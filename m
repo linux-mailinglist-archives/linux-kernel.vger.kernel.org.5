@@ -1,181 +1,142 @@
-Return-Path: <linux-kernel+bounces-30419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2582B831E6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:31:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94F75831E6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:32:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E0051F210A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:31:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30A291F21F04
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:32:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8222D047;
-	Thu, 18 Jan 2024 17:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HJRezMYj"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D18D2D049;
+	Thu, 18 Jan 2024 17:32:33 +0000 (UTC)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00BF2D03D
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:30:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DA22D03B
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705599054; cv=none; b=uMvrNqf7FM5cZw3hVUYBs3ToXqwJEALRVGqHv2/awEqbZVgE1p036/xpQZp34GGwHhICvg8PuLrpZfTkW7uQw9hqOyCw70fErsoU9M57IsgkIP+5FVJcyHezvxUmTK9evRH8TDiK+IUhL11/OmtrR8vTkr97ipo+zCuEEO/xVMc=
+	t=1705599153; cv=none; b=lqvwiQTjbG7g1rQbwIvnhUtvJfm2+ROdhrgfbVHP2ZknI9D9ZAHaPpzWJ3yVmsYGltDJoJcCIulhDksGCZRhk0RMv8QqwFxZ/F92KzOvZdTE0hcHCPeIPUcHsoPWB4iVByx/TJRZmvD0BapiqxwDcgnR0Z8miH27R747LNiZUsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705599054; c=relaxed/simple;
-	bh=YVukkp6Ty8xmn33aJ2CAd5z1se/6rMDA1u79jM3rJ6Q=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=ibFg9/csRQrSGiPCdvZ3BPyBv4zAHzKpK8RhX8VTdnkDFNFStn7tvQrEyg8uN7vxETpCsLyk0wYN3S2uP8o01lzw77eLzub5C5NcjW/MzxGrnWOgYGfLCXJ7s6n2ZWnp1eG392dHJfT5am3sPymMxt93cHaC/Vm2KyJel1/l8CE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HJRezMYj; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2c375d2430so1046502966b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:30:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705599051; x=1706203851; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dZ8+aWnS6wpwgfnA94ITk/n+W7jq2mwNVOlBfkoNPGg=;
-        b=HJRezMYjvD3u32A09tKZXH4iwRd+pipu6x9q2n3l86yBjO8l76NyK3B1IK2ptfo/zN
-         VLwJEllWeq2girnqFejvBZKp9f/AMsVITC//xdB8qOJEJT0CEoRTJbfdiKdiz3GelFgR
-         4FXCW2Ktq9y+DHswf007owvU7p/PxwnvehacAAhdMGWMjgH3vUeNTLiHm3LKYTaVT5qf
-         AXVOKfGKxPM0t3r7o2jhRv4sSNaGfmWmPwjyoHPyrgJJAxKxAWT3+gXsp6DnIFier9kj
-         nEPZx2QsYYauGlHlOwtYiW+mo1Sroj3LO1qW9jzCvQT6bUUXgvvryjZR4FZOEvw3GCOW
-         rL3w==
+	s=arc-20240116; t=1705599153; c=relaxed/simple;
+	bh=8vZW7ae9M/fsdkBQvJd0F3gvCjQeTEfCau3U1Be8stI=;
+	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
+	 X-Google-Smtp-Source:X-Received:Received:From:To:Cc:Subject:Date:
+	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding; b=up5JLWGUe8twno34eZpkNaDze8QGq6rw11ZAuYZ6TQeujkIaNlGUL4FTP/qxK6OVW3XId5MWgB3UpyFJCVlvK4oY9wnrgIaQ3zJUsT6q9g2HOcMt4wL/wU0mo6EsxztDWUEwIQchdVkjRUouP1d+f64dssmtSnNwPWSZx9MOhfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a26f73732c5so1450776466b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:32:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705599051; x=1706203851;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dZ8+aWnS6wpwgfnA94ITk/n+W7jq2mwNVOlBfkoNPGg=;
-        b=RLdKy3l/nbgAhDMVNnE8OcZPPtCE8KQxPpA7+8FID7AnpZssX4sMQB91PUTxPOjqB5
-         5jfU4IaRHRFo90xdiDc10d/ztVTM1BsBDLtYiEDTBkr7/AByz1QMRNZ03QA/JFVlJmDb
-         7pYreFuLAHjnFS1cPUu/3yIp3lQXlWTSp2mnG9QGsDuuTlhhrOtJAP1j1kBgZf7tOcFq
-         dvobHFtTKnJNwQf5renK827plI5DbxJ5wyTASh5vqGLkOOq3jZuNi7VzrxBFNDHWUANe
-         U6dPeTwXe/uk6jYmEKpXnj7xJe4C2ngy94GeFXBDCWNp2wx14GXdc4cHOZotJ7vK8Qx5
-         /DEg==
-X-Gm-Message-State: AOJu0YycGBuUGoEqTOr34rNwGVl8h1lygCVY3U8h6CrLjxQ6MhxS/tS0
-	umMTciBx2zGfUnT4AQpBJ3DL2RJdC1XXWHmylYUnqCl1cIdOPq5OahaBu7OOJvEeYWiQSpeNUIy
-	auLHXC4d8pzcagZi+aBZYW8pUx0cpLwp8A9+y
-X-Google-Smtp-Source: AGHT+IG7js52JDOKOth2ogk5zWVsYxaGZLs0gFbl1NLyC22gqAcaQk7pm9ZXvlpEMKYF0N87+x3Ziyr2ZnIXH+7G5dc=
-X-Received: by 2002:a17:906:c109:b0:a2a:1343:5b18 with SMTP id
- do9-20020a170906c10900b00a2a13435b18mr822061ejc.86.1705599050944; Thu, 18 Jan
- 2024 09:30:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705599149; x=1706203949;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z4wLhGa6Yk3lRyKA7quLUv+d0q8TE5jqEmzi7Wu30oo=;
+        b=RfCx56VttaDHNu6q4umRqwXpvKVqTX+j5RPP5I0dm8bFcOznEu5yb5lmxVc1bADMu/
+         6S448wGAPmL9UZ1TkAA+uiuu8nbhdohryRhv09GKM33XrPSusiNQuEjcc/YpqD5jo55G
+         NwcMcN5wYYsV5vCeQrKJMniaXVWcRwtLTLG5R5Z6oIZhT7EWcjfJktHpk2uvLmMQEguD
+         nOPuMhRG3IR/a7iOzkKkY/IBG0f4fzUTpcAoMCBJF/RWvjUcSNmvXwJThfLfyDuhl7+R
+         1QmFrYmmvlGcj+1DbvJQfxB7i/T41zvGcPH7s7SR06oKLJRuNAPK8JM+HLgfYPMXLXIF
+         nesg==
+X-Gm-Message-State: AOJu0YyxAr6rk0wkjX1JrKZd56jQb8yzFtcCC5aH2vDeCLrJ3nflZnsC
+	KOqfdMHtpFXQT3GbUozUHdksuLzJbS5AgMTC/fNZ3RlGtMdcWuQH
+X-Google-Smtp-Source: AGHT+IGAGOf1exf5CH+Zk9nbOBFWtMemx29YnJftAlOT7tKyQcrXrAbqQiirPxjsseNuMGRyWl3O2g==
+X-Received: by 2002:a17:907:ca24:b0:a23:62e7:d4cf with SMTP id uk36-20020a170907ca2400b00a2362e7d4cfmr650083ejc.34.1705599149277;
+        Thu, 18 Jan 2024 09:32:29 -0800 (PST)
+Received: from localhost (fwdproxy-cln-007.fbsv.net. [2a03:2880:31ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170906b30500b00a28ace8fb17sm9288088ejz.206.2024.01.18.09.32.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 09:32:28 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: mingo@kernel.org
+Cc: jpoimboe@kernel.org,
+	tglx@linutronix.de,
+	bp@alien8.de,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	pawan.kumar.gupta@linux.intel.com
+Subject: [PATCH 0/3] x86/bugs: Separate config for mitigations (part 2)
+Date: Thu, 18 Jan 2024 09:32:10 -0800
+Message-Id: <20240118173213.2008115-1-leitao@debian.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
- <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com> <20240118153425.GI939255@cmpxchg.org>
-In-Reply-To: <20240118153425.GI939255@cmpxchg.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 18 Jan 2024 09:30:12 -0800
-Message-ID: <CAJD7tkY48=2-4_iG6c-FcbzT3EBriem2spOFTTpGMfqmOmsx2Q@mail.gmail.com>
-Subject: Re: [PATCH 0/2] mm/zswap: optimize the scalability of zswap rb-tree
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Chengming Zhou <zhouchengming@bytedance.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	Chris Li <chriscli@google.com>, Nhat Pham <nphamcs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 18, 2024 at 7:34=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Wed, Jan 17, 2024 at 10:37:22AM -0800, Yosry Ahmed wrote:
-> > On Wed, Jan 17, 2024 at 1:23=E2=80=AFAM Chengming Zhou
-> > <zhouchengming@bytedance.com> wrote:
-> > >
-> > > When testing the zswap performance by using kernel build -j32 in a tm=
-pfs
-> > > directory, I found the scalability of zswap rb-tree is not good, whic=
-h
-> > > is protected by the only spinlock. That would cause heavy lock conten=
-tion
-> > > if multiple tasks zswap_store/load concurrently.
-> > >
-> > > So a simple solution is to split the only one zswap rb-tree into mult=
-iple
-> > > rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M). This id=
-ea is
-> > > from the commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB tr=
-unks").
-> > >
-> > > Although this method can't solve the spinlock contention completely, =
-it
-> > > can mitigate much of that contention. Below is the results of kernel =
-build
-> > > in tmpfs with zswap shrinker enabled:
-> > >
-> > >      linux-next  zswap-lock-optimize
-> > > real 1m9.181s    1m3.820s
-> > > user 17m44.036s  17m40.100s
-> > > sys  7m37.297s   4m54.622s
-> > >
-> > > So there are clearly improvements. And it's complementary with the on=
-going
-> > > zswap xarray conversion by Chris. Anyway, I think we can also merge t=
-his
-> > > first, it's complementary IMHO. So I just refresh and resend this for
-> > > further discussion.
-> >
-> > The reason why I think we should wait for the xarray patch(es) is
-> > there is a chance we may see less improvements from splitting the tree
-> > if it was an xarray. If we merge this series first, there is no way to
-> > know.
->
-> I mentioned this before, but I disagree quite strongly with this
-> general sentiment.
->
-> Chengming's patches are simple, mature, and have convincing
-> numbers. IMO it's poor form to hold something like that for "let's see
-> how our other experiment works out". The only exception would be if we
-> all agree that the earlier change flies in the face of the overall
-> direction we want to pursue, which I don't think is the case here.
+The current CONFIG_SPECULATION_MITIGATIONS namespace is only
+halfway populated, where some mitigations have entries in Kconfig, and
+they could be modified, while others mitigations do not have Kconfig entries,
+and can not be controlled at build time.
 
-My intention was not to delay merging these patches until the xarray
-patches are merged in. It was only to wait until the xarray patches
-are *posted*, so that we can redo the testing on top of them and
-verify that the gains are still there. That should have been around
-now, but the xarray patches were posted in a form that does not allow
-this testing (because we still have a lock on the read path), so I am
-less inclined.
+Fine-grained control over these Kconfig entries can help in a number of ways:
 
-My rationale was that if the gains from splitting the tree become
-minimal after we switch to an xarray, we won't know. It's more
-difficult to remove optimizations than to add them, because we may
-cause a regression. I am kind of paranoid about having code sitting
-around that we don't have full information about how much it's needed.
+1) Users can choose and pick only mitigations that are important for
+ their workloads.
 
-In this case, I suppose we can redo the testing (1 tree vs. split
-trees) once the xarray patches are in a testable form, and before we
-have formed any strong dependencies on the split trees (we have time
-until v6.9 is released, I assume).
+2) Users and developers can choose to disable mitigations that mangle
+ the assembly code generation, making it hard to read.
 
-How about that?
+3) Separate Kconfigs for just source code readability,
+ so that we see *which* butt-ugly piece of crap code is for what
+ reason...
 
->
-> With the xarray we'll still have a per-swapfile lock for writes. That
-> lock is the reason SWAP_ADDRESS_SPACE segmentation was introduced for
-> the swapcache in the first place. Lockless reads help of course, but
-> read-only access to swap are in the minority - stores will write, and
-> loads are commonly followed by invalidations. Somebody already went
-> through the trouble of proving that xarrays + segmentation are worth
-> it for swap load and store access patterns. Why dismiss that?
+In most cases, if a mitigation is disabled at compilation time, it
+can still be enabled at runtime using kernel command line arguments.
 
-Fair point, although I think the swapcache lock may be more contended
-than the zswap tree lock.
+This is the second part of the initial patchset[1] that got half landed.
+The first patch did some code re-organization. This second part
+contains the exact missing patches from the initial patchset, and
+basically adds build-time configuration for the other mitigations that
+are currently only disabled at boot time.
 
-> So my vote is that we follow the ususal upstreaming process here:
-> merge the ready patches now, and rebase future work on top of it.
+Here is a detailed view of each patch:
 
-No objections given the current state of the xarray patches as I
-mentioned earlier, but I prefer we redo the testing once possible with
-the xarray.
+Patch 1: Create a Kconfig to disable GDS mitigation.
+Patch 2: Add a Kconfig entry for each mitigation that doesn't have such
+Patch 3: Make spectre v2 userspace mitigation dependent on kernel
+         mitigations.
+
+With this patch applied, setting CONFIG_SPECULATION_MITIGATIONS=n, a
+simple script[2] shows that all the mitigations are disabled:
+
+  spectre_v2_user_stibp   	 SPECTRE_V2_USER_NONE
+  spectre_v2_user_ibpb    	 SPECTRE_V2_USER_NONE
+  spectre_v2_cmd          	 SPECTRE_V2_CMD_NONE
+  ssb_mode                	 SPEC_STORE_BYPASS_NONE
+  l1tf_mitigation         	 L1TF_MITIGATION_OFF
+  srso_mitigation         	 SRSO_MITIGATION_NONE
+  srso_cmd                	 SRSO_CMD_SAFE_RET
+  mds_mitigation          	 MDS_MITIGATION_OFF
+  taa_mitigation          	 TAA_MITIGATION_OFF
+  mmio_mitigation         	 MMIO_MITIGATION_OFF
+  srbds_mitigation        	 SRBDS_MITIGATION_OFF
+  gds_mitigation          	 GDS_MITIGATION_OFF
+  spectre_v1_mitigation   	 SPECTRE_V1_MITIGATION_NONE
+  spectre_v2_enabled      	 SPECTRE_V2_NONE
+  retbleed_mitigation     	 RETBLEED_MITIGATION_NONE
+
+[1] https://lore.kernel.org/all/ZZ7c9EbJ71zU5TOF@gmail.com/#t
+[2] https://github.com/leitao/debug/blob/main/spec/dump_speculation.py
+
+Breno Leitao (3):
+  x86/bugs: Create a way to disable GDS mitigation
+  x86/bugs: Add a separate config for missing mitigation
+  x86/bugs: spectre_v2_user default mode depends on main default
+
+ arch/x86/Kconfig           | 117 +++++++++++++++++++++++++++++++++++--
+ arch/x86/kernel/cpu/bugs.c |  57 +++++++++++-------
+ 2 files changed, 147 insertions(+), 27 deletions(-)
+
+-- 
+2.34.1
+
 
