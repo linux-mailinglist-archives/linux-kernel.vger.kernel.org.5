@@ -1,155 +1,120 @@
-Return-Path: <linux-kernel+bounces-30393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D43C5831E20
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ADF5831E23
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:07:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B881283BFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:06:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01B1E288C89
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625D12C844;
-	Thu, 18 Jan 2024 17:06:17 +0000 (UTC)
-Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EA52C6BE;
+	Thu, 18 Jan 2024 17:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k7aVVcZA"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C862C6AC
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F38D25742
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705597577; cv=none; b=TQfCXIGFnfvYG1bEYPPPnzabFDsKJMHCmUg0/mbhYBpe1kRohmZ/eV9fl6APcYnWcReE4mkguQYbwRlrAR9j0QyN75UXcBOYt1lb/f4MFfzgIapCND5MVGhG+nK0h6ig7CQjnM3XtxlpG9YIAaU7VxMRQEfjXscmzgq7dP9OBQA=
+	t=1705597642; cv=none; b=NxLdrFIrdqf7pLxbw7nfEnHxtewCTK5Xho3o9n1sWwyYBeqG8EtTeAuYjmh4UP2mrUPyLcRlkHUhRD5W7RwzG2fUZEzlmdo+pdIESYVlMntOxrqNf0a7lmsodT7dcdhv5LNCaU526FjPD7wdP5LhgrWPRXMyvwHBRyRNJ/qBzbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705597577; c=relaxed/simple;
-	bh=zwlAmsr3jy9o0CUfZAf7n0+dthoLludbuSbP800F6PU=;
-	h=Received:From:Date:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=mf2ayu0LoStm4c3hI88/hu2tIVv7wMZTmq479OWFuwYetx2p7iylMKiPkZxMbztxcDQcjxdDBseBS1hKFyIltKQ8/XPGPMCB4C61gksUmm2/e6zpnbIHrvtgZGTpXYOkPNUSSjsCxrbL6lYFl1SjSgvA0NZzhG/5Gx+D1m5BR7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
-	by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-	id e241a668-b623-11ee-b3cf-005056bd6ce9;
-	Thu, 18 Jan 2024 19:06:13 +0200 (EET)
-From: andy.shevchenko@gmail.com
-Date: Thu, 18 Jan 2024 19:06:13 +0200
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com,
-	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/6] spi: cs42l43: Add SPI controller support
-Message-ID: <ZalahZkCrBm-BXwz@surfacebook.localdomain>
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
- <20230804104602.395892-6-ckeepax@opensource.cirrus.com>
+	s=arc-20240116; t=1705597642; c=relaxed/simple;
+	bh=HlYwd4ZgoThSOWDK/BI/ByWriREGCZu6HCgLz+Vx7lU=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type; b=RsEfrhlHVZBnP4e27F74tYtlhhXLfh2JyomeSggXKi7dNwzWt4vOXUa3HP+OqQ6tFXCX+NkVuD8OzJPmDTuJ6Gs5t6/a4Jw5zpc0Nxn5WeHV2JZbuw5/rmRn8H7H9IKO4KasrNl68cfZfmp6hZazI1N6D+S5nuwxfZ3aC55aGW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=k7aVVcZA; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a26fa294e56so1307142266b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705597639; x=1706202439; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HlYwd4ZgoThSOWDK/BI/ByWriREGCZu6HCgLz+Vx7lU=;
+        b=k7aVVcZAG91ZgvgGHqLQQus/CNIUKv7CBvOaehJ259V1nsQ1NsDBWRAMgXD8FUePSu
+         Ze2xRB6mKfmC2fagT5JZ1BkuKsdgJO/00DEQlpQQp9Swe/d+ATmDeXVqXANRoaWHhV3I
+         ByzP+wsrK1G6T17xEWKnvkL54F2JUI0jSOitM0m3kybWLu5Z+MJsJcFn/E9jYz5lEjzd
+         zoZ0aHRLlSJN+ALep+hZhW0k1MhrDedlq6a96SFxg3W59Fz1PYXGmRCz8P1rqrIUue/a
+         ABdvX8hx9AwIz1MsBcaUFAbJzJU6IHnWBnP/hKHqVyVGL99qLSMJ9fg5xenqIgrLOKyi
+         PtSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705597639; x=1706202439;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HlYwd4ZgoThSOWDK/BI/ByWriREGCZu6HCgLz+Vx7lU=;
+        b=C2rbr6uPt7E3rIX7vNzKr9EZDtB+ENcJHeCUBYgvnWFuyDIjFoXa6PXdC/qaYeDqOh
+         pGSwsAZ+JK3eFp5+xGONH/rCI55JDj9RRfc7Bqcwg8cbCg1OufLHcPiyMmFFYZMNZ9h0
+         Mmylr0cjBrjIpnguGqBta/hI5QvDe709Nj28gbo7lVYU/Tkmo7mK8RJaxpv1/70ia7Ru
+         SjIbcezWC57WnlHeDCKinTMTD5oS/T8WZQdL3kYjSD/8LGKvSHZO9uLZh4CjkK3PJoOw
+         X9rjvkxGaCsL+ZWHLzg7bQSHWKy7VfsEhJd3lL5xsDICn+mGoHhvgPPFcY2YucZL76Y1
+         lGTQ==
+X-Gm-Message-State: AOJu0YyC8mrNOX+V05WV3O+6ZylasxY1PFyBGsfgIvW72L5WLoZV0N48
+	VjtlGNuEu3E64tth/Z8PKSUmIHZkPgEU78DaiaXhCiaAjU/rXRzjhl6GZ1m1SceU+B48qWcmydP
+	3pT2L337+l+8/fHVesPpyYZEHQc+UtTenaKBc
+X-Google-Smtp-Source: AGHT+IH8tvSJMBVtMjgt9oPnZXK6j/SOiKaEy5MCl32mJd7TLLo+oh5V3GfqfLmK0RNVJ0qI/u/fj1frwUcpuq7wqzA=
+X-Received: by 2002:a17:906:eb4a:b0:a29:8155:b813 with SMTP id
+ mc10-20020a170906eb4a00b00a298155b813mr781055ejb.85.1705597639224; Thu, 18
+ Jan 2024 09:07:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804104602.395892-6-ckeepax@opensource.cirrus.com>
+References: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
+ <20240116133145.12454-1-debug.penguin32@gmail.com> <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
+ <CAJD7tkb_uC_K7+C3GjVqg1rDRCmUkbHcEw950CkUHG66yokbcg@mail.gmail.com> <20240118161601.GJ939255@cmpxchg.org>
+In-Reply-To: <20240118161601.GJ939255@cmpxchg.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 18 Jan 2024 09:06:43 -0800
+Message-ID: <CAJD7tkb+NCocjpjvM08Nv2fPMDqm4t-YH05TJckz8m1AYFNWUg@mail.gmail.com>
+Subject: Re: [PATCH] mm/zswap: Improve with alloc_workqueue() call
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, Ronald Monthero <debug.penguin32@gmail.com>, sjenning@redhat.com, 
+	ddstreet@ieee.org, vitaly.wool@konsulko.com, akpm@linux-foundation.org, 
+	chrisl@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Fri, Aug 04, 2023 at 11:46:01AM +0100, Charles Keepax kirjoitti:
-> From: Lucas Tanure <tanureal@opensource.cirrus.com>
-> 
-> The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
-> (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
-> for portable applications. It provides a high dynamic range, stereo
-> DAC for headphone output, two integrated Class D amplifiers for
-> loudspeakers, and two ADCs for wired headset microphone input or
-> stereo line input. PDM inputs are provided for digital microphones.
-> 
-> The SPI component incorporates a SPI controller interface for
-> communication with other peripheral components.
+> > > On a different note, I wonder if it would help to perform synchronous
+> > > reclaim here instead. With our current design, the zswap store failure
+> > > (due to global limit hit) would leave the incoming page going to swap
+> > > instead, creating an LRU inversion. Not sure if that's ideal.
+> >
+> > The global shrink path keeps reclaiming until zswap can accept again
+> > (by default, that means reclaiming 10% of the total limit). I think
+> > this is too expensive to be done synchronously.
+>
+> That thresholding code is a bit weird right now.
+>
+> It wakes the shrinker and rejects at the same time. We're guaranteed
+> to see rejections, even if the shrinker has no trouble flushing some
+> entries a split second later.
+>
+> It would make more sense to wake the shrinker at e.g. 95% full and
+> have it run until 90%.
+>
+> But with that in place we also *should* do synchronous reclaim once we
+> hit 100%. Just enough to make room for the store. This is important to
+> catch the case where reclaim rate exceeds swapout rate. Rejecting and
+> going to swap means the reclaimer will be throttled down to IO rate
+> anyway, and the app latency isn't any worse. But this way we keep the
+> pipeline alive, and keep swapping out the oldest zswap entries,
+> instead of rejecting and swapping what would be the hottest ones.
 
-..
+I fully agree with the thresholding code being weird, and with waking
+up the shrinker before the pool is full. What I don't understand is
+how we can do synchronous reclaim when we hit 100% and still respect
+the acceptance threshold :/
 
-> +		while (buf < block) {
-> +			const u8 *word = min(buf + sizeof(u32), block);
-> +			int pad = (buf + sizeof(u32)) - word;
-> +
-> +			while (buf < word) {
-> +				val >>= BITS_PER_BYTE;
-> +				val |= FIELD_PREP(GENMASK(31, 24), *buf);
-> +
-> +				buf++;
-> +			}
-
-Is this a reinvented way of get_unaligned_*() APIs?
-
-> +			val >>= pad * BITS_PER_BYTE;
-> +
-> +			regmap_write(regmap, CS42L43_TX_DATA, val);
-> +		}
-
-..
-
-> +			while (buf < word) {
-> +				*buf = FIELD_GET(GENMASK(7, 0), val);
-> +
-> +				val >>= BITS_PER_BYTE;
-> +				buf++;
-> +			}
-
-put_unaligned_*() ?
-
-..
-
-> +	/* select another internal CS, which doesn't exist, so CS 0 is not used */
-> +	if (spi_get_csgpiod(spi, 0))
-> +		spi_config1 |= 1 << CS42L43_SPI_SS_SEL_SHIFT;
-
-BIT() ?
-
-> +	if (spi->mode & SPI_CPOL)
-> +		spi_config1 |= CS42L43_SPI_CPOL_MASK;
-> +	if (spi->mode & SPI_CPHA)
-> +		spi_config1 |= CS42L43_SPI_CPHA_MASK;
-> +	if (spi->mode & SPI_3WIRE)
-> +		spi_config1 |= CS42L43_SPI_THREE_WIRE_MASK;
-
-..
-
-> +	if (is_of_node(fwnode))
-> +		fwnode = fwnode_get_named_child_node(fwnode, "spi");
-
-You can actually drop these is_of_node() tests and use another variable. In
-ACPI there can't be child node in small letters.
-
-But main problem here (and in another driver where the similar is used) that
-you bumped reference count for fwnode. I haven't seen where you drop it back.
-Have you tested rmmod/modprobe in a loop?
-
-..
-
-> +	devm_pm_runtime_enable(priv->dev);
-
-No error check? Why?
-
-..
-
-> +	ret = devm_spi_register_controller(priv->dev, priv->ctlr);
-> +	if (ret) {
-> +		pm_runtime_disable(priv->dev);
-
-Ah! Are you sure you properly simulated faults when testing this code?
-
-> +		dev_err(priv->dev, "Failed to register SPI controller: %d\n", ret);
-> +	}
-> +
-> +	return ret;
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Are you proposing we change the semantics of the acceptance threshold
+to begin with?
 
