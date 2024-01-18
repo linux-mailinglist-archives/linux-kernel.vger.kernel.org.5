@@ -1,67 +1,40 @@
-Return-Path: <linux-kernel+bounces-29646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A231D831142
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:07:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0DC831145
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:07:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1703CB24C05
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:07:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B39C284374
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F294698;
-	Thu, 18 Jan 2024 02:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fy96bxi5"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1EC7497;
+	Thu, 18 Jan 2024 02:07:14 +0000 (UTC)
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F21323D9;
-	Thu, 18 Jan 2024 02:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E85A6124;
+	Thu, 18 Jan 2024 02:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705543627; cv=none; b=osMuQhtrk7ydj6tukVgKqYE9oQFYnslTivHD+mq6oMqhavrENpRJQ3jnsXq4252O0nVYJw88uwMHA/Zmpz4TvOxiTVldzH5eWhNBtKApqo+5tShV5DxxY7BnLDyDp41GBSb0jDcvnaxmAqUlxnK5gbJzpKXDZKGX7lhBHRBJBUw=
+	t=1705543634; cv=none; b=uHlLekUJG4qH5JoQQwS8M/cyhZg0m7ihpo/U/WMCjWzMYO2Q9XuekrEB9NnlYmBVJYgUqivoAfYLdGhlptrtfS3gblVK6NaSGnhoC98NndAxJ+7+rofNryJnpEKEo1s0sdq5NVjYGuZvpqe4CZus+27eHrekR0UdRHq+gs2UAqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705543627; c=relaxed/simple;
-	bh=eNa6RnBmD6nBUUK+JlWTYmea+WAEaaTuBXMWGIdloyw=;
-	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-ORIG-GUID:
-	 X-Proofpoint-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=TJA0xWMYSWufZ8XXxnETSNjSY3F/Sc+jT40JohwFcdpuwrkT8xS197Wees8NG8Vjm7ijq1WfOnzVSCroLMNmLFG9XBy9mHaIAdf6iW6Ved2hCE0lIoAlaXr0DHu9veYFTPVRFyDvphTxVbqmGKCKfYhPvJj+y09Vb/agEMSxG9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fy96bxi5; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40I1CTKw032163;
-	Thu, 18 Jan 2024 02:07:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=eJ775hQQr50RGfFRrsXBtSjR/Rhx1p4HhwQ06OFvHNM=; b=fy
-	96bxi5SlQXZ4d0gGhzvAjYTLZIFbUvUCcvo7tRwlCYjeLckToxG3XvHlUXlAvamu
-	AxJ+KUVBjpsiZpBeIuLaChYUyDzH4avYWzcjnTcRYx4esT9rAuYqkCm3P05Ztq8/
-	d2tr1cFUR1LrUGKMHW6+cwpYL2al2ncm7Kf+veyOoXezLrlbohMdQ9bN/j7losH+
-	umSG5YluBlxfmSJQdcWz6DjuwJaZ39BY5Nlf18c0SOavUnunQ69Tb2WbdJMU1MLn
-	34S7R+PFcQ0xP9caoZ7/C4zOX29/YuSEzvLTi5m9T0tYY2J4pKnsxcvN4AIYLAIN
-	XqsCHopfDJQVoNgLc80A==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vpejp1rg7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 02:06:59 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40I26wOc004919
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 02:06:58 GMT
-Received: from [10.238.139.231] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Jan
- 2024 18:06:54 -0800
-Message-ID: <4c82f1f0-1c5a-498f-9845-b5b26cd76468@quicinc.com>
-Date: Thu, 18 Jan 2024 10:06:46 +0800
+	s=arc-20240116; t=1705543634; c=relaxed/simple;
+	bh=p8ztB7SmZU1W5DwouAvpA1NwnVxwUnbtN1u7pC+nywU=;
+	h=X-Alimail-AntiSpam:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=UjYcHY/vCU5CdSlcbpWwZW0jDFEbZIUJysI3owHg5B7f9eI6YbVHWuH/5N3pxjU7KdBZdUW8Y+MDrUOwWj87AA4SEeOoV2WU8LYWUpVjg/eMRx1UiBfrrjvuv/4Xs1V4DFruIDTCdFRBe2eHn8GuqZCxUGl/X59R8ZaxGDaxAec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W-r297T_1705543621;
+Received: from 30.221.131.86(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W-r297T_1705543621)
+          by smtp.aliyun-inc.com;
+          Thu, 18 Jan 2024 10:07:02 +0800
+Message-ID: <b5de921a-27d8-4e68-8915-04e9aa06fb0d@linux.alibaba.com>
+Date: Thu, 18 Jan 2024 10:07:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,112 +42,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] arm64: dts: qcom: qcm6490-idp: Add definition for
- three LEDs
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross
-	<agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_fenglinw@quicinc.com>
-References: <20240115-lpg-v5-1-3c56f77f9cec@quicinc.com>
- <CAA8EJpoemnXTmshWrArVOCm0GRSkWZ5tH557nbAjRL1Tgg-Dig@mail.gmail.com>
- <e16f5ff1-9b12-4f90-89d5-f95cbfb859e7@quicinc.com>
- <6c29ce72-e303-406a-bb75-5b36b0cd8ee4@linaro.org>
- <44ab50c4-c63b-436c-af46-9b4543181446@quicinc.com>
- <CAA8EJpq8exe6n3OQnreLCsV+BnZKcu24d==rEKup=+n28nnDHw@mail.gmail.com>
-From: hui liu <quic_huliu@quicinc.com>
-In-Reply-To: <CAA8EJpq8exe6n3OQnreLCsV+BnZKcu24d==rEKup=+n28nnDHw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH net] net/smc: fix illegal rmb_desc access in SMC-D
+ connection dump
+To: dust.li@linux.alibaba.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ yepeilin.cs@gmail.com, ubraun@linux.ibm.com, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240117122749.63785-1-guwen@linux.alibaba.com>
+ <20240118015018.GB89692@linux.alibaba.com>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <20240118015018.GB89692@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: MX9vm9BR0clH7AOyHGumzPF0KEVobwiq
-X-Proofpoint-GUID: MX9vm9BR0clH7AOyHGumzPF0KEVobwiq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_14,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- suspectscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
- impostorscore=0 adultscore=0 priorityscore=1501 bulkscore=0
- mlxlogscore=944 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2401180012
 
 
 
-On 1/17/2024 11:41 AM, Dmitry Baryshkov wrote:
-> On Wed, 17 Jan 2024 at 05:02, hui liu <quic_huliu@quicinc.com> wrote:
+On 2024/1/18 09:50, Dust Li wrote:
+> On Wed, Jan 17, 2024 at 08:27:49PM +0800, Wen Gu wrote:
+>> A crash was found when dumping SMC-D connections. It can be reproduced
+>> by following steps:
 >>
+>> - run nginx/wrk test:
+>>   smc_run nginx
+>>   smc_run wrk -t 16 -c 1000 -d <duration> -H 'Connection: Close' <URL>
 >>
+>> - continuously dump SMC-D connections in parallel:
+>>   watch -n 1 'smcss -D'
 >>
->> On 1/15/2024 6:26 PM, Krzysztof Kozlowski wrote:
->>> On 15/01/2024 11:18, hui liu wrote:
->>>>
->>>>
->>>> On 1/15/2024 5:56 PM, Dmitry Baryshkov wrote:
->>>>> On Mon, 15 Jan 2024 at 11:48, Hui Liu via B4 Relay
->>>>> <devnull+quic_huliu.quicinc.com@kernel.org> wrote:
->>>>>>
->>>>>> From: Hui Liu <quic_huliu@quicinc.com>
->>>>>>
->>>>>> Add definition for three LEDs to make sure they can
->>>>>> be enabled base on QCOM LPG LED driver.
->>>>>
->>>>> The "function" property is still placed incorrectly. Posting the next
->>>>> iteration before concluding the discussion on the previous one is not
->>>>> the best idea.
->>>> Do you mean I should update it as below? Seems there is no consumer to
->>>> use the function config, do we need to add now?
->>>
->>> Paste the output of dtbs_check for your board (or CHECK_DTBS=y for your
->>> Makefile target).
->> I checked the dt-binding file of LPG LED, I will update the dts as
->> below, if you think it's correct, I will push v6.
+>> BUG: kernel NULL pointer dereference, address: 0000000000000030
+>> CPU: 2 PID: 7204 Comm: smcss Kdump: loaded Tainted: G	E      6.7.0+ #55
+>> RIP: 0010:__smc_diag_dump.constprop.0+0x5e5/0x620 [smc_diag]
+>> Call Trace:
+>>   <TASK>
+>>   ? __die+0x24/0x70
+>>   ? page_fault_oops+0x66/0x150
+>>   ? exc_page_fault+0x69/0x140
+>>   ? asm_exc_page_fault+0x26/0x30
+>>   ? __smc_diag_dump.constprop.0+0x5e5/0x620 [smc_diag]
+>>   ? __kmalloc_node_track_caller+0x35d/0x430
+>>   ? __alloc_skb+0x77/0x170
+>>   smc_diag_dump_proto+0xd0/0xf0 [smc_diag]
+>>   smc_diag_dump+0x26/0x60 [smc_diag]
+>>   netlink_dump+0x19f/0x320
+>>   __netlink_dump_start+0x1dc/0x300
+>>   smc_diag_handler_dump+0x6a/0x80 [smc_diag]
+>>   ? __pfx_smc_diag_dump+0x10/0x10 [smc_diag]
+>>   sock_diag_rcv_msg+0x121/0x140
+>>   ? __pfx_sock_diag_rcv_msg+0x10/0x10
+>>   netlink_rcv_skb+0x5a/0x110
+>>   sock_diag_rcv+0x28/0x40
+>>   netlink_unicast+0x22a/0x330
+>>   netlink_sendmsg+0x1f8/0x420
+>>   __sock_sendmsg+0xb0/0xc0
+>>   ____sys_sendmsg+0x24e/0x300
+>>   ? copy_msghdr_from_user+0x62/0x80
+>>   ___sys_sendmsg+0x7c/0xd0
+>>   ? __do_fault+0x34/0x160
+>>   ? do_read_fault+0x5f/0x100
+>>   ? do_fault+0xb0/0x110
+>>   ? __handle_mm_fault+0x2b0/0x6c0
+>>   __sys_sendmsg+0x4d/0x80
+>>   do_syscall_64+0x69/0x180
+>>   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>>
+>> It is possible that the connection is in process of being established
+>> when we dump it. Assumed that the connection has been registered in a
+>> link group by smc_conn_create() but the rmb_desc has not yet been
+>> initialized by smc_buf_create(), thus causing the illegal access to
+>> conn->rmb_desc. So fix it by checking before dump.
+>>
+>> Fixes: ce51f63e63c5 ("net/smc: Prevent kernel-infoleak in __smc_diag_dump()")
 > 
-> Is there any reason why you are defining three different LEDs instead
-> of multi-led with three components?
+> ce51f63e63c5 ("net/smc: Prevent kernel-infoleak in __smc_diag_dump()")
+> only add a memset() of 'struct smcd_diag_dmbinfo dinfo', which I don't
+> think is not the real cause of the bug.
+> 
 
-In the HW design, they are three seprete LEDs, there are three LEDs on 
-device. why do we need to add for multi-led?
+After re-checking the definition of Fixes tag, I agree that
+ce51f63e63c5 is not appropriate and
+4b1b7d3b30a6 ("net/smc: add SMC-D diag support") should be used.
 
-Thanks,
-Hui
-> 
+Thank you!
+
+>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+>> ---
+>> net/smc/smc_diag.c | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->> +&pm8350c_pwm {
->> +       #address-cells = <1>;
->> +       #size-cells = <0>;
->> +       status = "okay";
->> +
->> +       led@1 {
->> +               reg = <1>;
->> +               color = <LED_COLOR_ID_RED>;
->> +               function = LED_FUNCTION_STATUS;
->> +       };
->> +
->> +       led@2 {
->> +               reg = <2>;
->> +               color = <LED_COLOR_ID_GREEN>;
->> +               function = LED_FUNCTION_STATUS;
->> +       };
->> +
->> +       led@3 {
->> +               reg = <3>;
->> +               color = <LED_COLOR_ID_BLUE>;
->> +               function = LED_FUNCTION_STATUS;
->> +       };
->> +};
-> 
-> 
-> 
+>> diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
+>> index 52f7c4f1e767..5a33908015f3 100644
+>> --- a/net/smc/smc_diag.c
+>> +++ b/net/smc/smc_diag.c
+>> @@ -164,7 +164,7 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
+>> 	}
+>> 	if (smc_conn_lgr_valid(&smc->conn) && smc->conn.lgr->is_smcd &&
+>> 	    (req->diag_ext & (1 << (SMC_DIAG_DMBINFO - 1))) &&
+>> -	    !list_empty(&smc->conn.lgr->list)) {
+>> +	    !list_empty(&smc->conn.lgr->list) && smc->conn.rmb_desc) {
+>> 		struct smc_connection *conn = &smc->conn;
+>> 		struct smcd_diag_dmbinfo dinfo;
+>> 		struct smcd_dev *smcd = conn->lgr->smcd;
+>> -- 
+>> 2.43.0
 
