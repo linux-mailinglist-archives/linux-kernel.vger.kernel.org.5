@@ -1,72 +1,51 @@
-Return-Path: <linux-kernel+bounces-30441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A9C7831EC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:51:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDD6831EC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:52:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 315631F242F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:51:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE1B9B25BB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 252BC2D631;
-	Thu, 18 Jan 2024 17:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F09D2D60F;
+	Thu, 18 Jan 2024 17:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LbJgbhEn"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="wgJncUnU"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75552D607
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:50:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090392C68C;
+	Thu, 18 Jan 2024 17:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705600250; cv=none; b=e6huLmH70+uJ9IEpgRn1PuTfGJis39nJczm9kQEIGF9iNvZsWSFclCPz+g8nMqJE0OPNsIqkl03XC4Jm5cjGvHhAPIADGQuWeRFqLt9qnAr2tl4MFc3C6fWLDZlnk7b6W1IrzCUST8R+nJclA7XTz1vOyBdXqndqaC742Fnyl8U=
+	t=1705600359; cv=none; b=TeP3dQn9Gg/LNfgCrGrzbr2hM6WjWIzw7ZUcLQwcfSfDLwk9OiCOlZ1M4YcTcsSGwUPNToOjfB2agXhNWy2vh7a6jtEgKeh7/fLxJZOhycyfwJ79siZD3fj+Tj1CfORTU6amuDIr/j2AUw7Qg3vWkxmbyBZQtYd/lKMlyOS6GjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705600250; c=relaxed/simple;
-	bh=R83s/PyF4fXUdK67JiE75Dz9JrojGyAfOWEwxObSVV8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MPeNGteVZ5Exq0Y/rYwNRkNcRAxy6K8qjVAMEVXAGH+1Shy/iKm31FPa84aoqudA//i2SzSgJAD19TTmHiXlzQXoszZv/9+n5ivfeEDeffRFODr3W/x5ZGeHx39TQCe+p5DY8B+uO/ZIpfWM6Y62iDDfBuAo8J/3TSz5tLt4fpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LbJgbhEn; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50eabfac2b7so15144396e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:50:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705600246; x=1706205046; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BeOfVhu/YQjuPaBL7HLOFJxylUSZb5ghXwEj0tH+VbM=;
-        b=LbJgbhEneDdeNqOEmRiGt3riWuUBUuVlABZyUdAdZ8O0LkDxG+pAu7QNo5YAWMjpL3
-         eY6u86tWGvrLmk19X0D60CGMwpgspuFzxDdL+RbFND0sd11IavHXilYeBR1n/BWmS7QA
-         0obftDJl+9tRy7H2hcPydoykwQqlWTulXDus5CGoG3164YX20SfYCCS8VGrVFKeRega8
-         t4pXISDeLwMhi63Etq20aBuLQx+muYiJLWGJtutwJKIjANPa6R/YcMBqZ8PSCKs2nK8s
-         hc/mnuhYw9ADWkRf9LojrWc9shl2HeeJfJ+HaJY5D7AEri+CrT1SdGVGusGEMv+o/LY6
-         oxKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705600246; x=1706205046;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BeOfVhu/YQjuPaBL7HLOFJxylUSZb5ghXwEj0tH+VbM=;
-        b=rUeU7ztksH2njQqaMk+Rdqs0gQFLlvugwswSgOdgsrHZw7wwLmWogIC0zvN9L0T31p
-         BTPiHs7AAfT8wUie7q5DIIPS4yRnMMa62ZHjGtwGZ4IalIf1gP1sFh4wgHGLrXS+uXpC
-         Jov/XYF78R4bPs82CgJVhzXXboABEhfd8l180Zpw2Hbpw0IY6azfCoEEBL0gwF0WDyg/
-         +cKr76gWI4m0NJdeJ1NVqcN9l2XOoxDdyP66zMgzb2eWCYOSt+MfvMzK2VyIGdaeOM+9
-         2MjL85znMyP2gY5pW7sLMeayaAfxyRq+7YTX0YHxz3mhGMFRMq/yHsNsLz3SLvYeL8en
-         c8vg==
-X-Gm-Message-State: AOJu0YzKAguOoW35PcdxKWgjipzq8DmTvMnxdRZXL8X50rzt3vxV2hQt
-	tVG+y31o8fvYDxo4M/kP1B8MWxQVXmE8OBiCD2F1vEUc3tpGfIAgnRPBvtXXjfs=
-X-Google-Smtp-Source: AGHT+IHqhtxBqUtdwqkS5/LYHeL/ekXGtb2Jn3Eqr4OlemBLU7YUpfw9MOxkxxvtVnMVoEQW1MZhFA==
-X-Received: by 2002:a05:6512:31ca:b0:50e:6c1d:5dee with SMTP id j10-20020a05651231ca00b0050e6c1d5deemr7487lfe.33.1705600245837;
-        Thu, 18 Jan 2024 09:50:45 -0800 (PST)
-Received: from [172.30.205.26] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id h23-20020a19ca57000000b0050ee3e540e4sm718900lfj.65.2024.01.18.09.50.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 09:50:45 -0800 (PST)
-Message-ID: <ed2dddc6-6461-4a2b-8491-13955cbd80fd@linaro.org>
-Date: Thu, 18 Jan 2024 18:50:37 +0100
+	s=arc-20240116; t=1705600359; c=relaxed/simple;
+	bh=KKJJ6HPqG21gZ+Co1uAQr5O3IGs7SkQEmxmkOZnVKfM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=YdvnfZFeivYgw7PqKkP8r1OJSvv1e9rPt4vsW3kMvjz+K/49Up3F0mxVJXOlE5tp4Yvjp6PNz9uJCOEICo6D75j9CBKHKXdTZJM24glfF/ZzHxkPcw5qSpsbV3aiUqZvxvnqfFB/ib029BXQ4R7/Z/bCWrYEKpPd2CsItzK2V6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=wgJncUnU; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
+	bh=hGDDDdy4DJSwqpdxi3VKxYASFTzt0obR4RNDFTT72ow=; b=wgJncUnUfmNMXiR5xRJWIIeNXg
+	wBOu88qbaJDezs/zSYlfZcTUWlXhv3nv3I1fvX7tVAlpiBHzZrhSE/CbZNqoVSak1UAIFgZLvKs9k
+	d5oHh5hCeaIDuYlmrI5QaNjFvgiXnwViG4baMr+s/FmA98LNXq+C8YZ0KEpmhhU976FVX+oXBjuLW
+	yBqqIkLVvDNrdwWfqX1vr+UBI+oypanwcmpmfdz4cqSJDn88M2GjXrAyEFiDj0kciwzzFafjG+2jk
+	RDFFFCf6Sx0vfG5Jfu0Bl2m7EfkuxdYWhJQmTKxQs4YdFLn23iKb4DdnM3YTj7hp7lgUEd0/1PTHH
+	1/KpAwUg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rQWZ8-003R80-0C;
+	Thu, 18 Jan 2024 17:52:34 +0000
+Message-ID: <d91d9c20-3b17-40e4-96d0-49daecf6558e@infradead.org>
+Date: Thu, 18 Jan 2024 09:52:33 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,65 +53,123 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 9/9] PCI/pwrseq: add a pwrseq driver for QCA6390
+Subject: Re: [PATCH v4 2/4] kstrtox: introduce a safer version of memparse()
 Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Kalle Valo <kvalo@kernel.org>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Chris Morgan <macromorgan@hotmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>,
- Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Terry Bowman <terry.bowman@amd.com>, Lukas Wunner <lukas@wunner.de>,
- Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Abel Vesa <abel.vesa@linaro.org>
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-pci@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20240117160748.37682-1-brgl@bgdev.pl>
- <20240117160748.37682-10-brgl@bgdev.pl>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240117160748.37682-10-brgl@bgdev.pl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
+ andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM, ddiss@suse.de,
+ geert@linux-m68k.org
+References: <cover.1704422015.git.wqu@suse.com>
+ <f972b96cad42e49235d90b863038a080acc0059e.1704422015.git.wqu@suse.com>
+ <64def21a-2727-455b-9e35-e2a56d2f1625@infradead.org>
+ <848c719c-daa2-403a-b7eb-f172b4236dc1@gmx.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <848c719c-daa2-403a-b7eb-f172b4236dc1@gmx.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
-
-On 1/17/24 17:07, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 1/14/24 21:27, Qu Wenruo wrote:
 > 
-> Add a PCI power sequencing driver that's capable of correctly powering
-> up the ath11k module on QCA6390 and WCN7850 using the PCI pwrseq
-> functionality.
 > 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> [Neil: add support for WCN7850]
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
+> On 2024/1/15 14:57, Randy Dunlap wrote:
+> [...]
+>>> @@ -113,6 +113,105 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+>>>       return 0;
+>>>   }
+>>>
+>>> +/**
+>>> + * memparse_safe - convert a string to an unsigned long long, safer version of
+>>> + * memparse()
+>>> + *
+>>> + * @s:        The start of the string. Must be null-terminated.
+>>
+>> Unless I misunderstand, this is the biggest problem that I see with
+>> memparse_safe(): "Must be null-terminated".
+>> memparse() does not have that requirement.
+> 
+> This is just an extra safety requirement.
+> 
+> In reality, memparse_safe() would end at the either the first
+> unsupported suffix after the valid numeric string (including '\0'),
+> or won't be updated if any error is hit (either no valid string at all,
+> or some overflow happened).
+> 
+> For most if not all call sites, the string passed in is already
+> null-terminated.
+> 
+>>
+>> And how is @retptr updated if the string is null-terminated?
+> 
+> E.g "123456G\0", in this case if suffix "G" is allowed, then @retptr
+> would be updated to '\0'.
+> 
+> Or another example "123456\0", @retptr would still be updated to '\0'.
+> 
+>>
+>> If the "Must be null-terminated." is correct, it requires that every user/caller
+>> first determine the end of the number (how? space and/or any special character
+>> or any alphabetic character that is not in KMGTPE? Then save that ending char,
+>> change it to NUL, call memparse_safe(), then restore the saved char?
+> 
+> There are already test cases like "86k \0" (note all strings in the test
+> case is all null terminated), which would lead to a success parse, with
+> @retptr updated to ' ' (if suffix K is specified) or 'k' (if suffix K is
+> not specified).
+> 
+> So the behavior is still the same.
+> It may be my expression too confusing.
+> 
+> Any recommendation for the comments?
 
-[...]
+Well, "Must be null-terminated." is incorrect, so explain better where
+the numeric conversion ends.
 
-> +static struct pci_pwrseq_qca6390_vreg pci_pwrseq_wcn7850_vregs[] = {
-> +	{
-> +		.name = "vdd",
-> +	},
+Thanks.
 
-Weird there's no .load here.. On Qualcomm they're used for asking
-the regluators to enter the high power mode, so it'd be useful.
+> 
+> Thanks,
+> Qu
+> 
+>>
+>> I'm hoping that the documentation is not correct...
+>>
+>>> + *        The base is determined automatically, if it starts with "0x"
+>>> + *        the base is 16, if it starts with "0" the base is 8, otherwise
+>>> + *        the base is 10.
+>>> + *        After a valid number string, there can be at most one
+>>> + *        case-insensitive suffix character, specified by the @suffixes
+>>> + *        parameter.
+>>> + *
+>>> + * @suffixes:    The suffixes which should be handled. Use logical ORed
+>>> + *        memparse_suffix enum to indicate the supported suffixes.
+>>> + *        The suffixes are case-insensitive, all 2 ^ 10 based.
+>>> + *        Supported ones are "KMGPTE".
+>>> + *        If one suffix (one of "KMGPTE") is hit but that suffix is
+>>> + *        not specified in the @suffxies parameter, it ends the parse
+>>> + *        normally, with @retptr pointed to the (unsupported) suffix.
+>>> + *        E.g. "68k" with suffxies "M" returns 68 decimal, @retptr
+>>> + *        updated to 'k'.
+>>> + *
+>>> + * @res:    Where to write the result.
+>>> + *
+>>> + * @retptr:    (output) Optional pointer to the next char after parse completes.
+>>> + *
+>>> + * Returns:
+>>> + * * %0 if any valid numeric string can be parsed, and @retptr is updated.
+>>> + * * %-EINVAL if no valid number string can be found.
+>>> + * * %-ERANGE if the number overflows.
+>>> + * * For negative return values, @retptr is not updated.
+>>> + */
+>>> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixes,
+>>> +               unsigned long long *res, char **retptr)
+>>> +{
+>>
+>> Thanks.
+> 
 
-Konrad
+-- 
+#Randy
 
