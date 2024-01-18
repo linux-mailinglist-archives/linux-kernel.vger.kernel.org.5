@@ -1,139 +1,242 @@
-Return-Path: <linux-kernel+bounces-29635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7389683111B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:51:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1625183111E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:51:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03B32B25972
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:51:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A917D2812E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A2F5395;
-	Thu, 18 Jan 2024 01:50:31 +0000 (UTC)
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BEFC28FD;
+	Thu, 18 Jan 2024 01:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="feF3//t4"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C73523D8;
-	Thu, 18 Jan 2024 01:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F4F2115
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:51:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705542631; cv=none; b=Rq9wl1LriHC2J17YtiHe839XJBNauTJTxL7eG6wXyS4FLQAHiA+7rG6fiYM0lgJlYalm+EDmdA6NufM27avF7DML+9xM29xAj4+Ckdc6EDD60s8KE7E+3c76qLJeO4USafzx6I/hyh4cypRrGHZOyi9bbcLCj/Ciklb7bysHQI8=
+	t=1705542705; cv=none; b=jxOX59yNm6w3YIPcJ68f3GfXGPyMb8P2iVmzcv8AKUaY5Bqows6Q1l2k6h7o7cXX7VS6wBFQLWfxbRV4Mh3xBuMYfIx5sdEwVjLgL7tEmGsqMxXF1JiIiPnj2rH7hLGRmT6hozpXZ3WPJdR6bRThWsSR0ZlVRLlWN1geUOEj/SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705542631; c=relaxed/simple;
-	bh=YdX5G24CXnDLogY+5UtvR6u9a94ZuekG0rXEedpL2tU=;
-	h=X-Alimail-AntiSpam:Received:Date:From:To:Cc:Subject:Message-ID:
-	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=QqWxUw23/TaOWXstNUjSHQg48aMDJ31dlfnGGYMrx46POSLCJT+i8kDE7QpXipwvdANqBR1YQmfD8n3vbO7/nWAPi/N9wjrXFCaAYhlAy8udISAflPyQOJxIMe+XspkKsNJ8KRodoWcx31278C08oAw/KC+SxvFTT6cBJJP/iH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W-qr2Zh_1705542618;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0W-qr2Zh_1705542618)
-          by smtp.aliyun-inc.com;
-          Thu, 18 Jan 2024 09:50:19 +0800
-Date: Thu, 18 Jan 2024 09:50:18 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com,
-	jaka@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com
-Cc: alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-	yepeilin.cs@gmail.com, ubraun@linux.ibm.com,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net/smc: fix illegal rmb_desc access in SMC-D
- connection dump
-Message-ID: <20240118015018.GB89692@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20240117122749.63785-1-guwen@linux.alibaba.com>
+	s=arc-20240116; t=1705542705; c=relaxed/simple;
+	bh=gk+szIGCHDF1m7poSrWRwT4feXRQMAk4Aji7T4mqASo=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=HC4POM7xp/5YprQqPKErwjVhsptfBd4rBIlO3dYWV+urKQD8X0iLYuRo1NreXIDeKWARMATQUPeB+ivT1fx9WFRRa4SF5iEUGorp+pscD2sWLpaLoOheD8w655AVp7tLpqlzwhsGONhDHUNL9aYEFsg5Mgt+XRsc9iXGj6VAlUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=feF3//t4; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbed179f0faso205293276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:51:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705542703; x=1706147503; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zFlUvRLLxU9Bh03SHU8Xlmb6p9OjF1f1q03v5iks3yk=;
+        b=feF3//t4NHRn9AlzgJ6r1dD3KlmX+6ScpbWYxdI1UMxz7To61z/0b0s9w+sQ9/GRuV
+         7pJStWgkTlZn1qNGSpc+6fXAYkOcX/ZYCJakB9F0i40ciJuWmV0hlN1OYlMMWeAmR0mq
+         Px73FBlVJkgWnkFfDnWDqKbvElMFKbEATuHg20in/blhMse7WpfUUNpWNXJwQzE7qD7Z
+         WJLl8OHq4sBRTvjG0PmcFKbeSPCpj5CAYPO4Jg7xDEls1UzsVlX6L4S2uCXwcgFEvEWF
+         pu+YB+clDkEzW1Cf+9wLC6sm7iBoSw/6W5Ce4bxPq7sEejj9QEAuqaX+VESdZaMu34Il
+         nfvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705542703; x=1706147503;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zFlUvRLLxU9Bh03SHU8Xlmb6p9OjF1f1q03v5iks3yk=;
+        b=FHmTBp0nJdljUr+Ltgv/uZtmPjNc0W+cAYRRNIfhGyBhvLtHumwagESIfLclVQEQDA
+         9V6GueECbAa3ejMHJjxBnqi5I04TT5bZSl2h+WnBgms0MLS7+XvWyNFc9HfdoKc8GKup
+         JqySfq5PbpGYChIpjbFUB6/g7B1fOKae8UOJUCbbUNPSCg2tO3SMnkES/0s3LummO9o+
+         c+iIl0IBSJQwCIbXv2pfMdhwUqNHFHQCrvFx5R9P4oW2Hk+voHdXYCE855CVUsmwEcYD
+         Re0CLxpRINyzZquZJ1mLeY1LokOLY7/OvAkEOx2TXDaSIqzxpJvMvVpSgaBC08kvy4Bc
+         dDNQ==
+X-Gm-Message-State: AOJu0YwkH60vVcvl8RADLTlnfLswOYa760ObR8UKKJnNO9/6x8eh4mXJ
+	VSnf47HcOSQg0GqNu2JJcf2aG7cdHms5awrIUWKtdknrCk/mBQTRgpuCfrnp4IZZQORKjaT+5QC
+	93k0s4az+PD1nlj6TH1r1AOBAip4=
+X-Google-Smtp-Source: AGHT+IFrT7OEBcIDMjRqPmGgW8mNOdR276PugYkRYkwNXrye37KQTXmHBLX1+yeql3TzZczi/5Mx6ookRj33c2smh0E=
+X-Received: by 2002:a25:b40a:0:b0:db9:84c4:151a with SMTP id
+ n10-20020a25b40a000000b00db984c4151amr150239ybj.34.1705542703095; Wed, 17 Jan
+ 2024 17:51:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117122749.63785-1-guwen@linux.alibaba.com>
+References: <20240117050217.43610-1-ioworker0@gmail.com> <CAAa6QmR0rcdk_rJOzc88ZA4jm9K5LwxT4dSHiBX+nPyd6E3Ddw@mail.gmail.com>
+ <22b24ce9-d143-4b5f-87da-bf68e4fa46d3@redhat.com>
+In-Reply-To: <22b24ce9-d143-4b5f-87da-bf68e4fa46d3@redhat.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Thu, 18 Jan 2024 09:51:32 +0800
+Message-ID: <CAK1f24=MbVMrxWO2xa+9bJiqEKJ=DG68WQ5bE_LgW9=oTk6GwQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] mm/madvise: introduce MADV_TRY_COLLAPSE for
+ attempted synchronous hugepage collapse
+To: David Hildenbrand <david@redhat.com>
+Cc: "Zach O'Keefe" <zokeefe@google.com>, akpm@linux-foundation.org, songmuchun@bytedance.com, 
+	linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>, 
+	Peter Xu <peterx@redhat.com>, Michael Knyszek <mknyszek@google.com>, 
+	Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 08:27:49PM +0800, Wen Gu wrote:
->A crash was found when dumping SMC-D connections. It can be reproduced
->by following steps:
->
->- run nginx/wrk test:
->  smc_run nginx
->  smc_run wrk -t 16 -c 1000 -d <duration> -H 'Connection: Close' <URL>
->
->- continuously dump SMC-D connections in parallel:
->  watch -n 1 'smcss -D'
->
-> BUG: kernel NULL pointer dereference, address: 0000000000000030
-> CPU: 2 PID: 7204 Comm: smcss Kdump: loaded Tainted: G	E      6.7.0+ #55
-> RIP: 0010:__smc_diag_dump.constprop.0+0x5e5/0x620 [smc_diag]
-> Call Trace:
->  <TASK>
->  ? __die+0x24/0x70
->  ? page_fault_oops+0x66/0x150
->  ? exc_page_fault+0x69/0x140
->  ? asm_exc_page_fault+0x26/0x30
->  ? __smc_diag_dump.constprop.0+0x5e5/0x620 [smc_diag]
->  ? __kmalloc_node_track_caller+0x35d/0x430
->  ? __alloc_skb+0x77/0x170
->  smc_diag_dump_proto+0xd0/0xf0 [smc_diag]
->  smc_diag_dump+0x26/0x60 [smc_diag]
->  netlink_dump+0x19f/0x320
->  __netlink_dump_start+0x1dc/0x300
->  smc_diag_handler_dump+0x6a/0x80 [smc_diag]
->  ? __pfx_smc_diag_dump+0x10/0x10 [smc_diag]
->  sock_diag_rcv_msg+0x121/0x140
->  ? __pfx_sock_diag_rcv_msg+0x10/0x10
->  netlink_rcv_skb+0x5a/0x110
->  sock_diag_rcv+0x28/0x40
->  netlink_unicast+0x22a/0x330
->  netlink_sendmsg+0x1f8/0x420
->  __sock_sendmsg+0xb0/0xc0
->  ____sys_sendmsg+0x24e/0x300
->  ? copy_msghdr_from_user+0x62/0x80
->  ___sys_sendmsg+0x7c/0xd0
->  ? __do_fault+0x34/0x160
->  ? do_read_fault+0x5f/0x100
->  ? do_fault+0xb0/0x110
->  ? __handle_mm_fault+0x2b0/0x6c0
->  __sys_sendmsg+0x4d/0x80
->  do_syscall_64+0x69/0x180
->  entry_SYSCALL_64_after_hwframe+0x6e/0x76
->
->It is possible that the connection is in process of being established
->when we dump it. Assumed that the connection has been registered in a
->link group by smc_conn_create() but the rmb_desc has not yet been
->initialized by smc_buf_create(), thus causing the illegal access to
->conn->rmb_desc. So fix it by checking before dump.
->
->Fixes: ce51f63e63c5 ("net/smc: Prevent kernel-infoleak in __smc_diag_dump()")
+Hey David,
 
-ce51f63e63c5 ("net/smc: Prevent kernel-infoleak in __smc_diag_dump()")
-only add a memset() of 'struct smcd_diag_dmbinfo dinfo', which I don't
-think is not the real cause of the bug.
+Thanks for taking the time to review!
 
->Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->---
-> net/smc/smc_diag.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
+David Hildenbrand <david@redhat.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=8818=E6=
+=97=A5=E5=91=A8=E5=9B=9B 02:41=E5=86=99=E9=81=93=EF=BC=9A
 >
->diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
->index 52f7c4f1e767..5a33908015f3 100644
->--- a/net/smc/smc_diag.c
->+++ b/net/smc/smc_diag.c
->@@ -164,7 +164,7 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
-> 	}
-> 	if (smc_conn_lgr_valid(&smc->conn) && smc->conn.lgr->is_smcd &&
-> 	    (req->diag_ext & (1 << (SMC_DIAG_DMBINFO - 1))) &&
->-	    !list_empty(&smc->conn.lgr->list)) {
->+	    !list_empty(&smc->conn.lgr->list) && smc->conn.rmb_desc) {
-> 		struct smc_connection *conn = &smc->conn;
-> 		struct smcd_diag_dmbinfo dinfo;
-> 		struct smcd_dev *smcd = conn->lgr->smcd;
->-- 
->2.43.0
+> On 17.01.24 18:10, Zach O'Keefe wrote:
+> > [+linux-mm & others]
+> >
+> > On Tue, Jan 16, 2024 at 9:02=E2=80=AFPM Lance Yang <ioworker0@gmail.com=
+> wrote:
+> >>
+> >> This idea was inspired by MADV_COLLAPSE introduced by Zach O'Keefe[1].
+> >>
+> >> Introduce a new madvise mode, MADV_TRY_COLLAPSE, that allows users to
+> >> make a least-effort attempt at a synchronous collapse of memory at
+> >> their own expense.
+> >>
+> >> The only difference from MADV_COLLAPSE is that the new hugepage alloca=
+tion
+> >> avoids direct reclaim and/or compaction, quickly failing on allocation=
+ errors.
+> >>
+> >> The benefits of this approach are:
+> >>
+> >> * CPU is charged to the process that wants to spend the cycles for the=
+ THP
+> >> * Avoid unpredictable timing of khugepaged collapse
+> >> * Prevent unpredictable stalls caused by direct reclaim and/or compact=
+ion
+> >>
+> >> Semantics
+> >>
+> >> This call is independent of the system-wide THP sysfs settings, but wi=
+ll
+> >> fail for memory marked VM_NOHUGEPAGE.  If the ranges provided span
+> >> multiple VMAs, the semantics of the collapse over each VMA is independ=
+ent
+> >> from the others.  This implies a hugepage cannot cross a VMA boundary.=
+  If
+> >> collapse of a given hugepage-aligned/sized region fails, the operation=
+ may
+> >> continue to attempt collapsing the remainder of memory specified.
+> >>
+> >> The memory ranges provided must be page-aligned, but are not required =
+to
+> >> be hugepage-aligned.  If the memory ranges are not hugepage-aligned, t=
+he
+> >> start/end of the range will be clamped to the first/last hugepage-alig=
+ned
+> >> address covered by said range.  The memory ranges must span at least o=
+ne
+> >> hugepage-sized region.
+> >>
+> >> All non-resident pages covered by the range will first be
+> >> swapped/faulted-in, before being internally copied onto a freshly
+> >> allocated hugepage.  Unmapped pages will have their data directly
+> >> initialized to 0 in the new hugepage.  However, for every eligible
+> >> hugepage aligned/sized region to-be collapsed, at least one page must
+> >> currently be backed by memory (a PMD covering the address range must
+> >> already exist).
+> >>
+> >> Allocation for the new hugepage will not enter direct reclaim and/or
+> >> compaction, quickly failing if allocation fails. When the system has
+> >> multiple NUMA nodes, the hugepage will be allocated from the node prov=
+iding
+> >> the most native pages. This operation operates on the current state of=
+ the
+> >> specified process and makes no persistent changes or guarantees on how=
+ pages
+> >> will be mapped, constructed, or faulted in the future.
+> >>
+> >> Return Value
+> >>
+> >> If all hugepage-sized/aligned regions covered by the provided range we=
+re
+> >> either successfully collapsed, or were already PMD-mapped THPs, this
+> >> operation will be deemed successful.  On success, madvise(2) returns 0=
+.
+> >> Else, -1 is returned and errno is set to indicate the error for the
+> >> most-recently attempted hugepage collapse.  Note that many failures mi=
+ght
+> >> have occurred, since the operation may continue to collapse in the eve=
+nt a
+> >> single hugepage-sized/aligned region fails.
+> >>
+> >>          ENOMEM  Memory allocation failed or VMA not found
+> >>          EBUSY   Memcg charging failed
+> >>          EAGAIN  Required resource temporarily unavailable.  Try again
+> >>                  might succeed.
+> >>          EINVAL  Other error: No PMD found, subpage doesn't have Prese=
+nt
+> >>                  bit set, "Special" page no backed by struct page, VMA
+> >>                  incorrectly sized, address not page-aligned, ...
+> >>
+> >> Use Cases
+> >>
+> >> An immediate user of this new functionality is the Go runtime heap all=
+ocator
+> >> that manages memory in hugepage-sized chunks. In the past, whether it =
+was a
+> >> newly allocated chunk through mmap() or a reused chunk released by
+> >> madvise(MADV_DONTNEED), the allocator attempted to eagerly back memory=
+ with
+> >> huge pages using madvise(MADV_HUGEPAGE)[2] and madvise(MADV_COLLAPSE)[=
+3]
+> >> respectively. However, both approaches resulted in performance issues;=
+ for
+> >> both scenarios, there could be entries into direct reclaim and/or comp=
+action,
+> >> leading to unpredictable stalls[4]. Now, the allocator can confidently=
+ use
+> >> madvise(MADV_TRY_COLLAPSE) to attempt the allocation of huge pages.
+> >>
+> >> [1] https://github.com/torvalds/linux/commit/7d8faaf155454f8798ec56404=
+faca29a82689c77
+> >> [2] https://github.com/golang/go/commit/8fa9e3beee8b0e6baa733374099618=
+1268b60a3a
+> >> [3] https://github.com/golang/go/commit/9f9bb26880388c5bead158e9eca3be=
+4b3a9bd2af
+> >> [4] https://github.com/golang/go/issues/63334
+> >
+> > Thanks for the patch, Lance, and thanks for providing the links above,
+> > referring to issues Go has seen.
+> >
+> > I've reached out to the Go team to try and understand their use case,
+> > and how we could help. It's not immediately clear whether a
+> > lighter-weight MADV_COLLAPSE is the answer, but it could turn out to
+> > be.
+> >
+> > That said, with respect to the implementation, should a need for a
+> > lighter-weight MADV_COLLAPSE be warranted, I'd personally like to see
+> > process_madvise(2) be the "v2" of madvise(2), where we can start
+> > leveraging the forward-facing flags argument for these different
+> > advice flavors. We'd need to safely revert v5.10 commit a68a0262abdaa
+> > ("mm/madvise: remove racy mm ownership check") so that
+> > process_madvise(2) can always operate on self. IIRC, this was ~ the
+> > plan we landed on during MADV_COLLAPSE dev discussions (i.e. pick a
+> > sane default, and implement options in flags down the line).
+>
+> +1, using process_madvise() would likely be the right approach.
+
+Thanks for your suggestion! I completely agree :)
+Lance
+
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
