@@ -1,177 +1,134 @@
-Return-Path: <linux-kernel+bounces-30175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11F2D831AFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:00:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87310831B04
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD1191F27FE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:00:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC2821C224DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:02:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336F825765;
-	Thu, 18 Jan 2024 14:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F462576A;
+	Thu, 18 Jan 2024 14:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aeM1B0J2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Brv+xSJA"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79DAA25759
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359FE25579;
+	Thu, 18 Jan 2024 14:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705586420; cv=none; b=imPbJCd4yaxTzMgPaHM7YTprseHz8ZwjhxJPnDPVrLiJ5MqI/wTho9kZ4xl2QroohDX9sgvf6slxKkig/AlF2aVyAk0G3mv0KOrD3KkbrtBPb7iG+xJnRuC+sXQLFmfPl0d9cFGxnJiR6x+KGGjDUeSZvsQjGsRquZ5JaPqY/rg=
+	t=1705586532; cv=none; b=kzhtHgo2iagSxgGQUqmbF67wPYEDtvBt9Iec3JU9+i9YPyqWjB0jmQvyGrNPHwAi2/LViZDZghlY9tdlKTz3Hr9SXHbie3iQGH47E2C4vm7JHs06zqOjTbDLB/FCYrXPajOa892SVSytU+L9pOPBl1VMfIzJ/H7vPhsjWGBUcUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705586420; c=relaxed/simple;
-	bh=oePAFFYODLX4qKuT+hCCpKcLhpD+k+lB3GJAV7/Ee3I=;
-	h=Received:DKIM-Signature:Received:Date:Message-ID:From:To:Cc:
-	 Subject:In-Reply-To:References:User-Agent:MIME-Version:
-	 Content-Type:X-SA-Exim-Connect-IP:X-SA-Exim-Rcpt-To:
-	 X-SA-Exim-Mail-From:X-SA-Exim-Scanned; b=YJKh4wT+wGg8BYCaQPKaVtnZddv+3Pj2xzOQnFOLab47OYmL4PZg6UwID9D7WzMiqwn7dwGA2nBhaytzfW1DGn1+VyjlT7uWwzt7HJxtoLv/qAPb32BY56iJLkX2WACuljbZ0Mef4O0WDL5VNyD4um7l3UTgaLnA/ZHnsgy86uE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aeM1B0J2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F62C433F1;
-	Thu, 18 Jan 2024 14:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705586420;
-	bh=oePAFFYODLX4qKuT+hCCpKcLhpD+k+lB3GJAV7/Ee3I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=aeM1B0J20cbeQQNXCaZYaGpdGrfTjZA7w/rSw+wgQTLOMuEDK6L+Ukg+Sgb3/JSJA
-	 hAlpHZDyGPIdHRDRIBo6Y8L8FBJMdIG23sEdQugEWqb/NNDkMfRGbXkbWhlP0jIOsD
-	 bQybv1OQBW1JI2UKxQhzqqQdV85Z+DGLOMAn90i0vgwkOvvwSY0Uz7Ak9XS2lRrB68
-	 nX3ZYqnozKJSFtyeYFQPI9pgP+twQv8aYRz3ft6IS9ELPy70t8WZz/Y3Wr+xIgOkb4
-	 ukG9Fe24G9lyL4NQtl2qxxbMk9QuF0E9ubeHPHIYzmXYg0/nAj4LJmaDkGriiigjBj
-	 dNVpWXmcbYc5A==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rQSwL-00CiGO-Bx;
-	Thu, 18 Jan 2024 14:00:17 +0000
-Date: Thu, 18 Jan 2024 14:00:15 +0000
-Message-ID: <871qaeyc5s.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Dawei Li <dawei.li@shingroup.cn>
-Cc: tglx@linutronix.de,
-	sdonthineni@nvidia.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	set_pte_at@outlook.com
-Subject: Re: [PATCH 1/4] irqchip/gic-v3: Implement read polling with dedicated API
-In-Reply-To: <20240118112739.2000497-2-dawei.li@shingroup.cn>
-References: <20240118112739.2000497-1-dawei.li@shingroup.cn>
-	<20240118112739.2000497-2-dawei.li@shingroup.cn>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1705586532; c=relaxed/simple;
+	bh=0ZpTOxtF+JNwHEzDyAK3SuignG468h3k05SLchlkRsI=;
+	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=ffgV1UJHBGPedQ0etsiv37lX3F1hVIopE0r23ncQ0E19d2AHxuot86lOHcKNwMUv9cD6M7DH5LdLjv/ti9jiGBxWpE0v1TJQGUs13kOmHvlpDXgIyws4PdeZmfUt8jK3TSeyelIUVRJ4aPTqdk0G0kGp6ehPnEHCXyp/dIKMSus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Brv+xSJA; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=5xUMVOdWXR28LTjgi8INzdf5V0YNKbloTOUqIvRdyT4=; b=Brv+xSJAJkRLFEaaPkeJ5MarNg
+	irsTXhPRhnZr/cBDlI30GAeY2ZC9pTgFOeh9gEpT1kTPzY4PwUvm9H62TLCvt98PKxD9spEU3Ni97
+	HmgQCKiwclfVd2cKoq646LVS2y/He6n9bntFgEuW3RWaod8cVCQrV6mQ9mIqUYI3+dEw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rQSxv-005Txr-Jh; Thu, 18 Jan 2024 15:01:55 +0100
+Date: Thu, 18 Jan 2024 15:01:55 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: MD Danish Anwar <danishanwar@ti.com>
+Cc: Rob Herring <robh@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>,
+	Jan Kiszka <jan.kiszka@siemens.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Grygorii Strashko <grygorii.strashko@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Roger Quadros <rogerq@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, srk@ti.com, r-gunasekaran@ti.com
+Subject: Re: [RFC PATCH v2 0/3] Introduce switch mode support for ICSSG driver
+Message-ID: <f3d75103-c1ca-448d-b5aa-736496d00342@lunn.ch>
+References: <20240118071005.1514498-1-danishanwar@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dawei.li@shingroup.cn, tglx@linutronix.de, sdonthineni@nvidia.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, set_pte_at@outlook.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118071005.1514498-1-danishanwar@ti.com>
 
-On Thu, 18 Jan 2024 11:27:36 +0000,
-Dawei Li <dawei.li@shingroup.cn> wrote:
+On Thu, Jan 18, 2024 at 12:40:02PM +0530, MD Danish Anwar wrote:
+> This series adds support for switch-mode for ICSSG driver. This series
+> also introduces helper APIs to configure firmware maintained FDB
+> (Forwarding Database) and VLAN tables. These APIs are later used by ICSSG
+> driver in switch mode.
 > 
-> Kernel provide read*_poll_* API family to support looping based polling
-> code pattern like below:
-> while (...)
-> {
-> 	val = op(addr);
-> 	condition = cond(val);
-> 	if (condition)
-> 		break;
+> Now the driver will boot by default in dual EMAC mode. When first ICSSG
+> interface is added to bridge driver will still be in EMAC mode. As soon as
+> second ICSSG interface is added to same bridge, switch-mode will be
+> enabled and switch firmwares will be loaded to PRU cores. The driver will
+> remain in dual EMAC mode if ICSSG interfaces are added to two different
+> bridges or if two differnet interfaces (One ICSSG, one other) is added to
+> the same bridge. We'll only enable is_switch_mode flag when two ICSSG
+> interfaces are added to same bridge.
 > 
-> 	/* Maybe some timeout handling stuff */
+> We start in dual MAC mode. Let's say lan0 and lan1 are ICSSG interfaces
 > 
-> 	cpu_relax();
-> 	udelay();
-> }
+> ip link add name br0 type bridge
+> ip link set lan0 master br0
 > 
-> As such, use readl_relaxed_poll_timeout_atomic() to implement atomic
-> register polling logic in gic-v3.
+> At this point, we get a CHANGEUPPER event. Only one port is a member of
+> the bridge, so we will still be in dual MAC mode.
 > 
-> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> ---
->  drivers/irqchip/irq-gic-v3.c | 27 ++++++++-------------------
->  1 file changed, 8 insertions(+), 19 deletions(-)
+> ip link set lan1 master br0
 > 
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index 98b0329b7154..b9d9375a3434 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -19,6 +19,7 @@
->  #include <linux/percpu.h>
->  #include <linux/refcount.h>
->  #include <linux/slab.h>
-> +#include <linux/iopoll.h>
->  
->  #include <linux/irqchip.h>
->  #include <linux/irqchip/arm-gic-common.h>
-> @@ -251,17 +252,11 @@ static inline void __iomem *gic_dist_base(struct irq_data *d)
->  
->  static void gic_do_wait_for_rwp(void __iomem *base, u32 bit)
->  {
-> -	u32 count = 1000000;	/* 1s! */
-> +	u32 val;
->  
-> -	while (readl_relaxed(base + GICD_CTLR) & bit) {
-> -		count--;
-> -		if (!count) {
-> -			pr_err_ratelimited("RWP timeout, gone fishing\n");
-> -			return;
-> -		}
-> -		cpu_relax();
-> -		udelay(1);
-> -	}
-> +	if (readl_relaxed_poll_timeout_atomic(base + GICD_CTLR,
-> +		val, !(val & bit), 1, 1000000) == -ETIMEDOUT)
+> We get a second CHANGEUPPER event, the secind interface lan1 is also ICSSG
+> interface so we will set the is_switch_mode flag and when interfaces are
+> brought up again, ICSSG switch firmwares will be loaded to PRU Cores.
+> 
+> There are some other cases to consider as well. 
+> 
+> ip link add name br0 type bridge
+> ip link add name br1 type bridge
+> 
+> ip link set lan0 master br0
+> ip link set ppp0 master br0
+> 
+> Here we are adding lan0 (ICSSG) and ppp0 (non ICSSG) to same bridge, as
+> they both are not ICSSG, we will still be running in dual EMAC mode.
+> 
+> ip link set lan1 master br1
+> ip link set vpn0 master br1
+> 
+> Here we are adding lan1 (ICSSG) and vpn0 (non ICSSG) to same bridge, as
+> they both are not ICSSG, we will still be running in dual EMAC mode.
 
-If you are doing this, please use a constant such as USEC_PER_SEC for
-the timeout. And fix the alignment of the second line so that the
-parameters are aligned vertically.
+This is going in the right direction, thanks for the changes.
 
-> +		pr_err_ratelimited("RWP timeout, gone fishing\n");
->  }
->  
->  /* Wait for completion of a distributor change */
-> @@ -279,7 +274,6 @@ static void gic_redist_wait_for_rwp(void)
->  static void gic_enable_redist(bool enable)
->  {
->  	void __iomem *rbase;
-> -	u32 count = 1000000;	/* 1s! */
->  	u32 val;
->  
->  	if (gic_data.flags & FLAGS_WORKAROUND_GICR_WAKER_MSM8996)
-> @@ -301,14 +295,9 @@ static void gic_enable_redist(bool enable)
->  			return;	/* No PM support in this redistributor */
->  	}
->  
-> -	while (--count) {
-> -		val = readl_relaxed(rbase + GICR_WAKER);
-> -		if (enable ^ (bool)(val & GICR_WAKER_ChildrenAsleep))
-> -			break;
-> -		cpu_relax();
-> -		udelay(1);
-> -	}
-> -	if (!count)
-> +	if (readl_relaxed_poll_timeout_atomic(rbase + GICR_WAKER,
-> +		val, enable ^ (bool)(val & GICR_WAKER_ChildrenAsleep),
-> +		1, 1000000) == -ETIMEDOUT)
->  		pr_err_ratelimited("redistributor failed to %s...\n",
->  				   enable ? "wakeup" : "sleep");
->  }
+What features does the dual EMAC firmware support which the switch
+firmware does not?
 
-Same thing here.
+If such features are in use, you should not reload firmware to the
+switch firmware, since it will break whatever has been
+configured. Keep with bridging in software.
 
-	M.
+Similarly, what features are supported by both firmwares? Does feature
+configuration survive a firmware reload? Or is it necessary to pass
+all the configuration to the firmware again?
 
--- 
-Without deviation from the norm, progress is not possible.
+    Andrew
 
