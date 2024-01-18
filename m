@@ -1,100 +1,114 @@
-Return-Path: <linux-kernel+bounces-30189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFF7A831B3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:19:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B31F831B3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:20:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67BBB1F25538
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:19:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E2B61C22146
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2CE25772;
-	Thu, 18 Jan 2024 14:19:06 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B832125773;
+	Thu, 18 Jan 2024 14:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bVs6qz7u"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7311525614
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1B624A16
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705587545; cv=none; b=GPDWitTa7zRX0Q1JGu2zXGfNIXaPmyaa5oiIxM8VUI9XhIl59OmqW2S2PIW4FykowcY41rEXGhYlbY1sTF2mM/VGzL0WQZ9Qb6fWFodwsc9NDG0/6lGkJe524j7LB3/rQkeJXQKs087MD4nCq4A7DeES6nEdKKTkX94JJwO3LYE=
+	t=1705587621; cv=none; b=RTBS2n80crn3MEUU964nzu2Vf5xy71NNMfnm/G26rCsO9aXg4JyuV54ekbEhENlCakLlokXXD2ehKuYbbloIBSu512DyeTPLxVJDd4Cc9uCddRdLBZUb8UkaRhbrz3tz6eqqm/0/mDGGEKEvPTJnpT9JoHwokUiDl+WhWOOPubU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705587545; c=relaxed/simple;
-	bh=T4ORLdKNOVj3bjZZf6OYBnNg7tHoYxxzKwXKSXCqwaA=;
-	h=Received:Received:X-Virus-Status:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:Content-Language:To:References:Cc:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=khkC+S82MLsc3mvw5n1b0GrDHIru6OohTXaO+0KW4CjUZ2J1fDAv5Nbin9AFcIbiEohEKymxFOyHZFKl+Zbt2GxcFIHb3y28L2jIGHRySvxlDz2lcngxrAWRNxFjmlrlaeAED9NzdT27U66OWhunW8mj2kULAT/dgiH1Gvfku/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav111.sakura.ne.jp (fsav111.sakura.ne.jp [27.133.134.238])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40IEI4Vt090994;
-	Thu, 18 Jan 2024 23:18:04 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav111.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav111.sakura.ne.jp);
- Thu, 18 Jan 2024 23:18:04 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav111.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40IEI33U090989
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Thu, 18 Jan 2024 23:18:03 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <83414cb6-df16-4b6d-92e3-d54d22ba26cc@I-love.SAKURA.ne.jp>
-Date: Thu, 18 Jan 2024 23:18:03 +0900
+	s=arc-20240116; t=1705587621; c=relaxed/simple;
+	bh=CIBsSiu+SMND0CmGNeg8oFCef+pMyAWcopdOdeg35T0=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To:X-Cookie; b=h+kMfvMUAnGjxQpIuMKqhmRFtcb8kizLNlR8FHWTGH7amSfnw285jUMlaV/h9iBbgJmGkCtZdcJsnxfoX+cpFKeWPkgrmySpcEorzuGKVBhwe7U8l6anHVxtOUTXJ/rY4GXIQ7+EjoVBSz2MTsfYEkfELm09vDHRTqL3ZU6bjZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bVs6qz7u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8492DC433F1;
+	Thu, 18 Jan 2024 14:20:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705587620;
+	bh=CIBsSiu+SMND0CmGNeg8oFCef+pMyAWcopdOdeg35T0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bVs6qz7u1YsO2xUJsSdzfNFERFWyPhpnmvVy65hfjnGyPAxd0LgE22O401i+chzBI
+	 wExs47cQ9yQzLFHu78jbWM0gSwe5Nv716z4iBd9tKh1uaOxlKvRpQjy9f9vC0wqWmm
+	 kYl6FMi5UFcor9/MYZmQEVT19aS/Q5P0WeVBWZcAHUtMWr8pIVHKvrrhPe3ibNVSDT
+	 n+5x4YqqCoCfsio4jTL942eGsSf1chQdmgB0hlKatmYKLrq6SCyuee9xFL6QhEA9+H
+	 +zVFVzFChTlQIyVqH6EScfPGtwSe1XGiNPxYx1L2sam5NLCkUjMkMQMPp7uUBNpIA4
+	 WNGOKDIM9qcPg==
+Date: Thu, 18 Jan 2024 14:20:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Matti Vaittinen <mazziesaccount@gmail.com>
+Cc: Naresh Solanki <naresh.solanki@9elements.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] regulator: event: Add netlink command for event mask
+Message-ID: <3a39f7a2-d6db-43c6-961c-63ba6c774970@sirena.org.uk>
+References: <20240116103131.413205-1-naresh.solanki@9elements.com>
+ <e3e16af2-7f8d-4776-9726-f6282128a766@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [dri?] BUG: scheduling while atomic in
- drm_atomic_helper_wait_for_flip_done
-Content-Language: en-US
-To: syzbot <syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com,
-        linux-serial <linux-serial@vger.kernel.org>
-References: <00000000000039f237060f354ef7@google.com>
-Cc: linux-kernel@vger.kernel.org
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <00000000000039f237060f354ef7@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rEYdBdvZU0R8bSEk"
+Content-Disposition: inline
+In-Reply-To: <e3e16af2-7f8d-4776-9726-f6282128a766@gmail.com>
+X-Cookie: FEELINGS are cascading over me!!!
 
-#syz set subsystems: serial
 
-include/linux/tty_ldisc.h says "struct tty_ldisc_ops"->write is allowed to sleep.
+--rEYdBdvZU0R8bSEk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-include/linux/tty_driver.h says "struct tty_operations"->write is not allowed to sleep.
+On Tue, Jan 16, 2024 at 02:46:41PM +0200, Matti Vaittinen wrote:
+> On 1/16/24 12:31, Naresh Solanki wrote:
 
-drivers/tty/vt/vt.c implements do_con_write() from con_write() sleeping, violating what
-include/linux/tty_driver.h says. But how to fix?
+> > Add netlink command to enable perticular event(s) broadcasting instead
 
--	if (in_interrupt())
-+	if (in_interrupt() || in_atomic())
- 		return count;
+>=20
+> I think this mechanism for limiting events being forwarded to the listener
+> is worthy. My original idea was to utilize the netlink multicast groups f=
+or
+> this so that the regulator core would register multiple multicast groups =
+for
+> this family. User would then listen only the groups he is interested, and
+> multiplexing the messages would be done by netlink/socket code.
 
-in do_con_write() and con_flush_chars() ? But include/linux/preempt.h says
-in_atomic() cannot know about held spinlocks in non-preemptible kernels.
+> Problem(?) of the approach you propose here is that the event filtering is
+> global for all users. If multicast groups were used, this filtering would=
+ be
+> done per listener socket basis. I'm not sure if that would be needed thou=
+gh,
+> but somehow I feel it would be more usable for different user-land
+> appliactions (cost being the increased complexity though).
 
-Is there a way to detect spin_lock_irqsave(&gsm->tx_lock, flags) from gsmld_write() ?
-Something like whether irq is disabled?
+Thinking about this some more I do think that global filtering like
+the current patch would at least need some sort of permission check,
+otherwise just any random process can disrupt everyone's monitoring. =20
+Per socket filtering does seem like the way to go.
 
-On 2024/01/18 18:51, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    1b1934dbbdcf Merge tag 'docs-6.8-2' of git://git.lwn.net/l..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1029adbde80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=68ea41b98043e6e8
-> dashboard link: https://syzkaller.appspot.com/bug?extid=06fa1063cca8163ea541
-> compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm64
+--rEYdBdvZU0R8bSEk
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWpM58ACgkQJNaLcl1U
+h9CcTAf/VlL6l130WL+AUzPK/6LSR5HKnMohWlOZLkhEI+ZeM8RTyqaj3lC3GB/k
+mrBd54Ip8xfikSWeZjnFXFBHb5o+7J+ypwpAh5QdxMQ5T46yMn/DR3NddrQPBs+x
+Pbwbt8IcADrsr3PJ4V33CHYFMu4DgLOrDyTSoUxqNJSG6Njc5fJQZ8mz2Sqx4mi3
+3vpITym9+UXEW1elgF1WP08rdKE0uuGvnF8hmPR6iZCMX+bo0hwayI50BFog9V0F
+Ll5bITbDCa+RDkBVg67O3wF/vINeVxZNvZFLjLLAe6ZCdCOwR61YAQ0vwy+lRDq8
+YkHVaSIvtqVeBGEGbEIQbuktcE2zWw==
+=M0mL
+-----END PGP SIGNATURE-----
+
+--rEYdBdvZU0R8bSEk--
 
