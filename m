@@ -1,117 +1,155 @@
-Return-Path: <linux-kernel+bounces-30577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93D178320E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:27:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2003A8320E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:28:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 479F81F23F3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:27:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4AB328A00D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61D831A73;
-	Thu, 18 Jan 2024 21:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9ED2321A9;
+	Thu, 18 Jan 2024 21:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="AgaskupO"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="h5rfm+hm"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8782EB06;
-	Thu, 18 Jan 2024 21:27:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DFBD3218C
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705613259; cv=none; b=YcUYmbI4OQT02oq9UUsy1ydRitHFcT3j4sMeEkKRO61fFRtN4mzaG6y3uZ049EhxVyiNWm8TN9uPzzKUALmiVyvQuoyun8h3XRirxL2Vt7ye67cs6U24d+2b+uJ4MruSZF2jS4eM8QFS132vvPuYq5HV8mJTs2t6vmvo8vT1enQ=
+	t=1705613290; cv=none; b=oUchSSsCTedwNzKr3wTdZ/y2a/yPEZAtuZ8D7OSFfgmd6yqZLiu0tSvTyjKzQ+Yon9HvTBksQJLPpk/T3y58pT71QJq7gwz0Ykshq2JWA2BFGReu3mVxu6PIIUvzR8SSN5sNbZo3xHsHiO7z3jnyuiZYGDz4HXvz20N/9FkHvD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705613259; c=relaxed/simple;
-	bh=o1e+rn++rLhlte5H4ynuj6Q7EkxY+flGdKcnbQY30JE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=h+pffiezVJRpGARUmK6EoJpedtKCH91jfqIkMzG1xx9O3D6ViSTc+/03izApITiBCVczDK6TLNNUMg8ELwbKooab2z/68aGsc2h1iwCDgLAIwjTkkcVyyit61381cp0hgUd40fHuocVQ6rgEk0XrRXvZUIXqUKBIv36mg9PkIqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=AgaskupO; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
-	bh=96kKANMzCe9nNl8cI1u18mwobQi0vfy5NziQ9GUpncM=; b=AgaskupOFSB6UW0FmnVibQmNY7
-	QH0nNAZ8bfs4Wxkxzm3qbew3nj5oit0ed9lmUDPa32C86kpn7TKyZr7LTUMdQe5oH8dcjCllVL8Vu
-	2ZBwXtpRQIQ3ri+cL8yZKBtcinpdqMO7gpcJo9mQaq06YI6b5YIM5WltL40BOuJMHuiffQ6ycGA5Y
-	NxV/+PCF0DHLoowoUQ7O5yLyQj1h0iFvdNh6mGib1GHokbL8JUMcQL2KQt4wr1uYLaIWcieyUTSFN
-	NDvxzOoHSrkcDuryKLEYEvrGaWcu0heI4ePMaHNBTRYWHXjIxoqeCNjPvtb1Y4OnkOyGmgTCO/Mxb
-	5vYcbh7g==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQZv9-003uUN-2d;
-	Thu, 18 Jan 2024 21:27:32 +0000
-Message-ID: <370e7792-a8ce-4e91-8c41-8eec623fdde1@infradead.org>
-Date: Thu, 18 Jan 2024 13:27:31 -0800
+	s=arc-20240116; t=1705613290; c=relaxed/simple;
+	bh=qEGyvV7cTPkrg03PHZEkL1PsEULKDENH28do95HphSs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aG6v1mqyBLFHHYdYo4p59DN8uzII4lgopEjWSEH5H6HFvzTnmz6x2xYlL3dOmV0ig7uQRkXCA6xXW2mqMSpM1BChqYblVlo1rkFl8J4K0Lz7B2vDZXmhXS405MXlh9KnBKpoSxSivuIXxxdrgQGqsxk4QmUes/fflFCm7CvFzPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=h5rfm+hm; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d714e224e0so527885ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:28:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1705613288; x=1706218088; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VfXI7DlSW6ALh9PfIlcP8DqohnuHMAHGyRd4yKfEq38=;
+        b=h5rfm+hmX6rFBNgdqvccW1ERzsvTLUQtB7EP5WVNDqArz7LSEZV7cC6aqY8tF/SYI+
+         Sh08UxAPU7PM/X4Topo6GqevFa+3F5s3uL0e9gtE5UULvJAIgew5uxFNawxSBMwkfW3C
+         HdgXqNIuNOrtqqh0LVq9apkaxCeQHctLjBTK6xDNZOcog/U3MUS+1Qq0z0gFhPghBtp5
+         FOrfbbICWZtkLEBXSeImFTu+aSYuUmGUaA7KsFrBlFpEa+D6UJGpXavf/Y3zHsapBTA+
+         T/8cF/yiI8ijxezLfERKg2YCgftUJ87CROACN/x0duqDBRpZkD0ZuT1gaWCYEM6fp9KE
+         cYkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705613288; x=1706218088;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VfXI7DlSW6ALh9PfIlcP8DqohnuHMAHGyRd4yKfEq38=;
+        b=fb+m3/GfR+i5GB6Fua7rRqNgiVjXvpzUkjHXWg+oKbun4YQiM485PXEI6d5GXy6ik0
+         5ip9ozfIHiyWhiFgUmAlKs/v4Y46NrHAl1rTDqTGEVx/1SeEVeDM+7ovFt6yGgrZY0pB
+         F7WekftlYrS8Z+BsUbAHHt0EhWFEnpygjHBCnTZ4NhGWNkxGJsrs2ll7JrvlPsr01O93
+         IJDXpRndBPthgGb0HT0busCwXVNbFI9vscEwP1tllv/gtQwj0exsaGXRVcfRtf9KYUex
+         faiwXuKWVuEhuozPU67ODvHbxqv7ETI0OXDiNpaDbmxzcfk+DuOwzVYHKguSGV/dEeQB
+         rqeA==
+X-Gm-Message-State: AOJu0Yx3RPQUKziTkZQ0Muwsx0wiChE2dmlMQDJjW2o/k4C/bY8kNaeg
+	09gN0KMwbkeraf3NG6C62YdppfEpTqp4/LggwygCFh6YIfytq+GH9/7RLSR7UhE=
+X-Google-Smtp-Source: AGHT+IEWphQifugTG5YpeZETo0xSFCI4jAza+OoIp4jZGWuGSdeybTelL15MNkAXe88QcyIPFXB/JA==
+X-Received: by 2002:a17:902:db03:b0:1d4:e308:d70b with SMTP id m3-20020a170902db0300b001d4e308d70bmr1649884plx.92.1705613288623;
+        Thu, 18 Jan 2024 13:28:08 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-249-6.pa.nsw.optusnet.com.au. [49.180.249.6])
+        by smtp.gmail.com with ESMTPSA id h4-20020a170902f7c400b001d70953f166sm1448711plw.155.2024.01.18.13.28.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 13:28:08 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rQZvh-00CBNk-1c;
+	Fri, 19 Jan 2024 08:28:05 +1100
+Date: Fri, 19 Jan 2024 08:28:05 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 10/11] mm: vmalloc: Set nr_nodes based on CPUs in a
+ system
+Message-ID: <ZamX5QFjCTGJf52x@dread.disaster.area>
+References: <20240102184633.748113-1-urezki@gmail.com>
+ <20240102184633.748113-11-urezki@gmail.com>
+ <ZZ+z8vBl645FvxPq@dread.disaster.area>
+ <ZaWC6TRs4P1vq9TQ@pc636>
+ <Zab9yuUiz8OCMOHw@dread.disaster.area>
+ <ZalssyzC8_HsFZON@pc636>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Fix build error on rv32 + XIP
-To: Alexandre Ghiti <alexghiti@rivosinc.com>,
- Stephen Rothwell <sfr@canb.auug.org.au>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Frederik Haxel <haxel@fzi.de>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240118212120.2087803-1-alexghiti@rivosinc.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240118212120.2087803-1-alexghiti@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZalssyzC8_HsFZON@pc636>
 
-
-
-On 1/18/24 13:21, Alexandre Ghiti wrote:
-> commit 66f1e6809397 ("riscv: Make XIP bootable again") restricted page
-> offset to the sv39 page offset instead of the default sv57, which makes
-> sense since probably the platforms that target XIP kernels do not
-> support anything else than sv39 and we do not try to find out the
-> largest address space supported on XIP kernels (ie set_satp_mode()).
+On Thu, Jan 18, 2024 at 07:23:47PM +0100, Uladzislau Rezki wrote:
+> On Wed, Jan 17, 2024 at 09:06:02AM +1100, Dave Chinner wrote:
+> > On Mon, Jan 15, 2024 at 08:09:29PM +0100, Uladzislau Rezki wrote:
+> > > We can easily set nr_nodes to num_possible_cpus() and let it scale for
+> > > anyone. But before doing this, i would like to give it a try as a first
+> > > step because i have not tested it well on really big NUMA systems.
+> > 
+> > I don't think you need to have large NUMA systems to test it. We
+> > have the "fakenuma" feature for a reason.  Essentially, once you
+> > have enough CPU cores that catastrophic lock contention can be
+> > generated in a fast path (can take as few as 4-5 CPU cores), then
+> > you can effectively test NUMA scalability with fakenuma by creating
+> > nodes with >=8 CPUs each.
+> > 
+> > This is how I've done testing of numa aware algorithms (like
+> > shrinkers!) for the past decade - I haven't had direct access to a
+> > big NUMA machine since 2008, yet it's relatively trivial to test
+> > NUMA based scalability algorithms without them these days.
+> > 
+> I see your point. NUMA-aware scalability require reworking adding extra
+> layer that allows such scaling.
 > 
-> But PAGE_OFFSET_L3 is not defined for rv32, so fix the build error by
-> restoring the previous behaviour which picks CONFIG_PAGE_OFFSET for rv32.
-> 
-> Fixes: 66f1e6809397 ("riscv: Make XIP bootable again")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Closes: https://lore.kernel.org/linux-riscv/344dca85-5c48-44e1-bc64-4fa7973edd12@infradead.org/T/#u
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> If the socket has 256 CPUs, how do scale VAs inside that node among
+> those CPUs?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+It's called "sub-numa clustering" and is a bios option that presents
+large core count CPU packages as multiple NUMA nodes. See:
 
-Thanks.
+https://www.intel.com/content/www/us/en/developer/articles/technical/fourth-generation-xeon-scalable-family-overview.html
 
+Essentially, large core count CPUs are a cluster of smaller core
+groups with their own resources and memory controllers. This is how
+they are laid out either on a single die (intel) or as a collection
+of smaller dies (AMD compute complexes) that are tied together by
+the interconnect between the LLCs and memory controllers. They only
+appear as a "unified" CPU because they are configured that way by
+the bios, but can also be configured to actually expose their inner
+non-uniform memory access topology for operating systems and
+application stacks that are NUMA aware (like Linux).
 
-> ---
->  arch/riscv/mm/init.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index f533dd667a83..32cad6a65ccd 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -1060,7 +1060,11 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  	kernel_map.virt_addr = KERNEL_LINK_ADDR + kernel_map.virt_offset;
->  
->  #ifdef CONFIG_XIP_KERNEL
-> +#ifdef CONFIG_64BIT
->  	kernel_map.page_offset = PAGE_OFFSET_L3;
-> +#else
-> +	kernel_map.page_offset = _AC(CONFIG_PAGE_OFFSET, UL);
-> +#endif
->  	kernel_map.xiprom = (uintptr_t)CONFIG_XIP_PHYS_ADDR;
->  	kernel_map.xiprom_sz = (uintptr_t)(&_exiprom) - (uintptr_t)(&_xiprom);
->  
+This means a "256 core" CPU would probably present as 16 smaller 16
+core CPUs each with their own L1/2/3 caches and memory controllers.
+IOWs, a single socket appears to the kernel as a 16 node NUMA system
+with 16 cores per node. Most NUMA aware scalability algorithms will
+work just fine with this sort setup - it's just another set of
+numbers in the NUMA distance table...
 
+Cheers,
+
+Dave.
 -- 
-#Randy
+Dave Chinner
+david@fromorbit.com
 
