@@ -1,109 +1,109 @@
-Return-Path: <linux-kernel+bounces-30044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC3C83183E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:14:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFDB883183D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:14:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77CEC1F22F40
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:14:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0B90289606
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5605E24213;
-	Thu, 18 Jan 2024 11:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2152377A;
+	Thu, 18 Jan 2024 11:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TKLlCnT8"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OzcIPV/g"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270C523772
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E208822068;
+	Thu, 18 Jan 2024 11:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705576471; cv=none; b=We6WRxuxwhWDsmVfUFlg+hfaN4P8R9GCFjtP4/ygKAXrA/smQQaCDFxJbwvq1xkDxXcyszE9JV3N5U+EKNrt5bsgp2OUkC0gjNpNm5OOtXh3qdnyEIyu/EJBitz3hUkwzc1W0LWH90umeIqn14ayvVBLbC0xHwAbQQs/M/l/mC4=
+	t=1705576466; cv=none; b=YDb8ddgz6PTZKWSseTWw7doRHEfveldetryEKyK1/TGVAhn1ZiRWvfSP003NJWX9RE4m8/bYxe+pHhPw0MJ8xgyuze3o7ecZgVMwFkQLHPvv/xbOYEYkheDkAF3LCtjvfA1rVuq5mMCNX4lgbWugKSNC2Sq+yML4sZNDrfkQhv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705576471; c=relaxed/simple;
-	bh=9VE+k6l54CWKcwOP4zGe/Sl1ruOg42q4FivpaiWmeH4=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=H3R7cZFwIUNym2aSE6Ai0rEMQ7Uv7rhtbMWHGhNoB56imFN0aXXEMomSLsCTUj6hhW4RxWKwue5KAq0iPPAoVGjc2LEPBhoLwpg2U40G7oP8rPkgKLWXJfGPuZkjAC4hwxMFepUtiIaTxkmZjpPI81e4FADS65NZ3U4/wlhJ/8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TKLlCnT8; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cd853c159eso92753321fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:14:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705576468; x=1706181268; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9VE+k6l54CWKcwOP4zGe/Sl1ruOg42q4FivpaiWmeH4=;
-        b=TKLlCnT8EXQRuPLxpitYcLPEQ1Xnzwk03+GlkHA9hJZDfM6g+k0kjt1AlPUBYO6QfW
-         v6mH+GjaZJiVxPuoPuA9XGLg57rbfKIJ1ngxQY6aOSpeOAFCbYNhSK7soD8gAlEQWaNt
-         imM1RQ6kF4jaPBCNSuJh6En8pfmI4AqqZeAk4tsDVZMR2bE4gC1yxuAXVe41jq1lrLuu
-         2V41asCScaHGmqlLm6yDKzoXsahQcsHEE7GKCXQbGMH2mmvTozRQ5MqtNNZMxUpxHgp4
-         LsEOKAclp3UH7v0AGYGKOzgIoTPssVpIdiNVp1dq08hMIJyfjF70PJQTozfuKCAy21Ww
-         enPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705576468; x=1706181268;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9VE+k6l54CWKcwOP4zGe/Sl1ruOg42q4FivpaiWmeH4=;
-        b=FTHYka+Z9CebJ3chKtigtMWQ1K/CrZ1kQrNQdx8sEIV5Zsu1nJu20ECDn3T68aEw0p
-         khEa1PHWew8g/9Sv7Dao9r7adie7Y1HjksA9INJfJPBaY+XkjX+WwUS+0SILsyey53G+
-         MGMZ5SUsfDWSmn2n339i/n8xvChWhlPbyR5aOt/FTXqGqZXelR+qX4jGLEcR0x6OAatc
-         DMzwPE00f1Veb30bMsKyw11JVhYvuVzZjloWLQgVzrHY9yf6kUweo+lfHT/mY6K0E1T5
-         7d8L9JOHsACkhUb+duvcHunFeKmXG8Org8K80zKzpkl24Qpbutff5+CYIX8Q9OLqTQY5
-         jkFQ==
-X-Gm-Message-State: AOJu0YyJPht3B9f9PDEPWYkEdyHQK7Z1QePiPSt/Rurixvt2zdopMDKN
-	mkPe4dIqAV0/z1YdD/Y9FLHUpYv+auXuXkAROnH8KgW3k/aoSSM6oe1tyPzjirjXds4biflPBxZ
-	8+T5xSZp1x18XjceZnWNGIWILzkw=
-X-Google-Smtp-Source: AGHT+IGOekbppaoWwtk6ccGkeyMaF+QoO4HCmiuvByTKTlT9lg50wbR2VnXSzaFKEIzE7zcwlzczulK9pp0kkERFa9s=
-X-Received: by 2002:a05:6512:2813:b0:50e:d3dc:2645 with SMTP id
- cf19-20020a056512281300b0050ed3dc2645mr499069lfb.87.1705576467890; Thu, 18
- Jan 2024 03:14:27 -0800 (PST)
+	s=arc-20240116; t=1705576466; c=relaxed/simple;
+	bh=BkzJYAYQgD2+iSXa+2q/zYdRmPKlL7wyGiHR8aVNN4g=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:References:Date:
+	 In-Reply-To:Message-ID:User-Agent:MIME-Version:Content-Type; b=qxpZSIUyPM9qT8EN/Uuf/FS12MsAP0+RmmZ/F1oX4b5wqYmeJ9cmgDYaVOSymlhOwZO79YTimBBREj9RXCoKtq4SYLnM7WzWh+y2fy70nNl4JozN6GId6oRGmoOqP9QgowVhz9WC1xMZ///hVvZV+0f3LNppL4m0UeoPy4ePHOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OzcIPV/g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 250BCC433F1;
+	Thu, 18 Jan 2024 11:14:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705576465;
+	bh=BkzJYAYQgD2+iSXa+2q/zYdRmPKlL7wyGiHR8aVNN4g=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=OzcIPV/gWl6CabGnDEMnseP1mKLqiGDBskbxq0RxpBZvS0ZCi7NXpzAfovpNFOn5z
+	 PlgFwuOxYc5HCboVmBC9a4sbslrzg2Byedi7cvYX413GkmDC1GyvtkY7kgFSMQZoKq
+	 qNYeJO7fOj6J6xRuV8Q61qWUCpkCGBSvvI+gxNzYUn0Lzp9A7X9MdpsNA21fxHpBm6
+	 J3lHLDvutO+OJ2qbIAQ6YL1rHZPi5wDmYSEtZkxVpZZCHTuF3UxCnsapRYkbzOuISf
+	 m54biY+Qc+5HaDB0gnvQZDveAC7cdmudFriG9XH5X9q0EKatpqsGk6R0OYPyUds/6C
+	 gUsnEfVSdgXPQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: "Nicolas Escande" <nico.escande@gmail.com>
+Cc: "Jeff Johnson" <quic_jjohnson@quicinc.com>,
+  <linux-wireless@vger.kernel.org>,  <linux-kernel@vger.kernel.org>,
+  <ath11k@lists.infradead.org>
+Subject: Re: [PATCH] wifi: ath11k: fix layout of scan_flags in struct
+ scan_req_params
+References: <20231127180559.1696041-1-nico.escande@gmail.com>
+	<bdcdbd06-e9bd-4a92-b27b-d94b2d8fb52d@quicinc.com>
+	<CX9YPUDTAT1N.23DMRB5O9FEAO@gmail.com>
+	<20c7a367-2243-4e13-b023-9999dc6c6790@quicinc.com>
+	<CXC03GYAN4VN.2PQ88Q1S7IL6H@gmail.com>
+	<CYFAYRP5MWTZ.Q272WWLLE7MW@gmail.com>
+Date: Thu, 18 Jan 2024 13:14:22 +0200
+In-Reply-To: <CYFAYRP5MWTZ.Q272WWLLE7MW@gmail.com> (Nicolas Escande's message
+	of "Mon, 15 Jan 2024 14:09:28 +0100")
+Message-ID: <871qae51wx.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117031212.1104034-1-nunes.erico@gmail.com>
- <20240117031212.1104034-2-nunes.erico@gmail.com> <CAKGbVbsydzXyKuhN8VyW9zYwuOMWzvz192WKKReHVX1XCnuXGQ@mail.gmail.com>
-In-Reply-To: <CAKGbVbsydzXyKuhN8VyW9zYwuOMWzvz192WKKReHVX1XCnuXGQ@mail.gmail.com>
-From: Erico Nunes <nunes.erico@gmail.com>
-Date: Thu, 18 Jan 2024 12:14:15 +0100
-Message-ID: <CAK4VdL2PnWTZ+M2eQqF22+VuF-YGKb_WjG=168BcuBDqD8+9kA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/6] drm/lima: fix devfreq refcount imbalance for job timeouts
-To: Qiang Yu <yuq825@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org, 
-	anarsoul@gmail.com, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, christian.koenig@amd.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Thu, Jan 18, 2024 at 2:36=E2=80=AFAM Qiang Yu <yuq825@gmail.com> wrote:
+"Nicolas Escande" <nico.escande@gmail.com> writes:
+
+> On Thu Nov 30, 2023 at 9:24 AM CET, Nicolas Escande wrote:
+>> On Tue Nov 28, 2023 at 1:57 AM CET, Jeff Johnson wrote:
+>> > On 11/27/2023 2:54 PM, Nicolas Escande wrote:
+>> [...]
+>> > > So either we should not use WMI_SCAN_XXX with scan_req_params.scan_flags ever
+>> > > and only use the bitfield to set scan parameters or if we use WMI_SCAN_XXX with
+>> > > scan_req_params.scan_flags they need to match the corresponding bitfield.
+>> >
+>> > IMO the correct thing to do is to remove the unions from that struct and
+>> > only leave behind the bitfields and not use the WMI_SCAN_XXX masks
+>> > except when filling the firmware structure.
+>> >
+>> > But don't spin an update to your patches until Kalle has a chance to
+>> > give his opinion. I'm new to maintaining these drivers and Kalle may
+>> > have a different opinion on this.
+>> >
+>> > /jeff
+>>
+>> No problem, I'll wait for Kalle's input on this before doing anything.
+>> As soon as we decide which way is the right way, I'll work on this. I only care
+>> that this gets resolved.
 >
-> So this is caused by same job trigger both done and timeout handling?
-> I think a better way to solve this is to make sure only one handler
-> (done or timeout) process the job instead of just making lima_pm_idle()
-> unique.
+> Hi Kalle/Jeff,
+>
+> Any new input on this so I can move forward on fixing this ?
 
-It's not very clear to me how to best ensure that, with the drm_sched
-software timeout and the irq happening potentially at the same time.
-I think patch 4 in this series describes and covers the most common
-case that this would be hit. So maybe now this patch could be dropped
-in favour of just that one.
-But since this was a bit hard to reproduce and I'm not sure the issue
-is entirely covered by that, I just decided to keep this small change
-as it prevented all the stack trace reproducers I was able to come up
-with.
+Sorry, too many patches...
 
-Erico
+> Otherwise I think I'll end up going on with Jeff's proposal of only using the
+> bitfield for intra driver representation & then converting the bitfields to
+> their corresponding WMI_SCAN_XXX when transmiting the req to the hw with wmi.
+
+Yeah, I only took a quick glimpse but Jeff's proposal does make sense.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
