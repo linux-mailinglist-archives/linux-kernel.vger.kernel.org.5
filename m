@@ -1,104 +1,123 @@
-Return-Path: <linux-kernel+bounces-29602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB0BF8310A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:52:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72D5C8310A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:48:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CB7528A2E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:52:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E3AB1F20C17
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81FC81873;
-	Thu, 18 Jan 2024 00:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDEC186E;
+	Thu, 18 Jan 2024 00:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U17CO2b+"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="H++MzVIP"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2958185D;
-	Thu, 18 Jan 2024 00:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F24010EA
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 00:48:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705539142; cv=none; b=tahq2OIT2b4znSUfnoDwijYLxT+pRzuq/KB/HdpexjkF+WeYMJZxaEsaH5GfGgl6S08ZcuQt2+SUVekPLD0R4D+v+ZdhkHDpNULkUSFW0sMI+sPZHiGtyqjumrzvMwL2kGRjmVCJPNNNsJgU98PPUMa/6dsw8urXNdHBKzDv3RE=
+	t=1705538907; cv=none; b=Ww8DXtyIbBArKPcu+ukeEsH6+xz4o6iRd9VO5pdj8Y20BxYm5Kp92vTEaWs0oOb2zjw/tV4+/FQD6KB/LPOXg+8Z30lWTfTzuV6NuM7nlAlYScrLbkaK1p+KBpI7cmICs629/inKdYhcbCXdV5u+ST1g4AoNiUh3QImtBN8jfYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705539142; c=relaxed/simple;
-	bh=FirjylFd2MCTFO58V4vn7pDh9CrJrYnIJwrr78O9IR8=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:Received:Message-ID:Date:MIME-Version:User-Agent:Cc:
-	 Subject:Content-Language:To:References:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=cgt/Htnb2p+g/MftM7jDS7Nxt43fMFatNwQXmjCh04bH70g+k1dxajif33HRZ2+1kmpitEALr2VfzhsVpciMinqUJjm8uuZ9yrPKOfozhT9No8qQx9FQGoXzXjYAPi1bZ455zoy2ExD05eroWUVGVSNvVtwkh0oud4H++P6wDn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U17CO2b+; arc=none smtp.client-ip=192.55.52.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705539141; x=1737075141;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FirjylFd2MCTFO58V4vn7pDh9CrJrYnIJwrr78O9IR8=;
-  b=U17CO2b+PAZoZLRfRXr5ILSxGFwyOyAj2MFpqs1MvTBVQsFoAvGFP+Yu
-   kYYuKXXsDB1h7txbiOU3zAQRZJj5QO07hV9S9sjsLom5KORJXUh3+GspM
-   nfNcKJMAYK581U7/008Ou7/VLyrWJ/5HlLjITjeKUv7boIaZe0vseh4Mw
-   bI5Jl/5mPqnUur8Rzhfd5v3dzM62l5uvgjavOj3m1yYepG3y17hvVR89S
-   e1YXexN/6yatSE0nV4Uy0x5ROymB+3DrpDTUCII3m0MUm/TScAt7xfV/C
-   +6pMdiYgfCYZ38dx/tOdtJD11B7/Xe6wvyyDbGalBK7myMbtqwl/8M53y
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="397467481"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="397467481"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 16:52:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="186466"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa003.jf.intel.com with ESMTP; 17 Jan 2024 16:52:17 -0800
-Message-ID: <5a9c38ec-1dc2-40d3-99eb-02b87be660a6@linux.intel.com>
-Date: Thu, 18 Jan 2024 08:46:50 +0800
+	s=arc-20240116; t=1705538907; c=relaxed/simple;
+	bh=HgQZtLiPZ8yieYv69i+veXHyaQ1J23tRMff66BkFe0I=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=jXi/TYjJfqsW9UzyoHnYhk7RJ/uErWqP5hg4TJGfNj8XwwPn9jgko1adRaTMALrJ/f0u6oeVPYqi+c7KReRL4F4WegyMEyAJHMKNh/yIOSymm1f45yEwvb07jGCJjO6P+wdJ06HtCoirlSsUC1A0uiIZ/j1G6mX49LkGKqwOfY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=H++MzVIP; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc24f395c84so196089276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:48:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1705538903; x=1706143703; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BnQZVIdAe+SPFcHTrlVU0cLodcCnQ2+sbTo4x3UpZMA=;
+        b=H++MzVIPiqt0SKwia0D8kCyPrgp3dxOuFP+Itz+PsXVzI7log0196dIfPkO2L9FI08
+         jr8zm6n2zZM+m6U40e77Wf00+FUcldi4IMbhg8wYy7qfIDxQCDoOLo7eCeunq3IMsiRL
+         6XqeO0D0KxGyzHqMZc9nn/qzkEzhNUI8qRAxJTpht0agyYHZVDkzP5GZnho/vLTucDpo
+         1wieBvgqbC0UfEW3CA13U+KtiYCwm+6Dh2nK1TpHiL6WsmptFi/1QQe+bH8ct7w5cy5q
+         eKzGcs5DMj0TNI1RYkze6WWp6OF7H9KW5+HbBwCfa98T5jhZAHNzCkd5tbUgD9I/8Khr
+         zOzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705538903; x=1706143703;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BnQZVIdAe+SPFcHTrlVU0cLodcCnQ2+sbTo4x3UpZMA=;
+        b=LeJmewfSm+dllNnVrBmjhVIw4oZVtk/5FYurw6Em4yzlcqF0R3FIjBFiJWdRvbXkQ5
+         fl4ErRBaNH8hhWkPB2y/IYYeU01Gs050nVOIfSQkTEIV/xW/luJzk9ceyeE7XdfRmj9N
+         ULfQ5miqH+iByadAWjXDkricVWHl/EE9LzbvQGl6YWivsQ6Jc5O4tdmnnnOvwxb52NC0
+         C3Xi1geJXHETD38JbA5aAGeh5zEXa391qy6CSVdL4AIqdHFOp1Y264MLIxNoqioJlBoP
+         vo00SxS4Bw3rsCuGCddGm720JdEgUM3rxpi0nb/oP/MyIfbHVs8E46eHpc+eFPu1Btr2
+         4aUg==
+X-Gm-Message-State: AOJu0YyFD0hvuwrM//VyNZHHNwoC2jKXpNXNx6M+OE+Q+WrNQthRpK+W
+	gDkebM1XqYN8kdqMSPkp71CA3MLm5sJGYZ5e33rCdgLbv7ckhCNzrHxLZYl5uLgAtjMwl23aLIl
+	3Fb+Uw/ZIUiFKS4Zfgn67f88OIMOa8w/H0xT1TA==
+X-Google-Smtp-Source: AGHT+IFaH/HdKGGfwYN91eIoUq8ud2h3bJiadflP+e5X3ly/7ZaddV/vxJG3xX94IwXuoCFM0qeVeQzb7g/lq9Gwi+4=
+X-Received: by 2002:a25:2046:0:b0:dbd:726a:21f0 with SMTP id
+ g67-20020a252046000000b00dbd726a21f0mr97044ybg.16.1705538903270; Wed, 17 Jan
+ 2024 16:48:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, linux-pci@vger.kernel.org,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v10 0/5] fix vt-d hard lockup when hotplug ATS capable
- device
-Content-Language: en-US
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>, kevin.tian@intel.com,
- bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
- robin.murphy@arm.com, lukas@wunner.de
-References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
- <1a2a4069-c737-4a3c-a2f6-cce06823331b@linux.intel.com>
- <3ee904e9-8a93-4bd9-8df7-6294885589e4@linux.intel.com>
- <42f7848a-0262-4871-b5dc-0e87beebfd11@linux.intel.com>
- <dcd27bc8-5eca-41ae-bb86-fd8e657ccfed@linux.intel.com>
- <d72d0a12-f3a4-4b4d-8b3b-5e59937a21d3@linux.intel.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <d72d0a12-f3a4-4b4d-8b3b-5e59937a21d3@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240116160141.165951-1-kernel@valentinobst.de> <20240116220615.168083-1-kernel@valentinobst.de>
+In-Reply-To: <20240116220615.168083-1-kernel@valentinobst.de>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Wed, 17 Jan 2024 19:48:12 -0500
+Message-ID: <CALNs47v4=VatsUVfnNsT9jgtbYxvqhR5mgGMu0zrr18ORQVVNg@mail.gmail.com>
+Subject: Re: [PATCH 06/13] rust: str: move SAFETY comment in front of unsafe block
+To: Valentin Obst <kernel@valentinobst.de>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/17/24 5:00 PM, Ethan Zhao wrote:
-> +       /*
-> +        * If the ATS invalidation target device is gone this moment 
-> (surprise
-> +        * removed, died, no response) don't try this request again. this
-> +        * request will not get valid result anymore. but the request was
-> +        * already submitted to hardware and we predict to get a ITE in
-> +        * followed batch of request, if so, it will get handled then.
-> +        */
-> +       if (target_pdev && !pci_device_is_present(target_pdev))
-> +               return -EINVAL;
+On Tue, Jan 16, 2024 at 5:36=E2=80=AFPM Valentin Obst <kernel@valentinobst.=
+de> wrote:
+>
+> SAFETY comments should immediately precede the unsafe block they
+> justify. Move assignment to `bar` past comment as it is safe.
+>
+> Signed-off-by: Valentin Obst <kernel@valentinobst.de>
+> ---
+>  rust/kernel/str.rs | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
+> index 843ffeec9b3e..fec5c4314758 100644
+> --- a/rust/kernel/str.rs
+> +++ b/rust/kernel/str.rs
+> @@ -191,9 +191,9 @@ pub fn to_str(&self) -> Result<&str, core::str::Utf8E=
+rror> {
+>      /// ```
+>      /// # use kernel::c_str;
+>      /// # use kernel::str::CStr;
+> +    /// let bar =3D c_str!("=E3=83=84");
+>      /// // SAFETY: String literals are guaranteed to be valid UTF-8
+>      /// // by the Rust compiler.
+> -    /// let bar =3D c_str!("=E3=83=84");
+>      /// assert_eq!(unsafe { bar.as_str_unchecked() }, "=E3=83=84");
+>      /// ```
+>      #[inline]
+> --
+> 2.43.0
+>
+>
 
-Again, we should not ignore the error triggered by the current request.
-Do not leave it to the next one. The WAIT descriptor is a fence. Handle
-everything within its boundary.
-
-Best regards,
-baolu
+Reviewed-by: Trevor Gross <tmgross@umich.edu>
 
