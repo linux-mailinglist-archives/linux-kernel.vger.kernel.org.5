@@ -1,174 +1,134 @@
-Return-Path: <linux-kernel+bounces-29734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E168312AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:25:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A9298312B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:26:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39AF3B22195
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:25:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D85DD1F2219A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:26:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F5F8F7D;
-	Thu, 18 Jan 2024 06:25:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="H6dvU8qi"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2095.outbound.protection.outlook.com [40.92.19.95])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6BD9944D;
+	Thu, 18 Jan 2024 06:26:22 +0000 (UTC)
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.62.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D12DBA22;
-	Thu, 18 Jan 2024 06:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.19.95
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705559103; cv=fail; b=QFUzeP8lL6TUSuj/QVO8zWiRUJX69DN9NGCZBt7/Rml9h9r8AuZ+MRL/IjY6cX84m2OjPr89UN3zoxrAidCYczwtolUoNCY5BpWCwrbkjHZBC8D+jUdaQkIqY84m5TyH0CQ4UaCvZ02k1AJPG0ZcI3HJqstD+oQ8evuvQsybX5A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705559103; c=relaxed/simple;
-	bh=XLXOWA0XJCa6qno88mdJTSXp5aEo5wNCdkRNtd+gIHs=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 Content-Transfer-Encoding:Content-Type:X-TMN:X-ClientProxiedBy:
-	 X-Microsoft-Original-Message-ID:MIME-Version:
-	 X-MS-Exchange-MessageSentRepresentingType:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=OUZZeST6Z63IR6agaqEMy3BB/k2KT/f7V6KuenFRQpkDiZ4SLD5SzKRcevGiH9Ub6IIx94x9d8Z/e/fwEel3AkFa90EGrrPg8Q7u1IfJuAQedCJ8KKgeVAe6FLlbdK+EeUIPzJxzx2x+Q9eGtied5OG41j+T2gxNkaMd471eokU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=H6dvU8qi; arc=fail smtp.client-ip=40.92.19.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OhPTnUZDf6gthA61WyVbBEsY1HClxfQBQtdRf3MgDJui03+YpGHgSC/zGqGZ8h0c+xCGikNnFMF4awQzHOmm7L4KjQJv5pDzZzG5yNflkmW8uR0wQTUqTel6/jaPXpKlZzfRqtZGyRPn7c8jmNiNGn1Ss5VXa4C/2Q8eSs7LLlViPy/zHk2y6cRuHo31XN2NWr+hA0rv0auL5y/yTEjLFaqOwPrQo99PYfD1zFY94LIfzcOsZ2pZpiScH7KDxFDH31M9B4ftajZiLhezzo7DLgVmCIDeMnlbduwDgQTnUVQ0pUJvZP4EWoEVDaHzGZni2Tnz/Ffir9EsMfuMyzGQ7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gx9kwoCqci77bV09jm8OB6UsZgP2ClNJMF3niEXcBA8=;
- b=gerJWo0e+ZAi13UmAhiBBytQy0oUaHGwjMOn0hTo1z7vwUlbAkxBzvMojKtWslCSNgA1Bl/kUiacarzlWv3ryuBKBHbROHQL74JUFj9Q9FTI0Tsber0HUk0PTJGdSFOpEWkv+cNWcxgKdfjVS3mDmnzMQpIAWjHCQ2LAc5N3RNFiUnU2x1lLWsfDLW6OP66yv8MJVTps2rX65dJzFXyEa9NLud5uz09npMsFMH9IYpo9C7kqbRIt9pGgxo8LahosxsefxCB7HOJw6LPD2G0HnpIGvWSeSV1nkoK5uP1rhbmw9UwIJRthV/jvQvPsjJQrYSnuyDvOUIjQt6e3YSt2QQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gx9kwoCqci77bV09jm8OB6UsZgP2ClNJMF3niEXcBA8=;
- b=H6dvU8qijF1pfNU1r+kkk9DGASUidnXswo3qayjFEY/ZabjTrs6lPHrcPhhmfOxZMz1SFcyjo9mpREW1cGsXGQiB72inr/WmrGvxWQvWXiZB3SRhkmygVzznSYVQqLq1Y9ZRMvklaPaw/S4nhmAmuAVOXRiGI+YE50neJIkAaG6ZIZz+WbzkOg2t7MS/AtzRGhL8ih17y/cWPcB9wNIT7ZFzvdzahwKqZ+VSXQqPgBGdTc6Zgm1TA5qXw3rbYIqpbT986b4DicGSh6czije1R7sXET2VISQHw6Isie3DclJXxpnbOOGOBzCE90vU8CHavimDXDASW/V8s4yq3kRYJA==
-Received: from PH7PR20MB5925.namprd20.prod.outlook.com (2603:10b6:510:27f::21)
- by CH3PR20MB7418.namprd20.prod.outlook.com (2603:10b6:610:1dd::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Thu, 18 Jan
- 2024 06:24:59 +0000
-Received: from PH7PR20MB5925.namprd20.prod.outlook.com
- ([fe80::e1de:29a8:e090:5b7b]) by PH7PR20MB5925.namprd20.prod.outlook.com
- ([fe80::e1de:29a8:e090:5b7b%4]) with mapi id 15.20.7202.020; Thu, 18 Jan 2024
- 06:24:59 +0000
-From: Fullway Wang <fullwaywang@outlook.com>
-To: deller@gmx.de,
-	tzimmermann@suse.de,
-	sam@ravnborg.org,
-	javierm@redhat.com
-Cc: linux-fbdev@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3994A8F60;
+	Thu, 18 Jan 2024 06:26:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.62.65
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705559182; cv=none; b=n8lDeXXWb5jNGM4vSmk9/P5c9oVcEX/Jn8yyX4O7ls6rJFenaRMe9uFkedRp1gbkWbwbQc12ol/p/c1OsnmyizwAhIbmWcg1GI0z4j1yuxHidMtiMG9Ae0bs5NVlnaq9DtDbmws9z5TwWxHfofBXr/7wY+aAhTt6gzs+oB7JgMs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705559182; c=relaxed/simple;
+	bh=06hx4TXEtNfCn+LBiVcXorEGOJWWzHDB7F8IwbKCW6M=;
+	h=X-QQ-mid:X-QQ-Originating-IP:Received:X-QQ-SSF:X-QQ-FEAT:
+	 X-QQ-GoodBg:X-BIZMAIL-ID:From:To:Cc:Subject:Date:Message-Id:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-QQ-SENDSIZE:
+	 Feedback-ID; b=tdHGN4Zhxa6oZWPkx5Y/krK3MK59ifHECPGPVQFP3ImkQ9haXjx/x58kI/XWCpYQFB77KjeYUkKc5YQNrnnvF34ctrLIIgN9UUtMJihRbU4X5d02EWFyh3JsXa24kuSOBteU3Nq5kDflYUztSr98sGg7s8uTZdGnde12fMzDBlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=114.132.62.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+X-QQ-mid: bizesmtp71t1705559151tlapz74m
+X-QQ-Originating-IP: XdR0hHnqb0iwnfylwTSbcXKmxDgPk1mu6hduchUiZZ8=
+Received: from localhost.localdomain ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 18 Jan 2024 14:25:50 +0800 (CST)
+X-QQ-SSF: 0140000000000070C000000A0000000
+X-QQ-FEAT: RiweTmIJF2xseBh7gybJzGTZ+m9Ezxnni0emG/mx3vZy0Cn015ekpWYKTwn+5
+	ZtNo9gBuzpqwlWoWtWkHZ4zhBRQE6VtBtJiB1AOLfjlV9a6Vh6NvZYvgVr6xvl7gpx4BxRk
+	2qwDJ58R4HJQ/k3kPqHCtGTcUkzJTSVS330YlT/gEFD3wkjwaM6iizRhrpIrP/LIYYMkpFr
+	wjPw0bLKzsw2jX1ZgcJgUFFyDmXPfwcOvTcJMtKQpNOHrm55bNAAPKhHc4Wn6KRRwdur2Pt
+	E2rP5I7lMx64Bd7emz9hlZoltp0jQ09GYNB5hWg/CJi48WL9y9FpVeYqjSmfwjYpxktR5KK
+	zXKsu0b/wY97p60zWT+Gnybtzwh0DgxcUKTISJ+EQsf00jQTKKoJD+/cm05aO2Ee4YSCrHs
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 4436156189766700866
+From: Cheng Nie <niecheng1@uniontech.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	fullwaywang@tencent.com,
-	Fullway Wang <fullwaywang@outlook.com>
-Subject: [PATCH] video: fbdev: sis: Error out if pixclock equals zero
-Date: Thu, 18 Jan 2024 14:24:43 +0800
-Message-ID:
- <PH7PR20MB5925C492B7F8CDACB2386DB4BF712@PH7PR20MB5925.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [9M1jzjP0DiI6qoFzPnwvoKV9ytJ8cDa3]
-X-ClientProxiedBy: SI1PR02CA0051.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::6) To PH7PR20MB5925.namprd20.prod.outlook.com
- (2603:10b6:510:27f::21)
-X-Microsoft-Original-Message-ID:
- <20240118062443.14970-1-fullwaywang@outlook.com>
+	Cheng Nie <niecheng1@uniontech.com>
+Subject: [PATCH] ext4: fix the comment of ext4_map_blocks()/ext4_ext_map_blocks()
+Date: Thu, 18 Jan 2024 14:25:11 +0800
+Message-Id: <20240118062511.28276-1-niecheng1@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR20MB5925:EE_|CH3PR20MB7418:EE_
-X-MS-Office365-Filtering-Correlation-Id: f8d05777-0087-456b-e6e5-08dc17ee323c
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Jz63IS7enfUxD9X50rG6+jvGQXH3HbNZfFE9n2CE52JKyv+bGsbYbjpQh+sB2V4yqVGkngcI2BGmJ8wj56fDbh2onNfkPgkeU9yuElaloOkFGq0/yBJDV3gpC5Woyh/YG2NJM9NG1sY08c4/mzMc1y29cmB/uyi7ZFmffDhCj02iK/PV8VMAtq47vMwUihhsH31yk+ffmQGXW9aKrvn8fkK0bEzUeBEp7SKhP14kUv/V53BjiLZgzVKCqfEQddQZITbcA1HfmQXBxUvpqvD2JFpLoKFlzhx6LiLr+mXx0lecp+8nOc4Vo7GQ8npUMa/6fwLwQX4CgrkbSu9YKL0imcdM80WU5FTN/Yb3n8zPPyrN8IikoJhVLzlZcmK2l13zDtHss2VAYpMAJi5oqlydKQotGTjKZRWaymShqyNuiO21bMF8yw/amzNDUDr130bGi+oqiDWVTIJPqr0OEiGZJfEdQKizfMw5mjz5W9T6qH0fn1pywsEQO775L79Lz244gqrPvSq49l6U5UWJxNKNyQW+xKXPCQ+ck6BPiQyzrJexENVO/AfbTLnY6NN9Szjb/h4yEtjom/ZaDo//DVGeLdv7Q0mQE2KQkAozPBtJ+mFF3fyHS1FluXcXlu2I7fIB
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?dXuSiSW6WriQrcd/Wy6IDP9ctYscaGNAABPiyE/knJSS2EpTXcmeyPvFa6mM?=
- =?us-ascii?Q?6gpxPBwNhnABEGqZhMYF0k50DUTCRDbEWC46gNwXcYtWeqiYRtWIxZJ9HL+I?=
- =?us-ascii?Q?tDaw7WahDvlkE4n8F+wrVtu6UWZPZYx9eBh+YTraARY1qw6b2wS3XocIXS81?=
- =?us-ascii?Q?vadwHJyVIxD2vuQY6xtI3Nyrj0J0ghYc/el6HrOjypj3bklSvzZCrv8rLe+r?=
- =?us-ascii?Q?zhXrELMd095wTWJntKMU4gZ/EDY05lfde5Mugl4sl5Ww+K9+V/1N+mutROIF?=
- =?us-ascii?Q?Orwi78mEIKP1BTdnK9X+IOcGMeEI6IVu+FmRZApH6dcUJME3aEJW45eQJ5bP?=
- =?us-ascii?Q?fLLbeMPrFuSwzykFFcgkeZnSj3YPk+EAq1SGL8FgQLKkEXZ8DqCSKe4P3rtB?=
- =?us-ascii?Q?EpyEe7coAnT9/WtNYcxpmbehYbsWL+uwn/2Dft96vb1ejfO/p30pJZLExq96?=
- =?us-ascii?Q?F+/d31ISolAiUckb5i6ePdUlgcRvuQbMWQZvzAzduW+mdzA2vOTOZsAzER+V?=
- =?us-ascii?Q?meT31SrSMev2OvQ+apQTDiH4I/uDwesGMByc8CAcEIip9jpOr5sNPrFV5xqR?=
- =?us-ascii?Q?+qb62ETwmT+brdCxbGcr1mktUyfyDzeDP7kkJ+JULSVnWbGstS5pNS6KGeMg?=
- =?us-ascii?Q?ugJkIv5KBP57Wz+IUaJGe/A36J2nIde8YxvAAEwPEki6aw5EbmnGRQ8+/DJ6?=
- =?us-ascii?Q?ziSrvx+ohu5KRGfSogrc7ABe7IpRkyDJjUXq5KyZDqXjZY6nO5NduYdWDqa2?=
- =?us-ascii?Q?08itFqcvLO8XfO3NH66mY4Y4kGXNUoNbXHREFrfoCbiL1oyXnm0t8KRVNnvI?=
- =?us-ascii?Q?Q6rBBDyVdnNLNHCc8j+fhjtdHFqgYqbMW+QTFPIuMSgON7BmQ8u47zb1xelc?=
- =?us-ascii?Q?mvXT3XEDmoyHJUUoimMPamIzTnpPVtzRbdN94pD93cb1FVQUgYsJ9/KlQpYz?=
- =?us-ascii?Q?ZGzhUuqyPzTZYoZB2JHYuHXglnQVYuELemFFAyrvuExGVMAECxMck3phBqOr?=
- =?us-ascii?Q?mSfQGzS4vp5OjjXQ9Snc+Ce02jDfb6lffKxxAngLGsmuA2Jux6jF74xn1PyM?=
- =?us-ascii?Q?L7zhmxEZI3E9hcO3UAg9qJDDyu4EHcKOsOM11hDoPl9nRFpRcPOnnSL3mDV9?=
- =?us-ascii?Q?3EKZjUxVZgJ2lPUCmC1tgMFeJjkw2itx5LtLiwUuB1bc9dVDdy1H1D7yHkVt?=
- =?us-ascii?Q?9koqCZYvrjp4kTFrAqSc5Z924zyPhIUls3iamznm771bh996D7sWj4i2gR4?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8d05777-0087-456b-e6e5-08dc17ee323c
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR20MB5925.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 06:24:59.7373
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR20MB7418
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz7a-0
 
-The userspace program could pass any values to the driver through
-ioctl() interface. If the driver doesn't check the value of pixclock,
-it may cause divide-by-zero error.
+this comment of ext4_map_blocks()/ext4_ext_map_blocks() need
+update after commit c21770573319("ext4: Define a new set of
+flags for ext4_get_blocks()").
 
-In sisfb_check_var(), var->pixclock is used as a divisor to caculate
-drate before it is checked against zero. Fix this by checking it
-at the beginning.
-
-This is similar to CVE-2022-3061 in i740fb which was fixed by
-commit 15cf0b8.
-
-Signed-off-by: Fullway Wang <fullwaywang@outlook.com>
+Signed-off-by: Cheng Nie <niecheng1@uniontech.com>
 ---
- drivers/video/fbdev/sis/sis_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/ext4/extents.c |  6 +++---
+ fs/ext4/inode.c   | 10 +++++-----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/video/fbdev/sis/sis_main.c b/drivers/video/fbdev/sis/sis_main.c
-index 803ccb6aa479..009bf1d92644 100644
---- a/drivers/video/fbdev/sis/sis_main.c
-+++ b/drivers/video/fbdev/sis/sis_main.c
-@@ -1444,6 +1444,8 @@ sisfb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
- 
- 	vtotal = var->upper_margin + var->lower_margin + var->vsync_len;
- 
-+	if (!var->pixclock)
-+		return -EINVAL;
- 	pixclock = var->pixclock;
- 
- 	if((var->vmode & FB_VMODE_MASK) == FB_VMODE_NONINTERLACED) {
--- 
-2.39.3 (Apple Git-145)
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 01299b55a567..bb8fd760cc3c 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4069,10 +4069,10 @@ static int get_implied_cluster_alloc(struct super_block *sb,
+  *
+  * Need to be called with
+  * down_read(&EXT4_I(inode)->i_data_sem) if not allocating file system block
+- * (ie, create is zero). Otherwise down_write(&EXT4_I(inode)->i_data_sem)
++ * (ie, flags is zero). Otherwise down_write(&EXT4_I(inode)->i_data_sem)
+  *
+  * return > 0, number of blocks already mapped/allocated
+- *          if create == 0 and these are pre-allocated blocks
++ *          if flags doesn't contain EXT4_GET_BLOCKS_CREATE and these are pre-allocated blocks
+  *          	buffer head is unmapped
+  *          otherwise blocks are mapped
+  *
+@@ -4176,7 +4176,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+
+ 	/*
+ 	 * requested block isn't allocated yet;
+-	 * we couldn't try to create block if create flag is zero
++	 * we couldn't try to create block if flags doesn't contain EXT4_GET_BLOCKS_CREATE
+ 	 */
+ 	if ((flags & EXT4_GET_BLOCKS_CREATE) == 0) {
+ 		ext4_lblk_t hole_start, hole_len;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 5af1b0b8680e..89f0949ebcae 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -465,9 +465,10 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
+  * Otherwise, call with ext4_ind_map_blocks() to handle indirect mapping
+  * based files
+  *
+- * On success, it returns the number of blocks being mapped or allocated.  if
+- * create==0 and the blocks are pre-allocated and unwritten, the resulting @map
+- * is marked as unwritten. If the create == 1, it will mark @map as mapped.
++ * On success, it returns the number of blocks being mapped or allocated.
++ * If flags doesn't contain EXT4_GET_BLOCKS_CREATE the blocks are
++ * pre-allocated and unwritten, the resulting @map is marked as unwritten.
++ * If the flags contain EXT4_GET_BLOCKS_CREATE, it will mark @map as mapped.
+  *
+  * It returns 0 if plain look up failed (blocks have not been allocated), in
+  * that case, @map is returned as unmapped but we still do fill map->m_len to
+@@ -587,8 +588,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 	 * Returns if the blocks have already allocated
+ 	 *
+ 	 * Note that if blocks have been preallocated
+-	 * ext4_ext_get_block() returns the create = 0
+-	 * with buffer head unmapped.
++	 * ext4_ext_map_blocks() returns with buffer head unmapped
+ 	 */
+ 	if (retval > 0 && map->m_flags & EXT4_MAP_MAPPED)
+ 		/*
+--
+2.20.1
 
 
