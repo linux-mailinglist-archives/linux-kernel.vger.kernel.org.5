@@ -1,177 +1,118 @@
-Return-Path: <linux-kernel+bounces-29677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5612A83119D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:00:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B295183119F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:06:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53BC91C2157E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:00:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29A3E1F228CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:06:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BE76138;
-	Thu, 18 Jan 2024 03:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32500566D;
+	Thu, 18 Jan 2024 03:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JhNFy0fC"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fvm0Zspz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97796103;
-	Thu, 18 Jan 2024 03:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512F433D3
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:05:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705546833; cv=none; b=Ag7de8UNIcnzTGyQEVqOCt0dBF5Ij2K4cMJrv5ToOAYIobpClyNlwAYsKk40/KF2p0Byll7zSlRmof5NEPEzYPzvxZFW6HsDj/NLIk7enZZLa8F7xOI5w60nCa/F/P5fCSbTmHTrVEseN24SVBJ5xWM5rlwRZjeWlMn58CKwSq0=
+	t=1705547160; cv=none; b=uvOP186jsuq3Oe5xAoTSzAq5jRSI5qnBBZDsoJOde+92Xf/xp9mWbm5FUeBwAkF+qXzHri6RIUhYldHQPzd1QaZksi2cjyJLgB3oH4zfJLAdqhwF1l+3bVGLVYyxAXCvuK3OQu2f9sRL+ZroLdhKXc6CYTXzzjlbihQkPxtV2qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705546833; c=relaxed/simple;
-	bh=LVESCuDDxMkJnbV3/rZtny3ZFnghMF4aexce89WXjvk=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=um4Bzim0Z5x1l4DOQxzciXJKvBkjuc8UB6SPmroL/rVc74FQyTHkZm1xkeBhLT5TBQywzSJXQJvDZ3zwgZKWg0xl5joOQ464YvzmRmplDHs/QY8Bd/za1JpHjpduzs8jRNtgPjJR2UK/4s1J/p/DXDdVb+/+h39IHcY4SyvgzgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JhNFy0fC; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-559d0ef3fb5so1663565a12.3;
-        Wed, 17 Jan 2024 19:00:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705546830; x=1706151630; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/3tpggAW+qay+leKpt4ji/Ug6yIjOuqm8spjS9hcUjo=;
-        b=JhNFy0fCuF2AU+xJMEY/BAmf3p4JAtLudS++g5HGDGlJpti5Y0GVPRS75tn0rtgPmV
-         nXNefw72nLZivPfoMWgCRdsatlxE1KZCvhB2ZVZcIaP8CRh+0VScKg9JgcGRsvbPCWIe
-         T5v8896dwrI6RbuXC8nYeasBCC5upLtUzJeKSEvwdqVxNXyYu169sNM6ccoGZJ8+6jwx
-         xE0g9IOFhCFwNWDqUzfYUYE4gGPfXupVWAk+mvcnFB9hObSQnJoAxw6FAjirZ8Qs7kFz
-         LZwXCFgoeE+vrs2yUApDywju53kT0ZfyWLcxH33CkJx8VOpbDZj86G0fx2v5W1AgACmN
-         67hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705546830; x=1706151630;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/3tpggAW+qay+leKpt4ji/Ug6yIjOuqm8spjS9hcUjo=;
-        b=bGdMjG3yaZHsbOidRIyt7a5//WECTpqu7zw/SIv+Cz5DOP7GFUAUxhTJGolFK3YYbk
-         3qhaRpCgMtL/9g6BCjP/OEB3zB82OUvbKT9766fwjD+c46R4/3NOgZYWbAwZfDbArkg8
-         h0b1maVdoFLSSCTg686qdIBn9H8NjpvW5wx15hw3VXc6LLpLrfeJAwXmpEbBUwu0G53T
-         oWBJ5vcl42xIkox6s8HXS6KAwU91Z20wWGUtvo5bqQgwLSYlvo/JdnIizjWqWsskqZsr
-         /8bn7bKEpLDorZ8ZSGlOLQPLJn5qg17Ml8dXF/BS3Bko6Pq22OOw0qlCmbXrKsdVjg6g
-         veHg==
-X-Gm-Message-State: AOJu0YxOyrS7mVw58ezZMGbMjl/cInifMI4kaYttFn4VhYm3F0qfCir8
-	ztkkVct/78E0vbtJUuI66LzNcxjLh3TMAVtlsuFo8+HvQzWI2lwJX9NWwK3OjJXcAH1hOuS9L3V
-	yUYkySScEaI0FhCC9NC04ev4a4H0=
-X-Google-Smtp-Source: AGHT+IExOIl7sYKdEL0YDe7JcH6dv+9ucSRklmKirA1QT3KhLh4HWge73XLiKxdg/3wIMESiFyrM6kJxGh56ruOH8FA=
-X-Received: by 2002:aa7:c345:0:b0:555:e495:3540 with SMTP id
- j5-20020aa7c345000000b00555e4953540mr145791edr.73.1705546829818; Wed, 17 Jan
- 2024 19:00:29 -0800 (PST)
+	s=arc-20240116; t=1705547160; c=relaxed/simple;
+	bh=OKgJl85PBzkDLOECRXoBFZ9nSFWwN6N+G8E0iFDjg2w=;
+	h=Received:DKIM-Signature:From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:To:Cc:
+	 X-Mailer; b=my8pc5nSg/9xbLzk5SqNgDyZwIF0DmbXB3i4Lw0oKedvX6gGvwcRIi8CzLhpzwPWlfA8E9yfItn/bV02j9hBmjHU5bcQzWXBzcYWaIhVNIKCKd8AKlhkVhbqrsfwZ0NUQHFzd5SMUC57f+MowRllVVwumROkqOWS5dsgdez8xeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fvm0Zspz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80460C433C7;
+	Thu, 18 Jan 2024 03:05:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705547159;
+	bh=OKgJl85PBzkDLOECRXoBFZ9nSFWwN6N+G8E0iFDjg2w=;
+	h=From:Subject:Date:To:Cc:From;
+	b=Fvm0Zspz/CNN5KQ3c3PT8DPP7tlnCcuqAG6lVMLeHgcYHdXPeaRYafbaM/Pzef+/8
+	 xp40ZaUpHNnFQ64XyvwdFxQTxYv06XkirXjv1wIP3xzceM5JeJvnPzsJxcILCgDQdK
+	 5A35efQm7HP3sbTsfzPNzXUWuXLbs01LJwU9cbrHvM+WEDtZc3B1XKqGUnL7kp3TIv
+	 kUrL8+dVI52kKeUSWHpc+zOINfEWIrsKvSc+44O+tuxjfu30lIDCGh22daQAxhyLS2
+	 XIAhV78mkrVxgPzR5OMIFBpu32N2pO8rDmMds48kRbY4LRjyUTfqFBtCMy5QIa8rU4
+	 AGn97B1AvF4sw==
+From: Chris Li <chrisl@kernel.org>
+Subject: [PATCH 0/2] RFC: zswap tree use xarray instead of RB tree
+Date: Wed, 17 Jan 2024 19:05:40 -0800
+Message-Id: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115072306.303993-1-zegao@tencent.com> <CAM9d7cgXKaKTnfx9YJae2qqv0pXtWLVQPBN=2H0WZkenBjHFnQ@mail.gmail.com>
-In-Reply-To: <CAM9d7cgXKaKTnfx9YJae2qqv0pXtWLVQPBN=2H0WZkenBjHFnQ@mail.gmail.com>
-From: Ze Gao <zegao2021@gmail.com>
-Date: Thu, 18 Jan 2024 11:00:18 +0800
-Message-ID: <CAD8CoPA6xBT9hbGZoviyyQm1bwn2Oh=v8QCMjxkMMOSN2zfC-A@mail.gmail.com>
-Subject: Re: [PATCH 0/4] perf sched: Fix task state report
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAISVqGUC/x3MQQqAIBBA0avIrBPUzKCrRAupqWZjMkJZ0t2Tl
+ m/xf4GETJhgEAUYT0p0hArdCJh3HzaUtFSDUcYqrax80uWjzJ7Z37LXzjiFndXYQk0i40r5343
+ T+36OfBucXgAAAA==
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+ =?utf-8?q?Wei_Xu=EF=BF=BC?= <weixugc@google.com>, 
+ Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, 
+ Chun-Tse Shao <ctshao@google.com>, 
+ =?utf-8?q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
+ Yosry Ahmed <yosryahmed@google.com>, Brain Geffon <bgeffon@google.com>, 
+ Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+ Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
+ Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+ Kairui Song <kasong@tencent.com>, 
+ Zhongkun He <hezhongkun.hzk@bytedance.com>, 
+ Kemeng Shi <shikemeng@huaweicloud.com>, Barry Song <v-songbaohua@oppo.com>, 
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+ Joel Fernandes <joel@joelfernandes.org>, 
+ Chengming Zhou <zhouchengming@bytedance.com>, Chris Li <chrisl@kernel.org>
+X-Mailer: b4 0.12.3
 
-On Wed, Jan 17, 2024 at 9:35=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> Hello,
->
-> On Sun, Jan 14, 2024 at 11:23=E2=80=AFPM Ze Gao <zegao2021@gmail.com> wro=
-te:
-> >
-> > Hi,
-> >
-> > The problems of task state report in both libtraceevent
-> > and perf sched has been reported in [1]. In short, they
-> > parsed the wrong state due to relying on the outdated
-> > hardcoded state string to interpret the raw bitmask
-> > from the record, which left the messes to maintain the
-> > backward compatibilities for both tools.
-> >
-> > [1] has not managed to make itself into the kernel, the
-> > problems and the solutions are well studied though.
-> >
-> > Luckily, as suggested by Steven, perf/libtraceevent
-> > records the print format, especially the __print_flags()
-> > part of the in-kernel tracepoint sched_switch in its
-> > metadata, and we have a chance to build the state str
-> > on the fly by parsing it.
-> >
-> > Now that libtraceevent has landed this solution in [2],
-> > we now apply the same idea to perf as well.
->
-> Thanks for your work.  But perf links libtraceevent
-> conditionally so you need to make sure if it works without
-> that too.
+The RB tree shows some contribution to the swap fault
+long tail latency due to two factors:
+1) RB tree requires re-balance from time to time.
+2) The zswap RB tree has a tree level spin lock protecting
+the tree access.
 
-Yes, I've tested with NO_LIBTRACEEVENT=3D1, and it turns
-out perf removes perf sched subcmd without libtraceevent,
-which explains why the compiler does not complain no
-evsel__intval() defined when !HAVE_LIBTRACEEVENT
-given the fact so many references of evsel__intval() in
-builtin-sched.c.
+The swap cache is using xarray. The break down the swap
+cache access does not have the similar long time as zswap
+RB tree.
 
-Here evsel__taskstate() uses the exact assumption as
-evsel__intval(), so I put it next to it for clarity and it works
-without a doubt.
+Moving the zswap entry to xarray enable read side
+take read RCU lock only.
 
-> I think all libtraceevent related stuff should be in the
-> util/trace-event.c which is included only if the library is
-> available.  Maybe util/trace-event-parse.c is a better
-> place but then you need to tweak the python-ext-sources
-> and Makefile.perf for the case it's not available.
+The first patch adds the xarray alongside the RB tree.
+There is some debug check asserting the xarray agrees with
+the RB tree results.
 
-Thanks for pointing this out. I will do the hack if you insist
-on this move :D. But I think the current version is clear
-enough, otherwise we need to move all the parts guarded
-by #ifdef HAVE_LIBTRACEEVENT out for complete decoupling.
-What do you think of it?
+The second patch removes the zwap RB tree.
 
-Thanks,
-        -- Ze
+I expect to merge the zswap rb tree spin lock with the xarray
+lock in the follow up changes.
 
-> Thanks,
-> Namhyung
->
-> >
-> > Regards,
-> >
-> >         -- Ze
-> >
-> > [1]: https://lore.kernel.org/lkml/20230803083352.1585-1-zegao@tencent.c=
-om/
-> > [2]: https://lore.kernel.org/linux-trace-devel/20231224140732.7d41698d@=
-rorschach.local.home/
-> >
-> > Ze Gao (4):
-> >   perf sched: Sync state char array with the kernel
-> >   perf util: Add helpers to parse task state string from libtraceevent
-> >   perf util: Add evsel__taskstate() to parse the task state info instea=
-d
-> >   perf sched: Commit to evsel__taskstate() to parse task state info
-> >
-> >  tools/perf/builtin-sched.c |  57 +++------------
-> >  tools/perf/util/evsel.c    | 146 +++++++++++++++++++++++++++++++++++++
-> >  tools/perf/util/evsel.h    |   1 +
-> >  3 files changed, 157 insertions(+), 47 deletions(-)
-> >
-> > --
-> > 2.41.0
-> >
+I can surely use some help in reviewing and testing.
+
+Signed-off-by: Chris Li <chrisl@kernel.org>
+---
+Chris Li (2):
+      mm: zswap.c: add xarray tree to zswap
+      mm: zswap.c: remove RB tree
+
+ mm/zswap.c | 120 ++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 59 insertions(+), 61 deletions(-)
+---
+base-commit: d7ba3d7c3bf13e2faf419cce9e9bdfc3a1a50905
+change-id: 20240104-zswap-xarray-716260e541e3
+
+Best regards,
+-- 
+Chris Li <chrisl@kernel.org>
+
 
