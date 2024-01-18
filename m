@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-29777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 043C8831344
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:42:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F91C83133E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:41:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C68BFB2487F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:42:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D441A286504
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74A613FE7;
-	Thu, 18 Jan 2024 07:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 664E2BE7F;
+	Thu, 18 Jan 2024 07:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="t/SGTNGG"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2087.outbound.protection.outlook.com [40.107.94.87])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OLsaaRpl"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2045.outbound.protection.outlook.com [40.107.220.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9257B13AE2;
-	Thu, 18 Jan 2024 07:41:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E77DBA3F;
+	Thu, 18 Jan 2024 07:41:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.45
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705563699; cv=fail; b=HYsVLHMt+RuvA8TBXSwd/2phqTw6+BJMoloXQFQOOyPUPaeeoufhrxQ3f1p+xb0iMXAHCwAHOXAd/vza5WPQ3IaMjuf2P55FPsy3wogcP/o/460W6GPyU9BVOpBgVsWppVUWxXcAJFwmeRuzLIgVt+NfoLLmVG4s7OMJDxv2r0I=
+	t=1705563690; cv=fail; b=ip2Jhi5xpq9N9JfPRWGze9HRjRXyxPENCWlmDyJhnoGxHLpVbjhOBbTxPr3do73bDyvuLZXc8G73WlEGB8jrcq8gc+kJOSQ6ku1G0ye9oBz9iTlzXxlLV+rHpYNoRXj7xMWQoyonjog0L3VG2mh+059/Fv+5QQPOHdKkxLRcR6w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705563699; c=relaxed/simple;
-	bh=Jfk82G5jZVIsRBzCI9kWbEMHoWsswkAeeCpKlC9tKA4=;
+	s=arc-20240116; t=1705563690; c=relaxed/simple;
+	bh=wFCrcFQndFaM0uwDAAVR7sNNv7beh4vFm28mu4apZy4=;
 	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
 	 Received:Received:X-MS-Exchange-Authentication-Results:
-	 Received-SPF:Received:Received:Received:Received:From:To:CC:
-	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding:Content-Type:
-	 X-EOPAttributedMessage:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 Received-SPF:Received:Received:Received:From:To:CC:Subject:Date:
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type:X-EOPAttributedMessage:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:
 	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
 	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
 	 X-Forefront-Antispam-Report:X-OriginatorOrg:
@@ -42,56 +42,52 @@ ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	 X-MS-Exchange-CrossTenant-AuthSource:
 	 X-MS-Exchange-CrossTenant-AuthAs:
 	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=bozxohc7uBLc0VFfdRmKHWteuHiwgYyDYal2cla4W+cpUf3aMz7DKtErKJPxIW0l2eI9GthT6noTKMHGG4z1nRsUmyvHbeH4cvysQQZbb2Cj7aC+p67fDawFs4jARGzrbPoF6281aOZD/2B5tGqIDPMxIrJ030ywb5VLy/Acc8Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=t/SGTNGG; arc=fail smtp.client-ip=40.107.94.87
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=h2DL0FxOvbJrQM2yHEHi1I+cupBxqcLDCXoFaejyF5ReucD7CE4bOiCrPXzDXJvaBaWkBkJAdY6r3g5pWJp4O39ZdNLkZhd9JUpj5NH6e/zOe8pTmWl9cRjepC6hybXBOL1K2u7T5w1D2ipFF1ViBWtufY4d2x/gTH0WLBqU3OM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OLsaaRpl; arc=fail smtp.client-ip=40.107.220.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AskNJ7P2LVeEjJyKjrRYpdQw7Ov84RFOrlp8QBzQm3WNbVACCxjHmnV141XkSvKNX9QbZ2Ty4L+ceDkWlZ06sfRR6vstGT4LVfAYdXTWvBHGCD+gH3eCbpRd0vdu05FLHhstXHIpiQBq8eMmx52GGBmv1kmfE8aDGdMzYosUIH3t4gJYYY2BibT17KryCCL8GdVlD0MaTUhwagDKzomAjw/8SHPvfbWm/mGuezNiW4reuBWbLS/v9gu4Tg5LR82OdiRRJc+c2uWKVRBJ9RVVmuWQhYOqz/iRrdR0OMe+AV9Qf0HCo4pLEse9ictTKi+TvM2NsPNtzBcwpGf1PuuNfA==
+ b=c5yMuH+WfWmmijOm+v0WOp1z7TGitYvjhCoBp/IPVu9dhMOhFQTFLpxQ+ry25odiXd1D625KsMdGAV6JJQFD5FdcBLbQEXqPaK43KUdpb9QmbhFA0GQyauA1vkNruGsOKftDYYPkfpLRcy0OgcarNs/6bN1puNoK3sjI41MhwhAe5knTX/Xa2ViJZgcx7brO2oaM/vKtTBj/Wk4S2jUVc3RFhD4gYADQT8YWFhBA2VYdiFqe7c9InQDutKlYQLWFQP6glweMlkHc+zgoE2rZA3xMubTmVhNY35ITw3GHRAWylgD6mgrS9tDNOZwS6Yx1L8xt/1uIDiOz1TcmFqtz0g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZhsPzBh3pi+yhDM1qCxOiNj//mN2kx6/5lR6T77hW5M=;
- b=hN4Mr0UojFEGuKqFagfpoIEtcfrn5QsoXUOgW9QDxyPBzSNIw3Mza1arfebs27QkdMoWPtG4ORRyCKuMBb1jHkyPbAfLM51XQhdHd5Y7exJMrFJN0f2WUlol4bX2eYbnhGBCWBV5SrFiJn1J3zxslntHktEES8sxDP/KYxrn517KelMN8ew0QNfNzXtzF/1xg+3Rb6xokfutXL2zGD+arTL0TvRVKSX8cTQHWZamTdgvVYD/Ei3bDAPTuDD+F/BerYhkp+FowussUx+rEvy68pcc0kehHgR6X/5mEz3Tms0UHVTTHas89EVBwcPvj61vP7B7ComGEQw8GnKATSVyUA==
+ bh=k0R0b/68K3XuEVfQBiOCyt/q5AqIzJhnRyV8cytIM0A=;
+ b=jjQvJAK8qjtfq+DGRJ9OZHjjhGlez5h62uW4xBHFHG+f6UODJ5DLsmRlA0+Bpf7MEma4vrAdo0sn2pOTKqpV7HBcQpk6VbXUELByTOQt4UO3CSTbmNMjx647YlSoE9/GarrYGEHIA4umJx3ZYRaSDZ6/oWSK4b/PNvm6ED3Fb4bb4Wc56j6hyzhQ7z8D8zE/J140/wpSRbUJwNv9wTf4H9Cq7A1pKkDVC0aOffeQqdNfLtE+pQBUsKwFC2Dduxi2XLa2LEUM7Og5wmUMF+J4fCS0uVqHfRvJrXWmgGdDGiYkF+j7ZWb44pcnFOORHtRrbPGrWvcjA62pHNGirghDwg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZhsPzBh3pi+yhDM1qCxOiNj//mN2kx6/5lR6T77hW5M=;
- b=t/SGTNGG9rPMDgAYZ/NvARbXiitkbfFLrL0/V1Jtb+A0ho7QIWKJTI0ENRfBPdSnPQoPZClCeS43RsLbs+nYRwCvWbcvPmVrIDnAXbcz+1FIBLfFqZ2MkLiV1rR+UIWjvqnBYPQI7c3yfwJIpsST92WRPhdvVjEMGP1vJFvOi4c=
-Received: from CH0PR03CA0237.namprd03.prod.outlook.com (2603:10b6:610:e7::32)
- by MN2PR12MB4501.namprd12.prod.outlook.com (2603:10b6:208:269::10) with
+ bh=k0R0b/68K3XuEVfQBiOCyt/q5AqIzJhnRyV8cytIM0A=;
+ b=OLsaaRplKVpvbLaY/4SsRDPpbTcw2HT//V3ewJqTbPsnlRBsBGcPZRQRnkVm1D0Zxsu3qM/1QC6kuH/vGGlZpUCUaHETwKiZZybemXKW1DkWZl97PqHX/pPxwEWltkQ2QLrAAU7sGi/EBbNRw3pW1XIM731WCKbyjk7FUA4BjqE=
+Received: from SJ0PR13CA0032.namprd13.prod.outlook.com (2603:10b6:a03:2c2::7)
+ by PH0PR12MB7790.namprd12.prod.outlook.com (2603:10b6:510:289::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Thu, 18 Jan
- 2024 07:41:34 +0000
-Received: from DS3PEPF000099D8.namprd04.prod.outlook.com
- (2603:10b6:610:e7:cafe::a4) by CH0PR03CA0237.outlook.office365.com
- (2603:10b6:610:e7::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24 via Frontend
- Transport; Thu, 18 Jan 2024 07:41:33 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Thu, 18 Jan
+ 2024 07:41:15 +0000
+Received: from MWH0EPF000989E6.namprd02.prod.outlook.com
+ (2603:10b6:a03:2c2:cafe::9e) by SJ0PR13CA0032.outlook.office365.com
+ (2603:10b6:a03:2c2::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23 via Frontend
+ Transport; Thu, 18 Jan 2024 07:41:15 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099D8.mail.protection.outlook.com (10.167.17.9) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Thu, 18 Jan 2024 07:41:33 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ MWH0EPF000989E6.mail.protection.outlook.com (10.167.241.133) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Thu, 18 Jan 2024 07:41:15 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 18 Jan
- 2024 01:41:27 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Wed, 17 Jan
- 2024 23:41:07 -0800
+ 2024 01:41:14 -0600
 Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Thu, 18 Jan 2024 01:41:03 -0600
+ Transport; Thu, 18 Jan 2024 01:41:10 -0600
 From: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
 To: <git@amd.com>, <michal.simek@amd.com>, <gregkh@linuxfoundation.org>,
 	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -101,9 +97,9 @@ To: <git@amd.com>, <michal.simek@amd.com>, <gregkh@linuxfoundation.org>,
 CC: <radhey.shyam.pandey@amd.com>, <srinivas.goud@amd.com>,
 	<shubhrajyoti.datta@amd.com>, <manion05gk@gmail.com>, Manikanta Guntupalli
 	<manikanta.guntupalli@amd.com>
-Subject: [PATCH V9 2/3] tty: serial: uartps: Relocate cdns_uart_tx_empty to facilitate rs485
-Date: Thu, 18 Jan 2024 13:10:02 +0530
-Message-ID: <20240118074003.2334348-3-manikanta.guntupalli@amd.com>
+Subject: [PATCH V9 3/3] tty: serial: uartps: Add rs485 support to uartps driver
+Date: Thu, 18 Jan 2024 13:10:03 +0530
+Message-ID: <20240118074003.2334348-4-manikanta.guntupalli@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240118074003.2334348-1-manikanta.guntupalli@amd.com>
 References: <20240118074003.2334348-1-manikanta.guntupalli@amd.com>
@@ -117,123 +113,428 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D8:EE_|MN2PR12MB4501:EE_
-X-MS-Office365-Filtering-Correlation-Id: ff127777-244c-4dc0-5d9b-08dc17f8e4d1
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989E6:EE_|PH0PR12MB7790:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11ff1455-7ea0-49e0-aa57-08dc17f8d9ea
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	QOspj1Gbap2zxN38s/gpTk2yMIKO7Rzqg+PuTwRCyZjrGS6wTiH9HjW7rECtiMRs1LY0XDXTZQ7Wqryt+GsnitIroynKg73xiZ6NJ6+8ec5ICfj3ZA6R79EXXIjZAGMPPu09Q2u4f8Kb6cT4H3uXS8UGqE409HRk65GTIJMXDd/U7JE8FXdII4EEDy3wUf1eEPmcR3mQkiskM8g2o5nAE+G6C6YfMw4v+2dBhUVX2b/lIKqW8dyD3JIwLxV8wAu/Mvl2pJuaUwLteJRhBxvl65Zr7ke/8hyIOTFXSpqZBtX1YY0aBcuOzH1yoixRsilnUamEnMwX8YHf8CYh23cBMtWCpZdx19UnFBI1BM5X8PXWlReeVxQ0q2gOEa1Fp1RtozqSO7tIb9qcL8KBcCfhDPXhFhrw/OAB9eBZVIPmzhQaqMHl7+BKkAi+swLlPShi7wkHZNa87XYmV7jN1trvhFjFIELZWCqzlm5jn9liZV98d7vThhQ89dafzFlYa02KSFqyYwzPLFFK7/pX72rD2CIxHs/NwFbwqz8rIJCN9gCKWhtp9WiDFS7hxCIoZQ6fclhZf0vLbvAJqowczCnmU7llTXjwgOn3xdnAW00ohIUb8HABxOfFWrp9eyorkPWI7pXWqMtgRgndXUkPYOO6vq+/TSf4JjqmQ035m/K+X9bMcIRtrmOCQgvHWAEPcqjStk7eHA02/9kJVX86G1/QxxVcLl1rRZy5mg9jIal/BSxzwfS7oAGzMiIcTYNUOCzivSgCs/4cXo4S7Vr8BXAXhvPA9HwKpkTbd8AJkmPbE84=
+	zJ4zpVnwhrNNBP4lSkDBO6KxfhSrnQjdrMm3wGKPhuqY9gBbLcKHwi+JElDEb6Xo7smOeP9mZFJsahJeTINpD2KC8g4x+kCcoXgOYwQR1klYVowVDC+fRsFN7pWSGcP+G1gVcqkNWaKuKgeMt7Y3O5SEzP3Tule2iGaBceY1oAnx7AoqOzM0ZmBLZWTdbUwVF0ez78G8bZI4Y+DuN9AfszhJQ5BfvuRS72V/JjSwQbbXtj2QdEtI4rzObWz74hEVKk0kKJKafAPEuXgRgcrKzGGApfYXxt3GzSmEsvXmlvstt/7jKoYc48Agoph0jT3wfhU221d9zUwPZMd1YPYsqTHWO0NWtMRYPrJNLrmA3EXoCP8X9qkj/HwnZjh3EU4iB8USNQkYTLhrVTcZbBHHYj/kKZbvizAP//IQIpEnhktOJVpj42KTY75UfFX+sdWv2j6s8oFkbzsCeMCs7PsrqWwgB+jzS1GMUK6AoHuyRIkV/qzRfj0Sn4MC+Y4qRaZxCwJWkzEHBLlgi92GYGlpq4RMjgsmHuTf1KEpmoOcRXtNGeXdds8dchOk/SoBXFO3Yn7XStGbiHRNLXPXR/RrDXwzgs3Y1565uMRsM5of6lxUervjg5K+pgsuY6HiXX2YTgDied7m9USGo4MqALQHqn+42bf/AsUl3yWWs2ZKfzpep8Zp21SuFSCMvDi94CqM2nV0dKMHFWPh9MeMAfzO6s4uQwqLU86OV3MgeeQu1UV+3rBe0xrx2I5RsZigNtzZcyia+sMPForBrNfyZwojVkGp91ZydE68OJBJ/FT5P7c=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(136003)(376002)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(82310400011)(40470700004)(46966006)(36840700001)(36756003)(26005)(86362001)(356005)(81166007)(478600001)(40460700003)(2616005)(316002)(41300700001)(336012)(426003)(40480700001)(2906002)(1076003)(70206006)(5660300002)(70586007)(54906003)(83380400001)(110136005)(82740400003)(921011)(47076005)(8676002)(4326008)(8936002)(36860700001)(7416002)(44832011)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(376002)(136003)(396003)(230922051799003)(186009)(451199024)(82310400011)(64100799003)(1800799012)(40470700004)(46966006)(36840700001)(82740400003)(30864003)(41300700001)(86362001)(36860700001)(356005)(5660300002)(2906002)(36756003)(7416002)(81166007)(316002)(2616005)(6666004)(70206006)(110136005)(70586007)(54906003)(478600001)(83380400001)(47076005)(44832011)(4326008)(426003)(8936002)(8676002)(336012)(1076003)(26005)(921011)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 07:41:33.7241
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 07:41:15.3724
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff127777-244c-4dc0-5d9b-08dc17f8e4d1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11ff1455-7ea0-49e0-aa57-08dc17f8d9ea
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D8.namprd04.prod.outlook.com
+	MWH0EPF000989E6.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4501
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7790
 
-Relocate cdns_uart_tx_empty function to avoid prototype statement in
-rs485 changes.
-Update return check with uart_tx_stopped() in cdns_uart_handle_tx().
+Add rs485 support to uartps driver. Use either rts-gpios or RTS
+to control RS485 phy as driver or a receiver.
 
 Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
 ---
-Changes since V4:
-This patch introduced in V4.
+Changes for V2:
+Modify optional gpio name to xlnx,phy-ctrl-gpios.
+Update commit description.
+Add support for RTS, delay_rts_before_send and delay_rts_after_send in RS485 mode.
+
+Changes for V3:
+Modify optional gpio name to rts-gpios.
+Update commit description.
+Move cdns_uart_tx_empty function to avoid prototype statement.
+Remove assignment of struct serial_rs485 to port->rs485 as
+serial core performs that.
+Switch to native RTS in non GPIO case.
+Handle rs485 during stop tx.
+Remove explicit calls to configure gpio direction and value,
+as devm_gpiod_get_optional performs that by using GPIOD_OUT_LOW argument.
+Update implementation to support configuration of GPIO/RTS value
+based on user configuration of SER_RS485_RTS_ON_SEND and
+SER_RS485_RTS_AFTER_SEND. Move implementation to start_tx from handle_tx.
+
+Changes for V4:
+Create separate patch for cdns_uart_tx_empty relocation.
+Call cdns_rs485_rx_setup() before uart_add_one_port() in probe.
+Update gpio descriptor name to gpiod_rts.
+Instead of cdns_rs485_config_gpio_rts_high() and
+cdns_rs485_config_gpio_rts_low() functions for RTS/GPIO value
+configuration implement cdns_rts_gpio_enable().
+Disable auto rts and call cdns_uart_stop_tx() from cdns_rs485_config.
+Use timer instead of mdelay for delay_rts_before_send and delay_rts_after_send.
+Update cdns_uart_set_mctrl to support GPIO/RTS.
 
 Changes for V5:
 None.
 
 Changes for V6:
-None.
+Disable the TX and RX in cdns_rs485_config() when rs485 disabled.
+Hold lock for cdns_uart_handle_tx() in cdns_rs485_tx_callback().
 
 Changes for V7:
 None.
 
 Changes for V8:
-None.
+Use hrtimer instead of timer list.
+Simplify cdns_rs485_tx_setup() and cdns_rs485_rx_setup().
+Update argument of cdns_rts_gpio_enable() in cdns_uart_set_mctrl().
+Add cdns_calc_after_tx_delay() to calculate required delay after tx.
+Add hrtimer setup in cdns_rs485_config().
+Move enable TX Empty interrupt and rs485 rx callback scheduling part to
+cdns_uart_handle_tx().
 
 Changes for V9:
-Update return check with uart_tx_stopped() in cdns_uart_handle_tx().
-Update description of cdns_uart_handle_tx() and add clear TX Empty interrupt
-comment cdns_uart_start_tx().
+Remove stop tx timer.
+Remove hrtimer_cancel() call from cdns_uart_start_tx().
+Handle gpio case separately in cdns_uart_set_mctrl().
+Move hrtimer_cancel() call from below to above in cdns_uart_shutdown().
 ---
- drivers/tty/serial/xilinx_uartps.c | 35 +++++++++++++++---------------
- 1 file changed, 18 insertions(+), 17 deletions(-)
+ drivers/tty/serial/xilinx_uartps.c | 200 ++++++++++++++++++++++++++++-
+ 1 file changed, 196 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-index 920762d7b4a4..787c7cbc6600 100644
+index 787c7cbc6600..c44c77b3e54f 100644
 --- a/drivers/tty/serial/xilinx_uartps.c
 +++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -306,7 +306,22 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
+@@ -22,7 +22,9 @@
+ #include <linux/of.h>
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
+-#include <linux/iopoll.h>
++#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
++#include <linux/delay.h>
+ 
+ #define CDNS_UART_TTY_NAME	"ttyPS"
+ #define CDNS_UART_NAME		"xuartps"
+@@ -193,6 +195,9 @@ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
+  * @clk_rate_change_nb:	Notifier block for clock changes
+  * @quirks:		Flags for RXBS support.
+  * @cts_override:	Modem control state override
++ * @gpiod_rts:		Pointer to the gpio descriptor
++ * @rs485_tx_started:	RS485 tx state
++ * @tx_timer:		Timer for tx
+  */
+ struct cdns_uart {
+ 	struct uart_port	*port;
+@@ -203,10 +208,21 @@ struct cdns_uart {
+ 	struct notifier_block	clk_rate_change_nb;
+ 	u32			quirks;
+ 	bool cts_override;
++	struct gpio_desc	*gpiod_rts;
++	bool			rs485_tx_started;
++	struct hrtimer		tx_timer;
+ };
+ struct cdns_platform_data {
+ 	u32 quirks;
+ };
++
++struct serial_rs485 cdns_rs485_supported = {
++	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND |
++		 SER_RS485_RTS_AFTER_SEND,
++	.delay_rts_before_send = 1,
++	.delay_rts_after_send = 1,
++};
++
+ #define to_cdns_uart(_nb) container_of(_nb, struct cdns_uart, \
+ 		clk_rate_change_nb)
+ 
+@@ -305,6 +321,55 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
+ 	tty_flip_buffer_push(&port->state->port);
  }
  
- /**
-- * cdns_uart_handle_tx - Handle the bytes to be Txed.
-+ * cdns_uart_tx_empty -  Check whether TX is empty
-+ * @port: Handle to the uart port structure
-+ *
-+ * Return: TIOCSER_TEMT on success, 0 otherwise
++/**
++ * cdns_rts_gpio_enable - Configure RTS/GPIO to high/low
++ * @cdns_uart: Handle to the cdns_uart
++ * @enable: Value to be set to RTS/GPIO
 + */
-+static unsigned int cdns_uart_tx_empty(struct uart_port *port)
++static void cdns_rts_gpio_enable(struct cdns_uart *cdns_uart, bool enable)
 +{
-+	unsigned int status;
++	u32 val;
 +
-+	status = readl(port->membase + CDNS_UART_SR);
-+	status &= (CDNS_UART_SR_TXEMPTY | CDNS_UART_SR_TACTIVE);
-+	return (status == CDNS_UART_SR_TXEMPTY) ? TIOCSER_TEMT : 0;
++	if (cdns_uart->gpiod_rts) {
++		gpiod_set_value(cdns_uart->gpiod_rts, enable);
++	} else {
++		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
++		if (enable)
++			val |= CDNS_UART_MODEMCR_RTS;
++		else
++			val &= ~CDNS_UART_MODEMCR_RTS;
++		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
++	}
 +}
 +
 +/**
-+ * cdns_uart_handle_tx - Handle the bytes to be transmitted.
++ * cdns_rs485_tx_setup - Tx setup specific to rs485
++ * @cdns_uart: Handle to the cdns_uart
++ */
++static void cdns_rs485_tx_setup(struct cdns_uart *cdns_uart)
++{
++	bool enable;
++
++	enable = cdns_uart->port->rs485.flags & SER_RS485_RTS_ON_SEND;
++	cdns_rts_gpio_enable(cdns_uart, enable);
++
++	cdns_uart->rs485_tx_started = true;
++}
++
++/**
++ * cdns_rs485_rx_setup - Rx setup specific to rs485
++ * @cdns_uart: Handle to the cdns_uart
++ */
++static void cdns_rs485_rx_setup(struct cdns_uart *cdns_uart)
++{
++	bool enable;
++
++	enable = cdns_uart->port->rs485.flags & SER_RS485_RTS_AFTER_SEND;
++	cdns_rts_gpio_enable(cdns_uart, enable);
++
++	cdns_uart->rs485_tx_started = false;
++}
++
+ /**
+  * cdns_uart_tx_empty -  Check whether TX is empty
+  * @port: Handle to the uart port structure
+@@ -320,6 +385,37 @@ static unsigned int cdns_uart_tx_empty(struct uart_port *port)
+ 	return (status == CDNS_UART_SR_TXEMPTY) ? TIOCSER_TEMT : 0;
+ }
+ 
++/**
++ * cdns_rs485_rx_callback - Timer rx callback handler for rs485.
++ * @t: Handle to the hrtimer structure
++ */
++static enum hrtimer_restart cdns_rs485_rx_callback(struct hrtimer *t)
++{
++	struct cdns_uart *cdns_uart = container_of(t, struct cdns_uart, tx_timer);
++
++	/*
++	 * Default Rx should be setup, because Rx signaling path
++	 * need to enable to receive data.
++	 */
++	cdns_rs485_rx_setup(cdns_uart);
++
++	return HRTIMER_NORESTART;
++}
++
++/**
++ * cdns_calc_after_tx_delay - calculate delay required for after tx.
++ * @cdns_uart: Handle to the cdns_uart
++ */
++static u64 cdns_calc_after_tx_delay(struct cdns_uart *cdns_uart)
++{
++	/*
++	 * Frame time + stop bit time + rs485.delay_rts_after_send
++	 */
++	return cdns_uart->port->frame_time
++	       + DIV_ROUND_UP(cdns_uart->port->frame_time, 7)
++	       + (u64)cdns_uart->port->rs485.delay_rts_after_send * NSEC_PER_MSEC;
++}
++
+ /**
+  * cdns_uart_handle_tx - Handle the bytes to be transmitted.
   * @dev_id: Id of the UART port
-  * Return: None
-  */
-@@ -316,7 +331,7 @@ static void cdns_uart_handle_tx(void *dev_id)
+@@ -328,6 +424,7 @@ static unsigned int cdns_uart_tx_empty(struct uart_port *port)
+ static void cdns_uart_handle_tx(void *dev_id)
+ {
+ 	struct uart_port *port = (struct uart_port *)dev_id;
++	struct cdns_uart *cdns_uart = port->private_data;
  	struct circ_buf *xmit = &port->state->xmit;
  	unsigned int numbytes;
  
--	if (uart_circ_empty(xmit)) {
-+	if (uart_circ_empty(xmit) || uart_tx_stopped(port)) {
- 		writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IDR);
- 		return;
- 	}
-@@ -587,6 +602,7 @@ static void cdns_uart_start_tx(struct uart_port *port)
- 	if (uart_circ_empty(&port->state->xmit))
- 		return;
+@@ -347,6 +444,16 @@ static void cdns_uart_handle_tx(void *dev_id)
  
-+	/* Clear the TX Empty interrupt */
- 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
- 
- 	cdns_uart_handle_tx(port);
-@@ -626,21 +642,6 @@ static void cdns_uart_stop_rx(struct uart_port *port)
- 	writel(regval, port->membase + CDNS_UART_CR);
+ 	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
+ 		uart_write_wakeup(port);
++
++	/* Enable the TX Empty interrupt */
++	writel(CDNS_UART_IXR_TXEMPTY, cdns_uart->port->membase + CDNS_UART_IER);
++
++	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED &&
++	    (uart_circ_empty(xmit) || uart_tx_stopped(port))) {
++		cdns_uart->tx_timer.function = &cdns_rs485_rx_callback;
++		hrtimer_start(&cdns_uart->tx_timer,
++			      ns_to_ktime(cdns_calc_after_tx_delay(cdns_uart)), HRTIMER_MODE_REL);
++	}
  }
  
--/**
-- * cdns_uart_tx_empty -  Check whether TX is empty
-- * @port: Handle to the uart port structure
-- *
-- * Return: TIOCSER_TEMT on success, 0 otherwise
-- */
--static unsigned int cdns_uart_tx_empty(struct uart_port *port)
--{
--	unsigned int status;
--
--	status = readl(port->membase + CDNS_UART_SR) &
--		       (CDNS_UART_SR_TXEMPTY | CDNS_UART_SR_TACTIVE);
--	return (status == CDNS_UART_SR_TXEMPTY) ? TIOCSER_TEMT : 0;
--}
--
  /**
-  * cdns_uart_break_ctl - Based on the input ctl we have to start or stop
-  *			transmitting char breaks
+@@ -579,6 +686,21 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
+ }
+ #endif
+ 
++/**
++ * cdns_rs485_tx_callback - Timer tx callback handler for rs485.
++ * @t: Handle to the hrtimer structure
++ */
++static enum hrtimer_restart cdns_rs485_tx_callback(struct hrtimer *t)
++{
++	struct cdns_uart *cdns_uart = container_of(t, struct cdns_uart, tx_timer);
++
++	uart_port_lock(cdns_uart->port);
++	cdns_uart_handle_tx(cdns_uart->port);
++	uart_port_unlock(cdns_uart->port);
++
++	return HRTIMER_NORESTART;
++}
++
+ /**
+  * cdns_uart_start_tx -  Start transmitting bytes
+  * @port: Handle to the uart port structure
+@@ -586,6 +708,7 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
+ static void cdns_uart_start_tx(struct uart_port *port)
+ {
+ 	unsigned int status;
++	struct cdns_uart *cdns_uart = port->private_data;
+ 
+ 	if (uart_tx_stopped(port))
+ 		return;
+@@ -605,10 +728,16 @@ static void cdns_uart_start_tx(struct uart_port *port)
+ 	/* Clear the TX Empty interrupt */
+ 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
+ 
++	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
++		if (!cdns_uart->rs485_tx_started) {
++			cdns_uart->tx_timer.function = &cdns_rs485_tx_callback;
++			cdns_rs485_tx_setup(cdns_uart);
++			return hrtimer_start(&cdns_uart->tx_timer,
++					     ms_to_ktime(port->rs485.delay_rts_before_send),
++					     HRTIMER_MODE_REL);
++		}
++	}
+ 	cdns_uart_handle_tx(port);
+-
+-	/* Enable the TX Empty interrupt */
+-	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
+ }
+ 
+ /**
+@@ -618,6 +747,10 @@ static void cdns_uart_start_tx(struct uart_port *port)
+ static void cdns_uart_stop_tx(struct uart_port *port)
+ {
+ 	unsigned int regval;
++	struct cdns_uart *cdns_uart = port->private_data;
++
++	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED)
++		cdns_rs485_rx_setup(cdns_uart);
+ 
+ 	regval = readl(port->membase + CDNS_UART_CR);
+ 	regval |= CDNS_UART_CR_TX_DIS;
+@@ -830,6 +963,9 @@ static int cdns_uart_startup(struct uart_port *port)
+ 		(CDNS_UART_CR_TXRST | CDNS_UART_CR_RXRST))
+ 		cpu_relax();
+ 
++	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED)
++		cdns_rs485_rx_setup(cdns_uart);
++
+ 	/*
+ 	 * Clear the RX disable bit and then set the RX enable bit to enable
+ 	 * the receiver.
+@@ -889,6 +1025,10 @@ static void cdns_uart_shutdown(struct uart_port *port)
+ {
+ 	int status;
+ 	unsigned long flags;
++	struct cdns_uart *cdns_uart = port->private_data;
++
++	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED)
++		hrtimer_cancel(&cdns_uart->tx_timer);
+ 
+ 	uart_port_lock_irqsave(port, &flags);
+ 
+@@ -1034,6 +1174,8 @@ static void cdns_uart_set_mctrl(struct uart_port *port, unsigned int mctrl)
+ 
+ 	if (mctrl & TIOCM_RTS)
+ 		val |= CDNS_UART_MODEMCR_RTS;
++	if (cdns_uart_data->gpiod_rts)
++		gpiod_set_value(cdns_uart_data->gpiod_rts, !(mctrl & TIOCM_RTS));
+ 	if (mctrl & TIOCM_DTR)
+ 		val |= CDNS_UART_MODEMCR_DTR;
+ 	if (mctrl & TIOCM_LOOP)
+@@ -1456,6 +1598,39 @@ MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
+ /* Temporary variable for storing number of instances */
+ static int instances;
+ 
++/**
++ * cdns_rs485_config - Called when an application calls TIOCSRS485 ioctl.
++ * @port: Pointer to the uart_port structure
++ * @termios: Pointer to the ktermios structure
++ * @rs485: Pointer to the serial_rs485 structure
++ *
++ * Return: 0
++ */
++static int cdns_rs485_config(struct uart_port *port, struct ktermios *termios,
++			     struct serial_rs485 *rs485)
++{
++	u32 val;
++	struct cdns_uart *cdns_uart = port->private_data;
++
++	if (rs485->flags & SER_RS485_ENABLED) {
++		dev_dbg(port->dev, "Setting UART to RS485\n");
++		/* Make sure auto RTS is disabled */
++		val = readl(port->membase + CDNS_UART_MODEMCR);
++		val &= ~CDNS_UART_MODEMCR_FCM;
++		writel(val, port->membase + CDNS_UART_MODEMCR);
++
++		/* Timer setup */
++		hrtimer_init(&cdns_uart->tx_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++		cdns_uart->tx_timer.function = &cdns_rs485_tx_callback;
++
++		/* Disable transmitter and make Rx setup*/
++		cdns_uart_stop_tx(port);
++	} else {
++		hrtimer_cancel(&cdns_uart->tx_timer);
++	}
++	return 0;
++}
++
+ /**
+  * cdns_uart_probe - Platform driver probe
+  * @pdev: Pointer to the platform device structure
+@@ -1598,9 +1773,23 @@ static int cdns_uart_probe(struct platform_device *pdev)
+ 	port->private_data = cdns_uart_data;
+ 	port->read_status_mask = CDNS_UART_IXR_TXEMPTY | CDNS_UART_IXR_RXTRIG |
+ 			CDNS_UART_IXR_OVERRUN | CDNS_UART_IXR_TOUT;
++	port->rs485_config = cdns_rs485_config;
++	port->rs485_supported = cdns_rs485_supported;
+ 	cdns_uart_data->port = port;
+ 	platform_set_drvdata(pdev, port);
+ 
++	rc = uart_get_rs485_mode(port);
++	if (rc)
++		goto err_out_clk_notifier;
++
++	cdns_uart_data->gpiod_rts = devm_gpiod_get_optional(&pdev->dev, "rts",
++							    GPIOD_OUT_LOW);
++	if (IS_ERR(cdns_uart_data->gpiod_rts)) {
++		rc = PTR_ERR(cdns_uart_data->gpiod_rts);
++		dev_err(port->dev, "xuartps: devm_gpiod_get_optional failed\n");
++		goto err_out_clk_notifier;
++	}
++
+ 	pm_runtime_use_autosuspend(&pdev->dev);
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, UART_AUTOSUSPEND_TIMEOUT);
+ 	pm_runtime_set_active(&pdev->dev);
+@@ -1619,6 +1808,8 @@ static int cdns_uart_probe(struct platform_device *pdev)
+ 		console_port = port;
+ 	}
+ #endif
++	if (cdns_uart_data->port->rs485.flags & SER_RS485_ENABLED)
++		cdns_rs485_rx_setup(cdns_uart_data);
+ 
+ 	rc = uart_add_one_port(&cdns_uart_uart_driver, port);
+ 	if (rc) {
+@@ -1647,6 +1838,7 @@ static int cdns_uart_probe(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
+ 	pm_runtime_set_suspended(&pdev->dev);
+ 	pm_runtime_dont_use_autosuspend(&pdev->dev);
++err_out_clk_notifier:
+ #ifdef CONFIG_COMMON_CLK
+ 	clk_notifier_unregister(cdns_uart_data->uartclk,
+ 			&cdns_uart_data->clk_rate_change_nb);
 -- 
 2.25.1
 
