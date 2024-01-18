@@ -1,221 +1,119 @@
-Return-Path: <linux-kernel+bounces-30220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9296E831BAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:45:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31869831BB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:48:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AB25B22BED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:45:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D68F1285478
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:48:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B236D1E520;
-	Thu, 18 Jan 2024 14:45:28 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90E31DA3B;
+	Thu, 18 Jan 2024 14:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="JC5eM+Id"
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A481E4A1
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20DA635
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705589128; cv=none; b=JnmvlZNjF7q1QYHswm5WFdVocWpJlFXyf8N5BQLnt6qIPyn/XSZ9mZXq80MeUe9fRL276Rdw/dwETKqZdSZQx4P2HNh6wCCjQALUjEKrAgNFdlJ6mkjm4GlZmKvPlmdQzDwN+bJpigwdvmrSllyM7XuUCwgpMqqK4z6NqReet0I=
+	t=1705589308; cv=none; b=gRvPzmpafRJKN0+TJJ0DSKqSCcL8a8/rBjdA0wAVhDfi0oCjOuXNxyZMrNVZfFpZSRJ+GXojigAQpjK0gjj5iyH+IX0bf5rLrZ/C573MOBKor1tQ7GrLaETm9EEmRZOMwBZooNae+IV+RkEH25zw4FwKGrIFuWgawzC/kVLdGQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705589128; c=relaxed/simple;
-	bh=jWDkfChzYYvTaG6H6B35gjloWDfYxgMr/RX4Mzi9osU=;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:X-Mailer:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding; b=Y5yawU1VNspqh+FBDw7gRRnOYcC6PhrY6xYZBsaBM8VA+x6MvoBefwUrKnn3uNkd+VLiJ18xPPPR/ZCbf4E7yxJpfC8rpZ0tomBweV7lJaWOcYKCmB1r2osr3lj6i4dEOY4Hiw2MhfrZebOhnqmuvnc+m/g/YeCRJdhtR0hY8h8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F007FC433F1;
-	Thu, 18 Jan 2024 14:45:26 +0000 (UTC)
-Date: Thu, 18 Jan 2024 09:46:45 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Erick Archer <erick.archer@gmx.com>, Nathan Lynch <nathanl@linux.ibm.com>
-Subject: [GIT PULL] eventfs: Fix for readdir and a seq_buf fix
-Message-ID: <20240118094645.58edbfb7@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705589308; c=relaxed/simple;
+	bh=nWxZoXnqA+m1F8noLorBvRBbVwo3Ghzh5g/uhciY28M=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=MfV6Ny6wEblINxz+gtimY5m/xer9ahYBZ1/XMKvYX5czet/NyCfsjYlTLISbsvejyBWWIuGQzFcY4e7MKOyvV5SnI0qH1EMZ4KqBYog3Kzr8LQCHHY8VxbhqPo7jPiVSP6poU1PpUhHjDOZ1vfAn/yvyIOj/ZeJ7GbcGgPj7YuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=JC5eM+Id; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-78315243c11so858255485a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:48:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705589304; x=1706194104; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xVxmjtoLbdX7EDdsXjVidtJhDNnF1SPUOgvPjPFVQ/I=;
+        b=JC5eM+IdEFqp/QQyuKFN34vpDujVCLKPsdUzSJjHOp8HWybJE//p2V9mB9pB9okE04
+         LZhAWy+6OjKPvWWEQS/a5UZ9gHreuv1a6AWyZCfPnPTtI2dtA7vi0+48t5m217wAXQj0
+         +oRS7YJAtPOHwPmpk6mv0P0hXzT0UxNXRdHFOFAYK/eDUgQRIHPVMEjsg0GIg1Gu+hMh
+         Ftk7neIj4tzi0pXEnMufMPcbchxpich5SCX9na/Hok/BS5d8lHwhrhFRxhzq59DBygMz
+         RdusKzdY5OUsx5VquPMpb8G2Ycdi+r7+usqHX2O+iwY7eFxVuT5Smc7P/v/heLrrjI0v
+         53Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705589304; x=1706194104;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xVxmjtoLbdX7EDdsXjVidtJhDNnF1SPUOgvPjPFVQ/I=;
+        b=Py0yi5X4ZOcIyNgcWYjMecNKHQ07xIukMyVH6113Po2JfuncWQND+ryLEs9pS4FlWE
+         01vy7toJbMYmQ4CKpNHFlFN19OfOg4fNDR20BK6Od6Y8ZtkxR+221Ra7SyhJY95fOeQp
+         49xVcaGfVPgkLLGsYs8z1RCDsObUtEN1CbeY5HxAWvGcp4MuA5jvlkvl31wXG4riaWfR
+         Z/4FZrhI1VtO2p0DFak8TpccRqhWdQXBxsa0+UmWdXcZC6u73B+xFfjQDkLiYSDnK0Uk
+         W9GEpORBuRsmFgmE19yNUUv7cR5O6mGTes3ca+h2NTNQ/3ePRVTCNkjEmxpTBNmFXGhv
+         CZZg==
+X-Gm-Message-State: AOJu0Yy5RPwfPEZfonVZjIsFziNkfWVOouRnV0DGBwZ7CDdPjCuMt5Q0
+	F1pnKDfZaQVuLv9XsBZ2gc+45YwTI+Z+QesAMAgyOjzvPaOaqeovebbRKaKEVS4=
+X-Google-Smtp-Source: AGHT+IGajBJ36LmLjSs9/3yRFfq0ausFe3LXPKC7KV8Lu+uOJ5KX+HjVmDDJ/4m3FU3/212zX7RDlg==
+X-Received: by 2002:a05:6214:5186:b0:681:7567:86ee with SMTP id kl6-20020a056214518600b00681756786eemr1017913qvb.71.1705589304433;
+        Thu, 18 Jan 2024 06:48:24 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:e85f])
+        by smtp.gmail.com with ESMTPSA id w20-20020a0562140b3400b006817d42eac6sm1361209qvj.53.2024.01.18.06.48.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 06:48:24 -0800 (PST)
+Date: Thu, 18 Jan 2024 09:48:19 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Christopher Li <chrisl@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Wei =?utf-8?B?WHXvv7w=?= <weixugc@google.com>,
+	Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>,
+	Chun-Tse Shao <ctshao@google.com>,
+	Suren =?utf-8?B?QmFnaGRhc2FyeWFu77+8?= <surenb@google.com>,
+	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Mel Gorman <mgorman@techsingularity.net>,
+	Huang Ying <ying.huang@intel.com>, Nhat Pham <nphamcs@gmail.com>,
+	Kairui Song <kasong@tencent.com>,
+	Zhongkun He <hezhongkun.hzk@bytedance.com>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	Barry Song <v-songbaohua@oppo.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH 0/2] RFC: zswap tree use xarray instead of RB tree
+Message-ID: <20240118144819.GE939255@cmpxchg.org>
+References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
+ <CAJD7tkbQb5nAQdhHXELQsUWs8KhwnoOZ7C8Eu2o7tCYSKeY9Ug@mail.gmail.com>
+ <CANeU7Q=mphnSfiZRwFhqFTy56d2ifa5Pz-aa1h3O1PXUo_cu=Q@mail.gmail.com>
+ <CAJD7tkaTZz9-rtYab+pvf31dprjMLstnHeXk6HZ_0C-8Np=06A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkaTZz9-rtYab+pvf31dprjMLstnHeXk6HZ_0C-8Np=06A@mail.gmail.com>
 
+On Wed, Jan 17, 2024 at 11:05:15PM -0800, Yosry Ahmed wrote:
+> > I think it makes the review easier. The code adding and removing does
+> > not have much overlap. Combining it to a single patch does not save
+> > patch size. Having the assert check would be useful for some bisecting
+> > to narrow down which step causing the problem. I am fine with squash
+> > it to one patch as well.
+> 
+> I think having two patches is unnecessarily noisy, and we add some
+> debug code in this patch that we remove in the next patch anyway.
+> Let's see what others think, but personally I prefer a single patch.
 
-Linus,
-
-This includes the fix to eventfs that we discussed. It removes the creation
-of dentries/inodes from the readdir() logic. I also threw in a seq_buf fix
-that was sent to me not to long ago.
-
-More eventfs fixes and a seq_buf fix for 6.8:
-
-- Hard-code the inodes for eventfs to the same number for files, and
-  the same number for directories.
-
-- Have getdent() not create dentries/inodes in iterate_shared() as now
-  it has hard-coded inode numbers
-
-- Use kcalloc() instead of kzalloc() on a list of elements
-
-- Fix seq_buf warning and make static work properly.
-
-
-Please pull the latest eventfs-v6.8-2 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-eventfs-v6.8-2
-
-Tag SHA1: 09d733778820003cca5836364cbc0b162d70bb7e
-Head SHA1: 7a8e9cdf9405819105ae7405cd91e482bf574b01
-
-
-Erick Archer (1):
-      eventfs: Use kcalloc() instead of kzalloc()
-
-Nathan Lynch (1):
-      seq_buf: Make DECLARE_SEQ_BUF() usable
-
-Steven Rostedt (Google) (2):
-      eventfs: Have the inodes all for files and directories all be the same
-      eventfs: Do not create dentries nor inodes in iterate_shared
-
-----
- fs/tracefs/event_inode.c | 36 ++++++++++++++++++------------------
- include/linux/seq_buf.h  |  3 +--
- 2 files changed, 19 insertions(+), 20 deletions(-)
----------------------------
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index fdff53d5a1f8..6795fda2af19 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -32,6 +32,10 @@
-  */
- static DEFINE_MUTEX(eventfs_mutex);
- 
-+/* Choose something "unique" ;-) */
-+#define EVENTFS_FILE_INODE_INO		0x12c4e37
-+#define EVENTFS_DIR_INODE_INO		0x134b2f5
-+
- /*
-  * The eventfs_inode (ei) itself is protected by SRCU. It is released from
-  * its parent's list and will have is_freed set (under eventfs_mutex).
-@@ -93,7 +97,7 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
- 	/* Preallocate the children mode array if necessary */
- 	if (!(dentry->d_inode->i_mode & S_IFDIR)) {
- 		if (!ei->entry_attrs) {
--			ei->entry_attrs = kzalloc(sizeof(*ei->entry_attrs) * ei->nr_entries,
-+			ei->entry_attrs = kcalloc(ei->nr_entries, sizeof(*ei->entry_attrs),
- 						  GFP_NOFS);
- 			if (!ei->entry_attrs) {
- 				ret = -ENOMEM;
-@@ -352,6 +356,9 @@ static struct dentry *create_file(const char *name, umode_t mode,
- 	inode->i_fop = fop;
- 	inode->i_private = data;
- 
-+	/* All files will have the same inode number */
-+	inode->i_ino = EVENTFS_FILE_INODE_INO;
-+
- 	ti = get_tracefs(inode);
- 	ti->flags |= TRACEFS_EVENT_INODE;
- 	d_instantiate(dentry, inode);
-@@ -388,6 +395,9 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
- 	inode->i_op = &eventfs_root_dir_inode_operations;
- 	inode->i_fop = &eventfs_file_operations;
- 
-+	/* All directories will have the same inode number */
-+	inode->i_ino = EVENTFS_DIR_INODE_INO;
-+
- 	ti = get_tracefs(inode);
- 	ti->flags |= TRACEFS_EVENT_INODE;
- 
-@@ -717,8 +727,6 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 	struct eventfs_inode *ei_child;
- 	struct tracefs_inode *ti;
- 	struct eventfs_inode *ei;
--	struct dentry *ei_dentry = NULL;
--	struct dentry *dentry;
- 	const char *name;
- 	umode_t mode;
- 	int idx;
-@@ -739,11 +747,11 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 
- 	mutex_lock(&eventfs_mutex);
- 	ei = READ_ONCE(ti->private);
--	if (ei && !ei->is_freed)
--		ei_dentry = READ_ONCE(ei->dentry);
-+	if (ei && ei->is_freed)
-+		ei = NULL;
- 	mutex_unlock(&eventfs_mutex);
- 
--	if (!ei || !ei_dentry)
-+	if (!ei)
- 		goto out;
- 
- 	/*
-@@ -770,11 +778,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 		if (r <= 0)
- 			continue;
- 
--		dentry = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
--		if (!dentry)
--			goto out;
--		ino = dentry->d_inode->i_ino;
--		dput(dentry);
-+		ino = EVENTFS_FILE_INODE_INO;
- 
- 		if (!dir_emit(ctx, name, strlen(name), ino, DT_REG))
- 			goto out;
-@@ -798,11 +802,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 
- 		name = ei_child->name;
- 
--		dentry = create_dir_dentry(ei, ei_child, ei_dentry);
--		if (!dentry)
--			goto out_dec;
--		ino = dentry->d_inode->i_ino;
--		dput(dentry);
-+		ino = EVENTFS_DIR_INODE_INO;
- 
- 		if (!dir_emit(ctx, name, strlen(name), ino, DT_DIR))
- 			goto out_dec;
-@@ -874,7 +874,7 @@ struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode
- 	}
- 
- 	if (size) {
--		ei->d_children = kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
-+		ei->d_children = kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
- 		if (!ei->d_children) {
- 			kfree_const(ei->name);
- 			kfree(ei);
-@@ -941,7 +941,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 		goto fail;
- 
- 	if (size) {
--		ei->d_children = kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
-+		ei->d_children = kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
- 		if (!ei->d_children)
- 			goto fail;
- 	}
-diff --git a/include/linux/seq_buf.h b/include/linux/seq_buf.h
-index 5fb1f12c33f9..c44f4b47b945 100644
---- a/include/linux/seq_buf.h
-+++ b/include/linux/seq_buf.h
-@@ -22,9 +22,8 @@ struct seq_buf {
- };
- 
- #define DECLARE_SEQ_BUF(NAME, SIZE)			\
--	char __ ## NAME ## _buffer[SIZE] = "";		\
- 	struct seq_buf NAME = {				\
--		.buffer = &__ ## NAME ## _buffer,	\
-+		.buffer = (char[SIZE]) { 0 },		\
- 		.size = SIZE,				\
- 	}
- 
++1
 
