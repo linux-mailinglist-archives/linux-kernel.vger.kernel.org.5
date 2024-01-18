@@ -1,141 +1,178 @@
-Return-Path: <linux-kernel+bounces-29765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7DEA831323
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:35:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D123831327
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:36:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FDADB2389D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:35:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9C2AB23A31
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:36:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC690B66B;
-	Thu, 18 Jan 2024 07:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80DB1170E;
+	Thu, 18 Jan 2024 07:35:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iKA7nlHW"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Xb8xY9VP";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Skp4jtKn"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9488947A;
-	Thu, 18 Jan 2024 07:35:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4FC947A;
+	Thu, 18 Jan 2024 07:35:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705563338; cv=none; b=HaIu9sffC5rxgbUwAVigm7zbnpnEW6rDQDyhwWTlDr4mFNOQYAQRXO0Zst8YhvNXTTWLqTBd9pb2iQrLpHWS/3B8PQAlvs02jIbllPNksVPRuDLSR27pGI+ShQ1h0Wtb43885KVyP7arP9uQePNLCdv6uJeim3zSAEcxShjqKn0=
+	t=1705563346; cv=none; b=ixkR6/7ZK1Y1nT7lm3YsyjJuG0f41iylbEU84v7wU8kODf00NikKRS3tEqYaZujoBkrDFJ3QfC2MgAszmOVzBwFwsxznT9HxKynKn8mX3UG3zNhuv3n1MPTQztYchlTJ96VdvZOuZjISYxlrf13sWbmpT4LI2S3cBejbxLNSUgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705563338; c=relaxed/simple;
-	bh=OX3x/t7S5eYlemp0ECxrgPOLlFI4fZcRLUMx0aAs7nI=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:Received:Date:From:To:Cc:Subject:Message-ID:
-	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding; b=o0MjZU7Tlj6lmtyow6RWWFOAcHPHfzU9QgfO8kYW+blL7/72SocnFWCnnvIVVp4mk4UP8G5x3mtuhYz2bvvP93wwrOeyiO5ftpaKPI4/Y8UbNGzHJctYlXNvdSnigjiadxVEcNOhnEfeLqBsH0l9APKBvk1FjdsD004e2g0Yqf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iKA7nlHW; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705563336; x=1737099336;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OX3x/t7S5eYlemp0ECxrgPOLlFI4fZcRLUMx0aAs7nI=;
-  b=iKA7nlHWLI9Q22jR603zMvvMhyViy6ILJuOPm7YQZQd7S2lheIt1K606
-   AunPK/fnksvZa7kWdBZSSKKWW1eitXw5kJMekUSj23oKLhjGYmmLkz5D/
-   wPuluL3YiKjUADTvk/iikXU+FFp/GCIfRGezE3/GQXphj3K70eTgkn0Is
-   30+qhMj05laAbDe17irKF3YNK5apP9br6j2Z0LY5VEgfhZcmGgKdgj1Pi
-   UxBxjMKfsegK18JQgxUAqqVnK4QaeP+ode3r6f/tW2x8IQVPPxL3AcwEf
-   0yokM6o/d6zfxAQ5qvRvtOFMDU2Y5ZvyE7MK+Jz6XS0rLNkfpvRGdqtcS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7067652"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="7067652"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 23:35:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="26391581"
-Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.245.82.157])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 23:35:33 -0800
-Date: Thu, 18 Jan 2024 08:35:25 +0100
-From: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-To: linan666@huaweicloud.com
-Cc: song@kernel.org, shli@fb.com, neilb@suse.com, zlliu@suse.com,
- linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
- yangerkun@huawei.com
-Subject: Re: [PATCH v2 1/3] md: Don't clear MD_CLOSING when the raid is
- about to stop
-Message-ID: <20240118083525.00002b15@linux.intel.com>
-In-Reply-To: <20240117093707.2767209-2-linan666@huaweicloud.com>
-References: <20240117093707.2767209-1-linan666@huaweicloud.com>
-	<20240117093707.2767209-2-linan666@huaweicloud.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1705563346; c=relaxed/simple;
+	bh=8hmAdEIcfL0v9wcLZ0431SoMcuZUtlch/gTPUp8R8qQ=;
+	h=Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To; b=Gymn8v1P0TqlW1rru0GuLDZKFP1LVntw38RhqcD2sutr1YFf+e68VcAwUAW35BFUsoMKlUgs4bjxUhloqL6uTd8Uy7Q4wL4gMbUSNlpjSxMduOo8uWAWvVQiL0gcySgYsOFp/EHfqaMZDBs7VNbr73H+Kbtmg25cQc8KN0ywwn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Xb8xY9VP; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Skp4jtKn; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 18 Jan 2024 08:35:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705563341;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x/SrWGWqFAeh0Q4NXPXuSzxRFfe/0QLjn7iAVq/bzjE=;
+	b=Xb8xY9VPVGlZC+0QyCX3HfuFBe5M9F+tz0pdkLj3oZTgqR4tmZ9n4s9e21IQVo5tK8RFPB
+	/FAZt+62WyFkD+HgJvOrcbZAsgpc7IHfUk1S76Iwo6ICt5bt+DrVU7de6cy+pgZUQ0MP7n
+	NeehovYW/jpCoyeP/j3v9cxSBhcTvMSFYE3kxatMPiUx8nZY+cV+mvhp4jkHIlEIg7WWg8
+	Yt0CWDmppz+3oxeBAidkP+VT2U5UcO3aYLIMXi3z9QJAGs6EciAZ+pEF3FgSCT7eWJZ5wi
+	AH3aY702oiSHc1DIZies6lkRUmCtoBw9J7ofrWmyGNaoL08eUJyxmmKQFbzKhA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705563341;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x/SrWGWqFAeh0Q4NXPXuSzxRFfe/0QLjn7iAVq/bzjE=;
+	b=Skp4jtKnot55gcSMtLq/UrWu7lTfXeGcP1L+cK7QA43cdiWiuT4Z/sY+SwkBPZf1FZLnAu
+	dQU730Md1RqVgfCg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Cong Wang <xiyou.wangcong@gmail.com>, Hao Luo <haoluo@google.com>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Ronak Doshi <doshir@vmware.com>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
+ redirect.
+Message-ID: <20240118073540.GIobmYpD@linutronix.de>
+References: <20231215171020.687342-1-bigeasy@linutronix.de>
+ <20231215171020.687342-16-bigeasy@linutronix.de>
+ <CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
+ <87r0iw524h.fsf@toke.dk>
+ <20240112174138.tMmUs11o@linutronix.de>
+ <87ttnb6hme.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87ttnb6hme.fsf@toke.dk>
 
-On Wed, 17 Jan 2024 17:37:05 +0800
-linan666@huaweicloud.com wrote:
+On 2024-01-17 17:37:29 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> This is all back-of-the-envelope calculations, of course. Having some
+> actual numbers to look at would be great; I don't suppose you have a
+> setup where you can run xdp-bench and see how your patches affect the
+> throughput?
 
-> From: Li Nan <linan122@huawei.com>
-> 
-> The raid should not be opened anymore when it is about to be stopped.
-> However, other processes can open it again if the flag MD_CLOSING is
-> cleared before exiting. From now on, this flag will not be cleared when
-> the raid will be stopped.
-> 
-> Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called
-> md_set_readonly or do_md_stop") Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->  drivers/md/md.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 9bdd57324c37..4bf821b89415 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -6254,7 +6254,15 @@ static void md_clean(struct mddev *mddev)
->  	mddev->persistent = 0;
->  	mddev->level = LEVEL_NONE;
->  	mddev->clevel[0] = 0;
-> -	mddev->flags = 0;
-> +	/*
-> +	 * Don't clear MD_CLOSING, or mddev can be opened again.
-> +	 * 'hold_active != 0' means mddev is still in the creation
-> +	 * process and will be used later.
-> +	 */
-> +	if (mddev->hold_active)
-> +		mddev->flags = 0;
-> +	else
-> +		mddev->flags &= BIT_ULL_MASK(MD_CLOSING);
->  	mddev->sb_flags = 0;
->  	mddev->ro = MD_RDWR;
->  	mddev->metadata_type[0] = 0;
-> @@ -7728,6 +7736,12 @@ static int md_ioctl(struct block_device *bdev,
-> blk_mode_t mode, 
->  	case STOP_ARRAY:
->  		err = do_md_stop(mddev, 0, bdev);
-> +		if (!err)
-> +			/*
-> +			 * mddev has been stopped, keep flag the
-> +			 * MD_CLOSING to prevent reuse.
-> +			 */
-> +			did_set_md_closing = false;
+No but I probably could set it up.
 
-Hello Nan,
-The meaning of the "did_set_md_closing" is to notify that MD_CLOSING was set in
-this function, to know how to behave on error.
-You gave it another meaning "Do not clear MD_CLOSING because we want it to stay"
-Please consider how to solve this confusion. I see the comment you added but I
-think we can have this solved better, maybe just name it as "clear_md_closing"?
+> I chatted with Jesper about this, and he had an idea not too far from
+> this: split up the XDP and regular stack processing in two stages, each
+> with their individual batching. So whereas right now we're doing
+> something like:
+>=20
+> run_napi()
+>   bh_disable()
+>   for pkt in budget:
+>     act =3D run_xdp(pkt)
+>     if (act =3D=3D XDP_PASS)
+>       run_netstack(pkt)  // this is the expensive bit
+>   bh_enable()
+>=20
+> We could instead do:
+>=20
+> run_napi()
+>   bh_disable()
+>   for pkt in budget:
+>     act =3D run_xdp(pkt)
+>     if (act =3D=3D XDP_PASS)
+>       add_to_list(pkt, to_stack_list)
+>   bh_enable()
+>   // sched point
+>   bh_disable()
+>   for pkt in to_stack_list:
+>     run_netstack(pkt)
+>   bh_enable()
+>=20
+>=20
+> This would limit the batching that blocks everything to only the XDP
+> processing itself, which should limit the maximum time spent in the
+> blocking state significantly compared to what we have today. The caveat
+> being that rearranging things like this is potentially a pretty major
+> refactoring task that needs to touch all the drivers (even if some of
+> the logic can be moved into the core code in the process). So not really
+> sure if this approach is feasible, TBH.
 
-Anyway it looks acceptable to me:
-Acked-by: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
+This does not work because bh_disable() does not disable scheduling.
+Scheduling may happen. bh_disable() acquires a lock which is currently
+the only synchronisation point between two say network driver doing
+NAPI. And this what I want to get rid of.
+Regarding expensive bit as in XDP_PASS: This doesn't need locking as per
+proposal, just the REDIRECT piece.
 
-Thanks,
-Mariusz
+> > Daniel said netkit doesn't need this locking because it is not
+> > supporting this redirect and it made me think. Would it work to make
+> > the redirect structures part of the bpf_prog-structure instead of
+> > per-CPU? My understanding is that eBPF's programs data structures are
+> > part of it and contain locking allowing one eBPF program preempt
+> > another one.
+> > Having the redirect structures part of the program would obsolete
+> > locking. Do I miss anything?
+>=20
+> This won't work, unfortunately: the same XDP program can be attached to
+> multiple interfaces simultaneously, and for hardware with multiple
+> receive queues (which is most of the hardware that supports XDP), it can
+> even run simultaneously on multiple CPUs on the same interface. This is
+> the reason why this is all being kept in per-CPU variables today.
+
+So I started hacking this and noticed yesterday and noticed that you can
+run multiple bpf programs. This is how I learned that it won't work.
+My plan B is now to move it into task_struct.=20
+
+> -Toke
+Sebastian
 
