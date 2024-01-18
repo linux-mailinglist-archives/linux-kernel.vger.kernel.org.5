@@ -1,140 +1,137 @@
-Return-Path: <linux-kernel+bounces-30067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C889C8318B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 764368318BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA3C61C21F1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:50:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A97131C21FCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D29324201;
-	Thu, 18 Jan 2024 11:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B392724214;
+	Thu, 18 Jan 2024 11:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SXjje/vT"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl header.b="JE8QnRsP"
+Received: from ewsoutbound.kpnmail.nl (ewsoutbound.kpnmail.nl [195.121.94.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13CA520B1C
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C47424207
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.121.94.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705578653; cv=none; b=UHfd8kn9FvZ2SxmcTrADdna57LG67bUnO3E7hWNe5okUgs5LcjN4gqyIXo4etH/J0EREIBTLvO2zZIFC3Dy3YWz49pQeJTUlEA8CPGw81dfi9HOJ1YkuFoES4+zzM49f6xR/lq9ewJ6+u6m66pEHjDEDH1UoDJF60DOfNhNB4us=
+	t=1705578717; cv=none; b=bj1IE5Vy2W2v7WcBHZZ4uqGWN0dObVh/xqRAvlQXLYOCMAIMQYtOvR68rsByCV/5lxJc3qCJEOfd9ScYFH3ZVSbckZnyVoY8KWSZdDDsgfR27dsgRIBxd1xEjfxdv18qPHwFk6ulqTG9QE8jdDlCiRxRbV0woLxOE2/Iqfl8CdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705578653; c=relaxed/simple;
-	bh=gt35hwddnpNUWAan27VYVSM0nHY7vcCvCwkZZknrkR0=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=i8tle6vivDF24j6LTpI9M7crIXH7tb4P4ltS1efWTqApBn23dJN7dMI/X2Stoomj/sYEHiO48/MmlBqCCPvIs0UFDcQJQ6lhZ10zzOwh/q1IuAck36WNpmq5Fx8g9HfZfrsA7mJxOwX4H75hsswqsNxsBo4LdgydIs0MuOJ+vII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SXjje/vT; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705578651;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QT9qXfX+i5084J8ucGBrAuMK3QTq9k9pLJjBMMFh3rE=;
-	b=SXjje/vT9+vqiAGnAdtgnhGz12f4LEbUe02RAeji67okrlX0I3Z3/L0dP+cI6p84/aqNl9
-	LW7wvzgOsSmevT3K9vWUnfnPoavxQHB30rdIk2JzQu/KkHXFkyvaaL8x+KO+GQFuXjmbAK
-	i3gDJihQ37fN+PST0LnhUGnpjjrvwLs=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-168-uDcJ8n2rP3yT7AWla-_W5Q-1; Thu, 18 Jan 2024 06:50:49 -0500
-X-MC-Unique: uDcJ8n2rP3yT7AWla-_W5Q-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-28c391d255dso8324322a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:50:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705578649; x=1706183449;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QT9qXfX+i5084J8ucGBrAuMK3QTq9k9pLJjBMMFh3rE=;
-        b=JiLc3nyTLFTQ3YjZmR4r3vgpC6YGCSCc3Z5ssR5EyBMNRGEMfHIVEw9VMfXqTAQ1Sg
-         veuQRSsglFOeOkau5chJOc1PsQg0D0Y6yTivJxhgT1++ONgm2Be5p1/x8tpIW2/uly/M
-         Zw5qh348+jJuN1GgFewJaP0naihMfq7IMnljXEYZ+3hGijVefX8Y1pvOvukx0iJ9fxSR
-         +8Foovs5ltA8HtkphYqhhBwTuwjwPrVGziexrsiw0SyAloyYXeCukfZfGT0sZ4j2L64d
-         kEXGXJfeDJkhwBIJKkxrKjt3H0/DVvYh0pmjai9iPmIRJkbg8jjVKIGhsQB7VXt34BWM
-         htFg==
-X-Gm-Message-State: AOJu0YxFbtXSwEKG8rdJGNHPodNXrAGssOqDDzZfjytzeXzUEbQAUlBV
-	YqM/xf6EqcvsYwS4Prk6DU6DUVw5+VGStv2//7vXPxYAx/DOOR+vub3rztYjWUb1J+GYGixDNPE
-	ByV9RBX46YhRc7EKHkUYChcmp1MdgtQW9DD2Jlw2bejOvvFPDfKgg49ZY5yjKc0HLe/LiO8FZaF
-	wtDw0fSPam1qnzwAZFBRSkozLOYtqQjl213Zfi
-X-Received: by 2002:a17:90a:fa08:b0:28f:423f:1cfe with SMTP id cm8-20020a17090afa0800b0028f423f1cfemr537976pjb.18.1705578648789;
-        Thu, 18 Jan 2024 03:50:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHVs+zCTtfvuguPsuMp6IoFUt9geCNapxlrZ6013/fZtiox4ORl6FknrWsaFGhDHw+mmfqpBre4bZ+1zAqDKZk=
-X-Received: by 2002:a17:90a:fa08:b0:28f:423f:1cfe with SMTP id
- cm8-20020a17090afa0800b0028f423f1cfemr537973pjb.18.1705578648531; Thu, 18 Jan
- 2024 03:50:48 -0800 (PST)
+	s=arc-20240116; t=1705578717; c=relaxed/simple;
+	bh=+J4HlKZgPkAnNbe+/5Ny2aDPSavVymgjuzDiJAbIaS8=;
+	h=X-KPN-MessageId:Received:DKIM-Signature:X-KPN-MID:
+	 X-KPN-VerifiedSender:X-CMASSUN:X-Originating-IP:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=AnsBRKIm0u+dg1p0u3r1gdbYrk6RF6n9Ga/lQZ20FWFrW+xXOV2HDJ0/BUGMZGs6HiiBgWZRUXMXKveQPdJzecHxVEaWC7t2i1Y2zAA9OVALdvym7zhRMwJVdUxUHBGtYN08B37Nay0Ewb+6+371i9vwjhbT0B+sIwl4UfYHcjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xs4all.nl; spf=pass smtp.mailfrom=xs4all.nl; dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl header.b=JE8QnRsP; arc=none smtp.client-ip=195.121.94.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xs4all.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xs4all.nl
+X-KPN-MessageId: d01b7825-b5f7-11ee-b097-005056aba152
+Received: from smtp.kpnmail.nl (unknown [10.31.155.37])
+	by ewsoutbound.so.kpn.org (Halon) with ESMTPS
+	id d01b7825-b5f7-11ee-b097-005056aba152;
+	Thu, 18 Jan 2024 12:50:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=xs4all.nl; s=xs4all01;
+	h=content-type:from:to:subject:mime-version:date:message-id;
+	bh=9tytfViqCFLbiU7Wz6e6k4feBX9DmDYV8/hI1tB8vDg=;
+	b=JE8QnRsPGR1vwks6J1+Dy8zd6fvxR+oiZaaoM915UGciixmcWQSR6BdUvuRmzKnpzUeY5Ni8F92kX
+	 2Aj+dcsxdd0u4ceF8KFoz19GZlVw/8TEFvIPVVDKA4BOEx1QwFAeNQ0CAVTgCSNTxIrrhib4/xHf2J
+	 MjDuxRtGV2VZ3HUrOhk7U5X64Pz74A73aQLmmnlwLDhYmXawk0xr9vE48KLpYMsq7uaoYtrqU61sOn
+	 CuQx7WGxzxL1ktgklu+taU1k/K+9/uqdkWt4/aQR+M0sI6pFTKo4bwRZ4Itw2cvlAos4vKYa044faL
+	 /rUnUA+/8clQrlcviW/VQO1mo0uCWEQ==
+X-KPN-MID: 33|tp53BvIYLealaXNB0Z4K1LSygruItIfMLFmkwha891rB2GE/geg/8A2U7Esak0Y
+ UYzNA3PBJwI/ZWFa7qzD9fg==
+X-KPN-VerifiedSender: Yes
+X-CMASSUN: 33|iq2f6SR/PHyL6mX/Ziu73uaIUmrxzofpuz9uS59ol1C66aRryIrRw9Yif2uJcAj
+ 5gr0I7siTiygX4gF+ug1TeA==
+Received: from [10.47.75.249] (unknown [173.38.220.58])
+	by smtp.xs4all.nl (Halon) with ESMTPSA
+	id d011b4f8-b5f7-11ee-824d-005056ab1411;
+	Thu, 18 Jan 2024 12:50:45 +0100 (CET)
+Message-ID: <edaa388e-fc26-4318-b468-64366aa86699@xs4all.nl>
+Date: Thu, 18 Jan 2024 12:50:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116002817.216837-1-sashal@kernel.org> <20240116002817.216837-11-sashal@kernel.org>
- <ZabrPnsVr6WHz2lM@duo.ucw.cz>
-In-Reply-To: <ZabrPnsVr6WHz2lM@duo.ucw.cz>
-From: Andreas Gruenbacher <agruenba@redhat.com>
-Date: Thu, 18 Jan 2024 12:50:37 +0100
-Message-ID: <CAHc6FU70RD8fktBp=Srv6xeq3qXoLCdT8pi6y=1Y7bMHFK-mtQ@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 4.19 11/12] gfs2: Refcounting fix in gfs2_thaw_super
-To: Sasha Levin <sashal@kernel.org>, Pavel Machek <pavel@denx.de>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, gfs2@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: media videobuf2: Stop direct calls to queue
+ num_buffers field
+Content-Language: en-US
+To: Tomasz Figa <tfiga@chromium.org>,
+ Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc: m.szyprowski@samsung.com, mchehab@kernel.org,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com
+References: <20240115170826.214519-1-benjamin.gaignard@collabora.com>
+ <20240115170826.214519-2-benjamin.gaignard@collabora.com>
+ <c832da45-c818-420d-aaf8-05c15c1e5426@xs4all.nl>
+ <521a2a44-9ec1-4898-aca7-721d07e12643@collabora.com>
+ <CAAFQd5DWOZwm2E8BwfONtjrcg289wPHJEe3TMZKsBvDcn3OfNw@mail.gmail.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <CAAFQd5DWOZwm2E8BwfONtjrcg289wPHJEe3TMZKsBvDcn3OfNw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 16, 2024 at 9:53=E2=80=AFPM Pavel Machek <pavel@denx.de> wrote:
-> Hi!
->
-> > From: Andreas Gruenbacher <agruenba@redhat.com>
-> >
-> > [ Upstream commit 4e58543e7da4859c4ba61d15493e3522b6ad71fd ]
-> >
-> > It turns out that the .freeze_super and .thaw_super operations require
-> > the filesystem to manage the superblock refcount itself.  We are using
-> > the freeze_super() and thaw_super() helpers to mostly take care of that
-> > for us, but this means that the superblock may no longer be around by
-> > when thaw_super() returns, and gfs2_thaw_super() will then access freed
-> > memory.  Take an extra superblock reference in gfs2_thaw_super() to fix
-> > that.
->
-> Patch was broken during backport.
->
-> > +++ b/fs/gfs2/super.c
-> > @@ -1013,6 +1013,7 @@ static int gfs2_freeze(struct super_block *sb)
-> >               goto out;
-> >       }
-> >
-> > +     atomic_inc(&sb->s_active);
-> >       for (;;) {
-> >               error =3D gfs2_lock_fs_check_clean(sdp, &sdp->sd_freeze_g=
-h);
-> >               if (!error)
-> > @@ -1034,6 +1035,7 @@ static int gfs2_freeze(struct super_block *sb)
-> >       error =3D 0;
-> >  out:
-> >       mutex_unlock(&sdp->sd_freeze_mutex);
-> > +     deactivate_super(sb);
-> >       return error;
-> >  }
->
-> Notice the goto out? That now jumps around the atomic_inc, but we
-> still do decrease. This will break 4.19, please fix or drop.
+On 1/18/24 12:22, Tomasz Figa wrote:
+> On Tue, Jan 16, 2024 at 6:32 PM Benjamin Gaignard
+> <benjamin.gaignard@collabora.com> wrote:
+>>
+>>
+>> Le 16/01/2024 à 10:21, Hans Verkuil a écrit :
+>>> On 15/01/2024 18:08, Benjamin Gaignard wrote:
+>>>> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+>>>> This allows us to change how the number of buffers is computed in the
+>>>> future.
+>>>>
+>>>> Fixes: c838530d230b ("media: media videobuf2: Be more flexible on the number of queue stored buffers")
+>>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>>> ---
+>>>>   drivers/media/common/videobuf2/videobuf2-core.c | 2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+>>>> index 41a832dd1426..b6bf8f232f48 100644
+>>>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+>>>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+>>>> @@ -989,7 +989,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>>>>      bool no_previous_buffers = !q_num_bufs;
+>>>>      int ret = 0;
+>>>>
+>>>> -    if (q->num_buffers == q->max_num_buffers) {
+>>>> +    if (q_num_bufs == q->max_num_buffers) {
+>>>>              dprintk(q, 1, "maximum number of buffers already allocated\n");
+>>>>              return -ENOBUFS;
+>>>>      }
+>>> There is another case in vb2_ioctl_create_bufs() where num_buffers is accessed directly.
+>>> Can you fix that one as well?
+>>
+>> It is removed by the patch I have send just after this one:
+>> "media: core: Refactor vb2_ioctl_create_bufs() to always set capabilities flags"
+> 
+> I'd prefer that to be also included in this fix, so that it's all
+> logically grouped together. Actually Hans also ended up including that
+> change in his patch, without the commit message mentioning it.
 
-Thanks, Pavel.
+Yeah, it's borderline. But I think it is better if this patch updates both
+places, and then I'll make a v2 for my patch on top.
 
-Sasha, you don't want that fix without "gfs2: Rework freeze / thaw
-logic" and the follow-up fixes, and backporting that probably isn't
-going to be worth it.
+Regards,
 
-Thanks,
-Andreas
+	Hans
+
+> 
+> Best regards,
+> Tomasz
 
 
