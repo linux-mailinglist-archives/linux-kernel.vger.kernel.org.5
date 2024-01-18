@@ -1,152 +1,247 @@
-Return-Path: <linux-kernel+bounces-30217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11EBE831BA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:43:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B97A9831BAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 293251C209EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:43:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCA801C22C24
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF4EA53;
-	Thu, 18 Jan 2024 14:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 698E41DA2C;
+	Thu, 18 Jan 2024 14:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e8Z/+56M"
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZepYRH9l"
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893F1646
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1571DDC3;
+	Thu, 18 Jan 2024 14:44:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705588974; cv=none; b=FuG3NvNmWFDxuMSnAA3Af+eCgrwC8zn++Qhq38HI8820YHBdFk2BYnaIbvpi6zeeN1wR1LvgTdW0UapxNuWeHJci7XPlq0hyscuFvc+3cfdU/CaHuhzL2TVQhXtcYN17c+CmwF+9Q2SB1gZKkwn1KFJ5AwJ2ABEjGVdocerULO4=
+	t=1705589056; cv=none; b=WW4z4L5T4KM8X0JA0XuqxYXWQ49FUT3jt5kVpyiGnfpL/QHQDbRg4yoO5t5cmhSQGuPl9jgUOGE1v7YTkqwR6SV6uondW9CGGX6Ek5B3ZWAemkHvpSzr5WqRQ4zsCEZmL/Gy3wZzGZMNYJPQCfVeMgS9Jiq0vCgH7Ke1PnKPCyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705588974; c=relaxed/simple;
-	bh=uxGgJcXm3aAJDaHF15vKNxr/n7qIlwyktZ3CCGHOF3U=;
+	s=arc-20240116; t=1705589056; c=relaxed/simple;
+	bh=WCFGPbYkiQVLbhVotzaLYbYZTWEoJCeuU36QUwXEvMs=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Content-Language:To:Cc:
-	 From:Subject:Content-Type:Content-Transfer-Encoding; b=UbcMMEiVXae2In7otOajd8grG1btxt3mPq32sl9BqMqQeCv+z95tWoRSZDL+AKQoLPHJeYVoZw0cwqY9IbrdX5HcoUsUyCw6QbUiZ6PcGHbFdbj5Z3NpOglVSPRLe9T9baTK63xFoYJP6xoqE3C3F9B29FAQHUTXNpja7pUfM7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e8Z/+56M; arc=none smtp.client-ip=209.85.167.182
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Message-ID:In-Reply-To:References:Subject:Mime-Version:
+	 Content-Type:Content-Transfer-Encoding; b=JZUtYwCXFZCvS52DG4J/mEy+GM69mz7SixftLvrtE/vSvIHGKJgnHukSO8p9H+niNZ6iZTnTSq4r9gp7vjExwk8BdJge8brPyG3Pz4GUuOLCmkVZYE54ENpgTIzwjOvkEr0GeE5lXU4sDzAs5+8Dd8Q16AtniBDIpumIC4iuL0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZepYRH9l; arc=none smtp.client-ip=209.85.222.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bd5ed7d760so453323b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:42:53 -0800 (PST)
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78339210979so767687485a.1;
+        Thu, 18 Jan 2024 06:44:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705588972; x=1706193772; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705589054; x=1706193854; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mOqtTg4UhK2C7KvLSKvadXo0TFb7Q9SqKiW1/C+ZT5k=;
-        b=e8Z/+56M2dmaBAOhwnNFnuCjrzB/fDQAzD2oG6J7439VY0F5Xhd4y9gmwZAkgzKJCs
-         aKlc89u0uyPCpKyn0Ry+48t/GlM7Uq3pDP4zFvgqesWHzQAhEmb2C9Ze54P6xZIaNnjv
-         U/xFkMzLUTwWFUJWIVyKBi7B+D7DuycKbNs/PVt0n2ITExLmE5+snhHQWTuey2gPZADF
-         QZ8DRhx7PStWLH6Oa8bDVhILa97as8mrPatFjTs2tuD1u1FlkX9HzewHD0ir/jHRntKF
-         4LjZ2Rs2J3lJ6v00gSzV8ozVUFxPVh/wEjiT6A06DAC20q7gQDwYVU3nv7m7AOVJz69v
-         Ih7Q==
+        bh=YoZ+SlkruvUdNkH7eZxjFcDuia7cqhFoQuvvT1OXvIY=;
+        b=ZepYRH9lKAtqoFPXa/7Lka4xSlLEpq5qPJcAi0HrqSHVbNQomh2U+f7MO90Fb1Np8R
+         I6OKEHYP63okJhz2fnL267g8Ku5NO7OgG9S/KrlJKWkdysebiBloY4aj+t5mX9lewifq
+         tSST8eV4M+7JE//Nsws07ZLRL8tHkXzxmtJMBE2FAFYFw98etO2OcAXM2+Uxo5y31089
+         mT2ESHZ3smREOOQ37PuS78UFR7lOfXmTtciQEip+9MdT7KJ+JcjUBD/QcbNK9515EplM
+         aAjLuo5adjEyRWcPOsbTjem0f4w3zT1A6QY8VK3Q4NhTmYTaE8EkrikvvUECDdNbFmtv
+         8N0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705588972; x=1706193772;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=1e100.net; s=20230601; t=1705589054; x=1706193854;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=mOqtTg4UhK2C7KvLSKvadXo0TFb7Q9SqKiW1/C+ZT5k=;
-        b=l8OxVB6wyWVQkig0Od1xo/akqs9sH5voSIPNz3se0m9HRA6okAW2pGeJGttS4/Tr3S
-         Bd3py8rn7LB1xKhLIoNq9iMYEqypYKmwAsg08+RasWadCreaM2W4eUeNmIoQPC8wOR1x
-         TUqjDqlzx5eunbqmv/DjvdF2AfiTXup5lbjWGw2xliaYJVDix8pJ2h7ApWUwL18/MZjv
-         fcat4mhfwz37YjEx6pJGRAb3cyLsH2JunWUJGelZ3xFGohVVmokGrZDwmZbWAEYd/6ji
-         5B86IaLPDS3/c8Y+wtquakOJYlzzoBHvu56pTOYsT9Q/xeQsW7YKPvuuRFvJJzVkQ/KW
-         FXGQ==
-X-Gm-Message-State: AOJu0YzrsCqzbajhMPwddSlEU9dBrsUgZO/Qlg1wa012l50xC8dHK2YR
-	wEO50UPvThN2JrSM7K+QBEAWLyC5wUpbJ0LiqTWTpE7F16mGC1Gu
-X-Google-Smtp-Source: AGHT+IHwO/PRr4anWSEpoynGuxV16/UCi+N+rYypmX49+oaDj5sBVZrSE7+8oKlL6PS5YMbX7NpSRQ==
-X-Received: by 2002:a05:6358:8a9:b0:175:d0a3:7432 with SMTP id m41-20020a05635808a900b00175d0a37432mr1914208rwj.1.1705588972436;
-        Thu, 18 Jan 2024 06:42:52 -0800 (PST)
-Received: from [192.168.1.157] (pool-74-98-201-227.pitbpa.fios.verizon.net. [74.98.201.227])
-        by smtp.gmail.com with ESMTPSA id nh17-20020a056214391100b00681929ad11fsm455813qvb.76.2024.01.18.06.42.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 06:42:52 -0800 (PST)
-Message-ID: <03b524b7-8e66-4180-b22a-aa641acbaac3@gmail.com>
-Date: Thu, 18 Jan 2024 09:42:51 -0500
+        bh=YoZ+SlkruvUdNkH7eZxjFcDuia7cqhFoQuvvT1OXvIY=;
+        b=mm76E2fmc23jnRIJJAHTq7xlXnOA+7OhB5G2Zpfc89ZoH6NYdRwdpnIIcQOerXBKwP
+         vjqafnbRFT25VazlXFR019GvMIP25OI2g/TWtFjxgs2U8QyGybMXfrc3qfRg12Cu26lx
+         z1exJmTdiDfCaT5zXA2igg+jHMZkFQqSUJpFxqqkzlSs7k+K+KS9B+WFWrM8TR+xVJK9
+         su9q4eS6DkDs6USQibJh9r+QFxZOESQVWY3c7TGSc2xfb9vYexPrAaTfzul5N2TO44hI
+         oICOu2Y+p/2zvM3FY5L3hW4yjw9smC9QaoTZCal5c3Ob31+QBYxMIzW3lxll3gJ+iTZD
+         3zng==
+X-Gm-Message-State: AOJu0Ywon46VmidXaI9RUt3E4VdRh7SgKvUIjx6DkUnAC8jOPDnhoaqm
+	bUo/MK9EMxerv3FzSGM+B1ohKoDJBkHsvFizSTDM/tH+mQ+VXAqazoMB3D0W
+X-Google-Smtp-Source: AGHT+IEzw5yCRzR2VREpYP1zk6hUvPux7J9JLpCfOheCUlMPLJnyZiI+suikwj2sbgt4VUO4d0h4Kg==
+X-Received: by 2002:a05:620a:134b:b0:783:148f:a691 with SMTP id c11-20020a05620a134b00b00783148fa691mr948410qkl.71.1705589053991;
+        Thu, 18 Jan 2024 06:44:13 -0800 (PST)
+Received: from localhost (131.65.194.35.bc.googleusercontent.com. [35.194.65.131])
+        by smtp.gmail.com with ESMTPSA id q27-20020a05620a0c9b00b00781663f3161sm5350246qki.85.2024.01.18.06.44.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 06:44:13 -0800 (PST)
+Date: Thu, 18 Jan 2024 09:44:13 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: wangyunjian <wangyunjian@huawei.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ "jasowang@redhat.com" <jasowang@redhat.com>, 
+ "kuba@kernel.org" <kuba@kernel.org>, 
+ "davem@davemloft.net" <davem@davemloft.net>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ xudingke <xudingke@huawei.com>
+Message-ID: <65a9393d75353_1c8cde294e2@willemb.c.googlers.com.notmuch>
+In-Reply-To: <ed6fd9c514ae4a449580d11c9c6ba8e7@huawei.com>
+References: <1705490503-28844-1-git-send-email-wangyunjian@huawei.com>
+ <65a7f560a4643_6ba59294a7@willemb.c.googlers.com.notmuch>
+ <ed6fd9c514ae4a449580d11c9c6ba8e7@huawei.com>
+Subject: RE: [PATCH net v3] tun: add missing rx stats accounting in
+ tun_xdp_act
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org, wei_wang@realsil.com.cn,
- micky_ching@realsil.com.cn
-Cc: jklott.git@gmail.com
-From: Jacob Lott <jklott.git@gmail.com>
-Subject: [PATCH] staging: rts5208: Fix coding style issues
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Help text in a module should describe the module and give
-some guidance on whether or not to enable it.
+wangyunjian wrote:
+> > -----Original Message-----
+> > From: Willem de Bruijn [mailto:willemdebruijn.kernel@gmail.com]
+> > Sent: Wednesday, January 17, 2024 11:42 PM
+> > To: wangyunjian <wangyunjian@huawei.com>;
+> > willemdebruijn.kernel@gmail.com; jasowang@redhat.com; kuba@kernel.org;
+> > davem@davemloft.net
+> > Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; xudingke
+> > <xudingke@huawei.com>; wangyunjian <wangyunjian@huawei.com>
+> > Subject: Re: [PATCH net v3] tun: add missing rx stats accounting in tun_xdp_act
+> > 
+> > Yunjian Wang wrote:
+> > > The TUN can be used as vhost-net backend, and it is necessary to count
+> > > the packets transmitted from TUN to vhost-net/virtio-net. However,
+> > > there are some places in the receive path that were not taken into
+> > > account when using XDP. The commit 8ae1aff0b331 ("tuntap: split out
+> > > XDP logic") only includes dropped counter for XDP_DROP, XDP_ABORTED,
+> > > and invalid XDP actions. It would be beneficial to also include new
+> > > accounting for successfully received bytes using
+> > > dev_sw_netstats_rx_add and introduce new dropped counter for XDP errors
+> > on XDP_TX and XDP_REDIRECT.
+> > 
+> > From the description it is clear that these are two separate changes wrapped
+> > into one patch. I should have flagged this previously.
+> 
+> Do I need to split these two modifications into 2 patches?
+> 1. only fix dropped counter
+> 2. add new accounting for successfully received bytes
+> Or:
+> Only fix dropped counter?
 
-The BIT macro should be used instead of 1UL << n. This
-makes the code more readable and easier to maintain.
+It's definitely good to fix both.
 
-Signed-off-by: Jacob Lott <jklott.git@gmail.com>
----
-  drivers/staging/rts5208/Kconfig     | 10 +++++++---
-  drivers/staging/rts5208/rtsx_card.h |  4 ++--
-  2 files changed, 9 insertions(+), 5 deletions(-)
+It might be a bit pedantic, but two separate patches is more correct.
 
-diff --git a/drivers/staging/rts5208/Kconfig 
-b/drivers/staging/rts5208/Kconfig
-index b864023d3ccb..bb293cbf6230 100644
---- a/drivers/staging/rts5208/Kconfig
-+++ b/drivers/staging/rts5208/Kconfig
-@@ -3,7 +3,11 @@ config RTS5208
-         tristate "Realtek PCI-E Card Reader RTS5208/5288 support"
-         depends on PCI && SCSI
-         help
--         Say Y here to include driver code to support the Realtek
--         PCI-E card reader rts5208/rts5288.
-+      Choose Y here to enable support for the Realtek PCI-E card reader 
-RTS5208/5288.
-+         This driver facilitates communication between the Linux kernel 
-and the Realtek
-+         PCI-E card reader.
+The second fix, add missing byte counter, goes back to the original
+introduction of XDP for tun, so has a different tag:
 
--         If this driver is compiled as a module, it will be named rts5208.
-+         If you opt to compile this driver as a module, it will be 
-named rts5208. Selecting
-+         N will exclude this driver from the kernel build. Choose 
-option Y if your system includes
-+         the Realtek PCI-E card reader rts5208/rts5288. When in doubt, 
-it is generally safe
-+         to select N.
-diff --git a/drivers/staging/rts5208/rtsx_card.h 
-b/drivers/staging/rts5208/rtsx_card.h
-index 39727371cd7a..9d2504fddb13 100644
---- a/drivers/staging/rts5208/rtsx_card.h
-+++ b/drivers/staging/rts5208/rtsx_card.h
-@@ -338,7 +338,7 @@
-  #define DMA_DIR_FROM_CARD              0x02
-  #define DMA_EN                         0x01
-  #define DMA_128                                (0 << 4)
--#define DMA_256                                (1 << 4)
-+#define DMA_256                                BIT(4)
-  #define DMA_512                                (2 << 4)
-  #define DMA_1024                       (3 << 4)
-  #define DMA_PACK_SIZE_MASK             0x30
-@@ -542,7 +542,7 @@
+Fixes: 761876c857cb ("tap: XDP support")
 
-  #define BLINK_EN                       0x08
-  #define LED_GPIO0                      (0 << 4)
--#define LED_GPIO1                      (1 << 4)
-+#define LED_GPIO1                      BIT(4)
-  #define LED_GPIO2                      (2 << 4)
+> 
+> > 
+> > Ack on returning the error counter that was previously present and matches
+> > the Fixes tag.
+> > 
+> > For the second change, I had to check a few other XDP capable drivers to verify
+> > that it is indeed common to count such packets.
+> > 
+> > > Fixes: 8ae1aff0b331 ("tuntap: split out XDP logic")
+> > > Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+> > > ---
+> > > v3: update commit log and code
+> > > v2: add Fixes tag
+> > > ---
+> > >  drivers/net/tun.c | 14 +++++++++-----
+> > >  1 file changed, 9 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/net/tun.c b/drivers/net/tun.c index
+> > > afa5497f7c35..0704a17e74e1 100644
+> > > --- a/drivers/net/tun.c
+> > > +++ b/drivers/net/tun.c
+> > > @@ -1625,18 +1625,15 @@ static struct sk_buff *__tun_build_skb(struct
+> > > tun_file *tfile,  static int tun_xdp_act(struct tun_struct *tun, struct
+> > bpf_prog *xdp_prog,
+> > >  		       struct xdp_buff *xdp, u32 act)  {
+> > > -	int err;
+> > > +	unsigned int datasize = xdp->data_end - xdp->data;
+> > > +	int err = 0;
+> > >
+> > >  	switch (act) {
+> > >  	case XDP_REDIRECT:
+> > >  		err = xdp_do_redirect(tun->dev, xdp, xdp_prog);
+> > > -		if (err)
+> > > -			return err;
+> > >  		break;
+> > >  	case XDP_TX:
+> > >  		err = tun_xdp_tx(tun->dev, xdp);
+> > > -		if (err < 0)
+> > > -			return err;
+> > >  		break;
+> > >  	case XDP_PASS:
+> > >  		break;
+> > > @@ -1651,6 +1648,13 @@ static int tun_xdp_act(struct tun_struct *tun,
+> > struct bpf_prog *xdp_prog,
+> > >  		break;
+> > >  	}
+> > >
+> > > +	if (err < 0) {
+> > > +		act = err;
+> > > +		dev_core_stats_rx_dropped_inc(tun->dev);
+> > > +	} else if (act == XDP_REDIRECT || act == XDP_TX) {
+> > > +		dev_sw_netstats_rx_add(tun->dev, datasize);
+> > > +	}
+> > > +
+> > 
+> > Let's avoid adding yet another branch and just do these operations in the case
+> > statements, like XDP_DROP.
+> 
+> Fix it like this?
 
-  #define SDIO_BUS_CTRL          0x01
--- 
-2.34.1
+Perhaps avoid computing datasize is all paths, when it is not used
+in common XDP_PASS, high performance XDP_DROP and a few others. Not
+sure whether (all) compilers would optimze that.
+
+        dev_core_stats_rx_dropped_inc(tun->dev, xdp,
+                                      xdp->data_end - xdp->data);
+
+
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -1625,18 +1625,25 @@ static struct sk_buff *__tun_build_skb(struct tun_file *tfile,
+>  static int tun_xdp_act(struct tun_struct *tun, struct bpf_prog *xdp_prog,
+>                        struct xdp_buff *xdp, u32 act)
+>  {
+> +       unsigned int datasize = xdp->data_end - xdp->data;
+>         int err;
+>  
+>         switch (act) {
+>         case XDP_REDIRECT:
+>                 err = xdp_do_redirect(tun->dev, xdp, xdp_prog);
+> -               if (err)
+> +               if (err) {
+> +                       dev_core_stats_rx_dropped_inc(tun->dev);
+>                         return err;
+> +               }
+> +               dev_sw_netstats_rx_add(tun->dev, datasize);
+>                 break;
+>         case XDP_TX:
+>                 err = tun_xdp_tx(tun->dev, xdp);
+> -               if (err < 0)
+> +               if (err < 0) {
+> +                       dev_core_stats_rx_dropped_inc(tun->dev);
+>                         return err;
+> +               }
+> +               dev_sw_netstats_rx_add(tun->dev, datasize);
+>                 break;
+>         case XDP_PASS:
+> 
+> > 
+> > >  	return act;
+> > >  }
+> > >
+> > > --
+> > > 2.41.0
+> > >
+> > 
+> > 
+> 
+
 
 
