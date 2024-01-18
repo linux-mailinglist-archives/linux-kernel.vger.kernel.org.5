@@ -1,142 +1,115 @@
-Return-Path: <linux-kernel+bounces-30645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49F0A832271
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC0DC83221D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 00:05:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17455B21097
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 00:02:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C50AB23304
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 23:05:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9855725772;
-	Fri, 19 Jan 2024 00:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ADA91E88F;
+	Thu, 18 Jan 2024 23:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P488q9wP"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U4TRNLYO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA1F20B0A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 00:02:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1345F1DFE6
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705622565; cv=none; b=UxgFcmQsLAP7FV5KM6j0IFB2GJxbogeEW/hrJ9c5eonHe20Bijmm86BC8Wv3XfIwn6QrNj4kMGG4GshKGtDaC4EmdHzgtWGD6tXCTQ5pTATd0FhWzzCMv8iUu7mCHhwQb1W4yH88632YqyTkkPYG1+9a4P5xmeuGlGbjdsL7ZLo=
+	t=1705619099; cv=none; b=gubRRDsSOUWr6WzZN4r16jOQt7alHlvq//4m73nc/ygxMomWf8S58TGWxX+3jN8BSW5FRcxWaIuX4bj0nsq927lGoV7noEsTGs1VRLkbcO9qzNQhmsT3YOw2fDtxMob+Zoh2L7lLA6iNIByeGjqgmznorq7A8HMT4yI4RM0t1cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705622565; c=relaxed/simple;
-	bh=MtMdqj96rsjPzsEnYRg4Ac1eL3hsM5JZU42UDnZssdI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=I/dKI5GeLl+96rvgzrygMbksHDKsa46Py4mgMSeg8b3MXeBxzEAIl1aBZ7ar4mdph5CxPZIHNGK0ZtFSm4qGBEpjtN8yrWhZeNT3jACbctE87XfNpW7qzqXcMH1Wwz13nmuW0sdY2bsKfq9AUxoOQEzFfJycqQWwmtK3tg/Iwa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P488q9wP; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6db79e11596so231411b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 16:02:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705622564; x=1706227364; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FuVI82N8U3mum68Zeo3r0N8ktAUFrixqZFP4tV0YfIY=;
-        b=P488q9wPbr0u6Zc1yBNVnH8w5Q5zPrE41/slNbV/yI7G6XUMzrGRN9bFAgRmp9Mun/
-         e3kG4skg1G5JhY2jLcc4zlwTU1uHr1cJ6HQK8+A0svOE2tu9QjJy678wePanu29dwGV9
-         9SP/iBwPaQKnRamC1Jbv+w6H/cvn6Pa02BBuYVIsDezCZdwF0bl3qs1WFAvLbnFoFWl2
-         eP6FU2HGp87vWPrkPgHMeT+BCPFJzQGJwk6IhZrVnbITP65xfxpGpJ+lTAILkSMFJhJ1
-         K1FpaGljvfYaBgdgMre6loCqBMk7vV55hVjnBTinweRE5WyTMZTwcO16THuJ7iy+Jv7U
-         57VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705622564; x=1706227364;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FuVI82N8U3mum68Zeo3r0N8ktAUFrixqZFP4tV0YfIY=;
-        b=t6LdD8YeG8KsDf21KsMg9Qcq95Q1oNRhlzOr0ihxrQLZ1I6hvA2rYT9v8zd8CQDZzK
-         xZrEYBcv8HNzw1UNIjvBTUxldu7UNmqNkzk5Gn9AectUvjJ3bwhORlTChpfSdwbELsRD
-         naCAlracfmni3bX32da5sgoR6E3DrZbF9sIT8ASYSt7f77CpaF1lEZBWU8m2vRjN2iVa
-         6M0ba8j2ymWBF5myk9gOGevbKxUDF+kktpxJv3VgawdxCvIZaQigxYYXHyp/hjiiYbLR
-         C1Xd8zexdsBtJKa2Z5tAM9na8SQLWaXr8Llk+zsbyHSySgbKKQnmbO0LZ0C8puFdayFf
-         6hcQ==
-X-Gm-Message-State: AOJu0YyrtjqUWDcYW2jYEgFRKKxNHEnvJNWDInPCi8B4H8qbCGPyX8LX
-	alGU+DA2fZmkyP9PJOPvkK6QNvkAIHyuvPZQaZHPwvMtO5STDXC/
-X-Google-Smtp-Source: AGHT+IHTvP+5p5EJsvMOtO65Mw12dgFv7upmWt2R8NYaoV/i2TvLaRecMBvx+b/SXq/ew2L4vvYuQg==
-X-Received: by 2002:a05:6a20:6709:b0:19a:9973:2b22 with SMTP id q9-20020a056a20670900b0019a99732b22mr166093pzh.40.1705622562335;
-        Thu, 18 Jan 2024 16:02:42 -0800 (PST)
-Received: from localhost.localdomain (c-67-174-241-145.hsd1.ca.comcast.net. [67.174.241.145])
-        by smtp.gmail.com with ESMTPSA id a20-20020a62bd14000000b006da8f6650a2sm3833051pff.155.2024.01.18.16.02.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 16:02:41 -0800 (PST)
-From: Yang Shi <shy828301@gmail.com>
-To: jirislaby@kernel.org,
-	surenb@google.com,
-	riel@surriel.com,
-	willy@infradead.org,
-	cl@linux.com,
-	akpm@linux-foundation.org
-Cc: yang@os.amperecomputing.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: huge_memory: don't force huge page alignment on 32 bit
-Date: Thu, 18 Jan 2024 10:05:05 -0800
-Message-Id: <20240118180505.2914778-1-shy828301@gmail.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20240118133504.2910955-1-shy828301@gmail.com>
-References: <20240118133504.2910955-1-shy828301@gmail.com>
+	s=arc-20240116; t=1705619099; c=relaxed/simple;
+	bh=pXV1Phm7gXXc/IcPaGLWOcCoYm5um13/FmP8uLYS4j0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=UKcawRq7XXEUdXBokK9L1To3giFqn75e6lLXTElmNLvMpDFZzFTq+t2FKz96eXTnf6CsS+CHxdQ4Rg6MXnb/M/lb21bxD+nJrHSxJEsZ2pvfh2VcBr1OieX2yeWMDpLrbWTCaVvQFu41/dQmMDc6IYA3E+HN+Ii724YGjsMMSic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U4TRNLYO; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705619098; x=1737155098;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=pXV1Phm7gXXc/IcPaGLWOcCoYm5um13/FmP8uLYS4j0=;
+  b=U4TRNLYODtIBiHDaXdfZPGzJ3W4aHzpAqTnyiYMJeOglYnFl1pH5Uaky
+   pCI4ixdwEzGw0TFa7Tvbf9pBuRGPlqE4RTkFp27gjbdHSqg9J0pQ0ZY1u
+   JokxwAPk5ZGoi+DLics0f06ehJNviVV9ROIccpDh5jSZd/GzpPQqgzSMM
+   hTNy+KxSwcBTQ59tlF3/tzjzipOWi9fVi7Gv49Q6eJ4a0Ql57lnD6bvWg
+   q1JE56wOQUk1E6y/btOfrzsVIqGN5qAVRjSsKExdEtQsUaFqj4sL/wPqy
+   IILkA0z5op4+tTV/jCCm17UGGaQ0jcfXQqnN0Ivl1sYPaM4TwURo+ullQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7310168"
+X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
+   d="scan'208";a="7310168"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 15:04:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="784913168"
+X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
+   d="scan'208";a="784913168"
+Received: from dbhadrax-mobl5.amr.corp.intel.com (HELO [10.209.111.124]) ([10.209.111.124])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 15:04:56 -0800
+Message-ID: <29695e89ae2d838c9b7537941b0231c3ff559e48.camel@linux.intel.com>
+Subject: Re: [PATCH v4 3/7] padata: dispatch works on different nodes
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Gang Li <gang.li@linux.dev>, David Hildenbrand <david@redhat.com>, David
+ Rientjes <rientjes@google.com>, Mike Kravetz <mike.kravetz@oracle.com>,
+ Muchun Song <muchun.song@linux.dev>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ ligang.bdlg@bytedance.com
+Date: Thu, 18 Jan 2024 15:04:55 -0800
+In-Reply-To: <20240118123911.88833-4-gang.li@linux.dev>
+References: <20240118123911.88833-1-gang.li@linux.dev>
+	 <20240118123911.88833-4-gang.li@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Yang Shi <yang@os.amperecomputing.com>
+On Thu, 2024-01-18 at 20:39 +0800, Gang Li wrote:
+> When a group of tasks that access different nodes are scheduled on the
+> same node, they may encounter bandwidth bottlenecks and access latency.
+>=20
+> Thus, numa_aware flag is introduced here, allowing tasks to be
+> distributed across different nodes to fully utilize the advantage of
+> multi-node systems.
+>=20
+> Signed-off-by: Gang Li <gang.li@linux.dev>
+> Tested-by: David Rientjes <rientjes@google.com>
+> ---
+>  include/linux/padata.h |  3 +++
+>  kernel/padata.c        | 14 ++++++++++++--
+>  mm/mm_init.c           |  1 +
+>  3 files changed, 16 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/include/linux/padata.h b/include/linux/padata.h
+> index 495b16b6b4d7..f79ccd50e7f4 100644
+> --- a/include/linux/padata.h
+> +++ b/include/linux/padata.h
+> @@ -137,6 +137,8 @@ struct padata_shell {
+>   *             appropriate for one worker thread to do at once.
+>   * @max_threads: Max threads to use for the job, actual number may be le=
+ss
+>   *               depending on task size and minimum chunk size.
+> + * @numa_aware: Dispatch jobs to different nodes. If a node only has mem=
+ory but
+> + *              no CPU, dispatch its jobs to a random CPU.
 
-The commit efa7df3e3bb5 ("mm: align larger anonymous mappings on THP
-boundaries") caused two issues [1] [2] reported on 32 bit system or compat
-userspace.
+Suggest:
+Distribute jobs to different nodes with CPU in a round robin fashion.
 
-It doesn't make too much sense to force huge page alignment on 32 bit
-system due to the constrained virtual address space.
-
-[1] https://lore.kernel.org/linux-mm/d0a136a0-4a31-46bc-adf4-2db109a61672@kernel.org/
-[2] https://lore.kernel.org/linux-mm/CAJuCfpHXLdQy1a2B6xN2d7quTYwg2OoZseYPZTRpU0eHHKD-sQ@mail.gmail.com/
-
-Fixes: efa7df3e3bb5 ("mm: align larger anonymous mappings on THP boundaries")
-Reported-by: Jiri Slaby <jirislaby@kernel.org>
-Reported-by: Suren Baghdasaryan <surenb@google.com>
-Tested-by: Jiri Slaby <jirislaby@kernel.org>
-Tested-by: Suren Baghdasaryan <surenb@google.com>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Christopher Lameter <cl@linux.com>
-Signed-off-by: Yang Shi <yang@os.amperecomputing.com>
----
- mm/huge_memory.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 94ef5c02b459..66adecdc509b 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -37,6 +37,7 @@
- #include <linux/page_owner.h>
- #include <linux/sched/sysctl.h>
- #include <linux/memory-tiers.h>
-+#include <linux/compat.h>
- 
- #include <asm/tlb.h>
- #include <asm/pgalloc.h>
-@@ -811,6 +812,9 @@ static unsigned long __thp_get_unmapped_area(struct file *filp,
- 	loff_t off_align = round_up(off, size);
- 	unsigned long len_pad, ret;
- 
-+	if (IS_ENABLED(CONFIG_32BIT) || in_compat_syscall())
-+		return 0;
-+
- 	if (off_end <= off_align || (off_end - off_align) < size)
- 		return 0;
- 
--- 
-2.41.0
+>   */
+>  struct padata_mt_job {
 
 
