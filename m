@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-30336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D80D7831D47
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F87F831D4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:13:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC82CB212F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:13:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30560B219BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD1C12C18D;
-	Thu, 18 Jan 2024 16:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8692C1A6;
+	Thu, 18 Jan 2024 16:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="C8hFoY+4"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Msi9eP5w"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0C728DCC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3419F25601;
 	Thu, 18 Jan 2024 16:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705594381; cv=none; b=C66UzCMVMNNq005Qy49QG3pRZJdoegfYUh4TuXV4UXcuoii+AvwAMfufq3R4WxWtY2izSy4QcwimPalYKxjhqmxzYbSDfrnywZ3jzxZfXca3Aq+Og+dOSVhT00nWgmqf9NswLjZoAJeRuirzTbTxzLZotww886qGwZs214Stags=
+	t=1705594381; cv=none; b=e05t8OvGCYLGLzkDOcTlPwTAoKyHO2YmPIPF8YN4KUF3a3dUomTSN9GaTR1B3Sk+yiOa8biWTpOCppMvP+wingaHYdeUL2bqzHWyiz9+0IyaKtI2qK94BLzh3DFAgI/+DG8tyr5lK7K+rAjN6uMcLssE5OjY+JbaT9DyI7NqaE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705594381; c=relaxed/simple;
-	bh=f+eTMaKSC+t3FO/LTKXXvfC1BOCOZCJ7SjfzxwGpx5g=;
-	h=Received:DKIM-Signature:Received:Received:Received:From:Subject:
-	 Date:Message-ID:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-B4-Tracking:To:CC:X-Mailer:
-	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=n8FqA34T92RuK0fNHWgdaogIdFz7+GQsChQZ30upHYJ446jA0jpfu8DRKovlJHj+Gc5CfeRXvpJ4AF6Ig1ua3mzD/VTKfT0P+4pnqW/++YMhvh6zltPG87/hB6mGGZIuKEzCaJ9BKb4BtDmVXS6HobwsgOxtB22rtffU5XsK8jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=C8hFoY+4; arc=none smtp.client-ip=205.220.168.131
+	bh=UaegHqzX5s0SorZ1zzjatlZtZ0VpqIy7gdI3iiJrVCc=;
+	h=Received:DKIM-Signature:Received:Received:Received:From:Date:
+	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 Message-ID:References:In-Reply-To:To:CC:X-Mailer:X-Originating-IP:
+	 X-ClientProxiedBy:X-QCInternal:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=K316AzyWE5YGmfF95zK8Thbyc8WT1dOk3pJIyEd4ZzkIRd9Zll3CF59VVrYiGmwniY2Nc+PdFNT6ZiBGnEGhjEAh6cIuCgeNKUVg2prHhqVdoZatLftC/7DXyojZNUYnOcAEXXTGXueN4tT2VpL1j9QnCqNru6pDBAUNCvVXjyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Msi9eP5w; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40IC3pB8030883;
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40IFt73j005152;
 	Thu, 18 Jan 2024 16:12:56 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:subject:date:message-id:mime-version:content-type
-	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=cwOBLhodr8CT44
-	XbrWbGzF7SdmbNPrU3iBPGctfl20U=; b=C8hFoY+4MqjnKrMiWjEhIGBjMN/QI3
-	OIi0RlZ7gwjdVhy3/c6aPrWnWbkHcg61t8T6jK4cEk38vDfRSv/PTvWsUnyNBxC/
-	PnSxvhPoF9pkvhbHJqfMaKWfYoH7nOK0q6Gb7i9uTHOfaaTMre2dEjdnUdAk3WDH
-	MDqU+d4oA4pqUPWb2KZtb7uvWDUAtJIvD+fQL/fJA6epai/Ji6ZgcALlWPUnn0/C
-	mUGVV98v9b7momstRQlshiot0on4gSalr90rBGbTXK9x2L7FQ3Btka6eSsdzYTxi
-	kHKVg1DI5xToqTstD6KDB7w4GzP09Pysk/1Lz46NpJ4FsRomy/buaDKA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vq3ns8hyv-1
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:references:in-reply-to:to
+	:cc; s=qcppdkim1; bh=RzUk4+HXKrHL5KZwlScT2HafLHWcYPazTpGyCwMmxe8
+	=; b=Msi9eP5w2IVo+RtDoYZueuxZ8cFgafntdQMxZapBSzHyKKmtUQCDcWFQUmC
+	8a8ZoA1aGwVHtw5u1+7Ea7z5WLhhvFflA9FnPPqGFkXkpowaG/hQjCCneVvun4QI
+	Sh+cEokZmaJFiB8JjhqSlDvx50/qru1YDHuukKBJ9a8UCV+tBWqYeFO1+ABCJZNU
+	Mx3xvmxJrM2ydOMDsdqgX2pPQYsM/tYB0FRSjcLqhPwKZb73N26zFiDy4JGRru0N
+	FSsGVzsjf1UeZJlzhnWP8S9j+JeplEQAzbQ4a/aoYR5Qrrv3LJIRdwt2SQj4AsTv
+	g5tVc5BOa1zCAGs3lN4e7+ak4QA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vq5qrg8qv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 18 Jan 2024 16:12:55 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40IGCtkE013165
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40IGCtin026673
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 18 Jan 2024 16:12:55 GMT
 Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
  (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 18 Jan
- 2024 08:12:54 -0800
+ 2024 08:12:55 -0800
 From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Subject: [PATCH 0/5] wifi: ath10k: fix ath10k kerneldoc issues
-Date: Thu, 18 Jan 2024 08:12:52 -0800
-Message-ID: <20240118-ath10k-kerneldoc-v1-0-99c7e8d95aad@quicinc.com>
+Date: Thu, 18 Jan 2024 08:12:53 -0800
+Subject: [PATCH 1/5] wifi: ath10k: add missing wmi_10_4_feature_mask
+ documentation
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,10 +71,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAROqWUC/2WNQQ6CMBBFr0JmbU2nNK248h6GBZZBJmiLLRIN4
- e5WElcu30v++wskikwJjsUCkWZOHHwG3BXg+sZfSXCbGZRUWiIa0Uw9ykEMFD3d2uCEwbY0pC/
- opIY8GyN1/NqS5zpzz2kK8b09zPi1v5j9j80opMDqYG1nlSl1dXo82bF3exfuUK/r+gERV8l+s
- gAAAA==
+Message-ID: <20240118-ath10k-kerneldoc-v1-1-99c7e8d95aad@quicinc.com>
+References: <20240118-ath10k-kerneldoc-v1-0-99c7e8d95aad@quicinc.com>
+In-Reply-To: <20240118-ath10k-kerneldoc-v1-0-99c7e8d95aad@quicinc.com>
 To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
 CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
@@ -83,35 +82,59 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 93Gyjc2qukGWbjyt2k9mvrhAkOV4tFLZ
-X-Proofpoint-ORIG-GUID: 93Gyjc2qukGWbjyt2k9mvrhAkOV4tFLZ
+X-Proofpoint-GUID: UmK_HaZsNYcE7DMirE1UMAT4u9DyUtJh
+X-Proofpoint-ORIG-GUID: UmK_HaZsNYcE7DMirE1UMAT4u9DyUtJh
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-18_08,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 mlxlogscore=562 phishscore=0 clxscore=1015 lowpriorityscore=0
- mlxscore=0 spamscore=0 malwarescore=0 suspectscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401180118
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1015 malwarescore=0
+ phishscore=0 mlxlogscore=610 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2401180118
 
-With this series applied there are no kernel-doc issues in ath10k
-(ath11k and ath12k have already been previously fixed).
+Currently kernel-doc reports the following issues:
+drivers/net/wireless/ath/ath10k/wmi.h:3033: warning: Enum value 'WMI_10_4_EXT_PEER_TID_CONFIGS_SUPPORT' not described in enum 'wmi_10_4_feature_mask'
+drivers/net/wireless/ath/ath10k/wmi.h:3033: warning: Enum value 'WMI_10_4_REPORT_AIRTIME' not described in enum 'wmi_10_4_feature_mask'
 
+Update the kernel-doc for enum wmi_10_4_feature_mask to add the
+missing documentation.
+
+No functional changes, compile tested only.
+
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 ---
-Jeff Johnson (5):
-      wifi: ath10k: add missing wmi_10_4_feature_mask documentation
-      wifi: ath10k: correctly document enum wmi_tlv_tx_pause_id
-      wifi: ath10k: fix htt_q_state_conf & htt_q_state kernel-doc
-      wifi: ath10k: Fix htt_data_tx_completion kernel-doc warning
-      wifi: ath10k: Fix enum ath10k_fw_crash_dump_type kernel-doc
+ drivers/net/wireless/ath/ath10k/wmi.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
- drivers/net/wireless/ath/ath10k/coredump.h |  8 ++++++--
- drivers/net/wireless/ath/ath10k/htt.h      | 12 ++++++++----
- drivers/net/wireless/ath/ath10k/wmi-tlv.h  |  4 ++--
- drivers/net/wireless/ath/ath10k/wmi.h      |  7 +++++--
- 4 files changed, 21 insertions(+), 10 deletions(-)
----
-base-commit: c1938548bbeed6fcce8fa6e4de9f694994efcc42
-change-id: 20240116-ath10k-kerneldoc-61d36e4b1c04
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index b64b6e214bae..2379501225a4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -3,7 +3,7 @@
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
+  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+- * Copyright (c) 2021-2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+ 
+ #ifndef _WMI_H_
+@@ -3008,8 +3008,11 @@ enum wmi_coex_version {
+  * @WMI_10_4_TDLS_UAPSD_SLEEP_STA: TDLS sleep sta support enable/disable
+  * @WMI_10_4_TDLS_CONN_TRACKER_IN_HOST_MODE: TDLS connection tracker in host
+  *	enable/disable
+- * @WMI_10_4_TDLS_EXPLICIT_MODE_ONLY:Explicit TDLS mode enable/disable
++ * @WMI_10_4_TDLS_EXPLICIT_MODE_ONLY: Explicit TDLS mode enable/disable
+  * @WMI_10_4_TX_DATA_ACK_RSSI: Enable DATA ACK RSSI if firmware is capable
++ * @WMI_10_4_EXT_PEER_TID_CONFIGS_SUPPORT:  Firmware supports Extended Peer
++ *	TID configuration for QoS related settings
++ * @WMI_10_4_REPORT_AIRTIME: Firmware supports transmit airtime reporting
+  */
+ enum wmi_10_4_feature_mask {
+ 	WMI_10_4_LTEU_SUPPORT			= BIT(0),
+
+-- 
+2.42.0
 
 
