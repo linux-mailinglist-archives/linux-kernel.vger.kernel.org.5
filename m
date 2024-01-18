@@ -1,78 +1,79 @@
-Return-Path: <linux-kernel+bounces-30510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9487D831FA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:24:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08B88831FA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C83FB1C23793
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:24:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B32621F25319
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E12D2E840;
-	Thu, 18 Jan 2024 19:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554E62EB04;
+	Thu, 18 Jan 2024 19:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="v1RVh8N+";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="l5HNtTYm"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="D7SFWs5M";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bkTD2YfB"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBCB2E641;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31E72E648;
 	Thu, 18 Jan 2024 19:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705605842; cv=none; b=GxMF9VuJ9laSe/SNcHHDeAyfSH7YZZCWGz3RY9y20qhrfOg6frVW0dvOgbXPV+lS56f+2M19x0SDz49Vg9khLkyp32wAPquR3sgc2VJw80fWesWjNAKkztLivEbN4RiQRd05McOAdfTkxkHPZiOY0Yt63V0A6XcBkBKhcGLwF/o=
+	t=1705605843; cv=none; b=W/DjtRsv3piqIQUJwt7aYTarmFLyylyLGlVcth9PPBVzuG5TK6fdyevKHQybF/+CiEUVK4DpRweuwteJewOQ7Rj2SMHBfJdPSMof04EUOm4FCx9p2g4krLBf3Xha3B+Olf33c4nFNvd6fhRHcAK7g7MXePeK3c6tCOFe0xTtwbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705605842; c=relaxed/simple;
-	bh=IQQtFURNvODIyaNvAuKT7JPni73b4s8l2TDrTyHUN08=;
+	s=arc-20240116; t=1705605843; c=relaxed/simple;
+	bh=tStS/B9KG5gGvBnwX+gfx5AY4hhqpHpzIKSg9h1csDA=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=dVR7Wk/ltRwXy4xgbaP9QOm5wITx7nhkHEVjWafY3lEH0mi61u8JysmrtU3eVJ/gsqq+aKb4FoO6LWRbmEv9Q7QT18DAt73Npk+6BJXOkGTe5CwUtj2alhv7lpzJ1gNNwTO7i0pHti2USYEp7I2Lk+Gobo9gKZaXc6AzEKMuF3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=v1RVh8N+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=l5HNtTYm; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=iergX2sN8Y3gFPCKDDBz8a5YfhbD5I8qjXi2+NDr8vWUCdWza5Cmh7LH3mKAuWlXlcpKoTu01Lmi3D6FKoa5qcvuuFWKc5vrNLDczraQ4wrlpOc27ePHksheHZ4boOhdbLcCXyz80AdTzNTTYqWUyqHr5lRWSKUpbD81ENr87ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=D7SFWs5M; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bkTD2YfB; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 18 Jan 2024 19:23:58 -0000
+Date: Thu, 18 Jan 2024 19:23:59 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705605839;
+	s=2020; t=1705605840;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xnIpWqev2LgwO8Ow1GD+t6pP0ociRd6H33tAplbXrUk=;
-	b=v1RVh8N+ZiGCtAGsO4yxoeGJyWHEJrIywhLLcvlCxA2lOLNifcCrTdGi9nb786xgvQeR7E
-	RDJ71FNz36JevSDJjmAh/U0oQTE1HbVwa09E3qZ3uxb37Q39v01v34gMjMYCNh1u64iSHe
-	TIkBV4nEvCdg6QgKaOVvm9Zvg5rXjY3g2cmuQnWr265E/qhUF9A5e5YVV0fajuHhtocYvM
-	VjyITKQ1BtN4X4Zwmxk+DpaR9qM/b5mC15fg6+4OFCygZieVWVIPfWY+fpNBKChLSeBUKu
-	6Y5x/YZjuDiEpIR+CIg7II2m9nKUghQYQmwqgU0O8NTLzS6Z5Fre3+4ySDP+BA==
+	bh=Za10UEWMH8hZGiBS4E3s+Ih2vBf/Xgtyr/VdgtySCYI=;
+	b=D7SFWs5MsG1J13BlS1ywykXvzLiAdm0aYfpf1qg+Wn1IOy3DEL3jIBy7kzFXBHybdPXTzf
+	nk8cVwGQpOd0QaMZq7ZXyIOKJAMIWKvTk4X2gpNhIXjfHdut5NYJ3DpS2eL7HLblqHwEl1
+	CQa3ZkSAfBlLF6oPulHVM8hsscZm5wp7bJBKspNnAdJOElBcV4yU+LKt1/QfVuFe6VJX9W
+	FWgOFNhV7uaOpLhwiYIcfil4Z9j2eZ1HUx24Xa5k+5WbSMVeoFHAb8pC5/W5THRtjX86JD
+	GBYALtdJKcqlsJmKvtbtJWpeLvlvsfJSQNhC5NTGIGWmv0cXBPcsk147Pqdcdg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705605839;
+	s=2020e; t=1705605840;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xnIpWqev2LgwO8Ow1GD+t6pP0ociRd6H33tAplbXrUk=;
-	b=l5HNtTYmSueFVepDrpX9uvpC77E617HsQX/jfGvHznnv6H85SkJ/84hFAvS6UGV1Ms6GiW
-	jHwX1+dBF7iFQ9Aw==
-From: "tip-bot2 for Joshua Yeong" <tip-bot2@linutronix.de>
+	bh=Za10UEWMH8hZGiBS4E3s+Ih2vBf/Xgtyr/VdgtySCYI=;
+	b=bkTD2YfBVWejomP/fGcy0T/sEv1EgXy/8a6Xm+xF2bEcKJM3NREgXNheax6UVUvtFf7cxf
+	DjV8U9vRYJ3PqXCw==
+From: "tip-bot2 for Sia Jee Heng" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: timers/core] clocksource/timer-riscv: Add riscv_clock_shutdown callback
-Cc: Joshua Yeong <joshua.yeong@starfivetech.com>,
- Anup Patel <anup@brainfault.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231116105312.4800-1-joshua.yeong@starfivetech.com>
-References: <20231116105312.4800-1-joshua.yeong@starfivetech.com>
+Subject: [tip: timers/core] dt-bindings: timer: Add StarFive JH8100 clint
+Cc: Sia Jee Heng <jeeheng.sia@starfivetech.com>,
+ Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20231201121410.95298-4-jeeheng.sia@starfivetech.com>
+References: <20231201121410.95298-4-jeeheng.sia@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170560583897.398.3924693885126380500.tip-bot2@tip-bot2>
+Message-ID: <170560583956.398.10075614859421009889.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -82,48 +83,36 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     6a902b118e7f30dbf0e6248f7b0f97e12c0939c3
-Gitweb:        https://git.kernel.org/tip/6a902b118e7f30dbf0e6248f7b0f97e12c0939c3
-Author:        Joshua Yeong <joshua.yeong@starfivetech.com>
-AuthorDate:    Thu, 16 Nov 2023 18:53:12 +08:00
+Commit-ID:     e0cf60151e6317c654c42ba0e8b1fb6ff477489a
+Gitweb:        https://git.kernel.org/tip/e0cf60151e6317c654c42ba0e8b1fb6ff477489a
+Author:        Sia Jee Heng <jeeheng.sia@starfivetech.com>
+AuthorDate:    Fri, 01 Dec 2023 20:14:07 +08:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
 CommitterDate: Wed, 27 Dec 2023 15:37:11 +01:00
 
-clocksource/timer-riscv: Add riscv_clock_shutdown callback
+dt-bindings: timer: Add StarFive JH8100 clint
 
-Add clocksource detach/shutdown callback to disable RISC-V timer interrupt when
-switching out riscv timer as clock source
+Add compatible string for the StarFive JH8100 clint.
 
-Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
-Reviewed-by: Anup Patel <anup@brainfault.org>
+Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20231116105312.4800-1-joshua.yeong@starfivetech.com
+Link: https://lore.kernel.org/r/20231201121410.95298-4-jeeheng.sia@starfivetech.com
 ---
- drivers/clocksource/timer-riscv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/devicetree/bindings/timer/sifive,clint.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
-index 57857c0..e66dcbd 100644
---- a/drivers/clocksource/timer-riscv.c
-+++ b/drivers/clocksource/timer-riscv.c
-@@ -61,12 +61,19 @@ static int riscv_clock_next_event(unsigned long delta,
- 	return 0;
- }
- 
-+static int riscv_clock_shutdown(struct clock_event_device *evt)
-+{
-+	riscv_clock_event_stop();
-+	return 0;
-+}
-+
- static unsigned int riscv_clock_event_irq;
- static DEFINE_PER_CPU(struct clock_event_device, riscv_clock_event) = {
- 	.name			= "riscv_timer_clockevent",
- 	.features		= CLOCK_EVT_FEAT_ONESHOT,
- 	.rating			= 100,
- 	.set_next_event		= riscv_clock_next_event,
-+	.set_state_shutdown	= riscv_clock_shutdown,
- };
- 
- /*
+diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+index e8be6c4..0125426 100644
+--- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
++++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+@@ -33,6 +33,7 @@ properties:
+               - sifive,fu540-c000-clint # SiFive FU540
+               - starfive,jh7100-clint   # StarFive JH7100
+               - starfive,jh7110-clint   # StarFive JH7110
++              - starfive,jh8100-clint   # StarFive JH8100
+           - const: sifive,clint0        # SiFive CLINT v0 IP block
+       - items:
+           - enum:
 
