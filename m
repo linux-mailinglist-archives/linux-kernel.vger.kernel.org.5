@@ -1,109 +1,138 @@
-Return-Path: <linux-kernel+bounces-30043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFDB883183D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:14:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E684831848
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:15:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0B90289606
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:14:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70C131C250ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2152377A;
-	Thu, 18 Jan 2024 11:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7AC241FF;
+	Thu, 18 Jan 2024 11:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OzcIPV/g"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="RDlOUNNR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E208822068;
-	Thu, 18 Jan 2024 11:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C3123760;
+	Thu, 18 Jan 2024 11:15:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705576466; cv=none; b=YDb8ddgz6PTZKWSseTWw7doRHEfveldetryEKyK1/TGVAhn1ZiRWvfSP003NJWX9RE4m8/bYxe+pHhPw0MJ8xgyuze3o7ecZgVMwFkQLHPvv/xbOYEYkheDkAF3LCtjvfA1rVuq5mMCNX4lgbWugKSNC2Sq+yML4sZNDrfkQhv4=
+	t=1705576530; cv=none; b=nB3fJEDyLjZzzsZS6iRyHD+rLkbR0nJLCAwtNdcw/aarR1PqvUBcADcJeNcL76q8ctnkwec7Bt65BVtV0PiCJz7umebKJ5Z7+iq6Krk0IdVpdQv+wvfHfCVIPNdIyTtT9Vw70thfq5VLh4iIY9ZPITEtMEClHWBB7mPsWhZI4Io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705576466; c=relaxed/simple;
-	bh=BkzJYAYQgD2+iSXa+2q/zYdRmPKlL7wyGiHR8aVNN4g=;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:References:Date:
-	 In-Reply-To:Message-ID:User-Agent:MIME-Version:Content-Type; b=qxpZSIUyPM9qT8EN/Uuf/FS12MsAP0+RmmZ/F1oX4b5wqYmeJ9cmgDYaVOSymlhOwZO79YTimBBREj9RXCoKtq4SYLnM7WzWh+y2fy70nNl4JozN6GId6oRGmoOqP9QgowVhz9WC1xMZ///hVvZV+0f3LNppL4m0UeoPy4ePHOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OzcIPV/g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 250BCC433F1;
-	Thu, 18 Jan 2024 11:14:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705576465;
-	bh=BkzJYAYQgD2+iSXa+2q/zYdRmPKlL7wyGiHR8aVNN4g=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=OzcIPV/gWl6CabGnDEMnseP1mKLqiGDBskbxq0RxpBZvS0ZCi7NXpzAfovpNFOn5z
-	 PlgFwuOxYc5HCboVmBC9a4sbslrzg2Byedi7cvYX413GkmDC1GyvtkY7kgFSMQZoKq
-	 qNYeJO7fOj6J6xRuV8Q61qWUCpkCGBSvvI+gxNzYUn0Lzp9A7X9MdpsNA21fxHpBm6
-	 J3lHLDvutO+OJ2qbIAQ6YL1rHZPi5wDmYSEtZkxVpZZCHTuF3UxCnsapRYkbzOuISf
-	 m54biY+Qc+5HaDB0gnvQZDveAC7cdmudFriG9XH5X9q0EKatpqsGk6R0OYPyUds/6C
-	 gUsnEfVSdgXPQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: "Nicolas Escande" <nico.escande@gmail.com>
-Cc: "Jeff Johnson" <quic_jjohnson@quicinc.com>,
-  <linux-wireless@vger.kernel.org>,  <linux-kernel@vger.kernel.org>,
-  <ath11k@lists.infradead.org>
-Subject: Re: [PATCH] wifi: ath11k: fix layout of scan_flags in struct
- scan_req_params
-References: <20231127180559.1696041-1-nico.escande@gmail.com>
-	<bdcdbd06-e9bd-4a92-b27b-d94b2d8fb52d@quicinc.com>
-	<CX9YPUDTAT1N.23DMRB5O9FEAO@gmail.com>
-	<20c7a367-2243-4e13-b023-9999dc6c6790@quicinc.com>
-	<CXC03GYAN4VN.2PQ88Q1S7IL6H@gmail.com>
-	<CYFAYRP5MWTZ.Q272WWLLE7MW@gmail.com>
-Date: Thu, 18 Jan 2024 13:14:22 +0200
-In-Reply-To: <CYFAYRP5MWTZ.Q272WWLLE7MW@gmail.com> (Nicolas Escande's message
-	of "Mon, 15 Jan 2024 14:09:28 +0100")
-Message-ID: <871qae51wx.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1705576530; c=relaxed/simple;
+	bh=w0FBrm4sVu/DLk+0aSDbplyxxPuYJ1uOLaE9EFkd7dc=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To; b=ou3syrqEV/+QTF+prdRg8op3aF4sQxlCpDwkGLaJmIVA3NBj5BiRoY+mlwhgvbuHqfy611o7vLb+KHw7kmpKTpNczxJplDflwzp/B/hAhC9OJNrGls/C/2LW1fO/d+dM9NNd+d1Nug6KDKUYay+XMrC93dBW7Ud5wrNuRLmcR/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=RDlOUNNR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67825C433F1;
+	Thu, 18 Jan 2024 11:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1705576529;
+	bh=w0FBrm4sVu/DLk+0aSDbplyxxPuYJ1uOLaE9EFkd7dc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RDlOUNNRGsPbYHC1L726WS5dkr3VOCBjd+MqAQ3JUuhv4MGJkXgYEYB+5YyQ6MDp6
+	 NB6nu7QYWRq3V7fuP2fZxIS74bHee+zZbKSxRibWClXO4RxoPVbNRHIvtWjRA0ba7D
+	 gXUqRp/5zTN7aJpa6bWv04Guwid8cuyD5nfl4a9Y=
+Date: Thu, 18 Jan 2024 12:15:27 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	=?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado <nfraprado@collabora.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Peng Fan <peng.fan@nxp.com>, Robert Richter <rrichter@amd.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Terry Bowman <terry.bowman@amd.com>, Lukas Wunner <lukas@wunner.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Abel Vesa <abel.vesa@linaro.org>, linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 4/9] PCI: create platform devices for child OF nodes of
+ the port node
+Message-ID: <2024011836-wok-treadmill-c517@gregkh>
+References: <20240117160748.37682-1-brgl@bgdev.pl>
+ <20240117160748.37682-5-brgl@bgdev.pl>
+ <2024011707-alibi-pregnancy-a64b@gregkh>
+ <CAMRc=Mef7wxRccnfQ=EDLckpb1YN4DNLoC=AYL8v1LLJ=uFH2Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Mef7wxRccnfQ=EDLckpb1YN4DNLoC=AYL8v1LLJ=uFH2Q@mail.gmail.com>
 
-"Nicolas Escande" <nico.escande@gmail.com> writes:
+On Thu, Jan 18, 2024 at 11:58:50AM +0100, Bartosz Golaszewski wrote:
+> On Wed, Jan 17, 2024 at 5:45 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Jan 17, 2024 at 05:07:43PM +0100, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > In order to introduce PCI power-sequencing, we need to create platform
+> > > devices for child nodes of the port node.
+> >
+> > Ick, why a platform device?  What is the parent of this device, a PCI
+> > device?  If so, then this can't be a platform device, as that's not what
+> > it is, it's something else so make it a device of that type,.
+> >
+> 
+> Greg,
+> 
+> This is literally what we agreed on at LPC. In fact: during one of the
+> hall track discussions I said that you typically NAK any attempts at
+> using the platform bus for "fake" devices but you responded that this
+> is what the USB on-board HUB does and while it's not pretty, this is
+> what we need to do.
 
-> On Thu Nov 30, 2023 at 9:24 AM CET, Nicolas Escande wrote:
->> On Tue Nov 28, 2023 at 1:57 AM CET, Jeff Johnson wrote:
->> > On 11/27/2023 2:54 PM, Nicolas Escande wrote:
->> [...]
->> > > So either we should not use WMI_SCAN_XXX with scan_req_params.scan_flags ever
->> > > and only use the bitfield to set scan parameters or if we use WMI_SCAN_XXX with
->> > > scan_req_params.scan_flags they need to match the corresponding bitfield.
->> >
->> > IMO the correct thing to do is to remove the unions from that struct and
->> > only leave behind the bitfields and not use the WMI_SCAN_XXX masks
->> > except when filling the firmware structure.
->> >
->> > But don't spin an update to your patches until Kalle has a chance to
->> > give his opinion. I'm new to maintaining these drivers and Kalle may
->> > have a different opinion on this.
->> >
->> > /jeff
->>
->> No problem, I'll wait for Kalle's input on this before doing anything.
->> As soon as we decide which way is the right way, I'll work on this. I only care
->> that this gets resolved.
->
-> Hi Kalle/Jeff,
->
-> Any new input on this so I can move forward on fixing this ?
+Ah, you need to remind me of these things, this changelog was pretty
+sparse :)
 
-Sorry, too many patches...
+> Now as for the implementation, the way I see it we have two solutions:
+> either we introduce a fake, top-level PCI slot platform device device
+> that will reference the PCI host controller by phandle or we will live
+> with a secondary, "virtual" platform device for power sequencing that
+> is tied to the actual PCI device. The former requires us to add DT
+> bindings, add a totally fake DT node representing the "slot" which
+> doesn't really exist (and Krzysztof already expressed his negative
+> opinion of that) and then have code that will be more complex than it
+> needs to be. The latter allows us to not change DT at all (other than
+> adding regulators, clocks and GPIOs to already existing WLAN nodes),
+> reuse the existing parent-child relationship between the port node and
+> the instantiated platform device as well as result in simpler code.
+> 
+> Given that DT needs to be stable while the underlying C code can
+> freely change if we find a better solution, I think that the second
+> option is a no-brainer here.
 
-> Otherwise I think I'll end up going on with Jeff's proposal of only using the
-> bitfield for intra driver representation & then converting the bitfields to
-> their corresponding WMI_SCAN_XXX when transmiting the req to the hw with wmi.
+Ok, I remove my objections, sorry about that, my confusion.
 
-Yeah, I only took a quick glimpse but Jeff's proposal does make sense.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+greg k-h
 
