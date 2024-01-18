@@ -1,46 +1,81 @@
-Return-Path: <linux-kernel+bounces-30320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3051831D0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:57:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36180831D18
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:59:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 713CF1F227E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:57:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5E331F2404C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E5C28DC5;
-	Thu, 18 Jan 2024 15:57:32 +0000 (UTC)
-Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [104.156.224.86])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6698E28DC8;
+	Thu, 18 Jan 2024 15:59:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SWDlR3Ix";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SWDlR3Ix"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2F528DAB
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 15:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.156.224.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42EB29431
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 15:59:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705593452; cv=none; b=Y1cXrhZk0OxkHrWY021XsyZMqU9qSWvXIfi4KWs0zcAXbVGH7QQ0OLvmOSdo4Dj0utF+pTG5XI2aCatFHOaa+cfszUnRxZfEb0WIVgMxgsTy6+eWBkcdh/4bdL6tIAVM/V8Tqd5/RjF6tAuf3J8rx1HI2mHnoI7RDtnBHGUxKuc=
+	t=1705593571; cv=none; b=t5yIA1Ww2hFIVadXxT8p1sxGaj0PlcMCZeIOlGUAT/yv2vnX7wGnblt/ThFcoBUq2bIiiW6wNLnIneTmzU0WxAeIDicxCOV3So1NyxIGXCcKtwtaUxb9vmmGxWxbWstnOnuOv3+iuV66XU//zYEPl5+RY02vvmWSTyOV1nJXGyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705593452; c=relaxed/simple;
-	bh=IRyQeRsTU4B2bpwbcSVi8B83C3AiwhoAZyPmEFIonTo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To:User-Agent; b=crc3QTS9M1TXh1keSz3v6jEhi551eKnVRFyIc8sXr7XDjsM/ER+WY6XV/AagSaxclMGTupNLqO5AUH3mVrHwUqdGdk1IjyEGjkM4ywh9ekQKMvOLPoQp7hvuq2aHrKhVmURvxZjtoI3zqLctyP9T6wD/r7ZkE/EoNMo7GMnaOLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org; spf=pass smtp.mailfrom=libc.org; arc=none smtp.client-ip=104.156.224.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libc.org
-Date: Thu, 18 Jan 2024 10:57:37 -0500
-From: Rich Felker <dalias@libc.org>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Jann Horn <jannh@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	kernel list <linux-kernel@vger.kernel.org>,
-	Linux API <linux-api@vger.kernel.org>,
-	Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH v2] vfs: add RWF_NOAPPEND flag for pwritev2
-Message-ID: <20240118155735.GS22081@brightrain.aerifal.cx>
-References: <20200831153207.GO3265@brightrain.aerifal.cx>
- <CAG48ez39WNuoxYO=RaW5OeVGSOy=uEAZ+xW_++TP7yjkUKGqkg@mail.gmail.com>
- <a9d26744-ba7a-2223-7284-c0d1a5ddab8a@kernel.dk>
+	s=arc-20240116; t=1705593571; c=relaxed/simple;
+	bh=b3F8Pn1IX2EFCVN+dNYbhJ5u14FxiHhv1zos8u5icrI=;
+	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-Spam-Level:X-Rspamd-Server:
+	 X-Spamd-Result:X-Spam-Score:X-Rspamd-Queue-Id:X-Spam-Flag; b=b1bn0u0WP0rbt41vVWsN4miwkyYjwdbEPbp1nfYPmDP4vhiN8+VcIEXNzsDBaEGZJLAzqdVvnRSFVKcK5OiHK0fQgZw+QpzPUNroc9l6S8OAADWZEpEz87UaNpGuvPw1mvs+d64cJGOSJhac9NKa5FNSP8ijTrLXUw9QbKHhSzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SWDlR3Ix; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SWDlR3Ix; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 897801F78C;
+	Thu, 18 Jan 2024 15:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705593567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FL1eaVL1w8UaNCASvpod4Ss19US2yAmpTSN74Ny5W+M=;
+	b=SWDlR3IxAI/6JPFUk/Lb+u+Z3y7881rmXAJv+4Q0Mc8Gc5pMNFjLztkCdz8ifk5VZ6zSZe
+	68VizPMymw2RW/BKU/BMeYGq2vtJVFi+5EiQ+4uuVjuzZNgt8a7asVt6YmgZXmsSqhFciQ
+	CmaICoSY85/ERTJ+KtTkG2+3NxwJRk4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705593567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FL1eaVL1w8UaNCASvpod4Ss19US2yAmpTSN74Ny5W+M=;
+	b=SWDlR3IxAI/6JPFUk/Lb+u+Z3y7881rmXAJv+4Q0Mc8Gc5pMNFjLztkCdz8ifk5VZ6zSZe
+	68VizPMymw2RW/BKU/BMeYGq2vtJVFi+5EiQ+4uuVjuzZNgt8a7asVt6YmgZXmsSqhFciQ
+	CmaICoSY85/ERTJ+KtTkG2+3NxwJRk4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7346713874;
+	Thu, 18 Jan 2024 15:59:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id a2YpGd9KqWXSOQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 18 Jan 2024 15:59:27 +0000
+Date: Thu, 18 Jan 2024 16:59:26 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, ryan.roberts@arm.com,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2] mm: memory: move mem_cgroup_charge() into
+ alloc_anon_folio()
+Message-ID: <ZalK3suIskEyaR7m@tiehlicka>
+References: <20240117103954.2756050-1-wangkefeng.wang@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,42 +84,141 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a9d26744-ba7a-2223-7284-c0d1a5ddab8a@kernel.dk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20240117103954.2756050-1-wangkefeng.wang@huawei.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=SWDlR3Ix
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-5.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -5.51
+X-Rspamd-Queue-Id: 897801F78C
+X-Spam-Flag: NO
 
-On Mon, Aug 31, 2020 at 11:05:34AM -0600, Jens Axboe wrote:
-> On 8/31/20 9:46 AM, Jann Horn wrote:
-> > On Mon, Aug 31, 2020 at 5:32 PM Rich Felker <dalias@libc.org> wrote:
-> >> The pwrite function, originally defined by POSIX (thus the "p"), is
-> >> defined to ignore O_APPEND and write at the offset passed as its
-> >> argument. However, historically Linux honored O_APPEND if set and
-> >> ignored the offset. This cannot be changed due to stability policy,
-> >> but is documented in the man page as a bug.
-> >>
-> >> Now that there's a pwritev2 syscall providing a superset of the pwrite
-> >> functionality that has a flags argument, the conforming behavior can
-> >> be offered to userspace via a new flag. Since pwritev2 checks flag
-> >> validity (in kiocb_set_rw_flags) and reports unknown ones with
-> >> EOPNOTSUPP, callers will not get wrong behavior on old kernels that
-> >> don't support the new flag; the error is reported and the caller can
-> >> decide how to handle it.
-> >>
-> >> Signed-off-by: Rich Felker <dalias@libc.org>
-> > 
-> > Reviewed-by: Jann Horn <jannh@google.com>
-> > 
-> > Note that if this lands, Michael Kerrisk will probably be happy if you
-> > send a corresponding patch for the manpage man2/readv.2.
-> > 
-> > Btw, I'm not really sure whose tree this should go through - VFS is
-> > normally Al Viro's turf, but it looks like the most recent
-> > modifications to this function have gone through Jens Axboe's tree?
+On Wed 17-01-24 18:39:54, Kefeng Wang wrote:
+> mem_cgroup_charge() uses the GFP flags in a fairly sophisticated way.
+> In addition to checking gfpflags_allow_blocking(), it pays attention
+> to __GFP_NORETRY and __GFP_RETRY_MAYFAIL to ensure that processes within
+> this memcg do not exceed their quotas. Using the same GFP flags ensures
+> that we handle large anonymous folios correctly, including falling back
+> to smaller orders when there is plenty of memory available in the system
+> but this memcg is close to its limits.
+
+The changelog is not really clear in the actual problem you are trying
+to fix. Is this pure consistency fix or have you actually seen any
+misbehavior. From the patch I suspect you are interested in THPs much
+more than regular order-0 pages because those are GFP_KERNEL like when
+it comes to charging. THPs have a variety of options on how aggressive
+the allocation should try. From that perspective NORETRY and
+RETRY_MAYFAIL are not all that interesting because costly allocations
+(which THPs are) already do imply MAYFAIL and NORETRY.
+
+GFP_TRANSHUGE_LIGHT is more interesting though because those do not dive
+into the direct reclaim at all. With the current code they will reclaim
+charges to free up the space for the allocated THP page and that defeats
+the light mode. I have a vague recollection of preparing a patch to
+address that in the past. Let me have a look at the current code...
+
+.. So yes, we still do THP charging the way I remember
+(do_huge_pmd_anonymous_page). Your patch touches handle_pte_fault ->
+do_anonymous_page path which is not THP AFAICS. Or am I missing
+something?
+ 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+> v2:
+> - fix built when !CONFIG_TRANSPARENT_HUGEPAGE
+> - update changelog suggested by Matthew Wilcox
 > 
-> Should probably go through Al's tree, I've only carried them when
-> they've been associated with io_uring in some shape or form.
+>  mm/memory.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 5e88d5379127..551f0b21bc42 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4153,8 +4153,8 @@ static bool pte_range_none(pte_t *pte, int nr_pages)
+>  
+>  static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>  {
+> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  	struct vm_area_struct *vma = vmf->vma;
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  	unsigned long orders;
+>  	struct folio *folio;
+>  	unsigned long addr;
+> @@ -4206,15 +4206,21 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>  		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+>  		folio = vma_alloc_folio(gfp, order, vma, addr, true);
+>  		if (folio) {
+> +			if (mem_cgroup_charge(folio, vma->vm_mm, gfp)) {
+> +				folio_put(folio);
+> +				goto next;
+> +			}
+> +			folio_throttle_swaprate(folio, gfp);
+>  			clear_huge_page(&folio->page, vmf->address, 1 << order);
+>  			return folio;
+>  		}
+> +next:
+>  		order = next_order(&orders, order);
+>  	}
+>  
+>  fallback:
+>  #endif
+> -	return vma_alloc_zeroed_movable_folio(vmf->vma, vmf->address);
+> +	return folio_prealloc(vma->vm_mm, vma, vmf->address, true);
+>  }
+>  
+>  /*
+> @@ -4281,10 +4287,6 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>  	nr_pages = folio_nr_pages(folio);
+>  	addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
+>  
+> -	if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
+> -		goto oom_free_page;
+> -	folio_throttle_swaprate(folio, GFP_KERNEL);
+> -
+>  	/*
+>  	 * The memory barrier inside __folio_mark_uptodate makes sure that
+>  	 * preceding stores to the page contents become visible before
+> @@ -4338,8 +4340,6 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>  release:
+>  	folio_put(folio);
+>  	goto unlock;
+> -oom_free_page:
+> -	folio_put(folio);
+>  oom:
+>  	return VM_FAULT_OOM;
+>  }
+> -- 
+> 2.27.0
+> 
 
-This appears to have slipped through the cracks. Do I need to send an
-updated rebase of it? Were there any objections to it I missed?
-
-Rich
+-- 
+Michal Hocko
+SUSE Labs
 
