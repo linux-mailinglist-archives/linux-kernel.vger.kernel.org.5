@@ -1,136 +1,104 @@
-Return-Path: <linux-kernel+bounces-29719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89954831270
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:29:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFC3E831278
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 435ED286A97
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 05:29:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B56E31C21C96
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 05:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988038F6F;
-	Thu, 18 Jan 2024 05:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66338F69;
+	Thu, 18 Jan 2024 05:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bies4SxQ"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MNtkIGsz"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E7FE63B5
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 05:29:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A24B79D4;
+	Thu, 18 Jan 2024 05:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705555767; cv=none; b=D9csiXa0DdEgUfP5UmJQWQze0YpEeid/pMvYPe6IT5EI6B0FrYBQrQCngPTWayu26pjknMXdPcp21Yh16UCqymH+TFyoBXJj5SURW7De6oFzYLL0X0vYqpyv/+UZyBQ4sNy6NZgRwI55oG+lxFctUqQXb9benn4ExophHuCGqe8=
+	t=1705556131; cv=none; b=ETgKGW8SM+XoiZmDzxT+VPqqQncqoxj2/usSM3vxbsNWO3A0/WeX2oisfbe0do81BLIPO0aCzHD3bFyrWgyGVkCvrQyn7TZvYgewVV5LbrEFPSxy0J2H3vLbX7ZPn8tM3seGuGo1t3pBDtLh94U+t1u2QGxx1z0w49ew4sh5Bf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705555767; c=relaxed/simple;
-	bh=SBVMA/CPQNcVCfcURUzuwVBCE1qUg3c5WG0zdMGFPQg=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=G9afj1eCuwoH9xY5OZtyFTewHWtl6276rb82i2GZOtmX0HpVpPzcDeeu1kaTbmiu/D1quffw0rjss86VMJPi3rnx8llJrXll/ChoZfA0LZN/h2UwgV3injt/6zyi8LJAzDFI/IY+U6jztOQbFK//1+1Yv3dfcDqiO0pLNyhfaS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bies4SxQ; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e800461baso31788065e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 21:29:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705555764; x=1706160564; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wWVOjE9eG7LQZ1p5rDtepmpo2WIDbMJDdYV1+1m1FBU=;
-        b=Bies4SxQOMm2y9Btq51UiXzVZwhtvjN5NVmtvQJ0eMUe5gfREJdCIWlM2FxjYkiBL3
-         viV/JtBvnRgvSaTfwEus92WDyzUb3MfLjJ5O9zlh/ZVwvyVQBv9ZeiJiF1E7DFlkoLLO
-         63j7Xl9jQkNSOsfYa7Ts9+OTe+0uab+XRsZ5WD7dEzWzmQQ+NdTwQcWCyP+4CkAEiz+r
-         ORCWpnC38A/1yZmryV8RrfSfvJ57rWs9JR8xGuX/rZYA8bP39uLvGBOE2VJtukBhe+Tc
-         C7nh4w/yN1i/HRgsTCxOEl+pkZ6R/0O2RS9YvtIv8EHNK1rY8hSfBv0GqE2qbHOeuljq
-         YHeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705555764; x=1706160564;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wWVOjE9eG7LQZ1p5rDtepmpo2WIDbMJDdYV1+1m1FBU=;
-        b=AmHS4oDe4VRYhaR9Prm//GufKo+f0CoqNQcSjkjQqZ2rhA2mKPA1PNYXlePu9sk23/
-         kIACPf2D1VtDPbJQdRICtiYDhIod4+qesjlHMJ7aQi7qVRrm92a/ucYT76ZDJM1C0cPA
-         3YxheZqTUd9jlhmkDnzS0WEPJP3zJC2JElv0oQGUvJ0oud175eabG0zw3bL0YhPf6zCM
-         T5u9GyIZfVNijr+Qu/YlZmNZaCDaf36TfHEKWMQvmOOybc5aJnJX/rbnRYy6yq32Ao3P
-         EYVfMCTxjK7uRXqu9gJ4PmEpzEiyBkMLHn6Ck8I7eab9qXRR7HO2Ij4iyVP0kwV41KN2
-         KJdA==
-X-Gm-Message-State: AOJu0Yw5+wFKQnWy+a6dZOnUmaP+jtwA0jnvRZAaQNkE3xJe/jJBRPKx
-	9XgNqG8W7bodyskPLLEjhtA9JY1WV2wGzBfaJnq4lD06Y+BgnaDNvwSMLeS89mg=
-X-Google-Smtp-Source: AGHT+IHaCjW/5P67xwqKO0g8DnWLu4YQwaK2HHCRSW+8Wlvh81P/g9nOxJOSa7NQjI8+GNuKu6R48Q==
-X-Received: by 2002:a05:600c:880e:b0:40e:4799:8a81 with SMTP id gy14-20020a05600c880e00b0040e47998a81mr66295wmb.281.1705555764049;
-        Wed, 17 Jan 2024 21:29:24 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id o21-20020a05600c4fd500b0040e34ca648bsm24586127wmq.0.2024.01.17.21.29.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 21:29:23 -0800 (PST)
-Date: Thu, 18 Jan 2024 08:29:20 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-hardening@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	=?iso-8859-1?Q?G=FCnter_R=F6ck?= <groeck@chromium.org>,
-	Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: Re: [PATCH] pstore/ram: Return directly after a failed kasprintf()
- call in ramoops_init_prz()
-Message-ID: <26759e3b-ff74-4b04-b06f-4d68fbc5f606@moroto.mountain>
-References: <644f44ad-7e2b-4a1a-bbd7-ccc79d479242@web.de>
+	s=arc-20240116; t=1705556131; c=relaxed/simple;
+	bh=LzhELx9h/U3h0sODMzPzGL+liQMJLMUOPLsau3AmHcA=;
+	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding; b=gRfXID9QmgchD2MeuHft24U/x941xut7A7r18vQ696j/1oiaV4A3VtGByjrvcx7dz6W0Ud+X0lUfIMugtZXszRRaNdYnrbNQx/AwuRXFXKhVJFW2KcomhnhQGViY7X45UTbaiGhkIHJIiWjxsnv7xkESitLYGvO1mpRR40xhXxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MNtkIGsz; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=dH6p9SMJNPi+ukFSRBSjYz3JqljL0xzAdUNPFPGLjN8=; b=MNtkIGszG0wjyKy69ZChUe34pJ
+	I9qgJLnzNof+kFnP30VaWjvapB5VfCSGR4/ZqawI3a9cwUWnHBsZtoIagpZ4gBI/etsgnJPKy9+Z+
+	24NfymFoezA1htxrNuWZiVSWhhcShszSc4bBaFEfoyAf2PdaYtOW0myN2BRnci8bpyqikpcrMyPy4
+	o4JmwO+S6B78p6hGvGplNaift93ECgd59muZJ9qncEM4/94+iBVml1Y+fSKhD8KYx4vK2YbhHZHYV
+	O5LIcd0nJtSn+VxI9hDufL4NGkV4im3AbZlqTM7ZEik1920mShuOQxa4m/XppLvv5rc3dd7cBIlN6
+	r2CdE+0w==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rQL3c-001iKd-19;
+	Thu, 18 Jan 2024 05:35:16 +0000
+Message-ID: <34862fc1-1cd9-47e3-b8e1-3fcce6ff7cf7@infradead.org>
+Date: Wed, 17 Jan 2024 21:35:15 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <644f44ad-7e2b-4a1a-bbd7-ccc79d479242@web.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Content-Language: en-US
+To: James Bottomley <James.Bottomley@HansenPartnership.com>,
+ Theodore Ts'o <tytso@mit.edu>, Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>,
+ Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ Nikolai Kondrashov <spbnick@gmail.com>, Philip Li <philip.li@intel.com>,
+ Luis Chamberlain <mcgrof@kernel.org>
+References: <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
+ <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+ <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+ <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+ <2024011532-mortician-region-8302@gregkh>
+ <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+ <20240117055457.GL911245@mit.edu>
+ <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 17, 2024 at 09:24:12PM +0100, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Wed, 17 Jan 2024 21:09:22 +0100
-> 
-> The result from a call of the function “kasprintf” was passed to
-> a subsequent function call without checking for a null pointer before
-> (according to a memory allocation failure).
-> This issue was detected by using the Coccinelle software.
-> 
-> Thus return directly after a failed kasprintf() call.
-> 
-> Fixes: 1227daa43bce1 ("pstore/ram: Clarify resource reservation labels")
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  fs/pstore/ram.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
-> index 88b34fdbf759..1a673a4af17c 100644
-> --- a/fs/pstore/ram.c
-> +++ b/fs/pstore/ram.c
-> @@ -595,6 +595,9 @@ static int ramoops_init_prz(const char *name,
->  	}
-> 
->  	label = kasprintf(GFP_KERNEL, "ramoops:%s", name);
-> +	if (!label)
-> +		return -ENOMEM;
-> +
->  	*prz = persistent_ram_new(*paddr, sz, sig, &cxt->ecc_info,
->  				  cxt->memtype, PRZ_FLAG_ZAP_OLD, label);
->  	kfree(label);
 
-This patch is fine as a clean up, but I think it's useful to say that
-if you pass a NULL label to persistent_ram_new() then it will return
-an error.  It won't crash.  So this patch is a nice cleanup but it's not
-a bug fix.
 
-regards,
-dan carpenter
+On 1/17/24 05:03, James Bottomley wrote:
+> Finally testing infrastructure is how OSDL (the precursor to the Linux
+> foundation) got started and got its initial funding, so corporations
+> have been putting money into it for decades with not much return (and
+> pretty much nothing to show for a unified testing infrastructure ...
+> ten points to the team who can actually name the test infrastructure
+> OSDL produced) and have finally concluded it's not worth it, making it
+> a 10x harder sell now.
 
+What will ten points get me?  a weak cup of coffee?
+
+Do I need a team to answer the question?
+
+Anyway, Crucible.
+
+-- 
+#Randy
 
