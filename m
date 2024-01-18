@@ -1,167 +1,145 @@
-Return-Path: <linux-kernel+bounces-29641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382DC83112F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:59:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F607831131
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2035282FDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:59:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 371231F220C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834C2443D;
-	Thu, 18 Jan 2024 01:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF976124;
+	Thu, 18 Jan 2024 02:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Qfviq2ln"
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M+e8rjyb"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8AA28FD
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:59:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1997C6103
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:01:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705543163; cv=none; b=nE/7AZBVXQqrS7tzeIvNfLckBW7UHsXOuPa7xlzto3ncr5uPWX05bIjtW9Eso1N28Axl/d5JHwDD7WluDf2/znA2biLjzfXHLFn4OPXdqxDNXESeml8F5WNr4x2E/+195WqE/Uwka796jdfpQKTSvBacd3gA9PCoUu2IdcA2QJE=
+	t=1705543288; cv=none; b=ZJhoid9IPdhULO+jhDJqT3d5LiN6862zVrlwNS94IfZGVKbPVlSFf9uiUl2B4AylTkKJu0mphQ95HrrICCRqtBGCQSH68/alyiiHRdsccY78S9iJ5zpDMrho+clxnuhc34cvm4IWTccQ0HgV7ilM86OaqPmvyPyoB+7xDj1d2Ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705543163; c=relaxed/simple;
-	bh=qUn0tXssemFdVBvSxGg93sz4Fd7eoMBJDAi5n1ms+/A=;
+	s=arc-20240116; t=1705543288; c=relaxed/simple;
+	bh=jkCkol1LlDXcUxYD3N30HrZmE5VGDqsrqmgYaP0Kpj4=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding; b=Fxc0kHKUHbwvsKI/bKlrfbAAsIyyYfxIQrKACF/uiRdQuE2muRoVxUMnkj4fbPhJX40H5LxoTx3Dc797gX3dciS99xl2VrftMTUKycizIm+Y04II0CSL0IQA2CpeObTPrl3bwey3ly4CRUQVX5ITVIniyKhgTYpdykxg+vI6U9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Qfviq2ln; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5988e55ede0so4346243eaf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:59:22 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=jM17LPZRMVgHWzm2HdJnMRr2mO6w/uUY3vYJLcLuCTKYRu8ZkWMacrcRdTbSf90WB86NuA3c3a+RWg0SoQKtM24gt6hnFpFsqv1zJ7Xaoc702eFX7qvTCQneapHeMDs8s0xB42z38ZI7JTLKdGygbRQDksnTdshv0gHbRiQeoD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M+e8rjyb; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-559533e2503so4441229a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:01:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705543161; x=1706147961; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=C0aZ0gh2nMEIgtdl3btOXR1faHkRWy2p55YtG63QiVs=;
-        b=Qfviq2lneXjktAlOHn5A7YrzGJDC8zkDNy2bCtV/OTt/i+Eqb8gzNPVOGg6LYH0Ew3
-         ls+gPNICcPrdeGjI2o8KQL0OD+usPsADdSacMjgTzopK8Rlzdt4RZZYAI0vSYsA1wQLr
-         w52eKV5YqFzu23Hf5YdMSQD2LByd93tgtCj7w=
+        d=gmail.com; s=20230601; t=1705543285; x=1706148085; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G+ORuyfvKPKlivBCBwrn1aG4zMB6FM+NFT/lRf60y+w=;
+        b=M+e8rjybG2H1uwfwuZvoOWWYiV1qRtQ1FS4odCj8S077sn+0Qx1plHS64FDdAEqoe6
+         iZQbVSQPBX0hAo/MMQVXGB5tEc7xwfH40W6pNDVhfPrfAv25pQJZaH0VhfosEVnYIJOR
+         AVc2NQyp4fVCmow4Ht8JVQ/S43YxCVlGtDKwYHNP4aVwn/AdSElnpELp45aLKrriuLGj
+         gs3n/gZ4WkE/8b/BVNocZ7oKyoqfHLkNk+NfS8+sZlWgmypvX8ITpC93utkrUQemSqNR
+         ZnowpEoF01NBU7NiHBqIna0eyZUE5qukGXO6beleTVlyy7vWLZXQ57E04IPF1W53Lqf6
+         TN7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705543161; x=1706147961;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C0aZ0gh2nMEIgtdl3btOXR1faHkRWy2p55YtG63QiVs=;
-        b=GbI05I8ZDs0TK2l/uuEWip0Dy+vJoScHp7L0MxsymN61peBreNmtvmHNCzwn8febRK
-         3I0TXwcMDkC9Gr1IEZEuuaYZr0hfBr82Tmzz486guL09ta3vH6zNDkaa6RyQdRqAYXjI
-         rl7N2BhSq6Yl8PBogxbSofYECLni8AuquhM7UTx92DulnFs0qU0rscs59h/d02qNJ7hu
-         TaprEniPX4JSYDRtdXXCvKOkn26DMN/Sh28WgtFz+5Ds961PMg88q/GlqKtLint87jKl
-         ddCWDLKEfU9vlTsIw1z/lFaWUhSfnvKR1O0UlMjaguFeF4OGO5Rj9KcNS2QuuBtQwqML
-         Cq1w==
-X-Gm-Message-State: AOJu0Yz62B0ty65sgefkrlSb487Y4MFrgjd7pJA2eeovtH+U/Srz6e0Y
-	oaP4NI1GadDgJPajNCsEdPOFpKcKbZWbGX20QsE1YHe+dsBgNF6krbY3T6Ox1Q==
-X-Google-Smtp-Source: AGHT+IHCITwuSs+RUYFe/ZYh2Aaq7Mwt3FYk63+r+HrTRQNnTtj99c4qfSNv1QoNApfW32peMOyUlQ==
-X-Received: by 2002:a4a:d490:0:b0:598:8de8:be69 with SMTP id o16-20020a4ad490000000b005988de8be69mr175483oos.10.1705543161418;
-        Wed, 17 Jan 2024 17:59:21 -0800 (PST)
-Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:2557:c164:9ba8:60b])
-        by smtp.gmail.com with ESMTPSA id h10-20020a65638a000000b005c2420fb198sm270879pgv.37.2024.01.17.17.59.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 17:59:21 -0800 (PST)
-From: Hsin-Yi Wang <hsinyi@chromium.org>
-To: Douglas Anderson <dianders@chromium.org>,
-	dri-devel@lists.freedesktop.org
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>,
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-	Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Xin Ji <xji@analogixsemi.com>,
-	Pin-yen Lin <treapking@chromium.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/bridge: anx7625: Ensure bridge is suspended in disable()
-Date: Wed, 17 Jan 2024 17:58:14 -0800
-Message-ID: <20240118015916.2296741-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
+        d=1e100.net; s=20230601; t=1705543285; x=1706148085;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G+ORuyfvKPKlivBCBwrn1aG4zMB6FM+NFT/lRf60y+w=;
+        b=gRNjaXSQGTHa2oQ8tiCcuuVJVmVVxEzacMXMvBNC4mDtFkH2yQTSZShL1fa900Wk+H
+         4+6+vgeBJhEFJ9j9jsb9jyJeX7BWRjCp/iRKASueRZXThD/zGeB/ytwie46nfnl4DRtH
+         DEOOZFndWCDhyuTp397O7Aq1jCokkFk2Z3E3pgPEl1smb4lA2RhaskfMyFEVahttmVhe
+         CbfiQbALlP7gniuOtdehwlWsprOgxM93T7cuTtq7o8ajt+hy7Gvwj61zdO+UNv6JT1It
+         Ffn7nrhYqcjjZZaCk8cj6tO2xdYEo7rMVE8UUUGtBDmeKgFTkl8/Qew0wGYdgJv/T9ET
+         FRtQ==
+X-Gm-Message-State: AOJu0Yx8vQ9a+lPjwXD0o5pyDskeK6bC50KRf6CUosvXUAAAgpDewqFk
+	j2sJvBz4OWMbk0W9adNBwvjgfDWZFi2BVs9c+3F8BDfPYIyWRg9BPHggG8NpUChORvDmCqIzcL3
+	IP+eYok6NqXgorLeJuAZNY2CW1Zg=
+X-Google-Smtp-Source: AGHT+IFMLQzKS1z+NdIXFGvpFMPMfnfLjyk/zsZHuQ0OYD6RNNRTTG/elCwMSGh3SYfO3ZRlEQK10xOOeARR4/IibAc=
+X-Received: by 2002:a17:906:1653:b0:a28:ff59:12eb with SMTP id
+ n19-20020a170906165300b00a28ff5912ebmr36518ejd.139.1705543285151; Wed, 17 Jan
+ 2024 18:01:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240117031212.1104034-1-nunes.erico@gmail.com> <20240117031212.1104034-4-nunes.erico@gmail.com>
+In-Reply-To: <20240117031212.1104034-4-nunes.erico@gmail.com>
+From: Qiang Yu <yuq825@gmail.com>
+Date: Thu, 18 Jan 2024 10:01:13 +0800
+Message-ID: <CAKGbVbt_1SUmTftqA5H27keCeH+u2ibrevy=cW8KsJSHu8YRdw@mail.gmail.com>
+Subject: Re: [PATCH v1 3/6] drm/lima: set bus_stop bit before hard reset
+To: Erico Nunes <nunes.erico@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org, 
+	anarsoul@gmail.com, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, christian.koenig@amd.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Similar to commit 26db46bc9c67 ("drm/bridge: parade-ps8640: Ensure bridge
-is suspended in .post_disable()"). Add a mutex to ensure that aux transfer
-won't race with atomic_disable by holding the PM reference and prevent
-the bridge from suspend.
+Do we need same for GP?
 
-Also we need to use pm_runtime_put_sync_suspend() to suspend the bridge
-instead of idle with pm_runtime_put_sync().
+Regards,
+Qiang
 
-Fixes: 3203e497eb76 ("drm/bridge: anx7625: Synchronously run runtime suspend.")
-Fixes: adca62ec370c ("drm/bridge: anx7625: Support reading edid through aux channel")
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Tested-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 7 ++++++-
- drivers/gpu/drm/bridge/analogix/anx7625.h | 2 ++
- 2 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index ef31033439bc..29d91493b101 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -1762,6 +1762,7 @@ static ssize_t anx7625_aux_transfer(struct drm_dp_aux *aux,
- 	u8 request = msg->request & ~DP_AUX_I2C_MOT;
- 	int ret = 0;
- 
-+	mutex_lock(&ctx->aux_lock);
- 	pm_runtime_get_sync(dev);
- 	msg->reply = 0;
- 	switch (request) {
-@@ -1778,6 +1779,7 @@ static ssize_t anx7625_aux_transfer(struct drm_dp_aux *aux,
- 					msg->size, msg->buffer);
- 	pm_runtime_mark_last_busy(dev);
- 	pm_runtime_put_autosuspend(dev);
-+	mutex_unlock(&ctx->aux_lock);
- 
- 	return ret;
- }
-@@ -2474,7 +2476,9 @@ static void anx7625_bridge_atomic_disable(struct drm_bridge *bridge,
- 	ctx->connector = NULL;
- 	anx7625_dp_stop(ctx);
- 
--	pm_runtime_put_sync(dev);
-+	mutex_lock(&ctx->aux_lock);
-+	pm_runtime_put_sync_suspend(dev);
-+	mutex_unlock(&ctx->aux_lock);
- }
- 
- static enum drm_connector_status
-@@ -2668,6 +2672,7 @@ static int anx7625_i2c_probe(struct i2c_client *client)
- 
- 	mutex_init(&platform->lock);
- 	mutex_init(&platform->hdcp_wq_lock);
-+	mutex_init(&platform->aux_lock);
- 
- 	INIT_DELAYED_WORK(&platform->hdcp_work, hdcp_check_work_func);
- 	platform->hdcp_workqueue = create_workqueue("hdcp workqueue");
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
-index 66ebee7f3d83..39ed35d33836 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.h
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
-@@ -475,6 +475,8 @@ struct anx7625_data {
- 	struct workqueue_struct *hdcp_workqueue;
- 	/* Lock for hdcp work queue */
- 	struct mutex hdcp_wq_lock;
-+	/* Lock for aux transfer and disable */
-+	struct mutex aux_lock;
- 	char edid_block;
- 	struct display_timing dt;
- 	u8 display_timing_valid;
--- 
-2.43.0.381.gb435a96ce8-goog
-
+On Wed, Jan 17, 2024 at 11:12=E2=80=AFAM Erico Nunes <nunes.erico@gmail.com=
+> wrote:
+>
+> This is required for reliable hard resets. Otherwise, doing a hard reset
+> while a task is still running (such as a task which is being stopped by
+> the drm_sched timeout handler) may result in random mmu write timeouts
+> or lockups which cause the entire gpu to hang.
+>
+> Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
+> ---
+>  drivers/gpu/drm/lima/lima_pp.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/lima/lima_pp.c b/drivers/gpu/drm/lima/lima_p=
+p.c
+> index a8f8f63b8295..ac097dd75072 100644
+> --- a/drivers/gpu/drm/lima/lima_pp.c
+> +++ b/drivers/gpu/drm/lima/lima_pp.c
+> @@ -168,6 +168,11 @@ static void lima_pp_write_frame(struct lima_ip *ip, =
+u32 *frame, u32 *wb)
+>         }
+>  }
+>
+> +static int lima_pp_bus_stop_poll(struct lima_ip *ip)
+> +{
+> +       return !!(pp_read(LIMA_PP_STATUS) & LIMA_PP_STATUS_BUS_STOPPED);
+> +}
+> +
+>  static int lima_pp_hard_reset_poll(struct lima_ip *ip)
+>  {
+>         pp_write(LIMA_PP_PERF_CNT_0_LIMIT, 0xC01A0000);
+> @@ -181,6 +186,14 @@ static int lima_pp_hard_reset(struct lima_ip *ip)
+>
+>         pp_write(LIMA_PP_PERF_CNT_0_LIMIT, 0xC0FFE000);
+>         pp_write(LIMA_PP_INT_MASK, 0);
+> +
+> +       pp_write(LIMA_PP_CTRL, LIMA_PP_CTRL_STOP_BUS);
+> +       ret =3D lima_poll_timeout(ip, lima_pp_bus_stop_poll, 10, 100);
+> +       if (ret) {
+> +               dev_err(dev->dev, "pp %s bus stop timeout\n", lima_ip_nam=
+e(ip));
+> +               return ret;
+> +       }
+> +
+>         pp_write(LIMA_PP_CTRL, LIMA_PP_CTRL_FORCE_RESET);
+>         ret =3D lima_poll_timeout(ip, lima_pp_hard_reset_poll, 10, 100);
+>         if (ret) {
+> --
+> 2.43.0
+>
 
