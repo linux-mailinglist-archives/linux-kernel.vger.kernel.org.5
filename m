@@ -1,128 +1,174 @@
-Return-Path: <linux-kernel+bounces-29747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DEA88312DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:50:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 051708312E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9C7B1F23184
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:50:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AFDF1C21EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D7439467;
-	Thu, 18 Jan 2024 06:50:26 +0000 (UTC)
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BC89467;
+	Thu, 18 Jan 2024 06:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="IgYNv4x7"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F797481;
-	Thu, 18 Jan 2024 06:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.101.241.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CBF19444
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705560625; cv=none; b=nDI4/yeeMSBlhkuRLTwN4EwoHroSjNa8wOpGzg2+zGARDIyckmUhOQq3Nh1LMABP/yjIDE40SrYX1VDaEbFofhj3Ddx5MzvQxP4EoqrlzbXwoXr3+kZCcbIhoo6D4e6E5yG+opYaMLak/FCunKVYOWpmgV2cpKS3oVA+kTwgvQI=
+	t=1705561065; cv=none; b=F8czGfG8HkfzupMr5qcPnonNtKq74YQ2sqWMpGD1g5m4gniYJrdrUZc3/AWF37ZosRKqyIYysbI3vSe76ZreVHYHGHo8ibqZqcNb8ozMRZsSTslOxPbW1oxngfw/bqLgkTLfRAd9dmA2SrHPEL/eH8ERE8f5HIyRSq3ybERBtBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705560625; c=relaxed/simple;
-	bh=Thu0mtmAU3blSclLcbZ8kLQKJyxNkZYsKjPWnOmI2Ms=;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To:X-MIMEDefang-action:
-	 X-Scanned-By; b=rI41IlgBnHdo8E57s4EdqafFJLYXw+smx2BJV0ur3ZmzSKJx+xGyUFt5Gikx0QaFTI8+9egsC5Uve2aMkx1pnU4RhaJhi6gvQNu+Fs4lPFKQBRdEBavs9l+/XwQZhOw6Em4r7aX8xGCHmHCCNnfJr9YQCNAFwoRPHoW2MAF1prE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net; spf=pass smtp.mailfrom=just42.net; arc=none smtp.client-ip=150.101.241.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=just42.net
-Received: from marvin.atrad.com.au (marvin.atrad.com.au [192.168.0.2])
-	by server.atrad.com.au (8.17.2/8.17.2) with ESMTPS id 40I6mjS4007416
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Thu, 18 Jan 2024 17:18:46 +1030
-Date: Thu, 18 Jan 2024 17:18:45 +1030
-From: Jonathan Woithe <jwoithe@just42.net>
-To: Igor Mammedov <imammedo@redhat.com>
-Cc: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] PCI: Solve two bridge window sizing issues
-Message-ID: <ZajJzcquyvRebAFN@marvin.atrad.com.au>
-References: <20231228165707.3447-1-ilpo.jarvinen@linux.intel.com>
- <20240104131210.71f44d4b@imammedo.users.ipa.redhat.com>
- <ZZaiLOR4aO84CG2S@marvin.atrad.com.au>
- <ZZ+gEmxI/TxdbmyQ@marvin.atrad.com.au>
+	s=arc-20240116; t=1705561065; c=relaxed/simple;
+	bh=kG+rN8aFxG0mxJryn3v+GMXskNk7MkMH9uZygutc9Ck=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
+	 Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=ugvdBN4UYsbVt6cGGlS6Z6KM9WCePDPVxxM981XkrgtfdpklCiKnmu7e4nRtlzI9h3maaTSfGhNJHwbcRcjls8b5/qhNgiJ7Sk0Gdzr9LjofmbJ/v5bz1zYsSn6EClxMb7ufl4M3rgjN4NFrTJOujEAA4GcJcW5GpA6qJeOsWuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=IgYNv4x7; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28e7673233dso2251082a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 22:57:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1705561063; x=1706165863; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HYP/cl0xfMYStGxHC3bDdvWKef1/hrUDd9p4oYOcRUk=;
+        b=IgYNv4x7P/YYM19uGRJHDJnVtqnqpsaGCeLZCYz5bFB9CSJChl/7RKrmDL+7QQJIP7
+         scNBddMmN7E/ORxCuhSx3kknU8sdn9DM8t+tki07lHsdXM3m0PtsyUDza1EfITxM/2NU
+         uAubVzeXvIvjKo6xPjxPB30D4qYlp7EB4ctNVzWNY0JiGNud4PsU8hIPYYz8Y8tYdpGy
+         +RSc7Ct9Ml32ZF6R6LdGyHGyfrlwcVIKS5vDBMWyvmUpgkiSc715RLyeL0I/IyAWzKRv
+         hGy727+9lg3Nawka1sScuK1ilgRX2lk1CWYW3yAjZbEZzJ1Ej1KBTSSroRr6prFmYHiA
+         609Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705561063; x=1706165863;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HYP/cl0xfMYStGxHC3bDdvWKef1/hrUDd9p4oYOcRUk=;
+        b=Zq9SRR2RjUP3BRDxHg5YZ4CMiatKSS0na7L/c+rTobffJNOoZ/7gUEKsG3qnKyQgZN
+         MItYYJOFFFjgMPVfn2AR98frPwm1YUJtbgetKS4Dji1FZh4sBObo35YtgNEuAZOX+3De
+         4JU8ouPJspHArXESIiOVcsuS8mVA2tdVKYGwu6fR44Q9fp66VxU0izVMxPcNhPXYbc6d
+         pkkHi8malUjxYjpSPQuobugeKp5S/w9qTlUo7pZFCCNmwDJ8XJZ9dRbH4gcjvkkOkG3N
+         JnbTSs4Ux+UhT35GXeD9nXgdDpNo04V1cZyIcbzdz/1KH8vpbhfBWex1K4eB9mkWngMg
+         x7dg==
+X-Gm-Message-State: AOJu0YxSLHbWNsYCDx5GIwskqI+F8q9az8BemBhkqyi/wpI1g5gq0c/8
+	uwlhQkYwphRciRTNmu3/AGCzvA+rdB/MpO8rZF2DAu/D1c6nW4dhZCLHrIOlbfA=
+X-Google-Smtp-Source: AGHT+IHZwcZQCi35Kk0KToAdBGJaAQgNikg3mwCr02FZaFr2hTnS3/Ytsf2kl9KWMZ9qw9s3DeuemQ==
+X-Received: by 2002:a17:90a:d3c2:b0:28d:876e:250b with SMTP id d2-20020a17090ad3c200b0028d876e250bmr355597pjw.43.1705561062866;
+        Wed, 17 Jan 2024 22:57:42 -0800 (PST)
+Received: from [10.255.202.70] ([139.177.225.232])
+        by smtp.gmail.com with ESMTPSA id pa5-20020a17090b264500b0028e193e1edcsm897627pjb.25.2024.01.17.22.57.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 22:57:42 -0800 (PST)
+Message-ID: <7f52ad78-e10b-438a-b380-49451bf6f64f@bytedance.com>
+Date: Thu, 18 Jan 2024 14:57:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] RFC: zswap tree use xarray instead of RB tree
+To: Yosry Ahmed <yosryahmed@google.com>, Chris Li <chrisl@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, =?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>,
+ Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>,
+ Chun-Tse Shao <ctshao@google.com>, =?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?=
+ <surenb@google.com>, Brain Geffon <bgeffon@google.com>,
+ Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>,
+ Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>,
+ Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Kairui Song <kasong@tencent.com>, Zhongkun He
+ <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>,
+ Barry Song <v-songbaohua@oppo.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Joel Fernandes <joel@joelfernandes.org>
+References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
+ <CAJD7tkbQb5nAQdhHXELQsUWs8KhwnoOZ7C8Eu2o7tCYSKeY9Ug@mail.gmail.com>
+ <CAJD7tkb7GmMARE9ueyOCZz9wBbANhofUOHnen+b28sxE9tDy1A@mail.gmail.com>
+Content-Language: en-US
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAJD7tkb7GmMARE9ueyOCZz9wBbANhofUOHnen+b28sxE9tDy1A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZZ+gEmxI/TxdbmyQ@marvin.atrad.com.au>
-X-MIMEDefang-action: accept
-X-Scanned-By: MIMEDefang 2.86 on 192.168.0.1
 
-On Thu, Jan 11, 2024 at 06:30:22PM +1030, Jonathan Woithe wrote:
-> On Thu, Jan 04, 2024 at 10:48:53PM +1030, Jonathan Woithe wrote:
-> > On Thu, Jan 04, 2024 at 01:12:10PM +0100, Igor Mammedov wrote:
-> > > On Thu, 28 Dec 2023 18:57:00 +0200
-> > > Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
-> > > 
-> > > > Hi all,
-> > > > 
-> > > > Here's a series that contains two fixes to PCI bridge window sizing
-> > > > algorithm. Together, they should enable remove & rescan cycle to work
-> > > > for a PCI bus that has PCI devices with optional resources and/or
-> > > > disparity in BAR sizes.
-> > > > 
-> > > > For the second fix, I chose to expose find_empty_resource_slot() from
-> > > > kernel/resource.c because it should increase accuracy of the cannot-fit
-> > > > decision (currently that function is called find_resource()). In order
-> > > > to do that sensibly, a few improvements seemed in order to make its
-> > > > interface and name of the function sane before exposing it. Thus, the
-> > > > few extra patches on resource side.
-> > > > 
-> > > > Unfortunately I don't have a reason to suspect these would help with
-> > > > the issues related to the currently ongoing resource regression
-> > > > thread [1].
-> > > 
-> > > Jonathan,
-> > > can you test this series on affected machine with broken kernel to see if
-> > > it's of any help in your case?
-> > 
-> > Certainly, but it will have to wait until next Thursday (11 Jan 2024).  I'm
-> > still on leave this week, and when at work I only have physical access to
-> > the machine concerned on Thursdays at present.
-> > 
-> > Which kernel would you prefer I apply the series to?
+Hi Yosry and Chris,
+
+On 2024/1/18 14:39, Yosry Ahmed wrote:
+> On Wed, Jan 17, 2024 at 10:01 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+>>
+>> That's a long CC list for sure :)
+>>
+>> On Wed, Jan 17, 2024 at 7:06 PM Chris Li <chrisl@kernel.org> wrote:
+>>>
+>>> The RB tree shows some contribution to the swap fault
+>>> long tail latency due to two factors:
+>>> 1) RB tree requires re-balance from time to time.
+>>> 2) The zswap RB tree has a tree level spin lock protecting
+>>> the tree access.
+>>>
+>>> The swap cache is using xarray. The break down the swap
+>>> cache access does not have the similar long time as zswap
+>>> RB tree.
+>>
+>> I think the comparison to the swap cache may not be valid as the swap
+>> cache has many trees per swapfile, while zswap has a single tree.
+>>
+>>>
+>>> Moving the zswap entry to xarray enable read side
+>>> take read RCU lock only.
+>>
+>> Nice.
+>>
+>>>
+>>> The first patch adds the xarray alongside the RB tree.
+>>> There is some debug check asserting the xarray agrees with
+>>> the RB tree results.
+>>>
+>>> The second patch removes the zwap RB tree.
+>>
+>> The breakdown looks like something that would be a development step,
+>> but for patch submission I think it makes more sense to have a single
+>> patch replacing the rbtree with an xarray.
+>>
+>>>
+>>> I expect to merge the zswap rb tree spin lock with the xarray
+>>> lock in the follow up changes.
+>>
+>> Shouldn't this simply be changing uses of tree->lock to use
+>> xa_{lock/unlock}? We also need to make sure we don't try to lock the
+>> tree when operating on the xarray if the caller is already holding the
+>> lock, but this seems to be straightforward enough to be done as part
+>> of this patch or this series at least.
+>>
+>> Am I missing something?
 > 
-> I was very short of time today but I did apply the above series to the
-> 5.15.y branch (since I had this source available), resulting in version
-> 5.15.141+.  Unfortunately, in the rush I forgot to do a clean after the
-> bisect reset, so the resulting kernel was not correctly built.  It booted
-> but thought it was a different version and therefore none of the modules
-> could be found.  As a result, the test is invalid.
-> 
-> I will try again in a week when I next have physical access to the system. 
-> Apologies for the delay.  In the meantime, if there's a specific kernel I
-> should apply the patch series against please let me know.  As I understand
-> it, you want it applied to one of the kernels which failed, making 5.15.y
-> (for y < 145) a reasonable choice.
+> Also, I assume we will only see performance improvements after the
+> tree lock in its current form is removed so that we get loads
+> protected only by RCU. Can we get some performance numbers to see how
+> the latency improves with the xarray under contention (unless
+> Chengming is already planning on testing this for his multi-tree
+> patches).
 
-I did a "make clean" to reset the source tree and recompiled.  However, it
-errored out:
+I just give it a try, the same test of kernel build in tmpfs with zswap
+shrinker enabled, all based on the latest mm/mm-stable branch.
 
-  drivers/pci/setup-bus.c:988:24: error: ‘RESOURCE_SIZE_MAX’ undeclared
-  drivers/pci/setup-bus.c:998:17: error: ‘pci_bus_for_each_resource’ undeclared
+                    mm-stable           zswap-split-tree    zswap-xarray        
+real                1m10.442s           1m4.157s            1m9.962s            
+user                17m48.232s          17m41.477s          17m45.887s          
+sys                 8m13.517s           5m2.226s            7m59.305s           
 
-This was with the patch series applied against 5.15.141.  It seems the patch
-targets a kernel that's too far removed from 5.15.x.
+Looks like the contention of concurrency is still there, I haven't
+look into the code yet, will review it later.
 
-Which kernel would you like me to apply the patch series to and test?
-
-Regards
-  jonathan
 
