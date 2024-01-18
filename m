@@ -1,169 +1,168 @@
-Return-Path: <linux-kernel+bounces-30471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D657831F1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:31:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC65A831F1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:33:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04E7828BAFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:31:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32D811F2389D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:33:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00C82D7A6;
-	Thu, 18 Jan 2024 18:31:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631AA2D7A6;
+	Thu, 18 Jan 2024 18:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dPZfdoD4"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QBGbnc21"
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD60F2D638
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 18:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353262D791
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 18:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705602668; cv=none; b=pmYcVYaLNpMSWFKHN5VJe5kXp0HzDS1dX679Rtsj7vC9KpZIttaAX+alQRb5nOc0GPXwkVuYBtx+N+m+DxAc4loGEL7t9cEVkASgu0fpiBxgVXsV2fXvyLTcA9CZWk3S09qpEdDITnchc/ZmQdQa5q6e5JHuE4bnTVSxtvA+LEI=
+	t=1705602787; cv=none; b=hE0BJCJXjam0zmdVsiOjFDPuzorrHsS5Pd8AWXiDCSWdhR1LRdNvJAfIC5f5JgLM8LSKEdnMs2On7jrqehwU2o+TmEneKtCLV851ljYbiDJDWpMvNYkEnsrh17krrwHqFZAUqkJmztpz9DQxVpDDfZgnrxgduB2agXdlF74bA6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705602668; c=relaxed/simple;
-	bh=YsIlkMkHV5F76M0Xv6Opp+8mNktR56PhE/rfREYHALI=;
+	s=arc-20240116; t=1705602787; c=relaxed/simple;
+	bh=AoKvtiZnBVW/PmvlVnV1RfQwRL3DN9j4sZFOWAIFXeo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e23+1aXoxe+TDrZ3VgO74f1SKuA/0uVMkqfzGL93s5eG88W/TTWYXmMhzVNQkYAU0mRKgrMBEjuvglt+U/2MalQyx+pMebko23oV7mdU0R/GIXk0E2nSRSpgt8zhHgoItkLq1ynOKlFuGXxhNFEkyIerpCImaMABEjXWDKH1nV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dPZfdoD4; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-559f5db8f58so909a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 10:31:06 -0800 (PST)
+	 To:Cc:Content-Type; b=lHnCFD6JMx/Gq3cf7oAJ8WGDPT/pYWUaWHDTKAaveaT2kBKX14DUihU7oiR3ZwgtpVEMi8su7fypOD1VOn7MofjVMO/vczqw4yofdACNGmv5fQy0NxV81GZesdvWXIk4WiqNt1rFFq2IfoqJl/gHfH0k/qBEEfqyDqBiccSMj0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QBGbnc21; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4b7153b8d76so2148316e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 10:33:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705602665; x=1706207465; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705602785; x=1706207585; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WDzpumPQTxLkJQG+gluRd+YfgW50dew9HQQAlqRxvPI=;
-        b=dPZfdoD4xjIGRLOFcTEUZx7aPCd/WkIEwQA8EmPIwZNhVUomoV2CUG/Qu+UvGjoD+8
-         qRTJUC+FtiZsTCj40f+Ybi/LSiwraYff1iH/BVJQVR0O3uKm74asGwEr6GVupEANSNul
-         GnFlXbhFfnLcpqMAUcV+IX7i5ZlHuiIlE2wnoQYIKaH/tiISJgrsfFFggd9PteMBJl4Q
-         otJlrda/8Fm5VOxvORNCi2Flx0RFRKf/lNaYiw6SRTJMN7nD9y7vjn9FdPX9wHlMZvua
-         kM5L/cZdhK5yLMGC42xYH5skTOew5RSQgsy9+Pcmm0nk4RHMn8uE9iaMAtvl6M+lLlYa
-         doWA==
+        bh=AoKvtiZnBVW/PmvlVnV1RfQwRL3DN9j4sZFOWAIFXeo=;
+        b=QBGbnc21gDYX39pRJWb6inxDpBloZKQgQxfs5pwYwe82L/3LpFlww4Jxs8Z7YA+t35
+         4n++nlqpqKQUfddj59NzF8EFKOi9ar5KFGWnoeWWLcygiBegj+L/kDt3Eqx42U+DVLHJ
+         uV4y0OO/9qEDolO6RXnV2bR75QIjNl0SdRTbCDlhyTSqfwPGBCKAiwlzRQPxsOh1DbUs
+         Dt82N5S4n2cLQaR+3ctbx8ZLzWUN5mwjRhD/yY84LTtRxH8LaigDj9Y3QrmNkUIhDz/X
+         9qWEl+ALXVP/MFkfxK8wuy/5q7HfmhtunGJKdwFq1IESbh/Ni81Sm3kH0BUXzoV43z9N
+         JnBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705602665; x=1706207465;
+        d=1e100.net; s=20230601; t=1705602785; x=1706207585;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WDzpumPQTxLkJQG+gluRd+YfgW50dew9HQQAlqRxvPI=;
-        b=GUW/pKsVg7o8GQH1fKNyxCN7VDfSimmhJf0+tR1qjUTijAK3PF+gh1Pzuksa2vJZAU
-         IQ7d4B7GZz1Y2BcZyGIsE5Kv/hmm2OaL3dmVZLBTNp19jAfVUkNiWP9sQrI/wfx9qvhg
-         xRtp5E+j0fCIdyOZiQJ1tYrn0qVySMgtecYer57WV89Pe4ZJbp1oLfwhPN6KMWpiTlCs
-         m+eQoi22cmv5W7ChfeG6/DQ9NCR6QQPl35xE2kSWtu4O1EKtHLfoRXMvYsY6C0Dq6ro9
-         Fwoc9ZVMMSA+HPCHblL4CZWl/YHK4hVMNSehsE4TcWNpCbTOGbnpLZM53GdUQAExzUeW
-         Njaw==
-X-Gm-Message-State: AOJu0Yx97xDSqm79c4QzDjulujtnVEbv7qHcQq88XK/0NoypcSJXkzP9
-	s2Oj+irOWfen2KEUlgMbdBWzYMv6mc6LrBYPNNT5wYuAl72r+WD1bTFAEBR5t/tarhb+F6QoZsO
-	oRKQpT19UAJwMzemkHWwDnN9sfk0zilC6Cu1i
-X-Google-Smtp-Source: AGHT+IGTyXCLkCwzv91SQLJo8H1vilTaHcuH6H1HwaYMWwM9HiuPHyBE1pEgjVEFvDaXFEHXUCUkZurdjE3oRuDyd8M=
-X-Received: by 2002:a05:6402:3127:b0:55a:465a:45a5 with SMTP id
- dd7-20020a056402312700b0055a465a45a5mr1236edb.4.1705602664882; Thu, 18 Jan
- 2024 10:31:04 -0800 (PST)
+        bh=AoKvtiZnBVW/PmvlVnV1RfQwRL3DN9j4sZFOWAIFXeo=;
+        b=Xps1jRw6SMVEBAotpGFjGcT9CwCDW/arG2MHPGKxVjJ7ibvaBbs8MCzmuJXE3SZq6P
+         BmD/LyOen7fSSchF7CnAu6sChRg16n7rM5P4MfvA2r5vd92KPn9IljHLQIsWLZ+ns6a2
+         nrxI2ETmsGV0lDVuVmhwZb0rSRRK4Hyqn+SRcqUI+BOcEkbL2rtXrwquoXa5rQYSl+qk
+         GOwP6E+I3nnCrtOnTNEpT/kED13km/ryXU3a/5IG/Wb+Dsr+encjXAZGuBrv4OUqjLyn
+         wO/lGQxnZ0BDo3pP6mxBdCzC736v3ANN2Jy6vDIh6znGJ/uDloyTu++k9iuacrEWLx/Y
+         b8Qw==
+X-Gm-Message-State: AOJu0YzFZgi2CanUJOkSvbDX725mZHJi++k31mo+yyREBIuNr+HL8XXF
+	SK5G7hJfRLQ1/TZdHC2apc/3c6oXsn7pK+/xFfqKCM/J35oIGdddWcrDFYT8Mloud6yjBlx39RS
+	w+kYotZxF/Cn7dqjgo5jcheo9DoU=
+X-Google-Smtp-Source: AGHT+IGz8+VV+YjIzdeZnTGQat3BrS60m1s2aKJuDXDW43uot7OTGBId3+z+1dtYJTgJcqGKtfBevgjflgOsIJSNG8E=
+X-Received: by 2002:a05:6122:3128:b0:4b7:4cfb:4217 with SMTP id
+ cg40-20020a056122312800b004b74cfb4217mr937797vkb.22.1705602783574; Thu, 18
+ Jan 2024 10:33:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118154910.8765-1-quic_kriskura@quicinc.com>
-In-Reply-To: <20240118154910.8765-1-quic_kriskura@quicinc.com>
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date: Thu, 18 Jan 2024 10:30:53 -0800
-Message-ID: <CANP3RGePrcwQkmqrG0rkNH79tyXP-W6J=xnCGvWK6G2OPfa6iA@mail.gmail.com>
-Subject: Re: [PATCH] usb: gadget: ncm: Fix endianness of wMaxSegmentSize
- variable in ecm_desc
-To: Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hardik Gajjar <hgajjar@de.adit-jv.com>, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	quic_ppratap@quicinc.com, quic_wcheng@quicinc.com, quic_jackp@quicinc.com
+References: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
+ <20240116133145.12454-1-debug.penguin32@gmail.com> <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
+ <CAJD7tkb_uC_K7+C3GjVqg1rDRCmUkbHcEw950CkUHG66yokbcg@mail.gmail.com>
+ <20240118161601.GJ939255@cmpxchg.org> <CAJD7tkb+NCocjpjvM08Nv2fPMDqm4t-YH05TJckz8m1AYFNWUg@mail.gmail.com>
+ <20240118173927.GL939255@cmpxchg.org>
+In-Reply-To: <20240118173927.GL939255@cmpxchg.org>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Thu, 18 Jan 2024 10:32:51 -0800
+Message-ID: <CAKEwX=PKBaqcpFwXpf1-M2nZ+ytFv2oCwxRVCe+CC5++rhgY=A@mail.gmail.com>
+Subject: Re: [PATCH] mm/zswap: Improve with alloc_workqueue() call
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Ronald Monthero <debug.penguin32@gmail.com>, 
+	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
+	akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 18, 2024 at 7:49=E2=80=AFAM Krishna Kurapati
-<quic_kriskura@quicinc.com> wrote:
+On Thu, Jan 18, 2024 at 9:39=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
 >
-> Recent commit [1] added support for changing max segment size of the NCM
-> interface via configfs. But the value of segment size value stored in
-> ncm_opts need to be converted to little endian before saving it in
-> ecm_desc. Also while initialising the value of segment size in opts durin=
-g
-> instance allocation, the value ETH_FRAME_LEN needs to be assigned directl=
-y
-> without any conversion as ETH_FRAME_LEN and the variable max_segment_size
-> are native endian. The current implementaion modifies it into little endi=
-an
-> thus breaking things for big endian targets.
+> On Thu, Jan 18, 2024 at 09:06:43AM -0800, Yosry Ahmed wrote:
+> > > > > On a different note, I wonder if it would help to perform synchro=
+nous
+> > > > > reclaim here instead. With our current design, the zswap store fa=
+ilure
+> > > > > (due to global limit hit) would leave the incoming page going to =
+swap
+> > > > > instead, creating an LRU inversion. Not sure if that's ideal.
+> > > >
+> > > > The global shrink path keeps reclaiming until zswap can accept agai=
+n
+> > > > (by default, that means reclaiming 10% of the total limit). I think
+> > > > this is too expensive to be done synchronously.
+> > >
+> > > That thresholding code is a bit weird right now.
+> > >
+> > > It wakes the shrinker and rejects at the same time. We're guaranteed
+> > > to see rejections, even if the shrinker has no trouble flushing some
+> > > entries a split second later.
+> > >
+> > > It would make more sense to wake the shrinker at e.g. 95% full and
+> > > have it run until 90%.
+
+Yep, we should be reclaiming zswap objects way ahead of the pool
+limit. Hence the new shrinker, which is memory pressure-driven (i.e
+independent of zswap internal limits), and will typically be triggered
+even if the pool is not full. During experiments, I never observe the
+pool becoming full, with the default settings. I'd be happy to extend
+it (or build in extra shrinking logic) to cover these pool limits too,
+if it turns out to be necessary.
+
+> > >
+> > > But with that in place we also *should* do synchronous reclaim once w=
+e
+> > > hit 100%. Just enough to make room for the store. This is important t=
+o
+> > > catch the case where reclaim rate exceeds swapout rate. Rejecting and
+> > > going to swap means the reclaimer will be throttled down to IO rate
+> > > anyway, and the app latency isn't any worse. But this way we keep the
+> > > pipeline alive, and keep swapping out the oldest zswap entries,
+> > > instead of rejecting and swapping what would be the hottest ones.
+> >
+> > I fully agree with the thresholding code being weird, and with waking
+> > up the shrinker before the pool is full. What I don't understand is
+> > how we can do synchronous reclaim when we hit 100% and still respect
+> > the acceptance threshold :/
+> >
+> > Are you proposing we change the semantics of the acceptance threshold
+> > to begin with?
 >
-> Fix endianness while assigning these variables.
-> While at it, fix up some stray spaces in comments added in code.
+> I kind of am. It's worth looking at the history of this knob.
 >
-> [1]: https://lore.kernel.org/all/20231221153216.18657-1-quic_kriskura@qui=
-cinc.com/
+> It was added in 2020 by 45190f01dd402112d3d22c0ddc4152994f9e1e55, and
+> from the changelogs and the code in this patch I do not understand how
+> this was supposed to work.
 >
-> Fixes: 1900daeefd3e ("usb: gadget: ncm: Add support to update wMaxSegment=
-Size via configfs")
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> ---
-> Since the patch was tested on ARM based QC devices, no issues were seen
-> as these devices were little endian. Thanks to Maciej =C5=BBenczykowski f=
-or
-> pointing it out offline over ACK that the patch breaks functionality for
-> big endian devices.
+> It also *didn't* work for very basic real world applications. See
+> Domenico's follow-up (e0228d590beb0d0af345c58a282f01afac5c57f3), which
+> effectively reverted it to get halfway reasonable behavior.
 >
->  drivers/usb/gadget/function/f_ncm.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/fun=
-ction/f_ncm.c
-> index a1575a0ca568..ca5d5f564998 100644
-> --- a/drivers/usb/gadget/function/f_ncm.c
-> +++ b/drivers/usb/gadget/function/f_ncm.c
-> @@ -105,8 +105,8 @@ static inline struct f_ncm *func_to_ncm(struct usb_fu=
-nction *f)
->
->  /*
->   * Although max mtu as dictated by u_ether is 15412 bytes, setting
-> - * max_segment_sizeto 15426 would not be efficient. If user chooses segm=
-ent
-> - * size to be (>=3D 8192), then we can't aggregate more than one  buffer=
- in each
-> + * max_segment_size to 15426 would not be efficient. If user chooses seg=
-ment
-> + * size to be (>=3D 8192), then we can't aggregate more than one buffer =
-in each
->   * NTB (assuming each packet coming from network layer is >=3D 8192 byte=
-s) as ep
->   * maxpacket limit is 16384. So let max_segment_size be limited to 8000 =
-to allow
->   * at least 2 packets to be aggregated reducing wastage of NTB buffer sp=
-ace
-> @@ -1489,7 +1489,7 @@ static int ncm_bind(struct usb_configuration *c, st=
-ruct usb_function *f)
->         ncm_data_intf.bInterfaceNumber =3D status;
->         ncm_union_desc.bSlaveInterface0 =3D status;
->
-> -       ecm_desc.wMaxSegmentSize =3D ncm_opts->max_segment_size;
-> +       ecm_desc.wMaxSegmentSize =3D cpu_to_le16(ncm_opts->max_segment_si=
-ze);
->
->         status =3D -ENODEV;
->
-> @@ -1685,7 +1685,7 @@ static struct usb_function_instance *ncm_alloc_inst=
-(void)
->                 kfree(opts);
->                 return ERR_CAST(net);
->         }
-> -       opts->max_segment_size =3D cpu_to_le16(ETH_FRAME_LEN);
-> +       opts->max_segment_size =3D ETH_FRAME_LEN;
->         INIT_LIST_HEAD(&opts->ncm_os_desc.ext_prop);
->
->         descs[0] =3D &opts->ncm_os_desc;
-> --
-> 2.42.0
->
-Reviewed-by: Maciej =C5=BBenczykowski <maze@google.com>
+> If there are no good usecases for this knob, then I think it makes
+> sense to phase it out again.
+
+Yeah this was my original proposal - remove this knob altogether :)
+Based on a cursory read, it just seems like zswap was originally
+trying to shrink (synchronously) one "object", then try to check if
+the pool size is now under the limit. This is indeed insufficient.
+However, I'm not quite convinced by the solution (hysteresis) either.
+
+Maybe we can synchronously shrink a la Domenico, i.e until the pool
+can accept new pages, but this time capacity-based (maybe under the
+limit + some headroom, 1 page for example)? This is just so that the
+immediate incoming zswap store succeeds - we can still have the
+shrinker freeing up space later on (or maybe keep an asynchronous
+pool-limit based shrinker around).
 
