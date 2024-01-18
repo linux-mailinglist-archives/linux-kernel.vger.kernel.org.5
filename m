@@ -1,192 +1,158 @@
-Return-Path: <linux-kernel+bounces-30546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E42E183201C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:04:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2355E832045
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DD8A28CD8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:04:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98BE4B23D92
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058732E637;
-	Thu, 18 Jan 2024 20:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254662E641;
+	Thu, 18 Jan 2024 20:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="A1jayF8Q";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="j/gOikvb"
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="xqTtGfaJ"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B002A2E627;
-	Thu, 18 Jan 2024 20:04:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45AD22E820;
+	Thu, 18 Jan 2024 20:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705608266; cv=none; b=Jz6kcavxHZHByFdPAxQJ05hfRM9cPsCyrEAV9qZo9tlkK3yJ+GtGILVX8gHGhn8ikO/30W072TOHzuSlDiGJp25j16oUswtU6VvK8AZcYrTKoZYV/2w+y2Y1ypGzu0kBqR3kAdBoCPKqRLrxeUz5T6lxklw2+Oyhz+fU7tLwWy0=
+	t=1705608568; cv=none; b=QqfffUSOs9nkiXmaXeMN9fu7JdHp5dWyZBmSM/RNzWOk2hFjrtgxXW11PveuvMjaC60UE0NV0U28yGM7xm/BqXDYcHrcBFx2tgeQlXmg5v7m4+yDjmEHDW+jKNonfKX/d9zszbF2OsSatwZ40SkARDdCLPk2QP+e7U36tLVGesw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705608266; c=relaxed/simple;
-	bh=COhXMdF3+eMsGttATIi38DB05n6Iu0a1pqC7yzI2boU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ucr3mhm5y/cvvLXqf2sQqhTnc0ZCBAi9m+kDh2fhhuZBAsWmDN2kE83ywYvOpm/ClSf0ubo67lYiDKXyBpzVjIXWoleWIqhuxaOLekH+VJvJoc2bnZ4k3O6Rg/zihViXL5mSrLddhmyBfVSKaqaHKcYow/yY64SFn8TatRIJT1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=A1jayF8Q; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=j/gOikvb; arc=none smtp.client-ip=161.53.235.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 3F2786019E;
-	Thu, 18 Jan 2024 21:04:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1705608255; bh=COhXMdF3+eMsGttATIi38DB05n6Iu0a1pqC7yzI2boU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=A1jayF8QuQG4CrL+drJbI+qkNLTjXQzU+eDifn/TwMc8PpwLP1JHsQKToJS2ck2ky
-	 eA83g3Pi53SKYfFm++BwmO/8uqU8NlL/1F8XszCc5f2pYwzAZ5Z5ihFc/oi4PGiPHv
-	 Y2Uyot9OXv9V+Wn13ZJkR065xsHsdU9s480DTRX/bYaWr5/8Z0fYdpr+k7laTDj0WT
-	 nOunha61Rc09tQF2FN1f7E2ZJgci1E81fb/Q3OJ6UAEgezxNugFiS2s3IbrgllHbU8
-	 bFAldZ37BRAPfaijo3euhQeFfXwQLEohsmwPmPkq+ItKWJJFM/kieZKt42fohtq1X+
-	 0VolhUwSNJMuQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id FFRGPimg4s5R; Thu, 18 Jan 2024 21:04:13 +0100 (CET)
-Received: from [192.168.178.20] (dh207-40-167.xnet.hr [88.207.40.167])
-	by domac.alu.hr (Postfix) with ESMTPSA id B694C6019B;
-	Thu, 18 Jan 2024 21:04:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1705608253; bh=COhXMdF3+eMsGttATIi38DB05n6Iu0a1pqC7yzI2boU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=j/gOikvbTlQUFW2rcpxBxkrxfjuxfp2hRJDRFlLWlGKIz4rmHNo6UCKhSCWMe3176
-	 qNbm723njL6MP34/hETkBQ0mIVHd+aYEJpPacF/MulHsb3SolvdMdDFmShcmZGd/xJ
-	 4O3SjhERBbckMzJSOLlV5QqXIkFbNCpi6dWaGSKuScEo+Y0abzoBesQudnbZzAdDA5
-	 rvVyAq3mg6VvrXhY5QJCTq3eHzrwXdr8Av1RozguaBJ+8hARN31fk4LUJHkv4+nWee
-	 XtiqTJF294exckpH5Sq5FEI/GnYzN2U/kBMNB1L5eqbuRfbcjcBXaHisRN9mW+FBe2
-	 oRhs5YMbC/AyA==
-Message-ID: <1fe9b78c-7fb5-4d7b-a754-afd563950829@alu.unizg.hr>
-Date: Thu, 18 Jan 2024 21:04:05 +0100
+	s=arc-20240116; t=1705608568; c=relaxed/simple;
+	bh=+1BBAmhjPr21bsmB0fbG6/lTejPku0zieqaCETcpZqo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YjItywnXH3Y5yNIIwJhohWnHmE1Z4VtJn954HKNaaY//Q1OovN9vzHHtWw8mdys1zukwmJ4ugzd0kGFE7ldJwm+zEWB8KV0qbCN7FcZG+Y61bq11rMXk0nmeh/ior489HgUyiMdEkduiP3soKmfNPlmivecNRHnpewWB7Hkw43g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=xqTtGfaJ; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=0oxztr42FkjOzBi9aAnhLgr6FBfDil+TPxe0I/CkkSI=; b=xqTtGfaJv5Ieq5SM02K26en2n4
+	GKLn0wi8mP3Au/l5kQCJsfS76l8A2gPDxHmNgCktbyW9jhp73+zxRPHhp8N/TI/JE6Z6vlusiLJex
+	biODChGpk/ruC1X2ATRUo6fp6KTamezypQnW9wdCoogiAy6EB5cn0Ln5peFbHA3Bqllg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rQYhK-005VJS-W8; Thu, 18 Jan 2024 21:09:11 +0100
+Date: Thu, 18 Jan 2024 21:09:10 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Andre Werner <andre.werner@systec-electronic.com>, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	linux@armlinux.org.uk, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: adin1100: Fix nullptr exception for phy
+ interrupts
+Message-ID: <4e30f871-c7b7-4dc5-ba4c-629a63dc3261@lunn.ch>
+References: <20240118104341.10832-1-andre.werner@systec-electronic.com>
+ <322d5543-4d13-48a7-af58-daa8cc840f05@lunn.ch>
+ <727d83ab-3315-4b5c-84da-25f8ffd6aca5@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG][BISECTED] Freeze at loading init ramdisk
-To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hans de Goede <hdegoede@redhat.com>, Huacai Chen <chenhuacai@kernel.org>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Prathu Baronia <prathubaronia2011@gmail.com>, Sam Ravnborg
- <sam@ravnborg.org>, Sui Jingfeng <suijingfeng@loongson.cn>,
- Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org
-References: <8a6aa228-f2da-4dcd-93c1-e34614cd6471@alu.unizg.hr>
- <cc813525-5484-443e-a40a-cb98f2ed4e1f@alu.unizg.hr>
- <gevqxytidg5efylozindaqntkbl4yeoyzqnh5m3ylitmipgum3@sgmv7qieo7rs>
-Content-Language: en-US
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <gevqxytidg5efylozindaqntkbl4yeoyzqnh5m3ylitmipgum3@sgmv7qieo7rs>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <727d83ab-3315-4b5c-84da-25f8ffd6aca5@gmail.com>
 
+On Thu, Jan 18, 2024 at 06:36:16PM +0100, Heiner Kallweit wrote:
+> On 18.01.2024 17:53, Andrew Lunn wrote:
+> > On Thu, Jan 18, 2024 at 11:43:41AM +0100, Andre Werner wrote:
+> >> If using ADIN1100 as an external phy, e.g. in combination with
+> >> "smsc95xx", we ran into nullptr exception by creating a link.
+> >>
+> >> In our case the "smsc95xx" does not check for an available interrupt handler
+> >> on external phy driver to use poll instead of interrupts if no handler is
+> >> available. So we decide to implement a small handler in the phy driver
+> >> to support other MACs as well.
+> >>
+> >> I update the driver to add an interrupt handler because libphy
+> >> does not check if their is a interrupt handler available either.
+> >>
+> >> There are several interrupts maskable at the phy, but only link change interrupts
+> >> are handled by the driver yet.
+> >>
+> >> We tested the combination "smsc95xx" and "adin1100" with Linux Kernel 6.6.9
+> >> and Linux Kernel 6.1.0, respectively.
+> > 
+> > Hi Andre
+> > 
+> > A few different things....
+> > 
+> > Please could you give more details of the null pointer
+> > exception. phylib should test if the needed methods have been
+> > implemented in the PHY driver, and not tried to use interrupts when
+> > they are missing. It should of polled the PHY. So i would like to
+> > understand what went wrong. Maybe we have a phylib core bug we should
+> > be fixing. Or a bug in the smsc95xx driver.
+> > 
+> Seems to be a bug in smsc95xx. The following is the relevant code piece.
+> 
+> ret = mdiobus_register(pdata->mdiobus);
+> 	if (ret) {
+> 		netdev_err(dev->net, "Could not register MDIO bus\n");
+> 		goto free_mdio;
+> 	}
+> 
+> 	pdata->phydev = phy_find_first(pdata->mdiobus);
+> 	if (!pdata->phydev) {
+> 		netdev_err(dev->net, "no PHY found\n");
+> 		ret = -ENODEV;
+> 		goto unregister_mdio;
+> 	}
+> 
+> 	pdata->phydev->irq = phy_irq;
+> 
+> The interrupt is set too late, after phy_probe(), where we have this:
+> 
+> if (!phy_drv_supports_irq(phydrv) && phy_interrupt_is_valid(phydev))
+> 		phydev->irq = PHY_POLL;
+> 
+> So we would have two steps:
+> 1. Fix the smsc95xx bug (as the same issue could occur with another PHY type)
 
+Its not so nice to fix.
 
-On 1/18/24 08:45, Uwe Kleine-König wrote:
-> Hello Mirsad,
-> 
-> On Wed, Jan 17, 2024 at 07:47:49PM +0100, Mirsad Todorovac wrote:
->> On 1/16/24 01:32, Mirsad Todorovac wrote:
->>> On the Ubuntu 22.04 LTS Jammy platform, on a mainline vanilla torvalds tree kernel, the boot
->>> freezes upon first two lines and before any systemd messages.
->>>
->>> (Please find the config attached.)
->>>
->>> Bisecting the bug led to this result:
->>>
->>> marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect good
->>> d97a78423c33f68ca6543de510a409167baed6f5 is the first bad commit
->>> commit d97a78423c33f68ca6543de510a409167baed6f5
->>> Merge: 61da593f4458 689237ab37c5
->>> Author: Linus Torvalds <torvalds@linux-foundation.org>
->>> Date:   Fri Jan 12 14:38:08 2024 -0800
->>>
->>> [...]
->>>
->>> Hope this helps.
->>
->> P.S.
->>
->> As I see that this is a larger merge commit, with 5K+ lines changed, I don't think I can
->> bisect further to determine the culprit.
-> 
-> Actually it's not that hard. If a merge commit is the first bad commit
-> for a bisection, either the merge wasn't done correctly (less likely,
-> looking at d97a78423c33f68ca6543de510a409167baed6f5 I'd bet this isn't
-> the problem); or changes on different sides conflict or you did
-> something wrong during bisection.
-> 
-> To rule out the third option, you can just retest d97a78423c33,
-> 61da593f4458 and 689237ab37c5. If d97a78423c33 is the only bad one, you
-> did it right.
+Normally you would do something like:
 
-This was confirmed.
+        pdata->mdiobus->priv = dev;
+        pdata->mdiobus->read = smsc95xx_mdiobus_read;
+        pdata->mdiobus->write = smsc95xx_mdiobus_write;
+        pdata->mdiobus->reset = smsc95xx_mdiobus_reset;
+        pdata->mdiobus->name = "smsc95xx-mdiobus";
+        pdata->mdiobus->parent = &dev->udev->dev;
 
-> Then to further debug the second option you can find out the offending
-> commit on each side with a bisection as follows, here for the RHS (i.e.
-> 689237ab37c5):
-> 
-> 	git bisect start 689237ab37c5 $(git merge-base 61da593f4458 689237ab37c5)
-> 
-> and then in each bisection step do:
-> 
-> 	git merge --no-commit 61da593f4458
-> 	test if the problem is present
-> 	git reset --hard
-> 	git bisect good/bad
-> 
-> In this case you get merge conflicts in drivers/video/fbdev/amba-clcd.c
-> and drivers/video/fbdev/vermilion/vermilion.c. In the assumption that
-> you don't have these enabled in your .config, you can just ignore these.
-> 
-> Side note: A problem during bisection can be that the .config changes
-> along the process. You should put your config into (say)
-> arch/x86/configs/lala_defconfig and do
-> 
-> 	make lala_defconfig
-> 
-> before building each step to prevent this.
+        snprintf(pdata->mdiobus->id, ARRAY_SIZE(pdata->mdiobus->id),
+                 "usb-%03d:%03d", dev->udev->bus->busnum, dev->udev->devnum);
 
-I must have done something wrong:
+	pdata->mdiobus->irq[X] = phy_irq;
 
-marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect log
-# bad: [689237ab37c59b9909bc9371d7fece3081683fba] fbdev/intelfb: Remove driver
-# good: [de927f6c0b07d9e698416c5b287c521b07694cac] Merge tag 's390-6.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
-git bisect start '689237ab37c5' 'de927f6c0b07d9e698416c5b287c521b07694cac'
-# good: [d9f25b59ed85ae45801cf45fe17eb269b0ef3038] fbdev: Remove support for Carillo Ranch driver
-git bisect good d9f25b59ed85ae45801cf45fe17eb269b0ef3038
-# good: [e2e0b838a1849f92612a8305c09aaf31bf824350] video/sticore: Remove info field from STI struct
-git bisect good e2e0b838a1849f92612a8305c09aaf31bf824350
-# good: [778e73d2411abc8f3a2d60dbf038acaec218792e] drm/hyperv: Remove firmware framebuffers with aperture helper
-git bisect good 778e73d2411abc8f3a2d60dbf038acaec218792e
-# good: [df67699c9cb0ceb70f6cc60630ca938c06773eda] firmware/sysfb: Clear screen_info state after consuming it
-git bisect good df67699c9cb0ceb70f6cc60630ca938c06773eda
-marvin@defiant:~/linux/kernel/linux_torvalds$
+	ret = mdiobus_register(pdata->mdiobus);
 
-with the error:
+By setting pdata->mdiobus->irq[X] before registering the PHY, the irq
+number gets passed to the phydev->irq very early on. If everything is
+O.K, interrupts are then used.
 
-marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect good
-Bisecting: 0 revisions left to test after this (roughly 0 steps)
-drivers/video/fbdev/amba-clcd.c: needs merge
-drivers/video/fbdev/vermilion/vermilion.c: needs merge
-error: you need to resolve your current index first
-marvin@defiant:~/linux/kernel/linux_torvalds$
+However, because of the use of phy_find_first(), we have no idea what
+address on the bus the PHY is using. So we don't know which member of
+irq[] to set. Its not ideal, but one solution is to set them all.
 
-Best regards,
-Mirsad
+However, a better solution is to perform the validation again in
+phy_attach_direct(). Add a second:
 
-> Best regards
-> Uwe
-> 
+	if (!phy_drv_supports_irq(phydrv) && phy_interrupt_is_valid(phydev))
+        	phydev->irq = PHY_POLL;
+
+which will force phydev->irq back to polling.
+
+      Andrew
 
