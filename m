@@ -1,147 +1,222 @@
-Return-Path: <linux-kernel+bounces-30219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B2E831BAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2969D831BB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:46:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEEC7B21E88
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:45:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C627EB23F79
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29EB31DA29;
-	Thu, 18 Jan 2024 14:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545931DDD2;
+	Thu, 18 Jan 2024 14:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OmfPqywr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b2s3Dih+"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70DD2646;
-	Thu, 18 Jan 2024 14:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A63646;
+	Thu, 18 Jan 2024 14:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705589095; cv=none; b=XjHO98/vVqsB8VTqXEskc8BXj1r8ygmUkyAlHvnEDMkL+X3Md3paN58zjxBdwRj1PrtCT/vJcJZORsgVCv+Fz++7oCZDs5XzMOlUJTx1icB1U+fXHIdSuUlU6rTI93FLZx5Z8pcRsxQxw1v3BOxrhB0WVcJWutVojKnZchme96k=
+	t=1705589179; cv=none; b=Abf0YrfiSBgKV8ysXnu6Cab7IzPelj0TUC/oy/CTFbk0iChOtu/KX3JvJtzzJ9QSej8zv5JsBROnXI3PtPVLyuZEftdhx0oBuo9K/Oxv5WXiULwRDaGL8jcT85/l4Nuzq9fLVO1Q19ADBDaHrDmL74Qru+FzE2CEjItYdzBoPFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705589095; c=relaxed/simple;
-	bh=FIWDXh4TMq/7lMeI0IsyQDpPlkd6cnqeXUZhP3qX+A4=;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=rPkS8VEk9xFotx7xJCr1tDhS6u2xcGdUZOSZv61tiuJS8SaSv0FVB7aCkaAwi14nNTRns9RJhNN0hmW8s1+Ge3gGZCLyMwVvkkbjFDKB6WIIV7YL6Mzu3GDpT891Qk5LuPaq7wrPq/tVuTvohh+fEo6fUOuJAWDcC3HPz+fOJ34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OmfPqywr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBA55C433C7;
-	Thu, 18 Jan 2024 14:44:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705589094;
-	bh=FIWDXh4TMq/7lMeI0IsyQDpPlkd6cnqeXUZhP3qX+A4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=OmfPqywrN5vo9zYO6l/kHSO0GOcSt6zCu+Wvibnqme2XW7kQSLfgRs0oWVczAxoXe
-	 d6NWhfOKeQzHtrGjDkmxJlAEDlDzn3aD8aNL9vRJZEm0SjDI+MQR6heyuF2Kv6CW7I
-	 773MMllTjQ9wrci5Imq1JsL9U1M5cYXzd6kpocvZLYQDtVCWtxChhMg/+ixVvuyszl
-	 kvdhYJNQgYKH9322x923TgetLy3Ir43rUh4POtkDWjS+AUPtvnW4hZb6NEV/nwBkaV
-	 tNYjpb78YnDRALYsi4jarc2aLh02j7nV1vdnmHF+qZRk/fceXJFO19DW67eglBw8bc
-	 zbcaUrPpDWnew==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 50520CE0546; Thu, 18 Jan 2024 06:44:54 -0800 (PST)
-Date: Thu, 18 Jan 2024 06:44:54 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Chen Zhongjin <chenzhongjin@huawei.com>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, yangjihong1@huawei.com,
-	naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-	davem@davemloft.net, mhiramat@kernel.org, akpm@linux-foundation.org,
-	tglx@linutronix.de, peterz@infradead.org, pmladek@suse.com,
-	dianders@chromium.org, npiggin@gmail.com, mpe@ellerman.id.au,
-	jkl820.git@gmail.com, juerg.haefliger@canonical.com,
-	rick.p.edgecombe@intel.com, eric.devolder@oracle.com,
-	mic@digikod.net
-Subject: Re: [PATCH v2] kprobes: Use synchronize_rcu_tasks_rude in
- kprobe_optimizer
-Message-ID: <47e87ff3-2925-4671-89a6-067f36f25d19@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240118021842.290665-1-chenzhongjin@huawei.com>
- <20240117212646.5f0ddf0c@gandalf.local.home>
+	s=arc-20240116; t=1705589179; c=relaxed/simple;
+	bh=V/rb3e7RICwYcaa6sGQk5hX7onXeunnOrGGXPUjSP4s=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Message-ID:In-Reply-To:References:Subject:Mime-Version:
+	 Content-Type:Content-Transfer-Encoding; b=JbI01cXbPwgIwxKVY3BcvNhB15Yrk76nvgh9GDAKJGUsrazDTU46bdMOOES6YI3QZlU+3amiA2qyGSLDk3L8RNXajmzr3MXepSbifd/HbSAnZUD7qFoRO5a4hozTez7E6893cvZ+cu2e63bBJEBziaovkW+GnE3uZ9O3f3OYtiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b2s3Dih+; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68192840641so2338746d6.1;
+        Thu, 18 Jan 2024 06:46:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705589177; x=1706193977; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V/rb3e7RICwYcaa6sGQk5hX7onXeunnOrGGXPUjSP4s=;
+        b=b2s3Dih+kRIgNm+BIW8vVCPxX42jWdNMQLlFDCtbcXwUZA9gS/B5PET0r40/8yIGQu
+         mm10HhoDzSj/cgqHMwuXoYQX853qJgiMEmSZ9vnQYFoainGHwQp2Pogre0zPjBAezzhk
+         90tqPPm0oIcT+LfdosPSfcwrkvv2+4NgNkejyqOqdW3o9lERHDLp1wF8iiZDPdMgAhD6
+         EQDtjG+rlyS00Czczv3q3efIHu0PODN2r0pdz7iqtFsrsVD3t8N0ArjHqAP1C6D6i2R7
+         +yRhLULldk1tN5GHUVzPzZOPBnc9ez/8vIvcs+HLZqBO66cKi2hMUj8LIML6q1eNlzKQ
+         8eIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705589177; x=1706193977;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=V/rb3e7RICwYcaa6sGQk5hX7onXeunnOrGGXPUjSP4s=;
+        b=MZrI4kbRyn9fPKmOklZQBlcEGRKr+HIsciEfrD2tQgGM7QFe03I5ZntHs4i+biFAWe
+         APwE6CH5EFSR8QCawJm805js1/wzbbElImSf3QapkR1VkvN++LANH5/0L7Q/5a9HMUUZ
+         J3WqjasnvuZRND352oGuQJzX6Nql3kyu8UYLmn6kezFd1vQ8i5OAmmYF6dVJAmKk2zrZ
+         TO6sOj4oPrsnRhHDk2eOPEfrokdDkb+k7IqpM0GxIcPZSDavqxcqYHey+DmKWJKnckV4
+         HKpxPSF16aGRCwsdvGs+EBgvZXGyZe3IgZ4jPutblNHVGm82D+MM3iL3Hruyto6gf5W8
+         F13g==
+X-Gm-Message-State: AOJu0YzfDlxnjOAT4Mqp9fMwNYsFQXLN2nY9d0D1qrU5Xz8tpthxXREU
+	4hPEPgbHgeNbRXFQoKsfnbFNcC7p/7J08vKFO1TyVTf+DvQYvcRV
+X-Google-Smtp-Source: AGHT+IH+TgHvABrEncSHKKQdsk7gG56NyZWGS0rBtCCs3JQZ1KTPsJYVteYbiXaQa404+RhgAHTUBw==
+X-Received: by 2002:a05:6214:d08:b0:681:8230:3136 with SMTP id 8-20020a0562140d0800b0068182303136mr831375qvh.78.1705589176859;
+        Thu, 18 Jan 2024 06:46:16 -0800 (PST)
+Received: from localhost (131.65.194.35.bc.googleusercontent.com. [35.194.65.131])
+        by smtp.gmail.com with ESMTPSA id kh13-20020a056214514d00b006816b56e1desm2425026qvb.129.2024.01.18.06.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 06:46:16 -0800 (PST)
+Date: Thu, 18 Jan 2024 09:46:16 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <j-t.hinz@alumni.tu-berlin.de>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Arnd Bergmann <arnd@arndb.de>, 
+ Deepa Dinamani <deepa.kernel@gmail.com>
+Message-ID: <65a939b85a763_1c8cde29423@willemb.c.googlers.com.notmuch>
+In-Reply-To: <f4e27abc6741c175b4b1baf1331c30aaedeab290.camel@alumni.tu-berlin.de>
+References: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
+ <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
+ <f4e27abc6741c175b4b1baf1331c30aaedeab290.camel@alumni.tu-berlin.de>
+Subject: Re: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with
+ bpf_setsockopt()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117212646.5f0ddf0c@gandalf.local.home>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 09:26:46PM -0500, Steven Rostedt wrote:
-> On Thu, 18 Jan 2024 02:18:42 +0000
-> Chen Zhongjin <chenzhongjin@huawei.com> wrote:
-> 
-> > There is a deadlock scenario in kprobe_optimizer():
-> > 
-> > pid A				pid B			pid C
-> > kprobe_optimizer()		do_exit()		perf_kprobe_init()
-> > mutex_lock(&kprobe_mutex)	exit_tasks_rcu_start()	mutex_lock(&kprobe_mutex)
-> > synchronize_rcu_tasks()		zap_pid_ns_processes()	// waiting kprobe_mutex
-> > // waiting tasks_rcu_exit_srcu	kernel_wait4()
-> > 				// waiting pid C exit
-> > 
-> > To avoid this deadlock loop, use synchronize_rcu_tasks_rude() in kprobe_optimizer()
-> > rather than synchronize_rcu_tasks(). synchronize_rcu_tasks_rude() can also promise
-> > that all preempted tasks have scheduled, but it will not wait tasks_rcu_exit_srcu.
-> > 
-> 
-> Did lockdep detect this? If not, we should fix that.
-> 
-> I'm also thinking if we should find another solution, as this seems more of
-> a work around than a fix.
+J=C3=B6rn-Thorben Hinz wrote:
+> On Tue, 2024-01-16 at 10:17 -0500, Willem de Bruijn wrote:
+> > J=C3=B6rn-Thorben Hinz wrote:
+> > > A BPF application, e.g., a TCP congestion control, might benefit
+> > > from or
+> > > even require precise (=3Dhardware) packet timestamps. These
+> > > timestamps are
+> > > already available through __sk_buff.hwtstamp and
+> > > bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs=
 
-My suggestion is at 526b12e4-4bb0-47b1-bece-66b47bfc0a92@paulmck-laptop.
+> > > were
+> > > not allowed to set SO_TIMESTAMPING* on sockets.
+> > > =
 
-Better suggestions are of course welcome.  ;-)
+> > > Enable BPF programs to actively request the generation of
+> > > timestamps
+> > > from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the=
 
-> > Fixes: a30b85df7d59 ("kprobes: Use synchronize_rcu_tasks() for optprobe with CONFIG_PREEMPT=y")
-> > Signed-off-by: Chen Zhongjin <chenzhongjin@huawei.com>
-> > ---
-> > v1 -> v2: Add Fixes tag
-> > ---
-> >  arch/Kconfig     | 2 +-
-> >  kernel/kprobes.c | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index f4b210ab0612..dc6a18854017 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -104,7 +104,7 @@ config STATIC_CALL_SELFTEST
-> >  config OPTPROBES
-> >  	def_bool y
-> >  	depends on KPROBES && HAVE_OPTPROBES
-> > -	select TASKS_RCU if PREEMPTION
-> > +	select TASKS_RUDE_RCU
-> 
-> Is this still a bug if PREEMPTION is not enabled?
+> > > network device must still be done separately, in user space.
+> > > =
 
-Both "select" clauses would be needed for this patch, if I understand
-correctly.
+> > > This patch had previously been submitted in a two-part series
+> > > (first
+> > > link below). The second patch has been independently applied in
+> > > commit
+> > > 7f6ca95d16b9 ("net: Implement missing
+> > > getsockopt(SO_TIMESTAMPING_NEW)")
+> > > (second link below).
+> > > =
 
-							Thanx, Paul
+> > > On the earlier submission, there was the open question whether to
+> > > only
+> > > allow, thus enforce, SO_TIMESTAMPING_NEW in this patch:
+> > > =
 
-> -- Steve
-> 
-> >  
-> >  config KPROBES_ON_FTRACE
-> >  	def_bool y
-> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > index d5a0ee40bf66..09056ae50c58 100644
-> > --- a/kernel/kprobes.c
-> > +++ b/kernel/kprobes.c
-> > @@ -623,7 +623,7 @@ static void kprobe_optimizer(struct work_struct *work)
-> >  	 * Note that on non-preemptive kernel, this is transparently converted
-> >  	 * to synchronoze_sched() to wait for all interrupts to have completed.
-> >  	 */
-> > -	synchronize_rcu_tasks();
-> > +	synchronize_rcu_tasks_rude();
-> >  
-> >  	/* Step 3: Optimize kprobes after quiesence period */
-> >  	do_optimize_kprobes();
-> 
+> > > For a BPF program, this won't make a difference: A timestamp, when
+> > > accessed through the fields mentioned above, is directly read from
+> > > skb_shared_info.hwtstamps, independent of the places where NEW/OLD
+> > > is
+> > > relevant. See bpf_convert_ctx_access() besides others.
+> > > =
+
+> > > I am unsure, though, when it comes to the interconnection of user
+> > > space
+> > > and BPF "space", when both are interested in the timestamps. I
+> > > think it
+> > > would cause an unsolvable conflict when user space is bound to use
+> > > SO_TIMESTAMPING_OLD with a BPF program only allowed to set
+> > > SO_TIMESTAMPING_NEW *on the same socket*? Please correct me if I'm
+> > > mistaken.
+> > =
+
+> > The difference between OLD and NEW only affects the system calls. It
+> > is not reflected in how the data is stored in the skb, or how BPF can=
+
+> > read the data. A process setting SO_TIMESTAMPING_OLD will still allow=
+
+> > BPF to read data using SO_TIMESTAMPING_NEW.
+> > =
+
+> > But, he one place where I see a conflict is in setting sock_flag
+> > SOCK_TSTAMP_NEW. That affects what getsockopt returns and which cmsg
+> > is written:
+> > =
+
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 if (sock_flag(sk, SOCK_TSTAMP_NEW))
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 put=
+_cmsg_scm_timestamping64(msg, tss);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 else
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 put=
+_cmsg_scm_timestamping(msg, tss);
+> > =
+
+> > So a process could issue setsockopt SO_TIMESTAMPING_OLD followed by
+> > a BPF program that issues setsockopt SO_TIMESTAMPING_NEW and this
+> > would flip SOCK_TSTAMP_NEW.
+> > =
+
+> > Just allowing BPF to set SO_TIMESTAMPING_OLD does not fix it, as it
+> > just adds the inverse case.
+> Thanks for elaborating on this. I see I only thought of half the
+> possible conflicting situations.
+> =
+
+> > =
+
+> > A related problem is how does the BPF program know which of the two
+> > variants to set. The BPF program is usually compiled and loaded
+> > independently of the running process.
+> True, that is an additional challenge. And with respect to CO-RE, I
+> think a really portable BPF program could (or at least should) not even=
+
+> decide on NEW or OLD at compile time.
+> =
+
+> > =
+
+> > Perhaps one option is to fail the setsockop if it would flip
+> > sock_flag SOCK_TSTAMP_NEW. But only if called from BPF, as else it
+> > changes existing ABI.
+> > =
+
+> > Then a BPF program can attempt to set SO_TIMESTAMPING NEW, be
+> > prepared to handle a particular errno, and retry with
+> > SO_TIMESTAMPING_OLD.
+> Hmm, would be possible, yes. But sounds like a weird and unexpected
+> special-case behavior to the occasional BPF user.
+
+Agreed. So perhaps we're back to where we say: this is a new feature
+for BPF, only support it on modern environments that use
+SO_TIMESTAMPING_NEW?
+
 
