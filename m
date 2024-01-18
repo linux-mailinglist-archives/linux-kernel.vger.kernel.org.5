@@ -1,97 +1,133 @@
-Return-Path: <linux-kernel+bounces-30062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B845831898
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:44:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE5CD83189A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:44:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACD301F25A30
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:44:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4EA1B2132A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:44:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C83D24202;
-	Thu, 18 Jan 2024 11:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4247D241F5;
+	Thu, 18 Jan 2024 11:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F0cot2KT"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="2erxiN+a"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2340B241F3
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF97024A16
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705578243; cv=none; b=VqhEPWagtge4w66Xo3uhIvbHRIKdVbYxOQAf/r5FbMsIO901gnnLw0GSgxEgfehM2w7uWzF1FYWOZvYg3HvLdzVc23zGz+ZMxrjJ78JvieHLuTY9NV2hnMgXhNCpJK2UIZg+3wiviRjMoZdidqhJgUNOHi5mtwjOKhGeDDpMv/M=
+	t=1705578251; cv=none; b=Qv1/SnEqfg5syAXrm3LoQ3Kn99REcpx6mnBXBUsWaA1eNo0+V/CYcaZ6TBPoseZ2AFz+EdUid31Oelzg7J1wC8JAHAhzFcDJpCSTqbgLrQVaJOkKcsBh75e3UbnT/KDT3Qnm4HPrcPjg3+iq5A16cXdT4qVlVNavXGBdccp1y20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705578243; c=relaxed/simple;
-	bh=fGxN8H5cKdZFoYgwZBOkxu+K9a5y0CIqWCEk76K2YtU=;
+	s=arc-20240116; t=1705578251; c=relaxed/simple;
+	bh=TXhzczoo35a+K5387LOUu85eARm780theDy+utDYSSc=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=BzJ9P0Wc/WVjw5ETAYLN0pDI+3xw9dNwEHJnTHKuPZgL5zKfVyXhfXVQLhdU3Io7FpkKuC0K1/dZb5V8PD4g6thXfSgSwiXLzQvshsh9UHOZcTxPb8lI5wduUGXGoefD7P+n5cC0q+slJFwSkezB8FdMmWfp3WvLco9KTPJUN9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F0cot2KT; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e9e5c97e1so15444398e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:44:01 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=cbXHtV/aPlR6t3r1qPJDJLsEVRrGaW4dD741qmluvqGw/rmeWJm2BJUtILMHqjTWeEx7dn8mPe1xMJRKkdCir1YbkGyPWDIxcimrSjdrkdKynTv1+Za7Q0ek6IlJb/US/Q9CSmFihJb+eLQyIH92ddMAbXTk6SH8ClCbEn6WMY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=2erxiN+a; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e775695c6so34878845e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:44:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705578240; x=1706183040; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fGxN8H5cKdZFoYgwZBOkxu+K9a5y0CIqWCEk76K2YtU=;
-        b=F0cot2KTOWA1EPpVlzQaG6NLs9Zw/QVDlUQxluAHKY3qi8lVt0VJduyXI/41+Ohax2
-         KEYmDh1PKtkDDsH4fl/HWjsZovl9utrqUPW5aqZ1/LRV8rstT27kVWnEVzRDuyiGxLgM
-         pOGoUG43pcr8YQRqBhVY6ZfHAwgJildEyczasGwvJNB02dgaM/iEIiUTeKT8df1brDce
-         7Ftn8jLujGPpkfWi4Je/50DwVbiQCbImjZig0dd9996stMfZNZDKeS9YWUT7bAcC3E0m
-         rLLh2ABU1LHzExVLeI3h/yarWsxqsTSb51bSwOhNugpgp73eCG758wqv47UG/T7sW28y
-         lKqA==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1705578248; x=1706183048; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9DkW5uoEoUxrAMeFqmakm3WJjGOpUAJrCM6+jSD1194=;
+        b=2erxiN+a7JjJ7kproTTBLEPXwarsPSlUTBfFZj0GjVpp9FWYeJe2viziLTPuVMQLvi
+         dP6lXKRGYwXgS5yLxU2exjMoDfBVtaOJUas52U55jZoLwi6D8bEdwtX82i+BEeNin4o0
+         Ujv/if/kir0tBZoUGqJPQISeoxJNx8VN/bJNQ9Fd6+tPsJh3v+jDCcdxdmpes8ig0bbz
+         f6mIqmZaEGMr9OhLD4RXNnWUFm/3Xf3bGuE4GlP0i4d2ZvV+MsxDcfZWtM/pWVspy/T3
+         boUg30NcI4zZxGv/aSEJEwC1d7JOcHhkgmmATTc3gOB6kw+FrH67yOX76JnXiJ0bDzwo
+         TmNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705578240; x=1706183040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fGxN8H5cKdZFoYgwZBOkxu+K9a5y0CIqWCEk76K2YtU=;
-        b=g5DhWYrI7IowOsOykWHq2qNg2L7yU9KBJ86101j6sO2IvJiBiW+OxgpQk1JPa9Z081
-         t/tGK+ORVfYSk4ZKtVO0vktt0ao6qnINAh8bcgSKllTiYAvqMxe8z+T17tgw3jfon7jL
-         nuK+i4+eG1L+Bt3QmsbN2hJ8kHUThxOuI3Hc35Hh6lB5pkmEyYyZHwaor24524WZ/Ra6
-         vo4BxjUIHckT1dnNTpMl6HSr2kftyNjM/CUNYME7rpv7HfkaCZoEi6QHalBB0D7Tqcxr
-         P7cGXY1HQov9p72oqo2FarqV2nojpNlLb7bLlY68f+WQWnHyKbRAUj318WFpckEoQHLj
-         2AuA==
-X-Gm-Message-State: AOJu0YwpxOLM9w3nwpy4mVwOv4YWcbGPBLQCA131D4UD0lww1IrsPTad
-	P2hTOnR75tViq7UgLdvSxnRGQWQUXvobaueR+6WPMwTiId9GholE0UiDPoASXV6i9apwT+4vIKI
-	6m8DLdblHMKYRg6eDwW30jprbJCw=
-X-Google-Smtp-Source: AGHT+IH+ku94Iew2GTbP3stiXOc4w7Pc+iHFIUmBJ2FGRnxG5gnWdGIYhd8LU0pn1ChNo6tCtTMDSIOET/zL8wuPIlM=
-X-Received: by 2002:ac2:5939:0:b0:50e:7fd9:7 with SMTP id v25-20020ac25939000000b0050e7fd90007mr395694lfi.59.1705578240018;
- Thu, 18 Jan 2024 03:44:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705578248; x=1706183048;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9DkW5uoEoUxrAMeFqmakm3WJjGOpUAJrCM6+jSD1194=;
+        b=AahUue+N5ZLNDm3vyJr+Kgi8Whnyomhcj3KcBMmc02bxxqtOdZq6zO/H82oSj3D5+W
+         NmoHSiCFcJBv+6cOF5xwbVBg2kCEUDR66jL8ua40JzDujqcyAy5MYtu1R/4slYvVExV2
+         v4KtryEWxRnpjfhEYqxBGe+cLZnyEejnHw5en9H2IkuABu86BYFJYX4sRoGTq06D16TK
+         IVd+e9Sg3Tn5sNgSlSpuWZ1p76r7tuGLxGQYCdjsu+VOn27pdjmXXjYQV+397pO8/Svj
+         /P1lIjAq6dYY7PpBX6esegMdAFQ4U9PTjC6FND2m8hXR6XdP54RU4CpvpY1ABMmiCB53
+         sPNw==
+X-Gm-Message-State: AOJu0YwO/lOl7y/Puea1GQ0x4NZCrAHl9iML7X3+Sq/lLY3LqYbvi48R
+	vsCPEkUWemvTHjEIslA3uYbZFn1M4Kz/jVtEOKKRI9Fx706tZKpwteJuHznY6xQ=
+X-Google-Smtp-Source: AGHT+IE3kgrKcFo10agh5B8BtEjSfObTeRYqoqAXsWfdjxOX7R8rTE30te4cQgydhlEGgLacjZkyUQ==
+X-Received: by 2002:a1c:7c0a:0:b0:40e:66cf:81a9 with SMTP id x10-20020a1c7c0a000000b0040e66cf81a9mr477315wmc.111.1705578247918;
+        Thu, 18 Jan 2024 03:44:07 -0800 (PST)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id u21-20020a05600c139500b0040e4a7a7ca3sm25610137wmf.43.2024.01.18.03.44.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 03:44:07 -0800 (PST)
+Date: Thu, 18 Jan 2024 12:44:06 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Cc: netdev@vger.kernel.org, vadim.fedorenko@linux.dev, davem@davemloft.net,
+	milena.olech@intel.com, linux-kernel@vger.kernel.org,
+	pabeni@redhat.com, kuba@kernel.org, mschmidt@redhat.com,
+	Jan Glaza <jan.glaza@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Subject: Re: [PATCH net v5 2/4] dpll: fix pin dump crash for rebound module
+Message-ID: <ZakPBmakH8BTv8Cz@nanopsycho>
+References: <20240118110719.567117-1-arkadiusz.kubalewski@intel.com>
+ <20240118110719.567117-3-arkadiusz.kubalewski@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117031212.1104034-1-nunes.erico@gmail.com>
- <20240117031212.1104034-4-nunes.erico@gmail.com> <CAKGbVbt_1SUmTftqA5H27keCeH+u2ibrevy=cW8KsJSHu8YRdw@mail.gmail.com>
-In-Reply-To: <CAKGbVbt_1SUmTftqA5H27keCeH+u2ibrevy=cW8KsJSHu8YRdw@mail.gmail.com>
-From: Erico Nunes <nunes.erico@gmail.com>
-Date: Thu, 18 Jan 2024 12:43:48 +0100
-Message-ID: <CAK4VdL3umA8KZizPAqO2GGZu5RTtvgkFq9Y0rSYSwZZNsVkjDQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/6] drm/lima: set bus_stop bit before hard reset
-To: Qiang Yu <yuq825@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org, 
-	anarsoul@gmail.com, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, christian.koenig@amd.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118110719.567117-3-arkadiusz.kubalewski@intel.com>
 
-On Thu, Jan 18, 2024 at 3:01=E2=80=AFAM Qiang Yu <yuq825@gmail.com> wrote:
->
-> Do we need same for GP?
+Thu, Jan 18, 2024 at 12:07:17PM CET, arkadiusz.kubalewski@intel.com wrote:
 
-I don't have an issue reproducer for gp so far, but the hardware does
-have the same bit and the mali driver does it for both gp and pp, so I
-think we can also add it to gp.
+[...]
+
+>@@ -443,7 +490,9 @@ dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
+> 		ret = -EINVAL;
+> 		goto err_pin_prop;
+> 	}
+>-	pin->prop = prop;
+>+	ret = dpll_pin_prop_dup(prop, &pin->prop);
+>+	if (ret)
+>+		goto err_pin_prop;
+> 	refcount_set(&pin->refcount, 1);
+> 	xa_init_flags(&pin->dpll_refs, XA_FLAGS_ALLOC);
+> 	xa_init_flags(&pin->parent_refs, XA_FLAGS_ALLOC);
+
+You are missing dpll_pin_prop_free() call on error path. It should go
+right above "err_pin_prop:" line.
+
+Haste makes waste..
+
+pw-bot: cr
+
+
+
+>@@ -515,6 +564,7 @@ void dpll_pin_put(struct dpll_pin *pin)
+> 		xa_destroy(&pin->dpll_refs);
+> 		xa_destroy(&pin->parent_refs);
+> 		xa_erase(&dpll_pin_xa, pin->id);
+>+		dpll_pin_prop_free(&pin->prop);
+
+To be symmetric with dpll_pin_alloc() order, xa_erase() should be called
+first here and xa_destroys() in different order. But that is a material
+for net-next.
+
+
+
+> 		kfree(pin);
+> 	}
+> 	mutex_unlock(&dpll_lock);
+
+[...]
 
