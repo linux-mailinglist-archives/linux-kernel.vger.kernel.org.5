@@ -1,152 +1,85 @@
-Return-Path: <linux-kernel+bounces-30143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD6B831A5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:18:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D644A831A61
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C14861C22821
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:18:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 707AD1F28D7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1CE2575E;
-	Thu, 18 Jan 2024 13:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hMlQWnJw"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5627B25541;
+	Thu, 18 Jan 2024 13:18:21 +0000 (UTC)
+Received: from mail115-171.sinamail.sina.com.cn (mail115-171.sinamail.sina.com.cn [218.30.115.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56D525757;
-	Thu, 18 Jan 2024 13:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E672425105
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705583753; cv=none; b=Ee77hH3tF69pYyaXdlugTteO8UiiVUw0PkeFr48r1Efd4qo/Ose8ly7Xf6HnI7jHQnUQ51bFraWXhXXN0bhicqan7kv5RRd4qOcpJTSbEC2Q7I+g1IqAjVeWZSMQXeX6TYTkWAFH8WPleFYDIbvOaaJk2I+GEUr4124c8ei3YZ4=
+	t=1705583900; cv=none; b=OC6Zuaq3x4WRYi9/Obmin5gQ/A3sfYwYB3RFEpBmn/cj3OCDNU0XbMTh9S0cVjWMOoC+uyKND4U1RYHft5kOKopok6UjeIGYt317YE60K3xgbY6PvJXipCqfBIBX0pW+CHTD/qzBX8WSf72fN88R3Rmg5CxixEmpNT+pFL64OHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705583753; c=relaxed/simple;
-	bh=gawuwuYzbbmDzTZtAr7RJ6aRIEt4uhR05OLZfhfBC7Q=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=ZVJGalSYn+uTYcaOXLkqVq2iFCo+oKvU7BfAlhJzaX0FBwjYMHgK4jxJaXYfFB24b+SwD5vfuwGeDv7FCM4qSrCh6cuJR1nImAsmF5PG71Tjmbf7NjUtlE69SZjaptmUecWDZ1Rg3oWTp+niHoA31S5imXsCLCvh1GI/a6SwYtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hMlQWnJw; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso9606455a12.3;
-        Thu, 18 Jan 2024 05:15:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705583751; x=1706188551; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QvBNGC4E6LYR3uClPzVRaPdL+XA4Ac8k7SXynano+4o=;
-        b=hMlQWnJwUJx+uZoFvcuFjhQeaL2i+2bRz5ruVq9ndoI/7sb1b/WH28YF93y4m2DuZr
-         Q94ChiVWQMmJyfZPOqoMcvp3fm9tWr93gWDxojO9M17JSvL5NOT9tcLEWgSy5lB2ZEfp
-         D90wNu+uDWqob6UatnfQcjqYxvo/vyg/x7w01CaES3j7CfUivTwy81UWwtzSClpJ6LIb
-         WWBhqhIlBq4yKqFyOR2sTz3OXZZuhWu7ihX8LOdfRobP7TRe3GmLdFabF7qalyHbgrpB
-         sUpJD8iuoBPkwQSb7g4qNE+yI+sBMzSVAV9aqPRy6f4jyEs//CDvuEakZj/3FX5yE93R
-         vtfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705583751; x=1706188551;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QvBNGC4E6LYR3uClPzVRaPdL+XA4Ac8k7SXynano+4o=;
-        b=OBwIWRyZiaG4HYU85w4pW3Qsz6s9F9xdYP5H+3Yk19uE2QE4O0wYHX7xESOs3m5Nss
-         GJj+oR8JEGVIUNXLBLTUx7DFyizX4AH6LC7K3cdFTq84xnn+ZTUbTu5vKWFaHdDieP6s
-         ZjBo38X32Jy4kBDp6Yli40e6dwFskYHKYoOk2xkr2l276WBq5/6KybGb/Z9W2b8xaiDy
-         796EvbkyqFP/wwPNOWU265q0qsXq1XQjtCLYqYI98XzR++4Iu+aoKZ6UgXe/1tjxFmYn
-         ymetOt8ewqKP8RG6artd3oC+pfHBLQbECWpjh6u0056GxqVsw4T71wUyx9Sy29wdGvav
-         T1wg==
-X-Gm-Message-State: AOJu0YwswFij3YAAn2bwhzokWDxfXt1SNScWYcJoH1LDA6YlUn0RVwH1
-	gFtlKhnbbpx46wzMsDJKUxzTBwdNSPePKOWXhwPOwYQRd0iWKG1p
-X-Google-Smtp-Source: AGHT+IHAVONmZ6+MFMXj+43/FB2TEST5KD9+09fDp0qwlttgosGJA3EFA9LZaeTjch4C4eCgsQgSYA==
-X-Received: by 2002:a05:6a21:6d91:b0:196:ae4b:e007 with SMTP id wl17-20020a056a216d9100b00196ae4be007mr887739pzb.116.1705583750952;
-        Thu, 18 Jan 2024 05:15:50 -0800 (PST)
-Received: from rigel (194-223-183-150.tpgi.com.au. [194.223.183.150])
-        by smtp.gmail.com with ESMTPSA id z189-20020a6333c6000000b005c66a7d70fdsm1455523pgz.61.2024.01.18.05.15.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 05:15:50 -0800 (PST)
-Date: Thu, 18 Jan 2024 21:15:44 +0800
-From: Kent Gibson <warthog618@gmail.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Hugo Villeneuve <hugo@hugovil.com>, Bartosz Golaszewski <brgl@bgdev.pl>,
-	gregkh@linuxfoundation.org, jirislaby@kernel.org,
-	cosmin.tanislav@analog.com, shc_work@mail.ru,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Subject: Re: [PATCH 15/18] serial: max310x: replace ENOTSUPP with preferred
- EOPNOTSUPP (checkpatch)
-Message-ID: <20240118131544.GA151488@rigel>
-References: <20240117223856.2303475-1-hugo@hugovil.com>
- <20240117223856.2303475-16-hugo@hugovil.com>
- <CAHp75Ve5PYQTRdxcffdQvYWJ-iwvfEHfMnL-vhs_mv7yg+GJ5Q@mail.gmail.com>
- <20240117185909.78bb633ea090f74de9f4f3b7@hugovil.com>
- <CAHp75Vc5mePmXaAbsex6=tHeLSfSj5gZiE4_DQ0-5R-4h6=U5w@mail.gmail.com>
+	s=arc-20240116; t=1705583900; c=relaxed/simple;
+	bh=sq0s2ZlNlijNKAG327fa7nRqaPyj5VhfBHv2puH2NzI=;
+	h=X-SMAIL-HELO:Received:X-Sender:X-Auth-ID:X-SMAIL-MID:X-SMAIL-UIID:
+	 From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding; b=mJQbFV73aS8issWwa5DrovLgBFMGNFd/k8lvVnOwu0aCL4Ls6Yq3IADgWBgkCWCtDrwbbSS8SicyshsWKB6RNlmi95ACR5nUGblyxyMQjtH6ja2HuJjvj6NsdT/OS16gRx4nFIflpMUQvS9jZhrm/fIM7HDmVDYORNJj0x9B5oE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.25.116.10])
+	by sina.com (172.16.235.25) with ESMTP
+	id 65A9250800004A35; Thu, 18 Jan 2024 21:18:04 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 87036134209805
+X-SMAIL-UIID: 8D4A113887E4421F9B1D8F9C17FDFC6B-20240118-211804-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
+Date: Thu, 18 Jan 2024 21:17:50 +0800
+Message-Id: <20240118131750.1688-1-hdanton@sina.com>
+In-Reply-To: <000000000000498a02060de59162@google.com>
+References: <000000000000498a02060de59162@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75Vc5mePmXaAbsex6=tHeLSfSj5gZiE4_DQ0-5R-4h6=U5w@mail.gmail.com>
 
-On Thu, Jan 18, 2024 at 10:59:34AM +0200, Andy Shevchenko wrote:
-> On Thu, Jan 18, 2024 at 1:59 AM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > On Thu, 18 Jan 2024 01:24:11 +0200
-> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > On Thu, Jan 18, 2024 at 12:39 AM Hugo Villeneuve <hugo@hugovil.com> wrote:
->
-> ...
->
-> > > > Fixes the following checkpatch warning:
-> > > >
-> > > >     WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
-> > >
-> > > NAK.
-> > > It's a false positive.
-> > >
-> > > > According to include/linux/errno.h, ENOTSUPP is
-> > > > "Defined for the NFSv3 protocol", so replace it with preferred EOPNOTSUPP.
-> > >
-> > > The GPIO subsystem uses this internal error code internally. User
-> > > space won't get it, so users may not see this one.
-> >
-> > Hi Andy,
-> > I will drop the patch then.
-> >
-> > What about adding a comment to prevent future fixes?
-> >
-> > -               return -ENOTSUPP;
-> > +               return -ENOTSUPP; /*
-> > +                                  * ENOTSUPP is used for backward compatibility
-> > +                                  * with GPIO subsystem.
-> > +                                  */
->
-> It's kinda useless to add it to a single (GPIO) driver.
-> Rather it needs to be mentioned somewhere between
-> https://www.kernel.org/doc/html/latest/driver-api/gpio/index.html.
->
-> +Cc: Kent, Bart. It seems we have a handful of drivers violating this
-> (basically following what checkpatch says) and GPIO not documenting
-> this specific error code and its scope. Did I miss anything?
->
+On Mon, 01 Jan 2024 09:18:16 -0800
+> syzbot found the following issue on:
+> 
+> HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122dfc65e80000
 
-You are correct - the GPIO subsystem is expecting ENOTSUPP if the config
-is not supported.  In some cases it absorbs the failure or emulates the
-feature instead (open drain/source, debounce). Returning EOPNOTSUPP
-would be unfortunate, so checkpatch is not being helpful here.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-And don't get me started on the gpio_chip interface contract being too
-vague.
-
-There are a handful of ways this could be addressed (documentation,
-checkpatch, handle either, switch to EOPNOTSUPP, ... or some combination),
-but making that call is definitely in Bart's court.
-
-Cheers,
-Kent.
+--- x/net/core/flow_dissector.c
++++ y/net/core/flow_dissector.c
+@@ -1163,10 +1163,8 @@ proto_again:
+ 
+ 	switch (proto) {
+ 	case htons(ETH_P_IP): {
+-		const struct iphdr *iph;
+-		struct iphdr _iph;
++		const struct iphdr *iph = (struct iphdr *) skb_network_header(skb);
+ 
+-		iph = __skb_header_pointer(skb, nhoff, sizeof(_iph), data, hlen, &_iph);
+ 		if (!iph || iph->ihl < 5) {
+ 			fdret = FLOW_DISSECT_RET_OUT_BAD;
+ 			break;
+--
 
