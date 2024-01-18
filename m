@@ -1,142 +1,135 @@
-Return-Path: <linux-kernel+bounces-29644-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D93B83113A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:04:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C858831148
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5F7E1F21FE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:04:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C997FB20E80
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2334699;
-	Thu, 18 Jan 2024 02:04:38 +0000 (UTC)
-Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2CD5247;
+	Thu, 18 Jan 2024 02:09:13 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A6F1FAF;
-	Thu, 18 Jan 2024 02:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBA42115;
+	Thu, 18 Jan 2024 02:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705543478; cv=none; b=ZCZCCXDXi4O8uxWUnV4Dm9p5jPgMeE5FM/Mad6ST0NUlIyKe2CScOE1NlWXdBr4nWULtGajNRP1DZWDgIjV6EApNiZaqIHVDj8XzCnC4MRxhCVcSWWdQJFrP2DApq/5GwYCVaZhCp1XjJGZtKoq5H9M2pQGwphbHGwsL/cDIA+0=
+	t=1705543753; cv=none; b=ej4d7ElJY/M0gG2UFAYJECbPPUcRWV0Zx5fRRha12G7bZ5K65o214/aT/XKi0GENT7rC1kEQ9AMLsoj9CzYX3xzmBqVFXUS5qwiZBr+i6fXFbEipStynkGoWFtxV9bFHjkfsz6/h8DNgprMz8VpFAefrpWh+otJEGCTXPyGgJqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705543478; c=relaxed/simple;
-	bh=tHPwGIdFqi94LdAZOqJ7np7r/3FQCZ+fdVeRXwSazeE=;
-	h=Received:Received:Received:Received:From:To:CC:Subject:
-	 Thread-Topic:Thread-Index:Date:Message-ID:References:In-Reply-To:
-	 Accept-Language:Content-Language:X-MS-Has-Attach:
-	 X-MS-TNEF-Correlator:x-originating-ip:x-sender-location:
-	 Content-Type:Content-Transfer-Encoding:MIME-Version:X-DNSRBL:
-	 X-SPAM-SOURCE-CHECK:X-MAIL; b=E18hjj8g8o4ZBBrpNbdeyz10s0kmZTf8KwOfS9Ery9/x8eUYSnGvVNPL50x2lVa5p097WCa6+VdwApcehwbvnpLevusfXbnSIrYf0WvFMX5MG2qPwpP+WNRHJajMqJ1mEAL78QxIwu1MDoA93BMVq/nYKmCGxr3a6KUDfsLkFTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
-Received: from mail.maildlp.com ([172.25.15.154])
-	by h3cspam02-ex.h3c.com with ESMTP id 40I235rx063437;
-	Thu, 18 Jan 2024 10:03:06 +0800 (GMT-8)
-	(envelope-from hu.yadi@h3c.com)
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com (unknown [10.62.14.11])
-	by mail.maildlp.com (Postfix) with ESMTP id D29152004BB7;
-	Thu, 18 Jan 2024 10:07:35 +0800 (CST)
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) by
- DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.27; Thu, 18 Jan 2024 10:03:04 +0800
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4])
- by DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4%16]) with
- mapi id 15.02.1258.027; Thu, 18 Jan 2024 10:03:04 +0800
-From: Huyadi <hu.yadi@h3c.com>
-To: =?utf-8?B?J01pY2thw6tsIFNhbGHDvG4n?= <mic@digikod.net>,
-        "'Christian
- Brauner'" <brauner@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-CC: "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com"
-	<serge@hallyn.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org"
-	<linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>,
-        "514118380@qq.com" <514118380@qq.com>,
-        Christian Brauner <brauner@kernel.org>,
-        "linux-fsdevel@vger.kernel.org"
-	<linux-fsdevel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjRdIHNlbGZ0ZXN0cy9tb3ZlX21vdW50X3NldF9n?=
- =?utf-8?Q?roup:Make_tests_build_with_old_libc?=
-Thread-Topic: [PATCH v4] selftests/move_mount_set_group:Make tests build with
- old libc
-Thread-Index: AQHaRII9d44IpKHVmkiSX1xdCq/Vx7DUFK8AgArGFwA=
-Date: Thu, 18 Jan 2024 02:03:04 +0000
-Message-ID: <b7872e67938f4022ad0537bc617403ed@h3c.com>
-References: <20240111113229.10820-1-hu.yadi@h3c.com>
- <20240111.mee0ohZie5he@digikod.net>
-In-Reply-To: <20240111.mee0ohZie5he@digikod.net>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-sender-location: DAG2
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1705543753; c=relaxed/simple;
+	bh=z3G3oCbHidD8qynDWfVmNenXA6fw2hQV7eZGCKnPYyE=;
+	h=X-UUID:X-CID-P-RULE:X-CID-O-INFO:X-CID-INFO:X-CID-META:X-CID-BVR:
+	 X-CID-BAS:X-CID-FACTOR:X-UUID:Received:Received:X-ns-mid:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
+	 Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=kpNAS1jXVZ/E25p6Ts3EdHPsmjzpWAEn8deAVsxM90f5HsuKXtCLlTETrJoSEzqbsltOUJ3qVymZMk0Mw1gwEunWCnLUA8WoOQrAcf5iu2OHtvSe0P36KOvKUAK3NzQE6bt5vaN8jtpYHrq0oZJIL9SC/7xGdNwRUfoDryZRTu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 96769b9c0fbc46cd8ed79cbbd996c5c5-20240118
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:ee66016e-655b-450a-83d8-1a213d165016,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:1
+X-CID-INFO: VERSION:1.1.35,REQID:ee66016e-655b-450a-83d8-1a213d165016,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:1
+X-CID-META: VersionHash:5d391d7,CLOUDID:1b50787f-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240118100344LP7I44R2,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|42|7
+	4|64|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:
+	nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 96769b9c0fbc46cd8ed79cbbd996c5c5-20240118
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 696325700; Thu, 18 Jan 2024 10:03:42 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id D0A45E000EB9;
+	Thu, 18 Jan 2024 10:03:41 +0800 (CST)
+X-ns-mid: postfix-65A886FD-772615417
+Received: from [172.20.15.234] (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 46FA7E000EB9;
+	Thu, 18 Jan 2024 10:03:38 +0800 (CST)
+Message-ID: <e583bcd5-cae6-4299-8800-80e862a6bd8f@kylinos.cn>
+Date: Thu, 18 Jan 2024 10:03:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:h3cspam02-ex.h3c.com 40I235rx063437
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] pstore/ram: Return directly after a failed kasprintf()
+ call in ramoops_init_prz()
+To: Markus Elfring <Markus.Elfring@web.de>, linux-hardening@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "Guilherme G. Piccoli"
+ <gpiccoli@igalia.com>, Joel Fernandes <joel@joelfernandes.org>,
+ Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, =?UTF-8?B?R8O8bnRlciBSw7Zjaw==?=
+ <groeck@chromium.org>, Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+References: <644f44ad-7e2b-4a1a-bbd7-ccc79d479242@web.de>
+Content-Language: en-US
+From: Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <644f44ad-7e2b-4a1a-bbd7-ccc79d479242@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-DQo+T24gVGh1LCBKYW4gMTEsIDIwMjQgYXQgMDc6MzI6MjlQTSArMDgwMCwgSHUgWWFkaSB3cm90
-ZToNCj4+IEZyb206ICJIdS5ZYWRpIiA8aHUueWFkaUBoM2MuY29tPg0KPj4gDQo+PiBSZXBsYWNl
-IFNZU188c3lzY2FsbD4gd2l0aCBfX05SXzxzeXNjYWxsPi4gIFVzaW5nIHRoZSBfX05SXzxzeXNj
-YWxsPiANCj4+IG5vdGF0aW9uLCBwcm92aWRlZCBieSBVQVBJLCBpcyB1c2VmdWwgdG8gYnVpbGQg
-dGVzdHMgb24gc3lzdGVtcyANCj4+IHdpdGhvdXQgdGhlIFNZU188c3lzY2FsbD4gZGVmaW5pdGlv
-bnMuDQo+PiANCj4+IFJlcGxhY2UgU1lTX21vdmVfbW91bnQgd2l0aCBfX05SX21vdmVfbW91bnQN
-Cj4+IA0KPj4gU2ltaWxhciBjaGFuZ2VzOiBjb21taXQgODcxMjllZjEzNjAzICgic2VsZnRlc3Rz
-L2xhbmRsb2NrOiBNYWtlIHRlc3RzIA0KPj4gYnVpbGQgd2l0aCBvbGQgbGliYyIpDQo+PiANCj4+
-IEFja2VkLWJ5OiBNaWNrYcOrbCBTYWxhw7xuIDxtaWNAZGlnaWtvZC5uZXQ+DQo+DQo+U29ycnks
-IGl0IHNob3VsZCBoYXZlIGJlZW4gUmV2aWV3ZWQtYnk6IE1pY2thw6tsIFNhbGHDvG4gPG1pY0Bk
-aWdpa29kLm5ldD4NCj4NCj5BbHNvLCB0aGlzIGlzIG1haW50YWluZWQgYnkgdGhlIFZGUyBtYWlu
-dGFpbmVycy4gSSBDQ2VkIHRocmVlIHJlbGV2YW50IGFkZHJlc3Nlcy4NCg0KDQpBbnkgcHJvZ2Vz
-c3MgYWJvdXQgdGhpcyBwYXRjaCA/IA0KVGhhbmtzDQoNCj4NCj4+IFNpZ25lZC1vZmYtYnk6IEh1
-LllhZGkgPGh1LnlhZGlAaDNjLmNvbT4NCj4+IFN1Z2dlc3RlZC1ieTogSmlhbyA8amlhb3h1cG9A
-aDNjLmNvbT4NCj4+IFJldmlld2VkLWJ5OiBCZXJsaW4gPGJlcmxpbkBoM2MuY29tPg0KPj4gLS0t
-DQo+PiBDaGFuZ2VzIHY0IC0+IHYzOg0KPj4gIC0gQWRqdXN0IGNvbW1lbnRzIGZvciBjb25zaXN0
-ZW50DQo+PiAgLSBBZGQgQWNrZWQtYnkNCj4+IENoYW5nZXMgdjIgLT4gdjM6DQo+PiAgLSBBZGp1
-c3QgY29tbWVudHMNCj4+IENoYW5nZXMgdjEgLT4gdjI6DQo+PiAgLSBGaXggbWFpbCBvZiBTdWdn
-ZXN0ZWQtYnkgYW5kIFJldmlld2VkLWJ5DQo+PiANCj4+ICAuLi4vbW92ZV9tb3VudF9zZXRfZ3Jv
-dXAvbW92ZV9tb3VudF9zZXRfZ3JvdXBfdGVzdC5jICAgICAgICAgIHwgNCArKy0tDQo+PiAgMSBm
-aWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4+IA0KPj4gZGlm
-ZiAtLWdpdCANCj4+IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvbW92ZV9tb3VudF9zZXRfZ3Jv
-dXAvbW92ZV9tb3VudF9zZXRfZ3JvdXBfdGUNCj4+IHN0LmMgDQo+PiBiL3Rvb2xzL3Rlc3Rpbmcv
-c2VsZnRlc3RzL21vdmVfbW91bnRfc2V0X2dyb3VwL21vdmVfbW91bnRfc2V0X2dyb3VwX3RlDQo+
-PiBzdC5jIGluZGV4IDUwZWQ1ZDQ3NWRkMS4uYmNmNTFkNzg1YTM3IDEwMDY0NA0KPj4gLS0tIA0K
-Pj4gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9tb3ZlX21vdW50X3NldF9ncm91cC9tb3ZlX21v
-dW50X3NldF9ncm91cF90ZQ0KPj4gc3QuYw0KPj4gKysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVz
-dHMvbW92ZV9tb3VudF9zZXRfZ3JvdXAvbW92ZV9tb3VudF9zZXRfZ3JvdQ0KPj4gKysrIHBfdGVz
-dC5jDQo+PiBAQCAtMjE4LDcgKzIxOCw3IEBAIHN0YXRpYyBib29sIG1vdmVfbW91bnRfc2V0X2dy
-b3VwX3N1cHBvcnRlZCh2b2lkKQ0KPj4gIAlpZiAobW91bnQoTlVMTCwgU0VUX0dST1VQX0ZST00s
-IE5VTEwsIE1TX1NIQVJFRCwgMCkpDQo+PiAgCQlyZXR1cm4gLTE7DQo+PiAgDQo+PiAtCXJldCA9
-IHN5c2NhbGwoU1lTX21vdmVfbW91bnQsIEFUX0ZEQ1dELCBTRVRfR1JPVVBfRlJPTSwNCj4+ICsJ
-cmV0ID0gc3lzY2FsbChfX05SX21vdmVfbW91bnQsIEFUX0ZEQ1dELCBTRVRfR1JPVVBfRlJPTSwN
-Cj4+ICAJCSAgICAgIEFUX0ZEQ1dELCBTRVRfR1JPVVBfVE8sIE1PVkVfTU9VTlRfU0VUX0dST1VQ
-KTsNCj4+ICAJdW1vdW50MigiL3RtcCIsIE1OVF9ERVRBQ0gpOw0KPj4gIA0KPj4gQEAgLTM2Myw3
-ICszNjMsNyBAQCBURVNUX0YobW92ZV9tb3VudF9zZXRfZ3JvdXAsIGNvbXBsZXhfc2hhcmluZ19j
-b3B5aW5nKQ0KPj4gIAkJICAgICAgIENMT05FX1ZNIHwgQ0xPTkVfRklMRVMpOyBBU1NFUlRfR1Qo
-cGlkLCAwKTsNCj4+ICAJQVNTRVJUX0VRKHdhaXRfZm9yX3BpZChwaWQpLCAwKTsNCj4+ICANCj4+
-IC0JQVNTRVJUX0VRKHN5c2NhbGwoU1lTX21vdmVfbW91bnQsIGNhX2Zyb20ubW50ZmQsICIiLA0K
-Pj4gKwlBU1NFUlRfRVEoc3lzY2FsbChfX05SX21vdmVfbW91bnQsIGNhX2Zyb20ubW50ZmQsICIi
-LA0KPj4gIAkJCSAgY2FfdG8ubW50ZmQsICIiLCBNT1ZFX01PVU5UX1NFVF9HUk9VUA0KPj4gIAkJ
-CSAgfCBNT1ZFX01PVU5UX0ZfRU1QVFlfUEFUSCB8IE1PVkVfTU9VTlRfVF9FTVBUWV9QQVRIKSwN
-Cj4+ICAJCSAgMCk7DQo+PiAtLQ0KPj4gMi4yMy4wDQo+PiANCj4+ICANCg==
+Hi Markus,
+Thanks for your patch.
+
+On 2024/1/18 04:24, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Wed, 17 Jan 2024 21:09:22 +0100
+>=20
+> The result from a call of the function =E2=80=9Ckasprintf=E2=80=9D was =
+passed to
+> a subsequent function call without checking for a null pointer before
+> (according to a memory allocation failure).
+> This issue was detected by using the Coccinelle software.
+>=20
+> Thus return directly after a failed kasprintf() call.
+>=20
+> Fixes: 1227daa43bce1 ("pstore/ram: Clarify resource reservation labels"=
+)
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>   fs/pstore/ram.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>=20
+> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+> index 88b34fdbf759..1a673a4af17c 100644
+> --- a/fs/pstore/ram.c
+> +++ b/fs/pstore/ram.c
+> @@ -595,6 +595,9 @@ static int ramoops_init_prz(const char *name,
+>   	}
+>=20
+>   	label =3D kasprintf(GFP_KERNEL, "ramoops:%s", name);
+> +	if (!label)
+> +		return -ENOMEM;
+> +
+
+This part looks good to me.
+
+Commit 1227daa43bce1 ("pstore/ram: Clarify resource reservation labels")
+introduce another two more kasprintf in the ramoops_init_przs.
+
+Could you fix it together?
+>   	*prz =3D persistent_ram_new(*paddr, sz, sig, &cxt->ecc_info,
+>   				  cxt->memtype, PRZ_FLAG_ZAP_OLD, label);
+>   	kfree(label);
+> --
+> 2.43.0
+>=20
+--=20
+Thanks,
+   Kunwu
+
 
