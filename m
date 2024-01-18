@@ -1,245 +1,207 @@
-Return-Path: <linux-kernel+bounces-29890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B3D8314C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4981F8314C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:36:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C5591F2182F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:35:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE5B61F21A03
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C5B1F946;
-	Thu, 18 Jan 2024 08:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D69E20B1D;
+	Thu, 18 Jan 2024 08:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="X5r1MALB"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=digi.com header.i=@digi.com header.b="WATtEuCM"
+Received: from outbound-ip24b.ess.barracuda.com (outbound-ip24b.ess.barracuda.com [209.222.82.221])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E271D533
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 08:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705566235; cv=none; b=r/Kq35JWyCADoRKYAyYwq5YewxcIqwAeokEwO2JaJtRQHLr1RYq2plqxlvD7Z17ly4OJO2YsTtT9mL19iEHz08+2IGEDgWXrHPoHvmB5yKL7Y3Fp3c2HmivT4QOcpOUtxtA13fHd+3phxyopcKEjOT/j4qq/5gkx+QNy7Bg2yW0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705566235; c=relaxed/simple;
-	bh=BdVsw0FTwqzD+KS2xpaOjxHqz260SFBO0mWzXEz7i7M=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-	 User-Agent; b=F6i8l8WlB3b1O7KP2Fg1ZDXoX5TDulOSa8GfNLxqnwJ2ITy6PfLr2aw0KOXpQWw3HYNmik6EdvhJsOr0ODuTtKLiLwK+LLklWDbGDmQwmQ7eMkyJ9gnabx5SmAskOL70Ym+xCCUhn0rpGytkWbVMcUFBbXL9vhqVs/hMfqZl4PA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=X5r1MALB; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5cfa71498feso125833a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 00:23:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1705566232; x=1706171032; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=welEo0/WJxuhwoTNRxCpfyX7sfk5voOc4sTxJMWj2Aw=;
-        b=X5r1MALBFW7ed78ST+6HoXg0Nu5rxmHBG0KX6AsJEKoSq2SZPRxGHTBsTjWSBkVVtZ
-         +NWuZRx1AdDpyvlpWruNDuv1aP5EKvr/ry7Qv1wLHXd3BskwZxenyM0neB5tdLWDOBC4
-         vvd290gTbbTRnN+PYblJEHY91cLuP7sEW/DFiUJYSCkUneY5+DZiIxn0h1gDpGQl3KqH
-         Y1OtF50CFf6rnMgQO7uzJdq8GNHs3WHPGImliLbIDNEVIejVXrz5MmrgUKoZvJNEznP+
-         gju2SwU2c+trLu1cHUbTkYSduSnX3Q5ZE+WRW/RsUnwYzSyCs2Wl87AWuaf2BAHA+UkR
-         gACw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705566232; x=1706171032;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=welEo0/WJxuhwoTNRxCpfyX7sfk5voOc4sTxJMWj2Aw=;
-        b=CfBu8VaooQrMz6b3Gluu0vpug5A7rNCK5+ihyVUzcJG1VmTR9sqvoWTAGpkyMJN+47
-         DWGgjb6p1W3Qy+zGhVkk2jafuX7X2CWOhwxS2QGK2NF488qgIVPzqYlWFJv0iZ8MvZ2X
-         0obGeNZh9awas9z88M/PeOyXMCqt4LRHLI2se8H1l5fLJpGSd/8+FlRZIz4NzU/gNv5q
-         a2SF3y9GbeWhQokcrAiPChye6AuEQyU9jTVyp2WdCIW/xAF0S4VZBnlUe3DoNjtmvtWT
-         pl5XyWDA7GP/jamGMSxmEafSCbOoph3cOh2R/E1qA/J03V+AJXZAiKS7DI/skyZnw7n/
-         AxQg==
-X-Gm-Message-State: AOJu0Yx0nGSlvvC4RrqGf7W/nVL0LudKKpj0TlIn1c85fgnsi9B7yUGe
-	3QYQgyUnLDIr3Citm6YYpjRJVK+ExQ5qaRKNaxVMQ6CTyg2znYBNguGgdZNaBV4=
-X-Google-Smtp-Source: AGHT+IGaoDDx9aDO0YNH0g7XdpqbNuTcRdbMFDYtV1SQWylCAw0oi0AjU/zcDHvavTfmpNNLtZt26w==
-X-Received: by 2002:a05:6a20:43a7:b0:19b:7e77:7279 with SMTP id i39-20020a056a2043a700b0019b7e777279mr643544pzl.18.1705566232336;
-        Thu, 18 Jan 2024 00:23:52 -0800 (PST)
-Received: from hsinchu15 (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id fc13-20020a056a002e0d00b006d9cf4b56edsm2812458pfb.175.2024.01.18.00.23.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 18 Jan 2024 00:23:51 -0800 (PST)
-Date: Thu, 18 Jan 2024 16:23:47 +0800
-From: Nylon Chen <nylon.chen@sifive.com>
-To: alex@ghiti.fr
-Cc: apatel@ventanamicro.com, alexghiti@rivosinc.com,
-	catalin.marinas@arm.com, will@kernel.org, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, aou@eecs.berkeley.edu, robh+dt@kernel.org,
-	frowand.list@gmail.com, rppt@kernel.org, akpm@linux-foundation.org,
-	anup@brainfault.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-mm@kvack.org, zong.li@sifive.com,
-	nylon7717@gmail.com
-Subject: Re: Fwd: [PATCH v8 0/4] riscv: Use PUD/P4D/PGD pages for the linear
- mapping
-Message-ID: <20240118082346.GB31078@hsinchu15>
-References: <20230316131711.1284451-1-alexghiti@rivosinc.com>
- <CAK9=C2XJtSG2d_nsyDv7kU1v7Jj0chdevqrMc0MpJswukcEABA@mail.gmail.com>
- <CAHVXubhhxpzHDM-n91V_rceY5t_VqLvrwZj3RP_tNL2=F9mqjQ@mail.gmail.com>
- <CAK9=C2WVOpSqtt8r1U4hnzSZ=cc1PocpukgQjNyahP2XuPhozw@mail.gmail.com>
- <d0087922-4721-ccf1-80bf-9f74099d0948@ghiti.fr>
- <CAPqJEFr6MgUyARfbWAo7EeQKLVd4xRJz_LOYN68UC-kPD1Hr5A@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49AC20B10;
+	Thu, 18 Jan 2024 08:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=209.222.82.221
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705566362; cv=fail; b=Lei+qKhecmpmoSlAEjwigbEQODHBZrqyRGbW9WJZJCEYjXQSTylfuUvmWNhOwa1lzc5k881HeIxUaImooEu63wTmETtgGrBlkVBmQf936Zvmj6HRHjiwuKD8ywNCToztYTM5snOd/xVvW7ax7zTs/Rd+DmcpTxglvSSq15CHisY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705566362; c=relaxed/simple;
+	bh=PR7JVrPw1gPyTh9A3ApSgM9wc/GGx+39XrWkBwpj3T0=;
+	h=Received:ARC-Message-Signature:ARC-Authentication-Results:
+	 DKIM-Signature:Received:Received:Message-ID:Date:User-Agent:
+	 Subject:To:Cc:References:Content-Language:From:Organization:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-BESS-ID:
+	 X-BESS-VER:X-BESS-Apparent-Source-IP:X-BESS-Parts:
+	 X-BESS-Outbound-Spam-Score:X-BESS-Outbound-Spam-Report:
+	 X-BESS-Outbound-Spam-Status:X-BESS-BRTS-Status; b=nt0OAeYg3V8sj8X6S7RdevGDgwk60K1noYKwt+Jo2JUiE48iw+hoULGZl05W7XikVeyDBHZ7+trUUMMYSKYjwIuOHyJFDcAzsA4R6/O4qi1WziKE7OwnMdve1aEMQHmr5lfuCej8pFP9sGlkPAR0lxaW0ANI2hAfGzC6lnj0SSI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=digi.com; spf=pass smtp.mailfrom=digi.com; dkim=pass (2048-bit key) header.d=digi.com header.i=@digi.com header.b=WATtEuCM; arc=fail smtp.client-ip=209.222.82.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=digi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digi.com
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40]) by mx-outbound18-153.us-east-2b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Thu, 18 Jan 2024 08:25:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kCjkTm3dJ6prGSNFPdFMWLxXxU+DLe5Q6vnsButTUoMnnmHX33Mm5B4Tt58JZqFAdBMPsuJnlkQi+LCnHCF5mCw6RbLG913w2t/yIQhL+Z0R881NCFOhl7WQ3f/lE9+7qlGuvDa3JFaQ3bTFE5SWa3wev2qG0FtPW/GbEZGF9gePRA8hYPvW9pvKNATyywGS/ntP7IgwVY4EXj4mubjeRYSY1Dv5Olxsl3N14HZIWwwBMe7LsD3qF7PCwTLN/jd/YthlvMy/eYna2WCGWKyVg/uzB0z2txT+/3/JFEt8zJ5xUair+Aoa8udEF6JdjhePYqE7OJoFn7QC2nTNKaO+4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+grBI/+1iKef6ClC/3H9JXsV4Qz7qNHz9kOzSgEj5G4=;
+ b=QFxIb3YpdSPKH7S8W9rTO2oHsbs6Rn+2tB/ACga+KdmzGXNRjI3JQsEx/GDDQRd0KF5HIBHq5o65MbG1UAKocAuROjT8DcBckT1X/fCjbdHn0PTixe6aWaXtTAA9BQyDa6P7BohDT0QW6VUd2VStGWfLVAmvNAe61zGHIn23QATxP1pwTJPSDK1UkMH59ztRjN/6xLRQFU1Y+dIIlof8wK5/Pu0c6fDcfhuOO0nl0mNW1yZS4iJeEPt+bRSyjVdIkYpIDwzRhQ20jUXT0N+ZLtM5QlrKJ1fYuR5n6NttuLsHH2pofEivJZooRdAiRoM5yRqVXb5H/IoGfl+3q1gS7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=digi.com; dmarc=pass action=none header.from=digi.com;
+ dkim=pass header.d=digi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+grBI/+1iKef6ClC/3H9JXsV4Qz7qNHz9kOzSgEj5G4=;
+ b=WATtEuCMkk7ZN/kD2cGC39o1T0eZNDuc/+r+iqZUdDon6BeKMdOR8JYJHqjm0J0dwLvUZ6F0kfe+ZKG6KMkyX1fVjqclmFJV9KbFOl+3tB9dKzCg6uD0vxreW+v+QEmJIIfaOz2ToQUpoFOLfUeKH0o1Lk+PQ4YS9tD9Qf0d+EB3pUSMqP1FCFFg9EivtBYHQVzR/vDTsnGOBV/Yt+cPuu6tn3kxLGIuiwX4EtQMdr45izw5NeRtBiTRbRrc8oIYnHOBc9rZj2q9VYUN2enoQlNwpHELJKeM0dlxSO8AH3McFyCniabOR5lPVqwl+txEwcWuoI6HdM9GIBI8FmHuSA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=digi.com;
+Received: from BY5PR10MB4370.namprd10.prod.outlook.com (2603:10b6:a03:20b::19)
+ by CH0PR10MB5114.namprd10.prod.outlook.com (2603:10b6:610:dd::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Thu, 18 Jan
+ 2024 08:25:42 +0000
+Received: from BY5PR10MB4370.namprd10.prod.outlook.com
+ ([fe80::7cf4:e989:1a52:fb39]) by BY5PR10MB4370.namprd10.prod.outlook.com
+ ([fe80::7cf4:e989:1a52:fb39%4]) with mapi id 15.20.7202.024; Thu, 18 Jan 2024
+ 08:25:42 +0000
+Message-ID: <fd5550ad-76c0-419b-aa07-a0493a57286e@digi.com>
+Date: Thu, 18 Jan 2024 09:25:02 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/3] gpio: vf610: add support to DT 'ngpios' property
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linus.walleij@linaro.org, brgl@bgdev.pl, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, andy@kernel.org, conor+dt@kernel.org,
+ shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+ festevam@gmail.com, linux-imx@nxp.com, stefan@agner.ch,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240117083251.53868-1-hector.palacios@digi.com>
+ <20240117083251.53868-2-hector.palacios@digi.com>
+ <CAHp75Vci=1nAvxRcbkK2SxGWGbQVbzQMTycMt8tZ5snPRTYXOg@mail.gmail.com>
+Content-Language: en-US
+From: Hector Palacios <hector.palacios@digi.com>
+Organization: Digi
+In-Reply-To: <CAHp75Vci=1nAvxRcbkK2SxGWGbQVbzQMTycMt8tZ5snPRTYXOg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR2P281CA0186.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9f::20) To BY5PR10MB4370.namprd10.prod.outlook.com
+ (2603:10b6:a03:20b::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPqJEFr6MgUyARfbWAo7EeQKLVd4xRJz_LOYN68UC-kPD1Hr5A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4370:EE_|CH0PR10MB5114:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a8d580b-ca47-4470-b905-08dc17ff0f1f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	KdJx56PVy/xfLqbRWtBA3W1DyvuJfNk5lo8MTGcCnwKFYsQntCub/XyhDJtO2+d5cYGNprsh316QHwQH9yx/MxUzV1HBNe8wUTTvOooVZlDXu80MdOjSCh8jmz+i2k4e/lLYw20DHFVFAx10liybsuq6fh2A7RjQY3nTM1qkq1f44wFh/1e786WCmKwRrOKS0sC3nZrY2Qqt/AMHi9THfPwH95q8NpIMlVVpb5OL1tst31adBbpv0HTShaxG7vvWxChZSvgdg1XzzhNp+uXkGXjl7oa4LUqu/tRblG+KxyeaAkfhLfYC21SnBZuwdLafLxuG3U7oDPRIOE6u+1knhajXgpp/RjvBisPpgR7TOn8x3m1nRctmqw+kGybf+xOl7KcUUyH9T4xjRXUmyt5jct97nejRDSU7OvuiMfp/XLBK3tUjvszb9tsCpND8EOKPKc3bCeKYQhY+zlegZmSNFoTwwShjkJW0p0WyCHXFIR8EyPdJUwAjU39uIhRTtSiDDJTK077vuqMMqtbmDiZHrtnqOTNOZVFrwkd+hrU/2RkFeL2aS9BIWrLqGWoT33pU90kkZ/CnzuY9e1ntyz7bEiIjY6K/mv3wYQIL1ZsygIIjj1wbJy7CpRmiAI40mC81d2lpWUuStB5DL41mce08Qw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4370.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39850400004)(396003)(366004)(376002)(136003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(38100700002)(86362001)(31696002)(6486002)(36756003)(316002)(66556008)(66946007)(66476007)(6916009)(478600001)(53546011)(6512007)(36916002)(6506007)(6666004)(44832011)(2906002)(8936002)(4744005)(5660300002)(7416002)(31686004)(4326008)(8676002)(41300700001)(26005)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UGEzekxRdWJpMnhYNHZIcmplRE9ML1ZTVVMvaHNDNVJoeTVONFpZaUszdlJt?=
+ =?utf-8?B?UVZoSEVWWi8xNmJyWm9nU2REZCtRSjZ6VWcxcFVIWDh6aFUrNGVGT05BWi8r?=
+ =?utf-8?B?LzF2ZkR5M1VmUGNsdFBJZTZUam45ZGFKTWxnN3NPSC9XUmZHMUhpcUY0Z3hF?=
+ =?utf-8?B?VnoxOTIxYVpIYkFIWE92MkplWDUvZUhXcXRGMXd1M0tGU3NVWWtuT05UNkV2?=
+ =?utf-8?B?Sjl1T0FMRmYwai9GQ1Rrc1czVEE5cnhHVDB6a1JpTWpTU3p6dmU4RFVCV1ZE?=
+ =?utf-8?B?TlFYUVlHVTFvRjZEUHU2bVczdlRFNDFXKzVKbVhna0dJMWV1eHRSeDBGaXVY?=
+ =?utf-8?B?RDV2V2h1UjM0QThnaEVYOFJET3piZHYxREJjVzF6NmdMYm1VSnh0V29uWGpw?=
+ =?utf-8?B?SG1pSUNiS004RmZQMzE4OEJ4WHJJNVhpUGNBM0YreGYwSmRYUWg2RlVWMEU0?=
+ =?utf-8?B?dnFPZ1AvbTVka1h6dVU3Q1lkSUtFOFV3S0llanF6YkZUbTJRUUlsQXpwTkFE?=
+ =?utf-8?B?elgvc0N2azVSeSszVXVHbEFNNkx0MjEzTVFUUnlnUFFGdy92T2d1VFYyZ3Zs?=
+ =?utf-8?B?c1Z6VXRCaExTSmRsKzEzWlFQeEdLNlVpK24wa1lPdkJlMmU2MEQrczlldUln?=
+ =?utf-8?B?N09kb3VUQ1o2bnFiT2hqL0ZjNm9DRFdMWk44eityaWZEamJpQ3FEMUQvSi9l?=
+ =?utf-8?B?RE9Kbk8wQmZxaDhLQlN6VThjU2l4QVNGWmNmNUNudDFjbGsvSzA4akZnMjJU?=
+ =?utf-8?B?S2tGTmdjQllzSGFndUNRQURiQ1VEd2xEMmVFLzRtT2cyUHNXcTZOVTRPK3dJ?=
+ =?utf-8?B?S2RkU0duaTRSRmEvZnNKQnpqZTRYZlZWc0xmS0d5dExDWkVaaHJaYzQ0dmpX?=
+ =?utf-8?B?ZmdoNXR1cU4wcHNBTVUzUzE0WjdUVHVML1pOUUJBYmdQZG1lcTRQTWxGRnlI?=
+ =?utf-8?B?MUNRN1RIYnBWcHJxVHpvb3VOalFpUkdiR1dIcllLVHljeWZQMGlaR2NIVlFP?=
+ =?utf-8?B?RXk4djJjVy85OGZQVmZJRkUzSXV4eEl3MnRkeEdreGVGS0wwaWF2VDRPWnZY?=
+ =?utf-8?B?WHozcDYvSGRkTzVWQktXbG1pMjZ3QlJ3LzdjV1cxYkoybUJOclZlMTJUdzdO?=
+ =?utf-8?B?SEtpRUtLRkdHekFiRGloVjMxTW9BNG9kSnhCVVFmVzZFb296TU1WTXhPR2Q0?=
+ =?utf-8?B?YzZmd3Rvd1dVR1lQWGJ1TVkzallEdXJpQm9iYXZSZTZDM21URmUvQUZYSjI1?=
+ =?utf-8?B?RDZCbHA3cDZ6dzFadHhseXhvSzlLSHN1blZRQ1A4VG84RjhmeG1hWjBBUUdm?=
+ =?utf-8?B?Si9TMkhKVVdOZm1ObjB2NFBVSVMxQWNzS2RYY0l4MVExWmc4bTJ5SjVQcUhz?=
+ =?utf-8?B?YVRJa3l0MngyZXdqKzZzajdWSHRHbGJpaWZ3bzIwa05HZmJOR1FnSmt6RDQy?=
+ =?utf-8?B?ZlVMZktYZ1Q5TXlKT1Fna1JvL00wRFpSVDlWQXZSdSt5L3cvRk5FeHF3S0Mx?=
+ =?utf-8?B?QXo1ZTZ5QmJVNGVoTnNGMmNNMzVqN0UxYXI3YlRGQnRDbm1UdjNxaCtGaFNT?=
+ =?utf-8?B?NTZHTmt5YUUyTU9vRHlJclBDNUtQZTltTHl1dHRad21Yc1NFd0pSYjRPQkdk?=
+ =?utf-8?B?TWxJcXlaTzRLNEtxZG40OHE4YXFSbk5XNkdaaVVQSTZwMEhwZzl5WjFKdHpW?=
+ =?utf-8?B?WjM5ajlTMXpRNUc5aDBJWEhwc3FINGdHWkVXRmhmbDEwbVFzbEcwdmFWU2l2?=
+ =?utf-8?B?WjROTGVyZ0FQTi9KUmtkdWdYaTVJSlh1TlVveEEvWThSSDlzUjVwbzE4MXdX?=
+ =?utf-8?B?bkN3VzE3VFpWS2NPREVwZDNzZHdaTE1YTHN4bTQ0VlZCZXNuU1g4U2Zlc2py?=
+ =?utf-8?B?UHJJQ09KejhxajZjRGljUmgrRmVhK0gvajBTUnF5WDZrYnErdlBCd1lFblVn?=
+ =?utf-8?B?blA0VXJ6ZWZCY09CdkR0NnNjanVLNlBQYitjaW8zdkhmYVQ0TGVVOXBIZW93?=
+ =?utf-8?B?RHA0d3BNeXh1dFFrbms5QjN2cEtUek9BV0FPOFB3UGtVS2JaYmNrYWo2Y0pN?=
+ =?utf-8?B?cFR1VEpGcjZzQlB4WWFJS0JRVWd6bU1wamxoZjQ0czFjcWsydGxnZTdUQS9N?=
+ =?utf-8?Q?O2A9g3P1YxYaenpLj9IBUr4WI?=
+X-OriginatorOrg: digi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a8d580b-ca47-4470-b905-08dc17ff0f1f
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4370.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 08:25:42.0840
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: abb4cdb7-1b7e-483e-a143-7ebfd1184b9e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KP6A0rl6kgfOVDC9c0AiLEqHNbUtj/SGRrP2ZYdTPyKKaJsW3Iu71KARzgYe0e1M/fo7eHIy/dpoP9sd3H/wlw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5114
+X-BESS-ID: 1705566345-104761-12525-14975-1
+X-BESS-VER: 2019.1_20240103.1634
+X-BESS-Apparent-Source-IP: 104.47.73.40
+X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVubGlkBGBlAsLSUx1TjFIC3J1C
+	QlJcnA0tDC2DjFONXSMsUsxSwxLUmpNhYABhSVLkAAAAA=
+X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.253595 [from 
+	cloudscan14-208.us-east-2a.ess.aws.cudaops.com]
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------
+	0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
+X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS112744 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND
+X-BESS-BRTS-Status:1
 
-> On 3/23/23 15:55, Anup Patel wrote:
-> > On Thu, Mar 23, 2023 at 6:24 PM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
-> >> Hi Anup,
-> >>
-> >> On Thu, Mar 23, 2023 at 1:18 PM Anup Patel <apatel@ventanamicro.com> wrote:
-> >>> Hi Alex,
-> >>>
-> >>> On Thu, Mar 16, 2023 at 6:48 PM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
-> >>>> This patchset intends to improve tlb utilization by using hugepages for
-> >>>> the linear mapping.
-> >>>>
-> >>>> As reported by Anup in v6, when STRICT_KERNEL_RWX is enabled, we must
-> >>>> take care of isolating the kernel text and rodata so that they are not
-> >>>> mapped with a PUD mapping which would then assign wrong permissions to
-> >>>> the whole region: it is achieved by introducing a new memblock API.
-> >>>>
-> >>>> Another patch makes use of this new API in arm64 which used some sort of
-> >>>> hack to solve this issue: it was built/boot tested successfully.
-> >>>>
-> >>>> base-commit-tag: v6.3-rc1
-> >>>>
-> >>>> v8:
-> >>>> - Fix rv32, as reported by Anup
-> >>>> - Do not modify memblock_isolate_range and fixes comment, as suggested by Mike
-> >>>> - Use the new memblock API for crash kernel too in arm64, as suggested by Andrew
-> >>>> - Fix arm64 double mapping (which to me did not work in v7), but ends up not
-> >>>>    being pretty at all, will wait for comments from arm64 reviewers, but
-> >>>>    this patch can easily be dropped if they do not want it.
-> >>>>
-> >>>> v7:
-> >>>> - Fix Anup bug report by introducing memblock_isolate_memory which
-> >>>>    allows us to split the memblock mappings and then avoid to map the
-> >>>>    the PUD which contains the kernel as read only
-> >>>> - Add a patch to arm64 to use this newly introduced API
-> >>>>
-> >>>> v6:
-> >>>> - quiet LLVM warning by casting phys_ram_base into an unsigned long
-> >>>>
-> >>>> v5:
-> >>>> - Fix nommu builds by getting rid of riscv_pfn_base in patch 1, thanks
-> >>>>    Conor
-> >>>> - Add RB from Andrew
-> >>>>
-> >>>> v4:
-> >>>> - Rebase on top of v6.2-rc3, as noted by Conor
-> >>>> - Add Acked-by Rob
-> >>>>
-> >>>> v3:
-> >>>> - Change the comment about initrd_start VA conversion so that it fits
-> >>>>    ARM64 and RISCV64 (and others in the future if needed), as suggested
-> >>>>    by Rob
-> >>>>
-> >>>> v2:
-> >>>> - Add a comment on why RISCV64 does not need to set initrd_start/end that
-> >>>>    early in the boot process, as asked by Rob
-> >>>>
-> >>>> Alexandre Ghiti (4):
-> >>>>    riscv: Get rid of riscv_pfn_base variable
-> >>>>    mm: Introduce memblock_isolate_memory
-> >>>>    arm64: Make use of memblock_isolate_memory for the linear mapping
-> >>>>    riscv: Use PUD/P4D/PGD pages for the linear mapping
-> >>> Kernel boot fine on RV64 but there is a failure which is still not
-> >>> addressed. You can see this failure as following message in
-> >>> kernel boot log:
-> >>>      0.000000] Failed to add a System RAM resource at 80200000
-> >> Hmmm I don't get that in any of my test configs, would you mind
-> >> sharing yours and your qemu command line?
-> > Try alexghiti_test branch at
-> > https://github.com/avpatel/linux.git
-> >
-> > I am building the kernel using defconfig and my rootfs is
-> > based on busybox.
-> >
-> > My QEMU command is:
-> > qemu-system-riscv64 -M virt -m 512M -nographic -bios
-> > opensbi/build/platform/generic/firmware/fw_dynamic.bin -kernel
-> > ./build-riscv64/arch/riscv/boot/Image -append "root=/dev/ram rw
-> > console=ttyS0 earlycon" -initrd ./rootfs_riscv64.img -smp 4
-> 
-> 
-> So splitting memblock.memory is the culprit, it "confuses" the resources
-> addition and I can only find hacky ways to fix that...
-Hi Alexandre,
+Hello Andy,
 
-We encountered the same error as Anup. After adding your patch
-(3335068f87217ea59d08f462187dc856652eea15), we will not encounter the
-error again.
+On 1/17/24 21:51, Andy Shevchenko wrote:
+>> Some SoCs, such as i.MX93, don't have all 32 pins available
+>> per port. Allow optional generic 'ngpios' property to be
+>> specified from the device tree and default to
+>> VF610_GPIO_PER_PORT (32) if the property does not exist.
+> 
+> ...
+> 
+>> +       ret = device_property_read_u32(dev, "ngpios", &ngpios);
+>> +       if (ret || ngpios > VF610_GPIO_PER_PORT)
+>> +               gc->ngpio = VF610_GPIO_PER_PORT;
+>> +       else
+>> +               gc->ngpio = (u16)ngpios;
+> 
+> This property is being read by the GPIOLIB core. Why do you need to repeat this?
 
-What I have observed so far is
+My apologies; I had not seen this.
+I'll use gpiochip_get_ngpios() on the next iteration.
 
-- before your patch
-When merging consecutive memblocks, if the memblock types are different,
-they will be merged into reserved
-- after your patch
-When consecutive memblocks are merged, if the memblock types are
-different, they will be merged into memory.
+Thank you!
+-- 
+Héctor Palacios
 
-Such a result will cause the memory location of OpenSBI to be changed
-from reserved to memory. Will this have any side effects?
-> 
-> So given that the arm64 patch with the new API is not pretty and that
-> the simplest solution is to re-merge the memblock regions afterwards
-> (which is done by memblock_clear_nomap), I'll drop the new API and the
-> arm64 patch to use the nomap API like arm64: I'll take advantage of that
-> to clean setup_vm_final which I have wanted to do for a long time.
-> 
-> @Mike Thanks for you reviews!
-> 
-> @Anup Thanks for all your bug reports on this patchset, I have to
-> improve my test flow (it is in the work :)).
-> 
-> 
-> > Regards,
-> > Anup
-> >
-> >> Thanks
-> >>
-> >>> Regards,
-> >>> Anup
-> >>>
-> >>>>   arch/arm64/mm/mmu.c           | 25 +++++++++++------
-> >>>>   arch/riscv/include/asm/page.h | 19 +++++++++++--
-> >>>>   arch/riscv/mm/init.c          | 53 ++++++++++++++++++++++++++++-------
-> >>>>   arch/riscv/mm/physaddr.c      | 16 +++++++++++
-> >>>>   drivers/of/fdt.c              | 11 ++++----
-> >>>>   include/linux/memblock.h      |  1 +
-> >>>>   mm/memblock.c                 | 20 +++++++++++++
-> >>>>   7 files changed, 119 insertions(+), 26 deletions(-)
-> >>>>
-> >>>> --
-> >>>> 2.37.2
-> >>>>
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
