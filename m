@@ -1,179 +1,239 @@
-Return-Path: <linux-kernel+bounces-29675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F943831197
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:55:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0365883119A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:58:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 891B8284A0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:55:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247571C215C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DBA6106;
-	Thu, 18 Jan 2024 02:55:06 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3B36104;
+	Thu, 18 Jan 2024 02:58:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6hJIbuJ"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62DF53B5
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F0142F38;
+	Thu, 18 Jan 2024 02:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705546506; cv=none; b=BPIPAlKlIDY3OnWdRCwMYe0Kl46D6mLDWUOTV+agin4TxVoDeOdKDKEu7MjcR3Ddrv+GgSJjb1ABfx0zPfUBLZnzzWwgR2B05VHZhjPn+UEC65CpC+dRC9k+hP694hJ6D+IYEU/E2TYFExY+yPCZHxdk/UGnPY9h9btjvQ+MH+M=
+	t=1705546715; cv=none; b=BwjYp3L4TOlnu7Rli590/TcghBjLObD5USJG0axj3ZtguX26eNHlTxe+PazuMbW1yfobiwkHargZcP+6Vzd8jMjQE3W2vc9p/r1IVuG4R4cEF0OXVeeva4auIYQ1qdTmAhWTL/QMCUfed+7z7Ute2P+kaHwQJ7aZa/n8T3zaMak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705546506; c=relaxed/simple;
-	bh=YVm/1t0ItSlMZkMHdpp8tx96HwG6QpqBDAtUJESG87k=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:MIME-Version:X-Received:Date:In-Reply-To:
-	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:
-	 Message-ID:Subject:From:To:Content-Type; b=MFdDp0I5BTLQFLjgJIu5DeyqYd1VY6/cn0Lxph9Qer9oVs7iPHm85Njcphy0pfO8iGYyzgy5FasCRr/wVt4ksxWxEO7dnTBJdqQoJ4h7Ld+ruVIeGRwabeT/6p/bWY9bspTiR3Zc+mgJ4osbCeZz9BCewH5HETvzn+/eHikrVBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bec4b24a34so1208446539f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:55:04 -0800 (PST)
+	s=arc-20240116; t=1705546715; c=relaxed/simple;
+	bh=ptDDxqi9ai0mSu+Viwu8VChjR49X5ys2oRJkEXp/M0k=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
+	 Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=kkNz+Rie/jxAD3Wg3z6kJ0uD9/gRPFhbtPskERiFbsdqd6o/idO6IuakH5E95FDJKiXXj3oeztw/dutHiRMbukLApTwXHzNDBKzMh/oVYJBc8u1LDYEGXG9iqt1bqKi39jaCBb5bzcM5NCrbh0z4BNFbyzTNP+rHqw/547pawl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6hJIbuJ; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e8d3b32eeso9468335e9.1;
+        Wed, 17 Jan 2024 18:58:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705546711; x=1706151511; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lmS8hsrnFfM30GV9w0Fu6Ej0srTZRziSKaA98H/KigQ=;
+        b=O6hJIbuJNoH+2Rph3dM2bsGA8VxkMm2jRYF2K1BTUlMPxAtT7ERrgNKvG/PJ8M0unW
+         8IQbKkMRYrL2fCYlEBPizxEZwUXQOYs5qZEu++RVOWuWweR4gNyUXfMU2KGcxY/QjvyT
+         //Cb+nXzbhuph1rKSgUb4ZWOYP/NNkWfxLrwM3QFzvuJvuWaux4OLR+sIYUoIx40WZ1P
+         26uA/kEZrs9JpjBB2mR6mfYuyMvB+rRG6lJ39T0MEZQtnEJcWKYlWw53swf2+DsU41Lk
+         o1RE2yZI35kNcq9DlcyT1ByPPxsWlG/wk6MZmlayrxxDEi6M2HXqjFye6C8gswKTCciq
+         XcKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705546504; x=1706151304;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1705546711; x=1706151511;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FoVdfhHX4ff0XbftH9EFE+5Z9lgwg8otx+Ta2LAWigA=;
-        b=WUTi7Rqu3tDlx7XblOPEKgPu6aGPyzKTP96p4R9CPqY7a6fzYBs/YppEvKi0iwQR07
-         U+KnfIQeES77THw5YBxDzYvJJRj+LZfNAnzLhImn8VAgJvmbzOedmJOuCvy9ulXsLXzf
-         MEoAuWmBgPL83h5aLs2idYHyxkU7X4Cy4jEbdf9dlVpBvAFgAPRY00ZhsFNlBx/+xSRg
-         JOlEMigFjEo2Ac+vaTXEDLsCzP0MQ4ozHsQaPgcZm5wUu1Gk3ntafEhXtnNCYBpQ3r85
-         h9JjinIjTm0XVI5sn5a+W64RTMac5gvn9G1Hh3hjR4VOiFH1RZOLqFdda1UpTsVgJVgd
-         OAKg==
-X-Gm-Message-State: AOJu0Yw+bV8drzYRGDXZsGtz4rM+vanAfpJC2LeKclojvfmqY/GDZtuZ
-	113g63x9OgY04Cwszg46RsxKahoC8gP9Iskhzms8GDCCHQNgFVcegpXKcFb62ratnb6LMs6ZSdE
-	9DUliENgPPGjT1h1QdEeY/0+eYq16pYfVrw33KJgHUQi9DrarbVVipjc=
-X-Google-Smtp-Source: AGHT+IH229jr36+/NAAlB+aQ37zn/SAxvGdVGTTv8BZP8h0GcEZNLc5Hdq9TZGQXbDGjpp/xlBaE1rYMBiQS3moncnjbeOtONKog
+        bh=lmS8hsrnFfM30GV9w0Fu6Ej0srTZRziSKaA98H/KigQ=;
+        b=u6/Mx1bBEx2/i/2Os5Bd7Lo0+4FAvXcWOf6+ol+4G31404UQgNo69/K5nuFiRvXHTB
+         3uWuhpAIeHqs5wUwyEfa5lHlz5yiNIJ3dEME9o34JKs7FFespr+LxrVCSIAJVHmKjr7i
+         x05y6Zp2uMDfORVhoRiWC0Y83DNi9yohcpUhG6COLmWNsZIsZ7pXsm0cDZvDjWp0Xn1s
+         L86H76Eg3Xlgj32msk3L2Ql5EBOCVdHdh7DNqKdvjVsUkydWR9kTDOuXkw7jpphVSLq0
+         kDbbjPGxllEkBShRGgi9DQ3YNTkBL9/gtErRUEM4fZLAZHxE2T+dn1ItjSCyO3BrDa/3
+         P9Jg==
+X-Gm-Message-State: AOJu0Yxeo7wqqx8IC17u1cYOGAyW+u9LRN+JOVgtlitfyF2uIha0um7J
+	Dr52Mx4+W3D9uGkMTm/yCz3UZaUOSWpUx3SXddOsrD4KRqhXarADte7E5xvo
+X-Google-Smtp-Source: AGHT+IGWxlj83bcCPiU6HaMB+hDowVXv8gMkMtRdTrmjx1jASrFekpHiLFEfHryVOUStBGohV7i+RA==
+X-Received: by 2002:a7b:c349:0:b0:40e:4a76:2b74 with SMTP id l9-20020a7bc349000000b0040e4a762b74mr79543wmj.165.1705546711261;
+        Wed, 17 Jan 2024 18:58:31 -0800 (PST)
+Received: from [192.168.8.100] ([148.252.141.25])
+        by smtp.gmail.com with ESMTPSA id v21-20020a05600c445500b0040e3bdff98asm27791945wmn.23.2024.01.17.18.58.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 18:58:31 -0800 (PST)
+Message-ID: <01dc95c9-a327-4310-9b70-6fcb977db3d9@gmail.com>
+Date: Thu, 18 Jan 2024 02:56:26 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:379d:b0:46e:415e:e0a2 with SMTP id
- w29-20020a056638379d00b0046e415ee0a2mr7610jal.4.1705546503997; Wed, 17 Jan
- 2024 18:55:03 -0800 (PST)
-Date: Wed, 17 Jan 2024 18:55:03 -0800
-In-Reply-To: <20240118023348.1310-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000084d1e9060f2f7d0e@google.com>
-Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
-From: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6] io_uring: Statistics of the true utilization of sq
+ threads.
+To: Xiaobing Li <xiaobing.li@samsung.com>, axboe@kernel.dk
+Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+ kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
+ kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com
+References: <e117f6e0-a8bc-4068-8bce-65a7c4e129cf@kernel.dk>
+ <CGME20240117084516epcas5p2f0961781ff761ac3a3794c5ea80df45f@epcas5p2.samsung.com>
+ <20240117083706.11766-1-xiaobing.li@samsung.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20240117083706.11766-1-xiaobing.li@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On 1/17/24 08:37, Xiaobing Li wrote:
+> On 1/12/24 2:58 AM, Jens Axboe wrote:
+>> On 1/11/24 6:12 PM, Xiaobing Li wrote:
+>>> On 1/10/24 16:15 AM, Jens Axboe wrote:
+>>>> On 1/10/24 2:05 AM, Xiaobing Li wrote:
+>>>>> On 1/5/24 04:02 AM, Pavel Begunkov wrote:
+>>>>>> On 1/3/24 05:49, Xiaobing Li wrote:
+>>>>>>> On 12/30/23 9:27 AM, Pavel Begunkov wrote:
+>>>>>>>> Why it uses jiffies instead of some task run time?
+>>>>>>>> Consequently, why it's fine to account irq time and other
+>>>>>>>> preemption? (hint, it's not)
+>>>>>>>>
+>>>>>>>> Why it can't be done with userspace and/or bpf? Why
+>>>>>>>> can't it be estimated by checking and tracking
+>>>>>>>> IORING_SQ_NEED_WAKEUP in userspace?
+>>>>>>>>
+>>>>>>>> What's the use case in particular? Considering that
+>>>>>>>> one of the previous revisions was uapi-less, something
+>>>>>>>> is really fishy here. Again, it's a procfs file nobody
+>>>>>>>> but a few would want to parse to use the feature.
+>>>>>>>>
+>>>>>>>> Why it just keeps aggregating stats for the whole
+>>>>>>>> life time of the ring? If the workload changes,
+>>>>>>>> that would either totally screw the stats or would make
+>>>>>>>> it too inert to be useful. That's especially relevant
+>>>>>>>> for long running (days) processes. There should be a
+>>>>>>>> way to reset it so it starts counting anew.
+>>>>>>>
+>>>>>>> Hi, Jens and Pavel,
+>>>>>>> I carefully read the questions you raised.
+>>>>>>> First of all, as to why I use jiffies to statistics time, it
+>>>>>>> is because I have done some performance tests and found that
+>>>>>>> using jiffies has a relatively smaller loss of performance
+>>>>>>> than using task run time. Of course, using task run time is
+>>>>>>
+>>>>>> How does taking a measure for task runtime looks like? I expect it to
+>>>>>> be a simple read of a variable inside task_struct, maybe with READ_ONCE,
+>>>>>> in which case the overhead shouldn't be realistically measurable. Does
+>>>>>> it need locking?
+>>>>>
+>>>>> The task runtime I am talking about is similar to this:
+>>>>> start = get_system_time(current);
+>>>>> do_io_part();
+>>>>> sq->total_time += get_system_time(current) - start;
+>>>>
+>>>> Not sure what get_system_time() is, don't see that anywhere.
+>>>>
+>>>>> Currently, it is not possible to obtain the execution time of a piece of
+>>>>> code by a simple read of a variable inside task_struct.
+>>>>> Or do you have any good ideas?
+>>>>
+>>>> I must be missing something, because it seems like all you need is to
+>>>> read task->stime? You could possible even make do with just logging busy
+>>>> loop time, as getrusage(RUSAGE_THREAD, &stat) from userspace would then
+>>>> give you the total time.
+>>>>
+>>>> stat.ru_stime would then be the total time, the thread ran, and
+>>>> 1 - (above_busy_stime / stat.ru_stime) would give you the time the
+>>>> percentage of time the thread ran and did useful work (eg not busy
+>>>> looping.
+>>>
+>>> getrusage can indeed get the total time of the thread, but this
+>>> introduces an extra function call, which is relatively more
+>>> complicated than defining a variable. In fact, recording the total
+>>> time of the loop and the time of processing the IO part can achieve
+>>> our observation purpose. Recording only two variables will have less
+>>> impact on the existing performance, so why not  choose a simpler and
+>>> effective method.
+>>
+>> I'm not opposed to exposing both of them, it does make the API simpler.
+>> If we can call it an API... I think the main point was using task->stime
+>> for it rather than jiffies etc.
+> 
+> Hi, Jens and Pavel
+> I modified the code according to your opinions.
+> 
+> I got the total time of the sqpoll thread through getrusage.
+> eg：
+> 
+> fdinfo.c:
+> +long sq_total_time = 0;
+> +long sq_work_time = 0;
+> if (has_lock && (ctx->flags & IORING_SETUP_SQPOLL)) {
+> 	struct io_sq_data *sq = ctx->sq_data;
+> 
+> 	sq_pid = sq->task_pid;
+> 	sq_cpu = sq->sq_cpu;
+> +	struct rusage r;
+> +	getrusage(sq->thread, RUSAGE_SELF, &r);
+> +	sq_total_time = r.ru_stime.tv_sec * 1000000 + r.ru_stime.tv_usec;
+> +	sq_work_time = sq->work_time;
+> }
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: use-after-free Read in __skb_flow_dissect
+That's neat, but fwiw my concerns are mostly about what's
+exposed to the user space.
 
-==================================================================
-BUG: KASAN: use-after-free in __skb_flow_dissect+0x19d1/0x7a50 net/core/flow_dissector.c:1170
-Read of size 1 at addr ffff88813da6000e by task syz-executor.0/5482
+> seq_printf(m, "SqThread:\t%d\n", sq_pid);
+> seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
+> +seq_printf(m, "SqTotalTime:\t%ldus\n", sq_total_time);
+> +seq_printf(m, "SqWorkTime:\t%ldus\n", sq_work_time);
+> seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
+> 
+> The working time of the sqpoll thread is obtained through ktime_get().
+> eg：
 
-CPU: 0 PID: 5482 Comm: syz-executor.0 Not tainted 6.7.0-syzkaller-g296455ade1fd-dirty #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:488
- kasan_report+0xda/0x110 mm/kasan/report.c:601
- __skb_flow_dissect+0x19d1/0x7a50 net/core/flow_dissector.c:1170
- skb_flow_dissect_flow_keys include/linux/skbuff.h:1524 [inline]
- ___skb_get_hash net/core/flow_dissector.c:1791 [inline]
- __skb_get_hash+0xc7/0x540 net/core/flow_dissector.c:1856
- skb_get_hash include/linux/skbuff.h:1566 [inline]
- ip_tunnel_xmit+0x1843/0x33b0 net/ipv4/ip_tunnel.c:748
- ipip_tunnel_xmit+0x3cc/0x4e0 net/ipv4/ipip.c:308
- __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
- netdev_start_xmit include/linux/netdevice.h:5003 [inline]
- xmit_one net/core/dev.c:3547 [inline]
- dev_hard_start_xmit+0x137/0x6d0 net/core/dev.c:3563
- __dev_queue_xmit+0x7b6/0x3ed0 net/core/dev.c:4351
- dev_queue_xmit include/linux/netdevice.h:3171 [inline]
- neigh_connected_output+0x426/0x5d0 net/core/neighbour.c:1592
- neigh_output include/net/neighbour.h:542 [inline]
- ip_finish_output2+0x82d/0x2540 net/ipv4/ip_output.c:235
- __ip_finish_output net/ipv4/ip_output.c:313 [inline]
- __ip_finish_output+0x38b/0x650 net/ipv4/ip_output.c:295
- ip_finish_output+0x31/0x310 net/ipv4/ip_output.c:323
- NF_HOOK_COND include/linux/netfilter.h:303 [inline]
- ip_mc_output+0x1dd/0x6a0 net/ipv4/ip_output.c:420
- dst_output include/net/dst.h:451 [inline]
- ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:129
- iptunnel_xmit+0x5b4/0x9b0 net/ipv4/ip_tunnel_core.c:82
- ip_tunnel_xmit+0x1daa/0x33b0 net/ipv4/ip_tunnel.c:831
- ipgre_xmit+0x49b/0x980 net/ipv4/ip_gre.c:665
- __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
- netdev_start_xmit include/linux/netdevice.h:5003 [inline]
- xmit_one net/core/dev.c:3547 [inline]
- dev_hard_start_xmit+0x137/0x6d0 net/core/dev.c:3563
- __dev_queue_xmit+0x7b6/0x3ed0 net/core/dev.c:4351
- dev_queue_xmit include/linux/netdevice.h:3171 [inline]
- __bpf_tx_skb net/core/filter.c:2135 [inline]
- __bpf_redirect_no_mac net/core/filter.c:2169 [inline]
- __bpf_redirect+0x764/0xf40 net/core/filter.c:2192
- ____bpf_clone_redirect net/core/filter.c:2463 [inline]
- bpf_clone_redirect+0x2b2/0x420 net/core/filter.c:2435
- ___bpf_prog_run+0x3e44/0xabc0 kernel/bpf/core.c:1986
- __bpf_prog_run512+0xb7/0xf0 kernel/bpf/core.c:2227
- bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_test_run+0x3d3/0x9c0 net/bpf/test_run.c:423
- bpf_prog_test_run_skb+0xb75/0x1dd0 net/bpf/test_run.c:1056
- bpf_prog_test_run kernel/bpf/syscall.c:4107 [inline]
- __sys_bpf+0x11bf/0x4a00 kernel/bpf/syscall.c:5475
- __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5559
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f02f287cce9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f02f35200c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007f02f299bf80 RCX: 00007f02f287cce9
-RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
-RBP: 00007f02f28c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f02f299bf80 R15: 00007ffdf31f6258
- </TASK>
+Just like with jiffies, ktime_get() is wall clock time, but
+uncomfortably much more expensive. Why not stime Jens dug up
+last time?
 
-The buggy address belongs to the physical page:
-page:ffffea0004f69800 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13da60
-flags: 0x57ff00000000000(node=1|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 057ff00000000000 ffffea0004f69808 ffffea0004f69808 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner info is not present (never set?)
+> sqpoll.c:
+> +ktime_t start, diff;
+> +start = ktime_get();
+> list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
+> 	int ret = __io_sq_thread(ctx, cap_entries);
+> 
+> 	if (!sqt_spin && (ret > 0 || !wq_list_empty(&ctx->iopoll_list)))
+> 		sqt_spin = true;
+> }
+> if (io_run_task_work())
+> 	sqt_spin = true;
+> 
+> +diff = ktime_sub(ktime_get(), start);
+> +if (sqt_spin == true)
+> +	sqd->work_time += ktime_to_us(diff);
+> 
+> The test results are as follows:
+> Every 2.0s: cat /proc/9230/fdinfo/6 | grep -E Sq
+> SqMask: 0x3
+> SqHead: 3197153
+> SqTail: 3197153
+> CachedSqHead:   3197153
+> SqThread:       9231
+> SqThreadCpu:    11
+> SqTotalTime:    92215321us
+> SqWorkTime:     15106578us
+> 
+> Do you think this solution work?
 
-Memory state around the buggy address:
- ffff88813da5ff00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88813da5ff80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff88813da60000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                      ^
- ffff88813da60080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88813da60100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+I'm curious, is the plan to leave it only accessible via
+procfs? It's not machine readable well, so should be quite
+an annoyance parsing it every time.
 
-
-Tested on:
-
-commit:         296455ad Merge tag 'char-misc-6.8-rc1' of git://git.ke..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=13727293e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e5a3077efcfd8745
-dashboard link: https://syzkaller.appspot.com/bug?extid=bfde3bef047a81b8fde6
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11829877e80000
-
+-- 
+Pavel Begunkov
 
