@@ -1,265 +1,300 @@
-Return-Path: <linux-kernel+bounces-29949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7CDB8315B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:25:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A399C8315D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64A991F26EA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:25:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A5A42879C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15931F61A;
-	Thu, 18 Jan 2024 09:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66FF1F934;
+	Thu, 18 Jan 2024 09:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kCrS70Rp"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="YPb1106H"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2082.outbound.protection.outlook.com [40.107.7.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247581BDFC;
-	Thu, 18 Jan 2024 09:25:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479001BDFC;
+	Thu, 18 Jan 2024 09:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.82
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705569930; cv=fail; b=CCQN4nTUQyHPRefvBLR6K9CYV0WoqOIaY1hoaQF2LDl8BWx+UCzQpZJGJhFsq2ONDjmT22vANiySN1Lc8teL7QCmmHIPmujN0EDSM1wwiWiXX7cWCK8YMXO2j1N3tjuj6SjxKJDE5JktGoomDyjkW1VgpA4SvZtrhs789/ln4qU=
+	t=1705570114; cv=fail; b=TeEqtg/pydAckxXiePK21x+e+tsoRCg8I1g2lT7HsWWUly3EbuLO4nsbhkkTP7e5Y2M0fmJNCyg8LUazPeokZdWa9VL0bZh/O7RFmKfeZfvx4Y30rI2I8FGit0S+VOBwPyRr0dFMDRhFcw/GMD7kH/I+ZKGVq2JaqJDnekdrQfY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705569930; c=relaxed/simple;
-	bh=mz7XXlIeNs/NZop2YeZ1+JS5dJ44plfL7/Vw6IfXYJE=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Received:Received:Received:
-	 Received:ARC-Message-Signature:ARC-Authentication-Results:Received:
-	 Received:Message-ID:Date:User-Agent:Subject:Content-Language:To:CC:
-	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
+	s=arc-20240116; t=1705570114; c=relaxed/simple;
+	bh=mi2W1fdYWq/bi3dp+V49Eh5MFjh2oxZN194pyvtl1Rs=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:From:To:CC:Subject:Thread-Topic:Thread-Index:
+	 Date:Message-ID:References:In-Reply-To:Accept-Language:
+	 Content-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
+	 x-ms-publictraffictype:x-ms-traffictypediagnostic:
+	 x-ms-office365-filtering-correlation-id:
+	 x-ms-exchange-senderadcheck:x-ms-exchange-antispam-relay:
+	 x-microsoft-antispam:x-microsoft-antispam-message-info:
+	 x-forefront-antispam-report:
+	 x-ms-exchange-antispam-messagedata-chunkcount:
+	 x-ms-exchange-antispam-messagedata-0:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version:X-OriginatorOrg:
 	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-	b=r1Ltsbdd+JJOujpgmA+IDyhp050bi6/R/3Hh3GhjLfaGb+fwkJDUdZzuoxJ7ba9vFThxREsw2bgUHljTNkKulJWJzA7JXSIxPFwKAlMstrp9MDSG2+KUVu/KbvrKWtQLRcloAAjLdif4DNrXkfegXMq2uWgKnPFX32QjP+pN8bs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kCrS70Rp; arc=fail smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705569929; x=1737105929;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=mz7XXlIeNs/NZop2YeZ1+JS5dJ44plfL7/Vw6IfXYJE=;
-  b=kCrS70Rpl8BfbSY5XHcFx8nmZkfRpBvljeYgmdv/AnaGesr1MSWMs/MH
-   0nv8bJQIi8ugolmhNcGJr2MXe4vuyVOzDl1+BFQAUMBa6nXpGgilDpK2e
-   Oag+TatKhGallX4odDxl5ofV88FUqwSfxIoSgHIOeHDcD+uv11sxLNn+G
-   3uW30Y3DQylV9HTNU+KMni5SFfv1lep18XNrMUo5lYLudMKczTrSXSJqA
-   2GYvrikhUqFDaqEVIhRmQWxCyCpAnA4DNKHheZyKZBpsv5tqx7u3ik3GK
-   g+dSZKvFYOyS2KM0ENGtsRk24mzy2tgme6jyYdoNUNFpNcgej5RIYWRmM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="404164035"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="404164035"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 01:25:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="854941479"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="854941479"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Jan 2024 01:25:27 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Jan 2024 01:25:27 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Jan 2024 01:25:26 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 18 Jan 2024 01:25:26 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 18 Jan 2024 01:25:17 -0800
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-originalarrivaltime:
+	 X-MS-Exchange-CrossTenant-fromentityheader:
+	 X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+	 X-MS-Exchange-CrossTenant-userprincipalname:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=DDRe4ljHBYKJ+gU8utWhZvSuIAqJqDDb3NoBZ6fWMgXSxexb/p4JetMkRQsJJBcboQUySjiBRe5uCgSmm7UklJ//tA2bRnF8YPGPmzpK8MV3sF0Hbw0Knv32DYktrMciG3gTS4RJllltXizWicheIMYVSd46O2sSnA3j3lYu9Nw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=YPb1106H; arc=fail smtp.client-ip=40.107.7.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X7DGWTLbpMqxzZmtcbFiL8Jd+B7yCmfN0LpgL9VsevtgXd7HHoBoKlz2l6n6tipQHTsHA2QQXadl5sWt50o6V4d9vVgkjWPPrWnvoZ2Ds4VGtl8lk05Lid9tJuPTrbpPNP3HHGz9pxhkZb/Lg1tQ4zXB+e9HnlWqhh+Sbj5nlJ42FWt0PdxUoJ4xtD6gwb+D0tPTDJYteVBaDF9t3oS5WwF/BSNTzSF5FRv+i8McqyaNcBpemDszq1lrCWCftqwgqKJjfvr+FxMpHgT6gkQ0CkJrlXn6urTXqVLZAEe83/TU7SympxBZ/PZaEHDZTPQQaVhrAO1k7UnzTcu0wLgYPQ==
+ b=GlX7s7HxOj/9DMCpvHTFgCgxmjyKpBORU1dcMxRxS8h/rYoDgNzXZ0LrJponb8i3n7XkKd36jORNZ5eEwZonByieX/Du6DLU/1Fidp/SFLJ+0BbY3spbCxbXh+Ip1ciYadfdQb25hvMcKGlbKIgRNGt2landBMIW0tqdiaNY/F6lZo4kYt7Z677rLBxiM8UfY2DHtA69XyjOZglhJthpdUUSRY/Xr5lE1vW7QcVLK5WVp29ESwcKFuyjm0D5OIWT5EsWDVoN2Dqnu9TU+pfDnpwvRXeUtmwCqXRcz6agdr5MoNtup4+yKYxB9Rjt9nOn68gx89+PPFqYi/ArU8eZeg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XlLbJgsdjSGMJhZN68QCIRxS9jdKgUWLclRbvNAwLzs=;
- b=YhGqZRyMBBwSpiEaJh7PWl35yzukrAuE8Yg539uD8YEUmEUViP3M+TkRMVoCQsSbbwT6slKMiFCZlddCGlovVtdTswok55I/xADHxxNcmDFk3/NkCyiENDhXjPxx6h+zQXrYe6HBGQYDPi9BTYPQffqag1N8WW9tSNhY4tFLR1lfhrFaDr13wfUGrK06+SOwSKbRrcn8In2q1Ts5imFFNfAQaQox88G4zmf65J8G6YJ/3TAXLFeDyB6whfV1o2nnndMRncSwm0qHtlKjTi7tfKGTI4TCGfWm+fq+NEdIQLHd3nxyAGPMsFR3fC+TSzW2gz+o4D2K5B4rF/ndgmcvMw==
+ bh=naSGFWt3loXchwowv6jebyx+n5uVY9k3ysuvesuYm/g=;
+ b=P1sFTIhbpIgKyqzkYhvIPJ+J5iGH/qtbYyQhtmuvXR/uKoiRrpo/xMAC6As6aC9v/f/K8fJtQ1BPaP3YJqf60bPb+9PV5aMXx928UjZuA9TpeIqdkUN6J8YADT0DHA66xyWkLBT/19wwSHPg2gTkgWtxXQjle9MSkewO3PAlWfBpF8GI4MTF2IpffAEhf+fgCa0DfbNjometl9XYkcmUV6WmEFf6pIgyzeXKF+ZHRcHlJ6NNqXPGCT9S/QI8Pr3hZzHZzHHS5soxiQUxspdGbzGWa4dI95376YGLlGhBd+B9HQCze/Wx9eQnaqokKj478v5Mc0hInrfApHMTsSJc+A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by CYYPR11MB8358.namprd11.prod.outlook.com (2603:10b6:930:c9::21) with
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=naSGFWt3loXchwowv6jebyx+n5uVY9k3ysuvesuYm/g=;
+ b=YPb1106H6OTP9ZlaGPR6VQb/LSf1tuPmBj1cz6coUIugv5Qgcb23lGu6M0FwSbzMqRAUFOm9b//PmL1YMFbCvDBLlZQZ8F6Hr1StJJh9Vwm7D14bwoWFt66iG+n5dR67o7PpNlPXDWJFOMeBilSCHTU4Agq//vCahBlCEcp9k1o=
+Received: from AM0PR04MB6004.eurprd04.prod.outlook.com (2603:10a6:208:11a::11)
+ by PAXPR04MB8318.eurprd04.prod.outlook.com (2603:10a6:102:1c0::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Thu, 18 Jan
- 2024 09:25:15 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::a421:69e5:14fc:79d2]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::a421:69e5:14fc:79d2%2]) with mapi id 15.20.7202.020; Thu, 18 Jan 2024
- 09:25:15 +0000
-Message-ID: <459d6a3a-0ad9-4980-be37-103211e927c2@intel.com>
-Date: Thu, 18 Jan 2024 17:28:01 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/8] iommufd: Support attach/replace hwpt per pasid
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Thu, 18 Jan
+ 2024 09:28:29 +0000
+Received: from AM0PR04MB6004.eurprd04.prod.outlook.com
+ ([fe80::72db:548e:8011:b12f]) by AM0PR04MB6004.eurprd04.prod.outlook.com
+ ([fe80::72db:548e:8011:b12f%5]) with mapi id 15.20.7202.020; Thu, 18 Jan 2024
+ 09:28:29 +0000
+From: Gaurav Jain <gaurav.jain@nxp.com>
+To: Eric Biggers <ebiggers@kernel.org>
+CC: Herbert Xu <herbert@gondor.apana.org.au>, "David S . Miller"
+	<davem@davemloft.net>, Horia Geanta <horia.geanta@nxp.com>, Pankaj Gupta
+	<pankaj.gupta@nxp.com>, Varun Sethi <V.Sethi@nxp.com>, Meenakshi Aggarwal
+	<meenakshi.aggarwal@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>, Silvano Di
+ Ninno <silvano.dininno@nxp.com>, "linux-crypto@vger.kernel.org"
+	<linux-crypto@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [EXT] Re: [PATCH] crypto: caam/hash - fix asynchronous hash
+Thread-Topic: [EXT] Re: [PATCH] crypto: caam/hash - fix asynchronous hash
+Thread-Index: AQHaSGCYr0WDHP3yKEe2VG16zWQxl7Dda8kAgABkXzCAASAtAIAAYBmA
+Date: Thu, 18 Jan 2024 09:28:28 +0000
+Message-ID:
+ <AM0PR04MB6004C56470D075284635E008E7712@AM0PR04MB6004.eurprd04.prod.outlook.com>
+References: <20240116094405.744466-1-gaurav.jain@nxp.com>
+ <20240117043308.GA1137@sol.localdomain>
+ <AM0PR04MB6004E3B9AB6DB6BE3F6BE48BE7722@AM0PR04MB6004.eurprd04.prod.outlook.com>
+ <20240118034348.GA1103@sol.localdomain>
+In-Reply-To: <20240118034348.GA1103@sol.localdomain>
+Accept-Language: en-US
 Content-Language: en-US
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: "Tian, Kevin" <kevin.tian@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"robin.murphy@arm.com" <robin.murphy@arm.com>, "baolu.lu@linux.intel.com"
-	<baolu.lu@linux.intel.com>, "cohuck@redhat.com" <cohuck@redhat.com>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>, "nicolinc@nvidia.com"
-	<nicolinc@nvidia.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-	"chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-	"yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>, "peterx@redhat.com"
-	<peterx@redhat.com>, "jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
- Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
-	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
-	<yan.y.zhao@intel.com>
-References: <20231127063428.127436-1-yi.l.liu@intel.com>
- <20231127063428.127436-4-yi.l.liu@intel.com>
- <20240115172430.GN734935@nvidia.com>
- <BN9PR11MB52761349DFB5DAD2797C3EBF8C732@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20240116125756.GB734935@nvidia.com>
- <BN9PR11MB52763DDDE39C211E761A05168C722@BN9PR11MB5276.namprd11.prod.outlook.com>
- <88e46f6c-4d64-4357-be2a-833797e6de15@intel.com>
- <20240117125625.GF734935@nvidia.com>
-From: Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <20240117125625.GF734935@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR02CA0050.apcprd02.prod.outlook.com
- (2603:1096:4:196::11) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM0PR04MB6004:EE_|PAXPR04MB8318:EE_
+x-ms-office365-filtering-correlation-id: 0b66e78d-9f33-45ca-3484-08dc1807d493
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ YtqDkTnCPpo610oRMQj+awS5nbwH9yM8UMTtDEXeTdn8nYx6ZwqBXOcbdE/Kpy7A05eHiQutBIyEVw9DhomEg33zZ3u07FEPllIeGjKo9QiYM7tV0KnKaXhlYS6AHdc1vsmd/6IpFS7wSHT9r0ucqzgJwxNVuPy9Mcz5Nj1VvtlagXEAwRX2EvQOpr8GH+MyJkHGaow7sjqF9pXDgy8VDXCcrz01sPiq7Mu6PW502Q4Q8/NQbB2Fvp6+esQxdzjEO0vnOQUacWL5QNdVvxtUkVCbhsP5EFsDlyuEbcGTPmoelXgIA2n4WC/gjv7sc/D/pPzMdnBjgbStNP+nwmMat+vu2wiAXAx9yZpXQzGdfgtSCIz2ZxMJPViLszXYZcXnlSUmjAc2VfMh8+BCO046HpGKWMCn0AuWYL/4zYvp1ePY6BSVaMNNgYS1IMhnx/ibT39eZ/q0JqDCzfTZl/18kIB++JAf58wybLTfN/sI9Z9wTslrFKIRFVQc5BEZ4v8sp8C2+iZa+a1DcQ9xc0tR8bfsu1QTf7hbqSdiu0AwbEFUz6dnLIKq3xUKCpJQTtM7EN5qhde4ClxLSZwfF/0AN6B5TkaJCVWlmlDdmSRUprKUOSpZQAnnf5kQTdtzE9D5aiH2Cksm+w9FLpd0gL7RkBfOIl2uo3sX1L0muFrY8aw=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6004.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(366004)(346002)(39860400002)(230922051799003)(230173577357003)(230273577357003)(64100799003)(451199024)(186009)(1800799012)(55016003)(53546011)(7696005)(71200400001)(6506007)(55236004)(9686003)(26005)(8676002)(8936002)(52536014)(316002)(64756008)(66946007)(66476007)(6916009)(4326008)(54906003)(86362001)(5660300002)(76116006)(44832011)(478600001)(66446008)(66556008)(38100700002)(122000001)(83380400001)(38070700009)(41300700001)(33656002)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?3WPe/YlxBSeAYWkqGc7sgYC8dc+ErBPg5mhN9MH09XP3KBH0OOkUOqzuriph?=
+ =?us-ascii?Q?Frsz2Qa8+3Zb/sqSDzV1cYOLQUtOHEUrxhyETFWXQV2d2l9c8ijbLVoolhdB?=
+ =?us-ascii?Q?0RnWp+OlPBBiLIqiQfF/6L06lW+cNcKRHW13oq7844iMrI+FbwV+A064i6EF?=
+ =?us-ascii?Q?BqFUDNbAyTaIn3rMzCx84hiTs3D6Gu+8xpNvY9O6+ahIAIR+KAuiaXx/3VUJ?=
+ =?us-ascii?Q?8iNqGOY8ShqjsheKkg34NgtXT410HKNCvVV4MobBlOUUvc9OYS2o0xxp1tlU?=
+ =?us-ascii?Q?cg0aCVIcqR9NsfvEVUBoAdIiJ9FZ4DLt4glibfQITTq4T0qcNiyl9GgQ7yCo?=
+ =?us-ascii?Q?UdOBn9jcp2MVnR6Dkif3iauMG8QXFnUtigNBbkljMvpOSMy63Hdz5eCvSPAL?=
+ =?us-ascii?Q?H4kXQiHFeAWOIoP6/iixwW3pX1ZU0Nbik8pkOQNx5rtv02ClGXvbYOajPwZt?=
+ =?us-ascii?Q?qSNjaEMBOQ6CfOF/5CqVmXFx3wvOgy09RK3THLP8HrZcSRsk6d53VkLNMaiQ?=
+ =?us-ascii?Q?TytgESJM9q+yMKotwKVxGKmf4aDXr2U7rj/9FmATudx+nrGevedi7ngYvUxj?=
+ =?us-ascii?Q?qvSKr5j6EGXUxmT1lsYoZMNX6WqM2KUUjInsWlEQw9oiuxVe4xRe/N/Pobfu?=
+ =?us-ascii?Q?QLPqzxEGOe4SeeqGyyv7kLAOxN3ar4gw54SOWeeDa3CWHcyLf7zD29v1vgDI?=
+ =?us-ascii?Q?htnviILGO1o8n0iPSuRiMgHzQ5QNS3vhs9wNJwc9kadpmDtVTASiSKaajpyA?=
+ =?us-ascii?Q?C5hRIoDzFWyG9jUvdjxSck4FW2F6OyB4/wQipWlWf7U8bkWaSHo617nVbKE2?=
+ =?us-ascii?Q?5sy+y8IZCbBA61PqDzf80wg3PWq20zA2gHSH8vBqRP1oVjgfrD+uo9wIgZkc?=
+ =?us-ascii?Q?WNAzocPXkUjOb49ShK2/bzqgLtkXrT5LB5DlHiE4aZ038OthDy9TM2EIXgi7?=
+ =?us-ascii?Q?lqTpA58K5SnN+Vu+gfipU5fF3RSKOBlRM0iEGjaf8St1iHBN9zX+gh9SvL3l?=
+ =?us-ascii?Q?jPtrIx9vxCOGcXti1/f8k0fohycEvSJPVQo+D3Vn5WMTzHPmqllEe6pwgZkI?=
+ =?us-ascii?Q?y0Kv31kwgJ7TL0WL7hEBXeLM9nfOcaeb8TyIcDRgdu0DizJaafig0WzCxlBh?=
+ =?us-ascii?Q?eyawVKDaYsQqoILEO+lomqZ9yt3TfR7FSsVofhTQceZMIXzFffqpLsIfZg7H?=
+ =?us-ascii?Q?+qoZtn/bEL9uHBsVMc8LUrktp7D+Pg3BKWf+Db3bAjieBFpStHkQDU5VIGeI?=
+ =?us-ascii?Q?zk5Ne5XbdNYu9A4LZYxudb+CN4a9a1knvqUISj03u7X2M7Vgt4CuCmpPj+L8?=
+ =?us-ascii?Q?dl1G1ay4g0HBEjwMsTIJVbWoEjPhIv2XCOoR6q90/FWNHUGaoWCbMF5ARFCo?=
+ =?us-ascii?Q?NYJHpD08s2ddZd6KwfShsOaEGRlF5aL8zWbrB+sE6uc9hZRI24HSzSSAT71V?=
+ =?us-ascii?Q?y3kdc6S94Ou3ax/MqdqfIjGQGJYYUjgv+9xY/i2yGLbqinIuJIW4RzTVjCf9?=
+ =?us-ascii?Q?zaPiJpX5/Yju7mTWv7G4X2IfPQYF/cqELi2NoL3kPPwRZVBcg5uk43Vc0rju?=
+ =?us-ascii?Q?rTbfxMY5WA27QVBlRGAUsfd7g9NPmLdCT27YyclS?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|CYYPR11MB8358:EE_
-X-MS-Office365-Filtering-Correlation-Id: cd8efee1-222c-4e8b-b102-08dc180760dc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sIvr6ZChM6vnV/mmHKXGaAdR9vhU/R4V9zbVfO8Biyc+HcCYTjhscpfBoyPUq5+DTk8uap5Tz3bfn0h/ZH4hJi4k6J6HZX851S/1Z0rQo1QCH2jgYHrUgdaooEXL9f/Ct/eN8HYBFg75muI0wEin09JU15WikjcEVqC37LN7SJcOqmxYmmlxuw9TRAegkLmjojHCj/4BTD4erepW8sXQMEtzb2j8w711z6NLq7Z2xaMt+88+6OsNMBT67GE/NYCEmnrSHGeiML1vGudKhCEtNHvuXu70PLTfhYhU/NRui36UV/3DeSyppcl+FlHvfjU61qC3sKOED6rfAoPVWOsZlS5LvPs4jnJKq80N5qBJYDRMezVLbg34IpZBozlSasoIJ8pQS6A6kxwHgB0SQpnoOsEnTYz4NZpjvbHRdpkGvtucAcGUZIyki5ECx1miCet9zU6UCfjtRXuRtTS6V3mUiQbp9BVVzF+ryyvy95rqG74XFnKsdGG621Y643zKugpRKgItvDr9ykdF+uHYn2zT0pxFEoMT37KEwU/jgoRh4dYtn9lJPZLvpw8TVabC5h0xQEr5jsRfR4TN4ap5AfCgkUgmhRa3XCGCimxtvLrTAdpbLrkIJQTZLjq8NG9xbvyz0MjD1Gt7QtlwRFwVSUfgrQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(396003)(376002)(366004)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(26005)(83380400001)(82960400001)(31696002)(86362001)(36756003)(38100700002)(41300700001)(6916009)(66556008)(316002)(66946007)(54906003)(7416002)(5660300002)(2906002)(8936002)(8676002)(4326008)(66476007)(31686004)(53546011)(2616005)(6512007)(478600001)(6666004)(6506007)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cjRVdnMyM3VmUnlZT1A5bDh4WHhaVEN2MWw3c0Q3c0hvdnJSV3F2RnVoNHl4?=
- =?utf-8?B?SjllRzE4WjRmM1hidFl4K3pZZk5vZko4NjV3WTVJUWpmUDFpZWpFaDM2VGNt?=
- =?utf-8?B?WVY4TTJ1cnNGZ0FyQ3lONjN6OVNRYXFLNUpOMnR6aW1QNktLN0w0RnBDcDRR?=
- =?utf-8?B?a1VvQSt2RGx0eDJuVmVrNW16bEl1Qnl3VnVNOU4vb0UvcXI5SzVrWEFra0Nk?=
- =?utf-8?B?eDZsV0psL2dkZ2t0R3hsanVBTlBlMEFzZHBlN0lnOVphZVk5TFp6bVRrUnQ5?=
- =?utf-8?B?ZkpZdW82WUpaRFptRlR2ZUpucUhkcW9XUWQ3ZUZFV1U1ZnptOS9xdzBkNkdI?=
- =?utf-8?B?NjZQa3RRS3Q2K2pqYUNKSWlwZ3RrbXNrSTB2ZWQxM1FNR2xXU09udm0xbHll?=
- =?utf-8?B?ay8vamZFZnUwdnM1RHgzN0o2RXpVeTZIRHNNZGw2MUYzU0VLVVl2V0g1ZUhR?=
- =?utf-8?B?aUdURVJhbGhMMTZTWVl4YzRxcy80NlpaMk9SMEFWU0hEdG1XTkhzRHkvazU4?=
- =?utf-8?B?YkQ1WTRsZGl1eThtc1VyMmltN0psQWRPK0xpWDdCcmpxaTRiN0UrLysyQjdi?=
- =?utf-8?B?MkdWemZwRWxRM3U0cENqOGd2bU1zV213eXUyZHRrdWFjc1pEWWUwU284YW5G?=
- =?utf-8?B?ZHdqRG4raTZMaFhqdW9MVlNkcEJMbVJ2UHdNVEJvLzdNMlk3NitsUWdQZmg1?=
- =?utf-8?B?WXZuMWRyS2srY0tQSFA0Mk9KRE1CK0loOW5QZkpkbUw3SXArd3ZiTzZKNVpT?=
- =?utf-8?B?NFlPdThzTzQ3ckN6M21kVjBibXp2dEx2TWVXWm9qRlY4bytHUml4cVhqY05t?=
- =?utf-8?B?WDVTOFp1R3RFeHk0YUlkUDIxRkVoR0xaWFZ3RWk2RUhXaGVLcTZIZUFNckxB?=
- =?utf-8?B?a3BvTURMZVcvcXIrNkhvdzU5RGdYcWtNWTVQTkg3eW9lSGlCS3JoQ3BwOWg0?=
- =?utf-8?B?blR2RGhJLyswQjNBKzlhbHlMZmZXbTQ3dUxSRjFSTVVpalhaSVRGNVU5ZkxQ?=
- =?utf-8?B?MHF1Rmx6VWlRMUVRUzFPZml2SE81amZPVmo0UEpla0ZtL3Z1RDJnT3FqOXpz?=
- =?utf-8?B?TnNUeFZWdjhnYWtTTlBaRldVSGpTSnB2UkhpS2hFdUFqOHpnTmI1RzNWeHIw?=
- =?utf-8?B?NXQ3dWwwT0xTcnNiejRPWmluemJCT3FjOXlNVU1XWEV2VVF4TTl0eU1HUWRC?=
- =?utf-8?B?WjNRK3c1M3J1WHRuUUtIOHE2KzhXN0VXU3N3NCsvRXhRSXBQbkhLU2dnQTI3?=
- =?utf-8?B?ZEdIa3pEVnl4V29DYWt3NHhjVWhZeHBwV1M2TFhUekM2bFoyVmxiWEFoVFVZ?=
- =?utf-8?B?U05DeFQ0ZmtQZmUzVDZpM0Q5S2Z4bjVDQmVaZzYyUzVWd0xUTmJzT2xHTlVr?=
- =?utf-8?B?UXYzNTVCdkl2R1hZQ29WcFFGT0pHeTFnTEgxMjFaL2NybHhnZHE1ZzZOSmRy?=
- =?utf-8?B?b1Rsc1ltbG9WdEVqS05XblJlTmN0cWRnQ09HZUtTdGN0ZWVlbGdqNlh4dlNV?=
- =?utf-8?B?Um9GeUc3a2NpYjhuVzBWdUJhdjBYZldDbnQ1TS93QjhwUWdBS0dhNnRLVTYw?=
- =?utf-8?B?NFk4OTI4aDAyRU9sUE9sYlBSR3ZPTHd2L3U3OEJhTTc5QkExaXVnNEpWV3pp?=
- =?utf-8?B?WUVCajJ6ZXEzZlhZeXBoME1nLzg0eWp1aHl3eUhzQlJHUGpFcmg3QzJyeFNO?=
- =?utf-8?B?c1dBNFRpUmZ1Zi9ENEZGcUdwUnp4ZDhYR3BKN0tMaFZXY2YvM05pb2ZhbXY5?=
- =?utf-8?B?WkVMckRTbEd1RkJFb2RwRGQ2WWdVd3JaZ1RadkdVYk5pWElUdndINnByQjVL?=
- =?utf-8?B?eEJ3NUNTdU9FNzVYVmR6OER6dTErYlFlZEpCQ0FoV05mTFlZY2EvVG9rZXVN?=
- =?utf-8?B?bEZSc3VWMlhVRTgyZFBWdG9mSHcyKzZramdwdE9YUHVyZ21yMWU2d0dFUVVr?=
- =?utf-8?B?OTBMdk4yd0ZhMkdWOXYrVGVONU9EUk9BWk1ST0N0WU5heFRxRzBjS05ncnRa?=
- =?utf-8?B?SXg2MkgzMnFXTXdJaVJOZ3hEVkJJRGdlQlAva1FuemFkcGtyR3I3MHUzdG16?=
- =?utf-8?B?blM5R2xqWFNUK3dqZkVhbnRMT21kUXl6OVA0WXNBbUpiM0Z3eUIzNkVGK3Z6?=
- =?utf-8?Q?IACSxzWBsiy7Fx01NJ+AH6xC8?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd8efee1-222c-4e8b-b102-08dc180760dc
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 09:25:15.1539
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6004.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b66e78d-9f33-45ca-3484-08dc1807d493
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jan 2024 09:28:28.9834
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iug4cia1Or0+v4m8Hu60YBRrxQjQWNDcduz8m+pSwsQvZfnuccv6GoxY1tdXPaQgsnBIeLTsdaqA1AeA0UyLAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR11MB8358
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aHFeKTHCwON7RjVP0uXQGfQ479eakS3VwqphdVL2yL71KBPsfnHmKCczIfbQsu01k4ZxtghwO0Efr7pLZ86rVA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8318
 
-On 2024/1/17 20:56, Jason Gunthorpe wrote:
-> On Wed, Jan 17, 2024 at 04:24:24PM +0800, Yi Liu wrote:
->> Above indeed makes more sense if there can be concurrent attach/replace/detach
->> on a single pasid. Just have one doubt should we add lock to protect the
->> whole attach/replace/detach paths. In the attach/replace path[1] [2], the
->> xarray entry is verified firstly, and then updated after returning from
->> iommu attach/replace API. It is uneasy to protect the xarray operations only
->> with xa_lock as a detach path can acquire xa_lock right after attach/replace
->> path checks the xarray. To avoid it, may need a mutex to protect the whole
->> attach/replace/detach path to avoid race. Or maybe the attach/replace path
->> should mark the corresponding entry as a special state that can block the
->> other path like detach until the attach/replace path update the final hwpt to
->> the xarray. Is there such state in xarray?
-> 
-> If the caller is not allowed to make concurrent attaches/detaches to
-> the same pasid then you can document that in a comment,
 
-yes. I can document it. Otherwise, we may need a mutex for pasid to allow
-concurrent attaches/detaches.
 
-> but it is
-> still better to use xarray in a self-consistent way.
+> -----Original Message-----
+> From: Eric Biggers <ebiggers@kernel.org>
+> Sent: Thursday, January 18, 2024 9:14 AM
+> To: Gaurav Jain <gaurav.jain@nxp.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>; David S . Miller
+> <davem@davemloft.net>; Horia Geanta <horia.geanta@nxp.com>; Pankaj
+> Gupta <pankaj.gupta@nxp.com>; Varun Sethi <V.Sethi@nxp.com>; Meenakshi
+> Aggarwal <meenakshi.aggarwal@nxp.com>; Aisheng Dong
+> <aisheng.dong@nxp.com>; Silvano Di Ninno <silvano.dininno@nxp.com>; linux=
+-
+> crypto@vger.kernel.org; linux-kernel@vger.kernel.org; dl-linux-imx <linux=
+-
+> imx@nxp.com>
+> Subject: Re: [EXT] Re: [PATCH] crypto: caam/hash - fix asynchronous hash
+>=20
+> Caution: This is an external email. Please take care when clicking links =
+or
+> opening attachments. When in doubt, report the message using the 'Report =
+this
+> email' button
+>=20
+>=20
+> On Wed, Jan 17, 2024 at 10:48:39AM +0000, Gaurav Jain wrote:
+> >
+> >
+> > > -----Original Message-----
+> > > From: Eric Biggers <ebiggers@kernel.org>
+> > > Sent: Wednesday, January 17, 2024 10:03 AM
+> > > To: Gaurav Jain <gaurav.jain@nxp.com>
+> > > Cc: Herbert Xu <herbert@gondor.apana.org.au>; David S . Miller
+> > > <davem@davemloft.net>; Horia Geanta <horia.geanta@nxp.com>; Pankaj
+> > > Gupta <pankaj.gupta@nxp.com>; Varun Sethi <V.Sethi@nxp.com>;
+> > > Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>; Aisheng Dong
+> > > <aisheng.dong@nxp.com>; Silvano Di Ninno <silvano.dininno@nxp.com>;
+> > > linux- crypto@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > > dl-linux-imx <linux- imx@nxp.com>
+> > > Subject: [EXT] Re: [PATCH] crypto: caam/hash - fix asynchronous hash
+> > >
+> > > Caution: This is an external email. Please take care when clicking
+> > > links or opening attachments. When in doubt, report the message
+> > > using the 'Report this email' button
+> > >
+> > >
+> > > On Tue, Jan 16, 2024 at 03:14:05PM +0530, Gaurav Jain wrote:
+> > > > ahash_alg->setkey is updated to ahash_nosetkey in ahash.c so
+> > > > updating the handling of setkey in caam driver.
+> > > >
+> > > > Fixes: 2f1f34c1bf7b ("crypto: ahash - optimize performance when
+> > > > wrapping shash")
+> > > > Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
+> > > > ---
+> > > >  drivers/crypto/caam/caamalg_qi2.c | 4 ++--
+> > > >  drivers/crypto/caam/caamhash.c    | 4 ++--
+> > > >  2 files changed, 4 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/drivers/crypto/caam/caamalg_qi2.c
+> > > > b/drivers/crypto/caam/caamalg_qi2.c
+> > > > index a148ff1f0872..93a400e286b4 100644
+> > > > --- a/drivers/crypto/caam/caamalg_qi2.c
+> > > > +++ b/drivers/crypto/caam/caamalg_qi2.c
+> > > > @@ -4571,7 +4571,7 @@ static int caam_hash_cra_init(struct
+> > > > crypto_tfm
+> > > > *tfm)
+> > > >
+> > > >       ctx->dev =3D caam_hash->dev;
+> > > >
+> > > > -     if (alg->setkey) {
+> > > > +     if (crypto_hash_alg_has_setkey(halg)) {
+> > > >               ctx->adata.key_dma =3D dma_map_single_attrs(ctx->dev,=
+ ctx->key,
+> > > >                                                         ARRAY_SIZE(=
+ctx->key),
+> > > >
+> > > > DMA_TO_DEVICE, @@ -4611,7 +4611,7 @@ static int
+> > > > caam_hash_cra_init(struct crypto_tfm
+> > > *tfm)
+> > > >        * For keyed hash algorithms shared descriptors
+> > > >        * will be created later in setkey() callback
+> > > >        */
+> > > > -     return alg->setkey ? 0 : ahash_set_sh_desc(ahash);
+> > > > +     return crypto_hash_alg_has_setkey(halg) ? 0 :
+> > > > + ahash_set_sh_desc(ahash);
+> > > >  }
+> > > >
+> > > >  static void caam_hash_cra_exit(struct crypto_tfm *tfm) diff --git
+> > > > a/drivers/crypto/caam/caamhash.c b/drivers/crypto/caam/caamhash.c
+> > > > index 290c8500c247..4d50356b593c 100644
+> > > > --- a/drivers/crypto/caam/caamhash.c
+> > > > +++ b/drivers/crypto/caam/caamhash.c
+> > > > @@ -1804,7 +1804,7 @@ static int caam_hash_cra_init(struct
+> > > > crypto_tfm
+> > > *tfm)
+> > > >       } else {
+> > > >               if (priv->era >=3D 6) {
+> > > >                       ctx->dir =3D DMA_BIDIRECTIONAL;
+> > > > -                     ctx->key_dir =3D alg->setkey ? DMA_TO_DEVICE =
+: DMA_NONE;
+> > > > +                     ctx->key_dir =3D
+> > > > + crypto_hash_alg_has_setkey(halg) ? DMA_TO_DEVICE : DMA_NONE;
+> > > >               } else {
+> > > >                       ctx->dir =3D DMA_TO_DEVICE;
+> > > >                       ctx->key_dir =3D DMA_NONE; @@ -1862,7 +1862,7
+> > > > @@ static int caam_hash_cra_init(struct crypto_tfm *tfm)
+> > > >        * For keyed hash algorithms shared descriptors
+> > > >        * will be created later in setkey() callback
+> > > >        */
+> > > > -     return alg->setkey ? 0 : ahash_set_sh_desc(ahash);
+> > > > +     return crypto_hash_alg_has_setkey(halg) ? 0 :
+> > > > + ahash_set_sh_desc(ahash);
+> > > >  }
+> > > >
+> > >
+> > > Thanks.  Did you also consider putting something in struct
+> > > caam_hash_alg (the struct in which this driver embeds its ahash_alg
+> > > structure) that indicates whether the algorithm is an HMAC or not?  O=
+ther
+> drivers use that solution.
+> >
+> > Crypto/ahash.c has this API to check the setkey so I used to differenti=
+ate
+> between HMAC & only hash.
+> > Let me know if this change is not sufficient, will add the flag in caam=
+_hash_alg.
+> >
+>=20
+> Currently crypto_hash_alg_has_setkey() isn't used outside of crypto/ahash=
+c.
+> Since there's an alternative that matches what the other drivers do, I th=
+ink I'd
+> prefer that you did that.  We can then make crypto_hash_alg_has_setkey() =
+a
+> static function, private to crypto/ahash.c.
 
-sure. I'll try. At least in the detach path, xarray should be what you've
-suggested in prior email. Currently in the attach path, the logic is as
-below. Perhaps I can skip the check on old_hwpt since
-iommu_attach_device_pasid() should fail if there is an existing domain
-attached on the pasid. Then the xarray should be more consistent. what
-about your opinion?
+Understood. Changes done in v2.
 
-	old_hwpt = xa_load(&idev->pasid_hwpts, pasid);
-	if (old_hwpt) {
-		/* Attach does not allow overwrite */
-		if (old_hwpt == hwpt)
-			return NULL;
-		else
-			return ERR_PTR(-EINVAL);
-	}
-
-	rc = iommu_attach_device_pasid(hwpt->domain, idev->dev, pasid);
-	if (rc)
-		return ERR_PTR(rc);
-
-	refcount_inc(&hwpt->obj.users);
-	xa_store(&idev->pasid_hwpts, pasid, hwpt, GFP_KERNEL);
-
--- 
-Regards,
-Yi Liu
+Thanks
+Gaurav
+>=20
+> - Eric
 
