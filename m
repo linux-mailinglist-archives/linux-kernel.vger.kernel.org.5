@@ -1,184 +1,164 @@
-Return-Path: <linux-kernel+bounces-29728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1F0E831296
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D729D831293
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28ABF1F22B9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:01:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47CF51F22565
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801F98F74;
-	Thu, 18 Jan 2024 06:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302398F7D;
+	Thu, 18 Jan 2024 06:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YOwqiBC0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="XFV81y8n"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2047.outbound.protection.outlook.com [40.107.117.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8A9B641;
-	Thu, 18 Jan 2024 06:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705557701; cv=none; b=tAqVhTKDQ3tXfBk24F7rivOyWp2rD1Fuqv9AJkwUox6jgIymq3l2oK8HPLwM+MFJIplYs3Yo08987Q4HNc0qAmQUV/5R9/1zxEOgO1iXUc2ZXFWa+VfxSc+Mw8x1E33Sxh05X5lbBdCI102HDExPqyHPpL73xKQu9cTHrQO2xRo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705557701; c=relaxed/simple;
-	bh=qWJUF4vEm8pjestSXCI6d81SET0D64/8tA+HGwOLl+4=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=Fqyp4Wceoaf82o3DLjq5Fjlgb58agVdvDDDT7PjAObfggTBiOTaVxgysQwPTGW/BNJGRngyfAJ+f5rbS0x7RCzy3c+FnMkm9phbLq1M7wBkWXQ3+zRALiTm3a/7BVGIyV7Refoaain/SgFqPzZ/TthxMHB1+5sCUwR50fkcUTmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YOwqiBC0; arc=none smtp.client-ip=192.55.52.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705557700; x=1737093700;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=qWJUF4vEm8pjestSXCI6d81SET0D64/8tA+HGwOLl+4=;
-  b=YOwqiBC0SNdRxo1BTKGv/aZSFSlYpRoGeeg/xn/C1FPUkxxH36vBUJUY
-   btiVs4Noy9vDlGF+UDIAMJ6o+NzlbX1HW4mhlSRFgHb/l5fFC0BKb3M22
-   FwZwssi15DYcqNeovUaRFTc0+l+Syj/Ix0v8MnziwzxyIrfwNSa1C5nPw
-   5IRfPNg+Q3rUo73g4lvUzrOvIFL1QwRQGYKvpB2CKByaSOfuKHqOkmPL+
-   vUY4qcweu2vwmUjFR9H5y7Gg01nfDFa5eQS13eiohgNu28SCb+VPxYquU
-   Fah6Fi0RsEFOoRTEsEvg/DgUywCooG6a8aHYnrmAHL28buQOVEPaVEUEW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="397512970"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="397512970"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 22:00:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="903714547"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="903714547"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Jan 2024 22:00:03 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id 3440039B; Thu, 18 Jan 2024 08:00:02 +0200 (EET)
-Date: Thu, 18 Jan 2024 08:00:02 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Esther Shimanovich <eshimanovich@chromium.org>
-Cc: Lukas Wunner <lukas@wunner.de>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <20240118060002.GV2543524@black.fi.intel.com>
-References: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
- <20231228132517.GA12586@wunner.de>
- <20231228133949.GG2543524@black.fi.intel.com>
- <CA+Y6NJFQq39WSSwHwm37ZQV8_rwX+6k5r+0uUs_d1+UyGGLqUw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855958F51;
+	Thu, 18 Jan 2024 06:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705557654; cv=fail; b=brc9mUr2zbaTGU0f7Srom+OKLkFjtcdeYpXIVq+SnjcOjQ1RPEuL/NwbxICsVyL+OoPitFDqwNcEzwu609ICj2yYnAxY/Lsx+HocU3/RUMHgbol9ISXvDhSXgRJyPInoOrY+AbEtEBeX5aAsoaALKYuNyxhyG/MoiFCjQLiPObo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705557654; c=relaxed/simple;
+	bh=ZBo48Me5bL3031nMmETMgeFaNa2N+YC1N6v/Kk5S0hs=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:X-MS-Exchange-Authentication-Results:
+	 Received-SPF:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+	 MIME-Version:Content-Transfer-Encoding:X-EOPAttributedMessage:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:Content-Type:
+	 X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=XiKPotcAOdRVdpoY8u/v2pJIDEFdEpEQzU28MgcWst7cab1Sl1eOhJpSLDnhiynUCrL2Fk4QqThABg8piiFfEm3jSFOW2o2ny2dQ8Z7efdfYS+rUJbB/CA7GMbJK6a9XwwGcmnd8PaWPRfSOIss7be0Wshy0FcmpiPfvFCDo8uU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=XFV81y8n; arc=fail smtp.client-ip=40.107.117.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nw+Mg0D12zXbJoWZu8sU5adDPVuU+S/I++W7z6qviU91zJ/3QVP9fM5zGMt9gGSR9qWor3u012o9cF+ibzCCmqdpPOMeKapWvD1v6BA/7hJSxuQ/5JD5wPBowlD5QqlUEyMbxjWx7ESWbcT7aLZyo4q3kKdVWOks992j8khr3J7uxTqpTqaqT/qc5iNWohKbhMu4573nr12JZFfGLGkQ3ZaTBZRd5EoopIxTt85Hzij4W5ZTkLInxTFwpCouOU3Xl6R9N1Zw/PXi3dWlI0wUnyZZDEw+o3hvcw7Cz46F8sEq+Ypw+kBtByzrgNLSiUQ/F/GEUtNAKGH2cr2P/OJ+yQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MQc/EKVtkGvWctuIaLE8DGzk72FeZ503FjiicQJJFxs=;
+ b=Pys3v5iEGhzvu49IH9PkssP0q9fTqLyAFMeJVgP4xV/cm/l8b9YDcVLiQGDb4YlQI/ZJkaelPA81+0ur+fzcY3Cmour38vtZfvf0nr+Lq6rtDs2+KopG4ykHTYEjg2Ogw2ECUBGV7huG3htEIccms+GLjypkOlT4w9lJ0jojGovBSh9lY2DaE7FxjCDk8TcB06HTyQuUq7TsX/7kf2aPo1/L7xj8XSsK1k0fT3F37cXYgZFEZlZ1aRe0UPLBmqJO91HsnoL9lB66cFLIR1lEFZPS2jxyPIKBxA4PG21KEinMdHhU/Uery48R644kB3ftjwNAjpbUetCoAlkLdKSAtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MQc/EKVtkGvWctuIaLE8DGzk72FeZ503FjiicQJJFxs=;
+ b=XFV81y8n8xhr/CjU5zfE57sraGrLKe491ho58vcZT8JW8Janfvd/h2uj3mzagCvyzTg3mgKtoLCgRCqfQBBdwc4vFrUk3wYqmuH6kQQp+CzzjHRc4K4Mhs5Q1yhorBj5hlMhSfiqcmiO+LMjE0iodvVB581K2qYqNDGVY3iqClXxeLNhkXVbMDqsoM7jUWQdpwmmMtCKrC94yNKd1yECT/I5Mq6EcG6Qqcm1HQ8A84cbkcygN1ekO2jRl8DN4r2X3vqoLlTNGEmG0BNMfCH0o8Fu5lpbg5cy4AQwKADEG3njAoC/VXjY6Prxu4vIwjttY5wa8rXZLRRYN1wLLr301A==
+Received: from SG2PR06CA0184.apcprd06.prod.outlook.com (2603:1096:4:1::16) by
+ SI6PR04MB7919.apcprd04.prod.outlook.com (2603:1096:4:252::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.24; Thu, 18 Jan 2024 06:00:48 +0000
+Received: from SG2PEPF000B66CB.apcprd03.prod.outlook.com
+ (2603:1096:4:1:cafe::20) by SG2PR06CA0184.outlook.office365.com
+ (2603:1096:4:1::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24 via Frontend
+ Transport; Thu, 18 Jan 2024 06:00:48 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ SG2PEPF000B66CB.mail.protection.outlook.com (10.167.240.24) with Microsoft
+ SMTP Server id 15.20.7202.16 via Frontend Transport; Thu, 18 Jan 2024
+ 06:00:46 +0000
+From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To: patrick@stwcx.xyz
+Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1] ARM: dts: aspeed: yosemite4: add mac config for Yosemite 4
+Date: Thu, 18 Jan 2024 14:00:41 +0800
+Message-Id: <20240118060041.1923700-1-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+Y6NJFQq39WSSwHwm37ZQV8_rwX+6k5r+0uUs_d1+UyGGLqUw@mail.gmail.com>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CB:EE_|SI6PR04MB7919:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: bb8dd6e0-04ed-42fd-2555-08dc17ead0d4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	PqX7a6Ll998Y4uej992fOJznfBAdrhwLQWmUbjt8Hl/xy4r61oik3KBCtFdTCSOTBbV2aIetZa2ZJlCK40NV3gMzQ+53NnR0KP9sIeUo+B60jG9e9FtiufcbARW+ko/SHKzIGiee9cDJmq+D/t/eTWMvoMf9b/xmjI3oHrsJRZS3y8TpgKhrFnWHek074QPQ9htwYHd5wYhg4noHOU48+IftW4pMMDeTW3e1KblSptZBle7LXvQ7VD9PVlPlCvD1DDXwNlI3M3fGEQERfgki6rxXrbJ5VIfSUiCa1jbb8IeF8zsjjzLhPQYuvWL/UPy2HJKfbu9Cp+jYTmDwi0I+rXom92OFCCXhy+nzSCy25UATx6J2cugb0mTFJgpOycB8HPjYuLee7d4owTG9f+c7rxjOkiWSaHP5d3uxriMc5BP+Y/ZtB+nbnFLb6z1j7twDHzK0x5XDNOSA1sEEWki2Zg/Jzsi+Igetj9BBxx+ArhXPkt+QwJSek4BwvZXIJ5fD0Yfl/+jJTyQN16EOKmdn77TsQ2k4yY5Z2JjTJtellQmaJw8rUt8IYgkxc0u8NRkxubld5+RGkRlkguLdbeHrIddKw6yyIcplqBlM5HFztki2sQB8DI+JI2RJP21Hd4GmIOGp7G5Gawk90ndFWgg/Iuu7DXd4xajcFTb0+3Ok4AtpKxnYV8a0O6VwzIEsdYJkH1CPnFT1dqo2LVErZjsMRw==
+X-Forefront-Antispam-Report:
+	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(136003)(396003)(39860400002)(346002)(376002)(230922051799003)(82310400011)(64100799003)(186009)(451199024)(1800799012)(46966006)(36840700001)(40480700001)(26005)(1076003)(6666004)(336012)(6506007)(9316004)(36756003)(86362001)(81166007)(82740400003)(356005)(5660300002)(47076005)(8676002)(4326008)(4744005)(7416002)(2616005)(956004)(36860700001)(6512007)(41300700001)(316002)(6916009)(70586007)(70206006)(54906003)(8936002)(2906002)(6486002)(36736006)(478600001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 06:00:46.6555
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb8dd6e0-04ed-42fd-2555-08dc17ead0d4
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SG2PEPF000B66CB.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI6PR04MB7919
 
-On Wed, Jan 17, 2024 at 04:21:18PM -0500, Esther Shimanovich wrote:
-> Thank you for all your comments! I really appreciate all your help
-> with this. I will address the style feedback once we reach a decision
-> on how we will fix this bug.
-> I first will respond to your comments, and then I will list out the
-> possible solutions to this bug, in a way that takes into account all
-> of your insights.
-> 
-> On Tue, Dec 26, 2023 at 7:15 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > Can you include a citation (spec name, revision, section) for this
-> > DMAR requirement?
-> >
-> This was my mistake–I misinterpreted what a firmware developer told
-> me. This is a firmware ACPI requirement from windows, which is not in
-> the DMAR spec. Windows uses it to identify externally exposed PCIE
-> root ports.
-> https://learn.microsoft.com/en-us/windows-hardware/drivers/pci/dsd-for-pcie-root-ports#identifying-externally-exposed-pcie-root-ports
-> 
-> > But I don't see where the defect is here.  And I doubt that this is
-> > really a unique situation.  So it's likely that this will happen on
-> > other systems, and we don't want to have to add quirks every time
-> > another one shows up.
-> ...
-> > don't have the new interface.  But we at least need a plan that
-> > doesn't require quirks indefinitely.
-> ...
-> On Thu, Dec 28, 2023 at 8:41 AM Mika Westerberg
-> <mika.westerberg@linux.intel.com> wrote:
-> > This is not scalable at all. You would need to include lots of systems
-> > here. And there should be no issue at all anyways.
-> My team tests hundreds of different devices, and this is the only one
-> which exhibited this issue that we’ve seen so far.
-> No other devices we’ve seen so far have a discrete internal
-> Thunderbolt controller which is treated as a removable device.
-> Therefore, we don’t expect that a large number of devices will need
-> this quirk.
+Add start-redo-probe and no-channel-monitor property in mac config
+to fix Mellanox cx7 nic card cannot't get mac address after nic card
+re-plug.
 
-Well that's pretty much all Intel Titan Ridge and Maple Ridge based
-systems. Some early ones did not use IOMMU but all the rest do.
+Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+---
+ arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> > There is really nothing "unique" here. It's exactly as specified by
-> > this:
-> >
-> > https://learn.microsoft.com/en-us/windows-hardware/drivers/pci/dsd-for-pcie-root-ports#identifying-externally-exposed-pcie-root-ports
-> >
-> > and being used in many many system already out there and those have been
-> > working just fine.
-> I don’t know how many computers have a discrete Thunderbolt chip that
-> is separate from their CPU, but this doesn’t seem to be a common
-> occurrence.
-> These devices were made during a narrow window of time when CPUs
-> didn’t have Thunderbolt features yet, so a separate JHL6540 chip had
-> to be added so that Lenovo could include Thunderbolt on X1 Carbon Gen
-> 7/8.
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+index 64075cc41d92..33c01d79e5e0 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+@@ -89,6 +89,8 @@ &mac2 {
+ 	pinctrl-0 = <&pinctrl_rmii3_default>;
+ 	use-ncsi;
+ 	mlx,multi-host;
++	ncsi-ctrl,start-redo-probe;
++	ncsi-ctrl,no-channel-monitor;
+ };
+ 
+ &mac3 {
+@@ -97,6 +99,8 @@ &mac3 {
+ 	pinctrl-0 = <&pinctrl_rmii4_default>;
+ 	use-ncsi;
+ 	mlx,multi-host;
++	ncsi-ctrl,start-redo-probe;
++	ncsi-ctrl,no-channel-monitor;
+ };
+ 
+ &fmc {
+-- 
+2.25.1
 
-Before Intel Ice Lake it was all discrete and it is still discrete with
-the Barlow Ridge controller who will have exact same ExternalFacing port
-as the previous models.
-
-> As you said, these devices do indeed work fine in cases where you
-> don’t care if a PCI Thunderbolt device is internal or external, which
-> is most cases.
-> Problems happen only whenever someone adds a security policy, or some
-> other feature that cares about the distinction between a fixed or
-> removable PCI device.
-
-Do we have such security policy in the mainline kernel?
-
-> > This has been working just fine so far and as far as I can tell there is
-> > no such "policy" in place in the mainline kernel.
-> Correct, there is no such policy in the mainline kernel as of now. The
-> bug is that the linux kernel’s “removable” property is inaccurate for
-> this device.
-
-Or perhaps the "policy" should know this better? IIRC there were some
-"exceptions" in the Chrome kernel that allowed to put these devices into
-"allowlist" is this not the case anymore?
-
-> > Can you elaborate what the issue is and which mainline kernel you are
-> > using to reproduce this?
-> Thanks for this question! On a Lenovo Thinkpad Gen 7/Gen 8 computer
-> with the linux kernel installed, when you look at the properties of
-> the JHL6540 Thunderbolt controller, you see that it is incorrectly
-> labeled as removable. I have replicated this bug on the b85ea95d0864
-> Linux 6.7-rc1 kernel.
-> 
-> Before my patch, you see that the JHL6540 controller is inaccurately
-> labeled “removable”:
-> $ udevadm info -a -p /sys/bus/pci/devices/0000:05:00.0 | grep -e
-> {removable} -e {device} -e {vendor} -e looking
->   looking at device '/devices/pci0000:00/0000:00:1d.4/0000:05:00.0':
->     ATTR{device}=="0x15d3"
->     ATTR{removable}=="removable"
->     ATTR{vendor}=="0x8086"
-
-This is actually accurate. The Thunderbolt controller is itself
-hot-removable and that BTW happens to be hot-removed when fwupd applies
-firmware upgrades to the device.
 
