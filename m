@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-29998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E022A83167B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:08:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17BC283167F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CE121F23658
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:08:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 828061F235D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F83C208A6;
-	Thu, 18 Jan 2024 10:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38115208AD;
+	Thu, 18 Jan 2024 10:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="WxuplOgi"
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Wh0BVPmU"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A18C200BC;
-	Thu, 18 Jan 2024 10:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F742030E;
+	Thu, 18 Jan 2024 10:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705572520; cv=none; b=mu3BzyxgKoD80QzahzQewRJUQ88DU6jpUETyOn7l0/fKUHtGQ4E+3EOUw9TJzqJRDLSzX32BfrnrtSgzEm+DmYTNyzpdFyV6QyT+fN7Q27OF6d6JBCe/tvgIh7fvwRVM9/oMeyO1CjKFJkQCAtPIksSnj00LgWmR+/7PvzXeqr4=
+	t=1705572591; cv=none; b=KgSFni/qzI1Gd1gXyB2Dj26gTqG0OniolqSmwIF+Hc07x0El1rQ3cACaG5u2llmweVaL/6C63/dSVatxTYubdhwJrjBk54uUD3lxpcXIiS5+R00+mEgdU5fE68OmgEA2c19ebRQrDGwTbYLCGtdueempADDYWarqgMk89Om1BuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705572520; c=relaxed/simple;
-	bh=xbP+qBkAgbP8SmfFKf4c6P+KDk0bMEaf2tvnAZRQWuk=;
+	s=arc-20240116; t=1705572591; c=relaxed/simple;
+	bh=92ItJwOBecwjoQPK3gZ/6rdqrX12HFuollhqbYBbjs4=;
 	h=Received:DKIM-Signature:Received:Received:Received:Received:From:
 	 To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding:Content-Type:
-	 X-Originating-IP:X-ClientProxiedBy:X-Proofpoint-Virus-Version; b=ZNKF2LscKWAaZIpK+cYZYvV8BZs03ud0PfpwpfPm2vXMLB8Z+2XVGkMrGpxTWehwAx7gBTBHeRceLdVnR/GI3NOX6CE4uXk6A4VaLj4/dMAN8JH060KCNKIjqPBFsaWqTXC6/Qq5ZrlS1jv02N7/pnaj7aKyW8zc5ta6HOJ3lVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=WxuplOgi; arc=none smtp.client-ip=91.207.212.93
+	 X-Originating-IP:X-ClientProxiedBy:X-Proofpoint-Virus-Version; b=kDjpqhXQhsE7idNLCNrnewFD1z0we/Yrw2m5DIXntm0SNeiaForpe5ebQ6jS5rMLCEVlybAdwJptX2Yiac2OTge85XFJFlw9GpLELqB6L97aFKnWRg2iDP8sOqfVJZN9xKej+xJHGZrM453IsMXWFdvZa8Ukcf9+IcAAtiC7T00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=Wh0BVPmU; arc=none smtp.client-ip=185.132.182.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40I5Y2dO027228;
-	Thu, 18 Jan 2024 11:08:17 +0100
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40I3xc3Y005633;
+	Thu, 18 Jan 2024 11:09:29 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=JgTqkog598RbC204zCHUiytINQsebXi6rfWzdONWWfk=; b=Wx
-	uplOgiCAks7qgRx+ss0hjFkAn7YyqsblXDDPHzDcPjACBiZCtffOZkrEyrW4en3y
-	j8yJYMyf+BDZgtH4obrfAstL9Kot9S/bwQXM+fWZ0ElLuZKRNABTJKtsSKl/G0uE
-	cm37qFYRawFNz2HIOE9RxLGcTII15KuI/UMDrQjNrr4LaGYEG2jvZKND3ru+2BN5
-	CGou6k91tSD3QNZnOhZcu4C6uyqiNNlq44Ka/bBdArarY+fastFDqMtaH4b/HPD8
-	/QcXH9dLLl6Hz8yHlgJJrTVQjp/fSnbMAe2YuvuXpVFTAa6ixd5VRtumQrUgtAlC
-	qmVbMA28aoCsEY99LkrQ==
+	selector1; bh=SD1hzU/kFO4VdLwZk4y4ZTVUMXYz1/5Le65Cg8rPuEE=; b=Wh
+	0BVPmUg0eetfcNjgDZvqPld81yD8fRbSGtwzwqZIbpib9h1CGJ2/65EGPtvIgh/3
+	vz5/6Lxdebh+/XKeXmOQhxiEWuUCntDl20/nulcwRz4aYeg/jsOLPylUGfA0xb3q
+	tQa5vdt6wyyqY+RsAd50EoJL+3IJ4wmKHDDry1gRtdWB3g/NjcbyWcQj+GFn7UAt
+	R0ObE7hULHC7zuO7DbnLsIomDsNrU9rQ00nW7AOTu1rqFKJfUpi2W/FqpyVvWPcd
+	DnW6yYMt6BTZqxNoX6NOTcNt3tUsUCbMzijyt8shcSbtjMITVtd3Dgivh6zGUdK9
+	VCs9xGCvzAQZ8SxcYH9g==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vnbqcdjy3-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vm4y560eh-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 11:08:17 +0100 (CET)
+	Thu, 18 Jan 2024 11:09:28 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id ADABF10007D;
-	Thu, 18 Jan 2024 11:08:16 +0100 (CET)
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E000610007D;
+	Thu, 18 Jan 2024 11:09:26 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A36DB21A22F;
-	Thu, 18 Jan 2024 11:08:16 +0100 (CET)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D624821A237;
+	Thu, 18 Jan 2024 11:09:26 +0100 (CET)
 Received: from localhost (10.201.20.75) by SHFDAG1NODE2.st.com (10.75.129.70)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 18 Jan
- 2024 11:08:15 +0100
+ 2024 11:09:26 +0100
 From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 To: Bjorn Andersson <andersson@kernel.org>,
         Mathieu Poirier
@@ -74,9 +74,9 @@ CC: <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <op-tee@lists.trustedfirmware.org>, <devicetree@vger.kernel.org>,
         Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v2 3/4] remoteproc: stm32: Create sub-functions to request shutdown and release
-Date: Thu, 18 Jan 2024 11:04:32 +0100
-Message-ID: <20240118100433.3984196-4-arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v2 4/4] remoteproc: stm32: Add support of an OP-TEE TA to load the firmware
+Date: Thu, 18 Jan 2024 11:04:33 +0100
+Message-ID: <20240118100433.3984196-5-arnaud.pouliquen@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240118100433.3984196-1-arnaud.pouliquen@foss.st.com>
 References: <20240118100433.3984196-1-arnaud.pouliquen@foss.st.com>
@@ -94,124 +94,252 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-18_05,2024-01-17_01,2023-05-22_02
 
-To prepare for the support of TEE remoteproc, create sub-functions
-that can be used in both cases, with and without TEE support.
+The new TEE remoteproc device is used to manage remote firmware in a
+secure, trusted context. The 'st,stm32mp1-m4-tee' compatibility is
+introduced to delegate the loading of the firmware to the trusted
+execution context. In such cases, the firmware should be signed and
+adhere to the image format defined by the TEE.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 ---
- drivers/remoteproc/stm32_rproc.c | 84 +++++++++++++++++++-------------
- 1 file changed, 51 insertions(+), 33 deletions(-)
+V1 to V2 update:
+- remove the select "TEE_REMOTEPROC" in STM32_RPROC config as detected by
+  the kernel test robot:
+     WARNING: unmet direct dependencies detected for TEE_REMOTEPROC
+     Depends on [n]: REMOTEPROC [=y] && OPTEE [=n]
+     Selected by [y]:
+     - STM32_RPROC [=y] && (ARCH_STM32 || COMPILE_TEST [=y]) && REMOTEPROC [=y]
+- Fix initialized trproc variable in  stm32_rproc_probe
+---
+ drivers/remoteproc/stm32_rproc.c | 149 +++++++++++++++++++++++++++++--
+ 1 file changed, 144 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 4f469f0bcf8b..fcc0001e2657 100644
+index fcc0001e2657..cf6a21bac945 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -209,6 +209,54 @@ static int stm32_rproc_mbox_idx(struct rproc *rproc, const unsigned char *name)
- 	return -EINVAL;
+@@ -20,6 +20,7 @@
+ #include <linux/remoteproc.h>
+ #include <linux/reset.h>
+ #include <linux/slab.h>
++#include <linux/tee_remoteproc.h>
+ #include <linux/workqueue.h>
+ 
+ #include "remoteproc_internal.h"
+@@ -49,6 +50,9 @@
+ #define M4_STATE_STANDBY	4
+ #define M4_STATE_CRASH		5
+ 
++/* Remote processor unique identifier aligned with the Trusted Execution Environment definitions */
++#define STM32_MP1_M4_PROC_ID    0
++
+ struct stm32_syscon {
+ 	struct regmap *map;
+ 	u32 reg;
+@@ -90,6 +94,8 @@ struct stm32_rproc {
+ 	struct stm32_mbox mb[MBOX_NB_MBX];
+ 	struct workqueue_struct *workqueue;
+ 	bool hold_boot_smc;
++	bool fw_loaded;
++	struct tee_rproc *trproc;
+ 	void __iomem *rsc_va;
+ };
+ 
+@@ -257,6 +263,91 @@ static int stm32_rproc_release(struct rproc *rproc)
+ 	return err;
  }
  
-+static void stm32_rproc_request_shutdown(struct rproc *rproc)
++static int stm32_rproc_tee_elf_sanity_check(struct rproc *rproc,
++					    const struct firmware *fw)
 +{
 +	struct stm32_rproc *ddata = rproc->priv;
-+	int err, dummy_data, idx;
++	unsigned int ret = 0;
 +
-+	/* Request shutdown of the remote processor */
-+	if (rproc->state != RPROC_OFFLINE && rproc->state != RPROC_CRASHED) {
-+		idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_SHUTDOWN);
-+		if (idx >= 0 && ddata->mb[idx].chan) {
-+			/* A dummy data is sent to allow to block on transmit. */
-+			err = mbox_send_message(ddata->mb[idx].chan,
-+						&dummy_data);
-+			if (err < 0)
-+				dev_warn(&rproc->dev, "warning: remote FW shutdown without ack\n");
-+		}
-+	}
++	if (rproc->state == RPROC_DETACHED)
++		return 0;
++
++	ret = tee_rproc_load_fw(ddata->trproc, fw);
++	if (!ret)
++		ddata->fw_loaded = true;
++
++	return ret;
 +}
 +
-+static int stm32_rproc_release(struct rproc *rproc)
++static int stm32_rproc_tee_elf_load(struct rproc *rproc,
++				    const struct firmware *fw)
 +{
 +	struct stm32_rproc *ddata = rproc->priv;
-+	unsigned int err = 0;
++	unsigned int ret;
 +
-+	/* To allow platform Standby power mode, set remote proc Deep Sleep. */
-+	if (ddata->pdds.map) {
-+		err = regmap_update_bits(ddata->pdds.map, ddata->pdds.reg,
-+					 ddata->pdds.mask, 1);
-+		if (err) {
-+			dev_err(&rproc->dev, "failed to set pdds\n");
-+			return err;
-+		}
++	/*
++	 * This function can be called by remote proc for recovery
++	 * without the sanity check. In this case we need to load the firmware
++	 * else nothing done here as the firmware has been preloaded for the
++	 * sanity check to be able to parse it for the resource table.
++	 */
++	if (ddata->fw_loaded)
++		return 0;
++
++	ret = tee_rproc_load_fw(ddata->trproc, fw);
++	if (ret)
++		return ret;
++	ddata->fw_loaded = true;
++
++	/* Update the resource table parameters. */
++	if (rproc_tee_get_rsc_table(ddata->trproc)) {
++		/* No resource table: reset the related fields. */
++		rproc->cached_table = NULL;
++		rproc->table_ptr = NULL;
++		rproc->table_sz = 0;
 +	}
 +
-+	/* Update coprocessor state to OFF if available. */
-+	if (ddata->m4_state.map) {
-+		err = regmap_update_bits(ddata->m4_state.map,
-+					 ddata->m4_state.reg,
-+					 ddata->m4_state.mask,
-+					 M4_STATE_OFF);
-+		if (err) {
-+			dev_err(&rproc->dev, "failed to set copro state\n");
-+			return err;
-+		}
-+	}
++	return 0;
++}
 +
-+	return err;
++static struct resource_table *
++stm32_rproc_tee_elf_find_loaded_rsc_table(struct rproc *rproc,
++					  const struct firmware *fw)
++{
++	struct stm32_rproc *ddata = rproc->priv;
++
++	return tee_rproc_get_loaded_rsc_table(ddata->trproc);
++}
++
++static int stm32_rproc_tee_start(struct rproc *rproc)
++{
++	struct stm32_rproc *ddata = rproc->priv;
++
++	return tee_rproc_start(ddata->trproc);
++}
++
++static int stm32_rproc_tee_attach(struct rproc *rproc)
++{
++	/* Nothing to do, remote proc already started by the secured context. */
++	return 0;
++}
++
++static int stm32_rproc_tee_stop(struct rproc *rproc)
++{
++	struct stm32_rproc *ddata = rproc->priv;
++	int err;
++
++	stm32_rproc_request_shutdown(rproc);
++
++	err = tee_rproc_stop(ddata->trproc);
++	if (err)
++		return err;
++
++	ddata->fw_loaded = false;
++
++	return stm32_rproc_release(rproc);
 +}
 +
  static int stm32_rproc_prepare(struct rproc *rproc)
  {
  	struct device *dev = rproc->dev.parent;
-@@ -519,17 +567,9 @@ static int stm32_rproc_detach(struct rproc *rproc)
- static int stm32_rproc_stop(struct rproc *rproc)
+@@ -319,7 +410,14 @@ static int stm32_rproc_prepare(struct rproc *rproc)
+ 
+ static int stm32_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
  {
- 	struct stm32_rproc *ddata = rproc->priv;
--	int err, idx;
-+	int err;
+-	if (rproc_elf_load_rsc_table(rproc, fw))
++	struct stm32_rproc *ddata = rproc->priv;
++	int ret;
++
++	if (ddata->trproc)
++		ret = rproc_tee_get_rsc_table(ddata->trproc);
++	else
++		ret = rproc_elf_load_rsc_table(rproc, fw);
++	if (ret)
+ 		dev_warn(&rproc->dev, "no resource table found for this firmware\n");
  
--	/* request shutdown of the remote processor */
--	if (rproc->state != RPROC_OFFLINE && rproc->state != RPROC_CRASHED) {
--		idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_SHUTDOWN);
--		if (idx >= 0 && ddata->mb[idx].chan) {
--			err = mbox_send_message(ddata->mb[idx].chan, "detach");
--			if (err < 0)
--				dev_warn(&rproc->dev, "warning: remote FW shutdown without ack\n");
--		}
--	}
-+	stm32_rproc_request_shutdown(rproc);
+ 	return 0;
+@@ -693,8 +791,22 @@ static const struct rproc_ops st_rproc_ops = {
+ 	.get_boot_addr	= rproc_elf_get_boot_addr,
+ };
  
- 	err = stm32_rproc_set_hold_boot(rproc, true);
- 	if (err)
-@@ -541,29 +581,7 @@ static int stm32_rproc_stop(struct rproc *rproc)
- 		return err;
++static const struct rproc_ops st_rproc_tee_ops = {
++	.prepare	= stm32_rproc_prepare,
++	.start		= stm32_rproc_tee_start,
++	.stop		= stm32_rproc_tee_stop,
++	.attach		= stm32_rproc_tee_attach,
++	.kick		= stm32_rproc_kick,
++	.parse_fw	= stm32_rproc_parse_fw,
++	.find_loaded_rsc_table = stm32_rproc_tee_elf_find_loaded_rsc_table,
++	.get_loaded_rsc_table = stm32_rproc_get_loaded_rsc_table,
++	.sanity_check	= stm32_rproc_tee_elf_sanity_check,
++	.load		= stm32_rproc_tee_elf_load,
++};
++
+ static const struct of_device_id stm32_rproc_match[] = {
+-	{ .compatible = "st,stm32mp1-m4" },
++	{.compatible = "st,stm32mp1-m4",},
++	{.compatible = "st,stm32mp1-m4-tee",},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, stm32_rproc_match);
+@@ -853,6 +965,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct stm32_rproc *ddata;
+ 	struct device_node *np = dev->of_node;
++	struct tee_rproc *trproc = NULL;
+ 	struct rproc *rproc;
+ 	unsigned int state;
+ 	int ret;
+@@ -861,11 +974,31 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	rproc = rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
+-	if (!rproc)
+-		return -ENOMEM;
++	if (of_device_is_compatible(np, "st,stm32mp1-m4-tee")) {
++		trproc = tee_rproc_register(dev, STM32_MP1_M4_PROC_ID);
++		if (IS_ERR(trproc)) {
++			dev_err_probe(dev, PTR_ERR(trproc),
++				      "signed firmware not supported by TEE\n");
++			return PTR_ERR(trproc);
++		}
++		/*
++		 * Delegate the firmware management to the secure context.
++		 * The firmware loaded has to be signed.
++		 */
++		dev_info(dev, "Support of signed firmware only\n");
++	}
++	rproc = rproc_alloc(dev, np->name,
++			    trproc ? &st_rproc_tee_ops : &st_rproc_ops,
++			    NULL, sizeof(*ddata));
++	if (!rproc) {
++		ret = -ENOMEM;
++		goto free_tee;
++	}
+ 
+ 	ddata = rproc->priv;
++	ddata->trproc = trproc;
++	if (trproc)
++		trproc->rproc = rproc;
+ 
+ 	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
+ 
+@@ -916,6 +1049,10 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 		device_init_wakeup(dev, false);
  	}
- 
--	/* to allow platform Standby power mode, set remote proc Deep Sleep */
--	if (ddata->pdds.map) {
--		err = regmap_update_bits(ddata->pdds.map, ddata->pdds.reg,
--					 ddata->pdds.mask, 1);
--		if (err) {
--			dev_err(&rproc->dev, "failed to set pdds\n");
--			return err;
--		}
--	}
--
--	/* update coprocessor state to OFF if available */
--	if (ddata->m4_state.map) {
--		err = regmap_update_bits(ddata->m4_state.map,
--					 ddata->m4_state.reg,
--					 ddata->m4_state.mask,
--					 M4_STATE_OFF);
--		if (err) {
--			dev_err(&rproc->dev, "failed to set copro state\n");
--			return err;
--		}
--	}
--
--	return 0;
-+	return stm32_rproc_release(rproc);
+ 	rproc_free(rproc);
++free_tee:
++	if (trproc)
++		tee_rproc_unregister(trproc);
++
+ 	return ret;
  }
  
- static void stm32_rproc_kick(struct rproc *rproc, int vqid)
+@@ -937,6 +1074,8 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+ 		device_init_wakeup(dev, false);
+ 	}
+ 	rproc_free(rproc);
++	if (ddata->trproc)
++		tee_rproc_unregister(ddata->trproc);
+ }
+ 
+ static int stm32_rproc_suspend(struct device *dev)
 -- 
 2.25.1
 
