@@ -1,124 +1,130 @@
-Return-Path: <linux-kernel+bounces-30407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 928AB831E4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:20:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D228831E4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 422C828B6E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:20:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DA0FB236BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3112C84B;
-	Thu, 18 Jan 2024 17:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9472C84D;
+	Thu, 18 Jan 2024 17:20:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Abr4ElsV"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="DQ1+FQXx"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1939F2C6BD;
-	Thu, 18 Jan 2024 17:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87FB62C841;
+	Thu, 18 Jan 2024 17:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705598428; cv=none; b=K488MWr/dV+K0k8aR8PV4qwq1aycQH44INuRDZLoPkWkii9/rv71XQI6c86PBc4Inln5VudMcPF44ZjsEeuy/i+hUtf2ZSg5xt1wVAwQGdzbbGEPliDgtSYb58boARm0+Ns6EnxMKnZjsBHxJFm3tk6SpVhCP3r0fBus8BBUu3g=
+	t=1705598458; cv=none; b=Oa+FtIv+Cqx3Z+ZQA9rerdEGR/FtVsfpyyD0rA6EBWZoxKqznxsgxENnyBvO4c7jHbAK8/1hg9WO/I++DJbSzUrA2mpK+t2eBC4ianYs9hyeqlBYzE9G3Ef261NTix8b4QUAcBWJVkDSfj/OHlopr1CU0UJJLQ8UqJE700wnWCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705598428; c=relaxed/simple;
-	bh=AhBxUMiPWi0pJ79e4Muw8Q5X3mcmykTHVQCaSXf4MLk=;
-	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=giMCDOtVVvxy/ie8zdik/kXVvzK9+3O1FSiz1wzRYkUdsvAfs97GuN7fg5IeBdG3zStqicKaJmdzs496hKWJKJkfDiE5ZKpOZC3si9riJUfaxkJDisL3Uh8WB7fshGPlRSRO+l7dtxccDcLuwum0Jmd1muHQhfA1QfwMe4EM85E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Abr4ElsV; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1705598458; c=relaxed/simple;
+	bh=QCi0NAejhSMBU6bIleU7dVTM/9bEmhooAzEn3eRNGV0=;
+	h=DKIM-Signature:Received:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:Sender; b=UVCEAElghKM6jNCs9g9SSaF7yX0Hrw0ESAVx4c/P9NHYsjooNUxAPfg8biVKvmLz+TWjjaJZPv7UvOwi8jCDgyST+qUDbJePeo26/1rX2LgHwxcVJroSHZCj8id9vkE9PxB9jkp72tSNOIq1Vr0Tc3uWGIT2P1dVAfklCoWgU3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=DQ1+FQXx; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=utuWuDjXoRldKpL3sc8RaeRaG0cDdvSyns5k11OdnWo=; b=Abr4ElsV3qXeLBD8ICokyBRqNc
-	BuPGZij70p5LIRy0gnvgxvLEmiRzhdzYUuoYOAOS0GTfYxU7Bjx80rr0g2ljM1Hkya6ox3p7yRJbn
-	ywD0gppxzfFAVWZC31shhlQQNa+1SXp2nenTjtuYFD4i/VWd7JxPDU3mRG+QipA9DU9Ygq5ir7vhd
-	TSf5IBELm1FMeWstsQITYvc1xF2WQW9j2cVdjL4+4zdRuZTRZYjXQAPIfi0ey03cWkda6IzhfIcz/
-	XOSgjpEaigt0v7OBNcCq2bzhNw3xBvypvDfpFyEQfSJeJ3BhOFDvXzqlD5WUO3W6eji2KPCij4n2c
-	9tB5I5tQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQW40-003NJm-0m;
-	Thu, 18 Jan 2024 17:20:24 +0000
-Message-ID: <663ad3f4-f877-4817-8f31-dce1ff12ff40@infradead.org>
-Date: Thu, 18 Jan 2024 09:20:24 -0800
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=QW5QZVtvDMrqM5iqjOSP4enaNWSUCJ1eFOycJjQ34Lc=; b=DQ1+FQXxKz/5UT2gG/qY9Nm63q
+	ZnbqqtX0YlzE7kngEfJ7zhTkO0PCVEWPazi8mnmvmRDi7kwQAzAkEpLJRd+0FH9YbCl1aXTnUxllk
+	TYEXLaC69tAaw7A+UVOnWlA6CEuHYlR/ZrxyXANoPo1a44rGOWYolIIEZcD7o1uh19LW8yAH/goFX
+	0oygVnl4cQ38/l1IWT1L4HUR0Ckg+bCR3C0fHCiDenl3mT6rB1dDXAhatdye8KAvc8Hb7+haGVDpb
+	I4DamBIEeoPvBGAzooYMLzEQpOY4d3MhRwhGdcRXfYAmspaHBo7UEKlR+19UxZji1jwltZC3PCOmg
+	+pf3tZjA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58808)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rQW4O-0005vR-0C;
+	Thu, 18 Jan 2024 17:20:48 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rQW4M-0005tn-E5; Thu, 18 Jan 2024 17:20:46 +0000
+Date: Thu, 18 Jan 2024 17:20:46 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Andre Werner <andre.werner@systec-electronic.com>
+Cc: andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: adin1100: Fix nullptr exception for phy
+ interrupts
+Message-ID: <Zald7u8B+uKzCn42@shell.armlinux.org.uk>
+References: <20240118104341.10832-1-andre.werner@systec-electronic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] wifi: ath10k: Fix enum ath10k_fw_crash_dump_type
- kernel-doc
-Content-Language: en-US
-To: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240118-ath10k-kerneldoc-v1-0-99c7e8d95aad@quicinc.com>
- <20240118-ath10k-kerneldoc-v1-5-99c7e8d95aad@quicinc.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240118-ath10k-kerneldoc-v1-5-99c7e8d95aad@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118104341.10832-1-andre.werner@systec-electronic.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
+In addition to Andrew's comments:
 
+On Thu, Jan 18, 2024 at 11:43:41AM +0100, Andre Werner wrote:
+> +static int adin_config_intr(struct phy_device *phydev)
+> +{
+> +	int ret, regval;
+> +
+> +	ret = adin_phy_ack_intr(phydev);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	regval = phy_read_mmd(phydev, MDIO_MMD_VEND2, ADIN_PHY_SUBSYS_IRQ_MASK);
+> +	if (regval < 0)
+> +		return regval;
+> +
+> +	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
+> +		regval |= ADIN_LINK_STAT_CHNG_IRQ_EN;
+> +	else
+> +		regval &= ~ADIN_LINK_STAT_CHNG_IRQ_EN;
+> +
+> +	ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
+> +			    ADIN_PHY_SUBSYS_IRQ_MASK,
+> +			    regval);
+> +	return ret;
 
-On 1/18/24 08:12, Jeff Johnson wrote:
-> The kernel-doc script currently reports:
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_REGISTERS' not described in enum 'ath10k_fw_crash_dump_type'
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_CE_DATA' not described in enum 'ath10k_fw_crash_dump_type'
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_RAM_DATA' not described in enum 'ath10k_fw_crash_dump_type'
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_MAX' not described in enum 'ath10k_fw_crash_dump_type'
-> drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Excess enum value 'ATH10K_FW_CRASH_DUMP_REGDUMP' description in 'ath10k_fw_crash_dump_type'
-> 
-> Fix these issues with the enum ath10k_fw_crash_dump_type kernel-doc.
-> 
-> No functional changes, compile tested only.
-> 
-> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+	u16 irq_mask;
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
+		irq_mask = ADIN_LINK_STAT_CHNG_IRQ_EN;
+	else
+		irq_mask = 0;
+
+	return phy_modify_mmd(phydev, MDIO_MMD_VEND2,
+			      ADIN_PHY_SUBSYS_IRQ_MASK,
+			      ADIN_LINK_STAT_CHNG_IRQ_EN, irq_mask);
+
+> +}
+> +
+> +static irqreturn_t adin_phy_handle_interrupt(struct phy_device *phydev)
+> +{
+> +	int irq_status;
+> +
+> +	irq_status = phy_read_mmd(phydev, MDIO_MMD_VEND2, ADIN_PHY_SUBSYS_IRQ_STATUS);
+
+Probably want to wrap this - if you're going to bother wrapping your
+phy_write_mmd() above because it overflows 80 columns, then please do
+so consistently.
 
 Thanks.
 
-> ---
->  drivers/net/wireless/ath/ath10k/coredump.h | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
-> index e5ef0352e319..8d274e0f374b 100644
-> --- a/drivers/net/wireless/ath/ath10k/coredump.h
-> +++ b/drivers/net/wireless/ath/ath10k/coredump.h
-> @@ -1,7 +1,7 @@
->  /* SPDX-License-Identifier: ISC */
->  /*
->   * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-> - * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
-> + * Copyright (c) 2022, 2024 Qualcomm Innovation Center, Inc. All rights reserved.
->   */
->  
->  #ifndef _COREDUMP_H_
-> @@ -13,7 +13,11 @@
->  
->  /**
->   * enum ath10k_fw_crash_dump_type - types of data in the dump file
-> - * @ATH10K_FW_CRASH_DUMP_REGDUMP: Register crash dump in binary format
-> + * @ATH10K_FW_CRASH_DUMP_REGISTERS: Register crash dump in binary format
-> + * @ATH10K_FW_CRASH_DUMP_CE_DATA: Copy Engine crash dump data
-> + * @ATH10K_FW_CRASH_DUMP_RAM_DATA: RAM crash dump data, contains multiple
-> + *				   struct ath10k_dump_ram_data_hdr
-> + * @ATH10K_FW_CRASH_DUMP_MAX: Maximum enumeration
->   */
->  enum ath10k_fw_crash_dump_type {
->  	ATH10K_FW_CRASH_DUMP_REGISTERS = 0,
-> 
-
 -- 
-#Randy
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
