@@ -1,154 +1,132 @@
-Return-Path: <linux-kernel+bounces-30161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC67831ABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:40:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 758DA831AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:43:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C46B1F22E12
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:40:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37827287D0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:43:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E4E25605;
-	Thu, 18 Jan 2024 13:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5172560F;
+	Thu, 18 Jan 2024 13:43:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QfYk7VRu";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QfYk7VRu"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="Cp+PxdUJ"
+Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6434824B43
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 390B024A0B;
+	Thu, 18 Jan 2024 13:43:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.51.188.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705585224; cv=none; b=r4RJmbaNswdKSn6MOubbpUH3aNxltRhRc14a5XxQFMzKDlZZ/yiGuO5Aey/Smc2HtSEFRjeQmfO00YImuESaEK9LLGyu5SnHx1NPtHc8kRyges++mYb2yGIxSVT1tXCuI0ICK2Fbc7dx4e2No355nbRXNEhaHRdxE9ZQjkqcQM4=
+	t=1705585398; cv=none; b=de1HJWL55+QTPYA0L4l8GF5+scjNsx/0FQ2oWByJw7FEHIg/+Q1Utj9dST85HUbhIC2/EWve6b5jhV/7DKTaqm/i230+BEIO305ojqIxXlJtcetTF01HGyZmPXsL6vlqsuZJXgm1hGpbA7vI6d3bTIhrx+kVTm/uEmp3Ann7dTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705585224; c=relaxed/simple;
-	bh=ayZbMnS5g9zLYgG0N6LOxjLx9Ua0VrYQFSieutDHP7E=;
-	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-Spamd-Result:X-Spam-Level:
-	 X-Spam-Flag:X-Spam-Score; b=d0pemx3v5NnvWx9zK6U/EFGnUHQhsDHsDycflG1uSNQwxJzi/o5VsVS2QYltG6mVc7vSV18PaQoKT0n4KKjwmwaIXkE3jQL0NejTAebaD4WhXxDH+KsZEohDhrFyDq6pAxExBfgSL5pEQhh+9470mvWDEjoKFq9t9d11X4E5clM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QfYk7VRu; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QfYk7VRu; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6495F1F793;
-	Thu, 18 Jan 2024 13:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705585220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=we2LNT5Wx4kSmP/D3/KqsKAmidZoCRWlYOg8GUmAkvQ=;
-	b=QfYk7VRuspLDEbexxh3EuSniYjjNoEI62Z8ZhX8CK+pm1uwbMbPPvAQxRoNtyS+U9Np137
-	hsjPeA0GIJ6VmNRnvPzvxOvUG4nm0ZTvY9jrmaMjqSmnOtjn4K6ihJmAWdXeBgeUbpAUwV
-	PP7WMmYhFMJA1Z3uMxBUTZXhQh1aDTQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705585220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=we2LNT5Wx4kSmP/D3/KqsKAmidZoCRWlYOg8GUmAkvQ=;
-	b=QfYk7VRuspLDEbexxh3EuSniYjjNoEI62Z8ZhX8CK+pm1uwbMbPPvAQxRoNtyS+U9Np137
-	hsjPeA0GIJ6VmNRnvPzvxOvUG4nm0ZTvY9jrmaMjqSmnOtjn4K6ihJmAWdXeBgeUbpAUwV
-	PP7WMmYhFMJA1Z3uMxBUTZXhQh1aDTQ=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 44E3C13874;
-	Thu, 18 Jan 2024 13:40:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8S2uDkQqqWX9CgAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 18 Jan 2024 13:40:20 +0000
-Date: Thu, 18 Jan 2024 14:40:19 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com,
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com,
-	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT to
- process_madvise()
-Message-ID: <ZakqQyL9t2ffNUIf@tiehlicka>
-References: <20240118120347.61817-1-ioworker0@gmail.com>
+	s=arc-20240116; t=1705585398; c=relaxed/simple;
+	bh=Ja9BoTNSArKJ+F58kV7azM46qj6/hpbKD7iIT+NTPeI=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:In-Reply-To:References:
+	 Date:Message-ID:User-Agent:MIME-Version:Content-Type; b=jB3cjCyj2rnMkF1CrU7hLz1LpbUzJWqLrGzkt9ugyIVNQnmDFIa/DG5FwRs66YjMR1TisMO1/3Pym+6iY4utCB54YafMxAiw5FrnyvblUJOMEE7LbfvjLxNR3Z4jxXzDg0yJDILUxXlRwBaCZIpInq5BnCCaLSWLlZ8M3J4O1b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org; spf=pass smtp.mailfrom=gnu.org; dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b=Cp+PxdUJ; arc=none smtp.client-ip=209.51.188.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
+Received: from fencepost.gnu.org ([2001:470:142:3::e])
+	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.90_1)
+	(envelope-from <othacehe@gnu.org>)
+	id 1rQSfn-0004uE-Cn; Thu, 18 Jan 2024 08:43:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
+	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
+	From; bh=efuuIR75Ne4gKzieuxB6GvMLRG+XlSIaY1YCAUIZ41I=; b=Cp+PxdUJgklim1u1yQzh
+	lAjlcVHem0BTU2KRX7KFjrght1MTX21VTE3dmGgvxnfzdkJLElplkm9kPTbpY66pVtoHeyIhkVnkw
+	94O3lDor6XvajCmWc0/MjWDvhXUCoGx65vqOEJipZkM3k5Eyvh+lV53ssImg1I9ldXLsPbLJ/oc01
+	taG0QsaKxKkzk4/WYmVbEiyiO5V4pR/5ZYuLSb0C5BhU50iizWlpDKqJEVZGkdoJQEQ2SIdSVUpsU
+	4AA8RiRj+mdgBo3FG/Txlv+ugq12eBqJdMV/CyAN/kHUqu2+yUk389/9BJ+zFJSGcLO8Ot3bX403Q
+	vfrnyndX3/nCyQ==;
+From: Mathieu Othacehe <othacehe@gnu.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Primoz Fiser <primoz.fiser@norik.com>,  Rob Herring
+ <robh+dt@kernel.org>,  Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
+  Shawn Guo <shawnguo@kernel.org>,  Sascha Hauer <s.hauer@pengutronix.de>,
+  Pengutronix Kernel Team <kernel@pengutronix.de>,  Fabio Estevam
+ <festevam@gmail.com>,  NXP Linux Team <linux-imx@nxp.com>,  Li Yang
+ <leoyang.li@nxp.com>,  Stefan Wahren <wahrenst@gmx.net>,  Christoph
+ Stoidner <c.stoidner@phytec.de>,  Wadim Egorov <w.egorov@phytec.de>,
+  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org,  upstream@lists.phytec.de
+Subject: Re: [PATCH v2 2/2] arm64: dts: imx93-phycore-segin: Add Phytec
+ i.MX93 Segin
+In-Reply-To: <20240118-regretful-viewer-8d7dfc7a0802@spud> (Conor Dooley's
+	message of "Thu, 18 Jan 2024 10:19:23 +0000")
+References: <20240117074911.7425-1-othacehe@gnu.org>
+	<20240117074911.7425-3-othacehe@gnu.org>
+	<c1ef5c08-1ae9-4a22-8ca9-47673c023e1e@norik.com>
+	<20240118-regretful-viewer-8d7dfc7a0802@spud>
+Date: Thu, 18 Jan 2024 14:43:07 +0100
+Message-ID: <87jzo6vjtg.fsf@gnu.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118120347.61817-1-ioworker0@gmail.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [0.40 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,google.com,redhat.com,bytedance.com,gmail.com,kernel.org,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[16.10%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.40
+Content-Type: text/plain
 
-On Thu 18-01-24 20:03:46, Lance Yang wrote:
-[...]
 
-before we discuss the semantic, let's focus on the usecase.
+Hey,
 
-> Use Cases
-> 
-> An immediate user of this new functionality is the Go runtime heap allocator
-> that manages memory in hugepage-sized chunks. In the past, whether it was a
-> newly allocated chunk through mmap() or a reused chunk released by
-> madvise(MADV_DONTNEED), the allocator attempted to eagerly back memory with
-> huge pages using madvise(MADV_HUGEPAGE)[2] and madvise(MADV_COLLAPSE)[3]
-> respectively. However, both approaches resulted in performance issues; for
-> both scenarios, there could be entries into direct reclaim and/or compaction,
-> leading to unpredictable stalls[4]. Now, the allocator can confidently use
-> process_madvise(MADV_F_COLLAPSE_LIGHT) to attempt the allocation of huge pages.
+> Please do not order properties alphabetically. Instead, please read
+> the new documentation on property ordering that makes explicit what
+> has just been convention until now:
+> https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git/tree/Documentation/devicetree/bindings/dts-coding-style.rst?h=for-next&id=83a368a3fc8ae8538bccb713dc0cae9eacc04790#n112
 
-IIUC the primary reason is the cost of the huge page allocation which
-can be really high if the memory is heavily fragmented and it is called
-synchronously from the process directly, correct? Can that be worked
-around by process_madvise and performing the operation from a different
-context? Are there any other reasons to have a different mode?
+Thanks for the link.
 
-I mean I can think of a more relaxed (opportunistic) MADV_COLLAPSE -
-e.g. non blocking one to make sure that the caller doesn't really block
-on resource contention (be it locks or memory availability) because that
-matches our non-blocking interface in other areas but having a LIGHT
-operation sounds really vague and the exact semantic would be
-implementation specific and might change over time. Non-blocking has a
-clear semantic but it is not really clear whether that is what you
-really need/want.
+I have a question though. Regarding that section:
 
-> [1] https://github.com/torvalds/linux/commit/7d8faaf155454f8798ec56404faca29a82689c77
-> [2] https://github.com/golang/go/commit/8fa9e3beee8b0e6baa7333740996181268b60a3a
-> [3] https://github.com/golang/go/commit/9f9bb26880388c5bead158e9eca3be4b3a9bd2af
-> [4] https://github.com/golang/go/issues/63334
-> 
-> [v1] https://lore.kernel.org/lkml/20240117050217.43610-1-ioworker0@gmail.com/
--- 
-Michal Hocko
-SUSE Labs
+--8<---------------cut here---------------start------------->8---
+/* SD-Card */
+&usdhc2 {
+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+	pinctrl-0 = <&pinctrl_usdhc2_default>, <&pinctrl_usdhc2_cd>;
+	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_cd>;
+	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_cd>;
+	bus-width = <4>;
+	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
+	no-sdio;
+	no-mmc;
+	vmmc-supply = <&reg_usdhc2_vmmc>;
+	status = "okay";
+};
+--8<---------------cut here---------------end--------------->8---
+
+The documentation states:
+
+--8<---------------cut here---------------start------------->8---
+Order of Properties in Device Node
+----------------------------------
+
+The following order of properties in device nodes is preferred:
+
+1. "compatible"
+2. "reg"
+3. "ranges"
+4. Standard/common properties (defined by common bindings, e.g. without
+   vendor-prefixes)
+5. Vendor-specific properties
+6. "status" (if applicable)
+7. Child nodes, where each node is preceded with a blank line
+--8<---------------cut here---------------end--------------->8---
+
+All of the properties in my example are falling into the "4" category I
+guess, except for "status" that should come last. Now, how am I supposed
+to order those properties? I had a look to other IMX device trees and it
+is hard to establish a pattern. Pinctrl first, then alphabetical order?
+Anything else?
+
+Thanks for the guidance,
+
+Mathieu
 
