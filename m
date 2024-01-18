@@ -1,129 +1,133 @@
-Return-Path: <linux-kernel+bounces-30632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748C1832245
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 00:30:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 429D5832247
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 00:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F9071C2110A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 23:30:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F037B282B48
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 23:31:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B611EB52;
-	Thu, 18 Jan 2024 23:30:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561E625772;
+	Thu, 18 Jan 2024 23:31:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b2USuHK8"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Hlgh7OZN"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17021DA5E
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0524B1EB38
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705620622; cv=none; b=OTLjiNfx1MTIKTFBtQqGKpOEvOBbtoM/wmBsx2rKY6zcl8FsuaiyxgGafkZv8qnjCoi4SAe2lbWYWl9MlWFY53zKLD9I6xSwxkwi4DUMWOrBrpCtZ8huF0DSUc5X+75rZwG52XLxdTceYSFpAkcHoid3Fht0w2TNeSfOcVFBztw=
+	t=1705620672; cv=none; b=O3vt5OJTcBK9R6QPvPjNBF+rvfWc1L3dEIDqrB+q/smIWC51ZB1WOfATpGu9x6X0yj3o3Q3BhevjFDpXB14jDMsOhYGseJh8Jzp4C+4TBW8oQiG8lmnJwDJVCQF5Bm3z8+B+/qY7OYTaBQleSGYsYsP8zYxAYNvm9g5BJmxno4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705620622; c=relaxed/simple;
-	bh=z5fPf7zN0RtXmSKi8h8UwIiB1VTg5/bPLOeaIMJh1hA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IOFVI21NdqP3+lUhWpIMG/nOMCkcW+Y5VBDlCOEGwTAId2SofsPqGDoy7D044uUQ6KMQVROtoKcaicCrptV7faKNZHXJYU9/J+a/9QTPWqMYHMkFI+WLc5mUocrF0E/I11n/PXXrGvs2SCQN5C+nTtWNmvimAtM0PU8eGrcA3CA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b2USuHK8; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-336746c7b6dso150155f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 15:30:20 -0800 (PST)
+	s=arc-20240116; t=1705620672; c=relaxed/simple;
+	bh=IdpU2iFg7IVH1ufjSNd28yuQIldlBMrrkAL0tUwiR3M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uq99u6fB8XtiGkS2oxuc744iddHqzAYMmjSd0Ui/g08bCtGCd83NRdazNUp1S39W066RVDyhq5ybpFdZTY5DSRJo3bCncUSlWyTIbn4xop/vVi+OLHKejYiBvMGdX3Oo66Lbfh3TYrJCONA3myAZzgC/TS/IJJa4vc883uVi98M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Hlgh7OZN; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-337d99f9cdfso128390f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 15:31:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705620619; x=1706225419; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z5fPf7zN0RtXmSKi8h8UwIiB1VTg5/bPLOeaIMJh1hA=;
-        b=b2USuHK8iK7DMZDGYMC+kPDshk32tuLAUEMRcaqF5D54H+Vbc4vaGk7eV+AgqfB3Av
-         58ZJqHTb+GHSopV6zWwRPyc64mrwwMNGw7HiUWN1+l0VP45wF9TQ0pLcs6g9U8jmrVfn
-         8IIEeQVSI69/tmAbqSg74cE9zNfODO443jdwV1lgJ3n1LdG5LktdhzUFfTEA6YTeDzLz
-         QqjJSYxh0Fc1PVWVJR45CCuLfOmx/FccDSrGhPueYbVYgyP8mIhUO0/z2Zi7EX3DSC78
-         9NCgFvkx4RVZpS+xCXc/xPS2/6nFE4GC6H6rlpu2hIMcBwpA57AtKoSYxc3x5p7PaJhT
-         9JWg==
+        d=linaro.org; s=google; t=1705620669; x=1706225469; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6v0lpyy987F1ypK0yHFg7YzbqvtCeBq1Ni/3BxFVaP8=;
+        b=Hlgh7OZN+oceDjCX71S1+jjzVWubCpdutpcdapYvU7naFeHNvB8in8IJ+ZP6PcF5GO
+         vSwBK095CeX6m24vzIFg45Jcu+XydbVyCM1pXKttWBRtrL/BjjBd+ft37CBclgAemw4P
+         rTcmU0hlwWQtVxeuZwY9XOJOzVQeEfqh4WcLSN7QY0KLkSPZO80kGLIbsFf8crcMq4xs
+         zTkVa8O1OS0IKUyr0BHBMWSYwcQBflsxRmJ5F8oVD5D5hl09ER8DRzam1lL15Tvppj+J
+         T1zEYKtHAG+xHFX3eAo5MuDrLspS5TfGhDrCJrtU08hbVi9rNglnvVImLr0ybP8ine5+
+         iOFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705620619; x=1706225419;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z5fPf7zN0RtXmSKi8h8UwIiB1VTg5/bPLOeaIMJh1hA=;
-        b=xLaZOupxb3uRZGSWYx91CurH4DHEItjlf1T517NmY+kSWDw2YkNxYf8QshAJOojR21
-         J6h5nzco0xR+T8N1FxOO3RQQcgLJTHIudqz8llFyyEe+AtwetZLH9QFfm3jbuv5eRl4M
-         GJrbBaNikDq/Z5frRA+vgYHhv7xBw+g4uJtGAYUd1Fh8bCMDklN+4BDjcZp4/GHtU/ZM
-         IX/ObLT117U1+yjkkH3NFiDhTyFI02fSrtTqESheCkHUfsAmAv605u46qd9TglLR7jUQ
-         lBC7MzQNQL8TVixuthKV1wbowTAPG+VYsczpNymBx56+TSj6pdSPKmBZEfMlnaMpo4NA
-         dzdA==
-X-Gm-Message-State: AOJu0YwpH8UdIkhtpgCCTV7rEK7UMXfo2W0PGuREcBT1sWVbZFWKQ/d3
-	xVvwnjA8q7b6z9GkrFeGa4eWnLDIbQ0bUnFYWmo9Y1w82anNHubMb6fpFzcJd2KxLDokKgh0DMT
-	Jp3r0MPElRAeBub/diIw9MCImyajGRm050BWP
-X-Google-Smtp-Source: AGHT+IERBKIRZXhUEwT/FvY141cn7UHvj0sDW/KQK0D2C8nJKn7gUoNFHy2qzmo8U2RTdv+h1bRnz1oyiSScKyNcOhE=
-X-Received: by 2002:a5d:5092:0:b0:337:c117:10c with SMTP id
- a18-20020a5d5092000000b00337c117010cmr1049929wrt.113.1705620618937; Thu, 18
- Jan 2024 15:30:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705620669; x=1706225469;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6v0lpyy987F1ypK0yHFg7YzbqvtCeBq1Ni/3BxFVaP8=;
+        b=ZacvfcOlYJPgdjv6G0pMLS2m7Y/88uQfWK4vqyUz0zs++8vbuPmf3d59SdWx9DMPNy
+         MEFjWZlte2OFKUHM6EtxOXRrmfewE3aM/kYc824mQLs3h3Lxc7Gq4Lv/S0mbnN9PFNlR
+         JhryRqh5NWT1NakTObWz/KixiR1Cwei7YfnFcE70XwUJ5v3QlJIZoT73Gr4ATBxBsL6Q
+         ZtB829fgvwG+wbU2ndKi45x+p0WpJRjgGTWddu4c4O4UwBMR8F9xIDM1Iv5P/ErnorpA
+         F2PGKHbDO5JLc4wnuqe9gvyJwFr0WoFtxx604Bqxe709OYq+kQQllAGrXPmzr0A3gHbb
+         WhzA==
+X-Gm-Message-State: AOJu0Yzxu2IAj+kMNOuMCCS9oEOKIeOKJBNPFi5beT1yZ+hW5d8FrhVM
+	5Ky/6KPilnr4TNjVT45rHu+YiX6jGOQWMSM8+B4UgisKsU326UBtqTx3tN+ujdc=
+X-Google-Smtp-Source: AGHT+IHK8WMSnQ/xm+10s5i+APAOImX+NZ0MsBozts6V6weL9GokHwH2muJibNCsJCflNlRFjDFetQ==
+X-Received: by 2002:adf:cd85:0:b0:337:9b5d:4c68 with SMTP id q5-20020adfcd85000000b003379b5d4c68mr1119632wrj.127.1705620669094;
+        Thu, 18 Jan 2024 15:31:09 -0800 (PST)
+Received: from [10.66.66.2] (9.ip-51-91-159.eu. [51.91.159.9])
+        by smtp.gmail.com with ESMTPSA id q12-20020adfab0c000000b00337d8c40ff7sm973011wrc.3.2024.01.18.15.31.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 15:31:08 -0800 (PST)
+Message-ID: <ce77861a-b362-4ecc-8e92-7fb846c7e508@linaro.org>
+Date: Fri, 19 Jan 2024 00:31:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117223729.1444522-1-lokeshgidra@google.com> <20240118135941.c7795d52881f486aa21aeea8@linux-foundation.org>
-In-Reply-To: <20240118135941.c7795d52881f486aa21aeea8@linux-foundation.org>
-From: Axel Rasmussen <axelrasmussen@google.com>
-Date: Thu, 18 Jan 2024 15:29:42 -0800
-Message-ID: <CAJHvVcgcRVB75oevri-KH3=cayez7Wjn=G3nXkuO36r11Y98zQ@mail.gmail.com>
-Subject: Re: [PATCH] userfaultfd: fix mmap_changing checking in mfill_atomic_hugetlb
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Lokesh Gidra <lokeshgidra@google.com>, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, selinux@vger.kernel.org, 
-	surenb@google.com, kernel-team@android.com, aarcange@redhat.com, 
-	peterx@redhat.com, david@redhat.com, bgeffon@google.com, willy@infradead.org, 
-	jannh@google.com, kaleshsingh@google.com, ngeoffray@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp: Introduce additional tsens
+ instances
+Content-Language: en-US
+To: Bjorn Andersson <quic_bjorande@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240118-sc8280xp-tsens2_3-v1-1-e86bce14f6bf@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240118-sc8280xp-tsens2_3-v1-1-e86bce14f6bf@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Apologies, I had forgotten to re-check the "send plaintext" checkbox
-in my e-mail client, so the mailing lists rejected my previous mail. I
-am duly ashamed. Allow me to try once more. :)
 
-On Thu, Jan 18, 2024 at 1:59=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Wed, 17 Jan 2024 14:37:29 -0800 Lokesh Gidra <lokeshgidra@google.com> =
-wrote:
->
-> > In mfill_atomic_hugetlb(), mmap_changing isn't being checked
-> > again if we drop mmap_lock and reacquire it. When the lock is not held,
-> > mmap_changing could have been incremented. This is also inconsistent
-> > with the behavior in mfill_atomic().
 
-The change looks reasonable to me. I'm not sure I can conclusively say
-there isn't some other mechanism specific to hugetlbfs which means
-this isn't needed, though.
+On 1/19/24 00:00, Bjorn Andersson wrote:
+> The SC8280XP contains two additional tsens instances, providing among
+> other things thermal measurements for the GPU.
+> 
+> Add these and a GPU thermal-zone.
+> 
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+>   arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 37 ++++++++++++++++++++++++++++++++++
+>   1 file changed, 37 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> index febf28356ff8..68b5ac0339a0 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> @@ -4033,6 +4033,28 @@ tsens1: thermal-sensor@c265000 {
+>   			#thermal-sensor-cells = <1>;
+>   		};
+>   
+> +		tsens2: thermal-sensor@c251000 {
+> +			compatible = "qcom,sc8280xp-tsens", "qcom,tsens-v2";
+> +			reg = <0 0x0c251000 0 0x1ff>, /* TM */
+> +			      <0 0x0c224000 0 0x8>; /* SROT */
 
->
-> Thanks. Could you and reviewers please consider
->
-> - what might be the userspace-visible runtime effects?
->
-> - Should the fix be backported into earlier kernels?
->
-> - A suitable Fixes: target?
+I've previously called for removing these comments that we've been
+copypasting around for years and years, and I'm gonna stand by that :P
 
-Hmm, 60d4d2d2b40e4 added __mcopy_atomic_hugetlb without this. But, at
-that point in history, none of the other functions had mmap_changing
-either.
+[...]
 
-So, I think the right Fixes: target is df2cc96e77011 ("userfaultfd:
-prevent non-cooperative events vs mcopy_atomic races") ? It seems to
-have missed the hugetlb path. This was introduced in 4.18.
+>   
+> +		gpu-thermal {
+> +			polling-delay-passive = <250>;
+> +			polling-delay = <1000>;
 
-Based on that commit's message, essentially what can happen if the
-race "succeeds" is, memory can be accessed without userfaultfd being
-notified of this fact. Depending on what userfaultfd is being used
-for, from userspace's perspective this can appear like memory
-corruption for example. So, based on that it seems to me reasonable to
-backport this to stable kernels (4.19+).
+Hm, did tsens only gain support of non-polled reporting with 8450?
+
+If not, we should definitely update all the relevant SoCs.
+
+Konrad
 
