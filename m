@@ -1,99 +1,132 @@
-Return-Path: <linux-kernel+bounces-29960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 340268315D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:30:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B558315DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:32:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 676161C24E12
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:30:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAB2A1F26E5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0ABF200DE;
-	Thu, 18 Jan 2024 09:30:03 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D6481F946;
-	Thu, 18 Jan 2024 09:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD05E208C6;
+	Thu, 18 Jan 2024 09:32:04 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1FC2030E
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705570203; cv=none; b=uHBh+BQz58AaABs2EOuVuinm3oMno9VGZg7NXyDbtw1NtQ+rvJJgU2o7VU/SHghzEaHyNGbZluj0U8/Mbv84eVA1UmukGuZ6uEHObfQ6bLU5J7tcID6xN0TAQHJyiNlhVaiYn/P2RgPsksvbDc9ZrZtVORNBAAk3DAdRW3nKqhQ=
+	t=1705570324; cv=none; b=EOYJWOmpytlaEtYiKSdgq9psYbPqQbxbnzDX3w0gqJc/dXkpqz4swMPaZ8d/KThlUs877HYiZrOwcaeE5JK0maSzEKNG7tYlw40TWrP2NzCuJR7I8hHjX3oB/50DU65rptasd2oSCMWD2TOmDK/Hi42ucKteLRyhOk9Cb7SKfag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705570203; c=relaxed/simple;
-	bh=R4+K7Qie20s3jGZS63QrPtjyxEAWl88+m5i1etaoA7o=;
-	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 Content-Language:To:From:Subject:Content-Type:
-	 Content-Transfer-Encoding; b=EMrRq5CCG9JHuJVgMmZ0sGvhjJaqZUu1/9orLArH6apbY8ckfY5U5uk49HweuAmsjpyHcO5RQAXhwX5d1UMbzJKhGH+iY0Gc9VmfzzRYCv1IsBnhA2LH8+5ybqDIgBnJRnkkQovg2cFA6AmDjQRKQjvviX467clUJKHdmupZigw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4ECB91042;
-	Thu, 18 Jan 2024 01:30:45 -0800 (PST)
-Received: from [10.1.36.44] (unknown [10.1.36.44])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 244E23F5A1;
-	Thu, 18 Jan 2024 01:29:57 -0800 (PST)
-Message-ID: <a86cfdc8-016f-40f1-8b58-0cb15d2a792c@arm.com>
-Date: Thu, 18 Jan 2024 09:29:56 +0000
+	s=arc-20240116; t=1705570324; c=relaxed/simple;
+	bh=x4OR2QnV/+fgMTmdwS/QmOKbvtbDOKH/eK433t7NRV0=;
+	h=Received:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To:X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:
+	 X-SA-Exim-Scanned:X-PTX-Original-Recipient; b=mK2+dIjEGIDRElHzgSlkof8F2xCDWm5PjAETlmXxl91/ixIBm4uqMwcp9pDvSkD/5gJdRG6be+M8TZCXenLE0h8hBNRIoqSuOOJomjAjtyCZiVLIKIdrD73zSCXmqrzKSthFenJgX57+rFOQ7agNds9pveDgcVUGgawTfUq0JdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rQOj3-0002xz-Tn; Thu, 18 Jan 2024 10:30:17 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rQOiy-000etK-Ax; Thu, 18 Jan 2024 10:30:12 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rQOiy-002Ifg-0Y;
+	Thu, 18 Jan 2024 10:30:12 +0100
+Date: Thu, 18 Jan 2024 10:30:11 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: nikita.shubin@maquefel.me
+Cc: Hartley Sweeten <hsweeten@visionengravers.com>, 
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
+	Guenter Roeck <linux@roeck-us.net>, Thierry Reding <thierry.reding@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Damien Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	Ralf Baechle <ralf@linux-mips.org>, "Wu, Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, 
+	Olof Johansson <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+	dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org, linux-pwm@vger.kernel.org, 
+	linux-spi@vger.kernel.org, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-ide@vger.kernel.org, linux-input@vger.kernel.org, linux-sound@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko <andriy.shevchenko@intel.com>, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v7 00/39] ep93xx device tree conversion
+Message-ID: <a54csycouodnmj6qarfel7cvgupaerl7uhrruixuy7uaekqgzw@2whufrjqunme>
+References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- "corbet@lwn.net" <corbet@lwn.net>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "axboe@kernel.dk" <axboe@kernel.dk>
-From: Christian Loehle <christian.loehle@arm.com>
-Subject: [PATCHv2] Documentation: block: ioprio: Update schedulers
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="s7rbtueqy4vwjth4"
+Content-Disposition: inline
+In-Reply-To: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-This doc hasn't been touched in a while, in the meantime some
-new io schedulers were added (e.g. all of mq), some with ioprio
-support.
 
-Also reword the introduction to remove reference to CFQ and the
-limitation that io priorities only work on reads, which is no longer
-true.
+--s7rbtueqy4vwjth4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Christian Loehle <christian.loehle@arm.com>
----
- Documentation/block/ioprio.rst | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Hello,
 
-diff --git a/Documentation/block/ioprio.rst b/Documentation/block/ioprio.rst
-index a25c6d5df87b..4662e1ff3d81 100644
---- a/Documentation/block/ioprio.rst
-+++ b/Documentation/block/ioprio.rst
-@@ -6,17 +6,16 @@ Block io priorities
- Intro
- -----
- 
--With the introduction of cfq v3 (aka cfq-ts or time sliced cfq), basic io
--priorities are supported for reads on files.  This enables users to io nice
--processes or process groups, similar to what has been possible with cpu
--scheduling for ages.  This document mainly details the current possibilities
--with cfq; other io schedulers do not support io priorities thus far.
-+The io priority feature enables users to io nice processes or process groups,
-+similar to what has been possible with cpu scheduling for ages. Support for io
-+priorities is io scheduler dependent and currently supported by bfq and
-+mq-deadline.
- 
- Scheduling classes
- ------------------
- 
--CFQ implements three generic scheduling classes that determine how io is
--served for a process.
-+Three generic scheduling classes are implemented for io priorities that
-+determine how io is served for a process.
- 
- IOPRIO_CLASS_RT: This is the realtime io class. This scheduling class is given
- higher priority than any other in the system, processes from this class are
--- 
-2.34.1
+On Thu, Jan 18, 2024 at 11:20:43AM +0300, Nikita Shubin via B4 Relay wrote:
+> No major changes since last version (v6) all changes are cometic.
+
+Never saw changes described as "cometic". I guess that means "fast" and
+"high impact"?
+
+SCNR
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--s7rbtueqy4vwjth4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWo76MACgkQj4D7WH0S
+/k5uKAf/Z0JDYxAVHNppDOc31mQ8q/h4mL5VX4NFHWitBkLRBX5sufWi6uUBbK7h
+KA9Z1DHWGNNXUXsV2IsXKsw6WcsC+Wj/g+hUfWMx2kvbnvD8JtYBl1+MJALeBVlt
+aQCy1yMPL36xcy8vSLyh63vZXUHyBaWuooRwVqOhklHSg7/rwSEwECEZZqsg748Z
+iiYmSVRjLlktw1yUtJBvlO1fXWQ41DSbyaQWaIJvbym8B5+2XXW2BTGZOg7CuDz5
+HG9KvXf2AnAEM4RAV6Oo/WKBBEq0kfQ/UBkkH85YOaXrDlNblggfMix84LyansxB
+43g95kkMn3JP3koNgEA+nk73+SCctA==
+=1qlI
+-----END PGP SIGNATURE-----
+
+--s7rbtueqy4vwjth4--
 
