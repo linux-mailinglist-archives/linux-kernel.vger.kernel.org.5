@@ -1,100 +1,94 @@
-Return-Path: <linux-kernel+bounces-30057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15F1183187F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:32:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19797831883
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:36:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD3791F21281
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:32:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA1892847DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397BF241FB;
-	Thu, 18 Jan 2024 11:32:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="T4Ou9e5X"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADBC7241FD;
+	Thu, 18 Jan 2024 11:36:32 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77507241E2
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:32:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BD3241E9;
+	Thu, 18 Jan 2024 11:36:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705577559; cv=none; b=iZ8XvUQyipuP4c6JW0zcxZTA8LI0/F5JMVxbySqWWc92iXIp77svmzM56BdkbcSc+qNEqWfTK11ANon0ggl5UPOYcr8NNjcouOyd3i8F5217uuMR3b8phP1LdV0FGfycU9qST0jZDT+ogr9VxgVyC747KnZcaFQFRb82rD3luqY=
+	t=1705577792; cv=none; b=HoUn18M04gnySt8a6hI/4RAGHaHp77s3eqfLGawk5JkUjsAwCLYvO4Maxuyz2Z3dvUmgIXQceMMgUvrL4aT9bORG0F697vbrtODxre75r7SY3/txdME+ZUcCS6eHWBhkbZDeXXVKCuHMks7qDkqd8M9uQUeDg/dnUzLqaMNKx3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705577559; c=relaxed/simple;
-	bh=7X+XE/Gzv4Nomb0fLlmWLJhVAVM3P5M7gZDV8sKCsGg=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=TiXHVek7bXn0rDiUr3i/JfgQQF5Fp50PhIltEvifgbbluQ2NbIenYrmScIbkQLdwB2q7HgLqRxX4L0wMZAIaD8qNAR9/rMMpDtZrqqXLbL2MAuJm51YiIUaLYuMxbqGM8uEqgnqu/riIPWWBRzDJUzBXXOFNMaZQkouhvUrpoEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=T4Ou9e5X; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2e0be86878so119510766b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:32:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1705577555; x=1706182355; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7X+XE/Gzv4Nomb0fLlmWLJhVAVM3P5M7gZDV8sKCsGg=;
-        b=T4Ou9e5XcaUDtT+hA1UhKdNYI6UMu53OFVYkKRz2RUWrVUCmigH8AR3Pf4rNMHJmmV
-         FEarapDyo1D6OJPBxjL9nJSfPhTrPP8o+uyclYjm84fRxgUKFs5BPV43Hm8G+cYRZTgq
-         oFAZ1UPjpbJytrEIE87qUmVXJ5bocXaP9RsBNNNM1nS4HRAQPHs2rILGIzbq3Egq393z
-         1a7cMDDRKwVQXKW8sYxeTYaT7NaK4thght6TZXE7aPIWmpKZdK2TfmLoqHWBQ1ndbG9U
-         AGL1mcU++vpD3qLT43jEkDz4jFgaK/dNuGm2I4re0kiyUiO+QSu0mCdMhbq4TkGDBVVZ
-         NTfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705577555; x=1706182355;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7X+XE/Gzv4Nomb0fLlmWLJhVAVM3P5M7gZDV8sKCsGg=;
-        b=GXt4QTR7iRbO1SQhVM1IHdvjwJoG7l5k3lZorftLIto93T1kELWrOMjEsILEdk8Tl4
-         I2PnZENY5OT0NH8zDg1LPauALBExv8h5GkMDhrdhdP6DH7m6k5RKpi7VHfFE1XdTHE/Q
-         LKSTODQKOTAKYUrMO6xLYaubhMtymeNAkpxALjJhDXq5iyY+VuQGZUiU2FJkAcflK9H2
-         g0VibWtFw5lZ3Lq9q8PzvMJzRRo/ChC9+HTH2XCdtqx9sBOtkqGfc7NybVfgV1uihee+
-         gyGFw+b1fVKtgvMLFkcxcM8zrhVaS02HYuIWhvaBx1O4NEgqoTvmyRuJaUVPVuJQ2BXP
-         EMug==
-X-Gm-Message-State: AOJu0YztnD/kUwnmq63bytwcnVv+YubUscpqZxm1Gcas3aiO06MUbm0V
-	Trx4tZdgKbzbuUMvDZzg8BitGIg+GOQYhv3+UESgqMLv6AHiVdGU/nOo/qBswUk=
-X-Google-Smtp-Source: AGHT+IHG5LK0M7+mQFfqN9srL30ZgOLmu9WSR0nvuerMb9IulZ2RiBgrBqFZMLSnhs02D8eEwF4Xnw==
-X-Received: by 2002:a17:906:d931:b0:a2a:212:cfe5 with SMTP id rn17-20020a170906d93100b00a2a0212cfe5mr732923ejb.12.1705577555430;
-        Thu, 18 Jan 2024 03:32:35 -0800 (PST)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id g17-20020a170906c19100b00a2b1a20e662sm8934043ejz.34.2024.01.18.03.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 03:32:34 -0800 (PST)
-Date: Thu, 18 Jan 2024 12:32:33 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Cc: netdev@vger.kernel.org, vadim.fedorenko@linux.dev, davem@davemloft.net,
-	milena.olech@intel.com, linux-kernel@vger.kernel.org,
-	pabeni@redhat.com, kuba@kernel.org, mschmidt@redhat.com
-Subject: Re: [PATCH net v5 1/4] dpll: fix broken error path in
- dpll_pin_alloc(..)
-Message-ID: <ZakMUbC9xLzjkZwF@nanopsycho>
-References: <20240118110719.567117-1-arkadiusz.kubalewski@intel.com>
- <20240118110719.567117-2-arkadiusz.kubalewski@intel.com>
+	s=arc-20240116; t=1705577792; c=relaxed/simple;
+	bh=M7EAn7R7Qzkjp1pLVtrjmJ8cFDKmactEzIq7QW5zduA=;
+	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=f+By21M1Q7cTqkSsoXDDGHPvSZp62gb6nX5sZ8mYU03JzgKJrXxb6ZkysT4uGO1NnMAo3Jq1gxYj8TVxUOPbwF9/VO+NTI+GbkA36xG27w66d70Ulerpmb3bTV5VuPn3DGjfzMsgPq9cSK4JVgZDR4KzKOeUcRIwTEtj50qymwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 3D15B1C0071; Thu, 18 Jan 2024 12:36:22 +0100 (CET)
+Date: Thu, 18 Jan 2024 12:36:21 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com
+Subject: Re: [PATCH 6.1 000/100] 6.1.74-rc1 review
+Message-ID: <ZakNNSaezSvgWSvv@duo.ucw.cz>
+References: <20240118104310.892180084@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JiSdNXSbHFccVNUj"
+Content-Disposition: inline
+In-Reply-To: <20240118104310.892180084@linuxfoundation.org>
+
+
+--JiSdNXSbHFccVNUj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240118110719.567117-2-arkadiusz.kubalewski@intel.com>
+Content-Transfer-Encoding: quoted-printable
 
-Thu, Jan 18, 2024 at 12:07:16PM CET, arkadiusz.kubalewski@intel.com wrote:
->If pin type is not expected, or dpll_pin_prop_dup(..) failed to
->allocate memory, the unwind error path shall not destroy pin's xarrays,
->which were not yet initialized.
->Add new goto label and use it to fix broken error path.
->
->Fixes: 9431063ad323 ("dpll: core: Add DPLL framework base functions")
->Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Hi!
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> This is the start of the stable review cycle for the 6.1.74 release.
+> There are 100 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+6.1.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--JiSdNXSbHFccVNUj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZakNNQAKCRAw5/Bqldv6
+8qv/AJ9RMEDyA3LDTlsFrG6LKCpK6hznDQCgvcivROelW8n9Iqskhi0PxNHSOeY=
+=FF9/
+-----END PGP SIGNATURE-----
+
+--JiSdNXSbHFccVNUj--
 
