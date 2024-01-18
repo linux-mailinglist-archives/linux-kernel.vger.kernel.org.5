@@ -1,108 +1,101 @@
-Return-Path: <linux-kernel+bounces-30359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9916F831DB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:41:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67FA6831DB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:41:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4966828894E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:41:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88119B24DE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 324832C1B2;
-	Thu, 18 Jan 2024 16:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD712C1A2;
+	Thu, 18 Jan 2024 16:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HkIoxE7D"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="aXW1HrGT"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278D22C194;
-	Thu, 18 Jan 2024 16:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4443424202;
+	Thu, 18 Jan 2024 16:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705596110; cv=none; b=eKvHW9JQ315kdNS4WjqKNJN0dN/Hd1RlkN8EVp+oceQ4MkEeMhz8Tl+UxeZyERnAkucpgxVAxocTx+X2pnrBGUEq0hJMOQV/eK7YIIDHor5h7viG8d6dp8F3bcqXdXeRrVq1JR6PwoDyybUWwIaEYfFKu2qBaci3sJGIn9DbCIU=
+	t=1705596082; cv=none; b=cC/klr3Zxdws/IDBXSSOxXEW4YFgR6/PGDf2BiDKZJrdtW6Wsy3fd0kdT/xC+MhG58H+peaDgevbwtifzk8tOoYFXVrhRMwu/PfPCw2P69lNn6R24SEZr8KDM4ElPgQVVUEPaqH7JLtmtYVeIzpEGddmYUfYydlWrttQYauH2jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705596110; c=relaxed/simple;
-	bh=8ZoeWyhYJAXsI3uEm8LqP0ONHfsUFdg+kjcwc5JHX1o=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=BzbMUSsO9Kreovj1QBtJC+rwbJeABQJqNDCvDpzYDw5/7S/0HNgoZcEbvQqPGXC8rQjOcQPg/qquYXrbK6ILkhIMtXh7c4Ut3Q5uu27F2gYsZUJKCK2vIdmM99yOvuAIgr39JjKm7ryA3ug3KT30RmbTf+5iksUJQaRlz9CNRmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HkIoxE7D; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705596108; x=1737132108;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8ZoeWyhYJAXsI3uEm8LqP0ONHfsUFdg+kjcwc5JHX1o=;
-  b=HkIoxE7DPgJUQqsN5lLnsT3OBRDBUETfzqVHTa4SYWkLTwXJsAq/Ot8P
-   7FeQDCEc0XdRPwUXE7vum6wQODM9/+fEwMpjUBat7+ufKuLB8NErVbNkM
-   RApnaL9CsyvYl9YCK12qTKh7i1VWlflSL9GTAR8L4Pb7HqE0h6C48cFIF
-   GXKzXl2+l8B1BXSmADT7NXOA9QdGz4rEbweGHdOGN5urxG0j78VU9PLyZ
-   Lmg7tx1Sp5Ndr79EKu4GmTBSr8T5wJRs7Ncr2d4W3oHtWYatoRqYZMrnc
-   5CNrXXaDaVCKO0wM/lG4Vw/7fEjyCBpWNSrzNGOghqiLIqI+bz3eVJ0m2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="399376808"
-X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
-   d="scan'208";a="399376808"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 08:41:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
-   d="scan'208";a="405234"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa004.fm.intel.com with ESMTP; 18 Jan 2024 08:41:47 -0800
-Date: Fri, 19 Jan 2024 00:38:36 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
-	Kai Huang <kai.huang@intel.com>
-Subject: Re: [PATCH v2] KVM: x86/mmu: Retry fault before acquiring mmu_lock
- if mapping is changing
-Message-ID: <ZalUDLVJSVN/rEf2@yilunxu-OptiPlex-7050>
-References: <20240110012045.505046-1-seanjc@google.com>
+	s=arc-20240116; t=1705596082; c=relaxed/simple;
+	bh=P1MeR1zFOZw1B/OR+J0If6ovz3/5tWaRhOuUFOQAhFU=;
+	h=Received:X-Virus-Scanned:Received:DKIM-Signature:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=qJs73KZWTCWVA9F223q42lvMGleUW09Yz1g0vewDP+nyqzHpQsS5P09/6wIj9Ya3+csO5ld5C8zdsuPHeeryGsN7IMVF+m1bhUapNn4prlX6K6oUbbU5Qof2cY0Wfhx9YSjWrvlkXlNs7g0mf5sV8ZBodjLqxhA5ZtGIEwy+/fE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=aXW1HrGT; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D319240E01B2;
+	Thu, 18 Jan 2024 16:41:17 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id dByASFGmiBxo; Thu, 18 Jan 2024 16:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1705596075; bh=ciR9F994n9Q/PzxRRfbN8xsWLVQEiqRt05MkXbtgAAY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aXW1HrGTtqSlJiNn5eGJ01DHJa8sQWJqMhIqv9jSAJMF5RJF/6TL0SxctSNC6FP+b
+	 yvdIIns3rxC+ERstAoh6lnknTr542L02xLtt9KVoFZaPpDVLWZ/mnX6wQMxTavaigZ
+	 +F20yp8QHGMRFJ3cRK7Mie5GFYGkdN9iXi9pdxkxCo8UNkqzmLV0Gl35hzBi6EduhK
+	 x4egfZ78RidHuQ+PM75V3IkgAfdZeQHkssV33EJN5ikTaIfyvBeToPAQdVc5Sw8Vi6
+	 xGUvgZc/EpBkV6xEdfm3SqTGgTxAjxNn9fn2Pr2IY+1Q4rYJXU5SNUQZU0uM6g3KVH
+	 5Tgb31igCiG2gFhoQG53nat2B37ONpaDYoR2A19McKeCH9HCL9woiBSc9OXIMexE/2
+	 G0Fu1jaaN5//MUS91hLN6ESBda0m5ETF+L7zPESrRWAJneiCnfixIphXz2qjkLb+QD
+	 vlxS6SI+JNBLwuzXipia0K8wDU1RI5MBoG+O39atV9k2ZEcKHLwQLHZZPwQazA79O9
+	 q5wqqn/jn0Nwo5h9ApvmHEL6guCf1GRxFr/uP40p9xz8auzt6L9QwSWQ3BhqRdT3d8
+	 RMwsIHW1WNxpS06BOzBcUFQ67H5sSYbPbRbRa9PPVUcRdsDgpXoyulAlUkHxpM0QBP
+	 mMaJz42/Z3xgrtwL36f3vvtc=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E250F40E0196;
+	Thu, 18 Jan 2024 16:41:08 +0000 (UTC)
+Date: Thu, 18 Jan 2024 17:41:08 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: Nikolay Borisov <nik.borisov@suse.com>, tglx@linutronix.de,
+	x86@kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: Remove reference to syscall trampoline in PTI
+Message-ID: <20240118164108.GIZalUpEnj2HT-9ix6@fat_crate.local>
+References: <20231102130204.41043-1-nik.borisov@suse.com>
+ <dd0e864d-295a-4edc-bfd7-ad5de88d7a0c@suse.com>
+ <87edee1v0i.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240110012045.505046-1-seanjc@google.com>
+In-Reply-To: <87edee1v0i.fsf@meer.lwn.net>
 
-On Tue, Jan 09, 2024 at 05:20:45PM -0800, Sean Christopherson wrote:
-> Retry page faults without acquiring mmu_lock if the resolved gfn is covered
-> by an active invalidation.  Contending for mmu_lock is especially
-> problematic on preemptible kernels as the mmu_notifier invalidation task
-> will yield mmu_lock (see rwlock_needbreak()), delay the in-progress
+On Thu, Jan 18, 2024 at 09:11:41AM -0700, Jonathan Corbet wrote:
+> > Ping
+> 
+> Hmm...this has indeed languished for a while.  I was waiting for an ack
+> from x86land, but I guess I'll just apply it unless somebody screams.
 
-Is it possible fault-in task avoids contending mmu_lock by using _trylock()?
-Like:
+https://lore.kernel.org/all/170238995160.398.1051285467012003027.tip-bot2@tip-bot2
 
-	while (!read_trylock(&vcpu->kvm->mmu_lock))
-		cpu_relax();
+Jon wasn't CCed but Nik was.
 
-	if (is_page_fault_stale(vcpu, fault))
-		goto out_unlock;
-  
-	r = kvm_tdp_mmu_map(vcpu, fault);
+Nik, you missed that tip-bot2 mail or you don't have it?
 
-out_unlock:
-	read_unlock(&vcpu->kvm->mmu_lock)
+-- 
+Regards/Gruss,
+    Boris.
 
-> invalidation, and ultimately increase the latency of resolving the page
-> fault.  And in the worst case scenario, yielding will be accompanied by a
-> remote TLB flush, e.g. if the invalidation covers a large range of memory
-> and vCPUs are accessing addresses that were already zapped.
-
-This case covers all usage of mmu_invalidate_retry_gfn(), is it? Should
-we also consider vmx_set_apic_access_page_addr()?
-
-Thanks,
-Yilun
+https://people.kernel.org/tglx/notes-about-netiquette
 
