@@ -1,158 +1,366 @@
-Return-Path: <linux-kernel+bounces-30580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FEB68320F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:37:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB3F88320F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97DF21F25C64
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:37:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5284C1F25DC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB613173E;
-	Thu, 18 Jan 2024 21:37:32 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3801E486;
-	Thu, 18 Jan 2024 21:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B7F31753;
+	Thu, 18 Jan 2024 21:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bLrmEps2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD98331732
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705613852; cv=none; b=HDZ/uuZJH4OkONuFlFJi+ShCnv6CbYoe0rdpSWMc3vfzxPBuInS9noFUFE1P5/Ev7RqumOHy6sUFxBXOy6RPx8XfTovxWeGx5f0ZMvGs4j9XfslKhT2eNAXcNj8isLLl062Kq3tmPH3/nN3Z6MrgudQ8avTsE0wEX31PesayfNw=
+	t=1705614024; cv=none; b=XpTB+fJS6iRvKwG0muTzB6XQFujk22nxo94ov+ZA2w91dfYF8ynJGnY4zQF8hsGKTBiesLYKXTi4BvWJd6Biso4APxoFuiH4N3r+tzWDUT3w8BMCoGCWgNg7CrjVHijhUy6HLxc+vcPPNnPZUcTD+XNZNJt+eeeMliXgfY8xnrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705613852; c=relaxed/simple;
-	bh=CnEI21X70mU5g6+Ac0zxeWTlzVejTJYNKLurbo2aEig=;
+	s=arc-20240116; t=1705614024; c=relaxed/simple;
+	bh=tM/QU66VQUB8kZD24jyiSrHsJ+Kcsoztutoxvzm22ro=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AIzfUqXGCMJE6UgRcAYkc2GuFB39o7fp5wcEwpiz3NsIRiFIGQTDqJIl20488BfxCLbbKq1qjFkkLYzuWYpXwBr3pNlsKoiZ+tCz7XulshNxc/+IdqmFrfpHmDc2n1UgQa7neOvzV6gS1xQlCF3ixtk5aYEwWj9Riz5rUU66HhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id AE5E8140132; Thu, 18 Jan 2024 22:37:20 +0100 (CET)
-Date: Thu, 18 Jan 2024 22:37:20 +0100
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-input@vger.kernel.org,
-	linux-pm@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-	Dell.Client.Kernel@dell.com, regressions@lists.linux.dev
-Subject: Re: PS/2 keyboard of laptop Dell XPS 13 9360 goes missing after S3
-Message-ID: <ZamaEBy+wyWcf8Ec@cae.in-ulm.de>
-References: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OJSs8Qj3M1LQG+F2/2qNJtx51iz1I7OeWUGun6CYCtHgVX49w0oeeQAkaNoWx7I4xF9Yt7bKF6RTTWGagOkHqwqyfECScmbv6uqqN8DtfERNaBcgYebtR0Iss00urbygEjYmAE+9lyl5Z4JxO7mpYfpONfpeNAVWoKZ3f6WwIcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bLrmEps2; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705614021;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xa92SUx0tviopJhDIWZGFz30fwUB0DJ3p+sWP4FEk+s=;
+	b=bLrmEps2smewgpKOWyDP70FQyw3nw7A5kPrfdPoVQuRV9xBMMPOrUkRwQI5vRNvfXhl0qh
+	b+yqef6jbrmUPqVihNRdeDaHALE9VwXLMQTDF3szxFTCInM52gjwzl3fsTAWVWXdddJYWx
+	8xEBg2jLuHA4uJbDtepYP/9IfkLvKWQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-414-8wsiYn87M6OsIDlAu52bvA-1; Thu, 18 Jan 2024 16:40:19 -0500
+X-MC-Unique: 8wsiYn87M6OsIDlAu52bvA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-337bfa463e1so46387f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:40:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705614018; x=1706218818;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xa92SUx0tviopJhDIWZGFz30fwUB0DJ3p+sWP4FEk+s=;
+        b=pHMGwSAPPE+XFvbTrmQBOGPhRwZSqTyirk9UpROSnROnYhqJkcFjwLs3CHMO3KCBEQ
+         baXbKnCKH5PH/rNyzn/AxZg9p8/2rMM6Nsl0xKlZqCOeywALSYJASKcwJ9ALiDDHgzqb
+         5jel64NEJK5TE0LgPet9OimIBm5rtYAW21SF9VuYuqrxdFbbWFnxXhqahtoHIAGsmrID
+         tUikvPYNHHuKED0HxaSuDeljoXbkaDdODXpkBi6ygIrGyA1XAJ1hLw9EQt/p6R1YMhMC
+         96/z2bi08sDzE7hzaDxaVUPRSETuHzJ8sttfftbp6bU7N5DDMmnEhkTdp610X3mZ8j4f
+         46ZQ==
+X-Gm-Message-State: AOJu0YxVj2UJkZG4QEYEerarvYMrcs4hIJiAYfHr6rIB064Nnr1i2R0E
+	lLOdBm9+e5ZfgJTI+s7lAS+mJDn3CbiPH44Ryex+wM3OS+bp+OrrY2QaQ0/NZv+9TsFvw18FgEV
+	PevPQEGVXJItaj6yUqbB9Gw5lLt3YXPfz9i42U+vi2AdteHGgX2W4yJHpWoeHjw==
+X-Received: by 2002:a05:600c:35d1:b0:40e:4806:7f9b with SMTP id r17-20020a05600c35d100b0040e48067f9bmr467123wmq.307.1705614018257;
+        Thu, 18 Jan 2024 13:40:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHzu7h6Fo6GUvyykTS9VMLpY/bskI4+iQUY/zF1+uYeQ+1qVX2Ke101UmWIgIMx9PhGr0XmLQ==
+X-Received: by 2002:a05:600c:35d1:b0:40e:4806:7f9b with SMTP id r17-20020a05600c35d100b0040e48067f9bmr467112wmq.307.1705614017890;
+        Thu, 18 Jan 2024 13:40:17 -0800 (PST)
+Received: from toolbox ([2001:9e8:89aa:f00:af88:d221:94de:a009])
+        by smtp.gmail.com with ESMTPSA id o8-20020a05600c4fc800b0040e549c77a1sm30861698wmq.32.2024.01.18.13.40.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 13:40:17 -0800 (PST)
+Date: Thu, 18 Jan 2024 22:40:15 +0100
+From: Sebastian Wick <sebastian.wick@redhat.com>
+To: Andri Yngvason <andri@yngvason.is>
+Cc: Pekka Paalanen <ppaalanen@gmail.com>, dri-devel@lists.freedesktop.org,
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Werner Sembach <wse@tuxedocomputers.com>,
+	Leo Li <sunpeng.li@amd.com>, David Airlie <airlied@gmail.com>,
+	intel-gfx@lists.freedesktop.org, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH v2 2/4] drm/uAPI: Add "force color format" drm property
+ as setting for userspace
+Message-ID: <20240118214015.GB30589@toolbox>
+References: <20240115160554.720247-1-andri@yngvason.is>
+ <20240115160554.720247-3-andri@yngvason.is>
+ <20240116114235.GA311990@toolbox>
+ <CAFNQBQz3TNj_7BSmFw4CFMNuR4B+1d+y3f058s+rzTuzdYogqA@mail.gmail.com>
+ <20240116132918.GB311990@toolbox>
+ <CAFNQBQyfWmfu5T7bgZDZFGfyhsxQi7YXmY_wPc9Y+mm5iSspXQ@mail.gmail.com>
+ <20240117112150.4399d0bb@eldfell>
+ <CAFNQBQwoGvSF1ryOPUUnedYUG64HqFQNXjMf6R7piufN64Vc=g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFNQBQwoGvSF1ryOPUUnedYUG64HqFQNXjMf6R7piufN64Vc=g@mail.gmail.com>
 
+On Wed, Jan 17, 2024 at 12:58:15PM +0000, Andri Yngvason wrote:
+> mið., 17. jan. 2024 kl. 09:21 skrifaði Pekka Paalanen <ppaalanen@gmail.com>:
+> >
+> > On Tue, 16 Jan 2024 14:11:43 +0000
+> > Andri Yngvason <andri@yngvason.is> wrote:
+> >
+> > > þri., 16. jan. 2024 kl. 13:29 skrifaði Sebastian Wick
+> > > <sebastian.wick@redhat.com>:
+> > > >
+> > > > On Tue, Jan 16, 2024 at 01:13:13PM +0000, Andri Yngvason wrote:
+> > > [...]
+> > > > > şri., 16. jan. 2024 kl. 11:42 skrifaği Sebastian Wick
+> > > > > <sebastian.wick@redhat.com>:
+> > > > > >
+> > > > > > On Mon, Jan 15, 2024 at 04:05:52PM +0000, Andri Yngvason wrote:
+> > > > > > > From: Werner Sembach <wse@tuxedocomputers.com>
+> > > > > > >
+> > > > > > > Add a new general drm property "force color format" which can be used
+> > > > > > > by userspace to tell the graphics driver which color format to use.
+> > > > > >
+> > > > > > I don't like the "force" in the name. This just selects the color
+> > > > > > format, let's just call it "color format" then.
+> > > > > >
+> > > > >
+> > > > > In previous revisions, this was "preferred color format" and "actual
+> > > > > color format", of which the latter has been dropped. I recommend
+> > > > > reading the discussion for previous revisions.
+> > > >
+> > > > Please don't imply that I didn't read the thread I'm answering to.
+> >
+> > FYI, I have not read this thread.
+> >
+> 
+> pq, You did not read this summary?
+> https://lore.kernel.org/dri-devel/CAFNQBQwjeJaX6B4oewpgASMUd5_nxZYMxUfdOG294CTVGBTd1w@mail.gmail.com/
+> 
+> You partook in the discussion on IRC. Please read it and tell me if I
+> misunderstood anything.
+> 
+> Sebastian, I apologise. You clearly read it as you even replied to it!
 
-Hi Paul,
+Thank you :)
 
-On Thu, Jan 18, 2024 at 01:57:50PM +0100, Paul Menzel wrote:
-> [ 7487.040106] ------------[ cut here ]------------
-> [ 7487.040108] refcount_t: underflow; use-after-free.
-> [ 7487.040117] WARNING: CPU: 2 PID: 54815 at lib/refcount.c:28 refcount_w=
-arn_saturate+0xbe/0x110
-> [ 7487.040123] Modules linked in: sctp libcrc32c typec_displayport r8153_=
-ecm cdc_ether usbnet sd_mod r8152 sg mii uas usb_storage scsi_mod scsi_comm=
-on l2tp_ppp xfrm_interface l2tp_netlink xfrm6_tunnel l2tp_core tunnel6 tunn=
-el4 ip6_udp_tunnel xfrm_user udp_tunnel xfrm_algo pppox ppp_generic slhc ct=
-r ccm snd_seq_dummy snd_hrtimer snd_seq snd_seq_device qrtr snd_sof_pci_int=
-el_skl snd_sof_intel_hda_common soundwire_intel soundwire_generic_allocatio=
-n snd_hda_codec_hdmi snd_sof_intel_hda_mlink soundwire_cadence snd_sof_inte=
-l_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils soundwire_bus sn=
-d_ctl_led snd_soc_avs snd_soc_hda_codec snd_soc_skl snd_hda_codec_realtek s=
-nd_soc_hdac_hda ath10k_pci snd_hda_ext_core binfmt_misc snd_hda_codec_gener=
-ic ath10k_core btusb snd_soc_sst_ipc btrtl snd_soc_sst_dsp snd_soc_acpi_int=
-el_match btintel nls_ascii btbcm nls_cp437 ath snd_soc_acpi btmtk mac80211 =
-vfat bluetooth snd_soc_core x86_pkg_temp_thermal fat intel_powerclamp coret=
-emp kvm_intel snd_compress snd_pcm_dmaengine dell_laptop
-> [ 7487.040173]  snd_hda_intel mei_pxp mei_hdcp mei_wdt i915 ledtrig_audio=
- snd_intel_dspcfg libarc4 snd_intel_sdw_acpi kvm intel_rapl_msr snd_hda_cod=
-ec sha3_generic joydev jitterentropy_rng dell_smm_hwmon uvcvideo snd_hda_co=
-re cfg80211 videobuf2_vmalloc drbg uvc irqbypass snd_hwdep rapl snd_pcm vid=
-eobuf2_memops videobuf2_v4l2 dell_wmi intel_cstate ansi_cprng dell_smbios v=
-ideodev snd_timer dcdbas intel_uncore ucsi_acpi ecdh_generic mei_me typec_u=
-csi iTCO_wdt intel_pmc_bxt snd iTCO_vendor_support wmi_bmof intel_wmi_thund=
-erbolt watchdog dell_wmi_descriptor pcspkr mei videobuf2_common soundcore r=
-fkill drm_buddy typec ecc mc intel_pch_thermal drm_display_helper cec intel=
-_vbtn soc_button_array rc_core processor_thermal_device_pci_legacy processo=
-r_thermal_device ttm processor_thermal_wt_hint processor_thermal_rfim proce=
-ssor_thermal_rapl int3400_thermal drm_kms_helper int3403_thermal intel_rapl=
-_common acpi_thermal_rel intel_pmc_core intel_hid intel_xhci_usb_role_switc=
-h processor_thermal_wt_req button processor_thermal_power_floor
-> [ 7487.040218]  processor_thermal_mbox sparse_keymap evdev acpi_pad int34=
-0x_thermal_zone ac intel_soc_dts_iosf i2c_algo_bit roles hid_multitouch ser=
-io_raw msr parport_pc ppdev lp parport loop efi_pstore configfs nfnetlink e=
-fivarfs ip_tables x_tables autofs4 ext4 crc16 mbcache jbd2 crc32c_generic d=
-m_crypt dm_mod usbhid nvme crc32_pclmul crc32c_intel nvme_core t10_pi hid_g=
-eneric ghash_clmulni_intel crc64_rocksoft_generic sha512_ssse3 crc64_rockso=
-ft i2c_hid_acpi crc_t10dif i2c_hid crct10dif_generic xhci_pci sha512_generi=
-c drm xhci_hcd sha256_ssse3 intel_lpss_pci crct10dif_pclmul i2c_i801 crc64 =
-usbcore sha1_ssse3 crct10dif_common i2c_smbus hid battery intel_lpss idma64=
- usb_common video wmi aesni_intel crypto_simd cryptd
-> [ 7487.040256] CPU: 2 PID: 54815 Comm: kworker/u8:61 Not tainted 6.7-amd6=
-4 #1  Debian 6.7-1~exp1
-> [ 7487.040258] Hardware name: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 0=
-6/02/2022
-> [ 7487.040260] Workqueue: USBC000:00-con1 ucsi_poll_worker [typec_ucsi]
-> [ 7487.040269] RIP: 0010:refcount_warn_saturate+0xbe/0x110
-> [ 7487.040272] Code: 01 01 e8 f5 22 a9 ff 0f 0b c3 cc cc cc cc 80 3d e1 6=
-2 7e 01 00 75 85 48 c7 c7 38 ca 8f 89 c6 05 d1 62 7e 01 01 e8 d2 22 a9 ff <=
-0f> 0b c3 cc cc cc cc 80 3d bf 62 7e 01 00 0f 85 5e ff ff ff 48 c7
-> [ 7487.040274] RSP: 0000:ffffb653c149fd90 EFLAGS: 00010282
-> [ 7487.040276] RAX: 0000000000000000 RBX: ffffa07c8687ac08 RCX: 000000000=
-0000027
-> [ 7487.040278] RDX: ffffa07ff1521408 RSI: 0000000000000001 RDI: ffffa07ff=
-1521400
-> [ 7487.040279] RBP: ffffa07c8687ac00 R08: 0000000000000000 R09: 65646e752=
-03a745f
-> [ 7487.040280] R10: 75203b776f6c6672 R11: 72657466612d6573 R12: 000000000=
-0000000
-> [ 7487.040281] R13: ffffa07c8484fc40 R14: ffffffff8951ffa0 R15: ffffa07ee=
-4b06b48
-> [ 7487.040282] FS:  0000000000000000(0000) GS:ffffa07ff1500000(0000) knlG=
-S:0000000000000000
-> [ 7487.040283] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 7487.040285] CR2: 0000000000000000 CR3: 0000000246820001 CR4: 000000000=
-03706f0
-> [ 7487.040286] Call Trace:
-> [ 7487.040288]  <TASK>
-> [ 7487.040289]  ? refcount_warn_saturate+0xbe/0x110
-> [ 7487.040292]  ? __warn+0x81/0x130
-> [ 7487.040298]  ? refcount_warn_saturate+0xbe/0x110
-> [ 7487.040300]  ? report_bug+0x171/0x1a0
-> [ 7487.040304]  ? console_unlock+0xcb/0x120
-> [ 7487.040307]  ? handle_bug+0x3c/0x80
-> [ 7487.040309]  ? exc_invalid_op+0x17/0x70
-> [ 7487.040311]  ? asm_exc_invalid_op+0x1a/0x20
-> [ 7487.040315]  ? refcount_warn_saturate+0xbe/0x110
-> [ 7487.040319]  typec_altmode_release+0x49/0xc0 [typec]
-> [ 7487.040334]  device_release+0x34/0x90
-> [ 7487.040339]  kobject_put+0x78/0x190
-> [ 7487.040341]  ucsi_unregister_altmodes+0x41/0xa0 [typec_ucsi]
-> [ 7487.040347]  ucsi_unregister_partner.part.0+0x77/0xa0 [typec_ucsi]
-> [ 7487.040353]  ucsi_check_connection+0x73/0xc0 [typec_ucsi]
-> [ 7487.040359]  ucsi_poll_worker+0x3a/0x110 [typec_ucsi]
-> [ 7487.040365]  process_one_work+0x171/0x340
-> [ 7487.040369]  worker_thread+0x27b/0x3a0
-> [ 7487.040372]  ? __pfx_worker_thread+0x10/0x10
-> [ 7487.040374]  kthread+0xe5/0x120
-> [ 7487.040376]  ? __pfx_kthread+0x10/0x10
-> [ 7487.040378]  ret_from_fork+0x31/0x50
-> [ 7487.040381]  ? __pfx_kthread+0x10/0x10
-> [ 7487.040382]  ret_from_fork_asm+0x1b/0x30
-> [ 7487.040388]  </TASK>
-> [ 7487.040388] ---[ end trace 0000000000000000 ]---
+> > > >
+> > > > > There are arguments for adding "actual color format" later and if it
+> > > > > is added later, we'd end up with "color format" and "actual color
+> > > > > format", which might be confusing, and it is why I chose to call it
+> > > > > "force color format" because it clearly communicates intent and
+> > > > > disambiguates it from "actual color format".
+> > > >
+> > > > There is no such thing as "actual color format" in upstream though.
+> > > > Basing your naming on discarded ideas is not useful. The thing that sets
+> > > > the color space for example is called "Colorspace", not "force
+> > > > colorspace".
+> > > >
+> > >
+> > > Sure, I'm happy with calling it whatever people want. Maybe we can
+> > > have a vote on it?
+> >
+> > It would sound strange to say "force color format" = "auto". Just drop
+> > the "force" of it.
+> >
+> > If and when we need the feedback counterpart, it could be an immutable
+> > prop called "active color format" where "auto" is not a valid value, or
+> > something in the new "output properties" design Sima has been thinking
+> > of.
+> 
+> There seems to be consensus for calling it "color format"
+> 
+> >
+> > > > > [...]
+> > > > > > > @@ -1396,6 +1404,15 @@ static const u32 dp_colorspaces =
+> > > > > > >   *   drm_connector_attach_max_bpc_property() to create and attach the
+> > > > > > >   *   property to the connector during initialization.
+> > > > > > >   *
+> > > > > > > + * force color format:
+> > > > > > > + *   This property is used by userspace to change the used color format. When
+> > > > > > > + *   used the driver will use the selected format if valid for the hardware,
+> > > > > >
+> > > > > > All properties are always "used", they just can have different values.
+> > > > > > You probably want to talk about the auto mode here.
+> > > > >
+> > > > > Maybe we can say something like: If userspace does not set the
+> > > > > property or if it is explicitly set to zero, the driver will select
+> > > > > the appropriate color format based on other constraints.
+> > > >
+> > > > The property can be in any state without involvement from user space.
+> > > > Don't talk about setting it, talk about the state it is in:
+> > > >
+> > > >   When the color format is auto, the driver will select a format.
+> > > >
+> > >
+> > > Ok.
+> > >
+> > > > > >
+> > > > > > > + *   sink, and current resolution and refresh rate combination. Drivers to
+> > > > > >
+> > > > > > If valid? So when a value is not actually supported user space can still
+> > > > > > set it? What happens then? How should user space figure out if the
+> > > > > > driver and the sink support the format?
+> > > > >
+> > > > > The kernel does not expose this property unless it's implemented in the driver.
+> > > >
+> > > > If the driver simply doesn't support *one format*, the enum value for
+> > > > that format should not be exposed, period. This isn't about the property
+> > > > on its own.
+> > >
+> > > Right, understood. You mean that enum should only contain values that
+> > > are supported by the driver.
+> >
+> > Yes. When a driver installs a property, it can choose which of the enum
+> > entries are exposed. That cannot be changed later though, so the list
+> > cannot live by the currently connected sink, only by what the driver
+> > and display controlled could ever do.
+> 
+> Yes, and I think that basing it also on the connected sink's
+> capabilities would just add complexity for very little gain. In fact,
+> I think that limiting it based on the driver's capabilities is also
+> over-engineering, but I don't mind adding it if that's what people
+> really want.
 
-It is probably unrelated but there is the above warning in your logs
-during resume. The warning is related to USB-C and can be avoided if
-you do not connect anything to the USB-C ports for the duration of the
-test. The real fix for this warning made it into Linus's tree today.
+Having a bunch of values that will always fail a mode set just makes
+life for user space much worse. Might be overengineering from the kernel
+pov but it's not for user space.
 
-    regards  Christian
+> >
+> > > > > This was originally "preferred color format". Perhaps the
+> > > > > documentation should better reflect that it is now a mandatory
+> > > > > constraint which fails the modeset if not satisfied.
+> > > >
+> > > > That would definitely help.
+> > > >
+> > > > > >
+> > > > > > For the Colorspace prop, the kernel just exposes all formats it supports
+> > > > > > (independent of the sink) and then makes it the job of user space to
+> > > > > > figure out if the sink supports it.
+> > > > > >
+> > > > > > The same could be done here. Property value is exposed if the driver
+> > > > > > supports it in general, commits can fail if the driver can't support it
+> > > > > > for a specific commit because e.g. the resolution or refresh rate. User
+> > > > > > space must look at the EDID/DisplayID/mode to figure out the supported
+> > > > > > format for the sink.
+> > > > >
+> > > > > Yes, we can make it possible for userspace to discover which modes are
+> > > > > supported by the monitor, but there are other constraints that need to
+> > > > > be satisfied. This was discussed in the previous revision.
+> > > >
+> > > > I mean, yes, that's what I said. User space would then only be
+> > > > responsible for checking the sink capabilities and the atomic check
+> > > > would take into account other (non-sink) constraints.
+> > >
+> > > Since we need to probe using TEST_ONLY anyway, we'll end up with two
+> > > mechanisms to do the same thing where one of them depends on the other
+> > > for completeness.
+> >
+> > What do you mean by "same thing"?
+> 
+> I thought that it would be clear that I did not mean that they were
+> literally equal. This was discussed on IRC and summarised in the email
+> message that I linked to above. Excerpt:
+> "I asked if it made sense to add color format capabilities to the mode info
+> struct, but the conclusion was that it wouldn't really be useful because we
+> need TEST_ONLY anyway to see if the color format setting is compatible with
+> other settings."
+
+I feel like we're talking past each other.
+
+There are two questions:
+
+1. Should the property expose enum values which will always result in a
+   failed commit (because e.g. the hardware doesn't support it)
+2. Should the commit fail if the sink doesn't claim to support the
+   format
+
+The first issue I believe that we should try to minimize options that
+can't work to cut down on the combinatorial explosion problem.
+
+On the second issue, there are good reasons to just not fail commits in
+the kernel because:
+* user space already has to parse and understand EDIDs
+* this information is often wrong
+* support for new EDID/DisplayID can get to user space faster
+
+We have to decide on this and make them part of the API. We've seen how
+this gets a mess if that's not being done.
+
+> >
+> > Neither HDMI nor DisplayPort have a feedback message saying your
+> > infoframe contents are unacceptable, that I know of. Even if there was,
+> > it would come too late for failing the atomic commit ioctl in
+> > non-blocking mode.
+> >
+> > In general, display signalling is that you send whatever to the sink,
+> > and hope for the best.
+> >
+> > EDID is used to describe what the sink can accept, so in theory the
+> > kernel could parse EDID for all of these details and reject atomic
+> > commits that attempt unsupported configurations. However, EDID are also
+> > notoriously buggy. They are good for a best guess, but I believe it is
+> > useful to be able to try "unsupported" things. IIRC, PS VR2
+> > intentionally lies for instance.
+> >
+> > Even if the kernel did reject everything based on EDID, the only way
+> > today for userspace to know what should work is to parse the EDID
+> > itself. TEST_ONLY trials lead to a combinatorial explosion too easily.
+> > So userspace is already expected to parse EDID, with the major
+> > exception being video mode lists that are explicitly provided by the
+> > kernel in UAPI.
+> 
+> I thought that everyone agreed that display settings GUIs don't suffer
+> from combinatorial explosion because settings are selected in a
+> predefined order so they don't need to test all permutations.
+
+Not all permutations doesn't mean no permutations. This is still really
+expensive to do right.
+
+> >
+> > EDID and DisplayID standards also evolve. The kernel could be behind
+> > userspace in chasing them, which was the reason why the kernel does not
+> > validate HDR_OUTPUT_METADATA against EDID.
+> >
+> > The design of today with HDR_OUTPUT_METADATA and whatnot is
+> > that userspace is responsible for checking sink capabilities, and
+> > atomic check is responsible for driver and display controller
+> > capabilities.
+> 
+> I'm not really sure where you're going with this. Are you for or
+> against userspace parsing EDID instead of getting the information from
+> the kernel?
+
+The opposite I hope.
+
+Sink capabilities shouldn't influence commits, let user space do what it
+can do. We have a bunch of "auto" states but I do consider them a
+mistake.
+
+> >
+> > > > > In any case, these things can be added later and need not be a part of
+> > > > > this change set.
+> > > >
+> > > > No, this is the contract between the kernel and user space and has to be
+> > > > figured out before we can merge new uAPI.
+> >
+> > Indeed.
+> 
+> I don't see how adding something later to cut down on the
+> combinatorial explosion can possibly break any kind of contract in the
+> way things are currently implemented. Can anyone provide examples of
+> how things can go wrong in this particular instance?
+> 
+> Thanks,
+> Andri
+> 
 
 
