@@ -1,210 +1,107 @@
-Return-Path: <linux-kernel+bounces-30026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 013C583181A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:08:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8917D83181C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:08:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD34F288285
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:08:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05AA7B21E61
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8CAB2377A;
-	Thu, 18 Jan 2024 11:08:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A887C23772;
+	Thu, 18 Jan 2024 11:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rqObrR2i"
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PNZI9q7x"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E48C127
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3D92375A;
+	Thu, 18 Jan 2024 11:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705576095; cv=none; b=I8NGDhF7xNFS3UdfmkMwIhco4bOtjbvFer/JC0OSs5UygbwoSgyt7d9brE811ivGvAdSVn4yEEMXVl05XQFv8A5tQzOevCOo/a7FWFSKEFGnLlRJ9z1uuacZp04M1OCqckThnT8r8tGd94+HvpOe1X88wxgoB0dl4ro+qumFT3E=
+	t=1705576109; cv=none; b=KKTsJS38jFVH+DI4EWE0yBUTW5Juv3Lpx7GeDtwZNCDFm0zYpVSPq88K/Lfc/1nBSxX1vbzqDZRjSLb+uUU428jKgd7J+HhlKMWYZMDYk+TXOQUKYQFoWC1zU9YW0u8pK9rqKt/68cc3pEMtZqtnLIfU4Av6B5VDmFeahizrqdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705576095; c=relaxed/simple;
-	bh=CvbWims4wKwR0eh2WfAIVC0tAFWt8GTZnGP+3TUk1hw=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type; b=bMZtffkpQ52svBECDHRTTaNrMVaZ3znUWckwC+iX/wN0aML87xuIlZtmvyhQ4RfHJg1BnpmiunsY0BeMFB8b26g5PGlkWC/aqx8au8r96tQR4GMNU7yMveMVDC+CkKasPq0XqwOx/Pnp7TsJaUu6QYYwawWgRyhaCGTPtAj7Whg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rqObrR2i; arc=none smtp.client-ip=209.85.221.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4b72f2bdbdaso3256564e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:08:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705576092; x=1706180892; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3fBRUIb2Xioj9IoQ1nhfd3l3Jn6qijKU/uajCdRr4Q4=;
-        b=rqObrR2ihorypfqLqzOE7zHpYtjLTwH/+eJ95QPli8hUHsVwZ231wf5Gn6pmEvu4QX
-         9vTSwObIvF1TDUvwY1GKe3DMBGhJ/l24qJgGlkvZJrDHqvsSrjyds7t8xU126oKVngNT
-         P+efTRHba5waiBIgqxc9qb+Frof8+OEd25GfshjLrtKAQ31dTyhyWqMuFZggyWpCyEBo
-         /aEVFlB+74W7+4BYZpjckBdw51Z+F6l9Eg/aVFsMvs9f+ythg0PhNlh0wFTLiydnk+6h
-         A6NSd3FxdcPusR3vEdcM5KCba4D13nnSDBnA+dFOph/dGt8kD7GDfY303/Xq+s7PFzbr
-         3Fqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705576092; x=1706180892;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3fBRUIb2Xioj9IoQ1nhfd3l3Jn6qijKU/uajCdRr4Q4=;
-        b=NSZv6Nc5ilMwebEYUCTB6jR8Mi1G9Lq+nzIwM93v/afCyFsPqzRi30TZHdOFjcnHNt
-         qWwRjuo1LXQJaWe/yKnZDDGBtpZLvQ3JN4YR2GJb5dpdIg9QvyKkCcCxVIavy3pelbtm
-         ZQOO2/CD3RW7w5Kl14tcSIE2LIGL56XW4Q7ThhdQHIMEgXkq025vHMWQ+UT3t2lVxMNt
-         7IZagN3oRP7SZ9ZflhOpBxDrayjuXtrAjsPc8O5rj6zqL8prosf4Y4gKX/57FvYH2MlB
-         dp3ICIMq61zunc24pUkMGbfkhhCDArS5q58AaowlWi8KElzRxwwTSJGWOET4EKnmjE6n
-         pqZA==
-X-Gm-Message-State: AOJu0Yz8WP0rNC2ypgp9Zj2jbAiIKYppmdL01ZN/mCqKqQgguE1+Bsp8
-	0YwwczPmp1N4JyEp3YGWLuyS5WgtVMf2ixgE30gWQJc5bsm3CmvjIX2MQESel4uuKZlAAnbqBhM
-	zWNlh5W9vrpSzIugIaHUuuzX7XZclTlTbr+/4
-X-Google-Smtp-Source: AGHT+IEoAcSXDDVl4x6IPLR2yRPfpy0nUGBJ3WO4L/jouRR6M2ibsaNZ3Hq8iBqXnuEShXsvo4mHyLoW0z/PMHWkbRE=
-X-Received: by 2002:ac5:cd93:0:b0:4b6:ef57:a068 with SMTP id
- i19-20020ac5cd93000000b004b6ef57a068mr362816vka.32.1705576092216; Thu, 18 Jan
- 2024 03:08:12 -0800 (PST)
+	s=arc-20240116; t=1705576109; c=relaxed/simple;
+	bh=mjy35o3OcV45hLL1uxk3iUN5tBVkfvj+D2W44/uMvS8=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding; b=Yf0VlsxdfozLKECjHCrw1gaq6G2ipJHq1KjltdqUMryQs8X5rB4ZUdCIpR6ghSL3IvqwIG/kCUeaH1qcEtn5X4y+rlsMx6ZO3TWZJJ4Rdw3FB/v8NqxuJBhqqbjD4IepEpQTQHp0lWeuUUHx5vg179F0jdukPRwK6el/2zKwE5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PNZI9q7x; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705576107; x=1737112107;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mjy35o3OcV45hLL1uxk3iUN5tBVkfvj+D2W44/uMvS8=;
+  b=PNZI9q7xZxh9gvSfEm8/7R4abwR6siIgTnhd1ahjKzDrEH9Bm9ScXkxc
+   5Qi8bF6+/aepSKj9v0cbL37DCxXiaSvBNZTi1pxJmsD+PrVRa2Zy0eoIa
+   LwAy8qvjOTVS0oOuvV27B1dOR9mt9l4Ihcwtx2qoOip8ZYvdBv8/lsUFp
+   TpkYFa1pOxgKrCWNOTh8O+7P/HizWHRJZxgDH1NK6Fz7co65fJaXiVp4y
+   OB6ovbSkPZ/4d9XjfWw2FKOwcvmWDEGDDUEfSnqKL8+LmpPOi4og+eOyy
+   OCP4P8D/L+QFy+hJSHx9v/fXSawaKI4Felxx2dzxc3iEUqyJCA68j4l0G
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="404183212"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="404183212"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 03:08:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="297769"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.254.202])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 03:08:23 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+	"Oliver O'Halloran" <oohall@gmail.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Keith Busch <kbusch@kernel.org>,
+	Dongdong Liu <liudongdong3@huawei.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 1/1] PCI/DPC: Fix TLP Prefix register reading offset
+Date: Thu, 18 Jan 2024 13:08:15 +0200
+Message-Id: <20240118110815.3867-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118110022.2538350-1-elver@google.com>
-In-Reply-To: <20240118110022.2538350-1-elver@google.com>
-From: Marco Elver <elver@google.com>
-Date: Thu, 18 Jan 2024 12:07:34 +0100
-Message-ID: <CANpmjNPx0j-x_SDu777gaV1oOFuPmHV3xFfru56UzBXHnZhYLg@mail.gmail.com>
-Subject: Re: [PATCH] mm, kmsan: fix infinite recursion due to RCU critical section
-To: elver@google.com, Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com, 
-	Charan Teja Kalla <quic_charante@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, 18 Jan 2024 at 12:00, Marco Elver <elver@google.com> wrote:
->
-> Alexander Potapenko writes in [1]: "For every memory access in the code
-> instrumented by KMSAN we call kmsan_get_metadata() to obtain the
-> metadata for the memory being accessed. For virtual memory the metadata
-> pointers are stored in the corresponding `struct page`, therefore we
-> need to call virt_to_page() to get them.
->
-> According to the comment in arch/x86/include/asm/page.h,
-> virt_to_page(kaddr) returns a valid pointer iff virt_addr_valid(kaddr)
-> is true, so KMSAN needs to call virt_addr_valid() as well.
->
-> To avoid recursion, kmsan_get_metadata() must not call instrumented
-> code, therefore ./arch/x86/include/asm/kmsan.h forks parts of
-> arch/x86/mm/physaddr.c to check whether a virtual address is valid or
-> not.
->
-> But the introduction of rcu_read_lock() to pfn_valid() added
-> instrumented RCU API calls to virt_to_page_or_null(), which is called by
-> kmsan_get_metadata(), so there is an infinite recursion now.  I do not
-> think it is correct to stop that recursion by doing
-> kmsan_enter_runtime()/kmsan_exit_runtime() in kmsan_get_metadata(): that
-> would prevent instrumented functions called from within the runtime from
-> tracking the shadow values, which might introduce false positives."
->
-> Fix the issue by switching pfn_valid() to the _sched() variant of
-> rcu_read_lock/unlock(), which does not require calling into RCU. Given
-> the critical section in pfn_valid() is very small, this is a reasonable
-> trade-off (with preemptible RCU).
->
-> KMSAN further needs to be careful to suppress calls into the scheduler,
-> which would be another source of recursion. This can be done by wrapping
-> the call to pfn_valid() into preempt_disable/enable_no_resched(). The
-> downside is that this sacrifices breaking scheduling guarantees;
-> however, a kernel compiled with KMSAN has already given up any
-> performance guarantees due to being heavily instrumented.
->
-> Note, KMSAN code already disables tracing via Makefile, and since
-> mmzone.h is included, it is not necessary to use the notrace variant,
-> which is generally preferred in all other cases.
->
-> Link: https://lkml.kernel.org/r/20240115184430.2710652-1-glider@google.com [1]
-> Reported-by: Alexander Potapenko <glider@google.com>
-> Reported-by: syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com
-> Signed-off-by: Marco Elver <elver@google.com>
-> Cc: Charan Teja Kalla <quic_charante@quicinc.com>
+The TLP Prefix Log Register consists of multiple DWORDs (PCIe r6.1 sec
+7.9.14.13) but the loop in dpc_process_rp_pio_error() keeps reading
+from the first DWORD. Add the iteration count based offset calculation
+into the config read.
 
-This might want a:
+Fixes: f20c4ea49ec4 ("PCI/DPC: Add eDPC support")
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ drivers/pci/pcie/dpc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fixes: 5ec8e8ea8b77 ("mm/sparsemem: fix race in accessing
-memory_section->usage")
+diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+index 94111e438241..e5d7c12854fa 100644
+--- a/drivers/pci/pcie/dpc.c
++++ b/drivers/pci/pcie/dpc.c
+@@ -234,7 +234,7 @@ static void dpc_process_rp_pio_error(struct pci_dev *pdev)
+ 
+ 	for (i = 0; i < pdev->dpc_rp_log_size - 5; i++) {
+ 		pci_read_config_dword(pdev,
+-			cap + PCI_EXP_DPC_RP_PIO_TLPPREFIX_LOG, &prefix);
++			cap + PCI_EXP_DPC_RP_PIO_TLPPREFIX_LOG + i * 4, &prefix);
+ 		pci_err(pdev, "TLP Prefix Header: dw%d, %#010x\n", i, prefix);
+ 	}
+  clear_status:
+-- 
+2.39.2
 
-For reference which patch introduced the problem.
-
-> ---
->  arch/x86/include/asm/kmsan.h | 17 ++++++++++++++++-
->  include/linux/mmzone.h       |  6 +++---
->  2 files changed, 19 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kmsan.h b/arch/x86/include/asm/kmsan.h
-> index 8fa6ac0e2d76..d91b37f5b4bb 100644
-> --- a/arch/x86/include/asm/kmsan.h
-> +++ b/arch/x86/include/asm/kmsan.h
-> @@ -64,6 +64,7 @@ static inline bool kmsan_virt_addr_valid(void *addr)
->  {
->         unsigned long x = (unsigned long)addr;
->         unsigned long y = x - __START_KERNEL_map;
-> +       bool ret;
->
->         /* use the carry flag to determine if x was < __START_KERNEL_map */
->         if (unlikely(x > y)) {
-> @@ -79,7 +80,21 @@ static inline bool kmsan_virt_addr_valid(void *addr)
->                         return false;
->         }
->
-> -       return pfn_valid(x >> PAGE_SHIFT);
-> +       /*
-> +        * pfn_valid() relies on RCU, and may call into the scheduler on exiting
-> +        * the critical section. However, this would result in recursion with
-> +        * KMSAN. Therefore, disable preemption here, and re-enable preemption
-> +        * below while suppressing reschedules to avoid recursion.
-> +        *
-> +        * Note, this sacrifices occasionally breaking scheduling guarantees.
-> +        * Although, a kernel compiled with KMSAN has already given up on any
-> +        * performance guarantees due to being heavily instrumented.
-> +        */
-> +       preempt_disable();
-> +       ret = pfn_valid(x >> PAGE_SHIFT);
-> +       preempt_enable_no_resched();
-> +
-> +       return ret;
->  }
->
->  #endif /* !MODULE */
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 4ed33b127821..a497f189d988 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -2013,9 +2013,9 @@ static inline int pfn_valid(unsigned long pfn)
->         if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
->                 return 0;
->         ms = __pfn_to_section(pfn);
-> -       rcu_read_lock();
-> +       rcu_read_lock_sched();
->         if (!valid_section(ms)) {
-> -               rcu_read_unlock();
-> +               rcu_read_unlock_sched();
->                 return 0;
->         }
->         /*
-> @@ -2023,7 +2023,7 @@ static inline int pfn_valid(unsigned long pfn)
->          * the entire section-sized span.
->          */
->         ret = early_section(ms) || pfn_section_valid(ms, pfn);
-> -       rcu_read_unlock();
-> +       rcu_read_unlock_sched();
->
->         return ret;
->  }
-> --
-> 2.43.0.381.gb435a96ce8-goog
->
 
