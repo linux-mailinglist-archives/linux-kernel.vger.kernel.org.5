@@ -1,84 +1,144 @@
-Return-Path: <linux-kernel+bounces-30388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73F9D831E12
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:00:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 970A1831E14
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D7921F22488
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:00:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C95521C25C44
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:01:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D462C842;
-	Thu, 18 Jan 2024 17:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B362D039;
+	Thu, 18 Jan 2024 17:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Pmo5tso8"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="k4ZoqsgY"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363952D02B;
-	Thu, 18 Jan 2024 17:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAC12CCA6
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705597220; cv=none; b=n9tnq8PZ1WDteWui05kpE6bNizW+Vm+EovOYy1Wj5wIW/IEuRA5SMJvpuYzuLyLZegXh+XOEqm0F1KYn1ZwVaPYlj8zgoegS1FtF8sgaQVava2vl23Z04gZ1oXidmwBSP0uHqd444rkz8SXBqmlQA6fMYHPlDW+URz6hS+JXcGc=
+	t=1705597225; cv=none; b=DJPNFtHEnR0U/4Mwi8Vp7xJRcU5L0o7PlmYZgN6puckoM71LD9pEuZS63k1BZYTqdYrfKCbQWZQc7xFastn87CiQHsL3ClGGIg60RYpxzylVm1xFh2VY6cNPAPKpzpJPjdvTO4gPxzcgRTNf6O9kAf3liwV7iAh7apSp3pHiBkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705597220; c=relaxed/simple;
-	bh=ZQkTj7v3P3b8slVfFVO0LEhYN51N22sIpr/cgL8WBSg=;
-	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=Z1OIKdNHih8W9WEPFM2aRQodQXOih/IUuN/O1yLZk/EBm6gwB+gEtKUeWKPDukCSQO8qZe8EVGDBNlVgBY7Nn/Ae0dyeKt3KsmePNXQ0qb01W4IeEFLpU97Qvdhg8fGyLo7ETLrb5I3tvf4pDnxLIXXqRX46tTwAegURxn0SUwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Pmo5tso8; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=0tuU5//Jtkk4REo0lwHCqrHwmxJPEkKkKcI8xTrY0ts=; b=Pmo5tso8M37VzKsnub2PaUM2i/
-	KTG/bCFboCVTfbvP87Gk6zFJwzphCJsWVihUJuzNDyho9s5F5Nh/F5Xfqrctk2FV8G36iDvat+T2A
-	tbzyFHV5I6+ih8DTPTMQJxoL9QQnWf1lhcnCQBLfNeaJ29XANT9Ity7oIvbebs34Nw5s=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rQVkP-005UmY-SR; Thu, 18 Jan 2024 18:00:09 +0100
-Date: Thu, 18 Jan 2024 18:00:09 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc: hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	richardcochran@gmail.com, Divya.Koppera@microchip.com,
-	maxime.chevallier@bootlin.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net v2 2/2] net: micrel: Fix set/get PHC time for lan8814
-Message-ID: <139fe4c1-6a3e-4ef3-a178-ebbe09652966@lunn.ch>
-References: <20240118085916.1204354-1-horatiu.vultur@microchip.com>
- <20240118085916.1204354-3-horatiu.vultur@microchip.com>
- <6fa37dfd-3c92-4842-9785-1b17bbbedc9d@lunn.ch>
- <20240118152353.syk3v7kgf3mutqpp@DEN-DL-M31836.microchip.com>
+	s=arc-20240116; t=1705597225; c=relaxed/simple;
+	bh=wpIIcyoEEg7PkGDaYLohdCp9UKWtxtCJGJgRr5TOWSE=;
+	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding; b=Zvm6bhXPSMSJQa9sgDwrqF2GIATafHLukubz2tBc8g9wEnOgGz8xVsKxK+E/erAEPIoB7tZ0graPMGekqtphZU0NYSfwH3zeZVZ5npAcAhKbzW3knkkybMYzPfYmB85LhmD2R4c9L56CZW4h9Dek9Vpyyxangh6miE2cV9o55xA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=k4ZoqsgY; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=86x9UQGzuif9Ycxlv973IYRAed3OPWJVVR3izs/Vp2w=; b=k4ZoqsgYCT+fgi+JxQJKgfsiKz
+	mUowEqGPILNl2NOKO5ufMZlcQVtm7iKuBKtYtHzOy4g4VB+LHz+GLA00AYgSLOS4HD5nfXsQCeewQ
+	KRCTDLQ9opxucEIU/6x4V14Ep5UZHsrMiaEwAoN5gCidQfNnbKtDxbMpcefgNnZtKLhxhdS/t8TO+
+	nc5wW2Ra7Bzo1DN57o+F61nFpfaVTUku0m4TudkQdFABtd4/RMSZPJqwXmSHq9fBsPJjGhu835yiM
+	t8pZkTecOivC//5F0fvEcqdHmKu05gPSrfnKvjRNNA1A1PVnx1Py/yqfAO6Nl2reWiq5ifBJQkUIk
+	StM1Vz2g==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rQVkU-003Ktl-0w;
+	Thu, 18 Jan 2024 17:00:14 +0000
+Message-ID: <842e9e01-32cf-4a2d-8c5e-334616192889@infradead.org>
+Date: Thu, 18 Jan 2024 09:00:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118152353.syk3v7kgf3mutqpp@DEN-DL-M31836.microchip.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/imagination: fix ARRAY_SIZE build error
+Content-Language: en-US
+To: Matt Coster <Matt.Coster@imgtec.com>
+Cc: Maxime Ripard <mripard@kernel.org>, Frank Binns <Frank.Binns@imgtec.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240110002350.1096-1-rdunlap@infradead.org>
+ <ca53a99f-4bd9-47cb-bf4f-869712ef950c@imgtec.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ca53a99f-4bd9-47cb-bf4f-869712ef950c@imgtec.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> > Maybe submit this for net-next?
+Hi Matt,
+
+On 1/18/24 01:38, Matt Coster wrote:
+> On 10/01/2024 00:23, Randy Dunlap wrote:
+>> Fix a build error when using GCC 13.2.0 from kernel.org crosstools
+>> by changing ARRAY_SIZE() to the macro PVR_MIPS_PT_PAGE_COUNT:
 > 
-> Anyway, I don't have strong feelings about this, if it goes to net or
-> net-next, I just want to fix this at some point :)
+> I assume you're referring to the x86_64 => aarch64 toolchain here?
 
-Please submit to net-next. I think the ML bot which picks out patches
-to backport is likely to see the work Fix in the subject and decided
-to backport it anyway. But its not our problem if the bot breaks the
-stable rules.
+Yes.
 
-Is there any danger of regressions? Could the higher word actually
-have a value for some reason today, which is being ignored. Would this
-change then jump the time forward?
+> 
+>> drivers/gpu/drm/imagination/pvr_vm_mips.c: In function 'pvr_vm_mips_fini':
+>> ../include/linux/array_size.h:11:25: warning: overflow in conversion from 'long unsigned int' to 'int' changes value from '18446744073709551615' to '-1' [-Woverflow]
+>>     11 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+>>        |                         ^
+>> drivers/gpu/drm/imagination/pvr_vm_mips.c:105:24: note: in expansion of macro 'ARRAY_SIZE'
+>>    105 |         for (page_nr = ARRAY_SIZE(mips_data->pt_pages) - 1; page_nr >= 0; page_nr--) {
+>>        |                        ^~~~~~~~~~
+> 
+> I can't seem to reproduce this using the above toolchain (or any other),
+> even with -Woverflow explicitly specified.
+> 
+> The use of ARRAY_SIZE() in loop bounds is a pretty common construction –
+> even within the pvr driver. Do you see similar warnings anywhere else?
 
-       Andrew
+No, this is the only place that I have seen this issue.
+
+Thanks.
+
+> -- 
+> Matt Coster
+> Imagination Technologies
+> 
+>> Fixes: 927f3e0253c1 ("drm/imagination: Implement MIPS firmware processor and MMU support")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Donald Robson <donald.robson@imgtec.com>
+>> Cc: Maxime Ripard <mripard@kernel.org>
+>> Cc: Frank Binns <frank.binns@imgtec.com>
+>> Cc: Matt Coster <matt.coster@imgtec.com>
+>> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+>> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+>> Cc: David Airlie <airlied@gmail.com>
+>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>> Cc: dri-devel@lists.freedesktop.org
+>> ---
+>>   drivers/gpu/drm/imagination/pvr_vm_mips.c |    4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff -- a/drivers/gpu/drm/imagination/pvr_vm_mips.c b/drivers/gpu/drm/imagination/pvr_vm_mips.c
+>> --- a/drivers/gpu/drm/imagination/pvr_vm_mips.c
+>> +++ b/drivers/gpu/drm/imagination/pvr_vm_mips.c
+>> @@ -46,7 +46,7 @@ pvr_vm_mips_init(struct pvr_device *pvr_
+>>       if (!mips_data)
+>>           return -ENOMEM;
+>>   -    for (page_nr = 0; page_nr < ARRAY_SIZE(mips_data->pt_pages); page_nr++) {
+>> +    for (page_nr = 0; page_nr < PVR_MIPS_PT_PAGE_COUNT; page_nr++) {
+>>           mips_data->pt_pages[page_nr] = alloc_page(GFP_KERNEL | __GFP_ZERO);
+>>           if (!mips_data->pt_pages[page_nr]) {
+>>               err = -ENOMEM;
+>> @@ -102,7 +102,7 @@ pvr_vm_mips_fini(struct pvr_device *pvr_
+>>       int page_nr;
+>>         vunmap(mips_data->pt);
+>> -    for (page_nr = ARRAY_SIZE(mips_data->pt_pages) - 1; page_nr >= 0; page_nr--) {
+>> +    for (page_nr = PVR_MIPS_PT_PAGE_COUNT - 1; page_nr >= 0; page_nr--) {
+>>           dma_unmap_page(from_pvr_device(pvr_dev)->dev,
+>>                      mips_data->pt_dma_addr[page_nr], PAGE_SIZE, DMA_TO_DEVICE);
+>>   
+
+-- 
+#Randy
 
