@@ -1,131 +1,235 @@
-Return-Path: <linux-kernel+bounces-30229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86C64831BCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:52:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DE8E831BD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F78E28312E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:52:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BA81B26A36
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819C31F16B;
-	Thu, 18 Jan 2024 14:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WpH6lnIy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CF31E51D;
+	Thu, 18 Jan 2024 14:53:30 +0000 (UTC)
+Received: from wp716.webpack.hosteurope.de (wp716.webpack.hosteurope.de [80.237.130.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C497E1E87F;
-	Thu, 18 Jan 2024 14:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70F039B;
+	Thu, 18 Jan 2024 14:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705589518; cv=none; b=XxWQpztae7djWD6H2u4NMkyIF8jBZaM7P7dIGdKfBWULZF3FVZEzqX3+Hzno4jThsWkBCDT2KZ4iSLDyFhSSwfYS+ytoB8GlJIOe5YfJUn0vVyRr+M1Ozj38Zx3JumvIVKQM4mG5diWfmdQrcbR5HMOXxsk9b6Z3l3DbXYyPMtA=
+	t=1705589610; cv=none; b=KkmrVpNFbyY00COWf8C2xmU1zAHXTYn31NrOvBPG0XB1aoc2RTnzjxEQdgVwuVERW8JFu4bnhlSlFSDHn+m957UFIvz2xQo4PglKV9wsYT8bsIHZimZDzE1Z78iUsU4rVeLE0VAPv6RV2fdNnegVgPUnl2hsdRo0NyMJQsu70kE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705589518; c=relaxed/simple;
-	bh=xeoxo1JeEqSffJNlDwl5IKuOr/B7hUoTC/bpE5m133g=;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=YFCx0OESmWpu50MTOA5lxkOkU4SZrJH8eFnjCzpNi9rNON3EWhvOO5fM/nbtjQJOgodcQ60uKkFSWhOFJL9J2xVkQuxXA4hmWEs7hjMXFCf/NS1vTGX70Ia/S1ND29i1ttEzaZbP1adzt+38Jym53zMCcmbsnEMrI9UXwH0eZvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WpH6lnIy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 823ADC433C7;
-	Thu, 18 Jan 2024 14:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705589518;
-	bh=xeoxo1JeEqSffJNlDwl5IKuOr/B7hUoTC/bpE5m133g=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=WpH6lnIy7dg3b6oFMj1TyOY17r9YDQVNchWh+1G2VKtQqNCxKu5RYSsMxdZRE3/0b
-	 lk0gpYly4T8EarX6fSks+SMX7x/xzSZmArDUtNFbZOaqjrKGyF4UXypHKlJ0cyxV6p
-	 R9fnppqLn6+zUiUpzQDBT6l2vwu0TfdPD0bStBzdeAdVSsHaX6pRcrhfEpBRg+iH+t
-	 OmIp8k1ypakJgnvOsfZ3xmcJZX2qMFcF8nVOcn4l8oKRn1HpUSWg3NHdUcUFewsjEM
-	 HNsqhrby28VfWl+RWvH7qXXTKEwS/u3YlG0Z66qkzpRYVPRo4iAtDo/FF6OTZ7TfyO
-	 zgy62VOaRiuYg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E5FAFCE0546; Thu, 18 Jan 2024 06:51:57 -0800 (PST)
-Date: Thu, 18 Jan 2024 06:51:57 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Zqiang <qiang.zhang1211@gmail.com>, quic_neeraju@quicinc.com,
-	joel@joelfernandes.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/nocb: Check rdp_gp->nocb_timer in
- __call_rcu_nocb_wake()
-Message-ID: <3b63cf39-3805-4c1d-b79b-fdd5aeb17db3@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240117102616.18302-1-qiang.zhang1211@gmail.com>
- <ZafC_YkTJKsOropE@localhost.localdomain>
+	s=arc-20240116; t=1705589610; c=relaxed/simple;
+	bh=5QNhidmMxrvL4D2I8M20qaJImWVAaAjHxa9TzR5CbUk=;
+	h=Received:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:Content-Transfer-Encoding:User-Agent:
+	 MIME-Version:X-bounce-key:X-HE-SMSGID; b=pkANOOWrbJZ54L4pIUOOKGibpHyLHUIXc92zGSpNQVdNFtKnlFn18qx424isj4794mqSoBA+UUXJYUTFs4ANoNXgY5NpdW61oifnLcB0lzGczF3ckdaNyKvIboaT7RuI6vD5F5+4irEX0tenn3RVFJmNOHK1tLybpTgUhObLZkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=alumni.tu-berlin.de; spf=none smtp.mailfrom=alumni.tu-berlin.de; arc=none smtp.client-ip=80.237.130.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=alumni.tu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=alumni.tu-berlin.de
+Received: from dynamic-2a01-0c22-ac44-ff00-7b4e-548d-a441-0836.c22.pool.telefonica.de ([2a01:c22:ac44:ff00:7b4e:548d:a441:836] helo=jt.fritz.box); authenticated
+	by wp716.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	id 1rQTle-0004Td-8M; Thu, 18 Jan 2024 15:53:18 +0100
+Message-ID: <b332beac0f22636e7877c681b3adb9d6ff70cde3.camel@alumni.tu-berlin.de>
+Subject: Re: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with
+ bpf_setsockopt()
+From: =?ISO-8859-1?Q?J=F6rn-Thorben?= Hinz <j-t.hinz@alumni.tu-berlin.de>
+To: Martin KaFai Lau <martin.lau@linux.dev>, Willem de Bruijn
+	 <willemdebruijn.kernel@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,  Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan
+ <shuah@kernel.org>,  Arnd Bergmann <arnd@arndb.de>, Deepa Dinamani
+ <deepa.kernel@gmail.com>, bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Date: Thu, 18 Jan 2024 15:53:17 +0100
+In-Reply-To: <73235f05-8474-4341-b70b-34bd0e6dfac5@linux.dev>
+References: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
+	 <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
+	 <51fd5249-140a-4f1b-b20e-703f159e88a3@linux.dev>
+	 <65a7f855821cc_6d500294d0@willemb.c.googlers.com.notmuch>
+	 <73235f05-8474-4341-b70b-34bd0e6dfac5@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZafC_YkTJKsOropE@localhost.localdomain>
+X-bounce-key: webpack.hosteurope.de;j-t.hinz@alumni.tu-berlin.de;1705589607;d1e87b62;
+X-HE-SMSGID: 1rQTle-0004Td-8M
 
-On Wed, Jan 17, 2024 at 01:07:25PM +0100, Frederic Weisbecker wrote:
-> Le Wed, Jan 17, 2024 at 06:26:16PM +0800, Zqiang a écrit :
-> > Currently, only rdp_gp->nocb_timer is used, for nocb_timer of
-> > no-rdp_gp structure, the timer_pending() is always return false,
-> > this commit therefore need to check rdp_gp->nocb_timer in
-> > __call_rcu_nocb_wake().
-> > 
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > ---
-> >  kernel/rcu/tree_nocb.h | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index 54971afc3a9b..3f85577bddd4 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -564,6 +564,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
-> >  	long lazy_len;
-> >  	long len;
-> >  	struct task_struct *t;
-> > +	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
-> >  
-> >  	// If we are being polled or there is no kthread, just leave.
-> >  	t = READ_ONCE(rdp->nocb_gp_kthread);
-> > @@ -608,7 +609,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
-> >  		smp_mb(); /* Enqueue before timer_pending(). */
-> >  		if ((rdp->nocb_cb_sleep ||
-> >  		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
-> > -		    !timer_pending(&rdp->nocb_timer)) {
-> > +		    !timer_pending(&rdp_gp->nocb_timer)) {
-> 
-> Hehe, good eyes ;-)
-> 
-> I had that change in mind but while checking that area further I actually
-> wondered what is the actual purpose of this RCU_NOCB_WAKE_FORCE thing. If
-> we reach that place, it means that the nocb_gp kthread should be awaken
-> already (or the timer pending), so what does a force wake up solve in that
-> case?
-> 
-> Paul, any recollection of that?
+Hmm, after taking a new look at it today, I think my patch can be
+disregarded---at least for having a BPF program access *RX* *hardware*
+timestamps. (Sorry about the noise then.)
 
-Huh.  We never actually do RCU_NOCB_WAKE_FORCE in v6.7, if I followed
-all the code paths correctly.
+When I looked into this a few months ago, I half-blindly followed
+Documentation/networking/timestamping.rst, afterwards assuming
+bpf_setsockopt(SO_TIMESTAMPING*) will be necessary for my use case (see
+about it at the end).
 
-Historically, I have been worried about lost wakeups.  Also, there
-used to be code paths in which a wakeup was not needed, for example,
-because we knew that the ending of the current grace period would take
-care of things.  Unless there was some huge pile of callbacks, in which
-case an immediate wakeup could avoid falling behind a callback flood.
+Looking at it again today, it seems the ioctl(SIOCSHWTSTAMP) is
+sufficient here: It enables the hardware timestamping on the device,
+which are placed in skb's/skb_shared_info's hwtstamps field. This
+hwtstamps is where the values of __sk_buff.hwtstamp and
+bpf_sock_ops.skb_hwtstamp are coming from. No further timestamp
+processing is involved when a BPF program reads the these two fields.
+Meaning bpf_setsockopt(SOF_TIMESTAMPING_RX_HARDWARE) would be a no-op
+from the view of a BPF program.
 
-Given that rcutorture does test callback flooding, we appear to be OK,
-but maybe it is time to crank up the flooding more.
+I started this message before coming to the above understanding but
+I've left my replies in below.
 
-On the other hand, I have started seeing the (very) occasional OOM
-on TREE03.  (In addition to those that show up from time to time on the
-single-CPU TREE09 scenario.)
+With bpf_setsockopt(SOF_TIMESTAMPING_RX_HARDWARE) being unnecessary,
+and bpf_setsockopt(SOF_TIMESTAMPING_RX_SOFTWARE), as I understand,
+having a number of possibly unwanted implications---should we leave it
+at that here?
 
-							Thanx, Paul
+On Wed, 2024-01-17 at 13:23 -0800, Martin KaFai Lau wrote:
+> > On 1/17/24 7:55 AM, Willem de Bruijn wrote:
+> > > > Martin KaFai Lau wrote:
+> > > > > > On 1/16/24 7:17 AM, Willem de Bruijn wrote:
+> > > > > > > > J=C3=B6rn-Thorben Hinz wrote:
+> > > > > > > > > > A BPF application, e.g., a TCP congestion control,
+> > > > > > > > > > might
+> > > > > > > > > > benefit from or
+> > > > > > > > > > even require precise (=3Dhardware) packet timestamps.
+> > > > > > > > > > These
+> > > > > > > > > > timestamps are
+> > > > > > > > > > already available through __sk_buff.hwtstamp and
+> > > > > > > > > > bpf_sock_ops.skb_hwtstamp, but could not be
+> > > > > > > > > > requested: BPF
+> > > > > > > > > > programs were
+> > > > > > > > > > not allowed to set SO_TIMESTAMPING* on sockets.
+> > > > > >=20
+> > > > > > This patch only uses the SOF_TIMESTAMPING_RX_HARDWARE in
+> > > > > > the
+> > > > > > selftest. How about
+> > > > > > others? e.g. the SOF_TIMESTAMPING_TX_* that will affect the
+> > > > > > sk->sk_error_queue
+> > > > > > which seems not good. If rx tstamp is useful, tx tstamp
+> > > > > > should be
+> > > > > > useful also?
+I admit I only ever looked at enabling and using
+SOF_TIMESTAMPING_RX_HARDWARE for my/our use case. With that, I was not
+aware that _SOFTWARE has more, possibly complicating implications.
 
-> In the meantime:
-> 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> > > >=20
+> > > > Good point. Or should not be allowed to be set from BPF.
+> > > >=20
+> > > > That significantly changes process behavior, e.g., by returning
+> > > > POLLERR.
+> > > > =C2=A0=20
+> > > > > > > > > >=20
+> > > > > > > > > > Enable BPF programs to actively request the
+> > > > > > > > > > generation of
+> > > > > > > > > > timestamps
+> > > > > > > > > > from a stream socket. The also required
+> > > > > > > > > > ioctl(SIOCSHWTSTAMP)
+> > > > > > > > > > on the
+> > > > > > > > > > network device must still be done separately, in
+> > > > > > > > > > user space.
+> > > > > >=20
+> > > > > > hmm... so both ioctl(SIOCSHWTSTAMP) of the netdevice and
+> > > > > > the
+> > > > > > SOF_TIMESTAMPING_RX_HARDWARE of the sk must be done?
+> > > > > >=20
+> > > > > > I likely miss something. When skb is created=C2=A0 in the drive=
+r
+> > > > > > rx
+> > > > > > path, the sk is
+> > > > > > not known yet though. How the SOF_TIMESTAMPING_RX_HARDWARE
+> > > > > > of the
+> > > > > > sk affects the
+> > > > > > skb_shinfo(skb)->hwtstamps?
+I mostly followed Documentation/networking/timestamping.rst (section 3)
+to understand how the hardware timestamps are to be setup and used.
+
+From my understanding, the ioctl(SIOCSHWTSTAMP) makes a persistent
+setting for the device/driver, independent of the lifetime of any
+socket or skb.
+
+I used a simplified program[1] when trying out this patch a few months
+ago.
+
+> > > >=20
+> > > > Indeed it does not seem to do anything in the datapath.
+> > > >=20
+> > > > Requesting SOF_TIMESTAMPING_RX_SOFTWARE will call
+> > > > net_enable_timestamp
+> > > > to start timestamping packets.
+> > > >=20
+> > > > But SOF_TIMESTAMPING_RX_HARDWARE does not so thing.
+> > > >=20
+> > > > Drivers do use it in ethtool get_ts_info to signal hardware
+> > > > capabilities. But those must be configured using the ioctl.
+> > > >=20
+> > > > It is there more for consistency with the other timestamp
+> > > > recording
+> > > > options, I suppose.
+> > > >=20
+> >=20
+> > Thanks for the explanation on the
+> > SOF_TIMESTAMPING_RX_{HARDWARE,SOFTWARE}.
+> >=20
+> > __sk_buff.hwtstamp should have the NIC rx timestamp then as long as
+> > the NIC is=20
+> > ioctl configured.
+
+> >=20
+> > Jorn, do you need RX_SOFTWARE? From looking at net_timestamp_set(),
+> > any socket=20
+> > requested RX_SOFTWARE should be enough to get a skb->tstamp for all
+> > skbs. A=20
+> > workaround is to manually create a socket and turn on RX_SOFTWARE.
+No, my use case was only for the RX hardware timestamps, as close to
+the packet reception time point as possible.
+
+> >=20
+> > It will still be nice to get proper bpf_setsockopt() support for
+> > RX_SOFTWARE but=20
+> > it should be considered together with how SO_TIMESTAMPING_TX_*
+> > should
+> > work in=20
+> > bpf prog considering the TX tstamping does not have a workaround
+> > solution like=20
+> > RX_SOFTWARE.
+> >=20
+> > It is probably cleaner to have a separate bit in sk->sk_tsflags for
+> > bpf such=20
+> > that the bpf prog won't be affected by the userspace turning it
+> > on/off and it=20
+> > won't change the userspace's expectation also (e.g. sk_error_queue
+> > and POLLERR).
+> >=20
+> > The part that needs more thoughts in the tx tstamp is how to notify
+> > the bpf prog=20
+> > to consume it. Potentially the kernel can involve a bpf prog to
+> > collect the tx=20
+> > timestamp when the bpf bit in sk->sk_tsflags is set. An example on
+> > how TCP-CC is=20
+> > using it will help to think of the approach here.
+My (academic) application was an implementation[2,3] of PowerTCP[4], a
+CC that (in its simplified variant) profits from precise timestamping.
+Only the RX timestamps would be of use there.
+
+As mentioned above, I used[1] a while ago when I looked into timestamp
+usage. It shows how I imagine the timestamps could be accessed and used
+(similarly implemented in [2]).
+
+[1] https://github.com/jtdor/bpf_hwtstamps
+[2] https://github.com/inet-tub/powertcp-linux
+[3] https://schmiste.github.io/ebpf23.pdf
+[4] https://schmiste.github.io/nsdi22powertcp.pdf
+
+> >=20
+> >=20
+
+
 
