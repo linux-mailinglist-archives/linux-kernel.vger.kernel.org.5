@@ -1,173 +1,116 @@
-Return-Path: <linux-kernel+bounces-30286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BA1E831C9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42902831CA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE68C281E2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:31:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC99A28A72F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6ABC28DA4;
-	Thu, 18 Jan 2024 15:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B3A28DB3;
+	Thu, 18 Jan 2024 15:31:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gmp1uWa1"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oYgMK7mK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726C51DDC6;
-	Thu, 18 Jan 2024 15:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC1A23741;
+	Thu, 18 Jan 2024 15:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705591869; cv=none; b=TGQRdajfSEklpld05RcSDhEynvvnz26hznAWIrk4QhR5PEaXYYqgHFMqPaYNIBHJp1ONUzbVmuMGWUaoxXaPEdQOY7BECRS0hU5jGN3GwRwD8JYhiIYrEqq8suXzQVzxy1Gz2Rz34mLJgPG2lgflmk4dltdC+L2Xo/sYb5UAnms=
+	t=1705591893; cv=none; b=BQHvGt9VNMoPxBsnVS+hV1kENEdrGIIfQIdin2+sdInt2woo0uWeF4bUhNsklj21G6B7t/+loo3YGzybzT87Le45ekDHOL5tv+pggAbgNlI8PIud3PqP0C2Gmr1YBgHRq4FskoRkEzBSVwvhVpL8lK2DEXirGrb0fR3riHHHMNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705591869; c=relaxed/simple;
-	bh=l79NY2dKBoF9XTkQ1wdRVseM0jwGQtTbZVF6sXmEHUg=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=q2qSJMRE5NlRR53JEtuPLbVcWEK03vn7iTpKmwGeT9VRvP6P7Z+UzNc04Yj7dsTgZ104UM0Tn73l4OI2NiRzqLRfhbRt/EfbfO3gqrXVYMrXCf+8L/JW/191EfbWJNUjbcgvl9y/ovZKMI+9XTPv+I141JLvapSBfEpUseYRwZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gmp1uWa1; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cddb0ee311so38235121fa.0;
-        Thu, 18 Jan 2024 07:31:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705591865; x=1706196665; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ClAFFQl72AYBcbeJb8sfymN7hdNir4YEOmgS30D5baQ=;
-        b=Gmp1uWa1C/YZ/Zbt2WvqJtKhJQLxijsxmx8hYfHqPYvsvjBmIcqOMOF/71MEz0YHNp
-         EPucKN0HtwS5oLowmGEuuljlBlo1P3YIk/TWktm8khco6IfSQl/NQp6O39ctP4a6+75I
-         rHAzr3/I09TMExRbKrc1E0kbcHvS4Ofh+QZBKJAEbvk9ZOeGvgOp7QAeST5PBhAS/IJt
-         uZdcme7E8NhUTRvUkkNxuceF6i+lHDIR/G4+n5WWzIq0ziPugpnoYNfmg6kQEz/bFYAi
-         cFNSZNqY7Q/BzsoobOoLYz6UzsBnZC/H7vj/JQeBdwbsKplEOGeHcWZLhmco3TPQs1Bd
-         Q23A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705591865; x=1706196665;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ClAFFQl72AYBcbeJb8sfymN7hdNir4YEOmgS30D5baQ=;
-        b=LtYU/pNS611HcZCGvj+kkeAwwSbv7jPAH3bJ1YxVHu2eLE/FdZ4I4/GXqFn5FPW/Xz
-         16xtVUN3oxNgMiiK0Z11dNR5qQlErQlLV9c2sNFtP1mmxTOzw6FDoeThoFtc2PPLdvv/
-         yo/EXe94ct85i0hNyPNraznT6SD8ODSPi5TLF7jxPlVI8Zw/o0jIgnOqO5bnlBoD14Cz
-         SRpqIqmxT+sM9EfEHZDdz9AZl8sYF9b3s6JCUVmcp06ee6W1VOloP4usO9cHHnCFLW88
-         X9Je9N/hP0PvkmJuQMbo2kmzVKuqKLh/e0IvLK8L7JntK4eKcZ1nH3aaPF9oIf05cJXd
-         SBrA==
-X-Gm-Message-State: AOJu0YzWUNhdA70iporOcYaE+UGUQF6tdSwLinPLWDZzRYS8xH3aD+kS
-	33w8Lj9EjGu+6xl0ucAsGCf0q2cu3vMFjAIC2OryDqw5C8Zo7G5zIJrZwpaszADotPdDs4buv74
-	Z01qVjnFeEVZWNZ/Mi50AI005Z238ctWrAbM=
-X-Google-Smtp-Source: AGHT+IGsbx3wnyrWjOXm3YY25A2iEm2aIDxpxx8+OisUG8gtw4CKBY18wsSvaREIQJhkNkfjUX4WeruJYPCN39awfzE=
-X-Received: by 2002:a2e:6e06:0:b0:2cd:df43:9539 with SMTP id
- j6-20020a2e6e06000000b002cddf439539mr247922ljc.193.1705591865219; Thu, 18 Jan
- 2024 07:31:05 -0800 (PST)
+	s=arc-20240116; t=1705591893; c=relaxed/simple;
+	bh=4wA+UWwUt1juxH0gO+qlw0qBSnENNfKQfAfESA3JOVA=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=nbvf4eG2WQ3vV1Ba56cdPbhZdWTiLqtwPnLEvUaZK0ntf4OzdcFfWd4zdPGuLa9cIM6BVDdCzypCY7hMpMdy/AUTnxJ7rZTlLV6kH5hEBNNxecr0E3xIvmTrFRb9yqR6nWVkzSk7J3LKzK1dt0G0nkSLhdbVDecmTIGjIgM+Ss8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oYgMK7mK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A758C433F1;
+	Thu, 18 Jan 2024 15:31:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705591892;
+	bh=4wA+UWwUt1juxH0gO+qlw0qBSnENNfKQfAfESA3JOVA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oYgMK7mKWk4ZpaH3EseK8Uu7+VHlxzes9YSDMKw0MQl6vDz0aE35z9l5zA3rAJHxy
+	 BsMNnOdU+x1zZVU5ULw4Vi++4+idxP+fxaG4rDIVsNy0FceRSO1rQZ1d9c14jWDNB3
+	 VDjGwfjyA/qljuvGO80OcVYJV44ejuOioTJ6QpooEQkxKNn5zMXO0DG1ZGkDY21vs2
+	 lC3EVqEUqTc5/+e8ceuNyI/SV87N55LGVlxR7gw6+Ar7IueUmvo7ELbdeYy9R3OR1u
+	 aBeUpNP3Xwd53UP2qVMZAEDmGH1Ag1xLa9UCQlATBEv9FG6HnJaQ/Hea1i9hhhKBnO
+	 L3p63L2WnYYIg==
+Date: Thu, 18 Jan 2024 15:31:26 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Dharma Balasubiramani <dharma.b@microchip.com>
+Cc: conor.dooley@microchip.com, sam@ravnborg.org, bbrezillon@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	lee@kernel.org, thierry.reding@gmail.com,
+	u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+	linux4microchip@microchip.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: display: convert Atmel's HLCDC to DT
+ schema
+Message-ID: <20240118-unscathed-flail-be2e49abc56d@spud>
+References: <20240118092612.117491-1-dharma.b@microchip.com>
+ <20240118092612.117491-2-dharma.b@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231227180306.6319-1-johan+linaro@kernel.org>
- <ZZ15c1HUQIH2cY5o@google.com> <ZZ1-ehpU-g6i9Qem@hovoldconsulting.com>
- <ZZ2IOQEekFffJoHQ@google.com> <ZZ5RVpL88XNbgKIy@hovoldconsulting.com>
- <CABBYNZJ_EAuGEdeW+vZzXu20nVqLkLwiQbYQ9XzoABxQ5rAzdQ@mail.gmail.com> <ZajkA6oxtMcxKY4X@hovoldconsulting.com>
-In-Reply-To: <ZajkA6oxtMcxKY4X@hovoldconsulting.com>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Thu, 18 Jan 2024 10:30:50 -0500
-Message-ID: <CABBYNZLV9o9hsYGVTGA7dPby-j1P_a35yNrDy4d9PMJq=TaRsQ@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: qca: fix device-address endianness
-To: Johan Hovold <johan@kernel.org>
-Cc: Matthias Kaehlcke <mka@chromium.org>, Johan Hovold <johan+linaro@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
-	Bjorn Andersson <quic_bjorande@quicinc.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>, Doug Anderson <dianders@google.com>, 
-	Stephen Boyd <swboyd@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="uK+u7gbhbDVqB0jo"
+Content-Disposition: inline
+In-Reply-To: <20240118092612.117491-2-dharma.b@microchip.com>
+
+
+--uK+u7gbhbDVqB0jo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Johan,
+On Thu, Jan 18, 2024 at 02:56:10PM +0530, Dharma Balasubiramani wrote:
+> Convert the existing DT binding to DT schema of the Atmel's HLCDC display
+> controller.
+>=20
+> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+> ---
+> changelog
+> v2 -> v3
+> - Remove '|' in description, as there is no formatting to preserve.
+> - Ref video-interfaces as endpoint.
+> - Remove ref and description for bus-width.
+> - Add new line before the child node in example.
 
-On Thu, Jan 18, 2024 at 3:40=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
-te:
->
-> On Wed, Jan 17, 2024 at 05:49:07PM -0500, Luiz Augusto von Dentz wrote:
-> > On Wed, Jan 10, 2024 at 3:12=E2=80=AFAM Johan Hovold <johan@kernel.org>=
- wrote:
-> > > On Tue, Jan 09, 2024 at 05:54:01PM +0000, Matthias Kaehlcke wrote:
->
-> > > > hciconfig
-> > > > hci0:   Type: Primary  Bus: UART
-> > > >         BD Address: 8C:FD:F0:40:15:DC  ACL MTU: 1024:8  SCO MTU: 24=
-0:8
-> > > >         UP RUNNING
-> > > >         RX bytes:1700 acl:0 sco:0 events:95 errors:0
-> > > >         TX bytes:128949 acl:0 sco:0 commands:578 errors:0
-> > >
-> > > And any user space tool overriding the address would currently need t=
-o
-> > > provide the address in reverse order on Qualcomm platforms like this
-> > > one (e.g. if generating the address for privacy reasons).
-> >
-> > Perhaps we could attempt to resolve the address byteorder, in
-> > userspace we use hwdb_get_company to resolve the company but since
-> > this shall only really care about Qualcomm range(s) perhaps we can
-> > hardcode them check in which order the address is, that said if the
-> > device is configured with a Static Random Address then that would not
-> > work, but that is only really possible for BLE only devices.
->
-> It's not just Qualcomm ranges; The Lenovo ThinkPad X13s that I noticed
-> this on has been assigned a Wistron OUI, for example.
+> - Remove 'example 2', as it is not required for just one additional prope=
+rty.
 
-Well we could still attempt to check if it has a valid OUI and then it
-fail swap and check again.
-
-> We're still hoping to learn how to retrieve this address (from the
-> secure world firmware) so that we can set it directly from the driver,
-> but for now it needs to be set using btmgmt (or the local-bd-address
-> devicetree property).
->
-> As was discussed here:
->
->         https://github.com/bluez/bluez/issues/107
->
-> it would be useful to teach bluetoothd to (generate and) set an address
-> for devices that lack (accessible) persistent storage. And any such
-> generic tool would need to work using the standard interfaces and the
-> address endianness that those interfaces expect.
-
-Yep, patches are welcome in this regard, note that we do something like thi=
-s:
-
-https://github.com/bluez/bluez/blob/master/src/adapter.c#L9847
-
-But the first thing it checks is if the controller supports BR/EDR, so
-if you want to extend that we need at least the OUI portion to be able
-to allocate a valid public address, we could perhaps attempt to fetch
-the manufacturer somehow or use the controller manufacturer
-(adapter->manufacturer) in case there is nothing else to use.
-
-> And from skimming the Bluetooth spec, I was under the impression that
-> random addresses applied also to non-BLE devices (e.g. requiring the two
-> most-significants bits to be 1).
-
-Not really, BR/EDR/classic addresses are always considered public
-addresses, the HCI interface doesn't even have an address type to be
-able to handle something like a random address or privacy for the same
-reason.
-
-> But to summarise, I don't really see any way around fixing the Qualcomm
-> driver.
->
-> Johan
+Rob's comment on the previous version was:
+| Just 1 extra property doesn't justify 2 examples.
+|=20
+| In any case, drop the partial examples and just have 1 complete example=
+=20
+| in the MFD binding schema.
 
 
+--uK+u7gbhbDVqB0jo
+Content-Type: application/pgp-signature; name="signature.asc"
 
---=20
-Luiz Augusto von Dentz
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZalETQAKCRB4tDGHoIJi
+0oMyAP9+Ll8fdXViDHTVjFHNGPWzChucZsZdKY7aRr7jkFYBhAD/Qt7JIQGWHJ89
+hYQiygsvwed2ijEO9ueMCNp10XQMzw4=
+=FSle
+-----END PGP SIGNATURE-----
+
+--uK+u7gbhbDVqB0jo--
 
