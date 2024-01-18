@@ -1,142 +1,126 @@
-Return-Path: <linux-kernel+bounces-30447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA75E831ED0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:58:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6449E831ED2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:58:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CCB728AF0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:58:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E1371C22632
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:58:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4688A2D60C;
-	Thu, 18 Jan 2024 17:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20DB32D60F;
+	Thu, 18 Jan 2024 17:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DnwIbe9E"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VLLwigjV"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D6B2C1B9
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5EB02D608
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705600673; cv=none; b=TCLMeDv3Q/wuWrkaRKxz3h/eZ5cJ5jeF2VnR/wUI8sCDInNg7nxkF4ODDn5rA2HQfv/qdgf5qW5DQQua5aILgZopyO9a3AzIXgNSunkqMlif8QwWd5MRl33QefwlQa51nUVDhEiFfgueQ4sd7x77xCeA6MhnTZDMxxjrGMV2QZI=
+	t=1705600710; cv=none; b=LnmeHh15FoNrdU1EXhDT0A6Pf2+G2C6l3lpMxLqeMnQ/u7YgDejoGcVaNE69yrY1njdmXyhJ5Qmb/dsMpZhNhhfyg6Dl7FYJunB3q7V4dB0eFL1qkaoz7z/X8sbCSiAQrtgFnjM/d5VGPIuJrpfF5u53H57IyYFubpiyp77ThrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705600673; c=relaxed/simple;
-	bh=/h4q32yEfht3o3V4KdfWWw34f3PK7YiTSBlwmYSS93U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=UJtvXYlkUvEymVMRbowksa16XgFNnU5XG/UB1ou6QEK6efdfBjN74xvjH2jlMpn+qjxBHCxSDAJVOLj0RFJi4okio5CQ4I1gE9gU8xWFVA4YPpLGkB1P8hKQlpJ/ScbE6UyrzU1h0Ah0/hzZoHtuZppF7ZUtT2xPhoGVUkaLr/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DnwIbe9E; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705600670;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k698Zj5WVi2wSh0ojlY5XsX33bGvDw0g7gHOdyMGiao=;
-	b=DnwIbe9ErUIVFhOT+DscyJ5E9qiGxpPqaedBiRh+XY4mekUDoWoy5eeTzAU4F4g/nt96B9
-	oiv6uBFOjIYSmIKgE8VWuf9iqLogKwZDqwSpy5nThCmhWmZO2TCI/7LdBcLjY5plzjDkhv
-	f28boxi5g3bAJj6FA7NALEPsD/qDpD0=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-288-U9o9V2-dN4C0BF8Hn3bhEw-1; Thu, 18 Jan 2024 12:57:49 -0500
-X-MC-Unique: U9o9V2-dN4C0BF8Hn3bhEw-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1d5b60c929bso74465585ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:57:49 -0800 (PST)
+	s=arc-20240116; t=1705600710; c=relaxed/simple;
+	bh=QVF+n5V+O+hXfuYnJEtJo6fru3J22c12jHPTEEHaopc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gul2xsrMB1eD027CML3HR4SpuvtP4DXAJth0wlhKqLPxwUw9Qo1GBcNv+P4O3m4UyC5qkVi6t4TXP0sTLjVuk13M8n8E5oS/L/cp11MHjcu4greHCa3l00KsutCFaml6y6BbFn1562Wim+kLxmKj+W9bJONcA9X11pxbgjj+QxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VLLwigjV; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cd1232a2c7so159634731fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:58:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705600707; x=1706205507; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NrlV4jgpWCJfzB/7NzgqxnwjrFZnXY4okb0+G7cWf8A=;
+        b=VLLwigjVLLWhIbwEUpD3weBJKWQ1Qv5LCLFHpwDO0XO+dKXo4KGoh/s40jnB6S/NhF
+         ryPJvItm+GlSFfzIs2yxYMiOhJR54OPayNtoPUlMYUFtM458oJymhqJHX8U+mQbp6MSF
+         Arkwsjd3ZHGKWMRTKF1QkagN1sC8bEhl63A0cJw64wIy3jCNcpaWorUGweCpPsyLMqp2
+         QgCie7nsOdg4/le5W3WfGPRLLwZtFOzEAZ/5wcXbH0524RNho1O3YP9E5qjVWjMzNGoy
+         anAPxVH49/evX9Ds9YHGVndkBSujazjuEqdJOCR5t/mnT83WGajXDqiBdDRYnD+LQrPr
+         Dedw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705600668; x=1706205468;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
+        d=1e100.net; s=20230601; t=1705600707; x=1706205507;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k698Zj5WVi2wSh0ojlY5XsX33bGvDw0g7gHOdyMGiao=;
-        b=ZIB3e4QAwCt72SY6C3F1wTbcKXqB5X+9DfiA37gMwANkt8d6C15Ew1+R4Glf4+ofYG
-         xOxmELzULneJq1lAaeQTid3Pd1+BRqO6so+mVO48znSfV7uPY2WgsCDOaY3oTHH9o++Y
-         fW9v4TQUsMYe24CqhelSqFW+qDNropvkG4SS7kp2mrjZ1/XgRAXDOcsmgExYmylOs2BU
-         TatyGvsRY53tiV03Z4uLZo8VmcYr6UwctdxI4ST53dgBEbPJrdAEj1cEnjzx0LePVSHr
-         QXBawt52urW9lXhtHfst/JNdVYu39OT3htrVIVI7r5zZHDBhUnVbiYDzHuWtHhobwesc
-         Fq6Q==
-X-Gm-Message-State: AOJu0YySfcHQIDEu86G3hGN3GgKYUyS8PPZQDYNgB70aW/TK5ohJLwhj
-	SH87rMF2yHqaEAMGmYNwToKYnUU/8c4SNc4lUhnns93gHaqAtILbyZp0qhJ8GLwflJl3l8I5q0P
-	pais6TMfuhfQLOcEug8snlR27+w5M9DreamCtBRUnzE51LM2yrai2bAIKcWDwSQ==
-X-Received: by 2002:a17:902:ce8e:b0:1d5:4de3:ac46 with SMTP id f14-20020a170902ce8e00b001d54de3ac46mr1580958plg.3.1705600668377;
-        Thu, 18 Jan 2024 09:57:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEnebEcTPLHkFBmQ6EfojaCFD+NnXlGQNOks//6hkSo1dcU/+9i+KTj98r0E/eiyp7wduxGEA==
-X-Received: by 2002:a17:902:ce8e:b0:1d5:4de3:ac46 with SMTP id f14-20020a170902ce8e00b001d54de3ac46mr1580948plg.3.1705600668132;
-        Thu, 18 Jan 2024 09:57:48 -0800 (PST)
-Received: from localhost.localdomain ([2804:1b3:a803:96a5:ba81:becc:80f3:6a79])
-        by smtp.gmail.com with ESMTPSA id e3-20020a170902744300b001d704c0d5c8sm1574966plt.113.2024.01.18.09.57.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 09:57:47 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	John Ogness <john.ogness@linutronix.de>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-serial <linux-serial@vger.kernel.org>
-Subject: Re: [RESEND RFC PATCH v1 2/2] serial/8250: Avoid getting lock in RT atomic context
-Date: Thu, 18 Jan 2024 14:57:34 -0300
-Message-ID: <ZalmjpcqMvzlIGGs@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <3632cc5e-f1d4-4780-a233-19bfcfe8af69@kernel.org>
-References: <20240116073701.2356171-1-leobras@redhat.com> <20240116073701.2356171-3-leobras@redhat.com> <75a39f0a-8f79-eacf-4a35-5de512a3cbed@linux.intel.com> <ZabJGefGkrs0SNzW@LeoBras> <87o7djaubq.fsf@jogness.linutronix.de> <ZajxMc05uVmK7e60@LeoBras> <3632cc5e-f1d4-4780-a233-19bfcfe8af69@kernel.org>
+        bh=NrlV4jgpWCJfzB/7NzgqxnwjrFZnXY4okb0+G7cWf8A=;
+        b=kCdXnqiLhxMm1v/MsEVfdAgpaTKpKQYJ7hUs36Gn5qukYfR3j4bEDyCbPPeczgT2w9
+         sUXO5vKaaAwuqaPcHmRRIp4EOZRoUr8LNk3/pRbIaYQPXZQ5vdbHDnY65cdlHAyXZhnt
+         I8TU5wDnvJIW5mZrUXBiUu5SVLyDr+1eI50CorGM/VdP34GJ1NS5E9Ak2u7acDxsImQT
+         sQkZgxdLUa7ZlHAbFLvAdrGXP6q0RHJUiLGJS9fEGOyz1k+Ae3x6pTu2HWVGzNSqLCzp
+         46jY3qI80TyXT/Tn3+L8b21ih9v/3/w18X/7KmcAXBQ80k/9XOHtlX4AXh17QFNW52xr
+         yTGw==
+X-Gm-Message-State: AOJu0YwazLVPjO00zIsfr0K69WGlc82SRZldbFHVR2GsOcnHRTbM8udp
+	X8jU1GsAD2VPZCMBY3xj/KPEcLaX1SiCBun/6/FKfY5k2D+nkl8sV63cXnmS7Jw=
+X-Google-Smtp-Source: AGHT+IHA3nsf2QxBjJzDDsSCfuzn2I5E9MPsp1wzSuINFGRlDEcs7im02+W9DqUrmxZ7PrDqlAUQ8w==
+X-Received: by 2002:a2e:a555:0:b0:2cd:23a7:a346 with SMTP id e21-20020a2ea555000000b002cd23a7a346mr1045547ljn.83.1705600706894;
+        Thu, 18 Jan 2024 09:58:26 -0800 (PST)
+Received: from [172.30.205.26] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id x43-20020a2ea9ab000000b002cdb6a40096sm1507098ljq.131.2024.01.18.09.58.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 09:58:26 -0800 (PST)
+Message-ID: <7d012b9f-b1ca-4633-8dc2-03d90c418e7d@linaro.org>
+Date: Thu, 18 Jan 2024 18:58:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 4/5] iommu/arm-smmu: add ACTLR data and support for
+ SM8550
+Content-Language: en-US
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>, will@kernel.org,
+ robin.murphy@arm.com, joro@8bytes.org, dmitry.baryshkov@linaro.org,
+ jsnitsel@redhat.com, quic_bjorande@quicinc.com, mani@kernel.org,
+ quic_eberman@quicinc.com, robdclark@chromium.org,
+ u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com,
+ quic_pkondeti@quicinc.com, quic_molvera@quicinc.com
+Cc: linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240116150411.23876-1-quic_bibekkum@quicinc.com>
+ <20240116150411.23876-5-quic_bibekkum@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240116150411.23876-5-quic_bibekkum@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 18, 2024 at 11:33:08AM +0100, Jiri Slaby wrote:
-> On 18. 01. 24, 10:36, Leonardo Bras wrote:
-> > I am using mainline (torvalds/linux) kernel, forcing ARCH_SUPPORTS_RT:
-> > 
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index 5ca66aad0d08..879c34398cb7 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -1195,7 +1195,7 @@ config ARCH_NO_PREEMPT
-> >          bool
-> >   config ARCH_SUPPORTS_RT
-> > -       bool
-> > +       def_bool y
-> > 
-> > Since I was not aware of a PREEMPT_RT-patched tree, I did this so I could
-> > compile a PREEMPT_RT kernel.
+
+
+On 1/16/24 16:04, Bibek Kumar Patro wrote:
+> Add ACTLR data table for SM8550 along with support for
+> same including SM8550 specific implementation operations.
 > 
-> Huh, when exactly did you intend to mention this?
+> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> ---
 
-Since I was not aware of an PREEMPT_RT-patched tree, I thought that this 
-was the vanilla way to get a PREEMPT_RT kernel running. 
+[...]
 
-TBH I did not even though that there were an external repo for PREEMPT_RT. 
-I mean, I knew about non-mainline patches in the past, but I thought 
-everything got already merged upstream, and any other patches would be WIP.
+> +static const struct actlr_variant sm8550_actlr[] = {
+> +	{ .io_start = 0x15000000, .actlrcfg = sm8550_apps_actlr_cfg,
+> +			.num_actlrcfg = ARRAY_SIZE(sm8550_apps_actlr_cfg) },
+> +	{ .io_start = 0x03da0000, .actlrcfg = sm8550_gfx_actlr_cfg,
+> +			.num_actlrcfg = ARRAY_SIZE(sm8550_gfx_actlr_cfg) },
+> +};
+Just a nit again, but if struct definitions need to be wrapped, this looks
+better:
 
-I understand this was a mistake on my part, and I feel sorry if this 
-brought any pain to reviewers. For the future, I will be basing my RT 
-work in this RT-devel tree shared by John.
+{
+	.io_start = 0...,
+	.aclrcfg = ...,
+	.num_actlrcfg = ARR..,
+}, {
+	.io_start = 0..,
+	.aclrcfg = ...,
+	.num_actlrcfg = ARR..,
+};
 
-Thanks!
-Leo
-
-> 
-> -- 
-> js
-> suse labs
-> 
-
+Konrad
 
