@@ -1,111 +1,147 @@
-Return-Path: <linux-kernel+bounces-30093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECB1283190B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:23:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2673283190F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:24:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A40241F2158B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:23:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 588F71C223AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:24:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53FED24B2C;
-	Thu, 18 Jan 2024 12:23:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF62924A18;
+	Thu, 18 Jan 2024 12:23:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jNEBfz3V"
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bCZIJVPy"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADC624A0B
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 12:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67FAF24B2C;
+	Thu, 18 Jan 2024 12:23:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705580597; cv=none; b=GUKX9V/fSdY0CfteFxJhmS4FHpu7WD676NoHeKX0N3K0IDQ7JGUcTeeCqKJ5U6VdQrd0AtfpEVmv6yqj+V9wPEBJf6FBEFPdGRO2xHAz9SGWDg3rtTQtHpGywEgVyz+GUXdpcNupiPLG1itqfrAGdl2wKt5piivgxVF89yWowZI=
+	t=1705580632; cv=none; b=nB0UXFs7EYax0gntSGXMUdO4uZIHxECC1bD3wqJFjSANvBoZ+Oh2dMz/206M7BWRvV4MxogmEKhhM+O+7DW7EUythdgpt2zS7qKPMTgwaHXTwAWWBifq7UoqUX2Ek8YX+xe8mBPNxRzjzrKlQeBgoqejgYWxA6j6oPL7qhjMan4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705580597; c=relaxed/simple;
-	bh=7AuSwgYsRLtQPaH9Hm2+jqJ8wMg7c1ufpWu5H7xj9V0=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type; b=kqp4dTpXz2OrBA/RcU1stlEMOZUkoJtiK/VaNLw/HkGxzUvV/cRqblovd7i64yKOu5ruPoIqtTE46JdlQ6Ige2v3CD3WaROyYEh30yYUHRgUCT8vxOHCx8wDTrmaee6QGW/QXEr60oy2EuCtHTIeglf/kWOYVVRtMMlyQDuSi6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jNEBfz3V; arc=none smtp.client-ip=209.85.217.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4670af5bd56so3151093137.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 04:23:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705580595; x=1706185395; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7AuSwgYsRLtQPaH9Hm2+jqJ8wMg7c1ufpWu5H7xj9V0=;
-        b=jNEBfz3VVtf9Ib1HR0nMSPL2odriwx9jDgDGt8ZDxzMMd50wZktvo29XHgboXyE67i
-         JHDpRwRLs7+0tC+UEe7TaNFxNjyGB5h/OhjpX0SRvca/0DHyQJL10Lw7wsF5fhlH+GhA
-         Noql4aTvTuJBmGofhFb8dOm9UDtM7U0T+TxHtMHrdSCe/yNOyfGxkbkFu+ttbPvqc6Na
-         Y6yqVmrs7qA/7Yb1Kocp1MMtR3Bs+6eQlFy8WWy5Gveg25qs68+k0fwI+zRdrOyvsg+1
-         qyXjqBzTAtOdfQv6i5iw9at855BIpkrBMgeiLeffONxoHCvVdjhH7uRdKDyJc+8WI9dU
-         Gm1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705580595; x=1706185395;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7AuSwgYsRLtQPaH9Hm2+jqJ8wMg7c1ufpWu5H7xj9V0=;
-        b=fWafn1CoONHw4yoMKh/AcP9XinQzIk8mv/mUK60o7dmclHrDXvardBVo/vIkcR0WFd
-         IUxQwkawFZKdgTKTvuEMDI+RGfHqLhzU78lC7Vhh1mA0yV1N5O7XzvqVlJ3Rwh4CgGbm
-         gLp5x8iCJpS0hyk8z4CWGEAepvOkQJCa3JwROteFRW+1Ighc6m/U1FY8bNMLjc6FVpVX
-         ckXTLpcrBLQOpz2RdlMxZBrIw0iQAGPg+XQo/mheNUMzscq62iLw1IncWgW5h45FWYMt
-         roOtCe8GxiFWWY7ttboGVMVvA9yiPAe0ThKvPnwEj0cbePD1d/L355j6e7hDG9Zga4aN
-         HY3w==
-X-Gm-Message-State: AOJu0YwTQpiT9bun5xgDdzoCVF1nfqTNIcjFQCnK/2HIoC6M256SZdK0
-	7xdBsX520rnfcnmoMR9vcLuTFUWcxgXx6pOjKTwu2auXkYLftSG3Qdt4E3GEXmbtVCeo78mNKjU
-	eHXiezjQzOk88Dgp5V/gKKVdf7U5B4e6F0qkD
-X-Google-Smtp-Source: AGHT+IGSDeGuG8MW8B2XQ4Yb1Ndl68XMUmwU4DTwgvGAiW37PlrxPO0ZzqGwx8mdK4RZluZnibirrFQohgLudpytwH0=
-X-Received: by 2002:a05:6102:3165:b0:467:b086:3ec3 with SMTP id
- l5-20020a056102316500b00467b0863ec3mr597178vsm.25.1705580595173; Thu, 18 Jan
- 2024 04:23:15 -0800 (PST)
+	s=arc-20240116; t=1705580632; c=relaxed/simple;
+	bh=2t7lpymOLPbnkBt4k29RmU4K9o5hiZSkC5ZyTXdgAWY=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:From:To:Cc:Subject:Date:
+	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding; b=f3FLHZiL1Gaw5yJnEPpbjQuEcZQsNq3SNuchrHpxXThbNLYVEQN78YaWFQrOfA4cbDY9lLRFzxbN6RwQ/kzUs0Z3nk8ZBW1+eqr3MuVPzvazLKBIno/VtoI/MjfCPu0HmuPGyz5x9hGXTAFvx2i94nM5/FjWeg6tqXDB2JFwkuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bCZIJVPy; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705580631; x=1737116631;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2t7lpymOLPbnkBt4k29RmU4K9o5hiZSkC5ZyTXdgAWY=;
+  b=bCZIJVPyhyFOk69VJXBU5lqSwwZm3zbyVBVOS7JO6LzjHDwxBjRvY9LQ
+   yOuke9uIjGZokAg2P2EbxWimGo1TqcsZKVXQspxvhfup8BbOv6gOjAzbi
+   6OOtbVtDffTukRvRRyndZzyoJkoinWX8XWgS87bTfqkIZvlJeQHo/VvBT
+   TRQb0lHe830EVOyX2x2fkFj/uZRBzqBwhLzgCrOGSG6nbheiVWqciTXsF
+   52yCxQDhaRoyOkxAVt2Rmw5mj6R6aDyqYtB+dDe413LwvJKPUJduqgtQ4
+   FOdOJFOyvh+WnlBjiUXLRZ1jFu7cNWNc+b0w1lEo+ja7QaNDo6om0pUKK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7808305"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="7808305"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 04:23:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="818776379"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="818776379"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by orsmga001.jf.intel.com with ESMTP; 18 Jan 2024 04:23:49 -0800
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To: rafael@kernel.org,
+	daniel.lezcano@linaro.org,
+	lukasz.luba@arm.com
+Cc: linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] thermal: intel: powerclamp: Remove dead code for target mwait value
+Date: Thu, 18 Jan 2024 04:23:40 -0800
+Message-Id: <20240118122340.1034880-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118110022.2538350-1-elver@google.com> <CANpmjNPx0j-x_SDu777gaV1oOFuPmHV3xFfru56UzBXHnZhYLg@mail.gmail.com>
- <cd742d1d-70a3-586b-4bf5-fcfc94c75b4a@quicinc.com>
-In-Reply-To: <cd742d1d-70a3-586b-4bf5-fcfc94c75b4a@quicinc.com>
-From: Marco Elver <elver@google.com>
-Date: Thu, 18 Jan 2024 13:22:37 +0100
-Message-ID: <CANpmjNNZ6vV7DJ+SBGcSnV6qzkmH_J=WrofrfaAeidvSG2nHbQ@mail.gmail.com>
-Subject: Re: [PATCH] mm, kmsan: fix infinite recursion due to RCU critical section
-To: Charan Teja Kalla <quic_charante@quicinc.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Alexander Potapenko <glider@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 18 Jan 2024 at 12:28, Charan Teja Kalla
-<quic_charante@quicinc.com> wrote:
->
-> May I ask if KMSAN also instruments the access to the memory managed as
-> ZONE_DEVICE. You know this is not the RAM and also these pages will
-> never be onlined thus also not be available in buddy.
->
-> Reason for the ask is that this patch is introduced because of a race
-> between pfn walker ends up in pfn of zone device memory.
->
-> If KMSAN never instruments this, does it look good to you to have the
-> KMSAN version of pfn_valid(), as being suggested by Alexander in the
-> other mail.
+After conversion of this driver to use powercap idle_inject core, this
+driver doesn't use target_mwait value. So remove dead code.
 
-It would be nice to avoid duplicating functions - both options have downsides:
-1. Shared pfn_valid(): it might break for KMSAN again in future if new
-recursion is introduced.
-2. KMSAN-version of pfn_valid(): it might break if pfn_valid() changes
-in future.
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+Non urgent patch. For 6.9+ kernel.
 
-I suspect #1 is less likely.
+ drivers/thermal/intel/intel_powerclamp.c | 32 ------------------------
+ 1 file changed, 32 deletions(-)
 
-What is your main concern by switching to rcu_read_lock_sched()?
+diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
+index 5ac5cb60bae6..bc6eb0dd66a4 100644
+--- a/drivers/thermal/intel/intel_powerclamp.c
++++ b/drivers/thermal/intel/intel_powerclamp.c
+@@ -49,7 +49,6 @@
+  */
+ #define DEFAULT_DURATION_JIFFIES (6)
+ 
+-static unsigned int target_mwait;
+ static struct dentry *debug_dir;
+ static bool poll_pkg_cstate_enable;
+ 
+@@ -312,34 +311,6 @@ MODULE_PARM_DESC(window_size, "sliding window in number of clamping cycles\n"
+ 	"\twindow size results in slower response time but more smooth\n"
+ 	"\tclamping results. default to 2.");
+ 
+-static void find_target_mwait(void)
+-{
+-	unsigned int eax, ebx, ecx, edx;
+-	unsigned int highest_cstate = 0;
+-	unsigned int highest_subcstate = 0;
+-	int i;
+-
+-	if (boot_cpu_data.cpuid_level < CPUID_MWAIT_LEAF)
+-		return;
+-
+-	cpuid(CPUID_MWAIT_LEAF, &eax, &ebx, &ecx, &edx);
+-
+-	if (!(ecx & CPUID5_ECX_EXTENSIONS_SUPPORTED) ||
+-	    !(ecx & CPUID5_ECX_INTERRUPT_BREAK))
+-		return;
+-
+-	edx >>= MWAIT_SUBSTATE_SIZE;
+-	for (i = 0; i < 7 && edx; i++, edx >>= MWAIT_SUBSTATE_SIZE) {
+-		if (edx & MWAIT_SUBSTATE_MASK) {
+-			highest_cstate = i;
+-			highest_subcstate = edx & MWAIT_SUBSTATE_MASK;
+-		}
+-	}
+-	target_mwait = (highest_cstate << MWAIT_SUBSTATE_SIZE) |
+-		(highest_subcstate - 1);
+-
+-}
+-
+ struct pkg_cstate_info {
+ 	bool skip;
+ 	int msr_index;
+@@ -759,9 +730,6 @@ static int __init powerclamp_probe(void)
+ 		return -ENODEV;
+ 	}
+ 
+-	/* find the deepest mwait value */
+-	find_target_mwait();
+-
+ 	return 0;
+ }
+ 
+-- 
+2.40.1
+
 
