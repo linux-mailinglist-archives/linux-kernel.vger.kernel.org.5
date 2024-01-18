@@ -1,163 +1,197 @@
-Return-Path: <linux-kernel+bounces-30163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13327831AC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:43:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA9D831AC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:45:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 853C6B20C98
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:43:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08C591C22312
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:45:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF6025569;
-	Thu, 18 Jan 2024 13:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC3825613;
+	Thu, 18 Jan 2024 13:44:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CmN1miDM";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CmN1miDM"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OJrN8ayc"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804E824A0B;
-	Thu, 18 Jan 2024 13:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14FC625750;
+	Thu, 18 Jan 2024 13:44:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705585408; cv=none; b=s/Lc/I9jvQm1oP19Qybc0gf7K1b1fXSqcfeRG4/XkyVgYGmV82F9DqUsUPfS9UfuKUoBfe4Jf6R3YYuGMXG7nMA2qLNmvHpsPRLlQARuS4qw1wHp5pomj3ymoXAkyylgn5raUMu7eBm1EK1wpD7AIrVNHujkWa81UV0gdWxaDRI=
+	t=1705585496; cv=none; b=IGfnFAnrJ6Dz/18+vi0UN5GfNyRoVR0xetMVuSndFHtRw/JNaotNbrcGN/EGZ/xAOyhFp7JmvZG1NhpYnZCdmbc3e6roX6Gz+LLYuJZm4XZ6Aq4fr3WyLohh2e7F9he9jGJaZQ6gyEeusqpBKfmsup0/gcFy52NfUJ1AL84Fu60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705585408; c=relaxed/simple;
-	bh=CInZu229v+p6ubCNxyxTiYzu7fJFZZzOi8CMGdGohes=;
-	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-Spam-Level:X-Spam-Score:
-	 X-Spamd-Result:X-Spam-Flag; b=gBRjejJzY3LRqj1TNccTUJCxeGakeglAqD7pZLUMUq60OVXxdmS8wkvODKKyKIWzQQLHjK7+wxtYv6orgkK+XlZ/qKxkhzQ0YSts8h7obVNwbvxe3NYJuo3NFKQm5lp3gHdJv/VstdUcQUB8tEVM+mSzY0Q4mtV+SaxZoUNFG1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CmN1miDM; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CmN1miDM; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9F6071FCF4;
-	Thu, 18 Jan 2024 13:43:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705585403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NAWBeypBvGFM6Xet4cmHeLDFXwdHP1NsXHe8czK2YMg=;
-	b=CmN1miDMCWoPZDcJl9YS1hNtPAeMclubrDcIqROVR76CBjuXXcFa4wfjjq0sICX54wZX+6
-	Fz3a491/y9KDfEH5an44nGnbdES5Gc4UJr+TtZNGb0eDXerVeGho1gqbjjl5BET50a0ojt
-	WZX38fDrUgiiLC096IEsXyEcq/E1pco=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705585403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NAWBeypBvGFM6Xet4cmHeLDFXwdHP1NsXHe8czK2YMg=;
-	b=CmN1miDMCWoPZDcJl9YS1hNtPAeMclubrDcIqROVR76CBjuXXcFa4wfjjq0sICX54wZX+6
-	Fz3a491/y9KDfEH5an44nGnbdES5Gc4UJr+TtZNGb0eDXerVeGho1gqbjjl5BET50a0ojt
-	WZX38fDrUgiiLC096IEsXyEcq/E1pco=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86CB813874;
-	Thu, 18 Jan 2024 13:43:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bfnRHvsqqWUHDAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 18 Jan 2024 13:43:23 +0000
-Date: Thu, 18 Jan 2024 14:43:23 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com,
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com,
-	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT to
- process_madvise()
-Message-ID: <Zakq-54DFdPu0c2U@tiehlicka>
-References: <20240118120347.61817-1-ioworker0@gmail.com>
- <ZakqQyL9t2ffNUIf@tiehlicka>
+	s=arc-20240116; t=1705585496; c=relaxed/simple;
+	bh=fyOO87gyCVvda8Dtdu5dP+4OJie3gUe4JS7z6my6Q4k=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:Received:Received:Message-ID:Date:
+	 User-Agent:Subject:Content-Language:To:Cc:References:From:
+	 In-Reply-To:Content-Type:X-TM-AS-GCONF:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-GUID:Content-Transfer-Encoding:X-Proofpoint-UnRewURL:
+	 MIME-Version:X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details;
+	b=saXkjpCXvVBEBaXPaXorHxS4Fyd0vLC5o9CrFHiIcZpbZf/4Iddx1qtzSjgS3/tUAxowt47hEwRvL6daqMrpRREO2Hh0WbVAsQWczjui5wk7F+v3Wksw6+qQtQucmt1rZgw/8Bf6I/oGcMT41Z5Eqio/ySeEmtzvKfUEqn7DXnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OJrN8ayc; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40ID1JOC009014;
+	Thu, 18 Jan 2024 13:44:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=E11fxe4FBaAFH8dgSAN7Sr3yf87afr7uMgZUqa9RFe4=;
+ b=OJrN8ayc5rglqP0kFFe2zkEgWUn1Gzuk95HoXINOcHNTFmbNqnwyhcyl5+bXhKUmulDP
+ FiSGFeC/2WxDmf6FTZSVDnGZUT3LHOL4f9SaER0F5vg8Gqf/hYWG4lu3BW8yaU6VM1Et
+ AKYGy482DtCxVeXmKbMLWLf+kc4T+DZWsCKcucGVzdTMKPQpBvjVY547v7vey6FdXx/S
+ 5L005JXt8g1fNHx/8xkWYqVvsV17RqTYIN1hBA1rhBM5sum6I7WUKP/K2e5Ih/Nf3eEE
+ uLx9KLjfoxKYL5tY4CXCLvKKD+ihLPnF4lM360CU+VTJmDXc4IzYi2TlrgQbz/DbmJE2 cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vq45j21v8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 13:44:43 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40ID27aK012758;
+	Thu, 18 Jan 2024 13:44:42 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vq45j21u9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 13:44:42 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40IAeACi005842;
+	Thu, 18 Jan 2024 13:44:41 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm6bkufr1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 13:44:41 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40IDieD121496516
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 18 Jan 2024 13:44:40 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8B1BD58058;
+	Thu, 18 Jan 2024 13:44:40 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A526B58057;
+	Thu, 18 Jan 2024 13:44:38 +0000 (GMT)
+Received: from [9.179.26.4] (unknown [9.179.26.4])
+	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 18 Jan 2024 13:44:38 +0000 (GMT)
+Message-ID: <33cd7db0-2a0d-43af-b26c-a81bca382fbf@linux.ibm.com>
+Date: Thu, 18 Jan 2024 14:44:37 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2] net/smc: fix illegal rmb_desc access in SMC-D
+ connection dump
+Content-Language: en-GB
+To: Wen Gu <guwen@linux.alibaba.com>, jaka@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: alibuda@linux.alibaba.com, tonylu@linux.alibaba.com, ubraun@linux.ibm.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20240118043210.47618-1-guwen@linux.alibaba.com>
+From: Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <20240118043210.47618-1-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: XbUDJE67GtkkyzaHfEeR40bcqAkgRk_j
+X-Proofpoint-GUID: beCBhPepnKjL4QOlxfj2LQVhokggwF0d
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZakqQyL9t2ffNUIf@tiehlicka>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.80
-X-Spamd-Result: default: False [-0.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,google.com,redhat.com,bytedance.com,gmail.com,kernel.org,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-18_08,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 adultscore=0 bulkscore=0 impostorscore=0
+ spamscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1011 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401180099
 
-Dang, forgot to cc linux-api...
 
-On Thu 18-01-24 14:40:19, Michal Hocko wrote:
-> On Thu 18-01-24 20:03:46, Lance Yang wrote:
-> [...]
-> 
-> before we discuss the semantic, let's focus on the usecase.
-> 
-> > Use Cases
-> > 
-> > An immediate user of this new functionality is the Go runtime heap allocator
-> > that manages memory in hugepage-sized chunks. In the past, whether it was a
-> > newly allocated chunk through mmap() or a reused chunk released by
-> > madvise(MADV_DONTNEED), the allocator attempted to eagerly back memory with
-> > huge pages using madvise(MADV_HUGEPAGE)[2] and madvise(MADV_COLLAPSE)[3]
-> > respectively. However, both approaches resulted in performance issues; for
-> > both scenarios, there could be entries into direct reclaim and/or compaction,
-> > leading to unpredictable stalls[4]. Now, the allocator can confidently use
-> > process_madvise(MADV_F_COLLAPSE_LIGHT) to attempt the allocation of huge pages.
-> 
-> IIUC the primary reason is the cost of the huge page allocation which
-> can be really high if the memory is heavily fragmented and it is called
-> synchronously from the process directly, correct? Can that be worked
-> around by process_madvise and performing the operation from a different
-> context? Are there any other reasons to have a different mode?
-> 
-> I mean I can think of a more relaxed (opportunistic) MADV_COLLAPSE -
-> e.g. non blocking one to make sure that the caller doesn't really block
-> on resource contention (be it locks or memory availability) because that
-> matches our non-blocking interface in other areas but having a LIGHT
-> operation sounds really vague and the exact semantic would be
-> implementation specific and might change over time. Non-blocking has a
-> clear semantic but it is not really clear whether that is what you
-> really need/want.
-> 
-> > [1] https://github.com/torvalds/linux/commit/7d8faaf155454f8798ec56404faca29a82689c77
-> > [2] https://github.com/golang/go/commit/8fa9e3beee8b0e6baa7333740996181268b60a3a
-> > [3] https://github.com/golang/go/commit/9f9bb26880388c5bead158e9eca3be4b3a9bd2af
-> > [4] https://github.com/golang/go/issues/63334
-> > 
-> > [v1] https://lore.kernel.org/lkml/20240117050217.43610-1-ioworker0@gmail.com/
-> -- 
-> Michal Hocko
-> SUSE Labs
 
--- 
-Michal Hocko
-SUSE Labs
+On 18.01.24 05:32, Wen Gu wrote:
+> A crash was found when dumping SMC-D connections. It can be reproduced
+> by following steps:
+> 
+> - run nginx/wrk test:
+>    smc_run nginx
+>    smc_run wrk -t 16 -c 1000 -d <duration> -H 'Connection: Close' <URL>
+> 
+> - continuously dump SMC-D connections in parallel:
+>    watch -n 1 'smcss -D'
+> 
+>   BUG: kernel NULL pointer dereference, address: 0000000000000030
+>   CPU: 2 PID: 7204 Comm: smcss Kdump: loaded Tainted: G	E      6.7.0+ #55
+>   RIP: 0010:__smc_diag_dump.constprop.0+0x5e5/0x620 [smc_diag]
+>   Call Trace:
+>    <TASK>
+>    ? __die+0x24/0x70
+>    ? page_fault_oops+0x66/0x150
+>    ? exc_page_fault+0x69/0x140
+>    ? asm_exc_page_fault+0x26/0x30
+>    ? __smc_diag_dump.constprop.0+0x5e5/0x620 [smc_diag]
+>    ? __kmalloc_node_track_caller+0x35d/0x430
+>    ? __alloc_skb+0x77/0x170
+>    smc_diag_dump_proto+0xd0/0xf0 [smc_diag]
+>    smc_diag_dump+0x26/0x60 [smc_diag]
+>    netlink_dump+0x19f/0x320
+>    __netlink_dump_start+0x1dc/0x300
+>    smc_diag_handler_dump+0x6a/0x80 [smc_diag]
+>    ? __pfx_smc_diag_dump+0x10/0x10 [smc_diag]
+>    sock_diag_rcv_msg+0x121/0x140
+>    ? __pfx_sock_diag_rcv_msg+0x10/0x10
+>    netlink_rcv_skb+0x5a/0x110
+>    sock_diag_rcv+0x28/0x40
+>    netlink_unicast+0x22a/0x330
+>    netlink_sendmsg+0x1f8/0x420
+>    __sock_sendmsg+0xb0/0xc0
+>    ____sys_sendmsg+0x24e/0x300
+>    ? copy_msghdr_from_user+0x62/0x80
+>    ___sys_sendmsg+0x7c/0xd0
+>    ? __do_fault+0x34/0x160
+>    ? do_read_fault+0x5f/0x100
+>    ? do_fault+0xb0/0x110
+>    ? __handle_mm_fault+0x2b0/0x6c0
+>    __sys_sendmsg+0x4d/0x80
+>    do_syscall_64+0x69/0x180
+>    entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> 
+> It is possible that the connection is in process of being established
+> when we dump it. Assumed that the connection has been registered in a
+> link group by smc_conn_create() but the rmb_desc has not yet been
+> initialized by smc_buf_create(), thus causing the illegal access to
+> conn->rmb_desc. So fix it by checking before dump.
+> 
+> Fixes: 4b1b7d3b30a6 ("net/smc: add SMC-D diag support")
+> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+> ---
+> v2->v1: corrected the commit in Fixes tag.
+> (https://lore.kernel.org/netdev/20240117122749.63785-1-guwen@linux.alibaba.com/)
+> 
+>   net/smc/smc_diag.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
+> index 52f7c4f1e767..5a33908015f3 100644
+> --- a/net/smc/smc_diag.c
+> +++ b/net/smc/smc_diag.c
+> @@ -164,7 +164,7 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
+>   	}
+>   	if (smc_conn_lgr_valid(&smc->conn) && smc->conn.lgr->is_smcd &&
+>   	    (req->diag_ext & (1 << (SMC_DIAG_DMBINFO - 1))) &&
+> -	    !list_empty(&smc->conn.lgr->list)) {
+> +	    !list_empty(&smc->conn.lgr->list) && smc->conn.rmb_desc) {
+>   		struct smc_connection *conn = &smc->conn;
+>   		struct smcd_diag_dmbinfo dinfo;
+>   		struct smcd_dev *smcd = conn->lgr->smcd;
+
+That sounds reasonable to me! Thank you for the fix!
+
+Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
 
