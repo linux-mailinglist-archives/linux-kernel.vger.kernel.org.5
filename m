@@ -1,132 +1,86 @@
-Return-Path: <linux-kernel+bounces-29964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B558315DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 312938315D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:31:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAB2A1F26E5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:32:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B449B1F28FA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD05E208C6;
-	Thu, 18 Jan 2024 09:32:04 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7FA1F93F;
+	Thu, 18 Jan 2024 09:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TusqEuOj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1FC2030E
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934191F5FF;
+	Thu, 18 Jan 2024 09:31:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705570324; cv=none; b=EOYJWOmpytlaEtYiKSdgq9psYbPqQbxbnzDX3w0gqJc/dXkpqz4swMPaZ8d/KThlUs877HYiZrOwcaeE5JK0maSzEKNG7tYlw40TWrP2NzCuJR7I8hHjX3oB/50DU65rptasd2oSCMWD2TOmDK/Hi42ucKteLRyhOk9Cb7SKfag=
+	t=1705570276; cv=none; b=pf8qcoP2TjR/l6D6kCTWDdOb25kfCrXJspjIO315+nv8qjyMRX7KRvRpYWe8tKP854yZF9nkxyoaF9OxmdjMRMTJNWVeUMFLFsnmLcQoRmM+wdsXpwcycdvHifwcHWhmNI9ZlmsmRjLO1i1DPpyy4OWeXvM4tfk5+4HFAHUFKIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705570324; c=relaxed/simple;
-	bh=x4OR2QnV/+fgMTmdwS/QmOKbvtbDOKH/eK433t7NRV0=;
-	h=Received:Received:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:
-	 X-SA-Exim-Scanned:X-PTX-Original-Recipient; b=mK2+dIjEGIDRElHzgSlkof8F2xCDWm5PjAETlmXxl91/ixIBm4uqMwcp9pDvSkD/5gJdRG6be+M8TZCXenLE0h8hBNRIoqSuOOJomjAjtyCZiVLIKIdrD73zSCXmqrzKSthFenJgX57+rFOQ7agNds9pveDgcVUGgawTfUq0JdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQOj3-0002xz-Tn; Thu, 18 Jan 2024 10:30:17 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQOiy-000etK-Ax; Thu, 18 Jan 2024 10:30:12 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQOiy-002Ifg-0Y;
-	Thu, 18 Jan 2024 10:30:12 +0100
-Date: Thu, 18 Jan 2024 10:30:11 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: nikita.shubin@maquefel.me
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>, 
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>, 
-	Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
-	Guenter Roeck <linux@roeck-us.net>, Thierry Reding <thierry.reding@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Damien Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Ralf Baechle <ralf@linux-mips.org>, "Wu, Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, 
-	Olof Johansson <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
-	dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org, linux-pwm@vger.kernel.org, 
-	linux-spi@vger.kernel.org, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-ide@vger.kernel.org, linux-input@vger.kernel.org, linux-sound@vger.kernel.org, 
-	Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko <andriy.shevchenko@intel.com>, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v7 00/39] ep93xx device tree conversion
-Message-ID: <a54csycouodnmj6qarfel7cvgupaerl7uhrruixuy7uaekqgzw@2whufrjqunme>
-References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
+	s=arc-20240116; t=1705570276; c=relaxed/simple;
+	bh=3Ro5oDrOM89PXcFvsCKbt7YUP0R132LEtWDAKWQFa3U=;
+	h=Received:DKIM-Signature:Content-Type:MIME-Version:
+	 Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:
+	 Cc:User-Agent:Message-ID:Date; b=JLtyMzLFjhqvMhMuNLeHLcvs5HTSysjPL0JJnmjtE4qLRIxoTdokFp9i8hr38D4hdaWR+Y4Uc8tV4xitW7kEXBUW5phf9aQSZedEvrWEJaJMF0nldLHM602ywQemGxrbuWo0PY7oNssklSQW9wuxVVoz7EZVXVjEjohnCYLwevU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TusqEuOj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F6E1C43390;
+	Thu, 18 Jan 2024 09:31:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705570276;
+	bh=3Ro5oDrOM89PXcFvsCKbt7YUP0R132LEtWDAKWQFa3U=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=TusqEuOjSpvNpD3ixZ/hO2FutUweZUo2CdVZAQTGqwLlF7g+ep1f4JWs71ek9cKmG
+	 OKEcMw+fIxv48HRaci9zNdbzgFbpcy+Znw5BpR6OzVa1Ug8x8fMYHs3a7qCOA4r6YE
+	 9TXjo4t0e4vatc5O7T30+Dj8BR3xB0AjqNAyrfAHVh9sEtw+Wva/WIURxILRzbRyeS
+	 VkHwwQmcipGM/l0hsJwecYp3mKArcf0+O7SZu2/Ip5TM7ch/3Pkv+EwptmDEhNyxDV
+	 ZeoUDhAnVN1X8HwJPolvQAswm5bjUoUdpZr23uZ2FpLFS0l7KTXJt6E9s3P1kTLcT5
+	 ox3pJCeTkFgNQ==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s7rbtueqy4vwjth4"
-Content-Disposition: inline
-In-Reply-To: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/5] wifi: wilc1000: set preamble size to auto as default
+ in wilc_init_fw_config()
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240115-wilc_1000_fixes-v1-1-54d29463a738@bootlin.com>
+References: <20240115-wilc_1000_fixes-v1-1-54d29463a738@bootlin.com>
+To: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: linux-wireless@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ David Mosberger-Tang <davidm@egauge.net>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-kernel@vger.kernel.org,
+ =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170557027237.2797779.2354857290141885659.kvalo@kernel.org>
+Date: Thu, 18 Jan 2024 09:31:14 +0000 (UTC)
 
+Alexis Lothoré <alexis.lothore@bootlin.com> wrote:
 
---s7rbtueqy4vwjth4
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> From: Ajay Singh <ajay.kathat@microchip.com>
+> 
+> Changed the default value preamble to WILC_FW_PREAMBLE_AUTO in
+> wilc_init_fw_config().
+> 
+> Signed-off-by: Ajay Singh <ajay.kathat@microchip.com>
+> Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
 
-Hello,
+The commit message should always answer to the question "Why?". I can add that
+if you tell me what to add.
 
-On Thu, Jan 18, 2024 at 11:20:43AM +0300, Nikita Shubin via B4 Relay wrote:
-> No major changes since last version (v6) all changes are cometic.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20240115-wilc_1000_fixes-v1-1-54d29463a738@bootlin.com/
 
-Never saw changes described as "cometic". I guess that means "fast" and
-"high impact"?
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-SCNR
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---s7rbtueqy4vwjth4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWo76MACgkQj4D7WH0S
-/k5uKAf/Z0JDYxAVHNppDOc31mQ8q/h4mL5VX4NFHWitBkLRBX5sufWi6uUBbK7h
-KA9Z1DHWGNNXUXsV2IsXKsw6WcsC+Wj/g+hUfWMx2kvbnvD8JtYBl1+MJALeBVlt
-aQCy1yMPL36xcy8vSLyh63vZXUHyBaWuooRwVqOhklHSg7/rwSEwECEZZqsg748Z
-iiYmSVRjLlktw1yUtJBvlO1fXWQ41DSbyaQWaIJvbym8B5+2XXW2BTGZOg7CuDz5
-HG9KvXf2AnAEM4RAV6Oo/WKBBEq0kfQ/UBkkH85YOaXrDlNblggfMix84LyansxB
-43g95kkMn3JP3koNgEA+nk73+SCctA==
-=1qlI
------END PGP SIGNATURE-----
-
---s7rbtueqy4vwjth4--
 
