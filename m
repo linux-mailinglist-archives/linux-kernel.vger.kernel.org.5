@@ -1,145 +1,104 @@
-Return-Path: <linux-kernel+bounces-30112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B378883195D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 29037831967
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:47:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CA7D282F3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:45:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB9BB286545
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF4824B53;
-	Thu, 18 Jan 2024 12:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F3A24B4E;
+	Thu, 18 Jan 2024 12:47:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="sJB4mONY"
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Bok4Q69+"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C055E25116
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 12:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525D124B3A
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 12:47:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705581896; cv=none; b=ihvLkhaQRIooUThaDBpT6/ljmuhAhrkHCNrLW8qxJwNqL0DNZqwXkJWhdE+4Rev9YJXMjMT/lm5rtL0HYBC/LjK1+HsykrOLmZthfOfdcwOPu8GRvLglkEgZq5wErRqz5e6iLlWeUnqh5PWG25VtTmBuKykMxCDtrVpuvekNOyw=
+	t=1705582029; cv=none; b=PThlp9u7/168XBNtzYO9fkirrJkMPRDHlId6Uvvu33l5g1IbTDqcQFWyL3JYG2wUqBxOOs6j/i984TPNrsLdsJv2f/xmT24jmXHX4+80vcIxeX4WhTtKKZJXBI5wdbsNnugLvUT6wE8HpvKvMiIIPlQ+RLa8Lo/s31A7tY3jMA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705581896; c=relaxed/simple;
-	bh=37Nm1D6XQrs+VsUMHb4aux5DEe0RfLXArjfaU4qNE7E=;
+	s=arc-20240116; t=1705582029; c=relaxed/simple;
+	bh=7hzv9Q2RyFYsBMK7cp2sHJQU4W1HVKR0nok44qQw548=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
 	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=jeh/N8l1GoGqqpMv3fkRFScKv+/dyeIsr5K0pdnJe9D8WjZAc6Lw3rum/AHieyzSrRb1HS0PJZvNVLLzxiTnzIrtzw6ud9Ke37MYn7BWSNn03biZa2K6YxsxRGKJ5Doj+2q8WX/d9zP8RzpRDO0BSn77uo0JiLHpjpAYZ2NO410=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=sJB4mONY; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3608cfa5ce6so56361385ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 04:44:54 -0800 (PST)
+	 Content-Type:Content-Transfer-Encoding; b=b4oOYu9JG/g0Ac6/XJjhjlTKmoYte5VOCFRjY9M4uf3ZgDESBqHGXfioCZa4MzRpfxkeNSSenl3J0MTCdK8wAriQuAmvaPez7f2gitWWmqKBy+OzEe5kt2QPMQKGSpZ0YNQBVK8t4jjcdbdrKqdJtavdOxkQlUrIS16H8S7RLiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Bok4Q69+; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7831ed13d39so968075185a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 04:47:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1705581894; x=1706186694; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1705582027; x=1706186827; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6CWJqfzPlIKbIm9XXUGeYPV3xbAqaiB/K2JIOon3tWs=;
-        b=sJB4mONYac4ucb+zlyOttrKg+C2KJdOhwVGrwOOOqeAhzOkQgatCRZ/XS6iyDeRQ1J
-         LxKZhW6YnLCyUDVymX2un0bqI6gqc+ClQr8OJKRfF089QLglA8DMMRNoP1Fiae/4cOaT
-         tVKJBSMyPJUMOFEKv2+3d/St9EDiz4IkRbeG3JNmYLGeC0ZE0GDjA+GXyS+uL2NPWFW+
-         eChxVp1f7KztacUVaud4fLTsX+wqk9t47ltJNTwCL/KCf/021hCZVD7rOku9fDkSjeWy
-         9z8IToguiLrlmkU4jrVIXgf0HO0icZjunON4RNbgkUovKIXq9kg2Mn6sMp9bkYkbv9T0
-         plyA==
+        bh=7hzv9Q2RyFYsBMK7cp2sHJQU4W1HVKR0nok44qQw548=;
+        b=Bok4Q69+HhXa8aXkt8tCjve0evBtlKS5Avm+SDiXbV2MZcwMoGEXAAYvW95sTJ6wra
+         lQYYs4Mubuj9GLrfK+q1m87TB7IngUmlWs0PikpLblo8md+0B4c1n5j0bFa38nL/gKUk
+         U0o4cMMLrN0dBlxzgUuZE59Wu5D73Hntp6XVMYwK5t0wJ5qFvn1JaGdpLDHt5I2iktJ0
+         o5yhRbfi0ML7X70uoCdxMxQ3obaUBr+Lm+H/zZgVZj/0HzFE6Abd5s0hUlQE1k6ppF/v
+         2OtYzpH9qNvhqL3XGjZMm2uUmpbwOVg++/4Z9Gk+aQN90NDnwbLEK/iZGFQ+/OtMReG5
+         RtqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705581894; x=1706186694;
+        d=1e100.net; s=20230601; t=1705582027; x=1706186827;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6CWJqfzPlIKbIm9XXUGeYPV3xbAqaiB/K2JIOon3tWs=;
-        b=WI+RzJWYB5yoe5AerVYwu6FUkyFaL+Et1IEIcqNrzJDKusB+oH+UNf1oKRDYaGca3N
-         XGxMnimDFWXe9seAOj0f61GDqROo4akHeD4mZbzxXUvhnkmuzq3qRuUpsKxI8VozPWk/
-         H8iPPxQITG7CBkxq54uBd2aQCK9JmWrdvPw2KWXlaqGjv4q3cOw44N+2TamqqOOIZ4/5
-         WoYEbW3VLLsWrjR2AlE4YfdpjZztrePrcb4fRdvMJobti24kL/3Twc+BPh0VaByGUvhG
-         njRtaue63Ty0krYTN+B8DWj6wusNI1cKrcMNPqGSJNDCZQWus42jlKPEsQ6D4+sKUFCY
-         1sxw==
-X-Gm-Message-State: AOJu0YzOJwZgIeEjLnGvaa06yXpuWiDrARIB6F/ifkXtLeqAd0wS5dgx
-	zVDDJcCg5aVLGwQNINjCrgiYU5nvdYd55B5t75JX70D3p7NtqA/iKNCadpOrrQIpkrfngxhg+X6
-	Rmmp2VdcIElvJ5yFArfKS/YMIFhAs/synXMF9LQ==
-X-Google-Smtp-Source: AGHT+IFJ1bu7mCR98lyWrW+kDP0nULQ1bDHopDCzu01vUiZEYsTfjPTku/pcO21lNxa+IQGYXi5gy2BL1dSF+jC1bNQ=
-X-Received: by 2002:a05:6e02:96d:b0:361:a21d:d492 with SMTP id
- q13-20020a056e02096d00b00361a21dd492mr227444ilt.24.1705581893859; Thu, 18 Jan
- 2024 04:44:53 -0800 (PST)
+        bh=7hzv9Q2RyFYsBMK7cp2sHJQU4W1HVKR0nok44qQw548=;
+        b=iL42uAyqgpUb1TwE9Q/67GyTQrgT9s2DeULVycC8FzxwR2aNQdjpGCgV9hQpycRXM5
+         ja61PRh+96U1me4s8BBROAEsxWfdhcoGZzlJeoMdo82Ltg1v3u/LXfMMsLedOlzkr+Hi
+         vWFc6d9L1j4TMOTk3DynGwt6wrWW+9F0oWl6dgUngt+5QPKlRlv/JW/4b4bKCluWINek
+         GCE0+SpcK3IlW3rBFNMaF13wOvmqVMdQmNyq6LfxIqpFEs+jub02ZpBtz8P03CZ47iYn
+         ZQxQ3QB5cAKTrAFUv10AOXRScYe+ZnFFyH6GqPiCT7M+bAyAMoUGHWetpP91GR/AQXbn
+         i0hw==
+X-Gm-Message-State: AOJu0Yxgnjla/kyAho1VWVp6B8NHKPLh5xF2Gexb5UsQPbLo5pPRPbNz
+	vPNPU7+EDIaPfj3P8rgNOTt5NZQ+Azpxn6YA0TWtaMHEqxPkv75/9juICvVJXWP8JQRPzj8fdGv
+	nCmgquc6t+Los1IrKhw+4AZAHiUYcyf/wweyT
+X-Google-Smtp-Source: AGHT+IGsc6OnJVHcfGaSFGChfKZlDVpuDJr0DO/x+dFmITX18h5L8MTKUba0d5F7q2XP/CeYGYm0PJbdBCiSQGqqXQI=
+X-Received: by 2002:a0c:f2cf:0:b0:681:7867:fbb9 with SMTP id
+ c15-20020a0cf2cf000000b006817867fbb9mr747219qvm.88.1705582027089; Thu, 18 Jan
+ 2024 04:47:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231128145357.413321-1-apatel@ventanamicro.com>
-In-Reply-To: <20231128145357.413321-1-apatel@ventanamicro.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Thu, 18 Jan 2024 18:14:42 +0530
-Message-ID: <CAAhSdy0Q8raGzH_mUsvAo++KmWu3yqBkjNTrn8CO-ZCiYEY9Cw@mail.gmail.com>
-Subject: Re: [PATCH 00/15] KVM RISC-V report more ISA extensions through ONE_REG
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Atish Patra <atishp@atishpatra.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Shuah Khan <shuah@kernel.org>, Andrew Jones <ajones@ventanamicro.com>, devicetree@vger.kernel.org, 
-	kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+References: <20240118110022.2538350-1-elver@google.com> <CANpmjNPx0j-x_SDu777gaV1oOFuPmHV3xFfru56UzBXHnZhYLg@mail.gmail.com>
+ <cd742d1d-70a3-586b-4bf5-fcfc94c75b4a@quicinc.com>
+In-Reply-To: <cd742d1d-70a3-586b-4bf5-fcfc94c75b4a@quicinc.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Thu, 18 Jan 2024 13:46:26 +0100
+Message-ID: <CAG_fn=VMTOJn+wtg0NfE2bFtuh_OY1DQeMu0KB5u4sjS05sXgw@mail.gmail.com>
+Subject: Re: [PATCH] mm, kmsan: fix infinite recursion due to RCU critical section
+To: Charan Teja Kalla <quic_charante@quicinc.com>
+Cc: Marco Elver <elver@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Dmitry Vyukov <dvyukov@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 28, 2023 at 8:24=E2=80=AFPM Anup Patel <apatel@ventanamicro.com=
-> wrote:
+On Thu, Jan 18, 2024 at 12:28=E2=80=AFPM Charan Teja Kalla
+<quic_charante@quicinc.com> wrote:
 >
-> This extends the KVM RISC-V ONE_REG interface to report more ISA extensio=
-ns
-> namely: Zbz, scalar crypto, vector crypto, Zfh[min], Zihintntl, Zvfh[min]=
-,
-> and Zfa.
->
-> This series depends upon the "riscv: report more ISA extensions through
-> hwprobe" series.from Clement.
-> (Link: https://lore.kernel.org/lkml/20231114141256.126749-1-cleger@rivosi=
-nc.com/)
->
-> To test these patches, use KVMTOOL from the riscv_more_exts_v1 branch at:
-> https://github.com/avpatel/kvmtool.git
->
-> These patches can also be found in the riscv_kvm_more_exts_v1 branch at:
-> https://github.com/avpatel/linux.git
->
-> Anup Patel (15):
->   KVM: riscv: selftests: Generate ISA extension reg_list using macros
->   RISC-V: KVM: Allow Zbc extension for Guest/VM
->   KVM: riscv: selftests: Add Zbc extension to get-reg-list test
->   RISC-V: KVM: Allow scalar crypto extensions for Guest/VM
->   KVM: riscv: selftests: Add scaler crypto extensions to get-reg-list
->     test
->   RISC-V: KVM: Allow vector crypto extensions for Guest/VM
->   KVM: riscv: selftests: Add vector crypto extensions to get-reg-list
->     test
->   RISC-V: KVM: Allow Zfh[min] extensions for Guest/VM
->   KVM: riscv: selftests: Add Zfh[min] extensions to get-reg-list test
->   RISC-V: KVM: Allow Zihintntl extension for Guest/VM
->   KVM: riscv: selftests: Add Zihintntl extension to get-reg-list test
->   RISC-V: KVM: Allow Zvfh[min] extensions for Guest/VM
->   KVM: riscv: selftests: Add Zvfh[min] extensions to get-reg-list test
->   RISC-V: KVM: Allow Zfa extension for Guest/VM
->   KVM: riscv: selftests: Add Zfa extension to get-reg-list test
+> May I ask if KMSAN also instruments the access to the memory managed as
+> ZONE_DEVICE. You know this is not the RAM and also these pages will
+> never be onlined thus also not be available in buddy.
 
-The first PATCH is already merged in upstream Linux.
+Is there a way to tell whether a memory chunk belongs to ZONE_DEVICE
+by its address?
+Won't such check involve calling pfn_valid() or a similar function
+that would also require synchronization?
 
-I have rebased and queued the remaining patches for Linux-6.8.
-
-Regards,
-Anup
-
->
->  arch/riscv/include/uapi/asm/kvm.h             |  27 ++
->  arch/riscv/kvm/vcpu_onereg.c                  |  54 +++
->  .../selftests/kvm/riscv/get-reg-list.c        | 439 ++++++++----------
->  3 files changed, 265 insertions(+), 255 deletions(-)
->
-> --
-> 2.34.1
->
+In general, if e.g. one can call memset() on ZONE_DEVICE memory, it is
+already going to be instrumented by KMSAN.
 
