@@ -1,152 +1,309 @@
-Return-Path: <linux-kernel+bounces-29896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BC3A8314D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:38:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F7EC8314DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DB011C22123
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:38:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 188AA1F24FA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89DB128DB8;
-	Thu, 18 Jan 2024 08:29:16 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4A82942A;
+	Thu, 18 Jan 2024 08:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="y7IlbFvt";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="CYHaaf5R";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="y7IlbFvt";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="CYHaaf5R"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C9C28DB4
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 08:29:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4314D2940B;
+	Thu, 18 Jan 2024 08:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705566556; cv=none; b=erAVgK79eTPT/hG0iLmflzndoibO9X2kjvzU6qoDeEaHLNoOi7fxkWahzeVw8tFsHFvnJY61maWaetzxEtBocPA0h5YBZY7rC1k/2d7Abx43fN7We7u5pgxJPPxoD3VCPWwn7yglNhCEPkTrxVTpuRwmKBjE8mE8EW1+9Ip2ybk=
+	t=1705566617; cv=none; b=IcU+GLpGx+wOxKVRIvcQqrm7+t06reyf80Uy8r0RL4DDWFheLa2MsQjVFXUskB5Wp6JAkahZMj+vRLKDYPq7P/Do3KKSmAdfnjlo2nJxI36ovHTJaZODMRpM1HxG2CQurjPxwEf9qaNZxYp5cQO3eyH2t6p+58rMOtoF4ZRo0xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705566556; c=relaxed/simple;
-	bh=2AYP5CD9AZz8aB6EdtcR9jZS/dHOeqWoSjb7AvRioso=;
-	h=Received:Received:Received:Date:From:To:Cc:Subject:Message-ID:
-	 MIME-Version:Content-Type:Content-Disposition:X-SA-Exim-Connect-IP:
-	 X-SA-Exim-Mail-From:X-SA-Exim-Scanned:X-PTX-Original-Recipient; b=XWlYiQ7M6lyc5tFZsQ8ptRKR096wdHTvEsnVaWCdySEWAqHlpkU4dj2aDGwIQ3/HxWbAr1e6+pc81clia1dqD3/NJiqEPPiuPAvg4SmvjTqsKODasLI3lMV/xVE0D9ohfAZLieIB4SubPEyQ1VEMVCklZxbcmn6YbDVVn1o5c0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQNlv-0005et-5z; Thu, 18 Jan 2024 09:29:11 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQNlu-000eGH-My; Thu, 18 Jan 2024 09:29:10 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQNlu-002Gq5-21;
-	Thu, 18 Jan 2024 09:29:10 +0100
-Date: Thu, 18 Jan 2024 09:29:10 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Sean Young <sean@mess.org>, kernel@pengutronix.de
-Subject: [GIT PULL] pwm: Changes for v6.8-rc1, take 2
-Message-ID: <sbjugedbn2pyqcskybmxj2evju74ldyiwugnjpu4u5ln7ufrfj@m7hi2ie63aai>
+	s=arc-20240116; t=1705566617; c=relaxed/simple;
+	bh=ozEtRDovwQ9HKcq5Lq9pRgZfRZYSRvRqieYTeknXktg=;
+	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
+	 DKIM-Signature:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:Content-Language:To:Cc:References:From:
+	 Autocrypt:In-Reply-To:Content-Type:X-Spamd-Result:X-Rspamd-Server:
+	 X-Rspamd-Queue-Id:X-Spam-Level:X-Spam-Score:X-Spam-Flag; b=etg/TYqJayJHvzossQintrQi2GE23NK39oZ5wudR8JKL4uyXpYpbHYvjHt95too0GTFtC1ov2VzWMAgYKv9WVwBbHMCa9I00BYKhUiXZ6zcX9OvkEJI5M5ndh+X+10pCs4HMu2dC2q9Fm6sG7vRjeMQZ89OV7D9NU4bl4iPyXdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=y7IlbFvt; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=CYHaaf5R; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=y7IlbFvt; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=CYHaaf5R; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 52E70222BD;
+	Thu, 18 Jan 2024 08:30:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705566613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ozEtRDovwQ9HKcq5Lq9pRgZfRZYSRvRqieYTeknXktg=;
+	b=y7IlbFvtudo6t7J3NPU5RGi+lE+cYIBpNMVNAv4oJAjK0IkCFNAJ8lZp/+3Cen96ydGwJv
+	9aVpJ86XqCFDJeh315ycRRFqBi7r9ln68v60yF4O//3yFX5+zH+lpMZsWwUHnJL0yYkyyS
+	owKB7IXOQEaHNri2WSdN7VIV0W6h8Z8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705566613;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ozEtRDovwQ9HKcq5Lq9pRgZfRZYSRvRqieYTeknXktg=;
+	b=CYHaaf5Ravr7Aa2lkq5UcQeSLUY702upzj7uDgnX29ZUOTAyw3cBhStxlvgZvN9+yhLNy9
+	yRUV5f9644G2YDBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705566613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ozEtRDovwQ9HKcq5Lq9pRgZfRZYSRvRqieYTeknXktg=;
+	b=y7IlbFvtudo6t7J3NPU5RGi+lE+cYIBpNMVNAv4oJAjK0IkCFNAJ8lZp/+3Cen96ydGwJv
+	9aVpJ86XqCFDJeh315ycRRFqBi7r9ln68v60yF4O//3yFX5+zH+lpMZsWwUHnJL0yYkyyS
+	owKB7IXOQEaHNri2WSdN7VIV0W6h8Z8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705566613;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ozEtRDovwQ9HKcq5Lq9pRgZfRZYSRvRqieYTeknXktg=;
+	b=CYHaaf5Ravr7Aa2lkq5UcQeSLUY702upzj7uDgnX29ZUOTAyw3cBhStxlvgZvN9+yhLNy9
+	yRUV5f9644G2YDBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15ACA136F5;
+	Thu, 18 Jan 2024 08:30:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ELcFBJXhqGVMJwAAD6G6ig
+	(envelope-from <tzimmermann@suse.de>); Thu, 18 Jan 2024 08:30:13 +0000
+Message-ID: <39622a13-3999-4bf6-b8fc-f7a70c8cd5da@suse.de>
+Date: Thu, 18 Jan 2024 09:30:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="oel4hbh7smqzfdfw"
-Content-Disposition: inline
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 31/45] tty: vt: use VESA blanking constants
+Content-Language: en-US
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>, gregkh@linuxfoundation.org
+Cc: linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+ Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ linux-serial@vger.kernel.org
+References: <20240118075756.10541-1-jirislaby@kernel.org>
+ <20240118075756.10541-32-jirislaby@kernel.org>
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20240118075756.10541-32-jirislaby@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------h0vEtYR4n9cc2zehO4z3Os4l"
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=y7IlbFvt;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=CYHaaf5R
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 HAS_ATTACHMENT(0.00)[];
+	 MIME_BASE64_TEXT_BOGUS(1.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MIME_BASE64_TEXT(0.10)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MX_GOOD(-0.01)[];
+	 SIGNED_PGP(-2.00)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[hansenpartnership.com:email,suse.de:dkim,lists.freedesktop.org:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,gmx.de,lists.freedesktop.org,HansenPartnership.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 52E70222BD
+X-Spam-Level: 
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------h0vEtYR4n9cc2zehO4z3Os4l
+Content-Type: multipart/mixed; boundary="------------2w6xYYv6Qqcu08jEk1kOTx55";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>, gregkh@linuxfoundation.org
+Cc: linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+ Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ linux-serial@vger.kernel.org
+Message-ID: <39622a13-3999-4bf6-b8fc-f7a70c8cd5da@suse.de>
+Subject: Re: [PATCH 31/45] tty: vt: use VESA blanking constants
+References: <20240118075756.10541-1-jirislaby@kernel.org>
+ <20240118075756.10541-32-jirislaby@kernel.org>
+In-Reply-To: <20240118075756.10541-32-jirislaby@kernel.org>
 
---oel4hbh7smqzfdfw
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--------------2w6xYYv6Qqcu08jEk1kOTx55
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Hello Linus,
+SGkNCg0KQW0gMTguMDEuMjQgdW0gMDg6NTcgc2NocmllYiBKaXJpIFNsYWJ5IChTVVNFKToN
+Cj4gVGhlcmUgYXJlIFZFU0EgYmxhbmtpbmcgY29uc3RhbnRzIGRlZmluZWQgaW4gY29uc29s
+ZS5oIGFscmVhZHkuIFNvIHVzZQ0KPiB0aGVtIGluIHRoZSBjb25zb2xlIGNvZGUgaW5zdGVh
+ZCBvZiBjb25zdGFudCB2YWx1ZXMuDQoNClRoZXNlIGNvbnN0YW50cyBhbHNvIGV4aXN0IGlu
+IGluY2x1ZGUvdWFwaS9saW51eC9mYi5oLiBJdCB3b3VsZCBiZSBuaWNlIA0KdG8gZmluZCBh
+IGNvbW1vbiBoZWFkZXIgd2hlcmUgdGhleSBjYW4gYmUgc2hhcmVkLg0KDQpCZXN0IHJlZ2Fy
+ZHMNClRob21hcw0KDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBKaXJpIFNsYWJ5IChTVVNFKSA8
+amlyaXNsYWJ5QGtlcm5lbC5vcmc+DQo+IENjOiBIZWxnZSBEZWxsZXIgPGRlbGxlckBnbXgu
+ZGU+DQo+IENjOiAiSmFtZXMgRS5KLiBCb3R0b21sZXkiIDxKYW1lcy5Cb3R0b21sZXlASGFu
+c2VuUGFydG5lcnNoaXAuY29tPg0KPiBDYzogbGludXgtZmJkZXZAdmdlci5rZXJuZWwub3Jn
+DQo+IENjOiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnDQo+IENjOiBsaW51eC1w
+YXJpc2NAdmdlci5rZXJuZWwub3JnDQo+IC0tLQ0KPiAgIGRyaXZlcnMvdHR5L3Z0L3Z0LmMg
+ICAgICAgICAgICAgICAgIHwgOSArKysrKy0tLS0NCj4gICBkcml2ZXJzL3ZpZGVvL2NvbnNv
+bGUvbmV3cG9ydF9jb24uYyB8IDIgKy0NCj4gICBkcml2ZXJzL3ZpZGVvL2NvbnNvbGUvc3Rp
+Y29uLmMgICAgICB8IDIgKy0NCj4gICBkcml2ZXJzL3ZpZGVvL2NvbnNvbGUvdmdhY29uLmMg
+ICAgICB8IDYgKysrLS0tDQo+ICAgNCBmaWxlcyBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCsp
+LCA5IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdHR5L3Z0L3Z0
+LmMgYi9kcml2ZXJzL3R0eS92dC92dC5jDQo+IGluZGV4IDI3OWY4MDJhYTIyMi4uNmY0NmZl
+ZmVkY2ZiIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3R0eS92dC92dC5jDQo+ICsrKyBiL2Ry
+aXZlcnMvdHR5L3Z0L3Z0LmMNCj4gQEAgLTQzMzQsNyArNDMzNCw3IEBAIHN0YXRpYyBpbnQg
+c2V0X3Zlc2FfYmxhbmtpbmcodTggX191c2VyICptb2RlX3VzZXIpDQo+ICAgCQlyZXR1cm4g
+LUVGQVVMVDsNCj4gICANCj4gICAJY29uc29sZV9sb2NrKCk7DQo+IC0JdmVzYV9ibGFua19t
+b2RlID0gKG1vZGUgPCA0KSA/IG1vZGUgOiAwOw0KPiArCXZlc2FfYmxhbmtfbW9kZSA9ICht
+b2RlIDwgNCkgPyBtb2RlIDogVkVTQV9OT19CTEFOS0lORzsNCj4gICAJY29uc29sZV91bmxv
+Y2soKTsNCj4gICANCj4gICAJcmV0dXJuIDA7DQo+IEBAIC00MzYxLDcgKzQzNjEsNyBAQCB2
+b2lkIGRvX2JsYW5rX3NjcmVlbihpbnQgZW50ZXJpbmdfZ2Z4KQ0KPiAgIAlpZiAoZW50ZXJp
+bmdfZ2Z4KSB7DQo+ICAgCQloaWRlX2N1cnNvcih2Yyk7DQo+ICAgCQlzYXZlX3NjcmVlbih2
+Yyk7DQo+IC0JCXZjLT52Y19zdy0+Y29uX2JsYW5rKHZjLCAxLCAxKTsNCj4gKwkJdmMtPnZj
+X3N3LT5jb25fYmxhbmsodmMsIFZFU0FfVlNZTkNfU1VTUEVORCwgMSk7DQo+ICAgCQljb25z
+b2xlX2JsYW5rZWQgPSBmZ19jb25zb2xlICsgMTsNCj4gICAJCWJsYW5rX3N0YXRlID0gYmxh
+bmtfb2ZmOw0KPiAgIAkJc2V0X29yaWdpbih2Yyk7DQo+IEBAIC00MzgyLDcgKzQzODIsOCBA
+QCB2b2lkIGRvX2JsYW5rX3NjcmVlbihpbnQgZW50ZXJpbmdfZ2Z4KQ0KPiAgIA0KPiAgIAlz
+YXZlX3NjcmVlbih2Yyk7DQo+ICAgCS8qIEluIGNhc2Ugd2UgbmVlZCB0byByZXNldCBvcmln
+aW4sIGJsYW5raW5nIGhvb2sgcmV0dXJucyAxICovDQo+IC0JaSA9IHZjLT52Y19zdy0+Y29u
+X2JsYW5rKHZjLCB2ZXNhX29mZl9pbnRlcnZhbCA/IDEgOiAodmVzYV9ibGFua19tb2RlICsg
+MSksIDApOw0KPiArCWkgPSB2Yy0+dmNfc3ctPmNvbl9ibGFuayh2YywgdmVzYV9vZmZfaW50
+ZXJ2YWwgPyBWRVNBX1ZTWU5DX1NVU1BFTkQgOg0KPiArCQkJCSAodmVzYV9ibGFua19tb2Rl
+ICsgMSksIDApOw0KPiAgIAljb25zb2xlX2JsYW5rZWQgPSBmZ19jb25zb2xlICsgMTsNCj4g
+ICAJaWYgKGkpDQo+ICAgCQlzZXRfb3JpZ2luKHZjKTsNCj4gQEAgLTQ0MzMsNyArNDQzNCw3
+IEBAIHZvaWQgZG9fdW5ibGFua19zY3JlZW4oaW50IGxlYXZpbmdfZ2Z4KQ0KPiAgIAl9DQo+
+ICAgDQo+ICAgCWNvbnNvbGVfYmxhbmtlZCA9IDA7DQo+IC0JaWYgKHZjLT52Y19zdy0+Y29u
+X2JsYW5rKHZjLCAwLCBsZWF2aW5nX2dmeCkpDQo+ICsJaWYgKHZjLT52Y19zdy0+Y29uX2Js
+YW5rKHZjLCBWRVNBX05PX0JMQU5LSU5HLCBsZWF2aW5nX2dmeCkpDQo+ICAgCQkvKiBMb3ct
+bGV2ZWwgZHJpdmVyIGNhbm5vdCByZXN0b3JlIC0+IGRvIGl0IG91cnNlbHZlcyAqLw0KPiAg
+IAkJdXBkYXRlX3NjcmVlbih2Yyk7DQo+ICAgCWlmIChjb25zb2xlX2JsYW5rX2hvb2spDQo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpZGVvL2NvbnNvbGUvbmV3cG9ydF9jb24uYyBiL2Ry
+aXZlcnMvdmlkZW8vY29uc29sZS9uZXdwb3J0X2Nvbi5jDQo+IGluZGV4IDAzOWQxYzk5Mzdk
+Mi4uYWQzYTA5MTQyNzcwIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3ZpZGVvL2NvbnNvbGUv
+bmV3cG9ydF9jb24uYw0KPiArKysgYi9kcml2ZXJzL3ZpZGVvL2NvbnNvbGUvbmV3cG9ydF9j
+b24uYw0KPiBAQCAtNDgwLDcgKzQ4MCw3IEBAIHN0YXRpYyBpbnQgbmV3cG9ydF9ibGFuayhz
+dHJ1Y3QgdmNfZGF0YSAqYywgaW50IGJsYW5rLCBpbnQgbW9kZV9zd2l0Y2gpDQo+ICAgew0K
+PiAgIAl1bnNpZ25lZCBzaG9ydCB0cmVnOw0KPiAgIA0KPiAtCWlmIChibGFuayA9PSAwKSB7
+DQo+ICsJaWYgKGJsYW5rID09IFZFU0FfTk9fQkxBTktJTkcpIHsNCj4gICAJCS8qIHVuYmxh
+bmsgY29uc29sZSAqLw0KPiAgIAkJdHJlZyA9IG5ld3BvcnRfdmMyX2dldChucHJlZ3MsIFZD
+Ml9JUkVHX0NPTlRST0wpOw0KPiAgIAkJbmV3cG9ydF92YzJfc2V0KG5wcmVncywgVkMyX0lS
+RUdfQ09OVFJPTCwNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlkZW8vY29uc29sZS9zdGlj
+b24uYyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS9zdGljb24uYw0KPiBpbmRleCBmM2JiNDhh
+MGU5ODAuLjgxN2I4OWM0NWU4MSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy92aWRlby9jb25z
+b2xlL3N0aWNvbi5jDQo+ICsrKyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS9zdGljb24uYw0K
+PiBAQCAtMzAwLDcgKzMwMCw3IEBAIHN0YXRpYyBib29sIHN0aWNvbl9zd2l0Y2goc3RydWN0
+IHZjX2RhdGEgKmNvbnApDQo+ICAgDQo+ICAgc3RhdGljIGludCBzdGljb25fYmxhbmsoc3Ry
+dWN0IHZjX2RhdGEgKmMsIGludCBibGFuaywgaW50IG1vZGVfc3dpdGNoKQ0KPiAgIHsNCj4g
+LSAgICBpZiAoYmxhbmsgPT0gMCkgew0KPiArICAgIGlmIChibGFuayA9PSBWRVNBX05PX0JM
+QU5LSU5HKSB7DQo+ICAgCWlmIChtb2RlX3N3aXRjaCkNCj4gICAJICAgIHZnYV9pc19nZngg
+PSAwOw0KPiAgIAlyZXR1cm4gMTsNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlkZW8vY29u
+c29sZS92Z2Fjb24uYyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS92Z2Fjb24uYw0KPiBpbmRl
+eCA1MDI1YWI1MDFmMDIuLjkxMGRjNzM4NzRiNyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy92
+aWRlby9jb25zb2xlL3ZnYWNvbi5jDQo+ICsrKyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS92
+Z2Fjb24uYw0KPiBAQCAtODAwLDEwICs4MDAsMTAgQEAgc3RhdGljIHZvaWQgdmdhX3BhbF9i
+bGFuayhzdHJ1Y3Qgdmdhc3RhdGUgKnN0YXRlKQ0KPiAgIHN0YXRpYyBpbnQgdmdhY29uX2Js
+YW5rKHN0cnVjdCB2Y19kYXRhICpjLCBpbnQgYmxhbmssIGludCBtb2RlX3N3aXRjaCkNCj4g
+ICB7DQo+ICAgCXN3aXRjaCAoYmxhbmspIHsNCj4gLQljYXNlIDA6CQkvKiBVbmJsYW5rICov
+DQo+ICsJY2FzZSBWRVNBX05PX0JMQU5LSU5HOgkJLyogVW5ibGFuayAqLw0KPiAgIAkJaWYg
+KHZnYV92ZXNhX2JsYW5rZWQpIHsNCj4gICAJCQl2Z2FfdmVzYV91bmJsYW5rKCZ2Z2FzdGF0
+ZSk7DQo+IC0JCQl2Z2FfdmVzYV9ibGFua2VkID0gMDsNCj4gKwkJCXZnYV92ZXNhX2JsYW5r
+ZWQgPSBWRVNBX05PX0JMQU5LSU5HOw0KPiAgIAkJfQ0KPiAgIAkJaWYgKHZnYV9wYWxldHRl
+X2JsYW5rZWQpIHsNCj4gICAJCQl2Z2Ffc2V0X3BhbGV0dGUoYywgY29sb3JfdGFibGUpOw0K
+PiBAQCAtODEzLDcgKzgxMyw3IEBAIHN0YXRpYyBpbnQgdmdhY29uX2JsYW5rKHN0cnVjdCB2
+Y19kYXRhICpjLCBpbnQgYmxhbmssIGludCBtb2RlX3N3aXRjaCkNCj4gICAJCXZnYV9pc19n
+ZnggPSBmYWxzZTsNCj4gICAJCS8qIFRlbGwgY29uc29sZS5jIHRoYXQgaXQgaGFzIHRvIHJl
+c3RvcmUgdGhlIHNjcmVlbiBpdHNlbGYgKi8NCj4gICAJCXJldHVybiAxOw0KPiAtCWNhc2Ug
+MToJCS8qIE5vcm1hbCBibGFua2luZyAqLw0KPiArCWNhc2UgVkVTQV9WU1lOQ19TVVNQRU5E
+OgkvKiBOb3JtYWwgYmxhbmtpbmcgKi8NCj4gICAJCWlmICghbW9kZV9zd2l0Y2ggJiYgdmdh
+X3ZpZGVvX3R5cGUgPT0gVklERU9fVFlQRV9WR0FDKSB7DQo+ICAgCQkJdmdhX3BhbF9ibGFu
+aygmdmdhc3RhdGUpOw0KPiAgIAkJCXZnYV9wYWxldHRlX2JsYW5rZWQgPSB0cnVlOw0KDQot
+LSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNF
+IFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZyYW5rZW5zdHJhc3NlIDE0Niwg
+OTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRvdGV2LCBBbmRyZXcgTXllcnMs
+IEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpIUkIgMzY4MDkgKEFHIE51ZXJu
+YmVyZykNCg==
 
-the following changes since commit 7afc0e7f681e6efd6b826f003fc14c17b5093643:
+--------------2w6xYYv6Qqcu08jEk1kOTx55--
 
-  MAINTAINERS: pwm: Thierry steps down, Uwe takes over (2024-01-12 16:40:34=
- +0100)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/ukleinek/linux tags/pwm/=
-for-6.8-2
-
-for you to fetch changes up to 9320fc509b87b4d795fb37112931e2f4f8b5c55f:
-
-  pwm: jz4740: Don't use dev_err_probe() in .request() (2024-01-12 18:25:05=
- +0100)
-
-The commits are in next since next-20240117 only, but they are small
-and obvious enough to qualify for inclusion IMHO.
-
-Please pull this for v6.8-rc1.
-
-Thanks to Sean for his contribution to this PR.
-
-Best regards
-Uwe
-
-----------------------------------------------------------------
-pwm changes for 6.8, take 2
-
-The first commit fixes a duplicate cleanup in an error path introduced
-in pwm/for-6.8-rc1~13.
-
-The second cares for an out-of-bounds access. In practise it doesn't
-happen---otherwise someone would have noticed since v5.17-rc1 I
-guess---because the device tree binding for the two drivers using
-of_pwm_single_xlate() only have args->args_count =3D=3D 1. A device-tree
-that doesn't conform to the respective bindings could trigger that
-easily however.
-
-The third and last one corrects the request callback of the jz4740 pwm
-driver which used dev_err_probe() long after .probe() completed. This is
-conceptually wrong because dev_err_probe() might call
-device_set_deferred_probe_reason() which is nonsensical after the driver
-is bound.
-----------------------------------------------------------------
-
-Sean Young (1):
-      pwm: bcm2835: Remove duplicate call to clk_rate_exclusive_put()
-
-Uwe Kleine-K=F6nig (2):
-      pwm: Fix out-of-bounds access in of_pwm_single_xlate()
-      pwm: jz4740: Don't use dev_err_probe() in .request()
-
- drivers/pwm/core.c        | 2 +-
- drivers/pwm/pwm-bcm2835.c | 4 +---
- drivers/pwm/pwm-jz4740.c  | 7 ++++---
- 3 files changed, 6 insertions(+), 7 deletions(-)
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---oel4hbh7smqzfdfw
-Content-Type: application/pgp-signature; name="signature.asc"
+--------------h0vEtYR4n9cc2zehO4z3Os4l
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWo4VUACgkQj4D7WH0S
-/k7FqggAqzHss9G/SniAytw4Kh6MuU+Dzu55g71yItXx1o2XK21pgfCwsiGdGBBS
-1xXuHBaluaj92NceWK8/ID1ikLhvJJSCN5AyeOrow+JOru3RbiCZEg14LC0enb9s
-3cXB/BduiEvSxzS6iPdACxMFtn0o02yYVMWWM65YcFRej05dYP2fVLWUD6o63JTE
-O3e6b9Iac3LFFY3Vd/Hhrz9q/lJtjv6RgL0UJ+J610r775zURq+rp4N00z9wKQHq
-eq16Be4ONHfida9pTlH1g882wIOQaejChCem9BTYugiGFSw4CT6TmsY5facBYsA6
-tj9pw07DQSoljyini9JBDnRll68D0A==
-=mReT
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmWo4ZQFAwAAAAAACgkQlh/E3EQov+Aa
+cw/9GQ0PgqhvWZqzdvxs32R3bd7OniNvdXA3h5yAFHPi/wbCyj6cfIbd9oD+wGN+YhISc2jbPuNR
+PDue4szvjBEDGuc0vryM3PcRu5qml4LKkLOVRfAgbZXIVpi+KNqaiCzUBc3nC2+92IImYcSYeGX0
+gCZipjWDEfGXubOCcIekklCfypBvHInQC7NdtMh7H0fLeDfdPx9ijTHNqDvjxVQlal35uK2HDhf0
+GL3xRmWQBqGrLmAkwLuptic8n4a7dUsOw/AxOKDyEwup7gs1TvqifrNqT5UVqO1KW7/Kjm+Qd+YO
+cuWzWZMtDGfPHk8mdHPMRnG3dc6FgCdCPz7x7pjg+ovfNh7/gkxVsCpuiqG8kur18AGrgclyPbpH
+elTvxHLGJGzThybCxJWP7WjclnA44Key6YDQ4t7CUL+Ncq36tTwG9+6QUXog9v2QlmHPKCJUHk/c
+3/fs0JNpW5yWF8cGQiLhiAWAzhatPe+BZkoRUDPVOqdnbkQSY1s7s51spYR1BYaPdipS3y5j0mwx
+MdM1THDtDRTOgadQbu8EOCt3M+TnrfEnu0LGOnMUZw6aTI/A0sZNAYHQAqn+z7JNQi7GlaNsbmXl
+orGtfvS21NbRczFp5eOQy5tkjGY1Xln6FMghV844NWGRNduhyi0CTLzHyjVdww0B6dzzVZ/JCyl7
+HEI=
+=L4AR
 -----END PGP SIGNATURE-----
 
---oel4hbh7smqzfdfw--
+--------------h0vEtYR4n9cc2zehO4z3Os4l--
 
