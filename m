@@ -1,125 +1,152 @@
-Return-Path: <linux-kernel+bounces-30216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D97831BA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11EBE831BA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:43:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48D161C20DC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:42:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 293251C209EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB991DDCC;
-	Thu, 18 Jan 2024 14:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF4EA53;
+	Thu, 18 Jan 2024 14:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UC4J9KD5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e8Z/+56M"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CE3A53;
-	Thu, 18 Jan 2024 14:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893F1646
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:42:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705588866; cv=none; b=Tse9Jmuc3Se9G0KdHoQoPiygiCu6Qetx854mECegmIjl2RVFzUnvs007hJH6aZP/NeTKk51vCeXG6l8r0IwsjMKFNTyVBbkcP7vp1Sn9EaN8zv3MzQyKByO+15wzdPhAb/eeKVztTwugVBL651sBmNW4+JAGYzF/UAt1CPbbxXc=
+	t=1705588974; cv=none; b=FuG3NvNmWFDxuMSnAA3Af+eCgrwC8zn++Qhq38HI8820YHBdFk2BYnaIbvpi6zeeN1wR1LvgTdW0UapxNuWeHJci7XPlq0hyscuFvc+3cfdU/CaHuhzL2TVQhXtcYN17c+CmwF+9Q2SB1gZKkwn1KFJ5AwJ2ABEjGVdocerULO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705588866; c=relaxed/simple;
-	bh=jbr6rdJ/qeiYoL30WlSwpGj5SzBJllrSxz7PDcWI+jY=;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Iu4X6JgJi0zz57ZDhDUd4nmKDWVhVmapkEmoWvPCG4NakKm2nl89tLpJjxYIWVhdfu2500wA7UxGqX4lAEs9AP6mSDTtqC/n3s0aV3EZfF4DURRtuUbGRjX6rx60GPyR1OhY35F3eKrxYhNDS0WGM5Mr/MmieLqVvJKdNBVKnQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UC4J9KD5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A4E4C433F1;
-	Thu, 18 Jan 2024 14:41:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705588865;
-	bh=jbr6rdJ/qeiYoL30WlSwpGj5SzBJllrSxz7PDcWI+jY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=UC4J9KD5DkWzus10ieCSPso1KKv+GxZN/efrkkYGlvJNq/8JzrklGZZzUcPtoBb63
-	 nRapeeZ4STrBg/h272xm9P0M/cjCjO/a3PJukYYbM0pg12EIHLoWCdGBdlL7hrnTz6
-	 Q0xQFpSNsaIyesZZax+USYwBtamZ7n8nt4Lc+KD7mGl2n9vzgQLBSZdivVJEoDINek
-	 /ehG0nL5Z3nlJphQVJaxyRrt3m7B9Xr7rqZpVT9yiEjEp8Shq7F7UzYC5/uhNGqS0V
-	 txOjVqMWDqHHtVyrPN5axaMQ2A8HHJjsxEhPI3vtmHEmQDJ4u9YFfKKh+K1oPTt9Db
-	 4H95w7BbPSRPA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CB27ECE0546; Thu, 18 Jan 2024 06:41:04 -0800 (PST)
-Date: Thu, 18 Jan 2024 06:41:04 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Chen Zhongjin <chenzhongjin@huawei.com>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, yangjihong1@huawei.com,
-	naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-	davem@davemloft.net, mhiramat@kernel.org, tglx@linutronix.de,
-	peterz@infradead.org, pmladek@suse.com, dianders@chromium.org,
-	npiggin@gmail.com, mpe@ellerman.id.au, jkl820.git@gmail.com,
-	juerg.haefliger@canonical.com, rick.p.edgecombe@intel.com,
-	eric.devolder@oracle.com, mic@digikod.net
-Subject: Re: [PATCH] kprobes: Use synchronize_rcu_tasks_rude in
- kprobe_optimizer
-Message-ID: <526b12e4-4bb0-47b1-bece-66b47bfc0a92@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240117061636.288412-1-chenzhongjin@huawei.com>
- <20240117123133.2e40438936167e6a4aec8b16@linux-foundation.org>
+	s=arc-20240116; t=1705588974; c=relaxed/simple;
+	bh=uxGgJcXm3aAJDaHF15vKNxr/n7qIlwyktZ3CCGHOF3U=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Content-Language:To:Cc:
+	 From:Subject:Content-Type:Content-Transfer-Encoding; b=UbcMMEiVXae2In7otOajd8grG1btxt3mPq32sl9BqMqQeCv+z95tWoRSZDL+AKQoLPHJeYVoZw0cwqY9IbrdX5HcoUsUyCw6QbUiZ6PcGHbFdbj5Z3NpOglVSPRLe9T9baTK63xFoYJP6xoqE3C3F9B29FAQHUTXNpja7pUfM7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e8Z/+56M; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bd5ed7d760so453323b6e.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:42:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705588972; x=1706193772; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mOqtTg4UhK2C7KvLSKvadXo0TFb7Q9SqKiW1/C+ZT5k=;
+        b=e8Z/+56M2dmaBAOhwnNFnuCjrzB/fDQAzD2oG6J7439VY0F5Xhd4y9gmwZAkgzKJCs
+         aKlc89u0uyPCpKyn0Ry+48t/GlM7Uq3pDP4zFvgqesWHzQAhEmb2C9Ze54P6xZIaNnjv
+         U/xFkMzLUTwWFUJWIVyKBi7B+D7DuycKbNs/PVt0n2ITExLmE5+snhHQWTuey2gPZADF
+         QZ8DRhx7PStWLH6Oa8bDVhILa97as8mrPatFjTs2tuD1u1FlkX9HzewHD0ir/jHRntKF
+         4LjZ2Rs2J3lJ6v00gSzV8ozVUFxPVh/wEjiT6A06DAC20q7gQDwYVU3nv7m7AOVJz69v
+         Ih7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705588972; x=1706193772;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mOqtTg4UhK2C7KvLSKvadXo0TFb7Q9SqKiW1/C+ZT5k=;
+        b=l8OxVB6wyWVQkig0Od1xo/akqs9sH5voSIPNz3se0m9HRA6okAW2pGeJGttS4/Tr3S
+         Bd3py8rn7LB1xKhLIoNq9iMYEqypYKmwAsg08+RasWadCreaM2W4eUeNmIoQPC8wOR1x
+         TUqjDqlzx5eunbqmv/DjvdF2AfiTXup5lbjWGw2xliaYJVDix8pJ2h7ApWUwL18/MZjv
+         fcat4mhfwz37YjEx6pJGRAb3cyLsH2JunWUJGelZ3xFGohVVmokGrZDwmZbWAEYd/6ji
+         5B86IaLPDS3/c8Y+wtquakOJYlzzoBHvu56pTOYsT9Q/xeQsW7YKPvuuRFvJJzVkQ/KW
+         FXGQ==
+X-Gm-Message-State: AOJu0YzrsCqzbajhMPwddSlEU9dBrsUgZO/Qlg1wa012l50xC8dHK2YR
+	wEO50UPvThN2JrSM7K+QBEAWLyC5wUpbJ0LiqTWTpE7F16mGC1Gu
+X-Google-Smtp-Source: AGHT+IHwO/PRr4anWSEpoynGuxV16/UCi+N+rYypmX49+oaDj5sBVZrSE7+8oKlL6PS5YMbX7NpSRQ==
+X-Received: by 2002:a05:6358:8a9:b0:175:d0a3:7432 with SMTP id m41-20020a05635808a900b00175d0a37432mr1914208rwj.1.1705588972436;
+        Thu, 18 Jan 2024 06:42:52 -0800 (PST)
+Received: from [192.168.1.157] (pool-74-98-201-227.pitbpa.fios.verizon.net. [74.98.201.227])
+        by smtp.gmail.com with ESMTPSA id nh17-20020a056214391100b00681929ad11fsm455813qvb.76.2024.01.18.06.42.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 06:42:52 -0800 (PST)
+Message-ID: <03b524b7-8e66-4180-b22a-aa641acbaac3@gmail.com>
+Date: Thu, 18 Jan 2024 09:42:51 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117123133.2e40438936167e6a4aec8b16@linux-foundation.org>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org, wei_wang@realsil.com.cn,
+ micky_ching@realsil.com.cn
+Cc: jklott.git@gmail.com
+From: Jacob Lott <jklott.git@gmail.com>
+Subject: [PATCH] staging: rts5208: Fix coding style issues
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 17, 2024 at 12:31:33PM -0800, Andrew Morton wrote:
-> On Wed, 17 Jan 2024 06:16:36 +0000 Chen Zhongjin <chenzhongjin@huawei.com> wrote:
-> 
-> > There is a deadlock scenario in kprobe_optimizer():
-> > 
-> > pid A				pid B			pid C
-> > kprobe_optimizer()		do_exit()		perf_kprobe_init()
-> > mutex_lock(&kprobe_mutex)	exit_tasks_rcu_start()	mutex_lock(&kprobe_mutex)
-> > synchronize_rcu_tasks()		zap_pid_ns_processes()	// waiting kprobe_mutex
-> > // waiting tasks_rcu_exit_srcu	kernel_wait4()
-> > 				// waiting pid C exit
-> > 
-> > To avoid this deadlock loop, use synchronize_rcu_tasks_rude() in kprobe_optimizer()
-> > rather than synchronize_rcu_tasks(). synchronize_rcu_tasks_rude() can also promise
-> > that all preempted tasks have scheduled, but it will not wait tasks_rcu_exit_srcu.
+Help text in a module should describe the module and give
+some guidance on whether or not to enable it.
 
-Hello, Chen Zhongjin,
+The BIT macro should be used instead of 1UL << n. This
+makes the code more readable and easier to maintain.
 
-Relying on the non-preemptability of the last portion of the do_exit()
-function does appear to be the basis for a much better solution than
-what we currently have.  So at the very least, thank you for the idea!!!
-I feel a bit silly for not having thought of it myself.  ;-)
+Signed-off-by: Jacob Lott <jklott.git@gmail.com>
+---
+  drivers/staging/rts5208/Kconfig     | 10 +++++++---
+  drivers/staging/rts5208/rtsx_card.h |  4 ++--
+  2 files changed, 9 insertions(+), 5 deletions(-)
 
-However, just invoking synchronize_rcu_tasks_rude() will be bad for both
-energy efficiency and real-time response.  This is due to the fact that
-synchronize_rcu_tasks_rude() sends an IPI to each and every online CPUs,
-almost none of which will be in the non-preemptible tail of do_exit()
-at any given time.  These additional unnecessary IPIs will drain battery
-when they hit idle CPUs and degrade real-time response when they hit
-CPUs running aggressive real-time applications.  Which might not make
-people happy.
+diff --git a/drivers/staging/rts5208/Kconfig 
+b/drivers/staging/rts5208/Kconfig
+index b864023d3ccb..bb293cbf6230 100644
+--- a/drivers/staging/rts5208/Kconfig
++++ b/drivers/staging/rts5208/Kconfig
+@@ -3,7 +3,11 @@ config RTS5208
+         tristate "Realtek PCI-E Card Reader RTS5208/5288 support"
+         depends on PCI && SCSI
+         help
+-         Say Y here to include driver code to support the Realtek
+-         PCI-E card reader rts5208/rts5288.
++      Choose Y here to enable support for the Realtek PCI-E card reader 
+RTS5208/5288.
++         This driver facilitates communication between the Linux kernel 
+and the Realtek
++         PCI-E card reader.
 
-So, would you be willing to use RCU's do_exit() hooks and RCU's hook
-into the scheduler (either rcu_note_context_switch() or rcu_tasks_qs(),
-whichever would work better) maintain a per-CPU variable that is a
-pointer to the task in the non-preemptible tail of do_exit() if there
-is one or NULL otherwise?  This would get us the deadlock-avoidance
-simplicity of your underlying idea, while avoiding (almost all of)
-the energy-efficiency and real-time-response issues with your patch.
+-         If this driver is compiled as a module, it will be named rts5208.
++         If you opt to compile this driver as a module, it will be 
+named rts5208. Selecting
++         N will exclude this driver from the kernel build. Choose 
+option Y if your system includes
++         the Realtek PCI-E card reader rts5208/rts5288. When in doubt, 
+it is generally safe
++         to select N.
+diff --git a/drivers/staging/rts5208/rtsx_card.h 
+b/drivers/staging/rts5208/rtsx_card.h
+index 39727371cd7a..9d2504fddb13 100644
+--- a/drivers/staging/rts5208/rtsx_card.h
++++ b/drivers/staging/rts5208/rtsx_card.h
+@@ -338,7 +338,7 @@
+  #define DMA_DIR_FROM_CARD              0x02
+  #define DMA_EN                         0x01
+  #define DMA_128                                (0 << 4)
+-#define DMA_256                                (1 << 4)
++#define DMA_256                                BIT(4)
+  #define DMA_512                                (2 << 4)
+  #define DMA_1024                       (3 << 4)
+  #define DMA_PACK_SIZE_MASK             0x30
+@@ -542,7 +542,7 @@
 
-This does require a bit of memory-ordering care, so if you would prefer
-that I do the implementation, just let me know.
+  #define BLINK_EN                       0x08
+  #define LED_GPIO0                      (0 << 4)
+-#define LED_GPIO1                      (1 << 4)
++#define LED_GPIO1                      BIT(4)
+  #define LED_GPIO2                      (2 << 4)
 
-(The memory-ordering trick is to use "smp_mb(); smp_load_acquire();" to
-sample the counter and "smp_store_release(); smp_mb();" to update it.)
+  #define SDIO_BUS_CTRL          0x01
+-- 
+2.34.1
 
-							Thanx, Paul
-
-> > Signed-off-by: Chen Zhongjin <chenzhongjin@huawei.com>
-> 
-> Thanks.  Should we backport this fix into earlier kernels?  If so, are
-> we able to identify a suitable Fixes: target?
 
