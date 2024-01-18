@@ -1,286 +1,314 @@
-Return-Path: <linux-kernel+bounces-30171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11FFD831AEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:57:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E76C831AFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:59:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4778FB25ABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BAAB1F2811C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D88425639;
-	Thu, 18 Jan 2024 13:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3A625764;
+	Thu, 18 Jan 2024 13:59:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1VOpneTI"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jJB+uX+V"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5784250E7
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF2925618;
+	Thu, 18 Jan 2024 13:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705586229; cv=none; b=MY9e0crdOaArIe7TT6STwjSwWxwrx0qOgan2qGu1hr1TDbInPzolh5RLObM91tLpGo29H94zcZUSNzrZOokpUy4x3++rIFcPzRcU7FaLvJC/puLCmG8ukFujVOpYzTYc6+kVU1cqCHdonXwGkIw3sONFq/4V0ZwZilse2USUv8I=
+	t=1705586367; cv=none; b=pWMl6IH+CaZ+Qjzwcw22KptnDPb2vjJ3u4PeiLEhibAA8E9U2jojXOnhHBK8VXKNwV9nSU6h/iKM90Ppf6zI3DSEFzw9ierjL/OBKeGhLr/+zn5sVyk+USUbk9GGmiBcN6yGcRmAeuonprDdI8jA3bLIdMJZFG/zfVcpgTZ1nFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705586229; c=relaxed/simple;
-	bh=rmDgETvZzgz0Wy+BlvQmxNiaIXplxxgYOnwqePWgsyY=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=PKTzOsBoEovy9WtT2K384413XIfPib6K6kbhE9DDpZMBEPKXmuHIVMuSdChdzXGH5p09IlgVo5wn4tLiOsiiblvf3ecRdFnjDUm6Ztz9Sn6zYmd46qycwLsDjQ7chhOuYYj7d9FU31q9SGjiFxP0b1n6c3GD+9M13Nb5gfe9jrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1VOpneTI; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50ea9e189ebso14230707e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 05:57:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705586226; x=1706191026; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PwSnx95cO6mFrsPU26AYVuo3uyLppp+SMC5NBDN3TyU=;
-        b=1VOpneTIXzicXapRjDe4SG46H4PffWiCHRFzJgiKDXLJCJp+V7OkN/Q8DI5V2fQxEu
-         +G42AJeRqBK37Nd6cpcOG/0h0oHQxpZYwgtZ2kyb8BE4pHItGgZEf8kee9ZGJxvFwnhw
-         IGamptLkR8sWya67ujpjToN1ZS1oHR/CN0aVeNuU5ZWM3E0GDtiYSuCItMZFnMe6VuRn
-         QjlDl38XsqM7n8Oat3JzuxqChND1un5p7LHvQD40473hlVI8VIsQENfLyvIzxKbHUCLJ
-         BPjJrsN8JYvGNOKwJ74J9aXsTwC2dP38wdj8Ew7ykb34KHgR1LSF+qM8MZLZHqf6VCIV
-         o+mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705586226; x=1706191026;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PwSnx95cO6mFrsPU26AYVuo3uyLppp+SMC5NBDN3TyU=;
-        b=C8XHCKlM0TacCztlq7a7K2cUo9A/BFtzCiw544MHtYb0pSSa0e/gaZ1n/Mkc9KutWh
-         I+fxV/HMC37bA2ulTwc5YkYjD0M/i2FEG+czDoYMrF2SJIJFHuLmYcTcm2TU3GCdigsl
-         7L42jiqsUwWPKgHkwFkE0Gv/Cqjxi9EEAmSrQeRfkZCtU2KbLB/tRj4B4dqyPUiJvyvx
-         9LIetrVrRDh8V217I0UaDqtmumhH2D87kEVIA/cVZ1wLLczNzC2kpwuIT+pIYdjoub1n
-         fegCIrCFG3DpfjFwjKag+EUqiEGv3pyypEavYVFvICL/+DGjVtG2tMMCO4MTNUpX1MSp
-         pfdw==
-X-Gm-Message-State: AOJu0YxlqscmdNiYaoinhAKcHYaUxPp2qwnjzMEwtfMiixZqt8A7l8Zc
-	2DufFutsVo/tw+d1u+Oynuw7fqYOZq05w49cfkhIEfKP8PidImpzItU1VlbKYE+7/y28wmIVW6H
-	epZ0xtnlB5rylxK6GpMx+bkZeZD16wZe0+lCU
-X-Google-Smtp-Source: AGHT+IHl3eRLQirJ+Tzq8N9tnWQ9WTOjiBOJ2n2gTX0lzr9VJme9YPiGICdk8wHM+SayPFCAc2kPvVUfvyWrMi611qs=
-X-Received: by 2002:a05:6512:2382:b0:50e:4389:12c5 with SMTP id
- c2-20020a056512238200b0050e438912c5mr549814lfv.14.1705586225480; Thu, 18 Jan
- 2024 05:57:05 -0800 (PST)
+	s=arc-20240116; t=1705586367; c=relaxed/simple;
+	bh=dvH9k0mRMujShSF91uv3NEiynTKqv0VS5vKw2fzk+DU=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:CC:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-EXCLAIMER-MD-CONFIG; b=h2p+ZhOOvgCcszSSGh5q7ET8tvM8Egh9c6kZkJXpTt/g4WC+qLx5fBNCvfxT/1xHWpxnoEfbHHoN3VH/GXm49YI+nkzU/HqQ++t3ofgiAkna2Yr926KScA0RmoXdvlWMoEZSyhR/PUrxDoHAUIV7MlPM83Tys9Cir7uLq1ttyf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=jJB+uX+V; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40IDwaTH023624;
+	Thu, 18 Jan 2024 07:58:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705586316;
+	bh=snlIxOjhPnpd8I0F6QTr9vWqcbTC7U09y0KvcNnsdjc=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=jJB+uX+VpxQ7B/JOLFwwXCzgB8NiA0L8tTNoh7+xx5v39oSfgXW2F/LjGvNjvtlHg
+	 CXZnMTZtXzco9I39VoBbOiRfdzjQ4d8bRs3KtRm32sjhfA+EyDLcJiEpq4FODE2S6T
+	 wedoKOJUGA2fCeDGNjMHYHFUcWWRyT2iV9aJQc58=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40IDwaGP006099
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 18 Jan 2024 07:58:36 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 18
+ Jan 2024 07:58:36 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 18 Jan 2024 07:58:35 -0600
+Received: from [172.24.227.193] (devarsht.dhcp.ti.com [172.24.227.193])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40IDwTOM036361;
+	Thu, 18 Jan 2024 07:58:30 -0600
+Message-ID: <57805224-f4f9-7773-03e3-4bdff8936c9c@ti.com>
+Date: Thu, 18 Jan 2024 19:28:29 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109011455.1061529-1-almasrymina@google.com>
- <20240109011455.1061529-3-almasrymina@google.com> <5219f2cd-6854-0134-560d-8ae3f363b53f@huawei.com>
- <CAHS8izOtr+jfqQ6xCB3CoN-K_V1-4hPsB4-k5+1z-M3Qy2BbwA@mail.gmail.com>
- <0711845b-c435-251f-0bbc-20b243721c06@huawei.com> <CAHS8izOxvMVGXKpLBvVgyyS5_94WGG8Aca=O_zGMX+db-3gBXg@mail.gmail.com>
- <66bc7b8f-51b6-0d9e-db5b-47e7ee5e9029@huawei.com> <CAHS8izOnhtQGeQ-EFmYjZyZ0eW2LqO0Rrm73eAB2su=UA34yTw@mail.gmail.com>
- <20240116000129.GX734935@nvidia.com> <9c1a6725-c4c3-2bb1-344f-5e71f8ce7e63@huawei.com>
- <20240116121611.GY734935@nvidia.com> <CAHS8izPa6ostY7qZUAmm4g8N3rfWoVBK6r5z0_MycxfsEVH4jw@mail.gmail.com>
- <CAHS8izO1-+MczzFw_R80uv=aK5A9bUNcKroY=H9Euk+ZPnnGPw@mail.gmail.com> <65a8225348b92_11eb12942c@willemb.c.googlers.com.notmuch>
-In-Reply-To: <65a8225348b92_11eb12942c@willemb.c.googlers.com.notmuch>
-From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 18 Jan 2024 05:56:51 -0800
-Message-ID: <CAHS8izOiR3zvqCyRdBJchqGe-tYnoCpyYvwxroVFA6-_-i+EyQ@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v5 2/2] net: add netmem to skb_frag_t
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Yunsheng Lin <linyunsheng@huawei.com>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Shakeel Butt <shakeelb@google.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [RFC PATCH 1/3] dt-bindings: display: ti,am65x-dss: Add support
+ for display sharing mode
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+CC: <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <praneeth@ti.com>, <a-bhatia1@ti.com>,
+        <j-luthra@ti.com>
+References: <20240116134142.2092483-1-devarsht@ti.com>
+ <20240116134142.2092483-2-devarsht@ti.com>
+ <20240117201342.GA3041972-robh@kernel.org>
+From: Devarsh Thakkar <devarsht@ti.com>
+In-Reply-To: <20240117201342.GA3041972-robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, Jan 17, 2024 at 10:54=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Mina Almasry wrote:
-> > On Wed, Jan 17, 2024 at 10:00=E2=80=AFAM Mina Almasry <almasrymina@goog=
-le.com> wrote:
-> > >
-> > > On Tue, Jan 16, 2024 at 4:16=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.c=
-om> wrote:
-> > > >
-> > > > On Tue, Jan 16, 2024 at 07:04:13PM +0800, Yunsheng Lin wrote:
-> > > > > On 2024/1/16 8:01, Jason Gunthorpe wrote:
-> > > > > > On Mon, Jan 15, 2024 at 03:23:33PM -0800, Mina Almasry wrote:
-> > > > > >>>> You did not answer my question that I asked here, and ignori=
-ng this
-> > > > > >>>> question is preventing us from making any forward progress o=
-n this
-> > > > > >>>> discussion. What do you expect or want skb_frag_page() to do=
- when
-> > > > > >>>> there is no page in the frag?
-> > > > > >>>
-> > > > > >>> I would expect it to do nothing.
-> > > > > >>
-> > > > > >> I don't understand. skb_frag_page() with an empty implementati=
-on just
-> > > > > >> results in a compiler error as the function needs to return a =
-page
-> > > > > >> pointer. Do you actually expect skb_frag_page() to uncondition=
-ally
-> > > > > >> cast frag->netmem to a page pointer? That was explained as
-> > > > > >> unacceptable over and over again by Jason and Christian as it =
-risks
-> > > > > >> casting devmem to page; completely unacceptable and will get n=
-acked.
-> > > > > >> Do you have a suggestion of what skb_frag_page() should do tha=
-t will
-> > > > > >> not get nacked by mm?
-> > > > > >
-> > > > > > WARN_ON and return NULL seems reasonable?
-> > > > >
-> > >
-> > > That's more or less what I'm thinking.
-> > >
-> > > > > While I am agreed that it may be a nightmare to debug the case of=
- passing
-> > > > > a false page into the mm system, but I am not sure what's the poi=
-nt of
-> > > > > returning NULL to caller if the caller is not expecting or handli=
-ng
-> > > > > the
-> > > >
-> > > > You have to return something and NULL will largely reliably crash t=
-he
-> > > > thread. The WARN_ON explains in detail why your thread just crashed=
-.
-> > > >
-> > >
-> > > Agreed.
-> > >
-> > > > > NULL returning[for example, most of mm API called by the networki=
-ng does not
-> > > > > seems to handling NULL as input page], isn't the NULL returning w=
-ill make
-> > > > > the kernel panic anyway? Doesn't it make more sense to just add a=
- BUG_ON()
-> > > > > depending on some configuration like CONFIG_DEBUG_NET or CONFIG_D=
-EVMEM?
-> > > > > As returning NULL seems to be causing a confusion for the caller =
-of
-> > > > > skb_frag_page() as whether to or how to handle the NULL returning=
- case.
-> > > >
-> > > > Possibly, though Linus doesn't like BUG_ON on principle..
-> > > >
-> > > > I think the bigger challenge is convincing people that this devmem
-> > > > stuff doesn't just open a bunch of holes in the kernel where usersp=
-ace
-> > > > can crash it.
-> > > >
-> > >
-> > > It does not, and as of right now there are no pending concerns from
-> > > any netdev maintainers regarding mishandled devmem checks at least.
-> > > This is because the devmem series comes with a full audit of
-> > > skb_frag_page() callers [1] and all areas in the net stack attempting
-> > > to access the skb [2].
-> > >
-> > > [1] https://patchwork.kernel.org/project/netdevbpf/patch/202312180240=
-24.3516870-10-almasrymina@google.com/
-> > > [2] https://patchwork.kernel.org/project/netdevbpf/patch/202312180240=
-24.3516870-11-almasrymina@google.com/
-> > >
-> > > > The fact you all are debating what to do with skb_frag_page() sugge=
-sts
-> > > > to me there isn't confidence...
-> > > >
-> > >
-> > > The debate raging on is related to the performance of skb_frag_page()=
-,
-> > > not correctness (and even then, I don't think it's related to
-> > > perf...). Yunsheng would like us to optimize skb_frag_page() using an
-> > > unconditional cast from netmem to page. This in Yunsheng's mind is a
-> > > performance optimization as we don't need to add an if statement
-> > > checking if the netmem is a page. I'm resistant to implement that
-> > > change so far because:
-> > >
-> > > (a) unconditionally casting from netmem to page negates the compiler
-> > > type safety that you and Christian are laying out as a requirement fo=
-r
-> > > the devmem stuff.
-> > > (b) With likely/unlikely or static branches the check to make sure
-> > > netmem is page is a no-op for existing use cases anyway, so AFAIU,
-> > > there is no perf gain from optimizing it out anyway.
-> > >
-> >
-> > Another thought, if anyone else is concerned about the devmem checks
-> > performance,  potentially we could introduce CONFIG_NET_DEVMEM which
-> > when disabled prevents the user from using devmem at all (disables the
-> > netlink API).
-> >
-> > When that is disabled, skb_frag_page(), netmem_to_page() & friends can
-> > assume netmem is always a page and do a straight cast between netmem &
-> > page. When it's enabled, it will check that netmem =3D=3D page before
-> > doing a cast, and return NULL if it is not a page.
-> >
-> > I think this is technically viable and I think preserves the compiler
-> > type safety requirements set by mm folks. From my POV though, bloating
-> > the kernel with a a new CONFIG just to optimize out no-op checks seems
-> > unnecessary, but if there is agreement that the checks are a concern,
-> > adding CONFIG_NET_DEVMEM should address it while being acceptable to
-> > mm maintainers.
->
-> I agree. A concern with CONFIGs is that what matters in practice is
-> which default the distros compile with. In this case, adding hurdles
-> to using the feature likely for no real reason.
->
-> Static branches are used throughout the kernel in performance
-> sensitive paths, exactly because they allow optional paths effectively
-> for free. I'm quite surprised that this issue is being raised so
-> strongly here, as they are hardly new or controversial.
->
-> But perhaps best is to show with data. Is there a representative page
-> pool benchmark that exercises the most sensitive case (XDP_DROP?) that
-> we can run with and without a static branch to demonstrate that any
-> diff is within the noise?
->
+Hi Rob,
 
-Yes, Jesper has a page_pool benchmark that he pointed me to in RFC v2:
+Thanks for the quick review.
 
-https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/ben=
-ch_page_pool_simple.c
+On 18/01/24 01:43, Rob Herring wrote:
+> On Tue, Jan 16, 2024 at 07:11:40PM +0530, Devarsh Thakkar wrote:
+>> Add support for using TI Keystone DSS hardware present in display
+>> sharing mode.
+>>
+>> TI Keystone DSS hardware supports partitioning of resources between
+>> multiple hosts as it provides separate register space and unique
+>> interrupt line to each host.
+>>
+>> The DSS hardware can be used in shared mode in such a way that one or
+>> more of video planes can be owned by Linux wherease other planes can be
+>> owned by remote cores.
+>>
+>> One or more of the video ports can be dedicated exclusively to a
+>> processing core, wherease some of the video ports can be shared between
+>> two hosts too with only one of them having write access.
+>>
+>> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+>> ---
+>>  .../bindings/display/ti/ti,am65x-dss.yaml     | 82 +++++++++++++++++++
+>>  1 file changed, 82 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+>> index 55e3e490d0e6..d9bc69fbf1fb 100644
+>> --- a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+>> +++ b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+>> @@ -112,6 +112,86 @@ properties:
+>>        Input memory (from main memory to dispc) bandwidth limit in
+>>        bytes per second
+>>  
+>> +  ti,dss-shared-mode:
+>> +    type: boolean
+>> +    description:
+>> +      TI DSS7 supports sharing of display between multiple hosts
+>> +      as it provides separate register space for display configuration and
+>> +      unique interrupt line to each host.
+> 
+> If you care about line breaks, you need '|'. 
+> 
 
-When running the results on RFCv2, the results were:
+Noted.
 
-net-next @ b44693495af8
-https://pastebin.com/raw/JuU7UQXe
+>> +      One of the host is provided access to the global display
+>> +      configuration labelled as "common" region of DSS allows that host
+>> +      exclusive access to global registers of DSS while other host can
+>> +      configure the display for it's usage using a separate register
+>> +      space labelled as "common1".
+>> +      The DSS resources can be partitioned in such a way that one or more
+>> +      of the video planes are owned by Linux whereas other video planes
+> 
+> Your h/w can only run Linux?
+> 
+> What if you want to use this same binding to define the configuration to 
+> the 'remote processor'? You can easily s/Linux/the OS/, but it all 
+> should be reworded to describe things in terms of the local processor.
+> 
 
-+ devmem TCP changes:
-https://pastebin.com/raw/mY1L6U4r
+It can run both Linux and RTOS or for that matter any other OS too. But yes I
+got your point, will reword accordingly.
 
-On RFC v2 the benchmark showed only a single instruction regression in
-the page_pool fast path & the change deemed acceptable to Jesper from
-a performance POV [1].
+>> +      can be owned by a remote core.
+>> +      The video port controlling these planes acts as a shared video port
+>> +      and it can be configured with write access either by Linux or the
+>> +      remote core in which case Linux only has read-only access to that
+>> +      video port.
+> 
+> What is the purpose of this property when all the other properties are 
+> required?
+> 
 
-I have not run the benchmark continually on follow up iterations of
-the RFC, but I think I'll start doing so in the future.
+The ti,dss-shared-mode and below group of properties are optional. But
+if ti,dss-shared-mode is set then only driver should parse below set of
+properties.
 
-[1] https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@red=
-hat.com/
+>> +
+>> +  ti,dss-shared-mode-planes:
+>> +    description:
+>> +      The video layer that is owned by processing core running Linux.
+>> +      The display driver running from Linux has exclusive write access to
+>> +      this video layer.
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    enum: [vidl, vid]
+>> +
+>> +  ti,dss-shared-mode-vp:
+>> +    description:
+>> +      The video port that is being used in context of processing core
+>> +      running Linux with display susbsytem being used in shared mode.
+>> +      This can be owned either by the processing core running Linux in
+>> +      which case Linux has the write access and the responsibility to
+>> +      configure this video port and the associated overlay manager or
+>> +      it can be shared between core running Linux and a remote core
+>> +      with remote core provided with write access to this video port and
+>> +      associated overlay managers and remote core configures and drives
+>> +      this video port also feeding data from one or more of the
+>> +      video planes owned by Linux, with Linux only having read-only access
+>> +      to this video port and associated overlay managers.
+>> +
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    enum: [vp1, vp2]
+>> +
+>> +  ti,dss-shared-mode-common:
+>> +    description:
+>> +      The DSS register region owned by processing core running Linux.
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    enum: [common, common1]
+>> +
+>> +  ti,dss-shared-mode-vp-owned:
+>> +    description:
+>> +      This tells whether processing core running Linux has write access to
+>> +      the video ports enlisted in ti,dss-shared-mode-vps.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    enum: [0, 1]
+> 
+> This can be boolean. Do writes abort or just get ignored? The latter can 
+> be probed and doesn't need a property.
+> 
 
-> > > But none of this is related to correctness. Code calling
-> > > skb_frag_page() will fail or crash if it's not handled correctly
-> > > regardless of the implementation details of skb_frag_page(). In the
-> > > devmem series we add support to handle it correctly via [1] & [2].
-> > >
-> > > --
-> > > Thanks,
-> > > Mina
-> >
-> >
-> >
-> > --
-> > Thanks,
-> > Mina
->
->
+Although we have kept all these properties as enums, but actually in driver we
+are treating them as array of enums and using device_property_read_u32_array.
 
+The reason being that for SoCs using am65x-dss bindings they can only have
+single entry either vp1 or vp2 or 0 or 1 as there are only two video ports. So
+for them the device tree overlay would look like :
+&dss0 {
 
---=20
-Thanks,
-Mina
+        ti,dss-shared-mode;
+
+        ti,dss-shared-mode-vp = "vp1";
+
+        ti,dss-shared-mode-vp-owned = <0>;
+
+        ti,dss-shared-mode-common = "common1";
+
+        ti,dss-shared-mode-planes = "vid";
+
+        ti,dss-shared-mode-plane-zorder = <0>;
+
+        interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_>;
+}
+
+But we also plan to extend these bindings to SoCs using
+Documentation/devicetree/bindings/display/ti/ti,j721e-dss.yaml where there are
+multiple video ports. So in that the driver and bindings should support below
+configuration :
+
+&dss0 {
+
+        ti,dss-shared-mode;
+
+        ti,dss-shared-mode-vp = "vp1 vp2";
+
+        ti,dss-shared-mode-vp-owned = <0 1>;
+
+        ti,dss-shared-mode-common = "common_s1";
+
+        ti,dss-shared-mode-planes = "vid1 vidl1";
+
+        ti,dss-shared-mode-plane-zorder = <0 1>;
+
+        interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_>;
+}
+
+As I am using device_property_read_u32_array in driver I thought to keep this
+as uint32 in enum for am65x.yaml which works well with the driver.
+
+>> +
+>> +  ti,dss-shared-mode-plane-zorder:
+>> +    description:
+>> +      The zorder of the planes owned by Linux.
+>> +      For the scenario where Linux is not having write access to associated
+>> +      video port, this field is just for
+>> +      informational purpose to enumerate the zorder configuration
+>> +      being used by remote core.
+>> +
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    enum: [0, 1]
+> 
+> I don't understand how 0 or 1 defines Z-order.
+> 
+
+As there are only two planes in total so z-order can be either 0 or 1 for the
+shared mode plane as there is only a single entry of plane.
+For e.g. if ti,dss-shared-mode-plane-zorder is 1 then it means the plane owned
+by Linux is programmed as topmost plane wherease the plane owned by remote
+core is programmed as the underneath one.
+
+>> +
+>> +dependencies:
+>> +  ti,dss-shared-mode: [ 'ti,dss-shared-mode-planes', 'ti,dss-shared-mode-vp',
+>> +                        'ti,dss-shared-mode-plane-zorder', 'ti,dss-shared-mode-vp-owned']
+>> +  ti,dss-shared-mode-vp: ['ti,dss-shared-mode', 'ti,dss-shared-mode-planes',
+>> +                          'ti,dss-shared-mode-plane-zorder', 'ti,dss-shared-mode-vp-owned']
+>> +  ti,dss-shared-mode-planes: ['ti,dss-shared-mode', 'ti,dss-shared-mode-vp',
+>> +                              'ti,dss-shared-mode-plane-zorder', 'ti,dss-shared-mode-vp-owned']
+>> +  ti,dss-shared-mode-plane-zorder: ['ti,dss-shared-mode-planes', 'ti,dss-shared-mode-vp',
+>> +                                    'ti,dss-shared-mode', 'ti,dss-shared-mode-vp-owned']
+>> +  ti,dss-shared-mode-vp-owned: ['ti,dss-shared-mode-planes', 'ti,dss-shared-mode-vp',
+>> +                                'ti,dss-shared-mode', 'ti,dss-shared-mode-plane-zorder']
+>> +
+>>  allOf:
+>>    - if:
+>>        properties:
+>> @@ -123,6 +203,8 @@ allOf:
+>>          ports:
+>>            properties:
+>>              port@0: false
+>> +            ti,dss-shared-mode-vp:
+>> +            enum: [vp2]
+> 
+> This should throw a warning. You just defined a property called 'enum'.
+> 
+
+Oops will fix this.
+
+Regards
+Devarsh
+
+> Rob
 
