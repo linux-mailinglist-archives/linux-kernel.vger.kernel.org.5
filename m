@@ -1,313 +1,143 @@
-Return-Path: <linux-kernel+bounces-30180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E035831B10
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:04:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5D9A831B17
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:07:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0DD1286AF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:04:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55FEBB25CE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB746286B2;
-	Thu, 18 Jan 2024 14:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D69D25770;
+	Thu, 18 Jan 2024 14:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IrBy1KE5"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="XC6tRtmu"
+Received: from mout.web.de (mout.web.de [217.72.192.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F8825579;
-	Thu, 18 Jan 2024 14:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51AAB28DA0;
+	Thu, 18 Jan 2024 14:07:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705586671; cv=none; b=HdZI4/FFpEh3k3iQ9RRn17YMsVo/b6CARHI5N2i4EtBNPIk7X8nsQ5R/0Vq99fGBAY86++mWiy1sLs6NtYmX4i/TgB+K0QSIm3N0mMUJXjU2FPwwzGdFPZUJ9GzOgqDVLj9gj8l+L75J4VN9OU7T/VD4saGtFNAMfM1M2B6g5E4=
+	t=1705586859; cv=none; b=nRJbj6ZtNMubqhVBf6LYF2jwb6a5jBUKNcquyi3lFPfkGeOiV/71GsCl2nMitGISW3ivXlND4btzB+/oEfPiuMGI82HHxF8XvgH3iMOMo5ScvnfSJ3iQyuQt6K5tj98Zw06PyPWGLwoVDa/W7WcKCqLC9reyub6e70ZlZBmmPNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705586671; c=relaxed/simple;
-	bh=9lVuw0NTSAQ8gz21uvK06l+eBWHooCCeN+14mfp55nQ=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=i5Rgc/fcGdYo25cYNoFR1iRkx3eFnw3P0+uoDywG+i7tu9tGYwNQWlDNO2BbFPA9Mf89dwJGbAuvYtlwBxV0bJl4RhO95da4+mMkhY3dsL51fKlpDppF+O9gtb/JlL173VCPjjx6rIzIwEIee81d8LeHyG+V6ZTA4ojouDZQrTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IrBy1KE5; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705586668; x=1737122668;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9lVuw0NTSAQ8gz21uvK06l+eBWHooCCeN+14mfp55nQ=;
-  b=IrBy1KE5DOMH0Xc8vfSSRAGskUp//vnNGw4RchQkKtQA2S4FhY8PDZYU
-   +NSJqxniPegoFADTQ2G96QcqYkNT0LNzoFLsN+AHk/gIV+PVGm0lb3e4g
-   sZitBPoH8J9pi1o13ZT6L3+aZhsYGoijNa/p7YGNjizOLK4C6ruc8g9Yu
-   /wCJGJPmu11cuKBJkZpvJP4/+CF0RnAoWkaJrtK7ALRYI3pN/dtLiH03r
-   MTL4m5Gln5Y9oScTAvaoFrcqrqUNq3e9nTbdUxkuLqdSL2GOCZLWRjj8b
-   o8Q8h+Ya+OppPrjh6RShpKssuD78EIZNKkxac9rKz7Q9bPdUDd+JU4Z/V
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="431610081"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="431610081"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 06:04:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="957822907"
-X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
-   d="scan'208";a="957822907"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga005.jf.intel.com with SMTP; 18 Jan 2024 06:04:19 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 18 Jan 2024 16:04:17 +0200
-Date: Thu, 18 Jan 2024 16:04:17 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Haotien Hsu <haotienh@nvidia.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Utkarsh Patel <utkarsh.h.patel@intel.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Sing-Han Chen <singhanc@nvidia.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Wayne Chang <waynec@nvidia.com>, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, WK Tsai <wtsai@nvidia.com>
-Subject: Re: [PATCH v6] ucsi_ccg: Refine the UCSI Interrupt handling
-Message-ID: <Zakv4Z2tWa4R5kOn@kuha.fi.intel.com>
-References: <20240118040034.2798629-1-haotienh@nvidia.com>
+	s=arc-20240116; t=1705586859; c=relaxed/simple;
+	bh=z/2Bwgab96DZ5PKg8s3ghLC/ddBRjyNUGU5ig9YwyrQ=;
+	h=DKIM-Signature:X-UI-Sender-Class:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:To:Content-Language:Cc:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:X-Provags-ID:X-Spam-Flag:
+	 UI-OutboundReport; b=Gy8vlPDWh+kkprwJr3npdGwaamUM8LROFuD6GnXzI2Bbgeh5wMfy7KHJxvAK+h2bo5nMJRV+yR+/wTwKH0o4d9RFlNFL0U5a/aq0dsSZs2A4DA7jS3SMQWQzJkpMZ2hpRKzR4AQALRzHNRbZrXsEhEsDguqLpQPF2vcX3zE48C4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=XC6tRtmu; arc=none smtp.client-ip=217.72.192.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1705586827; x=1706191627; i=markus.elfring@web.de;
+	bh=z/2Bwgab96DZ5PKg8s3ghLC/ddBRjyNUGU5ig9YwyrQ=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=XC6tRtmunKwtM100D+Ewfm+CP19mBGN08XuDCnaMsEymoQGu+u7vI9noGUs/48rY
+	 37lO6G0Z7s4rxiJBdFOdWpHLXgkm6MWomCvWn1LAVRJh6RTBnLjbBsp+1AaW3QKca
+	 j39hinGd9YSL8oQLtAEux1AKzZ6XzkIratnfA+VOGaeDJ3mSzq/V0QrVB03p346JB
+	 5SD9TFL8tmm5r82DQ9X3KVoFC0LUBcu/NyxZb5gklB1tOY4jsp5oUy4KkN4+UfVZG
+	 PWBL4HPpTsukMlZanE0H7VNrkc0VzEDJMNv4a86cxO6WM4nxKJYlhdm4HitY7iLQq
+	 o7iKj5i5hC7nnlrpzA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MeUXu-1qsVjz2Us8-00aRKh; Thu, 18
+ Jan 2024 15:07:07 +0100
+Message-ID: <14171fc4-8157-4919-86b8-bdec0493197d@web.de>
+Date: Thu, 18 Jan 2024 15:06:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118040034.2798629-1-haotienh@nvidia.com>
+User-Agent: Mozilla Thunderbird
+To: linux-hardening@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+ Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <chentao@kylinos.cn>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] pstore/ram_core: Improve exception handling in
+ persistent_ram_new()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Q1rClzpMoW580z9Pvdi2Z3ZRHk52p2E2Q6XVLqRrNKlPpyakmvP
+ WdtYc8MLDxlgfuZiuPwGEHQI/kjaJnFeixYPqtoMPMyJoqoY6e8MtQV2fEre9niN1hh7or4
+ s8Nr82P4exdDLiTP+N0qKILv0/L4zk7aThKqlkzvZRNByhS/hQzzihNIIIt0uYBXfUk1GlZ
+ L2br0gqeFgTPu1dbLfm8A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:y1tJt7FpCs4=;72+dE2IeuiHLVRsnwrXAscXo/3+
+ lvUW7Cwig10uWMNkk8VoZsjoGTxhO8UkBuBLgmhNJbQQWUF4MZhVLvjFe+O45x6d8XsykU/+t
+ Zajbvk0S9m5vDTZDvONSCr+BSAbeYmZqEJijzswUGv+BNHWchFEAo7wiUULf3sCC/NBgs5u2b
+ MAq729vxCM+AA+uW3vRSEVD+epSW40GANRTa3ASQUuYI/P4ulMciw1Um5GwO7T/DLUPzQXwri
+ 3jFe6WGOiXNHrck3PozMnN2DtgFGgdHs8bUN0LN1hSBhTdPWbu7w8QE8Hpd3YSbMBVe0RIXk4
+ WJqosgBJkZlZvitPC0bbUZuwlbQ2R0P0gmx+JDjMmB8inYk/ACtrIfuv7WAEDR34/OxzcTnWh
+ xXan8ZTp3CYVvR81IFTH/2ze3HtRME4f5vZgCrf8SYacxEWMTcfudBmj4dE92NteLTFYo0UKs
+ Ydz8njlWcFwb4RhD2/wosXv5Bx6nJcp1dTO3debhxvVIROfRLYsrNOCF/DKPCW8NKCmsOzHJ5
+ HasbMgzopiHBANof97ShXv4O86FG7MgE1au11CCDvWsRRz/koRr36At3moaZwScQfYeYY2Q/l
+ ByqJXMBADHYdsAf5vE4L6yp35o5syjIQRJW5omsvy/9VqffBtOfcv+2poKy0Y/JSES9zg/2iY
+ DDhMPPsYzMFhJhc2MPGirACcfowJfOpYHuDGdrR0bSA7pcujnsOYNMOpcfsxu+kcFxRsCkjy1
+ v3xUKTfv1iD9gXNTsan/jNxruyGuh7K+WUWfxMeLa93S3oBkVuUXAmqQnSv8/A+Nf/aIDziaR
+ w4rjbwWwrDmE1EhVBvC6w/MIC1woQH2EcKIYlE2+n7fa/98AJbwa1Q/eNK1maP6+naBUZ71aq
+ 6CF8to4q7Z/arkn+R5WnPIU5ZZ4WKgKiiBkCNYwRIbkZr//5yHJra6Jw10d+9YzmtjxNzL6tU
+ EzlcPw==
 
-Hi,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 18 Jan 2024 14:57:21 +0100
 
-On Thu, Jan 18, 2024 at 12:00:34PM +0800, Haotien Hsu wrote:
-> With the Cypress CCGx Type-C controller the following error is
-> sometimes observed on boot:
-> [   16.087147] ucsi_ccg 1-0008: failed to reset PPM!
-> [   16.087319] ucsi_ccg 1-0008: PPM init failed (-110)
-> 
-> When the above timeout occurs the following happens:
-> 1. The function ucsi_reset_ppm() is called to reset UCSI controller.
->    This function performs an async write to start reset and then
->    polls for completion.
-> 2. An interrupt occurs when the reset completes. In the interrupt
->    handler, the OPM field in the INTR_REG is cleared and this clears
->    the CCI data in the PPM. Hence, the reset completion status is
->    cleared.
-> 3. The function ucsi_reset_ppm() continues to poll for the reset
->    completion, but has missed the reset completion event and
->    eventually timeouts.
-> 
-> In this patch, we store CCI when handling the interrupt and make
-> reading after async write gets the correct value.
-> 
-> To align with the CCGx UCSI interface guide, this patch updates the
-> driver to copy CCI and MESSAGE_IN before they are reset when UCSI
-> interrupt acknowledged.
-> 
-> When a new command is sent, the driver will clear the old CCI to avoid
-> ucsi_ccg_read() getting wrong CCI after ucsi_ccg_async_write() when
-> the UCSI interrupt is not handled.
-> 
-> Finally, acking the UCSI_READ_INT interrupt before calling complete()
-> in ISR to ensure that the ucsi_ccg_sync_write() would wait for the
-> interrupt handling to complete.
-> 
-> ---
-> V1->V2
-> - Fix uninitialized symbol 'cci'
-> v2->v3
-> - Remove misusing Reported-by tags
-> v3->v4
-> - Add comments for op_lock
-> v4->v5
-> - Specify the endianness of registers in struct op_region
-> - Replace ccg_op_region_read() with inline codes
-> - Replace ccg_op_region_clean() with inline codes
-> - Replace stack memory with GFP_ATOMIC allocated memory in ccg_op_region_update()
-> - Add comments for resetting CCI in ucsi_ccg_async_write()
-> v5->v6
-> - Fix sparse warning: incorrect type in assignment
+* Omit an initialisation (for the variable =E2=80=9Cret=E2=80=9D)
+  which became unnecessary with this refactoring
+  because a memory allocation failure will be directly indicated
+  by a corresponding return statement in an if branch.
 
-You need to put the changelog ..
+* Move a call of the function =E2=80=9Ckstrdup=E2=80=9D before two other s=
+tatements.
 
-> Signed-off-by: Sing-Han Chen <singhanc@nvidia.com>
-> Signed-off-by: Haotien Hsu <haotienh@nvidia.com>
-> ---
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ fs/pstore/ram_core.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-. here.
+diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
+index f1848cdd6d34..5047a8502e17 100644
+=2D-- a/fs/pstore/ram_core.c
++++ b/fs/pstore/ram_core.c
+@@ -586,21 +586,23 @@ struct persistent_ram_zone *persistent_ram_new(phys_=
+addr_t start, size_t size,
+ 			unsigned int memtype, u32 flags, char *label)
+ {
+ 	struct persistent_ram_zone *prz;
+-	int ret =3D -ENOMEM;
++	int ret;
 
->  drivers/usb/typec/ucsi/ucsi_ccg.c | 92 ++++++++++++++++++++++++++++---
->  1 file changed, 84 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/ucsi/ucsi_ccg.c b/drivers/usb/typec/ucsi/ucsi_ccg.c
-> index 449c125f6f87..dda7c7c94e08 100644
-> --- a/drivers/usb/typec/ucsi/ucsi_ccg.c
-> +++ b/drivers/usb/typec/ucsi/ucsi_ccg.c
-> @@ -192,6 +192,12 @@ struct ucsi_ccg_altmode {
->  	bool checked;
->  } __packed;
->  
-> +#define CCGX_MESSAGE_IN_MAX 4
-> +struct op_region {
-> +	__le32 cci;
-> +	__le32 message_in[CCGX_MESSAGE_IN_MAX];
-> +};
-> +
->  struct ucsi_ccg {
->  	struct device *dev;
->  	struct ucsi *ucsi;
-> @@ -222,6 +228,13 @@ struct ucsi_ccg {
->  	bool has_multiple_dp;
->  	struct ucsi_ccg_altmode orig[UCSI_MAX_ALTMODES];
->  	struct ucsi_ccg_altmode updated[UCSI_MAX_ALTMODES];
-> +
-> +	/*
-> +	 * This spinlock protects op_data which includes CCI and MESSAGE_IN that
-> +	 * will be updated in ISR
-> +	 */
-> +	spinlock_t op_lock;
-> +	struct op_region op_data;
->  };
->  
->  static int ccg_read(struct ucsi_ccg *uc, u16 rab, u8 *data, u32 len)
-> @@ -305,12 +318,42 @@ static int ccg_write(struct ucsi_ccg *uc, u16 rab, const u8 *data, u32 len)
->  	return 0;
->  }
->  
-> +static int ccg_op_region_update(struct ucsi_ccg *uc, u32 cci)
-> +{
-> +	u16 reg = CCGX_RAB_UCSI_DATA_BLOCK(UCSI_MESSAGE_IN);
-> +	struct op_region *data = &uc->op_data;
-> +	unsigned char *buf;
-> +	size_t size = sizeof(data->message_in);
-> +
-> +	buf = kzalloc(size, GFP_ATOMIC);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +	if (UCSI_CCI_LENGTH(cci)) {
-> +		int ret = ccg_read(uc, reg, (void *)buf, size);
-> +
-> +		if (ret) {
-> +			kfree(buf);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	spin_lock(&uc->op_lock);
-> +	data->cci = cpu_to_le32(cci);
-> +	if (UCSI_CCI_LENGTH(cci))
-> +		memcpy(&data->message_in, buf, size);
-> +	spin_unlock(&uc->op_lock);
-> +	kfree(buf);
-> +	return 0;
-> +}
-> +
->  static int ucsi_ccg_init(struct ucsi_ccg *uc)
->  {
->  	unsigned int count = 10;
->  	u8 data;
->  	int status;
->  
-> +	spin_lock_init(&uc->op_lock);
-> +
->  	data = CCGX_RAB_UCSI_CONTROL_STOP;
->  	status = ccg_write(uc, CCGX_RAB_UCSI_CONTROL, &data, sizeof(data));
->  	if (status < 0)
-> @@ -520,9 +563,20 @@ static int ucsi_ccg_read(struct ucsi *ucsi, unsigned int offset,
->  	u16 reg = CCGX_RAB_UCSI_DATA_BLOCK(offset);
->  	struct ucsi_capability *cap;
->  	struct ucsi_altmode *alt;
-> -	int ret;
-> +	int ret = 0;
-> +
-> +	if (offset == UCSI_CCI) {
-> +		spin_lock(&uc->op_lock);
-> +		memcpy(val, &(uc->op_data).cci, val_len);
-> +		spin_unlock(&uc->op_lock);
-> +	} else if (offset == UCSI_MESSAGE_IN) {
-> +		spin_lock(&uc->op_lock);
-> +		memcpy(val, &(uc->op_data).message_in, val_len);
-> +		spin_unlock(&uc->op_lock);
-> +	} else {
-> +		ret = ccg_read(uc, reg, val, val_len);
-> +	}
->  
-> -	ret = ccg_read(uc, reg, val, val_len);
->  	if (ret)
->  		return ret;
->  
-> @@ -559,9 +613,18 @@ static int ucsi_ccg_read(struct ucsi *ucsi, unsigned int offset,
->  static int ucsi_ccg_async_write(struct ucsi *ucsi, unsigned int offset,
->  				const void *val, size_t val_len)
->  {
-> +	struct ucsi_ccg *uc = ucsi_get_drvdata(ucsi);
->  	u16 reg = CCGX_RAB_UCSI_DATA_BLOCK(offset);
->  
-> -	return ccg_write(ucsi_get_drvdata(ucsi), reg, val, val_len);
-> +	/*
-> +	 * UCSI may read CCI instantly after async_write,
-> +	 * clear CCI to avoid caller getting wrong data before we get CCI from ISR
-> +	 */
-> +	spin_lock(&uc->op_lock);
-> +	uc->op_data.cci = 0;
-> +	spin_unlock(&uc->op_lock);
-> +
-> +	return ccg_write(uc, reg, val, val_len);
->  }
->  
->  static int ucsi_ccg_sync_write(struct ucsi *ucsi, unsigned int offset,
-> @@ -615,13 +678,18 @@ static irqreturn_t ccg_irq_handler(int irq, void *data)
->  	u16 reg = CCGX_RAB_UCSI_DATA_BLOCK(UCSI_CCI);
->  	struct ucsi_ccg *uc = data;
->  	u8 intr_reg;
-> -	u32 cci;
-> -	int ret;
-> +	u32 cci = 0;
-> +	int ret = 0;
->  
->  	ret = ccg_read(uc, CCGX_RAB_INTR_REG, &intr_reg, sizeof(intr_reg));
->  	if (ret)
->  		return ret;
->  
-> +	if (!intr_reg)
-> +		return IRQ_HANDLED;
-> +	else if (!(intr_reg & UCSI_READ_INT))
-> +		goto err_clear_irq;
-> +
->  	ret = ccg_read(uc, reg, (void *)&cci, sizeof(cci));
->  	if (ret)
->  		goto err_clear_irq;
-> @@ -629,13 +697,21 @@ static irqreturn_t ccg_irq_handler(int irq, void *data)
->  	if (UCSI_CCI_CONNECTOR(cci))
->  		ucsi_connector_change(uc->ucsi, UCSI_CCI_CONNECTOR(cci));
->  
-> -	if (test_bit(DEV_CMD_PENDING, &uc->flags) &&
-> -	    cci & (UCSI_CCI_ACK_COMPLETE | UCSI_CCI_COMMAND_COMPLETE))
-> -		complete(&uc->complete);
-> +	/*
-> +	 * As per CCGx UCSI interface guide, copy CCI and MESSAGE_IN
-> +	 * to the OpRegion before clear the UCSI interrupt
-> +	 */
-> +	ret = ccg_op_region_update(uc, cci);
-> +	if (ret)
-> +		goto err_clear_irq;
->  
->  err_clear_irq:
->  	ccg_write(uc, CCGX_RAB_INTR_REG, &intr_reg, sizeof(intr_reg));
->  
-> +	if (!ret && test_bit(DEV_CMD_PENDING, &uc->flags) &&
-> +	    cci & (UCSI_CCI_ACK_COMPLETE | UCSI_CCI_COMMAND_COMPLETE))
-> +		complete(&uc->complete);
-> +
->  	return IRQ_HANDLED;
->  }
->  
-> -- 
-> 2.34.1
+ 	prz =3D kzalloc(sizeof(struct persistent_ram_zone), GFP_KERNEL);
+ 	if (!prz) {
+ 		pr_err("failed to allocate persistent ram zone\n");
+-		goto err;
++		return ERR_PTR(-ENOMEM);
++	}
++
++	prz->label =3D kstrdup(label, GFP_KERNEL);
++	if (!prz->label) {
++		kfree(prz);
++		return ERR_PTR(-ENOMEM);
+ 	}
 
--- 
-heikki
+ 	/* Initialize general buffer state. */
+ 	raw_spin_lock_init(&prz->buffer_lock);
+ 	prz->flags =3D flags;
+-	prz->label =3D kstrdup(label, GFP_KERNEL);
+-	if (!prz->label)
+-		goto err;
+-
+ 	ret =3D persistent_ram_buffer_map(start, size, prz, memtype);
+ 	if (ret)
+ 		goto err;
+=2D-
+2.43.0
+
 
