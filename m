@@ -1,148 +1,146 @@
-Return-Path: <linux-kernel+bounces-30123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B116A8319CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:59:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 240948319D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF2AC1C24A66
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:59:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A808028AFB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:00:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C321B250E7;
-	Thu, 18 Jan 2024 12:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331E0250EF;
+	Thu, 18 Jan 2024 13:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="sAdDn6QI"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="RODEh9Vg"
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFCC924B4E
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 12:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A01324B57
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:00:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705582769; cv=none; b=G7FQ1/sp81WprKLPOvSxNC5wNt6GfUT6MNIatu9TfzHDXi3kBsfxV8ttV7yKZhvbMnSdF8urhr0xs8qsOqc2iw+dPzDL3ZetblwOcZU02DheQQCf1YnD8zogFJN5eEWUyzPGEiYDbC+S+dBD9xxm7U9+l+Egta+TZnzHE+6RWg4=
+	t=1705582804; cv=none; b=fPmrL9GuZBQqHl7rUUXu0JOCmYDq2TbzYmkEorQKv/24ITIX7w9hE9ukY9hRXEcjGwT65teb/jocvb1N1JxZkZkMBgGQot1yjkpRnjAox+U693V2NI2NPONPPz9aWmSlw7s+eTy5fD1oCbqX5bAQMHKbwPWJgiTu+TkoL954DWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705582769; c=relaxed/simple;
-	bh=NyU7+c+3R5qieLOE7iZQGD9dmLTqV7McsWlPf5E4zCw=;
+	s=arc-20240116; t=1705582804; c=relaxed/simple;
+	bh=7M4VaIUyYm8pE44IOXTCPDugJRBLIqoanr86Xn4yKIs=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
 	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=qFNEvE9kExshGab2n1xlr5N15VQDjTXjy3lvoUzM3wJWDt6TDsN1zZMmWibLFkpoRy9q6tte1eIAXB9muk6uLV8swYUwcrD3QScNpAQQs5fLfN7iTmQH2v6iDs2GK+YJgsjZSBK9/D8c1XUCCDK3PEc0esjRT5u1eGARfEW3Gx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=sAdDn6QI; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36082f3cb06so64475305ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 04:59:27 -0800 (PST)
+	 Content-Type:Content-Transfer-Encoding; b=WhbncdvBGeX4dqYcuFkHqP9c6SpfR0gDiLWw49tEO7AI/nlT2aSS6SM3K9Vs8oBjhN1IGVxkPUh26UeG15+QYlU57l2lDUEGm32/S4dWC+Mk+9YQOLDUlYDm/o/M3ctXetjUk+JLC/fsw33bL6J9D5DCW3dfr3JXGBmltfJjiMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=RODEh9Vg; arc=none smtp.client-ip=209.85.222.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7d2ce52d0c1so100292241.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 05:00:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1705582767; x=1706187567; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705582802; x=1706187602; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HWADTwPjX+2jaYXFvN/zsXEQ2ZmoOpg5k/PCeUcdjSk=;
-        b=sAdDn6QI8crmJgVo+jnaEFygVmZ7zyFNm6KMdmnS43XY1SxfIEsbV8M1DrcvFZFLMl
-         Q5UFaOBpJb9CYb17hnTZ0u7v417roGLBDtPLhC/ZWVTa3JVYmg5hr8r+6yWtuOp5Y2Xt
-         9t0f1UoA1Xw7fx1TvjUKabrd/BBo1cLMjDOHhR1aejp8L86na+fFTUDHi9ZPdub70rSD
-         jjFyY/cC/9H0YJhyHgiw3eZqX5eXrkWvcz+CYvfGSLt+LFLZhfXrKWByfQSLZuQpvC3s
-         feVSPTsxY/Pn8ZBfqDJIgOqEMGaP07AGy0IV59neSM26io8ClnTJ7tA52erAiRBAUPsT
-         a7bA==
+        bh=YbPI80yNiYQVcWLbaA0E+htnDslr+gyomLLCxgqK/9A=;
+        b=RODEh9VgKUbKarmhkWY8riLHD0mvfw761K6T1JqT6HOQbrDqNM0jB7qRzdiR1nIUyw
+         w31vlGZ5TifUZmURBbnYblehCKePsqlnVhuCe9o9sbzZLJf32LppFGgf9Xp9ng5Yd0Xz
+         OenY6DJtD/RpPkKWomwvP3HgQ6CD3qsv/CvX+EkPLCeeu3Npn4oskjIJJAuUzgrA4SzD
+         wU1LVQ9/m3esU9Ex9qkf0Wa5KP0uxEdkNs7s4ppL8UfybKp3C1CoAU4MYQ1SdgWmVKYK
+         7uTjrHwx+O+QuyJ6kBatAmJoms4gGFq55a/LSQ75ytTsIDrjBZ3lvzL2Wi2wNfb93nHn
+         yjFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705582767; x=1706187567;
+        d=1e100.net; s=20230601; t=1705582802; x=1706187602;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HWADTwPjX+2jaYXFvN/zsXEQ2ZmoOpg5k/PCeUcdjSk=;
-        b=MNujvNVnDBONo4Ibix1FCpuuiH/5Y5pZkMuGfU1Bd42iHPOZuEuJGbpX4JAaSX4dSN
-         8opx4oKlMauG4CIL0fw0fQtFY7TU+T7XOBSJbqOVOFDao4edAF41qeSw9Ri2/NC3hksX
-         3CVqmFV+DMwbtjlKgpOV3GiD3KByqL1Irk1YuBHWYEZFAd90lYQ3xEh1qzq1saFQqfUk
-         jGQFRWbxCf927nOvsHReFVMsMGrYKRUbtx9iH9WC2OkjRcqx2AOTBkYpzIdZvo973oPx
-         1o9BO2uyxokwwEX0HohDjshA3NPz1+HOLGMETrN4SSM1i3ZoAz272MTsvMFvPlMb7hvC
-         pVVA==
-X-Gm-Message-State: AOJu0YxD+DSClEPFHkou1gMgwpnrYVXXRa4nAzR4wFbfHX1PK8oBpkm4
-	dtkmh1gUsnBRtXwnu4fFV9jf4ZcailBXczweNufYdDDrGMES0RYpYOBjQQqjRYQILIQVc5WSKGT
-	N1YkECKp2ojCIFzbGoWd3DbPq4arCniRdF+a5aQ==
-X-Google-Smtp-Source: AGHT+IEULXICvafspeHkLMkr6soWFzV0SUySB8GzLHkUsKVp+V05biZlODsydI6eC8onv1WinflroTNSid+Lah/ulTM=
-X-Received: by 2002:a05:6e02:5ac:b0:361:98a3:a7ac with SMTP id
- k12-20020a056e0205ac00b0036198a3a7acmr879075ils.58.1705582767073; Thu, 18 Jan
- 2024 04:59:27 -0800 (PST)
+        bh=YbPI80yNiYQVcWLbaA0E+htnDslr+gyomLLCxgqK/9A=;
+        b=smRM7sTU2+s7UJuIaBx3itm7QM7WJdrrbX0TqAPq+iNeeesAF+BbCBxnZdm/qahfSp
+         E+xlXy56yYVaqPf88z2Ev/OgJAu78FaN+P9f7JypZXsoXxKlJP0bQMd7FKYxKr6zdEFn
+         KDTqu4QVAsJUbs3YgXzL6DMyldJVf5AfI9fejfAB73zbFuHG577sKH418XX1EZ4OLQ8+
+         ZLuoLx1DzUHoRBHCUZ4iy0a7SekW+S0UxWatQ5BuGiSqcYIT4D/HpV1MwGTjzZnTUBw3
+         nQzKXJk7uKBE3eTvff7le+ta+ohOF72CUqvLMQASncxsopDLr5zU1kTtV6PBZrG1wLZa
+         Me0Q==
+X-Gm-Message-State: AOJu0YzFHnrfTloqWXwvckBg74DR490axKNw5zBWTb93fqhNWXFRhrbw
+	oDuasd7ww4eaMkL0zOzFQOnlFd5nJDnZTULb2DHtkw2OyLA3qxMx0pC0BfjUuVunuBikpNMuuAf
+	hG17703V1yB/SzUQwYOE2+nsrYVsDcahear+WhA==
+X-Google-Smtp-Source: AGHT+IFV799Pl75EVGiEihv8NguEM801LhNe7yQvY5xjGtMqBPcnTKWr82ZJvwoc7zCV0G5B1YL66F/miSdR/lsCxqk=
+X-Received: by 2002:a67:f797:0:b0:469:877d:fc1a with SMTP id
+ j23-20020a67f797000000b00469877dfc1amr681665vso.8.1705582801234; Thu, 18 Jan
+ 2024 05:00:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104123727.76987-2-ajones@ventanamicro.com>
-In-Reply-To: <20240104123727.76987-2-ajones@ventanamicro.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Thu, 18 Jan 2024 18:29:16 +0530
-Message-ID: <CAAhSdy0SxZWdCHQVW0Bki+bHpg4qrHWV0aFzJq8V2xYtwsMWhw@mail.gmail.com>
-Subject: Re: [PATCH -fixes v2] RISC-V: KVM: Require HAVE_KVM
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: linux-riscv@lists.infradead.org, linux-next@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	kvm-riscv@lists.infradead.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	aou@eecs.berkeley.edu, atishp@atishpatra.org, rdunlap@infradead.org, 
-	sfr@canb.auug.org.au, alex@ghiti.fr, mpe@ellerman.id.au, npiggin@gmail.com, 
-	linuxppc-dev@lists.ozlabs.org, pbonzini@redhat.com
+References: <20240117083251.53868-1-hector.palacios@digi.com>
+ <20240117083251.53868-2-hector.palacios@digi.com> <CAHp75Vci=1nAvxRcbkK2SxGWGbQVbzQMTycMt8tZ5snPRTYXOg@mail.gmail.com>
+ <fd5550ad-76c0-419b-aa07-a0493a57286e@digi.com> <CAHp75Vf4wXLEjmfpz6KQSCB0Jd8LNv6+SU_ikbhR_8PsJHuq-g@mail.gmail.com>
+ <CAMRc=MfAW5NDJHtZ1333-xrcCyQfft-pQF1-0Vv_ehY16agShw@mail.gmail.com> <9b370036-bf3a-49d3-99a0-5c11eaca4e6f@digi.com>
+In-Reply-To: <9b370036-bf3a-49d3-99a0-5c11eaca4e6f@digi.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 18 Jan 2024 13:59:50 +0100
+Message-ID: <CAMRc=MeJQihq3N1ZqGiKS_9JJ6c0BwXZfiY1XicBiW8mc18Oxw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] gpio: vf610: add support to DT 'ngpios' property
+To: Hector Palacios <hector.palacios@digi.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, linus.walleij@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, andy@kernel.org, conor+dt@kernel.org, 
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
+	festevam@gmail.com, linux-imx@nxp.com, stefan@agner.ch, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 4, 2024 at 6:07=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
-m> wrote:
+On Thu, Jan 18, 2024 at 1:45=E2=80=AFPM Hector Palacios
+<hector.palacios@digi.com> wrote:
 >
-> KVM requires EVENTFD, which is selected by HAVE_KVM. Other KVM
-> supporting architectures select HAVE_KVM and then their KVM
-> Kconfigs ensure its there with a depends on HAVE_KVM. Make RISCV
-> consistent with that approach which fixes configs which have KVM
-> but not EVENTFD, as was discovered with a randconfig test.
+> On 1/18/24 13:03, Bartosz Golaszewski wrote:
+> >
+> > On Thu, Jan 18, 2024 at 10:04=E2=80=AFAM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> >>
+> >> On Thu, Jan 18, 2024 at 10:25=E2=80=AFAM Hector Palacios
+> >> <hector.palacios@digi.com> wrote:
+> >>> On 1/17/24 21:51, Andy Shevchenko wrote:
+> >>>>> Some SoCs, such as i.MX93, don't have all 32 pins available
+> >>>>> per port. Allow optional generic 'ngpios' property to be
+> >>>>> specified from the device tree and default to
+> >>>>> VF610_GPIO_PER_PORT (32) if the property does not exist.
+> >>
+> >> ...
+> >>
+> >>>>> +       ret =3D device_property_read_u32(dev, "ngpios", &ngpios);
+> >>>>> +       if (ret || ngpios > VF610_GPIO_PER_PORT)
+> >>>>> +               gc->ngpio =3D VF610_GPIO_PER_PORT;
+> >>>>> +       else
+> >>>>> +               gc->ngpio =3D (u16)ngpios;
+> >>>>
+> >>>> This property is being read by the GPIOLIB core. Why do you need to =
+repeat this?
+> >>>
+> >>> My apologies; I had not seen this.
+> >>> I'll use gpiochip_get_ngpios() on the next iteration.
+> >>
+> >> But still why?
+> >> https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#=
+L867
+> >>
+> >> It's called for every driver.
+> >>
+> >> Maybe it's needed to be refactored to allow fallbacks? Then can the
+> >> GPIO MMIO case also be updated?
+> >>
+> >
+> > I guess it's because Hector wants to set an upper limit on the number o=
+f GPIOs?
 >
-> Fixes: 99cdc6c18c2d ("RISC-V: Add initial skeletal KVM support")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Closes: https://lore.kernel.org/all/44907c6b-c5bd-4e4a-a921-e4d3825539d8@=
-infradead.org/
-> Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
+> I think Andy is suggesting to rework the gpio-vf610 driver to use
+> bgpio_chip struct (it doesn't currently), and then I guess the 'ngpio'
+> property gets read automatically if you call bgpio_init().
 
-Queued this patch for Linux-6.8
+No, Andy said (and even provided a link to the code) that "ngpios" is
+read ALWAYS when a new GPIO chip is registered with the GPIO core.
+It's just that it doesn't impose any limits but that could be
+addressed with imposing an upper limit in DT bindings maybe?
 
-Regards,
-Anup
-
-> ---
->
-> v2:
->  - Added Fixes tag and -fixes prefix [Alexandre/Anup]
->
->  arch/riscv/Kconfig     | 1 +
->  arch/riscv/kvm/Kconfig | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index a935a5f736b9..daba06a3b76f 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -128,6 +128,7 @@ config RISCV
->         select HAVE_KPROBES if !XIP_KERNEL
->         select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
->         select HAVE_KRETPROBES if !XIP_KERNEL
-> +       select HAVE_KVM
->         # https://github.com/ClangBuiltLinux/linux/issues/1881
->         select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
->         select HAVE_MOVE_PMD
-> diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
-> index 1fd76aee3b71..36fa8ec9e5ba 100644
-> --- a/arch/riscv/kvm/Kconfig
-> +++ b/arch/riscv/kvm/Kconfig
-> @@ -19,7 +19,7 @@ if VIRTUALIZATION
->
->  config KVM
->         tristate "Kernel-based Virtual Machine (KVM) support (EXPERIMENTA=
-L)"
-> -       depends on RISCV_SBI && MMU
-> +       depends on HAVE_KVM && RISCV_SBI && MMU
->         select HAVE_KVM_IRQCHIP
->         select HAVE_KVM_IRQ_ROUTING
->         select HAVE_KVM_MSI
-> --
-> 2.43.0
->
+Bart
 
