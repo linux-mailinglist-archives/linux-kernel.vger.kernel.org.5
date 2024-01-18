@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-30260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12FEE831C53
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:24:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33B0D831C56
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7F6A1F279C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:24:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0440283736
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0342C87D;
-	Thu, 18 Jan 2024 15:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A9B2D022;
+	Thu, 18 Jan 2024 15:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="u535Kp5c"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="Ty/CH0HO"
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256A72C865;
-	Thu, 18 Jan 2024 15:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFF02C872;
+	Thu, 18 Jan 2024 15:22:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705591353; cv=none; b=M1Ptp8JFzWctmRK5jowjSpSF9FNs4DtC4Y87M5toxrD0fUwPvhdz3F5Kch3uA9LZMBmkN7eYJUgDD+u9l6+syTrOCxV3/wPA9Mr1jCbC/x13xC+IoUxm74lvN/yTxF2az2+U+bDIxPqyHybA1Zc2TOoUlWHFJ/nAXJAlD59XM/I=
+	t=1705591354; cv=none; b=ad5bwLK1GZQWCnVlknqtyu1zKKX54qoAQHTIucG/1nE+bJJAN5ktcKC6G1vuH3pDopGgx1A9eHCFJnUCzMLFXCw6p3jru0597gueZqTTRmusYFtP40tSmZEBF8PCJdt5FLEwt7hlWJM+WuZP0DPakF4xRLeiRzZQ4AvZLBhyRVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705591353; c=relaxed/simple;
-	bh=3JrcSVp7RKn4lyZ3QbM4NjqKlgUOKTr8TF9u4wGWVlE=;
+	s=arc-20240116; t=1705591354; c=relaxed/simple;
+	bh=s4Mysqfst2QRa0IZKXW/CO703dzYrTXzrhZlsCa8/k8=;
 	h=DKIM-Signature:Received:From:To:Cc:Date:Message-Id:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:
-	 X-Spam-Checker-Version:X-Spam-Level:X-Spam-Report:X-Spam-Status:
-	 Subject:X-SA-Exim-Version:X-SA-Exim-Scanned; b=H6rN7RIbroE8LXgpqQVnJKcYLKVlpTJPbY21GzVDY6ucpYOWXSWtYIj/8vO0UlRdh+RPX8R3NX51lbO251Pfk1JWnydlaUw/P1NMXvTUOCTxvxGp6anN+h6hkptaX029czsH7jeqaYy5ZLTpcbV9eo0D3hGBouU9zn5hzZ1SAxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=u535Kp5c; arc=none smtp.client-ip=162.243.120.170
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:
+	 X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:X-Spam-Checker-Version:
+	 X-Spam-Level:X-Spam-Report:X-Spam-Status:Subject:X-SA-Exim-Version:
+	 X-SA-Exim-Scanned; b=tvB4Ko/EXv/9L44Arp84U9AWf6/ymX89j5kIvzveIicayxOrZ8v6mYdYmffN4fWR3HkESqyCO+t9Th+zUu45uJQcINsDfka8QqEOUoXuDI796RgsROrnoYOG8DPXk8+852BvBlPjC/FJP1h+/a0fbzX2BdajGMRy/KLouEbQJ5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=Ty/CH0HO; arc=none smtp.client-ip=162.243.120.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=KQBsa25kln8XupyVFsGT6mJS+LOwwrgBrkCwuFAgShk=; b=u535Kp5cKdfG45k/fotDqXouFe
-	uUNuF3iVUztCHwebplOY16EFSrpCyMXturye7MlNBxk2LACFG3HEWGZYJVc5NxcJkoZ9CkjiayPIa
-	TY3q9DnV3fIeSP367help4LhcBzlOnIcRI8c/uAeFIwLSgNjsSWdGwtxUd4pNz3JxFNY=;
+	bh=lvwXBazv5hN0bEQBpZM6qEByYxipLu4qujdJoNRv5fw=; b=Ty/CH0HOnew9IFzcyDF5QHGN4B
+	3e+/1e2uW2vuXzEFyWIHz5vh4xNwP4A60jE/LODIvsAq2kuLp6Rv6FuiTBB2SQryi/jZ3pBOU4lVT
+	QnYdyDQy6jZDtZJ7FLhz2n5Bbo4JXqpUUlIIBtrt0wZBB034J1DGshY6aqBWBMumsz+A=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:57058 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1rQUDr-0002lf-I3; Thu, 18 Jan 2024 10:22:28 -0500
+	id 1rQUDt-0002lf-Df; Thu, 18 Jan 2024 10:22:30 -0500
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -52,10 +52,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	hugo@hugovil.com,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	=?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>
-Date: Thu, 18 Jan 2024 10:22:04 -0500
-Message-Id: <20240118152213.2644269-9-hugo@hugovil.com>
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Date: Thu, 18 Jan 2024 10:22:05 -0500
+Message-Id: <20240118152213.2644269-10-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240118152213.2644269-1-hugo@hugovil.com>
 References: <20240118152213.2644269-1-hugo@hugovil.com>
@@ -65,7 +64,6 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 70.80.174.168
 X-SA-Exim-Mail-From: hugo@hugovil.com
@@ -73,84 +71,61 @@ X-Spam-Level:
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
 	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH v2 08/17] serial: max310x: use separate regmap name for each port
+Subject: [PATCH v2 09/17] serial: max310x: simplify probe() and remove() error handling
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Use a separate regmap name for each port so they can each have their own
-debugfs entry, allowing to access each port registers independently.
+Simplify error handling and only call uart_remove_one_port() if line bit
+is set, instead of having to manually set s->p[i].port.dev to NULL.
 
-For example, a four channels/ports device like the MAX14830 will have four
-entries in its regmap debugfs:
-
-$ find /sys/kernel/debug/regmap -type d | grep spi0.0
-/sys/kernel/debug/regmap/spi0.0-port0
-/sys/kernel/debug/regmap/spi0.0-port1
-/sys/kernel/debug/regmap/spi0.0-port2
-/sys/kernel/debug/regmap/spi0.0-port3
-
-Cc: Jan Kundrát <jan.kundrat@cesnet.cz>
-Link: https://lore.kernel.org/all/77f101f1-897d-4e6d-a8fd-27b818caf768@cesnet.cz/
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-
 ---
-
-I didn't put again Jan Kundrát's Reviewed-by and Tested-by tags since this
-version has modifications compared to the original one.
----
- drivers/tty/serial/max310x.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/tty/serial/max310x.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 6549eee4f6a6..d6219077d23c 100644
+index d6219077d23c..9ef146f09d5b 100644
 --- a/drivers/tty/serial/max310x.c
 +++ b/drivers/tty/serial/max310x.c
-@@ -1486,6 +1486,19 @@ static struct regmap_config regcfg = {
- 	.max_raw_write = MAX310X_FIFO_SIZE,
- };
+@@ -1395,10 +1395,9 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
  
-+static const char *max310x_regmap_name(u8 port_id)
-+{
-+	switch (port_id) {
-+	case 0:	return "port0";
-+	case 1:	return "port1";
-+	case 2:	return "port2";
-+	case 3:	return "port3";
-+	default:
-+		WARN_ON(true);
-+		return NULL;
-+	}
-+}
+ 		/* Register port */
+ 		ret = uart_add_one_port(&max310x_uart, &s->p[i].port);
+-		if (ret) {
+-			s->p[i].port.dev = NULL;
++		if (ret)
+ 			goto out_uart;
+-		}
 +
- #ifdef CONFIG_SPI_MASTER
- static int max310x_spi_extended_reg_enable(struct device *dev, bool enable)
- {
-@@ -1521,6 +1534,8 @@ static int max310x_spi_probe(struct spi_device *spi)
+ 		set_bit(line, max310x_lines);
  
+ 		/* Go to suspend mode */
+@@ -1433,10 +1432,8 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 
+ out_uart:
  	for (i = 0; i < devtype->nr; i++) {
- 		u8 port_mask = i * 0x20;
+-		if (s->p[i].port.dev) {
++		if (test_and_clear_bit(s->p[i].port.line, max310x_lines))
+ 			uart_remove_one_port(&max310x_uart, &s->p[i].port);
+-			clear_bit(s->p[i].port.line, max310x_lines);
+-		}
+ 	}
+ 
+ out_clk:
+@@ -1454,8 +1451,10 @@ static void max310x_remove(struct device *dev)
+ 		cancel_work_sync(&s->p[i].tx_work);
+ 		cancel_work_sync(&s->p[i].md_work);
+ 		cancel_work_sync(&s->p[i].rs_work);
+-		uart_remove_one_port(&max310x_uart, &s->p[i].port);
+-		clear_bit(s->p[i].port.line, max310x_lines);
 +
-+		regcfg.name = max310x_regmap_name(i);
- 		regcfg.read_flag_mask = port_mask;
- 		regcfg.write_flag_mask = port_mask | MAX310X_WRITE_BIT;
- 		regmaps[i] = devm_regmap_init_spi(spi, &regcfg);
-@@ -1620,6 +1635,7 @@ static int max310x_i2c_probe(struct i2c_client *client)
- 				     client->addr, devtype->slave_addr.min,
- 				     devtype->slave_addr.max);
- 
-+	regcfg_i2c.name = max310x_regmap_name(0);
- 	regmaps[0] = devm_regmap_init_i2c(client, &regcfg_i2c);
- 
- 	for (i = 1; i < devtype->nr; i++) {
-@@ -1628,6 +1644,7 @@ static int max310x_i2c_probe(struct i2c_client *client)
- 							client->adapter,
- 							port_addr);
- 
-+		regcfg_i2c.name = max310x_regmap_name(i);
- 		regmaps[i] = devm_regmap_init_i2c(port_client, &regcfg_i2c);
++		if (test_and_clear_bit(s->p[i].port.line, max310x_lines))
++			uart_remove_one_port(&max310x_uart, &s->p[i].port);
++
+ 		s->devtype->power(&s->p[i].port, 0);
  	}
  
 -- 
