@@ -1,138 +1,108 @@
-Return-Path: <linux-kernel+bounces-30045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E684831848
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:15:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95A75831852
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70C131C250ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:15:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C86DE1C20FA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7AC241FF;
-	Thu, 18 Jan 2024 11:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="RDlOUNNR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C259F2377B;
+	Thu, 18 Jan 2024 11:18:14 +0000 (UTC)
+Received: from mail78-58.sinamail.sina.com.cn (mail78-58.sinamail.sina.com.cn [219.142.78.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C3123760;
-	Thu, 18 Jan 2024 11:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1D723760
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:18:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=219.142.78.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705576530; cv=none; b=nB3fJEDyLjZzzsZS6iRyHD+rLkbR0nJLCAwtNdcw/aarR1PqvUBcADcJeNcL76q8ctnkwec7Bt65BVtV0PiCJz7umebKJ5Z7+iq6Krk0IdVpdQv+wvfHfCVIPNdIyTtT9Vw70thfq5VLh4iIY9ZPITEtMEClHWBB7mPsWhZI4Io=
+	t=1705576694; cv=none; b=jT29JwxJ0gXBzjp5O2R6f1HVeVKuZ6vi353Ei6GXNHb1euGV3NA/IjYeLB+rkdB6EsmHwWZfP/OXKb/qE+rYOI2vct8niPQe/4ZGBP3rmIrGsrymxqeAX5Si61GmV1kY4rCzq0xSLgGDwvN/k/GpbSYIZJR+Fg/Gx0V2APyjqUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705576530; c=relaxed/simple;
-	bh=w0FBrm4sVu/DLk+0aSDbplyxxPuYJ1uOLaE9EFkd7dc=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To; b=ou3syrqEV/+QTF+prdRg8op3aF4sQxlCpDwkGLaJmIVA3NBj5BiRoY+mlwhgvbuHqfy611o7vLb+KHw7kmpKTpNczxJplDflwzp/B/hAhC9OJNrGls/C/2LW1fO/d+dM9NNd+d1Nug6KDKUYay+XMrC93dBW7Ud5wrNuRLmcR/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=RDlOUNNR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67825C433F1;
-	Thu, 18 Jan 2024 11:15:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705576529;
-	bh=w0FBrm4sVu/DLk+0aSDbplyxxPuYJ1uOLaE9EFkd7dc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RDlOUNNRGsPbYHC1L726WS5dkr3VOCBjd+MqAQ3JUuhv4MGJkXgYEYB+5YyQ6MDp6
-	 NB6nu7QYWRq3V7fuP2fZxIS74bHee+zZbKSxRibWClXO4RxoPVbNRHIvtWjRA0ba7D
-	 gXUqRp/5zTN7aJpa6bWv04Guwid8cuyD5nfl4a9Y=
-Date: Thu, 18 Jan 2024 12:15:27 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	=?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado <nfraprado@collabora.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Peng Fan <peng.fan@nxp.com>, Robert Richter <rrichter@amd.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Terry Bowman <terry.bowman@amd.com>, Lukas Wunner <lukas@wunner.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Abel Vesa <abel.vesa@linaro.org>, linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 4/9] PCI: create platform devices for child OF nodes of
- the port node
-Message-ID: <2024011836-wok-treadmill-c517@gregkh>
-References: <20240117160748.37682-1-brgl@bgdev.pl>
- <20240117160748.37682-5-brgl@bgdev.pl>
- <2024011707-alibi-pregnancy-a64b@gregkh>
- <CAMRc=Mef7wxRccnfQ=EDLckpb1YN4DNLoC=AYL8v1LLJ=uFH2Q@mail.gmail.com>
+	s=arc-20240116; t=1705576694; c=relaxed/simple;
+	bh=EzIFRQntpfnEsY3JipXcSeq9Zj3ML31Df14pi43TAyQ=;
+	h=X-SMAIL-HELO:Received:X-Sender:X-Auth-ID:X-SMAIL-MID:X-SMAIL-UIID:
+	 From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding; b=U5Q/VuzdEks2+yjqe245CokGB4HqxBfA1jHO6pwwf/KrOdM44F/hObKJLyYJiBxsYYJOTdyWN6JUmB9dD4VFJkh+5PAR7UNrDm5dqMVOiLD4RYCNOP8H6RJMjLmluh7ZA0Qb1jz8LNsbDoHhpPXovnDBUaULGNogynYUIHdDL9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=219.142.78.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.25.116.10])
+	by sina.com (172.16.235.25) with ESMTP
+	id 65A908E900005930; Thu, 18 Jan 2024 19:18:03 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 39138134210283
+X-SMAIL-UIID: 4BFB07016F5D4985971B788877A21106-20240118-191803-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
+Date: Thu, 18 Jan 2024 19:17:51 +0800
+Message-Id: <20240118111751.1426-1-hdanton@sina.com>
+In-Reply-To: <000000000000498a02060de59162@google.com>
+References: <000000000000498a02060de59162@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Mef7wxRccnfQ=EDLckpb1YN4DNLoC=AYL8v1LLJ=uFH2Q@mail.gmail.com>
 
-On Thu, Jan 18, 2024 at 11:58:50AM +0100, Bartosz Golaszewski wrote:
-> On Wed, Jan 17, 2024 at 5:45 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Jan 17, 2024 at 05:07:43PM +0100, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > In order to introduce PCI power-sequencing, we need to create platform
-> > > devices for child nodes of the port node.
-> >
-> > Ick, why a platform device?  What is the parent of this device, a PCI
-> > device?  If so, then this can't be a platform device, as that's not what
-> > it is, it's something else so make it a device of that type,.
-> >
+On Mon, 01 Jan 2024 09:18:16 -0800
+> syzbot found the following issue on:
 > 
-> Greg,
-> 
-> This is literally what we agreed on at LPC. In fact: during one of the
-> hall track discussions I said that you typically NAK any attempts at
-> using the platform bus for "fake" devices but you responded that this
-> is what the USB on-board HUB does and while it's not pretty, this is
-> what we need to do.
+> HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122dfc65e80000
 
-Ah, you need to remind me of these things, this changelog was pretty
-sparse :)
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-> Now as for the implementation, the way I see it we have two solutions:
-> either we introduce a fake, top-level PCI slot platform device device
-> that will reference the PCI host controller by phandle or we will live
-> with a secondary, "virtual" platform device for power sequencing that
-> is tied to the actual PCI device. The former requires us to add DT
-> bindings, add a totally fake DT node representing the "slot" which
-> doesn't really exist (and Krzysztof already expressed his negative
-> opinion of that) and then have code that will be more complex than it
-> needs to be. The latter allows us to not change DT at all (other than
-> adding regulators, clocks and GPIOs to already existing WLAN nodes),
-> reuse the existing parent-child relationship between the port node and
-> the instantiated platform device as well as result in simpler code.
-> 
-> Given that DT needs to be stable while the underlying C code can
-> freely change if we find a better solution, I think that the second
-> option is a no-brainer here.
-
-Ok, I remove my objections, sorry about that, my confusion.
-
-greg k-h
+--- x/net/core/filter.c
++++ y/net/core/filter.c
+@@ -2431,7 +2431,7 @@ enum {
+ BPF_CALL_3(bpf_clone_redirect, struct sk_buff *, skb, u32, ifindex, u64, flags)
+ {
+ 	struct net_device *dev;
+-	struct sk_buff *clone;
++	struct sk_buff *buf;
+ 	int ret;
+ 
+ 	if (unlikely(flags & (~(BPF_F_INGRESS) | BPF_F_REDIRECT_INTERNAL)))
+@@ -2441,22 +2441,11 @@ BPF_CALL_3(bpf_clone_redirect, struct sk
+ 	if (unlikely(!dev))
+ 		return -EINVAL;
+ 
+-	clone = skb_clone(skb, GFP_ATOMIC);
+-	if (unlikely(!clone))
++	buf = skb_copy(skb, GFP_ATOMIC);
++	if (unlikely(!buf))
+ 		return -ENOMEM;
+ 
+-	/* For direct write, we need to keep the invariant that the skbs
+-	 * we're dealing with need to be uncloned. Should uncloning fail
+-	 * here, we need to free the just generated clone to unclone once
+-	 * again.
+-	 */
+-	ret = bpf_try_make_head_writable(skb);
+-	if (unlikely(ret)) {
+-		kfree_skb(clone);
+-		return -ENOMEM;
+-	}
+-
+-	return __bpf_redirect(clone, dev, flags);
++	return __bpf_redirect(buf, dev, flags);
+ }
+ 
+ static const struct bpf_func_proto bpf_clone_redirect_proto = {
+--
 
