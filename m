@@ -1,155 +1,95 @@
-Return-Path: <linux-kernel+bounces-30541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF4583200D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:57:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76A1683200E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D2171F28A2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:57:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CF861F28BA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1898358B4;
-	Thu, 18 Jan 2024 19:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1A02E633;
+	Thu, 18 Jan 2024 19:54:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="QyRz1pTl"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oS2696lf";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Rwkb7Rkt"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7A93529D
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CFA2E40C
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:54:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705607681; cv=none; b=XD+Gg5wut0Xl20BJQ1vpNXRk8bjimmBTXiTJiXmt85NhWoiaOxrgIP0z2KObDnFx/h7dBrBZVmrHkLmYAtwKk9005GeMZzVhEuCQUYtvvDFbdyU62/MdCfXvIcfinuO2nbT8iCz6zbckp5CZHEUX5LxEZt0rQ1uPaLjmcEheFis=
+	t=1705607687; cv=none; b=WdoqJ1ZXqucgrrUdn9yCSgJydkcsTNN7njmVCXKNwiWdlbUt5htgsp8EJKAehnsawpz5KxpqtNmT2QV0BGIJn0euPd/wMduvzO85aKzJsJGRo5tjH7WrbkISerplvjLA10Bnt86lZlno9FS9F/8HMkVQp5EQ7QgoChch7u7hkWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705607681; c=relaxed/simple;
-	bh=yzhmvpw6dHvm8R+C7LqpWP3Wj6s8xNkqYMpLWlwi0RI=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hbGk3ugf1OD/BcqN3gL57ysOJ/cYaV3bblShkTc/BjKSxU5get+sqj9T6YrE2wzMkXo/sPOvN7Jg8rMiLhtSutGJiHOFxNzJ/6YUiKJGwyld/XsCEaJBmAbYT5kA3oxRLGYZl5ITKfk502Ioko+4BenfxnqJZhU8a0jjBLOnGLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QyRz1pTl; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-28e8c930c01so71767a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:54:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1705607679; x=1706212479; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BeH1TIJtMu9dNiviTF/nkxwiev6sYu4cBkxn5iUmNwA=;
-        b=QyRz1pTldYDbOcvMJiyHe6bWKOyFN/rDBI4ARFsSVxKEXK4a+DoVJ5uXDgrjjbOfBF
-         hQwT3XhVITF6cupxzisIzBl9wdwvAaGBBE8WJR8ZbeEfETwCSZIwE3M2+flKWy1X3Pq0
-         oEE4Udk2ju502pLLXQFeLKNSAkmiXE5wdSBtI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705607679; x=1706212479;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BeH1TIJtMu9dNiviTF/nkxwiev6sYu4cBkxn5iUmNwA=;
-        b=XvZhtHg5Ii09+sGaCGF4Hy+kiRLOXB4LkKfh7DIUbwhJS/L3K41pUS3UFgHTQbxnbc
-         PttmC8zd+xDSFYWdOrKtuTmiXpyB4Iv0//BeWv4K6wLijG/lZC5q+o3dUWgwyaKxwx2G
-         eHB6Xsxfp0W3nREYMdYLyh2YTGvr3uUNavi6DXR6FRyMEeaXdoQnBIAaDJzTDXmBVQyS
-         SPjr/dNpDBovbXVlaQQc9iK2wLDPbSZKvOR5Ahtmq3Fnn5fMsRgsQlKaoEgiDGH0rb+N
-         pm8+XszSokXTJWinq46agt9+l3pR9rXI6EHGOJsVNrNB7jHUJArwXvCZSBk+V7tqhAEJ
-         yRkw==
-X-Gm-Message-State: AOJu0YzUmSDyDHnc9U3sRugtFd40wPZAfZdLPxWtoYzmXCTGSW5SHz6w
-	jW8WyHU1ryS09MWrPpX1PUSxO9xtfGhNqMTlbPw8s4pLT44RYHEqwD0ThPRepw==
-X-Google-Smtp-Source: AGHT+IHACuKl4Ub94+Xnxo/jnjCOYBw1yW1Eo6Y2FDr3CuoZ6RFhJZAwMW6S4Z0cAarZk55E4E+D7g==
-X-Received: by 2002:a17:90b:2349:b0:290:1d33:cc66 with SMTP id ms9-20020a17090b234900b002901d33cc66mr1276623pjb.91.1705607679035;
-        Thu, 18 Jan 2024 11:54:39 -0800 (PST)
-Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id rr12-20020a17090b2b4c00b0028d9b5d41edsm2263805pjb.38.2024.01.18.11.54.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Jan 2024 11:54:38 -0800 (PST)
-From: dregan@broadcom.com
-To: dregan@broadcom.com,
-	dregan@mail.com,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	computersforpeace@gmail.com,
-	kdasu.kdev@gmail.com,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	joel.peshkin@broadcom.com,
-	tomer.yacoby@broadcom.com,
-	dan.beygelman@broadcom.com,
-	william.zhang@broadcom.com,
-	anand.gore@broadcom.com,
-	kursad.oney@broadcom.com,
-	florian.fainelli@broadcom.com,
-	rafal@milecki.pl,
-	bcm-kernel-feedback-list@broadcom.com,
-	andre.przywara@arm.com,
-	baruch@tkos.co.il,
-	linux-arm-kernel@lists.infradead.org,
-	dan.carpenter@linaro.org
-Subject: [PATCH v2 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
-Date: Thu, 18 Jan 2024 11:53:56 -0800
-Message-Id: <20240118195356.133391-11-dregan@broadcom.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20240118195356.133391-1-dregan@broadcom.com>
-References: <20240118195356.133391-1-dregan@broadcom.com>
+	s=arc-20240116; t=1705607687; c=relaxed/simple;
+	bh=o2RBJWUk5u6Z+cVADfGN1CMe6R98eLGX8cv9D9sxVLA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NNTbh+3s5obdQd/dMOeIuxJRomredDqisSlF8orzYGGyN58S1cJuLoJ3+k9HoUcoJ/LXIRZApSNhvB6YWx9/OGz4MIxzuj6ubYRJEH4eERnYYrW+BNfMBK/vXmC2AWDFgRnaVGC9k6VjIDF/S28Dc+abNS3M+4e2LeMqoi6Du8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oS2696lf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Rwkb7Rkt; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705607684;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6HGMe/CfTJUGDM7yuEH/5jnstGrLape2b5UIKODPCsA=;
+	b=oS2696lfos7HlRbjOOt/lU5YACb4ptBkSdZD7Qg3Eag9LdXVMXL5QJ9YopoVqzpBNmqftP
+	jY2IaiJlUjTzhNwJ+I/zcRYAGdpdojMnElvnNLmFe6FFgEDlicM8j6Qp8WQyRHZQOlNU6f
+	ylQoq9Ej9xhr3rVp5gadSPnzjvEI1Rz5lZGtjbEZlI0Lkgp2c+Il8/vV1Ne4Hkv8tWxUj+
+	EsEzbbxU8U1iQtfpDbHnuTUGzwkFEbqzHN1U6UdqL9l9uLZc+0YNaJJ9Fn9ifincIOu4QQ
+	CMcJ716IRDTsCrgeekB7SCSVN1MJEzpMZJiAtY8fK9q+Ca91xXngDguNf+Sq2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705607684;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6HGMe/CfTJUGDM7yuEH/5jnstGrLape2b5UIKODPCsA=;
+	b=Rwkb7RktpERo6eUhVLq2oXVHo+ZKnjP2E7Mx19dgY1THHk8Pox6t/t4Dp4EEWCKhX40GTJ
+	ygL8VUNGPnUaGSCQ==
+To: Dave Hansen <dave.hansen@intel.com>, Andrei Vagin <avagin@gmail.com>
+Cc: Andrei Vagin <avagin@google.com>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ LKML <linux-kernel@vger.kernel.org>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>
+Subject: Re: [PATCH] x86/fpu: verify xstate buffer size according with
+ requested features
+In-Reply-To: <54bcb902-0fab-4a53-8b8e-85b6e4484b03@intel.com>
+References: <20240116234901.3238852-1-avagin@google.com>
+ <30cd0be4-705f-4d63-bdad-fc57301e7eda@intel.com>
+ <CANaxB-xu+zG=5_EAe4zapC5a_x4CkkDovmVX7LjiLk+E7kU75g@mail.gmail.com>
+ <b3e5456a-7113-4868-b8ce-020421e898ba@intel.com>
+ <CANaxB-zQYC8=7frWGU2pRTDJrkVu0iR8QZCmUxSzGmBG-_b1cg@mail.gmail.com>
+ <54bcb902-0fab-4a53-8b8e-85b6e4484b03@intel.com>
+Date: Thu, 18 Jan 2024 20:54:43 +0100
+Message-ID: <87cytyfmd8.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-From: David Regan <dregan@broadcom.com>
+On Thu, Jan 18 2024 at 10:27, Dave Hansen wrote:
+> If we have nice, reliable fault handling and then decide that we've got
+> XRSTOR's running amok reading random memory all over the place that need
+> a nicer error message, then we can add that code to predict the future.
+> If our "predict the future" code goes wrong, then we lose an error
+> message -- not a big deal.
 
-Allow settings for on-die ecc such that if on-die ECC is selected
-don't error out but require ECC strap setting of zero
+After staring more at it, it's arguable to pass fpstate->user_size to
+fault_in_readable() and ignore fx_sw->xstate_size completely.
 
-Signed-off-by: David Regan <dregan@broadcom.com>
-Reviewed-by: William Zhang <william.zhang@broadcom.com>
----
-Changes in v2:
-- Added to patch series
----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+That's a guaranteed to be reliable size which prevents endless loops
+because arguably that's the maximum size which can be touched by XRSTOR,
+no?
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index a4e311b6798c..42526f3250c9 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -2727,9 +2727,11 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 	cfg->blk_adr_bytes = get_blk_adr_bytes(mtd->size, mtd->writesize);
- 
- 	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST) {
--		dev_err(ctrl->dev, "only HW ECC supported; selected: %d\n",
--			chip->ecc.engine_type);
--		return -EINVAL;
-+		if (chip->ecc.strength) {
-+			dev_err(ctrl->dev, "ERROR!!! HW ECC must be set to zero for non-hardware ECC; selected: %d\n",
-+				chip->ecc.strength);
-+			return -EINVAL;
-+		}
- 	}
- 
- 	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN) {
-@@ -2797,7 +2799,11 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 	if (ret)
- 		return ret;
- 
--	brcmnand_set_ecc_enabled(host, 1);
-+	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_DIE) {
-+		dev_dbg(ctrl->dev, "Disable HW ECC for on-die ECC\n");
-+		brcmnand_set_ecc_enabled(host, 0);
-+	} else
-+		brcmnand_set_ecc_enabled(host, 1);
- 
- 	brcmnand_print_cfg(host, msg, cfg);
- 	dev_info(ctrl->dev, "detected %s\n", msg);
--- 
-2.37.3
+Thanks,
 
+        tglx
 
