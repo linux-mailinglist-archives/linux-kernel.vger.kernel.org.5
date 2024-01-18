@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-30053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A30831875
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:30:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A886831876
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:30:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A301D1C209BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:30:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C7F02892BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2B524B3A;
-	Thu, 18 Jan 2024 11:30:10 +0000 (UTC)
-Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F54241E9;
+	Thu, 18 Jan 2024 11:30:16 +0000 (UTC)
+Received: from smtpbgjp3.qq.com (smtpbgjp3.qq.com [54.92.39.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E5924B37
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EA91E530
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.92.39.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705577410; cv=none; b=X3IHwm0mPAvEN8fhHZVHdSCwyI7K7Hyj+wkxafPj2fYUSrHPqvCEDVuUDPL+1fKl2De8XKtwnks9h7wXDCo+8FBeNKmOF+LujPdLZdEOnGndN/7Si/YIeGENGmitpy7HY+50s1vHBz8MfPBA873D1Yzk3p3TAzAetUgiTUGu5cU=
+	t=1705577416; cv=none; b=rchgiHgI+V9gElRJ6jbgd4U9VzGpopB8+F/6A0/NIGEj/E7Ies/Eg9l7ZUoFWCnG/y5EJWD1zPl2FkMQhgz36F3vcq2UHrRKSgTaBWxnZK2+2fwE92pCTe6EAx7cbFqGzYKEwpGwCTKjeeMR2G8MZy9u04LND4FSCcvCRmfMrO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705577410; c=relaxed/simple;
-	bh=sZRxiKPZbRZd+nZlIZp3YhXFKhPnZo9TfDEOQiXJZmg=;
+	s=arc-20240116; t=1705577416; c=relaxed/simple;
+	bh=CQEbSv1ygZpxNu29WM/7aTyIQjnAU4JUdrf0Z7hNaJk=;
 	h=X-QQ-mid:X-QQ-Originating-IP:Received:X-QQ-SSF:X-QQ-FEAT:
 	 X-QQ-GoodBg:X-BIZMAIL-ID:From:To:Cc:Subject:Date:Message-Id:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-QQ-SENDSIZE:Feedback-ID; b=bb5sK71/BXM9d0QwgfRrr8s9u6+N/VXLvGgCuP7+ioIkgkvXeAMNln5a0GwER1Xqha+lMF+yHRici8kBafLMWqfN8+Cl5Yn02jH86aW3lGdG2jlR9nfj4NlA/Hp0+XTAXMWJM4uUL29r0PAVaxdffExoUmRz78/hoB7a8/ukmDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=15.184.224.54
+	 Content-Transfer-Encoding:X-QQ-SENDSIZE:Feedback-ID; b=JD/B49XYSDP768emGiEnMo9PZo4C/ngCO0uhIpp3R40B+yGN9SCQZNz1gG/Oml82729O+yjBBP9LV3gj0Xc/AblqrUTlK5sSjr3MMf7RfrsS6MoVwUEVe/TDaeVajOZynJBLdf5Gpc+y8LVeQrZumZ0UUjBWq/TvreH/lvXAR2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.92.39.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp64t1705577375tqna5agw
-X-QQ-Originating-IP: b06gOG+G3Lt6KugAxVb03XfVjcun9/KJ61laat0Gq3c=
+X-QQ-mid: bizesmtp72t1705577381tiai0ryj
+X-QQ-Originating-IP: TaQ28MjSP3N2N+fKggTDtskVFYbnKkJs6U8Q642YBLY=
 Received: from localhost ( [183.209.108.228])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 18 Jan 2024 19:29:33 +0800 (CST)
+	id ; Thu, 18 Jan 2024 19:29:40 +0800 (CST)
 X-QQ-SSF: 01400000000000504000000A0000000
-X-QQ-FEAT: LE7C6P2vL8RlqSltv7bKQonFxSrBkzY45rkHE2qduRISj3gifYQW1NYxZmPvm
-	jHGnf7gO9u3FjRdCcBL0zlG8ieH1YMhRfmqHS2tnadsqgbBg8VnfcyID4sbmW0oH9RtE7+n
-	yIRx53YSXX/pLkKIGZ0Y/5eJy1dRzUbFy7N2/rqZKJbTE8LQqTCp+g/xyDDBKM4/TqWwFCV
-	XUeAnS9rFCMSBbNjDCg64oPEhzMXL9PPVS6mVxFl4Aemhe+mvcJPFEK6ucRYxI6ddfpsr5F
-	JA2i5LfP/9bw5M8Z/djr/oh3MdS2FhOX4mQGwKNl83LEDY/ftM0F5+0NHHwPLmhrUO+RhVR
-	PFDVLSdG1EZHm+K+YMNj2iISep7xUzqOebY2U/mBtz9E0b7hmlC79WQhWW5rZr4DrtWb0K1
-	7dFuZyjWMA4=
+X-QQ-FEAT: 3M0okmaRx3iOREFUUdBFwoewzAHI2Yvwl7ilE395CssjLzFHMoBu2TOyZ0B2h
+	a+VDymui4zsvfa0eqS3czqmFOwfp+1ys6kWlUc7nP0lwTPCoArAQ4WcX0br4Yob+d+rZOLS
+	zVFrGRpWubl/5dgms51PqjJdWJsDsmxeYri52Jmg3r0PJj6tOm6xyL8l3A9MFepc0OXtGwb
+	DDAm0YLDya/Nor91MCyRUscj9Jfav0ZMmeWMB5nO+mvyDUas/AoVkjbRmeQPH+DbF7Z1daV
+	M46vEwIxWCM1Njxa410PF5OTN8DF6maySMm8vD0u85kJdMqqYFlZ5TBAe5bAgZrKmCrKpbb
+	c1b7Gx3j7ks7UosbTbHC+NgCyE7a2MGro8PZREc46WTC/RQ5XhlfeNVv4ysKAYTEG6Ddqdw
+	seBWIvBc07c=
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 10466252816895752989
+X-BIZMAIL-ID: 1086565048452587055
 From: Dawei Li <dawei.li@shingroup.cn>
 To: tglx@linutronix.de,
 	maz@kernel.org
@@ -53,9 +53,9 @@ Cc: sdonthineni@nvidia.com,
 	linux-kernel@vger.kernel.org,
 	dawei.li@shingroup.cn,
 	set_pte_at@outlook.com
-Subject: [PATCH 2/4] irqchip/gic: Implement generic gic_irq() API for GIC & GIC-v3
-Date: Thu, 18 Jan 2024 19:27:37 +0800
-Message-Id: <20240118112739.2000497-3-dawei.li@shingroup.cn>
+Subject: [PATCH 3/4] genirq: Remove unneeded forward declaration
+Date: Thu, 18 Jan 2024 19:27:38 +0800
+Message-Id: <20240118112739.2000497-4-dawei.li@shingroup.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20240118112739.2000497-1-dawei.li@shingroup.cn>
 References: <20240118112739.2000497-1-dawei.li@shingroup.cn>
@@ -69,65 +69,29 @@ Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-GIC & GIC-v3 share same gic_irq() implementations, unify them into a
-generic API.
+Protoype of irq_flow_handler_t is independent of irq_data, so
+remove unneeded forward declaration.
 
 Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
 ---
- drivers/irqchip/irq-gic-common.h | 5 +++++
- drivers/irqchip/irq-gic-v3.c     | 5 -----
- drivers/irqchip/irq-gic.c        | 5 -----
- 3 files changed, 5 insertions(+), 10 deletions(-)
+ include/linux/irqhandler.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
-index f407cce9ecaa..ed18db4ab2c5 100644
---- a/drivers/irqchip/irq-gic-common.h
-+++ b/drivers/irqchip/irq-gic-common.h
-@@ -19,6 +19,11 @@ struct gic_quirk {
- 	u32 mask;
- };
+diff --git a/include/linux/irqhandler.h b/include/linux/irqhandler.h
+index c30f454a9518..72dd1eb3a0e7 100644
+--- a/include/linux/irqhandler.h
++++ b/include/linux/irqhandler.h
+@@ -8,7 +8,7 @@
+  */
  
-+static inline unsigned int gic_irq(struct irq_data *d)
-+{
-+	return d->hwirq;
-+}
+ struct irq_desc;
+-struct irq_data;
 +
- int gic_configure_irq(unsigned int irq, unsigned int type,
-                        void __iomem *base, void (*sync_access)(void));
- void gic_dist_config(void __iomem *base, int gic_irqs,
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index b9d9375a3434..474a498a521e 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -181,11 +181,6 @@ static enum gic_intid_range get_intid_range(struct irq_data *d)
- 	return __get_intid_range(d->hwirq);
- }
+ typedef	void (*irq_flow_handler_t)(struct irq_desc *desc);
  
--static inline unsigned int gic_irq(struct irq_data *d)
--{
--	return d->hwirq;
--}
--
- static inline bool gic_irq_in_rdist(struct irq_data *d)
- {
- 	switch (get_intid_range(d)) {
-diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
-index 412196a7dad5..0d559effa172 100644
---- a/drivers/irqchip/irq-gic.c
-+++ b/drivers/irqchip/irq-gic.c
-@@ -162,11 +162,6 @@ static inline void __iomem *gic_cpu_base(struct irq_data *d)
- 	return gic_data_cpu_base(gic_data);
- }
- 
--static inline unsigned int gic_irq(struct irq_data *d)
--{
--	return d->hwirq;
--}
--
- static inline bool cascading_gic_irq(struct irq_data *d)
- {
- 	void *data = irq_data_get_irq_handler_data(d);
+ #endif
 -- 
 2.27.0
+
 
 
