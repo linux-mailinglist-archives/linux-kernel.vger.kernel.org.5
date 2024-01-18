@@ -1,183 +1,180 @@
-Return-Path: <linux-kernel+bounces-29845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C34F83144B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:14:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FA7F83144E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:15:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0E5A2857E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:14:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD581B21344
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E028911716;
-	Thu, 18 Jan 2024 08:14:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2515E1170A;
+	Thu, 18 Jan 2024 08:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MwCCmAkV"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=moxa.com header.i=@moxa.com header.b="K496z8cW"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2086.outbound.protection.outlook.com [40.107.255.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5CC813AF8
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 08:14:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705565643; cv=none; b=ODZ9BTNOmBKUU7lZZDOS9CIDaHR20CMZPr6R8fden+8MNPq9P32wjhpvQ6ix9Skkos7+h2y1ak8wckix9LitRdLojS3dFpBk7F4O7jbIoDPUVUA4hXtjd8IYH+KctMqG/tYJPTDNtlgZPeuWk/PIpPaOzdhnIBl1WNghyAEineQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705565643; c=relaxed/simple;
-	bh=VAdc1NKbCLJXB5ZwNWmpBl+bYEPBUTw+cW5ZgUWrUe4=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=tsvM5InUJtkdW/PbZu0DItlolq8DSTeIq2LBLTA+2NOZj35TgNV9RxJkOpTvFPDiAs6jty9DkCyKhxYEE9Lc8d9LkIw2lXwZ3VwvuKuGJj2g6DpUsECJhXQxGWoaFVdyHM/V1TNce9c0vIZXHIi5aCgzekxptFPtYJG4++hR6g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MwCCmAkV; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705565639;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5SsqaeFnNlDjnwQj4dzfPpX8ZsfHI+luLg/Td8wcFQ4=;
-	b=MwCCmAkVufJFzH9Z3YqgOl7D9xa8dpaBbzzj9sIjhmObvrvR1eUwP6AbmxUCSKrlc5bGMi
-	nMFx5EB+Uu59QfPZpwawXgbUHlZaPnKlgupCy9+5t8xYSe96IKd2pa9pBZmxdKRDIG8q5V
-	oIkP/dCXNn5eUS2vNdoOaa3aCeeXg4A=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-479-r_XrlEscNA6F2ZA678WIuA-1; Thu, 18 Jan 2024 03:13:57 -0500
-X-MC-Unique: r_XrlEscNA6F2ZA678WIuA-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-558b04cb660so3559564a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 00:13:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705565636; x=1706170436;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5SsqaeFnNlDjnwQj4dzfPpX8ZsfHI+luLg/Td8wcFQ4=;
-        b=JIc+jSM/RB2TgBc3DX1Qudqu31HL82DX659sX7VvvoWRMVr7eHG1ZLgzfyj8ASNVnJ
-         Vaz9s0bXSNipoBwwhMjH/QpMdOeDay1Np+Cnwj/NDsa7vgAuhxOWjAcxbvsFFDqZugp6
-         4Rmjc3ZOhMcVJpDkbr7kokfEKOOveIiz37B4jVYkb6Qtss5BMxvsalOUKQd3AUBzK4ex
-         A4Y8hiHAp7OKPMcbWThl6GNnmGxcqC7YPfnTfFrTr/363B4TxtnpfpCokpXtGn8Zce6u
-         68MdYBvWtOzP/QIQ7KcHjfrDXfY9wVrdac1CK1NuilKOKTEMcKBBDos8+d3pQIVcizPb
-         njFA==
-X-Gm-Message-State: AOJu0YwFwvPFGzwctHnElGUrFOtsPnuT6jfCVJVax0ftEkdy6VLLqg9S
-	uWMzA7gg4T93RpwmSooiQSHYGVqPHZBHZ6DALeI4CIc0kfRIx5FJwAYN8nh3gQmyrqEYvhISC6N
-	TVlHeKNL/Wx96/JkmbV1F4IhkiHDlUTfbPy9V/faOG0W7aj9MKSA6/lfRYBo0lmIOd25opGBGH/
-	fMP+5dsE71jvjgBMc6MWn5qU0tEoq0BLWsd1xW
-X-Received: by 2002:a17:906:f746:b0:a26:97fe:b8cc with SMTP id jp6-20020a170906f74600b00a2697feb8ccmr266444ejb.66.1705565636476;
-        Thu, 18 Jan 2024 00:13:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEC3cI8HvUGHgz6IrmlJYZMRWTXEOiyQ0Xwp7Yv8XXR/9cy35jOph4av3RGpi+WCBaGGtcY/I8OUZfAk0dVXVw=
-X-Received: by 2002:a17:906:f746:b0:a26:97fe:b8cc with SMTP id
- jp6-20020a170906f74600b00a2697feb8ccmr266431ejb.66.1705565636180; Thu, 18 Jan
- 2024 00:13:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846FE13AF8;
+	Thu, 18 Jan 2024 08:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.86
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705565691; cv=fail; b=OXlfmGCF10nYJwZaYmsXmkZbILby2BW6j63vUOsijjD0cKoD+QN3UzAy/+ZpKftMJFBSHdwycyTxQjncmp9c1qNyXJw5MWjoTFyNz8MVZK8ovUI+BAKHrDKHNV3ZbQAsooceGRSdq9WEFfXyxLH8AVU0QyVjFS7ejYZFtsiwBfM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705565691; c=relaxed/simple;
+	bh=nZzLrAOUCByDo8UCcKHpV53sCTiAyVM3KHoPN0mPOZ8=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 Content-Type:Content-Disposition:In-Reply-To:X-ClientProxiedBy:
+	 MIME-Version:X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=tWQAuA7rL+QzByC76yMbmVVGN9gA0wmkfyzdDDee9baISVxpg6BHYl1mBAmW3SfJsM/3EKO7At61+nhKU4CVMRGwwoJQFo/tr5eTT1oUbHKtJv855sKrJdnR3hlXAGgsOkoAV49rkA0aWESZM0ilHDeV968RM0ratoYSdFLoNVo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=moxa.com; spf=pass smtp.mailfrom=moxa.com; dkim=pass (1024-bit key) header.d=moxa.com header.i=@moxa.com header.b=K496z8cW; arc=fail smtp.client-ip=40.107.255.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=moxa.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=moxa.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tes79rnsmYJrQHAwUlxDCjV8jWIkOe4FkRJrjHnq8J+vrdAU4icRT4Sca29r1ZcZv3fqzkoYc/Q9M/aJ/OO4/1AFN+gV2RsByk/uggelIeTSp6Ie8CIXC6Ai9UoqdUV+0krLSWZdZNXvDUG/Z4qVDTcPAoXjybBkz7n8f+RMC4MTQNxy3h2zM3vZxkaIjle8rLA4n/9/JBG9ORRHR/zWOyMfgiTSbf3MEqRhttAKbcpqYUU6LWSZUKUkPyRN33STfDE2n/dfjpfjox+K8VjOnUeSJWVFeuGZJus/vHdqD3VbaUulvrMcbxzFZSOOSKc6jtwV7jc5blq5Jg6kT/vxaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AddfU5mfMCYomBt2Tuvvr5rtOW2XMYkHjkNHJKfKJqI=;
+ b=PW49XS2f1D5hCmgnOHm55ZzaD4k6Fdly4B6KcxN9WMF28G9++F2w+fJEXjNsOhywDKMmms45km2E0yP/P8ivkCV76TQyrYDmV6uBscuhvb449+kirSFOZbL4RvCnSEA1ZV+gVgixlG2+cX4vT0c6joNDFOIpy91CleI2qIi9DZE8lRchVFq6rDiR4QtDTCNifJw8vreLtNlOF7FAbCv3QeJBgYELuesxFFR6Y62ZU8GMNp10KDXoyblO1Kzcmc8E3rmOtyerUUlh8wuOcPbdXr/njSIHo1j8E0l5SMA0a9cj3vbL9WnmNm/0JOXvLW+4A+cinshr6kY/HVFwM9MkMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
+ dkim=pass header.d=moxa.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AddfU5mfMCYomBt2Tuvvr5rtOW2XMYkHjkNHJKfKJqI=;
+ b=K496z8cW1wAqbnlSanb/4JQrBjRvNB0so1955KClEfnh2lU4NqGpcA2wMESOHFXOVrHPTHIup9a3T9rJ2GzxX+nI6wuT0dY1j5OhJ1jPAlVCYED8tJLb+4P0ecxSdmDTTMEA5VaQoXgZzMIyNPY7SvP4vbfzC7+C/a9MuljBFhw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=moxa.com;
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14) by SI6PR01MB6423.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:243::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Thu, 18 Jan
+ 2024 08:14:45 +0000
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::1023:2132:c05e:ea6b]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::1023:2132:c05e:ea6b%2]) with mapi id 15.20.7181.027; Thu, 18 Jan 2024
+ 08:14:45 +0000
+Date: Thu, 18 Jan 2024 16:14:41 +0800
+From: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+	jirislaby@kernel.org, LinoSanfilippo@gmx.de, lukas@wunner.de,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 1/2] tty: serial: Cleanup the bit shift with macro
+Message-ID: <Zajd8fd/U3foRyLB@moxa-ThinkCentre-M90t>
+References: <20231201071554.258607-2-crescentcy.hsieh@moxa.com>
+ <20240117145623.3556-1-cniedermaier@dh-electronics.com>
+ <2024011836-glimmer-seventh-f2a7@gregkh>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024011836-glimmer-seventh-f2a7@gregkh>
+X-ClientProxiedBy: TYCP286CA0190.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:382::10) To PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-b4-wip-wacom-tests-fixes-v1-1-f317784f3c36@kernel.org> <CANRwn3QhYtuiGemwrf6_bYDDeAU0GrPm7T9ca3OzQaX8vGKPEQ@mail.gmail.com>
-In-Reply-To: <CANRwn3QhYtuiGemwrf6_bYDDeAU0GrPm7T9ca3OzQaX8vGKPEQ@mail.gmail.com>
-From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date: Thu, 18 Jan 2024 09:13:44 +0100
-Message-ID: <CAO-hwJ+n7Bv8UgNaDCEtqoU=DWVxxVUJ7y+=nj_PKmrdtgorkA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/hid: wacom: fix confidence tests
-To: Jason Gerecke <killertofu@gmail.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	Jason Gerecke <jason.gerecke@wacom.com>, linux-input@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|SI6PR01MB6423:EE_
+X-MS-Office365-Filtering-Correlation-Id: eea8ad19-870c-4f7d-5a15-08dc17fd87a1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	7vGd1Yok7cYkpBGRQVgDAdKEWERiEMk292qw3xeMNB7UOx2Yln1V4VfItjMDd9854FiqErqxUFhrinUeTVD372HeM0BGEJjGVlQW7/i6+AlnIU0XdldtRyAGK8mQJJ8GQxcmcfi4Mff+sZezl+5wJvwrwPS6pFqgfYsOY7eMXkVOk7vEbqt8DZzNKF2XC4wIyhwZBhCyP/JTQ8EcZpTBPK6f35sOEmL1GVdhwfQ/osHxT3yQBl6IdmAAkxfDw36+LEsIylMRen89/1V9CdJB6z41JYehXxLhxlimZr5f//USFidvhVRIfiVJH/dPJGuQBrnuxj74R3JJZyjz4IDcqhYu5BJnU5bCJEUIN2Jaa5I6cY9ijdoukUqIKbQy8qi2mNE+p9VDJ3vt2cPoFY0TKC/bY+TpWTh3uL0tt9fuMsLlgIDVpPD14R1xVVdhJFE/XyTLlPv+j3gOVJ1Nc3Y4v28COsyIaOVP3XvT68fxgxhqcNcVoVOxnImhuG30QcDFrsnHuaf2Fabo3gufbSTr9XLgFEYW9rl5+4U9MDCjVMdftMeafq0yhut47MSbW/4JCSWwPD/J6lCnGMfOubwv2RCiSvp98p8LndrBjj7Ax8YqDt3Ua6Cmik4ryXu9fpOS
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39850400004)(366004)(396003)(376002)(136003)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(26005)(9686003)(6512007)(6506007)(52116002)(478600001)(6666004)(38350700005)(38100700002)(6486002)(66476007)(66556008)(66946007)(316002)(4326008)(6916009)(5660300002)(86362001)(2906002)(41300700001)(8936002)(8676002)(33716001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?opw1W/8hrTO1ujJdhiG7rZJYBv6zreHDIAQimTKmfctIhJYvCXG8o8jp1v6p?=
+ =?us-ascii?Q?rrsi5lOvruAO/j9BAL2V2nHqLifeIEFQYaX9VMUhbLv3DFgHbrcY/4Fdvaxl?=
+ =?us-ascii?Q?HQFxOPMvYYHyqj6StG0tO4jLmVfQx3Ko3RawKcGsZtNeFy2X7FhWkvaj1eBz?=
+ =?us-ascii?Q?PPjBafM0L5icZWSTIn0neKMAkkIXTFQstI9g22CGO1I8K2UbcfHXvnH+S6Xh?=
+ =?us-ascii?Q?PXQaJuYGfI4CUkeMpW8wtP6pluGi5ABh5opfF6guNIZ0JibEHdO8DWSR29Kt?=
+ =?us-ascii?Q?JX2LFZKSuUdu0NGhuSD1UiFHs9Jgtvyu1+LsqLYGrp6XaV3bpoobq24n6/fy?=
+ =?us-ascii?Q?WsIz+/z4XwerAiJV1fJ32UwpO0Tqc9hXZMuXWd46bW+i5glgPgX/Wkfy+L7f?=
+ =?us-ascii?Q?fh7XTQ+w3bAB3l+Rcw+sxmUnez3RH1Vz1jHlFdM4Wjm92oFeUYVbTsiwxuwt?=
+ =?us-ascii?Q?kJuptFh7jtVEkgXBp9mfvLmAcPmQrD9L/le+uFrbKXV9jNOMDtUlLYIyB1NI?=
+ =?us-ascii?Q?wBRIrYsZCp3FBnOLImI4BZkaDJoWdTqhpftiiVn2UivX4/VH4GxmsqKsqVt7?=
+ =?us-ascii?Q?qWH59UiB2NOz+h6mUWSzp1V3m5yocnqX+22XjPGbNBtRqPFZ33McAHY8R4HJ?=
+ =?us-ascii?Q?SpFMAdjoYCGPpV2necKjB6zqLUoOsuCG1hSUjbKD6TFRMepT26Pa2hidlsn2?=
+ =?us-ascii?Q?1WpEvSezjEtaSAUC1wQmjRtkvuGhaa4GLvE3Dobm8wDcZzXW7OkSCUTQ5rPI?=
+ =?us-ascii?Q?OEUKOkBO/wA4p5L+VPMe9IebpTM1A7YGq+r1CBT93yZ5Ut7xs+GteXIIZslf?=
+ =?us-ascii?Q?TwIT5ytJcqw55SeTbiSAwS5etVmmx9YH26SQHhUjbjuCCW9hQifigwnIb8Ki?=
+ =?us-ascii?Q?QiqgFFzlL4v5PARnS0XQ+/LH5ezJ2OdzG3CrTk5fqL61R+HV/AibkuBRf3ya?=
+ =?us-ascii?Q?bkOC+ceAlM942KS6lADopeUAGNjiLIdxzBKYDOMxvOjgtqLIuloTz1n7zPpm?=
+ =?us-ascii?Q?+Te2itGK40GdLVU5/pikaBuYJNBffCO2165gViQZtQu2PrV9H0bljVfpzsHu?=
+ =?us-ascii?Q?DaTuUnE+WG0UN41kqzL+BL6H4qsMsVL7cSU1ETelU8skHWwU9fG42XbMYrNR?=
+ =?us-ascii?Q?7YMZ3r94VKsuysZ7/n/SqZeAERot36z3pQCstuoDUBspgSfvEcET/7gKgXF/?=
+ =?us-ascii?Q?moL4g1GqIwX9U4+zMNtLOrgGgR+Y3qMRNigCU6tHyTYE4rgRqkA7W0eW45gU?=
+ =?us-ascii?Q?FL/OJlMrTHsTT2n1OKmhMe/C8SvkLXTR9SOiLLKUDlrTaradBt+Gnlb5+pyJ?=
+ =?us-ascii?Q?BG/lSJ3cLQT6FpI4fRTL8s83daWOnUoBxPYf+9bAn/dfKABBIvKY1Cec+Hf4?=
+ =?us-ascii?Q?6W17vrKTUX2uWItSxNvCNbf2fceHEs9c4ty3PDO9DwdoxpSDHKQCwi1FuwKe?=
+ =?us-ascii?Q?Fot/LeMIkIiDuxoxhkvVjAWqOwow8zxuKvnqTsfGkjPLTzsj8v8jxyXUyKrM?=
+ =?us-ascii?Q?UpqtV8YTvxgWyEX1cxyb6OqzmZdEYTWNIAxqddH9rMgCCNVMWMj49v7JD5+v?=
+ =?us-ascii?Q?fovpUE9xjLAK8ouzAqubwtkfE5URYtK+LEc4iRBY2mMJyZ9VGjwKRSxYAjSN?=
+ =?us-ascii?Q?oQ=3D=3D?=
+X-OriginatorOrg: moxa.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eea8ad19-870c-4f7d-5a15-08dc17fd87a1
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 08:14:45.1074
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: C9Bl/PeujIkblzs+4Lk+ENccXboGtLRzzeXhX49m0rlW4tQEs5TDOE0Vi0e2daAqYm79OTi9jHPjVlBrN+5RuBZFG6P4/FccbdvecEamiGs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI6PR01MB6423
 
-On Wed, Jan 17, 2024 at 7:12=E2=80=AFPM Jason Gerecke <killertofu@gmail.com=
-> wrote:
->
-> LGTM. Acked-by: Jason Gerecke <jason.gerecke@wacom.com>
+On Thu, Jan 18, 2024 at 08:01:58AM +0100, Greg KH wrote:
+> On Wed, Jan 17, 2024 at 03:56:23PM +0100, Christoph Niedermaier wrote:
+> > >  struct serial_rs485 {
+> > >  	__u32	flags;
+> > > -#define SER_RS485_ENABLED		(1 << 0)
+> > > -#define SER_RS485_RTS_ON_SEND		(1 << 1)
+> > > -#define SER_RS485_RTS_AFTER_SEND	(1 << 2)
+> > 
+> > In the old definition (1 << 3) wasn't used.
+> > 
+> > > -#define SER_RS485_RX_DURING_TX		(1 << 4)
+> > > -#define SER_RS485_TERMINATE_BUS		(1 << 5)
+> > > -#define SER_RS485_ADDRB			(1 << 6)
+> > > -#define SER_RS485_ADDR_RECV		(1 << 7)
+> > > -#define SER_RS485_ADDR_DEST		(1 << 8)
+> > > +#define SER_RS485_ENABLED		_BITUL(0)
+> > > +#define SER_RS485_RTS_ON_SEND		_BITUL(1)
+> > > +#define SER_RS485_RTS_AFTER_SEND	_BITUL(2)
+> > > +#define SER_RS485_RX_DURING_TX		_BITUL(3)
+> > 
+> > Isn't it a break if number 3 isn't skipped here as well?
 
-Thanks!
+Sorry I might have misunderstood the meaning of "broke userspace".
 
-I'll add a:
-Fixes: b0fb904d074e ("HID: wacom: Add additional tests of confidence behavi=
-or")
+In this case, does it imply splitting the "cleanup" patch and the "add
+feature" patch, or leaving the third bit unused? Or perhaps both?
 
-And send to Linus in the next round for 6.8 so we also fix the future
-for-6.9 branches
-
-Cheers,
-Benjamin
-
-
->
->
-> Jason
-> ---
-> Now instead of four in the eights place /
-> you=E2=80=99ve got three, =E2=80=98Cause you added one  /
-> (That is to say, eight) to the two,     /
-> But you can=E2=80=99t take seven from three,    /
-> So you look at the sixty-fours....
->
->
->
-> On Wed, Jan 17, 2024 at 5:27=E2=80=AFAM Benjamin Tissoires <bentiss@kerne=
-l.org> wrote:
->>
->> The device is exported with a fuzz of 4, meaning that the `+ t` here
->> is removed by the fuzz algorithm, making those tests failing.
->>
->> Not sure why, but when I run this locally it was passing, but not in the
->> VM.
->>
->> Link: https://gitlab.freedesktop.org/bentiss/hid/-/jobs/53692957#L3315
->> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
->> ---
->> Over the break the test suite wasn't properly running on my runner,
->> and this small issue sneaked in.
->> ---
->>  tools/testing/selftests/hid/tests/test_wacom_generic.py | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/testing/selftests/hid/tests/test_wacom_generic.py b/t=
-ools/testing/selftests/hid/tests/test_wacom_generic.py
->> index 352fc39f3c6c..b62c7dba6777 100644
->> --- a/tools/testing/selftests/hid/tests/test_wacom_generic.py
->> +++ b/tools/testing/selftests/hid/tests/test_wacom_generic.py
->> @@ -880,8 +880,8 @@ class TestDTH2452Tablet(test_multitouch.BaseTest.Tes=
-tMultitouch, TouchTabletTest
->>          does not overlap with other contacts. The value of `t` may be
->>          incremented over time to move the point along a linear path.
->>          """
->> -        x =3D 50 + 10 * contact_id + t
->> -        y =3D 100 + 100 * contact_id + t
->> +        x =3D 50 + 10 * contact_id + t * 11
->> +        y =3D 100 + 100 * contact_id + t * 11
->>          return test_multitouch.Touch(contact_id, x, y)
->>
->>      def make_contacts(self, n, t=3D0):
->> @@ -902,8 +902,8 @@ class TestDTH2452Tablet(test_multitouch.BaseTest.Tes=
-tMultitouch, TouchTabletTest
->>          tracking_id =3D contact_ids.tracking_id
->>          slot_num =3D contact_ids.slot_num
->>
->> -        x =3D 50 + 10 * contact_id + t
->> -        y =3D 100 + 100 * contact_id + t
->> +        x =3D 50 + 10 * contact_id + t * 11
->> +        y =3D 100 + 100 * contact_id + t * 11
->>
->>          # If the data isn't supposed to be stored in any slots, there i=
-s
->>          # nothing we can check for in the evdev stream.
->>
->> ---
->> base-commit: 80d5a73edcfbd1d8d6a4c2b755873c5d63a1ebd7
->> change-id: 20240117-b4-wip-wacom-tests-fixes-298b50bea47f
->>
->> Best regards,
->> --
->> Benjamin Tissoires <bentiss@kernel.org>
->>
->>
-
+---
+Sincerely,
+Crescent Hsieh
 
