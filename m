@@ -1,123 +1,155 @@
-Return-Path: <linux-kernel+bounces-30392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA78831E1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:04:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D43C5831E20
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:06:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E41A1C21055
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:04:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B881283BFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED19A2C844;
-	Thu, 18 Jan 2024 17:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="E91rWm+Y"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625D12C844;
+	Thu, 18 Jan 2024 17:06:17 +0000 (UTC)
+Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C423F2C842
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C862C6AC
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705597471; cv=none; b=KcCg1x83krIrijjrXXSTKRWQGqanD9JNDa/oAnleQOoszeWSQib2d7DE8JODHyTzsn/l45sHrNb8dTvOrv2Q8EjteWxlGNyD57TGB7VU03BA+/a0H6E+vYST3hOoLDcXbDIRDhlyKdpnCc0NxEiIcjN+K2+4gRIGWIvmToWFdDI=
+	t=1705597577; cv=none; b=TQfCXIGFnfvYG1bEYPPPnzabFDsKJMHCmUg0/mbhYBpe1kRohmZ/eV9fl6APcYnWcReE4mkguQYbwRlrAR9j0QyN75UXcBOYt1lb/f4MFfzgIapCND5MVGhG+nK0h6ig7CQjnM3XtxlpG9YIAaU7VxMRQEfjXscmzgq7dP9OBQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705597471; c=relaxed/simple;
-	bh=g/rRRWlnTFqnEs2SFfwruUS/ClIg0NzA+8JMI1zfBgU=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=nRzILxMmJeThWA3IEFCPzWfsmXXfn+O8N0Iy2jlXp+vcIC1t+rjYpMKNq1Ihg1T/KmZ21QRsdnMKxWzZUpRt9DSQouvh6fLbP9cjrrCVRGzIGw4k3vwAuF3rBB+V1Hvl4H1a5yXxYxTfa6+3OJxFL2Sxmz2wU8p1XAD5qiP74Xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=E91rWm+Y; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-337b8da1f49so2748604f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:04:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1705597468; x=1706202268; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Spf2iYyM2yyAQqYpbtyryjRjyyX6h/O61i58Cf5ljuM=;
-        b=E91rWm+YSP/bcx6/NlUa7zuWBMkAjpAEWdGYFu6Af5yqV4m8rAIxry8YlglUil0uxx
-         MYo39f/7mQwFeRZOpN+tMq/4ncpUN3RbaahUCesR/7OvHi/5QGMoPoXNngCCbDFJGaos
-         XvkteUP4JQVjtbJFZ3FlaYimXL4Xr/27Ue5PVvJuowQnmumggxdgelzgEPOYGCHUPQUJ
-         mMzu3C3o4cmCzORgMvTn9/4U+1ZsF3aj2x0Z5ifkE2eaZoFKWpIzAwyt6e8jmrm1Bxfb
-         eCULs6JOovXx/w5nDJyGMoAq0WBid3G/keE0ZyKfd4URbwdTNG/Olvz1zEe6B7cC9Fsv
-         gmVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705597468; x=1706202268;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Spf2iYyM2yyAQqYpbtyryjRjyyX6h/O61i58Cf5ljuM=;
-        b=src8ED+2o3NLt+nmBHz+mBNCmwamrH3DiqKFBzNry5WD2ZyfGrpJLvGeRgKfA2UWci
-         pbOZCXwQ5g+X5k3z43r51KMIkEFPImTIRso2c61KYd8sk1s2B5FX5p1LzY4jTlSSyVRK
-         CKV5UVaJgwiDjCVKS/FcyA3YM3E8ifZvafrbOPXL/f9bwH0C3WeVhcR+LnjnDkG8rR+a
-         5xpG1H54EaYZ/1wVKgr5bw0Nmu5f8szZvO+ZBi+hvdErkUUOwrmVKzDGcXknlYOYrUzV
-         ZSICqMbl2cUhxZrgo6FgCo8mCW1AWKlUjLT3UFo4I+uf4gKzrWAKdSXVeDSlzUp1b3+z
-         XmEg==
-X-Gm-Message-State: AOJu0Yy8k6VoXnDkscp/3JyYjPqfBUSTgv+CAHLldQ1RANs3COB5txBD
-	xy/DirRj50ikVy4Ms9THGjFkxcQcvXyLHtqtTjQ3reYsj1RQPsodJ83bbrEczA==
-X-Google-Smtp-Source: AGHT+IH3FQC5AzBxXr/WrOnNom9+bRpYrvzb1p86jgCnhI7ov37Cf1NcCipvj61hKcTHgrF3bHv7XA==
-X-Received: by 2002:a05:6000:18a:b0:337:b057:c1d4 with SMTP id p10-20020a056000018a00b00337b057c1d4mr474170wrx.215.1705597468020;
-        Thu, 18 Jan 2024 09:04:28 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id q9-20020adff789000000b00337d6aa3912sm1021082wrp.10.2024.01.18.09.04.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 09:04:27 -0800 (PST)
-Message-ID: <358faa27-3ea3-4e63-a76f-7b5deeed756d@arista.com>
-Date: Thu, 18 Jan 2024 17:04:25 +0000
+	s=arc-20240116; t=1705597577; c=relaxed/simple;
+	bh=zwlAmsr3jy9o0CUfZAf7n0+dthoLludbuSbP800F6PU=;
+	h=Received:From:Date:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=mf2ayu0LoStm4c3hI88/hu2tIVv7wMZTmq479OWFuwYetx2p7iylMKiPkZxMbztxcDQcjxdDBseBS1hKFyIltKQ8/XPGPMCB4C61gksUmm2/e6zpnbIHrvtgZGTpXYOkPNUSSjsCxrbL6lYFl1SjSgvA0NZzhG/5Gx+D1m5BR7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
+	by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+	id e241a668-b623-11ee-b3cf-005056bd6ce9;
+	Thu, 18 Jan 2024 19:06:13 +0200 (EET)
+From: andy.shevchenko@gmail.com
+Date: Thu, 18 Jan 2024 19:06:13 +0200
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com,
+	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 5/6] spi: cs42l43: Add SPI controller support
+Message-ID: <ZalahZkCrBm-BXwz@surfacebook.localdomain>
+References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
+ <20230804104602.395892-6-ckeepax@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] selftests/net: A couple of typos fixes in
- key-management test
-Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Shuah Khan <shuah@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
- Mohammad Nassiri <mnassiri@ciena.com>, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240118-tcp-ao-test-key-mgmt-v1-0-3583ca147113@arista.com>
- <20240118085129.6313054b@kernel.org>
-From: Dmitry Safonov <dima@arista.com>
-In-Reply-To: <20240118085129.6313054b@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804104602.395892-6-ckeepax@opensource.cirrus.com>
 
-On 1/18/24 16:51, Jakub Kicinski wrote:
-> On Thu, 18 Jan 2024 02:51:33 +0000 Dmitry Safonov wrote:
->> Two typo fixes, noticed by Mohammad's review.
->> And a fix for an issue that got uncovered.
+Fri, Aug 04, 2023 at 11:46:01AM +0100, Charles Keepax kirjoitti:
+> From: Lucas Tanure <tanureal@opensource.cirrus.com>
 > 
-> Somewhat unrelated to these fixes but related to the tcp_ao selftests
-> in general - could you please also add a config file so that it's
-> easy to build a minimal kernel for running the tests?
+> The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
+> (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
+> for portable applications. It provides a high dynamic range, stereo
+> DAC for headphone output, two integrated Class D amplifiers for
+> loudspeakers, and two ADCs for wired headset microphone input or
+> stereo line input. PDM inputs are provided for digital microphones.
 > 
-> Something like:
-> 
->   make defconfig
->   make kvm_guest.config
->   make tools/testing/selftests/net/tcp_ao/config
+> The SPI component incorporates a SPI controller interface for
+> communication with other peripheral components.
 
-Yep, sounds good to me.
-I'll take as a base tools/testing/selftests/net/config and add any
-needed config options on the top.
+..
 
-> should give us a suitable config. Differently put it'd be great to have
-> a config we can pass to vmtest or virtme-ng and run the tests.
+> +		while (buf < block) {
+> +			const u8 *word = min(buf + sizeof(u32), block);
+> +			int pad = (buf + sizeof(u32)) - word;
+> +
+> +			while (buf < word) {
+> +				val >>= BITS_PER_BYTE;
+> +				val |= FIELD_PREP(GENMASK(31, 24), *buf);
+> +
+> +				buf++;
+> +			}
 
-Will check that it works with them.
+Is this a reinvented way of get_unaligned_*() APIs?
 
-Thanks,
-             Dmitry
+> +			val >>= pad * BITS_PER_BYTE;
+> +
+> +			regmap_write(regmap, CS42L43_TX_DATA, val);
+> +		}
+
+..
+
+> +			while (buf < word) {
+> +				*buf = FIELD_GET(GENMASK(7, 0), val);
+> +
+> +				val >>= BITS_PER_BYTE;
+> +				buf++;
+> +			}
+
+put_unaligned_*() ?
+
+..
+
+> +	/* select another internal CS, which doesn't exist, so CS 0 is not used */
+> +	if (spi_get_csgpiod(spi, 0))
+> +		spi_config1 |= 1 << CS42L43_SPI_SS_SEL_SHIFT;
+
+BIT() ?
+
+> +	if (spi->mode & SPI_CPOL)
+> +		spi_config1 |= CS42L43_SPI_CPOL_MASK;
+> +	if (spi->mode & SPI_CPHA)
+> +		spi_config1 |= CS42L43_SPI_CPHA_MASK;
+> +	if (spi->mode & SPI_3WIRE)
+> +		spi_config1 |= CS42L43_SPI_THREE_WIRE_MASK;
+
+..
+
+> +	if (is_of_node(fwnode))
+> +		fwnode = fwnode_get_named_child_node(fwnode, "spi");
+
+You can actually drop these is_of_node() tests and use another variable. In
+ACPI there can't be child node in small letters.
+
+But main problem here (and in another driver where the similar is used) that
+you bumped reference count for fwnode. I haven't seen where you drop it back.
+Have you tested rmmod/modprobe in a loop?
+
+..
+
+> +	devm_pm_runtime_enable(priv->dev);
+
+No error check? Why?
+
+..
+
+> +	ret = devm_spi_register_controller(priv->dev, priv->ctlr);
+> +	if (ret) {
+> +		pm_runtime_disable(priv->dev);
+
+Ah! Are you sure you properly simulated faults when testing this code?
+
+> +		dev_err(priv->dev, "Failed to register SPI controller: %d\n", ret);
+> +	}
+> +
+> +	return ret;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
