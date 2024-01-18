@@ -1,199 +1,98 @@
-Return-Path: <linux-kernel+bounces-29577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C06B983105E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:11:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B543831060
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:11:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77865283564
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:11:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C57C1F22760
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:11:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEC0630;
-	Thu, 18 Jan 2024 00:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD822631;
+	Thu, 18 Jan 2024 00:11:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g0m3Luz5"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="CZ1a1DKs"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053D5370
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 00:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C7F10E2
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 00:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705536674; cv=none; b=RZ6SNoYjl1o5QKZ69+ppSKZ7mHjMHsvddq+c6OtxtWJETkql/frt52LaR+I3y+fMEvDDxn0BU8rUo19Py5EBfXxtG0dk4dE51xuxtTrBz9c1704poheoLrjvqspHZ/Jj8rYaYY7YjrC+NEhkXNnfVW/Vb6pRm05qKZREn58mPbo=
+	t=1705536686; cv=none; b=MTJAGzs3lf90Ba+pJQdBF+LI1W5LeLUNsxIEf6T+fGII/PkQJvVyDzyzWzrTh/DQH/3sTMX8RBNsAhwfgNfqRc0a/dGlDVvM9I6DSyYyF6GZ8tuC+HwNPPvCsfuaM8IdAyCYVMrsMlT64JiLP2O+i25YPj4/PBubn27RHpuKbFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705536674; c=relaxed/simple;
-	bh=0cy4KIXUASFhW97OAs+eymqmHd51eLlQbcrYnDf5r2s=;
+	s=arc-20240116; t=1705536686; c=relaxed/simple;
+	bh=1w5Q64brPeYx8/ViGQBpGfdLrhYesMFZVAAlV6NcyTU=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=RtdYtseYU80hX1bRq92Fl+px+7oB9d2zV4CgqmQs6se95JtZK8Jt7WREDCoayEjGqjiqSalhdY0LghDQRFCE2pgMyRs+S8MrlFi63tzGrC8bxPJ0E5ATQg/5ZjzENBB7/BI9YGpQuxqTbxaRmVxGpbi+j23iAv2zrF8uVyQzgX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g0m3Luz5; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5ff828b93f0so3823507b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:11:12 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Received:X-Received:MIME-Version:References:In-Reply-To:From:Date:
+	 X-Gmail-Original-Message-ID:Message-ID:Subject:To:Cc:Content-Type;
+	b=jhpOXRcTLXyNQWr34pj/C+PpDuS+FVUS7+CNjKmZM4DMoJtsjsPF1M9oWUd4Ql2U9Rhv5OYZUK/ktYTfZnnRmaCmRfTHrTNQeyzZ9tPVtLrlCJgvKsAQ9AkxXoRnpziptVGSi48aLD+lT02ZeXOiQ13tAsUww1XdomsbYyOWuaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=CZ1a1DKs; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a29058bb2ceso1232852166b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:11:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705536672; x=1706141472; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LoDZgidcfDcF1qVsgYjkpOu/KB4eCKUf/VJq/PI9JJY=;
-        b=g0m3Luz5on1adarGeCpvUUnrGwlEXHM6dgTXSI7amx0dUevHG6Cjk/tVk7Ek073qjv
-         TVfMIlm82zLwo5slaTIlMvylbDzQbKJv9dvkxwq3DOaO6VTv2VYea9Q2wU0o1RmY7xn7
-         EzDwsvIABmWosg7419sonfr/FCKo3cWXIpgrWilYWjIUoGhlwGj415/RDPsUMZX0dIX4
-         25glPMp47h+ugINWH8KVBeHs/3E6IVL6gjBmGekz26+WtoViRy9kJtDg0I1RyLz9TCzJ
-         lBiNg6MSyh9kZeUJaS2rTQH9s9F3A1yZLU84ybNY+YMXgmi3b86/JXxYFAb9Z0ZbqSHS
-         WF+Q==
+        d=linux-foundation.org; s=google; t=1705536682; x=1706141482; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DH3fH0sAOwBA09p60ldRSMkKa4SNaStD6jUtWJRacm0=;
+        b=CZ1a1DKsvHFNatqJEDZVVWubbzKXj1zr7+jhss/u03AH+PBNhsI7B8+ngeCQMCkqo2
+         yUvbcoEWXNdxNLNtw87lE/kP7hxP4EAMzyyBrNQFkmf7SIf28+Q+LrCWEvr3xcmgc3hV
+         d2z7haRasYut2HhCUol5f3dVcnU9G9qoTKaDk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705536672; x=1706141472;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LoDZgidcfDcF1qVsgYjkpOu/KB4eCKUf/VJq/PI9JJY=;
-        b=UfrlgSkDbSdfsbbz2fgGjKT9G1YxEkOfaqJFY8Jp3xWWmVK/x/+LX1CJS4x1E56jFK
-         Eapv6nAk4lpOobd8ByYKETFLIX5oa0Tu36Okr9Ryn1vA11PY4eFUG/tY30Z4plt9/63L
-         iAwmq6QY2yaDn7WJ2ZXKFtxgW5BAu3uJzM4qCQvzxAxco3sKMWv3/4NKbY5bFindEXvJ
-         2SLrlWP9loAv5dZ8gE7tuKgGgHgVr+gpOhVNTp/oorSb+/M5Xh0re3bgYBJ25dvHrLqw
-         /bh+DUiF/aSH6XDTLqfqhMKNprrTeamLbRvXJ5Aqbmko9VDKdRM9KPS143/Fpe3RRPrT
-         USZg==
-X-Gm-Message-State: AOJu0Yys+vzeybMj0FvXrYtmEF8XqhNchDbmL31wepuhxoDfmO5JGXFw
-	gRlQd5ilwaJQUfqLmqosis59hkl7wRf9NShKoEEayhvowwzpIVZQ2AGGWoQUWnB5yDlXrscg1lL
-	yqnYB2+vPimld0nGRwjBq2ZCYZ6qMGWZLJwLy
-X-Google-Smtp-Source: AGHT+IHLrYpLoBhkEmiQ/l5XTtyxJhQzMl5guq0AWfDPU3CEMKgzuCK8+TXekH1cTOV6v7QI7bHSur5R1aZ7Tfy7yUc=
-X-Received: by 2002:a81:a08a:0:b0:5ff:5222:5214 with SMTP id
- x132-20020a81a08a000000b005ff52225214mr40555ywg.22.1705536671713; Wed, 17 Jan
- 2024 16:11:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705536682; x=1706141482;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DH3fH0sAOwBA09p60ldRSMkKa4SNaStD6jUtWJRacm0=;
+        b=GO3jWR89uejuEKWA+f+LNosl5/P8ZzIWTgwN6IsxgY8dT1lnSoUZoKud0NUEE0+/wU
+         uHv9Ud8yhJuLbYG5VUsO1kEIiLmat5ppoR7RLppDHtA+0qpsXtgZbajnHP8i8MUiJhj+
+         lFkanXZjGQ5WreYwd7uA9xcA+2R+Puv0/YJXzEZR/7NPiVQzj+cxWbyEwVH+O8ugk7vv
+         kZx5LwUz6XSITAH4elV+wBwfd+ucyh6UtJC/k9sV8TAIdpthsFVnvCEOo5GiurOKL+hB
+         4N+zD/q/x5Xt0LKWcNjcgGAJWiDmG0bMTESN5RMVE7VIw24qaD7NAgM2wIYl4P9h/mk7
+         o/QQ==
+X-Gm-Message-State: AOJu0Yx8+LYApUymD0AMuEeB/hsxW/aaRBdsMyeG22fhlhDM9uQteQWn
+	7/aILuYas7hSHtc9pSs9VcNumhPjBlFAmJ6tb8xAKhWoChDkSLecsAsec8gosEXfdSdu6+9Pdyy
+	fZnRwtQ==
+X-Google-Smtp-Source: AGHT+IGNt7+1pes4xTUZFcAhDxyGyzJv3T5AnML/bTjlskbhYiurSZjXLii+WQaqVgYfYvHnf44Zpw==
+X-Received: by 2002:a17:907:a08:b0:a27:a518:5c03 with SMTP id bb8-20020a1709070a0800b00a27a5185c03mr3901ejc.129.1705536682155;
+        Wed, 17 Jan 2024 16:11:22 -0800 (PST)
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
+        by smtp.gmail.com with ESMTPSA id ot8-20020a170906ccc800b00a28a8a7de10sm8393667ejb.159.2024.01.17.16.11.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 16:11:21 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-556c3f0d6c5so14418477a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:11:21 -0800 (PST)
+X-Received: by 2002:a50:d4d9:0:b0:559:f13a:af60 with SMTP id
+ e25-20020a50d4d9000000b00559f13aaf60mr38690edj.47.1705536681376; Wed, 17 Jan
+ 2024 16:11:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20220809142457.4751229f@imladris.surriel.com> <d0a136a0-4a31-46bc-adf4-2db109a61672@kernel.org>
- <3193bf5b-4e22-412f-8c5b-68574942d9bc@kernel.org> <CAHbLzkoL6sCDciHqVMJga288853CHdOTa5thOPQ9SHKSqjGGPQ@mail.gmail.com>
- <CAJuCfpH_Lr5HgVA-rXg6J0-BBq+__gDmh-XbhTynKOFmNef8kw@mail.gmail.com>
-In-Reply-To: <CAJuCfpH_Lr5HgVA-rXg6J0-BBq+__gDmh-XbhTynKOFmNef8kw@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 17 Jan 2024 16:11:00 -0800
-Message-ID: <CAJuCfpF7tK07rGHyWPFSVe=Lwv0_zN-J9WsV+nkhJffY+xdXkw@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: align larger anonymous mappings on THP boundaries
-To: Yang Shi <shy828301@gmail.com>
-Cc: Jiri Slaby <jirislaby@kernel.org>, Rik van Riel <riel@surriel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, kernel-team@fb.com, 
-	Matthew Wilcox <willy@infradead.org>, Christoph Lameter <cl@linux.com>
+References: <nqrl5ggszhlzaew6yte6t6uv5cbf4fhl5vd4pfhkitlsbqozvf@w4pttrz6supl> <20240117180021.GA539437@dev-arch.thelio-3990X>
+In-Reply-To: <20240117180021.GA539437@dev-arch.thelio-3990X>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 17 Jan 2024 16:11:04 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgx15ew5SOkri9M8dXnX1WV4__FZdiJoQ=6v8nj_7YLmA@mail.gmail.com>
+Message-ID: <CAHk-=wgx15ew5SOkri9M8dXnX1WV4__FZdiJoQ=6v8nj_7YLmA@mail.gmail.com>
+Subject: Re: [GIT PULL] power-supply changes for 6.8
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Sebastian Reichel <sre@kernel.org>, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 4:09=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
+On Wed, 17 Jan 2024 at 10:00, Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> On Wed, Jan 17, 2024 at 4:07=E2=80=AFPM Yang Shi <shy828301@gmail.com> wr=
-ote:
-> >
-> > On Tue, Jan 16, 2024 at 4:09=E2=80=AFAM Jiri Slaby <jirislaby@kernel.or=
-g> wrote:
-> > >
-> > > On 16. 01. 24, 12:53, Jiri Slaby wrote:
-> > > > Hi,
-> > > >
-> > > > On 09. 08. 22, 20:24, Rik van Riel wrote:
-> > > >> Align larger anonymous memory mappings on THP boundaries by
-> > > >> going through thp_get_unmapped_area if THPs are enabled for
-> > > >> the current process.
-> > > >>
-> > > >> With this patch, larger anonymous mappings are now THP aligned.
-> > > >> When a malloc library allocates a 2MB or larger arena, that
-> > > >> arena can now be mapped with THPs right from the start, which
-> > > >> can result in better TLB hit rates and execution time.
-> > > >
-> > > > This appears to break 32bit processes on x86_64 (at least). In
-> > > > particular, 32bit kernel or firefox builds in our build system.
-> > > >
-> > > > Reverting this on top of 6.7 makes it work again.
-> > > >
-> > > > Downstream report:
-> > > >   https://bugzilla.suse.com/show_bug.cgi?id=3D1218841
-> > > >
-> > > > So running:
-> > > > pahole -J --btf_gen_floats -j --lang_exclude=3Drust
-> > > > --skip_encoding_btf_inconsistent_proto --btf_gen_optimized .tmp_vml=
-inux.btf
-> > > >
-> > > > crashes or errors out with some random errors:
-> > > > [182671] STRUCT idr's field 'idr_next' offset=3D128 bit_size=3D0 ty=
-pe=3D181346
-> > > > Error emitting field
-> > > >
-> > > > strace shows mmap() fails with ENOMEM right before the errors:
-> > > > 1223  mmap2(NULL, 5783552, PROT_READ|PROT_WRITE,
-> > > > MAP_PRIVATE|MAP_ANONYMOUS, -1, 0 <unfinished ...>
-> > > > ...
-> > > > 1223  <... mmap2 resumed>)              =3D -1 ENOMEM (Cannot alloc=
-ate
-> > > > memory)
-> > > >
-> > > > Note the .tmp_vmlinux.btf above can be arbitrary, but likely large
-> > > > enough. For reference, one is available at:
-> > > > https://decibel.fi.muni.cz/~xslaby/n/btf
-> > > >
-> > > > Any ideas?
-> > >
-> > > This works around the problem, of course (but is a band-aid, not a fi=
-x):
-> > >
-> > > --- a/mm/mmap.c
-> > > +++ b/mm/mmap.c
-> > > @@ -1829,7 +1829,7 @@ get_unmapped_area(struct file *file, unsigned l=
-ong
-> > > addr, unsigned long len,
-> > >                   */
-> > >                  pgoff =3D 0;
-> > >                  get_area =3D shmem_get_unmapped_area;
-> > > -       } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
-> > > +       } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
-> > > !in_32bit_syscall()) {
-> > >                  /* Ensures that larger anonymous mappings are THP
-> > > aligned. */
-> > >                  get_area =3D thp_get_unmapped_area;
-> > >          }
-> > >
-> > >
-> > > thp_get_unmapped_area() does not take care of the legacy stuff...
-> >
-> > Could you please help test the below patch? It is compiled, but I
-> > don't have 32 bit userspace or machine to test it.
->
-> Hmm. I think you misunderstood me. This is happening on x86_64 emulated s=
-ystem.
+> This is missing a fix for building with older compilers:
 
-I mean it's x86_64 Android emulator, so kernel is 64bit.
+Dropped from my queue, will wait for a fixed pull request. Thanks for noticing,
 
->
-> >
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index 94ef5c02b459..a4d0839e5f31 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -811,6 +811,9 @@ static unsigned long
-> > __thp_get_unmapped_area(struct file *filp,
-> >         loff_t off_align =3D round_up(off, size);
-> >         unsigned long len_pad, ret;
-> >
-> > +       if (IS_ENABLED(CONFIG_32BIT) || in_compat_syscall())
-> > +               return 0;
-> > +
-> >         if (off_end <=3D off_align || (off_end - off_align) < size)
-> >                 return 0;
-> >
-> >
-> > >
-> > > regards,
-> > > --
-> > > js
-> > > suse labs
-> > >
-> >
+               Linus
 
