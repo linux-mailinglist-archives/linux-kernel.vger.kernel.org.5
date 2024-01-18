@@ -1,168 +1,201 @@
-Return-Path: <linux-kernel+bounces-29984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0461B831630
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:51:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4472B831631
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:51:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 942DB1F23480
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:51:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E91A7282E6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19A81F94C;
-	Thu, 18 Jan 2024 09:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Dw21sRWg"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9845B1F95A;
+	Thu, 18 Jan 2024 09:51:24 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBAB91B96D
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:51:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245D6BE7F
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705571470; cv=none; b=p1pTZJXwOWnmj/8AmrdKrU0OlzqS5U8HLzfjpC/jORhAMkWR7G30bvIyemhSSkNOdxR7oAqiDPah1IhZ8wv3G6wGkIRE5PMrEPvoRHCNaap0RhG3TfgpV86sw9qHtSG0vy6kGM3k/MNMKNtIgMZPdmI/bbzoFUvoN59MbhPXYOE=
+	t=1705571484; cv=none; b=fx4EBSUEwrVq3Ps57TIfYMUhIGD97dI+gcaGrEp0vFWt8Egj6VGoM/BCqldEXT7tg6BfhuWaiG5aAIodgE1f6uxuMryDXFY5D7DrEbg2FtImjW5Nwh7borukG+cg3BzPt4fPP8DnKp6JMKwUiK6Xy3zkxAO6HLioMBL7fjYRDW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705571470; c=relaxed/simple;
-	bh=s3vUMJLFHAD51DC2yFRfx7iE/+ob/GznEz4ar3z3+bk=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Date:
-	 Mime-Version:X-Mailer:Message-ID:Subject:From:To:Cc:Content-Type;
-	b=F4qsvmLr4Rr3xELrZ4xFuC5eawrG2vTCZaBAPWIOauf68gvBdlnyvQTp3c5E4OKoWaK/rPS9ep84+VGL7kXEsNaSQd3G/TYN1LNTCKRtyQW0lYvjiEgApqQFHQDEb+Pq8NzRSaoPcTsXkmXEguM5ZOJi46UYnibf0xK245BGqm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--gthelen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Dw21sRWg; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--gthelen.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e744f7ca3bso188256057b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:51:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705571467; x=1706176267; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RO6rdO7yon9JVy5o6uihMLS4VCKN6/zkfcB4kXn3j3k=;
-        b=Dw21sRWgO25P5sGKQLu6OP4DyJdA36g7iapH1YdNEM0JzusJTk4F+HyTIVlF7CGt21
-         B9rNP3gSAJ7iz81cw6MPcslp6AnPGlf9LVU/C/A2N4UxGtBg1c+DzVnra4c5Dss3XBN7
-         pji35wkNFln3yfIGos8mRnGJzZW+ZnHJY9gncqHC+UdE+vSBDhORG0yyzUqqFsv/MWX9
-         t6AZ1AeGYWcwlj2ob+wXQ/8d5F7mrGLHfU4JpC7FpoLTiLWSaRchAQW3tDu9zPcPs7rH
-         YzjtVCIKPa6DvRxsb2rWt0Xgnz+cYfgQ52YMSlfiNE9JBoTg4G1hRidCRcLcX9xEJEW8
-         iA2g==
+	s=arc-20240116; t=1705571484; c=relaxed/simple;
+	bh=z58m7XW30PvN5xVbMyZWpIDm8EVrwn1NU5W6Aj0AcjY=;
+	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
+	 X-Google-Smtp-Source:MIME-Version:X-Received:Date:
+	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:
+	 Message-ID:Subject:From:To:Content-Type; b=qPs+FGijdv75E2z80NM2YVUi946tUobWhb1ZOt+tJpnE4FV4eFgE2YjJliaYyEZY8MgqxnJG0fSl/UUGI/NPpHNGq/tHEIGTamiJ5tZxFF6Bhk7fA4NYRLISEkULFMT+iBumZEww8IlOwdv1ofaRwORMJGm35UwznqbNbXOdqMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bf0305ded5so23707939f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:51:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705571467; x=1706176267;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=1e100.net; s=20230601; t=1705571480; x=1706176280;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RO6rdO7yon9JVy5o6uihMLS4VCKN6/zkfcB4kXn3j3k=;
-        b=IDunWPptxkReUnH0Kfh4nKkTqLlK3IgFYTKZP3UzGyaMQUq3aD3yli4/MMdXLsdB64
-         k9/Mex6nwvNmoA+UwU6PTdfb/KZKLMvm4rAfU90bFEIef6RrHENq9/FHVDqoNWhFts2g
-         FR0izzX9eq2El3MPAiUfuXegdOEF3g8XSKnrVnbl4Egr2RLpJwv4e8DrFesFL8tjvH0n
-         cV9fFHta8U00rFgKrnCIxFAlMixN57VmHDUXCzmuLck6nLxHUbstP8N9+0Bv66nYT6V1
-         OGhc78qwhBpWYNVCF57iPp42+N1HXvqDBMr4rvz8U6P7n64pjJV0NegT7XchFCwYpbMX
-         iuPQ==
-X-Gm-Message-State: AOJu0Yw38YvYzMfrrLbzZt+DfysR0Z2hWY1696o6KvtoDOQxFGKKKa5O
-	CWYr4Bt0JvjS1Cj7Dcdj06VpFfnMj0ITMHnj2LMKJ+OAIphg6cmI6sjwi6VE8fOyouq1gEhWDYl
-	RDaCI3w==
-X-Google-Smtp-Source: AGHT+IGe18viwrppfstJfi4AUcP2ZanhxP9sww14HmVAsZgEBU6B1iIqZG6+djVghvja7wuNIfkQ57OeetYp
-X-Received: from gthelen-cloudtop.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1b13])
- (user=gthelen job=sendgmr) by 2002:a25:b112:0:b0:dbe:32b0:9250 with SMTP id
- g18-20020a25b112000000b00dbe32b09250mr27546ybj.0.1705571466906; Thu, 18 Jan
- 2024 01:51:06 -0800 (PST)
-Date: Thu, 18 Jan 2024 01:50:57 -0800
+        bh=LkvdycqJohxztUpLt/7vlWL8dxLjsENTxEfMc11iE9Y=;
+        b=dwV/BAS+fitVtyUNo4S0GnNMzqiX3dJEsxVuVSknxPR9qpEUnfC2TYQY2UdFUtWPlY
+         5tsNlXdC1fU97bRn3KF3LkcBWcHzbryrBEySvyFob3vGgI8cu2VW0VJE1O5rdCP0AnJp
+         ZPLwWR90vxbtrau9JJQMfXCbn1kDECvHqyujZK71W3JALzzaTOKMMMpysngAOo/dB/Rq
+         rTkJCx76cl2c9Ou4utGAVhQUiN0YGXyRyJMzqHMZxRdUYi+0vIobyqm4IUdIepZeN9zy
+         ixkg0yZmDs3tSlMEAF1xF3huD768VVZFXYljYr1Dh1vtmvwNcJZB+HqSkVm0JDZ6/Zhp
+         sMqA==
+X-Gm-Message-State: AOJu0Yy5BxR1i9vpXkjI47V2OgXGL4V9FuzzK0+vuo6TkEysLgMnMVmx
+	4kXMK4WGm2u7TyXJfSyx53eo4PP74oXNgViKoVku3n3/uNrsdwvlozGP3EjIlACyRgafsJBpyrY
+	jvHvVdOYULxNlD7x0eopw7qmziJOBGZO68hhkQgbSVZR3UGz7Q8tkHsw=
+X-Google-Smtp-Source: AGHT+IHzouAb2icz5oPAlRYTj81wQ5G3y9Kmz84hi6hFEOvIHRkLembbLk74QIQgZb7D3ntsDph2fxm5vOwhR35W5TCy4GS5pb4j
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240118095057.677544-1-gthelen@google.com>
-Subject: [PATCH] selftests/memfd: delete unused declarations
-From: Greg Thelen <gthelen@google.com>
-To: Daniel Verkamp <dverkamp@chromium.org>, Aleksa Sarai <cyphar@cyphar.com>, 
-	Shuah Khan <shuah@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Jeff Xu <jeffxu@google.com>, Kees Cook <keescook@chromium.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Greg Thelen <gthelen@google.com>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:2108:b0:46e:aaa7:fdf5 with SMTP id
+ n8-20020a056638210800b0046eaaa7fdf5mr38487jaj.0.1705571480364; Thu, 18 Jan
+ 2024 01:51:20 -0800 (PST)
+Date: Thu, 18 Jan 2024 01:51:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000039f237060f354ef7@google.com>
+Subject: [syzbot] [dri?] BUG: scheduling while atomic in drm_atomic_helper_wait_for_flip_done
+From: syzbot <syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com>
+To: airlied@gmail.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, 
+	hamohammed.sa@gmail.com, linux-kernel@vger.kernel.org, 
+	maarten.lankhorst@linux.intel.com, mairacanal@riseup.net, 
+	melissa.srw@gmail.com, mripard@kernel.org, rodrigosiqueiramelo@gmail.com, 
+	syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
 Content-Type: text/plain; charset="UTF-8"
 
-Commit 32d118ad50a5 ("selftests/memfd: add tests for F_SEAL_EXEC"):
-- added several unused 'nbytes' local variables
+Hello,
 
-Commit 6469b66e3f5a ("selftests: improve vm.memfd_noexec sysctl tests"):
-- orphaned 'newpid_thread_fn2()' forward declaration
-- orphaned 'join_newpid_thread()' forward declaration
-- added unused 'pid' local in sysctl_simple_child()
-- orphaned 'fd' local in sysctl_simple_child()
-- added unused 'fd' in sysctl_nested_child()
+syzbot found the following issue on:
 
-Delete the unused locals and forward declarations.
+HEAD commit:    1b1934dbbdcf Merge tag 'docs-6.8-2' of git://git.lwn.net/l..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1029adbde80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=68ea41b98043e6e8
+dashboard link: https://syzkaller.appspot.com/bug?extid=06fa1063cca8163ea541
+compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
-Signed-off-by: Greg Thelen <gthelen@google.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-1b1934db.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/00b728a4f3de/vmlinux-1b1934db.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5a3fe8452d59/Image-1b1934db.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com
+
+BUG: scheduling while atomic: syz-executor.0/29225/0x00000002
+Modules linked in:
+CPU: 1 PID: 29225 Comm: syz-executor.0 Not tainted 6.7.0-syzkaller-10085-g1b1934dbbdcf #0
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0x94/0xec arch/arm64/kernel/stacktrace.c:291
+ show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:298
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x48/0x60 lib/dump_stack.c:106
+ dump_stack+0x18/0x24 lib/dump_stack.c:113
+ __schedule_bug+0x50/0x68 kernel/sched/core.c:5943
+ schedule_debug kernel/sched/core.c:5970 [inline]
+ __schedule+0x7f4/0x8a8 kernel/sched/core.c:6620
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0x34/0xc8 kernel/sched/core.c:6817
+ schedule_timeout+0x8c/0x100 kernel/time/timer.c:2183
+ do_wait_for_common kernel/sched/completion.c:95 [inline]
+ __wait_for_common kernel/sched/completion.c:116 [inline]
+ wait_for_common kernel/sched/completion.c:127 [inline]
+ wait_for_completion_timeout+0x74/0x16c kernel/sched/completion.c:167
+ drm_atomic_helper_wait_for_flip_done+0x6c/0xc4 drivers/gpu/drm/drm_atomic_helper.c:1719
+ vkms_atomic_commit_tail+0x60/0xd0 drivers/gpu/drm/vkms/vkms_drv.c:81
+ commit_tail+0xa4/0x18c drivers/gpu/drm/drm_atomic_helper.c:1832
+ drm_atomic_helper_commit+0x164/0x178 drivers/gpu/drm/drm_atomic_helper.c:2072
+ drm_atomic_commit+0xa8/0xe0 drivers/gpu/drm/drm_atomic.c:1514
+ drm_client_modeset_commit_atomic+0x210/0x270 drivers/gpu/drm/drm_client_modeset.c:1051
+ drm_client_modeset_commit_locked+0x5c/0x188 drivers/gpu/drm/drm_client_modeset.c:1154
+ drm_client_modeset_commit+0x30/0x58 drivers/gpu/drm/drm_client_modeset.c:1180
+ __drm_fb_helper_restore_fbdev_mode_unlocked drivers/gpu/drm/drm_fb_helper.c:251 [inline]
+ __drm_fb_helper_restore_fbdev_mode_unlocked+0xa8/0xe8 drivers/gpu/drm/drm_fb_helper.c:230
+ drm_fb_helper_set_par+0x30/0x4c drivers/gpu/drm/drm_fb_helper.c:1344
+ fb_set_var+0x21c/0x488 drivers/video/fbdev/core/fbmem.c:312
+ fbcon_switch+0x214/0x4d0 drivers/video/fbdev/core/fbcon.c:2110
+ flush_scrollback drivers/tty/vt/vt.c:912 [inline]
+ csi_J+0x254/0x260 drivers/tty/vt/vt.c:1527
+ do_con_trol drivers/tty/vt/vt.c:2408 [inline]
+ do_con_write+0x1a30/0x1e2c drivers/tty/vt/vt.c:2905
+ con_write+0x18/0x68 drivers/tty/vt/vt.c:3251
+ gsmld_write+0x64/0xd0 drivers/tty/n_gsm.c:3724
+ iterate_tty_write drivers/tty/tty_io.c:1021 [inline]
+ file_tty_write.constprop.0+0x134/0x28c drivers/tty/tty_io.c:1092
+ tty_write+0x14/0x20 drivers/tty/tty_io.c:1113
+ call_write_iter include/linux/fs.h:2085 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0x1dc/0x2f4 fs/read_write.c:590
+ ksys_write+0x70/0x104 fs/read_write.c:643
+ __do_sys_write fs/read_write.c:655 [inline]
+ __se_sys_write fs/read_write.c:652 [inline]
+ __arm64_sys_write+0x1c/0x28 fs/read_write.c:652
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:51
+ el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x34/0xd8 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:595
+BUG: scheduling while atomic: syz-executor.0/29225/0x00000000
+Modules linked in:
+CPU: 0 PID: 29225 Comm: syz-executor.0 Tainted: G        W          6.7.0-syzkaller-10085-g1b1934dbbdcf #0
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0x94/0xec arch/arm64/kernel/stacktrace.c:291
+ show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:298
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x48/0x60 lib/dump_stack.c:106
+ dump_stack+0x18/0x24 lib/dump_stack.c:113
+ __schedule_bug+0x50/0x68 kernel/sched/core.c:5943
+ schedule_debug kernel/sched/core.c:5970 [inline]
+ __schedule+0x7f4/0x8a8 kernel/sched/core.c:6620
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0x34/0xc8 kernel/sched/core.c:6817
+ futex_wait_queue+0x70/0x9c kernel/futex/waitwake.c:370
+ __futex_wait+0xc8/0x15c kernel/futex/waitwake.c:669
+ futex_wait+0x84/0x108 kernel/futex/waitwake.c:697
+ do_futex+0xf8/0x1a0 kernel/futex/syscalls.c:102
+ __do_sys_futex kernel/futex/syscalls.c:179 [inline]
+ __se_sys_futex kernel/futex/syscalls.c:160 [inline]
+ __arm64_sys_futex+0x7c/0x1a4 kernel/futex/syscalls.c:160
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:51
+ el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x34/0xd8 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:595
+
+
 ---
- tools/testing/selftests/memfd/memfd_test.c | 10 ----------
- 1 file changed, 10 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/memfd/memfd_test.c b/tools/testing/selftests/memfd/memfd_test.c
-index 3df008677239..18f585684e20 100644
---- a/tools/testing/selftests/memfd/memfd_test.c
-+++ b/tools/testing/selftests/memfd/memfd_test.c
-@@ -44,8 +44,6 @@
-  */
- static size_t mfd_def_size = MFD_DEF_SIZE;
- static const char *memfd_str = MEMFD_STR;
--static int newpid_thread_fn2(void *arg);
--static void join_newpid_thread(pid_t pid);
- 
- static ssize_t fd2name(int fd, char *buf, size_t bufsize)
- {
-@@ -194,7 +192,6 @@ static unsigned int mfd_assert_get_seals(int fd)
- static void mfd_assert_has_seals(int fd, unsigned int seals)
- {
- 	char buf[PATH_MAX];
--	int nbytes;
- 	unsigned int s;
- 	fd2name(fd, buf, PATH_MAX);
- 
-@@ -696,7 +693,6 @@ static void mfd_assert_mode(int fd, int mode)
- {
- 	struct stat st;
- 	char buf[PATH_MAX];
--	int nbytes;
- 
- 	fd2name(fd, buf, PATH_MAX);
- 
-@@ -715,7 +711,6 @@ static void mfd_assert_mode(int fd, int mode)
- static void mfd_assert_chmod(int fd, int mode)
- {
- 	char buf[PATH_MAX];
--	int nbytes;
- 
- 	fd2name(fd, buf, PATH_MAX);
- 
-@@ -731,7 +726,6 @@ static void mfd_fail_chmod(int fd, int mode)
- {
- 	struct stat st;
- 	char buf[PATH_MAX];
--	int nbytes;
- 
- 	fd2name(fd, buf, PATH_MAX);
- 
-@@ -1254,9 +1248,6 @@ static void test_sysctl_set_sysctl2(void)
- 
- static int sysctl_simple_child(void *arg)
- {
--	int fd;
--	int pid;
--
- 	printf("%s sysctl 0\n", memfd_str);
- 	test_sysctl_set_sysctl0();
- 
-@@ -1321,7 +1312,6 @@ static void test_sysctl_sysctl2_failset(void)
- 
- static int sysctl_nested_child(void *arg)
- {
--	int fd;
- 	int pid;
- 
- 	printf("%s nested sysctl 0\n", memfd_str);
--- 
-2.43.0.429.g432eaa2c6b-goog
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
