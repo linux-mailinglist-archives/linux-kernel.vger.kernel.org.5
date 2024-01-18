@@ -1,163 +1,94 @@
-Return-Path: <linux-kernel+bounces-29912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDB8B83150C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:46:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A57CF83150E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E297E1C222B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:46:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 764D02817B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 807F6125D1;
-	Thu, 18 Jan 2024 08:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0198125B0;
+	Thu, 18 Jan 2024 08:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="H81lwFHu"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="NE282zo4"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3257E11C89;
-	Thu, 18 Jan 2024 08:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0014A1D533;
+	Thu, 18 Jan 2024 08:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705567582; cv=none; b=YbYl5Kdu9tgeNYEKrDcUY2MKO6S5pxoPW5+XN9Yq2eylSc4E8Y7IM/UGg1sd5qE0ZuhhLonhSjYDHbuveZk8i+FnD/0JPU7msrIR9wMO6CbA+ygkQ0iMLcUSOG2SmFmEirgBWn3c/6sSZUezib8/ZTtJX9zNl3nvIGfVm22jB0A=
+	t=1705567594; cv=none; b=b4FXEvE12tBqBx8jBpTYRg87XJ8gGvwoeZTM37XZX2WQQIO0ppBoBAXd3mXzxY8Krp8hSWERu3KIFHvXOjo4P24NrzSMeCi18bEb9y3KLC5ieH/CSfA5cg1MhUOiiXgVgeibZyBuKCUZMhBFrgc9O3goZJ5FshKbL2AYhN8jZDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705567582; c=relaxed/simple;
-	bh=3py4IxVUyHSKWw0EVz/Y6De2AR5tGiM/bpOlBfeFiG8=;
-	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:To:CC:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy:
-	 X-QCInternal:X-Proofpoint-Virus-Version:X-Proofpoint-ORIG-GUID:
-	 X-Proofpoint-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=Fwnw0F1DCqGEAZmuBanw0/vEqKd6qrFNhrbnl/7RIRXwkNTOOiopNDNIbBaX8HQ/dHMZBHudlA1F7IURgMXpBUjIn8jGW/zKwkE1UIbOgoLiSWadUDISh3JZ+a02YAetDMVSLwBpRWvyCfF1KzVSSqSBs7vvAepAjfINpDEH7io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=H81lwFHu; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40I6FmPk023540;
-	Thu, 18 Jan 2024 08:46:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=sIr0uxMxWHk2Z3UsG2tkbx7PQFYJUyRChndnXYqGeVc=; b=H8
-	1lwFHu/A5cnfim8KRFxpmNihYiwD9thKX86unzvxpZrDbKtPqmMVSm0NOse80tjm
-	x0pKr4umyVaA60yjtJ5mbCMYjui5EkhlHFJ+XqJa7S4ItdLEcJloQ0siLDrdiFcE
-	+SYC4PffHKdGX3zic3vhryLnBca9UL58LshfRo1Zn4+JGeHLnvCTLZ0VPfQeo/VX
-	MREHkYrJztqelKA+2GkgVb1MXtr4ygoqVy7VQcXAEJVwFp91SfZPgD1a1xBIvRa+
-	I7yYBSEGU0h9QuA07+1WaTx8Xj9ORh0iOWQyDwbk7eSP/CihEgYx7QKp+DtGFOhR
-	F/MDBiXf90SUMHDU5p9Q==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vpm1fshxy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 08:46:17 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40I8kGiD016309
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 08:46:16 GMT
-Received: from [10.218.39.189] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 18 Jan
- 2024 00:46:14 -0800
-Message-ID: <0ef3fb11-a207-2db4-1714-b3bca2ce2cea@quicinc.com>
-Date: Thu, 18 Jan 2024 14:16:11 +0530
+	s=arc-20240116; t=1705567594; c=relaxed/simple;
+	bh=Xlc2Yg/2t4ZtVXLim5SeRE+/1WgtJ76896r0f87mGwY=;
+	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding; b=YGMp7YiXaCzEAxxdQRgUFH5ZQ2zUDM+yNPxZaxGAvRhZvKgTYzzs/yFewH81Rj68yiGlrDNhom5CLW/ZHk8ktwTsCe3ZoL177PqaELS0DkgmEZW5D77KvIPdO/lV4VW42eSkbYpOAnIEqr21WDSzAhPj094wjJHytmyjrGMUSV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=NE282zo4; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705567591;
+	bh=Xlc2Yg/2t4ZtVXLim5SeRE+/1WgtJ76896r0f87mGwY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=NE282zo4E3JFhSe7KhhmvOaXZFUluByXB546POuZGZRQ5rY0dSFMwkUj2a4+T7bgV
+	 HBvJs9yxGTtyaARQZgIDSL8+cPqnME8HVUb8KR/ttRZTH4fLvQ+2z3WRXEdl+EsemN
+	 RzbHjBAZJPj4vF5lc84qyzkkrDFGWUfbCHimbadgyMdgYKRCut/iIej+jj4HafgfKm
+	 2O73zTuvphCrxL+7VlRc0m7qCqMQpskLOmp2sQ2dXwxRBtwDyA/SQJ541am9TW9m6z
+	 UVpAh/Md3F9VfUEiW8if1w4d0V6UAYl3/xU9qCRO3/uhEEBNqlyBoI2hyfB9uwmfys
+	 9MyzPvSarjUhw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2E39B3780C6C;
+	Thu, 18 Jan 2024 08:46:30 +0000 (UTC)
+Message-ID: <adf2db77-3d8e-4a59-bbcc-d7e1253bf162@collabora.com>
+Date: Thu, 18 Jan 2024 09:46:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [RFC PATCH] usb: dwc3: gadget: Fix NULL pointer dereference in
- dwc3_gadget_suspend
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC: Kuen-Han Tsai <khtsai@google.com>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org"
-	<linux-usb@vger.kernel.org>
-References: <20240110095532.4776-1-quic_uaggarwa@quicinc.com>
- <CAKzKK0qJOz_+pNAVAD8Ub6TZ9uhFOzuDC_bws9MVzxNa7RqYhA@mail.gmail.com>
- <77ffee9a-cd77-6a09-10ee-bdf17bfca5ec@quicinc.com>
- <8ba84432-bd07-3e59-3638-924d5fadec30@quicinc.com>
- <20240118005641.fpydq2opopbmlnvj@synopsys.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] firmware: coreboot: Replace tag with id table in
+ driver struct
 Content-Language: en-US
-From: UTTKARSH AGGARWAL <quic_uaggarwa@quicinc.com>
-In-Reply-To: <20240118005641.fpydq2opopbmlnvj@synopsys.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ Tzung-Bi Shih <tzungbi@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Brian Norris <briannorris@chromium.org>,
+ Julius Werner <jwerner@chromium.org>, Masahiro Yamada
+ <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nicolas@fjasle.eu>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, kernel@collabora.com,
+ chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240117-coreboot-mod-defconfig-v3-0-049565a27bba@collabora.com>
+ <20240117-coreboot-mod-defconfig-v3-3-049565a27bba@collabora.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240117-coreboot-mod-defconfig-v3-3-049565a27bba@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: E3ZrRg25Bu8y2dGaCNxBfvu76Ub-LnLg
-X-Proofpoint-GUID: E3ZrRg25Bu8y2dGaCNxBfvu76Ub-LnLg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-18_04,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=665
- suspectscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0 mlxscore=0
- phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401180062
 
+Il 17/01/24 20:03, Nícolas F. R. A. Prado ha scritto:
+> Switch the plain 'tag' field in struct coreboot_driver for the newly
+> created coreboot_device_id struct, which also contains a tag field and
+> has the benefit of allowing modalias generation, and update all coreboot
+> drivers accordingly.
+> 
+> While at it, also add the id table for each driver to the module device
+> table to allow automatically loading the module.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-On 1/18/2024 6:26 AM, Thinh Nguyen wrote:
-> On Wed, Jan 17, 2024, UTTKARSH AGGARWAL wrote:
->> On 1/17/2024 2:52 PM, UTTKARSH AGGARWAL wrote:
->>> On 1/17/2024 12:47 PM, Kuen-Han Tsai wrote:
->>>>>           ret = dwc3_gadget_soft_disconnect(dwc);
->>>>>           if (ret)
->>>>>                   goto err;
->>>> For improved readability, we can remove the goto statement and move
->>>> the error handling logic here.
->>> Hi Kuen-Han,
->>>
->>> Thanks for the suggestion.
->>> Does this looks good to you ?
->>>
->>>     int ret = dwc3_gadget_soft_disconnect(dwc);if (ret) {        if
->>> (dwc->softconnect)            dwc3_gadget_soft_connect(dwc);
->>>
->>>         return ret;    }    spin_lock_irqsave(&dwc->lock, flags);    if
->>> (dwc->gadget_driver)  dwc3_disconnect_gadget(dwc);
->>>   spin_unlock_irqrestore(&dwc->lock, flags);
->> Sorry for the mistake.
->>
->> int ret = dwc3_gadget_soft_disconnect(dwc);
->>
->> if (ret) {
->>
->>        if (dwc->softconnect)
->>
->>                   dwc3_gadget_soft_connect(dwc);
->>
->>        return ret;
->>
->> }
->>
->> spin_lock_irqsave(&dwc->lock, flags);
->>
->> if (dwc->gadget_driver)
->>
->>         dwc3_disconnect_gadget(dwc);
->>
->> spin_unlock_irqrestore(&dwc->lock, flags);
->>
-> Please only make one logical fix per change. If any unrelated refactor
-> or style change is needed, keep it to a separate commit.
->
-> Thanks,
-> Thinh
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Sure Thinh,I’ll only push fix in v2, not refactoring.
-
-Thanks,
-
-Uttkarsh
 
 
