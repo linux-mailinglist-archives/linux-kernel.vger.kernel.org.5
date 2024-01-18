@@ -1,159 +1,279 @@
-Return-Path: <linux-kernel+bounces-29701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DE58831202
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 05:06:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A5FF831206
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 05:07:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D67828396B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:06:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AD442839CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24DD63B5;
-	Thu, 18 Jan 2024 04:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77238C00;
+	Thu, 18 Jan 2024 04:07:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="hjqGPt+t"
-Received: from aye.elm.relay.mailchannels.net (aye.elm.relay.mailchannels.net [23.83.212.6])
+	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="NBY0dNK1"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2051.outbound.protection.outlook.com [40.107.243.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606679442;
-	Thu, 18 Jan 2024 04:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.212.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0602F8F69;
+	Thu, 18 Jan 2024 04:06:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.51
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705550802; cv=pass; b=CLdiBuRpmCSKclhgQ9cbpoypkzWnLamjDkYiyZcSF8/pywR0f51zs4zNZ26yPfSgtD13hR9r/BU7z+cAdlvpogpVunzakuic2cOAhFnOGfcMG4Fuk89ZzNkjyNbOjZSBfuErd8BTSOoTy+ZUCePtYzPn/+bA67Ev5beKWNSlRv8=
+	t=1705550821; cv=fail; b=AVJe8XZnFNTikSNyEo7dL1//iVho6Sp8E4EKJbK+c238jaWCZEZK7crougapgQ0aEYRM7OF6Vw6Row6I9g8Q/eKEmKP7L8B/ilE2JjjiN5ilyYrNJd0bZx6HZz68Ut6/8uggXkNFbtxq7tHS3XAEkIfTxsmiebwoMMi5ZKsy1RI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705550802; c=relaxed/simple;
-	bh=qIGaO+tVgnh7Dkk4Xt328KM7qEKSMW/pudvfRdDrPFo=;
-	h=X-Sender-Id:Received:Received:ARC-Message-Signature:
-	 ARC-Authentication-Results:X-Sender-Id:X-MC-Relay:
-	 X-MailChannels-SenderId:X-MailChannels-Auth-Id:X-Cooperative-Coil:
-	 X-MC-Loop-Signature:X-MC-Ingress-Time:Received:Received:
-	 DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
-	 User-Agent; b=NoUmspFeZnj7GRDFLPBih9B9cuCRf4v3z/sVNOhCIgY/iN2eOhY+3JIj2JLBhl6wZsXRnkG8DxJbK/nQmgS04y/ybQvgIUB5bI4N5OtH5ALzNHjzv8eoyFa2Wpqy7CmRjB5LgYQDI5aaoruVBos3HA6mZQ9Qa/S0Kd+iqKgWEYw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=hjqGPt+t; arc=pass smtp.client-ip=23.83.212.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 1B934941335;
-	Thu, 18 Jan 2024 04:06:33 +0000 (UTC)
-Received: from pdx1-sub0-mail-a270.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 886DB941E03;
-	Thu, 18 Jan 2024 04:06:32 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1705550792; a=rsa-sha256;
-	cv=none;
-	b=JRUx7qOfVuUnI3e1dofKavoADUTb+OmWLMDRquPkBoy0IdW+yyrYTehFx83CraNnW/oNmC
-	rBL/6icm2zdv1Hj1ClfqZjekMGiuZ5rPYPjW8sV884bVDb9UKoMaQPgYoz6HNpP3KfjkFT
-	Dkg913d4K6Ul5hj6MoNg3PEmY5Wlt1NonVWnIR+t8EPn3YlQeuM3ptSJGmr4s8FK8j3t8d
-	CLz4zwYhlUDwoP0wp2ey511TCv95a8aj7jGpUOmx+dLjQ/PwnYoQ/tr6ACv52zymmfeaUR
-	0sjDtT4qd41sWEtthxj/OtsJv+Y2xAHcCWlgvN0cZlJsEfClGnwuzs7ZUAUNtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1705550792;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=EJOE4oWc7zcPOVUmVEWhBrFQsdzfb6SMOjZRrmacEJ8=;
-	b=PoxWxYybVD7EfIN+Rg00oABHCttBPbYdQcsmaWr8jVLhAoLW++zMkPDNW5H6NyI4qxSF8G
-	CRbaGpKOlTIZKJPf6IpDbeM3XU0UlkhYW0ztRF4lC7Z7cmBAJ5ZeJaIc1oYIyp1lTGjNxK
-	wAHLqOHCf0eNIVb8DkyBhXHnqX8P9JHdvRMO5fTc3BlqnpfziKkuONefvrHXjQ1REpWpPG
-	DMmDrkuoW/6ttZ7jiiDy1jhi99gqzXWtf1xPb/fuS78eS9fXyN9VuZxH8YtSccsAg0JliR
-	KHGU9ElNpf2sGrcpJhlUyiCkXmG16Lwbvh6ig/12zCllDk8Lard6H1heilU3TQ==
-ARC-Authentication-Results: i=1;
-	rspamd-568947cb6c-w8h7p;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Cooperative-Coil: 7dbfad8f0b06d083_1705550792933_2243798975
-X-MC-Loop-Signature: 1705550792933:1660421329
-X-MC-Ingress-Time: 1705550792933
-Received: from pdx1-sub0-mail-a270.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.125.114.161 (trex/6.9.2);
-	Thu, 18 Jan 2024 04:06:32 +0000
-Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a270.dreamhost.com (Postfix) with ESMTPSA id 4TFq1g5QzGz71;
-	Wed, 17 Jan 2024 20:06:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1705550792;
-	bh=EJOE4oWc7zcPOVUmVEWhBrFQsdzfb6SMOjZRrmacEJ8=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=hjqGPt+tOJ8do4jmDlqsIQiQSztq48Lw89F5AcA72hJ7GPuJT1OAeNwzX7F+0mCmy
-	 Yym6VT7H5ovd7/gqxxEzRnwgxp+iSNXXfVAH3JUCQiNf/7UXmji4rBzkxEnHHoSg2Z
-	 LoF3F1waICIx+VzUJJSJnoli3rBH9yFEgvnHbCt8r2c38o0dtAfaoFX3P9P4M9Yhsa
-	 +fWT+7U6j/GQKFQvblDwwN+arKLgUmOtsMJiyDfOmy454DmIEP4s7M9w1phmo61cO9
-	 r9UhwNQEurid62sjzlG8e0yLeQwHXeMxMQvBmVDxx6TN9csdGC0zs6sIHMWhuu2d/P
-	 8pi2+YgdN+zsA==
-Date: Wed, 17 Jan 2024 20:06:25 -0800
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Jonathan Cameron <jonathan.cameron@huawei.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
-	Vishal Verma <vishal.l.verma@intel.com>, Dan Williams <dan.j.williams@intel.com>, 
-	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Dave Larsen <davelarsen58@gmail.com>, Fan Ni <fan.ni@samsung.com>
-Subject: Re: [PATCH v2] cxl/pci: Skip irq features if MSI/MSI-X are not
- supported
-Message-ID: <t6wkohozmtchuzzabjigr66tx6576nni54ig7lu2orlvqwmt5o@r52mxzei7uxs>
-References: <20240117-dont-fail-irq-v2-1-f33f26b0e365@intel.com>
+	s=arc-20240116; t=1705550821; c=relaxed/simple;
+	bh=L0FYRe0wpsNMm4Nfo5WxXRrl6r3UnMrMIwBxq2gxY0k=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 Content-Type:Content-Disposition:In-Reply-To:X-ClientProxiedBy:
+	 MIME-Version:X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=pIcjW20y+OQEe4y0dXb3G23AA9CDotSuqfgjkspqq3liDdLI24KA9JroJEQa2T500kua2rj0O0WyUQE7UzjMK7Dwg4NfEDddH4Pl+1Xf3j6ZiyQWf88QnmDFLSbSUSAn9AcLaxtB/ukX6W+pN08JF7Y6car4w73VzfrJt6MTe5M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=NBY0dNK1; arc=fail smtp.client-ip=40.107.243.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EerixHZg0JlK+OPUkI4EepWqIy31cDFQqjTrfKgTvyae+TvgUpXG1u3HVY2OtBDBaeSijj8O6ec/pvPEBJLCnE3c1FocbB3Jt4XtcLhPYRuwwDMRkEivO+myUE8hgD1cXyDXYkFBObf388JysRfu3xgM25c6R5+nu1IL3EhvNuy9B7RdrpnTofGu5QtDxHIpn6g7QdW2/nEZNDO3Pzworyh1usgq5ZSmqkaDMgtkh0K/YNS2pLJkM8QQjIdtK7qWXt6Ech17l2T1iQUS6iTmABudiiO94ZJC+AVbTiCA0kEmGudRFMd9bgdLEv7WFQG8eBX4Z5/IuCFL5Ps1PrjcuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dDUufBOghQeLx0mQLKnGZexIse8grpNM/2D+EVuUCks=;
+ b=UrbWEMJgDhrpP8RyuN/7o6ifsnnuxpJgOS5H5dGXAzaU2eZZ6bqcYerpX3uNJfa77QuCOVqY7VTdHwuvSXXLnUtjsWe8XUI6hRcmI71ly4oCOic0S8A5MVfQVh9YhqEKJpSClxQ/crwkCgECxv68nW6gkpZU1o1MZI5pVke9xW1CrQw27rDKAQD48nPDKmOZ0x/kxH3hJ/97F9IHAU5/dTdXtE8zydoqq9O91Ka4K84P4We14ROUFMZghubIiDCun2hnr/qpz7dy8BZ5Eh+f6V8EQ8kWU4HCxO8x/4DzNjTQtzm6ivEMfKFjC/mkz4Adh2lwzSdjwo1g6gt1lL98MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dDUufBOghQeLx0mQLKnGZexIse8grpNM/2D+EVuUCks=;
+ b=NBY0dNK1ALaO+jckOT6fJQ9IeGYMwbCZMY2X4OIFMpAoYIDPYDBNxwmC0Oot3tGFVygUud4RP2bzyPLEG1h2z7A6rlq8PNwCB8bqJvLxDoB3acuQZOrQSbnq2fFGzQkwZfaiYSZ8xUULPGI390S8YmzedYctlFM9KS27RLrvg8Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by CO3PR17MB5824.namprd17.prod.outlook.com (2603:10b6:303:175::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Thu, 18 Jan
+ 2024 04:06:56 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15%5]) with mapi id 15.20.7202.024; Thu, 18 Jan 2024
+ 04:06:56 +0000
+Date: Wed, 17 Jan 2024 23:06:46 -0500
+From: Gregory Price <gregory.price@memverge.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+	corbet@lwn.net, akpm@linux-foundation.org, honggyu.kim@sk.com,
+	rakie.kim@sk.com, hyeongtak.ji@sk.com, mhocko@kernel.org,
+	vtavarespetr@micron.com, jgroves@micron.com,
+	ravis.opensrc@micron.com, sthanneeru@micron.com,
+	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com,
+	hannes@cmpxchg.org, dan.j.williams@intel.com,
+	Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+Subject: Re: [PATCH 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE for
+ weighted interleaving
+Message-ID: <Zaij1uA4GvWxdNNW@memverge.com>
+References: <20240112210834.8035-1-gregory.price@memverge.com>
+ <20240112210834.8035-4-gregory.price@memverge.com>
+ <87fryvz6gf.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87fryvz6gf.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: BY5PR17CA0053.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::30) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240117-dont-fail-irq-v2-1-f33f26b0e365@intel.com>
-User-Agent: NeoMutt/20231221
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|CO3PR17MB5824:EE_
+X-MS-Office365-Filtering-Correlation-Id: f5ca821c-aac2-4d91-d207-08dc17dae8fe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ya9DnBCeB/wDky+1u07T3B+OTPAA3dYXi+MQRfYs/WjQuvQaKQNCvOa/5QGA6H6eBt7VIgGWvyYrw9YzlcYALX/Az8hCsTz/Tmvla37KRn4b751Ps9W6nGbEA9Vdhco33sQAIN/HU1+0YP7iPTv/xWpbbSNjZvPcS9nL3jAHoGUynYPjDktnLGXSxgwt5WmQYzpqi/1Hn4z6tHXZuG81ERunmpbRgkWNw1zqPT0FYmenTJYgdtFsiigXnEb9ib36Lugpb1BwUZnThDtvwhT7jIFzDdQVm8GEJXI4XEVSLLjXOoTxKJaHNroEvqtOptuVkPpiL/zAvPGfmseWszI4Weqw/SswjJHPOOyZY5Th2Mqz3TgFZt0R3kT3YFcLxI72uO3e+5nvXeD9+bgWgHVrwnVe1BORISsaBRpOamsptA/UHtS3zDgZVKx6lDvAUzdC0aNvD8aQ/TNIoA7WGtbXY7SRMYwownLHubD+eSwzmqiMh/D+NOYBhSlcJ3l9X1r6x2v0vbziRJRy4lh7Zl747HRU7ar2Q3tQI4M8yR1mwVA65x70HRD+ZPOYACBliZ6DR2e2SNN2bP8gFxVD3Mk6TZLzec84i7ufSarG2MkbRy4/Mvrr79q0tVBMTToOpflK
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39840400004)(136003)(366004)(396003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(38100700002)(4326008)(8676002)(8936002)(44832011)(7416002)(316002)(2616005)(6666004)(6506007)(41300700001)(2906002)(478600001)(26005)(36756003)(6486002)(86362001)(6512007)(6916009)(54906003)(66556008)(66476007)(66946007)(5660300002)(83380400001)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?LhQpRH3n25Hi3G8RgMXRiYxvR0NkuCHyItW0ZmNrFEyNo3cS+3XpJ6v3tw4i?=
+ =?us-ascii?Q?gR7wOi/x+Xm2rceXnJIiIrCPQ40ntAqnofQXUmhcFFVTmxrjfy9RC4eoDs6E?=
+ =?us-ascii?Q?PI9o9x7aW+iYV7Hu48hU0ETAQm7XkunyTZMFtziFDqz1Z+InD+9LSe9GoX7n?=
+ =?us-ascii?Q?bRVhIWl2BDG3LpjY/LRFFmGe4/MOauFh/mYqhKoxc2Dr3P6ELJ1Y8vHcdz/c?=
+ =?us-ascii?Q?KXHJ/0gABgp55SmQuAWt3LpV1wETUC1TlXJKi/L1TS9i6r3DwAYXwLUOZtJR?=
+ =?us-ascii?Q?u0CC727AMUGOv2ZGkDsXs6c0VPFzzhdkGexAh0ww5qdKjE25HZ8uhFn/Q0LD?=
+ =?us-ascii?Q?H3Bl6rujbZvsAmaXqFcZMWEIt02c6ssgmb0Ns8VbiM5iU3CoQ/ONR7MwAGq0?=
+ =?us-ascii?Q?IbTeP6vJBjgCsSce+07D9w2jlIol321GRrKz8k5zVERN6rm+9hhSPmNEcJGb?=
+ =?us-ascii?Q?IZO8EFbdmZcdK0BODxvo/xfz8QlFEtfKvVVuZAQ5BU4lT/iDJOSqxJgwLC0Y?=
+ =?us-ascii?Q?6R2agVuxuIqEqE4O0LLJ1sdv7geX7bv8YNhEmiOFo2JqIGbDXg3R+B79+2NK?=
+ =?us-ascii?Q?Upblzztv+dr+CQwH037MWcjyeWf5Zvu98kupKtZSaZAPkgkMEEfYUWq7aLvZ?=
+ =?us-ascii?Q?SUATs4DdV+vowfEZ8RoT9ArTMQV+bOIqSk5seJzYF9zqN4cE7+Fr1hIGkvrX?=
+ =?us-ascii?Q?u1NGamNOAdgqKQjkIMgiOeQkfxml6x8SIX7UTNTkOjZCi3p1JrritR4+dieN?=
+ =?us-ascii?Q?2SyZl41eK2bkqO6kQOrnNpkUpJ7xIOrWzpCBAEeeGlpyB8msWUl6K1bzYXB5?=
+ =?us-ascii?Q?5wiYyrs8NGuI3lsD2kTp55sma4tXU6Tk4mvSXb1PNCHybfg+1J+8AsAl9pz3?=
+ =?us-ascii?Q?UhfEGv/+BpO4aZgxNnWOR6wl49fjWAJoPlLG1yTvFKmt0u6CqtSbq8raBZCT?=
+ =?us-ascii?Q?lpv/B0EvKZDCtSF+omoHRTuidzO+/ZlvvBfoeEiFzyI912wk1ZQUK8wwvK3I?=
+ =?us-ascii?Q?loTKBC04BxTIxkkOksnqO9Rzgwx+jCQh8o1CVn5sYepLbIyKYQ+EoyEy+Hsq?=
+ =?us-ascii?Q?GCRR4UvMz0M+CVk8bMcLJLiFhuOzFZLxUGD4kx7S2YIs7QrqtZEvD28XfXqo?=
+ =?us-ascii?Q?WiK5RIf+oqA9+ofxhyYn5AGH2hOSYJOuN3FWNbevcjw4CaiaaKcUQOhnf/J8?=
+ =?us-ascii?Q?CRzGzjiFlZ2QbCIORtXWapE1YrJjEcFGme1AeIy0/x8nNdPumhgPppm4pt0E?=
+ =?us-ascii?Q?MMB07xQAdATeIXDIfkfpGd7cJXOo33gUNopZ4OmdQ3IjLpKs5nOo1fAYqHUT?=
+ =?us-ascii?Q?nNShqZv3n/MP8TbFqsCXZwOjYA24TwVvjiSqL70LJ9rs/jGV1yKNmdFy9M5m?=
+ =?us-ascii?Q?/Nbr9caRS26J3fk+tcERo3g7Y6y5zuAZOF20toN7k5Rmludpqf166eWi2KX5?=
+ =?us-ascii?Q?pPhmd+mZqyIPSNO9kVJFjgvKP8MBrRYFcnUZbjX5CbmNmzpvw1FVgyWKaOeI?=
+ =?us-ascii?Q?8b1TfTpcImfnUlAIp7HoUJzFXO7GRlkt4rSyFvUTw98PJk9YMdub5gAgC+fw?=
+ =?us-ascii?Q?3CRwyQK7coUaqp4RkDz9b3YLqk6HMjQIc/vHMcDqttEH8rUvAKVMLyyEz/HX?=
+ =?us-ascii?Q?ww=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5ca821c-aac2-4d91-d207-08dc17dae8fe
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 04:06:56.0261
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ie8mNkqaZXM6HtfBxqciChY2OLg88+VfxUgu9Q5e0isP1jkPFqDPxG8AUULHDwHfxcocB3SVhOVWcoJ0yyOdBTCSDmVBmsV/HnhPDNOXgj4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO3PR17MB5824
 
-On Wed, 17 Jan 2024, Ira Weiny wrote:
+On Thu, Jan 18, 2024 at 11:05:52AM +0800, Huang, Ying wrote:
+> Gregory Price <gourry.memverge@gmail.com> writes:
+> > +static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
+> > +		struct mempolicy *pol, unsigned long nr_pages,
+> > +		struct page **page_array)
+> > +{
+> > +	struct task_struct *me = current;
+> > +	unsigned long total_allocated = 0;
+> > +	unsigned long nr_allocated;
+> > +	unsigned long rounds;
+> > +	unsigned long node_pages, delta;
+> > +	u8 weight;
+> > +	struct iw_table __rcu *table;
+> > +	u8 *weights;
+> > +	unsigned int weight_total = 0;
+> > +	unsigned long rem_pages = nr_pages;
+> > +	nodemask_t nodes;
+> > +	int nnodes, node, weight_nodes;
+> > +	int prev_node = NUMA_NO_NODE;
+> > +	int i;
+> > +
+> > +	nnodes = read_once_policy_nodemask(pol, &nodes);
+> > +	if (!nnodes)
+> > +		return 0;
+> > +
+> > +	/* Continue allocating from most recent node and adjust the nr_pages */
+> > +	if (pol->wil.cur_weight) {
+> > +		node = next_node_in(me->il_prev, nodes);
+> > +		node_pages = pol->wil.cur_weight;
+> > +		if (node_pages > rem_pages)
+> > +			node_pages = rem_pages;
+> > +		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
+> > +						  NULL, page_array);
+> > +		page_array += nr_allocated;
+> > +		total_allocated += nr_allocated;
+> > +		/* if that's all the pages, no need to interleave */
+> > +		if (rem_pages <= pol->wil.cur_weight) {
+> > +			pol->wil.cur_weight -= rem_pages;
+> > +			return total_allocated;
+> > +		}
+> > +		/* Otherwise we adjust nr_pages down, and continue from there */
+> > +		rem_pages -= pol->wil.cur_weight;
+> > +		pol->wil.cur_weight = 0;
+> > +		prev_node = node;
+> > +	}
+> > +
+> > +	/* fetch the weights for this operation and calculate total weight */
+> > +	weights = kmalloc(nnodes, GFP_KERNEL);
+> > +	if (!weights)
+> > +		return total_allocated;
+> > +
+> > +	rcu_read_lock();
+> > +	table = rcu_dereference(iw_table);
+> > +	weight_nodes = 0;
+> > +	for_each_node_mask(node, nodes) {
+> > +		weights[weight_nodes++] = table->weights[node];
+> > +		weight_total += table->weights[node];
+> > +	}
+> > +	rcu_read_unlock();
+> > +
+> > +	if (!weight_total) {
+> > +		kfree(weights);
+> > +		return total_allocated;
+> > +	}
+> > +
+> > +	/* Now we can continue allocating as if from 0 instead of an offset */
+> > +	rounds = rem_pages / weight_total;
+> > +	delta = rem_pages % weight_total;
+> > +	for (i = 0; i < nnodes; i++) {
+> > +		node = next_node_in(prev_node, nodes);
+> > +		weight = weights[i];
+> > +		node_pages = weight * rounds;
+> > +		if (delta) {
+> > +			if (delta > weight) {
+> > +				node_pages += weight;
+> > +				delta -= weight;
+> > +			} else {
+> > +				node_pages += delta;
+> > +				delta = 0;
+> > +			}
+> > +		}
+> > +		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
+> > +						  NULL, page_array);
+> > +		page_array += nr_allocated;
+> > +		total_allocated += nr_allocated;
+> > +		if (total_allocated == nr_pages)
+> > +			break;
+> > +		prev_node = node;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Finally, we need to update me->il_prev and pol->wil.cur_weight
+> > +	 * if there were overflow pages, but not equivalent to the node
+> > +	 * weight, set the cur_weight to node_weight - delta and the
+> > +	 * me->il_prev to the previous node. Otherwise if it was perfect
+> > +	 * we can simply set il_prev to node and cur_weight to 0
+> > +	 */
+> > +	if (node_pages) {
+> > +		me->il_prev = prev_node;
+> > +		node_pages %= weight;
+> > +		pol->wil.cur_weight = weight - node_pages;
+> > +	} else {
+> > +		me->il_prev = node;
+> > +		pol->wil.cur_weight = 0;
+> > +	}
+> 
+> 
+> It appears that we should set me->il_prev and pol->wil.cur_weight when
+> delta becomes 0?  That is, following allocation should start from there?
+> 
 
->CXL 3.1 Section 3.1.1 states:
->
->	"A Function on a CXL device must not generate INTx messages if
->	that Function participates in CXL.cache protocol or CXL.mem
->	protocols."
->
->The generic CXL memory driver only supports devices which use the
->CXL.mem protocol.  The current driver attempts to allocate MSI/MSI-X
->vectors in anticipation of their need for mailbox interrupts or event
->processing.  However, the above requirement does not require a device to
->support interrupts, only that they use MSI/MSI-X.  For example, a device
->may disable mailbox interrupts and either be configured for firmware
->first or skip event processing and function.
->
->Dave Larsen reported that the following Intel / Agilex card does not
->support interrupts on function 0.
->
->	CXL: Intel Corporation Device 0ddb (rev 01) (prog-if 10 [CXL Memory Device (CXL 2.x)])
->
->Rather than fail device probe if interrupts are not supported; flag that
->irqs are not enabled and avoid features which require interrupts.
->Emit messages appropriate for the situation to aid in debugging should
->device behavior be unexpected due to a failure to allocate vectors.
->
->Note that it is possible for a device to have host based event
->processing through polling.  However, the driver does not support
->polling and it is not anticipated to be generally required.  Leave that
->functionality to a future patch if such a device comes along.
->
->Reported-by: Dave Larsen <davelarsen58@gmail.com>
->Reviewed-by: Dave Jiang <dave.jiang@intel.com>
->Reviewed-by: Fan Ni <fan.ni@samsung.com>
->Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+So the observation is that when delta reaches 0, we know what the prior
+node should be.  The only corner case being that delta is 0 when we
+enter the loop (in which case current prev_node is the correct
+prev_node).
 
-Yes, I suspected this might come up at some point.
+Eyeballing it, this seems correct, but I'll do some additional
+validation tomorrow. That should clean up the last block a bit.
 
-Reviewed-and-tested-by: Davidlohr Bueso <dave@stgolabs.net>
+Thanks!
+~Gregory
 
