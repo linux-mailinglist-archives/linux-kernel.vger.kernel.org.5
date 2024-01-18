@@ -1,285 +1,147 @@
-Return-Path: <linux-kernel+bounces-30410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56FC8831E56
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:22:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D58831E57
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:22:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C44E2B253EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:22:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB73A1C25FC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A51262C84E;
-	Thu, 18 Jan 2024 17:22:32 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6011B2C843;
-	Thu, 18 Jan 2024 17:22:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DF202CCA2;
+	Thu, 18 Jan 2024 17:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gQD/jx0A"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02922C844
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:22:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705598552; cv=none; b=WubPC9J3r/M4QJOcgCAAUO3N88Fb2PTHjcfajqfMygbR1PML0pJef7mTOn+IWC46Vp9/Sz0Ht5uTvY7SUzajB+gbWO9sgoIxO2OREg8FrLc+M9RCsDOBfw48s4OgCEKhlIaPzp+oUnltLTUANK4Zn6uqKeDa9zzO+G15UJX+aWQ=
+	t=1705598560; cv=none; b=oLyLrjgCZTTThXtG6KUdp1lXffOYGO71xsm6eu2kYA0yOeaqHpfBLzpyd9uJlrvGGZgbQ/LYQcORQ1ZX8IpPMx55c58f7sSQd2YHoEqKf+nPraDFzak9qwCQufVVxHPwdumoD6asr+owOv4K0lQnIohRfZjWJZbUXWD7p68fTR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705598552; c=relaxed/simple;
-	bh=uh/ZegrayGjehc4ODdNQcSBJrpivXNQEjMOnrwqqNrw=;
-	h=Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=VW0KgaxEiJFPWJ9qbflHzT13D9pMMjgnsymPC2V0+roHW8SVAdbdC1DfbXF4487PE5gnSUdSstbrDfWoIKaaT2w96lBhmMdd1Tt7lirNiTQLROLJZR3EiTubtn0xLOpB3JpuUYbFVVVe/LkLIDXrJu9vMCmf+f/z+fyP1PQygpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3F861042;
-	Thu, 18 Jan 2024 09:23:12 -0800 (PST)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C00C3F5A1;
-	Thu, 18 Jan 2024 09:22:24 -0800 (PST)
-Date: Thu, 18 Jan 2024 17:22:21 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: <cristian.marussi@arm.com>, <andersson@kernel.org>,
-	<konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<quic_rgottimu@quicinc.com>, <quic_kshivnan@quicinc.com>,
-	<conor+dt@kernel.org>, Amir Vajid <avajid@quicinc.com>
-Subject: Re: [RFC 3/7] firmware: arm_scmi: Add QCOM vendor protocol
-Message-ID: <ZaleTVhYlUj6iufT@bogus>
-References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
- <20240117173458.2312669-4-quic_sibis@quicinc.com>
+	s=arc-20240116; t=1705598560; c=relaxed/simple;
+	bh=iltjkxDb/0xDzy61r2/TbtUzAI6MQI7RRvk4pFe4udA=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Date:
+	 In-Reply-To:Mime-Version:References:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=jNqK1uBHADOwLuQgyalQ9HQ2trfYRqetsRcciJjNEhKWVNoLP3uDpDWsIgwOqP//mVZd6GMtNJoEe9eESq8TV7cQQ9u5pxwKY/sw/xM5slPmBWWtirNKbyOtg1pLaFd4mGlza4m0JKwYmYb0h+Najtsnt3PI0kUTQHTIW9qpGI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gQD/jx0A; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cf2714e392so900830a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:22:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705598559; x=1706203359; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xm/DLf0OcCuLKlxlCaP549a+9gpOVuErhiD2mGiJHlQ=;
+        b=gQD/jx0Aie9Tx5J4J1EH9EZm1ItntNmoTTo86f5aJHlFML2s+Iek3MK2bAJ3ahTrKR
+         fKFa0mZ46GtQDs5mg/ck2O3KtlL1qCJEtevS9vZjVfAzcO+nOlYSN57ijLJ0j45b1eXr
+         m4hVB7oszICG5ilcFkviEyn0Lf5jwIR8t9c/lcLafrHXZX5znEUKNom6aCN3XHihfcB0
+         oav90tLCDfLEN+enSC5ccIjDulhgMzqgTZd67q3NEEooDfwR/j1wvdHHsGB9dAN+OcsJ
+         3kKf73v6bEDc6SY0Z9QtLKoh7esp8KSQEAV+2BVgMIgGaabY2Kv2Dtku4qsHG18IRHxg
+         mciQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705598559; x=1706203359;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xm/DLf0OcCuLKlxlCaP549a+9gpOVuErhiD2mGiJHlQ=;
+        b=Ipr7yV3BiHkZmXnSdRuM1xU1WfZSV/vtMNLwy8Ec4mfDxWJPtvjclgMo4fKu8bvlXa
+         UEmZmfcAYobvHH53nYTKCLrISdVXRkKWNEn0toRxR7RGdrFeAv6iAcUFtg1z8EGhF4Cb
+         tz5v8S2zbA9sGwQuEmD5eoZynDs6uYaT4q9q+jW/2rS5eLjQjIkJKcbVgtKLK4tgIDT2
+         7NhnNxx8N2UOTDqUD4lLU4/nY1muekzNXnsOivLCxXhRBeMv1+LOOpanAwpRKZX0Nj2g
+         9ucGtKb1q39/g1doZwuJ4dVxhH4O835IXd0IKwKISnzkawsZWOwnzc5iKV0cj5P2BAbu
+         noMg==
+X-Gm-Message-State: AOJu0YxBGvuN7gb0RMSabmuAG503XtCRpQrwzwufe58BOhFkExpyt7fU
+	azgikAM3UhmY061+oEfh29RvLsSJ64N8LNJHB9C5ONUADgHIYE6OS+MxtFGNhOcCr2J+Ee9+5Ji
+	2NA==
+X-Google-Smtp-Source: AGHT+IFj0K9PMfNUkyIXk2MoqpEsxlcU1BvtMNNHuZ0E9DjQoqOOnxEeyHeSACPYhxmxjY7LB8Kr8Vkm5As=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:5c03:0:b0:577:4619:a0a0 with SMTP id
+ q3-20020a635c03000000b005774619a0a0mr22204pgb.6.1705598558913; Thu, 18 Jan
+ 2024 09:22:38 -0800 (PST)
+Date: Thu, 18 Jan 2024 09:22:37 -0800
+In-Reply-To: <ZalUDLVJSVN/rEf2@yilunxu-OptiPlex-7050>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117173458.2312669-4-quic_sibis@quicinc.com>
+Mime-Version: 1.0
+References: <20240110012045.505046-1-seanjc@google.com> <ZalUDLVJSVN/rEf2@yilunxu-OptiPlex-7050>
+Message-ID: <ZaleXWn7reOI5yJY@google.com>
+Subject: Re: [PATCH v2] KVM: x86/mmu: Retry fault before acquiring mmu_lock if
+ mapping is changing
+From: Sean Christopherson <seanjc@google.com>
+To: Xu Yilun <yilun.xu@linux.intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Yan Zhao <yan.y.zhao@intel.com>, Kai Huang <kai.huang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Jan 17, 2024 at 11:04:54PM +0530, Sibi Sankar wrote:
-> From: Shivnandan Kumar <quic_kshivnan@quicinc.com>
+On Fri, Jan 19, 2024, Xu Yilun wrote:
+> On Tue, Jan 09, 2024 at 05:20:45PM -0800, Sean Christopherson wrote:
+> > Retry page faults without acquiring mmu_lock if the resolved gfn is covered
+> > by an active invalidation.  Contending for mmu_lock is especially
+> > problematic on preemptible kernels as the mmu_notifier invalidation task
+> > will yield mmu_lock (see rwlock_needbreak()), delay the in-progress
 > 
-> SCMI QCOM vendor protocol provides interface to communicate with SCMI
-> controller and enable vendor specific features like bus scaling capable
-> of running on it.
+> Is it possible fault-in task avoids contending mmu_lock by using _trylock()?
+> Like:
 > 
-> Signed-off-by: Shivnandan Kumar <quic_kshivnan@quicinc.com>
-> Co-developed-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
-> Signed-off-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
-> Co-developed-by: Amir Vajid <avajid@quicinc.com>
-> Signed-off-by: Amir Vajid <avajid@quicinc.com>
-> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
->  drivers/firmware/arm_scmi/Kconfig            |  11 ++
->  drivers/firmware/arm_scmi/Makefile           |   1 +
->  drivers/firmware/arm_scmi/qcom_scmi_vendor.c | 160 +++++++++++++++++++
->  include/linux/qcom_scmi_vendor.h             |  36 +++++
->  4 files changed, 208 insertions(+)
->  create mode 100644 drivers/firmware/arm_scmi/qcom_scmi_vendor.c
->  create mode 100644 include/linux/qcom_scmi_vendor.h
+> 	while (!read_trylock(&vcpu->kvm->mmu_lock))
+> 		cpu_relax();
 > 
-> diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-> index aa5842be19b2..86b5d6c18ec4 100644
-> --- a/drivers/firmware/arm_scmi/Kconfig
-> +++ b/drivers/firmware/arm_scmi/Kconfig
-> @@ -180,4 +180,15 @@ config ARM_SCMI_POWER_CONTROL
->  	  called scmi_power_control. Note this may needed early in boot to catch
->  	  early shutdown/reboot SCMI requests.
->
-> +config QCOM_SCMI_VENDOR_PROTOCOL
-> +	tristate "Qualcomm Technologies, Inc. Qcom SCMI vendor Protocol"
-> +	depends on ARM || ARM64 || COMPILE_TEST
-> +	depends on ARM_SCMI_PROTOCOL
-> +	help
-> +	  The SCMI QCOM vendor protocol provides interface to communicate with SCMI
-> +	  controller and enable vendor specific features like bus scaling.
-> +
+> 	if (is_page_fault_stale(vcpu, fault))
+> 		goto out_unlock;
+>   
+> 	r = kvm_tdp_mmu_map(vcpu, fault);
+> 
+> out_unlock:
+> 	read_unlock(&vcpu->kvm->mmu_lock)
 
-I assume it will include all the Qualcomm specific vendor protocol
-handling here. Not sure how it it implemented across different platforms
-and but I already assume different platforms will use same protocol id
-for different things and this implementation will abstract all those
-details.
+It's definitely possible, but the downsides far outweigh any potential benefits.
 
-> diff --git a/drivers/firmware/arm_scmi/qcom_scmi_vendor.c b/drivers/firmware/arm_scmi/qcom_scmi_vendor.c
-> new file mode 100644
-> index 000000000000..878b99f0d1ef
-> --- /dev/null
-> +++ b/drivers/firmware/arm_scmi/qcom_scmi_vendor.c
-> @@ -0,0 +1,160 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2024, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#include <linux/qcom_scmi_vendor.h>
-> +
-> +#include "common.h"
-> +
-> +#define	EXTENDED_MSG_ID			0
+Doing trylock means the CPU is NOT put into the queue for acquiring the lock,
+which means that forward progress isn't guaranteed.  E.g. in a pathological
+scenario (and by "pathological", I mean if NUMA balancing or KSM is active ;-)),
+it's entirely possible for a near-endless stream of mmu_lock writers to be in
+the queue, thus preventing the vCPU from acquiring mmu_lock in a timely manner.
 
-This gives me no clue what this means ?
+And hacking the page fault path to bypass KVM's lock contention detection would
+be a very willful, deliberate violation of the intent of the MMU's yielding logic
+for preemptible kernels.
 
-> +#define	SCMI_MAX_TX_RX_SIZE		128
-> +#define	PROTOCOL_PAYLOAD_SIZE		16
-> +#define	SET_PARAM			0x10
+That said, I would love to revisit KVM's use of rwlock_needbreak(), at least in
+the TDP MMU.  As evidenced by this rash of issues, it's not at all obvious that
+yielding on mmu_lock contention is *ever* a net positive for KVM, or even for the
+kernel.  The shadow MMU is probably a different story since it can't parallelize
+page faults with other operations, e.g. yielding in kvm_zap_obsolete_pages() to
+allow vCPUs to make forward progress is probably a net positive.
 
-I assume these are the actual message IDs ? Any idea why 0x0-0xF is skipped ?
-I assume atleast the required 0x0-0x2 are implemented.
+But AFAIK, no one has done any testing to prove that yielding on contention in
+the TDP MMU is actually a good thing.  I'm 99% certain the only reason the TDP
+MMU yields on contention is because the shadow MMU yields on contention, i.e.
+I'm confident that no one ever did performance testing to shadow that there is
+any benefit whatsoever to yielding mmu_lock in the TDP MMU.
 
-> +#define	GET_PARAM			0x11
-> +#define	START_ACTIVITY			0x12
-> +#define	STOP_ACTIVITY			0x13
+> > invalidation, and ultimately increase the latency of resolving the page
+> > fault.  And in the worst case scenario, yielding will be accompanied by a
+> > remote TLB flush, e.g. if the invalidation covers a large range of memory
+> > and vCPUs are accessing addresses that were already zapped.
+> 
+> This case covers all usage of mmu_invalidate_retry_gfn(), is it? Should
+> we also consider vmx_set_apic_access_page_addr()?
 
-In general, good to add description of these in the implementation here
-or under Documentation or a pointer to the url where I can get the info.
-If documenting within the kernel, please use SCMI spec format as it may
-be easy to follow the same pattern even in the vendor protocols.
-
-> +
-> +static int qcom_scmi_set_param(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +			       u32 param_id, size_t size)
-> +{
-> +	int ret = -EINVAL;
-> +	struct scmi_xfer *t;
-> +	u32 *msg;
-> +
-> +	if (!ph || !ph->xops)
-> +		return ret;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, SET_PARAM, size + PROTOCOL_PAYLOAD_SIZE,
-> +				      SCMI_MAX_TX_RX_SIZE, &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	msg = t->tx.buf;
-> +	*msg++ = cpu_to_le32(EXTENDED_MSG_ID);
-> +	*msg++ = cpu_to_le32(algo_str & GENMASK(31, 0));
-> +	*msg++ = cpu_to_le32((algo_str & GENMASK(63, 32)) >> 32);
-> +	*msg++ = cpu_to_le32(param_id);
-> +	memcpy(msg, buf, size);
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	ph->xops->xfer_put(ph, t);
-> +
-> +	return ret;
-> +}
-> +
-> +static int qcom_scmi_get_param(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +			       u32 param_id, size_t tx_size, size_t rx_size)
-> +{
-> +	int ret = -EINVAL;
-> +	struct scmi_xfer *t;
-> +	u32 *msg;
-> +
-> +	if (!ph || !ph->xops || !buf)
-> +		return ret;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, GET_PARAM, tx_size + PROTOCOL_PAYLOAD_SIZE,
-> +				      SCMI_MAX_TX_RX_SIZE, &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	msg = t->tx.buf;
-> +	*msg++ = cpu_to_le32(EXTENDED_MSG_ID);
-> +	*msg++ = cpu_to_le32(algo_str & GENMASK(31, 0));
-> +	*msg++ = cpu_to_le32((algo_str & GENMASK(63, 32)) >> 32);
-> +	*msg++ = cpu_to_le32(param_id);
-> +	memcpy(msg, buf, tx_size);
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	if (t->rx.len > rx_size) {
-> +		pr_err("SCMI received buffer size %zu is more than expected size %zu\n",
-> +		       t->rx.len, rx_size);
-> +		return -EMSGSIZE;
-> +	}
-> +	memcpy(buf, t->rx.buf, t->rx.len);
-> +	ph->xops->xfer_put(ph, t);
-> +
-> +	return ret;
-> +}
-> +
-> +static int qcom_scmi_start_activity(const struct scmi_protocol_handle *ph,
-> +				    void *buf, u64 algo_str, u32 param_id, size_t size)
-> +{
-> +	int ret = -EINVAL;
-> +	struct scmi_xfer *t;
-> +	u32 *msg;
-> +
-> +	if (!ph || !ph->xops)
-> +		return ret;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, START_ACTIVITY, size + PROTOCOL_PAYLOAD_SIZE,
-> +				      SCMI_MAX_TX_RX_SIZE, &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	msg = t->tx.buf;
-> +	*msg++ = cpu_to_le32(EXTENDED_MSG_ID);
-> +	*msg++ = cpu_to_le32(algo_str & GENMASK(31, 0));
-> +	*msg++ = cpu_to_le32((algo_str & GENMASK(63, 32)) >> 32);
-> +	*msg++ = cpu_to_le32(param_id);
-> +	memcpy(msg, buf, size);
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	ph->xops->xfer_put(ph, t);
-> +
-> +	return ret;
-> +}
-> +
-> +static int qcom_scmi_stop_activity(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +				   u32 param_id, size_t size)
-> +{
-> +	int ret = -EINVAL;
-> +	struct scmi_xfer *t;
-> +	u32 *msg;
-> +
-> +	if (!ph || !ph->xops)
-> +		return ret;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, STOP_ACTIVITY, size + PROTOCOL_PAYLOAD_SIZE,
-> +				      SCMI_MAX_TX_RX_SIZE, &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	msg = t->tx.buf;
-> +	*msg++ = cpu_to_le32(EXTENDED_MSG_ID);
-> +	*msg++ = cpu_to_le32(algo_str & GENMASK(31, 0));
-> +	*msg++ = cpu_to_le32((algo_str & GENMASK(63, 32)) >> 32);
-> +	*msg++ = cpu_to_le32(param_id);
-> +	memcpy(msg, buf, size);
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	ph->xops->xfer_put(ph, t);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct qcom_scmi_vendor_ops qcom_proto_ops = {
-> +	.set_param = qcom_scmi_set_param,
-> +	.get_param = qcom_scmi_get_param,
-> +	.start_activity = qcom_scmi_start_activity,
-> +	.stop_activity = qcom_scmi_stop_activity,
-> +};
-> +
-> +static int qcom_scmi_vendor_protocol_init(const struct scmi_protocol_handle *ph)
-> +{
-> +	u32 version;
-> +
-> +	ph->xops->version_get(ph, &version);
-> +
-> +	dev_info(ph->dev, "qcom scmi version %d.%d\n",
-> +		 PROTOCOL_REV_MAJOR(version), PROTOCOL_REV_MINOR(version));
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct scmi_protocol qcom_scmi_vendor = {
-> +	.id = QCOM_SCMI_VENDOR_PROTOCOL,
-
-As Cristian might have pointed out, this will conflict and we need better
-matching to ensure each vendor and protocols with each implementation has
-unique matching mechanism so that only one match occurs per protocol on
-any platform.
-
--- 
-Regards,
-Sudeep
+Nah, reloading the APIC access page is an very, very infrequent operation.  And
+post-boot (of the VM), the page will only be reloaded if it's migrated by the
+primary MMU, i.e. after a relevant mmu_notifier operation.  And the APIC access
+page is a one-off allocation, i.e. it has its own VMA of PAGE_SIZE, so even if
+vmx_set_apic_access_page_addr() does manage to trigger contention with a relevant
+mmu_notifier event, e.g. races ahead of page migration completion, the odds of it
+forcing KVM's mmu_notifier handler to yield mmu_lock are low (maybe impossible?)
+because the invaldation event shouldn't be spanning multipl pages.
 
