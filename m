@@ -1,117 +1,91 @@
-Return-Path: <linux-kernel+bounces-30100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C108831938
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:36:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4A083193C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:38:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EFBF1C226BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:36:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F065B22B0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD8A24B4A;
-	Thu, 18 Jan 2024 12:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB8624B3A;
+	Thu, 18 Jan 2024 12:37:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lkXhqtgp"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b="e+VtO6pX"
+Received: from mx.swemel.ru (mx.swemel.ru [95.143.211.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEED1241E2;
-	Thu, 18 Jan 2024 12:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D8E125101;
+	Thu, 18 Jan 2024 12:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.211.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705581406; cv=none; b=Xu6dA+EqkQ/yh0ufoVobGZ8/z2RnZ7u32uM6qu6qqJu30R7n1Olu+/FgKsGy547Q4vh57TsGriHfs+FVNdW5XtQboh6XKBj3LTXNmpzv451tI/px2iQn3rQNyinQwkylud7bsWVAA6EK+VeXQoIkbl7zKZGcSzAjeEwUW9AGbz4=
+	t=1705581471; cv=none; b=MJsKBB6zXvM1YTFhCuVijhPlwYpoKR/LQtB7UZ5jUsaMCLTkbdOOfma9wTHqALz3EhPXBjJA51pCBJjCWOjHftEIcA3dFpVu7ZDB4pkG0R7yhTAOddfPV2viNqupkYInrIRNZzGnSkcgvt5YF6J2/PAOV/zRxmH4yLcYkx+W0Vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705581406; c=relaxed/simple;
-	bh=GSZCSpOqqzhMr6RwGuO1VJCCM884qyencHZG28chH8c=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding; b=EBT01LHbZ0PLetbh9RZn3D9ORQU2HAcw98kwH1wABok7hfPYeDFfSTqVf2cqExwktn5TN0WKayeA1GPRAOn/qhcu0OZnfAdtqEMSiZyflMncMzfmxuQYRTuHuA/S5/JBOatIE8e5ecmt0wWL0aFzKHHIb0GibED8BooIXnLMnRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lkXhqtgp; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-336c9acec03so9986388f8f.2;
-        Thu, 18 Jan 2024 04:36:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705581403; x=1706186203; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vA5DjepX8LO8HhgjcEQi+IWwObZWbeSNM5x2007oZCo=;
-        b=lkXhqtgphqWJDB2Fde4+QiEg7VNhst1hP3USufwGsHPUrHj62X3Ybs4Fmo5s7WRGyj
-         C86EekwaYn62lWAW7u2kydmMFlNZWL4r3LFErsMfcFVHrZP7YDBacZRJYaTkAQsye0j/
-         qTPCEgm2ScDAvrvn6X7soXDnKYlJTb9Hx2Eb8m0yes8RQ5r4CWlKw6ID7r0ZZzCv0EHs
-         +1/MJgEp0zfPfbHY1gTcj+yo5NW2JwusNwTFfWN04yZ4kJc/CWdqLWIgNTMDKdLuCoNw
-         0rtgSEx+DAJQAxe1N7Hu8l2PjdNkLnY4GezMRDUNX4OOGoEpuiwOdM3nh/W4KpnPWjfA
-         As+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705581403; x=1706186203;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vA5DjepX8LO8HhgjcEQi+IWwObZWbeSNM5x2007oZCo=;
-        b=hyPBoRIk5jUDI2nV2GH2j4H57qRgcLvaRIV2cWpgBdKy6A/j78zuqHqiysODae6o40
-         e93xm60uow3H0FQemVMjkMlafDbxgshuBv1TRhvhewCEh20mBwQeLOITAcYxwpIdric+
-         xIgiTxJg0uR0kVMgMPiyBknRqOiH2KFVZOguEbKMNmxXlbO24YatAjw5PNpdYEHZ4+0C
-         FStBoZb1wGc44Jiiv3rk+3+ikfiKqaI3eyBp0opC3tL2Hqx6oERsJUER3yC1hsgBDxVG
-         b/BInnm49gZ3B8AK4qbLYFt4T1KngoPIfotCGG5XccJpW5ddxggYklMCcEqq03QeKUCM
-         RsVQ==
-X-Gm-Message-State: AOJu0YzS4xl97S9dqmdukj+/3oRooj0ubAWECPFsyH7hIHjf3Crwceu8
-	Al94qeC+R0hfb5szE31/uQFNzNET3NaqMzKHQHTD7UjxfwnJvY5H
-X-Google-Smtp-Source: AGHT+IHaaeFxW7LHOmm4opdqNbFrJe66ZBuztiswDWE9W2nJuSGi1SBoZ4OebX2R7NA/FUs/dGT+vg==
-X-Received: by 2002:a5d:4051:0:b0:336:ba58:dade with SMTP id w17-20020a5d4051000000b00336ba58dademr460304wrp.62.1705581402845;
-        Thu, 18 Jan 2024 04:36:42 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id cp32-20020a056000402000b00337c55d9a28sm3027825wrb.93.2024.01.18.04.36.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 04:36:42 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Ian Abbott <abbotti@mev.co.uk>,
-	H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] comedi: ni_mio_common: remove redundant assignment to variable status1
-Date: Thu, 18 Jan 2024 12:36:41 +0000
-Message-Id: <20240118123641.2542208-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1705581471; c=relaxed/simple;
+	bh=5YFQLtGOw9hoUhhBssqvlRRHGqh1xTlEvXtlZs5UWYw=;
+	h=From:DKIM-Signature:To:Cc:Subject:Date:Message-Id:MIME-Version:
+	 Content-Transfer-Encoding; b=uqzRWuxO8+OJ9tvAIWtwH25bK0n+/DjWkl+l6xR3XWFh65IK6kBIUWH/xXYh57kypV+vJuupmtZ8iJiIABBpymPp88KCoYnAZAJ47TbSVCPzvnfd12iPTzj6VHfvkA0aGn7u5r82SDY1e7dTxRggf6pc3aOpK+xSuhfDk8k4lrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru; spf=pass smtp.mailfrom=swemel.ru; dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b=e+VtO6pX; arc=none smtp.client-ip=95.143.211.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=swemel.ru
+From: Denis Arefev <arefev@swemel.ru>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
+	t=1705581467;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kZPE9ryEyU6uy8bBTyu7cAdOqK0HdSpKBA8+uyMu3OI=;
+	b=e+VtO6pX6tMF83Cj/ndwG8AVrAe8X6hPNKzES38olv4MrX2XzUJGQn2DStUV3H2r/ztxvc
+	chnaAxV6jVNBbHtbYigEFM4bL8xfUERfSjCo92V6XG9nKyU6qz+2JedP80GoUJlNbs0foN
+	5fwAyfRGInlDKB4yzvEu97SFhbJJ9zY=
+To: Ian Abbott <abbotti@mev.co.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	stable@vger.kernel.org
+Subject: [PATCH] comedi: drivers: ni_tio: Fix arithmetic expression overflow
+Date: Thu, 18 Jan 2024 15:37:47 +0300
+Message-Id: <20240118123747.45795-1-arefev@swemel.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-The variable status1 is being assigned a value that is never read, the
-assignment is redundant and can be removed.
+The value of an arithmetic expression period_ns * 1000 is subject
+to overflow due to a failure to cast operands to a larger data
+type before performing arithmetic
 
-Cleans up clang scan build warning:
-warning: Although the value stored to 'status1' is used in the enclosing
-expression, the value is never actually read from 'status1'
-[deadcode.DeadStores]
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Fixes: 3e90b1c7ebe9 ("staging: comedi: ni_tio: tidy up ni_tio_set_clock_src() and helpers")
+Cc: <stable@vger.kernel.org> # v5.15+ 
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Signed-off-by: Denis Arefev <arefev@swemel.ru>
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
 ---
- drivers/comedi/drivers/ni_mio_common.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/comedi/drivers/ni_tio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
-index 980f309d6de7..824b026238b5 100644
---- a/drivers/comedi/drivers/ni_mio_common.c
-+++ b/drivers/comedi/drivers/ni_mio_common.c
-@@ -3798,8 +3798,7 @@ static int ni_serial_hw_readwrite8(struct comedi_device *dev,
- 	devpriv->dio_control &= ~NISTC_DIO_CTRL_HW_SER_START;
- 
- 	/* Wait until STC says we're done, but don't loop infinitely. */
--	while ((status1 = ni_stc_readw(dev, NISTC_STATUS1_REG)) &
--	       NISTC_STATUS1_SERIO_IN_PROG) {
-+	while (ni_stc_readw(dev, NISTC_STATUS1_REG) & NISTC_STATUS1_SERIO_IN_PROG) {
- 		/* Delay one bit per loop */
- 		udelay((devpriv->serial_interval_ns + 999) / 1000);
- 		if (--count < 0) {
+diff --git a/drivers/comedi/drivers/ni_tio.c b/drivers/comedi/drivers/ni_tio.c
+index da6826d77e60..acc914903c70 100644
+--- a/drivers/comedi/drivers/ni_tio.c
++++ b/drivers/comedi/drivers/ni_tio.c
+@@ -800,7 +800,7 @@ static int ni_tio_set_clock_src(struct ni_gpct *counter,
+ 				GI_PRESCALE_X2(counter_dev->variant) |
+ 				GI_PRESCALE_X8(counter_dev->variant), bits);
+ 	}
+-	counter->clock_period_ps = period_ns * 1000;
++	counter->clock_period_ps = period_ns * 1000UL;
+ 	ni_tio_set_sync_mode(counter);
+ 	return 0;
+ }
 -- 
-2.39.2
+2.25.1
 
 
