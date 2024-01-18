@@ -1,198 +1,202 @@
-Return-Path: <linux-kernel+bounces-29971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14CF1831603
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:43:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89274831611
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:44:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81FCF1F2461F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:43:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCA2BB22498
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41D6A200B2;
-	Thu, 18 Jan 2024 09:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0221F934;
+	Thu, 18 Jan 2024 09:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BVCvkwYI"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="lGGCFvdd"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2090.outbound.protection.outlook.com [40.107.237.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B363200A0
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:43:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705570999; cv=none; b=Mnv9oKinwmtHsJmiPgTktm14c5cmF1GpVPTiHyx/WR6OtG/3ZjBZUjUwl34FYS712jrsyyzcax1DeH/zyrcd+n8EfFJ4W1YtLwwATG8RQjopbn7V1TLUYzt9RXvZE4bjQi/Zp8qpMNa69nzyD7ruBHLWfg05a89yy1lg04rmLdc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705570999; c=relaxed/simple;
-	bh=Q7p3OWqmOkliqPEGHXQJk80V7+FoxK3eZPEcgL4cGNc=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:User-Agent; b=Otdt85QlSin+PW28/sS6NCiE9pdk7iuBsbY5/XnokJBnoQlVhPILLkf7UYvJk1Wsk3NvBoh8JvvgNEwlJdf79U69UFchTDqfv7yIYvFUvuLqJ89K7VDyOWVtrlBvkitSIoXfbrDElKrksJivBo/2vQZcnCkL7ZDuO5Uo8VkRs0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BVCvkwYI; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-337b8da1f49so2312889f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:43:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE42A1BC2E;
+	Thu, 18 Jan 2024 09:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.90
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705571038; cv=fail; b=rSIui46rhP50szd7ta0C8xpe2L5llxXzgLJrX51sHBCpA9jnLL61BwoBbRgDxzl3oSYHYVLrgHn2trVMM9GHYmYGpuYbMbzRWpFzuxos9eo5WC4s6p2BCZ/B39qFJ6QQbwP+Sq3psMXoCgRPOWevNlCYW+tLHdpiCmNPa4JnwWk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705571038; c=relaxed/simple;
+	bh=ZpgSKvZ84pjrTzhJpjvDpT3GUyqXdjPEL9W1Zrl45VI=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:Message-ID:Date:User-Agent:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=GxDd0YMN/rVSUDqC4P5zoY0HpPv7QhSbj3flhjdZ/XLW1cykZbjvBZtU35sAeSu2hN1+UVQDa99j20/SRLpxyJmttvZyYjmMhrlN9VzJ9zqZVFaHDdfMGmAdlhenff+W6BT70AfOjuADGDau8/GlEPNAUVDy8d/bp+i5Oj93LFs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=lGGCFvdd reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.237.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OQIGEtWootoUXey9ZzcMd+launavz0klPqSWIYNE3l6Q06VgjkKcFZhVZ7T9SB2Bj0TxEoq5iooJgKrf7CKh9TvX2iQBZ9UWwDwwLfYy+u+uarII15VN2rbeeMbzi84u0dc6UeWEn0r/JvFelQp1SSPatb1S3ireSyJx0IgGnOax4qPrN51oz5MZRxqF6Yhr9AmDTXtF1Umgor47POCNs7SiC2xhYdDNqs/s/Wob6DQJlUnXLP2IcZ/Wc9La7r1OgkV9GFVdULy6OZLbOFBxaRi/UDXJOY2160dCgtYqftBAdDNs6/ZLt9tq751RwaC1axjT4r3564ia0Z5q4fE7FQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ge6lr17kU3oUFaV/jyv+EtN3EYLB8BzBl/9CAG63juA=;
+ b=KRK0kiIRvrCeXiinoTIalbdXgFY4uvxVHMKt1DCAqK9CMZqVuZSYjDhWUowVhLqq8i2DOUmuVrYRB4i8RuetW3wJuOfAgWjYRvzkL3IqiFU55+mS0Yt4FsoTFZJJfT3qwFJjUJk75b8Hq5/T4V/xEeOEtley4KtQL1zK8iSVAe3mB1IZbTZPH8woazhauLcTcsKMbEksc3CXL++Q4qHkqWji4QJNXSKr/GyTsYkp4flB96kY+rFfDUz5Jwss3w/vY6PXbuwuCAEPh4e0r5Oj2fgmWmZ/FVlF+zAJ5wcF9heL0//sYpA7Lyd7aCibKAgIqI8Ytubi0auh5SwCt/P4eQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705570992; x=1706175792; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cuYpIw9soBWDz51Uc9U824cyLkAJt+cFBIInHg6YOR8=;
-        b=BVCvkwYICvMkn1L5asRCBWTJAL0H9QG4lNu8nu2dTvTX4aaarTg6XPujejXWgKID6U
-         HQ0uR0lLrEtVTuvkyCxfO5lERKXgmgT4O+uVF9ZDNtXcvAY8xBOQKbaMEF1qiNC8Bs71
-         fCKH94AEEaHBqLQ/eFQJwEzVJUH8Wo+A1nIbN/Wbcdhs0PiGpTWCaCAmIute66DR0c5B
-         WOWUBWKAyC8ptzeHBYg2gBgaSaAXgkgJM4h5vFKqH8DGaWKmql96gJHxW3fSdvvaQmIG
-         ffUHoti8tT0S4QUkN3+k3m0rm1ya7mod221kemLTQNNmwQ9R4TXnp9rxoFa8TC9M83OB
-         nUhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705570992; x=1706175792;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cuYpIw9soBWDz51Uc9U824cyLkAJt+cFBIInHg6YOR8=;
-        b=sqOaOWKB5736wmY/brIG6EaqWiuEXm52hH6aJNofoeGIY5SRzas76MwdOAZjdGzIl7
-         wu2bDpdyVLtTnWa99h98Db1v7wQZFM9BEkSqfdWQzBLwsaCnjbjpWF2oPXhsCjZdjOmp
-         NL4OQYQP4IWTo8v+5y9FHzQbuPHPdCfyCexHAzBOCXAbCl4bMjU6a3X/kkHy+IC0S8vq
-         PwrENyifkchnTPM7XZwdCxdlJU/c32fLcg8gABPyJHNKXyc4yjxlLWzANhljOIfgqE/A
-         2NaMyLSP/M5PYHlqunxwX/pOuHUCWwqm1F7c4SbT4UGaow/UU525Y532bOhe1qbdQQbQ
-         6dVw==
-X-Gm-Message-State: AOJu0YwBAq1Acac9rzNeUWFqwZU2zIMsMgp26ct4o7piGRoGHASpvtgy
-	W9fCAYt0lrLBFi46uH1LEMy9WxPD/Dh6nAt+z433tq8Ur4gWBshtJ7oFyHzk5w==
-X-Google-Smtp-Source: AGHT+IGzcGfdh/XGZX6vq9NkjYiXbIvTy/IuZlNkPA9MWbrFDI/4qIoYnFKmLtyVcsgZ61zbZ7ar+Q==
-X-Received: by 2002:a5d:508a:0:b0:337:bde6:63b3 with SMTP id a10-20020a5d508a000000b00337bde663b3mr205462wrt.31.1705570992147;
-        Thu, 18 Jan 2024 01:43:12 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:9c:201:9d7e:25fb:9605:2bef])
-        by smtp.gmail.com with ESMTPSA id q8-20020adff788000000b003367a51217csm3581808wrp.34.2024.01.18.01.43.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 01:43:11 -0800 (PST)
-Date: Thu, 18 Jan 2024 10:43:06 +0100
-From: Marco Elver <elver@google.com>
-To: Alexander Potapenko <glider@google.com>
-Cc: quic_charante@quicinc.com, akpm@linux-foundation.org,
-	aneesh.kumar@linux.ibm.com, dan.j.williams@intel.com,
-	david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	mgorman@techsingularity.net, osalvador@suse.de, vbabka@suse.cz,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Nicholas Miehlbradt <nicholas@linux.ibm.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
-Message-ID: <ZajyqgE3ZHYHSvZC@elver.google.com>
-References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
- <20240115184430.2710652-1-glider@google.com>
- <CANpmjNMP802yN0i6puHHKX5E1PZ_6_h1x9nkGHCXZ4DVabxy7A@mail.gmail.com>
- <Zagn_T44RU94dZa7@elver.google.com>
- <CAG_fn=XcMBWLCZKNY+hiP9HxT9vr0bXDEaHmOcr9-jVro5yAxw@mail.gmail.com>
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ge6lr17kU3oUFaV/jyv+EtN3EYLB8BzBl/9CAG63juA=;
+ b=lGGCFvddQL5/UNUdunC+S1VfH55GIsOiqTaju5/b6j1isVr7QkYUymKHO8MUaY4A/NPKzEYRs3+TvCUBryKRIO/DAK30mLyvc4ubkubtDgOlgKU/5R+CuhhG5nGA6vGY8IdpJ8Jl78BOwATT21QFfkBG3+yyg7IAq3X8yFETye0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
+Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
+ BY3PR01MB6690.prod.exchangelabs.com (2603:10b6:a03:363::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.24; Thu, 18 Jan 2024 09:43:45 +0000
+Received: from PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a])
+ by PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a%6]) with
+ mapi id 15.20.7159.020; Thu, 18 Jan 2024 09:43:45 +0000
+Message-ID: <b5d793c6-2951-474c-8439-8f541e65a538@amperemail.onmicrosoft.com>
+Date: Thu, 18 Jan 2024 17:43:14 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] init: refactor the generic cpu_to_node for NUMA
+To: Greg KH <gregkh@linuxfoundation.org>,
+ Huang Shijie <shijie@os.amperecomputing.com>
+Cc: patches@amperecomputing.com, rafael@kernel.org, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, yury.norov@gmail.com,
+ kuba@kernel.org, vschneid@redhat.com, mingo@kernel.org,
+ akpm@linux-foundation.org, vbabka@suse.cz, rppt@kernel.org,
+ tglx@linutronix.de, jpoimboe@kernel.org, ndesaulniers@google.com,
+ mikelley@microsoft.com, mhiramat@kernel.org, arnd@arndb.de,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+ will@kernel.org, mark.rutland@arm.com, mpe@ellerman.id.au,
+ linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org,
+ jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org,
+ cl@os.amperecomputing.com
+References: <20240118031412.3300-1-shijie@os.amperecomputing.com>
+ <2024011820-path-throat-b7c8@gregkh>
+From: Shijie Huang <shijie@amperemail.onmicrosoft.com>
+In-Reply-To: <2024011820-path-throat-b7c8@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: CH5P221CA0014.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:610:1f2::7) To PH0PR01MB7975.prod.exchangelabs.com
+ (2603:10b6:510:26d::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG_fn=XcMBWLCZKNY+hiP9HxT9vr0bXDEaHmOcr9-jVro5yAxw@mail.gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|BY3PR01MB6690:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7e947797-4c3c-4723-03d4-08dc1809f6c5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JdZniYWrIC5GGNy6Y5Nx+uFe/EeEFGaJMxT4FLkpYoq9jFk/Zh78+NlUrvmCOyamvFXClpqF8wiUp2GeWQfT9sFYwNUO43VkLG6+EG8rMms5+q7CpAA3eOCBnYgAItmvJb+B6A3Ot+E11WqHbOcpa1eYMciBpX5QGyj650S1kq6dVxn7r9D6KNj44S2rmifNqM0I1dTMSV50kSW4qTDxjIjymbUFwVLlXXGUg2KWvGEoI9NTC7MjFeKe4X2CsmmDcZ1m8PQBBXaM1AHMuOmAQGKBbr71EyytL59AShmiAnnWXeX0HKd/LHjatSm8IuQPH8uGQdN/jPa8sfF0eVwg+Ur2x5Aa190l//SZEMkv335Q/KZXpHJbxrPVRRPKladiZ+42A6KW2IzUf65W2T/6Yv8uoqwgPFg3e92btpZwcFIhGxMGV/qnFAJr7z24d9anN+UgFCCNWnzVgJgay21RNluVqNa4c87K1UIeTfMwMMWjV30kfI7OYEthIjDhMTcqlmMGmo/ElDj57UeCWqvYPdJl3910TkViJdZJllC8HNKwHP4Xkd+3WAFmINdUD905GkKomxIetrDlR/7Tmqadm1EhcJtu+RIfNvcZjV68iYCLaCx11zsWIHMkkOkOWiQvSgyCfuskESIt96i49xEjwQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(346002)(39850400004)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(26005)(6506007)(38100700002)(6666004)(42882007)(2616005)(6512007)(107886003)(7416002)(5660300002)(4326008)(8936002)(2906002)(41300700001)(6486002)(4744005)(8676002)(478600001)(66946007)(66476007)(110136005)(66556008)(316002)(83170400001)(31696002)(31686004)(41533002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?L2ZTb2w3Rmx1SFNCTEs2RkR6WUludUtrNkkrUFRDVFBoMlM4UUI2blpNRU9i?=
+ =?utf-8?B?Sk8wVHdMYVN4M1VEc1dZeDRGam1BY1M4VGRwV2N0MW1tSmhybjRFTVJHa0Fx?=
+ =?utf-8?B?NGE4d01jUDVITmlwUTUyYjUwTkNJWUZsNnNzOUxxTkVyRXczWWVHOTg4cS9r?=
+ =?utf-8?B?UTNVcHFMMjBBbCt6Wkl3NHFCcENOVEIvb1RBcnlmSjVuRWRZNkZxWkl3NnpC?=
+ =?utf-8?B?TnNTemR5NXVFd0dya1VTNmVrUUxLMFovbHpGYVhpZHlKdnlDL2o1dFlZeTNX?=
+ =?utf-8?B?ZFBSVjZTanBvQ0xRS2RlYURrc0V6aCt6UDhqMXZ5OU5TTW9RQmVsL2hkQytV?=
+ =?utf-8?B?RUFIcWxJNE9qeTlGbTNKWHRpME1RekorUnRxT3RQOEJiaHFwWVFtVExkWVYx?=
+ =?utf-8?B?NG1hZFhRTURqc2xWTHdMdnhubkRFOEZua0o3bmliOEVsNjUwT1JrUjhISHc3?=
+ =?utf-8?B?SFF2NVViMnYvSkNaZGNmYW1qWVQxSXVnOE4rVXdqOWpIZ0hPY2xURFNqWlZm?=
+ =?utf-8?B?c1dvdHhnT2U1dnFpT3d3eUVkOXd3TGFiUnNHaVhBY1lrVnZqVm9NQWNBOXdU?=
+ =?utf-8?B?U0RCZlNzOFJVaWJRVGNhbGVDb2hWeFdWQlpGc3hlTkZXeGhiWU5ZQkt6ZW42?=
+ =?utf-8?B?MDFiMitKWElJYjNCWThxUWhDT1JPM0JSZVlpT3ZvUGZPMXE1bUJuTVZKeHNl?=
+ =?utf-8?B?c0pKRzZUak9pbEhMNkNZQVdTalNXZnJxa3k0R0Jxb1NRK3IzMnBseVhqRWRJ?=
+ =?utf-8?B?UnJDYUZqUzFqUlFrZjhGKzRYNXVTVlRvMzVRNmZQWVN5NXBRMnJhbUJNNy9a?=
+ =?utf-8?B?aXVQZHBDbjBydllCM1hoR0JIaldUQTB5VWtzNkY0bENLWkNSOVUyeEdxbi9i?=
+ =?utf-8?B?VEJZb3BHMWZybEQ4S2FuTU9LWHhEWTV5V3VSbjRGUlpkTlp0Nlg5VCtvNFBG?=
+ =?utf-8?B?aGtrQkNCN0RMQ1lDY1lldWpTeDE3a1o2UGpGcjhYNEovSUVVaXRHQmpLMWhn?=
+ =?utf-8?B?c3l3RXBHZWxSSmk4R2d0TzdPREsxS3cwQlJwZUVSVjJyQmhEeS9wTUx0b0pl?=
+ =?utf-8?B?d1Vtc29wSGVIOEVjY2JCT3VuZmV1MFdoc2hidjNxRkNSOVJWblJYS3lKNFF2?=
+ =?utf-8?B?d2piTWduQXRxRUUyTEYwRUgxcWl0UjhPb3hXMFFqVWFvZ2E1ZDJCb1ZTbksw?=
+ =?utf-8?B?NFNFdHRHN3RUVldnZlRHOERDSlV4MVVvdVp6ajRhdVpFdUh5MWRRMm1tazBZ?=
+ =?utf-8?B?UUpqYkxHc2RRaGdMejI2OVdWODJaS3ZzTEh3MW82bGVhWW4zRTdoTlVHYWRI?=
+ =?utf-8?B?cHlmdUZ0SXR6bnBwZUxMQWFJN29hOGxYYnNybm5DVmtJWlpSTFkzM1ZqODBH?=
+ =?utf-8?B?eEx0c2dvamROeXZGV3YxSndad2tnaUJkVmhTaWVSWnVzcDlPMERXaHVvcnlk?=
+ =?utf-8?B?ZlIyNUs3amd5UDQ0WXR6OHhacWR3UHRpcmc0a0ZSc2dGbndrdDU3UVBDS0hu?=
+ =?utf-8?B?Z2hPK2NUNGNoNDAvcmF6cERxUjBmWGNyVmZoeDFYNWg4dkxZL2FzWGdUc2hs?=
+ =?utf-8?B?VXBHZHdvRnpOMHhwamM1ZFZBd25JTVMyeUVJcG1XQ1lhcjMyZktSZFlCS05C?=
+ =?utf-8?B?NStEc0hiaDVqSjNhNlNEaFJuUnpKampnclc4Rlc4RlRFOHVrUGhnYkJJVlpt?=
+ =?utf-8?B?OHBUSjU2RlVaM2pyUHBTWWxxam8vbkVVZnltMElvUm56QVlxMVNrVjZTeFFS?=
+ =?utf-8?B?WUY4QlgySEtBZXFJa1JwRGxSQi9GV3l1UWNyWVJJaytGUVVJNWQ2dUc5a3Fj?=
+ =?utf-8?B?UUp2bDY1RFM5ZVk5bHU1dVBUTzJ6SXEvR3pCcUFDc2J3Y0FhZEdEMUpFallB?=
+ =?utf-8?B?cmhiOEdqU2x0REtYbXlSSmEvVzVKRkorUk9aajhDL0JBREtjQWViZ0FLNVA2?=
+ =?utf-8?B?UC9HM002YXROZUtBV1lFeEpSOEtPb0RjblN4SkZraTBPaHJETURpczFRY0tq?=
+ =?utf-8?B?T250d21nU1A1ekZucjFrSTRZdjU3ajBwTlIvSHA1VlhaeTg5VEErT20xZXNm?=
+ =?utf-8?B?MmpZSjBaRG8rdkJnNlRlYUVXMXBnUmUrcVNsV2luRExGd2F3Sk0zZVJVL0Qy?=
+ =?utf-8?B?OG1BelBxZHJIYUg1eUpFTDhuNXIxM1ozQVdGVlN2c3VYSzllaXFQY0tJNzls?=
+ =?utf-8?Q?bf/LcA/Ft4kE5Pe0rCf1Md4=3D?=
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e947797-4c3c-4723-03d4-08dc1809f6c5
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 09:43:45.5287
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0Q3TpdTXa7ZTHeqzxbkBIx32wdM03n3dQGMoyZ6K6JvjU77V364stTIgahzhdrnk+G1IdSlnDaEXONK6XuS8UpLoHZAans7qDBI9sWMh/AOgONjkTxrX+r/Jpm34urEI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR01MB6690
 
-On Thu, Jan 18, 2024 at 10:01AM +0100, Alexander Potapenko wrote:
-> >
-> > Hrm, rcu_read_unlock_sched_notrace() can still call
-> > __preempt_schedule_notrace(), which is again instrumented by KMSAN.
-> >
-> > This patch gets me a working kernel:
-> >
-[...]
-> > Disabling interrupts is a little heavy handed - it also assumes the
-> > current RCU implementation. There is
-> > preempt_enable_no_resched_notrace(), but that might be worse because it
-> > breaks scheduling guarantees.
-> >
-> > That being said, whatever we do here should be wrapped in some
-> > rcu_read_lock/unlock_<newvariant>() helper.
-> 
-> We could as well redefine rcu_read_lock/unlock in mm/kmsan/shadow.c
-> (or the x86-specific KMSAN header, depending on whether people are
-> seeing the problem on s390 and Power) with some header magic.
-> But that's probably more fragile than adding a helper.
-> 
-> >
-> > Is there an existing helper we can use? If not, we need a variant that
-> > can be used from extremely constrained contexts that can't even call
-> > into the scheduler. And if we want pfn_valid() to switch to it, it also
-> > should be fast.
+Hi Greg,
 
-The below patch also gets me a working kernel. For pfn_valid(), using
-rcu_read_lock_sched() should be reasonable, given its critical section
-is very small and also enables it to be called from more constrained
-contexts again (like KMSAN).
+在 2024/1/18 17:27, Greg KH 写道:
+> On Thu, Jan 18, 2024 at 11:14:12AM +0800, Huang Shijie wrote:
+>> (0) We list the ARCHs which support the NUMA:
+>>         arm64, loongarch, powerpc, riscv,
+>>         sparc, mips, s390, x86,
+> I do not understand this format, what are you saying here?
 
-Within KMSAN we also have to suppress reschedules. This is again not
-ideal, but since it's limited to KMSAN should be tolerable.
+Sorry for the confusing.
 
-WDYT?
 
------- >8 ------
+I should put the conclusion at the beginning:
 
-diff --git a/arch/x86/include/asm/kmsan.h b/arch/x86/include/asm/kmsan.h
-index 8fa6ac0e2d76..bbb1ba102129 100644
---- a/arch/x86/include/asm/kmsan.h
-+++ b/arch/x86/include/asm/kmsan.h
-@@ -64,6 +64,7 @@ static inline bool kmsan_virt_addr_valid(void *addr)
- {
- 	unsigned long x = (unsigned long)addr;
- 	unsigned long y = x - __START_KERNEL_map;
-+	bool ret;
- 
- 	/* use the carry flag to determine if x was < __START_KERNEL_map */
- 	if (unlikely(x > y)) {
-@@ -79,7 +80,21 @@ static inline bool kmsan_virt_addr_valid(void *addr)
- 			return false;
- 	}
- 
--	return pfn_valid(x >> PAGE_SHIFT);
-+	/*
-+	 * pfn_valid() relies on RCU, and may call into the scheduler on exiting
-+	 * the critical section. However, this would result in recursion with
-+	 * KMSAN. Therefore, disable preemption here, and re-enable preemption
-+	 * below while suppressing rescheduls to avoid recursion.
-+	 *
-+	 * Note, this sacrifices occasionally breaking scheduling guarantees.
-+	 * Although, a kernel compiled with KMSAN has already given up on any
-+	 * performance guarantees due to being heavily instrumented.
-+	 */
-+	preempt_disable();
-+	ret = pfn_valid(x >> PAGE_SHIFT);
-+	preempt_enable_no_resched();
-+
-+	return ret;
- }
- 
- #endif /* !MODULE */
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 4ed33b127821..a497f189d988 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -2013,9 +2013,9 @@ static inline int pfn_valid(unsigned long pfn)
- 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
- 		return 0;
- 	ms = __pfn_to_section(pfn);
--	rcu_read_lock();
-+	rcu_read_lock_sched();
- 	if (!valid_section(ms)) {
--		rcu_read_unlock();
-+		rcu_read_unlock_sched();
- 		return 0;
- 	}
- 	/*
-@@ -2023,7 +2023,7 @@ static inline int pfn_valid(unsigned long pfn)
- 	 * the entire section-sized span.
- 	 */
- 	ret = early_section(ms) || pfn_section_valid(ms, pfn);
--	rcu_read_unlock();
-+	rcu_read_unlock_sched();
- 
- 	return ret;
- }
+   The generic cpu_to_node() has bug in some situations.
+
+   The generic cpu_to_node()  does not work in arm64, powerpc, riscv 
+when the CONFIG_NUMA is enabled:
+
+      The cpu_to_node() is called before it is initialized.
+
+  So all the four places are set with the wrong node id (get by 
+cpu_to_node()):
+
+            a.) early_trace_init()         in kernel/trace/trace.c
+	   b.) sched_init()               in kernel/sched/core.c
+	   c.) init_sched_fair_class()    in kernel/sched/fair.c
+	   d.) workqueue_init_early()     in kernel/workqueue.c
+
+
+Thanks
+
+Huang Shijie
+
 
