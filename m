@@ -1,51 +1,60 @@
-Return-Path: <linux-kernel+bounces-30228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18063831BCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:51:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86C64831BCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 792FAB26284
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:51:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F78E28312E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9931DA3B;
-	Thu, 18 Jan 2024 14:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819C31F16B;
+	Thu, 18 Jan 2024 14:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZlETpj+u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WpH6lnIy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B9439B;
-	Thu, 18 Jan 2024 14:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C497E1E87F;
+	Thu, 18 Jan 2024 14:51:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705589505; cv=none; b=ZKuvVPmO+HtmKa9qPGdWtR3dpiw1bi29SJ2BEBFEKvDNloFP3xumr7l9I8wvxxCo2DvRkaLIGoCZSYlVRjiVyUyOk70zJsXT+Vg0b3iitUdJSdY/S/xrObJDsLOn52x6oQPAa8ZWhVARiPlV3fBsG86nv2d/QCfbjRbswVS8eRE=
+	t=1705589518; cv=none; b=XxWQpztae7djWD6H2u4NMkyIF8jBZaM7P7dIGdKfBWULZF3FVZEzqX3+Hzno4jThsWkBCDT2KZ4iSLDyFhSSwfYS+ytoB8GlJIOe5YfJUn0vVyRr+M1Ozj38Zx3JumvIVKQM4mG5diWfmdQrcbR5HMOXxsk9b6Z3l3DbXYyPMtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705589505; c=relaxed/simple;
-	bh=sxik3Bd+uEArtL+u+/GfOU7QQ9XdRR+jLrak/mZRDX0=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To; b=gNqe+VK8cidDqFzWKKFrCHsRI1mNPghdqp+ZRAKDt9nkcKEilFTb7fBp+q/aakhXz9IhUnPQ9FUZJIBmeMk3kDljF0xTmVWvEPcnO1XiUUfQFO0zEFddHVd3twXSJ+JuWx37JZzhx9Xb8wJMAia826TNg5je7j/JTUSYVZbURnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZlETpj+u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29D2CC433F1;
-	Thu, 18 Jan 2024 14:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705589504;
-	bh=sxik3Bd+uEArtL+u+/GfOU7QQ9XdRR+jLrak/mZRDX0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZlETpj+uEftppa7SN349ZlsUFnWEKboupqxfOrPiR9gU0DtMz1czOuDhfSuDa3oqB
-	 oiN1S/p2UlXfsax95yw83A2bnlfFVhFm/lEr48ohSQuOp/FLcVTJNCkby6wPs+K66V
-	 DLLNHlzTC7cSvZODeTaW4iuyqUlBVEf+fHS+FOAc=
-Date: Thu, 18 Jan 2024 15:51:41 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Jacob Lott <jklott.git@gmail.com>
-Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	wei_wang@realsil.com.cn, micky_ching@realsil.com.cn
-Subject: Re: [PATCH] staging: rts5208: Fix coding style issues
-Message-ID: <2024011809-upstart-provider-6c88@gregkh>
-References: <03b524b7-8e66-4180-b22a-aa641acbaac3@gmail.com>
+	s=arc-20240116; t=1705589518; c=relaxed/simple;
+	bh=xeoxo1JeEqSffJNlDwl5IKuOr/B7hUoTC/bpE5m133g=;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
+	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=YFCx0OESmWpu50MTOA5lxkOkU4SZrJH8eFnjCzpNi9rNON3EWhvOO5fM/nbtjQJOgodcQ60uKkFSWhOFJL9J2xVkQuxXA4hmWEs7hjMXFCf/NS1vTGX70Ia/S1ND29i1ttEzaZbP1adzt+38Jym53zMCcmbsnEMrI9UXwH0eZvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WpH6lnIy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 823ADC433C7;
+	Thu, 18 Jan 2024 14:51:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705589518;
+	bh=xeoxo1JeEqSffJNlDwl5IKuOr/B7hUoTC/bpE5m133g=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=WpH6lnIy7dg3b6oFMj1TyOY17r9YDQVNchWh+1G2VKtQqNCxKu5RYSsMxdZRE3/0b
+	 lk0gpYly4T8EarX6fSks+SMX7x/xzSZmArDUtNFbZOaqjrKGyF4UXypHKlJ0cyxV6p
+	 R9fnppqLn6+zUiUpzQDBT6l2vwu0TfdPD0bStBzdeAdVSsHaX6pRcrhfEpBRg+iH+t
+	 OmIp8k1ypakJgnvOsfZ3xmcJZX2qMFcF8nVOcn4l8oKRn1HpUSWg3NHdUcUFewsjEM
+	 HNsqhrby28VfWl+RWvH7qXXTKEwS/u3YlG0Z66qkzpRYVPRo4iAtDo/FF6OTZ7TfyO
+	 zgy62VOaRiuYg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E5FAFCE0546; Thu, 18 Jan 2024 06:51:57 -0800 (PST)
+Date: Thu, 18 Jan 2024 06:51:57 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Zqiang <qiang.zhang1211@gmail.com>, quic_neeraju@quicinc.com,
+	joel@joelfernandes.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Check rdp_gp->nocb_timer in
+ __call_rcu_nocb_wake()
+Message-ID: <3b63cf39-3805-4c1d-b79b-fdd5aeb17db3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240117102616.18302-1-qiang.zhang1211@gmail.com>
+ <ZafC_YkTJKsOropE@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,117 +64,68 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <03b524b7-8e66-4180-b22a-aa641acbaac3@gmail.com>
+In-Reply-To: <ZafC_YkTJKsOropE@localhost.localdomain>
 
-On Thu, Jan 18, 2024 at 09:42:51AM -0500, Jacob Lott wrote:
-> Help text in a module should describe the module and give
-> some guidance on whether or not to enable it.
+On Wed, Jan 17, 2024 at 01:07:25PM +0100, Frederic Weisbecker wrote:
+> Le Wed, Jan 17, 2024 at 06:26:16PM +0800, Zqiang a écrit :
+> > Currently, only rdp_gp->nocb_timer is used, for nocb_timer of
+> > no-rdp_gp structure, the timer_pending() is always return false,
+> > this commit therefore need to check rdp_gp->nocb_timer in
+> > __call_rcu_nocb_wake().
+> > 
+> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > ---
+> >  kernel/rcu/tree_nocb.h | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 54971afc3a9b..3f85577bddd4 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -564,6 +564,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> >  	long lazy_len;
+> >  	long len;
+> >  	struct task_struct *t;
+> > +	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+> >  
+> >  	// If we are being polled or there is no kthread, just leave.
+> >  	t = READ_ONCE(rdp->nocb_gp_kthread);
+> > @@ -608,7 +609,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> >  		smp_mb(); /* Enqueue before timer_pending(). */
+> >  		if ((rdp->nocb_cb_sleep ||
+> >  		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
+> > -		    !timer_pending(&rdp->nocb_timer)) {
+> > +		    !timer_pending(&rdp_gp->nocb_timer)) {
 > 
-> The BIT macro should be used instead of 1UL << n. This
-> makes the code more readable and easier to maintain.
+> Hehe, good eyes ;-)
 > 
-> Signed-off-by: Jacob Lott <jklott.git@gmail.com>
-> ---
->  drivers/staging/rts5208/Kconfig     | 10 +++++++---
->  drivers/staging/rts5208/rtsx_card.h |  4 ++--
->  2 files changed, 9 insertions(+), 5 deletions(-)
+> I had that change in mind but while checking that area further I actually
+> wondered what is the actual purpose of this RCU_NOCB_WAKE_FORCE thing. If
+> we reach that place, it means that the nocb_gp kthread should be awaken
+> already (or the timer pending), so what does a force wake up solve in that
+> case?
 > 
-> diff --git a/drivers/staging/rts5208/Kconfig
-> b/drivers/staging/rts5208/Kconfig
-> index b864023d3ccb..bb293cbf6230 100644
-> --- a/drivers/staging/rts5208/Kconfig
-> +++ b/drivers/staging/rts5208/Kconfig
-> @@ -3,7 +3,11 @@ config RTS5208
->         tristate "Realtek PCI-E Card Reader RTS5208/5288 support"
->         depends on PCI && SCSI
->         help
-> -         Say Y here to include driver code to support the Realtek
-> -         PCI-E card reader rts5208/rts5288.
-> +      Choose Y here to enable support for the Realtek PCI-E card reader
-> RTS5208/5288.
-> +         This driver facilitates communication between the Linux kernel and
-> the Realtek
-> +         PCI-E card reader.
+> Paul, any recollection of that?
+
+Huh.  We never actually do RCU_NOCB_WAKE_FORCE in v6.7, if I followed
+all the code paths correctly.
+
+Historically, I have been worried about lost wakeups.  Also, there
+used to be code paths in which a wakeup was not needed, for example,
+because we knew that the ending of the current grace period would take
+care of things.  Unless there was some huge pile of callbacks, in which
+case an immediate wakeup could avoid falling behind a callback flood.
+
+Given that rcutorture does test callback flooding, we appear to be OK,
+but maybe it is time to crank up the flooding more.
+
+On the other hand, I have started seeing the (very) occasional OOM
+on TREE03.  (In addition to those that show up from time to time on the
+single-CPU TREE09 scenario.)
+
+							Thanx, Paul
+
+> In the meantime:
 > 
-> -         If this driver is compiled as a module, it will be named rts5208.
-> +         If you opt to compile this driver as a module, it will be named
-> rts5208. Selecting
-> +         N will exclude this driver from the kernel build. Choose option Y
-> if your system includes
-> +         the Realtek PCI-E card reader rts5208/rts5288. When in doubt, it
-> is generally safe
-> +         to select N.
-> diff --git a/drivers/staging/rts5208/rtsx_card.h
-> b/drivers/staging/rts5208/rtsx_card.h
-> index 39727371cd7a..9d2504fddb13 100644
-> --- a/drivers/staging/rts5208/rtsx_card.h
-> +++ b/drivers/staging/rts5208/rtsx_card.h
-> @@ -338,7 +338,7 @@
->  #define DMA_DIR_FROM_CARD              0x02
->  #define DMA_EN                         0x01
->  #define DMA_128                                (0 << 4)
-> -#define DMA_256                                (1 << 4)
-> +#define DMA_256                                BIT(4)
->  #define DMA_512                                (2 << 4)
->  #define DMA_1024                       (3 << 4)
->  #define DMA_PACK_SIZE_MASK             0x30
-> @@ -542,7 +542,7 @@
-> 
->  #define BLINK_EN                       0x08
->  #define LED_GPIO0                      (0 << 4)
-> -#define LED_GPIO1                      (1 << 4)
-> +#define LED_GPIO1                      BIT(4)
->  #define LED_GPIO2                      (2 << 4)
-> 
->  #define SDIO_BUS_CTRL          0x01
-> -- 
-> 2.34.1
-> 
-> 
-
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/process/email-clients.rst in order to fix this.
-
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what is needed in
-  order to properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what a proper
-  Subject: line should look like.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
