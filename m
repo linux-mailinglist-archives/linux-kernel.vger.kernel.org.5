@@ -1,155 +1,144 @@
-Return-Path: <linux-kernel+bounces-30585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC84483210B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D4CEA832116
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C0942861EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:48:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84C19283731
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BBD2EB09;
-	Thu, 18 Jan 2024 21:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9B831A60;
+	Thu, 18 Jan 2024 21:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QriCtqnW"
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="Z8YBglC+"
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED312E405
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619212EAF9
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705614527; cv=none; b=bA4faapk8WdykkFytHAtm4puMLNcW85yJDzSH5hvsfUOvqnFPCL5VD7bkhj4rrJlWaAYoW7dKBV5ty6wAsrrv5gwPyIRpaw7YTmc5DSjozTcI9HR31a+qqVTGQq/R9rC1sH5y4VHlfLEvfT2hVakF1hi17XEzQTqzAiBiuytSd4=
+	t=1705614678; cv=none; b=H4xlDHrQKd6ZeZw4Q5Iv/XeorHHs7UUeXrrXdB5/LdCVilsYFnLAT/lLUSmJgXRATCoX+hhIs4pt8nLnbXTFC0quB8vt6jQ3LEy+ASZYWwXJ18LMw0COLrZqZcxqJ/++702LaXRPDckAu0iOzIB2O4uVkT9tEj7GI74X/FIt1HU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705614527; c=relaxed/simple;
-	bh=Edof3HGd9iGAuFabvWL99OAkcFUpbmsJtzrwMu87x4w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OXCjG4Uvu04gfo4b8xhaKKQCta2m3GpmsmxMbcCMFYYkxAwLoU82BJunCjDRLp1TmBkjTnFKM3jYrCVuWEr4P5I3RBsIpoJSFaYTc91H73bdDAYEY7iNV9Nj11Ooq11WPKvnLn3vn+pzYGLU+59GRJN2p2dir4j7JB9Zv9B2bkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QriCtqnW; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5f0629e67f4so1043167b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:48:46 -0800 (PST)
+	s=arc-20240116; t=1705614678; c=relaxed/simple;
+	bh=EW4GgO79tM0kh74EqEgdTANw9zj1cbLCONoBa8UPMNQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fV0KTRfYLHKDV1RD8l+ENwcWqcATfzrUorvT33xcqWCPmQq6eD4o+C+ojXk/dCEnOxl8qFMWt+BZkQsexSkJpakhvvT/QPFKWERC0Nz9UvlNBwfHJb5cPsgVSUembOfKA506mU2e7NxsP8Jl/Z7RMuFLknVZnb5iV9sFQNFXhgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=Z8YBglC+; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6dde5d308c6so75164a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:51:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705614525; x=1706219325; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zGdgVUyAK1aAflsT7iZ9NPgtBe4T35/dr8bobRRTOjs=;
-        b=QriCtqnWa0JFJYhdyTC5SrfQf+2ZVQ7K+shHaG9fJKOCsZ5/sPOrU3Ej2mErbAblm+
-         PjwLeLho2baY4Z+Kz4Rh4zSFj1PbDZgMZF5SyUEN4QviNGzosm0lE+YMnK6zPO5LBlyF
-         bkP5OZX6+rv3JZc+yvod3AZhWfF8KYSV0yj/K8p3dG4btpYVPNVp4XXuHbNcSrV+yI/g
-         6u5H/GpMHj8Ud0tBSbixbErjj7IcwS/LiIRv26lDW8IJaX/u0X3sG2FWLjxXwl0kuN6C
-         J8JyT9TIb6oHyAdfrXsX0imPhMR0eoBsy/r81QqGWYh6OsU5HPuvS0w+UH/QDLCZ1QRG
-         O2qQ==
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1705614676; x=1706219476; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nhk4KIpFoW3go0xMs8gft3n3SAiaXQPK/lZKUl9AxEY=;
+        b=Z8YBglC+Le+cFsTn/WMWj+S3wbi3u0rK40+GMCoO8e/3EFn6elqLcDA61zB00uUhX/
+         Jozsp+4y8kbLELy5LQX7bkBOdpdp6W6Mt24wu9a4AQ3+1kBEdOciD82/jLO9Fp6YZwTE
+         eVUjRnD72VQtX10MRgbxn24a42ZppwGAgLjwDv/ibloJ7tW/NxNl5r4h++h1F3pS8E3/
+         qeRFQtx73RLQ8m5MIxVt7eqdAwtoUmEJMevYH6klAZgPyfFOwjd2otvaNaUbVxSg45Xj
+         8SSql8CM+a4d9/zKrOjr/R67s0+PGqrl/jbGCQQNZQYSVikvxe8QFUEHRsg5y1I9LY0I
+         axQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705614525; x=1706219325;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zGdgVUyAK1aAflsT7iZ9NPgtBe4T35/dr8bobRRTOjs=;
-        b=A9SH6Uszirn9N1MP/1qBiPUKwT3PAlP4H1fPKxy0l4Q0Q3x+eqhO/qgd8NP4I+0jOD
-         FyFxC8iBZEModQZUXCX3KHszmhSkhjDVOk4caP8TPw1ptqBRyCMWI+3mBaDrXkR/3j4e
-         W/FTrGh6uiF78k9h/KEkEqgMrVQQEtGI5eeKXacai2i3evy7ETYUETNEuNCBtQDkfqoJ
-         Z9SJscPy+zkL8ocieiPs/RETzh/rDPsNtCVez6NEZUPsCRVcmSQPLe4YWKjThtc4wwYz
-         BNsyMofZjHxLfkpvvta2d56dCrNfhvuq2sn81PhuIuBT79oXNSMrOtCc/YHiUNtrMsJw
-         i5sA==
-X-Gm-Message-State: AOJu0YxCzXR3MgdtT7VmPnPyKp+V3SYNjQ9u/0YtKlHGmYhoj63V9ADu
-	aqdzMFJC2zZfyRa0jyoJ3wBHA6KSTRenwlYj7W50C2yxZR6IDpSQ
-X-Google-Smtp-Source: AGHT+IGVMDVZxgqMFbHQywDUbtvVUzwbz++sS9yXUzkKQh4cCDaE3ihLfZ8Q5uFdp6tk6+OzvG/wuQ==
-X-Received: by 2002:a81:c20e:0:b0:5ff:958d:5b2 with SMTP id z14-20020a81c20e000000b005ff958d05b2mr955427ywc.51.1705614525244;
-        Thu, 18 Jan 2024 13:48:45 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:b45f:9648:c2e:2e36])
-        by smtp.gmail.com with ESMTPSA id p207-20020a8198d8000000b005ff60d85d1bsm2147803ywg.80.2024.01.18.13.48.44
+        d=1e100.net; s=20230601; t=1705614676; x=1706219476;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nhk4KIpFoW3go0xMs8gft3n3SAiaXQPK/lZKUl9AxEY=;
+        b=OgWJ9y/+S5w8kRNSVacvRKQA7qItQTOum3ee9pAQZjczgHm0/U4z0XuMdu8pJgs8fE
+         CYYgNAiWWFwWaIneOK/T6CJt3PoKFa33bJKjtbFgAp9bpMt50pdcVnKRDJ2cV2g19hBz
+         mBFINpI98kYqidpVee78fQPYpqG63kVJ10UYDGSxdvGZIlrHos9vVtoaUACzEeIPgc7l
+         S5uoel4SmJ8VZsExJCq4hCHMylqMLAVdPXbT8R7SzkZSX1fHvj49NQ2UYCrkHG2R/Y42
+         sBX/lYgd0uz5g3KyQ6ZXPckrVeTwSbozVIx86gI84vL467+iymuhHqEjtdXrf4egJSj7
+         VSJQ==
+X-Gm-Message-State: AOJu0YxN/tR0I17+4uqzjISu2LGVkv8rkWmqvE/mKllRGwHMSEblsQ25
+	IB5aT+U+uCaoTrMjAtxR8aWlZaz9DacriADClpBK3iUQ4cFy7SxqU6FUK/EJ9vY=
+X-Google-Smtp-Source: AGHT+IGgqtBGmFG8kvlkAhQYkj2Grg7+gfte7xCW9k695YvWwZSCXx/G6muSDjj4VaP+kGoVNbQmTA==
+X-Received: by 2002:a05:6830:5:b0:6e0:c35c:241d with SMTP id c5-20020a056830000500b006e0c35c241dmr1508100otp.75.1705614676589;
+        Thu, 18 Jan 2024 13:51:16 -0800 (PST)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
+        by smtp.gmail.com with ESMTPSA id ge9-20020a05622a5c8900b00427b3271ab4sm7147198qtb.41.2024.01.18.13.51.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 13:48:44 -0800 (PST)
-Date: Thu, 18 Jan 2024 13:48:43 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Lucas De Marchi <lucas.demarchi@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	intel-gfx@lists.freedesktop.org,
-	Kevin Brodsky <kevin.brodsky@arm.com>, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	intel-xe@lists.freedesktop.org
-Subject: Re: Re: [Intel-xe] [PATCH 2/3] linux/bits.h: Add fixed-width GENMASK
- and BIT macros
-Message-ID: <Zamcu7tts8mqX0b4@yury-ThinkPad>
-References: <20230509051403.2748545-1-lucas.demarchi@intel.com>
- <20230509051403.2748545-3-lucas.demarchi@intel.com>
- <ZJOwC5LIEySpduQJ@yury-ThinkPad>
- <4ezps56sdj7fmr27ivkaqjakv4ex46f5cvmy6oqr3z6gkhiorl@us4qd53jzq34>
+        Thu, 18 Jan 2024 13:51:16 -0800 (PST)
+Message-ID: <fc225f62a8ec396eddb335a7d906d274802be3fc.camel@ndufresne.ca>
+Subject: Re: [PATCH v3 0/2] [v3]Add hantro g1 video decoder support for
+ RK3588
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Piotr Oniszczuk <piotr.oniszczuk@gmail.com>, liujianfeng1994@gmail.com
+Cc: conor+dt@kernel.org, devicetree@vger.kernel.org, elezegarcia@gmail.com, 
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Heiko
+ =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,  knaerzche@gmail.com,
+ krzysztof.kozlowski+dt@linaro.org,  linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,  linux-media@vger.kernel.org, "open
+ list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+ mchehab@kernel.org, Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring
+ <robh+dt@kernel.org>,  sfr@canb.auug.org.au
+Date: Thu, 18 Jan 2024 16:51:15 -0500
+In-Reply-To: <2CFF2A39-6416-4599-AD32-E99EF95F5A36@gmail.com>
+References: <5490507acc121113e52a8cdddb155fddf6dbb374.camel@ndufresne.ca>
+	 <20240118113051.10773-1-liujianfeng1994@gmail.com>
+	 <2CFF2A39-6416-4599-AD32-E99EF95F5A36@gmail.com>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ezps56sdj7fmr27ivkaqjakv4ex46f5cvmy6oqr3z6gkhiorl@us4qd53jzq34>
 
-On Thu, Jan 18, 2024 at 02:42:12PM -0600, Lucas De Marchi wrote:
-> Hi,
-> 
-> Reviving this thread as now with xe driver merged we have 2 users for
-> a fixed-width BIT/GENMASK.
+Le jeudi 18 janvier 2024 =C3=A0 14:53 +0100, Piotr Oniszczuk a =C3=A9crit=
+=C2=A0:
+> > Wiadomo=C5=9B=C4=87 napisana przez amazingfate <liujianfeng1994@gmail.c=
+om> w dniu 18.01.2024, o godz. 12:30:
+> >=20
+> > Before rkvdec2 launching mainline
+>=20
+> Ooooo - is there concrete plan for this?
+>=20
+> Asking as imho rk35xx can be really nice multimedia soc.
+>=20
+> Can be=E2=80=A6. but is not due current lack of hevc/vp9 hw decode in mai=
+nline due lack of rkvdec2 support
+> This seems to be clear blocker for many multimedia use cases :-(
+>=20
+> Having rkvdec2 support via v4l2_request in mainline imho will make rk35xx=
+ killer soc for multimedia=E2=80=A6.
+>=20
+> ps: rkvdec support seems available since years on mainline and works well=
+.
+> So maybe rkvdec code base can be basis to gradually added support for rkv=
+dec2?
+> =C2=A0=C2=A0
 
-Can you point where and why?
- 
-> On Wed, Jun 21, 2023 at 07:20:59PM -0700, Yury Norov wrote:
-> > Hi Lucas, all!
-> > 
-> > (Thanks, Andy, for pointing to this thread.)
-> > 
-> > On Mon, May 08, 2023 at 10:14:02PM -0700, Lucas De Marchi wrote:
-> > > Add GENMASK_U32(), GENMASK_U16() and GENMASK_U8()  macros to create
-> > > masks for fixed-width types and also the corresponding BIT_U32(),
-> > > BIT_U16() and BIT_U8().
-> > 
-> > Can you split BIT() and GENMASK() material to separate patches?
-> > 
-> > > All of those depend on a new "U" suffix added to the integer constant.
-> > > Due to naming clashes it's better to call the macro U32. Since C doesn't
-> > > have a proper suffix for short and char types, the U16 and U18 variants
-> > > just use U32 with one additional check in the BIT_* macros to make
-> > > sure the compiler gives an error when the those types overflow.
-> > 
-> > I feel like I don't understand the sentence...
-> > 
-> > > The BIT_U16() and BIT_U8() need the help of GENMASK_INPUT_CHECK(),
-> > > as otherwise they would allow an invalid bit to be passed. Hence
-> > > implement them in include/linux/bits.h rather than together with
-> > > the other BIT* variants.
-> > 
-> > I don't think it's a good way to go because BIT() belongs to a more basic
-> > level than GENMASK(). Not mentioning possible header dependency issues.
-> > If you need to test against tighter numeric region, I'd suggest to
-> > do the same trick as  GENMASK_INPUT_CHECK() does, but in uapi/linux/const.h
-> > directly. Something like:
-> >        #define _U8(x)		(CONST_GT(U8_MAX, x) + _AC(x, U))
-> 
-> but then make uapi/linux/const.h include linux/build_bug.h?
-> I was thinking about leaving BIT() define where it is, and add the
-> fixed-width versions in this header. I was thinking uapi/linux/const.h
-> was more about allowing the U/ULL suffixes for things shared with asm.
+You'd be surprised that we are still upstreaming HEVC/10bit and 4:2:2 suppo=
+rt
+(well Jonas is) and are missing a proper solution to some needed HW reset l=
+ogic
+(to fix concurrent decoding). Though all these exist in some form in LibreE=
+LEC
+patchset.
 
-You can't include kernel headers in uapi code. But you can try doing
-vice-versa: implement or move the pieces you need to share to the
-uapi/linux/const.h, and use them in the kernel code.
+When this is behind, Jonas reported that he might be interested in looking =
+into
+rkvdec2. Consider that his is volunteer work, but it would indeed be amazin=
+g.
+The HW work blob free (no firmware needed) supports up to 8K (rk3588).  Som=
+e
+early work on adding encoder interface for this type of HW is also in progr=
+ess.
+The AV1 decoder for rk3588 (which is a chip from Verisillicon, not RK) is
+already upstream.
 
-In the worst case, you can just implement the macro you need in the
-uapi header, and make it working that way.
-
-Can you confirm that my proposal increases the kernel size? If so, is
-there any way to fix it? If it doesn't, I'd prefer to use the
-__GENMASK() approach.
-
-Thanks,
-Yury
+regards,
+Nicolas
 
