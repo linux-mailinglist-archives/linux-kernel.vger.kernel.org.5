@@ -1,337 +1,189 @@
-Return-Path: <linux-kernel+bounces-29685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0524A8311AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83C538311AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A25D1C220E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:16:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A95A1C220A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D188F49;
-	Thu, 18 Jan 2024 03:15:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF656104;
+	Thu, 18 Jan 2024 03:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="SN5josso"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2125.outbound.protection.outlook.com [40.107.93.125])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PRHpNnSy"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 666628C00;
-	Thu, 18 Jan 2024 03:15:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.125
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705547754; cv=fail; b=rwHnNSRL+O9omftA2A5nfota5TyT3i9/KOhVqalBM2+5FMyZnjS/saXtSi91JDsAGAt5ZnQcU/NVCARiumwvJySKwblwEDiyfP88WsegAq8ChrXEiFaqftUBsnybn5l9oI8luRBkPyeGEgabMdhr3L99eJTWhyVqjpZ496bFvpc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705547754; c=relaxed/simple;
-	bh=sesuh+qoPB7lM+bqBSE4stgA0/huVj/Xqcl4MgkwXI0=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 Content-Transfer-Encoding:Content-Type:X-ClientProxiedBy:
-	 MIME-Version:X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=RkKb0JmjaqIj20eJYgGTenyEuq46xo5UU0ploLv6tL2s0mxI8Q6XoD9bXtKCU/gfmj/GYJ5/ketgrE6+YntX+s1FzZrdS/ZJO/HvJS4CAv5MbCXbxLN9G3aHTnOe2dtmd67aOXx90qeJWiITn4mZ78QD3eNhzaORGsYp88/JMVY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=SN5josso; arc=fail smtp.client-ip=40.107.93.125
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mAbjfZeHxX9kjreOHTjFLdKv8Y5CorVzkah2+7bwgE8GfCVoyTJZxJ6w2+0aghXRMfy++p6X6VhVRv3LUUz5o2BS4xRjAj1iF9UW3znghwJh3OeG/z8aqf/BiKjU9wE5nbP4FxQNP8AdcutDu1Npjfi9K5LgEkAaXP/WP6ev8HjoV4PBCXC/FH6snrxFYMCtkVZc3CQ26Kq+BA+uAFaVSccUe3LO0TqQ+RB7NFtHJh90CNCBtKi+818axXPkhcpAyZHBwkTh9OR9uTBDDEU2QrfyUHjNvBDPfWGwryE6Qy4M9B7hvSy+OBuaPaD0qCtRUX1pXqOxjbdnkvm7FzBMkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9rSlbDTD9GZa0ytWtqo/JoUbXLsumjW+eNlIQoOM3f0=;
- b=N/1bfAtk/bNS+82wBO20faNkEGa2AmpH7c7e/JqNcAPfcJKPM6GZad+ytNo95ch+Z8V7XymEwc0M4DmLdUMSljTsIwaNCTI0MWvnsKit3cSto7+eThHfiYB5uO7yjyC+h2Ver42VKBIiz5oxKDNQaScwn66XtiNohhw3A/K2zOuSOjCNqyTlSNDDvYLIQx6xMUfJZiSJFerSPxnbTwOZsHsXyswuuRZOuIKcwjCgNFOI7iQ9ejZzL+yliDueUoY5TyryK48jg3EC8eG4YFIbQxAkgltSKRVph2n7l9bfyn3OF+ncNV4Pkk63vGzOOcFwhFcutIabUySlmJt0M+ApOQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FE08F40;
+	Thu, 18 Jan 2024 03:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705547745; cv=none; b=nLjNHpegCXPXFr2UiRtHirlN93qPje+aF+qPCW9PPxEBcOW0jVjWnWLNHEq4S91o9DRxW2w7VqCzRUVp4B5I85bP7J1MZ10Np7+YZGWU9IohnC651gHqaI9rGkz8iiaGVWCrROvQ4Ol3szzcFH04LAw1NvdJC5QevOgcTvZXbQ8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705547745; c=relaxed/simple;
+	bh=ahcR17wy58ScwIXrUFs8un/n33HPyuW4frd6NNX2NPc=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=UYfLOCQdxK237xJBHJN+AdThDexWkiT6uzuaKoi23sLGem3q/EkFZiINks9mRPyxzHQKWubjQe9eO0hezrORL8pYrZz0spwfjQwdyi6HcEiDJy1QIOWSP+nP6xBNvEGzwd6Br+PouUWUfipHyqvWFOOEoJ3XxgwfrDhc/pzkmLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PRHpNnSy; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso12860164a12.0;
+        Wed, 17 Jan 2024 19:15:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9rSlbDTD9GZa0ytWtqo/JoUbXLsumjW+eNlIQoOM3f0=;
- b=SN5jossoaRxbHWXHt1L9IYwS7sHZ/G47hZpC70aFQ6tW6yJqjQamtFe570W5nVlPyUXfHKfOo8pn/aZ7+s7jwNj3jp1ApMVPfDF2WmzBjNEoIrejj3gBx+MOEZVxzoI176ByzJNW2vz5KiWwdm9glM687iToXSi5D0/Sfnpo3u4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
- LV3PR01MB8439.prod.exchangelabs.com (2603:10b6:408:1a2::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.23; Thu, 18 Jan 2024 03:15:49 +0000
-Received: from PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a])
- by PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a%6]) with
- mapi id 15.20.7159.020; Thu, 18 Jan 2024 03:15:48 +0000
-From: Huang Shijie <shijie@os.amperecomputing.com>
-To: gregkh@linuxfoundation.org
-Cc: patches@amperecomputing.com,
-	rafael@kernel.org,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	yury.norov@gmail.com,
-	kuba@kernel.org,
-	vschneid@redhat.com,
-	mingo@kernel.org,
-	akpm@linux-foundation.org,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	tglx@linutronix.de,
-	jpoimboe@kernel.org,
-	ndesaulniers@google.com,
-	mikelley@microsoft.com,
-	mhiramat@kernel.org,
-	arnd@arndb.de,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	catalin.marinas@arm.com,
-	will@kernel.org,
-	mark.rutland@arm.com,
-	mpe@ellerman.id.au,
-	linuxppc-dev@lists.ozlabs.org,
-	chenhuacai@kernel.org,
-	jiaxun.yang@flygoat.com,
-	linux-mips@vger.kernel.org,
-	cl@os.amperecomputing.com,
-	Huang Shijie <shijie@os.amperecomputing.com>
-Subject: [PATCH] init: refactor the generic cpu_to_node for NUMA
-Date: Thu, 18 Jan 2024 11:14:12 +0800
-Message-Id: <20240118031412.3300-1-shijie@os.amperecomputing.com>
-X-Mailer: git-send-email 2.40.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CH0PR03CA0189.namprd03.prod.outlook.com
- (2603:10b6:610:e4::14) To PH0PR01MB7975.prod.exchangelabs.com
- (2603:10b6:510:26d::15)
+        d=gmail.com; s=20230601; t=1705547742; x=1706152542; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qcEJsJxbIc0RAjynqcDHIyz4es0oO29gIuI17GO9R1g=;
+        b=PRHpNnSykpd6UBJWF4m5Ovfjm0DeBX9am3QF/cygxUT9eoQGK0p+MIPCVg2bYRID8+
+         5hJxg9MsokrobeqlPUYYUfFx+i7Ed69tKoZvYDS8FZagtCXwi+Q1hKajSHFVtEQier9w
+         tUJo+4I+iioqKPdTKsbJGDESOc+ehJw7g7v4+eIL2Hy7fuk9CEPWfVFaMdZlHXKmR4Ga
+         eiHBZ934CMIPlFYouCe5nYoQGlHHw1OJTSXOvyf301xQPBLAdq27erKRI56WVtWupV2u
+         UePUuwO419ubvMzw+of3RtxjEa0liz9DhzBdigS7xPbSdLYPQi0eqpNRgbDCg/fC8ZCD
+         pEYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705547742; x=1706152542;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qcEJsJxbIc0RAjynqcDHIyz4es0oO29gIuI17GO9R1g=;
+        b=SbSFUkRQklxfTnrs2yIhs+D6o3gewSV/P5BzNTFiNEtUxBlzGj+IjrEf127UsUMw/S
+         B7N6gyj+pXifI8Na2qQjLdGM1ftr0snMdLjdYarQPicexX0dZzVYBnXaa9Oh6xKHezuh
+         DwoGwgNCyJ5zklZM25wlQ/WIVyD/IUqniIovOcDb3wv6SueCtCWloSuSBiQiT8jqXBMH
+         F5f7K2/n4bLkxuvrGgPfoSUuCD56BGbQWnJlUKdvcZwZ4bAl694kvu5UxIlCEMmKUUvz
+         bkq2LCJiE2k0m+HlyLmy1A+uIGeHq0CCTPWO9jC8ye4h/3TO1owwfK6d+shsI1SjMkIN
+         SOeA==
+X-Gm-Message-State: AOJu0YzyWBfQwVlIGfVT4Rla2Uwv3d7poxRMuH1XFVyImYcXc40OlY6a
+	c8+N8OGCxiBSb4D1U2fNHL004mNGlN8bpoLJlZQdRjxv15/jEZKyVoNL/IaAX266O04JCY2y2xi
+	KUIHM2ABkvGDpU6ISAYtnuvfGEzE=
+X-Google-Smtp-Source: AGHT+IG2KpdSARt9ngCj9PJk6H/6VhsAPH2Y6QTGCgL0gC6etSkuYrAHQ8YkaG8PI+ATXyYMa1Vr3+I3AlsDzkutXU4=
+X-Received: by 2002:aa7:c345:0:b0:555:e495:3540 with SMTP id
+ j5-20020aa7c345000000b00555e4953540mr154855edr.73.1705547742047; Wed, 17 Jan
+ 2024 19:15:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|LV3PR01MB8439:EE_
-X-MS-Office365-Filtering-Correlation-Id: 208619bf-361c-4a65-1167-08dc17d3c4b7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Mr/1TD6778cFBBbyoZwmZ3Dbro4P1rF32pgJMbrvXd7c91uHJs7ylAiWynpwhmwqoJKFG6nO8EonUA1QYXYsRoij9X1b6s8dEQFBsoEgi1160WSdfY46bBIP5HUfBhVjpzC+MQIj5yDPREj+Ut35+osNSej/53NdFCM2YUsfhmwPpUqsconz26uHGdtsPfBEkKoPeAW60MGLbmIbGyCOprnH0Km+99N3YAcdvf+hLMCgoffY3XvNN5DD1MF9l794T4wzJJSvyjVzW3bECcSFudl5dz42feswWIcPyFLubKNfSkNaYLDnz2c7GoAkSCOZk58uItsNMx6y29FAyOMv4KDEnp2jKZ61Xa595fCQXrtFWiSj3CBod64YEJqSviA/mH0IPBhnT+8FDzUk78USP6huEcVGNvr6V/+Daff0TO5+0ILO38LLZKYF3CnOH0jg774vcRZbnKH0owQ7tI3/oKCfd7FgEUmYQT8GCEWIKxwQnp/aSDGuX1cXZNZ1LaK/o5ZQHNDVNjHNc3ICSNDvjLuzfuBxup+JX0Kw/HJL5sJg1Z5VW+9r78zo499YAllgstVLEslHwf7mzq/oBWIRXu7cjMtOLbDsWGemQ35+6ZCDNeaxJYdT7bClnXhdmiWqycXOW/eAqJgI/rSNVE6pZw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39850400004)(376002)(136003)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(41300700001)(38100700002)(83380400001)(86362001)(66556008)(38350700005)(6486002)(6916009)(316002)(66476007)(2906002)(66946007)(5660300002)(7416002)(8936002)(4326008)(26005)(1076003)(2616005)(107886003)(478600001)(52116002)(6666004)(6506007)(6512007)(8676002)(41533002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?UJEiEPaIt1t8oFSATzhnNIet9OVoj0Rut08gOAu6Aa8kMPHi1DSKtvAYxYl1?=
- =?us-ascii?Q?1XYTHXRv3nK6BYPCC6FWYNCWtvJPa21W9crvptdb8HxigtHrNJm19uQmjyCg?=
- =?us-ascii?Q?Am6u0F32bp7/0FQjCIyYhLI5JeRL1hFfpb+jM5Ms4xUK7wauiU7yC/UnDi6G?=
- =?us-ascii?Q?Sez+Bj/O9i8I2ZpzUqn6ng4blO7gGJtZtZW6qwJa5dVAg/kp1M89oQQ8McRF?=
- =?us-ascii?Q?PusPAawq0/dkNLE4TpNKaUr3frkQAEjRJ+uT4brzzmHAsjJmBC0kXkdvyF/Z?=
- =?us-ascii?Q?JzMQbsoHymkP+rt9IASiDzVYWbOlwCpYyXtRd7UT7ylCB1MV9Olyjr3H9K5U?=
- =?us-ascii?Q?aTozH+brI2E9pc2tM1ZZgRw3lFyNM2WQo/3S086bvBGmOYtkWW9Qa/szG5wH?=
- =?us-ascii?Q?72z7b3URoy2dUIgD7VIqJ3+RckUcrj/u7NFf6Qo5RCs0mYHd9xRUsNkcwq2D?=
- =?us-ascii?Q?OdZ8Dq4hJX6XqMUTc4jmRQbuYTgLaemcldMy3Da859+fbxjQPW8g++0GWrQe?=
- =?us-ascii?Q?mOUPNO8QoNZ43Gb4kwZSVKWrIYQfdKh6GFGwUhwJCMGqtvArW7OTgcTo2eBf?=
- =?us-ascii?Q?PLrOC8v5BT4ZrLHbTbGFKSTBi4okW6yx+xoaSgLydnNhiTQGB0tO194BhIV9?=
- =?us-ascii?Q?aEZ3H+H9k6wE0iPH2jgmpNxX8tkpI6oIEfmXSSwr5677C6ogRYwNqe/FPwjA?=
- =?us-ascii?Q?u6FPnQCUGhe/g7ouJVpcOH7egRGRTPuBrxhSMS3ffQDyzTLAiUDkZA9/o199?=
- =?us-ascii?Q?9lI7e+ARbgpgE3d5jkCUn69I/biA+ABw1FSFI9Q3z7PRFrEvSwASbfMo4Zom?=
- =?us-ascii?Q?lz0r6dsZp4RjjdrC+OSCA/h8l/E0wJ6g6aQhaWyqExupUHCF3jqAz8OoWByX?=
- =?us-ascii?Q?2B+EqGIyyfiT/c1D+LQkCrHoM/XelggCeUJGldq6BLc0YBzsgFVq47mw6cbJ?=
- =?us-ascii?Q?T4ftu3k5nx4REhDMJXcm+o6EQGFkH6bLUX/nRHz7mq672myYxaEyA3zCPMDs?=
- =?us-ascii?Q?gWEPk9z98iFnkEogREqIerzOJT+gPciS8wDDRtynC84mEOOA46bzJDQpB/ua?=
- =?us-ascii?Q?X3oiViqAlqI0xlx9S4NCLJPh1qkwzLlAHOJAvULzZ7OqlZHTBbvFs54OWv28?=
- =?us-ascii?Q?7tJWnZJxLSwTT680qO+ErMe+nqL88k9hHyyvgHbHSlAeqEvxTJbQxdM3E4Pc?=
- =?us-ascii?Q?PWntl5RwJcTPQBHHLq/vqrQ79SUbcmhCzwNggwqiN6h4E7SM6Zo2reosw6XD?=
- =?us-ascii?Q?BA/o1pk+ZkxwfskCn+V25P8nPbRFiUP1bLdYuNAZc0oQyNNInGOHQGeBcSVM?=
- =?us-ascii?Q?kUgF57Qaz7NXbQXrcavuCJINMv9V8ERGo4p+jIzLD7QMTTKC0vAgX9PCEikV?=
- =?us-ascii?Q?6ATF9PZB9deT9P8tPywpHfi7FOahNpbv32xYbTddYwpocDQZQtDt88XVef1o?=
- =?us-ascii?Q?K0Ka9/3bNC0Ia7SInuVhv5cZzhlGGzfhETNPsWonnjaFYcZPWpafGrIYUkrp?=
- =?us-ascii?Q?TAm86B7dOMn0HR5l1AsXMeqByRrt8hTp42nOvTjvfvFh0UCgC1n4VrJDPCUD?=
- =?us-ascii?Q?mN9m0M0pwUV9MEygu+q+q9q70ET7mdo44NvfQydYZAHUS9nLwnQviBZt3uLK?=
- =?us-ascii?Q?tSqoLbQn/5M1lf5FzoPoccc=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 208619bf-361c-4a65-1167-08dc17d3c4b7
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 03:15:48.8422
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cNkIrnf8wHWP77puODQUm3mJvtTw6xor7pVIPEAzh+ivusw7ZlBMfayxuNMV9JS80Kdm4N2ziVL7OsyRuUB7UuRwbbjBnT9ZqPyKxxZm53yziDj50C5mb6ybcdaZvY2N
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR01MB8439
+References: <20240115072306.303993-1-zegao@tencent.com> <CAM9d7cgXKaKTnfx9YJae2qqv0pXtWLVQPBN=2H0WZkenBjHFnQ@mail.gmail.com>
+ <CAD8CoPA6xBT9hbGZoviyyQm1bwn2Oh=v8QCMjxkMMOSN2zfC-A@mail.gmail.com>
+In-Reply-To: <CAD8CoPA6xBT9hbGZoviyyQm1bwn2Oh=v8QCMjxkMMOSN2zfC-A@mail.gmail.com>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Thu, 18 Jan 2024 11:15:31 +0800
+Message-ID: <CAD8CoPA0YgVHVW1Ya1O0-vhmpCbiw2h3i29ayzKmg4YTu-zeKQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] perf sched: Fix task state report
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-(0) We list the ARCHs which support the NUMA:
-       arm64, loongarch, powerpc, riscv,
-       sparc, mips, s390, x86,
+On Thu, Jan 18, 2024 at 11:00=E2=80=AFAM Ze Gao <zegao2021@gmail.com> wrote=
+:
+>
+> On Wed, Jan 17, 2024 at 9:35=E2=80=AFAM Namhyung Kim <namhyung@kernel.org=
+> wrote:
+> >
+> > Hello,
+> >
+> > On Sun, Jan 14, 2024 at 11:23=E2=80=AFPM Ze Gao <zegao2021@gmail.com> w=
+rote:
+> > >
+> > > Hi,
+> > >
+> > > The problems of task state report in both libtraceevent
+> > > and perf sched has been reported in [1]. In short, they
+> > > parsed the wrong state due to relying on the outdated
+> > > hardcoded state string to interpret the raw bitmask
+> > > from the record, which left the messes to maintain the
+> > > backward compatibilities for both tools.
+> > >
+> > > [1] has not managed to make itself into the kernel, the
+> > > problems and the solutions are well studied though.
+> > >
+> > > Luckily, as suggested by Steven, perf/libtraceevent
+> > > records the print format, especially the __print_flags()
+> > > part of the in-kernel tracepoint sched_switch in its
+> > > metadata, and we have a chance to build the state str
+> > > on the fly by parsing it.
+> > >
+> > > Now that libtraceevent has landed this solution in [2],
+> > > we now apply the same idea to perf as well.
+> >
+> > Thanks for your work.  But perf links libtraceevent
+> > conditionally so you need to make sure if it works without
+> > that too.
+>
+> Yes, I've tested with NO_LIBTRACEEVENT=3D1, and it turns
+> out perf removes perf sched subcmd without libtraceevent,
 
-(1) Some ARCHs in (0) override the generic cpu_to_node(), such as:
-       sparc, mips, s390, x86.
+FWIW,  commit 378ef0f5d9d7f4 ("perf build: Use libtraceevent
+from the system") has proved this as well.
 
-    Since these ARCHs have their own cpu_to_node(), we do not care
-    about them.
+Regards,
+        -- Ze
 
-(2) The ARCHs enable NUMA and use the generic cpu_to_node.
-    From (0) and (1), we can know that four ARCHs support NUMA and
-    use the generic cpu_to_node:
-        arm64, loongarch, powerpc, riscv,
-
-    The generic cpu_to_node depends on percpu "numa_node".
-
-    (2.1) The loongarch sets "numa_node" in:
-          start_kernel --> smp_prepare_boot_cpu()
-
-    (2.2) The arm64, powerpc, riscv set "numa_node" in:
-       	  start_kernel --> arch_call_rest_init() --> rest_init()
-       	               --> kernel_init() --> kernel_init_freeable()
-                       --> smp_prepare_cpus()
-
-    (2.3) The first place calling the cpu_to_node() is early_trace_init():
-          start_kernel --> early_trace_init()--> __ring_buffer_alloc()
-	               --> rb_allocate_cpu_buffer()
-
-    (2.4) So it safe for loongarch. But for arm64, powerpc and riscv,
-          there are at least four places in the common code where
-	  the cpu_to_node() is called before it is initialized:
-	   a.) early_trace_init()         in kernel/trace/trace.c
-	   b.) sched_init()               in kernel/sched/core.c
-	   c.) init_sched_fair_class()    in kernel/sched/fair.c
-	   d.) workqueue_init_early()     in kernel/workqueue.c
-
-(3) In order to fix the issue, the patch refactors the generic cpu_to_node:
-    (3.1) change cpu_to_node to function pointer,
-          and export it for kernel modules.
-
-    (3.2) introduce _cpu_to_node() which is the original cpu_to_node().
-
-    (3.3) introduce smp_prepare_boot_cpu_start() to wrap the original
-          smp_prepare_boot_cpu(), and set cpu_to_node with
-	  early_cpu_to_node which works fine for arm64, powerpc,
-	  riscv and loongarch.
-
-    (3.4) introduce smp_prepare_cpus_done() to wrap the original
-          smp_prepare_cpus().
-	  The "numa_node" is ready after smp_prepare_cpus(),
-	  then set cpu_to_node with _cpu_to_node().
-
-Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
----
- drivers/base/arch_numa.c | 11 +++++++++++
- include/linux/topology.h |  6 ++----
- init/main.c              | 29 +++++++++++++++++++++++++++--
- 3 files changed, 40 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
-index 5b59d133b6af..867a477fa975 100644
---- a/drivers/base/arch_numa.c
-+++ b/drivers/base/arch_numa.c
-@@ -61,6 +61,17 @@ EXPORT_SYMBOL(cpumask_of_node);
- 
- #endif
- 
-+#ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
-+#ifndef cpu_to_node
-+int _cpu_to_node(int cpu)
-+{
-+	return per_cpu(numa_node, cpu);
-+}
-+int (*cpu_to_node)(int cpu);
-+EXPORT_SYMBOL(cpu_to_node);
-+#endif
-+#endif
-+
- static void numa_update_cpu(unsigned int cpu, bool remove)
- {
- 	int nid = cpu_to_node(cpu);
-diff --git a/include/linux/topology.h b/include/linux/topology.h
-index 52f5850730b3..e7ce2bae11dd 100644
---- a/include/linux/topology.h
-+++ b/include/linux/topology.h
-@@ -91,10 +91,8 @@ static inline int numa_node_id(void)
- #endif
- 
- #ifndef cpu_to_node
--static inline int cpu_to_node(int cpu)
--{
--	return per_cpu(numa_node, cpu);
--}
-+extern int (*cpu_to_node)(int cpu);
-+extern int _cpu_to_node(int cpu);
- #endif
- 
- #ifndef set_numa_node
-diff --git a/init/main.c b/init/main.c
-index e24b0780fdff..b142e9c51161 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -870,6 +870,18 @@ static void __init print_unknown_bootoptions(void)
- 	memblock_free(unknown_options, len);
- }
- 
-+static void __init smp_prepare_boot_cpu_start(void)
-+{
-+	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
-+
-+#ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
-+#ifndef cpu_to_node
-+	/* The early_cpu_to_node should be ready now. */
-+	cpu_to_node = early_cpu_to_node;
-+#endif
-+#endif
-+}
-+
- asmlinkage __visible __init __no_sanitize_address __noreturn __no_stack_protector
- void start_kernel(void)
- {
-@@ -899,7 +911,7 @@ void start_kernel(void)
- 	setup_command_line(command_line);
- 	setup_nr_cpu_ids();
- 	setup_per_cpu_areas();
--	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
-+	smp_prepare_boot_cpu_start();
- 	boot_cpu_hotplug_init();
- 
- 	pr_notice("Kernel command line: %s\n", saved_command_line);
-@@ -1519,6 +1531,19 @@ void __init console_on_rootfs(void)
- 	fput(file);
- }
- 
-+static void __init smp_prepare_cpus_done(unsigned int setup_max_cpus)
-+{
-+	/* Different ARCHs may override smp_prepare_cpus() */
-+	smp_prepare_cpus(setup_max_cpus);
-+
-+#ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
-+#ifndef cpu_to_node
-+	/* Change to the formal function. */
-+	cpu_to_node = _cpu_to_node;
-+#endif
-+#endif
-+}
-+
- static noinline void __init kernel_init_freeable(void)
- {
- 	/* Now the scheduler is fully set up and can do blocking allocations */
-@@ -1531,7 +1556,7 @@ static noinline void __init kernel_init_freeable(void)
- 
- 	cad_pid = get_pid(task_pid(current));
- 
--	smp_prepare_cpus(setup_max_cpus);
-+	smp_prepare_cpus_done(setup_max_cpus);
- 
- 	workqueue_init();
- 
--- 
-2.40.1
-
+> which explains why the compiler does not complain no
+> evsel__intval() defined when !HAVE_LIBTRACEEVENT
+> given the fact so many references of evsel__intval() in
+> builtin-sched.c.
+> Here evsel__taskstate() uses the exact assumption as
+> evsel__intval(), so I put it next to it for clarity and it works
+> without a doubt.
+>
+> > I think all libtraceevent related stuff should be in the
+> > util/trace-event.c which is included only if the library is
+> > available.  Maybe util/trace-event-parse.c is a better
+> > place but then you need to tweak the python-ext-sources
+> > and Makefile.perf for the case it's not available.
+>
+> Thanks for pointing this out. I will do the hack if you insist
+> on this move :D. But I think the current version is clear
+> enough, otherwise we need to move all the parts guarded
+> by #ifdef HAVE_LIBTRACEEVENT out for complete decoupling.
+> What do you think of it?
+>
+> Thanks,
+>         -- Ze
+>
+> > Thanks,
+> > Namhyung
+> >
+> > >
+> > > Regards,
+> > >
+> > >         -- Ze
+> > >
+> > > [1]: https://lore.kernel.org/lkml/20230803083352.1585-1-zegao@tencent=
+com/
+> > > [2]: https://lore.kernel.org/linux-trace-devel/20231224140732.7d41698=
+d@rorschach.local.home/
+> > >
+> > > Ze Gao (4):
+> > >   perf sched: Sync state char array with the kernel
+> > >   perf util: Add helpers to parse task state string from libtraceeven=
+t
+> > >   perf util: Add evsel__taskstate() to parse the task state info inst=
+ead
+> > >   perf sched: Commit to evsel__taskstate() to parse task state info
+> > >
+> > >  tools/perf/builtin-sched.c |  57 +++------------
+> > >  tools/perf/util/evsel.c    | 146 +++++++++++++++++++++++++++++++++++=
+++
+> > >  tools/perf/util/evsel.h    |   1 +
+> > >  3 files changed, 157 insertions(+), 47 deletions(-)
+> > >
+> > > --
+> > > 2.41.0
+> > >
 
