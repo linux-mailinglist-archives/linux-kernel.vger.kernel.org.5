@@ -1,197 +1,203 @@
-Return-Path: <linux-kernel+bounces-30164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDA9D831AC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96B0A831AC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:45:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08C591C22312
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:45:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBC161C21212
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC3825613;
-	Thu, 18 Jan 2024 13:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1287725777;
+	Thu, 18 Jan 2024 13:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OJrN8ayc"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u+3MZbe8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14FC625750;
-	Thu, 18 Jan 2024 13:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D76B25750;
+	Thu, 18 Jan 2024 13:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705585496; cv=none; b=IGfnFAnrJ6Dz/18+vi0UN5GfNyRoVR0xetMVuSndFHtRw/JNaotNbrcGN/EGZ/xAOyhFp7JmvZG1NhpYnZCdmbc3e6roX6Gz+LLYuJZm4XZ6Aq4fr3WyLohh2e7F9he9jGJaZQ6gyEeusqpBKfmsup0/gcFy52NfUJ1AL84Fu60=
+	t=1705585501; cv=none; b=bR+dT1C5TK8qw5ntr0RsTD6O6vINyETCYzpkA2GsAL6UtiO7thrA02JDsaUdCPrDjGCVQBbHSoZi16u6+BIR9rIqqk4HXYB4vbHAyvO+YRESQgOkFfkvEUadstT1y7uxCUtvKJvmLfrVFToz+SFMEIXeBAUdhxzRWxZl/9fC6y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705585496; c=relaxed/simple;
-	bh=fyOO87gyCVvda8Dtdu5dP+4OJie3gUe4JS7z6my6Q4k=;
-	h=Received:DKIM-Signature:Received:Received:Received:Received:
-	 Received:Received:Received:Received:Received:Message-ID:Date:
-	 User-Agent:Subject:Content-Language:To:Cc:References:From:
-	 In-Reply-To:Content-Type:X-TM-AS-GCONF:X-Proofpoint-ORIG-GUID:
-	 X-Proofpoint-GUID:Content-Transfer-Encoding:X-Proofpoint-UnRewURL:
-	 MIME-Version:X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details;
-	b=saXkjpCXvVBEBaXPaXorHxS4Fyd0vLC5o9CrFHiIcZpbZf/4Iddx1qtzSjgS3/tUAxowt47hEwRvL6daqMrpRREO2Hh0WbVAsQWczjui5wk7F+v3Wksw6+qQtQucmt1rZgw/8Bf6I/oGcMT41Z5Eqio/ySeEmtzvKfUEqn7DXnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OJrN8ayc; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40ID1JOC009014;
-	Thu, 18 Jan 2024 13:44:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=E11fxe4FBaAFH8dgSAN7Sr3yf87afr7uMgZUqa9RFe4=;
- b=OJrN8ayc5rglqP0kFFe2zkEgWUn1Gzuk95HoXINOcHNTFmbNqnwyhcyl5+bXhKUmulDP
- FiSGFeC/2WxDmf6FTZSVDnGZUT3LHOL4f9SaER0F5vg8Gqf/hYWG4lu3BW8yaU6VM1Et
- AKYGy482DtCxVeXmKbMLWLf+kc4T+DZWsCKcucGVzdTMKPQpBvjVY547v7vey6FdXx/S
- 5L005JXt8g1fNHx/8xkWYqVvsV17RqTYIN1hBA1rhBM5sum6I7WUKP/K2e5Ih/Nf3eEE
- uLx9KLjfoxKYL5tY4CXCLvKKD+ihLPnF4lM360CU+VTJmDXc4IzYi2TlrgQbz/DbmJE2 cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vq45j21v8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 13:44:43 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40ID27aK012758;
-	Thu, 18 Jan 2024 13:44:42 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vq45j21u9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 13:44:42 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40IAeACi005842;
-	Thu, 18 Jan 2024 13:44:41 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm6bkufr1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 13:44:41 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40IDieD121496516
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 18 Jan 2024 13:44:40 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8B1BD58058;
-	Thu, 18 Jan 2024 13:44:40 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A526B58057;
-	Thu, 18 Jan 2024 13:44:38 +0000 (GMT)
-Received: from [9.179.26.4] (unknown [9.179.26.4])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 18 Jan 2024 13:44:38 +0000 (GMT)
-Message-ID: <33cd7db0-2a0d-43af-b26c-a81bca382fbf@linux.ibm.com>
-Date: Thu, 18 Jan 2024 14:44:37 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2] net/smc: fix illegal rmb_desc access in SMC-D
- connection dump
-Content-Language: en-GB
-To: Wen Gu <guwen@linux.alibaba.com>, jaka@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: alibuda@linux.alibaba.com, tonylu@linux.alibaba.com, ubraun@linux.ibm.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20240118043210.47618-1-guwen@linux.alibaba.com>
-From: Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <20240118043210.47618-1-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XbUDJE67GtkkyzaHfEeR40bcqAkgRk_j
-X-Proofpoint-GUID: beCBhPepnKjL4QOlxfj2LQVhokggwF0d
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1705585501; c=relaxed/simple;
+	bh=gT28Fh3wl8eP/Ljj2XHYVD5ng9wv0/Gy376PoOmymDk=;
+	h=Received:DKIM-Signature:Received:X-Gm-Message-State:
+	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
+	 In-Reply-To:From:Date:X-Gmail-Original-Message-ID:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding; b=EfJZ7eYF6PYzYF4tOIXlXv2yUaB6Y+1ODgrwKtBFlon6zoZfKN+HjVyzOzL/nPtPmYLdQ7w7bsln2nkEB+OcLkoos2w1e2gdir0bOjPluM4YR6SU0kPuA/H//3XGkvF6Vp3PCiBMlHRsWKrEPIzb7KH86GGxp9Pmfco29WLD3ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u+3MZbe8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8E69C433A6;
+	Thu, 18 Jan 2024 13:45:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705585500;
+	bh=gT28Fh3wl8eP/Ljj2XHYVD5ng9wv0/Gy376PoOmymDk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=u+3MZbe8ibF/PsJaydFqyRJp8ldbVeNDlHnif9pS4/4cGJp0RDYpZPhpESX+qacPH
+	 onPkEixPpCI3mbAQKsqT0BLkRVtfsZwSSr2vEPj79v1OGDs/jP3+P2iwCV9iefkdef
+	 6QFcZms6XzJ8vIAUbW2367Ls8jD8nMfDaMUStiiTGymyegb1QmsgMVKR0Efw0kOD2X
+	 THGk7SORQtBkEz0/HgFmjH97kcFVNO6kgR6k42jCF/B5U7i9ivjOs0RtUs84cdmoqb
+	 1k6B1051EFaLPbHRejKw8QHcE007AYh4dLHDYkq67M+cnoRyuHj1bOBwTNVMa0pDs1
+	 6N9eImRIzo7Qg==
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2ccae380df2so136197601fa.1;
+        Thu, 18 Jan 2024 05:45:00 -0800 (PST)
+X-Gm-Message-State: AOJu0YzD/hSacEpsEOafHEYrVy95+9rqH9uTDGBWWynmLPZmK0BZ2gck
+	4drmaqjmcGh+dlAnlro9L1TIeT5eR/Cckh9PYmybJ9i86I8NTP6GurxAtak7bXLk5/4nMmjXKOQ
+	uAvpBZxsFKIWarAlg290NOKruig==
+X-Google-Smtp-Source: AGHT+IHanadODpHlW5kv28ZPQQm1BxNO/Q4y3N+LkzY5cQvNMtQPZvXZQU5q6BYEcqxNmpGoLRuQA+l7epkP//J5f0Q=
+X-Received: by 2002:a05:651c:107:b0:2cd:9e6c:7f3f with SMTP id
+ a7-20020a05651c010700b002cd9e6c7f3fmr625521ljb.71.1705585498933; Thu, 18 Jan
+ 2024 05:44:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-18_08,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- malwarescore=0 suspectscore=0 adultscore=0 bulkscore=0 impostorscore=0
- spamscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1011 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401180099
+References: <20240112200750.4062441-1-sboyd@kernel.org> <20240112200750.4062441-5-sboyd@kernel.org>
+ <20240115203230.GA1439771-robh@kernel.org> <cdaadf62222a705cda198dd96dc7c73d.sboyd@kernel.org>
+ <20240117174114.GA2779523-robh@kernel.org> <CAMuHMdXg1Y7mwHKTYi_j7a_XGdMJ7Aa7u5dEv5+xsLe8=BMaRw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXg1Y7mwHKTYi_j7a_XGdMJ7Aa7u5dEv5+xsLe8=BMaRw@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Thu, 18 Jan 2024 07:44:46 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLO89y6577ACi7s4Zhpexszp3Bby=tKMEoDGzK9MY+9Bw@mail.gmail.com>
+Message-ID: <CAL_JsqLO89y6577ACi7s4Zhpexszp3Bby=tKMEoDGzK9MY+9Bw@mail.gmail.com>
+Subject: Re: [PATCH 4/6] of: Create of_root if no dtb provided by firmware
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Stephen Boyd <sboyd@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
+	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, 
+	devicetree@vger.kernel.org, Simon Glass <sjg@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jan 18, 2024 at 2:46=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+>
+> Hi Rob,
+>
+> On Wed, Jan 17, 2024 at 6:41=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
+te:
+> > On Tue, Jan 16, 2024 at 05:18:15PM -0800, Stephen Boyd wrote:
+> > > Quoting Rob Herring (2024-01-15 12:32:30)
+> > > > On Fri, Jan 12, 2024 at 12:07:47PM -0800, Stephen Boyd wrote:
+> > > > > diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+> > > > > index da9826accb1b..9628e48baa15 100644
+> > > > > --- a/drivers/of/Kconfig
+> > > > > +++ b/drivers/of/Kconfig
+> > > > > @@ -54,9 +54,14 @@ config OF_FLATTREE
+> > > > >       select CRC32
+> > > > >
+> > > > >  config OF_EARLY_FLATTREE
+> > > > > -     bool
+> > > > > +     bool "Functions for accessing Flat Devicetree (FDT) early i=
+n boot"
+> > > >
+> > > > I think we could instead just get rid of this kconfig option. Or
+> > > > always enable with CONFIG_OF (except on Sparc). The only cost of
+> > > > enabling it is init section functions which get freed anyways.
+> > >
+> > > Getting rid of it is a more massive change. It can be the default and
+> > > kept hidden instead? If it can't be selected on Sparc then it should =
+be
+> > > hidden there anyway.
+> >
+> > The easier option is certainly fine for this series. I just don't want
+> > it visible.
+> >
+> > > > >       select DMA_DECLARE_COHERENT if HAS_DMA && HAS_IOMEM
+> > > > >       select OF_FLATTREE
+> > > > > +     help
+> > > > > +       Normally selected by platforms that process an FDT that h=
+as been
+> > > > > +       passed to the kernel by the bootloader.  If the bootloade=
+r does not
+> > > > > +       pass an FDT to the kernel and you need an empty devicetre=
+e that
+> > > > > +       contains only a root node to exist, then say Y here.
+> > > > >
+> > > > >  config OF_PROMTREE
+> > > > >       bool
+> > > [...]
+> > > > > @@ -195,6 +191,17 @@ static inline int of_node_check_flag(const s=
+truct device_node *n, unsigned long
+> > > > >       return test_bit(flag, &n->_flags);
+> > > > >  }
+> > > > >
+> > > > > +/**
+> > > > > + * of_have_populated_dt() - Has DT been populated by bootloader
+> > > > > + *
+> > > > > + * Return: True if a DTB has been populated by the bootloader an=
+d it isn't the
+> > > > > + * empty builtin one. False otherwise.
+> > > > > + */
+> > > > > +static inline bool of_have_populated_dt(void)
+> > > > > +{
+> > > > > +     return of_root !=3D NULL && !of_node_check_flag(of_root, OF=
+_EMPTY_ROOT);
+> > > >
+> > > > Just a side comment, but I think many/all callers of this function =
+could
+> > > > just be removed.
+> > > >
+> > > > I don't love new flags. Another possible way to handle this would b=
+e
+> > > > checking for "compatible" being present in the root node. I guess t=
+his
+> > > > is fine as-is for now at least.
+> > >
+> > > Ok. I can add a check for a compatible property. That's probably bett=
+er
+> > > anyway. Should there be a compatible property there to signal that th=
+is
+> > > DT isn't compatible with anything? I worry about DT overlays injectin=
+g a
+> > > compatible string into the root node, but maybe that is already
+> > > prevented.
+> >
+> > I worry about DT overlays injecting anything...
+> >
+> > I don't think it is explicitly forbidden, but I have asked that any
+> > general purpose interface to apply overlays be restricted to nodes
+> > explicitly allowed (e.g. downstream of a connector node). For now, the
+> > places (i.e. drivers) overlays are applied are limited.
+> >
+> > We could probably restrict the root node to new nodes only and no new
+> > or changed properties.
+>
+> Changing (<wild dream>or appending to</wild dream>) the root
+> "compatible" and/or "model" properties is useful in case of large
+> extension boards, though.  This is also the case for DTBs created from
+> a base DTB and one or more overlays using fdtoverlay.
+
+I think appending by adding another compatible value could be okay.
+Removing or appending to an existing entry is not. We don't want the
+following sequence to be possible:
+
+of_machine_is_compatible("foo") --> true
+apply overlay
+of_machine_is_compatible("foo") --> false
+
+For Stephen's case, it's going from no root compatible at all to
+something. I don't think your case would apply here. To put it another
+way, if we've booted with ACPI, compatible in the root node is not
+valid.
 
 
+> For the latter, see also the following threads, where you weren't
+> (but probably should have been) CCed:
+>
+> [1] "[PATCH v9 2/2] arm64: boot: Support Flat Image Tree"
+>      https://lore.kernel.org/all/20231202035511.487946-3-sjg@chromium.org
+> [2] "Proposal: FIT support for extension boards / overlays"
+>     https://lore.kernel.org/all/CAPnjgZ06s64C2ux1rABNAnMv3q4W++sjhNGCO_uP=
+MH_9sTF7Mw@mail.gmail.com
 
-On 18.01.24 05:32, Wen Gu wrote:
-> A crash was found when dumping SMC-D connections. It can be reproduced
-> by following steps:
-> 
-> - run nginx/wrk test:
->    smc_run nginx
->    smc_run wrk -t 16 -c 1000 -d <duration> -H 'Connection: Close' <URL>
-> 
-> - continuously dump SMC-D connections in parallel:
->    watch -n 1 'smcss -D'
-> 
->   BUG: kernel NULL pointer dereference, address: 0000000000000030
->   CPU: 2 PID: 7204 Comm: smcss Kdump: loaded Tainted: G	E      6.7.0+ #55
->   RIP: 0010:__smc_diag_dump.constprop.0+0x5e5/0x620 [smc_diag]
->   Call Trace:
->    <TASK>
->    ? __die+0x24/0x70
->    ? page_fault_oops+0x66/0x150
->    ? exc_page_fault+0x69/0x140
->    ? asm_exc_page_fault+0x26/0x30
->    ? __smc_diag_dump.constprop.0+0x5e5/0x620 [smc_diag]
->    ? __kmalloc_node_track_caller+0x35d/0x430
->    ? __alloc_skb+0x77/0x170
->    smc_diag_dump_proto+0xd0/0xf0 [smc_diag]
->    smc_diag_dump+0x26/0x60 [smc_diag]
->    netlink_dump+0x19f/0x320
->    __netlink_dump_start+0x1dc/0x300
->    smc_diag_handler_dump+0x6a/0x80 [smc_diag]
->    ? __pfx_smc_diag_dump+0x10/0x10 [smc_diag]
->    sock_diag_rcv_msg+0x121/0x140
->    ? __pfx_sock_diag_rcv_msg+0x10/0x10
->    netlink_rcv_skb+0x5a/0x110
->    sock_diag_rcv+0x28/0x40
->    netlink_unicast+0x22a/0x330
->    netlink_sendmsg+0x1f8/0x420
->    __sock_sendmsg+0xb0/0xc0
->    ____sys_sendmsg+0x24e/0x300
->    ? copy_msghdr_from_user+0x62/0x80
->    ___sys_sendmsg+0x7c/0xd0
->    ? __do_fault+0x34/0x160
->    ? do_read_fault+0x5f/0x100
->    ? do_fault+0xb0/0x110
->    ? __handle_mm_fault+0x2b0/0x6c0
->    __sys_sendmsg+0x4d/0x80
->    do_syscall_64+0x69/0x180
->    entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> 
-> It is possible that the connection is in process of being established
-> when we dump it. Assumed that the connection has been registered in a
-> link group by smc_conn_create() but the rmb_desc has not yet been
-> initialized by smc_buf_create(), thus causing the illegal access to
-> conn->rmb_desc. So fix it by checking before dump.
-> 
-> Fixes: 4b1b7d3b30a6 ("net/smc: add SMC-D diag support")
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
-> v2->v1: corrected the commit in Fixes tag.
-> (https://lore.kernel.org/netdev/20240117122749.63785-1-guwen@linux.alibaba.com/)
-> 
->   net/smc/smc_diag.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
-> index 52f7c4f1e767..5a33908015f3 100644
-> --- a/net/smc/smc_diag.c
-> +++ b/net/smc/smc_diag.c
-> @@ -164,7 +164,7 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
->   	}
->   	if (smc_conn_lgr_valid(&smc->conn) && smc->conn.lgr->is_smcd &&
->   	    (req->diag_ext & (1 << (SMC_DIAG_DMBINFO - 1))) &&
-> -	    !list_empty(&smc->conn.lgr->list)) {
-> +	    !list_empty(&smc->conn.lgr->list) && smc->conn.rmb_desc) {
->   		struct smc_connection *conn = &smc->conn;
->   		struct smcd_diag_dmbinfo dinfo;
->   		struct smcd_dev *smcd = conn->lgr->smcd;
+That all seems pretty orthogonal to the issues here.
 
-That sounds reasonable to me! Thank you for the fix!
-
-Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Rob
 
