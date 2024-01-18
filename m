@@ -1,246 +1,125 @@
-Return-Path: <linux-kernel+bounces-30050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25B77831871
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:28:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62EF683187D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA2B1285D4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:28:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52A3C1C2254C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D270241F2;
-	Thu, 18 Jan 2024 11:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA7DF24207;
+	Thu, 18 Jan 2024 11:31:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bqVveGw8"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R7lRovnW"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156B323776
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E4D241E6;
+	Thu, 18 Jan 2024 11:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705577309; cv=none; b=EQnr1sTCJUrt9IEGKcduXNabgWazLgNb+BB4qUywSKaNiYpoxf8mElql9ZYndYpJ/CHfgbkb3ou7Y6/zOwamcnBRFV/oby0Ym3k7pcMZuAC2cUFaDHquWzCr9sqt9vsOTls6l79gCmexkQ9332ZwccwQcJFe4k8x3PMmu60jTzY=
+	t=1705577477; cv=none; b=YcB9jCsdv/axBt8FBQIsnTJFvO8VuE/krHrRcRCK0CgOLV3fdcN116Ncu15/lqXzhgOmC/Nlmbo9iHZgrgm6DDnK7aphILJHiBLqSMQWxsvhc+MV2C4YMRTzATcCHeF9YN9+xC4Vg3MoXw6PXrBhKkaNd7WVIMwbVmAVKsRab8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705577309; c=relaxed/simple;
-	bh=OAqB/Umati0NjsiD1F2G7p+0eWVP5nxHXNKe4heLHdY=;
-	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:CC:
-	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-ORIG-GUID:
-	 X-Proofpoint-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=Z8kTKzzlS5S2JOUmLQyvHtdgUlziFleFe+q7FXOtk2/pf/YlJTmOL0LSkKVNWUPGZicfLYDx1t75ezEW4sEXg3ZAY+aFRlVbiBssoGh9Mrho3ahM7VW7xxmYIzX+24RsvHAn/ijHnRiBlsyXRwovH6vdhdp7TwpgE6X+ccEX36s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bqVveGw8; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40I602gl004450;
-	Thu, 18 Jan 2024 11:27:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=IoaCXp2bZnlOp0cjfLp4rHUzRkV2pKD6nav2X3Gxi60=; b=bq
-	VveGw8yBE0/P537ZDzsC8MGu500Y5bu+zNNf48qRUzGWjOGj5m5hDmFJ1xCsn0LG
-	ODKapGvqk9DEapRTvzNy/wqvEgWe09mzKM21KVMpf+4zxG27VSNlazkGjQt7jwkL
-	sPmVH7cfzBQeNrj+fW7Y8UCenSrbSWYo3V1Aww1sQUmYUNyXXTTLA0lfJQffeN1+
-	MLkPUiy7JuKQ1NLPnr7SbVv0r0CkSfH+0rdbKzVYaZYbPwiR8dlJAHeM5QTw4WmM
-	4IFNyazanGxw1MUCMvV0oqUktaF8URlzuSe+WESw07vAyXqHpF/S66o2+6YivuPo
-	+cIQ1H4xe05xzQCuFWLQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vpx8sgsxf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 11:27:52 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40IBRpQX018662
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 11:27:51 GMT
-Received: from [10.216.49.108] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 18 Jan
- 2024 03:27:46 -0800
-Message-ID: <cd742d1d-70a3-586b-4bf5-fcfc94c75b4a@quicinc.com>
-Date: Thu, 18 Jan 2024 16:57:43 +0530
+	s=arc-20240116; t=1705577477; c=relaxed/simple;
+	bh=/2dkV31yHAb+Qfdj4xcle6MF5whChIwDA5UIkWma74Q=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding; b=MNldedp/zqG3ocQ14XbkvSA70wldmShuNqE4XRvycDHZKWQe9/6n5UZku535rCOjE5T/pt94M2PJzVWxQTkRIAH/HT76Sm8HKMK+1GcvDO6a+9ukIBn+vwq4qMbpJC0G7ViG18VG4MNErUERZjBUhgjNHeo6RX1ettNgyErLxOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R7lRovnW; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6dde528dbe8so5745804a34.0;
+        Thu, 18 Jan 2024 03:31:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705577475; x=1706182275; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/2dkV31yHAb+Qfdj4xcle6MF5whChIwDA5UIkWma74Q=;
+        b=R7lRovnWvQGeiG9FmMLsbXMp2xqKSHnQxw5u5oJNJe+yFrTn9KtLAPXLFHXAxpbP55
+         Q2UuPMbMFUp8uKFr3PV4WCSJYuz3MWpPsH7NfejpjgzpD+NynFrB9mVhIWHfZY3xmjA1
+         us6Xs3yif20x23sZkuPGAoAqgnpCK92vGo7Hb/Mf/3Ha05ICa+vkcFxZkS70GUewqJvq
+         jOBeC0N79l8TUcbH2CspZ+Fmz/rbBaZdpyxs895zpgwFg7XuVDeXnSzWwZXjy0/1DEiS
+         d+4lzU6MALmOc7qT7uAJB/VNETSPZVkvmJh4v9FI4kzhPAEAhEIbXsYt54tJLSzeHQtT
+         s6+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705577475; x=1706182275;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/2dkV31yHAb+Qfdj4xcle6MF5whChIwDA5UIkWma74Q=;
+        b=sifHrSW1qdmBnxdoeX9qWuvD8Ykd4V4Ryzazq3K6H+/ldB+Ydi9pbpDpvjDjXs2Rnv
+         nshDut+Mxq7DZ4zo3Ay2wRsj5nBB+T+9r9FcEJfd4e+TcmplioY9PT3rLVHGoUBT7S3S
+         XI4oD81p59czXK7SKlWMe4ORjySE/hQS/Hk8fMp5gmbxfroCm7OouqMSPpCJIfHRuESy
+         n5K1tqvI7tF+TZS1iqY00aNIoqNufeg24cOstNb//scrT4am/oWQch5cpJ5LXDWZv8pg
+         21wbgXWmTN/MxgDqC+QJOoOVR1emwPOUQCidLlua8AMSnhZsdGPpe+jX7XrbkI3Xt9Hm
+         U3Zw==
+X-Gm-Message-State: AOJu0YwOgy0/JXKvHNbHoDR/wsJa2L3Ux5iygG7d4ZXudR7I5GMA91Jt
+	C2DGyu1aAdfKAZb9Fy9kfMyGCK/0BDkdobNj1L0EopaOEinwloY1
+X-Google-Smtp-Source: AGHT+IG7KytPhcCCGt0DJgflFsul/IGg9dbIsuDpZgqGurOYArTCDBoYnurv27JfOgVVV7C9JzB4IA==
+X-Received: by 2002:a05:6359:689:b0:175:abbe:58b9 with SMTP id ei9-20020a056359068900b00175abbe58b9mr592825rwb.64.1705577474866;
+        Thu, 18 Jan 2024 03:31:14 -0800 (PST)
+Received: from toyko-2.5 ([45.32.55.39])
+        by smtp.gmail.com with ESMTPSA id u22-20020aa78496000000b006d974d47a8csm3096710pfn.115.2024.01.18.03.31.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 03:31:14 -0800 (PST)
+From: amazingfate <liujianfeng1994@gmail.com>
+To: nicolas@ndufresne.ca
+Cc: conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	elezegarcia@gmail.com,
+	ezequiel@vanguardiasur.com.ar,
+	heiko@sntech.de,
+	knaerzche@gmail.com,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	liujianfeng1994@gmail.com,
+	mchehab@kernel.org,
+	p.zabel@pengutronix.de,
+	robh+dt@kernel.org,
+	sfr@canb.auug.org.au
+Subject: Re: [PATCH v3 0/2] [v3]Add hantro g1 video decoder support for RK3588
+Date: Thu, 18 Jan 2024 19:30:51 +0800
+Message-Id: <20240118113051.10773-1-liujianfeng1994@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <5490507acc121113e52a8cdddb155fddf6dbb374.camel@ndufresne.ca>
+References: <5490507acc121113e52a8cdddb155fddf6dbb374.camel@ndufresne.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mm, kmsan: fix infinite recursion due to RCU critical
- section
-Content-Language: en-US
-To: Marco Elver <elver@google.com>, Andrew Morton <akpm@linux-foundation.org>
-CC: Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov
-	<dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
-	<mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H. Peter Anvin"
-	<hpa@zytor.com>, <kasan-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com>
-References: <20240118110022.2538350-1-elver@google.com>
- <CANpmjNPx0j-x_SDu777gaV1oOFuPmHV3xFfru56UzBXHnZhYLg@mail.gmail.com>
-From: Charan Teja Kalla <quic_charante@quicinc.com>
-In-Reply-To: <CANpmjNPx0j-x_SDu777gaV1oOFuPmHV3xFfru56UzBXHnZhYLg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Rh-3EVEcIoOAH_xbT10Yj9vRa3gg77-3
-X-Proofpoint-GUID: Rh-3EVEcIoOAH_xbT10Yj9vRa3gg77-3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-18_06,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- phishscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401180082
+Content-Transfer-Encoding: 8bit
 
-May I ask if KMSAN also instruments the access to the memory managed as
-ZONE_DEVICE. You know this is not the RAM and also these pages will
-never be onlined thus also not be available in buddy.
+Hi Nicolas,
 
-Reason for the ask is that this patch is introduced because of a race
-between pfn walker ends up in pfn of zone device memory.
+Wed, 17 Jan 2024 14:16:24 -0500, Nicolas Dufresne wrote:
+>The only concern I have is that we rejected enabling this VPU on RK3399, since
+>having two H.264 decoders was confusing userspace softwares at the time, causing
+>the slow one to be picked sometimes. I know the selection is not fully
+>implemented in GStreamer either, not sure for LibreELEC ffmpeg fork, Chromium or
+>Cros-codec.
 
-If KMSAN never instruments this, does it look good to you to have the
-KMSAN version of pfn_valid(), as being suggested by Alexander in the
-other mail.
+Only H264 decoder is disabled for RK3399 in driver code, and RK3399 does
+have this VPU node in devicetree to support other codecs like MPEG or VP8.
 
-Thanks,
+>Of course, its not a problem now, but only when someone provides an rkvdec2
+>driver that enables the much more capable HW decoder. Shall we hold on H.264
+>mainline for now ?
 
-On 1/18/2024 4:37 PM, Marco Elver wrote:
-> On Thu, 18 Jan 2024 at 12:00, Marco Elver <elver@google.com> wrote:
->>
->> Alexander Potapenko writes in [1]: "For every memory access in the code
->> instrumented by KMSAN we call kmsan_get_metadata() to obtain the
->> metadata for the memory being accessed. For virtual memory the metadata
->> pointers are stored in the corresponding `struct page`, therefore we
->> need to call virt_to_page() to get them.
->>
->> According to the comment in arch/x86/include/asm/page.h,
->> virt_to_page(kaddr) returns a valid pointer iff virt_addr_valid(kaddr)
->> is true, so KMSAN needs to call virt_addr_valid() as well.
->>
->> To avoid recursion, kmsan_get_metadata() must not call instrumented
->> code, therefore ./arch/x86/include/asm/kmsan.h forks parts of
->> arch/x86/mm/physaddr.c to check whether a virtual address is valid or
->> not.
->>
->> But the introduction of rcu_read_lock() to pfn_valid() added
->> instrumented RCU API calls to virt_to_page_or_null(), which is called by
->> kmsan_get_metadata(), so there is an infinite recursion now.  I do not
->> think it is correct to stop that recursion by doing
->> kmsan_enter_runtime()/kmsan_exit_runtime() in kmsan_get_metadata(): that
->> would prevent instrumented functions called from within the runtime from
->> tracking the shadow values, which might introduce false positives."
->>
->> Fix the issue by switching pfn_valid() to the _sched() variant of
->> rcu_read_lock/unlock(), which does not require calling into RCU. Given
->> the critical section in pfn_valid() is very small, this is a reasonable
->> trade-off (with preemptible RCU).
->>
->> KMSAN further needs to be careful to suppress calls into the scheduler,
->> which would be another source of recursion. This can be done by wrapping
->> the call to pfn_valid() into preempt_disable/enable_no_resched(). The
->> downside is that this sacrifices breaking scheduling guarantees;
->> however, a kernel compiled with KMSAN has already given up any
->> performance guarantees due to being heavily instrumented.
->>
->> Note, KMSAN code already disables tracing via Makefile, and since
->> mmzone.h is included, it is not necessary to use the notrace variant,
->> which is generally preferred in all other cases.
->>
->> Link: https://lkml.kernel.org/r/20240115184430.2710652-1-glider@google.com [1]
->> Reported-by: Alexander Potapenko <glider@google.com>
->> Reported-by: syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com
->> Signed-off-by: Marco Elver <elver@google.com>
->> Cc: Charan Teja Kalla <quic_charante@quicinc.com>
-> 
-> This might want a:
-> 
-> Fixes: 5ec8e8ea8b77 ("mm/sparsemem: fix race in accessing
-> memory_section->usage")
-> 
-> For reference which patch introduced the problem.
-> 
->> ---
->>  arch/x86/include/asm/kmsan.h | 17 ++++++++++++++++-
->>  include/linux/mmzone.h       |  6 +++---
->>  2 files changed, 19 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/kmsan.h b/arch/x86/include/asm/kmsan.h
->> index 8fa6ac0e2d76..d91b37f5b4bb 100644
->> --- a/arch/x86/include/asm/kmsan.h
->> +++ b/arch/x86/include/asm/kmsan.h
->> @@ -64,6 +64,7 @@ static inline bool kmsan_virt_addr_valid(void *addr)
->>  {
->>         unsigned long x = (unsigned long)addr;
->>         unsigned long y = x - __START_KERNEL_map;
->> +       bool ret;
->>
->>         /* use the carry flag to determine if x was < __START_KERNEL_map */
->>         if (unlikely(x > y)) {
->> @@ -79,7 +80,21 @@ static inline bool kmsan_virt_addr_valid(void *addr)
->>                         return false;
->>         }
->>
->> -       return pfn_valid(x >> PAGE_SHIFT);
->> +       /*
->> +        * pfn_valid() relies on RCU, and may call into the scheduler on exiting
->> +        * the critical section. However, this would result in recursion with
->> +        * KMSAN. Therefore, disable preemption here, and re-enable preemption
->> +        * below while suppressing reschedules to avoid recursion.
->> +        *
->> +        * Note, this sacrifices occasionally breaking scheduling guarantees.
->> +        * Although, a kernel compiled with KMSAN has already given up on any
->> +        * performance guarantees due to being heavily instrumented.
->> +        */
->> +       preempt_disable();
->> +       ret = pfn_valid(x >> PAGE_SHIFT);
->> +       preempt_enable_no_resched();
->> +
->> +       return ret;
->>  }
->>
->>  #endif /* !MODULE */
->> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
->> index 4ed33b127821..a497f189d988 100644
->> --- a/include/linux/mmzone.h
->> +++ b/include/linux/mmzone.h
->> @@ -2013,9 +2013,9 @@ static inline int pfn_valid(unsigned long pfn)
->>         if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
->>                 return 0;
->>         ms = __pfn_to_section(pfn);
->> -       rcu_read_lock();
->> +       rcu_read_lock_sched();
->>         if (!valid_section(ms)) {
->> -               rcu_read_unlock();
->> +               rcu_read_unlock_sched();
->>                 return 0;
->>         }
->>         /*
->> @@ -2023,7 +2023,7 @@ static inline int pfn_valid(unsigned long pfn)
->>          * the entire section-sized span.
->>          */
->>         ret = early_section(ms) || pfn_section_valid(ms, pfn);
->> -       rcu_read_unlock();
->> +       rcu_read_unlock_sched();
->>
->>         return ret;
->>  }
->> --
->> 2.43.0.381.gb435a96ce8-goog
->>
+RK356x also has the same situation. That is why this patch shares the same
+compatible string with RK356X. Before rkvdec2 launching mainline, this
+hantro g1 vpu is the only H264 decoder to use on these socs. We can keep
+H.264 enabled, and disable it for RK356x and RK3588 just like what we did
+to RK3399 when rkvdec2 launches.
+
+Jianfeng
 
