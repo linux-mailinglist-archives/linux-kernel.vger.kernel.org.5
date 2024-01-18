@@ -1,97 +1,170 @@
-Return-Path: <linux-kernel+bounces-29691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C33948311DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:36:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 125DB8311E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:44:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 635B21F230F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:36:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31F341C21C3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C152568B;
-	Thu, 18 Jan 2024 03:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DB6963B5;
+	Thu, 18 Jan 2024 03:43:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O+PRy84f"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B+Qu4P/7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF2DD6104
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96ABC568B;
+	Thu, 18 Jan 2024 03:43:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705549005; cv=none; b=mykUBqTnRWX17UsrVcSOxD4rRWGjEjVwrBCNORJ6hxhPFvxyvp0Ov6Drr04oL1SHKiJ9a/B5mQhzOxpYSbcmVBlWkDa4UEiRovt2KRzrNruWqEPYJ0KAPXz6HyowJ7H2aSqYzkpmUoKMm6p7D5b9JXTA14oSgap7m2Wuh46jwCc=
+	t=1705549431; cv=none; b=LQlzcdlPnUrCNAsQ6TH0lq00ztHxD3uvI7S6aYHCRGyUKqU2zjyeM0o/W4DjvUsjFbOHLQ3MRQNcA1PfsBQuVDpTRsCfDL9J5GbKKGDqYvmWcR+e9tjTssfwMxL864B8BchL9OI+Q9N4Nud/57tcqKpYy6Y2o0a5naZnLkAFmqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705549005; c=relaxed/simple;
-	bh=KHaJKuupFrb/5JLgFhafWv0RzApN98z5dybDAr16RQo=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding; b=WWOhsJs6t8eeiZ54qPIG3jZw2uPPkwb1e9ht7KK0ZNB9IgbEXCho+2cjGYHqPirKT3LHRCSQNu39bovOmvP+EREam8P2dnZP8EMUhX8LSNNqEOHLzUpp2B+oO7Y707F/y1RG62qRK2K83g41S+PcIHPnLL9HNNCBpwNb7HKgJYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O+PRy84f; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705549004; x=1737085004;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KHaJKuupFrb/5JLgFhafWv0RzApN98z5dybDAr16RQo=;
-  b=O+PRy84fu6Uyna07zyroGoFIyO+4FRFmOvyfyhN95XieQARk+9LSU+lj
-   pV+w6XXMwa0NNiClCuIkKMtz1w2kWu+wBGr1U5WB0eALs0F93tQoT84hG
-   uRXdZewblECE0aZRmy0aAVQQ0GGZykOcOyKrnAzmEgv6GD4vRsZXih0/C
-   o3mLgkLUGB9dwE25Fj7IQ6LvcDJG5yxeSkxEXIV8+YnwbgHc1YQaUD2JH
-   YtVQFHDG1xSUaxCby5rsQv9nM65T7+SooGCjD3K2NLGcEuO1jRCoPxHIy
-   GGxeFmOj/0MEogk01bg5Z9NsQYMCx73CusVczelKw02eISBcEsnWzfd5F
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7709233"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="7709233"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 19:36:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="26346462"
-Received: from myalnuc.bj.intel.com ([10.238.158.152])
-  by orviesa002.jf.intel.com with ESMTP; 17 Jan 2024 19:36:42 -0800
-From: biao.lu@intel.com
-To: sameo@rivosinc.com
-Cc: dan.j.williams@intel.com,
-	linux-coco@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/4] tsm: Runtime measurement registers ABI
-Date: Thu, 18 Jan 2024 11:35:15 +0800
-Message-Id: <20240118033515.2293149-1-biao.lu@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240114223532.290550-1-sameo@rivosinc.com>
-References: <20240114223532.290550-1-sameo@rivosinc.com>
+	s=arc-20240116; t=1705549431; c=relaxed/simple;
+	bh=5we4N/QTc9CQm3qRCB+qD9bBssyR+XRbGzzp64rBYeI=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=JgXNQBqospZs+Kphsw9XoIfmPbBj9YIZkuB9fC8vYgddClr09vsTxT40smhlKQDAxjUGwascmSBjYVMhCevnvNeYnXZ6Xvm6TF6ls3x2npdbfUlMN/Gh8DU+3AFEoqU9pSmhPlnGkAqPfkMUdcQFGcN2plWOIfj+ynJBTPeJDjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B+Qu4P/7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81DADC433C7;
+	Thu, 18 Jan 2024 03:43:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705549431;
+	bh=5we4N/QTc9CQm3qRCB+qD9bBssyR+XRbGzzp64rBYeI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B+Qu4P/7/z2hzBs6x1PgVoe7FZJaiikZLcrJjIJj3aiqXqWeYPoRMZA+bCcHsUFJJ
+	 IshRqmJ2RZ1WCNkw/ZYqxTrZXB1/jk8yrkApfcYQSGZXzVFSq1b0ugTBOdxtUcBvEt
+	 MeK1hWxzi+eUQz0URiPGV4fwdKMBaf6JMQrAe4c/oppN1cH/kXORek5DGB2qb1bsOB
+	 Y2iKnVfzpTZVC6GAybz7x3WFAy0mcDFbv2LeKtTm1JHaSBPkFCsIJJxl5SLF0w51qq
+	 LEJ7kfAuAqsrVAU25QWBO5SRT349Bti9wVQCYcEsWYeSq1iE1/RWH0Ra3m2TLW3kOe
+	 zH1mT9Y+PALYQ==
+Date: Wed, 17 Jan 2024 19:43:48 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Gaurav Jain <gaurav.jain@nxp.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Horia Geanta <horia.geanta@nxp.com>,
+	Pankaj Gupta <pankaj.gupta@nxp.com>, Varun Sethi <V.Sethi@nxp.com>,
+	Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
+	Aisheng Dong <aisheng.dong@nxp.com>,
+	Silvano Di Ninno <silvano.dininno@nxp.com>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [EXT] Re: [PATCH] crypto: caam/hash - fix asynchronous hash
+Message-ID: <20240118034348.GA1103@sol.localdomain>
+References: <20240116094405.744466-1-gaurav.jain@nxp.com>
+ <20240117043308.GA1137@sol.localdomain>
+ <AM0PR04MB6004E3B9AB6DB6BE3F6BE48BE7722@AM0PR04MB6004.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM0PR04MB6004E3B9AB6DB6BE3F6BE48BE7722@AM0PR04MB6004.eurprd04.prod.outlook.com>
 
-Samuel Ortiz wrote:
-> Some confidential computing architectures (Intel TDX, ARM CCA, RISC-V
-> CoVE) provide their guests with a set of measurements registers that can
-> be extended at runtime, i.e. after the initial, host-initiated
-> measurements of the TVM are finalized. Those runtime measurement
-> registers (RTMR) are isolated from the host accessible ones but TSMs
-> include them in their signed attestation reports.
->
-> All architectures supporting RTMRs expose a similar interface to their
-> TVMs: An extension command/call that takes a measurement value and an
-> RTMR index to extend it with, and a readback command for reading an RTMR
-> value back (taking an RTMR index as an argument as well). This patch series
-> builds an architecture agnostic, configfs-based ABI for userspace to extend
-> and read RTMR values back. It extends the current TSM ops structure and
-> each confidential computing architecture can implement this extension to
-> provide RTMR support.
+On Wed, Jan 17, 2024 at 10:48:39AM +0000, Gaurav Jain wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Eric Biggers <ebiggers@kernel.org>
+> > Sent: Wednesday, January 17, 2024 10:03 AM
+> > To: Gaurav Jain <gaurav.jain@nxp.com>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>; David S . Miller
+> > <davem@davemloft.net>; Horia Geanta <horia.geanta@nxp.com>; Pankaj
+> > Gupta <pankaj.gupta@nxp.com>; Varun Sethi <V.Sethi@nxp.com>; Meenakshi
+> > Aggarwal <meenakshi.aggarwal@nxp.com>; Aisheng Dong
+> > <aisheng.dong@nxp.com>; Silvano Di Ninno <silvano.dininno@nxp.com>; linux-
+> > crypto@vger.kernel.org; linux-kernel@vger.kernel.org; dl-linux-imx <linux-
+> > imx@nxp.com>
+> > Subject: [EXT] Re: [PATCH] crypto: caam/hash - fix asynchronous hash
+> > 
+> > Caution: This is an external email. Please take care when clicking links or
+> > opening attachments. When in doubt, report the message using the 'Report this
+> > email' button
+> > 
+> > 
+> > On Tue, Jan 16, 2024 at 03:14:05PM +0530, Gaurav Jain wrote:
+> > > ahash_alg->setkey is updated to ahash_nosetkey in ahash.c so updating
+> > > the handling of setkey in caam driver.
+> > >
+> > > Fixes: 2f1f34c1bf7b ("crypto: ahash - optimize performance when
+> > > wrapping shash")
+> > > Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
+> > > ---
+> > >  drivers/crypto/caam/caamalg_qi2.c | 4 ++--
+> > >  drivers/crypto/caam/caamhash.c    | 4 ++--
+> > >  2 files changed, 4 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/crypto/caam/caamalg_qi2.c
+> > > b/drivers/crypto/caam/caamalg_qi2.c
+> > > index a148ff1f0872..93a400e286b4 100644
+> > > --- a/drivers/crypto/caam/caamalg_qi2.c
+> > > +++ b/drivers/crypto/caam/caamalg_qi2.c
+> > > @@ -4571,7 +4571,7 @@ static int caam_hash_cra_init(struct crypto_tfm
+> > > *tfm)
+> > >
+> > >       ctx->dev = caam_hash->dev;
+> > >
+> > > -     if (alg->setkey) {
+> > > +     if (crypto_hash_alg_has_setkey(halg)) {
+> > >               ctx->adata.key_dma = dma_map_single_attrs(ctx->dev, ctx->key,
+> > >                                                         ARRAY_SIZE(ctx->key),
+> > >                                                         DMA_TO_DEVICE,
+> > > @@ -4611,7 +4611,7 @@ static int caam_hash_cra_init(struct crypto_tfm
+> > *tfm)
+> > >        * For keyed hash algorithms shared descriptors
+> > >        * will be created later in setkey() callback
+> > >        */
+> > > -     return alg->setkey ? 0 : ahash_set_sh_desc(ahash);
+> > > +     return crypto_hash_alg_has_setkey(halg) ? 0 :
+> > > + ahash_set_sh_desc(ahash);
+> > >  }
+> > >
+> > >  static void caam_hash_cra_exit(struct crypto_tfm *tfm) diff --git
+> > > a/drivers/crypto/caam/caamhash.c b/drivers/crypto/caam/caamhash.c
+> > > index 290c8500c247..4d50356b593c 100644
+> > > --- a/drivers/crypto/caam/caamhash.c
+> > > +++ b/drivers/crypto/caam/caamhash.c
+> > > @@ -1804,7 +1804,7 @@ static int caam_hash_cra_init(struct crypto_tfm
+> > *tfm)
+> > >       } else {
+> > >               if (priv->era >= 6) {
+> > >                       ctx->dir = DMA_BIDIRECTIONAL;
+> > > -                     ctx->key_dir = alg->setkey ? DMA_TO_DEVICE : DMA_NONE;
+> > > +                     ctx->key_dir = crypto_hash_alg_has_setkey(halg)
+> > > + ? DMA_TO_DEVICE : DMA_NONE;
+> > >               } else {
+> > >                       ctx->dir = DMA_TO_DEVICE;
+> > >                       ctx->key_dir = DMA_NONE; @@ -1862,7 +1862,7 @@
+> > > static int caam_hash_cra_init(struct crypto_tfm *tfm)
+> > >        * For keyed hash algorithms shared descriptors
+> > >        * will be created later in setkey() callback
+> > >        */
+> > > -     return alg->setkey ? 0 : ahash_set_sh_desc(ahash);
+> > > +     return crypto_hash_alg_has_setkey(halg) ? 0 :
+> > > + ahash_set_sh_desc(ahash);
+> > >  }
+> > >
+> > 
+> > Thanks.  Did you also consider putting something in struct caam_hash_alg (the
+> > struct in which this driver embeds its ahash_alg structure) that indicates whether
+> > the algorithm is an HMAC or not?  Other drivers use that solution.
+> 
+> Crypto/ahash.c has this API to check the setkey so I used to differentiate between HMAC & only hash.
+> Let me know if this change is not sufficient, will add the flag in caam_hash_alg.
+> 
 
-Hi, Samuel
-The ABI does not include eventlog, but eventlog is usually used with RTMR.
-What do you think about how to implement eventlog?
+Currently crypto_hash_alg_has_setkey() isn't used outside of crypto/ahash.c.
+Since there's an alternative that matches what the other drivers do, I think I'd
+prefer that you did that.  We can then make crypto_hash_alg_has_setkey() a
+static function, private to crypto/ahash.c.
 
+- Eric
 
