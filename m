@@ -1,109 +1,128 @@
-Return-Path: <linux-kernel+bounces-30079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1E9F8318DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:05:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 587F38318E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:08:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EB152878B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:05:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6D36B2421B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CADE124214;
-	Thu, 18 Jan 2024 12:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E46D24A06;
+	Thu, 18 Jan 2024 12:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FVz8l6bl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b9TpMPGx"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB139241EC;
-	Thu, 18 Jan 2024 12:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A2E241E9;
+	Thu, 18 Jan 2024 12:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705579519; cv=none; b=l1Mw+GqQa0fkuyUQdxw4hvvuG4MHRQHaGsQtlOi8Bw9eLkPHuMlUQEC9AZ0zw+a3uT+s/dQacUxhib/BjL0SXGnDUGs0ILyodbU8d78ryIQjCwpQ9OqZG5F56JObLJYF+rgHO46u9B8jY5b+/T7K9KNrRzq9AeiYJ7V9FSKg3YY=
+	t=1705579670; cv=none; b=k8QYr6KDI6QYhRRVTHDrc01W7JNtNEml5id5JbYfH1b+efOb9qM+EGU8mwCOF3otcqqBFQG3z6nh2icQCYuNWhB1arYKiGMRYH7nqI/Sg7h7gyVjKpQLXkCejst296OevgQZCTphTKv5avS8SLBKB1Z8sLui+0sy9G4f+onGVjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705579519; c=relaxed/simple;
-	bh=SNU17WpjdPFohIh6bNYg3pQZpp+L6Jmf/1lHQBAlWQI=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding; b=fmPFeMcZ1oInfM3UmZCGxS522kC8+ay3EiuxMFl8XU1Jwu2qWWzppvXeEm9V8MPlMzjoDpIyr0OPO/mjztsJQt5vTFqJhzjz9kcp0H7C/3gkQDi+MSL0fLp701ENl942Ak2LDYGTWRINHnBabS0YTvl7uz0+mVAI+IWgyd8LwoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FVz8l6bl; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705579516; x=1737115516;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=SNU17WpjdPFohIh6bNYg3pQZpp+L6Jmf/1lHQBAlWQI=;
-  b=FVz8l6blqZcEovO3HhOQ+0prPH/mr+09iNSBNVsCrKpKJKOzuHRLNhZV
-   MYwk6W+SaqeHev91VI29LtYpHNTIxoM+yaExKuTEuu5L+QPtpIoXKCyau
-   BqwhevAs8iGFtUyrRziO/LjOYuvTgteyWnuPKn6p+F9vDETeatPMAB1bg
-   EJ8HiSAOELeulMLP0UbmzP9Zn74y4njAtpEIbLjiXQZlTisMleh0PrYui
-   NDeecj/uTFeuCuFZKzUEabdS6SNuIFNPknluPOTJzQwOR6zfQ25gFvyNc
-   UYjXdPIPvM9M9WUTV2VPsbXFs5JNm/D9Q+AL64esX/OrLWxhcj9AKXFxQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7188533"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="7188533"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 04:05:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="396341"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
-  by orviesa004.jf.intel.com with ESMTP; 18 Jan 2024 04:05:15 -0800
-From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To: rafael@kernel.org,
-	viresh.kumar@linaro.org
-Cc: linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] cpufreq: intel_pstate: Directly use stored ratios for max frequencies
-Date: Thu, 18 Jan 2024 04:05:13 -0800
-Message-Id: <20240118120513.1018808-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1705579670; c=relaxed/simple;
+	bh=Sfs0grAFRkw/zBunrBwd566BmWSyT4Zsgtf43ksD36A=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding; b=DYD7u/AyloGnz+F+LPNOxS7XFqOaMzlw24vzTUUc21xdoMvO0wwZMFBX+PijkkKavJzglAZ7ByAmOttd8iEzdS9w3vNKpMMrJZ+DOB2h1xDWv0FZZRRDC1fnORPSsbKoFs5XIrIFQswqmEP4N4vyMchgRk/WRxNRvbDyauASIAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b9TpMPGx; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e9101b5f9so5307365e9.3;
+        Thu, 18 Jan 2024 04:07:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705579667; x=1706184467; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4sCmIQx6AGFYTpS8ooyJWTqHb26hOTFWBxgbo7T6WeI=;
+        b=b9TpMPGx/D8lYaZULgH3H/42cag8rzICRRg405HlqfdlJPP1304dZUfxLbbTHxXeor
+         saOqERPhVxUBTA/oVu4ZUv8Y9ExcsMlo77NaKGPYWuIbdMPmNVEd9wifxwMRlWEngr+P
+         j5D8MRsiiCdPB+dPYo234Ed2PikbzfZHtp8wXld/VlOdl3gEoJBabqMCE7INLP/7Aqql
+         YTwkP0bZgJbreoiTxXYkanbfVpOntCbwdGOoBSY6cpBhVcRM7CtG97230ZqrbfdAL3MY
+         kIgFHtMd6y+U+fAe9BBwytVIWLb0hpfXKd0GC+h58UmjaGuvxbWdBZSLp1e3LXrcreGk
+         0miA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705579667; x=1706184467;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4sCmIQx6AGFYTpS8ooyJWTqHb26hOTFWBxgbo7T6WeI=;
+        b=xQlDqCb3veptKsnGKPFgLrsRlTJHOyUFRwQlbWiwPxhh4qrUlR5YJ30Krgy1mDuDmn
+         +AvC0q0JgR/XiKVPsUbIWJ8kVX4hibnq0XiRLQoXvrnXpFwXRFDqBj0M9muPPcuPxE1Z
+         deXPZeho39JPf0eQlck6MtUUiunq9HWOdVu9gIvUI9C/qGGi5FeC/jHSgE4xPNvAsZFL
+         Yf6dGu6+BZZEkfO9rsFKngX+Nu8gP+2hZ2Wrf60oK56tjioMZW2w5Tn7Kdzz7B5y0TfI
+         wqw0AfpUNbuIGwZo8DdjFMcWBZ1c52VBfseYk32sh/Uto5T4Enc28IYAW51jvti8WJXn
+         Db9Q==
+X-Gm-Message-State: AOJu0YwtgbCuLEL919h/FKhimInenbCHaSCuPOxVrJmEz8Pz/A1pwxEq
+	JLAJ4CKbVMsZTCkeTjRHMby+9ALLJR98SVb0E8ALHQFMank/N+VlnoOJ3X1n
+X-Google-Smtp-Source: AGHT+IFI2KpYg6ESmlPKx7B/dBNMJwuHYhi+S0sXgWlbDOeT1O2++W7P4U8MGNKxKy0yjsOLU4Cjsg==
+X-Received: by 2002:a05:600c:754:b0:40d:492d:c376 with SMTP id j20-20020a05600c075400b0040d492dc376mr449796wmn.114.1705579667210;
+        Thu, 18 Jan 2024 04:07:47 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id a12-20020a5d508c000000b0033763a9ea2dsm3908725wrt.63.2024.01.18.04.07.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 04:07:46 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: David Howells <dhowells@redhat.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	keyrings@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] crypto: asymmetric_keys: remove redundant pointer secs
+Date: Thu, 18 Jan 2024 12:07:45 +0000
+Message-Id: <20240118120745.2519762-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-Avoid unnecessary calculation for converting frequency to performance
-ratio by using a scaling factor for the maximum non turbo and turbo
-frequency. Here the driver already stored performance ratios for max
-non turbo and turbo frequency by reading from MSR_HWP_CAPABILITIES.
-Directly use those ratios without any calculations.
+The pointer secs is being assigned a value however secs is never
+read afterwards. The pointer secs is redundant and can be removed.
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cleans up clang scan build warning:
+warning: Although the value stored to 'secs' is used in the enclosing
+expression, the value is never actually read from 'secs'
+[deadcode.DeadStores]
+
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- drivers/cpufreq/intel_pstate.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ crypto/asymmetric_keys/verify_pefile.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 2ca70b0b5fdc..6bbc21ca96e0 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2532,7 +2532,14 @@ static void intel_pstate_update_perf_limits(struct cpudata *cpu,
- 		int freq;
+diff --git a/crypto/asymmetric_keys/verify_pefile.c b/crypto/asymmetric_keys/verify_pefile.c
+index f440767bd727..2863984b6700 100644
+--- a/crypto/asymmetric_keys/verify_pefile.c
++++ b/crypto/asymmetric_keys/verify_pefile.c
+@@ -28,7 +28,7 @@ static int pefile_parse_binary(const void *pebuf, unsigned int pelen,
+ 	const struct pe32plus_opt_hdr *pe64;
+ 	const struct data_directory *ddir;
+ 	const struct data_dirent *dde;
+-	const struct section_header *secs, *sec;
++	const struct section_header *sec;
+ 	size_t cursor, datalen = pelen;
  
- 		freq = max_policy_perf * perf_ctl_scaling;
--		max_policy_perf = DIV_ROUND_UP(freq, scaling);
-+
-+		if (freq == cpu->pstate.turbo_freq)
-+			max_policy_perf = cpu->pstate.turbo_pstate;
-+		else if (freq == cpu->pstate.max_freq)
-+			max_policy_perf = cpu->pstate.max_pstate;
-+		else
-+			max_policy_perf = DIV_ROUND_UP(freq, scaling);
-+
- 		freq = min_policy_perf * perf_ctl_scaling;
- 		min_policy_perf = DIV_ROUND_UP(freq, scaling);
- 	}
+ 	kenter("");
+@@ -110,7 +110,7 @@ static int pefile_parse_binary(const void *pebuf, unsigned int pelen,
+ 	ctx->n_sections = pe->sections;
+ 	if (ctx->n_sections > (ctx->header_size - cursor) / sizeof(*sec))
+ 		return -ELIBBAD;
+-	ctx->secs = secs = pebuf + cursor;
++	ctx->secs = pebuf + cursor;
+ 
+ 	return 0;
+ }
 -- 
-2.40.1
+2.39.2
 
 
