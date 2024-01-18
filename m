@@ -1,113 +1,193 @@
-Return-Path: <linux-kernel+bounces-30249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A2E9831C38
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:20:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A744B831C3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:21:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E438E281C34
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:20:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAA391C22651
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A32191E520;
-	Thu, 18 Jan 2024 15:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBD524B32;
+	Thu, 18 Jan 2024 15:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="cIB2KqO4"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kUsk2a8R"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C2C286AF
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 15:20:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CE81E520;
+	Thu, 18 Jan 2024 15:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705591235; cv=none; b=BfBvErrheP20Cl/zfpDaO4OehJpCUPO2wiFoql26wy4hvxTW4R8mM3b7ogtDIflI2oL5wWoTMsvR7sr87UbAetAI6ObHSP+xnN7+XJfXsU5dGO5diunnuFza/wAyUNEfPEBtzbXwcqxt2TAGLE3bgRUOa0qfHm3NMcc/j9MiD8Q=
+	t=1705591270; cv=none; b=TanGCXTYM+SUJL6v544ROMm1t2qGLIxXU2G9A/tb/N0dJAF63nXlYa30EzSzDvLgYsKRlejtAQxvTB6Oy1YpBhii7S55rQjNoRG0qEwS9fRqaJNlvlRMgH52OZYC0UFkzuglynUmJxJNyfduZKr/EGCs2FiaDgaFJIhGQ1V388g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705591235; c=relaxed/simple;
-	bh=ipuXZIpkqvyoFi72VtI54EQu47YsHMypO7nBKibnIA4=;
+	s=arc-20240116; t=1705591270; c=relaxed/simple;
+	bh=Q0uFvttzQM/xHVr4MGjxmmaHruyejoVLaVqpqT0uaag=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=EV/OLZcChdifM9obqkcGXjbXwbqsBG801OE1WWN/DnoUBuWVwvpKZwH2i3MYAEatI726vYsHtFIsxJcKg04b/Kj+Fj03d22gl6pq6YFIvA5kl1ThBWvH4zb59twuM12RyIIM1SM17omdU9quWbZ3tf1YV4+4UdRZs4GPMcY+Cqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=cIB2KqO4; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7bee01886baso48308439f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 07:20:33 -0800 (PST)
+	 Message-ID:X-Google-Original-Message-ID:Date:From:To:Cc:Subject:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=Tv4qGy1atsbsLH1ncxfiQ8LHKUT31oqv2iNaIzMkVb9sMd8w1mHOE1TI6Wz2/tvII++hIdE7XPPZHTWIR7HTkKJdg6cCi+yA9NyLhDLn1hvKPIwSPAR9kBzYLcVR+NwexSFgQuRPNjjifpJahAdYfweU9poxMVuQsJ/F2C+xAHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kUsk2a8R; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-598699c0f1eso5576460eaf.2;
+        Thu, 18 Jan 2024 07:21:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705591232; x=1706196032; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZQJTwYjBW+C1ky0uIeVi+0jPt7nyJT8dC8zxjuOj6ec=;
-        b=cIB2KqO4vffUtyplPlw1n4LQXrkl5aCbQ7V/95f5HPi5yAtFbPvUWYmIx2LqkjdMaA
-         3Yf7WhgzZZk4JP/1Jf0lTMpBNrNEw10Gqpv/xxc6hqW1xiv4y7bJ158o8l/zViv5beGn
-         gcOHa0p+BeAaP6qtgf96XZ0chlKZCOyqox8kIIVCxpSjzTFuCntXpNMx4Nb3bl4alXxY
-         Ub3dkVXXDsYKH5C4zZXtUbjTgtY/54wSE0VQzZAg+bt5wUmvPAnJEzgoLHc74onplprv
-         +/CXOaoB+X7H4cBj1eObmSyb8lIRkXD8OJyDYGGkSGtuDW/68MUUsSdOW4OCavMabrqh
-         t1tg==
+        d=gmail.com; s=20230601; t=1705591268; x=1706196068; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=OxhHEuq4UoGKdyKSn2yl78F78p0BZYUw4RlptfBHAvk=;
+        b=kUsk2a8RDT1YAP8m5T1T8iNxsWv+OLM2mGXah0rT6FP7wkLzx/a/M4i0SNZzctAUYe
+         49hbXWgzvnIOdrx+ufsF1jSO0GkAoZQJfFHep6b6UKsZ5ZAEAOHJ2KpXoTjwSA08lYdr
+         RmMyQ1JFaWRuin3b70vLzMCfmj7LdxP7OXXE0Jf4p4Bn7Id/k/UsrzLV6mF6qChkEnmT
+         0rWwwysUMx645WDd6uXIZk1ITMAgEoj1s/0o9x0j6p012v2wiSiJDv6KYE1XdNWjMOPD
+         crKtxQYTFVgHESQ2vdvI4jLYYbnygzmpBHQRsfvEmVtaZIrytulxwY7uXfQ/8T0m36nK
+         zLSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705591232; x=1706196032;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZQJTwYjBW+C1ky0uIeVi+0jPt7nyJT8dC8zxjuOj6ec=;
-        b=bdmQfOQ181gHjP291zzhJv5RQQYd81Gh4wyZqXGt3LrZhwpai0t2aEaCgM28HGCv9Z
-         0KkQnpb5eQnUWJj+gyUEzvD1GaGE7w+kSO9snXi7sydfv65ytZJKCopwGmeEQJ80Ulgx
-         qyNKwUexFbpOR/OI0HBI0/LHPO06E1XBz6XHaMwoHBwozlPscM3vn8I2edwrgIOn3rbS
-         pDjRcdNM45A0P8y6x4yMPdDCRBsS8s7f5Qw7vRbMHmi5RGnaf7UNNz5SZqCygiPzr3Li
-         SU87EGGpmga54VoS1Ag0fQ8Dq10MDC50yg+QhU+KyYBeC5H7YfTJz51w7uamY9uHdWTh
-         fnHA==
-X-Gm-Message-State: AOJu0YxtlCbhomWWi5nCxnj63dUaNyEhzolENVI3LyCYjaiqBgveqJDQ
-	rStgnbyhZpaxIMS0fXiIWWBR0m246zlH24olsdMT9bUvLhJNfZHkwsXd3+QCH/VK4EINY3W97tD
-	HB9c=
-X-Google-Smtp-Source: AGHT+IHvndeo7LZc4yj9jDyfvF1A5dB4m6oeKGrshKMFpAI7qE3NxRlMQpEHbdCVg05kBxRQBmIU9w==
-X-Received: by 2002:a6b:e305:0:b0:7bf:7374:edd2 with SMTP id u5-20020a6be305000000b007bf7374edd2mr2137744ioc.0.1705591232346;
-        Thu, 18 Jan 2024 07:20:32 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id y30-20020a029521000000b0046eb228a0e7sm655932jah.26.2024.01.18.07.20.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 07:20:31 -0800 (PST)
-Message-ID: <f6e687cc-debd-4864-901a-fb35be9f2adc@kernel.dk>
-Date: Thu, 18 Jan 2024 08:20:31 -0700
+        d=1e100.net; s=20230601; t=1705591268; x=1706196068;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OxhHEuq4UoGKdyKSn2yl78F78p0BZYUw4RlptfBHAvk=;
+        b=IY6S3lwVptffGQQaG6C8NkBAiwiGzdW6Bf0cm9vAJy6HEwoul6XA3Iy7soZYIO1P4f
+         qzbcKidcJ+JVVfqh4RQ5OzW3EGNQexItgb3gzGdvRAP8EWtCKGX/9SiSdoY+r0QuztNk
+         PeJzNTPljM1qfdfx4Ry/1fjb8cRNNw8zHov3L8OEYJssYPni22IItXHsmU9hkscUCcBg
+         mjfhLmR8gR+kZa9S5ynRtzHEB7CgH22XuEKnewgLQ3htDQjetKps+ZVXMitucfF+VM3s
+         CtpM5/aKSEJPcSh0xGeNnyd2JUgS0qrkvPDX/pTMUS+f7ox5GFYWnI0VJnL5zxfpFeZv
+         mb9A==
+X-Gm-Message-State: AOJu0Ywjti83+Zz3+sjtevJu3miEv8MDOSxauGDkG3bUhIDPkBzxwAFD
+	nn9C2NsN7qE0B6XCswaHfY8LB9lDMxx0uHrzUfUwzUdU1lydvKiU
+X-Google-Smtp-Source: AGHT+IH2BMhuQTwBXDYh4UyL8nSz7XvomyAtA2Fr7aMNO58k/+nLRU4T0sdfg/HjRYFAFfIrnghpBw==
+X-Received: by 2002:a4a:b149:0:b0:596:eb1:1014 with SMTP id e9-20020a4ab149000000b005960eb11014mr900095ooo.5.1705591267916;
+        Thu, 18 Jan 2024 07:21:07 -0800 (PST)
+Received: from neuromancer. ([75.28.21.198])
+        by smtp.gmail.com with ESMTPSA id z11-20020a4a304b000000b005990c400db8sm1187106ooz.46.2024.01.18.07.21.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 07:21:07 -0800 (PST)
+Message-ID: <65a941e3.4a0a0220.673cc.7147@mx.google.com>
+X-Google-Original-Message-ID: <ZalB4pIwnLf/zz2I@neuromancer.>
+Date: Thu, 18 Jan 2024 09:21:06 -0600
+From: Chris Morgan <macroalpha82@gmail.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: Tim Lunn <tim@feathertop.org>, linux-rockchip@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Chris Zhong <zyw@rock-chips.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Zhang Qing <zhangqing@rock-chips.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: rockchip: Document rk809 support for
+ rk817 audio codec
+References: <20240116132102.3272682-1-tim@feathertop.org>
+ <20240116132102.3272682-2-tim@feathertop.org>
+ <20240116-mangle-parish-93b5cd672d17@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block: Move checking GENHD_FL_NO_PART to
- bdev_add_partition()
-Content-Language: en-US
-To: Li Lingfeng <lilingfeng@huaweicloud.com>, allison.karlitskaya@redhat.com,
- hch@infradead.org, yukuai1@huaweicloud.com
-Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- houtao1@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
- Yu Kuai <yukuai1@huaweicloud.com>
-References: <20240118130401.792757-1-lilingfeng@huaweicloud.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240118130401.792757-1-lilingfeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116-mangle-parish-93b5cd672d17@spud>
 
-On 1/18/24 6:04 AM, Li Lingfeng wrote:
-> From: Li Lingfeng <lilingfeng3@huawei.com>
+On Tue, Jan 16, 2024 at 05:06:34PM +0000, Conor Dooley wrote:
+> On Wed, Jan 17, 2024 at 12:21:00AM +1100, Tim Lunn wrote:
+> > Rockchip RK809 shares the same audio codec as the rk817 mfd, it is also
+> > using the same rk817_codec driver. However it is missing from the
+> > bindings.
+> > 
+> > Update dt-binding documentation for rk809 to include the audio codec
+> > properties. This fixes the following warning from dtb check:
+> > 
+> > pmic@20: '#sound-dai-cells', 'assigned-clock-parents', 'assigned-clocks',
+> >    'clock-names', 'clocks', 'codec' do not match any of the regexes:
+> >    'pinctrl-[0-9]+'
+> > 
+> > Signed-off-by: Tim Lunn <tim@feathertop.org>
+> > ---
+> > 
+> > (no changes since v1)
+> > 
+> >  .../bindings/mfd/rockchip,rk809.yaml          | 30 ++++++++++++++++++-
+> >  1 file changed, 29 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml b/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
+> > index 839c0521f1e5..bac2e751e2f2 100644
+> > --- a/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
+> > +++ b/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
+> > @@ -12,7 +12,7 @@ maintainers:
+> >  
+> >  description: |
+> >    Rockchip RK809 series PMIC. This device consists of an i2c controlled MFD
+> > -  that includes regulators, an RTC, and power button.
+> > +  that includes regulators, an RTC, a power button, and an audio codec.
+> >  
+> >  properties:
+> >    compatible:
+> > @@ -93,6 +93,34 @@ properties:
+> >          unevaluatedProperties: false
+> >      unevaluatedProperties: false
+> >  
+> > +  clocks:
+> > +    description:
+> > +      The input clock for the audio codec.
+> > +
+> > +  clock-names:
+> > +    description:
+> > +      The clock name for the codec clock.
+> > +    items:
+> > +      - const: mclk
 > 
-> Commit 1a721de8489f ("block: don't add or resize partition on the disk
-> with GENHD_FL_NO_PART") prevented all operations about partitions on disks
-> with GENHD_FL_NO_PART in blkpg_do_ioctl() since they are meaningless.
-> However, it changed error code in some scenarios. So move checking
-> GENHD_FL_NO_PART to bdev_add_partition() to eliminate impact.
+> You have one clock only, why do you need to have clock-names?
+> 
+> Otherwise,
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> 
+> Cheers,
+> Conor.
 
-This looks fine, but it's identical to the one sent out by Yu two days
-ago. Hmm? Who's the proper author?
+The codec driver currently looks for a clock named "mclk".
 
-Adding Yu.
+Thank you,
+Chris.
 
--- 
-Jens Axboe
+> 
+> > +
+> > +  '#sound-dai-cells':
+> > +    description:
+> > +      Needed for the interpretation of sound dais.
+> > +    const: 0
+> > +
+> > +  codec:
+> > +    description: |
+> > +      The child node for the codec to hold additional properties. If no
+> > +      additional properties are required for the codec, this node can be
+> > +      omitted.
+> > +    type: object
+> > +    additionalProperties: false
+> > +    properties:
+> > +      rockchip,mic-in-differential:
+> > +        type: boolean
+> > +        description:
+> > +          Describes if the microphone uses differential mode.
+> > +
+> >  allOf:
+> >    - if:
+> >        properties:
+> > -- 
+> > 2.40.1
+> > 
 
+
+
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
 
