@@ -1,142 +1,177 @@
-Return-Path: <linux-kernel+bounces-30174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4598D831AFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:00:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F2D831AFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:00:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 782131C25782
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:00:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD1191F27FE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:00:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62013286B2;
-	Thu, 18 Jan 2024 13:59:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336F825765;
+	Thu, 18 Jan 2024 14:00:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VF0opJp6"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aeM1B0J2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F3525618;
-	Thu, 18 Jan 2024 13:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79DAA25759
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:00:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705586385; cv=none; b=PFBlc13zpEZYX+Pb5b2J7i1oVigmTx9jMT6E8UK5yn0QPhba5WaxgdBNA7SjDPIifAu9dfUoujTvkVga/NzSS+4/9WkUrYMNbZ/gZtZP9OVM62dyjKepddTQ0obvFbCvxkmeuhXLt1UHKKnk+6kHvo0lSl6tJErqNJolH3tKpjg=
+	t=1705586420; cv=none; b=imPbJCd4yaxTzMgPaHM7YTprseHz8ZwjhxJPnDPVrLiJ5MqI/wTho9kZ4xl2QroohDX9sgvf6slxKkig/AlF2aVyAk0G3mv0KOrD3KkbrtBPb7iG+xJnRuC+sXQLFmfPl0d9cFGxnJiR6x+KGGjDUeSZvsQjGsRquZ5JaPqY/rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705586385; c=relaxed/simple;
-	bh=y0IwCMSq9y/W9Z03dL7iPuixI88ZRL/QExoQtq9zsx8=;
-	h=Received:DKIM-Signature:Received:Received:Received:Received:
-	 Received:Received:Received:Received:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:Content-Language:To:Cc:References:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-TM-AS-GCONF:X-Proofpoint-ORIG-GUID:X-Proofpoint-GUID:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=VFAsGVdGKaRk+Vhp4j2IMRL0gpsjtx7FNzoWnYP+DJ1m2P+QIsep8aeZvS4ozw24MOh/LqAVNTC3F/vuXDvpiye8P/cGhhSAyoRPSCQcZUtN7ASgNvMzJkr49oLpoiAK7agPVeL3uknuIjD/tc46uf76iqaPm4R7jOAkASNUgok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VF0opJp6; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40IDlrJo031053;
-	Thu, 18 Jan 2024 13:59:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Lck6vOjOvjxQAjcjvAn+cEAdJmJF2EitvA9Y4tvDYd4=;
- b=VF0opJp6M0aeSvy7ZB5dvIOLP9AcQEy4OQRITalCHy1cylEAxs8PxcFcit58hs4GH9IG
- CFEaLz/Cjvofs9rsTaHVJxK7DFTdsNUcMV1ZU/2N4ZGIbnpnBwoQb7FyzPMEjL91ab5/
- myOP9zfgJL5Siu84Ukz70O8UpiqnnG4lCPe/8Y3n3huP3YYylDhBCin4uOts/u99ZANV
- GtsD//T2VV+eemIhqtGpVuFUh6eYo55RaZPVzX8JCNjIQYlrz7srerV3wYbXzNk/4rOT
- WVckFL+pcNNUMjuA4SnNUpQTUd4ECBx/7aLRRjWs+eRPcovXwVjmRzka5/NCym8iJFJ2 tA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vq56egbpp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 13:59:39 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40IDmuHM002853;
-	Thu, 18 Jan 2024 13:59:39 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vq56egbns-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 13:59:39 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40IAhkKM005797;
-	Thu, 18 Jan 2024 13:59:38 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm6bkuhs2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 13:59:38 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40IDxbJJ21496478
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 18 Jan 2024 13:59:37 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 483B458057;
-	Thu, 18 Jan 2024 13:59:37 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9026B5805D;
-	Thu, 18 Jan 2024 13:59:34 +0000 (GMT)
-Received: from [9.179.26.4] (unknown [9.179.26.4])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 18 Jan 2024 13:59:34 +0000 (GMT)
-Message-ID: <20a1a1f3-789a-4d91-9a94-dca16161afd7@linux.ibm.com>
-Date: Thu, 18 Jan 2024 14:59:33 +0100
+	s=arc-20240116; t=1705586420; c=relaxed/simple;
+	bh=oePAFFYODLX4qKuT+hCCpKcLhpD+k+lB3GJAV7/Ee3I=;
+	h=Received:DKIM-Signature:Received:Date:Message-ID:From:To:Cc:
+	 Subject:In-Reply-To:References:User-Agent:MIME-Version:
+	 Content-Type:X-SA-Exim-Connect-IP:X-SA-Exim-Rcpt-To:
+	 X-SA-Exim-Mail-From:X-SA-Exim-Scanned; b=YJKh4wT+wGg8BYCaQPKaVtnZddv+3Pj2xzOQnFOLab47OYmL4PZg6UwID9D7WzMiqwn7dwGA2nBhaytzfW1DGn1+VyjlT7uWwzt7HJxtoLv/qAPb32BY56iJLkX2WACuljbZ0Mef4O0WDL5VNyD4um7l3UTgaLnA/ZHnsgy86uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aeM1B0J2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F62C433F1;
+	Thu, 18 Jan 2024 14:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705586420;
+	bh=oePAFFYODLX4qKuT+hCCpKcLhpD+k+lB3GJAV7/Ee3I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=aeM1B0J20cbeQQNXCaZYaGpdGrfTjZA7w/rSw+wgQTLOMuEDK6L+Ukg+Sgb3/JSJA
+	 hAlpHZDyGPIdHRDRIBo6Y8L8FBJMdIG23sEdQugEWqb/NNDkMfRGbXkbWhlP0jIOsD
+	 bQybv1OQBW1JI2UKxQhzqqQdV85Z+DGLOMAn90i0vgwkOvvwSY0Uz7Ak9XS2lRrB68
+	 nX3ZYqnozKJSFtyeYFQPI9pgP+twQv8aYRz3ft6IS9ELPy70t8WZz/Y3Wr+xIgOkb4
+	 ukG9Fe24G9lyL4NQtl2qxxbMk9QuF0E9ubeHPHIYzmXYg0/nAj4LJmaDkGriiigjBj
+	 dNVpWXmcbYc5A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rQSwL-00CiGO-Bx;
+	Thu, 18 Jan 2024 14:00:17 +0000
+Date: Thu, 18 Jan 2024 14:00:15 +0000
+Message-ID: <871qaeyc5s.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: tglx@linutronix.de,
+	sdonthineni@nvidia.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	set_pte_at@outlook.com
+Subject: Re: [PATCH 1/4] irqchip/gic-v3: Implement read polling with dedicated API
+In-Reply-To: <20240118112739.2000497-2-dawei.li@shingroup.cn>
+References: <20240118112739.2000497-1-dawei.li@shingroup.cn>
+	<20240118112739.2000497-2-dawei.li@shingroup.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 00/15] net/smc: implement loopback-ism used by
- SMC-D
-Content-Language: en-GB
-To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
- <f98849a7-41e9-421b-97b7-36d720cc43ee@linux.alibaba.com>
-From: Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <f98849a7-41e9-421b-97b7-36d720cc43ee@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yxDY2XYbBvhB-CiSls17Oh2zCdMfEgfq
-X-Proofpoint-GUID: cb_4uLsWVgsShUQGkDa-_w9LzrpbuFVD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-18_08,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- mlxscore=0 malwarescore=0 mlxlogscore=685 phishscore=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401180101
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dawei.li@shingroup.cn, tglx@linutronix.de, sdonthineni@nvidia.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, set_pte_at@outlook.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-
-
-On 18.01.24 09:27, Wen Gu wrote:
+On Thu, 18 Jan 2024 11:27:36 +0000,
+Dawei Li <dawei.li@shingroup.cn> wrote:
 > 
+> Kernel provide read*_poll_* API family to support looping based polling
+> code pattern like below:
+> while (...)
+> {
+> 	val = op(addr);
+> 	condition = cond(val);
+> 	if (condition)
+> 		break;
 > 
-> On 2024/1/11 20:00, Wen Gu wrote:
->> This patch set acts as the second part of the new version of [1] (The 
->> first
->> part can be referred from [2]), the updated things of this version are 
->> listed
->> at the end.
->>
+> 	/* Maybe some timeout handling stuff */
 > 
-> Hi Wenjia and Jan, I would appreciate any thoughts or comments you might 
-> have
-> on this series. Thank you very much!
+> 	cpu_relax();
+> 	udelay();
+> }
 > 
-Hi Wen,
+> As such, use readl_relaxed_poll_timeout_atomic() to implement atomic
+> register polling logic in gic-v3.
+> 
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> ---
+>  drivers/irqchip/irq-gic-v3.c | 27 ++++++++-------------------
+>  1 file changed, 8 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 98b0329b7154..b9d9375a3434 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/percpu.h>
+>  #include <linux/refcount.h>
+>  #include <linux/slab.h>
+> +#include <linux/iopoll.h>
+>  
+>  #include <linux/irqchip.h>
+>  #include <linux/irqchip/arm-gic-common.h>
+> @@ -251,17 +252,11 @@ static inline void __iomem *gic_dist_base(struct irq_data *d)
+>  
+>  static void gic_do_wait_for_rwp(void __iomem *base, u32 bit)
+>  {
+> -	u32 count = 1000000;	/* 1s! */
+> +	u32 val;
+>  
+> -	while (readl_relaxed(base + GICD_CTLR) & bit) {
+> -		count--;
+> -		if (!count) {
+> -			pr_err_ratelimited("RWP timeout, gone fishing\n");
+> -			return;
+> -		}
+> -		cpu_relax();
+> -		udelay(1);
+> -	}
+> +	if (readl_relaxed_poll_timeout_atomic(base + GICD_CTLR,
+> +		val, !(val & bit), 1, 1000000) == -ETIMEDOUT)
 
-I'm still in the middle of the proto type on IPPROTO_SMC and other 
-issues, so that I need more time to review this patch series.
+If you are doing this, please use a constant such as USEC_PER_SEC for
+the timeout. And fix the alignment of the second line so that the
+parameters are aligned vertically.
 
-Thank you for your patience!
-Wenjia
+> +		pr_err_ratelimited("RWP timeout, gone fishing\n");
+>  }
+>  
+>  /* Wait for completion of a distributor change */
+> @@ -279,7 +274,6 @@ static void gic_redist_wait_for_rwp(void)
+>  static void gic_enable_redist(bool enable)
+>  {
+>  	void __iomem *rbase;
+> -	u32 count = 1000000;	/* 1s! */
+>  	u32 val;
+>  
+>  	if (gic_data.flags & FLAGS_WORKAROUND_GICR_WAKER_MSM8996)
+> @@ -301,14 +295,9 @@ static void gic_enable_redist(bool enable)
+>  			return;	/* No PM support in this redistributor */
+>  	}
+>  
+> -	while (--count) {
+> -		val = readl_relaxed(rbase + GICR_WAKER);
+> -		if (enable ^ (bool)(val & GICR_WAKER_ChildrenAsleep))
+> -			break;
+> -		cpu_relax();
+> -		udelay(1);
+> -	}
+> -	if (!count)
+> +	if (readl_relaxed_poll_timeout_atomic(rbase + GICR_WAKER,
+> +		val, enable ^ (bool)(val & GICR_WAKER_ChildrenAsleep),
+> +		1, 1000000) == -ETIMEDOUT)
+>  		pr_err_ratelimited("redistributor failed to %s...\n",
+>  				   enable ? "wakeup" : "sleep");
+>  }
 
+Same thing here.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
