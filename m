@@ -1,175 +1,119 @@
-Return-Path: <linux-kernel+bounces-30442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EDD6831EC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:52:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DC46831ECA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE1B9B25BB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:52:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B062C1C2617F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F09D2D60F;
-	Thu, 18 Jan 2024 17:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB982D611;
+	Thu, 18 Jan 2024 17:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="wgJncUnU"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="HZCO6SUB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090392C68C;
-	Thu, 18 Jan 2024 17:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251A12D605;
+	Thu, 18 Jan 2024 17:53:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705600359; cv=none; b=TeP3dQn9Gg/LNfgCrGrzbr2hM6WjWIzw7ZUcLQwcfSfDLwk9OiCOlZ1M4YcTcsSGwUPNToOjfB2agXhNWy2vh7a6jtEgKeh7/fLxJZOhycyfwJ79siZD3fj+Tj1CfORTU6amuDIr/j2AUw7Qg3vWkxmbyBZQtYd/lKMlyOS6GjE=
+	t=1705600390; cv=none; b=Wm+FH56Be0NiWMv/9q3ura622VJcbsArYuqYat8AS2fYhjpNC3lGRkgVl3Dt3T6a6hP1SRjuQaKkscGydq17oSvgyr3yEKseZbl4dQa1s/6z6K4Jv/kcVqMjlbBv42vys3hb1dvVhyiTF0ruvYATNIQF5RgnEBf+vlwjpXrHDpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705600359; c=relaxed/simple;
-	bh=KKJJ6HPqG21gZ+Co1uAQr5O3IGs7SkQEmxmkOZnVKfM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=YdvnfZFeivYgw7PqKkP8r1OJSvv1e9rPt4vsW3kMvjz+K/49Up3F0mxVJXOlE5tp4Yvjp6PNz9uJCOEICo6D75j9CBKHKXdTZJM24glfF/ZzHxkPcw5qSpsbV3aiUqZvxvnqfFB/ib029BXQ4R7/Z/bCWrYEKpPd2CsItzK2V6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=wgJncUnU; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
-	bh=hGDDDdy4DJSwqpdxi3VKxYASFTzt0obR4RNDFTT72ow=; b=wgJncUnUfmNMXiR5xRJWIIeNXg
-	wBOu88qbaJDezs/zSYlfZcTUWlXhv3nv3I1fvX7tVAlpiBHzZrhSE/CbZNqoVSak1UAIFgZLvKs9k
-	d5oHh5hCeaIDuYlmrI5QaNjFvgiXnwViG4baMr+s/FmA98LNXq+C8YZ0KEpmhhU976FVX+oXBjuLW
-	yBqqIkLVvDNrdwWfqX1vr+UBI+oypanwcmpmfdz4cqSJDn88M2GjXrAyEFiDj0kciwzzFafjG+2jk
-	RDFFFCf6Sx0vfG5Jfu0Bl2m7EfkuxdYWhJQmTKxQs4YdFLn23iKb4DdnM3YTj7hp7lgUEd0/1PTHH
-	1/KpAwUg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQWZ8-003R80-0C;
-	Thu, 18 Jan 2024 17:52:34 +0000
-Message-ID: <d91d9c20-3b17-40e4-96d0-49daecf6558e@infradead.org>
-Date: Thu, 18 Jan 2024 09:52:33 -0800
+	s=arc-20240116; t=1705600390; c=relaxed/simple;
+	bh=mNh3OFF6x1XO22tu+xQC+TvfaQnN/eob1JCb1+82/KE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tGCygjug79WrsWwuyVJ2W6fsXJQcZVc9sa+T3TiTGXd5zEqCTmsiyLvE3jUU+AgAZEQWUTqrzy1I6NWuLfePX+Oi0tr1boYdNovAIUTPxTKOLOC4dRQ3dfLgGLWZ4RnUXyvRp2jrzU8wJuXER5Hp2RjaWBiiRl3NHb1G2C4ZEYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=HZCO6SUB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DBC3C433C7;
+	Thu, 18 Jan 2024 17:53:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1705600389;
+	bh=mNh3OFF6x1XO22tu+xQC+TvfaQnN/eob1JCb1+82/KE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HZCO6SUBT6asO/d4lXdHFWSwVE8qCfBTgYEXDMi8nTw1Mt4GKPu2GPdb3dMmHAjK5
+	 cTUPczyyiP9EgAneFbgvxd5zC2P51jFMVUoch70/pYyPLWCTrunXoUxKUSGfjxLYuB
+	 T9dj3q6/K3nPSXG20vK5B0DxmODf1VNlFPKlMeFU=
+Date: Thu, 18 Jan 2024 18:53:06 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Jacob Lott <jklott.git@gmail.com>
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: rts5208: Add more details to Kconfig help
+Message-ID: <2024011856-reluctant-vertigo-eb31@gregkh>
+References: <20240118165447.78727-1-jklott.git@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/4] kstrtox: introduce a safer version of memparse()
-Content-Language: en-US
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
- andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM, ddiss@suse.de,
- geert@linux-m68k.org
-References: <cover.1704422015.git.wqu@suse.com>
- <f972b96cad42e49235d90b863038a080acc0059e.1704422015.git.wqu@suse.com>
- <64def21a-2727-455b-9e35-e2a56d2f1625@infradead.org>
- <848c719c-daa2-403a-b7eb-f172b4236dc1@gmx.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <848c719c-daa2-403a-b7eb-f172b4236dc1@gmx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118165447.78727-1-jklott.git@gmail.com>
+
+On Thu, Jan 18, 2024 at 11:54:47AM -0500, Jacob Lott wrote:
+> The current help text is short and triggers a
+> warning from checkpatch.pl. This patch adds more
+> details to the help text which should provide better
+> information for whether or not to enable the driver.
+> 
+> Signed-off-by: Jacob Lott <jklott.git@gmail.com>
+> ---
+>  drivers/staging/rts5208/Kconfig | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/rts5208/Kconfig b/drivers/staging/rts5208/Kconfig
+> index b864023d3ccb..c4664a26ba3b 100644
+> --- a/drivers/staging/rts5208/Kconfig
+> +++ b/drivers/staging/rts5208/Kconfig
+> @@ -3,7 +3,11 @@ config RTS5208
+>  	tristate "Realtek PCI-E Card Reader RTS5208/5288 support"
+>  	depends on PCI && SCSI
+>  	help
+> -	  Say Y here to include driver code to support the Realtek
+> -	  PCI-E card reader rts5208/rts5288.
+> +	  Choose Y here to enable support for the Realtek PCI-E card reader
+> +	  RTS5208/5288. This driver facilitates communication between the Linux
+> +	  kernel and the Realtek PCI-E card reader.
+>  
+> -	  If this driver is compiled as a module, it will be named rts5208.
+> +	  If you opt to compile this driver as a module, it will be named rts5208.
+> +	  Selecting N will exclude this driver from the kernel build. Choose option
+> +	  Y if your system includes the Realtek PCI-E card reader rts5208/rts5288.
+> +	  When in doubt, it is generally safe to select N.
+> -- 
+> 2.34.1
+> 
+> 
 
 Hi,
 
-On 1/14/24 21:27, Qu Wenruo wrote:
-> 
-> 
-> On 2024/1/15 14:57, Randy Dunlap wrote:
-> [...]
->>> @@ -113,6 +113,105 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
->>>       return 0;
->>>   }
->>>
->>> +/**
->>> + * memparse_safe - convert a string to an unsigned long long, safer version of
->>> + * memparse()
->>> + *
->>> + * @s:        The start of the string. Must be null-terminated.
->>
->> Unless I misunderstand, this is the biggest problem that I see with
->> memparse_safe(): "Must be null-terminated".
->> memparse() does not have that requirement.
-> 
-> This is just an extra safety requirement.
-> 
-> In reality, memparse_safe() would end at the either the first
-> unsupported suffix after the valid numeric string (including '\0'),
-> or won't be updated if any error is hit (either no valid string at all,
-> or some overflow happened).
-> 
-> For most if not all call sites, the string passed in is already
-> null-terminated.
-> 
->>
->> And how is @retptr updated if the string is null-terminated?
-> 
-> E.g "123456G\0", in this case if suffix "G" is allowed, then @retptr
-> would be updated to '\0'.
-> 
-> Or another example "123456\0", @retptr would still be updated to '\0'.
-> 
->>
->> If the "Must be null-terminated." is correct, it requires that every user/caller
->> first determine the end of the number (how? space and/or any special character
->> or any alphabetic character that is not in KMGTPE? Then save that ending char,
->> change it to NUL, call memparse_safe(), then restore the saved char?
-> 
-> There are already test cases like "86k \0" (note all strings in the test
-> case is all null terminated), which would lead to a success parse, with
-> @retptr updated to ' ' (if suffix K is specified) or 'k' (if suffix K is
-> not specified).
-> 
-> So the behavior is still the same.
-> It may be my expression too confusing.
-> 
-> Any recommendation for the comments?
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Well, "Must be null-terminated." is incorrect, so explain better where
-the numeric conversion ends.
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-Thanks.
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
 
-> 
-> Thanks,
-> Qu
-> 
->>
->> I'm hoping that the documentation is not correct...
->>
->>> + *        The base is determined automatically, if it starts with "0x"
->>> + *        the base is 16, if it starts with "0" the base is 8, otherwise
->>> + *        the base is 10.
->>> + *        After a valid number string, there can be at most one
->>> + *        case-insensitive suffix character, specified by the @suffixes
->>> + *        parameter.
->>> + *
->>> + * @suffixes:    The suffixes which should be handled. Use logical ORed
->>> + *        memparse_suffix enum to indicate the supported suffixes.
->>> + *        The suffixes are case-insensitive, all 2 ^ 10 based.
->>> + *        Supported ones are "KMGPTE".
->>> + *        If one suffix (one of "KMGPTE") is hit but that suffix is
->>> + *        not specified in the @suffxies parameter, it ends the parse
->>> + *        normally, with @retptr pointed to the (unsupported) suffix.
->>> + *        E.g. "68k" with suffxies "M" returns 68 decimal, @retptr
->>> + *        updated to 'k'.
->>> + *
->>> + * @res:    Where to write the result.
->>> + *
->>> + * @retptr:    (output) Optional pointer to the next char after parse completes.
->>> + *
->>> + * Returns:
->>> + * * %0 if any valid numeric string can be parsed, and @retptr is updated.
->>> + * * %-EINVAL if no valid number string can be found.
->>> + * * %-ERANGE if the number overflows.
->>> + * * For negative return values, @retptr is not updated.
->>> + */
->>> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixes,
->>> +               unsigned long long *res, char **retptr)
->>> +{
->>
->> Thanks.
-> 
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
--- 
-#Randy
+thanks,
+
+greg k-h's patch email bot
 
