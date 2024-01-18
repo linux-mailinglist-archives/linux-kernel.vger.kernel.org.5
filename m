@@ -1,104 +1,190 @@
-Return-Path: <linux-kernel+bounces-30356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A446B831DA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:38:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB746831DAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:38:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B0C5283356
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:38:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 106CFB23C18
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C455C2C6A8;
-	Thu, 18 Jan 2024 16:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D952C84B;
+	Thu, 18 Jan 2024 16:38:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U7TeO9Dy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="EbJEgVdG"
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A6928DD8;
-	Thu, 18 Jan 2024 16:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913DF2C19E
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 16:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705595896; cv=none; b=uTmVzUvbMvNaC0i2+hgwpLE4eP2YloLDzjUnxLmU1tcLtI8Lw3GalRsGqR2Yz6vz367RqsVZQiHK2wsT5Oeg/1FNeveerKOf1rInrtLlr41eG2s1HDOkPbAitLiccJq5MOHY2wwUUBDOgoXCUZw4pvgAwVCtM3i/iXF2J5WgDiI=
+	t=1705595913; cv=none; b=bE8Iy4vHlRQxgDpjoUK4oRILiqPc6QabktuwbDgmNgURP42ws1b6a4KE6VGthCRBc7lbb6K94JY0cc1ip6BccYtA8dtjhVJjzVI1u8EjyGvrkmOYF+Vi5t1KkeU1OtPBjlRqpEOks6BloVhLOkV/JRCgTbDnaipDr4/xhNAB6rE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705595896; c=relaxed/simple;
-	bh=jRTphcK/e9x4FUHAULwLsMzMToQ7/evgU0hqPmIiM2w=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 In-Reply-To:References:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding; b=HtA1QIbnHdg4jvYfKEnznCw5Z1TGW//eiQeyWPYQ87uXdtwh67xJca+jDX03HTpz2uMsBqUxYOE3G+OYMcnB4RDahJS7sXaRpAZtEO9wlez65U+84trt+mUp8+8FmfpYjgSbwilvTYIErnch6JL7Dnbs0YBUVLWPYDt1IyC//w0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U7TeO9Dy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0107C433C7;
-	Thu, 18 Jan 2024 16:38:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705595895;
-	bh=jRTphcK/e9x4FUHAULwLsMzMToQ7/evgU0hqPmIiM2w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=U7TeO9DyYiaYySuxIASAJyxlq3vtKIJKKXHNz0ART1KyEBafmJLUZTt1lKUV9vN3/
-	 yHE+oPLxoErQXKEL5PI4qnAOnrfz+gHw0LZcmbqfgIFLWUc3Nal6QrA8YxEfPhn3ON
-	 FNfTljnkrTGE3SnpBFGytjHJM5dI8/bO3pw7TUSd56nFAl32aB1qNxpSHj9IWdtDUc
-	 A9CBber0mDs2dbR8NjsFANQQQJmeIfx7MoBgvcm9hxnn0lGzK6Hz2Jm0ZMxgVE3TbL
-	 CB73O2cBxJ4KCd5UHeMWGoGhguWmEv43jQFvbhj7O0yrhom0WV0RCxiDaRGdd5062g
-	 loRGxHxsh4/Mw==
-Date: Thu, 18 Jan 2024 08:38:12 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>, Alexei
- Starovoitov <alexei.starovoitov@gmail.com>, LKML
- <linux-kernel@vger.kernel.org>, Network Development
- <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Boqun
- Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, Eric
- Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Paolo Abeni <pabeni@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Cong
- Wang <xiyou.wangcong@gmail.com>, Hao Luo <haoluo@google.com>, Jamal Hadi
- Salim <jhs@mojatatu.com>, Jesper Dangaard Brouer <hawk@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Ronak Doshi <doshir@vmware.com>, Song Liu
- <song@kernel.org>, Stanislav Fomichev <sdf@google.com>, VMware PV-Drivers
- Reviewers <pv-drivers@vmware.com>, Yonghong Song <yonghong.song@linux.dev>,
- bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
- redirect.
-Message-ID: <20240118083812.1b91ba88@kernel.org>
-In-Reply-To: <20240118082754.9L_QFIgU@linutronix.de>
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
-	<20231215171020.687342-16-bigeasy@linutronix.de>
-	<CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
-	<87r0iw524h.fsf@toke.dk>
-	<20240112174138.tMmUs11o@linutronix.de>
-	<87ttnb6hme.fsf@toke.dk>
-	<20240117180447.2512335b@kernel.org>
-	<20240118082754.9L_QFIgU@linutronix.de>
+	s=arc-20240116; t=1705595913; c=relaxed/simple;
+	bh=tESaceZsQLu3ExMxs9ZefEewpbweG6jrY8i9oCAW0pY=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=V8Z/CIJ5VEC2WlNO2EL8nUrAxGa5hs1UgKFoaEEY0DvJgPMWCOJwKsUNLc/Ac9gQ7N3a2RGElzM1gZkRTC7K+TaicJ7PNfhN5f61o6d/dqPdgu9xw7vGjVcMwfQv3DXolZM2L7erwV6FQHMDfmJ8NR4WSs6f8gudi2rqFQXCTtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=EbJEgVdG; arc=none smtp.client-ip=209.85.217.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-46777099deeso2624817137.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 08:38:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705595910; x=1706200710; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:references
+         :mime-version:in-reply-to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lDcDvEBa0ZL9S0MNvY5nML1juKi6GtvSEwqNpJNBubQ=;
+        b=EbJEgVdGh93UWOBZFuB5+c2sOdMhwGRvLBkRL5TWN2ud3Yod/8zfvP0D3p2xfazOhr
+         nP/NzVct+n1wSudt5T2MLF7VMZfyZ8w6UqQ9/UTrSMVaYIkIlTk940gE09MTIUHxb2id
+         EcS6nrRK2ykTIGxmrFxrjgNJ8PgkhtWco9FF04JFrQtyplY9+EuhiMKGqZ+o2qxkIKF/
+         jmwqY2NlB+BpmANtSDN0ie+TLaIJgn6h/3iTyQYQGDBkMHcKP7XODnZyb7eK9HrnyuIw
+         78MK/9zWdjpzv2ijFEPGJzJJThGu7v/1eJV/8USyw9aDRBv09JWaB0Y5dyXxSOIFvztg
+         xi+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705595910; x=1706200710;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:references
+         :mime-version:in-reply-to:from:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lDcDvEBa0ZL9S0MNvY5nML1juKi6GtvSEwqNpJNBubQ=;
+        b=X3ggnjlW9SNSVfV4bhHeZ1+bfAOyeMpw/RGo/KU3QYJP0mGaQ/pzMdUPG7lwGsIw5V
+         a8sqTBUgKQaYlorLmpJdXGB29jtBodFtTvEAlH9byKY/ZNrgfjfYuO0cQUzIEb+XMq7s
+         1firhPEwX+r2ckPdJ0p13AOYbWOopduFZwwAfOJ5Ob4Yd0mK6qTmb2Z0BDTcxcBBigv8
+         51McEFZgIP+GkNC22/9KnFfKi+QUzBLWdWgOEKIiTPbPS0c6bA3k3aGpuel752dtGDEy
+         30IFtYOBInoqVam+o4fqAjc8jZs0n2uPWdzrY1cdw25YdXffGRQM5ZQaOKCtpM2IPdbJ
+         wOdQ==
+X-Gm-Message-State: AOJu0Yywz4l0ytgncBcxKqD/n/GxjsFmF5ZvJJThq6t1s4/7Cpe9+6aR
+	oBdUIXooPTdbIKxOfW7MPJ0SaImBQmhXHbjcY+O5BSy5rPwXAF5266vrklqnx/wy2Mg5N2/c+Al
+	b+ak8Y/9SksCzDmSSuoJvXejOIpyAgybJMU7kdw==
+X-Google-Smtp-Source: AGHT+IFSPL8gB6IrZ9EKth3bABJWxmPIrQSPD2/Da0JPMgsi4X69cecm94Y73oSYciD9hUyudoSJNj+KFSgVI5DkYDg=
+X-Received: by 2002:a67:f24f:0:b0:468:67f:b067 with SMTP id
+ y15-20020a67f24f000000b00468067fb067mr855033vsm.35.1705595910409; Thu, 18 Jan
+ 2024 08:38:30 -0800 (PST)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 18 Jan 2024 08:38:29 -0800
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+In-Reply-To: <CAL_Jsq+0xb-otvjkbLqB8gNKadVqnigwGB_k+VGrj740Y6wxjg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240117160748.37682-1-brgl@bgdev.pl> <CAL_Jsq+0xb-otvjkbLqB8gNKadVqnigwGB_k+VGrj740Y6wxjg@mail.gmail.com>
+Date: Thu, 18 Jan 2024 08:38:29 -0800
+Message-ID: <CAMRc=MeV6hrPGkxjg4qnK6xH2_5LhjCLtijxEFJGiikW-P2OJg@mail.gmail.com>
+Subject: Re: [PATCH 0/9] PCI: introduce the concept of power sequencing of
+ PCIe devices
+To: Rob Herring <robh+dt@kernel.org>
+Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
+	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
+	Lukas Wunner <lukas@wunner.de>, Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 18 Jan 2024 09:27:54 +0100 Sebastian Andrzej Siewior wrote:
-> On 2024-01-17 18:04:47 [-0800], Jakub Kicinski wrote:
-> > Oh, and I'm bringing it up here, because CONFIG_RT can throw
-> > in "need_resched()" into the napi_rx_has_budget(), obviously.  
-> 
-> need_resched() does not work on PREEMPT_RT the way you think. This
-> context (the NAPI poll callback) is preemptible and (by default) runs at
-> SCHED_FIFO 50 (within a threaded IRQ) so a context switch can happen at
-> any time by a task with higher priority.
-> If threadA gets preempted and owns a lock that threadB, with higher
-> priority, wants then threadA will get back on CPU, inherit the priority
-> of the threadB and continue to run until it releases the lock.
-> 
-> If this is the per-CPU BH lock (which I want to remove) then it will
-> continue until all softirqs complete.
+On Thu, 18 Jan 2024 15:29:01 +0100, Rob Herring <robh+dt@kernel.org> said:
+> On Wed, Jan 17, 2024 at 10:08=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.=
+pl> wrote:
+>
 
-So there's no way for a process to know on RT that someone with higher
-prio is waiting for it to release its locks? :(
+[snip]
+
+>
+>> The general idea is to instantiate platform devices for child nodes of
+>> the PCIe port DT node. For those nodes for which a power-sequencing
+>> driver exists, we bind it and let it probe. The driver then triggers a
+>> rescan of the PCI bus with the aim of detecting the now powered-on
+>> device. The device will consume the same DT node as the platform,
+>> power-sequencing device. We use device links to make the latter become
+>> the parent of the former.
+>>
+>> The main advantage of this approach is not modifying the existing DT in
+>> any way and especially not adding any "fake" platform devices.
+>
+> Suspend/resume has been brought up already, but I disagree we can
+> worry about that later unless there is and always will be no power
+> sequencing during suspend/resume for all devices ever. Given the
+> supplies aren't standard, it wouldn't surprise me if standard PCI
+> power management isn't either. The primary issue I see with this
+> design is we will end up with 2 drivers doing the same power
+> sequencing: the platform driver for initial power on and the device's
+> PCI driver for suspend/resume.
+>
+> Rob
+>
+
+I admit that I don't have any HW where I could test it but I my thinking wa=
+s
+that with the following relationships between the devices:
+
+                  =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
+                  =E2=94=82                     =E2=94=82
+                  =E2=94=82   PCI Port device   =E2=94=82
+                  =E2=94=82                     =E2=94=82
+                  =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=AC=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=AC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98
+                      =E2=94=82           =E2=94=82
+                      =E2=94=82           =E2=94=82
+                      =E2=94=82           =E2=94=82
+=E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=96=BC=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=90     =E2=94=82
+=E2=94=82                           =E2=94=82     =E2=94=82
+=E2=94=82   QCA6390 pwrseq device   =E2=94=82     =E2=94=82
+=E2=94=82                           =E2=94=82     =E2=94=82
+=E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=AC=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=98     =E2=94=82
+                      =E2=94=82           =E2=94=82
+                      =E2=94=82           =E2=94=82
+                      =E2=94=82           =E2=94=82
+                =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=96=BC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=96=BC=E2=94=80=E2=94=80=E2=94=80=E2=94=90
+                =E2=94=82                     =E2=94=82
+                =E2=94=82  ath11k_pci device  =E2=94=82
+                =E2=94=82                     =E2=94=82
+                =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98
+
+the PM subsystem would handle the dependencies automatically and correctly
+setup the sequence for suspend and resume. Also: the PCI ath11k driver does
+not deal with the kind of resources that the power sequencing platform driv=
+er
+handles: regulators, GPIOs and clocks.
+
+I agree, it would be useful to have a working case of handling suspend/resu=
+me
+with this code though.
+
+Bartosz
 
