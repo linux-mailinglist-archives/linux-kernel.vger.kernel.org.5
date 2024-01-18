@@ -1,127 +1,179 @@
-Return-Path: <linux-kernel+bounces-29674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D22C5831194
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:52:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F943831197
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFFB61C210F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:52:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 891B8284A0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED60C129;
-	Thu, 18 Jan 2024 02:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="GCy8msPQ"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DBA6106;
+	Thu, 18 Jan 2024 02:55:06 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C386C9474
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62DF53B5
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705546312; cv=none; b=m/i5nXtlty9XWV/nkQQGWamTzwIygGfsuW+19J2rOvqPGq7ddM/tajaIsXSL/Rol/pcPgqRpKQLkxOrCuSrbLEZGKj8Cgile17lvyQdobKs2qSO98mjhgUCoc634XU/LB6TneuVkpzu6KwLhsnK+04pklhrcgoo7zUhN84OBNus=
+	t=1705546506; cv=none; b=BPIPAlKlIDY3OnWdRCwMYe0Kl46D6mLDWUOTV+agin4TxVoDeOdKDKEu7MjcR3Ddrv+GgSJjb1ABfx0zPfUBLZnzzWwgR2B05VHZhjPn+UEC65CpC+dRC9k+hP694hJ6D+IYEU/E2TYFExY+yPCZHxdk/UGnPY9h9btjvQ+MH+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705546312; c=relaxed/simple;
-	bh=qeZ3tY/o44baRhR6QAmQ3u7Ui4fQMK8qYGmLuQSHVR4=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Type:X-Mailer:X-Developer-Signature:
-	 X-Developer-Key:Content-Transfer-Encoding; b=j+bLEHpK3FiVWinWRUPxb1kn5ZkDcsiuHQ1zYCtv9Y5zLS5FI2KS1UFJF0nsA3ZbkIC5rqfVe5wBwfcBTmtJBM+2wEfnnY11UAOIl7oq1gvza32IQsH+s0RPv3ux8SbyhVnny+cQPM53/nxR0d4XPT6MtlEjPPrEILxNpfF+2vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=GCy8msPQ; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e90163be1so1611155e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:51:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1705546309; x=1706151109; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3o3JIW0lMFFX9linU1Dr7QEV8ZT+tiEVZq+1/7eCMH8=;
-        b=GCy8msPQX4RwUoFlDWaO2h4HYSplkrqpQIvPaS5AgnuN38X+8ggV3Fl9JapMsW0ALt
-         4iNNlnkLpubt9kwLMmMM9Qwpx8NDO0cgNYhO44zv5ovoyxpK2OarrJbej3cPfSZA6kUd
-         1T/4/zexLh8ySXUtCSHxUK4M6hhj2AY5FbFJ6+Efn4mOi1Izg7veck6QecMLTBnDFPx6
-         8/mKFiHwXE+sG6jPEEWV5ziQkzmDMUtGIUEdQqVYSAJeP444PkhYWpe1E4Z/pxkt8/GN
-         vQbs/bEb6kcWXylE/QYeaoGhKX9S3xuFloH8hWpFS0l8E+183q7FW40eAq73PGLjr2ZW
-         CKyA==
+	s=arc-20240116; t=1705546506; c=relaxed/simple;
+	bh=YVm/1t0ItSlMZkMHdpp8tx96HwG6QpqBDAtUJESG87k=;
+	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
+	 X-Google-Smtp-Source:MIME-Version:X-Received:Date:In-Reply-To:
+	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:
+	 Message-ID:Subject:From:To:Content-Type; b=MFdDp0I5BTLQFLjgJIu5DeyqYd1VY6/cn0Lxph9Qer9oVs7iPHm85Njcphy0pfO8iGYyzgy5FasCRr/wVt4ksxWxEO7dnTBJdqQoJ4h7Ld+ruVIeGRwabeT/6p/bWY9bspTiR3Zc+mgJ4osbCeZz9BCewH5HETvzn+/eHikrVBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bec4b24a34so1208446539f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:55:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705546309; x=1706151109;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3o3JIW0lMFFX9linU1Dr7QEV8ZT+tiEVZq+1/7eCMH8=;
-        b=mnjlo8JPzBAThW9w8wkGitCP51eDoLAdI4ExbCh7na7eJA/LRsqxKYS6YBRkq2YCUQ
-         tEIeTxzudci7U9xf78K2YVA3qC0u4O+uq/uidE1Q03/KAWnmxQfNHpAtisJHFiXW30Lz
-         +H04ZAzMyBc1cFldlaj+NwgHyxm7hwa8zxi0cFIp13XXpk2IT0VlToOOUTBQ0zfid7w0
-         j1zNg8ANKBz6A2mA/Gkpc9alBaLStCdVLPL6nT8J2bZbr0OJcqLCTmis6tLToAuz4f6O
-         OGhnmsa2pE1noswm4KGTPD3w33UTgpndMlEdwKWO2sFr40/UFSNqAajNaZxp3zQ86v9F
-         0F4g==
-X-Gm-Message-State: AOJu0YygqtBA2TlhHq++oL1Om+zIJvfavfQHYAj0zSiGE3CP5D3L++vE
-	EM7ejgGcTMnGa7rX9EdjRsJ2njozZej7mCTLMDqAgpompfTuwCVLhezXiOY2PA==
-X-Google-Smtp-Source: AGHT+IGTP8bDonVO2FTMnOfmYmhTkXA7oZIjIWi56IdHYCM3+hcb2Gwh7mTQIsxRTHcK1mpkziqCEQ==
-X-Received: by 2002:a1c:4b14:0:b0:40e:47bf:f332 with SMTP id y20-20020a1c4b14000000b0040e47bff332mr41977wma.97.1705546309242;
-        Wed, 17 Jan 2024 18:51:49 -0800 (PST)
-Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id z15-20020a5d440f000000b0033664ffaf5dsm2868219wrq.37.2024.01.17.18.51.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 18:51:48 -0800 (PST)
-From: Dmitry Safonov <dima@arista.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Dmitry Safonov <dima@arista.com>,
-	Mohammad Nassiri <mnassiri@ciena.com>,
-	netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] selftests/net: Clean-up double assignment
-Date: Thu, 18 Jan 2024 02:51:36 +0000
-Message-ID: <20240118-tcp-ao-test-key-mgmt-v1-3-3583ca147113@arista.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240118-tcp-ao-test-key-mgmt-v1-0-3583ca147113@arista.com>
-References: <20240118-tcp-ao-test-key-mgmt-v1-0-3583ca147113@arista.com>
+        d=1e100.net; s=20230601; t=1705546504; x=1706151304;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FoVdfhHX4ff0XbftH9EFE+5Z9lgwg8otx+Ta2LAWigA=;
+        b=WUTi7Rqu3tDlx7XblOPEKgPu6aGPyzKTP96p4R9CPqY7a6fzYBs/YppEvKi0iwQR07
+         U+KnfIQeES77THw5YBxDzYvJJRj+LZfNAnzLhImn8VAgJvmbzOedmJOuCvy9ulXsLXzf
+         MEoAuWmBgPL83h5aLs2idYHyxkU7X4Cy4jEbdf9dlVpBvAFgAPRY00ZhsFNlBx/+xSRg
+         JOlEMigFjEo2Ac+vaTXEDLsCzP0MQ4ozHsQaPgcZm5wUu1Gk3ntafEhXtnNCYBpQ3r85
+         h9JjinIjTm0XVI5sn5a+W64RTMac5gvn9G1Hh3hjR4VOiFH1RZOLqFdda1UpTsVgJVgd
+         OAKg==
+X-Gm-Message-State: AOJu0Yw+bV8drzYRGDXZsGtz4rM+vanAfpJC2LeKclojvfmqY/GDZtuZ
+	113g63x9OgY04Cwszg46RsxKahoC8gP9Iskhzms8GDCCHQNgFVcegpXKcFb62ratnb6LMs6ZSdE
+	9DUliENgPPGjT1h1QdEeY/0+eYq16pYfVrw33KJgHUQi9DrarbVVipjc=
+X-Google-Smtp-Source: AGHT+IH229jr36+/NAAlB+aQ37zn/SAxvGdVGTTv8BZP8h0GcEZNLc5Hdq9TZGQXbDGjpp/xlBaE1rYMBiQS3moncnjbeOtONKog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.13-dev-b6b4b
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705546294; l=958; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=qeZ3tY/o44baRhR6QAmQ3u7Ui4fQMK8qYGmLuQSHVR4=; b=nB5WMfppjsBWtpYlDmqyc73zjVS9nEfgidteoRQ0/Rfb/dLrknlixH1oNA964bflYfHGG2n2a /PKkERTk0U/BI8T0dEMYZie22fblu4GxYKvI1gJlXBlW4Qmnysso9RP
-X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:379d:b0:46e:415e:e0a2 with SMTP id
+ w29-20020a056638379d00b0046e415ee0a2mr7610jal.4.1705546503997; Wed, 17 Jan
+ 2024 18:55:03 -0800 (PST)
+Date: Wed, 17 Jan 2024 18:55:03 -0800
+In-Reply-To: <20240118023348.1310-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000084d1e9060f2f7d0e@google.com>
+Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
+From: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Yeah, copy'n'paste typo.
+Hello,
 
-Fixes: 3c3ead555648 ("selftests/net: Add TCP-AO key-management test")
-Reported-by: Nassiri, Mohammad <mnassiri@ciena.com>
-Closes: https://lore.kernel.org/all/DM6PR04MB4202BC58A9FD5BDD24A16E8EC56F2@DM6PR04MB4202.namprd04.prod.outlook.com/
-Signed-off-by: Dmitry Safonov <dima@arista.com>
----
- tools/testing/selftests/net/tcp_ao/lib/sock.c | 1 -
- 1 file changed, 1 deletion(-)
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: use-after-free Read in __skb_flow_dissect
 
-diff --git a/tools/testing/selftests/net/tcp_ao/lib/sock.c b/tools/testing/selftests/net/tcp_ao/lib/sock.c
-index c75d82885a2e..923a9bb4f1ca 100644
---- a/tools/testing/selftests/net/tcp_ao/lib/sock.c
-+++ b/tools/testing/selftests/net/tcp_ao/lib/sock.c
-@@ -377,7 +377,6 @@ int test_get_tcp_ao_counters(int sk, struct tcp_ao_counters *out)
- 
- 	key_dump[0].nkeys = nr_keys;
- 	key_dump[0].get_all = 1;
--	key_dump[0].get_all = 1;
- 	err = getsockopt(sk, IPPROTO_TCP, TCP_AO_GET_KEYS,
- 			 key_dump, &key_dump_sz);
- 	if (err) {
+==================================================================
+BUG: KASAN: use-after-free in __skb_flow_dissect+0x19d1/0x7a50 net/core/flow_dissector.c:1170
+Read of size 1 at addr ffff88813da6000e by task syz-executor.0/5482
 
--- 
-2.43.0
+CPU: 0 PID: 5482 Comm: syz-executor.0 Not tainted 6.7.0-syzkaller-g296455ade1fd-dirty #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:488
+ kasan_report+0xda/0x110 mm/kasan/report.c:601
+ __skb_flow_dissect+0x19d1/0x7a50 net/core/flow_dissector.c:1170
+ skb_flow_dissect_flow_keys include/linux/skbuff.h:1524 [inline]
+ ___skb_get_hash net/core/flow_dissector.c:1791 [inline]
+ __skb_get_hash+0xc7/0x540 net/core/flow_dissector.c:1856
+ skb_get_hash include/linux/skbuff.h:1566 [inline]
+ ip_tunnel_xmit+0x1843/0x33b0 net/ipv4/ip_tunnel.c:748
+ ipip_tunnel_xmit+0x3cc/0x4e0 net/ipv4/ipip.c:308
+ __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
+ netdev_start_xmit include/linux/netdevice.h:5003 [inline]
+ xmit_one net/core/dev.c:3547 [inline]
+ dev_hard_start_xmit+0x137/0x6d0 net/core/dev.c:3563
+ __dev_queue_xmit+0x7b6/0x3ed0 net/core/dev.c:4351
+ dev_queue_xmit include/linux/netdevice.h:3171 [inline]
+ neigh_connected_output+0x426/0x5d0 net/core/neighbour.c:1592
+ neigh_output include/net/neighbour.h:542 [inline]
+ ip_finish_output2+0x82d/0x2540 net/ipv4/ip_output.c:235
+ __ip_finish_output net/ipv4/ip_output.c:313 [inline]
+ __ip_finish_output+0x38b/0x650 net/ipv4/ip_output.c:295
+ ip_finish_output+0x31/0x310 net/ipv4/ip_output.c:323
+ NF_HOOK_COND include/linux/netfilter.h:303 [inline]
+ ip_mc_output+0x1dd/0x6a0 net/ipv4/ip_output.c:420
+ dst_output include/net/dst.h:451 [inline]
+ ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:129
+ iptunnel_xmit+0x5b4/0x9b0 net/ipv4/ip_tunnel_core.c:82
+ ip_tunnel_xmit+0x1daa/0x33b0 net/ipv4/ip_tunnel.c:831
+ ipgre_xmit+0x49b/0x980 net/ipv4/ip_gre.c:665
+ __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
+ netdev_start_xmit include/linux/netdevice.h:5003 [inline]
+ xmit_one net/core/dev.c:3547 [inline]
+ dev_hard_start_xmit+0x137/0x6d0 net/core/dev.c:3563
+ __dev_queue_xmit+0x7b6/0x3ed0 net/core/dev.c:4351
+ dev_queue_xmit include/linux/netdevice.h:3171 [inline]
+ __bpf_tx_skb net/core/filter.c:2135 [inline]
+ __bpf_redirect_no_mac net/core/filter.c:2169 [inline]
+ __bpf_redirect+0x764/0xf40 net/core/filter.c:2192
+ ____bpf_clone_redirect net/core/filter.c:2463 [inline]
+ bpf_clone_redirect+0x2b2/0x420 net/core/filter.c:2435
+ ___bpf_prog_run+0x3e44/0xabc0 kernel/bpf/core.c:1986
+ __bpf_prog_run512+0xb7/0xf0 kernel/bpf/core.c:2227
+ bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x3d3/0x9c0 net/bpf/test_run.c:423
+ bpf_prog_test_run_skb+0xb75/0x1dd0 net/bpf/test_run.c:1056
+ bpf_prog_test_run kernel/bpf/syscall.c:4107 [inline]
+ __sys_bpf+0x11bf/0x4a00 kernel/bpf/syscall.c:5475
+ __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5559
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f02f287cce9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f02f35200c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f02f299bf80 RCX: 00007f02f287cce9
+RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
+RBP: 00007f02f28c947a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f02f299bf80 R15: 00007ffdf31f6258
+ </TASK>
+
+The buggy address belongs to the physical page:
+page:ffffea0004f69800 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13da60
+flags: 0x57ff00000000000(node=1|zone=2|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 057ff00000000000 ffffea0004f69808 ffffea0004f69808 0000000000000000
+raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner info is not present (never set?)
+
+Memory state around the buggy address:
+ ffff88813da5ff00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88813da5ff80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff88813da60000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                      ^
+ ffff88813da60080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88813da60100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+
+
+Tested on:
+
+commit:         296455ad Merge tag 'char-misc-6.8-rc1' of git://git.ke..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=13727293e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e5a3077efcfd8745
+dashboard link: https://syzkaller.appspot.com/bug?extid=bfde3bef047a81b8fde6
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11829877e80000
 
 
