@@ -1,163 +1,174 @@
-Return-Path: <linux-kernel+bounces-30520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82AD0831FCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:34:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4200F831FCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A346287E58
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:34:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 189E9B20E29
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA402E41A;
-	Thu, 18 Jan 2024 19:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCBD2E410;
+	Thu, 18 Jan 2024 19:36:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="s7DUPnSj"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eXxknxGf"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3248B2E407
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E6A52E403
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:36:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705606469; cv=none; b=gulLcNo/JA9q7JKeCmGBjmg8OH10imny+3IbtjGJwyTv1tqkPCrtwlArbK94PXGTmzFHqqj5nWwDEjmi4XT1MSlhTm8uXKu1I2pub3+at2ClcM1Ij5WnuUvqOla4tmdU0Pe8AeEQzLvL9Ry/2ZrC8Sb84n/EXitJy4Zo/RnrGEA=
+	t=1705606580; cv=none; b=gmFcuul3NUszmP7Myr2MqfUyWfjx+TRuxJaIk7QBynzO+ttGnLc6GpZTeATYGU8OL3rM1ogIs/4QAHZC4dUIr//nFDIhEdVNjkWky/4zZcw8DXMewHHwJefkzGem6+ZkOmomXPQOwFnFQBucSxHLAgGb+W2O3opbmpgxubiff4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705606469; c=relaxed/simple;
-	bh=b5FwYCmuMfyWIbHYKlxaJmyq3KKcGbifob/gUmbvP/c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DlqoYamdv+Ek11dkms4HeM71lL0L3yQBFzZWLm0B/RzHURohQdF2Uy6+zsCbkGvNWS3Bx/pT4KxjqbW6BVUFgUDAhZlaiH3aaKfauZRU6WuAhzKSKt9+QA1d5H5NRx+JGPEqvGcFYaZNf7mKA63gl72kxCgmdKydNCPxNJFxki4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=s7DUPnSj; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7bee01886baso9339f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:34:26 -0800 (PST)
+	s=arc-20240116; t=1705606580; c=relaxed/simple;
+	bh=0Spb8poRMfqQSK08H+TL3uHUKPHZzTZQ/fCBGPaH0wI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=koO178slDm/3zEfHSUzxjIyavcbuwjNYXbIl1iIVn/XC3ouG2dTB8c0adiR3rAfsJ0PCSGP1r4UtIWi1ZmuJvsfZ3ispIhBbSZX3kGVaXuRFtw9BEoepOOvUK/nXILd0fmTPJeen3WZLiZ2FGSqiKC6XH1YI8yODQGTJiAlMsJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eXxknxGf; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-559cef15db5so2122544a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:36:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705606466; x=1706211266; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CnrFrxp56NFMNrnCrVwG/+HU/kQ2wnZfA81brF/kE/g=;
-        b=s7DUPnSjvzH8ztOmxWoTjRejRWH9+BLgAludHyKS+97LON4U40nxUONP/pfx/wYy2P
-         Rf+14QZqqPvqg43SHB2jI4P9dz5cF8KTlrh3RQ8b78LTAJTeWLszqQULhUt8JvAs6MKL
-         YKr0niNx0+p1lb7qWg74pb2FK3mO2RR1Vk+F4r5Je9enlKjLtO+DRYjbDFaEkumQJnJP
-         /p3Nx0N/00DniiqeWJVhORCDpLpzKcTewCUDcIe0RHZeq7mNwsJFMY5NTxKmy9Id/iIH
-         ETPFbnt3OsOToA2Ny8xx+tT0m2l8YulQl+Fhi3yPoIwLaYd5gP2+TkH6bmZUK4Fyhxou
-         Jwug==
+        d=google.com; s=20230601; t=1705606576; x=1706211376; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cZDkcKK8uyhcMNTfFp6ML8LXI1RuetKqYpSVVoE584Q=;
+        b=eXxknxGfb5/amFXjTjOI+dnJEAVV0gYSvwKJwnM2hN9/CAWLTdqWMOfyByGjx/PFAb
+         gogmVFEuZklyUCra12O0PIdIf/i/osHfDGbKGmmRilYhnSRwZjj7ab+uSSIwNdjDnIa9
+         JxgkdAvH5MOOUhyPdF/lvJgrQAv3MGDA4h2JKKjtw6Lxj2FxJQxjwJcK2vdOy+WUHxF2
+         QbCXKa4PejW1aZGs43PrQpPi7EXi67m9Iw4cc8TF6ysjaB0FiAa5zkAC3yL9B76xZRCL
+         MAo2Cn17Ep1GNglbs4R+/58of25xPTyO5Jo4IzfvDrHtGigZ73GHy58hsyVyeqbM90tl
+         huRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705606466; x=1706211266;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CnrFrxp56NFMNrnCrVwG/+HU/kQ2wnZfA81brF/kE/g=;
-        b=gZE7OwPy1tDAmfJGKxpioS2PnsTXXRld8cVwsOTyp0UcstC1mTK1QxW8ckBOEt/0jx
-         nu7pbsRmL6qrpO3StWxNrXQ24qiqa9Oci2fQYqwAfpmmMrPtov6I2OyYAiOqS7vLOND8
-         ysaJjL7qg4r1tmRLxi+nlSCD5sjh6gRPRFn50MQujQ1ydsXkdGvVJiYT3e498GHd3XGz
-         UI2zB4pMmYBRu0OpQnMERiATTcDtw3cbbe8wV/YcfFigM8lGUCt2YEczL1G3zZUkExOi
-         UdvmzWVle1NQ74yb2pBXFKo18OZ5xK+ejFq1h6jTzOp8kzXvm5v8t1hS7T+UE7HdTMhr
-         zwmw==
-X-Gm-Message-State: AOJu0Ywx4ylHMQMWD1QNEgFAUXBIomPfDudllrMPgob75q2dJ4dj6Wdi
-	L4JpqtkiZdcY0JEbzDohFe/giklzZjc9gOSyzy6hdSppy9Pu9fkLshog6ZCfovb3rKSq2dnlpmu
-	9AbU=
-X-Google-Smtp-Source: AGHT+IGjnDssC0Sb4H6/cdD4B1H0ME2lB4ZEcABBsnEX+OR63qzpBD3GVy93LXTChdbdT8mVElQe0g==
-X-Received: by 2002:a6b:5a0d:0:b0:7bf:35d5:bd21 with SMTP id o13-20020a6b5a0d000000b007bf35d5bd21mr388653iob.1.1705606466230;
-        Thu, 18 Jan 2024 11:34:26 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id j24-20020a02a698000000b0046ebbcf956bsm358743jam.53.2024.01.18.11.34.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 11:34:25 -0800 (PST)
-Message-ID: <8e104175-7388-4930-b6a2-405fb9143a2d@kernel.dk>
-Date: Thu, 18 Jan 2024 12:34:24 -0700
+        d=1e100.net; s=20230601; t=1705606576; x=1706211376;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cZDkcKK8uyhcMNTfFp6ML8LXI1RuetKqYpSVVoE584Q=;
+        b=oMBSooxe1KMOzQJmCYEJPkEg0Z1HOJmAEHkTKmRL4bvgY6RIqZ9yBGX2E2HnSqJqsG
+         uxdZreM1mah7cmOGunTJf34tJtB45ifemtUyeEI4O5aZTRTTPlHmlkffQhJ9I2u65dWL
+         hL2ADogKVWk2Je8e0ll8eWsNUjSrMKNMwaCWgpLXamW/2BpYQ8vRqPLUbok9bZswovyW
+         yYwA1JS6XjBSyLO22P1ghKpaUqV/7uIsoA6BnrfgHWYRgRJAJe+chwBvP+bKuaYwRAzz
+         egHGJOZqj5OrXHzqg12MwKtBH52wF3xfXhKXyoOZB9BvGRLQyEzTVwcKlkXtMfi9Ko8R
+         pDhg==
+X-Gm-Message-State: AOJu0YwUE121KZXzWSJ6QlB2kneMQyvy8DGrUWUuY9CbKb15TePCBXaB
+	rwzGo7yBllFjBd8Syd3nqWte8h1TvrEorkbxs+Ms4ZlQn2TRNVwv7Cd4mATMFrA6Bi//2gKnstG
+	4MtFeR6FdV/+yjbxPMoVjdEsHUeLhpQLztHNL
+X-Google-Smtp-Source: AGHT+IHNARndcPkevbhESph8uzGKHb3QILXTpJfID+26UjpTZwh9rl0SKaz5Jxqu1azSrdHtE0kbuTG6/SSnWwwcCms=
+X-Received: by 2002:a17:907:da8:b0:a2e:98d2:9c29 with SMTP id
+ go40-20020a1709070da800b00a2e98d29c29mr2257202ejc.70.1705606576334; Thu, 18
+ Jan 2024 11:36:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7] io_uring: Statistics of the true utilization of sq
- threads.
-Content-Language: en-US
-To: Xiaobing Li <xiaobing.li@samsung.com>, asml.silence@gmail.com
-Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
- kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
- kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
- cliang01.li@samsung.com, xue01.he@samsung.com
-References: <CGME20240118073844epcas5p2f346bc8ef02a2f48eef0020a6ad5165d@epcas5p2.samsung.com>
- <20240118073032.15015-1-xiaobing.li@samsung.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240118073032.15015-1-xiaobing.li@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
+ <20240117-zswap-xarray-v1-2-6daa86c08fae@kernel.org> <CAJD7tkZF102x_8LKAX+sxAttgYD_LNT3cRqeOr7_euwPfNdCFA@mail.gmail.com>
+In-Reply-To: <CAJD7tkZF102x_8LKAX+sxAttgYD_LNT3cRqeOr7_euwPfNdCFA@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 18 Jan 2024 11:35:38 -0800
+Message-ID: <CAJD7tkbFxfLxYPXHkSCq=1JsAinW9G+unyOadFY+Xfo-QTqNyA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: zswap.c: remove RB tree
+To: Chris Li <chrisl@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, =?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
+	Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, 
+	Chun-Tse Shao <ctshao@google.com>, =?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
+	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/18/24 12:30 AM, Xiaobing Li wrote:
-> diff --git a/io_uring/fdinfo.c b/io_uring/fdinfo.c
-> index 976e9500f651..24a7452ed98e 100644
-> --- a/io_uring/fdinfo.c
-> +++ b/io_uring/fdinfo.c
-> @@ -64,6 +64,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->  	unsigned int sq_shift = 0;
->  	unsigned int sq_entries, cq_entries;
->  	int sq_pid = -1, sq_cpu = -1;
-> +	long long sq_total_time = 0, sq_work_time = 0;
->  	bool has_lock;
->  	unsigned int i;
->  
-> @@ -147,10 +148,17 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->  
->  		sq_pid = sq->task_pid;
->  		sq_cpu = sq->sq_cpu;
-> +		struct rusage r;
-> +
-> +		getrusage(sq->thread, RUSAGE_SELF, &r);
-> +		sq_total_time = r.ru_stime.tv_sec * 1000000 + r.ru_stime.tv_usec;
-> +		sq_work_time = sq->work_time;
->  	}
+On Wed, Jan 17, 2024 at 10:35=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
+> wrote:
+>
+> > @@ -493,45 +471,47 @@ static struct zswap_entry *zswap_search(struct zs=
+wap_tree *tree, pgoff_t offset)
+> >  static int zswap_insert(struct zswap_tree *tree, struct zswap_entry *e=
+ntry,
+> >                         struct zswap_entry **dupentry)
+> >  {
+> > -       struct rb_root *root =3D &tree->rbroot;
+> > -       struct rb_node **link =3D &root->rb_node, *parent =3D NULL;
+> > -       struct zswap_entry *myentry, *old;
+> > -       pgoff_t myentry_offset, entry_offset =3D swp_offset(entry->swpe=
+ntry);
+> > -
+> > -
+> > -       while (*link) {
+> > -               parent =3D *link;
+> > -               myentry =3D rb_entry(parent, struct zswap_entry, rbnode=
+);
+> > -               myentry_offset =3D swp_offset(myentry->swpentry);
+> > -               if (myentry_offset > entry_offset)
+> > -                       link =3D &(*link)->rb_left;
+> > -               else if (myentry_offset < entry_offset)
+> > -                       link =3D &(*link)->rb_right;
+> > -               else {
+> > -                       old =3D xa_load(&tree->xarray, entry_offset);
+> > -                       BUG_ON(old !=3D myentry);
+> > -                       *dupentry =3D myentry;
+> > +       struct zswap_entry *e;
+> > +       pgoff_t offset =3D swp_offset(entry->swpentry);
+> > +       XA_STATE(xas, &tree->xarray, offset);
+> > +
+> > +       do {
+> > +               xas_lock_irq(&xas);
+> > +               do {
+> > +                       e =3D xas_load(&xas);
+> > +                       if (xa_is_zero(e))
+> > +                               e =3D NULL;
+> > +               } while (xas_retry(&xas, e));
+> > +               if (xas_valid(&xas) && e) {
+> > +                       xas_unlock_irq(&xas);
+> > +                       *dupentry =3D e;
+> >                         return -EEXIST;
+> >                 }
+> > -       }
+> > -       rb_link_node(&entry->rbnode, parent, link);
+> > -       rb_insert_color(&entry->rbnode, root);
+> > -       old =3D xa_store(&tree->xarray, entry_offset, entry, GFP_KERNEL=
+);
+> > -       return 0;
+> > +               xas_store(&xas, entry);
+> > +               xas_unlock_irq(&xas);
+> > +       } while (xas_nomem(&xas, GFP_KERNEL));
+> > +       return xas_error(&xas);
+>
+> I think using the xas_* APIs can be avoided here. The only reason we
+> need it is that we want to check if there's an existing entry first,
+> and return -EEXIST. However, in that case, the caller will replace it
+> anyway (and do some operations on the dupentry):
+>
+> while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) =3D=3D -EEXIST) {
+>         WARN_ON(1);
+>         zswap_duplicate_entry++;
+>         zswap_invalidate_entry(tree, dupentry);
+> }
+>
+> So I think we can do something like this in zswap_insert() instead:
+>
+> dupentry =3D xa_store(..);
+> if (WARN_ON(dupentry)) {
+>         zswap_duplicate_entry++;
+>         zswap_invalidate_entry(tree, dupentry);
+> }
 
-I guess getrusage() is fine here, though I would probably just grab it
-directly.
-
-> diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
-> index 65b5dbe3c850..f3e9fda72400 100644
-> --- a/io_uring/sqpoll.c
-> +++ b/io_uring/sqpoll.c
-> @@ -251,6 +251,9 @@ static int io_sq_thread(void *data)
->  		}
->  
->  		cap_entries = !list_is_singular(&sqd->ctx_list);
-> +		ktime_t start, diff;
-> +
-> +		start = ktime_get();
->  		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
->  			int ret = __io_sq_thread(ctx, cap_entries);
-
-But why on earth is this part then not doing getrusage() as well?
-
-
-> diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
-> index 8df37e8c9149..c14c00240443 100644
-> --- a/io_uring/sqpoll.h
-> +++ b/io_uring/sqpoll.h
-> @@ -16,6 +16,7 @@ struct io_sq_data {
->  	pid_t			task_pid;
->  	pid_t			task_tgid;
->  
-> +	long long			work_time;
->  	unsigned long		state;
->  	struct completion	exited;
->  };
-
-Probably just make that an u64.
-
-As Pavel mentioned, I think we really need to consider if fdinfo is the
-appropriate API for this. It's fine if you're running stuff directly and
-you're just curious, but it's a very cumbersome API in general as you
-need to know the pid of the task holding the ring, the fd of the ring,
-and then you can get it as a textual description. If this is something
-that is deemed useful, would it not make more sense to make it
-programatically available in addition, or even exclusively?
-
--- 
-Jens Axboe
-
+If this is doable, I think we can return xa_store(..) and keep the
+logic in the caller. I think there's a chance
+zswap_{search/insert/erase} may end up being very thin wrappers around
+xa_{load/store/erase}, and we may be able to remove them completely.
+Let's see how it goes.
 
