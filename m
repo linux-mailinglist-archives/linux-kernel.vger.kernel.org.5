@@ -1,142 +1,118 @@
-Return-Path: <linux-kernel+bounces-30423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 554DD831E71
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:33:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83797831E79
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:33:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8786D1C22316
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:33:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C743282DB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B63862D638;
-	Thu, 18 Jan 2024 17:32:38 +0000 (UTC)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D33862D05B;
+	Thu, 18 Jan 2024 17:33:35 +0000 (UTC)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9859C2D624
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB7E32D78A;
+	Thu, 18 Jan 2024 17:33:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705599158; cv=none; b=qk/nCHNRs9k/qHsh6YuqbEO2I5Ry0kLq0gduJoW6b5x7mDIpN9uqbpRSUUQ6iCNIwyDT/a0WRJjRLrTpL1iS4CRDoLXq9ufkZFV5UkJ2fKeYWZ1cYuXf3SV2sXqapq0GEMotozwJY2OxVXg99Ld2xlx1Bj9ybkV0vTHT1cgYvkg=
+	t=1705599215; cv=none; b=uT9EFRjfzGIJ/nAkCvUspR0vlR5O+uZMLqF95/bSBkStH2sfMLSsCbtZiqRmwwiDsFzQsrDMzWJPkaQpZECi0ez5d4h77+eUUKcqwpfca573JTEYqkAUJd1Um9tGqJrq78+Yt/PRUsRhMBfsmxqB2CCRmRoh180j2xbjMOk7SOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705599158; c=relaxed/simple;
-	bh=4doGAHQnnqzVCFzwSTC4oYZ1ZI0QDPVBOXZ7uuD/Ejw=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:X-Received:Received:From:To:Cc:Subject:Date:
-	 Message-Id:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding; b=rQ2i7kzUja+QIy+FwABESBv833wNrtO0RY5tKTQbzXdYl1gF2RDkDW3iLjsoHuJuJynuS0XmimVcsLJLFqbzaIuq2Uk6YJbXSM9hE+MbgxRjFJF+W/t3nDnEebtQeUaXDleX5UAPZ8MzMmmcLIuNK1DDVSmBwXaZ45T2dq8dizE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55a025bca6eso1226116a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:32:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705599155; x=1706203955;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7jbV2CYl4OTbu9y0UXRb9wohz91lwTslTApdIlsv4JU=;
-        b=lPsW57NxLYK/K0lgom3TzR/a5Oo9BTd/b+WiX/4TeQbxnOAwpeNPExgoih1Q7zhhL5
-         QmSMUlBXkUZKcBrftCvh9sHx6Vv6fXuJ+fnyZ6xfB02z++v7SyIeLYw28AvZXdJEhBoY
-         if+DFdXxJG/gWi96fkOl16YWEKNzMFo55P34UPOsfi0pdI9Lru3KtXvN2TkAx5qhgnMZ
-         P3jo33yh/DPyfXTxBMFCu1S9CWoImd6x86v5YnxaQFYoDeHLHmi1ekl1D5rJhBbQMd3s
-         oMy527sOSbdcfs+TNwFMSc7C+tuaIWMERxY//s8C/RtYnHJW4vD+dF7fFv46fKm8UY0l
-         mVPA==
-X-Gm-Message-State: AOJu0Ywb8YDEMIeT/tjxPt+wUJOBhqB70I/1g3piITCypFm5WnHF2+AY
-	RPKFeQOoK+s+z3TVTHdvS9TlFaFROHSH9Wgqu34iJK/MPjPjgHKj
-X-Google-Smtp-Source: AGHT+IFkabOlFrAcHIbQ+1GKxcOlGnEvasE2Ed13exEPiUHEduHIyWrfv7vHNi6LxNT0UecCIauYDw==
-X-Received: by 2002:a17:907:8744:b0:a2f:3f0f:9645 with SMTP id qo4-20020a170907874400b00a2f3f0f9645mr323060ejc.64.1705599154554;
-        Thu, 18 Jan 2024 09:32:34 -0800 (PST)
-Received: from localhost (fwdproxy-cln-000.fbsv.net. [2a03:2880:31ff::face:b00c])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170906c08400b00a2b10e20292sm9330225ejz.215.2024.01.18.09.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 09:32:34 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: mingo@kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] x86/bugs: spectre_v2_user default mode depends on main default
-Date: Thu, 18 Jan 2024 09:32:13 -0800
-Message-Id: <20240118173213.2008115-4-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240118173213.2008115-1-leitao@debian.org>
-References: <20240118173213.2008115-1-leitao@debian.org>
+	s=arc-20240116; t=1705599215; c=relaxed/simple;
+	bh=zSojkb9oa18GUBW1ZjAD4v5bdWLOPJhL+eDSN4oBcHs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CIge7drM6Hz9k5G95LfIyliIAeXFsDlfDMmRxFqBkDtg0ipgzW5457pMsvvS0q0lFimpBcg5ZDn7rwTDGqLfD+JOMK0za/fxQu2rtQeqAR5Cm01pVrqQTL2VCJ2smbc9ekgLcQcundi2yLU7srCHT1N4sCsoZiGKwRylz3sMRyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 344D3866EA;
+	Thu, 18 Jan 2024 18:33:24 +0100 (CET)
+From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH v2 0/2] Kinetic KTD2801 backlight driver
+Date: Thu, 18 Jan 2024 18:32:37 +0100
+Message-Id: <20240118-ktd2801-v2-0-425cf32e0769@skole.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIALVgqWUC/z3MQQrDIBCF4auEWdcyaiymq96jZJHopEpKDBqkJ
+ Xj32kC7/B+Pb4dE0VOCa7NDpOyTD0sNcWrAuGF5EPO2NggUkiO2bN6s0MgZTlJraUbVWYT6XiN
+ N/nVI976282kL8X3AmX/Xn6H+Rq4Ma6WxWo14Ed1wS3N40tlF6EspH+mznb2dAAAA
+To: Lee Jones <lee@kernel.org>, 
+ Daniel Thompson <daniel.thompson@linaro.org>, 
+ Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>
+Cc: Karel Balej <balejk@matfyz.cz>, ~postmarketos/upstreaming@lists.sr.ht, 
+ dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-fbdev@vger.kernel.org, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1320;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=zSojkb9oa18GUBW1ZjAD4v5bdWLOPJhL+eDSN4oBcHs=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlqWDBb2YGGpgsgix8UXpwxFe4Vyv+qY/SOJaLM
+ g8Eq0fu96SJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZalgwQAKCRCaEZ6wQi2W
+ 4SPlEACZQl6p/zx4TzYIK7kXZhjzDR2FDa/QIbn50ad9nnDfWy6jkRd+lDv5gXm8ZVBjD01e3FK
+ ECgsBBs9oft4nrZ35uY6iNTcNgyCwDL8fSbqZfuTye1yUP1yy06nPrUNmFULuyJ5HrcbGQN6We6
+ m4uEfEr5Rn7vLGviVuwK/rj+9YZSWAI2Wd/rqNd39yx8/MGo4oz4VnC9JbQhZhBw7PMtDL7mWUV
+ ptjS0gmRx5sJK7YiOWhj8IC95h5U97ShkeUMMaVkvgoPpUVjQPpdTWVIGZ1x1BlJIDdh3RYjhHE
+ DpiTjcvNWGxRa99NdqXb7Cb47auZTC/Z5Bb8N7jPH5N4WektAg7H+M9yefS8tkP+N3fJC142eYq
+ 3IW0gwnZEghHWXxZZ6/My/wsElID+ykQbVY+YnNrmcfl0pjuogDjMOmlsRrvxWp79FetLSNG8CE
+ zwOneEqUnD3SipnO4B8k85rIwGiIfE4IILfl6STltOpjnc27aRmE62HGgJ1iY2semAdicA/4gR6
+ s39lseXtoRyHYp9b0n/y7WNj3sCDykDybv0yMr0vz8AytVMgTu9bKM1RSQ619r2nVOMQfRxKsh1
+ Y7ZJFiUU9VozU84WtPsqHIEXHz6tU+bDIBNpqp0ok5Db4G8p7xf64JsdgPqzKu/x4Ylw5yDq70i
+ lgpHmR+3Ow8kDqg==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-Change the default value of spectre v2 in user mode to respect the
-CONFIG_MITIGATION_SPECTRE_V2 config option.
+Hello,
 
-Currently, user mode spectre v2 is set to auto
-(SPECTRE_V2_USER_CMD_AUTO) by default, even if
-CONFIG_MITIGATION_SPECTRE_V2 is disabled.
+This small series adds a driver for the Kinetic KTD2801 backlight IC.
+The driver has been tested on the samsung,coreprimevelte for which
+support is still out-of-tree.
 
-Set the Spectre_v2 value to auto (SPECTRE_V2_USER_CMD_AUTO) if the
-Spectre v2 config (CONFIG_MITIGATION_SPECTRE_V2) is enabled, otherwise
-set the value to none (SPECTRE_V2_USER_CMD_NONE).
-
-Important to say the command line argument "spectre_v2_user" overwrites
-the default value in both cases.
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
-Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- arch/x86/kernel/cpu/bugs.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+Changes in v2:
+- Address maintainer comments:
+  - Drop MODULE_ALIAS
+  - Rename enable-gpios to ctrl-gpios
+  - Rename ktd2801_backlight->desc to ktd2801_backlight->gpiod
+  - Give time constants more descriptive names and note their origins in
+    Samsung driver
+  - Convert to GPIO_ACTIVE_HIGH
+- Update trailers
+- Link to v1: https://lore.kernel.org/r/20231005-ktd2801-v1-0-43cd85b0629a@skole.hr
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 11ccbadd8800..4f1da92784c6 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -1221,8 +1221,11 @@ static __ro_after_init enum spectre_v2_mitigation_cmd spectre_v2_cmd;
- static enum spectre_v2_user_cmd __init
- spectre_v2_parse_user_cmdline(void)
- {
-+	int ret, i, mode;
- 	char arg[20];
--	int ret, i;
-+
-+	mode = IS_ENABLED(CONFIG_MITIGATION_SPECTRE_V2) ?
-+		SPECTRE_V2_USER_CMD_AUTO : SPECTRE_V2_USER_CMD_NONE;
- 
- 	switch (spectre_v2_cmd) {
- 	case SPECTRE_V2_CMD_NONE:
-@@ -1236,7 +1239,7 @@ spectre_v2_parse_user_cmdline(void)
- 	ret = cmdline_find_option(boot_command_line, "spectre_v2_user",
- 				  arg, sizeof(arg));
- 	if (ret < 0)
--		return SPECTRE_V2_USER_CMD_AUTO;
-+		return mode;
- 
- 	for (i = 0; i < ARRAY_SIZE(v2_user_options); i++) {
- 		if (match_option(arg, ret, v2_user_options[i].option)) {
-@@ -1246,8 +1249,8 @@ spectre_v2_parse_user_cmdline(void)
- 		}
- 	}
- 
--	pr_err("Unknown user space protection option (%s). Switching to AUTO select\n", arg);
--	return SPECTRE_V2_USER_CMD_AUTO;
-+	pr_err("Unknown user space protection option (%s). Switching to default\n", arg);
-+	return mode;
- }
- 
- static inline bool spectre_v2_in_ibrs_mode(enum spectre_v2_mitigation mode)
+---
+Duje Mihanović (2):
+      dt-bindings: backlight: add Kinetic KTD2801 binding
+      backlight: Add Kinetic KTD2801 driver
+
+ .../bindings/leds/backlight/kinetic,ktd2801.yaml   |  46 +++++++
+ MAINTAINERS                                        |   6 +
+ drivers/video/backlight/Kconfig                    |   7 +
+ drivers/video/backlight/Makefile                   |   1 +
+ drivers/video/backlight/ktd2801-backlight.c        | 149 +++++++++++++++++++++
+ 5 files changed, 209 insertions(+)
+---
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+change-id: 20231004-ktd2801-0f3883cb59d0
+
+Best regards,
 -- 
-2.34.1
+Duje Mihanović <duje.mihanovic@skole.hr>
+
 
 
