@@ -1,190 +1,216 @@
-Return-Path: <linux-kernel+bounces-30245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DDB8831C29
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:16:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54E76831C2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:17:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DE38284B99
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:16:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 149041F217ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:17:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44E61E88D;
-	Thu, 18 Jan 2024 15:15:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E2061E532
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 15:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B4C241F6;
+	Thu, 18 Jan 2024 15:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hb+bApsU"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163AF1E87D;
+	Thu, 18 Jan 2024 15:17:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705590952; cv=none; b=TMEgRtvZ4L7NffPER/uQ3DEDVd912Y6uHIZZ8IYNBi3h0P6JUMx4xPps2gg9aofhghiu1KNHK1+552QneL59+dZ1Q+1HnPRJfuJSWgomXQmY9uwpa6qdSQ82yN48SI3WfLw1DkkSjE0BYI/XO3KKmYlVHxPvl7agbnSeQcCS+no=
+	t=1705591050; cv=none; b=Hi5X0BvpgUxWLZFP3RJAXNUJOwlaMWpt2o8q6oFUiApXZ3KWKeIEYjwJe/g1RqYkEAKeUCuh4ALa+6NTdZywgCTdQMm/AeTl8xVkCLgfRWEF4bUeCH5oK3wYucGQV5xbtsBDrz/ot3RfYeIJsBByGoZx2Kmd2o0fry4Kn3HH1S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705590952; c=relaxed/simple;
-	bh=/hJ+jFjPcZBpWrtzOj9idrYCeyAyNSL3T466ON4vT4M=;
-	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
-	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=JkYFTENi//nHBaPY5WJBwk9Ecocm02RNjjQhDO35ixZ/m3MnCzWCbKjkN5rczcVVIV/gvuyTeckVZM9ufgEmg7TZNbWHCChvacfauWsJ8GRNgtplA6E5dk7L97rAvzOwhhT29QTtWu5yuRicsROOWU2ejgI4A/UKlA/EJJ8f83w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E4711042;
-	Thu, 18 Jan 2024 07:16:27 -0800 (PST)
-Received: from [10.57.77.97] (unknown [10.57.77.97])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE12B3F73F;
-	Thu, 18 Jan 2024 07:15:37 -0800 (PST)
-Message-ID: <9e60b948-0044-4826-8551-0a3888650657@arm.com>
-Date: Thu, 18 Jan 2024 15:15:36 +0000
+	s=arc-20240116; t=1705591050; c=relaxed/simple;
+	bh=+kFrRhjHpv40nvSzG/vyhe0ms38QkgFWWNV2IL9QDBA=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=IzWuvo6+PQhTlEdpgqRzBdFGY7orbO/GjY9Y8TQ2cEtyQ7aA6zziSMwsOYBl68q0ZCZdRY8eo586wEVLNDnIT7rnoNiSuxRdzKMIRs+XxgAl8VZxpjv4K9r1Tz5v7yLLTxN8aHeIdHVQZDW1qeG16khPG6jY4dgwoVdXNKIqX00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hb+bApsU; arc=none smtp.client-ip=134.134.136.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705591049; x=1737127049;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+kFrRhjHpv40nvSzG/vyhe0ms38QkgFWWNV2IL9QDBA=;
+  b=hb+bApsU7OftD90cqpsJZF2UNQTy53rMGGPzd0Rjx0c2C7c4GRxaufOY
+   nVFJw0lhJSP3U0p99r9muSDFSBFnF0RA8hKKCxH6Paqo4mddcgqpprnBq
+   wawDuAjSA5etnDj7we/fj/obtzKM7/doVd07E/jY61IckV1Vdn8vvJ21l
+   JZs/PxBEpfk4jayI8rbUdiWicGagZLUS3SW8s3/awF2h9Op0YRhuxkqLu
+   H62NiGZIGjONrTjgKL0jU0toz2vtJJqi1d5XWaq351m5GVUtTU9KvUW+g
+   hpXsjlx2HBaqY2DDpyLx8medeWvZtAGQBvnCyJnvALawYISuj2Yq/NTtk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="466852643"
+X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
+   d="scan'208";a="466852643"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 07:17:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="784826988"
+X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
+   d="scan'208";a="784826988"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 18 Jan 2024 07:17:20 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rQU8r-000356-1C;
+	Thu, 18 Jan 2024 15:17:17 +0000
+Date: Thu, 18 Jan 2024 23:16:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Alexander Graf <graf@amazon.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-trace-kernel@vger.kernel.org,
+	linux-mm@kvack.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kexec@lists.infradead.org,
+	linux-doc@vger.kernel.org, x86@kernel.org,
+	Eric Biederman <ebiederm@xmission.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Ashish Kalra <ashish.kalra@amd.com>,
+	James Gowans <jgowans@amazon.com>,
+	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
+	arnd@arndb.de, pbonzini@redhat.com, madvenka@linux.microsoft.com,
+	Anthony Yznaga <anthony.yznaga@oracle.com>,
+	Usama Arif <usama.arif@bytedance.com>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v3 13/17] tracing: Recover trace buffers from kexec
+ handover
+Message-ID: <202401182318.vEGddOt1-lkp@intel.com>
+References: <20240117144704.602-14-graf@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 06/13] mm/gup: Drop folio_fast_pin_allowed() in hugepd
- processing
-Content-Language: en-GB
-To: Jason Gunthorpe <jgg@nvidia.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "peterx@redhat.com" <peterx@redhat.com>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- James Houghton <jthoughton@google.com>, David Hildenbrand
- <david@redhat.com>, "Kirill A . Shutemov" <kirill@shutemov.name>,
- Yang Shi <shy828301@gmail.com>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
- Rik van Riel <riel@surriel.com>, Andrea Arcangeli <aarcange@redhat.com>,
- Axel Rasmussen <axelrasmussen@google.com>, Mike Rapoport <rppt@kernel.org>,
- John Hubbard <jhubbard@nvidia.com>, Vlastimil Babka <vbabka@suse.cz>,
- Michael Ellerman <mpe@ellerman.id.au>, Andrew Jones
- <andrew.jones@linux.dev>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Christoph Hellwig
- <hch@infradead.org>, Lorenzo Stoakes <lstoakes@gmail.com>,
- Matthew Wilcox <willy@infradead.org>
-References: <20240103091423.400294-1-peterx@redhat.com>
- <20240103091423.400294-7-peterx@redhat.com>
- <20240115183748.GR734935@nvidia.com>
- <c60c9d88-33aa-4312-a23c-20206e503b6e@csgroup.eu>
- <20240116123138.GZ734935@nvidia.com>
- <44e450cb-5d3f-407e-97a3-024eb936f74b@csgroup.eu>
- <20240117132243.GG734935@nvidia.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240117132243.GG734935@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117144704.602-14-graf@amazon.com>
 
-On 17/01/2024 13:22, Jason Gunthorpe wrote:
-> On Tue, Jan 16, 2024 at 06:32:32PM +0000, Christophe Leroy wrote:
->>>> hugepd is a page directory dedicated to huge pages, where you have huge
->>>> pages listed instead of regular pages. For instance, on powerpc 32 with
->>>> each PGD entries covering 4Mbytes, a regular page table has 1024 PTEs. A
->>>> hugepd for 512k is a page table with 8 entries.
->>>>
->>>> And for 8Mbytes entries, the hugepd is a page table with only one entry.
->>>> And 2 consecutive PGS entries will point to the same hugepd to cover the
->>>> entire 8Mbytes.
->>>
->>> That still sounds alot like the ARM thing - except ARM replicates the
->>> entry, you also said PPC relicates the entry like ARM to get to the
->>> 8M?
->>
->> Is it like ARM ? Not sure. The PTE is not in the PGD it must be in a L2 
->> directory, even for 8M.
-> 
-> Your diagram looks almost exactly like ARM to me.
-> 
-> The key thing is that the address for the L2 Table is *always* formed as:
-> 
->    L2 Table Base << 12 + L2 Index << 2 + 00
-> 
-> Then the L2 Descriptor must contains bits indicating the page
-> size. The L2 Descriptor is replicated to every 4k entry that the page
-> size covers.
-> 
-> The only difference I see is the 8M case which has a page size greater
-> than a single L1 entry.
-> 
->> Yes that's how it works on powerpc. For 8xx we used to do that for both 
->> 8M and 512k pages. Now for 512k pages we do kind of like ARM (which 
->> means replicating the entry 128 times) as that's needed to allow mixing 
->> different page sizes for a given PGD entry.
-> 
-> Right, you want to have granular page sizes or it becomes unusable in
-> the general case
->  
->> But for 8M pages that would mean replicating the entry 2048 times. 
->> That's a bit too much isn't it ?
-> 
-> Indeed, de-duplicating the L2 Table is a neat optimization.
-> 
->>> So if you imagine a pmd_leaf(), pmd_leaf_size() and a pte_leaf_size()
->>> that would return enough information for both.
->>
->> pmd_leaf() ? Unless I'm missing something I can't do leaf at PMD (PGD) 
->> level. It must be a two-level process even for pages bigger than a PMD 
->> entry.
-> 
-> Right, this is the normal THP/hugetlb situation on x86/etc. It
-> wouldn't apply here since it seems the HW doesn't have a bit in the L1
-> descriptor to indicate leaf.
-> 
-> Instead for PPC this hugepd stuff should start to follow Ryan's
-> generic work for ARM contig:
-> 
-> https://lore.kernel.org/all/20231218105100.172635-1-ryan.roberts@arm.com/
-> 
-> Specifically the arch implementation:
-> 
-> https://lore.kernel.org/linux-mm/20231218105100.172635-15-ryan.roberts@arm.com/
-> 
-> Ie the arch should ultimately wire up the replication and variable
-> page size bits within its implementation of set_ptes(). set_ptes()s
-> gets a contiguous run of address and should install it with maximum
-> use of the variable page sizes. The core code will start to call
-> set_ptes() in more cases as Ryan gets along his project.
+Hi Alexander,
 
-Note that it's not just set_ptes() that you want to batch; there are other calls
-that can benefit too. See patches 2 and 3 in the series you linked. (although
-I'm working with DavidH on this and the details are going to change a little).
+kernel test robot noticed the following build warnings:
 
-> 
-> For the purposes of GUP, where are are today and where we are going,
-> it would be much better to not have a special PPC specific "hugepd"
-> parser. Just process each of the 4k replicates one by one like ARM is
-> starting with.
-> 
-> The arch would still have to return the correct page address from
-> pte_phys() which I think Ryan is doing by having the replicates encode
-> the full 4k based address in each entry.
+[auto build test WARNING on linus/master]
+[cannot apply to tip/x86/core arm64/for-next/core akpm-mm/mm-everything v6.7 next-20240118]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Yes; although its actually also a requirement of the arm architecture. Since the
-contig bit is just a hint that the HW may or may not take any notice of, the
-page tables have to be correct for the case where the HW just reads them in base
-pages. Fixing up the bottom bits should be trivial using the PTE pointer, if
-needed for ppc.
+url:    https://github.com/intel-lab-lkp/linux/commits/Alexander-Graf/mm-memblock-Add-support-for-scratch-memory/20240117-225136
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20240117144704.602-14-graf%40amazon.com
+patch subject: [PATCH v3 13/17] tracing: Recover trace buffers from kexec handover
+config: i386-randconfig-061-20240118 (https://download.01.org/0day-ci/archive/20240118/202401182318.vEGddOt1-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240118/202401182318.vEGddOt1-lkp@intel.com/reproduce)
 
-> The HW will ignore those low
-> bits and pte_phys() then works properly. This would work for PPC as
-> well, excluding the 8M optimization.
-> 
-> Going forward I'd expect to see some pte_page_size() that returns the
-> size bits and GUP can have logic to skip reading replicates.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401182318.vEGddOt1-lkp@intel.com/
 
-Yes; pte_batch_remaining() in patch 2 is an attempt at this. But as I said the
-details will likely change a little.
+sparse warnings: (new ones prefixed by >>)
+   kernel/trace/ring_buffer.c:1105:32: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __poll_t @@     got int @@
+   kernel/trace/ring_buffer.c:1105:32: sparse:     expected restricted __poll_t
+   kernel/trace/ring_buffer.c:1105:32: sparse:     got int
+   kernel/trace/ring_buffer.c:4955:9: sparse: sparse: context imbalance in 'ring_buffer_peek' - different lock contexts for basic block
+   kernel/trace/ring_buffer.c:5041:9: sparse: sparse: context imbalance in 'ring_buffer_consume' - different lock contexts for basic block
+   kernel/trace/ring_buffer.c:5421:17: sparse: sparse: context imbalance in 'ring_buffer_empty' - different lock contexts for basic block
+   kernel/trace/ring_buffer.c:5451:9: sparse: sparse: context imbalance in 'ring_buffer_empty_cpu' - different lock contexts for basic block
+>> kernel/trace/ring_buffer.c:5937:82: sparse: sparse: non size-preserving integer to pointer cast
+   kernel/trace/ring_buffer.c:5939:84: sparse: sparse: non size-preserving integer to pointer cast
 
-> 
-> The advantage of all this is that it stops making the feature special
-> and the work Ryan is doing to generically push larger folios into
-> set_ptes will become usable on these PPC platforms as well. And we can
-> kill the PPC specific hugepd.
-> 
-> Jason
+vim +5937 kernel/trace/ring_buffer.c
 
+  5896	
+  5897	static int rb_kho_replace_buffers(struct ring_buffer_per_cpu *cpu_buffer,
+  5898					     struct rb_kho_cpu *kho)
+  5899	{
+  5900		bool first_loop = true;
+  5901		struct list_head *tmp;
+  5902		int err = 0;
+  5903		int i = 0;
+  5904	
+  5905		if (!IS_ENABLED(CONFIG_FTRACE_KHO))
+  5906			return -EINVAL;
+  5907	
+  5908		if (kho->nr_mems != cpu_buffer->nr_pages * 2)
+  5909			return -EINVAL;
+  5910	
+  5911		for (tmp = rb_list_head(cpu_buffer->pages);
+  5912		     tmp != rb_list_head(cpu_buffer->pages) || first_loop;
+  5913		     tmp = rb_list_head(tmp->next), first_loop = false) {
+  5914			struct buffer_page *bpage = (struct buffer_page *)tmp;
+  5915			const struct kho_mem *mem_bpage = &kho->mem[i++];
+  5916			const struct kho_mem *mem_page = &kho->mem[i++];
+  5917			const uint64_t rb_page_head = 1;
+  5918			struct buffer_page *old_bpage;
+  5919			void *old_page;
+  5920	
+  5921			old_bpage = __va(mem_bpage->addr);
+  5922			if (!bpage)
+  5923				goto out;
+  5924	
+  5925			if ((ulong)old_bpage->list.next & rb_page_head) {
+  5926				struct list_head *new_lhead;
+  5927				struct buffer_page *new_head;
+  5928	
+  5929				new_lhead = rb_list_head(bpage->list.next);
+  5930				new_head = (struct buffer_page *)new_lhead;
+  5931	
+  5932				/* Assume the buffer is completely full */
+  5933				cpu_buffer->tail_page = bpage;
+  5934				cpu_buffer->commit_page = bpage;
+  5935				/* Set the head pointers to what they were before */
+  5936				cpu_buffer->head_page->list.prev->next = (struct list_head *)
+> 5937					((ulong)cpu_buffer->head_page->list.prev->next & ~rb_page_head);
+  5938				cpu_buffer->head_page = new_head;
+  5939				bpage->list.next = (struct list_head *)((ulong)new_lhead | rb_page_head);
+  5940			}
+  5941	
+  5942			if (rb_page_entries(old_bpage) || rb_page_write(old_bpage)) {
+  5943				/*
+  5944				 * We want to recycle the pre-kho page, it contains
+  5945				 * trace data. To do so, we unreserve it and swap the
+  5946				 * current data page with the pre-kho one
+  5947				 */
+  5948				old_page = kho_claim_mem(mem_page);
+  5949	
+  5950				/* Recycle the old page, it contains data */
+  5951				free_page((ulong)bpage->page);
+  5952				bpage->page = old_page;
+  5953	
+  5954				bpage->write = old_bpage->write;
+  5955				bpage->entries = old_bpage->entries;
+  5956				bpage->real_end = old_bpage->real_end;
+  5957	
+  5958				local_inc(&cpu_buffer->pages_touched);
+  5959			} else {
+  5960				kho_return_mem(mem_page);
+  5961			}
+  5962	
+  5963			kho_return_mem(mem_bpage);
+  5964		}
+  5965	
+  5966	out:
+  5967		return err;
+  5968	}
+  5969	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
