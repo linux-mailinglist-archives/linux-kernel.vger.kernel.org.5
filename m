@@ -1,117 +1,125 @@
-Return-Path: <linux-kernel+bounces-30214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5531D831BA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:41:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15D97831BA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:42:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 062E82894C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:41:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48D161C20DC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C413B28DBB;
-	Thu, 18 Jan 2024 14:39:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB991DDCC;
+	Thu, 18 Jan 2024 14:41:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UC4J9KD5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0E0288DD
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CE3A53;
+	Thu, 18 Jan 2024 14:41:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705588773; cv=none; b=nWNZ5IPA2BHQSS6MqyAvZu3N/ZdFv6rwqi8fjwBkVKEgor5KQ/hD3TXxIHoIwA6ZdCcqu8RAHw0OB3hY3giGVkmOExpUhtxhf2wjK/hwjAhzoyc8m1QR5paJDKkfI86WdcWKE5lY+6afsT1hpFDNshv6xOK+fRcWlefsCwWCC80=
+	t=1705588866; cv=none; b=Tse9Jmuc3Se9G0KdHoQoPiygiCu6Qetx854mECegmIjl2RVFzUnvs007hJH6aZP/NeTKk51vCeXG6l8r0IwsjMKFNTyVBbkcP7vp1Sn9EaN8zv3MzQyKByO+15wzdPhAb/eeKVztTwugVBL651sBmNW4+JAGYzF/UAt1CPbbxXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705588773; c=relaxed/simple;
-	bh=o1pfL9AYoWWMo2KKUd8aotsevnS+yTBUAOMDAmuzcAE=;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:X-Mailer:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding; b=tRgWysb5mw60Q3so2UGwIP6er3uvySpeTZp5RV0n7U0cQa/nfLtA4V9g4gpJw3x569q4t5aF4RxacVoMFCiHZ+fheu5OU0/KNJB0Ow8bMpdB8+ltxbLGKpHqybdEKieXRTWQweWtFQitKpG4hzv3V47iIYxaJA59U70mKzxh4cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2E78C433F1;
-	Thu, 18 Jan 2024 14:39:31 +0000 (UTC)
-Date: Thu, 18 Jan 2024 09:40:50 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Kees Cook <keescook@chromium.org>, Nathan
- Lynch <nathanl@linux.ibm.com>
-Subject: [for-linus][PATCH] seq_buf: Make DECLARE_SEQ_BUF() usable
-Message-ID: <20240118094050.3b890e98@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705588866; c=relaxed/simple;
+	bh=jbr6rdJ/qeiYoL30WlSwpGj5SzBJllrSxz7PDcWI+jY=;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
+	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Iu4X6JgJi0zz57ZDhDUd4nmKDWVhVmapkEmoWvPCG4NakKm2nl89tLpJjxYIWVhdfu2500wA7UxGqX4lAEs9AP6mSDTtqC/n3s0aV3EZfF4DURRtuUbGRjX6rx60GPyR1OhY35F3eKrxYhNDS0WGM5Mr/MmieLqVvJKdNBVKnQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UC4J9KD5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A4E4C433F1;
+	Thu, 18 Jan 2024 14:41:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705588865;
+	bh=jbr6rdJ/qeiYoL30WlSwpGj5SzBJllrSxz7PDcWI+jY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=UC4J9KD5DkWzus10ieCSPso1KKv+GxZN/efrkkYGlvJNq/8JzrklGZZzUcPtoBb63
+	 nRapeeZ4STrBg/h272xm9P0M/cjCjO/a3PJukYYbM0pg12EIHLoWCdGBdlL7hrnTz6
+	 Q0xQFpSNsaIyesZZax+USYwBtamZ7n8nt4Lc+KD7mGl2n9vzgQLBSZdivVJEoDINek
+	 /ehG0nL5Z3nlJphQVJaxyRrt3m7B9Xr7rqZpVT9yiEjEp8Shq7F7UzYC5/uhNGqS0V
+	 txOjVqMWDqHHtVyrPN5axaMQ2A8HHJjsxEhPI3vtmHEmQDJ4u9YFfKKh+K1oPTt9Db
+	 4H95w7BbPSRPA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id CB27ECE0546; Thu, 18 Jan 2024 06:41:04 -0800 (PST)
+Date: Thu, 18 Jan 2024 06:41:04 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Chen Zhongjin <chenzhongjin@huawei.com>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, yangjihong1@huawei.com,
+	naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+	davem@davemloft.net, mhiramat@kernel.org, tglx@linutronix.de,
+	peterz@infradead.org, pmladek@suse.com, dianders@chromium.org,
+	npiggin@gmail.com, mpe@ellerman.id.au, jkl820.git@gmail.com,
+	juerg.haefliger@canonical.com, rick.p.edgecombe@intel.com,
+	eric.devolder@oracle.com, mic@digikod.net
+Subject: Re: [PATCH] kprobes: Use synchronize_rcu_tasks_rude in
+ kprobe_optimizer
+Message-ID: <526b12e4-4bb0-47b1-bece-66b47bfc0a92@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240117061636.288412-1-chenzhongjin@huawei.com>
+ <20240117123133.2e40438936167e6a4aec8b16@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117123133.2e40438936167e6a4aec8b16@linux-foundation.org>
 
+On Wed, Jan 17, 2024 at 12:31:33PM -0800, Andrew Morton wrote:
+> On Wed, 17 Jan 2024 06:16:36 +0000 Chen Zhongjin <chenzhongjin@huawei.com> wrote:
+> 
+> > There is a deadlock scenario in kprobe_optimizer():
+> > 
+> > pid A				pid B			pid C
+> > kprobe_optimizer()		do_exit()		perf_kprobe_init()
+> > mutex_lock(&kprobe_mutex)	exit_tasks_rcu_start()	mutex_lock(&kprobe_mutex)
+> > synchronize_rcu_tasks()		zap_pid_ns_processes()	// waiting kprobe_mutex
+> > // waiting tasks_rcu_exit_srcu	kernel_wait4()
+> > 				// waiting pid C exit
+> > 
+> > To avoid this deadlock loop, use synchronize_rcu_tasks_rude() in kprobe_optimizer()
+> > rather than synchronize_rcu_tasks(). synchronize_rcu_tasks_rude() can also promise
+> > that all preempted tasks have scheduled, but it will not wait tasks_rcu_exit_srcu.
 
-Another update for 6.8:
+Hello, Chen Zhongjin,
 
-- Fix seq_buf warning and make static work properly.
+Relying on the non-preemptability of the last portion of the do_exit()
+function does appear to be the basis for a much better solution than
+what we currently have.  So at the very least, thank you for the idea!!!
+I feel a bit silly for not having thought of it myself.  ;-)
 
+However, just invoking synchronize_rcu_tasks_rude() will be bad for both
+energy efficiency and real-time response.  This is due to the fact that
+synchronize_rcu_tasks_rude() sends an IPI to each and every online CPUs,
+almost none of which will be in the non-preemptible tail of do_exit()
+at any given time.  These additional unnecessary IPIs will drain battery
+when they hit idle CPUs and degrade real-time response when they hit
+CPUs running aggressive real-time applications.  Which might not make
+people happy.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-trace/urgent
+So, would you be willing to use RCU's do_exit() hooks and RCU's hook
+into the scheduler (either rcu_note_context_switch() or rcu_tasks_qs(),
+whichever would work better) maintain a per-CPU variable that is a
+pointer to the task in the non-preemptible tail of do_exit() if there
+is one or NULL otherwise?  This would get us the deadlock-avoidance
+simplicity of your underlying idea, while avoiding (almost all of)
+the energy-efficiency and real-time-response issues with your patch.
 
-Head SHA1: 7a8e9cdf9405819105ae7405cd91e482bf574b01
+This does require a bit of memory-ordering care, so if you would prefer
+that I do the implementation, just let me know.
 
+(The memory-ordering trick is to use "smp_mb(); smp_load_acquire();" to
+sample the counter and "smp_store_release(); smp_mb();" to update it.)
 
-Nathan Lynch (1):
-      seq_buf: Make DECLARE_SEQ_BUF() usable
+							Thanx, Paul
 
-----
- include/linux/seq_buf.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
----------------------------
-commit 7a8e9cdf9405819105ae7405cd91e482bf574b01
-Author: Nathan Lynch <nathanl@linux.ibm.com>
-Date:   Tue Jan 16 08:09:25 2024 -0600
-
-    seq_buf: Make DECLARE_SEQ_BUF() usable
-   =20
-    Using the address operator on the array doesn't work:
-   =20
-    ./include/linux/seq_buf.h:27:27: error: initialization of =E2=80=98char=
- *=E2=80=99
-      from incompatible pointer type =E2=80=98char (*)[128]=E2=80=99
-      [-Werror=3Dincompatible-pointer-types]
-       27 |                 .buffer =3D &__ ## NAME ## _buffer,       \
-          |                           ^
-   =20
-    Apart from fixing that, we can improve DECLARE_SEQ_BUF() by using a
-    compound literal to define the buffer array without attaching a name
-    to it. This makes the macro a single statement, allowing constructs
-    such as:
-   =20
-      static DECLARE_SEQ_BUF(my_seq_buf, MYSB_SIZE);
-   =20
-    to work as intended.
-   =20
-    Link: https://lkml.kernel.org/r/20240116-declare-seq-buf-fix-v1-1-915db=
-4692f32@linux.ibm.com
-   =20
-    Cc: stable@vger.kernel.org
-    Acked-by: Kees Cook <keescook@chromium.org>
-    Fixes: dcc4e5728eea ("seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_st=
-r()")
-    Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-    Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-
-diff --git a/include/linux/seq_buf.h b/include/linux/seq_buf.h
-index 5fb1f12c33f9..c44f4b47b945 100644
---- a/include/linux/seq_buf.h
-+++ b/include/linux/seq_buf.h
-@@ -22,9 +22,8 @@ struct seq_buf {
- };
-=20
- #define DECLARE_SEQ_BUF(NAME, SIZE)			\
--	char __ ## NAME ## _buffer[SIZE] =3D "";		\
- 	struct seq_buf NAME =3D {				\
--		.buffer =3D &__ ## NAME ## _buffer,	\
-+		.buffer =3D (char[SIZE]) { 0 },		\
- 		.size =3D SIZE,				\
- 	}
-=20
+> > Signed-off-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> 
+> Thanks.  Should we backport this fix into earlier kernels?  If so, are
+> we able to identify a suitable Fixes: target?
 
