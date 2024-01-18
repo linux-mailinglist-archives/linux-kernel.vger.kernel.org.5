@@ -1,192 +1,129 @@
-Return-Path: <linux-kernel+bounces-30456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FA52831EEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:07:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17218831EF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:08:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B4671F23571
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:07:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C1151F2360E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:08:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0F92D612;
-	Thu, 18 Jan 2024 18:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9E52D614;
+	Thu, 18 Jan 2024 18:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="Jj3QDk2p"
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MCqXL/3M"
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8D62C842
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 18:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC2C2C842
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 18:08:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705601225; cv=none; b=INR2HXaTz040rPN64LXrK65YzSkZRvdu1gVLBkXKdrUGTYq90XkvWSq19R6e3tpULhI5mHjX65MK+qtR96XPRWfET4sk/w4d3CO2dUxHt7GI2woV24r69TLhq6qyttbyLLzzkpLgfNty6kU1vJwELcT39I8O8jqp1DIW57dJI+4=
+	t=1705601302; cv=none; b=JwECGLZJx1+3EXZscxp6xXtGQrlCK7E1bvF/0TQSYNjwaQFWmx+BXpUOpI8hHYU+p7GdkJUCREY3izkGCmMhouAZeOQt7qdaz5LLhEqtq/0qjqBKVsOpZmJf5pjfxhcjzIWgolg2boe9O076JU3NYMi0PVQYEiHYj/6uE1S11nU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705601225; c=relaxed/simple;
-	bh=wYMUz7M82CRmVJYjs+F0MvYTs7b94mlZN8ahcx/N++k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HEDSWTpd0qUB/izeBMlMAe+f9lODMoyd4xnzFY/SyphNZEM1NWztgqZeECICEwSgJpwZleQdCHr9e3yIlCfkMnH2pIWHWI6sqsvq9jcO+UzuIw3JBJuGDygsiC04oO23JTHN6WYPhqQhsU2NJeU3VSU/Ak76/5k/z/vvSdjnHfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=Jj3QDk2p; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7831e87ba13so1070006085a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 10:07:01 -0800 (PST)
+	s=arc-20240116; t=1705601302; c=relaxed/simple;
+	bh=lb+KFR5UwwKootoHG78GkwJ5LrRDGOQzgc5mdvn66a0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D1R20eo+ck1DbYqKZu6YNEg6PfQJjy3zUHn7aC+d8aRuyhWF0TFFM8Cr/ypI8OglSV4IuP9Oj858ExWmBJ7ygUMG4iddKSlJqrUpdl8Dxt5S88/WH1pmnBuIPRhKz1aJctFbcNPst+YKAUa55Yp1WUYNR8NegpRYhpkREhyxPQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MCqXL/3M; arc=none smtp.client-ip=209.85.166.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7bee87b2f5eso261547639f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 10:08:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705601221; x=1706206021; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=g17qqdCkc/4dLWzvWkxlImPJQBvAa5kSq+wGioXKCYI=;
-        b=Jj3QDk2pa5gxjb9BVymaCbw+koj7V07v2QOT7OVlFnfQMsE9pXiOtt1dkUfVu60eAx
-         h4z7lrBMx/I2XH7z/dydmmhZHO2pskU7kaFiTUmfmv+IqzdT0nvoFGJk1DqvwhRA3VfC
-         qiLgECyE72cxEUmdglSOU6OcSchjQxVWMvYAJEL6y1psseZ/8J74bhh6JkNghihYHYrB
-         JVWJ0oDxE7e+HsuJfCT+V1mWLnhYXRUHh0ZeRPnc7NNUIaeKF49JloDUWB2OjKPFWUr0
-         URdJTjuaUAmHAR7lu5W/jvKuwycIefGeqX2hX+b4zzD6AZvDCwm/JBR6bFoKroQPLYyG
-         uqUA==
+        d=gmail.com; s=20230601; t=1705601300; x=1706206100; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n9oyBIjEpoT3XMaWPjAXVyQ5+LqPNizEst4EFi9ms0Q=;
+        b=MCqXL/3M5UGJPztQoGpoOCz0JVYatYKsM2D2p7GB4LBHTH+LXVUZcIUKlMeKrugy7J
+         ckelnOV7o6YF7zRuLO5VLvdoiv9kfzUEgEYYV+ytOkh+NBgXXNYTB2Gv6tlWN2tPTsPk
+         oZm4pVpJQQbaV8dyWiIHtWWwUxmkFQk646a79YLye9g8XREf91CsXYHCXWsQsERc4C6e
+         To5vm5fvn4mkaI9t9dO1UHdJNOipk5YVGpFSFsGB08LFDC/L3N6g6jbFhzdTH/o4/iG/
+         q22WwP9VjlArUq1K6FLDc8WxN+viqrAfYh58dHJ5/CUsMlUROHhP8tGINKc1t5H4iurh
+         lnsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705601221; x=1706206021;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g17qqdCkc/4dLWzvWkxlImPJQBvAa5kSq+wGioXKCYI=;
-        b=CmLfwl5j0oPSKlpKi8A0g/LyUMlxHJvHwMWA336Lok9A7m7Nm8Kl3FiVV9u0odaJpN
-         EWiWyJU4jfXbUu/hrKkG+pOCCegQww+fkXCV2SejmGft+aB4aTZZpHHmDGPec7eOsmVW
-         F98fqs4xVB27NSp5pzomK5r9Df3dnK8F0nqQdSDxcEV84sfs0G03eFk2TuC9MGHonC5/
-         nCSerfhti8WkEu9zTZBDLeNaHf1xdn0nXcQYHawBjyS9WqdAsUzCN8hwqt3sGyHHi3bd
-         xjGsQZhsd9baJMFkEXj0yjqjgXAhdUdU6a/Lm2+BD0d8Hmdo/XIP3/LXrbXeE6gnnBrP
-         S1Qg==
-X-Gm-Message-State: AOJu0Ywwihcy2Un2Xj7Anp8KVvMVpejoDk+RgeiLZdKCUANIwxOPES/Y
-	iyU8sxrCpG1OKz5Z7C02+GrpMcko6g5nl9wdCOItI7may/B08s/QsrBpID0/EMFBPiTuc/TDNj2
-	W
-X-Google-Smtp-Source: AGHT+IGh8foTcnko5oTEcDKBL65oF+epxyQdhBOJToNTcir/tYgwy2wIme/dSH+bt3bWZKQNx34XNg==
-X-Received: by 2002:a05:620a:1127:b0:783:4eb:1bd0 with SMTP id p7-20020a05620a112700b0078304eb1bd0mr51075qkk.0.1705601220815;
-        Thu, 18 Jan 2024 10:07:00 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:1f5c])
-        by smtp.gmail.com with ESMTPSA id c10-20020a37e10a000000b0078337726eefsm5428137qkm.6.2024.01.18.10.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 10:07:00 -0800 (PST)
-Date: Thu, 18 Jan 2024 13:06:55 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Chengming Zhou <zhouchengming@bytedance.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Chris Li <chriscli@google.com>, Nhat Pham <nphamcs@gmail.com>
-Subject: Re: [PATCH 0/2] mm/zswap: optimize the scalability of zswap rb-tree
-Message-ID: <20240118180655.GM939255@cmpxchg.org>
-References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
- <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com>
- <20240118153425.GI939255@cmpxchg.org>
- <CAJD7tkY48=2-4_iG6c-FcbzT3EBriem2spOFTTpGMfqmOmsx2Q@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1705601300; x=1706206100;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n9oyBIjEpoT3XMaWPjAXVyQ5+LqPNizEst4EFi9ms0Q=;
+        b=Vh007JTnJJLI9djaMd1whBpLw8paGF9zBEGEfM9GImIb2PJFqbSAYvFOBtL47+7Q/m
+         pCzA9rhzNDRhe/1C8mMMGFu1e0Ftoie0AdIhq2q4QkZ0ZvMRrJuAnc2N3VSOL/qXyyiz
+         F/qpgbeeYo5XEUdkQ//PhGuLlX+lsnGnuZ+56XQyVAPvTqk0YFNSjGp7h/GpETBg8Q76
+         u/2nvXgigiFLMGLWo5KoZ/voqdacMWKheYcm2Tz9F5SnWr/lmm64l6g8lbHWJJNAJuny
+         GTZ2EL52BPSJQ2e+n0fr1U6DAktCvOiqvb0jADGVoxVWhVG6ZZNB8w0TufELv1qXOy1V
+         zWKg==
+X-Gm-Message-State: AOJu0YyPjVK7Wj+cHuMVkKXRzJxUWyO5Z5e99OB4HD3oIg8VTdDfZ2GT
+	GEy1o1XYEaz0iVmC6AS8tcvkIes4ScfuCk2+5j21eQHoE+gnNXWYFOwqi9E/fodY8KVYyBvSQ5I
+	FNONwq1PD+kavFt4wAs9QKEuKb4A=
+X-Google-Smtp-Source: AGHT+IFPx4jMifBcYgXWizqwzIkj3U7a3ZuHUudPepeumwLD+rKp+Cv/jbSzuIaNPFjH+aO8rc3jNodYlQO1f/3cyBg=
+X-Received: by 2002:a6b:ea0a:0:b0:7bf:37b7:b0c0 with SMTP id
+ m10-20020a6bea0a000000b007bf37b7b0c0mr1609603ioc.31.1705601300656; Thu, 18
+ Jan 2024 10:08:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkY48=2-4_iG6c-FcbzT3EBriem2spOFTTpGMfqmOmsx2Q@mail.gmail.com>
+References: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
+ <20240116133145.12454-1-debug.penguin32@gmail.com> <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
+ <CAJD7tkb_uC_K7+C3GjVqg1rDRCmUkbHcEw950CkUHG66yokbcg@mail.gmail.com>
+ <20240118161601.GJ939255@cmpxchg.org> <20240118164839.GK939255@cmpxchg.org> <CAJD7tkZRMK2F09jgnjqPkoJtbFJ=Dj=QBtZbqXREKp4WE=_wyg@mail.gmail.com>
+In-Reply-To: <CAJD7tkZRMK2F09jgnjqPkoJtbFJ=Dj=QBtZbqXREKp4WE=_wyg@mail.gmail.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Thu, 18 Jan 2024 10:08:09 -0800
+Message-ID: <CAKEwX=O10C80GAaYiem3z9KVMtZ_dgZrCqTQ=7wvx-br_hzuRw@mail.gmail.com>
+Subject: Re: [PATCH] mm/zswap: Improve with alloc_workqueue() call
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Ronald Monthero <debug.penguin32@gmail.com>, sjenning@redhat.com, 
+	ddstreet@ieee.org, vitaly.wool@konsulko.com, akpm@linux-foundation.org, 
+	chrisl@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 18, 2024 at 09:30:12AM -0800, Yosry Ahmed wrote:
-> On Thu, Jan 18, 2024 at 7:34 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Thu, Jan 18, 2024 at 9:03=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Thu, Jan 18, 2024 at 8:48=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.o=
+rg> wrote:
 > >
-> > On Wed, Jan 17, 2024 at 10:37:22AM -0800, Yosry Ahmed wrote:
-> > > On Wed, Jan 17, 2024 at 1:23 AM Chengming Zhou
-> > > <zhouchengming@bytedance.com> wrote:
-> > > >
-> > > > When testing the zswap performance by using kernel build -j32 in a tmpfs
-> > > > directory, I found the scalability of zswap rb-tree is not good, which
-> > > > is protected by the only spinlock. That would cause heavy lock contention
-> > > > if multiple tasks zswap_store/load concurrently.
-> > > >
-> > > > So a simple solution is to split the only one zswap rb-tree into multiple
-> > > > rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M). This idea is
-> > > > from the commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trunks").
-> > > >
-> > > > Although this method can't solve the spinlock contention completely, it
-> > > > can mitigate much of that contention. Below is the results of kernel build
-> > > > in tmpfs with zswap shrinker enabled:
-> > > >
-> > > >      linux-next  zswap-lock-optimize
-> > > > real 1m9.181s    1m3.820s
-> > > > user 17m44.036s  17m40.100s
-> > > > sys  7m37.297s   4m54.622s
-> > > >
-> > > > So there are clearly improvements. And it's complementary with the ongoing
-> > > > zswap xarray conversion by Chris. Anyway, I think we can also merge this
-> > > > first, it's complementary IMHO. So I just refresh and resend this for
-> > > > further discussion.
-> > >
-> > > The reason why I think we should wait for the xarray patch(es) is
-> > > there is a chance we may see less improvements from splitting the tree
-> > > if it was an xarray. If we merge this series first, there is no way to
-> > > know.
+> > On Thu, Jan 18, 2024 at 11:16:08AM -0500, Johannes Weiner wrote:
+> > > > > On Tue, Jan 16, 2024 at 5:32=E2=80=AFAM Ronald Monthero
+> > > > > > @@ -1620,7 +1620,8 @@ static int zswap_setup(void)
+> > > > > >                 zswap_enabled =3D false;
+> > > > > >         }
+> > > > > >
+> > > > > > -       shrink_wq =3D create_workqueue("zswap-shrink");
+> > > > > > +       shrink_wq =3D alloc_workqueue("zswap-shrink",
+> > > > > > +                       WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
 > >
-> > I mentioned this before, but I disagree quite strongly with this
-> > general sentiment.
+> > > What could make a difference though is the increased concurrency by
+> > > switching max_active from 1 to 0. This could cause a higher rate of
+> > > shrinker runs, which might increase lock contention and reclaim
+> > > volume. That part would be good to double check with the shrinker
+> > > benchmarks.
 > >
-> > Chengming's patches are simple, mature, and have convincing
-> > numbers. IMO it's poor form to hold something like that for "let's see
-> > how our other experiment works out". The only exception would be if we
-> > all agree that the earlier change flies in the face of the overall
-> > direction we want to pursue, which I don't think is the case here.
-> 
-> My intention was not to delay merging these patches until the xarray
-> patches are merged in. It was only to wait until the xarray patches
-> are *posted*, so that we can redo the testing on top of them and
-> verify that the gains are still there. That should have been around
-> now, but the xarray patches were posted in a form that does not allow
-> this testing (because we still have a lock on the read path), so I am
-> less inclined.
-> 
-> My rationale was that if the gains from splitting the tree become
-> minimal after we switch to an xarray, we won't know. It's more
-> difficult to remove optimizations than to add them, because we may
-> cause a regression. I am kind of paranoid about having code sitting
-> around that we don't have full information about how much it's needed.
+> > Nevermind, I clearly can't read.
+>
+> Regardless of max_active, we only have one shrink_work per zswap pool,
+> and we can only have one instance of the work running at any time,
+> right?
 
-Yeah I understand that fear.
+I believe so, yeah. Well I guess you can have a weird setup where
+somehow multiple pools are full and submit shrink_work concurrently?
+But who does that :) But let's just keep it as is to reduce our mental
+workload (i.e not having to keep track of what changes) would be
+ideal.
 
-I expect the splitting to help more than the move to xarray because
-it's the writes that are hot. Luckily in this case it should be fairly
-easy to differential-test after it's been merged by changing that tree
-lookup macro/function locally to always return &trees[type][0], right?
-
-> In this case, I suppose we can redo the testing (1 tree vs. split
-> trees) once the xarray patches are in a testable form, and before we
-> have formed any strong dependencies on the split trees (we have time
-> until v6.9 is released, I assume).
-> 
-> How about that?
-
-That sounds reasonable.
-
-> > With the xarray we'll still have a per-swapfile lock for writes. That
-> > lock is the reason SWAP_ADDRESS_SPACE segmentation was introduced for
-> > the swapcache in the first place. Lockless reads help of course, but
-> > read-only access to swap are in the minority - stores will write, and
-> > loads are commonly followed by invalidations. Somebody already went
-> > through the trouble of proving that xarrays + segmentation are worth
-> > it for swap load and store access patterns. Why dismiss that?
-> 
-> Fair point, although I think the swapcache lock may be more contended
-> than the zswap tree lock.
-
-Right, it has two updates for each transition, compared to the one for
-zswap. But we know that in a concurrent system under pressure a
-globally shared swap lock will hurt. There is a history in Chengming's
-numbers, your previous patch to split the zpools,
-235b62176712b970c815923e36b9a9cc05d4d901 etc.
-
-> > So my vote is that we follow the ususal upstreaming process here:
-> > merge the ready patches now, and rebase future work on top of it.
-> 
-> No objections given the current state of the xarray patches as I
-> mentioned earlier, but I prefer we redo the testing once possible with
-> the xarray.
-
-Cool, sounds good to me.
+>
+> >
+> > Could still be worthwhile testing with the default 0, but it's not a
+> > concern in the patch as-is.
+> >
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> >
 
