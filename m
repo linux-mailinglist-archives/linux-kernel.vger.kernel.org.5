@@ -1,125 +1,118 @@
-Return-Path: <linux-kernel+bounces-30241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90ECE831C11
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:11:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D698C831C21
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:14:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A87E1B22DAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:11:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76D2E1F23E82
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2EB1E88E;
-	Thu, 18 Jan 2024 15:11:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="RCB/Pm0N"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41841E527
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 15:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 990501E893;
+	Thu, 18 Jan 2024 15:14:04 +0000 (UTC)
+Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E86286AF;
+	Thu, 18 Jan 2024 15:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705590689; cv=none; b=R+CrAHwxTnZxaWimq4G3NFfjAfp1iEJnUGBLoCEtAqVDV0JEz5xYNOTcuHQPCTeikeURR0KfbDeGGceXjyLwm9lezVpt1vOvhTRXedB5pxiyQgj8kBBDUvFlnk0YUBgdTRW85gfKVophE8G1mVGy9nD+HRWmy6q663gSqnaqz7g=
+	t=1705590844; cv=none; b=pxLUadBW0Jh2+kY/A3FS6zNwolavrGTWQTJ/pQBvid7gv8UykSzl3Yg1D2UGAPg2O7htYprcqAQYdOx3BjS7frE7iEkDq/vIN/eMKW+cMXtBeZ97w1i+Ax7iggaVOJBO2bPeXFnO/idWunqrW1yOEQ51pwoYy25fXqsqyqrMJS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705590689; c=relaxed/simple;
-	bh=ggYTZpEmIwOuDJfSBEFPOlRNL9D4+7ikr65MnXHKMc8=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=N68X8yrznPLJKn2i9viSDvsIHh1vayJFkbnOE3I0e+nZBmiHTIXC/hn4ody9HY18+MVt7jhlxin86WqlJlxa6R8RhoN4Ym+2R8miNPgoSVMASKrJ6EpE92ffspwxlPfYiJslzJnGB3AdKvTOEfhVXgQJ2/EFAMs7eCZjpFI+ZWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=RCB/Pm0N; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6806914dba7so77121706d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 07:11:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705590684; x=1706195484; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=n+n3702DzjvE8I5kV3B0z7yiCOBGUE0gdpStZqeKioA=;
-        b=RCB/Pm0NtX/dgCCmRhyd+/Ybokv/Mu9eXUuJMcDM+Q8HMtqYAdPMzefP7t+Buyc3ny
-         5+BI8PlkWUekcCMScZnSviWwnq7SyQjfg9ZIqvoZOcEzInRWhtoCEv2Cl0BHdXkJk0YI
-         ZbNHZ3JqfZ3tOmCZ4cS6cVFiJZeqjqOtRVzEov60KEhW23IjCyn+Ee2hIDsq9Ph9Rdzh
-         krGcZyVbSbKUEDzS92aDOKJPFtPra8DZUGIKS7ZLLOOx9Px4JluPs4YdmUEAPpL+Otqm
-         XlwV2atfIP9YAM1Zfku7t6DtQ45a46c+p7sDrOZl7ksuSPUFAncpZxUkhiIj7I0dOjbj
-         bWdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705590684; x=1706195484;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n+n3702DzjvE8I5kV3B0z7yiCOBGUE0gdpStZqeKioA=;
-        b=XuQF0LvihFc3eOL/7mGP9By9kPsGCwgTL4Ne/TeKCSJAhpp+7RBsowNYfHIhSZGMeT
-         7+1pAodKB6T/pWGiN3H6/+jaGLXxL6pqcTE9czw2Hkx+yYQLIEvAF9EYmfRCGXiizKDk
-         tGrWwHcpWgagNp8CUom3UUcQUVFxkmDt+TKfmZ9Gj8vtJQuTWo48XNA3b0n3lE3Wn3wE
-         0Y1OtwGd4089JxB6GbPtlgnh8B08RREqhr6gCAHkJquc5e+MOSyncy3SVH0dFij9GzYg
-         PrhpwpSwljG6QhlSbshqYZI4Ryx6OSu8It9IwMqw3WqeNOB5qpkGW0xshBkrPgTbXnR9
-         ofbw==
-X-Gm-Message-State: AOJu0YxnmjpES8lFBc+PzpGd6h9r0O02EwKq8b0eUxAny5INb7HzGVHn
-	oop/jE+RnJ+8cYXs80zpezFHjaVKsNg8YqGCS3afmfrZ5AiDG0712/GIUTcJ1JA=
-X-Google-Smtp-Source: AGHT+IHuI1hfsw0fiD9pOlV/VA4wpxp5PF3DTKwIpiToe6fi39i/8ohEnl7jT9S2c/geBCDuE0ChWg==
-X-Received: by 2002:a05:6214:5191:b0:681:7859:8d7f with SMTP id kl17-20020a056214519100b0068178598d7fmr894837qvb.81.1705590684757;
-        Thu, 18 Jan 2024 07:11:24 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:dd09])
-        by smtp.gmail.com with ESMTPSA id pd2-20020a056214490200b0068187a62fc0sm993203qvb.90.2024.01.18.07.11.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 07:11:24 -0800 (PST)
-Date: Thu, 18 Jan 2024 10:11:23 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Chris Li <chriscli@google.com>,
-	Nhat Pham <nphamcs@gmail.com>
-Subject: Re: [PATCH 2/2] mm/zswap: split zswap rb-tree
-Message-ID: <20240118151123.GH939255@cmpxchg.org>
-References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
- <20240117-b4-zswap-lock-optimize-v1-2-23f6effe5775@bytedance.com>
+	s=arc-20240116; t=1705590844; c=relaxed/simple;
+	bh=Kp2BlCBZMsuGi/OMB6tp4CaDWFkRha05w33XL2xn/Ws=;
+	h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
+	 X-CM-SenderInfo; b=j4XwqmUIRiv8R8veNoW0lLmtUS9W4iw7HbGd0beTt8PfR61oUvpZhNArowMScI/ISmjkoI5OxB5e2VE9PPCaJXAT5jNo+Ua6b8gT6ywvivdv8iARNBmifkLHB8f3O4bjqIwSJpFbCiTm/Hkf/q96kwQPEhj8dKTS+OT7a5vWRdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=129.150.39.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from luzhipeng.223.5.5.5 (unknown [183.159.169.110])
+	by mail-app4 (Coremail) with SMTP id cS_KCgDHwX8gQKllMBo+AA--.10025S2;
+	Thu, 18 Jan 2024 23:13:37 +0800 (CST)
+From: Zhipeng Lu <alexious@zju.edu.cn>
+To: alexious@zju.edu.cn
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Kate Hsuan <hpa@redhat.com>,
+	Dan Carpenter <error27@gmail.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Brent Pappas <bpappas@pappasbrent.com>,
+	Alan Cox <alan@linux.intel.com>,
+	linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] media: atomisp: ssh_css: Fix a null-pointer dereference in load_video_binaries
+Date: Thu, 18 Jan 2024 23:13:00 +0800
+Message-Id: <20240118151303.3828292-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117-b4-zswap-lock-optimize-v1-2-23f6effe5775@bytedance.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cS_KCgDHwX8gQKllMBo+AA--.10025S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw15uw1xGrW5KF1xuF1rWFg_yoW8Xr17pF
+	48Aw1DCFWUXFn2kanIkry7GF90v34v9ay5W34vqa4F9a92ya4qqF15Kay5Gr9Yvr4DJ3yq
+	vFyYgrWUXF4FyF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-On Wed, Jan 17, 2024 at 09:23:19AM +0000, Chengming Zhou wrote:
-> Each swapfile has one rb-tree to search the mapping of swp_entry_t to
-> zswap_entry, that use a spinlock to protect, which can cause heavy lock
-> contention if multiple tasks zswap_store/load concurrently.
-> 
-> Optimize the scalability problem by splitting the zswap rb-tree into
-> multiple rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M),
-> just like we did in the swap cache address_space splitting.
-> 
-> Although this method can't solve the spinlock contention completely, it
-> can mitigate much of that contention. Below is the results of kernel build
-> in tmpfs with zswap shrinker enabled:
-> 
->      linux-next  zswap-lock-optimize
-> real 1m9.181s    1m3.820s
-> user 17m44.036s  17m40.100s
-> sys  7m37.297s   4m54.622s
-> 
-> So there are clearly improvements.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+The allocation failure of mycs->yuv_scaler_binary in load_video_binaries
+is followed with a dereference of mycs->yuv_scaler_binary after the
+following call chain:
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+sh_css_pipe_load_binaries
+  |-> load_video_binaries (mycs->yuv_scaler_binary == NULL)
+  |
+  |-> sh_css_pipe_unload_binaries
+        |-> unload_video_binaries
 
-One minor nit:
+In unload_video_binaries, it calls to ia_css_binary_unload with argument
+&pipe->pipe_settings.video.yuv_scaler_binary[i], which refers to the
+same memory slot as mycs->yuv_scaler_binary. Thus, a null-pointer
+dereference is triggered.
 
-> @@ -265,6 +266,10 @@ static bool zswap_has_pool;
->  * helpers and fwd declarations
->  **********************************/
->  
-> +#define swap_zswap_tree(entry)					\
-> +	(&zswap_trees[swp_type(entry)][swp_offset(entry)	\
-> +		>> SWAP_ADDRESS_SPACE_SHIFT])
+Fixes: a49d25364dfb ("staging/atomisp: Add support for the Intel IPU v2")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+---
+Changelog:
 
-Make this a static inline function instead?
+v2: change fix approach to set mycs->num_yuv_scaler = 0 in
+load_video_binaries. Change the fix tag to correct commit.
+---
+ drivers/staging/media/atomisp/pci/sh_css.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
+index f35c90809414..638f08b3f21b 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css.c
++++ b/drivers/staging/media/atomisp/pci/sh_css.c
+@@ -4719,6 +4719,7 @@ static int load_video_binaries(struct ia_css_pipe *pipe)
+ 						  sizeof(struct ia_css_binary),
+ 						  GFP_KERNEL);
+ 		if (!mycs->yuv_scaler_binary) {
++			mycs->num_yuv_scaler = 0;
+ 			err = -ENOMEM;
+ 			return err;
+ 		}
+-- 
+2.34.1
+
 
