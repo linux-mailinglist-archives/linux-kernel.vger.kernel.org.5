@@ -1,51 +1,53 @@
-Return-Path: <linux-kernel+bounces-30281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B960D831C89
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:30:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27639831C8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:30:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 712601F2B73C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:30:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B94D41F2B6CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB322CCCF;
-	Thu, 18 Jan 2024 15:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2F8B2D7A4;
+	Thu, 18 Jan 2024 15:26:53 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD6720B07;
-	Thu, 18 Jan 2024 15:26:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D531286B6;
+	Thu, 18 Jan 2024 15:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705591567; cv=none; b=Ww97mgFeqQqIJQT4iAebLFV6zDxuOo7m7BZk9yU1nsyrz6VKAqRRZAogtoxRVAw+Y/7tQzIIT0Te/lOzIHSKiR4lkiiQO2N6ub+FHa2hiPCEcHXG70Zanz/nm1KMHIbGyE8nU5Tss7dbBuOXr3l9nuy871gBNvHCmAbovkOw3bU=
+	t=1705591613; cv=none; b=pJzADmVstUGnDcNm6ULIS63EV7oYUA0X1kUX7qPZSBqgtdUaO+I7IJGEQIJcIA6CvXQ0LxuIbPFESzecKUkJYPrXMNrCUJj25VHgkOI0a15hUPXPEq1kRMIVuzjKA5dmx8gAeSkB1cxBvqk7lhPf1R93OY0N+jUI3kcWXwZXQUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705591567; c=relaxed/simple;
-	bh=teWr3T/sOpLVOh0m3YVr1k4i9zBYM41sFiIiPRFCE1U=;
+	s=arc-20240116; t=1705591613; c=relaxed/simple;
+	bh=fu6GheHEBNxmSs1bBTsooD1uUVG41pw1PIGUREayObY=;
 	h=Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=IluMGtBRT5y7CcrN7mpRKTna7a6LPPoprrRbhzoXLn/+NoGMgBQAxuTESvRY57TTBRnNrBJdNErvGgihfm9C+qbuv8/EBESxmkOOZbHgXJjkLuxiOTgRjZVPIKItURGThI81/KROPQLU0FDD2ZAghwNhjBCOeCwXUc6Cvook9uM=
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=RU/9W63JUOsqX8G0g9BPfhmMhBewZeXiLijzERJ2NfjTKM4DNUUqdY/SG9J+OjTfD1sDyPx0wf9f6ZLtlfIcQWGXAC/Op3AK3KTL4v9c5WK18cZB8UXoUJNXKonTdXwiH8WS1jqZaybl78yrmWsWFmWlPdO8kjfb03wXGtby4Jg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EFD5E1042;
-	Thu, 18 Jan 2024 07:26:49 -0800 (PST)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 490673F73F;
-	Thu, 18 Jan 2024 07:26:01 -0800 (PST)
-Date: Thu, 18 Jan 2024 15:25:57 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: <cristian.marussi@arm.com>, <andersson@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>, <konrad.dybcio@linaro.org>,
-	<jassisinghbrar@gmail.com>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<quic_rgottimu@quicinc.com>, <quic_kshivnan@quicinc.com>,
-	<conor+dt@kernel.org>
-Subject: Re: [RFC 6/7] arm64: dts: qcom: x1e80100: Enable cpufreq
-Message-ID: <ZalDBWwOhD3Gy1Mb@bogus>
-References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
- <20240117173458.2312669-7-quic_sibis@quicinc.com>
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A8C11042;
+	Thu, 18 Jan 2024 07:27:36 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.28.174])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73C1F3F73F;
+	Thu, 18 Jan 2024 07:26:47 -0800 (PST)
+Date: Thu, 18 Jan 2024 15:26:43 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev, linux-um@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com,
+	linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org,
+	Frank Rowand <frowand.list@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
+Message-ID: <ZalDM90KoQ2Il0j7@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240112200750.4062441-1-sboyd@kernel.org>
+ <20240112200750.4062441-2-sboyd@kernel.org>
+ <ZaZtbU9hre3YhZam@FVFF77S0Q05N>
+ <434b21afe1899b1567f3617261594842.sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,37 +56,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240117173458.2312669-7-quic_sibis@quicinc.com>
+In-Reply-To: <434b21afe1899b1567f3617261594842.sboyd@kernel.org>
 
-(Generic note: It is middle of merge window and I have seen multiple
-series posted by you. Since I am mainly looking for bug fixes only ATM,
-I may miss to look at few. You may have to ping or repost after the merge
-window, just responding to this for now as it caught my attention)
-
-On Wed, Jan 17, 2024 at 11:04:57PM +0530, Sibi Sankar wrote:
-> Enable cpufreq on X1E80100 SoCs through the SCMI perf protocol node.
+On Tue, Jan 16, 2024 at 05:27:18PM -0800, Stephen Boyd wrote:
+> Quoting Mark Rutland (2024-01-16 03:51:14)
+> > Hi Stephen,
+> > 
+> > On Fri, Jan 12, 2024 at 12:07:44PM -0800, Stephen Boyd wrote:
+> > > Call this function unconditionally so that we can populate an empty DTB
+> > > on platforms that don't boot with a firmware provided or builtin DTB.
+> > > There's no harm in calling unflatten_device_tree() unconditionally.
+> > 
+> > For better or worse, that's not true: there are systems the provide both a DTB
+> > *and* ACPI tables, and we must not consume both at the same time as those can
+> > clash and cause all sorts of problems. In addition, we don't want people being
+> > "clever" and describing disparate portions of their system in ACPI and DT.
+> > 
+> > It is a very deliberate choice to not unflatten the DTB when ACPI is in use,
+> > and I don't think we want to reopen this can of worms.
 > 
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/x1e80100.dtsi | 27 ++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> index afdbd27f8346..6856a206f7fc 100644
-> --- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> @@ -62,6 +62,7 @@ CPU0: cpu@0 {
->  			compatible = "qcom,oryon";
->  			reg = <0x0 0x0>;
->  			enable-method = "psci";
-> +			clocks = <&scmi_dvfs 0>;
+> Hmm ok. I missed this part. Can we knock out the initial_boot_params in
+> this case so that we don't unflatten a DTB when ACPI is in use?
 
-I would use genpd bindings Ulf added recently. The reason I ask is I remember
-one of the Qcom platform had both clocks and qcom,freq-domain and each one
-served different purpose with latter one being used for cpufreq. So will
-that be an issue here ?
+Why is that better than just not calling unflatten_device_tree(), as we do
+today?
 
--- 
-Regards,
-Sudeep
+The cover letter says this is all so that we can run DT tests for the clk
+framework; why can't that just depend on the system being booted with DT rather
+than ACPI? We have other tests which are architecture and/or configuration
+dependent...
+
+Mark.
 
