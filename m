@@ -1,144 +1,187 @@
-Return-Path: <linux-kernel+bounces-30586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4CEA832116
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:51:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 814BC832121
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:54:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84C19283731
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:51:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDFE7B25141
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9B831A60;
-	Thu, 18 Jan 2024 21:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077B23174A;
+	Thu, 18 Jan 2024 21:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="Z8YBglC+"
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="C8u3bvO7"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619212EAF9
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8692EAF9
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:54:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705614678; cv=none; b=H4xlDHrQKd6ZeZw4Q5Iv/XeorHHs7UUeXrrXdB5/LdCVilsYFnLAT/lLUSmJgXRATCoX+hhIs4pt8nLnbXTFC0quB8vt6jQ3LEy+ASZYWwXJ18LMw0COLrZqZcxqJ/++702LaXRPDckAu0iOzIB2O4uVkT9tEj7GI74X/FIt1HU=
+	t=1705614844; cv=none; b=ULR8wSQ+Ktoa3AcavWe/AcqUgC/wVYhIS15J5Vp8hfjfCBQAHS4eiLHDLwM/TPsya4NmEj50i+8CxoSQE11wWKSxjrPBgkCKRyIA3d9HHXimufvtwouiWz9soWsWOOSCqEXwDkcl1KnGdut6qFkyYFJVc53pqcKI6qMjSSej4E8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705614678; c=relaxed/simple;
-	bh=EW4GgO79tM0kh74EqEgdTANw9zj1cbLCONoBa8UPMNQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fV0KTRfYLHKDV1RD8l+ENwcWqcATfzrUorvT33xcqWCPmQq6eD4o+C+ojXk/dCEnOxl8qFMWt+BZkQsexSkJpakhvvT/QPFKWERC0Nz9UvlNBwfHJb5cPsgVSUembOfKA506mU2e7NxsP8Jl/Z7RMuFLknVZnb5iV9sFQNFXhgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=Z8YBglC+; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6dde5d308c6so75164a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:51:17 -0800 (PST)
+	s=arc-20240116; t=1705614844; c=relaxed/simple;
+	bh=0OLoge7JRZVK/JTs8M53rSZCOS6zKNIvbnryNlKfkNs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=fNUlYKFjQibfXmAYTXPDe6M9KCpz7kVIhnIXdBjTl+5sieQ+cgsO+66lMwG06lEtOJ8YCCIWUCWoJhikirZVUHCQBstVDD1RuAlraX6rBVpGTMRQTcHZbcV2VGJbf+YpedlxAlAacPs2p0xmQRFJTq9hgSaa2U3wQWLhpA6PJdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=C8u3bvO7; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6d9b37f4804so828399b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:54:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1705614676; x=1706219476; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nhk4KIpFoW3go0xMs8gft3n3SAiaXQPK/lZKUl9AxEY=;
-        b=Z8YBglC+Le+cFsTn/WMWj+S3wbi3u0rK40+GMCoO8e/3EFn6elqLcDA61zB00uUhX/
-         Jozsp+4y8kbLELy5LQX7bkBOdpdp6W6Mt24wu9a4AQ3+1kBEdOciD82/jLO9Fp6YZwTE
-         eVUjRnD72VQtX10MRgbxn24a42ZppwGAgLjwDv/ibloJ7tW/NxNl5r4h++h1F3pS8E3/
-         qeRFQtx73RLQ8m5MIxVt7eqdAwtoUmEJMevYH6klAZgPyfFOwjd2otvaNaUbVxSg45Xj
-         8SSql8CM+a4d9/zKrOjr/R67s0+PGqrl/jbGCQQNZQYSVikvxe8QFUEHRsg5y1I9LY0I
-         axQg==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705614841; x=1706219641; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1ykJGA57/c6XjRX+/wiozqy8iJ6Vsrt2RLKtiLpKiLM=;
+        b=C8u3bvO7oxhgginUEjQzW+277qLH3R4XqiYXdi4z+KsPPXPEq7lceJzx1p1os6UKFt
+         zUaGS53pZUomjlGD4JAUIcV4DQH/KW5XaF6cSOqqzxVqgTk8r09FDyKi3nE+NSCllQw7
+         wueWI6E42J/rwk4Ca07/cZm7rVJ7p5NLjQxtfJOKk8dWYSPIIxGOMsbbzb2+MUru5asx
+         OMq1/yJvjyHwxWe1JS80uDYOJPBckJcphpEJj5z6QLVcCKOxkyOtVbK5F/er37Rs2GaF
+         TW9wNwZtHum51NvCM7HvkDUFNtPLFuuasFs4kckwwtkguU6ibJFZxpMy5Ml7ql3Zy6Oe
+         NXUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705614676; x=1706219476;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nhk4KIpFoW3go0xMs8gft3n3SAiaXQPK/lZKUl9AxEY=;
-        b=OgWJ9y/+S5w8kRNSVacvRKQA7qItQTOum3ee9pAQZjczgHm0/U4z0XuMdu8pJgs8fE
-         CYYgNAiWWFwWaIneOK/T6CJt3PoKFa33bJKjtbFgAp9bpMt50pdcVnKRDJ2cV2g19hBz
-         mBFINpI98kYqidpVee78fQPYpqG63kVJ10UYDGSxdvGZIlrHos9vVtoaUACzEeIPgc7l
-         S5uoel4SmJ8VZsExJCq4hCHMylqMLAVdPXbT8R7SzkZSX1fHvj49NQ2UYCrkHG2R/Y42
-         sBX/lYgd0uz5g3KyQ6ZXPckrVeTwSbozVIx86gI84vL467+iymuhHqEjtdXrf4egJSj7
-         VSJQ==
-X-Gm-Message-State: AOJu0YxN/tR0I17+4uqzjISu2LGVkv8rkWmqvE/mKllRGwHMSEblsQ25
-	IB5aT+U+uCaoTrMjAtxR8aWlZaz9DacriADClpBK3iUQ4cFy7SxqU6FUK/EJ9vY=
-X-Google-Smtp-Source: AGHT+IGgqtBGmFG8kvlkAhQYkj2Grg7+gfte7xCW9k695YvWwZSCXx/G6muSDjj4VaP+kGoVNbQmTA==
-X-Received: by 2002:a05:6830:5:b0:6e0:c35c:241d with SMTP id c5-20020a056830000500b006e0c35c241dmr1508100otp.75.1705614676589;
-        Thu, 18 Jan 2024 13:51:16 -0800 (PST)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
-        by smtp.gmail.com with ESMTPSA id ge9-20020a05622a5c8900b00427b3271ab4sm7147198qtb.41.2024.01.18.13.51.15
+        d=1e100.net; s=20230601; t=1705614841; x=1706219641;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1ykJGA57/c6XjRX+/wiozqy8iJ6Vsrt2RLKtiLpKiLM=;
+        b=ewXDKk4E/eIRlFrMyOqomaUfz/6w1SNTfVEbo8odr4SIXpY9DPai1bSHeLWt9XZea2
+         HNK/noHBNyUvKPRfV3f5G1SCGim1Aa+/OC3Qd/HDiUgb/sSAAMRKBLG23zOazuzrNAAd
+         R56G5S1qejRLyw5R+MnsPTmhO9akvgK1wdAV1sCgu378B+Zs21GIzsA7DuLjz4pB+vE/
+         KV7oHnPiUPrIF+pNG7w6wlh/Z/m9xK9odjmLYxPo7uSVoGsX5TRXbFLGfbNLsKgGrpKA
+         DVYL+paZdaycHmjVlwSHGFBRR5sIpDZTN0QgJGi/uxw+/HM+X3vOkjwkKVmOo5ebv0hT
+         TM+Q==
+X-Gm-Message-State: AOJu0Yz1mHcuGolKCQDltshopWMSsiIbkHakrcLIGFYAGqnX1wG27B/m
+	jV17qEjOdaQ3x7YAgdGEEUMQgNoOghFhz8lWcm4ESE6Hylh26dq4YwIknxwMG92QahwLedICtFT
+	j
+X-Google-Smtp-Source: AGHT+IFmbmT0nzrJVhkhIeOG1uqqUQ5TnTG1pxSQSR5fbID+PWzb61gZ7b9wYB/SkmypR7VVqfsHEA==
+X-Received: by 2002:a05:6a20:2dc:b0:19b:1da4:8dc with SMTP id 28-20020a056a2002dc00b0019b1da408dcmr18728pzb.34.1705614841620;
+        Thu, 18 Jan 2024 13:54:01 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id j15-20020aa78d0f000000b006d9c7f2840bsm3771459pfe.57.2024.01.18.13.54.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 13:51:16 -0800 (PST)
-Message-ID: <fc225f62a8ec396eddb335a7d906d274802be3fc.camel@ndufresne.ca>
-Subject: Re: [PATCH v3 0/2] [v3]Add hantro g1 video decoder support for
- RK3588
-From: Nicolas Dufresne <nicolas@ndufresne.ca>
-To: Piotr Oniszczuk <piotr.oniszczuk@gmail.com>, liujianfeng1994@gmail.com
-Cc: conor+dt@kernel.org, devicetree@vger.kernel.org, elezegarcia@gmail.com, 
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Heiko
- =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,  knaerzche@gmail.com,
- krzysztof.kozlowski+dt@linaro.org,  linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,  linux-media@vger.kernel.org, "open
- list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
- mchehab@kernel.org, Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring
- <robh+dt@kernel.org>,  sfr@canb.auug.org.au
-Date: Thu, 18 Jan 2024 16:51:15 -0500
-In-Reply-To: <2CFF2A39-6416-4599-AD32-E99EF95F5A36@gmail.com>
-References: <5490507acc121113e52a8cdddb155fddf6dbb374.camel@ndufresne.ca>
-	 <20240118113051.10773-1-liujianfeng1994@gmail.com>
-	 <2CFF2A39-6416-4599-AD32-E99EF95F5A36@gmail.com>
-Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+        Thu, 18 Jan 2024 13:54:01 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Date: Thu, 18 Jan 2024 13:53:59 -0800
+Subject: [PATCH] riscv: lib: Support csum on GCC <11
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240118-csum_remove_output_operands_asm_goto-v1-1-47c672bb9d4b@rivosinc.com>
+X-B4-Tracking: v=1; b=H4sIAPadqWUC/x3NQQrDIBBA0auEWVfIiNCmVylFxEzTWeiIoyEQc
+ vdKl2/z/wlKlUnhOZ1QaWdlyQN4myB+Q97I8DoMdrZuRnyYqD35Skl28tJb6c1LoRryqj5o8ps
+ 0MW5ZrI3oMNIdRqpU+vDx37ze1/UDe5WzqHYAAAA=
+To: Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705614840; l=2787;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=0OLoge7JRZVK/JTs8M53rSZCOS6zKNIvbnryNlKfkNs=;
+ b=dJpuJl1dFpZjTsUOyTWIxBNNNkZvncdUMycB4TzPg8EkchYbaXeZWzM0gJrYusU4KUPaoHcVO
+ XLWURTe24UwBbkRTIcQdUzshBpJFlZdeoMxWOC8rVKRzmO3g1hoiBq2
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-Le jeudi 18 janvier 2024 =C3=A0 14:53 +0100, Piotr Oniszczuk a =C3=A9crit=
-=C2=A0:
-> > Wiadomo=C5=9B=C4=87 napisana przez amazingfate <liujianfeng1994@gmail.c=
-om> w dniu 18.01.2024, o godz. 12:30:
-> >=20
-> > Before rkvdec2 launching mainline
->=20
-> Ooooo - is there concrete plan for this?
->=20
-> Asking as imho rk35xx can be really nice multimedia soc.
->=20
-> Can be=E2=80=A6. but is not due current lack of hevc/vp9 hw decode in mai=
-nline due lack of rkvdec2 support
-> This seems to be clear blocker for many multimedia use cases :-(
->=20
-> Having rkvdec2 support via v4l2_request in mainline imho will make rk35xx=
- killer soc for multimedia=E2=80=A6.
->=20
-> ps: rkvdec support seems available since years on mainline and works well=
-.
-> So maybe rkvdec code base can be basis to gradually added support for rkv=
-dec2?
-> =C2=A0=C2=A0
+The OutputOperands field for asm goto statements is only supported
+starting from GCC 11. Split the asm goto to remove the use of this
+feature.
 
-You'd be surprised that we are still upstreaming HEVC/10bit and 4:2:2 suppo=
-rt
-(well Jonas is) and are missing a proper solution to some needed HW reset l=
-ogic
-(to fix concurrent decoding). Though all these exist in some form in LibreE=
-LEC
-patchset.
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Fixes: a04c192eabfb ("riscv: Add checksum library")
+---
+The OutputOperands field for asm goto statements is only supported
+starting from GCC 11. Split the asm goto to remove the use of this
+feature.
+---
+ arch/riscv/lib/csum.c | 42 ++++++++++++++++++++++++++++++------------
+ 1 file changed, 30 insertions(+), 12 deletions(-)
 
-When this is behind, Jonas reported that he might be interested in looking =
-into
-rkvdec2. Consider that his is volunteer work, but it would indeed be amazin=
-g.
-The HW work blob free (no firmware needed) supports up to 8K (rk3588).  Som=
-e
-early work on adding encoder interface for this type of HW is also in progr=
-ess.
-The AV1 decoder for rk3588 (which is a chip from Verisillicon, not RK) is
-already upstream.
+diff --git a/arch/riscv/lib/csum.c b/arch/riscv/lib/csum.c
+index 06ce8e7250d9..23be289f52b6 100644
+--- a/arch/riscv/lib/csum.c
++++ b/arch/riscv/lib/csum.c
+@@ -177,22 +177,35 @@ do_csum_with_alignment(const unsigned char *buff, int len)
+ 				  : no_zbb);
+ 
+ #ifdef CONFIG_32BIT
+-		asm_volatile_goto(".option push			\n\
++		/*
++		 * OutputOperands in asm goto is not supported until GCC 11, so
++		 * this asm has to be split to be compatible.
++		 */
++		asm (".option push				\n\
+ 		.option arch,+zbb				\n\
+ 			rori	%[fold_temp], %[csum], 16	\n\
+ 			andi	%[offset], %[offset], 1		\n\
+ 			add	%[csum], %[fold_temp], %[csum]	\n\
+-			beq	%[offset], zero, %l[end]	\n\
+-			rev8	%[csum], %[csum]		\n\
+ 		.option pop"
+ 			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp)
+-			: [offset] "r" (offset)
+-			:
+-			: end);
++			: [offset] "r" (offset));
++
++		if (offset == 0)
++			goto end;
++
++		asm (".option push				\n\
++		.option arch, +zbb				\n\
++			rev8	%[csum], %[csum]		\n\
++		.option pop"
++			: [csum] "+r" (csum));
+ 
+ 		return (unsigned short)csum;
+ #else /* !CONFIG_32BIT */
+-		asm_volatile_goto(".option push			\n\
++		/*
++		 * OutputOperands in asm goto is not supported until GCC 11, so
++		 * this asm has to be split to be compatible.
++		 */
++		asm (".option push				\n\
+ 		.option arch,+zbb				\n\
+ 			rori	%[fold_temp], %[csum], 32	\n\
+ 			add	%[csum], %[fold_temp], %[csum]	\n\
+@@ -200,13 +213,18 @@ do_csum_with_alignment(const unsigned char *buff, int len)
+ 			roriw	%[fold_temp], %[csum], 16	\n\
+ 			addw	%[csum], %[fold_temp], %[csum]	\n\
+ 			andi	%[offset], %[offset], 1		\n\
+-			beq	%[offset], zero, %l[end]	\n\
+-			rev8	%[csum], %[csum]		\n\
+ 		.option pop"
+ 			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp)
+-			: [offset] "r" (offset)
+-			:
+-			: end);
++			: [offset] "r" (offset));
++
++		if (offset == 0)
++			goto end;
++
++		asm (".option push				\n\
++		.option arch, +zbb				\n\
++			rev8	%[csum], %[csum]		\n\
++		.option pop"
++			: [csum] "+r" (csum));
+ 
+ 		return (csum << 16) >> 48;
+ #endif /* !CONFIG_32BIT */
 
-regards,
-Nicolas
+---
+base-commit: 080c4324fa5e81ff3780206a138223abfb57a68e
+change-id: 20240118-csum_remove_output_operands_asm_goto-49922c141ce7
+-- 
+- Charlie
+
 
