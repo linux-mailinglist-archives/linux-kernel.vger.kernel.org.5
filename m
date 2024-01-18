@@ -1,127 +1,209 @@
-Return-Path: <linux-kernel+bounces-29739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA0C8312BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:30:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6568312C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:36:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F20711F22197
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:30:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86AB21C213A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3B0AD32;
-	Thu, 18 Jan 2024 06:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5E49444;
+	Thu, 18 Jan 2024 06:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="UojUzUzv"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J9ObBuiU"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CD311CAD
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD9F45CB0
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705559399; cv=none; b=okmo7SRojcm5FacVZYDNrhjL7Alsst8VXT+mC9dZlFecEjmlrC9IDP0T0n2wlVwL3GwfxdiKTJezUgQnOVYy3GY2LYjkJ/TNTEM092enKW7QuqKV+RvTumMl+GWUsXG8hyoE0TrI9Y80f9j7far7LAjjNnM2Md2CBxRNxnqSQnM=
+	t=1705559755; cv=none; b=IWwcaMF56ruzIqUFrw0J7raUAoioxi1YJKNjKyzhu2C0IihVaj0vBVqg9oxT67ZMReo6qFJXp8OUX5JDAcwqU3TBNfH6G/gYO/RiychCQnCluk+bvamHKnej+y7rezMOHpaP+d1vQ+HCplOGA1RukV7Oq9ABky70vZ0UExkWDFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705559399; c=relaxed/simple;
-	bh=s0jCrtcsnupGkX8Rh/JQOe2YBiR/JeRC946luu2mtS8=;
+	s=arc-20240116; t=1705559755; c=relaxed/simple;
+	bh=eTHiBnyqir1sEFqwoXdsbYZ1XGTsUucLPBVw+yxu1PI=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding; b=UgMQUCb8fOQ9U6HcS8pLRqZZqsstG36fVivSO4zUnzrXV4QyLJzOEVv/nTe71XiFa4K45W2Ss2KshuIUeaGhVwBettFhK3DPv6KGAGSuWFnR4+cwOLrVPJqELQY9HooUlkZI9CZKs4EzFUg97nDQ5DlmzxUKkCisgYpTQTGcxic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=UojUzUzv; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7bc3e297bc9so538117939f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 22:29:57 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type; b=ZdeOZh2OiG/iSlah+yfQwNu8gkExfO+e4FG+XDyKven6DhVIZ4A7USZ+KpaVX9AiPvu3mC6XUHLrmANnaK8JCjabVyTfwAnFCKn/80c0+oM/fECyGi00MkKZ1dNBqOJ6rcR7z/X/Kw30yX9bhDbY8HoczAPZY3tqe0bzJCdlsH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=J9ObBuiU; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2cea0563cbso884754866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 22:35:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1705559397; x=1706164197; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QtA1yi7bJhENd0OSwZZPO3/DRQ+e8frz78vUteV9MTU=;
-        b=UojUzUzv24vzKx8LoRVUqy+GH3tnYvLx6nxhIdmKNRHtZt5k827VZNiTDqRLpaUggM
-         0c6zZAM07/9NpdX3ZN890z4INf7iHl1L2+cT1aHcY+BIEHVSQ7ICMWiwegTJEGFIs00s
-         562W/JY0SrDUTEPg1Gy36ZSGZRql2w8T7FhIbey8GsECnhweTWcIlEJwvNhBJOfATpXT
-         u2sxvhrltg2cne/Y5X/dK+nlYe51jneghQxDxAaSujLJwmQhnGTREj7DZz5IAzW5hTLh
-         TpZHbUuYAT+Nwouicz2cQqv25vFDdUfS+sX5yIp39Cpna8XMnIZMJrEcjjmGwq7aNi0e
-         Ctkw==
+        d=google.com; s=20230601; t=1705559752; x=1706164552; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=F6Z6wuTdIE3oI+ENMJR97SNTKTQo97xJmtmIXWm79Rs=;
+        b=J9ObBuiUD/YGf3i65QumcD/nlhg1QTBRggxkZC1a8b/VcwF8Gqef32FwhnnpmQ4zcX
+         YHTkPQ5JFABIkWCcqHfJ31ouMZhNr0ElHpgLC7NOPMvmxd/jm0k1fTVZlSAaHiXqfCJC
+         9BYPovdvQW5X7/PnEuBHe4I0pNhg583y3Jn4rvvcpvS1hqBtrRpsUTi6G6uwcGF0iF4p
+         3hD1wAZ232lMdmoBmGxtvzTUy1qyolxqgCp310vNPXbOhKmvrL+VQl3R4aNJg84ONywn
+         HIW0nyxM72ZanV5s4CEaJ8/Op9cjRjmUhOWxW7mxOIjXyqm+/tFe0d3eF0rd6doQd3xp
+         /xYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705559397; x=1706164197;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QtA1yi7bJhENd0OSwZZPO3/DRQ+e8frz78vUteV9MTU=;
-        b=wBGN0/Y98qyEiduuGdk2Dezuv2unJUdMVDezTm+xjgFDNlh5TxuEvRZu64W0HqUfTG
-         lJzr1/k1Su3YFN2S2Dvo6TYCkuHynocjpTOhf8HOcUvEDs1hGIwUUactLdYX/8aurkmy
-         kkw+lyn0GwpNRqJ3PSO6T+7R2X3C3lkpp6spTsnRiHmTwnvEyxvur/TsSoiCrQzbSeT/
-         oR6cp6dxEQafkLBcFKiYsdo47yKmNOgkIgbP3z7f7HP2fWM/HFlB8/70iWa5rfAG5vAQ
-         qBNnf5azwt8l1GsOV2059ryWG0e0Hpe2qysm95z1jERCForIFxaqW1yHOlAhW70FGM6E
-         PdOw==
-X-Gm-Message-State: AOJu0YzVN2DrNDN4SxYf98pkXa9VvHlSzaSqtvNsyH5UHwaiabp8pFRX
-	HlckVfY9yBz8TADT8ZI1ZLCQwnSlx3P8lWXcwkOoIOgSUzstgnjQpGCvM+puiKI=
-X-Google-Smtp-Source: AGHT+IG5FtqixEBaNJDSNquSyctMTnCf+hskKjTKsUAyOqYtmHJhBUoYOvToNqCtx5vuaVjQy/gmAg==
-X-Received: by 2002:a92:4a01:0:b0:361:993b:7f3 with SMTP id m1-20020a924a01000000b00361993b07f3mr523402ilf.11.1705559397011;
-        Wed, 17 Jan 2024 22:29:57 -0800 (PST)
-Received: from sunil-laptop.dc1.ventanamicro.com ([106.51.83.242])
-        by smtp.gmail.com with ESMTPSA id bn28-20020a056e02339c00b0035fec699584sm4663269ilb.13.2024.01.17.22.29.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 22:29:56 -0800 (PST)
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: linux-pm@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Len Brown <lenb@kernel.org>,
-	Anup Patel <anup@brainfault.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Sunil V L <sunilvl@ventanamicro.com>
-Subject: [PATCH v3 -next 3/3] ACPI: Enable ACPI_PROCESSOR for RISC-V
-Date: Thu, 18 Jan 2024 11:59:30 +0530
-Message-Id: <20240118062930.245937-4-sunilvl@ventanamicro.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240118062930.245937-1-sunilvl@ventanamicro.com>
-References: <20240118062930.245937-1-sunilvl@ventanamicro.com>
+        d=1e100.net; s=20230601; t=1705559752; x=1706164552;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F6Z6wuTdIE3oI+ENMJR97SNTKTQo97xJmtmIXWm79Rs=;
+        b=GxO31UaqhTnSdQjKVVNXTdx9CtEwpb7wHu9qwb+A0AKaLMDb3k21R3uzxxY3Qqxkca
+         09u81WIBlnd8VXzcmea3lGiYiD86frJfyf7ombPd+Paozgq/9W9zWHw+1oBVH3ZMWC2a
+         m15chsXlWR0iwDWmWPyE4hIRDDE8hROIWRsdzjeVOzAJMMzQkdgM0ok/bZ1VFDffg7Gl
+         MPu8ima1NLn5aVNMH0tTsRhCsDJn+ed4fuV36jq2n8qNC4uMHNo5KrNr70oPsEs838bV
+         P1TA/ZJjT2vyT770i3rAprlKPIQ1pxdzpST6yUQGIF7sXoB813tlnWoEIe7+088tDt4i
+         jFvw==
+X-Gm-Message-State: AOJu0YwkyPaXrppQkrc/t1Dgfr1BCf9njHx5uKpplQruZhX5V8nb9Ypr
+	lqw2tCUBB+mOZuSJ4WeLXws21jxHmBeN1yUw3hRJfyuFwvKbq9leyPp1d2guj5O+AtFPKbfwjh3
+	NuSlsB6m3Sef74Rnctz9Q5hBD3Iirox0lZt9Q
+X-Google-Smtp-Source: AGHT+IF9WPH8KBIEm47kPYtcEi3P9fns4xjGcZxGxJfXJ7F/utnKCwSy+gT6g5altMwCfW0Gh/a6MGT+qR+StuUuPZQ=
+X-Received: by 2002:a17:906:35d8:b0:a2d:a5b5:70ab with SMTP id
+ p24-20020a17090635d800b00a2da5b570abmr195429ejb.100.1705559751871; Wed, 17
+ Jan 2024 22:35:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org> <20240117-zswap-xarray-v1-2-6daa86c08fae@kernel.org>
+In-Reply-To: <20240117-zswap-xarray-v1-2-6daa86c08fae@kernel.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 17 Jan 2024 22:35:15 -0800
+Message-ID: <CAJD7tkZF102x_8LKAX+sxAttgYD_LNT3cRqeOr7_euwPfNdCFA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: zswap.c: remove RB tree
+To: Chris Li <chrisl@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, =?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
+	Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, 
+	Chun-Tse Shao <ctshao@google.com>, =?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
+	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The ACPI processor driver is not currently enabled for RISC-V.
-This is required to enable CPU related functionalities like
-LPI and CPPC. Hence, enable ACPI_PROCESSOR for RISC-V.
+> @@ -493,45 +471,47 @@ static struct zswap_entry *zswap_search(struct zswap_tree *tree, pgoff_t offset)
+>  static int zswap_insert(struct zswap_tree *tree, struct zswap_entry *entry,
+>                         struct zswap_entry **dupentry)
+>  {
+> -       struct rb_root *root = &tree->rbroot;
+> -       struct rb_node **link = &root->rb_node, *parent = NULL;
+> -       struct zswap_entry *myentry, *old;
+> -       pgoff_t myentry_offset, entry_offset = swp_offset(entry->swpentry);
+> -
+> -
+> -       while (*link) {
+> -               parent = *link;
+> -               myentry = rb_entry(parent, struct zswap_entry, rbnode);
+> -               myentry_offset = swp_offset(myentry->swpentry);
+> -               if (myentry_offset > entry_offset)
+> -                       link = &(*link)->rb_left;
+> -               else if (myentry_offset < entry_offset)
+> -                       link = &(*link)->rb_right;
+> -               else {
+> -                       old = xa_load(&tree->xarray, entry_offset);
+> -                       BUG_ON(old != myentry);
+> -                       *dupentry = myentry;
+> +       struct zswap_entry *e;
+> +       pgoff_t offset = swp_offset(entry->swpentry);
+> +       XA_STATE(xas, &tree->xarray, offset);
+> +
+> +       do {
+> +               xas_lock_irq(&xas);
+> +               do {
+> +                       e = xas_load(&xas);
+> +                       if (xa_is_zero(e))
+> +                               e = NULL;
+> +               } while (xas_retry(&xas, e));
+> +               if (xas_valid(&xas) && e) {
+> +                       xas_unlock_irq(&xas);
+> +                       *dupentry = e;
+>                         return -EEXIST;
+>                 }
+> -       }
+> -       rb_link_node(&entry->rbnode, parent, link);
+> -       rb_insert_color(&entry->rbnode, root);
+> -       old = xa_store(&tree->xarray, entry_offset, entry, GFP_KERNEL);
+> -       return 0;
+> +               xas_store(&xas, entry);
+> +               xas_unlock_irq(&xas);
+> +       } while (xas_nomem(&xas, GFP_KERNEL));
+> +       return xas_error(&xas);
 
-Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
----
- drivers/acpi/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think using the xas_* APIs can be avoided here. The only reason we
+need it is that we want to check if there's an existing entry first,
+and return -EEXIST. However, in that case, the caller will replace it
+anyway (and do some operations on the dupentry):
 
-diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index f819e760ff19..9a920752171c 100644
---- a/drivers/acpi/Kconfig
-+++ b/drivers/acpi/Kconfig
-@@ -282,7 +282,7 @@ config ACPI_CPPC_LIB
- 
- config ACPI_PROCESSOR
- 	tristate "Processor"
--	depends on X86 || ARM64 || LOONGARCH
-+	depends on X86 || ARM64 || LOONGARCH || RISCV
- 	select ACPI_PROCESSOR_IDLE
- 	select ACPI_CPU_FREQ_PSS if X86 || LOONGARCH
- 	select THERMAL
--- 
-2.34.1
+while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
+        WARN_ON(1);
+        zswap_duplicate_entry++;
+        zswap_invalidate_entry(tree, dupentry);
+}
 
+So I think we can do something like this in zswap_insert() instead:
+
+dupentry = xa_store(..);
+if (WARN_ON(dupentry)) {
+        zswap_duplicate_entry++;
+        zswap_invalidate_entry(tree, dupentry);
+}
+
+WDYT?
+
+>  }
+>
+>  static bool zswap_erase(struct zswap_tree *tree, struct zswap_entry *entry)
+>  {
+> +       struct zswap_entry *e;
+>         pgoff_t offset = swp_offset(entry->swpentry);
+> -       if (!RB_EMPTY_NODE(&entry->rbnode)) {
+> -               struct zswap_entry *old;
+> -               old = xa_erase(&tree->xarray, offset);
+> -               BUG_ON(old != entry);
+> -               rb_erase(&entry->rbnode, &tree->rbroot);
+> -               RB_CLEAR_NODE(&entry->rbnode);
+> -               return true;
+> -       }
+> -       return false;
+> +       XA_STATE(xas, &tree->xarray, offset);
+> +
+> +       do {
+> +               xas_lock_irq(&xas);
+> +               do {
+> +                       e = xas_load(&xas);
+> +               } while (xas_retry(&xas, e));
+> +               if (xas_valid(&xas) && e != entry) {
+> +                       xas_unlock_irq(&xas);
+> +                       return false;
+> +               }
+> +               xas_store(&xas, NULL);
+> +               xas_unlock_irq(&xas);
+> +       } while (xas_nomem(&xas, GFP_KERNEL));
+> +       return !xas_error(&xas);
+>  }
+
+Same here, I think we just want:
+
+return !!xa_erase(..);
+
+>
+>  static struct zpool *zswap_find_zpool(struct zswap_entry *entry)
+> @@ -583,7 +563,6 @@ static void zswap_entry_put(struct zswap_tree *tree,
+>
+>         WARN_ON_ONCE(refcount < 0);
+>         if (refcount == 0) {
+> -               WARN_ON_ONCE(!RB_EMPTY_NODE(&entry->rbnode));
+>                 zswap_free_entry(entry);
+>         }
+
+nit: the braces are no longer needed here
 
