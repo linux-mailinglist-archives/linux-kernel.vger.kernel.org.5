@@ -1,131 +1,172 @@
-Return-Path: <linux-kernel+bounces-30131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30149831A0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:07:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A7A88319EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:04:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB63F282425
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:07:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C9A21F24584
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:04:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E24D25553;
-	Thu, 18 Jan 2024 13:07:43 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48FC25102;
+	Thu, 18 Jan 2024 13:04:38 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E30250E1;
-	Thu, 18 Jan 2024 13:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E352324B55;
+	Thu, 18 Jan 2024 13:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705583263; cv=none; b=FNmm1dvampa7D1mqoKIVSOFYJQRQl+l3Yk08hvCt5jAnibRMyxsmml/YqmvNyIIkJc0kuugLZAL43m7oVztLRZhpryARTXL57y0QIN5Yaj3qwh4RP5WdDfYmkGFXXzXGoizpKv28Z8QdFACgn4ZjGxRXln5Oh/K/aJWNxpKoFRo=
+	t=1705583078; cv=none; b=M3qscZSFvajs+8/Y/TdVpn1/cJeAD2HpHf3PH0kk9ioJ2IUbR1pXafjqORHiqvQLvJDZ3FL49oeMg0jNIobDXSyOUsXKADnK+qQ7qCWWOmYmsuBnlzuCt14NdidQK/EUGvxIAH+SO2junKV9MGHQkbfeY+5Wl85yFopIKxiM8LI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705583263; c=relaxed/simple;
-	bh=BtEeITIhhSJByudkXtg5B1z1EVkxDfr9R3qotxd8td8=;
-	h=Received:Received:Received:From:To:Cc:Subject:Date:Message-Id:
-	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-CM-TRANSID:
-	 X-Coremail-Antispam:X-CM-SenderInfo; b=qFp+5Gic0+Ig+LIzTVAkauHUFILXlzGrzZ3JftEbzeLEDpdmxYHHcp8l1K7HH7MKIVC6ILwIGzs4DgXzKDpfvmy1bKWZz9uHMizdQYimcUrnwwPUr2wHNrs3DnOSoQL1+0OvGoD5Sjs60zBqMByfQwn2dNG9ErK6nj1a/yQ3Ktk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TG31s54KGz4f3m6x;
-	Thu, 18 Jan 2024 21:07:29 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id D245A1A09E5;
-	Thu, 18 Jan 2024 21:07:35 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBGWIqllGLveBA--.44857S4;
-	Thu, 18 Jan 2024 21:07:35 +0800 (CST)
-From: Li Lingfeng <lilingfeng@huaweicloud.com>
-To: allison.karlitskaya@redhat.com,
-	hch@infradead.org,
-	axboe@kernel.dk,
-	yukuai1@huaweicloud.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	houtao1@huawei.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	lilingfeng@huaweicloud.com
-Subject: [PATCH] block: Move checking GENHD_FL_NO_PART to bdev_add_partition()
-Date: Thu, 18 Jan 2024 21:04:01 +0800
-Message-Id: <20240118130401.792757-1-lilingfeng@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1705583078; c=relaxed/simple;
+	bh=A2u/In+Ely0o9qIZsqtSMjnx7pYwOa9eMaospITnmZ8=;
+	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
+	 Content-Language:To:CC:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy; b=HFeQ3zAhpHfpzPF/xfKt1FWcWtPfGIv8LLARXVs0++M4wNLZHUGInDfIgHyCYzVYys4wS2JRUG0sCeyK4BDke3R43WVgsiEoBRdwr+l+6dJBQ9HWBWFoUqrqwtAKPa8zysT4N89rg2KVA3d7hm49+E7n0AFbQ3CZBSpLok2hGN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 18 Jan
+ 2024 16:04:31 +0300
+Received: from [192.168.211.130] (10.0.253.138) by Ex16-01.fintech.ru
+ (10.0.10.18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 18 Jan
+ 2024 16:04:31 +0300
+Message-ID: <549c658e-28a0-4e6c-be09-95ba748410b7@fintech.ru>
+Date: Thu, 18 Jan 2024 05:04:30 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] ipv6: mcast: fix data-race in ipv6_mc_down /
+ mld_ifc_work
+Content-Language: en-US
+To: Eric Dumazet <edumazet@google.com>
+CC: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Taehee Yoo
+	<ap420073@gmail.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com>
+References: <20240117172102.12001-1-n.zhandarovich@fintech.ru>
+ <CANn89iLUxP_YGLD1mrCmAr9qSg7wPWDjWPhJHNa_X4QVyNWqBQ@mail.gmail.com>
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+In-Reply-To: <CANn89iLUxP_YGLD1mrCmAr9qSg7wPWDjWPhJHNa_X4QVyNWqBQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBXKBGWIqllGLveBA--.44857S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7tryUurWxJF18Zry5Cr17KFg_yoW8AFy7pr
-	s8XrWjyw1UKFn8uayUta1xu3W5W3Z3JFs7K3yxAw4FvrW3AwnrtFy09ayY9a1Yqr9IkrWS
-	vr4SqrWkAFyxCrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	fUouWlDUUUU
-X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-From: Li Lingfeng <lilingfeng3@huawei.com>
+Hello,
 
-Commit 1a721de8489f ("block: don't add or resize partition on the disk
-with GENHD_FL_NO_PART") prevented all operations about partitions on disks
-with GENHD_FL_NO_PART in blkpg_do_ioctl() since they are meaningless.
-However, it changed error code in some scenarios. So move checking
-GENHD_FL_NO_PART to bdev_add_partition() to eliminate impact.
+On 1/18/24 00:59, Eric Dumazet wrote:
+> On Wed, Jan 17, 2024 at 6:21 PM Nikita Zhandarovich
+> <n.zhandarovich@fintech.ru> wrote:
+>>
+>> idev->mc_ifc_count can be written over without proper locking.
+>>
+>> Originally found by syzbot [1], fix this issue by encapsulating calls
+>> to mld_ifc_stop_work() (and mld_gq_stop_work() for good measure) with
+>> mutex_lock() and mutex_unlock() accordingly as these functions
+>> should only be called with mc_lock per their declarations.
+>>
+>> [1]
+>> BUG: KCSAN: data-race in ipv6_mc_down / mld_ifc_work
+>>
+>> Fixes: 2d9a93b4902b ("mld: convert from timer to delayed work")
+>> Reported-by: syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com
+>> Link: https://lore.kernel.org/all/000000000000994e09060ebcdffb@google.com/
+>> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+>> ---
+>>  net/ipv6/mcast.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
+>> index b75d3c9d41bb..bc6e0a0bad3c 100644
+>> --- a/net/ipv6/mcast.c
+>> +++ b/net/ipv6/mcast.c
+>> @@ -2722,8 +2722,12 @@ void ipv6_mc_down(struct inet6_dev *idev)
+>>         synchronize_net();
+>>         mld_query_stop_work(idev);
+>>         mld_report_stop_work(idev);
+>> +
+>> +       mutex_lock(&idev->mc_lock);
+>>         mld_ifc_stop_work(idev);
+>>         mld_gq_stop_work(idev);
+>> +       mutex_unlock(&idev->mc_lock);
+>> +
+>>         mld_dad_stop_work(idev);
+>>  }
+>>
+> 
+> Thanks for the fix.
+> 
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> 
+> I would also add some lockdep_assert_held() to make sure assumptions are met.
+> Trading a comment for a runtime check is better.
+> 
+> diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
+> index b75d3c9d41bb5005af2d4e10fab58f157e9ea4fa..b256362d3b5d5111f649ebfee4f1557d8c063d92
+> 100644
+> --- a/net/ipv6/mcast.c
+> +++ b/net/ipv6/mcast.c
+> @@ -1047,36 +1047,36 @@ bool ipv6_chk_mcast_addr(struct net_device
+> *dev, const struct in6_addr *group,
+>         return rv;
+>  }
+> 
+> -/* called with mc_lock */
+>  static void mld_gq_start_work(struct inet6_dev *idev)
+>  {
+>         unsigned long tv = get_random_u32_below(idev->mc_maxdelay);
+> 
+> +       lockdep_assert_held(&idev->mc_lock);
+>         idev->mc_gq_running = 1;
+>         if (!mod_delayed_work(mld_wq, &idev->mc_gq_work, tv + 2))
+>                 in6_dev_hold(idev);
+>  }
+> 
+> -/* called with mc_lock */
+>  static void mld_gq_stop_work(struct inet6_dev *idev)
+>  {
+> +       lockdep_assert_held(&idev->mc_lock);
+>         idev->mc_gq_running = 0;
+>         if (cancel_delayed_work(&idev->mc_gq_work))
+>                 __in6_dev_put(idev);
+>  }
+> 
+> -/* called with mc_lock */
+>  static void mld_ifc_start_work(struct inet6_dev *idev, unsigned long delay)
+>  {
+>         unsigned long tv = get_random_u32_below(delay);
+> 
+> +       lockdep_assert_held(&idev->mc_lock);
+>         if (!mod_delayed_work(mld_wq, &idev->mc_ifc_work, tv + 2))
+>                 in6_dev_hold(idev);
+>  }
+> 
+> -/* called with mc_lock */
+>  static void mld_ifc_stop_work(struct inet6_dev *idev)
+>  {
+> +       lockdep_assert_held(&idev->mc_lock);
+>         idev->mc_ifc_count = 0;
+>         if (cancel_delayed_work(&idev->mc_ifc_work))
+>                 __in6_dev_put(idev);
 
-Fixes: 1a721de8489f ("block: don't add or resize partition on the disk with GENHD_FL_NO_PART")
-Reported-by: Allison Karlitskaya <allison.karlitskaya@redhat.com>
-Closes: https://lore.kernel.org/all/CAOYeF9VsmqKMcQjo1k6YkGNujwN-nzfxY17N3F-CMikE1tYp+w@mail.gmail.com/
-Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
----
- block/ioctl.c           | 2 --
- block/partitions/core.c | 5 +++++
- 2 files changed, 5 insertions(+), 2 deletions(-)
+Just to clarify: should I incorporate your change into v2 version of my
+original one and attach 'Reviewed-by' tags or should I send a different
+patch with your suggestion?
 
-diff --git a/block/ioctl.c b/block/ioctl.c
-index 9c73a763ef88..438f79c564cf 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -20,8 +20,6 @@ static int blkpg_do_ioctl(struct block_device *bdev,
- 	struct blkpg_partition p;
- 	sector_t start, length;
- 
--	if (disk->flags & GENHD_FL_NO_PART)
--		return -EINVAL;
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EACCES;
- 	if (copy_from_user(&p, upart, sizeof(struct blkpg_partition)))
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index e6ac73617f3e..8bc68e8acafd 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -439,6 +439,11 @@ int bdev_add_partition(struct gendisk *disk, int partno, sector_t start,
- 		goto out;
- 	}
- 
-+	if (disk->flags & GENHD_FL_NO_PART) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
- 	if (partition_overlaps(disk, start, length, -1)) {
- 		ret = -EBUSY;
- 		goto out;
--- 
-2.39.2
+Apologies for the possibly silly question, got a little confused by
+signals from multiple maintainers.
 
+With regards,
+Nikita
 
