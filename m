@@ -1,183 +1,157 @@
-Return-Path: <linux-kernel+bounces-29687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 876BC8311B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EE088311BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:25:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37A552834B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:20:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18004285106
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28CCA9442;
-	Thu, 18 Jan 2024 03:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FC2AD5A;
+	Thu, 18 Jan 2024 03:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Zw/tFz2w"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04olkn2023.outbound.protection.outlook.com [40.92.45.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="oIPQS9Bi"
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CF88F40;
-	Thu, 18 Jan 2024 03:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.45.23
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705548026; cv=fail; b=oLL1GBerM8imdnYIRxvhnVh87j63Y9vsuyElxGz/Pwn76ydwHqUK2Duq5NjoWnUi7ZU/IF9jtGXm3LeNQeZrmJwBXfrLIZ4CpTrT7O4CAwtCxK3ydTyV28oR+qgyO31yhhabl6plt2wA/EYmRe6mrX+vBFOC1J0JfzcQJLWYrlg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705548026; c=relaxed/simple;
-	bh=Ka6armkSN2Vftom6ci/ifYOQq0xOWlxvL3E2bGJKSiw=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 Content-Transfer-Encoding:Content-Type:X-TMN:X-ClientProxiedBy:
-	 X-Microsoft-Original-Message-ID:MIME-Version:
-	 X-MS-Exchange-MessageSentRepresentingType:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=eRsizJ24z5il7Jna1tLqxDVCuFQa65Kbf0HkpKFzXGOpidcS6xfaU5QcA+sqySyD/disUPcw/2JYFfw00N2a+20ewjE80QAJgOQ7V+EFLFjT5EUYlCGE5SPDqGCD0RRvo4onWGpWNlYoAt7YYq3md4PYLqTDTpPAjEwR0zDgxH4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Zw/tFz2w; arc=fail smtp.client-ip=40.92.45.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UkM9b/xROQD/saMLP/7qaH3QGd5bfRD5FRRGoB5LFO8RDggLxibArsv4yVb7L8qOHnffsX15l6c+8Ct85um0IdfDLhsLSfqJtrtpp/guY/Klub9XNlMT9u8Z2w5PQkCKDxN0dovngRtJr+lAHXwfdMHWImO3PMXbNMyUr/Z7e6SNaK2WQRmHCmNyfvqlvVbe6tLzu87DtLOXQUDxhPVfwqkwfcKKqoTpQKoLCiJXVs5iu/KMWr+ErHpkoTDVYM6vnIYJeG/WvhtVj8O9+/Yw5ZKCxhsAYWB8EEqwGxljDI1rUh20qewjo9+NZyh/zUCAdnm8yqCLSfvZMZZWsFFUmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VPgx4Fxl3xnyDneE2sVD7T2pI258zNYPp7fBsUT3RcM=;
- b=HtAUiDee0kix2/BoSj8cnKcg0l5tnzoeWUnlukwrj8MR4HvM5Qh6kJXuoPJ09VOdVQ3JZBfBdi3tfCpkiikXdE6lTyb6yWvTuZjy5anmwPZZYVvGUd2+kwBJanL0Q/H7wenq0TF+WMzcf+CbYjYavMTMAEy/euHOaEmj2q9vNYnli6FVw/YEBv0oy+676St0cnX0TJK2Vg754wA4iAL3XQY/vRz1TbM7crWvhpnHBF+ZdVGx6Ut1N37rKXzkOQ1JZ71u6VzjkbkDFOLScmAzI5uXQ1RF5++yxavyJyXGPnSTHJaORRBo30Q/YefleSq3tcOW6O/TZXBqjzFD0gxqzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VPgx4Fxl3xnyDneE2sVD7T2pI258zNYPp7fBsUT3RcM=;
- b=Zw/tFz2wYU+3HctFLfCNq2rBqI7JHUzOwMGyYnzGqjHlIJe1xSJcGGJ1YBhjFgk0cMbXpOwUB1CMt5Rw1g/B+GHk+5YOxCo++mB94dAGmQvAkmCbGK9PXbgAC+Du1s6luYr6rgPe1jO2m1dHVQJMD5qIyQVBPJ8Uy15cFi9JI4uvX0+Od5YQNoslaq+xZ/8dnJLJrytQwTzvozMcC2pnMzO3vCaOM5c7h2Bo36R5qgprnUO5sc3PZ1MA2HBh3tmzF87rMKcPTxnXZcy9BMkyTGhQi00sZIniqSz3z7kLPszwqSzFHPtVhhTCCSxcS28HIPaRvJju6jnpVhFO3/8c3Q==
-Received: from PH7PR20MB5925.namprd20.prod.outlook.com (2603:10b6:510:27f::21)
- by LV8PR20MB7289.namprd20.prod.outlook.com (2603:10b6:408:222::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Thu, 18 Jan
- 2024 03:20:22 +0000
-Received: from PH7PR20MB5925.namprd20.prod.outlook.com
- ([fe80::e1de:29a8:e090:5b7b]) by PH7PR20MB5925.namprd20.prod.outlook.com
- ([fe80::e1de:29a8:e090:5b7b%4]) with mapi id 15.20.7202.020; Thu, 18 Jan 2024
- 03:20:22 +0000
-From: Fullway Wang <fullwaywang@outlook.com>
-To: bootc@bootc.net,
-	martin.petersen@oracle.com
-Cc: linux-scsi@vger.kernel.org,
-	target-devel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	fullwaywang@tencent.com,
-	Fullway Wang <fullwaywang@outlook.com>
-Subject: [PATCH] target: sbp: integer overflow and potential memory corruption
-Date: Thu, 18 Jan 2024 11:19:59 +0800
-Message-ID:
- <PH7PR20MB59258C767EF853A54273B3A7BF712@PH7PR20MB5925.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [NAB0d/mhuhnROt/NMMxu0JpLVw2WwJos]
-X-ClientProxiedBy: SI2P153CA0035.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:190::14) To PH7PR20MB5925.namprd20.prod.outlook.com
- (2603:10b6:510:27f::21)
-X-Microsoft-Original-Message-ID:
- <20240118031959.10718-1-fullwaywang@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B0DAD32
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705548323; cv=none; b=uYLgOyZH2XJMcQwEMepnnuix1YFG3+AmLml9p4phwN0Fb7YlMiMj4CbZAfMf8xQb02gl9Ymu+40JwXodSr8SDDY7250Xjuvf13erPjP9YRgueOj2LJ2Qwn2IHp5uzGR1UtZ4zAh4vsmi9a+onliDCx/2cTRrTCYkE9zccAqva+Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705548323; c=relaxed/simple;
+	bh=M7BOYEdezAOzVq0xrdZOq9iiRomKdt1QdNIDNsIFjCU=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=riGkAFWYDOkbmRiqcCKtLMfeoYjnCQl3jmVmjrqMf5cCqU3VK4o2i+DzLTSBSziAcyR+kjM8Pz9dEL0K5nwzxX1YCAgNl7wMi7DxPf0lUHFyyGiCfBAUuqPN8uu423MPZrr9q7Gc/FDqi9xcDlckg6c63Q40bnsflMXd171matk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=oIPQS9Bi; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3608402ab93so43088685ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:25:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705548321; x=1706153121; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ii56IFJu065FnMv6OshmGSGQK3NaWenX9LFIh28GHDw=;
+        b=oIPQS9BiBxJB8eJgU1V4qnfX9W2ozAMT9vlV6KtIsSLHezifz1A0R91rtk9hhcf3y1
+         pFdilCpp8rwjzNw2earg5jSgjUoItRRdTx30BQFoDPN5zzVoVJ0PCMsuRLaz9kgbEwGy
+         Szv8n6jTECugh2VSFYYwHvhAuecuGHHuU7q/8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705548321; x=1706153121;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ii56IFJu065FnMv6OshmGSGQK3NaWenX9LFIh28GHDw=;
+        b=QuIpq5l6JGlERaZjN92d6AWNXOMH0eYwsQzVYNxbIQLP8NTzoHbOgX9Rix/kOjba9Z
+         AB6tDYfbrux7So8DgPKnJMCcQNM/Y9wf41Myem8uS+wbgKojrRics1VzvJ3wG5Y5xNAY
+         j/h37ShlsFsebx6fRygOXL5Bxl8KErMFFSrtGysZLTNR33C81vhipDD0Apy6Cjtj0xot
+         GJQerFM3/5waEj4Ahv27MZxyX38fGE58/qYwGSY7j35zTDNWbRI2pGNTfKSV2OSpNIUs
+         uDkwwFMFRloNP0sH907r+iBWf9T2YnfmA1zNzINgUOzWyO6H2bJAx/XvPKm4h9ZWWu/U
+         C2Fg==
+X-Gm-Message-State: AOJu0Yyw0EiYztjhbNnaIW6zBI+LSJ2TNNDqeRzWpaq9m4jUEVKyyt1c
+	5o6k6kG9CCb62XRYmFsPgHZfz0lFqQX05OeHtw0xt30ry6DKtNcATsQJJbt8wibHQfJFs25hsQy
+	9df+3E10dJ2xLogc6S2qEqM2BhX10wn2G6O2B
+X-Google-Smtp-Source: AGHT+IE9D1TMeIh1UjhzZONIVYL35nzwGM7vKMti5Frnt+mKigLTifEXOn/4P8AZkmNo4W2eFWm7k1x7hjd+mCT2haA=
+X-Received: by 2002:a05:6e02:1bc9:b0:361:8c6f:fbd0 with SMTP id
+ x9-20020a056e021bc900b003618c6ffbd0mr388527ilv.49.1705548320834; Wed, 17 Jan
+ 2024 19:25:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR20MB5925:EE_|LV8PR20MB7289:EE_
-X-MS-Office365-Filtering-Correlation-Id: ffaa856a-3910-43e8-b0f4-08dc17d4675f
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VSi8w5XzqJSI3lBVZEUriD5yxt4qJ97CJyEQOzjG6daxQcHd7bKRf5aEdqg6ty5N3El8mMH0P6p0tqRfhbRoz1nfjNRLWlC9jqLjVEhVzAja5Tw3s9TL4qFCwSmjG0X9qI2iIR7rqwfdjUG62P2UG2cggul1heJ2K4UKgIOtXkMrnY72GYH7x0W26rEP1aRIvi0aJriuOVuMKy6At2Mnzw3ihnUVrEBMAEbpZLQyjXcXqMkg7lrF+ZZhA8cpQ7cuEm0xEJe97+jVPDLEJZuPiZI/o+isx0WDZU1ZEj8g2H+4Y8Rf3V4nK82ZgiuxcRu/UOhI5FtGgykSoM0aG8fC3wVRR8TyaBPbFtdeGflnRg2Bx8TQK32x1QEXkB19ATUJrPxqwKj/JMFVAce93nu5DYUnuZLVIAMhAEQB/MfugpvK019fPfiPWx36RX5sEenSLWWqhgMzyYUcytFZw+RaQDFh8nGQfz7obIa9Io7uYsQj9g6NriEjkDBfSvHPsGub+ZpOArtw1lsmncTkwyV5Mv8PdiTe11//Wde53zg4W+slHhOMJ/Vqm4b6mLxZHpwl5EeZqiKxd0V8GUYFgut/vVqbKz9PjXkQYBrV5OHqizUlzImjC5iDs8EcDpoSjokm
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?w+f9LaEoNzlSxqBaziwnjKQpwq9Hns69ZQXppwzrIF3qp4IAlHPMVELj9D93?=
- =?us-ascii?Q?ZkB6dQH/xH1WBH95KhHqGGvW55EN4iCHS5k1F2EVWRASYs8N577VjWfVBGBG?=
- =?us-ascii?Q?xecnV9u7Df8OHaIItjBZl2+DVrnQRs1gV1TPYvvxWlYjBXyONN7GCUCPOH7/?=
- =?us-ascii?Q?z9k4MH/nOzTAXErVVvrtpv+SJ61j8rFlMNfQkRyccf6XnjVE74ViOYDJkg5m?=
- =?us-ascii?Q?NUyFUcoliALyNuRLOwu950LBVvwdFQvZILkqJC4+CQ9aMSEj3i05/gxt9GXr?=
- =?us-ascii?Q?0SJGTymh3CvahQEgGdDSHHs5V2AS/aDfk1tgUPw0+Eky+LE9l0R+3i4enzqo?=
- =?us-ascii?Q?vsY3DjB7NUvt5MPQtQE+uHDSNfUoRc6lnyugdPhHfZqRqwpo7GlaFkMWosj3?=
- =?us-ascii?Q?q8cDwflHdmPc/GAhp+Je30818zkXOV1daAUEv1HjVErwHgtX1TQ2JIw9/p5C?=
- =?us-ascii?Q?PibtUxMc7nNVdELpQvion5wnXYz9oemeHOJJ2MfoffCpXw9GugnrrRINJHlU?=
- =?us-ascii?Q?VSckGRxMJtn04oMbZ/s+XzxP9tD2hxhIg0cWRUYKdbACOH3tzAk0Uuezj8N4?=
- =?us-ascii?Q?3VTiKCpls6ZyhuPmkqddRvBYy+pYX4T3Fv9Z+cMzuKyRAlku3cLT+2UhVetT?=
- =?us-ascii?Q?ZLa1ksyEBgya2R9Na3i528l+CUul3ax2ijhiDCSLRreNj9fqgSXww/Qzu6LU?=
- =?us-ascii?Q?OXwOlnEsJEBL9B2F2UWRhRfZvY5EVQFf1I/Ovwa/3QldABMJwLQ1zlatNv9Y?=
- =?us-ascii?Q?XadT++b2FVwmPLs0aR6REshMJpMY/U+bh6WH+Vh2Y6XFFow5RA5zZednXxb0?=
- =?us-ascii?Q?bzS1o3J4V1bRZn5JG7fqkQTvljVGtQxgIk8IgauZD5ho3SiM6WL/9jfpPwKy?=
- =?us-ascii?Q?t9QbxWPf7svlcvkQGBZiI6NDdh//bbXWrRU4tqqnQ7wk/k/uZBB+gz5kOuX3?=
- =?us-ascii?Q?xj9wvCSDCO9IF8Ic0IPYKSGgywGK4gZ89eLWfONVNZsZ9tFTgWVdev/d6pHG?=
- =?us-ascii?Q?T+SL3Sakqq9jnPlu9QTcWDQwe3wj9jfTwtfCtZ12+l42SCTRFaoPtsxZtsjU?=
- =?us-ascii?Q?HcD11DvZkgZ8SMChJJeqg9I9VD4eyjGW6CTBXELHI3/9Rx5r0XLvXqoqjPY8?=
- =?us-ascii?Q?a+wif4NPOQpXz+S7Bf0l42pK7YDOce+dlQ5vZtk9LCWPQsV5yA5W4eGD/O5l?=
- =?us-ascii?Q?LKiE0Q4db2AUXD2st3FXhoEnRMD45pX2f3RWBn0YRkFWPt4o+yVLCsIM30k?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffaa856a-3910-43e8-b0f4-08dc17d4675f
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR20MB5925.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 03:20:21.8274
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR20MB7289
+References: <20240109120528.1292601-1-treapking@chromium.org>
+ <CAD=FV=WjjH3BCDf-OnX=zdk201uMu+YJvKVBhVmMa4GqNinacw@mail.gmail.com>
+ <CAD=FV=Va-67xojWbm-8MBCxaDG19gQhmNr3V_sBwYUkDkny9GQ@mail.gmail.com> <CAD=FV=UJMVZATztLsx9YCkV37TYuS_mphbHzhqrS3qNKQCzVAA@mail.gmail.com>
+In-Reply-To: <CAD=FV=UJMVZATztLsx9YCkV37TYuS_mphbHzhqrS3qNKQCzVAA@mail.gmail.com>
+From: Pin-yen Lin <treapking@chromium.org>
+Date: Thu, 18 Jan 2024 11:25:09 +0800
+Message-ID: <CAEXTbpfo7YsEi7uYcYen82vHg0F=Ataca=FocwF1Jr0-6MpgyA@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/bridge: parade-ps8640: Ensure bridge is suspended
+ in .post_disable()
+To: Doug Anderson <dianders@chromium.org>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	dri-devel@lists.freedesktop.org, Sean Paul <seanpaul@chromium.org>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The code in sbp_make_tpg() is confusing because tpgt was limited
-to UINT_MAX but the datatype of tpg->tport_tpgt is actually u16.
-Correctly fix the data type problem to avoid integer overflow.
+Hi Doug,
 
-This is similar to CVE-2015-4036 in the sense that sbp is a clone
-of vhost/scsi, and the bug was inherited but never fixed.
+On Thu, Jan 18, 2024 at 2:37=E2=80=AFAM Doug Anderson <dianders@chromium.or=
+g> wrote:
+>
+> Hi,
+>
+> On Wed, Jan 17, 2024 at 9:34=E2=80=AFAM Doug Anderson <dianders@chromium.=
+org> wrote:
+> >
+> > Hi,
+> >
+> > On Tue, Jan 9, 2024 at 8:52=E2=80=AFAM Doug Anderson <dianders@chromium=
+org> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Tue, Jan 9, 2024 at 4:05=E2=80=AFAM Pin-yen Lin <treapking@chromiu=
+m.org> wrote:
+> > > >
+> > > > The ps8640 bridge seems to expect everything to be power cycled at =
+the
+> > > > disable process, but sometimes ps8640_aux_transfer() holds the runt=
+ime
+> > > > PM reference and prevents the bridge from suspend.
+> > > >
+> > > > Prevent that by introducing a mutex lock between ps8640_aux_transfe=
+r()
+> > > > and .post_disable() to make sure the bridge is really powered off.
+> > > >
+> > > > Fixes: 826cff3f7ebb ("drm/bridge: parade-ps8640: Enable runtime pow=
+er management")
+> > > > Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> > > > ---
+> > > >
+> > > > Changes in v2:
+> > > > - Use mutex instead of the completion and autosuspend hack
+> > > >
+> > > >  drivers/gpu/drm/bridge/parade-ps8640.c | 16 ++++++++++++++++
+> > > >  1 file changed, 16 insertions(+)
+> > >
+> > > This looks OK to me now.
+> > >
+> > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > >
+> > > I'll let it stew on the mailing list for ~1 week and then land it in
+> > > drm-misc-fixes unless there are additional comments.
+> >
+> > Pushed to drm-misc-fixes:
+> >
+> > 26db46bc9c67 drm/bridge: parade-ps8640: Ensure bridge is suspended in
+> > .post_disable()
+>
+> Crud. I landed this and then almost immediately hit a bug with it. :(
+> I've posted up the fix:
+>
+> https://lore.kernel.org/r/20240117103502.1.Ib726a0184913925efc7e99c4d4fc8=
+01982e1bc24@changeid
+>
+> -Doug
 
-Signed-off-by: Fullway Wang <fullwaywang@outlook.com>
----
- drivers/target/sbp/sbp_target.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Sorry, I missed this because the patch was based on drm-misc-next, so
+it did not include commit 024b32db43a3 ("drm/bridge: parade-ps8640:
+Wait for HPD when doing an AUX transfer").
 
-diff --git a/drivers/target/sbp/sbp_target.c b/drivers/target/sbp/sbp_target.c
-index b604fcae21e1..1ba742ee48b0 100644
---- a/drivers/target/sbp/sbp_target.c
-+++ b/drivers/target/sbp/sbp_target.c
-@@ -43,6 +43,7 @@ static const u32 sbp_unit_directory_template[] = {
- };
- 
- #define SESSION_MAINTENANCE_INTERVAL HZ
-+#define SBP_MAX_TARGET	256
- 
- static atomic_t login_id = ATOMIC_INIT(0);
- 
-@@ -1961,12 +1962,12 @@ static struct se_portal_group *sbp_make_tpg(struct se_wwn *wwn,
- 		container_of(wwn, struct sbp_tport, tport_wwn);
- 
- 	struct sbp_tpg *tpg;
--	unsigned long tpgt;
-+	u16 tpgt;
- 	int ret;
- 
- 	if (strstr(name, "tpgt_") != name)
- 		return ERR_PTR(-EINVAL);
--	if (kstrtoul(name + 5, 10, &tpgt) || tpgt > UINT_MAX)
-+	if (kstrtou16(name + 5, 10, &tpgt) || tpgt >= SBP_MAX_TARGET)
- 		return ERR_PTR(-EINVAL);
- 
- 	if (tport->tpg) {
--- 
-2.39.3 (Apple Git-145)
+I also forgot to apply that commit when I did my testing.
 
+Pin-yen
 
