@@ -1,143 +1,121 @@
-Return-Path: <linux-kernel+bounces-30183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5D9A831B17
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:07:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0914831B1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:10:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55FEBB25CE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:07:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D75011C230F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D69D25770;
-	Thu, 18 Jan 2024 14:07:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64286288D5;
+	Thu, 18 Jan 2024 14:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="XC6tRtmu"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SorbwJHw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51AAB28DA0;
-	Thu, 18 Jan 2024 14:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8350286AC;
+	Thu, 18 Jan 2024 14:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705586859; cv=none; b=nRJbj6ZtNMubqhVBf6LYF2jwb6a5jBUKNcquyi3lFPfkGeOiV/71GsCl2nMitGISW3ivXlND4btzB+/oEfPiuMGI82HHxF8XvgH3iMOMo5ScvnfSJ3iQyuQt6K5tj98Zw06PyPWGLwoVDa/W7WcKCqLC9reyub6e70ZlZBmmPNg=
+	t=1705586995; cv=none; b=pPNbJVUFJd/HVpEh33yk0uWjAwUzL8tczXx9SBbTIg0qrSCoTRSrNx4yWYSFtFCEOJoGPQMcRdFVAVs4U48joR87Pzc96CH3s8l+fEIlIeJrSTR8cXIWxZwKCtVOQzH79V3JloWjRS4RCcGgju9mnNMBVSs0Ry7yDUVspXSX9WM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705586859; c=relaxed/simple;
-	bh=z/2Bwgab96DZ5PKg8s3ghLC/ddBRjyNUGU5ig9YwyrQ=;
-	h=DKIM-Signature:X-UI-Sender-Class:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:To:Content-Language:Cc:From:Subject:
-	 Content-Type:Content-Transfer-Encoding:X-Provags-ID:X-Spam-Flag:
-	 UI-OutboundReport; b=Gy8vlPDWh+kkprwJr3npdGwaamUM8LROFuD6GnXzI2Bbgeh5wMfy7KHJxvAK+h2bo5nMJRV+yR+/wTwKH0o4d9RFlNFL0U5a/aq0dsSZs2A4DA7jS3SMQWQzJkpMZ2hpRKzR4AQALRzHNRbZrXsEhEsDguqLpQPF2vcX3zE48C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=XC6tRtmu; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1705586827; x=1706191627; i=markus.elfring@web.de;
-	bh=z/2Bwgab96DZ5PKg8s3ghLC/ddBRjyNUGU5ig9YwyrQ=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=XC6tRtmunKwtM100D+Ewfm+CP19mBGN08XuDCnaMsEymoQGu+u7vI9noGUs/48rY
-	 37lO6G0Z7s4rxiJBdFOdWpHLXgkm6MWomCvWn1LAVRJh6RTBnLjbBsp+1AaW3QKca
-	 j39hinGd9YSL8oQLtAEux1AKzZ6XzkIratnfA+VOGaeDJ3mSzq/V0QrVB03p346JB
-	 5SD9TFL8tmm5r82DQ9X3KVoFC0LUBcu/NyxZb5gklB1tOY4jsp5oUy4KkN4+UfVZG
-	 PWBL4HPpTsukMlZanE0H7VNrkc0VzEDJMNv4a86cxO6WM4nxKJYlhdm4HitY7iLQq
-	 o7iKj5i5hC7nnlrpzA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MeUXu-1qsVjz2Us8-00aRKh; Thu, 18
- Jan 2024 15:07:07 +0100
-Message-ID: <14171fc4-8157-4919-86b8-bdec0493197d@web.de>
-Date: Thu, 18 Jan 2024 15:06:53 +0100
+	s=arc-20240116; t=1705586995; c=relaxed/simple;
+	bh=kBiT5drkA1zgE0V/ePCDsjTx47cqMBWft3QxfGT5hXg=;
+	h=Received:DKIM-Signature:Received:Date:Message-ID:From:To:Cc:
+	 Subject:In-Reply-To:References:User-Agent:MIME-Version:
+	 Content-Type:X-SA-Exim-Connect-IP:X-SA-Exim-Rcpt-To:
+	 X-SA-Exim-Mail-From:X-SA-Exim-Scanned; b=R2jnQ7hGhjXqzngg6k2IQBjT0R326TkbKIM+TULd2CeC/8JsuoDy0MzOPokqAwef5TqH7Cotr743hadAUlY7UgOH7RKp1+oUu4oBv1Rjx8q0qlUk0BoV0Jrzlc1QWjWgI6XlZDAEipneGthvyyOSbtIQP4MtuEa6rYQUu25UUFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SorbwJHw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 371CEC433C7;
+	Thu, 18 Jan 2024 14:09:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705586995;
+	bh=kBiT5drkA1zgE0V/ePCDsjTx47cqMBWft3QxfGT5hXg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=SorbwJHwyJdHQdbkVNp8ySIaJDkWF/fDdv4spTE3Zc5Pnm8eUEpxyq3vE2h+QS7wB
+	 VOqhuIzlR5F6q1jVIvFCHNxgj2C4a4+Dj2ZtdlSCCIrJsBZHiT+FqERGJ93YtzoeT1
+	 mrTKjnwkn0nU+pAlcqLoQelYhIlSDvVVlem/u1ShNOitByvbuYBuQAbmC/0N3Qkuhu
+	 3O+gH4BhEZ3hdgwzjWAOLwF2q88Ixaf0GRrXBhPJ8psJZkEpC8WE88o/bondO90aiQ
+	 0j4pITXHZ6c9Gw4jRYf/PyTgW7dndpLBKrpuDwoMw2lOg2qr0pe70fGAtR1bRT/yyq
+	 06PZ69uTLy93A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rQT5d-00CiPd-4S;
+	Thu, 18 Jan 2024 14:09:53 +0000
+Date: Thu, 18 Jan 2024 14:09:52 +0000
+Message-ID: <87y1cmwx5b.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: tglx@linutronix.de,
+	sdonthineni@nvidia.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	set_pte_at@outlook.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 4/4] genirq: Initialize resend_node hlist for all irq_desc
+In-Reply-To: <20240118112739.2000497-5-dawei.li@shingroup.cn>
+References: <20240118112739.2000497-1-dawei.li@shingroup.cn>
+	<20240118112739.2000497-5-dawei.li@shingroup.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-hardening@vger.kernel.org, kernel-janitors@vger.kernel.org,
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
- Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <chentao@kylinos.cn>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] pstore/ram_core: Improve exception handling in
- persistent_ram_new()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Q1rClzpMoW580z9Pvdi2Z3ZRHk52p2E2Q6XVLqRrNKlPpyakmvP
- WdtYc8MLDxlgfuZiuPwGEHQI/kjaJnFeixYPqtoMPMyJoqoY6e8MtQV2fEre9niN1hh7or4
- s8Nr82P4exdDLiTP+N0qKILv0/L4zk7aThKqlkzvZRNByhS/hQzzihNIIIt0uYBXfUk1GlZ
- L2br0gqeFgTPu1dbLfm8A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:y1tJt7FpCs4=;72+dE2IeuiHLVRsnwrXAscXo/3+
- lvUW7Cwig10uWMNkk8VoZsjoGTxhO8UkBuBLgmhNJbQQWUF4MZhVLvjFe+O45x6d8XsykU/+t
- Zajbvk0S9m5vDTZDvONSCr+BSAbeYmZqEJijzswUGv+BNHWchFEAo7wiUULf3sCC/NBgs5u2b
- MAq729vxCM+AA+uW3vRSEVD+epSW40GANRTa3ASQUuYI/P4ulMciw1Um5GwO7T/DLUPzQXwri
- 3jFe6WGOiXNHrck3PozMnN2DtgFGgdHs8bUN0LN1hSBhTdPWbu7w8QE8Hpd3YSbMBVe0RIXk4
- WJqosgBJkZlZvitPC0bbUZuwlbQ2R0P0gmx+JDjMmB8inYk/ACtrIfuv7WAEDR34/OxzcTnWh
- xXan8ZTp3CYVvR81IFTH/2ze3HtRME4f5vZgCrf8SYacxEWMTcfudBmj4dE92NteLTFYo0UKs
- Ydz8njlWcFwb4RhD2/wosXv5Bx6nJcp1dTO3debhxvVIROfRLYsrNOCF/DKPCW8NKCmsOzHJ5
- HasbMgzopiHBANof97ShXv4O86FG7MgE1au11CCDvWsRRz/koRr36At3moaZwScQfYeYY2Q/l
- ByqJXMBADHYdsAf5vE4L6yp35o5syjIQRJW5omsvy/9VqffBtOfcv+2poKy0Y/JSES9zg/2iY
- DDhMPPsYzMFhJhc2MPGirACcfowJfOpYHuDGdrR0bSA7pcujnsOYNMOpcfsxu+kcFxRsCkjy1
- v3xUKTfv1iD9gXNTsan/jNxruyGuh7K+WUWfxMeLa93S3oBkVuUXAmqQnSv8/A+Nf/aIDziaR
- w4rjbwWwrDmE1EhVBvC6w/MIC1woQH2EcKIYlE2+n7fa/98AJbwa1Q/eNK1maP6+naBUZ71aq
- 6CF8to4q7Z/arkn+R5WnPIU5ZZ4WKgKiiBkCNYwRIbkZr//5yHJra6Jw10d+9YzmtjxNzL6tU
- EzlcPw==
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dawei.li@shingroup.cn, tglx@linutronix.de, sdonthineni@nvidia.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, set_pte_at@outlook.com, stable@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 18 Jan 2024 14:57:21 +0100
+On Thu, 18 Jan 2024 11:27:39 +0000,
+Dawei Li <dawei.li@shingroup.cn> wrote:
+> 
+> For !CONFIG_SPARSE_IRQ kernel, early_irq_init() is supposed to
+> initialize all the desc entries in system, desc->resend_node
+> included.
+> 
+> Thus, initialize desc->resend_node for all irq_desc entries, rather
+> than irq_desc[0] only, which is the current implementation is about.
+> 
+> Fixes: bc06a9e08742 ("genirq: Use hlist for managing resend handlers")
+> Cc: stable@vger.kernel.org
+> 
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> ---
+>  kernel/irq/irqdesc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+> index 27ca1c866f29..371eb1711d34 100644
+> --- a/kernel/irq/irqdesc.c
+> +++ b/kernel/irq/irqdesc.c
+> @@ -600,7 +600,7 @@ int __init early_irq_init(void)
+>  		mutex_init(&desc[i].request_mutex);
+>  		init_waitqueue_head(&desc[i].wait_for_threads);
+>  		desc_set_defaults(i, &desc[i], node, NULL, NULL);
+> -		irq_resend_init(desc);
+> +		irq_resend_init(&desc[i]);
+>  	}
+>  	return arch_early_irq_init();
+>  }
 
-* Omit an initialisation (for the variable =E2=80=9Cret=E2=80=9D)
-  which became unnecessary with this refactoring
-  because a memory allocation failure will be directly indicated
-  by a corresponding return statement in an if branch.
+Well spotted. It would probably be worth having a helper that fully
+initialises one desc, but that's out of the scope of this fix.
 
-* Move a call of the function =E2=80=9Ckstrdup=E2=80=9D before two other s=
-tatements.
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- fs/pstore/ram_core.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+	M.
 
-diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
-index f1848cdd6d34..5047a8502e17 100644
-=2D-- a/fs/pstore/ram_core.c
-+++ b/fs/pstore/ram_core.c
-@@ -586,21 +586,23 @@ struct persistent_ram_zone *persistent_ram_new(phys_=
-addr_t start, size_t size,
- 			unsigned int memtype, u32 flags, char *label)
- {
- 	struct persistent_ram_zone *prz;
--	int ret =3D -ENOMEM;
-+	int ret;
-
- 	prz =3D kzalloc(sizeof(struct persistent_ram_zone), GFP_KERNEL);
- 	if (!prz) {
- 		pr_err("failed to allocate persistent ram zone\n");
--		goto err;
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	prz->label =3D kstrdup(label, GFP_KERNEL);
-+	if (!prz->label) {
-+		kfree(prz);
-+		return ERR_PTR(-ENOMEM);
- 	}
-
- 	/* Initialize general buffer state. */
- 	raw_spin_lock_init(&prz->buffer_lock);
- 	prz->flags =3D flags;
--	prz->label =3D kstrdup(label, GFP_KERNEL);
--	if (!prz->label)
--		goto err;
--
- 	ret =3D persistent_ram_buffer_map(start, size, prz, memtype);
- 	if (ret)
- 		goto err;
-=2D-
-2.43.0
-
+-- 
+Without deviation from the norm, progress is not possible.
 
