@@ -1,159 +1,176 @@
-Return-Path: <linux-kernel+bounces-29987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1BCB831649
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:56:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43B0D83164F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5223E1F21598
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:56:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A94761F22550
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF0C20339;
-	Thu, 18 Jan 2024 09:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB7420333;
+	Thu, 18 Jan 2024 09:58:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZQWPCiL"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="LNluS1n3"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C89200AC;
-	Thu, 18 Jan 2024 09:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B358125D1;
+	Thu, 18 Jan 2024 09:58:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705571786; cv=none; b=sNAOAtGlKkl/BP+vMxrtnkxKJNpCDpb3qju82o92amsPu+jFL2PJ/NHxfn24U2S4KUlxOOSEYzF72S/M9rwpcA6zTBoVNh4WfE4pAUo/p+EPHx8M5L8+4NPhE3tICDuStClae/nudbN6WXG4EmHyYtiHE7/OCXF3ab9A1SdVLu4=
+	t=1705571914; cv=none; b=m9OcnPFPxsZBOQMcJ5H+C7RITjHLQV+2O9vM15/BIs96hT94hO1L22JuAEDDG35fXNplBi0DfCdbWwW+sTPpI5bwLkIo63SbVN4BWiC0EGQLyUk1gcY00BH6TCTr77Ud1XxFxUbrzroAz2PI9x+KHJQsXIl1xLxZuamODfHfQSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705571786; c=relaxed/simple;
-	bh=hWuuTgxcPQhYy8iWEJv2hwI1bR5CzV0o5I3xGjHNOwY=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=pGgnE956J8c1Kyim1HO2/K1ZQWCuBSq8iMyANSHePqdy6O9B61G5Odo/60UMKHQxYwHHGXU2Igm0+5UwpMLFNERUPU4aL2yW1BsRLbhho0UBvoRUbM3I+VY/4+XFFty+QG8S3cIQaIrhNklABwUr/4DuqrJPE24LYI0bMWVbW9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CZQWPCiL; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d4414ec9c7so62679915ad.0;
-        Thu, 18 Jan 2024 01:56:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705571780; x=1706176580; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qh+wH52rq1O19pUhbRYFfC3OyLYjJldAfdQgu6VbbCk=;
-        b=CZQWPCiLmUlH1kW/Ru2Q+TW8z83dfsoCIoi/ynaC+1TCRQ3cBvBKodx/6RmlzD6r7i
-         KKZEzfZMVJ7HrtvgbTPUmxwO5h+xWfqAISCeWt/LtwcJIEWMjiElgwzBYqPQVGbm1hLR
-         ufIDdAs+HFS39yBacPWmaKR1pKqMCS4cwxWgh3GDu3wuSc0qNCROTmXcG6tZtSKyp5LY
-         onoCwKrXORLaXuWwvhkz1vPIOQ+e6Vo/Ah8TOmshhMoxQmI8YQrkJkfLEuwRcMayYvZx
-         EFZOsNw3o/hc0ubJ4ft5Mh5QGmq99uez74gnH7uKbrK9GCInNz/opzgDPRF/odL4tIWC
-         rP+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705571780; x=1706176580;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qh+wH52rq1O19pUhbRYFfC3OyLYjJldAfdQgu6VbbCk=;
-        b=kn7CV21voxiYWUuEYNPHbgqpw37sf4oo3KBQjPSHs9gk5ZQCePxVCiXxWStubpnuZT
-         TDqpUI/Kn6++5uFiyGk3pk4pGpWFaR5LBl4ew/AzI74GeIiK4Y1XEjrkz2hBrg2WO0Lx
-         5FXcrFOf7bUWweUjvUvomEP+Xx4TeDMilmm/EhSidHzrpQ/vaVyTwbkI1b3HvGQJn2qT
-         Lw85sta96TD/bodLlBt4rbvoL0Z3H9TwLHjuZjoPwyZF5nJo7P4Vxs3f3fZf71WGvqug
-         SUw9bTxXRNgpqKmirLjr8FPiI+T5iBsgt85DL9H0M9bzoD1EiPAOhMCHQmMoq2Ld7yEt
-         M0wQ==
-X-Gm-Message-State: AOJu0Yy3IMEuhP8JrOCo0s9xOuXythA99CWn20szo38Z32mSIrmK/Bxm
-	PQHS6SkCUWVnb//Rcqee/bZenQft98jqb840g+FjGrHz1jdWwwUz
-X-Google-Smtp-Source: AGHT+IFbi904Qass+6FarhLrEOyIWehebMlhY5de+XmF3+ZUUb1r0tC1oXRW+8vZJ2FmjTwkab+7ow==
-X-Received: by 2002:a17:902:d4cf:b0:1d5:4b75:f2da with SMTP id o15-20020a170902d4cf00b001d54b75f2damr532208plg.108.1705571780257;
-        Thu, 18 Jan 2024 01:56:20 -0800 (PST)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id q11-20020a170902c9cb00b001d70eb36dd9sm385185pld.279.2024.01.18.01.56.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 01:56:19 -0800 (PST)
-Date: Thu, 18 Jan 2024 17:56:15 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Taehee Yoo <ap420073@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com
-Subject: Re: [PATCH net] ipv6: mcast: fix data-race in ipv6_mc_down /
- mld_ifc_work
-Message-ID: <Zaj1vyXpp_UvJIXX@Laptop-X1>
-References: <20240117172102.12001-1-n.zhandarovich@fintech.ru>
+	s=arc-20240116; t=1705571914; c=relaxed/simple;
+	bh=us7rkNzH3kgjjBtdp/OFNF7E2uhJBQ6GmJ8gywPwYDY=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
+	 X-TM-AS-GCONF:X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=oX1EGv4HuT5hEroEKfndJmCsL602ESP3Rf8t6S7DlC4kiPHiPT5Y+j4H9NFOSzXnhmJlOhoppCU0Hln3TvlORSGopQcix2IgJKlQHnBKsG/sxvkyRnUc4mW0yZmvzrHlyJHct7qFV455xHiVSw6rl1Q3K+vaFpZwdJs3zah4NOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=LNluS1n3; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40I9Keqp003504;
+	Thu, 18 Jan 2024 09:58:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=tDsa17QGnZJdJ7xoNKAU1deQRzOdcbYO8QmA7kYtEIc=;
+ b=LNluS1n3x8Hb6WLcT5dJt2X7g3hPRIi6MuAhjB9rfPCT8GmIIxFO9R+omJfNCfgLYPqM
+ 7fTSFJmlD8Y0kEuQlFn00dWGe5lROXQ1RNikZdy8vxOIsc4TDVFh9PSYY8pm47jucc1H
+ r2fnEFBnhYjd/fddA9t1zSUNGO60dVDax9XS2gqxeGgNaqta8NoiL3dRt+5HVCGlIQcp
+ Ic5agQL8bDmErzQGYsYS1ir0O2xi9gHgmxUkDPdzOyAQ1Hgx07gpSQ559oqo5DE+iDJq
+ zLiSDjhTEYUAXqSdRMxwMuN6x4YsmP4t+MtG16pIVhP1Zl17ur2wAv7VCAQ3BQif+M6+ hQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vq12x97ks-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 09:58:10 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40I9NZEe016473;
+	Thu, 18 Jan 2024 09:58:10 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vq12x97jp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 09:58:10 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40I6t3l8005788;
+	Thu, 18 Jan 2024 09:58:08 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm6bkth3a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 09:58:08 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40I9w51k41222586
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 18 Jan 2024 09:58:05 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4DD7A2004E;
+	Thu, 18 Jan 2024 09:58:05 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AD7E420040;
+	Thu, 18 Jan 2024 09:58:02 +0000 (GMT)
+Received: from li-a83676cc-350e-11b2-a85c-e11f86bb8d73.in.ibm.com (unknown [9.204.204.156])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 18 Jan 2024 09:58:02 +0000 (GMT)
+From: Amit Machhiwal <amachhiw@linux.ibm.com>
+To: linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org
+Cc: Vaibhav Jain <vaibhav@linux.ibm.com>, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Amit Machhiwal <amachhiw@linux.ibm.com>,
+        Amit Machhiwal <amit.machhiwal@ibm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: PPC: Book3S HV: Fix L2 guest reboot failure due to empty 'arch_compat'
+Date: Thu, 18 Jan 2024 15:26:53 +0530
+Message-ID: <20240118095653.2588129-1-amachhiw@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117172102.12001-1-n.zhandarovich@fintech.ru>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -Ffy459YXDPle-vIK3r04gKDoVnHSbTb
+X-Proofpoint-ORIG-GUID: Rl1pfpqO9J81VDdV_1Gvp8ltEJWiRkzB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-18_05,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=700 adultscore=0
+ clxscore=1011 priorityscore=1501 mlxscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401180071
 
-On Wed, Jan 17, 2024 at 09:21:02AM -0800, Nikita Zhandarovich wrote:
-> idev->mc_ifc_count can be written over without proper locking.
-> 
-> Originally found by syzbot [1], fix this issue by encapsulating calls
-> to mld_ifc_stop_work() (and mld_gq_stop_work() for good measure) with
-> mutex_lock() and mutex_unlock() accordingly as these functions
-> should only be called with mc_lock per their declarations.
-> 
-> [1]
-> BUG: KCSAN: data-race in ipv6_mc_down / mld_ifc_work
-> 
-> write to 0xffff88813a80c832 of 1 bytes by task 3771 on cpu 0:
->  mld_ifc_stop_work net/ipv6/mcast.c:1080 [inline]
->  ipv6_mc_down+0x10a/0x280 net/ipv6/mcast.c:2725
->  addrconf_ifdown+0xe32/0xf10 net/ipv6/addrconf.c:3949
->  addrconf_notify+0x310/0x980
->  notifier_call_chain kernel/notifier.c:93 [inline]
->  raw_notifier_call_chain+0x6b/0x1c0 kernel/notifier.c:461
->  __dev_notify_flags+0x205/0x3d0
->  dev_change_flags+0xab/0xd0 net/core/dev.c:8685
->  do_setlink+0x9f6/0x2430 net/core/rtnetlink.c:2916
->  rtnl_group_changelink net/core/rtnetlink.c:3458 [inline]
->  __rtnl_newlink net/core/rtnetlink.c:3717 [inline]
->  rtnl_newlink+0xbb3/0x1670 net/core/rtnetlink.c:3754
->  rtnetlink_rcv_msg+0x807/0x8c0 net/core/rtnetlink.c:6558
->  netlink_rcv_skb+0x126/0x220 net/netlink/af_netlink.c:2545
->  rtnetlink_rcv+0x1c/0x20 net/core/rtnetlink.c:6576
->  netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
->  netlink_unicast+0x589/0x650 net/netlink/af_netlink.c:1368
->  netlink_sendmsg+0x66e/0x770 net/netlink/af_netlink.c:1910
->  ...
-> 
-> write to 0xffff88813a80c832 of 1 bytes by task 22 on cpu 1:
->  mld_ifc_work+0x54c/0x7b0 net/ipv6/mcast.c:2653
->  process_one_work kernel/workqueue.c:2627 [inline]
->  process_scheduled_works+0x5b8/0xa30 kernel/workqueue.c:2700
->  worker_thread+0x525/0x730 kernel/workqueue.c:2781
->  ...
-> 
-> Fixes: 2d9a93b4902b ("mld: convert from timer to delayed work")
-> Reported-by: syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/all/000000000000994e09060ebcdffb@google.com/
-> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-> ---
->  net/ipv6/mcast.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
-> index b75d3c9d41bb..bc6e0a0bad3c 100644
-> --- a/net/ipv6/mcast.c
-> +++ b/net/ipv6/mcast.c
-> @@ -2722,8 +2722,12 @@ void ipv6_mc_down(struct inet6_dev *idev)
->  	synchronize_net();
->  	mld_query_stop_work(idev);
->  	mld_report_stop_work(idev);
-> +
-> +	mutex_lock(&idev->mc_lock);
->  	mld_ifc_stop_work(idev);
->  	mld_gq_stop_work(idev);
-> +	mutex_unlock(&idev->mc_lock);
-> +
->  	mld_dad_stop_work(idev);
->  }
->  
+Currently, rebooting a pseries nested qemu-kvm guest (L2) results in
+below error as L1 qemu sends PVR value 'arch_compat' == 0 via
+ppc_set_compat ioctl. This triggers a condition failure in
+kvmppc_set_arch_compat() resulting in an EINVAL.
 
-Reviewed-by: Hangbin Liu <liuhangbin@gmail.com>
+qemu-system-ppc64: Unable to set CPU compatibility mode in KVM: Invalid
+
+This patch updates kvmppc_set_arch_compat() to use the host PVR value if
+'compat_pvr' == 0 indicating that qemu doesn't want to enforce any
+specific PVR compat mode.
+
+Signed-off-by: Amit Machhiwal <amachhiw@linux.ibm.com>
+---
+ arch/powerpc/kvm/book3s_hv.c          |  2 +-
+ arch/powerpc/kvm/book3s_hv_nestedv2.c | 12 ++++++++++--
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 1ed6ec140701..9573d7f4764a 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -439,7 +439,7 @@ static int kvmppc_set_arch_compat(struct kvm_vcpu *vcpu, u32 arch_compat)
+ 	if (guest_pcr_bit > host_pcr_bit)
+ 		return -EINVAL;
+ 
+-	if (kvmhv_on_pseries() && kvmhv_is_nestedv2()) {
++	if (kvmhv_on_pseries() && kvmhv_is_nestedv2() && arch_compat) {
+ 		if (!(cap & nested_capabilities))
+ 			return -EINVAL;
+ 	}
+diff --git a/arch/powerpc/kvm/book3s_hv_nestedv2.c b/arch/powerpc/kvm/book3s_hv_nestedv2.c
+index fd3c4f2d9480..069a1fcfd782 100644
+--- a/arch/powerpc/kvm/book3s_hv_nestedv2.c
++++ b/arch/powerpc/kvm/book3s_hv_nestedv2.c
+@@ -138,6 +138,7 @@ static int gs_msg_ops_vcpu_fill_info(struct kvmppc_gs_buff *gsb,
+ 	vector128 v;
+ 	int rc, i;
+ 	u16 iden;
++	u32 arch_compat = 0;
+ 
+ 	vcpu = gsm->data;
+ 
+@@ -347,8 +348,15 @@ static int gs_msg_ops_vcpu_fill_info(struct kvmppc_gs_buff *gsb,
+ 			break;
+ 		}
+ 		case KVMPPC_GSID_LOGICAL_PVR:
+-			rc = kvmppc_gse_put_u32(gsb, iden,
+-						vcpu->arch.vcore->arch_compat);
++			if (!vcpu->arch.vcore->arch_compat) {
++				if (cpu_has_feature(CPU_FTR_ARCH_31))
++					arch_compat = PVR_ARCH_31;
++				else if (cpu_has_feature(CPU_FTR_ARCH_300))
++					arch_compat = PVR_ARCH_300;
++			} else {
++				arch_compat = vcpu->arch.vcore->arch_compat;
++			}
++			rc = kvmppc_gse_put_u32(gsb, iden, arch_compat);
+ 			break;
+ 		}
+ 
+-- 
+2.43.0
+
 
