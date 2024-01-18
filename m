@@ -1,137 +1,197 @@
-Return-Path: <linux-kernel+bounces-30069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 764368318BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:52:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 874318318BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:51:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A97131C21FCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:52:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27AA7286144
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B392724214;
-	Thu, 18 Jan 2024 11:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1005124218;
+	Thu, 18 Jan 2024 11:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl header.b="JE8QnRsP"
-Received: from ewsoutbound.kpnmail.nl (ewsoutbound.kpnmail.nl [195.121.94.168])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g/40rDyY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C47424207
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:51:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.121.94.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D43E4241EC
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705578717; cv=none; b=bj1IE5Vy2W2v7WcBHZZ4uqGWN0dObVh/xqRAvlQXLYOCMAIMQYtOvR68rsByCV/5lxJc3qCJEOfd9ScYFH3ZVSbckZnyVoY8KWSZdDDsgfR27dsgRIBxd1xEjfxdv18qPHwFk6ulqTG9QE8jdDlCiRxRbV0woLxOE2/Iqfl8CdE=
+	t=1705578690; cv=none; b=hRvBlaPnUVzRR8QJWASbtM0HDNOYUYjxLa7qYrTpf6xZzA79KAQ3ZZDzo8Z/6XtHbkSdiO+1LlMXQJQmpdtAxAh+xnK/joC2zUHUATGFM/7VwFPqiMvE/XEI2HjpFv/isALePIAMUJDymGtQyfh1qrQK6wwkJCQXUNMXdthXMHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705578717; c=relaxed/simple;
-	bh=+J4HlKZgPkAnNbe+/5Ny2aDPSavVymgjuzDiJAbIaS8=;
-	h=X-KPN-MessageId:Received:DKIM-Signature:X-KPN-MID:
-	 X-KPN-VerifiedSender:X-CMASSUN:X-Originating-IP:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=AnsBRKIm0u+dg1p0u3r1gdbYrk6RF6n9Ga/lQZ20FWFrW+xXOV2HDJ0/BUGMZGs6HiiBgWZRUXMXKveQPdJzecHxVEaWC7t2i1Y2zAA9OVALdvym7zhRMwJVdUxUHBGtYN08B37Nay0Ewb+6+371i9vwjhbT0B+sIwl4UfYHcjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xs4all.nl; spf=pass smtp.mailfrom=xs4all.nl; dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl header.b=JE8QnRsP; arc=none smtp.client-ip=195.121.94.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xs4all.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xs4all.nl
-X-KPN-MessageId: d01b7825-b5f7-11ee-b097-005056aba152
-Received: from smtp.kpnmail.nl (unknown [10.31.155.37])
-	by ewsoutbound.so.kpn.org (Halon) with ESMTPS
-	id d01b7825-b5f7-11ee-b097-005056aba152;
-	Thu, 18 Jan 2024 12:50:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=xs4all.nl; s=xs4all01;
-	h=content-type:from:to:subject:mime-version:date:message-id;
-	bh=9tytfViqCFLbiU7Wz6e6k4feBX9DmDYV8/hI1tB8vDg=;
-	b=JE8QnRsPGR1vwks6J1+Dy8zd6fvxR+oiZaaoM915UGciixmcWQSR6BdUvuRmzKnpzUeY5Ni8F92kX
-	 2Aj+dcsxdd0u4ceF8KFoz19GZlVw/8TEFvIPVVDKA4BOEx1QwFAeNQ0CAVTgCSNTxIrrhib4/xHf2J
-	 MjDuxRtGV2VZ3HUrOhk7U5X64Pz74A73aQLmmnlwLDhYmXawk0xr9vE48KLpYMsq7uaoYtrqU61sOn
-	 CuQx7WGxzxL1ktgklu+taU1k/K+9/uqdkWt4/aQR+M0sI6pFTKo4bwRZ4Itw2cvlAos4vKYa044faL
-	 /rUnUA+/8clQrlcviW/VQO1mo0uCWEQ==
-X-KPN-MID: 33|tp53BvIYLealaXNB0Z4K1LSygruItIfMLFmkwha891rB2GE/geg/8A2U7Esak0Y
- UYzNA3PBJwI/ZWFa7qzD9fg==
-X-KPN-VerifiedSender: Yes
-X-CMASSUN: 33|iq2f6SR/PHyL6mX/Ziu73uaIUmrxzofpuz9uS59ol1C66aRryIrRw9Yif2uJcAj
- 5gr0I7siTiygX4gF+ug1TeA==
-Received: from [10.47.75.249] (unknown [173.38.220.58])
-	by smtp.xs4all.nl (Halon) with ESMTPSA
-	id d011b4f8-b5f7-11ee-824d-005056ab1411;
-	Thu, 18 Jan 2024 12:50:45 +0100 (CET)
-Message-ID: <edaa388e-fc26-4318-b468-64366aa86699@xs4all.nl>
-Date: Thu, 18 Jan 2024 12:50:44 +0100
+	s=arc-20240116; t=1705578690; c=relaxed/simple;
+	bh=gjKL/IdNxXoEFbPq3V+ULP/88RRcg6e6ZtkZpfaK71w=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:
+	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
+	 X-Google-Smtp-Source:X-Received:Received:Received:From:To:Cc:
+	 Subject:In-Reply-To:References:X-Clacks-Overhead:Date:Message-ID:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding; b=IgZUcRmvbYNjms3NsRGMXt9H37ytG+/EJjOeYVIGFbEjFpq/uKquNjUoSPLtKkkpMQRhi2gLt3d1eEaaaROMmdWqLSr2Y3cQgwkHupuAbCTTq/lHxwmoAXXKgim8uQJxSzs05ivq3Ho8Pi/BCsYQwwmGskaDhm0yZQWz6/IrzxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g/40rDyY; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705578687;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dES9AcNoy5iDWvH8/jwu9Q9jSrExSLuFvfw2IDCTzWM=;
+	b=g/40rDyYgImzdIgUmY6USCskh1xCJgKzgCBMtHOJHkKgG3X8+WcNDMB0Zy8IXM723JsSXp
+	SZKNXxKQHy4Vd2vyFnx4ecsZn+DXZj6jrg0vuJoUnSHa8qFrY9IlEIa0jzhmwmzVXI7WWn
+	kyX+3F6yUWsPiGQR472j8Ac8JVAp+jM=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-45-H6gAcLdePpGlksLQDrU77g-1; Thu, 18 Jan 2024 06:51:21 -0500
+X-MC-Unique: H6gAcLdePpGlksLQDrU77g-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-55731b63fe0so6774565a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:51:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705578680; x=1706183480;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dES9AcNoy5iDWvH8/jwu9Q9jSrExSLuFvfw2IDCTzWM=;
+        b=LQTAyy7KKPGKkFHNfiaUVwHIqlUJBCy4LQlNen6s26uBdsGIticzPP4ppzJ8rm4nqU
+         JXI3ALEayWRgcNyp7YpQepU0YKc3eoznidk/id0bwcf7OE+2W4sBzN2OLDJeguOIT96G
+         NTtz0VgLsnmRxqY8kiqJtNuuMHKpfH2+/ghJIKnJcL16Qg2KZLkf9mOoHiaPXx0xHPUW
+         Up+VJ5r3yWPDU/sYtWbTewdZVhOqkNxeulZ3LQ5BQxn59qzR7O6VJeHb3jAuPnTDxjCR
+         IdfI2WSHy06lTpFaH4zUsDCu3v8gV+x3sqo28NPCPGDB3XkbUSYf7VtQgajpYU+mhO2/
+         LV0w==
+X-Gm-Message-State: AOJu0YzimsgJZpd/PJL/Me9AQ2fIXzWfyQkYLcpL0zqwjQCdtwydqYJS
+	ylrvyuBo14VXXXSc1Z2PwR8cOUrqOIj4x3OIUEd0wTw8tjFsJ0a6LamqKKg/U5HV6gh7YTSJC3w
+	e51jq7ixleaccSpLTNQuK5qt9oslyOrcxP86HxrQKBmW2bhrV0g6z6DjewMXtNQ==
+X-Received: by 2002:aa7:cf07:0:b0:559:e763:6bfc with SMTP id a7-20020aa7cf07000000b00559e7636bfcmr477441edy.56.1705578680242;
+        Thu, 18 Jan 2024 03:51:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFZxNA+3we4N57JAj4aSvmZmv7PX3SA4s4PiqefRRfW+RbV+w2ZNWBG3LhJT8xEATP5sdjuAQ==
+X-Received: by 2002:aa7:cf07:0:b0:559:e763:6bfc with SMTP id a7-20020aa7cf07000000b00559e7636bfcmr477425edy.56.1705578679854;
+        Thu, 18 Jan 2024 03:51:19 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id b3-20020a0564021f0300b005545dffa0bdsm9338903edb.13.2024.01.18.03.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 03:51:19 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id ABB751088BAE; Thu, 18 Jan 2024 12:51:18 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, Eric Dumazet <edumazet@google.com>, Frederic
+ Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>, Paolo
+ Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Waiman Long <longman@redhat.com>, Will
+ Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Cong Wang <xiyou.wangcong@gmail.com>, Hao
+ Luo <haoluo@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Jiri
+ Pirko <jiri@resnulli.us>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Ronak
+ Doshi <doshir@vmware.com>, Song Liu <song@kernel.org>, Stanislav Fomichev
+ <sdf@google.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
+ redirect.
+In-Reply-To: <20240117180447.2512335b@kernel.org>
+References: <20231215171020.687342-1-bigeasy@linutronix.de>
+ <20231215171020.687342-16-bigeasy@linutronix.de>
+ <CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
+ <87r0iw524h.fsf@toke.dk> <20240112174138.tMmUs11o@linutronix.de>
+ <87ttnb6hme.fsf@toke.dk> <20240117180447.2512335b@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 18 Jan 2024 12:51:18 +0100
+Message-ID: <87bk9i6ert.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: media videobuf2: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US
-To: Tomasz Figa <tfiga@chromium.org>,
- Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc: m.szyprowski@samsung.com, mchehab@kernel.org,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com
-References: <20240115170826.214519-1-benjamin.gaignard@collabora.com>
- <20240115170826.214519-2-benjamin.gaignard@collabora.com>
- <c832da45-c818-420d-aaf8-05c15c1e5426@xs4all.nl>
- <521a2a44-9ec1-4898-aca7-721d07e12643@collabora.com>
- <CAAFQd5DWOZwm2E8BwfONtjrcg289wPHJEe3TMZKsBvDcn3OfNw@mail.gmail.com>
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <CAAFQd5DWOZwm2E8BwfONtjrcg289wPHJEe3TMZKsBvDcn3OfNw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 1/18/24 12:22, Tomasz Figa wrote:
-> On Tue, Jan 16, 2024 at 6:32 PM Benjamin Gaignard
-> <benjamin.gaignard@collabora.com> wrote:
->>
->>
->> Le 16/01/2024 à 10:21, Hans Verkuil a écrit :
->>> On 15/01/2024 18:08, Benjamin Gaignard wrote:
->>>> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
->>>> This allows us to change how the number of buffers is computed in the
->>>> future.
->>>>
->>>> Fixes: c838530d230b ("media: media videobuf2: Be more flexible on the number of queue stored buffers")
->>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>>> ---
->>>>   drivers/media/common/videobuf2/videobuf2-core.c | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
->>>> index 41a832dd1426..b6bf8f232f48 100644
->>>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
->>>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
->>>> @@ -989,7 +989,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->>>>      bool no_previous_buffers = !q_num_bufs;
->>>>      int ret = 0;
->>>>
->>>> -    if (q->num_buffers == q->max_num_buffers) {
->>>> +    if (q_num_bufs == q->max_num_buffers) {
->>>>              dprintk(q, 1, "maximum number of buffers already allocated\n");
->>>>              return -ENOBUFS;
->>>>      }
->>> There is another case in vb2_ioctl_create_bufs() where num_buffers is accessed directly.
->>> Can you fix that one as well?
->>
->> It is removed by the patch I have send just after this one:
->> "media: core: Refactor vb2_ioctl_create_bufs() to always set capabilities flags"
-> 
-> I'd prefer that to be also included in this fix, so that it's all
-> logically grouped together. Actually Hans also ended up including that
-> change in his patch, without the commit message mentioning it.
+Jakub Kicinski <kuba@kernel.org> writes:
 
-Yeah, it's borderline. But I think it is better if this patch updates both
-places, and then I'll make a v2 for my patch on top.
+> On Wed, 17 Jan 2024 17:37:29 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> I am not contesting that latency is important, but it's a pretty
+>> fundamental trade-off and we don't want to kill throughput entirely
+>> either. Especially since this is global to the whole kernel; and there
+>> are definitely people who want to use XDP on an RT kernel and still
+>> achieve high PPS rates.
+>>=20
+>> (Whether those people really strictly speaking need to be running an RT
+>> kernel is maybe debatable, but it does happen).
+>>=20
+>> > I expected the lock operation (under RT) to always succeeds and not
+>> > cause any delay because it should not be contended.=20=20
+>>=20
+>> A lock does cause delay even when it's not contended. Bear in mind that
+>> at 10 Gbps line rate, we have a budget of 64 nanoseconds to process each
+>> packet (for 64-byte packets). So just the atomic op to figure out
+>> whether there's any contention (around 10ns on the Intel processors I
+>> usually test on) will blow a huge chunk of the total processing budget.
+>> We can't actually do the full processing needed in those 64 nanoseconds
+>> (not to mention the 6.4 nanoseconds we have available at 100Gbps), which
+>> is why it's essential to amortise as much as we can over multiple
+>> packets.
+>>=20
+>> This is all back-of-the-envelope calculations, of course. Having some
+>> actual numbers to look at would be great; I don't suppose you have a
+>> setup where you can run xdp-bench and see how your patches affect the
+>> throughput?
+>
+> A potentially stupid idea which I have been turning in my head is=20
+> how we could get away from having the driver handle details of NAPI
+> budgeting. It's an source of bugs and endless review comments.
+>
+> All drivers end up maintaining a counter of "how many packets have
+> I processed" and comparing that against the budget. Would it be crazy
+> if we put that inside napi_struct? Add a "budget" member inside
+> napi_struct as well, and:
+>
+> struct napi_struct {
+> ...
+> 	// poll state
+> 	unsigned int budget;
+> 	unsigned int rx_used;
+> ...
+> }
+>
+> static inline bool napi_rx_has_budget(napi)
+> {
+> 	return napi->budget > napi->rx_used;
+> }
+>
+> poll(napi) // no budget
+> {
+> 	while (napi_rx_has_budget(napi)) {
+> 		napi_gro_receive(napi, skb); /* does napi->rx_used++ */
+> 		// maybe add explicit napi_rx_count() if
+> 		// driver did something funny with the frame.
+> 	}
+> }
+>
+> We can also create napi_tx_has_budget() so that people stop being
+> confused whether budget is for Tx or not. And napi_xdp_comp_has_budget()
+> so that people stop completing XDP in hard irq context (budget=3D=3D0)...
+>
+> And we can pass napi into napi_consume_skb(), instead of, presumably
+> inexplicably to a newcomer, passing in budget.
+> And napi_complete_done() can lose the work_done argument, too.
 
-Regards,
+I do agree that conceptually it makes a lot of sense to encapsulate the
+budget like this so drivers don't have to do all this state tracking
+themselves. It does appear that drivers are doing different things with
+the budget as it is today, though. For instance, the intel drivers seem
+to divide the budget over all the enabled RX rings(?); so I'm wondering
+if it'll be possible to unify drivers around a more opaque NAPI poll
+API?
 
-	Hans
-
-> 
-> Best regards,
-> Tomasz
+-Toke
 
 
