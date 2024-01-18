@@ -1,143 +1,106 @@
-Return-Path: <linux-kernel+bounces-30476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D157E831F25
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C557831F2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:37:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 191E41C21C2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:36:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFED71C21C98
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06C22DF63;
-	Thu, 18 Jan 2024 18:36:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEB12D791;
+	Thu, 18 Jan 2024 18:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zAEaP9Sr"
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="T1tN/aj+"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9DE2D7B6
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 18:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F482D797;
+	Thu, 18 Jan 2024 18:37:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705602961; cv=none; b=h8MmsdQLNdxM9BIwFqLJSIlcuYUO70tTP/cHg5+tGagZE15mrsiuCGrJsTKzCuJph3CdBGodrsXWDyuJ6bvC8rWJ8lEQU+3OYs8i0/f2IiCz2KtWeyEubTw0/4RKbvl13X53FPJkudF+pmf3qS3DVkXp13WIuxIiqNK9a2QVEwI=
+	t=1705603029; cv=none; b=R0qseoOojybk3E8qn5EbYDJrjn99cw+/qpvQzDQkRHjyy4lmr/XdFRVmeZ64avq3XY2h7duI/kUZa1F2f4B3/Xhs1ZSWFL6Utr/1r56J4mwxOjWCe632hUNLOPr6BQjUql71kE6yUHFOa67Zwu7nXL/mvrxTlSpAKed1x74w+YU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705602961; c=relaxed/simple;
-	bh=20UxIykfYukj0g9j/eDNEQ/NSTxqxpi9uNhdtfcPpQk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=GYAX6+nvpo1pevip86VMhjcUhz3e7vUbGzDvAEBxr7ZmUq9Kv7E8znuyoy5LzpthKNgXsBHXS6eAFsMmFgRYKlSv0lgDkH+rezyf3SdyMb8cITw0QnzA7XzOzYAhgtAd0bA8hEIQriOdGd+9WuoFVtG5qfiu7e8vo4BOsgu7FPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=appsforartists-gmr.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zAEaP9Sr; arc=none smtp.client-ip=209.85.214.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=appsforartists-gmr.bounces.google.com
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1d5e88f69d3so21570305ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 10:35:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705602959; x=1706207759; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aVvypQ50Ee91qtKLnKzhKC/cnaDZgrechO8IJ87aiGM=;
-        b=zAEaP9SrChv6sutIgvGznI9El+qygcbOHTT89aidpsBnwBU4wqPhqj5VHI7/CnDHmo
-         O0UAz3bUa+F/wzGvAtOVVSSpUPdGdD2OQAGjynVr6KRYwZgqnpebEtW+Ub0z9A/2QAeO
-         7hUa7if3vb8mn2BFr2Ah+wdK+VPQ0O0BgdG/ZxnWhJ9jGwpXatnCx/+9494DIRTDiosT
-         rL1HgMMZJaX9Ru/SKPxHVZdubC8acHpispIy/wNH++Qgiryzqx0RgmuM3kYgYl8A9O6/
-         kn7XG+MyXMvEGdfQfCptlu00TkXeuSjiccaQ0UHxPmIoCopLDuiiNXYdKWNkAzuMVt2o
-         ckOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705602959; x=1706207759;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aVvypQ50Ee91qtKLnKzhKC/cnaDZgrechO8IJ87aiGM=;
-        b=JXKLdzHt2ifvRTaCTMb0/0MUzsQYcDGic0bjmU5AuxpyLScdgRXNflR5TKpNZmL/hg
-         HtJOXutsZ/UxakpcFvCrruvm3iNSMmVSA2Omb85GQduJeIdD3EFG332xIJ/iTyqkpUfQ
-         1Cn5FJDQSmnj6+orasx/H2SFyXSKsNWZ2AaVaNeIni6glYvkxTdGu+P/SYgI8nBhCWd9
-         0fmVEFZQT3aI7ao/iT2ARgClzkacxWNyuRIZkHscaYbpLnNm2c4yc+A0SOAQNE11Ed4b
-         yZcRf4OS7Y5sEBaQ4xnD4PRstX3DuK/md/DeRBqTh/t9MlRvNVKyz+aWmxwN+J5IENJZ
-         6DZQ==
-X-Gm-Message-State: AOJu0Yy/oqjeabM7JTHvpRl8kn7RSaqOYlI5ULiMD+QMeuO2e+kzP9M8
-	x6wqZbed8nf7+pZ4Gjp06mKHNrwGW+W6+oIBWQdYDNjps9A6FQ0HMd7yyadL43ZdPi35uwtDILv
-	8rQwj58XH3XrzW7INyiupKBQ19Q==
-X-Google-Smtp-Source: AGHT+IGnj7EF+GJQvg/2/Iue2rmvRAkno2OsXEXAETb8bgELqDgsXtZL23jbNlord2i3UIOaISr4SJQxpcg2A2d2VJI=
-X-Received: by 2002:a17:902:f683:b0:1d4:c27a:db7d with SMTP id
- l3-20020a170902f68300b001d4c27adb7dmr15102plg.0.1705602959193; Thu, 18 Jan
- 2024 10:35:59 -0800 (PST)
-Date: Thu, 18 Jan 2024 18:35:46 +0000
-In-Reply-To: <CAAL3-=88exVfuL1Y-kvPNbsU+d-UTfDLFViWVObFLtbC4xueeA@mail.gmail.com>
+	s=arc-20240116; t=1705603029; c=relaxed/simple;
+	bh=B12x5CU3LJAATEvwezybaFPvAgE1iCNB0PAo3tZON0Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=gpTGdWjtM6DU3iT/v53Krqfzr6RI2nu7xSyyRWkDVOE2XMPsKr0hjYFp69MNaZjRCedJszuBjJuO4HmFeIYXy9wtYz8OybCp0o4Hijsp3OawNksIERJxgdPjCouMuEnv3S55skp8I+vlr0Yk0wvZu5SgL3M3mjIfY0IiVfcwHvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=T1tN/aj+; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705603026;
+	bh=B12x5CU3LJAATEvwezybaFPvAgE1iCNB0PAo3tZON0Y=;
+	h=Date:From:To:Cc:Subject:From;
+	b=T1tN/aj+jOtqsSFJBIUGFabkBd+Gj6AIapWW+uI7ctwXpcFOY3P9CrOYWSsAWR0wQ
+	 rAgdU8RV7LFieTsYwb5lhSKh64lF8XybTXPoepaFemc4CBuvwgPh7Xg/ROd3IDKcdK
+	 vkHOhW46eH4DXdOBCX3DRgjKckb7VYvaYfQcXYi+cJ4MMrC3fWnuMakG2MB9XF8x0Q
+	 fKx0fK2REDa0nGx2arEVJjLNAUqpAMpl6YUTVx6FE+2sbLOngGffeCWasFLlJdls9x
+	 bKqXovIjuuw9l1E/+w5Ow7Bc0mB9xHlGWyHATrTZ92aJ2oGav87yvE66XP6FpJTgur
+	 Hh3/ytjo04XHw==
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EFFA83782079;
+	Thu, 18 Jan 2024 18:37:02 +0000 (UTC)
+Date: Thu, 18 Jan 2024 15:36:30 -0300
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, kernel@collabora.com,
+	Macpaul Lin <macpaul.lin@mediatek.com>,
+	Chunfeng Yun <chunfeng.yun@mediatek.com>,
+	Chen-Yu Tsai <wenst@chromium.org>
+Subject: Probe failure of usb controller @11290000 on MT8195 after
+ next-20231221
+Message-ID: <9fce9838-ef87-4d1b-b3df-63e1ddb0ec51@notapiano>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <CAAL3-=88exVfuL1Y-kvPNbsU+d-UTfDLFViWVObFLtbC4xueeA@mail.gmail.com>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240118183546.418064-1-appsforartists@google.com>
-Subject: [PATCH] Input: xpad - add Lenovo Legion Go controllers
-From: Brenton Simpson <appsforartists@google.com>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Hans de Goede <hdegoede@redhat.com>
-Cc: Cameron Gutman <aicommander@gmail.com>, Erica Taylor <rickytaylor26@gmail.com>, 
-	Ismael Ferreras Morezuelas <swyterzone@gmail.com>, Jonathan Frederick <doublej472@gmail.com>, 
-	Matthias Benkmann <matthias.benkmann@gmail.com>, Matthias Berndt <matthias_berndt@gmx.de>, nate@yocom.org, 
-	Sam Lantinga <slouken@libsdl.org>, Vicki Pfau <vi@endrift.com>, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, trivial@kernel.org, 
-	Brenton Simpson <appsforartists@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-The Lenovo Legion Go is a handheld gaming system, similar to a Steam Deck.
-It has a gamepad (including rear paddles), 3 gyroscopes, a trackpad,
-volume buttons, a power button, and 2 LED ring lights.
+Hi,
 
-The Legion Go firmware presents these controls as a USB hub with various
-devices attached.  In its default state, the gamepad is presented as an
-Xbox controller connected to this hub.  (By holding a combination of
-buttons, it can be changed to use the older DirectInput API.)
+KernelCI has identified a failure in the probe of one of the USB controllers on
+the MT8195-Tomato Chromebook [1]:
 
-This patch teaches the existing Xbox controller module `xpad` to bind to
-the controller in the Legion Go, which enables support for the:
+[   16.336840] xhci-mtk 11290000.usb: uwk - reg:0x400, version:104
+[   16.337081] xhci-mtk 11290000.usb: xHCI Host Controller
+[   16.337093] xhci-mtk 11290000.usb: new USB bus registered, assigned bus number 5
+[   16.357114] xhci-mtk 11290000.usb: clocks are not stable (0x1003d0f)
+[   16.357119] xhci-mtk 11290000.usb: can't setup: -110
+[   16.357128] xhci-mtk 11290000.usb: USB bus 5 deregistered
+[   16.359484] xhci-mtk: probe of 11290000.usb failed with error -110
 
-- directional pad,
-- analog sticks (including clicks),
-- X, Y, A, B,
-- start and select (or menu and capture),
-- shoulder buttons, and
-- rumble.
+A previous message [2] suggests that a force-mode phy property that has been
+merged might help with addressing the issue, however it's not clear to me how,
+given that the controller at 1129000 uses a USB2 phy and the phy driver patch
+only looks for the property on USB3 phys.
 
-The trackpad, touchscreen, volume controls, and power button are already
-supported via existing kernel modules.  Two of the face buttons, the
-gyroscopes, rear paddles, and LEDs are not.
+Worth noting that the issue doesn't always happen. For instance the test did
+pass for next-20240110 and then failed again on today's next [3]. But it does
+seem that the issue was introduced, or at least became much more likely, between
+next-20231221 and next-20240103, given that it never happened out of 10 runs
+before, and after that has happened 5 out of 7 times.
 
-After this patch lands, the Legion Go will be mostly functional in Linux,
-out-of-the-box.  The various components of the USB hub can be synthesized
-into a single logical controller (including the additional buttons) in
-userspace with [Handheld Daemon](https://github.com/hhd-dev/hhd), which
-makes the Go fully functional.
+Note: On the Tomato Chromebook specifically this USB controller is not connected
+to anything.
 
-Signed-off-by: Brenton Simpson <appsforartists@google.com>
----
- drivers/input/joystick/xpad.c | 2 ++
- 1 file changed, 2 insertions(+)
+[1] https://linux.kernelci.org/test/case/id/659ce3506673076a8c52a428/
+[2] https://lore.kernel.org/all/239def9b-437b-9211-7844-af4332651df0@mediatek.com/
+[3] https://linux.kernelci.org/test/case/id/65a8c66ee89acb56ac52a405/
 
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index f5c21565bb3c..ecfcea8740a0 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -127,6 +127,7 @@ static const struct xpad_device {
- 	u8 mapping;
- 	u8 xtype;
- } xpad_device[] = {
-+	{ 0x17ef, 0x6182, "Lenovo Legion Controller for Windows", 0, XTYPE_XBOX360 },
- 	{ 0x0079, 0x18d4, "GPD Win 2 X-Box Controller", 0, XTYPE_XBOX360 },
- 	{ 0x03eb, 0xff01, "Wooting One (Legacy)", 0, XTYPE_XBOX360 },
- 	{ 0x03eb, 0xff02, "Wooting Two (Legacy)", 0, XTYPE_XBOX360 },
-@@ -459,6 +460,7 @@ static const signed short xpad_btn_paddles[] = {
- 
- static const struct usb_device_id xpad_table[] = {
- 	{ USB_INTERFACE_INFO('X', 'B', 0) },	/* Xbox USB-IF not-approved class */
-+	XPAD_XBOX360_VENDOR(0x17ef),		/* Lenovo */
- 	XPAD_XBOX360_VENDOR(0x0079),		/* GPD Win 2 controller */
- 	XPAD_XBOX360_VENDOR(0x03eb),		/* Wooting Keyboards (Legacy) */
- 	XPAD_XBOXONE_VENDOR(0x03f0),		/* HP HyperX Xbox One controllers */
--- 
-2.43.0.275.g3460e3d667-goog
-
+Thanks,
+Nícolas
 
