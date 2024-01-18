@@ -1,146 +1,183 @@
-Return-Path: <linux-kernel+bounces-30124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 240948319D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:00:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4697D8319D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A808028AFB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:00:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A7E91C255F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331E0250EF;
-	Thu, 18 Jan 2024 13:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="RODEh9Vg"
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2F925106;
+	Thu, 18 Jan 2024 13:00:25 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A01324B57
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AE124B57;
+	Thu, 18 Jan 2024 13:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705582804; cv=none; b=fPmrL9GuZBQqHl7rUUXu0JOCmYDq2TbzYmkEorQKv/24ITIX7w9hE9ukY9hRXEcjGwT65teb/jocvb1N1JxZkZkMBgGQot1yjkpRnjAox+U693V2NI2NPONPPz9aWmSlw7s+eTy5fD1oCbqX5bAQMHKbwPWJgiTu+TkoL954DWw=
+	t=1705582824; cv=none; b=gQKSqCsSw6+QyVx5lId7pmtHMhdBxa4Q3UC5AgWVPUQA7F6vcnEsJyh8qX5WzwAQMJRKS65IfOtsJcoN92zQ9Z+BpPZl6rasTN5Z4jRu9bByK/9UIknbtmhHC5FMpiruxzokDZibqGy69NlUBH39S97W2J/6CQnGye1C147+JNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705582804; c=relaxed/simple;
-	bh=7M4VaIUyYm8pE44IOXTCPDugJRBLIqoanr86Xn4yKIs=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=WhbncdvBGeX4dqYcuFkHqP9c6SpfR0gDiLWw49tEO7AI/nlT2aSS6SM3K9Vs8oBjhN1IGVxkPUh26UeG15+QYlU57l2lDUEGm32/S4dWC+Mk+9YQOLDUlYDm/o/M3ctXetjUk+JLC/fsw33bL6J9D5DCW3dfr3JXGBmltfJjiMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=RODEh9Vg; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7d2ce52d0c1so100292241.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 05:00:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705582802; x=1706187602; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YbPI80yNiYQVcWLbaA0E+htnDslr+gyomLLCxgqK/9A=;
-        b=RODEh9VgKUbKarmhkWY8riLHD0mvfw761K6T1JqT6HOQbrDqNM0jB7qRzdiR1nIUyw
-         w31vlGZ5TifUZmURBbnYblehCKePsqlnVhuCe9o9sbzZLJf32LppFGgf9Xp9ng5Yd0Xz
-         OenY6DJtD/RpPkKWomwvP3HgQ6CD3qsv/CvX+EkPLCeeu3Npn4oskjIJJAuUzgrA4SzD
-         wU1LVQ9/m3esU9Ex9qkf0Wa5KP0uxEdkNs7s4ppL8UfybKp3C1CoAU4MYQ1SdgWmVKYK
-         7uTjrHwx+O+QuyJ6kBatAmJoms4gGFq55a/LSQ75ytTsIDrjBZ3lvzL2Wi2wNfb93nHn
-         yjFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705582802; x=1706187602;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YbPI80yNiYQVcWLbaA0E+htnDslr+gyomLLCxgqK/9A=;
-        b=smRM7sTU2+s7UJuIaBx3itm7QM7WJdrrbX0TqAPq+iNeeesAF+BbCBxnZdm/qahfSp
-         E+xlXy56yYVaqPf88z2Ev/OgJAu78FaN+P9f7JypZXsoXxKlJP0bQMd7FKYxKr6zdEFn
-         KDTqu4QVAsJUbs3YgXzL6DMyldJVf5AfI9fejfAB73zbFuHG577sKH418XX1EZ4OLQ8+
-         ZLuoLx1DzUHoRBHCUZ4iy0a7SekW+S0UxWatQ5BuGiSqcYIT4D/HpV1MwGTjzZnTUBw3
-         nQzKXJk7uKBE3eTvff7le+ta+ohOF72CUqvLMQASncxsopDLr5zU1kTtV6PBZrG1wLZa
-         Me0Q==
-X-Gm-Message-State: AOJu0YzFHnrfTloqWXwvckBg74DR490axKNw5zBWTb93fqhNWXFRhrbw
-	oDuasd7ww4eaMkL0zOzFQOnlFd5nJDnZTULb2DHtkw2OyLA3qxMx0pC0BfjUuVunuBikpNMuuAf
-	hG17703V1yB/SzUQwYOE2+nsrYVsDcahear+WhA==
-X-Google-Smtp-Source: AGHT+IFV799Pl75EVGiEihv8NguEM801LhNe7yQvY5xjGtMqBPcnTKWr82ZJvwoc7zCV0G5B1YL66F/miSdR/lsCxqk=
-X-Received: by 2002:a67:f797:0:b0:469:877d:fc1a with SMTP id
- j23-20020a67f797000000b00469877dfc1amr681665vso.8.1705582801234; Thu, 18 Jan
- 2024 05:00:01 -0800 (PST)
+	s=arc-20240116; t=1705582824; c=relaxed/simple;
+	bh=IRMtTjgdzFC8VQtQ4Cw3iyDgsSe5SHauaHyFtAzCph4=;
+	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
+	 To:CC:References:Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy; b=LRaX02CK3op606j4ouiZl3ouu186m7rnCYw40ePRavfimgKWY8Ml4E8qpybChyNf1UlXnywpY0OHILmEwBZIit13MQ0CanUXei+1PO7zGJOnBQlZwI1lqcYNGNvvpJ5eh59S4cRtq/cgKPrPF8pqwjwsC4YklNhfB2ctSrq8n6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 18 Jan
+ 2024 16:00:16 +0300
+Received: from [192.168.211.130] (10.0.253.138) by Ex16-01.fintech.ru
+ (10.0.10.18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 18 Jan
+ 2024 16:00:16 +0300
+Message-ID: <64dbd05c-4939-49ba-a8d5-807fe3ff2987@fintech.ru>
+Date: Thu, 18 Jan 2024 05:00:12 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117083251.53868-1-hector.palacios@digi.com>
- <20240117083251.53868-2-hector.palacios@digi.com> <CAHp75Vci=1nAvxRcbkK2SxGWGbQVbzQMTycMt8tZ5snPRTYXOg@mail.gmail.com>
- <fd5550ad-76c0-419b-aa07-a0493a57286e@digi.com> <CAHp75Vf4wXLEjmfpz6KQSCB0Jd8LNv6+SU_ikbhR_8PsJHuq-g@mail.gmail.com>
- <CAMRc=MfAW5NDJHtZ1333-xrcCyQfft-pQF1-0Vv_ehY16agShw@mail.gmail.com> <9b370036-bf3a-49d3-99a0-5c11eaca4e6f@digi.com>
-In-Reply-To: <9b370036-bf3a-49d3-99a0-5c11eaca4e6f@digi.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 18 Jan 2024 13:59:50 +0100
-Message-ID: <CAMRc=MeJQihq3N1ZqGiKS_9JJ6c0BwXZfiY1XicBiW8mc18Oxw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] gpio: vf610: add support to DT 'ngpios' property
-To: Hector Palacios <hector.palacios@digi.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, linus.walleij@linaro.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, andy@kernel.org, conor+dt@kernel.org, 
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
-	festevam@gmail.com, linux-imx@nxp.com, stefan@agner.ch, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND] mac802154: Fix uninit-value access in
+ ieee802154_hdr_push_sechdr
+To: Alexander Aring <aahringo@redhat.com>
+CC: Zhang Shurong <zhang_shurong@foxmail.com>, <alex.aring@gmail.com>,
+	<stefan@datenfreihafen.org>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <linux-wpan@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<harperchen1110@gmail.com>
+References: <CAK-6q+jsZ13Cs9iuk_WjFeYFCEnnj-dJ9QYkWaw4fh6Gi=JtHA@mail.gmail.com>
+ <20240112131554.10352-1-n.zhandarovich@fintech.ru>
+ <CAK-6q+gcs2djQfKRsuGpD7WERmbLhzjkHEm80MRe+2UE3bteKw@mail.gmail.com>
+ <CAK-6q+hRbsFkQec3O8FnT-G9Mx07rdhEMfmTE2Q0SDN0kKN-8g@mail.gmail.com>
+Content-Language: en-US
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+In-Reply-To: <CAK-6q+hRbsFkQec3O8FnT-G9Mx07rdhEMfmTE2Q0SDN0kKN-8g@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-On Thu, Jan 18, 2024 at 1:45=E2=80=AFPM Hector Palacios
-<hector.palacios@digi.com> wrote:
->
-> On 1/18/24 13:03, Bartosz Golaszewski wrote:
-> >
-> > On Thu, Jan 18, 2024 at 10:04=E2=80=AFAM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> >>
-> >> On Thu, Jan 18, 2024 at 10:25=E2=80=AFAM Hector Palacios
-> >> <hector.palacios@digi.com> wrote:
-> >>> On 1/17/24 21:51, Andy Shevchenko wrote:
-> >>>>> Some SoCs, such as i.MX93, don't have all 32 pins available
-> >>>>> per port. Allow optional generic 'ngpios' property to be
-> >>>>> specified from the device tree and default to
-> >>>>> VF610_GPIO_PER_PORT (32) if the property does not exist.
-> >>
-> >> ...
-> >>
-> >>>>> +       ret =3D device_property_read_u32(dev, "ngpios", &ngpios);
-> >>>>> +       if (ret || ngpios > VF610_GPIO_PER_PORT)
-> >>>>> +               gc->ngpio =3D VF610_GPIO_PER_PORT;
-> >>>>> +       else
-> >>>>> +               gc->ngpio =3D (u16)ngpios;
-> >>>>
-> >>>> This property is being read by the GPIOLIB core. Why do you need to =
-repeat this?
-> >>>
-> >>> My apologies; I had not seen this.
-> >>> I'll use gpiochip_get_ngpios() on the next iteration.
-> >>
-> >> But still why?
-> >> https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#=
-L867
-> >>
-> >> It's called for every driver.
-> >>
-> >> Maybe it's needed to be refactored to allow fallbacks? Then can the
-> >> GPIO MMIO case also be updated?
-> >>
-> >
-> > I guess it's because Hector wants to set an upper limit on the number o=
-f GPIOs?
->
-> I think Andy is suggesting to rework the gpio-vf610 driver to use
-> bgpio_chip struct (it doesn't currently), and then I guess the 'ngpio'
-> property gets read automatically if you call bgpio_init().
+Hello,
 
-No, Andy said (and even provided a link to the code) that "ngpios" is
-read ALWAYS when a new GPIO chip is registered with the GPIO core.
-It's just that it doesn't impose any limits but that could be
-addressed with imposing an upper limit in DT bindings maybe?
+On 1/17/24 17:42, Alexander Aring wrote:
+> Hi,
+> 
+> On Sun, Jan 14, 2024 at 10:32 PM Alexander Aring <aahringo@redhat.com> wrote:
+>>
+>> Hi,
+>>
+>> On Fri, Jan 12, 2024 at 8:16 AM Nikita Zhandarovich
+>> <n.zhandarovich@fintech.ru> wrote:
+>>>
+>>>>>>>
+>>>>>>> BUG: KMSAN: uninit-value in ieee802154_hdr_push_sechdr net/ieee802154=
+>>>> /header_ops.c:54 [inline]
+>>>>>>> BUG: KMSAN: uninit-value in ieee802154_hdr_push+0x971/0xb90 net/ieee8=
+>>>> 02154/header_ops.c:108
+>>>>>>>  ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
+>>>>>>>  ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
+>>>>>>>  ieee802154_header_create+0x9c0/0xc00 net/mac802154/iface.c:396
+>>>>>>>  wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
+>>>>>>>  dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
+>>>>>>>  ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
+>>>>>>>  sock_sendmsg_nosec net/socket.c:725 [inline]
+>>>>>>>  sock_sendmsg net/socket.c:748 [inline]
+>>>>>>>  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2494
+>>>>>>>  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2548
+>>>>>>>  __sys_sendmsg+0x225/0x3c0 net/socket.c:2577
+>>>>>>>  __compat_sys_sendmsg net/compat.c:346 [inline]
+>>>>>>>  __do_compat_sys_sendmsg net/compat.c:353 [inline]
+>>>>>>>  __se_compat_sys_sendmsg net/compat.c:350 [inline]
+>>>>>>>
+>>>>>>> We found hdr->key_id_mode is uninitialized in mac802154_set_header_se=
+>>>> curity()
+>>>>>>> which indicates hdr.fc.security_enabled should be 0. However, it is s=
+>>>> et to be cb->secen before.
+>>>>>>> Later, ieee802154_hdr_push_sechdr is invoked, causing KMSAN complains=
+>>>>  uninit-value issue.
+>>>>>>
+>>>>>> I am not too deeply involved in the security header but for me it feels
+>>>>>> like your patch does the opposite of what's needed. We should maybe
+>>>>>> initialize hdr->key_id_mode based on the value in cb->secen, no? (maybe
+>>>>>> Alexander will have a better understanding than I have).
+>>>>>
+>>>>> I can't help yet with a better answer why syzkaller reports it but it
+>>>>> will break things as we using skb->cb to pass additional parameters
+>>>>> through header_ops->create()... in this case it is some sockopts of
+>>>>> af802154, I guess.
+>>>>>
+>>>>
+>>>> Maybe we just need to init some "more" defaults in [0]
+>>>>
+>>>> - Alex
+>>>>
+>>>> [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+>>>> /net/ieee802154/socket.c?h=3Dv6.7-rc5#n474
+>>>
+>>> Hello,
+>>>
+>>> I was looking into the same issue (now present in syzbot [1]) and since it has a
+>>> C-repro, the error is easy to recreate. Apparently, despite cb->secen (and
+>>> hdr.fc.security_enabled accordingly) being equal 1, mac802154_set_header_security()
+>>> finishes with 0 in:
+>>>
+>>>         if (!params.enabled ||
+>>>             (cb->secen_override && !cb->secen) ||
+>>>             !params.out_level)
+>>>             return 0;
+>>>
+>>> Not presuming to understand the issue fully but if we do end up leaving
+>>> mac802154_set_header_security() early, should we init hdr->key_id_mode
+>>> with IEEE802154_SCF_KEY_IMPLICIT before returning with 0?
+>>> I imagine that reseting hdr.fc.security_enabled to 0 ourselves in this
+>>> case is a wrong way to go too.
+>>>
+>>
+>> I think here are two problems:
+>>
+>> 1.
+>> When (in any way) secen path is hit then we should make sure some
+>> other security parameters are set, if not return with an error. This
+>> needs to be done somewhere in the 802.15.4 socket code. [0]
+>>
+> 
+> This would require that we init them with some invalid value defaults
+> but I think because we are using bit fields, we need to change the
+> whole struct to make some invalid number range available.
+> I am happy to init those values to some value at [0] to at least get
+> rid of the uninit value warning. We can change it so that it fails at
+> send() afterwards, I think it should fail in some later path of the
+> implementation that ends in a kernel log message.
+> 
+> - Alex
+> 
+> [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/ieee802154/socket.c#n474
+> 
 
-Bart
+I was curious whether a smaller change would suffice since I might be
+too green to see the full picture here.
+
+In all honesty I am failing to see how exactly it happens that cb->secen
+== 1 and cb->secen_override == 0 (which is exactly what occurs during
+this error repro) at the start of mac802154_set_header_security().
+Since there is a check in mac802154_set_header_security()
+
+	if (!params.enabled && cb->secen_override && cb->secen)
+
+maybe we take off 'cb->secen_override' part of the condition? That way
+we catch the case when security is supposedly enabled without parameters
+being available (not enabled) and return with error. Or is this approach
+too lazy?
+
+With regards,
+Nikita
+
 
