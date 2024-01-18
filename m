@@ -1,139 +1,167 @@
-Return-Path: <linux-kernel+bounces-29640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F70E83112C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:58:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 382DC83112F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:59:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC163283385
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:58:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2035282FDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BCC528FD;
-	Thu, 18 Jan 2024 01:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834C2443D;
+	Thu, 18 Jan 2024 01:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="vsbyOaWa"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Qfviq2ln"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA6C20F2
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8AA28FD
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705543096; cv=none; b=KNkoDNLP5CvJfORQygQZ8suJ4xscZM5YjYxagfCNGNwFTHjoRpHLfwy1WpQBVSJNFWTQbiF1uCV+5ehFx6e02EQNsXkmyn+T7Yhxwua52jfyERlFAcgixFA/EeNsNq8Hw2lVEjtG3IDR5UrwZEYMDsq7J3jMOGoeHsU0JqllhRQ=
+	t=1705543163; cv=none; b=nE/7AZBVXQqrS7tzeIvNfLckBW7UHsXOuPa7xlzto3ncr5uPWX05bIjtW9Eso1N28Axl/d5JHwDD7WluDf2/znA2biLjzfXHLFn4OPXdqxDNXESeml8F5WNr4x2E/+195WqE/Uwka796jdfpQKTSvBacd3gA9PCoUu2IdcA2QJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705543096; c=relaxed/simple;
-	bh=/yNQMgTpmIQvXJcDMi+7SFnmZY+Cg5CYOixjsHZIBto=;
-	h=Received:DKIM-Signature:Received:Received:Received:From:To:Cc:
-	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding:X-SEG-SpamProfiler-Analysis:
-	 X-SEG-SpamProfiler-Score:x-atlnz-ls; b=YFfFgKtzfDSavFp61cU05QoKFyQXV8aRWjFzfWVbrGr5Z3poE80nUdSSPB96jyeizhbVBuCyDFOOh1CcBS9upGE+dJKONYjB3LHmBAU2S545gizaIKrbeUfqqB8K/xV6ikb5OUojRfFP/ubqZXnAI9cFyvBaAw/YSn5xYUq75mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=vsbyOaWa; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 4A6642C04EA;
-	Thu, 18 Jan 2024 14:58:11 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1705543091;
-	bh=FRzy5TWNR9TvahVng24nBv5nswqp/8FBQOCzVf4vOhM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=vsbyOaWazyBCp8HGmXGkzaNiOsLCqKIa247JVUYZ9S+pYaguL5RRwECnskeZKWUNG
-	 3TdHBJNggjTDmJOpWvPdhJQ/6XW4y2JfobhTIElkkS6X5QMvPdf/LzfWDQ6O3Hm0+S
-	 gGHffGOwQLoxzHQqDtBMSycIK/Yc8E67oe/ZfgG0Sl3USWYxb9Ei8w9ezJJrqtgxN4
-	 yX7h950dzU2kbTrZE8D3DQ1ny5o0KXmGlWvJ+uElTmN7yTTFHHbD70GGdOUzEcrKb5
-	 S3QA/9MfFeEAwhrDZRkOmR6eSsU8GtY6pcqgbLIZgcLFTR8DAJcHadDcuqkQS9UJJW
-	 Y1+pqeysWqmvQ==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65a885b30000>; Thu, 18 Jan 2024 14:58:11 +1300
-Received: from elliota2-dl.ws.atlnz.lc (elliota-dl.ws.atlnz.lc [10.33.23.28])
-	by pat.atlnz.lc (Postfix) with ESMTP id 158C013ED7B;
-	Thu, 18 Jan 2024 14:58:11 +1300 (NZDT)
-Received: by elliota2-dl.ws.atlnz.lc (Postfix, from userid 1775)
-	id 0EF9F3C0F25; Thu, 18 Jan 2024 14:58:11 +1300 (NZDT)
-From: Elliot Ayrey <elliot.ayrey@alliedtelesis.co.nz>
-To: Marcin Wojtas <marcin.s.wojtas@gmail.com>,
-	Russell King <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Elliot Ayrey <elliot.ayrey@alliedtelesis.co.nz>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH] net: mvpp2: Add EEE get/set to mvpp2 driver
-Date: Thu, 18 Jan 2024 14:57:48 +1300
-Message-ID: <20240118015748.3507954-1-elliot.ayrey@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1705543163; c=relaxed/simple;
+	bh=qUn0tXssemFdVBvSxGg93sz4Fd7eoMBJDAi5n1ms+/A=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=Fxc0kHKUHbwvsKI/bKlrfbAAsIyyYfxIQrKACF/uiRdQuE2muRoVxUMnkj4fbPhJX40H5LxoTx3Dc797gX3dciS99xl2VrftMTUKycizIm+Y04II0CSL0IQA2CpeObTPrl3bwey3ly4CRUQVX5ITVIniyKhgTYpdykxg+vI6U9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Qfviq2ln; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5988e55ede0so4346243eaf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:59:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705543161; x=1706147961; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=C0aZ0gh2nMEIgtdl3btOXR1faHkRWy2p55YtG63QiVs=;
+        b=Qfviq2lneXjktAlOHn5A7YrzGJDC8zkDNy2bCtV/OTt/i+Eqb8gzNPVOGg6LYH0Ew3
+         ls+gPNICcPrdeGjI2o8KQL0OD+usPsADdSacMjgTzopK8Rlzdt4RZZYAI0vSYsA1wQLr
+         w52eKV5YqFzu23Hf5YdMSQD2LByd93tgtCj7w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705543161; x=1706147961;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C0aZ0gh2nMEIgtdl3btOXR1faHkRWy2p55YtG63QiVs=;
+        b=GbI05I8ZDs0TK2l/uuEWip0Dy+vJoScHp7L0MxsymN61peBreNmtvmHNCzwn8febRK
+         3I0TXwcMDkC9Gr1IEZEuuaYZr0hfBr82Tmzz486guL09ta3vH6zNDkaa6RyQdRqAYXjI
+         rl7N2BhSq6Yl8PBogxbSofYECLni8AuquhM7UTx92DulnFs0qU0rscs59h/d02qNJ7hu
+         TaprEniPX4JSYDRtdXXCvKOkn26DMN/Sh28WgtFz+5Ds961PMg88q/GlqKtLint87jKl
+         ddCWDLKEfU9vlTsIw1z/lFaWUhSfnvKR1O0UlMjaguFeF4OGO5Rj9KcNS2QuuBtQwqML
+         Cq1w==
+X-Gm-Message-State: AOJu0Yz62B0ty65sgefkrlSb487Y4MFrgjd7pJA2eeovtH+U/Srz6e0Y
+	oaP4NI1GadDgJPajNCsEdPOFpKcKbZWbGX20QsE1YHe+dsBgNF6krbY3T6Ox1Q==
+X-Google-Smtp-Source: AGHT+IHCITwuSs+RUYFe/ZYh2Aaq7Mwt3FYk63+r+HrTRQNnTtj99c4qfSNv1QoNApfW32peMOyUlQ==
+X-Received: by 2002:a4a:d490:0:b0:598:8de8:be69 with SMTP id o16-20020a4ad490000000b005988de8be69mr175483oos.10.1705543161418;
+        Wed, 17 Jan 2024 17:59:21 -0800 (PST)
+Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:2557:c164:9ba8:60b])
+        by smtp.gmail.com with ESMTPSA id h10-20020a65638a000000b005c2420fb198sm270879pgv.37.2024.01.17.17.59.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 17:59:21 -0800 (PST)
+From: Hsin-Yi Wang <hsinyi@chromium.org>
+To: Douglas Anderson <dianders@chromium.org>,
+	dri-devel@lists.freedesktop.org
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Xin Ji <xji@analogixsemi.com>,
+	Pin-yen Lin <treapking@chromium.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/bridge: anx7625: Ensure bridge is suspended in disable()
+Date: Wed, 17 Jan 2024 17:58:14 -0800
+Message-ID: <20240118015916.2296741-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=LZFCFQXi c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dEuoMetlWLkA:10 a=uUW33zXHdHhOziz9OLUA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Transfer-Encoding: 8bit
 
-Fill in the missing .get_eee and .set_eee functions for the mvpp2
-driver.
+Similar to commit 26db46bc9c67 ("drm/bridge: parade-ps8640: Ensure bridge
+is suspended in .post_disable()"). Add a mutex to ensure that aux transfer
+won't race with atomic_disable by holding the PM reference and prevent
+the bridge from suspend.
 
-Signed-off-by: Elliot Ayrey <elliot.ayrey@alliedtelesis.co.nz>
+Also we need to use pm_runtime_put_sync_suspend() to suspend the bridge
+instead of idle with pm_runtime_put_sync().
+
+Fixes: 3203e497eb76 ("drm/bridge: anx7625: Synchronously run runtime suspend.")
+Fixes: adca62ec370c ("drm/bridge: anx7625: Support reading edid through aux channel")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Tested-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
 ---
- .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 7 ++++++-
+ drivers/gpu/drm/bridge/analogix/anx7625.h | 2 ++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/ne=
-t/ethernet/marvell/mvpp2/mvpp2_main.c
-index 820b1fabe297..85dc06c85b31 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -5701,6 +5701,26 @@ static int mvpp2_ethtool_set_rxfh(struct net_devic=
-e *dev,
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index ef31033439bc..29d91493b101 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -1762,6 +1762,7 @@ static ssize_t anx7625_aux_transfer(struct drm_dp_aux *aux,
+ 	u8 request = msg->request & ~DP_AUX_I2C_MOT;
+ 	int ret = 0;
+ 
++	mutex_lock(&ctx->aux_lock);
+ 	pm_runtime_get_sync(dev);
+ 	msg->reply = 0;
+ 	switch (request) {
+@@ -1778,6 +1779,7 @@ static ssize_t anx7625_aux_transfer(struct drm_dp_aux *aux,
+ 					msg->size, msg->buffer);
+ 	pm_runtime_mark_last_busy(dev);
+ 	pm_runtime_put_autosuspend(dev);
++	mutex_unlock(&ctx->aux_lock);
+ 
  	return ret;
  }
-=20
-+static int mvpp2_get_eee(struct net_device *dev, struct ethtool_eee *eda=
-ta)
-+{
-+	int ret =3D -EOPNOTSUPP;
-+
-+	if (dev->phydev)
-+		ret =3D phy_ethtool_get_eee(dev->phydev, edata);
-+
-+	return ret;
-+}
-+
-+static int mvpp2_set_eee(struct net_device *dev, struct ethtool_eee *eda=
-ta)
-+{
-+	int ret =3D -EOPNOTSUPP;
-+
-+	if (dev->phydev)
-+		ret =3D phy_ethtool_set_eee(dev->phydev, edata);
-+
-+	return ret;
-+}
-+
- /* Device ops */
-=20
- static const struct net_device_ops mvpp2_netdev_ops =3D {
-@@ -5743,6 +5763,8 @@ static const struct ethtool_ops mvpp2_eth_tool_ops =
-=3D {
- 	.get_rxfh_indir_size	=3D mvpp2_ethtool_get_rxfh_indir_size,
- 	.get_rxfh		=3D mvpp2_ethtool_get_rxfh,
- 	.set_rxfh		=3D mvpp2_ethtool_set_rxfh,
-+	.get_eee		=3D mvpp2_get_eee,
-+	.set_eee		=3D mvpp2_set_eee,
- };
-=20
- /* Used for PPv2.1, or PPv2.2 with the old Device Tree binding that
---=20
-2.43.0
+@@ -2474,7 +2476,9 @@ static void anx7625_bridge_atomic_disable(struct drm_bridge *bridge,
+ 	ctx->connector = NULL;
+ 	anx7625_dp_stop(ctx);
+ 
+-	pm_runtime_put_sync(dev);
++	mutex_lock(&ctx->aux_lock);
++	pm_runtime_put_sync_suspend(dev);
++	mutex_unlock(&ctx->aux_lock);
+ }
+ 
+ static enum drm_connector_status
+@@ -2668,6 +2672,7 @@ static int anx7625_i2c_probe(struct i2c_client *client)
+ 
+ 	mutex_init(&platform->lock);
+ 	mutex_init(&platform->hdcp_wq_lock);
++	mutex_init(&platform->aux_lock);
+ 
+ 	INIT_DELAYED_WORK(&platform->hdcp_work, hdcp_check_work_func);
+ 	platform->hdcp_workqueue = create_workqueue("hdcp workqueue");
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
+index 66ebee7f3d83..39ed35d33836 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.h
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
+@@ -475,6 +475,8 @@ struct anx7625_data {
+ 	struct workqueue_struct *hdcp_workqueue;
+ 	/* Lock for hdcp work queue */
+ 	struct mutex hdcp_wq_lock;
++	/* Lock for aux transfer and disable */
++	struct mutex aux_lock;
+ 	char edid_block;
+ 	struct display_timing dt;
+ 	u8 display_timing_valid;
+-- 
+2.43.0.381.gb435a96ce8-goog
 
 
