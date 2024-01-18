@@ -1,195 +1,139 @@
-Return-Path: <linux-kernel+bounces-30325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8DBF831D1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:01:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0A25831D22
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:02:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 799F528512C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:01:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A1C1F23C85
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5AE428DDA;
-	Thu, 18 Jan 2024 16:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF33A241E6;
+	Thu, 18 Jan 2024 16:02:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GFhHCI6L";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GFhHCI6L"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="pA0p/dlO"
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E7B24B40
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 16:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D93D24B40
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 16:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705593684; cv=none; b=dXCteRLK//Lsg/RJm6bD7fpuGUd4vYx7W4AAB8PYNkhIY34uxKeYLWy9b1eoqEtlbDkPmZdVtDtd+zRmddo0c5TIcRhDAmqQvTV1Ww0nNOXJq7RQ0DEdTTRxS4SAKJ5+ape+1nC2XTNJnyV6TNdR108eeBu8NpY9dhKvvzFVLok=
+	t=1705593737; cv=none; b=gSa6cvmI40w6lWi+JpX4SzcgLdIADThNme6b4m+WbKITKs9T+vEsmOD4bfYnrSd1bEJw3Rva4VdGsy+ahteDh7Bq+Ei3bCROXEf0H24WZIfxB3LF3jHPVJQCXjLwIvcZb3EDZEIJOQ4yAptCQx/I6iMe3g89VpFaMxfmQzVwhaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705593684; c=relaxed/simple;
-	bh=/bFitulnKeMD7nL6DUK9UTmNnjFHo6afAaFJr8rlhh8=;
-	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:From:To:
-	 Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding:X-Spamd-Result:X-Spam-Level:X-Spam-Score:
-	 X-Spam-Flag; b=DPUfY1DOGXtmOP2TBEpNS/vxXXtGTecMucPqc1E70FvuDU98VuyvrjWGZ1Ry9ZcuDBb0gnwRehhFPavbmJ3Gd56goXI6qh9noeEQ2xJaU+M8HpOKi3VbyBPX5g3Lnm5RAakezcxU+puw8eHQ37RuE4JJNvoy7gljJmrHIiuWwr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GFhHCI6L; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GFhHCI6L; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8C1AC1F78C;
-	Thu, 18 Jan 2024 16:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705593681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=yqxe6RmDElHAsoN8dM0gFQuxWNqNWQehMUdGnSfMDbQ=;
-	b=GFhHCI6LVB4uh/keNp8qXLftsxLtPNTvriewBj9rql/Fqf4J/g31CCV4IEDqDEot0dZTAn
-	V6NDmKL7ljVneEWZmAyT1GBdvBJqSiLI60a/hbTVp4ZVn+fXKkC+CR4gAj5MfNVFR113tW
-	Z1tqaddjVbY5e+6UgwKA4NRYnXFRW6E=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705593681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=yqxe6RmDElHAsoN8dM0gFQuxWNqNWQehMUdGnSfMDbQ=;
-	b=GFhHCI6LVB4uh/keNp8qXLftsxLtPNTvriewBj9rql/Fqf4J/g31CCV4IEDqDEot0dZTAn
-	V6NDmKL7ljVneEWZmAyT1GBdvBJqSiLI60a/hbTVp4ZVn+fXKkC+CR4gAj5MfNVFR113tW
-	Z1tqaddjVbY5e+6UgwKA4NRYnXFRW6E=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2221013874;
-	Thu, 18 Jan 2024 16:01:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id g5ZJBVFLqWV9OgAAD6G6ig
-	(envelope-from <nik.borisov@suse.com>); Thu, 18 Jan 2024 16:01:21 +0000
-From: Nikolay Borisov <nik.borisov@suse.com>
-To: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org,
-	dave.hansen@linux.intel.com,
-	linux-coco@lists.linux.dev,
-	Nikolay Borisov <nik.borisov@suse.com>
-Subject: [RFC PATCH] x86/virt/tdx: Disable KEXEC in the presence of TDX
-Date: Thu, 18 Jan 2024 18:01:18 +0200
-Message-Id: <20240118160118.1899299-1-nik.borisov@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705593737; c=relaxed/simple;
+	bh=7/CWAjx5zfqKJ2XKGA+zCddsRmnknHYAn2kIAh+LnQ8=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=OISIUNOkaYT/eJZ+qEGsy1kdxvAJPAd/anmnotxPivVBILVrOtJzwN82z5070t9rAVDCy6rtY26yJzTNt6DV0nteqPR0bY3+hxwp7CI4wU18mbPAsaGZa+1ME4fX/4yzeL1v35j0Q7qwQqHHQT/KLbTgDXGK0MBh+XmsCK0sFEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=pA0p/dlO; arc=none smtp.client-ip=209.85.166.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-35d374bebe3so9827755ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 08:02:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705593733; x=1706198533; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hto2SU4R3yAYwp81hj4Efa1CV18LRXcWhBAicey50VM=;
+        b=pA0p/dlOaP2FLSI44v0AjlgWAVOgEyKcTWu8IOUO2YH36DKCcbcsz6UKV7Jz56eAJQ
+         lWB4G+eIglQweQQs9NCTkpgRtdD8ZWuSxRmjKxtsCZ7Z86oiv4GNkwhTarMlcOfb3ClU
+         5djgNM3TKg+5fx7Sbxw5+SEF+tS1FaOipUaUhYQdL19XON7Sm6iNDBzXr1TF3S1Fls/z
+         ijvpDFaeozNURh2Z3nw8cIczsu/kFMYHAYg14q/f/TI2Utx345vvNuTqcdLOlFurjmEF
+         m+pro5/EmM0yjCAXPROBAsYybd4VDPBU+kfEYieY+zr6QGNtC2n+WfPEEeW65/FB/mjU
+         WvMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705593733; x=1706198533;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hto2SU4R3yAYwp81hj4Efa1CV18LRXcWhBAicey50VM=;
+        b=JqD3gOQrtS9ESRncnJ6y3JQtVFOZM1Hud2urwnzzvz3v4dblJCag6WvlpEaB/3o+ag
+         uS5ufHqmhHUSAJv0HgNiO5z3NJDfsQD6qMUly0Vfb8xBI8kyNXMkEekrQ6PSaOfXGS3X
+         2V9pznsnL5votiJt0vP9mHo4Ii5tTvhj+UkGb2f1V3Ihhuyodj7L39pLshLO4mPhKQZ+
+         PATHFRM9oBkBq5W7O6ncjuS68jWJN4hIQhxVa9Pe0147/1raAc8df5E/e433uz/LmZhI
+         N8D5uo1MSoaKrhaREh4jTjvLTIHVgXK0oODlqgO7LgF/ObQn0axynUl2j+buo+DlPq+J
+         iJdg==
+X-Gm-Message-State: AOJu0YzcepE2k6gCm/Kvk/j+mfOd734GRjwzc9Aaf5Xe6hefIfA+Ourc
+	uIn0G1e1H+yLQWoNkxvhtT+pnDnuMQuFMB4HVXDjYvSPg+EheHr1yiaOkKqX5qw=
+X-Google-Smtp-Source: AGHT+IFnCgCMwuQLn+46tpajB2tVEuF0J1Am5tT3Fme1GmHSkQ6lEQkASyB/fJpRQd7Vv/I6DjrRlQ==
+X-Received: by 2002:a05:6e02:20ef:b0:360:2a3:7e5f with SMTP id q15-20020a056e0220ef00b0036002a37e5fmr1936347ilv.2.1705593733508;
+        Thu, 18 Jan 2024 08:02:13 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id s11-20020a02cc8b000000b0046e7578c703sm1061800jap.21.2024.01.18.08.02.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 08:02:12 -0800 (PST)
+Message-ID: <fab1b4da-cbe6-49d6-9159-29fb405ca64f@kernel.dk>
+Date: Thu, 18 Jan 2024 09:02:11 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [1.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: *
-X-Spam-Score: 1.90
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] vfs: add RWF_NOAPPEND flag for pwritev2
+Content-Language: en-US
+To: Rich Felker <dalias@libc.org>
+Cc: Jann Horn <jannh@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ kernel list <linux-kernel@vger.kernel.org>,
+ Linux API <linux-api@vger.kernel.org>,
+ Pavel Begunkov <asml.silence@gmail.com>,
+ Christian Brauner <brauner@kernel.org>
+References: <20200831153207.GO3265@brightrain.aerifal.cx>
+ <CAG48ez39WNuoxYO=RaW5OeVGSOy=uEAZ+xW_++TP7yjkUKGqkg@mail.gmail.com>
+ <a9d26744-ba7a-2223-7284-c0d1a5ddab8a@kernel.dk>
+ <20240118155735.GS22081@brightrain.aerifal.cx>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240118155735.GS22081@brightrain.aerifal.cx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-TDX doesn't currently support kexec so disable the latter when TDX
-is detected at boot time. If kexec must absolutely be supported then
-TDX can be disabled from the bios.
+On 1/18/24 8:57 AM, Rich Felker wrote:
+> On Mon, Aug 31, 2020 at 11:05:34AM -0600, Jens Axboe wrote:
+>> On 8/31/20 9:46 AM, Jann Horn wrote:
+>>> On Mon, Aug 31, 2020 at 5:32 PM Rich Felker <dalias@libc.org> wrote:
+>>>> The pwrite function, originally defined by POSIX (thus the "p"), is
+>>>> defined to ignore O_APPEND and write at the offset passed as its
+>>>> argument. However, historically Linux honored O_APPEND if set and
+>>>> ignored the offset. This cannot be changed due to stability policy,
+>>>> but is documented in the man page as a bug.
+>>>>
+>>>> Now that there's a pwritev2 syscall providing a superset of the pwrite
+>>>> functionality that has a flags argument, the conforming behavior can
+>>>> be offered to userspace via a new flag. Since pwritev2 checks flag
+>>>> validity (in kiocb_set_rw_flags) and reports unknown ones with
+>>>> EOPNOTSUPP, callers will not get wrong behavior on old kernels that
+>>>> don't support the new flag; the error is reported and the caller can
+>>>> decide how to handle it.
+>>>>
+>>>> Signed-off-by: Rich Felker <dalias@libc.org>
+>>>
+>>> Reviewed-by: Jann Horn <jannh@google.com>
+>>>
+>>> Note that if this lands, Michael Kerrisk will probably be happy if you
+>>> send a corresponding patch for the manpage man2/readv.2.
+>>>
+>>> Btw, I'm not really sure whose tree this should go through - VFS is
+>>> normally Al Viro's turf, but it looks like the most recent
+>>> modifications to this function have gone through Jens Axboe's tree?
+>>
+>> Should probably go through Al's tree, I've only carried them when
+>> they've been associated with io_uring in some shape or form.
+> 
+> This appears to have slipped through the cracks. Do I need to send an
+> updated rebase of it? Were there any objections to it I missed?
 
-Making this decision at run time rather than as a compile time option
-allows distribution kernels to have both enabled and delegate to the
-user whether they want to use TDX/Kexec.
+Let's add Christian.
 
-Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
----
+-- 
+Jens Axboe
 
-Sending as RFC as I don't know the reason why initially it was decided to
-enforce the incompaibility between kexec/tdx at build time rather than runtime.
-
- arch/x86/Kconfig            | 1 -
- arch/x86/virt/vmx/tdx/tdx.c | 6 ++++++
- include/linux/kexec.h       | 1 +
- kernel/kexec_core.c         | 5 +++++
- 4 files changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 92c03cb99b3e..6c2b620b40d8 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1973,7 +1973,6 @@ config INTEL_TDX_HOST
- 	depends on X86_X2APIC
- 	select ARCH_KEEP_MEMBLOCK
- 	depends on CONTIG_ALLOC
--	depends on !KEXEC_CORE
- 	depends on X86_MCE
- 	help
- 	  Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
-diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-index 4d6826a76f78..270090bd7b5e 100644
---- a/arch/x86/virt/vmx/tdx/tdx.c
-+++ b/arch/x86/virt/vmx/tdx/tdx.c
-@@ -20,6 +20,7 @@
- #include <linux/memblock.h>
- #include <linux/memory.h>
- #include <linux/minmax.h>
-+#include <linux/kexec.h>
- #include <linux/sizes.h>
- #include <linux/pfn.h>
- #include <linux/align.h>
-@@ -1473,6 +1474,11 @@ void __init tdx_init(void)
- 		return;
- 	}
-
-+#ifdef CONFIG_KEXEC_CORE
-+	kexec_disable();
-+	pr_info("Disable Kexec. Turn off TDX in the BIOS to use KEXEC.\n");
-+#endif
-+
- #if defined(CONFIG_ACPI) && defined(CONFIG_SUSPEND)
- 	pr_info("Disable ACPI S3. Turn off TDX in the BIOS to use ACPI S3.\n");
- 	acpi_suspend_lowlevel = NULL;
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 8227455192b7..c434c8569242 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -500,6 +500,7 @@ static inline int crash_hotplug_memory_support(void) { return 0; }
- static inline unsigned int crash_get_elfcorehdr_size(void) { return 0; }
- #endif
-
-+extern void kexec_disable(void);
- #else /* !CONFIG_KEXEC_CORE */
- struct pt_regs;
- struct task_struct;
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index be5642a4ec49..8d3a2a04ff4d 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -927,6 +927,11 @@ struct kimage *kexec_image;
- struct kimage *kexec_crash_image;
- static int kexec_load_disabled;
-
-+void kexec_disable(void)
-+{
-+	kexec_load_disabled = 1;
-+}
-+
- #ifdef CONFIG_SYSCTL
- static int kexec_limit_handler(struct ctl_table *table, int write,
- 			       void *buffer, size_t *lenp, loff_t *ppos)
---
-2.34.1
 
 
