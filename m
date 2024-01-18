@@ -1,217 +1,153 @@
-Return-Path: <linux-kernel+bounces-30434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F1AB831E9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:44:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3AC7831EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:45:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC9E8B216C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:44:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02E931C24AA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:45:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191D62D607;
-	Thu, 18 Jan 2024 17:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC4B2D05B;
+	Thu, 18 Jan 2024 17:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="XRJqiRxv"
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kNx2ZLxA"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584532D600
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1333B2D606
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705599875; cv=none; b=JML2wVg/PuIRrWKz/Qy4joFdFTgAbr6KWfsb2iU4DbmBp4+MNz+PlB4Nhu8ixMCqrTEqyifX5qw7vY7yer5aw0iz42Xx4y0DQXoy1ujddAAavS/Bpc8CBc5k28ElAG/Y13vcOq1SYo4KlJN/e9uy0Px5FJjqxUrYCfZ1xgHHOfw=
+	t=1705599905; cv=none; b=Kd381CFz6Sk8h6ZpD4KSZsiDubbeLoBJYdm7Rz0FYNgtbgnubrad/m9DxQKgQQt9HNm1ie6neKkPJukIjENdsFYIHAuJNlPlBSj665yg4Y+PXWVA5I0vXEasHxtCA9lKRO+8JplpfMNYF7nexVuOZyoGNnFXoSzu7PjKcPAh2qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705599875; c=relaxed/simple;
-	bh=+EEn3iTOmt+kltd/ldWX9BmOtkos9GsLBVlCS0F0OGY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Fy6M598gsN3PzHsDqcNOA5ELohP4ofB8A3LbTDCZuPBOii7xvgeQeUuxqUT9O+Wkrs1PQU4STOKWvM9bHD5ASbrQHTbGNR0+6FIo/drBiCtHAQcuTW49KR+OKumpZjNJlvp1cJi/EtGFJfqpK2fSNIE7F8oWkqa2w+bLNmojj+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=XRJqiRxv; arc=none smtp.client-ip=192.134.164.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+	s=arc-20240116; t=1705599905; c=relaxed/simple;
+	bh=9FmE4PJJMHUJcOAmiwnAx4z1xIV4aO2a5RhnwfLZmL8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FO/sjonYUXYBJGPGRcn0RP35yEYea7IowgLjLFd45qm4MiItlwjNSG2snAIpVd4mUravPyDYb74k4Z8pb2lPIbs0Jy9hwJFvYEzGcX1tlXkkERgK9/B0pZ1Xacjod21yzdd5damHFERH2wiUuyY5Q51Ad6TnPFqpc5F7AlYz+Ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kNx2ZLxA; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e4e3323a6so1096014e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:45:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=M+DaurYcoM0Iiblj8Kl2BjtzI1qZfuyNgY4ZprroW9s=;
-  b=XRJqiRxvIACJO8Ujkt9p0TfIxL8y12Elv1QVIPCLPKK+3MK3cL2Clxhy
-   +zhZb2O0/Yp5nLcrjwPkSk71XfrtsJQRAsxsODOyQKSfRneYEDSteKjJD
-   edHsF23pOUjkGh8cpp97+31IQlThaH+PTU4vxvgbp8DRdsGaB77WYReM2
-   U=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.05,203,1701126000"; 
-   d="scan'208";a="147455876"
-Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 18:43:20 +0100
-Date: Thu, 18 Jan 2024 18:43:19 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
-    linux-kernel@vger.kernel.org
-Subject: Re: EEVDF and NUMA balancing
-In-Reply-To: <CAKfTPtB4R3ZCxgnLLz-uVFBEaAGv6CtKTTXSYP5PB59-U7kbhQ@mail.gmail.com>
-Message-ID: <7231bfb1-9acc-656-c6b6-20bd8624e08a@inria.fr>
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com> <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr> <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
- <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr> <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr> <CAKfTPtDrULyOB9+RhjoPfCpHKVhx5kRf6dq79DSE6jZgsEairw@mail.gmail.com> <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr> <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr>
- <CAKfTPtCAcHuzhcDvry6_nH2K29wc-LEo2yOi-J-mnZkwMvGDbw@mail.gmail.com> <cfae246d-9383-59d-ee5b-81ea3dd0a795@inria.fr> <CAKfTPtD0B29zadkeEOCWvry123zWVEEm41ouKj7noXwQdoh2+Q@mail.gmail.com> <7a845b43-bd8e-6c7d-6bca-2e6f174f671@inria.fr> <36f2cc93-db10-5977-78ab-d9d07c3f445@inria.fr>
- <CAKfTPtA31Z0N9hd4z_GPvoZwK=KTf4fPbx_jDbK653mdVDLEbw@mail.gmail.com> <424169db-49df-f168-d7f7-b48efe6ada@inria.fr> <CAKfTPtB4R3ZCxgnLLz-uVFBEaAGv6CtKTTXSYP5PB59-U7kbhQ@mail.gmail.com>
+        d=linaro.org; s=google; t=1705599900; x=1706204700; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NSfW+YUfmRkyvf/SzyhIkwxnaiEK9UQEjvnNWE6tnVg=;
+        b=kNx2ZLxAub2oFRza92YPo+U9X68g16/g9XEDK9mbUgQY+9iiZLP5NL1q+qKFHkKmn6
+         QWeiSNzKagj0dFKV1kOfTVD45uZDcjykB8GVlI29nheM8deoxAt296A9QAVzBixWuA4X
+         ZVxBqXnOSrtNr0A551Mn0IL0E5ukn4nxJVFQiC8eb/fotwXrgc1VIPkMi6W8uyYtzDFt
+         N2XM20v+/mcJ/+3P75DOEQTJTmfNo1Evw/jGthT9yTOKD9y5RsxaVOShj9BM2ui5eCUN
+         U2nKoR2nB2Xw9EFZyyHIK25hTkDbfThOwc5v44RfNj2hbeRReXJ1rjW/9iKplMc4MSg+
+         kNTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705599900; x=1706204700;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NSfW+YUfmRkyvf/SzyhIkwxnaiEK9UQEjvnNWE6tnVg=;
+        b=OqOkZTLb75vxdv2A7nSxKlRHpEgw+zv92oIuUasKYw92yenOD4R5adVssTUGrJ/6/f
+         mHlnBFgqr0W+sbRpaIA4Uiit8vB7LFnTpKzE5GgF1LB07YjvvBRgYh8NRrp01DEV472H
+         qf+wUe3YaPZtQo95UPzE12uevo9vDJ2vsJwc5E/Wqm9n68WAdDhAAq7YM9nGk8w58HMP
+         FBrhDKiczFB10vvzBQ2bg+T8uEgQ9INsJCwi0PNphIHzWSFg7hdhkriW3dA1bzuJJukg
+         YqOI8alHWQ9kamBSWwn4Ejh2NqJpz8KudKUOZUz6p7dKfxrhU9rbCPHRx0oUu+pgYt3Q
+         UkAA==
+X-Gm-Message-State: AOJu0YyR4uAuAOghxiK3LBzuFlCPQAcKUiy/mCBtIDh/1mTYC+xNSFJ/
+	njddWKkyZIXg2aMri3iuMlituo9SdixdsMNO5za1SO462ljrTu1v7QkuYxbyM79l4Jdb4FWpEFH
+	J
+X-Google-Smtp-Source: AGHT+IFMZMNJ9hclYGahC7K3qfbzmRSnW3OqnqmNUQR6BgamVW7SW02oVYX9Erny3j7GZr3boHA+kQ==
+X-Received: by 2002:a19:644a:0:b0:50e:e1c3:f97b with SMTP id b10-20020a19644a000000b0050ee1c3f97bmr1859018lfj.3.1705599900074;
+        Thu, 18 Jan 2024 09:45:00 -0800 (PST)
+Received: from [172.30.205.26] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id k17-20020a192d11000000b0050e9323408csm716228lfj.57.2024.01.18.09.44.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 09:44:59 -0800 (PST)
+Message-ID: <04a364e8-534c-40a4-a031-b9f9d2304c39@linaro.org>
+Date: Thu, 18 Jan 2024 18:44:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] media: venus: add new rate control type MBR for
+ encoder
+Content-Language: en-US
+To: Sachin Kumar Garg <quic_sachinku@quicinc.com>, hverkuil-cisco@xs4all.nl,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org
+References: <20240118105934.137919-1-quic_sachinku@quicinc.com>
+ <20240118105934.137919-3-quic_sachinku@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240118105934.137919-3-quic_sachinku@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
-On Thu, 18 Jan 2024, Vincent Guittot wrote:
+On 1/18/24 11:59, Sachin Kumar Garg wrote:
+> There is no limit on the maximum level of the bit rate with
+> the existing VBR rate control.
+> V4L2_MPEG_VIDEO_BITRATE_MODE_MBR rate control will limit the
+> frame maximum bit rate range to the +/- 10% of the configured
+> bit-rate value. Encoder will choose appropriate quantization
+> parameter and do the smart bit allocation to set the frame
+> maximum bitrate level.
+> 
+> Signed-off-by: Sachin Kumar Garg <quic_sachinku@quicinc.com>
+> ---
+>   drivers/media/platform/qcom/venus/hfi_cmds.c  | 38 +++++++++++++------
+>   .../media/platform/qcom/venus/hfi_helper.h    |  1 +
+>   drivers/media/platform/qcom/venus/venc.c      |  2 +
+>   .../media/platform/qcom/venus/venc_ctrls.c    |  5 ++-
+>   4 files changed, 33 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
+> index 3418d2dd9371..95fc27e0dc7d 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_cmds.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
+> @@ -645,17 +645,33 @@ static int pkt_session_set_property_1x(struct hfi_session_set_property_pkt *pkt,
+>   	case HFI_PROPERTY_PARAM_VENC_RATE_CONTROL: {
+>   		u32 *in = pdata;
+>   
+> -		switch (*in) {
+> -		case HFI_RATE_CONTROL_OFF:
+> -		case HFI_RATE_CONTROL_CBR_CFR:
+> -		case HFI_RATE_CONTROL_CBR_VFR:
+> -		case HFI_RATE_CONTROL_VBR_CFR:
+> -		case HFI_RATE_CONTROL_VBR_VFR:
+> -		case HFI_RATE_CONTROL_CQ:
+> -			break;
+> -		default:
+> -			ret = -EINVAL;
+> -			break;
+> +		if (hfi_ver == HFI_VERSION_4XX) {
 
-> On Thu, 18 Jan 2024 at 17:50, Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> >
-> >
-> > On Thu, 18 Jan 2024, Vincent Guittot wrote:
-> >
-> > > Hi Julia,
-> > >
-> > > Sorry for the delay. I have been involved on other perf regression
-> > >
-> > > On Fri, 5 Jan 2024 at 18:27, Julia Lawall <julia.lawall@inria.fr> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On Fri, 5 Jan 2024, Julia Lawall wrote:
-> > > >
-> > > > >
-> > > > >
-> > > > > On Fri, 5 Jan 2024, Vincent Guittot wrote:
-> > > > >
-> > > > > > On Fri, 5 Jan 2024 at 15:51, Julia Lawall <julia.lawall@inria.fr> wrote:
-> > > > > > >
-> > > > > > > > Your system is calling the polling mode and not the default
-> > > > > > > > cpuidle_idle_call() ? This could explain why I don't see such problem
-> > > > > > > > on my system which doesn't have polling
-> > > > > > > >
-> > > > > > > > Are you forcing the use of polling mode ?
-> > > > > > > > If yes, could you check that this problem disappears without forcing
-> > > > > > > > polling mode ?
-> > > > > > >
-> > > > > > > I expanded the code in do_idle to:
-> > > > > > >
-> > > > > > >                 if (cpu_idle_force_poll) { c1++;
-> > > > > > >                         tick_nohz_idle_restart_tick();
-> > > > > > >                         cpu_idle_poll();
-> > > > > > >                 } else if (tick_check_broadcast_expired()) { c2++;
-> > > > > > >                         tick_nohz_idle_restart_tick();
-> > > > > > >                         cpu_idle_poll();
-> > > > > > >                 } else { c3++;
-> > > > > > >                         cpuidle_idle_call();
-> > > > > > >                 }
-> > > > > > >
-> > > > > > > Later, I have:
-> > > > > > >
-> > > > > > >         trace_printk("force poll: %d: c1: %d, c2: %d, c3: %d\n",cpu_idle_force_poll, c1, c2, c3);
-> > > > > > >         flush_smp_call_function_queue();
-> > > > > > >         schedule_idle();
-> > > > > > >
-> > > > > > > force poll, c1 and c2 are always 0, and c3 is always some non-zero value.
-> > > > > > > Sometimes small (often 1), and sometimes large (304 or 305).
-> > > > > > >
-> > > > > > > So I don't think it's calling cpu_idle_poll().
-> > > > > >
-> > > > > > I agree that something else
-> > > > > >
-> > > > > > >
-> > > > > > > x86 has TIF_POLLING_NRFLAG defined to be a non zero value, which I think
-> > > > > > > is sufficient to cause the issue.
-> > > > > >
-> > > > > > Could you trace trace_sched_wake_idle_without_ipi() ans csd traces as well ?
-> > > > > > I don't understand what set need_resched() in your case; having in
-> > > > > > mind that I don't see the problem on my Arm systems and IIRC Peter
-> > > > > > said that he didn't face the problem on his x86 system.
-> > > > >
-> > > > > TIF_POLLING_NRFLAG doesn't seem to be defined on Arm.
-> > > > >
-> > > > > Peter said that he didn't see the problem, but perhaps that was just
-> > > > > random.  It requires a NUMA move to occur.  I make 20 runs to be sure to
-> > > > > see the problem at least once.  But another machine might behave
-> > > > > differently.
-> > > > >
-> > > > > I believe the call chain is:
-> > > > >
-> > > > > scheduler_tick
-> > > > >   trigger_load_balance
-> > > > >     nohz_balancer_kick
-> > > > >       kick_ilb
-> > > > >         smp_call_function_single_async
-> > > > >           generic_exec_single
-> > > > >             __smp_call_single_queue
-> > > > >               send_call_function_single_ipi
-> > > > >                 call_function_single_prep_ipi
-> > > > >                   set_nr_if_polling <====== sets need_resched
-> > > > >
-> > > > > I'll make a trace to reverify that.
-> > > >
-> > > > This is what I see at a tick, which corresponds to the call chain shown
-> > > > above:
-> > > >
-> > > >           bt.B.x-4184  [046]   466.410605: bputs:                scheduler_tick: calling trigger_load_balance
-> > > >           bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling nohz_balancer_kick
-> > > >           bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling kick_ilb
-> > > >           bt.B.x-4184  [046]   466.410607: bprint:               trigger_load_balance: calling smp_call_function_single_async 22
-> > > >           bt.B.x-4184  [046]   466.410607: bputs:                smp_call_function_single_async: calling generic_exec_single
-> > > >           bt.B.x-4184  [046]   466.410607: bputs:                generic_exec_single: calling __smp_call_single_queue
-> > > >           bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling send_call_function_single_ipi
-> > > >           bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling call_function_single_prep_ipi
-> > > >           bt.B.x-4184  [046]   466.410608: bputs:                call_function_single_prep_ipi: calling set_nr_if_polling
-> > > >           bt.B.x-4184  [046]   466.410609: sched_wake_idle_without_ipi: cpu=22
-> > >
-> > > I don't know if you have made progress on this in the meantime.
-> >
-> > Not really.  Basically after do_idle, there is the call to
-> > flush_smp_call_function_queue that invokes the deposited functions, which
-> > in our case is at best going to raise a softirq, and the call to schedule.
-> > Raising a softirq doesn't happen because of the check for need_resched.
-> > But even if that test were removed, it would still not be useful because
-> > there would be the ksoftirqd running on the idle core that would eliminate
-> > the imbalance between the sockets.  Maybe there could be some way to call
-> > run_rebalance_domains directly from nohz_csd_func, since
-> > run_rebalance_domains doesn't use its argument, but at the moment
-> > run_rebalance_domains is not visible to nohz_csd_func.
->
-> All this happen because we don't use an ipi, it should not use
-> ksoftirqd with ipi
->
-> >
-> > >
-> > > Regarding the trace above, do you know if anything happens on CPU22
-> > > just before the scheduler tried to kick the ILB on it ?
-> >
-> > I don't think so.  It's idle.
->
-> Ok, so if it is idle for a while , I mean nothing happened on it, not
-> even spurious irq, It should have cleared its TIF_POLLING_NRFLAG
->
-> I would be good to trace the selected idle state
->
-> >
-> > > Have you found why TIF_POLLING_NRFLAG seems to be always set when the
-> > > kick_ilb happens ? It should be cleared once entering the idle state.
-> >
-> > Actually, I don't think it is always set.  It switches back and forth
-> > between two cases.  I will look for the traces that show that.
-> >
-> > > Could you check your cpuidle driver ?
-> >
-> > Check what specifically?
->
-> $ cat /sys/devices/system/cpu/cpuidle/current_driver
-> $ cat /sys/devices/system/cpu/cpuidle/current_governor
+So, only sdm845/sc7180 and friends support it, but the newer
+SoCs (like 8250 don't)?
 
-intel_idle and menu
+[...]
 
-julia
+> --- a/drivers/media/platform/qcom/venus/venc_ctrls.c
+> +++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
+> @@ -387,10 +387,11 @@ int venc_ctrl_init(struct venus_inst *inst)
+>   
+>   	v4l2_ctrl_new_std_menu(&inst->ctrl_handler, &venc_ctrl_ops,
+>   		V4L2_CID_MPEG_VIDEO_BITRATE_MODE,
+> -		V4L2_MPEG_VIDEO_BITRATE_MODE_CBR,
+> +		V4L2_MPEG_VIDEO_BITRATE_MODE_MBR,
+
+Is this okay, since you're claiming only v4 supports it?
+
+Konrad
 
