@@ -1,93 +1,141 @@
-Return-Path: <linux-kernel+bounces-29772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1684831334
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:39:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7DEA831323
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:35:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A374B282815
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:39:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FDADB2389D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:35:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E336BE47;
-	Thu, 18 Jan 2024 07:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC690B66B;
+	Thu, 18 Jan 2024 07:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="UzkzYM/O"
-Received: from out203-205-221-149.mail.qq.com (out203-205-221-149.mail.qq.com [203.205.221.149])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iKA7nlHW"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A4CBA30;
-	Thu, 18 Jan 2024 07:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9488947A;
+	Thu, 18 Jan 2024 07:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705563579; cv=none; b=Lgbgx3W6phJiywfttb7Pe4MbLq+Smk25+EFNLkR82byc8v7AYHSfN2+EiSaECKlhA86QGx7KZYOMFdFdZJYJyPsVrVn5xedqAtH/wNLfEZ+S4N0GlPIBwYNQCH3JiUJh6h42P0jwWihIwkLFSVeBH63xPz255hkp1F+ie1miudY=
+	t=1705563338; cv=none; b=HaIu9sffC5rxgbUwAVigm7zbnpnEW6rDQDyhwWTlDr4mFNOQYAQRXO0Zst8YhvNXTTWLqTBd9pb2iQrLpHWS/3B8PQAlvs02jIbllPNksVPRuDLSR27pGI+ShQ1h0Wtb43885KVyP7arP9uQePNLCdv6uJeim3zSAEcxShjqKn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705563579; c=relaxed/simple;
-	bh=Kx7sR29tnRaLNojoCF18ToW2lJnA5TVBRtwOfQmUQpQ=;
-	h=DKIM-Signature:Received:X-QQ-mid:Message-ID:X-QQ-XMAILINFO:
-	 X-QQ-XMRINFO:X-OQ-MSGID:Date:MIME-Version:User-Agent:Subject:
-	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=jcHSdIJuMByncI0LlrdgkQS9J6SEXL2aLuJ6AMqYb5tnQsUkmB07dl/6Um1rxVPKN2l2fjtArwgEEf7Noor4UyB/Y/0cqSteFLQCsrhEUdFMNwEKSN5DMVuiilsz6FHQenERb0ucY0YQYS0daBIGYAhzRNyXf3yxGSBDMQxCk5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=UzkzYM/O; arc=none smtp.client-ip=203.205.221.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1705563568;
-	bh=U1htK6EddZlHF9aOrwhZ47HPx0c/qh7tu7sPPx5SMf0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=UzkzYM/OBdlUAqZ05HD5yEKMS2O3wW6SOdMUnyRCFQteTChqnEuprnMfEm/55u7QP
-	 llLHU9L75Bsr8MllGkBXHbqEw44xxfeT0Tq8iWemdxzO2qFcbPEjqGNJbsks48aN3j
-	 OVFCJDD3rbTfPmPAnC0bQivD9iES/vSy7vG2MpJ4=
-Received: from [192.168.3.231] ([116.128.244.171])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id 852B3800; Thu, 18 Jan 2024 15:33:18 +0800
-X-QQ-mid: xmsmtpt1705563198tlv6dervy
-Message-ID: <tencent_0681F9CE96CDCF741BD6ECA4C401EC4CCB09@qq.com>
-X-QQ-XMAILINFO: NvH2zBBgt3uTSDX7e0PNwbch0pg1bNQJWKJsIoeMvlDntNRnq0xc5R+pdmEKIf
-	 gyJIIcZrgdv+pO0F1OBL8qUQC7t7CYHa9B1/U8G46DAaTdiha3Kyf4fCuxeJa5WiZ01Mi02tYM0r
-	 VfuSRdSdl7gKtHMrRmoVJXUPfPGsDkbzeQh2X81MeF3/l6A8crTL2FrggZG+54dhj5RvBAWSv4TI
-	 bcr1xbOeQv/a8VKYiCS9zRvSBLwUO/X1JxmBv+0g9ECbbnMR5lqHUEuyWt7K6/XRQ6aK/y3K6eza
-	 cwuLXwU8lsIgzevz5Y2EejxmdX6DxOa2wtmXTHK7Bvc1Ofmr4b00pg9byZ281VGEtrvAB5lHyfh3
-	 yeXkg/K9g6g8wPNow5McOQ8NCp6/hHlN9NfJerLbzU1yCGYrH46dNH0nk6EYx1/imwbWrcFllnYr
-	 B7i5ZBSXbMr87SStkIiEKqjGs5PvCRLW5Yo0rMiGc3nMqhDIieI5HA8nWXN8mscOJY6SzCsYkszA
-	 a4f8lgxG7GdU6IwGYrMuBKyQszAihuEeQgBbqRbH+dMUpc7EQhwB9cERszuzt54SoY/CIZz5LQ+m
-	 TMd1VUKDMNAgnj2QQuAsbnsIv1lKkXHmmV7RSkK4fRDg5ap7Hh/vwY4xQ6E3bM7nzXvU8Vk7uu5O
-	 RtaCth6a5jxqhuZOyt0HQO8bQH4NtXcsuVkAY0rxtbjROEn4mw5QnpV/J1vM3tgQ2fOj42PmDh+x
-	 xCcNbWq1ybs+e3Wv1xZfr4jJAeTA/OA27yDhKGFaXp9Me3EAvjuk/vqoB3q2a5L/LuP5H5y1sLa+
-	 wBGcJ/ceEWWE94ocjk7Vg10uiCmOVL1blD8t9m90K7sNTFUKSEnoJyG11Mw3hSKYhaxYFIrD4xE2
-	 vCxC4+UKi5nxl2D8L+TaDDsyEH3LPhM13tafOf8HY8xnZINDtL/ob06mIM+b3R8XqvBHDmZvYW7a
-	 zpqCj3MuIsZWbqNoL59nt14/TjTnsz4d/sK/J5DxJgd17qhFIU4o9dw2nbB9c8
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-X-OQ-MSGID: <fafc0369-639c-45aa-8eaa-5f67b86590ae@foxmail.com>
-Date: Thu, 18 Jan 2024 15:33:17 +0800
+	s=arc-20240116; t=1705563338; c=relaxed/simple;
+	bh=OX3x/t7S5eYlemp0ECxrgPOLlFI4fZcRLUMx0aAs7nI=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:Date:From:To:Cc:Subject:Message-ID:
+	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding; b=o0MjZU7Tlj6lmtyow6RWWFOAcHPHfzU9QgfO8kYW+blL7/72SocnFWCnnvIVVp4mk4UP8G5x3mtuhYz2bvvP93wwrOeyiO5ftpaKPI4/Y8UbNGzHJctYlXNvdSnigjiadxVEcNOhnEfeLqBsH0l9APKBvk1FjdsD004e2g0Yqf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iKA7nlHW; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705563336; x=1737099336;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=OX3x/t7S5eYlemp0ECxrgPOLlFI4fZcRLUMx0aAs7nI=;
+  b=iKA7nlHWLI9Q22jR603zMvvMhyViy6ILJuOPm7YQZQd7S2lheIt1K606
+   AunPK/fnksvZa7kWdBZSSKKWW1eitXw5kJMekUSj23oKLhjGYmmLkz5D/
+   wPuluL3YiKjUADTvk/iikXU+FFp/GCIfRGezE3/GQXphj3K70eTgkn0Is
+   30+qhMj05laAbDe17irKF3YNK5apP9br6j2Z0LY5VEgfhZcmGgKdgj1Pi
+   UxBxjMKfsegK18JQgxUAqqVnK4QaeP+ode3r6f/tW2x8IQVPPxL3AcwEf
+   0yokM6o/d6zfxAQ5qvRvtOFMDU2Y5ZvyE7MK+Jz6XS0rLNkfpvRGdqtcS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7067652"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="7067652"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 23:35:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="26391581"
+Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.245.82.157])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 23:35:33 -0800
+Date: Thu, 18 Jan 2024 08:35:25 +0100
+From: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
+To: linan666@huaweicloud.com
+Cc: song@kernel.org, shli@fb.com, neilb@suse.com, zlliu@suse.com,
+ linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+ yangerkun@huawei.com
+Subject: Re: [PATCH v2 1/3] md: Don't clear MD_CLOSING when the raid is
+ about to stop
+Message-ID: <20240118083525.00002b15@linux.intel.com>
+In-Reply-To: <20240117093707.2767209-2-linan666@huaweicloud.com>
+References: <20240117093707.2767209-1-linan666@huaweicloud.com>
+	<20240117093707.2767209-2-linan666@huaweicloud.com>
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Question about btrfs no space left error and forced readonly
-Content-Language: en-US
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: chenxiaosong@kylinos.cn, liuzhengyuan@kylinos.cn, huhai@kylinos.cn,
- liuyun01@kylinos.cn, zhangduo@kylinos.cn, liuzhucai@kylinos.cn,
- zhangshida@kylinos.cn
-References: <tencent_0C621A54ED78C4A1ED4ECA25F87A9619CE09@qq.com>
- <2870e41e-c0a8-4ab4-baaa-bbffbcd1e6a4@gmx.com>
-From: ChenXiaoSong <chenxiaosongemail@foxmail.com>
-In-Reply-To: <2870e41e-c0a8-4ab4-baaa-bbffbcd1e6a4@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 2024/1/18 15:07, Qu Wenruo wrote:
+On Wed, 17 Jan 2024 17:37:05 +0800
+linan666@huaweicloud.com wrote:
+
+> From: Li Nan <linan122@huawei.com>
 > 
-> And `btrfs fi usage`, `btrfs fi df` output, along with `btrfs check
-> --readonly` if possible.
+> The raid should not be opened anymore when it is about to be stopped.
+> However, other processes can open it again if the flag MD_CLOSING is
+> cleared before exiting. From now on, this flag will not be cleared when
+> the raid will be stopped.
+> 
+> Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called
+> md_set_readonly or do_md_stop") Signed-off-by: Li Nan <linan122@huawei.com>
+> ---
+>  drivers/md/md.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 9bdd57324c37..4bf821b89415 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -6254,7 +6254,15 @@ static void md_clean(struct mddev *mddev)
+>  	mddev->persistent = 0;
+>  	mddev->level = LEVEL_NONE;
+>  	mddev->clevel[0] = 0;
+> -	mddev->flags = 0;
+> +	/*
+> +	 * Don't clear MD_CLOSING, or mddev can be opened again.
+> +	 * 'hold_active != 0' means mddev is still in the creation
+> +	 * process and will be used later.
+> +	 */
+> +	if (mddev->hold_active)
+> +		mddev->flags = 0;
+> +	else
+> +		mddev->flags &= BIT_ULL_MASK(MD_CLOSING);
+>  	mddev->sb_flags = 0;
+>  	mddev->ro = MD_RDWR;
+>  	mddev->metadata_type[0] = 0;
+> @@ -7728,6 +7736,12 @@ static int md_ioctl(struct block_device *bdev,
+> blk_mode_t mode, 
+>  	case STOP_ARRAY:
+>  		err = do_md_stop(mddev, 0, bdev);
+> +		if (!err)
+> +			/*
+> +			 * mddev has been stopped, keep flag the
+> +			 * MD_CLOSING to prevent reuse.
+> +			 */
+> +			did_set_md_closing = false;
 
-The environment has been restored by rebooting the system, and there is 
-enough disk space after rebooting the system.
+Hello Nan,
+The meaning of the "did_set_md_closing" is to notify that MD_CLOSING was set in
+this function, to know how to behave on error.
+You gave it another meaning "Do not clear MD_CLOSING because we want it to stay"
+Please consider how to solve this confusion. I see the comment you added but I
+think we can have this solved better, maybe just name it as "clear_md_closing"?
 
+Anyway it looks acceptable to me:
+Acked-by: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
+
+Thanks,
+Mariusz
 
