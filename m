@@ -1,89 +1,124 @@
-Return-Path: <linux-kernel+bounces-30001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D02B831686
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:15:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6CA683168A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:17:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2A70B21B73
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:15:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A31E91C20F68
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 911E4208A6;
-	Thu, 18 Jan 2024 10:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="00BPwWzh";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OhyBShu3"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49ADC208B3;
+	Thu, 18 Jan 2024 10:17:13 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D0720B01;
-	Thu, 18 Jan 2024 10:14:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBD620339
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 10:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705572899; cv=none; b=qthGXFc7mAum8KuWrzxpu3vHss9kLQccuDchEni1H1Alf/F9Pb+teMmFxh+CTMMF8HMgMlhLG0tdCuZjH/M8vLQc8px8uq+0/l/aS8rMthhLrBPiL/a2m8py8fcHnJTM6uPmEsdeM7Cw4xkqEJj1ejKVqoumcQP/65H2k9MmYtY=
+	t=1705573032; cv=none; b=SgZL5Arl5ApctWFo9c61UbGoRwQyOHZM/T5DDXl7z2kRIV4US0anC2DwRMyJJcJhmBdmuNZtw9u0/ONJFmG+Jhx24lRCW86lMRYjAqwB//l36PuvTMM7bjA3iISiCAyA3w7V+clMVUR5c4616CRWfsCvYlRvfeyKOjVSt8xZA2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705572899; c=relaxed/simple;
-	bh=khhLqmve9Id0BgYdRyMNy+0ycxyLazuWpvl/uJGui2g=;
-	h=From:DKIM-Signature:DKIM-Signature:To:Cc:Subject:In-Reply-To:
-	 References:Date:Message-ID:MIME-Version:Content-Type; b=lXHqzDSTDHYCWL7K1MqxBVfdaJFKq5BAEwresor8mArEmJe4mnu0cIpbeRpNTAdXysTVGkQkZCe0DeCDZSZpZsWsOtHdH5VM/du4aQBMi2cwWxoHryYKiCGyHcloKMegXfwx0b5LTw178wCdRt0Z2k4U+CExrlIIAqi8PE1h3oA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=00BPwWzh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OhyBShu3; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705572895;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JzaKwCLLcrV0lAUYdlCr9JKsNWWBaBuoPxIK1F3gv1E=;
-	b=00BPwWzhkm3L0MmROW6y6HEAbXbRET4sA0iC4Ai+lQv/jzdbl6G34U8dq8Pn3jZs273ZCv
-	jRfhj0P6znPdKYDQrSt5Zif98zDwD9BrD9lXcwdg339ojVdSCOb59sbOlq06APX/HVDr60
-	kZ8easq3iyu0BHyPy+ap7CceMr/hLd5ZhgWTb4s9M99CECwPoYgCVPNoe2CICOeUuMtnOR
-	l5MBvzUU0UNhDcO1sw5VNYvczARNX7wfenFF+zfmJzH1RKD1GhDahNZp+Q2OYSbM9b+l6h
-	enBYTToQzEtWNsNxJegZOXJaUhuaJ1bghnjr9dhUTMfz9F2gfMnnzHwKC5LDlQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705572895;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JzaKwCLLcrV0lAUYdlCr9JKsNWWBaBuoPxIK1F3gv1E=;
-	b=OhyBShu3/6Q8I7chxynESX5SoYFTFP7rL4vBWYHnn8kw6OFW3gCs8YvDfD25+ChfzGY85O
-	AQlsAppiMfXfY+Bw==
-To: Sreenath Vijayan <sreenath.vijayan@sony.com>, corbet@lwn.net,
- gregkh@linuxfoundation.org, jirislaby@kernel.org, rdunlap@infradead.org,
- pmladek@suse.com
-Cc: rostedt@goodmis.org, senozhatsky@chromium.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, taichi.shimoyashiki@sony.com,
- daniel.palmer@sony.com, anandakumar.balasubramaniam@sony.com,
- sreenath.vijayan@sony.com
-Subject: Re: [PATCH v3 1/2] printk: Add function to dump printk buffer
- directly to consoles
-In-Reply-To: <87le8nas4f.fsf@jogness.linutronix.de>
-References: <cover.1705331453.git.sreenath.vijayan@sony.com>
- <402f0cbc3a573503c7cc794113aa5137ed7f276c.1705331453.git.sreenath.vijayan@sony.com>
- <87le8nas4f.fsf@jogness.linutronix.de>
-Date: Thu, 18 Jan 2024 11:20:54 +0106
-Message-ID: <87fryvaqxt.fsf@jogness.linutronix.de>
+	s=arc-20240116; t=1705573032; c=relaxed/simple;
+	bh=nvH/+q2N6Cd7sJKxG0KRQwvC9INP3R9zrgZljiQfg4g=;
+	h=Received:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To:X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:
+	 X-SA-Exim-Scanned:X-PTX-Original-Recipient; b=WkJEI2dfJ+Larnb9MtIWMXkWqSlDXsyD28dy0UGIH65G7ngPT9tfgWIqedpJaTSLXFUaikcUQGyHe6b7a/4joOCjDi3qxbsg95KD2OrpoD/9xHxjPsOuI/A9QHgMuaSYSUeXCumZmGqW6IJxvW2+jQjnKtyfzj/4qFjGlgpVPYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rQPS8-0006ET-BN; Thu, 18 Jan 2024 11:16:52 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rQPS5-000fSu-VC; Thu, 18 Jan 2024 11:16:49 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rQPS5-002KPs-2m;
+	Thu, 18 Jan 2024 11:16:49 +0100
+Date: Thu, 18 Jan 2024 11:16:49 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Dharma Balasubiramani <dharma.b@microchip.com>
+Cc: conor.dooley@microchip.com, sam@ravnborg.org, bbrezillon@kernel.org, 
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, 
+	daniel@ffwll.ch, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
+	claudiu.beznea@tuxon.dev, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, lee@kernel.org, 
+	thierry.reding@gmail.com, linux-pwm@vger.kernel.org, linux4microchip@microchip.com
+Subject: Re: [PATCH v3 2/3] dt-bindings: atmel,hlcdc: convert pwm bindings to
+ json-schema
+Message-ID: <kht2fxv2fbeod4pakk6q6m4gthftdr6asjqjojgb45kqlsrxpl@37umfctsorhs>
+References: <20240118092612.117491-1-dharma.b@microchip.com>
+ <20240118092612.117491-3-dharma.b@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ctdxky3tp4klhg4f"
+Content-Disposition: inline
+In-Reply-To: <20240118092612.117491-3-dharma.b@microchip.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Oops, for the current mainline code it is actually even simpler because
-the console_unlock() will perform the flushing:
 
-void dump_printk_buffer(void)
-{
- 	console_lock();
- 	console_rewind_all();
- 	console_unlock();
-}
+--ctdxky3tp4klhg4f
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-John
+Hello,
+
+On Thu, Jan 18, 2024 at 02:56:11PM +0530, Dharma Balasubiramani wrote:
+> Convert device tree bindings for Atmel's HLCDC PWM controller to YAML
+> format.
+>=20
+> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+I will update the short log to
+
+	dt-bindings: pwm: atmel,hlcdc: Convert bindings to json-schema
+
+to match my preferences (unless you object) and apply for next after the
+merge window.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ctdxky3tp4klhg4f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWo+pAACgkQj4D7WH0S
+/k6GLwgAs+MEUZnzvgpfyAgXp1x4fFMoEQokVCvLZGX1tqfXkY1UtYujR0eCWFH1
+8LqCQTya4u1FnUv3c9zMTZ51NINu2hGoc7sbrKI9pTmrgbvB4JXUr+0Plu5NpHHo
+OCFoUuJ4X5z/p38sAvExr34RA0jfKMjJQ24bHzmxda+GfqyDVIeazpzmmbf8YItE
+2YQcxyKA3QvSRtscHT3ORpfIifhKfqbxQ733K3pu7koLfRBbjg93ytSR0FZ/IRVd
+MdcqAYpwDjhx4J0aufPMuCBevj2xTPHqBGL9CPMKXeyOr5H9bpIC3A2J20VcjUD1
+QslvGv7SwhqVJW5C2RCytH5l9gQJoQ==
+=3SAX
+-----END PGP SIGNATURE-----
+
+--ctdxky3tp4klhg4f--
 
