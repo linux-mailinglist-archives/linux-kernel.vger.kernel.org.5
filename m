@@ -1,231 +1,183 @@
-Return-Path: <linux-kernel+bounces-29717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 325C0831254
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:22:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF5E831257
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 06:23:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C71ECB2321C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 05:22:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 951CE1C21B66
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 05:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C6F8F4F;
-	Thu, 18 Jan 2024 05:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F078C8F52;
+	Thu, 18 Jan 2024 05:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="iJvo62KA"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2064.outbound.protection.outlook.com [40.107.117.64])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X/oWadan"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB7753A8;
-	Thu, 18 Jan 2024 05:22:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705555351; cv=fail; b=KLhcLkWvtKKLh+yelhW2B0nuBTD00aJlict0pq6dIZyjnubwHUUajT5+rLgMfw8YBbAUWHXQf8aIUPGZthg7teL/TIIXtPyeoXiMFjrVc1OZp3tL9IMpaVhQ9CRYOKOrpb3BiNaUGBaQVjvuEAw0+jUGQMq6VojfHo7M85m0JC0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705555351; c=relaxed/simple;
-	bh=iBeygL9hk7iSNyr50yFQ98ozkkcOtBhgdMMORRfhoYc=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:X-MS-Exchange-Authentication-Results:
-	 Received-SPF:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding:X-EOPAttributedMessage:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:Content-Type:
-	 X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=f8xwSQrOujYGrk+N62BjR4Bl4E8c1OUFuw7XV4tgka7v2nrrZ6z0WUC9BlPOWBVKY4rf5jppBly1G/fKpNqWlx3UJrLPxb8J9Gm1dyLV8iS3bbEMbsw1AmRC4AcQePFsZMjH7crej4lRrNw9AikBVUum8PyQqVLG4EHnFIUkxWs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=iJvo62KA; arc=fail smtp.client-ip=40.107.117.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hizz01/m0guGbMq5g+OJSftneRPZ7lyqGh5A/OjXys84L9/hC0UQr+RQn0P0tFVeTuSbvrFA8QBnKARUZJLp1KqVOmRfd/FCI+T+YcvSrFSORU/jDX5gCF5EqOz+UpeYa9qOUC+HLbvEjQF3niA7EVyVMLvirlW+/XPlceOa71hUrtpIYE5TPrlQo1KkfjazGnfW4tzdotg8gbLXpfghj6QUNTf/7DTvGAo87qnhH8GUHYTKp+kqU6reTDG0vUQGOC9ClEG3xBgqvSY3gfrwnw9HApFE3TSop68X8GFsi05szna0WbCDTPL3/53QebDqkKcMZJ2tV84Uf35Vm61sFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MS5PSOJsuj2MzX08hFUsBUhDuZi4V4KWE+DnawiBK08=;
- b=a+okxdtc4X3Um/RH4LKAnpeEo37g4iHw2tvK5P/YRyYwZ7yq9/2WPwCBpTciS5BIk5bAcbK4hcyyZr1ANeK8Rss2jRVy5Y7aW7JLwM95E5rd6vTwUbXmBAAb5d0/aI+7yKEZcWm6NLFf17sHzo3liHNqWnnJhhpMZJSInqVZUdAG1QE6qjyGGzs1xoI+PS0EczYGSV3y8fOhsj/Fwgmd/+DAu+b8S/+VTg47BVW0A0DUgtDjj9nD6LjOpNBDDvwl4Nb14cB3XVKvzF1n+HSGAOP7xxHpASRGnKGgyhy5G/oTyWR5f10J9m5lmZyANtq2fagjOyymOUqyrbqBaJjNdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MS5PSOJsuj2MzX08hFUsBUhDuZi4V4KWE+DnawiBK08=;
- b=iJvo62KAA+HBSyRN8XMdLcVyMSY4xpPqtg+dK41g8cwN30l9MAdR6QWrUOxVkUe6JjZcpub4lSBf8AUONqYiGPsXCBk58syUyHVT1TBzWFF9m+sc9IQzSHCdcMzRFRXhZASqkcuXl9NPFWrhp3w3a5QrVemb1m7mlKaBIv1MtXd46HiZlU5NyBlPTAaEwSZ1sFzKMRvmDKt4D1Gtc2hxjU6QYxOFc3LPro+lL6TxaJYXFQ2mbZRpakb1oiMhIaYgxWEkwj1bYp5NZuFiopjHFPVqLLKgT3T2LXQAfPyduLjS5eDFiasUigU/ZW11foedq7jGITU3XDqodHoHTpQP2g==
-Received: from SI2PR01CA0015.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::15) by TYZPR04MB4174.apcprd04.prod.outlook.com
- (2603:1096:400:2d::5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Thu, 18 Jan
- 2024 05:22:24 +0000
-Received: from HK3PEPF0000021B.apcprd03.prod.outlook.com
- (2603:1096:4:191:cafe::4f) by SI2PR01CA0015.outlook.office365.com
- (2603:1096:4:191::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24 via Frontend
- Transport; Thu, 18 Jan 2024 05:22:24 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK3PEPF0000021B.mail.protection.outlook.com (10.167.8.37) with Microsoft SMTP
- Server id 15.20.7181.14 via Frontend Transport; Thu, 18 Jan 2024 05:22:23
- +0000
-From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To: patrick@stwcx.xyz
-Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] NCSI: Add propety : no-channel-monitor and start-redo-probe
-Date: Thu, 18 Jan 2024 13:22:20 +0800
-Message-Id: <20240118052220.1906721-1-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF186FBC;
+	Thu, 18 Jan 2024 05:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705555404; cv=none; b=ZrdRxl504ecIo8RCK6IQfu0ZB0pujLHUty3gUQvullPTh5vuPVlbinfZyR6qh2/sXx4aQRAZolIWNzPyRfUDJm0GDksYHiF44pAmHwimoP5f7I8KdQRBaHRDJupG6mw6mz8ZMIQZsNDLAHA6lkHPhYd80w5dLr8AlwtdTlSiBS0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705555404; c=relaxed/simple;
+	bh=x/6No842LSfCPrLeri6/s3ezEv75k2+9QtC8rEcULB8=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=n0EeREYgNGN7cpXiCfGbnZKuZmz0DCb0SjlKTV+rmBLPB/7Taxdedj6+ioju48mpgskV6WpL3kWO5R0/dIu7ohAy/ueKLgvlHLAhq5sfGb/DxBeAPFGsk7Cy62NvF6kKUqhXIGC2AuRx+oMi+8CghlqhBYSyav38s6M6Qht2IO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=X/oWadan; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705555402; x=1737091402;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=x/6No842LSfCPrLeri6/s3ezEv75k2+9QtC8rEcULB8=;
+  b=X/oWadan1tGPzrQwSu4H3DjH5Yp6QU+B7g4JFM+R9T47x0otkONtykku
+   JS3vdZ64RUTdcY/crqa/lTOYRJ8G0UPurWYoM+l/+MCmkUthuyTv8/PB4
+   WkHz43l5of122zE8JVsUK909LZ03lX91vWrs4kwbTQxwlLIaDJaikjRtH
+   B7edSM70GrrfgW/o65wfsaVDdG5VK5+oCUzT3liN5IPYgR7NOi0EmBguZ
+   8Kvg+n9nGgAtpOvdGxtDGPRIdATBPrFyr1sywOdIPqG9NLy9NlMpf6se+
+   sPGuy+UMvIQEAVvOHMu8KccrW95fpbPEFdGV+fmDsFkEaUMFQZCn2zzE/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="390802140"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="390802140"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 21:23:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="1031539496"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="1031539496"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Jan 2024 21:23:14 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rQKrw-0002g1-2H;
+	Thu, 18 Jan 2024 05:23:12 +0000
+Date: Thu, 18 Jan 2024 13:23:03 +0800
+From: kernel test robot <lkp@intel.com>
+To: Alexander Graf <graf@amazon.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-trace-kernel@vger.kernel.org,
+	linux-mm@kvack.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kexec@lists.infradead.org,
+	linux-doc@vger.kernel.org, x86@kernel.org,
+	Eric Biederman <ebiederm@xmission.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Ashish Kalra <ashish.kalra@amd.com>,
+	James Gowans <jgowans@amazon.com>,
+	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
+	arnd@arndb.de, pbonzini@redhat.com, madvenka@linux.microsoft.com,
+	Anthony Yznaga <anthony.yznaga@oracle.com>,
+	Usama Arif <usama.arif@bytedance.com>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v3 14/17] tracing: Add kho serialization of trace events
+Message-ID: <202401181352.qC85XHgx-lkp@intel.com>
+References: <20240117144704.602-15-graf@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK3PEPF0000021B:EE_|TYZPR04MB4174:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 1439d3e7-e7e4-41d8-fe43-08dc17e573d5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	e18XHtmTjqmu9zBm7wCB9B3MGuYQAijqH0/8X9eweyze371p6Yf2Qzp73qMRxngIVfDCSev77DeXUQ2fPfAhLpcjiQ3N8vP+xCy+N0GJBbQDVm85Xm2uViLl6RC8f5IcPVGUdHEiHWXUfyXXEG42SHWj9sGc/RQZWIwY6gVmSPGb6raa1EIB/hCsda7Vl2bRzCvnGDx9RS8IvJI9GG4uZS2kscE+CHY6bUXq3JW/+4TTFbbgt0gMisMtCBHegwqOKjtnGHQ1khDnOk02tT6MEVqSSU+SR2XqCC8v+uuOwwUHOXh2eB37M1+mr/JE6GFNxLQ1x7QWmXaspm08lUUxxYjhbOoyKap6DjbcePQb9G9bxp/vNSEtaLND6D4vHQ+j+mYHjzgwy1oIUHI3hMzTa5swplxrgp/9akvvi7CS5zgn1Zi9W8OzmxlRzuE+1ju+MXksONOHp6SW4hiZx9dl9JiSxlYL8oUfvDdcLSfrYr1/X9WZQ/jm7VhK1gM/iXalm2euVJd/9ymrbh8yFOIqEoRIbHOulStAw5g4uMdaPilrd5CEnkEm2EQzcuMceWCqWyAYJg4zXn/6fA3iAKZPL9iL6WyCNIh7omxryv3VRZl73g2tEa/uIC9Ze8uAUwAUiJxytb8C24mhkegkTvfA/RE2N/BOGKblj5/9s5prhI6pyBaN6hIpJLHWINgwR8P23iZXpWN1ZS2g0eHzufcwlg==
-X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(39850400004)(136003)(376002)(396003)(346002)(230922051799003)(1800799012)(451199024)(82310400011)(186009)(64100799003)(46966006)(36840700001)(2906002)(9316004)(4326008)(5660300002)(41300700001)(81166007)(86362001)(356005)(82740400003)(478600001)(6486002)(36756003)(83380400001)(6512007)(6506007)(26005)(336012)(956004)(1076003)(2616005)(47076005)(36860700001)(6916009)(316002)(8676002)(8936002)(70586007)(70206006)(54906003)(36736006)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 05:22:23.6246
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1439d3e7-e7e4-41d8-fe43-08dc17e573d5
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource:
-	HK3PEPF0000021B.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR04MB4174
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117144704.602-15-graf@amazon.com>
 
-Add property start-redo-probe to redo probe, because Mellanox cx7 nic card
-cannot't get mac address after nic card hot-plug.
-Setup start-redo-probe property so that nic card can get MAC address again.
-Also setup no-channel-monitor property so that the log won't keep
-popping up when nic card host-plug.
+Hi Alexander,
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
----
- net/ncsi/internal.h    |  6 ++++++
- net/ncsi/ncsi-manage.c | 25 +++++++++++++++++++++++--
- 2 files changed, 29 insertions(+), 2 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/net/ncsi/internal.h b/net/ncsi/internal.h
-index 03757e76bb6b..a605271e04b4 100644
---- a/net/ncsi/internal.h
-+++ b/net/ncsi/internal.h
-@@ -199,6 +199,11 @@ struct ncsi_channel_stats {
- 	u32 pt_rx_os_err;	/* Rx oversize errors         */
- };
- 
-+enum {
-+	NCSI_CTRL_FLAG_NO_CHANNEL_MONITOR	= 0x0001,
-+	NCSI_CTRL_FLAG_START_REDO_PROBE		= 0x0002,
-+};
-+
- struct ncsi_dev_priv;
- struct ncsi_package;
- 
-@@ -340,6 +345,7 @@ struct ncsi_dev_priv {
- 	bool                multi_package;   /* Enable multiple packages   */
- 	bool                mlx_multi_host;  /* Enable multi host Mellanox */
- 	u32                 package_whitelist; /* Packages to configure    */
-+	unsigned int        ctrl_flags;      /* NCSI control flags */
- };
- 
- struct ncsi_cmd_arg {
-diff --git a/net/ncsi/ncsi-manage.c b/net/ncsi/ncsi-manage.c
-index d9da942ad53d..21a4b4db3cdc 100644
---- a/net/ncsi/ncsi-manage.c
-+++ b/net/ncsi/ncsi-manage.c
-@@ -1211,7 +1211,8 @@ static void ncsi_configure_channel(struct ncsi_dev_priv *ndp)
- 		ndp->hot_channel = hot_nc;
- 		spin_unlock_irqrestore(&ndp->lock, flags);
- 
--		ncsi_start_channel_monitor(nc);
-+		if (!(ndp->ctrl_flags & NCSI_CTRL_FLAG_NO_CHANNEL_MONITOR))
-+			ncsi_start_channel_monitor(nc);
- 		ncsi_process_next_channel(ndp);
- 		break;
- 	default:
-@@ -1779,6 +1780,7 @@ struct ncsi_dev *ncsi_register_dev(struct net_device *dev,
- 	INIT_LIST_HEAD(&ndp->vlan_vids);
- 	INIT_WORK(&ndp->work, ncsi_dev_work);
- 	ndp->package_whitelist = UINT_MAX;
-+	ndp->ctrl_flags = 0;
- 
- 	/* Initialize private NCSI device */
- 	spin_lock_init(&ndp->lock);
-@@ -1804,8 +1806,14 @@ struct ncsi_dev *ncsi_register_dev(struct net_device *dev,
- 	if (pdev) {
- 		np = pdev->dev.of_node;
- 		if (np && (of_property_read_bool(np, "mellanox,multi-host") ||
--			   of_property_read_bool(np, "mlx,multi-host")))
-+			of_property_read_bool(np, "mlx,multi-host")))
- 			ndp->mlx_multi_host = true;
-+
-+		if (np && of_get_property(np, "ncsi-ctrl,no-channel-monitor", NULL))
-+			ndp->ctrl_flags |= NCSI_CTRL_FLAG_NO_CHANNEL_MONITOR;
-+
-+		if (np && of_get_property(np, "ncsi-ctrl,start-redo-probe", NULL))
-+			ndp->ctrl_flags |= NCSI_CTRL_FLAG_START_REDO_PROBE;
- 	}
- 
- 	return nd;
-@@ -1815,11 +1823,24 @@ EXPORT_SYMBOL_GPL(ncsi_register_dev);
- int ncsi_start_dev(struct ncsi_dev *nd)
- {
- 	struct ncsi_dev_priv *ndp = TO_NCSI_DEV_PRIV(nd);
-+	struct ncsi_package *np, *tmp;
-+	unsigned long flags;
- 
- 	if (nd->state != ncsi_dev_state_registered &&
- 	    nd->state != ncsi_dev_state_functional)
- 		return -ENOTTY;
- 
-+	if (ndp->ctrl_flags & NCSI_CTRL_FLAG_START_REDO_PROBE) {
-+		nd->state = ncsi_dev_state_probe;
-+		spin_lock_irqsave(&ndp->lock, flags);
-+		ndp->flags &= ~NCSI_DEV_PROBED;
-+		ndp->gma_flag = 0;
-+		spin_unlock_irqrestore(&ndp->lock, flags);
-+
-+		list_for_each_entry_safe(np, tmp, &ndp->packages, node)
-+			ncsi_remove_package(np);
-+	}
-+
- 	if (!(ndp->flags & NCSI_DEV_PROBED)) {
- 		ndp->package_probe_id = 0;
- 		nd->state = ncsi_dev_state_probe;
+[auto build test WARNING on linus/master]
+[cannot apply to tip/x86/core arm64/for-next/core akpm-mm/mm-everything v6.7 next-20240117]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Alexander-Graf/mm-memblock-Add-support-for-scratch-memory/20240117-225136
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20240117144704.602-15-graf%40amazon.com
+patch subject: [PATCH v3 14/17] tracing: Add kho serialization of trace events
+config: i386-randconfig-141-20240118 (https://download.01.org/0day-ci/archive/20240118/202401181352.qC85XHgx-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240118/202401181352.qC85XHgx-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401181352.qC85XHgx-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/trace/trace_output.c:731:12: warning: unsequenced modification and access to 'count' [-Wunsequenced]
+     731 |                 map[count++] = (struct trace_event_map) {
+         |                          ^
+     732 |                         .crc32 = count,
+         |                                  ~~~~~
+   1 warning generated.
+
+
+vim +/count +731 kernel/trace/trace_output.c
+
+   710	
+   711	static int __maybe_unused _trace_kho_write_events(void *fdt)
+   712	{
+   713		struct trace_event_call *call;
+   714		int count = __TRACE_LAST_TYPE - 1;
+   715		struct trace_event_map *map;
+   716		int err = 0;
+   717		int i;
+   718	
+   719		down_read(&trace_event_sem);
+   720		/* Allocate an array that we can place all maps into */
+   721		list_for_each_entry(call, &ftrace_events, list)
+   722			count++;
+   723	
+   724		map = vmalloc(count * sizeof(*map));
+   725		if (!map)
+   726			return -ENOMEM;
+   727	
+   728		/* Then fill the array with all crc32 values */
+   729		count = 0;
+   730		for (i = 1; i < __TRACE_LAST_TYPE; i++)
+ > 731			map[count++] = (struct trace_event_map) {
+   732				.crc32 = count,
+   733				.type = count,
+   734			};
+   735	
+   736		list_for_each_entry(call, &ftrace_events, list) {
+   737			struct trace_event *event = &call->event;
+   738	
+   739			map[count++] = (struct trace_event_map) {
+   740				.crc32 = event2fp(event),
+   741				.type = event->type,
+   742			};
+   743		}
+   744		up_read(&trace_event_sem);
+   745	
+   746		/* And finally write it into a DT variable */
+   747		err |= fdt_property(fdt, "events", map, count * sizeof(*map));
+   748	
+   749		vfree(map);
+   750		return err;
+   751	}
+   752	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
