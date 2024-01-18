@@ -1,125 +1,111 @@
-Return-Path: <linux-kernel+bounces-30386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5774B831E0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:00:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD4F0831E0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A44E61C21371
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:00:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DC051F23136
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54BF2D7A7;
-	Thu, 18 Jan 2024 16:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5CB2C84D;
+	Thu, 18 Jan 2024 16:58:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oVlNCGgM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AXAHcms6"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6622CCD1;
-	Thu, 18 Jan 2024 16:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11DA2C6B8
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 16:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705597106; cv=none; b=qCtecmZTYDswLEk4E0crXRhWa0g1g+WBBu/2hLsa55ljw14ZaLJbYZyUhIJIyESx+tx3rbIBWnwRfR9oLHfp5VVpd42wk+Yl/ErPAKpCFBD38g0sNMI0S+4q7kjO9mBc10z6ZwP96KycOSjV43++NQDz1dslMaG20buYxJsxA8I=
+	t=1705597125; cv=none; b=WZ4hFNrtySWofoWUoLcTDvq+bNq8wdNq9yU4mRoufswtUH+9vSbMG09FAmFoZImRd7QFzno5FSycCqMy5H6EbwwFqnC0QePpok0ez/8Wcwrkfj0xXZtHSyGelm+9aK+oyF+S4ZCly//Qj1azpjpE4bc6S35QqisuJpPexV+uSC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705597106; c=relaxed/simple;
-	bh=XqnUEmyZpWIygAVvpTrPmcqqd9rd5+DfFZrkq8MtP5c=;
-	h=Received:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding; b=M17iMmTIwvwjBPmA9zxJJS2Idy6nEhfJOkv8Y/114r90/PtqsR/zBi9mTRQEx70mdq4ePxU9Km9VbXCeVHJAoCQBjAssaxTI/sKymJPohVHobpDkPSdLWa6aicqz9RCoze42xSVS/Fojo4/0uaLJeKpogn0kdOBdSrh7RRFm38w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oVlNCGgM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8118C43399;
-	Thu, 18 Jan 2024 16:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705597105;
-	bh=XqnUEmyZpWIygAVvpTrPmcqqd9rd5+DfFZrkq8MtP5c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oVlNCGgM9k5EJKY9p0X+kAZGLgyEu12I/iszIVU2VW44hAO8wyqGi82go/A3okkfy
-	 psZr+Yxd4ARitIFCosuNcoh6hHVYEDw1YTQR7+T+ymP/QHKRsrtbd+Pb0aVmyvZrV4
-	 7UFOAc6TEXVJxG2dHJg7nSt4oh985u9Q3HhvuUojPEUjRgYwwvg4MsBVnfOU52N+qu
-	 UzzC6wk3HTCerUm9x2qmiIGilUJ94ka91u9pFYcPpDJcWiakzMswp5gJcvHf052S0q
-	 r2qUXDLRjXCvWUgvOHmW14C4Amf66cULbLikqYiLElgtjd2fRB5qzzZZd9ncWCgPm2
-	 NeoTJMJJ5Ml1A==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1rQVir-0003Z6-33;
-	Thu, 18 Jan 2024 17:58:33 +0100
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH v3 5/5] ASoC: codecs: wcd9335: drop unused gain hack remnant
-Date: Thu, 18 Jan 2024 17:58:11 +0100
-Message-ID: <20240118165811.13672-6-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240118165811.13672-1-johan+linaro@kernel.org>
-References: <20240118165811.13672-1-johan+linaro@kernel.org>
+	s=arc-20240116; t=1705597125; c=relaxed/simple;
+	bh=Z5thKj8FdeMPyV5/0e6dgRb4ppMPY94gIbrMAFviSyo=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Reply-To:Date:
+	 Mime-Version:X-Mailer:Message-ID:Subject:From:To:Cc:Content-Type;
+	b=PMsp0ZrGi2hjg+Y+xfqMYTUgRu054AnXIIBy2Fueak/CGKFku18ny5vPHbZQPx86GGhxgu84RNAHJ2GVJRcyr2oLXFAY7pei/AmaLaW/uldTlp/67kLY4JzjINgo/GVw21b8f7+u/I8G8RPG2I6hGDAyFt5uWTtOudzorfXTK6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AXAHcms6; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cf962e1fcbso1532847a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 08:58:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705597123; x=1706201923; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qOJj2c9xW4mty6RVL8pJG7rPEgOg5AXdEBigC3Y4jtY=;
+        b=AXAHcms6dIN13GnNTUE4FzFUwDA+eem9NXCDkkP1Od/czzNHTQr5OhOGk3QX0KEonr
+         NFd962j41sNkyewHIRD2Pm8NuJ7Z9pSIC4YT5VAZHsNCzfr8w3UUtbiNs2ExsTKyMgCY
+         VPP22Ti95YqC1gsjrIuJDDCdljmhHYMv/YSgrGox2+0Dd0pcidQqrQmHBKcGdqSRad9z
+         W9gFvyUKaU7nAS7+3lDqzzr6LMANTRMi4pJ1hBq4g6SFR2+vQlGsqC4054u9TYqLwB7z
+         Kw8ZvoyFNt29tMdbe+C/uhbzCIhoyWBLVxslky0kROZFzx4jGyj7dK8sMxfVr8sEh0xX
+         Jzsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705597123; x=1706201923;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qOJj2c9xW4mty6RVL8pJG7rPEgOg5AXdEBigC3Y4jtY=;
+        b=dcsz3++ALtA7cS/IoLnlWf7yFN7OtNU39jHVUdoviPWlsI702gnFxv2I6088ZrgBVt
+         MzBYseF4KIyzV5fVbR4LSvWoHIzQz29r+w4T7xUvD+iCaGMF161KOaikSZLdBI050eyv
+         w2j9nZnLkQZlgiwgpP3n/y9MOmoXKjs7PoPAhqPSkBclumbPV0ub6QuBRGPh5BchYWcz
+         vA9L9UtGvgPhLBW8sntjDrIVKdHmqnL2l4DaAEnQVJlqYQ5LWsmNpeaqFXos5uWyRSBu
+         d5kxxkbQlNVDtTDZaB98hOgX01chvobQNpTijFgHnHAhyU8huyM/SKh6pxr8p9dnP+P+
+         eDdw==
+X-Gm-Message-State: AOJu0YwD2zIoHsPZCZwB/V6Vj/19W7H4ruBXqvqkXzpyY2qy1IXpfzR7
+	OKh+BOGEw2Gph983TAHqIEoT3VteXrTDPGg1rNuyRjSzjChNHHfQZxCMw5Fea/f6frehw5wELD0
+	hbQ==
+X-Google-Smtp-Source: AGHT+IGe39iSbo3pp4Oh1OoPuJaAYSL8rktRk+jxW6UtZTirBf1ZCu2iYHNI0H7nbbmWrSXesSiYDaEUb0M=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:2fc1:0:b0:5ca:3e8f:6d6a with SMTP id
+ v184-20020a632fc1000000b005ca3e8f6d6amr6924pgv.12.1705597123202; Thu, 18 Jan
+ 2024 08:58:43 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Thu, 18 Jan 2024 08:58:38 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
+Message-ID: <20240118165838.1934853-1-seanjc@google.com>
+Subject: [ANNOUNCE] PUCK Notes - 2024.01.17 - TDP MMU for IOMMU
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Jason Gunthorpe <jgg@nvidia.com>, Yan Zhao <yan.y.zhao@intel.com>, 
+	David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The vendor driver appears to be modifying the gain settings behind the
-back of user space but these hacks never made it upstream except for
-some essentially dead code that adds a constant zero to the current gain
-setting on DAPM events.
+Recording and slides:
 
-Note that the volume registers still need to be written after enabling
-clocks in order for any prior updates to take effect.
+  https://drive.google.com/corp/drive/folders/1sSr_8FE5KjjGGnpX7_QlHAX3QGoRnck7?resourcekey=0-UB_vbXfpY4Dezo9xI_-6iA
 
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- sound/soc/codecs/wcd9335.c | 4 ----
- 1 file changed, 4 deletions(-)
+Key Takeways:
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 43c648efd0d9..deb15b95992d 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -3033,7 +3033,6 @@ static int wcd9335_codec_enable_mix_path(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
- 	u16 gain_reg;
--	int offset_val = 0;
- 	int val = 0;
- 
- 	switch (w->reg) {
-@@ -3073,7 +3072,6 @@ static int wcd9335_codec_enable_mix_path(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		val = snd_soc_component_read(comp, gain_reg);
--		val += offset_val;
- 		snd_soc_component_write(comp, gain_reg, val);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
-@@ -3294,7 +3292,6 @@ static int wcd9335_codec_enable_interpolator(struct snd_soc_dapm_widget *w,
- 	u16 gain_reg;
- 	u16 reg;
- 	int val;
--	int offset_val = 0;
- 
- 	if (!(snd_soc_dapm_widget_name_cmp(w, "RX INT0 INTERP"))) {
- 		reg = WCD9335_CDC_RX0_RX_PATH_CTL;
-@@ -3337,7 +3334,6 @@ static int wcd9335_codec_enable_interpolator(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_POST_PMU:
- 		wcd9335_config_compander(comp, w->shift, event);
- 		val = snd_soc_component_read(comp, gain_reg);
--		val += offset_val;
- 		snd_soc_component_write(comp, gain_reg, val);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--- 
-2.41.0
+ - Having KVM notify (or install PTEs in) the IOMMU page tables for _all_ PTEs
+   created by KVM may not be necessary to achieve the desired performance, e.g.
+   proactively mapping in the IOMMU may only be necessary when swapping in
+   memory for oversubscribed VMs.
 
+ - Synchronously notifying/installing could be a net negative for guest
+   performance, e.g. could add significant latency in KVM's page fault path if
+   a PTE operation necessitates an IOMMU TLB invalidation.
+
+ - Despite hardware vendors' intentions/claims, CPU and IOMMU page table entries
+   aren't 100% interchangeable.  E.g. even on Intel, where the formats are
+   compatible, it's still possible to create EPT PTEs (CPU) that are not usable
+   in the IOMMU.
+
+ - Given the above, having KVM manage and/or notify IOMMU Page tables would be
+   a premature optimization.
+
+ - Recommended next step is to explore using heterogeneous memory management
+   (HMM) to manage IOMMU page tables and coordinate with mmu_notifiers, and see
+   if HMM can be optimized to meet the performance goals without involving KVM.
 
