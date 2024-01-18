@@ -1,175 +1,217 @@
-Return-Path: <linux-kernel+bounces-30199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D2C831B5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:31:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12C8E831B7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:37:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A09D1283D28
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:31:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78CB41F21C84
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:37:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F22C465C;
-	Thu, 18 Jan 2024 14:31:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68F51E521;
+	Thu, 18 Jan 2024 14:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="a5EubFEg"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2043.outbound.protection.outlook.com [40.107.220.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vZ6nQwB3"
+Received: from mail-lf1-f73.google.com (mail-lf1-f73.google.com [209.85.167.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C92375;
-	Thu, 18 Jan 2024 14:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705588272; cv=fail; b=dgSDIDPGsmP+6T3uheHQJlGgkBAPYpu/FmRzCRUki3iXTuHlwla+WXYqOihcsDoUJng99u12Tk3TDqwPSSzpQbbb4/Cdps5ZIKOtMPfBH4Pluz3cpbx/jUGteriOIKLkinKKpLQ8YH4JWisr1WdISkDbn5th1ObyhYtFdc39Acw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705588272; c=relaxed/simple;
-	bh=TarCZNF34cbkJ7TYEXJ436XSxx3DfZJBwH0xaz4cvQc=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:X-MS-Exchange-Authentication-Results:
-	 Received-SPF:Received:Received:Received:Received:From:To:CC:
-	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding:Content-Type:
-	 X-EOPAttributedMessage:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=ngOmqJVU/pp8xt5ho3lRn/51jQCUlPVBlFvtZ1BKhauwp4B1KGTVvKmS77g3S3oLFdUhN3AzJA67y/7MSUP9zirxawLk0sjpmjFhubU2N4VcHWcj2aVtLkDag/N0fN5fyrxLIqtH2dL5ziRSKudIXqpL9QWxDCKTySWaqJHWCEs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=a5EubFEg; arc=fail smtp.client-ip=40.107.220.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=odpYJCrgEC42068Qqb0LW1YupiRT0zk2Gxu1MClToIbbiM54yke+csFVAbjDrmx5rEOFDlb2FMwnY5t65papIICARuMklXMOPCMP8s9+D+hhLgClODCNOUT+8oyL+sL8zgy0B2i68kJrstaHfdrwj1J7OcvtUGv6x1IKbV9c9UAtlKSPaFALDom5srZqEPsf+nPclms4en7HJKekKK5SKFwlA+z5TaOO/s2NEvvrnFgylCRAFvxltaBApmwaulhVYeS+wMhxkWyUOuVsW0eMXaH1fR+O3xPM+UIyytUhbOSp2/FoqR4NyVaFX2GpN+lhkwNsnrQ29e8XUka6zHp/mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pFLmCPJjJFH2XLuYXiy/wIG1LVjbj4rTcbORql18LHI=;
- b=i/Epjo2EShYrkrs0kMtPYNImdVR1Phh7nm0qDtsyGIDQHUvmPJsspOsXnWNLcHq3Wt48rCb2Ah63xzgn/VLRLdV/ZONCSuABnGg0ubaSikGrb1tcUmgtUP7gposkazdk4ZsF/xTt/Q5g5Gj2ZjrvWKzS0vH/jo4foT1/q40Oy1YdTqwZA+9buMj0k3wmDrOrJiCPwPTBk0Xj80bMTgmT7Y/fy8sxGDatc9PFQaESUein5Mq5gdGz7xlqh/gJlGyEpsXfmuP1H8a/BUZm5XsvvTP6FqH86zncG+58yIJt1SJhj7O1TZ5xtAgJL2pMA0wN/4BkiMv+wTbdd3Fabkc3vQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pFLmCPJjJFH2XLuYXiy/wIG1LVjbj4rTcbORql18LHI=;
- b=a5EubFEgrlmk4rgcdrpXVvbM6uMSYpAYuTdKvxAES/quOcAM2W089HJf/OySQAxFkEmZhENAmwkN/oNODsEB7XlJL3ZwCdtUnKyZiw2D6lnWUoDSj4/3GheqmrDi4uUyj/CLDP7BAsglLAbOxsAH5Z5iiHTniyTU1ScdU8KVrU0=
-Received: from PH0P220CA0015.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:d3::26)
- by SA3PR12MB8440.namprd12.prod.outlook.com (2603:10b6:806:2f8::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Thu, 18 Jan
- 2024 14:31:06 +0000
-Received: from SN1PEPF000252A4.namprd05.prod.outlook.com
- (2603:10b6:510:d3:cafe::42) by PH0P220CA0015.outlook.office365.com
- (2603:10b6:510:d3::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24 via Frontend
- Transport; Thu, 18 Jan 2024 14:31:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- SN1PEPF000252A4.mail.protection.outlook.com (10.167.242.11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Thu, 18 Jan 2024 14:31:05 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 18 Jan
- 2024 08:31:01 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 18 Jan
- 2024 08:30:47 -0600
-Received: from prasad-lnx-mach.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Thu, 18 Jan 2024 08:30:38 -0600
-From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC: <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-	<Sunil-kumar.Dommati@amd.com>, <syed.sabakareem@amd.com>, "Venkata Prasad
- Potturu" <venkataprasad.potturu@amd.com>, Liam Girdwood
-	<lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
-	<tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>, "Alper Nebi
- Yasak" <alpernebiyasak@gmail.com>, Marian Postevca <posteuca@mutex.one>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "open list:SOUND - SOC
- LAYER / DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, open
- list <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] ASoC: amd: acp: Add check for cpu dai link initialization
-Date: Thu, 18 Jan 2024 20:00:21 +0530
-Message-ID: <20240118143023.1903984-3-venkataprasad.potturu@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240118143023.1903984-1-venkataprasad.potturu@amd.com>
-References: <20240118143023.1903984-1-venkataprasad.potturu@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5D91DDCE
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.73
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705588616; cv=none; b=Ef34mu74CH/Pj8pNL8zs4fmfaIZmdaDNI/ksWUGNjybLCKEHvnY2av2axMHGEQMxRSL8c7zhkVaVgBoeUQsunEjn6kpTENUcepAgtIIu8iXqp+K+61SuKkFJcroFPIGsmIJq2h5EyOMFHMpr2aBw6wMDAzym1wM0aqinPcyR52c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705588616; c=relaxed/simple;
+	bh=jhNAUl+zNRT0DrGGSk/2IHTE6BjJ/ijabDZTUKUpX+o=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Date:
+	 Mime-Version:X-Developer-Key:X-Developer-Signature:X-Mailer:
+	 Message-ID:Subject:From:To:Cc:Content-Type; b=U2u8VXtqeqWS0wa+e82ZD8khUaWvBf+azUTJdrT306i1OhnxkuX5fGQMQ6WXx7A1RDGcogjshUpv/D3cPMa418FWqyZxqmyWj5P93nfWI7wr7JOwlc+BpQ9NqeocBvFAkvYsC95yfTEvXD86TiuHm9TlLxwznq7zb4EDALJrCyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vZ6nQwB3; arc=none smtp.client-ip=209.85.167.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-lf1-f73.google.com with SMTP id 2adb3069b0e04-50e75f8d722so387467e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:36:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705588612; x=1706193412; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0v0DKUVm/o60VD+s4pHxHrhv8BixZc6h40304F/G0T0=;
+        b=vZ6nQwB3rF9RTmCwwzjKD2KEIdqtgr0KLnHrSxJL2zk8sXvhd6qYWtegXpkjj8qdIC
+         pHFpRjwyld5aCBq6ajCNCzkBzZDod4NBaLqv9sGvrgzTrKNn77BYjmlU14htf0ERuvDq
+         BFINVc5iNyeiN830lIZWYJ/WsPWjWrGR28WKNK/LnpWpcpFffwtm2dsbUsFX37snAQkF
+         kdiyAuRTyT93bY598ii8s04i1xC+rB08NpHkUs8kiuTL6kinup0jxt6voRzw2buFadDf
+         vnPfzU0vVsfv9T4BASs68dWq4i9A7220APwzAD6p4UNU2Zk0EdAqZvbEeLxh1ymlXehn
+         3zsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705588612; x=1706193412;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0v0DKUVm/o60VD+s4pHxHrhv8BixZc6h40304F/G0T0=;
+        b=PIGg6pT/ibJpWO8w7zQR4Vp9Vg0aZTvx1ajC8ucQ/85SvbVDEpm5K4TehCncZAqWsO
+         Z3U/W0sAz4MXlXKfNSXyMv/gBFd/xEpUsQojjIV+ZJKl/231wjrnbl2ZDz6F0nCkPwRY
+         /9OzXX4SKCdCiUTZNlwRYDzBekSr0J3X3jp37gl6e4qwKESkzo9ooArYDIm77KJHJEyg
+         hkbUOES85qrgKZwRjEF8rb1f2EqDvswKKQXyW+XprBtATHaIox64Vn5mj4F2yRsJE7QQ
+         /kUy9rUt8zxzKtOLcVq/FgnGjl9udJXWuRbt0jYKiU/GYnDphvUaVskzhuiD4sTsGCEI
+         dqaA==
+X-Gm-Message-State: AOJu0YzIEtt0mFYea4OoiN5OkqVTJEOW1FP5hAj9jNqiXvqZm+XufA+G
+	WIKjQR//SGlePLTwSK0/LcwQctPyoa2djjQt4S/I+k1fi/BB0t58+f4KFIa+aF6frUaog6xWXys
+	GNK8Lw769ymQGpw==
+X-Google-Smtp-Source: AGHT+IH++RrT7XJnlPbyNQDU0b3yDi12ZhV2bf8Jr+2xWg4gaqXlF8npqL0MspBZqGkPjDN99AkA5+X00UUBHLY=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a05:6512:34c1:b0:50e:b2ba:147 with SMTP
+ id w1-20020a05651234c100b0050eb2ba0147mr6622lfr.2.1705588612573; Thu, 18 Jan
+ 2024 06:36:52 -0800 (PST)
+Date: Thu, 18 Jan 2024 14:36:41 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000252A4:EE_|SA3PR12MB8440:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0cb750a3-ae23-4e09-de35-08dc18321ac4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	iIYkavs17ip8vpKI3cAIHUryf7zrICBsaZZG81JWxriskMqPmKgvz+BcNLK3x/kJRZPqDg59vjhzGl+U+eqnIgPwR8TC3mK9YTAShLRDNxTii4rh52vRgTN7336K71IrvM1dMxdsVxoFtYf3G0s+Ug1wnP76QwXpJNMFgeVc5qv3sO61wKXIF6BnX5xQNkzTZST6ev5QrEJRJmd2QQPo0+SQfCqE9b56ovgIj5UEk79ckt+SejSmNn4iIroHEFv2j5U9tKyXnysxYkZAaPA/Ny9i+oZlwjp8f6TMazxmStS96UD/4qkigb2l4O2AFmBu1UEtLNRwyYYuUWDtYd+41gZXTOfzFky6v/NJjT5VvYk1X4X53F5n8+v6JBe/+KDo0HC1l2z7/IkYtSwDdS3aJAE6ZXXn/z7YP/FNTmc0tT+l5BhaQtnWwN1Rb5cH9viQfOeZ39rtfqOvrQumhkOW0EM9r6qXzy68/lAE/O7HTgGxy8gLC2i6ucdWZsAiO2qWR48NsknpeqOhexe0l/UaDcEITnIiyvpKtSFvIrMpO69bbJKsNOIKXoJmuD1H4GPsneuSlbbtMPr+VxIzdGH7DoAlAt7QKLuVL6X8BB85TBVHiNqo7Ax5/b320sH7zs37qKB9nEkhJE+uHebSZykhZbZ1hOqNbv8gzu2SJYbyT8ta9dfh5arqGqseQNDA/4iVI505MZaXjqX9zlxOjivYS03mRif3pwIcIho6V849wogh9FXrmozWBymUERy4j9UNfB4UfoN9+AXjgq4rjrPvEg==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(396003)(346002)(39860400002)(230922051799003)(451199024)(186009)(82310400011)(64100799003)(1800799012)(40470700004)(46966006)(36840700001)(478600001)(82740400003)(41300700001)(36860700001)(86362001)(36756003)(356005)(5660300002)(2906002)(7416002)(81166007)(316002)(2616005)(6666004)(70206006)(70586007)(54906003)(47076005)(83380400001)(426003)(4326008)(8936002)(8676002)(336012)(1076003)(26005)(110136005)(7696005)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 14:31:05.5683
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0cb750a3-ae23-4e09-de35-08dc18321ac4
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF000252A4.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8440
+Mime-Version: 1.0
+X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4635; i=aliceryhl@google.com;
+ h=from:subject; bh=jhNAUl+zNRT0DrGGSk/2IHTE6BjJ/ijabDZTUKUpX+o=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlqTHLOLO4pSaf2+zw3LdhQoTIc4w+uP2NKl9Y9
+ /cn6Z7VrtmJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZakxywAKCRAEWL7uWMY5
+ Rk99D/0TYZ05gVZnIv1O/8NQ7Qj2KOYRm7SGdDQU0riJGIupvyVGm85cuWSZ+eFKcM2VZQIbXqQ
+ AKCyaWC79/EkRmp0tOTOA8dWiYyfYcAsdUCaEDMuPeGV72JyAeYpHSYHdOSgBOqf2EMr4dPBTA8
+ lK7aYxg/qAUulf8m8m4uEHjVy0qSglOrzsshCv7uM6U0F3RjjdjcsQh2YnvBEXHV4gBT15TmLP4
+ EY9QNde/ga8sOa7g4jIRvKg9TbpuImJQbL781fMYeXpfziHfGQqUoWX2N9PYym8i2i4raxaHaRO
+ CeItS4DcdWjdqqgHAxRI2LA97Aou6+QeD7irIJmsm1E9LClzp0XaUGNlJ2QRFYIndXRzq5gNQC6
+ szUZZcnDUdFW8JTMDTgNXnpNR6H+xL4rtW6aLwO530sIYCeSKpa1SgnqLwbo8Dhpmz52O9/IIuf
+ J9BIO3+QS6OQAoMc/wm1F8rnH8Y3EFaAp0RNVEtET3HldJjSC5WH+fw7vP/E7YMPddtpa/lQXRI
+ x2J4ruw9QgvhMQvEZ9ui2v9J+hQHIbVjuWoWb103Ga0kRT2g3oVkYcIFVA63Q0+Rjm6Bp60Nr37
+ hXK6bG4BCWgN01WrjKI6GvH/32QP+6h+2SlX/3YzYu/4pe3tjebyngBh9tP9hTVwCNGrExsbf3M DOXWb0TOVvL4wXA==
+X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
+Message-ID: <20240118-alice-file-v3-0-9694b6f9580c@google.com>
+Subject: [PATCH v3 0/9] File abstractions needed by Rust Binder
+From: Alice Ryhl <aliceryhl@google.com>
+To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	"=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>
+Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, 
+	Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Add condition check for cpu dai link initialization for amplifier
-codec path, as same pcm id uses for both headset and speaker path
-for RENOIR platforms.
+This patchset contains the file abstractions needed by the Rust
+implementation of the Binder driver.
 
-Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Please see the Rust Binder RFC for usage examples:
+https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-0-08ba9197f637@google.com/
+
+Users of "rust: file: add Rust abstraction for `struct file`":
+        [PATCH RFC 02/20] rust_binder: add binderfs support to Rust binder
+        [PATCH RFC 03/20] rust_binder: add threading support
+
+Users of "rust: cred: add Rust abstraction for `struct cred`":
+        [PATCH RFC 05/20] rust_binder: add nodes and context managers
+        [PATCH RFC 06/20] rust_binder: add oneway transactions
+        [PATCH RFC 11/20] rust_binder: send nodes in transaction
+        [PATCH RFC 13/20] rust_binder: add BINDER_TYPE_FD support
+
+Users of "rust: security: add abstraction for secctx":
+        [PATCH RFC 06/20] rust_binder: add oneway transactions
+
+Users of "rust: types: add `NotThreadSafe`":
+        [PATCH 5/9] rust: file: add `FileDescriptorReservation`
+
+Users of "rust: file: add `FileDescriptorReservation`":
+        [PATCH RFC 13/20] rust_binder: add BINDER_TYPE_FD support
+        [PATCH RFC 14/20] rust_binder: add BINDER_TYPE_FDA support
+
+Users of "rust: task: add `Task::current_raw`":
+        [PATCH 7/9] rust: file: add `Kuid` wrapper
+        [PATCH 8/9] rust: file: add `DeferredFdCloser`
+
+Users of "rust: file: add `Kuid` wrapper":
+        [PATCH RFC 05/20] rust_binder: add nodes and context managers
+        [PATCH RFC 06/20] rust_binder: add oneway transactions
+
+Users of "rust: file: add `DeferredFdCloser`":
+        [PATCH RFC 14/20] rust_binder: add BINDER_TYPE_FDA support
+
+Users of "rust: file: add abstraction for `poll_table`":
+        [PATCH RFC 07/20] rust_binder: add epoll support
+
+This patchset has some uses of read_volatile in place of READ_ONCE.
+Please see the following rfc for context on this:
+https://lore.kernel.org/all/20231025195339.1431894-1-boqun.feng@gmail.com/
+
+Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- sound/soc/amd/acp/acp-mach-common.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Changes in v3:
+- Completely rewrite comments about refcounting in the first patch.
+  - And add a note to the documentation in fs/file.c.
+- Discuss speculation gadgets in commit message for the Kuid wrapper.
+- Introduce NotThreadSafe and Task::current_raw patches and use them in
+  later patches.
+- Improve safety comments in DeferredFdCloser.
+- Some other minor changes.
+- Link to v2: https://lore.kernel.org/r/20231206-alice-file-v2-0-af617c0d9d94@google.com
 
-diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
-index a224043ccd42..504d1b8c4cbb 100644
---- a/sound/soc/amd/acp/acp-mach-common.c
-+++ b/sound/soc/amd/acp/acp-mach-common.c
-@@ -1471,8 +1471,13 @@ int acp_sofdsp_dai_links_create(struct snd_soc_card *card)
- 	if (drv_data->amp_cpu_id == I2S_SP) {
- 		links[i].name = "acp-amp-codec";
- 		links[i].id = AMP_BE_ID;
--		links[i].cpus = sof_sp_virtual;
--		links[i].num_cpus = ARRAY_SIZE(sof_sp_virtual);
-+		if (drv_data->platform == RENOIR) {
-+			links[i].cpus = sof_sp;
-+			links[i].num_cpus = ARRAY_SIZE(sof_sp);
-+		} else {
-+			links[i].cpus = sof_sp_virtual;
-+			links[i].num_cpus = ARRAY_SIZE(sof_sp_virtual);
-+		}
- 		links[i].platforms = sof_component;
- 		links[i].num_platforms = ARRAY_SIZE(sof_component);
- 		links[i].dpcm_playback = 1;
--- 
-2.25.1
+Changes in v2:
+- Update various docs and safety comments.
+- Rename method names to match the C name.
+- Use ordinary read instead of READ_ONCE in File::cred.
+- Changed null check in secctx.
+- Add type alias for PhantomData in FileDescriptorReservation.
+- Use Kuid::from_raw in Kuid::current_euid.
+- Make DeferredFdCloser fallible if it is unable to schedule a task
+  work. And also schedule the task work *before* closing the file.
+- Moved PollCondVar to rust/kernel/sync.
+- Updated PollCondVar to use wake_up_pollfree.
+- Link to v1: https://lore.kernel.org/all/20231129-alice-file-v1-0-f81afe8c7261@google.com/
 
+Link to RFC:
+https://lore.kernel.org/all/20230720152820.3566078-1-aliceryhl@google.com/
+
+---
+Alice Ryhl (6):
+  rust: security: add abstraction for secctx
+  rust: types: add `NotThreadSafe`
+  rust: task: add `Task::current_raw`
+  rust: file: add `Kuid` wrapper
+  rust: file: add `DeferredFdCloser`
+  rust: file: add abstraction for `poll_table`
+
+Wedson Almeida Filho (3):
+  rust: file: add Rust abstraction for `struct file`
+  rust: cred: add Rust abstraction for `struct cred`
+  rust: file: add `FileDescriptorReservation`
+
+ fs/file.c                       |   7 +
+ rust/bindings/bindings_helper.h |   8 +
+ rust/helpers.c                  |  94 ++++++
+ rust/kernel/cred.rs             |  74 +++++
+ rust/kernel/file.rs             | 512 ++++++++++++++++++++++++++++++++
+ rust/kernel/lib.rs              |   3 +
+ rust/kernel/security.rs         |  71 +++++
+ rust/kernel/sync.rs             |   1 +
+ rust/kernel/sync/lock.rs        |  15 +-
+ rust/kernel/sync/poll.rs        | 113 +++++++
+ rust/kernel/task.rs             | 112 ++++++-
+ rust/kernel/types.rs            |  17 ++
+ 12 files changed, 1015 insertions(+), 12 deletions(-)
+ create mode 100644 rust/kernel/cred.rs
+ create mode 100644 rust/kernel/file.rs
+ create mode 100644 rust/kernel/security.rs
+ create mode 100644 rust/kernel/sync/poll.rs
+---
+base-commit: 711cbfc717650532624ca9f56fbaf191bed56e67
+change-id: 20231123-alice-file-525b98e8a724
+
+Best regards,
+--
+Alice Ryhl <aliceryhl@google.com>
 
