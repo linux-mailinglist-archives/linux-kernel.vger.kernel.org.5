@@ -1,141 +1,131 @@
-Return-Path: <linux-kernel+bounces-30515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E68A5831FB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:27:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9F5831FBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ACB4B20DD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:27:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5196B1C22B9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D7F22E407;
-	Thu, 18 Jan 2024 19:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DB72E40C;
+	Thu, 18 Jan 2024 19:29:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dionne-riel-com.20230601.gappssmtp.com header.i=@dionne-riel-com.20230601.gappssmtp.com header.b="K20sqeVp"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S3u/Av31"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59DC2D796
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457042E3FD
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:29:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705606070; cv=none; b=awYsBbiMqzlsVwmE3aKqIRVcENqjbAA4FKdpKnPqNCsGWQxQ6ogz4qBy+Lt1QherxI3AS7pr2yMd+LmEkhSbmF8Oi6u9aLU96NmrFvmtP6WQNeiWxKCXjIEIqkcngJSNMu9Vh0dK1sSp2QfuRgLK5fwYV0IoOfPWYryJx4StCSg=
+	t=1705606154; cv=none; b=efLBHkja5ZOuO2YuRULlt0F5kzPHm95ygsXfo+KzK1RP3f2H3YMKzojW3f2M8RV0zrIYJNMpbv5C4eUgULnfLSfEWN2hK7S3mSsf8f9caEq6ki+kgjVdbVOireR7yQXouxJu/65Bk7X+JmmLbG43XJMdx16X5maJ9R/JbMZagDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705606070; c=relaxed/simple;
-	bh=Yar1XVZ/VjR4FynzD3NM+MEkkvT0jCBMyW/eO9pNfwg=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=is251v4iPTMUgiPeDJg3L0J8ViXpNFBvz/h21Fn8gB+t5t6j8TzyAYwoYPvwuxqidr0aRDVjrLmnz/sxvs6tt5RH8d1U4NLPlSHA+Wnu0y95kWCFJux/NNxn5KJ1krOarFgDG9mrT5GCtdTAEYjdN8Jayk4BsVVIPP+calMWhuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dionne-riel.com; spf=pass smtp.mailfrom=dionne-riel.com; dkim=pass (2048-bit key) header.d=dionne-riel-com.20230601.gappssmtp.com header.i=@dionne-riel-com.20230601.gappssmtp.com header.b=K20sqeVp; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dionne-riel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dionne-riel.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-78324e302d4so2345985a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:27:48 -0800 (PST)
+	s=arc-20240116; t=1705606154; c=relaxed/simple;
+	bh=EYGd/BtwuvtD8ZA8Nfy4r9pHo1JatfhJ33J3FjqEQrM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IjpeMlRYeJOX7iBKbXMggWC8MPmvWdofhkivHEk4pWsqpdB7uiLu5uFwsuz2schFC4eFvJmQqWX+HYRPGe/5e0Ju0ZI0VQgPCgwIULOoaGQ0PP6zB5ysi50rGDynEKqO1ARYjMdr2LG8LIw4D7BySUxiuvQSIHFsOZEFkPLzSIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=S3u/Av31; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-28ffac1ce99so45875a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:29:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dionne-riel-com.20230601.gappssmtp.com; s=20230601; t=1705606068; x=1706210868; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:to:from:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cl86MxNlP9JU8mn4QxWW8Z1SEI1toh78ROznChJ2Mp8=;
-        b=K20sqeVp4YjiXIYolUoyHDdnC+WYvk/wNP+KP2cubureHXGEuweV3zq8JwP3S80wHU
-         F8e43s8EwhhBu9M+Res/Q2zZ68n4GAz5WTG7Rk1CP1NF2Uo9yH0uDv7URtbURbQ5nyDi
-         ACFmKRH1aFgZfyAgVoURzumSG7dnVc/2kqfBiKXxpR2toBqKDWgHEJTJR9cag9NROaYy
-         KfLMpWZItfYfw4UNyrKN+5wQAXn8PW1uXFLtJv/RRvTiyvUYI9iw9IZyoVK+8AHmT+r0
-         BmpU0EOI+Ry0TtRpir5VjAAfF3cTJVNI3pdjY91pl1IbyvUGulYUOwzHc51Aeww8Xam0
-         Yq0A==
+        d=google.com; s=20230601; t=1705606152; x=1706210952; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+iomTbXqRTjibxPrZcFIaAB8B6frVBWEtPfgQV/mc1o=;
+        b=S3u/Av314bbOChT4eb5WgE0aLJdxWthB6iKAfRqC1CA59rt1pW5unaFdmlBfnJeedP
+         cjKM1qDTXCCKEWOWQ/gpWvnQ1lF68ASBYjP29kT5H8JdTUCwFmc6VyQb2X/vmXrXMwxs
+         UJ8TaYXJmwBZZm1QPVI9I83uLnO2T05RK1mFQ5Z+KCub5WGV8YClTU0LrROXS66DJPK4
+         vOZaoZOi84i22Fc8CIFEoz+yAafYtyh2QGmJbTMtxyFbkFHqyEhSYwRSfK88d/dUS3Q7
+         BXg+rS7pRXpCypYQZy9KBWSoi2d58knqvFw0c94rEngi/mNKSBCm1cI6S9pyvHwFcXrh
+         U77g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705606068; x=1706210868;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cl86MxNlP9JU8mn4QxWW8Z1SEI1toh78ROznChJ2Mp8=;
-        b=FnYsdwUrUmL1HBMDRyW7BDF6nIj0v5Mr2iS6/pn0VxvnogWj9OuUQ3XNSe2Y8qASKW
-         9lR2L3G7TQtxhgq2i44pixpENtjdQl0M5JRS5kOvRaKXTMhuc4YwzSilVVW42+gJ6gfU
-         +DE79jZPWYNbU0gbge96M6BRnZpTJBzcIInDrfPHB6+oIBERew6mzTjufjRDSnKKESaW
-         HaXHoUOz6mnUbLHbHF1li9cPhXrUONydiwq7Yr0Zjpk7AajYNT8525JI2RHpBK5m2l8o
-         zr3Avx4CdNrC0xV4azA+nulJBU4e4TWFMKGm03vaPgWw1k7A6PVpoRwqarpku/10uarN
-         hNBg==
-X-Gm-Message-State: AOJu0YzIer2KGpma9uEZAylBDfKzQ35rvAaX7hSBnES+0KjnFCPZIYuQ
-	66PNwBhiU+PKviqftxUryT31eqL43WLDft7qMxDQqjlvMFKGacGntScT8IM/MBz6mAkRZW36hoY
-	GxQ==
-X-Google-Smtp-Source: AGHT+IHSOe1LtWuDt9eb1xAJjqjUVCk+Ml5NMxnoOGGVWM65IW19VJdnN3QsYNsy62zdIQZtdfVgAw==
-X-Received: by 2002:ae9:e105:0:b0:783:47e2:41ff with SMTP id g5-20020ae9e105000000b0078347e241ffmr144690qkm.43.1705606067572;
-        Thu, 18 Jan 2024 11:27:47 -0800 (PST)
-Received: from frankgrimes (135-23-195-66.cpe.pppoe.ca. [135.23.195.66])
-        by smtp.gmail.com with ESMTPSA id h7-20020a05620a10a700b007836647671fsm2631952qkk.89.2024.01.18.11.27.46
+        d=1e100.net; s=20230601; t=1705606152; x=1706210952;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+iomTbXqRTjibxPrZcFIaAB8B6frVBWEtPfgQV/mc1o=;
+        b=epQV0/seaylXD0BxkzOEQyCCxJxPrAPh/X9PBL5cWfXYJzVk/6REuTqe+9gkHw0G0y
+         W6EkfBqo25clrdE3rcrwaJTC/P6jC0/fINnBTt9ZhSDh0RTXfhtMvGSrwzAwtw4/vPwh
+         NnWwY+d9DsWU7bjys9jvmpSUwdXhhbRjWdKa7LwuKdZ6ae3xGXISZB1nkSmEch2JypCu
+         7Fhrd36q3O/5RXZ9zzngOEXhPZKN4i2yYPN0Hga+Ea392jwx0Fhq0ZbPKDSVj6D1A8Wc
+         yEr7wF1dKALMlw+CXWjGupXc/OZZfO9zeGSgVL+YMabvtoRCtmQdq3CJMeY8ZHMybZ6C
+         RItQ==
+X-Gm-Message-State: AOJu0Yzc+6IqyG6iAHzGbkqkKwxRSiTupR8oTgnoUsRTErANfzg/3Qfy
+	5ArfHAe1/Rsswd/BMCb+s/2z0l9diKjA3mQOUHAuayIxEmolHfs5GyzfBKqiXg==
+X-Google-Smtp-Source: AGHT+IEDU0f/LZTZf0+r3K8CSuUlFt617cPqAtIUeGN2vr636LX8vCpmJ6gjqngAJppnD0SbvlrATA==
+X-Received: by 2002:a17:90a:e2c8:b0:290:45a7:3ed7 with SMTP id fr8-20020a17090ae2c800b0029045a73ed7mr158870pjb.3.1705606152436;
+        Thu, 18 Jan 2024 11:29:12 -0800 (PST)
+Received: from google.com (77.62.105.34.bc.googleusercontent.com. [34.105.62.77])
+        by smtp.gmail.com with ESMTPSA id oe15-20020a17090b394f00b002903a89ebb3sm716848pjb.31.2024.01.18.11.29.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 11:27:47 -0800 (PST)
-Date: Thu, 18 Jan 2024 14:27:45 -0500
-From: Samuel Dionne-Riel <samuel@dionne-riel.com>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
- <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm: panel-orientation-quirks: Add quirk for GPD Win
- Mini
-Message-ID: <20240118142745.1b52585a.samuel@dionne-riel.com>
-In-Reply-To: <20231222030149.3740815-2-samuel@dionne-riel.com>
-References: <20231222030149.3740815-2-samuel@dionne-riel.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Thu, 18 Jan 2024 11:29:11 -0800 (PST)
+Date: Thu, 18 Jan 2024 19:29:07 +0000
+From: Carlos Llamas <cmllamas@google.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Brian Swetland <swetland@google.com>
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+	Alice Ryhl <aliceryhl@google.com>,
+	Greg Kroah-Hartman <gregkh@suse.de>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 03/28] binder: fix race between mmput() and do_exit()
+Message-ID: <Zal8A95q3jVl4nu5@google.com>
+References: <20231201172212.1813387-1-cmllamas@google.com>
+ <20231201172212.1813387-4-cmllamas@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201172212.1813387-4-cmllamas@google.com>
 
-On Thu, 21 Dec 2023 22:01:50 -0500
-Samuel Dionne-Riel <samuel@dionne-riel.com> wrote:
-
-Hi,
-
-Can I request a small share of your attention to review, and apply this patch?
-
-Thank you all,
-
-> Signed-off-by: Samuel Dionne-Riel <samuel@dionne-riel.com>
+On Fri, Dec 01, 2023 at 05:21:32PM +0000, Carlos Llamas wrote:
+> Task A calls binder_update_page_range() to allocate and insert pages on
+> a remote address space from Task B. For this, Task A pins the remote mm
+> via mmget_not_zero() first. This can race with Task B do_exit() and the
+> final mmput() refcount decrement will come from Task A.
+> 
+>   Task A            | Task B
+>   ------------------+------------------
+>   mmget_not_zero()  |
+>                     |  do_exit()
+>                     |    exit_mm()
+>                     |      mmput()
+>   mmput()           |
+>     exit_mmap()     |
+>       remove_vma()  |
+>         fput()      |
+> 
+> In this case, the work of ____fput() from Task B is queued up in Task A
+> as TWA_RESUME. So in theory, Task A returns to userspace and the cleanup
+> work gets executed. However, Task A instead sleep, waiting for a reply
+> from Task B that never comes (it's dead).
+> 
+> This means the binder_deferred_release() is blocked until an unrelated
+> binder event forces Task A to go back to userspace. All the associated
+> death notifications will also be delayed until then.
+> 
+> In order to fix this use mmput_async() that will schedule the work in
+> the corresponding mm->async_put_work WQ instead of Task A.
+> 
+> Fixes: 457b9a6f09f0 ("Staging: android: add binder driver")
+> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+> Signed-off-by: Carlos Llamas <cmllamas@google.com>
 > ---
-> 
-> Changes since v1:
-> 
->  - Add 1080p right-side up panel data
->  - Use the correct panel orientation
-> 
->  drivers/gpu/drm/drm_panel_orientation_quirks.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-> index 3d92f66e550c3..aa93129c3397e 100644
-> --- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-> +++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-> @@ -117,6 +117,12 @@ static const struct drm_dmi_panel_orientation_data lcd1080x1920_leftside_up = {
->  	.orientation = DRM_MODE_PANEL_ORIENTATION_LEFT_UP,
->  };
->  
-> +static const struct drm_dmi_panel_orientation_data lcd1080x1920_rightside_up = {
-> +	.width = 1080,
-> +	.height = 1920,
-> +	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
-> +};
-> +
->  static const struct drm_dmi_panel_orientation_data lcd1200x1920_rightside_up = {
->  	.width = 1200,
->  	.height = 1920,
-> @@ -279,6 +285,12 @@ static const struct dmi_system_id orientation_data[] = {
->  		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1618-03")
->  		},
->  		.driver_data = (void *)&lcd720x1280_rightside_up,
-> +	}, {	/* GPD Win Mini */
-> +		.matches = {
-> +		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "GPD"),
-> +		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1617-01")
-> +		},
-> +		.driver_data = (void *)&lcd1080x1920_rightside_up,
->  	}, {	/* I.T.Works TW891 */
->  		.matches = {
->  		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "To be filled by O.E.M."),
 
+Sorry, I forgot to Cc: stable@vger.kernel.org.
+
+--
+Carlos Llamas
 
