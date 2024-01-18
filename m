@@ -1,282 +1,167 @@
-Return-Path: <linux-kernel+bounces-29888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DED88314BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:33:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D3DE8314BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:35:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49274281F81
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:33:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B70501C2207D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C87834CF6;
-	Thu, 18 Jan 2024 08:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CB713AF8;
+	Thu, 18 Jan 2024 08:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="liJfhEoE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SBJmTn8g"
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C400F219FB;
-	Thu, 18 Jan 2024 08:23:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A6B125D3
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 08:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705566180; cv=none; b=cU1W7C+YQLhU5JXArga4V2b08/0cE0vW6+djYlYFU9An8Cws91KnRNgEf9/JtUkzIAE8v5MDSXOaHuGH/umqRrQYH4nPRsafeq//r96YqDrVi62yJU1pR6ArsaTx9IRMmUH/TBTMxBsyjScCTJal44n6tHxXoFvudWdW3vcTffw=
+	t=1705566212; cv=none; b=qbb0F37vXUzmJ1ffBLmYwPr09KqmLQPTrySA0943c4SwzXoLp62+jSqEeK+yUqo10Cf8CiMe36WcT7a+PFpWIRL23JJ1qtdB/MZEAhgqLqxf6+6k0u1iSah3kO/7lUNjS2BPpUJoPQTmFWVPC8TssashPq6VDsSeLpSAp/xu5Ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705566180; c=relaxed/simple;
-	bh=N7/3TejevMzTdHuQwHKg0+Cn4QrndvepBaVHarp+hKU=;
-	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
-	 X-Endpoint-Received:X-Original-From:Reply-To; b=NuPJt012d6qBDnpNEYKv8TQSBZ3VmwXz0T0ej+qkF1Nf3DuOeLr2HS+yGHVAoL7mM4ykX+bMtAVyY40NJGqasR4KKKr08eddtDILpVdZVIoNqJ2DVfTDG9blA4hcALI4w8CyxJGqt8Hd0wl/W0LhnrYlAwsZ9mDlYgextEmO50A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=liJfhEoE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9C36BC4E75B;
-	Thu, 18 Jan 2024 08:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705566180;
-	bh=N7/3TejevMzTdHuQwHKg0+Cn4QrndvepBaVHarp+hKU=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=liJfhEoER0+OX0zSdCCEPDD7E9OLV1uEtN9iqbjtKKgU/X2rgYpJScPOu31f4QJmM
-	 QROCWqZot6c/oBE/0aMP7yDqJK60wX8+MFzS9Mrzhq3FgR40wLWiTwhqlQBaQiBBhX
-	 /pu8UKSwMkpE1S8SKOAMniD4YlpvHWwBEqQ6ocW/F8kpVCUyb2h378OwtTFEvx0YL6
-	 fVXlrlcYSlRmjvoYTLb/0kqp7pXj2YA5sBGJH+KygAKcNJKgT0JDCB8Tn+vNdMSS0Q
-	 QKsclyDaJhCRjrXRIcx0V5UI/fdxKZWvoh6LNgGF4PAH+QHiNQGRW4A75sqcZmgobe
-	 y+PUnkYlLKGxw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82822C4707B;
-	Thu, 18 Jan 2024 08:23:00 +0000 (UTC)
-From:
- Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 18 Jan 2024 11:21:22 +0300
-Subject: [PATCH v7 39/39] dma: cirrus: remove platform code
+	s=arc-20240116; t=1705566212; c=relaxed/simple;
+	bh=C1hmTg2nY8yzj64atwww1ythwPSEs6LPcdpJP7PXbqw=;
+	h=X-Report-Abuse:DKIM-Signature:From:To:Cc:Subject:Date:Message-Id:
+	 MIME-Version:Content-Transfer-Encoding:X-Migadu-Flow; b=lvq8xIWl17YDyvzX0m/xdOhZoWPGcU3Q945U6/+rsxnfgDGzNbqmJawMujlCaoMn1G6sQApR8DmAhhlyprb8vUc+B99JqdPoiht1cB0gEQ7vhON0kOYtRPnXTiDCMUldFgLqS+aQI2dp5Dstiq9XjwLeW146yh2er5Nu4RogShA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SBJmTn8g; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705566207;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=pe8IQrETqG5sJ0hFhkc64W1l6+nAKA4aDlhTJnXDWtk=;
+	b=SBJmTn8g80S8xKAdpZWPh/c8KSATg87T78tr6m5D14ECkBeTJqRCJfnqu63LsoU1CU2t5Z
+	BaoXLQyzx9nI+IezmXxYukd1V73FEBZ7GsBUFrrd+FiExJjqTVjDwno93GRTNj7/WVhpRI
+	nSv3+o86VTpwX8+wlHsxW+SIEqRopps=
+From: Yajun Deng <yajun.deng@linux.dev>
+To: akpm@linux-foundation.org
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] mm/mmap: simplify vma_merge()
+Date: Thu, 18 Jan 2024 16:23:12 +0800
+Message-Id: <20240118082312.2801992-1-yajun.deng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240118-ep93xx-v7-39-d953846ae771@maquefel.me>
-References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
-In-Reply-To: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
-To: Vinod Koul <vkoul@kernel.org>, 
- Nikita Shubin <nikita.shubin@maquefel.me>, 
- Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, 
- Arnd Bergmann <arnd@arndb.de>
-X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705566176; l=6035;
- i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=+yka+X+eKgqo9oTZdvdU7l3LYkjbt/uZxdAkM2+WkI8=; =?utf-8?q?b=3DHzkxEG4zHMIB?=
- =?utf-8?q?rSahZa3fa3xysomny3RAZoP9/clSFqjvHLTenc3MeZGD3qS+JIEo/G002ODIGQvd?=
- ezHJAZiRC1ci55ZmY877tnxj4d017JS8OeO8re6Mku/gTBQOOs29
-X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
- pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
-X-Endpoint-Received:
- by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
-X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
-Reply-To: <nikita.shubin@maquefel.me>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Nikita Shubin <nikita.shubin@maquefel.me>
+These vma_merge() callers will pass mm, anon_vma and file, they all from
+vma. There is no need to pass three parameters at the same time.
 
-Remove DMA platform header, from now on we use device tree for DMA
-clients.
+We will find the current vma in vma_merge(). If we pass the original vma
+to vma_merge(), the current vma is actually the original vma or NULL.
+So we didn't need to find the current vma with find_vma_intersection().
 
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Pass vma to vma_merge(), and add a check to make sure the current vma
+is an existing vma.
+
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- drivers/dma/ep93xx_dma.c                 |  48 ++++++++++++++-
- include/linux/platform_data/dma-ep93xx.h | 100 -------------------------------
- 2 files changed, 46 insertions(+), 102 deletions(-)
+ mm/mmap.c | 37 +++++++++++++++++--------------------
+ 1 file changed, 17 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/dma/ep93xx_dma.c b/drivers/dma/ep93xx_dma.c
-index a214680a837d..5c35ffc340d3 100644
---- a/drivers/dma/ep93xx_dma.c
-+++ b/drivers/dma/ep93xx_dma.c
-@@ -17,6 +17,7 @@
- #include <linux/clk.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
-@@ -25,8 +26,6 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 49d25172eac8..7e00ae4f39e3 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -860,14 +860,16 @@ can_vma_merge_after(struct vm_area_struct *vma, unsigned long vm_flags,
+  *      area is returned, or the function will return NULL
+  */
+ static struct vm_area_struct
+-*vma_merge(struct vma_iterator *vmi, struct mm_struct *mm,
+-	   struct vm_area_struct *prev, unsigned long addr, unsigned long end,
+-	   unsigned long vm_flags, struct anon_vma *anon_vma, struct file *file,
+-	   pgoff_t pgoff, struct mempolicy *policy,
++*vma_merge(struct vma_iterator *vmi, struct vm_area_struct *prev,
++	   struct vm_area_struct *curr, unsigned long addr, unsigned long end,
++	   unsigned long vm_flags, pgoff_t pgoff, struct mempolicy *policy,
+ 	   struct vm_userfaultfd_ctx vm_userfaultfd_ctx,
+ 	   struct anon_vma_name *anon_name)
+ {
+-	struct vm_area_struct *curr, *next, *res;
++	struct mm_struct *mm = curr->vm_mm;
++	struct anon_vma *anon_vma = curr->anon_vma;
++	struct file *file = curr->vm_file;
++	struct vm_area_struct *next = NULL, *res;
+ 	struct vm_area_struct *vma, *adjust, *remove, *remove2;
+ 	struct vm_area_struct *anon_dup = NULL;
+ 	struct vma_prepare vp;
+@@ -889,13 +891,12 @@ static struct vm_area_struct
+ 		return NULL;
  
--#include <linux/platform_data/dma-ep93xx.h>
--
- #include "dmaengine.h"
+ 	/* Does the input range span an existing VMA? (cases 5 - 8) */
+-	curr = find_vma_intersection(mm, prev ? prev->vm_end : 0, end);
++	if (prev == curr || addr != curr->vm_start || end > curr->vm_end)
++		curr = NULL;
  
- /* M2P registers */
-@@ -106,6 +105,26 @@
- #define DMA_MAX_CHAN_BYTES		0xffff
- #define DMA_MAX_CHAN_DESCRIPTORS	32
+ 	if (!curr ||			/* cases 1 - 4 */
+ 	    end == curr->vm_end)	/* cases 6 - 8, adjacent VMA */
+-		next = vma_lookup(mm, end);
+-	else
+-		next = NULL;		/* case 5 */
++		next = vma_lookup(mm, end); /* NULL case 5 */
  
-+/*
-+ * M2P channels.
-+ *
-+ * Note that these values are also directly used for setting the PPALLOC
-+ * register.
-+ */
-+#define EP93XX_DMA_I2S1			0
-+#define EP93XX_DMA_I2S2			1
-+#define EP93XX_DMA_AAC1			2
-+#define EP93XX_DMA_AAC2			3
-+#define EP93XX_DMA_AAC3			4
-+#define EP93XX_DMA_I2S3			5
-+#define EP93XX_DMA_UART1		6
-+#define EP93XX_DMA_UART2		7
-+#define EP93XX_DMA_UART3		8
-+#define EP93XX_DMA_IRDA			9
-+/* M2M channels */
-+#define EP93XX_DMA_SSP			10
-+#define EP93XX_DMA_IDE			11
-+
- enum ep93xx_dma_type {
- 	M2P_DMA,
- 	M2M_DMA,
-@@ -242,6 +261,31 @@ static struct ep93xx_dma_chan *to_ep93xx_dma_chan(struct dma_chan *chan)
- 	return container_of(chan, struct ep93xx_dma_chan, chan);
+ 	if (prev) {
+ 		vma_start = prev->vm_start;
+@@ -919,7 +920,6 @@ static struct vm_area_struct
+ 
+ 	/* Verify some invariant that must be enforced by the caller. */
+ 	VM_WARN_ON(prev && addr <= prev->vm_start);
+-	VM_WARN_ON(curr && (addr != curr->vm_start || end > curr->vm_end));
+ 	VM_WARN_ON(addr >= end);
+ 
+ 	if (!merge_prev && !merge_next)
+@@ -2424,9 +2424,8 @@ struct vm_area_struct *vma_modify(struct vma_iterator *vmi,
+ 	pgoff_t pgoff = vma->vm_pgoff + ((start - vma->vm_start) >> PAGE_SHIFT);
+ 	struct vm_area_struct *merged;
+ 
+-	merged = vma_merge(vmi, vma->vm_mm, prev, start, end, vm_flags,
+-			   vma->anon_vma, vma->vm_file, pgoff, policy,
+-			   uffd_ctx, anon_name);
++	merged = vma_merge(vmi, prev, vma, start, end, vm_flags,
++			   pgoff, policy, uffd_ctx, anon_name);
+ 	if (merged)
+ 		return merged;
+ 
+@@ -2456,9 +2455,8 @@ static struct vm_area_struct
+ 		   struct vm_area_struct *vma, unsigned long start,
+ 		   unsigned long end, pgoff_t pgoff)
+ {
+-	return vma_merge(vmi, vma->vm_mm, prev, start, end, vma->vm_flags,
+-			 vma->anon_vma, vma->vm_file, pgoff, vma_policy(vma),
+-			 vma->vm_userfaultfd_ctx, anon_vma_name(vma));
++	return vma_merge(vmi, prev, vma, start, end, vma->vm_flags, pgoff,
++			 vma_policy(vma), vma->vm_userfaultfd_ctx, anon_vma_name(vma));
  }
  
-+static inline bool ep93xx_dma_chan_is_m2p(struct dma_chan *chan)
-+{
-+	if (device_is_compatible(chan->device->dev, "cirrus,ep9301-dma-m2p"))
-+		return true;
-+
-+	return !strcmp(dev_name(chan->device->dev), "ep93xx-dma-m2p");
-+}
-+
-+/*
-+ * ep93xx_dma_chan_direction - returns direction the channel can be used
-+ *
-+ * This function can be used in filter functions to find out whether the
-+ * channel supports given DMA direction. Only M2P channels have such
-+ * limitation, for M2M channels the direction is configurable.
-+ */
-+static inline enum dma_transfer_direction
-+ep93xx_dma_chan_direction(struct dma_chan *chan)
-+{
-+	if (!ep93xx_dma_chan_is_m2p(chan))
-+		return DMA_TRANS_NONE;
-+
-+	/* even channels are for TX, odd for RX */
-+	return (chan->chan_id % 2 == 0) ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
-+}
-+
- /**
-  * ep93xx_dma_set_active - set new active descriptor chain
-  * @edmac: channel
-diff --git a/include/linux/platform_data/dma-ep93xx.h b/include/linux/platform_data/dma-ep93xx.h
-deleted file mode 100644
-index 9ec5cdd5a1eb..000000000000
---- a/include/linux/platform_data/dma-ep93xx.h
-+++ /dev/null
-@@ -1,100 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __ASM_ARCH_DMA_H
--#define __ASM_ARCH_DMA_H
--
--#include <linux/types.h>
--#include <linux/device.h>
--#include <linux/dmaengine.h>
--#include <linux/dma-mapping.h>
--#include <linux/property.h>
--#include <linux/string.h>
--
--/*
-- * M2P channels.
-- *
-- * Note that these values are also directly used for setting the PPALLOC
-- * register.
-- */
--#define EP93XX_DMA_I2S1		0
--#define EP93XX_DMA_I2S2		1
--#define EP93XX_DMA_AAC1		2
--#define EP93XX_DMA_AAC2		3
--#define EP93XX_DMA_AAC3		4
--#define EP93XX_DMA_I2S3		5
--#define EP93XX_DMA_UART1	6
--#define EP93XX_DMA_UART2	7
--#define EP93XX_DMA_UART3	8
--#define EP93XX_DMA_IRDA		9
--/* M2M channels */
--#define EP93XX_DMA_SSP		10
--#define EP93XX_DMA_IDE		11
--
--/**
-- * struct ep93xx_dma_data - configuration data for the EP93xx dmaengine
-- * @port: peripheral which is requesting the channel
-- * @direction: TX/RX channel
-- * @name: optional name for the channel, this is displayed in /proc/interrupts
-- *
-- * This information is passed as private channel parameter in a filter
-- * function. Note that this is only needed for slave/cyclic channels.  For
-- * memcpy channels %NULL data should be passed.
-- */
--struct ep93xx_dma_data {
--	int				port;
--	enum dma_transfer_direction	direction;
--	const char			*name;
--};
--
--/**
-- * struct ep93xx_dma_chan_data - platform specific data for a DMA channel
-- * @name: name of the channel, used for getting the right clock for the channel
-- * @base: mapped registers
-- * @irq: interrupt number used by this channel
-- */
--struct ep93xx_dma_chan_data {
--	const char			*name;
--	void __iomem			*base;
--	int				irq;
--};
--
--/**
-- * struct ep93xx_dma_platform_data - platform data for the dmaengine driver
-- * @channels: array of channels which are passed to the driver
-- * @num_channels: number of channels in the array
-- *
-- * This structure is passed to the DMA engine driver via platform data. For
-- * M2P channels, contract is that even channels are for TX and odd for RX.
-- * There is no requirement for the M2M channels.
-- */
--struct ep93xx_dma_platform_data {
--	struct ep93xx_dma_chan_data	*channels;
--	size_t				num_channels;
--};
--
--static inline bool ep93xx_dma_chan_is_m2p(struct dma_chan *chan)
--{
--	if (device_is_compatible(chan->device->dev, "cirrus,ep9301-dma-m2p"))
--		return true;
--
--	return !strcmp(dev_name(chan->device->dev), "ep93xx-dma-m2p");
--}
--
--/**
-- * ep93xx_dma_chan_direction - returns direction the channel can be used
-- * @chan: channel
-- *
-- * This function can be used in filter functions to find out whether the
-- * channel supports given DMA direction. Only M2P channels have such
-- * limitation, for M2M channels the direction is configurable.
-- */
--static inline enum dma_transfer_direction
--ep93xx_dma_chan_direction(struct dma_chan *chan)
--{
--	if (!ep93xx_dma_chan_is_m2p(chan))
--		return DMA_TRANS_NONE;
--
--	/* even channels are for TX, odd for RX */
--	return (chan->chan_id % 2 == 0) ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
--}
--
--#endif /* __ASM_ARCH_DMA_H */
-
+ /*
+@@ -2472,10 +2470,9 @@ struct vm_area_struct *vma_merge_extend(struct vma_iterator *vmi,
+ 	pgoff_t pgoff = vma->vm_pgoff + vma_pages(vma);
+ 
+ 	/* vma is specified as prev, so case 1 or 2 will apply. */
+-	return vma_merge(vmi, vma->vm_mm, vma, vma->vm_end, vma->vm_end + delta,
+-			 vma->vm_flags, vma->anon_vma, vma->vm_file, pgoff,
+-			 vma_policy(vma), vma->vm_userfaultfd_ctx,
+-			 anon_vma_name(vma));
++	return vma_merge(vmi, vma, vma, vma->vm_end, vma->vm_end + delta,
++			 vma->vm_flags, pgoff, vma_policy(vma),
++			 vma->vm_userfaultfd_ctx, anon_vma_name(vma));
+ }
+ 
+ /*
 -- 
-2.41.0
+2.25.1
 
 
