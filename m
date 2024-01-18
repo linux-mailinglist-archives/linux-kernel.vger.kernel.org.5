@@ -1,125 +1,128 @@
-Return-Path: <linux-kernel+bounces-30091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B238B831904
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:19:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC50C831908
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A51611C2289F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:19:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4327281966
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45FF124B2C;
-	Thu, 18 Jan 2024 12:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F09624B37;
+	Thu, 18 Jan 2024 12:20:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ClTrz+3q"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yy14tb4L"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D055125A7
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 12:19:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287EE241F5;
+	Thu, 18 Jan 2024 12:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705580386; cv=none; b=aVlCWcDAygY59rv0cw13XV/0MSnjfrKWy/aHonhQF0krZC5JIPY5MJ22p132Wm3eLUvUySz61BodFFnojF23Fvcb61/I1gxI0wdv13j5dHTx5J7I+APaZvukYECsvNeH6E+Ihwl+n8FaL2d8tlDtwwp1iHAWmnLCTMGnLTRB4ko=
+	t=1705580444; cv=none; b=oBIvmPJazWc4taZUgGKF4iAT+ma3RQU7qEB4/n25SCtzCdfk/pbdtlwmfzUVm+3+7VmksKkexjUDgurpYu12+zrdNp/ZTH4wKOVJXWX3X5MqjAjt+H9BdU0UcAzpIQO8qnTSExqyJ0GbmpBkf3qntBeMgrPOZWgQR13dQk30F2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705580386; c=relaxed/simple;
-	bh=AEevfr9XoEmXV7CtmjTt3x1naHbjv/B6KkwqHnPrMlA=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:Received:Message-ID:Subject:From:
-	 To:Date:In-Reply-To:References:Autocrypt:Content-Type:
-	 Content-Transfer-Encoding:User-Agent:MIME-Version; b=PZLAQnchiSLSVScdcW7xFumMt+3woxAYjK0sAML+1pc57ijsRJzh49OXEeJD+J5MWdqXEwYBk0shuRuYPWhnwZ8jQYbosrnnp1iEE5tE41oFm5Hq5hQKEbRmU55ahK9sidlXy4e+gdhKmuXQKz+F/LO9d9rZdDXx4fFm2iEqo10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ClTrz+3q; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705580383;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=AEevfr9XoEmXV7CtmjTt3x1naHbjv/B6KkwqHnPrMlA=;
-	b=ClTrz+3qKFpo0ZKYrUrz3YPsifycW1laXjwJyILOAJchQyhIgjeysdh62r++i7VqgVjTcG
-	ou74mpJuOwLBhHOkI8cjv8W47yolA1LlfMVNqo5H64yji44Ka/Ot6ztzf8Kk33Qi/Zg5kP
-	2nRY/Eu072FA07c14ryuEbrtp9wP2gs=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-549-zNU8W5eEMR-N841tO--Qyw-1; Thu, 18 Jan 2024 07:19:42 -0500
-X-MC-Unique: zNU8W5eEMR-N841tO--Qyw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3378f48dbbfso869263f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 04:19:42 -0800 (PST)
+	s=arc-20240116; t=1705580444; c=relaxed/simple;
+	bh=wKeRRvwusUw6uM5fiDp+NNumKfPCuSxZTnfq0P5ovz0=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding; b=mCidjmLvqlda09fyrK2jbY2UNkBnRDs14jdbxvCUWPG01zlWrjZJ+1xsnpt4Ncn/wrlmFXC0U598UzGSaW5W4gq5DMwLUq0tHt8P9Q6dXzw244jAO7P0Un7HbPx0emSVrsY4b/vVyDt5aFzUdhDTkdgKZ0MVGCxWFp2u8y/9oFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yy14tb4L; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e76109cdeso45685345e9.0;
+        Thu, 18 Jan 2024 04:20:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705580441; x=1706185241; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=m0nHhjrzFZM7Cc/aJje9RV5MSdJX0vTi3w7er5mHZ94=;
+        b=Yy14tb4LrOT9YvrkDgpRLpxOEJlwMvZj2S0lxCVHgfvhEmMW5cVUq2s/5S3jNDIqC5
+         YPA+13fPGdiuUh2Xb3a9dz1PyshhdnX1YKgCwjimxLPgqo7o7LcJgAnXYG/vHzuck0Du
+         g3333MuWL+DrTrPfoqbarFAQW9SBQpF2ntKgEn7/3kVApGD41f4f6qUhzCFpBbpbqO5A
+         NJ2udb9Vsdf0WrMgULhuV0jdyaoMiXjumdA+un6kpSDyGTTlwqgW5nAZ0iaMEQNv2wLy
+         MJllzyoMsfL83hH9YvxVqSgmtQ6rGb0XnG7E7u4cXtFH33UUEO4Su3WALPdxWrwh1IoO
+         NJHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705580381; x=1706185181;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AEevfr9XoEmXV7CtmjTt3x1naHbjv/B6KkwqHnPrMlA=;
-        b=SQs9oos610312CXgKI0ctSXrKv0fecoMQtO8N4cNCNfcrqPT+iFPePdZ511qx3aa99
-         Df8h/N3Fm+yvOCGx/lwmtPmGcxWjo1L6oOTRdeXZNmNAHXV8apFymS+ZAkpZVP5yvD+6
-         OmGS4MPsrx6jSXvlsRQvaJP8Pgx/dvqFeLppoGPQQFdUAJLkLz7mWiZKOV0Ts0TFy9Zx
-         HoRrn+pvSlGzJjnOtk4VOzAOZy9zrgr1pNUVIe/dnODHabpj3LXuP1L7CJAAscsLagAb
-         4X6b1fsHOVcZwNGaymOqKWTlg/rYsayXKTNDuGaNe8glGL/QlyTo9QbLrYyF+eKVz+mF
-         M9jg==
-X-Gm-Message-State: AOJu0Yyed+b3XgWJiX2yKE9uGp80xDJuNiSHLY0yEr4bqtwvdG/WLYdX
-	TFVyyId2gZBUeeqSIc7x5EBU0fHWq51xA3z5MUsIAsaWCZ6YixknCZAK5Fmz0RfeQeqtqCjTV5b
-	BIqdgTr6+eSt4ILYDyPD7lHVlDK1HakS1NFEBM4KZM5bvGJ6BiPi963XP1NXPhw==
-X-Received: by 2002:a5d:508a:0:b0:337:c58a:ac91 with SMTP id a10-20020a5d508a000000b00337c58aac91mr898910wrt.1.1705580381459;
-        Thu, 18 Jan 2024 04:19:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHcJ8d42KXzo+C7TSGuKsXc6BQMfAYTM/431jeVFDg02NiLe+Zo64bFkUy1DHsrWVEHzzkdzQ==
-X-Received: by 2002:a5d:508a:0:b0:337:c58a:ac91 with SMTP id a10-20020a5d508a000000b00337c58aac91mr898901wrt.1.1705580381087;
-        Thu, 18 Jan 2024 04:19:41 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-241-180.dyn.eolo.it. [146.241.241.180])
-        by smtp.gmail.com with ESMTPSA id e40-20020a5d5968000000b00337bfd9bd47sm3908789wri.73.2024.01.18.04.19.40
+        d=1e100.net; s=20230601; t=1705580441; x=1706185241;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m0nHhjrzFZM7Cc/aJje9RV5MSdJX0vTi3w7er5mHZ94=;
+        b=E/MfG0IatHeRLznmBxIwPRBRY5GDmTGV/Jz+VkiPX0VEHV1T/GHc2u1vp3H9/BOYC9
+         nL49MX4BN2xW+QBHhZPEbEFOuuuWX3iw0not1/PvkQKIV6DyzJyqsyI2F/e9ZQ6oodag
+         JYAp3dXCqiV+yvnonVg2kwOozI6q/1XzH1t62ewDCJp4oiXfMtx4znd277cLmhfDyYCZ
+         zwuWaVJnMzDRQG83NaVaOffmCMYPs5Rtb2vs7fhhjSOywb4eKaFjI0dcmVYHshNoF/Vh
+         A17zmWoZ6jf4ioWYYPxksl4FtE3nA7z3/4yBnINR0b3pS2/gWtfKAAI88PKyDf9v8aEf
+         zJMQ==
+X-Gm-Message-State: AOJu0Ywa9i7aON7CsuggnQGwUw6Aa5YN/TJTVLhb7RFYSgyFdlygx/6k
+	a3K62qZ1u8qIimEU1K6AORl3ap6pNuvPujOQJVPtD821knP4X9R9
+X-Google-Smtp-Source: AGHT+IE1li7/tNfuLhhzIfuUktoc+UB/iW/Ffzt1JDUrO6Lg7Nbep8IaJTaabEGGhpnnb3Faob3EQg==
+X-Received: by 2002:a1c:7508:0:b0:40e:7734:ead2 with SMTP id o8-20020a1c7508000000b0040e7734ead2mr483857wmc.177.1705580441142;
+        Thu, 18 Jan 2024 04:20:41 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id v4-20020a05600c470400b0040e45799541sm29398014wmo.15.2024.01.18.04.20.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 04:19:40 -0800 (PST)
-Message-ID: <1137d26fb5fc1ca7070f8012ec588116a29a1c8a.camel@redhat.com>
-Subject: Re: [PATCH net-next v1] vlan: skip nested type that is not
- IFLA_VLAN_QOS_MAPPING
-From: Paolo Abeni <pabeni@redhat.com>
-To: Lin Ma <linma@zju.edu.cn>, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 18 Jan 2024 13:19:39 +0100
-In-Reply-To: <20240117153810.1197794-1-linma@zju.edu.cn>
-References: <20240117153810.1197794-1-linma@zju.edu.cn>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+        Thu, 18 Jan 2024 04:20:40 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Sathya Prakash <sathya.prakash@broadcom.com>,
+	Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>,
+	MPT-FusionLinux.pdl@broadcom.com,
+	linux-scsi@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] scsi: message: fusion: remove redundant pointer hd
+Date: Thu, 18 Jan 2024 12:20:39 +0000
+Message-Id: <20240118122039.2541425-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2024-01-17 at 23:38 +0800, Lin Ma wrote:
-> In the vlan_changelink function, a loop is used to parse the nested
-> attributes IFLA_VLAN_EGRESS_QOS and IFLA_VLAN_INGRESS_QOS in order to
-> obtain the struct ifla_vlan_qos_mapping. These two nested attributes are
-> checked in the vlan_validate_qos_map function, which calls
-> nla_validate_nested_deprecated with the vlan_map_policy.
->=20
-> However, this deprecated validator applies a LIBERAL strictness, allowing
-> the presence of an attribute with the type IFLA_VLAN_QOS_UNSPEC.
-> Consequently, the loop in vlan_changelink may parse an attribute of type
-> IFLA_VLAN_QOS_UNSPEC and believe it carries a payload of
-> struct ifla_vlan_qos_mapping, which is not necessarily true.
->=20
-> To address this issue and ensure compatibility, this patch introduces two
-> type checks that skip attributes whose type is not IFLA_VLAN_QOS_MAPPING.
->=20
-> Signed-off-by: Lin Ma <linma@zju.edu.cn>
+The pointer hd is being assigned a value that is not being
+read later. The variable is redundant and can be removed.
 
-Why are you targeting net-next? this looks like a fix suitable for
-'net' - with a proper fixes tag.
+Cleans up clang scan build warning:
+warning: Although the value stored to 'hd' is used in the enclosing
+expression, the value is never actually read from 'hd'
+[deadcode.DeadStores]
 
-Cheers,
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/message/fusion/mptfc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Paolo
+diff --git a/drivers/message/fusion/mptfc.c b/drivers/message/fusion/mptfc.c
+index 0581f855c72e..c459f709107b 100644
+--- a/drivers/message/fusion/mptfc.c
++++ b/drivers/message/fusion/mptfc.c
+@@ -1401,7 +1401,6 @@ static struct pci_driver mptfc_driver = {
+ static int
+ mptfc_event_process(MPT_ADAPTER *ioc, EventNotificationReply_t *pEvReply)
+ {
+-	MPT_SCSI_HOST *hd;
+ 	u8 event = le32_to_cpu(pEvReply->Event) & 0xFF;
+ 	unsigned long flags;
+ 	int rc=1;
+@@ -1412,8 +1411,7 @@ mptfc_event_process(MPT_ADAPTER *ioc, EventNotificationReply_t *pEvReply)
+ 	devtverboseprintk(ioc, printk(MYIOC_s_DEBUG_FMT "MPT event (=%02Xh) routed to SCSI host driver!\n",
+ 			ioc->name, event));
+ 
+-	if (ioc->sh == NULL ||
+-		((hd = shost_priv(ioc->sh)) == NULL))
++	if (ioc->sh == NULL || shost_priv(ioc->sh) == NULL)
+ 		return 1;
+ 
+ 	switch (event) {
+-- 
+2.39.2
 
 
