@@ -1,107 +1,138 @@
-Return-Path: <linux-kernel+bounces-30027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8917D83181C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:08:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 046E783181E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05AA7B21E61
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:08:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77E74B2499E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A887C23772;
-	Thu, 18 Jan 2024 11:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA7F24218;
+	Thu, 18 Jan 2024 11:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PNZI9q7x"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FVq4UqzR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3D92375A;
-	Thu, 18 Jan 2024 11:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6138E241E6;
+	Thu, 18 Jan 2024 11:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705576109; cv=none; b=KKTsJS38jFVH+DI4EWE0yBUTW5Juv3Lpx7GeDtwZNCDFm0zYpVSPq88K/Lfc/1nBSxX1vbzqDZRjSLb+uUU428jKgd7J+HhlKMWYZMDYk+TXOQUKYQFoWC1zU9YW0u8pK9rqKt/68cc3pEMtZqtnLIfU4Av6B5VDmFeahizrqdg=
+	t=1705576114; cv=none; b=AwauZsuVmTPBI50YLe9DM2TAOp3HgHqS5za15MVUlmC/0Ql2eKI5YXuSjjRo0MV9m1fnR9URZJlKg2mquhhRob/KTJLUnRS2wk+YH/6BGXFX5BHkMZJJxIjU9I4ZkPIPdruh3/gVZCt+zhhOQ/mBl/CEVhFS+F9NxfJkqPhqcqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705576109; c=relaxed/simple;
-	bh=mjy35o3OcV45hLL1uxk3iUN5tBVkfvj+D2W44/uMvS8=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding; b=Yf0VlsxdfozLKECjHCrw1gaq6G2ipJHq1KjltdqUMryQs8X5rB4ZUdCIpR6ghSL3IvqwIG/kCUeaH1qcEtn5X4y+rlsMx6ZO3TWZJJ4Rdw3FB/v8NqxuJBhqqbjD4IepEpQTQHp0lWeuUUHx5vg179F0jdukPRwK6el/2zKwE5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PNZI9q7x; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705576107; x=1737112107;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=mjy35o3OcV45hLL1uxk3iUN5tBVkfvj+D2W44/uMvS8=;
-  b=PNZI9q7xZxh9gvSfEm8/7R4abwR6siIgTnhd1ahjKzDrEH9Bm9ScXkxc
-   5Qi8bF6+/aepSKj9v0cbL37DCxXiaSvBNZTi1pxJmsD+PrVRa2Zy0eoIa
-   LwAy8qvjOTVS0oOuvV27B1dOR9mt9l4Ihcwtx2qoOip8ZYvdBv8/lsUFp
-   TpkYFa1pOxgKrCWNOTh8O+7P/HizWHRJZxgDH1NK6Fz7co65fJaXiVp4y
-   OB6ovbSkPZ/4d9XjfWw2FKOwcvmWDEGDDUEfSnqKL8+LmpPOi4og+eOyy
-   OCP4P8D/L+QFy+hJSHx9v/fXSawaKI4Felxx2dzxc3iEUqyJCA68j4l0G
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="404183212"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="404183212"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 03:08:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="297769"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.254.202])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 03:08:23 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	"Oliver O'Halloran" <oohall@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Keith Busch <kbusch@kernel.org>,
-	Dongdong Liu <liudongdong3@huawei.com>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 1/1] PCI/DPC: Fix TLP Prefix register reading offset
-Date: Thu, 18 Jan 2024 13:08:15 +0200
-Message-Id: <20240118110815.3867-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1705576114; c=relaxed/simple;
+	bh=rGbrI8sNR96Acbsy9tBWyCiVY3Sa9RJ0zm5JcTqANrE=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:References:Date:
+	 In-Reply-To:Message-ID:User-Agent:MIME-Version:Content-Type; b=f0sM4y12FbhGMXxDBK86B0T7u33mXLtaWeBxxxTYuygZcovAKc+frOpkqOrk+Ozwk+76ZINDgmq0gyVjk/tTr6hBjrcnU9GtKecJZ2mgPn77gsg/2JaaygWHlYhKCXgOXqn+WweT6bQ71BqWZqBIKKe/FJTlyny4Dw7M2nVe8pQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FVq4UqzR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30C51C433F1;
+	Thu, 18 Jan 2024 11:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705576114;
+	bh=rGbrI8sNR96Acbsy9tBWyCiVY3Sa9RJ0zm5JcTqANrE=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=FVq4UqzRz3KJliesJ/BdCC3eGm/OBDDeBB3uv+HhnSIqLhnBr7/eQvQ0jBozxLtpu
+	 U6536KA0mxD/9x66U7v43Rn0CaLV6f5R87dQgciFJs4y6heCyH0s8Me4aE6n3s1PFL
+	 4n9W6HFv0YjbE/nwWIcr9C7MPKK4tAcOJ+2St+hWdnJccAtPdlTiGtEuSClpbDHMaj
+	 z4TepxfgrrXmvknY5qXn0p9puoJvxxKrU3qgL46W9s39AjDNvsiNCasO2vIwboI8q2
+	 Guvaj5GWfNTh6QL/QV6pblEpBRY+nOR7D9MbJDo/mebTWcJYSqZcHgczeKMUoOwE6F
+	 Etuudmr27d+ow==
+From: Kalle Valo <kvalo@kernel.org>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: <ath11k@lists.infradead.org>,  <linux-wireless@vger.kernel.org>,
+  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] wifi: ath11k: document HAL_RX_BUF_RBM_SW4_BM
+References: <20240111-document-hal_rx_buf_rbm_sw4_bm-v1-1-ad277e8ab3cc@quicinc.com>
+	<874jfg7xm4.fsf@kernel.org>
+	<b4f29511-e001-4964-b88d-208dabf88121@quicinc.com>
+Date: Thu, 18 Jan 2024 13:08:31 +0200
+In-Reply-To: <b4f29511-e001-4964-b88d-208dabf88121@quicinc.com> (Jeff
+	Johnson's message of "Tue, 16 Jan 2024 08:58:04 -0800")
+Message-ID: <875xzq526o.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-The TLP Prefix Log Register consists of multiple DWORDs (PCIe r6.1 sec
-7.9.14.13) but the loop in dpc_process_rp_pio_error() keeps reading
-from the first DWORD. Add the iteration count based offset calculation
-into the config read.
+Jeff Johnson <quic_jjohnson@quicinc.com> writes:
 
-Fixes: f20c4ea49ec4 ("PCI/DPC: Add eDPC support")
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- drivers/pci/pcie/dpc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On 1/14/2024 7:17 AM, Kalle Valo wrote:
+>> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
+>> 
+>>> Commit 7636c9a6e7d7 ("wifi: ath11k: Add multi TX ring support for WCN6750")
+>>> added HAL_RX_BUF_RBM_SW4_BM to enum hal_rx_buf_return_buf_manager. However,
+>>> as flagged by the kernel-doc script, the documentation was not updated:
+>>>
+>>> drivers/net/wireless/ath/ath11k/hal.h:689: warning: Enum value
+>>> 'HAL_RX_BUF_RBM_SW4_BM' not described in enum
+>>> 'hal_rx_buf_return_buf_manager'
+>>>
+>>> So update the documentation. No functional changes, compile tested only.
+>>>
+>>> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+>> 
+>> I'm not really a fan of kernel-doc in wireless drivers, it feels more
+>> unnecessary work. Should we remove the kernel-doc markings from ath11k
+>> altogether?
+>
+> Are you not a fan of kernel-doc format specifically, or not a fan of
+> documentation at all?
 
-diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-index 94111e438241..e5d7c12854fa 100644
---- a/drivers/pci/pcie/dpc.c
-+++ b/drivers/pci/pcie/dpc.c
-@@ -234,7 +234,7 @@ static void dpc_process_rp_pio_error(struct pci_dev *pdev)
- 
- 	for (i = 0; i < pdev->dpc_rp_log_size - 5; i++) {
- 		pci_read_config_dword(pdev,
--			cap + PCI_EXP_DPC_RP_PIO_TLPPREFIX_LOG, &prefix);
-+			cap + PCI_EXP_DPC_RP_PIO_TLPPREFIX_LOG + i * 4, &prefix);
- 		pci_err(pdev, "TLP Prefix Header: dw%d, %#010x\n", i, prefix);
- 	}
-  clear_status:
+I'm definitely a fan of documentation where it makes sense, but I'm not
+fan of kernel-doc if there are no users or readers. For example, using
+kernel-doc in cfg80211 or mac80211 makes a lot of sense, and is
+important, but I'm not convinced about using kernel-doc in wireless
+drivers.
+
+> I'm personally a fan of documentation since good documentation makes the
+> code more maintainable. Yes, there is a cost in creating and maintaining
+> the documentation, but this is hopefully offset by cost saving when new
+> developers are trying to understand and modify the code.
+>
+> I'm also a fan of consistency. And since kernel-doc is the standard
+> format defined for the kernel, it is my personal preference to use that
+> format.
+
+I understand your points and if we had plenty of free time I would be
+onboard with this. To keep my mail short few quick points:
+
+* To make sure there are no kernel-doc warnings we would have to add
+  checks to ath11k-check, which would slow down it considerably and it
+  would again slow down our workflow (I run it several times a day).
+
+* To use kernel-doc formatting alone doesn't really make sense so we
+  would have to start creating a kernel-doc book or something. But who
+  would read it?
+
+* kernel-doc moves field documentation in structures away from the
+  actual fields which I find confusing.
+
+* The risk of having outdated kernel-doc documentation is high, it would
+  need active maintenance etc.
+
+* I'm worried about creating useless documentation, like "Count number
+  foo" for foo_count() just because of kernel-doc.
+
+This is why I consider return on investment is low here :) My preference
+is to make the code understandable (good symbol names etc) and document
+the special cases, which are not obvious from the code, with a normal
+code comment.
+
+> I'm curious what others think of the ath10/11/12k level and style of
+> documentation.
+
+IIRC iwlwifi uses kernel-doc to document the firmware interface, not
+sure how much it's used elsewhere in the driver.
+
 -- 
-2.39.2
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
