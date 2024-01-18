@@ -1,138 +1,168 @@
-Return-Path: <linux-kernel+bounces-29983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 077F483162E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:49:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0461B831630
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD72C281BE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:49:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 942DB1F23480
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B3651F951;
-	Thu, 18 Jan 2024 09:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19A81F94C;
+	Thu, 18 Jan 2024 09:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qBR3Q25J";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="m6WwSFX0"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Dw21sRWg"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC591B978;
-	Thu, 18 Jan 2024 09:49:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBAB91B96D
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:51:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705571378; cv=none; b=lyN6xCy5LvNSUCR6jwCZDdCwnYBg1SSX1Lgw1X83pnUdFpSEsGM38oyoZED0BiLxfhTRr0MM746h8jPSwfNdbJHO1ha3fuXZEY7wuJ+8vdtqWpMwSyhYRSDo/RKdBYxnAO2+io+RcDlQFiH4OxR2m9ATX9n3zhCHeLtVOXTtK6s=
+	t=1705571470; cv=none; b=p1pTZJXwOWnmj/8AmrdKrU0OlzqS5U8HLzfjpC/jORhAMkWR7G30bvIyemhSSkNOdxR7oAqiDPah1IhZ8wv3G6wGkIRE5PMrEPvoRHCNaap0RhG3TfgpV86sw9qHtSG0vy6kGM3k/MNMKNtIgMZPdmI/bbzoFUvoN59MbhPXYOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705571378; c=relaxed/simple;
-	bh=Xx1w2j0Ut6qee5gadoLoqIjcIiSaRiZlSco/pUHyEh8=;
-	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-Spam-Level:X-Rspamd-Server:
-	 X-Spamd-Result:X-Spam-Score:X-Rspamd-Queue-Id:X-Spam-Flag; b=rdJ1SKG3gM/YHYsMx7LrB4g0OnvDtfdiEuEvlzhpwZKfxG6UolpGjgIYE9vGRfXqDVv/vXW2qSLUF4cF2tVfwvlKQix3tARV04TdcsuqR2luE61FxZL8hg+RdiMfXxpE0B1bPslxebVX5Ce92Am9YMPyqer+Cqn8JAZpOqH3U/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qBR3Q25J; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=m6WwSFX0; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E50011F76E;
-	Thu, 18 Jan 2024 09:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705571374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jz/0ds8afeq3DpOVl8DS5UXtCEYQMmU6QgXHoRDaeGc=;
-	b=qBR3Q25J9klgtYkNFKQe3s8GVc+znkGesqzm2ClVjNWKA0Q+PE/2MbzpqOCzajEhytLd9n
-	zkGg/1tyTknXB5ZWForDujNYOerJYiRhpp48gLZRvizUGnnHGJqUSH7yPnGLznIMts6hTa
-	pJqkD7XFuBoPHh+J7PWW174bl8Vcig0=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705571373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jz/0ds8afeq3DpOVl8DS5UXtCEYQMmU6QgXHoRDaeGc=;
-	b=m6WwSFX00eeqMGnOpFRCh/+cexaLtJCSsD+wOsgNkvI54cpVharnqpE49XNuMWyPXEoJ/V
-	mPkxWQlraFajlLD9SOBtdIjHC/gdqOkluZzd3Z1iINullDmg72/1BYPgvuQOEcpL9qKxAN
-	h8zReVQees4G2Z7OOfT015tfml+GJVU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C654713874;
-	Thu, 18 Jan 2024 09:49:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NX5uLS30qGVSPwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 18 Jan 2024 09:49:33 +0000
-Date: Thu, 18 Jan 2024 10:49:33 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Shakeel Butt <shakeelb@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-	Vasily Averin <vasily.averin@linux.dev>,
-	Michal Koutny <mkoutny@suse.com>, Waiman Long <longman@redhat.com>,
-	Muchun Song <muchun.song@linux.dev>, Jiri Kosina <jikos@kernel.org>,
-	cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
-Message-ID: <Zaj0LYIJRL9TNj2R@tiehlicka>
-References: <cover.1705507931.git.jpoimboe@kernel.org>
- <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
- <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
+	s=arc-20240116; t=1705571470; c=relaxed/simple;
+	bh=s3vUMJLFHAD51DC2yFRfx7iE/+ob/GznEz4ar3z3+bk=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Date:
+	 Mime-Version:X-Mailer:Message-ID:Subject:From:To:Cc:Content-Type;
+	b=F4qsvmLr4Rr3xELrZ4xFuC5eawrG2vTCZaBAPWIOauf68gvBdlnyvQTp3c5E4OKoWaK/rPS9ep84+VGL7kXEsNaSQd3G/TYN1LNTCKRtyQW0lYvjiEgApqQFHQDEb+Pq8NzRSaoPcTsXkmXEguM5ZOJi46UYnibf0xK245BGqm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--gthelen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Dw21sRWg; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--gthelen.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e744f7ca3bso188256057b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:51:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705571467; x=1706176267; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RO6rdO7yon9JVy5o6uihMLS4VCKN6/zkfcB4kXn3j3k=;
+        b=Dw21sRWgO25P5sGKQLu6OP4DyJdA36g7iapH1YdNEM0JzusJTk4F+HyTIVlF7CGt21
+         B9rNP3gSAJ7iz81cw6MPcslp6AnPGlf9LVU/C/A2N4UxGtBg1c+DzVnra4c5Dss3XBN7
+         pji35wkNFln3yfIGos8mRnGJzZW+ZnHJY9gncqHC+UdE+vSBDhORG0yyzUqqFsv/MWX9
+         t6AZ1AeGYWcwlj2ob+wXQ/8d5F7mrGLHfU4JpC7FpoLTiLWSaRchAQW3tDu9zPcPs7rH
+         YzjtVCIKPa6DvRxsb2rWt0Xgnz+cYfgQ52YMSlfiNE9JBoTg4G1hRidCRcLcX9xEJEW8
+         iA2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705571467; x=1706176267;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RO6rdO7yon9JVy5o6uihMLS4VCKN6/zkfcB4kXn3j3k=;
+        b=IDunWPptxkReUnH0Kfh4nKkTqLlK3IgFYTKZP3UzGyaMQUq3aD3yli4/MMdXLsdB64
+         k9/Mex6nwvNmoA+UwU6PTdfb/KZKLMvm4rAfU90bFEIef6RrHENq9/FHVDqoNWhFts2g
+         FR0izzX9eq2El3MPAiUfuXegdOEF3g8XSKnrVnbl4Egr2RLpJwv4e8DrFesFL8tjvH0n
+         cV9fFHta8U00rFgKrnCIxFAlMixN57VmHDUXCzmuLck6nLxHUbstP8N9+0Bv66nYT6V1
+         OGhc78qwhBpWYNVCF57iPp42+N1HXvqDBMr4rvz8U6P7n64pjJV0NegT7XchFCwYpbMX
+         iuPQ==
+X-Gm-Message-State: AOJu0Yw38YvYzMfrrLbzZt+DfysR0Z2hWY1696o6KvtoDOQxFGKKKa5O
+	CWYr4Bt0JvjS1Cj7Dcdj06VpFfnMj0ITMHnj2LMKJ+OAIphg6cmI6sjwi6VE8fOyouq1gEhWDYl
+	RDaCI3w==
+X-Google-Smtp-Source: AGHT+IGe18viwrppfstJfi4AUcP2ZanhxP9sww14HmVAsZgEBU6B1iIqZG6+djVghvja7wuNIfkQ57OeetYp
+X-Received: from gthelen-cloudtop.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1b13])
+ (user=gthelen job=sendgmr) by 2002:a25:b112:0:b0:dbe:32b0:9250 with SMTP id
+ g18-20020a25b112000000b00dbe32b09250mr27546ybj.0.1705571466906; Thu, 18 Jan
+ 2024 01:51:06 -0800 (PST)
+Date: Thu, 18 Jan 2024 01:50:57 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=m6WwSFX0
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[17];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.69)[83.24%]
-X-Spam-Score: -1.70
-X-Rspamd-Queue-Id: E50011F76E
-X-Spam-Flag: NO
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240118095057.677544-1-gthelen@google.com>
+Subject: [PATCH] selftests/memfd: delete unused declarations
+From: Greg Thelen <gthelen@google.com>
+To: Daniel Verkamp <dverkamp@chromium.org>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Shuah Khan <shuah@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Jeff Xu <jeffxu@google.com>, Kees Cook <keescook@chromium.org>
+Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed 17-01-24 14:00:55, Jeff Layton wrote:
-> I'm really not a fan of tunables or different kconfig options,
-> especially for something niche like this.
+Commit 32d118ad50a5 ("selftests/memfd: add tests for F_SEAL_EXEC"):
+- added several unused 'nbytes' local variables
 
-I completely agree with that. We do have plethora of kernel objects
-which are accounted and we really do not want to have a kernel cmd line
-option for many/each of them. Kernel memory accounting can be disabled
-through kernel cmd line already. 
+Commit 6469b66e3f5a ("selftests: improve vm.memfd_noexec sysctl tests"):
+- orphaned 'newpid_thread_fn2()' forward declaration
+- orphaned 'join_newpid_thread()' forward declaration
+- added unused 'pid' local in sysctl_simple_child()
+- orphaned 'fd' local in sysctl_simple_child()
+- added unused 'fd' in sysctl_nested_child()
+
+Delete the unused locals and forward declarations.
+
+Signed-off-by: Greg Thelen <gthelen@google.com>
+---
+ tools/testing/selftests/memfd/memfd_test.c | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/tools/testing/selftests/memfd/memfd_test.c b/tools/testing/selftests/memfd/memfd_test.c
+index 3df008677239..18f585684e20 100644
+--- a/tools/testing/selftests/memfd/memfd_test.c
++++ b/tools/testing/selftests/memfd/memfd_test.c
+@@ -44,8 +44,6 @@
+  */
+ static size_t mfd_def_size = MFD_DEF_SIZE;
+ static const char *memfd_str = MEMFD_STR;
+-static int newpid_thread_fn2(void *arg);
+-static void join_newpid_thread(pid_t pid);
+ 
+ static ssize_t fd2name(int fd, char *buf, size_t bufsize)
+ {
+@@ -194,7 +192,6 @@ static unsigned int mfd_assert_get_seals(int fd)
+ static void mfd_assert_has_seals(int fd, unsigned int seals)
+ {
+ 	char buf[PATH_MAX];
+-	int nbytes;
+ 	unsigned int s;
+ 	fd2name(fd, buf, PATH_MAX);
+ 
+@@ -696,7 +693,6 @@ static void mfd_assert_mode(int fd, int mode)
+ {
+ 	struct stat st;
+ 	char buf[PATH_MAX];
+-	int nbytes;
+ 
+ 	fd2name(fd, buf, PATH_MAX);
+ 
+@@ -715,7 +711,6 @@ static void mfd_assert_mode(int fd, int mode)
+ static void mfd_assert_chmod(int fd, int mode)
+ {
+ 	char buf[PATH_MAX];
+-	int nbytes;
+ 
+ 	fd2name(fd, buf, PATH_MAX);
+ 
+@@ -731,7 +726,6 @@ static void mfd_fail_chmod(int fd, int mode)
+ {
+ 	struct stat st;
+ 	char buf[PATH_MAX];
+-	int nbytes;
+ 
+ 	fd2name(fd, buf, PATH_MAX);
+ 
+@@ -1254,9 +1248,6 @@ static void test_sysctl_set_sysctl2(void)
+ 
+ static int sysctl_simple_child(void *arg)
+ {
+-	int fd;
+-	int pid;
+-
+ 	printf("%s sysctl 0\n", memfd_str);
+ 	test_sysctl_set_sysctl0();
+ 
+@@ -1321,7 +1312,6 @@ static void test_sysctl_sysctl2_failset(void)
+ 
+ static int sysctl_nested_child(void *arg)
+ {
+-	int fd;
+ 	int pid;
+ 
+ 	printf("%s nested sysctl 0\n", memfd_str);
 -- 
-Michal Hocko
-SUSE Labs
+2.43.0.429.g432eaa2c6b-goog
+
 
