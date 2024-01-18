@@ -1,143 +1,134 @@
-Return-Path: <linux-kernel+bounces-30290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D389831CA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:34:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 674E8831D16
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72E44B219B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:34:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98E281C23065
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:59:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 046BA28DAB;
-	Thu, 18 Jan 2024 15:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326B128DD2;
+	Thu, 18 Jan 2024 15:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="fcHk/YjR"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mistralsolutions.com header.i=@mistralsolutions.com header.b="K5FVaXDt"
+Received: from egress-ip43a.ess.de.barracuda.com (egress-ip43a.ess.de.barracuda.com [18.185.115.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3714D28DA0
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 15:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 598FD24B40
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 15:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.185.115.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705592079; cv=none; b=jfBRchvIiyzW2L6Lv0lI2Fi8JEzhKzrWNRVCudef8dhjtTjZ5bf4SzY7hcW3nHNWhgpii1CM1fTinBip+V9Rbi4JtEl6127cZuv1R/h4wN5wfONqPBa+KdoZmYShXyESzNmhuyZyC3gQenRAVeluNiep6wjSpiWRa1fYElQEfes=
+	t=1705593563; cv=none; b=ex3DSwvmKsRJ4v9Nr11Jq3Ud4SWJTZyOFBHSHk6R03/SQ2VsuNhUrAswTkhApbYNaHE9dDZpb5f1AWOcjQy2Vbs98hIGp9comBpdOysn5PVHKLo6IuS1S/PtMgTbmnpNYaftjKpC/B9sZsiI6iylosfhYSahnexUn5z2aPnghpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705592079; c=relaxed/simple;
-	bh=UGxG6EyibmRAM5Y8/h5dxRVzsp4YczRcqVH4LdOjekE=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=Kse23T+BdtE/j5K4rBV9+z+E7HRv3klM0WX9dgZqoA7iNhmPwOegUVLBxt4bKloYfcSED5wAdSCAZf+mBIjAc6ZPvmvfCuiiEjw2JrxkMHwRjD2zQn8h2VAp4mWYnLZj0HFpQi9Sx4Xe+u4LMdaPDMkirJrNyl5xFrTHhZxzLk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=fcHk/YjR; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7833bd8be24so64624085a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 07:34:35 -0800 (PST)
+	s=arc-20240116; t=1705593563; c=relaxed/simple;
+	bh=+y5fUEkd5+zzoxl0HWIsvFG0uwPbNdaHmGmzGann5z0=;
+	h=Received:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Received:X-Google-Smtp-Source:X-Received:
+	 Received:From:X-Google-Original-From:To:Cc:Subject:Date:Message-Id:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-BESS-ID:
+	 X-BESS-VER:X-BESS-Apparent-Source-IP:X-BESS-Parts:
+	 X-BESS-Outbound-Spam-Score:X-BESS-Outbound-Spam-Report:
+	 X-BESS-Outbound-Spam-Status:X-BESS-BRTS-Status; b=Jlt8c3MAnPz4aizbPyXWVDc+/KdABHAqR9aeVUWzrqiAZsCZ+ipDswzg2LUDt5aIxIiY1Hk2KqLNCU+PBp6cWbsEs1H0iDZ0MHfQqbfkB3KFxhIOd7DJJSGz18d8lFDD7gYB+rgraLLG2eRJD4eQIVIYKC6r3UqT3lJy4PPnM3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mistralsolutions.com; spf=pass smtp.mailfrom=mistralsolutions.com; dkim=pass (1024-bit key) header.d=mistralsolutions.com header.i=@mistralsolutions.com header.b=K5FVaXDt; arc=none smtp.client-ip=18.185.115.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mistralsolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mistralsolutions.com
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70]) by mx-outbound40-32.eu-central-1c.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Thu, 18 Jan 2024 15:59:18 +0000
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6e0b75639deso633008a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 07:59:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705592075; x=1706196875; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z90u0SuucO9XdrnILoeOBey/mQvJmgZQH7Wy3n6yiQ0=;
-        b=fcHk/YjRkTT7EwBvCqG0rkxfKqk6wgzVR6TteWnxFXrRi6Mh7Z2d5L+A0Y+LRyL3yc
-         mCc0xJLqPN5SfVRlp0jU0jBXei0IhOpGWis0aNb+3aqIwOGdFAvFmBbUjAmmuIIUr7KM
-         v0ZZyAMaTdlj+jvyiVae55pdmElGGvKSYaY47FXxO8OqU6BAiHC89xLWdhyr3P90zcDH
-         oZC/rgvORFSxCm3aYCCCyRt1blbSHgl+O9sDhn+3dQrOe/QSkwZZDrONJhVuP/YV3xSM
-         0PIJV8OR++xfJttd8Szw2qHwFlXmkftNMYcBOFftQWLJuGh4HpLa7fq8HD2DE9MkAqDc
-         aLXg==
+        d=mistralsolutions.com; s=google; t=1705593557; x=1706198357; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=o8p6tnemlAQdnLlr6kCUPw8u4bTJQ9vaiCBP/sDK8h8=;
+        b=K5FVaXDtepQr6OE5D7Fk6Q0bZTtlMVb0sSU6qZBFpV8J57QnyoMEdDQ31/TSNKuzaP
+         ZcDg70FbhKQ74J1Vo1ZzOCdQn2IW9WQekaUBfyXFAYHaULUKg0teFcspvUEqS/Y+9+GV
+         vWsb/p9+SdQNtOHapBaOJ4pn5MAKfuckNrTqU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705592075; x=1706196875;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z90u0SuucO9XdrnILoeOBey/mQvJmgZQH7Wy3n6yiQ0=;
-        b=v09Pw7JFdMdtaAd1bw7lMtvmqbJyWFk/GWDf6VQox1YeCwiAalYPTVHeR+t10LBkSz
-         s3AjXGFHgER9XTNpJXbZwhhCIkfqGOCA3bc0Av4kW+KhAYSSWjZXeuGmrBmfSMdHYvdF
-         F3F9HI2pcHMJ08h/qlJTsjUmzIg4aNkDZbifstqLMQk8JVE6RcZVgxQMuZUN8vwoqowi
-         +tsrnilh+222Zp2MEbXxZHp6DQSvJcSIUdTOnihUKamWizgh2I9HSf20khnESBuBObnJ
-         003YLoqxnJsKVP89aPKdm3b0SHPgFb+QK4BcWkNO37ZgF8Qe0J4acUnckLc1NQ3OHbg7
-         h7Dg==
-X-Gm-Message-State: AOJu0Yzmn1JbRb81LdUqzRCrSfug4fyGfFb44LJCpzm+PxaNV4F34QS1
-	ADClWPCw2Ipvj3qxoRi3H+kg9rAgJAvjHN35RzyrcNsYnqv7HYGIeZeLcPDYWwA=
-X-Google-Smtp-Source: AGHT+IEJpW6Lgi4UzRfBaM94wBsZuW5rwjyurtWeDGfMBYfTAFgQqavFd6uKsVqZK9cdsmYFOFoMag==
-X-Received: by 2002:a05:620a:3902:b0:781:b6a7:2d6c with SMTP id qr2-20020a05620a390200b00781b6a72d6cmr4016350qkn.8.1705592074948;
-        Thu, 18 Jan 2024 07:34:34 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:d00e])
-        by smtp.gmail.com with ESMTPSA id m1-20020a05620a214100b00781df3924f3sm5350981qkm.129.2024.01.18.07.34.34
+        d=1e100.net; s=20230601; t=1705593557; x=1706198357;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o8p6tnemlAQdnLlr6kCUPw8u4bTJQ9vaiCBP/sDK8h8=;
+        b=v27dYZxAktP3GkKM9r/wpv5qxrAJ6uzzdpEowfuisqNaA2Mv02I2fdlhU9fOuvv+0g
+         g9UHdH9ALh5LmCJygzUDslF9SS1tePi1zEc2IG9gaBeUP4hKuHZo4hqBXxHellxUeNqX
+         Gi07yD+QvQVDT0ibudFMiF1oETDDBQh0G4IKh0WmIa4u5+7t/UIy8bEPITpnIToukvEd
+         t0v8++MbHyAwC4tuQLFfOHjBTaIejuSzY954jTdVg/+hp26qbVMLjMexBpgHVLugu0v+
+         Ux7bGRrL0UTd1HbxwE3HKHFVjf+PzhI0TUzbAetAqeVx5XiRta6koAWXUbx7dRBECDmt
+         adzg==
+X-Gm-Message-State: AOJu0YyfPs4dtvUaqK3BiktUhozoWIqoEdCNzWvT8FFJcXRz7RH6ylqb
+	cEZdrI7071E97JVZznuYD0Ul6jGuTYXL+JaLPrd7YuOfl8VRF64fnTm/HF5zbb77DRM9ucwrby5
+	Hqawl2z97/AMsCWa2h3g5LjCRyYlC094bPR9ldsHWPEACALq+dSVkECjImSJ3hIRLe1RWTeNs8b
+	mBxlVkncho/Ywn7iZ9+HPK
+X-Received: by 2002:a17:903:2289:b0:1d7:ad3:6318 with SMTP id b9-20020a170903228900b001d70ad36318mr1058206plh.23.1705592152666;
+        Thu, 18 Jan 2024 07:35:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEMhD19NwdQ6O2/f85sTtPnPbTyrLlNxaAEf9pNnH3bnZq+ODPClOncwHC663UDceOhebj/zA==
+X-Received: by 2002:a17:903:2289:b0:1d7:ad3:6318 with SMTP id b9-20020a170903228900b001d70ad36318mr1058187plh.23.1705592152360;
+        Thu, 18 Jan 2024 07:35:52 -0800 (PST)
+Received: from LAP559U.mistral.in ([106.51.69.35])
+        by smtp.gmail.com with ESMTPSA id kf13-20020a17090305cd00b001d0ca40158dsm1535207plb.280.2024.01.18.07.35.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 07:34:34 -0800 (PST)
-Date: Thu, 18 Jan 2024 10:34:25 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Chengming Zhou <zhouchengming@bytedance.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Chris Li <chriscli@google.com>, Nhat Pham <nphamcs@gmail.com>
-Subject: Re: [PATCH 0/2] mm/zswap: optimize the scalability of zswap rb-tree
-Message-ID: <20240118153425.GI939255@cmpxchg.org>
-References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
- <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com>
+        Thu, 18 Jan 2024 07:35:52 -0800 (PST)
+From: sabiya.d@mistralsolutions.com
+X-Google-Original-From: sabiya.d@ti.com
+To: nm@ti.com,
+	vigneshr@ti.com,
+	kristo@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	linus.walleij@linaro.org
+Cc: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	u-kumar1@ti.com,
+	sabiya.d@mistralsolutions.com,
+	Dasnavis Sabiya <sabiya.d@ti.com>
+Subject: [PATCH 0/2] Add CAN and OSPI support for AM69-SK platform
+Date: Thu, 18 Jan 2024 21:05:22 +0530
+Message-Id: <20240118153524.4135901-1-sabiya.d@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com>
+X-BESS-ID: 1705593558-310272-12403-7663-1
+X-BESS-VER: 2019.1_20240103.1634
+X-BESS-Apparent-Source-IP: 209.85.210.70
+X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUirNy1bSUcovVrIyMTMEMjKAYsZGRobJJkbJlk
+	DSwsLCPCU1NTUtzSA11SzJwMzCxEKpNhYA43mfqkAAAAA=
+X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.253601 [from 
+	cloudscan10-163.eu-central-1a.ess.aws.cudaops.com]
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------
+	0.00 BSF_SC0_MISMATCH_TO    META: Envelope rcpt doesn't match header 
+	0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
+	0.00 NO_REAL_NAME           HEADER: From: does not include a real name 
+X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_SC0_MISMATCH_TO, BSF_BESS_OUTBOUND, NO_REAL_NAME
+X-BESS-BRTS-Status:1
 
-On Wed, Jan 17, 2024 at 10:37:22AM -0800, Yosry Ahmed wrote:
-> On Wed, Jan 17, 2024 at 1:23 AM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
-> >
-> > When testing the zswap performance by using kernel build -j32 in a tmpfs
-> > directory, I found the scalability of zswap rb-tree is not good, which
-> > is protected by the only spinlock. That would cause heavy lock contention
-> > if multiple tasks zswap_store/load concurrently.
-> >
-> > So a simple solution is to split the only one zswap rb-tree into multiple
-> > rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M). This idea is
-> > from the commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trunks").
-> >
-> > Although this method can't solve the spinlock contention completely, it
-> > can mitigate much of that contention. Below is the results of kernel build
-> > in tmpfs with zswap shrinker enabled:
-> >
-> >      linux-next  zswap-lock-optimize
-> > real 1m9.181s    1m3.820s
-> > user 17m44.036s  17m40.100s
-> > sys  7m37.297s   4m54.622s
-> >
-> > So there are clearly improvements. And it's complementary with the ongoing
-> > zswap xarray conversion by Chris. Anyway, I think we can also merge this
-> > first, it's complementary IMHO. So I just refresh and resend this for
-> > further discussion.
-> 
-> The reason why I think we should wait for the xarray patch(es) is
-> there is a chance we may see less improvements from splitting the tree
-> if it was an xarray. If we merge this series first, there is no way to
-> know.
+From: Dasnavis Sabiya <sabiya.d@ti.com>
 
-I mentioned this before, but I disagree quite strongly with this
-general sentiment.
+Hi All,
 
-Chengming's patches are simple, mature, and have convincing
-numbers. IMO it's poor form to hold something like that for "let's see
-how our other experiment works out". The only exception would be if we
-all agree that the earlier change flies in the face of the overall
-direction we want to pursue, which I don't think is the case here.
+This series adds support for the below interfaces on AM69-SK platform:
+-  CAN support on both MCU and MAIN domains
+-  OSPI NOR flash support
 
-With the xarray we'll still have a per-swapfile lock for writes. That
-lock is the reason SWAP_ADDRESS_SPACE segmentation was introduced for
-the swapcache in the first place. Lockless reads help of course, but
-read-only access to swap are in the minority - stores will write, and
-loads are commonly followed by invalidations. Somebody already went
-through the trouble of proving that xarrays + segmentation are worth
-it for swap load and store access patterns. Why dismiss that?
+Dasnavis Sabiya (2):
+  arm64: dts: ti: k3-am69-sk: Enable CAN interfaces for AM69 SK board
+  arm64: dts: ti: k3-am69-sk: Add support for OSPI flash
 
-So my vote is that we follow the ususal upstreaming process here:
-merge the ready patches now, and rebase future work on top of it.
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts | 166 ++++++++++++++++++++++++++
+ 1 file changed, 166 insertions(+)
+
+-- 
+2.34.1
+
 
