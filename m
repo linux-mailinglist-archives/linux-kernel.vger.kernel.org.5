@@ -1,264 +1,224 @@
-Return-Path: <linux-kernel+bounces-30463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB916831F02
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:16:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49BE3831F03
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:17:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6598A2874C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:16:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E6BF1C21570
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6D282D61B;
-	Thu, 18 Jan 2024 18:16:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC682D61C;
+	Thu, 18 Jan 2024 18:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DjAD8hK9"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dBc+i5H0"
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888922D607;
-	Thu, 18 Jan 2024 18:16:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DCD2D603
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 18:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705601783; cv=none; b=WQwD8yX6U7QjKtC7iQr6PsMFpIXXnbxcA9euwJiBiNkSQ2LE27+DcTStJsQ6HZGqcWWw/tGQXVg29o1ht1+uAfdfqwoVlCdmk60pG5zmrc4ZfbWoegcWS2RT5YeKpTLRPC3dIN8MjgNk1xo/n8kXJNFmMDBFpX4HlB/VmIaTL7c=
+	t=1705601812; cv=none; b=ue4XoCmyz0pjkImZjwSXVXJ0YiY0Sjb3VuQ23gfQMZAT/nI4ReCnsjlZdEJrkcaa0mWhjz7QPeN+HgOVIy3pYOT+0OGcoxzOSB/Ue1JflpoP2Ix6VVMqDiuYs5Y+saBzcgJs+n2XLCYCiyMbEBvcBD+05TerBtHpQ+tQeS8vIZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705601783; c=relaxed/simple;
-	bh=75xyrl2Vt3b2PhHiLwfpIiTowVr6nUc6G+SBgiESLiA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=igBNhcCKDUzFPAC5Uu80tdwuAq1J+3kKqdrFy7K6+LFBIPX+lURWN7bLzdxI1zS4w/fmz1JHEXbnpBrKYiLQ3lSQsYacD8b0K5MbJG1MM/qFqmfcxqE10ecNmlAFU6mkdCL96ymCGR/uek36XkxYZfayRvmqjLTCEqSgsVv4ivs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DjAD8hK9; arc=none smtp.client-ip=209.85.210.173
+	s=arc-20240116; t=1705601812; c=relaxed/simple;
+	bh=5/4og5glP9zdLy7I7d5oxsFz5APYY0CQD4pK7aB5GXU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W4XPyYOfGzjh1oJgh4fVYTDi2niYLlpb0ztXzPn+Tr1zB27wdi7Gx6BefSjji6xvPf+VA2la51LyDr89MDOJrH/NWBznaMsNHliRoowkqwhu8BanoSWl/R7AB0R0Fiqic9v8LMs04F67MHnWgQrhheFqlTpePbAgtWa7B5+jR1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dBc+i5H0; arc=none smtp.client-ip=209.85.166.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6dbb003be79so469065b3a.0;
-        Thu, 18 Jan 2024 10:16:21 -0800 (PST)
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7bb5fda069bso517519139f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 10:16:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705601781; x=1706206581; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705601810; x=1706206610; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6Bcx0IbP5g/OJJK6YtXAX93piFFuqRs0WI847iNZ19Q=;
-        b=DjAD8hK9PQzJASjc06Q/tFPAdblbo+MyLyhZfXXeHOz6ak6vzQvdUn8KAFc1GG4/n9
-         169ve/+mi1QMAClwhmtBo6psxNoNBrzKkimYIl+V6sJnHjrujSG3IWhAKVR32WkEf8Sy
-         TaR6bCWVCHiT0Scqg6WciKN/TI45baKtrTN4VafxkVXatzW8MGGAnDrleJscIMr94lit
-         RT7r3nIvOuiij92+Vpy4Tli5k8S/3+7VCTQgz9ojJ1pQNmCNYORAWljHmI0sSD3j5zUy
-         oYNNMRlxmsdhfAx9jExtlFMHoOF1vJQjjv5pKCEYbLa/9gTe7JEJerMa7DtigzFFToVg
-         n/ng==
+        bh=8h1yBz/J7E0Ht6qB3EEpyUc4skdwfMJw+NDm6XA4Q44=;
+        b=dBc+i5H0L3D2x1PzjM3z1xYPGdSztjpLJd9TeM96FFnYwwBUDAIMVl/QAEMCwRy902
+         A1BBswRjormpGCObuLDcPDFXs7UtoSwIcqDs8UWlrQHAGCJBRyO6Ig01IxUdN3pAdBw9
+         dgeSuXPkv3fiRa70aaqDqYGrbdG+S8YLF+G03pl0bjxGRlOa6OFCQklwCmt4xapS8zPx
+         XVuTV9do02fO4+JyTb+8lBEiSW9WVsm21icrQUctJRGPGf60H3o99HHHF2oJUg3RzXZF
+         s9hYf18heMDhUFSiITGTKoZkT5KLyP9Z5CozJHZ9e1RVL7/UIFhMJy3PEYxeDd9RlJ1m
+         fEUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705601781; x=1706206581;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1705601810; x=1706206610;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6Bcx0IbP5g/OJJK6YtXAX93piFFuqRs0WI847iNZ19Q=;
-        b=jAQD4IxYd7hu029xb0Juormbo8pJnWvFAzBRr5H90lywBHoHqH/YHW0Sl6rfH5Xyfo
-         7lhrJY0WNC3IF9HpSEbFkD0FjmwJbZaELTUbFbypCI/BkdUXCx1MFs7pztWTRVID2q9a
-         UaLc1o+3cjXSLWlMcw1lU51EBS6osrllgU5fokTABzPiVbTi+baUjKOeBsVmbiidYNNH
-         siLvIGYKC/qAVtciNjf9LnS4uYZwRiQvKnV/DSn9D1l34bmn2trJHwuNPK6rmhfkz2hl
-         4FZjtHuvQP69KtZI/ULuKMpeaZ1lASorW7CHMSIoQkRGyAvr+5aF1ukhYddvOApL6BwN
-         Xm+w==
-X-Gm-Message-State: AOJu0Yx4mz9bz9i/9nWv37W15n9mkV1Rn/qjRATuJg9USYr3dAHgLyuF
-	4Xhrq3GDCP/Pf7WWqZZMeonvBNg4O3q5epr5ReWgLFuaPemqVSeVQfrjF7c6
-X-Google-Smtp-Source: AGHT+IFabAJ6tpgBiSXr4HWkyvdoeKyIuYKRSweGoSVc2kC/p+oIBaGxjO1hlFqFr/k9dRqVBoXPmQ==
-X-Received: by 2002:a17:90b:202:b0:28d:acdd:ad23 with SMTP id fy2-20020a17090b020200b0028dacddad23mr3893322pjb.9.1705601780682;
-        Thu, 18 Jan 2024 10:16:20 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:f04f:73f4:b79:a70c])
-        by smtp.gmail.com with ESMTPSA id qa17-20020a17090b4fd100b002902e409b77sm1509428pjb.57.2024.01.18.10.16.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 10:16:20 -0800 (PST)
-Date: Thu, 18 Jan 2024 10:16:17 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [git pull] Input updates for v6.8-rc0
-Message-ID: <Zalq8fauylyDfoXf@google.com>
+        bh=8h1yBz/J7E0Ht6qB3EEpyUc4skdwfMJw+NDm6XA4Q44=;
+        b=naWewsmey4RFlt02pQ2f3OhgW2h/pU1FRfggd6L3B8/DtgdY7bAMANKrDi03gsTc4L
+         RL+ZUrvcOypULpeOqVlPHFU8/P3ztB4Qt7txKejJB52yrkOrFKPxwC5AcVSBlmZKaAZW
+         s6ZIYLGuiJahJ4f1itQdw+HEK3B+xi6R8H6pP61kZjt4hnhmafL6OCEsDUg1MStqgVus
+         ukerYPb750gpe/ij99WJPhg8YlfRelWd8ZC67HmB1A4KdcVcKXlPgz+46c8jd7edNS8Q
+         QW25SK60R/szbNPpKis2+k6uCKzfcRg3mhTlv5UM9ftdoZxXmFjBN7k9QPc3qxxXTe7B
+         dGrA==
+X-Gm-Message-State: AOJu0Yw+JCUZQM4/yTdGCz+Pmlo573IqHx+nHUYY02MyDAT+IBHfREiw
+	p5b56/3V8XMaeJGFUE5Mr+U/cHcEudoYvosbbtdkFDlQm8xYy95pIXYv/a8Fzb7u+jj8zPDrFAS
+	Zkr5ZRkordtVvjA91O5Agwl2f2vk=
+X-Google-Smtp-Source: AGHT+IF4ac27YHrVkcC7cplUn0qBT5WLu6b/s4Z+TAj7QYcFXrWFEosv+9IOrBbhUqVNXgro3OsJqjySMhRjv7WeDr0=
+X-Received: by 2002:a6b:6f18:0:b0:7bf:4f28:11a1 with SMTP id
+ k24-20020a6b6f18000000b007bf4f2811a1mr1471678ioc.11.1705601810023; Thu, 18
+ Jan 2024 10:16:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com> <20240117-b4-zswap-lock-optimize-v1-1-23f6effe5775@bytedance.com>
+In-Reply-To: <20240117-b4-zswap-lock-optimize-v1-1-23f6effe5775@bytedance.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Thu, 18 Jan 2024 10:16:39 -0800
+Message-ID: <CAKEwX=Oj+Vb1d8aahBJ6=51XZY0rG-G06CnQeqiD8=M7KbjtZQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/zswap: make sure each swapfile always have zswap rb-tree
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, 
+	Chris Li <chriscli@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Wed, Jan 17, 2024 at 1:23=E2=80=AFAM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> Not all zswap interfaces can handle the absence of the zswap rb-tree,
+> actually only zswap_store() has handled it for now.
+>
+> To make things simple, we make sure each swapfile always have the
+> zswap rb-tree prepared before being enabled and used. The preparation
+> is unlikely to fail in practice, this patch just make it explicit.
+>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Please pull from:
+This seems fine to me. IIUC, zswap_swapon() only fails when the rbtree
+allocation fails, and the tree's memory footprint is small so that's
+unlikely anyway.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git tags/input-for-v6.8-rc0
-
-to receive updates for the input subsystem. You will get:
-
-- a new driver for Adafruit Seesaw gamepad device
-- Zforce touchscreen will handle standard device properties for axis
-  swap/inversion
-- handling of advanced sensitivity settings in Microchip CAP11xx
-  capacitive sensor driver
-- more drivers have been converted to use newer gpiod API
-- support for dedicated wakeup IRQs in gpio-keys dirver
-- support for slider gestures and OTP variants in iqs269a driver
-- atkbd will report keyboard version as 0xab83 in cases when GET ID
-  command was skipped (to deal with problematic firmware on newer
-  laptops), restoring the previous behavior
-- other assorted cleanups and changes.
-
-Changelog:
----------
-
-Andreas Kemnade (4):
-      Input: omap4-keypad - react on keypresses if device is runtime-suspended
-      dt-bindings: touchscreen: convert neonode,zforce to json-schema
-      dt-bindings: touchscreen: neonode,zforce: Use standard properties
-      Input: zforce_ts - accept standard touchscreen properties
-
-Anshul Dalal (4):
-      dt-bindings: input: gpio-mouse: Convert to json-schema
-      dt-bindings: input: convert drv266x to json-schema
-      dt-bindings: input: bindings for Adafruit Seesaw Gamepad
-      Input: driver for Adafruit Seesaw Gamepad
-
-Biju Das (3):
-      Input: da9063 - simplify obtaining OF match data
-      Input: da9063 - drop redundant prints in probe()
-      Input: da9063 - use dev_err_probe()
-
-Christophe JAILLET (1):
-      Input: xpad - remove usage of the deprecated ida_simple_xx() API
-
-Dmitry Torokhov (2):
-      Input: da9063_onkey - avoid using OF-specific APIs
-      Input: da9063_onkey - avoid explicitly setting input's parent
-
-Hans de Goede (1):
-      Input: atkbd - use ab83 as id when skipping the getid command
-
-Hermes Zhang (1):
-      Input: gpio-keys - filter gpio_keys -EPROBE_DEFER error messages
-
-Jeff LaBundy (4):
-      dt-bindings: input: iqs269a: Add bindings for slider gestures
-      Input: iqs269a - add support for slider gestures
-      dt-bindings: input: iqs269a: Add bindings for OTP variants
-      Input: iqs269a - add support for OTP variants
-
-Jiri Valek - 2N (3):
-      Input: cap11xx - remove unnecessary IRQ parsing
-      dt-bindings: input: microchip,cap11xx: add advanced sensitivity settings
-      Input: cap11xx - add advanced sensitivity settings
-
-Krzysztof Kozlowski (1):
-      dt-bindings: input: samsung,s6sy761: convert to DT schema
-
-Linus Walleij (4):
-      Input: navpoint - convert to use GPIO descriptor
-      Input: tca6416-keypad - drop unused include
-      Input: omap-keypad - drop optional GPIO support
-      Input: as5011 - convert to GPIO descriptor
-
-Marcus Folkesson (1):
-      Input: pxrc - simplify mutex handling with guard macro
-
-Marek Szyprowski (1):
-      Input: max77693-haptic - add device-tree compatible strings
-
-Mark Brown (3):
-      Input: cap11xx - cache hardware ID registers
-      Input: cap11xx - convert to use maple tree register cache
-      Input: qt1050 - convert to use maple tree register cache
-
-Rob Herring (2):
-      dt-bindings: input: sprd,sc27xx-vibrator: Drop incomplete example
-      dt-bindings: input: mediatek,pmic-keys: Drop incomplete example
-
-Tony Lindgren (2):
-      dt-bindings: input: gpio-keys: Allow optional dedicated wakeirq
-      Input: gpio-keys - add system suspend support for dedicated wakeirqs
-
-ye xingchen (7):
-      Input: use sysfs_emit() instead of scnprintf()
-      Input: mouse - use sysfs_emit[_at]() instead of scnprintf()
-      Input: touchscreen - use sysfs_emit[_at]() instead of scnprintf()
-      Input: synaptics-rmi4 - use sysfs_emit() to instead of scnprintf()
-      Input: ims-pcu - use sysfs_emit() instead of scnprintf()
-      Input: iqs269a - use sysfs_emit() instead of scnprintf()
-      Input: vivaldi - convert to use sysfs_emit_at() API
-
-Diffstat:
---------
-
- .../bindings/input/adafruit,seesaw-gamepad.yaml    |  63 ++++
- .../devicetree/bindings/input/gpio-keys.yaml       |  41 ++-
- .../devicetree/bindings/input/gpio-mouse.txt       |  32 --
- .../devicetree/bindings/input/gpio-mouse.yaml      |  68 +++++
- .../devicetree/bindings/input/iqs269a.yaml         |  98 +++++-
- .../bindings/input/mediatek,pmic-keys.yaml         |  24 +-
- .../bindings/input/microchip,cap11xx.yaml          |  80 ++++-
- .../bindings/input/sprd,sc27xx-vibrator.yaml       |  19 +-
- .../devicetree/bindings/input/ti,drv2665.txt       |  17 --
- .../devicetree/bindings/input/ti,drv2667.txt       |  17 --
- .../devicetree/bindings/input/ti,drv266x.yaml      |  50 +++
- .../bindings/input/touchscreen/neonode,zforce.yaml |  72 +++++
- .../bindings/input/touchscreen/samsung,s6sy761.txt |  32 --
- .../input/touchscreen/samsung,s6sy761.yaml         |  54 ++++
- .../bindings/input/touchscreen/zforce_ts.txt       |  34 ---
- MAINTAINERS                                        |   7 +
- drivers/input/input.c                              |   8 +-
- drivers/input/joystick/Kconfig                     |  10 +
- drivers/input/joystick/Makefile                    |   1 +
- drivers/input/joystick/adafruit-seesaw.c           | 315 +++++++++++++++++++
- drivers/input/joystick/as5011.c                    |  24 +-
- drivers/input/joystick/pxrc.c                      |  42 ++-
- drivers/input/joystick/xpad.c                      |   6 +-
- drivers/input/keyboard/atkbd.c                     |  12 +-
- drivers/input/keyboard/cap11xx.c                   | 253 ++++++++++++----
- drivers/input/keyboard/gpio_keys.c                 |  75 ++++-
- drivers/input/keyboard/omap-keypad.c               |  19 +-
- drivers/input/keyboard/omap4-keypad.c              |  15 +-
- drivers/input/keyboard/qt1050.c                    |   2 +-
- drivers/input/keyboard/tca6416-keypad.c            |   1 -
- drivers/input/misc/da9063_onkey.c                  |  69 ++---
- drivers/input/misc/ims-pcu.c                       |  10 +-
- drivers/input/misc/iqs269a.c                       | 335 ++++++++++++++++++---
- drivers/input/misc/max77693-haptic.c               |  14 +-
- drivers/input/mouse/cyapa.c                        |  22 +-
- drivers/input/mouse/cyapa_gen3.c                   |   2 +-
- drivers/input/mouse/cyapa_gen5.c                   |   4 +-
- drivers/input/mouse/cyapa_gen6.c                   |  20 +-
- drivers/input/mouse/elan_i2c_core.c                |  18 +-
- drivers/input/mouse/navpoint.c                     |  41 +--
- drivers/input/rmi4/rmi_f01.c                       |  13 +-
- drivers/input/touchscreen/atmel_mxt_ts.c           |  21 +-
- drivers/input/touchscreen/edt-ft5x06.c             |   2 +-
- drivers/input/touchscreen/hideep.c                 |   6 +-
- drivers/input/touchscreen/hycon-hy46xx.c           |   2 +-
- drivers/input/touchscreen/ilitek_ts_i2c.c          |  16 +-
- drivers/input/touchscreen/iqs5xx.c                 |  12 +-
- drivers/input/touchscreen/iqs7211.c                |  12 +-
- drivers/input/touchscreen/melfas_mip4.c            |  16 +-
- drivers/input/touchscreen/usbtouchscreen.c         |   4 +-
- drivers/input/touchscreen/wdt87xx_i2c.c            |   6 +-
- drivers/input/touchscreen/zforce_ts.c              |  34 +--
- drivers/input/vivaldi-fmap.c                       |   6 +-
- include/linux/gpio_keys.h                          |   2 +
- include/linux/input/as5011.h                       |   1 -
- include/linux/input/navpoint.h                     |   1 -
- include/linux/platform_data/keypad-omap.h          |   3 -
- 57 files changed, 1633 insertions(+), 550 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
- delete mode 100644 Documentation/devicetree/bindings/input/gpio-mouse.txt
- create mode 100644 Documentation/devicetree/bindings/input/gpio-mouse.yaml
- delete mode 100644 Documentation/devicetree/bindings/input/ti,drv2665.txt
- delete mode 100644 Documentation/devicetree/bindings/input/ti,drv2667.txt
- create mode 100644 Documentation/devicetree/bindings/input/ti,drv266x.yaml
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/neonode,zforce.yaml
- delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/samsung,s6sy761.txt
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/samsung,s6sy761.yaml
- delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/zforce_ts.txt
- create mode 100644 drivers/input/joystick/adafruit-seesaw.c
-
-Thanks.
+Acked-by: Nhat Pham <nphamcs@gmail.com>
 
 
--- 
-Dmitry
+
+> ---
+>  include/linux/zswap.h |  7 +++++--
+>  mm/swapfile.c         | 10 +++++++---
+>  mm/zswap.c            |  7 ++++---
+>  3 files changed, 16 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+> index 0b709f5bc65f..eca388229d9a 100644
+> --- a/include/linux/zswap.h
+> +++ b/include/linux/zswap.h
+> @@ -30,7 +30,7 @@ struct zswap_lruvec_state {
+>  bool zswap_store(struct folio *folio);
+>  bool zswap_load(struct folio *folio);
+>  void zswap_invalidate(int type, pgoff_t offset);
+> -void zswap_swapon(int type);
+> +int zswap_swapon(int type);
+>  void zswap_swapoff(int type);
+>  void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+>  void zswap_lruvec_state_init(struct lruvec *lruvec);
+> @@ -51,7 +51,10 @@ static inline bool zswap_load(struct folio *folio)
+>  }
+>
+>  static inline void zswap_invalidate(int type, pgoff_t offset) {}
+> -static inline void zswap_swapon(int type) {}
+> +static inline int zswap_swapon(int type)
+> +{
+> +       return 0;
+> +}
+>  static inline void zswap_swapoff(int type) {}
+>  static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)=
+ {}
+>  static inline void zswap_lruvec_state_init(struct lruvec *lruvec) {}
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 3eec686484ef..6c53ea06626b 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -2347,8 +2347,6 @@ static void enable_swap_info(struct swap_info_struc=
+t *p, int prio,
+>                                 unsigned char *swap_map,
+>                                 struct swap_cluster_info *cluster_info)
+>  {
+> -       zswap_swapon(p->type);
+> -
+>         spin_lock(&swap_lock);
+>         spin_lock(&p->lock);
+>         setup_swap_info(p, prio, swap_map, cluster_info);
+> @@ -3166,6 +3164,10 @@ SYSCALL_DEFINE2(swapon, const char __user *, speci=
+alfile, int, swap_flags)
+>         if (error)
+>                 goto bad_swap_unlock_inode;
+>
+> +       error =3D zswap_swapon(p->type);
+> +       if (error)
+> +               goto free_swap_address_space;
+> +
+>         /*
+>          * Flush any pending IO and dirty mappings before we start using =
+this
+>          * swap device.
+> @@ -3174,7 +3176,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specia=
+lfile, int, swap_flags)
+>         error =3D inode_drain_writes(inode);
+>         if (error) {
+>                 inode->i_flags &=3D ~S_SWAPFILE;
+> -               goto free_swap_address_space;
+> +               goto free_swap_zswap;
+>         }
+>
+>         mutex_lock(&swapon_mutex);
+> @@ -3198,6 +3200,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specia=
+lfile, int, swap_flags)
+>
+>         error =3D 0;
+>         goto out;
+> +free_swap_zswap:
+> +       zswap_swapoff(p->type);
+>  free_swap_address_space:
+>         exit_swap_address_space(p->type);
+>  bad_swap_unlock_inode:
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index ca25b676048e..d88faea85978 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1519,7 +1519,7 @@ bool zswap_store(struct folio *folio)
+>         if (folio_test_large(folio))
+>                 return false;
+>
+> -       if (!zswap_enabled || !tree)
+> +       if (!zswap_enabled)
+>                 return false;
+>
+>         /*
+> @@ -1772,19 +1772,20 @@ void zswap_invalidate(int type, pgoff_t offset)
+>         spin_unlock(&tree->lock);
+>  }
+>
+> -void zswap_swapon(int type)
+> +int zswap_swapon(int type)
+>  {
+>         struct zswap_tree *tree;
+>
+>         tree =3D kzalloc(sizeof(*tree), GFP_KERNEL);
+>         if (!tree) {
+>                 pr_err("alloc failed, zswap disabled for swap type %d\n",=
+ type);
+> -               return;
+> +               return -ENOMEM;
+>         }
+>
+>         tree->rbroot =3D RB_ROOT;
+>         spin_lock_init(&tree->lock);
+>         zswap_trees[type] =3D tree;
+> +       return 0;
+>  }
+>
+>  void zswap_swapoff(int type)
+>
+> --
+> b4 0.10.1
 
