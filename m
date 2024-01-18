@@ -1,95 +1,100 @@
-Return-Path: <linux-kernel+bounces-30188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 586BB831B2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:15:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFF7A831B3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:19:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC6BDB21E1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:15:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67BBB1F25538
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F4E82576A;
-	Thu, 18 Jan 2024 14:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hZIzGa0T"
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2CE25772;
+	Thu, 18 Jan 2024 14:19:06 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE20525759
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7311525614
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705587300; cv=none; b=aAcwaFSwIBgApLDA3788v8jpM0XYrKA2enTGDYHijeGja6+sQYudFKou6KWJffQgEPkGs7KclC5iKV+bYEIhN47W4Lw05KbTXf5zEI7NWNyhqzkHs9gCtDlaUdjjkukZqv/79z++lyIWZ3ZCW90KnHIX/TgqpLYDk3axcWffxa8=
+	t=1705587545; cv=none; b=GPDWitTa7zRX0Q1JGu2zXGfNIXaPmyaa5oiIxM8VUI9XhIl59OmqW2S2PIW4FykowcY41rEXGhYlbY1sTF2mM/VGzL0WQZ9Qb6fWFodwsc9NDG0/6lGkJe524j7LB3/rQkeJXQKs087MD4nCq4A7DeES6nEdKKTkX94JJwO3LYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705587300; c=relaxed/simple;
-	bh=9xvmJE0htP/uWURUWOqFs+gbJDnfmHDjeswpyr/OtiI=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type; b=AwjSQkDx3V9ou46byAfbJTnwTzot3ddhKE5KRS/vihtzzJ0KMl3oj7ZCuypQeV7AzOqo5Utwvh55/m7Xs5ofWf1ZdKyJuNt76ij1RhV0SEXfC9yen9jzAUS7ZYo0jAmXi5oeKwfPyiSp1rBldZYyTKNUqoyUNgzSFL8WtxsCOZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hZIzGa0T; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-429de32dad9so30607941cf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:14:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705587297; x=1706192097; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9xvmJE0htP/uWURUWOqFs+gbJDnfmHDjeswpyr/OtiI=;
-        b=hZIzGa0TODfDh3nIprNUnM+8dPeAM2IWn9S91+IzjAYbArrVQCErSY6qih1KFU9gbG
-         E3+vkCNlx7kB0aw59KIW+jNz2/pn/NY4j1HMJoFHVY4aHk0wEWF9cdZ2OP1CmIR0PxIK
-         Q7yEiWRuvJhm2haxeElYGkKd08vfMpH0SPEHGQ9nkovY4BVY79+ggKKJM9ZduqKEPHfR
-         DS3m95/US1w6TSb6FNuVNlhLFFurBVXRVpUybF0ythIdRxRALl1QFocH6HmEBo0SIDdX
-         uNH4ZAMB5bjog7gma7Q0rA9uoHtUQoEUZPfIsF32xZikK89ktCAuto1LObmHhbYqzL7Q
-         /JpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705587297; x=1706192097;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9xvmJE0htP/uWURUWOqFs+gbJDnfmHDjeswpyr/OtiI=;
-        b=qR2fS8L+diVOUtbOSOSixuk3sKPDcVKv9B4iUjZEeDitsozSCKKvCoKKWFS6AbfS0O
-         ttQP1b4HxcLpDZnjyosQf2Qr8mhRLQC+3zPOhacKuaCluNmEOjdy8Z2i+/3uU8c7aaIE
-         /3o/LWXtIfyDpQdHLI3S6rQpSIzo1TvKa4QZfku+b1VBMFN8zJss7kY4UkA7+E6U695G
-         hpIeos+8XPu933FktWnqXVKcYImBC9DDwfP/wmO6QsXpAEcvaBn0p9VycCD4USsgYuXT
-         57lpAyi/mAwGf4Y5+/m7JrM/QCtuE81U8v4SOjz3rLEDXKyPtFuzRtaj8af34LbUKCjr
-         iN/g==
-X-Gm-Message-State: AOJu0YwOwGhiibWs92v96tgB0tCwo+8Kh0slptUwgh5w/ZvLIEABJ1TR
-	21vkBtyTWtnJX/9ilaslHfqYJaJozhPThAnv846EHxEHCVinWHtyuZBRJhAa2a0OYMoNNgxu/on
-	LBPc/tOpkZZ1snNDt91t4I6lJ1AGk8WqU
-X-Google-Smtp-Source: AGHT+IFO4M30hPG9uOoEKUA2BlvLEIuWKZLXXe20J/9Vt1dZU9mcko1aXB4sKOdTvpI82E9JV1cqRaNbU4ZC6DmixDk=
-X-Received: by 2002:ac8:7d88:0:b0:42a:1c88:41d7 with SMTP id
- c8-20020ac87d88000000b0042a1c8841d7mr764877qtd.109.1705587297481; Thu, 18 Jan
- 2024 06:14:57 -0800 (PST)
+	s=arc-20240116; t=1705587545; c=relaxed/simple;
+	bh=T4ORLdKNOVj3bjZZf6OYBnNg7tHoYxxzKwXKSXCqwaA=;
+	h=Received:Received:X-Virus-Status:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:Content-Language:To:References:Cc:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=khkC+S82MLsc3mvw5n1b0GrDHIru6OohTXaO+0KW4CjUZ2J1fDAv5Nbin9AFcIbiEohEKymxFOyHZFKl+Zbt2GxcFIHb3y28L2jIGHRySvxlDz2lcngxrAWRNxFjmlrlaeAED9NzdT27U66OWhunW8mj2kULAT/dgiH1Gvfku/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav111.sakura.ne.jp (fsav111.sakura.ne.jp [27.133.134.238])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40IEI4Vt090994;
+	Thu, 18 Jan 2024 23:18:04 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav111.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav111.sakura.ne.jp);
+ Thu, 18 Jan 2024 23:18:04 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav111.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40IEI33U090989
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Thu, 18 Jan 2024 23:18:03 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <83414cb6-df16-4b6d-92e3-d54d22ba26cc@I-love.SAKURA.ne.jp>
+Date: Thu, 18 Jan 2024 23:18:03 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110090107.26323-1-ppbuk5246@gmail.com> <21e77238-4884-40ca-bc01-b7e4774b9239@arm.com>
- <29a13c04-f669-a6c3-4693-af7e44469ad2@arm.com> <CAM7-yPRSY7rz-GCWAS1yY75kD1FUjJTF=_AdCd0LtEhQa9dssg@mail.gmail.com>
-In-Reply-To: <CAM7-yPRSY7rz-GCWAS1yY75kD1FUjJTF=_AdCd0LtEhQa9dssg@mail.gmail.com>
-From: Yun Levi <ppbuk5246@gmail.com>
-Date: Thu, 18 Jan 2024 14:14:46 +0000
-Message-ID: <CAM7-yPRfEZnYoZQQophrdQUrAi5=UVfxZ=SVZs=U4MTC6Nyg4w@mail.gmail.com>
-Subject: Re: [PATCH] firmware/arm_sdei: Fix invalid argument to unregister
- private events.
-To: James Morse <james.morse@arm.com>
-Cc: Pierre Gondois <pierre.gondois@arm.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [dri?] BUG: scheduling while atomic in
+ drm_atomic_helper_wait_for_flip_done
+Content-Language: en-US
+To: syzbot <syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com,
+        linux-serial <linux-serial@vger.kernel.org>
+References: <00000000000039f237060f354ef7@google.com>
+Cc: linux-kernel@vger.kernel.org
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <00000000000039f237060f354ef7@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> But, I think it should be checked on sdei_reboot_notifier.
-> otherwise, In the situation sdei device was freezed, when
-> sdei_reboot_notifier is called,
-> It would fail on cpuhp_cb_check too.
->
-> Should I add a sanity check on sdei_reboot_notifier in the next patch?
->
+#syz set subsystems: serial
 
-Sorry to make a noise. Maybe there's no case for this.
+include/linux/tty_ldisc.h says "struct tty_ldisc_ops"->write is allowed to sleep.
+
+include/linux/tty_driver.h says "struct tty_operations"->write is not allowed to sleep.
+
+drivers/tty/vt/vt.c implements do_con_write() from con_write() sleeping, violating what
+include/linux/tty_driver.h says. But how to fix?
+
+-	if (in_interrupt())
++	if (in_interrupt() || in_atomic())
+ 		return count;
+
+in do_con_write() and con_flush_chars() ? But include/linux/preempt.h says
+in_atomic() cannot know about held spinlocks in non-preemptible kernels.
+
+Is there a way to detect spin_lock_irqsave(&gsm->tx_lock, flags) from gsmld_write() ?
+Something like whether irq is disabled?
+
+On 2024/01/18 18:51, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    1b1934dbbdcf Merge tag 'docs-6.8-2' of git://git.lwn.net/l..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1029adbde80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=68ea41b98043e6e8
+> dashboard link: https://syzkaller.appspot.com/bug?extid=06fa1063cca8163ea541
+> compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: arm64
+
 
