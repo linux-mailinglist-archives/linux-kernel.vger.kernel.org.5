@@ -1,290 +1,165 @@
-Return-Path: <linux-kernel+bounces-30210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16D5C831B98
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:40:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35F92831B9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:40:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83B3C1F23CD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:40:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 698EE1C25DFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3959A2D634;
-	Thu, 18 Jan 2024 14:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wZEAkGfp"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0FFC1DDC7;
+	Thu, 18 Jan 2024 14:37:34 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C202D60C
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:37:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BFE32D7B0
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705588640; cv=none; b=Gonk0ld+6V9WK+xcsiv5a7On3KTqpzuSEU2GBcQMkAGNY6GGVSRoUgsRq7a8gY2zd4YsNPtQxUoM53goimCFlM5yxmYlWisq/ZJIu95LXkO26l4ZkLhcQ+EZGMNgKxcwzWd/IudFMl5z+qT4PXoHe+MlHuCDRLruw+VX9tTqTLw=
+	t=1705588654; cv=none; b=i+cgbOc2XIChGn4mJSor2cO8ZBysm4rlM02g1cK6fhvWETqSiN93fRQavGmOj61oLkmJTrpjP9TJopCoRqV2TQtlixs1CG6FErwTijn49Xqh7NEJhzfDd8vrlBqzpBhqd1QlDVLBH1sI7Yk4FIF6vukVPH+/EBsS49kQf6uuQsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705588640; c=relaxed/simple;
-	bh=U0kbF9n+OCIj5nAmZ8f74BVmM+kgojhD1k4K8VuFoB4=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Date:
-	 In-Reply-To:Mime-Version:References:X-Developer-Key:
-	 X-Developer-Signature:X-Mailer:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=qgmPaAVMJAkjvFv0KlRdj3/i1yYbPaaICGRD5ka5CGZYWaEus8Me3F3n+F+sE3SBjOpfwExIGKJIQtdKvXp3D9t+RINKQF1BvAJ1ow40CuWSRcgNkLmvER5hAkuHClAxRj8y0+SiM9winKIrO+hNUEPWLW/l3087FegpKz33qmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wZEAkGfp; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf618042daso6504193276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:37:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705588637; x=1706193437; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Im2eze6BefJj1h9/utHPCxEpN5HThewTotaQF/gyF20=;
-        b=wZEAkGfpuMjRpE1+6dwYHA+yS/JnPH7iFnZnfvjWaWkUW1l768E5XywiBfavFs/lZk
-         nv0lTuqPwlOLIuyIBnC01KE0C/uQIEIhamisNIoghYFbfDiMpOrcJBAUIPxESCkynsfO
-         WV7FVk4H0Fc8MTDwnOvIxuRaqyvlA4jiSNtpRU2vaClN+AWxeqLjqYefdA+FZtL87m0y
-         5DbKU5canLqyi7gm9a/ylAKeDWfcy+nChbGWSbGirLR7YMieI5uE7H4SQHG1g4NRXwwM
-         3dZ1o7/cw8QZBt8rRG/myVS2KFzp5hhiwjLCKe/xFtrUhZFSFi5OK0ELk30cCuMO0doB
-         2Xrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705588637; x=1706193437;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Im2eze6BefJj1h9/utHPCxEpN5HThewTotaQF/gyF20=;
-        b=EYS1LVi9P1I7yRZtcJzq59Bpm1PwNW3fQH3FDAbnhA8DeeF7eMyZt352HqbfZAHnXe
-         6rc9U/5Jpls28yBI9mk4Nx5wJJ4Lbz//aYA2EYmtdiQB33li/ENQIUDKqcnSHzzQZcJ7
-         Y2bl6YoVwRTc3d1p+KrPRtacmPMMhp1cQLjXaYr8TxC8X1gmXs4zHF872TgDUdeFCR+1
-         3dxvtrUyZwyckrnh82FQCXf2hwrj8dAwLTjUjfJyT5OfU+glF0sesaa6i6pUIXZcUevM
-         8BM7+luVPpzRjdNdAIgo2tTnnkouhkc0mhd5jlBQnr9jV9wmbCaz1NomnXL05UrX4LLK
-         6Pjg==
-X-Gm-Message-State: AOJu0Yxmg3RD0jMhF5qkA7BFLpbYP6IZu/LsW/zHJFxhnKDz2tUeZMxB
-	7JyfBYCdJTRKJnf0ARHbJ9HHZaLqaJ70ideKerQ6HX0Sk2ILoD9Rh0ImeGpNxY1iMZkWGgN5pXP
-	Ov/jxdeq0gOSYsA==
-X-Google-Smtp-Source: AGHT+IH8ayeG+LimUUCtLX40cJjApi/UJmZ4hNnhw+B525FrsPAuQeOvYvvRlowVtsQKqAev3yzVGqS/cnakdkA=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a25:ab11:0:b0:dc2:5273:53f9 with SMTP id
- u17-20020a25ab11000000b00dc2527353f9mr38278ybi.1.1705588637528; Thu, 18 Jan
- 2024 06:37:17 -0800 (PST)
-Date: Thu, 18 Jan 2024 14:36:50 +0000
-In-Reply-To: <20240118-alice-file-v3-0-9694b6f9580c@google.com>
+	s=arc-20240116; t=1705588654; c=relaxed/simple;
+	bh=3MfCdf31cUH20HZg1uT4/uF6Pn0cfZ2WXANUBxZRNt8=;
+	h=Received:X-MC-Unique:Received:Received:From:To:CC:Subject:
+	 Thread-Topic:Thread-Index:Date:Message-ID:References:In-Reply-To:
+	 Accept-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
+	 x-ms-exchange-transport-fromentityheader:x-originating-ip:
+	 MIME-Version:X-Mimecast-Spam-Score:X-Mimecast-Originator:
+	 Content-Language:Content-Type:Content-Transfer-Encoding; b=H7ZqYnOFO/bmPnES/PVDWVsgoqRw9+2GjJRABER++vx6RCwHMjiHNbW4O6yUp+5jCyiH9p/fiB67LhGdW5KQLyTQa9+OV8IW/KvvtNDrRlUY3N0xOcsOjyD1Qp4Zn/IUaPXH16vouxujeZChfO9U9UjN6+cKnUzbARW0DvtUFEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-322-LN46kXRnMMaCnHGxLJ7dhA-1; Thu, 18 Jan 2024 14:37:22 +0000
+X-MC-Unique: LN46kXRnMMaCnHGxLJ7dhA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 18 Jan
+ 2024 14:37:04 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 18 Jan 2024 14:37:04 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>, Denis Arefev
+	<arefev@swemel.ru>
+CC: Ian Abbott <abbotti@mev.co.uk>, H Hartley Sweeten
+	<hsweeten@visionengravers.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "lvc-project@linuxtesting.org"
+	<lvc-project@linuxtesting.org>, "stable@vger.kernel.org"
+	<stable@vger.kernel.org>
+Subject: RE: [PATCH] comedi: drivers: ni_tio: Fix arithmetic expression
+ overflow
+Thread-Topic: [PATCH] comedi: drivers: ni_tio: Fix arithmetic expression
+ overflow
+Thread-Index: AQHaShiS6dX7emI6I0mP4mJbb50t4rDfo15Q
+Date: Thu, 18 Jan 2024 14:37:04 +0000
+Message-ID: <3f8d1a69e3434d2085aa3564357fa31d@AcuMS.aculab.com>
+References: <20240118123747.45795-1-arefev@swemel.ru>
+ <2024011842-groggy-badly-393c@gregkh>
+In-Reply-To: <2024011842-groggy-badly-393c@gregkh>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com>
-X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6894; i=aliceryhl@google.com;
- h=from:subject; bh=U0kbF9n+OCIj5nAmZ8f74BVmM+kgojhD1k4K8VuFoB4=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlqTHP1B0f9FEveRyGvHFIpDR82qIOZvzI0h0Dh
- +gXrFTQQkOJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZakxzwAKCRAEWL7uWMY5
- RvAlEACEQG3zoHHCnyU+9ljr+4eCS0WAPem8ctmmonLTjsvGstWq9lFCCdBAc/0DMdLauRdTUGO
- mHtCVk6tZMWBOKyBNSxNiAzLV+v5Q5gIREOwh3hYLXvxVg3Xns/JeAdhXpxdtFEF9zuieO7vjAq
- BpHCxnuaPL/YFHFyYnDBo8bUZ5VhK0pzsM1ske9YQ5PEhyrx+geH9bzzDHl4JmCtrHltrtP/sLz
- Cn3TmAkW4th4USkhTxFxBHbGrHsgi+LayvLtYCHhWrUM99d6VtV5AAU8MTbGP3zV1X6P4sQPYS/
- ki3ChcPczJBFP5GEesM6QsMz0lPLngu57/jHKArSkrZ2fkU2JEFfbaAJlfoVxmd6ngxDxLJH193
- Sbi1M3sOqyR02eiJHybU6vJUqpZoPFHloMC8S5vPWKNcVFAngUB5jEXtaW2KiRV4QgccDTIwBxY
- jgLAO2yzUx6E3+Xp4Qtm3qhegaMr0SEQs+wWlxcLtddbi1COkAAJ1ebrc+vVCN6ro3RWLcW7Aox
- GzUFpnuqAT5U0ZvQ3bPCiM49MoOdUmujk/D2O84TfLkFMYdJ2k0uFl/FuCnMKwoxB6ann9NOgY3
- OLLnq4SgOImxiGcRCl23sNk+opYWTejwCXcq7Wiz9+qceQQ0Hitu7SZOODb/2uLDRXSeAow/eJU O2Sr+4iWJpdKUvw==
-X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
-Message-ID: <20240118-alice-file-v3-9-9694b6f9580c@google.com>
-Subject: [PATCH v3 9/9] rust: file: add abstraction for `poll_table`
-From: Alice Ryhl <aliceryhl@google.com>
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	"=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>
-Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, 
-	Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-The existing `CondVar` abstraction is a wrapper around
-`wait_queue_head`, but it does not support all use-cases of the C
-`wait_queue_head` type. To be specific, a `CondVar` cannot be registered
-with a `struct poll_table`. This limitation has the advantage that you
-do not need to call `synchronize_rcu` when destroying a `CondVar`.
 
-However, we need the ability to register a `poll_table` with a
-`wait_queue_head` in Rust Binder. To enable this, introduce a type
-called `PollCondVar`, which is like `CondVar` except that you can
-register a `poll_table`. We also introduce `PollTable`, which is a safe
-wrapper around `poll_table` that is intended to be used with
-`PollCondVar`.
 
-The destructor of `PollCondVar` unconditionally calls `synchronize_rcu`
-to ensure that the removal of epoll waiters has fully completed before
-the `wait_queue_head` is destroyed.
+> -----Original Message-----
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Sent: 18 January 2024 14:14
+> To: Denis Arefev <arefev@swemel.ru>
+> Cc: Ian Abbott <abbotti@mev.co.uk>; H Hartley Sweeten <hsweeten@visioneng=
+ravers.com>; linux-
+> kernel@vger.kernel.org; lvc-project@linuxtesting.org; stable@vger.kernel.=
+org
+> Subject: Re: [PATCH] comedi: drivers: ni_tio: Fix arithmetic expression o=
+verflow
+>=20
+> On Thu, Jan 18, 2024 at 03:37:47PM +0300, Denis Arefev wrote:
+> > The value of an arithmetic expression period_ns * 1000 is subject
+> > to overflow due to a failure to cast operands to a larger data
+> > type before performing arithmetic
+> >
+> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> >
+> > Fixes: 3e90b1c7ebe9 ("staging: comedi: ni_tio: tidy up ni_tio_set_clock=
+_src() and helpers")
+> > Cc: <stable@vger.kernel.org> # v5.15+
+> > Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+> > Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> > Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+> > ---
+> >  drivers/comedi/drivers/ni_tio.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/comedi/drivers/ni_tio.c b/drivers/comedi/drivers/n=
+i_tio.c
+> > index da6826d77e60..acc914903c70 100644
+> > --- a/drivers/comedi/drivers/ni_tio.c
+> > +++ b/drivers/comedi/drivers/ni_tio.c
+> > @@ -800,7 +800,7 @@ static int ni_tio_set_clock_src(struct ni_gpct *cou=
+nter,
+> >  =09=09=09=09GI_PRESCALE_X2(counter_dev->variant) |
+> >  =09=09=09=09GI_PRESCALE_X8(counter_dev->variant), bits);
+> >  =09}
+> > -=09counter->clock_period_ps =3D period_ns * 1000;
+> > +=09counter->clock_period_ps =3D period_ns * 1000UL;
 
-That said, `synchronize_rcu` is rather expensive and is not needed in
-all cases: If we have never registered a `poll_table` with the
-`wait_queue_head`, then we don't need to call `synchronize_rcu`. (And
-this is a common case in Binder - not all processes use Binder with
-epoll.) The current implementation does not account for this, but if we
-find that it is necessary to improve this, a future patch could store a
-boolean next to the `wait_queue_head` to keep track of whether a
-`poll_table` has ever been registered.
+What about 32bit systems...
 
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
----
- rust/bindings/bindings_helper.h |   1 +
- rust/kernel/sync.rs             |   1 +
- rust/kernel/sync/poll.rs        | 113 ++++++++++++++++++++++++++++++++
- 3 files changed, 115 insertions(+)
- create mode 100644 rust/kernel/sync/poll.rs
+> >  =09ni_tio_set_sync_mode(counter);
+> >  =09return 0;
+> >  }
+> > --
+> > 2.25.1
+> >
+> >
+>=20
+> Hi,
+>=20
+> This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+> a patch that has triggered this response.  He used to manually respond
+> to these common problems, but in order to save his sanity (he kept
+> writing the same thing over and over, yet to different people), I was
+> created.  Hopefully you will not take offence and will fix the problem
+> in your patch and resubmit it so that it can be accepted into the Linux
+> kernel tree.
+>=20
+> You are receiving this message because of the following common error(s)
+> as indicated below:
+>=20
+> - This looks like a new version of a previously submitted patch, but you
+>   did not list below the --- line any changes from the previous version.
+>   Please read the section entitled "The canonical patch format" in the
+>   kernel file, Documentation/process/submitting-patches.rst for what
+>   needs to be done here to properly describe this.
+>=20
+> If you wish to discuss this problem further, or you have questions about
+> how to resolve this issue, please feel free to respond to this email and
+> Greg will reply once he has dug out from the pending patches received
+> from other developers.
+>=20
+> thanks,
+>=20
+> greg k-h's patch email bot
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 6b5616499b6d..56c1471fc03c 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -13,6 +13,7 @@
- #include <linux/file.h>
- #include <linux/fs.h>
- #include <linux/pid_namespace.h>
-+#include <linux/poll.h>
- #include <linux/security.h>
- #include <linux/slab.h>
- #include <linux/refcount.h>
-diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs
-index d219ee518eff..84726f80c406 100644
---- a/rust/kernel/sync.rs
-+++ b/rust/kernel/sync.rs
-@@ -11,6 +11,7 @@
- mod condvar;
- pub mod lock;
- mod locked_by;
-+pub mod poll;
- 
- pub use arc::{Arc, ArcBorrow, UniqueArc};
- pub use condvar::CondVar;
-diff --git a/rust/kernel/sync/poll.rs b/rust/kernel/sync/poll.rs
-new file mode 100644
-index 000000000000..157341a69854
---- /dev/null
-+++ b/rust/kernel/sync/poll.rs
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! Utilities for working with `struct poll_table`.
-+
-+use crate::{
-+    bindings,
-+    file::File,
-+    prelude::*,
-+    sync::{CondVar, LockClassKey},
-+    types::Opaque,
-+};
-+use core::ops::Deref;
-+
-+/// Creates a [`PollCondVar`] initialiser with the given name and a newly-created lock class.
-+#[macro_export]
-+macro_rules! new_poll_condvar {
-+    ($($name:literal)?) => {
-+        $crate::sync::poll::PollCondVar::new($crate::optional_name!($($name)?), $crate::static_lock_class!())
-+    };
-+}
-+
-+/// Wraps the kernel's `struct poll_table`.
-+///
-+/// # Invariants
-+///
-+/// This struct contains a valid `struct poll_table`.
-+///
-+/// For a `struct poll_table` to be valid, its `_qproc` function must follow the safety
-+/// requirements of `_qproc` functions. It must ensure that when the waiter is removed and a rcu
-+/// grace period has passed, it must no longer access the `wait_queue_head`.
-+#[repr(transparent)]
-+pub struct PollTable(Opaque<bindings::poll_table>);
-+
-+impl PollTable {
-+    /// Creates a reference to a [`PollTable`] from a valid pointer.
-+    ///
-+    /// # Safety
-+    ///
-+    /// The caller must ensure that for the duration of 'a, the pointer will point at a valid poll
-+    /// table (as defined in the type invariants).
-+    ///
-+    /// The caller must also ensure that the `poll_table` is only accessed via the returned
-+    /// reference for the duration of 'a.
-+    pub unsafe fn from_ptr<'a>(ptr: *mut bindings::poll_table) -> &'a mut PollTable {
-+        // SAFETY: The safety requirements guarantee the validity of the dereference, while the
-+        // `PollTable` type being transparent makes the cast ok.
-+        unsafe { &mut *ptr.cast() }
-+    }
-+
-+    fn get_qproc(&self) -> bindings::poll_queue_proc {
-+        let ptr = self.0.get();
-+        // SAFETY: The `ptr` is valid because it originates from a reference, and the `_qproc`
-+        // field is not modified concurrently with this call since we have an immutable reference.
-+        unsafe { (*ptr)._qproc }
-+    }
-+
-+    /// Register this [`PollTable`] with the provided [`PollCondVar`], so that it can be notified
-+    /// using the condition variable.
-+    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
-+        if let Some(qproc) = self.get_qproc() {
-+            // SAFETY: The pointers to `file` and `self` need to be valid for the duration of this
-+            // call to `qproc`, which they are because they are references.
-+            //
-+            // The `cv.wait_list` pointer must be valid until an rcu grace period after the waiter
-+            // is removed. The `PollCondVar` is pinned, so before `cv.wait_list` can be destroyed,
-+            // the destructor must run. That destructor first removes all waiters, and then waits
-+            // for an rcu grace period. Therefore, `cv.wait_list` is valid for long enough.
-+            unsafe { qproc(file.as_ptr() as _, cv.wait_list.get(), self.0.get()) };
-+        }
-+    }
-+}
-+
-+/// A wrapper around [`CondVar`] that makes it usable with [`PollTable`].
-+///
-+/// [`CondVar`]: crate::sync::CondVar
-+#[pin_data(PinnedDrop)]
-+pub struct PollCondVar {
-+    #[pin]
-+    inner: CondVar,
-+}
-+
-+impl PollCondVar {
-+    /// Constructs a new condvar initialiser.
-+    pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self> {
-+        pin_init!(Self {
-+            inner <- CondVar::new(name, key),
-+        })
-+    }
-+}
-+
-+// Make the `CondVar` methods callable on `PollCondVar`.
-+impl Deref for PollCondVar {
-+    type Target = CondVar;
-+
-+    fn deref(&self) -> &CondVar {
-+        &self.inner
-+    }
-+}
-+
-+#[pinned_drop]
-+impl PinnedDrop for PollCondVar {
-+    fn drop(self: Pin<&mut Self>) {
-+        // Clear anything registered using `register_wait`.
-+        //
-+        // SAFETY: The pointer points at a valid `wait_queue_head`.
-+        unsafe { bindings::__wake_up_pollfree(self.inner.wait_list.get()) };
-+
-+        // Wait for epoll items to be properly removed.
-+        //
-+        // SAFETY: Just an FFI call.
-+        unsafe { bindings::synchronize_rcu() };
-+    }
-+}
--- 
-2.43.0.381.gb435a96ce8-goog
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
