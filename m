@@ -1,104 +1,119 @@
-Return-Path: <linux-kernel+bounces-30331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57C5E831D39
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:07:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1000831D3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D893D285034
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:07:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E41331C23014
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFFB28E2E;
-	Thu, 18 Jan 2024 16:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2BF28E1B;
+	Thu, 18 Jan 2024 16:09:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="TbyIEquI"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T34mUrxK"
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE171E88F;
-	Thu, 18 Jan 2024 16:07:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BABF28DCB
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 16:09:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705594055; cv=none; b=fsP6MmQJsgX6oJVe88blqP4nw3TffwOKHY+pB+3hQhLOWvDWYJEBwVn0j9Ft2KfDuh7fF4wwuMW1Cz2F6gfmc9zk9YlAw7ei2shBuLYhDsEzo9DRY2raxu++/Pwb7CDnioaCkJc6n1skghYEvfgWi1MBc+vNoQIsu1pviQLsJEc=
+	t=1705594147; cv=none; b=SW2MDscyHCTAw1jiFeOx7pUevR3Ev4sDv6Lqc6DVo0Jtz1Ptc2ZdPgDwXKDNdoAYFnLbBIYCc5I/X/Rn8U7EOY7VjTaTbcku16YONGN9tvAnbnwgoR7obF3m2GO7auXBR7cvIzPx7CBu2jc+AG+JY9vNSbfJjz8FH40SrGsD3xY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705594055; c=relaxed/simple;
-	bh=3T7ZxFRZznZp33Uckeh26hwEA7gDX3RAmrrvqu9q1j4=;
-	h=DKIM-Signature:Received:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:Sender; b=L8bikQ4e+DbJmyBEfaRsuCfOxe3/XW38kteclhbTA0r4lk5wLUDZvlBIa/FXpgbq5DK8jcwzQicZrai1d0CokxxTAzlJkksS/aWdfFeyZIokEpZbHXQN3z71Yx2ucK++4TJmKzpjEwWYIBWvUeNI/1mQA1tbnIy3w37EVlFXQ6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=TbyIEquI; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=kDnqCJc6DdlPkC0AYd50uBaKkZtlxVtjgN6JvECPsPU=; b=TbyIEquIRD1S0207D7QoRD0DZL
-	wLyxrQ/QjWvcHfkRlGyM/4Tdrxxn0s1i1I3VAkS40hYxblU7YWvT1WHTjzjPxQ9Uh3Vuy/T8xnAg/
-	IifACYSU2Gq+h7UzcW8tbSsVybtg1J04beB2tcbE1QTQ3QwXBSaQ6GjyuVhoa98K3XjZetCy4PtAp
-	afDHhcUkrDzMUe/lKBxfAIQkErTweyAL3Nt++bKUeKzABf170xeixEQXstZzOjp1UxuAtpIrWe75o
-	NXXqFBjyESoZwj01ZABE+QFTPwmnCDSkstL7hPTG66NXtI8iGWm+icZHfTzl3zo7MhzDOaGFHYaeW
-	kSr+xOzA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52464)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rQUvC-0005rd-1f;
-	Thu, 18 Jan 2024 16:07:14 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rQUvA-0005qW-AB; Thu, 18 Jan 2024 16:07:12 +0000
-Date: Thu, 18 Jan 2024 16:07:12 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Josua Mayer <josua@solid-run.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Yazan Shhady <yazan.shhady@solid-run.com>,
-	Jon Nettleton <jon@solid-run.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx6qdl-hummingboard: Add rtc0 and rtc1
- aliases to fix hctosys
-Message-ID: <ZalMsJZKrpwncEDp@shell.armlinux.org.uk>
-References: <20240118-imx6-hb-primary-rtc-v1-1-81b87935c557@solid-run.com>
+	s=arc-20240116; t=1705594147; c=relaxed/simple;
+	bh=kHzuk/kNSL6JIRdg7lH2BgyUkGbVunML4qI1j50U/aU=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=E7rkDHwjlXkcOQLnZHPBKlPD24OdWBhI2pqekID2NiDEW1YADLkkf2E1nu7C/IXHhkVJH3DSTnOmmlzbRzcHWHLgIts7uyqvs/GqgR9oCpDYB1uXzIJqalneGKNg/6nm9gY4Wlg5gUEID/zUUici5vSxVeoZRpr4YSxyI4jdGQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T34mUrxK; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-4298761b728so16802751cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 08:09:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705594145; x=1706198945; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kDM781oFpgaSAT0QQI2tKSG6Pv6TalHpG0gxNI4eT4Y=;
+        b=T34mUrxK9p/b7EaXg0Zf2KokQCrtlboryqCjf6NexicVwTCqleMS+Rm2YTSWxbVRlt
+         TSKTOYsocg/aZ/QCMjwZRw8FtplNVjiGHdIIRuHdr2T6EaCRhQe9PGsGy3BGlN1b3gs2
+         jmtxsl3Dt0SJZwbFBgfoV806Q2I1KJm/FD/E+3qzKKCIkcqn55nAAkPgj+ZXxIY6dGiW
+         JS6SH7c/23/tfwIBOMUIx24yKHGJ6T4xGqdfD7uIaPS2dH1b1vCuptJEIf6+uFZs3rVA
+         fQ5haCM5gXZIPcj28UAVZnPNz38+73pcH3kCmy08NWSV2SObhE633MN/+I5KwR1SbxSk
+         kwdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705594145; x=1706198945;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kDM781oFpgaSAT0QQI2tKSG6Pv6TalHpG0gxNI4eT4Y=;
+        b=csq3OgqYjWpjsYtvw5U13LO1AilMD/ElqbMCPY+4XCbh0IstYNzmUHE52XIx7jWidD
+         D75RbgW+kxluC5+XZG4EX02t3Fhx+6jMMdntCQzZACO4bO5X+SIFSPcaivyrInnQA6hM
+         KJ8YSV6xS4wdgk9nJ54lPnjQG1Wqoh9GUxoSJRMktkLotQudpOd5hXbvf0a3Kj8SrMPH
+         Rag7Ysoykj9WAAPqLNGe8vSd6eC/0GwFmOz3SEmm7fYRvPNXeB2D6nX52DbVoDqFyASC
+         3x5R+3rtEiL1atmvXdOvEOln8NOQJi64e6K5fdS9CruxAnxdoBquMItLqu1GCx/7vPaM
+         X9NA==
+X-Gm-Message-State: AOJu0YzYHRVyJsc78N63/sWI4Tmg5XaXc/ypleSOLzY7Mn6sVezdRIgC
+	I5a+CP64wFbHRmrSqiYeeHqCxnnjAeNdz3D0Tzw9frEFI+qZkCk5
+X-Google-Smtp-Source: AGHT+IF0+tItICVcJXLHzZ8+UXQlKYxINubxeC3GTQ4wEZYESJxViQuSAVZO0+FI3GoxlJHS+PzTsw==
+X-Received: by 2002:ac8:118f:0:b0:42a:1c4c:f662 with SMTP id d15-20020ac8118f000000b0042a1c4cf662mr1398446qtj.3.1705594145125;
+        Thu, 18 Jan 2024 08:09:05 -0800 (PST)
+Received: from me.mynetworksettings.com (pool-74-98-201-227.pitbpa.fios.verizon.net. [74.98.201.227])
+        by smtp.gmail.com with ESMTPSA id fw6-20020a05622a4a8600b00427f89957d9sm6863013qtb.79.2024.01.18.08.09.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 08:09:04 -0800 (PST)
+From: Jacob Lott <jklott.git@gmail.com>
+To: gregkh@linuxfoundation.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Jacob Lott <jklott.git@gmail.com>
+Subject: [PATCH v2] staging: rts5208: Add more details to Kconfig help
+Date: Thu, 18 Jan 2024 11:09:01 -0500
+Message-Id: <20240118160901.71756-1-jklott.git@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118-imx6-hb-primary-rtc-v1-1-81b87935c557@solid-run.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 18, 2024 at 04:01:10PM +0100, Josua Mayer wrote:
-> HummingBoard has two RTCs, first integrated within SoC that can be used to
-> wake up from sleep - and a second on the carrier board including back-up
-> battery which is intended for keeping time during power-off.
-> 
-> Add aliases for both, ensuring that the battery-backed clock is primary
-> rtc and used by default during boot for restoring system time.
+The current help text is short and triggers a
+warning from checkpatch.pl. This patch adds more
+details to the help text which should provide better
+information for whether or not to enable the driver.
 
-Given that the snvs RTC isn't battery backed, should we even be enabling
-that in DT?
+Signed-off-by: Jacob Lott <jklott.git@gmail.com>
+---
+ drivers/staging/rts5208/Kconfig | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Also, have you seen any issues such as:
-
-[    0.933249] rtc-pcf8523 0-0068: failed to set xtal load capacitance: -11
-[    0.933505] rtc-pcf8523: probe of 0-0068 failed with error -11
-
-which seems to be exhibiting itself on my SolidSense board?
-
+diff --git a/drivers/staging/rts5208/Kconfig b/drivers/staging/rts5208/Kconfig
+index b864023d3ccb..4f9cc3f00e1a 100644
+--- a/drivers/staging/rts5208/Kconfig
++++ b/drivers/staging/rts5208/Kconfig
+@@ -3,7 +3,11 @@ config RTS5208
+ 	tristate "Realtek PCI-E Card Reader RTS5208/5288 support"
+ 	depends on PCI && SCSI
+ 	help
+-	  Say Y here to include driver code to support the Realtek
+-	  PCI-E card reader rts5208/rts5288.
++      Choose Y here to enable support for the Realtek PCI-E card reader
++	  RTS5208/5288. This driver facilitates communication between the Linux
++	  kernel and the Realtek PCI-E card reader.
+ 
+-	  If this driver is compiled as a module, it will be named rts5208.
++	  If you opt to compile this driver as a module, it will be named rts5208.
++	  Selecting N will exclude this driver from the kernel build. Choose option
++	  Y if your system includes the Realtek PCI-E card reader rts5208/rts5288.
++	  When in doubt, it is generally safe to select N.
+\ No newline at end of file
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.34.1
+
 
