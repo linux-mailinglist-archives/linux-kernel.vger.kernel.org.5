@@ -1,174 +1,171 @@
-Return-Path: <linux-kernel+bounces-29750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC658312ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:03:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3CC58312F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:05:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED269B242E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:03:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C61E1F22FBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:05:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632F4B666;
-	Thu, 18 Jan 2024 07:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="FQvRgXNV"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223359474;
+	Thu, 18 Jan 2024 07:05:02 +0000 (UTC)
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF24B645
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 07:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C16A9444
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 07:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705561372; cv=none; b=oMXcJ6hs6Z5RqD0aItQ8X0hGYfrahada+6WH0l6+NW92o9kbAlCypHYvkv1HfrLZj0VWjMMOHNiTS5qBaHN0zZb23OaO8CtgvJ6Z5+zDj92TKNJ+Lb2sF2TMxvbHXM/lB93AnD0THGmmQrHEMRsI4GAQkeEy/AcnaC8neB9DUrU=
+	t=1705561501; cv=none; b=dJ1jtNCWnao6W4/Qa19ySo9ZDtzkC+u+pKxrb1GnN7Yw/oqvkwPVrLpSFhcYkY23sqavjRdBdONNmU2XuCfmw9/jhd3JEnyY5ly0r0COejstQh7lC6rmCnN7QLYnjEkadg8+2WphOY8cV8Nq9p6RbeVe3YAYILqdLhv40r9mebo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705561372; c=relaxed/simple;
-	bh=pycnk6WaUVoeJgbhdniZV1H9VrizOLFDvu1eykpqBBY=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=I364ejWJkUyQ2p7GYir5ifF3YSWs9pbW7sn9ofy4foEVRPfxgnTik+5KbtOO1mqh32XxiWZ4CwNs07eTd8w3j8RedB+Z2XZ+BtyH5ZLb86+4/3GfBf+YnLC2SlvwIcLw/p8ouFLr8Kx1Fs5uR6COuzFH7uuHS84+kHGmW7d2Z2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FQvRgXNV; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28cc85e6b5so1409736566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:02:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705561369; x=1706166169; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nbjh7lj3LaK3dDhh9thIiUGNa0deGp3ufaKLo6GVy8c=;
-        b=FQvRgXNVfHOFVE16UeNT0h0FQU6nwNQLurmAe6QLgi2ZeEQrSP+oiVNbgPHitKEfW0
-         FMNIjbNgZpG3Vn003sCkszV84mFt1rDIZXsmg2B065Pf4ftLBZra0APu4KMTWhI4S30c
-         CNRLZbV7JUAyJjn6djc5YwghI5opN4TZHs+0YVajJQ4CCpxa87M5vTabreQ2YWBe9PTz
-         qdDyx3zJKqvArI8STnkMMah/1cXxJibZ/5un70RYCjXbF6hhNfvf3pnXAyJM7J2qLhMd
-         AJcpd3IJkthdwVcpAhNkgWuo7skL5rXs6ayZ9ropTBbA6UqzNI2Y+xU5ICVooRbhhd0s
-         +j5w==
+	s=arc-20240116; t=1705561501; c=relaxed/simple;
+	bh=v0d+o+oyU2L+qDUyAPW9p8OAzcs2j9iv1LOXtPMvlvU=;
+	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
+	 X-Google-Smtp-Source:X-Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:Content-Language:To:Cc:References:
+	 From:Autocrypt:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	b=f+0urOR4LjdBo4o6ca/YhZzG49UZIB6Jp2u3D12eU74zlL56v6IEEvck8scQHAF2QKDjtOvjSAM0gvVjeJUZKCnDEAiF9Qw+wg0QQdN7F3aTgfNKhjB1U3MaG+xyCTDJWoX/ZX+oLPlOwMGj7DcoMGTNpqkfXbhMFhX2blWcRoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso69936685e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:04:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705561369; x=1706166169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nbjh7lj3LaK3dDhh9thIiUGNa0deGp3ufaKLo6GVy8c=;
-        b=F6ny4aJG6qnwoO74nnqypFdr1qhpIGeUCkRLcDnEQoEYQYjwLQxvJy9l2F2axFPwYs
-         Qww4+XO3pv3vv8T5TJNw0eeBVcLw5Mq+P3TOad/CcTMMN1Mxu1zRRnPrlxxacnXnLQqC
-         3YESjvjQ6eCjwGAPe2r88bqyKxl8Ny2H6QLO5Dym4ps9l3WzsSHni/eBTZpHaL46R7LU
-         HX+Flb5VJjTGN+fHO74E7R4E6tWzw2J8+lGMQenbuc19ivl2nZA1OTKF89w5SV0YiOyf
-         i/qUOh9NRU9MfAJ8geCTyNOdme/dJ47NJ2oxkQKFH8VstKYr2zGSjgQZErHeXjEyIzbW
-         XsLQ==
-X-Gm-Message-State: AOJu0YyegFl8s+OKswqWRikU/T0VY05v/ptA9/1KV/e7z5oFKe091DmG
-	i1+zsC2KDRaVg5vSqlZ39hhyz1LGzDKA4DHo4je1uYDwtBKL7BjWGKxx/10Iqh9HYX+8ORM6qjN
-	M9QvMpzF9AoRmgvbUpUe7Z9CV0PCAHwxXBiqTbqSOfZUVS6OkRg==
-X-Google-Smtp-Source: AGHT+IFXOCrsKZFskYsH/UIu/PL4WgJ1hIa7+Er8K1Ylf7x/E0yJYgJ9ghoUUYiH9SJjC/yJ/eXvEQ1HEE65wc1z/Ec=
-X-Received: by 2002:a17:907:7890:b0:a28:fcbd:cabc with SMTP id
- ku16-20020a170907789000b00a28fcbdcabcmr129710ejc.41.1705561369103; Wed, 17
- Jan 2024 23:02:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705561498; x=1706166298;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5S4lXTmw9h953xURv594T5Yo3rY/dm6ydiBKsQ3CdKQ=;
+        b=K3BfpAgSFK9/drbAQtqSHbQgnaas9std7bomLsspHP4EAXBMefbXe5z6GfftSd1Ld3
+         e37K0kGBRsCRh114PQw0H+n+fl4YgWrJ6nRs+IV4o+ngldA1kDeFMr+8DMSEQCXtHNtM
+         gZxelVT7OJSvv5c7mZaWQfbhXbw5ILmldS+b9fccaPMgvJf3Hb4zL93QgmNNhJti3tM+
+         j/pskFy90M1K65gWGyqpDKnRb/liF0tLVywGpvejvB0wyvGw7pNcMTJ0gzA51fNeyTly
+         jxeRUlnxW/UlmhwXVQ2n89Jrnf6aE0sEl0brkczAbHFxd9ihOR2fhHOqWrVIYzcwhTNn
+         e6qA==
+X-Gm-Message-State: AOJu0YzYARzyqCNsWf+s+2DJi+UKyGNGecWonlpRjY04USlkRczG75HU
+	vBbuWC/zA3rRYv4QBRArjKOrlib/bm3AgIX43CBtUV7BWI7hlSd7
+X-Google-Smtp-Source: AGHT+IGAFGpP7XF2uouD5Uj3NbTbrJ+u+1W7IY0t7vFat81rQSB9yz2I3sh9Epp7wUzlN925jm/jsQ==
+X-Received: by 2002:a05:600c:4513:b0:40e:4119:cb4a with SMTP id t19-20020a05600c451300b0040e4119cb4amr236147wmo.15.1705561498062;
+        Wed, 17 Jan 2024 23:04:58 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id h6-20020a05600c350600b0040c6d559490sm24785527wmq.3.2024.01.17.23.04.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 23:04:57 -0800 (PST)
+Message-ID: <7103dfea-0db3-44b7-9b2e-e89d4edd19d7@kernel.org>
+Date: Thu, 18 Jan 2024 08:04:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
- <CAJD7tkbQb5nAQdhHXELQsUWs8KhwnoOZ7C8Eu2o7tCYSKeY9Ug@mail.gmail.com>
- <CAJD7tkb7GmMARE9ueyOCZz9wBbANhofUOHnen+b28sxE9tDy1A@mail.gmail.com> <7f52ad78-e10b-438a-b380-49451bf6f64f@bytedance.com>
-In-Reply-To: <7f52ad78-e10b-438a-b380-49451bf6f64f@bytedance.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Jan 2024 23:02:11 -0800
-Message-ID: <CAJD7tkaeBTforGTQ8ia_6-1fd5hf-zwkBcd_kW8Bk=zdO+Qnvw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] RFC: zswap tree use xarray instead of RB tree
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	=?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, Yu Zhao <yuzhao@google.com>, 
-	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
-	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm: align larger anonymous mappings on THP boundaries
+Content-Language: en-US
+To: Yang Shi <shy828301@gmail.com>
+Cc: Rik van Riel <riel@surriel.com>, Andrew Morton
+ <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, kernel-team@fb.com,
+ Matthew Wilcox <willy@infradead.org>, Christoph Lameter <cl@linux.com>
+References: <20220809142457.4751229f@imladris.surriel.com>
+ <d0a136a0-4a31-46bc-adf4-2db109a61672@kernel.org>
+ <3193bf5b-4e22-412f-8c5b-68574942d9bc@kernel.org>
+ <CAHbLzkoL6sCDciHqVMJga288853CHdOTa5thOPQ9SHKSqjGGPQ@mail.gmail.com>
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <CAHbLzkoL6sCDciHqVMJga288853CHdOTa5thOPQ9SHKSqjGGPQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 17, 2024 at 10:57=E2=80=AFPM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> Hi Yosry and Chris,
->
-> On 2024/1/18 14:39, Yosry Ahmed wrote:
-> > On Wed, Jan 17, 2024 at 10:01=E2=80=AFPM Yosry Ahmed <yosryahmed@google=
-com> wrote:
-> >>
-> >> That's a long CC list for sure :)
-> >>
-> >> On Wed, Jan 17, 2024 at 7:06=E2=80=AFPM Chris Li <chrisl@kernel.org> w=
-rote:
-> >>>
-> >>> The RB tree shows some contribution to the swap fault
-> >>> long tail latency due to two factors:
-> >>> 1) RB tree requires re-balance from time to time.
-> >>> 2) The zswap RB tree has a tree level spin lock protecting
-> >>> the tree access.
-> >>>
-> >>> The swap cache is using xarray. The break down the swap
-> >>> cache access does not have the similar long time as zswap
-> >>> RB tree.
-> >>
-> >> I think the comparison to the swap cache may not be valid as the swap
-> >> cache has many trees per swapfile, while zswap has a single tree.
-> >>
-> >>>
-> >>> Moving the zswap entry to xarray enable read side
-> >>> take read RCU lock only.
-> >>
-> >> Nice.
-> >>
-> >>>
-> >>> The first patch adds the xarray alongside the RB tree.
-> >>> There is some debug check asserting the xarray agrees with
-> >>> the RB tree results.
-> >>>
-> >>> The second patch removes the zwap RB tree.
-> >>
-> >> The breakdown looks like something that would be a development step,
-> >> but for patch submission I think it makes more sense to have a single
-> >> patch replacing the rbtree with an xarray.
-> >>
-> >>>
-> >>> I expect to merge the zswap rb tree spin lock with the xarray
-> >>> lock in the follow up changes.
-> >>
-> >> Shouldn't this simply be changing uses of tree->lock to use
-> >> xa_{lock/unlock}? We also need to make sure we don't try to lock the
-> >> tree when operating on the xarray if the caller is already holding the
-> >> lock, but this seems to be straightforward enough to be done as part
-> >> of this patch or this series at least.
-> >>
-> >> Am I missing something?
-> >
-> > Also, I assume we will only see performance improvements after the
-> > tree lock in its current form is removed so that we get loads
-> > protected only by RCU. Can we get some performance numbers to see how
-> > the latency improves with the xarray under contention (unless
-> > Chengming is already planning on testing this for his multi-tree
-> > patches).
->
-> I just give it a try, the same test of kernel build in tmpfs with zswap
-> shrinker enabled, all based on the latest mm/mm-stable branch.
->
->                     mm-stable           zswap-split-tree    zswap-xarray
-> real                1m10.442s           1m4.157s            1m9.962s
-> user                17m48.232s          17m41.477s          17m45.887s
-> sys                 8m13.517s           5m2.226s            7m59.305s
->
-> Looks like the contention of concurrency is still there, I haven't
-> look into the code yet, will review it later.
+On 18. 01. 24, 1:07, Yang Shi wrote:
+>> This works around the problem, of course (but is a band-aid, not a fix):
+>>
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -1829,7 +1829,7 @@ get_unmapped_area(struct file *file, unsigned long
+>> addr, unsigned long len,
+>>                    */
+>>                   pgoff = 0;
+>>                   get_area = shmem_get_unmapped_area;
+>> -       } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+>> +       } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>> !in_32bit_syscall()) {
+>>                   /* Ensures that larger anonymous mappings are THP
+>> aligned. */
+>>                   get_area = thp_get_unmapped_area;
+>>           }
+>>
+>>
+>> thp_get_unmapped_area() does not take care of the legacy stuff...
+> 
+> Could you please help test the below patch? It is compiled, but I
+> don't have 32 bit userspace or machine to test it.
 
-I think that's expected with the current version because the tree
-spin_lock is still there and we are still doing lookups with a
-spinlock.
+Yeah, for x86_64, it's semantically the same as the above, so this works 
+too:
+
+Tested-by: Jiri Slaby <jirislaby@kernel.org>
+
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -811,6 +811,9 @@ static unsigned long
+> __thp_get_unmapped_area(struct file *filp,
+>          loff_t off_align = round_up(off, size);
+>          unsigned long len_pad, ret;
+> 
+> +       if (IS_ENABLED(CONFIG_32BIT) || in_compat_syscall())
+> +               return 0;
+> +
+>          if (off_end <= off_align || (off_end - off_align) < size)
+>                  return 0;
+
+thanks,
+-- 
+js
+suse labs
+
 
