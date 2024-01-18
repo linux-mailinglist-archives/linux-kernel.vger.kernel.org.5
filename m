@@ -1,116 +1,215 @@
-Return-Path: <linux-kernel+bounces-30403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB589831E43
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:17:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87690831E44
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9F94B22466
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:17:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E27E9282B54
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:18:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1BE12C851;
-	Thu, 18 Jan 2024 17:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF272C845;
+	Thu, 18 Jan 2024 17:18:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="1gy+RV3R"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YY0GKIJc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CCF2C841;
-	Thu, 18 Jan 2024 17:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65DB12C841;
+	Thu, 18 Jan 2024 17:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705598226; cv=none; b=k8+0aZsCTgIWbCk0BaY6DX7sJQIhnZr57sm78o5gWkP12r6zjLji6p3sqFVGNTTePqlocO4Hm3pxpifNj5do4q66R0LUQNAOwTS01KFDFjb6fG6ZdjBLYAATP12x1cefMqMoO2Pzv+RWcw0PUrNaW7unXQQ55LtP7TKXwtmEbTw=
+	t=1705598279; cv=none; b=jdIeV25ORWCKf3zp4f6LEEpYhQ6Os5WmaL7yqrtL5pFqE8taRyvNuKoI1xULTaXsomp/n17LYLqKYJXp39m8x+vapJs38Y0Jpkyq83IR3Qn0mLmu38RYTwuH5/6ICIPjKyZHRGtFmd3G1qo4ZD+Sog4P+NxHA75Yhf+jibs41eY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705598226; c=relaxed/simple;
-	bh=xzS7KgMyxS+q27HZS7IF+gpTTD0lHiDbJUUAbO/M+No=;
-	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=F21B8iKQyn0fqDwx97xrhb5DWv2s1bX6G9y8Rgwe8ebrwkKFPms+2dMCGalnbE9HlMnxJLBKG7ZJZ1C+8+KBiUedD8oGvvExxLdXXGSlexDjMWIMYHpJX2SBlshvY0dlbFcb3d3Y3TOkvP5QD8H+0OP9TfzLuoi6Iu7SGnWj0oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=1gy+RV3R; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=ZwnPUB1SZKfhgOedNF5DZLlFWvgucJS8NHyeCiQMdLc=; b=1gy+RV3RgIUDcW1HfTLt+ro2yC
-	ogrr2vPEDTcCFnvGM1LWXuX9cotS0ojK7G9e7RMJAOvDMJc1afBGJJutsiOgKaM/cE7nYReoBKPVJ
-	H92fYHz3ywBAxD3Yq+LaTBRJ4BK9snx0/r0U6H6KvYmEb5vzLxJEZ9wfSA3XfHC9Y8cycQcdtOta8
-	wTudkhOaygtosTS1H15QHpWfPAjiJKuulv4iuallY0sbrq2Fau3rI9XiE/kvj98rimm8ZZTVYnvYp
-	6zdVfYCxDhjBaWQt43eUpDMh9yWkHB9+2V1Zc45/NOSFmEO45JBRmjwuCNOC4M7GYiOcCFYM7DdpL
-	YTeMOEYA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQW0l-003N7E-0B;
-	Thu, 18 Jan 2024 17:17:03 +0000
-Message-ID: <a59d0fd8-1351-4fc0-a177-1c96cbff4675@infradead.org>
-Date: Thu, 18 Jan 2024 09:17:02 -0800
+	s=arc-20240116; t=1705598279; c=relaxed/simple;
+	bh=3QxSF28AU67pQOjUoBLeJaaRz+4V7zAoBNQxbnwWDt8=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-Id:
+	 X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding; b=WvSTlYbQ/nSc9uv4CmRdi4odFpM+ojdcYd7QrKxWSIcSx00Wee+Anr+9+H65RkRQ633FAvN9p/gwITAKDJCZCWsvGVNdOzkGpR7YTlnYuXHb3yVfpvYfBaYEFgsU52vFX1t2LekinsHM9MqhtIWHolYcqhitvNlrrO+NJ4H/+NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YY0GKIJc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66706C433C7;
+	Thu, 18 Jan 2024 17:17:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705598278;
+	bh=3QxSF28AU67pQOjUoBLeJaaRz+4V7zAoBNQxbnwWDt8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YY0GKIJc+pAS737+c4sKDiztl/QoGtBo8pvn+YwjPSonfyxdp0JRYw4bQNAr0joWz
+	 CaVmb7jTY4wu9qshPkDLOY+weKEPjX+1DBD9bFW2MdV537bXdXFmTO3Ba4DOODuxuI
+	 7pWpez9XB8YlGlN4/ud5X91JMKrygflfa27tvcxRILMMUKFvlWpolaQ3aN3mKmzQYW
+	 Gp8csA815jUZcly340n12SsW5f4Lbf/h33nXVW2vBTKUzh0JgLfOYa+JmPfcSA0J+R
+	 SFPrW1SXWufOKHqiDMTSLlhk0NrSTLgLDJjLUyCvUAKzvYcUSL/ovQkMkm6+Q0XnhE
+	 KPhE25L8zpjvA==
+From: SeongJae Park <sj@kernel.org>
+To: Hyeongtak Ji <hyeongtak.ji@sk.com>
+Cc: sj@kernel.org,
+	akpm@linux-foundation.org,
+	apopple@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	damon@lists.linux.dev,
+	dave.jiang@intel.com,
+	honggyu.kim@sk.com,
+	kernel_team@skhynix.com,
+	linmiaohe@huawei.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org,
+	lizhijian@cn.fujitsu.com,
+	mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org,
+	rakie.kim@sk.com,
+	rostedt@goodmis.org,
+	surenb@google.com,
+	yangx.jy@fujitsu.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com
+Subject: Re: [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory
+Date: Thu, 18 Jan 2024 09:17:56 -0800
+Message-Id: <20240118171756.80356-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240118104017.2098-1-hyeongtak.ji@sk.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] wifi: ath10k: correctly document enum
- wmi_tlv_tx_pause_id
-Content-Language: en-US
-To: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>
-Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240118-ath10k-kerneldoc-v1-0-99c7e8d95aad@quicinc.com>
- <20240118-ath10k-kerneldoc-v1-2-99c7e8d95aad@quicinc.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240118-ath10k-kerneldoc-v1-2-99c7e8d95aad@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+On Thu, 18 Jan 2024 19:40:16 +0900 Hyeongtak Ji <hyeongtak.ji@sk.com> wrote:
 
-
-On 1/18/24 08:12, Jeff Johnson wrote:
-> Currently kernel-doc reports the issue:
-> drivers/net/wireless/ath/ath10k/wmi-tlv.h:2363: warning: cannot understand function prototype: 'enum wmi_tlv_tx_pause_id '
+> Hi SeongJae,
 > 
-> Update the enum wmi_tlv_tx_pause_id documentation to fix this issue.
+> On Wed, 17 Jan 2024 SeongJae Park <sj@kernel.org> wrote:
 > 
-> No functional changes, compile tested only.
+> [...]
+> >> Let's say there are 3 nodes in the system and the first node0 and node1
+> >> are the first tier, and node2 is the second tier.
+> >> 
+> >>   $ cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
+> >>   0-1
+> >> 
+> >>   $ cat /sys/devices/virtual/memory_tiering/memory_tier22/nodelist
+> >>   2
+> >> 
+> >> Here is the result of partitioning hot/cold memory and I put execution
+> >> command at the right side of numastat result.  I initially ran each
+> >> hot_cold program with preferred setting so that they initially allocate
+> >> memory on one of node0 or node2, but they gradually migrated based on
+> >> their access frequencies.
+> >> 
+> >>   $ numastat -c -p hot_cold
+> >>   Per-node process memory usage (in MBs) 
+> >>   PID              Node 0 Node 1 Node 2 Total 
+> >>   ---------------  ------ ------ ------ ----- 
+> >>   754 (hot_cold)     1800      0   2000  3800    <- hot_cold 1800 2000 
+> >>   1184 (hot_cold)     300      0    500   800    <- hot_cold 300 500 
+> >>   1818 (hot_cold)     801      0   3199  4000    <- hot_cold 800 3200 
+> >>   30289 (hot_cold)      4      0      5    10    <- hot_cold 3 5 
+> >>   30325 (hot_cold)     31      0     51    81    <- hot_cold 30 50 
+> >>   ---------------  ------ ------ ------ ----- 
+> >>   Total              2938      0   5756  8695
+> >> 
+> >> The final node placement result shows that DAMON accurately migrated
+> >> pages by their hotness for multiple processes.
+> >
+> > What was the result when the corner cases handling logics were not applied?
 > 
-> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  drivers/net/wireless/ath/ath10k/wmi-tlv.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> This is the result of the same test that Honggyu did, but with an insufficient
+> corner cases handling logics.
 > 
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-> index 83a8f07a687f..8a2f87d0a3a3 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-> +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-> @@ -3,7 +3,7 @@
->   * Copyright (c) 2005-2011 Atheros Communications Inc.
->   * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
->   * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-> - * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
-> + * Copyright (c) 2022, 2024 Qualcomm Innovation Center, Inc. All rights reserved.
->   */
->  #ifndef _WMI_TLV_H
->  #define _WMI_TLV_H
-> @@ -2343,7 +2343,7 @@ struct wmi_tlv_adaptive_qcs {
->  } __packed;
->  
->  /**
-> - * wmi_tlv_tx_pause_id - firmware tx queue pause reason types
-> + * enum wmi_tlv_tx_pause_id - firmware tx queue pause reason types
->   *
->   * @WMI_TLV_TX_PAUSE_ID_MCC: used for by multi-channel firmware scheduler.
->   *		Only vdev_map is valid.
+>   $ numastat -c -p hot_cold
 > 
+>   Per-node process memory usage (in MBs)
+>   PID             Node 0 Node 1 Node 2 Total
+>   --------------  ------ ------ ------ -----
+>   862 (hot_cold)    2256      0   1545  3801   <- hot_cold 1800 2000
+>   863 (hot_cold)     403      0    398   801   <- hot_cold 300 500
+>   864 (hot_cold)    1520      0   2482  4001   <- hot_cold 800 3200
+>   865 (hot_cold)       6      0      3     9   <- hot_cold 3 5
+>   866 (hot_cold)      29      0     52    81   <- hot_cold 30 50
+>   --------------  ------ ------ ------ -----
+>   Total             4215      0   4480  8695
+> 
+> As time goes by, DAMON keeps trying to split the hot/cold region, but it does
+> not seem to be enough.
+> 
+>   $ numastat -c -p hot_cold
+> 
+>   Per-node process memory usage (in MBs)
+>   PID             Node 0 Node 1 Node 2 Total
+>   --------------  ------ ------ ------ -----
+>   862 (hot_cold)    2022      0   1780  3801   <- hot_cold 1800 2000
+>   863 (hot_cold)     351      0    450   801   <- hot_cold 300 500
+>   864 (hot_cold)    1134      0   2868  4001   <- hot_cold 800 3200
+>   865 (hot_cold)       7      0      2     9   <- hot_cold 3 5
+>   866 (hot_cold)      43      0     39    81   <- hot_cold 30 50
+>   --------------  ------ ------ ------ -----
+>   Total             3557      0   5138  8695
+> 
+> >
+> > And, what are the corner cases handling logic that seemed essential?  I show
+> > the page granularity active/reference check could indeed provide many
+> > improvements, but that's only my humble assumption.
+> 
+> Yes, the page granularity active/reference check is essential.  To make the
+> above "insufficient" result, the only thing I did was to promote
+> inactive/not_referenced pages.
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index f03be320f9ad..c2aefb883c54 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1127,9 +1127,7 @@ static unsigned int __promote_folio_list(struct list_head *folio_list,
+>                 VM_BUG_ON_FOLIO(folio_test_active(folio), folio);
+> 
+>                 references = folio_check_references(folio, sc);
+> -               if (references == FOLIOREF_KEEP ||
+> -                   references == FOLIOREF_RECLAIM ||
+> -                   references == FOLIOREF_RECLAIM_CLEAN)
+> +               if (references == FOLIOREF_KEEP )
+>                         goto keep_locked;
+> 
+>                 /* Relocate its contents to another node. */
 
--- 
-#Randy
+Thank you for sharing the details :)  I think DAMOS filters based approach
+could be worthy to try, then.
+
+> 
+> >
+> > If the corner cases are indeed better to be applied in page granularity, I
+> > agree we need some more efforts since DAMON monitoring results are not page
+> > granularity aware by the design.  Users could increase min_nr_regions to make
+> > it more accurate, and we have plan to support page granularity monitoring,
+> > though.  But maybe the overhead could be unacceptable.
+> >
+> > Ideal solution would be making DAMON more accurate while keeping current level
+> > of overhead.  We indeed have TODO items for DAMON accuracy improvement, but
+> > this may take some time that might unacceptable for your case.
+> >
+> > If that's the case, I think the additional corner handling (or, page gran
+> > additional access check) could be made as DAMOS filters[1], since DAMOS filters
+> > can be applied in page granularity, and designed for this kind of handling of
+> > information that DAMON monitoring results cannot provide.  More specifically,
+> > we could have filters for promotion-qualifying pages and demotion-qualifying
+> > pages.  In this way, I think we can keep the action more flexible while the
+> > filters can be applied in creative ways.
+> 
+> Making corner handling as a new DAMOS filters is a good idea.  I'm just a bit
+> concerned if adding new filters might cause users to care more.
+
+I prefer keeping DAMON API and Sysfs interface flexible and easy to extended
+even if it increases number of parameters, while providing simplified
+high level interfaces for end users aiming to use DAMON for specific use cases,
+like DAMON_RECLAIM, DAMON_LRU_SORT, and damo do.  Hence I'm not very concerned.
+
+
+Thanks,
+SJ
+
+> 
+> Kind regards,
+> Hyeongtak
 
