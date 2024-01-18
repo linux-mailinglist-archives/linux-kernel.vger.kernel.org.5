@@ -1,172 +1,176 @@
-Return-Path: <linux-kernel+bounces-30025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC01E831816
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:05:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F863831824
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:10:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B5771F252FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:05:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51AA3B24784
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E8B2376B;
-	Thu, 18 Jan 2024 11:04:54 +0000 (UTC)
-Received: from wp716.webpack.hosteurope.de (wp716.webpack.hosteurope.de [80.237.130.238])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5380C241EC;
+	Thu, 18 Jan 2024 11:10:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bLzP5bw8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3486BE7F;
-	Thu, 18 Jan 2024 11:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09C422068;
+	Thu, 18 Jan 2024 11:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705575893; cv=none; b=h0JjjPjB4G4UH9pj9CJZbx5LtqXZrbxPizg1prGCFOtpqeST4nBrDObPr6CtBjcRxe0lWBFgLPNoOM0+vJYaz6iBYZH9ZISOCuG5hNPM1f4AVVSm1YeLOZED5Z01YtP5OaXNkk48eePg1CumM5u7JvE0mXvapLkc2hfWwrBvm7c=
+	t=1705576229; cv=none; b=PEdOCx0OYmxiVg2W//Pe2r+ipxGdY0WEeY2g0iwm1wirGcsZOKf5Pcwd9Many+FvJtReWNl+W5n9Ko7CQHco4QxbEoKBsnkMLGo6RUWxJhKMzWWpMd7jW0wDcSL+dD93JYETXV1HnBVNeF8AJeIVriW4Djdf7bgsUeVVoHDArps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705575893; c=relaxed/simple;
-	bh=oRoy9VL0TOg/kIEHuPEg7HuqMMm0cPIFZLvMKX+hsE0=;
-	h=Received:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:User-Agent:
-	 MIME-Version:X-bounce-key:X-HE-SMSGID; b=WsgrtvmPwBlEn2Uh/HyBJTw23xqeEEHi5f+HfjjppYxEMxKZ04yc5hAGbrfRTij/DtM8Sesl6SuVnD4gmjKb1zmL9F+/ocETSPWUig+h+mZK4Kb5XdzX+6vFvCwxw3jM1ArMwbRGkkF1SqsIlpFN/Kr+Xj+nVIKgx71hAOI3KHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=alumni.tu-berlin.de; spf=none smtp.mailfrom=alumni.tu-berlin.de; arc=none smtp.client-ip=80.237.130.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=alumni.tu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=alumni.tu-berlin.de
-Received: from dynamic-2a01-0c22-ac44-ff00-7b4e-548d-a441-0836.c22.pool.telefonica.de ([2a01:c22:ac44:ff00:7b4e:548d:a441:836] helo=jt.fritz.box); authenticated
-	by wp716.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	id 1rQQCP-0007Mz-OR; Thu, 18 Jan 2024 12:04:41 +0100
-Message-ID: <f4e27abc6741c175b4b1baf1331c30aaedeab290.camel@alumni.tu-berlin.de>
-Subject: Re: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with
- bpf_setsockopt()
-From: =?ISO-8859-1?Q?J=F6rn-Thorben?= Hinz <j-t.hinz@alumni.tu-berlin.de>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, bpf@vger.kernel.org,
-  linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,  Arnd Bergmann
- <arnd@arndb.de>, Deepa Dinamani <deepa.kernel@gmail.com>
-Date: Thu, 18 Jan 2024 12:04:41 +0100
-In-Reply-To: <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
-References: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
-	 <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1705576229; c=relaxed/simple;
+	bh=07FNtxDV64G/dYussRz0AVKbrFzrHIChmm+6ZAmMYVw=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+	 MIME-Version:Content-Transfer-Encoding; b=p/GF/U7KZlmtiR5kkgmNna4EngnRKS5RmED2WLDTRHNZiQGPteA3YZZ+JxA1k7tDxOkdpqS8sEkpvhhhgauwy5O2er6Vn8WLbGm0rLDK0tlhfTzld6BUGqBQ/fXMq2Lt+bv3FqQmZK+1QmsASU+i8UjcKwzZe4RkBjqnBfGTgCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bLzP5bw8; arc=none smtp.client-ip=192.55.52.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705576227; x=1737112227;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=07FNtxDV64G/dYussRz0AVKbrFzrHIChmm+6ZAmMYVw=;
+  b=bLzP5bw8+jOQcZzcU5cOFugkbk2GwSN09gHhM96lfL995btZs5wIZHJX
+   Scc8CqlbGy2BuoKBMvuZwuIHqzfU/9Y9CWtEdZ9GFaW9OHQffkMcGvJHg
+   oDLODZS9WLEzkjGne772wAgh6ZQ+P/dMM2sV4HiMfvzbiJCzUoeN+Mosv
+   7vGsK3fQC6TJC0J6cmM+i/5NsEATwufdOHv8A0oNgvrlVOuu632n7ttIz
+   sV0LTpuAcS39/daZEHMs7Yd/NbuxwhXrcGHnrx+IDwqTjiJsmja2kjmiR
+   n8w5RhlQBi3H12390ZLYWwPcu5lwIWnfh+uX7IHdhfj05zCQEOy4BwaKl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="486571165"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="486571165"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 03:10:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="262406"
+Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
+  by fmviesa003.fm.intel.com with ESMTP; 18 Jan 2024 03:10:24 -0800
+From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+To: netdev@vger.kernel.org
+Cc: vadim.fedorenko@linux.dev,
+	jiri@resnulli.us,
+	davem@davemloft.net,
+	milena.olech@intel.com,
+	linux-kernel@vger.kernel.org,
+	pabeni@redhat.com,
+	kuba@kernel.org,
+	mschmidt@redhat.com,
+	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Subject: [PATCH net v5 0/4] dpll: fix unordered unbind/bind registerer issues
+Date: Thu, 18 Jan 2024 12:07:15 +0100
+Message-Id: <20240118110719.567117-1-arkadiusz.kubalewski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-bounce-key: webpack.hosteurope.de;j-t.hinz@alumni.tu-berlin.de;1705575891;c74c2469;
-X-HE-SMSGID: 1rQQCP-0007Mz-OR
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2024-01-16 at 10:17 -0500, Willem de Bruijn wrote:
-> J=C3=B6rn-Thorben Hinz wrote:
-> > A BPF application, e.g., a TCP congestion control, might benefit
-> > from or
-> > even require precise (=3Dhardware) packet timestamps. These
-> > timestamps are
-> > already available through __sk_buff.hwtstamp and
-> > bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs
-> > were
-> > not allowed to set SO_TIMESTAMPING* on sockets.
-> >=20
-> > Enable BPF programs to actively request the generation of
-> > timestamps
-> > from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
-> > network device must still be done separately, in user space.
-> >=20
-> > This patch had previously been submitted in a two-part series
-> > (first
-> > link below). The second patch has been independently applied in
-> > commit
-> > 7f6ca95d16b9 ("net: Implement missing
-> > getsockopt(SO_TIMESTAMPING_NEW)")
-> > (second link below).
-> >=20
-> > On the earlier submission, there was the open question whether to
-> > only
-> > allow, thus enforce, SO_TIMESTAMPING_NEW in this patch:
-> >=20
-> > For a BPF program, this won't make a difference: A timestamp, when
-> > accessed through the fields mentioned above, is directly read from
-> > skb_shared_info.hwtstamps, independent of the places where NEW/OLD
-> > is
-> > relevant. See bpf_convert_ctx_access() besides others.
-> >=20
-> > I am unsure, though, when it comes to the interconnection of user
-> > space
-> > and BPF "space", when both are interested in the timestamps. I
-> > think it
-> > would cause an unsolvable conflict when user space is bound to use
-> > SO_TIMESTAMPING_OLD with a BPF program only allowed to set
-> > SO_TIMESTAMPING_NEW *on the same socket*? Please correct me if I'm
-> > mistaken.
->=20
-> The difference between OLD and NEW only affects the system calls. It
-> is not reflected in how the data is stored in the skb, or how BPF can
-> read the data. A process setting SO_TIMESTAMPING_OLD will still allow
-> BPF to read data using SO_TIMESTAMPING_NEW.
->=20
-> But, he one place where I see a conflict is in setting sock_flag
-> SOCK_TSTAMP_NEW. That affects what getsockopt returns and which cmsg
-> is written:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 if (sock_flag(sk, SOCK_TSTAMP_NEW))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 put_cmsg=
-_scm_timestamping64(msg, tss);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 else
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 put_cmsg=
-_scm_timestamping(msg, tss);
->=20
-> So a process could issue setsockopt SO_TIMESTAMPING_OLD followed by
-> a BPF program that issues setsockopt SO_TIMESTAMPING_NEW and this
-> would flip SOCK_TSTAMP_NEW.
->=20
-> Just allowing BPF to set SO_TIMESTAMPING_OLD does not fix it, as it
-> just adds the inverse case.
-Thanks for elaborating on this. I see I only thought of half the
-possible conflicting situations.
+Fix issues when performing unordered unbind/bind of a kernel modules
+which are using a dpll device with DPLL_PIN_TYPE_MUX pins.
+Currently only serialized bind/unbind of such use case works, fix
+the issues and allow for unserialized kernel module bind order.
 
->=20
-> A related problem is how does the BPF program know which of the two
-> variants to set. The BPF program is usually compiled and loaded
-> independently of the running process.
-True, that is an additional challenge. And with respect to CO-RE, I
-think a really portable BPF program could (or at least should) not even
-decide on NEW or OLD at compile time.
+The issues are observed on the ice driver, i.e.,
 
->=20
-> Perhaps one option is to fail the setsockop if it would flip
-> sock_flag SOCK_TSTAMP_NEW. But only if called from BPF, as else it
-> changes existing ABI.
->=20
-> Then a BPF program can attempt to set SO_TIMESTAMPING NEW, be
-> prepared to handle a particular errno, and retry with
-> SO_TIMESTAMPING_OLD.
-Hmm, would be possible, yes. But sounds like a weird and unexpected
-special-case behavior to the occasional BPF user.
+$ echo 0000:af:00.0 > /sys/bus/pci/drivers/ice/unbind
+$ echo 0000:af:00.1 > /sys/bus/pci/drivers/ice/unbind
 
->=20
->=20
->=20
-> =C2=A0
-> > Link:
-> > https://lore.kernel.org/lkml/20230703175048.151683-1-jthinz@mailbox.tu-=
-berlin.de/
-> > Link:
-> > https://lore.kernel.org/all/20231221231901.67003-1-jthinz@mailbox.tu-be=
-rlin.de/
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Deepa Dinamani <deepa.kernel@gmail.com>
-> > Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> > Signed-off-by: J=C3=B6rn-Thorben Hinz <j-t.hinz@alumni.tu-berlin.de>
->=20
->=20
+results in:
+
+ice 0000:af:00.0: Removed PTP clock
+BUG: kernel NULL pointer dereference, address: 0000000000000010
+PF: supervisor read access in kernel mode
+PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0 
+Oops: 0000 [#1] PREEMPT SMP PTI
+CPU: 7 PID: 71848 Comm: bash Kdump: loaded Not tainted 6.6.0-rc5_next-queue_19th-Oct-2023-01625-g039e5d15e451 #1
+Hardware name: Intel Corporation S2600STB/S2600STB, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+RIP: 0010:ice_dpll_rclk_state_on_pin_get+0x2f/0x90 [ice]
+Code: 41 57 4d 89 cf 41 56 41 55 4d 89 c5 41 54 55 48 89 f5 53 4c 8b 66 08 48 89 cb 4d 8d b4 24 f0 49 00 00 4c 89 f7 e8 71 ec 1f c5 <0f> b6 5b 10 41 0f b6 84 24 30 4b 00 00 29 c3 41 0f b6 84 24 28 4b
+RSP: 0018:ffffc902b179fb60 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff8882c1398000 RSI: ffff888c7435cc60 RDI: ffff888c7435cb90
+RBP: ffff888c7435cc60 R08: ffffc902b179fbb0 R09: 0000000000000000
+R10: ffff888ef1fc8050 R11: fffffffffff82700 R12: ffff888c743581a0
+R13: ffffc902b179fbb0 R14: ffff888c7435cb90 R15: 0000000000000000
+FS:  00007fdc7dae0740(0000) GS:ffff888c105c0000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000010 CR3: 0000000132c24002 CR4: 00000000007706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ ? __die+0x20/0x70
+ ? page_fault_oops+0x76/0x170
+ ? exc_page_fault+0x65/0x150
+ ? asm_exc_page_fault+0x22/0x30
+ ? ice_dpll_rclk_state_on_pin_get+0x2f/0x90 [ice]
+ ? __pfx_ice_dpll_rclk_state_on_pin_get+0x10/0x10 [ice]
+ dpll_msg_add_pin_parents+0x142/0x1d0
+ dpll_pin_event_send+0x7d/0x150
+ dpll_pin_on_pin_unregister+0x3f/0x100
+ ice_dpll_deinit_pins+0xa1/0x230 [ice]
+ ice_dpll_deinit+0x29/0xe0 [ice]
+ ice_remove+0xcd/0x200 [ice]
+ pci_device_remove+0x33/0xa0
+ device_release_driver_internal+0x193/0x200
+ unbind_store+0x9d/0xb0
+ kernfs_fop_write_iter+0x128/0x1c0
+ vfs_write+0x2bb/0x3e0
+ ksys_write+0x5f/0xe0
+ do_syscall_64+0x59/0x90
+ ? filp_close+0x1b/0x30
+ ? do_dup2+0x7d/0xd0
+ ? syscall_exit_work+0x103/0x130
+ ? syscall_exit_to_user_mode+0x22/0x40
+ ? do_syscall_64+0x69/0x90
+ ? syscall_exit_work+0x103/0x130
+ ? syscall_exit_to_user_mode+0x22/0x40
+ ? do_syscall_64+0x69/0x90
+ entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+RIP: 0033:0x7fdc7d93eb97
+Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+RSP: 002b:00007fff2aa91028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000000000d RCX: 00007fdc7d93eb97
+RDX: 000000000000000d RSI: 00005644814ec9b0 RDI: 0000000000000001
+RBP: 00005644814ec9b0 R08: 0000000000000000 R09: 00007fdc7d9b14e0
+R10: 00007fdc7d9b13e0 R11: 0000000000000246 R12: 000000000000000d
+R13: 00007fdc7d9fb780 R14: 000000000000000d R15: 00007fdc7d9f69e0
+ </TASK>
+Modules linked in: uinput vfio_pci vfio_pci_core vfio_iommu_type1 vfio irqbypass ixgbevf snd_seq_dummy snd_hrtimer snd_seq snd_timer snd_seq_device snd soundcore overlay qrtr rfkill vfat fat xfs libcrc32c rpcrdma sunrpc rdma_ucm ib_srpt ib_isert iscsi_target_mod target_core_mod ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm intel_rapl_msr intel_rapl_common intel_uncore_frequency intel_uncore_frequency_common isst_if_common skx_edac nfit libnvdimm ipmi_ssif x86_pkg_temp_thermal intel_powerclamp coretemp irdma rapl intel_cstate ib_uverbs iTCO_wdt iTCO_vendor_support acpi_ipmi intel_uncore mei_me ipmi_si pcspkr i2c_i801 ib_core mei ipmi_devintf intel_pch_thermal ioatdma i2c_smbus ipmi_msghandler lpc_ich joydev acpi_power_meter acpi_pad ext4 mbcache jbd2 sd_mod t10_pi sg ast i2c_algo_bit drm_shmem_helper drm_kms_helper ice crct10dif_pclmul ixgbe crc32_pclmul drm crc32c_intel ahci i40e libahci ghash_clmulni_intel libata mdio dca gnss wmi fuse [last unloaded: iavf]
+CR2: 0000000000000010
+
+v5:
+- change order of patches: [v4 4/4] -> [v5 1/4], [v4 1/4] -> [v5 2/4],
+  [v4 2/4] -> [v5 3/4], [v4 3/4] -> [v5 4/4]
+
+Arkadiusz Kubalewski (4):
+  dpll: fix broken error path in dpll_pin_alloc(..)
+  dpll: fix pin dump crash for rebound module
+  dpll: fix userspace availability of pins
+  dpll: fix register pin with unregistered parent pin
+
+ drivers/dpll/dpll_core.c    | 67 +++++++++++++++++++++++++++++++------
+ drivers/dpll/dpll_core.h    |  4 +--
+ drivers/dpll/dpll_netlink.c | 57 ++++++++++++++++++++++---------
+ 3 files changed, 99 insertions(+), 29 deletions(-)
+
+
+base-commit: ea937f77208323d35ffe2f8d8fc81b00118bfcda
+-- 
+2.38.1
 
 
