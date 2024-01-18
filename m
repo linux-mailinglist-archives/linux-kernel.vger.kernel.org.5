@@ -1,364 +1,152 @@
-Return-Path: <linux-kernel+bounces-29989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 182D4831654
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:59:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B06C831659
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:02:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AA931C24E39
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:59:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D368DB21EE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712EE20333;
-	Thu, 18 Jan 2024 09:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D682033F;
+	Thu, 18 Jan 2024 10:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norik.com header.i=@norik.com header.b="ISYZW+ZE"
-Received: from cpanel.siel.si (cpanel.siel.si [46.19.9.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FbSM+GLw"
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B11220B0B;
-	Thu, 18 Jan 2024 09:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.19.9.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1E5200CD
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 10:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705571925; cv=none; b=GXwLr9gOhOG9ZlkEVr3yP41kQuEAbbSouxWyaIKqXJHo4z7Jy8UKBxt2p4bXRgWOCyow92467bxeC7VN02SwVU87/+LegEEHQhT+FD7rNpfLGLHYUJWfA7ouQgYW0+k2VtHpoobxnaLauSBNayeJYTEiVDPyaGv1cWbJfw2Pgos=
+	t=1705572126; cv=none; b=tXgbc0n69ovdizqOSC7sbVS5rIkygrcBkpqZzj5b5FBA8LOvQA0KYQRDc2KkfoJMFhqBD5eXB+T5oDG0rx/V7knx7/VnSZdh1A1GMygDtpY8oHjQyJQT0rE34Nx47aIGJt9k5445eJ+3RYPJnkqir3vIJaz3C4/yi81SJEu1k2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705571925; c=relaxed/simple;
-	bh=4lelM5Mu8dIeQYfmmTEIKQSVvC5biNoMtuRcvphtl/U=;
-	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:Content-Language:To:Cc:References:From:Organization:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding:X-AntiAbuse:
-	 X-AntiAbuse:X-AntiAbuse:X-AntiAbuse:X-AntiAbuse:
-	 X-Get-Message-Sender-Via:X-Authenticated-Sender:X-Source:
-	 X-Source-Args:X-Source-Dir; b=PE0KV42pAWhdyI+iiyDwlnIhJPJZcoKo2p3UIZQ3+I4oAyozfHtfA15Ifa7mCEK1Y+ge+dAamEYTeTV51VsO4RhL52c0IC4pFsdKoa/krGz4vEGvUSuOGA7K2Bhbn0oha9LzlUWiWQhGbh6VzLrjnaDBml3B6Qnlsr8qIOdKWi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com; spf=none smtp.mailfrom=norik.com; dkim=pass (2048-bit key) header.d=norik.com header.i=@norik.com header.b=ISYZW+ZE; arc=none smtp.client-ip=46.19.9.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=norik.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=norik.com;
-	s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=xsaHQFs/dJguDvAuW/jcuqfX0soPSo8tx8PPeafV9Bc=; b=ISYZW+ZENUQ1jryV33gZCrcbRx
-	9QNFVRF21YdXLvMAxf+uduBooLirnJq7bZPOTjUqvG29BL5f3yJy4Z1F0XwYsm22gOOMourGVeFeA
-	cvOrbXNAUqb51aoj2msmbG0/swBq/+Tvdiy8YxJ9HEQT1/z0ijOlm1JmuGXtORHLnY3e+KK8YsC5K
-	ZkpTYpMkkQxIpMNPeVRWzWItbQ6Nhvtf3U4tkQMta+50ALIEtcBqkLe6ZZ87xjSlh1HuK7NKALAvn
-	fB2gcCprPj65851y4iU+OG/YYy+UE5xfu3RZ8bqz7cS5dO9CtT/Vsv4pxAxdyUM49jFvLKPSJCo5H
-	1GambFdg==;
-Received: from 89-212-21-243.static.t-2.net ([89.212.21.243]:50934 helo=[192.168.69.116])
-	by cpanel.siel.si with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <primoz.fiser@norik.com>)
-	id 1rQPAT-006uBR-39;
-	Thu, 18 Jan 2024 10:58:37 +0100
-Message-ID: <c1ef5c08-1ae9-4a22-8ca9-47673c023e1e@norik.com>
-Date: Thu, 18 Jan 2024 10:58:36 +0100
+	s=arc-20240116; t=1705572126; c=relaxed/simple;
+	bh=soHeTw8nucVzer4yQdR+I0O2Kl9v9GMUXLJfbUAO134=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Received:X-Received:MIME-Version:References:In-Reply-To:From:Date:
+	 X-Gmail-Original-Message-ID:Message-ID:Subject:To:Cc:Content-Type:
+	 Content-Transfer-Encoding; b=BmBe4JyzQlLC2eZvzUNZWzm9OABcz8/3k052kuHxwM+gZzdnkI8FnAEWoBQ6zyRiD9TYGXgPwmoskWBVVRlVaLUpLhJzkZz38QiiCoBdlfLBtub1DCnVVBFOHr2TVBA+Y89Ob8uFTCIKDzXiZ8xFUXx1y+r+CnMOwcytPhl9nUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FbSM+GLw; arc=none smtp.client-ip=209.85.217.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-469893c4c11so419615137.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:01:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705572118; x=1706176918; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UsG4DowCs4KKFZiNp7kWGzZfbLS3E3qjNg9PmSz4SaI=;
+        b=FbSM+GLwAonLvvNMSrQXi1wL6PBBuQwyJVYGA2wg56+oo0m5CT+hj9arc5Kb7rMs82
+         x5ItwL8XRWJ4jCuo5JLFgaxcv5IfbgISkrgZd5aejtOoQus72ZR9NtVHy0R/e3bmC/A+
+         +5Xmp3qJ5iUBnMewC69JYDSwhN5DZFzwU/11U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705572118; x=1706176918;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UsG4DowCs4KKFZiNp7kWGzZfbLS3E3qjNg9PmSz4SaI=;
+        b=m1/DDYYEUClnntBb+sRv6hOeX85zVicKZHgD/HYgA91Iyc+M7saKwDkacs987xnzgn
+         /QPQMQ1KLbLLO/Kbdqq8bH3Jt7pMmmK6UOYvE5RsvcZGrjvO7MMX4fNK/O8th3/l2Uh7
+         uj3+pKUiG5ZslQKouDEQgZzq76zrKrIPBr1szntAuc4PpxkzEe6bKEGR+YjhFKUh1hr2
+         p4xZnnZtpNoqaNiqe1E2bb2kyPHxEl19IPw8aQ05WLkqnzaYxbrEC/U0XxCYHmdQuBxy
+         bH+HfRbQHNXJcNi4Z5MOUSF07tctcHui6eXV9tYOuuiiREb9J0hN+/lWB2HUkAthV17a
+         9NTg==
+X-Gm-Message-State: AOJu0YzuyHAdJPXZCoHVa8Keje77j/PJL+HfHIexINy6KcRL6rF9vcbe
+	QP/7Kiz9OznqLENVLGJBsB2o3RSQ/ZUFnqNPaj4ZkLtVFR/qore5fVjguOr6+TzTGjKYhsSWGAo
+	=
+X-Google-Smtp-Source: AGHT+IELjCUzBnQ/ERj7dOIbDyaAmc0Hz4Jzrmg1U9xsuelu/uQFO1uh/77jgi/UUVzO/y9SYyKvpQ==
+X-Received: by 2002:a05:6102:40f:b0:467:48c8:840d with SMTP id d15-20020a056102040f00b0046748c8840dmr516515vsq.38.1705572118207;
+        Thu, 18 Jan 2024 02:01:58 -0800 (PST)
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
+        by smtp.gmail.com with ESMTPSA id j19-20020a056102335300b00467bfdd07bcsm1430060vse.32.2024.01.18.02.01.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 02:01:56 -0800 (PST)
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4b77948f7deso3459076e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:01:56 -0800 (PST)
+X-Received: by 2002:a1f:fe0b:0:b0:4b7:1d62:b48f with SMTP id
+ l11-20020a1ffe0b000000b004b71d62b48fmr299907vki.24.1705572116196; Thu, 18 Jan
+ 2024 02:01:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] arm64: dts: imx93-phycore-segin: Add Phytec i.MX93
- Segin
-Content-Language: en-US
-To: Mathieu Othacehe <othacehe@gnu.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Li Yang <leoyang.li@nxp.com>, Stefan Wahren <wahrenst@gmx.net>,
- Christoph Stoidner <c.stoidner@phytec.de>, Wadim Egorov <w.egorov@phytec.de>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, upstream@lists.phytec.de
-References: <20240117074911.7425-1-othacehe@gnu.org>
- <20240117074911.7425-3-othacehe@gnu.org>
-From: Primoz Fiser <primoz.fiser@norik.com>
-Organization: Norik systems d.o.o.
-In-Reply-To: <20240117074911.7425-3-othacehe@gnu.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cpanel.siel.si
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - norik.com
-X-Get-Message-Sender-Via: cpanel.siel.si: authenticated_id: primoz.fiser@norik.com
-X-Authenticated-Sender: cpanel.siel.si: primoz.fiser@norik.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20240118085310.1139545-1-phoenixshen@google.com>
+In-Reply-To: <20240118085310.1139545-1-phoenixshen@google.com>
+From: Fei Shao <fshao@chromium.org>
+Date: Thu, 18 Jan 2024 18:01:19 +0800
+X-Gmail-Original-Message-ID: <CAC=S1njRz=d73J0ntKma2L85icqbCO79wLjrMpkQ0HgiDpdbrw@mail.gmail.com>
+Message-ID: <CAC=S1njRz=d73J0ntKma2L85icqbCO79wLjrMpkQ0HgiDpdbrw@mail.gmail.com>
+Subject: Re: [PATCH] Input: cros_ec_keyb: add support for base attached event
+To: Ting Shen <phoenixshen@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ting Shen <phoenixshen@google.com>, 
+	Benson Leung <bleung@chromium.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guenter Roeck <groeck@chromium.org>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	chrome-platform@lists.linux.dev, =?UTF-8?B?am9ld3UgKOWQs+S7suaMryk=?= <joewu@msi.com>, 
+	linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Mathieu,
+On Thu, Jan 18, 2024 at 4:54=E2=80=AFPM Ting Shen <phoenixshen@chromium.org=
+> wrote:
+>
+> This CL maps ChromeOS EC's BASE_ATTACHED event to SW_DOCK,
+Hi Ting,
 
-first of all, nice to see an attempt to upstream the board. A bit fast
-though as upstreaming was planned after the official PHYTEC release.
+The change itself looks good to me, but the userspace can already
+detect keyboard attachment through USB events. Can you explain why
+this becomes necessary?
+And the Linux community doesn't use the term "CL". Please use general
+terms like "commit" or "patch" as well as imperative sentences [1] in chang=
+elog.
 
-However, there is quite a lot of differences in respect to the
-downstream PHYTEC kernel tree.
+After that,
+Reviewed-by: Fei Shao <fshao@chromium.org>
 
-I am sure PHYTEC wants to sync here to avoid general confusion.
+[1]: https://www.kernel.org/doc/html/latest/process/submitting-patches.html=
+#describe-your-changes
 
-CC-ing: upstream@list.phytec.de
-
-So lets start:
-
-- the board should be named "imx93-phyboard-segin" instead of
-"imx93-phycore-segin".
-
-PHYTEC naming convention:
-phyCORE -> the SoM
-phyBOARD -> the base board (with the SoM)
+Regards,
+Fei
 
 
-On 17. 01. 24 08:49, Mathieu Othacehe wrote:
-> Add DTSI for Phytec i.MX93 System on Module and DTS for Phytec
-> i.MX93 on Segin evaluation board.
-> 
-> This version comes with:
->  - 1GB LPDDR4 RAM
->  - external SD
->  - debug UART
->  - 1x 100Mbit Ethernet
 
-Maybe you sync this commit msg + title with downstream commit like so:
-
->     arm64: dts: imx93: Add phyBOARD-Segin-i.MX93 support
->     
->     Add basic support for phyBOARD-Segin-i.MX93.
->     Main features are:
->     * Ethernet
->     * SD-Card
->     * UART
->     
-
-plus add eMMC to the list if you decided to enable it?
-
-
-> 
-> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
+> to allow userspace detect that a keyboard is attached to the
+> detachable device.
+>
+> Signed-off-by: Ting Shen <phoenixshen@google.com>
 > ---
->  arch/arm64/boot/dts/freescale/Makefile        |  1 +
->  .../dts/freescale/imx93-phycore-segin.dts     | 93 +++++++++++++++++++
->  .../boot/dts/freescale/imx93-phycore-som.dtsi | 64 +++++++++++++
->  3 files changed, 158 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx93-phycore-segin.dts
->  create mode 100644 arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index 2e027675d7bb..f078d6ef75f7 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -201,6 +201,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-iris-v2.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
-> +dtb-$(CONFIG_ARCH_MXC) += imx93-phycore-segin.dtb
-
-Like I said, this has to be renamed to imx93-phyboard-segin.dts as the
-official kit name is "phyBOARD-Segin-i.MX93".
-
->  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
->  
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-phycore-segin.dts b/arch/arm64/boot/dts/freescale/imx93-phycore-segin.dts
-> new file mode 100644
-> index 000000000000..748b779a9dc1
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-phycore-segin.dts> @@ -0,0 +1,93 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2023 PHYTEC Messtechnik GmbH
-> + * Christoph Stoidner <c.stoidner@phytec.de>
-> + * Copyright (C) 2024 Mathieu Othacehe <m.othacehe@gmail.com>
-> + *
-> + */
-> +/dts-v1/;
-> +
-> +#include "imx93-phycore-som.dtsi"
-> +
-> +/{
-> +	model = "PHYTEC phyBOARD-Segin-i.MX93";
-> +	compatible = "phytec,imx93-phycore-segin", "phytec,imx93-phycore-som",
-> +		     "fsl,imx93";
-> +
-> +	chosen {
-> +		stdout-path = &lpuart1;
-> +	};
-> +
-> +	reg_usdhc2_vmmc: regulator-usdhc2 {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-> +		regulator-name = "VSD_3V3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		gpio = <&gpio3 7 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-
-Order properties here alphabetically like in the downstream kernel.
-
-Comment applies for the entire patch.
-
-> +	};
-> +};
-> +
-> +/* Console */
-> +&lpuart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart1>;
-> +	status = "okay";
-> +};
-> +
-> +/* SD-Card */
-> +&usdhc2 {
-> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-> +	pinctrl-1 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-> +	pinctrl-2 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-> +	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
-> +	vmmc-supply = <&reg_usdhc2_vmmc>;
-> +	bus-width = <4>;
-> +	status = "okay";
-> +	no-sdio;
-> +	no-mmc;
-> +};
-> +
-
-Please consider adding pinctrl_100mhz and pinctrl_200mhz from the
-downstream kernel which were determined by HW measurements at those
-operating frequencies.
-
-
-> +/* Watchdog */
-> +&wdog3 {
-> +	status = "okay";
-> +};
-> +
-> +&iomuxc {
-> +	pinctrl-names = "default";
-> +	status = "okay";
-
-Remove this pinctrl + status left-over?
-
-> +
-> +	pinctrl_uart1: uart1grp {
-> +		fsl,pins = <
-> +			MX93_PAD_UART1_RXD__LPUART1_RX			0x31e
-> +			MX93_PAD_UART1_TXD__LPUART1_TX			0x31e
-
-Please consider pinctrl settings from the down-stream kernel. They differ.
-
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_RESET_B__GPIO3_IO07		0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_CD_B__GPIO3_IO00			0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2: usdhc2grp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_CLK__USDHC2_CLK			0x178e
-> +			MX93_PAD_SD2_CMD__USDHC2_CMD			0x139e
-> +			MX93_PAD_SD2_DATA0__USDHC2_DATA0		0x138e
-> +			MX93_PAD_SD2_DATA1__USDHC2_DATA1		0x138e
-> +			MX93_PAD_SD2_DATA2__USDHC2_DATA2		0x138e
-> +			MX93_PAD_SD2_DATA3__USDHC2_DATA3		0x139e
-> +			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT		0x51e
-> +		>;
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi b/arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi
-> new file mode 100644
-> index 000000000000..4edff4a50b2b
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi
-> @@ -0,0 +1,64 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2023 PHYTEC Messtechnik GmbH
-> + * Christoph Stoidner <c.stoidner@phytec.de>
-> + * Copyright (C) 2024 Mathieu Othacehe <m.othacehe@gmail.com>
-> + *
-> + */
-> +/dts-v1/;
-> +
-> +#include "imx93.dtsi"
-> +
-> +/{
-> +	model = "PHYTEC phyCORE-i.MX93";
-> +	compatible = "phytec,imx93-phycore-som", "fsl,imx93";
-> +
-> +	reserved-memory {
-> +		ranges;
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +
-> +		linux,cma {
-> +			compatible = "shared-dma-pool";
-> +			reusable;
-> +			alloc-ranges = <0 0x80000000 0 0x40000000>;
-> +			size = <0 0x10000000>;
-> +			linux,cma-default;
-> +		};
-> +
-> +		ele_reserved: ele-reserved@a4120000 {
-> +			compatible = "shared-dma-pool";
-> +			reg = <0 0xa4120000 0 0x100000>;
-> +			no-map;
-> +		};
-
-Remove ele_reserved if you are not using it anywhere. This only applies
-to vendor kernel at the moment.
-
-> +	};
-> +};
-> +
-> +/* eMMC */
-> +&usdhc1 {
-> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 = <&pinctrl_usdhc1>;
-> +	pinctrl-1 = <&pinctrl_usdhc1>;
-> +	pinctrl-2 = <&pinctrl_usdhc1>;
-> +	bus-width = <8>;
-> +	non-removable;
-> +	status = "okay";
-
-Currently only default DDR50 is supported.
-
-So no need for 100mhz + 200mhz pinctrls.
-
-> +};
-> +
-> +&iomuxc {
-> +	pinctrl_usdhc1: usdhc1grp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD1_CLK__USDHC1_CLK		0x15fe
-> +			MX93_PAD_SD1_CMD__USDHC1_CMD		0x13fe
-> +			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x13fe
-> +			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x13fe
-> +			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x13fe
-> +			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x13fe
-> +			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x13fe
-> +			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x13fe
-> +			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x13fe
-> +			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x13fe
-> +			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x15fe
-> +		>;
-> +	};
-> +};
-
-BR,
-Primoz
+>
+>  drivers/input/keyboard/cros_ec_keyb.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboa=
+rd/cros_ec_keyb.c
+> index 30678a34cf647..d2e0d89d4ffdf 100644
+> --- a/drivers/input/keyboard/cros_ec_keyb.c
+> +++ b/drivers/input/keyboard/cros_ec_keyb.c
+> @@ -128,6 +128,11 @@ static const struct cros_ec_bs_map cros_ec_keyb_bs[]=
+ =3D {
+>                 .code           =3D SW_TABLET_MODE,
+>                 .bit            =3D EC_MKBP_TABLET_MODE,
+>         },
+> +       {
+> +               .ev_type        =3D EV_SW,
+> +               .code           =3D SW_DOCK,
+> +               .bit            =3D EC_MKBP_BASE_ATTACHED,
+> +       },
+>  };
+>
+>  /*
+> --
+> 2.43.0.381.gb435a96ce8-goog
+>
 
