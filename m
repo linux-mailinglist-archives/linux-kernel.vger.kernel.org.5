@@ -1,139 +1,217 @@
-Return-Path: <linux-kernel+bounces-30433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D88E831E9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:43:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F1AB831E9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C93C1F226A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:43:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC9E8B216C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE182D052;
-	Thu, 18 Jan 2024 17:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191D62D607;
+	Thu, 18 Jan 2024 17:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SN1UImHA"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="XRJqiRxv"
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155C52D04B
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584532D600
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705599789; cv=none; b=XQhkK69LcyztrcwubgBhQtGM5b+nybTRmWNTfg0k8dl6b2jWtQGYhg8gbHfJMN1YdkW8mRPlERqhUngyDSvfTVAwIlY1DoGbCUnbwBCcI0Hvu1eUofxUrQ1eZJ9PK+SMW1/4XqgtclITIwhALADsieraWHbSq//yA8A6XvgH1Gs=
+	t=1705599875; cv=none; b=JML2wVg/PuIRrWKz/Qy4joFdFTgAbr6KWfsb2iU4DbmBp4+MNz+PlB4Nhu8ixMCqrTEqyifX5qw7vY7yer5aw0iz42Xx4y0DQXoy1ujddAAavS/Bpc8CBc5k28ElAG/Y13vcOq1SYo4KlJN/e9uy0Px5FJjqxUrYCfZ1xgHHOfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705599789; c=relaxed/simple;
-	bh=NOcAiExZvR2mQb61dcNah83qN7CavovaR3DLX+XgZEM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NNlj0rAI9ao7ouUbywnpNuNNd0LlEuMqZL+viV8ImqAvg87WFcCmsgflEx1jptjgvigj6U0LHPUjYSym6M6NRO41WdWae4YqasuYJwe16GLNmUHvnjOsyi5ewS9M36q19iB+D8y7nZwXy9ly3pVA4TYkVu93jx9RFYeUf+Xaq78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SN1UImHA; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso196a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:43:07 -0800 (PST)
+	s=arc-20240116; t=1705599875; c=relaxed/simple;
+	bh=+EEn3iTOmt+kltd/ldWX9BmOtkos9GsLBVlCS0F0OGY=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Fy6M598gsN3PzHsDqcNOA5ELohP4ofB8A3LbTDCZuPBOii7xvgeQeUuxqUT9O+Wkrs1PQU4STOKWvM9bHD5ASbrQHTbGNR0+6FIo/drBiCtHAQcuTW49KR+OKumpZjNJlvp1cJi/EtGFJfqpK2fSNIE7F8oWkqa2w+bLNmojj+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=XRJqiRxv; arc=none smtp.client-ip=192.134.164.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705599786; x=1706204586; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NOcAiExZvR2mQb61dcNah83qN7CavovaR3DLX+XgZEM=;
-        b=SN1UImHAfDqvSYWPKQy1ZfJD/O0OqrYawAOLWdjaXsI33a0OrZ+m6cTHzCluqm9zUm
-         FnsKIV9rKdjr0ZjVI/ApNjoll7ecdmMT8bJcL+ClyZhCJJ7Y28YCaAA5VsC7hoau4x4w
-         hcfeBbh57NaFV0k2K2iSlFbdQB31RwX4QvF1Z3IQwFd4X3fCIINms2uQ815N28E/QqMk
-         FA1cZphp957H/lonxnybMC6SoAa/W2x6lWcmbsDgoh2sxy9YU2q00xLj9zQVS3rxctZE
-         B5Vb94E3gmky63LaMonlOLRWryGAHlADixLgG5Ndxj4bnCERsAxLlsV8BlEn5dHlw6jh
-         UTsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705599786; x=1706204586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NOcAiExZvR2mQb61dcNah83qN7CavovaR3DLX+XgZEM=;
-        b=ei33ruKq5faZafUjqE7Q9P3wuPrqX+BfogkZgc7K1B2pozfdMlI+LH+X/+4fUkoZQt
-         /yFsYKk0HL74l89t9/rinHRooDP2kFpggave+0HxIX3K8PfMVNV4h0sgj1Fd95kbRNj+
-         OVyTT9dzJunqwS3dNxcBeKoODHJaALJK1IF1NLq3F7ffJ/YDNk0wPnKWCq3czMnAdiDH
-         Py9HtJrzO4QHbVd0/DsMfrne3Q0Y9GluIHnKzkv/w1E/Y6QrYctWqPVcePbHiY+5c1LY
-         WhWgqFGScodYQMlAttnBGvHvRIMcgnXlp76io73mMJfXYXpa9YqUTxC9QQUFuqmZ5GKO
-         1hmQ==
-X-Gm-Message-State: AOJu0Yy1cBYOK4tLPNTG2RScEt6eJR8Cxh4Zk2HLMtLJTUlp2aK3o84R
-	zBv6Yzgk70yE5usP4nLZPheikyjtXaZvKq3smsC6IM9HVK98PSsAZ22pkDTJ2cBDmI+Ks6kYyRr
-	4kWv0sQ1f0T6oF0HnJG/Mx13ZB+gkGSxW6WiZ
-X-Google-Smtp-Source: AGHT+IE0AakL/4sUeGb+URi8tBIOtgC2fQnSnJWrYDiK2j7xATlq2bUkk4OH1pRcNoFZDynH19IvzdzPXcB0BJXDBJ0=
-X-Received: by 2002:a05:6402:b4c:b0:55a:47a0:d8ad with SMTP id
- bx12-20020a0564020b4c00b0055a47a0d8admr63065edb.3.1705599786153; Thu, 18 Jan
- 2024 09:43:06 -0800 (PST)
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=M+DaurYcoM0Iiblj8Kl2BjtzI1qZfuyNgY4ZprroW9s=;
+  b=XRJqiRxvIACJO8Ujkt9p0TfIxL8y12Elv1QVIPCLPKK+3MK3cL2Clxhy
+   +zhZb2O0/Yp5nLcrjwPkSk71XfrtsJQRAsxsODOyQKSfRneYEDSteKjJD
+   edHsF23pOUjkGh8cpp97+31IQlThaH+PTU4vxvgbp8DRdsGaB77WYReM2
+   U=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.05,203,1701126000"; 
+   d="scan'208";a="147455876"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 18:43:20 +0100
+Date: Thu, 18 Jan 2024 18:43:19 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
+    linux-kernel@vger.kernel.org
+Subject: Re: EEVDF and NUMA balancing
+In-Reply-To: <CAKfTPtB4R3ZCxgnLLz-uVFBEaAGv6CtKTTXSYP5PB59-U7kbhQ@mail.gmail.com>
+Message-ID: <7231bfb1-9acc-656-c6b6-20bd8624e08a@inria.fr>
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com> <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr> <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
+ <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr> <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr> <CAKfTPtDrULyOB9+RhjoPfCpHKVhx5kRf6dq79DSE6jZgsEairw@mail.gmail.com> <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr> <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr>
+ <CAKfTPtCAcHuzhcDvry6_nH2K29wc-LEo2yOi-J-mnZkwMvGDbw@mail.gmail.com> <cfae246d-9383-59d-ee5b-81ea3dd0a795@inria.fr> <CAKfTPtD0B29zadkeEOCWvry123zWVEEm41ouKj7noXwQdoh2+Q@mail.gmail.com> <7a845b43-bd8e-6c7d-6bca-2e6f174f671@inria.fr> <36f2cc93-db10-5977-78ab-d9d07c3f445@inria.fr>
+ <CAKfTPtA31Z0N9hd4z_GPvoZwK=KTf4fPbx_jDbK653mdVDLEbw@mail.gmail.com> <424169db-49df-f168-d7f7-b48efe6ada@inria.fr> <CAKfTPtB4R3ZCxgnLLz-uVFBEaAGv6CtKTTXSYP5PB59-U7kbhQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240114223532.290550-1-sameo@rivosinc.com> <20240118033515.2293149-1-biao.lu@intel.com>
-In-Reply-To: <20240118033515.2293149-1-biao.lu@intel.com>
-From: Dionna Amalie Glaze <dionnaglaze@google.com>
-Date: Thu, 18 Jan 2024 09:42:50 -0800
-Message-ID: <CAAH4kHb9-7p0z2xgmofiCVkOUgXdkJz89qLPc1DuG0F_Wf4-Tg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/4] tsm: Runtime measurement registers ABI
-To: biao.lu@intel.com
-Cc: sameo@rivosinc.com, dan.j.williams@intel.com, linux-coco@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, Jan 17, 2024 at 7:36=E2=80=AFPM <biao.lu@intel.com> wrote:
->
-> Samuel Ortiz wrote:
-> > Some confidential computing architectures (Intel TDX, ARM CCA, RISC-V
-> > CoVE) provide their guests with a set of measurements registers that ca=
-n
-> > be extended at runtime, i.e. after the initial, host-initiated
-> > measurements of the TVM are finalized. Those runtime measurement
-> > registers (RTMR) are isolated from the host accessible ones but TSMs
-> > include them in their signed attestation reports.
+
+
+On Thu, 18 Jan 2024, Vincent Guittot wrote:
+
+> On Thu, 18 Jan 2024 at 17:50, Julia Lawall <julia.lawall@inria.fr> wrote:
 > >
-> > All architectures supporting RTMRs expose a similar interface to their
-> > TVMs: An extension command/call that takes a measurement value and an
-> > RTMR index to extend it with, and a readback command for reading an RTM=
-R
-> > value back (taking an RTMR index as an argument as well). This patch se=
-ries
-> > builds an architecture agnostic, configfs-based ABI for userspace to ex=
-tend
-> > and read RTMR values back. It extends the current TSM ops structure and
-> > each confidential computing architecture can implement this extension t=
-o
-> > provide RTMR support.
+> >
+> >
+> > On Thu, 18 Jan 2024, Vincent Guittot wrote:
+> >
+> > > Hi Julia,
+> > >
+> > > Sorry for the delay. I have been involved on other perf regression
+> > >
+> > > On Fri, 5 Jan 2024 at 18:27, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On Fri, 5 Jan 2024, Julia Lawall wrote:
+> > > >
+> > > > >
+> > > > >
+> > > > > On Fri, 5 Jan 2024, Vincent Guittot wrote:
+> > > > >
+> > > > > > On Fri, 5 Jan 2024 at 15:51, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > > > > >
+> > > > > > > > Your system is calling the polling mode and not the default
+> > > > > > > > cpuidle_idle_call() ? This could explain why I don't see such problem
+> > > > > > > > on my system which doesn't have polling
+> > > > > > > >
+> > > > > > > > Are you forcing the use of polling mode ?
+> > > > > > > > If yes, could you check that this problem disappears without forcing
+> > > > > > > > polling mode ?
+> > > > > > >
+> > > > > > > I expanded the code in do_idle to:
+> > > > > > >
+> > > > > > >                 if (cpu_idle_force_poll) { c1++;
+> > > > > > >                         tick_nohz_idle_restart_tick();
+> > > > > > >                         cpu_idle_poll();
+> > > > > > >                 } else if (tick_check_broadcast_expired()) { c2++;
+> > > > > > >                         tick_nohz_idle_restart_tick();
+> > > > > > >                         cpu_idle_poll();
+> > > > > > >                 } else { c3++;
+> > > > > > >                         cpuidle_idle_call();
+> > > > > > >                 }
+> > > > > > >
+> > > > > > > Later, I have:
+> > > > > > >
+> > > > > > >         trace_printk("force poll: %d: c1: %d, c2: %d, c3: %d\n",cpu_idle_force_poll, c1, c2, c3);
+> > > > > > >         flush_smp_call_function_queue();
+> > > > > > >         schedule_idle();
+> > > > > > >
+> > > > > > > force poll, c1 and c2 are always 0, and c3 is always some non-zero value.
+> > > > > > > Sometimes small (often 1), and sometimes large (304 or 305).
+> > > > > > >
+> > > > > > > So I don't think it's calling cpu_idle_poll().
+> > > > > >
+> > > > > > I agree that something else
+> > > > > >
+> > > > > > >
+> > > > > > > x86 has TIF_POLLING_NRFLAG defined to be a non zero value, which I think
+> > > > > > > is sufficient to cause the issue.
+> > > > > >
+> > > > > > Could you trace trace_sched_wake_idle_without_ipi() ans csd traces as well ?
+> > > > > > I don't understand what set need_resched() in your case; having in
+> > > > > > mind that I don't see the problem on my Arm systems and IIRC Peter
+> > > > > > said that he didn't face the problem on his x86 system.
+> > > > >
+> > > > > TIF_POLLING_NRFLAG doesn't seem to be defined on Arm.
+> > > > >
+> > > > > Peter said that he didn't see the problem, but perhaps that was just
+> > > > > random.  It requires a NUMA move to occur.  I make 20 runs to be sure to
+> > > > > see the problem at least once.  But another machine might behave
+> > > > > differently.
+> > > > >
+> > > > > I believe the call chain is:
+> > > > >
+> > > > > scheduler_tick
+> > > > >   trigger_load_balance
+> > > > >     nohz_balancer_kick
+> > > > >       kick_ilb
+> > > > >         smp_call_function_single_async
+> > > > >           generic_exec_single
+> > > > >             __smp_call_single_queue
+> > > > >               send_call_function_single_ipi
+> > > > >                 call_function_single_prep_ipi
+> > > > >                   set_nr_if_polling <====== sets need_resched
+> > > > >
+> > > > > I'll make a trace to reverify that.
+> > > >
+> > > > This is what I see at a tick, which corresponds to the call chain shown
+> > > > above:
+> > > >
+> > > >           bt.B.x-4184  [046]   466.410605: bputs:                scheduler_tick: calling trigger_load_balance
+> > > >           bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling nohz_balancer_kick
+> > > >           bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling kick_ilb
+> > > >           bt.B.x-4184  [046]   466.410607: bprint:               trigger_load_balance: calling smp_call_function_single_async 22
+> > > >           bt.B.x-4184  [046]   466.410607: bputs:                smp_call_function_single_async: calling generic_exec_single
+> > > >           bt.B.x-4184  [046]   466.410607: bputs:                generic_exec_single: calling __smp_call_single_queue
+> > > >           bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling send_call_function_single_ipi
+> > > >           bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling call_function_single_prep_ipi
+> > > >           bt.B.x-4184  [046]   466.410608: bputs:                call_function_single_prep_ipi: calling set_nr_if_polling
+> > > >           bt.B.x-4184  [046]   466.410609: sched_wake_idle_without_ipi: cpu=22
+> > >
+> > > I don't know if you have made progress on this in the meantime.
+> >
+> > Not really.  Basically after do_idle, there is the call to
+> > flush_smp_call_function_queue that invokes the deposited functions, which
+> > in our case is at best going to raise a softirq, and the call to schedule.
+> > Raising a softirq doesn't happen because of the check for need_resched.
+> > But even if that test were removed, it would still not be useful because
+> > there would be the ksoftirqd running on the idle core that would eliminate
+> > the imbalance between the sockets.  Maybe there could be some way to call
+> > run_rebalance_domains directly from nohz_csd_func, since
+> > run_rebalance_domains doesn't use its argument, but at the moment
+> > run_rebalance_domains is not visible to nohz_csd_func.
 >
-> Hi, Samuel
-> The ABI does not include eventlog, but eventlog is usually used with RTMR=
-.
-> What do you think about how to implement eventlog?
+> All this happen because we don't use an ipi, it should not use
+> ksoftirqd with ipi
 >
+> >
+> > >
+> > > Regarding the trace above, do you know if anything happens on CPU22
+> > > just before the scheduler tried to kick the ILB on it ?
+> >
+> > I don't think so.  It's idle.
 >
+> Ok, so if it is idle for a while , I mean nothing happened on it, not
+> even spurious irq, It should have cleared its TIF_POLLING_NRFLAG
+>
+> I would be good to trace the selected idle state
+>
+> >
+> > > Have you found why TIF_POLLING_NRFLAG seems to be always set when the
+> > > kick_ilb happens ? It should be cleared once entering the idle state.
+> >
+> > Actually, I don't think it is always set.  It switches back and forth
+> > between two cases.  I will look for the traces that show that.
+> >
+> > > Could you check your cpuidle driver ?
+> >
+> > Check what specifically?
+>
+> $ cat /sys/devices/system/cpu/cpuidle/current_driver
+> $ cat /sys/devices/system/cpu/cpuidle/current_governor
 
-I had the same question and deleted my reply. The event log in TPM is
-made available in sysfs only up to the point that control transitions
-to user space. After that, all extensions to PCRs have to be logged by
-user space with whatever chosen workload event log representation. I
-imagine the same is true for RTMRs.
+intel_idle and menu
 
-What this patch series doesn't take into account is how RTMRs might
-not be represented in the hardware attestation, but rather would be in
-a supervisor service whose integrity is chained from hardware
-attestation. In the configfs-tsm model, tsm/report with its single
-provider requirement will not be able to interface with the SVSM
-attestation protocol /and/ the AMD hardware protocol. That may as well
-be okay, but that's a choice folks need to be aware of. There's still
-the issue of attesting a single service vs attesting all services in
-the SVSM. I imagine single service attestation will have to be
-abandoned.
-
-In SVSM, a vTPM is a service that an updated linux driver will be able
-to get a quote from, and the same AMD SEV-SNP attestation report TSM
-provider would still be present, but if we want a simpler RTMR
-service, then we're in a little pickle with this design.
-
---=20
--Dionna Glaze, PhD (she/her)
+julia
 
