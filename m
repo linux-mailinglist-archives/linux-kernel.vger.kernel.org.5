@@ -1,198 +1,199 @@
-Return-Path: <linux-kernel+bounces-30017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DFD28317A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB6BD8317D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:01:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 825531C22BE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:59:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C5A21C212B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:01:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DA8241E4;
-	Thu, 18 Jan 2024 10:59:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE4C25551;
+	Thu, 18 Jan 2024 11:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="aQ7O6UoN"
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wcAmgP3B"
+Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A8822F06
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 10:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751C823762
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705575545; cv=none; b=srFosR5cdOf4KiETzgAC54yTj608zddW8s6l9tq7R1ffx4fj0wU2guil5puOaEB9NQOxX6e5deNhsseKAYlykhnxzYPJt91QodSNKlE8Ud1+cSrD88O+IAfjSN6TVfx/3d63EM3QiJqycv0wZGIrolTdg6e80jStHvf6e/bo35s=
+	t=1705575637; cv=none; b=jsAFyfM5R+jVVcIgwavWmMLJmHymIpGWHGkZg3WLXsy5em0Xl8BcF+HDK/OBOK5EQgBcHbS8C+FFErJjxX9zYeXqtQBPL84q3mGrsiahVp0mVarXJn+2W7V0jVFww35N3CKjJ73ZvzLjY4WXnSe96fnVovfAgEkFLmi64bIgAIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705575545; c=relaxed/simple;
-	bh=XAezkMl8AMyv2duDx8KtemVoTiY3JEudvQLd/3+rctQ=;
+	s=arc-20240116; t=1705575637; c=relaxed/simple;
+	bh=9uRuOPnLrdJcJhWP8ED+28EUo5/SEOBarbn2AVCEczA=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=WIOa9gWN422r1vZl7PQ5F+5wweMouJmIHOHb7okAtBbA/HZ0Uca5gQ6Qoxw7Gf4y277ZizCeyKM45sGKcTLPKongX0OPb8gI51QuxG8/xIC88/5PwnLpgmiwedu+A0RVpc7Y4XjQNGnvVrfGeKsqQbpwuFMjlADylgMa3vLCMbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=aQ7O6UoN; arc=none smtp.client-ip=209.85.217.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-46776ec433eso2612761137.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:59:02 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Date:
+	 Mime-Version:X-Mailer:Message-ID:Subject:From:To:Cc:Content-Type;
+	b=qSYWWt2L2uDACdVz/wSZpQjlPr4d6+J6HVkYlNgjcsE14bFFMGAGNnPrTGixuU/V6ltKF55s3NGvovOJiBa8tRd3jAwy9oXfAPzOMCbJVZ42sYhgp8c1lvFT4gU1PlvrMMkYtN8o+LEpjCRK69gzbJWH7z8GZyhfNHndvTRYoBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wcAmgP3B; arc=none smtp.client-ip=209.85.218.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
+Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-a2e1630853eso162383466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:00:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705575541; x=1706180341; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5kKGm3Yb15Ds8SRKMOgK2sjBctiic0JJzDM70AH8Db0=;
-        b=aQ7O6UoNqmzc2cKpHkK2ZRyyOJkrA8Je2CWKJiihaMI4+R48ADOGrw4wYaVKpHFFxJ
-         IUKHCUdSv1JNigRvl+evdCz6dl/8BVFHsqBb3xtycSRK3YTlJ2PcIaxBFfdTW650Foa+
-         +KhO4G+I0EYvH2IOoEAf41CJAPcM384cpEsYY2o3qS9Y3GlMA0VSvbsv1gVIVPkPPNLg
-         rLZq91PkAnJ2zT8GQy0V6IXgVingNu/QsB7UAnRd34xOFGuHUTO+jk6Z6lCWts0UCkSh
-         6UGDSOkh6lOcgQOF7HDnZK78rHap2aHIOAD3WufjqaZOTeS/scQwL9+Bh6Ur0FevruQQ
-         EXgQ==
+        d=google.com; s=20230601; t=1705575633; x=1706180433; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6RrXGrowsStE9nemPJC0cN0IXJkwkJ+pwI0mRPXiexU=;
+        b=wcAmgP3Bb0S9qvlKkucNqzQ6nWbdlRqVb5wL8olmnNFkzqROSaxQc/GOP3m2iegDzp
+         T5T5KUoJVqXt9Jx0tMVLw7iL8XbBUU1l9BK1rVGiOURN/LHjWJpWt37t/Rr0oeBBsiPd
+         alkrU3bmGew4lOVZFaT4cLCGn7/X7NwOTqeeFkMxbDP7Z7OF8rrTyoaFg2lleIbvncoL
+         uZ79WXwDk9Xx+899oebJo3jgaVZ/RglcZjvXvYIuk+S+G/PZue80RuqLBTjMfctRP7Dn
+         llJ8ncEOLVNn5NPCGLqhnT4k24dv4tIfy2DnOIs5SLZCMNrzALi3QkczwnXFf0ehqXqx
+         l6GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705575541; x=1706180341;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5kKGm3Yb15Ds8SRKMOgK2sjBctiic0JJzDM70AH8Db0=;
-        b=hKeBpu1HFZ7HA/hv8qHD1QXZTBlv/tpEBlYgrCn3h9U95q0S1dDQeWxT48F8EVuvXF
-         hKJh7o/S0RYMQqADfnmyDqblO/TyAwBhLAR3MKx73gfENtoOrPJlKVlzW/sGhsizZmt0
-         AmQ/giX7hVNDFs+G+ycua9QL8OlpiVKxPO34J3crFl9crdCpanZRF9kZpRdDy8FeQO5O
-         LNbQhTot5XEtXXRv60T6Lo7clslkejtUwYm8hkCmvjpOjhMmX3tOZKcicoJ0i7LgGb2j
-         dVlcdHubImYYOXKW/s/dMR8JbZ8JL8CtZGFJ6GJfjWcrTtKJToIosGpIitBdW4vxZQ1L
-         iV6A==
-X-Gm-Message-State: AOJu0YzMtmkj4QkaTt8SnSm9Hw00EQdLaph5sKAAjRmub/JtfbDDKsg8
-	Ogl8sfUZBGVnOMb/+2J3q03GtJFGeaoa3gaMG6w3ZrXo+MPj7AOuXexUBcpkq1u2kGuoPdgYC0a
-	bISK8V3k7rbPw1LITaWyPpu63j2d8Cw9572cvpg==
-X-Google-Smtp-Source: AGHT+IErNYi3bFXEg7C3n/Klc9CkVbXd1qVuTyh7DRA66+TJldDEJ7m4oEy9GWfbxO/EHLmuHiKQcKdlVYw+jqqEvk0=
-X-Received: by 2002:a67:fbcf:0:b0:468:633:aabb with SMTP id
- o15-20020a67fbcf000000b004680633aabbmr669252vsr.1.1705575541672; Thu, 18 Jan
- 2024 02:59:01 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705575633; x=1706180433;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6RrXGrowsStE9nemPJC0cN0IXJkwkJ+pwI0mRPXiexU=;
+        b=f5iUYPTvV0ItpI6tmnxvk4PlhDZ89aZDlSBzZUQzqMD3JOy5bS+yyiswx5nlqfOAn8
+         KVMA+u7I2rTdmLO1ai2OCzpXaN3dhGufcStfxuguA3Lhhd8ARQLCq4tGSPDyKfYlSue4
+         OHdCidHBcD7WyuJnJq24SvyecjyGM6e2y8PWPmJPtGDOniaMgjWNf424MNgjKg+tEGwL
+         eCee9GyMRosZzk8+l0B+CI3CmMp/oChH5HX0caOPzddSGdKXnkL1uOxkghuiEn4C3EZq
+         04HyuKDcyYFYBAliWCas8dGRbY+jQxSHM/gfxi3tFi/WFOgNM3TOwRr7avdW0KmxNNzN
+         IIKw==
+X-Gm-Message-State: AOJu0YyeyWnLt5naASwGudjIVL6Kjt1023ORKhViBbrd6Jj64/IxXVIx
+	HNnH66LnWaB9XwrivN0VBx6M5MPnEqCg8FgO3sFLhwLbTjO1uHdg/99E4qzJ0O4xXgAHdU/FMg=
+	=
+X-Google-Smtp-Source: AGHT+IFa7FQxY4lu1mD59CzjOMD/gCR8C9dFGiq1Jl93adEZmgb2tdPkH71clHTN05oD3miarDKNgZ6Y0A==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:9c:201:9d7e:25fb:9605:2bef])
+ (user=elver job=sendgmr) by 2002:a17:907:788f:b0:a2d:51d4:9ddc with SMTP id
+ ku15-20020a170907788f00b00a2d51d49ddcmr1361ejc.14.1705575633222; Thu, 18 Jan
+ 2024 03:00:33 -0800 (PST)
+Date: Thu, 18 Jan 2024 11:59:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240117160748.37682-1-brgl@bgdev.pl> <20240117160748.37682-5-brgl@bgdev.pl>
- <2024011707-alibi-pregnancy-a64b@gregkh>
-In-Reply-To: <2024011707-alibi-pregnancy-a64b@gregkh>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 18 Jan 2024 11:58:50 +0100
-Message-ID: <CAMRc=Mef7wxRccnfQ=EDLckpb1YN4DNLoC=AYL8v1LLJ=uFH2Q@mail.gmail.com>
-Subject: Re: [PATCH 4/9] PCI: create platform devices for child OF nodes of
- the port node
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
-	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
-	Lukas Wunner <lukas@wunner.de>, Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Abel Vesa <abel.vesa@linaro.org>, 
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-pci@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
+Message-ID: <20240118110022.2538350-1-elver@google.com>
+Subject: [PATCH] mm, kmsan: fix infinite recursion due to RCU critical section
+From: Marco Elver <elver@google.com>
+To: elver@google.com, Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com, 
+	Charan Teja Kalla <quic_charante@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 5:45=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jan 17, 2024 at 05:07:43PM +0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > In order to introduce PCI power-sequencing, we need to create platform
-> > devices for child nodes of the port node.
->
-> Ick, why a platform device?  What is the parent of this device, a PCI
-> device?  If so, then this can't be a platform device, as that's not what
-> it is, it's something else so make it a device of that type,.
->
+Alexander Potapenko writes in [1]: "For every memory access in the code
+instrumented by KMSAN we call kmsan_get_metadata() to obtain the
+metadata for the memory being accessed. For virtual memory the metadata
+pointers are stored in the corresponding `struct page`, therefore we
+need to call virt_to_page() to get them.
 
-Greg,
+According to the comment in arch/x86/include/asm/page.h,
+virt_to_page(kaddr) returns a valid pointer iff virt_addr_valid(kaddr)
+is true, so KMSAN needs to call virt_addr_valid() as well.
 
-This is literally what we agreed on at LPC. In fact: during one of the
-hall track discussions I said that you typically NAK any attempts at
-using the platform bus for "fake" devices but you responded that this
-is what the USB on-board HUB does and while it's not pretty, this is
-what we need to do.
+To avoid recursion, kmsan_get_metadata() must not call instrumented
+code, therefore ./arch/x86/include/asm/kmsan.h forks parts of
+arch/x86/mm/physaddr.c to check whether a virtual address is valid or
+not.
 
-Now as for the implementation, the way I see it we have two solutions:
-either we introduce a fake, top-level PCI slot platform device device
-that will reference the PCI host controller by phandle or we will live
-with a secondary, "virtual" platform device for power sequencing that
-is tied to the actual PCI device. The former requires us to add DT
-bindings, add a totally fake DT node representing the "slot" which
-doesn't really exist (and Krzysztof already expressed his negative
-opinion of that) and then have code that will be more complex than it
-needs to be. The latter allows us to not change DT at all (other than
-adding regulators, clocks and GPIOs to already existing WLAN nodes),
-reuse the existing parent-child relationship between the port node and
-the instantiated platform device as well as result in simpler code.
+But the introduction of rcu_read_lock() to pfn_valid() added
+instrumented RCU API calls to virt_to_page_or_null(), which is called by
+kmsan_get_metadata(), so there is an infinite recursion now.  I do not
+think it is correct to stop that recursion by doing
+kmsan_enter_runtime()/kmsan_exit_runtime() in kmsan_get_metadata(): that
+would prevent instrumented functions called from within the runtime from
+tracking the shadow values, which might introduce false positives."
 
-Given that DT needs to be stable while the underlying C code can
-freely change if we find a better solution, I think that the second
-option is a no-brainer here.
+Fix the issue by switching pfn_valid() to the _sched() variant of
+rcu_read_lock/unlock(), which does not require calling into RCU. Given
+the critical section in pfn_valid() is very small, this is a reasonable
+trade-off (with preemptible RCU).
 
-> > They will get matched against
-> > the pwrseq drivers (if one exists) and then the actual PCI device will
-> > reuse the node once it's detected on the bus.
->
-> Reuse it how?
->
+KMSAN further needs to be careful to suppress calls into the scheduler,
+which would be another source of recursion. This can be done by wrapping
+the call to pfn_valid() into preempt_disable/enable_no_resched(). The
+downside is that this sacrifices breaking scheduling guarantees;
+however, a kernel compiled with KMSAN has already given up any
+performance guarantees due to being heavily instrumented.
 
-By consuming the same DT node using device_set_of_node_from_dev() when
-the PCI device is registered. This ensures we don't try to bind
-pinctrl twice etc.
+Note, KMSAN code already disables tracing via Makefile, and since
+mmzone.h is included, it is not necessary to use the notrace variant,
+which is generally preferred in all other cases.
 
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > ---
-> >  drivers/pci/bus.c    | 9 ++++++++-
-> >  drivers/pci/remove.c | 3 ++-
-> >  2 files changed, 10 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
-> > index 9c2137dae429..8ab07f711834 100644
-> > --- a/drivers/pci/bus.c
-> > +++ b/drivers/pci/bus.c
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/errno.h>
-> >  #include <linux/ioport.h>
-> >  #include <linux/of.h>
-> > +#include <linux/of_platform.h>
-> >  #include <linux/proc_fs.h>
-> >  #include <linux/slab.h>
-> >
-> > @@ -342,8 +343,14 @@ void pci_bus_add_device(struct pci_dev *dev)
-> >        */
-> >       pcibios_bus_add_device(dev);
-> >       pci_fixup_device(pci_fixup_final, dev);
-> > -     if (pci_is_bridge(dev))
-> > +     if (pci_is_bridge(dev)) {
-> >               of_pci_make_dev_node(dev);
-> > +             retval =3D of_platform_populate(dev->dev.of_node, NULL, N=
-ULL,
-> > +                                           &dev->dev);
->
-> So this is a pci bridge device, not a platform device, please don't do
-> this, make it a real device of a new type.
->
+Link: https://lkml.kernel.org/r/20240115184430.2710652-1-glider@google.com [1]
+Reported-by: Alexander Potapenko <glider@google.com>
+Reported-by: syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com
+Signed-off-by: Marco Elver <elver@google.com>
+Cc: Charan Teja Kalla <quic_charante@quicinc.com>
+---
+ arch/x86/include/asm/kmsan.h | 17 ++++++++++++++++-
+ include/linux/mmzone.h       |  6 +++---
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
-Not sure what you mean. Are you suggesting adding a new bus? Or do we
-already have a concept of PCI bridge devices in the kernel?
+diff --git a/arch/x86/include/asm/kmsan.h b/arch/x86/include/asm/kmsan.h
+index 8fa6ac0e2d76..d91b37f5b4bb 100644
+--- a/arch/x86/include/asm/kmsan.h
++++ b/arch/x86/include/asm/kmsan.h
+@@ -64,6 +64,7 @@ static inline bool kmsan_virt_addr_valid(void *addr)
+ {
+ 	unsigned long x = (unsigned long)addr;
+ 	unsigned long y = x - __START_KERNEL_map;
++	bool ret;
+ 
+ 	/* use the carry flag to determine if x was < __START_KERNEL_map */
+ 	if (unlikely(x > y)) {
+@@ -79,7 +80,21 @@ static inline bool kmsan_virt_addr_valid(void *addr)
+ 			return false;
+ 	}
+ 
+-	return pfn_valid(x >> PAGE_SHIFT);
++	/*
++	 * pfn_valid() relies on RCU, and may call into the scheduler on exiting
++	 * the critical section. However, this would result in recursion with
++	 * KMSAN. Therefore, disable preemption here, and re-enable preemption
++	 * below while suppressing reschedules to avoid recursion.
++	 *
++	 * Note, this sacrifices occasionally breaking scheduling guarantees.
++	 * Although, a kernel compiled with KMSAN has already given up on any
++	 * performance guarantees due to being heavily instrumented.
++	 */
++	preempt_disable();
++	ret = pfn_valid(x >> PAGE_SHIFT);
++	preempt_enable_no_resched();
++
++	return ret;
+ }
+ 
+ #endif /* !MODULE */
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 4ed33b127821..a497f189d988 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -2013,9 +2013,9 @@ static inline int pfn_valid(unsigned long pfn)
+ 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+ 		return 0;
+ 	ms = __pfn_to_section(pfn);
+-	rcu_read_lock();
++	rcu_read_lock_sched();
+ 	if (!valid_section(ms)) {
+-		rcu_read_unlock();
++		rcu_read_unlock_sched();
+ 		return 0;
+ 	}
+ 	/*
+@@ -2023,7 +2023,7 @@ static inline int pfn_valid(unsigned long pfn)
+ 	 * the entire section-sized span.
+ 	 */
+ 	ret = early_section(ms) || pfn_section_valid(ms, pfn);
+-	rcu_read_unlock();
++	rcu_read_unlock_sched();
+ 
+ 	return ret;
+ }
+-- 
+2.43.0.381.gb435a96ce8-goog
 
-Bartosz
-
-> thanks,
->
-> greg k-h
 
