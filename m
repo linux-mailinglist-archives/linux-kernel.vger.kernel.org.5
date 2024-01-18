@@ -1,402 +1,144 @@
-Return-Path: <linux-kernel+bounces-30590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3821832143
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 23:01:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C682832147
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 23:01:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 916F6286A78
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:01:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFBE21C22B92
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:01:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19B231A8F;
-	Thu, 18 Jan 2024 22:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D2B321BF;
+	Thu, 18 Jan 2024 22:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TuL8k02S"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QnEgnSEL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4B92E85F;
-	Thu, 18 Jan 2024 22:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F5E321BA
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 22:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705615278; cv=none; b=o080EOQXUGt1r8QsLpOyUUXSSKlkGhWfldo+n1FDyoapa9i/eM64FctftNXhvU6vAR/098YD8Cpp8jkpHx6XneIKtw01yEZqPiaZUQyXwYdsbKiH4JIzWtQtyk1CEpWpG8a3wrh4kpQEle7nKApLEmJYi428Du6MOA5lkg+qI8Y=
+	t=1705615293; cv=none; b=OLhX255b446uTu/R64xe6dfId+h2nGK+KlIXi98LBCcYRCOZOKIGdkK0lFmgFdq2ow6Sbz31ivuUChdTa9bw4JE0BiRN4EvoTP0nLVsC8BAKftiyWPslPheiDNd1Ai8LqGljpaEpYyHA7uYPTocroMauDGQ3GhtTodYrdDaKhvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705615278; c=relaxed/simple;
-	bh=Efm+PXJ7N7sLa7pTKfa3U4klPY4k63z8iTuAYJQsFRk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lpDTr6UYeDYLuxmuhoXBzhiDX4tqrRGjSjyC/0CcoHsqgOg+v8sWPJak8x99GauwEVAd8wBp8piDiMA8mbbTlPEJgKsMvpCbt1YxAX8R8wZBJhYeG5kT8NCWRZdsbVxDC5uXfhuf8TXT+9xN9cxyYcGND8iT3IZy7nCo69yrMN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TuL8k02S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAF6AC433F1;
-	Thu, 18 Jan 2024 22:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705615278;
-	bh=Efm+PXJ7N7sLa7pTKfa3U4klPY4k63z8iTuAYJQsFRk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TuL8k02S+rhHlOBqjRv0Smavss9EBk3xoM4T/tR2ORZvxXEhLahbpQ/dmGul9PWrq
-	 A9RdD2Z1J6BgiVqvTnRZurwFUT0p+OlEk2OJCQ14WJiP3naQpyi8HSLWVohkplLmb0
-	 v/O3d3YhWOHlTHgf2wgf8zYm2fyGK4bA7IiHIYsNCdJ/PVSi3AS+QF9zc5sJfzT3jp
-	 kNGy+Tb9AfAmD/cnsgRHPwl13/DE9hrMX1N1qyRienua8B33vCkeXeHRJsWHZirCFa
-	 flaZ7mjACUh0377u6gOTtZmBvU1lYF4k/RxUYBbsiWNyyrj4DcTuFz/JfSizGD0cUc
-	 BvFvE3ZMkVQBg==
-From: Jakub Kicinski <kuba@kernel.org>
-To: torvalds@linux-foundation.org
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	pabeni@redhat.com,
-	bpf@vger.kernel.org
-Subject: [GIT PULL] Networking for v6.8-rc1
-Date: Thu, 18 Jan 2024 14:01:16 -0800
-Message-ID: <20240118220116.2146136-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1705615293; c=relaxed/simple;
+	bh=1l2k0DCIGCSpNoESefovU5y1nH2h9QDA2SjwEwTldHA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XvfqtYYeWNtrwRn1amSsHCiRf1MCaq6cE1qz/nVSip5vON9P3pbioK898Gf+oXAfVkw2oOsHegIhc9ngaUpEeaX/Dlkh8rvohc0a/BZI7cbqJEicfFvHRkgQI8pnejSuVs645GlA9znOg76TgR2aIkNytNF0UPcjg5mfvhfSCTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QnEgnSEL; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705615292; x=1737151292;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=1l2k0DCIGCSpNoESefovU5y1nH2h9QDA2SjwEwTldHA=;
+  b=QnEgnSELJsIxXWqRzS4HGlPZiKnJtZrbHvPtf5Cl6WMiDkVceNPCqsFW
+   48peYUTMCJW+WIXfw9j/0Kl+BS+nBAzmgffm2bbFscU31SpRWEsRS/Z6s
+   Gtb3tNuSu+XZ694bIMT/ZpKYRH9BrMNI06j2aMfqkvT02B5BJrOx4tyFb
+   YblaP0EeuMuLjCjrtmZZzs4CqFMVg9nguf1BBpM1XpLzJFIU6rSlBNwxD
+   PKojG1ZZVcBDBRZRgXSIZ7goALjK+Woumem+cEYjGJ8AN4Cz6YkKp6Nyq
+   gyrC1YbHA+kosII4nw3sMgZyB4ooJyQ/I+xJNjC+M30hRGbNys5z0R1WZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7280835"
+X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
+   d="scan'208";a="7280835"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 14:01:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="818893221"
+X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
+   d="scan'208";a="818893221"
+Received: from dfast-mobl.amr.corp.intel.com (HELO [10.251.13.41]) ([10.251.13.41])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 14:01:30 -0800
+Message-ID: <5bddbb34-4081-494b-8c12-c2e70898a608@intel.com>
+Date: Thu, 18 Jan 2024 14:02:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/fpu: verify xstate buffer size according with
+ requested features
+Content-Language: en-US
+To: Thomas Gleixner <tglx@linutronix.de>, Andrei Vagin <avagin@gmail.com>
+Cc: Andrei Vagin <avagin@google.com>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>
+References: <20240116234901.3238852-1-avagin@google.com>
+ <30cd0be4-705f-4d63-bdad-fc57301e7eda@intel.com>
+ <CANaxB-xu+zG=5_EAe4zapC5a_x4CkkDovmVX7LjiLk+E7kU75g@mail.gmail.com>
+ <b3e5456a-7113-4868-b8ce-020421e898ba@intel.com>
+ <CANaxB-zQYC8=7frWGU2pRTDJrkVu0iR8QZCmUxSzGmBG-_b1cg@mail.gmail.com>
+ <54bcb902-0fab-4a53-8b8e-85b6e4484b03@intel.com> <87cytyfmd8.ffs@tglx>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <87cytyfmd8.ffs@tglx>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Hi Linus!
-
-The following changes since commit 3e7aeb78ab01c2c2f0e1f784e5ddec88fcd3d106:
-
-  Merge tag 'net-next-6.8' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next (2024-01-11 10:07:29 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.8-rc1
-
-for you to fetch changes up to 925781a471d8156011e8f8c1baf61bbe020dac55:
-
-  Merge tag 'nf-24-01-18' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf (2024-01-18 12:45:05 -0800)
-
-----------------------------------------------------------------
-Including fixes from bpf and netfilter.
-
-Previous releases - regressions:
-
- - Revert "net: rtnetlink: Enslave device before bringing it up",
-   breaks the case inverse to the one it was trying to fix
-
- - net: dsa: fix oob access in DSA's netdevice event handler
-   dereference netdev_priv() before check its a DSA port
-
- - sched: track device in tcf_block_get/put_ext() only for clsact
-   binder types
-
- - net: tls, fix WARNING in __sk_msg_free when record becomes full
-   during splice and MORE hint set
-
- - sfp-bus: fix SFP mode detect from bitrate
-
- - drv: stmmac: prevent DSA tags from breaking COE
-
-Previous releases - always broken:
-
- - bpf: fix no forward progress in in bpf_iter_udp if output
-   buffer is too small
-
- - bpf: reject variable offset alu on registers with a type
-   of PTR_TO_FLOW_KEYS to prevent oob access
-
- - netfilter: tighten input validation
-
- - net: add more sanity check in virtio_net_hdr_to_skb()
-
- - rxrpc: fix use of Don't Fragment flag on RESPONSE packets,
-   avoid infinite loop
-
- - amt: do not use the portion of skb->cb area which may get clobbered
-
- - mptcp: improve validation of the MPTCPOPT_MP_JOIN MCTCP option
-
-Misc:
-
- - spring cleanup of inactive maintainers
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Alexei Starovoitov (2):
-      Merge branch 'bpf-fix-backward-progress-bug-in-bpf_iter_udp'
-      Merge branch 'tighten-up-arg-ctx-type-enforcement'
-
-Amit Cohen (3):
-      mlxsw: spectrum_acl_erp: Fix error flow of pool allocation failure
-      selftests: mlxsw: qos_pfc: Remove wrong description
-      selftests: mlxsw: qos_pfc: Adjust the test to support 8 lanes
-
-Andrii Nakryiko (5):
-      libbpf: feature-detect arg:ctx tag support in kernel
-      bpf: extract bpf_ctx_convert_map logic and make it more reusable
-      bpf: enforce types for __arg_ctx-tagged arguments in global subprogs
-      selftests/bpf: add tests confirming type logic in kernel for __arg_ctx
-      libbpf: warn on unexpected __arg_ctx type when rewriting BTF
-
-Arnd Bergmann (1):
-      wangxunx: select CONFIG_PHYLINK where needed
-
-Benjamin Poirier (3):
-      selftests: bonding: Change script interpreter
-      selftests: forwarding: Remove executable bits from lib.sh
-      selftests: bonding: Add more missing config options
-
-Breno Leitao (6):
-      net: fill in MODULE_DESCRIPTION()s for SLIP
-      net: fill in MODULE_DESCRIPTION()s for HSR
-      net: fill in MODULE_DESCRIPTION()s for NFC
-      net: fill in MODULE_DESCRIPTION()s for Sun RPC
-      net: fill in MODULE_DESCRIPTION()s for ds26522 module
-      net: fill in MODULE_DESCRIPTION()s for s2io
-
-Claudiu Beznea (1):
-      net: phy: micrel: populate .soft_reset for KSZ9131
-
-David Howells (1):
-      rxrpc: Fix use of Don't Fragment flag
-
-David S. Miller (1):
-      Merge branch 'tls-splice-hint-fixes'
-
-Dmitry Antipov (1):
-      net: liquidio: fix clang-specific W=1 build warnings
-
-Dmitry Safonov (1):
-      selftests/net/tcp-ao: Use LDLIBS instead of LDFLAGS
-
-Eric Dumazet (7):
-      mptcp: mptcp_parse_option() fix for MPTCPOPT_MP_JOIN
-      mptcp: strict validation before using mp_opt->hmac
-      mptcp: use OPTION_MPTCP_MPJ_SYNACK in subflow_finish_connect()
-      mptcp: use OPTION_MPTCP_MPJ_SYN in subflow_check_req()
-      mptcp: refine opt_mp_capable determination
-      udp: annotate data-races around up->pending
-      net: add more sanity check in virtio_net_hdr_to_skb()
-
-Fedor Pchelkin (1):
-      ipvs: avoid stat macros calls from preemptible context
-
-Hao Sun (2):
-      bpf: Reject variable offset alu on PTR_TO_FLOW_KEYS
-      selftests/bpf: Add test for alu on PTR_TO_FLOW_KEYS
-
-Horatiu Vultur (1):
-      net: micrel: Fix PTP frame parsing for lan8841
-
-Ido Schimmel (2):
-      mlxsw: spectrum_acl_tcam: Fix NULL pointer dereference in error path
-      mlxsw: spectrum_acl_tcam: Fix stack corruption
-
-Jakub Kicinski (20):
-      Merge branch 'fix-module_description-for-net-p1'
-      MAINTAINERS: eth: mtk: move John to CREDITS
-      MAINTAINERS: eth: mt7530: move Landen Chao to CREDITS
-      MAINTAINERS: eth: mvneta: move Thomas to CREDITS
-      MAINTAINERS: eth: mark Cavium liquidio as an Orphan
-      MAINTAINERS: Bluetooth: retire Johan (for now?)
-      MAINTAINERS: mark ax25 as Orphan
-      MAINTAINERS: ibmvnic: drop Dany from reviewers
-      Merge branch 'rtnetlink-allow-to-enslave-with-one-msg-an-up-interface'
-      Merge branch 'net-ethernet-ti-am65-cpsw-allow-for-mtu-values'
-      net: fill in MODULE_DESCRIPTION()s for wx_lib
-      Merge branch 'mptcp-better-validation-of-mptcpopt_mp_join-option'
-      selftests: netdevsim: sprinkle more udevadm settle
-      selftests: netdevsim: correct expected FEC strings
-      selftests: bonding: add missing build configs
-      net: netdevsim: don't try to destroy PHC on VFs
-      selftests: netdevsim: add a config file
-      Merge branch 'mlxsw-miscellaneous-fixes'
-      Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-      Merge tag 'nf-24-01-18' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
-
-Jiri Pirko (1):
-      net: sched: track device in tcf_block_get/put_ext() only for clsact binder types
-
-John Fastabend (2):
-      net: tls, fix WARNIING in __sk_msg_free
-      net: tls, add test to capture error on large splice
-
-Kunwu Chan (1):
-      net: dsa: vsc73xx: Add null pointer check to vsc73xx_gpio_probe
-
-Lin Ma (1):
-      net: qualcomm: rmnet: fix global oob in rmnet_policy
-
-Ludvig Pärsson (1):
-      ethtool: netlink: Add missing ethnl_ops_begin/complete
-
-Marc Kleine-Budde (1):
-      net: netdev_queue: netdev_txq_completed_mb(): fix wake condition
-
-Marcin Wojtas (1):
-      MAINTAINERS: eth: mvneta: update entry
-
-Martin KaFai Lau (3):
-      bpf: iter_udp: Retry with a larger batch size without going back to the previous bucket
-      bpf: Avoid iter->offset making backward progress in bpf_iter_udp
-      selftests/bpf: Test udp and tcp iter batching
-
-Nicolas Dichtel (3):
-      Revert "net: rtnetlink: Enslave device before bringing it up"
-      selftests: rtnetlink: check enslaving iface in a bond
-      selftests: rtnetlink: use setup_ns in bonding test
-
-Nikita Yushchenko (1):
-      net: ravb: Fix dma_addr_t truncation in error case
-
-Nikita Zhandarovich (1):
-      ipv6: mcast: fix data-race in ipv6_mc_down / mld_ifc_work
-
-Nithin Dabilpuram (1):
-      octeontx2-af: CN10KB: Fix FIFO length calculation for RPM2
-
-Pablo Neira Ayuso (8):
-      netfilter: nf_tables: reject invalid set policy
-      netfilter: nf_tables: validate .maxattr at expression registration
-      netfilter: nf_tables: bail out if stateful expression provides no .clone
-      netfilter: nft_limit: do not ignore unsupported flags
-      netfilter: nf_tables: check if catch-all set element is active in next generation
-      netfilter: nf_tables: do not allow mismatch field size and set key length
-      netfilter: nf_tables: skip dead set elements in netlink dump
-      netfilter: nf_tables: reject NFT_SET_CONCAT with not field length description
-
-Paolo Abeni (2):
-      Merge branch 'selftests-net-small-fixes'
-      mptcp: relax check on MPC passive fallback
-
-Pavel Tikhomirov (4):
-      netfilter: nfnetlink_log: use proper helper for fetching physinif
-      netfilter: nf_queue: remove excess nf_bridge variable
-      netfilter: propagate net to nf_bridge_get_physindev
-      netfilter: bridge: replace physindev with physinif in nf_bridge_info
-
-Petr Machata (1):
-      mlxsw: spectrum_router: Register netdevice notifier before nexthop
-
-Qiang Ma (1):
-      net: stmmac: ethtool: Fixed calltrace caused by unbalanced disable_irq_wake calls
-
-Romain Gantois (1):
-      net: stmmac: Prevent DSA tags from breaking COE
-
-Russell King (Oracle) (1):
-      net: sfp-bus: fix SFP mode detect from bitrate
-
-Sanjuán García, Jorge (1):
-      net: ethernet: ti: am65-cpsw: Fix max mtu to fit ethernet frames
-
-Sneh Shah (1):
-      net: stmmac: Fix ethool link settings ops for integrated PCS
-
-Taehee Yoo (1):
-      amt: do not use overwrapped cb area
-
-Tony Nguyen (1):
-      i40e: Include types.h to some headers
-
-Vladimir Oltean (1):
-      net: dsa: fix netdev_priv() dereference before check on non-DSA netdevice events
-
-Zhu Yanjun (1):
-      virtio_net: Fix "‘%d’ directive writing between 1 and 11 bytes into a region of size 10" warnings
-
- CREDITS                                            |  17 ++
- MAINTAINERS                                        |  16 +-
- drivers/net/amt.c                                  |   6 +-
- drivers/net/dsa/vitesse-vsc73xx-core.c             |   2 +
- .../ethernet/cavium/liquidio/cn23xx_pf_device.c    |   2 +-
- .../ethernet/cavium/liquidio/cn23xx_vf_device.c    |   2 +-
- .../net/ethernet/cavium/liquidio/octeon_mailbox.h  |   5 +-
- drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h  |   1 +
- drivers/net/ethernet/intel/i40e/i40e_diag.h        |   1 +
- drivers/net/ethernet/marvell/octeontx2/af/rpm.c    |   7 +-
- .../net/ethernet/mellanox/mlxsw/spectrum_acl_erp.c |   8 +-
- .../ethernet/mellanox/mlxsw/spectrum_acl_tcam.c    |   6 +-
- .../net/ethernet/mellanox/mlxsw/spectrum_router.c  |  24 +--
- drivers/net/ethernet/neterion/s2io.c               |   1 +
- drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c |   2 +-
- drivers/net/ethernet/renesas/ravb_main.c           |   2 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac.h       |   1 +
- .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c   |  20 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  33 ++-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c           |   5 +-
- drivers/net/ethernet/wangxun/Kconfig               |   2 +-
- drivers/net/ethernet/wangxun/libwx/wx_lib.c        |   1 +
- drivers/net/netdevsim/netdev.c                     |   9 +-
- drivers/net/phy/micrel.c                           |   9 +
- drivers/net/phy/sfp-bus.c                          |   8 +-
- drivers/net/slip/slhc.c                            |   1 +
- drivers/net/slip/slip.c                            |   1 +
- drivers/net/virtio_net.c                           |   9 +-
- drivers/net/wan/slic_ds26522.c                     |   1 +
- include/linux/btf.h                                |   2 +-
- include/linux/netfilter_bridge.h                   |   6 +-
- include/linux/skbuff.h                             |   2 +-
- include/linux/virtio_net.h                         |   9 +-
- include/net/netdev_queues.h                        |   2 +-
- kernel/bpf/btf.c                                   | 231 ++++++++++++++++++---
- kernel/bpf/verifier.c                              |   4 +
- net/bridge/br_netfilter_hooks.c                    |  42 +++-
- net/bridge/br_netfilter_ipv6.c                     |  14 +-
- net/core/rtnetlink.c                               |  14 +-
- net/dsa/user.c                                     |   7 +-
- net/ethtool/features.c                             |   9 +-
- net/hsr/hsr_main.c                                 |   1 +
- net/ipv4/netfilter/nf_reject_ipv4.c                |   9 +-
- net/ipv4/udp.c                                     |  34 ++-
- net/ipv6/mcast.c                                   |   4 +
- net/ipv6/netfilter/nf_reject_ipv6.c                |  11 +-
- net/ipv6/udp.c                                     |  16 +-
- net/mptcp/options.c                                |   6 +-
- net/mptcp/subflow.c                                |  17 +-
- net/netfilter/ipset/ip_set_hash_netiface.c         |   8 +-
- net/netfilter/ipvs/ip_vs_xmit.c                    |   4 +-
- net/netfilter/nf_log_syslog.c                      |  13 +-
- net/netfilter/nf_queue.c                           |   6 +-
- net/netfilter/nf_tables_api.c                      |  44 ++--
- net/netfilter/nfnetlink_log.c                      |   8 +-
- net/netfilter/nft_limit.c                          |  19 +-
- net/netfilter/xt_physdev.c                         |   2 +-
- net/nfc/digital_core.c                             |   1 +
- net/nfc/nci/core.c                                 |   1 +
- net/nfc/nci/spi.c                                  |   1 +
- net/rxrpc/ar-internal.h                            |   1 +
- net/rxrpc/local_object.c                           |  13 +-
- net/rxrpc/output.c                                 |   6 +-
- net/rxrpc/rxkad.c                                  |   2 +
- net/sched/cls_api.c                                |  12 +-
- net/sunrpc/auth_gss/auth_gss.c                     |   1 +
- net/sunrpc/auth_gss/gss_krb5_mech.c                |   1 +
- net/sunrpc/sunrpc_syms.c                           |   1 +
- net/tls/tls_sw.c                                   |   6 +-
- tools/lib/bpf/libbpf.c                             | 142 ++++++++++++-
- .../selftests/bpf/prog_tests/sock_iter_batch.c     | 135 ++++++++++++
- .../selftests/bpf/prog_tests/test_global_funcs.c   |  13 ++
- .../testing/selftests/bpf/progs/bpf_tracing_net.h  |   3 +
- .../testing/selftests/bpf/progs/sock_iter_batch.c  |  91 ++++++++
- tools/testing/selftests/bpf/progs/test_jhash.h     |  31 +++
- .../selftests/bpf/progs/verifier_global_subprogs.c | 164 ++++++++++++++-
- .../bpf/progs/verifier_value_illegal_alu.c         |  19 ++
- tools/testing/selftests/drivers/net/bonding/config |   8 +
- .../drivers/net/bonding/mode-1-recovery-updelay.sh |   2 +-
- .../drivers/net/bonding/mode-2-recovery-updelay.sh |   2 +-
- .../testing/selftests/drivers/net/mlxsw/qos_pfc.sh |  19 +-
- .../drivers/net/mlxsw/spectrum-2/tc_flower.sh      | 106 +++++++++-
- .../testing/selftests/drivers/net/netdevsim/config |  10 +
- .../drivers/net/netdevsim/ethtool-common.sh        |   1 +
- .../selftests/drivers/net/netdevsim/ethtool-fec.sh |  18 +-
- .../drivers/net/netdevsim/udp_tunnel_nic.sh        |   1 +
- tools/testing/selftests/net/forwarding/lib.sh      |   0
- tools/testing/selftests/net/rtnetlink.sh           |  26 +++
- tools/testing/selftests/net/tcp_ao/Makefile        |   4 +-
- tools/testing/selftests/net/tls.c                  |  14 ++
- 90 files changed, 1366 insertions(+), 235 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
- create mode 100644 tools/testing/selftests/bpf/progs/sock_iter_batch.c
- create mode 100644 tools/testing/selftests/drivers/net/netdevsim/config
- mode change 100755 => 100644 tools/testing/selftests/net/forwarding/lib.sh
+Content-Transfer-Encoding: 7bit
+
+On 1/18/24 11:54, Thomas Gleixner wrote:
+> On Thu, Jan 18 2024 at 10:27, Dave Hansen wrote:
+>> If we have nice, reliable fault handling and then decide that we've got
+>> XRSTOR's running amok reading random memory all over the place that need
+>> a nicer error message, then we can add that code to predict the future.
+>> If our "predict the future" code goes wrong, then we lose an error
+>> message -- not a big deal.
+> After staring more at it, it's arguable to pass fpstate->user_size to
+> fault_in_readable() and ignore fx_sw->xstate_size completely.
+> 
+> That's a guaranteed to be reliable size which prevents endless loops
+> because arguably that's the maximum size which can be touched by XRSTOR,
+> no?
+
+I like it.  It takes fx_sw completely out of the picture, which was the
+root of the problem in the first place.
 
