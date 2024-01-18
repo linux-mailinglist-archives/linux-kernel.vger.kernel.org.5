@@ -1,144 +1,192 @@
-Return-Path: <linux-kernel+bounces-30343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16F65831D54
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EDB7831D55
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:16:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 786A4B25DC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:16:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF9E3B2148A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:16:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 375C22942A;
-	Thu, 18 Jan 2024 16:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D8B029422;
+	Thu, 18 Jan 2024 16:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RQ+1uv5x"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="VKdxLhuF"
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE892E3E8;
-	Thu, 18 Jan 2024 16:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D44A50
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 16:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705594478; cv=none; b=HN0uaRFNpYLrAYAwuIiX9hxIweqehA5gvMAQsdTJQAAPcPTaGA2gF0gwu2/VHqwdkWwVWu1YbwwZD0e6i8BC9/3zQK9KogDb5/Nfyl1lmfYEnBSeQy+FLDjl1ln5XqrO5aOM7kLNRhLoeuN0fiG2xmUP/eeZytIgkTBSCqIhbbg=
+	t=1705594572; cv=none; b=VkXCNXJooLZdCToFUt7osJGVQrgkRKqUTQrfJ+fseI2vnLseFVhszC/ySiTTw5OAwCegiAMGT5Ut3ETDcZEQYOh0yYQCdmFoiv08HSe9lkbKDchfqozMwC/XD62bf8h0C47I/WmcJJAMAM0hYYZmHc6OsJF2QQ/h3604Wed1phY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705594478; c=relaxed/simple;
-	bh=OWJUIlewldnhlZ2AChJ/wqce0X7gESh3qoR1yipsHrM=;
-	h=Received:DKIM-Signature:Received:Received:Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:CC:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-EXCLAIMER-MD-CONFIG; b=mZZFicBqPi2/xoq3r34H+PzPPbIwUod47ItOP9g5SfOKUPZFEFeBGiN+SMC1OjsHl4wuI/VkUalKfGexijaCltZoMyWKlI0NxvLtjqAtUfk/p51BUH6TS3lOso8ygUQICE45J5B3kvpJ6htKiQjb6QU4qCFdS5NU+qZOwNi6aB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RQ+1uv5x; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40IGEIXt054990;
-	Thu, 18 Jan 2024 10:14:18 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705594459;
-	bh=O+AzhLX1Qjz+NgbNfuUYk2TlA6YH0ew00AyhB6CMsZU=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=RQ+1uv5x0K/hjJoCY1DZHu7rVt2cbqnK/UTnqP0CpjE4+LMBg80mK2/80QcNx0UI5
-	 PRV1DyfKlGHCsy9MYo8ioT7gYNOdUxF2fDKE+o/L3bIWwJ+SDEy3nsZ4I4T2Zfy00j
-	 ZHsuWtY/ZJ8HVC+M7j5RbmYnl1ZjlYH9iM4HqRJI=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40IGEIW6014540
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 18 Jan 2024 10:14:18 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 18
- Jan 2024 10:14:18 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 18 Jan 2024 10:14:18 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40IGEHix097023;
-	Thu, 18 Jan 2024 10:14:17 -0600
-Message-ID: <eaa10f7c-4c8e-4330-b156-8f0edbdaabdf@ti.com>
-Date: Thu, 18 Jan 2024 10:14:17 -0600
+	s=arc-20240116; t=1705594572; c=relaxed/simple;
+	bh=UPTqnYu/2OvTjqmhgVKz/X7E/FlqTTPdr2e7dUY3mpg=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=EDP3jAIMwQWvj21y11C2YqBKtcPAbR2lCfjHj+MDhcaLgnlrvv+t+9BCGmU+Vz7snhN1TbBuTIvti7wbb+TyVhwTJ47oCxk0xYQsm0/Ge1G/TjhhQyTSy3i3vu4bGyP1ylIVTVPu1a70EyhL8IU1PZRwNqPltsllGR84lfwuatk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=VKdxLhuF; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bd7c5b2439so2327359b6e.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 08:16:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705594568; x=1706199368; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MRkAAxwE545hdA1CHQLahd76L0FTgjCjQ9oVd5rONMw=;
+        b=VKdxLhuFOjz8tL/pSwYvj1tr77WzNdHVKH+moCJmC4FJIv08vFLvZOXesGdJZG3H4T
+         3RVmf2y5l6ln/Ejxhi07AWQX21bVrJB20fxoKD3zTLiT2j4ubWHrdnYI4Y9wrvQnBU0F
+         HFXimRmtw8c0+7AstX8ydC0t8ur65KPGDAsdjE6pSfzBm9RJsNaa9j22dBi4EovV9wNy
+         I8uVgBOgJ8C7wNd5sJZN5DZEDM0lQnozMHXEo8EZEUEKvx42OT7kJyZVSmc+we4Zdtvt
+         9B5lmg7Z2egakyE+j5W6I17Dj2nRVIbDREb5HVOkkBAZ51ozjLJobVTbe3TcTolqE2p+
+         FqJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705594568; x=1706199368;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MRkAAxwE545hdA1CHQLahd76L0FTgjCjQ9oVd5rONMw=;
+        b=ovK17Q0MQZYTclSArado35amn3NJCoduGUVRBJgJ+I2/tnTKgmxg4KJXqGUyPuJM2x
+         A2UI27KK0ORosTCmOhdER8D+XAv+UntpqBCpK8zvX0OL0L2P9+C+8bFmB8u5gLSgoosX
+         3DFC/rUHlBZw9BoMYKEeZkyWjixAYHJM28KwjTfmUUK4fl8o8caym8VKaRpy8yPNxosu
+         DWbJtOHRIrrOhOZPI9aGEeKIldzXDlKKeGeqpC3OopuG+kTXVJBd/HSqt/YVbsGDoxRC
+         G2tFfmeZlDa1Ln+QwtdT+/EDgsZXQxNwOQiWCAPWo3mcphnMPamlVjBDgHFWKAR1I8MN
+         /vEQ==
+X-Gm-Message-State: AOJu0Ywy7y6yF3D8/ybQscBRzNuPRY8IhD3IT8+73iduVheymxatc7eQ
+	h6rq3rxgCEDAIThuB7NYip4JTXd/DKbRBEepa64G0UUgOOh1WVhQWv0A8K2iafY=
+X-Google-Smtp-Source: AGHT+IG+S1DdeH3g6eDWfi0nVMqIeHOEMSECiM1LqNNddjUCuRix8OSGJiLYFXD+hc+8VolIcbx43A==
+X-Received: by 2002:a05:6808:d50:b0:3bd:a103:490b with SMTP id w16-20020a0568080d5000b003bda103490bmr65459oik.104.1705594568587;
+        Thu, 18 Jan 2024 08:16:08 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:2fe6])
+        by smtp.gmail.com with ESMTPSA id bc14-20020a05622a1cce00b00429bdddfb49sm6891681qtb.44.2024.01.18.08.16.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 08:16:07 -0800 (PST)
+Date: Thu, 18 Jan 2024 11:16:01 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Nhat Pham <nphamcs@gmail.com>,
+	Ronald Monthero <debug.penguin32@gmail.com>, sjenning@redhat.com,
+	ddstreet@ieee.org, vitaly.wool@konsulko.com,
+	akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/zswap: Improve with alloc_workqueue() call
+Message-ID: <20240118161601.GJ939255@cmpxchg.org>
+References: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
+ <20240116133145.12454-1-debug.penguin32@gmail.com>
+ <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
+ <CAJD7tkb_uC_K7+C3GjVqg1rDRCmUkbHcEw950CkUHG66yokbcg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] arm64: dts: ti: k3-j784s4-main: Convert
- serdes_ln_ctrl node into reg-mux
-To: Chintan Vankar <c-vankar@ti.com>, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>,
-        <tony@atomide.com>
-References: <20240118094454.2656734-1-c-vankar@ti.com>
- <20240118094454.2656734-2-c-vankar@ti.com>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240118094454.2656734-2-c-vankar@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkb_uC_K7+C3GjVqg1rDRCmUkbHcEw950CkUHG66yokbcg@mail.gmail.com>
 
-On 1/18/24 3:44 AM, Chintan Vankar wrote:
-> This removes a dependency on the parent node being a syscon node.
-> Convert from mmio-mux to reg-mux adjusting node name and properties
-> as needed.
+On Wed, Jan 17, 2024 at 11:30:50AM -0800, Yosry Ahmed wrote:
+> On Wed, Jan 17, 2024 at 11:14 AM Nhat Pham <nphamcs@gmail.com> wrote:
+> >
+> > On Tue, Jan 16, 2024 at 5:32 AM Ronald Monthero
+> > <debug.penguin32@gmail.com> wrote:
+> >
+> > + Johannes and Yosry
+> >
+> > >
+> > > The core-api create_workqueue is deprecated, this patch replaces
+> > > the create_workqueue with alloc_workqueue. The previous
+> > > implementation workqueue of zswap was a bounded workqueue, this
+> > > patch uses alloc_workqueue() to create an unbounded workqueue.
+> > > The WQ_UNBOUND attribute is desirable making the workqueue
+> > > not localized to a specific cpu so that the scheduler is free
+> > > to exercise improvisations in any demanding scenarios for
+> > > offloading cpu time slices for workqueues.
+> >
+> > nit: extra space between paragraph would be nice.
+> >
+> > > For example if any other workqueues of the same primary cpu
+> > > had to be served which are WQ_HIGHPRI and WQ_CPU_INTENSIVE.
+> > > Also Unbound workqueue happens to be more efficient
+> > > in a system during memory pressure scenarios in comparison
+> > >  to a bounded workqueue.
+> > >
+> > > shrink_wq = alloc_workqueue("zswap-shrink",
+> > >                      WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
+> > >
+> > > Overall the change suggested in this patch should be
+> > > seamless and does not alter the existing behavior,
+> > > other than the improvisation to be an unbounded workqueue.
+> > >
+> > > Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
+> > > ---
+> > >  mm/zswap.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/mm/zswap.c b/mm/zswap.c
+> > > index 74411dfdad92..64dbe3e944a2 100644
+> > > --- a/mm/zswap.c
+> > > +++ b/mm/zswap.c
+> > > @@ -1620,7 +1620,8 @@ static int zswap_setup(void)
+> > >                 zswap_enabled = false;
+> > >         }
+> > >
+> > > -       shrink_wq = create_workqueue("zswap-shrink");
+> > > +       shrink_wq = alloc_workqueue("zswap-shrink",
+> > > +                       WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
+> >
+> > Have you benchmarked this to check if there is any regression, just to
+> > be safe? With an unbounded workqueue, you're gaining scheduling
+> > flexibility at the cost of cache locality. My intuition is that it
+> > doesn't matter too much here, but you should probably double check by
+> > stress testing - run some workload with a relatively small zswap pool
+> > limit (i.e heavy global writeback), and see if there is any difference
+> > in performance.
 > 
-> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
-> ---
->   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
+> I also think this shouldn't make a large difference. The global
+> shrinking work is already expensive, and I imagine that it exhausts
+> the caches anyway by iterating memcgs. A performance smoketest would
+> be reassuring for sure, but I believe it won't make a difference.
+
+The LRU inherently makes the shrinker work on the oldest and coldest
+entries, so I doubt we benefit a lot from cache locality there.
+
+What could make a difference though is the increased concurrency by
+switching max_active from 1 to 0. This could cause a higher rate of
+shrinker runs, which might increase lock contention and reclaim
+volume. That part would be good to double check with the shrinker
+benchmarks.
+
+> > On a different note, I wonder if it would help to perform synchronous
+> > reclaim here instead. With our current design, the zswap store failure
+> > (due to global limit hit) would leave the incoming page going to swap
+> > instead, creating an LRU inversion. Not sure if that's ideal.
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> index f2b720ed1e4f..56c8eaad6324 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> @@ -52,12 +52,12 @@ serdes_ln_ctrl: mux-controller@4080 {
->   			compatible = "reg-mux";
+> The global shrink path keeps reclaiming until zswap can accept again
+> (by default, that means reclaiming 10% of the total limit). I think
+> this is too expensive to be done synchronously.
 
-Seems this was already a "reg-mux", so the commit message is a bit
-off, you are not converting from "mmio-mux" here.
+That thresholding code is a bit weird right now.
 
-Thinking about this, if this was already a "reg-mux" then this node
-was likely broken by my reg-mux update as it doubles the offset (reg
-is offset 0x4080 which adds to the already offset in masks). I did
-check for this before sending my patch, but seems this one node
-was added after I sent it, but before it was taken. Re-checking
-this is the only instance of this issue, and this patch fixes the
-issue.
+It wakes the shrinker and rejects at the same time. We're guaranteed
+to see rejections, even if the shrinker has no trouble flushing some
+entries a split second later.
 
-So you should reword the commit message to include that this is
-actually a fix and add:
+It would make more sense to wake the shrinker at e.g. 95% full and
+have it run until 90%.
 
-Fixes: 2765149273f4 ("mux: mmio: use reg property when parent device is not a syscon")
-
-looks good to me otherwise:
-
-Acked-by: Andrew Davis <afd@ti.com>
-
->   			reg = <0x00004080 0x30>;
->   			#mux-control-cells = <1>;
-> -			mux-reg-masks = <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
-> -					<0x4088 0x3>, <0x408c 0x3>, /* SERDES0 lane2/3 select */
-> -					<0x4090 0x3>, <0x4094 0x3>, /* SERDES1 lane0/1 select */
-> -					<0x4098 0x3>, <0x409c 0x3>, /* SERDES1 lane2/3 select */
-> -					<0x40a0 0x3>, <0x40a4 0x3>, /* SERDES2 lane0/1 select */
-> -					<0x40a8 0x3>, <0x40ac 0x3>; /* SERDES2 lane2/3 select */
-> +			mux-reg-masks = <0x0 0x3>, <0x4 0x3>, /* SERDES0 lane0/1 select */
-> +					<0x8 0x3>, <0xc 0x3>, /* SERDES0 lane2/3 select */
-> +					<0x10 0x3>, <0x14 0x3>, /* SERDES1 lane0/1 select */
-> +					<0x18 0x3>, <0x1c 0x3>, /* SERDES1 lane2/3 select */
-> +					<0x20 0x3>, <0x24 0x3>, /* SERDES2 lane0/1 select */
-> +					<0x28 0x3>, <0x2c 0x3>; /* SERDES2 lane2/3 select */
->   			idle-states = <J784S4_SERDES0_LANE0_PCIE1_LANE0>,
->   				      <J784S4_SERDES0_LANE1_PCIE1_LANE1>,
->   				      <J784S4_SERDES0_LANE2_IP3_UNUSED>,
+But with that in place we also *should* do synchronous reclaim once we
+hit 100%. Just enough to make room for the store. This is important to
+catch the case where reclaim rate exceeds swapout rate. Rejecting and
+going to swap means the reclaimer will be throttled down to IO rate
+anyway, and the app latency isn't any worse. But this way we keep the
+pipeline alive, and keep swapping out the oldest zswap entries,
+instead of rejecting and swapping what would be the hottest ones.
 
