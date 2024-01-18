@@ -1,242 +1,213 @@
-Return-Path: <linux-kernel+bounces-30011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087558316B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4F383174F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:55:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AE5A1C21EFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:37:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A31711C225D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD8720B1F;
-	Thu, 18 Jan 2024 10:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CiwIEf+s"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65522033C;
-	Thu, 18 Jan 2024 10:37:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E26D123760;
+	Thu, 18 Jan 2024 10:55:43 +0000 (UTC)
+Received: from invmail3.skhynix.com (exvmail3.skhynix.com [166.125.252.90])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311B41B96D;
+	Thu, 18 Jan 2024 10:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705574238; cv=none; b=kJDLh80rPjDdujqN/qovrCD7s7XPyND36jwZjB0sooCIGcaVvNlYuhr4B98KsZ5ZXgNsy/VqmUHl+vgvSyZEHiedI0KyW08G7VQCdlcsvCcQUk+GcYKi1i3TjxVvSqXwZhJ9WVJIC4vttWjv280ol13ZG2YwT3HJx5nlJBKGJfk=
+	t=1705575343; cv=none; b=tcHoxhT/9eLz8YD8f/kdy+WN+1bEe+6kZX+cTIfqL7DPEdN5UMNPvwxJ8eIlE8odaIijwvpJMlwnLE3NexEWxLSex6gQBS97iJsbAbP6wz3wx2CcIn8CO+fThxCcoQYYb0FliLZhyRbAXFpSN1bqfZg4/7Zrj5I0sd7f71d88Y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705574238; c=relaxed/simple;
-	bh=RJ4L71AXZx+xhM6BQtxN0J2s4OHf6poSNuVUQ6oqgck=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 X-Google-Original-From:Date:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To; b=e09sdgjSLbsyD3Tls69D0WKP+gRfTG9ZlPf6E+37lY2gwxXt470pOLhqxZE5gJJ0E3xAWZpIpbQjtEkOuStSSCIS4SAMOA8j1WojKj0cyKMsHMVSCb1Vmb1rIxbFiSqSDjdOeQFXucdKY93fiSYEyx6UQKaAOHZNzKoKh9MB3K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CiwIEf+s; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e7e55c0f6so14725835e87.0;
-        Thu, 18 Jan 2024 02:37:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705574235; x=1706179035; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qFraLko0Sunles8rE+veYeEajynN3b2IofKXL2TxPzM=;
-        b=CiwIEf+sfzHHyPumXgIbl2gYONHQn/+LjPavYTIDf2EJra036MWtWRDCmcPSdJlnWY
-         i73OIx79GJWrvHc3/+ZXcfq4paT3CIxNsbkJNYXzmzPFgUldrULwGhMvp3i7mB+NYp5j
-         dLoz6ebBclCUmhMR05bPV2hLLYFJXqwsu2HrCns2XpULBWCjfvbzaZuW+AvbWVho784R
-         eCZHLYqFoE+SGKufX162QhGL9FxFpQXi+qbZDk4oH0BsDq9yqptpCmjlUH23nVl6DOma
-         xbEehzssWCbd6f0T8lSTpTtIIk+EtwnxRgPDgrEoWHd9h1aQSFuuHUQTUd0AbRf+Qrqm
-         pIqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705574235; x=1706179035;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qFraLko0Sunles8rE+veYeEajynN3b2IofKXL2TxPzM=;
-        b=GqOnF2jmvUaBY1V1FX/uNymiksgDFlCOXwUxxxcvBF5jK1VkmwW+KNTgq5p0ktqTXQ
-         CnYfhYYJlLJRvc+LbghfBEuJ5D5E3yzKI+WjzappAZ+mIoLAyLA8JqaNqzdnb4kJvVvY
-         zNzB1FVNZfOcuh/BKmNaXKbWrLsvAsA0LVXujCptiwqWwSDArElozGNhQ9v5BTvez8q7
-         m8sipiTdsnvW/91nX0wUCayQDE005cGiRKlzZHxhuPQYJSpHYTFUpSVEBcGpJyFm6WKj
-         Z9huTuKyHd1ZfKBJVAJj+z19GXDHknDmFAFPvfTpObe33SVp6d7FL/FZJJjZNbayGQGZ
-         LYQg==
-X-Gm-Message-State: AOJu0Yx/STzLePLEQaGvD3Mdb8DuVTLU+DI3B4ddAM9NbKnXs0aa0wy3
-	J3kDe2mJCE81uZ0X9shUI20jfy9rAKeKNkaL8BGkLDC/rYgXHFM0
-X-Google-Smtp-Source: AGHT+IGztuqXWrg30hrZfO2olrqNs7VCjF+rYVLphMtpPYdpBGJVF7g0KOxH1eK3rpZyM9tMbah56Q==
-X-Received: by 2002:a05:6512:3081:b0:50e:bd4d:9e2a with SMTP id z1-20020a056512308100b0050ebd4d9e2amr226676lfd.96.1705574234582;
-        Thu, 18 Jan 2024 02:37:14 -0800 (PST)
-Received: from pc636 (host-90-235-20-191.mobileonline.telia.com. [90.235.20.191])
-        by smtp.gmail.com with ESMTPSA id b5-20020a056512060500b0050e6bf65b2asm590662lfe.288.2024.01.18.02.37.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 02:37:14 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 18 Jan 2024 11:37:11 +0100
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v4 1/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <Zaj_Vw8B5E28TqZ2@pc636>
-References: <20240104162510.72773-1-urezki@gmail.com>
- <20240104162510.72773-2-urezki@gmail.com>
- <ZaHGv3wMYP4LDCxG@localhost.localdomain>
+	s=arc-20240116; t=1705575343; c=relaxed/simple;
+	bh=62k+DYNYiAToaJmsoXZKLChah95X0PxNNmBWywU7twk=;
+	h=X-AuditID:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:
+	 X-Brightmail-Tracker:X-Brightmail-Tracker:X-CFilter-Loop; b=NPGtj5c+Z8j/Qd8POZQdpwzPU470YKVYyJi3MfRhLrGpb5HTaO6eFbRtRFifrF9lLNVnQ+rO6O4gEuBvi9ypwPIppJ0zPZYkM+tgs5I9vyeEfmUEu4kveZ5Axjyc+Xi3GY/1JbFWXZBmTQTCzOhkIPR+3t7u4Rr/MNT3+6B9UQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc59-bd5ff7000001c92b-70-65a9001d9683
+From: Hyeongtak Ji <hyeongtak.ji@sk.com>
+To: sj@kernel.org
+Cc: akpm@linux-foundation.org,
+	apopple@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	damon@lists.linux.dev,
+	dave.jiang@intel.com,
+	honggyu.kim@sk.com,
+	hyeongtak.ji@sk.com,
+	kernel_team@skhynix.com,
+	linmiaohe@huawei.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org,
+	lizhijian@cn.fujitsu.com,
+	mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org,
+	rakie.kim@sk.com,
+	rostedt@goodmis.org,
+	surenb@google.com,
+	yangx.jy@fujitsu.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com
+Subject: Re: [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory
+Date: Thu, 18 Jan 2024 19:40:16 +0900
+Message-Id: <20240118104017.2098-1-hyeongtak.ji@sk.com>
+X-Mailer: git-send-email 2.37.3.windows.1
+In-Reply-To: <20240117211103.51806-1-sj@kernel.org>
+References: <20240117211103.51806-1-sj@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZaHGv3wMYP4LDCxG@localhost.localdomain>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsXC9ZZnka4sw8pUgwe/tCzmrF/DZrHrRojF
+	/73HGC2e/P/NanHiZiObRef3pSwWl3fNYbO4t+Y/q8WR9WdZLNbdArI2nz3DbLF4uZrFvo4H
+	TBaHv75hsph8aQGbxYspZxgtTs6azGIx++g9dgchj/8HJzF7LD39hs1jQxOQaNl3i91jwaZS
+	j5Yjb1k9Fu95yeSxaVUnm8emT5PYPU7M+M3isfOhpceLzTMZPXqb37F5fN4kF8AXxWWTkpqT
+	WZZapG+XwJXx53YnW8EnzYpfkw+yNDBOkOti5OSQEDCRuL7kIjuMvfLICiYQm01AQ2Jaw2Jm
+	EFtEQFCi//EM1i5GLg5mgRksEhf3HAcrEhYIkHg85wxYEYuAqkTLgk4WEJtXwFxi5u41LBBD
+	NSUmbJkDVs8pYCwx+cREsGVCAkYS29smskHUC0qcnPkErJ5ZQF6ieetsZpBlEgKH2CVWbVjD
+	BDFIUuLgihssExj5ZyHpmYWkZwEj0ypGkcy8stzEzBxjveLsjMq8zAq95PzcTYzAqFtW+ydy
+	B+O3C8GHGAU4GJV4eDOeLE8VYk0sK67MPcQowcGsJMLrb7AsVYg3JbGyKrUoP76oNCe1+BCj
+	NAeLkjiv0bfyFCGB9MSS1OzU1ILUIpgsEwenVAOjhPXVy5c7udb/d02LtrKX1TU5sHLSLPZT
+	tyRZr1bv39J+aGZTSLi7gu7+8+71h6/orFrqe/Pmzs/eh9f//OG2a7Kgtprb028lO5e+qyt8
+	UTZxgsqiKWsuL3cvyfu1I5FjW/qsYnu3x0mV/QXsF6dcEunwaL0+w1L93/nA6NapItFaMxQm
+	KpYsV2Ipzkg01GIuKk4EAA04c1+2AgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsXCNUPNU1eWYWWqwcW50hZz1q9hs9h1I8Ti
+	/95jjBZP/v9mtThxs5HN4vOz18wWnU++M1ocnnuS1aLz+1IWi8u75rBZ3Fvzn9XiyPqzLBbr
+	bgFZm8+eYbZYvFzN4tC156wW+zoeMFkc/vqGyWLypQVsFi+mnGG0ODlrMovF7KP32B3EPP4f
+	nMTssfT0GzaPDU1AomXfLXaPBZtKPVqOvGX1WLznJZPHplWdbB6bPk1i9zgx4zeLx86Hlh4v
+	Ns9k9Ohtfsfm8e22h8fiFx+YPD5vkgsQiOKySUnNySxLLdK3S+DK+HO7k63gk2bFr8kHWRoY
+	J8h1MXJySAiYSKw8soIJxGYT0JCY1rCYGcQWERCU6H88g7WLkYuDWWAGi8TFPcfBioQFAiQe
+	zzkDVsQioCrRsqCTBcTmFTCXmLl7DQvEUE2JCVvmgNVzChhLTD4xkR3EFhIwktjeNpENol5Q
+	4uTMJ2D1zALyEs1bZzNPYOSZhSQ1C0lqASPTKkaRzLyy3MTMHDO94uyMyrzMCr3k/NxNjMAo
+	W1b7Z9IOxm+X3Q8xCnAwKvHwdjxckSrEmlhWXJl7iFGCg1lJhNffYFmqEG9KYmVValF+fFFp
+	TmrxIUZpDhYlcV6v8NQEIYH0xJLU7NTUgtQimCwTB6dUA2NFlpnYb70PZ7i5l0jdVFHMfLD2
+	Tvp120lf3p2bI/1nh2CruuSsXqYYBu1jn0KbOft/Xw7v6n9RsevFU8VWz0/dRywL/rxiK2Iv
+	3nrIZOPEu0pHP8bvWbTt/j3+61Uz6sVXhWX/zPX9ED5BZKYoU9pKmxdCBZFntH01rTS5f/Bs
+	+ffZO+XUlDNKLMUZiYZazEXFiQBg223CrgIAAA==
+X-CFilter-Loop: Reflected
 
-On Sat, Jan 13, 2024 at 12:09:51AM +0100, Frederic Weisbecker wrote:
-> Le Thu, Jan 04, 2024 at 05:25:07PM +0100, Uladzislau Rezki (Sony) a écrit :
-> > diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-> > index 9b0b52e1836f..4812c6249185 100644
-> > --- a/kernel/rcu/Kconfig.debug
-> > +++ b/kernel/rcu/Kconfig.debug
-> > @@ -168,4 +168,16 @@ config RCU_STRICT_GRACE_PERIOD
-> >  	  when looking for certain types of RCU usage bugs, for example,
-> >  	  too-short RCU read-side critical sections.
-> >  
-> > +config RCU_SR_NORMAL_DEBUG_GP
-> > +	bool "Debug synchronize_rcu() callers for a grace period completion"
-> > +	depends on DEBUG_KERNEL && RCU_EXPERT
-> > +	default n
-> > +	help
-> > +	  This option enables additional debugging for detecting a grace
-> > +	  period incompletion for synchronize_rcu() users. If a GP is not
-> > +	  fully passed for any user, the warning message is emitted.
-> > +
-> > +	  Say Y here if you want to enable such debugging
-> > +	  Say N if you are unsure.
-> 
-> How about just reuse CONFIG_PROVE_RCU instead?
-> 
-Less extra CONFIG_* configuration we have the better approach is. I do
-not mind, so we can reuse it. Thanks for this point :)
+Hi SeongJae,
 
-I see in some places indeed it is used as a debugging peace.
+On Wed, 17 Jan 2024 SeongJae Park <sj@kernel.org> wrote:
 
-> > +
-> >  endmenu # "RCU Debugging"
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 499803234176..b756c40e4960 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1422,6 +1422,106 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
-> >  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >  }
-> >  
-> > +/*
-> > + * There are three lists for handling synchronize_rcu() users.
-> > + * A first list corresponds to new coming users, second for users
-> > + * which wait for a grace period and third is for which a grace
-> > + * period is passed.
-> > + */
-> > +static struct sr_normal_state {
-> > +	struct llist_head srs_next;	/* request a GP users. */
-> > +	struct llist_head srs_wait;	/* wait for GP users. */
-> > +	struct llist_head srs_done;	/* ready for GP users. */
-> > +
-> > +	/*
-> > +	 * In order to add a batch of nodes to already
-> > +	 * existing srs-done-list, a tail of srs-wait-list
-> > +	 * is maintained.
-> > +	 */
-> > +	struct llist_node *srs_wait_tail;
-> > +} sr;
-> 
-> "sr" is good enough for a function scope variable but not for a file scope one.
-> 
-> At least "sr_state" would be better. Or maybe you don't even need to name that
-> struct and make instead:
-> 
-> struct {
->     ...
->     ...
-> } sr_normal_state;
-> 
-It is moved by the following patch in the series under the "rcu_state" struct variable.
-
-> 
-> > +
-> > +/* Disabled by default. */
-> > +static int rcu_normal_wake_from_gp;
-> > +module_param(rcu_normal_wake_from_gp, int, 0644);
-> > +
-> > +static void rcu_sr_normal_complete(struct llist_node *node)
-> > +{
-> > +	struct rcu_synchronize *rs = container_of(
-> > +		(struct rcu_head *) node, struct rcu_synchronize, head);
-> 
-> Should there be some union in struct rcu_synchronize between struct rcu_head
-> and struct llist_node?
-> 
-> Anyway it's stack allocated, they could even be separate fields.
-> 
-> > +	unsigned long oldstate = (unsigned long) rs->head.func;
-> 
-> Luckily struct callback_head layout allows such magic but if rcu_head
-> and llist_node were separate, reviewers would be less hurt.
-> 
-> If stack space really matters, something like the below?
-> 
-> struct rcu_synchronize {
-> 	union {
-> 		struct rcu_head head;
-> 		struct {
-> 			struct llist_node node;
-> 			unsigned long seq;
-> 		}
-> 	}
-> 	struct completion completion;
-> };
-> 
-> 
-We can do that. I am not sure if should be a separate patch or as a big
-change. I tend to separate it.
-
-> > +
-> > +	WARN_ONCE(IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP) &&
-> > +		!poll_state_synchronize_rcu(oldstate),
-> > +		"A full grace period is not passed yet: %lu",
-> > +		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-> > +
-> > +	/* Finally. */
-> > +	complete(&rs->completion);
-> > +}
-> > +
-> [...]
-> > +
-> > +/*
-> > + * Helper function for rcu_gp_cleanup().
-> > + */
-> > +static void rcu_sr_normal_gp_cleanup(void)
-> > +{
-> > +	struct llist_node *head, *tail;
-> > +
-> > +	if (llist_empty(&sr.srs_wait))
-> > +		return;
-> > +
-> > +	tail = READ_ONCE(sr.srs_wait_tail);
-> 
-> Is the READ_ONCE() needed?
-> 
-> A part from those boring details:
-> 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+[...]
+>> Let's say there are 3 nodes in the system and the first node0 and node1
+>> are the first tier, and node2 is the second tier.
+>> 
+>>   $ cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
+>>   0-1
+>> 
+>>   $ cat /sys/devices/virtual/memory_tiering/memory_tier22/nodelist
+>>   2
+>> 
+>> Here is the result of partitioning hot/cold memory and I put execution
+>> command at the right side of numastat result.  I initially ran each
+>> hot_cold program with preferred setting so that they initially allocate
+>> memory on one of node0 or node2, but they gradually migrated based on
+>> their access frequencies.
+>> 
+>>   $ numastat -c -p hot_cold
+>>   Per-node process memory usage (in MBs) 
+>>   PID              Node 0 Node 1 Node 2 Total 
+>>   ---------------  ------ ------ ------ ----- 
+>>   754 (hot_cold)     1800      0   2000  3800    <- hot_cold 1800 2000 
+>>   1184 (hot_cold)     300      0    500   800    <- hot_cold 300 500 
+>>   1818 (hot_cold)     801      0   3199  4000    <- hot_cold 800 3200 
+>>   30289 (hot_cold)      4      0      5    10    <- hot_cold 3 5 
+>>   30325 (hot_cold)     31      0     51    81    <- hot_cold 30 50 
+>>   ---------------  ------ ------ ------ ----- 
+>>   Total              2938      0   5756  8695
+>> 
+>> The final node placement result shows that DAMON accurately migrated
+>> pages by their hotness for multiple processes.
 >
-Appreciate for the review. I will fix all the comments.
+> What was the result when the corner cases handling logics were not applied?
 
-Thanks!
+This is the result of the same test that Honggyu did, but with an insufficient
+corner cases handling logics.
 
---
-Uladzislau Rezki
+  $ numastat -c -p hot_cold
+
+  Per-node process memory usage (in MBs)
+  PID             Node 0 Node 1 Node 2 Total
+  --------------  ------ ------ ------ -----
+  862 (hot_cold)    2256      0   1545  3801   <- hot_cold 1800 2000
+  863 (hot_cold)     403      0    398   801   <- hot_cold 300 500
+  864 (hot_cold)    1520      0   2482  4001   <- hot_cold 800 3200
+  865 (hot_cold)       6      0      3     9   <- hot_cold 3 5
+  866 (hot_cold)      29      0     52    81   <- hot_cold 30 50
+  --------------  ------ ------ ------ -----
+  Total             4215      0   4480  8695
+
+As time goes by, DAMON keeps trying to split the hot/cold region, but it does
+not seem to be enough.
+
+  $ numastat -c -p hot_cold
+
+  Per-node process memory usage (in MBs)
+  PID             Node 0 Node 1 Node 2 Total
+  --------------  ------ ------ ------ -----
+  862 (hot_cold)    2022      0   1780  3801   <- hot_cold 1800 2000
+  863 (hot_cold)     351      0    450   801   <- hot_cold 300 500
+  864 (hot_cold)    1134      0   2868  4001   <- hot_cold 800 3200
+  865 (hot_cold)       7      0      2     9   <- hot_cold 3 5
+  866 (hot_cold)      43      0     39    81   <- hot_cold 30 50
+  --------------  ------ ------ ------ -----
+  Total             3557      0   5138  8695
+
+>
+> And, what are the corner cases handling logic that seemed essential?  I show
+> the page granularity active/reference check could indeed provide many
+> improvements, but that's only my humble assumption.
+
+Yes, the page granularity active/reference check is essential.  To make the
+above "insufficient" result, the only thing I did was to promote
+inactive/not_referenced pages.
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index f03be320f9ad..c2aefb883c54 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1127,9 +1127,7 @@ static unsigned int __promote_folio_list(struct list_head *folio_list,
+                VM_BUG_ON_FOLIO(folio_test_active(folio), folio);
+
+                references = folio_check_references(folio, sc);
+-               if (references == FOLIOREF_KEEP ||
+-                   references == FOLIOREF_RECLAIM ||
+-                   references == FOLIOREF_RECLAIM_CLEAN)
++               if (references == FOLIOREF_KEEP )
+                        goto keep_locked;
+
+                /* Relocate its contents to another node. */
+
+>
+> If the corner cases are indeed better to be applied in page granularity, I
+> agree we need some more efforts since DAMON monitoring results are not page
+> granularity aware by the design.  Users could increase min_nr_regions to make
+> it more accurate, and we have plan to support page granularity monitoring,
+> though.  But maybe the overhead could be unacceptable.
+>
+> Ideal solution would be making DAMON more accurate while keeping current level
+> of overhead.  We indeed have TODO items for DAMON accuracy improvement, but
+> this may take some time that might unacceptable for your case.
+>
+> If that's the case, I think the additional corner handling (or, page gran
+> additional access check) could be made as DAMOS filters[1], since DAMOS filters
+> can be applied in page granularity, and designed for this kind of handling of
+> information that DAMON monitoring results cannot provide.  More specifically,
+> we could have filters for promotion-qualifying pages and demotion-qualifying
+> pages.  In this way, I think we can keep the action more flexible while the
+> filters can be applied in creative ways.
+
+Making corner handling as a new DAMOS filters is a good idea.  I'm just a bit
+concerned if adding new filters might cause users to care more.
+
+Kind regards,
+Hyeongtak
 
