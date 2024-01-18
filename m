@@ -1,126 +1,128 @@
-Return-Path: <linux-kernel+bounces-29903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C19EA8314EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:40:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E07F98314F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:40:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2FD71C21131
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:40:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 972381F25134
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4755125B1;
-	Thu, 18 Jan 2024 08:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50071125B3;
+	Thu, 18 Jan 2024 08:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="k0go9khd"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G/upmPKV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A772F11716;
-	Thu, 18 Jan 2024 08:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884A511729;
+	Thu, 18 Jan 2024 08:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705567187; cv=none; b=ZjTo72XFW8AL9h2jBmKMkWpXW/F+Ge+KLPWxYCopIz2qwxv41i3V7PGSihnhhWUxmc2h5QAU7/btUQ7Z7OryzQ/7wCaA7wMpPrg2fzlsK9Bq14Xt8jLvxfeITNQ0C2jDw2p4cMRezw4Q830hBzF1AcNDrD4Vmf75/duWbNN6q58=
+	t=1705567229; cv=none; b=K/cUhqfnjdmHSPkwvb8/GFu93PO29Bu31GOsdQH+Hy+XgSv2V0NMMdnLfWa4f5clq8HNBg/tqd0PrqcuchnKUpYlw5SnOUy1upkgYSs94VHScOapljjBWh3vZF7eFbJayzjon9Nddpvciq89rGwmOqvcevgxKVGVSsE2xxYeLhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705567187; c=relaxed/simple;
-	bh=c5NIjA7ZVExAL8yvcmRrYUcTws8SPyenufmj2QU5Fkw=;
-	h=DKIM-Signature:X-UI-Sender-Class:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:Content-Language:To:Cc:References:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Provags-ID:X-Spam-Flag:UI-OutboundReport; b=Saec4zebCRl8/0lq+Sr8SPE3oV5H8T4gjQK70Op9XPdzrqc6c/qkfa36aCiYve3MQp4aq1+ii6YuVfwD9F5NKcDb5UwqwWDO95bPpUn9ZjQD5HqSHkZTVLTBmqA3QOhuNhhrY6gWubfulU0VXOT7FVkDYQa8ybWuHyBMMmASC60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=k0go9khd; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1705567136; x=1706171936; i=markus.elfring@web.de;
-	bh=c5NIjA7ZVExAL8yvcmRrYUcTws8SPyenufmj2QU5Fkw=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=k0go9khdcMe+WBdNDa4U+Qhm6YfsiAia1sv4LWKlM55XdS/un90eRmaVWQZlnAVy
-	 vrFLLk7gsLYHHrqfifWG3w66rxpqx8ZOZ8QXH+N+LLh6PLKyVpN8F4mjhjtcHO2/j
-	 15/gDR1fDG2G3/+iQphlkQ0cgc3lBuw9mRj0inxQ0YfbYJcQwpAMCuky0OtmHQl51
-	 xFCGzl+jcmpkmBXQ/oZdJxRt8mC6WsWBYDn2juQl0QjCLeNQqGFXltnMk38JJhEkz
-	 xMA3jSAFpbSVhzPOteKEQBJ4lvx5znKbYl0O0ZRkhbfw2O/5o2LEdC4y8HrzvuR9g
-	 rQ5wykQgaPTs0WSthA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1McIki-1qpxiG2irM-00cfcL; Thu, 18
- Jan 2024 09:38:56 +0100
-Message-ID: <ea4117d5-bc70-4f6d-9fe4-e70e0cc47a6c@web.de>
-Date: Thu, 18 Jan 2024 09:38:49 +0100
+	s=arc-20240116; t=1705567229; c=relaxed/simple;
+	bh=Nae8yxhkYkovkItw8eTsuNr+khFIydZsusz95L+/xEI=;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=dsZ29Ko4atyFO+6Gv8fZd7RjvSQf7g3zHJATRCSwH8TwdcJA7Jfg2YeKRRizQHzLRHMJXtLnRvLq2/+jqv8E9vconfBzTTOVxrARHT82mUCfEqZtirNYJ+uOge6IdApEXNlRELWkanL+xJYtbKQJ3GKMRR7vGqP4yOehMPT6XT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G/upmPKV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14B9CC433C7;
+	Thu, 18 Jan 2024 08:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705567229;
+	bh=Nae8yxhkYkovkItw8eTsuNr+khFIydZsusz95L+/xEI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G/upmPKVDD44TDRIpF4V6xyDI/dgH7sfI1UtNYg0/BhboT42VldbTAnwh8mOsyaC/
+	 hE0bMJrMezddutwnFZFfDE2xc+otlnK77yr63zeoOCUiyo/X6TMpKd3Y5eE/AZ03ag
+	 h4M44ftMMc+krB8lOvLZwQeoqkywiaWclPNuwWziZ/n8b9msNC7ODq+0F/crmJlstO
+	 hQ564Me3eF3DLla+0kNDe/xIQbVpnnFRZ5G5oS+CW+RmTHL7Z14ytb5WqwsX3+wQ2w
+	 vZl0VYKWLB9lmN7/q/WF1XKld/fvMY5aAF3d4Eux4/EPlGoqi6k8Q/VcPqGHtjEN39
+	 IKlUKioytNwAQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rQNwx-0001xg-08;
+	Thu, 18 Jan 2024 09:40:35 +0100
+Date: Thu, 18 Jan 2024 09:40:35 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Matthias Kaehlcke <mka@chromium.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+	Doug Anderson <dianders@google.com>,
+	Stephen Boyd <swboyd@google.com>
+Subject: Re: [PATCH] Bluetooth: qca: fix device-address endianness
+Message-ID: <ZajkA6oxtMcxKY4X@hovoldconsulting.com>
+References: <20231227180306.6319-1-johan+linaro@kernel.org>
+ <ZZ15c1HUQIH2cY5o@google.com>
+ <ZZ1-ehpU-g6i9Qem@hovoldconsulting.com>
+ <ZZ2IOQEekFffJoHQ@google.com>
+ <ZZ5RVpL88XNbgKIy@hovoldconsulting.com>
+ <CABBYNZJ_EAuGEdeW+vZzXu20nVqLkLwiQbYQ9XzoABxQ5rAzdQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] pstore/ram: Return directly after a failed kasprintf()
- call in ramoops_init_prz()
-Content-Language: en-GB
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- linux-hardening@vger.kernel.org, kernel-janitors@vger.kernel.org,
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
- Joel Fernandes <joel@joelfernandes.org>, Kees Cook <keescook@chromium.org>,
- Tony Luck <tony.luck@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, =?UTF-8?B?R8O8bnRlciBSw7Zjaw==?=
- <groeck@chromium.org>, Sai Prakash Ranjan
- <saiprakash.ranjan@codeaurora.org>, Kunwu Chan <chentao@kylinos.cn>
-References: <644f44ad-7e2b-4a1a-bbd7-ccc79d479242@web.de>
- <26759e3b-ff74-4b04-b06f-4d68fbc5f606@moroto.mountain>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <26759e3b-ff74-4b04-b06f-4d68fbc5f606@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nV3so7VARuPz+H3zgBtP5qFxp0QSibkDxt/9dkRReI3IdOgNMLU
- BcINV1xvzIwy4ceXKDMUQttLb3561ySWFGmUxrzME9oKpCpbjwGGdcHMq2/ti/VqoHZQZi2
- JcFEMEncuE98uc8xJvTSAwICMZlgYIoXx0znWcoaYOO4YHfiZGbHV7O3RH0pPcuP3mMahtk
- zChUGwIwdkCgNVnJeFDEg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mJ0dEA0NvLA=;dTB2kylOv6oJYX9V0c3EanhWlh8
- gHXqOviPoFcDqkCtG2CguXyQsV4A0BIYg/JSHreVhLsX/e2L2NQUrVr+0my9XK2ENWXbpGGOb
- 6x44lIAGMlJbwYCKlejIvhptLS+dHiwKt63u2uI9MmGE94u/joRE+A2NGD6WL1uUVAunozIm8
- jTKFnD704vMciTL/j7schkkLf198LVe4oHFtqDUJdF4UzNE3Cs2X/S043T7ha8HNbAGkCM8/x
- tINTZF8WoxBlgCMYp85TDtH9Osjc4gJPGmIgFFOCXU7kTMXKMa6R3gmqi5YujL/92aYz2qVue
- jZYfk8me85L+iuZxGRnZr/MwZFXzj7f2ehpGae6aCZOWkEpcv6TBuyuQKoIALWz9olVGQvnu/
- izQAqe7HvJN1pi2OsbCb5SmxjK4oq/qN+vzTr6S/wYbJnlNssX58zeKcyqaO9Rpz4xDy2XaLD
- EI7xldmGrqUXAa8KAl2r44nN/IHQ/bb9T3Li8S9jUlTVqb7w/Cn9fJDUvuddHlEATY8ypKLIQ
- Le+GSvaJEZssfPjUbD6bhgrZ6k4xNmcXq5YtGNUpi7tTRSjnvWnjqZV4nt6rKKPXfo1mqlafR
- 6oHAdvDAGLEp4MAG5OeJNis/AO1NZ5bog5fWTt0qJEuG3MwbHp3UB/5KTMyKxrWbY3YfFbZPA
- HOvvghQwygfha7Vkjcb7TVJyOkjec4xthjBB4sKGgLFwzxTsE4PqJ8ldD4Dd/lDC08aSxBbnY
- LrDFqS7rG1tKgbBI6qXfZb6tZib/eLNyYsgpCPVbUftd9C2sEEI+xkwHLeVhFcb8qF5YzZQ5r
- A4Y+CeAOP+B04/Pc80orfJ/ioqQMlTmo07gbmIkoIhwCAB+J3eJQRwGK0b3pXMwsC2+C7fjnO
- p1fUvpEWfIm1gHjNna+atKro1uWFhVXXCUOZm2jzU2250YlvdJdMxMzU3gIZUfoNELVnkJJDj
- enbmkw==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABBYNZJ_EAuGEdeW+vZzXu20nVqLkLwiQbYQ9XzoABxQ5rAzdQ@mail.gmail.com>
 
->> The result from a call of the function =E2=80=9Ckasprintf=E2=80=9D was =
-passed to
->> a subsequent function call without checking for a null pointer before
->> (according to a memory allocation failure).
->> This issue was detected by using the Coccinelle software.
-=E2=80=A6
->> +++ b/fs/pstore/ram.c
->> @@ -595,6 +595,9 @@ static int ramoops_init_prz(const char *name,
->>  	}
->>
->>  	label =3D kasprintf(GFP_KERNEL, "ramoops:%s", name);
->> +	if (!label)
->> +		return -ENOMEM;
->> +
->>  	*prz =3D persistent_ram_new(*paddr, sz, sig, &cxt->ecc_info,
->>  				  cxt->memtype, PRZ_FLAG_ZAP_OLD, label);
->>  	kfree(label);
->
-> This patch is fine as a clean up, but I think it's useful to say that
-> if you pass a NULL label to persistent_ram_new() then it will return
-> an error.
-=E2=80=A6
+On Wed, Jan 17, 2024 at 05:49:07PM -0500, Luiz Augusto von Dentz wrote:
+> On Wed, Jan 10, 2024 at 3:12 AM Johan Hovold <johan@kernel.org> wrote:
+> > On Tue, Jan 09, 2024 at 05:54:01PM +0000, Matthias Kaehlcke wrote:
 
-Will it become helpful to annotate the corresponding function input parame=
-ter
-for null pointer tolerance anyhow?
+> > > hciconfig
+> > > hci0:   Type: Primary  Bus: UART
+> > >         BD Address: 8C:FD:F0:40:15:DC  ACL MTU: 1024:8  SCO MTU: 240:8
+> > >         UP RUNNING
+> > >         RX bytes:1700 acl:0 sco:0 events:95 errors:0
+> > >         TX bytes:128949 acl:0 sco:0 commands:578 errors:0
+> >
+> > And any user space tool overriding the address would currently need to
+> > provide the address in reverse order on Qualcomm platforms like this
+> > one (e.g. if generating the address for privacy reasons).
+> 
+> Perhaps we could attempt to resolve the address byteorder, in
+> userspace we use hwdb_get_company to resolve the company but since
+> this shall only really care about Qualcomm range(s) perhaps we can
+> hardcode them check in which order the address is, that said if the
+> device is configured with a Static Random Address then that would not
+> work, but that is only really possible for BLE only devices.
 
-Regards,
-Markus
+It's not just Qualcomm ranges; The Lenovo ThinkPad X13s that I noticed
+this on has been assigned a Wistron OUI, for example.
+
+We're still hoping to learn how to retrieve this address (from the
+secure world firmware) so that we can set it directly from the driver,
+but for now it needs to be set using btmgmt (or the local-bd-address
+devicetree property).
+
+As was discussed here:
+
+	https://github.com/bluez/bluez/issues/107
+
+it would be useful to teach bluetoothd to (generate and) set an address
+for devices that lack (accessible) persistent storage. And any such
+generic tool would need to work using the standard interfaces and the
+address endianness that those interfaces expect.
+
+And from skimming the Bluetooth spec, I was under the impression that
+random addresses applied also to non-BLE devices (e.g. requiring the two
+most-significants bits to be 1).
+
+But to summarise, I don't really see any way around fixing the Qualcomm
+driver.
+
+Johan
 
