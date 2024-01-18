@@ -1,199 +1,125 @@
-Return-Path: <linux-kernel+bounces-30022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB6BD8317D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:01:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E82E08317BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:00:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C5A21C212B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:01:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15CBD1C244ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:00:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE4C25551;
-	Thu, 18 Jan 2024 11:00:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1C7241FA;
+	Thu, 18 Jan 2024 11:00:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wcAmgP3B"
-Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="llcZOavu"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751C823762
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:00:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9297122F16;
+	Thu, 18 Jan 2024 11:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705575637; cv=none; b=jsAFyfM5R+jVVcIgwavWmMLJmHymIpGWHGkZg3WLXsy5em0Xl8BcF+HDK/OBOK5EQgBcHbS8C+FFErJjxX9zYeXqtQBPL84q3mGrsiahVp0mVarXJn+2W7V0jVFww35N3CKjJ73ZvzLjY4WXnSe96fnVovfAgEkFLmi64bIgAIw=
+	t=1705575602; cv=none; b=XsesBXC/gc84LUXZ1UaCed7oVAAcfYo2UscesELxW9i4euxpkBRL1CPbH9oaf6DpKa1/1iXxDQ2x/orirBW1mm9kk5AanE156OlxUNGgMsJaoacPbwUY1znj3N6bh9qE4V9Y0Pd45CHI09DS6qw/DFcqLpH5zezT14wxTJb0t4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705575637; c=relaxed/simple;
-	bh=9uRuOPnLrdJcJhWP8ED+28EUo5/SEOBarbn2AVCEczA=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Date:
-	 Mime-Version:X-Mailer:Message-ID:Subject:From:To:Cc:Content-Type;
-	b=qSYWWt2L2uDACdVz/wSZpQjlPr4d6+J6HVkYlNgjcsE14bFFMGAGNnPrTGixuU/V6ltKF55s3NGvovOJiBa8tRd3jAwy9oXfAPzOMCbJVZ42sYhgp8c1lvFT4gU1PlvrMMkYtN8o+LEpjCRK69gzbJWH7z8GZyhfNHndvTRYoBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wcAmgP3B; arc=none smtp.client-ip=209.85.218.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
-Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-a2e1630853eso162383466b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:00:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705575633; x=1706180433; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6RrXGrowsStE9nemPJC0cN0IXJkwkJ+pwI0mRPXiexU=;
-        b=wcAmgP3Bb0S9qvlKkucNqzQ6nWbdlRqVb5wL8olmnNFkzqROSaxQc/GOP3m2iegDzp
-         T5T5KUoJVqXt9Jx0tMVLw7iL8XbBUU1l9BK1rVGiOURN/LHjWJpWt37t/Rr0oeBBsiPd
-         alkrU3bmGew4lOVZFaT4cLCGn7/X7NwOTqeeFkMxbDP7Z7OF8rrTyoaFg2lleIbvncoL
-         uZ79WXwDk9Xx+899oebJo3jgaVZ/RglcZjvXvYIuk+S+G/PZue80RuqLBTjMfctRP7Dn
-         llJ8ncEOLVNn5NPCGLqhnT4k24dv4tIfy2DnOIs5SLZCMNrzALi3QkczwnXFf0ehqXqx
-         l6GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705575633; x=1706180433;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6RrXGrowsStE9nemPJC0cN0IXJkwkJ+pwI0mRPXiexU=;
-        b=f5iUYPTvV0ItpI6tmnxvk4PlhDZ89aZDlSBzZUQzqMD3JOy5bS+yyiswx5nlqfOAn8
-         KVMA+u7I2rTdmLO1ai2OCzpXaN3dhGufcStfxuguA3Lhhd8ARQLCq4tGSPDyKfYlSue4
-         OHdCidHBcD7WyuJnJq24SvyecjyGM6e2y8PWPmJPtGDOniaMgjWNf424MNgjKg+tEGwL
-         eCee9GyMRosZzk8+l0B+CI3CmMp/oChH5HX0caOPzddSGdKXnkL1uOxkghuiEn4C3EZq
-         04HyuKDcyYFYBAliWCas8dGRbY+jQxSHM/gfxi3tFi/WFOgNM3TOwRr7avdW0KmxNNzN
-         IIKw==
-X-Gm-Message-State: AOJu0YyeyWnLt5naASwGudjIVL6Kjt1023ORKhViBbrd6Jj64/IxXVIx
-	HNnH66LnWaB9XwrivN0VBx6M5MPnEqCg8FgO3sFLhwLbTjO1uHdg/99E4qzJ0O4xXgAHdU/FMg=
+	s=arc-20240116; t=1705575602; c=relaxed/simple;
+	bh=QgYur3T9UwvSVkNtHMOx7Ihz32gtSj12RpHQg6Kj0fI=;
+	h=Received:DKIM-Signature:Received:Received:Received:From:To:CC:
+	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type:X-Originating-IP:
+	 X-ClientProxiedBy:X-QCInternal:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=aYerE771/X0Xkd3oE/h7qIejmb9oVJ5zcFfXKziJBZbGEy1FptQn73wEzWUVmyYyQNbiBtTyN/JAw1IcZhbvLDrFgzae8bvlqE1uC1d6MkovmMM30eUP4/hvquE3JSRh2nmiNZuqGy6w4o6pYwCvAjzmiwiYaykj6q3pRyQ2RoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=llcZOavu; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40I8oWpk004925;
+	Thu, 18 Jan 2024 10:59:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=D4SKnA3
+	O9LLEGsotqMbDim6PNntDd3euh2Q5XQ9jEbg=; b=llcZOavuEt1XRAO+rXjgrsz
+	x2lJhLMDm1ovhn84sbNJfvyBc3gc/E1yUcU1ZZQqwL/mN8hG9Xue74OnpoD8cDtm
+	BS5bJV2MZsPzca2zsGCizLBs8aUo1qJYRs4kUqyqcZeM4DaLbxEYiq3XAO8O3z0D
+	cFoVtXgQHPVv/6oqS0F/p/PFCEmdVO7HEx4Bnld+rs5B/3gFSGNkSP14cUgliGpj
+	oIvGQmqu4UcDSSL5FNYwnzERuvR2/2BO2e3F7oVp7jqj6/ZHB1zfU8lOD7b56nQs
+	vCGDRxwxGdgc0XqaJckZDWs5qV6oBkrRoyl4ZjCU3VrP/Y9HSlruXwl0fpefIow=
 	=
-X-Google-Smtp-Source: AGHT+IFa7FQxY4lu1mD59CzjOMD/gCR8C9dFGiq1Jl93adEZmgb2tdPkH71clHTN05oD3miarDKNgZ6Y0A==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:9c:201:9d7e:25fb:9605:2bef])
- (user=elver job=sendgmr) by 2002:a17:907:788f:b0:a2d:51d4:9ddc with SMTP id
- ku15-20020a170907788f00b00a2d51d49ddcmr1361ejc.14.1705575633222; Thu, 18 Jan
- 2024 03:00:33 -0800 (PST)
-Date: Thu, 18 Jan 2024 11:59:14 +0100
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vpxaj0n65-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 10:59:57 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40IAxu4u013107
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 10:59:56 GMT
+Received: from hu-sachinku-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 18 Jan 2024 02:59:52 -0800
+From: Sachin Kumar Garg <quic_sachinku@quicinc.com>
+To: <hverkuil-cisco@xs4all.nl>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia
+	<quic_vgarodia@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+CC: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH 0/2] add MBR type rate control for encoder
+Date: Thu, 18 Jan 2024 16:29:32 +0530
+Message-ID: <20240118105934.137919-1-quic_sachinku@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
-Message-ID: <20240118110022.2538350-1-elver@google.com>
-Subject: [PATCH] mm, kmsan: fix infinite recursion due to RCU critical section
-From: Marco Elver <elver@google.com>
-To: elver@google.com, Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com, 
-	Charan Teja Kalla <quic_charante@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: WAQHh77HLt2Me-K_yPraZsZPRC0dgdpw
+X-Proofpoint-ORIG-GUID: WAQHh77HLt2Me-K_yPraZsZPRC0dgdpw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-18_06,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 priorityscore=1501 adultscore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=508 spamscore=0 phishscore=0 suspectscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401180079
 
-Alexander Potapenko writes in [1]: "For every memory access in the code
-instrumented by KMSAN we call kmsan_get_metadata() to obtain the
-metadata for the memory being accessed. For virtual memory the metadata
-pointers are stored in the corresponding `struct page`, therefore we
-need to call virt_to_page() to get them.
+This series adds the support for MBR rate control type in the
+venus driver.
 
-According to the comment in arch/x86/include/asm/page.h,
-virt_to_page(kaddr) returns a valid pointer iff virt_addr_valid(kaddr)
-is true, so KMSAN needs to call virt_addr_valid() as well.
+This rate control type will limit the frame level maximum bitrate as
+per the target bitrate.
+It will improve the video quality of low motion video at ultra low
+bit-rates.
 
-To avoid recursion, kmsan_get_metadata() must not call instrumented
-code, therefore ./arch/x86/include/asm/kmsan.h forks parts of
-arch/x86/mm/physaddr.c to check whether a virtual address is valid or
-not.
+Sachin Kumar Garg (2):
+  media: v4l2-ctrls: add encoder maximum bitrate control
+  media: venus: add new rate control type MBR for encoder
 
-But the introduction of rcu_read_lock() to pfn_valid() added
-instrumented RCU API calls to virt_to_page_or_null(), which is called by
-kmsan_get_metadata(), so there is an infinite recursion now.  I do not
-think it is correct to stop that recursion by doing
-kmsan_enter_runtime()/kmsan_exit_runtime() in kmsan_get_metadata(): that
-would prevent instrumented functions called from within the runtime from
-tracking the shadow values, which might introduce false positives."
+ .../media/v4l/ext-ctrls-codec.rst             |  2 +
+ drivers/media/platform/qcom/venus/hfi_cmds.c  | 38 +++++++++++++------
+ .../media/platform/qcom/venus/hfi_helper.h    |  1 +
+ drivers/media/platform/qcom/venus/venc.c      |  2 +
+ .../media/platform/qcom/venus/venc_ctrls.c    |  5 ++-
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  1 +
+ include/uapi/linux/v4l2-controls.h            |  1 +
+ 7 files changed, 37 insertions(+), 13 deletions(-)
 
-Fix the issue by switching pfn_valid() to the _sched() variant of
-rcu_read_lock/unlock(), which does not require calling into RCU. Given
-the critical section in pfn_valid() is very small, this is a reasonable
-trade-off (with preemptible RCU).
-
-KMSAN further needs to be careful to suppress calls into the scheduler,
-which would be another source of recursion. This can be done by wrapping
-the call to pfn_valid() into preempt_disable/enable_no_resched(). The
-downside is that this sacrifices breaking scheduling guarantees;
-however, a kernel compiled with KMSAN has already given up any
-performance guarantees due to being heavily instrumented.
-
-Note, KMSAN code already disables tracing via Makefile, and since
-mmzone.h is included, it is not necessary to use the notrace variant,
-which is generally preferred in all other cases.
-
-Link: https://lkml.kernel.org/r/20240115184430.2710652-1-glider@google.com [1]
-Reported-by: Alexander Potapenko <glider@google.com>
-Reported-by: syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
-Cc: Charan Teja Kalla <quic_charante@quicinc.com>
----
- arch/x86/include/asm/kmsan.h | 17 ++++++++++++++++-
- include/linux/mmzone.h       |  6 +++---
- 2 files changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/include/asm/kmsan.h b/arch/x86/include/asm/kmsan.h
-index 8fa6ac0e2d76..d91b37f5b4bb 100644
---- a/arch/x86/include/asm/kmsan.h
-+++ b/arch/x86/include/asm/kmsan.h
-@@ -64,6 +64,7 @@ static inline bool kmsan_virt_addr_valid(void *addr)
- {
- 	unsigned long x = (unsigned long)addr;
- 	unsigned long y = x - __START_KERNEL_map;
-+	bool ret;
- 
- 	/* use the carry flag to determine if x was < __START_KERNEL_map */
- 	if (unlikely(x > y)) {
-@@ -79,7 +80,21 @@ static inline bool kmsan_virt_addr_valid(void *addr)
- 			return false;
- 	}
- 
--	return pfn_valid(x >> PAGE_SHIFT);
-+	/*
-+	 * pfn_valid() relies on RCU, and may call into the scheduler on exiting
-+	 * the critical section. However, this would result in recursion with
-+	 * KMSAN. Therefore, disable preemption here, and re-enable preemption
-+	 * below while suppressing reschedules to avoid recursion.
-+	 *
-+	 * Note, this sacrifices occasionally breaking scheduling guarantees.
-+	 * Although, a kernel compiled with KMSAN has already given up on any
-+	 * performance guarantees due to being heavily instrumented.
-+	 */
-+	preempt_disable();
-+	ret = pfn_valid(x >> PAGE_SHIFT);
-+	preempt_enable_no_resched();
-+
-+	return ret;
- }
- 
- #endif /* !MODULE */
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 4ed33b127821..a497f189d988 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -2013,9 +2013,9 @@ static inline int pfn_valid(unsigned long pfn)
- 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
- 		return 0;
- 	ms = __pfn_to_section(pfn);
--	rcu_read_lock();
-+	rcu_read_lock_sched();
- 	if (!valid_section(ms)) {
--		rcu_read_unlock();
-+		rcu_read_unlock_sched();
- 		return 0;
- 	}
- 	/*
-@@ -2023,7 +2023,7 @@ static inline int pfn_valid(unsigned long pfn)
- 	 * the entire section-sized span.
- 	 */
- 	ret = early_section(ms) || pfn_section_valid(ms, pfn);
--	rcu_read_unlock();
-+	rcu_read_unlock_sched();
- 
- 	return ret;
- }
 -- 
-2.43.0.381.gb435a96ce8-goog
+2.34.1
 
 
