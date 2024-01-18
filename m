@@ -1,147 +1,142 @@
-Return-Path: <linux-kernel+bounces-30338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8057C831D4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:13:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98ADC831D51
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B32F41C22A36
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:13:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25DA31F2408C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 905A82C6A4;
-	Thu, 18 Jan 2024 16:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24EC42D05B;
+	Thu, 18 Jan 2024 16:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KQc3e6NI"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="E7t0IQ4K"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807B128DDA;
-	Thu, 18 Jan 2024 16:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9362C197;
+	Thu, 18 Jan 2024 16:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705594381; cv=none; b=Kce6Iyj1aiNQF8ekBQg9YlqEUvwlOovrwu7Fh2eFSKKOhzoxokmtqrK1XP71T4jlnPCLGc9pwuUAQJECM6VDWYH/FWwKkvbWsehH5sAbfCf79nfXqhKoGJRgQtQlGjdHzs6KqG7e0mHilGj+WqYXa3G8uVXU1iMGc1fytKkAHRc=
+	t=1705594383; cv=none; b=iJvGXFv03xVxJv3GGTX8o51eRVIB+xOqjRKSaZap6cI0/8p+VZWaD0d1UU6799voUUknalqsw+Tc+9gRgezDzI9bQ0JXNIzdOJBl3nongOz6rGO03OhSH4HUhCnZecu/MxUfnpKa4kW4N95DsqZH//1GKbUXam59w4ftL59K8o0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705594381; c=relaxed/simple;
-	bh=8NoStMZp0TB8q3jrITsXs6s0yhquDXW9LljJq0jQBeg=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=o1pIIkpuVOJyJiQfEEnI9wtX/M5BCMcD23uNSXKFWbexYu3xtOeKIomDCRkEVPUrrPXW5hwkHHy2CFOZrm8XZrpFkygn2F6Eg0AvRyRgMi3Z/aNhRBbzF0av4nxBxKGkzStSLc2OvhJIe1t/1pP+704rlmkMN3N46OV5s0SWXC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KQc3e6NI; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6daf694b439so6974207b3a.1;
-        Thu, 18 Jan 2024 08:13:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705594380; x=1706199180; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ASbIsDuH6/1Mo4MaDgTuPSwi0dXnfDHc/QyBIdAIL4I=;
-        b=KQc3e6NIxPsaVVum9svsy+Qq02eWH/rm2kIWUGzWW+0VguGAONjtbaJqOQrC/2g0vv
-         7irJ4m4k4NMbNLvVxoy/4UjQ1NCEaYM5lTsYwhOoY6SqR/J4F7iMbQhPZNiHxuKnRh5h
-         FaMReeaD0190nn9lpKyZPVgTdBOewMhlGxnLaT2epmqxX+Mw1jJ+zY1f6YAf62djyCCU
-         /Rk59UpZvGbmBTDJ+R+B1DO4/veCdGC2QIS3LVyuqrDy4RckGH9fHVdAsXettIUPOq0m
-         2UPLQ5PkBcF0vvd8Pp/jheVKKMj+Z35S/Hnp73On2Cigahcsu2TL8VrUhrrEL8hiXRPq
-         8xdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705594380; x=1706199180;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ASbIsDuH6/1Mo4MaDgTuPSwi0dXnfDHc/QyBIdAIL4I=;
-        b=ndS1mH1YX3AfN+sEzenClYA8gIH44kZhQXrzvS/yyo4ao9ZzUqWOdPItl51EYFI6v6
-         Iav+vmsoG/WvH9TI13lfTX4W/biJGb4yBBVDFon/vsJEU7yU+FanmvsAGFVfmQAF7Z6K
-         Go5fdDEwuF9TY3S/DsFa4CoehmQkqbY2OC4g6sFCHD6mNcsqshMdDlwx6JYML/DMIOxI
-         kcamX/rLbaGe8NgebS5BmMuDb0obKdkS96NIV0ubRaBcWNlVf72r5khDmyJl2hqU/fdl
-         FB1ZwnbG3B81TV2rx0Ia1u3t1mDZUFZTPQmo3cpsqS1A0a21XnhwtHF5r8Ea2vJPbVVM
-         UJvw==
-X-Gm-Message-State: AOJu0Ywm4y50Atif3+CJQ0y5/VIkGbNJ+EJhIwTNJ2htPLFsKFIX8BLu
-	4CARz5Rw1HsmZeUfQ8eU0i8oy3Olhovacz6cT/tUtEwgTlXmI7qU
-X-Google-Smtp-Source: AGHT+IGEwS/Mpc69BhPwt9Z2PRosCQXyQnkRZBKZCwfbPHKzpJkVR4HsYTm1Zf4G9HUzLxMdnEWb7A==
-X-Received: by 2002:a05:6a20:d38e:b0:19a:3b4a:22c8 with SMTP id iq14-20020a056a20d38e00b0019a3b4a22c8mr1167907pzb.14.1705594379663;
-        Thu, 18 Jan 2024 08:12:59 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:77ac:1fe8:3f5:523d])
-        by smtp.gmail.com with ESMTPSA id o8-20020a056a00214800b006d9a38fe569sm3466683pfk.89.2024.01.18.08.12.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 08:12:59 -0800 (PST)
-Date: Thu, 18 Jan 2024 08:12:56 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Esther Shimanovich <eshimanovich@chromium.org>,
-	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <ZalOCPrVA52wyFfv@google.com>
-References: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
- <20231228132517.GA12586@wunner.de>
- <20231228133949.GG2543524@black.fi.intel.com>
- <CA+Y6NJFQq39WSSwHwm37ZQV8_rwX+6k5r+0uUs_d1+UyGGLqUw@mail.gmail.com>
- <20240118060002.GV2543524@black.fi.intel.com>
- <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
+	s=arc-20240116; t=1705594383; c=relaxed/simple;
+	bh=cVq8KIc6KbMwS94GCq0XE4YIyPj2j38EsV1T7oPH1cI=;
+	h=Received:DKIM-Signature:Received:Received:Received:From:Date:
+	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 Message-ID:References:In-Reply-To:To:CC:X-Mailer:X-Originating-IP:
+	 X-ClientProxiedBy:X-QCInternal:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=svBWjGbYZ+un6keSML62rsJ3oWPfz5vw8zUDVqhOJaZgPK+J2/mRzFZ/U4paJpPyKK1xAx6eRwDEAbm+JEFCGS2GvTjFCWp6W8y4Mkvu0y0kXgyWg1e3niluw6c9sDTb4fJUXUNEr5e+R+cDpw4uHe0Uybbvs6sdXRmiKRaF8RY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=E7t0IQ4K; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40IFtoLh003667;
+	Thu, 18 Jan 2024 16:12:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:references:in-reply-to:to
+	:cc; s=qcppdkim1; bh=xu6LTZd46of4ubV1T8bkdLfUORCXmE/Vrh+3G16Hzgg
+	=; b=E7t0IQ4KKRqP66W1QzCTrCfwySqO2uRoRHfyYx1R7c10FkgKCA/6RcBaYWg
+	7dNocXha1JYlhxg8kUWUC0DbZ/c3d1DgdOuXQndh9PwbrSoMHx6QZQ35qwvKxSlj
+	0KOj330oiLtGbkT4RlGjlE6QXTDk6HdQ3801Y/HbcZPlXB6FOpbuNzOtljcDspSB
+	Ir+NJG1dmtP15mkeILniSpbZKnWL+UWD/ZObXM9MnruNmuazQdFw/ZkSVRW4LzuX
+	KJI+FXqvQpYigq/taxLSqIuFbIdOWrfCf3WW17LmnpxczaezSHQxj2hjswvRC4ji
+	F2YXsGrjs6tfMcV8FFj13SP/8xw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vq00116p9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 16:12:57 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40IGCuR1007130
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 16:12:56 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 18 Jan
+ 2024 08:12:56 -0800
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+Date: Thu, 18 Jan 2024 08:12:57 -0800
+Subject: [PATCH 5/5] wifi: ath10k: Fix enum ath10k_fw_crash_dump_type
+ kernel-doc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240118-ath10k-kerneldoc-v1-5-99c7e8d95aad@quicinc.com>
+References: <20240118-ath10k-kerneldoc-v1-0-99c7e8d95aad@quicinc.com>
+In-Reply-To: <20240118-ath10k-kerneldoc-v1-0-99c7e8d95aad@quicinc.com>
+To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
+CC: <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+X-Mailer: b4 0.12.3
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: jYp6qPk_ZYAK8Non6zY-kJVaTpyo4p0X
+X-Proofpoint-ORIG-GUID: jYp6qPk_ZYAK8Non6zY-kJVaTpyo4p0X
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-18_08,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ mlxscore=0 clxscore=1015 spamscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 bulkscore=0 mlxlogscore=894 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2401180118
 
-On Thu, Jan 18, 2024 at 09:47:07AM -0600, Mario Limonciello wrote:
-> On 1/18/2024 00:00, Mika Westerberg wrote:
-> > > Before my patch, you see that the JHL6540 controller is inaccurately
-> > > labeled “removable”:
-> > > $ udevadm info -a -p /sys/bus/pci/devices/0000:05:00.0 | grep -e
-> > > {removable} -e {device} -e {vendor} -e looking
-> > >    looking at device '/devices/pci0000:00/0000:00:1d.4/0000:05:00.0':
-> > >      ATTR{device}=="0x15d3"
-> > >      ATTR{removable}=="removable"
-> > >      ATTR{vendor}=="0x8086"
-> > 
-> > This is actually accurate. The Thunderbolt controller is itself
-> > hot-removable and that BTW happens to be hot-removed when fwupd applies
-> > firmware upgrades to the device.
+The kernel-doc script currently reports:
+drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_REGISTERS' not described in enum 'ath10k_fw_crash_dump_type'
+drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_CE_DATA' not described in enum 'ath10k_fw_crash_dump_type'
+drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_RAM_DATA' not described in enum 'ath10k_fw_crash_dump_type'
+drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Enum value 'ATH10K_FW_CRASH_DUMP_MAX' not described in enum 'ath10k_fw_crash_dump_type'
+drivers/net/wireless/ath/ath10k/coredump.h:27: warning: Excess enum value 'ATH10K_FW_CRASH_DUMP_REGDUMP' description in 'ath10k_fw_crash_dump_type'
 
-This is quite interesting take. Does fwupd rip the controller out of the
-box to update it? By that account your touchpad is also removable as it
-may stop functioning when its firmware gets updated.
+Fix these issues with the enum ath10k_fw_crash_dump_type kernel-doc.
 
-> 
-> Depending on the consumers of this removable attribute I wonder if we need
-> to a new ATTR of "external" instead of overloading "removable".
+No functional changes, compile tested only.
 
-Isn't this the same thing? From
-Documentation/ABI/testing/sysfs-devices-removable:
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+---
+ drivers/net/wireless/ath/ath10k/coredump.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-What:		/sys/devices/.../removable
-Date:		May 2021
-Contact:	Rajat Jain <rajatxjain@gmail.com>
-Description:
-		Information about whether a given device can be removed from the
-		platform by the	user. This is determined by its subsystem in a
-		bus / platform-specific way. This attribute is only present for
-		devices that can support determining such information:
-
-		===========  ===================================================
-		"removable"  device can be removed from the platform by the user
-		"fixed"      device is fixed to the platform / cannot be removed
-			     by the user.
-
-Note this "by the user". Maybe we should add word "physically" here to
-qualify the meaning completely, but that is what it is. Not that it
-disappears from the bus or stops operating for some time because of
-firmware updates, but it can be physically detached from the
-platform/system.
-
-Thanks.
+diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
+index e5ef0352e319..8d274e0f374b 100644
+--- a/drivers/net/wireless/ath/ath10k/coredump.h
++++ b/drivers/net/wireless/ath/ath10k/coredump.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: ISC */
+ /*
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
+- * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2022, 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+ 
+ #ifndef _COREDUMP_H_
+@@ -13,7 +13,11 @@
+ 
+ /**
+  * enum ath10k_fw_crash_dump_type - types of data in the dump file
+- * @ATH10K_FW_CRASH_DUMP_REGDUMP: Register crash dump in binary format
++ * @ATH10K_FW_CRASH_DUMP_REGISTERS: Register crash dump in binary format
++ * @ATH10K_FW_CRASH_DUMP_CE_DATA: Copy Engine crash dump data
++ * @ATH10K_FW_CRASH_DUMP_RAM_DATA: RAM crash dump data, contains multiple
++ *				   struct ath10k_dump_ram_data_hdr
++ * @ATH10K_FW_CRASH_DUMP_MAX: Maximum enumeration
+  */
+ enum ath10k_fw_crash_dump_type {
+ 	ATH10K_FW_CRASH_DUMP_REGISTERS = 0,
 
 -- 
-Dmitry
+2.42.0
+
 
