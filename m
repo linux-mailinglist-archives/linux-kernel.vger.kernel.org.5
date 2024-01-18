@@ -1,207 +1,148 @@
-Return-Path: <linux-kernel+bounces-30554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CD19832064
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:19:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5A98832066
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:19:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFF941F27B59
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:19:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1017AB23EE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:19:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 572942E655;
-	Thu, 18 Jan 2024 20:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F502E648;
+	Thu, 18 Jan 2024 20:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GPVojCRK"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="clmzw37h"
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31AE029CED;
-	Thu, 18 Jan 2024 20:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD802E650
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 20:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705609152; cv=none; b=dH1owG3JFep/MWHuyetPTiMyDsk0Z9KLi9DrOBUpUxUrka1KSfVXI/x1SVw+5AgzpzVtMBaAG5N4g+ms5DaFp03IWY5ySrCSGzRfrNSsc/Ly2vKeHb39R+4gBqT1O/90gAoZPYGRabxE+EeuazenxszL9mD6DAqI2HBfoShy3u4=
+	t=1705609169; cv=none; b=BWVvz5AUd6jCW9sSNGu6nFddVPFitT1esgp0MY3jAL7EZtEC6DUYBRXpzknoVruLZJ6jkWXoCCZlKsmjNqsfFTQEJguMCyQ647UhC2s/8o9b8amiXCCnYg+QS7xDppV0S3gBdsHwP/00sDfzi8rW2GN1R3CoSf2nw4WzivpjFOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705609152; c=relaxed/simple;
-	bh=qOyfcY8+N2GbqPmNyR8KCsqKlMiz/33m0/NfqqMf8fE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oSKZYhodqmkapHE5LfMbJw4MbEDqwF/RPOQZwPY7cyJAJmm1Ji+vYE5bVX+2YRpucPa8RuITRHvAAoGqPwClFOvnfxpS5sxP/OLo2rf36urAaet+MiTra9xcwfjMsYEbv0gdcEkY6ZzIaL+FE4KuleZMe7PUIcZmWOQPWw0PRNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GPVojCRK; arc=none smtp.client-ip=209.85.215.177
+	s=arc-20240116; t=1705609169; c=relaxed/simple;
+	bh=PIi7GYt6jbHa+tcCPyWxzhvV162nht9aB8jy6QpLXHY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E6XalkvZaAs8wd0GaRvUxHQ/Blm5bfTI73DapVbTEtvlUPLSo3UzHjdmkl05m0Lr8H83WR9iGRfCYBYOJot4uebBrUzmRyvD/DwsljoMOrt4QbxbleLghQu3zXFrjceqf6ed3yvI2ENZAOyG4XycFEenKRKiC8hMkbKFqgn+xXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=clmzw37h; arc=none smtp.client-ip=209.85.210.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5cf6d5117f9so49320a12.2;
-        Thu, 18 Jan 2024 12:19:10 -0800 (PST)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6dc20b4595bso35995a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 12:19:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705609150; x=1706213950; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SSp4LijXK8czV2YlnwfwApZRO+PHOzGdXK5fdCdR75M=;
-        b=GPVojCRKfV+AyAg6rdPud8dgVJ+JhkCHmnTJNHjSr8lutfvgBbBSkOT2MPHhG4l06a
-         cIkwm+OxOnaHSNvHDRYWw4aWXNNn4GMvCLFC4OB70JaqQw7zovccyAiqOhf3aib/HQKq
-         LyRMcXnOFX0bY2QCDB2pH4VYrYlfCIR23SGwCUxA7U+zKR7COqiIO5qLybWMJ8ZZkMxI
-         9RuQK2TklGOqEP5wreZKbcL8mUchkdR+JaW8QyI94tSChcMu0QUVPgyOZfkronX/PABP
-         91ZcQulNYClQUqLTXIXatSSWcIgI/LkUvyZdYE7xd/8+xc+Nk3SdV6CfkqifW4Sel1ZW
-         +32A==
+        d=gmail.com; s=20230601; t=1705609166; x=1706213966; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PhrU9+2Wos2GEkaqWKGdWBeUMi5dBl1aaYQCU5q6qoM=;
+        b=clmzw37hjCmuYnXa3YTCVT3sqDe402c7V8eFlCi8CRyXGd3f//brZm3MkgN72I0Hit
+         OfifoPHXlwb7uxedZv4ZUipnPRDe+YReT9xB9/gXuAAGzmoott9mU7qprdpsuncQewsn
+         vj4w5Af8ALW7eU9MPvn2dckRI0r6/vYIbVn00sppcYDl7Rc5KCeo9d804DW83Q6VqUio
+         PDJnG1xmNeOKpjJvI7d86o7tpK2NR7Xhx9+7SKfnjoBNGo2cH0XjEr53N8sPzPSGKxt0
+         tU+veu8Ax1HzR/MKxb7Tx6mb5u+ZkdlA4E5cDeOyusqsGWq2QR46D2juwVB3dopWxMol
+         R7QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705609150; x=1706213950;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SSp4LijXK8czV2YlnwfwApZRO+PHOzGdXK5fdCdR75M=;
-        b=oLxK3Zl0248yhwn4GNPw6aL5q6cc14EknYmT66xBYTOIDZLKhteCUtJph+dy3anHtP
-         RCtc+ClbC0GXqden+yL9TdO8zoGE2kuzzE9TT7NMIswX+nWEzcIdNcu0IfVeZpqqiqBG
-         VN3KwjMzCKoR7naWM5cDADllUlBcpRvBJ8JBo8c0+G7xKO4ihCiiN8BSbq2FzLRcftNp
-         NTVhTKFiEyGRm933GK+zBmQvsUJv5X107J/VetGSxbdjr9qlxHPtrsxrWBuLBWFeAc2m
-         EJkODzSWEd47F5XJVqXf/qY5CKpC3meh6UXOs2wM9WqA9ifBzXNKGdnfSWffoCxJKABH
-         5+hA==
-X-Gm-Message-State: AOJu0YzZaIheOyaizrOipKRUsbPR7zEarn3qncITKQ4cX9FJKhzWSwyo
-	qxn+lMTgufodqJVbc3QAy8hCAzt4+MyRBEvE/4uB6M/WwLENEE7j
-X-Google-Smtp-Source: AGHT+IEUSO3kM4FvQZ01TNYzRtRpIG/nW46bdm3gKsc1P9hpMcQbQplOiA9zvr2duZoex7h0eWTw3g==
-X-Received: by 2002:a17:902:cecb:b0:1d4:53cf:fb99 with SMTP id d11-20020a170902cecb00b001d453cffb99mr1789461plg.24.1705609150521;
-        Thu, 18 Jan 2024 12:19:10 -0800 (PST)
-Received: from [192.168.0.228] (c-24-20-51-242.hsd1.or.comcast.net. [24.20.51.242])
-        by smtp.gmail.com with ESMTPSA id mi7-20020a170902fcc700b001d5f387aa6esm1768633plb.240.2024.01.18.12.19.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 12:19:10 -0800 (PST)
-Message-ID: <40483b3e-d820-4a9c-823d-76d6f24edfd6@gmail.com>
-Date: Thu, 18 Jan 2024 12:19:09 -0800
+        d=1e100.net; s=20230601; t=1705609166; x=1706213966;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PhrU9+2Wos2GEkaqWKGdWBeUMi5dBl1aaYQCU5q6qoM=;
+        b=ldFiGU0yLR+z50+10wGUiU9BMh6Xey+5hNccZPJ9bXUS2a9QF97eUB569YcZKQALJj
+         8uCWBS2RkYuI5M+Eep3VsfjHAGBYK9sTmdkwPLe/PtUAt3qxRS7wOC6qfH6rPKAL5ENm
+         hD5lJzD+hwheHZUlAZULNobF92IBizbj/Dp5H7lZDxRX/5bukG6uX2nruIjY1vqRaU1M
+         RRxJ5amA/sdn77q+MbHtIIFRZHsBXXpTRj6Wq/wpGaTWtPzkJ5GmvFxXE7spOF5LFAT7
+         dYillcyomIizch/dZU/nCglcyUtcH/zaN/n2qoUO6QpuJuEAiB3mhy1gL13r0d4EJJLy
+         N/fg==
+X-Gm-Message-State: AOJu0Yw+fkEm/0AulCDY8+UvCGdB0X/of0NXMr6A1u73Eb7uAVIC6ENS
+	oQ+SjZtYG8Zw+h9mnMSfbE9DoPguZH8MToSjbaOg5VYvHbAyrilW2K7OKy8mv+D/c8xa1skwBuK
+	IVzVhBnRZmO3B0Bi4PCK2fQY52uc=
+X-Google-Smtp-Source: AGHT+IHFyv8JqhpnsV52YeCOupboqAMIhZ7qnurgiXLv38ZMbl3Qakmyl9cU6t4jDjiVrNmsHVfPoHNnEZ8KnSXh8dE=
+X-Received: by 2002:a05:6871:7827:b0:206:cbc8:1001 with SMTP id
+ oy39-20020a056871782700b00206cbc81001mr1533751oac.92.1705609166241; Thu, 18
+ Jan 2024 12:19:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: ibmvscsi_tgt: replace deprecated strncpy with
- strscpy
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, Justin Stitt <justinstitt@google.com>
-Cc: Michael Cyr <mikecyr@linux.ibm.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20231030-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-v1-1-859b5ce257fd@google.com>
- <202311301315.BAB096926@keescook>
-From: Tyrel Datwyler <turtle.in.the.kernel@gmail.com>
-In-Reply-To: <202311301315.BAB096926@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240117144436.10930-1-n.zhandarovich@fintech.ru>
+In-Reply-To: <20240117144436.10930-1-n.zhandarovich@fintech.ru>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Thu, 18 Jan 2024 15:19:14 -0500
+Message-ID: <CADnq5_MFLxNcKnvT6gr1RBiBoQrnynqQmo9kyKD86+_7pHa4TQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: remove dead code in ni_mc_load_microcode()
+To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Cc: Alex Deucher <alexander.deucher@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>, 
+	linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>, 
+	David Airlie <airlied@gmail.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	lvc-project@linuxtesting.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/30/23 13:25, Kees Cook wrote:
-> On Mon, Oct 30, 2023 at 09:43:20PM +0000, Justin Stitt wrote:
->> strncpy() is deprecated for use on NUL-terminated destination strings
->> [1] and as such we should prefer more robust and less ambiguous string
->> interfaces.
->>
->> We don't need the NUL-padding behavior that strncpy() provides as vscsi
->> is NUL-allocated in ibmvscsis_probe() which proceeds to call
->> ibmvscsis_adapter_info():
->> |       vscsi = kzalloc(sizeof(*vscsi), GFP_KERNEL);
->>
->> ibmvscsis_probe() -> ibmvscsis_handle_crq() -> ibmvscsis_parse_command()
->> -> ibmvscsis_mad() -> ibmvscsis_process_mad() -> ibmvscsis_adapter_info()
->>
->> Following the same idea, `partition_name` is defiend as:
->> |       static char partition_name[PARTITION_NAMELEN] = "UNKNOWN";
->>
->> ... which is NUL-padded already, meaning strscpy() is the best option.
->>
->> Considering the above, a suitable replacement is `strscpy` [2] due to
->> the fact that it guarantees NUL-termination on the destination buffer
->> without unnecessarily NUL-padding.
-> 
-> My only worry here is that I don't see if %NUL termination is _required_
-> for these variables. (i.e. do we run the risk of truncating these by 1
-> byte if they're right at the limit?) Are they __nonstring?
-> 
-> I *think* they're %NUL terminated since they follow the same sizing as
-> the global "partition_name", but I'm not sure.
-> 
-> Can any of the SCSI authors comment on this?
+On Thu, Jan 18, 2024 at 3:52=E2=80=AFAM Nikita Zhandarovich
+<n.zhandarovich@fintech.ru> wrote:
+>
+> Inside the if block with (running =3D=3D 0), the checks for 'running'
+> possibly being non-zero are redundant. Remove them altogether.
+>
+> This change is similar to the one authored by Heinrich Schuchardt
+> <xypron.glpk@gmx.de> in commit
+> ddbbd3be9679 ("drm/radeon: remove dead code, si_mc_load_microcode (v2)")
+>
+> Found by Linux Verification Center (linuxtesting.org) with static
+> analysis tool Svace.
+>
+> Fixes: 0af62b016804 ("drm/radeon/kms: add ucode loader for NI")
+> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 
-Sorry, for a delayed response. I've just taken over the maintainer role as it
-had been left unaccounted for sometime.
+Applied both of your patches.  Thanks!
 
-These are meant to be handled as C strings and nul termination is expected.
+Alex
 
--Tyrel
-
-> 
->>
->> However, for cap->name let's use strscpy_pad as cap is allocated via
->> dma_alloc_coherent():
->> |       cap = dma_alloc_coherent(&vscsi->dma_dev->dev, olen, &token,
->> |                                GFP_ATOMIC);
-> 
-> This is also true for the "info" allocation (it comes out of DMA).
-> 
->>
->> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
->> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
->> Link: https://github.com/KSPP/linux/issues/90
->> Cc: linux-hardening@vger.kernel.org
->> Signed-off-by: Justin Stitt <justinstitt@google.com>
->> ---
->> Note: build-tested only.
->>
->> Found with: $ rg "strncpy\("
->> ---
->>  drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c | 14 +++++++-------
->>  1 file changed, 7 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
->> index 385f812b8793..cd223ef696e5 100644
->> --- a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
->> +++ b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
->> @@ -1551,17 +1551,17 @@ static long ibmvscsis_adapter_info(struct scsi_info *vscsi,
->>  	if (vscsi->client_data.partition_number == 0)
->>  		vscsi->client_data.partition_number =
->>  			be32_to_cpu(info->partition_number);
->> -	strncpy(vscsi->client_data.srp_version, info->srp_version,
->> +	strscpy(vscsi->client_data.srp_version, info->srp_version,
->>  		sizeof(vscsi->client_data.srp_version));
->> -	strncpy(vscsi->client_data.partition_name, info->partition_name,
->> +	strscpy(vscsi->client_data.partition_name, info->partition_name,
->>  		sizeof(vscsi->client_data.partition_name));
->>  	vscsi->client_data.mad_version = be32_to_cpu(info->mad_version);
->>  	vscsi->client_data.os_type = be32_to_cpu(info->os_type);
->>  
->>  	/* Copy our info */
->> -	strncpy(info->srp_version, SRP_VERSION,
->> +	strscpy(info->srp_version, SRP_VERSION,
->>  		sizeof(info->srp_version));
->> -	strncpy(info->partition_name, vscsi->dds.partition_name,
->> +	strscpy(info->partition_name, vscsi->dds.partition_name,
->>  		sizeof(info->partition_name));
-> 
-> Since "info" is from DMA, let's use the _pad variant here just to be
-> safe.
-> 
->>  	info->partition_number = cpu_to_be32(vscsi->dds.partition_num);
->>  	info->mad_version = cpu_to_be32(MAD_VERSION_1);
->> @@ -1645,8 +1645,8 @@ static int ibmvscsis_cap_mad(struct scsi_info *vscsi, struct iu_entry *iue)
->>  			 be64_to_cpu(mad->buffer),
->>  			 vscsi->dds.window[LOCAL].liobn, token);
->>  	if (rc == H_SUCCESS) {
->> -		strncpy(cap->name, dev_name(&vscsi->dma_dev->dev),
->> -			SRP_MAX_LOC_LEN);
->> +		strscpy_pad(cap->name, dev_name(&vscsi->dma_dev->dev),
->> +			sizeof(cap->name));
-> 
-> And this is a safe conversion to sizeof():
-> 
-> struct capabilities {
-> 	...
->         char name[SRP_MAX_LOC_LEN];
-> 
-> 
-> If we can convince ourselves that non of these are __nonstring types,
-> then I think with the "info" change above, this should be good.
-> 
-> -Kees
-> 
-
+> ---
+>  drivers/gpu/drm/radeon/ni.c | 10 +---------
+>  1 file changed, 1 insertion(+), 9 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
+> index 927e5f42e97d..8eac8c090433 100644
+> --- a/drivers/gpu/drm/radeon/ni.c
+> +++ b/drivers/gpu/drm/radeon/ni.c
+> @@ -624,7 +624,7 @@ static const u32 cayman_io_mc_regs[BTC_IO_MC_REGS_SIZ=
+E][2] =3D {
+>  int ni_mc_load_microcode(struct radeon_device *rdev)
+>  {
+>         const __be32 *fw_data;
+> -       u32 mem_type, running, blackout =3D 0;
+> +       u32 mem_type, running;
+>         u32 *io_mc_regs;
+>         int i, ucode_size, regs_size;
+>
+> @@ -659,11 +659,6 @@ int ni_mc_load_microcode(struct radeon_device *rdev)
+>         running =3D RREG32(MC_SEQ_SUP_CNTL) & RUN_MASK;
+>
+>         if ((mem_type =3D=3D MC_SEQ_MISC0_GDDR5_VALUE) && (running =3D=3D=
+ 0)) {
+> -               if (running) {
+> -                       blackout =3D RREG32(MC_SHARED_BLACKOUT_CNTL);
+> -                       WREG32(MC_SHARED_BLACKOUT_CNTL, 1);
+> -               }
+> -
+>                 /* reset the engine and set to writable */
+>                 WREG32(MC_SEQ_SUP_CNTL, 0x00000008);
+>                 WREG32(MC_SEQ_SUP_CNTL, 0x00000010);
+> @@ -689,9 +684,6 @@ int ni_mc_load_microcode(struct radeon_device *rdev)
+>                                 break;
+>                         udelay(1);
+>                 }
+> -
+> -               if (running)
+> -                       WREG32(MC_SHARED_BLACKOUT_CNTL, blackout);
+>         }
+>
+>         return 0;
 
