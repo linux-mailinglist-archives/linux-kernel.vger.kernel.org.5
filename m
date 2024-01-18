@@ -1,138 +1,84 @@
-Return-Path: <linux-kernel+bounces-29662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7888483116F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:32:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D4A9831173
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:34:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11C7B1F25073
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:32:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 266202879AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603D653BE;
-	Thu, 18 Jan 2024 02:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hPpofyRm"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F138FAD5A;
+	Thu, 18 Jan 2024 02:34:50 +0000 (UTC)
+Received: from mail115-76.sinamail.sina.com.cn (mail115-76.sinamail.sina.com.cn [218.30.115.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79ED3566D;
-	Thu, 18 Jan 2024 02:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75387AD32
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705545152; cv=none; b=qQwlEB5pOuQtC0ABLncCTq+E37QbqJAEh9K1mHxHFQZ+nqzPTb+Tms0ZO0f5dH9xBj4oMiMUvJs/k6pXAoBHZRBbHBKgV8iQRp5KUkQn4TZC11CJn+sED/84CKR7c9o+mJ1lYQhMD6YwKwNkWsU/Bp6H1JCovluwXfzFzyXssiQ=
+	t=1705545290; cv=none; b=a626vBDJ8Q/3NmSvmql0lbGjxsLesU4YKpX7lnaA0o5Cc6wR9NwbKxiUcqMGnPtmj0i2uFjTL9hv5YOhFfr3yNCQEvpi3vd84CiH4zOrsnrobpmKgVatvTLmNUMJOcbB3+RBc//0VC/qfelD/hkGSEGob0/asMw9lzOp06Bhf6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705545152; c=relaxed/simple;
-	bh=rZUgRK/6bWCbmtxrq6/nPe4yEvZHLPc6MjZDysW0tkE=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Subject:From:To:Cc:References:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=hu1lhbFdgXBddTSrDzVeT00qm7gFml73RTsNluglg3EFdvl6YN09f3viT1yhuCItLq3psMJe2QGgn5A8FbkP3DINl7TxZnUzI89QkzT++eG4I5UA4/bLNZDiUUxqCAbnPfs7UGOxGsU5k/2clGj0X1BcxNSurDGuGmKeZdku9aA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hPpofyRm; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705545151; x=1737081151;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=rZUgRK/6bWCbmtxrq6/nPe4yEvZHLPc6MjZDysW0tkE=;
-  b=hPpofyRmxHCrQnpU01ON8tKaiNIDueaQGHJjar6HVBgLLiBpU3ny/nsw
-   kmj7CSrMdHFCaI15TjGDZP3PSyBA9HCW1nT7lxjvlfY+jw7Nf2PrWi8Zk
-   MyjgNQgusdgBzuVQtcAQtyQYwolvDqiJ3qYp+yKfwsp1EyoalvLh7C007
-   faa3WUB1lHsSqU8FUeGH3w7YRxiChr5xTsRk5JVu5OOFG3LjuUGZ/qLq7
-   Bu5kSYPHZSYPN/br/28BFyhlmJsm9z377FWp3/WvcHSMT15P7gtvB3Bhl
-   n/Cw4w2T+5W9FIGF27C4NCNF1cXpWOvbaG2YxT0u9f0YKG4nS+6LaBgFe
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="404096617"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="404096617"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 18:32:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="854865851"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="854865851"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.254.215.192]) ([10.254.215.192])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 18:32:23 -0800
-Message-ID: <f6e57309-be5a-4a84-a280-6ed00a550548@linux.intel.com>
-Date: Thu, 18 Jan 2024 10:32:20 +0800
+	s=arc-20240116; t=1705545290; c=relaxed/simple;
+	bh=CnA0w49IF8enfhXEes0dk7a/PKOBy+B/UoVjYJQjNYM=;
+	h=X-SMAIL-HELO:Received:X-Sender:X-Auth-ID:X-SMAIL-MID:X-SMAIL-UIID:
+	 From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding; b=FMXHPNondHRNMQSTFvAj/CgTOji6edr+x6/O9lrj7YuQUnY9C4Cr75bnUPo8k4tCHXpPkMLBV3lQ1eVlqS62kCdSxIEOpm9oX2L//E2+F2IXRYf6acyk3HLHRHLWNNvfWN+jKKwvPeKN5Zp8pui2ZL4b6GG2wLc+PD/ib5r4rzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.25.116.10])
+	by sina.com (10.75.12.45) with ESMTP
+	id 65A88E160000728F; Thu, 18 Jan 2024 10:34:01 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 26839831458093
+X-SMAIL-UIID: CE22F8317646437A9919901293FEC241-20240118-103401-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
+Date: Thu, 18 Jan 2024 10:33:48 +0800
+Message-Id: <20240118023348.1310-1-hdanton@sina.com>
+In-Reply-To: <000000000000498a02060de59162@google.com>
+References: <000000000000498a02060de59162@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v10 0/5] fix vt-d hard lockup when hotplug ATS capable
- device
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-To: Baolu Lu <baolu.lu@linux.intel.com>, kevin.tian@intel.com,
- bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
- robin.murphy@arm.com, lukas@wunner.de
-Cc: linux-pci@vger.kernel.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
- <1a2a4069-c737-4a3c-a2f6-cce06823331b@linux.intel.com>
- <3ee904e9-8a93-4bd9-8df7-6294885589e4@linux.intel.com>
- <42f7848a-0262-4871-b5dc-0e87beebfd11@linux.intel.com>
- <dcd27bc8-5eca-41ae-bb86-fd8e657ccfed@linux.intel.com>
- <d72d0a12-f3a4-4b4d-8b3b-5e59937a21d3@linux.intel.com>
- <5a9c38ec-1dc2-40d3-99eb-02b87be660a6@linux.intel.com>
- <9cc2010f-269c-4d23-b284-6fe4162f8810@linux.intel.com>
-In-Reply-To: <9cc2010f-269c-4d23-b284-6fe4162f8810@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+On Mon, 01 Jan 2024 09:18:16 -0800
+> syzbot found the following issue on:
+> 
+> HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122dfc65e80000
 
-On 1/18/2024 10:26 AM, Ethan Zhao wrote:
->
-> On 1/18/2024 8:46 AM, Baolu Lu wrote:
->> On 1/17/24 5:00 PM, Ethan Zhao wrote:
->>> +       /*
->>> +        * If the ATS invalidation target device is gone this moment 
->>> (surprise
->>> +        * removed, died, no response) don't try this request again. 
->>> this
->>> +        * request will not get valid result anymore. but the 
->>> request was
->>> +        * already submitted to hardware and we predict to get a ITE in
->>> +        * followed batch of request, if so, it will get handled then.
->>> +        */
->>> +       if (target_pdev && !pci_device_is_present(target_pdev))
->>> +               return -EINVAL;
->>
->> Again, we should not ignore the error triggered by the current request.
->> Do not leave it to the next one. The WAIT descriptor is a fence. Handle
->> everything within its boundary.
->
->  We didn't set fence bit to every ATS invalidation wait descriptor,
->
-> only the intel_drain_pasid_prq() queue a drain page requests with FN
->
-> sit, but that is not called in hotplug removal path.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-So, in fact so far, it doesn't act as a fence except the 
-intel_drain_pasid_prq() ,
-
-and it never handle everthing within its border.
-
-
-Thanks,
-
-Ethan
-
->
->
-> Thanks,
->
-> Ethan
->
->
->
->>
->> Best regards,
->> baolu
->
+--- x/net/core/filter.c
++++ y/net/core/filter.c
+@@ -2147,6 +2147,10 @@ static int __bpf_redirect_no_mac(struct
+ 		kfree_skb(skb);
+ 		return -ERANGE;
+ 	}
++	if (skb_headlen(skb) <= mlen + sizeof(struct iphdr)) {
++		kfree_skb(skb);
++		return -ERANGE;
++	}
+ 
+ 	if (mlen) {
+ 		__skb_pull(skb, mlen);
+--
 
