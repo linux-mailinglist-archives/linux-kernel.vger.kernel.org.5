@@ -1,72 +1,111 @@
-Return-Path: <linux-kernel+bounces-30071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 766FA8318C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:55:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53ADD8318C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:58:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94EF61C20DA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:55:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E444285E02
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 11:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3164424B38;
-	Thu, 18 Jan 2024 11:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16263241EC;
+	Thu, 18 Jan 2024 11:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KVOdbaP0";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eRJXjOOO"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OIetjBDp"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD75C24B2C
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033CF24201
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705578896; cv=none; b=NJukDE9dATl2i5FGHkfVGAHg6k16Dr56GeT5b58pwbWRDXg43wTt5wyudKSIbmhcIQRtCnQXIXr0/FpiNCVwB92zGh3tgVNBcetH/IPqNXbDXOGDv6PPIADe6abb5FkGX+6TAdQ4zCuIO22pLn+4LKSvBMae+74dzuyDkZog588=
+	t=1705579093; cv=none; b=E0e93F+iKexpmj9PYZW7m/ZbQMndcs0znbIgHvMpeD/aFauTte4jZmlhmUTqLlLwBZmfyPzNK4AzWD9FfHEvJIdft2YC+1LQNE3+26pX1i1GfEmLPHK2fiRda5DKgBjcCe4xzVeG1sli9rl5DSBeRXKdp17ux1g1uCk+YpLu3lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705578896; c=relaxed/simple;
-	bh=KL3D6nF+EcTdA1XslZF8kY0lQsesqywyVVhbd711gAw=;
-	h=Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To; b=M1pSv1Ggbsp+uvVQ1fwkwqFvAskLgfjAADXXQczZrMuQWha+1g2ai5fLUuWipAqBmo9qdmjN0/DDOuM8yS997GwsDy/YRUMUUZyoSO/A2xyhPaVN0+rdlQR48vYY/aPWQLDSZlcn8Rx7gN7C8fLKMUmxK1Hynt0mf3Un7bI3PBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KVOdbaP0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eRJXjOOO; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 18 Jan 2024 12:54:51 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705578892;
+	s=arc-20240116; t=1705579093; c=relaxed/simple;
+	bh=X82cqppfXg1vTXr8GzlQmIMAHtN7MmeahOqytI0aDbM=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:
+	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
+	 X-Google-Smtp-Source:X-Received:Received:Received:From:To:Cc:
+	 Subject:In-Reply-To:References:X-Clacks-Overhead:Date:Message-ID:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding; b=mBhU6Z+Ie2YjkHYeGT5OJy607Lw8FGS6ip+Ve1TWva5uxX30gtIM5tK5+bUAnoNWRuVk9bvpHum8pL9YZMuseQ2D8lGb2Z3q6xo12p8daceR+OJFeqLu4j0fl8j+MCqf9VFe+piOrnjqUqxQIPzAKg+r0aZO3wraHNJUqpohZIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OIetjBDp; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705579091;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=F0k9tV2fdGZXdBmJ9ubkFL7Z2lu4Lj7jGGCNYLeTsQ4=;
-	b=KVOdbaP0F0xoMI2Ay65sbU45+7ZgmvrJSyldKXJRfjtrYX8dj0neEryfVae3v5Sn6qGrK5
-	J9bd0cjHysfEH2qY7m/CTXsbai+TwFEQIb5zJOiaF7D4kVyplc2GqxpekwYHStSRIdsfdp
-	DL+aBjUAInRx2Yeb8b7VEgvsJhzx6q3xwTclNJxy7JAgypHx7B7npm4n5Y3EtsBUx0w754
-	6WJc6OoNYxRSo0CKggVi5jp8j+e3FQ6OwdIUoJbzLz2wOAm0y2DNx8hunVEKWG/WGkoFP7
-	7ivyGmBtPWrAE6hCugRmyob35VLrzatH3gWEMG+udRUUb2YafMPtRMUHKW4yug==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705578892;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F0k9tV2fdGZXdBmJ9ubkFL7Z2lu4Lj7jGGCNYLeTsQ4=;
-	b=eRJXjOOOQ0IDMcCiNvll63+GWsINpScquiXvaISAJfcf03wqKPHbJCzf2tMWUfy7JmTtSY
-	iJPtm+rRMsq+M8AQ==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jiri Slaby <jirislaby@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	boqun.feng@gmail.com, bristot@redhat.com, bsegall@google.com,
-	dietmar.eggemann@arm.com, jstultz@google.com, juri.lelli@redhat.com,
-	longman@redhat.com, mgorman@suse.de, mingo@redhat.com,
-	rostedt@goodmis.org, swood@redhat.com, vincent.guittot@linaro.org,
-	vschneid@redhat.com, will@kernel.org
-Subject: [PATCH v2] futex: Avoid reusing outdated pi_state.
-Message-ID: <20240118115451.0TkD_ZhB@linutronix.de>
-References: <20240116130810.ji1YCxpg@linutronix.de>
- <87wms7g62b.ffs@tglx>
+	bh=K8Qc8s97lzK/6LVP40VLku+QWSyBWBrxtyhvc1y67Ow=;
+	b=OIetjBDpayHlHu4C77+NXRFw7uCqMXRb5vF7NZ2WeUxnuhbm3y1onrXxc/4uNgpM+tAiZ7
+	eNZHRQGngW2kKIob89U+ifbBrg7Td6MsxUUdWvOz75g2pG8k4blT+6aAO0D1m/noCbglBO
+	L+okcYkUinaAdNa0yaz7bohTbVtr94M=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-84-mzX2lsBuPSOWVtf_kZl2Rw-1; Thu, 18 Jan 2024 06:58:09 -0500
+X-MC-Unique: mzX2lsBuPSOWVtf_kZl2Rw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a2866011bbaso78363166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 03:58:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705579088; x=1706183888;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K8Qc8s97lzK/6LVP40VLku+QWSyBWBrxtyhvc1y67Ow=;
+        b=gfMOdOXWOnkwzp+qJq2mwV8H3jejxigtZA8Hi4DUJy07Thcgba/UqqHZTXlYizH8Oj
+         ObaFIZLR2ilwxFCuEF9h9pmwJ1rTie0kcFYbYHP2YQoYtCoDMIqCX2/yxXi2jxP3isMg
+         VoCF9UBHMpHTbPpGRBRHPG0ViejV0Z7tkdn+Ce/AdVZpNJ609oojX1UaX8V8B/xxbe7z
+         vfE+Xb4a33NRa5mfewbgByO6pW9SPDAPi+p/42rzwf8j33GaItxro+6f8ucp1AJiWyxL
+         RMjDwVVhe5CB79H9FW/S1SSa1hdFo/NnGz8uSNES0sQ6lqoatlvg5ilNkJ0QXSFLUr29
+         R0vQ==
+X-Gm-Message-State: AOJu0YwFRFQtpyllNLI0FZUXZskmioXo0stgZATriLpiHhNjnLOwSOz1
+	6BowFojxMpijZVfBJyOSf1LAVfvSBqJL0bxB6BVNSX2BWdR2gIBZv2yfo8LZe6mpvINeuYshvSA
+	8GH6BgpiwmY1uO3rS3sLW3lUOLRdAsmFKq/lL3/QXWGq5U4zCG38kvxWZaqqNuA==
+X-Received: by 2002:a17:907:920d:b0:a2b:ebd5:80bd with SMTP id ka13-20020a170907920d00b00a2bebd580bdmr695558ejb.42.1705579088506;
+        Thu, 18 Jan 2024 03:58:08 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGGGO5E/Kwhm76zD+5k/fy00eMidLtcdtb5JLMPh23IfsUK5h8/QfmCHB/u1LpIBwuJ9ZoAfQ==
+X-Received: by 2002:a17:907:920d:b0:a2b:ebd5:80bd with SMTP id ka13-20020a170907920d00b00a2bebd580bdmr695543ejb.42.1705579088227;
+        Thu, 18 Jan 2024 03:58:08 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id cw1-20020a170907160100b00a2dae4e408bsm5484231ejd.15.2024.01.18.03.58.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 03:58:07 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 57A871088BB0; Thu, 18 Jan 2024 12:58:07 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, LKML
+ <linux-kernel@vger.kernel.org>, Network Development
+ <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Boqun
+ Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, Eric
+ Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Waiman Long <longman@redhat.com>, Will
+ Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Cong Wang <xiyou.wangcong@gmail.com>, Hao
+ Luo <haoluo@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Jiri
+ Pirko <jiri@resnulli.us>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Ronak
+ Doshi <doshir@vmware.com>, Song Liu <song@kernel.org>, Stanislav Fomichev
+ <sdf@google.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
+ redirect.
+In-Reply-To: <20240118073540.GIobmYpD@linutronix.de>
+References: <20231215171020.687342-1-bigeasy@linutronix.de>
+ <20231215171020.687342-16-bigeasy@linutronix.de>
+ <CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
+ <87r0iw524h.fsf@toke.dk> <20240112174138.tMmUs11o@linutronix.de>
+ <87ttnb6hme.fsf@toke.dk> <20240118073540.GIobmYpD@linutronix.de>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 18 Jan 2024 12:58:07 +0100
+Message-ID: <878r4m6egg.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,135 +113,72 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <87wms7g62b.ffs@tglx>
 
-Jiri Slaby reported a futex state inconsistency resulting in -EINVAL
-during a lock operation for a PI futex. A requirement is that the lock
-process is interrupted by a timeout or signal:
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
 
-T1 Owns the futex in userland.
+> On 2024-01-17 17:37:29 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> This is all back-of-the-envelope calculations, of course. Having some
+>> actual numbers to look at would be great; I don't suppose you have a
+>> setup where you can run xdp-bench and see how your patches affect the
+>> throughput?
+>
+> No but I probably could set it up.
 
-T2 Tries to acquire the futex in kernel (futex_lock_pi()). Allocates a
-   pi_state and attaches itself to it.
+That would be great! Feel free to ping me if you need any pointers to
+how we usually do the perf measurements :)
 
-T2 Times out and removes its rt_waiter from the rt_mutex.
+>> I chatted with Jesper about this, and he had an idea not too far from
+>> this: split up the XDP and regular stack processing in two stages, each
+>> with their individual batching. So whereas right now we're doing
+>> something like:
+>>=20
+>> run_napi()
+>>   bh_disable()
+>>   for pkt in budget:
+>>     act =3D run_xdp(pkt)
+>>     if (act =3D=3D XDP_PASS)
+>>       run_netstack(pkt)  // this is the expensive bit
+>>   bh_enable()
+>>=20
+>> We could instead do:
+>>=20
+>> run_napi()
+>>   bh_disable()
+>>   for pkt in budget:
+>>     act =3D run_xdp(pkt)
+>>     if (act =3D=3D XDP_PASS)
+>>       add_to_list(pkt, to_stack_list)
+>>   bh_enable()
+>>   // sched point
+>>   bh_disable()
+>>   for pkt in to_stack_list:
+>>     run_netstack(pkt)
+>>   bh_enable()
+>>=20
+>>=20
+>> This would limit the batching that blocks everything to only the XDP
+>> processing itself, which should limit the maximum time spent in the
+>> blocking state significantly compared to what we have today. The caveat
+>> being that rearranging things like this is potentially a pretty major
+>> refactoring task that needs to touch all the drivers (even if some of
+>> the logic can be moved into the core code in the process). So not really
+>> sure if this approach is feasible, TBH.
+>
+> This does not work because bh_disable() does not disable scheduling.
+> Scheduling may happen. bh_disable() acquires a lock which is currently
+> the only synchronisation point between two say network driver doing
+> NAPI. And this what I want to get rid of.
+> Regarding expensive bit as in XDP_PASS: This doesn't need locking as per
+> proposal, just the REDIRECT piece.
 
-T1 Unlocks the futex (futex_unlock_pi()). Finds a futex_q but no
-   rt_waiter. Unlocks the futex (do_uncontended) and makes it available
-   to userland.
+Right, well s/bh_disable()/lock()/; my main point was splitting up the
+processing so that the XDP processing itself and the stack activation on
+XDP_PASS is not interleaved. This will make it possible to hold the lock
+around the whole XDP batch, not just individual packets, and so retain
+the performance we gain from amortising expensive operations over
+multiple packets.
 
-T3 Acquires the futex in userland.
-
-T4 Tries to acquire the futex in kernel (futex_lock_pi()). Finds the
-   existing futex_q and tries to attach itself to the existing pi_state.
-   This (attach_to_pi_state()) fails with -EINVAL because uval contains
-   the pid of T3 but pi_state points to T1.
-
-We must not unlock the futex and make it available for userland as long
-as there is still an existing state in kernel. It can be used by further
-futex_lock_pi() caller and observe inconsistent state.
-
-The lock can not be handed over to T1 because it already gave up and
-started to clean up.
-All futex_q entries point to the same pi_state and the pi_mutex has no
-waiters. A waiter can not be enqueued because hb->lock +
-pi_mutex.wait_lock is acquired (by the unlock operation) and the same
-ordering is used by futex_lock_pi() during locking.
-
-Remove all futex_q entries from the hb list which point to the futex if
-no waiter has been observed in the futex_unlock_pi() path. This closes
-the race window by removing all pointer to the previous in-kernel state.
-
-The leaving futex_lock_pi() caller can clean up the pi-state once it
-acquires hb->lock. During the process futex_unqueue_pi() must remove
-the futex_q item from the hb list only if not yet happened.
-
-Fixes: fbeb558b0dd0d ("futex/pi: Fix recursive rt_mutex waiter state")
-Reported-by: Jiri Slaby <jirislaby@kernel.org>
-Closes: https://lore.kernel.org/all/4611bcf2-44d0-4c34-9b84-17406f881003@ke=
-rnel.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Tested-by: Jiri Slaby <jirislaby@kernel.org>
----
-v1=E2=80=A6v2:
-  - Removed the argument to futex_unqueue_pi(). __futex_unqueue() is now
-    always invoked conditionally.
-  - Rewrote the patch description and comments in the patch.
-  - Corrected the Closes: link and added Tested-by.
-
- kernel/futex/core.c |  7 ++++++-
- kernel/futex/pi.c   | 11 ++++++++---
- 2 files changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/futex/core.c b/kernel/futex/core.c
-index dad981a865b84..fd56a84b163a1 100644
---- a/kernel/futex/core.c
-+++ b/kernel/futex/core.c
-@@ -628,10 +628,15 @@ int futex_unqueue(struct futex_q *q)
- /*
-  * PI futexes can not be requeued and must remove themselves from the
-  * hash bucket. The hash bucket lock (i.e. lock_ptr) is held.
-+ * If the lock was not acquired (due to timeout or signal) then the rt_wai=
-ter
-+ * is removed before futex_q is. If this is observed by unlocker then it w=
-ill
-+ * remove futex_q from the hash bucket list. Thefore the removal here is
-+ * optional.
-  */
- void futex_unqueue_pi(struct futex_q *q)
- {
--	__futex_unqueue(q);
-+	if (!plist_node_empty(&q->list))
-+		__futex_unqueue(q);
-=20
- 	BUG_ON(!q->pi_state);
- 	put_pi_state(q->pi_state);
-diff --git a/kernel/futex/pi.c b/kernel/futex/pi.c
-index 90e5197f4e569..50008b7b38e7e 100644
---- a/kernel/futex/pi.c
-+++ b/kernel/futex/pi.c
-@@ -1135,6 +1135,7 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int f=
-lags)
-=20
- 	hb =3D futex_hash(&key);
- 	spin_lock(&hb->lock);
-+retry_hb:
-=20
- 	/*
- 	 * Check waiters first. We do not trust user space values at
-@@ -1177,12 +1178,17 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int=
- flags)
- 		/*
- 		 * Futex vs rt_mutex waiter state -- if there are no rt_mutex
- 		 * waiters even though futex thinks there are, then the waiter
--		 * is leaving and the uncontended path is safe to take.
-+		 * is leaving. The entry needs to be removed from the list so a
-+		 * new futex_lock_pi() is not using this outdated PI-state while
-+		 * the futex is available in userland again.
-+		 * There can be more than one task on its way out so it needs
-+		 * to retry.
- 		 */
- 		rt_waiter =3D rt_mutex_top_waiter(&pi_state->pi_mutex);
- 		if (!rt_waiter) {
-+			__futex_unqueue(top_waiter);
- 			raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
--			goto do_uncontended;
-+			goto retry_hb;
- 		}
-=20
- 		get_pi_state(pi_state);
-@@ -1217,7 +1223,6 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int f=
-lags)
- 		return ret;
- 	}
-=20
--do_uncontended:
- 	/*
- 	 * We have no kernel internal state, i.e. no waiters in the
- 	 * kernel. Waiters which are about to queue themselves are stuck
---=20
-2.43.0
+-Toke
 
 
