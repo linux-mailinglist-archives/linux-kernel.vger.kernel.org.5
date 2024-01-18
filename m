@@ -1,189 +1,120 @@
-Return-Path: <linux-kernel+bounces-29684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83C538311AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:15:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2A668311B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 04:19:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A95A1C220A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:15:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1832D2829C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF656104;
-	Thu, 18 Jan 2024 03:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PRHpNnSy"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA906106;
+	Thu, 18 Jan 2024 03:19:44 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FE08F40;
-	Thu, 18 Jan 2024 03:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8624D5395;
+	Thu, 18 Jan 2024 03:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705547745; cv=none; b=nLjNHpegCXPXFr2UiRtHirlN93qPje+aF+qPCW9PPxEBcOW0jVjWnWLNHEq4S91o9DRxW2w7VqCzRUVp4B5I85bP7J1MZ10Np7+YZGWU9IohnC651gHqaI9rGkz8iiaGVWCrROvQ4Ol3szzcFH04LAw1NvdJC5QevOgcTvZXbQ8=
+	t=1705547984; cv=none; b=dMd7E6DasczxpgMci7Y+gyFqSQGO7Xt/3sBkDgUv0MlFwOjxuoAkBYhtkGXkck8nHY3zzdsjcldqfU74MHayN+jrojlIHGQUDgve9zv4c/1/SqAhuAMyovKBmUzfVUKPp9a/240pb4iSMlXJlh7ygQxK0pSuv8LHlhaOMVbejdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705547745; c=relaxed/simple;
-	bh=ahcR17wy58ScwIXrUFs8un/n33HPyuW4frd6NNX2NPc=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=UYfLOCQdxK237xJBHJN+AdThDexWkiT6uzuaKoi23sLGem3q/EkFZiINks9mRPyxzHQKWubjQe9eO0hezrORL8pYrZz0spwfjQwdyi6HcEiDJy1QIOWSP+nP6xBNvEGzwd6Br+PouUWUfipHyqvWFOOEoJ3XxgwfrDhc/pzkmLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PRHpNnSy; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso12860164a12.0;
-        Wed, 17 Jan 2024 19:15:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705547742; x=1706152542; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qcEJsJxbIc0RAjynqcDHIyz4es0oO29gIuI17GO9R1g=;
-        b=PRHpNnSykpd6UBJWF4m5Ovfjm0DeBX9am3QF/cygxUT9eoQGK0p+MIPCVg2bYRID8+
-         5hJxg9MsokrobeqlPUYYUfFx+i7Ed69tKoZvYDS8FZagtCXwi+Q1hKajSHFVtEQier9w
-         tUJo+4I+iioqKPdTKsbJGDESOc+ehJw7g7v4+eIL2Hy7fuk9CEPWfVFaMdZlHXKmR4Ga
-         eiHBZ934CMIPlFYouCe5nYoQGlHHw1OJTSXOvyf301xQPBLAdq27erKRI56WVtWupV2u
-         UePUuwO419ubvMzw+of3RtxjEa0liz9DhzBdigS7xPbSdLYPQi0eqpNRgbDCg/fC8ZCD
-         pEYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705547742; x=1706152542;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qcEJsJxbIc0RAjynqcDHIyz4es0oO29gIuI17GO9R1g=;
-        b=SbSFUkRQklxfTnrs2yIhs+D6o3gewSV/P5BzNTFiNEtUxBlzGj+IjrEf127UsUMw/S
-         B7N6gyj+pXifI8Na2qQjLdGM1ftr0snMdLjdYarQPicexX0dZzVYBnXaa9Oh6xKHezuh
-         DwoGwgNCyJ5zklZM25wlQ/WIVyD/IUqniIovOcDb3wv6SueCtCWloSuSBiQiT8jqXBMH
-         F5f7K2/n4bLkxuvrGgPfoSUuCD56BGbQWnJlUKdvcZwZ4bAl694kvu5UxIlCEMmKUUvz
-         bkq2LCJiE2k0m+HlyLmy1A+uIGeHq0CCTPWO9jC8ye4h/3TO1owwfK6d+shsI1SjMkIN
-         SOeA==
-X-Gm-Message-State: AOJu0YzyWBfQwVlIGfVT4Rla2Uwv3d7poxRMuH1XFVyImYcXc40OlY6a
-	c8+N8OGCxiBSb4D1U2fNHL004mNGlN8bpoLJlZQdRjxv15/jEZKyVoNL/IaAX266O04JCY2y2xi
-	KUIHM2ABkvGDpU6ISAYtnuvfGEzE=
-X-Google-Smtp-Source: AGHT+IG2KpdSARt9ngCj9PJk6H/6VhsAPH2Y6QTGCgL0gC6etSkuYrAHQ8YkaG8PI+ATXyYMa1Vr3+I3AlsDzkutXU4=
-X-Received: by 2002:aa7:c345:0:b0:555:e495:3540 with SMTP id
- j5-20020aa7c345000000b00555e4953540mr154855edr.73.1705547742047; Wed, 17 Jan
- 2024 19:15:42 -0800 (PST)
+	s=arc-20240116; t=1705547984; c=relaxed/simple;
+	bh=CoGvzEWgsxwu3UrwcqmHbOPzRseiLOEg/obwf3keBrY=;
+	h=X-UUID:X-CID-P-RULE:X-CID-O-INFO:X-CID-INFO:X-CID-META:X-CID-BVR:
+	 X-CID-BAS:X-CID-FACTOR:X-UUID:Received:Received:X-ns-mid:Received:
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=eu1ybStLB5aN47L+rtLf8r1S/OKdV17M8dhDGzmGr8kd5G9+LXXJE1wmqY2ni3vw42aPg+ECa0CbAs5t9kciAeY4Z3JeKeN3k6lG4F4gzl1j51d1ZZtKO5HKmVzP/4H8IEeh18X/60g2XsaZ1TwC9AYUiazCNFsSUUzgbxMIaf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: f85114de2f7f4de78e595bf92527fc4d-20240118
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:e38ac366-c8a4-4215-88da-3343b4ffb5f2,IP:10,
+	URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+	TION:release,TS:15
+X-CID-INFO: VERSION:1.1.35,REQID:e38ac366-c8a4-4215-88da-3343b4ffb5f2,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:15
+X-CID-META: VersionHash:5d391d7,CLOUDID:456f4a2f-1ab8-4133-9780-81938111c800,B
+	ulkID:240118111934Z45MBBSN,BulkQuantity:0,Recheck:0,SF:19|44|66|38|24|17|1
+	02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
+	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: f85114de2f7f4de78e595bf92527fc4d-20240118
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 476209112; Thu, 18 Jan 2024 11:19:32 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 788FEE000EB9;
+	Thu, 18 Jan 2024 11:19:32 +0800 (CST)
+X-ns-mid: postfix-65A898C4-298668660
+Received: from kernel.. (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 8869DE000EB9;
+	Thu, 18 Jan 2024 11:19:31 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: peter.ujfalusi@gmail.com,
+	vkoul@kernel.org
+Cc: dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] dmaengine: ti: edma: Add some null pointer checks to the edma_probe
+Date: Thu, 18 Jan 2024 11:19:29 +0800
+Message-Id: <20240118031929.192192-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115072306.303993-1-zegao@tencent.com> <CAM9d7cgXKaKTnfx9YJae2qqv0pXtWLVQPBN=2H0WZkenBjHFnQ@mail.gmail.com>
- <CAD8CoPA6xBT9hbGZoviyyQm1bwn2Oh=v8QCMjxkMMOSN2zfC-A@mail.gmail.com>
-In-Reply-To: <CAD8CoPA6xBT9hbGZoviyyQm1bwn2Oh=v8QCMjxkMMOSN2zfC-A@mail.gmail.com>
-From: Ze Gao <zegao2021@gmail.com>
-Date: Thu, 18 Jan 2024 11:15:31 +0800
-Message-ID: <CAD8CoPA0YgVHVW1Ya1O0-vhmpCbiw2h3i29ayzKmg4YTu-zeKQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4] perf sched: Fix task state report
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 18, 2024 at 11:00=E2=80=AFAM Ze Gao <zegao2021@gmail.com> wrote=
-:
->
-> On Wed, Jan 17, 2024 at 9:35=E2=80=AFAM Namhyung Kim <namhyung@kernel.org=
-> wrote:
-> >
-> > Hello,
-> >
-> > On Sun, Jan 14, 2024 at 11:23=E2=80=AFPM Ze Gao <zegao2021@gmail.com> w=
-rote:
-> > >
-> > > Hi,
-> > >
-> > > The problems of task state report in both libtraceevent
-> > > and perf sched has been reported in [1]. In short, they
-> > > parsed the wrong state due to relying on the outdated
-> > > hardcoded state string to interpret the raw bitmask
-> > > from the record, which left the messes to maintain the
-> > > backward compatibilities for both tools.
-> > >
-> > > [1] has not managed to make itself into the kernel, the
-> > > problems and the solutions are well studied though.
-> > >
-> > > Luckily, as suggested by Steven, perf/libtraceevent
-> > > records the print format, especially the __print_flags()
-> > > part of the in-kernel tracepoint sched_switch in its
-> > > metadata, and we have a chance to build the state str
-> > > on the fly by parsing it.
-> > >
-> > > Now that libtraceevent has landed this solution in [2],
-> > > we now apply the same idea to perf as well.
-> >
-> > Thanks for your work.  But perf links libtraceevent
-> > conditionally so you need to make sure if it works without
-> > that too.
->
-> Yes, I've tested with NO_LIBTRACEEVENT=3D1, and it turns
-> out perf removes perf sched subcmd without libtraceevent,
+devm_kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
-FWIW,  commit 378ef0f5d9d7f4 ("perf build: Use libtraceevent
-from the system") has proved this as well.
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ drivers/dma/ti/edma.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Regards,
-        -- Ze
+diff --git a/drivers/dma/ti/edma.c b/drivers/dma/ti/edma.c
+index f1f920861fa9..5f8d2e93ff3f 100644
+--- a/drivers/dma/ti/edma.c
++++ b/drivers/dma/ti/edma.c
+@@ -2404,6 +2404,11 @@ static int edma_probe(struct platform_device *pdev=
+)
+ 	if (irq > 0) {
+ 		irq_name =3D devm_kasprintf(dev, GFP_KERNEL, "%s_ccint",
+ 					  dev_name(dev));
++		if (!irq_name) {
++			ret =3D -ENOMEM;
++			goto err_disable_pm;
++		}
++
+ 		ret =3D devm_request_irq(dev, irq, dma_irq_handler, 0, irq_name,
+ 				       ecc);
+ 		if (ret) {
+@@ -2420,6 +2425,11 @@ static int edma_probe(struct platform_device *pdev=
+)
+ 	if (irq > 0) {
+ 		irq_name =3D devm_kasprintf(dev, GFP_KERNEL, "%s_ccerrint",
+ 					  dev_name(dev));
++		if (!irq_name) {
++			ret =3D -ENOMEM;
++			goto err_disable_pm;
++		}
++
+ 		ret =3D devm_request_irq(dev, irq, dma_ccerr_handler, 0, irq_name,
+ 				       ecc);
+ 		if (ret) {
+--=20
+2.39.2
 
-> which explains why the compiler does not complain no
-> evsel__intval() defined when !HAVE_LIBTRACEEVENT
-> given the fact so many references of evsel__intval() in
-> builtin-sched.c.
-> Here evsel__taskstate() uses the exact assumption as
-> evsel__intval(), so I put it next to it for clarity and it works
-> without a doubt.
->
-> > I think all libtraceevent related stuff should be in the
-> > util/trace-event.c which is included only if the library is
-> > available.  Maybe util/trace-event-parse.c is a better
-> > place but then you need to tweak the python-ext-sources
-> > and Makefile.perf for the case it's not available.
->
-> Thanks for pointing this out. I will do the hack if you insist
-> on this move :D. But I think the current version is clear
-> enough, otherwise we need to move all the parts guarded
-> by #ifdef HAVE_LIBTRACEEVENT out for complete decoupling.
-> What do you think of it?
->
-> Thanks,
->         -- Ze
->
-> > Thanks,
-> > Namhyung
-> >
-> > >
-> > > Regards,
-> > >
-> > >         -- Ze
-> > >
-> > > [1]: https://lore.kernel.org/lkml/20230803083352.1585-1-zegao@tencent=
-com/
-> > > [2]: https://lore.kernel.org/linux-trace-devel/20231224140732.7d41698=
-d@rorschach.local.home/
-> > >
-> > > Ze Gao (4):
-> > >   perf sched: Sync state char array with the kernel
-> > >   perf util: Add helpers to parse task state string from libtraceeven=
-t
-> > >   perf util: Add evsel__taskstate() to parse the task state info inst=
-ead
-> > >   perf sched: Commit to evsel__taskstate() to parse task state info
-> > >
-> > >  tools/perf/builtin-sched.c |  57 +++------------
-> > >  tools/perf/util/evsel.c    | 146 +++++++++++++++++++++++++++++++++++=
-++
-> > >  tools/perf/util/evsel.h    |   1 +
-> > >  3 files changed, 157 insertions(+), 47 deletions(-)
-> > >
-> > > --
-> > > 2.41.0
-> > >
 
