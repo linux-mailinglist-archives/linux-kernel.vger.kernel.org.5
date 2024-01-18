@@ -1,135 +1,152 @@
-Return-Path: <linux-kernel+bounces-29648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C858831148
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:09:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 207D283113D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:05:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C997FB20E80
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:09:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 186351C21865
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2CD5247;
-	Thu, 18 Jan 2024 02:09:13 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0A3749D;
+	Thu, 18 Jan 2024 02:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CA2BaMyZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBA42115;
-	Thu, 18 Jan 2024 02:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C1CC63A4;
+	Thu, 18 Jan 2024 02:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705543753; cv=none; b=ej4d7ElJY/M0gG2UFAYJECbPPUcRWV0Zx5fRRha12G7bZ5K65o214/aT/XKi0GENT7rC1kEQ9AMLsoj9CzYX3xzmBqVFXUS5qwiZBr+i6fXFbEipStynkGoWFtxV9bFHjkfsz6/h8DNgprMz8VpFAefrpWh+otJEGCTXPyGgJqM=
+	t=1705543490; cv=none; b=Pp3C35IDmnU+4Hm7N0Gs7LRYnL0083fCZWzyir902UJWuZgYoCHg4QNjDuf5ZR1H8iw9co5CqPFLLSFfV6HDYbX32ZoWonGvEmwnNsrF6iEkwS02z0iG5Sp84blmFNmA7HKWb8ZR5NV2GiOoUlAIiPnnsPMUvCPVq8NsKJllLcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705543753; c=relaxed/simple;
-	bh=z3G3oCbHidD8qynDWfVmNenXA6fw2hQV7eZGCKnPYyE=;
-	h=X-UUID:X-CID-P-RULE:X-CID-O-INFO:X-CID-INFO:X-CID-META:X-CID-BVR:
-	 X-CID-BAS:X-CID-FACTOR:X-UUID:Received:Received:X-ns-mid:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=kpNAS1jXVZ/E25p6Ts3EdHPsmjzpWAEn8deAVsxM90f5HsuKXtCLlTETrJoSEzqbsltOUJ3qVymZMk0Mw1gwEunWCnLUA8WoOQrAcf5iu2OHtvSe0P36KOvKUAK3NzQE6bt5vaN8jtpYHrq0oZJIL9SC/7xGdNwRUfoDryZRTu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 96769b9c0fbc46cd8ed79cbbd996c5c5-20240118
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:ee66016e-655b-450a-83d8-1a213d165016,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:1
-X-CID-INFO: VERSION:1.1.35,REQID:ee66016e-655b-450a-83d8-1a213d165016,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:1
-X-CID-META: VersionHash:5d391d7,CLOUDID:1b50787f-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240118100344LP7I44R2,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|42|7
-	4|64|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:
-	nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 96769b9c0fbc46cd8ed79cbbd996c5c5-20240118
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 696325700; Thu, 18 Jan 2024 10:03:42 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id D0A45E000EB9;
-	Thu, 18 Jan 2024 10:03:41 +0800 (CST)
-X-ns-mid: postfix-65A886FD-772615417
-Received: from [172.20.15.234] (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 46FA7E000EB9;
-	Thu, 18 Jan 2024 10:03:38 +0800 (CST)
-Message-ID: <e583bcd5-cae6-4299-8800-80e862a6bd8f@kylinos.cn>
-Date: Thu, 18 Jan 2024 10:03:37 +0800
+	s=arc-20240116; t=1705543490; c=relaxed/simple;
+	bh=XNIIq6PjrrNjsY11XjebC3Pu5vgGDdfjY33hybEPFtg=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 In-Reply-To:References:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding; b=Ju+hV3UNZmUEJVwV5v/RHPlhofwxccCrTGm8jQpwhsZSwv+RAI1kabVH+qbO53LljmdYrORsGH+02r32QjPElj/CClGfAzbPgtGoW+gEylhXQwW89PnFuDCTLPt81Bz8OOZ+v3I9dGEne+bIVLKBZ9GrcRvy1K+Pcs3DHg4Lpfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CA2BaMyZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49848C433C7;
+	Thu, 18 Jan 2024 02:04:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705543490;
+	bh=XNIIq6PjrrNjsY11XjebC3Pu5vgGDdfjY33hybEPFtg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CA2BaMyZWcW//E9N/pitv8U2ATbyOQ6mwGVGbU1UaoUJcalwYQ8hRBXOeaj2VOgGX
+	 reHmCT4l43M/VGtp27rrYVb87W4ytKRwRPD/3iaAyKUdRWeWMPhjddkUVtuvAfwUng
+	 DcmYuKzBobzzJ7idQt/1znlTC2MygQzs42bxM7nEw/5MaPQCMaQp/Lry1IEFUa6BOL
+	 Yvox0R04NYH+uIhntcSyNs6/9wTFsmQ9iRHhOYsgoYcBOCXtFhHiTj9d3Pgnl3uV71
+	 3+ArXQW6A5Q8cNjEgJJolGs8QflwpGP7wDwZQb+bsZkx8SnLypuGwIlHmsq34CQb6B
+	 KLcmzmLOKAKqg==
+Date: Wed, 17 Jan 2024 18:04:47 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, Eric Dumazet <edumazet@google.com>, Frederic
+ Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>, Paolo
+ Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Waiman Long <longman@redhat.com>, Will
+ Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Cong Wang <xiyou.wangcong@gmail.com>, Hao Luo
+ <haoluo@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Jiri Pirko
+ <jiri@resnulli.us>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+ <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Ronak Doshi
+ <doshir@vmware.com>, Song Liu <song@kernel.org>, Stanislav Fomichev
+ <sdf@google.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
+ redirect.
+Message-ID: <20240117180447.2512335b@kernel.org>
+In-Reply-To: <87ttnb6hme.fsf@toke.dk>
+References: <20231215171020.687342-1-bigeasy@linutronix.de>
+	<20231215171020.687342-16-bigeasy@linutronix.de>
+	<CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
+	<87r0iw524h.fsf@toke.dk>
+	<20240112174138.tMmUs11o@linutronix.de>
+	<87ttnb6hme.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] pstore/ram: Return directly after a failed kasprintf()
- call in ramoops_init_prz()
-To: Markus Elfring <Markus.Elfring@web.de>, linux-hardening@vger.kernel.org,
- kernel-janitors@vger.kernel.org, "Guilherme G. Piccoli"
- <gpiccoli@igalia.com>, Joel Fernandes <joel@joelfernandes.org>,
- Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, =?UTF-8?B?R8O8bnRlciBSw7Zjaw==?=
- <groeck@chromium.org>, Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-References: <644f44ad-7e2b-4a1a-bbd7-ccc79d479242@web.de>
-Content-Language: en-US
-From: Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <644f44ad-7e2b-4a1a-bbd7-ccc79d479242@web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi Markus,
-Thanks for your patch.
+On Wed, 17 Jan 2024 17:37:29 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> I am not contesting that latency is important, but it's a pretty
+> fundamental trade-off and we don't want to kill throughput entirely
+> either. Especially since this is global to the whole kernel; and there
+> are definitely people who want to use XDP on an RT kernel and still
+> achieve high PPS rates.
+>=20
+> (Whether those people really strictly speaking need to be running an RT
+> kernel is maybe debatable, but it does happen).
+>=20
+> > I expected the lock operation (under RT) to always succeeds and not
+> > cause any delay because it should not be contended. =20
+>=20
+> A lock does cause delay even when it's not contended. Bear in mind that
+> at 10 Gbps line rate, we have a budget of 64 nanoseconds to process each
+> packet (for 64-byte packets). So just the atomic op to figure out
+> whether there's any contention (around 10ns on the Intel processors I
+> usually test on) will blow a huge chunk of the total processing budget.
+> We can't actually do the full processing needed in those 64 nanoseconds
+> (not to mention the 6.4 nanoseconds we have available at 100Gbps), which
+> is why it's essential to amortise as much as we can over multiple
+> packets.
+>=20
+> This is all back-of-the-envelope calculations, of course. Having some
+> actual numbers to look at would be great; I don't suppose you have a
+> setup where you can run xdp-bench and see how your patches affect the
+> throughput?
 
-On 2024/1/18 04:24, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Wed, 17 Jan 2024 21:09:22 +0100
->=20
-> The result from a call of the function =E2=80=9Ckasprintf=E2=80=9D was =
-passed to
-> a subsequent function call without checking for a null pointer before
-> (according to a memory allocation failure).
-> This issue was detected by using the Coccinelle software.
->=20
-> Thus return directly after a failed kasprintf() call.
->=20
-> Fixes: 1227daa43bce1 ("pstore/ram: Clarify resource reservation labels"=
-)
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->   fs/pstore/ram.c | 3 +++
->   1 file changed, 3 insertions(+)
->=20
-> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
-> index 88b34fdbf759..1a673a4af17c 100644
-> --- a/fs/pstore/ram.c
-> +++ b/fs/pstore/ram.c
-> @@ -595,6 +595,9 @@ static int ramoops_init_prz(const char *name,
->   	}
->=20
->   	label =3D kasprintf(GFP_KERNEL, "ramoops:%s", name);
-> +	if (!label)
-> +		return -ENOMEM;
-> +
+A potentially stupid idea which I have been turning in my head is=20
+how we could get away from having the driver handle details of NAPI
+budgeting. It's an source of bugs and endless review comments.
 
-This part looks good to me.
+All drivers end up maintaining a counter of "how many packets have
+I processed" and comparing that against the budget. Would it be crazy
+if we put that inside napi_struct? Add a "budget" member inside
+napi_struct as well, and:
 
-Commit 1227daa43bce1 ("pstore/ram: Clarify resource reservation labels")
-introduce another two more kasprintf in the ramoops_init_przs.
+struct napi_struct {
+..
+	// poll state
+	unsigned int budget;
+	unsigned int rx_used;
+..
+}
 
-Could you fix it together?
->   	*prz =3D persistent_ram_new(*paddr, sz, sig, &cxt->ecc_info,
->   				  cxt->memtype, PRZ_FLAG_ZAP_OLD, label);
->   	kfree(label);
-> --
-> 2.43.0
->=20
---=20
-Thanks,
-   Kunwu
+static inline bool napi_rx_has_budget(napi)
+{
+	return napi->budget > napi->rx_used;
+}
 
+poll(napi) // no budget
+{
+	while (napi_rx_has_budget(napi)) {
+		napi_gro_receive(napi, skb); /* does napi->rx_used++ */
+		// maybe add explicit napi_rx_count() if
+		// driver did something funny with the frame.
+	}
+}
+
+We can also create napi_tx_has_budget() so that people stop being
+confused whether budget is for Tx or not. And napi_xdp_comp_has_budget()
+so that people stop completing XDP in hard irq context (budget=3D=3D0)...
+
+And we can pass napi into napi_consume_skb(), instead of, presumably
+inexplicably to a newcomer, passing in budget.
+And napi_complete_done() can lose the work_done argument, too.
+
+Oh, and I'm bringing it up here, because CONFIG_RT can throw
+in "need_resched()" into the napi_rx_has_budget(), obviously.
 
