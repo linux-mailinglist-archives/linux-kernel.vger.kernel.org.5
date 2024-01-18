@@ -1,51 +1,50 @@
-Return-Path: <linux-kernel+bounces-30087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D9AA8318FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:16:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95F0583192D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:33:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C86C21F27455
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:16:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D222B24FB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8755724B3A;
-	Thu, 18 Jan 2024 12:15:47 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2913E2421D;
+	Thu, 18 Jan 2024 12:33:41 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A51524208
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 12:15:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A652A33FA
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 12:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705580147; cv=none; b=hrlwzYOEin7oE7WDFTxi97Ev4cTJb+4uRpfjChN80Nsw2chjgpz3HU7d2SbCXWICdKUAX/+nWlgWqdCYNBniCM1Oxl8FlhYx5uUuXAEi4bpRqJmiXGuFyhB+OUulwYDkRBj2M74IhBLBUCjwyegLQDA20IHxMPCyxr7MrHEmSxc=
+	t=1705581220; cv=none; b=B7/KbdlfOJLBvN6cxZNEnT06nWTzpjZdh37XL61pO0XrCFj2ozdGNNN7xAo9e94OSzUiFkCZ6IkK5uNX8CVpql0NR5DqrlZzvMXOg+K+BueL0mVWB0ubnvXvJetLMVyLt6PuFrrg+w8uVGI8M2mTbvw+4MYu9XQHJnHhOfu+ges=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705580147; c=relaxed/simple;
-	bh=XReaYeH4oa5Yd0af0EK3ve6Wbk3NV4Ikk1OxA1yci94=;
+	s=arc-20240116; t=1705581220; c=relaxed/simple;
+	bh=bXRtTkMsQOcByH1DqJEtaBQEU/8SZM69SRf+aMse1Nw=;
 	h=Received:Received:Received:From:To:Subject:Date:Message-Id:
 	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-CM-TRANSID:
-	 X-Coremail-Antispam:X-CM-SenderInfo; b=kD8c+gpSXS7bafkGKJfpEUT/PmStYfyACwjAlvqiOvEQFTBN1NYZKw7nfvsX9fSfDvZismdtOuAo1ZQPXLJPtcIk3WIMZyi54cN0LwaJkdy+2umy1d3iGJ7UYQzPxvHF/L1wyjWhCCGj04Ld0eXREoXsYBSylzIGjOEWfdd76cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 X-Coremail-Antispam:X-CM-SenderInfo; b=h7hRJrr2H3ASWY/ZgWV/faH1WLe2rzIly0uSPuGamFXT8xMfrEFn8WYpJh3GakZKng5LMM5jx0NyOH/0JZLXz97XDv37QF8FyCIGwcniPqkBnBUOt3qudWu3sL7MZGCHutWJIL9xgy6E/3jtqQ+B6rouuswW//YiQudRLsm0tKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TG1sr6gJBz4f3mHh
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 20:15:28 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 15D6B1A016E
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 20:15:35 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TG2Gc3jkKz4f3kFh
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 20:33:28 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 49E9B1A016E
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 20:33:32 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP2 (Coremail) with SMTP id Syh0CgAnSQxlFqllWvbnBA--.43072S2;
-	Thu, 18 Jan 2024 20:15:34 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgAnLW+aGqllR6blBA--.39914S2;
+	Thu, 18 Jan 2024 20:33:32 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: akpm@linux-foundation.org,
-	jack@suse.cz,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] flex_proportions: remove unused fprop_local_single
-Date: Fri, 19 Jan 2024 04:13:21 +0800
-Message-Id: <20240118201321.759174-1-shikemeng@huaweicloud.com>
+Subject: [PATCH] writeback: avoid to move skipped wb in offline_cgwbs list
+Date: Fri, 19 Jan 2024 04:31:19 +0800
+Message-Id: <20240118203119.764016-1-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -54,163 +53,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAnSQxlFqllWvbnBA--.43072S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF47CryrKFyUXry7ArWUJwb_yoWrGFy7pF
-	nxK3yYgr4xZa18Ww4kA3ySywn7t348Jr18Ja47Cw4kCwsFyw1vqas7KF4rZa4Yk34rZrnY
-	gFn8KFn8WFZ8AF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_
-	Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r
-	xl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
-	0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z2
-	80aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28I
-	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-	IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-	87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j-6pPUUUUU=
+X-CM-TRANSID:gCh0CgAnLW+aGqllR6blBA--.39914S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF4xCF18Wr17CrW3GF48JFb_yoWDtFX_ua
+	9Yvr1UGrnxursY9Fya9a4UXrZYkw4kCr17WF40y347A3yUAr4DuFWkJFn7Xry8XFWagrWf
+	WrZIvw45Gr1q9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl8c
+	AvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7
+	JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oV
+	Cq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG
+	8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2js
+	IE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY
+	0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+	0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAI
+	cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
+	CF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0miiDUUUUU==
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-The single variant of flex_proportions is not used. Simply remove it.
+There is no need to move skipped wb to local list. Only move wb which is
+going to be cleanup to avoid unnecessary work.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- include/linux/flex_proportions.h | 32 -------------
- lib/flex_proportions.c           | 77 --------------------------------
- 2 files changed, 109 deletions(-)
+ mm/backing-dev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/flex_proportions.h b/include/linux/flex_proportions.h
-index 3e378b1fb0bc..e9a72fd0bfe7 100644
---- a/include/linux/flex_proportions.h
-+++ b/include/linux/flex_proportions.h
-@@ -38,38 +38,6 @@ int fprop_global_init(struct fprop_global *p, gfp_t gfp);
- void fprop_global_destroy(struct fprop_global *p);
- bool fprop_new_period(struct fprop_global *p, int periods);
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index 039dc74b505a..681548f848c5 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -773,8 +773,6 @@ static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
+ 	while (!list_empty(&offline_cgwbs)) {
+ 		wb = list_first_entry(&offline_cgwbs, struct bdi_writeback,
+ 				      offline_node);
+-		list_move(&wb->offline_node, &processed);
+-
+ 		/*
+ 		 * If wb is dirty, cleaning up the writeback by switching
+ 		 * attached inodes will result in an effective removal of any
+@@ -790,6 +788,8 @@ static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
+ 		if (!wb_tryget(wb))
+ 			continue;
  
--/*
-- *  ---- SINGLE ----
-- */
--struct fprop_local_single {
--	/* the local events counter */
--	unsigned long events;
--	/* Period in which we last updated events */
--	unsigned int period;
--	raw_spinlock_t lock;	/* Protect period and numerator */
--};
--
--#define INIT_FPROP_LOCAL_SINGLE(name)			\
--{	.lock = __RAW_SPIN_LOCK_UNLOCKED(name.lock),	\
--}
--
--int fprop_local_init_single(struct fprop_local_single *pl);
--void fprop_local_destroy_single(struct fprop_local_single *pl);
--void __fprop_inc_single(struct fprop_global *p, struct fprop_local_single *pl);
--void fprop_fraction_single(struct fprop_global *p,
--	struct fprop_local_single *pl, unsigned long *numerator,
--	unsigned long *denominator);
--
--static inline
--void fprop_inc_single(struct fprop_global *p, struct fprop_local_single *pl)
--{
--	unsigned long flags;
--
--	local_irq_save(flags);
--	__fprop_inc_single(p, pl);
--	local_irq_restore(flags);
--}
--
- /*
-  * ---- PERCPU ----
-  */
-diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
-index 83332fefa6f4..84ecccddc771 100644
---- a/lib/flex_proportions.c
-+++ b/lib/flex_proportions.c
-@@ -83,83 +83,6 @@ bool fprop_new_period(struct fprop_global *p, int periods)
- 	return true;
- }
- 
--/*
-- * ---- SINGLE ----
-- */
--
--int fprop_local_init_single(struct fprop_local_single *pl)
--{
--	pl->events = 0;
--	pl->period = 0;
--	raw_spin_lock_init(&pl->lock);
--	return 0;
--}
--
--void fprop_local_destroy_single(struct fprop_local_single *pl)
--{
--}
--
--static void fprop_reflect_period_single(struct fprop_global *p,
--					struct fprop_local_single *pl)
--{
--	unsigned int period = p->period;
--	unsigned long flags;
--
--	/* Fast path - period didn't change */
--	if (pl->period == period)
--		return;
--	raw_spin_lock_irqsave(&pl->lock, flags);
--	/* Someone updated pl->period while we were spinning? */
--	if (pl->period >= period) {
--		raw_spin_unlock_irqrestore(&pl->lock, flags);
--		return;
--	}
--	/* Aging zeroed our fraction? */
--	if (period - pl->period < BITS_PER_LONG)
--		pl->events >>= period - pl->period;
--	else
--		pl->events = 0;
--	pl->period = period;
--	raw_spin_unlock_irqrestore(&pl->lock, flags);
--}
--
--/* Event of type pl happened */
--void __fprop_inc_single(struct fprop_global *p, struct fprop_local_single *pl)
--{
--	fprop_reflect_period_single(p, pl);
--	pl->events++;
--	percpu_counter_add(&p->events, 1);
--}
--
--/* Return fraction of events of type pl */
--void fprop_fraction_single(struct fprop_global *p,
--			   struct fprop_local_single *pl,
--			   unsigned long *numerator, unsigned long *denominator)
--{
--	unsigned int seq;
--	s64 num, den;
--
--	do {
--		seq = read_seqcount_begin(&p->sequence);
--		fprop_reflect_period_single(p, pl);
--		num = pl->events;
--		den = percpu_counter_read_positive(&p->events);
--	} while (read_seqcount_retry(&p->sequence, seq));
--
--	/*
--	 * Make fraction <= 1 and denominator > 0 even in presence of percpu
--	 * counter errors
--	 */
--	if (den <= num) {
--		if (num)
--			den = num;
--		else
--			den = 1;
--	}
--	*denominator = den;
--	*numerator = num;
--}
--
- /*
-  * ---- PERCPU ----
-  */
++		list_move(&wb->offline_node, &processed);
++
+ 		spin_unlock_irq(&cgwb_lock);
+ 		while (cleanup_offline_cgwb(wb))
+ 			cond_resched();
 -- 
 2.30.0
 
