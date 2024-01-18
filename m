@@ -1,124 +1,182 @@
-Return-Path: <linux-kernel+bounces-30233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273FD831BE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFDED831BE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:59:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C7371C22D8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:57:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E41331C23BD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4FF1E521;
-	Thu, 18 Jan 2024 14:57:50 +0000 (UTC)
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618D71E521;
+	Thu, 18 Jan 2024 14:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pOwCPkuY"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D268624B32;
-	Thu, 18 Jan 2024 14:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE93A1E489
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705589870; cv=none; b=c2dcJ12OOEiJ7JHxfJKYX+IxZ/LViwpGzKFADU5whZq0wtnT+d5R3mfuq/O2XSsAqC4KfeC5X3j57rVZu+mHe+EFP4yQ05v4vQQ1tAZuzS2GRH0f9nfmGU39USTsZzQegspKcMSQYipPSNdqmhQQy8OAz0q3JeWF1H3dHgCUtKc=
+	t=1705589964; cv=none; b=X3RJISgeytNEI4nLYstsFUquyRHipnwwxSuSXp5qoPrrD0n73p1/twFjNxLkLckoGyM96DpNNzwo0AQZL8ViLvW/m4IqasdshsQoxiy1hFPOxDKqCkT6cJPSy6R3k//7nY5NAKzyRpsDyWTT90msHzB4NcGBbHExc8qQtzhRHpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705589870; c=relaxed/simple;
-	bh=9vG04yUoo2s196yOGMlC3D8vecQCNCa6UnsnMYuaq2o=;
-	h=Received:Received:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
-	 User-Agent:MIME-Version:X-Original-Sender:X-Originating-IP:
-	 X-ZEDAT-Hint; b=J8ukLx9U6GoL+uvZEhBeJcdt4CZMx0rwQ9GS6QhIaLvv4uqiIM+KJjwDJbDMpwfJSIOP8NPOTyah89uABm8LwaTyFH0wxbjCF90y8wLnCSg9GkkibKuGj1RtHu58R16V8Cn1AvmI9QukV4taXVzJg8JizwxJvm2ENk0Njcq50ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1rQTpj-000p61-ND; Thu, 18 Jan 2024 15:57:31 +0100
-Received: from p5dc556fd.dip0.t-ipconnect.de ([93.197.86.253] helo=[192.168.178.20])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1rQTpj-003N7a-FJ; Thu, 18 Jan 2024 15:57:31 +0100
-Message-ID: <4e4dfece5f2f44c6fc826735ddef67ca3c3ac2dc.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] sh: ecovec24: Rename missed backlight field from fbdev
- to dev
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Geert Uytterhoeven <geert+renesas@glider.be>, Yoshinori Sato
- <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Thomas
- Zimmermann <tzimmermann@suse.de>, Sam Ravnborg <sam@ravnborg.org>, Daniel
- Thompson <daniel.thompson@linaro.org>
-Cc: linux-sh@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel test
- robot <lkp@intel.com>
-Date: Thu, 18 Jan 2024 15:57:30 +0100
-In-Reply-To: <20230925111022.3626362-1-geert+renesas@glider.be>
-References: <20230925111022.3626362-1-geert+renesas@glider.be>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1705589964; c=relaxed/simple;
+	bh=k6rGCGj38YEdXpsi6au5FMf/nUAYKbTHYROQ02xUMEc=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=BlyW+EY33cqzkg/vWM+cSul+dIjodHn7zHzdmrekGLleKNNkCf4PvQOI+5nh3YcPL7640SVevouAdClpmbrverlgCV6fQaJKVNuaRJLvCxOST/sLXr1FD1+ADYff+m8WJy9nK1j2SLjtqomEy6kuJ6znncnUqN6NnzxS29lABEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pOwCPkuY; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-559f5db8f58so7260a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 06:59:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705589961; x=1706194761; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k6rGCGj38YEdXpsi6au5FMf/nUAYKbTHYROQ02xUMEc=;
+        b=pOwCPkuYtkropmmqOxnSV2JIx+OYjzToHs5L6Vq4gj0ghiEwtzHYUanCNXUtukj0+J
+         llT8rRPK01tHo9NdnuGcWZin+XdhDxVONUsjqWMjpFf5X/fhCduwGh6ili2D3LpzbnXp
+         zKNuvkzeqeJNJVu99CteRxkD3pGGLI8HnooAGfUq1im6uPkLEp+I31Ysz2MWL9RxCWiQ
+         XIn4s54o+obKbo0yiIZQJwE8nGRgA/HuooUS22rvjz/s5klg4fwXmckAd5vJoJMreJlH
+         EvouKoJpCLsSlxt433QYWUwXQD5jUJxcs8N8ztLd79XBVw/aeucu1XvYLOfrEdX/rRIh
+         3VOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705589961; x=1706194761;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k6rGCGj38YEdXpsi6au5FMf/nUAYKbTHYROQ02xUMEc=;
+        b=hI6okOMVRQUiaOAwKX5RMuXlorYxXGrT65+Q89dhySN5G7ujQmotLc0r1/fWKeAguD
+         WEA0sYome8Iuvs8rG779YUTGouRuLA/ZxjP3VBZ6ag6H5AM+PZQ1fx1q/ebR5peUf3LS
+         s5SOBJKriNEsKXyKXL9nurnKXcix56g6/yS4ris2QL8qHaKjlZCzyu1njaMfIg7FpdOq
+         6A2NpMbuYDJib+L2YKh59fHvNStPb0xpldCyu1hmV9/+6kr+HlzhN563Bfyt918zSZAJ
+         866RXu7IrCx9ouqHM8TfPVtYpFSYEAG4R0Bq7xKUdqkykfYFxa/KOxjIki6WViKtV4lt
+         ksNw==
+X-Gm-Message-State: AOJu0YxE1ELF56U+Pt5Uob/2r3fe48ftT2G34U2BRmoXpUGTW87X1t/0
+	FnBsuvF6WyYt8JxDJ+vQajz1mPseNJJvxbJqvX+M4JZPoO8xl6Mx4K+oDER3vm9naKjU8ke5MYl
+	xB6X9COYFjkI7NyeaSMONdAmDIV6PBlGWVKGl
+X-Google-Smtp-Source: AGHT+IHtQJZIhYWo20RfWorkKjfr5BHeQ+VsCtRIUwXOCTZ4aOM7H6cuXBtOcWoP3jUZY8xgehvROMlmzSA3U90VP98=
+X-Received: by 2002:a05:6402:1d91:b0:558:7f0f:aa70 with SMTP id
+ dk17-20020a0564021d9100b005587f0faa70mr92826edb.5.1705589961035; Thu, 18 Jan
+ 2024 06:59:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+References: <20240118120347.61817-1-ioworker0@gmail.com> <ZakqQyL9t2ffNUIf@tiehlicka>
+ <Zakq-54DFdPu0c2U@tiehlicka>
+In-Reply-To: <Zakq-54DFdPu0c2U@tiehlicka>
+From: "Zach O'Keefe" <zokeefe@google.com>
+Date: Thu, 18 Jan 2024 06:58:42 -0800
+Message-ID: <CAAa6QmTN2B-JAO=38A09hMtUp=srLiUfs=sDbck7Chkr=W-dCw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT to process_madvise()
+To: Michal Hocko <mhocko@suse.com>
+Cc: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org, david@redhat.com, 
+	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
+	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2023-09-25 at 13:10 +0200, Geert Uytterhoeven wrote:
-> One instance of gpio_backlight_platform_data.fbdev was renamed, but the
-> second instance was forgotten, causing a build failure:
->=20
->     arch/sh/boards/mach-ecovec24/setup.c: In function =E2=80=98arch_setup=
-=E2=80=99:
->     arch/sh/boards/mach-ecovec24/setup.c:1223:37: error: =E2=80=98struct =
-gpio_backlight_platform_data=E2=80=99 has no member named =E2=80=98fbdev=E2=
-=80=99; did you mean =E2=80=98dev=E2=80=99?
->      1223 |                 gpio_backlight_data.fbdev =3D NULL;
-> 	  |                                     ^~~~~
-> 	  |                                     dev
->=20
-> Fix this by updating the second instance.
->=20
-> Fixes: ed369def91c1579a ("backlight/gpio_backlight: Rename field 'fbdev' =
-to 'dev'")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309231601.Uu6qcRnU-lkp@i=
-ntel.com/
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  arch/sh/boards/mach-ecovec24/setup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/sh/boards/mach-ecovec24/setup.c b/arch/sh/boards/mach-e=
-covec24/setup.c
-> index 3be293335de54512..7a788d44cc73496c 100644
-> --- a/arch/sh/boards/mach-ecovec24/setup.c
-> +++ b/arch/sh/boards/mach-ecovec24/setup.c
-> @@ -1220,7 +1220,7 @@ static int __init arch_setup(void)
->  		lcdc_info.ch[0].num_modes		=3D ARRAY_SIZE(ecovec_dvi_modes);
-> =20
->  		/* No backlight */
-> -		gpio_backlight_data.fbdev =3D NULL;
-> +		gpio_backlight_data.dev =3D NULL;
-> =20
->  		gpio_set_value(GPIO_PTA2, 1);
->  		gpio_set_value(GPIO_PTU1, 1);
+On Thu, Jan 18, 2024 at 5:43=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> Dang, forgot to cc linux-api...
+>
+> On Thu 18-01-24 14:40:19, Michal Hocko wrote:
+> > On Thu 18-01-24 20:03:46, Lance Yang wrote:
+> > [...]
+> >
+> > before we discuss the semantic, let's focus on the usecase.
+> >
+> > > Use Cases
+> > >
+> > > An immediate user of this new functionality is the Go runtime heap al=
+locator
+> > > that manages memory in hugepage-sized chunks. In the past, whether it=
+ was a
+> > > newly allocated chunk through mmap() or a reused chunk released by
+> > > madvise(MADV_DONTNEED), the allocator attempted to eagerly back memor=
+y with
+> > > huge pages using madvise(MADV_HUGEPAGE)[2] and madvise(MADV_COLLAPSE)=
+[3]
+> > > respectively. However, both approaches resulted in performance issues=
+; for
+> > > both scenarios, there could be entries into direct reclaim and/or com=
+paction,
+> > > leading to unpredictable stalls[4]. Now, the allocator can confidentl=
+y use
+> > > process_madvise(MADV_F_COLLAPSE_LIGHT) to attempt the allocation of h=
+uge pages.
 
-Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Aside: The thought was a MADV_F_COLLAPSE_LIGHT _flag_; so it'd be
+process_madvise(..., MADV_COLLAPSE, MADV_F_COLLAPSE_LIGHT)
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> > IIUC the primary reason is the cost of the huge page allocation which
+> > can be really high if the memory is heavily fragmented and it is called
+> > synchronously from the process directly, correct? Can that be worked
+> > around by process_madvise and performing the operation from a different
+> > context? Are there any other reasons to have a different mode?
+> >
+> > I mean I can think of a more relaxed (opportunistic) MADV_COLLAPSE -
+> > e.g. non blocking one to make sure that the caller doesn't really block
+> > on resource contention (be it locks or memory availability) because tha=
+t
+> > matches our non-blocking interface in other areas but having a LIGHT
+> > operation sounds really vague and the exact semantic would be
+> > implementation specific and might change over time. Non-blocking has a
+> > clear semantic but it is not really clear whether that is what you
+> > really need/want.
+
+IIUC, usecase from Go is unbounded latency due to sync compaction in a
+context where the latency is unacceptable. Working w/ them to
+understand how things can be improved -- it's possible the changes can
+occur entirely on their side, w/o any additional kernel support.
+
+The non-blocking case awkwardly sits between MADV_COLLAPSE today, and
+khugepaged; esp when common case is that the allocation can probably
+be satisfied in fast path.
+
+The suggestion for something like "LIGHT" was intentionally vague
+because it could allow for other optimizations / changes down the
+line, as you point out. I think that might be a win, vs tying to a
+specific optimization (e.g. like a MADV_F_COLLAPSE_NODEFRAG). But I
+could be alone on that front, given the design of
+/sys/kernel/mm/transparent_hugepage.
+
+But circling back, I agree w/ you that the first order of business is to
+iron out a real usecase. As of right now, it's not clear something
+like this is required or helpful.
+
+Thanks,
+Zach
+
+
+
+
+> > > [1] https://github.com/torvalds/linux/commit/7d8faaf155454f8798ec5640=
+4faca29a82689c77
+> > > [2] https://github.com/golang/go/commit/8fa9e3beee8b0e6baa73337409961=
+81268b60a3a
+> > > [3] https://github.com/golang/go/commit/9f9bb26880388c5bead158e9eca3b=
+e4b3a9bd2af
+> > > [4] https://github.com/golang/go/issues/63334
+> > >
+> > > [v1] https://lore.kernel.org/lkml/20240117050217.43610-1-ioworker0@gm=
+ail.com/
+> > --
+> > Michal Hocko
+> > SUSE Labs
+>
+> --
+> Michal Hocko
+> SUSE Labs
 
