@@ -1,135 +1,173 @@
-Return-Path: <linux-kernel+bounces-29633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E60E831104
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:47:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25E9983110E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADBB6B224A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:47:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F12D1C2069E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 01:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323B933D5;
-	Thu, 18 Jan 2024 01:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="By1B/KUt"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41116FBC;
+	Thu, 18 Jan 2024 01:49:59 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607C02907
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB7D16104;
+	Thu, 18 Jan 2024 01:49:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705542449; cv=none; b=U1FNX72vQFxI4qcIKLi0u9y6I9nX8S+eEAbNBnmLWcLFKzo+ihGyUlweL9lfZzMQiavhqDwswSTZwblPYYKSHpBti/yhn9xzJU/Q2V10eUbpuA0WyAp+OAg41JUAonR3q5wDjeuobGimVsK6YNhF3h4GZf8g8RA8BKYD0jvNxx4=
+	t=1705542599; cv=none; b=QNAZcfoh1AVHR6o3DikVn7PrKyMOC2siWd5klFlw/4bfS9vs3CdiL61N8KyFkVug0xqT6cdCDJUkWRpEpKkRlBPAdnDLBL0Vb7ERJ/EblkrR0OdUoY7byCPK1L6NiJyKVzKusIDx6ZJijOj6gNWx6aNP6RtrE9LbZH8UxvKuBSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705542449; c=relaxed/simple;
-	bh=IzCbt6Kn4zEE1yM1iJiCGXyejnVITdsERAAt6Fmoigs=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=BZlhpz8vbT0bWNwXNeSd6T4SIiZ0Fk4miebZyjKpTgn36fN/BzGz0xzpVOThz48xho8Y6P5OiaQBdmVfJJzo3v5nIKYQ+nLfNG14c+ts2e+t7WOEGmb5Q0un3IR7+BVeMG1HKLR1cahllFhI7NqsAD11ql9cpFkpUM1tL5esLOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=By1B/KUt; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5fc2e997804so53551257b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:47:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1705542446; x=1706147246; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xSPD4dVB7yQhkt0VaTSNJwmcnifEmy9Ij5Sgpl1CTcc=;
-        b=By1B/KUtj8do5OtkHGwzzXyl2s9RwiZoD5Vg/Yk1Ohid8YscVuZNNqZDjCPfNM7Me+
-         AaY0Jbwk7g5Zr7/qBsBw5y5FyJ9xSSMiaw3/MrYFg3CQERsPe5RZME90E+HSay8DaEW5
-         GQUsoFQcmL8ETyfjPFseypXmLIxCa/3Qv+sas5XWbpPBuGkR6uu/I4mv+0gGseldfKWn
-         2lNDyax93cTHE0qnHfNxlN2PMyzM8XqbjFLyKrAWDMQtWPGqLQXcGRr3/LyI6tvj4Ir0
-         +QFsf6c4604G+EwgBiDld5MpfWi6MtDkQYoMnlaV8fbQlIG7TInQm5vMbMHfV01XN3yD
-         Y+9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705542446; x=1706147246;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xSPD4dVB7yQhkt0VaTSNJwmcnifEmy9Ij5Sgpl1CTcc=;
-        b=iYPxn2g92zESeMZpoc58P5Hfm4r3BHb6u5rRB1LWd6PJ8ON+5rtLoaL9m9p7F3OdWu
-         +iH5n/GVaf0JI7xb2TsI1zgwBsAPLZO4OWge3z6ErcQ1m81r2QQY/FyCwTDvtELUnOb7
-         dDb5NQACjD+WQ1of39rMLDGn3nRgiAZsBFILQCVTHQVmGfciTIwRFj8SKIiVtnZcR/+I
-         QqTyTkSlO3Q6pq4W1mxJetjtY1vgBKRovmB9rSInFvlcypL5StpaMC3v432tbkJmfMsU
-         qr2tMxJMGrOe5qBsZuwILhsJ9jTeQlGHv2wLl6N7UsfWo1pmhIqrrKl6cvKFyJuHUwPO
-         emAA==
-X-Gm-Message-State: AOJu0YwXkk/JPHmucZIOrCcHfPeWEx8tRFjBMiVGHuo4NYME92NJ3okc
-	orgd91Qyb/yGS3Eq47aXKKgH1rW/2FoU27roL5VHgR9OHOIr4hjCbITzH4+G6xErwEK6QXtM6nu
-	dJ9yLuYomlvxBxWwVyHinuuWk9K/ouvGkudIDZA==
-X-Google-Smtp-Source: AGHT+IFdpoOGBI1qBIxAzKo5lmEL9zYK/Wh3v6+6V/sZxY5+aJ+pxdGKZeFpOjaVByK73f1FBkZyCHg5w859zoq6520=
-X-Received: by 2002:a0d:c242:0:b0:5ff:49b8:747c with SMTP id
- e63-20020a0dc242000000b005ff49b8747cmr105605ywd.74.1705542446398; Wed, 17 Jan
- 2024 17:47:26 -0800 (PST)
+	s=arc-20240116; t=1705542599; c=relaxed/simple;
+	bh=/2EcgLIdjLkuVOwnCVBDIsmvCmTGxn7eKXilJfkoMRk=;
+	h=Received:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
+	 X-CM-SenderInfo; b=Fmvu1EaGu/2joDI7ExlbUcG6MxjfScEEzuUPb38GAJbm7jUFtoyvgYh4VfliOveXDevhmtSFL+sYyDZF9BLbSomnNaiyNkQA+T6snteIS1d61gfVL4q0NmPTC+nq9BdXZfzKh9rFOBkjMyp4LcpOdYxkTCxqxr/P3GBenswfjf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TFlzx67Qcz4f3jHy;
+	Thu, 18 Jan 2024 09:49:49 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 9747F1A0A10;
+	Thu, 18 Jan 2024 09:49:53 +0800 (CST)
+Received: from [10.174.179.247] (unknown [10.174.179.247])
+	by APP2 (Coremail) with SMTP id Syh0CgDH6w68g6hlTIu5BA--.57019S3;
+	Thu, 18 Jan 2024 09:49:52 +0800 (CST)
+Message-ID: <19ff9020-043c-ffc1-c09c-3c40814620b2@huaweicloud.com>
+Date: Thu, 18 Jan 2024 09:49:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116160141.165951-1-kernel@valentinobst.de> <20240116160141.165951-2-kernel@valentinobst.de>
-In-Reply-To: <20240116160141.165951-2-kernel@valentinobst.de>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Wed, 17 Jan 2024 20:47:15 -0500
-Message-ID: <CALNs47tgvK-3=0CrZ0tUuk91T+k49m_N_BNkwBvaNGFiZnt3UA@mail.gmail.com>
-Subject: Re: [PATCH 01/13] rust: kernel: fix multiple typos in documentation
-To: Valentin Obst <kernel@valentinobst.de>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH] md: Don't clear MD_CLOSING when the raid is about to stop
+To: Yu Kuai <yukuai1@huaweicloud.com>,
+ Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>, linan666@huaweicloud.com
+Cc: song@kernel.org, zlliu@suse.com, neilb@suse.com, shli@fb.com,
+ linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20231211081714.1923567-1-linan666@huaweicloud.com>
+ <20231211105620.00001753@linux.intel.com>
+ <f0ab24e5-eb0a-d564-19d4-b72ecedff34f@huaweicloud.com>
+From: Li Nan <linan666@huaweicloud.com>
+In-Reply-To: <f0ab24e5-eb0a-d564-19d4-b72ecedff34f@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgDH6w68g6hlTIu5BA--.57019S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw1UGr13WF4xJryUtr4fKrg_yoW5Gryfpa
+	97JF13tan0k348Gw4jqw1DJFyYqwn3JFWDAry8WF95Aa4vyryjgr4Sg390gr4DWFWfKF4U
+	K3W5J3ZrZr4vgw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBI14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+	4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+	04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
+	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0DUUUUU==
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
-On Tue, Jan 16, 2024 at 11:06=E2=80=AFAM Valentin Obst <kernel@valentinobst=
-de> wrote:
->
-> Fixes multiple trivial typos in documentation and comments of the
-> kernel crate.
->
-> allocator:
-> - Fix a trivial list item alignment issue in the last SAFETY comment of
-> `krealloc_aligned`.
->
-> init:
-> - Replace 'type' with 'trait' in the doc comments of the `PinInit` and
-> `Init` traits.
-> - Add colons before starting lists.
-> - Add spaces between the type and equal sign to respect the code
-> formatting rules in example code.
-> - End a sentence with a full stop instead of a colon.
->
-> ioctl:
-> - Replace 'an' with 'a' where appropriate.
->
-> str:
-> - Replace 'Return' with 'Returns' in the doc comment of `bytes_written`
-> as the text describes what the function does.
->
-> sync/lock/spinlock:
-> - The code in this module operates on spinlocks, not mutexes. Thus,
-> replace 'mutex' with 'spinlock' in the SAFETY comment of `unlock`.
->
-> workqueue:
-> - Replace "wont" with "won't" in the doc comment of `__enqueue`.
->
-> Signed-off-by: Valentin Obst <kernel@valentinobst.de>
-> ---
->  rust/kernel/allocator.rs          |  2 +-
->  rust/kernel/init.rs               | 16 ++++++++--------
->  rust/kernel/ioctl.rs              |  4 ++--
->  rust/kernel/str.rs                |  2 +-
->  rust/kernel/sync/lock/spinlock.rs |  2 +-
->  rust/kernel/workqueue.rs          |  2 +-
->  6 files changed, 14 insertions(+), 14 deletions(-)
 
-What an excellent commit message :)
 
-Reviewed-by: Trevor Gross <tmgross@umich.edu>
+在 2023/12/12 11:21, Yu Kuai 写道:
+> Hi,
+> 
+> 在 2023/12/11 17:56, Mariusz Tkaczyk 写道:
+>> On Mon, 11 Dec 2023 16:17:14 +0800
+>> linan666@huaweicloud.com wrote:
+>>
+>>> From: Li Nan <linan122@huawei.com>
+>>>
+>>> The raid should not be opened anymore when it is about to be stopped.
+>>> However, other processes can open it again if the flag MD_CLOSING is
+>>> cleared before exiting. From now on, this flag will not be cleared when
+>>> the raid will be stopped.
+>>>
+>>> Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called
+>>> md_set_readonly or do_md_stop") Signed-off-by: Li Nan 
+>>> <linan122@huawei.com>
+>>
+>> Hello Li Nan,
+>> I was there when I needed to fix this:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/song/md.git/commit/?h=md-next&id=c8870379a21fbd9ad14ca36204ccfbe9d25def43 
+>>
+>>
+>> For sure, you have to consider applying same solution for array_store 
+>> "clear".
+>> Minor nit below.
+>>
+>> Thanks,
+>> Mariusz
+>>
+>>> ---
+>>>   drivers/md/md.c | 8 +++-----
+>>>   1 file changed, 3 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>>> index 4e9fe5cbeedc..ebdfc9068a60 100644
+>>> --- a/drivers/md/md.c
+>>> +++ b/drivers/md/md.c
+>>> @@ -6238,7 +6238,6 @@ static void md_clean(struct mddev *mddev)
+>>>       mddev->persistent = 0;
+>>>       mddev->level = LEVEL_NONE;
+>>>       mddev->clevel[0] = 0;
+>>> -    mddev->flags = 0;
+>>
+>> I recommend (safety recommendation):
+>>     mddev->flags = MD_CLOSING;
+> 
+> Taking a look I think both MD_CLOSING and MD_DELETED should not be
+> cleared, however, there is no guarantee that MD_CLOSING will be set
+> before md_clean, because mdadm can be removed without running. Hence I
+> think just set MD_CLOSING is werid.
+> 
+> I think the proper way is to keep MD_CLOSING and MD_DELETED if they are
+> set. However, there is no such api to clear other bits at once. Since
+> we're not expecting anyone else to write flags, following maybe
+> acceptable:
+> 
+> mddev->flags &= BIT_ULL_MASK(MD_CLOSING) | BIT_ULL_MASK(MD_DELETED);
+> 
+
+MD_DELETED is only set after mddev->active is put to 0. We need to open 
+mddev and get it before stropping raid, so the active must not be 0 and
+MD_DELETED  will not be set in md_clean.
+
+> Or after making sure other flags cannot race, this patch is ok.
+> 
+> Thanks,
+> Kuai
+> 
+>>
+>> Unless you can prove that other flags cannot race.
+>>
+>>>       mddev->sb_flags = 0;
+>>>       mddev->ro = MD_RDWR;
+>>>       mddev->metadata_type[0] = 0;
+>>
+>> .
+>>
+> 
+> 
+> .
+
+-- 
+Thanks,
+Nan
+
 
