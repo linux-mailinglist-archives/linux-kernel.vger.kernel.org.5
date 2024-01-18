@@ -1,116 +1,80 @@
-Return-Path: <linux-kernel+bounces-30385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D866831E03
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7A7D831DF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:58:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 029811F21301
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:59:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D5861F22053
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C153D2D036;
-	Thu, 18 Jan 2024 16:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CaopBlRH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235772C6B1;
+	Thu, 18 Jan 2024 16:58:15 +0000 (UTC)
+Received: from fgw23-7.mail.saunalahti.fi (fgw23-7.mail.saunalahti.fi [62.142.5.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15E42C6AE;
-	Thu, 18 Jan 2024 16:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62ECF2C843
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 16:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705597106; cv=none; b=fpp4M4kYYpEhDCLY5GvPRs3Cgkdd9XM+xfxFcrnBDoSyXoQOGGW2FLQKgHfkGoInfduTemC5NAw86aLo1VaqZj3aQ7pJjTNkVKP9VHH1yhZ2t945V492AIwQOR8bS07CPJMuzCpI9pvJhVEfOxWy0bmIYgixlaZpF7a5owse67M=
+	t=1705597094; cv=none; b=K324WUKNXonOHjqk3nC4DrzjlGhkm0YJV3VQKzZFci2rDn+neYySSj9irmx7LYNWZDqB70UbsSoa8HViCb8SqDUb6n4rrOHUmKpBVxLS0yb+j/C+MuFZrzfiCv6pIceWWftiE9ZS1HIgKL3LGiUgi7YsteTZo6g+W6ZgUXO48Dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705597106; c=relaxed/simple;
-	bh=VB3r36g1TRzb+ZnbcM0huvM7RrOa7bcVG6ouX9BQqJA=;
-	h=Received:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding; b=O+xWeItNq8pJozdSMZarpv78olXlHUk9qwDrLEGFqgk69cnbK/xFDza/C+zxncdKgov/mFs1Q9PbDCYI/++WuP9DevKfWxANhpD2lybRcpZ7F1kA0hgiBMwO5o6i00HaGGE8Sjjnbfsi5mIPd+aDxnqJCRGbk3ESCMVT0QEytvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CaopBlRH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2FDEC43390;
-	Thu, 18 Jan 2024 16:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705597105;
-	bh=VB3r36g1TRzb+ZnbcM0huvM7RrOa7bcVG6ouX9BQqJA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CaopBlRHiCrC8zCeZp67HFQyNRiRgFzPECgJWdw8s18TdyRTNbsl2RO/26CPvhC8Q
-	 1f+ALwq2Z5yJg79gFKKhAF4BBYC1Ef9RLD7NKPWKHpYJTXo4p3EhwKyV2xgWjS4a/S
-	 5sscBlUUHPo/9iPuR2X0ehW7E10ESQuI9EbakUQ0ip2bY0GJeDcPbzfz2QS5K064HB
-	 rM8O6/SiwgTwLXvzMXt/hYsb09g+mBcvYw1n1txszMEx2I+0Gq0uuxmvmqgx9n1pdm
-	 BZm6SJ80h27wmzK6OHXn43VIZkQLcUXAKn14gFpUSTwBIAbShIe/skwOxSBufY8r7u
-	 NtSEMTQS7lapQ==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1rQVir-0003Z2-2R;
-	Thu, 18 Jan 2024 17:58:33 +0100
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH v3 3/5] ASoC: qcom: sc8280xp: limit speaker volumes
-Date: Thu, 18 Jan 2024 17:58:09 +0100
-Message-ID: <20240118165811.13672-4-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240118165811.13672-1-johan+linaro@kernel.org>
-References: <20240118165811.13672-1-johan+linaro@kernel.org>
+	s=arc-20240116; t=1705597094; c=relaxed/simple;
+	bh=QYRlUkW/XpdCNFGIHDOmI1vkPXM8L2eljOqXfzrzFsQ=;
+	h=Received:From:Date:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=ITf5OqdzVZVFQB0mdYbU09l7s2gbBZxJsEYvoAMijhkVoqsTEjveN/hbAl1cvkathoBK1nSp8pDCndUnGKqzfDom4Q9UsOjCXrwo0l7y9wdR+5G9p9a2CvWBGMyO0EN33df/K0GoY65CeGjZymSfUqoHjbigfZ1N9Oq0UB1qa2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
+	by fgw23.mail.saunalahti.fi (Halon) with ESMTP
+	id c2b5c193-b622-11ee-b972-005056bdfda7;
+	Thu, 18 Jan 2024 18:58:11 +0200 (EET)
+From: andy.shevchenko@gmail.com
+Date: Thu, 18 Jan 2024 18:58:10 +0200
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com,
+	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 0/6] Add cs42l43 PC focused SoundWire CODEC
+Message-ID: <ZalYooJxj7Ba0sYU@surfacebook.localdomain>
+References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
 
-The UCM configuration for the Lenovo ThinkPad X13s has up until now
-been setting the speaker PA volume to -3 dB when enabling the speakers,
-but this does not prevent the user from increasing the volume further.
+Fri, Aug 04, 2023 at 11:45:56AM +0100, Charles Keepax kirjoitti:
+> This patch chain adds support for the Cirrus Logic cs42l43 PC focused
+> SoundWire CODEC. The chain is currently based of Lee's for-mfd-next
+> branch.
+> 
+> This series is mostly just a resend keeping pace with the kernel under
+> it, except for a minor fixup in the ASoC stuff.
 
-Limit the PA volume to -3 dB in the machine driver to reduce the risk of
-speaker damage until we have active speaker protection in place.
 
-Note that this will probably need to be generalised using
-machine-specific limits, but a common limit should do for now.
+Sorry for the late review, nevertheless, I was alerted by the pin control code
+probe function that does something custom with devlinks. This is a red flag,
+please find time to fix that.
 
-Cc: stable@vger.kernel.org	# 6.5
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- sound/soc/qcom/sc8280xp.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+The rest of the review (since the code is in upstream) is probably good to have
+via follow up cleanups.
 
-diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
-index ed4bb551bfbb..a19bfa354af8 100644
---- a/sound/soc/qcom/sc8280xp.c
-+++ b/sound/soc/qcom/sc8280xp.c
-@@ -32,12 +32,14 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
- 	case WSA_CODEC_DMA_RX_0:
- 	case WSA_CODEC_DMA_RX_1:
- 		/*
--		 * set limit of 0dB on Digital Volume for Speakers,
--		 * this can prevent damage of speakers to some extent without
--		 * active speaker protection
-+		 * Set limit of 0 dB on Digital Volume and -3 dB on PA Volume
-+		 * to reduce the risk of speaker damage until we have active
-+		 * speaker protection in place.
- 		 */
- 		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
- 		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
-+		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 1);
-+		snd_soc_limit_volume(card, "SpkrRight PA Volume", 1);
- 		break;
- 	default:
- 		break;
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
 
