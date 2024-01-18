@@ -1,125 +1,108 @@
-Return-Path: <linux-kernel+bounces-30593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD58832160
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 23:07:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2485783216E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 23:11:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7C42B21DAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:07:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9B58B23623
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:11:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D5E31A7E;
-	Thu, 18 Jan 2024 22:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5B0F31A6F;
+	Thu, 18 Jan 2024 22:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f6NCM36u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JgEPiifx";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ciaocaMb"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590122E848;
-	Thu, 18 Jan 2024 22:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15D02E640
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 22:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705615627; cv=none; b=dzUmWikykFz3Us46h16OW1GUADna+bXJed/u9XdVjrz6nQzQ+fzlHROID0iamIM8k/MPoe6unBv/R0l9mTC5Lo0c7cujVYhPwCrVIyJH5jxV03aBszgNVals6mzd+MJZhHOyFmKyCXtf5FUQcb3rYkWyQRODZaHas1F4pj0iSOg=
+	t=1705615905; cv=none; b=BUKP+k2ZiPM0GJFGicdE/HGSWUruCV081gPcVXqbILQ/e+Q0YE6L8rZcZ0hEZAofQtS2sCy0wIuAN46cIavgO7fwwuwkGMHH0viARBH2u0T7bDHjnkrcSn275dxSzbCS/U/NXXuXY7CHUJZ4KdQyKgxUZ32U8PCb1+Y/vK89vTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705615627; c=relaxed/simple;
-	bh=iseU8jQdo5TbasDTsLDq2FqVB/V3B0OwmtPqZ4AdvHM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f4J63nFtowQhI4lXfXEcNvnqpZVe+P1TtXEnhdlMAx5sj71WlMPncXRDofiPfvcb3WR/V/uZ9L08CqFR5f8BfwkIPo5rtiU8ml9PoySes8J7hd9jIfo4E10frsROMj3/gDtdoHzWcCojPrzKobO9R83eX0Hu6BXpuLRV7r3R6Qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f6NCM36u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 596ECC433F1;
-	Thu, 18 Jan 2024 22:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705615626;
-	bh=iseU8jQdo5TbasDTsLDq2FqVB/V3B0OwmtPqZ4AdvHM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f6NCM36uAeF0IfTRbUH03Lri3cCsoKdvkLTwbchpoXLnitcPpd2hQvJji/o3GJod9
-	 FVsOKYovvKJDaYreDsXBWTluZtFP5GoI6bAR+GGtV7JHSdpUd303Qj0bmzYzNX0V1s
-	 +wSwD8JbKfT/moIH/rGvb2peKnPGeoeRhrPa57Qho/NdTgQpG/TyPa4+HuQ3k6BA4O
-	 9RK6KXgdBsb9Mtu0RrVHfyNQjAm8BEKErTj6Q9H38l9ubDqPgFndwYsRpcKVBMXorN
-	 j1gY6KZB3CaOyOabqW28lhoKZxU/V0KufzcJ9hlvOLMTIDS6WMWXJvCYEYYVDspYy3
-	 W8yfgeaCBxdhg==
-Date: Thu, 18 Jan 2024 22:07:00 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, lee@kernel.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, linus.walleij@linaro.org, vkoul@kernel.org,
-	lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
-	sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com,
-	alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 6/6] ASoC: cs42l43: Add support for the cs42l43
-Message-ID: <b1889bb0-2b9f-477c-80d3-a636b9017ea4@sirena.org.uk>
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
- <20230804104602.395892-7-ckeepax@opensource.cirrus.com>
- <Zali4qxdegY7H6eY@surfacebook.localdomain>
- <aec96f5a-b759-48c7-a5ec-bafe3bfa5357@sirena.org.uk>
- <CAHp75Vd6JtW4ddbSPXUp6WgEdBJizjwnS-XZzwLcXWWLxFWp-w@mail.gmail.com>
+	s=arc-20240116; t=1705615905; c=relaxed/simple;
+	bh=OpJNRpQ+SSmWdmSOznoYKZnRIsdRAvixasMs7TNCrmc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=KdB+mVcNBWZH707ziRpgVp6vaNj6srcFqgGnCymBKcgOeQcPK3s7AoWR4l6Zfv4Wyywjr39NjsQ58EDwxixnJwZd8Aa6dolY+3hiYSt+29nYDOwoI6QSuse2YBIGI/1JZvxurTg4ie44NeByFqYrpMoHVKVmXu8USSSpimMNcc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JgEPiifx; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ciaocaMb; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705615901;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tDtVWcMaj7jj4XT6eyA4k8Tf0NHxgvS28FM4DOAYURw=;
+	b=JgEPiifxwKN/IvmmGejYJOw51/jz0lWbxnaUBttFn4grsxUqtWqKel0IjulNRkgA6Vqv2o
+	hyODFPnv2cScLvnQ/PLQNEVMderFzYyvwVVSgaqUz9YYnibEoXGIScetcgcGeOn/11o2sp
+	LD1tr27eSvQ4qdVosL7J0puJTOdqa3UQB1Gd+61vM3Po3taK+61cv74Qg0QGnoiuym4HMu
+	BSJLZb7A8v1g3HYEsle9yTuqoBDMKgD0BF1KRIsUzw+A3oJ7soaOFpxiJf0skHLMzmn/us
+	jACrLJDpTVgU7wW7BkSdktJIkTU4J5tSyetrpqew6r18zmlDGTXVTAY6sx9WAg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705615901;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tDtVWcMaj7jj4XT6eyA4k8Tf0NHxgvS28FM4DOAYURw=;
+	b=ciaocaMb0qk1X+Yx3OTnxO4UxrfnVV0eHuMjORdqZ1QaCU9xZgXPQDR0jCpwVFs3aIAwT3
+	0tThV3b9mBMzzRCQ==
+To: Dave Hansen <dave.hansen@intel.com>, Andrei Vagin <avagin@gmail.com>
+Cc: Andrei Vagin <avagin@google.com>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ LKML <linux-kernel@vger.kernel.org>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>
+Subject: Re: [PATCH] x86/fpu: verify xstate buffer size according with
+ requested features
+In-Reply-To: <5bddbb34-4081-494b-8c12-c2e70898a608@intel.com>
+References: <20240116234901.3238852-1-avagin@google.com>
+ <30cd0be4-705f-4d63-bdad-fc57301e7eda@intel.com>
+ <CANaxB-xu+zG=5_EAe4zapC5a_x4CkkDovmVX7LjiLk+E7kU75g@mail.gmail.com>
+ <b3e5456a-7113-4868-b8ce-020421e898ba@intel.com>
+ <CANaxB-zQYC8=7frWGU2pRTDJrkVu0iR8QZCmUxSzGmBG-_b1cg@mail.gmail.com>
+ <54bcb902-0fab-4a53-8b8e-85b6e4484b03@intel.com> <87cytyfmd8.ffs@tglx>
+ <5bddbb34-4081-494b-8c12-c2e70898a608@intel.com>
+Date: Thu, 18 Jan 2024 23:11:40 +0100
+Message-ID: <877ck6fg0z.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="71ujX23WTb2DYuTK"
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vd6JtW4ddbSPXUp6WgEdBJizjwnS-XZzwLcXWWLxFWp-w@mail.gmail.com>
-X-Cookie: FEELINGS are cascading over me!!!
+Content-Type: text/plain
+
+On Thu, Jan 18 2024 at 14:02, Dave Hansen wrote:
+> On 1/18/24 11:54, Thomas Gleixner wrote:
+>> On Thu, Jan 18 2024 at 10:27, Dave Hansen wrote:
+>>> If we have nice, reliable fault handling and then decide that we've got
+>>> XRSTOR's running amok reading random memory all over the place that need
+>>> a nicer error message, then we can add that code to predict the future.
+>>> If our "predict the future" code goes wrong, then we lose an error
+>>> message -- not a big deal.
+>> After staring more at it, it's arguable to pass fpstate->user_size to
+>> fault_in_readable() and ignore fx_sw->xstate_size completely.
+>> 
+>> That's a guaranteed to be reliable size which prevents endless loops
+>> because arguably that's the maximum size which can be touched by XRSTOR,
+>> no?
+>
+> I like it.  It takes fx_sw completely out of the picture, which was the
+> root of the problem in the first place.
+
+Correct.
+
+I really don't care about the esoteric case where this might
+theoretically result in a unjustified application abort.
+
+You really need to twist your brain around 6 corners and then squint
+twice to construct that case. Of course syzcaller might trigger it, but
+fuzzing the sigreturn frame is a #GP, #PF and whatever lottery anyway.
 
 
---71ujX23WTb2DYuTK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 18, 2024 at 10:46:28PM +0200, Andy Shevchenko wrote:
-> On Thu, Jan 18, 2024 at 8:11=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
-rote:
-> > On Thu, Jan 18, 2024 at 07:41:54PM +0200, andy.shevchenko@gmail.com wro=
-te:
-> > > Fri, Aug 04, 2023 at 11:46:02AM +0100, Charles Keepax kirjoitti:
-
-> > > > +   unsigned int hs2 =3D 0x2 << CS42L43_HSDET_MODE_SHIFT;
-
-> > > BIT(1) ?
-
-> > Given that this is writing a value into a register field called "MODE"
-> > it seems very likely that it's an enumeration value rather than a
-> > bitmask (and similarly for all the other places where you're making
-> > similar comments).  Please think a bit more about the code being
-> > commented on when making these minor stylistic comments.
-
-> I read a bit further and have given a comment about this as you put it
-> above that they are plain values.
-> Please, read my comments in full.
-
-I did eventually find that while going through the other comments but
-given that the earlier ones hadn't been revised and it was all a bunch
-of different fields it still seemed useful to highlight, if nothing else
-it was a little unclear that your later comment applied to all the
-fields you were asking for updates to.
-
-In general in a case like this where the code is already in tree it does
-seem like it'd be better to just write patche for the stylistic issues.
-
---71ujX23WTb2DYuTK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWpoQMACgkQJNaLcl1U
-h9CCeQf+I21xMOQThraPXK85uU2p913UhGWbaP7HY9FD+DAulq1voxw9sDv5OoFD
-ciLzUlxTW5AGYUk1xAKqSHaxLf7PYAztwmpSXO3NBY9khrbEbBTNpcylDRzKgrQx
-ZhQAbiD54n6wKFCn6efN+Rh+8xXxP+XvRd2Dh8CVeWydMoRQaKs8GB0SnXr32F3M
-irPxz+pFuUEi6uYVqn4FPY3nowFTSqTiL3AzjtfXsK1MTl2MDlwcJdld0jr6bCk3
-GzrjYt+MDyyjj2Gk7LzEvNrZfgggAOH3KCNttfwRL9yO/bV7981VyOmdbzA7wxPL
-yQVLQLMim55rdMKYjPcsaLFGmCTEfA==
-=A+RS
------END PGP SIGNATURE-----
-
---71ujX23WTb2DYuTK--
 
