@@ -1,85 +1,81 @@
-Return-Path: <linux-kernel+bounces-30516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D9F5831FBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:29:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 502FD831FC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5196B1C22B9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:29:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06480283653
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DB72E40C;
-	Thu, 18 Jan 2024 19:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5822E410;
+	Thu, 18 Jan 2024 19:31:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S3u/Av31"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="G8nzFqbl";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="M2IhRQzu"
+Received: from mailrelay2-1.pub.mailoutpod2-cph3.one.com (mailrelay2-1.pub.mailoutpod2-cph3.one.com [46.30.211.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457042E3FD
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:29:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200C22E403
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705606154; cv=none; b=efLBHkja5ZOuO2YuRULlt0F5kzPHm95ygsXfo+KzK1RP3f2H3YMKzojW3f2M8RV0zrIYJNMpbv5C4eUgULnfLSfEWN2hK7S3mSsf8f9caEq6ki+kgjVdbVOireR7yQXouxJu/65Bk7X+JmmLbG43XJMdx16X5maJ9R/JbMZagDg=
+	t=1705606315; cv=none; b=XDGwGMt9/uhwUSyMLd86ytLzFHeIewhekzm+Inlk2YdFVh8ha4ZaalawtxaUkBEZspkBingY3hV08UVB3b2tIrHXC4dcobsv+lOF0Fkhuj+KLkfFLUpsl0PL3KGE7yGy6/fG+l5JGK4y9v0wuyecwQFa+Nuw3eVrQZ3l27MENeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705606154; c=relaxed/simple;
-	bh=EYGd/BtwuvtD8ZA8Nfy4r9pHo1JatfhJ33J3FjqEQrM=;
+	s=arc-20240116; t=1705606315; c=relaxed/simple;
+	bh=vVVnzqY+EY0SOiGfdFNXM65FWvxpPLAtME59q4uRfeM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IjpeMlRYeJOX7iBKbXMggWC8MPmvWdofhkivHEk4pWsqpdB7uiLu5uFwsuz2schFC4eFvJmQqWX+HYRPGe/5e0Ju0ZI0VQgPCgwIULOoaGQ0PP6zB5ysi50rGDynEKqO1ARYjMdr2LG8LIw4D7BySUxiuvQSIHFsOZEFkPLzSIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=S3u/Av31; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-28ffac1ce99so45875a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:29:13 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=CTE7x4iDVNJsBrMFB+TSMwTfwTh5q/lexjKul+ZoyJCt1DgQDOaLdCkAmrTm6ox0z+KRRQ44G+mIXzZwsh8DBB1lYK1MUthzyLfcLokzgi3fV1U530xIP82accz+eMAeee+VKoWO3d4Qs9KiuFwe0B75oOm71eFWPVjB4aRe/uM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=G8nzFqbl; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=M2IhRQzu; arc=none smtp.client-ip=46.30.211.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+X-HalOne-ID: 11cb3bcc-b638-11ee-b2ba-b520e3c7e1da
+Received: from mailrelay5.pub.mailoutpod3-cph3.one.com (unknown [104.37.34.42])
+	by mailrelay2.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPS
+	id 11cb3bcc-b638-11ee-b2ba-b520e3c7e1da;
+	Thu, 18 Jan 2024 19:30:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705606152; x=1706210952; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+iomTbXqRTjibxPrZcFIaAB8B6frVBWEtPfgQV/mc1o=;
-        b=S3u/Av314bbOChT4eb5WgE0aLJdxWthB6iKAfRqC1CA59rt1pW5unaFdmlBfnJeedP
-         cjKM1qDTXCCKEWOWQ/gpWvnQ1lF68ASBYjP29kT5H8JdTUCwFmc6VyQb2X/vmXrXMwxs
-         UJ8TaYXJmwBZZm1QPVI9I83uLnO2T05RK1mFQ5Z+KCub5WGV8YClTU0LrROXS66DJPK4
-         vOZaoZOi84i22Fc8CIFEoz+yAafYtyh2QGmJbTMtxyFbkFHqyEhSYwRSfK88d/dUS3Q7
-         BXg+rS7pRXpCypYQZy9KBWSoi2d58knqvFw0c94rEngi/mNKSBCm1cI6S9pyvHwFcXrh
-         U77g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705606152; x=1706210952;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+iomTbXqRTjibxPrZcFIaAB8B6frVBWEtPfgQV/mc1o=;
-        b=epQV0/seaylXD0BxkzOEQyCCxJxPrAPh/X9PBL5cWfXYJzVk/6REuTqe+9gkHw0G0y
-         W6EkfBqo25clrdE3rcrwaJTC/P6jC0/fINnBTt9ZhSDh0RTXfhtMvGSrwzAwtw4/vPwh
-         NnWwY+d9DsWU7bjys9jvmpSUwdXhhbRjWdKa7LwuKdZ6ae3xGXISZB1nkSmEch2JypCu
-         7Fhrd36q3O/5RXZ9zzngOEXhPZKN4i2yYPN0Hga+Ea392jwx0Fhq0ZbPKDSVj6D1A8Wc
-         yEr7wF1dKALMlw+CXWjGupXc/OZZfO9zeGSgVL+YMabvtoRCtmQdq3CJMeY8ZHMybZ6C
-         RItQ==
-X-Gm-Message-State: AOJu0Yzc+6IqyG6iAHzGbkqkKwxRSiTupR8oTgnoUsRTErANfzg/3Qfy
-	5ArfHAe1/Rsswd/BMCb+s/2z0l9diKjA3mQOUHAuayIxEmolHfs5GyzfBKqiXg==
-X-Google-Smtp-Source: AGHT+IEDU0f/LZTZf0+r3K8CSuUlFt617cPqAtIUeGN2vr636LX8vCpmJ6gjqngAJppnD0SbvlrATA==
-X-Received: by 2002:a17:90a:e2c8:b0:290:45a7:3ed7 with SMTP id fr8-20020a17090ae2c800b0029045a73ed7mr158870pjb.3.1705606152436;
-        Thu, 18 Jan 2024 11:29:12 -0800 (PST)
-Received: from google.com (77.62.105.34.bc.googleusercontent.com. [34.105.62.77])
-        by smtp.gmail.com with ESMTPSA id oe15-20020a17090b394f00b002903a89ebb3sm716848pjb.31.2024.01.18.11.29.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 11:29:11 -0800 (PST)
-Date: Thu, 18 Jan 2024 19:29:07 +0000
-From: Carlos Llamas <cmllamas@google.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Brian Swetland <swetland@google.com>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
-	Alice Ryhl <aliceryhl@google.com>,
-	Greg Kroah-Hartman <gregkh@suse.de>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 03/28] binder: fix race between mmput() and do_exit()
-Message-ID: <Zal8A95q3jVl4nu5@google.com>
-References: <20231201172212.1813387-1-cmllamas@google.com>
- <20231201172212.1813387-4-cmllamas@google.com>
+	d=ravnborg.org; s=rsa2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=BWvtIZzeIG8OQ9lhdg7O1Ah8L08MbdZeVVuTjMHxWYY=;
+	b=G8nzFqblNhH5mYOI6VDQG/LovZIk7vAPPrdqS6byoV1ORZvE6we8m/wbGOq5EsHZ/SHcjQ9DA9H/c
+	 jKsF0sVymxb+vKwY6eZOrYfA4WcQexqXmw2Pjn8aUzEXH7XSMnEksFwZNo2exOJI863AVpN+zEYacy
+	 554O5ixTJXSRsh4A0c9Jz5lfs96bhgykZsS0YPGOVevF4wegBryTiFoa8j0rg+Z0BzpuVbdeZye1tV
+	 2qG4Gjq5AXWSJ6A6dacB7ByKwKdhFcNreuUKu2ykJSeB3DbQ9F2+bJ9ju9stO1gYDI3IH/VR/WLJ16
+	 dBl1+msMY1omwZxActJHL1PsFxpKqnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=BWvtIZzeIG8OQ9lhdg7O1Ah8L08MbdZeVVuTjMHxWYY=;
+	b=M2IhRQzuVcfPvogIfXlOznEYNzckT9lZDdlcuSr1btDeg4DaqaHqJGGheQ4gFS7G0lQl80XLqCEdw
+	 hyDFgxHAA==
+X-HalOne-ID: 0fb75f5f-b638-11ee-a200-9fce02cdf4bb
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay5.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
+	id 0fb75f5f-b638-11ee-a200-9fce02cdf4bb;
+	Thu, 18 Jan 2024 19:30:42 +0000 (UTC)
+Date: Thu, 18 Jan 2024 20:30:40 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Dharma Balasubiramani <dharma.b@microchip.com>
+Cc: conor.dooley@microchip.com, bbrezillon@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	lee@kernel.org, thierry.reding@gmail.com,
+	u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+	linux4microchip@microchip.com
+Subject: Re: [PATCH v3 0/3] Convert Microchip's HLCDC Text based DT bindings
+ to JSON schema
+Message-ID: <20240118193040.GA223383@ravnborg.org>
+References: <20240118092612.117491-1-dharma.b@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,44 +84,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231201172212.1813387-4-cmllamas@google.com>
+In-Reply-To: <20240118092612.117491-1-dharma.b@microchip.com>
 
-On Fri, Dec 01, 2023 at 05:21:32PM +0000, Carlos Llamas wrote:
-> Task A calls binder_update_page_range() to allocate and insert pages on
-> a remote address space from Task B. For this, Task A pins the remote mm
-> via mmget_not_zero() first. This can race with Task B do_exit() and the
-> final mmput() refcount decrement will come from Task A.
-> 
->   Task A            | Task B
->   ------------------+------------------
->   mmget_not_zero()  |
->                     |  do_exit()
->                     |    exit_mm()
->                     |      mmput()
->   mmput()           |
->     exit_mmap()     |
->       remove_vma()  |
->         fput()      |
-> 
-> In this case, the work of ____fput() from Task B is queued up in Task A
-> as TWA_RESUME. So in theory, Task A returns to userspace and the cleanup
-> work gets executed. However, Task A instead sleep, waiting for a reply
-> from Task B that never comes (it's dead).
-> 
-> This means the binder_deferred_release() is blocked until an unrelated
-> binder event forces Task A to go back to userspace. All the associated
-> death notifications will also be delayed until then.
-> 
-> In order to fix this use mmput_async() that will schedule the work in
-> the corresponding mm->async_put_work WQ instead of Task A.
-> 
-> Fixes: 457b9a6f09f0 ("Staging: android: add binder driver")
-> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Carlos Llamas <cmllamas@google.com>
-> ---
+Hi Dharma et al.
 
-Sorry, I forgot to Cc: stable@vger.kernel.org.
+On Thu, Jan 18, 2024 at 02:56:09PM +0530, Dharma Balasubiramani wrote:
+> Converted the text bindings to YAML and validated them individually using following commands
+> 
+> $ make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/
+> $ make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/
+> 
+> changelogs are available in respective patches.
+> 
+> Dharma Balasubiramani (3):
+>   dt-bindings: display: convert Atmel's HLCDC to DT schema
+>   dt-bindings: atmel,hlcdc: convert pwm bindings to json-schema
+>   dt-bindings: mfd: atmel,hlcdc: Convert to DT schema format
 
---
-Carlos Llamas
+I know this is a bit late to ask - sorry in advance.
+
+The binding describes the single IP block as a multi functional device,
+but it is a single IP block that includes the display controller and a
+simple pwm that can be used for contrast or backlight.
+
+If we ignore the fact that the current drivers for hlcdc uses an mfd
+abstraction, is this then the optimal way to describe the HW?
+
+
+In one of my stale git tree I converted atmel lcdc to DT, and here
+I used:
+
++  "#pwm-cells":
++    description:
++      This PWM chip use the default 3 cells bindings
++      defined in ../../pwm/pwm.yaml.
++    const: 3
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    maxItems: 2
++    items:
++      - const: lcdc_clk
++      - const: hclk
+
+This proved to be a simple way to describe the HW.
+
+To make the DT binding backward compatible you likely need to add a few
+compatible that otherwise would have been left out - but that should do
+the trick.
+
+The current atmel hlcdc driver that is split in three is IMO an
+over-engineering, and the driver could benefit merging it all in one.
+And the binding should not prevent this.
+
+	Sam
 
