@@ -1,174 +1,203 @@
-Return-Path: <linux-kernel+bounces-30521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4200F831FCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:36:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E4C5831FCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:36:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 189E9B20E29
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:36:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C18D12896BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCBD2E410;
-	Thu, 18 Jan 2024 19:36:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC972E410;
+	Thu, 18 Jan 2024 19:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eXxknxGf"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Yn3hlWOq"
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E6A52E403
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E562E403
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705606580; cv=none; b=gmFcuul3NUszmP7Myr2MqfUyWfjx+TRuxJaIk7QBynzO+ttGnLc6GpZTeATYGU8OL3rM1ogIs/4QAHZC4dUIr//nFDIhEdVNjkWky/4zZcw8DXMewHHwJefkzGem6+ZkOmomXPQOwFnFQBucSxHLAgGb+W2O3opbmpgxubiff4Y=
+	t=1705606592; cv=none; b=ht0Q4M1MjfkZgUsJfx4HpP5LvRsG74prx6U4nkzYcWfS9U9ZGXUBR1sYgz/a7z7b8K/YL6y1LNrc571O7ixsWwKBQbDic7BawggCW71/CRiSx+/Amqoe55HW1fn8qT+BLqn6ZU44jXUkmwDqd3gaygcjI382CyFHTKQ7qut1t44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705606580; c=relaxed/simple;
-	bh=0Spb8poRMfqQSK08H+TL3uHUKPHZzTZQ/fCBGPaH0wI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=koO178slDm/3zEfHSUzxjIyavcbuwjNYXbIl1iIVn/XC3ouG2dTB8c0adiR3rAfsJ0PCSGP1r4UtIWi1ZmuJvsfZ3ispIhBbSZX3kGVaXuRFtw9BEoepOOvUK/nXILd0fmTPJeen3WZLiZ2FGSqiKC6XH1YI8yODQGTJiAlMsJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eXxknxGf; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-559cef15db5so2122544a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:36:18 -0800 (PST)
+	s=arc-20240116; t=1705606592; c=relaxed/simple;
+	bh=RhUutAdIJhj+56TWvVpkohH7higOxofuXmtZ8gXAS0o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ir3Cm0CvEwr5Vwa/984BDuz8WQ0Q+ux+Vnx1uhh7B74886F3RTzvOrIKhgKssDRe9TUOeH7Ci5brzXKI4Ah6XqRMvpqx5mxVIiT/EEgbHqZbq9srdcOlEyi0HFpfF2Q2Z8l4g/0wSUA5OOgFlmB7lkPXUkQ2RoUe34eC20q0PBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Yn3hlWOq; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-2108e106947so39698fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:36:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705606576; x=1706211376; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cZDkcKK8uyhcMNTfFp6ML8LXI1RuetKqYpSVVoE584Q=;
-        b=eXxknxGfb5/amFXjTjOI+dnJEAVV0gYSvwKJwnM2hN9/CAWLTdqWMOfyByGjx/PFAb
-         gogmVFEuZklyUCra12O0PIdIf/i/osHfDGbKGmmRilYhnSRwZjj7ab+uSSIwNdjDnIa9
-         JxgkdAvH5MOOUhyPdF/lvJgrQAv3MGDA4h2JKKjtw6Lxj2FxJQxjwJcK2vdOy+WUHxF2
-         QbCXKa4PejW1aZGs43PrQpPi7EXi67m9Iw4cc8TF6ysjaB0FiAa5zkAC3yL9B76xZRCL
-         MAo2Cn17Ep1GNglbs4R+/58of25xPTyO5Jo4IzfvDrHtGigZ73GHy58hsyVyeqbM90tl
-         huRg==
+        d=ziepe.ca; s=google; t=1705606589; x=1706211389; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l2PskYN91C/N8uLAsb2pAS+pkc4njoKmH/O+Ga1GokQ=;
+        b=Yn3hlWOqvTFpiOKycyrkMVg7msldVrhBAdPIQmbAozisbKiaMNZxhbW4CLrZgIeVO7
+         RkPZuwQfbUJfOiICGAeXuPsn9dsypIXXg6P8mt057TZA8cOQl5gmk914DQFLwOWWtHk0
+         NATSvInDrT9E/LNhSK4qHjIRaZ3HQNdm6BgmFRntZpuM9nz/pdvrajjLxU9Ckh/7h7Mt
+         KGFzJlCfYqEXsBlXM7xpQmQO2F+AVEyQy7PVabBmvhE39mpYkR+Fm/iAiEDtlUjccYHo
+         Z7K1am8FJ/qpAGAzXpWjM8cKXkszBtiWSAO4wThDSOrgUf+eD6Cctahyv7AibU5WH6W1
+         /vbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705606576; x=1706211376;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cZDkcKK8uyhcMNTfFp6ML8LXI1RuetKqYpSVVoE584Q=;
-        b=oMBSooxe1KMOzQJmCYEJPkEg0Z1HOJmAEHkTKmRL4bvgY6RIqZ9yBGX2E2HnSqJqsG
-         uxdZreM1mah7cmOGunTJf34tJtB45ifemtUyeEI4O5aZTRTTPlHmlkffQhJ9I2u65dWL
-         hL2ADogKVWk2Je8e0ll8eWsNUjSrMKNMwaCWgpLXamW/2BpYQ8vRqPLUbok9bZswovyW
-         yYwA1JS6XjBSyLO22P1ghKpaUqV/7uIsoA6BnrfgHWYRgRJAJe+chwBvP+bKuaYwRAzz
-         egHGJOZqj5OrXHzqg12MwKtBH52wF3xfXhKXyoOZB9BvGRLQyEzTVwcKlkXtMfi9Ko8R
-         pDhg==
-X-Gm-Message-State: AOJu0YwUE121KZXzWSJ6QlB2kneMQyvy8DGrUWUuY9CbKb15TePCBXaB
-	rwzGo7yBllFjBd8Syd3nqWte8h1TvrEorkbxs+Ms4ZlQn2TRNVwv7Cd4mATMFrA6Bi//2gKnstG
-	4MtFeR6FdV/+yjbxPMoVjdEsHUeLhpQLztHNL
-X-Google-Smtp-Source: AGHT+IHNARndcPkevbhESph8uzGKHb3QILXTpJfID+26UjpTZwh9rl0SKaz5Jxqu1azSrdHtE0kbuTG6/SSnWwwcCms=
-X-Received: by 2002:a17:907:da8:b0:a2e:98d2:9c29 with SMTP id
- go40-20020a1709070da800b00a2e98d29c29mr2257202ejc.70.1705606576334; Thu, 18
- Jan 2024 11:36:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705606589; x=1706211389;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l2PskYN91C/N8uLAsb2pAS+pkc4njoKmH/O+Ga1GokQ=;
+        b=ZDZNb4WeVFBENUBOqfMuhYrnqztEe5pfCQHSCe8FS0oM2Yv9BqJ3LSl5bmQZTyoos1
+         HuPa1L+giG++0Ydg09bEKbfriVgIcQWPCwODA5heLXqKbCIN47Fah+dg6fXU6WH11rcD
+         DG+wG+GXgQV8laijA08FLJy7EMvpIMR+FqwI/nMEHKTJcSA6wGRFKNwkHR2vK6Hrw0KW
+         sHeGZ4GTaNPAgHuAZt1lG8aElNjNShc2yo6xCvfFr4Zq1exIBSaFq6+eApdmIEtq78j7
+         BkA9sshN5KqtmwiAv9wgfBE+23uONNu0gcMdGvhVTmguKtLo0l1nUeoB0bYVpTjYxKy5
+         j0UQ==
+X-Gm-Message-State: AOJu0YxtMd0EW6lFiFTOhmkoh6hX8XWPqjYWFhvrv2lTB9zFQU9gSd54
+	GGQXpWrj2T4J6Zn5pstng/MVHHxlhW04odTQUGU+0tM7Z6AlQDo67TNKbGLTNE4uQ22jNHoCOgD
+	z/2I=
+X-Google-Smtp-Source: AGHT+IGcDCQed2oC90eSpiV4K0U2TE1f43Rh5brUKnoNn+8w5+ly9/pUcR1AINSn0E/WwPXGq3E0BA==
+X-Received: by 2002:a05:6870:a923:b0:210:da44:c885 with SMTP id eq35-20020a056870a92300b00210da44c885mr98748oab.45.1705606589379;
+        Thu, 18 Jan 2024 11:36:29 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id fs12-20020a056870f78c00b002044e1b74c5sm519705oab.52.2024.01.18.11.36.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 11:36:28 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rQYBf-0058a6-G1;
+	Thu, 18 Jan 2024 15:36:27 -0400
+Date: Thu, 18 Jan 2024 15:36:27 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>, Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iommufd/selftest: Use right iommu_ops for mock device
+Message-ID: <20240118193627.GJ50608@ziepe.ca>
+References: <20240111073213.180020-1-baolu.lu@linux.intel.com>
+ <20240111144840.GW50608@ziepe.ca>
+ <016e052e-8a99-4d60-b864-87c9859953f2@arm.com>
+ <20240111155648.GX50608@ziepe.ca>
+ <e08cd3b3-7ce0-47c9-b2f3-28095987f46b@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
- <20240117-zswap-xarray-v1-2-6daa86c08fae@kernel.org> <CAJD7tkZF102x_8LKAX+sxAttgYD_LNT3cRqeOr7_euwPfNdCFA@mail.gmail.com>
-In-Reply-To: <CAJD7tkZF102x_8LKAX+sxAttgYD_LNT3cRqeOr7_euwPfNdCFA@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 18 Jan 2024 11:35:38 -0800
-Message-ID: <CAJD7tkbFxfLxYPXHkSCq=1JsAinW9G+unyOadFY+Xfo-QTqNyA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: zswap.c: remove RB tree
-To: Chris Li <chrisl@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, =?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
-	Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, 
-	Chun-Tse Shao <ctshao@google.com>, =?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Chengming Zhou <zhouchengming@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e08cd3b3-7ce0-47c9-b2f3-28095987f46b@arm.com>
 
-On Wed, Jan 17, 2024 at 10:35=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> > @@ -493,45 +471,47 @@ static struct zswap_entry *zswap_search(struct zs=
-wap_tree *tree, pgoff_t offset)
-> >  static int zswap_insert(struct zswap_tree *tree, struct zswap_entry *e=
-ntry,
-> >                         struct zswap_entry **dupentry)
-> >  {
-> > -       struct rb_root *root =3D &tree->rbroot;
-> > -       struct rb_node **link =3D &root->rb_node, *parent =3D NULL;
-> > -       struct zswap_entry *myentry, *old;
-> > -       pgoff_t myentry_offset, entry_offset =3D swp_offset(entry->swpe=
-ntry);
-> > -
-> > -
-> > -       while (*link) {
-> > -               parent =3D *link;
-> > -               myentry =3D rb_entry(parent, struct zswap_entry, rbnode=
-);
-> > -               myentry_offset =3D swp_offset(myentry->swpentry);
-> > -               if (myentry_offset > entry_offset)
-> > -                       link =3D &(*link)->rb_left;
-> > -               else if (myentry_offset < entry_offset)
-> > -                       link =3D &(*link)->rb_right;
-> > -               else {
-> > -                       old =3D xa_load(&tree->xarray, entry_offset);
-> > -                       BUG_ON(old !=3D myentry);
-> > -                       *dupentry =3D myentry;
-> > +       struct zswap_entry *e;
-> > +       pgoff_t offset =3D swp_offset(entry->swpentry);
-> > +       XA_STATE(xas, &tree->xarray, offset);
-> > +
-> > +       do {
-> > +               xas_lock_irq(&xas);
-> > +               do {
-> > +                       e =3D xas_load(&xas);
-> > +                       if (xa_is_zero(e))
-> > +                               e =3D NULL;
-> > +               } while (xas_retry(&xas, e));
-> > +               if (xas_valid(&xas) && e) {
-> > +                       xas_unlock_irq(&xas);
-> > +                       *dupentry =3D e;
-> >                         return -EEXIST;
-> >                 }
-> > -       }
-> > -       rb_link_node(&entry->rbnode, parent, link);
-> > -       rb_insert_color(&entry->rbnode, root);
-> > -       old =3D xa_store(&tree->xarray, entry_offset, entry, GFP_KERNEL=
-);
-> > -       return 0;
-> > +               xas_store(&xas, entry);
-> > +               xas_unlock_irq(&xas);
-> > +       } while (xas_nomem(&xas, GFP_KERNEL));
-> > +       return xas_error(&xas);
->
-> I think using the xas_* APIs can be avoided here. The only reason we
-> need it is that we want to check if there's an existing entry first,
-> and return -EEXIST. However, in that case, the caller will replace it
-> anyway (and do some operations on the dupentry):
->
-> while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) =3D=3D -EEXIST) {
->         WARN_ON(1);
->         zswap_duplicate_entry++;
->         zswap_invalidate_entry(tree, dupentry);
-> }
->
-> So I think we can do something like this in zswap_insert() instead:
->
-> dupentry =3D xa_store(..);
-> if (WARN_ON(dupentry)) {
->         zswap_duplicate_entry++;
->         zswap_invalidate_entry(tree, dupentry);
-> }
+On Tue, Jan 16, 2024 at 06:19:00PM +0000, Robin Murphy wrote:
 
-If this is doable, I think we can return xa_store(..) and keep the
-logic in the caller. I think there's a chance
-zswap_{search/insert/erase} may end up being very thin wrappers around
-xa_{load/store/erase}, and we may be able to remove them completely.
-Let's see how it goes.
+> > > As I've tried to explain before, this is in fact the correct use of fwspec
+> > > as originally designed, i.e. being set up by *bus code* before device_add()
+> > > (remember this is not the "IOMMU driver" part of selftest.c).
+> > 
+> > I understand it was the intention, but it doesn't relaly match how the
+> > code works today..
+> 
+> The fact that some things aren't following the pattern, and are broken and
+> problematic in several ways as a result, does not mean that other things
+> that *can* follow the pattern correctly shouldn't.
+
+What pattern? fwspec was never setup "by bus code" before
+device_add(). I'm not even sure I see how that will be possible since
+fwspec relies on the iommu driver being present to parse the FW tables
+to create the fwspec in the first place.
+
+The main tension is that the information the bus code needs to supply
+to parse the FW has to go into the driver to accomplish the parse and
+then be discarded once the parsing is done. Why would we attach
+temporary data to the struct device prior to device_add and waste that
+memory when we can generate it on the fly with a bus op callback?
+
+> > > I'm working to get things back to that model (wherein the dev_iommu and
+> > > fwspec lifecycles become trivial), just with the slight tweak that these
+> > > days it's going to make more sense to have the initialisation factored into
+> > > device_add() itself (via iommu_probe_device()), rather than beforehand.
+> > 
+> > I would prefer to simply remove fwspec as I've already shown patches
+> > for. You should give some comment on them.
+> 
+> You mean the 1600 lines of churn which did nothing to address any real
+> problem (but did at least acknowledge so in the cover letter)?
+
+Sometimes it takes cleanup before you can solve the real problem. Just
+constantly hacking around the edges often creates an architectural
+mess.
+
+Indeed is not quite nothing - it did solve alot of the wonky lifetime
+issues throughout and replaces an incomplete abstraction with a
+complete one.
+
+Look, put aside your aesthetic distaste and point to something that is
+actually fundamentally wrong and can't ever work with what I've
+done. I showed everything, so if there is some issue it should be
+visible.
+
+Otherwise you should admit it is technically sound, even if you don't
+like how it looks.
+
+> I thought I had responded to that, but it must have been one of the
+> many drafts which end up getting deleted out of utter
+> exasperation. Needless to say, the response was a NAK.
+
+Nope, no reply!
+
+I think you should take a careful and thoughtful look. Given it is
+right there ready to go we can be done with this probe mis-ordering
+saga in a couple of months.
+
+My plan is to break up the three parsing ways into smaller series and
+go ahead with them in stages.
+
+> For the last time, any fwspec lifetime issues are a *symptom* of a
+> well-understood problem which exists, and not a problem in
+> themselves.
+
+There is more wrong than just the lifetime issues.
+
+> some stuff being carried around in iommu_fwspec that really
+> shouldn't need to be, but once probing is properly fixed it will get
+> stripped back down to the useful shared abstraction of stored
+> firmware data that has always been its true spirit. 
+
+Which is what exactly? What can you put in the fwspec that is actually
+shared by every, or even most, drivers? From my complete analysis the
+answer is pretty much nothing.
+
+> In the meantime, adding a load more complexity to unabstract it and
+> support 2 or 3 different ways of drivers all individually
+> open-coding storage of the same data is not helpful now, and even
+> less helpful in future.
+
+I think you should look at the series much more closely, because I
+don't think that impression can really be justified.
+
+Most drivers had a net LOC reduction and many had a significant
+reduction in their probe-time complexity, like apple-dart. Many little
+bugs and missing checks went away because the shared common code was
+now actually doing what the drivers need.
+
+Like it or not we actually have 4-5 different ways the drivers do
+things! Explicitly supporting those ways and factoring common logic
+into common code is *good design*. fwspec doesn't do that, it
+ supports *one way* and everything else gets no good support.
+
+We already had several different open coded ways for ID storage. That
+isn't going away as far as I can see. The one common method, the u32
+array of ids, is shorter, faster, and uses less memory. At no
+significant complexity cost either.
+
+The cleaner layering between FW parsing and IOMMU driver parsing, I
+maintain, makes the whole thing easier to understand as the FW code
+layer has a clear API boundary now instead of being messily co-mingled
+with iommu code.
+
+Jason
 
