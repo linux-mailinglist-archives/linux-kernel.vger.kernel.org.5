@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-29789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4450A83138A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:58:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C258831391
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7F6FB23FD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:58:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54278283249
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431D014AAF;
-	Thu, 18 Jan 2024 07:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6744A1D521;
+	Thu, 18 Jan 2024 07:58:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hzV9XM2o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vJESU3IA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8307C13AF9;
-	Thu, 18 Jan 2024 07:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96C41BDFD;
+	Thu, 18 Jan 2024 07:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705564687; cv=none; b=olLEPREOyn+nG3nMG7TBU/TPKmLDxkWYRfnBfmU6T9BAM0DjnoG/eZompQZqb6lob3y0BVTW6T/nkAgv8gYC395rX4XxS9K8Lxh7nDAxxgPQ2xcnkqMYnvCk5EqMetAJJZTZzlhrw3m5Fex+Ovr1qchsBlTcanMKYd1Qxz+u2EM=
+	t=1705564689; cv=none; b=mDeagyyNX3faHD3xRpLttFDdf6Q8mPSc+VdHd4vTTWo4KGGZ8V+vXU0W5AnE7gtRZz0mbCKwu6/Nyh6lPqrnYExJnS2l1YqT/DPxyBYCkdRzYFM3kuSnD7lEhGbz7phzHnhl6Mb5DrLsrNMON5MEXM55Bn03H6NbzNTZTAsWQrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705564687; c=relaxed/simple;
-	bh=VF67ScvZaWBLLIl5rAX1Kh4YdbBo6nKFZPHrtIWu1Y8=;
+	s=arc-20240116; t=1705564689; c=relaxed/simple;
+	bh=JLskyX1cYZHzZMmvuU1LzSTACKKk6cE/XiYsShkR8C4=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding; b=Ti+lcsgr/huevKPH6Q0nRQRZXxt3dG/phLHD7Ub7oI3at3oZVWhSeMmyak5ntVFpSxpiSPOtqArarEPkfsK2HwG8a7s/1PPs3Pc7gHCGy1wmm3Sng8fVQXV3xP4IRjANnqzc1k9avo7ABXZx3DwzxNNIoxDWoVG/OQMS7SSbZOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hzV9XM2o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A187C433F1;
-	Thu, 18 Jan 2024 07:58:05 +0000 (UTC)
+	 Content-Transfer-Encoding; b=O4lX+jvsjY33OBMrVkLPfbLP2HxGu7UtEC26gCTdngTrekwChp0ijftqA8ue08SWdqMCowPPoOwmP5E4yVuB17Eyn6vSDGWn1Rt8sQmVD7Lc9YOJfIkgm/c4D6X8VxWMV2lQW9HhT3Cx9sQT5HsqseGLdOM8uYGh9gz4uLDhhCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vJESU3IA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D71D0C433C7;
+	Thu, 18 Jan 2024 07:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705564687;
-	bh=VF67ScvZaWBLLIl5rAX1Kh4YdbBo6nKFZPHrtIWu1Y8=;
+	s=k20201202; t=1705564689;
+	bh=JLskyX1cYZHzZMmvuU1LzSTACKKk6cE/XiYsShkR8C4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hzV9XM2oma7CXY2prJ5hO4Kbts/86byd0p9nMAE71rQBKPNnKmCaFUuJhksZ6tiWq
-	 A4DeNHDswadUILCIUtRzvkMMFjSHKrClNwXM8YlKPhiey55Ge1Geu35zcySFp7xrIh
-	 g3zCt4gtKuBSfXYLHfm1F3DNLjkpXXasYfrY1gwsZlY8A+rb5ZRiJ8hYADBevSK/GZ
-	 wecsF4s50veThCCoCiLIMPItmjENtSJPPTaH2HzrGfrJLUeZlQxmNwskMoH/eQTHbz
-	 LJ6oISId7gI8Gz4YxFtwAYrDidRreY6Ay3kys2ZXctW2eftCVbxdgvPa/XN6HosL4a
-	 /5zquQEqoeZSA==
+	b=vJESU3IAqd69GLqIiFKDFIagNUQv3n+FfY2/R5MVHbje30/2WTE86E8phmkCHG3Eu
+	 21hxB3uIcNRnCYuU8yD+JblDqnZPUXsX3iIzO4vcoK46t4mTo4n28msoJ1pLIhPxjm
+	 k0GPU3RwtmPqcCOYPn6xxigoG2RSXbikDJG8cnQOpe5/0KvPfE3qQaRDJbBqw700OK
+	 N9mSdQd9MinsTAuwV1Rn0GaIUvjqwJkaHnQ7o+vSicWMVJ0xjeVDnVgd+oEobig4dW
+	 GxMIX6K8jDouI751V07ITF6XQ9WAtPji2kmmU+LsoO9K+K1tVljjr5ZNSMsv1IHSKx
+	 epMMnNfmD+x7A==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH 02/45] fbcon: make display_desc a static array in fbcon_startup()
-Date: Thu, 18 Jan 2024 08:57:13 +0100
-Message-ID: <20240118075756.10541-3-jirislaby@kernel.org>
+	Martin Hostettler <textshell@uchuujin.de>
+Subject: [PATCH 03/45] tty: vt: fix 20 vs 0x20 typo in EScsiignore
+Date: Thu, 18 Jan 2024 08:57:14 +0100
+Message-ID: <20240118075756.10541-4-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240118075756.10541-1-jirislaby@kernel.org>
 References: <20240118075756.10541-1-jirislaby@kernel.org>
@@ -64,32 +61,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-display_desc is a pointer to a RO string. Instead, switch display_desc
-to a static array as we are used to. It BTW saves unnecessary 8B on the
-stack.
+The if (c >= 20 && c <= 0x3f) test added in commit 7a99565f8732 is
+wrong.  20 is DC4 in ascii and it makes no sense to consider that as the
+bottom limit. Instead, it should be 0x20 as in the other test in
+the commit above. This is supposed to NOT change anything as we handle
+interesting 20-0x20 asciis far before this if.
+
+So for sakeness, change to 0x20 (which is SPACE).
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
+Fixes: 7a99565f8732 ("vt: ignore csi sequences with intermediate characters.")
+Cc: Martin Hostettler <textshell@uchuujin.de>
+Link: https://lore.kernel.org/all/ZaP45QY2WEsDqoxg@neutronstar.dyndns.org/
 ---
- drivers/video/fbdev/core/fbcon.c | 2 +-
+ drivers/tty/vt/vt.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 63af6ab034b5..a8c32cb4c878 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -921,7 +921,7 @@ static void display_to_var(struct fb_var_screeninfo *var,
- 
- static const char *fbcon_startup(void)
- {
--	const char *display_desc = "frame buffer device";
-+	static const char display_desc[] = "frame buffer device";
- 	struct fbcon_display *p = &fb_display[fg_console];
- 	struct vc_data *vc = vc_cons[fg_console].d;
- 	const struct font_desc *font = NULL;
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 3f3f7c216819..55ce6cdecbca 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -2469,7 +2469,7 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+ 		}
+ 		return;
+ 	case EScsiignore:
+-		if (c >= 20 && c <= 0x3f)
++		if (c >= 0x20 && c <= 0x3f)
+ 			return;
+ 		vc->vc_state = ESnormal;
+ 		return;
 -- 
 2.43.0
 
