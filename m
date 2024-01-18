@@ -1,366 +1,238 @@
-Return-Path: <linux-kernel+bounces-30581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB3F88320F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C3008320F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5284C1F25DC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:40:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 133DC1F241D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:42:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B7F31753;
-	Thu, 18 Jan 2024 21:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA7E2EB06;
+	Thu, 18 Jan 2024 21:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bLrmEps2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iKU5cYMT"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD98331732
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234618BE7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705614024; cv=none; b=XpTB+fJS6iRvKwG0muTzB6XQFujk22nxo94ov+ZA2w91dfYF8ynJGnY4zQF8hsGKTBiesLYKXTi4BvWJd6Biso4APxoFuiH4N3r+tzWDUT3w8BMCoGCWgNg7CrjVHijhUy6HLxc+vcPPNnPZUcTD+XNZNJt+eeeMliXgfY8xnrk=
+	t=1705614144; cv=none; b=gBuWwkBTPqC0iTKubTh4U9HAdqOfqTptLO/Le6H8bZMMSeK6PnuPTCD/6IXw4Pscr3izpdH/Jb/7mUgnV90Al8njLoOHbZY4IIORbbH2dXV7Giq+j6dK7tG3uvavGimdA9Ji6fvQoPI3HVUG5JnH7M+2c7yc+wpsVa28PLoIrhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705614024; c=relaxed/simple;
-	bh=tM/QU66VQUB8kZD24jyiSrHsJ+Kcsoztutoxvzm22ro=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OJSs8Qj3M1LQG+F2/2qNJtx51iz1I7OeWUGun6CYCtHgVX49w0oeeQAkaNoWx7I4xF9Yt7bKF6RTTWGagOkHqwqyfECScmbv6uqqN8DtfERNaBcgYebtR0Iss00urbygEjYmAE+9lyl5Z4JxO7mpYfpONfpeNAVWoKZ3f6WwIcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bLrmEps2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705614021;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xa92SUx0tviopJhDIWZGFz30fwUB0DJ3p+sWP4FEk+s=;
-	b=bLrmEps2smewgpKOWyDP70FQyw3nw7A5kPrfdPoVQuRV9xBMMPOrUkRwQI5vRNvfXhl0qh
-	b+yqef6jbrmUPqVihNRdeDaHALE9VwXLMQTDF3szxFTCInM52gjwzl3fsTAWVWXdddJYWx
-	8xEBg2jLuHA4uJbDtepYP/9IfkLvKWQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-414-8wsiYn87M6OsIDlAu52bvA-1; Thu, 18 Jan 2024 16:40:19 -0500
-X-MC-Unique: 8wsiYn87M6OsIDlAu52bvA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-337bfa463e1so46387f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:40:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705614018; x=1706218818;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xa92SUx0tviopJhDIWZGFz30fwUB0DJ3p+sWP4FEk+s=;
-        b=pHMGwSAPPE+XFvbTrmQBOGPhRwZSqTyirk9UpROSnROnYhqJkcFjwLs3CHMO3KCBEQ
-         baXbKnCKH5PH/rNyzn/AxZg9p8/2rMM6Nsl0xKlZqCOeywALSYJASKcwJ9ALiDDHgzqb
-         5jel64NEJK5TE0LgPet9OimIBm5rtYAW21SF9VuYuqrxdFbbWFnxXhqahtoHIAGsmrID
-         tUikvPYNHHuKED0HxaSuDeljoXbkaDdODXpkBi6ygIrGyA1XAJ1hLw9EQt/p6R1YMhMC
-         96/z2bi08sDzE7hzaDxaVUPRSETuHzJ8sttfftbp6bU7N5DDMmnEhkTdp610X3mZ8j4f
-         46ZQ==
-X-Gm-Message-State: AOJu0YxVj2UJkZG4QEYEerarvYMrcs4hIJiAYfHr6rIB064Nnr1i2R0E
-	lLOdBm9+e5ZfgJTI+s7lAS+mJDn3CbiPH44Ryex+wM3OS+bp+OrrY2QaQ0/NZv+9TsFvw18FgEV
-	PevPQEGVXJItaj6yUqbB9Gw5lLt3YXPfz9i42U+vi2AdteHGgX2W4yJHpWoeHjw==
-X-Received: by 2002:a05:600c:35d1:b0:40e:4806:7f9b with SMTP id r17-20020a05600c35d100b0040e48067f9bmr467123wmq.307.1705614018257;
-        Thu, 18 Jan 2024 13:40:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHzu7h6Fo6GUvyykTS9VMLpY/bskI4+iQUY/zF1+uYeQ+1qVX2Ke101UmWIgIMx9PhGr0XmLQ==
-X-Received: by 2002:a05:600c:35d1:b0:40e:4806:7f9b with SMTP id r17-20020a05600c35d100b0040e48067f9bmr467112wmq.307.1705614017890;
-        Thu, 18 Jan 2024 13:40:17 -0800 (PST)
-Received: from toolbox ([2001:9e8:89aa:f00:af88:d221:94de:a009])
-        by smtp.gmail.com with ESMTPSA id o8-20020a05600c4fc800b0040e549c77a1sm30861698wmq.32.2024.01.18.13.40.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 13:40:17 -0800 (PST)
-Date: Thu, 18 Jan 2024 22:40:15 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Andri Yngvason <andri@yngvason.is>
-Cc: Pekka Paalanen <ppaalanen@gmail.com>, dri-devel@lists.freedesktop.org,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Werner Sembach <wse@tuxedocomputers.com>,
-	Leo Li <sunpeng.li@amd.com>, David Airlie <airlied@gmail.com>,
-	intel-gfx@lists.freedesktop.org, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [PATCH v2 2/4] drm/uAPI: Add "force color format" drm property
- as setting for userspace
-Message-ID: <20240118214015.GB30589@toolbox>
-References: <20240115160554.720247-1-andri@yngvason.is>
- <20240115160554.720247-3-andri@yngvason.is>
- <20240116114235.GA311990@toolbox>
- <CAFNQBQz3TNj_7BSmFw4CFMNuR4B+1d+y3f058s+rzTuzdYogqA@mail.gmail.com>
- <20240116132918.GB311990@toolbox>
- <CAFNQBQyfWmfu5T7bgZDZFGfyhsxQi7YXmY_wPc9Y+mm5iSspXQ@mail.gmail.com>
- <20240117112150.4399d0bb@eldfell>
- <CAFNQBQwoGvSF1ryOPUUnedYUG64HqFQNXjMf6R7piufN64Vc=g@mail.gmail.com>
+	s=arc-20240116; t=1705614144; c=relaxed/simple;
+	bh=ONUFNhR31M6XU0q15l7ZwgJWHhRL+fzNUqwsw5NJTzM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jTzobsA2nO9QHsTv2waTKDhtMRmT8QGSqOvsQb4zzVs3oooj5+PVaMcYSUB7vzkssujah9bZz6yg8hBMoXJwkTCOX7iZ6Qm13z9wzDYTCJPqIT/ShoF16BuA8PLq/E0/pxxTc/EUkO8nAu2dy3YSnlk2HWxGow3UdYxviz/nyNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iKU5cYMT; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705614142; x=1737150142;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ONUFNhR31M6XU0q15l7ZwgJWHhRL+fzNUqwsw5NJTzM=;
+  b=iKU5cYMTTk3eTjwK+qfqrFSxBB0qQaOrE5ldBbQNjwn3ekyfBbn+65iY
+   9cXxHe5LwT0EqTSylcEZC3kHdVIV2msPljNaHLP/sP5WLDaB6vGfomE4d
+   e6rgWS7RxO351vtgEwhWS3qxKaUl/Ip8WlU0mLxbOWN0C6QlseTDD5vRW
+   KjkqC2AfZtYPgDPA0lifUrrBcrrq+osBvQq1fo57schohZHgFjiivCfqj
+   fxhvBK3p+J28cb9zOHpDgWDNE7Cbo7RNX+b/51BmyJ7CFRi97CZzJERrY
+   m4r0hKXdrOZbMo9zd7p4cKMxzM31lahd8tcn/nyoZxL/TUPb5gl/30RQc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7677268"
+X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
+   d="scan'208";a="7677268"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 13:42:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="855131976"
+X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
+   d="scan'208";a="855131976"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 13:42:20 -0800
+From: Tony Luck <tony.luck@intel.com>
+To: Fenghua Yu <fenghua.yu@intel.com>,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Peter Newman <peternewman@google.com>,
+	x86@kernel.org
+Cc: James Morse <james.morse@arm.com>,
+	Jamie Iles <quic_jiles@quicinc.com>,
+	Babu Moger <babu.moger@amd.com>,
+	Xiaochen Shen <xiaochen.shen@intel.com>,
+	linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v2] x86/resctrl: Implement new mba_MBps throttling heuristic
+Date: Thu, 18 Jan 2024 13:42:13 -0800
+Message-ID: <20240118214213.59596-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231201214737.104444-1-tony.luck@intel.com>
+References: <20231201214737.104444-1-tony.luck@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFNQBQwoGvSF1ryOPUUnedYUG64HqFQNXjMf6R7piufN64Vc=g@mail.gmail.com>
 
-On Wed, Jan 17, 2024 at 12:58:15PM +0000, Andri Yngvason wrote:
-> mið., 17. jan. 2024 kl. 09:21 skrifaði Pekka Paalanen <ppaalanen@gmail.com>:
-> >
-> > On Tue, 16 Jan 2024 14:11:43 +0000
-> > Andri Yngvason <andri@yngvason.is> wrote:
-> >
-> > > þri., 16. jan. 2024 kl. 13:29 skrifaði Sebastian Wick
-> > > <sebastian.wick@redhat.com>:
-> > > >
-> > > > On Tue, Jan 16, 2024 at 01:13:13PM +0000, Andri Yngvason wrote:
-> > > [...]
-> > > > > şri., 16. jan. 2024 kl. 11:42 skrifaği Sebastian Wick
-> > > > > <sebastian.wick@redhat.com>:
-> > > > > >
-> > > > > > On Mon, Jan 15, 2024 at 04:05:52PM +0000, Andri Yngvason wrote:
-> > > > > > > From: Werner Sembach <wse@tuxedocomputers.com>
-> > > > > > >
-> > > > > > > Add a new general drm property "force color format" which can be used
-> > > > > > > by userspace to tell the graphics driver which color format to use.
-> > > > > >
-> > > > > > I don't like the "force" in the name. This just selects the color
-> > > > > > format, let's just call it "color format" then.
-> > > > > >
-> > > > >
-> > > > > In previous revisions, this was "preferred color format" and "actual
-> > > > > color format", of which the latter has been dropped. I recommend
-> > > > > reading the discussion for previous revisions.
-> > > >
-> > > > Please don't imply that I didn't read the thread I'm answering to.
-> >
-> > FYI, I have not read this thread.
-> >
-> 
-> pq, You did not read this summary?
-> https://lore.kernel.org/dri-devel/CAFNQBQwjeJaX6B4oewpgASMUd5_nxZYMxUfdOG294CTVGBTd1w@mail.gmail.com/
-> 
-> You partook in the discussion on IRC. Please read it and tell me if I
-> misunderstood anything.
-> 
-> Sebastian, I apologise. You clearly read it as you even replied to it!
+The mba_MBps feedback loop increases throttling when a group is using
+more bandwidth than the target set by the user in the schemata file, and
+decreases throttling when below target.
 
-Thank you :)
+To avoid possibly stepping throttling up and down on every poll a
+flag "delta_comp" is set whenever throttling is changed to indicate
+that the actual change in bandwidth should be recorded on the next
+poll in "delta_bw". Throttling is only reduced if the current bandwidth
+plus delta_bw is below the user target.
 
-> > > >
-> > > > > There are arguments for adding "actual color format" later and if it
-> > > > > is added later, we'd end up with "color format" and "actual color
-> > > > > format", which might be confusing, and it is why I chose to call it
-> > > > > "force color format" because it clearly communicates intent and
-> > > > > disambiguates it from "actual color format".
-> > > >
-> > > > There is no such thing as "actual color format" in upstream though.
-> > > > Basing your naming on discarded ideas is not useful. The thing that sets
-> > > > the color space for example is called "Colorspace", not "force
-> > > > colorspace".
-> > > >
-> > >
-> > > Sure, I'm happy with calling it whatever people want. Maybe we can
-> > > have a vote on it?
-> >
-> > It would sound strange to say "force color format" = "auto". Just drop
-> > the "force" of it.
-> >
-> > If and when we need the feedback counterpart, it could be an immutable
-> > prop called "active color format" where "auto" is not a valid value, or
-> > something in the new "output properties" design Sima has been thinking
-> > of.
-> 
-> There seems to be consensus for calling it "color format"
-> 
-> >
-> > > > > [...]
-> > > > > > > @@ -1396,6 +1404,15 @@ static const u32 dp_colorspaces =
-> > > > > > >   *   drm_connector_attach_max_bpc_property() to create and attach the
-> > > > > > >   *   property to the connector during initialization.
-> > > > > > >   *
-> > > > > > > + * force color format:
-> > > > > > > + *   This property is used by userspace to change the used color format. When
-> > > > > > > + *   used the driver will use the selected format if valid for the hardware,
-> > > > > >
-> > > > > > All properties are always "used", they just can have different values.
-> > > > > > You probably want to talk about the auto mode here.
-> > > > >
-> > > > > Maybe we can say something like: If userspace does not set the
-> > > > > property or if it is explicitly set to zero, the driver will select
-> > > > > the appropriate color format based on other constraints.
-> > > >
-> > > > The property can be in any state without involvement from user space.
-> > > > Don't talk about setting it, talk about the state it is in:
-> > > >
-> > > >   When the color format is auto, the driver will select a format.
-> > > >
-> > >
-> > > Ok.
-> > >
-> > > > > >
-> > > > > > > + *   sink, and current resolution and refresh rate combination. Drivers to
-> > > > > >
-> > > > > > If valid? So when a value is not actually supported user space can still
-> > > > > > set it? What happens then? How should user space figure out if the
-> > > > > > driver and the sink support the format?
-> > > > >
-> > > > > The kernel does not expose this property unless it's implemented in the driver.
-> > > >
-> > > > If the driver simply doesn't support *one format*, the enum value for
-> > > > that format should not be exposed, period. This isn't about the property
-> > > > on its own.
-> > >
-> > > Right, understood. You mean that enum should only contain values that
-> > > are supported by the driver.
-> >
-> > Yes. When a driver installs a property, it can choose which of the enum
-> > entries are exposed. That cannot be changed later though, so the list
-> > cannot live by the currently connected sink, only by what the driver
-> > and display controlled could ever do.
-> 
-> Yes, and I think that basing it also on the connected sink's
-> capabilities would just add complexity for very little gain. In fact,
-> I think that limiting it based on the driver's capabilities is also
-> over-engineering, but I don't mind adding it if that's what people
-> really want.
+This algorithm works well if the workload has steady bandwidth needs.
+But it can go badly wrong if the workload moves to a different phase
+just as the throttling level changed. E.g. if the workload becomes
+essentially idle right as throttling level is increased, the value
+calculated for delta_bw will be more or less the old bandwidth level.
+If the workload then resumes, Linux may never reduce throttling because
+current bandwidth plus delta_bw is above the target set by the user.
 
-Having a bunch of values that will always fail a mode set just makes
-life for user space much worse. Might be overengineering from the kernel
-pov but it's not for user space.
+Implement a simpler heuristic by assuming that in the worst case the
+currently measured bandwidth is being controlled by the current level of
+throttling. Compute how much it may increase if throttling is relaxed to
+the next higher level. If that is still below the user target, then it
+is ok to reduce the amount of throttling.
 
-> >
-> > > > > This was originally "preferred color format". Perhaps the
-> > > > > documentation should better reflect that it is now a mandatory
-> > > > > constraint which fails the modeset if not satisfied.
-> > > >
-> > > > That would definitely help.
-> > > >
-> > > > > >
-> > > > > > For the Colorspace prop, the kernel just exposes all formats it supports
-> > > > > > (independent of the sink) and then makes it the job of user space to
-> > > > > > figure out if the sink supports it.
-> > > > > >
-> > > > > > The same could be done here. Property value is exposed if the driver
-> > > > > > supports it in general, commits can fail if the driver can't support it
-> > > > > > for a specific commit because e.g. the resolution or refresh rate. User
-> > > > > > space must look at the EDID/DisplayID/mode to figure out the supported
-> > > > > > format for the sink.
-> > > > >
-> > > > > Yes, we can make it possible for userspace to discover which modes are
-> > > > > supported by the monitor, but there are other constraints that need to
-> > > > > be satisfied. This was discussed in the previous revision.
-> > > >
-> > > > I mean, yes, that's what I said. User space would then only be
-> > > > responsible for checking the sink capabilities and the atomic check
-> > > > would take into account other (non-sink) constraints.
-> > >
-> > > Since we need to probe using TEST_ONLY anyway, we'll end up with two
-> > > mechanisms to do the same thing where one of them depends on the other
-> > > for completeness.
-> >
-> > What do you mean by "same thing"?
-> 
-> I thought that it would be clear that I did not mean that they were
-> literally equal. This was discussed on IRC and summarised in the email
-> message that I linked to above. Excerpt:
-> "I asked if it made sense to add color format capabilities to the mode info
-> struct, but the conclusion was that it wouldn't really be useful because we
-> need TEST_ONLY anyway to see if the color format setting is compatible with
-> other settings."
+Fixes: ba0f26d8529c ("x86/intel_rdt/mba_sc: Prepare for feedback loop")
+Reported-by: Xiaochen Shen <xiaochen.shen@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Tested-by: Xiaochen Shen <xiaochen.shen@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+---
 
-I feel like we're talking past each other.
+Changes since v1:
+Reinette: Subject & commit comment: ("MBA_mbps" -> "mba_MBps", "plu" -> "plus")
 
-There are two questions:
+Added Xiaochen's Tested-by
+Added Reinette's Reviewed-by
 
-1. Should the property expose enum values which will always result in a
-   failed commit (because e.g. the hardware doesn't support it)
-2. Should the commit fail if the sink doesn't claim to support the
-   format
+ arch/x86/kernel/cpu/resctrl/internal.h |  4 ---
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 42 ++++++--------------------
+ 2 files changed, 10 insertions(+), 36 deletions(-)
 
-The first issue I believe that we should try to minimize options that
-can't work to cut down on the combinatorial explosion problem.
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index a4f1aa15f0a2..71bbd2245cc7 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -296,14 +296,10 @@ struct rftype {
+  * struct mbm_state - status for each MBM counter in each domain
+  * @prev_bw_bytes: Previous bytes value read for bandwidth calculation
+  * @prev_bw:	The most recent bandwidth in MBps
+- * @delta_bw:	Difference between the current and previous bandwidth
+- * @delta_comp:	Indicates whether to compute the delta_bw
+  */
+ struct mbm_state {
+ 	u64	prev_bw_bytes;
+ 	u32	prev_bw;
+-	u32	delta_bw;
+-	bool	delta_comp;
+ };
+ 
+ /**
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index f136ac046851..1961823b555b 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -440,9 +440,6 @@ static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
+ 
+ 	cur_bw = bytes / SZ_1M;
+ 
+-	if (m->delta_comp)
+-		m->delta_bw = abs(cur_bw - m->prev_bw);
+-	m->delta_comp = false;
+ 	m->prev_bw = cur_bw;
+ }
+ 
+@@ -520,7 +517,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ {
+ 	u32 closid, rmid, cur_msr_val, new_msr_val;
+ 	struct mbm_state *pmbm_data, *cmbm_data;
+-	u32 cur_bw, delta_bw, user_bw;
++	u32 cur_bw, user_bw;
+ 	struct rdt_resource *r_mba;
+ 	struct rdt_domain *dom_mba;
+ 	struct list_head *head;
+@@ -543,7 +540,6 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ 
+ 	cur_bw = pmbm_data->prev_bw;
+ 	user_bw = dom_mba->mbps_val[closid];
+-	delta_bw = pmbm_data->delta_bw;
+ 
+ 	/* MBA resource doesn't support CDP */
+ 	cur_msr_val = resctrl_arch_get_config(r_mba, dom_mba, closid, CDP_NONE);
+@@ -555,49 +551,31 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ 	list_for_each_entry(entry, head, mon.crdtgrp_list) {
+ 		cmbm_data = &dom_mbm->mbm_local[entry->mon.rmid];
+ 		cur_bw += cmbm_data->prev_bw;
+-		delta_bw += cmbm_data->delta_bw;
+ 	}
+ 
+ 	/*
+ 	 * Scale up/down the bandwidth linearly for the ctrl group.  The
+ 	 * bandwidth step is the bandwidth granularity specified by the
+ 	 * hardware.
+-	 *
+-	 * The delta_bw is used when increasing the bandwidth so that we
+-	 * dont alternately increase and decrease the control values
+-	 * continuously.
+-	 *
+-	 * For ex: consider cur_bw = 90MBps, user_bw = 100MBps and if
+-	 * bandwidth step is 20MBps(> user_bw - cur_bw), we would keep
+-	 * switching between 90 and 110 continuously if we only check
+-	 * cur_bw < user_bw.
++	 * Always increase throttling if current bandwidth is above the
++	 * target set by user.
++	 * But avoid thrashing up and down on every poll by checking
++	 * whether a decrease in throttling is likely to push the group
++	 * back over target. E.g. if currently throttling to 30% of bandwidth
++	 * on a system with 10% granularity steps, check whether moving to
++	 * 40% would go past the limit by multiplying current bandwidth by
++	 * "(30 + 10) / 30".
+ 	 */
+ 	if (cur_msr_val > r_mba->membw.min_bw && user_bw < cur_bw) {
+ 		new_msr_val = cur_msr_val - r_mba->membw.bw_gran;
+ 	} else if (cur_msr_val < MAX_MBA_BW &&
+-		   (user_bw > (cur_bw + delta_bw))) {
++		   (user_bw > (cur_bw * (cur_msr_val + r_mba->membw.min_bw) / cur_msr_val))) {
+ 		new_msr_val = cur_msr_val + r_mba->membw.bw_gran;
+ 	} else {
+ 		return;
+ 	}
+ 
+ 	resctrl_arch_update_one(r_mba, dom_mba, closid, CDP_NONE, new_msr_val);
+-
+-	/*
+-	 * Delta values are updated dynamically package wise for each
+-	 * rdtgrp every time the throttle MSR changes value.
+-	 *
+-	 * This is because (1)the increase in bandwidth is not perfectly
+-	 * linear and only "approximately" linear even when the hardware
+-	 * says it is linear.(2)Also since MBA is a core specific
+-	 * mechanism, the delta values vary based on number of cores used
+-	 * by the rdtgrp.
+-	 */
+-	pmbm_data->delta_comp = true;
+-	list_for_each_entry(entry, head, mon.crdtgrp_list) {
+-		cmbm_data = &dom_mbm->mbm_local[entry->mon.rmid];
+-		cmbm_data->delta_comp = true;
+-	}
+ }
+ 
+ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
 
-On the second issue, there are good reasons to just not fail commits in
-the kernel because:
-* user space already has to parse and understand EDIDs
-* this information is often wrong
-* support for new EDID/DisplayID can get to user space faster
-
-We have to decide on this and make them part of the API. We've seen how
-this gets a mess if that's not being done.
-
-> >
-> > Neither HDMI nor DisplayPort have a feedback message saying your
-> > infoframe contents are unacceptable, that I know of. Even if there was,
-> > it would come too late for failing the atomic commit ioctl in
-> > non-blocking mode.
-> >
-> > In general, display signalling is that you send whatever to the sink,
-> > and hope for the best.
-> >
-> > EDID is used to describe what the sink can accept, so in theory the
-> > kernel could parse EDID for all of these details and reject atomic
-> > commits that attempt unsupported configurations. However, EDID are also
-> > notoriously buggy. They are good for a best guess, but I believe it is
-> > useful to be able to try "unsupported" things. IIRC, PS VR2
-> > intentionally lies for instance.
-> >
-> > Even if the kernel did reject everything based on EDID, the only way
-> > today for userspace to know what should work is to parse the EDID
-> > itself. TEST_ONLY trials lead to a combinatorial explosion too easily.
-> > So userspace is already expected to parse EDID, with the major
-> > exception being video mode lists that are explicitly provided by the
-> > kernel in UAPI.
-> 
-> I thought that everyone agreed that display settings GUIs don't suffer
-> from combinatorial explosion because settings are selected in a
-> predefined order so they don't need to test all permutations.
-
-Not all permutations doesn't mean no permutations. This is still really
-expensive to do right.
-
-> >
-> > EDID and DisplayID standards also evolve. The kernel could be behind
-> > userspace in chasing them, which was the reason why the kernel does not
-> > validate HDR_OUTPUT_METADATA against EDID.
-> >
-> > The design of today with HDR_OUTPUT_METADATA and whatnot is
-> > that userspace is responsible for checking sink capabilities, and
-> > atomic check is responsible for driver and display controller
-> > capabilities.
-> 
-> I'm not really sure where you're going with this. Are you for or
-> against userspace parsing EDID instead of getting the information from
-> the kernel?
-
-The opposite I hope.
-
-Sink capabilities shouldn't influence commits, let user space do what it
-can do. We have a bunch of "auto" states but I do consider them a
-mistake.
-
-> >
-> > > > > In any case, these things can be added later and need not be a part of
-> > > > > this change set.
-> > > >
-> > > > No, this is the contract between the kernel and user space and has to be
-> > > > figured out before we can merge new uAPI.
-> >
-> > Indeed.
-> 
-> I don't see how adding something later to cut down on the
-> combinatorial explosion can possibly break any kind of contract in the
-> way things are currently implemented. Can anyone provide examples of
-> how things can go wrong in this particular instance?
-> 
-> Thanks,
-> Andri
-> 
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+-- 
+2.43.0
 
 
