@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-30151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C70831A8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:25:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D60E1831A85
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:25:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46EF31C25BB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:25:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154841C214C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:25:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9403928DC3;
-	Thu, 18 Jan 2024 13:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E29625615;
+	Thu, 18 Jan 2024 13:24:53 +0000 (UTC)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48CB25546;
-	Thu, 18 Jan 2024 13:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D20184C;
+	Thu, 18 Jan 2024 13:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705584294; cv=none; b=uT4F6d5Fjr0dbyalk/TbmKli7C9esyXi8JTcUV6W3VNSgXKkCfqqZn7AMdukyKg89b4eiHzf+asLjCAlaE8q7TiITvF6mxqLuCNXmciw/sj2Yj8qnB8XRJfht//NcqQoU0uf3FOIJZ0/GkKXyE8I5qkRir8Nt0PoibpR/VWe/pk=
+	t=1705584293; cv=none; b=iWssVWKd1UvQQl7lOTvGEg8oOBLvW7rJPolNb27L+ep1GD15H5Rpcvbe33/BE8IRpJBVybDgohQ7YrY9681kKzkgFFeOTAjlfbUF5w0G226YyglVUB+ZmvqCfCDfQA+4qpMq+z/hVeivNURXji6F5AaoVrUZ+ca4JUt729YiqL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705584294; c=relaxed/simple;
-	bh=CNk2VPYgaHZVUWLkXbMZyzxsjX0YYQCq1bBFNAfMI2M=;
+	s=arc-20240116; t=1705584293; c=relaxed/simple;
+	bh=onNdsPb+69WqAEQtLe5+cbbnN6bq1q8qyW8fuoVDI4g=;
 	h=Received:Received:Received:From:To:Subject:Date:Message-Id:
-	 X-Mailer:In-Reply-To:References:X-Virus-Scanned; b=VSLQ4yeb/asPTzv5k77cW3cwVnlVLSMZJmZ9dkql2MqOSmsO/mpO4v6iJszP+LsMA/m7hEXeRmTyJI1pJiFqtHGWOJV9m8x/EmMm6YgCPUDWhpXcmBmWwYIxQdQpDt1bzzehhVPolQQnh5JT6z9Vc5FZGmtAmEgm8GneqWx6P+w=
+	 X-Mailer:In-Reply-To:References:X-Virus-Scanned; b=oJ8uQ/Lffs0oOhPKtP5HxC36w36UoEoGuSyUucGJfzzgBgKdXCUTnFxAoRofHql9hu8swCzUrFQVAigCMm2FSo3Y/bY/3vvLSjwgYyJxwlclBx//9cxraGuRAUDBnyA38JLnjNQ32Qs0Z57UemHZWQEDO8RI+rAmJZ0KRSi/uqw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 49CF01A17C4;
-	Thu, 18 Jan 2024 14:14:57 +0100 (CET)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D32B01A2299;
+	Thu, 18 Jan 2024 14:14:58 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 129271A0762;
-	Thu, 18 Jan 2024 14:14:57 +0100 (CET)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9BE161A0762;
+	Thu, 18 Jan 2024 14:14:58 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 0DDCE18002A2;
-	Thu, 18 Jan 2024 21:14:54 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 971391834898;
+	Thu, 18 Jan 2024 21:14:56 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -55,9 +55,9 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v12 05/15] ASoC: fsl_easrc: register m2m platform device
-Date: Thu, 18 Jan 2024 20:31:58 +0800
-Message-Id: <1705581128-4604-6-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v12 06/15] media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
+Date: Thu, 18 Jan 2024 20:31:59 +0800
+Message-Id: <1705581128-4604-7-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
@@ -68,59 +68,55 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Register m2m platform device,that user can
-use M2M feature.
+V4L2_CAP_AUDIO_M2M is similar to V4L2_CAP_VIDEO_M2M flag.
+
+It is used for audio memory to memory case.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_easrc.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ Documentation/userspace-api/media/v4l/vidioc-querycap.rst    | 3 +++
+ Documentation/userspace-api/media/videodev2.h.rst.exceptions | 1 +
+ include/uapi/linux/videodev2.h                               | 1 +
+ 3 files changed, 5 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index cf7ad30a323b..ccbf45c7abf4 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -2075,6 +2075,7 @@ MODULE_DEVICE_TABLE(of, fsl_easrc_dt_ids);
- static int fsl_easrc_probe(struct platform_device *pdev)
- {
- 	struct fsl_easrc_priv *easrc_priv;
-+	struct fsl_asrc_m2m_pdata m2m_pdata;
- 	struct device *dev = &pdev->dev;
- 	struct fsl_asrc *easrc;
- 	struct resource *res;
-@@ -2190,6 +2191,19 @@ static int fsl_easrc_probe(struct platform_device *pdev)
- 		goto err_pm_disable;
- 	}
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
+index 6c57b8428356..1c0d97bf192a 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
+@@ -173,6 +173,9 @@ specification the ioctl returns an ``EINVAL`` error code.
+ 	interface. A video overlay device typically stores captured images
+ 	directly in the video memory of a graphics card, with hardware
+ 	clipping and scaling.
++    * - ``V4L2_CAP_AUDIO_M2M``
++      - 0x00000008
++      - The device supports the audio Memory-To-Memory interface.
+     * - ``V4L2_CAP_VBI_CAPTURE``
+       - 0x00000010
+       - The device supports the :ref:`Raw VBI Capture <raw-vbi>`
+diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+index 3e58aac4ef0b..da6d0b8e4c2c 100644
+--- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
++++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+@@ -197,6 +197,7 @@ replace define V4L2_CAP_META_OUTPUT device-capabilities
+ replace define V4L2_CAP_DEVICE_CAPS device-capabilities
+ replace define V4L2_CAP_TOUCH device-capabilities
+ replace define V4L2_CAP_IO_MC device-capabilities
++replace define V4L2_CAP_AUDIO_M2M device-capabilities
  
-+	m2m_pdata.asrc = easrc;
-+	m2m_pdata.fmt_in = FSL_EASRC_FORMATS;
-+	m2m_pdata.fmt_out = FSL_EASRC_FORMATS | SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE;
-+	m2m_pdata.rate_min = 8000;
-+	m2m_pdata.rate_max = 768000;
-+	m2m_pdata.chan_min = 1;
-+	m2m_pdata.chan_max = 32;
-+	easrc->m2m_pdev = platform_device_register_data(&pdev->dev,
-+							M2M_DRV_NAME,
-+							PLATFORM_DEVID_AUTO,
-+							&m2m_pdata,
-+							sizeof(m2m_pdata));
-+
- 	return 0;
- 
- err_pm_disable:
-@@ -2199,6 +2213,11 @@ static int fsl_easrc_probe(struct platform_device *pdev)
- 
- static void fsl_easrc_remove(struct platform_device *pdev)
- {
-+	struct fsl_asrc *easrc = dev_get_drvdata(&pdev->dev);
-+
-+	if (easrc->m2m_pdev && !IS_ERR(easrc->m2m_pdev))
-+		platform_device_unregister(easrc->m2m_pdev);
-+
- 	pm_runtime_disable(&pdev->dev);
- }
- 
+ # V4L2 pix flags
+ replace define V4L2_PIX_FMT_PRIV_MAGIC :c:type:`v4l2_pix_format`
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 2c23f0b369e4..6cd65969c2b5 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -473,6 +473,7 @@ struct v4l2_capability {
+ #define V4L2_CAP_VIDEO_CAPTURE		0x00000001  /* Is a video capture device */
+ #define V4L2_CAP_VIDEO_OUTPUT		0x00000002  /* Is a video output device */
+ #define V4L2_CAP_VIDEO_OVERLAY		0x00000004  /* Can do video overlay */
++#define V4L2_CAP_AUDIO_M2M		0x00000008  /* audio memory to memory */
+ #define V4L2_CAP_VBI_CAPTURE		0x00000010  /* Is a raw VBI capture device */
+ #define V4L2_CAP_VBI_OUTPUT		0x00000020  /* Is a raw VBI output device */
+ #define V4L2_CAP_SLICED_VBI_CAPTURE	0x00000040  /* Is a sliced VBI capture device */
 -- 
 2.34.1
 
