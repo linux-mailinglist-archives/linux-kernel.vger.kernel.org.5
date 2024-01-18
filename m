@@ -1,225 +1,155 @@
-Return-Path: <linux-kernel+bounces-30584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB56832100
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:44:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC84483210B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:48:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E87E21F26285
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:44:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C0942861EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:48:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D117731752;
-	Thu, 18 Jan 2024 21:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BBD2EB09;
+	Thu, 18 Jan 2024 21:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="qmBU8Ysd";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="JnTyWDD3"
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QriCtqnW"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DFA52C197;
-	Thu, 18 Jan 2024 21:44:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED312E405
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705614283; cv=none; b=Qhy5iUscVuqxfdrmQv4gRU6UU++DIgym0+zVaecgPA1bBINAHu1mipNmrfwD7o9vuaxZBT7NY4evA/91/Xc+9iBgKs0D3Of3Zo7gkv9F8Vtn7hCTJydNZ1TpWZBSYHt5unL/FOV12Xaom+uVnDtSOmdvYvphmVUltNDotV+Peo0=
+	t=1705614527; cv=none; b=bA4faapk8WdykkFytHAtm4puMLNcW85yJDzSH5hvsfUOvqnFPCL5VD7bkhj4rrJlWaAYoW7dKBV5ty6wAsrrv5gwPyIRpaw7YTmc5DSjozTcI9HR31a+qqVTGQq/R9rC1sH5y4VHlfLEvfT2hVakF1hi17XEzQTqzAiBiuytSd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705614283; c=relaxed/simple;
-	bh=IS1yEaRMuerTQxizDzJWXJ8G5cZ1GL+CPG/5u9t2Fnw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f18GxhJSe++8HbS3CuzfHCo8dq0mwR/uaRQGjdCyh60II1Dfq+JYKk1RR1wcJYt8kbQWUoPk+FHEZtOCGIxwjlUkXMYYKW1HOvdwutMbhv+LB/Jf5kfWGyXjFNMwpTbC2l1iRjYOXLHBNA44xlvZDFyUmhr9zpJA9DEyTZAezIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=qmBU8Ysd; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=JnTyWDD3; arc=none smtp.client-ip=161.53.235.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 74432601A5;
-	Thu, 18 Jan 2024 22:44:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1705614275; bh=IS1yEaRMuerTQxizDzJWXJ8G5cZ1GL+CPG/5u9t2Fnw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qmBU8YsdJIZZgtpi5Zh0hAsUah5INpLoQmhgnJcrXZ31WfutbQzrzUEv2hhsxcr++
-	 wVwbxqD4R/rshgVeI5/+J+tHmZ/54tTItW13vrKZXaDgbajqkL20aAZCKLl7bvSTsp
-	 8FeOhSn1iP3LPQVcKAVlicTsknY7Go3tQJFSAd0+Zfn528vcc6WgeoUYx2ROQg4JjU
-	 yAEB0/gIZ5iN14tWWPoD3Kl5vGMDMoeA0uB5M1RigW0j7YY6QQJaLC+6YZWjcEkYRZ
-	 WKkJWfnYjLyK6U9QJFpZJ66+t2i68f4jWaVuoiB6dVtUnq7qouU0bmmM93tOTsxLZl
-	 7A10wK6m+7ZKQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id hj2rLTFDBh8j; Thu, 18 Jan 2024 22:44:33 +0100 (CET)
-Received: from [192.168.178.20] (dh207-40-167.xnet.hr [88.207.40.167])
-	by domac.alu.hr (Postfix) with ESMTPSA id BE6CC601A1;
-	Thu, 18 Jan 2024 22:44:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1705614272; bh=IS1yEaRMuerTQxizDzJWXJ8G5cZ1GL+CPG/5u9t2Fnw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JnTyWDD3kNHEMWtbilVBMLIVc01OSgOF/i6pubmDiBmvxUQZQ0IL1O1f6Vn7IDZqg
-	 jXoUKJxyTuliQU8ZPQnDg7v5zAwn/7t4CnUm6vIQQF28dLtCR40gmkKQzEFOs5RTLv
-	 qHHdla3+p2+z7MX/Tl7GccPaHie3zXEBJggUtUeUmYqtSQ9OdxQP+ngKJZukfrPYAR
-	 /JPakAugRrIsZkWjmsoeJ7oMm69aCSFZR5r5bfutiMo8WS2NccIoVg6F1ijk0H9kUj
-	 nvkoPg/hlrmYa0vKxXEp0H8X4DQSB56A6NFF/bCLE7uLToqzAXhtp5nicdJ7fP3Zw1
-	 DxXH3D+btMeTw==
-Message-ID: <b9ecdb2e-f62c-4661-a786-496804e09606@alu.unizg.hr>
-Date: Thu, 18 Jan 2024 22:44:27 +0100
+	s=arc-20240116; t=1705614527; c=relaxed/simple;
+	bh=Edof3HGd9iGAuFabvWL99OAkcFUpbmsJtzrwMu87x4w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OXCjG4Uvu04gfo4b8xhaKKQCta2m3GpmsmxMbcCMFYYkxAwLoU82BJunCjDRLp1TmBkjTnFKM3jYrCVuWEr4P5I3RBsIpoJSFaYTc91H73bdDAYEY7iNV9Nj11Ooq11WPKvnLn3vn+pzYGLU+59GRJN2p2dir4j7JB9Zv9B2bkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QriCtqnW; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5f0629e67f4so1043167b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:48:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705614525; x=1706219325; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zGdgVUyAK1aAflsT7iZ9NPgtBe4T35/dr8bobRRTOjs=;
+        b=QriCtqnWa0JFJYhdyTC5SrfQf+2ZVQ7K+shHaG9fJKOCsZ5/sPOrU3Ej2mErbAblm+
+         PjwLeLho2baY4Z+Kz4Rh4zSFj1PbDZgMZF5SyUEN4QviNGzosm0lE+YMnK6zPO5LBlyF
+         bkP5OZX6+rv3JZc+yvod3AZhWfF8KYSV0yj/K8p3dG4btpYVPNVp4XXuHbNcSrV+yI/g
+         6u5H/GpMHj8Ud0tBSbixbErjj7IcwS/LiIRv26lDW8IJaX/u0X3sG2FWLjxXwl0kuN6C
+         J8JyT9TIb6oHyAdfrXsX0imPhMR0eoBsy/r81QqGWYh6OsU5HPuvS0w+UH/QDLCZ1QRG
+         O2qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705614525; x=1706219325;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zGdgVUyAK1aAflsT7iZ9NPgtBe4T35/dr8bobRRTOjs=;
+        b=A9SH6Uszirn9N1MP/1qBiPUKwT3PAlP4H1fPKxy0l4Q0Q3x+eqhO/qgd8NP4I+0jOD
+         FyFxC8iBZEModQZUXCX3KHszmhSkhjDVOk4caP8TPw1ptqBRyCMWI+3mBaDrXkR/3j4e
+         W/FTrGh6uiF78k9h/KEkEqgMrVQQEtGI5eeKXacai2i3evy7ETYUETNEuNCBtQDkfqoJ
+         Z9SJscPy+zkL8ocieiPs/RETzh/rDPsNtCVez6NEZUPsCRVcmSQPLe4YWKjThtc4wwYz
+         BNsyMofZjHxLfkpvvta2d56dCrNfhvuq2sn81PhuIuBT79oXNSMrOtCc/YHiUNtrMsJw
+         i5sA==
+X-Gm-Message-State: AOJu0YxCzXR3MgdtT7VmPnPyKp+V3SYNjQ9u/0YtKlHGmYhoj63V9ADu
+	aqdzMFJC2zZfyRa0jyoJ3wBHA6KSTRenwlYj7W50C2yxZR6IDpSQ
+X-Google-Smtp-Source: AGHT+IGVMDVZxgqMFbHQywDUbtvVUzwbz++sS9yXUzkKQh4cCDaE3ihLfZ8Q5uFdp6tk6+OzvG/wuQ==
+X-Received: by 2002:a81:c20e:0:b0:5ff:958d:5b2 with SMTP id z14-20020a81c20e000000b005ff958d05b2mr955427ywc.51.1705614525244;
+        Thu, 18 Jan 2024 13:48:45 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:b45f:9648:c2e:2e36])
+        by smtp.gmail.com with ESMTPSA id p207-20020a8198d8000000b005ff60d85d1bsm2147803ywg.80.2024.01.18.13.48.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 13:48:44 -0800 (PST)
+Date: Thu, 18 Jan 2024 13:48:43 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	intel-gfx@lists.freedesktop.org,
+	Kevin Brodsky <kevin.brodsky@arm.com>, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	intel-xe@lists.freedesktop.org
+Subject: Re: Re: [Intel-xe] [PATCH 2/3] linux/bits.h: Add fixed-width GENMASK
+ and BIT macros
+Message-ID: <Zamcu7tts8mqX0b4@yury-ThinkPad>
+References: <20230509051403.2748545-1-lucas.demarchi@intel.com>
+ <20230509051403.2748545-3-lucas.demarchi@intel.com>
+ <ZJOwC5LIEySpduQJ@yury-ThinkPad>
+ <4ezps56sdj7fmr27ivkaqjakv4ex46f5cvmy6oqr3z6gkhiorl@us4qd53jzq34>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG][BISECTED] Freeze at loading init ramdisk
-To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hans de Goede <hdegoede@redhat.com>, Huacai Chen <chenhuacai@kernel.org>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Prathu Baronia <prathubaronia2011@gmail.com>, Sam Ravnborg
- <sam@ravnborg.org>, Sui Jingfeng <suijingfeng@loongson.cn>,
- Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org
-References: <8a6aa228-f2da-4dcd-93c1-e34614cd6471@alu.unizg.hr>
- <cc813525-5484-443e-a40a-cb98f2ed4e1f@alu.unizg.hr>
- <gevqxytidg5efylozindaqntkbl4yeoyzqnh5m3ylitmipgum3@sgmv7qieo7rs>
- <1fe9b78c-7fb5-4d7b-a754-afd563950829@alu.unizg.hr>
- <esh5npfi6ahrlralvmcrnqtrfkarlhsqahbtmfnw5pclr2pf2u@xzitdq6wi7of>
-Content-Language: en-US
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <esh5npfi6ahrlralvmcrnqtrfkarlhsqahbtmfnw5pclr2pf2u@xzitdq6wi7of>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ezps56sdj7fmr27ivkaqjakv4ex46f5cvmy6oqr3z6gkhiorl@us4qd53jzq34>
 
-
-
-On 1/18/24 22:14, Uwe Kleine-König wrote:
-> On Thu, Jan 18, 2024 at 09:04:05PM +0100, Mirsad Todorovac wrote:
->>
->>
->> On 1/18/24 08:45, Uwe Kleine-König wrote:
->>> Hello Mirsad,
->>>
->>> On Wed, Jan 17, 2024 at 07:47:49PM +0100, Mirsad Todorovac wrote:
->>>> On 1/16/24 01:32, Mirsad Todorovac wrote:
->>>>> On the Ubuntu 22.04 LTS Jammy platform, on a mainline vanilla torvalds tree kernel, the boot
->>>>> freezes upon first two lines and before any systemd messages.
->>>>>
->>>>> (Please find the config attached.)
->>>>>
->>>>> Bisecting the bug led to this result:
->>>>>
->>>>> marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect good
->>>>> d97a78423c33f68ca6543de510a409167baed6f5 is the first bad commit
->>>>> commit d97a78423c33f68ca6543de510a409167baed6f5
->>>>> Merge: 61da593f4458 689237ab37c5
->>>>> Author: Linus Torvalds <torvalds@linux-foundation.org>
->>>>> Date:   Fri Jan 12 14:38:08 2024 -0800
->>>>>
->>>>> [...]
->>>>>
->>>>> Hope this helps.
->>>>
->>>> P.S.
->>>>
->>>> As I see that this is a larger merge commit, with 5K+ lines changed, I don't think I can
->>>> bisect further to determine the culprit.
->>>
->>> Actually it's not that hard. If a merge commit is the first bad commit
->>> for a bisection, either the merge wasn't done correctly (less likely,
->>> looking at d97a78423c33f68ca6543de510a409167baed6f5 I'd bet this isn't
->>> the problem); or changes on different sides conflict or you did
->>> something wrong during bisection.
->>>
->>> To rule out the third option, you can just retest d97a78423c33,
->>> 61da593f4458 and 689237ab37c5. If d97a78423c33 is the only bad one, you
->>> did it right.
->>
->> This was confirmed.
->>
->>> Then to further debug the second option you can find out the offending
->>> commit on each side with a bisection as follows, here for the RHS (i.e.
->>> 689237ab37c5):
->>>
->>> 	git bisect start 689237ab37c5 $(git merge-base 61da593f4458 689237ab37c5)
->>>
->>> and then in each bisection step do:
->>>
->>> 	git merge --no-commit 61da593f4458
->>> 	test if the problem is present
->>> 	git reset --hard
->>> 	git bisect good/bad
->>>
->>> In this case you get merge conflicts in drivers/video/fbdev/amba-clcd.c
->>> and drivers/video/fbdev/vermilion/vermilion.c. In the assumption that
->>> you don't have these enabled in your .config, you can just ignore these.
->>>
->>> Side note: A problem during bisection can be that the .config changes
->>> along the process. You should put your config into (say)
->>> arch/x86/configs/lala_defconfig and do
->>>
->>> 	make lala_defconfig
->>>
->>> before building each step to prevent this.
->>
->> I must have done something wrong:
->>
->> marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect log
->> # bad: [689237ab37c59b9909bc9371d7fece3081683fba] fbdev/intelfb: Remove driver
->> # good: [de927f6c0b07d9e698416c5b287c521b07694cac] Merge tag 's390-6.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
->> git bisect start '689237ab37c5' 'de927f6c0b07d9e698416c5b287c521b07694cac'
->> # good: [d9f25b59ed85ae45801cf45fe17eb269b0ef3038] fbdev: Remove support for Carillo Ranch driver
->> git bisect good d9f25b59ed85ae45801cf45fe17eb269b0ef3038
->> # good: [e2e0b838a1849f92612a8305c09aaf31bf824350] video/sticore: Remove info field from STI struct
->> git bisect good e2e0b838a1849f92612a8305c09aaf31bf824350
->> # good: [778e73d2411abc8f3a2d60dbf038acaec218792e] drm/hyperv: Remove firmware framebuffers with aperture helper
->> git bisect good 778e73d2411abc8f3a2d60dbf038acaec218792e
->> # good: [df67699c9cb0ceb70f6cc60630ca938c06773eda] firmware/sysfb: Clear screen_info state after consuming it
->> git bisect good df67699c9cb0ceb70f6cc60630ca938c06773eda
->> marvin@defiant:~/linux/kernel/linux_torvalds$
->>
->> with the error:
->>
->> marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect good
->> Bisecting: 0 revisions left to test after this (roughly 0 steps)
->> drivers/video/fbdev/amba-clcd.c: needs merge
->> drivers/video/fbdev/vermilion/vermilion.c: needs merge
->> error: you need to resolve your current index first
+On Thu, Jan 18, 2024 at 02:42:12PM -0600, Lucas De Marchi wrote:
+> Hi,
 > 
-> It seems you forgot the "git reset --hard" step.  Doing it in this state
-> should still be possible.
+> Reviving this thread as now with xe driver merged we have 2 users for
+> a fixed-width BIT/GENMASK.
 
-Well, it was possible, but I obviously got the wrong result:
+Can you point where and why?
+ 
+> On Wed, Jun 21, 2023 at 07:20:59PM -0700, Yury Norov wrote:
+> > Hi Lucas, all!
+> > 
+> > (Thanks, Andy, for pointing to this thread.)
+> > 
+> > On Mon, May 08, 2023 at 10:14:02PM -0700, Lucas De Marchi wrote:
+> > > Add GENMASK_U32(), GENMASK_U16() and GENMASK_U8()  macros to create
+> > > masks for fixed-width types and also the corresponding BIT_U32(),
+> > > BIT_U16() and BIT_U8().
+> > 
+> > Can you split BIT() and GENMASK() material to separate patches?
+> > 
+> > > All of those depend on a new "U" suffix added to the integer constant.
+> > > Due to naming clashes it's better to call the macro U32. Since C doesn't
+> > > have a proper suffix for short and char types, the U16 and U18 variants
+> > > just use U32 with one additional check in the BIT_* macros to make
+> > > sure the compiler gives an error when the those types overflow.
+> > 
+> > I feel like I don't understand the sentence...
+> > 
+> > > The BIT_U16() and BIT_U8() need the help of GENMASK_INPUT_CHECK(),
+> > > as otherwise they would allow an invalid bit to be passed. Hence
+> > > implement them in include/linux/bits.h rather than together with
+> > > the other BIT* variants.
+> > 
+> > I don't think it's a good way to go because BIT() belongs to a more basic
+> > level than GENMASK(). Not mentioning possible header dependency issues.
+> > If you need to test against tighter numeric region, I'd suggest to
+> > do the same trick as  GENMASK_INPUT_CHECK() does, but in uapi/linux/const.h
+> > directly. Something like:
+> >        #define _U8(x)		(CONST_GT(U8_MAX, x) + _AC(x, U))
+> 
+> but then make uapi/linux/const.h include linux/build_bug.h?
+> I was thinking about leaving BIT() define where it is, and add the
+> fixed-width versions in this header. I was thinking uapi/linux/const.h
+> was more about allowing the U/ULL suffixes for things shared with asm.
 
-marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect log
-# bad: [689237ab37c59b9909bc9371d7fece3081683fba] fbdev/intelfb: Remove driver
-# good: [de927f6c0b07d9e698416c5b287c521b07694cac] Merge tag 's390-6.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
-git bisect start '689237ab37c5' 'de927f6c0b07d9e698416c5b287c521b07694cac'
-# good: [d9f25b59ed85ae45801cf45fe17eb269b0ef3038] fbdev: Remove support for Carillo Ranch driver
-git bisect good d9f25b59ed85ae45801cf45fe17eb269b0ef3038
-# good: [e2e0b838a1849f92612a8305c09aaf31bf824350] video/sticore: Remove info field from STI struct
-git bisect good e2e0b838a1849f92612a8305c09aaf31bf824350
-# good: [778e73d2411abc8f3a2d60dbf038acaec218792e] drm/hyperv: Remove firmware framebuffers with aperture helper
-git bisect good 778e73d2411abc8f3a2d60dbf038acaec218792e
-# good: [df67699c9cb0ceb70f6cc60630ca938c06773eda] firmware/sysfb: Clear screen_info state after consuming it
-git bisect good df67699c9cb0ceb70f6cc60630ca938c06773eda
-# good: [df67699c9cb0ceb70f6cc60630ca938c06773eda] firmware/sysfb: Clear screen_info state after consuming it
-git bisect good df67699c9cb0ceb70f6cc60630ca938c06773eda
-# good: [c25a19afb81cfd73dab494ba64f9a434cf1a4499] fbdev/hyperv_fb: Do not clear global screen_info
-git bisect good c25a19afb81cfd73dab494ba64f9a434cf1a4499
-# first bad commit: [689237ab37c59b9909bc9371d7fece3081683fba] fbdev/intelfb: Remove driver
-marvin@defiant:~/linux/kernel/linux_torvalds$ uname -rms
-Linux 6.7.0-initrd-retest-02751-g689237ab37c5 x86_64
-marvin@defiant:~/linux/kernel/linux_torvalds$
+You can't include kernel headers in uapi code. But you can try doing
+vice-versa: implement or move the pieces you need to share to the
+uapi/linux/const.h, and use them in the kernel code.
 
-.. meaning, I get the 689237ab37c5 as "first bad commit" but it boots.
+In the worst case, you can just implement the macro you need in the
+uapi header, and make it working that way.
 
-If you see an obvious error, it would be helpful, otherwise I might retry the bisect, but later.
+Can you confirm that my proposal increases the kernel size? If so, is
+there any way to fix it? If it doesn't, I'd prefer to use the
+__GENMASK() approach.
 
-I am puzzled, but bisecting a merge commit is my first attempt at this.
-
-Best regards,
-Mirsad
+Thanks,
+Yury
 
