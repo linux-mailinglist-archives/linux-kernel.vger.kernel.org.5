@@ -1,127 +1,225 @@
-Return-Path: <linux-kernel+bounces-30583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C777C8320FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:44:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB56832100
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:44:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED8AD1C23D6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:44:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E87E21F26285
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 21:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894CE31A6B;
-	Thu, 18 Jan 2024 21:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D117731752;
+	Thu, 18 Jan 2024 21:44:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="VTg7IMb1"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="qmBU8Ysd";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="JnTyWDD3"
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E8D931747
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DFA52C197;
+	Thu, 18 Jan 2024 21:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705614257; cv=none; b=dLKLYS77RnqoIAydio4LnUI3OVMVB3jfufc1l10ZsaGOzn9bAvWSynEFPNFfL12BZ4T0c40wluEXfp48Dkj9AQDwMHPm0EjbadZr2cUUWXxn7MFJmrHJ5o/EVR5qccdk4n42azv+a9D9SPgo+2ygRXQlRGPRh4+62f+fU8812jA=
+	t=1705614283; cv=none; b=Qhy5iUscVuqxfdrmQv4gRU6UU++DIgym0+zVaecgPA1bBINAHu1mipNmrfwD7o9vuaxZBT7NY4evA/91/Xc+9iBgKs0D3Of3Zo7gkv9F8Vtn7hCTJydNZ1TpWZBSYHt5unL/FOV12Xaom+uVnDtSOmdvYvphmVUltNDotV+Peo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705614257; c=relaxed/simple;
-	bh=dxW94Xo16tN4F2/zNoyofSr34Bz4H0NPwZaMM3AQ/g4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=i2nQEOfMn6O9YfLZZVYyvpVCY7C6RA1L3DOF+u7OEidSJfKSPUxDmZcg+UBD23GGresq3kSAYhiNeN1FPvnyiRKC23cifcs/QQHq8CpvAKI/OlWRuFiky/0yq1B7O/Qt1jlYGlXjrPLE8dRRcvKtywV6TBJgbGrd0gzBWE4hoq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=VTg7IMb1; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc25099b084so145888276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:44:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1705614254; x=1706219054; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dxW94Xo16tN4F2/zNoyofSr34Bz4H0NPwZaMM3AQ/g4=;
-        b=VTg7IMb1zVhXf1QNTbVwResuUQT7OxpH1Szt/hwTVevjSXxgt1byT5LgkjaimG6Jxk
-         dMq9i0nuSRMnpg0YK+/jEWEGmJpV53dM9eQf2S5nl1fhv1mfllveHO9QPd0MRoqkpdeR
-         RRt6gYtpGx1R9I4zZyt3Qpk1UOwXsuWc77JDhbT2K3LIbwGh8TE7QjCQqP1slz+SMgL+
-         hZ53XV2lTjlmnMy1xkPENKT9AF5rGhlJOLl/dpQmxZg/lFcHvpeuQZbzzMUy1m7rSmqa
-         8TugxhTsLNmcbOZ0pzBwhq1tttoeryII+gpqKAm6+mGQ7yz3zi6QEaaRWnWTYOoVOs1l
-         16Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705614254; x=1706219054;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dxW94Xo16tN4F2/zNoyofSr34Bz4H0NPwZaMM3AQ/g4=;
-        b=cfwB6kUMYF0MAExyctkUVtMKp/n4ofxbz8Vlxx9DrijSuiogydNgkZuV+XY+4rekAF
-         Ysz/71wgv2b8b7WlMnXHVsGEBLVau5PQdc8KWCSLRGO0CdpLI36jPmn9k1eXVCP0eWAZ
-         NfP3AF+L94yvK7WdPVCwgu4xMIk8NbHLGg0JzZXIUHz5QumrGJ8Xu46bwjkLqaA4c0wE
-         1InOpmgFOA821XXm1d5CzO5DryRijocWmJQBe8Zp6rckRxooV3ovOGDDoyGWWHS4hcCr
-         PtZ+9garSO4kXC1MH+KM+xnjyPtzyg+4hwt0E2dDEhsbMCbjxGtTSX8FIL23MXTmBWm7
-         ggag==
-X-Gm-Message-State: AOJu0YzFLfnplS45ux0KUTqeVhlumiltFyJQd8aSTlUU68/2IpXSrjBY
-	yOZxSMb8oC5r855BsfMAAKfMWEnxz++isnEDXWh75s9cag742/Ggbm4KzsmSBig=
-X-Google-Smtp-Source: AGHT+IFTpM/j9s/7BU5IuSX0nDJIeasuF97xldX5n/sHZyCswVJRa7EtsNcn/HwcYXNLgvUGcRpk9Q==
-X-Received: by 2002:a25:d712:0:b0:dbf:22cd:b59d with SMTP id o18-20020a25d712000000b00dbf22cdb59dmr1343391ybg.101.1705614254061;
-        Thu, 18 Jan 2024 13:44:14 -0800 (PST)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
-        by smtp.gmail.com with ESMTPSA id on32-20020a05621444a000b006819a675e24sm346382qvb.69.2024.01.18.13.44.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 13:44:13 -0800 (PST)
-Message-ID: <2f1f5657d0d16821f6fa1366f99b5ee5d8ae7fdc.camel@ndufresne.ca>
-Subject: Re: [PATCH v3 1/2] arm64: dts: rockchip: Add Hantro G1 VPU support
- for RK3588
-From: Nicolas Dufresne <nicolas@ndufresne.ca>
-To: amazingfate <liujianfeng1994@gmail.com>
-Cc: conor+dt@kernel.org, devicetree@vger.kernel.org, 
- ezequiel@vanguardiasur.com.ar, heiko@sntech.de, knaerzche@gmail.com, 
- krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
- linux-rockchip@lists.infradead.org, mchehab@kernel.org,
- p.zabel@pengutronix.de,  robh+dt@kernel.org, sfr@canb.auug.org.au,
- sigmaris@gmail.com
-Date: Thu, 18 Jan 2024 16:44:12 -0500
-In-Reply-To: <20240118080602.9028-1-liujianfeng1994@gmail.com>
-References: <e01c9ab69f3e120cdb9b70fbacebbab32d5abba4.camel@ndufresne.ca>
-	 <20240118080602.9028-1-liujianfeng1994@gmail.com>
-Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1705614283; c=relaxed/simple;
+	bh=IS1yEaRMuerTQxizDzJWXJ8G5cZ1GL+CPG/5u9t2Fnw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f18GxhJSe++8HbS3CuzfHCo8dq0mwR/uaRQGjdCyh60II1Dfq+JYKk1RR1wcJYt8kbQWUoPk+FHEZtOCGIxwjlUkXMYYKW1HOvdwutMbhv+LB/Jf5kfWGyXjFNMwpTbC2l1iRjYOXLHBNA44xlvZDFyUmhr9zpJA9DEyTZAezIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=qmBU8Ysd; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=JnTyWDD3; arc=none smtp.client-ip=161.53.235.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 74432601A5;
+	Thu, 18 Jan 2024 22:44:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1705614275; bh=IS1yEaRMuerTQxizDzJWXJ8G5cZ1GL+CPG/5u9t2Fnw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qmBU8YsdJIZZgtpi5Zh0hAsUah5INpLoQmhgnJcrXZ31WfutbQzrzUEv2hhsxcr++
+	 wVwbxqD4R/rshgVeI5/+J+tHmZ/54tTItW13vrKZXaDgbajqkL20aAZCKLl7bvSTsp
+	 8FeOhSn1iP3LPQVcKAVlicTsknY7Go3tQJFSAd0+Zfn528vcc6WgeoUYx2ROQg4JjU
+	 yAEB0/gIZ5iN14tWWPoD3Kl5vGMDMoeA0uB5M1RigW0j7YY6QQJaLC+6YZWjcEkYRZ
+	 WKkJWfnYjLyK6U9QJFpZJ66+t2i68f4jWaVuoiB6dVtUnq7qouU0bmmM93tOTsxLZl
+	 7A10wK6m+7ZKQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id hj2rLTFDBh8j; Thu, 18 Jan 2024 22:44:33 +0100 (CET)
+Received: from [192.168.178.20] (dh207-40-167.xnet.hr [88.207.40.167])
+	by domac.alu.hr (Postfix) with ESMTPSA id BE6CC601A1;
+	Thu, 18 Jan 2024 22:44:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1705614272; bh=IS1yEaRMuerTQxizDzJWXJ8G5cZ1GL+CPG/5u9t2Fnw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=JnTyWDD3kNHEMWtbilVBMLIVc01OSgOF/i6pubmDiBmvxUQZQ0IL1O1f6Vn7IDZqg
+	 jXoUKJxyTuliQU8ZPQnDg7v5zAwn/7t4CnUm6vIQQF28dLtCR40gmkKQzEFOs5RTLv
+	 qHHdla3+p2+z7MX/Tl7GccPaHie3zXEBJggUtUeUmYqtSQ9OdxQP+ngKJZukfrPYAR
+	 /JPakAugRrIsZkWjmsoeJ7oMm69aCSFZR5r5bfutiMo8WS2NccIoVg6F1ijk0H9kUj
+	 nvkoPg/hlrmYa0vKxXEp0H8X4DQSB56A6NFF/bCLE7uLToqzAXhtp5nicdJ7fP3Zw1
+	 DxXH3D+btMeTw==
+Message-ID: <b9ecdb2e-f62c-4661-a786-496804e09606@alu.unizg.hr>
+Date: Thu, 18 Jan 2024 22:44:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG][BISECTED] Freeze at loading init ramdisk
+To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Helge Deller <deller@gmx.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hans de Goede <hdegoede@redhat.com>, Huacai Chen <chenhuacai@kernel.org>,
+ Javier Martinez Canillas <javierm@redhat.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Prathu Baronia <prathubaronia2011@gmail.com>, Sam Ravnborg
+ <sam@ravnborg.org>, Sui Jingfeng <suijingfeng@loongson.cn>,
+ Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org
+References: <8a6aa228-f2da-4dcd-93c1-e34614cd6471@alu.unizg.hr>
+ <cc813525-5484-443e-a40a-cb98f2ed4e1f@alu.unizg.hr>
+ <gevqxytidg5efylozindaqntkbl4yeoyzqnh5m3ylitmipgum3@sgmv7qieo7rs>
+ <1fe9b78c-7fb5-4d7b-a754-afd563950829@alu.unizg.hr>
+ <esh5npfi6ahrlralvmcrnqtrfkarlhsqahbtmfnw5pclr2pf2u@xzitdq6wi7of>
+Content-Language: en-US
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <esh5npfi6ahrlralvmcrnqtrfkarlhsqahbtmfnw5pclr2pf2u@xzitdq6wi7of>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Le jeudi 18 janvier 2024 =C3=A0 16:06 +0800, amazingfate a =C3=A9crit=C2=A0=
-:
-> Hi Nicolas,
->=20
-> Wed, 17 Jan 2024 14:13:19 -0500, Nicolas Dufresne wrote:
-> > In general, we ask submitters to share a fluster [0] score (this is jus=
-t to
-> > demonstrate that the integration has been well validated). LibreELEC co=
-mmunity
-> > have patch to enable this ffmpeg fork. I don't expect any surprise here=
-, and you
-> > can just reply to my email here.
->=20
-> Here are fluster test result with ffmpeg v6.0 patched with v4l2 request p=
-atches
-> from LibreELEC and gstreamer 1.22:
-> https://gist.github.com/amazingfate/1675389df382ff266d6f1318fd4675fd
->=20
-> I am using Kwiboo's fluster fork[1] to run ffmpeg v4l2 request tests
 
-Thank you very much, these are the expected results for this HW, indicating
-everything works as expected.
 
-Nicolas
+On 1/18/24 22:14, Uwe Kleine-König wrote:
+> On Thu, Jan 18, 2024 at 09:04:05PM +0100, Mirsad Todorovac wrote:
+>>
+>>
+>> On 1/18/24 08:45, Uwe Kleine-König wrote:
+>>> Hello Mirsad,
+>>>
+>>> On Wed, Jan 17, 2024 at 07:47:49PM +0100, Mirsad Todorovac wrote:
+>>>> On 1/16/24 01:32, Mirsad Todorovac wrote:
+>>>>> On the Ubuntu 22.04 LTS Jammy platform, on a mainline vanilla torvalds tree kernel, the boot
+>>>>> freezes upon first two lines and before any systemd messages.
+>>>>>
+>>>>> (Please find the config attached.)
+>>>>>
+>>>>> Bisecting the bug led to this result:
+>>>>>
+>>>>> marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect good
+>>>>> d97a78423c33f68ca6543de510a409167baed6f5 is the first bad commit
+>>>>> commit d97a78423c33f68ca6543de510a409167baed6f5
+>>>>> Merge: 61da593f4458 689237ab37c5
+>>>>> Author: Linus Torvalds <torvalds@linux-foundation.org>
+>>>>> Date:   Fri Jan 12 14:38:08 2024 -0800
+>>>>>
+>>>>> [...]
+>>>>>
+>>>>> Hope this helps.
+>>>>
+>>>> P.S.
+>>>>
+>>>> As I see that this is a larger merge commit, with 5K+ lines changed, I don't think I can
+>>>> bisect further to determine the culprit.
+>>>
+>>> Actually it's not that hard. If a merge commit is the first bad commit
+>>> for a bisection, either the merge wasn't done correctly (less likely,
+>>> looking at d97a78423c33f68ca6543de510a409167baed6f5 I'd bet this isn't
+>>> the problem); or changes on different sides conflict or you did
+>>> something wrong during bisection.
+>>>
+>>> To rule out the third option, you can just retest d97a78423c33,
+>>> 61da593f4458 and 689237ab37c5. If d97a78423c33 is the only bad one, you
+>>> did it right.
+>>
+>> This was confirmed.
+>>
+>>> Then to further debug the second option you can find out the offending
+>>> commit on each side with a bisection as follows, here for the RHS (i.e.
+>>> 689237ab37c5):
+>>>
+>>> 	git bisect start 689237ab37c5 $(git merge-base 61da593f4458 689237ab37c5)
+>>>
+>>> and then in each bisection step do:
+>>>
+>>> 	git merge --no-commit 61da593f4458
+>>> 	test if the problem is present
+>>> 	git reset --hard
+>>> 	git bisect good/bad
+>>>
+>>> In this case you get merge conflicts in drivers/video/fbdev/amba-clcd.c
+>>> and drivers/video/fbdev/vermilion/vermilion.c. In the assumption that
+>>> you don't have these enabled in your .config, you can just ignore these.
+>>>
+>>> Side note: A problem during bisection can be that the .config changes
+>>> along the process. You should put your config into (say)
+>>> arch/x86/configs/lala_defconfig and do
+>>>
+>>> 	make lala_defconfig
+>>>
+>>> before building each step to prevent this.
+>>
+>> I must have done something wrong:
+>>
+>> marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect log
+>> # bad: [689237ab37c59b9909bc9371d7fece3081683fba] fbdev/intelfb: Remove driver
+>> # good: [de927f6c0b07d9e698416c5b287c521b07694cac] Merge tag 's390-6.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
+>> git bisect start '689237ab37c5' 'de927f6c0b07d9e698416c5b287c521b07694cac'
+>> # good: [d9f25b59ed85ae45801cf45fe17eb269b0ef3038] fbdev: Remove support for Carillo Ranch driver
+>> git bisect good d9f25b59ed85ae45801cf45fe17eb269b0ef3038
+>> # good: [e2e0b838a1849f92612a8305c09aaf31bf824350] video/sticore: Remove info field from STI struct
+>> git bisect good e2e0b838a1849f92612a8305c09aaf31bf824350
+>> # good: [778e73d2411abc8f3a2d60dbf038acaec218792e] drm/hyperv: Remove firmware framebuffers with aperture helper
+>> git bisect good 778e73d2411abc8f3a2d60dbf038acaec218792e
+>> # good: [df67699c9cb0ceb70f6cc60630ca938c06773eda] firmware/sysfb: Clear screen_info state after consuming it
+>> git bisect good df67699c9cb0ceb70f6cc60630ca938c06773eda
+>> marvin@defiant:~/linux/kernel/linux_torvalds$
+>>
+>> with the error:
+>>
+>> marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect good
+>> Bisecting: 0 revisions left to test after this (roughly 0 steps)
+>> drivers/video/fbdev/amba-clcd.c: needs merge
+>> drivers/video/fbdev/vermilion/vermilion.c: needs merge
+>> error: you need to resolve your current index first
+> 
+> It seems you forgot the "git reset --hard" step.  Doing it in this state
+> should still be possible.
 
->=20
-> Jianfeng
->=20
-> [1] https://github.com/Kwiboo/fluster/tree/v4l2-request
+Well, it was possible, but I obviously got the wrong result:
 
+marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect log
+# bad: [689237ab37c59b9909bc9371d7fece3081683fba] fbdev/intelfb: Remove driver
+# good: [de927f6c0b07d9e698416c5b287c521b07694cac] Merge tag 's390-6.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
+git bisect start '689237ab37c5' 'de927f6c0b07d9e698416c5b287c521b07694cac'
+# good: [d9f25b59ed85ae45801cf45fe17eb269b0ef3038] fbdev: Remove support for Carillo Ranch driver
+git bisect good d9f25b59ed85ae45801cf45fe17eb269b0ef3038
+# good: [e2e0b838a1849f92612a8305c09aaf31bf824350] video/sticore: Remove info field from STI struct
+git bisect good e2e0b838a1849f92612a8305c09aaf31bf824350
+# good: [778e73d2411abc8f3a2d60dbf038acaec218792e] drm/hyperv: Remove firmware framebuffers with aperture helper
+git bisect good 778e73d2411abc8f3a2d60dbf038acaec218792e
+# good: [df67699c9cb0ceb70f6cc60630ca938c06773eda] firmware/sysfb: Clear screen_info state after consuming it
+git bisect good df67699c9cb0ceb70f6cc60630ca938c06773eda
+# good: [df67699c9cb0ceb70f6cc60630ca938c06773eda] firmware/sysfb: Clear screen_info state after consuming it
+git bisect good df67699c9cb0ceb70f6cc60630ca938c06773eda
+# good: [c25a19afb81cfd73dab494ba64f9a434cf1a4499] fbdev/hyperv_fb: Do not clear global screen_info
+git bisect good c25a19afb81cfd73dab494ba64f9a434cf1a4499
+# first bad commit: [689237ab37c59b9909bc9371d7fece3081683fba] fbdev/intelfb: Remove driver
+marvin@defiant:~/linux/kernel/linux_torvalds$ uname -rms
+Linux 6.7.0-initrd-retest-02751-g689237ab37c5 x86_64
+marvin@defiant:~/linux/kernel/linux_torvalds$
+
+.. meaning, I get the 689237ab37c5 as "first bad commit" but it boots.
+
+If you see an obvious error, it would be helpful, otherwise I might retry the bisect, but later.
+
+I am puzzled, but bisecting a merge commit is my first attempt at this.
+
+Best regards,
+Mirsad
 
