@@ -1,94 +1,120 @@
-Return-Path: <linux-kernel+bounces-29965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 018888315F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B131583160F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:43:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33F931C24AB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:35:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3AD81C24247
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F1471F93F;
-	Thu, 18 Jan 2024 09:35:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BAB420B05;
+	Thu, 18 Jan 2024 09:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Km7Q3hJ2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b="Es19nIjp"
+Received: from forward500a.mail.yandex.net (forward500a.mail.yandex.net [178.154.239.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2DAA1D533;
-	Thu, 18 Jan 2024 09:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57A3200A5;
+	Thu, 18 Jan 2024 09:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705570533; cv=none; b=L4wpLRtUPresaD4LNRSx6EbDZ6/GstCRgun9NJxDfUxLOAE41ifdmU92TBdefYJixbB1zAtD8o5oyyQMwIrG/0+xKP8dCkCR/GCL+En0DvhZ5RzwD3KWM57pqr7NOUsLQHC2QJLG+pHe28SWyW+DpPhgAYNqOUTyRd83aSz5O7c=
+	t=1705571006; cv=none; b=rGcRiq/Ap6reDlw7caMUYhWonz2NBb2gbhaljS6rhMYfLBhpodrFU/oxhKIyZoT2nxohbUa66oEnMQq67gIa7HclbXHnSH61xIFCV6OQM3NR8VVpQ4Zv6P92hDnEq2k/UITHjMDqt8GdZILVu1Fqma0/LaRT2QQ0cpHVF0FlLRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705570533; c=relaxed/simple;
-	bh=zmnWkUQ50YwnxBoRMyZDoe6MGpBLlZ0I0mlMYpE5XkE=;
-	h=Received:DKIM-Signature:Content-Type:MIME-Version:
-	 Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:
-	 Cc:User-Agent:Message-ID:Date; b=NsnIHS1lsbVPLanZ4ccMkWGqumh5KAwv7+FaMHqoiVAbZcudG+HnrzEPuEOnysEnjcgwVycRR6onyMAe0tjvu/JA+Oq4bdMZtNg22H57WHnscKKzHu4L3d1KCPHrSi4L9nl5Tl6uUGpx6o+HpX6amThjs8qkCgEGuaUHRH6P5JU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Km7Q3hJ2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E38C2C433F1;
-	Thu, 18 Jan 2024 09:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705570533;
-	bh=zmnWkUQ50YwnxBoRMyZDoe6MGpBLlZ0I0mlMYpE5XkE=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=Km7Q3hJ2oL+04mplxZ759OS3TQMymc5LVSZBVFX5TPx1BJRfQtWPwEm5MjfV+VXr7
-	 /YR0fQDpRAphhvGpQI6TgQlB8czrqba2bxGh29Dr9DbulpWyEjSEgvU83LGV3q3D50
-	 rB5sTm/C98fBr+bRDvbSkg17ZRLfO0kOR829MC0oQVuT9N2r83RJRO+OQkGwuR1r93
-	 3rE8/RsUHGQMSyiZA04Ov1kSIKD6YjqvuV3OuWKuuacQEIz+RaaZBo8zOhphrI0M1I
-	 ZzKNEoWepe73CeyMpnfYnTCqZFhyAHnhcsmdsq51k33hv6PrV7zUZxbZptZd92mLrr
-	 e6nPQewoEiNHw==
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1705571006; c=relaxed/simple;
+	bh=eOYgq6vBGLmYMc8CNKKKb0RzNhlbCa5ML+43wchdMZA=;
+	h=Received:Received:X-Yandex-Fwd:DKIM-Signature:Message-ID:Subject:
+	 From:To:Cc:Date:In-Reply-To:References:Content-Type:
+	 Content-Transfer-Encoding:User-Agent:MIME-Version; b=QTL9JxgW6z3tx/MK7L57XfubYZLIybjamZv0+FNyYOEFr4Y6VquFc8P1bUvrjgGFdFFCo2hNWCIFOlXqpO8pl/kdJfM0oJ9Dj798DGFihLdOE5UPLmSymiIKxG2wlIBNS63NwcrALRoG/SCVKVINK5AISCUKBldBp9Yp9deKVg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me; spf=pass smtp.mailfrom=maquefel.me; dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b=Es19nIjp; arc=none smtp.client-ip=178.154.239.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maquefel.me
+Received: from mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1d:5fd0:0:640:c018:0])
+	by forward500a.mail.yandex.net (Yandex) with ESMTP id A8B01616FD;
+	Thu, 18 Jan 2024 12:36:44 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id baJWEC7aoCg0-7skv82tT;
+	Thu, 18 Jan 2024 12:36:42 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+	t=1705570602; bh=eOYgq6vBGLmYMc8CNKKKb0RzNhlbCa5ML+43wchdMZA=;
+	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+	b=Es19nIjpoisIBb6MjPgosN8BBLwA3g37Sg+8/RzikHK2iJGA8I33MTMMnsCeSd95a
+	 FcvuQE7PCMCd9C0Lf3UXj5lju7/29hXhNB61xQrIV3xj6jS+j2ttUffxBAet9gIIDQ
+	 eap9ausw2GyVdWnpZfdMCuPomyP6WRpJQi/KCiZk=
+Authentication-Results: mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <3659cd8be443f632f44f9ad31a214a82f995ed75.camel@maquefel.me>
+Subject: Re: [PATCH v7 00/39] ep93xx device tree conversion
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin
+ <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Sebastian Reichel <sre@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>, Thierry Reding
+ <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>,  Sergey
+ Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Ralf Baechle <ralf@linux-mips.org>, "Wu,
+ Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, Olof Johansson
+ <olof@lixom.net>,  Niklas Cassel <cassel@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-pm@vger.kernel.org,  devicetree@vger.kernel.org,
+ dmaengine@vger.kernel.org,  linux-watchdog@vger.kernel.org,
+ linux-pwm@vger.kernel.org,  linux-spi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-ide@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-sound@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko
+ <andriy.shevchenko@intel.com>, Bartosz Golaszewski
+ <bartosz.golaszewski@linaro.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>, Andy
+ Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 18 Jan 2024 12:36:38 +0300
+In-Reply-To: <a54csycouodnmj6qarfel7cvgupaerl7uhrruixuy7uaekqgzw@2whufrjqunme>
+References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
+	 <a54csycouodnmj6qarfel7cvgupaerl7uhrruixuy7uaekqgzw@2whufrjqunme>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 2/5] wifi: wilc1000: fix driver_handler when committing
- initial configuration
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240115-wilc_1000_fixes-v1-2-54d29463a738@bootlin.com>
-References: <20240115-wilc_1000_fixes-v1-2-54d29463a738@bootlin.com>
-To: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Cc: linux-wireless@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- David Mosberger-Tang <davidm@egauge.net>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-kernel@vger.kernel.org,
- =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170557053011.2797779.17608692195405867430.kvalo@kernel.org>
-Date: Thu, 18 Jan 2024 09:35:31 +0000 (UTC)
 
-Alexis Lothoré <alexis.lothore@bootlin.com> wrote:
+Hello,
 
-> From: Ajay Singh <ajay.kathat@microchip.com>
-> 
-> During firmware initial configuration in wilc_init_fw_config, the special
-> driver_handler 0 should be used instead of targeting a specific virtual
-> interface (either 1 or 2)
-> The issue does not seem to have real consequence (both virtual interfaces
-> seems to answer correctly to a Add Block Ack request with the Immediate
-> policy), but lets make everything homogeneous
-> 
-> Signed-off-by: Ajay Singh <ajay.kathat@microchip.com>
-> Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
+On Thu, 2024-01-18 at 10:30 +0100, Uwe Kleine-K=C3=B6nig wrote:
+> Hello,
+>=20
+> On Thu, Jan 18, 2024 at 11:20:43AM +0300, Nikita Shubin via B4 Relay
+> wrote:
+> > No major changes since last version (v6) all changes are cometic.
+>=20
+> Never saw changes described as "cometic". I guess that means "fast"
+> and
+> "high impact"?
 
-4 patches applied to wireless-next.git, thanks.
+"Cosmetic" of course.
 
-52284952cbf3 wifi: wilc1000: fix driver_handler when committing initial configuration
-328efda22af8 wifi: wilc1000: do not realloc workqueue everytime an interface is added
-a4f1a05b832e wifi: wilc1000: fix incorrect power down sequence
-12cfc9c8d3fa wifi: wilc1000: fix multi-vif management when deleting a vif
+Well i guess it's nice that i hadn't misspelled it like "comedic"...
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240115-wilc_1000_fixes-v1-2-54d29463a738@bootlin.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>=20
+> SCNR
+> Uwe
+>=20
 
 
