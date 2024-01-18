@@ -1,48 +1,47 @@
-Return-Path: <linux-kernel+bounces-30191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37C41831B3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:22:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 613B6831B3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A914B1F2654E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:22:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12956289332
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32788286AC;
-	Thu, 18 Jan 2024 14:22:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T4L6tKHN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F2E28DB6;
+	Thu, 18 Jan 2024 14:22:43 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26AEA25570;
-	Thu, 18 Jan 2024 14:22:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC7128DAF
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705587754; cv=none; b=JllFn6t2EJC1TNz2TWDCkDHW7znhDwnzYrkoAGoorrz2Ju3SHWkZWZH9TbPfad4sFaGZJDsK5XSSfCg8OYv7xGeIiD6N6PMTxsa1NoagCOrcjDe9nbHHMeH+Hd4mz0CgoovVQDDJhzLWlcXieJB78PGkMGmrJgD4v2NbiL0VSZU=
+	t=1705587762; cv=none; b=bc94smK81UN+KkmsUPOP/DbxrIl4VEFxVsPQgl5AYoMfbI49xzqShGE5DV0ChsfPlFZdz1AMK5gGXOqx2MVA5IRtsQAu2f+6GLotCVho17kcj98fgMVLzIUPjhlfUjtZENVYeREfOfjOTwg+T36cBGyCeKapTcXl6m+jrA3eDxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705587754; c=relaxed/simple;
-	bh=MX2OExeQDK9q07J8iMC2SX5j+Nvh2BeUujepIyF1+Eo=;
-	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=uyl5oKsI/Ym2mWO6UrNZdYA2qr3ONlFgQarMjh5OsM029C2KgKM9N88H0cyDYxJI2Kkf37M1J4zZuYfl/sjWnEAomd5Rrk7UMJcXcBEHzsZXjodh7GikJoXLab+rwe8L9x/FZi5c5To/k9yQb6QBnohnop9TyULAwsFalZAAKwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T4L6tKHN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D734C433F1;
-	Thu, 18 Jan 2024 14:22:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705587753;
-	bh=MX2OExeQDK9q07J8iMC2SX5j+Nvh2BeUujepIyF1+Eo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=T4L6tKHNe01CBTGWQZhBmYy24MXlg55TO8I7oQdYargIF+cN66xm1aLlADAcNtuVU
-	 MQxzFPA9aFsyc3IKxLW05fo6bKm1GG9Is5eKWClZMT8jyxdqXTbEbOkOh8hu2idJ6B
-	 HqtXwctj5/DiZEYm4suxMMXvmm4nAy1YZlbzXPtTTyoxx0XV4mUUQjYNMWWm2CAB45
-	 iyZg2csZrmegEjXrP98Xbm0m+WapzFPvrBAuEhxdcu2a+8SW9pDT4bms+i2NRFQncu
-	 GHVIIE2ahXr5EiJ6i4yGKE4soyxCEsGlB1hn4U5RKbQrCEgPJIxF4a8C/DpUvpYDwI
-	 hZ8W+lrJHgB4g==
-Message-ID: <3512dea9-a124-40e6-9ad7-12ed8beb45c3@kernel.org>
-Date: Thu, 18 Jan 2024 16:22:27 +0200
+	s=arc-20240116; t=1705587762; c=relaxed/simple;
+	bh=RaAR4iKXhImCOq8X/xcEqLZUrDrSsgzaUKbhMu1eOg0=;
+	h=Received:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:Content-Language:To:CC:References:From:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Originating-IP:X-ClientProxiedBy; b=o+1QrMn0uTQOay4x1dFKfkE415yHNMFlQK4OF9GXE6dXhDaxIAPXO5MOBXXFqoHGfKzoRBRHXbAyjcioELzIiQA1AWQ7ODEA56QSKmncPxATSrMMpGmjXuxub8gJeAsbeNDsYl0r+5uVZg7boOclsv1kpsrg8Tp5ArgCtRJOfcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TG4gc74J3z1xmF8;
+	Thu, 18 Jan 2024 22:21:48 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 220821A016B;
+	Thu, 18 Jan 2024 22:22:35 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 18 Jan 2024 22:22:34 +0800
+Message-ID: <f11526d6-463a-4e1a-979e-a93de1a24617@huawei.com>
+Date: Thu, 18 Jan 2024 22:22:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,286 +49,172 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
+Subject: Re: [PATCH v4 7/7] hugetlb: parallelize 1G hugetlb initialization
 Content-Language: en-US
-To: Tomeu Vizoso <tomeu@tomeuvizoso.net>
-Cc: Cancan Chang <Cancan.Chang@amlogic.com>, Jagan Teki <jagan@edgeble.ai>,
- linux-media <linux-media@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Dave Airlie
- <airlied@redhat.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
-References: <SEYPR03MB704641091854162959578D7E9AFFA@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <SEYPR03MB70462A385A52A317427E93B59AFCA@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CAFCwf11hxBpg3T6MoVrL0GaOD_=xB+-dWeEtDH0cCyzyQ-q1tg@mail.gmail.com>
- <SEYPR03MB70463AEED951A0E2C18481099AC2A@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CAFCwf13ZiYYoXE+S_wQ_EhjiACPGJGT+70_stwpY_=aD=VYa4A@mail.gmail.com>
- <SEYPR03MB704690FD9116A31D6FBCF32A9AC1A@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CAFCwf128vYZ+EGHvZD0_ND2CGBzwMKk6OyhVRW_z=xCOSmi47w@mail.gmail.com>
- <SEYPR03MB7046F74834B7D789C2DD4E459AC1A@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CAFCwf10HAi+HEEWy=C4395eaHh_iSmcW1v87A+1J8QN9_P7tUQ@mail.gmail.com>
- <SEYPR03MB704698F40D90FF6B50D72AC39AC8A@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CAAObsKBpD3D76_ugTYDT8p-Fhb6zXOmQQP0yb7qj9jK+=JrqgA@mail.gmail.com>
- <96719046-d391-42be-8abc-564c9c909b97@kernel.org>
- <CAAObsKDegsjsUQAKWqLDU+jqzzuX2gzYv5wgqjP_u6MNLc3GMQ@mail.gmail.com>
-From: Oded Gabbay <ogabbay@kernel.org>
-In-Reply-To: <CAAObsKDegsjsUQAKWqLDU+jqzzuX2gzYv5wgqjP_u6MNLc3GMQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Gang Li <gang.li@linux.dev>, David Hildenbrand <david@redhat.com>, David
+ Rientjes <rientjes@google.com>, Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton
+	<akpm@linux-foundation.org>, Tim Chen <tim.c.chen@linux.intel.com>
+CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+	<ligang.bdlg@bytedance.com>
+References: <20240118123911.88833-1-gang.li@linux.dev>
+ <20240118123911.88833-8-gang.li@linux.dev>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <20240118123911.88833-8-gang.li@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 
-On 15/01/2024 10:29, Tomeu Vizoso wrote:
-> On Thu, Jan 11, 2024 at 2:14 PM Oded Gabbay <ogabbay@kernel.org> wrote:
->>
->> On 11/01/2024 10:04, Tomeu Vizoso wrote:
->>> Hi Oded,
->>>
->>> Out of curiosity, did you end up taking a look at Amlogic's driver?
->>>
->>> Cheers,
->>>
->>> Tomeu
->> Hi Tomeu,
->> Yes, I have looked at the driver's code. It was not an in-depth review,
->> but I tried to mainly understand the features the driver provide to the
->> user and how much complex it is.
->>
->>   From what I could see, this is a full-fledged accelerator which
->> requires command submission/completion handling, memory management,
->> information and debug capabilities and more.
->>
->> Therefore, I do think the correct place is in the accel sub-system,
->> which will require you to convert the driver to use drm (we can discuss
->> exactly what is the level of integration required).
->>
->> As I said, I didn't do a full-fledged review, but please note the driver
->> has a lot of OS-wrapper code, which is not acceptable in the Linux
->> kernel, so you will have to clean all the up.
-> 
-> Thanks, Oded.
-> 
-> I'm wondering now about the requirement for open userspace. Do we have
-> it for this one?
-> 
-> Cheers,
-> 
-> Tomeu
-The requirements are the same as for the other drivers in accel, which 
-is to have at least the Runtime/UMD part open-sourced.
-If this accelerator also runs compiled code (e.g. kernels/shaders), you 
-will also need to open source the compiler.
 
-Oded
 
+On 2024/1/18 20:39, Gang Li wrote:
+> Optimizing the initialization speed of 1G huge pages through
+> parallelization.
 > 
->> Thanks,
->> Oded
->>
->>>
->>> On Sat, Oct 7, 2023 at 8:37 AM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
->>>>
->>>> Oded,
->>>>          You can get the driver code from  github link： https://github.com/OldDaddy9/driver
->>>>           e.g.  git clone https://github.com/OldDaddy9/driver.git
->>>>
->>>> ________________________________________
->>>> 发件人: Oded Gabbay <ogabbay@kernel.org>
->>>> 发送时间: 2023年10月3日 18:52
->>>> 收件人: Cancan Chang
->>>> 抄送: Jagan Teki; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
->>>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
->>>>
->>>> [ EXTERNAL EMAIL ]
->>>>
->>>> On Thu, Sep 28, 2023 at 11:16 AM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
->>>>>
->>>>> “What happens if you call this again without waiting for the previous
->>>>> inference to complete ?”
->>>>>      --- There is a work-queue in the driver to manage inference tasks.
->>>>>            When two consecutive inference tasks occur, the second inference task will be add to
->>>>>            the "pending list". While the previous inference task ends, the second inference task will
->>>>>            switch to the "scheduled list", and be executed.
->>>>>            Each inference task has an id,  "inferece" and "wait until finish" are paired.
->>>>>
->>>>>            thanks
->>>> Thanks for the clarification.
->>>> I'll wait for your driver's code link. It doesn't have to be a patch
->>>> series at this point. A link to a git repo is enough.
->>>> I just want to do a quick pass.
->>>>
->>>> Thanks,
->>>> Oded
->>>>
->>>>
->>>>
->>>>>
->>>>> ________________________________________
->>>>> 发件人: Oded Gabbay <ogabbay@kernel.org>
->>>>> 发送时间: 2023年9月28日 15:40
->>>>> 收件人: Cancan Chang
->>>>> 抄送: Jagan Teki; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
->>>>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
->>>>>
->>>>> [ EXTERNAL EMAIL ]
->>>>>
->>>>> On Thu, Sep 28, 2023 at 10:25 AM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
->>>>>>
->>>>>> “Could you please post a link to the driver's source code ?
->>>>>> In addition, could you please elaborate which userspace libraries
->>>>>> exists that work with your driver ? Are any of them open-source ?”
->>>>>> --- We will prepare the adla driver link after the holiday on October 6th.
->>>>>>        It's a pity that there is no open-source userspace library.
->>>>>>        But you can probably understand it through a workflow, which can be simplified as:
->>>>>>        1. create model context
->>>>>>             ret = ioctl(context->fd, ADLAK_IOCTL_REGISTER_NETWORK, &desc);
->>>>>>        2.  set inputs
->>>>>>        3.  inference
->>>>>>              ret = ioctl(context->fd, ADLAK_IOCTL_INVOKE, &invoke_dec);
->>>>> What happens if you call this again without waiting for the previous
->>>>> inference to complete ?
->>>>> Oded
->>>>>>        4.  wait for the inference to complete
->>>>>>              ret = ioctl(context->fd, ADLAK_IOCTL_WAIT_UNTIL_FINISH, &stat_req_desc);
->>>>>>        5.  destroy model context
->>>>>>              ret = ioctl(context->fd, ADLAK_IOCTL_DESTROY_NETWORK, &submit_del);
->>>>>>
->>>>>>
->>>>>>         thanks
->>>>>>
->>>>>>
->>>>>> ________________________________________
->>>>>> 发件人: Oded Gabbay <ogabbay@kernel.org>
->>>>>> 发送时间: 2023年9月28日 13:28
->>>>>> 收件人: Cancan Chang
->>>>>> 抄送: Jagan Teki; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
->>>>>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
->>>>>>
->>>>>> [ EXTERNAL EMAIL ]
->>>>>>
->>>>>> On Wed, Sep 27, 2023 at 10:01 AM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
->>>>>>>
->>>>>>> “Or do you handle one cmd at a time, where the user sends a cmd buffer
->>>>>>> to the driver and the driver then submit it by writing to a couple of
->>>>>>> registers and polls on some status register until its done, or waits
->>>>>>> for an interrupt to mark it as done ?”
->>>>>>>     --- yes， user sends a cmd buffer to driver, and driver triggers hardware by writing to register,
->>>>>>>           and then, waits for an interrupt to mark it  as done.
->>>>>>>
->>>>>>>       My current driver is very different from drm, so I want to know if I have to switch to drm？
->>>>>> Could you please post a link to the driver's source code ?
->>>>>> In addition, could you please elaborate which userspace libraries
->>>>>> exists that work with your driver ? Are any of them open-source ?
->>>>>>
->>>>>>>       Maybe I can refer to /driver/accel/habanalabs.
->>>>>> That's definitely a possibility.
->>>>>>
->>>>>> Oded
->>>>>>>
->>>>>>> thanks
->>>>>>>
->>>>>>> ________________________________________
->>>>>>> 发件人: Oded Gabbay <ogabbay@kernel.org>
->>>>>>> 发送时间: 2023年9月26日 20:54
->>>>>>> 收件人: Cancan Chang
->>>>>>> 抄送: Jagan Teki; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
->>>>>>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
->>>>>>>
->>>>>>> [ EXTERNAL EMAIL ]
->>>>>>>
->>>>>>> On Mon, Sep 25, 2023 at 12:29 PM Cancan Chang <Cancan.Chang@amlogic.com> wrote:
->>>>>>>>
->>>>>>>> Thank you for your reply from Jagan & Oded.
->>>>>>>>
->>>>>>>> It is very appropritate for my driver to be placed in driver/accel.
->>>>>>>>
->>>>>>>> My accelerator is named ADLA(Amlogic Deep Learning Accelerator).
->>>>>>>> It is an IP in SOC,mainly used for neural network models acceleration.
->>>>>>>> It will split and compile the neural network model into a private format cmd buffer,
->>>>>>>> and submit this cmd buffer to ADLA hardware. It is not programmable device.
->>>>>>> What exactly does it mean to "submit this cmd buffer to ADLA hardware" ?
->>>>>>>
->>>>>>> Does your h/w provides queues for the user/driver to put their
->>>>>>> workloads/cmd-bufs on them ? And does it provide some completion queue
->>>>>>> to notify when the work is completed?
->>>>>>>
->>>>>>> Or do you handle one cmd at a time, where the user sends a cmd buffer
->>>>>>> to the driver and the driver then submit it by writing to a couple of
->>>>>>> registers and polls on some status register until its done, or waits
->>>>>>> for an interrupt to mark it as done ?
->>>>>>>
->>>>>>>>
->>>>>>>> ADLA includes four hardware engines:
->>>>>>>> RS engines             : working for the reshape operators
->>>>>>>> MAC engines         : working for the convolution operators
->>>>>>>> DW engines           : working for the planer & Elementwise operators
->>>>>>>> Activation engines : working for activation operators(ReLu,tanh..)
->>>>>>>>
->>>>>>>> By the way, my IP is mainly used for SOC, and the current driver registration is through the platform_driver,
->>>>>>>> is it necessary to switch to drm?
->>>>>>> This probably depends on the answer to my question above. btw, there
->>>>>>> are drivers in drm that handle IPs that are part of an SOC, so
->>>>>>> platform_driver is supported.
->>>>>>>
->>>>>>> Oded
->>>>>>>
->>>>>>>>
->>>>>>>> thanks.
->>>>>>>>
->>>>>>>> ________________________________________
->>>>>>>> 发件人: Oded Gabbay <ogabbay@kernel.org>
->>>>>>>> 发送时间: 2023年9月22日 23:08
->>>>>>>> 收件人: Jagan Teki
->>>>>>>> 抄送: Cancan Chang; linux-media; linux-kernel; Dave Airlie; Daniel Vetter
->>>>>>>> 主题: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
->>>>>>>>
->>>>>>>> [你通常不会收到来自 ogabbay@kernel.org 的电子邮件。请访问 https://aka.ms/LearnAboutSenderIdentification，以了解这一点为什么很重要]
->>>>>>>>
->>>>>>>> [ EXTERNAL EMAIL ]
->>>>>>>>
->>>>>>>> On Fri, Sep 22, 2023 at 12:38 PM Jagan Teki <jagan@edgeble.ai> wrote:
->>>>>>>>>
->>>>>>>>> On Fri, 22 Sept 2023 at 15:04, Cancan Chang <Cancan.Chang@amlogic.com> wrote:
->>>>>>>>>>
->>>>>>>>>> Dear Media Maintainers:
->>>>>>>>>>        Thanks for your attention. Before describing my problem，let me introduce to you what I  mean by NPU.
->>>>>>>>>>        NPU is Neural Processing Unit, It is designed for deep learning acceleration, It is also called TPU, APU ..
->>>>>>>>>>
->>>>>>>>>>        The real problems:
->>>>>>>>>>         When I was about to upstream my NPU driver codes to linux mainline, i meet two problems:
->>>>>>>>>>           1.  According to my research, There is no NPU module path in the linux (base on linux 6.5.4) , I have searched all linux projects and found no organization or comany that has submitted NPU code. Is there a path prepared for NPU driver currently?
->>>>>>>>>>           2.   If there is no NPU driver path currently, I am going to put my NPU driver code in the drivers/media/platform/amlogic/ ﻿, because my NPU driver belongs to amlogic. and amlogic NPU is mainly used for AI vision applications. Is this plan suitabe for you?
->>>>>>>>>
->>>>>>>>> If I'm correct about the discussion with Oded Gabby before. I think
->>>>>>>>> the drivers/accel/ is proper for AI Accelerators including NPU.
->>>>>>>>>
->>>>>>>>> + Oded in case he can comment.
->>>>>>>>>
->>>>>>>>> Thanks,
->>>>>>>>> Jagan.
->>>>>>>> Thanks Jagan for adding me to this thread. Adding Dave & Daniel as well.
->>>>>>>>
->>>>>>>> Indeed, the drivers/accel is the place for Accelerators, mainly for
->>>>>>>> AI/Deep-Learning accelerators.
->>>>>>>> We currently have 3 drivers there already.
->>>>>>>>
->>>>>>>> The accel subsystem is part of the larger drm subsystem. Basically, to
->>>>>>>> get into accel, you need to integrate your driver with the drm at the
->>>>>>>> basic level (registering a device, hooking up with the proper
->>>>>>>> callbacks). ofc the more you use code from drm, the better.
->>>>>>>> You can take a look at the drivers under accel for some examples on
->>>>>>>> how to do that.
->>>>>>>>
->>>>>>>> Could you please describe in a couple of sentences what your
->>>>>>>> accelerator does, which engines it contains, how you program it. i.e.
->>>>>>>> Is it a fixed-function device where you write to a couple of registers
->>>>>>>> to execute workloads, or is it a fully programmable device where you
->>>>>>>> load compiled code into it (GPU style) ?
->>>>>>>>
->>>>>>>> For better background on the accel subsystem, please read the following:
->>>>>>>> https://docs.kernel.org/accel/introduction.html
->>>>>>>> This introduction also contains links to other important email threads
->>>>>>>> and to Dave Airlie's BOF summary in LPC2022.
->>>>>>>>
->>>>>>>> Thanks,
->>>>>>>> Oded
->>
->>
+> 1G hugetlbs are allocated from bootmem, a process that is already
+> very fast and does not currently require optimization. Therefore,
+> we focus on parallelizing only the initialization phase in
+> `gather_bootmem_prealloc`.
+> 
+> Here are some test results:
+>          test          no patch(ms)   patched(ms)   saved
+>   ------------------- -------------- ------------- --------
+>    256c2t(4 node) 1G           4745          2024   57.34%
+>    128c1t(2 node) 1G           3358          1712   49.02%
+>        12t        1G          77000         18300   76.23%
+> 
+> Signed-off-by: Gang Li <gang.li@linux.dev>
+> Tested-by: David Rientjes <rientjes@google.com>
+> ---
+>   include/linux/hugetlb.h |  2 +-
+>   mm/hugetlb.c            | 42 +++++++++++++++++++++++++++++++++--------
+>   2 files changed, 35 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index c1ee640d87b1..77b30a8c6076 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -178,7 +178,7 @@ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
+>   struct address_space *hugetlb_page_mapping_lock_write(struct page *hpage);
+>   
+>   extern int sysctl_hugetlb_shm_group;
+> -extern struct list_head huge_boot_pages;
+> +extern struct list_head huge_boot_pages[MAX_NUMNODES];
 
+Hi, please update arch/powerpc/mm/hugetlbpage.c too, since it
+was used in ppc.
+
+>   
+>   /* arch callbacks */
+>   
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 9b348ba418f5..2f4b77630ada 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -69,7 +69,7 @@ static bool hugetlb_cma_folio(struct folio *folio, unsigned int order)
+>   #endif
+>   static unsigned long hugetlb_cma_size __initdata;
+>   
+> -__initdata LIST_HEAD(huge_boot_pages);
+> +__initdata struct list_head huge_boot_pages[MAX_NUMNODES];
+>   
+>   /* for command line parsing */
+>   static struct hstate * __initdata parsed_hstate;
+> @@ -3301,7 +3301,7 @@ int alloc_bootmem_huge_page(struct hstate *h, int nid)
+>   int __alloc_bootmem_huge_page(struct hstate *h, int nid)
+>   {
+>   	struct huge_bootmem_page *m = NULL; /* initialize for clang */
+> -	int nr_nodes, node;
+> +	int nr_nodes, node = nid;
+>   
+>   	/* do node specific alloc */
+>   	if (nid != NUMA_NO_NODE) {
+> @@ -3339,7 +3339,7 @@ int __alloc_bootmem_huge_page(struct hstate *h, int nid)
+>   		huge_page_size(h) - PAGE_SIZE);
+>   	/* Put them into a private list first because mem_map is not up yet */
+>   	INIT_LIST_HEAD(&m->list);
+> -	list_add(&m->list, &huge_boot_pages);
+> +	list_add(&m->list, &huge_boot_pages[node]);
+>   	m->hstate = h;
+>   	return 1;
+>   }
+> @@ -3390,8 +3390,6 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
+>   	/* Send list for bulk vmemmap optimization processing */
+>   	hugetlb_vmemmap_optimize_folios(h, folio_list);
+>   
+> -	/* Add all new pool pages to free lists in one lock cycle */
+> -	spin_lock_irqsave(&hugetlb_lock, flags);
+>   	list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
+>   		if (!folio_test_hugetlb_vmemmap_optimized(folio)) {
+>   			/*
+> @@ -3404,23 +3402,27 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
+>   					HUGETLB_VMEMMAP_RESERVE_PAGES,
+>   					pages_per_huge_page(h));
+>   		}
+> +		/* Subdivide locks to achieve better parallel performance */
+> +		spin_lock_irqsave(&hugetlb_lock, flags);
+>   		__prep_account_new_huge_page(h, folio_nid(folio));
+>   		enqueue_hugetlb_folio(h, folio);
+> +		spin_unlock_irqrestore(&hugetlb_lock, flags);
+>   	}
+> -	spin_unlock_irqrestore(&hugetlb_lock, flags);
+>   }
+>   
+>   /*
+>    * Put bootmem huge pages into the standard lists after mem_map is up.
+>    * Note: This only applies to gigantic (order > MAX_PAGE_ORDER) pages.
+>    */
+> -static void __init gather_bootmem_prealloc(void)
+> +static void __init __gather_bootmem_prealloc(unsigned long start, unsigned long end, void *arg)
+> +
+>   {
+> +	int nid = start;
+>   	LIST_HEAD(folio_list);
+>   	struct huge_bootmem_page *m;
+>   	struct hstate *h = NULL, *prev_h = NULL;
+>   
+> -	list_for_each_entry(m, &huge_boot_pages, list) {
+> +	list_for_each_entry(m, &huge_boot_pages[nid], list) {
+>   		struct page *page = virt_to_page(m);
+>   		struct folio *folio = (void *)page;
+>   
+> @@ -3453,6 +3455,22 @@ static void __init gather_bootmem_prealloc(void)
+>   	prep_and_add_bootmem_folios(h, &folio_list);
+>   }
+>   
+> +static void __init gather_bootmem_prealloc(void)
+> +{
+> +	struct padata_mt_job job = {
+> +		.thread_fn	= __gather_bootmem_prealloc,
+> +		.fn_arg		= NULL,
+> +		.start		= 0,
+> +		.size		= num_node_state(N_MEMORY),
+> +		.align		= 1,
+> +		.min_chunk	= 1,
+> +		.max_threads	= num_node_state(N_MEMORY),
+> +		.numa_aware	= true,
+> +	};
+> +
+> +	padata_do_multithreaded(&job);
+> +}
+> +
+>   static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
+>   {
+>   	unsigned long i;
+> @@ -3602,6 +3620,14 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+>   		return;
+>   	}
+>   
+> +	/* hugetlb_hstate_alloc_pages will be called many times, init huge_boot_pages once*/
+> +	if (huge_boot_pages[0].next == NULL) {
+> +		int i = 0;
+> +
+> +		for (i = 0; i < MAX_NUMNODES; i++)
+> +			INIT_LIST_HEAD(&huge_boot_pages[i]);
+> +	}
+> +
+>   	/* do node specific alloc */
+>   	if (hugetlb_hstate_alloc_pages_specific_nodes(h))
+>   		return;
 
