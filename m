@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-29773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 437BD831339
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:40:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0697831341
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 673D81C227D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:40:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02332B240F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 07:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20292BE67;
-	Thu, 18 Jan 2024 07:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C932B11CAD;
+	Thu, 18 Jan 2024 07:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="YCwsSkn5"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2061.outbound.protection.outlook.com [40.107.220.61])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="InfiefTF"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2070.outbound.protection.outlook.com [40.107.243.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61BFBA22;
-	Thu, 18 Jan 2024 07:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1424C127;
+	Thu, 18 Jan 2024 07:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.70
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705563631; cv=fail; b=F4RSZbCIpCNg3zd0YZJGtCWyeuXwG9u6hL+WE07N1iVGfY8myGgzQaAKKHr+JSwr0eJDdm1lz333Mc0q9R0B1Q7oub4XjZ40iURpKWrYwtg4PGkU9/3wpyNLQuTpx8SgRKkHy5qKBPbuFNtX7xpE+/nRPf6SBtPB3VA2N4MSmls=
+	t=1705563693; cv=fail; b=o5k5tEJQwvs1mEUge5xeQFUmKNGYFX60UHbFPGeKquEjAwb/r9Mu47oSyAUuw39d6Mw+e92ILt5zW/VEZ20+sdzRJ7DO9zTJC/SFGwkuxFAsV089XOS0I86aBTtckZTvvoHUW3cYozljKuIuLaZx01kDQXhqGv6VwflCCBV7//o=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705563631; c=relaxed/simple;
-	bh=ObdAGXl8hDVKweTPjf3F2NYkEQQcupd3H9Ba+DFMVpc=;
+	s=arc-20240116; t=1705563693; c=relaxed/simple;
+	bh=TYEgEqpFG5YkW4ZwlKKsgXX+Zc4497q5kjfjQJr7LFQ=;
 	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
 	 Received:Received:X-MS-Exchange-Authentication-Results:
 	 Received-SPF:Received:Received:Received:Received:From:To:CC:
-	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding:Content-Type:X-EOPAttributedMessage:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:
+	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding:Content-Type:
+	 X-EOPAttributedMessage:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
 	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
 	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
 	 X-Forefront-Antispam-Report:X-OriginatorOrg:
@@ -42,56 +42,56 @@ ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	 X-MS-Exchange-CrossTenant-AuthSource:
 	 X-MS-Exchange-CrossTenant-AuthAs:
 	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=MUEuEEQUkeGYbN69fErqRnw40XLnpCSpD5xm2htiipobAyLt/XvWoZBUKuhvrEjPjl5iRfKHQ9bBgMhUTSD8wKiZ8TswdLqeb3764kcuhTVuTRDb3wFuaKLg7CX4b1isW6w//uCwpt62+7Lm5905TdFvIuKrnVFsOEIhS729njU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=YCwsSkn5; arc=fail smtp.client-ip=40.107.220.61
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=WXCKh+Ca0VTP4L8V+3hEpOuCkjy41ecjSEGKi28Viz3lSmBe5Cq3HFaIKBwbysZ0lRYbYTK68roabfyZwN2vRRx5IzQUvvXbDIWFa8GqgQ35TgIMwrknjlkC3qjO+nsGn8CcXAx6UicLPIXNnSfIfAoGy0QG5kB6Fzf7zrfMg2c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=InfiefTF; arc=fail smtp.client-ip=40.107.243.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DAoEjw+H9USgtW4hf0fcvci1wjFUC48Ozx2borAT873XPekNna8xhdX4oZ/taGAIg912nGSxItdpnlu7rT3yVSJHG/dJcFQbxdoBG8SWZPlIoWmjbBE4kRv/qBh0/jO5jcz8GdbhmGFGXZ89K6yrZ1kkmAoHp5rPLnCkeYiOkysCgAheEql9wfua/+ldX9Zf5P7IOi2O5c0xxvH6+gFwwn8fC+Rs65ugOeL/lastEBAuhZdt2MgiGj/AbpdcOfdyQXXEssdY/1QKYSRvs3AKoPYBiwCLBjKDrOm/MBhg3i8qD/029cSuYjY+q1DfLTX1UzQAiKIY+RwL/9yXPsXCLA==
+ b=ejscTUSh8ochwCnbvfxp6w7Tm/f0cuXW/4lLpjccRuAKyRHDgZeRC3P8PLaoKjDBwy0023JL2ZtiIjwmERUkuCz3XaLUGEtXRmBQMB+cydta0tWjJbHejheNN9UUlqMSjXMhukWfDT+r2I5qpB4nuUvSZd1cY/9gzRDBhj0iwQLaf7ghv5ZimUh9I9W6OOdplxuog+XvRO0Jv1Al/U+8PqHg0ZdEnWI3sQNY3R52edbRy3Dev+wOUERG7P08afIWyKzHLc6Jf8Vs1SchadAMv+E707s98ZRC39pQwQFFJoY7tMjp9U+diN87Ozkp5e+eI3rPA3C3LMRC8cRQ7++R+Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=teFDFgSvfiCUHmISG+d2ssYfvvjIo0dn2SBtI1384Bg=;
- b=JdPLnJgUZVp6yWvtEQPKG6qF+YvNebzaQA77c+PFxJRl4hpFqwRQ8UnW2AiRL1hrbQi4cbeG3Kd7KgNP9bTQMS4eeiEgNqYI167MhL+dOY0xF+0t7xXvJ5CrzGw0oiEKr0nWLsxQlU/djY14rTXMx5IDvJupFe0TY9X3IHmKnsvyCIqys7KDhToZ+5kulMXPT3p0f718+SM2110k+kCLLFspVSP1x9O+vvDHyNVbUgtMC8TXv529MTMiB+IcpXS7fBE7POJ6BeU9Rx6ekOwKBjwczi5ieOQLw2aW3tqLT+l62Vj/cL9E7U9M4ESnD3AMyH2wBC6918qbEbk77ieUCA==
+ bh=zRKGuLs+835hff+TGPL7YUfDyZhAKGJZy4+ZhQVa8UE=;
+ b=kWnRL8b87EyNSK/2JeY00AJ7ZjxSnLCVTK/6IXyXRoUXoKines10L+FwY9BgK744fdgUYGQYa50EONJNPb7giN/1FNDNYyVbQFy9krxFPfb4yG4S9KHKOKXxM6PYd2QNVDKCR0Xg7wuDroRN0qEVFBFH9fFKunWWn8lry5FgdncjslALlo5tNGJJPF2IJExObB3li+2Wp8wHqBqapAsBkSGm1djyRTViSM7PtPpSZHEDolYPs/uN1s7MY3HhItUQnHeTHauXm4eMHl24EmR9+u+vET9F4M7o2qnGWU3E6G1ochtGA33DIvad1nfNC8GDAXofBIPFDdHukXrOo27TlA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=teFDFgSvfiCUHmISG+d2ssYfvvjIo0dn2SBtI1384Bg=;
- b=YCwsSkn5qv3CndFOrz6jQewhO9njDqq9KPsn5SN/RIiUpCvxW68a8xPWs5NDVDeIugjxSOvCBQ2gHUbZhrezXLcFl81vGzWzaf4GUA7aL8kfixgdtT0oFVogNuk71ZDU3/8vNKkybqYmWcoyz/eQ1Z2UHQVWbCsonCGPdiALAn8=
-Received: from CH2PR14CA0003.namprd14.prod.outlook.com (2603:10b6:610:60::13)
- by IA0PR12MB8648.namprd12.prod.outlook.com (2603:10b6:208:486::19) with
+ bh=zRKGuLs+835hff+TGPL7YUfDyZhAKGJZy4+ZhQVa8UE=;
+ b=InfiefTFQ3ooPi8tWceTQey7Ml4ss8mcVxYZUuX/q53FZyfq9TSThCh+XSKJgDuH2ZYK21D3E1A7WIq9QtfK/As7b0boB0Kb9uBMptymrJYkCbv2/Yf3ZTsLkNzJCWJsZKJEd4XfaSEwkn0lvlrWF4XVF2kVHRaVnKwMxsw6MSA=
+Received: from SJ0PR13CA0048.namprd13.prod.outlook.com (2603:10b6:a03:2c2::23)
+ by IA1PR12MB6555.namprd12.prod.outlook.com (2603:10b6:208:3a1::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Thu, 18 Jan
- 2024 07:40:26 +0000
-Received: from DS3PEPF000099D7.namprd04.prod.outlook.com
- (2603:10b6:610:60:cafe::2a) by CH2PR14CA0003.outlook.office365.com
- (2603:10b6:610:60::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24 via Frontend
- Transport; Thu, 18 Jan 2024 07:40:26 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Thu, 18 Jan
+ 2024 07:41:28 +0000
+Received: from MWH0EPF000989E6.namprd02.prod.outlook.com
+ (2603:10b6:a03:2c2:cafe::cf) by SJ0PR13CA0048.outlook.office365.com
+ (2603:10b6:a03:2c2::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.8 via Frontend
+ Transport; Thu, 18 Jan 2024 07:41:27 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099D7.mail.protection.outlook.com (10.167.17.8) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Thu, 18 Jan 2024 07:40:25 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ MWH0EPF000989E6.mail.protection.outlook.com (10.167.241.133) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Thu, 18 Jan 2024 07:41:27 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 18 Jan
- 2024 01:40:19 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ 2024 01:40:59 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 18 Jan
- 2024 01:40:19 -0600
+ 2024 01:40:59 -0600
 Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Thu, 18 Jan 2024 01:40:15 -0600
+ Transport; Thu, 18 Jan 2024 01:40:55 -0600
 From: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
 To: <git@amd.com>, <michal.simek@amd.com>, <gregkh@linuxfoundation.org>,
 	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -100,11 +100,13 @@ To: <git@amd.com>, <michal.simek@amd.com>, <gregkh@linuxfoundation.org>,
 	<jirislaby@kernel.org>, <linux-arm-kernel@lists.infradead.org>
 CC: <radhey.shyam.pandey@amd.com>, <srinivas.goud@amd.com>,
 	<shubhrajyoti.datta@amd.com>, <manion05gk@gmail.com>, Manikanta Guntupalli
-	<manikanta.guntupalli@amd.com>
-Subject: [PATCH V9 0/3] Add rs485 support to uartps driver
-Date: Thu, 18 Jan 2024 13:10:00 +0530
-Message-ID: <20240118074003.2334348-1-manikanta.guntupalli@amd.com>
+	<manikanta.guntupalli@amd.com>, Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH V9 1/3] dt-bindings: Add reference to rs485.yaml
+Date: Thu, 18 Jan 2024 13:10:01 +0530
+Message-ID: <20240118074003.2334348-2-manikanta.guntupalli@amd.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240118074003.2334348-1-manikanta.guntupalli@amd.com>
+References: <20240118074003.2334348-1-manikanta.guntupalli@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -115,60 +117,43 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D7:EE_|IA0PR12MB8648:EE_
-X-MS-Office365-Filtering-Correlation-Id: ef2482d3-f15a-44e1-a60e-08dc17f8bc6b
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989E6:EE_|IA1PR12MB6555:EE_
+X-MS-Office365-Filtering-Correlation-Id: 931b4ecf-762c-40b3-6993-08dc17f8e122
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	lT7gjjeycuwt09Dlwq34hbSSwjAr1Q3+MgSSUfVe3B5gnNC2d8g2MEGoPRW1IZLRtFcyvGz5H5ICuG8jDbuanEz1+yXiTsCT3VVK+DKyJB8Ic/WAJRlwCHILjQdRUA5k9E8qwam0EMa0wasknoGQafeo8mUEIgKTq2/U0sT+KKNJ+mjpG1nrQfxFWd2zuTtPo1E7yK+koBWLOM6ANQe2InQmZ63HJ8CCVcDfG0kTVIQSAPAy8XjZeOZmRSiW/paI+AvZB6Ds3hDYYYYHxrwO7dGV9McpM3aE4jOkjj3iYsHDObR3vyp2MdmkdSk1XR0J7EeyvdGby5z7KQhsZr/A8nCAHT+aX2PUNzDdt4UnC0uyJgnkwwBpInjGvTjwb8hkQVTurzO52qhK9xgFTJJxEpo44RsKSC1TE6iccbpKyDnAZJCxYewnCpeY1D0QE9TLecDYsJdyrMz0ljagJGdhtRDn3rUEvYl/RmnrQlCYRGpYfCuPf8ukwRDM2qfUHkm4/c14KxiW8B+NcnXRNijajNInuk6Q+TTk5bb0QFlmb6OBFaVOfJqE4jg31tD9iBwg7NXAgr1TCMTkcJMo1pASDGKP/cgsbXKuCVXal4UMIbgGZ/Jm3dBZXAhjP7bMvwxxDIkiM8R+AWQVP3NlteywGnZ0DbEfc9/dVcUd7GUJNc91v+5Jmb7t60EMxnXCRARUTWqdF0aXocyG2SmSaXgwy69hTmX0MQ0NJPWmIJzuarFFnTbQ+9vI0w3Rr4/8MSnghzjCVms/BEZYnPclmQBq4DXPCWtsTP7YjlkwX/7XSmI=
+	4cJrGXGpnq7HobY0QiCl9CEUj3WZ8Isdpm4Q6t/gRI+OlBEDeYm+CariMGKUsMbkQctfjWLZ0nh8LGK825TPM02bncqxhPqb4toX/CDiTQjE1aJGlyJaND+FpJ9AUieruxbdg7ik53VV/8zRRDoz4wadmyYTXsIiYxNZDLsegJRR8Tg+zO3Jt5l+jer5TFZ5PkgxwYoRsNI3qgbo8g8YBs0QKhR2uqrb4vjlZMWUWKSOcZrbM5RNasjKBDm3/NFHhozYOT03/E5nZQJbn4dhkxnXCA/Md2HA3AG1MEyTHjvvzYf3+pES8oq8JHYWP8YccnmHtUgCU6Gu7Z8TUdFrIP4Nw0NDrfEQadPECtpJfJ9yCJZZ7iSiroY7BkfnMrFyky+vQw6JAlKI+nPeUBH/kKPmzzAx1hDfZ3RW/oZaREJJhgWjejrQll/a9T3UgFsxBk3utCa0j+IhkdyCi7WxO5dbGWEsY0Nj8miTdyQGZ1VjMiz7y1ZEhCrqGto4z7FkMMjtyQd/DfgNl47A8NUw9SWY82m0D4dzrgEASexIAO5te/Ff78O8f+X2MP56rpTh2PDwHR0CmHSWGDEGmbiijgbRBComMYLyNTQQ9D241+fASYhqbvjOdulmc53NSbh10GMmMDBxjs6i3u2n0p7hkdqdnXGXiztCCmsPM1gn32gnYElBfmvd+60vKN+C+gGRL+SuFJPJs2AYUspPLF9bRaAlVo6trlRY0R6Y3ig/3U9U10mTxpzmqds6iEYAdrLyJzgkzhdfLQV3VH7pgRhgqL5TF/n6gQrvVHAsbe4xZ6A=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(376002)(396003)(136003)(230922051799003)(186009)(82310400011)(1800799012)(64100799003)(451199024)(36840700001)(46966006)(40470700004)(40480700001)(40460700003)(426003)(26005)(1076003)(6666004)(83380400001)(336012)(86362001)(36756003)(82740400003)(81166007)(356005)(44832011)(2616005)(7416002)(4326008)(5660300002)(8676002)(47076005)(36860700001)(316002)(70586007)(70206006)(110136005)(54906003)(921011)(8936002)(41300700001)(2906002)(478600001)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(186009)(64100799003)(82310400011)(451199024)(1800799012)(36840700001)(46966006)(40470700004)(40480700001)(40460700003)(83380400001)(921011)(86362001)(36756003)(81166007)(356005)(36860700001)(82740400003)(8676002)(8936002)(4326008)(1076003)(47076005)(2616005)(26005)(426003)(336012)(6666004)(110136005)(70586007)(70206006)(54906003)(5660300002)(316002)(478600001)(44832011)(41300700001)(2906002)(7416002)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 07:40:25.9330
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 07:41:27.4818
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef2482d3-f15a-44e1-a60e-08dc17f8bc6b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 931b4ecf-762c-40b3-6993-08dc17f8e122
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D7.namprd04.prod.outlook.com
+	MWH0EPF000989E6.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8648
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6555
 
-Add reference to rs485.yaml.
-Add rs485 support to uartps driver.
+Xilinx/AMD Kria SOM KD240 board has a rs485 compatible peripheral.
+Update the binding to have rs485 support.
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
 ---
 Changes for V2:
 Modify optional gpio name to xlnx,phy-ctrl-gpios.
 Update commit description.
-Add support for RTS, delay_rts_before_send and delay_rts_after_send in RS485 mode.
 
 Changes for V3:
 Modify optional gpio name to rts-gpios.
 Update commit description.
-Move cdns_uart_tx_empty function to avoid prototype statement.
-Remove assignment of struct serial_rs485 to port->rs485 as
-serial core performs that.
-Switch to native RTS in non GPIO case.
-Handle rs485 during stop tx.
-Remove explicit calls to configure gpio direction and value,
-as devm_gpiod_get_optional performs that by using GPIOD_OUT_LOW argument.
-Update implementation to support configuration of GPIO/RTS value
-based on user configuration of SER_RS485_RTS_ON_SEND and
-SER_RS485_RTS_AFTER_SEND. Move implementation to start_tx from handle_tx.
 
 Changes for V4:
 Update rts-gpios description.
-Create separate patch for cdns_uart_tx_empty relocation.
-Call cdns_rs485_rx_setup() before uart_add_one_port() in probe.
-Update gpio descriptor name to gpiod_rts.
-Instead of cdns_rs485_config_gpio_rts_high() and
-cdns_rs485_config_gpio_rts_low() functions for RTS/GPIO value
-configuration implement cdns_rts_gpio_enable().
-Disable auto rts and call cdns_uart_stop_tx() from cdns_rs485_config.
-Use timer instead of mdelay for delay_rts_before_send and delay_rts_after_send.
-Update cdns_uart_set_mctrl to support GPIO/RTS.
 
 Changes for V5:
 Remove rts-gpios description.
@@ -176,39 +161,31 @@ Update commit message and description.
 
 Changes for V6:
 Update commit description.
-Disable the TX and RX in cdns_rs485_config() when rs485 disabled.
-Hold lock for cdns_uart_handle_tx() in cdns_rs485_tx_callback().
 
 Changes for V7:
 Update commit description.
 
 Changes for V8:
-Use hrtimer instead of timer list.
-Simplify cdns_rs485_tx_setup() and cdns_rs485_rx_setup().
-Update argument of cdns_rts_gpio_enable() in cdns_uart_set_mctrl().
-Add cdns_calc_after_tx_delay() to calculate required delay after tx.
-Add hrtimer setup in cdns_rs485_config().
-Move enable TX Empty interrupt and rs485 rx callback scheduling part to
-cdns_uart_handle_tx().
+None.
 
 Changes for V9:
-Update return check with uart_tx_stopped() in cdns_uart_handle_tx().
-Update description of cdns_uart_handle_tx() and add clear TX Empty interrupt
-comment cdns_uart_start_tx().
-Remove stop tx timer.
-Remove hrtimer_cancel() call from cdns_uart_start_tx().
-Handle gpio case separately in cdns_uart_set_mctrl().
-Move hrtimer_cancel() call from below to above in cdns_uart_shutdown().
+None.
+---
+ Documentation/devicetree/bindings/serial/cdns,uart.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Manikanta Guntupalli (3):
-  dt-bindings: Add reference to rs485.yaml
-  tty: serial: uartps: Relocate cdns_uart_tx_empty to facilitate rs485
-  tty: serial: uartps: Add rs485 support to uartps driver
-
- .../devicetree/bindings/serial/cdns,uart.yaml |   1 +
- drivers/tty/serial/xilinx_uartps.c            | 235 ++++++++++++++++--
- 2 files changed, 215 insertions(+), 21 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/serial/cdns,uart.yaml b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
+index e35ad1109efc..2129247d7c81 100644
+--- a/Documentation/devicetree/bindings/serial/cdns,uart.yaml
++++ b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
+@@ -55,6 +55,7 @@ required:
+ 
+ allOf:
+   - $ref: serial.yaml#
++  - $ref: rs485.yaml#
+   - if:
+       properties:
+         compatible:
 -- 
 2.25.1
 
