@@ -1,125 +1,159 @@
-Return-Path: <linux-kernel+bounces-29936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB04831566
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:04:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98EAC831568
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90D861F2211C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:04:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70EFA283075
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:04:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2798F13FEF;
-	Thu, 18 Jan 2024 09:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C686013FEF;
+	Thu, 18 Jan 2024 09:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m1iayccb"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="q0utVZF0";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lK5Ihehp"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DA712E41;
-	Thu, 18 Jan 2024 09:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1DF12E41;
+	Thu, 18 Jan 2024 09:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705568664; cv=none; b=tPIzmbSG7spz+1t84McunorgFNQIhWe8u15nLCSgzHsFYSq/ytgBVoMMwGW1AV4T/euPpUb58FR/EgE4PCpvZH82X7MeL4qn6lVDSxms4ReV9rIcLLYbqPAiur363litq5hL6x3AemcL2UFcNmUvsC9ce3LxPZN9VueiWWfPy4k=
+	t=1705568676; cv=none; b=Dq87nOGQcpBNHEADlrdmZcky48NBC4SUz7aMf2O83JSJuiRGQ5AJ81WrROHunQxSvfn8T+LM0DRv3z3snrQ46TGiv0NN3MNyZG7GFfvR1063KImbhMtJ6DNziM8dGP+GtBtdvThfnkleLfTi3XQwDzAgYKRYHM5GTpVgQJi3b08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705568664; c=relaxed/simple;
-	bh=Cy29blYtOL8hXF3iNGpo76Fmt3RU8Vjz1i2wkMTBQ98=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=NuGUkbc5SixOga85Er/IgbqOj2+vlJsXRvW5WQtWj1V9aPmfP2ReserpsbjYS99AktoU6bwyhY6Q0s3laJ6uKmEzntWmr+NbawdVy5qn/HcH/DOQDN+OpqQQ0EL02y+aFg8YvSvCWYTQ4YapgLc9lSLLJbISf5X3yn5Q3u71ZFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m1iayccb; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a26fa294e56so1251658466b.0;
-        Thu, 18 Jan 2024 01:04:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705568661; x=1706173461; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B5t772S8vsp7sqvQIHtML2Lp6V766h0wNn7VzTTwTSA=;
-        b=m1iayccb/kjogDT+tiYK2QuGkp4j8kYIDHngXrXi2y8wBGzXsc6y17/NajW6uNh4nD
-         j3pxtpkM90TzPn7GuNRhnt4rF0EEKBE96y1YMUZ87v8eM+UZwkY0GSlHyNKcpK/eix9c
-         rhUTEybBY8syW96fWzT3vUTsNZsO23Wq4G6+074wHNhxlPNZVPmHYW8vk4aXx9EjwbLj
-         BZDNdAWrePxkz306kc3gj6vY16bKT7cndSCgmNB4gIF4PUKndyscExazfGpxn9yajqav
-         HSP7gtYYaxWJLd9RcMDjI1yM+oQakp0pRp0NPNswCnAUYiMcQE4SCvAHwNWl6GSQQhYP
-         IUoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705568661; x=1706173461;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B5t772S8vsp7sqvQIHtML2Lp6V766h0wNn7VzTTwTSA=;
-        b=GG2cl7EVqRb8weMehJFOu1H0Aoxow92dMsXZ3Le9wRSMHCDvhoiaSWofGQxMTjGVZW
-         J/u31n/gdTE09FbzWUrsEcuiegODL4OD438m1k8QdWlHd14vUeH2bjFGzMns3vr9NcRk
-         tPPxpSKqiqg06bBhF7TXr7HLuuBqehKleQj4kdrnKvMvlCf/Cnizn2La2YeKRAs7fRH+
-         jyXSibfxvJo3/k9iqOvOaar0eTiwqn4XJDmVoOgp/rklltP7gWlpq25CZWQOLoXdkbOo
-         DzTYyEIOirfSYdV5PPymI+84UfZnWiWrq+37OpOzxd0KsnfmmCAkxbSYQtT4JobLRIti
-         R8rg==
-X-Gm-Message-State: AOJu0Ywe+dECGlCx7XKo2tbBw2DZtkfu63pWjVDUeBrz85HzUiS5mDfr
-	8HIi8TMbW+hNluldu3foqXuKuZi9E7TJ7HgsOdtdqGjyG929HoE6MrYkxXHK+xk/xb5VKVIhJXp
-	0d+KryLYIVe+6hGvN7ynjHbg6nuE=
-X-Google-Smtp-Source: AGHT+IEVS3DrF0VDBRkpOHBLTP50YToKVYiSYI8gmaMux7Cp4NGxB2HLSReD4CdWSdU8opRHU5ykcHcHvmKJd6CgA9w=
-X-Received: by 2002:a17:906:d96d:b0:a2f:1817:2ef with SMTP id
- rp13-20020a170906d96d00b00a2f181702efmr308106ejb.70.1705568661001; Thu, 18
- Jan 2024 01:04:21 -0800 (PST)
+	s=arc-20240116; t=1705568676; c=relaxed/simple;
+	bh=Lx9tonMV0p2LmGJzOUVmxlBkhvvyPY8HKeuAJPQh4ks=;
+	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-Spamd-Result:X-Rspamd-Server:
+	 X-Rspamd-Queue-Id:X-Spam-Level:X-Spam-Score:X-Spam-Flag; b=r6/ZBXmghL1pSTCZT60clqnakMvobrTNWlDGoYucKNIFVQpFIE/r8s44BQi5y7P8DKQnEMUbmRGTe+GUuL4ztb+NqITNXMFG3jgHKjvs9oEAGmJeTGyF8Kg9EmZETngJbRfmcWyhKtVNcnil9Qd+5/8YedTc/U9l9gIdWEhfaeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=q0utVZF0; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lK5Ihehp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FA5922049;
+	Thu, 18 Jan 2024 09:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705568672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lx9tonMV0p2LmGJzOUVmxlBkhvvyPY8HKeuAJPQh4ks=;
+	b=q0utVZF0O92nhdxl2kE4a6MZyKsKAtvwi2N/IkUkbVsotX2YQISspqe6TosRHNUqMz6vvd
+	UMuwMgDMufs7dSmREmYrsR45+gZH1uOI5mW655ZZuwG2jbpRKj7+1wxZXy69NcoCfWoU51
+	qrMnarvLlmNUaTJEwYqtrWXp9d++Yew=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705568671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lx9tonMV0p2LmGJzOUVmxlBkhvvyPY8HKeuAJPQh4ks=;
+	b=lK5IhehpmssMnTKxdBPOWJ6FwenHO4AUxX3t+ItSvSa8aQd1liz32rxnFfsuF4P4mEVXmm
+	x5N5wbY5N+SOGshCLSfORkSdYDJbvlOiTfwb0Q+su98rU52Qwz5S/b/9EF680lLKga9eTF
+	uE2CvXGmtfCRkv5pLJThqB1Ki728rMA=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E026113874;
+	Thu, 18 Jan 2024 09:04:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PpbYNZ7pqGXBMQAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Thu, 18 Jan 2024 09:04:30 +0000
+Date: Thu, 18 Jan 2024 10:04:29 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
+	Shakeel Butt <shakeelb@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org, 
+	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
+	Vasily Averin <vasily.averin@linux.dev>, Waiman Long <longman@redhat.com>, 
+	Muchun Song <muchun.song@linux.dev>, Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org
+Subject: Re: [PATCH RFC 4/4] mitigations: Add flock cache accounting to
+ 'mitigations=off'
+Message-ID: <dxd775xvo2r4vonmpvzb6sgrwgfqrsvekqabyh4mjljgrqzecj@eiubz4t2lepu>
+References: <cover.1705507931.git.jpoimboe@kernel.org>
+ <3e803d5aee5dd1f4c738f0de1e839e6cfcb9dc41.1705507931.git.jpoimboe@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117083251.53868-1-hector.palacios@digi.com>
- <20240117083251.53868-2-hector.palacios@digi.com> <CAHp75Vci=1nAvxRcbkK2SxGWGbQVbzQMTycMt8tZ5snPRTYXOg@mail.gmail.com>
- <fd5550ad-76c0-419b-aa07-a0493a57286e@digi.com>
-In-Reply-To: <fd5550ad-76c0-419b-aa07-a0493a57286e@digi.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Thu, 18 Jan 2024 11:03:44 +0200
-Message-ID: <CAHp75Vf4wXLEjmfpz6KQSCB0Jd8LNv6+SU_ikbhR_8PsJHuq-g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] gpio: vf610: add support to DT 'ngpios' property
-To: Hector Palacios <hector.palacios@digi.com>
-Cc: linus.walleij@linaro.org, brgl@bgdev.pl, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, andy@kernel.org, conor+dt@kernel.org, 
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
-	festevam@gmail.com, linux-imx@nxp.com, stefan@agner.ch, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="u4b4gqso4ihknobk"
+Content-Disposition: inline
+In-Reply-To: <3e803d5aee5dd1f4c738f0de1e839e6cfcb9dc41.1705507931.git.jpoimboe@kernel.org>
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=lK5Ihehp
+X-Spamd-Result: default: False [-4.08 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[17];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.17)[70.01%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 4FA5922049
+X-Spam-Level: 
+X-Spam-Score: -4.08
+X-Spam-Flag: NO
 
-On Thu, Jan 18, 2024 at 10:25=E2=80=AFAM Hector Palacios
-<hector.palacios@digi.com> wrote:
-> On 1/17/24 21:51, Andy Shevchenko wrote:
-> >> Some SoCs, such as i.MX93, don't have all 32 pins available
-> >> per port. Allow optional generic 'ngpios' property to be
-> >> specified from the device tree and default to
-> >> VF610_GPIO_PER_PORT (32) if the property does not exist.
 
-..
+--u4b4gqso4ihknobk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >> +       ret =3D device_property_read_u32(dev, "ngpios", &ngpios);
-> >> +       if (ret || ngpios > VF610_GPIO_PER_PORT)
-> >> +               gc->ngpio =3D VF610_GPIO_PER_PORT;
-> >> +       else
-> >> +               gc->ngpio =3D (u16)ngpios;
-> >
-> > This property is being read by the GPIOLIB core. Why do you need to rep=
-eat this?
->
-> My apologies; I had not seen this.
-> I'll use gpiochip_get_ngpios() on the next iteration.
+On Wed, Jan 17, 2024 at 08:14:46AM -0800, Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+> Allow flock cache accounting to be disabled with 'mitigations=off', as
+> it fits the profile for that option: trusted user space combined with a
+> performance-impacting mitigation.
 
-But still why?
-https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#L867
+Note that some other kernel objects that don't have any other tight
+limit are already charged too (but their charging likely did not stand
+out in any performance regression tests).
+In the situation you describe, users can already pass
+`cgroup.memory=nokmem` and get rid of charging overhead in general.
 
-It's called for every driver.
+IOW, if flock objects are charged, there already is a boot option to
+turn off such behavior.
 
-Maybe it's needed to be refactored to allow fallbacks? Then can the
-GPIO MMIO case also be updated?
+Regards,
+Michal
 
---=20
-With Best Regards,
-Andy Shevchenko
+--u4b4gqso4ihknobk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZajpkQAKCRAGvrMr/1gc
+jnI1AQCbThmyZZHc0yb1sSU87kRYGU6A+8Qm5wtthTdtlNoPuwEAnOxavnxMkLvy
+VhsoAek+ajhMUjJp7v03BI1OEx2X/AA=
+=LaB0
+-----END PGP SIGNATURE-----
+
+--u4b4gqso4ihknobk--
 
