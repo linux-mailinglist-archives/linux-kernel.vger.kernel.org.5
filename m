@@ -1,175 +1,197 @@
-Return-Path: <linux-kernel+bounces-29835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49809831431
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:10:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37199831437
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:10:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DECE01F23648
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:10:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BDCE1C234FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9B511CB3;
-	Thu, 18 Jan 2024 08:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42533219ED;
+	Thu, 18 Jan 2024 08:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cRh78Q+N"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OBK3Uu4x"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56D411C80;
-	Thu, 18 Jan 2024 08:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E9320B0C;
+	Thu, 18 Jan 2024 08:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705564936; cv=none; b=tqrhJZIa+caE2s1V2lEzXDYJJcgPIGWas5fzvuVvb3qdzfftSlAtEmNved60zC6Nnc2L6vaqGaLAHUQ2gcd/dtOKvj60kfOrSKMFVCnAu88IDxoZiCwOjasSz/rIwS5IqPUYx5DN/eUGLUekBFtfeaZGRh3vrcM/jCGwZz+WWFA=
+	t=1705565084; cv=none; b=UWeKWWKSauCm1p7YAvgc7RRV/bpYUNomYaNFKBMl1eIJbvr8a4dx8QVgbU2Gv/Yukx1zV47MqZ+PyIFedr4wVL3lRH3sc743YKdAC8frwVSYbVnx8ZCfAuKJsU9pWWh21H4kSOPzEvgq34VJ8lixGmFpmOEzcBErjH5D2CCZ2rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705564936; c=relaxed/simple;
-	bh=OALzICepfRDRFg9fUGRC5iG9WOyOuoZA3htK7BIML9k=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:Received:Date:From:To:Cc:Subject:Message-ID:
-	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding; b=FG2VaPWrZ+jBGH+89gdZm25c4NZIDdd1YScYxHeG9E+9GM7DIQDxxEKsL+oJ5DTgA/uhVOEsRC8DYMKP0gojVMPApGexGLAmkbL70HAawGGtAMpest5jkyfUwCBuiYZOrHg0h55j3xj2Z+qKx4K+tely4+p1doMq/xM+j3gT5SQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cRh78Q+N; arc=none smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705564934; x=1737100934;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OALzICepfRDRFg9fUGRC5iG9WOyOuoZA3htK7BIML9k=;
-  b=cRh78Q+NAjacPhFH8pqA1vz54x+qd7J5Ceycod87SIHWylKc6ppz3do/
-   6OG9O1TDGYdhKgkUQQD55BaV+yHAurW70TMx+WCGxCVeqJe7qsAJKBwJ0
-   X/hihTOZzSJJkt8GLs3WLdOgP5+hOcoTitwP80YLTtkumMx6TLgnT7FZb
-   e9Zd7DZvD+2ZqRTHuK8kzuUnoZA/1cwuQamBX/StHNWFZ2AyEOvRmonVg
-   AbvueTm4HoYecrA0oRZzwQitLqGllLqNGrH7fDlwt0orbLwTNGO8ZwQSl
-   tTfP+1qrAa2U6Lg/vmp3EcEiXoHzeq5Dx4wzH4UCu3vbbJ+LI+cBunI0r
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="390825917"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="390825917"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 00:02:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="33032144"
-Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.245.82.157])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 00:02:10 -0800
-Date: Thu, 18 Jan 2024 09:02:05 +0100
-From: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-To: linan666@huaweicloud.com
-Cc: song@kernel.org, shli@fb.com, neilb@suse.com, zlliu@suse.com,
- linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
- yangerkun@huawei.com
-Subject: Re: [PATCH v2 3/3] md: sync blockdev before stopping raid or
- setting readonly
-Message-ID: <20240118090205.00000212@linux.intel.com>
-In-Reply-To: <20240117093707.2767209-4-linan666@huaweicloud.com>
-References: <20240117093707.2767209-1-linan666@huaweicloud.com>
-	<20240117093707.2767209-4-linan666@huaweicloud.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1705565084; c=relaxed/simple;
+	bh=68d9CmU5eeaESHqJic1JKrZ9pX0+kwyDcb6eL/2eh2o=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:From:To:Cc:Subject:Date:Message-Id:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-TM-AS-GCONF:
+	 X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=TTid7FPjuBVqQWJ7gh5n4kIfnry/NxtqRayoLGaxkqpqDfonJvTjJPR2+s7kcNr5Qdks1bqWcWFjh9MZjent3kwi6Lsg8lAjBRoVReiiT+W4b3DHSWjC/MmHt6N46i6wgAfKHdeh3wb7kDvISgM1h/p3IncTYSK58S5KiwxNWNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OBK3Uu4x; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40I7L5Br031729;
+	Thu, 18 Jan 2024 08:04:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=dW6SN3AhL0Lcxi0KIl8tKzSobcAeQPzLd4TnKFmh2CA=;
+ b=OBK3Uu4xnAqt0dl7fLOvpH/dqie3h3kpd8tLlyyaLATTVcXpH3tfbUk9+5Aa7G/SkG9K
+ rGke8RGRKvHW/aFLsNURz+WoPhu6p4+ZAR4f7hRro7yFdqwJQoe3DUPPpYvvR26ZYt/R
+ Qg925ljlJjVAh/KroqGlufbV/gNP5L1cKnfvqs2NlZ5GAecZzrlc27e2WIU8ZjhqpTQX
+ SjPlEsa1eJyZFyPTHu4YK/Nk5lErAvcvnC8hHQzhtgzR3JmMv+/iKT6ycjNjUGi6helL
+ Yw1phm/qMsyUNa1osixjIXNf705SlW8gt+qgt6G7PBP5QEubARkXtE1F/fv6+PJyoTXS mA== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vpw6pvauv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 08:04:03 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40I7BDoX006508;
+	Thu, 18 Jan 2024 08:04:03 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vm7j21nb2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Jan 2024 08:04:02 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40I841Q036045078
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 18 Jan 2024 08:04:01 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2FADC20043;
+	Thu, 18 Jan 2024 08:04:01 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F40FD20040;
+	Thu, 18 Jan 2024 08:03:58 +0000 (GMT)
+Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.in.ibm.com (unknown [9.109.201.126])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 18 Jan 2024 08:03:58 +0000 (GMT)
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+To: linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: sshegde@linux.ibm.com, mpe@ellerman.id.au, mingo@kernel.org,
+        peterz@infradead.org, chandan.babu@oracle.com, anton@tuxera.com
+Subject: [RFC PATCH 0/3] remove duplicate ifdefs
+Date: Thu, 18 Jan 2024 13:33:23 +0530
+Message-Id: <20240118080326.13137-1-sshegde@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sHUTBHPs0bn-MPgVd2jK5MQVyP9-lhbG
+X-Proofpoint-ORIG-GUID: sHUTBHPs0bn-MPgVd2jK5MQVyP9-lhbG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-18_04,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ malwarescore=0 lowpriorityscore=0 mlxlogscore=696 priorityscore=1501
+ phishscore=0 adultscore=0 clxscore=1011 mlxscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401180056
 
-On Wed, 17 Jan 2024 17:37:07 +0800
-linan666@huaweicloud.com wrote:
+When going through the code observed a case in scheduler,
+where #ifdef CONFIG_SMP was used to inside an #ifdef CONFIG_SMP.
+That didn't make sense since first one is good enough and second
+one is a duplicate.
 
-> From: Li Nan <linan122@huawei.com>
-> 
-> Commit a05b7ea03d72 ("md: avoid crash when stopping md array races
-> with closing other open fds.") added sync_block before stopping raid and
-> setting readonly. Later in commit 260fa034ef7a ("md: avoid deadlock when
-> dirty buffers during md_stop.") it is moved to ioctl. array_state_store()
-> was ignored. Add sync blockdev to array_state_store() now.
-> 
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->  drivers/md/md.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 2c793992a604..aea39598457c 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -4477,6 +4477,7 @@ array_state_store(struct mddev *mddev, const char *buf,
-> size_t len) {
->  	int err = 0;
->  	enum array_state st = match_word(buf, array_states);
-> +	bool clear_md_closing = false;
->  
->  	/* No lock dependent actions */
->  	switch (st) {
-> @@ -4511,6 +4512,16 @@ array_state_store(struct mddev *mddev, const char
-> *buf, size_t len) spin_unlock(&mddev->lock);
->  		return err ?: len;
->  	}
-> +
-> +	/* we will call set readonly or stop raid, sync blockdev */
-> +	if (st == clear || (mddev->pers && (st == readonly ||
-> +	    st == inactive || (st == read_auto && md_is_rdwr(mddev))))) {
-> +		err = mddev_sync_blockdev(mddev);
-> +		if (err)
-> +			return err;
-> +		clear_md_closing = true;
-> +	}
-> +
+This could improve code readability. No functional change is intended.
+Maybe this is not an issue these days as language servers can parse
+the config and users can read the code without bothering about
+whats true and whats not.
 
-Please reorganize it a little for readability:
-I think if no mddev->pers we don't need to consider sync_blockdev at all. If
-personality is there we can probably check for read-write. If it is not
-read-write then nothing to sync. What about that:
+Does this change makes sense?
 
-if (mddev->pers && md_is_rdwr(mddev) &&
-    (st == clear || st == readonly || st == inactive || st == read_auto)) 
+Since this might be present in other code areas wrote a very basic
+python script which helps in finding these cases. It doesn't handle any
+complicated #defines or space separated "# if". At some places the
+log collected had to be manually corrected due to space separated ifdefs.
+Thats why its not a treewide change.
+There might be an opportunity for other files as well.
 
-Please note that I didn't test it so please let me know if you see issue in
-proposed logic.
-I think that we may be able to include it in "/* No lock dependent actions */"
-switch. Please consider it too:
+Logic is very simple. If there is #ifdef or #if or #ifndef add that
+variable to list. Upon every subsequent #ifdef or #if or #ifndef
+check if the same variable is in the list. If yes flag
+an error. Verification was done manually later checking for any #undef
+or any error due to script. These were the ones that flagged out and
+made sense after going through code.
 
-case clear:
-case readonly:
-case inactive:
-case read_auto:
-    if(!mddev->pers || !md_is_rdwr(mddev))
-          break;
-    err = mddev_sync_blockdev(mddev);
-    if (err)
-        return err;
-    clear_md_closing = true;
-    
->  	err = mddev_lock(mddev);
->  	if (err)
->  		return err;
-> @@ -4523,6 +4534,8 @@ array_state_store(struct mddev *mddev, const char *buf,
-> size_t len) break;
->  	case clear:
->  		err = do_md_stop(mddev, 0, NULL);
-> +		if (!err)
-> +			clear_md_closing = false;
->  		break;
->  	case readonly:
->  		if (mddev->pers)
-> @@ -4585,6 +4598,8 @@ array_state_store(struct mddev *mddev, const char *buf,
-> size_t len) sysfs_notify_dirent_safe(mddev->sysfs_state);
->  	}
->  	mddev_unlock(mddev);
-> +	if (clear_md_closing)
-> +		clear_bit(MD_CLOSING, &mddev->flags);
+ifdefs were collected using grep in below way and that file was used as
+the input to the script.
+grep -rIwn --include="*.c*" --include="*.h"  -e "#if" -e "#ifndef" -e "#ifdef" -e "#else" -e "#endif" * > /tmp/input.txt
 
-Please add spaces before and after if.
+---------------------------------------------------------------------
+script used:
+---------------------------------------------------------------------
+import os
+import argparse
 
->  	return err ?: len;
->  }
->  static struct md_sysfs_entry md_array_state =
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--file",
+                            help="file to input to script",
+                            type=str)
+    parser.add_argument("--verbose",
+                            help="Print additional debugging info, 0 to disable ",
+                            type=int)
+    args = parser.parse_args()
+    return args
 
-Thanks,
-Mariusz
+def parseFiles(args):
+    file_to_parse = open(args.file, "r")
+    lines = file_to_parse.readlines()
+    check_length = len(lines)
+    ifdefs_list = []
+    i=0
+
+    while i < check_length:
+        line = lines[i]
+        last_word = line.strip().split(":")[2]
+        last_word = last_word.split("/")[0]
+
+        if (args.verbose):
+            print(line)
+        last_word_splits = last_word.split()
+        if (args.verbose):
+            print(last_word_splits)
+        if last_word_splits[0] == "#ifdef" or last_word_splits[0] == "#ifndef" or last_word_splits[0] == "#if":
+            if last_word_splits[1] in ifdefs_list:
+                print("This is duplicate and may be fixed: %s, parent_list:\n" % (line))
+                print(ifdefs_list)
+            ifdefs_list.append(last_word_splits[1])
+        if last_word_splits[0] == "#endif"":
+            ifdefs_list.pop()
+
+        i=i+1
+
+if __name__ == "__main__":
+    args = parse_args()
+    parseFiles(args)
+-------------------------------------------------------------------------
+
+
+Shrikanth Hegde (3):
+  sched: remove duplicate ifdefs
+  fs: remove depulicate ifdefs
+  arch/powerpc: remove duplicate ifdefs
+
+ arch/powerpc/include/asm/paca.h           | 4 ----
+ arch/powerpc/kernel/asm-offsets.c         | 2 --
+ arch/powerpc/platforms/powermac/feature.c | 2 --
+ arch/powerpc/xmon/xmon.c                  | 2 --
+ fs/ntfs/inode.c                           | 2 --
+ fs/xfs/xfs_sysfs.c                        | 4 ----
+ kernel/sched/core.c                       | 4 +---
+ kernel/sched/fair.c                       | 2 --
+ 8 files changed, 1 insertion(+), 21 deletions(-)
+
+--
+2.39.3
+
 
