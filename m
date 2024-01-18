@@ -1,141 +1,138 @@
-Return-Path: <linux-kernel+bounces-30440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BBAD831EBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:50:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A9C7831EC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:51:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39AF51F28BDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:50:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 315631F242F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB232D605;
-	Thu, 18 Jan 2024 17:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 252BC2D631;
+	Thu, 18 Jan 2024 17:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XvCP81my"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LbJgbhEn"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D702D054
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75552D607
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:50:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705600235; cv=none; b=Mazkrm6HU919r7GisrtD28DmcjOiDEyk0x84Y5IeJqG/6lMgt/8L+yD0i5S8P9A9dvc5inXPwICdpDTpQt8r+kpFr0jIp9aVry88uxxxqnQQgCGX6hbb3JDl1jgMoLAICT6Hr1caCYpBBwET3dS2EMArIh97/XmgHErB7kuI6XQ=
+	t=1705600250; cv=none; b=e6huLmH70+uJ9IEpgRn1PuTfGJis39nJczm9kQEIGF9iNvZsWSFclCPz+g8nMqJE0OPNsIqkl03XC4Jm5cjGvHhAPIADGQuWeRFqLt9qnAr2tl4MFc3C6fWLDZlnk7b6W1IrzCUST8R+nJclA7XTz1vOyBdXqndqaC742Fnyl8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705600235; c=relaxed/simple;
-	bh=aUaKUwh3YAaWNKWA7dj+PRcrSs20vLRDXme+DX+1ioM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=WQZnDYx00jfaKqYxTXMJuzjLEkP0qiQFJhvZikTCzuykXlbB7MXbY/26Gt0UiI1zpjkmZGowrfsQVj1LiH4E2vWfisYE110AOXUnrXFxF5mQAmuZGi6htlkrNRVq6gb9fyz8YXY25q6G79QfYRHbhRabLz2S75ZAi+fGTme/hjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XvCP81my; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705600232;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6aHsNkGQXlA8j1zbdtTdQqDbzc5qUVpizDvSzqJvBko=;
-	b=XvCP81mykMH2XolhDrZI/jT/ed+5wsbvzUD5ajvonFgWSKcGoQcNIvefV+e8srBceNbmrc
-	kZW8YYtOuiWKV/8QudVudSRcwGbsZUqmfIvQ9MgYqsJC8NR/h45d/Kdm8qzAA5L0ZdOD+B
-	SzNYgWFsrzpvoG6dL/4aRhYCUOn+qik=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-280-LL9zUts-PGOTPziGVOqGVA-1; Thu, 18 Jan 2024 12:50:30 -0500
-X-MC-Unique: LL9zUts-PGOTPziGVOqGVA-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5ce97b87716so6432524a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:50:29 -0800 (PST)
+	s=arc-20240116; t=1705600250; c=relaxed/simple;
+	bh=R83s/PyF4fXUdK67JiE75Dz9JrojGyAfOWEwxObSVV8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MPeNGteVZ5Exq0Y/rYwNRkNcRAxy6K8qjVAMEVXAGH+1Shy/iKm31FPa84aoqudA//i2SzSgJAD19TTmHiXlzQXoszZv/9+n5ivfeEDeffRFODr3W/x5ZGeHx39TQCe+p5DY8B+uO/ZIpfWM6Y62iDDfBuAo8J/3TSz5tLt4fpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LbJgbhEn; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50eabfac2b7so15144396e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:50:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705600246; x=1706205046; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BeOfVhu/YQjuPaBL7HLOFJxylUSZb5ghXwEj0tH+VbM=;
+        b=LbJgbhEneDdeNqOEmRiGt3riWuUBUuVlABZyUdAdZ8O0LkDxG+pAu7QNo5YAWMjpL3
+         eY6u86tWGvrLmk19X0D60CGMwpgspuFzxDdL+RbFND0sd11IavHXilYeBR1n/BWmS7QA
+         0obftDJl+9tRy7H2hcPydoykwQqlWTulXDus5CGoG3164YX20SfYCCS8VGrVFKeRega8
+         t4pXISDeLwMhi63Etq20aBuLQx+muYiJLWGJtutwJKIjANPa6R/YcMBqZ8PSCKs2nK8s
+         hc/mnuhYw9ADWkRf9LojrWc9shl2HeeJfJ+HaJY5D7AEri+CrT1SdGVGusGEMv+o/LY6
+         oxKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705600229; x=1706205029;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
+        d=1e100.net; s=20230601; t=1705600246; x=1706205046;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6aHsNkGQXlA8j1zbdtTdQqDbzc5qUVpizDvSzqJvBko=;
-        b=wafYWO/ot0OyqqeKbBtcAgCymDsugJ2bEmRn0A4ax9utGcTu0pK2TrtmGjoitTubEt
-         czPA6zFLcfcgiQCe8eo/cKMJ1pCu4BXwCsgSpxNhc9Ceme6dqKCm0c+0711EYcrS4GeN
-         UmahRc5V0ykaiLycRFTLWO0/XZVpa4wuo0Hk38OvdAtcJg/Ei4R0qpA7v2ePqMzVPJSm
-         rz+hzaBibbw9u4Xk8WFNrOY3cEaDD8VQwFNW2pxfZXRyRV7GQb2gaVH9HBG2gybfdrzm
-         KKOB4hmUxLiwsDKBxCusOVWD8ZGP5qjA6zE53SFLAOqig6+sACgh2yZh+R+k1IiSoH2D
-         jMCw==
-X-Gm-Message-State: AOJu0YxeIswXTc4TEjzS1eEt9lxs20VSGUPs0kehMBUqf7M/vh2UsFL3
-	KxN4iyFPZiF1tkowVaumnRhfDcCmecO4USxQ4ja6N866jXsNrAPo8YgYG3JSoww0TSGk87Ble+y
-	YB8YDH7TQFC5cdd+3V2drbWCTGnGRdmyz0HFC5OwAshhBATlcjmVqn0DMhXzaMJtHkbbTMQ==
-X-Received: by 2002:a05:6a21:3183:b0:19a:42b3:d68c with SMTP id za3-20020a056a21318300b0019a42b3d68cmr1179174pzb.57.1705600228849;
-        Thu, 18 Jan 2024 09:50:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG+a7eH+d8iL1heB53j0/12YRSVmaGC7RabUtALrUzma6iH+gcMuNZfyaB6zX3v4ROAyDuHuA==
-X-Received: by 2002:a05:6a21:3183:b0:19a:42b3:d68c with SMTP id za3-20020a056a21318300b0019a42b3d68cmr1179164pzb.57.1705600228557;
-        Thu, 18 Jan 2024 09:50:28 -0800 (PST)
-Received: from localhost.localdomain ([2804:1b3:a803:96a5:ba81:becc:80f3:6a79])
-        by smtp.gmail.com with ESMTPSA id qa17-20020a17090b4fd100b002902e409b77sm1481848pjb.57.2024.01.18.09.50.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 09:50:28 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-serial <linux-serial@vger.kernel.org>
-Subject: Re: [RESEND RFC PATCH v1 2/2] serial/8250: Avoid getting lock in RT atomic context
-Date: Thu, 18 Jan 2024 14:50:08 -0300
-Message-ID: <Zalk0Md6F12xNz91@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <87cytzaqdj.fsf@jogness.linutronix.de>
-References: <20240116073701.2356171-1-leobras@redhat.com> <20240116073701.2356171-3-leobras@redhat.com> <75a39f0a-8f79-eacf-4a35-5de512a3cbed@linux.intel.com> <ZabJGefGkrs0SNzW@LeoBras> <87o7djaubq.fsf@jogness.linutronix.de> <ZajxMc05uVmK7e60@LeoBras> <87cytzaqdj.fsf@jogness.linutronix.de>
+        bh=BeOfVhu/YQjuPaBL7HLOFJxylUSZb5ghXwEj0tH+VbM=;
+        b=rUeU7ztksH2njQqaMk+Rdqs0gQFLlvugwswSgOdgsrHZw7wwLmWogIC0zvN9L0T31p
+         BTPiHs7AAfT8wUie7q5DIIPS4yRnMMa62ZHjGtwGZ4IalIf1gP1sFh4wgHGLrXS+uXpC
+         Jov/XYF78R4bPs82CgJVhzXXboABEhfd8l180Zpw2Hbpw0IY6azfCoEEBL0gwF0WDyg/
+         +cKr76gWI4m0NJdeJ1NVqcN9l2XOoxDdyP66zMgzb2eWCYOSt+MfvMzK2VyIGdaeOM+9
+         2MjL85znMyP2gY5pW7sLMeayaAfxyRq+7YTX0YHxz3mhGMFRMq/yHsNsLz3SLvYeL8en
+         c8vg==
+X-Gm-Message-State: AOJu0YzKAguOoW35PcdxKWgjipzq8DmTvMnxdRZXL8X50rzt3vxV2hQt
+	tVG+y31o8fvYDxo4M/kP1B8MWxQVXmE8OBiCD2F1vEUc3tpGfIAgnRPBvtXXjfs=
+X-Google-Smtp-Source: AGHT+IHqhtxBqUtdwqkS5/LYHeL/ekXGtb2Jn3Eqr4OlemBLU7YUpfw9MOxkxxvtVnMVoEQW1MZhFA==
+X-Received: by 2002:a05:6512:31ca:b0:50e:6c1d:5dee with SMTP id j10-20020a05651231ca00b0050e6c1d5deemr7487lfe.33.1705600245837;
+        Thu, 18 Jan 2024 09:50:45 -0800 (PST)
+Received: from [172.30.205.26] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id h23-20020a19ca57000000b0050ee3e540e4sm718900lfj.65.2024.01.18.09.50.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 09:50:45 -0800 (PST)
+Message-ID: <ed2dddc6-6461-4a2b-8491-13955cbd80fd@linaro.org>
+Date: Thu, 18 Jan 2024 18:50:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 9/9] PCI/pwrseq: add a pwrseq driver for QCA6390
+Content-Language: en-US
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Kalle Valo <kvalo@kernel.org>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Chris Morgan <macromorgan@hotmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>,
+ Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Terry Bowman <terry.bowman@amd.com>, Lukas Wunner <lukas@wunner.de>,
+ Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Abel Vesa <abel.vesa@linaro.org>
+Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-pci@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240117160748.37682-1-brgl@bgdev.pl>
+ <20240117160748.37682-10-brgl@bgdev.pl>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240117160748.37682-10-brgl@bgdev.pl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 18, 2024 at 11:33:04AM +0106, John Ogness wrote:
-> On 2024-01-18, Leonardo Bras <leobras@redhat.com> wrote:
-> > Sure, please let me know of where can I find the latest PREEMPT_RT
-> > patch series so I can re-test my bug. By what you comment, it's higly
-> > probable that patch 2/2 will not be necessary.
-> 
-> Some links for you:
-> 
-> 
-> The Real-Time Wiki at the Linux Foundation:
-> 
-> https://wiki.linuxfoundation.org/realtime/
-> 
-> 
-> The latest development RT patch series for 6.7:
-> 
-> https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/patches-6.7-rt6.tar.xz
-> 
-> 
-> RT git (branch linux-6.7.y-rt-rebase is probably what you want):
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git
-> 
 
-Hello John, thank you for sharing the links!
 
+On 1/17/24 17:07, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> > On the other hand, unless some extra work was done in preventing the
-> > scenario in patch 1/2, I think that can still be discussed.
+> Add a PCI power sequencing driver that's capable of correctly powering
+> up the ath11k module on QCA6390 and WCN7850 using the PCI pwrseq
+> functionality.
 > 
-> I agree. Thanks for looking into this.
-> 
-> John
-> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> [Neil: add support for WCN7850]
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
 
-Thank you!
-Leo
+[...]
 
+> +static struct pci_pwrseq_qca6390_vreg pci_pwrseq_wcn7850_vregs[] = {
+> +	{
+> +		.name = "vdd",
+> +	},
+
+Weird there's no .load here.. On Qualcomm they're used for asking
+the regluators to enter the high power mode, so it'd be useful.
+
+Konrad
 
