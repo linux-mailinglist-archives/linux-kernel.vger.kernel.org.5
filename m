@@ -1,183 +1,286 @@
-Return-Path: <linux-kernel+bounces-30125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4697D8319D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:00:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 040138319D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:02:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A7E91C255F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:00:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D530B25AC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2F925106;
-	Thu, 18 Jan 2024 13:00:25 +0000 (UTC)
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F3624B55;
+	Thu, 18 Jan 2024 13:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="G2+bhBmM"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AE124B57;
-	Thu, 18 Jan 2024 13:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330E224B51
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 13:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705582824; cv=none; b=gQKSqCsSw6+QyVx5lId7pmtHMhdBxa4Q3UC5AgWVPUQA7F6vcnEsJyh8qX5WzwAQMJRKS65IfOtsJcoN92zQ9Z+BpPZl6rasTN5Z4jRu9bByK/9UIknbtmhHC5FMpiruxzokDZibqGy69NlUBH39S97W2J/6CQnGye1C147+JNw=
+	t=1705582909; cv=none; b=KlXY3yW6gZ0bZh4IWFbziUG+ewwaM13xAxs2k8ir+jhc2NWALBWOWddRxnoOr10aEU8zywd2YrYnrPTdM6sgO2TfSy0fAbrYsZ45GdX2GkPzAof1Sd71XBLl8rP+qotosjHWe/GqGGiF+K+mxb7jT4lfF9yIcHVVFl+6VwIbpXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705582824; c=relaxed/simple;
-	bh=IRMtTjgdzFC8VQtQ4Cw3iyDgsSe5SHauaHyFtAzCph4=;
-	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
-	 To:CC:References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy; b=LRaX02CK3op606j4ouiZl3ouu186m7rnCYw40ePRavfimgKWY8Ml4E8qpybChyNf1UlXnywpY0OHILmEwBZIit13MQ0CanUXei+1PO7zGJOnBQlZwI1lqcYNGNvvpJ5eh59S4cRtq/cgKPrPF8pqwjwsC4YklNhfB2ctSrq8n6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 18 Jan
- 2024 16:00:16 +0300
-Received: from [192.168.211.130] (10.0.253.138) by Ex16-01.fintech.ru
- (10.0.10.18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 18 Jan
- 2024 16:00:16 +0300
-Message-ID: <64dbd05c-4939-49ba-a8d5-807fe3ff2987@fintech.ru>
-Date: Thu, 18 Jan 2024 05:00:12 -0800
+	s=arc-20240116; t=1705582909; c=relaxed/simple;
+	bh=2ztFDnpOlXrJ4GQSk3NJNV83MQvwqGMLsD8DeDUnEKU=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=nM57iNULJyh2hW75tl2n5SHMbG9ZnmSxQpM1cvJBJbPyfJu8WfDC/cuCX6HcYLRgTpTxz9mxnDBrla31MusILofRO2raRXrVMHOJaPvF3KKkhVsjS4GbTCsm6MNAlcq6AApUqwCappfroMqEoJwEVZckYykp9T876CB++bF8S4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=G2+bhBmM; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a28b0207c1dso1007697566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 05:01:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705582904; x=1706187704; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CV99ndMBEnv7+i0KgO9Jy4dZrWznQQ7WCTJP40FuP9k=;
+        b=G2+bhBmMlAnbD1IQKZw25E1k5+uzlAZXTc8XSk/i8AwptO/qgJp+LLYJCK53QmVNLR
+         O/JZHCfeBGVWSwPWXcO6DCu2af94xzW274EWNguOeeVJzkaUNSWvmtSkn5oZmNmDS5pR
+         crJDPu+rrK04N3fdwzQie1Iky48esO/HV13a/tDDPWqGnefcXlxSIspLjFd7LfGjttnO
+         4lhuWEnJ9IXxAfWEdJB17grTT3T2sb0bBcrp7UmVFJVWRAH+qR5MUgtiPc0vHXsHR2ub
+         Fgi1ldfy+s94c5eNxHNCPgSZLjwNhAvINHPXXcYZMfFH5M/JjACDz8ttgMkYyezKBgcm
+         4+Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705582904; x=1706187704;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CV99ndMBEnv7+i0KgO9Jy4dZrWznQQ7WCTJP40FuP9k=;
+        b=dAPhz5xX7YC5YpkHgPdxqyEGCjco/ZbbpYWDiVoyCZEoHPrcX5iv6kX242LCjUpYmT
+         VjYzO85U6s6d7fRQ35s3f1D2m2I/79qoXZg63XnmOb1BZSXsYBak+k3LK4TqRSWl51aJ
+         mS7AC2T2OGoPCW9KqVp1eClBm3h6s0zxrllYMYLMDhn4K3fbnTzNHcHiMlGucA0pmEvP
+         qSf2HZCUmNYynRXsXf9W8k+3Md2A+OrMV3uCyccC9eMWg+2ldbI1rLUpoUZYqO8y7IU4
+         hqbArzUjkLmnzekhvzFBBrlM8zFFUrFhb58Fmr0CM8t0f146+6E8swBgrkdDYFjmcu/Y
+         w7Aw==
+X-Gm-Message-State: AOJu0YwzKfp5ax9Ymu3R+kfqbXh/EdaFORL+r82WlF3/SAmwGspW87OQ
+	wLpcGPtemJS7k1jIZnSsxVdVNIVGNhz3lakRZK1IWvzHK7l/JPalgPYJaY4pLBuelCGga3mfBeR
+	c646elahM/Kl2aF2GoRBgXkZMZNSxUtI3yYTXeQ==
+X-Google-Smtp-Source: AGHT+IGXHWuAbZf6vP7bFyGlIWm/V3xNm9G1zzWXciRpuQQcls3Pd1mtfB3eXcJXawXwCc8Me/YMNC+4PA9rLOOa3OQ=
+X-Received: by 2002:a17:906:3b10:b0:a2c:b0a6:8b6 with SMTP id
+ g16-20020a1709063b1000b00a2cb0a608b6mr488211ejf.1.1705582904215; Thu, 18 Jan
+ 2024 05:01:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND] mac802154: Fix uninit-value access in
- ieee802154_hdr_push_sechdr
-To: Alexander Aring <aahringo@redhat.com>
-CC: Zhang Shurong <zhang_shurong@foxmail.com>, <alex.aring@gmail.com>,
-	<stefan@datenfreihafen.org>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <linux-wpan@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<harperchen1110@gmail.com>
-References: <CAK-6q+jsZ13Cs9iuk_WjFeYFCEnnj-dJ9QYkWaw4fh6Gi=JtHA@mail.gmail.com>
- <20240112131554.10352-1-n.zhandarovich@fintech.ru>
- <CAK-6q+gcs2djQfKRsuGpD7WERmbLhzjkHEm80MRe+2UE3bteKw@mail.gmail.com>
- <CAK-6q+hRbsFkQec3O8FnT-G9Mx07rdhEMfmTE2Q0SDN0kKN-8g@mail.gmail.com>
-Content-Language: en-US
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-In-Reply-To: <CAK-6q+hRbsFkQec3O8FnT-G9Mx07rdhEMfmTE2Q0SDN0kKN-8g@mail.gmail.com>
+References: <20230316131711.1284451-1-alexghiti@rivosinc.com>
+ <CAK9=C2XJtSG2d_nsyDv7kU1v7Jj0chdevqrMc0MpJswukcEABA@mail.gmail.com>
+ <CAHVXubhhxpzHDM-n91V_rceY5t_VqLvrwZj3RP_tNL2=F9mqjQ@mail.gmail.com>
+ <CAK9=C2WVOpSqtt8r1U4hnzSZ=cc1PocpukgQjNyahP2XuPhozw@mail.gmail.com>
+ <d0087922-4721-ccf1-80bf-9f74099d0948@ghiti.fr> <CAPqJEFr6MgUyARfbWAo7EeQKLVd4xRJz_LOYN68UC-kPD1Hr5A@mail.gmail.com>
+ <20240118082346.GB31078@hsinchu15>
+In-Reply-To: <20240118082346.GB31078@hsinchu15>
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+Date: Thu, 18 Jan 2024 14:01:33 +0100
+Message-ID: <CAHVXubiQ5N+ngdy=Fk3j-hS_KkOEg272b++-hB4-oGeSSZKtNQ@mail.gmail.com>
+Subject: Re: Fwd: [PATCH v8 0/4] riscv: Use PUD/P4D/PGD pages for the linear mapping
+To: Nylon Chen <nylon.chen@sifive.com>
+Cc: alex@ghiti.fr, apatel@ventanamicro.com, catalin.marinas@arm.com, 
+	will@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, robh+dt@kernel.org, frowand.list@gmail.com, 
+	rppt@kernel.org, akpm@linux-foundation.org, anup@brainfault.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-mm@kvack.org, zong.li@sifive.com, nylon7717@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi Nylon,
 
-On 1/17/24 17:42, Alexander Aring wrote:
-> Hi,
-> 
-> On Sun, Jan 14, 2024 at 10:32 PM Alexander Aring <aahringo@redhat.com> wrote:
->>
->> Hi,
->>
->> On Fri, Jan 12, 2024 at 8:16 AM Nikita Zhandarovich
->> <n.zhandarovich@fintech.ru> wrote:
->>>
->>>>>>>
->>>>>>> BUG: KMSAN: uninit-value in ieee802154_hdr_push_sechdr net/ieee802154=
->>>> /header_ops.c:54 [inline]
->>>>>>> BUG: KMSAN: uninit-value in ieee802154_hdr_push+0x971/0xb90 net/ieee8=
->>>> 02154/header_ops.c:108
->>>>>>>  ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
->>>>>>>  ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
->>>>>>>  ieee802154_header_create+0x9c0/0xc00 net/mac802154/iface.c:396
->>>>>>>  wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
->>>>>>>  dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
->>>>>>>  ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
->>>>>>>  sock_sendmsg_nosec net/socket.c:725 [inline]
->>>>>>>  sock_sendmsg net/socket.c:748 [inline]
->>>>>>>  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2494
->>>>>>>  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2548
->>>>>>>  __sys_sendmsg+0x225/0x3c0 net/socket.c:2577
->>>>>>>  __compat_sys_sendmsg net/compat.c:346 [inline]
->>>>>>>  __do_compat_sys_sendmsg net/compat.c:353 [inline]
->>>>>>>  __se_compat_sys_sendmsg net/compat.c:350 [inline]
->>>>>>>
->>>>>>> We found hdr->key_id_mode is uninitialized in mac802154_set_header_se=
->>>> curity()
->>>>>>> which indicates hdr.fc.security_enabled should be 0. However, it is s=
->>>> et to be cb->secen before.
->>>>>>> Later, ieee802154_hdr_push_sechdr is invoked, causing KMSAN complains=
->>>>  uninit-value issue.
->>>>>>
->>>>>> I am not too deeply involved in the security header but for me it feels
->>>>>> like your patch does the opposite of what's needed. We should maybe
->>>>>> initialize hdr->key_id_mode based on the value in cb->secen, no? (maybe
->>>>>> Alexander will have a better understanding than I have).
->>>>>
->>>>> I can't help yet with a better answer why syzkaller reports it but it
->>>>> will break things as we using skb->cb to pass additional parameters
->>>>> through header_ops->create()... in this case it is some sockopts of
->>>>> af802154, I guess.
->>>>>
->>>>
->>>> Maybe we just need to init some "more" defaults in [0]
->>>>
->>>> - Alex
->>>>
->>>> [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
->>>> /net/ieee802154/socket.c?h=3Dv6.7-rc5#n474
->>>
->>> Hello,
->>>
->>> I was looking into the same issue (now present in syzbot [1]) and since it has a
->>> C-repro, the error is easy to recreate. Apparently, despite cb->secen (and
->>> hdr.fc.security_enabled accordingly) being equal 1, mac802154_set_header_security()
->>> finishes with 0 in:
->>>
->>>         if (!params.enabled ||
->>>             (cb->secen_override && !cb->secen) ||
->>>             !params.out_level)
->>>             return 0;
->>>
->>> Not presuming to understand the issue fully but if we do end up leaving
->>> mac802154_set_header_security() early, should we init hdr->key_id_mode
->>> with IEEE802154_SCF_KEY_IMPLICIT before returning with 0?
->>> I imagine that reseting hdr.fc.security_enabled to 0 ourselves in this
->>> case is a wrong way to go too.
->>>
->>
->> I think here are two problems:
->>
->> 1.
->> When (in any way) secen path is hit then we should make sure some
->> other security parameters are set, if not return with an error. This
->> needs to be done somewhere in the 802.15.4 socket code. [0]
->>
-> 
-> This would require that we init them with some invalid value defaults
-> but I think because we are using bit fields, we need to change the
-> whole struct to make some invalid number range available.
-> I am happy to init those values to some value at [0] to at least get
-> rid of the uninit value warning. We can change it so that it fails at
-> send() afterwards, I think it should fail in some later path of the
-> implementation that ends in a kernel log message.
-> 
-> - Alex
-> 
-> [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/ieee802154/socket.c#n474
-> 
+On Thu, Jan 18, 2024 at 9:23=E2=80=AFAM Nylon Chen <nylon.chen@sifive.com> =
+wrote:
+>
+> > On 3/23/23 15:55, Anup Patel wrote:
+> > > On Thu, Mar 23, 2023 at 6:24=E2=80=AFPM Alexandre Ghiti <alexghiti@ri=
+vosinc.com> wrote:
+> > >> Hi Anup,
+> > >>
+> > >> On Thu, Mar 23, 2023 at 1:18=E2=80=AFPM Anup Patel <apatel@ventanami=
+cro.com> wrote:
+> > >>> Hi Alex,
+> > >>>
+> > >>> On Thu, Mar 16, 2023 at 6:48=E2=80=AFPM Alexandre Ghiti <alexghiti@=
+rivosinc.com> wrote:
+> > >>>> This patchset intends to improve tlb utilization by using hugepage=
+s for
+> > >>>> the linear mapping.
+> > >>>>
+> > >>>> As reported by Anup in v6, when STRICT_KERNEL_RWX is enabled, we m=
+ust
+> > >>>> take care of isolating the kernel text and rodata so that they are=
+ not
+> > >>>> mapped with a PUD mapping which would then assign wrong permission=
+s to
+> > >>>> the whole region: it is achieved by introducing a new memblock API=
+.
+> > >>>>
+> > >>>> Another patch makes use of this new API in arm64 which used some s=
+ort of
+> > >>>> hack to solve this issue: it was built/boot tested successfully.
+> > >>>>
+> > >>>> base-commit-tag: v6.3-rc1
+> > >>>>
+> > >>>> v8:
+> > >>>> - Fix rv32, as reported by Anup
+> > >>>> - Do not modify memblock_isolate_range and fixes comment, as sugge=
+sted by Mike
+> > >>>> - Use the new memblock API for crash kernel too in arm64, as sugge=
+sted by Andrew
+> > >>>> - Fix arm64 double mapping (which to me did not work in v7), but e=
+nds up not
+> > >>>>    being pretty at all, will wait for comments from arm64 reviewer=
+s, but
+> > >>>>    this patch can easily be dropped if they do not want it.
+> > >>>>
+> > >>>> v7:
+> > >>>> - Fix Anup bug report by introducing memblock_isolate_memory which
+> > >>>>    allows us to split the memblock mappings and then avoid to map =
+the
+> > >>>>    the PUD which contains the kernel as read only
+> > >>>> - Add a patch to arm64 to use this newly introduced API
+> > >>>>
+> > >>>> v6:
+> > >>>> - quiet LLVM warning by casting phys_ram_base into an unsigned lon=
+g
+> > >>>>
+> > >>>> v5:
+> > >>>> - Fix nommu builds by getting rid of riscv_pfn_base in patch 1, th=
+anks
+> > >>>>    Conor
+> > >>>> - Add RB from Andrew
+> > >>>>
+> > >>>> v4:
+> > >>>> - Rebase on top of v6.2-rc3, as noted by Conor
+> > >>>> - Add Acked-by Rob
+> > >>>>
+> > >>>> v3:
+> > >>>> - Change the comment about initrd_start VA conversion so that it f=
+its
+> > >>>>    ARM64 and RISCV64 (and others in the future if needed), as sugg=
+ested
+> > >>>>    by Rob
+> > >>>>
+> > >>>> v2:
+> > >>>> - Add a comment on why RISCV64 does not need to set initrd_start/e=
+nd that
+> > >>>>    early in the boot process, as asked by Rob
+> > >>>>
+> > >>>> Alexandre Ghiti (4):
+> > >>>>    riscv: Get rid of riscv_pfn_base variable
+> > >>>>    mm: Introduce memblock_isolate_memory
+> > >>>>    arm64: Make use of memblock_isolate_memory for the linear mappi=
+ng
+> > >>>>    riscv: Use PUD/P4D/PGD pages for the linear mapping
+> > >>> Kernel boot fine on RV64 but there is a failure which is still not
+> > >>> addressed. You can see this failure as following message in
+> > >>> kernel boot log:
+> > >>>      0.000000] Failed to add a System RAM resource at 80200000
+> > >> Hmmm I don't get that in any of my test configs, would you mind
+> > >> sharing yours and your qemu command line?
+> > > Try alexghiti_test branch at
+> > > https://github.com/avpatel/linux.git
+> > >
+> > > I am building the kernel using defconfig and my rootfs is
+> > > based on busybox.
+> > >
+> > > My QEMU command is:
+> > > qemu-system-riscv64 -M virt -m 512M -nographic -bios
+> > > opensbi/build/platform/generic/firmware/fw_dynamic.bin -kernel
+> > > ./build-riscv64/arch/riscv/boot/Image -append "root=3D/dev/ram rw
+> > > console=3DttyS0 earlycon" -initrd ./rootfs_riscv64.img -smp 4
+> >
+> >
+> > So splitting memblock.memory is the culprit, it "confuses" the resource=
+s
+> > addition and I can only find hacky ways to fix that...
+> Hi Alexandre,
+>
+> We encountered the same error as Anup. After adding your patch
+> (3335068f87217ea59d08f462187dc856652eea15), we will not encounter the
+> error again.
+>
+> What I have observed so far is
+>
+> - before your patch
+> When merging consecutive memblocks, if the memblock types are different,
+> they will be merged into reserved
+> - after your patch
+> When consecutive memblocks are merged, if the memblock types are
+> different, they will be merged into memory.
+>
+> Such a result will cause the memory location of OpenSBI to be changed
+> from reserved to memory. Will this have any side effects?
 
-I was curious whether a smaller change would suffice since I might be
-too green to see the full picture here.
+I guess it will end up in the memory pool and pages from openSBI
+region will be allocated, so we should see very quickly bad stuff
+happening (either PMP violation or M-mode ecall never
+returning/trapping/etc).
 
-In all honesty I am failing to see how exactly it happens that cb->secen
-== 1 and cb->secen_override == 0 (which is exactly what occurs during
-this error repro) at the start of mac802154_set_header_security().
-Since there is a check in mac802154_set_header_security()
+But I don't observe the same thing, I always see the openSBI region
+being reserved:
 
-	if (!params.enabled && cb->secen_override && cb->secen)
+reserved[0x0] [0x0000000080000000-0x000000008007ffff],
+0x0000000000080000 bytes flags: 0x0
 
-maybe we take off 'cb->secen_override' part of the condition? That way
-we catch the case when security is supposedly enabled without parameters
-being available (not enabled) and return with error. Or is this approach
-too lazy?
+Can you elaborate a bit more about "When consecutive memblocks are
+merged, if the memblock types are different, they will be merged into
+memory"? Where/when does this merge happen? Can you give me a config
+file and a kernel revision so that I can take a look?
 
-With regards,
-Nikita
+Thanks,
 
+Alex
+
+> >
+> > So given that the arm64 patch with the new API is not pretty and that
+> > the simplest solution is to re-merge the memblock regions afterwards
+> > (which is done by memblock_clear_nomap), I'll drop the new API and the
+> > arm64 patch to use the nomap API like arm64: I'll take advantage of tha=
+t
+> > to clean setup_vm_final which I have wanted to do for a long time.
+> >
+> > @Mike Thanks for you reviews!
+> >
+> > @Anup Thanks for all your bug reports on this patchset, I have to
+> > improve my test flow (it is in the work :)).
+> >
+> >
+> > > Regards,
+> > > Anup
+> > >
+> > >> Thanks
+> > >>
+> > >>> Regards,
+> > >>> Anup
+> > >>>
+> > >>>>   arch/arm64/mm/mmu.c           | 25 +++++++++++------
+> > >>>>   arch/riscv/include/asm/page.h | 19 +++++++++++--
+> > >>>>   arch/riscv/mm/init.c          | 53 ++++++++++++++++++++++++++++-=
+------
+> > >>>>   arch/riscv/mm/physaddr.c      | 16 +++++++++++
+> > >>>>   drivers/of/fdt.c              | 11 ++++----
+> > >>>>   include/linux/memblock.h      |  1 +
+> > >>>>   mm/memblock.c                 | 20 +++++++++++++
+> > >>>>   7 files changed, 119 insertions(+), 26 deletions(-)
+> > >>>>
+> > >>>> --
+> > >>>> 2.37.2
+> > >>>>
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
