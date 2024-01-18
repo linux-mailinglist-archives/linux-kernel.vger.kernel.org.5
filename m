@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-30264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FEE3831C5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA40B831C5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 16:26:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A61D41F29086
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:25:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AD8C1F21457
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:26:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB4425614;
-	Thu, 18 Jan 2024 15:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637112D620;
+	Thu, 18 Jan 2024 15:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="mZGaJeWL"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="gEc8VUK9"
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361422D616;
-	Thu, 18 Jan 2024 15:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101032D791;
+	Thu, 18 Jan 2024 15:22:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705591359; cv=none; b=jJJLWLLQVBninKNCmnGjKu6ryqmx6OrVHC/tqxhft6CoOVKd/h4xRw9MOFZtZmmtMaAoundgBRxYqzjlep4B27n6ZGIOXD0EBI92mtwbdBRB/ZtpfLINbbfftsgyneRZL0og66GKKLZBcZ5+1mhfXbkeV4K/LSk7sphncaUjNew=
+	t=1705591362; cv=none; b=pqL5OhiPdtNM+PiM/M91HzxOoK5LL2sDSt6yKvta3RWF8g6OZfnZT+JYEoGiwSZ17ze5s/SkIOQQ5YFum+4U4Ujaa/J5UF3QJrwhwihShTcR4VZA5xHqPUizxquy/YSPZf/F3ljKXNBjn9jeA9ujaxFvT4LsjpC+3pOJYxpeDJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705591359; c=relaxed/simple;
-	bh=i4xj6El2BfEWLwlSqlCUyWpVmsC2pN7T6k39iaUcdJI=;
+	s=arc-20240116; t=1705591362; c=relaxed/simple;
+	bh=XTBEVpNcXyJm5JXb4qmqdv3/cCbi+7FgyOKcpiQ95kc=;
 	h=DKIM-Signature:Received:From:To:Cc:Date:Message-Id:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:
 	 X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:X-Spam-Checker-Version:
 	 X-Spam-Level:X-Spam-Report:X-Spam-Status:Subject:X-SA-Exim-Version:
-	 X-SA-Exim-Scanned; b=Q6pAV/86G733Atm4skwfeN6obez69EqkzdnK+PMeLOO0qopiWkFrGjq7uUhROvACSXKJkxpFGlC9sJZ+YN/h0rUpkldLC3IDNvBpqrM18SJO7WWACCey8YAhwAlcqMPuMzItgwpZGD6xfllTFst92qoJ3zLPPflQRkUSyh5rL+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=mZGaJeWL; arc=none smtp.client-ip=162.243.120.170
+	 X-SA-Exim-Scanned; b=Us38Rh8De9eEKIr0Oas5N6ZRWT5u1SaMlysvY9ZUNpvvFgV8OPTvVV2u61Ow0zcdg4/DAFEL+M8UX4XE6wTKwsZVciDekrHVEwwpb39AAikvxnALoicsP/WOTLF7/8hxO22An1Wm28S30Bn+6Tk8EVxYH5f9nAN8MiXXKy6ELn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=gEc8VUK9; arc=none smtp.client-ip=162.243.120.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=i0zXZTdF/p5LousnhgRj/bUoPKrlkQD8kZnJJ1Dwxd8=; b=mZGaJeWLvvQPLOFdUErrFOOb6n
-	5mhYTRG61bu41lyk4S6i96bi5bWv+W5ZfR5/1N71CfXa7EF3YOigTW2NddECTHz9qmZTMOq/PgDJf
-	vu31qi3RiSPK5CmrZGPJRDBbaI5NgRI9VJl0ONPWOEUR0fIb/umh62MUHMbc5KVrhm+A=;
+	bh=vP7M3q+xvEEUk8CeZPGhsv1tPgQInJxJwOa/S0yCR6Y=; b=gEc8VUK9NTlhxz5b/BUzzk9uE9
+	b9Hf/lDIrSbeiPltO/MkekU+JmK0Ju/dndG6dMtQBzqNiFN98m2G46ZusEM9T2YJHAlP9aZhjmhdG
+	bdwG9B8mwXJHOmEnp2Xa/dkvHccxqaKCKF6exqp/VL9/4mS5UC6886ouOkntb4UzZt5Y=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:57058 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1rQUDx-0002lf-E1; Thu, 18 Jan 2024 10:22:34 -0500
+	id 1rQUDy-0002lf-T2; Thu, 18 Jan 2024 10:22:36 -0500
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -53,8 +53,8 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	hugo@hugovil.com,
 	Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date: Thu, 18 Jan 2024 10:22:08 -0500
-Message-Id: <20240118152213.2644269-13-hugo@hugovil.com>
+Date: Thu, 18 Jan 2024 10:22:09 -0500
+Message-Id: <20240118152213.2644269-14-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240118152213.2644269-1-hugo@hugovil.com>
 References: <20240118152213.2644269-1-hugo@hugovil.com>
@@ -71,67 +71,271 @@ X-Spam-Level:
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
 	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH v2 12/17] serial: max310x: replace hardcoded masks with preferred GENMASK()
+Subject: [PATCH v2 13/17] serial: max310x: use common detect function for all variants
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-GENMASK() is preferred when defining bitmasks.
-
-Of all the masks changed, only MAX310x_REV_MASK is actually used.
-
-No functional change.
+Simplify driver by defining a common function to handle the detection
+of all variants.
 
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- drivers/tty/serial/max310x.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/tty/serial/max310x.c | 134 ++++++++++++++---------------------
+ 1 file changed, 54 insertions(+), 80 deletions(-)
 
 diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 701bf54e4084..c93b326faf89 100644
+index c93b326faf89..83beaab3a0c5 100644
 --- a/drivers/tty/serial/max310x.c
 +++ b/drivers/tty/serial/max310x.c
-@@ -161,14 +161,14 @@
- #define MAX310X_IRDA_SIR_BIT		(1 << 1) /* SIR mode enable */
+@@ -67,6 +67,7 @@
+ #define MAX310X_BRGDIVMSB_REG		(0x1d) /* Baud rate divisor MSB */
+ #define MAX310X_CLKSRC_REG		(0x1e) /* Clock source */
+ #define MAX310X_REG_1F			(0x1f)
++#define MAX310X_EXTREG_START		(0x20) /* Only relevant in SPI mode. */
  
- /* Flow control trigger level register masks */
--#define MAX310X_FLOWLVL_HALT_MASK	(0x000f) /* Flow control halt level */
--#define MAX310X_FLOWLVL_RES_MASK	(0x00f0) /* Flow control resume level */
-+#define MAX310X_FLOWLVL_HALT_MASK	GENMASK(3, 0) /* Flow control halt level */
-+#define MAX310X_FLOWLVL_RES_MASK	GENMASK(7, 4) /* Flow control resume level */
- #define MAX310X_FLOWLVL_HALT(words)	((words / 8) & 0x0f)
- #define MAX310X_FLOWLVL_RES(words)	(((words / 8) & 0x0f) << 4)
+ #define MAX310X_REVID_REG		MAX310X_REG_1F /* Revision ID */
  
- /* FIFO interrupt trigger level register masks */
--#define MAX310X_FIFOTRIGLVL_TX_MASK	(0x0f) /* TX FIFO trigger level */
--#define MAX310X_FIFOTRIGLVL_RX_MASK	(0xf0) /* RX FIFO trigger level */
-+#define MAX310X_FIFOTRIGLVL_TX_MASK	GENMASK(3, 0) /* TX FIFO trigger level */
-+#define MAX310X_FIFOTRIGLVL_RX_MASK	GENMASK(7, 4) /* RX FIFO trigger level */
- #define MAX310X_FIFOTRIGLVL_TX(words)	((words / 8) & 0x0f)
- #define MAX310X_FIFOTRIGLVL_RX(words)	(((words / 8) & 0x0f) << 4)
+@@ -74,9 +75,9 @@
+ #define MAX310X_GLOBALCMD_REG		MAX310X_REG_1F /* Global Command (WO) */
  
-@@ -215,8 +215,8 @@
- 						  */
+ /* Extended registers */
+-#define MAX310X_SPI_REVID_EXTREG	MAX310X_REG_05 /* Revision ID */
+-#define MAX310X_I2C_REVID_EXTREG	(0x25) /* Revision ID */
+-
++#define MAX310X_REVID_EXTREG		(0x25) /* Revision ID
++						* (extended addressing space)
++						*/
+ /* IRQ register bits */
+ #define MAX310X_IRQ_LSR_BIT		(1 << 0) /* LSR interrupt */
+ #define MAX310X_IRQ_SPCHR_BIT		(1 << 1) /* Special char interrupt */
+@@ -250,8 +251,7 @@
  
- /* PLL configuration register masks */
--#define MAX310X_PLLCFG_PREDIV_MASK	(0x3f) /* PLL predivision value */
--#define MAX310X_PLLCFG_PLLFACTOR_MASK	(0xc0) /* PLL multiplication factor */
-+#define MAX310X_PLLCFG_PREDIV_MASK	GENMASK(5, 0) /* PLL predivision value */
-+#define MAX310X_PLLCFG_PLLFACTOR_MASK	GENMASK(7, 6) /* PLL multiplication factor */
+ struct max310x_if_cfg {
+ 	int (*extended_reg_enable)(struct device *dev, bool enable);
+-
+-	unsigned int rev_id_reg;
++	u8 rev_id_offset;
+ };
  
- /* Baud rate generator configuration register bits */
- #define MAX310X_BRGCFG_2XMODE_BIT	(1 << 4) /* Double baud rate */
-@@ -235,7 +235,7 @@
+ struct max310x_devtype {
+@@ -260,10 +260,11 @@ struct max310x_devtype {
+ 		unsigned short max;
+ 	} slave_addr;
+ 	int	nr;
+-	int	(*detect)(struct device *);
+ 	void	(*power)(struct uart_port *, int);
+ 	char	name[9];
+ 	u8	mode1;
++	u8	rev_id_val;
++	u8	rev_id_reg; /* Relevant only if rev_id_val is defined. */
+ };
  
- /* Misc definitions */
- #define MAX310X_FIFO_SIZE		(128)
--#define MAX310x_REV_MASK		(0xf8)
-+#define MAX310x_REV_MASK		GENMASK(7, 3)
- #define MAX310X_WRITE_BIT		0x80
+ struct max310x_one {
+@@ -324,62 +325,52 @@ static void max310x_port_update(struct uart_port *port, u8 reg, u8 mask, u8 val)
+ 	regmap_update_bits(one->regmap, reg, mask, val);
+ }
  
- /* MAX3107 specific */
+-static int max3107_detect(struct device *dev)
++static int max310x_detect(struct device *dev)
+ {
+ 	struct max310x_port *s = dev_get_drvdata(dev);
+ 	unsigned int val = 0;
+ 	int ret;
+ 
+-	ret = regmap_read(s->regmap, MAX310X_REVID_REG, &val);
+-	if (ret)
+-		return ret;
++	/* Check if variant supports REV ID register: */
++	if (s->devtype->rev_id_val) {
++		u8 rev_id_reg = s->devtype->rev_id_reg;
+ 
+-	if (((val & MAX310x_REV_MASK) != MAX3107_REV_ID)) {
+-		dev_err(dev,
+-			"%s ID 0x%02x does not match\n", s->devtype->name, val);
+-		return -ENODEV;
+-	}
++		/* Check if REV ID is in extended addressing space: */
++		if (s->devtype->rev_id_reg >= MAX310X_EXTREG_START) {
++			ret = s->if_cfg->extended_reg_enable(dev, true);
++			if (ret)
++				return ret;
+ 
+-	return 0;
+-}
++			/* Adjust REV ID extended addressing space address: */
++			if (s->if_cfg->rev_id_offset)
++				rev_id_reg -= s->if_cfg->rev_id_offset;
++		}
+ 
+-static int max3108_detect(struct device *dev)
+-{
+-	struct max310x_port *s = dev_get_drvdata(dev);
+-	unsigned int val = 0;
+-	int ret;
++		regmap_read(s->regmap, rev_id_reg, &val);
+ 
+-	/* MAX3108 have not REV ID register, we just check default value
+-	 * from clocksource register to make sure everything works.
+-	 */
+-	ret = regmap_read(s->regmap, MAX310X_CLKSRC_REG, &val);
+-	if (ret)
+-		return ret;
++		if (s->devtype->rev_id_reg >= MAX310X_EXTREG_START) {
++			ret = s->if_cfg->extended_reg_enable(dev, false);
++			if (ret)
++				return ret;
++		}
+ 
+-	if (val != (MAX310X_CLKSRC_EXTCLK_BIT | MAX310X_CLKSRC_PLLBYP_BIT)) {
+-		dev_err(dev, "%s not present\n", s->devtype->name);
+-		return -ENODEV;
+-	}
++		if (((val & MAX310x_REV_MASK) != s->devtype->rev_id_val))
++			return dev_err_probe(dev, -ENODEV,
++					     "%s ID 0x%02x does not match\n",
++					     s->devtype->name, val);
++	} else {
++		/*
++		 * For variant without REV ID register, just check default value
++		 * from clocksource register to make sure everything works.
++		 */
++		ret = regmap_read(s->regmap, MAX310X_CLKSRC_REG, &val);
++		if (ret)
++			return ret;
+ 
+-	return 0;
+-}
+-
+-static int max3109_detect(struct device *dev)
+-{
+-	struct max310x_port *s = dev_get_drvdata(dev);
+-	unsigned int val = 0;
+-	int ret;
+-
+-	ret = s->if_cfg->extended_reg_enable(dev, true);
+-	if (ret)
+-		return ret;
+-
+-	regmap_read(s->regmap, s->if_cfg->rev_id_reg, &val);
+-	s->if_cfg->extended_reg_enable(dev, false);
+-	if (((val & MAX310x_REV_MASK) != MAX3109_REV_ID)) {
+-		dev_err(dev,
+-			"%s ID 0x%02x does not match\n", s->devtype->name, val);
+-		return -ENODEV;
++		if (val != (MAX310X_CLKSRC_EXTCLK_BIT | MAX310X_CLKSRC_PLLBYP_BIT))
++			return dev_err_probe(dev, -ENODEV,
++					     "%s not present\n",
++					     s->devtype->name);
+ 	}
+ 
+ 	return 0;
+@@ -394,27 +385,6 @@ static void max310x_power(struct uart_port *port, int on)
+ 		msleep(50);
+ }
+ 
+-static int max14830_detect(struct device *dev)
+-{
+-	struct max310x_port *s = dev_get_drvdata(dev);
+-	unsigned int val = 0;
+-	int ret;
+-
+-	ret = s->if_cfg->extended_reg_enable(dev, true);
+-	if (ret)
+-		return ret;
+-
+-	regmap_read(s->regmap, s->if_cfg->rev_id_reg, &val);
+-	s->if_cfg->extended_reg_enable(dev, false);
+-	if (((val & MAX310x_REV_MASK) != MAX14830_REV_ID)) {
+-		dev_err(dev,
+-			"%s ID 0x%02x does not match\n", s->devtype->name, val);
+-		return -ENODEV;
+-	}
+-
+-	return 0;
+-}
+-
+ static void max14830_power(struct uart_port *port, int on)
+ {
+ 	max310x_port_update(port, MAX310X_BRGCFG_REG,
+@@ -428,7 +398,8 @@ static const struct max310x_devtype max3107_devtype = {
+ 	.name	= "MAX3107",
+ 	.nr	= 1,
+ 	.mode1	= MAX310X_MODE1_AUTOSLEEP_BIT | MAX310X_MODE1_IRQSEL_BIT,
+-	.detect	= max3107_detect,
++	.rev_id_val = MAX3107_REV_ID,
++	.rev_id_reg = MAX310X_REVID_REG,
+ 	.power	= max310x_power,
+ 	.slave_addr	= {
+ 		.min = 0x2c,
+@@ -440,7 +411,8 @@ static const struct max310x_devtype max3108_devtype = {
+ 	.name	= "MAX3108",
+ 	.nr	= 1,
+ 	.mode1	= MAX310X_MODE1_AUTOSLEEP_BIT,
+-	.detect	= max3108_detect,
++	.rev_id_val = 0, /* Unsupported. */
++	.rev_id_reg = 0, /* Irrelevant when rev_id_val is not defined. */
+ 	.power	= max310x_power,
+ 	.slave_addr	= {
+ 		.min = 0x60,
+@@ -452,7 +424,8 @@ static const struct max310x_devtype max3109_devtype = {
+ 	.name	= "MAX3109",
+ 	.nr	= 2,
+ 	.mode1	= MAX310X_MODE1_AUTOSLEEP_BIT,
+-	.detect	= max3109_detect,
++	.rev_id_val = MAX3109_REV_ID,
++	.rev_id_reg = MAX310X_REVID_EXTREG,
+ 	.power	= max310x_power,
+ 	.slave_addr	= {
+ 		.min = 0x60,
+@@ -464,7 +437,8 @@ static const struct max310x_devtype max14830_devtype = {
+ 	.name	= "MAX14830",
+ 	.nr	= 4,
+ 	.mode1	= MAX310X_MODE1_IRQSEL_BIT,
+-	.detect	= max14830_detect,
++	.rev_id_val = MAX14830_REV_ID,
++	.rev_id_reg = MAX310X_REVID_EXTREG,
+ 	.power	= max14830_power,
+ 	.slave_addr	= {
+ 		.min = 0x60,
+@@ -1322,7 +1296,7 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 	dev_set_drvdata(dev, s);
+ 
+ 	/* Check device to ensure we are talking to what we expect */
+-	ret = devtype->detect(dev);
++	ret = max310x_detect(dev);
+ 	if (ret)
+ 		goto out_clk;
+ 
+@@ -1501,7 +1475,7 @@ static int max310x_spi_extended_reg_enable(struct device *dev, bool enable)
+ 
+ static const struct max310x_if_cfg __maybe_unused max310x_spi_if_cfg = {
+ 	.extended_reg_enable = max310x_spi_extended_reg_enable,
+-	.rev_id_reg = MAX310X_SPI_REVID_EXTREG,
++	.rev_id_offset = MAX310X_EXTREG_START,
+ };
+ 
+ static int max310x_spi_probe(struct spi_device *spi)
+@@ -1574,7 +1548,7 @@ static struct regmap_config regcfg_i2c = {
+ 	.writeable_reg = max310x_reg_writeable,
+ 	.volatile_reg = max310x_reg_volatile,
+ 	.precious_reg = max310x_reg_precious,
+-	.max_register = MAX310X_I2C_REVID_EXTREG,
++	.max_register = MAX310X_REVID_EXTREG,
+ 	.writeable_noinc_reg = max310x_reg_noinc,
+ 	.readable_noinc_reg = max310x_reg_noinc,
+ 	.max_raw_read = MAX310X_FIFO_SIZE,
+@@ -1583,7 +1557,7 @@ static struct regmap_config regcfg_i2c = {
+ 
+ static const struct max310x_if_cfg max310x_i2c_if_cfg = {
+ 	.extended_reg_enable = max310x_i2c_extended_reg_enable,
+-	.rev_id_reg = MAX310X_I2C_REVID_EXTREG,
++	.rev_id_offset = 0, /* No offset in I2C mode. */
+ };
+ 
+ static unsigned short max310x_i2c_slave_addr(unsigned short addr,
 -- 
 2.39.2
 
