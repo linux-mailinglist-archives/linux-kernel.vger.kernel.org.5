@@ -1,201 +1,111 @@
-Return-Path: <linux-kernel+bounces-29985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4472B831631
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:51:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD007831645
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 10:55:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E91A7282E6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:51:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D7171C21F3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9845B1F95A;
-	Thu, 18 Jan 2024 09:51:24 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471E720305;
+	Thu, 18 Jan 2024 09:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FhH+pNpY"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245D6BE7F
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD6B29A2;
+	Thu, 18 Jan 2024 09:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705571484; cv=none; b=fx4EBSUEwrVq3Ps57TIfYMUhIGD97dI+gcaGrEp0vFWt8Egj6VGoM/BCqldEXT7tg6BfhuWaiG5aAIodgE1f6uxuMryDXFY5D7DrEbg2FtImjW5Nwh7borukG+cg3BzPt4fPP8DnKp6JMKwUiK6Xy3zkxAO6HLioMBL7fjYRDW4=
+	t=1705571752; cv=none; b=NnFCVV43fF9yBNl87Jok9EMqFuZePCqlH7/KOzdeSE4G7Z0Y7Kx4Mus2BE3JQj3lEP+GWrzeQIDEFBFvwDWQHXXReVmYs/xBBAcTG3hXnV3eigL8+gIO5pe5WzkmMkeKeoOCBqDKPS9SvmH1y8VTYOJPzdZhXela7+Yy+h1zhdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705571484; c=relaxed/simple;
-	bh=z58m7XW30PvN5xVbMyZWpIDm8EVrwn1NU5W6Aj0AcjY=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:MIME-Version:X-Received:Date:
-	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:
-	 Message-ID:Subject:From:To:Content-Type; b=qPs+FGijdv75E2z80NM2YVUi946tUobWhb1ZOt+tJpnE4FV4eFgE2YjJliaYyEZY8MgqxnJG0fSl/UUGI/NPpHNGq/tHEIGTamiJ5tZxFF6Bhk7fA4NYRLISEkULFMT+iBumZEww8IlOwdv1ofaRwORMJGm35UwznqbNbXOdqMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bf0305ded5so23707939f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 01:51:20 -0800 (PST)
+	s=arc-20240116; t=1705571752; c=relaxed/simple;
+	bh=FmtxJ1/Uk8uKGZ1IhBGuuuJVOGfB4FaSQCyPA4KP4YI=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=K7Em4VwUDsmWEHuYO5byALb2hHITnJVSSkQdhqEMuEdPfcIdicXHVpmkDdQR8DqA3Ukk58fZwxBPqITbrIJCp7OW/N1vC/kPI9VUC21nI9T/PJcjzvwrHDuRrWRtgFhaYmCd52PyLe7O9z3SIJfRjOr+infQhVEKQmc0Qfgf7uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FhH+pNpY; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6da6b0eb2d4so6534170b3a.1;
+        Thu, 18 Jan 2024 01:55:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705571747; x=1706176547; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=35MgUySkivZiu3Aq5AqtYwsVQJ4Uq1MrdaE+7l+zuec=;
+        b=FhH+pNpYKZqCuVF9GBY/NWlLqJztXxl0mW3gA7jSVYJKal48UVus9KWoGRk/y6Tb6M
+         KSltvtq8pc0V7TrOwIXMYEOBuMMSKohJOPqaaPULh2WCLDavFbCiDG5/naz2wKl+CJbm
+         LiWaJEmKg1xMT+XS0coOmRNTB0n7ch62oxb3TvUQDaMJcjw0zd8Sxdd83m0Bt9nkdKqb
+         ZDaLDH1V8UwHooy5MILzASqWDSiD4M+2ZjaRduymoTHPwEb9K3l6CXBN7kLKMsNXOwTP
+         VnquEtrT0sA7AFZmlscuhlehWdNSJkaDfDOyNkoXQrQa22fKnZZaSn1j7HHywL+SDlSk
+         RPFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705571480; x=1706176280;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LkvdycqJohxztUpLt/7vlWL8dxLjsENTxEfMc11iE9Y=;
-        b=dwV/BAS+fitVtyUNo4S0GnNMzqiX3dJEsxVuVSknxPR9qpEUnfC2TYQY2UdFUtWPlY
-         5tsNlXdC1fU97bRn3KF3LkcBWcHzbryrBEySvyFob3vGgI8cu2VW0VJE1O5rdCP0AnJp
-         ZPLwWR90vxbtrau9JJQMfXCbn1kDECvHqyujZK71W3JALzzaTOKMMMpysngAOo/dB/Rq
-         rTkJCx76cl2c9Ou4utGAVhQUiN0YGXyRyJMzqHMZxRdUYi+0vIobyqm4IUdIepZeN9zy
-         ixkg0yZmDs3tSlMEAF1xF3huD768VVZFXYljYr1Dh1vtmvwNcJZB+HqSkVm0JDZ6/Zhp
-         sMqA==
-X-Gm-Message-State: AOJu0Yy5BxR1i9vpXkjI47V2OgXGL4V9FuzzK0+vuo6TkEysLgMnMVmx
-	4kXMK4WGm2u7TyXJfSyx53eo4PP74oXNgViKoVku3n3/uNrsdwvlozGP3EjIlACyRgafsJBpyrY
-	jvHvVdOYULxNlD7x0eopw7qmziJOBGZO68hhkQgbSVZR3UGz7Q8tkHsw=
-X-Google-Smtp-Source: AGHT+IHzouAb2icz5oPAlRYTj81wQ5G3y9Kmz84hi6hFEOvIHRkLembbLk74QIQgZb7D3ntsDph2fxm5vOwhR35W5TCy4GS5pb4j
+        d=1e100.net; s=20230601; t=1705571747; x=1706176547;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=35MgUySkivZiu3Aq5AqtYwsVQJ4Uq1MrdaE+7l+zuec=;
+        b=VibfyP5e7mH/q2e6YuQioAaPhEKqt9UcTxzKpoSS8KGBtQYORT3LOx1oLY+i0m9OOu
+         6iHlw25Glry7/MhHwnpqEng5l0yR/zC9FEWhCVvbBL0ORAnKlYlAC3Rs7hilKUVSRq0m
+         Bn2Ccz8Q3IyFA9qu2SfVksPKSM17C7fBWogX24rmDwasET3X1+jyowEN2J9SCCF7nPY9
+         ZaSIl7i7bBZVcudkjd+4W0wZ31arG2OEmnbAM+jypxoqcF7O+qmRMBGUAkKrQ9uMMIkY
+         Lh2N2WIIAlRqk3KldFYpxsUqTiE1yO8IiArwhZ+kC3jKMFByEK/1f6PNR97oCtmmAQzK
+         Gu9g==
+X-Gm-Message-State: AOJu0YwC8ypAcV+/tBswmvegSi4pNyRuE1Bd2r74hhDj5kMNqaW38JiR
+	7LzpcAoccbQv3DpWLbd5GdnS8E/jHWrKr6dXopaRCvApVe33l5Zk
+X-Google-Smtp-Source: AGHT+IHkoE7cNPQHqsxto7dcjxGewqmRATl7Mep6ZTuTs9J1gjrq8mcOHXgE2lkTxR4/2yaacNUEbQ==
+X-Received: by 2002:a05:6a21:3a47:b0:19a:5d53:e76b with SMTP id zu7-20020a056a213a4700b0019a5d53e76bmr508394pzb.41.1705571746882;
+        Thu, 18 Jan 2024 01:55:46 -0800 (PST)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id a28-20020aa78e9c000000b006d9bdc0f765sm2901519pfr.53.2024.01.18.01.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 01:55:46 -0800 (PST)
+Date: Thu, 18 Jan 2024 17:55:41 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Taehee Yoo <ap420073@gmail.com>
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com
+Subject: Re: [PATCH net] ipv6: mcast: fix data-race in ipv6_mc_down /
+ mld_ifc_work
+Message-ID: <Zaj1nZRBkWaDfo-e@Laptop-X1>
+References: <20240117172102.12001-1-n.zhandarovich@fintech.ru>
+ <ZaiQs6yTY7XuS06i@Laptop-X1>
+ <bac390f1-ef6d-317f-a5e1-1c0c5e4e4535@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2108:b0:46e:aaa7:fdf5 with SMTP id
- n8-20020a056638210800b0046eaaa7fdf5mr38487jaj.0.1705571480364; Thu, 18 Jan
- 2024 01:51:20 -0800 (PST)
-Date: Thu, 18 Jan 2024 01:51:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000039f237060f354ef7@google.com>
-Subject: [syzbot] [dri?] BUG: scheduling while atomic in drm_atomic_helper_wait_for_flip_done
-From: syzbot <syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com>
-To: airlied@gmail.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, 
-	hamohammed.sa@gmail.com, linux-kernel@vger.kernel.org, 
-	maarten.lankhorst@linux.intel.com, mairacanal@riseup.net, 
-	melissa.srw@gmail.com, mripard@kernel.org, rodrigosiqueiramelo@gmail.com, 
-	syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bac390f1-ef6d-317f-a5e1-1c0c5e4e4535@gmail.com>
 
-Hello,
+On Thu, Jan 18, 2024 at 04:24:52PM +0900, Taehee Yoo wrote:
+> > I saw mld_process_v1() also cancel these works when changing to v1 mode.
+> > Should we also add lock there?
+> 
+> I think mld_process_v1() doesn't have a problem.
+> Because mld_process_v1() is always called under mc_lock by mld_query_work().
+> 
+> mld_query_work()
+>    mutex_lock(&idev->mc_lock);
+>     __mld_query_work();
+>        mld_process_v1();
+>    mutex_unlock(&idev->mc_lock);
 
-syzbot found the following issue on:
+Thanks for this info, then this works for me.
 
-HEAD commit:    1b1934dbbdcf Merge tag 'docs-6.8-2' of git://git.lwn.net/l..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1029adbde80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=68ea41b98043e6e8
-dashboard link: https://syzkaller.appspot.com/bug?extid=06fa1063cca8163ea541
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-1b1934db.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/00b728a4f3de/vmlinux-1b1934db.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5a3fe8452d59/Image-1b1934db.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com
-
-BUG: scheduling while atomic: syz-executor.0/29225/0x00000002
-Modules linked in:
-CPU: 1 PID: 29225 Comm: syz-executor.0 Not tainted 6.7.0-syzkaller-10085-g1b1934dbbdcf #0
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0x94/0xec arch/arm64/kernel/stacktrace.c:291
- show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:298
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x48/0x60 lib/dump_stack.c:106
- dump_stack+0x18/0x24 lib/dump_stack.c:113
- __schedule_bug+0x50/0x68 kernel/sched/core.c:5943
- schedule_debug kernel/sched/core.c:5970 [inline]
- __schedule+0x7f4/0x8a8 kernel/sched/core.c:6620
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0x34/0xc8 kernel/sched/core.c:6817
- schedule_timeout+0x8c/0x100 kernel/time/timer.c:2183
- do_wait_for_common kernel/sched/completion.c:95 [inline]
- __wait_for_common kernel/sched/completion.c:116 [inline]
- wait_for_common kernel/sched/completion.c:127 [inline]
- wait_for_completion_timeout+0x74/0x16c kernel/sched/completion.c:167
- drm_atomic_helper_wait_for_flip_done+0x6c/0xc4 drivers/gpu/drm/drm_atomic_helper.c:1719
- vkms_atomic_commit_tail+0x60/0xd0 drivers/gpu/drm/vkms/vkms_drv.c:81
- commit_tail+0xa4/0x18c drivers/gpu/drm/drm_atomic_helper.c:1832
- drm_atomic_helper_commit+0x164/0x178 drivers/gpu/drm/drm_atomic_helper.c:2072
- drm_atomic_commit+0xa8/0xe0 drivers/gpu/drm/drm_atomic.c:1514
- drm_client_modeset_commit_atomic+0x210/0x270 drivers/gpu/drm/drm_client_modeset.c:1051
- drm_client_modeset_commit_locked+0x5c/0x188 drivers/gpu/drm/drm_client_modeset.c:1154
- drm_client_modeset_commit+0x30/0x58 drivers/gpu/drm/drm_client_modeset.c:1180
- __drm_fb_helper_restore_fbdev_mode_unlocked drivers/gpu/drm/drm_fb_helper.c:251 [inline]
- __drm_fb_helper_restore_fbdev_mode_unlocked+0xa8/0xe8 drivers/gpu/drm/drm_fb_helper.c:230
- drm_fb_helper_set_par+0x30/0x4c drivers/gpu/drm/drm_fb_helper.c:1344
- fb_set_var+0x21c/0x488 drivers/video/fbdev/core/fbmem.c:312
- fbcon_switch+0x214/0x4d0 drivers/video/fbdev/core/fbcon.c:2110
- flush_scrollback drivers/tty/vt/vt.c:912 [inline]
- csi_J+0x254/0x260 drivers/tty/vt/vt.c:1527
- do_con_trol drivers/tty/vt/vt.c:2408 [inline]
- do_con_write+0x1a30/0x1e2c drivers/tty/vt/vt.c:2905
- con_write+0x18/0x68 drivers/tty/vt/vt.c:3251
- gsmld_write+0x64/0xd0 drivers/tty/n_gsm.c:3724
- iterate_tty_write drivers/tty/tty_io.c:1021 [inline]
- file_tty_write.constprop.0+0x134/0x28c drivers/tty/tty_io.c:1092
- tty_write+0x14/0x20 drivers/tty/tty_io.c:1113
- call_write_iter include/linux/fs.h:2085 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0x1dc/0x2f4 fs/read_write.c:590
- ksys_write+0x70/0x104 fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __arm64_sys_write+0x1c/0x28 fs/read_write.c:652
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:51
- el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:155
- el0_svc+0x34/0xd8 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:595
-BUG: scheduling while atomic: syz-executor.0/29225/0x00000000
-Modules linked in:
-CPU: 0 PID: 29225 Comm: syz-executor.0 Tainted: G        W          6.7.0-syzkaller-10085-g1b1934dbbdcf #0
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0x94/0xec arch/arm64/kernel/stacktrace.c:291
- show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:298
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x48/0x60 lib/dump_stack.c:106
- dump_stack+0x18/0x24 lib/dump_stack.c:113
- __schedule_bug+0x50/0x68 kernel/sched/core.c:5943
- schedule_debug kernel/sched/core.c:5970 [inline]
- __schedule+0x7f4/0x8a8 kernel/sched/core.c:6620
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0x34/0xc8 kernel/sched/core.c:6817
- futex_wait_queue+0x70/0x9c kernel/futex/waitwake.c:370
- __futex_wait+0xc8/0x15c kernel/futex/waitwake.c:669
- futex_wait+0x84/0x108 kernel/futex/waitwake.c:697
- do_futex+0xf8/0x1a0 kernel/futex/syscalls.c:102
- __do_sys_futex kernel/futex/syscalls.c:179 [inline]
- __se_sys_futex kernel/futex/syscalls.c:160 [inline]
- __arm64_sys_futex+0x7c/0x1a4 kernel/futex/syscalls.c:160
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:51
- el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:155
- el0_svc+0x34/0xd8 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:595
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Hangbin
 
