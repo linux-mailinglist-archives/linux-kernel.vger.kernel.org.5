@@ -1,172 +1,146 @@
-Return-Path: <linux-kernel+bounces-30494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 573FC831F78
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:09:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3128A831F7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC032B23C51
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:09:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 646661C232AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78712E400;
-	Thu, 18 Jan 2024 19:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D412E631;
+	Thu, 18 Jan 2024 19:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="1faBJUsi"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2062.outbound.protection.outlook.com [40.107.244.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mqelJzJc"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F7E2E643;
-	Thu, 18 Jan 2024 19:08:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705604924; cv=fail; b=UMt+oHspPrwAxTiDODk1WR5UPrzYqcmruXRV3baVkjn3KNVZ9J4cfWiuFN3toK/xT/BWetYB4LKe62cuAm4kzXaqXrBYTfmv+Tub08abUlIrpImDfaa+575zGH5fW2s+YWaeHtjkwqhUlgE8M8L6EIE5CTaMGEWXtlpK7ISfVbE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705604924; c=relaxed/simple;
-	bh=LziV6RK2xAVDFPaOwyCXUtlx5FdkkpX57NY9/1c+4oQ=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e0W78nLJBdcZc60yK4Tk298lMeLQi/lYpdAQnVt3LWGFo0kri8SqFpZQGeiXiGiH8NlSUHjXPMBhTSnTAZLmol4/+GmolwVq10lzyUtSq79Fcj0ckx3a+zlKfsFMwUvUTOxF9zHbde+rcNqaouiwTc9PsD7ADjYaofKo4t7oQ9Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=1faBJUsi; arc=fail smtp.client-ip=40.107.244.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ikx82a0UVD1ba4O1dNYP1Yfh+3fG4Pn4X66sicgBr2AD0cYoYeq1Jv1U51JoaVNZ003k2BczJ78JmIkyX1ayZNPKu7CfkckIb9sNmPN+y5V0Q5knDq/g5iyYPhehQsRkBOgFbI+w26unlO9mJTBQXt0xhHlr3OXO+WBHEOeA7/H6M2AquL0kHpFtPhRna9Zm0KqRbCjp7C/Or9pJkNnBPNlNzmMtrvrhicqE95C6Ykqfnb6pG5PcjGzFy7lsKZUQzJ0Pbs3P2+C0JsqN5KgDm++iT9JtrlN0DZx4lRtblh2a6qTFlxwTp6zY+w8Z0G79qnI5eIA3BPGgstGf8c4tbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TT6aqESmVjzsLXiOvMdOF97y4bZP0Gy6gOWt4/wE80g=;
- b=Zef8ycUdsp+NKpNtGCdobux13/q9k5ZAzxKVMc2LbEiu/OeUU/dggEwsFef9sHg/7nAQ5SvSylLdUBx268oVqNAAxUKphVLsZdLERQDtoK1bw5Li/gOcq9Lmdp8+J3Bpm01WM8fbO9yuZWdRSaTGdwExDjPIJkfpzeVB6WmEiIWfMPzm8s886wNnvgsqYZH+e7zvowazOhFakFPKy11JgCLHYOYysBD8IFTuVZt8hQzbfdSRHrmEriuztRYsuZrcz0wf3ZvzxChhgU19uZHZCYcGLt1wYzI7l53BwpQ8q6pRDAKJihZcvOgaGsr5ZzWjFUSdqzVbS8JE0YR9bYaBkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TT6aqESmVjzsLXiOvMdOF97y4bZP0Gy6gOWt4/wE80g=;
- b=1faBJUsiIgD0rXl3jCJXplOdc6Rv29ukK7+zvNhIJ7wTzXRh8XU2LZvA7/XJj41RJOsg6ia7HrqAdjHuCVLZsMccs/46FmEETZK4u0cbJx9wXP9idL8JjxDr/HrSe2RiBJ36pZjZ16ZBOpAVk5nyx058QLHMOFu3b/ndW2ebUIQ=
-Received: from DM6PR02CA0104.namprd02.prod.outlook.com (2603:10b6:5:1f4::45)
- by BL1PR12MB5946.namprd12.prod.outlook.com (2603:10b6:208:399::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Thu, 18 Jan
- 2024 19:08:37 +0000
-Received: from DS3PEPF000099DF.namprd04.prod.outlook.com
- (2603:10b6:5:1f4:cafe::92) by DM6PR02CA0104.outlook.office365.com
- (2603:10b6:5:1f4::45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24 via Frontend
- Transport; Thu, 18 Jan 2024 19:08:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DS3PEPF000099DF.mail.protection.outlook.com (10.167.17.202) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Thu, 18 Jan 2024 19:08:36 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 18 Jan
- 2024 13:08:36 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 18 Jan
- 2024 13:08:35 -0600
-Received: from xhdradheys41.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Thu, 18 Jan 2024 13:08:33 -0600
-From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-To: <dlemoal@kernel.org>, <cassel@kernel.org>, <richardcochran@gmail.com>,
-	<piyush.mehta@xilinx.com>, <axboe@kernel.dk>, <michal.simek@amd.com>
-CC: <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<git@amd.com>, Piyush Mehta <piyush.mehta@amd.com>, Radhey Shyam Pandey
-	<radhey.shyam.pandey@amd.com>
-Subject: [PATCH 2/2] ata: ahci_ceva: add missing enable regulator API for Xilinx GT PHY support
-Date: Fri, 19 Jan 2024 00:38:24 +0530
-Message-ID: <1705604904-471889-3-git-send-email-radhey.shyam.pandey@amd.com>
-X-Mailer: git-send-email 2.1.1
-In-Reply-To: <1705604904-471889-1-git-send-email-radhey.shyam.pandey@amd.com>
-References: <1705604904-471889-1-git-send-email-radhey.shyam.pandey@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD3B2E40B;
+	Thu, 18 Jan 2024 19:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705605040; cv=none; b=YnsW1llbtz+c3h5orx632px94Dpm09blYLseXwrL+ZcL2mg7LlWXzBqMuTW50HAKEL4CGcZwQfaS7crjkVIjAJExuDr1NEb5/w1R9M4X5g9wBduV/vJmlGW0y5BIcl+FcQ82cn4hPoqasdOagiPe+E13YheabVLXGIOsqHflH0I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705605040; c=relaxed/simple;
+	bh=QGy/gV3NdSFRk3x+356l/x+E2n1PrWJbsuTSzohNMVg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Wh1a3k2p3kDcQ4Pk8V1SkNNaOqyuhkx+INj0F6k4ZqwOtLPwCpucdwP8gko5n1iPlk/iG60wrKD3/EidcStlF1MKtLLSdWjk/YmkfR6YzFLm4hlY1HqZ7T70o96erPSI1J028Of2WjfZ5OlLkmMcLpT6FOjW1gQuzL1qdLroIHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mqelJzJc; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d70b0e521eso6198505ad.1;
+        Thu, 18 Jan 2024 11:10:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705605038; x=1706209838; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1v/TZYvh2MJ80QgyM922C9D8jEpr9cFLhd1cuq1fI6E=;
+        b=mqelJzJc1bl3B1Bax3INUnxYfwhpd7xy2fIdI8nZga9r3lW2Tp4Xdekf/BrEZP/C79
+         bCDKs1qVPWtaRsQUHi44i9wsnjauVQJblnbqYyCL/TZInsx6kYRiJiB1FQjPAGQkYvS7
+         a/92ERBno4m4EpZqwm48UE9BQkdl90u8PLnYx3JYS93wNuWb6YJUrhHvGjWhzwu54tiQ
+         EbpmYl9qzSuodkwruRMRRJaQ2t6zy1t5Ft2xb8pNx/RPwRwfh1/NfMBbYm7toXk1fNWJ
+         KH/51nZRSZOC+/D5VX7HasUNaQKy3KPMKZu+aMPCQ1Ta+lLUPPXzQ/zYiQ2fMswHIwz0
+         PCmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705605038; x=1706209838;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1v/TZYvh2MJ80QgyM922C9D8jEpr9cFLhd1cuq1fI6E=;
+        b=oE9LxE1V53Oz6ZA8g/ZoF6a3LHmXQBdCR9+jml8kJr+kDY/AFDBOQO8cAUkku1GOLt
+         +zJXMPTcw8fIq2iAnLYFsLiQTfg+4O7fRDfe/D2f8UNEWW/ooeR4Eaj1/h9tLxzqbtd6
+         scTHb6EZHK4QL7W7kceetnYnYH0oq1Pt1Hh72ExsuJF+SOlHCANWAITe0KOeeEc+IlUz
+         lseHjSRUsOIQmTuIS/qoPOmVEQ0Ey1MuW5LJAWU68hfm0FKedV7Ihq3vAWxIDwneylqk
+         dFQxuOnV1fIDnHPcsloRGfcuHBi0YiW7ppWtz4zy0mvcaMM2APVvJnrlkt4QzaaJAdL+
+         uleQ==
+X-Gm-Message-State: AOJu0YzOHTqNs9aaDgLK50vGgbQ5Ir6PCzWw87ZcHct5tXAvV78wshUD
+	jcqJAR8GCUFijtWD4EuoyFkhw7Qtr4StyGdxoOGIs6EJaNQyfT7/
+X-Google-Smtp-Source: AGHT+IH4Ocz9kjSah+mw055Dw5Myw+oA+YfyxXg4b3gE3cy9rSFukaLV5FVQ5ejGALvuuCDYVFztVg==
+X-Received: by 2002:a17:902:ebc5:b0:1d6:fc43:6005 with SMTP id p5-20020a170902ebc500b001d6fc436005mr1824509plg.133.1705605038093;
+        Thu, 18 Jan 2024 11:10:38 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id bi3-20020a170902bf0300b001d6fe15b563sm1704682plb.157.2024.01.18.11.10.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 11:10:37 -0800 (PST)
+Message-ID: <96dc2b0b-ad51-42f9-a305-744d9d97272e@gmail.com>
+Date: Thu, 18 Jan 2024 11:10:31 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099DF:EE_|BL1PR12MB5946:EE_
-X-MS-Office365-Filtering-Correlation-Id: 428e0b88-ecfc-406e-1d3b-08dc1858dfc4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	CJGwbspyX6asroc+hUIFMMEC9Rq0xbXIct7ivczmALxOJhd72A8fwQmMm0lJ+SFShwAU4k5jw2O+NCi8373u+wabQrwKEwOjqEizo6l6hU9cG9RBUl5y8D817jWJk+/myUK6wTBQyKZqEyafzEUJqVPeiwIjQo2JLNEOI50jG8SzJfoNDUXVhEKC2ZqIoAJbz/SYQAI1PzA+R9DG1G+iNTO2Nf/fNmDCn2zdnHrjGoke7Z/ULgUK0NbrtMzsBAu7y054wMV//pA2+NCcN16Cwfkw/2pMq/CDaslbxa+rSARw/6j/SH2PVpbjBIvGWwsAOXLdbonkGaayNkKgoUxSVMF18D6GiaeuwSXkQGuJsUqWZwdZtjBDEYWiYkoGe/iog2PT1nt6Jw6JhdGHE7PLLlM8pHGlI+ktKfqAPx6LTrpz7l8oBQRAABff4Ifay0Vrr0pimzzxJ/17Nmk5N31UPM3gelPbZt7Wtso5RfsS3S/3ioKZFKKZ5GvtxUhaxDEH3K9sdF/sFFqSkSnxg9UQEvL8yIqmapsRJgRr54POsfOAqI/kiLeQwXwN4AIuuStjFV+74f7Z1tuxRTtCSZdIZ0mrbToaqKeuHnQZiiXEHFOs+gj2bQXg+mGfKRUQQGg78ZmvMIKiNQNcSAokm/SCvn5BaYImurYnihhQ2TcUhzkFnI17beTsDFafBqGMOGEZV7LtBOeOHcGn8tZQ84MsJAPCO0PwN3nrCPIIypoh1DrGcccXZ0lDD2JdSRvW0ntmT5zZbrsYw6mjREbw4+nRYKtIhBfuyUTGIXfvBVoXJnw3MJDcZg17kQUVUS7CjS//
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(346002)(396003)(39860400002)(230922051799003)(230173577357003)(230273577357003)(451199024)(1800799012)(64100799003)(186009)(82310400011)(40470700004)(36840700001)(46966006)(336012)(83380400001)(426003)(26005)(2616005)(82740400003)(47076005)(36860700001)(8676002)(5660300002)(4326008)(41300700001)(54906003)(2906002)(6666004)(110136005)(478600001)(316002)(6636002)(8936002)(70586007)(70206006)(81166007)(36756003)(356005)(86362001)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 19:08:36.9346
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 428e0b88-ecfc-406e-1d3b-08dc1858dfc4
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099DF.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5946
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/100] 6.1.74-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
+ Stefan Wiehler <stefan.wiehler@nokia.com>
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20240118104310.892180084@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240118104310.892180084@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Piyush Mehta <piyush.mehta@amd.com>
++Stefan,
 
-The regulators API are disabled and enabled, during suspend and resume,
-respectively. The following warning notice shows up on the initial suspend
-because the enable regulators API is unaddressed in the probe:
+On 1/18/24 02:48, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.74 release.
+> There are 100 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 20 Jan 2024 10:42:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.74-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-regulator-dummy: Underflow of regulator enable count
+ARM and ARM64 builds worked fine and passed tests, however BMIPS_GENERIC 
+fails to build with:
 
-Added the ahci_platform_enable_regulators API in probe to maintain the
-regulator enabled and disabled ref count.
+arch/mips/kernel/smp.c: In function 'start_secondary':
+arch/mips/kernel/smp.c:340:2: error: implicit declaration of function 
+'rcutree_report_cpu_starting'; did you mean 'rcu_cpu_starting'? 
+[-Werror=implicit-function-declaration]
+   rcutree_report_cpu_starting(cpu);
+   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   rcu_cpu_starting
+cc1: all warnings being treated as errors
+host-make[5]: *** [scripts/Makefile.build:250: arch/mips/kernel/smp.o] 
+Error 1
+host-make[4]: *** [scripts/Makefile.build:500: arch/mips/kernel] Error 2
+host-make[3]: *** [scripts/Makefile.build:500: arch/mips] Error 2
+host-make[3]: *** Waiting for unfinished jobs....
 
-Fixes: 9a9d3abe24bb ("ata: ahci: ceva: Update the driver to support xilinx GT phy")
-Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
----
- drivers/ata/ahci_ceva.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+which is caused by 7c20a4cc189eff36d5aeb586008a540d8024fbff ("mips/smp: 
+Call rcutree_report_cpu_starting() earlier").
 
-diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
-index bfc513f1d0b3..1c56f0cabb11 100644
---- a/drivers/ata/ahci_ceva.c
-+++ b/drivers/ata/ahci_ceva.c
-@@ -219,9 +219,14 @@ static int ceva_ahci_probe(struct platform_device *pdev)
- 		if (rc)
- 			return rc;
- 	} else {
--		rc = ahci_platform_enable_clks(hpriv);
-+		rc = ahci_platform_enable_regulators(hpriv);
- 		if (rc)
- 			return rc;
-+
-+		rc = ahci_platform_enable_clks(hpriv);
-+		if (rc)
-+			goto disable_regulator;
-+
- 		/* Assert the controller reset */
- 		reset_control_assert(cevapriv->rst);
- 
-@@ -340,6 +345,9 @@ static int ceva_ahci_probe(struct platform_device *pdev)
- disable_clks:
- 	ahci_platform_disable_clks(hpriv);
- 
-+disable_regulator:
-+	ahci_platform_disable_regulators(hpriv);
-+
- 	return rc;
- }
- 
+It looks like rcutree_report_cpu_starting() has been introduced 
+448e9f34d91d1a4799fdb06a93c2c24b34b6fd9d ("rcu: Standardize explicit 
+CPU-hotplug calls") which is in v6.7.
+
+For MIPS, it would like an adequate fix would be to 
+'s/rcutree_report_cpu_starting/rcu_cpu_starting/' for the 6.1 and 6.6 
+branches.
+
+Stefan, do you agree?
 -- 
-2.34.1
+Florian
 
 
