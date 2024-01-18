@@ -1,175 +1,121 @@
-Return-Path: <linux-kernel+bounces-29670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC96A831184
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:50:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0A7F831189
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 03:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B936286368
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:50:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDE35B22E81
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 02:52:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC44A6111;
-	Thu, 18 Jan 2024 02:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CBE06FBC;
+	Thu, 18 Jan 2024 02:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="nEZ0rDNJ"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="PHPfExvq"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735D153B5
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D5F53B4
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 02:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705546210; cv=none; b=hKu/oCuBytiAKUlw0FGJSWUlJLIAdR+s6G86G1WeYs+ooqfzdWnCZJJh3TwgGqMlHPezJPbroit/bUyE2MUSeoTi2znKiGoF/kyNOE5h8TTOlXlEcgL2Y0rB9EWr5yfkgAg608EJDovbfh5+VHYUm0fKh76PERke3/E7D3QF4ww=
+	t=1705546307; cv=none; b=FcBJmgF8VWATFfyJWqpBV//HysHGqCL9NgTF3jrLJAKZUZ0wQcnD9fWEBOtUkCsg4jmiPq1x9Q00QeleZujkI1bQsm+n+fBrQ/He8QSc8LG6eUI/ohfRImyfiyCRCZP1lVRawbftuWyNPP8f/jsscyfmy4lWAUE3TjZR+Sva4mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705546210; c=relaxed/simple;
-	bh=BJg75ZFdFsMHx0IzN/znZuL4kHgdbCZHjvh8m/sP/Ic=;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=C0Gy6y5KCb/RTvqwoBJYEhfy4YyO5AsTit/z5XoAtBImbRyGG6h4Lkg5QycxGndeo+gmi2/oFUuSGdryeM2X9bA12l8ED0VZdLQcLzm8VeNw2YYYzsZU1JZE6jKuktjxWHfaifJdaFWGQ00gd3qylYkcHZ8YDPA0/pIwTXaP28A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=nEZ0rDNJ; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-112-211.bstnma.fios.verizon.net [173.48.112.211])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40I2nMf0019056
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 21:49:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1705546166; bh=QY2jieE117yh9NkMq2fzek7v348fUElM78MBn1O7k+c=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=nEZ0rDNJWDL7d1gCdVYmfFfutRKEw2G+rNE4+GDGhxboywGSJtNjBqEe+MTnpiBik
-	 yVjrGhFN+FUGGE4TXKk0mgfcA19fnasGKYpVsNbMuLqEREcvVI9545CVNmF82H4mmG
-	 dC0kCfezHq6SMV7AalXUahxeaDxPKUt0X4z/PU8tJT666bmVDF9tjAFTzvUVv2hf/F
-	 ATwbGobBtp4bFlkdlL+wqjIV+plKAZz5ntdTgt1jGs8ao5G/6smZS0yMGsaBPbIsX/
-	 9wNI4Rlqf9vk1QiE3F2yluvG4UhQrXxXoyYBffTJ86mh3Z6JdQf/GkE0v6fj8aeJtx
-	 y1GEMArcvRm8w==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 82EC215C0278; Wed, 17 Jan 2024 21:49:22 -0500 (EST)
-Date: Wed, 17 Jan 2024 21:49:22 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Greg KH <greg@kroah.com>,
-        Mark Brown <broonie@kernel.org>, Neal Gompa <neal@gompa.dev>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Nikolai Kondrashov <spbnick@gmail.com>,
-        Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <20240118024922.GB1353741@mit.edu>
-References: <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
- <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
- <20240117055457.GL911245@mit.edu>
- <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+	s=arc-20240116; t=1705546307; c=relaxed/simple;
+	bh=YHhFdreFP9ZE/+rucVuzbm04/JKcvfDc6wo5uMXaSX8=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:Content-Type:
+	 X-Mailer:X-Developer-Signature:X-Developer-Key:
+	 Content-Transfer-Encoding; b=ukeH0lSMl1uWyHLw5WDB7MaWgKrRMAXZiq04D8CeK33HTajkTGQcLF+qOW+La9TmXIZV+jg+S6bq5ASjQZptarfFfejSB1ykQUyJx9ryXlL9/uPwIb7i0ZHSQ8hxnk9vISJm/S+j68biL2iTDRHHZBPgQ97rzMjoag6Y6dWIdR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=PHPfExvq; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-337b976773fso2335294f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:51:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1705546303; x=1706151103; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H5JsUOgz+DPxJOOyNlG1B9EN9snqbFszTDtDaVe5HBM=;
+        b=PHPfExvqFP9dNkw/o1LSkVNxh6G6osL4+UztZaPS6M0NUeISe5flKcZVRQz+UKZbVW
+         oARqCfAPr6CwtY7/naIvTKlrEGSe8pfSmeWSIEE40dcrWIQbuERvvrGEBd1jlGLA+XBA
+         0iEMeDvqlD9WrkZtuA5HFhzlH+OyYaXe+sBgWo0aNsrdHQTjjfUJkJpgaPJxvcuViza3
+         U4d122bRIWi8OtteFp87ekFHFOkw2nCY5vDX2LAiDrHT/Jeg03xaLA5S4Zh4SZ+hOsOL
+         EWB1sxcXlXH1cGAIGs2DeOW9Aa8a8sTZaWoN5S89l9kmZ7NUYqgz5ZxXrAFT3gun6z0G
+         qo1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705546303; x=1706151103;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H5JsUOgz+DPxJOOyNlG1B9EN9snqbFszTDtDaVe5HBM=;
+        b=MAUsrNtnoR/hgEYakFt7SmLt5eZga6iTxB802AjNfr7T5Z9OOC3b88LtcJpGHQp4Sp
+         Jt62afjW1QCcclc5+GJqjpL0b8fY0zBKb/eVBouVx4B5gNNHabfwlF/JkcF/7JscFzzh
+         aJiEel7cFJBXZ0TAYlaXC3OwMDgKzpz/Xvd1bF3Rttvj++Ok0yYyz152nwWWD79m/w6q
+         ahxgtAIBVpveZgv5kmHclP+bxd0OJgOleOjwI99F/GKbkHTM9RMBFg9Yv3cyv5VvTY/U
+         rM4qnj9kmk7Tbxva7N6yCWnD+FCPlAFjlUM4qmZ9q8rwL8i36BssKaHL2A7AgOQDi/qd
+         8/wA==
+X-Gm-Message-State: AOJu0YxlCRcXhl/bXP5hGSHUIZp67x+qTvF7UySCn5FHFDL/nC6PrCVO
+	E6tSArva7JXOSo6jtmHgeDTg8VRFknWyABwcSt1AVthNr8b2z/lFASHltDj1iQ==
+X-Google-Smtp-Source: AGHT+IGuu+Qi2Tx2cCYMGpPYN+O0khIiJHE3lWN6J6IrC2aFuK1G0SyFIM92LO01t3+UwG9sk29NlA==
+X-Received: by 2002:a5d:400b:0:b0:333:44e2:16b7 with SMTP id n11-20020a5d400b000000b0033344e216b7mr79098wrp.49.1705546303326;
+        Wed, 17 Jan 2024 18:51:43 -0800 (PST)
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id z15-20020a5d440f000000b0033664ffaf5dsm2868219wrq.37.2024.01.17.18.51.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 18:51:42 -0800 (PST)
+From: Dmitry Safonov <dima@arista.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Dmitry Safonov <dima@arista.com>,
+	Mohammad Nassiri <mnassiri@ciena.com>,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] selftests/net: A couple of typos fixes in key-management test
+Date: Thu, 18 Jan 2024 02:51:33 +0000
+Message-ID: <20240118-tcp-ao-test-key-mgmt-v1-0-3583ca147113@arista.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.13-dev-b6b4b
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705546294; l=736; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=YHhFdreFP9ZE/+rucVuzbm04/JKcvfDc6wo5uMXaSX8=; b=E1xkCdz0M9XB7LOyp1foBBxJnUvlo7QXSIQqLpKlLQB377ZXUXuwOvQUCG4cuseiQQNIU4E6N RodDkay3j8aAB5yco4ZxHozCAOJCI4dCrc0vyqgUf83CsOC7UR+yKr3
+X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
-> Actually, this is partly our fault.  Companies behave exactly like a
-> selfish contributor does:
-> 
-> https://archive.fosdem.org/2020/schedule/event/selfish_contributor/
-> 
-> The question they ask is "if I'm putting money into it, what am I
-> getting out of it".  If the answer to that is that it benefits
-> everybody, it's basically charity  to the entity being asked (and not
-> even properly tax deductible at that), which goes way back behind even
-> real charitable donations (which at least have a publicity benefit) and
-> you don't even get to speak to anyone about it when you go calling with
-> the collecting tin.  If you can say it benefits these 5 tasks your
-> current employees are doing, you might have a possible case for the
-> engineering budget (you might get in the door but you'll still be
-> queuing behind every in-plan budget item).  The best case is if you can
-> demonstrate some useful for profit contribution it makes to the actual
-> line of business (or better yet could be used to spawn a new line of
-> business), so when you're asking for a tool, it has to be usable
-> outside the narrow confines of the kernel and you need to be able to
-> articulate why it's generally useful (git is a great example, it was
-> designed to solve a kernel specific problem, but not it's in use pretty
-> much everywhere source control is a thing).
+Two typo fixes, noticed by Mohammad's review.
+And a fix for an issue that got uncovered.
 
-I have on occasion tried to make the "it benefits the whole ecosystem"
-argument, and that will work on the margins.  But it's a lot harder
-when it's more than a full SWE-year's worth of investment, at least
-more recently.  I *have* tried to get more test investment. with an
-eye towards benefitting not just one company, but in a much more
-general fasion ---- but multi-engineer projects are a very hard sell,
-especially recently.  If Kent wants to impugn my leadership skills,
-that's fine; I invite him to try and see if he can get SVP's cough up
-the dough.  :-)
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+Dmitry Safonov (2):
+      selftests/net: Rectify key counters checks
+      selftests/net: Clean-up double assignment
 
-I've certainly had a lot more success with the "Business quid pro quo"
-argument; fscrypt and fsverity was developed for Android and Chrome;
-casefolding support benefited Android and Steam; ext4 fast commits was
-targetted at cloud-based NFS and Samba serving, etc.
+Mohammad Nassiri (1):
+      selftests/net: Argument value mismatch when calling verify_counters()
 
-My conception of a successful open source maintainer includes a strong
-aspect of a product manager whose job is to find product/market fit.
-That is, I try to be a matchmaker between some feature that I've
-wnated for my subsystem, and would benefit users, and a business case
-that is sufficientlty compelling that a company is willing to fund the
-engineering effort to make taht feature happen.  That companmy might
-be one that signs my patcheck, or might be some other company.  For
-special bonus points, if I can convince some other company to find a
-good chunk of the engineering effort, and it *also* benefits the
-company that pays my salary, that's a win-win that I can crow about at
-performance review time.  :-)
+ .../testing/selftests/net/tcp_ao/key-management.c  | 46 ++++++++++++----------
+ tools/testing/selftests/net/tcp_ao/lib/sock.c      |  1 -
+ 2 files changed, 26 insertions(+), 21 deletions(-)
+---
+base-commit: 296455ade1fdcf5f8f8c033201633b60946c589a
+change-id: 20240118-tcp-ao-test-key-mgmt-bb51a5fe15a2
 
-> Somewhere between 2000 and now we seem to have lost our ability to
-> frame the argument in the above terms, because the business quid pro
-> quo argument was what got us money for stuff we needed and the Linux
-> Foundation and the TAB formed, but we're not managing nearly as well
-> now.  The environment has hardened against us (we're no longer the new
-> shiny) but that's not the whole explanation.
+Best regards,
+-- 
+Dmitry Safonov <dima@arista.com>
 
-There are a couple of dynamics going on here, I think.  When a company
-is just starting to invest in open source, and it is the "new shiny"
-it's a lot easier to make the pitch for big projects that are good for
-everyone.  In the early days of the IBM Linux Technolgy Center, the
-Linux SMP scalability effort, ltp, etc., were significantly funded by
-the IBM LTC.  And in some cases, efforts which didn't make it
-upstream, but which inspired the features to enter Linux (even if it
-wasn't IBM code), such as in the case of the IBM's linux thread or
-volume management, it was still considered a win by IBM management.
-
-Unfortunately, this effect fades over time.  It's a lot easier to fund
-multi-engineer projects which run for more than a year, when a company
-is just starting out, and when it's still trying to attract upstream
-developers, and it has a sizeable "investment" budget.  ("IBM will
-invest a billion dollars in Linux").  But then in later years, the
-VP's have to justify their budget, and so companies tend to become
-more and more "selfish".  After all, that's how capitalism works ---
-"think of the children^H^H^H^H^H^H^H shareholders!"
-
-I suspect we can all think of companies beyond just IBM where this
-dynamic is at play; I certainly can!
-
-The economic cycle can also make a huge difference.  Things got harder
-after the dot com imposiion; then things lossened up.  Howver,
-post-COVID, we've seen multiple companies really become much more
-focused on "how is this good for our company".  It has different names
-at different companies, such as "year of efficiency" or "sharpening
-our focus", but it often is accompanied with layoffs, and a general
-tightening of budgets.  I don't think it's an accident that
-maintainwer grumpiness has been higher than normal in the last year or
-so.
-
-	    	       	  	      	     	- Ted
 
