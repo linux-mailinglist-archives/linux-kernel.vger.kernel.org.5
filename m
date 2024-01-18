@@ -1,106 +1,123 @@
-Return-Path: <linux-kernel+bounces-30186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1BD0831B29
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:13:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FCB831B2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 15:14:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9813E1F243F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:13:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 228A21C20A3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6863C2576B;
-	Thu, 18 Jan 2024 14:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45CBE2576F;
+	Thu, 18 Jan 2024 14:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sn7zFNmi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="AtYI9Syd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B4025549
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 14:12:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD9F25759;
+	Thu, 18 Jan 2024 14:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705587176; cv=none; b=euKilAP1fx0A1ipYKNJXDxiRmq7rEOMR897lxmbQgoNWCuJ8Qfkm4EWSK2VrxWs4+KjvH7ohTSnCr+DthzdFyZNmcc1e1SKvAnMCtl/y5DNTxl5mTj67Sj+9J0Uw+o3TY0c3yS96qt2+RfLn8y687n+LOeIn4L9Hmph1Ka1Nq2I=
+	t=1705587244; cv=none; b=maCeGS0LYSHC2k/Vzg+ZPxU976aO8KDtdGxwtRiHeDH/+ykZRttHJcA/8Wv1cBQ92FqqY+5fP7jh9SkqiaY1osyuE8HEPS2XZZCeJyaKu8tXnBMzih4IsCSXItSobqAUhhRxOtpDFJFCm3Myo2Uxv16qLqu9Poi1uFoLETtrFqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705587176; c=relaxed/simple;
-	bh=HxSLrYC+hnZMNQE8N/YqaKMukOyUuO+/CWYaAZNCBK4=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:From:To:Cc:
-	 Subject:Date:Message-ID:In-Reply-To:References:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-Scanned-By; b=V33NjUM7hNDkGjg1xSE2/OdGfx3ucrWV0S/ZPvOsnaJo+w7jqqerusYz1U2+IbkY21Q/2wtfM7fLL1MI8B0haYmOMdsn1pv7MTYBewPLGrm0OKCfiD3fdjzFOEEc+0nWYxTjd5bC60j1i8xXxjUJcpQTihZcROCyCIXxwQGc4v8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Sn7zFNmi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705587174;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C6daif3Wpo6oR6mWR0a75zB3XL2N/MWmItaHsVRRCfY=;
-	b=Sn7zFNmiq2o54BNmPQrkSUmhEKDo6XVfCTV7qsC3ldhwXIsWNTE4rIDuUCrmBIAzFWVJI3
-	JYXic4w51yKqEEnwRKWt1NZOHpGCmIDWDCSamzfEkpsnlU+U9uBFJTSPOW7kIoL1WapKYo
-	XE5vbPFXa3ggeZnSBO3Y443WuCgiu6w=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-607-xgcAbzp2MJGxL2n8EKgOGA-1; Thu,
- 18 Jan 2024 09:12:49 -0500
-X-MC-Unique: xgcAbzp2MJGxL2n8EKgOGA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5C60D3C2A1C2;
-	Thu, 18 Jan 2024 14:12:49 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.192.155])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8D15D2166B36;
-	Thu, 18 Jan 2024 14:12:47 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: masahiroy@kernel.org
-Cc: dcavalca@meta.com,
-	jtornosm@redhat.com,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	nathan@kernel.org,
-	ndesaulniers@google.com,
-	nicolas@fjasle.eu,
+	s=arc-20240116; t=1705587244; c=relaxed/simple;
+	bh=dz63Si+AMcFRAvV73H3y1FBriMnSZcSRfeMFkdG5Xuo=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=b2MBz/PeYucrAM2MtVb2jaOS8f1/y0tG1Zds4BTXFDdg+eQVo8gcROyDSVeEmuujwh6+wRtRr5xMc/NbWJ/Jt3NOkTiR/jbBGpOnfjJzJ2ccQmvp2mKLCu0DYkeT9VZtpGtDxGO6MS4w6b7tjS+LJteSCWSMOvwrD/dolLmm4gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=AtYI9Syd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98C7BC433C7;
+	Thu, 18 Jan 2024 14:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1705587244;
+	bh=dz63Si+AMcFRAvV73H3y1FBriMnSZcSRfeMFkdG5Xuo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AtYI9Syd6vP9sYWP9WmRdXJR3JLSlReeP6B1iAWde8XIMVY7NJ4/tnk4Oza+0pVtO
+	 BGcUKN+zoex0A70BGQ0cnJxjctUtZg3A170XZVe2qluxKEx/sUnhzvgMPiX2CoTl39
+	 FJUmq8tcfXmrLHGQee7dXMZxQe1lVviQjIewGAiY=
+Date: Thu, 18 Jan 2024 15:14:01 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Denis Arefev <arefev@swemel.ru>
+Cc: Ian Abbott <abbotti@mev.co.uk>,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
 	stable@vger.kernel.org
-Subject: Re: [PATCH V5 2/2] rpm-pkg: avoid install/remove the running kernel
-Date: Thu, 18 Jan 2024 15:12:45 +0100
-Message-ID: <20240118141246.370272-1-jtornosm@redhat.com>
-In-Reply-To: <CAK7LNARX==sMKVTGXutGMmMkfg1idGUYLhBLZvKZ0psdwmiUvQ@mail.gmail.com>
-References: <CAK7LNARX==sMKVTGXutGMmMkfg1idGUYLhBLZvKZ0psdwmiUvQ@mail.gmail.com>
+Subject: Re: [PATCH] comedi: drivers: ni_tio: Fix arithmetic expression
+ overflow
+Message-ID: <2024011842-groggy-badly-393c@gregkh>
+References: <20240118123747.45795-1-arefev@swemel.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118123747.45795-1-arefev@swemel.ru>
 
-> What is the problem with this?
-In my opinion, it is risky to remove the kernel that is running, that is
-the reason why I am trying to protect this.
-If you try to remove or update (and the running kernel is removed), if the
-kernel and modules are already preloaded in memory, it could not happen
-anything but some extra action could be necessary or automatically started,
-and even the new kernel could not boot.
-Fedora and others are taking this into account with upper tools and declare
-the running kernel as protected avoinding this action. But others
-(i.e. openSUSE Tumbleweed) allow this behavior.
-It may only be a safety measure but it can also be beneficial to avoid
-problems, just in case. 
-Besides, in this way, all the tested distributions would have the same
-behavior.
+On Thu, Jan 18, 2024 at 03:37:47PM +0300, Denis Arefev wrote:
+> The value of an arithmetic expression period_ns * 1000 is subject
+> to overflow due to a failure to cast operands to a larger data
+> type before performing arithmetic
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: 3e90b1c7ebe9 ("staging: comedi: ni_tio: tidy up ni_tio_set_clock_src() and helpers")
+> Cc: <stable@vger.kernel.org> # v5.15+ 
+> Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+> ---
+>  drivers/comedi/drivers/ni_tio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/comedi/drivers/ni_tio.c b/drivers/comedi/drivers/ni_tio.c
+> index da6826d77e60..acc914903c70 100644
+> --- a/drivers/comedi/drivers/ni_tio.c
+> +++ b/drivers/comedi/drivers/ni_tio.c
+> @@ -800,7 +800,7 @@ static int ni_tio_set_clock_src(struct ni_gpct *counter,
+>  				GI_PRESCALE_X2(counter_dev->variant) |
+>  				GI_PRESCALE_X8(counter_dev->variant), bits);
+>  	}
+> -	counter->clock_period_ps = period_ns * 1000;
+> +	counter->clock_period_ps = period_ns * 1000UL;
+>  	ni_tio_set_sync_mode(counter);
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
+> 
+> 
 
-If it is ok, I will create a following version patch describing the problem
-better and using indentation as you suggested for the other patch.
+Hi,
 
-Thanks
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Best regards
-José Ignacio
+You are receiving this message because of the following common error(s)
+as indicated below:
 
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
 
