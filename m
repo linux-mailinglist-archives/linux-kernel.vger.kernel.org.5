@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-29830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DFB6831428
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:08:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8131083142A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 09:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 711301C2284A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:08:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0BCD1F23155
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 08:09:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9282A35281;
-	Thu, 18 Jan 2024 07:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F1335883;
+	Thu, 18 Jan 2024 07:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i7rsVnzZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aEPYShIE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA9034CF0;
-	Thu, 18 Jan 2024 07:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A6B35291;
+	Thu, 18 Jan 2024 07:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705564776; cv=none; b=Ag144STAzQfZ683rethtELFdx3Rvm/ZEyBtUbjcbZ1UtsPGPGJcPd4Dy3Yd+fnFAZnjaN9vXkPVM3YvxnQSqhzcqCxTzhnVRcyVkIFV+QQHvV/UMGMTm97TnJsmrKvynTxbNwPAqCKhCf11m3zjXcjxOUJXROR1gMNJeLwMP4nI=
+	t=1705564778; cv=none; b=eo1hxdVvP4jUxuHmp6rtJUNfPyFKxKcf9ZYf24apo/hgsxdOZs83LKVizpfoTUoIoOzXOGE/L+hbT2m6hlZddOuF8nTboNt9YkVkMvdfR76njxpnTw5mtoKwTqiJ29qK/FqrIfl2mrRHnJ4Ufr+nE7rJ5vF4Koc25nmg3F29qBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705564776; c=relaxed/simple;
-	bh=RPsg4+ITmM9gFoQ7ZYe+JsyD9TMljUbzbnXkyjAN+G4=;
+	s=arc-20240116; t=1705564778; c=relaxed/simple;
+	bh=sch2oSklySkkA5uKtgIFo49P/8fkBuU14RBK4x6PEBU=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding; b=F9VL/bPndsbukQ8nWmKQVi+2HIfyVz8aC+F+AQLaO6sC3FPKKsWPJwz3A2DcIXoIBi9L9CukSbhVmuIqvE9B0pxEmqrO84TLYft87Dc6vVMwOWg3MPUoDWaOem/B/ABx3H0VlC+HdifkYdkPelDmlzT0Uj5BKU0tQR1l/rXLOMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i7rsVnzZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C647C433C7;
-	Thu, 18 Jan 2024 07:59:34 +0000 (UTC)
+	 Content-Transfer-Encoding; b=ETi4X8/tn685zd6cZWHBH1CFNwFSaCDx6B68dnzUxhM046deiCpPwUBAff3/GNADAmQ7wNTdwpzLUHalZucEF7ZVSUPstcXOnJeNNQUTF4O6AHe+SmsdEni/2G2+PD3l6XFOpzvP40pdHce4q3VHIDbPTvtUcXtG+q5O91U/pLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aEPYShIE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3CF4C43390;
+	Thu, 18 Jan 2024 07:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705564776;
-	bh=RPsg4+ITmM9gFoQ7ZYe+JsyD9TMljUbzbnXkyjAN+G4=;
+	s=k20201202; t=1705564778;
+	bh=sch2oSklySkkA5uKtgIFo49P/8fkBuU14RBK4x6PEBU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=i7rsVnzZNRbj8c9PpNiRg7tMJRfqPL27CBgh/2BYLhy+qMnsqAZ1SI3yukubMY6Pi
-	 AqeWgCRa9QCvNhT6DfZWACmnjtde1LUWdPnComt6Z0SC6DukGCv61sYaSpKPaMy5ED
-	 Tb2lkZz+jCZfbSru5IjhAQ3R7UyRWHJRoG2Q2d+ed2IFfP3HbrOknGR74/DblxShz3
-	 HfDdHL6wK5w6kd2sjsm4mOfCT2YWLVhkmgSkGHrsJul0PrUtSR7Pu2lWRfyXHB0YpQ
-	 PxZjwhTXiv4YCQpcKbcz+qchBV/Gz6yINg7rEhGp0Z6vJJzYvYlsq9D0uJWB+wPLr8
-	 ILHwZO3irzVsQ==
+	b=aEPYShIE76jCj+iduQRivOTb09yxfqTVTSqr5ORmMOkMCTfOhC5uEdCl48+co51+F
+	 kHXx1EHOJoFu7L5XxQyTQh+bh1JII43MUMi00CnBHVSvmYe3yS6x0M4CEEMHgTrfF5
+	 caJmj0QYayz73wDPVrOHF04dUQFTxMVl5C7BwodZoGZ7xot16aBBOava7BH92g07Hp
+	 Iim94CsF+B3D+FwbbhRR0E1AUiJXi6R7xlf+UP9W2NNvCYxoJ5m4zG7hdrjckv8NBo
+	 WOPmv1wgYSamFep6aK3I4PHzrHSi57FnB4rP5FAGimg5KXHRO4MvKYgH+eRdLPsRLG
+	 We3bbtudrbk2g==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 43/45] tty: vt: document the rest of struct consw
-Date: Thu, 18 Jan 2024 08:57:54 +0100
-Message-ID: <20240118075756.10541-44-jirislaby@kernel.org>
+Subject: [PATCH 44/45] tty: vt: fix up kernel-doc
+Date: Thu, 18 Jan 2024 08:57:55 +0100
+Message-ID: <20240118075756.10541-45-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240118075756.10541-1-jirislaby@kernel.org>
 References: <20240118075756.10541-1-jirislaby@kernel.org>
@@ -60,81 +60,276 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There are still members of struct consw which are not documented yet.
-Fix that up, so we can generate kernel-doc for that struct.
+selection.c and vt.c still uses tabs in the kernel-doc. This misrenders the
+functions in the output -- sphinx misinterprets the description. So
+remove these tabs, incl. those around dashes.
+
+'enum' keyword is needed before enum names. Fix that.
+
+Superfluous \n after the comments are also removed. They are not
+completely faulty, but this unifies all the kernel-doc in the files.
+
+Finally fix up the cross references.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- include/linux/console.h | 34 +++++++++++++++++++++++++---------
- 1 file changed, 25 insertions(+), 9 deletions(-)
+ drivers/tty/vt/selection.c | 30 ++++++-------
+ drivers/tty/vt/vt.c        | 86 +++++++++++++++++++-------------------
+ include/linux/console.h    |  6 +--
+ 3 files changed, 62 insertions(+), 60 deletions(-)
 
+diff --git a/drivers/tty/vt/selection.c b/drivers/tty/vt/selection.c
+index 34ee09f5a8f4..564341f1a74f 100644
+--- a/drivers/tty/vt/selection.c
++++ b/drivers/tty/vt/selection.c
+@@ -73,10 +73,12 @@ sel_pos(int n, bool unicode)
+ }
+ 
+ /**
+- *	clear_selection		-	remove current selection
++ * clear_selection - remove current selection
+  *
+- *	Remove the current selection highlight, if any from the console
+- *	holding the selection. The caller must hold the console lock.
++ * Remove the current selection highlight, if any from the console holding the
++ * selection.
++ *
++ * Locking: The caller must hold the console lock.
+  */
+ void clear_selection(void)
+ {
+@@ -110,13 +112,13 @@ static inline int inword(const u32 c)
+ }
+ 
+ /**
+- *	sel_loadlut()		-	load the LUT table
+- *	@lut: user table
++ * sel_loadlut() - load the LUT table
++ * @lut: user table
+  *
+- *	Load the LUT table from user space. Make a temporary copy so a partial
+- *	update doesn't make a mess.
++ * Load the LUT table from user space. Make a temporary copy so a partial
++ * update doesn't make a mess.
+  *
+- *	Locking: The console lock is acquired.
++ * Locking: The console lock is acquired.
+  */
+ int sel_loadlut(u32 __user *lut)
+ {
+@@ -173,14 +175,14 @@ static int store_utf8(u32 c, char *p)
+ }
+ 
+ /**
+- *	set_selection_user	-	set the current selection.
+- *	@sel: user selection info
+- *	@tty: the console tty
++ * set_selection_user - set the current selection.
++ * @sel: user selection info
++ * @tty: the console tty
+  *
+- *	Invoked by the ioctl handle for the vt layer.
++ * Invoked by the ioctl handle for the vt layer.
+  *
+- *	The entire selection process is managed under the console_lock. It's
+- *	 a lot under the lock but its hardly a performance path
++ * Locking: The entire selection process is managed under the console_lock.
++ * It's a lot under the lock but its hardly a performance path.
+  */
+ int set_selection_user(const struct tiocl_selection __user *sel,
+ 		       struct tty_struct *tty)
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 35d303017653..72d089b502fe 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1115,21 +1115,20 @@ static inline int resize_screen(struct vc_data *vc, int width, int height,
+ }
+ 
+ /**
+- *	vc_do_resize	-	resizing method for the tty
+- *	@tty: tty being resized
+- *	@vc: virtual console private data
+- *	@cols: columns
+- *	@lines: lines
+- *	@from_user: invoked by a user?
++ * vc_do_resize - resizing method for the tty
++ * @tty: tty being resized
++ * @vc: virtual console private data
++ * @cols: columns
++ * @lines: lines
++ * @from_user: invoked by a user?
+  *
+- *	Resize a virtual console, clipping according to the actual constraints.
+- *	If the caller passes a tty structure then update the termios winsize
+- *	information and perform any necessary signal handling.
++ * Resize a virtual console, clipping according to the actual constraints. If
++ * the caller passes a tty structure then update the termios winsize
++ * information and perform any necessary signal handling.
+  *
+- *	Caller must hold the console semaphore. Takes the termios rwsem and
+- *	ctrl.lock of the tty IFF a tty is passed.
++ * Locking: Caller must hold the console semaphore. Takes the termios rwsem and
++ * ctrl.lock of the tty IFF a tty is passed.
+  */
+-
+ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+ 			unsigned int cols, unsigned int lines, bool from_user)
+ {
+@@ -1277,16 +1276,17 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+ }
+ 
+ /**
+- *	__vc_resize		-	resize a VT
+- *	@vc: virtual console
+- *	@cols: columns
+- *	@rows: rows
+- *	@from_user: invoked by a user?
++ * __vc_resize - resize a VT
++ * @vc: virtual console
++ * @cols: columns
++ * @rows: rows
++ * @from_user: invoked by a user?
++ *
++ * Resize a virtual console as seen from the console end of things. We use the
++ * common vc_do_resize() method to update the structures.
+  *
+- *	Resize a virtual console as seen from the console end of things. We
+- *	use the common vc_do_resize methods to update the structures. The
+- *	caller must hold the console sem to protect console internals and
+- *	vc->port.tty
++ * Locking: The caller must hold the console sem to protect console internals
++ * and @vc->port.tty.
+  */
+ int __vc_resize(struct vc_data *vc, unsigned int cols, unsigned int rows,
+ 		bool from_user)
+@@ -1296,16 +1296,15 @@ int __vc_resize(struct vc_data *vc, unsigned int cols, unsigned int rows,
+ EXPORT_SYMBOL(__vc_resize);
+ 
+ /**
+- *	vt_resize		-	resize a VT
+- *	@tty: tty to resize
+- *	@ws: winsize attributes
++ * vt_resize - resize a VT
++ * @tty: tty to resize
++ * @ws: winsize attributes
+  *
+- *	Resize a virtual terminal. This is called by the tty layer as we
+- *	register our own handler for resizing. The mutual helper does all
+- *	the actual work.
++ * Resize a virtual terminal. This is called by the tty layer as we register
++ * our own handler for resizing. The mutual helper does all the actual work.
+  *
+- *	Takes the console sem and the called methods then take the tty
+- *	termios_rwsem and the tty ctrl.lock in that order.
++ * Locking: Takes the console sem and the called methods then take the tty
++ * termios_rwsem and the tty ctrl.lock in that order.
+  */
+ static int vt_resize(struct tty_struct *tty, struct winsize *ws)
+ {
+@@ -2647,8 +2646,8 @@ static inline int vc_translate_ascii(const struct vc_data *vc, int c)
+ 
+ 
+ /**
+- * vc_sanitize_unicode - Replace invalid Unicode code points with U+FFFD
+- * @c: the received character, or U+FFFD for invalid sequences.
++ * vc_sanitize_unicode - Replace invalid Unicode code points with ``U+FFFD``
++ * @c: the received character, or ``U+FFFD`` for invalid sequences.
+  */
+ static inline int vc_sanitize_unicode(const int c)
+ {
+@@ -2659,14 +2658,15 @@ static inline int vc_sanitize_unicode(const int c)
+ }
+ 
+ /**
+- * vc_translate_unicode - Combine UTF-8 into Unicode in @vc_utf_char
++ * vc_translate_unicode - Combine UTF-8 into Unicode in &vc_data.vc_utf_char
+  * @vc: virtual console
+  * @c: character to translate
+  * @rescan: we return true if we need more (continuation) data
+  *
+- * @vc_utf_char is the being-constructed unicode character.
+- * @vc_utf_count is the number of continuation bytes still expected to arrive.
+- * @vc_npar is the number of continuation bytes arrived so far.
++ * * &vc_data.vc_utf_char is the being-constructed unicode character.
++ * * &vc_data.vc_utf_count is the number of continuation bytes still expected to
++ *   arrive.
++ * * &vc_data.vc_npar is the number of continuation bytes arrived so far.
+  */
+ static int vc_translate_unicode(struct vc_data *vc, int c, bool *rescan)
+ {
+@@ -3044,16 +3044,16 @@ struct tty_driver *console_driver;
+ #ifdef CONFIG_VT_CONSOLE
+ 
+ /**
+- * vt_kmsg_redirect() - Sets/gets the kernel message console
+- * @new:	The new virtual terminal number or -1 if the console should stay
+- * 		unchanged
++ * vt_kmsg_redirect() - sets/gets the kernel message console
++ * @new: the new virtual terminal number or -1 if the console should stay
++ *	unchanged
+  *
+  * By default, the kernel messages are always printed on the current virtual
+  * console. However, the user may modify that default with the
+- * TIOCL_SETKMSGREDIRECT ioctl call.
++ * %TIOCL_SETKMSGREDIRECT ioctl call.
+  *
+  * This function sets the kernel message console to be @new. It returns the old
+- * virtual console number. The virtual terminal number 0 (both as parameter and
++ * virtual console number. The virtual terminal number %0 (both as parameter and
+  * return value) means no redirection (i.e. always printed on the currently
+  * active console).
+  *
+@@ -3061,8 +3061,8 @@ struct tty_driver *console_driver;
+  * value is not modified. You may use the macro vt_get_kmsg_redirect() in that
+  * case to make the code more understandable.
+  *
+- * When the kernel is compiled without CONFIG_VT_CONSOLE, this function ignores
+- * the parameter and always returns 0.
++ * When the kernel is compiled without %CONFIG_VT_CONSOLE, this function ignores
++ * the parameter and always returns %0.
+  */
+ int vt_kmsg_redirect(int new)
+ {
+@@ -3974,7 +3974,7 @@ static void vtconsole_deinit_device(struct con_driver *con)
+  * RETURNS: zero if unbound, nonzero if bound
+  *
+  * Drivers can call this and if zero, they should release
+- * all resources allocated on con_startup()
++ * all resources allocated on &consw.con_startup()
+  */
+ int con_is_bound(const struct consw *csw)
+ {
 diff --git a/include/linux/console.h b/include/linux/console.h
-index 698a2f7576b0..e0d5d84e918a 100644
+index e0d5d84e918a..b105675b7ec4 100644
 --- a/include/linux/console.h
 +++ b/include/linux/console.h
-@@ -45,8 +45,11 @@ enum vc_intensity;
- /**
-  * struct consw - callbacks for consoles
-  *
-+ * @owner:      the module to get references of when this console is used
-+ * @con_startup: set up the console and return its name (like VGA, EGA, ...)
-  * @con_init:   initialize the console on @vc. @init is true for the very first
-  *		call on this @vc.
-+ * @con_deinit: deinitialize the console from @vc.
-  * @con_clear:  erase @count characters at [@x, @y] on @vc. @count >= 1.
-  * @con_putc:   emit one character with attributes @ca to [@x, @y] on @vc.
-  *		(optional -- @con_putcs would be called instead)
-@@ -60,12 +63,33 @@ enum vc_intensity;
-  * @con_blank:  blank/unblank the console. The target mode is passed in @blank.
-  *		@mode_switch is set if changing from/to text/graphics. The hook
-  *		is supposed to return true if a redraw is needed.
-- * @con_set_palette: sets the palette of the console to @table (optional)
-+ * @con_font_set: set console @vc font to @font with height @vpitch. @flags can
-+ *		be %KD_FONT_FLAG_DONT_RECALC. (optional)
-+ * @con_font_get: fetch the current font on @vc of height @vpitch into @font.
-+ *		(optional)
-+ * @con_font_default: set default font on @vc. @name can be %NULL or font name
-+ *		to search for. @font can be filled back. (optional)
-+ * @con_resize:	resize the @vc console to @width x @height. @from_user is true
-+ *		when this change comes from the user space.
-+ * @con_set_palette: sets the palette of the console @vc to @table (optional)
-  * @con_scrolldelta: the contents of the console should be scrolled by @lines.
-  *		     Invoked by user. (optional)
-  * @con_set_origin: set origin (see &vc_data::vc_origin) of the @vc. If not
-  *		provided or returns false, the origin is set to
-  *		@vc->vc_screenbuf. (optional)
-+ * @con_save_screen: save screen content into @vc->vc_screenbuf. Called e.g.
-+ *		upon entering graphics. (optional)
-+ * @con_build_attr: build attributes based on @color, @intensity and other
-+ *		parameters. The result is used for both normal and erase
-+ *		characters. (optional)
-+ * @con_invert_region: invert a region of length @count on @vc starting at @p.
-+ *		(optional)
-+ * @con_debug_enter: prepare the console for the debugger. This includes, but
-+ *		is not limited to, unblanking the console, loading an
-+ *		appropriate palette, and allowing debugger generated output.
-+ *		(optional)
-+ * @con_debug_leave: restore the console to its pre-debug state as closely as
-+ *		possible. (optional)
+@@ -163,7 +163,7 @@ static inline void con_debug_leave(void) { }
   */
- struct consw {
- 	struct module *owner;
-@@ -104,15 +128,7 @@ struct consw {
- 			enum vc_intensity intensity,
- 			bool blink, bool underline, bool reverse, bool italic);
- 	void	(*con_invert_region)(struct vc_data *vc, u16 *p, int count);
--	/*
--	 * Prepare the console for the debugger.  This includes, but is not
--	 * limited to, unblanking the console, loading an appropriate
--	 * palette, and allowing debugger generated output.
--	 */
- 	void	(*con_debug_enter)(struct vc_data *vc);
--	/*
--	 * Restore the console to its pre-debug state as closely as possible.
--	 */
- 	void	(*con_debug_leave)(struct vc_data *vc);
- };
  
+ /**
+- * cons_flags - General console flags
++ * enum cons_flags - General console flags
+  * @CON_PRINTBUFFER:	Used by newly registered consoles to avoid duplicate
+  *			output of messages that were already shown by boot
+  *			consoles or read by userspace via syslog() syscall.
+@@ -244,7 +244,7 @@ struct nbcon_state {
+ static_assert(sizeof(struct nbcon_state) <= sizeof(int));
+ 
+ /**
+- * nbcon_prio - console owner priority for nbcon consoles
++ * enum nbcon_prio - console owner priority for nbcon consoles
+  * @NBCON_PRIO_NONE:		Unused
+  * @NBCON_PRIO_NORMAL:		Normal (non-emergency) usage
+  * @NBCON_PRIO_EMERGENCY:	Emergency output (WARN/OOPS...)
+@@ -476,7 +476,7 @@ static inline bool console_is_registered(const struct console *con)
+  * for_each_console() - Iterator over registered consoles
+  * @con:	struct console pointer used as loop cursor
+  *
+- * The console list and the console->flags are immutable while iterating.
++ * The console list and the &console.flags are immutable while iterating.
+  *
+  * Requires console_list_lock to be held.
+  */
 -- 
 2.43.0
 
