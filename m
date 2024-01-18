@@ -1,116 +1,217 @@
-Return-Path: <linux-kernel+bounces-30127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F7BB8319E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 14:03:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9AA8318FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:16:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1B0AB25EAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 13:03:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C86C21F27455
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 12:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1432250FF;
-	Thu, 18 Jan 2024 13:03:31 +0000 (UTC)
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77082C9D;
-	Thu, 18 Jan 2024 13:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.99.105.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8755724B3A;
+	Thu, 18 Jan 2024 12:15:47 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A51524208
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 12:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705583011; cv=none; b=ihBcy18nBkqEbCygG9PG96hQjXgu2ngMwKy3rDWhaEiJM32CJBvwsjHZW0niwjAVUs3cTcsC57u9hq9ly15MZu9cxPpNuFFXcaUqMfkRn1EVc4KwvNYP0xxsBOBlL4eN1dc/IAImqCRHyoLivjYJ9/BnGQldodyuVQnbRwXNG6Q=
+	t=1705580147; cv=none; b=hrlwzYOEin7oE7WDFTxi97Ev4cTJb+4uRpfjChN80Nsw2chjgpz3HU7d2SbCXWICdKUAX/+nWlgWqdCYNBniCM1Oxl8FlhYx5uUuXAEi4bpRqJmiXGuFyhB+OUulwYDkRBj2M74IhBLBUCjwyegLQDA20IHxMPCyxr7MrHEmSxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705583011; c=relaxed/simple;
-	bh=b/kcvM1x17lzfUd+fGdYlf9PnRElI5xtL5KheTucpFg=;
-	h=Received:From:To:Subject:Date:Message-Id:X-Mailer:X-CM-TRANSID:
-	 X-Coremail-Antispam:X-CM-SenderInfo; b=Te4ToO0rUMtP11URIstnHkVSTHQ3OATlgcE/Kb1/FDDgOb+ofX40nJ+TvE9Hm1SZVVVfnHq/Y6SziFQvykX7CS2tDFbrm55F9BgL6+AivHj6nMRLrvS8WNY4AVn02gY64MFWgF1OqP7JKRiSKvKj8dE0IpguttI9xW1ei0VOHGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=167.99.105.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from localhost.localdomain (unknown [36.24.98.148])
-	by mail-app4 (Coremail) with SMTP id cS_KCgCXs4KQIally_c8AA--.46623S4;
-	Thu, 18 Jan 2024 21:03:13 +0800 (CST)
-From: Lin Ma <linma@zju.edu.cn>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linma@zju.edu.cn,
-	netdev@vger.kernel.org,
+	s=arc-20240116; t=1705580147; c=relaxed/simple;
+	bh=XReaYeH4oa5Yd0af0EK3ve6Wbk3NV4Ikk1OxA1yci94=;
+	h=Received:Received:Received:From:To:Subject:Date:Message-Id:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-CM-TRANSID:
+	 X-Coremail-Antispam:X-CM-SenderInfo; b=kD8c+gpSXS7bafkGKJfpEUT/PmStYfyACwjAlvqiOvEQFTBN1NYZKw7nfvsX9fSfDvZismdtOuAo1ZQPXLJPtcIk3WIMZyi54cN0LwaJkdy+2umy1d3iGJ7UYQzPxvHF/L1wyjWhCCGj04Ld0eXREoXsYBSylzIGjOEWfdd76cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TG1sr6gJBz4f3mHh
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 20:15:28 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 15D6B1A016E
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 20:15:35 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP2 (Coremail) with SMTP id Syh0CgAnSQxlFqllWvbnBA--.43072S2;
+	Thu, 18 Jan 2024 20:15:34 +0800 (CST)
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: akpm@linux-foundation.org,
+	jack@suse.cz,
+	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] vlan: skip nested type that is not IFLA_VLAN_QOS_MAPPING
-Date: Thu, 18 Jan 2024 21:03:06 +0800
-Message-Id: <20240118130306.1644001-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cS_KCgCXs4KQIally_c8AA--.46623S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr47ZrWrZF17Kw1xtF43Jrb_yoW8Cw18pF
-	y5Gry7Gw4DJF9YgFWIqF48XayxZFnrJr18uF1Fka1Fkrn8tF9rtFWUWFnF9r13ZFZ5Aa45
-	tFnIvF4j934DWrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYCJmUU
-	UUU
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+Subject: [PATCH] flex_proportions: remove unused fprop_local_single
+Date: Fri, 19 Jan 2024 04:13:21 +0800
+Message-Id: <20240118201321.759174-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgAnSQxlFqllWvbnBA--.43072S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF47CryrKFyUXry7ArWUJwb_yoWrGFy7pF
+	nxK3yYgr4xZa18Ww4kA3ySywn7t348Jr18Ja47Cw4kCwsFyw1vqas7KF4rZa4Yk34rZrnY
+	gFn8KFn8WFZ8AF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+	8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_
+	Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r
+	xl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
+	0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z2
+	80aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28I
+	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+	IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+	87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j-6pPUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-In the vlan_changelink function, a loop is used to parse the nested
-attributes IFLA_VLAN_EGRESS_QOS and IFLA_VLAN_INGRESS_QOS in order to
-obtain the struct ifla_vlan_qos_mapping. These two nested attributes are
-checked in the vlan_validate_qos_map function, which calls
-nla_validate_nested_deprecated with the vlan_map_policy.
+The single variant of flex_proportions is not used. Simply remove it.
 
-However, this deprecated validator applies a LIBERAL strictness, allowing
-the presence of an attribute with the type IFLA_VLAN_QOS_UNSPEC.
-Consequently, the loop in vlan_changelink may parse an attribute of type
-IFLA_VLAN_QOS_UNSPEC and believe it carries a payload of
-struct ifla_vlan_qos_mapping, which is not necessarily true.
-
-To address this issue and ensure compatibility, this patch introduces two
-type checks that skip attributes whose type is not IFLA_VLAN_QOS_MAPPING.
-
-Fixes: 07b5b17e157b ("[VLAN]: Use rtnl_link API")
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
-V1 -> V2: make net-next to net as suggested by Paolo
-          and add Fixes tag for this one
+ include/linux/flex_proportions.h | 32 -------------
+ lib/flex_proportions.c           | 77 --------------------------------
+ 2 files changed, 109 deletions(-)
 
- net/8021q/vlan_netlink.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/net/8021q/vlan_netlink.c b/net/8021q/vlan_netlink.c
-index 214532173536..a3b68243fd4b 100644
---- a/net/8021q/vlan_netlink.c
-+++ b/net/8021q/vlan_netlink.c
-@@ -118,12 +118,16 @@ static int vlan_changelink(struct net_device *dev, struct nlattr *tb[],
- 	}
- 	if (data[IFLA_VLAN_INGRESS_QOS]) {
- 		nla_for_each_nested(attr, data[IFLA_VLAN_INGRESS_QOS], rem) {
-+			if (nla_type(attr) != IFLA_VLAN_QOS_MAPPING)
-+				continue;
- 			m = nla_data(attr);
- 			vlan_dev_set_ingress_priority(dev, m->to, m->from);
- 		}
- 	}
- 	if (data[IFLA_VLAN_EGRESS_QOS]) {
- 		nla_for_each_nested(attr, data[IFLA_VLAN_EGRESS_QOS], rem) {
-+			if (nla_type(attr) != IFLA_VLAN_QOS_MAPPING)
-+				continue;
- 			m = nla_data(attr);
- 			err = vlan_dev_set_egress_priority(dev, m->from, m->to);
- 			if (err)
+diff --git a/include/linux/flex_proportions.h b/include/linux/flex_proportions.h
+index 3e378b1fb0bc..e9a72fd0bfe7 100644
+--- a/include/linux/flex_proportions.h
++++ b/include/linux/flex_proportions.h
+@@ -38,38 +38,6 @@ int fprop_global_init(struct fprop_global *p, gfp_t gfp);
+ void fprop_global_destroy(struct fprop_global *p);
+ bool fprop_new_period(struct fprop_global *p, int periods);
+ 
+-/*
+- *  ---- SINGLE ----
+- */
+-struct fprop_local_single {
+-	/* the local events counter */
+-	unsigned long events;
+-	/* Period in which we last updated events */
+-	unsigned int period;
+-	raw_spinlock_t lock;	/* Protect period and numerator */
+-};
+-
+-#define INIT_FPROP_LOCAL_SINGLE(name)			\
+-{	.lock = __RAW_SPIN_LOCK_UNLOCKED(name.lock),	\
+-}
+-
+-int fprop_local_init_single(struct fprop_local_single *pl);
+-void fprop_local_destroy_single(struct fprop_local_single *pl);
+-void __fprop_inc_single(struct fprop_global *p, struct fprop_local_single *pl);
+-void fprop_fraction_single(struct fprop_global *p,
+-	struct fprop_local_single *pl, unsigned long *numerator,
+-	unsigned long *denominator);
+-
+-static inline
+-void fprop_inc_single(struct fprop_global *p, struct fprop_local_single *pl)
+-{
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	__fprop_inc_single(p, pl);
+-	local_irq_restore(flags);
+-}
+-
+ /*
+  * ---- PERCPU ----
+  */
+diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
+index 83332fefa6f4..84ecccddc771 100644
+--- a/lib/flex_proportions.c
++++ b/lib/flex_proportions.c
+@@ -83,83 +83,6 @@ bool fprop_new_period(struct fprop_global *p, int periods)
+ 	return true;
+ }
+ 
+-/*
+- * ---- SINGLE ----
+- */
+-
+-int fprop_local_init_single(struct fprop_local_single *pl)
+-{
+-	pl->events = 0;
+-	pl->period = 0;
+-	raw_spin_lock_init(&pl->lock);
+-	return 0;
+-}
+-
+-void fprop_local_destroy_single(struct fprop_local_single *pl)
+-{
+-}
+-
+-static void fprop_reflect_period_single(struct fprop_global *p,
+-					struct fprop_local_single *pl)
+-{
+-	unsigned int period = p->period;
+-	unsigned long flags;
+-
+-	/* Fast path - period didn't change */
+-	if (pl->period == period)
+-		return;
+-	raw_spin_lock_irqsave(&pl->lock, flags);
+-	/* Someone updated pl->period while we were spinning? */
+-	if (pl->period >= period) {
+-		raw_spin_unlock_irqrestore(&pl->lock, flags);
+-		return;
+-	}
+-	/* Aging zeroed our fraction? */
+-	if (period - pl->period < BITS_PER_LONG)
+-		pl->events >>= period - pl->period;
+-	else
+-		pl->events = 0;
+-	pl->period = period;
+-	raw_spin_unlock_irqrestore(&pl->lock, flags);
+-}
+-
+-/* Event of type pl happened */
+-void __fprop_inc_single(struct fprop_global *p, struct fprop_local_single *pl)
+-{
+-	fprop_reflect_period_single(p, pl);
+-	pl->events++;
+-	percpu_counter_add(&p->events, 1);
+-}
+-
+-/* Return fraction of events of type pl */
+-void fprop_fraction_single(struct fprop_global *p,
+-			   struct fprop_local_single *pl,
+-			   unsigned long *numerator, unsigned long *denominator)
+-{
+-	unsigned int seq;
+-	s64 num, den;
+-
+-	do {
+-		seq = read_seqcount_begin(&p->sequence);
+-		fprop_reflect_period_single(p, pl);
+-		num = pl->events;
+-		den = percpu_counter_read_positive(&p->events);
+-	} while (read_seqcount_retry(&p->sequence, seq));
+-
+-	/*
+-	 * Make fraction <= 1 and denominator > 0 even in presence of percpu
+-	 * counter errors
+-	 */
+-	if (den <= num) {
+-		if (num)
+-			den = num;
+-		else
+-			den = 1;
+-	}
+-	*denominator = den;
+-	*numerator = num;
+-}
+-
+ /*
+  * ---- PERCPU ----
+  */
 -- 
-2.17.1
+2.30.0
 
 
