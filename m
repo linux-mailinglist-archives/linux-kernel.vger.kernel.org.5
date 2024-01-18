@@ -1,229 +1,239 @@
-Return-Path: <linux-kernel+bounces-30395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 133A0831E2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:09:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1845831E31
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 18:11:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF9B428350A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:09:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EDA71F221DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 17:11:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C08862C84B;
-	Thu, 18 Jan 2024 17:08:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0362C6BF;
+	Thu, 18 Jan 2024 17:11:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TM3sI8z0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PleZcimN"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C272C6AA
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:08:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D9F28E07
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:11:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705597728; cv=none; b=Vo7KkeOwVL750vhkB8HiVHE9GBiU6gkB6riKOkM/5Wd5fSy7zIk4nPRO0ReUqDHre0yTC3x3crSYAGJlKiCNuAd4OFdzs+Zs/EZwDh105kSTKXIDFt7Md/YFzEq9+KW5ZMOhZEBPUrGxHPgSJSNrWulvNw/9fGsBTH+UeB5rrQI=
+	t=1705597868; cv=none; b=fj/ZH1Lt0CWvh+JadRwKmaHudwL0CvRiADhWSlje4whluQaGgKUSo7/gKcAOFL7cB9XWfLeT4Gzui4fl1WcBQ3tDkFGjPvVJV3AJzFpHIcN4AXFZ7YymzvV4mhftYGJ/cFbMGEvSv2cPwGfPArs9qDLC5QyTAvgJkPbkrD7kKCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705597728; c=relaxed/simple;
-	bh=BqHMQ6YFIEXyylSMaRcciYAELO9Rvlk6sWFPcaGy7lY=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 MIME-Version:Content-Type:Content-Disposition; b=KrqLXb9oiEKLSTad8q8swXwYE+E1COvaFZmeacJUtCewgEOlBF6CAYYPP97f0THwCC2+zUE6I8A0xIbj3Km2fL+KMWAaBnurcjVAZ9TIx9EHRptKuvV/RVibBVV2ncUPats+aMHqlk/MrZRmWNyLUCgECHd2BdZ4Cz4sMKyb4q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TM3sI8z0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D522EC433F1;
-	Thu, 18 Jan 2024 17:08:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705597727;
-	bh=BqHMQ6YFIEXyylSMaRcciYAELO9Rvlk6sWFPcaGy7lY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=TM3sI8z0/fLbaBsVARuM0qfPzLel71oCvcuLvOpc1FwFWRpPlQej5E6zDU2UP54mO
-	 8BSchZRU5yCGfeP6gb7WY92/yhnS02D8MYlOb8vwPD4K43WDVJ1z+fMdo4x0v8LbBo
-	 ap51aUNozhn5FABjiyzxLbwDcUWesRJ+UVcKSa0Q3RZo2GhgVe8rhs7Z4gCOZR1GuC
-	 3+7EV95euytlzKQM8cyrfriWgM+6H328wVPNEdD8nNuS7bMdaRqtRuAj7R/eAv+FjR
-	 mkUoN0uWvOUMB6jalDgYTDkHYYlyGlJP7pXVJIawVCcau2t831FRnHWcr+Cn9YwWEP
-	 lCPKMF7UFg88Q==
-Date: Thu, 18 Jan 2024 22:38:43 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: Generic phy updates for 6.8
-Message-ID: <ZalbG7hfGcZ0USyt@matsya>
+	s=arc-20240116; t=1705597868; c=relaxed/simple;
+	bh=tEn9ywLTxk6B/I4exfiBCkTT6ibFHMsfkFGhRP30whw=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type; b=qksmNIIgkzZEbN7V/DF1tNv8+amh7HWCCtwcP3v1cUYqSR6F3phtgcbpqr5sTAlrjCLtJXwAHSuMbEqzgs/dVnEMTADWo5Pmdv7HcvGIPeuLxmk5rnSV5YXToL+X60sXHNi5g9+Y+VHLRMkoRcDjbNi2HMPxN0F1NyQi+dHVsUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PleZcimN; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-28beb1d946fso10430811a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 09:11:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705597866; x=1706202666; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zB8NheDOjoyRg4iK1bMpm+myTppQTgpQZzU6VcukInQ=;
+        b=PleZcimNpWtnjfe0txtCBUi+AvATFZZw9RSfP1AtB89ac6I8xr/+tskLjYO0VGXb61
+         3CxZwqiPuKotJxeoNEANphrZ3h13EO04jjTZjH4ZLc3XC900IMKXWFzvEwTaZcMA5FNT
+         HJLtwTzjxzMQnILp1hogRXxhsf+DoI6XhZJrh/bJkDL3hbFf2MKRtCDS2ESL3IOp37OW
+         d/QzzrdsGW+8xkS6GnfPDLLRbeCD0nKI6lH1xxgkH9+qtk9nkSdl1B2xby+TN++6tbST
+         Gm7H+YDgHuCHnyEEOHE5ut/+zoyX00Jcb/xNoD2g5PX872al8Le+2Ge2CQ/mlslxzxJu
+         Zzpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705597866; x=1706202666;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zB8NheDOjoyRg4iK1bMpm+myTppQTgpQZzU6VcukInQ=;
+        b=jIU+G49DL/ghmJD8iW0epmlFwoP6fnSiRIg4ErcUG7iBY+kpnDrU3KLRWOhP3W33kc
+         x0cLFyt4YH3vK/tt3HPd5vjjix2xb+H1HBGQzn5pXs7GXyi0QpMF55y3qL5F2rdfX7Lk
+         MDTyLxUqK6PFlN+T47KOIzyAQrt6oyFO/OXJKsG4HKvHWgLdEYgxkGzyFn54xPae+Xyj
+         m0rwFXYTPrHNrpjvQ5KYBsbCT5Bg7OTxCA0ruOufYeLClyLhb8aPOLwUE3SkQBtdE+kE
+         iyFJIZrIia1NnL2W87L5xZkcTgUL25hfoiWVsuqCIg9i9pn6nhxM31ult8+vZaq42mbJ
+         rShQ==
+X-Gm-Message-State: AOJu0YzjY7df/XlFLT0IkCe52fN+W3FGQRHYmWI6M4TFAcxI4qWlGrCV
+	qgECxhR1MjJh6Qi/Nt6G964VfWo32u4dkXnonkkW5wNiakpPg8SDNwJdaZ6YmjSXBc2zvzRAEOM
+	6etBZ24hV3jyYjOVOWBCcfIuxn22qQ/v3qJL2eg==
+X-Google-Smtp-Source: AGHT+IGjxFKnkW2noyig5jiMJxskr5bo/hw2iZcqtaYerw+3f5m8daszr4llId9kdHV76gaWgswow7TjztXoTR7Dr2U=
+X-Received: by 2002:a17:90a:6c06:b0:28e:7163:855d with SMTP id
+ x6-20020a17090a6c0600b0028e7163855dmr986389pjj.53.1705597865981; Thu, 18 Jan
+ 2024 09:11:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZTEEkJLh/19BT52x"
-Content-Disposition: inline
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
+ <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
+ <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com>
+ <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr> <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
+ <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr> <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr>
+ <CAKfTPtDrULyOB9+RhjoPfCpHKVhx5kRf6dq79DSE6jZgsEairw@mail.gmail.com>
+ <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr> <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr>
+ <CAKfTPtCAcHuzhcDvry6_nH2K29wc-LEo2yOi-J-mnZkwMvGDbw@mail.gmail.com>
+ <cfae246d-9383-59d-ee5b-81ea3dd0a795@inria.fr> <CAKfTPtD0B29zadkeEOCWvry123zWVEEm41ouKj7noXwQdoh2+Q@mail.gmail.com>
+ <7a845b43-bd8e-6c7d-6bca-2e6f174f671@inria.fr> <36f2cc93-db10-5977-78ab-d9d07c3f445@inria.fr>
+ <CAKfTPtA31Z0N9hd4z_GPvoZwK=KTf4fPbx_jDbK653mdVDLEbw@mail.gmail.com> <424169db-49df-f168-d7f7-b48efe6ada@inria.fr>
+In-Reply-To: <424169db-49df-f168-d7f7-b48efe6ada@inria.fr>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 18 Jan 2024 18:10:54 +0100
+Message-ID: <CAKfTPtB4R3ZCxgnLLz-uVFBEaAGv6CtKTTXSYP5PB59-U7kbhQ@mail.gmail.com>
+Subject: Re: EEVDF and NUMA balancing
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 18 Jan 2024 at 17:50, Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+>
+>
+> On Thu, 18 Jan 2024, Vincent Guittot wrote:
+>
+> > Hi Julia,
+> >
+> > Sorry for the delay. I have been involved on other perf regression
+> >
+> > On Fri, 5 Jan 2024 at 18:27, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > >
+> > >
+> > >
+> > > On Fri, 5 Jan 2024, Julia Lawall wrote:
+> > >
+> > > >
+> > > >
+> > > > On Fri, 5 Jan 2024, Vincent Guittot wrote:
+> > > >
+> > > > > On Fri, 5 Jan 2024 at 15:51, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > > > >
+> > > > > > > Your system is calling the polling mode and not the default
+> > > > > > > cpuidle_idle_call() ? This could explain why I don't see such problem
+> > > > > > > on my system which doesn't have polling
+> > > > > > >
+> > > > > > > Are you forcing the use of polling mode ?
+> > > > > > > If yes, could you check that this problem disappears without forcing
+> > > > > > > polling mode ?
+> > > > > >
+> > > > > > I expanded the code in do_idle to:
+> > > > > >
+> > > > > >                 if (cpu_idle_force_poll) { c1++;
+> > > > > >                         tick_nohz_idle_restart_tick();
+> > > > > >                         cpu_idle_poll();
+> > > > > >                 } else if (tick_check_broadcast_expired()) { c2++;
+> > > > > >                         tick_nohz_idle_restart_tick();
+> > > > > >                         cpu_idle_poll();
+> > > > > >                 } else { c3++;
+> > > > > >                         cpuidle_idle_call();
+> > > > > >                 }
+> > > > > >
+> > > > > > Later, I have:
+> > > > > >
+> > > > > >         trace_printk("force poll: %d: c1: %d, c2: %d, c3: %d\n",cpu_idle_force_poll, c1, c2, c3);
+> > > > > >         flush_smp_call_function_queue();
+> > > > > >         schedule_idle();
+> > > > > >
+> > > > > > force poll, c1 and c2 are always 0, and c3 is always some non-zero value.
+> > > > > > Sometimes small (often 1), and sometimes large (304 or 305).
+> > > > > >
+> > > > > > So I don't think it's calling cpu_idle_poll().
+> > > > >
+> > > > > I agree that something else
+> > > > >
+> > > > > >
+> > > > > > x86 has TIF_POLLING_NRFLAG defined to be a non zero value, which I think
+> > > > > > is sufficient to cause the issue.
+> > > > >
+> > > > > Could you trace trace_sched_wake_idle_without_ipi() ans csd traces as well ?
+> > > > > I don't understand what set need_resched() in your case; having in
+> > > > > mind that I don't see the problem on my Arm systems and IIRC Peter
+> > > > > said that he didn't face the problem on his x86 system.
+> > > >
+> > > > TIF_POLLING_NRFLAG doesn't seem to be defined on Arm.
+> > > >
+> > > > Peter said that he didn't see the problem, but perhaps that was just
+> > > > random.  It requires a NUMA move to occur.  I make 20 runs to be sure to
+> > > > see the problem at least once.  But another machine might behave
+> > > > differently.
+> > > >
+> > > > I believe the call chain is:
+> > > >
+> > > > scheduler_tick
+> > > >   trigger_load_balance
+> > > >     nohz_balancer_kick
+> > > >       kick_ilb
+> > > >         smp_call_function_single_async
+> > > >           generic_exec_single
+> > > >             __smp_call_single_queue
+> > > >               send_call_function_single_ipi
+> > > >                 call_function_single_prep_ipi
+> > > >                   set_nr_if_polling <====== sets need_resched
+> > > >
+> > > > I'll make a trace to reverify that.
+> > >
+> > > This is what I see at a tick, which corresponds to the call chain shown
+> > > above:
+> > >
+> > >           bt.B.x-4184  [046]   466.410605: bputs:                scheduler_tick: calling trigger_load_balance
+> > >           bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling nohz_balancer_kick
+> > >           bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling kick_ilb
+> > >           bt.B.x-4184  [046]   466.410607: bprint:               trigger_load_balance: calling smp_call_function_single_async 22
+> > >           bt.B.x-4184  [046]   466.410607: bputs:                smp_call_function_single_async: calling generic_exec_single
+> > >           bt.B.x-4184  [046]   466.410607: bputs:                generic_exec_single: calling __smp_call_single_queue
+> > >           bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling send_call_function_single_ipi
+> > >           bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling call_function_single_prep_ipi
+> > >           bt.B.x-4184  [046]   466.410608: bputs:                call_function_single_prep_ipi: calling set_nr_if_polling
+> > >           bt.B.x-4184  [046]   466.410609: sched_wake_idle_without_ipi: cpu=22
+> >
+> > I don't know if you have made progress on this in the meantime.
+>
+> Not really.  Basically after do_idle, there is the call to
+> flush_smp_call_function_queue that invokes the deposited functions, which
+> in our case is at best going to raise a softirq, and the call to schedule.
+> Raising a softirq doesn't happen because of the check for need_resched.
+> But even if that test were removed, it would still not be useful because
+> there would be the ksoftirqd running on the idle core that would eliminate
+> the imbalance between the sockets.  Maybe there could be some way to call
+> run_rebalance_domains directly from nohz_csd_func, since
+> run_rebalance_domains doesn't use its argument, but at the moment
+> run_rebalance_domains is not visible to nohz_csd_func.
 
---ZTEEkJLh/19BT52x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+All this happen because we don't use an ipi, it should not use
+ksoftirqd with ipi
 
-Hello Linus,
+>
+> >
+> > Regarding the trace above, do you know if anything happens on CPU22
+> > just before the scheduler tried to kick the ILB on it ?
+>
+> I don't think so.  It's idle.
 
-Please pull to receive Generic phy subsystem updates for v6.8-rc1. This
-primarily includes bunch of new device support for Qualcomm, mediatek and T=
-I soc
+Ok, so if it is idle for a while , I mean nothing happened on it, not
+even spurious irq, It should have cleared its TIF_POLLING_NRFLAG
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+I would be good to trace the selected idle state
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+>
+> > Have you found why TIF_POLLING_NRFLAG seems to be always set when the
+> > kick_ilb happens ? It should be cleared once entering the idle state.
+>
+> Actually, I don't think it is always set.  It switches back and forth
+> between two cases.  I will look for the traces that show that.
+>
+> > Could you check your cpuidle driver ?
+>
+> Check what specifically?
 
-are available in the Git repository at:
+$ cat /sys/devices/system/cpu/cpuidle/current_driver
+$ cat /sys/devices/system/cpu/cpuidle/current_governor
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-for-6.8
-
-for you to fetch changes up to 2029e71482fcd94dcc7df2c66c7fa635479748bf:
-
-  phy: ti: j721e-wiz: Add SGMII support in WIZ driver for J784S4 (2023-12-2=
-2 21:20:08 +0530)
-
-----------------------------------------------------------------
-phy-for-6.8
-
-- New Support
-  - Qualcomm SM8650 UFS, PCIe and USB/DP Combo PHY, eUSB2 PHY, SDX75 USB3,
-    X1E80100 USB3 support
-  - Mediatek MT8195 support
-  - Rockchip RK3128 usb2 support
-  - TI SGMII mode for J784S4
-
-- Updates
-  - Qualcomm v7 register offsets updates
-  - Mediatek tphy support for force phy mode switch
-
-----------------------------------------------------------------
-Abel Vesa (12):
-      phy: qcom-qmp: qserdes-com: Add some more v6 register offsets
-      phy: qcom-qmp: qserdes-txrx: Add some more v6.20 register offsets
-      phy: qcom-qmp: pcs: Add v7 register offsets
-      phy: qcom-qmp: pcs-usb: Add v7 register offsets
-      phy: qcom-qmp: qserdes-com: Add v7 register offsets
-      phy: qcom-qmp: qserdes-txrx: Add V6 N4 register offsets
-      phy: qcom-qmp: qserdes-txrx: Add v7 register offsets
-      dt-bindings: phy: qcom: snps-eusb2: Document the X1E80100 compatible
-      dt-bindings: phy: qcom,sc8280xp-qmp-usb43dp-phy: Document X1E80100 co=
-mpatible
-      phy: qcom-qmp-combo: Add x1e80100 USB/DP combo phys
-      dt-bindings: phy: qcom,sc8280xp-qmp-usb3-uni: Add X1E80100 USB PHY bi=
-nding
-      phy: qcom-qmp-usb: Add Qualcomm X1E80100 USB3 PHY support
-
-Alex Bee (2):
-      phy: rockchip-inno-usb2: Split ID interrupt phy registers
-      phy: phy-rockchip-inno-usb2: Add RK3128 support
-
-Can Guo (1):
-      phy: qualcomm: phy-qcom-qmp-ufs: Rectify SM8550 UFS HS-G4 PHY Settings
-
-Chintan Vankar (2):
-      phy: ti: gmii-sel: Enable SGMII mode for J784S4
-      phy: ti: j721e-wiz: Add SGMII support in WIZ driver for J784S4
-
-Christophe JAILLET (1):
-      phy: core: Remove usage of the deprecated ida_simple_xx() API
-
-Chunfeng Yun (2):
-      dt-bindings: phy: mediatek: tphy: add a property for force-mode switch
-      phy: mediatek: tphy: add support force phy mode switch
-
-Krzysztof Kozlowski (1):
-      dt-bindings: phy: qcom,sc8280xp-qmp-usb43dp-phy: fix path to header
-
-Michael Walle (1):
-      dt-bindings: phy: add compatible for Mediatek MT8195
-
-Neil Armstrong (9):
-      dt-bindings: phy: qcom,sc8280xp-qmp-ufs-phy: document the SM8650 QMP =
-UFS PHY
-      dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy: document the SM8650 QMP=
- PCIe PHYs
-      dt-bindings: phy: qcom,sc8280xp-qmp-usb43dp-phy: document the SM8650 =
-QMP USB/DP Combo PHY
-      dt-bindings: phy: qcom,snps-eusb2: document the SM8650 Synopsys eUSB2=
- PHY
-      phy: qcom: qmp-ufs: add QMP UFS PHY tables for SM8650
-      phy: qcom: qmp-pcie: add QMP PCIe PHY tables for SM8650
-      phy: qcom: qmp-combo: add QMP USB3/DP PHY tables for SM8650
-      dt-bindings: phy: amlogic,meson-axg-mipi-pcie-analog: drop text about=
- parent syscon and drop example
-      dt-bindings: phy: amlogic,g12a-mipi-dphy-analog: drop unneeded reg pr=
-operty and example
-
-Randy Dunlap (1):
-      phy: renesas: phy-rcar-gen2: use select for GENERIC_PHY
-
-Rohit Agarwal (1):
-      phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support
-
-Wang Jinchao (1):
-      phy: phy-can-transceiver: insert space after include
-
- .../phy/amlogic,g12a-mipi-dphy-analog.yaml         |  12 -
- .../phy/amlogic,meson-axg-mipi-pcie-analog.yaml    |  17 -
- .../devicetree/bindings/phy/mediatek,dsi-phy.yaml  |   1 +
- .../devicetree/bindings/phy/mediatek,tphy.yaml     |   9 +
- .../bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml   |   5 +
- .../bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml    |   2 +
- .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml        |   3 +
- .../phy/qcom,sc8280xp-qmp-usb43dp-phy.yaml         |   8 +-
- .../bindings/phy/qcom,snps-eusb2-phy.yaml          |   2 +
- drivers/phy/mediatek/phy-mtk-tphy.c                |  25 ++
- drivers/phy/phy-can-transceiver.c                  |  10 +-
- drivers/phy/phy-core.c                             |   4 +-
- drivers/phy/qualcomm/phy-qcom-qmp-combo.c          | 174 +++++++++++
- drivers/phy/qualcomm/phy-qcom-qmp-pcie.c           |  65 ++++
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |   1 +
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h     |  17 +
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-v7.h         |  32 ++
- drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |   5 +
- drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v7.h |  87 ++++++
- .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |   8 +
- .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6.h    |   1 +
- .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_20.h |   4 +
- .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_n4.h |  51 +++
- .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h    |  78 +++++
- drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 114 ++++++-
- drivers/phy/qualcomm/phy-qcom-qmp-usb.c            | 344 +++++++++++++++++=
-++++
- drivers/phy/qualcomm/phy-qcom-qmp.h                |   6 +
- drivers/phy/renesas/Kconfig                        |   2 +-
- drivers/phy/rockchip/phy-rockchip-inno-usb2.c      | 156 ++++++++--
- drivers/phy/ti/phy-gmii-sel.c                      |   2 +-
- drivers/phy/ti/phy-j721e-wiz.c                     |   1 +
- 31 files changed, 1168 insertions(+), 78 deletions(-)
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-pcs-v7.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v7.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_n4.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h
-
---=20
-~Vinod
-
---ZTEEkJLh/19BT52x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmWpWxsACgkQfBQHDyUj
-g0cwKQ/8DYJoqw2RMtjHRt6gSY1mjM1QYcg5huMAqqoN5ydO8jZNuIFNEi6TbnNG
-U7Z8nX4dEfCh0LGh++6+7oeYDSuhUW5Y9OgWv47zjD0oCh4N7l0oClMkQwvElNmz
-+epkNQZ6xSLTtlEU7HnF5t0aBeYj/84yx63S1ybtWtS86bE0kIX4sE++11ABJ/I8
-L3lhYi2I6yyCcHiLfsiKPijy5MxajCs/DMrd4Zz5zuGK/1QIgQh2l1Vm8/djqZDs
-dac8V0wV5YoCkw23uwQKpSjdoygWJjpUY/FmxcgwACqXsU3UHhPu8xvU4jeeGTik
-9W3Rq5jNBJBNe1Y3gYlMgpPxvTjaEm4CG8ld34rKpdhX0BjRnMddXa/gvgCO7ktx
-G1pGkYjNg5uRzcjRSCpiR/i9mO53PoxnrRDDhBQiRsyer88XRb0La+T12wmquDSj
-fUJGJY+yHGEmrUV02VEE5daiGLMwqntRCjpzlqkTXV0DFzrTtLiXCbX16iH2VQRO
-E8LsZg+GlulcFalLpdkoYGlRRK3Waqja3cf+iAw+yeoxJamUSHz6Vjt9MJ+WqZ9b
-Qc83cKSRyEuAcVDMkgk1t5Xoqk4+a1poi2hwbgoDbc4tznyxR1Efdh3qKG9Zctkl
-hwserpeQQb5h3epLSdO5rTHK4jeelN1SHiWokjucqraOGrIDnVk=
-=sslt
------END PGP SIGNATURE-----
-
---ZTEEkJLh/19BT52x--
+>
+> thanks,
+> julia
 
