@@ -1,129 +1,103 @@
-Return-Path: <linux-kernel+bounces-30502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2109C831F8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:20:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1827831F88
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 20:19:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD7B9288B55
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:20:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 394161F28DFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 19:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF8E72E40A;
-	Thu, 18 Jan 2024 19:20:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB802E40D;
+	Thu, 18 Jan 2024 19:19:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="uhigdn+i"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="fG0aH+Do"
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2412E627
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:20:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C3BB2E3FB
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705605618; cv=none; b=qqZvafHJCJjggbOVUuwJJ09QBhpLzvnb+dcR1J9oYCaUush9TWWVPQdUbfIS/FcuB9LcE8cBLYFPNCJSWS6HhfoPxdZwjytig2/pBfwg8EDPNQUxzck7ZDO3t2QMIhP9PyFLMYH/3Aha0Rq+17SZBk6hqjnLsjugPNhWBPANO4M=
+	t=1705605569; cv=none; b=oqO35Vr70prnqP5dHqBU1LeCqFlQwCAiuMvp8fKK9QM+Zd+xnUSRe0Qn032CXJVXtT08W8j+Vqt2/u/8yOJkwQwrwmeaDMnky5SYIwGOAGr4Wo0E9k7OwiMtyv6ZGMfPY9po9z4TH9cBd2b9o0OceB1duVKBAbY163ZNI6NUT1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705605618; c=relaxed/simple;
-	bh=9nf9clFh0EbDats4Fa2YQ+RNXkctZPuqdS5Gbc572e8=;
-	h=Subject:Date:Message-ID:MIME-Version:Cc:From:To; b=rzHsDShP3PjcLP/gMi3plnZNTWJicQ9pOZGJz7w7Avh9WTHeOcl0I+n45YAbebnH/nbNStQ8ekJ/AyKJkXyzYIRlmeqFfPVrOAYit49kxNUhTw5BzHHCK/3a64klQ8SIAdRH9M9lvZ6tFpaSsd5E6MDhbQUol6gDSBRzcHFRN1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=uhigdn+i; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d70696b6faso8878695ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:20:15 -0800 (PST)
+	s=arc-20240116; t=1705605569; c=relaxed/simple;
+	bh=LdQBpPSFJZHAxiRnzyNT29aUGLfrazztcyszNCh7pSo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ckuAFIR4O5eDQ/6/aGgbeyKtvjZjmgPE92IVtBKr+8lc04soSAbPdeQUJAl6B6CqPvUBJ8xjsksam7kmNTu6ObTubXaczVRPSy+W3E38c/z9IhGtLUqxismqlT0Use0hiueovwpgMjs3gkZ8tokNz03Dt1NDOVA2x7xDShb+w0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=fG0aH+Do; arc=none smtp.client-ip=209.85.217.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-467021612acso3096354137.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 11:19:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705605615; x=1706210415; darn=vger.kernel.org;
-        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:to:cc:subject:date:message-id:reply-to;
-        bh=CcmZDwBIevh96PY0m3UwCbyUVvMq97xdTBzYDcc3ymc=;
-        b=uhigdn+iIPaABls756LkC7gBE9iU1oKBRJ1HVHXUj/qGQQ+0wajKMgxRJab2xGW8G4
-         5AH/ASuxaBmKlIe7qozDTH8kSQzLWWpoMH4DdfKy7LvFYfxvEz+7clV6FNwQxuECKgx8
-         pDP/9PZjiExXG6Ag8QZZcS/8b0Bu8liF7fm4oK1Tf+hnaGazhlJEg5wuAsEOdu8r2rDK
-         O9U1WtMu65rMdKIzc57vXbUwrfQGG4FwMWMPN24MXADjdBnqmhNHssIUksG3xiTFhxWa
-         rTqeeWvnARzt5sdKVIbaF3V3exmiLpRgurBTRKE7YeRxYLIFxODrs/DNgjRDLND4Cwhb
-         ISng==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705605566; x=1706210366; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9MU572EdVLdUkapQWYdIbhqtVcpdD79Cvhg2J7pciqk=;
+        b=fG0aH+DoYij4ZEzRUztp/ojc8RpIIsAf7UwTvSnfWKcz0La4x+Ct3BW641mq4lVArJ
+         BsNlKYaPYPTMvlQG36Tje9XJ8Gq2u0RgtbVloUNgICreHryw18K0YHR7wFnmz9txKzZy
+         Dz+YDuThPHnuYA8rFddVdr65vxdD+BClcHyU30Xq8n/2KIrQg2nwarLwoVASABN+GIB8
+         iqQJwn6vUg5IkGq73oeDyQsC4R8Lo0b9+TSAYxiJlb5ZtRH7ZAhAMZEhXQF628D6H79U
+         b/UCF9+JxbnHY7qUpbNM9PGUDdxRyGzcO8IqB1h5r96qb4JU1Y4vPlks7XWWSusSKdC0
+         laPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705605615; x=1706210415;
-        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
-         :subject:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CcmZDwBIevh96PY0m3UwCbyUVvMq97xdTBzYDcc3ymc=;
-        b=OnihFpl/cqn/muoIeIotq8rYyDmVfIKaR+aRH2un3OztqKth3ZaZeQRKOtakKdU02j
-         sZo3Ho5tCzHxWFDZto/BPNrjOXii8cxGLVIz9t1V/LWVuFJHj6Y2ylHZ79HLwUV3MAfb
-         RmX1QdIDp7xP4mq1Cuzacw5ph7obn8DpTZNViEWEEygFpg0+Kb79L/odUp75NzhxBaMw
-         MgQtX+sIfehoPOVIdng4RcFTMq9kGZfecUj6JnpTML3olejpd255CuFQfAY4ug+/LCcH
-         uzNExTgdxZRboh65OeFNLgOjP/UMsXEpz+72gR5QD8S6292RU5PRi4QLdP4C1aGOWQEC
-         Mciw==
-X-Gm-Message-State: AOJu0YxdQPqn90kRw7gD6bwcBlBhp3bV3NsANm7kWQhiB06Bu95VoLMR
-	ROP8D8zSjtifKA5sRmK0fplDsSlsOibm1fNkVx7tCeopkAf/lNe3I2bL/dAdKW8=
-X-Google-Smtp-Source: AGHT+IFNJL1nqkL/h0IqxGVCUNhKrNSluuke+rosWvVVfdt8F4bqjY6XaJmILmyhvNBy5s5IaQsYwA==
-X-Received: by 2002:a17:902:ea12:b0:1d5:a5ba:1c49 with SMTP id s18-20020a170902ea1200b001d5a5ba1c49mr1372634plg.1.1705605614994;
-        Thu, 18 Jan 2024 11:20:14 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id kz3-20020a170902f9c300b001d70c695172sm1190896plb.78.2024.01.18.11.20.13
+        d=1e100.net; s=20230601; t=1705605566; x=1706210366;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9MU572EdVLdUkapQWYdIbhqtVcpdD79Cvhg2J7pciqk=;
+        b=CSxQdtnHK1KjTBhtLWxzqD/tgb7+ECvm8yFzsq9RCACg2QCg0DjNbcuzezqX9HtFWX
+         mTI/0CIpVvuSEwEMDyzvzb1RIi0JplMjtepnQW9N56tIqBtsrAin9+bBMnYpU5nwTZI0
+         OMDzaB9t/Nq30YuwcR2GvXBpQGIL1AzT6VPVqQ12qHpOu/y93iJ5eX+UUCHWR5Mckwe3
+         JCYvU1JcqqauDBXoORtlDVLsVJ3a1e2UW7Mn6Hpkk+CDL6mmpbb7eJdhsbe+MI2txZxj
+         m3OZi9WJNTuT0DZaxRYmNAGzF7KO5fCuECOpp/rlxeIBbL+Kuk6BcNL1nnuGpskRUCuE
+         IpUw==
+X-Gm-Message-State: AOJu0YzO/oYvcYwxcAA+WGha9v189KiZNZ4tz7XuaVxLmxg0ELe8WBnv
+	Q+liuEou5qkAFW4Opg6qM3m7bOEAnrqSIkyJotwbCRgiz2xb8FOjRjAcUaBlMZI=
+X-Google-Smtp-Source: AGHT+IGKfTocm4eVWCtnjc03F2xb43OO+W4kEUU4mAbk31KIM3WqWdepd95bP8ts1QqIQXTIPbACQA==
+X-Received: by 2002:a67:fe45:0:b0:468:1083:39ea with SMTP id m5-20020a67fe45000000b00468108339eamr1375691vsr.20.1705605566127;
+        Thu, 18 Jan 2024 11:19:26 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:8773])
+        by smtp.gmail.com with ESMTPSA id om9-20020a0562143d8900b00681a83650b9sm64917qvb.41.2024.01.18.11.19.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 11:20:14 -0800 (PST)
-Subject: [PATCH] Makefile: Add HOST_GCC_SUFFIX and CROSS_GCC_SUFFIX
-Date: Thu, 18 Jan 2024 11:17:27 -0800
-Message-ID: <20240118191727.5547-1-palmer@rivosinc.com>
-X-Mailer: git-send-email 2.43.0
+        Thu, 18 Jan 2024 11:19:25 -0800 (PST)
+Date: Thu, 18 Jan 2024 14:19:24 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Shakeel Butt <shakeelb@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
+	Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Michal Hocko <mhocko@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: writeback: ratelimit stat flush from
+ mem_cgroup_wb_stats
+Message-ID: <20240118191924.GN939255@cmpxchg.org>
+References: <20240118184235.618164-1-shakeelb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: nathan@kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-  Palmer Dabbelt <palmer@rivosinc.com>
-From: Palmer Dabbelt <palmer@rivosinc.com>
-To: masahiroy@kernel.org, nicolas@fjasle.eu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118184235.618164-1-shakeelb@google.com>
 
-From: Palmer Dabbelt <palmer@rivosinc.com>
+On Thu, Jan 18, 2024 at 06:42:35PM +0000, Shakeel Butt wrote:
+> One of our workloads (Postgres 14) has regressed when migrated from 5.10
+> to 6.1 upstream kernel. The regression can be reproduced by sysbench's
+> oltp_write_only benchmark. It seems like the always on rstat flush in
+> mem_cgroup_wb_stats() is causing the regression. So, rate limit that
+> specific rstat flush. One potential consequence would be the dirty
+> throttling might be decided on stale memcg stats. However from our
+> benchmarks and production traffic we have not observed any change in the
+> dirty throttling behavior of the application.
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-I was just trying to track down a build bug with an old toolchain.
-Turns out Ubuntu installs old GCCs as something like
-riscv64-linux-gnu-gcc-10, which is a bit clunky to point the build at
-without a way to append a suffix to CC.
-
-There's already LLVM_SUFFIX, but nothing similar for GCC.  I've split
-out the host and target suffixes as users probably don't have the same
-version of for both (unlike LLVM, where the cross compiler is likely to
-support the host target).
-
-Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
----
-I've only given this some very minimal testing, but it at least works
-for my simple use case.
----
- Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index f1b2fd977275..36ce336cda3b 100644
---- a/Makefile
-+++ b/Makefile
-@@ -433,8 +433,8 @@ endif
- HOSTCC	= $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
- HOSTCXX	= $(LLVM_PREFIX)clang++$(LLVM_SUFFIX)
- else
--HOSTCC	= gcc
--HOSTCXX	= g++
-+HOSTCC	= gcc$(HOST_GCC_SUFFIX)
-+HOSTCXX	= g++$(HOST_GCC_SUFFIX)
- endif
- HOSTRUSTC = rustc
- HOSTPKG_CONFIG	= pkg-config
-@@ -480,7 +480,7 @@ OBJDUMP		= $(LLVM_PREFIX)llvm-objdump$(LLVM_SUFFIX)
- READELF		= $(LLVM_PREFIX)llvm-readelf$(LLVM_SUFFIX)
- STRIP		= $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
- else
--CC		= $(CROSS_COMPILE)gcc
-+CC		= $(CROSS_COMPILE)gcc$(CROSS_GCC_SUFFIX)
- LD		= $(CROSS_COMPILE)ld
- AR		= $(CROSS_COMPILE)ar
- NM		= $(CROSS_COMPILE)nm
--- 
-2.43.0
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
