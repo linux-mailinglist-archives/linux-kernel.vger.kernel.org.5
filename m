@@ -1,65 +1,90 @@
-Return-Path: <linux-kernel+bounces-30597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 538B1832173
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 23:14:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8863832177
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 23:16:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 077A71F22759
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:14:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 594511F2651E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 22:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75323328B5;
-	Thu, 18 Jan 2024 22:14:27 +0000 (UTC)
-Received: from gentwo.org (gentwo.org [62.72.0.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679F032193;
+	Thu, 18 Jan 2024 22:16:15 +0000 (UTC)
+Received: from mail78-58.sinamail.sina.com.cn (mail78-58.sinamail.sina.com.cn [219.142.78.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25CF1328AB
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 22:14:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD8F250F7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 22:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=219.142.78.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705616067; cv=none; b=D+6Lbeiz6RETVE2syZycE7/5WlQ4okB42jK2xXJV9tOABTH69TG97xP9OU7UvV6Jo/j79hQELdSsMDED0+5uMCUs1S+qe/ocQADnv4H7PvvpSZnnt4LBMHsDItNayTrx51KJhc8GKncYyZKgOO/34h7lcvCPrmAtRGcvlZeHjk4=
+	t=1705616175; cv=none; b=qZTvDVeWW8ViP3pHC3xgswfNguiQioDgDCnUNwglLKnYoK0NV/MGS1koe2rKhnf+e0D8uDIKeyZrgcGmWGFQGUeDSSrBnVa6DfyKRrRR+acxMh77v4NzuWx/ih9NVApj43QNjJU3xNum+gtE4AelrfKBOgSV74KhXm7+DZqtIw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705616067; c=relaxed/simple;
-	bh=KNzMXxvj1PRO1JNAxJ39l4/YUa8pBQvllxzTgn89BZU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=KgAxkqZzFYM9YkEGIFlRRLLAdg48rdX0w8GUu3jQL7vpuUSvDdiQkXuegupvurqSYlJh/mqgSHrHyni3suhMF9ET51LgiX5tN9uw5ntMK08lcY8PbbpeDlSnuL1dGMeoV08H5wcWT3/oHIaPvCfsSXIR4J7HIExX36PV+58tdu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=fail smtp.mailfrom=linux.com; arc=none smtp.client-ip=62.72.0.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.com
-Received: by gentwo.org (Postfix, from userid 1003)
-	id C879C40AAD; Thu, 18 Jan 2024 14:14:17 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-	by gentwo.org (Postfix) with ESMTP id C67AA40A82;
-	Thu, 18 Jan 2024 14:14:17 -0800 (PST)
-Date: Thu, 18 Jan 2024 14:14:17 -0800 (PST)
-From: "Christoph Lameter (Ampere)" <cl@linux.com>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
-    Vlastimil Babka <vbabka@suse.cz>, Pekka Enberg <penberg@kernel.org>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Roman Gushchin <roman.gushchin@linux.dev>, 
-    David Rientjes <rientjes@google.com>, linux-mm@kvack.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mm/slub: directly load freelist from cpu partial
- slab in the likely case
-In-Reply-To: <412b8618-0941-4d9d-85df-ee480695e7f7@bytedance.com>
-Message-ID: <a2132c63-99a5-7fa2-9f2a-cccf6b40fe9e@linux.com>
-References: <20240117-slab-misc-v1-0-fd1c49ccbe70@bytedance.com> <20240117-slab-misc-v1-1-fd1c49ccbe70@bytedance.com> <76641777-1918-2b29-b6aa-bda9b5467aa3@gentwo.org> <412b8618-0941-4d9d-85df-ee480695e7f7@bytedance.com>
+	s=arc-20240116; t=1705616175; c=relaxed/simple;
+	bh=mdW8/uyoRWJLNvzuoFtv1hbqtX8oYkV/wIr4zaSTATU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=TcdpvVzP4J3pmLjTAfYnfNWnjoMLvo0E9mY/3NW0IOxCxtDlLz1wN1k01qccHrYOVgQOWy0KBUJqvPvj+zjCtjFBn798GgIeaTh+BYWs91NDb/IdAgjAxrAassqZCymYWfQCu+JxANmra2Y4Qetww7019IHzOmQQXgLvTFzqGN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=219.142.78.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.24.10.220])
+	by sina.com (172.16.235.25) with ESMTP
+	id 65A9A32300000D16; Thu, 19 Jan 2024 06:16:06 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 27104634210572
+X-SMAIL-UIID: 080A8B68410A41D18B4BA858570DF158-20240119-061606-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
+Date: Fri, 19 Jan 2024 06:15:54 +0800
+Message-Id: <20240118221554.1749-1-hdanton@sina.com>
+In-Reply-To: <000000000000498a02060de59162@google.com>
+References: <000000000000498a02060de59162@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 18 Jan 2024, Chengming Zhou wrote:
+On Mon, 01 Jan 2024 09:18:16 -0800
+> syzbot found the following issue on:
+> 
+> HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122dfc65e80000
 
-> So get_freelist() has two cases to handle: cpu slab and cpu partial list slab.
-> The latter is NOT frozen, so need to remove "VM_BUG_ON(!new.frozen)" from it.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-Right so keep the check if it is the former?
-
+--- x/net/core/filter.c
++++ y/net/core/filter.c
+@@ -2148,17 +2148,6 @@ static int __bpf_redirect_no_mac(struct
+ 		return -ERANGE;
+ 	}
+ 
+-	if (mlen) {
+-		__skb_pull(skb, mlen);
+-
+-		/* At ingress, the mac header has already been pulled once.
+-		 * At egress, skb_pospull_rcsum has to be done in case that
+-		 * the skb is originated from ingress (i.e. a forwarded skb)
+-		 * to ensure that rcsum starts at net header.
+-		 */
+-		if (!skb_at_tc_ingress(skb))
+-			skb_postpull_rcsum(skb, skb_mac_header(skb), mlen);
+-	}
+ 	skb_pop_mac_header(skb);
+ 	skb_reset_mac_len(skb);
+ 	return flags & BPF_F_INGRESS ?
+--
 
