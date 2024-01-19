@@ -1,141 +1,125 @@
-Return-Path: <linux-kernel+bounces-31291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF84832BF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F69A832C0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDF7D1C23F1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:56:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 429911C23706
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4F956748;
-	Fri, 19 Jan 2024 14:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B45954668;
+	Fri, 19 Jan 2024 15:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AnmkdkQi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="N937FwuA"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11D854F9B
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:54:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9BB1373
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705676084; cv=none; b=OR+RKUa54kP/aLqdSBsZQCLFlBUZOnZWU2EyueGQczwHY04tg85qqNVnDIKbi9xyurPZVBEfHoQloS9IEDvLhGyMSYMlKxo2nGgdcY1q+ANm/+z135KhE7BH9sAfM/QJnw4MorfyMQKVn7MG1CWUd0fBcO831YSdrMUuIfOl7p0=
+	t=1705676622; cv=none; b=KpM8RmHceG0h1bSEw6xXrrtUHWjcvuD/mkQWELO1G1T0EqszGUnqmfbMcBM2T9wXB659o10C4yhQFbxZzcYZLm6ZNEZHB8ZvYFfCP/wDoWYk/6uJUqhOsn+PSNl698TGfHf3AAkDJsDW3ExJ+XOKictPoloJh33UVCcECJVYTS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705676084; c=relaxed/simple;
-	bh=OUjhJFF9q7D4YR1pSHqAvZMEA4AEazo/hcoLLBgzWxI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-type; b=Ucu3HCi4bLLr2YGKs3+KpPYSR1DXIHYMqfkCmz9PF4+JKsxii6LCuznjwb9whYUWD6kk8C/CZVywRgyWg85EZhVqB0vZ7P/XQW4h7KZeOxO+OlAVju4PZKUkFHrTywGICLMVvUHEmeQGtLguD8LyCcoMpd4LO/1PpdTyN6PB7fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AnmkdkQi; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705676081;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jDvYJxBJvZegSwo4Kk9zAYMdDY4WlX7FhACBVJ8AwnU=;
-	b=AnmkdkQiYVCCYD+Hsc2i83b4MO211wqNi4AC/Ld0g3I68hjuNb9dKuZN5NDC9CXtNrm9YI
-	HoXK7Ps2hPy8/r7tyDeAi3K/ib4/3EOqkalo4B7YwoSMDbopXEeU9d8AWhIkUgz51L/NaD
-	5upeA4dRa7UgzSe/77HHrv4s3GcnmHA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-648-osoDulHkOveZzpDk9NGWvg-1; Fri, 19 Jan 2024 09:54:38 -0500
-X-MC-Unique: osoDulHkOveZzpDk9NGWvg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 12C54868A02;
-	Fri, 19 Jan 2024 14:54:37 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.116.4])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id DBA8251D5;
-	Fri, 19 Jan 2024 14:54:30 +0000 (UTC)
-From: Baoquan He <bhe@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: kexec@lists.infradead.org,
-	x86@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	loongarch@lists.linux.dev,
-	akpm@linux-foundation.org,
-	ebiederm@xmission.com,
-	hbathini@linux.ibm.com,
-	piliu@redhat.com,
-	viro@zeniv.linux.org.uk,
-	Baoquan He <bhe@redhat.com>
-Subject: [PATCH v2 14/14] loongarch, crash: wrap crash dumping code into crash related ifdefs
-Date: Fri, 19 Jan 2024 22:52:41 +0800
-Message-ID: <20240119145241.769622-15-bhe@redhat.com>
-In-Reply-To: <20240119145241.769622-1-bhe@redhat.com>
-References: <20240119145241.769622-1-bhe@redhat.com>
+	s=arc-20240116; t=1705676622; c=relaxed/simple;
+	bh=WThewpXt/M7/HyWVe33yqIVrMcMdh8fZCrQsnJP/J0U=;
+	h=Subject:Date:Message-ID:MIME-Version:Cc:From:To; b=UHK6O4ApAz6aah07O0hdT/lI3PUK76T/P2mbMfz2PHBnJfeK0cuHAfdYFDkIi1Y4bbcU1vN9kdyhzN41v6hLVILNUA4Fy1l1Yi2KKQ6pAeNuPUqNUgc5ITUyieB7pW4FAXaRVq9nwuj7hPZ1IQqGHBAsMytk8ndV93oswJIuGAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=N937FwuA; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6d99980b2e0so895698b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:03:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705676620; x=1706281420; darn=vger.kernel.org;
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:to:cc:subject:date:message-id:reply-to;
+        bh=0OkN04rYJbcV5yI+1DylExB1sHf2862fFRZ4+hBrCQg=;
+        b=N937FwuAxKkX8EYhAlqq1ZBzryT6ydlbtB/20uNW4jbEKbcZjexmuJoTfHJZuvydw+
+         nxWQNKF/zx9Z/Mn84r17jM1A0U9/G9+CfyhhauJCUMu5kxPijFaUo4FJ6cIDrXxaTCRX
+         2VGiF2DliuahFMUVRTZzRZNizt20FD3T1xLqiabYjT/cykgsWjfXBfrfXj2k48GX78lR
+         VtxcXP4V5ef90BjULFASiZcQMgzJeJdKJvm+GQlInTUI93FkUFlPCDHghwqAcVuNE5fW
+         LL+3qi0cl0tuSqe2IBi5ZiaquC9bNdFUZHFvlOUf71hbQlczpYmabgmWi30noYVjYS6X
+         oxNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705676620; x=1706281420;
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
+         :subject:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0OkN04rYJbcV5yI+1DylExB1sHf2862fFRZ4+hBrCQg=;
+        b=KM5omW8sx0AtsYqPFP1vnxB4MPHpvQjLtFM3lhgnNrQ3NxvH351M7HzuNnRZJ4pBc6
+         ta823t5hxnY8T2isYDAjbpTG3SOG1bPoaG1ipx6foNkvt/u/HyRw3cFj6wwcFw2lMB11
+         1QC8kQ53DZZjCpbEfpXCMkQARpWJ2XbwCdgLMuURo7F8PjVOJn7aV6BX32qBPj4BmB2v
+         9QfRbJe0zRY18XCHbsjn2ATKa2WQmbPYsdx4NLq30q4kNyE0BQidcSADj8npprfJbD8m
+         NvBbcW2I6dr6fWXz0qeCiApTn4kcU9T0nXjMpX+4mtfz2jmr6YduEguYynSo8ZdcsJ0E
+         6U5g==
+X-Gm-Message-State: AOJu0YyhHLbA6lMGJft9Ow5mRGXe6HA5fGYyygkMXaEnJY+x1ZvgWByl
+	dLPG4rwnf6vGwvJvtypd+rJVdsGh9kl4kPaML4X9M6RbuQeRgAOb8MSmEEXmWqE=
+X-Google-Smtp-Source: AGHT+IHU8Y7GKeyuuZYXeP9FKdXHUATlkC+PPQYbKGR1PAMKpM6ElwORYAvxQJgd6B6GEHijfENnAQ==
+X-Received: by 2002:a05:6a20:2d0f:b0:19a:3a07:1f2d with SMTP id g15-20020a056a202d0f00b0019a3a071f2dmr3458624pzl.44.1705676620338;
+        Fri, 19 Jan 2024 07:03:40 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id d7-20020aa78147000000b006dbc6a5daa5sm750913pfn.154.2024.01.19.07.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 07:03:39 -0800 (PST)
+Subject: [PATCH] lib: checksum: Fix build with CONFIG_NET=n
+Date: Fri, 19 Jan 2024 06:56:01 -0800
+Message-ID: <20240119145600.3093-2-palmer@rivosinc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Cc: Palmer Dabbelt <palmer@rivosinc.com>, davem@davemloft.net,
+  goldstein.w.n@gmail.com, dave.hansen@linux.intel.com, christophe.leroy@csgroup.eu, nathan@kernel.org,
+  ndesaulniers@google.com, lrh2000@pku.edu.cn, Arnd Bergmann <arnd@arndb.de>, masahiroy@kernel.org,
+  linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+From: Palmer Dabbelt <palmer@rivosinc.com>
+To: charlie@rivosinc.com
 
-Now crash codes under kernel/ folder has been split out from kexec
-code, crash dumping can be separated from kexec reboot in config
-items on loongarch with some adjustments.
+From: Palmer Dabbelt <palmer@rivosinc.com>
 
-Here wrap up crash dumping codes with CONFIG_CRASH_DUMP ifdeffery, and
-use IS_ENABLED(CONFIG_CRASH_RESERVE) check to decide if compiling
-in the crashkernel reservation code.
+The generic ipv6 checksums are only defined with CONFIG_NET=y, so gate
+the test as well.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
+Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_csum")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401192143.jLdjbIy3-lkp@intel.com/
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 ---
- arch/loongarch/kernel/setup.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+That Fixes tag is against a PR I just sent up to Linus [1], sorry for
+missing this but it came in right when I was sending out the PR.
 
-diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
-index d183a745fb85..61f88dd97947 100644
---- a/arch/loongarch/kernel/setup.c
-+++ b/arch/loongarch/kernel/setup.c
-@@ -258,11 +258,13 @@ static void __init arch_reserve_vmcore(void)
+1: https://lore.kernel.org/linux-riscv/mhng-690cf774-fd28-4d25-be9f-69e19fb84d5c@palmer-ri-x1c9/T/#u
+---
+ lib/checksum_kunit.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
+index af3e5ca4e170..225bb7701460 100644
+--- a/lib/checksum_kunit.c
++++ b/lib/checksum_kunit.c
+@@ -593,6 +593,7 @@ static void test_ip_fast_csum(struct kunit *test)
  
- static void __init arch_parse_crashkernel(void)
+ static void test_csum_ipv6_magic(struct kunit *test)
  {
--#ifdef CONFIG_KEXEC
- 	int ret;
- 	unsigned long long total_mem;
- 	unsigned long long crash_base, crash_size;
- 
-+	if (!IS_ENABLED(CONFIG_CRASH_RESERVE))
-+		return;
-+
- 	total_mem = memblock_phys_mem_size();
- 	ret = parse_crashkernel(boot_command_line, total_mem,
- 				&crash_size, &crash_base,
-@@ -283,7 +285,6 @@ static void __init arch_parse_crashkernel(void)
- 
- 	crashk_res.start = crash_base;
- 	crashk_res.end	 = crash_base + crash_size - 1;
--#endif
++#if defined(CONFIG_NET)
+ 	const struct in6_addr *saddr;
+ 	const struct in6_addr *daddr;
+ 	unsigned int len;
+@@ -616,6 +617,7 @@ static void test_csum_ipv6_magic(struct kunit *test)
+ 		CHECK_EQ(expected_csum_ipv6_magic[i],
+ 			 csum_ipv6_magic(saddr, daddr, len, proto, csum));
+ 	}
++#endif /* !CONFIG_NET */
  }
  
- static void __init fdt_setup(void)
-@@ -468,7 +469,7 @@ static void __init resource_init(void)
- 		request_resource(res, &bss_resource);
- 	}
- 
--#ifdef CONFIG_KEXEC
-+#ifdef CONFIG_CRASH_RESERVE
- 	if (crashk_res.start < crashk_res.end) {
- 		insert_resource(&iomem_resource, &crashk_res);
- 		pr_info("Reserving %ldMB of memory at %ldMB for crashkernel\n",
+ static struct kunit_case __refdata checksum_test_cases[] = {
 -- 
-2.41.0
+2.43.0
 
 
