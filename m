@@ -1,166 +1,215 @@
-Return-Path: <linux-kernel+bounces-31122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC389832950
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:58:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F217D832951
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E9601F24FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:58:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33640B2132A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:59:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEF24F215;
-	Fri, 19 Jan 2024 11:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55FC4F1F1;
+	Fri, 19 Jan 2024 11:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KKWp8tsq"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CZzl1VTL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4F34EB27
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2EAA4F1E8
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705665518; cv=none; b=s6dP3DwOVRWFa4rrkyoVE1oA0Gk/EEfe+jI2MJeuPZknuSoDrJq0Sl7geNKBYqkaeVTbYNSH8SbWY+9XrGDLrEctLKz4zsZV1tTaIKIsA9oErXHTdapL6sYIB9/oiQAc//pF+rXCE6A2A3AGIAtgkvNEmhhOAdacwARzL6vjoao=
+	t=1705665560; cv=none; b=l5LK4ix7M932j3Xb83VBisl/TZpWxF1QK9N+Tvbd60x9w0EJy2+sLO1bXMwIO6/IKn07i1oJI0b29PgsbqRc8sD23uqPk0tpevP5aUCoBn7H172SmtzK3ACmYWsrxzIUfmcEZ87YiZ+Fh+258GrFr3++jgfU/sHTEP83xNVYlYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705665518; c=relaxed/simple;
-	bh=YF/9VGqCR3NnRq2qiSBkKzD4drsN36p29YQjpDwOOF0=;
+	s=arc-20240116; t=1705665560; c=relaxed/simple;
+	bh=bAHJx0yhKKnHDIkSyj/+7VryXHJi2XP5zcuoP570mEY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LF9MpkRlUdXncJKjoHHEcPhGWQHTTZtXiXKSlSR0LwYh08bXllCycIjSidcPoDBhr4E0TI78fCGBBBYzTOQD+mW3235WHBQmZpT/RiBN+rPVJZx12BoD+6WuhzqzJektJtXDkao04FkPwO2TiRWBH3Ay3zybBrHn07A0BlS5/d8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KKWp8tsq; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e70d8273fso2643e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 03:58:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705665513; x=1706270313; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cAlbKavRuOVyWI1tc7ET/JPkNgvFzUd+Nd5ZfFEBLDM=;
-        b=KKWp8tsqbPFBTH9W1XevhpWpJZOoa12zOLjWccmVpFMwJNom4SAv2oF8PGttISiLn1
-         wnMarZre/DK4aEGdd7DHOP4MNZHyQoU5FXUHQktVg+eCm1gAifVxVDYaAJx/27oo4XcQ
-         OQYLt7w4We15KZ/POC/epmlDxgylQ2QNymt2Pl7F1n3V7qMRTxp2kz/GVgCsNcfKHK0K
-         QQY+sRjMx+sgnPM9bl7RBVN2Izv1KPuF+hGjgnXkXsuvdQh7GrHCzF6Cvn46NQmbnfTP
-         naO/rIVmyut3avzoI2e3WbcIPcaNKOdswfifpxsjp9rhJcH/nzLtfQDmMCizzi2yzRqw
-         a5qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705665513; x=1706270313;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cAlbKavRuOVyWI1tc7ET/JPkNgvFzUd+Nd5ZfFEBLDM=;
-        b=twPt+8PGxbOfRM5fvDHJwaTRgb429x31dzAEBMGxHTX7jDWjbJ0ho32CKhnjkPGEgS
-         Ia/kVhXm3pNoaYWt+21+nHec7xjX6P/onbf760SvGMmi6VS2UgjwP4g3i1QOhNAMzT/B
-         mSa/5xR2Z7JnzOIWmt0Feq8MBcCGKueyhQnaE32r1XX/tBW0XWMJB+0fZ9QUElbEnCJK
-         eHvIIo4yjkQPQ91TRbyPO86oUQvKuBcuP2coQkh7KrGTISqzdO+/Vi6mjDC8XIzNczwE
-         FhMe1RmtK2l3zNad9xGReqBdruQEhNHj2oWJKAG+xAQRbRlEksVkhP00DJff7YTD6Bog
-         J3ig==
-X-Gm-Message-State: AOJu0Yx9QE1Om6KV1KAIcicuefprnL0qh7i0hdaXGY+bxdIEZ6TzjfdV
-	Jm/H1zVGw2hYiBTmJ6pnWMDijRCbycjFMKpcjqJnfHxQLB/iMWPkDzi6f3Fje5CsaPkhlWf2tCo
-	nOtsJalDNDj9cTDykDJI0SUWUlBNxaNboutXY
-X-Google-Smtp-Source: AGHT+IE+W2bcGytYq3XHpcl6zjaKwTL9fIYI9UTl4iqdV2PFW01+WLopAd2AorYGVBNhKOduK2b5DhCUZBwwbUL5g2M=
-X-Received: by 2002:a19:e005:0:b0:50e:3828:d29d with SMTP id
- x5-20020a19e005000000b0050e3828d29dmr116990lfg.0.1705665513222; Fri, 19 Jan
- 2024 03:58:33 -0800 (PST)
+	 To:Cc:Content-Type; b=RxD6zHQM9T/IjM5P3EmmK5gcgoncRGa7vMoIEoiS8LskntRVJwfq1Ob0de8tP+4SaHh+w7w6+Xhv3YlH5bq9ZoZWezIW3+wP0jGWT3Gkx9MzVcEAFYsTMaHBN9UqA95jpK/YwtGBwaw1h93PtLY0gAON7AYU6E42uOHesJIVPgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CZzl1VTL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71C5FC43330
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705665559;
+	bh=bAHJx0yhKKnHDIkSyj/+7VryXHJi2XP5zcuoP570mEY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=CZzl1VTLUCN9HS8jI9iqNBiYprEBRawsVnx/4AwG/RmrD3jCa1ZFtbEbu6RjLtJpu
+	 +h2590qAnFM/u7S00mh6ErcEjpR72sNqKtMh/CIuBgC0Wvc6FE1egjztbt8UCNTtUn
+	 bWZdK7xxwXX/pGUImXbuDayuYGR4yn1WUedv+GIwtvEFRJ5We19mSZ2YS8aok0vj7F
+	 Ebd8Lx0zivRSsdSGeIq5pmsokkWt8I+lWsNSGvU7ssekTY08sp8EGi0yAG8NZ5Yn93
+	 g9Hwnei9dDjkh+86jL+l648GKxh6Igxrr1OHf7Z7JqyLtDS573YYcSF5CvHRo2SjFO
+	 WnOj8tkXo9yLQ==
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cdfbd4e8caso622244a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 03:59:19 -0800 (PST)
+X-Gm-Message-State: AOJu0YyQ1NG+A2Zk8WeqPJba0i5+n7Pra0vZlhU9dz1Ld9G3z3IleOvj
+	x28hr73GfKszK+9WSfF5eTfOYHO6NeWFJxAdFPGiqe+JbqPWZLLb/JPeCYNw49JgF3tjun2aBMy
+	Lj0aNwMuANlgERsIqKwtZWvzzTht1ic4tQal/
+X-Google-Smtp-Source: AGHT+IG7NvN6OZLP/OU1SyMLwKuBCHH9lQsNNtMIExy1C2cP6UjvhwHkcMYz/IAyChNd0xRlcqbqPThF9Dlkj/h0rdI=
+X-Received: by 2002:a05:6a21:150b:b0:199:afd6:2338 with SMTP id
+ nq11-20020a056a21150b00b00199afd62338mr3022933pzb.43.1705665558914; Fri, 19
+ Jan 2024 03:59:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000a135c0060a2260b3@google.com> <00000000000037f0f3060af9e763@google.com>
- <CACT4Y+YBGDYbhXvpEAo6iXS--QOSsUxXqkGZxOpUCuCd3CM3aQ@mail.gmail.com> <ZakvjMjMYK1HtYGt@casper.infradead.org>
-In-Reply-To: <ZakvjMjMYK1HtYGt@casper.infradead.org>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Fri, 19 Jan 2024 12:58:21 +0100
-Message-ID: <CACT4Y+YT-Y=b_oSFNCQgTeh8igSqfYQ40JHGTad9w2+uZ_JvNg@mail.gmail.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: null-ptr-deref Read in ida_free (4)
-To: Matthew Wilcox <willy@infradead.org>
-Cc: syzbot <syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com>, 
-	wzhmmmmm@gmail.com, johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
+ <CAJD7tkbQb5nAQdhHXELQsUWs8KhwnoOZ7C8Eu2o7tCYSKeY9Ug@mail.gmail.com>
+ <CAJD7tkb7GmMARE9ueyOCZz9wBbANhofUOHnen+b28sxE9tDy1A@mail.gmail.com>
+ <7f52ad78-e10b-438a-b380-49451bf6f64f@bytedance.com> <CAJD7tkaeBTforGTQ8ia_6-1fd5hf-zwkBcd_kW8Bk=zdO+Qnvw@mail.gmail.com>
+ <CAF8kJuNPPruLDOEqH-f-w1zw-TSuWkUZsQ43Qe_EtycapXgkbQ@mail.gmail.com>
+ <3a1b124d-4a97-4400-9714-0cceac53bd34@bytedance.com> <CAF8kJuN_3eaJjwLx_hpwN_ahfHa3qT1kN+NQdYd7vokZj458mA@mail.gmail.com>
+ <9b2f8385-735b-4341-b521-a42c9a9cb04c@bytedance.com> <CAF8kJuNvxZgMvW+7gN1anpASKXdaPfYi=0pSfmJftHkzXnV-ag@mail.gmail.com>
+ <ad007bf8-ab06-4414-8675-e689c5c84fc9@bytedance.com>
+In-Reply-To: <ad007bf8-ab06-4414-8675-e689c5c84fc9@bytedance.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Fri, 19 Jan 2024 03:59:07 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuM4ybP+4_3zssCfV3-Vf9_gE2P7jiOcD9OGgT4JjFC0bg@mail.gmail.com>
+Message-ID: <CAF8kJuM4ybP+4_3zssCfV3-Vf9_gE2P7jiOcD9OGgT4JjFC0bg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] RFC: zswap tree use xarray instead of RB tree
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	=?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, Yu Zhao <yuzhao@google.com>, 
+	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
+	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
+	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 18 Jan 2024 at 15:02, Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, Jan 19, 2024 at 3:12=E2=80=AFAM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
 >
-> On Thu, Jan 18, 2024 at 11:21:34AM +0100, Dmitry Vyukov wrote:
-> > On Sat, 25 Nov 2023 at 14:18, syzbot
-> > <syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com> wrote:
-> > >
-> > > syzbot has found a reproducer for the following issue on:
-> > >
-> > > HEAD commit:    8c9660f65153 Add linux-next specific files for 20231124
-> > > git tree:       linux-next
-> > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=1678a3cce80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ca1e8655505e280
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=51baee846ddab52d5230
-> > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d54c08e80000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160ef1a4e80000
-> > >
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/345ed4af3a0d/disk-8c9660f6.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/191053c69d57/vmlinux-8c9660f6.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/aac7ee5e55e0/bzImage-8c9660f6.xz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com
-> > >
-> > > Bluetooth: hci0: hardware error 0x00
-> > > ==================================================================
-> > > BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-> > > BUG: KASAN: null-ptr-deref in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
-> > > BUG: KASAN: null-ptr-deref in ida_free+0x218/0x2e0 lib/idr.c:511
-> > > Read of size 8 at addr 0000000000000078 by task kworker/u5:1/4455
-> > >
-> > > CPU: 1 PID: 4455 Comm: kworker/u5:1 Not tainted 6.7.0-rc2-next-20231124-syzkaller #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-> > > Workqueue: hci0 hci_error_reset
-> > > Call Trace:
-> > >  <TASK>
-> > >  __dump_stack lib/dump_stack.c:88 [inline]
-> > >  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
-> > >  kasan_report+0xd9/0x110 mm/kasan/report.c:588
-> > >  check_region_inline mm/kasan/generic.c:182 [inline]
-> > >  kasan_check_range+0xef/0x190 mm/kasan/generic.c:188
-> > >  instrument_atomic_read include/linux/instrumented.h:68 [inline]
-> > >  _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+> On 2024/1/19 18:26, Chris Li wrote:
+> > On Thu, Jan 18, 2024 at 10:19=E2=80=AFPM Chengming Zhou
+> > <zhouchengming@bytedance.com> wrote:
+> >>
+> >> On 2024/1/19 12:59, Chris Li wrote:
+> >>> On Wed, Jan 17, 2024 at 11:35=E2=80=AFPM Chengming Zhou
+> >>> <zhouchengming@bytedance.com> wrote:
+> >>>
+> >>>>>>>                     mm-stable           zswap-split-tree    zswap=
+-xarray
+> >>>>>>> real                1m10.442s           1m4.157s            1m9.9=
+62s
+> >>>>>>> user                17m48.232s          17m41.477s          17m45=
+887s
+> >>>>>>> sys                 8m13.517s           5m2.226s            7m59.=
+305s
+> >>>>>>>
+> >>>>>>> Looks like the contention of concurrency is still there, I haven'=
+t
+> >>>>>>> look into the code yet, will review it later.
+> >>>>>
+> >>>>> Thanks for the quick test. Interesting to see the sys usage drop fo=
+r
+> >>>>> the xarray case even with the spin lock.
+> >>>>> Not sure if the 13 second saving is statistically significant or no=
+t.
+> >>>>>
+> >>>>> We might need to have both xarray and split trees for the zswap. It=
+ is
+> >>>>> likely removing the spin lock wouldn't be able to make up the 35%
+> >>>>> difference. That is just my guess. There is only one way to find ou=
+t.
+> >>>>
+> >>>> Yes, I totally agree with this! IMHO, concurrent zswap_store paths s=
+till
+> >>>> have to contend for the xarray spinlock even though we would have co=
+nverted
+> >>>> the rb-tree to the xarray structure at last. So I think we should ha=
+ve both.
+> >>>>
+> >>>>>
+> >>>>> BTW, do you have a script I can run to replicate your results?
+> >>>
+> >>> Hi Chengming,
+> >>>
+> >>> Thanks for your script.
+> >>>
+> >>>>
+> >>>> ```
+> >>>> #!/bin/bash
+> >>>>
+> >>>> testname=3D"build-kernel-tmpfs"
+> >>>> cgroup=3D"/sys/fs/cgroup/$testname"
+> >>>>
+> >>>> tmpdir=3D"/tmp/vm-scalability-tmp"
+> >>>> workdir=3D"$tmpdir/$testname"
+> >>>>
+> >>>> memory_max=3D"$((2 * 1024 * 1024 * 1024))"
+> >>>>
+> >>>> linux_src=3D"/root/zcm/linux-6.6.tar.xz"
+> >>>> NR_TASK=3D32
+> >>>>
+> >>>> swapon ~/zcm/swapfile
+> >>>
+> >>> How big is your swapfile here?
+> >>
+> >> The swapfile is big enough here, I use a 50GB swapfile.
 > >
-> > Wonder if this is fixed with:
+> > Thanks,
 > >
-> > ida: Fix crash in ida_free when the bitmap is empty
+> >>
+> >>>
+> >>> It seems you have only one swapfile there. That can explain the conte=
+ntion.
+> >>> Have you tried multiple swapfiles for the same test?
+> >>> That should reduce the contention without using your patch.
+> >> Do you mean to have many 64MB swapfiles to swapon at the same time?
 > >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=af73483f4e8b6f5c68c9aa63257bdd929a9c194a
-> >
-> > ?
+> > 64MB is too small. There are limits to MAX_SWAPFILES. It is less than
+> > (32 - n) swap files.
+> > If you want to use 50G swap space, you can have MAX_SWAPFILES, each
+> > swapfile 50GB / MAX_SWAPFILES.
 >
-> Should be.  The backtrace below looks like it's the same bug that got
-> reported 3-4 weeks ago.
+> Right.
+>
+> >
+> >> Maybe it's feasible to test,
+> >
+> > Of course it is testable, I am curious to see the test results.
+> >
+> >> I'm not sure how swapout will choose.
+> >
+> > It will rotate through the same priority swap files first.
+> > swapfile.c: get_swap_pages().
+> >
+> >> But in our usecase, we normally have only one swapfile.
+> >
+> > Is there a good reason why you can't use more than one swapfile?
+>
+> I think no, but it seems an unneeded change/burden to our admin.
+> So I just tested and optimized for the normal case.
 
-On second thought, perhaps the bluetooth stack shouldn't free invalid
-ids in the first place.
-It may even take these bogus ids from the wire, which would be pretty bad.
+I understand. Just saying it is not really a kernel limitation per say.
+I blame the user space :-)
 
-> > >  ida_free+0x218/0x2e0 lib/idr.c:511
-> > >  hci_conn_cleanup net/bluetooth/hci_conn.c:157 [inline]
-> > >  hci_conn_del+0x78c/0xe10 net/bluetooth/hci_conn.c:1183
-> > >  hci_conn_hash_flush+0x189/0x260 net/bluetooth/hci_conn.c:2643
-> > >  hci_dev_close_sync+0x5a7/0x1160 net/bluetooth/hci_sync.c:5021
-> > >  hci_dev_do_close+0x2e/0x90 net/bluetooth/hci_core.c:554
-> > >  hci_error_reset+0xa6/0x190 net/bluetooth/hci_core.c:1059
-> > >  process_one_work+0x8a4/0x15f0 kernel/workqueue.c:2633
-> > >  process_scheduled_works kernel/workqueue.c:2706 [inline]
-> > >  worker_thread+0x8b6/0x1290 kernel/workqueue.c:2787
-> > >  kthread+0x2c1/0x3a0 kernel/kthread.c:389
-> > >  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-> > >  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-> > >  </TASK>
-> > > ==================================================================
-> > >
-> > >
-> > > ---
-> > > If you want syzbot to run the reproducer, reply with:
-> > > #syz test: git://repo/address.git branch-or-commit-hash
-> > > If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> > One swapfile will not take the full advantage of the existing code.
+> > Even if you split the zswap trees within a swapfile. With only one
+> > swapfile, you will still be having lock contention on "(struct
+> > swap_info_struct).lock".
+> > It is one lock per swapfile.
+> > Using more than one swap file should get you better results.
+>
+> IIUC, we already have the per-cpu swap entry cache to not contend for
+> this lock? And I don't see much hot of this lock in the testing.
+
+Yes. The swap entry cache helps. The cache batching also causes other
+problems, e.g. the long tail in swap faults handling.
+Shameless plug, I have a patch posted earlier to address the swap
+fault long tail latencies.
+
+https://lore.kernel.org/linux-mm/20231221-async-free-v1-1-94b277992cb0@kern=
+el.org/T/
+
+Chris
 
