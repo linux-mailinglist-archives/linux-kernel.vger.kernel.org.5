@@ -1,220 +1,202 @@
-Return-Path: <linux-kernel+bounces-31324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF96D832C80
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:49:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A0C6832C82
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:49:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E53CB1C23AB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:49:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEDD7284D35
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37DA54BE4;
-	Fri, 19 Jan 2024 15:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D8654F99;
+	Fri, 19 Jan 2024 15:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nvf669uk"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NXIke1hf"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85B554BCB;
-	Fri, 19 Jan 2024 15:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 396D154F87
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705679347; cv=none; b=GNKnO809pyF6mmfPtq/HcZWvZgpoQL5s29yjRPu34TYlXOVQ5BonwMAVIRDE9skSHwvav9wBbUyjgrtVPEhEwOuQGGRt8stgpbJuNPlezKjTwJMGj60HTnDNyd945dN6OTi0BNX2Xh9pIfpWmRoxqta9eu4+hkQqMJ9VGHthfxA=
+	t=1705679354; cv=none; b=uQ0I3KDZUDmc/D4TRvp4t3s6VlTSW2ARaHnG0au0gPxr8YDqIbsWxHpdq+rKvETQOXSQlqWaTLEVgm2RBqPfVcBMb7OrD5L9Dqfhb0OyCUNKNo2wYJ+xuf4r8enEX5dmBxlPJANCkZ4U/hdkhcHo2LE9J0GYqgHtW885n1UtBWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705679347; c=relaxed/simple;
-	bh=HCWh7lQ/W3HxtWCwtOdwFHHK7Klg3DCi9PmosL7r9yo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=S+W4GbsNR360w0JkSOvTlGazR0UXQhLpRfON1WmKtrOlakJgxFk9xZ5yMxsvRw2tdIqwmdDKivtWBwNpTlTU9EeSlRKo7/nd5OKmIu+1JOJtGWmlDW41eePHDYpLTvTZXu3eHq5vc5s4XEAKgYHG756rVuIV55G+NbA5AzE+P4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nvf669uk; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40JFMamB013798;
-	Fri, 19 Jan 2024 15:48:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=J9ig2IJPl4P+QEzFCNblDiqJod4+v+VvpLkQeSXtsGc=; b=nv
-	f669uktnYhKxrOtL5tcoVJYreCLcVtLMFK7Gqhue0TlFOFgHinaQW6+oagC5bq/X
-	YxejjpXot7W9LnbNV48FnRMqQ+z9iJfIGwAeKxVZbMxM3AAfi4XYHZ/L7UsEXrqP
-	b4WSVp6Y6I6eUSE4KX1RkTIaUmcybRgzltSmcXOiXYX+K8/MZwz9p6AjybPUmPqp
-	OeSpc/11hFlJxoOf/muge1+cfAl7fSbbSTOFeyvwMut8fSi2U8PCeUmGWP1eQFtG
-	KVfcZvO59E7UTo85rLYk6n0tWoxh6TWwDmEzb97ibGfCkuIcIinpAQzmqOh30xxe
-	Y9tFM53BQyAGTW7WKnYw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vq403k6vj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 15:48:40 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40JFmdcT004408
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 15:48:39 GMT
-Received: from [10.216.49.108] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 19 Jan
- 2024 07:48:36 -0800
-Message-ID: <c85fffe6-e455-d0fa-e332-87e81e0a0e86@quicinc.com>
-Date: Fri, 19 Jan 2024 21:18:32 +0530
+	s=arc-20240116; t=1705679354; c=relaxed/simple;
+	bh=ukd8lgAS8mkUlXaFfGGD+2VLPywWab4A2H1fZgyGbr0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NxOopoLc+tcq75bDEBWP3GJmPotu5BQf+i1QjDr9+PEjZph249wkL+Xio/2b+xITxy4RYYPljfG7U380SyC65YiXH44oNq9jFI20R/PJTR7zEjzbP1cSZkqRx9jF6/b+RlYfIbqL3sE3kmHoxz5JAmT1HItmvMHosQlrsGy2eg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NXIke1hf; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e7065b7bdso9777405e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:49:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705679350; x=1706284150; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DJCOJrM5uAeYWzffiza/Y1SSVgClIZfy3CNOrCYjLv4=;
+        b=NXIke1hfSIfxgXhdHjw6wV5Zzt7XrePjPSP8g1oGG3K+IaNA6xxQaC4GtkX5DHsSCx
+         VGpmRD0sLuGI0cTwZPwgJFHlHx8/SPjqXbDFY7YUqcGS9PvUYT1zVCaKU1kB4doleQeg
+         IXapLP3FXQIoa0Z/bNpj8oe3W8NFQXjd390f64lU8SkyBsnSSAkrNGt4XNex+JiDHsMa
+         cvpN4330KZ79iZkTTCMpSrZIS1IcLwFNiiXG+jfGa+gySJuS5PnvMgllpSma2RBqj7eQ
+         yhOelOKU6C/+Jp768rBjSkIznksk/M4Ce4r3MTIsigB6ujBugvwSq5CHvHNFTb2MhKyt
+         ummg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705679350; x=1706284150;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DJCOJrM5uAeYWzffiza/Y1SSVgClIZfy3CNOrCYjLv4=;
+        b=ZKoD2F+DxNOBP0k7Rt+Ygckh2VExO5aRAwPIceUQ10lCBwEgD9jIdeZri9X6xBExpk
+         t/2jTlOTCKpSLv0uZPTMjF06WOrt3eKij7d++JCvzB23l3Jz1k5BEJwekG+im1y/KrPK
+         LKbojkZUiUBRghVS6jDDkI5b+dqlPJhE2hU4Yo2H+NJXa2sXAESEAh58C5RS7W7b59SV
+         D0mK/J/Ex5cKjTn/nmiNUD4v6cltgTLW/i1ZBkQTpy46cECgq2QgF717Gxqg3iUTsbsK
+         h+jM0NOWYWBEbRd7Uq7BwOgODkUT3EONLc/hBc/1haFyBYUTT7srpOT3QWCI7z4xDHVT
+         OpOg==
+X-Gm-Message-State: AOJu0Yxwtg4++yzCXWsckayx8Ch/G8JYwytjAsqJSVNYCUbEN2/7I6Eh
+	jVTYnd7dot1eHziphJuJP6RlkmXz18DSCVg5q7zFHAPewblcwUQLF17vYcOX0ho=
+X-Google-Smtp-Source: AGHT+IGt+Ic6TmYhme3qLr6jE1/68NER1BpVZ+X3fxsIbn5gfmAli+tnqmvjZjUMJ3vS8Xa0akDxSA==
+X-Received: by 2002:a05:600c:2192:b0:40e:867d:7c27 with SMTP id e18-20020a05600c219200b0040e867d7c27mr1121821wme.262.1705679350236;
+        Fri, 19 Jan 2024 07:49:10 -0800 (PST)
+Received: from vingu-book ([2a01:e0a:f:6020:be5a:dd18:16a0:a9e5])
+        by smtp.gmail.com with ESMTPSA id n22-20020a05600c4f9600b0040e53f24ceasm29455083wmq.16.2024.01.19.07.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 07:49:09 -0800 (PST)
+Date: Fri, 19 Jan 2024 16:49:07 +0100
+From: Vincent Guittot <vincent.guittot@linaro.org>
+To: Konstantin Khorenko <khorenko@virtuozzo.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Alexander Atanasov <alexander.atanasov@virtuozzo.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 RESEND] sched/fair: Do not scan non-movable tasks
+ several times
+Message-ID: <ZaqZ8wXzNvqUH8Jn@vingu-book>
+References: <20240115105052.398761-1-khorenko@virtuozzo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] fs: improve dump_mapping() robustness
-To: Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Al Viro
-	<viro@zeniv.linux.org.uk>
-CC: <akpm@linux-foundation.org>, <willy@infradead.org>, <brauner@kernel.org>,
-        <jack@suse.cz>, <linux-mm@kvack.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <937ab1f87328516821d39be672b6bc18861d9d3e.1705391420.git.baolin.wang@linux.alibaba.com>
- <20240118013857.GO1674809@ZenIV>
- <d5979f89-7a84-423a-a1c7-29bdbf7c2bc1@linux.alibaba.com>
-Content-Language: en-US
-From: Charan Teja Kalla <quic_charante@quicinc.com>
-In-Reply-To: <d5979f89-7a84-423a-a1c7-29bdbf7c2bc1@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: QnU7MX2vPrWySRf9jhtVFKZ2LZqmokq7
-X-Proofpoint-ORIG-GUID: QnU7MX2vPrWySRf9jhtVFKZ2LZqmokq7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-19_09,2024-01-19_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 phishscore=0
- spamscore=0 adultscore=0 mlxlogscore=741 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401190088
+In-Reply-To: <20240115105052.398761-1-khorenko@virtuozzo.com>
 
-Hi Matthew/Baolin,
-
-On 1/18/2024 8:13 AM, Baolin Wang wrote:
+Le lundi 15 janv. 2024 � 13:50:52 (+0300), Konstantin Khorenko a �crit :
+> If busiest rq is small, nr_running < SCHED_NR_MIGRATE_BREAK and all
+> tasks are not movable, detach_tasks() should not iterate more than tasks
+> available in the busiest rq.
 > 
+> Before commit: b0defa7ae03e ("sched/fair: Make sure to try to detach at
+> least one movable task"), the (env->loop > env->loop_max) condition
+> prevented us from scanning non-movable tasks more than rq size times,
+> but after we start checking the LBF_ALL_PINNED flag, the "all tasks are
+> not movable" case is under threat.
 > 
-> On 1/18/2024 9:38 AM, Al Viro wrote:
->> On Tue, Jan 16, 2024 at 03:53:35PM +0800, Baolin Wang wrote:
->>
->>> With checking the 'dentry.parent' and 'dentry.d_name.name' used by
->>> dentry_name(), I can see dump_mapping() will output the invalid dentry
->>> instead of crashing the system when this issue is reproduced again.
->>
->>>       dentry_ptr = container_of(dentry_first, struct dentry,
->>> d_u.d_alias);
->>> -    if (get_kernel_nofault(dentry, dentry_ptr)) {
->>> +    if (get_kernel_nofault(dentry, dentry_ptr) ||
->>> +        !dentry.d_parent || !dentry.d_name.name) {
->>>           pr_warn("aops:%ps ino:%lx invalid dentry:%px\n",
->>>                   a_ops, ino, dentry_ptr);
->>>           return;
->>
->> That's nowhere near enough.  Your ->d_name.name can bloody well be
->> pointing
->> to an external name that gets freed right under you.  Legitimately so.
->>
->> Think what happens if dentry has a long name (longer than would fit into
->> the embedded array) and gets renamed name just after you copy it into
->> a local variable.  Old name will get freed.  Yes, freeing is RCU-delayed,
->> but I don't see anything that would prevent your thread losing CPU
->> and not getting it back until after the sucker's been freed.
+> Note: in case all tasks in the rq could not be moved in detach_tasks()
+> we always increase loop_break by SCHED_NR_MIGRATE_BREAK, so we can step
+> over loop_max, but i think it's a rare case and does not worth adding
+> here extra check for rq->nr_running overlimit.
+
+
+In this case why not doing the below ? Close to your 1st version 
+
+---
+ kernel/sched/fair.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index fce22b4462bb..1dae6cdf8561 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11344,6 +11344,13 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+ 		env.loop_max  = min(sysctl_sched_nr_migrate, busiest->nr_running);
+
+ more_balance:
++		/*
++		 * If busiest rq is small, nr_running < SCHED_NR_MIGRATE_BREAK
++		 * and all tasks are not movable, detach_tasks() should not
++		 * iterate more than tasks available in rq.
++		 */
++		env.loop_break = min(env.loop_break, busiest->nr_running);
++
+ 		rq_lock_irqsave(busiest, &rf);
+ 		update_rq_clock(busiest);
+
+--
+2.34.1
+
+
 > 
-> Yes, that's possible. And this appears to be a use-after-free issue in
-> the existing code, which is different from the issue that my patch
-> addressed.
+> Fixes: b0defa7ae03e ("sched/fair: Make sure to try to detach at least
+> one movable task")
 > 
-> So how about adding a rcu_read_lock() before copying the dentry to a
-> local variable in case the old name is freed?
+> Signed-off-by: Konstantin Khorenko <khorenko@virtuozzo.com>
+> ---
+>  kernel/sched/fair.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 > 
-
-We too seen the below crash while printing the dentry name.
-
-aops:shmem_aops ino:5e029 dentry name:"dev/zero"
-flags:
-0x8000000000080006(referenced|uptodate|swapbacked|zone=2|kasantag=0x0)
-raw: 8000000000080006 ffffffc033b1bb60 ffffffc033b1bb60 ffffff8862537600
-raw: 0000000000000001 0000000000000000 00000003ffffffff ffffff807fe64000
-page dumped because: migration failure
-migrating pfn aef223 failed ret:1
-page:000000009e72a120 refcount:3 mapcount:0 mapping:000000003325dda1
-index:0x1 pfn:0xaef223
-memcg:ffffff807fe64000
-Unable to handle kernel NULL pointer dereference at virtual address
-0000000000000000
-Mem abort info:
-  ESR = 0x0000000096000005
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x05: level 1 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000005
-  CM = 0, WnR = 0
-user pgtable: 4k pages, 39-bit VAs, pgdp=000000090c12d000
-[0000000000000000] pgd=0000000000000000, p4d=0000000000000000,
-pud=0000000000000000
-Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-
-dentry_name+0x1f8/0x3a8
-pointer+0x3b0/0x6b8
-vsnprintf+0x4a4/0x65c
-vprintk_store+0x168/0x4a8
-vprintk_emit+0x98/0x218
-vprintk_default+0x44/0x70
-vprintk+0xf0/0x138
-_printk+0x54/0x80
-dump_mapping+0x17c/0x188
-dump_page+0x1d0/0x2e8
-offline_pages+0x67c/0x898
-
-
-
-Not much comfortable with block layer internals, TMK, the below is what
-happening in the my case:
-memoffline	     		dput()
-(offline_pages)		 (as part of closing of the shmem file)
-------------		 --------------------------------------
-					.......
-			1) dentry_unlink_inode()
-			      hlist_del_init(&dentry->d_u.d_alias);
-
-			2) iput():
-			    a) inode->i_state |= I_FREEING
-				.....
-			    b) evict_inode()->..->shmem_undo_range
-			       1) get the folios with elevated refcount
-3) do_migrate_range():
-   a) Because of the elevated
-   refcount in 2.b.1, the
-   migration of this page will
-   be failed.
-
-			       2) truncate_inode_folio() ->
-				     filemap_remove_folio():
- 				(deletes from the page cache,
-				 set page->mapping=NULL,
-				 decrement the refcount on folio)
-  b) Call dump_page():
-     1) mapping = page_mapping(page);
-     2) dump_mapping(mapping)
-	  a) We unlinked the dentry in 1)
-           thus dentry_ptr from host->i_dentry.first
-           is not a proper one.
-
-         b) dentry name print with %pd is resulting into
-	   the mentioned crash.
-
-
-At least in this case, I think __this patchset in its current form can
-help us__.
-
-Thanks,
-Charan
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 533547e3c90a..920fb16e6e2f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -11277,7 +11277,6 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>  		.dst_rq		= this_rq,
+>  		.dst_grpmask    = group_balance_mask(sd->groups),
+>  		.idle		= idle,
+> -		.loop_break	= SCHED_NR_MIGRATE_BREAK,
+>  		.cpus		= cpus,
+>  		.fbq_type	= all,
+>  		.tasks		= LIST_HEAD_INIT(env.tasks),
+> @@ -11324,6 +11323,14 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>  		 */
+>  		env.loop_max  = min(sysctl_sched_nr_migrate, busiest->nr_running);
+>  
+> +more_balance_reset_break:
+> +		/*
+> +		 * If busiest rq is small, nr_running < SCHED_NR_MIGRATE_BREAK
+> +		 * and all tasks are not movable, detach_tasks() should not
+> +		 * iterate more than tasks available in rq.
+> +		 */
+> +		env.loop_break = min(SCHED_NR_MIGRATE_BREAK, busiest->nr_running);
+> +
+>  more_balance:
+>  		rq_lock_irqsave(busiest, &rf);
+>  		update_rq_clock(busiest);
+> @@ -11386,13 +11393,12 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>  			env.dst_cpu	 = env.new_dst_cpu;
+>  			env.flags	&= ~LBF_DST_PINNED;
+>  			env.loop	 = 0;
+> -			env.loop_break	 = SCHED_NR_MIGRATE_BREAK;
+>  
+>  			/*
+>  			 * Go back to "more_balance" rather than "redo" since we
+>  			 * need to continue with same src_cpu.
+>  			 */
+> -			goto more_balance;
+> +			goto more_balance_reset_break;
+>  		}
+>  
+>  		/*
+> @@ -11418,7 +11424,6 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>  			 */
+>  			if (!cpumask_subset(cpus, env.dst_grpmask)) {
+>  				env.loop = 0;
+> -				env.loop_break = SCHED_NR_MIGRATE_BREAK;
+>  				goto redo;
+>  			}
+>  			goto out_all_pinned;
+> -- 
+> 2.39.3
+> 
 
