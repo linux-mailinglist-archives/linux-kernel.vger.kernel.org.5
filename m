@@ -1,282 +1,267 @@
-Return-Path: <linux-kernel+bounces-30922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763A28325EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:44:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA27E8325E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:43:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 245FF284670
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:44:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AA8D1C22700
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B05D2C844;
-	Fri, 19 Jan 2024 08:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF5628E0C;
+	Fri, 19 Jan 2024 08:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZtZv2Yw5"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="VjwcU9sX"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2064.outbound.protection.outlook.com [40.107.237.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A157C2C1B2
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 08:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705653856; cv=none; b=N2v8hXbN0E62j6PaM0BFBcw0S+7NU4GLQ54hbgjFlxPFnML2VWG5p0CIIw81T1hLeAxm72sqipX260UTNPiAupgsCmotPmLZA0l8CZmef+UnWA5UUiNFlCBmFlFrL1Eg+S5AuyOWosQzBCQlG6Joolp5bjQc+Bc5ovb3BJYvVjs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705653856; c=relaxed/simple;
-	bh=9XbCjjF8r2gVGofKMbrTlFCA/5ptow5KkNMD0C96u2k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=os28bfiOc/8fJ46KRQ5lvGl4Dkn4EQk18EDeRqeIooIfciwvZ9FWSWn0KvnmeVmmFjwTAVZZXA7F2+M2ojHqfWZL3QmcU68PDPBb/M2J3YSK3eKT4ItFsWAxWL7B2+X6pXEvjXVB2vJbAbhKNbE/T6MZfI4MNBDbXjLRcHmFVMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZtZv2Yw5; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705653853;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MJTkm+mOw+g+wQwvmg6Px3ajeLTkr/0B7LPwNJlQxg0=;
-	b=ZtZv2Yw5jq35B+QEx8K8nChFSO2bHkkDOdBE/6yewrxBfMuya09pq70ScRjp3Pk8OuX/1l
-	gVmZCTqqfRrdNwEv2luDTmmmDYv5Cy2Ab7sbHXA+S/dt1IRBVDWKYCR/Wnac5WcKgWpth0
-	kgfO6NDsrNE6XaAoso78AKjwBWqa7ho=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-494-WKJ_DB5UOzOn6N3OiSkbsg-1; Fri, 19 Jan 2024 03:44:12 -0500
-X-MC-Unique: WKJ_DB5UOzOn6N3OiSkbsg-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a2f71c83b7eso25356666b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 00:44:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705653851; x=1706258651;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MJTkm+mOw+g+wQwvmg6Px3ajeLTkr/0B7LPwNJlQxg0=;
-        b=FSa9/fKtKvcRH6KrbUPD6JJeQBV3W71UIF+aV53QAAt2wwSCa0oL8L1ZOmF883cT9j
-         booR2y3Il6dbbN3yd01NRyDo+DfWlV/9QA25sGLCALNgoP6jd78+g2vPV3+X5j/SHQFB
-         5qQdJ6UYKRQb2F9043Pz2p8hTqgzaokvMGfGszdWycAa+lZ0wYj3F3PiQuYL5mxQYkKH
-         eqoiLZkfR3uu81GRhWzbjHYCDtAUArvpQk9s69Af6EWfRNSQkr59v2jxEwlecELFuJae
-         O+RDIcR7/IMb46d5zJgOrXxtE+BpJN2PxxpOU90xXet2Ym+FR2JcBaH96qFb5KD7dkSL
-         rHMg==
-X-Gm-Message-State: AOJu0YyvvzkMttTqeWrnl1n1/1eyrjYEVKB96Yh+8eN4KTXr65aKMfG5
-	sixnd4BC8O10O5+/tgfK2HP1hmh380mlABPt0U7HEy02tsHyOIoEl1MZe6tT1ef5Ffta5sx2fHI
-	gp/SQA2KRcpIxYCQ02I25nMqtJ2UY1HYQhcY1+W2HFXz/xSyRP0jJLVh8lZSZ8A==
-X-Received: by 2002:a17:907:970a:b0:a28:d122:ef4a with SMTP id jg10-20020a170907970a00b00a28d122ef4amr1014784ejc.125.1705653850888;
-        Fri, 19 Jan 2024 00:44:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEPaki7Nvh5s+ZRsiTzSg8e/2nNuxfLn/8eX3GvtF22Txji1mc1ty+kzsiF/OK7tcW1i5nY+A==
-X-Received: by 2002:a17:907:970a:b0:a28:d122:ef4a with SMTP id jg10-20020a170907970a00b00a28d122ef4amr1014778ejc.125.1705653850502;
-        Fri, 19 Jan 2024 00:44:10 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id ti8-20020a170907c20800b00a2da4738882sm6498313ejc.131.2024.01.19.00.44.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jan 2024 00:44:09 -0800 (PST)
-Message-ID: <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
-Date: Fri, 19 Jan 2024 09:44:09 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23AC628E01
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 08:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705653794; cv=fail; b=QoWB3s/W9Eej1B0R4zeVzjkezjK8XrYWmxf65v8xQebOgSjtyLxDmrTOaowGwkC6NO4gTKAR3qACG83psDk+Z3FtqlivifsfBUUVWKIbqfnXxET/VqiBrClXtnfU44I8nJCf/bfWncoELNWozrQq/cg3smi60PD373xUlfRqXy4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705653794; c=relaxed/simple;
+	bh=9wap/LQgYMwDgMBCHqHCLnm9WuUww448ldv89jZqWL0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fQ90c0wO5AVPO0175PTs0lKN0kyEP89OLRrrESfNbtDYZh0nje8cVGE6hrRYoA4thbsBX/fi/kfvzpBWgN8O90QYFi2OZWd0tRql22rL7gq4vFjdPcWZFpuDdG6iWJVE3Xbeo+uKee+SRMGY5Z+0fuuKeGLtV+XWkwRZVoQxrcs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=VjwcU9sX; arc=fail smtp.client-ip=40.107.237.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fSo94BDyP7j2zgKxlR3y9bext3hkuTN3KfKRXnvpNhV+jHB+KZjfhlkdfHpewbDNfBK5QyJGX/z786yxlqjSt3dU3inEEmt6qnMexKCdMl5FHozodbwfSl2K65zRPD5YDCy6jmCLoOFTqv1bm95Wo5wegfTGRjnqpYYRqImp/a3zNhGUS1MUdZJDTz03WQNhcV/AAam1yxlsv+acefAJC5Z8izEJyoKoPOnSUnc6gvSCX7xd5ORpNos1pKtUzdFSOXhXFZakK1nDughJSC3ZUZSM8r46XgIeP9rRwe7+rS/gntAsLzIq4x9XMzavsUKBFhhMv7WNf7z1ScQnYSTdfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2Nlaz+MGRPLhpVYEmrL64cGlOJtxz2euNygmwm8EPPY=;
+ b=I5SKTJA667Q7bv+SjR2Y1HgL11rSrN111oYRxbgE7V7YOIr7I6cOFb0Rh8IgRgdnEgxZrCRRltmW+nIht5jrc26YfOBYbTylkWQTNmQwxOavtdPWhxGr5TEZ35MHYBRHrTrLQWNNrdyyzgqw9dDVtrk7dRQoVbEEOT6mb9XYDCUsSWoe9pR/8X286xQTgto5nCEimtY6WR+x1UOOBpo9z334lp1VqD56//dWBkmxwaqFTnSiauVs+DJqJLeXiqORpku0+UFNePmgXcT33xy3jR6t92J0HshO9rckdokCpXHRlbj0Na0tkV3QQAxzJeVKv/floRW1bsU9r25I7V2djQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2Nlaz+MGRPLhpVYEmrL64cGlOJtxz2euNygmwm8EPPY=;
+ b=VjwcU9sX8W+p9mNDK+fRgspNkrzR1HxmwMe6f+SmePKpu+Nj4BR+pe5EK6ymc5go/4jx6X9P3605OCKGd6Fj22Q4k6pB/W4Sq9LxOXDeM/x2wnwT93IvqIZJxDNHvKMobMM1lEFZ3WEAPT1Nw/Ykbz+w4+gG8pI90VRGGiaZH3o=
+Received: from MW4PR03CA0043.namprd03.prod.outlook.com (2603:10b6:303:8e::18)
+ by SJ2PR12MB9087.namprd12.prod.outlook.com (2603:10b6:a03:562::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
+ 2024 08:43:09 +0000
+Received: from CO1PEPF000044FC.namprd21.prod.outlook.com
+ (2603:10b6:303:8e:cafe::75) by MW4PR03CA0043.outlook.office365.com
+ (2603:10b6:303:8e::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.26 via Frontend
+ Transport; Fri, 19 Jan 2024 08:43:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044FC.mail.protection.outlook.com (10.167.241.202) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7228.0 via Frontend Transport; Fri, 19 Jan 2024 08:43:09 +0000
+Received: from BLR5CG134614W.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 19 Jan
+ 2024 02:42:53 -0600
+From: K Prateek Nayak <kprateek.nayak@amd.com>
+To: <linux-kernel@vger.kernel.org>
+CC: <mingo@redhat.com>, <peterz@infradead.org>, <juri.lelli@redhat.com>,
+	<vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
+	<rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
+	<bristot@redhat.com>, <vschneid@redhat.com>, <gautham.shenoy@amd.com>,
+	<kprateek.nayak@amd.com>
+Subject: [PATCH] sched/fair: Skip newidle_balance() when an idle CPU is woken up to process an IPI
+Date: Fri, 19 Jan 2024 14:15:48 +0530
+Message-ID: <20240119084548.2788-1-kprateek.nayak@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-To: Pavel Machek <pavel@ucw.cz>, Werner Sembach <wse@tuxedocomputers.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
- Jelle van der Waa <jelle@vdwaa.nl>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Lee Jones <lee@kernel.org>,
- linux-kernel@vger.kernel.org,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org
-References: <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
- <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
- <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
- <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
- <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
- <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
- <ZaljwLe7P+dXHEHb@duo.ucw.cz>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ZaljwLe7P+dXHEHb@duo.ucw.cz>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FC:EE_|SJ2PR12MB9087:EE_
+X-MS-Office365-Filtering-Correlation-Id: f85439a5-4230-4ebe-a9a1-08dc18caa9f8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	PIDIQHEIYZ0dY6uD6h6ebsnj4NbtfUoDUdLsZWrrDfUqqRiru5KrdghitHAjlE+ZjJW0wAUeYCOvGCmj0PVdL0VOfC8rGL3+5l6Rxoj3MlTJfjjAjsmbiP7CgYdz2TkGtV9q9Dkm3AhoDL68e2CMf9+YWzRdVMKUtpygqg3qoHLE8d3JX2ahrSTBvFC6XPATXDTg7rj4/srL2E1bQKWGfhJpMuPTQEygSmingOrDR5pwJTbM5VVLNd/J1CLdzSsy+oUc14KXH6fESLkW1To/jc+ECBFL7n6NFWyQcitJPeXE+ip1mYT1upagmxcfHrKZboohWJuWUi8a5ebsNULmqyOHblPZ1ozNR+I/Vh9BpUPyQnUMbL3PsJ/HRudH1jVxdCOErMkc8a6ANMeMYh8HWEPzjEzSHFktyW/wKFS6nxB2NmONWxlPPL5rr7kuzOv3lrjnNRo/VtjcXdvm/FAly7SlBohhs1DslFkZpzkWOOIVdg99X7tS0mOpdLbHV/CGtAXdgsLkgRGA5eQ8gXzvHxiIeQGr9Mo+0P7Inl2H9Ph8Xp0kMERjbuE/htDtGp8C/YMvBWogb+KEHmG+b4KMbgqEku6rDN0QppjZYF+U4Y/Upjt6xVCW87crbXonr1pveof2gTggRaC2GIJ+GOtNcgksxhgTjC4Ngbv3n0+vEsPm9b0G/0ZlPKlYa2ZvM7FFp+0zvhdEmXteHwRyLGsXf7HOgQ8m5hHNEtscLVl5D3nAGjZ3363ebn2L4sUtsm7W4X3KSQrbIUBA7V40wL/GTw==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(376002)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(82310400011)(40470700004)(46966006)(36840700001)(40460700003)(40480700001)(16526019)(1076003)(2616005)(426003)(336012)(2906002)(7416002)(26005)(5660300002)(7696005)(6666004)(70586007)(70206006)(8936002)(316002)(4326008)(8676002)(54906003)(6916009)(36860700001)(81166007)(356005)(82740400003)(966005)(478600001)(86362001)(83380400001)(47076005)(36756003)(41300700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 08:43:09.2467
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f85439a5-4230-4ebe-a9a1-08dc18caa9f8
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000044FC.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9087
 
-Hi,
+When measuring IPI throughput using a modified version of Anton
+Blanchard's ipistorm benchmark [1], configured to measure time taken to
+perform a fixed number of smp_call_function_single() (with wait set to
+1), an increase in benchmark time was observed between v5.7 and v5.8.
+Bisection pointed to commit b2a02fc43a1f ("smp: Optimize
+send_call_function_single_ipi()") as the reason behind this increase in
+runtime.
 
-On 1/18/24 18:45, Pavel Machek wrote:
-> Hi!
-> 
->> We have an upcoming device that has a per-key keyboard backlight, but does
->> the control completely via a wmi/acpi interface. So no usable hidraw here
->> for a potential userspace driver implementation ...
->>
->> So a quick summary for the ideas floating in this thread so far:
->>
->> 1. Expand leds interface allowing arbitrary modes with semi arbitrary
->> optional attributes:
-> 
->>     - Con:
->>
->>         - Violates the simplicity paradigm of the leds interface (e.g. with
->> this one leds entry controls possible multiple leds)
-> 
-> Let's not do this.
-> 
->> 2. Implement per-key keyboards as auxdisplay
->>
->>     - Pro:
->>
->>         - Already has a concept for led positions
->>
->>         - Is conceptually closer to "multiple leds forming a singular entity"
->>
->>     - Con:
->>
->>         - No preexisting UPower support
->>
->>         - No concept for special hardware lightning modes
->>
->>         - No support for arbitrary led outlines yet (e.g. ISO style enter-key)
-> 
-> Please do this one.
+Since a clean revert is not possible with the latest kernel, to restore
+the older behavior, the call_function_single_prep_ipi() check in
+send_call_function_single_ipi() was skipped leading to
+send_call_function_single_ipi() always calling
+arch_send_call_function_single_ipi(). The
+flush_smp_call_function_queue() introduced in do_idle() by the same
+commit was removed as well since the above change would unconditionally
+send an IPI to the idle CPU in TIF_POLLING mode.
 
-Ok, so based on the discussion so far and Pavel's feedback lets try to
-design a custom userspace API for this. I do not believe that auxdisplay
-is a good fit because:
+With the above changes (which will be referred to as "revert"
+henceforth) the ipistorm benchmark time improves. Following are
+normalized results from test runs (average runtime from 10 runs of
+ipistorm) on a dual socket 4th Generation EPYC system (2 x 128C/256T):
 
-- auxdisplay is just a directory name, it does not seem to clearly
-  define an API
+cmdline: insmod ipistorm.ko numipi=100000 single=1 offset=8 cpulist=8 wait=1
 
-- instead the deprecated /dev/fb API is used which is deprecated
+  ==================================================================
+  Test          : ipistorm (modified)
+  Units         : Normalized runtime
+  Interpretation: Lower is better
+  Statistic     : AMean
+  ==================================================================
+  kernel:		time [pct imp]
+  v6.7-rc5		1.00 [0.00]
+  v6.7-rc5 + revert	0.66 [34.41]
 
-- auxdisplays are very much displays (hence /dev/fb) they are typically
-  small LCD displays with a straight widthxheight grid of square pixels
+Although the revert improves ipistorm performance, it also regresses
+tbench and netperf when applied on top of latest tip:sched/core
+supporting the validity of the optimization
 
-- /dev/fb does gives us nothing for effects, zoned keyboard, etc.
+tip:sched/core was at tag "sched-core-2024-01-08" during the test. C2
+was disabled but boost remained on coupled with performance governor for
+all the tests.
 
-So my proposal would be an ioctl interface (ioctl only no r/w)
-using /dev/rgbkbd0 /dev/rgbkdb1, etc. registered as a misc chardev.
+  ==================================================================
+  Test          : tbench
+  Units         : Normalized throughput
+  Interpretation: Higher is better
+  Statistic     : AMean
+  ==================================================================
+  Clients:    tip[pct imp](CV)       revert[pct imp](CV)
+      1     1.00 [  0.00]( 0.24)     0.91 [ -8.96]( 0.30)
+      2     1.00 [  0.00]( 0.25)     0.92 [ -8.20]( 0.97)
+      4     1.00 [  0.00]( 0.23)     0.91 [ -9.20]( 1.75)
+      8     1.00 [  0.00]( 0.69)     0.91 [ -9.48]( 1.56)
+     16     1.00 [  0.00]( 0.66)     0.92 [ -8.49]( 2.43)
+     32     1.00 [  0.00]( 0.96)     0.89 [-11.13]( 0.96)
+     64     1.00 [  0.00]( 1.06)     0.90 [ -9.72]( 2.49)
+    128     1.00 [  0.00]( 0.70)     0.92 [ -8.36]( 1.26)
+    256     1.00 [  0.00]( 0.72)     0.97 [ -3.30]( 1.10)
+    512     1.00 [  0.00]( 0.42)     0.98 [ -1.73]( 0.37)
+   1024     1.00 [  0.00]( 0.28)     0.99 [ -1.39]( 0.43)
 
-For per key controllable rgb LEDs we need to discuss a coordinate
-system. I propose using a fixed size of 16 rows of 64 keys,
-so 64x16 in standard WxH notation.
+  ==================================================================
+  Test          : netperf
+  Units         : Normalized Througput
+  Interpretation: Higher is better
+  Statistic     : AMean
+  ==================================================================
+  Clients:         tip[pct imp](CV)       revert[pct imp](CV)
+   1-clients     1.00 [  0.00]( 0.50)     0.89 [-10.51]( 0.20)
+   2-clients     1.00 [  0.00]( 1.16)     0.89 [-11.10]( 0.59)
+   4-clients     1.00 [  0.00]( 1.03)     0.89 [-10.68]( 0.38)
+   8-clients     1.00 [  0.00]( 0.99)     0.89 [-10.54]( 0.50)
+  16-clients     1.00 [  0.00]( 0.87)     0.89 [-10.92]( 0.95)
+  32-clients     1.00 [  0.00]( 1.24)     0.89 [-10.85]( 0.63)
+  64-clients     1.00 [  0.00]( 1.58)     0.90 [-10.11]( 1.18)
+  128-clients    1.00 [  0.00]( 0.87)     0.89 [-10.94]( 1.11)
+  256-clients    1.00 [  0.00]( 4.77)     1.00 [ -0.16]( 3.45)
+  512-clients    1.00 [  0.00](56.16)     1.02 [  2.10](56.05)
 
-And then storing RGB in separate bytes, so userspace will then
-always send a buffer of 192 bytes per line (64x3) x 14 rows
-= 3072 bytes. With the kernel driver ignoring parts of
-the buffer where there are no actual keys.
+Looking further into the difference in the code path taken, it was
+noticed that to pull a TIF_POLLING thread out of idle to process an IPI,
+the sender sets the TIF_NEED_RESCHED bit in the idle task's thread info.
+As a result, the scheduler expects a task to be enqueued when exiting
+the idle path. This is not the case with non-polling idle states where
+the idle CPU exits the non-polling idle state to process the interrupt,
+and since need_resched() returns false, soon goes back to idle again.
 
-I would then like the map the standard 105 key layout onto this,
-starting at x.y (column.row) coordinates of 16.6 (with 0.0 being
-the top left). Leaving plenty of space on the left top and right
-(and some on the bottom) for extra media key rows, macro keys, etc.
+When TIF_NEED_RESCHED flag is set, do_idle() will call schedule_idle(),
+a large part of which runs with local IRQ disabled. In case of ipistorm,
+when measuring IPI throughput, this large IRQ disabled section delays
+processing of IPIs. Further auditing revealed that in absence of any
+runnable tasks, pick_next_task_fair(), which is called from the
+pick_next_task() fast path, will always call newidle_balance() in this
+scenario, further increasing the time spent in the IRQ disabled section.
 
-The idea to have the standard layout at a fixed place is to allow
-userspace to have a database of preset patterns which will work
-everywhere.
+In cases where an idle CPU in TIF_POLLING mode wakes up to process only
+an interrupt, with no new tasks enqueued, skip newidle_balance(). This
+also makes the behavior consistent with scenarios where an idle CPU in
+non-polling mode is woken up only to process an interrupt where
+need_resched() will return false leading to an immediate idle re-entry.
 
-Note I say standard 105 key layout, but in reality for
-defining the standardized part of the buffer we should
-use the maximum amount of keys per row of all the standard layouts,
-so for row 6 (the ESC row) and for extra keys on the right outside
-the main block we use the standard layout as shown here:
+Following is the ipistorm results on the same test system with this
+patch:
 
-http://www.maxkeyboard.com/images/105_ISO_6_25_Key_Layout.jpg
+  ==================================================================
+  Test          : ipistorm (modified)
+  Units         : Normalized runtime
+  Interpretation: Lower is better
+  Statistic     : AMean
+  ==================================================================
+  kernel:		time [pct imp]
+  v6.7-rc5		1.00 [0.00]
+  v6.7-rc5 + revert	0.66 [34.41]
+  v6.7-rc5 + patch	0.55 [44.81]
 
-For the main area of the keyboard looking at:
+netperf and tbench results with the patch match the results on tip.
+Additionally, hackbench, stream, and schbench too were tested, with
+results from the patched kernel matching that of the tip.
 
-http://bopqehorizon.weebly.com/uploads/1/3/4/3/134337299/913246919_orig.png
+Link: https://github.com/antonblanchard/ipistorm [1]
+Suggested-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
+Signed-off-by: K Prateek Nayak <kprateek.nayak@amd.com>
+---
+This patch is based on tip:sched/core at tag "sched-core-2024-01-08".
+---
+ kernel/sched/fair.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-We want to max rows per key, so this means that per row we use
-(from the above image) :
-
-row  7: 106/109 - JIS 
-row  8: 101/104 - ANSI
-row  9: 102/105 - ISO
-row 10: 104/107 - ABNT
-row 11: 106/109 - JIS
-
-(with row 7 being the main area top row)
-
-This way we can address all the possible keys in the various
-standard layouts in one standard wat and then the drivers can
-just skip keys which are not there when preparing the buffer
-to send to the hw / fw.
-
-One open question is if we should add padding after the main
-area so that the printscreen / ins / del / leftarrow of the
-"middle" block of 
-
-http://www.maxkeyboard.com/images/105_ISO_6_25_Key_Layout.jpg
-
-all start at the same x (say 32) or we just pack these directly
-after the main area.
-
-And the same question for the numlock block, do we align
-this to an x of say 36, or pack it ?
-
-
-As for the actual IOCTL API I think there should be
-the following ioctls:
-
-1. A get-info ioctl returning a struct with the following members:
-
-{
-char name[64]      /* Keyboard model name / identifier */
-int row_begin[16]; /* The x address of the first available key per row. On a std 105key kbd this will be 16 for rows 6-11, 0 for other rows */
-int row_end[16];   /* x+1 for the address of the last available key per row, end - begin gives number of keys in a row */
-int rgb_zones;     /* number of rgb zones for zoned keyboards. Note both
-                      zones and per key addressing may be available if
-                      effects are applied per zone. */
-?
-}
-
-2. A set-leds ioctl which takes the earlier discussed 3092 bytes buffer
-to set all the LEDs at once, only valid if at least one row has a non 0 lenght.
-
-3. A set-zones ioctl which takes an array of bytes sized 3 * number-of-zones
-containing RGB values for each zone
-
-4. A enum_effects ioctl which takes a struct with the following members:
-
-{
-long size; /* Size of passed in struct including the size member itself */
-long effects_mask[]
-}
-
-the idea being that there is an enum with effects, which gets extended
-as we encounter more effects and the bitmask in effects_mask has a bit set
-for each effects enum value which is supported. effects_mask is an array
-so that we don't run out of bits. If older userspace only passes 1 long
-(size == (2*sizeof(long)) when 2 are needed at some point in the future 
-then the kernel will simply only fill the first long.
-
-5. A set_effect ioctl which takes a struct with the following members:
-
-{
-long size; /* Size of passed in struct including the size member itself */
-int effect_nr; /* enum value of the effect to enable, 0 for disable effect */
-int zone;  /* zone to apply the effect to */
-int speed; /* cycle speed of the effect in milli-hz */
-char color1[3]; /* effect dependend may be unused. */
-char color2[3]; /* effect dependend may be unused. */
-}
-
-Again the idea with the size member is that the struct can be extended with
-new members if necessary and the kernel will supply a default value for
-older userspaces which provide a smaller struct (note size being smaller
-then sizeof(struct-v1) will invalid).
-
-
-Note this is all just a rough sketch suggestions welcome!
-
-Regards,
-
-Hans
-
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index b803030c3a03..1fedc7e29c98 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8499,6 +8499,16 @@ done: __maybe_unused;
+ 	if (!rf)
+ 		return NULL;
+ 
++	/*
++	 * An idle CPU in TIF_POLLING mode might end up here after processing
++	 * an IPI when the sender sets the TIF_NEED_RESCHED bit and avoids
++	 * sending an actual IPI. In such cases, where an idle CPU was woken
++	 * up only to process an interrupt, without necessarily queuing a task
++	 * on it, skip newidle_balance() to facilitate faster idle re-entry.
++	 */
++	if (prev == rq->idle)
++		return NULL;
++
+ 	new_tasks = newidle_balance(rq, rf);
+ 
+ 	/*
+-- 
+2.25.1
 
 
