@@ -1,248 +1,184 @@
-Return-Path: <linux-kernel+bounces-30910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A52578325D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:37:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95FEC8325D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:37:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA8E01C21473
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:37:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 128241F231D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C991E535;
-	Fri, 19 Jan 2024 08:36:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914A01E497;
+	Fri, 19 Jan 2024 08:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r7/jEw35"
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="WpC6uKKT"
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494DD2376A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 08:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0161E862
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 08:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705653416; cv=none; b=ATYVvIDFnWEke0CsV0bWv5kQEBiPi0CITTr7akzcQo1zhGBi4pB/E1OAQl4ekisH0L5yufqvTsbd+vt/wDUNo7Wbd8rtiCq+FNJDJJfRDYHuV4QmlEYxaOHq0R3coZiQc2ytv96XsvvXWNHx5SWPBRXfEBKBuw3z81nqVZICRiA=
+	t=1705653453; cv=none; b=aO2FT2tSg1yXNFrta0Ib591U9FL5M/Ngmnvpj9mhBQ8SgZzLP7A3dfzCDPsLTsWXnVpUHKEbcONrRHqzX8SUuFAjahSSWbmriTjg4ZZUiYIfA5VMNKHb3YpSomUWD2USSCsAJrSCljl011wCHwsjRFCafPPLAou7v7RW++fe+mY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705653416; c=relaxed/simple;
-	bh=An74sy0Qj9Fshhiuou7kSc+ngOIXJBHat6su2pQipds=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g1QY95doB5ibW0grtiavEMhP+lLUVPX6O4D/90TfGJ2ZXHsUxTjrLkmJV1aHjRNr2vPcwiPOiMr/Oyu4ZfgBA2wu5Q96L3XXNWjclDjVl/RaKU4SEgxmGJAQd/I5V/QxkIqSpEz24RMvtFq9oz0TkI2+Z+5ENxPze7isYJKTdvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r7/jEw35; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-681781f8401so3957246d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 00:36:53 -0800 (PST)
+	s=arc-20240116; t=1705653453; c=relaxed/simple;
+	bh=lK4MYTGk+LLGnKIrNyR4BUyPuK/kpvJ3iBXwKgmLHE0=;
+	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=aPCvWose2Yf8shT7OWHsoL65uHFvoKgr+fV2dUlThiY3wFlrk5gviBEjlQOXuMgCJUShntgNt45+GKPLKNprM/vDMKTY2WsYKStaEieQrVdMKwyS3SIHvKFVB6OVELTE9WoaiTby3AJLO+vNlFr9+xDxYzfCnNsUGsiSd18RahQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=WpC6uKKT; arc=none smtp.client-ip=192.134.164.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705653412; x=1706258212; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/m9Dn2s7DAcJl6iK8lEgisV9JoAgGh1R4B8Dzyz9OsA=;
-        b=r7/jEw35f+IAuaSsB3Hk1+tFN43DA2nC4db/PKpoVoOtSq9UNDmF10jEU+OEntx2Ba
-         43cLkjkbqUW7Z1MsVsewA4I5/BV0oA3g9Bgv5TTpjstKpv6jjIqefOFNimdacNItTRRt
-         4WnRDS77LbqDTYsCMRRdPg++MKe7ToB0yBEb4ff8qkMMfYdZ9wQX3ke03gM5f/TjFBzY
-         hCCWu9SchwMCY2v2Iy7zqFcwQnLMXsHnduUwBr3cKhsFDRvKf8/MVfPgfw2BEcrwF/Kp
-         kMpt5IG+CDr1172KE+THbk2MEATseC0pB+C7+HfVKlaVS83ayYmpz4cMGa6/JuGjHC1e
-         /b1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705653412; x=1706258212;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/m9Dn2s7DAcJl6iK8lEgisV9JoAgGh1R4B8Dzyz9OsA=;
-        b=rxGOQ19gythHKCZqevstCeLfId+X7mxwZjj528zxL4oDLCpR+GvJfuMXDn/VibnTkx
-         6EVbfCc7TybffbtqIXzLZaxeq9mVtWSHMILqXK0STMOJACxRq1sehVpvTSmaXCmvcD4x
-         rIV+Ym/6JaooCj3mI1HLzu+fuiBdCJPIdGPvBxmKa7bjrWZiQOpxuLb+ZieDzAXvyy6J
-         6usgSSvN25BW8Wa/FH9DQx7+CPCbF2SyLj4jAxlZiNMSqTuRbpTnTIKMfYsadFG3stOg
-         hw1oUIFQ3LJKB68ZVoXLKCoPDUVdJkoiS/GLi+Vd0exjYO5QCC0z8InNRcksV+r5ji3y
-         7IWg==
-X-Gm-Message-State: AOJu0YwH9rzEOvdUFJQ8RVTx+gwTJ6kV/As/tClmUAzCxfgPFoBzFL/8
-	5BwA4EEQYx/FXFsXsHxF+pwuZzhmZttbZLEzBf8NFp5PpGt6hCfNdTRz3FUg7w==
-X-Google-Smtp-Source: AGHT+IGlb7Np49bNK6MfN45X9m/DEmw7SZ2hsGwQDKQU1UGOoLwHr2Rse3cZQJORbM9zYpOtddks/w==
-X-Received: by 2002:a05:6214:440a:b0:683:29e6:d696 with SMTP id oj10-20020a056214440a00b0068329e6d696mr680148qvb.102.1705653412167;
-        Fri, 19 Jan 2024 00:36:52 -0800 (PST)
-Received: from thinkpad ([117.248.2.56])
-        by smtp.gmail.com with ESMTPSA id lu19-20020a0562145a1300b0068200592351sm498483qvb.89.2024.01.19.00.36.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 00:36:51 -0800 (PST)
-Date: Fri, 19 Jan 2024 14:06:39 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v8 16/16] PCI: imx6: Add iMX95 Endpoint (EP) support
-Message-ID: <20240119083639.GI2866@thinkpad>
-References: <20240108232145.2116455-1-Frank.Li@nxp.com>
- <20240108232145.2116455-17-Frank.Li@nxp.com>
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=qHwLxG3XXvDj6i3V51GtruF33I9dNC9PJdW5RW/t6Z8=;
+  b=WpC6uKKTyXoGTFhRvfQLpMAH9zznrgiAsDK6vINhIvltGvsILLaqRIxk
+   XrE3DIlVOETqzIgB7j3tfXZSZVH5xNvGp+IBe3Emcd/JxBoEVgPczf+Af
+   WjzNoOltBIZ3VdtkYy6fbwo/Z9T34HTvObPutm3EVuQ9toEEn1+TxevET
+   k=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.05,204,1701126000"; 
+   d="scan'208";a="77245273"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 09:37:27 +0100
+Date: Fri, 19 Jan 2024 09:37:26 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Tom Zanussi <tom.zanussi@linux.intel.com>, 
+    Herbert Xu <herbert@gondor.apana.org.au>, linux-kernel@vger.kernel.org
+cc: oe-kbuild-all@lists.linux.dev
+Subject: drivers/crypto/intel/keembay/ocs-aes.c:1476:49-50: WARNING opportunity
+ for min() (fwd)
+Message-ID: <15aa10f2-189-7cbb-1c58-799ce8f2d3e@inria.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240108232145.2116455-17-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On Mon, Jan 08, 2024 at 06:21:45PM -0500, Frank Li wrote:
-> Add iMX95 EP support and add 64bit address support. Internal bus bridge for
-> PCI support 64bit dma address in iMX95. Hence, call
-> dma_set_mask_and_coherent() to set 64 bit DMA mask.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Please see the last line of the code extract.
 
-One comment below. With that addressed,
+---------- Forwarded message ----------
+Date: Fri, 19 Jan 2024 10:52:40 +0800
+From: kernel test robot <lkp@intel.com>
+To: oe-kbuild@lists.linux.dev
+Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
+Subject: drivers/crypto/intel/keembay/ocs-aes.c:1476:49-50: WARNING opportunity
+    for min()
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+BCC: lkp@intel.com
+CC: oe-kbuild-all@lists.linux.dev
+CC: linux-kernel@vger.kernel.org
+TO: Tom Zanussi <tom.zanussi@linux.intel.com>
+CC: Herbert Xu <herbert@gondor.apana.org.au>
 
-> ---
-> 
-> Notes:
->     Change from v7 to v8
->     - Update commit message
->     - Using Fixme
->     - Update clks_cnts by ARRAY_SIZE
->     
->     Change from v4 to v7
->     - none
->     Change from v3 to v4
->     - change align to 4k for imx95
->     Change from v1 to v3
->     - new patches at v3
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 46 +++++++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 3f474d4749dce..69ba72c3a9c9c 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -75,6 +75,7 @@ enum imx6_pcie_variants {
->  	IMX8MQ_EP,
->  	IMX8MM_EP,
->  	IMX8MP_EP,
-> +	IMX95_EP,
->  };
->  
->  #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
-> @@ -84,6 +85,7 @@ enum imx6_pcie_variants {
->  #define IMX6_PCIE_FLAG_HAS_APP_RESET		BIT(4)
->  #define IMX6_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
->  #define IMX6_PCIE_FLAG_HAS_SERDES		BIT(6)
-> +#define IMX6_PCIE_FLAG_SUPPORT_64BIT		BIT(7)
->  
->  #define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
->  
-> @@ -616,6 +618,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
->  		break;
->  	case IMX7D:
->  	case IMX95:
-> +	case IMX95_EP:
->  		break;
->  	case IMX8MM:
->  	case IMX8MM_EP:
-> @@ -1050,6 +1053,23 @@ static const struct pci_epc_features imx8m_pcie_epc_features = {
->  	.align = SZ_64K,
->  };
->  
-> +/*
-> + * BAR#	| Default BAR enable	| Default BAR Type	| Default BAR Size	| BAR Sizing Scheme
-> + * ================================================================================================
-> + * BAR0	| Enable		| 64-bit		| 1 MB			| Programmable Size
-> + * BAR1	| Disable		| 32-bit		| 64 KB			| Fixed Size
-> + *	| (If BAR0 is 64-bit)	| (if BAR0 is 32-bit)	| (if BAR0 is 32-bit)	| As Bar0 is 64bit
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0f289bdd4102fc870c8b97652c57d41952040d70
+commit: fbf31dd599875cb132d764cf4d05d7985e332c05 crypto: keembay - Move driver to drivers/crypto/intel/keembay
+date:   10 months ago
+:::::: branch date: 85 minutes ago
+:::::: commit date: 10 months ago
+config: hexagon-randconfig-r061-20240117 (https://download.01.org/0day-ci/archive/20240119/202401191031.nqVcuyDA-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 9bde5becb44ea071f5e1fa1f5d4071dc8788b18c)
 
-I think the above comment needs some fixup. I think you want to say that if BAR0
-is 64bit then BAR1 should be disabled? If not, please clarify.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Julia Lawall <julia.lawall@inria.fr>
+| Closes: https://lore.kernel.org/r/202401191031.nqVcuyDA-lkp@intel.com/
 
-> + * BAR2	| Enable		| 32-bit		| 1 MB			| Programmable Size
-> + * BAR3	| Enable		| 32-bit		| 64 KB			| Programmable Size
-> + * BAR4	| Enable		| 32-bit		| 1M			| Programmable Size
-> + * BAR5	| Enable		| 32-bit		| 64 KB			| Programmable Size
-> + */
-> +static const struct pci_epc_features imx95_pcie_epc_features = {
-> +	.msi_capable = true,
-> +	.bar_fixed_size[1] = SZ_64K,
-> +	.align = SZ_4K,
-> +};
-> +
->  static const struct pci_epc_features*
->  imx6_pcie_ep_get_features(struct dw_pcie_ep *ep)
->  {
-> @@ -1092,6 +1112,14 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
->  
->  	pci->dbi_base2 = pci->dbi_base + pcie_dbi2_offset;
->  
-> +	/*
-> +	 * FIXME: dbi2 information should fetch from dtb file. dw_pcie_ep_init() can get dbi_base2
-> +	 * from "dbi2" if pci->dbi_base2 is NULL. All code related pcie_dbi2_offset should be
-> +	 * removed after all dts added "dbi2" reg.
-> +	 */
+cocci warnings: (new ones prefixed by >>)
+>> drivers/crypto/intel/keembay/ocs-aes.c:1476:49-50: WARNING opportunity for min()
 
-	FIXME: Ideally, dbi2 base address should come from DT. But since only IMX95 is
-	defining "dbi2" in DT, "dbi_base2" is set to NULL here for that platform alone
-	so that the DWC core code can fetch that from DT. But once all platform
-	DTs were fixed, this and the above "dbi_base2" setting should be removed.
+vim +1476 drivers/crypto/intel/keembay/ocs-aes.c
 
-- Mani
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1400
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1401  /**
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1402   * ocs_create_linked_list_from_sg() - Create OCS DMA linked list from SG list.
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1403   * @aes_dev:	  The OCS AES device the list will be created for.
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1404   * @sg:		  The SG list OCS DMA linked list will be created from. When
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1405   *		  passed to this function, @sg must have been already mapped
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1406   *		  with dma_map_sg().
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1407   * @sg_dma_count: The number of DMA-mapped entries in @sg. This must be the
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1408   *		  value returned by dma_map_sg() when @sg was mapped.
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1409   * @dll_desc:	  The OCS DMA dma_list to use to store information about the
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1410   *		  created linked list.
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1411   * @data_size:	  The size of the data (from the SG list) to be mapped into the
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1412   *		  OCS DMA linked list.
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1413   * @data_offset:  The offset (within the SG list) of the data to be mapped.
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1414   *
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1415   * Return:	0 on success, negative error code otherwise.
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1416   */
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1417  int ocs_create_linked_list_from_sg(const struct ocs_aes_dev *aes_dev,
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1418  				   struct scatterlist *sg,
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1419  				   int sg_dma_count,
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1420  				   struct ocs_dll_desc *dll_desc,
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1421  				   size_t data_size, size_t data_offset)
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1422  {
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1423  	struct ocs_dma_linked_list *ll = NULL;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1424  	struct scatterlist *sg_tmp;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1425  	unsigned int tmp;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1426  	int dma_nents;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1427  	int i;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1428
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1429  	if (!dll_desc || !sg || !aes_dev)
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1430  		return -EINVAL;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1431
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1432  	/* Default values for when no ddl_desc is created. */
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1433  	dll_desc->vaddr = NULL;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1434  	dll_desc->dma_addr = DMA_MAPPING_ERROR;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1435  	dll_desc->size = 0;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1436
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1437  	if (data_size == 0)
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1438  		return 0;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1439
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1440  	/* Loop over sg_list until we reach entry at specified offset. */
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1441  	while (data_offset >= sg_dma_len(sg)) {
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1442  		data_offset -= sg_dma_len(sg);
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1443  		sg_dma_count--;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1444  		sg = sg_next(sg);
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1445  		/* If we reach the end of the list, offset was invalid. */
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1446  		if (!sg || sg_dma_count == 0)
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1447  			return -EINVAL;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1448  	}
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1449
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1450  	/* Compute number of DMA-mapped SG entries to add into OCS DMA list. */
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1451  	dma_nents = 0;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1452  	tmp = 0;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1453  	sg_tmp = sg;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1454  	while (tmp < data_offset + data_size) {
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1455  		/* If we reach the end of the list, data_size was invalid. */
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1456  		if (!sg_tmp)
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1457  			return -EINVAL;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1458  		tmp += sg_dma_len(sg_tmp);
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1459  		dma_nents++;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1460  		sg_tmp = sg_next(sg_tmp);
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1461  	}
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1462  	if (dma_nents > sg_dma_count)
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1463  		return -EINVAL;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1464
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1465  	/* Allocate the DMA list, one entry for each SG entry. */
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1466  	dll_desc->size = sizeof(struct ocs_dma_linked_list) * dma_nents;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1467  	dll_desc->vaddr = dma_alloc_coherent(aes_dev->dev, dll_desc->size,
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1468  					     &dll_desc->dma_addr, GFP_KERNEL);
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1469  	if (!dll_desc->vaddr)
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1470  		return -ENOMEM;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1471
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1472  	/* Populate DMA linked list entries. */
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1473  	ll = dll_desc->vaddr;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1474  	for (i = 0; i < dma_nents; i++, sg = sg_next(sg)) {
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26  1475  		ll[i].src_addr = sg_dma_address(sg) + data_offset;
+88574332451380 drivers/crypto/keembay/ocs-aes.c Mike Healy 2020-11-26 @1476  		ll[i].src_len = (sg_dma_len(sg) - data_offset) < data_size ?
 
-> +	if (imx6_pcie->drvdata->variant == IMX95_EP)
-> +		pci->dbi_base2 = NULL;
-> +
->  	ret = dw_pcie_ep_init(ep);
->  	if (ret) {
->  		dev_err(dev, "failed to initialize endpoint\n");
-> @@ -1345,6 +1373,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  					     "unable to find iomuxc registers\n");
->  	}
->  
-> +	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_SUPPORT_64BIT))
-> +		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
-> +
->  	/* Grab PCIe PHY Tx Settings */
->  	if (of_property_read_u32(node, "fsl,tx-deemph-gen1",
->  				 &imx6_pcie->tx_deemph_gen1))
-> @@ -1567,6 +1598,20 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
->  		.epc_features = &imx8m_pcie_epc_features,
->  	},
-> +	[IMX95_EP] = {
-> +		.variant = IMX95_EP,
-> +		.flags = IMX6_PCIE_FLAG_HAS_SERDES |
-> +			 IMX6_PCIE_FLAG_SUPPORT_64BIT,
-> +		.clk_names = imx6_4clks_bus_pcie_phy_aux,
-> +		.clks_cnt = ARRAY_SIZE(imx6_4clks_bus_pcie_phy_aux),
-> +		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
-> +		.ltssm_mask = IMX95_PCIE_LTSSM_EN,
-> +		.mode_off[0]  = IMX95_PE0_GEN_CTRL_1,
-> +		.mode_mask[0] = IMX95_PCIE_DEVICE_TYPE,
-> +		.init_phy = imx95_pcie_init_phy,
-> +		.epc_features = &imx95_pcie_epc_features,
-> +		.mode = DW_PCIE_EP_TYPE,
-> +	},
->  };
->  
->  static const struct of_device_id imx6_pcie_of_match[] = {
-> @@ -1581,6 +1626,7 @@ static const struct of_device_id imx6_pcie_of_match[] = {
->  	{ .compatible = "fsl,imx8mq-pcie-ep", .data = &drvdata[IMX8MQ_EP], },
->  	{ .compatible = "fsl,imx8mm-pcie-ep", .data = &drvdata[IMX8MM_EP], },
->  	{ .compatible = "fsl,imx8mp-pcie-ep", .data = &drvdata[IMX8MP_EP], },
-> +	{ .compatible = "fsl,imx95-pcie-ep", .data = &drvdata[IMX95_EP], },
->  	{},
->  };
->  
-> -- 
-> 2.34.1
-> 
+:::::: The code at line 1476 was first introduced by commit
+:::::: 88574332451380f4b51f6ca88ab9810e714bfb9b crypto: keembay - Add support for Keem Bay OCS AES/SM4
+
+:::::: TO: Mike Healy <mikex.healy@intel.com>
+:::::: CC: Herbert Xu <herbert@gondor.apana.org.au>
 
 -- 
-மணிவண்ணன் சதாசிவம்
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
