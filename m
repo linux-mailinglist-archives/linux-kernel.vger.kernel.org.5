@@ -1,81 +1,140 @@
-Return-Path: <linux-kernel+bounces-31624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2586683315C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:12:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5CBB833168
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:19:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 578F01C234F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:12:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CA4B1F2336F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D2B58ACE;
-	Fri, 19 Jan 2024 23:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC5759140;
+	Fri, 19 Jan 2024 23:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yuk5vwF2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="nqjSpM5g"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CECBB55C22;
-	Fri, 19 Jan 2024 23:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D33855C22;
+	Fri, 19 Jan 2024 23:19:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705705960; cv=none; b=iWjjcjnlVlbDQT7CyqzR77N9VOhTaor6hW5dVnUORUwxY5kpaE3NTJbdvh4JTpa/qUr9zsRXjDUYydvlBD2ll60nTBX6VheCOS79F+b7G+I5O4FTMradYNLg1OWJWD/O8yUASzyJ2ooobCpgAdPrnKIPJwjI5NJ3Zw7QeFHXh9I=
+	t=1705706353; cv=none; b=XktBvyDj6kineLqYWsa9G4RiIRc/WO9La6HXTCDLTc+0cnDyqArByrjB8LFHcGw4tP/0/VYoNTnmxudVYrBijYF2x98rukixCdX3am3pkbRvDpj4Zmo8TAIEkL7gb91KY0WOLXPCWTcd0uLIRFm4p3kmvfYQ634189O2Kann8Ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705705960; c=relaxed/simple;
-	bh=QWLoWPTVSJk5hBdkRxtSR5LOwrHHVowDsyCeyV+Yr+M=;
+	s=arc-20240116; t=1705706353; c=relaxed/simple;
+	bh=AnVBsugdrJOJKoBFxn0hA//u3IhVicqISHxvAkkrAlA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GQFUme/w3whPSCuFqoIdRG35+ZXnsGVSxrS9yZ7ooHf49VYm9wjXUebT5VVbiYHetwvXDMs99roqWAgK5KlARUqKGaGyw0VJYsK7lsoVkEZVA1wl7flbfNcOBRGjYgCFy5q31T8iw6yBaDFpOO64JoHEfSdHJ7MQj4ULSSJvFJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yuk5vwF2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15624C433C7;
-	Fri, 19 Jan 2024 23:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705705960;
-	bh=QWLoWPTVSJk5hBdkRxtSR5LOwrHHVowDsyCeyV+Yr+M=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=cZuFFlkyRiODMekcXR4QbqnJnlFglc2QrhnKuUB0tDX7RBK98QMLmtumm3IQYSnBeFeZsYEP6Fi9t0zXnyklhCdbsPtlSG+uA0yWEcAkVuqMsXuWp6WsFfXZdrpiYoJVaZsTngvOSd1AK4z++JG6Pwtj2ivbD+vQ0SO3GI1QDKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=nqjSpM5g; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705706350;
+	bh=AnVBsugdrJOJKoBFxn0hA//u3IhVicqISHxvAkkrAlA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Yuk5vwF28PLjn9QVyUzzMK8NDXjnOdkIxZ8nhcuNJXlIwBBcEefuRK0Saf48UOWmg
-	 AI/1EiIwgZMpVYEH28BYogH3MN6lZAtuAVDY/9lEgRzX3rJ652SB58lYoNZQIqIyf9
-	 GKC/0fbeUQkdNp/36oNdaPtomYF5oNsV2aS7ij4pjophACJjrpezkLjiZB44/3Bvay
-	 VTttKwi6HVoi5Gu63uNlPIRAVSqUecBJHtkgrUjEV8eAo3zPxaatIJZBmQy+zfiCxy
-	 1nRbZjXQVxg45Yv+aJkRr5AXS7O4wKWB3+ZHoVHABl0YeqYs+wsj/Y/ZoO/FeK3OGX
-	 b9gvGBrKkY9MQ==
-Date: Fri, 19 Jan 2024 17:12:38 -0600
-From: Rob Herring <robh@kernel.org>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org,
-	Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/1] of: property: Make 'no port node found' output a
- debug message
-Message-ID: <170570595710.1290663.500028571860662803.robh@kernel.org>
-References: <20240117083206.2901534-1-alexander.stein@ew.tq-group.com>
+	b=nqjSpM5ghJN+LLYcQhBSTgswZXWQ153FMUX9SeBtEwSuVWArl5VKq+peQL3F1/i1i
+	 tdETI8PqgR3UmO//6wbtNLDY7sESHVgHHZga5u/jFyZa36MhV9nzz9oEmjqRW2yR06
+	 0SLmXMUmnO/dzo3LocU1DRGwKh+Nph80VD4remEa4vHNzOpwvnXycjRwpHSIiXzwpL
+	 rzjIu4VhIjOBH63c+W2eV9+I1TMByMGITWVX+lSiXtq3meCQetqv5gcpeCnT8rmvtR
+	 WMGjL/XoyjxTjBNc6y2b1jpMN0prGFBboF4d0ym6t6OdCRS2Oo53dmEt9JkLrPizjn
+	 ihe/TPr5YL7Wg==
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2F8FA378143B;
+	Fri, 19 Jan 2024 23:19:10 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id 940F610609DF; Sat, 20 Jan 2024 00:19:09 +0100 (CET)
+Date: Sat, 20 Jan 2024 00:19:09 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@pengutronix.de, linux-kernel@vger.kernel.org, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org, 
+	devicetree@vger.kernel.org, =?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>
+Subject: Re: [RFC PATCH v1 0/7] Introduction of PSCR Framework and Related
+ Components
+Message-ID: <7gadkjffeljjwb2cgcmg6ixco3xtg4t4hrxtetfnjyzuxvfsjt@ze7u4glqnerb>
+References: <20240119132521.3609945-1-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yynn7vmbrmtxc4wq"
+Content-Disposition: inline
+In-Reply-To: <20240119132521.3609945-1-o.rempel@pengutronix.de>
+
+
+--yynn7vmbrmtxc4wq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240117083206.2901534-1-alexander.stein@ew.tq-group.com>
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
-On Wed, 17 Jan 2024 09:32:06 +0100, Alexander Stein wrote:
-> There are cases where an unavailable port is not an error, making this
-> error message a false-positive. Since commit d56de8c9a17d8 ("usb: typec:
-> tcpm: try to get role switch from tcpc fwnode") the role switch is tried
-> on the port dev first and tcpc fwnode afterwards. If using the latter
-> bindings getting from port dev fails every time. The kernel log is flooded
-> with the messages like:
->  OF: graph: no port node found in /soc@0/bus@42000000/i2c@42530000/usb-typec@50
-> Silence this message by making it a debug message.
-> 
-> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> ---
->  drivers/of/property.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+On Fri, Jan 19, 2024 at 02:25:14PM +0100, Oleksij Rempel wrote:
+> This patch series introduces the Power State Change Reasons (PSCR)
+> tracking framework and its related components into the kernel. The PSCR
+> framework is designed for systems where traditional methods of storing
+> power state change reasons, like PMICs or watchdogs, are inadequate. It
+> provides a structured way to store reasons for system shutdowns and
+> reboots, such as under-voltage or software-triggered events, in
+> non-volatile hardware storage.
+>=20
+> These changes are critical for systems requiring detailed postmortem
+> analysis and where immediate power-down scenarios limit traditional
+> storage options. The framework also assists bootloaders and early-stage
+> system components in making informed recovery decisions.
 
-Applied, thanks!
+A couple of things come to my mind:
 
+1. Do we need the DT based reason-string-to-integer mapping? Can we
+   just use a fixed mapping instead? It simplifies the binding a
+   lot. With that the generic part could be dropped completely.
+
+2. I would expect the infrastructure to read and clear the reason
+   during boot. If e.g. a watchdog triggers a reset you will otherwise
+   get an incorrect value.
+
+3. The reason is only stored, but not used? We have a sysfs ABI to
+   expose the reboot reason to userspace since half a year ago, see
+   d40befed9a58 (power: reset: at91-reset: add sysfs interface to
+   the power on reason).
+
+4. Available options should be synced with the list in
+   include/linux/power/power_on_reason.h
+
+-- Sebastian
+
+--yynn7vmbrmtxc4wq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmWrA2MACgkQ2O7X88g7
++pqqxxAApPpXCMedUU7kOCntJqMLZ2NYWmlTlDiWtgZ1oiZyPTFblTNj052kj1ha
+QfFMuwMYVUBOdo3uNUOBx3WGDLk67FPt2soIii79r5t2tXvyhF2+htyUbaIJIgIn
+mnqHiaACqdVAMOAjYWMeiy5kTvYtg3ObVuQjhS0WUXFoYsi3ahdHIhvuAp8RBMja
+5z0OcA3/p9UvF1jqgxHguo0iImDgCqN1hTOkeOne4KIxWbnrKGz0isFCWs7MXSy5
+cgr8AiBJUgabH9Fap8AHR7ejY4M64A5luchfFm/vcRMGa0gW9+2fOGzV90VYtCDT
+POEZ3JS+iohk8gAXlDAwLPMqB9xjTX4by1AfneJGP2hAzK/asrbmYrJGKcEog7Kk
+gnWMM1WEFRe1dgjJbyW8UNWbsR2YAuB1qPw2n2BYRJOmzV2dAjek7PhjuuC+JnNH
+Tk+FkPPe2B8H9pWjMxyDmcBWsxFFFwB6CzmgT59tlPW3Rs+Hned7QoHtG8WZlSMi
+q3UTF1H4hTHVo1mGYse500p3jtGibOd4uiUgGYSBsoWfOnOGGoDYkQ6CAHN1Bp34
+w0bcqEp+JnqZUB3INzhi04LS3ITZEb192dUp6eaYxpKmSg/1y/u2kVRSFbb1PF1r
+ST5BCWNb3z8l3j00dBmM/hu4KKa9E7bzyYLbTOOozpa8VMJS6tE=
+=l+0N
+-----END PGP SIGNATURE-----
+
+--yynn7vmbrmtxc4wq--
 
