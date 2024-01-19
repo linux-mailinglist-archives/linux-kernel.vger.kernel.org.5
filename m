@@ -1,111 +1,260 @@
-Return-Path: <linux-kernel+bounces-30705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7591832359
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 03:36:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD15C83235C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 03:37:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35DA31F21733
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:36:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C8E0285EAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:37:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D741715A4;
-	Fri, 19 Jan 2024 02:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C48B139D;
+	Fri, 19 Jan 2024 02:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OVOe6Ok9"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ldr6hg1A"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFF81362
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:35:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBFAF15A4;
+	Fri, 19 Jan 2024 02:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705631757; cv=none; b=qRGXSKeqNc3eSkfW3g0qCt6hQ8y0ZVGYHHbmlfvaP3EV/zRMtZYxQX0bFZ/xShWn+3O+cOESmuCnKnLnvNqsY4H1DtGCC3tMzDU+RVzZsD9xpBY5t0bW59Qi03i2jlGinpKaKycyB8wU48RTir8Hu8WtG5NA5SezYhF80SxjIkg=
+	t=1705631848; cv=none; b=XWw6feMSjnuTDfRSTn5BeiKNcRgoq/rJm+9wEXatTLy8BKjYpuGtmRTxQ5+iuMILwBlo4wJUDpWDl7TE0THbebVusxPelgtsoT7xDTOXiVYAfVANq8GCvvJDHHAe80wDwAWAO5lKsG0Z7KLevKIIofc7t6+baaYR7kL68239vus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705631757; c=relaxed/simple;
-	bh=FWdvLRIjZQjdEsuLa7S5VAS5JZs8laiq1LL6yRWxQOA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=pPWvdbyj4tmbdNMVE2rOSVmrPcmyKH1/mMxWgajdYTaKeJqoVeXanRaJyp/LKI2PYFrWSewTkIKLpNM8mkKzrBhHZdifgQLcJ4Q0CUNxiXyOM4Psi8CysQz5Ncuwo67tn4Y7GfGq3/Uu3UOi3RPNfd2kFkfmfjs5KwbL5wfk2jk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OVOe6Ok9; arc=none smtp.client-ip=134.134.136.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705631754; x=1737167754;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=FWdvLRIjZQjdEsuLa7S5VAS5JZs8laiq1LL6yRWxQOA=;
-  b=OVOe6Ok9vdfeOswGcJg0deVrXdfyTj23qqjTfx9Nqjo+ljzwNdC/EYCW
-   dZ8RsGYIiJdlraFoP1C5bTN7qK4romV6CRA+SElFvgo3CvEaCGKmKC7Hr
-   Jg010uTUC/Wtq09LoEgzChLmIbuQ5eIdJgBd+KYvtmXZum/3a+WQGKd+M
-   Yg4hk9RUatcKHWhwD+vfeshLRQdIKhWL4q5PWAGmfhFresVf/UxurWyHp
-   /bAKDQYT3ty8lCq8jj33wwUOGFQ4FaWMlISkTKgkYBzU6ry896Mzrk3yl
-   6k8BtYQh+vFs8BlnJ1SDfHzdxTCtzBCtO8gelZGnhCNChcdDpwo+WNxfz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="467015121"
-X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
-   d="scan'208";a="467015121"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 18:35:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,203,1701158400"; 
-   d="scan'208";a="499769"
-Received: from pialybar-mobl2.amr.corp.intel.com (HELO desk) ([10.209.49.165])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 18:35:49 -0800
-Date: Thu, 18 Jan 2024 18:35:47 -0800
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-	kirill.shutemov@linux.intel.com, daniel.sneddon@linux.intel.com,
-	antonio.gomez.iglesias@linux.intel.com, rick.p.edgecombe@intel.com,
-	sohil.mehta@intel.com, alexander.shishkin@intel.com
-Subject: [PATCH] x86/lam: Disable ADDRESS_MASKING in most cases
-Message-ID: <919b6370a908bb091779ec2eca7ca5e369d57847.1705631230.git.pawan.kumar.gupta@linux.intel.com>
+	s=arc-20240116; t=1705631848; c=relaxed/simple;
+	bh=aICAH4hRXeLeMw1z8zxzaW7lbyGRMfDIu0CC/thDglg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lIwq24TAh003AT4OM72uwxdtdDEmd7A/HlGnQegpdhiPFV1lTvD3xXSE2EuryBnokhhfZGCIQ84pekT5PvPkuFu8Ri4jc9rigT5/CKFQ7tvT371mqqZ1QBBFofqsTWm/1b5WBvfx4OgvJNnI+Uh2+toMwZuczllBCGhX5g+8OvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ldr6hg1A; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5ebca94cf74so3178837b3.0;
+        Thu, 18 Jan 2024 18:37:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705631846; x=1706236646; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aICAH4hRXeLeMw1z8zxzaW7lbyGRMfDIu0CC/thDglg=;
+        b=ldr6hg1A/8WMSsCLdyU6MRQGsRsvrpVwAmeGGnle2Rcr8wJpoemKiNDuoSrXM4vRfP
+         zYZ025iYb9VCmXMzTxlszWdZfWwzz/WC+OoT/AoVkJTN1sk8v33DJa0IhVLVgX7tbAIA
+         aJGg8ohJWycWsj+k+InHaX4Z0D1+M6Bdm/dppyQAcD3Ib5HRg71w+gSAvVDVtIS+iEQw
+         BTgQ+bsYqGbbUgUgm9VLElnexUZZIaY1X5BhVdriBYjvXEpxuflnPjl+BVVhGwM2Vd7Q
+         sfX9yK0Nvlmrwc+STUzlqPeotInONJRHVvqo8xz+M4rbdXO+YiYYQxU9+xHM8PxVNOaO
+         92WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705631846; x=1706236646;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aICAH4hRXeLeMw1z8zxzaW7lbyGRMfDIu0CC/thDglg=;
+        b=Aq9PE/00bQ9L017q0kj7vRYuODMEvP5qmtyx9cv70d3aczPGKjTDkBssTVNLirE1DV
+         i0iegl7L1AVsgLdkAmGTdsIAdzwqbJdXUIqjUkVuWk5l6wEmCVkubVP2EUHac0kTEgzg
+         lDMuUVXwJZjr4eJQvCUIt1rK1YVfXiFsv/RW9Q9riy+3lNSOeNOBkHXmkwynBbKjkL0q
+         s58icv8U+LyKaPNrsaFHefR2/V+miWXSJZ2g83//L6d58wRwW1spXJYpTMU8+TGHrcBj
+         f3As1LXDrLx+JBPbA9Pf5TWEKyLPM2kCJ0tA5flPflExHjzIelCkiDK1lzKr1SVHUcA/
+         NHMw==
+X-Gm-Message-State: AOJu0YwdWri43d5k115aayrm/C1240VUJX0ZJWRBAXlpyy7AYvsH3IrA
+	oWaCdn+JXM9dpXYuE+GPYmhl2X2MndIYp3D+GNmpRy57J7FDzW8dZSFCGgONpPC+QWiEoHTYW87
+	nDsBKosf/hoqjuMlS41uJCRumkeo=
+X-Google-Smtp-Source: AGHT+IFh9LHQHtffb4CbOihY48EMjl6zFT/VeDNE2gD3ybmauOUjWzJrCzUrHXjoEE8tIzwDekj0YCoL7L2xxgPhr8g=
+X-Received: by 2002:a5b:c07:0:b0:dc2:371d:53b with SMTP id f7-20020a5b0c07000000b00dc2371d053bmr1488950ybq.9.1705631845763;
+ Thu, 18 Jan 2024 18:37:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240118120347.61817-1-ioworker0@gmail.com> <ZakqQyL9t2ffNUIf@tiehlicka>
+ <Zakq-54DFdPu0c2U@tiehlicka> <CAAa6QmTN2B-JAO=38A09hMtUp=srLiUfs=sDbck7Chkr=W-dCw@mail.gmail.com>
+ <CAHbLzkphG+kmLvYQFB6WZuuGadPsRvsH4Os9CwnxvizKAfwuvQ@mail.gmail.com>
+In-Reply-To: <CAHbLzkphG+kmLvYQFB6WZuuGadPsRvsH4Os9CwnxvizKAfwuvQ@mail.gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Fri, 19 Jan 2024 10:37:14 +0800
+Message-ID: <CAK1f24kQTUQsNf05cxJ_HsaLg9rTBWh8K64PCVbeudW8G7pStg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT to process_madvise()
+To: Yang Shi <shy828301@gmail.com>
+Cc: "Zach O'Keefe" <zokeefe@google.com>, Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, 
+	david@redhat.com, songmuchun@bytedance.com, peterx@redhat.com, 
+	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Intel feature Linear Address Masking (LAM) has a weakness related to
-transient execution as described in the SLAM paper[1]. Unless Linear
-Address Space Separation (LASS) is enabled this weakness may be
-exploitable.
+Hey Yang,
 
-Until kernel adds support for LASS[2], only allow LAM for COMPILE_TEST,
-or when speculation mitigations have been disabled at compile time,
-otherwise keep LAM disabled.
+Thanks for taking the time to review!
 
-[1] SLAM: https://download.vusec.net/papers/slam_sp24.pdf
-[2] LASS: https://lore.kernel.org/lkml/20230609183632.48706-1-alexander.shishkin@linux.intel.com/
+On Fri, Jan 19, 2024 at 3:00=E2=80=AFAM Yang Shi <shy828301@gmail.com> wrot=
+e:
+>
+> On Thu, Jan 18, 2024 at 6:59=E2=80=AFAM Zach O'Keefe <zokeefe@google.com>=
+ wrote:
+> >
+> > On Thu, Jan 18, 2024 at 5:43=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
+wrote:
+> > >
+> > > Dang, forgot to cc linux-api...
+> > >
+> > > On Thu 18-01-24 14:40:19, Michal Hocko wrote:
+> > > > On Thu 18-01-24 20:03:46, Lance Yang wrote:
+> > > > [...]
+> > > >
+> > > > before we discuss the semantic, let's focus on the usecase.
+> > > >
+> > > > > Use Cases
+> > > > >
+> > > > > An immediate user of this new functionality is the Go runtime hea=
+p allocator
+> > > > > that manages memory in hugepage-sized chunks. In the past, whethe=
+r it was a
+> > > > > newly allocated chunk through mmap() or a reused chunk released b=
+y
+> > > > > madvise(MADV_DONTNEED), the allocator attempted to eagerly back m=
+emory with
+> > > > > huge pages using madvise(MADV_HUGEPAGE)[2] and madvise(MADV_COLLA=
+PSE)[3]
+> > > > > respectively. However, both approaches resulted in performance is=
+sues; for
+> > > > > both scenarios, there could be entries into direct reclaim and/or=
+ compaction,
+> > > > > leading to unpredictable stalls[4]. Now, the allocator can confid=
+ently use
+> > > > > process_madvise(MADV_F_COLLAPSE_LIGHT) to attempt the allocation =
+of huge pages.
+> >
+> > Aside: The thought was a MADV_F_COLLAPSE_LIGHT _flag_; so it'd be
+> > process_madvise(..., MADV_COLLAPSE, MADV_F_COLLAPSE_LIGHT)
+> >
+> > > > IIUC the primary reason is the cost of the huge page allocation whi=
+ch
+> > > > can be really high if the memory is heavily fragmented and it is ca=
+lled
+> > > > synchronously from the process directly, correct? Can that be worke=
+d
+> > > > around by process_madvise and performing the operation from a diffe=
+rent
+> > > > context? Are there any other reasons to have a different mode?
+> > > >
+> > > > I mean I can think of a more relaxed (opportunistic) MADV_COLLAPSE =
+-
+> > > > e.g. non blocking one to make sure that the caller doesn't really b=
+lock
+> > > > on resource contention (be it locks or memory availability) because=
+ that
+> > > > matches our non-blocking interface in other areas but having a LIGH=
+T
+> > > > operation sounds really vague and the exact semantic would be
+> > > > implementation specific and might change over time. Non-blocking ha=
+s a
+> > > > clear semantic but it is not really clear whether that is what you
+> > > > really need/want.
+> >
+> > IIUC, usecase from Go is unbounded latency due to sync compaction in a
+> > context where the latency is unacceptable. Working w/ them to
+> > understand how things can be improved -- it's possible the changes can
+> > occur entirely on their side, w/o any additional kernel support.
+> >
+> > The non-blocking case awkwardly sits between MADV_COLLAPSE today, and
+> > khugepaged; esp when common case is that the allocation can probably
+> > be satisfied in fast path.
+> >
+> > The suggestion for something like "LIGHT" was intentionally vague
+> > because it could allow for other optimizations / changes down the
+> > line, as you point out. I think that might be a win, vs tying to a
+> > specific optimization (e.g. like a MADV_F_COLLAPSE_NODEFRAG). But I
+> > could be alone on that front, given the design of
+> > /sys/kernel/mm/transparent_hugepage.
+>
+> Per the description Go marks the address spaces with MADV_HUGEPAGE. It
+> means the application really wants to have huge page back the address
+> space so kernel will try as hard as possible to get huge page. This is
+> the default behavior of MADV_HUGEPAGE. If they don't want to enter
+> direct reclaim, they can configure the defrag mode to "defer", which
+> means no direct reclaim and wakeup kswapd and kcompactd, and rely on
+> khugepaged to install huge page later on. But this mode is not
+> supported by khugepaged defrag, so MADV_COLLAPSE may not support it
+> (IIRC MADV_COLLAPSE uses khugepaged defrag mode). Or they can just not
+> call MADV_HUGEPAGE and leave the decision to the users, IIRC Java does
+> so (specifying a flag to indicate use huge page or not by the users).
 
-Cc: stable@vger.kernel.org # v6.4+
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
----
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Thank you for providing insights into the Go use cases with MADV_HUGEPAGE
+and the configuration options for defrag mode.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 1566748f16c4..794517df8068 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2270,6 +2270,7 @@ config RANDOMIZE_MEMORY_PHYSICAL_PADDING
- config ADDRESS_MASKING
- 	bool "Linear Address Masking support"
- 	depends on X86_64
-+	depends on COMPILE_TEST || !SPECULATION_MITIGATIONS # wait for LASS
- 	help
- 	  Linear Address Masking (LAM) modifies the checking that is applied
- 	  to 64-bit linear addresses, allowing software to use of the
+Considering the limitations with the "defer" mode, it becomes apparent
+that there
+is a gap in addressing scenarios where an application desires a lighter-wei=
+ght
+alternative to MADV_HUGEPAGE.
 
-base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
--- 
-2.34.1
+MADV_F_COLLAPSE_LIGHT aims to fill this gap by providing a more flexible an=
+d
+opportunistic approach, catering to applications in latency-sensitive
+environments
+that seek performance improvements with huge pages but prefer to avoid dire=
+ct
+reclaim and compaction. This option can serve as a valuable addition for us=
+ers
+who want more control over the behavior without the constraints of existing
+configurations.
 
+In the era of cloud-native computing, it's challenging for users to be
+aware of the
+THP configurations on all nodes in a cluster, let alone have
+fine-grained control
+over them. Simply disabling the use of huge pages due to concerns
+about potential
+direct reclamation and compaction may be regrettable, as users are deprived=
+ of
+the opportunity to experiment with large page allocations. However,
+relying solely on
+MADV_HUGEPAGE introduces the risk of unpredictable stalls, making it a trad=
+e-off
+that users must carefully consider.
 
+By introducing MADV_F_COLLAPSE_LIGHT, we offer users a more flexible and
+controllable solution in cloud-native environments, allowing them to
+better balance
+performance requirements and resource management. This selectively lightwei=
+ght
+alternative is designed to provide users with more choices to better
+meet the diverse
+needs of different scenarios.
+
+Thanks again for your review and your suggestion!
+Lance
+
+>
+> >
+> > But circling back, I agree w/ you that the first order of business is t=
+o
+> > iron out a real usecase. As of right now, it's not clear something
+> > like this is required or helpful.
+> >
+> > Thanks,
+> > Zach
+> >
+> >
+> >
+> >
+> > > > > [1] https://github.com/torvalds/linux/commit/7d8faaf155454f8798ec=
+56404faca29a82689c77
+> > > > > [2] https://github.com/golang/go/commit/8fa9e3beee8b0e6baa7333740=
+996181268b60a3a
+> > > > > [3] https://github.com/golang/go/commit/9f9bb26880388c5bead158e9e=
+ca3be4b3a9bd2af
+> > > > > [4] https://github.com/golang/go/issues/63334
+> > > > >
+> > > > > [v1] https://lore.kernel.org/lkml/20240117050217.43610-1-ioworker=
+0@gmail.com/
+> > > > --
+> > > > Michal Hocko
+> > > > SUSE Labs
+> > >
+> > > --
+> > > Michal Hocko
+> > > SUSE Labs
 
