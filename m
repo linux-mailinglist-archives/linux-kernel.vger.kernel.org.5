@@ -1,109 +1,101 @@
-Return-Path: <linux-kernel+bounces-31620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AA4E833103
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:55:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7272833109
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E15AB23B71
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:55:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11E481C23816
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BCA58AA3;
-	Fri, 19 Jan 2024 22:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13ACC58AC8;
+	Fri, 19 Jan 2024 22:59:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YJFzAItI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ut1qqGeK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 580FC57884;
-	Fri, 19 Jan 2024 22:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5507B56B7B;
+	Fri, 19 Jan 2024 22:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705704906; cv=none; b=e91cnW/OynQTXKDN0RSvkKeYHg8NA3SIUQ74bOOa/axw24HPwkwiQuJ0XZaE8VZazbWFgABpnMMJaMB5OCQl5fKUiAQx5o8AfTfMBkv5fKSt4U8plNmMBoziFMLQIBkZKEM16cZWs4YvixyZF+32Lio5S5cQU/ylaIUp3Dwu8uE=
+	t=1705705166; cv=none; b=jDbj6/ldT02dUb3x44RJZ36RdshS3sIwBO3x5f9QyA74wQdeSoxNGpq1rv/3fQBFqdsMmoB+qgu8j3rxHWEl1Bpu/RknGiu5dFiGXZCSRxUPuWF/6Ppgzng8SB4WEHGgig04vP6Qd85Aub/tN3uW7jUSexktQWAwVzy9conIdg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705704906; c=relaxed/simple;
-	bh=FCIf4jjmsCjm0WrvfocICE7muDXMamDKBfgKtLjKjoo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WDJlE7UuvY3dQSwif67J2bhfqmSl0MD93CPCvUBYktE2h4E3oMEcOZHTBwzk72hgawOMT/GVAWYFT+eTfhOKXfBNFbX6386o+BkPzHRuugo8gBDudgHmCZdGZGtpc8tpfF81XhjU9a8Mf0zgMx3YzUQIM9c8t1DvFx7Hc8+ufOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YJFzAItI; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705704904; x=1737240904;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FCIf4jjmsCjm0WrvfocICE7muDXMamDKBfgKtLjKjoo=;
-  b=YJFzAItI7X9yBUy/NKhHvf13iCjNWMBNUcBdBI8wnoCYYyAZQZ/v9ofl
-   +pYhObx2R/WL2n0sisfgIfaPlodtrKLLcfA4QEsMbzb5DYmdYQo5UkHp+
-   AczG+E0vRTnBwAU58oVSMYyagYH0w6cjJWGkZ5Vr/uwm/KwSCxd2MYlQ7
-   zdtSgRXQpFXjZv315Rukd9yZGazqp64FGIs7AHue5F3IHfyniF+frCoWF
-   38PcnLxlZorgVWbBldeFp77kerwykZ/kHMU23/W+KGVGs3hs7JweT5ASa
-   HDNQHh/TYoa40Wuftr+yZqpbqh38I0noMFk21Em8VN23nZ291HAh6F3JZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="14383183"
-X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
-   d="scan'208";a="14383183"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 14:55:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
-   d="scan'208";a="683998"
-Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 14:55:03 -0800
-Date: Fri, 19 Jan 2024 14:55:01 -0800
-From: Andi Kleen <ak@linux.intel.com>
-To: Ben Gainey <Ben.Gainey@arm.com>
-Cc: "irogers@google.com" <irogers@google.com>,
-	"alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>,
-	James Clark <James.Clark@arm.com>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	Mark Rutland <Mark.Rutland@arm.com>,
-	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"acme@kernel.org" <acme@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"jolsa@kernel.org" <jolsa@kernel.org>,
-	"namhyung@kernel.org" <namhyung@kernel.org>,
-	"adrian.hunter@intel.com" <adrian.hunter@intel.com>
-Subject: Re: [PATCH 0/1] Support PERF_SAMPLE_READ with inherit_stat
-Message-ID: <Zar9xXlPmCM2vtAk@tassilo>
-References: <20240119163924.2801678-1-ben.gainey@arm.com>
- <87a5p1kyif.fsf@linux.intel.com>
- <e69ffb457b761763c30e2d63ffd8a38606dbadd3.camel@arm.com>
+	s=arc-20240116; t=1705705166; c=relaxed/simple;
+	bh=R+D0jk/2xIKckQ4bRuHaV19Q6bC2783kDdOIqDI6aVM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=CrbIk61WmEG43c2Y05B4Q7DjkdFTnVKsgn3wqz2hW9m+Pdj7SeSSn21FlNbNWNkjM0zbWc5AgOAXfVEgIVjeutQDDqeCawrLRACshYYzhR+l5cZKwNMgl8rNezX5uda5jCIH8BI0UgWdpznKDW1eEXloHiH+9ZJ1Kzo53+tygRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ut1qqGeK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 678C5C433C7;
+	Fri, 19 Jan 2024 22:59:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705705165;
+	bh=R+D0jk/2xIKckQ4bRuHaV19Q6bC2783kDdOIqDI6aVM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=Ut1qqGeKL6SDjjZnM3+TyodeE0wMlOB3DvZ4OZWLukoMnEEAB81JeMxten0zHXHV3
+	 fMgjt/MR6sXA4prsQC61w6cjuW8P0GRqE7T1dLDT5CcfUMrMs1ZaQlS+7z4Q4/Rhaq
+	 YC4fotRM1zaiBwkGaEMQTDhEnJriNKy76mOYqplqJ21GHCkvscDcd1XUj2Y053W8Yz
+	 RdsHZPPpnwOYwVlOYESFQF5HrfJpzRe1ywTfdDBjhfLQpnQ8VY1E31A0eUFLAYE5Na
+	 vNtUFQeMuY8JHdjwxWNAKQTINBj4zQycfk5GT7WQK0DNO7FL76GbyKtxhW4X2Cbdq6
+	 LksvSEA7an54g==
+Date: Fri, 19 Jan 2024 16:59:23 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc: Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+	Oliver O'Halloran <oohall@gmail.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Keith Busch <kbusch@kernel.org>,
+	Dongdong Liu <liudongdong3@huawei.com>,
+	linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] PCI/DPC: Fix TLP Prefix register reading offset
+Message-ID: <20240119225923.GA191511@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e69ffb457b761763c30e2d63ffd8a38606dbadd3.camel@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240118110815.3867-1-ilpo.jarvinen@linux.intel.com>
 
-> I had considered that, but given currently this perf_event_attr
-> configuration is not allowed, I assumed that it would require existing
-> tools to add support which would in effect be an opt-in. Of course,
-> adding a new flag to be explicit would be trivial enough if required.
+On Thu, Jan 18, 2024 at 01:08:15PM +0200, Ilpo Järvinen wrote:
+> The TLP Prefix Log Register consists of multiple DWORDs (PCIe r6.1 sec
+> 7.9.14.13) but the loop in dpc_process_rp_pio_error() keeps reading
+> from the first DWORD. Add the iteration count based offset calculation
+> into the config read.
 
-That's fair. Makes sense.
+So IIUC the user-visible bug is that we print only the first PIO TLP
+Prefix (duplicated several times), and we never print the second,
+third, etc Prefixes, right?
 
-> That said, the binary format for the mmap records / read() etc does not
-> change so using an unmodified tool to parse the data file will give bad
-> results. Therefore any workflow where "modified recording tool" can be
-> combined with "older / unmodified parsing tool" will break. Not sure of
-> the best way to handle this... presumably whenever a change is made to
-> the perf record format, any workflow that allows old parsers to read
-> new format data without version checks could fail? Admittedly this is a
-> "looks the same but isn't" change so harder for tools devs to spot. Any
-> suggestions?
+I wish we could print them all in a single pci_err(), as we do for the
+TLP Header Log, instead of dribbling them out one by one.
 
-For perf itself we can find something. It does a couple of checks, like
-reserved bits in the perf_event_attr. For the general case of other
-parsers it's unclear. I suppose could increment the magic identifier
-to PERFILE3
-
--Andi
+> Fixes: f20c4ea49ec4 ("PCI/DPC: Add eDPC support")
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  drivers/pci/pcie/dpc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> index 94111e438241..e5d7c12854fa 100644
+> --- a/drivers/pci/pcie/dpc.c
+> +++ b/drivers/pci/pcie/dpc.c
+> @@ -234,7 +234,7 @@ static void dpc_process_rp_pio_error(struct pci_dev *pdev)
+>  
+>  	for (i = 0; i < pdev->dpc_rp_log_size - 5; i++) {
+>  		pci_read_config_dword(pdev,
+> -			cap + PCI_EXP_DPC_RP_PIO_TLPPREFIX_LOG, &prefix);
+> +			cap + PCI_EXP_DPC_RP_PIO_TLPPREFIX_LOG + i * 4, &prefix);
+>  		pci_err(pdev, "TLP Prefix Header: dw%d, %#010x\n", i, prefix);
+>  	}
+>   clear_status:
+> -- 
+> 2.39.2
+> 
 
