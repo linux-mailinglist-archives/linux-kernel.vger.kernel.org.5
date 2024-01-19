@@ -1,217 +1,357 @@
-Return-Path: <linux-kernel+bounces-31469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1C39832EC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:20:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5231E832EC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3422C286C4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:20:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93862B22009
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F7125645B;
-	Fri, 19 Jan 2024 18:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5C956455;
+	Fri, 19 Jan 2024 18:22:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="osYqAFfk";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="S7Cxf6ye"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="DgrXMIuE"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2048.outbound.protection.outlook.com [40.107.94.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B8C5644C;
-	Fri, 19 Jan 2024 18:19:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1421F170;
+	Fri, 19 Jan 2024 18:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705688393; cv=fail; b=A1goOISuMFXPxvgyBqs6lAuru7KFzn06mYyZ03mgwNWSvp/uUP/CowWd4sHRElKEntL5NF3zwjwJ27HjqjPqK04H+W1nVe3T/lvo8VohxH2kW/lzm9/uA9JzmcY9odpYqXyhksopqGBw9IkTwwhqKohEQcrpRwXU0eazO3Ur7EA=
+	t=1705688551; cv=fail; b=iPUZoKLg+c1mzg9wryyAL16m0N4rkGWQ1yh2rsmrFJnXJPfB5aRccArNvBSiYKQM2vhMCLobjQys41wTkZyYm64DrIFLTnPmiXEdbA54EmF2Xv90kBe7v65N43BAw7FZtKr1nl5cuujhkXTyGRzEjgCunb+TgN1s3i67F3UOInE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705688393; c=relaxed/simple;
-	bh=cU+eaSTfNCVq/q6uAbcQycnf9Co4CHtUVepBekkV3KM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ShOLvWhZ+a55pDj2YMfEF4qXMqkVofXbOgM/krn5G6IDI6uMBbEf/ccGZC/BkzZyT08LXCJcVrMC/3dSYB6fe7uMFpdyprA3Wyn2M6BUt93bcMQrcywQpjboyS9zkj2uldpg3hzpaPVd76PTGpscYAtOH36XgtflGGkTyJsSzWk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=osYqAFfk; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=S7Cxf6ye; arc=fail smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1705688391; x=1737224391;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=cU+eaSTfNCVq/q6uAbcQycnf9Co4CHtUVepBekkV3KM=;
-  b=osYqAFfk9N4+aszgGBHaaLSYvnNX7eszAYAMuaZX4rmftm/cQLUbNJc0
-   vjdy1n3HIQL77OKa3Cbuqa21zG10FU1n0blutiWKWyjFaN4DhthF+eaP0
-   3ZeGwE573jPckY+J5MS/CQnGiSzhTxnD4Oq5R5xlclH2T3qSMGwmjvD8M
-   SLPHAjbAUep+74lhKuHmEVkRyzKmYRfZcPxZFoGkH9lefAs+0Kuv4PAO3
-   cg6rnTR+NU7gWf7Z6oq07zc12V5tCxQnRdziK7et9J5FpJ+19O7enGzEF
-   k90udXpgmS9oTl6iuAX1le5wpH7l4xTWEURklMHjCbsRnvVhsrCzCWKL8
-   Q==;
-X-CSE-ConnectionGUID: rF+Mr8T5R8GWwbJug/OE+A==
-X-CSE-MsgGUID: AW/pnnseRhOOmGuV4Zem5w==
-X-IronPort-AV: E=Sophos;i="6.05,204,1701154800"; 
-   d="scan'208";a="182250030"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Jan 2024 11:19:49 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 19 Jan 2024 11:19:47 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 19 Jan 2024 11:19:47 -0700
+	s=arc-20240116; t=1705688551; c=relaxed/simple;
+	bh=hYFvbkiCkn6JY+LHEm/O2JlTPF+xBB1f4BjAQiUnsE0=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BAQEhoDrXz6WymKCgAipCMpUIj+R+aP/WCifSnB0X14KzI1F2RTcdtVNkWmNiHA9bzoojab19Yv0fZKChiSe2WyoYj0TdqgxTLP+8nnYhnQyOGCjzidZoZgFN4Jp0d299hfMvAxWbXXpzhe8RHjUaD1+fiXK3PzV4tb94A2qbD0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=DgrXMIuE; arc=fail smtp.client-ip=40.107.94.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vs2EH3Z0bNIUHi520NAKSwfZGPtNmawR6xvdN0+srz6A7eRja5bAUJEGKSW1TRFUAojsHHfq82oVpfUfYpBeWKC67kiLTpbCvpJkqJTx6L471C6j+APNrBBjHVUuJrXIokSe9ERLjl+wRp/po/l4H4bWYz/4rmj+W232vasljeo4NWHfm6+06r81Gn7CF8IsUxZ7qDN1m4ICTRjFV7QzRZkJvI8FdmcYVnan48g1sJzhqVxQFaRHYc5ta6kVPcCMEmFH+odWrnMXhVlrTYktoEXH3SX7/p77+7NrmcmnurUQcz+t2UbHyywJeZezvHrf5mTS07dQaGQaz4HJ0Yttmg==
+ b=S2rhsNANnp9AzVGxkL3rdstksHE41l7utXGG1oSYUa8CUMp8I8Wep0Pt+ToTrSUiZiT7K2idcVAZMk2Q5x2dySei4jRf4bIZ4ZN1yvp8lCTI94Hiq5h63zTYO3L+ItBC1LVO5RMjUpnI7tYGLVhM/pLXikMLWJ9z9s27wmaIKjJby97q85NdSjAU3Sq9FpWY1/qc7YVXdh+RPIqnJCuOyaPKWWUaSz7deBd8a5clap5m+WX+rt/L3hcCnhv5ys2JMSsvWDhyFiiZ58Sl7cb9t4sTI778ahSaW4YE8VN7opgnq+fA3b9tAGf238KRugKAU+5zcn0U8aPFiA8KtmpSYA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cU+eaSTfNCVq/q6uAbcQycnf9Co4CHtUVepBekkV3KM=;
- b=l3ZIr6+SgsJ360ySxtdZJlYweD+u3gXuxsOAJzigVIxn9A8YdpxPoq5G4t45TcBNSSKhsjZLpJqdatCaMRnSt9ybr6oF/xGFMb9nx1hRD1XE6mWrQe4/ohO6R6Z/WV0+DI6tbY1yTscBojE0dQtDd20n43rcvzDr79EmCOC8ojWFZ9JsXQS5MBe8EZ+zdvuKiwRLEJtObAxPgn+T9NTH0u9C/Nf9gSWgM5b4/eaRpZIOo4KbacxPMm1p3h3/Jqj6xmiG1VBz14QZgMXXOUEDshHKAAHcxUvGtaNWAI+Kk5eFvRX3+Kp5dyrAixUH0Ic1kTStxDzS0VVl1AblX8Fv1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
+ bh=eBTWO4HKg5kXdHE4fN/DwYJmPTPBWOrfFZIqDaXQcMY=;
+ b=bFBxiU2gCKNu3EOpyMV3+nqCwbIzOHQLB6h7T6OFVeg0qcqNph4gMbxYb9ppy3Mq1u9UWdFGipy59wlydHeG50Qjrip65mv/KL9A131x7nuSiq1BsVWQUZhJSZcrvCvUBgRPVqLfhgH0bge23YLSARzw4Tb2XxIKXSQT/iC1g2IdfG9HsHyy6u5i9KUcINwaxmzqqrixkbvYu+vvEyLU99phWRlTSEURg62OiyznegXQyJci4pwiaa1keyCV2/2HElpYT8a6JHssaiApxBKOMDZZ5pSYfgindIWkbIdrWl35qxMw3zrUTAFM0CZbyNXRWrFvXnsE6eL8y33Zte1Mqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cU+eaSTfNCVq/q6uAbcQycnf9Co4CHtUVepBekkV3KM=;
- b=S7Cxf6ye6qexr6EF2/OsUDupK7Wyv1mDqPCsqJGEfaMqXu3UzO26uDjCX/mW6GM3ko9VuM2dc8TSl3ENbhA+Ff+7322iCqo/Uf4MiQnVP60keuIMX//hF7udrIO0yMQtLklz+302da6GRDWI3Bp3Igi9AJnbRRuAz49wLvKotZNPNN/CMcaJmLjVnDynSVluSWz01oAathC9GgWzglqQpDVPSaNPsn74H9tiMP3z8/dNsZH3VGDapjGvMVa3zZb4wF/vUSkoRkbWdV1QPond6zVmtUTe3uyReJ963Ubfr9YENCyi2YzTn/UzvAoxyLWMTQkwlfE1aYBbxHXcg+/HTA==
-Received: from PH0PR11MB5176.namprd11.prod.outlook.com (2603:10b6:510:3f::5)
- by DM4PR11MB6192.namprd11.prod.outlook.com (2603:10b6:8:a9::13) with
+ bh=eBTWO4HKg5kXdHE4fN/DwYJmPTPBWOrfFZIqDaXQcMY=;
+ b=DgrXMIuEIq1+qD7cNV3IL+4oM/f1lu4bo5fryBIkdN0cHIqjk30FXXht6aKQBOAW10dguPp9Rw/Wd/Ujr+KlxpzwRP0GkQAUjT7olcS2qmdk8wJzIPBvGn915pwSeYGrdg0BsisUin4Fxu6UcMYfzoxoAg0lNj40y6PDdi6fJGU=
+Received: from BYAPR11CA0046.namprd11.prod.outlook.com (2603:10b6:a03:80::23)
+ by DS0PR12MB7852.namprd12.prod.outlook.com (2603:10b6:8:147::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
- 2024 18:19:44 +0000
-Received: from PH0PR11MB5176.namprd11.prod.outlook.com
- ([fe80::613:fb5:737:dae8]) by PH0PR11MB5176.namprd11.prod.outlook.com
- ([fe80::613:fb5:737:dae8%7]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
- 18:19:43 +0000
-From: <Ajay.Kathat@microchip.com>
-To: <alexis.lothore@bootlin.com>, <kvalo@kernel.org>
-CC: <linux-wireless@vger.kernel.org>, <claudiu.beznea@tuxon.dev>,
-	<davidm@egauge.net>, <thomas.petazzoni@bootlin.com>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/5] wifi: wilc1000: set preamble size to auto as default
- in wilc_init_fw_config()
-Thread-Topic: [PATCH 1/5] wifi: wilc1000: set preamble size to auto as default
- in wilc_init_fw_config()
-Thread-Index: AQHaR8N1F/E9+Yo0nE2y0lDjNrL3d7DfUqEAgABeLICAABz/AIAA+QwAgACxxQA=
-Date: Fri, 19 Jan 2024 18:19:43 +0000
-Message-ID: <2a7cdcb3-03ef-46b8-8cda-e5d28801f6a0@microchip.com>
-References: <20240115-wilc_1000_fixes-v1-1-54d29463a738@bootlin.com>
- <170557027237.2797779.2354857290141885659.kvalo@kernel.org>
- <000e823e-ede1-408b-b8e1-fd9c1c73fd6e@bootlin.com>
- <5c5e1332-39de-4d6b-9646-661c78cee900@microchip.com>
- <b215909e-43c7-47b5-ac0b-2a194b55cb39@bootlin.com>
-In-Reply-To: <b215909e-43c7-47b5-ac0b-2a194b55cb39@bootlin.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5176:EE_|DM4PR11MB6192:EE_
-x-ms-office365-filtering-correlation-id: 14164bf9-23ae-4006-7c57-08dc191b35d7
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0CjdXyEf3XeSup8lUrdFZB7yspToxALGFtIuYKUcsOAyBkmrwkWwWJUBKI1nKc2+lumJoSzlO/kJe9ObrJjj5k3htFMYAbwtGav9GyMwXnQ62sTFpV3llP20+9FFc68iQn1+HuL40ayPNNBnStVsszDU8PZ+BJwwdGnFXLOUuUqyewlzqobaaL/AQWniIzJU+6AGkIhLAfRNac2ISkPPa/f1BpdZFL2eBISlVtN41GWavKgcO6b8UM88sMpjsWprAFvCVhg3Mw5ZuvuFwZ6K+IEewHdbI3UIkmNF8YfdJHmPMsuQBmMG+PSMV6U6L30+ZOHBJNexaYPkPLN/DXuX3Hx7laBxrFo4nXPK7jifmTgFH3ZSO6aNFRX2WUdW7ExwX9vh7udjQrw+mKz/nV93QEeO+79s2MXDe8KqMF9qfqeZ7HZNXfrMwc+F5aqD8fURKYgEDDsJboMaAFZun/Oopbv1sgH/KQt3fuMwJFD9wlKE/GCfBNy5RTTSKI/t+L3wvNk+0E90uP6MIaCCA+1Qp4Iq9AqT5P3ze67CruHOqq4hI72uM/9ZilcUScKF6n7YD9HwhPmOb8vuL4WtGB2QSMHyvj+dZFGANsshytIfYoCs+3Id6ppLfi0q7KPIU7VLM9JI7bJJUTdNjJwbv8HODAV3yrhl64gb89H+pVEZhjdksLImdwq7Kw+TPpYxyuR1lqwaPwGTXAaufOXzCTDdAGjpmnayFwmDNIBTt/fHU60=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5176.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(39860400002)(346002)(136003)(230922051799003)(230273577357003)(230173577357003)(451199024)(186009)(1800799012)(64100799003)(26005)(53546011)(478600001)(2616005)(71200400001)(6486002)(6506007)(6512007)(83380400001)(5660300002)(2906002)(41300700001)(316002)(66946007)(66556008)(76116006)(66476007)(66446008)(64756008)(91956017)(110136005)(54906003)(4326008)(8936002)(8676002)(38070700009)(38100700002)(86362001)(122000001)(36756003)(31696002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U3hSV2orN2c5bjZiMENyUTlLZCtnWUlzQ044dWw1ZFVvV0YwejdZcVdHNnZk?=
- =?utf-8?B?eWxiRWFtVUpkT25mSkIwK01odVdjZTNVV3BKUGRiWnlUVzNVL0JDRzcyY2t3?=
- =?utf-8?B?MkVCYTlhOFk5OEZObElvUEdBa29jMTdGeW9Kd1NrN21uNjlpQ04vNVZwMXlx?=
- =?utf-8?B?ajB1eE45bkxZdnErNWRhY1l0ZFZjZG5JbVBzZ3k2VEVTSzJ2aGNUZDBtRkV4?=
- =?utf-8?B?REpxVXE0UXlNZ01DM1ovKzJyNEQwQlE3MWwvQk1UWjAyVDhRNE5HdU0zYi9i?=
- =?utf-8?B?dG5VTFVONU5ESmw0QnZxV0d5VzNsaU1pNEZYOGlRL1hEYTV3ZW9KbjlhUlE0?=
- =?utf-8?B?R0piL0Ric215emZST3JVNHNackhrOWEvZmNrVTI0czFyYjNERXNBZ1lpRTRa?=
- =?utf-8?B?WWxOd0NaazFocnRrZ3FOOGovTkUydlNlVmJMckYxaEJkQjlleGErdTY1RXlV?=
- =?utf-8?B?Y3QrdStrREhHNThHYnJ1bjJrY2o0NkVNNTVSeit4V1I2Q3FSdmpxRjk4M0Yx?=
- =?utf-8?B?MGttaUIvWldUcmNxZWozTlRRTXRrcERiekhCU1FXMU1BR3A1eGtoQWxwYVRn?=
- =?utf-8?B?ZERZT3dYYjFhK1pPNmt6NzJHemwxWk05N0drNUQwMWVJSG5IT2JKQjdpWWlw?=
- =?utf-8?B?OHBIUXF0ZzFWTWxQVzM5bk5zeWhXcVBscjF2UjVseXM1NUJwQXRwWHlhb0Rn?=
- =?utf-8?B?dzlHQnRwUXFBV3RZYkNJUEsrREEyQmNiTHJQamU0dG1UYzUySWZaY1E2cndI?=
- =?utf-8?B?OUlNSnlmN2ZNd2pnUnIyRi9BMXZtc2h3bjBUNklUQ0FReHN6UXpXaEE4WGp1?=
- =?utf-8?B?Ui9SMWR1VVhEVm5pdjlycFBaU0JzdXh3STBkeDVHMXZjMmFIRGlZWW9Dc0Qv?=
- =?utf-8?B?RS94RlpqaC9HSXZiWEliVUZSdElRdC90azFBUm1YSzlpQ1BxbGJyd1A5c0hC?=
- =?utf-8?B?a3dXNzZVYUYyazZpTmZ3b1hkSWFHK0drRW5OYlZ1UVl3OVV4YmNTMXluTlFN?=
- =?utf-8?B?NkRGQ1ZVMEJYSnlqMkQ5a2hraG1SN1c0WTkybnJSa095RHJ4Y1U5ZEtJVXo1?=
- =?utf-8?B?VXFtN29XQ2FVZzJQV1ZEd0ZNMkNxbVh5Mk5kQUc4VDFacmw5cWJKSEQ4S0JF?=
- =?utf-8?B?WGd0WU5QVndzQStLMFk5TmhKRmR3NEFOa0phNExSN3Y2akZxSFp4Y1FWZ0hS?=
- =?utf-8?B?aGJWYVhjMWgyd0o5bFh5VkJ6Q3AvUDIyZGd2WU53YWlaT3JUWXFJNW9BY2RD?=
- =?utf-8?B?NUpSUE95VVFiRDZkcldjWXZ6dmtseGZFcDAwckczM0VjNzErYUdvRGgwWDAy?=
- =?utf-8?B?akIwL3puZHlUTWVJZWNNZkszeWhRa1RmdjhtSkFzTk9kSTFDVkFQWCtqUVVj?=
- =?utf-8?B?WTgwbllUOXluVnR5azVjem5MN2MrNU5jbUZWWkNvM3pYNjlTM1pLMnh4YVda?=
- =?utf-8?B?dUFpQWVUK0Zkd2krdW5vRGYxNGtmRWlzM3dkNVVFSm43V1cyVFpLbFpSRWlO?=
- =?utf-8?B?YXpXYVhySDlwVXVHQStMdXF4S2Z1eDdvL3I1UmtTSEx5Yi9GaDBpTndVQktr?=
- =?utf-8?B?UXZHWXRHVmpEOGVCNTlrMjNHandqMjVRTGlJUFhIMy9UTzdqdlgzdWFmellY?=
- =?utf-8?B?a0phcm93UEtiK3JoRkJ4NWdCaEFjOW90ZlFRL2Y4ZmJVSXFPdnBzTk1saEhB?=
- =?utf-8?B?clF3TXhYeUF0Q0RadFRNRzhKbUZKdmRvdTR0bEl4Z1hoWXJYTklnOWpna0t0?=
- =?utf-8?B?STI1cHNjOVZ3ZTV3U29tcEhHV3Y3MS94T3B3c2pOLytlT2pQMmVvREZVeHlo?=
- =?utf-8?B?WGo2aVBPYTRGQXFjNjRYYlR1V0lRdlF6aHUzbzVQZW5JZ0lncDh4aG5mZjhH?=
- =?utf-8?B?UHFoTUNZaVZ1NFJxSmdKUVNnTkJTalg1NERnNytZVWVhR0tyNkZPMHdYRlZW?=
- =?utf-8?B?cGRTcjBVbXRZVk9xY25xYVhac2hhOWo5U29mZStVSWhZcXJxeEVnTVNjaldE?=
- =?utf-8?B?V3MwTTNlUXpna0xyOXF5RC9TU0puaWxxb3ZIcjM5RURNazd2Vlg3ZUhudzIr?=
- =?utf-8?B?dCtyQ3pWMVcyZzBPZXNpa2hHSzN4SkpiZFJBOWtzbnJDNmd4a1pHeGl3S2Ry?=
- =?utf-8?Q?/bPjADvPmiEyk8VInmkyYMlLW?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5105D3C90C4CEA43910DE9B68B28135D@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.26; Fri, 19 Jan
+ 2024 18:22:26 +0000
+Received: from SJ1PEPF00001CE3.namprd05.prod.outlook.com
+ (2603:10b6:a03:80:cafe::a3) by BYAPR11CA0046.outlook.office365.com
+ (2603:10b6:a03:80::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.26 via Frontend
+ Transport; Fri, 19 Jan 2024 18:22:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CE3.mail.protection.outlook.com (10.167.242.11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Fri, 19 Jan 2024 18:22:26 +0000
+Received: from bmoger-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 19 Jan
+ 2024 12:22:24 -0600
+From: Babu Moger <babu.moger@amd.com>
+To: <corbet@lwn.net>, <fenghua.yu@intel.com>, <reinette.chatre@intel.com>,
+	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+	<dave.hansen@linux.intel.com>
+CC: <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+	<rdunlap@infradead.org>, <tj@kernel.org>, <peterz@infradead.org>,
+	<yanjiewtw@gmail.com>, <babu.moger@amd.com>, <kim.phillips@amd.com>,
+	<lukas.bulwahn@gmail.com>, <seanjc@google.com>, <jmattson@google.com>,
+	<leitao@debian.org>, <jpoimboe@kernel.org>, <rick.p.edgecombe@intel.com>,
+	<kirill.shutemov@linux.intel.com>, <jithu.joseph@intel.com>,
+	<kai.huang@intel.com>, <kan.liang@linux.intel.com>,
+	<daniel.sneddon@linux.intel.com>, <pbonzini@redhat.com>,
+	<sandipan.das@amd.com>, <ilpo.jarvinen@linux.intel.com>,
+	<peternewman@google.com>, <maciej.wieczor-retman@intel.com>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<eranian@google.com>
+Subject: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth Monitoring Counters (ABMC)
+Date: Fri, 19 Jan 2024 12:22:02 -0600
+Message-ID: <cover.1705688538.git.babu.moger@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231201005720.235639-1-babu.moger@amd.com>
+References: <20231201005720.235639-1-babu.moger@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5176.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14164bf9-23ae-4006-7c57-08dc191b35d7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2024 18:19:43.7789
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE3:EE_|DS0PR12MB7852:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9b39f223-8a12-4762-8dfe-08dc191b96f2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	hsbHMqMegj3CQr2lrO58tYi6Da2cIo2VVs51eeokx6Dg1KLC4s0FcoBUw3aQ0jJsqOcRmkJsnDsqyo/8LF+a40JidD4yTJ3iw7gO1S10y6DKDnMsXqFzfqe0+61KFvADP6b3N7fOup/WMJeIEpVdW1LQfw39NH71O65dZKbuYuopImarQN0CkuMDCGJWuDvmwthD9684jvHuS2//rk02K04kqhWwGu2FjwxuWrYRNdB4wlm9Q3EB4AHeVrxcHoswnRgxs6+vIYHMFi+oKErWYMgfOi38PdUM/Hv9ceDhstp23UvoajC4KA6lYBOj7QXnxi2QB0qPD6LL8rOZGrqjpcMio5ozsEJNpyVVhJEP7t6K+sAbafTqtQq09eCks+y+FTnZHxMIi96equ7pMe3EbqDcVYwUKh3zLN/UXVn9Sw8Xl4lDi9Z83mx2eQ2/6Iu/80Ndo54BOEe3KuODOg7I8Kf/pyI0WTbC9Rpt56v5prZY8Vzf25TBM+CqbFdRbwGXFKD8P/Dp9AWuUiB4jIv405TyjpK2p4GWAC+xxbC2qT284CjAbIC62/4C6jq8St4J9wYO+e3wABfaEKPc47Mtx7wGJGYALksV3QVUuoJV1acte5YoJSV/SXKCRh97J4o7ozQhteFD9fTRbdosppDMEFWNVmol8r/8PyigeuYNK7qFQvof3RTPnIrx+Qe/i72QowWuaQfL2WXqRZdbPTA6plHxhOdGbJvQsZpIjtx/mX5MEBWNioryFp3Z2c5CT1o5rPSH1zf5+Gzux0d2m9tvnoplyeHC327Ni350LmorOWk=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(136003)(346002)(396003)(230922051799003)(451199024)(186009)(82310400011)(64100799003)(1800799012)(36840700001)(46966006)(40470700004)(86362001)(40460700003)(40480700001)(70586007)(36756003)(2616005)(426003)(83380400001)(81166007)(356005)(16526019)(336012)(47076005)(26005)(70206006)(7416002)(7406005)(316002)(2906002)(5660300002)(110136005)(54906003)(966005)(478600001)(7696005)(4326008)(6666004)(44832011)(82740400003)(41300700001)(8676002)(36860700001)(8936002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 18:22:26.5807
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: a4D5AMcH3sh6OxIQsGkViifDrg/u3UOaD6hU9aDJNQKSXcPH/oVbGsN2/Z5hlyl+i+vs4Xbh3c+cRY9iEWkUXwyjEmQK+ulYYnDSALYxCe0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6192
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b39f223-8a12-4762-8dfe-08dc191b96f2
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE3.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7852
 
-SGkgQWxleGlzLA0KDQpPbiAxLzE5LzI0IDAwOjQzLCBBbGV4aXMgTG90aG9yw6kgd3JvdGU6DQo+
-IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1
-bmxlc3MgeW91IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gT24gMS8xOC8yNCAxNzo1
-MiwgQWpheS5LYXRoYXRAbWljcm9jaGlwLmNvbSB3cm90ZToNCj4+IE9uIDEvMTgvMjQgMDg6MDgs
-IEFsZXhpcyBMb3Rob3LDqSB3cm90ZToNCj4gDQo+IFsuLi5dDQo+IA0KPj4+ICJXSUxDIGRyaXZl
-ciBjdXJyZW50bHkgYXBwbGllcyBzb21lIGRlZmF1bHQgY29uZmlndXJhdGlvbiB3aGVuZXZlciB0
-aGUgZmlybXdhcmUNCj4+PiBpcyBpbml0aWFsaXplZCwgYW5kIHNldHMgdGhlIGRlZmF1bHQgcHJl
-YW1ibGUgc2l6ZSB0byBzaG9ydC4gSG93ZXZlciwgZGVzcGl0ZQ0KPj4+IHRoaXMgcGFzc2VkIG9w
-dGlvbiwgZmlybXdhcmUgaXMgYWxzbyBhYmxlIHRvIHN1Y2Nlc3NmdWxseSBjb25uZWN0IHRvIGFj
-Y2Vzcw0KPj4+IHBvaW50cyBvbmx5IHVzaW5nIGxvbmcgcHJlYW1ibGUsIHNvIHRoaXMgc2V0dGlu
-ZyBkb2VzIG5vdCByZWFsbHkgZW5mb3JjZSBzaG9ydA0KPj4+IHByZWFtYmxlcyBhbmQgaXMgbWlz
-bGVhZGluZyByZWdhcmRpbmcgYXBwbGllZCBjb25maWd1cmF0aW9uLg0KPj4+DQo+Pj4gVXBkYXRl
-IGRlZmF1bHQgY29uZmlndXJhdGlvbiBhbmQgbWFrZSBpdCBtYXRjaCB0aGUgZmlybXdhcmUgYmVo
-YXZpb3IgYnkgcGFzc2luZw0KPj4+IHRoZSBleGlzdGluZyBXSUxDX0ZXX1BSRUFNQkxFX0FVVE8g
-dmFsdWUgKDIgaW5zdGVhZCBvZiAwKS4gVGhlIHVwZGF0ZWQgc2V0dGluZw0KPj4+IGRvZXMgbm90
-IHJlYWxseSBhbHRlciBmaXJtd2FyZSBiZWhhdmlvciBzaW5jZSBpdCBpcyBzdGlsbCBjYXBhYmxl
-IHRvIGNvbm5lY3QgdG8NCj4+PiBib3RoIHNob3J0IHByZWFtYmxlIGFuZCBsb25nIHByZWFtYmxl
-IGFjY2VzcyBwb2ludHMsIGJ1dCBhdCBsaXN0IHRoZSBzZXR0aW5nIG5vdw0KPj4+IGV4cHJlc3Nl
-cyBmb3IgcmVhbCB0aGUgY29ycmVzcG9uZGluZyBmaXJtd2FyZSBiZWhhdmlvciINCj4+Pg0KPj4+
-IFRvIGdpdmUgYSBiaXQgb2YgY29udGV4dCBhcm91bmQgdGhpcyBvbmU6IEkgZG8gbm90IGhhdmUg
-YWNjZXNzIHRvIHRoZSBmaXJtd2FyZQ0KPj4+IGludGVybmFscywgSSBqdXN0IHRvb2sgdGhlIHBh
-dGNoIGZyb20gQWpheSBhbmQgSSBtZXJlbHkgZGlkIHNvbWUgdGVzdHMgYXJvdW5kIGl0DQo+Pj4g
-d2l0aCBtdWx0aXBsZSBBUHMgKGJhc2ljYWxseSwgbWFraW5nIGEgV0lMQyBTVEEgY29ubmVjdCBh
-bmQgcGluZyB0aGUgQVApLCBhbmQNCj4+PiBlbnN1cmVkIHdpdGggd2lyZXNoYXJrIHRvIGdldCBh
-dCBsZWFzdCBvbmUgQVAgYmUgcmVhbGx5ICJsb2NrZWQiIHdpdGggbG9uZw0KPj4+IHByZWFtYmxl
-LCB3aXRoIFdJTEMgbWFuYWdpbmcgdG8gY29ubmVjdCB0byBpdC4NCj4+Pg0KPj4NCj4+IEhlcmUg
-YXJlIHNvbWUgbW9yZSBkZXRhaWxzIGFib3V0IHRoaXMgY2hhbmdlLiBJdCBoYXZlIGJlZW4gaW1w
-bGVtZW50ZWQNCj4+IHRvIGFkZHJlc3MgdGhlIHRyYW5zbWlzc2lvbihUeCkgYmxhY2tvdXQgaXNz
-dWUgb2JzZXJ2ZWQgaW4gdGhlIDgwMi4xMWINCj4+IG1vZGUuIFRoZSBtb2RpZmljYXRpb24gaGFz
-IG5vIGltcGFjdCBvbiB0aGUgb3RoZXIgbW9kZXMsIHdoaWNoIHdpbGwNCj4+IGNvbnRpbnVlIHRv
-IHdvcmsgYXMgdGhleSBkaWQgaW4gdGhlIHByZXZpb3VzIGltcGxlbWVudGF0aW9uLiBUaGlzIGNo
-YW5nZQ0KPj4gd2lsbCBhbGxvdyB0aGUgODAyLjExYiB0cmFuc21pc3Npb24oMiwgNS41LCAxMU1i
-cHMpIHRvIHVzZSBsb25nIHByZWFtYmxlLg0KPiANCj4gQWgsIHNvIGl0IGZpeGVzIGEgc3BlY2lm
-aWMgYnVnIChhbmQgbWFrZXMgcGFydHMgb2YgbXkgc3VnZ2VzdGVkIGRlc2NyaXB0aW9uDQo+IHdy
-b25nKS4gSGFzIHRoZXJlIGJlZW4gYW55IHJlcG9ydCBhYm91dCB0aGlzICJUWCBibGFja291dCBp
-c3N1ZSIgb24gdGhlIG1haWxpbmcNCj4gbGlzdHMgPyBJZiBzbywgd2UgY291bGQgZW5yaWNoIHRo
-ZSBtZXNzYWdlIHdpdGggc29tZSBkZXRhaWxzIGZyb20gdGhlIHJlcG9ydCBhbmQNCj4gYWRkIHNv
-bWUgbWlzc2luZyBSZXBvcnRlZC1CeS9GaXhlcy9DbG9zZXMgdGFncy4NCj4gDQoNCkZvciB0aGlz
-IGlzc3VlLCB0aGVyZSBhcmUgbm8gZGV0YWlscyBvbiB0aGUgbWFpbGluZyBsaXN0cy4gSXQgd2Fz
-DQpkaXNjb3ZlcmVkIGJ5IGludGVybmFsIFFBIHRlYW0uDQoNClJlZ2FyZHMsDQpBamF5DQo=
+
+These series adds the support for Assignable Bandwidth Monitoring Counters
+(ABMC). It is also called QoS RMID Pinning feature
+
+The feature details are documented in the  APM listed below [1].
+[1] AMD64 Architecture Programmer's Manual Volume 2: System Programming
+Publication # 24593 Revision 3.41 section 19.3.3.3 Assignable Bandwidth
+Monitoring (ABMC). The documentation is available at
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+
+The patches are based on top of commit
+1ac6b49423e83af2abed9be7fbdf2e491686c66b (tip/master)
+
+# Introduction
+
+AMD hardware can support 256 or more RMIDs. However, bandwidth monitoring
+feature only guarantees that RMIDs currently assigned to a processor will
+be tracked by hardware. The counters of any other RMIDs which are no longer
+being tracked will be reset to zero. The MBM event counters return
+"Unavailable" for the RMIDs that are not active.
+    
+Users can create 256 or more monitor groups. But there can be only limited
+number of groups that can be give guaranteed monitoring numbers.  With ever
+changing configurations there is no way to definitely know which of these
+groups will be active for certain point of time. Users do not have the
+option to monitor a group or set of groups for certain period of time
+without worrying about RMID being reset in between.
+    
+The ABMC feature provides an option to the user to assign an RMID to the
+hardware counter and monitor the bandwidth for a longer duration.
+The assigned RMID will be active until the user unassigns it manually.
+There is no need to worry about counters being reset during this period.
+Additionally, the user can specify a bitmask identifying the specific
+bandwidth types from the given source to track with the counter.
+
+Without ABMC enabled, monitoring will work in current mode without
+assignment option.
+
+# Linux Implementation
+
+Linux resctrl subsystem provides the interface to count maximum of two
+memory bandwidth events per group, from a combination of available total
+and local events. Keeping the current interface, users can assign a maximum
+of 2 ABMC counters per group. User will also have the option to assign only
+one counter to the group. If the system runs out of assignable ABMC
+counters, kernel will display an error. Users need to unassign an already
+assigned counter to make space for new assignments.
+
+
+# Examples
+
+a. Check if ABMC support is available
+	#mount -t resctrl resctrl /sys/fs/resctrl/
+
+	#cat /sys/fs/resctrl/info/L3_MON/mon_features 
+	llc_occupancy
+	mbm_total_bytes
+	mbm_total_bytes_config
+	mbm_local_bytes
+	mbm_local_bytes_config
+	mbm_assign_capable ←  Linux kernel detected ABMC feature
+
+b. Check if ABMC is enabled. By default, ABMC feature is disabled.
+   Monitoring works in legacy monitor mode when ABMC is not enabled.
+
+	#cat /sys/fs/resctrl/info/L3_MON/mbm_assign_enable
+	0
+
+c. There will be new file "monitor_state" for each monitor group when ABMC
+   feature is supported. However, monitor_state is not available if ABMC is
+   disabled.
+	
+	#cat /sys/fs/resctrl/monitor_state 
+	Unsupported
+	
+d. Read the event mbm_total_bytes and mbm_local_bytes. Without ABMC
+   enabled, monitoring will work in current mode without assignment option.
+	
+	# cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_total_bytes
+	779247936
+	# cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_local_bytes 
+	765207488
+	
+e. Enable ABMC mode.
+
+	#echo 1 > /sys/fs/resctrl/info/L3_MON/mbm_assign_enable
+        #cat /sys/fs/resctrl/info/L3_MON/mbm_assign_enable
+        1
+
+f. Read the monitor states. By default, both total and local MBM
+	events are in "unassign" state.
+	
+	#cat /sys/fs/resctrl/monitor_state
+	total=unassign;local=unassign
+
+g. Read the event mbm_total_bytes and mbm_local_bytes. In ABMC mode,
+   the MBA events are not available until the user assigns the events
+   explicitly.
+	
+	#cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_total_bytes
+	Unsupported
+	
+	#cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_local_bytes 
+	Unsupported
+
+h. The event llc_occupancy is not affected by ABMC mode. Users can still
+   read the llc_occupancy.
+
+	#cat /sys/fs/resctrl/mon_data/mon_L3_00/llc_occupancy 
+	557056
+
+i. Now assign the total event and read the monitor_state.
+	
+	#echo total=assign > /sys/fs/resctrl/monitor_state
+	#cat /sys/fs/resctrl/monitor_state 
+	total=assign;local=unassign
+	
+j. Now that the total event is assigned. Read the total event.
+	
+	#cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_total_bytes
+	6136000
+	
+k. Now assign the local event and read the monitor_state.
+	
+	#echo local=assign > /sys/fs/resctrl/monitor_state
+	#cat /sys/fs/resctrl/monitor_state
+	total=assign;local=assign
+
+        Users can also assign both total and local events in one single
+	command.
+
+l. Now that both total and local events are assigned, read the events.
+	
+	#cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_total_bytes
+	6136000
+	#cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_local_bytes
+	58694
+	
+m. Check the bandwidth configuration for the group. Note that bandwidth
+   configuration has a domain scope. Total event defaults to 0x7F (to
+   count all the events) and local event defaults to 0x15 (to count all
+   the local numa events). The event bitmap decoding is available at
+   https://www.kernel.org/doc/Documentation/x86/resctrl.rst
+   in section "mbm_total_bytes_config", "mbm_local_bytes_config":
+	
+	#cat /sys/fs/resctrl/info/L3_MON/mbm_total_bytes_config 
+	0=0x7f;1=0x7f
+	
+	#cat /sys/fs/resctrl/info/L3_MON/mbm_local_bytes_config 
+	0=0x15;1=0xi15
+	
+n. Change the bandwidth source for domain 0 for the total event to count only reads.
+   Note that this change effects lotal events on the domain 0.
+	
+	#echo 0=0x33 > /sys/fs/resctrl/info/L3_MON/mbm_total_bytes_config 
+	#cat /sys/fs/resctrl/info/L3_MON/mbm_total_bytes_config 
+	0=0x33;1=0x7F
+	
+o. Now read the total event again. The mbm_total_bytes should display
+   only the read events.
+	
+	#cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_total_bytes
+	314101
+	
+p. Unmount the resctrl
+	 
+	#umount /sys/fs/resctrl/
+
+NOTE: For simplicity these examples are run on a default resctrl group.
+Similar experiments are can be run non-defaults groups.
+---
+v2:
+   a. Major change is the way ABMC is enabled. Earlier, user needed to remount
+      with -o abmc to enable ABMC feature. Removed that option now.
+      Now users can enable ABMC by "$echo 1 to /sys/fs/resctrl/info/L3_MON/mbm_assign_enable".
+     
+   b. Added new word 21 to x86/cpufeatures.h.
+
+   c. Display unsupported if user attempts to read the events when ABMC is enabled
+      and event is not assigned.
+
+   d. Display monitor_state as "Unsupported" when ABMC is disabled.
+  
+   e. Text updates and rebase to latest tip tree (as of Jan 18).
+ 
+   f. This series is still work in progress. I am yet to hear from ARM developers. 
+
+v1 :
+   https://lore.kernel.org/lkml/20231201005720.235639-1-babu.moger@amd.com/
+
+Babu Moger (17):
+  x86/cpufeatures: Add word 21 for scattered CPUID features
+  x86/resctrl: Add support for Assignable Bandwidth Monitoring Counters
+    (ABMC)
+  x86/resctrl: Add ABMC feature in the command line options
+  x86/resctrl: Detect Assignable Bandwidth Monitoring feature details
+  x86/resctrl: Introduce resctrl_file_fflags_init
+  x86/resctrl: Introduce interface to display number of ABMC counters
+  x86/resctrl: Add support to enable/disable ABMC feature
+  x86/resctrl: Introduce the interface to display ABMC state
+  x86/resctrl: Introdruce rdtgroup_assign_enable_write
+  x86/resctrl: Add interface to display monitor state of the group
+  x86/resctrl: Report Unsupported when MBM events are read
+  x86/resctrl: Initialize assignable counters bitmap
+  x86/resctrl: Add data structures for ABMC assignment
+  x86/resctrl: Introduce mbm_total_cfg and mbm_local_cfg
+  x86/resctrl: Add the interface to assign the RMID
+  x86/resctrl: Add the interface unassign the RMID
+  x86/resctrl: Update RMID assignments on event configuration changes
+
+ .../admin-guide/kernel-parameters.txt         |   2 +-
+ Documentation/arch/x86/resctrl.rst            |  62 +++
+ arch/x86/include/asm/cpufeature.h             |   6 +-
+ arch/x86/include/asm/cpufeatures.h            |   7 +-
+ arch/x86/include/asm/disabled-features.h      |   3 +-
+ arch/x86/include/asm/msr-index.h              |   2 +
+ arch/x86/include/asm/required-features.h      |   3 +-
+ arch/x86/kernel/cpu/cpuid-deps.c              |   3 +
+ arch/x86/kernel/cpu/resctrl/core.c            |  25 +-
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c     |  15 +
+ arch/x86/kernel/cpu/resctrl/internal.h        |  54 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c         |  26 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c        | 466 +++++++++++++++++-
+ arch/x86/kernel/cpu/scattered.c               |   1 +
+ include/linux/resctrl.h                       |   2 +
+ 15 files changed, 651 insertions(+), 26 deletions(-)
+
+-- 
+2.34.1
+
 
