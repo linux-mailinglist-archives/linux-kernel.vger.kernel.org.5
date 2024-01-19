@@ -1,68 +1,100 @@
-Return-Path: <linux-kernel+bounces-30964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 575168326E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:43:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AD2E8326E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:44:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89F531C231C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:43:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3449A2822FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B626B3C47E;
-	Fri, 19 Jan 2024 09:43:11 +0000 (UTC)
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9237E3C463;
-	Fri, 19 Jan 2024 09:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.46.229.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7DD3C68A;
+	Fri, 19 Jan 2024 09:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="TYzO3Kv3"
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884F83C463;
+	Fri, 19 Jan 2024 09:43:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705657391; cv=none; b=V3YSCGI+SuNqls4uX2zJ6PA6JcBj3IfEHVMyU/syx8jzR+QgEL9xSi8AVHypwX9BfLsYZXLpQa6swBs76YIsfJQd0A8tINPwvrw6CHhb5Y/5F4ybPSCIgJtrAu3SaVfb55aOvuK+LtkYMVKj1tvCTxIRAfikxK5X79LZatlib24=
+	t=1705657429; cv=none; b=SDG+Rinvsvm2zJSBFtMqs6BRH/uu+ZmKvXuOn2IKapCPzxJdSfhWDRBvyZ8q0jeYuAFJYmntF9WaJbPDRAVsX9wLsLUlE/syOnwKerBsSQUiOGWqlLLkeYjAbCyiNfM9RJYJ8vXFe2VSyxxVgvB8nwY8fEJmycqKElR8FeFfxX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705657391; c=relaxed/simple;
-	bh=YAIzMiJuCKphBety3PsrZGEniRd5/SSgfqJPPSFwiyE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=Xq7e3/if8FNJ1GXWSoSJ2ky/EEffhMC47PeOAcDDKMsKc8PDqWfsWrvTTZ6N7QVi45bz5uQ0Lx8QCiErmLfAJm3GzVeckTcVRcs+DYXA1c11EBvu3GLa61+JrL5ieEfP5/WkhpTZTYno+MSy1t4nm3KSeMJklWQ3sK+0vrZY2yE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=207.46.229.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from linma$zju.edu.cn ( [42.120.103.58] ) by
- ajax-webmail-mail-app2 (Coremail) ; Fri, 19 Jan 2024 17:42:54 +0800
- (GMT+08:00)
-Date: Fri, 19 Jan 2024 17:42:54 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: "Lin Ma" <linma@zju.edu.cn>
-To: djohannes@sipsolutions.net, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v1] nl80211/cfg80211: add nla_policy for S1G
- band
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
- 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <20240119093724.7852-1-linma@zju.edu.cn>
-References: <20240119093724.7852-1-linma@zju.edu.cn>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1705657429; c=relaxed/simple;
+	bh=tG2zsCK8yQbCDBC3gzpjutSRIN2h2t3FmjArqi3HUsA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qqf120H/RJtfrUaJ6l9NDkmdb04jPXb8mY8bdkpgIN+sgKuz0TjR8mR8OIAZOFra4Nhp8Ap90CYPL7n0DxIvbNK1S8XyqQrEZzH7COQGnrY82wyzNTjtAX63DWDlTNfMOa8Z2G7YJCsaIxgmbiVIEQ9dRBoJn99dM1Ez/EdZM10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=TYzO3Kv3; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=plqhpujkl5dg7mbbrfxmygange.protonmail; t=1705657418; x=1705916618;
+	bh=+LdiskQeHEZLdxUpn/S/pubmhIJOcYkLCINwk9ZEXhs=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=TYzO3Kv3NP/nXCpS9KlHhzYw6dzOjNA9WCqWMCaf5s5TZI4X9gF8CoshCPEzWGb2V
+	 Jw5CAxiB2CH0mQcsY6b6qehsWqgG/nc2AiC1LtSYGgstutdQpD5vPVE2i66PNAVCcT
+	 mGlQ0CwXXmzR1kUCg4CCaRL5LANeLg7TNEPsUt97XUIwr3fAASwnHkC78D2v8BbTwY
+	 22TBc1ACbb33Z6tDY59Y4hJlkaNQi9f+GZ2r2cTZVDmbhZlswHOvDsTbgjyhw8cEdk
+	 0V3v6zPEix1/sDRey8BIe+KlDmpFJeupanjDH4vpl6DKxg/LS0LQwLvXm7HM5SUwfx
+	 eJ3thEiUyWzfA==
+Date: Fri, 19 Jan 2024 09:43:23 +0000
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 4/9] rust: types: add `NotThreadSafe`
+Message-ID: <a8caa050-4296-4b3f-aded-ef41bdf7972d@proton.me>
+In-Reply-To: <20240118-alice-file-v3-4-9694b6f9580c@google.com>
+References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-4-9694b6f9580c@google.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <6acb79fc.79d3.18d211a170c.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:by_KCgBnja0fRKpldnZhAA--.9518W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwMEEmWoIc4RlgAJs6
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWUJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-SGVsbG8gdGhlcmUsCgo+IE91ciBkZXRlY3RvciBoYXMgaWRlbnRpZmllZCBhbm90aGVyIGNhc2Ug
-b2YgYW4gaW5jb21wbGV0ZSBwb2xpY3kuCj4gLi4uCgpJIG1hcmsgdGhlIG5ldC1uZXh0IHRhZyBm
-b3IgdGhpcyBvbmUgYW5kIGEgcHJldmlvdXMgc2VudCBvbmUgaW4gdGhpcwptb3JuaW5nIChbUEFU
-Q0ggbmV0LW5leHQgdjFdIG5laWdoYm91cjogY29tcGxlbWVudCBubF9udGJsX3Bhcm1fcG9saWN5
-KS4KClBsZWFzZSBsZXQgbWUga25vdyBpZiBzdWNoIG5sYV9wb2xpY3kgY29tcGxlbWVudGluZyBz
-aG91bGQgZ28gbmV0IGluc3RlYWQuCgpUaGFua3MhCgpSZWdhcmRzCkxpbg==
+On 1/18/24 15:36, Alice Ryhl wrote:
+> This introduces a new marker type for types that shouldn't be thread
+> safe. By adding a field of this type to a struct, it becomes non-Send
+> and non-Sync, which means that it cannot be accessed in any way from
+> threads other than the one it was created on.
+>=20
+> This is useful for APIs that require globals such as `current` to remain
+> constant while the value exists.
+>=20
+> We update two existing users in the Kernel to use this helper:
+>=20
+>  * `Task::current()` - moving the return type of this value to a
+>    different thread would not be safe as you can no longer be guaranteed
+>    that the `current` pointer remains valid.
+>  * Lock guards. Mutexes and spinlocks should be unlocked on the same
+>    thread as where they were locked, so we enforce this using the Send
+>    trait.
+>=20
+> There are also additional users in later patches of this patchset. See
+> [1] and [2] for the discussion that led to the introducion of this
+> patch.
+>=20
+> Link: https://lore.kernel.org/all/nFDPJFnzE9Q5cqY7FwSMByRH2OAn_BpI4H53NQf=
+WIlN6I2qfmAqnkp2wRqn0XjMO65OyZY4h6P4K2nAGKJpAOSzksYXaiAK_FoH_8QbgBI4=3D@pro=
+ton.me/ [1]
+> Link: https://lore.kernel.org/all/nFDPJFnzE9Q5cqY7FwSMByRH2OAn_BpI4H53NQf=
+WIlN6I2qfmAqnkp2wRqn0XjMO65OyZY4h6P4K2nAGKJpAOSzksYXaiAK_FoH_8QbgBI4=3D@pro=
+ton.me/ [2]
+> Suggested-by: Benno Lossin <benno.lossin@proton.me>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+
+--=20
+Cheers,
+Benno
+
 
