@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-30780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB52F83244E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:40:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 007BA832450
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C61A1F21872
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:40:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87205B22E26
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A30C4A3C;
-	Fri, 19 Jan 2024 05:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4C94C6B;
+	Fri, 19 Jan 2024 05:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="xt7BvpKP"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="rBw4YQNG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7520246AD;
-	Fri, 19 Jan 2024 05:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B47B4A0F;
+	Fri, 19 Jan 2024 05:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705642824; cv=none; b=f0jioxxvao2Ac68QJ591Mh5hf3rtSv+pH7fVE0y4fa+/GXY8MKE9/VnCQo1tzrHS+i5eoisl+4lOmCcdIAJKBXmxQiaNFbSBFUwDHQ5JUznaH2X3rq3gV1h+sLLMYxv9VCbA6AmTfbV3Gb+hoWXpwSUNytyT4Mqgool2UZghK/c=
+	t=1705642845; cv=none; b=hq8PtPWFjPPB6EpteoEEH3umo3dWUvBPU9Iqejm3HKkF4dj2VQhKDVgpWV0VAJcqrPuLFO94tiwy5KWuVgtIj65T6Z7pQrBW+WB91Xc4eaxNcSVbW0mzmapBC/GBn6Kc6mvpKi2WJPZ6YVcYf8NhvVV4P8hy/WBbaUvruFFc0is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705642824; c=relaxed/simple;
-	bh=5U2+txbxsG7CqjIgj3CsUOtH+mIhI/wUdDud2EcvgxA=;
+	s=arc-20240116; t=1705642845; c=relaxed/simple;
+	bh=u9j17daQHcZtcaiTomO9tc+OzSndwaD8Ua17DNPn0WU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QBgKDFlEuoJAYrneKli9B9juANXQPDYtumj5hWfpT/QvVQPWQhbvpI+Mfu5PsorRe4VYGYIkurVVhZsG57T5/loMU/K3x/CMI1y3jGJH92avoNvpwZd0/pqZx9G1/uMYeKl2QkQkLpJaVpzk1+WAQO5XtKe50TrKWcGPvzdUlzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=xt7BvpKP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2C20C433F1;
-	Fri, 19 Jan 2024 05:40:22 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=jyOmcTjMBrlTPWvne2kitzUswu52E1FcreOK4FgRmhJcAGwc0ATt9WUOhw73wBS+DBfu89JiBK+YI1XnJ+V1W0OMBFzkvMNY48sa3iiQuntUvPRHFb1jsAEFuiqG9he9O40gyhDlD7S6BnyX3zd/Vbpmy4d+bqmw0M/peEqX/So=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=rBw4YQNG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EFCDC433F1;
+	Fri, 19 Jan 2024 05:40:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705642823;
-	bh=5U2+txbxsG7CqjIgj3CsUOtH+mIhI/wUdDud2EcvgxA=;
+	s=korg; t=1705642845;
+	bh=u9j17daQHcZtcaiTomO9tc+OzSndwaD8Ua17DNPn0WU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=xt7BvpKPfLtDTQX4t585RAz5DMjC7A/r8gycZSxmPZ8usGD8X8DiPiizaf7n7VBIW
-	 OaxVOHd5rpEOQ+EhxIb02KB4mKzBuLId19K61uv1j/f+gIeEscHRK7wZqCfCGpIPFb
-	 SH4DGjUZ8Bll9yJN6XYabGV04/JFqWCVT1SGQWN0=
-Date: Fri, 19 Jan 2024 06:40:20 +0100
+	b=rBw4YQNGZKZrMxgsbJNWhUeJzwlMr7b2vFWquT2EDVNec2J7aaThur3mJVF0a8aGz
+	 rMeciJW+U9cNmh76fAaOncyyhy4Wnt3fc+5AC5MZvoNnvE0y/V/tkueUjKKU52DPqF
+	 tsI46VfmCvGX8EBMFf5N6ID+QM91K3DDcr64EPWc=
+Date: Fri, 19 Jan 2024 06:40:41 +0100
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: stable@vger.kernel.org, Stefan Wiehler <stefan.wiehler@nokia.com>,
-	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 6.1 000/100] 6.1.74-rc1 review
-Message-ID: <2024011902-unplanted-dice-2873@gregkh>
-References: <20240118104310.892180084@linuxfoundation.org>
- <96dc2b0b-ad51-42f9-a305-744d9d97272e@gmail.com>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com
+Subject: Re: [PATCH 6.6 000/150] 6.6.13-rc1 review
+Message-ID: <2024011930-congress-slimness-caa5@gregkh>
+References: <20240118104320.029537060@linuxfoundation.org>
+ <ab9bef24-a07b-4930-b09a-b3c0f4e04789@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,14 +59,12 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <96dc2b0b-ad51-42f9-a305-744d9d97272e@gmail.com>
+In-Reply-To: <ab9bef24-a07b-4930-b09a-b3c0f4e04789@gmail.com>
 
-On Thu, Jan 18, 2024 at 11:10:31AM -0800, Florian Fainelli wrote:
-> +Stefan,
-> 
-> On 1/18/24 02:48, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 6.1.74 release.
-> > There are 100 patches in this series, all will be posted as a response
+On Thu, Jan 18, 2024 at 11:22:03AM -0800, Florian Fainelli wrote:
+> On 1/18/24 02:47, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 6.6.13 release.
+> > There are 150 patches in this series, all will be posted as a response
 > > to this one.  If anyone has any issues with these being applied, please
 > > let me know.
 > > 
@@ -74,14 +72,16 @@ On Thu, Jan 18, 2024 at 11:10:31AM -0800, Florian Fainelli wrote:
 > > Anything received after that time might be too late.
 > > 
 > > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.74-rc1.gz
+> > 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.13-rc1.gz
 > > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
 > > and the diffstat can be found below.
 > > 
 > > thanks,
 > > 
 > > greg k-h
+> 
+> Same as with 6.1:
 > 
 > ARM and ARM64 builds worked fine and passed tests, however BMIPS_GENERIC
 > fails to build with:
@@ -100,7 +100,7 @@ On Thu, Jan 18, 2024 at 11:10:31AM -0800, Florian Fainelli wrote:
 > host-make[3]: *** [scripts/Makefile.build:500: arch/mips] Error 2
 > host-make[3]: *** Waiting for unfinished jobs....
 > 
-> which is caused by 7c20a4cc189eff36d5aeb586008a540d8024fbff ("mips/smp: Call
+> which is caused by 1fa03a4622bb26a31279a453aa251154f11e6c70 ("mips/smp: Call
 > rcutree_report_cpu_starting() earlier").
 > 
 > It looks like rcutree_report_cpu_starting() has been introduced
@@ -110,11 +110,8 @@ On Thu, Jan 18, 2024 at 11:10:31AM -0800, Florian Fainelli wrote:
 > For MIPS, it would like an adequate fix would be to
 > 's/rcutree_report_cpu_starting/rcu_cpu_starting/' for the 6.1 and 6.6
 > branches.
-> 
-> Stefan, do you agree?
 
-The offending commit has been dropped from the queue, sorry, I didn't
-push out a new -rc yet.
+Again, the offending change has been dropped now, thanks.
 
 greg k-h
 
