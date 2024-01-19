@@ -1,61 +1,72 @@
-Return-Path: <linux-kernel+bounces-31499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 555EA832F09
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:40:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B59832F08
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:39:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79C791C2357F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:40:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04A7A28814A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:39:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D99423B1;
-	Fri, 19 Jan 2024 18:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8150E5646D;
+	Fri, 19 Jan 2024 18:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aeHqFEQu"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="OAXOKUh2"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0330A56778;
-	Fri, 19 Jan 2024 18:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F9E56453
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705689570; cv=none; b=sqwLoT010IrUzkwdkAfTMpMIzKH1i4ycgFMM8h0XSokL+OwrR/MMu37CAFB1SuBSmJ3lLKut20AkIxhr7bwiMS5Gih1oqEyoZ1vXglCznAIkm5jwTc/vS2kPSRloqzlpPKiBB+ruTuruh0A2m4ZhV8eh4QyY+ESnuPu7cdVkJmk=
+	t=1705689565; cv=none; b=o0cTFWbpwtMIfuVAchuoWg3MiriMWzq/dX0YOLKPCFbMSmkA7KuQClwj2uvt4u5eplX3tbU1v38lvOMXY4huulHKJnUBdyG2uydH3ZLBms87njsfcc7syb2DjZzQ9yJUhxHGQ9sI//YDHbRdCnye8YcnZRXppIVMSRsXazUEVkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705689570; c=relaxed/simple;
-	bh=1Gn1OgtQ5ch+2QdJcArCviRv9vCtxy1FKMEYMeTXq4s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ua2HrqWRGoYPasvYxUwGbhXrBS2x61LmN6gs/y6Il+balrCo7dz6U3PxnSu6tOJva4dZQDNymosx6HZ+E+9mYwnJVhWeidX7pRreOvIWAARz9nS5soRGhERSLaQDkQLaMRLq/TJH7K2FHG0JkxQG+sQpQMiPmNL2+BWypkfj2u0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aeHqFEQu; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705689569; x=1737225569;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1Gn1OgtQ5ch+2QdJcArCviRv9vCtxy1FKMEYMeTXq4s=;
-  b=aeHqFEQuunkl9zsZaX1oR5eyu4LMkzEjRNQ/qsexY08jjC4SwWhQZh8b
-   nKXLtXKeOJD5fHzv7brSY9J14nNpYuyeSVOyK5eM8G4aaL7KmQOBfRGHb
-   N9IQuYAGuZSE6jxBX0eHbELL3WLEV/nalaQ5JMIH5uet0ny0JINgSlQTu
-   zkPs6zDJinIUb9EVLAYltvHxmf2u+iUMxZ1Xq4zKZUib9n+kMlTrrpKiY
-   HGy9ZXaHG5E46alh8eEm/vF7AymMY6Gg9QsqlbmhI8eryyOmws/agXHtY
-   XVuyPEpjqFJm8zhO3xWlQ4aYr3uY2VbPZ+fxZtCTzhS1MpH32PxD3lMQn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="404578759"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="404578759"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 10:39:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="778042466"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="778042466"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.39.208])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 10:39:23 -0800
-Message-ID: <e3463435-b879-4d72-9cab-c4bf951b9084@intel.com>
-Date: Fri, 19 Jan 2024 20:39:19 +0200
+	s=arc-20240116; t=1705689565; c=relaxed/simple;
+	bh=KPBYnvXs+bRh8VQUcF3cGEvDOy/UxtfQJY6XAedGMkE=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=DsvPy6zhRujwlfhnsjuHe3/pHeAkktoBt7qo1PF7JieOeCaErtha50aalZA/8xDbHOt9E7Z44f/sJaILFlm+hsombkc64YKqAkF8oICesnMJ/vevhCM+hDXz7fl+IdJrnG3kPDCRhwUSXAoLZJL3ZLjdkcuRRqW/bt1gZYoC81s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=OAXOKUh2; arc=none smtp.client-ip=209.85.166.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7bee9f626caso15518839f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:39:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705689562; x=1706294362; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3YqF9VDWGaS4VlQNR7o2au0lZg/1V8nOrIBJo7jDbbk=;
+        b=OAXOKUh2tLnEJ/7cQFrpSvVdQcql8RO27m8kReJn8sy8qbYp3kJq7bLIfx+TYln+No
+         Iau6brV/T/aQWw5ymKtNX4jyqXQmyt44roXdbjPJf2ht7hVTBiBVPSOIi4PFhKDketfI
+         /gEM7gSBbtQPtiuT4p5KJQe+7aFj3fIowKuoq2idrnrQJyb6ofODjgfMm8pkAEOUds6y
+         G9DGdcNMpEovHpRwVu8JOQzJ7XBMrA9LAPViJCWo5MSBwiNejijM0UoFfUethkRaAA0n
+         M0gAN+Qt07SFImJqioe2TKfFETgeKfYhInSDhSiDiYMCPs6PUDHgrx1F1bunZ/o7hjUu
+         3ZoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705689562; x=1706294362;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3YqF9VDWGaS4VlQNR7o2au0lZg/1V8nOrIBJo7jDbbk=;
+        b=DtbR6ChrArJmPGOh94TeYQ1DNr1yfvTmfGQjBP73uJ9u1bcgcNAhHluG6XPcB5wjlU
+         VaZlpEnKz2gsdRIw+vLJjf8/gAS/tUleGy1Gv9LSW6IPies8LW2kFgu+CJ+FISj8ouj+
+         jTxE7+B97L6v834sraIoEOiHaZsg26cZDMnMoscrRB/0QBGhSZ+FbQokYBB8lExtWKge
+         yYPchMPP+WroQ0Bg+CQq4nNnCdg+U3YTvvgqvHvTHDRskH4f6utphiZ1wArCB+ITW7wP
+         vz2qPITs8pMFJsm4/IgaEEQDuSIKBv6RwI1M/PolbCZB/MRrQ9iH+Y7Yuq/Ao73Tczg6
+         VvPA==
+X-Gm-Message-State: AOJu0YwhdSWEji8QvddfTLqyJ5rKgPb02LjoZYmV8GXbUe0qzeLU/7dy
+	xh3tYd+vGFOWG0o9RhRjBO9D5wFVniWkH6sO7v6OtTTUkXBA8Fv+Je9231t4r1dTlsnxAvOn3UX
+	5D5w=
+X-Google-Smtp-Source: AGHT+IG/wN6lTQv3q2R53igCCDQ0O7n9t9yzniyNiXLbO+u1nKR+CX6nGMNXevdX7msmrrgcagZdzQ==
+X-Received: by 2002:a92:c549:0:b0:360:7937:6f7 with SMTP id a9-20020a92c549000000b00360793706f7mr570951ilj.3.1705689562493;
+        Fri, 19 Jan 2024 10:39:22 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id bf7-20020a056e02308700b0035fabab7985sm5669677ilb.21.2024.01.19.10.39.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jan 2024 10:39:21 -0800 (PST)
+Message-ID: <05ea3233-20dd-4af7-86cc-de11ad2efe84@kernel.dk>
+Date: Fri, 19 Jan 2024 11:39:20 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,281 +74,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/5] perf: util: use capstone disasm engine to show
- assembly instructions
 Content-Language: en-US
-To: Changbin Du <changbin.du@huawei.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
- Thomas Richter <tmricht@linux.ibm.com>, changbin.du@gmail.com,
- Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Ingo Molnar <mingo@redhat.com>
-References: <20240119104856.3617986-1-changbin.du@huawei.com>
- <20240119104856.3617986-3-changbin.du@huawei.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240119104856.3617986-3-changbin.du@huawei.com>
+To: LKML <linux-kernel@vger.kernel.org>,
+ "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>,
+ avier Martinez Canillas <javierm@redhat.com>, Helge Deller <deller@gmx.de>
+From: Jens Axboe <axboe@kernel.dk>
+Subject: REGRESSION: no console on current -git
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 19/01/24 12:48, Changbin Du wrote:
-> Currently, the instructions of samples are shown as raw hex strings
-> which are hard to read. x86 has a special option '--xed' to disassemble
-> the hex string via intel XED tool.
-> 
-> Here we use capstone as our disassembler engine to give more friendly
-> instructions. We select libcapstone because capstone can provide more
-> insn details. Perf will fallback to raw instructions if libcapstone is
-> not available.
-> 
-> The advantages compared to XED tool:
->  * Support arm, arm64, x86-32, x86_64 (more could be supported),
->    xed only for x86_64.
->  * Immediate address operands are shown as symbol+offs.
-> 
-> Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> ---
->  tools/perf/builtin-script.c  |   8 +--
->  tools/perf/util/Build        |   1 +
->  tools/perf/util/print_insn.c | 122 +++++++++++++++++++++++++++++++++++
->  tools/perf/util/print_insn.h |  14 ++++
->  4 files changed, 140 insertions(+), 5 deletions(-)
->  create mode 100644 tools/perf/util/print_insn.c
->  create mode 100644 tools/perf/util/print_insn.h
-> 
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index b1f57401ff23..4817a37f16e2 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -34,6 +34,7 @@
->  #include "util/event.h"
->  #include "ui/ui.h"
->  #include "print_binary.h"
-> +#include "print_insn.h"
->  #include "archinsn.h"
->  #include <linux/bitmap.h>
->  #include <linux/kernel.h>
-> @@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
->  	if (PRINT_FIELD(INSNLEN))
->  		printed += fprintf(fp, " ilen: %d", sample->insn_len);
->  	if (PRINT_FIELD(INSN) && sample->insn_len) {
-> -		int i;
-> -
-> -		printed += fprintf(fp, " insn:");
-> -		for (i = 0; i < sample->insn_len; i++)
-> -			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
-> +		printed += fprintf(fp, " insn: ");
+Hi,
 
-"insn:" seems unnecessary.  Also xed prints 2 tabs, which
-helps line up the output.  Perhaps 1 tab and 2 spaces is
-enough.
+My trusty R7525 test box is failing to show a console, or in fact anything,
+on current -git. There's no output after:
 
-> +		printed += sample__fprintf_insn_raw(sample, fp);
->  	}
->  	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
->  		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
-> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> index 988473bf907a..c33aab53d8dd 100644
-> --- a/tools/perf/util/Build
-> +++ b/tools/perf/util/Build
-> @@ -32,6 +32,7 @@ perf-y += perf_regs.o
->  perf-y += perf-regs-arch/
->  perf-y += path.o
->  perf-y += print_binary.o
-> +perf-y += print_insn.o
->  perf-y += rlimit.o
->  perf-y += argv_split.o
->  perf-y += rbtree.o
-> diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
-> new file mode 100644
-> index 000000000000..162be4856f79
-> --- /dev/null
-> +++ b/tools/perf/util/print_insn.c
-> @@ -0,0 +1,122 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Instruction binary disassembler based on capstone.
-> + *
-> + * Author(s): Changbin Du <changbin.du@huawei.com>
-> + */
-> +#include "print_insn.h"
+Loading Linux 6.7.0+ ...
+Loading initial ramdisk ...
 
-Please put with the other non-system includes
+and I don't get a console up. I went through the bisection pain and
+found this was the culprit:
 
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <stdbool.h>
-> +#include "util/debug.h"
+commit df67699c9cb0ceb70f6cc60630ca938c06773eda
+Author: Thomas Zimmermann <tzimmermann@suse.de>
+Date:   Wed Jan 3 11:15:11 2024 +0100
 
-util/ not needed
+    firmware/sysfb: Clear screen_info state after consuming it
 
-> +#include "util/symbol.h"
+Reverting this commit, and everything is fine. Looking at dmesg with a
+buggy kernel, I get no frame or fb messages. On a good kernel, it looks
+ilke this:
 
-util/ not needed
+[    1.416486] efifb: probing for efifb
+[    1.416602] efifb: framebuffer at 0xde000000, using 3072k, total 3072k
+[    1.416605] efifb: mode is 1024x768x32, linelength=4096, pages=1
+[    1.416607] efifb: scrolling: redraw
+[    1.416608] efifb: Truecolor: size=8:8:8:8, shift=24:16:8:0
+[    1.449746] fb0: EFI VGA frame buffer device
 
-> +#include "machine.h"
-> +
-> +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
-> +{
-> +	int printed = 0;
-> +
-> +	for (int i = 0; i < sample->insn_len; i++)
-> +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
+Happy to test a fix, or barring that, can someone just revert this
+commit please?
 
-Why change this to put a space on the end?
-
-> +	return printed;
-> +}
-> +
-> +#ifdef HAVE_LIBCAPSTONE_SUPPORT
-> +#include <capstone/capstone.h>
-> +
-> +static int capstone_init(struct machine *machine, csh *cs_handle)
-> +{
-> +	cs_arch arch;
-> +	cs_mode mode;
-> +
-> +	if (machine__is(machine, "x86_64")) {
-> +		arch = CS_ARCH_X86;
-> +		mode = CS_MODE_64;
-> +	} else if (machine__normalized_is(machine, "x86")) {
-> +		arch = CS_ARCH_X86;
-> +		mode = CS_MODE_32;
-> +	} else if (machine__normalized_is(machine, "arm64")) {
-> +		arch = CS_ARCH_ARM64;
-> +		mode = CS_MODE_ARM;
-> +	} else if (machine__normalized_is(machine, "arm")) {
-> +		arch = CS_ARCH_ARM;
-> +		mode = CS_MODE_ARM + CS_MODE_V8;
-> +	} else if (machine__normalized_is(machine, "s390")) {
-> +		arch = CS_ARCH_SYSZ;
-> +		mode = CS_MODE_BIG_ENDIAN;
-> +	} else {
-> +		return -1;
-> +	}
-> +
-> +	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
-> +		pr_warning_once("cs_open failed\n");
-> +		return -1;
-> +	}
-> +
-> +	cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-
-That's only needed for x86 isn't it
-
-> +	if (machine__normalized_is(machine, "x86"))
-> +		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
-
-Why? Could use a comment.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
-> +			     cs_insn *insn, FILE *fp)
-> +{
-> +	struct addr_location al;
-> +	size_t printed = 0;
-> +
-> +	if (insn->detail && insn->detail->x86.op_count == 1) {
-> +		cs_x86_op *op = &insn->detail->x86.operands[0];
-> +
-> +		addr_location__init(&al);
-
-Missing addr_location__exit()
-
-> +
-> +		if (op->type == X86_OP_IMM &&
-> +		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
-> +			printed += fprintf(fp, "%s ", insn[0].mnemonic);
-> +			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
-> +			return printed;
-> +		}
-> +	}
-> +
-> +	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> +	return printed;
-> +}
-> +
-> +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> +			    struct machine *machine, FILE *fp)
-> +{
-> +	static csh cs_handle;
-
-Why static?
-
-> +	cs_insn *insn;
-> +	size_t count;
-> +	size_t printed = 0;
-> +	int ret;
-> +
-> +	ret = capstone_init(machine, &cs_handle);
-
-Does this really need to be done every time?
-
-> +	if (ret < 0) {
-> +		/* fallback */
-> +		return sample__fprintf_insn_raw(sample, fp);
-> +	}
-> +
-> +	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
-> +			  sample->ip, 1, &insn);
-> +	if (count > 0) {
-> +		if (machine__normalized_is(machine, "x86"))
-> +			printed += print_insn_x86(sample, thread, &insn[0], fp);
-> +		else
-> +			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> +		cs_free(insn, count);
-> +	} else {
-> +		printed += fprintf(fp, "illegal instruction");
-> +	}
-> +
-> +	cs_close(&cs_handle);
-> +	return printed;
-> +}
-> +#else
-> +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread __maybe_unused,
-> +			    struct machine *machine __maybe_unused, FILE *fp)
-> +{
-> +	return sample__fprintf_insn_raw(sample, fp);
-> +}
-> +#endif
-> diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
-> new file mode 100644
-> index 000000000000..af8fa5d01fb7
-> --- /dev/null
-> +++ b/tools/perf/util/print_insn.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef PERF_PRINT_ISNS_H
-
-Here and elsewhere
-
-ISNS -> INSN
-
-> +#define PERF_PRINT_ISNS_H
-> +
-> +#include <stddef.h>
-> +#include <stdio.h>
-> +#include "event.h"
-> +#include "util/thread.h"
-
-Instead of including event.h and thread.h, just forward declare:
-
-struct perf_sample;
-struct thread;
-struct machine;
-
-> +
-> +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> +			    struct machine *machine, FILE *fp);
-> +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
-> +
-> +#endif /* PERF_PRINT_ISNS_H */
+-- 
+Jens Axboe
 
 
