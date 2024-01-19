@@ -1,187 +1,178 @@
-Return-Path: <linux-kernel+bounces-30898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F36F8325AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:23:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FE888325AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC1A6289E7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:23:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F22991C2260D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0C220B10;
-	Fri, 19 Jan 2024 08:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="c0Rmrfs7"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C54219E8;
+	Fri, 19 Jan 2024 08:23:59 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1CCDDD2
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 08:23:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69C1E28DA1;
+	Fri, 19 Jan 2024 08:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705652582; cv=none; b=GOmoN/RWjoyeNjl4a0t/rpT0MTgDuXxiGDQ8QExccAouyOgldgsLlcxqOYXjRZWhu0uaFpJ7r2pWy2TyxgdN9M5zE6yVJ8DO0wleTkow53JoQ+jaG0iy1MbYVLETbMwzrywlgiV5HVqOnRxn7UCPBAYWi9Fd8N9dg5ukxWxENJ4=
+	t=1705652639; cv=none; b=H4y1IyvTcnr8qESV1ZleZkIcvb4yi1HZ154bpjv6N+3y5cItJCaYXDzWXDRK+JjkCXd/o6THP4XKepUf+XiqSVYFaOKSlYRyzkAL0JIBnKVZnepZ6TtlnyySTV3TO64v9Om0+nfAlVwrTrNJ53inwb9O/EDhP/UuZGQ9T/YvAXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705652582; c=relaxed/simple;
-	bh=rNH5w9MEnm/L7pSlhbE5K6ub+H7WRRZ8uvcVydL82jQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JNlovcrNkdsigQrseAqNOLTOs/NJoiDX/0JbokpiGokIjuhJGoHMF8OhLAHALVVd/CeEVc0BJolVsumRpYSzI14UVPjIbgFYE7TXBd8WlTwX/GbCiIrr3MNHZDHRNmZ46+kTO9nSMu4FxLPxd0xfTQLzKESXG0v0O42XfH/7UTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=c0Rmrfs7; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e7e2e04f0so5375705e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 00:23:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705652579; x=1706257379; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7G8u3jZmSnI6t8T7vybwiOVPsXxP7J+QmNG1+oPGSI8=;
-        b=c0Rmrfs7K62dXC+q6wHSPktn5wUNm03WVZRFXinrc8s0vKAzTSyuK5+6IvQxtmfdJi
-         394z7WSgkr6fPzsVB+VWQcD97/snYcChI9MF10mal1AOK/3oGXXuD3OiVKvn8J0EMG0Q
-         plSgvILisaKj6zNK0EOapB4vJFcIlcH+gjWlRcT/weRUm/WJOk3UE7WNSEbXPwcQmJRV
-         XkZqTW6+66wwgy/ZpXctsGegnKm11CnzzUCtd7t91VrgCuf29UOm3zayKbQmAePgyl1x
-         5Q52sF6PlWRpUONKf+D8ArMbjHBlvstbMJ7PrRtxPwplZaGn+1jphghWM1Db6hQm6Vl+
-         L/yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705652579; x=1706257379;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7G8u3jZmSnI6t8T7vybwiOVPsXxP7J+QmNG1+oPGSI8=;
-        b=NjpPoky+3CXkO9kaig/JnvwL4wjZWQYjMHTo15N0xVbj4lyhG7ipWTSrj+BMVJyza+
-         AT/51VXDmKG5wzcJAjjBx57oze/69mAg49TJlI7fvhOnp8XxeeDAdA/02KR+Mb41E4eH
-         7o/nay4UYdff8XrPHhuh4ul6nazC5++ngssdoFQqWqpoGOMQ8RWI7GA5EvXn+GOHbdhh
-         llcibP8moLb9z69NaJvJ5RvusDnJ3TM5NJER3oi016uavXeRlTE9P3wcus8zgKd0ELnm
-         g7WIzkJ7k3SIqwyXgWZ0HGuEXV/HfaAFwucNDjmldV8bui2wu2jTZAaQQI0aT/+rd7+m
-         /BiQ==
-X-Gm-Message-State: AOJu0YyRHXavTz9n81Fg5OQQd1ofHrrxzF1WfMCbmPOUtlDaZZ/Bl+BC
-	Kmka64Gb72Tf0/1HW8lJpt6V5zys6rV5hCj0rXyTPri2t+412vRrIX5AQhXDm3PAN0nHI1RUHfG
-	ze180LTo2yfS4vr8q0M+lZKD8Ndr1kgWdESbu
-X-Google-Smtp-Source: AGHT+IEtwGqCg6+G8tWJ+B+4jKLxhzzARtXT4xjsqIeERHh1fxV6MbmzUNh4SeVxsqSRMXUDSrDp9LewThDiLbVF3PE=
-X-Received: by 2002:a05:600c:3414:b0:40e:88b3:8918 with SMTP id
- y20-20020a05600c341400b0040e88b38918mr1232159wmp.52.1705652578931; Fri, 19
- Jan 2024 00:22:58 -0800 (PST)
+	s=arc-20240116; t=1705652639; c=relaxed/simple;
+	bh=oxLHI2Fxb2xW9QYzUQqyOsGxScIpG5doLBa6JQmhwkY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hcJpfAQRSm+BITBs/mPgaVnp7PpRbu5MB6io8feWnTsYaLm0wFB9uLCCJ4Ri1tcZTtyoMzcthTDIxCqjb6ZkBcCjttmQf308ym2U4NrNZFogMKauKy0XECE1Q7MV39qMICL/5APnRcYvJNq/d/CxTSIjt7K0HYPbl0JLi1rDM7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDD18C433F1;
+	Fri, 19 Jan 2024 08:23:56 +0000 (UTC)
+Message-ID: <597292b3-8ef4-4202-a63f-a17ffb4bdd10@xs4all.nl>
+Date: Fri, 19 Jan 2024 09:23:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAAL3-=88exVfuL1Y-kvPNbsU+d-UTfDLFViWVObFLtbC4xueeA@mail.gmail.com>
- <20240118183546.418064-1-appsforartists@google.com> <da6f1483-1ae2-40b5-9c1e-684321e12288@endrift.com>
-In-Reply-To: <da6f1483-1ae2-40b5-9c1e-684321e12288@endrift.com>
-From: Brenton Simpson <appsforartists@google.com>
-Date: Fri, 19 Jan 2024 00:22:45 -0800
-Message-ID: <CAAL3-=-RRWyCbq_B=Lh7tnG2i3MOLL+2bqPOUS54oTC4+vVk_g@mail.gmail.com>
-Subject: Re: [PATCH] Input: xpad - add Lenovo Legion Go controllers
-To: Vicki Pfau <vi@endrift.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Hans de Goede <hdegoede@redhat.com>, 
-	Cameron Gutman <aicommander@gmail.com>, Erica Taylor <rickytaylor26@gmail.com>, 
-	Ismael Ferreras Morezuelas <swyterzone@gmail.com>, Jonathan Frederick <doublej472@gmail.com>, 
-	Matthias Benkmann <matthias.benkmann@gmail.com>, Matthias Berndt <matthias_berndt@gmx.de>, nate@yocom.org, 
-	Sam Lantinga <slouken@libsdl.org>, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, trivial@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH next v4 0/5] minmax: Relax type checks in min() and max().
+Content-Language: en-US, nl
+To: Jiri Slaby <jirislaby@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: David Laight <David.Laight@aculab.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Christoph Hellwig <hch@infradead.org>, "Jason A. Donenfeld"
+ <Jason@zx2c4.com>, linux-media <linux-media@vger.kernel.org>
+References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
+ <18c6df0d-45ed-450c-9eda-95160a2bbb8e@gmail.com>
+ <CAHk-=wjvM5KiQFpbPMPXH-DcvheNcPGj+ThNEJVm+QL6n05A8A@mail.gmail.com>
+ <650bdb23-0875-4e19-9e3e-82337da6da00@kernel.org>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <650bdb23-0875-4e19-9e3e-82337da6da00@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Thanks Vicki.  I didn't realize they were meant to be sorted.
+On 19/01/2024 08:14, Jiri Slaby wrote:
+> On 08. 01. 24, 19:19, Linus Torvalds wrote:
+>> On Mon, 8 Jan 2024 at 03:46, Jiri Slaby <jirislaby@gmail.com> wrote:
+>>>
+>>>     CPP [M] drivers/media/pci/solo6x10/solo6x10-p2m.i
+>>> real    0m45,002s
+>>>
+>>> $ git revert 867046cc7027703f60a46339ffde91a1970f2901
+>>>     CPP [M] drivers/media/pci/solo6x10/solo6x10-p2m.i
+>>> real    0m11,132s
+>>>
+>>> $ git revert 4ead534fba42fc4fd41163297528d2aa731cd121
+>>>     CPP [M] drivers/media/pci/solo6x10/solo6x10-p2m.i
+>>> real    0m3,711s
+>>
+>> Ouch. Yeah, that's unfortunate. There's a lot of nested nasty macro
+>> expansion there, but that timing is excessive.
+>>
+>> Sparse actually complains about that file:
+>>
+>>    drivers/media/pci/solo6x10/solo6x10-p2m.c:309:13: error: too long
+>> token expansion
+>>    drivers/media/pci/solo6x10/solo6x10-p2m.c:310:17: error: too long
+>> token expansion
+>>
+>> and while that is a sparse limitation, it's still interesting. Having
+>> that file expand to 122M is not ok.
+>>
+>> In this case, I suspect the right thing to do is to simply not use
+>> min()/max() in that header at all, but do something like
+>>
+>>    --- a/drivers/media/pci/solo6x10/solo6x10-offsets.h
+>>    +++ b/drivers/media/pci/solo6x10/solo6x10-offsets.h
+>>    @@ -56,2 +56,5 @@
+>>
+>>    +#define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
+>>    +#define MAX(X, Y) ((X) > (Y) ? (X) : (Y))
+>>    +
+>>     #define SOLO_MP4E_EXT_ADDR(__solo) \
+>>    @@ -59,4 +62,4 @@
+>>     #define SOLO_MP4E_EXT_SIZE(__solo) \
+>>    -     max((..),                               \
+>>    -         min(((..) - \
+>>    +     MAX((..),                               \
+>>    +         MIN(((..) - \
+>>                   ..), 0x00ff0000))
+>>    @@ -67,4 +70,4 @@
+>>     #define SOLO_JPEG_EXT_SIZE(__solo) \
+>>    -     max(..,                         \
+>>    -         min(..)
+>>    +     MAX(..,                         \
+>>    +         MIN(..)
+>>
+>> and avoid this issue.
+> 
+> So can someone pick up 20240113183334.1690740-1-aurelien@aurel32.net so that we are done with this? I see neither Hans, nor Linus got to take it yet.
 
-Would it be appropriate to add comments explaining the sorting?  The
-second stanza, in particular, is sorted by the IDs rather than
-lexicographically.  If someone sorted it naively, they'd end up with a
-bigger diff than expected.
+I replied here:
 
-It looks like a few others have escaped sorting; for instance,
-"Microsoft X-Box One Elite 2 pad" appears in the wrong place.
+https://lore.kernel.org/all/fd143cf8-5e3d-4d80-8b53-b05980558e45@xs4all.nl/
 
-If Dmitry wants to land this and then follow on with a sort + comment
-commit (or do that first and then rebase this on top), that would be
-great.  I can take a stab too if that's helpful.
+Either Linus can pick it up directly during the merge window, or it will
+appear in a media fixes PR once rc1 is released.
 
+Regards,
 
-On Thu, Jan 18, 2024 at 10:16=E2=80=AFPM Vicki Pfau <vi@endrift.com> wrote:
->
-> Hi Brenton,
->
-> On 1/18/24 10:35, Brenton Simpson wrote:
-> > The Lenovo Legion Go is a handheld gaming system, similar to a Steam De=
-ck.
-> > It has a gamepad (including rear paddles), 3 gyroscopes, a trackpad,
-> > volume buttons, a power button, and 2 LED ring lights.
-> >
-> > The Legion Go firmware presents these controls as a USB hub with variou=
-s
-> > devices attached.  In its default state, the gamepad is presented as an
-> > Xbox controller connected to this hub.  (By holding a combination of
-> > buttons, it can be changed to use the older DirectInput API.)
-> >
-> > This patch teaches the existing Xbox controller module `xpad` to bind t=
-o
-> > the controller in the Legion Go, which enables support for the:
-> >
-> > - directional pad,
-> > - analog sticks (including clicks),
-> > - X, Y, A, B,
-> > - start and select (or menu and capture),
-> > - shoulder buttons, and
-> > - rumble.
-> >
-> > The trackpad, touchscreen, volume controls, and power button are alread=
-y
-> > supported via existing kernel modules.  Two of the face buttons, the
-> > gyroscopes, rear paddles, and LEDs are not.
-> >
-> > After this patch lands, the Legion Go will be mostly functional in Linu=
-x,
-> > out-of-the-box.  The various components of the USB hub can be synthesiz=
-ed
-> > into a single logical controller (including the additional buttons) in
-> > userspace with [Handheld Daemon](https://github.com/hhd-dev/hhd), which
-> > makes the Go fully functional.
-> >
-> > Signed-off-by: Brenton Simpson <appsforartists@google.com>
-> > ---
-> >   drivers/input/joystick/xpad.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpa=
-d.c
-> > index f5c21565bb3c..ecfcea8740a0 100644
-> > --- a/drivers/input/joystick/xpad.c
-> > +++ b/drivers/input/joystick/xpad.c
-> > @@ -127,6 +127,7 @@ static const struct xpad_device {
-> >       u8 mapping;
-> >       u8 xtype;
-> >   } xpad_device[] =3D {
-> > +     { 0x17ef, 0x6182, "Lenovo Legion Controller for Windows", 0, XTYP=
-E_XBOX360 },
-> >       { 0x0079, 0x18d4, "GPD Win 2 X-Box Controller", 0, XTYPE_XBOX360 =
-},
-> >       { 0x03eb, 0xff01, "Wooting One (Legacy)", 0, XTYPE_XBOX360 },
-> >       { 0x03eb, 0xff02, "Wooting Two (Legacy)", 0, XTYPE_XBOX360 },
->
-> Please keep the items in this list sorted.
->
->  > @@ -459,6 +460,7 @@ static const signed short xpad_btn_paddles[] =3D {
-> >
-> >   static const struct usb_device_id xpad_table[] =3D {
-> >       { USB_INTERFACE_INFO('X', 'B', 0) },    /* Xbox USB-IF not-approv=
-ed class */
-> > +     XPAD_XBOX360_VENDOR(0x17ef),            /* Lenovo */
-> >       XPAD_XBOX360_VENDOR(0x0079),            /* GPD Win 2 controller *=
-/
-> >       XPAD_XBOX360_VENDOR(0x03eb),            /* Wooting Keyboards (Leg=
-acy) */
-> >       XPAD_XBOXONE_VENDOR(0x03f0),            /* HP HyperX Xbox One con=
-trollers */
->
-> Ditto here.
->
-> Dmitry will sometimes take patches and fix the sorting after they're
-> submitted so you might not to resubmit, but for future reference, this
-> list is intended to be sorted.
->
-> Vicki
+	Hans
+
+> 
+>> That said, I'm sure this thing exists to a smaller degree elsewhere. I
+>> wonder if we could simplify our min/max type tests.
+> I assume we don't care with solo fixed? Hans pointed out ath11k too. Even if there is size increase in the preproc file, I don't see much of compile time increase there.
+> 
+> thanks,
+
 
