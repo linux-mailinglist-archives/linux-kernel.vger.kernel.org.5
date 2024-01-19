@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-31093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AACF8328BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B688328BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C513F1F235B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:27:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B181C1F23635
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4154D11C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520DA4D111;
 	Fri, 19 Jan 2024 11:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O3nxEPkA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhJkk+cM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CCB4CDE3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C58A4CB4F;
 	Fri, 19 Jan 2024 11:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705663615; cv=none; b=TCv8J6qaiLCuvDyuD5rKbdYP5aAkzH5CY1SmFuES2fX/3Akw7NtEsXNAlGFCV/EpyDWbmC38xn8gx7AyOaD0ZWwyy2JS8Re8yhXL4wE8xxPZK56DFgQkWnUG4uSWWL7eBnoUTsT+4MBDjFof9KemzNpoAV60sEPBDuaiC2RMErE=
+	t=1705663615; cv=none; b=mMiBqZkbf4ThSVoO4OgvGE1trc91th3yvyQE16O6N6ACxayIDA9L1rdeFld214qdnud2BARAwkxDuPE4NA8aYnVLADMsIrcpuetXBhHpCFEHnienVOiAvX6uJz5fmuV69xTEFCv23DmcrH+EN7xmF+rDCyEFh8lZJhEcCWjV5kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705663615; c=relaxed/simple;
-	bh=HuYa0Hs5Af/qVxD25qBo9TBTPaafJMPziE92BqysBBA=;
+	bh=l7DGGpCso7bX08YQvGfXDvfIrpjxnzkTzOG8xe3VBVk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ChN4GSNM8P3eSqfFE9l7+zA8Nj0pIAahZol2XJkfR/VFazJKttYaTJ9lf+C+tdRvIX1QJshbhlKS+SrzrKIXRVlmXjy11ySRd9kX7ZCdbKb6+dChe9k1QJnCGZlKubK4J5eUMAXBU3KUHItjLTfzHaN8V8HlZB28HkxkUojNYjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O3nxEPkA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28949C433B2;
+	 MIME-Version; b=n1XnosuyqUw/57+D/NCmNMhVeETF/uX26unSt0YiBtqkrC1HyB3MVhTBMio2xd79ixV/8TJaVlNKnOQNQt0M2/oxORdKOT1injmp1F5zKIuDS5QDgo0ykaAbAVkF7GalNJt2NNGFTOBVL1PGCjoE8pjJkgUFmHQ6ZZBa9S1UeVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YhJkk+cM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22A93C433A6;
 	Fri, 19 Jan 2024 11:26:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705663615;
-	bh=HuYa0Hs5Af/qVxD25qBo9TBTPaafJMPziE92BqysBBA=;
+	bh=l7DGGpCso7bX08YQvGfXDvfIrpjxnzkTzOG8xe3VBVk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O3nxEPkA96L2O/NWjrzucPoxwhvHKV8dJJ77SyUattgWnQJGmC0BZiknQDuLdin16
-	 KzErDIsOJoMpmCI3lijwVL7Z5dHTJ0VfyjQjAtw43CX99KQYMvPUbEnSZQGJRiqMph
-	 Jvi0C3orFIfEwnwF8lpyUVk6acPb5cgoqfA1vigp6dL8eyXLorQ07wpci4/DJqCG7w
-	 vOZHcaKJqymR/pCEVqA5i6iancpP6k7+id8e+i4CkvbHFRgn/ltm9c3nIo8yuPZ3Rp
-	 xfus0YgQjQfSKZ1KO5JP4S3hcUH7fAH4BtnfKjXc/jr8HrmJH17fAbRqjL7AQqUVg3
-	 xxXOCKdrk3U7g==
+	b=YhJkk+cMaTlopP1irGiiDq13+a7TBtsEZ6otbU7M/ljnD1V55EZePRM0XtewkayqI
+	 UeyqWcv6XBo//CpsOZwirvLsTenlMeTkrtCq5RBz0m3/3MavweFxj46tRj0ADjKj3d
+	 2aYFpqtsrJs2973P54qVLkBGOjt4BhDhLSuAk8B+PEMpXz6ZDiJmjn867D1dLYq7rs
+	 7Qq56OAjruTuHV18kW0T0U5hhu4P+hodxMSfJbQmuunEBxbA+iAgyFVZbhwsi9fa85
+	 qMZgPi//RtVTz9TFUE5gc7viZH2lk2UINQbmIX349Lfd+KejHhSCNhdrph5rUardAc
+	 eVBmMXD2G+KvQ==
 Received: from johan by xi.lan with local (Exim 4.96.2)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1rQn1b-0001xL-2w;
-	Fri, 19 Jan 2024 12:27:03 +0100
+	id 1rQn1b-0001xN-3C;
+	Fri, 19 Jan 2024 12:27:04 +0100
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Mark Brown <broonie@kernel.org>
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -56,9 +56,9 @@ Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan+linaro@kernel.org>,
 	stable@vger.kernel.org
-Subject: [PATCH v4 2/4] ASoC: qcom: sc8280xp: limit speaker volumes
-Date: Fri, 19 Jan 2024 12:24:18 +0100
-Message-ID: <20240119112420.7446-3-johan+linaro@kernel.org>
+Subject: [PATCH v4 3/4] ASoC: codecs: lpass-wsa-macro: fix compander volume hack
+Date: Fri, 19 Jan 2024 12:24:19 +0100
+Message-ID: <20240119112420.7446-4-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20240119112420.7446-1-johan+linaro@kernel.org>
 References: <20240119112420.7446-1-johan+linaro@kernel.org>
@@ -70,51 +70,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The UCM configuration for the Lenovo ThinkPad X13s has up until now
-been setting the speaker PA volume to the minimum -3 dB when enabling
-the speakers, but this does not prevent the user from increasing the
-volume further.
+The LPASS WSA macro codec driver is updating the digital gain settings
+behind the back of user space on DAPM events if companding has been
+enabled.
 
-Limit the digital gain and PA volumes to a combined -3 dB in the machine
-driver to reduce the risk of speaker damage until we have active speaker
-protection in place (or higher safe levels have been established).
+As compander control is exported to user space, this can result in the
+digital gain setting being incremented (or decremented) every time the
+sound server is started and the codec suspended depending on what the
+UCM configuration looks like.
 
-Note that the PA volume limit cannot be set lower than 0 dB or
-PulseAudio gets confused when the first 16 levels all map to -3 dB.
+Soon enough playback will become distorted (or too quiet).
 
-Also note that this will probably need to be generalised using
-machine-specific limits, but a common limit should do for now.
+This is specifically a problem on the Lenovo ThinkPad X13s as this
+bypasses the limit for the digital gain setting that has been set by the
+machine driver.
 
-Cc: stable@vger.kernel.org	# 6.5
+Fix this by simply dropping the compander gain offset hack. If someone
+cares about modelling the impact of the compander setting this can
+possibly be done by exporting it as a volume control later.
+
+Note that the volume registers still need to be written after enabling
+clocks in order for any prior updates to take effect.
+
+Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
+Cc: stable@vger.kernel.org      # 5.11
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- sound/soc/qcom/sc8280xp.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/codecs/lpass-wsa-macro.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
-index ed4bb551bfbb..b7fd503a1666 100644
---- a/sound/soc/qcom/sc8280xp.c
-+++ b/sound/soc/qcom/sc8280xp.c
-@@ -32,12 +32,14 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
- 	case WSA_CODEC_DMA_RX_0:
- 	case WSA_CODEC_DMA_RX_1:
- 		/*
--		 * set limit of 0dB on Digital Volume for Speakers,
--		 * this can prevent damage of speakers to some extent without
--		 * active speaker protection
-+		 * Set limit of -3 dB on Digital Volume and 0 dB on PA Volume
-+		 * to reduce the risk of speaker damage until we have active
-+		 * speaker protection in place.
- 		 */
--		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
--		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
-+		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 81);
-+		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 81);
-+		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 17);
-+		snd_soc_limit_volume(card, "SpkrRight PA Volume", 17);
- 		break;
- 	default:
- 		break;
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index 7e21cec3c2fb..6ce309980cd1 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -1584,7 +1584,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 	u16 gain_reg;
+ 	u16 reg;
+ 	int val;
+-	int offset_val = 0;
+ 	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
+ 
+ 	if (w->shift == WSA_MACRO_COMP1) {
+@@ -1623,10 +1622,8 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
+ 					CDC_WSA_RX_PGA_HALF_DB_MASK,
+ 					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
+-			offset_val = -2;
+ 		}
+ 		val = snd_soc_component_read(component, gain_reg);
+-		val += offset_val;
+ 		snd_soc_component_write(component, gain_reg, val);
+ 		wsa_macro_config_ear_spkr_gain(component, wsa,
+ 						event, gain_reg);
+@@ -1654,10 +1651,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
+ 					CDC_WSA_RX_PGA_HALF_DB_MASK,
+ 					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
+-			offset_val = 2;
+-			val = snd_soc_component_read(component, gain_reg);
+-			val += offset_val;
+-			snd_soc_component_write(component, gain_reg, val);
+ 		}
+ 		wsa_macro_config_ear_spkr_gain(component, wsa,
+ 						event, gain_reg);
 -- 
 2.41.0
 
