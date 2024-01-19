@@ -1,109 +1,172 @@
-Return-Path: <linux-kernel+bounces-30873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 107BD832557
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:00:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EB72832559
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:01:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB6D028723B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:00:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2663C1F24BBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:01:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E54DDA1;
-	Fri, 19 Jan 2024 08:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C469AD53F;
+	Fri, 19 Jan 2024 08:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cs09mdNN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Tl/co0SH";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Tl/co0SH"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A061D684;
-	Fri, 19 Jan 2024 08:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8E0D52A
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 08:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705651207; cv=none; b=aoSFDCq+JvCS0D08CxrJcwqh57e9r1ft8IR0vFWjzgs5IyVKtUfaS+Gx4qJjpPnGFRY6PS9Xju9FqVpjygskwrf30GF8s7zV3ZHlFV77RUKrNnyCi47zyqbeONfJwR/YgQRz5OBPc9E+XXy6O1iHhFaJSEm11+pZL2KrR3f2wr0=
+	t=1705651250; cv=none; b=ZVTu3wqofvonfz/A56TVi+U/wviUEM1pP1CakTFnacoFOqxTUeAjlCI2ChkMt5YQ+sHGpoyfrwWZZLN2sz7nrEtxmpi1cDJwJwK1ptqIU7vUjJtHgX95FC77oiU6wE3M9q2LxGsfPk2q4MYySEEGwcqp7DKI4uywsPsveuPLG5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705651207; c=relaxed/simple;
-	bh=RvV+1/JImv/LsRuTBtSvKboMDVj2C5IRu1Y90h46cMw=;
+	s=arc-20240116; t=1705651250; c=relaxed/simple;
+	bh=lCFwSt1h+0zZ+bhtWR1K6DgWMDUvThVRcpsKI+6zjvE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jVL/fFlrzkS3GBxB+M3z9eK/37KajDbeF6a8GRAyEFdBllOGybbX4CBcj93ho4CmO5GAuIwaVHU5vwWUz7cmDrBNv8FclNSEqhNUNUd4TxT7ky0fWMEa3OZ7rXwFvyQhpsjAdPdskDZSEC1fvpp2UyDSZUcAMkc1/YociurkBvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cs09mdNN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 322C1C43390;
-	Fri, 19 Jan 2024 08:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705651207;
-	bh=RvV+1/JImv/LsRuTBtSvKboMDVj2C5IRu1Y90h46cMw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cs09mdNNXn/aACNvQqz5ULreJfjwPVRxn8+H6D39eaWB57CeeCyQAf3qFkJ0r0Co4
-	 gm/i6ZljCOGciBqfUaZas4CEgLSUgKNaBhTdX4h5xAAaWsWA2rmDjmQNCFdhr8iMwf
-	 aWklHr9uTSG/2DrbxsCHkqH38+bFyLHicrWVU/wIrSGqMKQSCSdB2WvlEqmFl9Hrk3
-	 o+tN/PTFdsXeV4PLrVtGf23hli2nVfpjAbvNHrlUgYS3J5OmxmlKnMXP2A15fwAQHc
-	 GCYzEIpv+Ol/iexkRvigJCVTZSKBBo32ifJM3DmayVuccwcQONNO+YODHiDCeKGzvF
-	 5aiJb63saaCqg==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rQjnT-0004Yp-2Z;
-	Fri, 19 Jan 2024 09:00:15 +0100
-Date: Fri, 19 Jan 2024 09:00:15 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] ASoC: codecs: wsa883x: lower default PA gain
-Message-ID: <ZaosD3N0MpYg9Fpo@hovoldconsulting.com>
-References: <20240118165811.13672-1-johan+linaro@kernel.org>
- <20240118165811.13672-3-johan+linaro@kernel.org>
- <63e000c7-deae-44df-8d82-a74ffe303e9a@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fj6MCTcd7SBAWWROzyB309RU+BXP/q9dw7Pimlc8lprseHjDjjwcjLvlAjWgxxx0p8bM8kjO7liA00oQJ2RdEXEmhAeQ5aL9XiGPL/CkrtClabqhrqK4IqHoQHOIQGNiWGtS4Efs6lS65FwrKyYc7ZPdsXo5UM8k9Q/cQgygW18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Tl/co0SH; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Tl/co0SH; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A6A802203C;
+	Fri, 19 Jan 2024 08:00:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705651244; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Bn5ufnHpA6Z9dfznXpVhdImFXiNotqxspeRNBGa/t/s=;
+	b=Tl/co0SHQk5Ek/hRvLDHlUdr7CyoF1wFwgMIQoYkkEHLVCPtFcCVdSxgvyJzgue3nf2WwE
+	n2VTmEXZWd19esIA+6d6l+IuZ68tHGqH0N3Q2LvsEHMgOD4u1pRaSoYfIfzzGqIG0Z7kTM
+	NbcHHeQVGPOMxTf2Wx0/w2v7NQqO9xs=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705651244; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Bn5ufnHpA6Z9dfznXpVhdImFXiNotqxspeRNBGa/t/s=;
+	b=Tl/co0SHQk5Ek/hRvLDHlUdr7CyoF1wFwgMIQoYkkEHLVCPtFcCVdSxgvyJzgue3nf2WwE
+	n2VTmEXZWd19esIA+6d6l+IuZ68tHGqH0N3Q2LvsEHMgOD4u1pRaSoYfIfzzGqIG0Z7kTM
+	NbcHHeQVGPOMxTf2Wx0/w2v7NQqO9xs=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8430E1388C;
+	Fri, 19 Jan 2024 08:00:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mMZMHSwsqmVaOQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Fri, 19 Jan 2024 08:00:44 +0000
+Date: Fri, 19 Jan 2024 09:00:43 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, ryan.roberts@arm.com,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2] mm: memory: move mem_cgroup_charge() into
+ alloc_anon_folio()
+Message-ID: <ZaosK59cRa27K9zW@tiehlicka>
+References: <20240117103954.2756050-1-wangkefeng.wang@huawei.com>
+ <ZalK3suIskEyaR7m@tiehlicka>
+ <c7b1cc8e-c434-4c86-972e-4a105524646c@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <63e000c7-deae-44df-8d82-a74ffe303e9a@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c7b1cc8e-c434-4c86-972e-4a105524646c@huawei.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [2.43 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(2.03)[89.10%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: **
+X-Spam-Score: 2.43
+X-Spam-Flag: NO
 
-On Fri, Jan 19, 2024 at 07:15:33AM +0000, Srinivas Kandagatla wrote:
+On Fri 19-01-24 10:05:15, Kefeng Wang wrote:
 > 
 > 
-> On 18/01/2024 16:58, Johan Hovold wrote:
-> > The default PA gain is set to a pretty high level of 15 dB. Initialise
-> > the register to the minimum -3 dB level instead.
+> On 2024/1/18 23:59, Michal Hocko wrote:
+> > On Wed 17-01-24 18:39:54, Kefeng Wang wrote:
+> > > mem_cgroup_charge() uses the GFP flags in a fairly sophisticated way.
+> > > In addition to checking gfpflags_allow_blocking(), it pays attention
+> > > to __GFP_NORETRY and __GFP_RETRY_MAYFAIL to ensure that processes within
+> > > this memcg do not exceed their quotas. Using the same GFP flags ensures
+> > > that we handle large anonymous folios correctly, including falling back
+> > > to smaller orders when there is plenty of memory available in the system
+> > > but this memcg is close to its limits.
 > > 
-> > This is specifically needed to allow machine drivers to use the lowest
-> > level as a volume limit.
-> > 
-> > Cc: stable@vger.kernel.org      # 6.5
-> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> > ---
-> >   sound/soc/codecs/wsa883x.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
-> > index 32983ca9afba..8942c88dee09 100644
-> > --- a/sound/soc/codecs/wsa883x.c
-> > +++ b/sound/soc/codecs/wsa883x.c
-> > @@ -722,7 +722,7 @@ static struct reg_default wsa883x_defaults[] = {
-> >   	{ WSA883X_WAVG_PER_6_7, 0x88 },
-> >   	{ WSA883X_WAVG_STA, 0x00 },
-> >   	{ WSA883X_DRE_CTL_0, 0x70 },
-> > -	{ WSA883X_DRE_CTL_1, 0x08 },
+> > The changelog is not really clear in the actual problem you are trying
+> > to fix. Is this pure consistency fix or have you actually seen any
+> > misbehavior. From the patch I suspect you are interested in THPs much
+> > more than regular order-0 pages because those are GFP_KERNEL like when
+> > it comes to charging. THPs have a variety of options on how aggressive
+> > the allocation should try. From that perspective NORETRY and
+> > RETRY_MAYFAIL are not all that interesting because costly allocations
+> > (which THPs are) already do imply MAYFAIL and NORETRY.
 > 
-> this is hw default value.
+> I don't meet actual issue, it founds from code inspection.
+> 
+> mTHP is introduced by Ryan（19eaf44954df "mm: thp: support allocation of
+> anonymous multi-size THP")，so we have similar check for mTHP like PMD THP
+> in alloc_anon_folio(), it will try to allocate large order folio below
+> PMD_ORDER, and fallback to order-0 folio if fails, meanwhile,
+> it get GFP flags from vma_thp_gfp_mask() according to user configuration
+> like PMD THP allocation, so
+> 
+> 1) the memory charge failure check should be moved into fallback
+> logical, because it will make us to allocated as much as possible large
+> order folio, although the memcg's memory usage is close to its limits.
+> 
+> 2) using seem GFP flags for allocate/mem charge, be consistent with PMD
+> THP firstly, in addition, according to GFP flag returned for
+> vma_thp_gfp_mask(), GFP_TRANSHUGE_LIGHT could make us skip direct reclaim,
+> _GFP_NORETRY will make us skip mem_cgroup_oom and won't kill
+> any progress from large order folio charging.
 
-Indeed. This was a last minute change when I noticed I could actually
-set the lowest limit in the machine driver after I offset it, but then
-the reset value was never updated. Didn't think this through.
+OK, makes sense. Please turn that into the changelog.
 
-> > +	{ WSA883X_DRE_CTL_1, 0x1e },
-> >   	{ WSA883X_DRE_IDLE_DET_CTL, 0x1F },
-> >   	{ WSA883X_CLSH_CTL_0, 0x37 },
-> >   	{ WSA883X_CLSH_CTL_1, 0x81 },
+> > GFP_TRANSHUGE_LIGHT is more interesting though because those do not dive
+> > into the direct reclaim at all. With the current code they will reclaim
+> > charges to free up the space for the allocated THP page and that defeats
+> > the light mode. I have a vague recollection of preparing a patch to
+> 
+> We are interesting to GFP_TRANSHUGE_LIGHT and _GFP_NORETRY as mentioned
+> above.
 
-Johan
+if mTHP can be smaller than COSTLY_ORDER then you are correct and
+NORETRY makes a difference. Please mention that in the changelog as
+well.
+
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
 
