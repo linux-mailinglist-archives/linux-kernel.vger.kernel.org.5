@@ -1,160 +1,149 @@
-Return-Path: <linux-kernel+bounces-31016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 472FB832796
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:24:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15C6B83279B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:24:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB87F1F23F5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:23:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 430561C23640
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED8D3CF5F;
-	Fri, 19 Jan 2024 10:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C323C6BC;
+	Fri, 19 Jan 2024 10:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bHdhVAUY"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tUnyka1z"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9114136138;
-	Fri, 19 Jan 2024 10:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C352D3C693;
+	Fri, 19 Jan 2024 10:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705659785; cv=none; b=QqZyX0yH3h2NPvtW/52YZBlOUpEGHFt7Hbo6NAWCpef1qZ/z90ANCD3bSC3jkp/yhojb9RrdGm8ygqRV0QxI21akn5ELWjKiCm3sWnO8g3VdPG6u4xVvoRH29cbVXfENVvXbtIIzul68hgaacOjkjHw/j8UYBm/BGd2IWY07+sw=
+	t=1705659875; cv=none; b=Ee9QJKCx0km0WBg/+7oI1oSGStf+tMf6QhHFMFMYAENUl6h13upBsyIsJhwVr6A+vtMnRYeKXAvmrsoCc3Vp7OOdcGt51oiZObO19yvwiB9NHHOty+Y5WHB0q8Rj7qQWX0ddWLLXHFAoh5Z/Bssy1LRX/3fgUbrpoDppoTNkRfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705659785; c=relaxed/simple;
-	bh=+J0CO6a+MEvtWB8JYt98J+05IRCxT9Ub3fmh88Ph2k0=;
+	s=arc-20240116; t=1705659875; c=relaxed/simple;
+	bh=1JTZbN5qh9CT0H6mxkpOji2eqTwX6brav/2vU7IADqY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GE6VUDHue2PN98z/hocl1TZSUy9jM5Q6KW6NoIpmyupWYgpilRJVCMrxKeltp/hkrgiGMiqsgzskjc9ca7XMSggLrvh3qMzoSOvBsEWRb1vivCX86y6LKowiDGCWGYvSU9hQf56YX+i4ta/pT66WHVwtMdSo6leaD7hLoIZunZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bHdhVAUY; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705659784; x=1737195784;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=+J0CO6a+MEvtWB8JYt98J+05IRCxT9Ub3fmh88Ph2k0=;
-  b=bHdhVAUYEMaywkz8qq1gVtwFb7OeOEInePgboy9jkDOdK9OKrMDp4JQG
-   G0Kq8zzaFah3Vj2ayi1LyrINTx00Azehkc3PEUV+qPJOMAyp9gRuX7ea4
-   0jZcuQ1Yy2PNit0iy6Vn3qiiFyRWu80dzu9GnC02QBun1CcxogBI0foau
-   lAwGcFj5wkPdpfru+EChHHUxYGrk3DXbcWnsVSLBkWE23/AsIjtWhY4Yu
-   VGRgRt0qgYysqz0XfPYlt1LRkkygkVbFzd5b3Ll//Q4kIppxasJGKtCKU
-   1Yomuw7sn90ErdHZBD8g33+nreMaorPJ7ptOWEam61FJ/ZAJZvIVxwBNL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="8088412"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="8088412"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 02:23:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="928370826"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="928370826"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2024 02:23:00 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id 0DF5CE3; Fri, 19 Jan 2024 12:22:58 +0200 (EET)
-Date: Fri, 19 Jan 2024 12:22:58 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Esther Shimanovich <eshimanovich@chromium.org>,
-	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <20240119102258.GE2543524@black.fi.intel.com>
-References: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
- <20231228132517.GA12586@wunner.de>
- <20231228133949.GG2543524@black.fi.intel.com>
- <CA+Y6NJFQq39WSSwHwm37ZQV8_rwX+6k5r+0uUs_d1+UyGGLqUw@mail.gmail.com>
- <20240118060002.GV2543524@black.fi.intel.com>
- <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
- <ZalOCPrVA52wyFfv@google.com>
- <20240119053756.GC2543524@black.fi.intel.com>
- <20240119074829.GD2543524@black.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mmileMnakmbfjnRHiA5qOMQzPS7IV5Tp1e+w4owR/fC5Iis8Vr0HpnchHRm6A1PbevdKLFONqWS2fZS/kWUMzCFYOKybaLxqcSLONYvYFgWxWMFKBd3NR8fBlEs/nq6Vml0Z/PNRvnPdwzJreuHI7f2EJ2umvdOJoGahlMttOE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tUnyka1z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ABBAC433F1;
+	Fri, 19 Jan 2024 10:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705659875;
+	bh=1JTZbN5qh9CT0H6mxkpOji2eqTwX6brav/2vU7IADqY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=tUnyka1zdEsMcGr0V3gN/gUgHN0bguQ9TLw7nUFX/7fn6ybsx1BktWgGc0xNHLjl/
+	 SvRzF8Gq9PfNJd02epxrJ5++PeV1VC6ajBQVcQIhd5Mm5mQIdnbWFm91ITdtFWfizo
+	 yEBab6oTUeAjecNq/BAOSY7N2fjEY1/BOOrTNHDLqg9Z0Fd3hA5ZJrIAXiAZoKqZ9U
+	 UqjZexiv/FLTaQStfc2v5R2bv0AFx169ErX7s2LMSPofJqGgOXxJr9GPH4cz+vEHoF
+	 t8YN+FLBrbJjDWDEJu7rhvsz1ITB76G7ZUqCw2DrKZ9nspCJ8XbpA5G+5v11U7kgzU
+	 HZwj1KeVkRZjw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C29F2CE114A; Fri, 19 Jan 2024 02:24:34 -0800 (PST)
+Date: Fri, 19 Jan 2024 02:24:34 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
+	Ryan Phillips <rphillips@redhat.com>,
+	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Alex Gladkov <agladkov@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>, Phil Auld <pauld@redhat.com>,
+	Paul Gortmaker <paul.gortmaker@windriver.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
+ partitions
+Message-ID: <ad806d7c-91ec-4659-9348-1b0bb42dd417@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240117163511.88173-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240119074829.GD2543524@black.fi.intel.com>
+In-Reply-To: <20240117163511.88173-1-longman@redhat.com>
 
-On Fri, Jan 19, 2024 at 09:48:29AM +0200, Mika Westerberg wrote:
-> On Fri, Jan 19, 2024 at 07:37:56AM +0200, Mika Westerberg wrote:
-> > On Thu, Jan 18, 2024 at 08:12:56AM -0800, Dmitry Torokhov wrote:
-> > > On Thu, Jan 18, 2024 at 09:47:07AM -0600, Mario Limonciello wrote:
-> > > > On 1/18/2024 00:00, Mika Westerberg wrote:
-> > > > > > Before my patch, you see that the JHL6540 controller is inaccurately
-> > > > > > labeled “removable”:
-> > > > > > $ udevadm info -a -p /sys/bus/pci/devices/0000:05:00.0 | grep -e
-> > > > > > {removable} -e {device} -e {vendor} -e looking
-> > > > > >    looking at device '/devices/pci0000:00/0000:00:1d.4/0000:05:00.0':
-> > > > > >      ATTR{device}=="0x15d3"
-> > > > > >      ATTR{removable}=="removable"
-> > > > > >      ATTR{vendor}=="0x8086"
-> > > > > 
-> > > > > This is actually accurate. The Thunderbolt controller is itself
-> > > > > hot-removable and that BTW happens to be hot-removed when fwupd applies
-> > > > > firmware upgrades to the device.
-> > > 
-> > > This is quite interesting take. Does fwupd rip the controller out of the
-> > > box to update it? By that account your touchpad is also removable as it
-> > > may stop functioning when its firmware gets updated.
-> > 
-> > The Thunderbolt controller is connected to a hotpluggable PCIe root port
-> > so it will be dissappear from the userspace so that "removable" in that
-> > sense is accurate.
+On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
+> This patch series is based on the RFC patch from Frederic [1]. Instead
+> of offering RCU_NOCB as a separate option, it is now lumped into a
+> root-only cpuset.cpus.isolation_full flag that will enable all the
+> additional CPU isolation capabilities available for isolated partitions
+> if set. RCU_NOCB is just the first one to this party. Additional dynamic
+> CPU isolation capabilities will be added in the future.
 > 
-> There are systems as well where the Thunderbolt (and/or xHCI) controller
-> only appears if there is anything plugged to the physical Type-C ports
-> and it gets removed pretty soon after the physical device gets
-> unplugged. These are also the same Alpine Ridge and Titan Ridge
-> controllers that this patch is dealing with.
+> The first 2 patches are adopted from Federic with minor twists to fix
+> merge conflicts and compilation issue. The rests are for implementing
+> the new cpuset.cpus.isolation_full interface which is essentially a flag
+> to globally enable or disable full CPU isolation on isolated partitions.
+> On read, it also shows the CPU isolation capabilities that are currently
+> enabled. RCU_NOCB requires that the rcu_nocbs option be present in
+> the kernel boot command line. Without that, the rcu_nocb functionality
+> cannot be enabled even if the isolation_full flag is set. So we allow
+> users to check the isolation_full file to verify that if the desired
+> CPU isolation capability is enabled or not.
 > 
-> I tried to think about some sort of more generic heuristic how to figure
-> out that the controller is actually inside the physical system but there
-> is a problem that the same controller can appear on the bus as well, eg.
-> you plug in Thunderbolt dock and that one has xHCI controller too. That
-> device should definitely be "removable". With the "software CM" systems
-> we have a couple of additional hints in the ACPI tables that can be used
-> to identify the "tunneled" ports but this does not apply to the older
-> systems I'm afraid.
+> Only sanity checking has been done so far. More testing, especially on
+> the RCU side, will be needed.
 
-The below "might" work:
+There has been some discussion of simplifying the (de-)offloading code
+to handle only offline CPUs.  Along with some discussion of eliminating
+the (de-)offloading capability altogehter.
 
-1. A device that is directly behind a PCIe root or downstream port that
-   has ->external_facing == 1.
+We clearly should converge on the capability to be provided before
+exposing this to userspace.  ;-)
 
-2. It is a PCIe endpoint.
+							Thanx, Paul
 
-3. It is a sibling to or has any of the below PCI IDs (see
-   drivers/thunderbolt/nhi.h for the definitions):
-
-   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_4C_NHI
-   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_2C_NHI
-   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_LP_USBONLY_NHI
-   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_USBONLY_NHI
-   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_USBONLY_NHI
-   PCI_DEVICE_ID_INTEL_TITAN_RIDGE_2C_NHI
-   PCI_DEVICE_ID_INTEL_TITAN_RIDGE_4C_NHI
-
-   And for all USB4 we can use the PCI class:
-
-   PCI_CLASS_SERIAL_USB_USB4
-
-(4. With USB4 systems we could also add the check that the device is not
-below the tunneled PCIe ports but that's kind of redundant).
-
-I think this covers the existing devices as well as future discrete USB4
-controllers and marks both the NHI and the xHCI as "fixed" which we
-could also use to lift the bounce buffering restriction from them.
-
-@Mario, did I miss anything?
+> [1] https://lore.kernel.org/lkml/20220525221055.1152307-1-frederic@kernel.org/
+> 
+> Frederic Weisbecker (2):
+>   rcu/nocb: Pass a cpumask instead of a single CPU to offload/deoffload
+>   rcu/nocb: Prepare to change nocb cpumask from CPU-hotplug protected
+>     cpuset caller
+> 
+> Waiman Long (6):
+>   rcu/no_cb: Add rcu_nocb_enabled() to expose the rcu_nocb state
+>   cgroup/cpuset: Better tracking of addition/deletion of isolated CPUs
+>   cgroup/cpuset: Add cpuset.cpus.isolation_full
+>   cgroup/cpuset: Enable dynamic rcu_nocb mode on isolated CPUs
+>   cgroup/cpuset: Document the new cpuset.cpus.isolation_full control
+>     file
+>   cgroup/cpuset: Update test_cpuset_prs.sh to handle
+>     cpuset.cpus.isolation_full
+> 
+>  Documentation/admin-guide/cgroup-v2.rst       |  24 ++
+>  include/linux/rcupdate.h                      |  15 +-
+>  kernel/cgroup/cpuset.c                        | 237 ++++++++++++++----
+>  kernel/rcu/rcutorture.c                       |   6 +-
+>  kernel/rcu/tree_nocb.h                        | 118 ++++++---
+>  .../selftests/cgroup/test_cpuset_prs.sh       |  23 +-
+>  6 files changed, 337 insertions(+), 86 deletions(-)
+> 
+> -- 
+> 2.39.3
+> 
 
