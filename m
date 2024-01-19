@@ -1,134 +1,148 @@
-Return-Path: <linux-kernel+bounces-31334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B305B832CB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:02:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A399832CBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:03:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 434DDB2446E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:02:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8565E1F24003
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F16B54F87;
-	Fri, 19 Jan 2024 16:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0AB554BFA;
+	Fri, 19 Jan 2024 16:03:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NcJYriy7"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Rzefv25D"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FEE54BEF;
-	Fri, 19 Jan 2024 16:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6FD4EB4C
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 16:03:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705680153; cv=none; b=LgZY6eqqbxsYq+JdlWTU8i+A6xHdMPyBKpbIpOJDDSFED+sHtuGbDPrUIBOqVw6OBRubibnuUXhy6URQT1eB8izGBKrjtRPdyW7m356LTN5F1+w7qMoIbgeYdC/wJL72vsOPpzd+Rs0/JwwTEtA8rSOUOHwX7lMtVbQItU6Bhw8=
+	t=1705680214; cv=none; b=iml20OrqSoVfErC8xDKkiZL1bDbj11HmvIRzoIoo2evD/7dAXriRVBLEvvQarz7esL5jbTFhB/51S3z7a5tpLm/bT+xJiThFCjSSxxvVEpV5mb825PS9y/IeAHoDoAg0n3Xw+4bd3GF8v++vFl6kPxemJhakf/PFuBELsDuBOqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705680153; c=relaxed/simple;
-	bh=OBALHD6dMCTH8DfGXAMz3ycEswsgVRPYGo911qlJ3vI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pqEv/LbQOAt9FyK2dt2ZhbNhBb3HxTgzOe1H+Ho12GOQjjBPcRhIDuh7ydCWeCA9DFxvwn/REFMB9GuujGHsJUNE0/LkOibuq7RPDbCfOR992siA75V4dP98KWwBCXAtW7CDOFnDJgvWJVJp298AI36atJyaEe3V6HaH8yp5RYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NcJYriy7; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40ea045f29eso5066915e9.1;
-        Fri, 19 Jan 2024 08:02:32 -0800 (PST)
+	s=arc-20240116; t=1705680214; c=relaxed/simple;
+	bh=bcLvwWccNAWsUiEj7IX0uRHJeNmfTZEkM9hsx1PnbHU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QK2GqH53w6aJHtiZHN9ieb+T3zmIXU5CYOu4mCC0aBcrcWN55vOnJYiXYrhFwt6TUXJ0No6/BnN0PsQoEBv+Y6GNd9W6a1Q9oCb2yKfpXwokCOpYtHm1LeeeTX6k/jfm5sWIzjQT1Sk09bGjvrmbyIZhykWRHxirN+4AmcFISWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Rzefv25D; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4b7480a80ceso1213199e0c.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 08:03:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705680150; x=1706284950; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PNhgjieyuAkb21sM/cZK8/j108ZNnyV1mN/DwFWKB88=;
-        b=NcJYriy7rWffU/IOtM/6RyBtYT0cq2dFtzIb6E/GOsifM4+fQGyNpIQWo+LmIVO+AY
-         /jctU+Jn5+RKH7kkXckNRQkp7xQ/EEb2SOXEWFkxix726IyqP1IAxAV8yUp+UzpYC235
-         u0XpEJLkSi0uAVkdNQV55xSQd+U5YT9v60Oi5TDoHQNCaSmBX5tAMQzBXmG+eBqzRNjt
-         H5KnXgOeQWqZAuDspIi9h9urX69yqQ6ECIj/7kf6z2gYgCTsIUbuZNNWo5IVHqc4ggww
-         S2AL+eLKHjmtrIo771tZ+IxJKBWCAxZ07zIxFg6f840+lPSeaI3WKAAC+mXes9Ejr5fT
-         kwHw==
+        d=chromium.org; s=google; t=1705680211; x=1706285011; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QC2wn1ghIRgJ17BldXRyobqgCTNz3OsOecAZdsiLq84=;
+        b=Rzefv25DSSBOFwICV9pImVfp1vGwQli3ewR/gkcYOSDj2aOYOOeYil9Zrd9zam8IS0
+         Bst9nsXENoBtTqmdy6mRFFDkD4VPpuX9eO8X0N0MPcC0k+8akyZF/hOKROycQ3UZPo91
+         MleZmAOnjP3NNmr+rRFP+lPcNQHWMDtEp7nhk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705680150; x=1706284950;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PNhgjieyuAkb21sM/cZK8/j108ZNnyV1mN/DwFWKB88=;
-        b=FI/RigAhauFLsmd1UnbEB+EXQtMRmYZOSPlu22fw6RQ6EtuM6u8ci3pEfwNxWsLUEq
-         Wx/PbLyT2pYxeAI9OO45FErPMV4ZSUCTxPRq6RX4BM47qRQalNgNOgjd6tg3lu2wiinP
-         qDdvoJQT8iULEqn8O42V79A+siqTbjjvJCI8Lav+P7qTgiXVKwHGt/vU7+erb1QG+qc5
-         4xBbvYuXbfgjI006dyd+EZavUzLc422kh7vnyc1rSDCioM4t/aHHElPSWYnIzNakS6wE
-         rpRarwtZhZw1vpnRdKf5GfipIpzIAwRyxYbgyOWrK6OAn570EZqjxcbFRFqsVq7WEvTW
-         YiBQ==
-X-Gm-Message-State: AOJu0YwF2saWOPny6EijwXfaYAHArcm9FD1M5JhC8nE9JDZF+QycSjhi
-	YqbiZE8OiyXGVs3yBMRSBFkdGz0cbKI2qFm9TAEUlRJEUZ2sC5jv8RSuveff
-X-Google-Smtp-Source: AGHT+IH17xwS+VX7IP2KqqJdqwz/V7lQvx/CZzlQo7ZH6AJMSviV4KcM64dg3YVsL3j85kegIeTPUg==
-X-Received: by 2002:a05:600c:6988:b0:40e:632d:d6c with SMTP id fp8-20020a05600c698800b0040e632d0d6cmr1652628wmb.113.1705680150367;
-        Fri, 19 Jan 2024 08:02:30 -0800 (PST)
-Received: from localhost.localdomain (ip-94-112-167-15.bb.vodafone.cz. [94.112.167.15])
-        by smtp.gmail.com with ESMTPSA id n18-20020a05600c3b9200b0040e4ca7fcb4sm29631823wms.37.2024.01.19.08.02.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 08:02:29 -0800 (PST)
-From: Ilya Dryomov <idryomov@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: ceph-devel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph fixes for 6.8-rc1
-Date: Fri, 19 Jan 2024 17:02:08 +0100
-Message-ID: <20240119160212.1466841-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1705680211; x=1706285011;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QC2wn1ghIRgJ17BldXRyobqgCTNz3OsOecAZdsiLq84=;
+        b=IhN0g8gPh2QmBZgyVwv89uyx+Db247cQ9UIDo10WhdUDWCBX04cOF9F3sR4iAz8Gta
+         H3CH42ka07heDE+saxFMeCUyXKxxafOhf9tLo385elI+rh0/1S39KTPNn8I68nGPC+LG
+         49foNngnIYTKtfIH0cH6rL80PLbV7hu+Z8cPN5FSkDn8/5Fn9unZ8DA2qVxY5Sun+MFD
+         J5rECIOTX+1IZeBRAeCQBsIwCARFfE6GG9TzfFcT658RV25Ctxsgond8T398dsucpxLm
+         XjO7w85Da1lOezEafiCZSi+IaxxPexC50RPHCL7DR3pwc0rSuM1cJ25X7cC8KdJ437yd
+         7X5g==
+X-Gm-Message-State: AOJu0Yz7x2vvbp9QU8r2CU6BQ9Q3LPBd0F9jb734MCQsCoXLKQMNm+nP
+	DCCOJ+IaEnCDU9s76PmZqzmQIBUSkS5OkB3hiRUrwPxckwAeAgn8/I8zeNmPdOOkitWA1KHmjq/
+	C/ZsES1atGtBSdjqwHvw8KuA2GnUVqDyLaI0U
+X-Google-Smtp-Source: AGHT+IGhC1DkuAVOHUbGsqhAv7kRl/8FPFEepErLnioMEXwPe0+Fk3F00JapWbWMLrHATAzVnIMljAIDoOit0HtstHQ=
+X-Received: by 2002:a05:6122:2224:b0:4bb:3b8:afbd with SMTP id
+ bb36-20020a056122222400b004bb03b8afbdmr194770vkb.0.1705680211307; Fri, 19 Jan
+ 2024 08:03:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
+ <20231228132517.GA12586@wunner.de> <20231228133949.GG2543524@black.fi.intel.com>
+ <CA+Y6NJFQq39WSSwHwm37ZQV8_rwX+6k5r+0uUs_d1+UyGGLqUw@mail.gmail.com>
+ <20240118060002.GV2543524@black.fi.intel.com> <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
+ <ZalOCPrVA52wyFfv@google.com> <20240119053756.GC2543524@black.fi.intel.com>
+ <20240119074829.GD2543524@black.fi.intel.com> <20240119102258.GE2543524@black.fi.intel.com>
+In-Reply-To: <20240119102258.GE2543524@black.fi.intel.com>
+From: Esther Shimanovich <eshimanovich@chromium.org>
+Date: Fri, 19 Jan 2024 11:03:18 -0500
+Message-ID: <CA+Y6NJHhTaroqJKEvOebRvbTdgkxW8tqFvq5MrOVE9swmwmtOw@mail.gmail.com>
+Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Mario Limonciello <mario.limonciello@amd.com>, Lukas Wunner <lukas@wunner.de>, 
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Thu, Jan 18, 2024 at 1:01=E2=80=AFAM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> Well that's pretty much all Intel Titan Ridge and Maple Ridge based
+> systems. Some early ones did not use IOMMU but all the rest do.
+..
+> Before Intel Ice Lake it was all discrete and it is still discrete with
+> the Barlow Ridge controller who will have exact same ExternalFacing port
+> as the previous models.
 
-The following changes since commit 0dd3ee31125508cd67f7e7172247f05b7fd1753a:
+Next week I'll try those devices in our inventory to see if I can find
+another one with this bug. I'll get back to you on that!
 
-  Linux 6.7 (2024-01-07 12:18:38 -0800)
+On Fri, Jan 19, 2024 at 2:58=E2=80=AFAM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> Now if I understand the reason behind this patch is actually not about
+> "removability" that much than about identifying a trusted vs. untrusted
+> device and attaching a driver to those. I was under impression that
+> there is already a solution to this in ChromeOS kernel. It has an
+> allowlist of drivers that are allowed to attach these devices and that
+> includes the PCIe port drivers, xhci_hcd and the thunderbolt driver,
+> possibly something else too. Is this not working for your case?
 
-are available in the Git repository at:
+This device shouldn=E2=80=99t be treated as a removable thunderbolt device
+that is enabled by policy because it is an internal device that should
+be trusted in the first place.
+Even so, while learning about this problem I tried modifying the
+ChromeOS policy but it ended up not fixing the issue because it seems
+like there is an expectation for it to see an existing =E2=80=9Cfixed=E2=80=
+=9D
+thunderbolt port before it loads anything else. But the fixed
+thunderbolt port is prevented from enumerating during bootup, before
+the policy has a chance to work.
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-6.8-rc1
+On Fri, Jan 19, 2024 at 5:23=E2=80=AFAM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> The below "might" work:
+>
+> 1. A device that is directly behind a PCIe root or downstream port that
+>    has ->external_facing =3D=3D 1.
+>
+> 2. It is a PCIe endpoint.
+>
+> 3. It is a sibling to or has any of the below PCI IDs (see
+>    drivers/thunderbolt/nhi.h for the definitions):
 
-for you to fetch changes up to 2a965d1b15d28065b35ab4ebd1e51558fcd91aa5:
+External pci devices seem to have the same kinds of chips in them. So
+this wouldn=E2=80=99t distinguish the =E2=80=9Cfixed but discrete=E2=80=9D =
+embedded pci
+devices from the =E2=80=9Cremovable=E2=80=9D pcie through usb devices. My m=
+onitor with
+thunderbolt capabilities has the JHL7540 chip in it. From the kernel's
+perspective, I have only found that the subsystem id is what
+distinguishes these devices.
 
-  ceph: get rid of passing callbacks in __dentry_leases_walk() (2024-01-15 15:54:54 +0100)
-
-----------------------------------------------------------------
-Assorted CephFS fixes and cleanups with nothing standing out.
-
-----------------------------------------------------------------
-Al Viro (2):
-      ceph: d_obtain_{alias,root}(ERR_PTR(...)) will do the right thing
-      ceph: get rid of passing callbacks in __dentry_leases_walk()
-
-Eric Biggers (1):
-      ceph: select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
-
-Venky Shankar (1):
-      ceph: reinitialize mds feature bit even when session in open
-
-Wenchao Hao (1):
-      ceph: fix invalid pointer access if get_quota_realm return ERR_PTR
-
-Xiubo Li (7):
-      ceph: skip reconnecting if MDS is not ready
-      libceph: remove MAX_EXTENTS check for sparse reads
-      ceph: try to allocate a smaller extent map for sparse read
-      ceph: fix deadlock or deadcode of misusing dget()
-      ceph: rename create_session_open_msg() to create_session_full_msg()
-      ceph: send oldest_client_tid when renewing caps
-      ceph: remove duplicated code in ceph_netfs_issue_read()
-
- fs/ceph/Kconfig                 |  1 +
- fs/ceph/addr.c                  |  8 +++++---
- fs/ceph/caps.c                  |  9 +++------
- fs/ceph/dir.c                   | 21 +++++++++++++--------
- fs/ceph/export.c                |  2 --
- fs/ceph/file.c                  |  8 ++++++--
- fs/ceph/mds_client.c            | 35 +++++++++++++++++++++++++----------
- fs/ceph/quota.c                 | 39 ++++++++++++++++++++++-----------------
- fs/ceph/super.h                 | 14 ++++++++++++++
- include/linux/ceph/osd_client.h |  7 +++++--
- net/ceph/osd_client.c           | 17 ++++-------------
- 11 files changed, 98 insertions(+), 63 deletions(-)
+That is, unless I am missing something in your proposal that would
+distinguish a fixed JHL6540 chip from an external JHL6540 chip. Please
+correct me on any assumptions I get wrong!
 
