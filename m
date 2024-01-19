@@ -1,118 +1,150 @@
-Return-Path: <linux-kernel+bounces-30968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E874D8326F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:49:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D07A8326F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 133961C23278
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:49:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C09FE1F2311D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CDF43C480;
-	Fri, 19 Jan 2024 09:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC22E3C48A;
+	Fri, 19 Jan 2024 09:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="IPvtxXFj"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="5RAJ7rmy"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E78B3C063;
-	Fri, 19 Jan 2024 09:49:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7493C3C6BA;
+	Fri, 19 Jan 2024 09:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705657756; cv=none; b=GOYVw3bfDFRr8s82cCXDmJb1jZG6dhS+i9qQNjnHEFvHIerltAmBlagBC7AGtPMSMJPwoCMIA3pS4/dBlMKYXple89tS8dIn2nnPYQtEsn61FlBxREc0pt+RI0VEjDqXzRmfUXeUmlVDdIT7u6/L5BWOCmTuvoM+0QstTiko4N0=
+	t=1705657794; cv=none; b=mX/xt4oytZ9FVyBFwk0ZVOpfBZzZti8fJaazonljPzbDluC7GNzKWYAiZTZ2mbc0dKJVdiBqoKPCXyBiQv8IVHgteXDoaXI6CpGWqCyNpeCkP8MuGwe2pbgd6ytFClDikSzVW1XunckCZDE1+VAbKcHGdiw2OM8jZb+pyct0kCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705657756; c=relaxed/simple;
-	bh=sPvqaSxMPD3BnGdcH7OD60vhSLB2Rbvur4SVyjNqG5E=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bfeIx6fjiogWoxgNAakvEW0Bzy3Pusdtx9/o8I+XMImeZ208211+G0Zn3gY4RGFBrl5iGHBtWakBQ994Zx0YTVjxkEF80Q7zflrn8STId9D+zdM0ecHMpyUUhl5b9Wog/qE3qHgWiHKS4Sh8bTk+jzyyBh40dmv2jAy1avcr5LQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=IPvtxXFj; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1705657753; x=1705916953;
-	bh=Q88luiGZXueycQwStfuEcmkDlp6/zu/vG2FfYmoeFK4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=IPvtxXFjEEEEZd3djhqkZPnt5Ye00sfCZAvx+5jDFWAKtjlpzMscB2uw0WeFo0nF6
-	 pNR3Z6ErcoxDFPMmXVbW3pbtsQjzYu3oeVMORaM30lE3Tc518EqQpPNTHD1bL4mrM2
-	 iUjTJ4pFpoTrS5m0wYIkQESwb+ELePJ9JSv29HUZfE5IuOrPcXWI9ycYPzT9A4YWgC
-	 Sorqph4wQMY5O1Baymn2OGIvKqEgN9PH91b5Rqp651CECMOqH6yZWhNiMEkE7sjFmJ
-	 LMuTXuXEroVaHSLCFUYAk9q57lQ2/vT64+7b7yIr8N3t+gMiJW/dLEBqeJ+GB4MtlM
-	 yy+QOOV/M6vXQ==
-Date: Fri, 19 Jan 2024 09:48:57 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 5/9] rust: file: add `FileDescriptorReservation`
-Message-ID: <c8ffd601-e11c-46dc-82e6-9ac8ed471d7c@proton.me>
-In-Reply-To: <20240118-alice-file-v3-5-9694b6f9580c@google.com>
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-5-9694b6f9580c@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1705657794; c=relaxed/simple;
+	bh=d8pc7d+5bVJ+1CKyc9rJxHNauc4Q5Sm7tNJYT45ZHr4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IIiaQid5yZB+lYvwqKyYyqV8IVFdALQmn0qG8IxUjQ7B1G/IeLE3KpE5fY0C+ysdKt3l5nlsqTD+IhuXj4MfJkthyq0Rc0oqACp44Vw9rf5W1t8QJbW9lFPl5hIGnbYzcjW6JtbmXlEP1Eprq8s/vQU/YgT0G78t6ArmlWCuVAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=5RAJ7rmy; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705657790;
+	bh=d8pc7d+5bVJ+1CKyc9rJxHNauc4Q5Sm7tNJYT45ZHr4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=5RAJ7rmyFAh6syb9LXX8rNegaU8XZ7GEuZ9KkXQuFOuNCWprvWZq3BxY562QyRJ/4
+	 eWoy48xRvLxjqsR69poIvJT42Jg619C0a2Fgywz7/xssBjJexmZ+JSoBTfJPdlkitX
+	 AOnURUcJBizGH51pxPeJY2r3DNq/G/2QjhGBxbQiyIPeokC7OCI7BpOc3lWgrygbS/
+	 CUpe/6Ulg7R2xd81j+10lDlJw/RAenCXOkM3wbfuHRqK2FeGMB2onFwm9hu3lWw6K5
+	 Wum3c4UluAfwBfJfyhx5NpmY78ejEcFlPjxkv4/qB7pNQ9F8zXVod9aPsk+35Ba9o9
+	 ZFhz1iJID6x/Q==
+Received: from benjamin-XPS-13-9310.. (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: benjamin.gaignard)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5EFAC37811F4;
+	Fri, 19 Jan 2024 09:49:50 +0000 (UTC)
+From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To: hverkuil@xs4all.nl,
+	mchehab@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	kernel@collabora.com,
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v17 0/8] Add DELETE_BUF ioctl
+Date: Fri, 19 Jan 2024 10:49:36 +0100
+Message-Id: <20240119094944.26763-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On 1/18/24 15:36, Alice Ryhl wrote:
-> From: Wedson Almeida Filho <wedsonaf@gmail.com>
->=20
-> Allow for the creation of a file descriptor in two steps: first, we
-> reserve a slot for it, then we commit or drop the reservation. The first
-> step may fail (e.g., the current process ran out of available slots),
-> but commit and drop never fail (and are mutually exclusive).
->=20
-> This is needed by Rust Binder when fds are sent from one process to
-> another. It has to be a two-step process to properly handle the case
-> where multiple fds are sent: The operation must fail or succeed
-> atomically, which we achieve by first reserving the fds we need, and
-> only installing the files once we have reserved enough fds to send the
-> files.
->=20
-> Fd reservations assume that the value of `current` does not change
-> between the call to get_unused_fd_flags and the call to fd_install (or
-> put_unused_fd). By not implementing the Send trait, this abstraction
-> ensures that the `FileDescriptorReservation` cannot be moved into a
-> different process.
->=20
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
+Unlike when resolution change on keyframes, dynamic resolution change
+on inter frames doesn't allow to do a stream off/on sequence because
+it is need to keep all previous references alive to decode inter frames.
+This constraint have two main problems:
+- more memory consumption.
+- more buffers in use.
+To solve these issue this series introduce DELETE_BUFS ioctl and remove
+the 32 buffers limit per queue.
 
-I have one nit below, with that fixed:
+VP9 conformance tests using fluster give a score of 210/305.
+The 23 of the 24 resize inter tests (vp90-2-21-resize_inter_* files) are ok
+but require to use postprocessor.
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+Kernel branch is available here:
+https://gitlab.collabora.com/benjamin.gaignard/for-upstream/-/commits/remove_vb2_queue_limit_v1
 
-> +impl Drop for FileDescriptorReservation {
-> +    fn drop(&mut self) {
-> +        // SAFETY: `self.fd` was previously returned by `get_unused_fd_f=
-lags`. We have not yet used
+GStreamer branch to use DELETE_BUF ioctl and testing dynamic resolution
+change is here:
+https://gitlab.freedesktop.org/benjamin.gaignard1/gstreamer/-/commits/VP9_drc
 
-I would again suggest mentioning the type invariant of `Self`.
+changes in version 17:
+- rebased on top of:
+  https://patchwork.linuxtv.org/project/linux-media/patch/20240118121452.29151-1-benjamin.gaignard@collabora.com/
+  https://patchwork.linuxtv.org/project/linux-media/patch/92975c06-d6e1-4ba6-8d03-b2ef0b199c21@xs4all.nl/
+- rewrite min_reqbufs_allocation field documentation.
+- rewrite vb2_core_create_bufs() first_index parameter documentation.
+- rework bitmap allocation usage in __vb2_queue_alloc().
+- remove useless i < q->max_num_buffers checks.
+- rework DELETE_BUFS documentation.
+- change split between patch 7 and patch 8
+- v4l2_m2m_delete_bufs() is now a static function.
 
---=20
-Cheers,
-Benno
+changes in version 16:
+- The 50 patches related to add helpers for queue num_bufefrs have already been merged.
+- 'min_queued_buffers' patch has been merged too.
+- Add 'min_reqbufs_allocation' field in vb2_queue structure.
+- Take care of 'min_queued_buffers' when deleting buffers
+- Add more check about buffers range limit when deleting buffers.
 
-> +        // the fd, so it is still valid, and `current` still refers to t=
-he same task, as this type
-> +        // cannot be moved across task boundaries.
-> +        unsafe { bindings::put_unused_fd(self.fd) };
-> +    }
-> +}
-> +
->  /// Represents the `EBADF` error code.
->  ///
->  /// Used for methods that can only fail with `EBADF`.
-> --
-> 2.43.0.381.gb435a96ce8-goog
->=20
+changes in version 15:
+- Check that PLANE_INDEX_BITS value match with VIDEO_MAX_PLANES.
+- Add a check on vb->vb2_queue in vb2_queue_add_buffer()
+- Fix the remarks done by Hans, Thomasz and Andrzej. Thanks for the time
+  they spend (again) on the review.
+
+
+Benjamin Gaignard (8):
+  videobuf2: Add min_reqbufs_allocation field to vb2_queue structure
+  media: test-drivers: Set REQBUFS minimum number of buffers
+  media: core: Rework how create_buf index returned value is computed
+  media: core: Add bitmap manage bufs array entries
+  media: core: Free range of buffers
+  media: v4l2: Add DELETE_BUFS ioctl
+  media: v4l2: Add mem2mem helpers for DELETE_BUFS ioctl
+  media: verisilicon: Support deleting buffers on capture queue
+
+ .../userspace-api/media/v4l/user-func.rst     |   1 +
+ .../media/v4l/vidioc-delete-bufs.rst          |  80 +++++++
+ .../media/v4l/vidioc-reqbufs.rst              |   1 +
+ .../media/common/videobuf2/videobuf2-core.c   | 222 ++++++++++++------
+ .../media/common/videobuf2/videobuf2-v4l2.c   |  34 ++-
+ .../media/platform/verisilicon/hantro_drv.c   |   1 +
+ .../media/platform/verisilicon/hantro_v4l2.c  |   1 +
+ .../media/test-drivers/vicodec/vicodec-core.c |   2 +
+ drivers/media/test-drivers/vim2m.c            |   2 +
+ .../media/test-drivers/vimc/vimc-capture.c    |   4 +-
+ drivers/media/test-drivers/visl/visl-video.c  |   2 +
+ drivers/media/test-drivers/vivid/vivid-core.c |  17 +-
+ drivers/media/v4l2-core/v4l2-dev.c            |   1 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  20 ++
+ drivers/media/v4l2-core/v4l2-mem2mem.c        |  15 ++
+ include/media/v4l2-ioctl.h                    |   4 +
+ include/media/v4l2-mem2mem.h                  |   2 +
+ include/media/videobuf2-core.h                |  50 +++-
+ include/media/videobuf2-v4l2.h                |  13 +
+ include/uapi/linux/videodev2.h                |  17 ++
+ 20 files changed, 402 insertions(+), 87 deletions(-)
+ create mode 100644 Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+
+-- 
+2.40.1
 
 
