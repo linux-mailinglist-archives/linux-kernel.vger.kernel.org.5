@@ -1,153 +1,143 @@
-Return-Path: <linux-kernel+bounces-31602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F1B383309F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:06:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63EF08330AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:07:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2752728347B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:06:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFD881F2261B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025B758AB8;
-	Fri, 19 Jan 2024 22:06:26 +0000 (UTC)
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89BEA5914F;
+	Fri, 19 Jan 2024 22:06:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H0eg5u8Q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445B7537EE;
-	Fri, 19 Jan 2024 22:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F42B56475;
+	Fri, 19 Jan 2024 22:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705701985; cv=none; b=AiJShDfbUkhVqSpotRR6lT/bKBv0jrf7ysXk8Q6BVjgHvcfYgMm3A5FL7rCejB4iRAG0TVM7tAs9rFJpjfNO89N+R9YjAYNosTSCEdMYtJzlNb/2o+h76JBuIR24dube2kh3z3doNVt9cyg9QcK8PCJcmE2tn9jQz3ohPrpr9Bs=
+	t=1705702012; cv=none; b=tzk3U0rANN31aUWhTaaOsX0G1P+gH9goe3Oe80zCB/cAnTdaOMTVeh5fuBYUK400cxdGO0BgvF3ZiE/qAh3B3vTfwyw7AdwOsqeZgw4RuH3We2WhigUBch8ooYmfmVmMdNYdGMf8o31CaEBIjoGtyUESr/A2iyaIH2sitvGpyXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705701985; c=relaxed/simple;
-	bh=zhaVfEhWynwbx7C9lDCvozKetdFXiOTJKUY5TMI0l54=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KOBq1DNcPCQRfZzcYct6Qc0qDgSptOheHZW4HTGHoUdICLiAujTMvnzUOSCkqTh1FS7cNywVrDK7u/FiZGd3lDGSEO1TwvfgjRJixf+k3R4jdMeHKy8vp468Wl/CRhM5ihXb3vRywlA9At7g/aJI/R4G/60M50H6W01mhca7Few=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5cdfed46372so1177088a12.3;
-        Fri, 19 Jan 2024 14:06:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705701984; x=1706306784;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OLiBau14xJmw6pibIF0iVnHj1duiVItI9rclo/jaOto=;
-        b=Hl/r23SHkxpdiMuW4lm1IRFUpDESDriaikc5ekGAtvu9MCBj3/MMYTFhG0YigPVqLH
-         zq8eeBq4FZxbjsNRPUAazgmFrtIS7O2HGanWpb13rovayfmKGXJtQF+mbgwxP2flU+l4
-         gs2t+IJaDQavxtglrOnuOlZ47GtYLHMaY9VI4Ca8o0z50kriVxIlmhCOas4ssels6uCz
-         i2NcZmyhH09OW2ud39VrIyeAQVpZBuO+4eRX7qNUQzwbBADP+Nnxa8r0B/SsR8hfOHrV
-         36iQS2iml7YvIn29YtaP6RHdUK2GpGXZs1sIXYUJIGLFttGC2fVZ95CUeMXPPyh5duA+
-         mJsw==
-X-Gm-Message-State: AOJu0Yxg0/A+c6jPA2Y/NFO9SP5SUMzLiAHn4AFw6xAXRC6c3SDc7cXT
-	W+aGyoVARgCJL5Ayx1mdhfqFjXnWrVw+a2k5J+cH7pUBB7/01dmzppELjdytj5M1tddLkn1aAc8
-	Ttro/KOkiYce/1ITJ4wP1JlRls0Q=
-X-Google-Smtp-Source: AGHT+IHaLWSOypnk8Bq3sMJzz8IOvtOQOu2TfZa97jph0NydtDD21Zq5X193ApaLI6YHkc1CIS+FISEp4Sw/EptNfSc=
-X-Received: by 2002:a05:6a21:9217:b0:19a:f684:cbc4 with SMTP id
- tl23-20020a056a21921700b0019af684cbc4mr489615pzb.104.1705701983718; Fri, 19
- Jan 2024 14:06:23 -0800 (PST)
+	s=arc-20240116; t=1705702012; c=relaxed/simple;
+	bh=bAiP8neWkuFOr1UcviXY9sGWpEscgq5SMLZxG3s9Dt8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IyzRQGp+4KX2Pj6c32h+wj95+6zaxG1UOJCjiRayKBL9I6TUynaRuY0R1gFkRXr78u5z51p3zW1NXaOOlaNGICQjvTIJJGQr0y19zLuu7E36vWtk3MPLlv0lSSP4pdfGo2wogj6hWe1WAQSUWYF3els0TihSxDjuwQsZsN3YozI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H0eg5u8Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8E49C433F1;
+	Fri, 19 Jan 2024 22:06:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705702012;
+	bh=bAiP8neWkuFOr1UcviXY9sGWpEscgq5SMLZxG3s9Dt8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H0eg5u8QwEQ6ypQgu+Ro/nkwaVoSk6fZjoWXqYEmXDBBypv3SaURpbSvuGPnkUm9o
+	 0iLO54XqFDrY5SKuQZx1PtWWdbaWIgzQTzV0z70555OEw/cl0wpl9rZN9FKfkiyBAu
+	 SnG9Ko2Xb/Ck170Mviz7ss9Pl+yNAe9Xg7Gdjqf86+CfI4wXVZ78Auk6i3XkpHvEn8
+	 o34tv8O0Sbg6s3KM1vurE0tBmVLz8HbPfZTpKnkQxTLGN+n1rFaTju4cEt2Sd0Ic8a
+	 RkPd0onKWlpH1K9oGo+Gggwbv4VFEK2eJRyldbIWTPpp09a5rhij2/rv2jp9evvYPK
+	 wyA/FwbQHedSA==
+Date: Fri, 19 Jan 2024 16:06:48 -0600
+From: Rob Herring <robh@kernel.org>
+To: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc: olivier.moysan@foss.st.com, gregkh@linuxfoundation.org,
+	richardcochran@gmail.com, arnd@kernel.org,
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+	linux-usb@vger.kernel.org, mchehab@kernel.org, peng.fan@oss.nxp.com,
+	pabeni@redhat.com, rcsekar@samsung.com,
+	alexandre.torgue@foss.st.com, fabrice.gasnier@foss.st.com,
+	linux-serial@vger.kernel.org, Oleksii_Moisieiev@epam.com,
+	linux-spi@vger.kernel.org, will@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, lars@metafoo.de,
+	conor+dt@kernel.org, linux-mmc@vger.kernel.org, kuba@kernel.org,
+	linux-media@vger.kernel.org, arnaud.pouliquen@foss.st.com,
+	andi.shyti@kernel.org, ulf.hansson@linaro.org,
+	Frank Rowand <frowand.list@gmail.com>,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-phy@lists.infradead.org, jic23@kernel.org,
+	linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, robh+dt@kernel.org, lee@kernel.org,
+	catalin.marinas@arm.com, mkl@pengutronix.de,
+	herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+	dmaengine@vger.kernel.org, hugues.fruchet@foss.st.com,
+	edumazet@google.com, netdev@vger.kernel.org, vkoul@kernel.org,
+	wg@grandegger.com, linux-i2c@vger.kernel.org, davem@davemloft.net
+Subject: Re: [PATCH v9 02/13] dt-bindings: treewide: add access-controllers
+ description
+Message-ID: <170570200425.1132338.1743644162144723458.robh@kernel.org>
+References: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
+ <20240105130404.301172-3-gatien.chevallier@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119040304.3708522-1-yangjihong1@huawei.com>
-In-Reply-To: <20240119040304.3708522-1-yangjihong1@huawei.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Fri, 19 Jan 2024 14:06:12 -0800
-Message-ID: <CAM9d7chheMq=J1kHCTD+2Vxh=iKA5Toe=DyWmvRRX_E6xdXNKA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] perf record: Fix segfault with '--timestamp-filename'
- option and pipe mode
-To: Yang Jihong <yangjihong1@huawei.com>
-Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, 
-	irogers@google.com, adrian.hunter@intel.com, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240105130404.301172-3-gatien.chevallier@foss.st.com>
 
-Hello,
 
-On Thu, Jan 18, 2024 at 8:07=E2=80=AFPM Yang Jihong <yangjihong1@huawei.com=
-> wrote:
->
-> When perf record uses '--timestamp-filename' option and pipe mode,
-> will occur segfault:
->
->   # perf record --timestamp-filename -o- true 1>/dev/null
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Dump -.2024011813361681 ]
->   perf: Segmentation fault
->   Segmentation fault (core dumped)
->
-> Debug the core file by using the gdb:
->
->   # gdb perf core.3706841
->   <SNIP>
->   [New LWP 3706841]
->   [Thread debugging using libthread_db enabled]
->   Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.=
-1".
->   Core was generated by `perf record --timestamp-filename -o- true'.
->   Program terminated with signal SIGSEGV, Segmentation fault.
->   #0  evsel__free_stat_priv (evsel=3D0x555ea56197af) at util/stat.c:145
->   145             struct perf_stat_evsel *ps =3D evsel->stats;
->   (gdb) bt
->   #0  evsel__free_stat_priv (evsel=3D0x555ea56197af) at util/stat.c:145
->   #1  evlist__free_stats (evlist=3Devlist@entry=3D0x555bf0dad1b0) at util=
-/stat.c:215
->   #2  0x0000555befd425e8 in evlist__delete (evlist=3D0x555bf0dad1b0) at u=
-til/evlist.c:175
->   #3  0x0000555befd42785 in evlist__delete (evlist=3D<optimized out>) at =
-util/evlist.c:181
->   #4  0x0000555befc7f547 in cmd_record (argc=3D<optimized out>, argv=3D<o=
-ptimized out>) at builtin-record.c:4252
->   #5  0x0000555befd27700 in run_builtin (p=3Dp@entry=3D0x555bf05acf88 <co=
-mmands+264>, argc=3Dargc@entry=3D4, argv=3Dargv@entry=3D0x7ffc2696a920) at =
-perf.c:349
->   #6  0x0000555befc68751 in handle_internal_command (argv=3D0x7ffc2696a92=
-0, argc=3D4) at perf.c:402
->   #7  run_argv (argv=3D<synthetic pointer>, argcp=3D<synthetic pointer>) =
-at perf.c:446
->   #8  main (argc=3D4, argv=3D0x7ffc2696a920) at perf.c:562
->
-> It is found that the memory of the evsel is modified.
-> The reason is that perf_data__switch() not initialized 'new_filename',
-> as a result, it uses the on-stack variable. It happens that the evsel
-> address is stored here. 'new_filename' is freed later when uses
-> '--timestamp-filename' option. Therefore, segfault occurs in the evsel_de=
-lete().
->
->
-> 1. patch1 fixes this problem.
-> 2. patch2 to optimize the process, check conflict between
->    '--timestamp-filename' option and the pipe mode before recording to
->    avoid switch perf data.
-> 3. patch3 fixes the code style problem by the way.
->
->
-> Yang Jihong (3):
->   perf record: Fix possible incorrect free in record__switch_output()
->   perf record: Check conflict between '--timestamp-filename' option and
->     pipe mode before recording
->   perf data: Minor code style alignment cleanup
+On Fri, 05 Jan 2024 14:03:53 +0100, Gatien Chevallier wrote:
+> access-controllers is an optional property that allows a peripheral to
+> refer to one or more domain access controller(s).
+> 
+> Description of this property is added to all peripheral binding files of
+> the peripheral under the STM32 firewall controller. It allows an accurate
+> representation of the hardware, where various peripherals are connected
+> to a firewall bus. The firewall can then check the peripheral accesses
+> before allowing its device to probe.
+> 
+> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+> ---
+> 
+> Changes in V6:
+> 	- Minor changes in commit message
+> 	- Renamed access-controller to access-controllers
+> 
+> Changes in V5:
+> 	- Discarded review tags as the content has changed
+> 	- Renamed feature-domains to access-controller
+> 
+> Changes in V4:
+> 	- Added Jonathan's tag for IIO
+> 
+> Changes in V2:
+> 	- Add missing "feature-domains" property declaration
+> 	  in bosch,m_can.yaml and st,stm32-cryp.yaml files
+> 
+>  Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/dma/st,stm32-dma.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml    | 4 ++++
+>  Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml   | 4 ++++
+>  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml | 4 ++++
+>  Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml    | 4 ++++
+>  .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml        | 4 ++++
+>  Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml    | 4 ++++
+>  Documentation/devicetree/bindings/mmc/arm,pl18x.yaml          | 4 ++++
+>  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml    | 4 ++++
+>  Documentation/devicetree/bindings/net/stm32-dwmac.yaml        | 4 ++++
+>  Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml  | 4 ++++
+>  .../devicetree/bindings/regulator/st,stm32-vrefbuf.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/rng/st,stm32-rng.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/serial/st,stm32-uart.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml     | 4 ++++
+>  Documentation/devicetree/bindings/sound/st,stm32-sai.yaml     | 4 ++++
+>  Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml | 4 ++++
+>  Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml      | 4 ++++
+>  Documentation/devicetree/bindings/spi/st,stm32-spi.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/usb/dwc2.yaml               | 4 ++++
+>  26 files changed, 104 insertions(+)
+> 
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Thanks,
-Namhyung
-
->
->  tools/perf/builtin-record.c | 14 ++++++++++----
->  tools/perf/util/data.c      | 10 ++++------
->  tools/perf/util/data.h      |  6 +++---
->  3 files changed, 17 insertions(+), 13 deletions(-)
->
-> --
-> 2.34.1
->
 
