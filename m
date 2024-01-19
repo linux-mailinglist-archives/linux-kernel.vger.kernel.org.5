@@ -1,177 +1,178 @@
-Return-Path: <linux-kernel+bounces-31147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD2FF8329C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:52:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E89FB8329C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:53:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 649F21F211F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:52:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 541D5B2287B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F6951C43;
-	Fri, 19 Jan 2024 12:51:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 488D551C3D;
+	Fri, 19 Jan 2024 12:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cmsk7QZg";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cmsk7QZg"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IsY3ET4a"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0E551C34
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 12:51:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F794F1F6;
+	Fri, 19 Jan 2024 12:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705668716; cv=none; b=TzwsNkI9MgEFoGxJH1owXFcBRlsxNlWMi7Bs+3xgyVTlg5QIZcelaT2udHamPzecbvcBICc83JjFeLEMYPhAGsu24/4M/jHvBzd2RzQHC5JBv4cKWREVnMv7AdUFm3jXw7DrsHiv460s8jdVPzPPQicQWRA8nbdwANxqca0nfV8=
+	t=1705668804; cv=none; b=P9z4IisjmZ4hMPtKTb8e6mXBkRIYWXjB1Hhbjbn20UKTPzGiehY2+Qhv+X+gRJz2Yo0IRmE2r62Z2vPX8F27frPdBhxhDG6IoInbwHkcUtO+fwAgom3EbGk9AqI0ILlm4ldK302LRLu8nkkAl16tdxrZKlu+iPpOX6ZthjoR5Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705668716; c=relaxed/simple;
-	bh=g8zMOzIBwQIHFfANEao9RUXtVPRvJGxDN9i+ELpGA8E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SvMNA4GcM8W5og853buhR0CbWc7KOP/9HNB4ehmW6gvN6uk6qMJlyF5H5yTpdGvQC2+R9XUuTNjWMipry6lzstIVsgk/2KQJ8m+B3Lh3T/Y41+FrY3Zt+rI6CEp2IN9lgwPShZC295rSKepBgiBOleVX6YE++D5aXIBwqH37kak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cmsk7QZg; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cmsk7QZg; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6D5C31FD15;
-	Fri, 19 Jan 2024 12:51:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705668712; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V/t7pPanzZo6yuB0Rau9uLmRftNtX/53oMyJObN2XzQ=;
-	b=cmsk7QZg71qSypTUXvv6jwmfrbjRsUj9zQgIEaaZ7V5peesZqr2w22PNHdQRANDM6SIvIB
-	Yqhp8Tl+Q67FtdhAJrw1f94mfePvkCyprCJa6luhWK8Dq7LuP9bDIiA/lI9wPLVmq5868x
-	Pyh7towxAi6Hfz57KISvt9jSVlVgTA8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705668712; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V/t7pPanzZo6yuB0Rau9uLmRftNtX/53oMyJObN2XzQ=;
-	b=cmsk7QZg71qSypTUXvv6jwmfrbjRsUj9zQgIEaaZ7V5peesZqr2w22PNHdQRANDM6SIvIB
-	Yqhp8Tl+Q67FtdhAJrw1f94mfePvkCyprCJa6luhWK8Dq7LuP9bDIiA/lI9wPLVmq5868x
-	Pyh7towxAi6Hfz57KISvt9jSVlVgTA8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 470A7136F5;
-	Fri, 19 Jan 2024 12:51:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ovZrDmhwqmVEEgAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 19 Jan 2024 12:51:52 +0000
-Date: Fri, 19 Jan 2024 13:51:38 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com,
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com,
-	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT to
- process_madvise()
-Message-ID: <ZapwWuVTIDeI3W8A@tiehlicka>
-References: <20240118120347.61817-1-ioworker0@gmail.com>
- <ZakqQyL9t2ffNUIf@tiehlicka>
- <CAK1f24k+=Sskotbct+yGxpDKNv=qyXPkww5i2kaqfzwaUVO_GQ@mail.gmail.com>
+	s=arc-20240116; t=1705668804; c=relaxed/simple;
+	bh=0y4BSC04otWxDZZPtwZGIu7dgXANcBq9sE7P3QKEXmU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L5aS1EgnJ/p8Ys0VntJjHDrkZv4iFvGNPluxgW22/cxKRtJ62EBk9HBI+iflrhcokGIgHKop25P1INz5g6oYkZYWv0MkxxtZ1jmOh1qqPjGa3a7Rr2fYiIr/yNFijwk7DoEruBsb2QfGc95o4tuaSTrS+96p2ZmSXQNY8NpePJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IsY3ET4a; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6da9c834646so772435b3a.3;
+        Fri, 19 Jan 2024 04:53:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705668802; x=1706273602; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=sQQbktNOdg7q6Z2j6gpx1q2IJTHA1r1uVxnrDVfNaTc=;
+        b=IsY3ET4aFxJ71U7q8T3ww/n/WzwQdXfiWplhrU46SNLVoIAWnkCF7nFnPf9/DbMtuK
+         7ZxrxrfvNoZV2bppYFwhelkfnStO7RhOa3wRFlv+72eD1HRw53vGc07IxLO1vBA8LzOR
+         lKa6X+erqyXdc8bV1jgg1gH7emmKQtZdAQ/vrK9jls0EGk7uGE6zd4vohnmaKAxIFlNN
+         O4Y+PYXqgnXU+GLDb17TBbwxxV8G9ZPlJaIVMClhODDCL8S33MeWJoU+LdYNMlsj4THi
+         N2WhbDlOIN0p22O75JLt70p7GHrzJJihrmtCEpg6eLI7WAVoauVGr73uK4fV12Xd4jYM
+         3UnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705668802; x=1706273602;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sQQbktNOdg7q6Z2j6gpx1q2IJTHA1r1uVxnrDVfNaTc=;
+        b=SRM3NkPSiaobNq2kttTWxyLaJ+b8Ti93nbOYCChhUHYwv+2WN2yPhBndKxr44m/aR2
+         JPdZQz0rD+JV+ezCbL+YZ+XSyNgvDzioQ9+qlkd+EGtGUgkl2GJ8cCc8HP/VVPidxfZu
+         JOHEe/vfsJBckeIWDMHPUV/WxvGq2qykftQVHDirEwFCw9/OA8k6W1eTHPgq1YnEypc9
+         2r4N4fPfyKRghDI3Ip4Q56KML0qo3IUPkNp/uz0I04ftDxg/zKtyo/fs/gIjgG0flEor
+         5CsfSAM3diYq1Q5yz/vXQ0VvmeDubN5pEapQ9T+c7A0ALjgwEcBrZw6loDmQIBxwfETx
+         7LYQ==
+X-Gm-Message-State: AOJu0YwWGwFBerhkj5jXa6qhpYGH42zh7gYiQiOlmf5vh+AulIioprek
+	J7R18cXQgtO4L7tjQSzOng4YD1lIYD94W+kMwazNipxhN2cblW/QbCiVCzhg
+X-Google-Smtp-Source: AGHT+IHGojORXxOYxVl6qe5Xa6DukkMDmiVYFbw44fXXKTU/DcgQo3QIKKY3smQNIVLWry0C7guHYg==
+X-Received: by 2002:a05:6a00:c90:b0:6db:af46:c8af with SMTP id a16-20020a056a000c9000b006dbaf46c8afmr2314864pfv.40.1705668801846;
+        Fri, 19 Jan 2024 04:53:21 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ks11-20020a056a004b8b00b006d6b91c6eb6sm5135977pfb.13.2024.01.19.04.53.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jan 2024 04:53:21 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <dd5a33f7-96b7-4f10-941e-3a597c7537de@roeck-us.net>
+Date: Fri, 19 Jan 2024 04:53:19 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK1f24k+=Sskotbct+yGxpDKNv=qyXPkww5i2kaqfzwaUVO_GQ@mail.gmail.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.60 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,google.com,redhat.com,bytedance.com,gmail.com,kernel.org,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.60
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] watchdog: starfive: Check pm_runtime_enabled() before
+ decrementing usage counter
+Content-Language: en-US
+To: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+ Xingyu Wu <xingyu.wu@starfivetech.com>,
+ Samin Guo <samin.guo@starfivetech.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+ linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240119082722.1133024-1-jisheng.teoh@starfivetech.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240119082722.1133024-1-jisheng.teoh@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri 19-01-24 10:03:05, Lance Yang wrote:
-> Hey Michal,
+On 1/19/24 00:27, Ji Sheng Teoh wrote:
+> In the probe function, pm_runtime_put_sync() will fail on platform with
+> runtime PM disabled.
+> Check if runtime PM is enabled before calling pm_runtime_put_sync() to
+> fix it.
 > 
-> Thanks for taking the time to review!
-> 
-> On Thu, Jan 18, 2024 at 9:40 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 18-01-24 20:03:46, Lance Yang wrote:
-> > [...]
-> >
-> > before we discuss the semantic, let's focus on the usecase.
-> >
-> > > Use Cases
-> > >
-> > > An immediate user of this new functionality is the Go runtime heap allocator
-> > > that manages memory in hugepage-sized chunks. In the past, whether it was a
-> > > newly allocated chunk through mmap() or a reused chunk released by
-> > > madvise(MADV_DONTNEED), the allocator attempted to eagerly back memory with
-> > > huge pages using madvise(MADV_HUGEPAGE)[2] and madvise(MADV_COLLAPSE)[3]
-> > > respectively. However, both approaches resulted in performance issues; for
-> > > both scenarios, there could be entries into direct reclaim and/or compaction,
-> > > leading to unpredictable stalls[4]. Now, the allocator can confidently use
-> > > process_madvise(MADV_F_COLLAPSE_LIGHT) to attempt the allocation of huge pages.
-> >
-> > IIUC the primary reason is the cost of the huge page allocation which
-> > can be really high if the memory is heavily fragmented and it is called
-> > synchronously from the process directly, correct? Can that be worked
-> 
-> Yes, that's correct.
-> 
-> > around by process_madvise and performing the operation from a different
-> > context? Are there any other reasons to have a different mode?
-> 
-> In latency-sensitive scenarios, some applications aim to enhance performance
-> by utilizing huge pages as much as possible. At the same time, in case of
-> allocation failure, they prefer a quick return without triggering direct memory
-> reclamation and compaction.
+> Fixes: db728ea9c7be ("drivers: watchdog: Add StarFive Watchdog driver")
+> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+> Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
 
-Could you elaborate some more on why?
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-> > I mean I can think of a more relaxed (opportunistic) MADV_COLLAPSE -
-> > e.g. non blocking one to make sure that the caller doesn't really block
-> > on resource contention (be it locks or memory availability) because that
-> > matches our non-blocking interface in other areas but having a LIGHT
-> > operation sounds really vague and the exact semantic would be
-> > implementation specific and might change over time. Non-blocking has a
-> > clear semantic but it is not really clear whether that is what you
-> > really need/want.
+Guenter
+
+> ---
+>   drivers/watchdog/starfive-wdt.c | 9 +++++++--
+>   1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> Could you provide me with some suggestions regarding the naming of a
-> more relaxed (opportunistic) MADV_COLLAPSE?
+> diff --git a/drivers/watchdog/starfive-wdt.c b/drivers/watchdog/starfive-wdt.c
+> index e28ead24c520..df68ae4acbd7 100644
+> --- a/drivers/watchdog/starfive-wdt.c
+> +++ b/drivers/watchdog/starfive-wdt.c
+> @@ -494,8 +494,13 @@ static int starfive_wdt_probe(struct platform_device *pdev)
+>   	if (ret)
+>   		goto err_exit;
+>   
+> -	if (!early_enable)
+> -		pm_runtime_put_sync(&pdev->dev);
+> +	if (!early_enable) {
+> +		if (pm_runtime_enabled(&pdev->dev)) {
+> +			ret = pm_runtime_put_sync(&pdev->dev);
+> +			if (ret)
+> +				goto err_exit;
+> +		}
+> +	}
+>   
+>   	return 0;
+>   
 
-Naming is not all that important at this stage (it could be
-MADV_COLLAPSE_NOBLOCK for example). The primary question is whether
-non-blocking in general is the desired behavior or the implementation
-should try but not too hard.
-
--- 
-Michal Hocko
-SUSE Labs
 
