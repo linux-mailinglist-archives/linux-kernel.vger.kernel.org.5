@@ -1,188 +1,94 @@
-Return-Path: <linux-kernel+bounces-31237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80F32832AF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90968832AF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:08:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A61CD1C20B30
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:08:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C44BA1C20A33
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:08:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461E053815;
-	Fri, 19 Jan 2024 14:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QDevurz7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF42E53E24;
+	Fri, 19 Jan 2024 14:08:29 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797CF537F8;
-	Fri, 19 Jan 2024 14:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1C852F75;
+	Fri, 19 Jan 2024 14:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705673273; cv=none; b=X85vx5FHMOXLEzPZqtARaZ3elqnx9ILqvRSB5cE/1dZlzS4F5W1cqTa5qjZQ3t2c0EMPDHzPRjPDFAqBq72sYiY/WWYm5AyQTogaGttsbjci8ftsxkfPqLpZEhSU1hrRbZDNNOecvga+vCnnpN7gqcuWUbCxeFshzwpj0ZhkvrY=
+	t=1705673309; cv=none; b=VYZjrJI85NvHHjs2ioXRmltZ1T49thfrjRyRArFtjAPzK3ihIexXD5lenB17qnHQrzrKfgUAkjeafyNdKzTUEn12iqLhQXt7aNuySxEklPzC2rNJ/1Ymgq5HQvvYD0egIBce12X0daJ9tsPdVfKPz5mPssVQuazDG5hMba6I7W4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705673273; c=relaxed/simple;
-	bh=9gWt20bJrYzN8KUJ3FLlC9ALjS6WuHIP3vCqrGPDA24=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DcK6WQPVxw24gkqxJTNH5QuJMgrqs7fobtUcEE+GyJdK+IyoR0TJjjm1AzM52KJWCl2JlnLfpdnJ8vrnFol2p1XmCMMZmzWG28/4RKEVrDmhJFy8Kz9gw+bsqcYpRFmA+FIeQYUjLAejjJifgwH6f2iwzYIa4znvSZ20beo8h0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QDevurz7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDC3FC433F1;
-	Fri, 19 Jan 2024 14:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705673273;
-	bh=9gWt20bJrYzN8KUJ3FLlC9ALjS6WuHIP3vCqrGPDA24=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=QDevurz73QpNeCT5uLWPhdRmxJLDNaENLyR4YMoW7Af83PoKClv/8Ce9TecrVLJcG
-	 ipiR2tGDMFOi+119skzB89fTgjaLujQXa0c7k4BRhp1QSPWOYoTf3gin6oStYvmK06
-	 LS6W/fOzTaZESJ/4wG2XU16tM7itl3oyn5Pe/uzX4Jmn09wbPFZZXufWCZs8QlRNu0
-	 zSLyZj6PblCVJDU+khdaCEMYOm3b4zqAytVMvedOiu6ZQR2Fsn0KidSnZ6a1CRXuJK
-	 SeDIKnW7GYS09WHXEaLntYogGV5SPH3bvnl3F8BYQba88vUFZ3keXKLvVn2HIvbLwD
-	 T1RmnSRKhph6A==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e4e3323a6so2073019e87.0;
-        Fri, 19 Jan 2024 06:07:52 -0800 (PST)
-X-Gm-Message-State: AOJu0YxHQRnJhDzsir67qf2Tbxr1vXrGlwuizggE4rS6DnqmZ37Rud+R
-	mUglJ5WCWa//DT7KShwWDjS2VnkZJfj+BSoKSvW/C1HmEu2yAPGthvIUQTw77vY0luaCi9p+FJ2
-	Kx63jwDhr4i+h4KOMQ5e809Y4Uw==
-X-Google-Smtp-Source: AGHT+IFM+LBRxDVA1L2DbmI4tWCfgPIDKugjYb0C66a28GKBvSwHPbqRRJcdXjcn8wNjD6mv8KVGjp1WforYWUXcIpo=
-X-Received: by 2002:a05:6512:313a:b0:50e:765b:1ea3 with SMTP id
- p26-20020a056512313a00b0050e765b1ea3mr758065lfd.22.1705673271160; Fri, 19 Jan
- 2024 06:07:51 -0800 (PST)
+	s=arc-20240116; t=1705673309; c=relaxed/simple;
+	bh=Fiec/VXA2nixAbvl9sqxHaQnfa3rCyHt390tUB1yGjI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QSxREuopQ4vuBpWeOMG/FA0JxZN58BeqyGdMLAPSWbAintDBsLTmTQCqWzl0r5GEKdvnqcqtAN7X7+Nm1Xl2e7cOhBPi0yXb3o9K2odb8FNyIkUm1oRLC7in1j+EZ9CLg5+6i2I90mjK70UsUXicCKGluh/nUqMJPhs9JBIKXW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rQpXl-0006wC-N4; Fri, 19 Jan 2024 15:08:25 +0100
+Message-ID: <08b23a77-63c8-4af8-9497-4393235c02ea@leemhuis.info>
+Date: Fri, 19 Jan 2024 15:08:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231211160510.0aef871b@canb.auug.org.au> <20240119115843.5556189a@canb.auug.org.au>
-In-Reply-To: <20240119115843.5556189a@canb.auug.org.au>
-From: Rob Herring <robh@kernel.org>
-Date: Fri, 19 Jan 2024 08:07:38 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLTx9k2Nq130PB9y--dv=Spjs3ELVttTwB4=Tf1s1moCg@mail.gmail.com>
-Message-ID: <CAL_JsqLTx9k2Nq130PB9y--dv=Spjs3ELVttTwB4=Tf1s1moCg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the devicetree tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Andy Gross <agross@kernel.org>, Abel Vesa <abel.vesa@linaro.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Rajendra Nayak <quic_rjendra@quicinc.com>, 
-	Sibi Sankar <quic_sibis@quicinc.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Regression from dcadfd7f7c74ef9ee415e072a19bdf6c085159eb
+Content-Language: en-US, de-DE
+To: Linux kernel regressions list <regressions@lists.linux.dev>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux FireWire <linux1394-devel@lists.sourceforge.net>
+References: <f878b188-3fe4-420c-9bcb-b431ac6088dd@amd.com>
+ <ZUnhEjtUihOFQ9t1@debian.me>
+From: "Linux regression tracking #update (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <ZUnhEjtUihOFQ9t1@debian.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1705673307;e3abef9c;
+X-HE-SMSGID: 1rQpXl-0006wC-N4
 
-On Thu, Jan 18, 2024 at 6:58=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
-au> wrote:
->
-> Hi all,
->
-> On Mon, 11 Dec 2023 16:05:10 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > After merging the devicetree tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >
-> > drivers/clk/qcom/gcc-x1e80100.c:6786:15: error: variable 'gcc_x1e80100_=
-driver' has initializer but incomplete type
-> >  6786 | static struct platform_driver gcc_x1e80100_driver =3D {
-> >       |               ^~~~~~~~~~~~~~~
-> > drivers/clk/qcom/gcc-x1e80100.c:6787:10: error: 'struct platform_driver=
-' has no member named 'probe'
-> >  6787 |         .probe =3D gcc_x1e80100_probe,
-> >       |          ^~~~~
-> > drivers/clk/qcom/gcc-x1e80100.c:6787:18: warning: excess elements in st=
-ruct initializer
-> >  6787 |         .probe =3D gcc_x1e80100_probe,
-> >       |                  ^~~~~~~~~~~~~~~~~~
-> > drivers/clk/qcom/gcc-x1e80100.c:6787:18: note: (near initialization for=
- 'gcc_x1e80100_driver')
-> > drivers/clk/qcom/gcc-x1e80100.c:6788:10: error: 'struct platform_driver=
-' has no member named 'driver'
-> >  6788 |         .driver =3D {
-> >       |          ^~~~~~
-> > drivers/clk/qcom/gcc-x1e80100.c:6788:19: error: extra brace group at en=
-d of initializer
-> >  6788 |         .driver =3D {
-> >       |                   ^
-> > drivers/clk/qcom/gcc-x1e80100.c:6788:19: note: (near initialization for=
- 'gcc_x1e80100_driver')
-> > drivers/clk/qcom/gcc-x1e80100.c:6788:19: warning: excess elements in st=
-ruct initializer
-> > drivers/clk/qcom/gcc-x1e80100.c:6788:19: note: (near initialization for=
- 'gcc_x1e80100_driver')
-> > drivers/clk/qcom/gcc-x1e80100.c: In function 'gcc_x1e80100_init':
-> > drivers/clk/qcom/gcc-x1e80100.c:6796:16: error: implicit declaration of=
- function 'platform_driver_register' [-Werror=3Dimplicit-function-declarati=
-on]
-> >  6796 |         return platform_driver_register(&gcc_x1e80100_driver);
-> >       |                ^~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/clk/qcom/gcc-x1e80100.c: In function 'gcc_x1e80100_exit':
-> > drivers/clk/qcom/gcc-x1e80100.c:6802:9: error: implicit declaration of =
-function 'platform_driver_unregister'; did you mean 'driver_unregister'? [-=
-Werror=3Dimplicit-function-declaration]
-> >  6802 |         platform_driver_unregister(&gcc_x1e80100_driver);
-> >       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> >       |         driver_unregister
-> > drivers/clk/qcom/gcc-x1e80100.c: At top level:
-> > drivers/clk/qcom/gcc-x1e80100.c:6786:31: error: storage size of 'gcc_x1=
-e80100_driver' isn't known
-> >  6786 | static struct platform_driver gcc_x1e80100_driver =3D {
-> >       |                               ^~~~~~~~~~~~~~~~~~~
-> >
-> > Caused by commit
-> >
-> >   0d18bcdebb2f ("of: Stop circularly including of_device.h and of_platf=
-orm.h")
-> >
-> > interacting with commit
-> >
-> >   161b7c401f4b ("clk: qcom: Add Global Clock controller (GCC) driver fo=
-r X1E80100")
-> >
-> > from the qcom tree.
-> >
-> > I have applied the following merge resolution patch.  This patch could
-> > be applied to the gcom tree.
-> >
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Mon, 11 Dec 2023 15:47:55 +1100
-> > Subject: [PATCH] fix up for "of: Stop circularly including of_device.h =
-and of_platform.h"
-> >
-> > interacting with
-> > "clk: qcom: Add Global Clock controller (GCC) driver for X1E80100"
-> >
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > ---
-> >  drivers/clk/qcom/gcc-x1e80100.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/clk/qcom/gcc-x1e80100.c b/drivers/clk/qcom/gcc-x1e=
-80100.c
-> > index 74db7fef237b..d7182d6e9783 100644
-> > --- a/drivers/clk/qcom/gcc-x1e80100.c
-> > +++ b/drivers/clk/qcom/gcc-x1e80100.c
-> > @@ -4,8 +4,9 @@
-> >   */
-> >
-> >  #include <linux/clk-provider.h>
-> > +#include <linux/mod_devicetable.h>
-> >  #include <linux/module.h>
-> > -#include <linux/of_device.h>
-> > +#include <linux/platform_device.h>
-> >  #include <linux/regmap.h>
-> >
-> >  #include <dt-bindings/clock/qcom,x1e80100-gcc.h>
-> > --
-> > 2.40.1
->
-> Did this get lost somewhere among the merges?  I am still applying the pa=
-tch
-> to linux-next.
+On 07.11.23 08:02, Bagas Sanjaya wrote:
+> On Mon, Nov 06, 2023 at 02:14:39PM -0600, Mario Limonciello wrote:
+>> Hi,
+>>
+>> I recently came across a kernel bugzilla that bisected a boot problem [1]
+>> introduced in kernel 6.5 to this change.
+>>
+>> commit dcadfd7f7c74ef9ee415e072a19bdf6c085159eb (HEAD -> dcadfd7f7c7)
+>> Author: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> Date:   Tue May 30 08:12:40 2023 +0900
+>>
+>>     firewire: core: use union for callback of transaction completion
+>>
+>> Removing the firewire card from the system fixes it for both reporters
+>> (CC'ed)
+>>
+>> As the author of this issue can you please take a look at it?
+>>
+> 
+> Thanks for the forwarding regression report from Bugzilla. I'm adding it
+> to regzbot:
+> 
+> #regzbot introduced: dcadfd7f7c74ef https://bugzilla.kernel.org/show_bug.cgi?id=217993
+> #regzbot title: completing firewire transaction callback with union bootloops AMD Ryzen 7 system
+> #regzbot link: https://lore.kernel.org/regressions/f878b188-3fe4-420c-9bcb-b431ac6088dd@amd.com/
 
-Thanks for pointing that out. I guess the QCom folks never applied it.
-I'm going to send the final patch to Linus today and will add this one
-in.
+#regzbot fix: ac9184fbb8478dab4a0724b279f94956b69be827
+#regzbot ignore-activity
 
-Rob
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
+
 
