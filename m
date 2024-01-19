@@ -1,41 +1,40 @@
-Return-Path: <linux-kernel+bounces-31367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 871E8832D52
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EDCE1832D56
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:37:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15C0A1F24CC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:37:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 868411F24EFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B3E54F90;
-	Fri, 19 Jan 2024 16:37:19 +0000 (UTC)
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5A55578B;
+	Fri, 19 Jan 2024 16:37:22 +0000 (UTC)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C685354F89;
-	Fri, 19 Jan 2024 16:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04705467E;
+	Fri, 19 Jan 2024 16:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705682239; cv=none; b=FtEKsi+QXkW+5Pn757K1e4rptEZR2aIV/yToKAI1yaSLgalb30Op7wa5qC8Kh21T2nNZZr10KuuCUilkM7yjD7YOfe2Ey8fgrWxtmzXroj7AkCrzVgbP1DPnmkeMK237edPsk3kN60aReh8PmGykvfh0BslZTpZolRaWQ0BIY/o=
+	t=1705682242; cv=none; b=j9X+dUFDezIAzpKxoxZamqmj/iah7TqUVAK09przGw0+B6jM1W1boX/4Uk95Ay3xD0cNBQZPxBsP6Xpw9AomDQ3Wub7Vkg5qSEiTMyYJ2Od/8Z4ZCboBqXqMz/JTh3y7feECRLZR8zh5RsTZ09396TUeII3ADZv1u2HO1veZK+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705682239; c=relaxed/simple;
-	bh=U6gHFx3lPChjn2zJs4iE1s5P9gyba00HSfbHHYoV1r0=;
+	s=arc-20240116; t=1705682242; c=relaxed/simple;
+	bh=mh3W/FZwyN7+BH2uSua52kzdiY7KEuVedktYT7VBH0c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g+Myoeih3qnlNJ8zA/JCL71FE0E5Zn4l+V1ZaHYgI6diboLP073U7U8IvM1gYEPVXkjU/O8CFa/mtvpapzEsYsa+Ku3fLXGKJWmeRoOLJJpuFsT+nbSEM8etzC3P7335azVhcysueFXKlTe8PKtxjLfZ7V4565Ef3KZkO5FCObU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+	 MIME-Version:Content-Type; b=bNo1y8o55uuZ/vSMCE2yXRTu5/AhVESci+Pqp2n8U1KyRJZSbVY3VldeVp/zqS5ESi16JyD3TnpkUUg0ulICFviRueGBd6sFokAEO/qcRnNqRdlFbZLFr/o2tMei3ES7QMAKaMbou6UJK6S+4v4+l9ksAQs4+QHRmWxWn48eFI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 55949868B1;
-	Fri, 19 Jan 2024 17:37:12 +0100 (CET)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 06BE4855A5;
+	Fri, 19 Jan 2024 17:37:16 +0100 (CET)
 From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Lee Jones <lee@kernel.org>, Daniel Thompson <daniel.thompson@linaro.org>,
- Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>,
- Rob Herring <robh+dt@kernel.org>,
+To: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+ Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>,
  Karel Balej <balejk@matfyz.cz>, ~postmarketos/upstreaming@lists.sr.ht,
@@ -43,14 +42,13 @@ Cc: Lee Jones <lee@kernel.org>, Daniel Thompson <daniel.thompson@linaro.org>,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-fbdev@vger.kernel.org
 Subject: Re: [PATCH v2 2/2] backlight: Add Kinetic KTD2801 driver
-Date: Fri, 19 Jan 2024 17:36:37 +0100
-Message-ID: <13440257.uLZWGnKmhe@radijator>
-In-Reply-To:
- <CACRpkdaUvmmbGUyQ-L_u8c73=Oz+qE88GXd1=cUY7r+PPttJbw@mail.gmail.com>
+Date: Fri, 19 Jan 2024 17:36:40 +0100
+Message-ID: <2925385.e9J7NaK4W3@radijator>
+In-Reply-To: <20240119100709.GB100705@aspen.lan>
 References:
  <20240118-ktd2801-v2-0-425cf32e0769@skole.hr>
  <20240118-ktd2801-v2-2-425cf32e0769@skole.hr>
- <CACRpkdaUvmmbGUyQ-L_u8c73=Oz+qE88GXd1=cUY7r+PPttJbw@mail.gmail.com>
+ <20240119100709.GB100705@aspen.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -113,85 +111,25 @@ Autocrypt: addr=duje.mihanovic@skole.hr;
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 
-On Friday, January 19, 2024 10:02:33 AM CET Linus Walleij wrote:
-> Hi Duje,
->=20
-> thanks for your patch!
->=20
-> On Thu, Jan 18, 2024 at 6:33=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanov=
-ic@skole.hr>=20
-wrote:
-> > Add driver for the Kinetic KTD2801 backlight driver.>
+On Friday, January 19, 2024 11:07:09 AM CET Daniel Thompson wrote:
+> On Thu, Jan 18, 2024 at 06:32:39PM +0100, Duje Mihanovi=C4=87 wrote:
+> > Add driver for the Kinetic KTD2801 backlight driver.
+> >=20
 > > Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+> >=20
+> > ---
+> > Shared ExpressWire handling code and preemption watchdogs haven't been
+> > implemented in this version as my questions regarding these two weren't
+> > answered.
+> > ---
 >=20
-> Add some commit message?
-
-Besides the usual short explanation of the hardware I'd also add a link to =
-the=20
-datasheet in the commit message if that's appropriate.
-
-> > +#include <linux/backlight.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/of.h>
+> The last mail I saw on this topic was of the "do you have any better
+> ideas?" variety. I (mis)read that as "unless you have any
+> better ideas" and didn't realize you were waiting for anything.
 >=20
-> I don't think you need <linux/of.h>, the compatible table works without
-> that (is in the device driver core).
+> I didn't have any better ideas!
 
-Can confirm it compiles without.
-
-> > +/* These values have been extracted from Samsung's driver. */
-> > +#define KTD2801_EXPRESSWIRE_DETECT_DELAY_US    150
-> > +#define KTD2801_EXPRESSWIRE_DETECT_US          270
-> > +#define KTD2801_LOW_BIT_HIGH_TIME_US           5
-> > +#define KTD2801_LOW_BIT_LOW_TIME_US            (4 *
-> > KTD2801_HIGH_BIT_LOW_TIME_US) +#define KTD2801_HIGH_BIT_LOW_TIME_US    =
-   =20
-> >   5
-> > +#define KTD2801_HIGH_BIT_HIGH_TIME_US          (4 *
-> > KTD2801_HIGH_BIT_LOW_TIME_US) +#define KTD2801_DATA_START_US           =
-   =20
-> >   5
-> > +#define KTD2801_END_OF_DATA_LOW_US             10
-> > +#define KTD2801_END_OF_DATA_HIGH_US            350
-> > +#define KTD2801_PWR_DOWN_DELAY_US              2600
-> > +
-> > +#define KTD2801_DEFAULT_BRIGHTNESS     100
-> > +#define KTD2801_MAX_BRIGHTNESS         255
-> > +
-> > +struct ktd2801_backlight {
-> > +       struct backlight_device *bd;
-> > +       struct gpio_desc *gpiod;
-> > +       bool was_on;
-> > +};
-> > +
-> > +static int ktd2801_update_status(struct backlight_device *bd)
-> > +{
-> > +       struct ktd2801_backlight *ktd2801 =3D bl_get_data(bd);
-> > +       u8 brightness =3D (u8) backlight_get_brightness(bd);
-> > +
-> > +       if (backlight_is_blank(bd)) {
-> > +               gpiod_set_value(ktd2801->gpiod, 0);
-> > +               udelay(KTD2801_PWR_DOWN_DELAY_US);
->=20
-> That's 2600 us, a pretty long delay in a hard loop or delay timer!
->=20
-> Can you use usleep_range() instead, at least for this one?
-
-Sounds like a good idea. Should I also make that GPIO pulldown _cansleep wh=
-ile=20
-at it?
-
-> > +       for (int i =3D 0; i < 8; i++) {
-> > +               u8 next_bit =3D (brightness & 0x80) >> 7;
->=20
-> I would just:
->=20
-> #include <linux/bits.h>
->=20
-> bool next_bit =3D !!(brightness & BIT(7));
-
-Will do.
+My apologies, I'll write the library as I proposed in that email.
 
 Regards,
 =2D-
