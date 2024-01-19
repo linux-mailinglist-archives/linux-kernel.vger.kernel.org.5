@@ -1,168 +1,119 @@
-Return-Path: <linux-kernel+bounces-31064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FB6783283B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:55:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 322B783283C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:55:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04D41B2409C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:55:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C84961F21C5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D3C4CDE5;
-	Fri, 19 Jan 2024 10:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35344CB33;
+	Fri, 19 Jan 2024 10:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="avoTUk8W"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u+N38//4"
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F8F4C632;
-	Fri, 19 Jan 2024 10:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24064C61D
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705661612; cv=none; b=ic35RpKix/Ykja2iPIb68g6mTmlrKYyx07V1hH9MqMR6zklUGdxg0eFj49F2cWwHDe03c5BC463GIWqz77r8qZ86bYvGOQdRYjcTFWWMfZfNPisg5R/0OIf4QaNIsEC5aHnGWFM7BgYsxGHgeukKaRcmnABSZ3ZNU+GeYiidMLo=
+	t=1705661694; cv=none; b=TYptqEz3XkrO+wnJ5nu3NBvxCpyL1q41vJqM19CYyCt9iU0dd9n9C4AiKnhEtgW/870sKdnMhzdE8ewabecf5UsETmlv8ijtI5vrqoEXKgWo1kWe0tx4D+UsPBx6qQI28jPPif+vM2u3PFWX800izJjK+96C+0rD/DQZyVQvaLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705661612; c=relaxed/simple;
-	bh=CFyBN3hM6Icm5piROwxSXNJbjOUUSK0D7k+x7CC40aU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EusJohIYDrIfFluJ6kYlaAvrXu+4UXB7Fx3qL58YeeVjpI5T8JBAXmOoWpWpPRNrPJw66Z1EhKxJCTtYWkkAE4Y7HzWYm3bLmbUkdozCcF0Jd+dRz7xXX17qZT64OAlDQFKd0Ejc0jYkT3tueiFcwCtsM8SxS3gq2uCN37y3ToA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=avoTUk8W; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705661608;
-	bh=CFyBN3hM6Icm5piROwxSXNJbjOUUSK0D7k+x7CC40aU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=avoTUk8WRN/wl1do+O2nS/ru8pUagCwo4abnUWi1pX+a2UJBgBv/QnAf8ajcp/IRX
-	 rn7dvUSc6EWvANhphTJmt3tJaslmfHGyXq05qKFHILrnX3hQzV8EDK5PszgnmTvIc0
-	 M5cyBnu2ZLRTuJiqyIMvEUKNkiNoaLuuxpMNbf05/XvhVJjmy7Ji9Vbo7Bft8JW14f
-	 rkJZIpie5RTHZdSfoOCkWnrJ92vqbz34HZwxTy8EGfJ9Wts8CCASh/jwXUovDOgaBm
-	 Ee3tMs5+O+EndXRO7krQWzoKAKnYRoMF3o78oqyfHjMMBbHUdJg2MbzZLNApmb8gg1
-	 ZNvAuD/5vERSA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5EC20378202D;
-	Fri, 19 Jan 2024 10:53:27 +0000 (UTC)
-Message-ID: <30dca707-2b48-4309-8567-8c1297a75db5@collabora.com>
-Date: Fri, 19 Jan 2024 11:53:26 +0100
+	s=arc-20240116; t=1705661694; c=relaxed/simple;
+	bh=m18szehcgIZyGC92ETa72dOynkQ2f6n24be0IltSxcQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RakRhpTazujbHROG9GgN5rJ2LcsgXkEXlOOahu/MiKulpxnQfoHbmDkDwWKs5UvCCwAzIamSsmAlrltDPGCFCXwRDg/i2PZ1V7ZdikXjorEkUvrXRARfLFf0hmB4nlNsBPnbFeWt8iFQkf32irkSpufmVDcirkjEc5aRxoLrifs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u+N38//4; arc=none smtp.client-ip=209.85.217.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-4698c58c589so164162137.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:54:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705661692; x=1706266492; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Xb+juV7I4ZaGbrlpY2PUAxU1pIC4OKmMwt1hcg3KeQ=;
+        b=u+N38//4Pq2J2IhdqxzrDWt2GGMKtvZez+jz7ORN2U9KkOo7JzuDzJiHg3KWV3NFfm
+         SUlpQXgSUDMudJWR8u3U7IsuV95p2zGRcnSnyNmbB1uKbWwMLhaVKZAgmvkSwB5G11g/
+         eYNCqTBOoXeJfK8+Vpz0u6Ye0rQG2Sh0aL6jyQos5Gm1ahLqptQFqBauLNg3RRrWnOmv
+         jBaBtHTNMMil2PnPorxV5K6zLPaAdn5CoKqhVpbWgFS20z4L9WBnO7tLUnBFcgO32g1G
+         8uEI9ZVQ+jMQLIsswESxS41O2fSuk4nuOKmdijAyfY/VN8Fat4Thh+Rg3r8J4A/03blT
+         8EuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705661692; x=1706266492;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5Xb+juV7I4ZaGbrlpY2PUAxU1pIC4OKmMwt1hcg3KeQ=;
+        b=nV7oktoc2pYD32/lyCKN+nfGqq6hkIMbWJRg4/FYSqR/+NDnM/H5vHYp+lSwJ5p209
+         9TKjeRAPdEHDSKaq3hRrSOJLxKY5obBjFHIf0myRzg7GS2OruqP3RKKG73NYAl/1bx5V
+         wcLiorNWLCYN3VmiEkVcAnYx2roDwruE4lkr7Et3wneasjrJ6UFHTDzBrlfibsINDxKF
+         l5y7ok+ODY98a+CuQLadQkMSSXGd0SeBsQ2niKURb6sIRzpR8dj5tU8SWYKk+zvCVU9k
+         BbGftcgbHiUPE+CJTjnuoNWO2GZw9EOWSwVUAWttr8TKFV7wLaSLlM7c1kaqb9KnZ0hj
+         otLA==
+X-Gm-Message-State: AOJu0Yxa6SikGE+ARWld72rEc/VA/ZRajDDz7tCYU84DCYBvp8HqqhwU
+	UQpYFXqFPIvARdytm5ysosT/POBxc21AH1UVeTzBzBQWbtbglbo24XMaALCUF1IqvqMU7WU26HW
+	SKwsekqiSKVmMQAqrs1inMNzmASmNA9Om7KGp
+X-Google-Smtp-Source: AGHT+IGfGiELClmDzev+0sWDa7A19EKW7tm37U7fiBmUfUP3YgUO4ewnFd/UnPwUYszhWmGdM00WaZHtrI4Lm8Qd9PQ=
+X-Received: by 2002:a05:6102:214f:b0:467:cacc:bbf2 with SMTP id
+ h15-20020a056102214f00b00467caccbbf2mr1927163vsg.8.1705661691706; Fri, 19 Jan
+ 2024 02:54:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] dt-bindings: mailbox: Add mediatek,gce-props.yaml
-Content-Language: en-US
-To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
- linaro-mm-sig@lists.linaro.org, Jason-ch Chen <jason-ch.chen@mediatek.com>,
- Johnson Wang <johnson.wang@mediatek.com>,
- Singo Chang <singo.chang@mediatek.com>, Nancy Lin <nancy.lin@mediatek.com>,
- Shawn Sung <shawn.sung@mediatek.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20240119063224.29671-1-jason-jh.lin@mediatek.com>
- <20240119063224.29671-2-jason-jh.lin@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240119063224.29671-2-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CABXGCsOzpRPZGg23QqJAzKnqkZPKzvieeg=W7sgjgi3q0pBo0g@mail.gmail.com>
+In-Reply-To: <CABXGCsOzpRPZGg23QqJAzKnqkZPKzvieeg=W7sgjgi3q0pBo0g@mail.gmail.com>
+From: Marco Elver <elver@google.com>
+Date: Fri, 19 Jan 2024 11:54:14 +0100
+Message-ID: <CANpmjNN-5PpSQ1A_9aM3u4ei74HuvCoThiLAHi=reXXQwer67A@mail.gmail.com>
+Subject: Re: regression/bisected commit 773688a6cb24b0b3c2ba40354d883348a2befa38
+ make my system completely unusable under high load
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc: andreyknvl@google.com, glider@google.com, dvyukov@google.com, 
+	eugenis@google.com, Oscar Salvador <osalvador@suse.de>, Vlastimil Babka <vbabka@suse.cz>, 
+	Andrew Morton <akpm@linux-foundation.org>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Il 19/01/24 07:32, Jason-JH.Lin ha scritto:
-> Add mediatek,gce-props.yaml for common GCE properties that is used for
-> both mailbox providers and consumers. We place the common property
-> "mediatek,gce-events" in this binding currently.
-> 
-> The property "mediatek,gce-events" is used for GCE event ID corresponding
-> to a hardware event signal sent by the hardware or a sofware driver.
-> If the mailbox providers or consumers want to manipulate the value of
-> the event ID, they need to know the specific event ID.
-> 
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
->   .../bindings/mailbox/mediatek,gce-props.yaml  | 52 +++++++++++++++++++
->   1 file changed, 52 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml b/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
-> new file mode 100644
-> index 000000000000..68b519ff089f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
-> @@ -0,0 +1,52 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mailbox/mediatek,gce-props.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek Global Command Engine Common Propertes
-> +
-> +maintainers:
-> +  - Houlong Wei <houlong.wei@mediatek.com>
-> +
-> +description:
-> +  The Global Command Engine (GCE) is an instruction based, multi-threaded,
-> +  single-core command dispatcher for MediaTek hardware. The Command Queue
-> +  (CMDQ) mailbox driver is a driver for GCE, implemented using the Linux
-> +  mailbox framework. It is used to receive messages from mailbox consumers
-> +  and configure GCE to execute the specified instruction set in the message.
-> +  We use mediatek,gce-mailbox.yaml to define the properties for CMDQ mailbox
-> +  driver. A device driver that uses the CMDQ driver to configure its hardware
-> +  registers is a mailbox consumer. The mailbox consumer can request a mailbox
-> +  channel corresponding to a GCE hardware thread to send a message, specifying
-> +  that the GCE thread to configure its hardware. The mailbox provider can also
-> +  reserved a mailbox channel to configure GCE hardware register by the spcific
-> +  GCE thread. This binding defines the common GCE properties for both mailbox
-> +  provider and consumers.
-> +
-> +properties:
-> +  mediatek,gce-events:
-> +    description:
-> +      GCE has an event table in SRAM, consisting of 1024 event IDs (0~1023).
-> +      Each event ID has a boolean event value with the default value 0.
-> +      The property mediatek,gce-events is used to obtain the event IDs.
-> +      Some gce-events are hardware-bound and cannot be changed by software.
-> +      For instance, in MT8195, when VDO0_MUTEX is stream done, VDO_MUTEX will
-> +      send an event signal to GCE, setting the value of event ID 597 to 1.
-> +      Similarly, in MT8188, the value of event ID 574 will be set to 1 when
-> +      VOD0_MUTEX is stream done.
-> +      On the other hand, some gce-events are not hardware-bound and can be
-> +      changed by software. For example, in MT8188, we can set the value of
-> +      event ID 855, which is not bound to any hardware, to 1 when the driver
-> +      in the secure world completes a task. However, in MT8195, event ID 855
-> +      is already bound to VDEC_LAT1, so we need to select another event ID to
-> +      achieve the same purpose. This event ID can be any ID that is not bound
-> +      to any hardware and is not yet used in any software driver.
-> +      To determine if the event ID is bound to the hardware or used by a
-> +      software driver, refer to the GCE header
-> +      include/dt-bindings/gce/<chip>-gce.h of each chip.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 1
-> +    maxItems: 1024
+On Fri, 19 Jan 2024 at 11:46, Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
+>
+> Hi,
+> I use a system with KASAN sanitizer everyday.
+> Because I want to catch difficult-to-repeat bugs.
+> And all worked fine until commit 773688a6cb24b0b3c2ba40354d883348a2befa38.
+> After commit 773688a6cb24b0b3c2ba40354d883348a2befa38 all working
+> jerky when I compile something.
+> The sound is interrupted, the cursor moves jerkily if I try to do
+> anything when all the cores are loaded.
+>
+> > git bisect bad
+> 773688a6cb24b0b3c2ba40354d883348a2befa38 is the first bad commit
+> commit 773688a6cb24b0b3c2ba40354d883348a2befa38
+> Author: Andrey Konovalov <andreyknvl@google.com>
+> Date:   Mon Nov 20 18:47:19 2023 +0100
+>
+>     kasan: use stack_depot_put for Generic mode
+[...]
+>  mm/kasan/common.c     |  3 ++-
+>  mm/kasan/generic.c    | 22 ++++++++++++++++++----
+>  mm/kasan/quarantine.c | 26 ++++++++++++++++++++------
+>  3 files changed, 40 insertions(+), 11 deletions(-)
+>
+> I attached here my build .config and kernel log.
+> Who could dig into it, please?
 
-maxItems: 1024 seems to be a bit too many... this means that one devicetree node
-may have up to 1024 gce events, which is impossible! If a driver needed all of
-the 1024 events, this means that it's not an user of the GCE, but the GCE itself!
+I was afraid this would happen - could you try this patch series:
+https://lore.kernel.org/all/20240118110216.2539519-2-elver@google.com/
 
-Imagine seeing a devicetree node with 1024 array entries for mediatek,gce-events...
-
-I'd set that to a more sensible value of 32 - eventually we can extend it later,
-if ever needed.
-
-Besides, nice job about all this documentation of the GCE and its events: love it!
-
-Cheers,
-Angelo
-
+Thanks,
+-- Marco
 
