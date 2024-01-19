@@ -1,141 +1,164 @@
-Return-Path: <linux-kernel+bounces-31626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27F0283316A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:20:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD0783316C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D489C28552C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:20:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8E521F2350E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13FC58ADB;
-	Fri, 19 Jan 2024 23:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538BD58ADB;
+	Fri, 19 Jan 2024 23:22:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iUPxmlZW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="eWAWNFYl"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D39738E;
-	Fri, 19 Jan 2024 23:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198285789B;
+	Fri, 19 Jan 2024 23:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705706435; cv=none; b=i+Kiac5WdG3xx4+XQCk0Aujeh0Nxuhb33DVaiYa5AK7iR+7zk1ugkQWNG/s/IzK/a3pZ3pfdqAdFdMCyDJaWfkLW2KlMAEduZlm2edV1Ug9eFZ+bQlsGsoVcjgA8OlVtFM7d0A8XnLbJn/ELd6nhFeZwO4YxJJuEZvevMba2z+w=
+	t=1705706551; cv=none; b=KSpEIpvXIVwBjuEW5HJCaaVtyvTU0S6w2/CYSXMXP1cBm3mUXi/QMmooL8UJixuP9zcSBIx+K1PLS+xiC5C1orIxu6uDiqhXNcA0xuR2kKOckTm/xWkiwwZLCRNCAf59f9ObG4u0vsKf3faOUX02ysQBFCEdx4XiROn17GkXdpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705706435; c=relaxed/simple;
-	bh=UdNTVVg961CwiMd5mYYDaAcvaTXvq85umlFhv66v4j0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=uP8bhYeSPuY0mWylgz81Cwv7h+MFaxZZrJNsBVDIP0/FE8ENCDEtnF9VBdE/H4anyoK9hdbj/eh1gg2XmvTQUjzDeu253yWXIdN6rHvekw9cqKVCR+IA0y/X9XAvEDWXs4q4+7xOKNN13o+o54zXOP47mQLU/QTvhO4FFb12tKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iUPxmlZW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CD33C433F1;
-	Fri, 19 Jan 2024 23:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705706434;
-	bh=UdNTVVg961CwiMd5mYYDaAcvaTXvq85umlFhv66v4j0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=iUPxmlZW3cYxAfpppMdb/zgUTSxrT57hkfXdY1Bqqne2bP3HJAVRqJOiMFAnyL2v2
-	 mtgKFYVLsOyKU/dalbHacAlxKDtpxR9N8Q5kfXgSHOK2zKrnnMZavxopK0hx59O2fJ
-	 X79zrj5r727bHZ5rh0hl4IM5p/N/KLBpODpDJWnac/BKfnvxgQsad4qrPxEbY1gMaw
-	 uINgLmt6f+TwIEPaZHqUcIjgp5v18nnUVe+DYIby41w1eyaksUMIiE6xEnPhgv0Dpk
-	 ELmGDni7xmhgYqefbWiO4MGBmT3omsQ5FZeqEW6wklkawAeNcbY62aTyfIL8TZElYi
-	 G5eIbB/1TTkgg==
-Date: Fri, 19 Jan 2024 17:20:32 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
-	bhelgaas@google.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	ilpo.jarvinen@linux.intel.com, vigneshr@ti.com,
-	r-gunasekaran@ti.com, srk@ti.com
-Subject: Re: [PATCH v3] PCI: keystone: Fix race condition when initializing
- PHYs
-Message-ID: <20240119232032.GA192245@bhelgaas>
+	s=arc-20240116; t=1705706551; c=relaxed/simple;
+	bh=5FsT8mgZflGaTw8AtvFQX7BxaQeZrNKpxYcDl51lLWo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MTnr3eVY1jCZgHNVJ0+SmZgAH6Rbjq1ePnpbvRwpjxrHI0spUpZvDHIiFqKVP4xAEmyGV5jFAsVEPiAyrOn4VVRx1bExJPoofuJ/fGDElsavJ2OOwLSLtQjsog5Vpsygf+M8YRSjvHJV+MvZ5fewoJQYjBm4bapv/XSZGAnbDAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=eWAWNFYl; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705706548;
+	bh=5FsT8mgZflGaTw8AtvFQX7BxaQeZrNKpxYcDl51lLWo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eWAWNFYlMthDefVPwaJFw+GmCB9DaGkA+I2dNr8mDFSRzHd8eCZ1UebtpHcfhC1c3
+	 xM9UhD7GlORXQ5UcGn2mIiu6YtGswlqgnBEaQmYbhWp/U7+dANqiqn/eoM4a2uhXXx
+	 Ui0B8734lUWgtarFWvfDgem/lp94h0tI4UDDsecmEjRhYstUBpSljR8818nBzhlTsp
+	 uaOd03JRj+ODh/yg9AQoJLdz6bBYMyhZqeOo0ngRkea8OQs54gYh6Q0HT4j7dWaFYX
+	 NFl6InhbX0bhT/lqFa3bkzxw8boMKBWLk5PNnH7XUtKHKWAUBm6xALd8Ly0KMP0qY9
+	 MAVYNW3oRZGIw==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 01D26378143B;
+	Fri, 19 Jan 2024 23:22:26 +0000 (UTC)
+Message-ID: <f4ab86cb-158a-48e4-af63-6b13e15a7823@collabora.com>
+Date: Sat, 20 Jan 2024 01:22:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8dbbffd-c209-44bc-8d1e-42b6f1b08aef@ti.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] phy: rockchip: Add Samsung HDMI/DP Combo PHY driver
+Content-Language: en-US
+To: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I
+ <kishon@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Johan Jonker <jbx6244@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>,
+ Algea Cao <algea.cao@rock-chips.com>, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com
+References: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
+ <20240119193806.1030214-4-cristian.ciocaltea@collabora.com>
+ <eodlujrytdm6gugcbaz3efnjvgg7sbvsqedwllmleh4ar6e7cr@3ejicokdjzcd>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <eodlujrytdm6gugcbaz3efnjvgg7sbvsqedwllmleh4ar6e7cr@3ejicokdjzcd>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10, 2024 at 11:35:24AM +0530, Siddharth Vadapalli wrote:
-> Hello Bjorn,
-> 
-> On 10/01/24 02:53, Bjorn Helgaas wrote:
-> > On Wed, Sep 27, 2023 at 09:48:45AM +0530, Siddharth Vadapalli wrote:
-> >> The PCI driver invokes the PHY APIs using the ks_pcie_enable_phy()
-> >> function. The PHY in this case is the Serdes. It is possible that the
-> >> PCI instance is configured for 2 lane operation across two different
-> 
-> ...
-> 
-> >>  
-> >> +	/* Obtain reference(s) to the phy(s) */
-> >> +	for (i = 0; i < num_lanes; i++)
-> >> +		phy_pm_runtime_get_sync(ks_pcie->phy[i]);
-> >> +
-> >>  	ret = ks_pcie_enable_phy(ks_pcie);
-> >> +
-> >> +	/* Release reference(s) to the phy(s) */
-> >> +	for (i = 0; i < num_lanes; i++)
-> >> +		phy_pm_runtime_put_sync(ks_pcie->phy[i]);
-> > 
-> > This looks good and has already been applied, so no immediate action
-> > required.
-> > 
-> > This is the only call to ks_pcie_enable_phy(), and these loops get and
-> > put the PM references for the same PHYs initialized in
-> > ks_pcie_enable_phy(), so it seems like maybe these loops could be
-> > moved *into* ks_pcie_enable_phy().
-> 
-> Does the following look fine?
-> ===============================================================================
-> diff --git a/drivers/pci/controller/dwc/pci-keystone.c
-> b/drivers/pci/controller/dwc/pci-keystone.c
-> index e02236003b46..6e9f9589d26c 100644
-> --- a/drivers/pci/controller/dwc/pci-keystone.c
-> +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> @@ -962,6 +962,9 @@ static int ks_pcie_enable_phy(struct keystone_pcie *ks_pcie)
->         int num_lanes = ks_pcie->num_lanes;
-> 
->         for (i = 0; i < num_lanes; i++) {
-> +               /* Obtain reference to the phy */
-> +               phy_pm_runtime_get_sync(ks_pcie->phy[i]);
+Hi Sebastian,
 
-I thought the point was that you needed to guarantee that all PHYs are
-powered on and stay that way before initializing any of them.  If so,
-you would need a separate loop, e.g.,
-
-  for (i = 0; i < num_lanes; i++)
-    phy_pm_runtime_get_sync(ks_pcie->phy[i]);
-
-  for (i = 0; i < num_lanes; i++) {
-    ret = phy_reset(ks_pcie->phy[i]);
-    ...
-
->                 ret = phy_reset(ks_pcie->phy[i]);
->                 if (ret < 0)
->                         goto err_phy;
-> @@ -977,12 +980,18 @@ static int ks_pcie_enable_phy(struct keystone_pcie *ks_pcie)
->                 }
->         }
+On 1/20/24 00:47, Sebastian Reichel wrote:
+> Hi Cristian,
 > 
-> +       /* Release reference(s) to the phy(s) */
-> +       for (i = 0; i < num_lanes; i++)
-> +               phy_pm_runtime_put_sync(ks_pcie->phy[i]);
-> +
->         return 0;
+> On Fri, Jan 19, 2024 at 09:38:03PM +0200, Cristian Ciocaltea wrote:
+>> Add driver for the Rockchip HDMI/eDP TX Combo PHY found on RK3588 SoC.
+>>
+>> The PHY is based on a Samsung IP block and supports HDMI 2.1 TMDS, FRL
+>> and eDP links.  The maximum data rate is 12Gbps (HDMI 2.1 FRL), while
+>> the minimum is 250Mbps (HDMI 2.1 TMDS).
+>>
+>> Co-developed-by: Algea Cao <algea.cao@rock-chips.com>
+>> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>> ---
 > 
->  err_phy:
->         while (--i >= 0) {
->                 phy_power_off(ks_pcie->phy[i]);
->                 phy_exit(ks_pcie->phy[i]);
-> +               /* Release reference to the phy */
-> +               phy_pm_runtime_put_sync(ks_pcie->phy[i]);
->         }
+> The driver has multiple sequences looking like this (this is just one
+> example of many):
 > 
->         return ret;
+>> +	hdptx_write(hdptx, CMN_REG0087, 0x04);
+>> +	hdptx_write(hdptx, CMN_REG0089, 0x00);
+>> +	hdptx_write(hdptx, CMN_REG008A, 0x55);
+>> +	hdptx_write(hdptx, CMN_REG008B, 0x25);
+>> +	hdptx_write(hdptx, CMN_REG008C, 0x2c);
+>> +	hdptx_write(hdptx, CMN_REG008D, 0x22);
+>> +	hdptx_write(hdptx, CMN_REG008E, 0x14);
+>> +	hdptx_write(hdptx, CMN_REG008F, 0x20);
+>> +	hdptx_write(hdptx, CMN_REG0090, 0x00);
+>> +	hdptx_write(hdptx, CMN_REG0091, 0x00);
+>> +	hdptx_write(hdptx, CMN_REG0092, 0x00);
+>> +	hdptx_write(hdptx, CMN_REG0093, 0x00);
+>> +	hdptx_write(hdptx, CMN_REG0095, 0x00);
+>> +	hdptx_write(hdptx, CMN_REG0097, 0x02);
+>> +	hdptx_write(hdptx, CMN_REG0099, 0x04);
+>> +	hdptx_write(hdptx, CMN_REG009A, 0x11);
+>> +	hdptx_write(hdptx, CMN_REG009B, 0x00);
+> 
+> Instead of the repetitive calls to regmap_write, it's better to do
+> it like this:
+> 
+> static const struct reg_sequence some_init_seq[] = {
+> 	REG_SEQ0(CMN_REG0087, 0x04),
+> 	REG_SEQ0(CMN_REG0089, 0x00),
+> 	REG_SEQ0(CMN_REG008A, 0x55),
+> 	REG_SEQ0(CMN_REG008B, 0x25),
+> 	REG_SEQ0(CMN_REG008C, 0x2c),
+> 	REG_SEQ0(CMN_REG008D, 0x22),
+> 	REG_SEQ0(CMN_REG008E, 0x14),
+> 	REG_SEQ0(CMN_REG008F, 0x20),
+> 	REG_SEQ0(CMN_REG0090, 0x00),
+> 	REG_SEQ0(CMN_REG0091, 0x00),
+> 	REG_SEQ0(CMN_REG0092, 0x00),
+> 	REG_SEQ0(CMN_REG0093, 0x00),
+> 	REG_SEQ0(CMN_REG0095, 0x00),
+> 	REG_SEQ0(CMN_REG0097, 0x02),
+> 	REG_SEQ0(CMN_REG0099, 0x04),
+> 	REG_SEQ0(CMN_REG009A, 0x11),
+> 	REG_SEQ0(CMN_REG009B, 0x00),
+> };
+> 
+> regmap_multi_reg_write(hdptx->regmap, some_init_seq, ARRAY_SIZE(some_init_seq));
+
+Thanks for the hint!  Will try to make use of this as much as possible.
+
+>> +static const struct of_device_id rockchip_hdptx_phy_of_match[] = {
+>> +	{ .compatible = "rockchip,rk3588-hdptx-phy", },
+>> +	{}
+>> +};
+>> +MODULE_DEVICE_TABLE(of, rockchip_hdptx_phy_of_match);
+>> +
+>> +static struct platform_driver rockchip_hdptx_phy_driver = {
+>> +	.probe  = rockchip_hdptx_phy_probe,
+>> +	.driver = {
+>> +		.name = "rockchip-hdptx-phy",
+>> +		.pm = &rockchip_hdptx_phy_pm_ops,
+>> +		.of_match_table = of_match_ptr(rockchip_hdptx_phy_of_match),
+> 
+> Remove of_match_ptr(). It's a nop, since the driver depends on OF.
+
+Right, will drop it in v2.
+
+Regards,
+Cristian
 
