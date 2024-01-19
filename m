@@ -1,63 +1,99 @@
-Return-Path: <linux-kernel+bounces-31314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 771B3832C51
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:27:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DD06832C57
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:27:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04B542866C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:26:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32B341C23BF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A571B54BC7;
-	Fri, 19 Jan 2024 15:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB8154BD2;
+	Fri, 19 Jan 2024 15:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Smz9BHF+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nWM6ElDs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dNXizWJn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nWM6ElDs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dNXizWJn"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2AD654BC1;
-	Fri, 19 Jan 2024 15:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697A853810;
+	Fri, 19 Jan 2024 15:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705678012; cv=none; b=QcltcyG5TmtdfozmR6ACeC9ww0JopL0/n26FQVJ1fw5oMM0LKOACmSSTi1NRw8Y0ozwpEPetE+k9sZq05FNApbjnsaM3rUyKtmAygrePSMlk1DUqHPM6FKzw7bgYbN/KBSR+TtGZox2fJyQNMwJXeGxp1b2jW8qNWwbAvqfYZEk=
+	t=1705678025; cv=none; b=TJ/uj0NjPTg1qNQZGy4x6Oyps4vR7wpuWl3Ozn7gzm5Qwptp+CtgvjQat4tM4t3X2Wn9L8F4FKbUHPALNlVHRHPlVMh09zH/8zaDv+gUSciVdqL6Eu1aelVr+kQyEhmoXsC5vL0XPOHopGSnA0KCS3hL1gxEVLuH2PNUFSmzYAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705678012; c=relaxed/simple;
-	bh=X/xd67Fr3PvF8lGpTMnDOMiobvUDHSVg02IBNzMqNGw=;
+	s=arc-20240116; t=1705678025; c=relaxed/simple;
+	bh=19rSRL58dOC4OZ9Gg2gm/OwItV5wyPowOqlclDsjcp8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nJpEtpYTquozelyFTV6KSYvk1YcwQpZ8WAHUHQVXBN1ms4gsqa4TJmLzI2YcsrabdiGfdsNhntN9pjOrbM/2pntq7s7G8dQjaPbTC4oHuH8OGiPT4agIVlzAkDeUIb9A0YuAebvGW8eBdyLia6VVP/ZZ4478XqeMyiBSVvAqdzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Smz9BHF+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CD31C43394;
-	Fri, 19 Jan 2024 15:26:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705678011;
-	bh=X/xd67Fr3PvF8lGpTMnDOMiobvUDHSVg02IBNzMqNGw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Smz9BHF+haNafasg95JGgtPJYBBHgYlY+/gV8naiOscTv4jh4wJ879u65MnftYq6a
-	 HAUOFwKH1cDjAP5MHxOW36tw5KQInht3bZQ1BFVITR9Yzm9vXVmKVdow6S4SYtSqgK
-	 5P9fluDHo1/AH/VYLojyr6pEutOZvF53QmF8Xmc9bryktDxd8fom/RgoGR4lzDD5cG
-	 FPvOP3M7jePnZwQt9kQ2nPtv/mNf/zvOtRaTKCxC8PanmTYg2fMFrtE0YKiXhr1Y2l
-	 +80VKww/UwvBAfTpHO80c6pItmi8s1lvnZOvi9cprM9bVTGTVr9tUZgiS4FYb1QGtl
-	 TxW5g3tXcywrw==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rQqlo-0004QS-00;
-	Fri, 19 Jan 2024 16:27:00 +0100
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ey6sB3WtBhW4PRq5hJFlNEhdT4CJX1oaeOzdlqoniOdc/feBUBO1P66arTMjj91H11NDyqv409hmu29a/Ode6KLbd8g/kHDhtwymUBz0DkznlvzYPSYuCnnhSALPUBW7BTyc99gtPbTeSFxE8tW9HE+BGdvVk4yhXa5NfpXgcSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nWM6ElDs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dNXizWJn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nWM6ElDs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dNXizWJn; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 546DF1F7F9;
+	Fri, 19 Jan 2024 15:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705678020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vxcPS0/G6HHJ5b5iYVi8rX0C+ZxopTM5emRTtqK5mEc=;
+	b=nWM6ElDsO70gVDzIpw/X5OmojQFWVg/b/CD497QQi7snPAYNYzEHuJ7rHYQtoiNDT59S/A
+	a/Pqa7Dr7xQkI/kI5ceavl0ALoQFu1u/LQz3V1mj0NcKi/KykjlIwAlGiOiawov4LB579z
+	8em9bFDW9httwADNp3xaJAm3RGRtQLE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705678020;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vxcPS0/G6HHJ5b5iYVi8rX0C+ZxopTM5emRTtqK5mEc=;
+	b=dNXizWJnimFWh8EDbrLRiAzjUlrUXxZgfydlBxFe+TvWNgZaIPQfZnWGNRwtkHykTdLfSy
+	LQ1glfjwFfUmSsAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705678020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vxcPS0/G6HHJ5b5iYVi8rX0C+ZxopTM5emRTtqK5mEc=;
+	b=nWM6ElDsO70gVDzIpw/X5OmojQFWVg/b/CD497QQi7snPAYNYzEHuJ7rHYQtoiNDT59S/A
+	a/Pqa7Dr7xQkI/kI5ceavl0ALoQFu1u/LQz3V1mj0NcKi/KykjlIwAlGiOiawov4LB579z
+	8em9bFDW9httwADNp3xaJAm3RGRtQLE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705678020;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vxcPS0/G6HHJ5b5iYVi8rX0C+ZxopTM5emRTtqK5mEc=;
+	b=dNXizWJnimFWh8EDbrLRiAzjUlrUXxZgfydlBxFe+TvWNgZaIPQfZnWGNRwtkHykTdLfSy
+	LQ1glfjwFfUmSsAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 49B831388C;
+	Fri, 19 Jan 2024 15:27:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5N/2EcSUqmUxRQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 19 Jan 2024 15:27:00 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id DB033A0803; Fri, 19 Jan 2024 16:26:59 +0100 (CET)
 Date: Fri, 19 Jan 2024 16:26:59 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] ASoC: qcom: sc8280xp: limit speaker volumes
-Message-ID: <ZaqUw-9XulJGKH7v@hovoldconsulting.com>
-References: <20240119112420.7446-1-johan+linaro@kernel.org>
- <20240119112420.7446-3-johan+linaro@kernel.org>
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	akpm@linux-foundation.org, tj@kernel.org, xiujianfeng@huawei.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH] writeback: move wb_wakeup_delayed defination to
+ fs-writeback.c
+Message-ID: <20240119152659.fvfk2axsd2pwhebk@quack3>
+References: <20240118203339.764093-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,30 +102,144 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240119112420.7446-3-johan+linaro@kernel.org>
+In-Reply-To: <20240118203339.764093-1-shikemeng@huaweicloud.com>
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nWM6ElDs;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=dNXizWJn
+X-Spamd-Result: default: False [5.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_SPAM(5.10)[100.00%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 5.29
+X-Rspamd-Queue-Id: 546DF1F7F9
+X-Spam-Level: *****
+X-Spam-Flag: NO
+X-Spamd-Bar: +++++
 
-On Fri, Jan 19, 2024 at 12:24:18PM +0100, Johan Hovold wrote:
-> The UCM configuration for the Lenovo ThinkPad X13s has up until now
-> been setting the speaker PA volume to the minimum -3 dB when enabling
-> the speakers, but this does not prevent the user from increasing the
-> volume further.
+On Fri 19-01-24 04:33:39, Kemeng Shi wrote:
+> The wb_wakeup_delayed is only used in fs-writeback.c. Move it to
+> fs-writeback.c after defination of wb_wakeup and make it static.
 > 
-> Limit the digital gain and PA volumes to a combined -3 dB in the machine
-> driver to reduce the risk of speaker damage until we have active speaker
-> protection in place (or higher safe levels have been established).
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+
+Yeah, not sure why it was left there. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/fs-writeback.c           | 25 +++++++++++++++++++++++++
+>  include/linux/backing-dev.h |  1 -
+>  mm/backing-dev.c            | 25 -------------------------
+>  3 files changed, 25 insertions(+), 26 deletions(-)
 > 
-> Note that the PA volume limit cannot be set lower than 0 dB or
-> PulseAudio gets confused when the first 16 levels all map to -3 dB.
-
-I tracked the down the root cause for this, which appears to be a bug
-(feature) in pulseaudio that causes it to reject the dB range if the
-maximum is negative:
-
-	https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/merge_requests/447
-
-This happened to work with v3 which limited the PA volume to the single
-lowest setting, but would similarly break if anyone wants to set a -1.5
-dB limit.
-
-Johan
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index 1767493dffda..5ab1aaf805f7 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -141,6 +141,31 @@ static void wb_wakeup(struct bdi_writeback *wb)
+>  	spin_unlock_irq(&wb->work_lock);
+>  }
+>  
+> +/*
+> + * This function is used when the first inode for this wb is marked dirty. It
+> + * wakes-up the corresponding bdi thread which should then take care of the
+> + * periodic background write-out of dirty inodes. Since the write-out would
+> + * starts only 'dirty_writeback_interval' centisecs from now anyway, we just
+> + * set up a timer which wakes the bdi thread up later.
+> + *
+> + * Note, we wouldn't bother setting up the timer, but this function is on the
+> + * fast-path (used by '__mark_inode_dirty()'), so we save few context switches
+> + * by delaying the wake-up.
+> + *
+> + * We have to be careful not to postpone flush work if it is scheduled for
+> + * earlier. Thus we use queue_delayed_work().
+> + */
+> +static void wb_wakeup_delayed(struct bdi_writeback *wb)
+> +{
+> +	unsigned long timeout;
+> +
+> +	timeout = msecs_to_jiffies(dirty_writeback_interval * 10);
+> +	spin_lock_irq(&wb->work_lock);
+> +	if (test_bit(WB_registered, &wb->state))
+> +		queue_delayed_work(bdi_wq, &wb->dwork, timeout);
+> +	spin_unlock_irq(&wb->work_lock);
+> +}
+> +
+>  static void finish_writeback_work(struct bdi_writeback *wb,
+>  				  struct wb_writeback_work *work)
+>  {
+> diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+> index 1a97277f99b1..8e7af9a03b41 100644
+> --- a/include/linux/backing-dev.h
+> +++ b/include/linux/backing-dev.h
+> @@ -38,7 +38,6 @@ struct backing_dev_info *bdi_alloc(int node_id);
+>  
+>  void wb_start_background_writeback(struct bdi_writeback *wb);
+>  void wb_workfn(struct work_struct *work);
+> -void wb_wakeup_delayed(struct bdi_writeback *wb);
+>  
+>  void wb_wait_for_completion(struct wb_completion *done);
+>  
+> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> index 1e3447bccdb1..039dc74b505a 100644
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+> @@ -372,31 +372,6 @@ static int __init default_bdi_init(void)
+>  }
+>  subsys_initcall(default_bdi_init);
+>  
+> -/*
+> - * This function is used when the first inode for this wb is marked dirty. It
+> - * wakes-up the corresponding bdi thread which should then take care of the
+> - * periodic background write-out of dirty inodes. Since the write-out would
+> - * starts only 'dirty_writeback_interval' centisecs from now anyway, we just
+> - * set up a timer which wakes the bdi thread up later.
+> - *
+> - * Note, we wouldn't bother setting up the timer, but this function is on the
+> - * fast-path (used by '__mark_inode_dirty()'), so we save few context switches
+> - * by delaying the wake-up.
+> - *
+> - * We have to be careful not to postpone flush work if it is scheduled for
+> - * earlier. Thus we use queue_delayed_work().
+> - */
+> -void wb_wakeup_delayed(struct bdi_writeback *wb)
+> -{
+> -	unsigned long timeout;
+> -
+> -	timeout = msecs_to_jiffies(dirty_writeback_interval * 10);
+> -	spin_lock_irq(&wb->work_lock);
+> -	if (test_bit(WB_registered, &wb->state))
+> -		queue_delayed_work(bdi_wq, &wb->dwork, timeout);
+> -	spin_unlock_irq(&wb->work_lock);
+> -}
+> -
+>  static void wb_update_bandwidth_workfn(struct work_struct *work)
+>  {
+>  	struct bdi_writeback *wb = container_of(to_delayed_work(work),
+> -- 
+> 2.30.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
