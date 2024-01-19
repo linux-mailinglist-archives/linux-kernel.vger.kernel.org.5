@@ -1,148 +1,97 @@
-Return-Path: <linux-kernel+bounces-31335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A399832CBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:03:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1FC832CC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:04:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8565E1F24003
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:03:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E216B24129
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0AB554BFA;
-	Fri, 19 Jan 2024 16:03:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E962F54F82;
+	Fri, 19 Jan 2024 16:04:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Rzefv25D"
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VFHtZH/B"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6FD4EB4C
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 16:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F83754F99;
+	Fri, 19 Jan 2024 16:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705680214; cv=none; b=iml20OrqSoVfErC8xDKkiZL1bDbj11HmvIRzoIoo2evD/7dAXriRVBLEvvQarz7esL5jbTFhB/51S3z7a5tpLm/bT+xJiThFCjSSxxvVEpV5mb825PS9y/IeAHoDoAg0n3Xw+4bd3GF8v++vFl6kPxemJhakf/PFuBELsDuBOqA=
+	t=1705680241; cv=none; b=sqtnGhgKdqLX296rc2Fejr4MD57NK5ro0MQD6vuFpNvq1Nx0Dyl0zLkPIB3leMgviqVl6f/p16Rmk5Hyi2LcwHU9WDU33B4sDFxq5QsY0ZsFkT7zf80y/spjGk1m1GMq4FeE3K1iWFf2UBzDw2+qXLhQdt686M7XogsMG9CwBXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705680214; c=relaxed/simple;
-	bh=bcLvwWccNAWsUiEj7IX0uRHJeNmfTZEkM9hsx1PnbHU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QK2GqH53w6aJHtiZHN9ieb+T3zmIXU5CYOu4mCC0aBcrcWN55vOnJYiXYrhFwt6TUXJ0No6/BnN0PsQoEBv+Y6GNd9W6a1Q9oCb2yKfpXwokCOpYtHm1LeeeTX6k/jfm5sWIzjQT1Sk09bGjvrmbyIZhykWRHxirN+4AmcFISWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Rzefv25D; arc=none smtp.client-ip=209.85.221.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4b7480a80ceso1213199e0c.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 08:03:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705680211; x=1706285011; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QC2wn1ghIRgJ17BldXRyobqgCTNz3OsOecAZdsiLq84=;
-        b=Rzefv25DSSBOFwICV9pImVfp1vGwQli3ewR/gkcYOSDj2aOYOOeYil9Zrd9zam8IS0
-         Bst9nsXENoBtTqmdy6mRFFDkD4VPpuX9eO8X0N0MPcC0k+8akyZF/hOKROycQ3UZPo91
-         MleZmAOnjP3NNmr+rRFP+lPcNQHWMDtEp7nhk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705680211; x=1706285011;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QC2wn1ghIRgJ17BldXRyobqgCTNz3OsOecAZdsiLq84=;
-        b=IhN0g8gPh2QmBZgyVwv89uyx+Db247cQ9UIDo10WhdUDWCBX04cOF9F3sR4iAz8Gta
-         H3CH42ka07heDE+saxFMeCUyXKxxafOhf9tLo385elI+rh0/1S39KTPNn8I68nGPC+LG
-         49foNngnIYTKtfIH0cH6rL80PLbV7hu+Z8cPN5FSkDn8/5Fn9unZ8DA2qVxY5Sun+MFD
-         J5rECIOTX+1IZeBRAeCQBsIwCARFfE6GG9TzfFcT658RV25Ctxsgond8T398dsucpxLm
-         XjO7w85Da1lOezEafiCZSi+IaxxPexC50RPHCL7DR3pwc0rSuM1cJ25X7cC8KdJ437yd
-         7X5g==
-X-Gm-Message-State: AOJu0Yz7x2vvbp9QU8r2CU6BQ9Q3LPBd0F9jb734MCQsCoXLKQMNm+nP
-	DCCOJ+IaEnCDU9s76PmZqzmQIBUSkS5OkB3hiRUrwPxckwAeAgn8/I8zeNmPdOOkitWA1KHmjq/
-	C/ZsES1atGtBSdjqwHvw8KuA2GnUVqDyLaI0U
-X-Google-Smtp-Source: AGHT+IGhC1DkuAVOHUbGsqhAv7kRl/8FPFEepErLnioMEXwPe0+Fk3F00JapWbWMLrHATAzVnIMljAIDoOit0HtstHQ=
-X-Received: by 2002:a05:6122:2224:b0:4bb:3b8:afbd with SMTP id
- bb36-20020a056122222400b004bb03b8afbdmr194770vkb.0.1705680211307; Fri, 19 Jan
- 2024 08:03:31 -0800 (PST)
+	s=arc-20240116; t=1705680241; c=relaxed/simple;
+	bh=coIAvRixLjBf9zPBZMTN1uD3GQStYEqNZAtBzDJljok=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QASwL+wsF2z66rtZ1E75Y6eZr/Icswy5Ahx8Jt8g3T2mS8ON5+doLop2I5jD8q98uQ661f4MVGLraUXFO2Dyg6jRSX1nZ1ucneR7EfoYiNXpfiGfc5/y6BCJgH/joo7BAl/uO0XTzewmyCa+s2ymuAuoXbzPWbXDMQxU+HpfA3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VFHtZH/B; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=iUKkw0LVdxxgGvR/w0sJNMBB9Yzkz0bi7KdkWfHGaSU=; b=VFHtZH/BxNE1NyNn4x8zlPw3V0
+	otOF4mofoFIZwnsv/SadjNj1TGnGVM9jguNmYkeKpGxgVDPkD+e9xA+IMgbAZBG33gABKChGkIgv6
+	qhltfbiV4KoaGiZVTuup+I7yJ4KNkFxSFK/2SUVo8TCBx+R5oWDUtMSng4Wqa/GMlvnbOhUWrPSTs
+	OC58SYzYjCfwo1jHn3meOdt3udWclzhVa08eQ4/+aNaNFCU19QDndLnLzHZzWk+Iic2zu63uCCrT5
+	4sSo6bWsB1HUCiKb/CJCngxuzUrunPZ3WkgLKgDpXmqE4d/lOC5ucC2+bttrZfn4lWx2Kja5kRhtG
+	uyU0NpfQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rQrLV-00000005apa-3uB9;
+	Fri, 19 Jan 2024 16:03:54 +0000
+Date: Fri, 19 Jan 2024 16:03:53 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzbot+8b23309d5788a79d3eea@syzkaller.appspotmail.com,
+	syzbot+004c1e0fced2b4bc3dcc@syzkaller.appspotmail.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] block: Fix iterating over an empty bio with
+ bio_for_each_folio_all
+Message-ID: <ZaqdaYzEm--W8mti@casper.infradead.org>
+References: <20240116212959.3413014-1-willy@infradead.org>
+ <170544262659.494117.14502342650352587808.b4-ty@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
- <20231228132517.GA12586@wunner.de> <20231228133949.GG2543524@black.fi.intel.com>
- <CA+Y6NJFQq39WSSwHwm37ZQV8_rwX+6k5r+0uUs_d1+UyGGLqUw@mail.gmail.com>
- <20240118060002.GV2543524@black.fi.intel.com> <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
- <ZalOCPrVA52wyFfv@google.com> <20240119053756.GC2543524@black.fi.intel.com>
- <20240119074829.GD2543524@black.fi.intel.com> <20240119102258.GE2543524@black.fi.intel.com>
-In-Reply-To: <20240119102258.GE2543524@black.fi.intel.com>
-From: Esther Shimanovich <eshimanovich@chromium.org>
-Date: Fri, 19 Jan 2024 11:03:18 -0500
-Message-ID: <CA+Y6NJHhTaroqJKEvOebRvbTdgkxW8tqFvq5MrOVE9swmwmtOw@mail.gmail.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Mario Limonciello <mario.limonciello@amd.com>, Lukas Wunner <lukas@wunner.de>, 
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170544262659.494117.14502342650352587808.b4-ty@kernel.dk>
 
-On Thu, Jan 18, 2024 at 1:01=E2=80=AFAM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> Well that's pretty much all Intel Titan Ridge and Maple Ridge based
-> systems. Some early ones did not use IOMMU but all the rest do.
-..
-> Before Intel Ice Lake it was all discrete and it is still discrete with
-> the Barlow Ridge controller who will have exact same ExternalFacing port
-> as the previous models.
+On Tue, Jan 16, 2024 at 03:03:46PM -0700, Jens Axboe wrote:
+> 
+> On Tue, 16 Jan 2024 21:29:59 +0000, Matthew Wilcox (Oracle) wrote:
+> > If the bio contains no data, bio_first_folio() calls page_folio() on a
+> > NULL pointer and oopses.  Move the test that we've reached the end of
+> > the bio from bio_next_folio() to bio_first_folio().
+> > 
+> > 
+> 
+> Applied, thanks!
+> 
+> [1/1] block: Fix iterating over an empty bio with bio_for_each_folio_all
+>       commit: 7bed6f3d08b7af27b7015da8dc3acf2b9c1f21d7
 
-Next week I'll try those devices in our inventory to see if I can find
-another one with this bug. I'll get back to you on that!
+I see you added an unlikely(), and I'm not sure it's justified.
+It's going to be true at the end of each iteration.  For a bio that
+contains one bio_vec, it will be false once and true once.  It'd be like
+writing a for loop as:
 
-On Fri, Jan 19, 2024 at 2:58=E2=80=AFAM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> Now if I understand the reason behind this patch is actually not about
-> "removability" that much than about identifying a trusted vs. untrusted
-> device and attaching a driver to those. I was under impression that
-> there is already a solution to this in ChromeOS kernel. It has an
-> allowlist of drivers that are allowed to attach these devices and that
-> includes the PCIe port drivers, xhci_hcd and the thunderbolt driver,
-> possibly something else too. Is this not working for your case?
+	for (i = 0; likely(i < n); i++) {
+	}
 
-This device shouldn=E2=80=99t be treated as a removable thunderbolt device
-that is enabled by policy because it is an internal device that should
-be trusted in the first place.
-Even so, while learning about this problem I tried modifying the
-ChromeOS policy but it ended up not fixing the issue because it seems
-like there is an expectation for it to see an existing =E2=80=9Cfixed=E2=80=
-=9D
-thunderbolt port before it loads anything else. But the fixed
-thunderbolt port is prevented from enumerating during bootup, before
-the policy has a chance to work.
+which I've never seen us do.
 
-On Fri, Jan 19, 2024 at 5:23=E2=80=AFAM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> The below "might" work:
->
-> 1. A device that is directly behind a PCIe root or downstream port that
->    has ->external_facing =3D=3D 1.
->
-> 2. It is a PCIe endpoint.
->
-> 3. It is a sibling to or has any of the below PCI IDs (see
->    drivers/thunderbolt/nhi.h for the definitions):
+I don't know that it's worth taking out, but I wouldn't've put it in.
+I wouldn't be surprised to see benchmarks show it's a bad idea.
 
-External pci devices seem to have the same kinds of chips in them. So
-this wouldn=E2=80=99t distinguish the =E2=80=9Cfixed but discrete=E2=80=9D =
-embedded pci
-devices from the =E2=80=9Cremovable=E2=80=9D pcie through usb devices. My m=
-onitor with
-thunderbolt capabilities has the JHL7540 chip in it. From the kernel's
-perspective, I have only found that the subsystem id is what
-distinguishes these devices.
-
-That is, unless I am missing something in your proposal that would
-distinguish a fixed JHL6540 chip from an external JHL6540 chip. Please
-correct me on any assumptions I get wrong!
+Could you at least _say_ when you're going to make that kind of change?
+I wouldn't've noticed except that I got a merge conflict.
 
