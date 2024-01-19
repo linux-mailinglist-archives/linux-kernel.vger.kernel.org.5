@@ -1,132 +1,200 @@
-Return-Path: <linux-kernel+bounces-31375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A33832D66
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:42:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 730E6832D69
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:44:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41EF7B21526
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:42:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22A37284A00
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:44:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3170955C1F;
-	Fri, 19 Jan 2024 16:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B1C455780;
+	Fri, 19 Jan 2024 16:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="mDKTd2E2"
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q7kZGfi2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E8D155C02
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 16:42:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B2154FA8;
+	Fri, 19 Jan 2024 16:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705682561; cv=none; b=bcXw+2jUTRU3tVGvBgjKIAY1KIo4hKyBF655vlinMyHi8GK+STPaRtrOwKXa+GUQVYHk2nh6YSmYuljLcKh/tHg6A8wkrTC7Kv9lxdaafej9E6GQjt9nHnZPPihJr4SRmMBe39tOI1DNDinLtvPNQWfrPaWLXFxZqobz68tALAU=
+	t=1705682650; cv=none; b=W00uEan0Jz8YMJ9pvNPnkCIddz8wHmfxolPVxzmiCIiWtm45o/5oEqsbbXgwCYK3whtU36x7rAcaVoAdl2mUpSZ36lgV5QvpZ6KnIvSNYBDsU8YX8E4Pvgg950w0EMdsckPffUIUHdJQ94ZjphhZp7zUOsSBzaEHBjSJwVNRp2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705682561; c=relaxed/simple;
-	bh=sAgxVufww+s7c9+SI3V7tDgmhm53SKH/gHoO4P6KpSE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JPYjTkvOMzBJA6tWz71bltwSGfkuxUXLvToK9L1kW/ISmj/HFhP9PLo0tLU2mhG0nldxfmFoYl82aM22MYiPgm3uvBk7haU6L/oKv3+marPKjsyIO1hKzNQcWb+GLceW0gnfNPz9dQjN5Pkl/7RLuPqVEBervAX6oT9BuwGp1Ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=mDKTd2E2; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1705682539; bh=WBVXT1eMhsUBOF+VkQjn2e6bAsMa31G9ZE+9F6Mv41s=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=mDKTd2E2DS/YmHWX8pRY4d399KM7iv0HaSbiUE/EdxujFw0I42iYwgN9WRcYhHbvm
-	 OTRkESZeVjujmzGL9ek6sRaVg9vOrdWOTo8YATtRAtSX8S2aD4Ks5XlGXraTbx3PPX
-	 VVw3FgAn438e2yrVBH4pWG9EvAqxY1W99Sf+/caE=
-Received: from [IPV6:240e:379:224a:8600:8135:3b7:6c6a:b836] ([240e:379:224a:8600:8135:3b7:6c6a:b836])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id A911FC98; Sat, 20 Jan 2024 00:42:17 +0800
-X-QQ-mid: xmsmtpt1705682537tgsl6n8dc
-Message-ID: <tencent_17342E52CC61C847A3071F8E609CB6A1E306@qq.com>
-X-QQ-XMAILINFO: NDgMZBR9sMmaYnJROs3H0TrudBMJlyIIvfi9OBTz/ZcMDsfL2q1VPX5agvH4Zn
-	 bUkoMKeu+MpdXKBuec19bhIw41DmQnq0AeSka4+zNaKWBUDHVXWz9jun8b6cr28FjbBVSldB5r4W
-	 1UbMEK36fpiKpBgrLOGQye2wjXfIEQgyz+GKjlb8v1Hmu59zLPYiGqnNoSklXleQJd/hsy5wmx1I
-	 onsv7VZ3PiMQy6+TqD9ulPByTIkv+MX3lTxlehn4QdiWOttnD0E91iMkM3V/OEw89MYcasCnHg4h
-	 vKiUxDHbiVT/QaGzZyBGUHeMX1DpbNcdbsFy0R0AMCYlStIYXmR8VDWZmlCCY2gFbY4J16Vc2krm
-	 MC/dQBGC25UeOlc+JW1zCggYOo0UANkdlGZ/FfGmKa6UKT1WqsgTNNpfd6lIOPCu6JW/jdzPusJ9
-	 9ZSPTti69gxqV7GNeo4GBZwqihalVHkC02v6AwA8xMQFl0QpbKFhYujf8sOCGuIJ0LJH2hCHf0Yh
-	 7FOBbghZycYOl20nrK8sGvOmLTa6nE1mDVOqkmazBDgELNGfABszc2w7DYmzJV6TLMUP9g4C1VkI
-	 Qtp66/g4bSO27LPNFLQFS7w99td7YPrqaA49k4w8SgWjJTtoiqSKToJdHqZcsOqgXRj0Fo7Dd/Mt
-	 HLTuWAWljjx9RAAMH8AKNmFDqzaGhpxCE8+spYbrSHx98cvfnFamf17mJ/TCnRRuEVhvKnMgd6sp
-	 30HuKFiQD17Sc4kePzllgdYEy4CkiTwXrlO1NZ0r+Uku7pe4HpDdnIEO3h2nIMsH5o4EgT9zinjw
-	 0FBgM7VbTAp+p7mEOmfsl98m8z/Vs9PCv/6f2TKJHAfk/oU16IFH102Q6Tq2wMC3i1Dyiy3Qn2zf
-	 xalVr8WSQZ4MWn696562F4akCLqkxLm9/nUOQ42YIQD1EfHCq9Asb2+dScaDufj7KXAcsDjd022i
-	 3+ZGOupQ++Cbw64zNGZbrl/rHvmipm
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-X-OQ-MSGID: <adb7072e-55de-4f0f-a36e-494181ea2700@cyyself.name>
-Date: Sat, 20 Jan 2024 00:42:17 +0800
+	s=arc-20240116; t=1705682650; c=relaxed/simple;
+	bh=rRw2O8xwrDlJ45VGXmvgJkqhcUfZQFmZYjMTGiQcFo0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YkxaITieULiuQzJAOUz5uTnqB310zGJRpNXSR/0HR/xo/4TsGM/MAvd2qBmXsMKE1SOPyHqbAt0kkVqdvazlqtbulDxc7lrekw3G03a7ysHLn8LSjjmSIUdJ0NYQKSIe/eppMOzd/Cl54SzqOsawYKYSQ53thj7oB43L+33DWBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q7kZGfi2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27A60C433C7;
+	Fri, 19 Jan 2024 16:44:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705682650;
+	bh=rRw2O8xwrDlJ45VGXmvgJkqhcUfZQFmZYjMTGiQcFo0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=q7kZGfi2i22e2F/TmsZJrGGsmi1v+fJ9bhNNWQLcIh56t/cwSl/tPVh0WD9bi/AEj
+	 Y4toGR1r5VwBuR+dCg0x42dZdoR0WTCryYhydFUp7TQvIKMuzemhX/bYaVldx/nyAL
+	 Jq2JrYHng9RIX6ivrVNikYrqbVdI/Q11/7fETP2FWoiD/1AAQ9WTeqDUOzM0yi9h5i
+	 rtsllgRARjyaNb8br7SkPkjaDfdFzf+nyMzqXAVrTJNIBVUGB9Q/PNh0A8pxneHvpD
+	 oNzkUIUn98Ovk/z75q0iJEbuZ/lvN3a4tzxcK2s8S0f8UYpm+U+76e5T7nLoP6if+O
+	 zntyEg7xT6WBg==
+Date: Fri, 19 Jan 2024 16:44:03 +0000
+From: Conor Dooley <conor@kernel.org>
+To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+	Jason-ch Chen <jason-ch.chen@mediatek.com>,
+	Johnson Wang <johnson.wang@mediatek.com>,
+	Singo Chang <singo.chang@mediatek.com>,
+	Nancy Lin <nancy.lin@mediatek.com>,
+	Shawn Sung <shawn.sung@mediatek.com>,
+	Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: mailbox: Add mediatek,gce-props.yaml
+Message-ID: <20240119-demote-fragment-624a35367a87@spud>
+References: <20240119063224.29671-1-jason-jh.lin@mediatek.com>
+ <20240119063224.29671-2-jason-jh.lin@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] RISC-V: mm: correct mmap behavior in sv48 address
- space
-Content-Language: en-US
-To: linux-riscv@lists.infradead.org
-Cc: Charlie Jenkins <charlie@rivosinc.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Guo Ren <guoren@kernel.org>, Andy Chiu <andy.chiu@sifive.com>,
- Conor Dooley <conor.dooley@microchip.com>, linux-kernel@vger.kernel.org
-References: <tencent_F3B3B5AB1C9D704763CA423E1A41F8BE0509@qq.com>
-From: Yangyu Chen <cyy@cyyself.name>
-In-Reply-To: <tencent_F3B3B5AB1C9D704763CA423E1A41F8BE0509@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5+I8isPEC3Mumo7F"
+Content-Disposition: inline
+In-Reply-To: <20240119063224.29671-2-jason-jh.lin@mediatek.com>
 
-Friendly ping. There are already 5 days since this patch was submitted 
-but there are no comments now. The previous buggy patch has already been 
-in the mainline kernel since the v6.6 release and breaks some userspace 
-software that relies on mmap to create mapping on the hint address 
-without MAP_FIXED set. I think this fix should go to the kernel ASAP.
 
-Thanks,
-Yangyu Chen
+--5+I8isPEC3Mumo7F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 1/15/24 03:55, Yangyu Chen wrote:
-> Previous patch series [1] violates the principle of mmap syscall as it uses
-> hint address as the largest address space to use rather than where to
-> create the mapping, thus broke the possibility to mmap in sv48, sv57
-> address space without a MAP_FIXED flag. This patchset corrects the behavior
-> of mmap syscall and use the behavior of x86 5-stage-paging as a reference.
-> 
-> I first noticed this issue when I was trying to run box64 on a sv48 system
-> with commit previous than [2]. Then I reported this through private
-> communication, then a box64 contributor did some investigation and found
-> that trying to mmap in sv48 address space without MAP_FIXED flag will
-> always return a random address in sv39. I review the changelog with some
-> tests on qemu and found this issue was introduced from [1]. After reviewing
-> the code, tests and docs, I think the original author might misunderstand
-> the meaning of hint address in mmap syscall. Then I did some investigation
-> on other ISAs like x86 which has 5-stage-paging and found that it has
-> addressed the same issue if some userspace software assumes the pointer
-> size should smaller than 47 bits and also solved in kernel by limiting the
-> mmap in maximum 47 bits address space by default.
-> 
-> Finally I correct the behavior of mmap syscall as x86 5-stage-paging does,
-> and migreate the documentation from x86-64 kernel to riscv kernel.
-> 
-> 
-> [1]. https://lore.kernel.org/linux-riscv/20230809232218.849726-1-charlie@rivosinc.com/
-> [2]. https://github.com/ptitSeb/box64/commit/5b700cb6e6f397d2074c49659f7f9915f4a33c5f
-> 
-> Yangyu Chen (3):
->    RISC-V: mm: fix mmap behavior in sv48 address space
->    RISC-V: mm: only test mmap without hint
->    Documentation: riscv: correct sv57 kernel behavior
-> 
->   Documentation/arch/riscv/vm-layout.rst        | 48 +++++++++++--------
->   arch/riscv/include/asm/processor.h            | 39 ++++-----------
->   .../selftests/riscv/mm/mmap_bottomup.c        | 12 -----
->   .../testing/selftests/riscv/mm/mmap_default.c | 12 -----
->   tools/testing/selftests/riscv/mm/mmap_test.h  | 30 ------------
->   5 files changed, 36 insertions(+), 105 deletions(-)
-> 
+Rob,
 
+On Fri, Jan 19, 2024 at 02:32:22PM +0800, Jason-JH.Lin wrote:
+> Add mediatek,gce-props.yaml for common GCE properties that is used for
+> both mailbox providers and consumers. We place the common property
+> "mediatek,gce-events" in this binding currently.
+>=20
+> The property "mediatek,gce-events" is used for GCE event ID corresponding
+> to a hardware event signal sent by the hardware or a sofware driver.
+> If the mailbox providers or consumers want to manipulate the value of
+> the event ID, they need to know the specific event ID.
+>=20
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> ---
+>  .../bindings/mailbox/mediatek,gce-props.yaml  | 52 +++++++++++++++++++
+
+Is bindings/mailbox the correct directory to put this in?
+
+>  1 file changed, 52 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/mediatek,gc=
+e-props.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/mailbox/mediatek,gce-props=
+=2Eyaml b/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
+> new file mode 100644
+> index 000000000000..68b519ff089f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mailbox/mediatek,gce-props.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek Global Command Engine Common Propertes
+> +
+> +maintainers:
+> +  - Houlong Wei <houlong.wei@mediatek.com>
+> +
+> +description:
+> +  The Global Command Engine (GCE) is an instruction based, multi-threade=
+d,
+> +  single-core command dispatcher for MediaTek hardware. The Command Queue
+> +  (CMDQ) mailbox driver is a driver for GCE, implemented using the Linux
+> +  mailbox framework. It is used to receive messages from mailbox consume=
+rs
+> +  and configure GCE to execute the specified instruction set in the mess=
+age.
+> +  We use mediatek,gce-mailbox.yaml to define the properties for CMDQ mai=
+lbox
+> +  driver. A device driver that uses the CMDQ driver to configure its har=
+dware
+> +  registers is a mailbox consumer. The mailbox consumer can request a ma=
+ilbox
+> +  channel corresponding to a GCE hardware thread to send a message, spec=
+ifying
+> +  that the GCE thread to configure its hardware. The mailbox provider ca=
+n also
+> +  reserved a mailbox channel to configure GCE hardware register by the s=
+pcific
+> +  GCE thread. This binding defines the common GCE properties for both ma=
+ilbox
+> +  provider and consumers.
+> +
+> +properties:
+> +  mediatek,gce-events:
+> +    description:
+> +      GCE has an event table in SRAM, consisting of 1024 event IDs (0~10=
+23).
+> +      Each event ID has a boolean event value with the default value 0.
+> +      The property mediatek,gce-events is used to obtain the event IDs.
+> +      Some gce-events are hardware-bound and cannot be changed by softwa=
+re.
+> +      For instance, in MT8195, when VDO0_MUTEX is stream done, VDO_MUTEX=
+ will
+> +      send an event signal to GCE, setting the value of event ID 597 to =
+1.
+> +      Similarly, in MT8188, the value of event ID 574 will be set to 1 w=
+hen
+> +      VOD0_MUTEX is stream done.
+> +      On the other hand, some gce-events are not hardware-bound and can =
+be
+> +      changed by software. For example, in MT8188, we can set the value =
+of
+> +      event ID 855, which is not bound to any hardware, to 1 when the dr=
+iver
+> +      in the secure world completes a task. However, in MT8195, event ID=
+ 855
+> +      is already bound to VDEC_LAT1, so we need to select another event =
+ID to
+> +      achieve the same purpose. This event ID can be any ID that is not =
+bound
+> +      to any hardware and is not yet used in any software driver.
+> +      To determine if the event ID is bound to the hardware or used by a
+> +      software driver, refer to the GCE header
+> +      include/dt-bindings/gce/<chip>-gce.h of each chip.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 1
+> +    maxItems: 1024
+> +
+> +additionalProperties: true
+> --=20
+> 2.18.0
+>=20
+
+--5+I8isPEC3Mumo7F
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaqm0wAKCRB4tDGHoIJi
+0no0AQC56hKuU1fmtkZ0/SFR3pDacK2I9XoVgG8Zhv6/MlLMfwEAnf7AHDe29oll
+GZ8VqDNg5+hCVNwBevuCStPe9uK+WAw=
+=kej4
+-----END PGP SIGNATURE-----
+
+--5+I8isPEC3Mumo7F--
 
