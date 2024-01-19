@@ -1,171 +1,168 @@
-Return-Path: <linux-kernel+bounces-31538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38D54832FA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:14:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1461F832FA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:15:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC45828160A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:14:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2973F1C21A40
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE8858104;
-	Fri, 19 Jan 2024 20:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BACC58AAB;
+	Fri, 19 Jan 2024 20:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TP+emgSi"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="pI/ms/IT"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F341B57873
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 20:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F00358AA2;
+	Fri, 19 Jan 2024 20:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705695255; cv=none; b=a5DaFVMq8oxp5+jjyRuJf8J4U5zT0TSENYkXqn5KsyhJPpD349PgW/SihzKYU5oIOO/y1CclkHCP1BDs9kzuJUsm9NitgptNwUoeJuwxPPl+HESKUxlcGo74GhuVsgFiYeeDU0AIt65G5vwyjgzbPtRi8fi4o0CyxHOXl7IpalE=
+	t=1705695319; cv=none; b=J0p5+R9EGQh0APg9I3R1oOnwf6+vYzwsIUdtfAwo1YNwMkrg6MZgGkL6Vz6jHSGrbPitB72xQGOgfdiePdU58ZVKZFE5FTCDYjAWxqHBX6kDV5amylx/Ponj5CLUaGs5wqhGtHCMMiatKba+bdIJ/FAazUtMQ7ipW1IOKVnJpgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705695255; c=relaxed/simple;
-	bh=F9Ijc1dkn4LnIYgLJYdQeo8/xAlm6GZYuUki9yJ2hME=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ixJzJES2ex9/r/ZS6ZgPLSbTZ5+yRUYiS1EYCjKbdWV9e/ILcRBKatVddXerX28rcmDG0Haz4pd9SojrUezpJy8YBv3mOr8ydrBBnJZwhw4gpTzbEWuoooHYn0BxVudYv7R/M3oRCm5yfSs3UzUlUz92sunGycQfrhJYJC5zmgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TP+emgSi; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e8801221cso10479895e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 12:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705695251; x=1706300051; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cslHUuioJKZUdWZhA350tTceu4m4Qgt6DILKRrYZ0CA=;
-        b=TP+emgSirsMxBcK31BpgZQs9B2cV6Xqdyn7U+yLygJylIirfAWFO07JRsReVegK9n1
-         3G2/CVAyG41/yHTtiqn0u2/b/TyDJ3Igoc2CgmWbNh10ypo+BZpNfxa0t4HpuzbaRAvd
-         Czfb9gboYR95/YbWzYZuxgnU6K4pOHGKOa/j8/zexW7kzmOqP4+3p+7RpCIqyen+cWkK
-         P56HPBaYrWyho8crCZHPD+ZO1E0es7hpzh8028HJaWvUZRhSqnlBMIFJVvZBRaeL6yZD
-         OKpfnun/0VlHw6cVBe3l8goGDxu5KMVyTsbi/2naV4THanuaYguqeMH/j81A47eRDhbL
-         /J0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705695251; x=1706300051;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cslHUuioJKZUdWZhA350tTceu4m4Qgt6DILKRrYZ0CA=;
-        b=Kwv/ePGjfo5qsqsm4f1ZmAMnF0G7v6tjO4znD/uIggL7Oof1dWEhVMSnqlfb3mQDXD
-         KLz/b7uQWLV9is6Qh42bjZXiQTtIdNUJK1aT7dtlG4W3eMRxAW58co01Np/Z8C0rRFVt
-         6KoNHSZ2mlJ6jbyonQF75UpBSFJhDTwI/G3RGtwo9oJLm8BQiq20ZPwtRQE4CUONKlF3
-         PDQtQT/uKkocMFN8OZ+7i6kQ4PFKTSSku0cmMnuLtvHaRDgas+FWYdOkaxYPZmRAHACk
-         vpmFwq+7RGH8CE/uZk6dJPRLG+fGXY0BdNobMycySv6cI/zJUWjo+bEr/zMKKOruU9b6
-         I0Zg==
-X-Gm-Message-State: AOJu0YxR/zKd2ofFUcou6WXCLnHoMJWzKc/1lMwjLdRP+QTAmLLq72eT
-	PF+PTufK0Uqv4QPBiqJEI3A7sqEV8htFZtE8U0M+bcujeqQzvq0U
-X-Google-Smtp-Source: AGHT+IFOTbdL41cPmnp9k4iSwF+mjvZLoMetREkJ8ghXgjbgzt/oHLxO7qTkVIPVPM4SNAVG2Qk5Pw==
-X-Received: by 2002:a1c:7404:0:b0:40e:6b8e:5ab2 with SMTP id p4-20020a1c7404000000b0040e6b8e5ab2mr189320wmc.106.1705695250892;
-        Fri, 19 Jan 2024 12:14:10 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id q5-20020adff505000000b00339214d70b5sm2084788wro.85.2024.01.19.12.14.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 12:14:10 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Russell King <linux@armlinux.org.uk>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Eric DeVolder <eric.devolder@oracle.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Kees Cook <keescook@chromium.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	John Crispin <john@phrozen.org>
-Subject: [PATCH 2/2] ARM: decompressor: add option to ignore MEM ATAGs
-Date: Fri, 19 Jan 2024 21:12:45 +0100
-Message-ID: <20240119201356.7903-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240119201356.7903-1-ansuelsmth@gmail.com>
-References: <20240119201356.7903-1-ansuelsmth@gmail.com>
+	s=arc-20240116; t=1705695319; c=relaxed/simple;
+	bh=Mz4Krf9Noer37dhja5oAhLdJ4V/2bq80kqZ7XRlDqfo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BxHGI41Lgzf2Lo8kWwLFesVuqmfwxMTIgOofzjenREGDNJ82D6a+NqL1iZ9GHtBSdP2gkeJ9nin0S+PWln6yaSxN2rZwdywEsI1XL1oeO8PO8hYJE2PoGv7H+cm7eo5bfCNcXZIt8yQSVkMUUqnymmBK13kG9xerWFBL98kA1EY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=pI/ms/IT; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 033531C0071; Fri, 19 Jan 2024 21:15:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1705695307;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hKuIM8W+NNavO6XUMavTavQPy2bJBy/hmu5/EWXXd5g=;
+	b=pI/ms/ITLYhFrPr7zCiV+hcNVOnPoHdBswPqTSzmsrbqbLCKmPV6STTKLXwpES0kgPvw2G
+	SEmrmcXAw0WRSeEp4OsgbBc12uqzwjdKjvI4U+jh3yRS7q78cXggVgDXFKNa2OPVRzeeac
+	47Gkqtn5TzcVJZ4pN4RNeAS/1XDuHlU=
+Date: Fri, 19 Jan 2024 21:15:06 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Werner Sembach <wse@tuxedocomputers.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
+	Jelle van der Waa <jelle@vdwaa.nl>,
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	linux-input@vger.kernel.org, ojeda@kernel.org,
+	linux-leds@vger.kernel.org
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+Message-ID: <ZarYSkzISyS+wuYR@duo.ucw.cz>
+References: <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
+ <87sf61bm8t.fsf@intel.com>
+ <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
+ <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
+ <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
+ <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+ <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+ <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
+ <ZaljwLe7P+dXHEHb@duo.ucw.cz>
+ <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sNVhZD9VvNEiSHyg"
+Content-Disposition: inline
+In-Reply-To: <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
 
-Some bootloaders can pass broken MEM ATAGs that provide hardcoded
-information about mounted RAM size and physical location.
-Example booloader provide RAM of size 1.7Gb but actual mounted RAM
-size is 512Mb causing kernel panic.
 
-Add option CONFIG_ARM_ATAG_DTB_COMPAT_IGNORE_MEM to ignore these ATAG
-and not augument appended DTB memory node.
+--sNVhZD9VvNEiSHyg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- arch/arm/Kconfig                        | 12 ++++++++++++
- arch/arm/boot/compressed/atags_to_fdt.c | 10 ++++++++++
- 2 files changed, 22 insertions(+)
+Hi!
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index b2ab8db63c4b..6bb5c6b28106 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -1549,6 +1549,18 @@ config ARM_ATAG_DTB_COMPAT
- 	  bootloaders, this option allows zImage to extract the information
- 	  from the ATAG list and store it at run time into the appended DTB.
- 
-+config ARM_ATAG_DTB_COMPAT_IGNORE_MEM
-+	bool "Ignore MEM ATAG information from bootloader"
-+	depends on ARM_ATAG_DTB_COMPAT
-+	help
-+	  Some bootloaders can pass broken MEM ATAGs that provide hardcoded
-+	  information about mounted RAM size and physical location.
-+	  Example booloader provide RAM of size 1.7Gb but actual mounted RAM
-+	  size is 512Mb causing kernel panic.
-+
-+	  Enable this option if MEM ATAGs should be ignored and the memory
-+	  node in the appended DTB should NOT be augumented.
-+
- choice
- 	prompt "Kernel command line type" if ARM_ATAG_DTB_COMPAT
- 	default ARM_ATAG_DTB_COMPAT_CMDLINE_FROM_BOOTLOADER
-diff --git a/arch/arm/boot/compressed/atags_to_fdt.c b/arch/arm/boot/compressed/atags_to_fdt.c
-index 627752f18661..189db9fc7fea 100644
---- a/arch/arm/boot/compressed/atags_to_fdt.c
-+++ b/arch/arm/boot/compressed/atags_to_fdt.c
-@@ -10,6 +10,12 @@
- #define do_extend_cmdline 0
- #endif
- 
-+#if defined(CONFIG_ARM_ATAG_DTB_COMPAT_IGNORE_MEM)
-+#define do_ignore_mem 1
-+#else
-+#define do_ignore_mem 0
-+#endif
-+
- #define NR_BANKS 16
- 
- static int node_offset(void *fdt, const char *node_path)
-@@ -170,6 +176,10 @@ int atags_to_fdt(void *atag_list, void *fdt, int total_space)
- 				setprop_string(fdt, "/chosen", "bootargs",
- 					       atag->u.cmdline.cmdline);
- 		} else if (atag->hdr.tag == ATAG_MEM) {
-+			/* Bootloader MEM ATAG are broken and should be ignored */
-+			if (do_ignore_mem)
-+				continue;
-+
- 			if (memcount >= sizeof(mem_reg_property)/4)
- 				continue;
- 			if (!atag->u.mem.size)
--- 
-2.43.0
+> >> 2. Implement per-key keyboards as auxdisplay
+> >>
+> >> =A0=A0=A0 - Pro:
+> >>
+> >> =A0=A0=A0 =A0=A0=A0 - Already has a concept for led positions
+> >>
+> >> =A0=A0=A0 =A0=A0=A0 - Is conceptually closer to "multiple leds forming=
+ a singular entity"
+> >>
+> >> =A0=A0=A0 - Con:
+> >>
+> >> =A0=A0=A0 =A0=A0=A0 - No preexisting UPower support
+> >>
+> >> =A0=A0=A0 =A0=A0=A0 - No concept for special hardware lightning modes
+> >>
+> >> =A0=A0=A0 =A0=A0=A0 - No support for arbitrary led outlines yet (e.g. =
+ISO style enter-key)
+> >=20
+> > Please do this one.
+>=20
+> Ok, so based on the discussion so far and Pavel's feedback lets try to
+> design a custom userspace API for this. I do not believe that auxdisplay
+> is a good fit because:
 
+Ok, so lets call this a "display". These days, framebuffers and drm
+handles displays. My proposal is to use similar API as other displays.
+
+> So my proposal would be an ioctl interface (ioctl only no r/w)
+> using /dev/rgbkbd0 /dev/rgbkdb1, etc. registered as a misc chardev.
+>=20
+> For per key controllable rgb LEDs we need to discuss a coordinate
+> system. I propose using a fixed size of 16 rows of 64 keys,
+> so 64x16 in standard WxH notation.
+>=20
+> And then storing RGB in separate bytes, so userspace will then
+> always send a buffer of 192 bytes per line (64x3) x 14 rows
+> =3D 3072 bytes. With the kernel driver ignoring parts of
+> the buffer where there are no actual keys.
+
+That's really really weird interface. If you are doing RGB888 64x14,
+lets make it a ... display? :-).
+
+ioctl always sending 3072 bytes is really a hack.
+
+Small displays exist and are quite common, surely we'd handle this as
+a display:
+https://pajenicko.cz/displeje/graficky-oled-displej-0-66-64x48-i2c-bily-wem=
+os-d1-mini
+It is 64x48.
+
+And then there's this:
+https://pajenicko.cz/displeje/maticovy-8x8-led-displej-s-radicem-max7219
+and this:
+https://pajenicko.cz/displeje/maticovy-8x32-led-displej-s-radicem-max7219
+
+One of them is 8x8.
+
+Surely those should be displays, too?
+
+And yes, we'd probably want some extra ioctls on top, for example to
+map from input device to this and back, and maybe for various effects,
+too. And yes, I realize that display with holes in it and with some
+pixels bigger than others is weird, but it still looks like a display
+to me. (And phones have high-res displays with rounded corners and
+holes in them, so... we'll need to deal with weird displays anyway).
+
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--sNVhZD9VvNEiSHyg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZarYSgAKCRAw5/Bqldv6
+8mh0AKCdbdt+aZYvFOmUj57gVRZ7wYfxUwCfcuKXV1EpVhd6hWel7T/V86MYINo=
+=Yt0i
+-----END PGP SIGNATURE-----
+
+--sNVhZD9VvNEiSHyg--
 
