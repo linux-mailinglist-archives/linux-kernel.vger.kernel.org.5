@@ -1,190 +1,133 @@
-Return-Path: <linux-kernel+bounces-30831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FA288324CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:56:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 057888324CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:59:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BC94B229D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:56:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63EF3B228DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:59:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BB1D2E0;
-	Fri, 19 Jan 2024 06:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10436FB1;
+	Fri, 19 Jan 2024 06:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b="iM314C9W"
-Received: from mail.systec-electronic.com (mail.systec-electronic.com [77.220.239.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PuiNchqB"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37A6184E;
-	Fri, 19 Jan 2024 06:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.220.239.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3FF4A34;
+	Fri, 19 Jan 2024 06:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705647358; cv=none; b=Rsbm4lV0ZKtCxkCpZRC4i3w3nUogEkaX1t6wSvXbRBgL00F95TN1ZAvgbjjAxlEqeBgwkO/f83lxyFpTVhGpHCz0wpJakY6nUFFdZsHtZLQbE8owDwS9wRho1+fpqspEyUhSOyZ7i3TJhKsY505fXV7fMrGpJuQu58JJVBIhgjY=
+	t=1705647542; cv=none; b=V4jCtRNxogZeH8EPEOtbKQMYITHaf3/6yk9R6FSHrFAhrKFxDA7UTyEMFXeJbCxGahG2ZONRvU+6bvGAekOmf3LnebigeOZA/hwaR2Vf2IeSlYDF4fDWR+5mRVO8qogInAR38NE8jdOcUFPpBgVSlw2mpALwD3iXTfImrnaLLPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705647358; c=relaxed/simple;
-	bh=fzZ9PqYrfw2bV7Rfs2G/n0BHJjQaonVjoKgOKh5vznc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F0tAFVSkwtjziy0J5GR/R8prgUR5k+XMF10kFkQQFEuFhGZy0FYf+6dTsG5SXZW0/RjCjLobbZ41NxuN2ws1bEZEP//l9x9JivMR6hR44ri2sW7qE+8q/6m/j8ppvN4wSMAqpzhg2YHkL6X3FNX7NVtyCDBQ2GwYa4QyGCO24fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com; spf=pass smtp.mailfrom=systec-electronic.com; dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b=iM314C9W; arc=none smtp.client-ip=77.220.239.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=systec-electronic.com
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id 01CCF940010D;
-	Fri, 19 Jan 2024 07:55:55 +0100 (CET)
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id Q8OpYxjlMZbe; Fri, 19 Jan 2024 07:55:54 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id BDA089400115;
-	Fri, 19 Jan 2024 07:55:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.systec-electronic.com BDA089400115
+	s=arc-20240116; t=1705647542; c=relaxed/simple;
+	bh=hogej2Hq/Ar9DF2BDUWIkWyiEHi3+d77JUjEQDh5/MU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CVPpLAjTKzCUhIrg0LbRNuAWZkiE70HTjTNsgFIcS7nINwEkQjRPHzy2+tx2zTgvOHqNJ64r8SH7upiV5eParke46asB+k4mz3DUmyjM3ntTGAWt6a7ckHj2S5DVJN32j1lGlWcMkfzXw4hcu8Qb4XcFLrILOflasbR3KfXCrrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PuiNchqB; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d5d736cdcdso3134655ad.1;
+        Thu, 18 Jan 2024 22:59:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=systec-electronic.com; s=B34D3B04-5DC7-11EE-83E3-4D8CAB78E8CD;
-	t=1705647354; bh=R2H+wxpHRJ7ij8BQv9/AjquxQAEYGY9PEXxh3X7nW18=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=iM314C9WPLk/qprc7zek/T3vwG/ee4kK4VD4Q7avuTkfBvoHAFhH+3OSGE3ttQGxh
-	 zPj3QEh0pcNeBs5GUmVAO5lQff7Idtq+5Kv40kb5GFhJxsV5cDYh396OCgA8Ju8j1v
-	 UnJPVK9Qq4/L6reEqVhyd4SvbRVwMubpnZI0nfjWpxUqPGvtIzMel3587UzK6m12yY
-	 XmYAe033xaLMPNSAPRk+c5bdhtRecjEoPhC/2M0AhN+kJNEk4M8zUDHTZKEkjQ52uT
-	 d5XqJKhxMnKX4k9VpumoG3cRYsdfTcfGaDPQxrnt237MtZP6lASbQ+gzsmLsbyA4Zc
-	 x9bNEfRTSqzPg==
-X-Virus-Scanned: amavis at systec-electronic.com
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id XjM1_v4EJDbj; Fri, 19 Jan 2024 07:55:54 +0100 (CET)
-Received: from ws-565760.systec.local (unknown [212.185.67.148])
-	by mail.systec-electronic.com (Postfix) with ESMTPSA id 724CF940010D;
-	Fri, 19 Jan 2024 07:55:54 +0100 (CET)
-From: Andre Werner <andre.werner@systec-electronic.com>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: linux@armlinux.org.uk,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andre Werner <andre.werner@systec-electronic.com>
-Subject: [RFC net-next v2 2/2] net: phy: adin1100: Add interrupt support for link change
-Date: Fri, 19 Jan 2024 07:51:14 +0100
-Message-ID: <20240119065542.30279-2-andre.werner@systec-electronic.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240119065542.30279-1-andre.werner@systec-electronic.com>
-References: <20240119065542.30279-1-andre.werner@systec-electronic.com>
+        d=gmail.com; s=20230601; t=1705647540; x=1706252340; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hogej2Hq/Ar9DF2BDUWIkWyiEHi3+d77JUjEQDh5/MU=;
+        b=PuiNchqB0d2DLWZ3Tl+Xy6HVTmvilTdlmZhtiZ+m5QFY/7jab6yfREsPr3sC5JezqG
+         e0nvDACLQnUJ9PkzN62fyzL98YQKMYbz2UDklQSYn8cXJ5nNr5jqyLz478KlngzfcQy+
+         1n03fBLwy18ci1+EEYTHPYjrV6PGKVDezs9ccFKEEjb0Xablr8HkIBhQJ8QSOGsa2xl4
+         kr3nQTt7b9pIop3kyaKnKFcIfkw6IIz7nhghjLKvTAwq59yCLABvl3lh8A3w3bo+oRgJ
+         Iq+aFRAuo3lp+6ySDaMBw7Cc3lB9PNomct6ZVFZfRWPIlskPC/eSujZY/h1UPs63MD9n
+         WQsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705647540; x=1706252340;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hogej2Hq/Ar9DF2BDUWIkWyiEHi3+d77JUjEQDh5/MU=;
+        b=TiqxubosvN3ObqgbxcPiNHqNkuzGOI7WUhjADWSeg9ZSY49I+jLEt2uexa8fdDO4D+
+         LoKf4bZlqglGP1Ykm5rap/QKyZEEdISQAE7k6QPFb2OOJjPczT+os7wOxDo5j5EeKLTV
+         8Y8wWipkzuT84G98RyxjRx0MNzy2jUPR8tjBksZOzMPOyeF8w+DC0mG4DI5jyvPRJ3wl
+         q75fioGyitRTZ7SZBmJ98NAED1m0JVm8dkH0q9yXUPWiLz4ZsfVfjnk0RgZ2jF3mKNTe
+         ws7hcQKdPqut9FA5ZRdQrhM09Z++okfPHBQ8pS3Lm4L8su3w2TqU+1xytvZx2Wmw1GSl
+         BkFA==
+X-Gm-Message-State: AOJu0Yyl9HaEbj5BH4YFsGKYtWcn3a1b/zXMhlTUC1eJNN/xcZSSI19Z
+	buW4TWO+YAHoLVlBgzVL0PcG/FmG8W4UZPCUa9ed8G36Lb4AhFPY
+X-Google-Smtp-Source: AGHT+IHJixHYo3krLzziz+R41+iMji7GYGWIRRNcbflClYK6OAWpT5zGOMdo53Qx2VNmbGi2ULd9tw==
+X-Received: by 2002:a17:902:7c94:b0:1d4:3d04:cdd with SMTP id y20-20020a1709027c9400b001d43d040cddmr1795857pll.32.1705647540466;
+        Thu, 18 Jan 2024 22:59:00 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id kq11-20020a170903284b00b001d6efcefadfsm2370127plb.202.2024.01.18.22.58.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 22:58:59 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id D0B251854A1A0; Fri, 19 Jan 2024 13:58:52 +0700 (WIB)
+Date: Fri, 19 Jan 2024 13:58:52 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Gowtham <trgowtham123@gmail.com>,
+	Linux btrfs <linux-btrfs@vger.kernel.org>,
+	Linux Regressions <regressions@lists.linux.dev>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Subject: Re: Disk write deterioration in 5.x kernel
+Message-ID: <ZaodrO8QjCqSXPHe@archie.me>
+References: <CA+XNQ=j6re4bhRDUebzPLDvMtZecqtx+GRRPgpd9apss+vOaBg@mail.gmail.com>
+ <CA+XNQ=hGxYsMAo6Gc+Up5QctbWjkER17uK97YXWc9uyx_7+3uw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="W9V2F+uscCUe8eop"
+Content-Disposition: inline
+In-Reply-To: <CA+XNQ=hGxYsMAo6Gc+Up5QctbWjkER17uK97YXWc9uyx_7+3uw@mail.gmail.com>
+
+
+--W9V2F+uscCUe8eop
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-An interrupt handler was added to the driver as well as functions
-to enable interrupts at the phy.
+[also Cc: btrfs maintainers]
 
-There are several interrupts maskable at the phy, but only link change
-interrupts are handled by the driver yet.
+On Fri, Jan 19, 2024 at 09:37:50AM +0530, Gowtham wrote:
+> Hi
+>=20
+> Is there anything I can collect to debug what is the problem in the new k=
+ernel?
+>=20
 
-Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
----
-v2:
-- Clean format and reword commit message as suggested by reviewer of
-  first patch submission
----
- drivers/net/phy/adin1100.c | 61 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+Please don't top-post, reply inline with appropriate context instead.
 
-diff --git a/drivers/net/phy/adin1100.c b/drivers/net/phy/adin1100.c
-index 7619d6185801..fb1146cf881a 100644
---- a/drivers/net/phy/adin1100.c
-+++ b/drivers/net/phy/adin1100.c
-@@ -18,6 +18,12 @@
- #define PHY_ID_ADIN1110				0x0283bc91
- #define PHY_ID_ADIN2111				0x0283bca1
-=20
-+#define ADIN_PHY_SUBSYS_IRQ_MASK		0x0021
-+#define   ADIN_LINK_STAT_CHNG_IRQ_EN		BIT(1)
-+
-+#define ADIN_PHY_SUBSYS_IRQ_STATUS		0x0011
-+#define   ADIN_LINK_STAT_CHNG			BIT(1)
-+
- #define ADIN_FORCED_MODE			0x8000
- #define   ADIN_FORCED_MODE_EN			BIT(0)
-=20
-@@ -136,6 +142,59 @@ static int adin_config_aneg(struct phy_device *phyde=
-v)
- 	return genphy_c45_config_aneg(phydev);
- }
-=20
-+static int adin_phy_ack_intr(struct phy_device *phydev)
-+{
-+	/* Clear pending interrupts */
-+	int rc =3D phy_read_mmd(phydev, MDIO_MMD_VEND2,
-+			      ADIN_PHY_SUBSYS_IRQ_STATUS);
-+
-+	return rc < 0 ? rc : 0;
-+}
-+
-+static int adin_config_intr(struct phy_device *phydev)
-+{
-+	int ret, regval;
-+
-+	ret =3D adin_phy_ack_intr(phydev);
-+
-+	if (ret)
-+		return ret;
-+
-+	regval =3D phy_read_mmd(phydev, MDIO_MMD_VEND2,
-+			      ADIN_PHY_SUBSYS_IRQ_MASK);
-+	if (regval < 0)
-+		return regval;
-+
-+	if (phydev->interrupts =3D=3D PHY_INTERRUPT_ENABLED)
-+		regval |=3D ADIN_LINK_STAT_CHNG_IRQ_EN;
-+	else
-+		regval &=3D ~ADIN_LINK_STAT_CHNG_IRQ_EN;
-+
-+	ret =3D phy_write_mmd(phydev, MDIO_MMD_VEND2,
-+			    ADIN_PHY_SUBSYS_IRQ_MASK,
-+			    regval);
-+	return ret;
-+}
-+
-+static irqreturn_t adin_phy_handle_interrupt(struct phy_device *phydev)
-+{
-+	int irq_status;
-+
-+	irq_status =3D phy_read_mmd(phydev, MDIO_MMD_VEND2,
-+			          ADIN_PHY_SUBSYS_IRQ_STATUS);
-+	if (irq_status < 0) {
-+		phy_error(phydev);
-+		return IRQ_NONE;
-+	}
-+
-+	if (!(irq_status & ADIN_LINK_STAT_CHNG))
-+		return IRQ_NONE;
-+
-+	phy_trigger_machine(phydev);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int adin_set_powerdown_mode(struct phy_device *phydev, bool en)
- {
- 	int ret;
-@@ -275,6 +334,8 @@ static struct phy_driver adin_driver[] =3D {
- 		.probe			=3D adin_probe,
- 		.config_aneg		=3D adin_config_aneg,
- 		.read_status		=3D adin_read_status,
-+		.config_intr		=3D adin_config_intr,
-+		.handle_interrupt	=3D adin_phy_handle_interrupt,
- 		.set_loopback		=3D adin_set_loopback,
- 		.suspend		=3D adin_suspend,
- 		.resume			=3D adin_resume,
+Since you have regression w.r.t. old LTS kernel (v5.4.y), can you check
+current mainline (v6.7) to confirm or deny the regression? If the
+regression still happens there, can you perform bisection (see
+Documentation/admin-guide/bug-bisect.rst in the kernel sources for details)?
+
+Also, it is also helpful to list SSD devices that you've tested.
+
+Thanks.
+
 --=20
-2.43.0
+An old man doll... just what I always wanted! - Clara
 
+--W9V2F+uscCUe8eop
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZaodqAAKCRD2uYlJVVFO
+oznlAPsGd2k4lotRybEZil8Cr95NHCC5FGqwT4eW7L0FIBO0fwEAq6D/v+fULtZx
+aM0klFefbcFQsJK+aywrUR+bbsgMVwM=
+=RXeF
+-----END PGP SIGNATURE-----
+
+--W9V2F+uscCUe8eop--
 
