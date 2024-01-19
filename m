@@ -1,249 +1,239 @@
-Return-Path: <linux-kernel+bounces-31008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B8FA83277B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:12:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE65832786
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90F061C22942
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:12:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A8301F238CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCFAC3C6AB;
-	Fri, 19 Jan 2024 10:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 197A63C697;
+	Fri, 19 Jan 2024 10:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ma6Xpj6j"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="xoV+DeqE"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F181C3C09F;
-	Fri, 19 Jan 2024 10:12:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705659156; cv=fail; b=jq8Wypo3LF/c9z+JijKVh6xYrWpoIK+aeyNpVcgzEnxM7TI3Xo95PtNJjlxIDHw0buXOJ69DuWRp23DdnFyyKXBr+mUVtObOe0esNhFwrOnpcNEwC7DmXLFRm/h7Wg+mjeD5qBXIoWojBdEX7ntP5ZdIdLyAJLGMjQqmxqcJVpI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705659156; c=relaxed/simple;
-	bh=vAM8WwAa4pSyBcvmLwN/TJEEOg1GFhzhtk80m3+dML4=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=I879bdcoGUhzcNMOnv1/1NU7WSI1Y8XSg6KWDeI/a5C+Q2+2FXBVAMgA4KusRj5wwdy+2LjD9y1vdtbBApB8pkJGwzlmVK4ZNxh8FajfTe8c3q6EaGqxqisnHCGz1g8Qhf/qKzFM4jOC0xUne6Jc9SChSWhAZ3tSVyT0/JtjloE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ma6Xpj6j; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A990DDA5;
+	Fri, 19 Jan 2024 10:17:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705659455; cv=none; b=sRnCtluJPQaQhqcFOE2q4Y9u+30z5lz+U39L7p9w6RkvWwsa9rAqyVhw5klhZz/2oUh7xMRpWgIT8u1LTZgFhr/guYJSwZwastVBiCUIIhfhhAN4I+YhaMJlTXNQmpoCR+5B8BddqPYXp/El7NhcKAPaSC9pHSIR7hJU9mSqtrc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705659455; c=relaxed/simple;
+	bh=+LtMZPOF1yo585gqDoaAA6wOBqB5Aivtv5s5vcPOK50=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tZgQggmxaIBhZGPqiYcwvztH04qeQ76aP/dy1q2F/ZW2GOITmLUk6xgfsNHoXvSg+cMbbyNxQsT8KkKlCvoBJoKYnH7TefkEY2S16NUcB0vuArxuGPipXsraI7tCLo4EpP3OA32REhblT4c3CoTiZS/IFQHb8WKfRh/+l82v2m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=xoV+DeqE; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705659156; x=1737195156;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=vAM8WwAa4pSyBcvmLwN/TJEEOg1GFhzhtk80m3+dML4=;
-  b=ma6Xpj6jn0TYxsOQXpRcbPgFr5mZtk00Z1OI7jFxWTjc4duXcG2Qmk+8
-   Apaz76Ga+p4HUVgh5CKNEaQfWlJQsxW7ywntE96OE6mHqGnwJslNDceTG
-   7dAG2wVCgn6QibPn2bgUt/CSduuwBlYHX0iMTPsr+eHoGnuTkHrfjL9lB
-   QiL+DfTOJxnfeeTkVSOLgNCh8vlWQS+XmE79jx8kE86VrSCKb2+Mlx+Jn
-   cEtg8TIwuqzn+kKRNiv2647rI4X3B0WMdF82nfMFFb19jsixeBmFlc93x
-   xpE8DQpvZE9uzK3gObc1QQj8pUjQYcwevigPdT0djZWa7pLeVobghSYc0
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1705659453; x=1737195453;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+LtMZPOF1yo585gqDoaAA6wOBqB5Aivtv5s5vcPOK50=;
+  b=xoV+DeqE3CUXdy9URhQDrHmi8k+DbWw6DW7QFEgyuC22WxnMn7oJCnG8
+   s9FetOukohBy7Kks+rOAaRAcEFSyDKBxr0FF3tpeGZvnU6rsCiJ7+9rtb
+   /RMpbH7id1llCfK3YyXIMKep2HrLYdd4tM3x9+8fR7uHpbwtiO5DACAL7
+   g1wAxD7+KoLBRGhGApgsakHy2S9vKFFz9p6IAqxmH3c+J9cDZxNCVUE5W
+   cq9EzMZhGghFIeg3KXL6XfFBpRfjz2TedigQiNjkrJ6xVCnWmXGTruLMm
+   pK2gA1x33p9xf98ja9jQwOQO/pLt9Kbqe1UcSdv6/vIZH7fGi1r7iN21e
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="19294440"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="19294440"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 02:12:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="19362333"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Jan 2024 02:12:33 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+X-CSE-ConnectionGUID: K82mF02xSm2dPv+Ypq+eGQ==
+X-CSE-MsgGUID: vERtogOnTAm69wiMAgHXnw==
+X-IronPort-AV: E=Sophos;i="6.05,204,1701154800"; 
+   d="asc'?scan'208";a="245712682"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Jan 2024 03:17:26 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 19 Jan 2024 02:12:33 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 19 Jan 2024 02:12:33 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 19 Jan 2024 02:12:32 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jb1AtvE01lRnFelmdpfe4SyU1TPd5WFmZT5fk3H/PYydNOSqlLcwQJj3lPTNJlgIlSLFg8yjEeIEHprKAfyp35oFUzfChqueBS7TTD3/FhbTykhQOP7XHb75K+wRBZmNZH/v5+mq2Uv/GNtlPcp5zJTkskMZ0V7xChCBZUY0G/PuzW+odAKZY0808B6XIm7yghF/+j27ufbWOzXs7rAVAkvjBFWTpjBZty7ds9ZZySOIeuMsApCLTZIJwOo4LLsOihLmB3f0aWfy0eA/+gRADMQAp+84Z35mv8HcvLLtm5Bz8g8wMSfSMbzB0Vt5YTThPE6u27o2j4IQpP9xo90waA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hjqnm9BL5seac3s479Y8IlZ+MtkLdzp4fFoWwVc+WFs=;
- b=NYDmtGK13bOIdWZJbLnWwo6lmMsP3ghSLGsSZyjgWcZhCMH57vfhFTmT1X6UdFVuqKDpL3nthTysVARBy37FHUfqBFfcBf3fHo6UiiHNWtM4if96bYwtsZ/2M6UEMP59vQXi0GaOuYMt411WQSofONvqRthcytiYWndAHnPsQXAYFRbtPGshGDAfx99SP1LP886aPsQSB+Wp5dkyedNJeqvp5XBX9QpKuMm6XHY+5zMLzh5Zg1eL2UMmmfuNY4LlvO6l59Chr+37vyNQak6bvYr/UqwFgkXiNTO5TMs8GXhv8kHLMRWLJfK4EJ5JAyfycNhQlFrEMsToVLzsIRUovQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by DM6PR11MB4660.namprd11.prod.outlook.com (2603:10b6:5:2ad::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.26; Fri, 19 Jan
- 2024 10:12:30 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::a421:69e5:14fc:79d2]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::a421:69e5:14fc:79d2%2]) with mapi id 15.20.7202.020; Fri, 19 Jan 2024
- 10:12:30 +0000
-Message-ID: <cb52ad1f-822f-4da6-9753-691454565b26@intel.com>
-Date: Fri, 19 Jan 2024 18:15:30 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/8] iommufd: Support attach/replace hwpt per pasid
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: "Tian, Kevin" <kevin.tian@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"robin.murphy@arm.com" <robin.murphy@arm.com>, "baolu.lu@linux.intel.com"
-	<baolu.lu@linux.intel.com>, "cohuck@redhat.com" <cohuck@redhat.com>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>, "nicolinc@nvidia.com"
-	<nicolinc@nvidia.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-	"chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-	"yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>, "peterx@redhat.com"
-	<peterx@redhat.com>, "jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
- Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
-	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
-	<yan.y.zhao@intel.com>
-References: <20231127063428.127436-1-yi.l.liu@intel.com>
- <20231127063428.127436-4-yi.l.liu@intel.com>
- <20240115172430.GN734935@nvidia.com>
- <BN9PR11MB52761349DFB5DAD2797C3EBF8C732@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20240116125756.GB734935@nvidia.com>
- <BN9PR11MB52763DDDE39C211E761A05168C722@BN9PR11MB5276.namprd11.prod.outlook.com>
- <88e46f6c-4d64-4357-be2a-833797e6de15@intel.com>
- <20240117125625.GF734935@nvidia.com>
- <459d6a3a-0ad9-4980-be37-103211e927c2@intel.com>
- <20240118133857.GK734935@nvidia.com>
-Content-Language: en-US
-From: Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <20240118133857.GK734935@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0095.apcprd02.prod.outlook.com
- (2603:1096:4:90::35) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+ 15.1.2507.35; Fri, 19 Jan 2024 03:17:25 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 19 Jan 2024 03:17:23 -0700
+Date: Fri, 19 Jan 2024 10:16:46 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Changhuang Liang <changhuang.liang@starfivetech.com>
+CC: Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Emil
+ Renner Berthing <kernel@esmil.dk>, Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jack
+ Zhu <jack.zhu@starfivetech.com>, <linux-media@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<devicetree@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] dt-bindings: media: starfive: Match driver and
+ yaml property names
+Message-ID: <20240119-despair-festival-59ab2d4d896b@wendy>
+References: <20240119100639.84029-1-changhuang.liang@starfivetech.com>
+ <20240119100639.84029-2-changhuang.liang@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|DM6PR11MB4660:EE_
-X-MS-Office365-Filtering-Correlation-Id: da3193f5-459c-40c2-0314-08dc18d72562
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NP5aCIZxOwBsc0i8UdQdQArLLT1xPz4yQ3hVq+hF4CwXrZZFuweyg8odynX826cykpxzjNyLTXytGNTV+f65H7a19uwbay8wBsyhF+pYSXIi8zV38btSUIfVUrPUJfIQZIoKC27Pp7PxXjgl+/3VDhHStggXsK4oHoIZN78Zs/r2/nP+3+XxNZpBOg3g9gWGXEemoXcGtkRatZyWfgszcW5iYDSB7iZPjimqK37e06P8l7w/fKGMN2dbAIr/df8wldrhLyUcVbwSV8OYc/4i6ZvBp8J4XI7AVuvT9X5rVWnNniLiJiSrmYW/oQWQNPcpqHRw6epOhzn/9LyR9v1Uqe5JVzGCDzZyDb8mscWP5dWav4Qu31jMMLJK7iVpma9pmAmcKXwthXVH2+jfsnrQJtvICNF6UGBQB6+sjh5C+N8xlFV/Oq7ho+Mm++iEgDp4MzpSCa3Jai7jFCrNX5uyFHjSkwlkgp+yUuJcRF748hOmIsfek+H0za4C14L6scobP+w1nihj8TrwHMDzWv/41b5qsmQUDD+8Bo9bQaAPOXBFSnkoAdNeU8LJJNcgf+nQfIGAmvitHxa5DIIyQJurdnqp7rQXWRuCPBD3hDj4wgHAiv+f0O3YP34IwMozvbPBCmkTH2AzL74WaNljgJjBLw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(376002)(136003)(39860400002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(41300700001)(36756003)(86362001)(31696002)(38100700002)(82960400001)(83380400001)(478600001)(6506007)(8936002)(8676002)(4326008)(6486002)(316002)(6916009)(66946007)(66556008)(66476007)(54906003)(5660300002)(7416002)(26005)(2906002)(6512007)(53546011)(2616005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bFFWc25WOWdpWDRhNW9adS9uQkQ2WTVERER3K3NKUkh1N2RXaW1POXNnUWlW?=
- =?utf-8?B?NUUyd0tXUHBZN1dEejF4UFErQjErR2NDaUdBVG15bjFZVTFBU2IyVUphSXJT?=
- =?utf-8?B?WHhFbDdQdTJDWnBLRVJ3ajFXK2pRTm5UQndKVy9nZ1dRVit3SzVteDFyWm5o?=
- =?utf-8?B?YWVrQW5LNmlla2lJWGdObnVmWTNWa2dzZnU5cjRQY1Q4eHJkbXBhcFJtSWJI?=
- =?utf-8?B?VXR4Mkt3M1Z2YTJWS1BERy9FMzFMVEREdThsQzY0TWtCQVpFVzBHNkhwdnB6?=
- =?utf-8?B?UGVtbHNGQ0JrT1BLbExibTgxL3VHNDNuNVY3dHQrTy9VWmhxN2pGVWRxbzNj?=
- =?utf-8?B?dFNSdXcydU5EVXJzVXQ3UUdjWVdJR3NQN2ZDMS9RVG5rWWlnNlFOMjdUTFgx?=
- =?utf-8?B?RUFlSFduMnkwbWdrMXA0S3Q5Vk9KRDBDT1RRejF1SkNzWGx3L2ZUMjY1ekpC?=
- =?utf-8?B?SE9jL2Q5MTMzYUh4Zm9uR09oMytjRmFrTEpVK3F1SjVqV2duWkNtZkdRYS82?=
- =?utf-8?B?S0ZzV1RraXJ6d2JWbjFkNi8vSVMvbUxRRjFVTWwvam1wN2ZwUU9JMUQ4Z0Fy?=
- =?utf-8?B?bGJMRkZHbmFyTzFvYlJCYS9ubmpHV2RjTS9zdklpQnI0bzNhZTgxYVpGcnpH?=
- =?utf-8?B?MVV4U2dUTU1ROTJNY3EzVHFCT1VCcHFRSnBNM3RDQzZCdVJNZ213WmZKb1Nx?=
- =?utf-8?B?Y3Q4aDdtY0xVNXROYkNKSytvcnBpU3paRUIwV3M3ZVlPaFcxUk1RaUJqcm9s?=
- =?utf-8?B?QXpGTEpmWmRubkFickhoSWNlYjQxU0NiVko5bWt1MTVTOVdmU0xMZVZxRkIy?=
- =?utf-8?B?UXdrVTYrcUxyS1FVVGVld2lVdXdqc1Zya0hRV1FGVGRheDFDeHltYlMxcWRV?=
- =?utf-8?B?YXl0SG4vTW0zWnBlbjd3K3FkSWNtSDM0NDdkbnhuczUrOFl4WFVsdFlnVEFH?=
- =?utf-8?B?RUkrSVBOdUpnQnphN1NJbkVkTU9mY1lxdC9LbzZRWmpyc3JEeEk3Ylh0bFgw?=
- =?utf-8?B?TDRhdVRwVEZQVmJZYmlLM0JJMlRtKzJZL0h1Z1dKVDBhdUFMU0sxN2p2dzNW?=
- =?utf-8?B?bGxvVlFFYmxLeFlYUG5kc3ZJTFcxaStybDR1bkhmUENmNWxBUmRmZ0VOOFBJ?=
- =?utf-8?B?dmlGbTFGUDdVL1B0VlpMZUlPK1UzZFdwcTVzb3hOOWNPYUQvaWNwaXUwdHZa?=
- =?utf-8?B?Q3lkWWVDSEFYRWIvMDNVWXR6QVRZKzMxcEphT3BUTUxyMDFrTE5vOWI2N2NM?=
- =?utf-8?B?TjBDdnB3L3U4ZFdFbzFMUUJreXByTFhrZW9McTJtak5WTFdKbjZUaXNmNnNC?=
- =?utf-8?B?ODVmR09OSXgvZzZVM0JFOHpHa3d6MG5yckxXRSs5VXA3bnl5NHBIN2x4bnFS?=
- =?utf-8?B?L055dWczYzNXOTkxT0NjM2ExYUhLQXJ3Q0NxdGpmb2JLQUNVVkdUeitYWTBo?=
- =?utf-8?B?TWRtalB5TG1ZVFFrenIvVjhtOFpTRHp5TDdkcXhNclV4SjJHMzhDenp5QjZT?=
- =?utf-8?B?VjRmUEpaNHJiQzVXQldDWThPSnlPM2t0TE10UUtBZjBXdVRVUEo2ekFGR25z?=
- =?utf-8?B?RmFoemcrWUUwS0pQb1A2Y09heUNYdW1CT2xWK1lqa2hTR0Z1MlZiNU9xdTNa?=
- =?utf-8?B?RmlPampaZCtqaVhBMDZrZ2UwRytPWE1yME8vd25oVzdxSFQ0SDg1eVlMTWpG?=
- =?utf-8?B?QWhQYzZSbStXZk9hZ01SSmNrWmY5dFdmTDhDMEt5Y01iZGU3OWVHS3UxTE5N?=
- =?utf-8?B?TEJmZnRBbTV6Q2Z4WU1DU0xYQlRpWDJqWkxTUXdkSVFMeGY3eHFGZGlUL2xm?=
- =?utf-8?B?bXI1WWpIT1l3L3VRZUsycFNDVnY2NmFnR3ZSRDlOczBkMjRzZndUMU5SUExp?=
- =?utf-8?B?NHkvbGx3QzIrNE9HSFF4d2ZaWkl4Sk9UR2l6Q3N4V3pweVR5TnNMZmMwU3dJ?=
- =?utf-8?B?aHV2WThWWjFEdjZia2pmb1pZaVR2Y1Fjd1BpaDBoVEpSZnV4NkoyNjgrTzN5?=
- =?utf-8?B?dDZ1dk1HcUo0RW8xZmM3alNOclpwMkV4N2d0MFZGL3RhN0ZQWnJXNVFZajZC?=
- =?utf-8?B?RHljTEdva25KNFgrUGllQnhRd1hYbDZDVWt3dHBPVG14ZjBzR09TRFYzVzJm?=
- =?utf-8?Q?p3scBnhwO6+IAL2IZVm0//nO6?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: da3193f5-459c-40c2-0314-08dc18d72562
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 10:12:30.7101
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QGSJfwXifyKXWTP0AN6Q0ptyBse/ea1cMpA5lEK1WxprCL9MbC5nVZpY7zbfTXeMIJ8TQb4n7EkK0k+gS/+BBw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4660
-X-OriginatorOrg: intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="BFH1MedVdG7X979+"
+Content-Disposition: inline
+In-Reply-To: <20240119100639.84029-2-changhuang.liang@starfivetech.com>
 
-On 2024/1/18 21:38, Jason Gunthorpe wrote:
-> On Thu, Jan 18, 2024 at 05:28:01PM +0800, Yi Liu wrote:
->> On 2024/1/17 20:56, Jason Gunthorpe wrote:
->>> On Wed, Jan 17, 2024 at 04:24:24PM +0800, Yi Liu wrote:
->>>> Above indeed makes more sense if there can be concurrent attach/replace/detach
->>>> on a single pasid. Just have one doubt should we add lock to protect the
->>>> whole attach/replace/detach paths. In the attach/replace path[1] [2], the
->>>> xarray entry is verified firstly, and then updated after returning from
->>>> iommu attach/replace API. It is uneasy to protect the xarray operations only
->>>> with xa_lock as a detach path can acquire xa_lock right after attach/replace
->>>> path checks the xarray. To avoid it, may need a mutex to protect the whole
->>>> attach/replace/detach path to avoid race. Or maybe the attach/replace path
->>>> should mark the corresponding entry as a special state that can block the
->>>> other path like detach until the attach/replace path update the final hwpt to
->>>> the xarray. Is there such state in xarray?
->>>
->>> If the caller is not allowed to make concurrent attaches/detaches to
->>> the same pasid then you can document that in a comment,
->>
->> yes. I can document it. Otherwise, we may need a mutex for pasid to allow
->> concurrent attaches/detaches.
->>
->>> but it is
->>> still better to use xarray in a self-consistent way.
->>
->> sure. I'll try. At least in the detach path, xarray should be what you've
->> suggested in prior email. Currently in the attach path, the logic is as
->> below. Perhaps I can skip the check on old_hwpt since
->> iommu_attach_device_pasid() should fail if there is an existing domain
->> attached on the pasid. Then the xarray should be more consistent. what
->> about your opinion?
->>
->> 	old_hwpt = xa_load(&idev->pasid_hwpts, pasid);
->> 	if (old_hwpt) {
->> 		/* Attach does not allow overwrite */
->> 		if (old_hwpt == hwpt)
->> 			return NULL;
->> 		else
->> 			return ERR_PTR(-EINVAL);
->> 	}
->>
->> 	rc = iommu_attach_device_pasid(hwpt->domain, idev->dev, pasid);
->> 	if (rc)
->> 		return ERR_PTR(rc);
->>
->> 	refcount_inc(&hwpt->obj.users);
->> 	xa_store(&idev->pasid_hwpts, pasid, hwpt, GFP_KERNEL);
-> 
-> Use xa_cmpxchg()
+--BFH1MedVdG7X979+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-sure.
+On Fri, Jan 19, 2024 at 02:06:38AM -0800, Changhuang Liang wrote:
+> Drop some unused properties for clocks, resets and interrupts for
+> StarFive JH7110 camera subsystem.
 
--- 
-Regards,
-Yi Liu
+What do you mean "unused"?
+
+Do these clocks etc exist but are not used by the driver?
+
+Or do they not exist at all?
+
+The two are very different!
+
+Thanks,
+Conor.
+
+>=20
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> Reviewed-by: Jack Zhu <jack.zhu@starfivetech.com>
+> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+> ---
+>  .../bindings/media/starfive,jh7110-camss.yaml | 31 +++++--------------
+>  1 file changed, 8 insertions(+), 23 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/media/starfive,jh7110-cams=
+s.yaml b/Documentation/devicetree/bindings/media/starfive,jh7110-camss.yaml
+> index c66586d90fa2..2504381058b3 100644
+> --- a/Documentation/devicetree/bindings/media/starfive,jh7110-camss.yaml
+> +++ b/Documentation/devicetree/bindings/media/starfive,jh7110-camss.yaml
+> @@ -4,14 +4,14 @@
+>  $id: http://devicetree.org/schemas/media/starfive,jh7110-camss.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+> =20
+> -title: Starfive SoC CAMSS ISP
+> +title: StarFive SoC CAMSS ISP
+> =20
+>  maintainers:
+>    - Jack Zhu <jack.zhu@starfivetech.com>
+>    - Changhuang Liang <changhuang.liang@starfivetech.com>
+> =20
+>  description:
+> -  The Starfive CAMSS ISP is a Camera interface for Starfive JH7110 SoC. =
+It
+> +  The StarFive CAMSS ISP is a Camera interface for StarFive JH7110 SoC. =
+It
+>    consists of a VIN controller (Video In Controller, a top-level control=
+ unit)
+>    and an ISP.
+> =20
+> @@ -28,26 +28,21 @@ properties:
+>        - const: isp
+> =20
+>    clocks:
+> -    maxItems: 7
+> +    maxItems: 3
+> =20
+>    clock-names:
+>      items:
+> -      - const: apb_func
+>        - const: wrapper_clk_c
+> -      - const: dvp_inv
+> -      - const: axiwr
+> -      - const: mipi_rx0_pxl
+>        - const: ispcore_2x
+>        - const: isp_axi
+> =20
+>    resets:
+> -    maxItems: 6
+> +    maxItems: 5
+> =20
+>    reset-names:
+>      items:
+>        - const: wrapper_p
+>        - const: wrapper_c
+> -      - const: axird
+>        - const: axiwr
+>        - const: isp_top_n
+>        - const: isp_top_axi
+> @@ -57,7 +52,7 @@ properties:
+>        - description: JH7110 ISP Power Domain Switch Controller.
+> =20
+>    interrupts:
+> -    maxItems: 4
+> +    maxItems: 3
+> =20
+>    ports:
+>      $ref: /schemas/graph.yaml#/properties/ports
+> @@ -125,34 +120,24 @@ examples:
+>          reg =3D <0x19840000 0x10000>,
+>                <0x19870000 0x30000>;
+>          reg-names =3D "syscon", "isp";
+> -        clocks =3D <&ispcrg 0>,
+> -                 <&ispcrg 13>,
+> -                 <&ispcrg 2>,
+> -                 <&ispcrg 12>,
+> -                 <&ispcrg 1>,
+> +        clocks =3D <&ispcrg 13>,
+>                   <&syscrg 51>,
+>                   <&syscrg 52>;
+> -        clock-names =3D "apb_func",
+> -                      "wrapper_clk_c",
+> -                      "dvp_inv",
+> -                      "axiwr",
+> -                      "mipi_rx0_pxl",
+> +        clock-names =3D "wrapper_clk_c",
+>                        "ispcore_2x",
+>                        "isp_axi";
+>          resets =3D <&ispcrg 0>,
+>                   <&ispcrg 1>,
+> -                 <&ispcrg 10>,
+>                   <&ispcrg 11>,
+>                   <&syscrg 41>,
+>                   <&syscrg 42>;
+>          reset-names =3D "wrapper_p",
+>                        "wrapper_c",
+> -                      "axird",
+>                        "axiwr",
+>                        "isp_top_n",
+>                        "isp_top_axi";
+>          power-domains =3D <&pwrc 5>;
+> -        interrupts =3D <92>, <87>, <88>, <90>;
+> +        interrupts =3D <92>, <87>, <90>;
+> =20
+>          ports {
+>              #address-cells =3D <1>;
+> --=20
+> 2.25.1
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+--BFH1MedVdG7X979+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZapMDgAKCRB4tDGHoIJi
+0lzdAP0XhGNQY1wQcLpLFfEc/Sj9meIVrA/jD1GxiMXgdQqWnQD/QUG80+qLfwIm
+6Glfk4ikQIoSAIG9e230u0TETuQEkQg=
+=ngD+
+-----END PGP SIGNATURE-----
+
+--BFH1MedVdG7X979+--
 
