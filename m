@@ -1,172 +1,106 @@
-Return-Path: <linux-kernel+bounces-30682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99E7E8322F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:27:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22AE18322F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:27:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 281271F2337E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:27:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6185B22AF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:27:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996BC1111;
-	Fri, 19 Jan 2024 01:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aNjOWHXC"
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC113C37;
+	Fri, 19 Jan 2024 01:27:43 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8755ECF
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 01:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842E9322A;
+	Fri, 19 Jan 2024 01:27:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705627638; cv=none; b=UrDw0xeZ7Mq8GmLqd55Hmqai+LHHKvK+nXmce4Az378KMSY26LWBxf6TZ3WLRup/ahx1tfIJaYjOdt+2XEg/qOAPFi6njgK0khVcppDmKM5AFHVMzfPkRAHvODn8yzYZnB2tZCU9HustRkviY5bcqLhNnNcqTVfbNn4UG9beVvg=
+	t=1705627663; cv=none; b=M+wt7//DanQ/X6bcorKVcObg4cpEuPdHTs8HtH+KUBNcAfPW+RYLEQK5u7Ix2BQN+MwDd5gncfBackCQQFnsrjT6LsT8ttrndmDr3Ac4EIOIXc1SVcLRSnlEGtvd0gsVSbynefq/3Zkq4JjQ8Ru9C3e0Ezeo+rXhBmh7uw/GyFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705627638; c=relaxed/simple;
-	bh=oIs2VoyVo5eys3aTQpEMmJF1mdTuSPVW1ZHPdC2hqxg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o+p45JiE+M7R3bAKso+Nh5dpTKuQEUwwd2hKWAShD0vFTPXwS1zgO2x3QaZJKoD0gMrfwHuptPqQmK+A1VaVGgOJGV9/Y5cvy7qJEx2TyPtSrcbsaDviijQY9hTpF18YIOvm03sGJrFT8KlOBxGc8ey5CJnaST/d0X+VsHvZ4kM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aNjOWHXC; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 19 Jan 2024 10:26:59 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705627634;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MEAAKdKI2s28mLXSjhbge/t2jcWXL1sSrlOeBNigut8=;
-	b=aNjOWHXCrX/lkwKeCe64ksjMWHQnYhafV7LjxiqaEbtC7Rtq2OswV7y4MAuWj8a0yQmjgh
-	LIHNxMfvUdAjeJ9hG0aTTuYW8VB0blGusdNjdMZYbXrerP2ioa++WAdfAkv3UDD8GsJBKI
-	b0XaHXSc78GqGkDtCfcwHTBTwGgeDlI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Itaru Kitayama <itaru.kitayama@linux.dev>
-To: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
-	kvmarm@lists.linux.dev, catalin.marinas@arm.com, will@kernel.org,
-	maz@kernel.org, steven.price@arm.com, alexandru.elisei@arm.com,
-	joey.gouly@arm.com, james.morse@arm.com,
-	Jonathan.Cameron@huawei.com, dgilbert@redhat.com, jpb@kernel.org,
-	oliver.upton@linux.dev, zhi.wang.linux@gmail.com,
-	yuzenghui@huawei.com, salil.mehta@huawei.com,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Chao Peng <chao.p.peng@linux.intel.com>,
-	Christoffer Dall <christoffer.dall@arm.com>,
-	Fuad Tabba <tabba@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Quentin Perret <qperret@google.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Thomas Huth <thuth@redhat.com>, Ryan Roberts <Ryan.Roberts@arm.com>,
-	Sami Mujawar <Sami.Mujawar@arm.com>
-Subject: Re: [RFC] Support for Arm CCA VMs on Linux
-Message-ID: <ZanP4+K/CEkhukkp@vm3>
-References: <20230127112248.136810-1-suzuki.poulose@arm.com>
- <20231002124311.204614-1-suzuki.poulose@arm.com>
- <ZZ4tsTQOKOamM+h/@vm3>
- <ec8ed5b0-5080-45e9-a4a6-e5dbe48e86d3@arm.com>
- <d47e8b8c-50e4-4ad3-8f00-cadaede1eca9@arm.com>
+	s=arc-20240116; t=1705627663; c=relaxed/simple;
+	bh=T2KrNq+0FoKIbhPTRgYchgT5nfKU6YqP1rVxIQBzJns=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=KFOZFLc6r5Jh9/GOfbIBVYMXSPeRWTO1S7nkaAecqgULuCMuWWjAUbRMCF1WijhvN9Mx6tJTPytulAQyynBnO152UFgk9NZA7UdRsg6SSJQWnrAu72mMTWT2X7x4U/L4wmq+tHNJE0t+XiDDjyTnRfMhaXmSgeXIL1vBFvqKjgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TGMRm6mc0z4f3kF5;
+	Fri, 19 Jan 2024 09:27:32 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id B52B71A0172;
+	Fri, 19 Jan 2024 09:27:36 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBnOBEG0Klly7QUBQ--.22293S3;
+	Fri, 19 Jan 2024 09:27:36 +0800 (CST)
+Subject: Re: [PATCH] block: Move checking GENHD_FL_NO_PART to
+ bdev_add_partition()
+To: Jens Axboe <axboe@kernel.dk>, Li Lingfeng <lilingfeng@huaweicloud.com>,
+ allison.karlitskaya@redhat.com, hch@infradead.org, yukuai1@huaweicloud.com
+Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ houtao1@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240118130401.792757-1-lilingfeng@huaweicloud.com>
+ <f6e687cc-debd-4864-901a-fb35be9f2adc@kernel.dk>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <00c59648-bbf3-7ae4-4cea-aeccbb2bfe0c@huaweicloud.com>
+Date: Fri, 19 Jan 2024 09:27:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <f6e687cc-debd-4864-901a-fb35be9f2adc@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d47e8b8c-50e4-4ad3-8f00-cadaede1eca9@arm.com>
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:cCh0CgBnOBEG0Klly7QUBQ--.22293S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw47trWkZr18Cw13JF4xZwb_yoW3CrX_Zw
+	1FkwnrJr4xJa4SgF40krWayryY9ayUW347ZrsrJrsxXrykA34kCFZagwna93yxXFs7Krn8
+	CrnxWr4DZa1IvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Wed, Jan 10, 2024 at 01:44:45PM +0000, Suzuki K Poulose wrote:
-> On 10/01/2024 11:41, Suzuki K Poulose wrote:
-> > Hi Itaru,
-> > 
-> > On 10/01/2024 05:40, Itaru Kitayama wrote:
-> > > On Mon, Oct 02, 2023 at 01:43:11PM +0100, Suzuki K Poulose wrote:
-> > > > Hi,
-> > > > 
-> > > > 
-> 
-> ...
-> 
-> > > 
-> > > Suzuki,
-> > > Any update to the Arm CCA series (v3?) since last October?
-> > 
-> > Yes, we now have a version that supports the final RMM-v1.0
-> > specification (RMM-v1.0-EAC5). We also have the UEFI EDK2 firmware
-> > support for Guests in Realm world.
-> > 
-> > We are planning to post the changes for review in the v6.8-rc cycle. We
-> > are trying to integrate the guest_mem support (available in v6.8-rc1) as
-> > well as reusing some of the arm64 kvm generic interface for configuring
-> > the Realm parameters (e.g., PMU, SVE_VL etc).
-> > 
-> > Here is a version that is missing the items mentioned above, based
-> > on v6.7-rc4, if anyone would like to try.
-> > 
-> > Also, the easiest way to get the components built and model kick started
-> > is using the shrinkwrap [6] tool, using the cca-3world configuration.
-> > The tool pulls all the required software components, builds (including
-> > the buildroot for rootfs) and can run a model using these built
-> > components.
-> 
-> Also, please see 'arm/run-realm-tests.sh' in the kvm-unit-tests-cca
-> repository for sample command lines to invoke kvmtool to create Realm
-> VMs.
+Hi,
 
-Thank you, Suzuki. I have just run the script above, again in the
-framework of shrinkwrap on the RevC FVP and the jobs ran fine. I need to
-go look at the lots of logs.
+åœ¨ 2024/01/18 23:20, Jens Axboe å†™é“:
+> On 1/18/24 6:04 AM, Li Lingfeng wrote:
+>> From: Li Lingfeng <lilingfeng3@huawei.com>
+>>
+>> Commit 1a721de8489f ("block: don't add or resize partition on the disk
+>> with GENHD_FL_NO_PART") prevented all operations about partitions on disks
+>> with GENHD_FL_NO_PART in blkpg_do_ioctl() since they are meaningless.
+>> However, it changed error code in some scenarios. So move checking
+>> GENHD_FL_NO_PART to bdev_add_partition() to eliminate impact.
+> 
+> This looks fine, but it's identical to the one sent out by Yu two days
+> ago. Hmm? Who's the proper author?
 
-Itaru.
+Lingfeng is my collegue and I told him that he should send a fix for his
+formal patch. Sorry for the confusion :)
+
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
 
 > 
+> Adding Yu.
 > 
-> > 
-> > 
-> > 
-> > [0] Linux Repo:
-> >        Where: git@git.gitlab.arm.com:linux-arm/linux-cca.git
-> >        KVM Support branch: cca-host/rmm-v1.0-eac5
-> >        Linux Guest branch: cca-guest/rmm-v1.0-eac5
-> >        Full stack branch:  cca-full/rmm-v1.0-eac5
-> > 
-> > [1] kvmtool Repo:
-> >        Where: git@git.gitlab.arm.com:linux-arm/kvmtool-cca.git
-> >        Branch: cca/rmm-v1.0-eac5
-> > 
-> > [2] kvm-unit-tests Repo:
-> >        Where: git@git.gitlab.arm.com:linux-arm/kvm-unit-tests-cca.git
-> >        Branch: cca/rmm-v1.0-eac5
-> > 
-> > [3] UEFI Guest firmware:
-> >        edk2:     https://git.gitlab.arm.com/linux-arm/edk2-cca.git
-> >        revision: 2802_arm_cca_rmm-v1.0-eac5
-> > 
-> >        edk2-platforms:
-> > https://git.gitlab.arm.com/linux-arm/edk2-platforms-cca.git
-> >        revision:       2802_arm_cca_rmm-v1.0-eac5
-> > 
-> > 
-> > [4] RMM Repo:
-> >        Where: https://git.trustedfirmware.org/TF-RMM/tf-rmm.git
-> >        tag : tf-rmm-v0.4.0
-> > 
-> > [5] TF-A repo:
-> >        Where: https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git
-> >        Tag: v2.10
-> > 
-> > 
-> > [6] https://shrinkwrap.docs.arm.com/en/latest/
-> >      config: cca-3world.yaml
-> > 
-> 
-> Suzuki
-> 
+
 
