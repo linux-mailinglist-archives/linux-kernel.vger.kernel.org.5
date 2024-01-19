@@ -1,127 +1,130 @@
-Return-Path: <linux-kernel+bounces-30945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96EE783267A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:22:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E01C6832694
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:25:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D32651C22CBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:22:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 974E51F23AE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:25:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EAB8288CE;
-	Fri, 19 Jan 2024 09:22:50 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA62328E0A;
+	Fri, 19 Jan 2024 09:25:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LJJ3WZ/j"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F84D26AEC;
-	Fri, 19 Jan 2024 09:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B76219E8;
+	Fri, 19 Jan 2024 09:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705656169; cv=none; b=eOAZSc+CdXeRYJrpY5ZRVWkURy6uur2jpo88TXB2RUdEZlH/CMLBpQNrzsUR12qAJ/xnBzFn9Yx4FhuWEGDl/32XguDVPf1BYyYMOn8HFedEbl9tXbgruQWfi6sCfrsDMYgiitUXgYT58OlKmq5OwWD8UvJkAEuOhWthPrx5guM=
+	t=1705656335; cv=none; b=KSCgB8ikFARvBJMchBXhlqEWbTLyHD/LQex+4nf3Nri74EHU5GykXxI12HEzg1qb11toB5V1wqCgUwtkuaWqW99a9215hDll7HHzJmeoG0/3rpRU8Z2MQ43zrjLx22GWR5NOLHPC8qNtJEwkEhxFrOVaAzScVIvjkPgrWWjmlWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705656169; c=relaxed/simple;
-	bh=N9FUij+Gv7vcYaUX9+UtvBQrZdEYrKAc7y0cF6kUUcM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gVVAIh2P7YvlKfFxoAHEKA5musSrjIgQaFYX18CAENy70KygSOlF2KwZWD53Y5QqLC51Mz1c9hLHeaODnnUrW5TcP4IReVGsE9HtNKw7ooS0IbEE0Zw15f4tJbhuBp8/2SQS149BcnRZP2ZKJTbCFupDtSWIYy3A4PFLO0j2WRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 5eb2d7502dca4681b1c1b85464ee8963-20240119
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:645a9bb7-9aee-47af-8dff-de50fb4a484f,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-3,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:7
-X-CID-INFO: VERSION:1.1.35,REQID:645a9bb7-9aee-47af-8dff-de50fb4a484f,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-3,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:7
-X-CID-META: VersionHash:5d391d7,CLOUDID:e3ee877f-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240119172239A7QKR7U4,BulkQuantity:0,Recheck:0,SF:17|101|24|100|38|19
-	|44|64|66|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil
-	,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 5eb2d7502dca4681b1c1b85464ee8963-20240119
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1484895239; Fri, 19 Jan 2024 17:22:37 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 426E3E000EB9;
-	Fri, 19 Jan 2024 17:22:35 +0800 (CST)
-X-ns-mid: postfix-65AA3F5B-1855721587
-Received: from [172.20.15.234] (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 338B4E000EB9;
-	Fri, 19 Jan 2024 17:22:26 +0800 (CST)
-Message-ID: <517fae75-c4e7-4576-81ff-6a14a3eb9cd7@kylinos.cn>
-Date: Fri, 19 Jan 2024 17:22:25 +0800
+	s=arc-20240116; t=1705656335; c=relaxed/simple;
+	bh=A2jzrktREwr+3hYTqUqTbZhIrwHo5lxqiGqRRdJOwXA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OOYerSUfcnVV9rRnfElNzxTfQcn9nzO2cWqCx4shixYgzdUcxVCZPUXMlE6DbP1PGh6pI3uPOLyxZzmmERVknL+Zyxb300WFqHeprgw1eKdbmQveo+qpu/dcWmO/pGkvlXY1vTGAgjFdlw9yD+jQLG/KGrAsYaNrk/r/Eqx2rVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LJJ3WZ/j; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40J8FINO022663;
+	Fri, 19 Jan 2024 09:25:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=5QTXHF5
+	YIu07ZNxUg796IFtmuJItrJDHQxNWUG9q+WA=; b=LJJ3WZ/jr/IRqP8uEdwU77I
+	B2N4K2JwOswvf4LXhBh69elrvOdw/1dTmMlS1a53n3Y4y73iNTlVAthbwUsPThGn
+	2Cuy8+hUBYNkS/cx6PP+6afkk/8D0ULEmmZ8Kd8ZdnJeYQSqx8zC+DQcUtcyl4g9
+	rkuVLAp2RNEmaAp3V7V2GvD/rgbRTfclRplCcuQRwvhptMpJ6oOVFhAbapSoU7b+
+	NA6qEjlzpHeqfcM7xuf4f57Yov4OO5sf2BlpG92qi/3ZU5WJJ0q6lL7gk9I6pyqa
+	sCLD9/T0rHiFT21YSa3hRuEZBuv453BSh9krsEKilt04OSFxAE0IW6riSy6+OBQ=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vqndb04d2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 09:25:13 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40J9PCQ6014612
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 09:25:12 GMT
+Received: from hu-jinlmao-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 19 Jan 2024 01:25:12 -0800
+From: Mao Jinlong <quic_jinlmao@quicinc.com>
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach
+	<mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+        Leo Yan
+	<leo.yan@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC: Mao Jinlong <quic_jinlmao@quicinc.com>, <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        Tingwei Zhang
+	<quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        "Tao
+ Zhang" <quic_taozha@quicinc.com>
+Subject: [PATCH v3 0/2] arm64: dts: qcom: Add coresight nodes for sm8450
+Date: Fri, 19 Jan 2024 01:24:56 -0800
+Message-ID: <20240119092500.7154-1-quic_jinlmao@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] x86/xen: Add some null pointer checking to smp.c
-To: Markus Elfring <Markus.Elfring@web.de>, xen-devel@lists.xenproject.org,
- kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel test robot <lkp@intel.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
- =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-References: <20240117090018.152031-1-chentao@kylinos.cn>
- <1705655941162581.825.seg@mailgw>
-Content-Language: en-US
-From: Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <1705655941162581.825.seg@mailgw>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: hLt1EV_AIseKsW6O0teSSBx83zO-XkXE
+X-Proofpoint-GUID: hLt1EV_AIseKsW6O0teSSBx83zO-XkXE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_04,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ suspectscore=0 clxscore=1015 mlxlogscore=685 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401190039
 
-On 2024/1/17 18:40, Markus Elfring wrote:
->> kasprintf() returns a pointer to dynamically allocated memory
->> which can be NULL upon failure. Ensure the allocation was successful
->> by checking the pointer validity.
-> =E2=80=A6
->> +++ b/arch/x86/xen/smp.c
->> @@ -61,10 +61,14 @@ void xen_smp_intr_free(unsigned int cpu)
->>
->>   int xen_smp_intr_init(unsigned int cpu)
->>   {
->> -	int rc;
->> +	int rc =3D 0;
->=20
-> I find the indication of a successful function execution sufficient by
-> the statement =E2=80=9Creturn 0;=E2=80=9D at the end.
-> How do you think about to omit such an extra variable initialisation?
-Thanks, it's no need now. I'll remove it in v3.
->=20
->=20
->>   	char *resched_name, *callfunc_name, *debug_name;
->>
->>   	resched_name =3D kasprintf(GFP_KERNEL, "resched%d", cpu);
->> +	if (!resched_name) {
->> +		rc =3D -ENOMEM;
->> +		goto fail;
->> +	}
->>   	per_cpu(xen_resched_irq, cpu).name =3D resched_name;
->>   	rc =3D bind_ipi_to_irqhandler(XEN_RESCHEDULE_VECTOR,
->>   				    cpu,
->=20
-> You propose to apply the same error code in four if branches.
-> I suggest to avoid the specification of duplicate assignment statements
-> for this purpose.
-> How do you think about to use another label like =E2=80=9Ce_nomem=E2=80=
-=9D?
-I'll add a new label to simply the code.
->=20
-> Regards,
-> Markus
---=20
-Thanks,
-   Kunwu
+Add coresight components on Qualcomm SM8450 Soc. The components include
+TMC ETF/ETR, ETE, STM, TPDM, CTI. And remove the pattern of ete node
+name.
+
+Change since V2:
+1. Change the name in binding as 'ete'.
+
+Change since V1:
+1. Remove the pattern match of ETE node name.
+2. Update the tmc-etr node name in DT.
+
+Mao Jinlong (2):
+  dt-bindings: arm: coresight: Remove pattern match of ETE node name
+  arm64: dts: qcom: Add coresight nodes for sm8450
+
+ .../arm/arm,embedded-trace-extension.yaml     |   6 +-
+ arch/arm64/boot/dts/qcom/sm8450.dtsi          | 742 ++++++++++++++++++
+ 2 files changed, 744 insertions(+), 4 deletions(-)
+
+-- 
+2.41.0
 
 
