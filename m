@@ -1,167 +1,289 @@
-Return-Path: <linux-kernel+bounces-30929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311F1832625
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:05:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16EC1832629
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:05:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EA7D1C22A7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:05:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 037C81C22C49
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B77E1E535;
-	Fri, 19 Jan 2024 09:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD6123748;
+	Fri, 19 Jan 2024 09:05:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="cINraWqb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="bwxMVfTm"
-Received: from smtpout35.security-mail.net (smtpout35.security-mail.net [85.31.212.35])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="FINBWkf5"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2083.outbound.protection.outlook.com [40.107.237.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33DA71E89A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 09:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=85.31.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4329D208C6;
+	Fri, 19 Jan 2024 09:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.83
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705655105; cv=fail; b=FZrMbB5ZRY0YlhzKXHXHKBK8SfLH2roDcf+SW209RlkhZr3RT7gGJh2KCZtqYrQRG1DGK0rpenEQJHh/kPEqNpNnLGzQ4O/r1+fZgfL3B9b2+8rURGrmrPvpqG6hKKNcBDfvpyC86/TjZUi31yRE9wD1HFLf/RLD4re3qINH1ks=
+	t=1705655131; cv=fail; b=EcqjfdAGCUBp26fFB+vw1lOYme6cfh9Uc5dyI7RU+/Rabo5djT/0gzqrD0cOfn7IYxXGMRK/CVAV/36MtLj/ydCEBuWyYpCzG1+WwKevOajF3XQPq5MOxzGvVs+63Ey8PRjc0loCaK+4N9/jYK9nXyUPGjBUVeQ32Q84vGnHmAc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705655105; c=relaxed/simple;
-	bh=Ps889YvbYKLEBvlwatD18mbcUmmkvu+en5koGfiRmjw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Mnlqv+0HAv4NpebTELDLf+tZOWPGKoIkYFF7c35HKD0VXEf2+xN+7mPzKsAuvnTWbcGmJ0UO4L9AAy0EWmJAuCebwRYtJIPKfr/ImNof40aaMN9ZbwTnNYJF1bwxYAsQ3EYaNe8pBWfFZ6BF6S271EAkQPqc7rNYOZt7n5P2vto=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com; spf=pass smtp.mailfrom=kalrayinc.com; dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=cINraWqb; dkim=fail (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=bwxMVfTm reason="signature verification failed"; arc=fail smtp.client-ip=85.31.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kalrayinc.com
-Received: from localhost (localhost [127.0.0.1])
-	by fx304.security-mail.net (Postfix) with ESMTP id 68AC3AB267A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 09:59:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
-	s=sec-sig-email; t=1705654765;
-	bh=Ps889YvbYKLEBvlwatD18mbcUmmkvu+en5koGfiRmjw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=cINraWqbUU65/RDmZdZe79Jkdhli1xmZQhm11ny2pZ2ZBr4LU2ANxekxNS9tIvjlr
-	 vCoglFqWH5mIcjvxsTnS86A2HFOqDzVxIy6DhuJ7cgs5UXNT5d8L/x94g4ewAuXzQQ
-	 viV6/CWI4OKu67GN6vIYjIEQ671Sq801+bua/Ugg=
-Received: from fx304 (localhost [127.0.0.1]) by fx304.security-mail.net
- (Postfix) with ESMTP id 10E80AB2363; Fri, 19 Jan 2024 09:59:25 +0100 (CET)
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com
- (mail-mr2fra01on0100.outbound.protection.outlook.com [104.47.25.100]) by
- fx304.security-mail.net (Postfix) with ESMTPS id 37AB5AB3041; Fri, 19 Jan
- 2024 09:59:24 +0100 (CET)
-Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:13::5)
- by MRZP264MB1717.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:b::9) with
+	s=arc-20240116; t=1705655131; c=relaxed/simple;
+	bh=k9tZXa0FGa0Tf2Zw7gXamq8S/6G7r3RJ70KsfNVMOQY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TusdZZglnAZFuX+s1zhnJ4ixSJg1XgduCKZSQ1Zj5JgPTBDewZ3SsoXqL2IUj071ORb8xUVGBbbTZLsNuLr0HOFJGOOVe0Jfb1bHLtAwhugm5HyzXEp0l9CMEa719GZ6J9oEoAgmmEnYJNXeLA3S+gXJWgmw8SekhhqhfXNMZmo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=FINBWkf5; arc=fail smtp.client-ip=40.107.237.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eocUA8Dcuux7nmV40OhLVPbrMrYXk7WKKtHM2t5nXqWMkMiEpfH/KQ8AsuxOB8Q1ldnPdBwd5RV0Gs28poQPjJIgrtseEAhXFE15Yi/GYmI0SQ+bpKCsuOgybFjq5ir6J3yS3sml3FBSXTyEAVq9m1fSPQQRuG1Mb+pE6P/411/X+fKiN1AUzv7qxbRZ2qHJXTlN3o0BJEkEzHUx+bIgRBIuTIfxX0VzAz2z7jryP26XMw+m6UuUUuFiVr3zoq1qnNvIhi3kfGUh11uq5Z+LGC91I9yr0YLceGl4ENGGrZrvQtnYYDfoUMyi7Kmf1K5MIx8joGDEUjp7LN1qHfZCmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pwatftxozgpTz8H9hxy3w7AoWbP2md/pGLMPpfFenL4=;
+ b=IStzMd7+2Z3qB7dAllVo4ri1iGQkw3GGKdcb4a0/F3JA7LVoNQW/zuRduA5LdWavart3cWirGviLa/H6FuIcdP/MnEnX7i0JpkgwdhKo67AsEU7QF9nJ4wNd/xzaHdLibiLPsP4dosAlVUGJxeuTSMSUZMgBuonns5vTt0eaY32dBKGwhQ3XQITHt6n+oXsS0dm90qDesBTO3DbOcW+oVRtQq03Fs+j3E0cLH/ltMRRwboMGTRmJkNv2Qg0RbWsM31PHn+un908fJ1XI8w6uqux8UmttHp8uQprNkQW7bbToyef38w7gy9BN+A8LQ3BmLRD5+Q8/P2NqERp3+nbsjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pwatftxozgpTz8H9hxy3w7AoWbP2md/pGLMPpfFenL4=;
+ b=FINBWkf5WNIp0XnioCwuvr6d1vxuaGIN8QA0xRXL7maPvkDMsMwWxkI9QDOpGRcfv239VKGo0MN/vfKd5e/R0oJw9xy77Vwe675/EjEOpiJgWGDJnfHMwqXhlit9OycSozJFwNljAiBRke3uoEDW6lac5Ttu0rSnUkoR1x9d84Y=
+Received: from MW3PR06CA0023.namprd06.prod.outlook.com (2603:10b6:303:2a::28)
+ by MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
- 2024 08:59:22 +0000
-Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1300:32a9:2172:a2a]) by MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1300:32a9:2172:a2a%7]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
- 08:59:22 +0000
-X-Virus-Scanned: E-securemail
-Secumail-id: <9aaf.65aa39ec.18f90.0>
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lmRbhN36L5gPY5mF2gGNnnlWblVAbc6WZmPi1j7uFKBGaCZKFLTz30Tw6Pw4WNaJLjOUPo6ecn+F+81lhqrYDuBao87YtOPNfEMbd5B4qmC572dLlXpMO4ydlYS3uxDp3CRu3NHjg50dAwgOE2SEaL4JcEhKdNTrmHGC5Xnmaj0xTeGTDmxpDXiJGZOop/H3Bs5oyJ1SAfu26Ktoqv9JrDzjiWnsfcW0KqAiZTOVRex0GQGY8J5PAuUCQYGR2EQ/F8QefEENJQe+QWz0Qa/ZJ+8z57ZGblZEH2NV4RlfCGf2nKwWNeZGKr/x2ocpnVYg6q107xQOnZFhNXrReAminA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microsoft.com; s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LRJGr761jbAaEFpKgUNYIQ8vOsHHBQMT55fvnNtACSQ=;
- b=YaVNpo8ABBoPeFRBBaVonq1/lsc0S+kG4cHwJnvOfiRbXUPeytXG6mvakd/sOVmqsKZLf0yEU6cLm2UXtFRF6uUMauln0zOCHY6LuQ5obVn7Fowi9aZS2/2rVkqvZKYTZ6ZQqxGsGJXNU04npFs/r2rWn6XrxUmPN1LNGUhw+457S0euqmHrSM14f/4ForHWSOGofU/C3c6QE13JRbUxVYse7hO4yK77jaJ5JZqW0/QNJ40N93tm7B3k10DuDYsdoxxU2LjODyoZsNUi9KhZwwTIxe35YG2JAfoZ4zLIMu9aM2ZRB21MYOrqQ0LWE7HIqadFj4YgMy9CjqC3WazF/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
- header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LRJGr761jbAaEFpKgUNYIQ8vOsHHBQMT55fvnNtACSQ=;
- b=bwxMVfTmkApbhAS+7lr9lgaKm+sMJ8qh5FS9To321Sw/WYl/bXPcgndzOiQo62bYqTZMxiv9DYGslK0Eu2L5ce4VbbIogUa85XMqAvjJ+wM+T3qeE5pDx+vbv/kxebUzBUTrcYqSozyOcvL4Ecus0PWLLaQHcyMzK82ijpMlPU9HcnI4tp6cSs5gTeR2zDr0Qy8qFq7vTvts8GPr+n8Ypg19SDVlSntcifKU0KvST64yN+CftU+t3k2Of2yJLXdO99zyYMKjKnrhFEnTxub/VKECgfPV89vaLDFDXCR3l5oTfHrPsBnhYlDhMq4AhWLOCZcCNjkxCaimkAfs4NatZA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kalrayinc.com;
-Message-ID: <f98aad7d-ff1a-4607-b37b-c5ca9624f61b@kalrayinc.com>
-Date: Fri, 19 Jan 2024 09:59:09 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/100] 6.1.74-rc1 review
-Content-Language: en-us, fr
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240118104310.892180084@linuxfoundation.org>
-From: Yann Sionneau <ysionneau@kalrayinc.com>
-In-Reply-To: <20240118104310.892180084@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PR1P264CA0022.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:19f::9) To MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:501:13::5)
+ 2024 09:05:26 +0000
+Received: from CO1PEPF000044FC.namprd21.prod.outlook.com
+ (2603:10b6:303:2a:cafe::a1) by MW3PR06CA0023.outlook.office365.com
+ (2603:10b6:303:2a::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24 via Frontend
+ Transport; Fri, 19 Jan 2024 09:05:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044FC.mail.protection.outlook.com (10.167.241.202) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7228.0 via Frontend Transport; Fri, 19 Jan 2024 09:05:26 +0000
+Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 19 Jan
+ 2024 03:05:20 -0600
+From: Meng Li <li.meng@amd.com>
+To: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Borislav Petkov
+	<bpetkov@amd.com>, Huang Rui <ray.huang@amd.com>
+CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<x86@kernel.org>, <linux-acpi@vger.kernel.org>, Shuah Khan
+	<skhan@linuxfoundation.org>, <linux-kselftest@vger.kernel.org>, "Nathan
+ Fontenot" <nathan.fontenot@amd.com>, Deepak Sharma <deepak.sharma@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>, Mario Limonciello
+	<mario.limonciello@amd.com>, Shimmer Huang <shimmer.huang@amd.com>, "Perry
+ Yuan" <Perry.Yuan@amd.com>, Xiaojian Du <Xiaojian.Du@amd.com>, Viresh Kumar
+	<viresh.kumar@linaro.org>, Borislav Petkov <bp@alien8.de>, "Oleksandr
+ Natalenko" <oleksandr@natalenko.name>, Meng Li <li.meng@amd.com>
+Subject: [PATCH V14 0/7] amd-pstate preferred core
+Date: Fri, 19 Jan 2024 17:04:55 +0800
+Message-ID: <20240119090502.3869695-1-li.meng@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MR1P264MB1890:EE_|MRZP264MB1717:EE_
-X-MS-Office365-Filtering-Correlation-Id: 68cdaaa2-3e07-4d2c-44ce-08dc18cce769
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FC:EE_|MW3PR12MB4379:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11dceb1d-0260-4c5c-bd60-08dc18cdc6f3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1eDqOA7Wo58iZvPpGqu8TArR+isqB9FQzgECGpWL9Y7yoQyDaqyhKG183lobYem1AmZ2tKt3z/G8j54QTue0ENzLaYLdq64QygJiuSprGm4QiqFuD14FWLX58IlFnZPj7votHzxxS4xXvH7nj7LEqXSgBUa7xj7a+7CO6AEm/8fa2uWiMDvLYq72mM8iCOETEwX4fHLFSzapM3lXdZ6E2oI4tldu30ql3W82tBW5ego45P+X8rCkqVlAxpL03huFFUULic0wTiqwfGducSlfIUjcWym+wN9EDZWMmlAT0oNPY7YXXcet2y5hEPYcSwCJQ4r9ez+0jxdj+s4IBSn5ofg62Cc/xvgZ9qe9AxpIbJ0i5ieJVvE5zGHOUFMUzuxGVB4e8qrpxZHBVs5VkptsaWdOiwsBLE+GMBsy3lLeYRdtpOpLNBtU8Co+BuP/tNHiI+nhn60W7LwXiXgYlZvxbNt46el1HLhqjh4NWWsc4dPuAUqN05G6m2D1jOya3QjlVQG5klXnDwcG4eKH9/T/w0dgn3ywDOFBFuTHxiGRQa+7UD0mzrTremQUIxQ1R2+jcn1eqW3sYT7aJ4iVmheyESjrPFKUMa9+aascH/gNJofNEhcsGdIZ6XWf1ps7xu9BUMs9IzWTj/RbfbY/t4L69g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(396003)(366004)(346002)(136003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(38100700002)(2906002)(7416002)(5660300002)(41300700001)(36756003)(6506007)(966005)(478600001)(86362001)(6486002)(2616005)(53546011)(6512007)(6666004)(8676002)(31696002)(316002)(8936002)(66556008)(66946007)(66476007)(4326008)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: c0Elw7ldT5zx0PuLnb0dNmqcuy+2pJKDLKSi2uO5zxmlfJ7X7/rFRYqkKKida3AQEijNPCF3pphIuM6H2oGhj2/etyv8RfhZY0p3gKGsJsvh70REYNvqtluqAdTb/d4R7ZHLnDfnaClpm4/u58r6yWmqKLYM/61TV251V266Z4UjmBzDkO8riQRr0g17myIXoqMommeN7PnMRsHVF3HQJwxf30ZOavrfgZLcwVLiNIXIAgPcFWXiXsMgftTLa7b2h9gAYVl0DvnR4838q9IwjyEwxLFqgYDC6BXbBXQcYib0EYP4FoT+Mr6hBFtWMn+xsyjSz14g8nK9QXVDfxpnDLjHIprVyzkQfb5sLs/Lc4gHeEuPqa4+FGWf1sjxazp4QntcxHt/VbFVhxUiivbrCsaX96FOntpnDwNFq14ksvYahJ0tNQ/Y93nq3YblZH44W0hZ1JcV2C9SENmUBJ2EJ4wVhu2b9GT7WQHzZ6Q6xGWfF3fBsGODtzAPaWmBEZvZBviQREU9YGsmVXhqnV14443lRM6TNP1LWWi/hPyZcHJ11qobYrVVCvWwDqyLjzK/9sEo+OkvgdUSWVlnUAugvEoPq0laE8ZRbFOA+qvcsJKgXCc5sZibZM2EITYlxwj23mWbjvT3HiiS0KC4pLNkyozjYEpRuhJC0T9GMc8Sl0lK0vNFuRug2AH0TOfL8hAYr2eMcB6huhTBX6tmRApH86LZeFyp8dj+faaavHgOh726B7v5/wDjjEiMB1oT/5Z72VT8UmWTqA8oU1QHEyrdYWYTvBquMy2AIBZ7esF44JHpSWNkNqw4cs0ILHn2B69o8xdN90XS7ELrwJwOVOI6j08MKUOTvs2ydrEofE/s1KnKc77UMrwVUtApGVuMiWkUFyLzi0p1AlTeo4/KUN+vVdi7tkTVP6T5Ba1zgk6dwKDr1tpdaxNGBb42VzNjvMH0
- Y+jGNiWHP9pEg5zCOD21zOpUq1UuMBsA2pmcRr1RQ+A45ix6lZIp0JF1EAX03LtPvW7vNCA8X53dxru9gzQ31FvoeCyArOrslD6HNf3qQ3tmIvXYvHRb9dxHxDBG0JNqAcQJ3H/Z0zR4BM5aFYPGJOb73N+pdnLTgX08D7DKXjiyE6naFEQi2GpAfafy1Xvt/gOINy9hFhKBjEHAarLTmJVioxNSBC5oW9uoan9+vqD0sor5Z29o/wbBoIpJ3ngIi3VzPYgX7s3RDdH9wMzVYgIhnj5iJWYandVlxuBa61yK7vUiDfqfVmjAuV9BHcMzdCIxbiwEUlINsmA4W2OwO/iNxig4LqAnYPdjytYGFI5BAY3/IJLUFUW1f7HUt2Y+DB9pxsny1wE4bfmjiFZO8YVp+943+E4c0ns21BKU+4bR5vnSaMDMkwMctrsbu7UIA9Q2Q6beJFvEknVhWoM71Aqkb6WWrfAjuXSZsaK330p2Ke3bn7StjKTwgtdAjKtGupa9j9Pdc7DmhUNmpmeFw1lpILPJkykfbcwPH0a1PoGDskxJnh0u9OAkozDKd6qz+uJdrgWPR1YDpQMhposuKWWDByEIksQ14k+VqAo25UZtPv09+et6xEnIcjHQtVt09hez35YX5M3+0J21YjJ7k3RO9q9KkecZrMFfb3rBqr6JdAZ4sv2FO0lWtoduA4O4zyKqOHFipF2x0vcRps2XeQ==
-X-OriginatorOrg: kalrayinc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68cdaaa2-3e07-4d2c-44ce-08dc18cce769
-X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 08:59:22.6301
+X-Microsoft-Antispam-Message-Info:
+	lveV0AWRzpzoRQ+g5hJeBxRxBBPfNjafs/VZ5sL0+/iQxnK8b7uIGPVbpDc/jXJ8nujJFxM19npH3DJKQ+i2Uznl8Z5RbHZpCzbom2ANWHLmm+u0jkfSKL/H3pHxz43PIQhliVHAQSZIbRNAYpDcp/m7YBlLMVfUHkzsGImM8NDzYiiTDinOHhKYGLBtcWK1XJKj5hFMQV2B4aQdUnVTYc/VYzrrPbBVWgULZ8++xqRMQK8pGg+q/NSdjXgMvHkxxg9n07oDJnGykFcfyD6o82vvTUzbhIlzbiXHlkW30NaY7NXUQnjbgj9qXIxoRx5dRM9F4VBqMuzBfI+hRKjzogh1rMTLBbtNoI3BKSEkG3h609TK0740dCrd4j1gZonui4pwGTusfLzjy7A/zUu6xlrCODZ+90ysRw3WxKhPwO7050X87pmFAINMKTZOpJwt2wLorOvVWzkoADzW0CsSfNX3Bx+VvrfLV6VrrrSOBwioVb6djxN9RvgBjhXJ8nOgpSYZWJd+1OTfJEDkMmtvfcrDGQv7gRtSlun1UP5n9zArKCXVBZs6vV5zXwU61akQ2xUGswoyvc0VhvV0LacVGvYEhgk9U0lNzmx9ILffpWuD362i3h2smZ1PXutcvpwfiZp/drNW5Umkghb48HXi5uDNoU5/FsKJUOWLtk7ta6SK+vJ112a7UDIF5Gp86EbMN9j8WE3gZ4Q8GpGZIgW/ndNQuzjmMgHWjcgpzjcF9B96psYrdArP8EMLhHZigKONitEXjqwCj+W+3h18VHx2/X3CqDyv8Ai5S2xxm3YTT0LHlplFICNlosOrWromNp2t
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(346002)(136003)(230922051799003)(230173577357003)(230273577357003)(64100799003)(82310400011)(186009)(1800799012)(451199024)(36840700001)(40470700004)(46966006)(8676002)(5660300002)(7416002)(4326008)(47076005)(8936002)(36756003)(40480700001)(36860700001)(426003)(26005)(16526019)(336012)(1076003)(70206006)(110136005)(70586007)(40460700003)(2906002)(7696005)(6636002)(54906003)(316002)(478600001)(6666004)(86362001)(83380400001)(2616005)(356005)(41300700001)(82740400003)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 09:05:26.3586
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gNaLLM/X9tkzkcjsYl1a8NlQDmNyQx8Jtuu4swuTJU8KwgIA2bgljIUHB6tkatXX1CAErlp1ql6uXPO7J+BdtQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB1717
-X-ALTERMIMEV2_out: done
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11dceb1d-0260-4c5c-bd60-08dc18cdc6f3
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000044FC.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4379
 
-Hi Greg,
+Hi all:
 
-On 18/01/2024 11:48, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.74 release.
-> There are 100 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 20 Jan 2024 10:42:49 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.74-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
+The core frequency is subjected to the process variation in semiconductors.
+Not all cores are able to reach the maximum frequency respecting the
+infrastructure limits. Consequently, AMD has redefined the concept of
+maximum frequency of a part. This means that a fraction of cores can reach
+maximum frequency. To find the best process scheduling policy for a given
+scenario, OS needs to know the core ordering informed by the platform through
+highest performance capability register of the CPPC interface.
 
-I tested 6.1.74-rc1 (1ffea4b3e361) on Kalray kvx arch (not upstream yet), just to let you know everything works in our CI.
+Earlier implementations of amd-pstate preferred core only support a static
+core ranking and targeted performance. Now it has the ability to dynamically
+change the preferred core based on the workload and platform conditions and
+accounting for thermals and aging.
 
-It ran on real hw (k200 and k200lp boards), on qemu as well as on our internal instruction set simulator (ISS).
+Amd-pstate driver utilizes the functions and data structures provided by
+the ITMT architecture to enable the scheduler to favor scheduling on cores
+which can be get a higher frequency with lower voltage.
+We call it amd-pstate preferred core.
 
-Tests were run on several interfaces/drivers (usb, qsfp ethernet, eMMC, PCIe endpoint+RC, SPI, remoteproc, uart, iommu). LTP and uClibc-ng testsuites are also run without any regression.
+Here sched_set_itmt_core_prio() is called to set priorities and
+sched_set_itmt_support() is called to enable ITMT feature.
+Amd-pstate driver uses the highest performance value to indicate
+the priority of CPU. The higher value has a higher priority.
 
-Everything looks fine to us.
+Amd-pstate driver will provide an initial core ordering at boot time.
+It relies on the CPPC interface to communicate the core ranking to the
+operating system and scheduler to make sure that OS is choosing the cores
+with highest performance firstly for scheduling the process. When amd-pstate
+driver receives a message with the highest performance change, it will
+update the core ranking.
 
-Tested-by: Yann Sionneau <ysionneau@kalrayinc.com>
+Changes from V13->V14:
+- cpufreq:
+- - fix build error without CONFIG_CPU_FREQ
 
-Thanks a lot!
+- ACPI: CPPC:
+Changes from V12->V13:
+- ACPI: CPPC:
+- - modify commit message.
+- - modify handle function of the notify(0x85).
+- cpufreq: amd-pstate:
+- - implement update_limits() callback function.
+- x86:
+- - pick up Acked-By flag added by Petkov.
 
--- 
+Changes from V11->V12:
+- all:
+- - pick up Reviewed-By flag added by Perry.
+- cpufreq: amd-pstate:
+- - rebase the latest linux-next and fixed conflicts.
+- - fixed the issue about cpudata without init in amd_pstate_update_highest_perf().
 
-Yann
+Changes from V10->V11:
+- cpufreq: amd-pstate:
+- - according Perry's commnts, I replace the string with str_enabled_disable().
 
+Changes from V9->V10:
+- cpufreq: amd-pstate:
+- - add judgement for highest_perf. When it is less than 255, the
+  preferred core feature is enabled. And it will set the priority.
+- - deleset "static u32 max_highest_perf" etc, because amd p-state
+  perferred coe does not require specail process for hotpulg.
 
+Changes form V8->V9:
+- all:
+- - pick up Tested-By flag added by Oleksandr.
+- cpufreq: amd-pstate:
+- - pick up Review-By flag added by Wyes.
+- - ignore modification of bug.
+- - add a attribute of prefcore_ranking.
+- - modify data type conversion from u32 to int.
+- Documentation: amd-pstate:
+- - pick up Review-By flag added by Wyes.
 
+Changes form V7->V8:
+- all:
+- - pick up Review-By flag added by Mario and Ray.
+- cpufreq: amd-pstate:
+- - use hw_prefcore embeds into cpudata structure.
+- - delete preferred core init from cpu online/off.
 
+Changes form V6->V7:
+- x86:
+- - Modify kconfig about X86_AMD_PSTATE.
+- cpufreq: amd-pstate:
+- - modify incorrect comments about scheduler_work().
+- - convert highest_perf data type.
+- - modify preferred core init when cpu init and online.
+- ACPI: CPPC:
+- - modify link of CPPC highest performance.
+- cpufreq:
+- - modify link of CPPC highest performance changed.
+
+Changes form V5->V6:
+- cpufreq: amd-pstate:
+- - modify the wrong tag order.
+- - modify warning about hw_prefcore sysfs attribute.
+- - delete duplicate comments.
+- - modify the variable name cppc_highest_perf to prefcore_ranking.
+- - modify judgment conditions for setting highest_perf.
+- - modify sysfs attribute for CPPC highest perf to pr_debug message.
+- Documentation: amd-pstate:
+- - modify warning: title underline too short.
+
+Changes form V4->V5:
+- cpufreq: amd-pstate:
+- - modify sysfs attribute for CPPC highest perf.
+- - modify warning about comments
+- - rebase linux-next
+- cpufreq: 
+- - Moidfy warning about function declarations.
+- Documentation: amd-pstate:
+- - align with ``amd-pstat``
+
+Changes form V3->V4:
+- Documentation: amd-pstate:
+- - Modify inappropriate descriptions.
+
+Changes form V2->V3:
+- x86:
+- - Modify kconfig and description.
+- cpufreq: amd-pstate: 
+- - Add Co-developed-by tag in commit message.
+- cpufreq:
+- - Modify commit message.
+- Documentation: amd-pstate:
+- - Modify inappropriate descriptions.
+
+Changes form V1->V2:
+- ACPI: CPPC:
+- - Add reference link.
+- cpufreq:
+- - Moidfy link error.
+- cpufreq: amd-pstate: 
+- - Init the priorities of all online CPUs
+- - Use a single variable to represent the status of preferred core.
+- Documentation:
+- - Default enabled preferred core.
+- Documentation: amd-pstate: 
+- - Modify inappropriate descriptions.
+- - Default enabled preferred core.
+- - Use a single variable to represent the status of preferred core.
+
+Meng Li (7):
+  x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for the expansion.
+  ACPI: CPPC: Add get the highest performance cppc control
+  cpufreq: amd-pstate: Enable amd-pstate preferred core supporting.
+  cpufreq: Add a notification message that the highest perf has changed
+  cpufreq: amd-pstate: Update amd-pstate preferred core ranking
+    dynamically
+  Documentation: amd-pstate: introduce amd-pstate preferred core
+  Documentation: introduce amd-pstate preferrd core mode kernel command
+    line options
+
+ .../admin-guide/kernel-parameters.txt         |   5 +
+ Documentation/admin-guide/pm/amd-pstate.rst   |  59 +++++-
+ arch/x86/Kconfig                              |   5 +-
+ drivers/acpi/cppc_acpi.c                      |  13 ++
+ drivers/acpi/processor_driver.c               |   6 +
+ drivers/cpufreq/amd-pstate.c                  | 183 +++++++++++++++++-
+ include/acpi/cppc_acpi.h                      |   5 +
+ include/linux/amd-pstate.h                    |  10 +
+ include/linux/cpufreq.h                       |   1 +
+ 9 files changed, 275 insertions(+), 12 deletions(-)
+
+-- 
+2.34.1
 
 
