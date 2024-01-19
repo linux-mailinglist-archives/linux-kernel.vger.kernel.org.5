@@ -1,193 +1,144 @@
-Return-Path: <linux-kernel+bounces-31196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4B6832A64
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:26:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6AA0832A82
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:28:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF708B22E52
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:26:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2454C1C2368A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF4554676;
-	Fri, 19 Jan 2024 13:25:42 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D73FC524BE
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:25:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F314D5465D;
+	Fri, 19 Jan 2024 13:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fB4wcuiH"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F1354656
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:27:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705670742; cv=none; b=ngG/PMErIVK4GUfljroSGl/u/I5SiPWu2EOGQ5aBoxEH0d3i83zobVwX9yhRGPEbWTqlI7im25SExA0c4XPAsp5Y0XkBj0dUUZoHcMrXX8LTbh7kZtvD6xVHlPi5OTFzSt3rLyaBtST8Oi8FeJ5wExQfeQcDaduUWepmyEV7big=
+	t=1705670830; cv=none; b=MOxKc4mZDxSOOG3nVNzlxmzTlVNxQKx1GSwe0Qw+rqIuvnhQ6z3vy/IxpnATMl3RsAnNpikg+P2ZoaDzNiGDld91tBr+uSlYDEK8K39XgFwg5QSofFUcSVAIrPwtDCdFTp8Y3kAiwZK20eRTyT6X05PdJqCMtruGMPdrHn1kIgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705670742; c=relaxed/simple;
-	bh=XTJ+9wKUeHxFBGZCSjaJFzAFmGcbalV48BRz8Qy7cUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KJltc/xsM2Ki3DqdkS7QvBL9LZ3HaJmPxcchBDwDTB0ypZQw3h4hSVjZ1h9LFmzWSxTZES6KtJM8/ATR/Rm7HFGxN2u4eXE8Z3Abm41ARTXClpwgWE8PAPQNtrXSAM6sOXSfYtKEBfEaiN9tKM3LFEKWHUTbtY8xCv/UAcjDZfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E713C1042;
-	Fri, 19 Jan 2024 05:26:22 -0800 (PST)
-Received: from [10.57.77.97] (unknown [10.57.77.97])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C0C2A3F5A1;
-	Fri, 19 Jan 2024 05:25:33 -0800 (PST)
-Message-ID: <caf72da8-1f32-4eb4-9935-b49c1efed4c5@arm.com>
-Date: Fri, 19 Jan 2024 13:25:31 +0000
+	s=arc-20240116; t=1705670830; c=relaxed/simple;
+	bh=tkNP5hdtLMLmdRU6kGCnnq1HZvK5vqTcSU7Mp+tbZQE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A8crBc7+U+R4kDdTStecWqmieWhGk+UWqkbHo++QHsmXRBO5I+LRh6zKAsAhrxIydO3mTyFj3jCFXw35IDImk/2ElsUFsybrSkMFRj+QOlAY3J4V5ITEOFiwbqq5dbiyUtz6T/Zw6H86HL+amdRdA7CggHM7qE53FnLkiTrymb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fB4wcuiH; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc202317415so639961276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:27:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705670827; x=1706275627; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=42jWvBuWK7I9LjSS4bPIwTmo8OJpE10eZpVzP5bii30=;
+        b=fB4wcuiH7Epb9QP7/JxhvLWtjh4BnKG0d9lSuS2SuzmdrHq8EdhUtOiACwFldx/wkL
+         sgdYMnSCDb6nK5din5kMrMloFFhf3M2P0kao1LPszPtGnb7JQYITE6s1ClX0yeCxkoO8
+         rX0sXoyL8Ob55mahZIfsEghci39GEXOu7dHAnzqkTDxlbJASGcxXZoocWZJfQIhbOKcS
+         teOciIwYXLwJYDpKAeJms/Wq0viDV+zASrJQpyTJ9oE5FUaxB29chXiuwFiID2NHjENK
+         GOlN8QSGtASuQ/igNrTURDBEG1ReCaGWqDi5i1AQEmPh+3G/3G8ZWfIGRG2om1Jg3pYA
+         2pNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705670827; x=1706275627;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=42jWvBuWK7I9LjSS4bPIwTmo8OJpE10eZpVzP5bii30=;
+        b=wiqqXd+9jsCLlSd6dpkCV4U9Fc8Upo0yTMIrsf1MyVfm75Cmuw2tc+jDDths7PiZPn
+         hrYWUYidoR/cIKTg7TW7tfRwFOOakkPmwxifuCliRmx9S5wf2tw0TdgSWbDi2kPt2rlS
+         KBro21CQaSW+mRNgEZztZZSMTTooO+w0HpIYRQ2dFnzqwuxODe7yIIklXy1Y2P0Yc3Tl
+         FWZz7bfVGel7mGbZeXzv9mZt9iBPXQJ5jF8yaOCJZOcGwu11uzbNo96YSyNBSwMTJ3WI
+         1VYiUFMXSGOfyaEQ6eJeFSyuMOuu8HYGagcZ+Njel2Ony32+PO55xIHkaJ6Xd8BAlxGp
+         y26A==
+X-Gm-Message-State: AOJu0Yzjkf1IIcfs16fQaSuG42RD6M3cnWPyVsfp3omGrOejLKEE+Frm
+	vgbES9zFlew0Vh/eEmbk9M7kQ50CtdP2RtVqfaStA8d9dxf/sTflct83lnQMg/GzXWSrfx8CibO
+	HCGGYUvU9i6hhKr7NCov+9cQ4v1iodGSPqdi4zA==
+X-Google-Smtp-Source: AGHT+IHcNZ3z0a6KFk4Azj3BQtD3k/0SlfNc1gxTnmWDbYZDfxsy/+8Zo5qiZ4T2sE8zVUc9JU70wOEc2pwAJXP0ECs=
+X-Received: by 2002:a25:c583:0:b0:dc2:46d7:d8d5 with SMTP id
+ v125-20020a25c583000000b00dc246d7d8d5mr1960765ybe.65.1705670827062; Fri, 19
+ Jan 2024 05:27:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/6] mm: support large folios swap-in
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, mhocko@suse.com, shy828301@gmail.com,
- wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
- ying.huang@intel.com, yuzhao@google.com, surenb@google.com,
- steven.price@arm.com
-References: <20231025144546.577640-1-ryan.roberts@arm.com>
- <20240118111036.72641-1-21cnbao@gmail.com>
- <0450f151-143a-4ce8-8131-31180bbc13b8@arm.com>
- <CAGsJ_4xHaAzOMphFt-0GwtS4f+Vj4cbR+WdX68TSQVo+-WR6rA@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4xHaAzOMphFt-0GwtS4f+Vj4cbR+WdX68TSQVo+-WR6rA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com> <1705669223-5655-3-git-send-email-quic_msarkar@quicinc.com>
+In-Reply-To: <1705669223-5655-3-git-send-email-quic_msarkar@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 19 Jan 2024 15:26:56 +0200
+Message-ID: <CAA8EJprWHiShFpZdb+pWsCoxNvNEoP+3By2x4u8rq+ek37hJXw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/6] dmaengine: dw-edma: Introduce helpers for getting
+ the eDMA/HDMA max channel count
+To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc: vkoul@kernel.org, jingoohan1@gmail.com, conor+dt@kernel.org, 
+	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org, 
+	robh+dt@kernel.org, quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com, 
+	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com, quic_krichai@quicinc.com, 
+	quic_vbadigan@quicinc.com, quic_parass@quicinc.com, quic_schintav@quicinc.com, 
+	quic_shijjose@quicinc.com, Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
+	Serge Semin <fancer.lancer@gmail.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On 18/01/2024 23:54, Barry Song wrote:
-> On Thu, Jan 18, 2024 at 11:25 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 18/01/2024 11:10, Barry Song wrote:
->>> On an embedded system like Android, more than half of anon memory is actually
->>> in swap devices such as zRAM. For example, while an app is switched to back-
->>> ground, its most memory might be swapped-out.
->>>
->>> Now we have mTHP features, unfortunately, if we don't support large folios
->>> swap-in, once those large folios are swapped-out, we immediately lose the
->>> performance gain we can get through large folios and hardware optimization
->>> such as CONT-PTE.
->>>
->>> In theory, we don't need to rely on Ryan's swap out patchset[1]. That is to say,
->>> before swap-out, if some memory were normal pages, but when swapping in, we
->>> can also swap-in them as large folios.
->>
->> I think this could also violate MADV_NOHUGEPAGE; if the application has
->> requested that we do not create a THP, then we had better not; it could cause a
->> correctness issue in some circumstances. You would need to pay attention to this
->> vma flag if taking this approach.
->>
->>> But this might require I/O happen at
->>> some random places in swap devices. So we limit the large folios swap-in to
->>> those areas which were large folios before swapping-out, aka, swaps are also
->>> contiguous in hardware.
->>
->> In fact, even this may not be sufficient; it's possible that a contiguous set of
->> base pages (small folios) were allocated to a virtual mapping and all swapped
->> out together - they would likely end up contiguous in the swap file, but should
->> not be swapped back in as a single folio because of this (same reasoning applies
->> to cluster of smaller THPs that you mistake for a larger THP, etc).
->>
->> So you will need to check what THP sizes are enabled and check the VMA
->> suitability regardless; Perhaps you are already doing this - I haven't looked at
->> the code yet.
-> 
-> we are actually re-using your alloc_anon_folio() by adding a parameter
-> to make it
-> support both do_anon_page and do_swap_page,
-> 
-> -static struct folio *alloc_anon_folio(struct vm_fault *vmf)
-> +static struct folio *alloc_anon_folio(struct vm_fault *vmf,
-> +      bool (*pte_range_check)(pte_t *, int))
+On Fri, 19 Jan 2024 at 15:00, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
+>
+> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>
+> Add common helpers for getting the eDMA/HDMA max channel count.
+>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> ---
+>  drivers/dma/dw-edma/dw-edma-core.c           | 18 ++++++++++++++++++
+>  drivers/pci/controller/dwc/pcie-designware.c |  6 +++---
+>  include/linux/dma/edma.h                     | 14 ++++++++++++++
+>  3 files changed, 35 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/dma/dw-edma/dw-edma-core.c b/drivers/dma/dw-edma/dw-edma-core.c
+> index 7fe1c19..2bd6e43 100644
+> --- a/drivers/dma/dw-edma/dw-edma-core.c
+> +++ b/drivers/dma/dw-edma/dw-edma-core.c
+> @@ -902,6 +902,24 @@ static int dw_edma_irq_request(struct dw_edma *dw,
+>         return err;
+>  }
+>
+> +static u32 dw_edma_get_max_ch(enum dw_edma_map_format mf, enum dw_edma_dir dir)
+> +{
+> +       if (mf == EDMA_MF_HDMA_NATIVE)
+> +               return HDMA_MAX_NR_CH;
+
+This will break unless patch 5 is applied. Please move the
+corresponding definition to this path.
+
+> +
+> +       return dir == EDMA_DIR_WRITE ? EDMA_MAX_WR_CH : EDMA_MAX_RD_CH;
+> +}
+> +
+> +u32 dw_edma_get_max_rd_ch(enum dw_edma_map_format mf)
+> +{
+> +       return dw_edma_get_max_ch(mf, EDMA_DIR_READ);
+> +}
+> +
+> +u32 dw_edma_get_max_wr_ch(enum dw_edma_map_format mf)
+> +{
+> +       return dw_edma_get_max_ch(mf, EDMA_DIR_WRITE);
+> +}
+> +
+>  int dw_edma_probe(struct dw_edma_chip *chip)
 >  {
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->   struct vm_area_struct *vma = vmf->vma;
-> @@ -4190,7 +4270,7 @@ static struct folio *alloc_anon_folio(struct
-> vm_fault *vmf)
->   order = highest_order(orders);
->   while (orders) {
->   addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
-> - if (pte_range_none(pte + pte_index(addr), 1 << order))
-> + if (pte_range_check(pte + pte_index(addr), 1 << order))
->   break;
->   order = next_order(&orders, order);
->   }
-> @@ -4269,7 +4349,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->   if (unlikely(anon_vma_prepare(vma)))
->   goto oom;
->   /* Returns NULL on OOM or ERR_PTR(-EAGAIN) if we must retry the fault */
-> - folio = alloc_anon_folio(vmf);
-> + folio = alloc_anon_folio(vmf, pte_range_none);
->   if (IS_ERR(folio))
->   return 0;
->   if (!folio)
-> --
-> 
-> I assume this has checked everything?
-
-Ahh yes, very good. In that case you can disregard what I said; its already covered.
-
-I notice that this series appears as a reply to my series. I'm not sure what the
-normal convention is, but I expect more people would see it if you posted it as
-its own thread?
+>         struct device *dev;
 
 
-> 
->>
->> I'll aim to review the code in the next couple of weeks.
-> 
-> nice, thanks!
-> 
->>
->> Thanks,
->> Ryan
->>
->>> On the other hand, in OPPO's product, we've deployed
->>> anon large folios on millions of phones[2]. we enhanced zsmalloc and zRAM to
->>> compress and decompress large folios as a whole, which help improve compression
->>> ratio and decrease CPU consumption significantly. In zsmalloc and zRAM we can
->>> save large objects whose original size are 64KiB for example. So it is also a
->>> better choice for us to only swap-in large folios for those compressed large
->>> objects as a large folio can be decompressed all together.
->>>
->>> Note I am moving my previous "arm64: mm: swap: support THP_SWAP on hardware
->>> with MTE" to this series as it might help review.
->>>
->>> [1] [PATCH v3 0/4] Swap-out small-sized THP without splitting
->>> https://lore.kernel.org/linux-mm/20231025144546.577640-1-ryan.roberts@arm.com/
->>> [2] OnePlusOSS / android_kernel_oneplus_sm8550
->>> https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/tree/oneplus/sm8550_u_14.0.0_oneplus11
->>>
->>> Barry Song (2):
->>>   arm64: mm: swap: support THP_SWAP on hardware with MTE
->>>   mm: rmap: weaken the WARN_ON in __folio_add_anon_rmap()
->>>
->>> Chuanhua Han (4):
->>>   mm: swap: introduce swap_nr_free() for batched swap_free()
->>>   mm: swap: make should_try_to_free_swap() support large-folio
->>>   mm: support large folios swapin as a whole
->>>   mm: madvise: don't split mTHP for MADV_PAGEOUT
->>>
->>>  arch/arm64/include/asm/pgtable.h |  21 ++----
->>>  arch/arm64/mm/mteswap.c          |  42 ++++++++++++
->>>  include/asm-generic/tlb.h        |  10 +++
->>>  include/linux/huge_mm.h          |  12 ----
->>>  include/linux/pgtable.h          |  62 ++++++++++++++++-
->>>  include/linux/swap.h             |   6 ++
->>>  mm/madvise.c                     |  48 ++++++++++++++
->>>  mm/memory.c                      | 110 ++++++++++++++++++++++++++-----
->>>  mm/page_io.c                     |   2 +-
->>>  mm/rmap.c                        |   5 +-
->>>  mm/swap_slots.c                  |   2 +-
->>>  mm/swapfile.c                    |  29 ++++++++
->>>  12 files changed, 301 insertions(+), 48 deletions(-)
->>>
->>
-> 
-> Thanks
-> Barry
-
+-- 
+With best wishes
+Dmitry
 
