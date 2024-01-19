@@ -1,220 +1,121 @@
-Return-Path: <linux-kernel+bounces-31106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47D068328F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:37:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82FC783290E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:42:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAE8A2811B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:37:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFCD7B2329A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B7EC4EB58;
-	Fri, 19 Jan 2024 11:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCEC4EB49;
+	Fri, 19 Jan 2024 11:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Y7pQKDnA"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2043.outbound.protection.outlook.com [40.107.243.43])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GpDiNrMr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9633C470;
-	Fri, 19 Jan 2024 11:36:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705664209; cv=fail; b=alI/GNXhzTdvpizFoMZgCg4ENz9Jh9Y9KBfZeY21ll21Y5LRY+5cB3zX8RGk2vqL7CzKht/IWHAzR1Sdcw0SOQZAeDJzlQLqQM9rLCjGzuh7jJwaxIzGSGA0eosap2NpY0RWCa5YlSR8SEsk1KECNPuWGi2xcfWcSWN9ER5T5dk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705664209; c=relaxed/simple;
-	bh=lLzND4hbyFeh3NgBIp/0dFJh24fSVu4ObGGn9s6kuSo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rIUOCkzalUQSy3AuQ/btASRV8TLitLErs3cBzp4pgPxcs2pNfEcGMM94h2yTK2nDkD84y5vvTvV30xca5zaeL72kAffdNoxyDHECOYJu0rt8gf56b42jS1g7UKj9lEMOsoSghDUFh2Nt1ns1LUerpjcLYELzl3qr/QBABk9LVMA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Y7pQKDnA; arc=fail smtp.client-ip=40.107.243.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZqLU3FNiY+WhAtQMDNlZO1okAiek1X+CKMnzobMO/ShsEZ3RAIM6IhDAFnTkiWN7tkoUHJxGBibmMGdTrWJT7G56PK/HON95YsNh1NEsLO7kyI4+843wFFoDw5aq7PICrMNPVOgURPph2mvayM3IwowsXoRRdKO2PJoGJE9Y285E7U5wwTlxfc88oqKBwaPNc6hfBGMKZYp2pvCdjPNnAruz9XIf2sLuzoQpvJU0rW9ZXRJ5qJTn7JlCJOOtf9kWOW56Tc/3lKHCTnCcCN9FN3BCS8XBhMuBRI8uEcr7yggYEOG86UWUfcgt5NVkVNN4wjvJ/Cg8SyBIaxUEC3HtMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XgIzSTiNQXGeI9RlE397ErPvS4TLChjNgNQP0bOjUfE=;
- b=YM/Qa/vNq649vR4g9APbzrnqYgboZzhNVF7CO/1Q0+BhlmKFMoyZlOa+0BbSGQqagoU4UQ3pbWh8lw2eIr9D4nTaSTnYF6edRncXHSi1U2Jezfl6LBTclWK2e7AD/qdQThCmjL+SfoZYqmlvYppjFAXhQD8VB2/HJUgNATydbnKC7ckTseeNXYx53UeIrCKqXpT6QcdmDrvhmnIt4hKjlQlUWXC248DBaYkxq9tRat3Y1hu4XJV7ir8vWH6gYcUsSSnTK6ITYZcUAonwsTBpFQqQTrIcN4l+nYoNyFa09Q4mGioW3JKvn+M7o+5g+nISiXKBREfhE86jCfOez58s9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XgIzSTiNQXGeI9RlE397ErPvS4TLChjNgNQP0bOjUfE=;
- b=Y7pQKDnAORZFaQwDcumssZzOLbY2CQM/6AYolR/xtTsMMqqUXKxZYLDjxl3B9bCTqgoXhHhXfExNu/+kWxcMbXx/fGQqneUgrOwKl7A4+ycJMn9UlTnArRIRe25CVq6dEJcJU3fj4B5fxbPGfk9shN6bV4c+9O+tITFTTBrfqOU=
-Received: from DM6PR06CA0072.namprd06.prod.outlook.com (2603:10b6:5:54::49) by
- CY5PR12MB6576.namprd12.prod.outlook.com (2603:10b6:930:40::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.24; Fri, 19 Jan 2024 11:36:44 +0000
-Received: from CY4PEPF0000E9D6.namprd05.prod.outlook.com
- (2603:10b6:5:54:cafe::77) by DM6PR06CA0072.outlook.office365.com
- (2603:10b6:5:54::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24 via Frontend
- Transport; Fri, 19 Jan 2024 11:36:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D6.mail.protection.outlook.com (10.167.241.80) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Fri, 19 Jan 2024 11:36:43 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 19 Jan
- 2024 05:36:39 -0600
-Received: from xhdradheys41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Fri, 19 Jan 2024 05:36:24 -0600
-From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-To: <dlemoal@kernel.org>, <cassel@kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<linus.walleij@linaro.org>, <brgl@bgdev.pl>, <michal.simek@amd.com>,
-	<p.zabel@pengutronix.de>, <gregkh@linuxfoundation.org>,
-	<piyush.mehta@amd.com>, <mubin.sayyed@amd.com>, <radhey.shyam.pandey@amd.com>
-CC: <linux-ide@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-usb@vger.kernel.org>,
-	<git@amd.com>
-Subject: [PATCH] dt-bindings: xilinx: replace Piyush Mehta maintainership
-Date: Fri, 19 Jan 2024 17:06:21 +0530
-Message-ID: <1705664181-722937-1-git-send-email-radhey.shyam.pandey@amd.com>
-X-Mailer: git-send-email 2.1.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B4024B47
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:42:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705664535; cv=none; b=DxK2voi6ulCpaSK5zauEUEm8r4HWfRINvGoS/0WZoAAfzhDQ24EWi807TUL07XA9mOx00U4ZyDkskhb/c/GXkoSZ1z55qM/Sw5ehO1xwe4GCFudJycQ56zlzsgZDIrB4vqdzFFvcGL8i3C2oaxsM5AIKQYhbTxBs9khrGy93Ggk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705664535; c=relaxed/simple;
+	bh=xMOqSLBIyM2IZsbfPaN7LMfLSmGeIVV9PAZhUsjiD/E=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=r6dUVjvuKLA+6hIJqdpjD2vXM8dswGVE1F/yL5pI7yf13amLMwDX2eKDbkiBPeQgc5LhTc2qpkut15WoMMfPYSG+t2/7U3dHhaL0Eh+lRbproOuQuHFKnm2nR+eU8PWYmUQlSh10yDjVUzFqm+47j19whBUJI6LPXmuVupOtXXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GpDiNrMr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705664533;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=xMOqSLBIyM2IZsbfPaN7LMfLSmGeIVV9PAZhUsjiD/E=;
+	b=GpDiNrMrWZg1ckcksCafGLlK50N7s1QXPOsFUrAc1ZjG87TZdr/tLC/A1VsA3hca6BaZST
+	O/3W/PYwu+xLRSMhULoXLE3bIhJL2jZEbrX1Aaf2trhk2e+bQ/u/zWd1HbdI7hB0FqOBhU
+	sVS/e4B+fpHTZ7jIvFwrs8fsorrnBTo=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-593-_vzKjl53P--Wj6cgTWjqYw-1; Fri, 19 Jan 2024 06:42:11 -0500
+X-MC-Unique: _vzKjl53P--Wj6cgTWjqYw-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2cd13187886so1945381fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 03:42:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705664529; x=1706269329;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xMOqSLBIyM2IZsbfPaN7LMfLSmGeIVV9PAZhUsjiD/E=;
+        b=SVPN/Go1KdxZCQLT8z9uZ3GvDEKnnJje+GwYs1tjEdilsl1689E5PXbEqccdS5FXuh
+         3IuJM5snlOItP1mi76yjQ6+6j2H8htLsRngz6/23v2w+AFKHAsdd4B/zrM46/l1aE+vF
+         AOfx1n0wkj5CummGbOWmVC6kWN+PTwvhWv5eCz9mGKhyTkPwgGkUs0eNqLgZuCsX61Hf
+         oFvxe5tY34zHirHjV12dVjG+c+Rb3Kx0wnFdpmskDYn5zgzWGFVumkTkYr0A34BFy/zV
+         XRBAzbpGdC6CkzyprN0kiqALtjv+AfKqi5nBKYX2TrTXM+pwL3EIEWVydmzY5U2vzixE
+         EK/Q==
+X-Gm-Message-State: AOJu0YyzN1E5UoBM1Z1mO2Td3izUiVaIdE88iE3ljeIQ4P12V6hmw5GO
+	IDiOW3egveSLyQgGimH9SAgSCgmaOBNwphCyLqaPS57M7kOya+fhm3K7m2V1EB+k4pfGk2Q59yl
+	9XV9gb8HzNn+msGLJ7viYVHUD3ocGO0xRsLaFMw+oT7ubzpaCW/+jZiRw7ehnew==
+X-Received: by 2002:a2e:988f:0:b0:2cd:3731:9c5a with SMTP id b15-20020a2e988f000000b002cd37319c5amr1164531ljj.2.1705664529851;
+        Fri, 19 Jan 2024 03:42:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFvTGzEe5sslav7QIgyeBW3wqnWrYYzEtDSGVkjfflQdI2fiPPTNvOgQS3+BFd5R/O0T3/NJw==
+X-Received: by 2002:a2e:988f:0:b0:2cd:3731:9c5a with SMTP id b15-20020a2e988f000000b002cd37319c5amr1164520ljj.2.1705664529496;
+        Fri, 19 Jan 2024 03:42:09 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-241-180.dyn.eolo.it. [146.241.241.180])
+        by smtp.gmail.com with ESMTPSA id s15-20020a5d510f000000b00336aa190139sm6313332wrt.5.2024.01.19.03.42.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 03:42:09 -0800 (PST)
+Message-ID: <e667aa499be7a1ebc1267d30f502275d36bf1f04.camel@redhat.com>
+Subject: Re: [PATCH v2] net: stmmac: Wait a bit for the reset to take effect
+From: Paolo Abeni <pabeni@redhat.com>
+To: Bernd Edlinger <bernd.edlinger@hotmail.de>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>,  Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Jiri Pirko <jiri@nvidia.com>, Andrew Morton
+ <akpm@linux-foundation.org>
+Date: Fri, 19 Jan 2024 12:42:07 +0100
+In-Reply-To: <AS8P193MB1285C2DE6BCCDC8DD40E5A64E4702@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+References: 
+	<AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+	 <AS8P193MB1285EEAFE30C0DE7B201D33CE46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+	 <f5ddf800df95cdce32637d41bc1539aed0a7b6f3.camel@redhat.com>
+	 <AS8P193MB1285C2DE6BCCDC8DD40E5A64E4702@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D6:EE_|CY5PR12MB6576:EE_
-X-MS-Office365-Filtering-Correlation-Id: 252f67c2-ed13-4abc-e7be-08dc18e2e945
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	mfznvKK7a1E7asVQkydCPxsTyRjr5pCyj6nrz+rXqsx6+rdmQ2h7pcK1VL/ZOqW5Sx82gtARMkY0lMRHiPYuPZTnrR6Uv0hDTJd6C6NAXw1xAbowID4V2gEfdsYE/kuK45vJscW3yZYoKYKsA6JI0zjoYmezPudWOIuItrDLLT6hdbfiBz4/1VMIfF7dXG0Of3Vrk/vR137RidukdovIh+p7olcNeRHtGOJLgxCZKf//zM+2dNUnZdsnHj70TAKwD/aAdr7Aa7C7+U+I1z89NKNiFD0pTL02TPqn+oDMwAxzc9aDlpCd4kppUk3kK4W/49lOSQ3mhpr28wSbnYTpjz74j3iR86Fa26ovnLVnZsGPKRqhaTeMlTE9P/oHXwMtyKdmVVsDfJdbhedXbIHMe59G03pB3AJhSub5T08Zs6DHhbG4lsDmiUxMlLVS6offg6M4o/HXVI+7X4hYf1chOBabsQNnw2riDpGizprlCCiHdSZmCEhDYvBeL+yhuJ5/B1m2lqZYudfZi2MQhuuSjwGsD9EGEBBGlwmpP/0KQ7ccaeIV0G/gRvrjY67x4d77QYMIwwE11Uq1e6aIWKVAf5hMdhy2F6CuuTkFAsPtsNghF0KcHb13fKXYSix3x5VSMpS3EQ+k2RqP+3OW3r2L82vsA57fHrtxYr2Sp47JK4TMgyd3iQh8d2cBZOt7kZfKYen5rcEtnEFJWpekHa97j7jG5aAHPPWPZRk9tKCuqziVIQ41yYUWJDt7fV6j7jc4Mqic/Md0sxwt3uGuvZOoSQ==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(39860400002)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(82310400011)(36840700001)(46966006)(40470700004)(966005)(83380400001)(41300700001)(478600001)(7049001)(82740400003)(40460700003)(40480700001)(81166007)(47076005)(36860700001)(356005)(336012)(426003)(26005)(6666004)(7416002)(86362001)(54906003)(316002)(2906002)(8676002)(4326008)(36756003)(8936002)(110136005)(70586007)(70206006)(5660300002)(2616005)(921011)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 11:36:43.4022
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 252f67c2-ed13-4abc-e7be-08dc18e2e945
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9D6.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6576
 
-As Piyush is leaving AMD, he handed over ahci-ceva, ZynqMP Mode Pin GPIO
-controller, Zynq UltraScale+ MPSoC and Versal reset, Xilinx SuperSpeed
-DWC3 USB SoC controller, Microchip USB5744 4-port Hub Controller and
-Xilinx udc controller maintainership duties to Mubin and Radhey.
+On Fri, 2024-01-19 at 11:27 +0100, Bernd Edlinger wrote:
+> On 1/16/24 13:22, Paolo Abeni wrote:
+>=20
+> > You need to include the relevant target tree into the subj prefix (in
+> > this case 'net').
+>=20
+> Will do, but please clarify how exactly I need to change the subject line=
+.
 
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
----
- Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml      | 3 ++-
- .../devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml     | 3 ++-
- Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml | 3 ++-
- Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml         | 3 ++-
- Documentation/devicetree/bindings/usb/microchip,usb5744.yaml   | 3 ++-
- Documentation/devicetree/bindings/usb/xlnx,usb2.yaml           | 3 ++-
- 6 files changed, 12 insertions(+), 6 deletions(-)
+The prefix part should be alike: "[PATCH net v3]"
 
-diff --git a/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml b/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
-index b29ce598f9aa..9952e0ef7767 100644
---- a/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
-+++ b/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
-@@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Ceva AHCI SATA Controller
- 
- maintainers:
--  - Piyush Mehta <piyush.mehta@amd.com>
-+  - Mubin Sayyed <mubin.sayyed@amd.com>
-+  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
- 
- description: |
-   The Ceva SATA controller mostly conforms to the AHCI interface with some
-diff --git a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
-index b1fd632718d4..bb93baa88879 100644
---- a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
-+++ b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
-@@ -12,7 +12,8 @@ description:
-   PS_MODE). Every pin can be configured as input/output.
- 
- maintainers:
--  - Piyush Mehta <piyush.mehta@amd.com>
-+  - Mubin Sayyed <mubin.sayyed@amd.com>
-+  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
- 
- properties:
-   compatible:
-diff --git a/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml b/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml
-index 49db66801429..1f1b42dde94d 100644
---- a/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml
-+++ b/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml
-@@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Zynq UltraScale+ MPSoC and Versal reset
- 
- maintainers:
--  - Piyush Mehta <piyush.mehta@amd.com>
-+  - Mubin Sayyed <mubin.sayyed@amd.com>
-+  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
- 
- description: |
-   The Zynq UltraScale+ MPSoC and Versal has several different resets.
-diff --git a/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml b/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
-index bb373eb025a5..00f87a558c7d 100644
---- a/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
-+++ b/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
-@@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Xilinx SuperSpeed DWC3 USB SoC controller
- 
- maintainers:
--  - Piyush Mehta <piyush.mehta@amd.com>
-+  - Mubin Sayyed <mubin.sayyed@amd.com>
-+  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
- 
- properties:
-   compatible:
-diff --git a/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
-index 6d4cfd943f58..445183d9d6db 100644
---- a/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
-+++ b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
-@@ -16,8 +16,9 @@ description:
-   USB 2.0 traffic.
- 
- maintainers:
--  - Piyush Mehta <piyush.mehta@amd.com>
-   - Michal Simek <michal.simek@amd.com>
-+  - Mubin Sayyed <mubin.sayyed@amd.com>
-+  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
- 
- properties:
-   compatible:
-diff --git a/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml b/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
-index 868dffe314bc..a7f75fe36665 100644
---- a/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
-+++ b/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
-@@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Xilinx udc controller
- 
- maintainers:
--  - Piyush Mehta <piyush.mehta@amd.com>
-+  - Mubin Sayyed <mubin.sayyed@amd.com>
-+  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
- 
- properties:
-   compatible:
--- 
-2.34.1
+Cheers,
+
+Paolo
 
 
