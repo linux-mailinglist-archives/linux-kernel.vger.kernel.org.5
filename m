@@ -1,123 +1,124 @@
-Return-Path: <linux-kernel+bounces-31345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4747832CE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:10:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AB54832CDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C3D1B23D0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:10:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B93AB22EB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F0954F8C;
-	Fri, 19 Jan 2024 16:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bNY9mz2y"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF4C54BF0;
-	Fri, 19 Jan 2024 16:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CCAF54BFF;
+	Fri, 19 Jan 2024 16:09:51 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D7854659;
+	Fri, 19 Jan 2024 16:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705680609; cv=none; b=LDm7LaoXzyvjwpGImD+4QJ7le8iXNrP9tsYgPy7wG+Md70quFiG25h3GXddD4UgA1OhvP7TawnFSPMpX5ogZW3sZWpUnjDw9VJDx2CSm8FaULMHLiz5B0tOgHqLBHYHNcY8dUbBPueOkI0fqkQp27mbHebeefRSipUxfh2KAdCk=
+	t=1705680591; cv=none; b=hknFLml6jATcJ3f7ksqKcyOzaEVU3nx/NzYxGr6WNFyqO/4v81T8Zv4jhHp9qUyaMzY2vEM4JXc3soxrQFvUEcAKFZ39W75jsLqAG4gLCX1OwXYJZBijpF5JeoyPdXQqLm/qZMLBAoZwT/PKStEudgaYAIMAWQfqiqMxLutsnNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705680609; c=relaxed/simple;
-	bh=vrfrQmaR7zVk3WtIOmDG6fhQnohSJy5l+phLzlOEZ2E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c/dEhD0ZmhuvkTHzkoS1wohZdzts1fHf/YHU6L31g2hawGpEHIoXNrA2b3tHlcptPkZr+A0DPx74QpTPrM7EX89aY2yVRkzEmNl+SEAK7CDE4yIkhQhTmfFSPgqzA7tp1mpxwV1e6qXbFYlsAj0xi4mF9y5BxyHw0oJT3x5KDA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bNY9mz2y; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e7f58c5fbso1184549e87.1;
-        Fri, 19 Jan 2024 08:10:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705680605; x=1706285405; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xe2AZJ9rG4DIKTX8/he/utaFFdUl2hwHY++4l7rMVNA=;
-        b=bNY9mz2yhuev4/zguk0T2YsXLIquxkOuuOX5LMgM2+j8aXRkLnL8B7f0wWkDtRBQKr
-         3psTOvtq2haQeXW7x/QiP8b7dr7pWfSx2x9dfaMY22NF1a7KCLxcxigGN/O+UkJAYjWP
-         44QCSsdJigZKOOM9x9aX6ouWQz8ti3GPJPDM1OnT14AMiFnBVS3vqTtrNhBNrES+1/P0
-         gxqAhtvlWvT+miFEZGC5A547HFBQAaWaWPUiyIcLQYXFiKPshJnh+gba+he6rMRhyPDA
-         3YEdtMckr8g2zHXRztIHYUfzHeMP5ayF7MQA94cY0egbdqpbK9x1RnYj7AO7vFA+H2is
-         wJ5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705680605; x=1706285405;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xe2AZJ9rG4DIKTX8/he/utaFFdUl2hwHY++4l7rMVNA=;
-        b=sIxEXF77RF10+Kz/Q1iUmWQ5DUS+C9bVqiqOa4eK1GQ3oosUethV3y9IvobkXEtYWI
-         DCFY71l5ta/+dvI1vV6NZpc2DBurNz31lf97MaceSbAZjoydRgAaNufPXptkjW7AoS8H
-         rNwlKdp3Fh2QbpEDkOQvD7dJJHoTYltPiPKPPzUtLVwYUX9fY7L/B1RRPLv7X4NuPvNw
-         FFJHWJA6aOtf66LjFYs/QP3kJrb7Tl5jfmtzq7hSB8sF63+m9wDBffM0MCbY22oIfgT7
-         qDxpcEy0TUQManLiqOGKL9SKvmb+8VE7YV0Y61rXeWBAE0eqp6fYgklABxgmQ9iKuvfA
-         v73g==
-X-Gm-Message-State: AOJu0Yw/tkca/XAwuJLZbshSYmnw2fYf2f3ug0cgfw+Nnc2pBx44YWDz
-	Au+VFzCpY7o7iOzNZITfukoUVeg5AcasIG2T7uUulREOnTCGjqJkmzmHYCzA8dzXSY0sOzZ6Qud
-	sHIuz5tfO2kKzLXzqGTXZQMIqPHM=
-X-Google-Smtp-Source: AGHT+IGe5hGb3AQxEzUByESuCQYg8t9XsnK7jKBnEML9VYgxTrUlh51XrlhoAVDfHHhRdN684YROYUuUrEhYSmYrlgU=
-X-Received: by 2002:a19:7413:0:b0:50e:d5e2:92cc with SMTP id
- v19-20020a197413000000b0050ed5e292ccmr804081lfe.81.1705680605272; Fri, 19 Jan
- 2024 08:10:05 -0800 (PST)
+	s=arc-20240116; t=1705680591; c=relaxed/simple;
+	bh=+qVwNgKWyvVHNlIWEZ5n9M6EFS+J7PQq+oE9zH58ZMg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i/H08cCNjyZCVuY4ukAhZ/4fMlKWeL+i6ohfTJxS2vYvTPe3FGjXuJTFeTYylXrQOCZMkqbWoi89u4hk6PNUmLOzdH889Yeylmr3wkLjF7nSQH58m9cI5y8E4XZ7FFZRM6c+YAf+CqF5hrLWJSX9EEvlLZXD4x5C7LeCQd251IA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73B9D1042;
+	Fri, 19 Jan 2024 08:10:25 -0800 (PST)
+Received: from [10.57.77.97] (unknown [10.57.77.97])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 04F803F73F;
+	Fri, 19 Jan 2024 08:09:37 -0800 (PST)
+Message-ID: <ffdba8c4-f1a2-4141-a3d4-0c85dfea6fef@arm.com>
+Date: Fri, 19 Jan 2024 16:09:35 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
- <20230804104602.395892-6-ckeepax@opensource.cirrus.com> <ZalahZkCrBm-BXwz@surfacebook.localdomain>
- <20240119114917.GB16899@ediswmail.ad.cirrus.com>
-In-Reply-To: <20240119114917.GB16899@ediswmail.ad.cirrus.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 19 Jan 2024 18:09:28 +0200
-Message-ID: <CAHp75Vf0BdOj_Bcxs3L=aznUzoMptPF+tDBpOcBKOcVTH45+Hg@mail.gmail.com>
-Subject: Re: [PATCH v7 5/6] spi: cs42l43: Add SPI controller support
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com, 
-	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com, 
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, 
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/mm: run_vmtests.sh: add missing tests
+Content-Language: en-GB
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
+Cc: kernel@collabora.com, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240116090641.3411660-1-usama.anjum@collabora.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240116090641.3411660-1-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 19, 2024 at 1:49=E2=80=AFPM Charles Keepax
-<ckeepax@opensource.cirrus.com> wrote:
-> On Thu, Jan 18, 2024 at 07:06:13PM +0200, andy.shevchenko@gmail.com wrote=
-:
+Hi Muhammad,
 
-..
+Afraid this patch is causing a regression on our CI system when it turned up in
+linux-next today. Additionally, 2 of thetests you have added are failing because
+the scripts are not exported correctly...
 
-> > > +   if (is_of_node(fwnode))
-> > > +           fwnode =3D fwnode_get_named_child_node(fwnode, "spi");
-> >
-> > You can actually drop these is_of_node() tests and use another variable=
- In
-> > ACPI there can't be child node in small letters.
->
-> is_of_node feels pretty clear what the intent is, rather than
-> relying on nodes not existing etc.
->
-> > But main problem here (and in another driver where the similar is used)=
- that
-> > you bumped reference count for fwnode. I haven't seen where you drop it=
- back.
-> > Have you tested rmmod/modprobe in a loop?
->
-> Yeah it should drop the reference will add that.
+On 16/01/2024 09:06, Muhammad Usama Anjum wrote:
+> Add missing tests to run_vmtests.sh. The mm kselftests are run through
+> run_vmtests.sh. If a test isn't present in this script, it'll not run
+> with run_tests or `make -C tools/testing/selftests/mm run_tests`.
+> 
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+>  tools/testing/selftests/mm/run_vmtests.sh | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+> index 246d53a5d7f2..a5e6ba8d3579 100755
+> --- a/tools/testing/selftests/mm/run_vmtests.sh
+> +++ b/tools/testing/selftests/mm/run_vmtests.sh
+> @@ -248,6 +248,9 @@ CATEGORY="hugetlb" run_test ./map_hugetlb
+>  CATEGORY="hugetlb" run_test ./hugepage-mremap
+>  CATEGORY="hugetlb" run_test ./hugepage-vmemmap
+>  CATEGORY="hugetlb" run_test ./hugetlb-madvise
+> +CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh
+> +CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh
 
-Note, this will require an additional variable anyway (as in the
-infamous `x =3D realloc(x...)` mistake).
+These 2 tests are failing because the test scripts are not exported. You will
+need to add them to the TEST_FILES variable in the Makefile.
 
---=20
-With Best Regards,
-Andy Shevchenko
+> +CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
+
+The addition of this test causes 2 later tests to fail with ENOMEM. I suspect
+its a side-effect of marking the hugetlbs as hwpoisoned? (just a guess based on
+the test name!). Once a page is marked poisoned, is there a way to un-poison it?
+If not, I suspect that's why it wasn't part of the standard test script in the
+first place.
+
+These are the tests that start failing:
+
+# # ------------------------------------
+# # running ./uffd-stress hugetlb 128 32
+# # ------------------------------------
+# # nr_pages: 64, nr_pages_per_cpu: 8
+# # ERROR: context init failed (errno=12, @uffd-stress.c:254)
+# # [FAIL]
+# not ok 18 uffd-stress hugetlb 128 32 # exit=1
+# # --------------------------------------------
+# # running ./uffd-stress hugetlb-private 128 32
+# # --------------------------------------------
+# # nr_pages: 64, nr_pages_per_cpu: 8
+# # bounces: 31, mode: rnd racing ver poll, ERROR: UFFDIO_COPY error: -12ERROR:
+UFFDIO_COPY error: -12 (errno=12, @uffd-common.c:614)
+# #  (errno=12, @uffd-common.c:614)
+# # [FAIL]
+
+Quickest way to repo is:
+
+$ sudo ./run_vmtests.sh -t "userfaultfd hugetlb"
+
+Thanks,
+Ryan
+
+
+>  
+>  nr_hugepages_tmp=$(cat /proc/sys/vm/nr_hugepages)
+>  # For this test, we need one and just one huge page
+
 
