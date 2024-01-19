@@ -1,80 +1,171 @@
-Return-Path: <linux-kernel+bounces-31067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4B86832841
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:01:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF5748326CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:37:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35D5BB227F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:01:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F55C28526D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:37:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7924C602;
-	Fri, 19 Jan 2024 11:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859003C092;
+	Fri, 19 Jan 2024 09:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="gXOAHKO6"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="HoREC4/W"
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662303C464
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFAE1EB52;
+	Fri, 19 Jan 2024 09:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705662074; cv=none; b=ibR7xj8Z4gxenIWjeX769ISr1rsRaTexFw4UFaXMuRUCRIdFTcOdnubW3nbIqJ+9w25b4YUMKnRsDPw22Lk6PKiGHMag/rCujvjfhbaa5E4G95Wp/uQXEPmKqv80/CnJAocr5vLYDbZ6reRfZRdQh55KDym0ZIBJmmTYm2xaTxw=
+	t=1705657064; cv=none; b=EZVUwBEeiUK0s2Wbs6Ca6ymBpqoWwLeDzSNS+JdTFHXAa2RZ0c8im0sa0eCx3qtDV+k8fuRgzCJq+Ee7a6ABKfR5UCq0mOZngdlozCcjPuqSzjPKsqgkkTOp9Pp+KM/O0jcqZdgtpYlrzrqonQj7QCXfe6D0yQSa84o/oK8Odag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705662074; c=relaxed/simple;
-	bh=w5wBDo8jUiYzz+5J3il+LC9xZdfbGnzBJXcrQQHkLzM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=UGQlAG0rmwrU2Yr8oWdIWkIoSCJ4FC9zc4vulG4yAvgn0jdVQ6SRDPkaKOSC5ZngUEi9KP1GCK5lt+ntFCAdGo6nYSAujLE8oUMa9MyBC+YTB9u9IvxI6vESrTwWPRCV25D513J5SyGjksNt3mZEVF9oFGrWbeDN8LFz4xdyOMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=gXOAHKO6; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
-	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=b6VkcU727MKQow5IhybOt1tkD+yKTAqrwjsZRcJZP2g=; b=gXOAHKO6FRDplvXdFDNzwxNJq9
-	wV9oO87QjA1bRFiSyF7PoiyDi5SzWl6/MXdYXELlQdi38HCotn8doggvAhM9vGd2eUXrD5kd7/rMf
-	4fy7ZbixepusSp6G6pX8ub5p0h+R/vTdA/mrh0lxAV/oLGDXQusdFO1lDjtcem4Q14sxNv/KuhNhd
-	4WzE3cBVS9Xx8ZbX/gwuz7MZib++AXQIzjMUxwx1KWNhspb2fPf35gx9e816cGF1um9q8F1R933zC
-	Fa1cSXFziq/JTUwqQ05iiU3hKWMy48YfETi3oaOT1FTQHYJ05SIDmtRWh2y8Bb+jq8smwr49ny+Ca
-	iQk2akEQ==;
-Received: from [84.215.119.50] (port=58153 helo=[192.168.0.2])
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
-	id 1rQlGr-000OQt-F9
-	for linux-kernel@vger.kernel.org;
-	Fri, 19 Jan 2024 10:34:41 +0100
-Message-ID: <e25d240b-67f1-44fe-97f1-02fbdd76c721@cu-phil.org>
-Date: Fri, 19 Jan 2024 10:34:40 +0100
+	s=arc-20240116; t=1705657064; c=relaxed/simple;
+	bh=VQjoaasfjGj4Pt4jE9IK07lq2R6F63SB0ntq1hY/FL4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WT5Jar/Rg5gqe71HTRMyaOVI3vp4+X5O1MkXGG5Y+OSMtOsDe4HHOOg6PFU84/OG0SrJ2wd+E8GhWttraSDnz+KsAhyLmOCKWwI5OQnJMGESqPWESmOsYQY1gx376zVvfYyBgESfJK2WvrevBRJTl3d1hovfHoNhNUR5PQFAi4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=HoREC4/W; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1705657058; x=1705916258;
+	bh=8e/rU8mWyRsdYMtNFKOr1SDmHGWMG+cSiKUa3CJl5vE=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=HoREC4/WD32aiGHQKEf6Vt8D/QhA2+yVfqPC26y7RcTkaqB76qxUQGajzuP/uqxu3
+	 LjsnRWMss/mjzog+QG4sGSF0w4VkIpuTt4GqDkLzqMEWJ1D2H9AGi1t/86SdJ7ShTr
+	 KkzkFa+PBukrlzQLg78oNaRHNRzZ+rRJLx8Cl7+2IUjiFrGyH9SdPOS04esJf6/1xr
+	 3zgULcYWxRQi+XKqin1dF99vjuTEDnw7jyPdTbl7YrpdDLvXH8PeERRSkDHdj52arq
+	 0w9Kw7yekiwbuQeRATcEkaJFNivDu0Y2BysYVYZquCpVylzVs6bJM+38lxNSFSSgni
+	 +1fbwBwxh59lQ==
+Date: Fri, 19 Jan 2024 09:37:12 +0000
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 2/9] rust: cred: add Rust abstraction for `struct cred`
+Message-ID: <67a9f08d-d551-4238-b02d-f1c7af3780ae@proton.me>
+In-Reply-To: <20240118-alice-file-v3-2-9694b6f9580c@google.com>
+References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-2-9694b6f9580c@google.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Bit X (was Fair Source etc)
-To: linux-kernel@vger.kernel.org
-References: <92a99f69-3c6d-4c9b-b16c-19da17943eae@cu-phil.org>
- <E1rPzsA-003sTD-Lh@smtp.domeneshop.no>
-From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
-In-Reply-To: <E1rPzsA-003sTD-Lh@smtp.domeneshop.no>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-I have gotten an apology for the Apple Faux Pa.
+On 1/18/24 15:36, Alice Ryhl wrote:
+> diff --git a/rust/kernel/cred.rs b/rust/kernel/cred.rs
+> new file mode 100644
+> index 000000000000..ccec77242dfd
+> --- /dev/null
+> +++ b/rust/kernel/cred.rs
+> @@ -0,0 +1,65 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +//! Credentials management.
+> +//!
+> +//! C header: [`include/linux/cred.h`](../../../../include/linux/cred.h)
 
-Project is generalized to Bit X.
+IIRC you can use `srctree/include/..` to avoid the `../..` madness.
 
-Channels: TBL Preacher - https://www.youtube.com/@I_T_San/  (will be 
-updated to TBL Pracher)
+> +//!
+> +//! Reference: <https://www.kernel.org/doc/html/latest/security/credenti=
+als.html>
+> +
+> +use crate::{
+> +    bindings,
+> +    types::{AlwaysRefCounted, Opaque},
+> +};
+> +
+> +/// Wraps the kernel's `struct cred`.
+> +///
+> +/// # Invariants
+> +///
+> +/// Instances of this type are always ref-counted, that is, a call to `g=
+et_cred` ensures that the
+> +/// allocation remains valid at least until the matching call to `put_cr=
+ed`.
+> +#[repr(transparent)]
+> +pub struct Credential(Opaque<bindings::cred>);
+> +
+> +// SAFETY: By design, the only way to access a `Credential` is via an im=
+mutable reference or an
+> +// `ARef`. This means that the only situation in which a `Credential` ca=
+n be accessed mutably is
+> +// when the refcount drops to zero and the destructor runs. It is safe f=
+or that to happen on any
+> +// thread, so it is ok for this type to be `Send`.
 
-Muclim: https://www.youtube.com/@Ywe_Caerlyn_Norway/videos
+IMO the only important part is that calling `drop`/`dec_ref` is OK from
+any thread.
 
--Peace.
+In general I think it might be a good idea to make
+`AlwaysRefCounted: Send + Sync`. But that is outside the scope of this
+patch.
+
+> +unsafe impl Send for Credential {}
+> +
+> +// SAFETY: It's OK to access `Credential` through shared references from=
+ other threads because
+> +// we're either accessing properties that don't change or that are prope=
+rly synchronised by C code.
+> +unsafe impl Sync for Credential {}
+> +
+> +impl Credential {
+> +    /// Creates a reference to a [`Credential`] from a valid pointer.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The caller must ensure that `ptr` is valid and remains valid for=
+ the lifetime of the
+> +    /// returned [`Credential`] reference.
+> +    pub unsafe fn from_ptr<'a>(ptr: *const bindings::cred) -> &'a Creden=
+tial {
+> +        // SAFETY: The safety requirements guarantee the validity of the=
+ dereference, while the
+> +        // `Credential` type being transparent makes the cast ok.
+> +        unsafe { &*ptr.cast() }
+> +    }
+> +
+> +    /// Returns the effective UID of the given credential.
+> +    pub fn euid(&self) -> bindings::kuid_t {
+> +        // SAFETY: By the type invariant, we know that `self.0` is valid=
+.
+
+Is `euid` an immutable property, or why does this memory access not race
+with something?
+
+--=20
+Cheers,
+Benno
+
+> +        unsafe { (*self.0.get()).euid }
+> +    }
+> +}
+> +
+> +// SAFETY: The type invariants guarantee that `Credential` is always ref=
+-counted.
+> +unsafe impl AlwaysRefCounted for Credential {
+> +    fn inc_ref(&self) {
+> +        // SAFETY: The existence of a shared reference means that the re=
+fcount is nonzero.
+> +        unsafe { bindings::get_cred(self.0.get()) };
+> +    }
+> +
+> +    unsafe fn dec_ref(obj: core::ptr::NonNull<Credential>) {
+> +        // SAFETY: The safety requirements guarantee that the refcount i=
+s nonzero. The cast is okay
+> +        // because `Credential` has the same representation as `struct c=
+red`.
+> +        unsafe { bindings::put_cred(obj.cast().as_ptr()) };
+> +    }
+> +}
+
 
