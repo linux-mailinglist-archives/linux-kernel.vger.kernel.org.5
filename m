@@ -1,199 +1,122 @@
-Return-Path: <linux-kernel+bounces-31317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DE29832C6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:36:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA4E9832C6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC50C2868F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:36:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D6B01F23F58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC8FE54BCC;
-	Fri, 19 Jan 2024 15:36:34 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E9A54BE0;
+	Fri, 19 Jan 2024 15:39:29 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637B154BC7;
-	Fri, 19 Jan 2024 15:36:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506E13C465;
+	Fri, 19 Jan 2024 15:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705678594; cv=none; b=uNEJBaCfrIE0Ux69ZPVG/IqqPKXPDY3c4fgF2LYoAech2nshJGMBH7+v3wp3vQOWifOFARQXopMan0VySfjw95zcgY8lZPbXb5ZKIqEOAslgg9Y1MGbwOH3A6DDyV93m3utrU2xw4Eldy/+Balia/4Ec4uYw0GK5+CSTSIY9y2Y=
+	t=1705678769; cv=none; b=CiVPM4j9xmZUW5/YKDf4tLlOuvn9vcSGL3kS5cLNmvO7HUdKaiAB4fiBwX9EkhaSnJv5aqQbmfJ6M+eGHgKk5Hv8TCiQKWCkUdXpIBSQRWKoTunM5qU5GdMs6gQfCS6emkhCNcM6ZMoeA1eQUzmk042EoD5/2xZqc3Lp5nbU+yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705678594; c=relaxed/simple;
-	bh=mdLArEAx2++hnsF4nRXH6+e4vKM3ueZvivxFppef9Do=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sIhk8hCEJAuV46jBKipzXCUOA83nkpSAgV7kT2FjTBTUI0taQrhDxqj9dpi8SHETjaGx1B1YPmDWvnjLarU+6wexXHJYR7Psxlo8k7oDroHNN7PjtlX4yID3uvulik0zCVNgP0eCm/KDozDpn/mRVeNBxCGKPM9E7vkVyIHicJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29257C433C7;
-	Fri, 19 Jan 2024 15:36:33 +0000 (UTC)
-Date: Fri, 19 Jan 2024 10:37:54 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] ring-buffer: Simplify reservation with try_cmpxchg()
- loop
-Message-ID: <20240119103754.154dc009@gandalf.local.home>
-In-Reply-To: <504085e9-bf91-4948-a158-abae5dcb276a@efficios.com>
-References: <20240118181206.4977da2f@gandalf.local.home>
-	<504085e9-bf91-4948-a158-abae5dcb276a@efficios.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705678769; c=relaxed/simple;
+	bh=VtiMxsi1+ub0qW/r114MxUAGi/pPUxucnebfcw3ezbc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Eipn1GW45z0naebRbgewEbW+CK/Yax+LhBYdfOhd3Ma9j5gf5KmCvUZr3tRJ/NRN4vrdpKNpzWmbSND/e2RPlAseCwRkrU+qEQauw1l5zsqPbLP/arZPF2R4Htuci3iRISEEc3dhI1ywHUoBNt8odIZ3c8iEABeXaWowIUMelho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 19 Jan
+ 2024 18:39:17 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 19 Jan
+ 2024 18:39:16 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: Chuck Lever <chuck.lever@oracle.com>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Jeff Layton
+	<jlayton@kernel.org>, Amir Goldstein <amir73il@gmail.com>, Alexander Viro
+	<viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara
+	<jack@suse.cz>, <linux-fsdevel@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com>
+Subject: [PATCH] do_sys_name_to_handle(): use kzalloc() to fix kernel-infoleak
+Date: Fri, 19 Jan 2024 07:39:06 -0800
+Message-ID: <20240119153906.4367-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-On Fri, 19 Jan 2024 09:40:27 -0500
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+syzbot identified a kernel information leak vulnerability in
+do_sys_name_to_handle() and issued the following report [1].
 
-> On 2024-01-18 18:12, Steven Rostedt wrote:
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> >=20
-> > Instead of using local_add_return() to reserve the ring buffer data,
-> > Mathieu Desnoyers suggested using local_cmpxchg(). This would simplify =
-the
-> > reservation with the time keeping code. =20
->=20
-> I admire the effort of trying to simplify the Ftrace ring buffer by bring=
-ing
-> over ideas that worked well for LTTng. :-) As reviewer of the tracing sub=
-system,
-> I certainly welcome the simplifications.
->=20
+[1]
+"BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+ _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ copy_to_user include/linux/uaccess.h:191 [inline]
+ do_sys_name_to_handle fs/fhandle.c:73 [inline]
+ __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
+ __se_sys_name_to_handle_at+0x949/0xb10 fs/fhandle.c:94
+ __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
+ ...
 
-The idea itself wasn't new. It was you convincing me that
-local_add_return() is no faster than local_cmpxchg(). As I would have done
-it this way from the start if I wasn't dead set against adding any new
-cmpxchg() in the fast path.
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ do_sys_name_to_handle fs/fhandle.c:39 [inline]
+ __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
+ __se_sys_name_to_handle_at+0x441/0xb10 fs/fhandle.c:94
+ __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
+ ...
 
-Testing showed that local_add_return() is pretty much just as bad, so the
-added complexity to avoid just slapping in a cmpxchg() was useless.
+Bytes 18-19 of 20 are uninitialized
+Memory access of size 20 starts at ffff888128a46380
+Data copied to user address 0000000020000240"
 
-> > Although, it does not get rid of the double time stamps (before_stamp a=
-nd
-> > write_stamp), using cmpxchg() does get rid of the more complex case when
-> > an interrupting event occurs between getting the timestamps and reservi=
-ng
-> > the data, as when that happens, it just tries again instead of dealing
-> > with it. =20
->=20
-> I understand that the reason why you need the before/after stamps and the=
-ir
-> associated complexity is because the Ftrace ring buffer ABI encodes event
-> timestamps as delta from the previous event within the buffer as a mean of
-> compressing the timestamp fields. If the delta cannot be represented in a
-> given number of bits, then it inserts a 64-bit timestamp (not sure if that
-> one is absolute or a delta from previous event).
+Per Chuck Lever's suggestion, use kzalloc() instead of kmalloc() to
+solve the problem.
 
-There's both. An extended timestamp, which is added when the delta is too
-big, and that too is just a delta from the previous event. And there is the
-absolute timestamp as well. I could always just use the absolute one. That
-event came much later.
+Fixes: 990d6c2d7aee ("vfs: Add name to file handle conversion support")
+Suggested-by: Chuck Lever III <chuck.lever@oracle.com>
+Reported-and-tested-by: syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+Link to Chuck's suggestion: 
+https://lore.kernel.org/all/B4A8D625-6997-49C8-B105-B2DCFE8C6DDA@oracle.com/
 
->=20
-> This timestamp encoding as delta between events introduce a strong
-> inter-dependency between consecutive (nested) events, and is the reason
-> why you are stuck with all this timestamp before/after complexity.
->=20
-> The Common Trace Format specifies (and LTTng implements) a different way
-> to achieve the same ring buffer space-savings achieved with timestamp del=
-tas
-> while keeping the timestamps semantically absolute from a given reference,
-> hence without all the before/after timestamp complexity. You can see the
-> clock value decoding procedure in the CTF2 SPEC RC9 [1] document. The bas=
-ic
+ fs/fhandle.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That points to this:
+diff --git a/fs/fhandle.c b/fs/fhandle.c
+index 18b3ba8dc8ea..57a12614addf 100644
+--- a/fs/fhandle.c
++++ b/fs/fhandle.c
+@@ -36,7 +36,7 @@ static long do_sys_name_to_handle(const struct path *path,
+ 	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
+ 		return -EINVAL;
+ 
+-	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
++	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
+ 			 GFP_KERNEL);
+ 	if (!handle)
+ 		return -ENOMEM;
+-- 
+2.25.1
 
----------------------8<-------------------------
-6.3. Clock value update procedure
-To update DEF_CLK_VAL from an unsigned integer field F having the unsigned =
-integer value V and the class C:
-
-Let L be an unsigned integer initialized to, depending on the type property=
- of C:
-
-"fixed-length-unsigned-integer"
-The value of the length property of C.
-
-"variable-length-unsigned-integer"
-S =C3=977, where S is the number of bytes which F occupies with the data st=
-ream.
-
-Let MASK be an unsigned integer initialized to 2L =E2=88=92 1.
-
-Let H be an unsigned integer initialized to DEF_CLK_VAL & ~MASK, where =E2=
-=80=9C&=E2=80=9D is the bitwise AND operator and =E2=80=9C~=E2=80=9D is the=
- bitwise NOT operator.
-
-Let CUR be an unsigned integer initialized to DEF_CLK_VAL & MASK, where =E2=
-=80=9C&=E2=80=9D is the bitwise AND operator.
-
-Set DEF_CLK_VAL to:
-
-If V =E2=89=A5 CUR
-H + V
-
-Else
-H + MASK + 1 + V
---------------------->8-------------------------
-
-There's a lot of missing context there, so I don't see how it relates.
-
-
-> idea on the producer side is to record the low-order bits of the current
-> timestamp in the event header (truncating the higher order bits), and
-> fall back on a full 64-bit value if the number of low-order bits overflows
-> from the previous timestamp is more than 1, or if it is impossible to fig=
-ure
-> out precisely the timestamp of the previous event due to a race. This ach=
-ieves
-> the same space savings as delta timestamp encoding without introducing the
-> strong event inter-dependency.
-
-So when an overflow happens, you just insert a timestamp, and then events
-after that is based on that?
-
->=20
-> The fact that Ftrace exposes this ring buffer binary layout as a user-spa=
-ce
-> ABI makes it tricky to move to the Common Trace Format timestamp encoding.
-> There are clearly huge simplifications that could be made by moving to th=
-is
-> scheme though. Is there any way to introduce a different timestamp encodi=
-ng
-> scheme as an extension to the Ftrace ring buffer ABI ? This would allow u=
-s to
-> introduce this simpler scheme and gradually phase out the more complex de=
-lta
-> encoding when no users are left.
-
-I'm not sure if there's a path forward. The infrastructure can easily swap
-in and out a new implementation. That is, there's not much dependency on
-the way the ring buffer works outside the ring buffer itself.
-
-If we were to change the layout, it would likely require a new interface
-file to read. The trace_pipe_raw is the only file that exposes the current
-ring buffer. We could create a trace_out_raw or some other named file that
-has a completely different API and it wouldn't break any existing API.
-
-Although, if we want to change the "default" way, it may need some other
-knobs or something, which wouldn't be hard.
-
-Now I have to ask, what's the motivation for this. The code isn't that
-complex anymore. Yes it still has the before/after timestamps, but the
-most complexity in that code was due to what happens in the race of
-updating the reserved data. But that's no longer the case with the
-cmpxchg(). If you look at this patch, that entire else statement was
-deleted. And that deleted code was what made me sick to my stomach ;-)
-Good riddance!
-
--- Steve
 
