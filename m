@@ -1,119 +1,128 @@
-Return-Path: <linux-kernel+bounces-31189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A3C832A46
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:23:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0869E832A65
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:27:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C58AB1C2355A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:23:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BA801C235AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:27:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 027DA52F86;
-	Fri, 19 Jan 2024 13:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yzvr7X+g"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4461C5478B;
+	Fri, 19 Jan 2024 13:25:43 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BFC524DE
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 522CD5380E
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705670630; cv=none; b=M4SVxCTwwQDhCOEy/5pqZZOfwE3dgUsl8FL0Y8kiO3QzW38Mwzb50XN2/tLe1p9pG0YRFRUc4O/WQApFIsLmGNZ1doUGZAGYJMYPjozrpn+NVzymRXvzBSS4FJb9oa7kREwp9ARxXq+K9ZaSUgHO+NVoycTb7O8OvBEdRCeDpzE=
+	t=1705670742; cv=none; b=n5TbJ4XAKt8T+yGfjFkXVStLcEoS94jKgSaXe4OuiRV1BMsflV+g/FZAmPFMxj8tXaryhiEHHaQuTUigrPhmsXvotlbg1wbrOh0GHDDYurL6HjPmFKhWdJDUwSUwy9Y9Dyuh5/kDm+oJnYBC6bdT2fHI1eAsYJH8JBz78l09p8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705670630; c=relaxed/simple;
-	bh=jT1o+1fCLAVLwXFrrOA+eYd/Esf8c1zGpOV8XzCPnlQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O1goJUsAuVKadKYxiJ3xpDT1d/IHjGMUAVtXQhwLVedkxIuQRZFgqdD6loRtpqSMaRZLex6dJdn9RzxxXSSouhEc2LE6/QQox4EkacFhJY4wqsXHSNT/Y4Dbgw3YTkymubIqE2OQzkqFLOouRNznDbxfvDgdnO3kTD0vMM0z5Rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yzvr7X+g; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5ebca94cf74so7756537b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:23:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705670628; x=1706275428; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wYjGRonmxWAwRkUotTTDya9Rp8c+PP7p+UBBXWqIeDY=;
-        b=Yzvr7X+gzsaQt9WOshGLunenjwLi1VQ2s/1CkR2RBXeVqZXp6H5sdL+3uDxLWRfj2i
-         pUt/pbuUd2DuYnb77zQgPK/SVSgSXvmIXVa94dUthGBSvbfn8jRpPTWc9AdTjtuE7nU5
-         14UaDJ72vhi3DtbNIz+nEoP6UmUGWxkU/xZjf9scqSvm5BYLOcNDsfn5hRR42/DXjuYs
-         aWTxSD9LLMijZeguOQS/uxdI0sBcrblgvTjKMRyTSSJnnz1SB7k/6xPxWgArXe6RCxIw
-         lIrStHwNH9aISdRT88bVnt87zYD605qrPwkNAg+ruKExWvp1u7nFAPWYE+en/FZRk6NL
-         jf4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705670628; x=1706275428;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wYjGRonmxWAwRkUotTTDya9Rp8c+PP7p+UBBXWqIeDY=;
-        b=SkVYDGfCIY4g6SpDL4hxHMAHLRZgggz9lnWCwK6IXdv/SynKScLtntnc5kEuW92+vs
-         7ov1N2Q8roX0eaReKkK9JyfJEQ9fK1wfn4zsaI6OnVFqX+qCf7HHg9HWL6aoy5rv4eAY
-         XhDBuDXl2oprpP9tHxoTpOry+XidMSRJh4oq+ICOIIHE2LW8rJFz/D820/NqStcsTZVY
-         +wO58/R4Oua8qmB7odiwurZ1ZcrAFMAzGANMwfsieJAtiWzkv8hWhPZmQWtzoaxxIwRA
-         PJAwaj2Sicf1Lcg8mmiZFqrJRW6tsuOSpdR0ViXv9EC9HoNQs8YAMp1t6WCz6iAj9DKZ
-         WSKQ==
-X-Gm-Message-State: AOJu0YyK7J18rwHZQ2IjrEolDPmZu8U8nJ06eY8+BY9xE+izUVMUCogi
-	O5I1EsPb6jfuvDerxX5y8Bhh1K3c1zKwemIAmr/Z2oMK6RRBbog+UiYXD3CKbgJ7m9sFb/5Ylbw
-	2h0wg9pns0gwOfTmD0F8RtM77nF0Ik4tyx/b0cQ==
-X-Google-Smtp-Source: AGHT+IE24O4oHX+Znek8EKmxAo69mROS6r2o4oW+offeuwEJNv5nK9E27XqRcTnwBG8RF9BP82f09XLq4Sz7Hw8ZCgs=
-X-Received: by 2002:a81:6d10:0:b0:5ee:66b0:5960 with SMTP id
- i16-20020a816d10000000b005ee66b05960mr2136607ywc.10.1705670627269; Fri, 19
- Jan 2024 05:23:47 -0800 (PST)
+	s=arc-20240116; t=1705670742; c=relaxed/simple;
+	bh=SnlmRY4YzKLUEZW36LRtIOn/V1xJIwJfrgcpZ0DRfw0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u2ko5MTKCTKUAJqpLNGCtwFAya41Ho6qac8x4R+ErKdGxVbuXEyhvH7cURmIYUKaAzQi6VDlImKSumGqo9R/qe4eJu2sWD4wxejDpKPjPJcMy/Qa/2VGZICOIvJsTBJIiKfXpYmeiqDEq4BIQBtvIMXAszeuW/c2padTg9wPnoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rQos7-00074E-C1; Fri, 19 Jan 2024 14:25:23 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rQos6-000viF-4D; Fri, 19 Jan 2024 14:25:22 +0100
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rQos6-00F97X-0B;
+	Fri, 19 Jan 2024 14:25:22 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Sebastian Reichel <sre@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
+Subject: [RFC PATCH v1 0/7] Introduction of PSCR Framework and Related Components
+Date: Fri, 19 Jan 2024 14:25:14 +0100
+Message-Id: <20240119132521.3609945-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com> <1705669223-5655-2-git-send-email-quic_msarkar@quicinc.com>
-In-Reply-To: <1705669223-5655-2-git-send-email-quic_msarkar@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 19 Jan 2024 15:23:36 +0200
-Message-ID: <CAA8EJprFo+ujC2VqEtxbrEn_Dn23qfQAcc6WtMm4JWquth=Xgw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/6] dmaengine: dw-edma: Pass 'struct dw_edma_chip' to irq_vector()
-To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc: vkoul@kernel.org, jingoohan1@gmail.com, conor+dt@kernel.org, 
-	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org, 
-	robh+dt@kernel.org, quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com, 
-	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com, quic_krichai@quicinc.com, 
-	quic_vbadigan@quicinc.com, quic_parass@quicinc.com, quic_schintav@quicinc.com, 
-	quic_shijjose@quicinc.com, Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
-	Serge Semin <fancer.lancer@gmail.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Fri, 19 Jan 2024 at 15:00, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
->
-> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->
-> eDMA client drivers defining the irq_vector() callback need to access the
-> members of dw_edma_chip structure. So let's pass that pointer instead.
+Hello all,
 
-Nit: 'will need'. They do not need to do that at this point, but will
-need it at the next commit. I'd rephrase it to something like 'In
-preparation to ...'
+This patch series introduces the Power State Change Reasons (PSCR)
+tracking framework and its related components into the kernel. The PSCR
+framework is designed for systems where traditional methods of storing
+power state change reasons, like PMICs or watchdogs, are inadequate. It
+provides a structured way to store reasons for system shutdowns and
+reboots, such as under-voltage or software-triggered events, in
+non-volatile hardware storage.
 
-Other than that:
+These changes are critical for systems requiring detailed postmortem
+analysis and where immediate power-down scenarios limit traditional
+storage options. The framework also assists bootloaders and early-stage
+system components in making informed recovery decisions.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Oleksij Rempel (7):
+  dt-bindings: power: reset: add generic PSCR binding trackers
+  power: reset: Introduce PSCR Tracking Framework for Non-Volatile
+    Storage
+  dt-bindings: power: reset: add bindings for NVMEM hardware storing
+    PSCR Data
+  nvmem: provide consumer access to cell size metrics
+  power: reset: add PSCR NVMEM Driver for Storing Power State Change
+    Reasons
+  regulator: set Power State Change Reason before
+    hw_protection_shutdown()
+  thermal: core: set Power State Change Reason before
+    hw_protection_shutdown()
 
->
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> ---
->  drivers/dma/dw-edma/dw-edma-core.c           | 11 +++++------
->  drivers/dma/dw-edma/dw-edma-pcie.c           |  4 ++--
->  drivers/pci/controller/dwc/pcie-designware.c |  4 ++--
->  include/linux/dma/edma.h                     |  3 ++-
->  4 files changed, 11 insertions(+), 11 deletions(-)
+ .../bindings/power/reset/pscr-nvmem.yaml      |  54 ++++
+ .../devicetree/bindings/power/reset/pscr.yaml |  51 ++++
+ drivers/nvmem/core.c                          |  25 ++
+ drivers/power/reset/Kconfig                   |  30 ++
+ drivers/power/reset/Makefile                  |   2 +
+ drivers/power/reset/pscr-nvmem.c              | 100 +++++++
+ drivers/power/reset/pscr.c                    | 259 ++++++++++++++++++
+ drivers/regulator/core.c                      |   6 +
+ drivers/thermal/thermal_core.c                |   2 +
+ include/linux/nvmem-consumer.h                |   7 +
+ include/linux/pscr.h                          |  40 +++
+ 11 files changed, 576 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/reset/pscr-nvmem.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/reset/pscr.yaml
+ create mode 100644 drivers/power/reset/pscr-nvmem.c
+ create mode 100644 drivers/power/reset/pscr.c
+ create mode 100644 include/linux/pscr.h
 
 -- 
-With best wishes
-Dmitry
+2.39.2
+
 
