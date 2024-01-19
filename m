@@ -1,158 +1,133 @@
-Return-Path: <linux-kernel+bounces-30937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3056B832647
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:08:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 832C1832652
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:12:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54FA51C22EBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:08:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 396B71F238F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:12:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B9E28E1A;
-	Fri, 19 Jan 2024 09:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971FB24208;
+	Fri, 19 Jan 2024 09:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="twRq39oL"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2079.outbound.protection.outlook.com [40.107.212.79])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="EXuqvTcb"
+Received: from mout.web.de (mout.web.de [217.72.192.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FFC21E89E;
-	Fri, 19 Jan 2024 09:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705655194; cv=fail; b=dbb+NPxnfbqY9VQs6wxvHHBvr21xwMwW0Cwbj6EaiTQW408Fuj/ySJalnt8rMuMVuGai+QTTVoBf9SfTVC7IqYHnNkb2uAg38E2qfSeqilKz5ATWTcoiUoQYwCo3HSp84Mq93WIddoMzN1/vZAdlJc07C5TVh3IZ9dodNdp87os=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705655194; c=relaxed/simple;
-	bh=IZvjB7EN/4zNzdRQnCVGIQg4s42HWrXioCam/fK1DV0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=m+cnZsxV8ut6SERmUrRjiLN36YOJQ2hUhHfKAB3SXqMq4UP1bxJvObX2UBl68lV+BWOdgFIA0aztEhJ4Bu/xkpOIv7H6a1/7bMh0T5+oW75xvXbFyQp0OtXzgK/bnivR3AhuUDpbYP/1T4h0AQkzOR3Ne7M3vAxSs+q10kESc3c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=twRq39oL; arc=fail smtp.client-ip=40.107.212.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sfv7KOTQVQu5ozwi+Y8rHXbFDrRI2huujN6erunpMzUIOCyX8Xy3i/At2KNtoERysJdy13CfMlGO/RGe5yCV1CCRKJxLFjhJkJ20ZPFCGcPGniMqgv7+kf6Q4qmJQnW7hNTqB7bKBgjRSpZUVCKvMzLkEWa1uaJNKFwWTXw03jgb21sbfx3ZoMaqZZJwDFRnjt7/GZMPCcxAzsH7gfPzPxXdIxqFfCvPADkP9VJbUD2vI27LEfsAJpts07xXigowEFH/w3+Il/VTLqMro6UXXI/WMd809Gee24sWEWKw5EaTU3E8JIHZ6IE2sHG7VxyT8HXZPSker52uvOGxILQC3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=No7NU21ife6RzGvHBvQIbHlZ1whS1mUgP/ZoECpCgPo=;
- b=i5qE0PIl79fP8x4sNn2gv4ZfiRx2Dp8tjK+JMj1+KHaHd1ISj5FvesQnV8wnUP6BrXMldQrwirRPlb/ZmtGXQSKUJBGGWR/8fzLMIbx0TlzyZ91r1qr0HNn+Sic+g7gR/0dOX91y6Svozn/7cvpg1FVqmTE00NTBWCnOeSeOcocg6Wf4dtK/jL/HLhXxlieYDGO6Nl8nO3TI6nvTu76hROBT0CTHjmwX65U3EQ3KwXpydTRaAM5dFbbjDW9Msg6Ni01OAnmulbOldQXyEmUjP2I6reQyIh458n+N74HkkXiCl4Vk5EC5qLJdPwDhtoxHx23QwC4v/3ItAKNPtWinmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=No7NU21ife6RzGvHBvQIbHlZ1whS1mUgP/ZoECpCgPo=;
- b=twRq39oLD9T+KXqC2KD9tc+L9d5xeUiiDowEhvI7QYaKurL3Sjrc9hxSxvCVWHLeHiDCpcAhaqBwVrRQZayJwOztOKSNv4y0trSn4rxB8RD1BkmIciZdgusOjbs5560TaRqeH5/UDMaNC00FbVtnuDCGKXhTFdomKYe3ZoK6qAc=
-Received: from MW4PR04CA0347.namprd04.prod.outlook.com (2603:10b6:303:8a::22)
- by DS7PR12MB8250.namprd12.prod.outlook.com (2603:10b6:8:db::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
- 2024 09:06:27 +0000
-Received: from CO1PEPF000044F8.namprd21.prod.outlook.com
- (2603:10b6:303:8a:cafe::9e) by MW4PR04CA0347.outlook.office365.com
- (2603:10b6:303:8a::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24 via Frontend
- Transport; Fri, 19 Jan 2024 09:06:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044F8.mail.protection.outlook.com (10.167.241.198) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7228.0 via Frontend Transport; Fri, 19 Jan 2024 09:06:27 +0000
-Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 19 Jan
- 2024 03:06:05 -0600
-From: Meng Li <li.meng@amd.com>
-To: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Borislav Petkov
-	<bpetkov@amd.com>, Huang Rui <ray.huang@amd.com>
-CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<x86@kernel.org>, <linux-acpi@vger.kernel.org>, Shuah Khan
-	<skhan@linuxfoundation.org>, <linux-kselftest@vger.kernel.org>, "Nathan
- Fontenot" <nathan.fontenot@amd.com>, Deepak Sharma <deepak.sharma@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>, Mario Limonciello
-	<mario.limonciello@amd.com>, Shimmer Huang <shimmer.huang@amd.com>, "Perry
- Yuan" <Perry.Yuan@amd.com>, Xiaojian Du <Xiaojian.Du@amd.com>, Viresh Kumar
-	<viresh.kumar@linaro.org>, Borislav Petkov <bp@alien8.de>, "Oleksandr
- Natalenko" <oleksandr@natalenko.name>, Meng Li <li.meng@amd.com>, Wyes Karny
-	<wyes.karny@amd.com>, Perry Yuan <perry.yuan@amd.com>
-Subject: [PATCH V14 7/7] Documentation: introduce amd-pstate preferrd core mode kernel command line options
-Date: Fri, 19 Jan 2024 17:05:02 +0800
-Message-ID: <20240119090502.3869695-8-li.meng@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240119090502.3869695-1-li.meng@amd.com>
-References: <20240119090502.3869695-1-li.meng@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BF5A53;
+	Fri, 19 Jan 2024 09:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705655521; cv=none; b=NrdT4tlLaV3TCtr0cZS1GQn+Z3TlajFxDHMktcSGAwJHoKeXhL5z+ldO2+9I082/RIBLwi00F1+He9G/3kZNN9rCW5QJ4nVvVzpx5/Oah4OQAIOzC4EZOs59szYUS4DboYltwhwg1rynS9wwU2VdWtn7r/7cV4xi01bP3ZsO3S4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705655521; c=relaxed/simple;
+	bh=tXJxt9w/oJ0XNk3Nt2w4s8/VSDNpnSFcsu7XbSCZO8E=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=Y4QnYYf8Wa0yq4S5Fr62kqOmN+5T3AVKVbn8e75v8MV8WO4Q/UvKBmw/Z25J10xPmkp1Yv5lmWpXsPyh9Dy8oi9q09Pf2J54hPacUKmJDPnMmkj5CIKC2s+H7ZSjF7S1toUGGX5SY0kigFQoRLKmGUgB2/TMZZQgMVgcbUsKkvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=EXuqvTcb; arc=none smtp.client-ip=217.72.192.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1705655516; x=1706260316; i=markus.elfring@web.de;
+	bh=tXJxt9w/oJ0XNk3Nt2w4s8/VSDNpnSFcsu7XbSCZO8E=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=EXuqvTcbYD2Zi90s6T4Q1ox9PYgwfrpbV02TzQ5U+J24VRCAeO+kPE28tr2BImMS
+	 o/Gei0iJpLIid7iVOx64jjqKXoTFIslOXrLshxm35HyztQiAEAFco7qi83dCH83LW
+	 uItQtW9H+Vd5JgDVXq/KUyq/gnxCRw7rktoDZUHEU3ZQpY77/aIfRpL1KlnONHyc8
+	 x177psnPPbiFyttdzXKfYBjlJ2RhXC1o6o0bqVOxfga/8F81tUsWmPpfJ9F8h7DI2
+	 eo0CJ1BnnUticEI2AUMYRXw5rBWCxyWr6a+jCc3N2OxqwKv5oZYCrJ7qtjSpeHpKI
+	 kHNzlvMtWeLuUf4gkA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M2xrq-1rPeMg2Pe8-003JVi; Fri, 19
+ Jan 2024 10:06:18 +0100
+Message-ID: <a5f974aa-826d-421b-bfe2-bb6c9b43ea9a@web.de>
+Date: Fri, 19 Jan 2024 10:06:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F8:EE_|DS7PR12MB8250:EE_
-X-MS-Office365-Filtering-Correlation-Id: dec0e504-d57d-44fe-70cc-08dc18cdeb1b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	0bZ+9mItUCQsNnwz4qvbMAxIfbok0qoYXtBj7Y0za9vLm/GBNuehQDT7vo81xDRw442MhHPk8E2wHcphTRG6Cwm++vgFKPBHQi6ikhBF9DW18n5/A7ajvnIy4wqY89fNzOisqXuYbnJ2DfrqSziJZJqPlk12aJAIH2wGl5+WbqOQ7Odgzn1fOZq1N+VqKdKsMfqUvaEvqTyP3GZ+1drEaDdrX63ghmr9Uo6diNLorxI3/6WUK+1Cg1LuKRoNHkE8upZpLcSYSASQVg1TDf61IqUzmNnuB/q/eBwI1UkDFPxHTGSfSI/IFexyc7TdcxCf0s8dAgBpZYgU9jLtDIc8J4Cq6ANfw/c6GltVzGXuY6JXOmWz1UuOQeHLtAiapXXiLnrOtOsrjpxAM0Z4ugYg6lQS0Ce1RH7CLKVAFwspSri9GY9HRZ1v0BF8kA9Z4oZBZyYRaik+ZFgdHQ8XnaeHIKu3QTSOj877t7XMI61xOekS5e/meqmiVOEi+j3Wjn6W+MiUs93gBfRlQCb8v2gbxOZ4nUoVOeBN5kxkPvhzzLQ5WQMtenXOppiHoL3AHCUj83ouTMw4n8CAX/2ZljRT2s6EEdeprIhdj5IFb6Oaj5f0cSSDlcC/EUku2jICYFBGARPuN52PUYoFCzkQqBWHWCXX2f/ij8oZkbR2/8V5ASIuZZfJA0EiwLDAM5K9jGneVwjCQBxuvVkkgbCz5sKQn/NBrOAH78mJOWVZwrn1+jdHbr6TphcVqzXqN5NKpCv1rz8XJT79LntqvIVlmc1MUh0Zwf7dm3DbKTAZiw0M0HznKk5lpCXctAjv9T4J+J0x
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(376002)(346002)(396003)(230922051799003)(186009)(451199024)(64100799003)(82310400011)(1800799012)(46966006)(40470700004)(36840700001)(26005)(16526019)(478600001)(81166007)(1076003)(426003)(336012)(40480700001)(40460700003)(356005)(7696005)(2616005)(6666004)(316002)(70586007)(70206006)(54906003)(83380400001)(110136005)(6636002)(86362001)(5660300002)(41300700001)(4326008)(7416002)(8936002)(8676002)(82740400003)(47076005)(2906002)(36860700001)(36756003)(36900700001)(14943795004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 09:06:27.0167
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dec0e504-d57d-44fe-70cc-08dc18cdeb1b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044F8.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8250
+User-Agent: Mozilla Thunderbird
+To: Kunwu Chan <chentao@kylinos.cn>, linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ Jerome Brunet <jbrunet@baylibre.com>, Kevin Hilman <khilman@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240119074635.265218-1-chentao@kylinos.cn>
+Subject: Re: [PATCH] meson-mx-socinfo: Fix possible null-pointer dereference
+ issues in meson_mx_socinfo_init
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240119074635.265218-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hyKdlCkKgO+YTVOmB/GLcZr1wgCtUsa5eeb6696qbaPYs4p0tvm
+ Wra2BA76jeC0HAYFadK3zTM811Z1GpZWxG4iCWQ5Bk+trVGnKthKiHdAFS2TbN04JmxxTCx
+ WONU3Oho+j5ZwCDdVyNhs2AqyTtnjqq4XRtR/jwqQJatLceP9A53aOnjo5HdqunAr+ij8gY
+ 32k/iA4rAfXkBY8Sfs/ZA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:UigNfyhaB4k=;UdHpO01shOQaaFwGIPHVxcK+HUZ
+ VbqH4e0fYiE5esvL3Xw20BGCS6Cwt3LUi/oLUtC+x9bio1PMIX8BV2MAmQp3BTgYMMF20OV2s
+ jqsL5x7oZ0o+ELhtDwM6es78LAWh771mbjZoRvBnaJC+CID8i5WAnCL/4zDH7p0AYLpeLy5Gv
+ FB/3CTSv6IRRYiRbs2ORvYZwPgJuFdlyZX8VIcQKygJFT1AadFSzitsqNz5DnRkihyypVIdUs
+ rDDY7k8bz1SJu7/2WKLHcuqF30COXLYj4n8Sb1B5Bh6i3X5VWChXMB9riXQn0qix6+P5f6WYb
+ Xz/sBicYnxTLFEdn+zL9OVn7nmhKEm8ea2b5Z/fFFHBMY/uTdKL4ZA62LgKhxOEemfQk28Nzq
+ 2Uhvl5cgCcMptCu7Je+FnAO9YhIU3iENkaphqjl0OF9zi5WnGnMt7/B/Dob4zlkidM3VX9VN8
+ oNNOsCvDX/0q1srFjbJw9np1RCttc88P3DJl8sjhLYHl86id10e8U6JC68qkQ59aDvXguINBP
+ EbauE4ekg6nsw57Vt4x22stfFyabslQHHx8ORWKZJgk30PB5iU0dJK56ssbDHop23VJY+WAbt
+ iQvciVgpuNf0j+CVPcUPS60b2221yJJe2ltNkZS4kOLCtRfP2dFbsDG3Huoxo1vRnONbzLglq
+ rso0SDsasPYbKcg1L8UUetmBcoVOT80Z7JWZGPlPXssPTjcqXvCNU5iv5PySJQwYz8hn1aySw
+ xxrumNfL/u3EWOwNKRPpfr1aUqNwfpTZ2wJMuUbXHu3DR3DIwtrjXoeqx+1DaNcPD2q0t7a3S
+ eppSn08LWTLSaqwodjD3PmTVi8pTRRlbdcEzoFsw6AOVha/U2VNPD7GKCBVftw79J1nwyKkwo
+ UuoIn72v07Lx5z6Q+N3yo71kFM48JGGsEqVwUYE3vhSnFS27hm3KCGmJFjtpJ9wrtKOHvEcDU
+ abogjg==
 
-amd-pstate driver support enable/disable preferred core.
-Default enabled on platforms supporting amd-pstate preferred core.
-Disable amd-pstate preferred core with
-"amd_prefcore=disable" added to the kernel command line.
+> In meson_mx_socinfo_revision, kasprintf() returns a pointer
+> to dynamically allocated memory which can be NULL upon failure.
+>
+> Similarly, the kstrdup_const in the meson_mx_socinfo_soc_id
+> returns a null pointer when it fails. Ensure the allocation was successf=
+ul
+> by checking the pointer validity. Avoid null pointer dereference issues.
 
-Signed-off-by: Meng Li <li.meng@amd.com>
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Reviewed-by: Wyes Karny <wyes.karny@amd.com>
-Reviewed-by: Huang Rui <ray.huang@amd.com>
-Reviewed-by: Perry Yuan <perry.yuan@amd.com>
-Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
----
- Documentation/admin-guide/kernel-parameters.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D for the completion o=
+f the error handling
+in this function implementation?
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index e0891ac76ab3..88b29efc474f 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -363,6 +363,11 @@
- 			  selects a performance level in this range and appropriate
- 			  to the current workload.
- 
-+	amd_prefcore=
-+			[X86]
-+			disable
-+			  Disable amd-pstate preferred core.
-+
- 	amijoy.map=	[HW,JOY] Amiga joystick support
- 			Map of devices attached to JOY0DAT and JOY1DAT
- 			Format: <a>,<b>
--- 
-2.34.1
 
+=E2=80=A6
+> +++ b/drivers/soc/amlogic/meson-mx-socinfo.c
+> @@ -160,6 +160,12 @@ static int __init meson_mx_socinfo_init(void)
+>  							   metal_rev);
+>  	soc_dev_attr->soc_id =3D meson_mx_socinfo_soc_id(major_ver, metal_rev)=
+;
+>
+> +	if (!soc_dev_attr->revision || !soc_dev_attr->soc_id) {
+
+I suggest to split such a check for null pointers.
+
+
+> +		kfree_const(soc_dev_attr->revision);
+> +		kfree_const(soc_dev_attr->soc_id);
+> +		kfree(soc_dev_attr);
+> +		return -ENOMEM;
+> +	}
+>  	soc_dev =3D soc_device_register(soc_dev_attr);
+>  	if (IS_ERR(soc_dev)) {
+>  		kfree_const(soc_dev_attr->revision);
+
+Please use a goto chain for better exception handling.
+https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C.+Consider+using+a+go=
+to+chain+when+leaving+a+function+on+error+when+using+and+releasing+resourc=
+es
+
+Regards,
+Markus
 
