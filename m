@@ -1,144 +1,137 @@
-Return-Path: <linux-kernel+bounces-31202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6AA0832A82
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:28:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06205832A84
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:29:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2454C1C2368A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:28:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BCC21F23F4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:29:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F314D5465D;
-	Fri, 19 Jan 2024 13:27:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF53854737;
+	Fri, 19 Jan 2024 13:27:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fB4wcuiH"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="b9x1nmu/"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F1354656
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:27:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1D353E18;
+	Fri, 19 Jan 2024 13:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705670830; cv=none; b=MOxKc4mZDxSOOG3nVNzlxmzTlVNxQKx1GSwe0Qw+rqIuvnhQ6z3vy/IxpnATMl3RsAnNpikg+P2ZoaDzNiGDld91tBr+uSlYDEK8K39XgFwg5QSofFUcSVAIrPwtDCdFTp8Y3kAiwZK20eRTyT6X05PdJqCMtruGMPdrHn1kIgs=
+	t=1705670832; cv=none; b=GjsK+JkhxYsxaOnZNzkRvE6oA5obahbrvh4ToPgpzsei8HMmROxn33y76qYc/nS+m4LRYAn+9uwGHpVXEh+VmKK9+6WpGPeeCojTQP+X/a80qkROatFVAf0rSP6tXDq/ywshqQTVPNU7UkPUsW88aQnSYS5EgBySanVBvvhIGOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705670830; c=relaxed/simple;
-	bh=tkNP5hdtLMLmdRU6kGCnnq1HZvK5vqTcSU7Mp+tbZQE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A8crBc7+U+R4kDdTStecWqmieWhGk+UWqkbHo++QHsmXRBO5I+LRh6zKAsAhrxIydO3mTyFj3jCFXw35IDImk/2ElsUFsybrSkMFRj+QOlAY3J4V5ITEOFiwbqq5dbiyUtz6T/Zw6H86HL+amdRdA7CggHM7qE53FnLkiTrymb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fB4wcuiH; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc202317415so639961276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:27:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705670827; x=1706275627; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=42jWvBuWK7I9LjSS4bPIwTmo8OJpE10eZpVzP5bii30=;
-        b=fB4wcuiH7Epb9QP7/JxhvLWtjh4BnKG0d9lSuS2SuzmdrHq8EdhUtOiACwFldx/wkL
-         sgdYMnSCDb6nK5din5kMrMloFFhf3M2P0kao1LPszPtGnb7JQYITE6s1ClX0yeCxkoO8
-         rX0sXoyL8Ob55mahZIfsEghci39GEXOu7dHAnzqkTDxlbJASGcxXZoocWZJfQIhbOKcS
-         teOciIwYXLwJYDpKAeJms/Wq0viDV+zASrJQpyTJ9oE5FUaxB29chXiuwFiID2NHjENK
-         GOlN8QSGtASuQ/igNrTURDBEG1ReCaGWqDi5i1AQEmPh+3G/3G8ZWfIGRG2om1Jg3pYA
-         2pNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705670827; x=1706275627;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=42jWvBuWK7I9LjSS4bPIwTmo8OJpE10eZpVzP5bii30=;
-        b=wiqqXd+9jsCLlSd6dpkCV4U9Fc8Upo0yTMIrsf1MyVfm75Cmuw2tc+jDDths7PiZPn
-         hrYWUYidoR/cIKTg7TW7tfRwFOOakkPmwxifuCliRmx9S5wf2tw0TdgSWbDi2kPt2rlS
-         KBro21CQaSW+mRNgEZztZZSMTTooO+w0HpIYRQ2dFnzqwuxODe7yIIklXy1Y2P0Yc3Tl
-         FWZz7bfVGel7mGbZeXzv9mZt9iBPXQJ5jF8yaOCJZOcGwu11uzbNo96YSyNBSwMTJ3WI
-         1VYiUFMXSGOfyaEQ6eJeFSyuMOuu8HYGagcZ+Njel2Ony32+PO55xIHkaJ6Xd8BAlxGp
-         y26A==
-X-Gm-Message-State: AOJu0Yzjkf1IIcfs16fQaSuG42RD6M3cnWPyVsfp3omGrOejLKEE+Frm
-	vgbES9zFlew0Vh/eEmbk9M7kQ50CtdP2RtVqfaStA8d9dxf/sTflct83lnQMg/GzXWSrfx8CibO
-	HCGGYUvU9i6hhKr7NCov+9cQ4v1iodGSPqdi4zA==
-X-Google-Smtp-Source: AGHT+IHcNZ3z0a6KFk4Azj3BQtD3k/0SlfNc1gxTnmWDbYZDfxsy/+8Zo5qiZ4T2sE8zVUc9JU70wOEc2pwAJXP0ECs=
-X-Received: by 2002:a25:c583:0:b0:dc2:46d7:d8d5 with SMTP id
- v125-20020a25c583000000b00dc246d7d8d5mr1960765ybe.65.1705670827062; Fri, 19
- Jan 2024 05:27:07 -0800 (PST)
+	s=arc-20240116; t=1705670832; c=relaxed/simple;
+	bh=C9ZWVjgbefXWApSOG+jjr14zfL+3/NQPQVKowbPJEwk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uIk9q9LlDSGEISDMyJFhiXDJJLXXmWrDRTt7QvUVYgVM201ReWXeME4dmqpMxbrLCklHrcRe50/Zl0oO/HlJpP7OHTned+heTpePpiHEaS85Lvd58R4pTb5TnXmUpIuv8oIdXeULNLycXLAU8lW4vkeE8LvBfnpVBV/jHdUv7xw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=b9x1nmu/; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=oAX/SO+ppExiD053wec+IhSfmBvN9fcB5BYMFRjEhXg=; b=b9x1nmu/gvlmcdwUw+GMi3PwqM
+	2whYk+wzShzv/BCcxll9cEDkBSbu5kfw1r4OovmJTsAxlJio1dU8sB2OovPUYPHm/IqZm3X/kbBq/
+	ui8HCERJWRoD+vRoEtyfT00uVupxyxFJPww2dpeZ73kifGXfrWOKM1K99olA2og6x5SM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rQoth-005Yn4-1a; Fri, 19 Jan 2024 14:27:01 +0100
+Date: Fri, 19 Jan 2024 14:27:01 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Andre Werner <andre.werner@systec-electronic.com>
+Cc: hkallweit1@gmail.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, linux@armlinux.org.uk,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next v3 1/2] net: phy: phy_device Prevent nullptr
+ exceptions on ISR
+Message-ID: <fa47c497-a831-4e11-bbb9-c3901b174d0d@lunn.ch>
+References: <20240119093503.6370-1-andre.werner@systec-electronic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com> <1705669223-5655-3-git-send-email-quic_msarkar@quicinc.com>
-In-Reply-To: <1705669223-5655-3-git-send-email-quic_msarkar@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 19 Jan 2024 15:26:56 +0200
-Message-ID: <CAA8EJprWHiShFpZdb+pWsCoxNvNEoP+3By2x4u8rq+ek37hJXw@mail.gmail.com>
-Subject: Re: [PATCH v1 2/6] dmaengine: dw-edma: Introduce helpers for getting
- the eDMA/HDMA max channel count
-To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc: vkoul@kernel.org, jingoohan1@gmail.com, conor+dt@kernel.org, 
-	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org, 
-	robh+dt@kernel.org, quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com, 
-	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com, quic_krichai@quicinc.com, 
-	quic_vbadigan@quicinc.com, quic_parass@quicinc.com, quic_schintav@quicinc.com, 
-	quic_shijjose@quicinc.com, Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
-	Serge Semin <fancer.lancer@gmail.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119093503.6370-1-andre.werner@systec-electronic.com>
 
-On Fri, 19 Jan 2024 at 15:00, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
->
-> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->
-> Add common helpers for getting the eDMA/HDMA max channel count.
->
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+On Fri, Jan 19, 2024 at 10:32:25AM +0100, Andre Werner wrote:
+> If phydev->irq is set unconditionally by MAC drivers, check
+> for valid interrupt handler or fall back to polling mode to prevent
+> nullptr exceptions.
+
+Hi Andre
+
+A few more process things...
+
+Please don't post a new version within 24 hours. Reviews need time to
+review, and you could miss comments made on older versions of the
+patches.
+
+For a multi part patch set, its normal to include a clover
+letter. When using git format-patch add --cover-letter and than edit
+patch 0000-*.patch to describe the big picture of what the patchset
+does. The text will be used for the merge commit message.
+ 
+> Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
 > ---
->  drivers/dma/dw-edma/dw-edma-core.c           | 18 ++++++++++++++++++
->  drivers/pci/controller/dwc/pcie-designware.c |  6 +++---
->  include/linux/dma/edma.h                     | 14 ++++++++++++++
->  3 files changed, 35 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/dma/dw-edma/dw-edma-core.c b/drivers/dma/dw-edma/dw-edma-core.c
-> index 7fe1c19..2bd6e43 100644
-> --- a/drivers/dma/dw-edma/dw-edma-core.c
-> +++ b/drivers/dma/dw-edma/dw-edma-core.c
-> @@ -902,6 +902,24 @@ static int dw_edma_irq_request(struct dw_edma *dw,
->         return err;
+> v3:
+> - No changes to v2. Just to complete the series.
+> ---
+>  drivers/net/phy/phy_device.c | 22 +++++++++++++++++-----
+>  1 file changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index 3611ea64875e..3986e103d25e 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -1413,6 +1413,11 @@ int phy_sfp_probe(struct phy_device *phydev,
 >  }
->
-> +static u32 dw_edma_get_max_ch(enum dw_edma_map_format mf, enum dw_edma_dir dir)
+>  EXPORT_SYMBOL(phy_sfp_probe);
+>  
+> +static bool phy_drv_supports_irq(struct phy_driver *phydrv)
 > +{
-> +       if (mf == EDMA_MF_HDMA_NATIVE)
-> +               return HDMA_MAX_NR_CH;
-
-This will break unless patch 5 is applied. Please move the
-corresponding definition to this path.
-
-> +
-> +       return dir == EDMA_DIR_WRITE ? EDMA_MAX_WR_CH : EDMA_MAX_RD_CH;
+> +	return phydrv->config_intr && phydrv->handle_interrupt;
 > +}
 > +
-> +u32 dw_edma_get_max_rd_ch(enum dw_edma_map_format mf)
-> +{
-> +       return dw_edma_get_max_ch(mf, EDMA_DIR_READ);
-> +}
-> +
-> +u32 dw_edma_get_max_wr_ch(enum dw_edma_map_format mf)
-> +{
-> +       return dw_edma_get_max_ch(mf, EDMA_DIR_WRITE);
-> +}
-> +
->  int dw_edma_probe(struct dw_edma_chip *chip)
->  {
->         struct device *dev;
+>  /**
+>   * phy_attach_direct - attach a network device to a given PHY device pointer
+>   * @dev: network device to attach
+> @@ -1527,6 +1532,18 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
+>  	if (phydev->dev_flags & PHY_F_NO_IRQ)
+>  		phydev->irq = PHY_POLL;
+>  
+> +	/*
+> +	 * Some drivers may add IRQ numbers unconditionally to a phy device that does
+> +	 * not implement an interrupt handler after phy_probe is already done.
+> +	 * Reset to PHY_POLL to prevent nullptr exceptions in that case.
+> +	 */
+> +	if (!phy_drv_supports_irq(phydev->drv) && phy_interrupt_is_valid(phydev)) {
+> +		phydev_warn(phydev,
+> +			    "No handler for IRQ=%d available. Falling back to polling mode\n",
+> +			    phydev->irq);
+> +		phydev->irq = PHY_POLL;
+> +	}
 
+Please drop the phydev_warn(). Interrupt handling has always been
+optional, and we have always silently dropped back to polling if
+interrupts are not supported.
 
--- 
-With best wishes
-Dmitry
+The comment wording is also not great. The MAC driver is not supposed
+to have any idea what the PHY driver is. It just uses the phylib API,
+which is PHY driver independent. So the MAC driver cannot tell if the
+PHY driver supports interrupts or not.
+
+I don't think a comment is needed. The code is pretty readable as is.
+
+    Andrew
+
+---
+pw-bot: cr
 
