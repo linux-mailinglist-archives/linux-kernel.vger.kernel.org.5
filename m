@@ -1,193 +1,156 @@
-Return-Path: <linux-kernel+bounces-30838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5233F8324F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:14:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F12B8324F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:14:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCDA5B2159B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:14:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEDBB285376
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AEDFC2D6;
-	Fri, 19 Jan 2024 07:14:21 +0000 (UTC)
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD2DCA4A;
+	Fri, 19 Jan 2024 07:14:39 +0000 (UTC)
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2049.outbound.protection.outlook.com [40.92.90.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95296FAF;
-	Fri, 19 Jan 2024 07:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705648460; cv=none; b=t1Zd0oW4Yt6xcVmeMTFe/kXv2rM0UWYZRlMqMMVv1W+Y/SimBfmvAdLvNx34ErIEzo2jf+VYZGPLvc9PaHDV7RH9alshZHdh32ntAQeDyI428N31fEbeX5YQxW70EUjAKXp9Q8JOyRMifR6AJfCbPMIitKB2lyivzqm+ozmKsZw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705648460; c=relaxed/simple;
-	bh=/gxn/jFgHsQXiBInw7pnc+b9451HlXJVs4xIbsm4tJQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YmdQmPEK51p3rfLmdRAAaoSUDdttVo42WTtcmQJ6Un/zqfAOOM+6ucgFb0BNKazTIKqhTvps6Wqd+kBI3y2g15EBdbqXthCuchHxpFsvLE2ONmz1ZQliTPB9573FkPe3jpkOeep9IjgoIgbX1owWq8eTeD82l7WQMmR/rvM6gTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e9ed20ffcso1646495e9.2;
-        Thu, 18 Jan 2024 23:14:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705648457; x=1706253257;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e+LizfPHsG6bAopC0j/zp9dPrP6kGMGuwGSFDeP/7og=;
-        b=RV/y/c47mpvnbgewabw1nZHdIIVJc1beF9i06zmdHlVQZXCIOV6i01wwX/610K93Wm
-         ULU7RynznsH1ksWvHrKjJEoWm7FJsBRd/a7AZXVVdyLupXOdJzgDMcEnkAT+lXJrmkUW
-         /xhBSu/53vkPdWRBxGheZBrWnEHDseY1jteQNGlHxZNom+SyI2ANoPsYFGNFhOv4y6B9
-         YSHKRhss8jHCNZ9XH8BSGJguRVMf9wsJEFFu85Lq19iPwOj950iNuAIJ5TS/wgif+WDH
-         DtG9inBj0DXm+FfXeijh4sIt8AK6zL5scdgCryiiKb5DQXtkJ2PmjjB085P4ss3b0DNM
-         23LQ==
-X-Gm-Message-State: AOJu0YyVQlWn2unFYBsjVZv9gGtY0ZshqPjgMSdb5P3Bg1gnvV+W6XaY
-	yvVxl9PtDrvxNwpfQty5RmJ+5Xhv7Gj4Al3GGIp+N8yPjqsii4mY
-X-Google-Smtp-Source: AGHT+IES8Kj3wvqTHYHlen8zHCbUM9Zer9QbNEQo0wjeHqrdaNh08XXHRq1MtMu1cULMya4AMiSDJA==
-X-Received: by 2002:a05:600c:5d5:b0:40e:6b7f:5ca9 with SMTP id p21-20020a05600c05d500b0040e6b7f5ca9mr1439501wmd.80.1705648456979;
-        Thu, 18 Jan 2024 23:14:16 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id n18-20020a05600c3b9200b0040e4ca7fcb4sm28048633wms.37.2024.01.18.23.14.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 23:14:15 -0800 (PST)
-Message-ID: <650bdb23-0875-4e19-9e3e-82337da6da00@kernel.org>
-Date: Fri, 19 Jan 2024 08:14:14 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F2B22088;
+	Fri, 19 Jan 2024 07:14:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.90.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705648478; cv=fail; b=ExPrvAL1Dw2Id9c5dWJg8k6FBznSP5dAEpXISIS3gZ4+OX4Fz0WmlO3i6914FByQSvI6UjE5jSCtbhruaaTM7nSSxXO//btm1EmJmTznHYxQiGc+AKfMsNGJA6iaQlpjlo1yNoev4HcD2Kp8cCLptjsFrXT5EAjogpzmjQGRZUI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705648478; c=relaxed/simple;
+	bh=vPK76vJ/dzlCghYHHSdykpQw5zxFYEA4Bw6W9R8c0tw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=HWrP9VcTQ/+VkjTdO8LjUJlq0wlLlv1IduueA3K/2AU1YQfhzLT/plCxXeArZ9PVO2kaVKUsZ66fjDq5ZIgFH9hDLLw1VRnnHRevtSwTgZnrgBS/vsKbQ4qTt+O9ccXdyVVjj7ZgGYYs/Vi8TTIjCSVg/vDGH8E40lqxyd4tWTo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de; spf=pass smtp.mailfrom=hotmail.de; arc=fail smtp.client-ip=40.92.90.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.de
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LbfBBaSrCjG+Lw9ApzeLRQ/KfwutIJS8VDdK427VDvMAbEdrcMLFUhQEi731s+fyN/YoXAxKC4UkzOQjn7Pvld8BSigbaoj3EhtUsPQPikSSRQtTS424olF8klvIOcaNKUP8Q+PZskPmDVC9+e16Ha1QugEHJFj5WQMvrZzlO0n9b7GelenHOsNWN4CXE+3/G5R5xF3AMT1fi+hbahrMfwlpQmFArklaNGRpVszaFSBC0qFPxMULdCfNOva9qMWASVcBEPBf2siRYztxcNqtnmdWpoX6oDyNNlwNCCzpUwxLf7rjCyoaDfWbNvZms83saGf5z4o5pFXepQX9bn1vqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aeYZVB9wt9c/z5enDpNqA9W1lAPT0qOmgjtWfhGmERg=;
+ b=hWP4hxgmVrXkKS2icYwLLuExyUxFgv/rK2ufRvIiwJ6FKKgef0gYomhCljeaC+GIcJ6Q80ktwjx/Pryi3WhJ9144qXB4j3ncDL6HunbOBm2gI3q3dwAMN/eaNA/sCBuK1RYDHaxi3J9A3tZeNwCtlmCtvDuGaZ3E5meICcUAPA4eLVuoLL6Ld0ZgyV6NgevIUAcSqO/iz+/E4CjWo5A5bIq9rEAfgw6HOaPUn6m68tj4lHfKB2G9QQ8aEl2hFwxLopPyLHVrKeWQLLCBwXsRNhgHXIIoFBdoNYci5ATXabsaIghB1dtuzvuShGBVPvvZDf28J0bqNW/1CApp36boxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:333::21)
+ by PAXP193MB1438.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:139::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
+ 2024 07:14:33 +0000
+Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+ ([fe80::897e:cfd5:b29b:c611]) by AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+ ([fe80::897e:cfd5:b29b:c611%6]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
+ 07:14:33 +0000
+Message-ID:
+ <AS8P193MB1285B34B71F3143FA9B0A053E4702@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+Date: Fri, 19 Jan 2024 08:15:31 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] net: stmmac: Wait a bit for the reset to take effect
+To: Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-stm32@st-md-mailman.stormreply.com"
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jiri Pirko <jiri@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>
+References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <AS8P193MB1285EEAFE30C0DE7B201D33CE46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <6e33c038-45a7-4941-b5d9-ce5704e13d48@lunn.ch>
+ <AS8P193MB128591BBF397DC664D7D860EE4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <DM4PR12MB50883D41B18E8627FBDF5E32D3722@DM4PR12MB5088.namprd12.prod.outlook.com>
+Content-Language: en-US
+From: Bernd Edlinger <bernd.edlinger@hotmail.de>
+In-Reply-To: <DM4PR12MB50883D41B18E8627FBDF5E32D3722@DM4PR12MB5088.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TMN: [cY+JBWZZZtoOHiW2BVQYL8qRM6pVmABFE/DvxCRRL2pRMENToR421OAzjcTsAgOi]
+X-ClientProxiedBy: FR3P281CA0063.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4b::13) To AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:20b:333::21)
+X-Microsoft-Original-Message-ID:
+ <fe1f1201-31ec-49bd-99c8-e49fb42ff6ee@hotmail.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH next v4 0/5] minmax: Relax type checks in min() and max().
-Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Laight <David.Laight@aculab.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Christoph Hellwig <hch@infradead.org>, "Jason A. Donenfeld"
- <Jason@zx2c4.com>, linux-media <linux-media@vger.kernel.org>,
- Hans Verkuil <hverkuil@xs4all.nl>
-References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
- <18c6df0d-45ed-450c-9eda-95160a2bbb8e@gmail.com>
- <CAHk-=wjvM5KiQFpbPMPXH-DcvheNcPGj+ThNEJVm+QL6n05A8A@mail.gmail.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <CAHk-=wjvM5KiQFpbPMPXH-DcvheNcPGj+ThNEJVm+QL6n05A8A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8P193MB1285:EE_|PAXP193MB1438:EE_
+X-MS-Office365-Filtering-Correlation-Id: de6019a3-c598-4282-c1ab-08dc18be496f
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	pzaqQdZil9BdMK/aDQI1zzeb2wLDSo4/KKsIg7pOX46pqonlQc4sr1cvHbJ9PE1omsuqEaWS611KE1GXYH8Fe7/0aGwm0qhh9KZLaYv4NihMgXeP/YxBpX9KWAQSTxU2/MRzn75e57dPeW1/rtqSFk8reaE5DBYtlOQ23SQ91U7mtBEOOv6IqDnAd0itAVIjYtYMsH7S7V08Srpgp6k/sLf3oLPOSH9wC0T9jAHdOpxja4RNHG3RBfSWHzEeEss+NNxu4zwG6wZJmNscbw6sCz8pH6qmcWLXyB8dF1aFXiQqDXo7bkPZIGV/n7a6TWrVszb73p5ueQ89gjqxV/bE7PRZQUGn4VXC45WichlvHRabqOAMRulvgUq8/rsO7wedjnbTdSqJq1svHrCjkhvvhb0y41qq732nb3iEO59sENRYF7cqdkJXv8Sa/8VZjugPRUxudBb9OBaY1651Uyau5qKiXVBOUlPPZR7+HVBN1nvsQcR96uy5ibXcdnMw19lVtGxjIXqIb41wHOSaH+obMVGXXCYAhkYGGjL3vQEbt3EJq2xBieH063Msjsj4tATo
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?V0JxWVRKalBHVVNIcnFaSSt5eU4vYkczSVNKSzRibHliUWttUTVLMDBUeUt1?=
+ =?utf-8?B?RFJ1SlN0a2NleVJ1RlBDQnhFNjgzUUpRdDhvM1llZUtmeXlMdkZlSkV0UUxl?=
+ =?utf-8?B?K0pEQlZDVFZjUWxDTUVWcjgyd1hVKzJWNUhhMzAzak9vZnJkTVFSZEJjMGpU?=
+ =?utf-8?B?N3BkRUYzVFpKaHRXTWl0QW9KbG5vNndBWHdCM1lRSHR1T0ZSNERQSUhVRmth?=
+ =?utf-8?B?L1Fmc25oNklsMlN5MlkwaTVFeFc5Wm8wWEd0SGwyRDUrQS94blZ2R253QzVh?=
+ =?utf-8?B?NmxuWStHVENzV2dHc3NlTXBLUTVwRlNzM25MbDU3eGFRTFRHVUpJSXpsWHdN?=
+ =?utf-8?B?SWFBRnpkM2lzN2NTckpVYW5WZURNZndvN2g0ZUFSMVQ0MXRYSnlNYXZBaUEz?=
+ =?utf-8?B?VkNQUEk2NDBWL0ZzWlNkcmpJaFFtN1dIRVN4bW14T1J2Y2NKQ0p1elpmNDVz?=
+ =?utf-8?B?NTJuWlhRVm9HVTBuMHVqMVFXSi9lajVkc05mekpldXh3aVdHcndsbHJNejlh?=
+ =?utf-8?B?Z1ZWUVRzZ1ZENXNHRDliQWNaYktLOS9SdTBxMEh5b1pzUTdPR3JUdE12aUFM?=
+ =?utf-8?B?UitIWEtYQllUdXAvdFU5YUIwNGZOWGo2czNOL1pldkZCWWg3Ujk4QmVJYjRR?=
+ =?utf-8?B?OHVUMmF6YUluL1lZR25KYmhTblpOLzVrV3dtOUtLT2hKTElXTk92dFp2Q1p4?=
+ =?utf-8?B?cEtteXNLWDlwcW9wRmt1cXI2V2FaOHdXcE02SGdwY0RqNThrQTBRSzhLZ2Jq?=
+ =?utf-8?B?cjM4QWhpWjg4WjlKdUxjeVFvZ00xc2JZSVRVQzZQT3NHVVpOQ2dkeDlIVUw3?=
+ =?utf-8?B?NVNPUU9NdVZ3Ulh4SGVqelVsM2RPMldkU084OUhUbDB2ZVlCdHhodGQvQkU2?=
+ =?utf-8?B?MVpqalBzS0xBMlRCUHJzNW9uSzhveEI4bEwxakVHSjRUc2R3cjUrUjFjR1RJ?=
+ =?utf-8?B?MVp6MlUvY2lXWTR4ais1cWRUTmJFTnhCNVlZdkdhUE9IU2FlbTBmQVU3TTBW?=
+ =?utf-8?B?c09xVFdEV2VITFdRVFlPUmlWMEVXeU5FNE55Ri9YYTA2aG8reFo5Tlhqbmxa?=
+ =?utf-8?B?ODREUXl6Q0xTTk0rSFhUT1RhcUlxNkZ6ZzZnNGIvSzk0UXd3cmhsaC9DK2tI?=
+ =?utf-8?B?SFhsYjFwaDJQY1kxbnZRNHVGaDBoM2dUaERwRW56YTB5dlVFU0pYcmxiYnV3?=
+ =?utf-8?B?OWloR09IK2NKb05wZzJobWdhWGFNSTZSL0t4bGphdW1YczJRcVkzaS9KR201?=
+ =?utf-8?B?bVhmcE1lY0NUZERnTmN0TFJFRkg2MEVMNGM2SnNCeDFVNTFNd0RHQ2FrNGJ2?=
+ =?utf-8?B?K0MvRk1NeFJ3VGQ3WUVjN0l3TGtKZjlLUTJJcjIvNVhiQUZNSFhCeW5WcVN1?=
+ =?utf-8?B?MTJxVXU5cjRNYWovU25PSmY5UWxpNGQ5akl1dk50ZWZGbHp5SnFCMm10YXBC?=
+ =?utf-8?B?d2pjK2xLak9kZURUVG9ZZkNTSHBwRHNvM0VTNFVVUU92TkNzT1hCa2ZXQVBF?=
+ =?utf-8?B?cy9KN3VMRVRMSXlpRThoK2d6a2pPcnI0ZkhMN3dtVlpJZU9wNW9ZemxnVTJU?=
+ =?utf-8?B?a0V1Qk1BUlJ1WjBBSHdqVU1MT3FNMGQrZnUrb1ROVys5QTNZQWd6NnRDZlI5?=
+ =?utf-8?B?RWFYenpBT1dMMTNxdm5hNW9veHpxajc5eEpxaEhLSmRqMVVLbS8yK2ZoYk5i?=
+ =?utf-8?B?V0plNldSQ0gyNWtWZDhsUkxhWUg5dlVLRzNLckNUU2xScm9KNVUwQ3VPTitp?=
+ =?utf-8?Q?q4E0JMXABU6R4kTpgk=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-80ceb.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: de6019a3-c598-4282-c1ab-08dc18be496f
+X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 07:14:33.8063
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP193MB1438
 
-On 08. 01. 24, 19:19, Linus Torvalds wrote:
-> On Mon, 8 Jan 2024 at 03:46, Jiri Slaby <jirislaby@gmail.com> wrote:
->>
->>     CPP [M] drivers/media/pci/solo6x10/solo6x10-p2m.i
->> real    0m45,002s
->>
->> $ git revert 867046cc7027703f60a46339ffde91a1970f2901
->>     CPP [M] drivers/media/pci/solo6x10/solo6x10-p2m.i
->> real    0m11,132s
->>
->> $ git revert 4ead534fba42fc4fd41163297528d2aa731cd121
->>     CPP [M] drivers/media/pci/solo6x10/solo6x10-p2m.i
->> real    0m3,711s
+On 1/17/24 17:55, Jose Abreu wrote:
+> From: Bernd Edlinger <bernd.edlinger@hotmail.de>
+> Date: Wed, Jan 17, 2024 at 16:48:22
 > 
-> Ouch. Yeah, that's unfortunate. There's a lot of nested nasty macro
-> expansion there, but that timing is excessive.
+>> I don't know at all.  And actually, I am more concerned that other registers
+>> might be unreliable within the first microsecond after reset is de-asserted.
 > 
-> Sparse actually complains about that file:
+> Are you guaranteeing that the documented PoR time is achieved before reading registers?
 > 
->    drivers/media/pci/solo6x10/solo6x10-p2m.c:309:13: error: too long
-> token expansion
->    drivers/media/pci/solo6x10/solo6x10-p2m.c:310:17: error: too long
-> token expansion
-> 
-> and while that is a sparse limitation, it's still interesting. Having
-> that file expand to 122M is not ok.
-> 
-> In this case, I suspect the right thing to do is to simply not use
-> min()/max() in that header at all, but do something like
-> 
->    --- a/drivers/media/pci/solo6x10/solo6x10-offsets.h
->    +++ b/drivers/media/pci/solo6x10/solo6x10-offsets.h
->    @@ -56,2 +56,5 @@
-> 
->    +#define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
->    +#define MAX(X, Y) ((X) > (Y) ? (X) : (Y))
->    +
->     #define SOLO_MP4E_EXT_ADDR(__solo) \
->    @@ -59,4 +62,4 @@
->     #define SOLO_MP4E_EXT_SIZE(__solo) \
->    -     max((..),                               \
->    -         min(((..) - \
->    +     MAX((..),                               \
->    +         MIN(((..) - \
->                   ..), 0x00ff0000))
->    @@ -67,4 +70,4 @@
->     #define SOLO_JPEG_EXT_SIZE(__solo) \
->    -     max(..,                         \
->    -         min(..)
->    +     MAX(..,                         \
->    +         MIN(..)
-> 
-> and avoid this issue.
 
-So can someone pick up 20240113183334.1690740-1-aurelien@aurel32.net so 
-that we are done with this? I see neither Hans, nor Linus got to take it 
-yet.
+Yes, that is the idea, why I added the udelay directly after releasing the reset,
+thus simply delaying the execution of the stmmac_hw_init function, and not directly
+where the synopsys_id register is accessed.
 
-> That said, I'm sure this thing exists to a smaller degree elsewhere. I
-> wonder if we could simplify our min/max type tests.
-I assume we don't care with solo fixed? Hans pointed out ath11k too. 
-Even if there is size increase in the preproc file, I don't see much of 
-compile time increase there.
 
-thanks,
--- 
-js
-suse labs
-
+Thanks
+Bernd.
 
