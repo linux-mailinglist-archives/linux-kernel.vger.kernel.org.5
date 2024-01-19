@@ -1,174 +1,194 @@
-Return-Path: <linux-kernel+bounces-31587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A088833065
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:41:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A87C9833069
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:45:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EBBA1C23BF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:41:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08FBBB2212E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D225858220;
-	Fri, 19 Jan 2024 21:41:32 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0AA58229;
+	Fri, 19 Jan 2024 21:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iVegl6ZZ"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C41158217;
-	Fri, 19 Jan 2024 21:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749BD57888
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 21:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705700492; cv=none; b=FTVIXaEHiejb15XMQfUsUGgXJiZHVm4loT82qdQN7uOAozMxFbPMGvtMBApXdGKmGxnCFayYAugP4TBfWLgrXKWwnYbFzAxx7eIkXFe6bu7t8Nskbr8Zbi27Gyxkm+Q1IQRZMcL5ZXOUwNhcav+vGhw+ytZn3NEec1DMGxfj/X0=
+	t=1705700705; cv=none; b=qwn88AE5QelUMVgS88Tac4coGXp3PSXlf25Mo0ugYJlkUd9qhOP2+gzUJ5BPShLuLB8P/W6sRi3o3RwwFLuMbThAXoyIokp/iUltjhRjGj1ciPzD/Rtc5iAtWgTf8QD5kzGl2SbUsqadtEBf39hmTGjsjB4Oi6QjQWbJeshUSAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705700492; c=relaxed/simple;
-	bh=eC4XqyL+AmSKRqhuhKoHuMFTp8Cil693CxJZanrtSd0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TYdM/IPgMGLdWxgFdvtTERVoAYfPcVY9cb1r4+igcbaOjW1iY0RGpwS6Smvg8itzC+pGJtJ0RVR7Yuw5VmB1cq4ombJx/M4xengQH0nh3LB2Bt18S5dq5aEwTZVJrXzJ4G7ywSpwh3FOrjHjxSZFMAh5IAhG5ZWm53PpleG+1nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27977C433C7;
-	Fri, 19 Jan 2024 21:41:31 +0000 (UTC)
-Date: Fri, 19 Jan 2024 16:42:52 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Philippe Proulx
- <pproulx@efficios.com>
-Subject: Re: [PATCH] ring-buffer: Simplify reservation with try_cmpxchg()
- loop
-Message-ID: <20240119164252.54ccb654@gandalf.local.home>
-In-Reply-To: <cd3f37cc-31ba-4eb4-8d67-852d05570e7b@efficios.com>
-References: <20240118181206.4977da2f@gandalf.local.home>
-	<504085e9-bf91-4948-a158-abae5dcb276a@efficios.com>
-	<20240119103754.154dc009@gandalf.local.home>
-	<cd3f37cc-31ba-4eb4-8d67-852d05570e7b@efficios.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705700705; c=relaxed/simple;
+	bh=UoTGZPGLjSKotWGcOsKycPrcx3E0xv916IA9TgXjXfE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F9ATvuatrEz/aWjWe0nW6WK9COpD7pxZUc3OzyTC5WFihtZXLTgYIty6DrAAf5Ir1dLrUoVm55yeHdgz6rsCZu830Y2mbnABj7pjbJvmzclJFmpf8D6he6P+BQQ58UDWe0bYyyGJuldXZcmt8Y3l7s+1WjlJbiGPubAVaDY1xfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iVegl6ZZ; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a2821884a09so93284566b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:45:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705700701; x=1706305501; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IFHkRRUf4+mmCS00V7PU7SyvKE+JJ4qA1z51rRSw46o=;
+        b=iVegl6ZZii9treZls2PIVBveubwyh2eneaBBce9eMt6olmtAa1hlUsOH8ppZ2V8tcg
+         ZeVSiJF+BplYjgpc7LQj4LXYuGqZ+4eLUCb5YxDgYp1vyTH8LoPoitCYN+owOTILyf9h
+         ImcL/1F0RCln0T6wip4ZpjtOMoQxBifzfpZKYr1oG0AcpnRL0tHWAkyjzHwVwNDyKZm0
+         ry1LC9DaWDFFeyGuAPhOPyDZclPgv5F7PkmRjzmzv4+UxSzrBfDyGfakn0BiE8Hqd/Kz
+         A9x1tGX+fgKjWPiWOKcVUS2fFGpOFmfqmmLB/w6KL5h0CLqYvGfA6E196UySvG5cbZY1
+         KSxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705700701; x=1706305501;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IFHkRRUf4+mmCS00V7PU7SyvKE+JJ4qA1z51rRSw46o=;
+        b=NZdzVYBmfR45+c5UlLrQ+R7v26L1PLxUbgzjBVMw7PyZSlDEqZJRDG4uQTdusBHekd
+         qZJ6cbIRYMJaTfv5oGfTfdf8IA5qPwaGaogQkmo5eA0LA1Yg3mHQ2rwnFyO8GBgKFo3O
+         TeURu2pN/mmIOaotBLtVZdeUm+s7c7KB/FHd3mie2Hf762Dc08Q9WDjpwOO1VmPxdetD
+         dwG0go7EYeSXj8zeENpcFOIt/SQL1YhypYDn7F8Am4Xbw2NDv3fW5HwbQ0sV74NEAW/u
+         Db88j6e9MmqQXKanLved4MGMQY4fSZAotuxBSdGol3pQ1dFdnJF0s25NPNxMMITmbyMB
+         1OLw==
+X-Gm-Message-State: AOJu0YyeWWSpAQGreq1H8L99lHDVLeU8O0DXlpF8nwL4LpVGyLcb5als
+	mu+gmzKk0K7V7REfH99pOdG052u5oQ68l6/w8pGgrpHD/oKB1pw32/OFnddcWhtsSyUHxnZRwQz
+	f5vXryCP/K0CGDDTGXj1nOUexPa395GTMUvsiKqCQR3pAw46jOUvh
+X-Google-Smtp-Source: AGHT+IHNH/A8G136eZd1r/TCC/N64BQ1NGlGnBBEvogcIwpsnX9PbC7a57fLAHve3xa3XPzkpth7hOSq93E+mezX0m8=
+X-Received: by 2002:a17:907:d503:b0:a29:7ddf:40eb with SMTP id
+ wb3-20020a170907d50300b00a297ddf40ebmr290646ejc.15.1705700701405; Fri, 19 Jan
+ 2024 13:45:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
+ <20240117-zswap-xarray-v1-2-6daa86c08fae@kernel.org> <CAJD7tkZF102x_8LKAX+sxAttgYD_LNT3cRqeOr7_euwPfNdCFA@mail.gmail.com>
+ <CAF8kJuMwF=s-28OPFbCfJf-f3jsfYmyiP6pSBjj8ZgkGmbT9ZA@mail.gmail.com>
+ <CAJD7tkbdT-Bdi4YkOS_Px73dkhthq2qn6Yvy7CobzTBji0WMog@mail.gmail.com> <CAF8kJuOOwyzGGz21PKsGBdJBU3B+gk1+o78MwGqG5FDNZK9LSA@mail.gmail.com>
+In-Reply-To: <CAF8kJuOOwyzGGz21PKsGBdJBU3B+gk1+o78MwGqG5FDNZK9LSA@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Fri, 19 Jan 2024 13:44:25 -0800
+Message-ID: <CAJD7tkbKvJtLNDZn7G=yJKH+tbdmhF7sbkWru-V7vrAVwGb2sg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: zswap.c: remove RB tree
+To: Chris Li <chrisl@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, =?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
+	Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, 
+	Chun-Tse Shao <ctshao@google.com>, =?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
+	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 19 Jan 2024 15:56:21 -0500
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On Fri, Jan 19, 2024 at 1:32=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote:
+>
+> On Fri, Jan 19, 2024 at 11:37=E2=80=AFAM Yosry Ahmed <yosryahmed@google.c=
+om> wrote:
+> > > > I think using the xas_* APIs can be avoided here. The only reason w=
+e
+> > > > need it is that we want to check if there's an existing entry first=
+,
+> > > > and return -EEXIST. However, in that case, the caller will replace =
+it
+> > > > anyway (and do some operations on the dupentry):
+> > >
+> > > We might be able to for the insert case if we don't mind changing the
+> > > code behavior a bit. My original intent is to keep close to the
+> > > original zswap code and not stir the pot too much for the xarray
+> > > replacement. We can always make more adjustment once the RB tree is
+> > > gone.
+> >
+> > I don't see how this changes code behavior though. The current code in
+> > zswap_store() will do the following:
+>
+> I am referring to the log and update counter happening after the zswap
+> mapping was updated. Maybe nobody actually cares about that behavior
+> difference. In my mind, there is a difference.
 
-> > So when an overflow happens, you just insert a timestamp, and then events
-> > after that is based on that?  
-> 
-> No. Let's use an example to show how it works.
-> 
-> For reference, LTTng uses 5-bit for event ID and 27-bit for timestamps
-> in the compact event header representation. But for the sake of making this
-> discussion easier, let's assume a tracer would use 16-bit for timestamps in the
-> compact representation.
-> 
-> Let's say we have the following ktime_get() values (monotonic timestamp value) for
-> a sequence of events:
-> 
->                                    Timestamp (Hex)    Encoding in the trace
-> 
-> Packet header timestamp begin     0x12345678         64-bit: 0x12345678
-> 
-> Event 1                           0x12345678         16-bit: 0x5678
->     (When decoded, same value as previous timestamp, no overflow)
-> Event 2                           0x12347777         16-bit: 0x7777
->     (When decoded, going from "0x5678" to "0x7777" does not overflow 16-bit)
-> Event 3                           0x12350000         16-bit: 0x0000
->     (When decoded, going from "0x7777" to "0x0000" overflow 16-bit exactly once
->      which allows the trace reader to reconstruct timestamp 0x12350000 from the
->      previous timestamp and the 16-bit timestamp encoding.)
-> Event 4                           0x12370000         64-bit: 0x12370000
->     (Encoding over 16-bit not possible because going from 0x12350000 to
->      0x12370000 would overflow 16-bit twice, which cannot be detected
->      by a trace reader. Therefore use the full 64-bit timestamp in the
->      "large" event header representation.)
+I don't think it matters tbh, certainly not worth the more complicated
+implementation.
 
-I think that's basically what I said, but you are just looking at it
-differently ;-) Or should I say, you are using bits for optimization.
+> > > > >  static bool zswap_erase(struct zswap_tree *tree, struct zswap_en=
+try *entry)
+> > > > >  {
+> > > > > +       struct zswap_entry *e;
+> > > > >         pgoff_t offset =3D swp_offset(entry->swpentry);
+> > > > > -       if (!RB_EMPTY_NODE(&entry->rbnode)) {
+> > > > > -               struct zswap_entry *old;
+> > > > > -               old =3D xa_erase(&tree->xarray, offset);
+> > > > > -               BUG_ON(old !=3D entry);
+> > > > > -               rb_erase(&entry->rbnode, &tree->rbroot);
+> > > > > -               RB_CLEAR_NODE(&entry->rbnode);
+> > > > > -               return true;
+> > > > > -       }
+> > > > > -       return false;
+> > > > > +       XA_STATE(xas, &tree->xarray, offset);
+> > > > > +
+> > > > > +       do {
+> > > > > +               xas_lock_irq(&xas);
+> > > > > +               do {
+> > > > > +                       e =3D xas_load(&xas);
+> > > > > +               } while (xas_retry(&xas, e));
+> > > > > +               if (xas_valid(&xas) && e !=3D entry) {
+> > > > > +                       xas_unlock_irq(&xas);
+> > > > > +                       return false;
+> > > > > +               }
+> > > > > +               xas_store(&xas, NULL);
+> > > > > +               xas_unlock_irq(&xas);
+> > > > > +       } while (xas_nomem(&xas, GFP_KERNEL));
+> > > > > +       return !xas_error(&xas);
+> > > > >  }
+> > > >
+> > > > Same here, I think we just want:
+> > > >
+> > > > return !!xa_erase(..);
+> > >
+> > > For the erase case it is tricky.
+> > > The current zswap code does not erase an entry if the tree entry at
+> > > the same offset has been changed. It should be fine if the new entry
+> > > is NULL. Basically some race to remove the entry already. However, if
+> > > the entry is not NULL, then force resetting it to NULL will change
+> > > behavior compared to the current.
+> >
+> > I see, very good point. I think we can use xa_cmpxchg() and pass in NUL=
+L?
+> >
+> That is certainly possible. Thanks for bringing it up.
+> Let me try to combine the tree->lock with xarray lock first. If
+> xa_cmpxchg() can simplify the result there, I will use it.
 
-The events are based off of the last injected timestamp. The above example,
-starts with an timestamp injection into the packet header: 0x12345678, with
-the lsb 16bits ignore. So in actuality, it inserts 0x12340000, plus adds a
-5678 that represents the creation of the header (like we discussed about in
-the last tracing meeting).
+SGTM.
 
-The first event has: 0x5678 which is based on the previous injected
-timestamp of 0x12340000.
+> > Handling large folios in zswap is a much larger topic that involves a
+> > lot more than this xa_* vs. xas_* apis dispute. Let's not worry about
+> > this for now.
+>
+> Ack. One more reason to use the XAS interface is that zswap currently
+> does multiple lookups on typical zswap_load(). It finds entries by
+> offset, for the entry (lookup one). Then after folio install to swap
+> cache, it deletes the entry, it will performan another lookup to
+> delete the entry (look up two). Using XAS might be able to cache the
+> node location for the second lookup to avoid the full node walk. That
+> is not in my current patch and can be a later improvement patch as
+> well.
 
-the events go on just using a delta from that until you see it overflow (or
-too big of a delta to fit in the 16 bits), and you insert a new full
-timestamps that everything will be based on:
+One more straightforward optimization we can do with the xas_* API is
+to cache the lookup done in zswap_load() and reuse it when doing
+invalidations for exclusive loads.
 
-  0x12370000
-
-Now events following that are just a delta from that timestamp. But you
-calculate the delta simply by masking out the lower bits.
-
-But how do you detect the overflow? That last timestamps to know if the tsc
-overflowed or not needs to be saved and compared. I would assume you have a
-similar race that I have.
-
-> 
-> >   
-> >>
-> >> The fact that Ftrace exposes this ring buffer binary layout as a user-space
-> >> ABI makes it tricky to move to the Common Trace Format timestamp encoding.
-> >> There are clearly huge simplifications that could be made by moving to this
-> >> scheme though. Is there any way to introduce a different timestamp encoding
-> >> scheme as an extension to the Ftrace ring buffer ABI ? This would allow us to
-> >> introduce this simpler scheme and gradually phase out the more complex delta
-> >> encoding when no users are left.  
-> > 
-> > I'm not sure if there's a path forward. The infrastructure can easily swap
-> > in and out a new implementation. That is, there's not much dependency on
-> > the way the ring buffer works outside the ring buffer itself.
-> > 
-> > If we were to change the layout, it would likely require a new interface
-> > file to read. The trace_pipe_raw is the only file that exposes the current
-> > ring buffer. We could create a trace_out_raw or some other named file that
-> > has a completely different API and it wouldn't break any existing API.  
-> 
-> Or introduce "trace_pipe_raw2" or some kind of versioned file names as new
-> ABIs.
-
-I hate "version numbers" ;-)  I would rather have a meaning name instead.
-
-"trace_pipe_raw_ts_delta" or something that gives a hint to why it's
-different.
-
-> 
-> > Although, if we want to change the "default" way, it may need some other
-> > knobs or something, which wouldn't be hard.  
-> 
-> The delta-timestamp-encoding would have to stay there for a while as long
-> as users have not switched over to trace_pipe_raw2. Then when it's really
-> gone, the trace_pipe_raw could either go away or return an error when
-> opened.
-> 
-> > Now I have to ask, what's the motivation for this. The code isn't that
-> > complex anymore. Yes it still has the before/after timestamps, but the
-> > most complexity in that code was due to what happens in the race of
-> > updating the reserved data. But that's no longer the case with the
-> > cmpxchg(). If you look at this patch, that entire else statement was
-> > deleted. And that deleted code was what made me sick to my stomach ;-)
-> > Good riddance!  
-> 
-> The motivation for this would be to further simplify the implementation
-> of __rb_reserve_next(), rb_add_timestamp(), and rb_try_to_discard(), and
-> remove a few useless loads, stores, and conditional branches on the fast-path
-> of __rb_reserve_next(). This would turn the before/after timestamp
-> stores/loads/comparisons into a simple "last timestamp" field and a comparison
-> of the current timestamp against the "last timestamp" value to figure out
-> whether the compact representation can be used.
-> 
-> I don't know whether it's worth the trouble or not, it's really up to you. :)
-
-Yeah, making such a change would require an analysis to know if it would
-speed things up enough to make a significant difference to do that effort.
-
--- Steve
+For the initial implementation, let's keep it simple and try to use
+the xa_* APIs where possible.
 
