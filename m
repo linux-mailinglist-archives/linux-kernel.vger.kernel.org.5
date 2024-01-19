@@ -1,133 +1,185 @@
-Return-Path: <linux-kernel+bounces-30879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B24C832569
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EDDA283256C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:07:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB7481F2254D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:06:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A10C1F222CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4697BDDAB;
-	Fri, 19 Jan 2024 08:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iLqIgOTb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54571125C1;
+	Fri, 19 Jan 2024 08:07:27 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB61D53E;
-	Fri, 19 Jan 2024 08:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97936DDA0;
+	Fri, 19 Jan 2024 08:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705651566; cv=none; b=m/qnemyX0G2TFXauRZ4mtWBxUYp4pwqHO1Y9VBMAlhUJenfW2bIJHKvmShXnS8yCGcs2C2+knv7GJmFkz8ddvTZtp7EFHMCICXQ4iiW+cEEj23ZkCOFVXtZiZevoWOyM5RNVroUuPToAWYFfuE5L3wlpy3bvEfj/+erP4la/ZOA=
+	t=1705651646; cv=none; b=Z+Tskx7+8hbw+XPsThS+4/2XpR22gmNRj0brEnuFLJobw+Hhv9Y6dFlxiHDdn9PLmKOwwEcfgE/xUSpIJwVaVfjH6QrI464gdOg4iSCnv+WG1XERfhbU4FkynBZhqfjebcTT2jgO704+7mOIauku2FB7CyL3VHUiXxWWKBHSens=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705651566; c=relaxed/simple;
-	bh=WPQT+tS6NSneAp94KCLXM+GXH9VM9CTH1xf/mPDf+Lo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sZhHl40aREC6CCdWoVn7avRW7ydrTNZJgCu6oUwNDkyIQyNko2BG9sbiXIVjpXbZi7Gv726jderhWsQgJoiLr4ji5By3Wx0CZdltIu5EIa/hOMeyshQ8FO4Dtui254u7jOWoKUROFxp0zR4vKfoCtO8MnHPnouNWnjVV2gb/4EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iLqIgOTb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC7EFC433C7;
-	Fri, 19 Jan 2024 08:06:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705651566;
-	bh=WPQT+tS6NSneAp94KCLXM+GXH9VM9CTH1xf/mPDf+Lo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iLqIgOTbpKObnRHe8jUnzJO4m+SsNJiE3A1ihbhfIGWonvm+wVIQRsxR2AhBKYE1P
-	 phOTnPN3oVklYuHkuUP/zNTpo0+39gUqLF9/x+Md8NW7JKBJM3aEgKbihpDm0jrydt
-	 I2wbVIJu0S8VA05wF5mX3fep8pJCCsHRSqOZjLS2rMhzmtFwyCPjmVLtiKI1xcAOK2
-	 gznz2bVWsbpFg5/PwcP3W3ncSiFx/yGLVAy9MSEGaxj03+CDQFOoeRZaCU2svbYBsO
-	 nQC2TbmJsXbsZFRh0q4ENTIaf1KdUJHL/qrQ+l8vcb7/RWwRdftF52RPsVl/7Bvmnr
-	 i/O/OsMpH8slg==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rQjtG-0004aL-2O;
-	Fri, 19 Jan 2024 09:06:14 +0100
-Date: Fri, 19 Jan 2024 09:06:14 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] ASoC: qcom: sc8280xp: limit speaker volumes
-Message-ID: <ZaotdsEutSLfbD3x@hovoldconsulting.com>
-References: <20240118165811.13672-1-johan+linaro@kernel.org>
- <20240118165811.13672-4-johan+linaro@kernel.org>
- <ac6eb9f9-9a5c-472d-9a57-ee509d9589f9@linaro.org>
+	s=arc-20240116; t=1705651646; c=relaxed/simple;
+	bh=QhKAzNtW7wh6yRXN9+zaA6TCQZjmUCaV8eOf29rSVyY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=K+1DQ6RzSUwcEayfKDsp73CCRfo09o4kTPmghuG2Aoaa9vHYumMiQZ3oiPTDvxIanUpRj5/J4F9vlA7M6S096fC9lIqqroRznhq/3vfI3wHeDf6jQTJ6jIMxor0tlR5uKjoxeCN+X3+Y7sf15EBeZxwikqW2M3WTny9AbRyws6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TGXHz6XSrzsW3q;
+	Fri, 19 Jan 2024 16:06:23 +0800 (CST)
+Received: from kwepemd100001.china.huawei.com (unknown [7.221.188.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 15A91140153;
+	Fri, 19 Jan 2024 16:07:20 +0800 (CST)
+Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
+ kwepemd100001.china.huawei.com (7.221.188.240) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Fri, 19 Jan 2024 16:07:19 +0800
+Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
+ dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
+ Fri, 19 Jan 2024 16:07:18 +0800
+From: wangyunjian <wangyunjian@huawei.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "jasowang@redhat.com"
+	<jasowang@redhat.com>, "kuba@kernel.org" <kuba@kernel.org>,
+	"davem@davemloft.net" <davem@davemloft.net>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, xudingke
+	<xudingke@huawei.com>
+Subject: RE: [PATCH net v3] tun: add missing rx stats accounting in
+ tun_xdp_act
+Thread-Topic: [PATCH net v3] tun: add missing rx stats accounting in
+ tun_xdp_act
+Thread-Index: AQHaSTdaoh49U62FKkOqzRq1lENoTbDdnv0AgAHaJdD//6fugIABpoCw
+Date: Fri, 19 Jan 2024 08:07:18 +0000
+Message-ID: <b65dae408d6446088c1d09440a62206c@huawei.com>
+References: <1705490503-28844-1-git-send-email-wangyunjian@huawei.com>
+ <65a7f560a4643_6ba59294a7@willemb.c.googlers.com.notmuch>
+ <ed6fd9c514ae4a449580d11c9c6ba8e7@huawei.com>
+ <65a9393d75353_1c8cde294e2@willemb.c.googlers.com.notmuch>
+In-Reply-To: <65a9393d75353_1c8cde294e2@willemb.c.googlers.com.notmuch>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ac6eb9f9-9a5c-472d-9a57-ee509d9589f9@linaro.org>
 
-On Fri, Jan 19, 2024 at 07:37:14AM +0000, Srinivas Kandagatla wrote:
-> 
-> 
-> On 18/01/2024 16:58, Johan Hovold wrote:
-> > The UCM configuration for the Lenovo ThinkPad X13s has up until now
-> > been setting the speaker PA volume to -3 dB when enabling the speakers,
-> > but this does not prevent the user from increasing the volume further.
-> > 
-> > Limit the PA volume to -3 dB in the machine driver to reduce the risk of
-> > speaker damage until we have active speaker protection in place.
-> > 
-> > Note that this will probably need to be generalised using
-> > machine-specific limits, but a common limit should do for now.
-> > 
-> > Cc: stable@vger.kernel.org	# 6.5
-> > Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> > ---
-> >   sound/soc/qcom/sc8280xp.c | 8 +++++---
-> >   1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
-> > index ed4bb551bfbb..a19bfa354af8 100644
-> > --- a/sound/soc/qcom/sc8280xp.c
-> > +++ b/sound/soc/qcom/sc8280xp.c
-> > @@ -32,12 +32,14 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
-> >   	case WSA_CODEC_DMA_RX_0:
-> >   	case WSA_CODEC_DMA_RX_1:
-> >   		/*
-> > -		 * set limit of 0dB on Digital Volume for Speakers,
-> > -		 * this can prevent damage of speakers to some extent without
-> > -		 * active speaker protection
-> > +		 * Set limit of 0 dB on Digital Volume and -3 dB on PA Volume
-> > +		 * to reduce the risk of speaker damage until we have active
-> > +		 * speaker protection in place.
-> 
-> I would prefer a 0dB here instead of -3dB, this could become issue if we 
-> are testing speakers without any pluseaudio or any software 
-> amplification. ex: console
-
-I know you want that, but I'm not willing to be the one raising the
-default volume that people have been using so far and that you have
-(unknowingly) used in your tests to verify that you did not break your
-speakers.
-
-Once you've run some more tests we can easily raise this limit.
-
-I just want to make sure we have something safe in place ASAP now that
-people will soon be able to change the hardware volume control more
-easily (i.e. with the fixed UCM files).
-
-> >   		 */
-> >   		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
-> >   		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
-> > +		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 1);
-> > +		snd_soc_limit_volume(card, "SpkrRight PA Volume", 1)
-> 
-> It would be nice to consider using component->name_prefix here.
-
-That can possibly be done later.
-
-Johan
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBXaWxsZW0gZGUgQnJ1aWpuIFtt
+YWlsdG86d2lsbGVtZGVicnVpam4ua2VybmVsQGdtYWlsLmNvbV0NCj4gU2VudDogVGh1cnNkYXks
+IEphbnVhcnkgMTgsIDIwMjQgMTA6NDQgUE0NCj4gVG86IHdhbmd5dW5qaWFuIDx3YW5neXVuamlh
+bkBodWF3ZWkuY29tPjsgV2lsbGVtIGRlIEJydWlqbg0KPiA8d2lsbGVtZGVicnVpam4ua2VybmVs
+QGdtYWlsLmNvbT47IGphc293YW5nQHJlZGhhdC5jb207DQo+IGt1YmFAa2VybmVsLm9yZzsgZGF2
+ZW1AZGF2ZW1sb2Z0Lm5ldA0KPiBDYzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2Vy
+bmVsQHZnZXIua2VybmVsLm9yZzsgeHVkaW5na2UNCj4gPHh1ZGluZ2tlQGh1YXdlaS5jb20+DQo+
+IFN1YmplY3Q6IFJFOiBbUEFUQ0ggbmV0IHYzXSB0dW46IGFkZCBtaXNzaW5nIHJ4IHN0YXRzIGFj
+Y291bnRpbmcgaW4gdHVuX3hkcF9hY3QNCj4gDQo+IHdhbmd5dW5qaWFuIHdyb3RlOg0KPiA+ID4g
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IFdpbGxlbSBkZSBCcnVpam4g
+W21haWx0bzp3aWxsZW1kZWJydWlqbi5rZXJuZWxAZ21haWwuY29tXQ0KPiA+ID4gU2VudDogV2Vk
+bmVzZGF5LCBKYW51YXJ5IDE3LCAyMDI0IDExOjQyIFBNDQo+ID4gPiBUbzogd2FuZ3l1bmppYW4g
+PHdhbmd5dW5qaWFuQGh1YXdlaS5jb20+Ow0KPiA+ID4gd2lsbGVtZGVicnVpam4ua2VybmVsQGdt
+YWlsLmNvbTsgamFzb3dhbmdAcmVkaGF0LmNvbTsNCj4gPiA+IGt1YmFAa2VybmVsLm9yZzsgZGF2
+ZW1AZGF2ZW1sb2Z0Lm5ldA0KPiA+ID4gQ2M6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4
+LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHh1ZGluZ2tlDQo+ID4gPiA8eHVkaW5na2VAaHVhd2Vp
+LmNvbT47IHdhbmd5dW5qaWFuIDx3YW5neXVuamlhbkBodWF3ZWkuY29tPg0KPiA+ID4gU3ViamVj
+dDogUmU6IFtQQVRDSCBuZXQgdjNdIHR1bjogYWRkIG1pc3Npbmcgcnggc3RhdHMgYWNjb3VudGlu
+ZyBpbg0KPiA+ID4gdHVuX3hkcF9hY3QNCj4gPiA+DQo+ID4gPiBZdW5qaWFuIFdhbmcgd3JvdGU6
+DQo+ID4gPiA+IFRoZSBUVU4gY2FuIGJlIHVzZWQgYXMgdmhvc3QtbmV0IGJhY2tlbmQsIGFuZCBp
+dCBpcyBuZWNlc3NhcnkgdG8NCj4gPiA+ID4gY291bnQgdGhlIHBhY2tldHMgdHJhbnNtaXR0ZWQg
+ZnJvbSBUVU4gdG8gdmhvc3QtbmV0L3ZpcnRpby1uZXQuDQo+ID4gPiA+IEhvd2V2ZXIsIHRoZXJl
+IGFyZSBzb21lIHBsYWNlcyBpbiB0aGUgcmVjZWl2ZSBwYXRoIHRoYXQgd2VyZSBub3QNCj4gPiA+
+ID4gdGFrZW4gaW50byBhY2NvdW50IHdoZW4gdXNpbmcgWERQLiBUaGUgY29tbWl0IDhhZTFhZmYw
+YjMzMQ0KPiA+ID4gPiAoInR1bnRhcDogc3BsaXQgb3V0IFhEUCBsb2dpYyIpIG9ubHkgaW5jbHVk
+ZXMgZHJvcHBlZCBjb3VudGVyIGZvcg0KPiA+ID4gPiBYRFBfRFJPUCwgWERQX0FCT1JURUQsIGFu
+ZCBpbnZhbGlkIFhEUCBhY3Rpb25zLiBJdCB3b3VsZCBiZQ0KPiA+ID4gPiBiZW5lZmljaWFsIHRv
+IGFsc28gaW5jbHVkZSBuZXcgYWNjb3VudGluZyBmb3Igc3VjY2Vzc2Z1bGx5DQo+ID4gPiA+IHJl
+Y2VpdmVkIGJ5dGVzIHVzaW5nIGRldl9zd19uZXRzdGF0c19yeF9hZGQgYW5kIGludHJvZHVjZSBu
+ZXcNCj4gPiA+ID4gZHJvcHBlZCBjb3VudGVyIGZvciBYRFAgZXJyb3JzDQo+ID4gPiBvbiBYRFBf
+VFggYW5kIFhEUF9SRURJUkVDVC4NCj4gPiA+DQo+ID4gPiBGcm9tIHRoZSBkZXNjcmlwdGlvbiBp
+dCBpcyBjbGVhciB0aGF0IHRoZXNlIGFyZSB0d28gc2VwYXJhdGUgY2hhbmdlcw0KPiA+ID4gd3Jh
+cHBlZCBpbnRvIG9uZSBwYXRjaC4gSSBzaG91bGQgaGF2ZSBmbGFnZ2VkIHRoaXMgcHJldmlvdXNs
+eS4NCj4gPg0KPiA+IERvIEkgbmVlZCB0byBzcGxpdCB0aGVzZSB0d28gbW9kaWZpY2F0aW9ucyBp
+bnRvIDIgcGF0Y2hlcz8NCj4gPiAxLiBvbmx5IGZpeCBkcm9wcGVkIGNvdW50ZXINCj4gPiAyLiBh
+ZGQgbmV3IGFjY291bnRpbmcgZm9yIHN1Y2Nlc3NmdWxseSByZWNlaXZlZCBieXRlcw0KPiA+IE9y
+Og0KPiA+IE9ubHkgZml4IGRyb3BwZWQgY291bnRlcj8NCj4gDQo+IEl0J3MgZGVmaW5pdGVseSBn
+b29kIHRvIGZpeCBib3RoLg0KPiANCj4gSXQgbWlnaHQgYmUgYSBiaXQgcGVkYW50aWMsIGJ1dCB0
+d28gc2VwYXJhdGUgcGF0Y2hlcyBpcyBtb3JlIGNvcnJlY3QuDQo+IA0KPiBUaGUgc2Vjb25kIGZp
+eCwgYWRkIG1pc3NpbmcgYnl0ZSBjb3VudGVyLCBnb2VzIGJhY2sgdG8gdGhlIG9yaWdpbmFsIGlu
+dHJvZHVjdGlvbg0KPiBvZiBYRFAgZm9yIHR1biwgc28gaGFzIGEgZGlmZmVyZW50IHRhZzoNCj4g
+DQo+IEZpeGVzOiA3NjE4NzZjODU3Y2IgKCJ0YXA6IFhEUCBzdXBwb3J0IikNCg0KT0ssIEkgd2ls
+bCB1cGRhdGUgaXQgdG8gMiBwYXRjaGVzLg0KVGhhbmtzDQoNCj4gDQo+ID4NCj4gPiA+DQo+ID4g
+PiBBY2sgb24gcmV0dXJuaW5nIHRoZSBlcnJvciBjb3VudGVyIHRoYXQgd2FzIHByZXZpb3VzbHkg
+cHJlc2VudCBhbmQNCj4gPiA+IG1hdGNoZXMgdGhlIEZpeGVzIHRhZy4NCj4gPiA+DQo+ID4gPiBG
+b3IgdGhlIHNlY29uZCBjaGFuZ2UsIEkgaGFkIHRvIGNoZWNrIGEgZmV3IG90aGVyIFhEUCBjYXBh
+YmxlDQo+ID4gPiBkcml2ZXJzIHRvIHZlcmlmeSB0aGF0IGl0IGlzIGluZGVlZCBjb21tb24gdG8g
+Y291bnQgc3VjaCBwYWNrZXRzLg0KPiA+ID4NCj4gPiA+ID4gRml4ZXM6IDhhZTFhZmYwYjMzMSAo
+InR1bnRhcDogc3BsaXQgb3V0IFhEUCBsb2dpYyIpDQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFl1
+bmppYW4gV2FuZyA8d2FuZ3l1bmppYW5AaHVhd2VpLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+
+IHYzOiB1cGRhdGUgY29tbWl0IGxvZyBhbmQgY29kZQ0KPiA+ID4gPiB2MjogYWRkIEZpeGVzIHRh
+Zw0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gIGRyaXZlcnMvbmV0L3R1bi5jIHwgMTQgKysrKysrKysr
+LS0tLS0NCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDUgZGVsZXRp
+b25zKC0pDQo+ID4gPiA+DQo+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC90dW4uYyBi
+L2RyaXZlcnMvbmV0L3R1bi5jIGluZGV4DQo+ID4gPiA+IGFmYTU0OTdmN2MzNS4uMDcwNGExN2U3
+NGUxIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9kcml2ZXJzL25ldC90dW4uYw0KPiA+ID4gPiArKysg
+Yi9kcml2ZXJzL25ldC90dW4uYw0KPiA+ID4gPiBAQCAtMTYyNSwxOCArMTYyNSwxNSBAQCBzdGF0
+aWMgc3RydWN0IHNrX2J1ZmYNCj4gPiA+ID4gKl9fdHVuX2J1aWxkX3NrYihzdHJ1Y3QgdHVuX2Zp
+bGUgKnRmaWxlLCAgc3RhdGljIGludA0KPiA+ID4gPiB0dW5feGRwX2FjdChzdHJ1Y3QgdHVuX3N0
+cnVjdCAqdHVuLCBzdHJ1Y3QNCj4gPiA+IGJwZl9wcm9nICp4ZHBfcHJvZywNCj4gPiA+ID4gIAkJ
+ICAgICAgIHN0cnVjdCB4ZHBfYnVmZiAqeGRwLCB1MzIgYWN0KSAgew0KPiA+ID4gPiAtCWludCBl
+cnI7DQo+ID4gPiA+ICsJdW5zaWduZWQgaW50IGRhdGFzaXplID0geGRwLT5kYXRhX2VuZCAtIHhk
+cC0+ZGF0YTsNCj4gPiA+ID4gKwlpbnQgZXJyID0gMDsNCj4gPiA+ID4NCj4gPiA+ID4gIAlzd2l0
+Y2ggKGFjdCkgew0KPiA+ID4gPiAgCWNhc2UgWERQX1JFRElSRUNUOg0KPiA+ID4gPiAgCQllcnIg
+PSB4ZHBfZG9fcmVkaXJlY3QodHVuLT5kZXYsIHhkcCwgeGRwX3Byb2cpOw0KPiA+ID4gPiAtCQlp
+ZiAoZXJyKQ0KPiA+ID4gPiAtCQkJcmV0dXJuIGVycjsNCj4gPiA+ID4gIAkJYnJlYWs7DQo+ID4g
+PiA+ICAJY2FzZSBYRFBfVFg6DQo+ID4gPiA+ICAJCWVyciA9IHR1bl94ZHBfdHgodHVuLT5kZXYs
+IHhkcCk7DQo+ID4gPiA+IC0JCWlmIChlcnIgPCAwKQ0KPiA+ID4gPiAtCQkJcmV0dXJuIGVycjsN
+Cj4gPiA+ID4gIAkJYnJlYWs7DQo+ID4gPiA+ICAJY2FzZSBYRFBfUEFTUzoNCj4gPiA+ID4gIAkJ
+YnJlYWs7DQo+ID4gPiA+IEBAIC0xNjUxLDYgKzE2NDgsMTMgQEAgc3RhdGljIGludCB0dW5feGRw
+X2FjdChzdHJ1Y3QgdHVuX3N0cnVjdA0KPiA+ID4gPiAqdHVuLA0KPiA+ID4gc3RydWN0IGJwZl9w
+cm9nICp4ZHBfcHJvZywNCj4gPiA+ID4gIAkJYnJlYWs7DQo+ID4gPiA+ICAJfQ0KPiA+ID4gPg0K
+PiA+ID4gPiArCWlmIChlcnIgPCAwKSB7DQo+ID4gPiA+ICsJCWFjdCA9IGVycjsNCj4gPiA+ID4g
+KwkJZGV2X2NvcmVfc3RhdHNfcnhfZHJvcHBlZF9pbmModHVuLT5kZXYpOw0KPiA+ID4gPiArCX0g
+ZWxzZSBpZiAoYWN0ID09IFhEUF9SRURJUkVDVCB8fCBhY3QgPT0gWERQX1RYKSB7DQo+ID4gPiA+
+ICsJCWRldl9zd19uZXRzdGF0c19yeF9hZGQodHVuLT5kZXYsIGRhdGFzaXplKTsNCj4gPiA+ID4g
+Kwl9DQo+ID4gPiA+ICsNCj4gPiA+DQo+ID4gPiBMZXQncyBhdm9pZCBhZGRpbmcgeWV0IGFub3Ro
+ZXIgYnJhbmNoIGFuZCBqdXN0IGRvIHRoZXNlIG9wZXJhdGlvbnMNCj4gPiA+IGluIHRoZSBjYXNl
+IHN0YXRlbWVudHMsIGxpa2UgWERQX0RST1AuDQo+ID4NCj4gPiBGaXggaXQgbGlrZSB0aGlzPw0K
+PiANCj4gUGVyaGFwcyBhdm9pZCBjb21wdXRpbmcgZGF0YXNpemUgaXMgYWxsIHBhdGhzLCB3aGVu
+IGl0IGlzIG5vdCB1c2VkIGluIGNvbW1vbg0KPiBYRFBfUEFTUywgaGlnaCBwZXJmb3JtYW5jZSBY
+RFBfRFJPUCBhbmQgYSBmZXcgb3RoZXJzLiBOb3Qgc3VyZSB3aGV0aGVyDQo+IChhbGwpIGNvbXBp
+bGVycyB3b3VsZCBvcHRpbXplIHRoYXQuDQo+IA0KPiAgICAgICAgIGRldl9jb3JlX3N0YXRzX3J4
+X2Ryb3BwZWRfaW5jKHR1bi0+ZGV2LCB4ZHAsDQo+IA0KICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB4ZHAtPmRhdGFfZW5kIC0geGRwLT5kYXRhKTsNCk9LLCBJIGFncmVlLg0K
+DQo+IA0KPiANCj4gPiAtLS0gYS9kcml2ZXJzL25ldC90dW4uYw0KPiA+ICsrKyBiL2RyaXZlcnMv
+bmV0L3R1bi5jDQo+ID4gQEAgLTE2MjUsMTggKzE2MjUsMjUgQEAgc3RhdGljIHN0cnVjdCBza19i
+dWZmICpfX3R1bl9idWlsZF9za2Ioc3RydWN0DQo+ID4gdHVuX2ZpbGUgKnRmaWxlLCAgc3RhdGlj
+IGludCB0dW5feGRwX2FjdChzdHJ1Y3QgdHVuX3N0cnVjdCAqdHVuLCBzdHJ1Y3QNCj4gYnBmX3By
+b2cgKnhkcF9wcm9nLA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IHhkcF9idWZm
+ICp4ZHAsIHUzMiBhY3QpICB7DQo+ID4gKyAgICAgICB1bnNpZ25lZCBpbnQgZGF0YXNpemUgPSB4
+ZHAtPmRhdGFfZW5kIC0geGRwLT5kYXRhOw0KPiA+ICAgICAgICAgaW50IGVycjsNCj4gPg0KPiA+
+ICAgICAgICAgc3dpdGNoIChhY3QpIHsNCj4gPiAgICAgICAgIGNhc2UgWERQX1JFRElSRUNUOg0K
+PiA+ICAgICAgICAgICAgICAgICBlcnIgPSB4ZHBfZG9fcmVkaXJlY3QodHVuLT5kZXYsIHhkcCwg
+eGRwX3Byb2cpOw0KPiA+IC0gICAgICAgICAgICAgICBpZiAoZXJyKQ0KPiA+ICsgICAgICAgICAg
+ICAgICBpZiAoZXJyKSB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZGV2X2NvcmVfc3Rh
+dHNfcnhfZHJvcHBlZF9pbmModHVuLT5kZXYpOw0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
+IHJldHVybiBlcnI7DQo+ID4gKyAgICAgICAgICAgICAgIH0NCj4gPiArICAgICAgICAgICAgICAg
+ZGV2X3N3X25ldHN0YXRzX3J4X2FkZCh0dW4tPmRldiwgZGF0YXNpemUpOw0KPiA+ICAgICAgICAg
+ICAgICAgICBicmVhazsNCj4gPiAgICAgICAgIGNhc2UgWERQX1RYOg0KPiA+ICAgICAgICAgICAg
+ICAgICBlcnIgPSB0dW5feGRwX3R4KHR1bi0+ZGV2LCB4ZHApOw0KPiA+IC0gICAgICAgICAgICAg
+ICBpZiAoZXJyIDwgMCkNCj4gPiArICAgICAgICAgICAgICAgaWYgKGVyciA8IDApIHsNCj4gPiAr
+ICAgICAgICAgICAgICAgICAgICAgICBkZXZfY29yZV9zdGF0c19yeF9kcm9wcGVkX2luYyh0dW4t
+PmRldik7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGVycjsNCj4gPiArICAg
+ICAgICAgICAgICAgfQ0KPiA+ICsgICAgICAgICAgICAgICBkZXZfc3dfbmV0c3RhdHNfcnhfYWRk
+KHR1bi0+ZGV2LCBkYXRhc2l6ZSk7DQo+ID4gICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+ICAg
+ICAgICAgY2FzZSBYRFBfUEFTUzoNCj4gPg0KPiA+ID4NCj4gPiA+ID4gIAlyZXR1cm4gYWN0Ow0K
+PiA+ID4gPiAgfQ0KPiA+ID4gPg0KPiA+ID4gPiAtLQ0KPiA+ID4gPiAyLjQxLjANCj4gPiA+ID4N
+Cj4gPiA+DQo+ID4gPg0KPiA+DQo+IA0KPiANCg0K
 
