@@ -1,186 +1,118 @@
-Return-Path: <linux-kernel+bounces-30694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8FE4832323
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:49:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D48D832324
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 014AA1C225B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:49:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 160201F21F9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C5020E8;
-	Fri, 19 Jan 2024 01:49:45 +0000 (UTC)
-Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940E346AF;
+	Fri, 19 Jan 2024 01:50:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z0ABaQ6R"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CAE1C30
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 01:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.169.211.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6995E4691
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 01:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705628985; cv=none; b=LP+I4OeNGv9+j++65VYLGtcw3FSDsPPtZS9+ezqM1tbBO8rdQB+VErr4LohENrboudtLIWHVU2GbQwJMAVgqm4Oa4CtOADFya2TyGmjUZ0nhuIPvg9u3CwcqIBwsxkzcqwZky62NsbyHJ4/gLDz3POUT0WIMjkiVkTMs8Q6iUv0=
+	t=1705629057; cv=none; b=Sz1/BbL7sjpcOCB0IlmYXWaPrZWaj6N1J8GOKZeh6cDOJdbBQbCusFOqH2dbdhBk4xnIvbTIv5lY5DwDBgS5SghOv4Hzl521AehncJ5f3aZBsnNeumXXhPXES6ijNRUZHQZO2lN3VYfRpwES3xPSew6Hjt/AskbfwkOFuNjKDR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705628985; c=relaxed/simple;
-	bh=T86wVEWIFt2hySqd2k7s7zDxzFY9oLKJqje1Rbam5oo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RGw/zn3S7pRoZxlZwMzaoA8Ne67xeWBGE5Vd0nNZafpS6QGv8pl5OxFP6A2yr0MFvG0M6ZqFajiXwFYuODQ1XduHiHNJrsw+IS65efvBIJ4OmabedMLyA9hECRAWPl1mKijkekkrQWVQ7ls2wv4HR3IfEb6FwI2uzAxq4Qa5CLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=18.169.211.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp87t1705628947tj4q10jx
-X-QQ-Originating-IP: j27BpN+p7rOsbd3ZNiDoHJmA3RCz0FD/Ud+l+7UNIYk=
-Received: from localhost ( [183.209.108.228])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 19 Jan 2024 09:49:06 +0800 (CST)
-X-QQ-SSF: 01400000000000504000000A0000000
-X-QQ-FEAT: 1eRl5/SlfYPzYDWzAzOoN3fvsYciMkk4LPFMnXBW6M4C5F+GLp+GrljY2IaW2
-	uRPKsOdp4F3vT6wzGqPYwbFG7Erdvkm+UG6Gn0MlNZig+djbzibMlup3u5b6kBD75ZlR5SP
-	cTO0/IwyZd4D2+C5DDtjK9ktRlaHD2wGCk4iGFUeGyuvXxVeBgxiBlRJmxOuD4mBM0qe2TG
-	35HWC/O8PRhzvYzD+BSir6mZ8zsbEE16WCaMtJEWykIHb/we+Vc55vJOg5qIgOFwCVTRl9D
-	BP4Fa6bRgLBp4bnW+mqf9YSHCjDi+OWC37ywc7afTctTXtrdTRP2tz6URg/srZXcm5+Yg5j
-	EcsDi0X3PgO/K2sxUyXQonMNpH3XHEXlPbgDdQYPAY5nmTlu+U1kEEcrBvH53xIOKZ0uhdM
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 7786004939020553288
-Date: Fri, 19 Jan 2024 09:49:06 +0800
-From: Dawei Li <dawei.li@shingroup.cn>
-To: Marc Zyngier <maz@kernel.org>
-Cc: tglx@linutronix.de, sdonthineni@nvidia.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	set_pte_at@outlook.com
-Subject: Re: [PATCH 1/4] irqchip/gic-v3: Implement read polling with
- dedicated API
-Message-ID: <D59B0C29D27B99CF+ZanVEqqcRSYt8f5F@centos8>
-References: <20240118112739.2000497-1-dawei.li@shingroup.cn>
- <20240118112739.2000497-2-dawei.li@shingroup.cn>
- <871qaeyc5s.wl-maz@kernel.org>
+	s=arc-20240116; t=1705629057; c=relaxed/simple;
+	bh=38huTxU0pXTsIWTOQp4P0tI0mktk6V47LUM1nr2Z7hc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tizXnjunmYa0fJk9sf1ugg6BZ2w109O0m3GxNQtRnRyHMmb0biCdCwe7JOEyb7bNnQYD7wGSL9fwW+N27r+8PC6rZbzl5WYbqvAIHsUzrSa/0WhfbjBBIOgF7kQZq8ewlf+fpvbWRJqrWHoCC6zAl4o18q+7uSawhUUrCd07nUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z0ABaQ6R; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55a070af87eso162110a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 17:50:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705629054; x=1706233854; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=38huTxU0pXTsIWTOQp4P0tI0mktk6V47LUM1nr2Z7hc=;
+        b=Z0ABaQ6Rh07v5h1+4NlW9q0d8DN6z8RcAICxkLEwBw6ydRvwDrJXA3q2UeAZCxzksA
+         UYTTkOQ6ZsEmaO3G1OQlJFRlIMXp5rnSHz+gVAxhRIOFmi4/45hXWZCdtVzz6kdj0av/
+         m22aJD7tyFgh2t6TTtio7+7DA7GsehhWUVFvIMaDn0+Tc/rlEvoiGtRNzPOaq7QWfzT/
+         xzWjZRv+7L4RX3icPgkDnujuQU/iNUytCiIeqaGyxLnzBcfnOH9A1V0WEqg8gCBqAmjU
+         fcbLLspovmZAAkPIrNOT8cDIkKzaXGpqJqtHqHPJu1Cpu/lPweQZaFYTQj6T0sUXIdWz
+         8Sug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705629054; x=1706233854;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=38huTxU0pXTsIWTOQp4P0tI0mktk6V47LUM1nr2Z7hc=;
+        b=VDBWm4JnGNF3BmezPoNoFtXIuqtcE6LmHqy3BJB1cNRysgqESPYOMNQgUhTR/RP/Ua
+         0XUhTS0anFuSf/yL+CCmXu9dR+htQQgBiRdHJnwk+F31JtR+yr5DVr4xBSYT11hD1owI
+         wyz3XV4BgZKAGWI13AclAeV6UZffZV6FNvMY+8VQlhSxM89U6gmiy/WmEcpQCcQnuZdq
+         V2LE+prjiiGC6sNgsUKNVXrk+Dt/P3jia23Qk7IgL9G0El9gcKGL3RX9+cPQqYsWzZkD
+         CtQwi7pDZfLHOw79XDrEbtRZjHhUGFxcMwTgpIep9uVmEQI8IgeyRZjcFwK44sLsOcD+
+         hLwQ==
+X-Gm-Message-State: AOJu0YywGEbEgQwbFn+ygQfKcohuq4ok8ahfR1qpePbz4aw+VkUm9gA4
+	gqAJs35XGPpUiGSwIsx/PW1HL1lZ4gTiyU4NVYVYWybvV25P6jHzx/4q0pMldlO1JmXRa+IsqI1
+	qseiDZ9Oa17LW2TdIia1zws4uasw=
+X-Google-Smtp-Source: AGHT+IHwbTFcn66Vs6N9m1zO2oQ7Y90pxTA6pv2kCP0lCxfAYuG+Gn/uItpKxpiZf3L4CwRFmNgtehqNnZBm5PF/Hs8=
+X-Received: by 2002:a05:6402:d43:b0:557:188b:eccb with SMTP id
+ ec3-20020a0564020d4300b00557188beccbmr957829edb.84.1705629054596; Thu, 18 Jan
+ 2024 17:50:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871qaeyc5s.wl-maz@kernel.org>
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+References: <20240117031212.1104034-1-nunes.erico@gmail.com>
+ <20240117031212.1104034-2-nunes.erico@gmail.com> <CAKGbVbsydzXyKuhN8VyW9zYwuOMWzvz192WKKReHVX1XCnuXGQ@mail.gmail.com>
+ <CAK4VdL2PnWTZ+M2eQqF22+VuF-YGKb_WjG=168BcuBDqD8+9kA@mail.gmail.com>
+In-Reply-To: <CAK4VdL2PnWTZ+M2eQqF22+VuF-YGKb_WjG=168BcuBDqD8+9kA@mail.gmail.com>
+From: Qiang Yu <yuq825@gmail.com>
+Date: Fri, 19 Jan 2024 09:50:42 +0800
+Message-ID: <CAKGbVbvWAM64T+a6_VRL99araN_2dubu4vO=mqzCoC1p2m_X-g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/6] drm/lima: fix devfreq refcount imbalance for job timeouts
+To: Erico Nunes <nunes.erico@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org, 
+	anarsoul@gmail.com, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, christian.koenig@amd.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Marc,
+On Thu, Jan 18, 2024 at 7:14=E2=80=AFPM Erico Nunes <nunes.erico@gmail.com>=
+ wrote:
+>
+> On Thu, Jan 18, 2024 at 2:36=E2=80=AFAM Qiang Yu <yuq825@gmail.com> wrote=
+:
+> >
+> > So this is caused by same job trigger both done and timeout handling?
+> > I think a better way to solve this is to make sure only one handler
+> > (done or timeout) process the job instead of just making lima_pm_idle()
+> > unique.
+>
+> It's not very clear to me how to best ensure that, with the drm_sched
+> software timeout and the irq happening potentially at the same time.
+This could be done by stopping scheduler run more job and disable
+GP/PP interrupt. Then after sync irq, there should be no more new
+irq gets in when we handling timeout.
 
-Thanks for the quick review.
+> I think patch 4 in this series describes and covers the most common
+> case that this would be hit. So maybe now this patch could be dropped
+> in favour of just that one.
+Yes.
 
-On Thu, Jan 18, 2024 at 02:00:15PM +0000, Marc Zyngier wrote:
-> On Thu, 18 Jan 2024 11:27:36 +0000,
-> Dawei Li <dawei.li@shingroup.cn> wrote:
-> > 
-> > Kernel provide read*_poll_* API family to support looping based polling
-> > code pattern like below:
-> > while (...)
-> > {
-> > 	val = op(addr);
-> > 	condition = cond(val);
-> > 	if (condition)
-> > 		break;
-> > 
-> > 	/* Maybe some timeout handling stuff */
-> > 
-> > 	cpu_relax();
-> > 	udelay();
-> > }
-> > 
-> > As such, use readl_relaxed_poll_timeout_atomic() to implement atomic
-> > register polling logic in gic-v3.
-> > 
-> > Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> > ---
-> >  drivers/irqchip/irq-gic-v3.c | 27 ++++++++-------------------
-> >  1 file changed, 8 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> > index 98b0329b7154..b9d9375a3434 100644
-> > --- a/drivers/irqchip/irq-gic-v3.c
-> > +++ b/drivers/irqchip/irq-gic-v3.c
-> > @@ -19,6 +19,7 @@
-> >  #include <linux/percpu.h>
-> >  #include <linux/refcount.h>
-> >  #include <linux/slab.h>
-> > +#include <linux/iopoll.h>
-> >  
-> >  #include <linux/irqchip.h>
-> >  #include <linux/irqchip/arm-gic-common.h>
-> > @@ -251,17 +252,11 @@ static inline void __iomem *gic_dist_base(struct irq_data *d)
-> >  
-> >  static void gic_do_wait_for_rwp(void __iomem *base, u32 bit)
-> >  {
-> > -	u32 count = 1000000;	/* 1s! */
-> > +	u32 val;
-> >  
-> > -	while (readl_relaxed(base + GICD_CTLR) & bit) {
-> > -		count--;
-> > -		if (!count) {
-> > -			pr_err_ratelimited("RWP timeout, gone fishing\n");
-> > -			return;
-> > -		}
-> > -		cpu_relax();
-> > -		udelay(1);
-> > -	}
-> > +	if (readl_relaxed_poll_timeout_atomic(base + GICD_CTLR,
-> > +		val, !(val & bit), 1, 1000000) == -ETIMEDOUT)
-> 
-> If you are doing this, please use a constant such as USEC_PER_SEC for
-> the timeout. And fix the alignment of the second line so that the
-> parameters are aligned vertically.
-
-Agreed, well defined constant is always preferable than magic number;
-
-And yes, alignment is for better readability.
-
-> 
-> > +		pr_err_ratelimited("RWP timeout, gone fishing\n");
-> >  }
-> >  
-> >  /* Wait for completion of a distributor change */
-> > @@ -279,7 +274,6 @@ static void gic_redist_wait_for_rwp(void)
-> >  static void gic_enable_redist(bool enable)
-> >  {
-> >  	void __iomem *rbase;
-> > -	u32 count = 1000000;	/* 1s! */
-> >  	u32 val;
-> >  
-> >  	if (gic_data.flags & FLAGS_WORKAROUND_GICR_WAKER_MSM8996)
-> > @@ -301,14 +295,9 @@ static void gic_enable_redist(bool enable)
-> >  			return;	/* No PM support in this redistributor */
-> >  	}
-> >  
-> > -	while (--count) {
-> > -		val = readl_relaxed(rbase + GICR_WAKER);
-> > -		if (enable ^ (bool)(val & GICR_WAKER_ChildrenAsleep))
-> > -			break;
-> > -		cpu_relax();
-> > -		udelay(1);
-> > -	}
-> > -	if (!count)
-> > +	if (readl_relaxed_poll_timeout_atomic(rbase + GICR_WAKER,
-> > +		val, enable ^ (bool)(val & GICR_WAKER_ChildrenAsleep),
-> > +		1, 1000000) == -ETIMEDOUT)
-> >  		pr_err_ratelimited("redistributor failed to %s...\n",
-> >  				   enable ? "wakeup" : "sleep");
-> >  }
-> 
-> Same thing here.
-
-Ack.
-
-I will address two issues above and send respin of V2.
-
-Thanks,
-	Dawei
-
-> 
-> 	M.
-> 
-> -- 
-> Without deviation from the norm, progress is not possible.
-> 
+> But since this was a bit hard to reproduce and I'm not sure the issue
+> is entirely covered by that, I just decided to keep this small change
+> as it prevented all the stack trace reproducers I was able to come up
+> with.
+>
+> Erico
 
