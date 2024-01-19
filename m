@@ -1,281 +1,132 @@
-Return-Path: <linux-kernel+bounces-31087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D43238328B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:23:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A484E8328BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:27:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 056FE1C22F83
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:23:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E5441F23B45
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:27:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFEB54CE12;
-	Fri, 19 Jan 2024 11:22:38 +0000 (UTC)
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 423B14D10D;
+	Fri, 19 Jan 2024 11:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGfAHRBx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833734CB40
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:22:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F91D4CB45;
+	Fri, 19 Jan 2024 11:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705663358; cv=none; b=tYQqusq6cUvSDBOyqAWOSMzCjgTex0IeDfXu4aW/eUkPutHpYN0gNQoPau6BHljjQ08pNUjW4XrkHEqQKG9LDItw3Lb/VRSqMPQHnRovsVfXg0Nlbi/bnIgeOVhixbe0KUC7SQui0N32kG3VT9Ilj/1YeMviDJbyG+w3kgJtS5g=
+	t=1705663615; cv=none; b=FZXWoIIEz8+u1mLoQcdOMa18HQNYzN5geheifyFRmFViNnzrimSjfEPO9adMEXityl7XarBMILf+d5OuAf/KFWgNODYKEXkIDnj2HIq1A1LIFMtbzxATEw3gMkuf/GkPMaa/hHEVEnmpRSQYj2sh+2BS2rkWkYQuRCxzS7OVAg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705663358; c=relaxed/simple;
-	bh=STTBS161JIPRA1SjEhSl0dRb0yjkdHTr74XohKywC4w=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=UOgSrStsReVKy6tBrG7MncYa36YMip4MpSxroh9RTEdG6/ESEdp/KCqsUpyXGZ/a69EgleJ4/hWA5IU+aS3554PMEb4ChFeYZZAc8eOOmX+Y8Bki4v+m37z7ws3apXGPy+bDq0pB4HCVLAkTySieYM+SXDONZaTPpnj1IxFxipw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <zhouchengming@bytedance.com>
-Date: Fri, 19 Jan 2024 11:22:23 +0000
-Subject: [PATCH v2 2/2] mm/zswap: split zswap rb-tree
+	s=arc-20240116; t=1705663615; c=relaxed/simple;
+	bh=y9EPfighvp9gn9o7ZscqDXm0oHny+oVmp15fgxEog1o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Dfy9NTTV4L20o+O2GWeiMXxlfAc5630jE9V/3zf5neDk5rqUzZCEHD+EXCJWFfBluFvXOdIHU+alJBavCfRh9cEyYFYUpxVq1UW/ZjV8RFzXm5U3kkDLygh4bjAmAKeAlAqjkh3Bn7M5M3rX3pOaIj6N3IhBrxE21AXR0UmXrLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gGfAHRBx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 206BCC43399;
+	Fri, 19 Jan 2024 11:26:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705663615;
+	bh=y9EPfighvp9gn9o7ZscqDXm0oHny+oVmp15fgxEog1o=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gGfAHRBx8Lb62/FK3+Fx3zmG65nnbsJABDrtacTayzigkckOAOcxVq1QvX5Hekq3d
+	 4v0DqHZtGqUfeKnO5JBP19sPunVQsO8jA6Q5arFCQoyfofZzuBdShLTU7ATW7eJSVk
+	 UzLP4o5WAVioJ5arXvwGiGs/B2e42g7mb4fnkDFGC/8XDoeyFZkZWresnJ51PXY90R
+	 Fk+XJgJxvLZYXhtvlyosF/zVbaAG3kB8O0+hSyKAkhGbdYUQ7DGvb3lq2+liGcmPP4
+	 RISQV/JDq2EsVlIFLPX20S8pXuxC1eA8gJ7Tlq6G7hrEFMxHv0isBdD9TmPRmvZ4hV
+	 VB098w5sX7qXA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1rQn1b-0001xH-08;
+	Fri, 19 Jan 2024 12:27:03 +0100
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH v4 0/4] ASoC: qcom: volume fixes and codec cleanups
+Date: Fri, 19 Jan 2024 12:24:16 +0100
+Message-ID: <20240119112420.7446-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240117-b4-zswap-lock-optimize-v2-2-b5cc55479090@bytedance.com>
-References: <20240117-b4-zswap-lock-optimize-v2-0-b5cc55479090@bytedance.com>
-In-Reply-To: <20240117-b4-zswap-lock-optimize-v2-0-b5cc55479090@bytedance.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Chris Li <chriscli@google.com>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
- Chengming Zhou <zhouchengming@bytedance.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705663348; l=7114;
- i=zhouchengming@bytedance.com; s=20231204; h=from:subject:message-id;
- bh=STTBS161JIPRA1SjEhSl0dRb0yjkdHTr74XohKywC4w=;
- b=bFo0QeQtyjGFtSnh6n45b8T++jbrYv6goBtMlmOhBp57yOKq5hpghI9HgNN1SmSD5s74vuMrs
- IZviwVVhWvnB0bY8nwHQvC2IyjnrT1wztQQGlfihj14bSKT5rd31aq+
-X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
- pk=xFTmRtMG3vELGJBUiml7OYNdM393WOMv0iWWeQEVVdA=
-X-Migadu-Flow: FLOW_OUT
 
-Each swapfile has one rb-tree to search the mapping of swp_entry_t to
-zswap_entry, that use a spinlock to protect, which can cause heavy lock
-contention if multiple tasks zswap_store/load concurrently.
+To reduce the risk of speaker damage the PA gain needs to be limited on
+machines like the Lenovo Thinkpad X13s until we have active speaker
+protection in place.
 
-Optimize the scalability problem by splitting the zswap rb-tree into
-multiple rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M),
-just like we did in the swap cache address_space splitting.
+Limit the gain to the current default setting provided by the UCM
+configuration which most user have so far been using (due to a bug in
+the configuration files which prevented hardware volume control [1]).
 
-Although this method can't solve the spinlock contention completely, it
-can mitigate much of that contention. Below is the results of kernel build
-in tmpfs with zswap shrinker enabled:
+The wsa883x PA volume control also turned out to be broken, which meant
+that the default setting used by UCM configuration is actually the
+lowest level (-3 dB). With the codec driver fixed, hardware volume
+control also works as expected.
 
-     linux-next  zswap-lock-optimize
-real 1m9.181s    1m3.820s
-user 17m44.036s  17m40.100s
-sys  7m37.297s   4m54.622s
+Note that the new wsa884x driver most likely suffers from a similar bug,
+I'll send a fix for that once I've got that confirmed.
 
-So there are clearly improvements.
+Included is also a related fix for the LPASS WSA macro driver, which
+was changing the digital gain setting behind the back of user space and
+which can result in excessive (or too low) digital gain.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Nhat Pham <nphamcs@gmail.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- include/linux/zswap.h |  4 +--
- mm/swapfile.c         |  2 +-
- mm/zswap.c            | 71 +++++++++++++++++++++++++++++++++------------------
- 3 files changed, 49 insertions(+), 28 deletions(-)
+There are further Qualcomm codec drivers that similarly appear to
+manipulate various gain settings, but on closer inspection it turns out
+that they only write back the current settings. Tests reveal that these
+writes are indeed needed for any prior updates to take effect (at least
+for the WSA and RX macros).
 
-diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-index eca388229d9a..91895ce1fdbc 100644
---- a/include/linux/zswap.h
-+++ b/include/linux/zswap.h
-@@ -30,7 +30,7 @@ struct zswap_lruvec_state {
- bool zswap_store(struct folio *folio);
- bool zswap_load(struct folio *folio);
- void zswap_invalidate(int type, pgoff_t offset);
--int zswap_swapon(int type);
-+int zswap_swapon(int type, unsigned long nr_pages);
- void zswap_swapoff(int type);
- void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
- void zswap_lruvec_state_init(struct lruvec *lruvec);
-@@ -51,7 +51,7 @@ static inline bool zswap_load(struct folio *folio)
- }
- 
- static inline void zswap_invalidate(int type, pgoff_t offset) {}
--static inline int zswap_swapon(int type)
-+static inline int zswap_swapon(int type, unsigned long nr_pages)
- {
- 	return 0;
- }
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 6c53ea06626b..35aa17b2a2fa 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3164,7 +3164,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	if (error)
- 		goto bad_swap_unlock_inode;
- 
--	error = zswap_swapon(p->type);
-+	error = zswap_swapon(p->type, maxpages);
- 	if (error)
- 		goto free_swap_address_space;
- 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index d88faea85978..2885f4fb6dcb 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -239,6 +239,7 @@ struct zswap_tree {
- };
- 
- static struct zswap_tree *zswap_trees[MAX_SWAPFILES];
-+static unsigned int nr_zswap_trees[MAX_SWAPFILES];
- 
- /* RCU-protected iteration */
- static LIST_HEAD(zswap_pools);
-@@ -265,6 +266,12 @@ static bool zswap_has_pool;
- * helpers and fwd declarations
- **********************************/
- 
-+static inline struct zswap_tree *swap_zswap_tree(swp_entry_t swp)
-+{
-+	return &zswap_trees[swp_type(swp)][swp_offset(swp)
-+		>> SWAP_ADDRESS_SPACE_SHIFT];
-+}
-+
- #define zswap_pool_debug(msg, p)				\
- 	pr_debug("%s pool %s/%s\n", msg, (p)->tfm_name,		\
- 		 zpool_get_type((p)->zpools[0]))
-@@ -865,7 +872,7 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
- 	 * until the entry is verified to still be alive in the tree.
- 	 */
- 	swpoffset = swp_offset(entry->swpentry);
--	tree = zswap_trees[swp_type(entry->swpentry)];
-+	tree = swap_zswap_tree(entry->swpentry);
- 	list_lru_isolate(l, item);
- 	/*
- 	 * It's safe to drop the lock here because we return either
-@@ -1494,10 +1501,9 @@ static void zswap_fill_page(void *ptr, unsigned long value)
- bool zswap_store(struct folio *folio)
- {
- 	swp_entry_t swp = folio->swap;
--	int type = swp_type(swp);
- 	pgoff_t offset = swp_offset(swp);
- 	struct page *page = &folio->page;
--	struct zswap_tree *tree = zswap_trees[type];
-+	struct zswap_tree *tree = swap_zswap_tree(swp);
- 	struct zswap_entry *entry, *dupentry;
- 	struct scatterlist input, output;
- 	struct crypto_acomp_ctx *acomp_ctx;
-@@ -1569,7 +1575,7 @@ bool zswap_store(struct folio *folio)
- 		src = kmap_local_page(page);
- 		if (zswap_is_page_same_filled(src, &value)) {
- 			kunmap_local(src);
--			entry->swpentry = swp_entry(type, offset);
-+			entry->swpentry = swp;
- 			entry->length = 0;
- 			entry->value = value;
- 			atomic_inc(&zswap_same_filled_pages);
-@@ -1651,7 +1657,7 @@ bool zswap_store(struct folio *folio)
- 	mutex_unlock(&acomp_ctx->mutex);
- 
- 	/* populate entry */
--	entry->swpentry = swp_entry(type, offset);
-+	entry->swpentry = swp;
- 	entry->handle = handle;
- 	entry->length = dlen;
- 
-@@ -1711,10 +1717,9 @@ bool zswap_store(struct folio *folio)
- bool zswap_load(struct folio *folio)
- {
- 	swp_entry_t swp = folio->swap;
--	int type = swp_type(swp);
- 	pgoff_t offset = swp_offset(swp);
- 	struct page *page = &folio->page;
--	struct zswap_tree *tree = zswap_trees[type];
-+	struct zswap_tree *tree = swap_zswap_tree(swp);
- 	struct zswap_entry *entry;
- 	u8 *dst;
- 
-@@ -1757,7 +1762,7 @@ bool zswap_load(struct folio *folio)
- 
- void zswap_invalidate(int type, pgoff_t offset)
- {
--	struct zswap_tree *tree = zswap_trees[type];
-+	struct zswap_tree *tree = swap_zswap_tree(swp_entry(type, offset));
- 	struct zswap_entry *entry;
- 
- 	/* find */
-@@ -1772,37 +1777,53 @@ void zswap_invalidate(int type, pgoff_t offset)
- 	spin_unlock(&tree->lock);
- }
- 
--int zswap_swapon(int type)
-+int zswap_swapon(int type, unsigned long nr_pages)
- {
--	struct zswap_tree *tree;
-+	struct zswap_tree *trees, *tree;
-+	unsigned int nr, i;
- 
--	tree = kzalloc(sizeof(*tree), GFP_KERNEL);
--	if (!tree) {
-+	nr = DIV_ROUND_UP(nr_pages, SWAP_ADDRESS_SPACE_PAGES);
-+	trees = kvcalloc(nr, sizeof(*tree), GFP_KERNEL);
-+	if (!trees) {
- 		pr_err("alloc failed, zswap disabled for swap type %d\n", type);
- 		return -ENOMEM;
- 	}
- 
--	tree->rbroot = RB_ROOT;
--	spin_lock_init(&tree->lock);
--	zswap_trees[type] = tree;
-+	for (i = 0; i < nr; i++) {
-+		tree = trees + i;
-+		tree->rbroot = RB_ROOT;
-+		spin_lock_init(&tree->lock);
-+	}
-+
-+	nr_zswap_trees[type] = nr;
-+	zswap_trees[type] = trees;
- 	return 0;
- }
- 
- void zswap_swapoff(int type)
- {
--	struct zswap_tree *tree = zswap_trees[type];
--	struct zswap_entry *entry, *n;
-+	struct zswap_tree *trees = zswap_trees[type];
-+	unsigned int i;
- 
--	if (!tree)
-+	if (!trees)
- 		return;
- 
--	/* walk the tree and free everything */
--	spin_lock(&tree->lock);
--	rbtree_postorder_for_each_entry_safe(entry, n, &tree->rbroot, rbnode)
--		zswap_free_entry(entry);
--	tree->rbroot = RB_ROOT;
--	spin_unlock(&tree->lock);
--	kfree(tree);
-+	for (i = 0; i < nr_zswap_trees[type]; i++) {
-+		struct zswap_tree *tree = trees + i;
-+		struct zswap_entry *entry, *n;
-+
-+		/* walk the tree and free everything */
-+		spin_lock(&tree->lock);
-+		rbtree_postorder_for_each_entry_safe(entry, n,
-+						     &tree->rbroot,
-+						     rbnode)
-+			zswap_free_entry(entry);
-+		tree->rbroot = RB_ROOT;
-+		spin_unlock(&tree->lock);
-+	}
-+
-+	kvfree(trees);
-+	nr_zswap_trees[type] = 0;
- 	zswap_trees[type] = NULL;
- }
- 
+Johan
+
+[1] https://github.com/alsa-project/alsa-ucm-conf/pull/382
+
+
+Changes in v4
+ - keep the full PA volume control range and only fix the exported dB
+   values
+ - use a combined -3 dB machine limit as limiting just the PA volume
+   confuses PulseAudio
+ - drop the PA gain initialisation which is no longer needed
+
+Changes in v3
+ - fix the wsa883x PA volume control and update the machine limits
+   accordingly
+
+Changes in v2
+ - keep the volume register write on power-on in lpass-wsa-macro
+ - drop the other patches removing volume register writes on DAPM events
+ - only drop the constant-zero gain offsets in wcd9335
+
+
+Johan Hovold (4):
+  ASoC: codecs: wsa883x: fix PA volume control
+  ASoC: qcom: sc8280xp: limit speaker volumes
+  ASoC: codecs: lpass-wsa-macro: fix compander volume hack
+  ASoC: codecs: wcd9335: drop unused gain hack remnant
+
+ sound/soc/codecs/lpass-wsa-macro.c |  7 -------
+ sound/soc/codecs/wcd9335.c         |  4 ----
+ sound/soc/codecs/wsa883x.c         |  6 +++++-
+ sound/soc/qcom/sc8280xp.c          | 12 +++++++-----
+ 4 files changed, 12 insertions(+), 17 deletions(-)
 
 -- 
-b4 0.10.1
+2.41.0
+
 
