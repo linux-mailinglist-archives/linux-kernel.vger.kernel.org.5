@@ -1,171 +1,109 @@
-Return-Path: <linux-kernel+bounces-30958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF5748326CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:37:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 553C08326D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F55C28526D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:37:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 989DCB24258
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859003C092;
-	Fri, 19 Jan 2024 09:37:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="HoREC4/W"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFAE1EB52;
-	Fri, 19 Jan 2024 09:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EDA73C493;
+	Fri, 19 Jan 2024 09:37:54 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5271EB52;
+	Fri, 19 Jan 2024 09:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.237.72.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705657064; cv=none; b=EZVUwBEeiUK0s2Wbs6Ca6ymBpqoWwLeDzSNS+JdTFHXAa2RZ0c8im0sa0eCx3qtDV+k8fuRgzCJq+Ee7a6ABKfR5UCq0mOZngdlozCcjPuqSzjPKsqgkkTOp9Pp+KM/O0jcqZdgtpYlrzrqonQj7QCXfe6D0yQSa84o/oK8Odag=
+	t=1705657074; cv=none; b=aVw7nF/kkkvTIT9QjO/CKIwpfbvhseC3BXoZbLWzfWEhzAHPcclxHGKS9ILP9VLtMZFPyvCIy7TbmXSId5jeMl5SoCLKA2+iW/wDXRLhtnZGAWL2pwP/fh5VlfcW/V2DCfALonsaKe6lIiwvsq+sz/U9nCzw1jUvxCQKlxoaaRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705657064; c=relaxed/simple;
-	bh=VQjoaasfjGj4Pt4jE9IK07lq2R6F63SB0ntq1hY/FL4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WT5Jar/Rg5gqe71HTRMyaOVI3vp4+X5O1MkXGG5Y+OSMtOsDe4HHOOg6PFU84/OG0SrJ2wd+E8GhWttraSDnz+KsAhyLmOCKWwI5OQnJMGESqPWESmOsYQY1gx376zVvfYyBgESfJK2WvrevBRJTl3d1hovfHoNhNUR5PQFAi4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=HoREC4/W; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1705657058; x=1705916258;
-	bh=8e/rU8mWyRsdYMtNFKOr1SDmHGWMG+cSiKUa3CJl5vE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=HoREC4/WD32aiGHQKEf6Vt8D/QhA2+yVfqPC26y7RcTkaqB76qxUQGajzuP/uqxu3
-	 LjsnRWMss/mjzog+QG4sGSF0w4VkIpuTt4GqDkLzqMEWJ1D2H9AGi1t/86SdJ7ShTr
-	 KkzkFa+PBukrlzQLg78oNaRHNRzZ+rRJLx8Cl7+2IUjiFrGyH9SdPOS04esJf6/1xr
-	 3zgULcYWxRQi+XKqin1dF99vjuTEDnw7jyPdTbl7YrpdDLvXH8PeERRSkDHdj52arq
-	 0w9Kw7yekiwbuQeRATcEkaJFNivDu0Y2BysYVYZquCpVylzVs6bJM+38lxNSFSSgni
-	 +1fbwBwxh59lQ==
-Date: Fri, 19 Jan 2024 09:37:12 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 2/9] rust: cred: add Rust abstraction for `struct cred`
-Message-ID: <67a9f08d-d551-4238-b02d-f1c7af3780ae@proton.me>
-In-Reply-To: <20240118-alice-file-v3-2-9694b6f9580c@google.com>
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-2-9694b6f9580c@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1705657074; c=relaxed/simple;
+	bh=fhRyHl9d9j86uNZdgU/t59QbpKu7S7LsJf51vQuHOmA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NzTgUyp9RsKCdx1k1H70ej7fLOW0fu5jID8dxZPLD6khi1B+3En9/fAaxK3Cn4j/IdZ6fL9BPi50LZeoLBX3zp57nNcwc7RD9DpnxDyksgMWPvYUaLAwf+66n8o+bSbAP//E/SMWjICPURcGc2CpKWQeas7EhnT6rPwlIXdZZEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=52.237.72.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from cmd.. (unknown [39.174.92.167])
+	by mail-app4 (Coremail) with SMTP id cS_KCgBHY4LZQqplMTVLAA--.7396S2;
+	Fri, 19 Jan 2024 17:37:30 +0800 (CST)
+From: Lin Ma <linma@zju.edu.cn>
+To: djohannes@sipsolutions.net,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH net-next v1] nl80211/cfg80211: add nla_policy for S1G band
+Date: Fri, 19 Jan 2024 17:37:24 +0800
+Message-Id: <20240119093724.7852-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cS_KCgBHY4LZQqplMTVLAA--.7396S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw18tF1xZr4Utw1xCrykZrb_yoW8XFWkpr
+	WDJFZFy347tw47JFWrCa18XasrXanrG34rur4YyFyxZ3Z0gw1FqFyY93W3tr1fZFs5t34r
+	XF4ktw15t3Wa93JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	tVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd-B_UUU
+	UU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
 
-On 1/18/24 15:36, Alice Ryhl wrote:
-> diff --git a/rust/kernel/cred.rs b/rust/kernel/cred.rs
-> new file mode 100644
-> index 000000000000..ccec77242dfd
-> --- /dev/null
-> +++ b/rust/kernel/cred.rs
-> @@ -0,0 +1,65 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +//! Credentials management.
-> +//!
-> +//! C header: [`include/linux/cred.h`](../../../../include/linux/cred.h)
+Our detector has identified another case of an incomplete policy.
+Specifically, the commit df78a0c0b67d ("nl80211: S1G band and channel
+definitions") introduced the NL80211_BAND_S1GHZ attribute to
+nl80211_band, but it neglected to update the
+nl80211_match_band_rssi_policy accordingly.
 
-IIRC you can use `srctree/include/..` to avoid the `../..` madness.
+Similar commits that add new band types, such as the initial
+commit 1e1b11b6a111 ("nl80211/cfg80211: Specify band specific min RSSI
+thresholds with sched scan"), the commit e548a1c36b11 ("cfg80211: add 6GHz
+in code handling array with NUM_NL80211_BANDS entries"), and the
+commit 63fa04266629 ("nl80211: Add LC placeholder band definition to
+nl80211_band"), all require updates to the policy.
+Failure to do so could result in accessing an attribute of unexpected
+length in the function nl80211_parse_sched_scan_per_band_rssi.
 
-> +//!
-> +//! Reference: <https://www.kernel.org/doc/html/latest/security/credenti=
-als.html>
-> +
-> +use crate::{
-> +    bindings,
-> +    types::{AlwaysRefCounted, Opaque},
-> +};
-> +
-> +/// Wraps the kernel's `struct cred`.
-> +///
-> +/// # Invariants
-> +///
-> +/// Instances of this type are always ref-counted, that is, a call to `g=
-et_cred` ensures that the
-> +/// allocation remains valid at least until the matching call to `put_cr=
-ed`.
-> +#[repr(transparent)]
-> +pub struct Credential(Opaque<bindings::cred>);
-> +
-> +// SAFETY: By design, the only way to access a `Credential` is via an im=
-mutable reference or an
-> +// `ARef`. This means that the only situation in which a `Credential` ca=
-n be accessed mutably is
-> +// when the refcount drops to zero and the destructor runs. It is safe f=
-or that to happen on any
-> +// thread, so it is ok for this type to be `Send`.
+To resolve this issue, this commit adds the policy for the
+NL80211_BAND_S1GHZ attribute.
 
-IMO the only important part is that calling `drop`/`dec_ref` is OK from
-any thread.
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ net/wireless/nl80211.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-In general I think it might be a good idea to make
-`AlwaysRefCounted: Send + Sync`. But that is outside the scope of this
-patch.
-
-> +unsafe impl Send for Credential {}
-> +
-> +// SAFETY: It's OK to access `Credential` through shared references from=
- other threads because
-> +// we're either accessing properties that don't change or that are prope=
-rly synchronised by C code.
-> +unsafe impl Sync for Credential {}
-> +
-> +impl Credential {
-> +    /// Creates a reference to a [`Credential`] from a valid pointer.
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// The caller must ensure that `ptr` is valid and remains valid for=
- the lifetime of the
-> +    /// returned [`Credential`] reference.
-> +    pub unsafe fn from_ptr<'a>(ptr: *const bindings::cred) -> &'a Creden=
-tial {
-> +        // SAFETY: The safety requirements guarantee the validity of the=
- dereference, while the
-> +        // `Credential` type being transparent makes the cast ok.
-> +        unsafe { &*ptr.cast() }
-> +    }
-> +
-> +    /// Returns the effective UID of the given credential.
-> +    pub fn euid(&self) -> bindings::kuid_t {
-> +        // SAFETY: By the type invariant, we know that `self.0` is valid=
-.
-
-Is `euid` an immutable property, or why does this memory access not race
-with something?
-
---=20
-Cheers,
-Benno
-
-> +        unsafe { (*self.0.get()).euid }
-> +    }
-> +}
-> +
-> +// SAFETY: The type invariants guarantee that `Credential` is always ref=
--counted.
-> +unsafe impl AlwaysRefCounted for Credential {
-> +    fn inc_ref(&self) {
-> +        // SAFETY: The existence of a shared reference means that the re=
-fcount is nonzero.
-> +        unsafe { bindings::get_cred(self.0.get()) };
-> +    }
-> +
-> +    unsafe fn dec_ref(obj: core::ptr::NonNull<Credential>) {
-> +        // SAFETY: The safety requirements guarantee that the refcount i=
-s nonzero. The cast is okay
-> +        // because `Credential` has the same representation as `struct c=
-red`.
-> +        unsafe { bindings::put_cred(obj.cast().as_ptr()) };
-> +    }
-> +}
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 60877b532993..980300621a60 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -911,6 +911,7 @@ nl80211_match_band_rssi_policy[NUM_NL80211_BANDS] = {
+ 	[NL80211_BAND_5GHZ] = { .type = NLA_S32 },
+ 	[NL80211_BAND_6GHZ] = { .type = NLA_S32 },
+ 	[NL80211_BAND_60GHZ] = { .type = NLA_S32 },
++	[NL80211_BAND_S1GHZ] = { .type = NLA_S32 },
+ 	[NL80211_BAND_LC]    = { .type = NLA_S32 },
+ };
+ 
+-- 
+2.34.1
 
 
