@@ -1,119 +1,138 @@
-Return-Path: <linux-kernel+bounces-31004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBAD083275B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5563383275C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:09:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEE7C1C21140
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:09:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 886861C23250
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E223CF47;
-	Fri, 19 Jan 2024 10:07:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D8B53C087
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:07:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63303C496;
+	Fri, 19 Jan 2024 10:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="lWjBuygq"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E393C46B
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705658872; cv=none; b=B/BgzzsS+u68pEdy0TV914urYhSRlbAganBWmW2xUqZ3Ictw6Xy2sx78PINs7kuNrUq/7otVeqKD7jS1PoNMCCjJOQfpLd9rCkJjK1p/bJdg+ng0dwqljXbbSGfGB4xkEHc4KiTTdTBpol3ap60+5dFYQilptb0TIL2PvAXR4SM=
+	t=1705658974; cv=none; b=lgnFGs8/cAe75SUkALe5u4tNdxFK8xLMafed6s1gAH+wBgnvwCQhG5qGxWb+bsJkN3mpH6JbwjkgeQnt3PeI7lR7J5LLTdKx4SuVjq3c8gnrZKXSvuEH4wnFm6/HYJnt2PKfaXSmBZXqOl+uhRS7pmDb1Q+cvhLRXIte5to/Gkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705658872; c=relaxed/simple;
-	bh=Z8SBMIkxuHo0nr1CRCCR/KAj0F4wPTWY/y+en285gUo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aX+WgcV1mnl8KbpfV/Tr3p2jhm+IDTt14afL0WrRpJRkZQdOQEmuMmrs409IWub/rYALYxTGu13LX6fGSKLfmwUOsdBnXMF0rRXmR6zz9gh6gDf7wK52nrp1YTK5cPyp1+R+UGU3gYMLD9qZR8riAsc8flBf/+vn8+DIYxKjIys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F965DA7;
-	Fri, 19 Jan 2024 02:08:34 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 057BD3F73F;
-	Fri, 19 Jan 2024 02:07:45 -0800 (PST)
-Message-ID: <52631d2d-a2bb-4e86-af59-ff67bbf0b32a@arm.com>
-Date: Fri, 19 Jan 2024 10:07:43 +0000
+	s=arc-20240116; t=1705658974; c=relaxed/simple;
+	bh=lUAVtgaJ0bprSpHAgPNiOEqKghOV7Hz56cuKVazrV94=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fZ9D5CVFRnXMUY3r5rjXf/B/NDqVF4louns/zKPC5rZdJQw45mI0skpyq2yGGTZV2dOkgeTZQm598595YJdL3AqmDAZi5lgUD2eAgKgUYLJs3M/tfTYE92IxhSV/qIlYnjw4lKHI/1tJAGyVcPQCW1Hu7j2Tpcs6bnYdz5wvnDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=lWjBuygq; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e7dd8bce8so610427e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:09:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1705658971; x=1706263771; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nujauiSJ02Zrdg5BkB4mk+zSnAXh7vp4Jlf9tWWb5Vs=;
+        b=lWjBuygqNVUOHlk0jA9ECKf2TejBawZF8S6inNweMf/aS6+Xo6nCgovYXILIT3y9E6
+         lIyHFS0Evrm1xLCo+v7lMbDKdPjTtijXIwPEayC5+63PeiT/ZKAdF+gzgjPF/enZHPIJ
+         HjFDrKpFvyRcEdGAKF+abgRS5JR9eJc/Q6Ag+mJgOzqhdpuOIRIqIStn1sMsZLrv+pFC
+         u9/Yb0IaOYAAAlAz32F6y6f5wrvuydJyKEl0H7RyNLwMHn3Nf0S17smCcCAiodg6p9+l
+         nHAvSrdLLvVsWMVrqtaBYfnZY8IAwriIwKG1rYapUZ+Wk63E4wqftwliykp4d/IKtbQH
+         MDjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705658971; x=1706263771;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nujauiSJ02Zrdg5BkB4mk+zSnAXh7vp4Jlf9tWWb5Vs=;
+        b=dO5MIZ1os2k8W2wsBdyR2iSn/vAv10ZyA+EsSdfKevBnRXmaYKQZuds2B2s3dNL61v
+         5Zeq4EkgVuD/TItnHJ1g6fYaqM0iUU/g7oDG+sOA06Y6XphnYz3JsHI78Hkn8/x3rCpB
+         A7kx8XvtXjZczZhA3RkF/25ZREouYhsCc09xVD6PO9PH3Tk/XnnMbs7bbFeqoD+kf/7V
+         up5nWdrKhB2GXANzjzairm7AWi8JdnNK4ud9JmVcKMTXRqsUfk+MEquDgHvPjY7OEKy5
+         8FwFSVzF9bbpJDWPrqlMcuvj/DhQdq9EobZHvWAVv9MKuVvUfiGSnyQvfvSMOGO0LWkN
+         etzw==
+X-Gm-Message-State: AOJu0Ywn/Q0yxYQcVrE2UIVPr+LlXrdZioVIS8nFwPQ2g5EYgPZ4ErPL
+	exulKyCFs9UFW9nQbi7B40Wu36NX7IDWjGcUgJq/LTvaG6xTU7PpD0xso4escsxI0KUS+dX4yBs
+	bCIb5RlV/agqZNFgOqga5PPJDjjNdDVWeMuExPQ==
+X-Google-Smtp-Source: AGHT+IHa/MIEYQlMLAmgsbbIMQodojNHus//+YiXCwZclJTJDmp0EnnAZVroAF6CDUc971U4uLo9+++Hzxp9zvHBhpo=
+X-Received: by 2002:a05:6512:1328:b0:50e:e557:f1c4 with SMTP id
+ x40-20020a056512132800b0050ee557f1c4mr675944lfu.0.1705658970552; Fri, 19 Jan
+ 2024 02:09:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/8] coresight: Remove the 'enable' field.
-Content-Language: en-US
-To: James Clark <james.clark@arm.com>, coresight@lists.linaro.org
-Cc: Mike Leach <mike.leach@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, Tao Zhang
- <quic_taozha@quicinc.com>, Mao Jinlong <quic_jinlmao@quicinc.com>
-References: <20231212155407.1429121-1-james.clark@arm.com>
- <20231212155407.1429121-6-james.clark@arm.com>
- <82e9dbed-281c-4a87-8c0b-a2b1cb0a2247@arm.com>
- <cb65b58f-5c6a-ad99-095c-70b9f013b3e5@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <cb65b58f-5c6a-ad99-095c-70b9f013b3e5@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <170498463783.20080.10723421328706946354.git-patchwork-notify@kernel.org>
+ <mhng-2a34d0e2-170f-47a5-a688-ab454a70f06b@palmer-ri-x1c9>
+In-Reply-To: <mhng-2a34d0e2-170f-47a5-a688-ab454a70f06b@palmer-ri-x1c9>
+From: Anup Patel <apatel@ventanamicro.com>
+Date: Fri, 19 Jan 2024 15:39:18 +0530
+Message-ID: <CAK9=C2UV8J52a1pZjsNpFNwpUKn5K3nhS-+bS-3pohDwi3HrfQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/5] RISC-V SBI debug console extension support
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, nathan@kernel.org, 
+	linux-riscv@lists.infradead.org, Paul Walmsley <paul.walmsley@sifive.com>, 
+	jirislaby@kernel.org, Conor Dooley <conor@kernel.org>, ajones@ventanamicro.com, 
+	linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 19/01/2024 09:59, James Clark wrote:
-> 
-> 
-> On 08/01/2024 14:42, Suzuki K Poulose wrote:
->> Hi James
->>
->> +Cc: Tao Zhang <quic_taozha@quicinc.com>
->> +Cc: Mao Jinlong <quic_jinlmao@quicinc.com>
->>
->> On 12/12/2023 15:54, James Clark wrote:
->>> 'enable', which probably should have been 'enabled', is only ever read
->>> in the core code in relation to controlling sources, and specifically
->>> only sources in sysfs mode. Confusingly it's not labelled as such and
->>> relying on it can be a source of bugs like the one fixed by
->>> commit 078dbba3f0c9 ("coresight: Fix crash when Perf and sysfs modes are
->>> used concurrently").
->>>
->>> Most importantly, it can only be used when the coresight_mutex is held
->>> which is only done when enabling and disabling paths in sysfs mode, and
->>> not Perf mode.
->>
->>
->> I think we may be able to relax this a bit for the syfs. The sole reason
->> for holding the mutex is for the "build_path" (and get_enabled_sink)
->> where we need to make sure that no devices are removed/added. We hold
->> necessary refcount on the device and the module (via
->> coresight_grab_device()). After which, we should be able to release the
->> mutex and perform the rest without it in coresight_enable()
->>
-> 
-> After looking at the per-sink trace ID maps a bit more, I'm not sure if
-> it will be worth the mental effort and risk to relax the sysfs locking
-> right now.
-> 
-> We also currently have other things like writing to the global
-> tracer_path which are outside of build_path/get_enabled_sink. But for
-> the per-sink maps change we'll also have some tracking for sysfs mode
-> about which sink map was used for each source and sink. And this state
-> will be accessed across multiple sources, and after building the path,
-> so it makes sense to leave the locking as-is for now IMO.
-> 
-> I also can't see a realistic gain from doing it, most sysfs use cases
-> would be done from a single threaded script. Maybe in the future we
-> could do the change to move the per-device locks into struct
-> coresight_device, and then the core code can use them for things that
-> need to be locked, but don't need the full coresight_mutex. And then
-> that would also work for the per-sink case. But at the moment each
-> device has its own lock so that's difficult.
+On Sat, Jan 13, 2024 at 12:00=E2=80=AFAM Palmer Dabbelt <palmer@dabbelt.com=
+> wrote:
+>
+> On Thu, 11 Jan 2024 06:50:37 PST (-0800), patchwork-bot+linux-riscv@kerne=
+l.org wrote:
+> > Hello:
+> >
+> > This series was applied to riscv/linux.git (for-next)
+> > by Palmer Dabbelt <palmer@rivosinc.com>:
+> >
+> > On Fri, 24 Nov 2023 12:39:00 +0530 you wrote:
+> >> The SBI v2.0 specification is now frozen. The SBI v2.0 specification d=
+efines
+> >> SBI debug console (DBCN) extension which replaces the legacy SBI v0.1
+> >> functions sbi_console_putchar() and sbi_console_getchar().
+> >> (Refer v2.0-rc5 at https://github.com/riscv-non-isa/riscv-sbi-doc/rele=
+ases)
+> >>
+> >> This series adds support for SBI debug console (DBCN) extension in
+> >> Linux RISC-V.
+> >>
+> >> [...]
+> >
+> > Here is the summary with links:
+> >   - [v5,1/5] RISC-V: Add stubs for sbi_console_putchar/getchar()
+> >     https://git.kernel.org/riscv/c/f503b167b660
+> >   - [v5,2/5] RISC-V: Add SBI debug console helper routines
+> >     https://git.kernel.org/riscv/c/f43fabf444ca
+> >   - [v5,3/5] tty/serial: Add RISC-V SBI debug console based earlycon
+> >     https://git.kernel.org/riscv/c/c77bf3607a0f
+> >   - [v5,4/5] tty: Add SBI debug console support to HVC SBI driver
+> >     https://git.kernel.org/riscv/c/88ead68e764c
+> >   - [v5,5/5] RISC-V: Enable SBI based earlycon support
+> >     https://git.kernel.org/riscv/c/50942ad6ddb5
+> >
+> > You are awesome, thank you!
+>
+> Nathan points out that this has some semantic conflicts with a patch in
+> Greg's TTY tree: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/t=
+ty.git/commit/?id=3Df32fcbedbe9290565e4eac3fd7c4c451d5478787
+>
+> So I think the best bet is to wait on Greg's patch to land in Linus'
+> tree, and then base a v6 of this patch set on that merged patch.  I'm
+> going to drop this one from for-next.
 
-Ok, we could come back to this after the per-sink trace id pool work.
-My observation was about the inconsistency between the perf vs sysfs 
-mode as you mentioned in the above code.
+Greg's patch is now available in upstream Linux so I will rebase and
+send out v6.
 
-Suzuki
-
-
+Thanks,
+Anup
 
