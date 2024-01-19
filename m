@@ -1,167 +1,112 @@
-Return-Path: <linux-kernel+bounces-30861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59EB6832537
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11CA383253A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:47:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EA851C224F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:46:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 443C81C234B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08EDDD52B;
-	Fri, 19 Jan 2024 07:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="L1XXYsT8"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB179D53F;
+	Fri, 19 Jan 2024 07:46:55 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5885DDC5
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB62ED518
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705650350; cv=none; b=UH+wrF4juPYWEMWkd/puUMyWSpLXVv6ah9ygEydpUkvObTgEnqSJWExc21IdoGQMPqsUPYuQ2S3CuO44tAgvOQCIY3PhpXvQ/T3TzzbLWCHWBx+c6Vooi2S9RE6A7Q79ZoJMg2NL2vY+KVydexQ/blcKnp/3FSBbI4Gs9Qbq41o=
+	t=1705650415; cv=none; b=n+7zPhN/9OE0IoaWbKOSQhbYPYHD86msDSS/VXlCzDz/ZUncSPg4wka5FU2+SR38YO+N+88w66Ln7IWJ09iYU6H6oUMpvulozF19VlGNfM4HzcPWxcKFK114GD6qcqspeu3xHpj4MOGtHsheQKDYbIvSkL0VXUFFnod5L3BwbpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705650350; c=relaxed/simple;
-	bh=Q4LIJG2y70z4o4cUYu3Cup/EpTdk2M6eRV1q2WORKVY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uyDOUsdDDYgxKOb2XSRqi5i6h4V1hvQ89eLltAlA47uGYv7dgN3U2hOoh86HuUs7+PNWC3v0GUK/ksJOydFcNk09OobNgwkFSqXQwvFvqxth39tzrrZEkn7QUA66s3pQvlxzoW4OmvKZsGGgNKBLFvnv5cYXlZ3mMvc7Oj5BaP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=L1XXYsT8; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e9ef9853bso887725e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:45:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705650347; x=1706255147; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=axlxMn3mKxrZ+z0NjINZroTLytSc1sa1mWx0FPrBc1I=;
-        b=L1XXYsT8dYS1hVglZuzYBiRt8v747GwbqwRhuaFYVzMelUvha9CtC+vDeTp4n7jE4e
-         qUbfy9N5XcRmfx6KwC71y6/1Xt1wqVFVjye32tCddB/8c+QDMlsToQf4LwXNFeiIxRqc
-         zMWxMywgpESrmFNb78GkNqCWLB4bFz6wDur+Xw7EbILe9neMPYeDPFsYSBr45s4d8m92
-         XvI0gdD0x3RFuoyMYRTM/LJ1QgMaf1SZyEdWdh3ZNKav2+yj/J9qdf89SNs4LPpS9JwV
-         kZWSRBBf4ZVSBGk/QakX5rsogiKLc7GJ1C/Wu0hqFQmhEXwqkQYOUrO/wORIuaD9vDv2
-         1PHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705650347; x=1706255147;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=axlxMn3mKxrZ+z0NjINZroTLytSc1sa1mWx0FPrBc1I=;
-        b=cJo9HS4wiIvFVQkDUXGi85cAH2BKYBWirDdVAiM4fxk9BAq58BdcjJpPASbB7F3m/d
-         NvqC1SdFRLUW8dRieeIXkrjCtwEfhEpNenIjLMCMPAQ0Jsz08zjMVDr8GDElnizT7/mW
-         AvGiLT+pc3LHCKUX/CBvKmPS5kphct+4EV5hdykUd+eroP23aR7LWKBwcTVb0Wk4ga5H
-         1u/PHNykaW2k7x4xUnwilvqLJ8kTyG8dRE5Nal/Nlahdy9QIP5v/A4hNyn+5eg8UYSM4
-         1SjdBBQS6NpyZfgW2jqG97KtA3Pphfk+RIbxeNL1js7SyxeTitYfLFKikV8HKYunPiOW
-         am5A==
-X-Gm-Message-State: AOJu0YxmEy+m27AJmg1K6abGgl+DozXtaGcl08dQGJITxbtCaaG9Ut1Q
-	8Olj+ifaQ/rk0bL1mAEOpmE0zUzfn9VFeHYRYvan+MU3duD5TVS67W0f5maYiRs=
-X-Google-Smtp-Source: AGHT+IFDofa/AFb3zEbQS9BWqodcUqjTtN/sp/WtGUkdrc4wTm5faoFC+sDHVcwObz4Ml2d7rzEcEA==
-X-Received: by 2002:a05:600c:4248:b0:40e:4380:c8e5 with SMTP id r8-20020a05600c424800b0040e4380c8e5mr261612wmm.49.1705650346897;
-        Thu, 18 Jan 2024 23:45:46 -0800 (PST)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id i6-20020adfb646000000b00337bc2176f6sm5800237wre.81.2024.01.18.23.45.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 23:45:46 -0800 (PST)
-Message-ID: <6d8f77e2-7257-4a6c-96de-fd3f1c821b51@linaro.org>
-Date: Fri, 19 Jan 2024 07:45:45 +0000
+	s=arc-20240116; t=1705650415; c=relaxed/simple;
+	bh=U9lDSuASbh6d5ZjnANlzasKqEFRINfeIrxMa70xYl8I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jzDB9szACf39aUFvjsXJHW/svrf3xWnEGelHIfVLAGkRjKL9qewX0t7hb3C26+qxt2m9yApK82LCiGYix69JCCFA7Eu3+wzT86eRLVYuSj1gItVfnzOuS9KBxwpGe+tZcGqICxmZl7J8Hyr2qsGQlG3w1s8oqJ15nvQ+dNtSkTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: b295426561af4f67bc70b69a7c2ea1ee-20240119
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:c4acb646-4d71-44fb-aa5e-55f74e42c7d6,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:5
+X-CID-INFO: VERSION:1.1.35,REQID:c4acb646-4d71-44fb-aa5e-55f74e42c7d6,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-META: VersionHash:5d391d7,CLOUDID:78f5572f-1ab8-4133-9780-81938111c800,B
+	ulkID:240119154645RWLL5RGM,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: b295426561af4f67bc70b69a7c2ea1ee-20240119
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1189345623; Fri, 19 Jan 2024 15:46:42 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 3CD5BE000EB9;
+	Fri, 19 Jan 2024 15:46:42 +0800 (CST)
+X-ns-mid: postfix-65AA28E2-47313902
+Received: from kernel.. (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 648F9E000EB9;
+	Fri, 19 Jan 2024 15:46:36 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: neil.armstrong@linaro.org,
+	khilman@baylibre.com,
+	jbrunet@baylibre.com,
+	martin.blumenstingl@googlemail.com
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-amlogic@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] meson-mx-socinfo: Fix possible null-pointer dereference issues in meson_mx_socinfo_init
+Date: Fri, 19 Jan 2024 15:46:35 +0800
+Message-Id: <20240119074635.265218-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/5] ASoC: codecs: lpass-wsa-macro: fix compander
- volume hack
-Content-Language: en-US
-To: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>
-Cc: Banajit Goswami <bgoswami@quicinc.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20240118165811.13672-1-johan+linaro@kernel.org>
- <20240118165811.13672-5-johan+linaro@kernel.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20240118165811.13672-5-johan+linaro@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
+In meson_mx_socinfo_revision, kasprintf() returns a pointer
+to dynamically allocated memory which can be NULL upon failure.
 
+Similarly, the kstrdup_const in the meson_mx_socinfo_soc_id
+returns a null pointer when it fails. Ensure the allocation was successfu=
+l
+by checking the pointer validity. Avoid null pointer dereference issues.
 
-On 18/01/2024 16:58, Johan Hovold wrote:
-> The LPASS WSA macro codec driver is updating the digital gain settings
-> behind the back of user space on DAPM events if companding has been
-> enabled.
-> 
-> As compander control is exported to user space, this can result in the
-> digital gain setting being incremented (or decremented) every time the
-> sound server is started and the codec suspended depending on what the
-> UCM configuration looks like.
-> 
-> Soon enough playback will become distorted (or too quiet).
-> 
-> This is specifically a problem on the Lenovo ThinkPad X13s as this
-> bypasses the limit for the digital gain setting that has been set by the
-> machine driver.
-> 
-> Fix this by simply dropping the compander gain offset hack. If someone
-> cares about modelling the impact of the compander setting this can
-> possibly be done by exporting it as a volume control later.
-> 
-> Note that the volume registers still need to be written after enabling
-> clocks in order for any prior updates to take effect.
-> 
-> Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
-> Cc: stable@vger.kernel.org      # 5.11
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
->   sound/soc/codecs/lpass-wsa-macro.c | 7 -------
->   1 file changed, 7 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-> index 7e21cec3c2fb..6ce309980cd1 100644
-> --- a/sound/soc/codecs/lpass-wsa-macro.c
-> +++ b/sound/soc/codecs/lpass-wsa-macro.c
-> @@ -1584,7 +1584,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
->   	u16 gain_reg;
->   	u16 reg;
->   	int val;
-> -	int offset_val = 0;
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ drivers/soc/amlogic/meson-mx-socinfo.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-TBH, as discussed in my previous review we should just remove 
-spkr_gain_offset and associated code path.
+diff --git a/drivers/soc/amlogic/meson-mx-socinfo.c b/drivers/soc/amlogic=
+/meson-mx-socinfo.c
+index 92125dd65f33..9c0296599561 100644
+--- a/drivers/soc/amlogic/meson-mx-socinfo.c
++++ b/drivers/soc/amlogic/meson-mx-socinfo.c
+@@ -160,6 +160,12 @@ static int __init meson_mx_socinfo_init(void)
+ 							   metal_rev);
+ 	soc_dev_attr->soc_id =3D meson_mx_socinfo_soc_id(major_ver, metal_rev);
+=20
++	if (!soc_dev_attr->revision || !soc_dev_attr->soc_id) {
++		kfree_const(soc_dev_attr->revision);
++		kfree_const(soc_dev_attr->soc_id);
++		kfree(soc_dev_attr);
++		return -ENOMEM;
++	}
+ 	soc_dev =3D soc_device_register(soc_dev_attr);
+ 	if (IS_ERR(soc_dev)) {
+ 		kfree_const(soc_dev_attr->revision);
+--=20
+2.39.2
 
-
---srini
-
->   	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
->   
->   	if (w->shift == WSA_MACRO_COMP1) {
-> @@ -1623,10 +1622,8 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
->   					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
->   					CDC_WSA_RX_PGA_HALF_DB_MASK,
->   					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
-> -			offset_val = -2;
->   		}
->   		val = snd_soc_component_read(component, gain_reg);
-> -		val += offset_val;
->   		snd_soc_component_write(component, gain_reg, val);
->   		wsa_macro_config_ear_spkr_gain(component, wsa,
->   						event, gain_reg);
-> @@ -1654,10 +1651,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
->   					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
->   					CDC_WSA_RX_PGA_HALF_DB_MASK,
->   					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
-> -			offset_val = 2;
-> -			val = snd_soc_component_read(component, gain_reg);
-> -			val += offset_val;
-> -			snd_soc_component_write(component, gain_reg, val);
->   		}
->   		wsa_macro_config_ear_spkr_gain(component, wsa,
->   						event, gain_reg);
 
