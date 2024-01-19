@@ -1,174 +1,168 @@
-Return-Path: <linux-kernel+bounces-31063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DF2D832838
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:55:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FB6783283B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EC991F218FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:55:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04D41B2409C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:55:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 349754C3CD;
-	Fri, 19 Jan 2024 10:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D3C4CDE5;
+	Fri, 19 Jan 2024 10:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zgccc3lJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="avoTUk8W"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637B237140;
-	Fri, 19 Jan 2024 10:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F8F4C632;
+	Fri, 19 Jan 2024 10:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705661604; cv=none; b=jg/cBa9tIW3MUI9MsQXJiNNRyE76/wNxNGmfOHpAz5z1NIZe3Woai8KSan12/dFiK48ipxTGXq1C91cm5jQTh5B3IWYBJx32N8ryt9k2eFIj5eF0cY62Vkwux4QkQSJ+71kkLZZ6lRcPYGPj3ihGqxU7c0Aa9ISvC7K6LXQ4TM8=
+	t=1705661612; cv=none; b=ic35RpKix/Ykja2iPIb68g6mTmlrKYyx07V1hH9MqMR6zklUGdxg0eFj49F2cWwHDe03c5BC463GIWqz77r8qZ86bYvGOQdRYjcTFWWMfZfNPisg5R/0OIf4QaNIsEC5aHnGWFM7BgYsxGHgeukKaRcmnABSZ3ZNU+GeYiidMLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705661604; c=relaxed/simple;
-	bh=Mxlek2OcZc5MOxfxdA6PCxCO13PphNkAbiyjwjOP3n4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c4LQQQdGwOH3u101eRLPGS3X8C0j7pzj1wN6EuCJ98EDXuNmIXG3hijy1W/JOSqQF22vNjHCg3002EhQ6KQlJbMGzqMqRaUiY6F52kslNnjR+NiNNqbXrVhGrgkPHA0aIWEL2r0MCRC8Vy0dB6cQMsWJeEM0mhj6pH+aEwMCQSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zgccc3lJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC28C433F1;
-	Fri, 19 Jan 2024 10:53:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705661603;
-	bh=Mxlek2OcZc5MOxfxdA6PCxCO13PphNkAbiyjwjOP3n4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Zgccc3lJJoTASngAWnHQZtNX0yxhbJXzxkKeqOV6fOANxe/S/Cs1XsUHaq1TdR+by
-	 I+tMS/bYViVVAnBrSstu+XCL9uhuuWIk57ifydnss08BhMxcJTFmfVZBl/i+ajSdoc
-	 oFvHikGHs3rblgvT+aB/h/qTOao48Bc4ORnsqWdzSal1+hHR8VAUDAHquJAKEBRQDw
-	 PBd0yR/jg4KXynaQcXIz37Ot+koc4z5g1BPIz6ccfw4NBGKY8jHFLpagb/HwwCNp0p
-	 /Hwk+o6zAjVmoORm4VOk873P/BGIovG6PqbzW1f9LI2m1lhlyVtSdn3ItY0qYugxmw
-	 iAtaeKs8iczOg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6B747CE114A; Fri, 19 Jan 2024 02:53:23 -0800 (PST)
-Date: Fri, 19 Jan 2024 02:53:23 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Chen Zhongjin <chenzhongjin@huawei.com>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, yangjihong1@huawei.com,
-	naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-	davem@davemloft.net, mhiramat@kernel.org, akpm@linux-foundation.org,
-	tglx@linutronix.de, peterz@infradead.org, pmladek@suse.com,
-	dianders@chromium.org, npiggin@gmail.com, mpe@ellerman.id.au,
-	jkl820.git@gmail.com, juerg.haefliger@canonical.com,
-	rick.p.edgecombe@intel.com, eric.devolder@oracle.com,
-	mic@digikod.net
-Subject: Re: [PATCH v2] kprobes: Use synchronize_rcu_tasks_rude in
- kprobe_optimizer
-Message-ID: <6d405c7c-2ad1-499a-b609-a7fbf34a8f5e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240118021842.290665-1-chenzhongjin@huawei.com>
- <20240117212646.5f0ddf0c@gandalf.local.home>
- <47e87ff3-2925-4671-89a6-067f36f25d19@paulmck-laptop>
+	s=arc-20240116; t=1705661612; c=relaxed/simple;
+	bh=CFyBN3hM6Icm5piROwxSXNJbjOUUSK0D7k+x7CC40aU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EusJohIYDrIfFluJ6kYlaAvrXu+4UXB7Fx3qL58YeeVjpI5T8JBAXmOoWpWpPRNrPJw66Z1EhKxJCTtYWkkAE4Y7HzWYm3bLmbUkdozCcF0Jd+dRz7xXX17qZT64OAlDQFKd0Ejc0jYkT3tueiFcwCtsM8SxS3gq2uCN37y3ToA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=avoTUk8W; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705661608;
+	bh=CFyBN3hM6Icm5piROwxSXNJbjOUUSK0D7k+x7CC40aU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=avoTUk8WRN/wl1do+O2nS/ru8pUagCwo4abnUWi1pX+a2UJBgBv/QnAf8ajcp/IRX
+	 rn7dvUSc6EWvANhphTJmt3tJaslmfHGyXq05qKFHILrnX3hQzV8EDK5PszgnmTvIc0
+	 M5cyBnu2ZLRTuJiqyIMvEUKNkiNoaLuuxpMNbf05/XvhVJjmy7Ji9Vbo7Bft8JW14f
+	 rkJZIpie5RTHZdSfoOCkWnrJ92vqbz34HZwxTy8EGfJ9Wts8CCASh/jwXUovDOgaBm
+	 Ee3tMs5+O+EndXRO7krQWzoKAKnYRoMF3o78oqyfHjMMBbHUdJg2MbzZLNApmb8gg1
+	 ZNvAuD/5vERSA==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5EC20378202D;
+	Fri, 19 Jan 2024 10:53:27 +0000 (UTC)
+Message-ID: <30dca707-2b48-4309-8567-8c1297a75db5@collabora.com>
+Date: Fri, 19 Jan 2024 11:53:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47e87ff3-2925-4671-89a6-067f36f25d19@paulmck-laptop>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/3] dt-bindings: mailbox: Add mediatek,gce-props.yaml
+Content-Language: en-US
+To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+ linaro-mm-sig@lists.linaro.org, Jason-ch Chen <jason-ch.chen@mediatek.com>,
+ Johnson Wang <johnson.wang@mediatek.com>,
+ Singo Chang <singo.chang@mediatek.com>, Nancy Lin <nancy.lin@mediatek.com>,
+ Shawn Sung <shawn.sung@mediatek.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20240119063224.29671-1-jason-jh.lin@mediatek.com>
+ <20240119063224.29671-2-jason-jh.lin@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240119063224.29671-2-jason-jh.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 18, 2024 at 06:44:54AM -0800, Paul E. McKenney wrote:
-> On Wed, Jan 17, 2024 at 09:26:46PM -0500, Steven Rostedt wrote:
-> > On Thu, 18 Jan 2024 02:18:42 +0000
-> > Chen Zhongjin <chenzhongjin@huawei.com> wrote:
-> > 
-> > > There is a deadlock scenario in kprobe_optimizer():
-> > > 
-> > > pid A				pid B			pid C
-> > > kprobe_optimizer()		do_exit()		perf_kprobe_init()
-> > > mutex_lock(&kprobe_mutex)	exit_tasks_rcu_start()	mutex_lock(&kprobe_mutex)
-> > > synchronize_rcu_tasks()		zap_pid_ns_processes()	// waiting kprobe_mutex
-> > > // waiting tasks_rcu_exit_srcu	kernel_wait4()
-> > > 				// waiting pid C exit
-> > > 
-> > > To avoid this deadlock loop, use synchronize_rcu_tasks_rude() in kprobe_optimizer()
-> > > rather than synchronize_rcu_tasks(). synchronize_rcu_tasks_rude() can also promise
-> > > that all preempted tasks have scheduled, but it will not wait tasks_rcu_exit_srcu.
-> > > 
-> > 
-> > Did lockdep detect this? If not, we should fix that.
-> > 
-> > I'm also thinking if we should find another solution, as this seems more of
-> > a work around than a fix.
+Il 19/01/24 07:32, Jason-JH.Lin ha scritto:
+> Add mediatek,gce-props.yaml for common GCE properties that is used for
+> both mailbox providers and consumers. We place the common property
+> "mediatek,gce-events" in this binding currently.
 > 
-> My suggestion is at 526b12e4-4bb0-47b1-bece-66b47bfc0a92@paulmck-laptop.
+> The property "mediatek,gce-events" is used for GCE event ID corresponding
+> to a hardware event signal sent by the hardware or a sofware driver.
+> If the mailbox providers or consumers want to manipulate the value of
+> the event ID, they need to know the specific event ID.
 > 
-> Better suggestions are of course welcome.  ;-)
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> ---
+>   .../bindings/mailbox/mediatek,gce-props.yaml  | 52 +++++++++++++++++++
+>   1 file changed, 52 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
 > 
-> > > Fixes: a30b85df7d59 ("kprobes: Use synchronize_rcu_tasks() for optprobe with CONFIG_PREEMPT=y")
-> > > Signed-off-by: Chen Zhongjin <chenzhongjin@huawei.com>
-> > > ---
-> > > v1 -> v2: Add Fixes tag
-> > > ---
-> > >  arch/Kconfig     | 2 +-
-> > >  kernel/kprobes.c | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > index f4b210ab0612..dc6a18854017 100644
-> > > --- a/arch/Kconfig
-> > > +++ b/arch/Kconfig
-> > > @@ -104,7 +104,7 @@ config STATIC_CALL_SELFTEST
-> > >  config OPTPROBES
-> > >  	def_bool y
-> > >  	depends on KPROBES && HAVE_OPTPROBES
-> > > -	select TASKS_RCU if PREEMPTION
-> > > +	select TASKS_RUDE_RCU
-> > 
-> > Is this still a bug if PREEMPTION is not enabled?
-> 
-> Both "select" clauses would be needed for this patch, if I understand
-> correctly.
-> 
-> 							Thanx, Paul
-> 
-> > -- Steve
-> > 
-> > >  
-> > >  config KPROBES_ON_FTRACE
-> > >  	def_bool y
-> > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > > index d5a0ee40bf66..09056ae50c58 100644
-> > > --- a/kernel/kprobes.c
-> > > +++ b/kernel/kprobes.c
-> > > @@ -623,7 +623,7 @@ static void kprobe_optimizer(struct work_struct *work)
-> > >  	 * Note that on non-preemptive kernel, this is transparently converted
-> > >  	 * to synchronoze_sched() to wait for all interrupts to have completed.
-> > >  	 */
-> > > -	synchronize_rcu_tasks();
-> > > +	synchronize_rcu_tasks_rude();
+> diff --git a/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml b/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
+> new file mode 100644
+> index 000000000000..68b519ff089f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mailbox/mediatek,gce-props.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek Global Command Engine Common Propertes
+> +
+> +maintainers:
+> +  - Houlong Wei <houlong.wei@mediatek.com>
+> +
+> +description:
+> +  The Global Command Engine (GCE) is an instruction based, multi-threaded,
+> +  single-core command dispatcher for MediaTek hardware. The Command Queue
+> +  (CMDQ) mailbox driver is a driver for GCE, implemented using the Linux
+> +  mailbox framework. It is used to receive messages from mailbox consumers
+> +  and configure GCE to execute the specified instruction set in the message.
+> +  We use mediatek,gce-mailbox.yaml to define the properties for CMDQ mailbox
+> +  driver. A device driver that uses the CMDQ driver to configure its hardware
+> +  registers is a mailbox consumer. The mailbox consumer can request a mailbox
+> +  channel corresponding to a GCE hardware thread to send a message, specifying
+> +  that the GCE thread to configure its hardware. The mailbox provider can also
+> +  reserved a mailbox channel to configure GCE hardware register by the spcific
+> +  GCE thread. This binding defines the common GCE properties for both mailbox
+> +  provider and consumers.
+> +
+> +properties:
+> +  mediatek,gce-events:
+> +    description:
+> +      GCE has an event table in SRAM, consisting of 1024 event IDs (0~1023).
+> +      Each event ID has a boolean event value with the default value 0.
+> +      The property mediatek,gce-events is used to obtain the event IDs.
+> +      Some gce-events are hardware-bound and cannot be changed by software.
+> +      For instance, in MT8195, when VDO0_MUTEX is stream done, VDO_MUTEX will
+> +      send an event signal to GCE, setting the value of event ID 597 to 1.
+> +      Similarly, in MT8188, the value of event ID 574 will be set to 1 when
+> +      VOD0_MUTEX is stream done.
+> +      On the other hand, some gce-events are not hardware-bound and can be
+> +      changed by software. For example, in MT8188, we can set the value of
+> +      event ID 855, which is not bound to any hardware, to 1 when the driver
+> +      in the secure world completes a task. However, in MT8195, event ID 855
+> +      is already bound to VDEC_LAT1, so we need to select another event ID to
+> +      achieve the same purpose. This event ID can be any ID that is not bound
+> +      to any hardware and is not yet used in any software driver.
+> +      To determine if the event ID is bound to the hardware or used by a
+> +      software driver, refer to the GCE header
+> +      include/dt-bindings/gce/<chip>-gce.h of each chip.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 1
+> +    maxItems: 1024
 
-The full comment reads as follows:
+maxItems: 1024 seems to be a bit too many... this means that one devicetree node
+may have up to 1024 gce events, which is impossible! If a driver needed all of
+the 1024 events, this means that it's not an user of the GCE, but the GCE itself!
 
-	/*
-	 * Step 2: Wait for quiesence period to ensure all potentially
-	 * preempted tasks to have normally scheduled. Because optprobe
-	 * may modify multiple instructions, there is a chance that Nth
-	 * instruction is preempted. In that case, such tasks can return
-	 * to 2nd-Nth byte of jump instruction. This wait is for avoiding it.
-	 * Note that on non-preemptive kernel, this is transparently converted
-	 * to synchronoze_sched() to wait for all interrupts to have completed.
-	 */
+Imagine seeing a devicetree node with 1024 array entries for mediatek,gce-events...
 
-Except that synchronize_rcu_tasks_rude() isn't going to wait for any
-preempted tasks.  It instead waits only for regions of code that have
-disabled preemption (or interrrupts or ...).  So either the above comment
-is wrong and needs to be fixed, or this change breaks kprobes.  Last
-I knew, the comment was correct.
+I'd set that to a more sensible value of 32 - eventually we can extend it later,
+if ever needed.
 
-So I still like the idea of using non-preemptability to wait for tasks
-near the end of do_exit(), but unless I am missing something, this patch
-as written is inserting a rare but real bug.
+Besides, nice job about all this documentation of the GCE and its events: love it!
 
-Steve,thoughts?
+Cheers,
+Angelo
 
-							Thanx, Paul
-
-> > >  	/* Step 3: Optimize kprobes after quiesence period */
-> > >  	do_optimize_kprobes();
-> > 
 
