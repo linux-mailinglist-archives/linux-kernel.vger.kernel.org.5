@@ -1,117 +1,147 @@
-Return-Path: <linux-kernel+bounces-31609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED27D8330CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E89018330D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:46:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 876FA1F2160F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:41:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22D8D1F21788
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF1E56B84;
-	Fri, 19 Jan 2024 22:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA4856B90;
+	Fri, 19 Jan 2024 22:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4wd/D3L"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="v7hoBNwf"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0E81E48B;
-	Fri, 19 Jan 2024 22:40:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7682E5674D
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 22:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705704056; cv=none; b=uIUO5iTqp/hu0zHckMxcC3S0WJI5vMOtP8iBj73+l/9LUwGRjTHuUi+2SbgmMctNFy6fz5yU9AwMImApdymPeW7+9ZKs0V8KTPI/JFoGr+9xrINb86VmOYQKeHsQmhZNpv9SahmrQtElFQR250KixEPKcXVMUO1RvKH3hCRPbDE=
+	t=1705704356; cv=none; b=IDWBL9wvkH9wOTfbuqMgOeRw39ETu2XdPOrHNeatllcTlf2ygxrIp6v/+y9KDvsa6JUi6He+GKK71dOe82f7iByAP4vjcLWDp2V+W2H0kDgTuM6dSzmOBnJmvngTLw/WYIKIWJ271jwNoEdd25OqELTv7OCr9hNNcAn9BwW9wv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705704056; c=relaxed/simple;
-	bh=nz9TfAIKTDYYfKIsjPDHg+tXyY7yGKcv76BL1axJAno=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=g7HGCT60dBW9UgIMO083Q2HytVMtrdnc8bG/0ilHvYC1GZLJC22vL0+2MZsFVYL9kjmoLSocao1ZgtgCYmxUgvHpAI6GaxKdlYobNfxR2mOW6QrtTlQ3CuRwOvgQmriVn0C8PfK9AatREptb5g392f7AK2mTM9GeaGmtFARqiOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4wd/D3L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 598D7C433F1;
-	Fri, 19 Jan 2024 22:40:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705704055;
-	bh=nz9TfAIKTDYYfKIsjPDHg+tXyY7yGKcv76BL1axJAno=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=j4wd/D3Lv8cYHiOsEE907KBlNaTbtxYev4dGj+w6L2X8eoVqCRgu0pzY6Sr6jDv8B
-	 a5wscl+4Dlbf/EVr6PjxSj/otwwWSTsj6izfoHhAkfIl39cIfb0/w3Q+CHGYhcEQrC
-	 f/4eDJ8XEH4ggAnw35848tpWYQtTda335GSGPYyY9T8aY7Wm5GMYgiRmukEZZgNIiN
-	 0YL05mAtsOMeLaQYdaaeImCqRXHthh39HzxBRN2SZcQ8ZIcRZq/m68pS1VVcvaUv+D
-	 pwYk/i8oegrrUEvXZXIL1tMUwaXSpFADiGoDALqffcZ5oxdru2EILr6+/QRmJdIOT/
-	 taUUcFcXwU2ow==
-Date: Fri, 19 Jan 2024 16:40:53 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: adrian.hunter@intel.com, ulf.hansson@linaro.org,
-	Victor Shih <victor.shih@genesyslogic.com.tw>,
-	Ben Chuang <benchuanggli@gmail.com>, linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay
- timer timeout during suspend
-Message-ID: <20240119224053.GA187501@bhelgaas>
+	s=arc-20240116; t=1705704356; c=relaxed/simple;
+	bh=uA4FdWifBIyvvaSzLAe1j5JokAg2Yd8ZAqmFqenknLs=;
+	h=Subject:Date:Message-ID:MIME-Version:Cc:From:To; b=K1h4j+xhk1khz+/7kmjEIUdqcNf5qtEhuYk47HNUJfarx6rCu8kx6bLORQnp4gC7MHKUnSXmfbdC18SXIeCMp2bvREgGgvM+mH+fWT2P8dcfH2RrCiEIBLv4U8xMQU7fQ4ROUOjSB9DB2moV5pGI/T6RKqWCq8X28odVaVkjDd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=v7hoBNwf; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d70a98c189so9991015ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:45:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705704354; x=1706309154; darn=vger.kernel.org;
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:to:cc:subject:date:message-id:reply-to;
+        bh=2m1XhtygbnQtWGP2mbVBYdagXNcPKgbqxOJjRe6fvag=;
+        b=v7hoBNwfzatVyTIrzBUh27gG6hOIeg/qxyPjdrIrVIyLzgJ1iOWjNlUAgCWIN2xWrg
+         pfP1fnfOvio8jMiu0apESO3EKDCOpi7dj12x905G/0p+yNFlzhzSYZwOKfWzn7osYx5g
+         nlntyGT22bW1Yj/4vjxClsgHLNb5uM4nt85wI0NeKuZsFxRJfX+V+ERhBJFIvlnQfjLl
+         ohKh3gzbOnkbYZC1cwpgn0jPiMZRLvGBu1pdsBq7mUxn9UdUgqGboYgniTQshwVUq1JP
+         gJjgu0ROlvDpyUCOhjj3fx67JgL/vlejmDgzln8UqTIsSTmh28H1KkG7N9QVtykz6NlE
+         2grw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705704354; x=1706309154;
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
+         :subject:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2m1XhtygbnQtWGP2mbVBYdagXNcPKgbqxOJjRe6fvag=;
+        b=hlHB6YJ5WT2PNC6xP1G8zUgTVXDlT8r6waBxjymSVNAr/0eslB4jOZt5ocPkGxA+lF
+         4xV5wo0yR+04iXtv4pFW5Y6WwBwif0hpD9Z+RR6PUu/Z7u5CFNT2OIOqg4lebuDbxm1g
+         vk5f60WIBBKksdCWJsDVISudE3kz47SeBgpMvzElVTKLWFhYGLUk8sDp/fBf/fA7VT5n
+         iZgv06LqmGPl9DiRVTuGr5w/t87k6M5Mf6Tnqhywir4Nn1YjPpZv6OhfzUJyZMYAN97B
+         nBGKAGIBoBQPmOfRw2R9+W6MvkokFriiFm5lXt1YHe3G3bT5R4MxOqnuScIWdcCfKizb
+         TDEQ==
+X-Gm-Message-State: AOJu0YzZYMn2HLgfE73mJw3ZlJnFw0ypjmLQPKqsYzecnGD/6KgDfjs9
+	Y6T60D+5TJBka9KzzYOaZWx8HnJxHGjVTbY+y7W/Wj1JVVqEnGHEpJa/0XQxgwc=
+X-Google-Smtp-Source: AGHT+IGDYcz91ZsFkrsdeetEFLWkVDikcqnEMGNi7rrUqJxNwbVFtPK97ae9vNTPyqHIMS90uGoxFA==
+X-Received: by 2002:a17:902:6b02:b0:1d4:e2bc:88f1 with SMTP id o2-20020a1709026b0200b001d4e2bc88f1mr582016plk.110.1705704353758;
+        Fri, 19 Jan 2024 14:45:53 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id p20-20020a170902c71400b001d5e2127632sm3525800plp.9.2024.01.19.14.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 14:45:53 -0800 (PST)
+Subject: [PATCH v2] tty: hvc: Fix the RISC-V SBI driver for a refactoring
+Date: Fri, 19 Jan 2024 14:44:05 -0800
+Message-ID: <20240119224404.26695-2-palmer@rivosinc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p6qE76QjJmjr5ei0mU8xcSNE32hJMOE9Frwz-BuC3gDkA@mail.gmail.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+  Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
+  ajones@ventanamicro.com, apatel@ventanamicro.com, Atish Patra <atishp@rivosinc.com>,
+  linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+  linux-riscv@lists.infradead.org, Palmer Dabbelt <palmer@rivosinc.com>
+From: Palmer Dabbelt <palmer@rivosinc.com>
+To:         linux-riscv@lists.infradead.org
 
-On Thu, Jan 18, 2024 at 02:40:50PM +0800, Kai-Heng Feng wrote:
-> On Sat, Jan 13, 2024 at 1:37 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Fri, Jan 12, 2024 at 01:14:42PM +0800, Kai-Heng Feng wrote:
-> > > On Sat, Jan 6, 2024 at 5:19 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Thu, Dec 21, 2023 at 11:21:47AM +0800, Kai-Heng Feng wrote:
-> > > > > Spamming `lspci -vv` can still observe the replay timer timeout error
-> > > > > even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the
-> > > > > replay timer timeout of AER"), albeit with a lower reproduce rate.
-> > > >
-> > > > I'm not sure what this is telling me.  By "spamming `lspci -vv`, do
-> > > > you mean that if you run lspci continually, you still see Replay Timer
-> > > > Timeout logged, e.g.,
-> > > >
-> > > >   CESta:        ... Timeout+
-> > >
-> > > Yes it's logged and the AER IRQ is raised.
-> >
-> > IIUC the AER IRQ is the important thing.
-> >
-> > Neither 015c9cbcf0ad nor this patch affects logging in
-> > PCI_ERR_COR_STATUS, so the lspci output won't change and mentioning it
-> > here doesn't add useful information.
-> 
-> You are right. That's just a way to access config space to reproduce
-> the issue.
+From: Palmer Dabbelt <palmer@rivosinc.com>
 
-Oh, I think I completely misunderstood you!  I thought you were saying
-that suspending the device caused the PCI_ERR_COR_REP_TIMER error, and
-you happened to see that it was logged when you ran lspci.
+I missed the int->size_t refactoring in f32fcbedbe92 ("tty: hvc: convert
+to u8 and size_t"), which causes the newly used ops in 88ead68e764c
+("tty: Add SBI debug console support to HVC SBI driver") to fail to
+build due to a
 
-But I guess you mean that running lspci actually *causes* the error?
-I.e., lspci does a config access while we're suspending the device
-causes the error, and the config access itself causes the error, which
-causes the ERR_COR message and ultimately the AER interrupt, and that
-interrupt prevents the system suspend.
+linux/drivers/tty/hvc/hvc_riscv_sbi.c:59:15: error: incompatible function pointer types initializing 'ssize_t (*)(uint32_t, const u8 *, size_t)' (aka 'long (*)(unsigned int, const unsigned char *, unsigned long)') with an expression of type 'int (uint32_t, const char *, int)' (aka 'int (unsigned int, const char *, int)') [-Wincompatible-function-pointer-types]
+        .put_chars = hvc_sbi_dbcn_tty_put,
 
-If that's the case, I wonder if this is a generic problem that could
-happen with *any* device, not just GL975x.
+Fixes: f32fcbedbe92 ("tty: hvc: convert to u8 and size_t")
+Fixes: 88ead68e764c ("tty: Add SBI debug console support to HVC SBI driver")
+Link: https://lore.kernel.org/r/20240119215612.20529-2-palmer@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+Changes since v1 <20240119215612.20529-2-palmer@rivosinc.com>:
+* Fix the return and arguments correctly.
+* Also fix the hvc_sbi_dbcn_tty_{get,put}().
+---
+ drivers/tty/hvc/hvc_riscv_sbi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-What power state do we put the GL975x in during system suspend?
-D3hot?  D3cold?  Is there anything that prevents config access while
-we suspend it?
+diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_riscv_sbi.c
+index 2f3571f17ecd..f8cd3310ef35 100644
+--- a/drivers/tty/hvc/hvc_riscv_sbi.c
++++ b/drivers/tty/hvc/hvc_riscv_sbi.c
+@@ -15,7 +15,7 @@
+ 
+ #include "hvc_console.h"
+ 
+-static int hvc_sbi_tty_put(uint32_t vtermno, const char *buf, int count)
++static ssize_t hvc_sbi_tty_put(uint32_t vtermno, const u8 *buf, size_t count)
+ {
+ 	int i;
+ 
+@@ -25,7 +25,7 @@ static int hvc_sbi_tty_put(uint32_t vtermno, const char *buf, int count)
+ 	return i;
+ }
+ 
+-static int hvc_sbi_tty_get(uint32_t vtermno, char *buf, int count)
++static ssize_t hvc_sbi_tty_get(uint32_t vtermno, u8 *buf, size_t count)
+ {
+ 	int i, c;
+ 
+@@ -44,12 +44,12 @@ static const struct hv_ops hvc_sbi_v01_ops = {
+ 	.put_chars = hvc_sbi_tty_put,
+ };
+ 
+-static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int count)
++static ssize_t hvc_sbi_dbcn_tty_put(uint32_t vtermno, const u8 *buf, size_t count)
+ {
+ 	return sbi_debug_console_write(buf, count);
+ }
+ 
+-static int hvc_sbi_dbcn_tty_get(uint32_t vtermno, char *buf, int count)
++static ssize_t hvc_sbi_dbcn_tty_get(uint32_t vtermno, u8 *buf, size_t count)
+ {
+ 	return sbi_debug_console_read(buf, count);
+ }
+-- 
+2.43.0
 
-We do have dev->block_cfg_access, and there's a comment that says
-"we're required to prevent config accesses during D-state
-transitions," but I don't see it being used during D-state
-transitions.
-
-Also, it doesn't seem suitable for preventing config accesses during
-suspend because pci_wait_cfg() just busy-waits and never returns an
-error.
-
-Bjorn
 
