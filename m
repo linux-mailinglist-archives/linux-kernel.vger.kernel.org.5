@@ -1,61 +1,72 @@
-Return-Path: <linux-kernel+bounces-31496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB41832F04
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:39:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1898E832F07
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:39:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E03FA1C24E41
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:39:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6490B2140B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C02C44362;
-	Fri, 19 Jan 2024 18:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42E8A524CF;
+	Fri, 19 Jan 2024 18:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kxdGrwgq"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="BTNVVvKV"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF5326AF7;
-	Fri, 19 Jan 2024 18:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D78537E7
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705689532; cv=none; b=bn+khviWy0lnAneOj4kwMk/NvtvM4HR4ZwUsUDp29FD0dza0d4YO3G42nTFZoevjoA5I/HtdkPg2RUpDv9QkBAZ40G2nQtcWO/RWZ9xtDqo1nfc31uERHROkODfURU/R33pzMO3vWMX1iHVxxms/BTLgRrpbCETS/rUIGDQUXJg=
+	t=1705689558; cv=none; b=K31h8zBhB0t+6f/BLZv1xTDRfyfJ48WWnXp3x00hlulqepC654EyFlKoFoynSE3Jwk/l+/YzXwT0iLrDFLLTxiTBfvd1Y/Ic91U+31XiiV1VZMl/JoXO6LBcBAGCZDo9bkFbGek9mdiemrjo7V+daEP0fPXOE6HDlPEV+VXEVxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705689532; c=relaxed/simple;
-	bh=EAecYnq6UDf33R57hZay3IKYojJLPNpFfbigLtJirRM=;
+	s=arc-20240116; t=1705689558; c=relaxed/simple;
+	bh=iwCxCVOR4jnaYfbcOzF5/VStJ4/WlUg5Op4I2ZEX0bs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uCOLbcCWq08B//ZxNdaMpoaLARl0gBZ+R1xWPKXcIT5BjfqqXxTuzWwrc7HxVoFjUnNwailivgWgaqyURr7QmEu7rWLBw18pbSiWuNzj7BlHAYGZ+Wxo7JF1unfscOpg/VvPbzYQsxWBf8C3eGUwT3CW2dXqSbFHPqMsLIK7gQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kxdGrwgq; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705689531; x=1737225531;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=EAecYnq6UDf33R57hZay3IKYojJLPNpFfbigLtJirRM=;
-  b=kxdGrwgq8FGI1ZQ+og1tmmpjVQ1eeBNldyuDEnml8Prhose2531QzV96
-   jObOx9MSBSV1FIRpJpwc6rB5wtmvB607RPpJ2CxHQHP8PicuAfbQ3tbAd
-   dcflWn19i8Bglo7pZJAox60SU+e+YI0YMXbdb164Q9cOqrSdryotrWyJ9
-   4QNrsE13+G+0y0DIAsTrc/0IsJ5ySTXbyXB0AdCp3dZEPF6AB+GQhFZSJ
-   UojbqaPn6bo4XXMpuYz2sgCh827KyeZSBvrr6Y9YWIdOZfKn+Q+VbkwIA
-   pGx4Xqtnv5nxId98XUYCseHFjNsjlKSVUMU2hRMhnnaEIVBbgpV4ScY5F
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="404578652"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="404578652"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 10:38:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="778042392"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="778042392"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.39.208])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 10:38:46 -0800
-Message-ID: <029cd7e3-51f5-4d04-8f54-c6e478e052a3@intel.com>
-Date: Fri, 19 Jan 2024 20:38:40 +0200
+	 In-Reply-To:Content-Type; b=XMWl0aqVddAVG1uuYYlA14GK0sFxiTlTin0Qmm0UOcbSz1OumAdA0jYOklyLk54ig/yx1b6plRDDbe0O1y7S2b0Ra/rOsl2Q6y4ZQhRw+J4pjmj2fXt8vakpPa58KopTYocOr1jnjZiNZ08JGDB4dDmu1EAVPOqDrIBnQ82lu2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=BTNVVvKV; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d6b4e2945so11820865e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:39:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1705689555; x=1706294355; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GLVqtZB7ksYYlMI57Z8Vk1wj7Ou0Yg42oFkvW8eSN7U=;
+        b=BTNVVvKVnnwZIO1rjg07S7czlWYeL1yUKJCYkH2ziKdFdj/IO6WrpUoIsGSIZjCnis
+         kaMvYNSDNsWItqRQe8TzrpR194F5aNlCrrDMX3AqOQn5uduLSasgpab38FSk/OMELWvW
+         1Ny467Q2LwfY9SAqxXygCtBnl6Ezp3mU1Wd+eD/8yr2PXNLOfHKp9CcTHKDsCdacySfs
+         DnpQKdn6eXluVlE1QM1RQN3GZjobZHAQDgIQBzrTHpED+4n+w8DRnIUXwTjgCIo+xMRl
+         bGP1Gg7sQ8dlm9yCY4h2MUAT37EgMla28r9tFBtuRP2zPVvsMTv/wDSk207d5fVyHFJN
+         xc8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705689555; x=1706294355;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GLVqtZB7ksYYlMI57Z8Vk1wj7Ou0Yg42oFkvW8eSN7U=;
+        b=rkXsnu0OsWjRl0pfDJ/m2yB9v7/6P5Fa+jfSpwVfeYPnN/wMFhsz+cDyY6VATQn14o
+         vd670LEOfrqDYwG+1AvhggkkPRwiePzx1lq7Hzgo/wrinTjpsuJ475J+8eiZ0EG2YVEk
+         aKGjLu3pUI/dmO73glYuvCEQb7GXo+k66BAI3nMpzjPIkIfLuZOXUIko1MAS7Zx8Udp5
+         l28bB1CTMbBvmiqLHa4r/+Sr4npka1ORQPDfiqV0gaS0JAODphmBqhGSvCGMXhQ452Lt
+         xxYVuWfPYY6oPpHP3IWgxV7N9Xm6/0G5C5fdlhJZKxyfx/oW5OYnedHLaZzIsC2lfGdW
+         YCAA==
+X-Gm-Message-State: AOJu0Ywhsz+ho63RXsj1rPZwIKpw6nGetipmO4oKPhUTkiMEsdS0iwed
+	3VfOMM4QYekiYpGq/8A0PS9m1rP1MGfvzC0gvq5iiXSmXajS9UOxZhJN21IAqw==
+X-Google-Smtp-Source: AGHT+IHkkqi0sUUubDAyF8otPSakjzR/c2b01NQkAkzs0OiKsZp5Af3JwmWc9wV2g7ywhLc+hABc3Q==
+X-Received: by 2002:a05:600c:15c3:b0:40d:3afc:9263 with SMTP id v3-20020a05600c15c300b0040d3afc9263mr77497wmf.104.1705689555259;
+        Fri, 19 Jan 2024 10:39:15 -0800 (PST)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id t18-20020a05600c199200b0040e5951f199sm29697280wmq.34.2024.01.19.10.39.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jan 2024 10:39:14 -0800 (PST)
+Message-ID: <a9a5378d-c908-4a83-a63d-3e9928733a3d@arista.com>
+Date: Fri, 19 Jan 2024 18:39:14 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,169 +74,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] perf: build: introduce the libcapstone
+Subject: Re: [PATCH 0/3] selftests/net: A couple of typos fixes in
+ key-management test
 Content-Language: en-US
-To: Changbin Du <changbin.du@huawei.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
- Thomas Richter <tmricht@linux.ibm.com>, changbin.du@gmail.com,
- Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Ingo Molnar <mingo@redhat.com>
-References: <20240119104856.3617986-1-changbin.du@huawei.com>
- <20240119104856.3617986-2-changbin.du@huawei.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240119104856.3617986-2-changbin.du@huawei.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
+ Mohammad Nassiri <mnassiri@ciena.com>, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240118-tcp-ao-test-key-mgmt-v1-0-3583ca147113@arista.com>
+ <20240118085129.6313054b@kernel.org>
+ <358faa27-3ea3-4e63-a76f-7b5deeed756d@arista.com>
+ <20240118091327.173f3cb0@kernel.org>
+From: Dmitry Safonov <dima@arista.com>
+In-Reply-To: <20240118091327.173f3cb0@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 19/01/24 12:48, Changbin Du wrote:
-> Later we will use libcapstone to disassemble instructions of samples.
+On 1/18/24 17:13, Jakub Kicinski wrote:
+> On Thu, 18 Jan 2024 17:04:25 +0000 Dmitry Safonov wrote:
+>>> Somewhat unrelated to these fixes but related to the tcp_ao selftests
+>>> in general - could you please also add a config file so that it's
+>>> easy to build a minimal kernel for running the tests?
+>>>
+>>> Something like:
+>>>
+>>>   make defconfig
+>>>   make kvm_guest.config
+>>>   make tools/testing/selftests/net/tcp_ao/config  
+>>
+>> Yep, sounds good to me.
+>> I'll take as a base tools/testing/selftests/net/config and add any
+>> needed config options on the top.
 > 
-> Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> ---
->  tools/build/Makefile.feature           |  2 ++
->  tools/build/feature/Makefile           |  4 ++++
->  tools/build/feature/test-all.c         |  4 ++++
->  tools/build/feature/test-libcapstone.c | 11 +++++++++++
->  tools/perf/Makefile.config             | 21 +++++++++++++++++++++
->  tools/perf/Makefile.perf               |  3 +++
+> You probably want something smaller to be honest.
+> tools/testing/selftests/net/config has a lot of stuff in it 
+> and it's actually missing a lot more. I'm working thru adding
+> the missing options to tools/testing/selftests/net/config 
+> right now so far I got:
 
-tools/perf/tests/make needs updating also
+Thanks!
 
->  6 files changed, 45 insertions(+)
->  create mode 100644 tools/build/feature/test-libcapstone.c
+I'll send a patch for it in version 2 (as I anyway need to address
+Simon's feedback).
+
 > 
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index 934e2777a2db..23bee50aeb0f 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -86,6 +86,7 @@ FEATURE_TESTS_EXTRA :=                  \
->           gtk2-infobar                   \
->           hello                          \
->           libbabeltrace                  \
-> +         libcapstone                    \
->           libbfd-liberty                 \
->           libbfd-liberty-z               \
->           libopencsd                     \
-> @@ -133,6 +134,7 @@ FEATURE_DISPLAY ?=              \
->           libcrypto              \
->           libunwind              \
->           libdw-dwarf-unwind     \
-> +         libcapstone            \
->           zlib                   \
->           lzma                   \
->           get_cpuid              \
-> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> index dad79ede4e0a..d6eaade09694 100644
-> --- a/tools/build/feature/Makefile
-> +++ b/tools/build/feature/Makefile
-> @@ -53,6 +53,7 @@ FILES=                                          \
->           test-timerfd.bin                       \
->           test-libdw-dwarf-unwind.bin            \
->           test-libbabeltrace.bin                 \
-> +         test-libcapstone.bin			\
->           test-compile-32.bin                    \
->           test-compile-x32.bin                   \
->           test-zlib.bin                          \
-> @@ -282,6 +283,9 @@ $(OUTPUT)test-libdw-dwarf-unwind.bin:
->  $(OUTPUT)test-libbabeltrace.bin:
->  	$(BUILD) # -lbabeltrace provided by $(FEATURE_CHECK_LDFLAGS-libbabeltrace)
->  
-> +$(OUTPUT)test-libcapstone.bin:
-> +	$(BUILD) # -lcapstone provided by $(FEATURE_CHECK_LDFLAGS-libcapstone)
-> +
->  $(OUTPUT)test-compile-32.bin:
->  	$(CC) -m32 -o $@ test-compile.c
->  
-> diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-> index 6f4bf386a3b5..dd0a18c2ef8f 100644
-> --- a/tools/build/feature/test-all.c
-> +++ b/tools/build/feature/test-all.c
-> @@ -134,6 +134,10 @@
->  #undef main
->  #endif
->  
-> +#define main main_test_libcapstone
-> +# include "test-libcapstone.c"
-> +#undef main
-> +
->  #define main main_test_lzma
->  # include "test-lzma.c"
->  #undef main
-> diff --git a/tools/build/feature/test-libcapstone.c b/tools/build/feature/test-libcapstone.c
-> new file mode 100644
-> index 000000000000..fbe8dba189e9
-> --- /dev/null
-> +++ b/tools/build/feature/test-libcapstone.c
-> @@ -0,0 +1,11 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <capstone/capstone.h>
-> +
-> +int main(void)
-> +{
-> +	csh handle;
-> +
-> +	cs_open(CS_ARCH_X86, CS_MODE_64, &handle);
-> +	return 0;
-> +}
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index b3e6ed10f40c..7589725ad178 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -191,6 +191,15 @@ endif
->  FEATURE_CHECK_CFLAGS-libbabeltrace := $(LIBBABELTRACE_CFLAGS)
->  FEATURE_CHECK_LDFLAGS-libbabeltrace := $(LIBBABELTRACE_LDFLAGS) -lbabeltrace-ctf
->  
-> +# for linking with debug library, run like:
-> +# make DEBUG=1 LIBCAPSTONE_DIR=/opt/capstone/
-> +ifdef LIBCAPSTONE_DIR
-> +  LIBCAPSTONE_CFLAGS  := -I$(LIBCAPSTONE_DIR)/include
-> +  LIBCAPSTONE_LDFLAGS := -L$(LIBCAPSTONE_DIR)/
-> +endif
-> +FEATURE_CHECK_CFLAGS-libcapstone := $(LIBCAPSTONE_CFLAGS)
-> +FEATURE_CHECK_LDFLAGS-libcapstone := $(LIBCAPSTONE_LDFLAGS) -lcapstone
-> +
->  ifdef LIBZSTD_DIR
->    LIBZSTD_CFLAGS  := -I$(LIBZSTD_DIR)/lib
->    LIBZSTD_LDFLAGS := -L$(LIBZSTD_DIR)/lib
-> @@ -1089,6 +1098,18 @@ ifndef NO_LIBBABELTRACE
->    endif
->  endif
->  
-> +ifndef NO_CAPSTONE
-> +  $(call feature_check,libcapstone)
-> +  ifeq ($(feature-libcapstone), 1)
-> +    CFLAGS += -DHAVE_LIBCAPSTONE_SUPPORT $(LIBCAPSTONE_CFLAGS)
-> +    LDFLAGS += $(LICAPSTONE_LDFLAGS)
-> +    EXTLIBS += -lcapstone
-> +    $(call detected,CONFIG_LIBCAPSTONE)
-> +  else
-> +    msg := $(warning No libcapstone found, disables disasm engine support for 'perf script', please install libcapstone-dev/capstone-devel);
-> +  endif
-> +endif
-> +
->  ifndef NO_AUXTRACE
->    ifeq ($(SRCARCH),x86)
->      ifeq ($(feature-get_cpuid), 0)
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 058c9aecf608..236da4f39a63 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -84,6 +84,9 @@ include ../scripts/utilities.mak
->  # Define NO_LIBBABELTRACE if you do not want libbabeltrace support
->  # for CTF data format.
->  #
-> +# Define NO_CAPSTONE if you do not want libcapstone support
-> +# for disasm engine.
-> +#
->  # Define NO_LZMA if you do not want to support compressed (xz) kernel modules
->  #
->  # Define NO_AUXTRACE if you do not want AUX area tracing support
+> # tun / tap
+> +CONFIG_TUN=y
+> +CONFIG_MACVLAN=y
+> +CONFIG_MACVTAP=y
+> +CONFIG_NET_SCH_FQ_CODEL=m
+> +# l2tp
+> +CONFIG_L2TP=m
+> +CONFIG_L2TP_V3=y
+> +CONFIG_L2TP_IP=m
+> +CONFIG_L2TP_ETH=m
+> +# sctp-vrf (need SCTP_DIAG to appear)
+> +CONFIG_INET_DIAG=y
+> +# txtimestamp
+> +CONFIG_NET_CLS_U32=m
+> +# test-vxlan-mdb-sh etc.
+> +CONFIG_BRIDGE_VLAN_FILTERING=y
+> +# gre_gso.sh etc.
+> +CONFIG_NET_IPGRE_DEMUX=m
+> +CONFIG_IP_GRE=m
+> +CONFIG_IPV6_GRE=m
+> +# ./srv6_end_dt*_l3vpn_test.sh
+> +CONFIG_IPV6_SEG6_LWTUNNEL=y
+> +# local port something..
+> +CONFIG_MPTCP=y
+> +# fib_test.sh
+> +CONFIG_NET_CLS_BASIC=m
+
+Thanks,
+            Dmitry
 
 
