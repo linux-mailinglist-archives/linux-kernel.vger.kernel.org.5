@@ -1,111 +1,156 @@
-Return-Path: <linux-kernel+bounces-30720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90582832384
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 03:59:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62EBC832385
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 03:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A13828679C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:59:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCDD61F23C6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E8E1870;
-	Fri, 19 Jan 2024 02:59:27 +0000 (UTC)
-Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443714A05;
+	Fri, 19 Jan 2024 02:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="anA8kDQA"
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A03138F;
-	Fri, 19 Jan 2024 02:59:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E814E4689
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705633166; cv=none; b=fGQnpj4dlmVPVAEE29cZkr0uUj8h2CVbv4hMSshTYtcwrA7x9rbqY8TMhBVt8y0gvmbajmGZp/yB7AAGPESRmvMTitJgSrw/Kzr6pJbVvQTNTYV9eVm6k7x1Nsj4Vk1UkcLgkz+6hvANQ0GRsvaMwpjRpvmR7CtqQ1UAxSaxQkM=
+	t=1705633189; cv=none; b=RgtWgzimI6RtLmsMeIPPH+i5uuhgDrCl8Bgrskn5Zm8yzjBwiACR+lc90YLIERAbkkzzw0jmS7J5df2QAGT/RQ4qcpMWorRd8uxZi1uhllqqJAEwXM+2lGz8ogVPWEp6Y+2K6ksDnwKOMEqwVY4+8sluXd1KVsFRArZ1lj5bVLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705633166; c=relaxed/simple;
-	bh=wTuOtLp0K3RgyC3KOzCWVfI7I4OOv/HcKRoWWEzway0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=IOxsqQHV1r7s5qIy60RCqT9ciOR6w6H9phFeOcXDT2Fyqp7RpZzfjQI+Km6HGUdvv3aUQvDmnjqOM6Z5qI72VJDgRttE6eAvJfSsBupDmRc2VRqHoQyn1gLhxRzL4FZZfhRcE+513tRnyzOMCrMM5I1NIGMAI1HBUlA1UwJQ5oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
-Received: from mail.maildlp.com ([172.25.15.154])
-	by h3cspam02-ex.h3c.com with ESMTP id 40J2vhvT092086;
-	Fri, 19 Jan 2024 10:57:43 +0800 (GMT-8)
-	(envelope-from hu.yadi@h3c.com)
-Received: from DAG6EX07-IMDC.srv.huawei-3com.com (unknown [10.62.14.16])
-	by mail.maildlp.com (Postfix) with ESMTP id DEA3A22CFEC6;
-	Fri, 19 Jan 2024 11:02:14 +0800 (CST)
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) by
- DAG6EX07-IMDC.srv.huawei-3com.com (10.62.14.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.27; Fri, 19 Jan 2024 10:57:43 +0800
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4])
- by DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4%16]) with
- mapi id 15.02.1258.027; Fri, 19 Jan 2024 10:57:43 +0800
-From: Huyadi <hu.yadi@h3c.com>
-To: "'Christian Brauner'" <brauner@kernel.org>
-CC: "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org"
-	<linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>,
-        "514118380@qq.com" <514118380@qq.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com"
-	<serge@hallyn.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "mic@digikod.net" <mic@digikod.net>
-Subject: =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjRdIHNlbGZ0ZXN0cy9tb3ZlX21vdW50X3NldF9n?=
- =?utf-8?Q?roup:Make_tests_build_with_old_libc?=
-Thread-Topic: [PATCH v4] selftests/move_mount_set_group:Make tests build with
- old libc
-Thread-Index: AQHaRII9d44IpKHVmkiSX1xdCq/Vx7DfKLkAgAFS0NA=
-Date: Fri, 19 Jan 2024 02:57:43 +0000
-Message-ID: <8918d5e83d54418b9db3ee9c055d675d@h3c.com>
-References: <20240111113229.10820-1-hu.yadi@h3c.com>
- <20240118-sezieren-neurologie-6690110057ca@brauner>
-In-Reply-To: <20240118-sezieren-neurologie-6690110057ca@brauner>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-sender-location: DAG2
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1705633189; c=relaxed/simple;
+	bh=236h0DgDZImCK2goedN8W9SWmHCQR18+oOMDZ46NdtQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HhBvNNbsa39oVG/d3fculjr+OvOjrKp84LS3wnFWVsWsI7Ko5pF74DCc5DWC9YiET7lV1SpD4YJy1pqfJ6jz84Xf2KGJbk6Bh7Enok/nywtuiAGnZRJkT/zHPvPVQNX9w2u/v1gFg18rKy2hSWSGWCX6N/9V9UIBJ2EoSoFxfSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=anA8kDQA; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <10f26c5c-760d-4f1b-abdc-8508971236ed@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705633185;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y+Kc2NDnmlkNzK7U+ZErpyTm3v0Dgj/NSpkX/uSwmaM=;
+	b=anA8kDQAnpivlHYD60wp5ZBbUwPiXufJoerQq/zAq6vBLsigfM74QswzqZq3BfqamEdtj9
+	3x5ldDNPwygvuzhABK0bOBEvfN5st5WJZJgu3xBYdk/xJbMLsSi2UtV8JU4miD7gqY3pNK
+	7WCX+Gj74hhjmZ/U+8svf/R2VTPvX7g=
+Date: Fri, 19 Jan 2024 10:59:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:h3cspam02-ex.h3c.com 40J2vhvT092086
+Subject: Re: [PATCH v4 3/7] padata: dispatch works on different nodes
+To: Gang Li <gang.li@linux.dev>, David Hildenbrand <david@redhat.com>,
+ David Rientjes <rientjes@google.com>, Mike Kravetz
+ <mike.kravetz@oracle.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Tim Chen <tim.c.chen@linux.intel.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ ligang.bdlg@bytedance.com
+References: <20240118123911.88833-1-gang.li@linux.dev>
+ <20240118123911.88833-4-gang.li@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20240118123911.88833-4-gang.li@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-DQo+T24gVGh1LCAxMSBKYW4gMjAyNCAxOTozMjoyOSArMDgwMCwgSHUgWWFkaSB3cm90ZToNCj4+
-IFJlcGxhY2UgU1lTXzxzeXNjYWxsPiB3aXRoIF9fTlJfPHN5c2NhbGw+LiAgVXNpbmcgdGhlIF9f
-TlJfPHN5c2NhbGw+IA0KPj4gbm90YXRpb24sIHByb3ZpZGVkIGJ5IFVBUEksIGlzIHVzZWZ1bCB0
-byBidWlsZCB0ZXN0cyBvbiBzeXN0ZW1zIA0KPj4gd2l0aG91dCB0aGUgU1lTXzxzeXNjYWxsPiBk
-ZWZpbml0aW9ucy4NCj4+IA0KPj4gUmVwbGFjZSBTWVNfbW92ZV9tb3VudCB3aXRoIF9fTlJfbW92
-ZV9tb3VudA0KPj4gDQo+PiBTaW1pbGFyIGNoYW5nZXM6IGNvbW1pdCA4NzEyOWVmMTM2MDMgKCJz
-ZWxmdGVzdHMvbGFuZGxvY2s6IE1ha2UgdGVzdHMgDQo+PiBidWlsZCB3aXRoIG9sZCBsaWJjIikN
-Cj4+IA0KPj4gWy4uLl0NCj4NCj5BcHBsaWVkIHRvIHRoZSB2ZnMubWlzYyBicmFuY2ggb2YgdGhl
-IHZmcy92ZnMuZ2l0IHRyZWUuDQo+UGF0Y2hlcyBpbiB0aGUgdmZzLm1pc2MgYnJhbmNoIHNob3Vs
-ZCBhcHBlYXIgaW4gbGludXgtbmV4dCBzb29uLg0KPg0KPlBsZWFzZSByZXBvcnQgYW55IG91dHN0
-YW5kaW5nIGJ1Z3MgdGhhdCB3ZXJlIG1pc3NlZCBkdXJpbmcgcmV2aWV3IGluIGEgbmV3IHJldmll
-dyB0byB0aGUgb3JpZ2luYWwgcGF0Y2ggc2VyaWVzIGFsbG93aW5nIHVzIHRvIGRyb3AgaXQuDQo+
-DQo+SXQncyBlbmNvdXJhZ2VkIHRvIHByb3ZpZGUgQWNrZWQtYnlzIGFuZCBSZXZpZXdlZC1ieXMg
-ZXZlbiB0aG91Z2ggdGhlIHBhdGNoIGhhcyBub3cgYmVlbiBhcHBsaWVkLiBJZiBwb3NzaWJsZSBw
-YXRjaCB0cmFpbGVycyB3aWxsIGJlIHVwZGF0ZWQuDQo+DQo+Tm90ZSB0aGF0IGNvbW1pdCBoYXNo
-ZXMgc2hvd24gYmVsb3cgYXJlIHN1YmplY3QgdG8gY2hhbmdlIGR1ZSB0byByZWJhc2UsIHRyYWls
-ZXIgdXBkYXRlcyBvciBzaW1pbGFyLiBJZiBpbiBkb3VidCwgcGxlYXNlIGNoZWNrIHRoZSBsaXN0
-ZWQgYnJhbmNoLg0KPg0KPnRyZWU6ICAgaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xp
-bnV4L2tlcm5lbC9naXQvdmZzL3Zmcy5naXQNCj5icmFuY2g6IHZmcy5taXNjDQo+DQoNCk1heSBJ
-IHRha2UgdGhlIGxpYmVydHkgdG8gYXNrIHdoeSBJIGRvbid0IHNlZSBwYXRjaCBhcHBsaWVkIHRv
-IGFib3ZlIGJyYW5jaD8NCmFuZCBiZWxvdyBjb21taXQgYWxzbyBzaG93cyBlcnJvcjoNCg0KQmFk
-IG9iamVjdCBpZDogMDc3OGIwYTFhOGQyDQoNCj5bMS8xXSBzZWxmdGVzdHMvbW92ZV9tb3VudF9z
-ZXRfZ3JvdXA6TWFrZSB0ZXN0cyBidWlsZCB3aXRoIG9sZCBsaWJjDQo+ICAgICBodHRwczovL2dp
-dC5rZXJuZWwub3JnL3Zmcy92ZnMvYy8wNzc4YjBhMWE4ZDINCg==
+
+
+On 2024/1/18 20:39, Gang Li wrote:
+> When a group of tasks that access different nodes are scheduled on the
+> same node, they may encounter bandwidth bottlenecks and access latency.
+>
+> Thus, numa_aware flag is introduced here, allowing tasks to be
+> distributed across different nodes to fully utilize the advantage of
+> multi-node systems.
+>
+> Signed-off-by: Gang Li <gang.li@linux.dev>
+> Tested-by: David Rientjes <rientjes@google.com>
+> ---
+>   include/linux/padata.h |  3 +++
+>   kernel/padata.c        | 14 ++++++++++++--
+>   mm/mm_init.c           |  1 +
+>   3 files changed, 16 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/padata.h b/include/linux/padata.h
+> index 495b16b6b4d7..f79ccd50e7f4 100644
+> --- a/include/linux/padata.h
+> +++ b/include/linux/padata.h
+> @@ -137,6 +137,8 @@ struct padata_shell {
+>    *             appropriate for one worker thread to do at once.
+>    * @max_threads: Max threads to use for the job, actual number may be less
+>    *               depending on task size and minimum chunk size.
+> + * @numa_aware: Dispatch jobs to different nodes. If a node only has memory but
+> + *              no CPU, dispatch its jobs to a random CPU.
+>    */
+>   struct padata_mt_job {
+>   	void (*thread_fn)(unsigned long start, unsigned long end, void *arg);
+> @@ -146,6 +148,7 @@ struct padata_mt_job {
+>   	unsigned long		align;
+>   	unsigned long		min_chunk;
+>   	int			max_threads;
+> +	bool			numa_aware;
+>   };
+>   
+>   /**
+> diff --git a/kernel/padata.c b/kernel/padata.c
+> index 179fb1518070..10eae3f59203 100644
+> --- a/kernel/padata.c
+> +++ b/kernel/padata.c
+> @@ -485,7 +485,8 @@ void __init padata_do_multithreaded(struct padata_mt_job *job)
+>   	struct padata_work my_work, *pw;
+>   	struct padata_mt_job_state ps;
+>   	LIST_HEAD(works);
+> -	int nworks;
+> +	int nworks, nid;
+> +	static atomic_t last_used_nid = ATOMIC_INIT(0);
+last_used_nid is only used during boot time so it could be
+__init_data. Otherwise, LGTM.
+
+Reviewed-by: Muchun Song <muchun.song@linux.dev>
+
+>   
+>   	if (job->size == 0)
+>   		return;
+> @@ -517,7 +518,16 @@ void __init padata_do_multithreaded(struct padata_mt_job *job)
+>   	ps.chunk_size = roundup(ps.chunk_size, job->align);
+>   
+>   	list_for_each_entry(pw, &works, pw_list)
+> -		queue_work(system_unbound_wq, &pw->pw_work);
+> +		if (job->numa_aware) {
+> +			int old_node = atomic_read(&last_used_nid);
+> +
+> +			do {
+> +				nid = next_node_in(old_node, node_states[N_CPU]);
+> +			} while (!atomic_try_cmpxchg(&last_used_nid, &old_node, nid));
+> +			queue_work_node(nid, system_unbound_wq, &pw->pw_work);
+> +		} else {
+> +			queue_work(system_unbound_wq, &pw->pw_work);
+> +		}
+>   
+>   	/* Use the current thread, which saves starting a workqueue worker. */
+>   	padata_work_init(&my_work, padata_mt_helper, &ps, PADATA_WORK_ONSTACK);
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 2c19f5515e36..549e76af8f82 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -2231,6 +2231,7 @@ static int __init deferred_init_memmap(void *data)
+>   			.align       = PAGES_PER_SECTION,
+>   			.min_chunk   = PAGES_PER_SECTION,
+>   			.max_threads = max_threads,
+> +			.numa_aware  = false,
+>   		};
+>   
+>   		padata_do_multithreaded(&job);
+
 
