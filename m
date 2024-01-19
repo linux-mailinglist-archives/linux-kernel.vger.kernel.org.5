@@ -1,195 +1,187 @@
-Return-Path: <linux-kernel+bounces-31252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09398832B37
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:16:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 351DE832B41
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62128B21171
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:16:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C99261F25968
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EFF553E2F;
-	Fri, 19 Jan 2024 14:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B24853E15;
+	Fri, 19 Jan 2024 14:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="stzVS3TQ"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2047.outbound.protection.outlook.com [40.107.223.47])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h8BC9ThI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D7954F87;
-	Fri, 19 Jan 2024 14:14:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705673689; cv=fail; b=RPH1m4OmBdBBwBjfyqSJSi+7p/R1BZQC8vy2cqVZHv8pev1Y2QtdhTI+K7xX0YRhu/FEoiGg0BX3pRD3jNZ1VfJXkO1sizwNMUmF++h4pKGCC/R/j59ni7qzxPYw6Xan+KYU+KUPtjIZc9mKdB8dRZ5KEZy9cTdWk07xuXDu8sY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705673689; c=relaxed/simple;
-	bh=CHL/cnAWlfFMjdVO9EAzk8+FBnQJWTRjrIWQ3RMzXtE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=WRXzUMTREye4QGxCgKx7b7uOjjeTsY2Xju/87EBEbxTMulk9umDxvwU44PRsE+9XLrVBskgbP+o8hSPF8vROY5pZ6ykWDaYeY0OhnL5szRe9TWlf2X5iZ0SSUv9DG436eB/S2kwJ4VGlWeszrh0PAae9jnNESq6cl2J4nhN9ZoE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=stzVS3TQ; arc=fail smtp.client-ip=40.107.223.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=POddFChSjup+IkR4NsI/wGaWOWfPWpuWxm7azbXKZfwjSmLrQDXGc6P2BTTV/hlBRgP78ld6r1ktc31GSbb1vWSoIgZw0RMWeK2sCOFK4HMR/DAkUvzo4Ro0juAn6TzbLUFUdnuTlvxs696aFoDcHMnUox4nNVheGuplLRusEw2zAYdnUpAVDb0RnNzQ2aqeyLp2mwFHhSdp4rE0F0DTyvitmR6/2t8MRCHkdKP1KEAwpLIt/19j5sC4NOgH7NpQi97lltnvOVKj3PpqF3j7TPhGatHN9STiKMA9Si0cNkj340zAo4u69VmKcWcT5HvxURDIE+/rx/bPirgzr5fi9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xdt9quGLElHrPchcCjcYG3TCE8RxpoSGT+a9QccOjVM=;
- b=DUj9OH1tC+0b6jWdtmaOhqUIN93szUAtlapczczLRC6ytZu2UrkFeya6n/NxSJXDUL74mwk6//JlHUiZEIJosALZB26j1ufvhpNMyEuLmETviz12iBlQzD9/Ivd4NHSecL0hbA/C93faFI0UjmI16G425oW+KU846uL+1afnCPHNDUxI/AWb/rZaeBdzqi1JCtg5Rewynbhw5LRgmhSMr8eLC74Xj2eGNA1C6Z9xfjcvPGFVYw6zUovhwHT6weG5VTj63V/U0UNuE3Xw6Dvx46XwpPZY71X4STaU3lzBIcEyRkeentD4BS+8KsKppRTytg0zvVwPcXOZHc9zIXjEHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xdt9quGLElHrPchcCjcYG3TCE8RxpoSGT+a9QccOjVM=;
- b=stzVS3TQ2ktRJV+Iti/LyDXS2FSAcIvTQ/QFE2NQMU+LNlZPlVhvpyM+EELWEWRlqrwRewhMFkOiFte4o4W1IoCiXyB8VQerRuuHsKD7x4cWpOVjB0pqpgmdmprEnEpXnxHtGty+Znoq3BiuMAvp6Chi1ZF7X7JwjtIGhsKTzT//p39MY5PPkO3JPedCumbJnoN1vVidXjFzFDzbkVqOXpkxPGNA+Q2b6xffulZaaenW9W6qotMxB6/U1pOILOx8w6/kqI24VfL/SUaRMcoCenIIizZ1LrR0Acv+U+lpPtE4Cgm3DFpDm64PX55j3g1I8bNzobLlE7XOVNA3tL+dnw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
- CY8PR12MB7416.namprd12.prod.outlook.com (2603:10b6:930:5c::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.24; Fri, 19 Jan 2024 14:14:44 +0000
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::acb6:8bd8:e40b:2bfe]) by CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::acb6:8bd8:e40b:2bfe%3]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
- 14:14:44 +0000
-Message-ID: <e5d91609-829f-4318-a200-fb6657be82fd@nvidia.com>
-Date: Fri, 19 Jan 2024 14:14:35 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.7 00/28] 6.7.1-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, f.fainelli@gmail.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com,
- SW-Mobile-Linux-Upstreaming <SW-Mobile-Linux-Upstreaming@exchange.nvidia.com>
-References: <20240118104301.249503558@linuxfoundation.org>
-From: Jon Hunter <jonathanh@nvidia.com>
-In-Reply-To: <20240118104301.249503558@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0198.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:318::11) To CO6PR12MB5444.namprd12.prod.outlook.com
- (2603:10b6:5:35e::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F9F52F89
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:16:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705673787; cv=none; b=nDT2p6ciSmOpgvw9lh7QQEDNmmPQ1fUiJLmBElb1Ix3e76Vb+qU+pzcwg6wFn2bWd1EoScFE8TgInJdFeL0qYsDzXeer98Nq2tEnNU26m7tXQXRy58eE2ZI+gfxnfgrAL5K9K/OKLLwJuz+sUsu6/h00qH/iQU5doAsxENsaaB4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705673787; c=relaxed/simple;
+	bh=nv2GpNG+L8QnLw7AeDXbcdaQi7ztbj6Xlz2y/QmgdDo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jjU3hSrshqnhsBJUFEbNCOof/daic+kKDPMjg91TzP1Y2BFBzwZAb61AClItPVUg+o+KhT9vFJL85D36lfXconB9+YCeTbeoI9lOUzzFMlmE8WDrWigjZbcShr96NIyT7kqaGj7Y7xepKYXvdV+7OjyCrx30zcuSCtAat+4IO3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h8BC9ThI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705673785;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NvEKGuuarKJEMXHUtudRSVocElOnguvaapshPozeGjw=;
+	b=h8BC9ThIXVia6jKt79hHDpPePAlEZfz2/02IYqbSa5uvdyUYxG/SEMV4UbV6zbE54EvYyR
+	rxjcLqgVq4vGDHx6IybSsIaKvkNipqPzdG9tswCmzWJzoFX3hNXWoYtBQaTayT14RSxmnA
+	l3p+zFQJBEu4YItL6VH76ltF+JUkfZs=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-73-V2RrU0_wMFujMmTaVAEtZw-1; Fri,
+ 19 Jan 2024 09:16:21 -0500
+X-MC-Unique: V2RrU0_wMFujMmTaVAEtZw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7382C3C2AB16;
+	Fri, 19 Jan 2024 14:16:20 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.76])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 698A42166B35;
+	Fri, 19 Jan 2024 14:16:14 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri, 19 Jan 2024 15:15:07 +0100 (CET)
+Date: Fri, 19 Jan 2024 15:15:01 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dylan Hatch <dylanbhatch@google.com>, Kees Cook <keescook@chromium.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Vincent Whitchurch <vincent.whitchurch@axis.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mike Christie <michael.christie@oracle.com>,
+	David Hildenbrand <david@redhat.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Stefan Roesch <shr@devkernel.io>, Joey Gouly <joey.gouly@arm.com>,
+	Josh Triplett <josh@joshtriplett.org>, Helge Deller <deller@gmx.de>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Florent Revest <revest@chromium.org>,
+	Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] getrusage: move thread_group_cputime_adjusted() outside
+ of lock_task_sighand()
+Message-ID: <20240119141501.GA23739@redhat.com>
+References: <20240117192534.1327608-1-dylanbhatch@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:EE_|CY8PR12MB7416:EE_
-X-MS-Office365-Filtering-Correlation-Id: fd3d71d4-fd87-461d-b135-08dc18f8fc2c
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	EhpsFmJxeLPv9DlJ6bF4r90qhh+mBg4UEKzin2WSL5n3p15a0nT8s1faKO1/fQP4vfFtTKNTK08c/sowXehexi2+GACHUKSBcvRrUBNenXsNWY74Quua4y6RbVChI4GAWulmBSWVfUm1jSqjaKL9lbpvnD7J3rc6tAe4SGPuwqbjlZQ+27bdMT1lO4U6YhB4LeJpIKRtbF53dsViLqis1d9fo5VCtJQeJkUm0Ckbdn+STqi0Ql59FyQoxRlbDZzzLa/Ynu86bgclsWOGiKM6fe156jOTSeAIEyQ2wnxSlz2Ot6ji7OJXc0/vTStGTk2fW+/uC6SJ7XcVNQQZZoKz97PXRql00p03ZNn63mtGYJi1CJQ1W7GpHzNNi+QkEzfJpuQQ2Luym/3O5dsK+IB0NvcSSd/qfhpCYL0b8w6PtSh0zrBTva1RIY1/n/CS29Efc6fZ+BEV3yMPgAfioz8HoSPkWpHWPsLBSYoIkwPzQpbrTyuQ9OUAP/SA711G5jxxutNM6JPT0s4dWXacsXLnLV9MDxv+IKWVC3XUj0UJFN5fJiMQqeFslFWjXs2SClLyy2IwwWW9eigcJQarDXMebl3DSdvduof4zOVoVs5rHuCCM5HsJ0BPMU+fF90U+jsOAXdmPdkYeZRLp5/wES4Xb2xndH8Asc9rrhv+/fFnYKmqi3JT5PukuWkm5DhjIaJ8
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(396003)(346002)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(6512007)(83380400001)(86362001)(2616005)(53546011)(107886003)(38100700002)(316002)(4326008)(5660300002)(8936002)(8676002)(7416002)(66556008)(966005)(6666004)(478600001)(6486002)(2906002)(6506007)(66946007)(66476007)(36756003)(31696002)(31686004)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VE5JdUNlRnF1Q1hVVGl5aUFybkg3U2Vzcmlvdmx5dUpjRXlXWThNMUFvN0s3?=
- =?utf-8?B?YjhEZDJRQzg3aUJ4Vm9BaGw3bTBHQ0o0a1lZR1VPVEhMcGFzUDQ1QzN4QkFS?=
- =?utf-8?B?U2FYc0ZCVWRZNjYzcHhXeGpwTWNyeGlPL0ROZUQrdTRodFl0M1F6eW9heTNT?=
- =?utf-8?B?dXZvRW5Rck43ZkpUMStvT3ZETkEwVEdrNEg4SFhIK3RtbVE0ZEd1QnFMUGkx?=
- =?utf-8?B?Vk9Ya255S1p5bDJVMnF1MXgwclVNenIvcEs3RjUyeG9nVk5XRTBIRnYxdWFz?=
- =?utf-8?B?K0VIZDcyN2JkaHZJSHhnOGpWTVg2bFY4b1hobkZKL3Y4a3ZxMzdOTTc0YzZv?=
- =?utf-8?B?cE93TWF2YTlETUtYNWNxVnArck1yNnRudnZBcUF2bzYrU3RIOG1RYWZLb09u?=
- =?utf-8?B?ZVBXcFJVUmU1Tzk4eHhNVmFvdGQ4a2RFK013cmQ1NWpDbllRaERqYjZ0R2Jy?=
- =?utf-8?B?ZVlrT3Q2eU1MVEdRN0hIZVRkYStSK1AxY1dZYTZJVk5mS05iNHhEamtXaHNU?=
- =?utf-8?B?aEFRRkpaKzFYdXVaaGFEZ3A4M2lrK2VSRW9OUFU1YXlQeTZRKzgyNnQyaDRw?=
- =?utf-8?B?ODNvVG1zMnZnUEFNMXdQTkdzckVTbllvdVVTRG81bzkxT1c4eE84ellqbnc4?=
- =?utf-8?B?aHFpdzB4ZjFiT1dueEZtdjR6czl2cDlrZFJNZWhLdDhudDJsUnRrZzBjYkFZ?=
- =?utf-8?B?VGN1V2ZyL3dhcWF5a3ZGYzJTdm9pQktESmJ0Wk94MGcxOUFoTWVoR2NDTGNr?=
- =?utf-8?B?Tm5ORkhLdkFNUVIram4rV2VDZGtFZ3UxV1BDUlNMWG1EM2x1WE8zOEtYa1lF?=
- =?utf-8?B?K2QycUlIQi8xalFOYTh6NFg4NWpYa2hIOVlLVE50K0pzQjErT21WSGYydWZV?=
- =?utf-8?B?T2owdkJkbC9XUG13WUlOUXRORVIvUU1CdE0wZlpDWkVWYkdYekFseUdZVnFj?=
- =?utf-8?B?UzJKM1E5dDlLaDFiZUQvTE1HSlAzMzZ2bkc1OEo4MGZPSE5mQ0p5OXpnclBO?=
- =?utf-8?B?bWdLNUtMUVdJd1MzN3BRbkpoUk1sY0JpL1RXNktqNHpVaXNsS3dwU08zOGJ4?=
- =?utf-8?B?cTYwR2VybDdRT2JCN3RVa2Q4UWF6ZkRhdmdLa2pHcW52ZkQrczVydkpyOU1i?=
- =?utf-8?B?d2FZTnk4dk9xa3VjbldQZ0tjMnYxUjJvS01wSkZoL2dyT0czT0s0dEs2YnZF?=
- =?utf-8?B?TUpBK1Y4Rm5oMFJ2OWkxTkVLMWRuVmpQTVpkRGpYQXNucUxab3BCNW5yVU1T?=
- =?utf-8?B?ajJ5WHFPeWxBNzVTZmJiZXg4UDRqTXRFcE90Q0hQWUE5b1dYU1h3RWxGTHRi?=
- =?utf-8?B?MlM1NHkyOWRLckNQZ1lQei9wSUtlNXQ2WnVVd25UZzEvaFd2dmpBa1diSnJz?=
- =?utf-8?B?RDlvK2VwYiswWmRUVzM2NHVkclFMU0w4cFpmKzlWTFRsOVRySTV0Z2llTTZV?=
- =?utf-8?B?Y0hrNjJpbEtVVFlxSmlXOWs3NkYxMExja3BpYjFnc2VzTzJVM2t0czF3UVhY?=
- =?utf-8?B?bGZvU0t6UkloSnptTUVrcXpBb2JtUS9aOWhQeU5NTndTTDFPYzlHcmk1VFUv?=
- =?utf-8?B?TkhSSjNkMzFmMHh0MzdCa0JpSFFqUFJicnpzOW9IRXRtL25MeWVKOEd2TC9r?=
- =?utf-8?B?T2JTV2VWemExdUoyVXhSUEc2K1YzTk82Q1l3WkI0Y0lOeXZPenpWbVpQdlRZ?=
- =?utf-8?B?dWNzN3MvSHJnZFVva0lmNWEzc3lURzllbDVVSjF2OVltaXhYTDVRdWVKOGhu?=
- =?utf-8?B?NUtFSDl3V1JMOUZSdnlidGVxZkhyTm5iM2hrRjVGSnBXTUxBV1dWRnd6RDcy?=
- =?utf-8?B?SGlIcTlmcGNKTDRmcFZOK0RyVjV2LzhLU2t0YjJHYS9YOTFkalVyVmhTWmZJ?=
- =?utf-8?B?cXh2L3A2NFF5ZDFmWlpPS1dlQUdFbmNuTXo3b1JTWVlubmROTm5yWG54VTRL?=
- =?utf-8?B?MU15b3JiamR0Y3l5SHZTSVVCZFd5MHpHUlY3em1Od0U4SnRJdmYrdWpTaS9w?=
- =?utf-8?B?TGxVTDduWVZGek1tZVFoR2lvRUhqUmhhK29hQlE3ZmFQaThJU25XMGsxaEF2?=
- =?utf-8?B?eEJ3MEhrOUJyV01JUFBPN0Y0U2JnVnBja01nZHFjUDlwdDI5NzQ0QkxMQjlk?=
- =?utf-8?B?djlidFZtTU00aW15TEw0NjFycWNVZnIvd2d3ZldoM1Zia0pMZFZlcWVpV0Np?=
- =?utf-8?Q?Z8DEgIbviiHorZkDbs+plS1bqzB0LGwwIlyVlNs54HgN?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd3d71d4-fd87-461d-b135-08dc18f8fc2c
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 14:14:44.4084
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 49hQb3puPMaYSuSPhsy2xP9yv3lMh7zpWskSNtWnS4DBV9k8JpcmOb/3P3btWi1MaSB6yclbrgmDDYhqMDjQIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7416
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117192534.1327608-1-dylanbhatch@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
+thread_group_cputime() does its own locking, we can safely shift
+thread_group_cputime_adjusted() which does another for_each_thread loop
+outside of ->siglock protected section.
 
+This is also preparation for the next patch which changes getrusage() to
+use stats_lock instead of siglock. Currently the deadlock is not possible,
+if getrusage() enters the slow path and takes stats_lock, read_seqretry()
+in thread_group_cputime() must always return 0, so thread_group_cputime()
+will never try to take the same lock. Yet this looks more safe and better
+performance-wise.
 
-On 18/01/2024 10:48, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.1 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 20 Jan 2024 10:42:49 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.1-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/sys.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
-
-No new regressions for Tegra ...
-
-Test results for stable-v6.7:
-     10 builds:	10 pass, 0 fail
-     26 boots:	26 pass, 0 fail
-     116 tests:	115 pass, 1 fail
-
-Linux version:	6.7.1-rc1-gef44e963b02e
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                 tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                 tegra20-ventana, tegra210-p2371-2180,
-                 tegra210-p3450-0000, tegra30-cardhu-a04
-
-Test failures:	tegra186-p2771-0000: pm-system-suspend.sh
-
-
-Unfortunately, we have a suspend regression for v6.7 on one board. We 
-have identified the change in v6.7, in the Tegra Host1x driver, and we 
-are working to fix. So the above failure is expected.
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Jon
-
+diff --git a/kernel/sys.c b/kernel/sys.c
+index e219fcfa112d..70ad06ad852e 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1785,17 +1785,19 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	struct task_struct *t;
+ 	unsigned long flags;
+ 	u64 tgutime, tgstime, utime, stime;
+-	unsigned long maxrss = 0;
++	unsigned long maxrss;
++	struct mm_struct *mm;
+ 	struct signal_struct *sig = p->signal;
+ 
+-	memset((char *)r, 0, sizeof (*r));
++	memset(r, 0, sizeof(*r));
+ 	utime = stime = 0;
++	maxrss = 0;
+ 
+ 	if (who == RUSAGE_THREAD) {
+ 		task_cputime_adjusted(current, &utime, &stime);
+ 		accumulate_thread_rusage(p, r);
+ 		maxrss = sig->maxrss;
+-		goto out;
++		goto out_thread;
+ 	}
+ 
+ 	if (!lock_task_sighand(p, &flags))
+@@ -1819,9 +1821,6 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 		fallthrough;
+ 
+ 	case RUSAGE_SELF:
+-		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+-		utime += tgutime;
+-		stime += tgstime;
+ 		r->ru_nvcsw += sig->nvcsw;
+ 		r->ru_nivcsw += sig->nivcsw;
+ 		r->ru_minflt += sig->min_flt;
+@@ -1839,19 +1838,24 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	}
+ 	unlock_task_sighand(p, &flags);
+ 
+-out:
+-	r->ru_utime = ns_to_kernel_old_timeval(utime);
+-	r->ru_stime = ns_to_kernel_old_timeval(stime);
++	if (who == RUSAGE_CHILDREN)
++		goto out_children;
+ 
+-	if (who != RUSAGE_CHILDREN) {
+-		struct mm_struct *mm = get_task_mm(p);
++	thread_group_cputime_adjusted(p, &tgutime, &tgstime);
++	utime += tgutime;
++	stime += tgstime;
+ 
+-		if (mm) {
+-			setmax_mm_hiwater_rss(&maxrss, mm);
+-			mmput(mm);
+-		}
++out_thread:
++	mm = get_task_mm(p);
++	if (mm) {
++		setmax_mm_hiwater_rss(&maxrss, mm);
++		mmput(mm);
+ 	}
++
++out_children:
+ 	r->ru_maxrss = maxrss * (PAGE_SIZE / 1024); /* convert pages to KBs */
++	r->ru_utime = ns_to_kernel_old_timeval(utime);
++	r->ru_stime = ns_to_kernel_old_timeval(stime);
+ }
+ 
+ SYSCALL_DEFINE2(getrusage, int, who, struct rusage __user *, ru)
 -- 
-nvpublic
+2.25.1.362.g51ebf55
+
+
 
