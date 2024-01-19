@@ -1,194 +1,137 @@
-Return-Path: <linux-kernel+bounces-30808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A823983248B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:21:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9543183248E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:24:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E610B20BE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:21:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C33A31C22CD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A32D527;
-	Fri, 19 Jan 2024 06:21:14 +0000 (UTC)
-Received: from esa6.hc1455-7.c3s2.iphmx.com (esa6.hc1455-7.c3s2.iphmx.com [68.232.139.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9699DC142;
+	Fri, 19 Jan 2024 06:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Fg1AUJnO"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56A4CA4A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 06:21:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF55BA2E
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 06:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705645273; cv=none; b=CkpF20GcSPQ92eULSicbHrfljCXyKhB+B9NPjHmysBB6V6GerruGeazJyb780a/njRi1vLfa13vjUGN6ZnvARNjVscBrOS9CZJpSzF/hRJCfQoLmtvFwynOT7AQ046TZqUW5+DsXmqBi+agVFuXY+NWQ+vBMk8nRFKUnNZVXMvs=
+	t=1705645468; cv=none; b=VC5Gk1aEF2aICHV9/sLTDalGyZpTo7ENnRKU8dRIL5BR8YVvDzRdjGfX028qGebYePC8FWhsD6v49Py5xpgDx9je+SphMyGehf8d8e2tOSivTEUL90/Xq4DnFxbIjzO0XnHv8TOCzcpzW0rnU5DHgd/Qazib3De8tPkg3jtWuts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705645273; c=relaxed/simple;
-	bh=2dXpWaC/gA+rQCGSdigv19bRkfr4cEkbCln5JNbcfiE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mjZOJGdJ96nNG8HLWC+bnqbPU0FZyO/wliWX/cRpNsGbhgsG+N1sa1o8VsgZF5XWlQHEeCr/QVYlr352pnkWl0HCx6/VZx1KKd13gG9OYzdchWWT8+R5zhwsc/X+wblPfzw9nAo2kp2LGeCwvLG7YzRPBS+uxeXDVTbgXvq/p8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; arc=none smtp.client-ip=68.232.139.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="148292404"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701097200"; 
-   d="scan'208";a="148292404"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
-  by esa6.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 15:21:07 +0900
-Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com [192.168.87.61])
-	by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 0E961D64B1
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:21:05 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
-	by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 41F56AA47D
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:21:04 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id BF915200968EC
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:21:03 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.226.45])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id 1946F1A015E;
-	Fri, 19 Jan 2024 14:21:03 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
-To: linux-kernel@vger.kernel.org
-Cc: Li Zhijian <lizhijian@fujitsu.com>,
-	Julia Lawall <Julia.Lawall@inria.fr>,
-	Nicolas Palix <nicolas.palix@imag.fr>,
-	cocci@inria.fr
-Subject: [PATCH v2] coccinelle: device_attr_show: Adapt to the latest Documentation/filesystems/sysfs.rst
-Date: Fri, 19 Jan 2024 14:20:57 +0800
-Message-Id: <20240119062057.4026888-1-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1705645468; c=relaxed/simple;
+	bh=NjXRZzRQRfi2WqiVfEKjjPOfMA6nHiBOBvPolNtw6Gw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yc6mnBvvNAKMisJienXnXLup4/0EPCb1uEEpAXt871iTp/QWMmfExqgbxW0q1WLExyw+z48OW5YRKL85ghrvLdF30BbfTMOQfOYGD+B5ypL46Y1rJKQ8lQpHUmxGctXT8PwkaBXkLXXg6JxPKxkyFtzsuDZt9LAAPhIK1+8+xJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Fg1AUJnO; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d71c844811so2085055ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 22:24:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1705645467; x=1706250267; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ezGigqCkcdld0LRuOuJDBfz/9AsfE2OTVy2IitNYYM8=;
+        b=Fg1AUJnO5U6UK5VGg2rzQAfxTV62ERztv2aNZFsHt+uw/SSAW7w/shhbD14OMig8yC
+         RKelynFjupAa1O4ZzgSEdIaJO3gBnTwSxZbNHtULVEu2VQ+WhXr9r1hwSs15MgRcIFQW
+         4WmMpLbltrMZ1tqO/vU8PKv7FTE5AgiM3KE8NLIQgkGoNJu8KTWrC+NGAguQqV5yaN2d
+         pRBxWeIgJCe7O1tvxogjup1AsbOIAKZO9dk1x8/UrhaulZlhcbR/GPgkmo0wfrTfZEeG
+         0q8NOwIQKmXeKxV3Jb0ZYyRvQSNqFRTXYAlNrqpX4NTJJ0ukP+lew4ukLdx78CJF/KrD
+         hqZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705645467; x=1706250267;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ezGigqCkcdld0LRuOuJDBfz/9AsfE2OTVy2IitNYYM8=;
+        b=V3wltNpUQSrPMtjNzTmyeASNWFw3pN1dGkXkuxgMOc2d3QIWxLzRggcUKVnqoC2M9Z
+         3wf7/eIcZHxD+EZPTZOJmPpVF4ex+GkMHlhfmT3Rge5Xp9CXhJZm/jkrGE8jv0NA4MOV
+         +0iqGTzSOCHkk+GMhr8KE7uj4wAX00ZNVdsQjXqA94O59JBbWv5Nzki0WmROO2nr8oN8
+         uYJRjqpEYTuok5lJN1MoEN99JEm4HEUycnx/8ko7YDg9wWlzmVUGisYMWUgWhdCuN2pp
+         rUZsK5bJOtsxwufdrxbzIxrla0rMEYFPbPv2yg6364oNRnZoPuSGuHXdT3XXstupdAa+
+         n21g==
+X-Gm-Message-State: AOJu0YyuCpndZ1Z8Cw/0S+QAvfrzLjXzWiH0X8cvvDusjEAa3joxZQE2
+	/ahR0kxo7e+UwfKgKhKp8VbW6ZTsYDIXdtCdCvM7thk3JMaqYzsmg9KEaFYl2eo=
+X-Google-Smtp-Source: AGHT+IHbs1UCb6N4UA5U9mggCoxh/GqergCZhsihImGoe010eTwzBJXzkJPka6nGusHM57gdVMc67w==
+X-Received: by 2002:a17:902:c3d1:b0:1d7:19ec:2e55 with SMTP id j17-20020a170902c3d100b001d719ec2e55mr951130plj.59.1705645466629;
+        Thu, 18 Jan 2024 22:24:26 -0800 (PST)
+Received: from [10.254.224.1] ([139.177.225.241])
+        by smtp.gmail.com with ESMTPSA id jf4-20020a170903268400b001d0d312bc2asm2301115plb.193.2024.01.18.22.24.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 22:24:26 -0800 (PST)
+Message-ID: <fa586d2c-179c-4315-9e32-0832cf22e186@bytedance.com>
+Date: Fri, 19 Jan 2024 14:24:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] mm/zswap: split zswap rb-tree
+Content-Language: en-US
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org,
+ Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
+ Chris Li <chriscli@google.com>
+References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
+ <20240117-b4-zswap-lock-optimize-v1-2-23f6effe5775@bytedance.com>
+ <CAKEwX=Op6XTawUZg-4pDM70z4kB4-5Wo6Ss+ptyzkd+Ub3PDEQ@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAKEwX=Op6XTawUZg-4pDM70z4kB4-5Wo6Ss+ptyzkd+Ub3PDEQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28128.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28128.005
-X-TMASE-Result: 10--8.997200-10.000000
-X-TMASE-MatchedRID: VFz6FHT9KvIRC3tpysE8AO9kW9mxCQvttOtXYgbXjde+f7ap9DJaDSxz
-	RYsJiUav/17ljwcNaRm5hiunv4GcSziJuiRnf5DQKiJEqUFWRggFeeAjqMW+l8ZgSaBgziUc2d8
-	mtRIRsUMkfu0SYDUi3tk+AWND1SQ/1s1AHJ9E8eDfSQNpZkETVFLiJI6ntczPeGHkpR2WBaKp7E
-	+IyeS1Xt9azz0zRbyE1mLuCemy7OOnhintEWTpJ65bb5QEYSkdLYdywTHl7nvZCDeKLir288tMy
-	hlcs3zJTLP4m7if3GSdqC2fLtk9xB8TzIzimOwPC24oEZ6SpSkj80Za3RRg8JU8c6O2cgtdKkXm
-	cQlIhgRkwIxiFgO1Jve1LKdTmTjePJuGM8tMGsU=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-Adapt description, warning message and MODE=patch according to the latest
-Documentation/filesystems/sysfs.rst:
-> show() should only use sysfs_emit() or sysfs_emit_at() when formatting
-> the value to be returned to user space.
+On 2024/1/19 03:24, Nhat Pham wrote:
+> On Wed, Jan 17, 2024 at 1:23 AM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
+>>
+>> Each swapfile has one rb-tree to search the mapping of swp_entry_t to
+>> zswap_entry, that use a spinlock to protect, which can cause heavy lock
+>> contention if multiple tasks zswap_store/load concurrently.
+>>
+>> Optimize the scalability problem by splitting the zswap rb-tree into
+>> multiple rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M),
+>> just like we did in the swap cache address_space splitting.
+>>
+>> Although this method can't solve the spinlock contention completely, it
+>> can mitigate much of that contention. Below is the results of kernel build
+>> in tmpfs with zswap shrinker enabled:
+>>
+>>      linux-next  zswap-lock-optimize
+>> real 1m9.181s    1m3.820s
+>> user 17m44.036s  17m40.100s
+>> sys  7m37.297s   4m54.622s
+> 
+> That's really impressive, especially the sys time reduction :) Well done.
+> 
 
-After this patch:
-When MODE=report,
- $ make coccicheck COCCI=scripts/coccinelle/api/device_attr_show.cocci M=drivers/hid/hid-picolcd_core.c MODE=report
- <...snip...>
- drivers/hid/hid-picolcd_core.c:304:8-16: WARNING: please use sysfs_emit or sysfs_emit_at
- drivers/hid/hid-picolcd_core.c:259:9-17: WARNING: please use sysfs_emit or sysfs_emit_at
+Thanks!
 
-When MODE=patch,
- $ make coccicheck COCCI=scripts/coccinelle/api/device_attr_show.cocci M=drivers/hid/hid-picolcd_core.c MODE=patch
- <...snip...>
- diff -u -p a/drivers/hid/hid-picolcd_core.c b/drivers/hid/hid-picolcd_core.c
- --- a/drivers/hid/hid-picolcd_core.c
- +++ b/drivers/hid/hid-picolcd_core.c
- @@ -255,10 +255,12 @@ static ssize_t picolcd_operation_mode_sh
-  {
-         struct picolcd_data *data = dev_get_drvdata(dev);
+>>
+>> So there are clearly improvements.
+>>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> Code looks solid too. I haven't read the xarray patch series too
+> closely yet, but this patch series is clearly already an improvement.
+> It is simple, with existing precedent (from swap cache), and
+> experiments show that it works quite well to improve zswap's
+> performance.
+> 
+> If the xarray patch proves to be even better, we can always combine it
+> with this approach (a per-range xarray?), or replace it with the
+> xarray. But for now:
+> 
+> Acked-by: Nhat Pham <nphamcs@gmail.com>
+> 
 
- -       if (data->status & PICOLCD_BOOTLOADER)
- -               return snprintf(buf, PAGE_SIZE, "[bootloader] lcd\n");
- -       else
- -               return snprintf(buf, PAGE_SIZE, "bootloader [lcd]\n");
- +       if (data->status & PICOLCD_BOOTLOADER) {
- +               return sysfs_emit(buf, "[bootloader] lcd\n");
- +       }
- +       else {
- +               return sysfs_emit(buf, "bootloader [lcd]\n");
- +       }
-  }
-
-  static ssize_t picolcd_operation_mode_store(struct device *dev,
- @@ -301,7 +303,7 @@ static ssize_t picolcd_operation_mode_de
-  {
-         struct picolcd_data *data = dev_get_drvdata(dev);
-
- -       return snprintf(buf, PAGE_SIZE, "hello world\n");
- +       return sysfs_emit(buf, "hello world\n");
-  }
-
-  static ssize_t picolcd_operation_mode_delay_store(struct device *dev,
-
-CC: Julia Lawall <Julia.Lawall@inria.fr>
-CC: Nicolas Palix <nicolas.palix@imag.fr>
-CC: cocci@inria.fr
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
-V2:
-- changed title from coccinelle: device_attr_show.cocci: update description and warning message
-- Fix MODE=patch
-- Extract patch from the patch set[1] so that maintainer can accept it separately.
-[1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
----
- scripts/coccinelle/api/device_attr_show.cocci | 22 +++++++++++--------
- 1 file changed, 13 insertions(+), 9 deletions(-)
-
-diff --git a/scripts/coccinelle/api/device_attr_show.cocci b/scripts/coccinelle/api/device_attr_show.cocci
-index a28dc061653a..634514937e63 100644
---- a/scripts/coccinelle/api/device_attr_show.cocci
-+++ b/scripts/coccinelle/api/device_attr_show.cocci
-@@ -1,10 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0-only
- ///
- /// From Documentation/filesystems/sysfs.rst:
--///  show() must not use snprintf() when formatting the value to be
--///  returned to user space. If you can guarantee that an overflow
--///  will never happen you can use sprintf() otherwise you must use
--///  scnprintf().
-+///  show() should only use sysfs_emit() or sysfs_emit_at() when formatting
-+///  the value to be returned to user space.
- ///
- // Confidence: High
- // Copyright: (C) 2020 Denis Efremov ISPRAS
-@@ -30,15 +28,21 @@ ssize_t show(struct device *dev, struct device_attribute *attr, char *buf)
- 
- @rp depends on patch@
- identifier show, dev, attr, buf;
-+expression BUF, SZ, FORMAT, STR;
- @@
- 
- ssize_t show(struct device *dev, struct device_attribute *attr, char *buf)
- {
- 	<...
-+(
- 	return
---		snprintf
--+		scnprintf
--			(...);
-+-		snprintf(BUF, SZ, FORMAT, STR);
-++		sysfs_emit(BUF, FORMAT, STR);
-+|
-+	return
-+-		snprintf(BUF, SZ, STR);
-++		sysfs_emit(BUF, STR);
-+)
- 	...>
- }
- 
-@@ -46,10 +50,10 @@ ssize_t show(struct device *dev, struct device_attribute *attr, char *buf)
- p << r.p;
- @@
- 
--coccilib.report.print_report(p[0], "WARNING: use scnprintf or sprintf")
-+coccilib.report.print_report(p[0], "WARNING: please use sysfs_emit or sysfs_emit_at")
- 
- @script: python depends on org@
- p << r.p;
- @@
- 
--coccilib.org.print_todo(p[0], "WARNING: use scnprintf or sprintf")
-+coccilib.org.print_todo(p[0], "WARNING: please use sysfs_emit or sysfs_emit_at")
--- 
-2.29.2
-
+Right, I agree. We should combine both approaches.
 
