@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-31047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11D8A83280E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:49:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2098B832814
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:50:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 378C41C22E45
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:49:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45C2D1C23210
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5960151031;
-	Fri, 19 Jan 2024 10:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 339AF51C4B;
+	Fri, 19 Jan 2024 10:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qTc8qlV5"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="si/6tQey"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A935A5024C
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:45:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C616250A7E
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705661148; cv=none; b=NM8mGFuIl/c8+/HeSXZDBy0fEAYf7hgAd/whLu3Jb3ywAyH5VwXWh+ytKYZJ+nZKkl51Nrm8lslimg5BcJXkMUJppBEktwc7RY5JlYNz1kSmuJlPuHykPCB9gUrE+aEILfhbTRD/l81Fyg+lIhL58YmcYYKKagDvC3WvjmAeRbw=
+	t=1705661149; cv=none; b=SeK9Q1uMkEy9fZqXgiZR+GawpSnXKDiTwgTiKSAQZKGsWtM7a58ZCkBT9htxHCQP5C7xtpDjCZkAzzZ4kXqc/b5thKXc056gXFQrqbCXb+Mj6p+hpkl5cou/o8cSiwhEKq8K0bn/ONkOnrJte3OirWG02zEtUvC34+yYHOPhlxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705661148; c=relaxed/simple;
-	bh=ZFSueeqJOG50kpfUkqWZIIakY/L+wXXiARZ0cSz/CKo=;
+	s=arc-20240116; t=1705661149; c=relaxed/simple;
+	bh=0rvm+ZfAvB34/Bb8MmtN/eXQ/wWDxr8HdRasaolA49E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IrhRm38gDAW25EcLygwjvumzfmI4R3p3RS83pFFH28x3PyEYPRId9COVMVEfuLeA9PgML2yxUY7kdbb8nZ6PAmHUo0JkmwHSjBfiNo1XZqoH9hFZhtJiSbxRS20QO3wt7GWNvGs3LyFR+jY3h8MyKoyDXIN2EVx3kxryZFEY3RQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qTc8qlV5; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=kwi9zcqcXGTRGRXw+lWZz0R83BdSWkmCCkcpRysCB0PZYqGORFXRX2oMwXAVwnl+Qjbewhkt95HsLHf+FTkQE8+1fHmJBp5ltQDttkmbmSmXAVfJS1H4jprlkQ9q4bBOr7bAdoQNOiSg/uhBweF5Bw9qYSpnTikNZbolKGd1I+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=si/6tQey; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e7065b7bdso6626245e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:45:46 -0800 (PST)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e779f030aso3688205e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:45:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705661145; x=1706265945; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705661146; x=1706265946; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Nwo45PT47NHmv38PG0rfELhMxvzOHKS168E5xQGMKNU=;
-        b=qTc8qlV5brIp3i10rpuf2Wny+Ysd3EH9O50JGwdKQGn1nWIT2VWv6XR0Uojsi7FOa/
-         KB05+DM6/q5ZQJKR0+6T1AedB4wFFX3ccBeRGdnwKIuQOY5r7KlnHaQGbmuZscPJ5fbI
-         pfa4dBpqov3WiEiniuLGZxUeKavMJpETq3ReZthVfFLYXso69NsLz4rY1qXUmFnY3tAM
-         ARHBzmwf0fcPJJtnWsbrg5s81WI14eSUrA/D96CnZOpBWjbN2vmos8DXjihZW8zOH2DW
-         rT7oKOsvK+WVA+mSf8f83jCdMtSQqDuVGetd6LH4vIQcT6sg6sKujvMxPmEfiApuN4m/
-         vnSQ==
+        bh=ecEUv9cB/C4rgpKZf48XubyCx93neS07LHrZaWe0W9s=;
+        b=si/6tQeyPq6LIimqvEt8VzUpZuHxFU85yfnK+W3rx6Rrk3rhvxg2NQ+BWjGZhdeBHO
+         foZfEoTHuad9Plp48UYuJryDZjyrAFOBLQuFL3GZrr3kv6AJyMUe9a/BWBffWOIXPWNY
+         nY6XXayP0SQLe5CP6wX1wx2BJy/qrz2v8Z2XRcIxz7CrcwNWhzfWU6jFZmys/v2pPCze
+         poeBzNeJjjHS5FAAoC3ekwjm2BC7EXOzyCogqj6GqqQ56R2Mq4Rzl0I1DPzZvN2Ft1Ol
+         q8wd2Lg+KF8MEfixrMag5ntOAqrtcmTesf6XMBtAb10dhk+GubO4x8XWVSGWKVUNdY4x
+         Pr/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705661145; x=1706265945;
+        d=1e100.net; s=20230601; t=1705661146; x=1706265946;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Nwo45PT47NHmv38PG0rfELhMxvzOHKS168E5xQGMKNU=;
-        b=wlKPoYMI2dHTqFghTohhlxFaZVcWa77YnJeKFZ3p3ieJ6J0gqtw+S5Yp2CFkiJAL5e
-         ngMIeHjeXAq+vlJpRm6dqDfklx6DiJWd7YVuCEots4aXs2L5kH2LrGBKLwu6H2/Autx+
-         ROsmkIo8H67u35+ghf/9cX4dcOanPz/+HHF5S7wljxDMR1mzMNw4w684CdTULO8CYuZp
-         co45kYrVtN+TL8jXSqIqQgGtO3QUFBVlQazD0wNeUW/5KvvUGm3NQQyLgmVCnrYAMVkC
-         yLM7QIAZ898RiYtP773DyGcQ0uVQ9sHXMyzKPN8XvM94Q71crE4HoYvJ2pd0R+PsAa77
-         ZSxg==
-X-Gm-Message-State: AOJu0Yx+YIBTfAzdEhmjCZonqhutRdraY2RllHAI/+fxNI3Ga3irNg1M
-	b7HNRA5P0A2LUP4BC5okgw0OvHUc4VgYCPSzC4Ihn9Zc0l8jn2QtU6HcQZeAGP4=
-X-Google-Smtp-Source: AGHT+IGDB9vqcXlGOfTsqQDi0fDJITgrOZsH9TN5J8Bnk1BdqNWsb0qFE7oeW7Dj1+a5XuLSTOkUiA==
-X-Received: by 2002:a7b:cbcd:0:b0:40d:6f34:5c13 with SMTP id n13-20020a7bcbcd000000b0040d6f345c13mr920130wmi.231.1705661145026;
-        Fri, 19 Jan 2024 02:45:45 -0800 (PST)
+        bh=ecEUv9cB/C4rgpKZf48XubyCx93neS07LHrZaWe0W9s=;
+        b=C1zxLojd9xLiu0L1YZcTZFvmIAibBfJswatHqS4KJzQqF3EJ95klyAQ8w3b37lt2Io
+         qkBYvECzywrK4yLm6jjjPQrWmV1dp5s+N0+ct6L1veXuVYhdQHghyWPmf5AkggYZSBbs
+         7oCfDoN98SlLG76YJCZWmj5jc5+FzWqB3JKxlW8sanMl7m26u4dtYpmvEVjWQbQATa53
+         f0W5dU/t2w8BfpTuR16ncDvF6ejmpjpzoztPbScD2y1CNWaQbl0lvK4lbZbESOSm4Tvg
+         OO3LCLvjg1SN93QEwSgfir67k0krsRqfpvxavY4Is1ZTLiCi6SobLFgZIvKx/76rFIg4
+         HK4A==
+X-Gm-Message-State: AOJu0Yzt6jKwQLZifOhyr6TUC/UbmNvJ7Kr2i5vH7kXfsh3MMoIujgP3
+	a2ZKIwRAB8iHJfrCQA7om/YeoXPVvklzTaxEt2RPqUrpL1wkpVDN04jo3W6FNw4=
+X-Google-Smtp-Source: AGHT+IFYdU7YgMMRHC+DrUKA5MwlIsxGfbocGuG9y6jEGdz2VaUXMw579pgtjEfWCwn+GLZjJgGcDw==
+X-Received: by 2002:a05:600c:6b0e:b0:40e:4ad9:90df with SMTP id jn14-20020a05600c6b0e00b0040e4ad990dfmr428957wmb.158.1705661146233;
+        Fri, 19 Jan 2024 02:45:46 -0800 (PST)
 Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id fm16-20020a05600c0c1000b0040ea10178f3sm77470wmb.21.2024.01.19.02.45.44
+        by smtp.gmail.com with ESMTPSA id fm16-20020a05600c0c1000b0040ea10178f3sm77470wmb.21.2024.01.19.02.45.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 02:45:44 -0800 (PST)
+        Fri, 19 Jan 2024 02:45:45 -0800 (PST)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -83,9 +83,9 @@ Cc: alim.akhtar@samsung.com,
 	semen.protsenko@linaro.org,
 	willmcvicker@google.com,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2 17/19] tty: serial: samsung: shrink the clock selection to 8 clocks
-Date: Fri, 19 Jan 2024 10:45:24 +0000
-Message-ID: <20240119104526.1221243-18-tudor.ambarus@linaro.org>
+Subject: [PATCH v2 18/19] tty: serial: samsung: change has_divslot type to bool
+Date: Fri, 19 Jan 2024 10:45:25 +0000
+Message-ID: <20240119104526.1221243-19-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 In-Reply-To: <20240119104526.1221243-1-tudor.ambarus@linaro.org>
 References: <20240119104526.1221243-1-tudor.ambarus@linaro.org>
@@ -97,109 +97,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<linux/serial_s3c.h> provides a clock selection pool of maximum 4 clocks.
-Update the driver to consider a pool selection of maximum 8 clocks.
-u8 is large enough to allow more clocks than are supported by the driver
-now, and not too big to cause spanning of ``struct s3c24xx_uart_info``
-through 2 cachelines when compiled for arm64. The goal is to reduce the
-memory footprint of ``struct s3c24xx_uart_info``.
+Since the driver was introduced the port features flags never extended.
+As we don't expect more flags soon that would bypass the first
+cacheline of ``struct s3c24xx_uart_info``, change the type of
+``has_divslot`` to bool. Bitfields operations incur performance penalty
+when set or read as compared to direct types.
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/tty/serial/samsung_tty.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/tty/serial/samsung_tty.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-index 149f618e22ce..c429029c0207 100644
+index c429029c0207..0a03df44211d 100644
 --- a/drivers/tty/serial/samsung_tty.c
 +++ b/drivers/tty/serial/samsung_tty.c
-@@ -81,11 +81,11 @@ struct s3c24xx_uart_info {
- 	unsigned long		tx_fifomask;
- 	unsigned long		tx_fifoshift;
- 	unsigned long		tx_fifofull;
--	unsigned int		def_clk_sel;
--	unsigned long		num_clks;
- 	unsigned long		clksel_mask;
- 	unsigned long		clksel_shift;
- 	unsigned long		ucon_mask;
-+	u8			def_clk_sel;
-+	u8			num_clks;
+@@ -89,8 +89,7 @@ struct s3c24xx_uart_info {
  	u8			iotype;
  
  	/* uart port features */
-@@ -1340,7 +1340,7 @@ static void s3c24xx_serial_pm(struct uart_port *port, unsigned int level,
+-
+-	unsigned int		has_divslot:1;
++	bool			has_divslot;
+ };
  
- #define MAX_CLK_NAME_LENGTH 15
- 
--static inline int s3c24xx_serial_getsource(struct uart_port *port)
-+static inline u8 s3c24xx_serial_getsource(struct uart_port *port)
- {
- 	const struct s3c24xx_uart_info *info = s3c24xx_port_to_info(port);
- 	u32 ucon;
-@@ -1353,8 +1353,7 @@ static inline int s3c24xx_serial_getsource(struct uart_port *port)
- 	return ucon >> info->clksel_shift;
- }
- 
--static void s3c24xx_serial_setsource(struct uart_port *port,
--			unsigned int clk_sel)
-+static void s3c24xx_serial_setsource(struct uart_port *port, u8 clk_sel)
- {
- 	const struct s3c24xx_uart_info *info = s3c24xx_port_to_info(port);
- 	u32 ucon;
-@@ -1373,14 +1372,15 @@ static void s3c24xx_serial_setsource(struct uart_port *port,
- 
- static unsigned int s3c24xx_serial_getclk(struct s3c24xx_uart_port *ourport,
- 			unsigned int req_baud, struct clk **best_clk,
--			unsigned int *clk_num)
-+			u8 *clk_num)
- {
- 	const struct s3c24xx_uart_info *info = ourport->info;
- 	struct clk *clk;
- 	unsigned long rate;
--	unsigned int cnt, baud, quot, best_quot = 0;
-+	unsigned int baud, quot, best_quot = 0;
- 	char clkname[MAX_CLK_NAME_LENGTH];
- 	int calc_deviation, deviation = (1 << 30) - 1;
-+	u8 cnt;
- 
- 	for (cnt = 0; cnt < info->num_clks; cnt++) {
- 		/* Keep selected clock if provided */
-@@ -1473,9 +1473,10 @@ static void s3c24xx_serial_set_termios(struct uart_port *port,
- 	struct s3c24xx_uart_port *ourport = to_ourport(port);
- 	struct clk *clk = ERR_PTR(-EINVAL);
- 	unsigned long flags;
--	unsigned int baud, quot, clk_sel = 0;
-+	unsigned int baud, quot;
- 	unsigned int udivslot = 0;
- 	u32 ulcon, umcon;
-+	u8 clk_sel = 0;
- 
- 	/*
- 	 * We don't support modem control lines.
-@@ -1776,10 +1777,9 @@ static int s3c24xx_serial_enable_baudclk(struct s3c24xx_uart_port *ourport)
- 	struct device *dev = ourport->port.dev;
- 	const struct s3c24xx_uart_info *info = ourport->info;
- 	char clk_name[MAX_CLK_NAME_LENGTH];
--	unsigned int clk_sel;
- 	struct clk *clk;
--	int clk_num;
- 	int ret;
-+	u8 clk_sel, clk_num;
- 
- 	clk_sel = ourport->cfg->clk_sel ? : info->def_clk_sel;
- 	for (clk_num = 0; clk_num < info->num_clks; clk_num++) {
-@@ -2287,9 +2287,9 @@ s3c24xx_serial_get_options(struct uart_port *port, int *baud,
- {
- 	struct clk *clk;
- 	unsigned long rate;
--	unsigned int clk_sel;
- 	u32 ulcon, ucon, ubrdiv;
- 	char clk_name[MAX_CLK_NAME_LENGTH];
-+	u8 clk_sel;
- 
- 	ulcon  = rd_regl(port, S3C2410_ULCON);
- 	ucon   = rd_regl(port, S3C2410_UCON);
+ struct s3c24xx_serial_drv_data {
+@@ -2400,7 +2399,7 @@ static const struct s3c24xx_serial_drv_data s3c6400_serial_drv_data = {
+ 		.port_type	= PORT_S3C6400,
+ 		.iotype		= UPIO_MEM,
+ 		.fifosize	= 64,
+-		.has_divslot	= 1,
++		.has_divslot	= true,
+ 		.rx_fifomask	= S3C2440_UFSTAT_RXMASK,
+ 		.rx_fifoshift	= S3C2440_UFSTAT_RXSHIFT,
+ 		.rx_fifofull	= S3C2440_UFSTAT_RXFULL,
+@@ -2429,7 +2428,7 @@ static const struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+ 		.type		= TYPE_S3C6400,
+ 		.port_type	= PORT_S3C6400,
+ 		.iotype		= UPIO_MEM,
+-		.has_divslot	= 1,
++		.has_divslot	= true,
+ 		.rx_fifomask	= S5PV210_UFSTAT_RXMASK,
+ 		.rx_fifoshift	= S5PV210_UFSTAT_RXSHIFT,
+ 		.rx_fifofull	= S5PV210_UFSTAT_RXFULL,
+@@ -2459,7 +2458,7 @@ static const struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+ 		.type		= TYPE_S3C6400,			\
+ 		.port_type	= PORT_S3C6400,			\
+ 		.iotype		= UPIO_MEM,			\
+-		.has_divslot	= 1,				\
++		.has_divslot	= true,				\
+ 		.rx_fifomask	= S5PV210_UFSTAT_RXMASK,	\
+ 		.rx_fifoshift	= S5PV210_UFSTAT_RXSHIFT,	\
+ 		.rx_fifofull	= S5PV210_UFSTAT_RXFULL,	\
+@@ -2498,7 +2497,7 @@ static const struct s3c24xx_serial_drv_data gs101_serial_drv_data = {
+ 		.type		= TYPE_S3C6400,
+ 		.port_type	= PORT_S3C6400,
+ 		.iotype		= UPIO_MEM32,
+-		.has_divslot	= 1,
++		.has_divslot	= true,
+ 		.rx_fifomask	= S5PV210_UFSTAT_RXMASK,
+ 		.rx_fifoshift	= S5PV210_UFSTAT_RXSHIFT,
+ 		.rx_fifofull	= S5PV210_UFSTAT_RXFULL,
+@@ -2569,7 +2568,7 @@ static const struct s3c24xx_serial_drv_data artpec8_serial_drv_data = {
+ 		.port_type	= PORT_S3C6400,
+ 		.iotype		= UPIO_MEM,
+ 		.fifosize	= 64,
+-		.has_divslot	= 1,
++		.has_divslot	= true,
+ 		.rx_fifomask	= S5PV210_UFSTAT_RXMASK,
+ 		.rx_fifoshift	= S5PV210_UFSTAT_RXSHIFT,
+ 		.rx_fifofull	= S5PV210_UFSTAT_RXFULL,
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
