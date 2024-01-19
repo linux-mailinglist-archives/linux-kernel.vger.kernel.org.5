@@ -1,144 +1,173 @@
-Return-Path: <linux-kernel+bounces-31321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64194832C78
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:46:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B6D0832CAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:02:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D7AE284FC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:46:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A197B2301A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8667254BDB;
-	Fri, 19 Jan 2024 15:46:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A198654FA6;
+	Fri, 19 Jan 2024 16:01:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Jk2YMo1P";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Jk2YMo1P"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZFPK9QiI";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kuDG/Evb"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7A054BE0
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E5C154BFC;
+	Fri, 19 Jan 2024 16:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705679172; cv=none; b=Ko2rWn5WgiS3KFTDwMxuitAFFKL+l0yea9LbFQFVmGpDTrnQGEofpllk5Fd+038t66eSv+cSOIyNmBpnOtxXPIwCkHKbyfR44hA6JywQTYW5jg8fnCxiVTTcVuFHSxAkyElgDqm3zVBEoh981tFHH0wSFJh1jf5fZoNZR1hlkYc=
+	t=1705680111; cv=none; b=RXQYVBoRNkZ0MAmKYGEbE1/Zq1DLeQScJbw8UxQVRhUD5TqeDCrIlmGHtmfRmgIKbGaKOWI50uX+iCEqADmOkU9qZ/Iulg+7bm9RIeXmaSQvsdIC+L4zJdcndyyBDrSi5fQMaJF6BqZwhu0V1KcTosX6+li+FlC6la/v9R2KpEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705679172; c=relaxed/simple;
-	bh=w8OrW7FhL4oRB0Y2bDVTNkpxCQm8IU8DfUxDQwC6jLM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Teq9LZ3GKVuTBOqwPcWLtcin60zjr8ZZ3fRyTC79EmkK7uMdx6ZaodmbloZtGJqvfeNqhbsv+guIv3Auf/1M4snkw0c4pmbGlndWMtydi8WQxwQ7WPXoAkHWE+y9s+JOi0gb0dVDp2UMeate4A2aaYZzZhwbhIIX1b+d+1Hcl8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Jk2YMo1P; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Jk2YMo1P; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7BC0721F6A;
-	Fri, 19 Jan 2024 15:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705679168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1705680111; c=relaxed/simple;
+	bh=8kuc08C2taB58eMQ6rGGFADhFfGm4/dWdPXlBPFcrus=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=jEIGjJWkV7oiv17imMjVczr9Sn86o/m1/ej0VoyC5iBEulsH6ToPjykjZFuFO9FvMv/k49rmnYTukI5cmHvp2kgh3Zx9mzzfod3akKBiasZx6hBJIsySrpM/bKMGaa+xbdc40dma7v5NMDaTMoMcJwFX32IA3RC94zn+kr6fhFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZFPK9QiI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kuDG/Evb; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 19 Jan 2024 15:47:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705679234;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=L/IkvwqWM3HNNg1/Uy/USTNPgBNZMsOoOsiNX+V4qTA=;
-	b=Jk2YMo1PILNRnK/XmsvxK6a3fjwq9hnkYALMaPIQX5lVSlPZEbs+9XXCUEQhFgR99iuhop
-	eaRKLtTNFM5tt4TxuX/JyqxszSweMfJ7SRlfWn6u0fLGI79jui4M3iDBw5kIakjE3IDjjU
-	c3HphCMmA12v22HJCKVHjGCjQyohEis=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705679168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	bh=OFazF9OBwT3EjQqG8QuBCT1kbtLVarHDzsAbA8dTKw4=;
+	b=ZFPK9QiIICfd8WUV0M7dre8KmtFwLNjg/6SE4JlANPlmsZ781B/ossw5+vZB7K74lBxE1s
+	/A+WYMOH8FtXds5SG7TuDi+KZ/f73fJLxkqX0vpNceovvg2Gsszed/YTCrgQLD9FsWf8MN
+	7Z8p7ZKlNACtXyBw1ga3Qrbe0+01hMd/vq6FtGOn+GPSLry3AtY3c8aXqvm17HgCWoDSFS
+	j4HD1ioYtW2XCg9qqqK5eKDNcd8lnXAG14KL1SVSzibxq3FWuWM0flT0jxeWXtOS1yZQ7t
+	OnpQNWNyF0HaEXq/k/fohU9Z5hr7mOIXPCMggMS8bglWH7QseOl7yRK4LwN5Pw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705679234;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=L/IkvwqWM3HNNg1/Uy/USTNPgBNZMsOoOsiNX+V4qTA=;
-	b=Jk2YMo1PILNRnK/XmsvxK6a3fjwq9hnkYALMaPIQX5lVSlPZEbs+9XXCUEQhFgR99iuhop
-	eaRKLtTNFM5tt4TxuX/JyqxszSweMfJ7SRlfWn6u0fLGI79jui4M3iDBw5kIakjE3IDjjU
-	c3HphCMmA12v22HJCKVHjGCjQyohEis=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 64C8A1388C;
-	Fri, 19 Jan 2024 15:46:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6vyaFUCZqmWzSwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 19 Jan 2024 15:46:08 +0000
-Date: Fri, 19 Jan 2024 16:46:07 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, ryan.roberts@arm.com,
-	Matthew Wilcox <willy@infradead.org>,
-	David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v2] mm: memory: move mem_cgroup_charge() into
- alloc_anon_folio()
-Message-ID: <ZaqZPxDUOuxRWB5l@tiehlicka>
-References: <20240117103954.2756050-1-wangkefeng.wang@huawei.com>
- <ZalK3suIskEyaR7m@tiehlicka>
- <c7b1cc8e-c434-4c86-972e-4a105524646c@huawei.com>
- <ZaosK59cRa27K9zW@tiehlicka>
- <14ae628d-a9ef-42f3-9201-e90c5c88c133@huawei.com>
+	bh=OFazF9OBwT3EjQqG8QuBCT1kbtLVarHDzsAbA8dTKw4=;
+	b=kuDG/EvbM+WAIO/NIPmWXdZoSDPWxyZ/aVvK9yTG2xXRNSdkFU3RWl+Xi1h7BRXQyP7u2f
+	QnEaaZvu7OIZFZAA==
+From: "tip-bot2 for Heiko Carstens" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] tick-sched: Fix idle and iowait sleeptime
+ accounting vs CPU hotplug
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240115163555.1004144-1-hca@linux.ibm.com>
+References: <20240115163555.1004144-1-hca@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14ae628d-a9ef-42f3-9201-e90c5c88c133@huawei.com>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=Jk2YMo1P
-X-Spamd-Result: default: False [0.19 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[32.81%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 0.19
-X-Rspamd-Queue-Id: 7BC0721F6A
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+Message-ID: <170567923344.398.15988931354472984709.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Fri 19-01-24 20:59:22, Kefeng Wang wrote:
-> > > > GFP_TRANSHUGE_LIGHT is more interesting though because those do not dive
-> > > > into the direct reclaim at all. With the current code they will reclaim
-> > > > charges to free up the space for the allocated THP page and that defeats
-> > > > the light mode. I have a vague recollection of preparing a patch to
-> > > 
-> > > We are interesting to GFP_TRANSHUGE_LIGHT and _GFP_NORETRY as mentioned
-> > > above.
-> > 
-> > if mTHP can be smaller than COSTLY_ORDER then you are correct and
-> > NORETRY makes a difference. Please mention that in the changelog as
-> > well.
-> > 
-> 
-> For memory cgroup charge, _GFP_NORETRY checked to make us directly skip
-> mem_cgroup_oom(), it has no concern with folio order or COSTLY_ORDER when
-> check _GFP_NORETRY in try_charge_memcg(), so I think NORETRY should
-> always make difference for all large order folio.
+The following commit has been merged into the timers/core branch of tip:
 
-we do not OOM on COSTLY_ORDER (see mem_cgroup_oom). So NORETRY really
-makes a difference for small orders.
--- 
-Michal Hocko
-SUSE Labs
+Commit-ID:     71fee48fb772ac4f6cfa63dbebc5629de8b4cc09
+Gitweb:        https://git.kernel.org/tip/71fee48fb772ac4f6cfa63dbebc5629de8b4cc09
+Author:        Heiko Carstens <hca@linux.ibm.com>
+AuthorDate:    Mon, 15 Jan 2024 17:35:55 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 19 Jan 2024 16:40:38 +01:00
+
+tick-sched: Fix idle and iowait sleeptime accounting vs CPU hotplug
+
+When offlining and onlining CPUs the overall reported idle and iowait
+times as reported by /proc/stat jump backward and forward:
+
+cpu  132 0 176 225249 47 6 6 21 0 0
+cpu0 80 0 115 112575 33 3 4 18 0 0
+cpu1 52 0 60 112673 13 3 1 2 0 0
+
+cpu  133 0 177 226681 47 6 6 21 0 0
+cpu0 80 0 116 113387 33 3 4 18 0 0
+
+cpu  133 0 178 114431 33 6 6 21 0 0 <---- jump backward
+cpu0 80 0 116 114247 33 3 4 18 0 0
+cpu1 52 0 61 183 0 3 1 2 0 0        <---- idle + iowait start with 0
+
+cpu  133 0 178 228956 47 6 6 21 0 0 <---- jump forward
+cpu0 81 0 117 114929 33 3 4 18 0 0
+
+Reason for this is that get_idle_time() in fs/proc/stat.c has different
+sources for both values depending on if a CPU is online or offline:
+
+- if a CPU is online the values may be taken from its per cpu
+  tick_cpu_sched structure
+
+- if a CPU is offline the values are taken from its per cpu cpustat
+  structure
+
+The problem is that the per cpu tick_cpu_sched structure is set to zero on
+CPU offline. See tick_cancel_sched_timer() in kernel/time/tick-sched.c.
+
+Therefore when a CPU is brought offline and online afterwards both its idle
+and iowait sleeptime will be zero, causing a jump backward in total system
+idle and iowait sleeptime. In a similar way if a CPU is then brought
+offline again the total idle and iowait sleeptimes will jump forward.
+
+It looks like this behavior was introduced with commit 4b0c0f294f60
+("tick: Cleanup NOHZ per cpu data on cpu down").
+
+This was only noticed now on s390, since we switched to generic idle time
+reporting with commit be76ea614460 ("s390/idle: remove arch_cpu_idle_time()
+and corresponding code").
+
+Fix this by preserving the values of idle_sleeptime and iowait_sleeptime
+members of the per-cpu tick_sched structure on CPU hotplug.
+
+Fixes: 4b0c0f294f60 ("tick: Cleanup NOHZ per cpu data on cpu down")
+Reported-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Link: https://lore.kernel.org/r/20240115163555.1004144-1-hca@linux.ibm.com
+
+---
+ kernel/time/tick-sched.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index a17d260..d250167 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -1576,13 +1576,18 @@ void tick_setup_sched_timer(void)
+ void tick_cancel_sched_timer(int cpu)
+ {
+ 	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
++	ktime_t idle_sleeptime, iowait_sleeptime;
+ 
+ # ifdef CONFIG_HIGH_RES_TIMERS
+ 	if (ts->sched_timer.base)
+ 		hrtimer_cancel(&ts->sched_timer);
+ # endif
+ 
++	idle_sleeptime = ts->idle_sleeptime;
++	iowait_sleeptime = ts->iowait_sleeptime;
+ 	memset(ts, 0, sizeof(*ts));
++	ts->idle_sleeptime = idle_sleeptime;
++	ts->iowait_sleeptime = iowait_sleeptime;
+ }
+ #endif
+ 
 
