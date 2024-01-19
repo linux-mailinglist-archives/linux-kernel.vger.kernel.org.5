@@ -1,83 +1,78 @@
-Return-Path: <linux-kernel+bounces-31619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE72833100
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:53:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AA4E833103
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:55:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6B952883BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:53:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E15AB23B71
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037DB58AC8;
-	Fri, 19 Jan 2024 22:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BCA58AA3;
+	Fri, 19 Jan 2024 22:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Wsj84mse"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YJFzAItI"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F9D58236
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 22:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 580FC57884;
+	Fri, 19 Jan 2024 22:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705704804; cv=none; b=oixtIt76SCxDkZP4JZPkEnmRrqgGEVgFSXolLnbqmU5TIwfDQQABdRPsq2aLnGlLNyMTCV09xKvvA+s4CTe/Hz++s4lot9Yo6HFTLHJpN5McedmgVlZy89tF59UV/2YDPP1ROLQmw06F2i5VZxKgSHoG7Q4Gmw5ePWZfZ1XvE70=
+	t=1705704906; cv=none; b=e91cnW/OynQTXKDN0RSvkKeYHg8NA3SIUQ74bOOa/axw24HPwkwiQuJ0XZaE8VZazbWFgABpnMMJaMB5OCQl5fKUiAQx5o8AfTfMBkv5fKSt4U8plNmMBoziFMLQIBkZKEM16cZWs4YvixyZF+32Lio5S5cQU/ylaIUp3Dwu8uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705704804; c=relaxed/simple;
-	bh=cXFQABVkDQ0a0E3pFCzVsdT8CC/V4HbLE2EFYUk9T0U=;
+	s=arc-20240116; t=1705704906; c=relaxed/simple;
+	bh=FCIf4jjmsCjm0WrvfocICE7muDXMamDKBfgKtLjKjoo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dBD7kfcmwp181vAp0RSgnq71OtDvEDbz3vhntfl97oaV4KTKtv7XZMnxT13/MmqOBjqy4ep0we1W2WVq9ZOmyzSn3C/dgaGcLZU+kdRnecdqHZgCxvac/e/ahdwDis0J9wqLnIUbQEv3DbtO1dIwfwYxxKJDa84GSO1lD9GdeIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Wsj84mse; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5cf495b46caso822439a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:53:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705704802; x=1706309602; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sWad+tkSe47JjCBUATlLgY9DkjlP39hvBfIJ4tcS5v4=;
-        b=Wsj84mseOuuJwWKO5DTTHSZOePaHDDj2v9gpifG0cMQDIJvA47qHZb6hMliEhYd+9E
-         vfuSfgoblCtjHtIVQ0Tjbp05dyrQ3EgeQd/0sIXLH9K2CNcqnB3HGCa/xfX4Wck3UBHt
-         kj00AktNWWa/WnHZHI7sRgiROmZUW3O8sObMI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705704802; x=1706309602;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sWad+tkSe47JjCBUATlLgY9DkjlP39hvBfIJ4tcS5v4=;
-        b=sRl9osw9u85Uumg9Eb/QKebie8sgo3OjpXfvZgNt2geisfnOylqP4FUMNwlfuYI5+k
-         tFhWL++yTMOUm8iL5QXFIJb7u9rC9v1QKRNrVmS4U+oNnJ1V/b3PDmP12iRQ+w+OcWe5
-         3X0CznVY7lTU7+gGj2ndM0jlkE11rY/lXyObd04FOu3qQkW2B6esCmFYZ9BTFCpJmTqA
-         LM3r9xPOgCwTO3GQlsuk1jtgT8MzQAMxIET6UBwPtGyMHBXBFwa3/IlbGOhO72wT8bhA
-         gfGpA6Sx80lythepWxttGIYdLnUXFVeMqLXrzx8YLi3HAbtIjkeM3KePKk3Of0JWkZyN
-         Ov8Q==
-X-Gm-Message-State: AOJu0YzU20xdcszZ8HzSvXB11QILkBQBeQETHKTcq0iSI7bmgISmTxwz
-	OH7WDlnTqmnWxxVWgWRtZJqEj3fGvG92iXzT2tBM8zz3MCeoF5g6BRxZQu32PA==
-X-Google-Smtp-Source: AGHT+IE+IQHn+4YqB/lmtgA3p4J8DA8wXFp6+0CzprVWrwhYC9bV9FJqlGyXVmXghPBe/oDy22G7SQ==
-X-Received: by 2002:a05:6a20:3943:b0:19b:827d:ee10 with SMTP id r3-20020a056a20394300b0019b827dee10mr553889pzg.92.1705704802463;
-        Fri, 19 Jan 2024 14:53:22 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id pl15-20020a17090b268f00b0028bdc73edfcsm4660022pjb.12.2024.01.19.14.53.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 14:53:22 -0800 (PST)
-Date: Fri, 19 Jan 2024 14:53:21 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Andy Whitcroft <apw@canonical.com>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Brian Foster <bfoster@redhat.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Joe Perches <joe@perches.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [GIT PULL] strlcpy removal for v6.8-rc1
-Message-ID: <202401191450.CAF805687A@keescook>
-References: <202401191311.B6AA79D@keescook>
- <CAHk-=wj0j07B=n1Bt4EkDJpN5CBmxMuZhv+nnFdi0DxDVSiZAA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WDJlE7UuvY3dQSwif67J2bhfqmSl0MD93CPCvUBYktE2h4E3oMEcOZHTBwzk72hgawOMT/GVAWYFT+eTfhOKXfBNFbX6386o+BkPzHRuugo8gBDudgHmCZdGZGtpc8tpfF81XhjU9a8Mf0zgMx3YzUQIM9c8t1DvFx7Hc8+ufOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YJFzAItI; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705704904; x=1737240904;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FCIf4jjmsCjm0WrvfocICE7muDXMamDKBfgKtLjKjoo=;
+  b=YJFzAItI7X9yBUy/NKhHvf13iCjNWMBNUcBdBI8wnoCYYyAZQZ/v9ofl
+   +pYhObx2R/WL2n0sisfgIfaPlodtrKLLcfA4QEsMbzb5DYmdYQo5UkHp+
+   AczG+E0vRTnBwAU58oVSMYyagYH0w6cjJWGkZ5Vr/uwm/KwSCxd2MYlQ7
+   zdtSgRXQpFXjZv315Rukd9yZGazqp64FGIs7AHue5F3IHfyniF+frCoWF
+   38PcnLxlZorgVWbBldeFp77kerwykZ/kHMU23/W+KGVGs3hs7JweT5ASa
+   HDNQHh/TYoa40Wuftr+yZqpbqh38I0noMFk21Em8VN23nZ291HAh6F3JZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="14383183"
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="14383183"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 14:55:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="683998"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 14:55:03 -0800
+Date: Fri, 19 Jan 2024 14:55:01 -0800
+From: Andi Kleen <ak@linux.intel.com>
+To: Ben Gainey <Ben.Gainey@arm.com>
+Cc: "irogers@google.com" <irogers@google.com>,
+	"alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>,
+	James Clark <James.Clark@arm.com>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	Mark Rutland <Mark.Rutland@arm.com>,
+	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"acme@kernel.org" <acme@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"jolsa@kernel.org" <jolsa@kernel.org>,
+	"namhyung@kernel.org" <namhyung@kernel.org>,
+	"adrian.hunter@intel.com" <adrian.hunter@intel.com>
+Subject: Re: [PATCH 0/1] Support PERF_SAMPLE_READ with inherit_stat
+Message-ID: <Zar9xXlPmCM2vtAk@tassilo>
+References: <20240119163924.2801678-1-ben.gainey@arm.com>
+ <87a5p1kyif.fsf@linux.intel.com>
+ <e69ffb457b761763c30e2d63ffd8a38606dbadd3.camel@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,26 +81,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wj0j07B=n1Bt4EkDJpN5CBmxMuZhv+nnFdi0DxDVSiZAA@mail.gmail.com>
+In-Reply-To: <e69ffb457b761763c30e2d63ffd8a38606dbadd3.camel@arm.com>
 
-On Fri, Jan 19, 2024 at 02:00:14PM -0800, Linus Torvalds wrote:
-> On Fri, 19 Jan 2024 at 13:14, Kees Cook <keescook@chromium.org> wrote:
-> >
-> > The kernel is now free of the strlcpy() API!
-> 
-> .. still mentioned in docs and checkpatch. Maybe remove that too?
+> I had considered that, but given currently this perf_event_attr
+> configuration is not allowed, I assumed that it would require existing
+> tools to add support which would in effect be an opt-in. Of course,
+> adding a new flag to be explicit would be trivial enough if required.
 
-Sorry, I should have called that out in the PR, but the commit itself
-had my rationale for intentionally leaving those in:
+That's fair. Makes sense.
 
-    Leave mentions in Documentation (about its deprecation), and in
-    checkpatch.pl (to help migrate host-only tools/ usage).
+> That said, the binary format for the mmap records / read() etc does not
+> change so using an unmodified tool to parse the data file will give bad
+> results. Therefore any workflow where "modified recording tool" can be
+> combined with "older / unmodified parsing tool" will break. Not sure of
+> the best way to handle this... presumably whenever a change is made to
+> the perf record format, any workflow that allows old parsers to read
+> new format data without version checks could fail? Admittedly this is a
+> "looks the same but isn't" change so harder for tools devs to spot. Any
+> suggestions?
 
-If you feel like that's not right, I can either respin or send a
-follow-up patch?
+For perf itself we can find something. It does a couple of checks, like
+reserved bits in the perf_event_attr. For the general case of other
+parsers it's unclear. I suppose could increment the magic identifier
+to PERFILE3
 
--Kees
-
--- 
-Kees Cook
+-Andi
 
