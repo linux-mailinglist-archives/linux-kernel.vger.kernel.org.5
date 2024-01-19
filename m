@@ -1,174 +1,221 @@
-Return-Path: <linux-kernel+bounces-30788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2096483245D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5261483245E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:50:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FFB41F23901
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:49:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E9A81F23900
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274F9611B;
-	Fri, 19 Jan 2024 05:49:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C2C5664;
+	Fri, 19 Jan 2024 05:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FTxQXpuL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amd.com header.i=@amd.com header.b="cAxK1HXh"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2080.outbound.protection.outlook.com [40.107.244.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5340F4A0A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:49:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705643355; cv=none; b=ppRO/n5lxLL62CTPuzqHdJoPO4B5RYtnpH14tFuJzO5cqaU9RXamaDgQOO4mCRVUxCQc+hjYUFTImESxLuw3qEV+K8+d2S75d5EhUETws4EE5x0byixrR1YjZCHaT3mfVYzKdtJY0aoRA6kgFL1LZPiBBEYkxxUN1xUzgbz850Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705643355; c=relaxed/simple;
-	bh=gFaoz5Lad+xTGdXdZ7SAqJDCdLlZZMjHIoUjSxAe/Ws=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=df9EsaHv5Ecz4mJ0muL81Tx15qKr9aX9TsPqqNEpyziYlvE3SpFbx47hSDShHhP0h1KXfAlBl33qtPEf6rdfAL7mYl65xVWOxTyGY4//WF1urkb4gyRj/3q/RMmPeM2Tl+cz58wvYz5SoiAC17NmMKKn1uOcjqMu2BH0EWSvrNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FTxQXpuL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16377C433F1
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:49:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705643355;
-	bh=gFaoz5Lad+xTGdXdZ7SAqJDCdLlZZMjHIoUjSxAe/Ws=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FTxQXpuLFOJfe145uoTZI2lFRgbOWDzvMPE6rUfq4pGJhAbWk0jYK+jbs94X16kXJ
-	 PSpyO0xNKyPGV5B1WyAfVCu0WMXPJhKxi1MW35bLoqlbgfFIeZ7ZZpa6V1lsOzVp0w
-	 nqKiYJ8aSn1wAjuvX4kL3aCCZLf7ibD40/FNZ6VCDHM3sk9Y9gbpDlum9Dd7KkGRIf
-	 O3KuK8GJqZWAXDOexLp8WN6jCIrgIQBlkDMWkQXaOdPiraaxu1818hI88cjkDS2llT
-	 qmlEh0BxSE2SfXHQCsa9w718A9vEDcvAjDF8RMzcD4EeBiGrpRWCPH83c9PTJnPQi5
-	 slkIOH7urPmNw==
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-59960d26f65so8941eaf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:49:14 -0800 (PST)
-X-Gm-Message-State: AOJu0YzK0XM4FgpMfZlZsnFRPDneZE8ncKD/fAhsN2Wdeho2vLevPlxv
-	cmlPrhmhDwtS0sOTMglnAKovA2lmVwTsV5WeF0PeqnZ1XGz0QXeq/XYV3W/kIBaKP2jmLJ7ycLq
-	PBiCS6oWiOzJBrHdYUCxLwadRbZz7kLUFgApo
-X-Google-Smtp-Source: AGHT+IF0zUxYWNPabx8vxbpRQ8Nx587jedet0oDo6CRg6ecDT2wFKoHxB4IWqV1gAwVBFcfxSv6C3uxGcuX+1llkUqs=
-X-Received: by 2002:a05:6359:320c:b0:175:67e3:cb28 with SMTP id
- rj12-20020a056359320c00b0017567e3cb28mr1756236rwb.12.1705643353344; Thu, 18
- Jan 2024 21:49:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85FD4C69
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.80
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705643385; cv=fail; b=oj+WVUs0A8VkvQzIc7leSHd4SYNW0NrxqSwbTmKrMpDaBAroSTpM8u8bNRmSepG53D+1ZdF6dBVY3tt8HrsJAXytW1A/mpUnP5sV/75uGmm206rOD5iF6Osxjs0EVS2TPXkVS/WFWKKFHwMoHHITu+ZB64ggJ3/2ZsgZ/ueJKi8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705643385; c=relaxed/simple;
+	bh=bN5tQuaOVrQhjAr9EqR8fZYPcsLdnhRj6E7dBvD+OEw=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GNPQHmvqpi5e2P5lCRhwnP5+K17ugv/zcQkPI6qIyGsZQfDq0pI6jf1nPt5zM5nr96Q7Z0hYT4Esp13ebXDWvlQpcTCsEcfTk38qxxC/FTWYJ8FM5w6Ysh6td0hRBy3r2xhfcJsp0iAGNUy7X4R4P9nbEtky/9B2w1lURU2IAAo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=cAxK1HXh; arc=fail smtp.client-ip=40.107.244.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VV+4ALLuU4HxYT1zilEO5RtBIWpN7EySLPH1iBLvH0D0RkdFOL/hTEMsaoE9ihW6K7SKwgPfRTETDVEKBYDjCnXYg0NIRad2wKkbg+oCq4S9DeIOd7nRll7SnfuFQyhqauGNrqq90Y9AD0euDIFdccQpSOC+TlN/o2kcz2gYOQnw+lzPkS6aBF5H4nNX3B8k+j0YafOND2HCn8nsI/+3psBSMb5Ga8MaIcScmUsvrzkWeyyHVNkhtIVGA5qYsbLNhhWiTFcWrDbPLPrLpcWusdPuYKZuVsbnkVitLpA1bTtif1oVpptQYmE7zCW93bfHZnykp2B3vKTJe+gs4xrYVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qlar8cZXaurNjxpdrBlld/kbpuDsh8m3esuXf/q10Js=;
+ b=ZcCTL+dhNH65RYzJjNmfWxpW7cRz+tDciSdnzlX85uMNXYCkNYKwyWY9td+CoSFuNnO4labEsIrCNHHI+Mrmb0vrLTda+0pn0RQGwv8WeMlInDN7YW3PCPwhZI/5n/iopaIeoximhNo7445hfYPfkKdJQHAyzgWxzr60L0OczNrAnJkYo8yFMSepg6NQ8Mx/Q4rzUF5/9Uw8fhnRA9DBDl5pv/4EdVANLPW97XUX08A9+1bMYQXk1IuT72RUXdK0lf8bG6axpbjutDmIAfZyJdzaFbVIlhipYSMRikQ9ytfKVUaeWuhZapGFbQ1DoFFy8na3kaprGpCw26Rng4im0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qlar8cZXaurNjxpdrBlld/kbpuDsh8m3esuXf/q10Js=;
+ b=cAxK1HXhtUJEHRFd6CsEWtFe3FyPLESh/Itailq5LowwmlMe0Zi4ezyL/rG20zViAqyTqLCRhst0BaB5/5xDzgzJEycp1joa4AUrAqkmW0DXbZH0uYYGzYzKYZ1TvcviCQsrn515ix9BLYg8Dx7Q4s9gOxKHQyi4bHCemz4ExF0=
+Received: from MW4PR12MB7165.namprd12.prod.outlook.com (2603:10b6:303:21b::14)
+ by DM6PR12MB4217.namprd12.prod.outlook.com (2603:10b6:5:219::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
+ 2024 05:49:41 +0000
+Received: from MW4PR12MB7165.namprd12.prod.outlook.com
+ ([fe80::374b:e99d:5ba7:1ec0]) by MW4PR12MB7165.namprd12.prod.outlook.com
+ ([fe80::374b:e99d:5ba7:1ec0%4]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
+ 05:49:41 +0000
+From: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maxime Ripard
+	<mripard@kernel.org>, "maarten.lankhorst@linux.intel.com"
+	<maarten.lankhorst@linux.intel.com>, "tzimmermann@suse.de"
+	<tzimmermann@suse.de>, "airlied@gmail.com" <airlied@gmail.com>,
+	"daniel@ffwll.ch" <daniel@ffwll.ch>, "Simek, Michal" <michal.simek@amd.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] Fixing live video input in ZynqMP DPSUB
+Thread-Topic: [PATCH 0/4] Fixing live video input in ZynqMP DPSUB
+Thread-Index: AQHaSptLK8WV8aU0/UeE/Qp+In1IcQ==
+Date: Fri, 19 Jan 2024 05:49:41 +0000
+Message-ID:
+ <MW4PR12MB716560EDEF35C59F77D7156FE6702@MW4PR12MB7165.namprd12.prod.outlook.com>
+References: <mailman.1627.1705504032.2418.dri-devel@lists.freedesktop.org>
+In-Reply-To: <mailman.1627.1705504032.2418.dri-devel@lists.freedesktop.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW4PR12MB7165:EE_|DM6PR12MB4217:EE_
+x-ms-office365-filtering-correlation-id: 16510a7c-5a4a-4f2f-24fc-08dc18b26e5b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ A+qjnIFZNU5PuUqmBZEgVjSYUiDNOkbiuqURM9k6znZBOotkauZhTFO6Lfx0/weutKaByxZN32eKqv4YngXmNXZF64XbGJ8x1WQTryO1Gnl8eUDnFaFK1OGgGrXDo27uC4ihI8P3AxBIhAzR8vxkkXUwHp0B580FF3tHrkBOH4aX6Px6o9G3v5KdDXR1tBZ7RU+31P3kAsJKKqPottv9B1Rw46fZl1xFneGzvVdG0/rRfm2t2N+ZEfDfmfRybyI3YYCdMoNVfrIFly4BhqfHPd5af5F+wY5WFufUqG3QRd7J46pkvSUy/oOBiVkuxVpE/mx/gOK3zxBAJJRNm1cIg9TtkszBxRmxMH9YxZmMv+gyndRleVJ4ibQkMV4jHXwMx7NQpPmWl+rbownu2VNqwCFwS2l229Kr2amtNpY1nargdW13GvXHe3DTuuxNfV1DigjwD/o+UAfGPkfGrNMpt7rJyp7wqNu/a1z7/DCShHFUkds6ib3HVQ8R8UknT4tOk823LHB7RZ1+CgljLFVc4Kyu8ZWkhyOSBeK9w4Wuyxz5gTsEbdFw3OEEru2RhEbSGKdAHUQubtA7w0WPZNQLcu6ibz/Z1LvxOg/fZo2jgAAjDkNnf9cUEFhNr85LA4ntsQd/ta4jPS/Sr+srHGaTIA==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7165.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(396003)(376002)(366004)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(71200400001)(26005)(478600001)(7696005)(83380400001)(6506007)(9686003)(5660300002)(2906002)(52536014)(921011)(41300700001)(110136005)(76116006)(8936002)(8676002)(66946007)(66446008)(316002)(64756008)(66556008)(66476007)(33656002)(86362001)(38100700002)(122000001)(38070700009)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?AvdLjxIqRnGYCwJoup2zfNPPuMwTsc6UGxDNTudHfLmFXNaLo+QWK2rehKuc?=
+ =?us-ascii?Q?LBNutaX6uL5kZPyI/gJSzeiT0NtHDRFScOGXkSeSGEQgJibhPQCh9GuCV8Nm?=
+ =?us-ascii?Q?OzId02m7ZMLVz/f7inDyF1as4ZxsQC+j+xQ+NPE8U9cjBacQc3mOssKkve6P?=
+ =?us-ascii?Q?kSPaDZ+WYZSSYZU87rnSibWxcfzUxQsKLZ/uiKng9yhM2fgJazql4q0UJncC?=
+ =?us-ascii?Q?yjNzW9dFj1wQp7c5sd2w1CatWm2eLOH5EIS9F0wblTL9kVUbwuWkGsbLfktn?=
+ =?us-ascii?Q?eHevFDyCGr/G7csaruO9lweYvGuh9QtV6UKZsSpH2RMGQ0AKeW6PLGnABu1v?=
+ =?us-ascii?Q?U8in5KXhnYwW5mb5zOChmsZAAsKUJsSkYzfCEja2hwfWhVTf9V75w0GEpQfL?=
+ =?us-ascii?Q?xz/QXI5h8XfFB/p6DiZ2VtOFxQFS+H/Dz2ZDS+RXbP47JCiYGBzOJdcQIqDq?=
+ =?us-ascii?Q?VNf5/hHDv7A+dtm2BcRIKEI2xQe5o3txGxZo2zfeEa1eYRVyuc7CxnuzipOG?=
+ =?us-ascii?Q?ELU4cLDJOnpixzWXAknGc/ZGPdOWCi6VM//ESyn4wjF4ffUFzVETcSsvde1S?=
+ =?us-ascii?Q?q3/6Is3Dqabsef8klxIrCbCkXicLrtLHy/BGylMHbtUgC48YdW29Fq2CBem8?=
+ =?us-ascii?Q?50lsARXOqBImLhJLBrHsYQxThsFDh1cwS1jtJgZxuTiCIHTp/wfpjcx6h4Lm?=
+ =?us-ascii?Q?yZ4qBUdabKyS3xicIME6k2ik5q6nvyo7xUqIhAq0QnXTG0yjrluOxz9dYYWL?=
+ =?us-ascii?Q?KYRXZSBS74xxGTm+u9ueZgy+GOtZY2lGbBcUwmH2ThlD6uPRuuHW6pchPrWS?=
+ =?us-ascii?Q?ttM2p8r3M3wPIS4t4ykKmGHddtFgtOEYJk2po3UKTaNhhCOPNiw4PTaxvuSG?=
+ =?us-ascii?Q?OtbkJ5HLx8mU1D8TVr/3gVni1K/VHDJk9o1gou1VzSg490H/NN9Zy3Y4WChL?=
+ =?us-ascii?Q?ti2uCh0/bmNKTugl4fjG4jj/YzFhHNMGI0LHYuvJFXr2drnC0kVj2vXNnpbA?=
+ =?us-ascii?Q?69sYd7rxYHUk0Isw2LMrK2JVtPzqlV/hNZAfkCNEt93QY3RhC0PhBclhMyBh?=
+ =?us-ascii?Q?pO7w1JkgUQ4DlhiCgSEX72OvgqJOKoRC2wJS2rnPoYW1PF/Sf0BVQiVpust1?=
+ =?us-ascii?Q?lBD0Yfm8sx6pmfNfxfM2DllCmF7A6pL4zpr56AqivJ2nqSajK3wnbwTrKCg+?=
+ =?us-ascii?Q?YjGcc4skrrxDF+hFJkZYI/giMit7a0/V2ic+FmhUy5mjgLEIou3w+NgdIsSn?=
+ =?us-ascii?Q?zFCT6x0bx25hprShfQx0kvOfbEIpGzA/nXpMHO+uAAWb/J0yjJ/hWzLH4rZq?=
+ =?us-ascii?Q?0PDVyFWEpziwteN4v0GcDSvBPUQ3pO18eLMWWcDNTl+ZawZmyf2+KOlBUj/2?=
+ =?us-ascii?Q?TmUIfYtnICBxe12jhHN/f0gR46/3nbA63PSeybIpRHHLPn7VmUUkdRrFFSuy?=
+ =?us-ascii?Q?c0CyylhSFH9TEtHNK7fc0I3OzRE4sHO+9BCFj0j6GVJtmc6YLK9Kw1FJIBbF?=
+ =?us-ascii?Q?jMp351Y7SYJu6dfYYt1c9k7z3Gl2YQ4McH5rNsTGCmtfbZgvHfs5ZoH0PTIo?=
+ =?us-ascii?Q?wLM+NAj1+2C4PsPhpf4=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
- <20240117-zswap-xarray-v1-2-6daa86c08fae@kernel.org> <CAJD7tkZF102x_8LKAX+sxAttgYD_LNT3cRqeOr7_euwPfNdCFA@mail.gmail.com>
- <CAJD7tkbFxfLxYPXHkSCq=1JsAinW9G+unyOadFY+Xfo-QTqNyA@mail.gmail.com>
-In-Reply-To: <CAJD7tkbFxfLxYPXHkSCq=1JsAinW9G+unyOadFY+Xfo-QTqNyA@mail.gmail.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Thu, 18 Jan 2024 21:49:02 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuPXrkN3XRvpgf4t-afxU-JpcNGVKyoXXwiEXMypchaEGg@mail.gmail.com>
-Message-ID: <CAF8kJuPXrkN3XRvpgf4t-afxU-JpcNGVKyoXXwiEXMypchaEGg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: zswap.c: remove RB tree
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, =?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
-	Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, 
-	Chun-Tse Shao <ctshao@google.com>, =?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Chengming Zhou <zhouchengming@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7165.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16510a7c-5a4a-4f2f-24fc-08dc18b26e5b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2024 05:49:41.4305
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GQe2CHbDQc8frbCAmg1C63I7NeIEHb1JVGGfgi5RrpI9vHsxtY2YvA+lsqgFr/tq37bLVZlE/ccZwm75MIRpLQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4217
 
-On Thu, Jan 18, 2024 at 11:36=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> On Wed, Jan 17, 2024 at 10:35=E2=80=AFPM Yosry Ahmed <yosryahmed@google.c=
-om> wrote:
-> >
-> > > @@ -493,45 +471,47 @@ static struct zswap_entry *zswap_search(struct =
-zswap_tree *tree, pgoff_t offset)
-> > >  static int zswap_insert(struct zswap_tree *tree, struct zswap_entry =
-*entry,
-> > >                         struct zswap_entry **dupentry)
-> > >  {
-> > > -       struct rb_root *root =3D &tree->rbroot;
-> > > -       struct rb_node **link =3D &root->rb_node, *parent =3D NULL;
-> > > -       struct zswap_entry *myentry, *old;
-> > > -       pgoff_t myentry_offset, entry_offset =3D swp_offset(entry->sw=
-pentry);
-> > > -
-> > > -
-> > > -       while (*link) {
-> > > -               parent =3D *link;
-> > > -               myentry =3D rb_entry(parent, struct zswap_entry, rbno=
-de);
-> > > -               myentry_offset =3D swp_offset(myentry->swpentry);
-> > > -               if (myentry_offset > entry_offset)
-> > > -                       link =3D &(*link)->rb_left;
-> > > -               else if (myentry_offset < entry_offset)
-> > > -                       link =3D &(*link)->rb_right;
-> > > -               else {
-> > > -                       old =3D xa_load(&tree->xarray, entry_offset);
-> > > -                       BUG_ON(old !=3D myentry);
-> > > -                       *dupentry =3D myentry;
-> > > +       struct zswap_entry *e;
-> > > +       pgoff_t offset =3D swp_offset(entry->swpentry);
-> > > +       XA_STATE(xas, &tree->xarray, offset);
-> > > +
-> > > +       do {
-> > > +               xas_lock_irq(&xas);
-> > > +               do {
-> > > +                       e =3D xas_load(&xas);
-> > > +                       if (xa_is_zero(e))
-> > > +                               e =3D NULL;
-> > > +               } while (xas_retry(&xas, e));
-> > > +               if (xas_valid(&xas) && e) {
-> > > +                       xas_unlock_irq(&xas);
-> > > +                       *dupentry =3D e;
-> > >                         return -EEXIST;
-> > >                 }
-> > > -       }
-> > > -       rb_link_node(&entry->rbnode, parent, link);
-> > > -       rb_insert_color(&entry->rbnode, root);
-> > > -       old =3D xa_store(&tree->xarray, entry_offset, entry, GFP_KERN=
-EL);
-> > > -       return 0;
-> > > +               xas_store(&xas, entry);
-> > > +               xas_unlock_irq(&xas);
-> > > +       } while (xas_nomem(&xas, GFP_KERNEL));
-> > > +       return xas_error(&xas);
-> >
-> > I think using the xas_* APIs can be avoided here. The only reason we
-> > need it is that we want to check if there's an existing entry first,
-> > and return -EEXIST. However, in that case, the caller will replace it
-> > anyway (and do some operations on the dupentry):
-> >
-> > while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) =3D=3D -EEXIST)=
- {
-> >         WARN_ON(1);
-> >         zswap_duplicate_entry++;
-> >         zswap_invalidate_entry(tree, dupentry);
-> > }
-> >
-> > So I think we can do something like this in zswap_insert() instead:
-> >
-> > dupentry =3D xa_store(..);
-> > if (WARN_ON(dupentry)) {
-> >         zswap_duplicate_entry++;
-> >         zswap_invalidate_entry(tree, dupentry);
-> > }
->
-> If this is doable, I think we can return xa_store(..) and keep the
-> logic in the caller. I think there's a chance
-> zswap_{search/insert/erase} may end up being very thin wrappers around
-> xa_{load/store/erase}, and we may be able to remove them completely.
-> Let's see how it goes.
->
+Hi Laurent and Maxime,
 
-See my other email about erasing an entry raced into a new entry. That
-is the part I am not certain.
-Anyway, when zswap adopte folio, then it might need to handle multi
-entry, we will be back to using the XAS API.
+Laurent, thank you very much for clear and comprehensive description of the=
+ "live video input" feature.
 
-Chris
+Maxime, sure, I will elaborate more in the next version of cover letter.
+
+> Date: Wed, 17 Jan 2024 16:23:43 +0200
+> From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> To: Maxime Ripard <mripard@kernel.org>
+> Cc: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
+>         maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+>         airlied@gmail.com, daniel@ffwll.ch, michal.simek@amd.com,
+>         dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead=
+org,
+>         linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 0/4] Fixing live video input in ZynqMP DPSUB
+> Message-ID: <20240117142343.GD17920@pendragon.ideasonboard.com>
+> Content-Type: text/plain; charset=3Dutf-8
+>=20
+> On Mon, Jan 15, 2024 at 09:28:39AM +0100, Maxime Ripard wrote:
+> > On Fri, Jan 12, 2024 at 03:42:18PM -0800, Anatoliy Klymenko wrote:
+> > > Patches 1/4,2/4,3/4 are minor fixes.
+> > >
+> > > DPSUB requires input live video format to be configured.
+> > > Patch 4/4: The DP Subsystem requires the input live video format to
+> > > be configured. In this patch we are assuming that the CRTC's bus
+> > > format is fixed and comes from the device tree. This is a proposed
+> > > solution, as there are no api to query CRTC output bus format.
+> > >
+> > > Is this a good approach to go with?
+> >
+> > I guess you would need to expand a bit on what "live video input" is?
+> > Is it some kind of mechanism to bypass memory and take your pixels
+> > straight from a FIFO from another device, or something else?
+>=20
+> Yes and no.
+>=20
+> The DPSUB integrates DMA engines, a blending engine (two planes), and a D=
+P
+> encoder. The dpsub driver supports all of this, and creates a DRM device.=
+ The DP
+> encoder hardware always takes its input data from the output of the blend=
+ing
+> engine.
+>=20
+> The blending engine can optionally take input data from a bus connected t=
+o the
+> FPGA fabric, instead of taking it from the DPSUB internal DMA engines. Wh=
+en
+> operating in that mode, the dpsub driver exposes the DP encoder as a brid=
+ge, and
+> internally programs the blending engine to disable blending. Typically, t=
+he FPGA
+> fabric will then contain a CRTC of some sort, with a driver that will acq=
+uire the DP
+> encoder bridge as usually done.
+>=20
+> In this mode of operation, it is typical for the IP cores in FPGA fabric =
+to be
+> synthesized with a fixed format (as that saves resources), while the DPSU=
+B
+> supports multiple input formats. Bridge drivers in the upstream kernel wo=
+rk the
+> other way around, with the bridge hardware supporting a limited set of fo=
+rmats,
+> and the CRTC then being programmed with whatever the bridges chain needs.
+> Here, the negotiation needs to go the other way around, as the CRTC is th=
+e
+> limiting factor, not the bridge.
+>=20
+> Is this explanation clear ?
+>=20
+> --
+> Regards,
+>=20
+> Laurent Pinchart
+>=20
+>=20
+
+Thank you,
+Anatoliy
 
