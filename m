@@ -1,137 +1,78 @@
-Return-Path: <linux-kernel+bounces-31203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06205832A84
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:29:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54591832A7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BCC21F23F4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:29:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BEC21F22A58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF53854737;
-	Fri, 19 Jan 2024 13:27:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="b9x1nmu/"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FC953E20;
+	Fri, 19 Jan 2024 13:27:05 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1D353E18;
-	Fri, 19 Jan 2024 13:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D809B53E18
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705670832; cv=none; b=GjsK+JkhxYsxaOnZNzkRvE6oA5obahbrvh4ToPgpzsei8HMmROxn33y76qYc/nS+m4LRYAn+9uwGHpVXEh+VmKK9+6WpGPeeCojTQP+X/a80qkROatFVAf0rSP6tXDq/ywshqQTVPNU7UkPUsW88aQnSYS5EgBySanVBvvhIGOQ=
+	t=1705670825; cv=none; b=TV1qpytQnM3MLlpP68uJPMHcDWUiPXi4SKbrjss4SY5pJKcohTtXIb4CzZWnJ+Amsh5pE9XvsmkTyb2cMlEC5jfcbtio9s7LDYEYlFG+JFp/8BiDox2ueHMsMTuIEuQw5Dk89XVVMHVFyZfUcGzB1KgWoaXvvBSIMiLI8jTmqrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705670832; c=relaxed/simple;
-	bh=C9ZWVjgbefXWApSOG+jjr14zfL+3/NQPQVKowbPJEwk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uIk9q9LlDSGEISDMyJFhiXDJJLXXmWrDRTt7QvUVYgVM201ReWXeME4dmqpMxbrLCklHrcRe50/Zl0oO/HlJpP7OHTned+heTpePpiHEaS85Lvd58R4pTb5TnXmUpIuv8oIdXeULNLycXLAU8lW4vkeE8LvBfnpVBV/jHdUv7xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=b9x1nmu/; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=oAX/SO+ppExiD053wec+IhSfmBvN9fcB5BYMFRjEhXg=; b=b9x1nmu/gvlmcdwUw+GMi3PwqM
-	2whYk+wzShzv/BCcxll9cEDkBSbu5kfw1r4OovmJTsAxlJio1dU8sB2OovPUYPHm/IqZm3X/kbBq/
-	ui8HCERJWRoD+vRoEtyfT00uVupxyxFJPww2dpeZ73kifGXfrWOKM1K99olA2og6x5SM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rQoth-005Yn4-1a; Fri, 19 Jan 2024 14:27:01 +0100
-Date: Fri, 19 Jan 2024 14:27:01 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Andre Werner <andre.werner@systec-electronic.com>
-Cc: hkallweit1@gmail.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, linux@armlinux.org.uk,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next v3 1/2] net: phy: phy_device Prevent nullptr
- exceptions on ISR
-Message-ID: <fa47c497-a831-4e11-bbb9-c3901b174d0d@lunn.ch>
-References: <20240119093503.6370-1-andre.werner@systec-electronic.com>
+	s=arc-20240116; t=1705670825; c=relaxed/simple;
+	bh=rgtudZZcADzLkHbzNldBWBixKJSfqWKiGj2a7fsnTUY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=QATsdiqCsDiGtQmuiZkOFwmsKm26oL0bkR9QpYnznSKArF5YR70/aIx6Fxlr/56+GPy6FGnnP0SSeVdRgDweCV0U8wVYSspUH6V2lQheWqHnsM5KwL/GQ9VzO4hiueljEyCrEjF3yDjm9FHP/v3sq/cEaAL7AxKjO3KThKmZPBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bf44da02c3so57076139f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:27:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705670823; x=1706275623;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rgtudZZcADzLkHbzNldBWBixKJSfqWKiGj2a7fsnTUY=;
+        b=kNffdQDf8lMrmviMQWyQKpGsXDhs40tX1/RaVx5pkTZ2gGSuVi99O9ks0Nu13UB0vj
+         +1JqkUDoLnBUoDFhM+6kIrHbJqruwlIYoPHi6CVFtO/tcyfagJtgwMWEDIOoTAVtqEGU
+         R4v7nyQyHaKizxjVwBDxPv2KPG8iv5400R4CJqO9LPeY5V1evUZ2xDuzfEmxUSEiykzP
+         aSBfJCFcNiPniipjofjEcJj6h6fdADn4HnHHKmsbZEeqvpf8FCYWn/BaDAbBA1WDRIac
+         slcyAsfGJ7jc5TeI7xLb0IGNLv40PhE+6sajygOTeefkGlNwn4hgRWVSnz6WB87cQw4a
+         oSjA==
+X-Gm-Message-State: AOJu0YzTpBmbQ44iI9WCVIvg68KL0+cfKsuT/wmpRj0Wj/qFvdU92XlJ
+	Vdb1C/ojmiau2NtwMTI1vORAEBeYFs3YLxXuFOrW2JbH5N+GOi5AnVG9lLlPZuZf2lIfFUStrX5
+	ORZt3Tbf9O24ZYgigTqZif/htfVFdGANlBEjUQBTjzMSO2m5L6dxpePGtTQ==
+X-Google-Smtp-Source: AGHT+IHErbubnXpCTDSsLjo5CDmb739Avmz/DA2UxK2vswc2ene9Kl7MvOIpm5mmTw9oVZAN1MMpprCFM1/JfyNBwGQ3tcXVkmTs
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119093503.6370-1-andre.werner@systec-electronic.com>
+X-Received: by 2002:a05:6602:2b0c:b0:7b7:d7af:97cf with SMTP id
+ p12-20020a0566022b0c00b007b7d7af97cfmr123823iov.1.1705670822995; Fri, 19 Jan
+ 2024 05:27:02 -0800 (PST)
+Date: Fri, 19 Jan 2024 05:27:02 -0800
+In-Reply-To: <00000000000060446d060af10f08@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000823321060f4c6fa7@google.com>
+Subject: Re: [syzbot] [syzbot] [can?] memory leak in j1939_netdev_start
+From: syzbot <syzbot+1d37bef05da87b99c5a6@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jan 19, 2024 at 10:32:25AM +0100, Andre Werner wrote:
-> If phydev->irq is set unconditionally by MAC drivers, check
-> for valid interrupt handler or fall back to polling mode to prevent
-> nullptr exceptions.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Hi Andre
+***
 
-A few more process things...
+Subject: [syzbot] [can?] memory leak in j1939_netdev_start
+Author: n.zhandarovich@fintech.ru
 
-Please don't post a new version within 24 hours. Reviews need time to
-review, and you could miss comments made on older versions of the
-patches.
+Test to make sure the issue is still standing.
 
-For a multi part patch set, its normal to include a clover
-letter. When using git format-patch add --cover-letter and than edit
-patch 0000-*.patch to describe the big picture of what the patchset
-does. The text will be used for the merge commit message.
- 
-> Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
-> ---
-> v3:
-> - No changes to v2. Just to complete the series.
-> ---
->  drivers/net/phy/phy_device.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 3611ea64875e..3986e103d25e 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -1413,6 +1413,11 @@ int phy_sfp_probe(struct phy_device *phydev,
->  }
->  EXPORT_SYMBOL(phy_sfp_probe);
->  
-> +static bool phy_drv_supports_irq(struct phy_driver *phydrv)
-> +{
-> +	return phydrv->config_intr && phydrv->handle_interrupt;
-> +}
-> +
->  /**
->   * phy_attach_direct - attach a network device to a given PHY device pointer
->   * @dev: network device to attach
-> @@ -1527,6 +1532,18 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
->  	if (phydev->dev_flags & PHY_F_NO_IRQ)
->  		phydev->irq = PHY_POLL;
->  
-> +	/*
-> +	 * Some drivers may add IRQ numbers unconditionally to a phy device that does
-> +	 * not implement an interrupt handler after phy_probe is already done.
-> +	 * Reset to PHY_POLL to prevent nullptr exceptions in that case.
-> +	 */
-> +	if (!phy_drv_supports_irq(phydev->drv) && phy_interrupt_is_valid(phydev)) {
-> +		phydev_warn(phydev,
-> +			    "No handler for IRQ=%d available. Falling back to polling mode\n",
-> +			    phydev->irq);
-> +		phydev->irq = PHY_POLL;
-> +	}
-
-Please drop the phydev_warn(). Interrupt handling has always been
-optional, and we have always silently dropped back to polling if
-interrupts are not supported.
-
-The comment wording is also not great. The MAC driver is not supposed
-to have any idea what the PHY driver is. It just uses the phylib API,
-which is PHY driver independent. So the MAC driver cannot tell if the
-PHY driver supports interrupts or not.
-
-I don't think a comment is needed. The code is pretty readable as is.
-
-    Andrew
-
----
-pw-bot: cr
+#syz test
 
