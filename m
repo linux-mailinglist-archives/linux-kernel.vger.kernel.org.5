@@ -1,72 +1,120 @@
-Return-Path: <linux-kernel+bounces-31138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FADE832996
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:37:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBF50832998
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:37:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B0571C22E73
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:37:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A59D1284DFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195B251C34;
-	Fri, 19 Jan 2024 12:37:23 +0000 (UTC)
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF5C524AC;
+	Fri, 19 Jan 2024 12:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jY9Y+fhn";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jY9Y+fhn"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563C31D687;
-	Fri, 19 Jan 2024 12:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA11524A7;
+	Fri, 19 Jan 2024 12:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705667842; cv=none; b=aoHFXYqM3fi5nIjypYsMQxRjdV439BkIGWfBKEOsZNrQM03SXXo6QuqOQnLswbV9chk5ZRG+1n8bV/AxMW8RI0qdkDS08DM2B+uxCb1QkrPOYvNqRtN0J04VOMBUMQ0XwdPyCpfxmafarYkjD6vy5Q7yLeRFN3QrXk8gst9309U=
+	t=1705667850; cv=none; b=LZjdUxBo0tiy7AJjwKxLvSFwmrTL5g7/YS30PzdmXmlPejY8dStaChpRjPdgu3BHSjsDDZ3YxJfX9PFf7IxvEj3FUM0OWGLgEk19jjawEYxn0tQpJXjOVjjLuzkX1WZL/eZ0iXo0gpEPHQUdm4bGEjQLaJEoLf7hrghukZljdrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705667842; c=relaxed/simple;
-	bh=ZwpSq93rbnovsdIDb5kZ0WFR8+aUX/dq0TsAxC9N25s=;
+	s=arc-20240116; t=1705667850; c=relaxed/simple;
+	bh=SjwwPYaDeTn8+WySgdVe2Jy3obiU1LoQMOO+RVjo+a4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ag2Zw1iZ3sps2L+VHjf2mSVX3M51zD+Tb7zepiHI+nBTmKapFOS9+yjx5xMlSsrf/h53Vu7FD1wbu2qmfh377+9M4AXmlfw42tMybll9JOS2oTbRcor+BmhCJs3RQG8vJns1G6sfWVbpr3LqB8e04kCcYJaWtjpC7DUoW58DWRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1rQo7N-0007zr-9w; Fri, 19 Jan 2024 13:37:05 +0100
-Date: Fri, 19 Jan 2024 13:37:05 +0100
-From: Florian Westphal <fw@strlen.de>
-To: wangkeqi <wangkeqi_chris@163.com>
-Cc: Florian Westphal <fw@strlen.de>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	wangkeqi <wangkeqiwang@didiglobal.com>,
-	kernel test robot <oliver.sang@intel.com>, fengwei.yin@intel.com
-Subject: Re: Re: [PATCH net v2] connector: Change the judgment conditions for
- clearing proc_event_num_listeners
-Message-ID: <20240119123705.GB9015@breakpoint.cc>
-References: <20240116015753.209781-1-wangkeqi_chris@163.com>
- <20240117114713.GA11468@breakpoint.cc>
- <1adb8c68.a950.18d1d237182.Coremail.wangkeqi_chris@163.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GhP0uak7lJqCdK00GGjRrCqicYvA2qBP2z+l3wnmvA98DCzevTCsW5Laj8SksLkbNbtmLPKpyUO6ZGzykcpwhBvDoxoRlqS+8amclxFeYbXjDGOb303eoBTinJ5L+OEuciLqxuHivd3kDDTPGeA0YTR6ZjuwAtInjreyaWNW+nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jY9Y+fhn; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jY9Y+fhn; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A5A4A21E4F;
+	Fri, 19 Jan 2024 12:37:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705667840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UEfBPVEz5WOmoy4eOtA/Y+8nJMYZBVOx5DSCH//+zbI=;
+	b=jY9Y+fhnvNswaq/yxDtvbCiumzDhzm5ENMrwoS4y0n0NiyJXo343INe4d6CoNFycCOmqKV
+	pecs+YiDIxcH4jbh0nSqghSw3JggeLzAM9TdqE+Fv9L692QQIk6dXIRuNpvmidh21+MvKF
+	3qQyKNDdxIBMfsko7doteRIcOkZnCKo=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705667840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UEfBPVEz5WOmoy4eOtA/Y+8nJMYZBVOx5DSCH//+zbI=;
+	b=jY9Y+fhnvNswaq/yxDtvbCiumzDhzm5ENMrwoS4y0n0NiyJXo343INe4d6CoNFycCOmqKV
+	pecs+YiDIxcH4jbh0nSqghSw3JggeLzAM9TdqE+Fv9L692QQIk6dXIRuNpvmidh21+MvKF
+	3qQyKNDdxIBMfsko7doteRIcOkZnCKo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D201136F5;
+	Fri, 19 Jan 2024 12:37:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MA54GwBtqmXLDQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Fri, 19 Jan 2024 12:37:20 +0000
+Date: Fri, 19 Jan 2024 13:37:19 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Lance Yang <ioworker0@gmail.com>
+Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com,
+	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com,
+	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org,
+	linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT flag to
+ process_madvise()
+Message-ID: <Zaps_0jnspsheP92@tiehlicka>
+References: <20240119115104.75456-1-ioworker0@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1adb8c68.a950.18d1d237182.Coremail.wangkeqi_chris@163.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240119115104.75456-1-ioworker0@gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.45
+X-Spamd-Result: default: False [-1.45 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,google.com,redhat.com,bytedance.com,gmail.com,kernel.org,kvack.org,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.65)[82.59%]
+X-Spam-Flag: NO
 
-wangkeqi <wangkeqi_chris@163.com> wrote:
-> 
-> If cn_netlink_has_listeners() is used instead of proc_event_num_listeners, I think proc_event_num_listeners will be completely meaningless. 
-> I read the code and found that there is nothing wrong with cn_netlink_has_listeners as a judgment of whether to send msg. 
-> sock_close will update the listeners. The previous proc_event_num_listeners count was wrong, making it meaningless. 
-> But if I change it to cn_netlink_has_listeners, will it affect some low-probability scenarios?
+Please do not start a new version until all the outstanding points are
+settled. This just fragments the discussion and makes it hard to follow
+it.
 
-Please avoid top-posting on netdev mailing list.
-
-Yes, thats what I meant, replace proc_event_num_listeners.
-
-I do not know what a 'low-probability scenarios' is.
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
 
