@@ -1,126 +1,99 @@
-Return-Path: <linux-kernel+bounces-30865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 031C5832543
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:48:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 729D2832546
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36AC81C23620
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:48:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A53EC1C236CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6EC8D52B;
-	Fri, 19 Jan 2024 07:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F59DDAB;
+	Fri, 19 Jan 2024 07:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dtqw5KNs"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cXgcLfOf"
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CBAD51D
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:48:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36339208A4
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705650519; cv=none; b=i43P0RhgLycdzDuKG5nWNjnpUN6eO4WZTTQENHgBj8kasWDb8nrgP0g3hE5MJKXQX+ElhlwzjQh9Tb2WqBdm3rOJhCP5oN5NJDiU2SxudRqWtBkj49V87S2cmCT090Vz/KvtnUwNc0qFqGeFRE6yXcA6dBgOPCFrFWEPadSJsMI=
+	t=1705650533; cv=none; b=n/QCxMGR/6AVO8JPhQphLdg4UTJmccpGMNk/czbebfXEnWDVL495D/lfZE4CUE9KMVL2E+h0sito9KGcH8PlD7oY+yU+YBCJT3WFZQvyK3+e8mxQhJ4miQJmADXY1WIK0L4gkazuoc+BVAg6StDPJKVq6EfFtN7B6Ce43m2VGMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705650519; c=relaxed/simple;
-	bh=ebbJ6bA1dlgy/6ZtQSvyFQkwF2mZTYLPxjDz3eZfPdU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WiuTsMerZOvZBQ/YcwQ9jWsMe2O2hLK0rhYVImLyyzmHqwGqzE/55P+vpJTlmJJQdWBXzXPvtr7NjtpXy1pRZltjg5dWxoY/1Vz3MsUb1XX6ttlRs80HjsdQgmEh4IqHPYzQJ5olpnv54oRNcJaolkKIGbw1hFu2SHELRX+cLmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dtqw5KNs; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6d9b5c4f332so372480b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:48:37 -0800 (PST)
+	s=arc-20240116; t=1705650533; c=relaxed/simple;
+	bh=437pMwh05AkF7Ma5zrf7H0IpeVqtl0ZFLHqUs70QIko=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J86utiogRjRTqATye9g2BugKZoSDacU8KnHxQjtQobDy1jkFXL4bZ6clcw6nLEHoCvL5jT7S+j0jFr3ywDigW1ZGqk66MJXRBD7NV7xBJ/9Jmxp8PU9w+1T+X60lhWCqhVJgOFSLRTcjpoNQUJKC6qSZW1BvVzMZpqbLm1WQEJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cXgcLfOf; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-428405a0205so122251cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:48:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705650517; x=1706255317; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nXGjBm0+HOq1i2RiP/xgovqiQd2Jx9NrE+bGhtMDLmQ=;
-        b=dtqw5KNsbDefq64UP+wgTUqnsEAn4ScsQRHKp80TQ+WpAAAH8cOTxN/Aq8rsafVS4y
-         r9aRkUwks1e7cnbxnlc1thPavmNOLrTbaXJRxjuoIof2exp3SctAM4SWgnysMx906EuJ
-         aCTlAILQK7+FAi8A2gK0Hhz6ZHfA623kPKCKU=
+        d=google.com; s=20230601; t=1705650531; x=1706255331; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=szrFUm5mWLk1fmanvNXQddD8V+/YNa2IQhkuUqvkeaY=;
+        b=cXgcLfOfckJ2/5IWSTFnHIAQ4YxrA5QnxU9Z7QM1cX9/gNnKhUfiMeFFY/EoIIsHeN
+         SQSnE1s89wKEcHxnG6w/aVacR7zQ+qZ9uEdXTXNiX8KMwv2xkaRHnlXBs/zrtP9SoA5w
+         t6tN/jyXAWiQZuslKyDTWhQjLR1NQzl1m7/A2V1cjFhuC0QTeKjQT+WT8bUb8cPNvdTC
+         rWcqKu7CjaKWyLMNV1mDINE5aqpbIy9nb9CQ5WZll5NkxrDBr+7pNtY+A+30XLktVk6z
+         YsJjdHq1ApB0d/EndEG4I7EkF8Y6jbLo32Qbef3liRECRmuwZ3nVL7ib8tnc86DA0iVF
+         zv+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705650517; x=1706255317;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1705650531; x=1706255331;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=nXGjBm0+HOq1i2RiP/xgovqiQd2Jx9NrE+bGhtMDLmQ=;
-        b=rRGXIYFZ9MwjIVer0e+lutba+sNqCzaXG1Q8TaYlA+BESncXhKmXkoRIqUXdYpEg4H
-         IfCYqBBHynVVCJ5h0e9jjp793rrTE9kIosj1W7DfIDDxsDW4N/3u+/KdNUA86nQXXhvH
-         uP5oolAz4UXrXMpn2bLZ3+Y0hTPgcBWZPUiszX44EzQAAQyNMdkQexSrEraYPSdwX0Qe
-         n+L92b/J+KWXsc3xCTP6O8leXb3YZNNSJFtUd+HUP+2+cDCNae71K7FEsHUuQdQdFd88
-         7RqH+PKvVjeX/GYco3jz0tpObPv4sFhlkJ82E/Csh572gQprxm89HuEp3nfwMPrZadeO
-         oABQ==
-X-Gm-Message-State: AOJu0YxezBHcq0mnvnQBSPnhCb0dTu2Jnz3D7oD5BrTYpnvJPEMtyTYD
-	/80TLAvk2YLj5P6ima+yu9TjcCFwwChvT9Hhtc6mvXy7qB1Gf8a/IHi1MIcpb6lVfDGWqCr2adM
-	=
-X-Google-Smtp-Source: AGHT+IHQna9e3X42lqrWFOSQZQYMAmVaV6Zoi5bSDcbYwGwoWzErrSZ7syFdmAt05s4X8B7fmLNpGw==
-X-Received: by 2002:a05:6a20:9154:b0:19a:e212:46c with SMTP id x20-20020a056a20915400b0019ae212046cmr1736163pzc.95.1705650516771;
-        Thu, 18 Jan 2024 23:48:36 -0800 (PST)
-Received: from localhost ([2401:fa00:1:10:a5a9:5dbc:778d:db07])
-        by smtp.gmail.com with UTF8SMTPSA id j14-20020a170902da8e00b001d4b1d190e3sm2435533plx.58.2024.01.18.23.48.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 23:48:36 -0800 (PST)
-From: Ting Shen <phoenixshen@chromium.org>
-X-Google-Original-From: Ting Shen <phoenixshen@google.com>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: fshao@chromium.org,
-	Ting Shen <phoenixshen@google.com>,
-	Benson Leung <bleung@chromium.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	chrome-platform@lists.linux.dev,
-	=?UTF-8?q?joewu=20=28=E5=90=B3=E4=BB=B2=E6=8C=AF=29?= <joewu@msi.com>,
-	linux-input@vger.kernel.org
-Subject: [PATCH v2] Input: cros_ec_keyb: add support for base attached event
-Date: Fri, 19 Jan 2024 15:48:17 +0800
-Message-ID: <20240119074831.2979671-1-phoenixshen@google.com>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+        bh=szrFUm5mWLk1fmanvNXQddD8V+/YNa2IQhkuUqvkeaY=;
+        b=s7r1NqusQvCH9oIlutP2JG09rp2yZkvoCXPLPHLWWxIwGMqhTOb3iHIZUt+kYQAoB+
+         zlwRgj+Xl5bIdxUc4cjDR2Lf3ej6IZY3gv6p27gdvP6dXJ+obxHCn5uRhWNgYLacBzo8
+         KXDTQ4QtcexCDaEWtbCrRwmwQgPmpfehUoH6BqIwnvgYRjnaBz2PJJUeI1cP9oRfGEI1
+         xoHSrY23bkoWRR1Ru13YpDzB7Fsk/rYUJEn9KeTfzCo9B3tzCuT+Tml+b3YQUN35PLlA
+         b48vzcfjKPsuSxlxEn7SjXFhGOAV5pXMf2lLU7DxoRYhzD+YvoBnZ1QOHrT+gFFpD3Q3
+         Ktig==
+X-Gm-Message-State: AOJu0Ywjeii64wHWEVRDJKSkePWTqOfVIrkphn1g5IrHix63Rptrbko5
+	/thfMfzlVlknt1UyKVz8PJgJ39qBnSRvZRNG7tp/XzS71WdyjNbeyPhE80OcQib4rPjFzKCv3c/
+	ahdJ1MAfhLaYFzYVa06eC/89y+1ShDUXJcbhP
+X-Google-Smtp-Source: AGHT+IHKnNuhZdSTnx1fM+MjdP5tLVjtVO/zdHuvi0LGAI4iEjeq+iR6ewAk+XMnAGAxgRorcKOsq8q4G3VClE1oC4U=
+X-Received: by 2002:a05:622a:5104:b0:429:c9cc:daa5 with SMTP id
+ ev4-20020a05622a510400b00429c9ccdaa5mr160861qtb.23.1705650531018; Thu, 18 Jan
+ 2024 23:48:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240118091146.3101-1-quic_uaggarwa@quicinc.com> <20240119004551.234tvv5w2fhhsqrv@synopsys.com>
+In-Reply-To: <20240119004551.234tvv5w2fhhsqrv@synopsys.com>
+From: Kuen-Han Tsai <khtsai@google.com>
+Date: Fri, 19 Jan 2024 15:48:24 +0800
+Message-ID: <CAKzKK0r8RUqgXy1o5dndU21KuTKtyZ5rn5Fb9sZqTPZqAjT_9A@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: dwc3: gadget: Fix NULL pointer dereference in dwc3_gadget_suspend
+To: Uttkarsh Aggarwal <quic_uaggarwa@quicinc.com>
+Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, 
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-There is a new type of ChromeOS detachable keyboard that talks to
-the host via CrOS EC host command interface, rather than the USB
-interface.
+Hi,
 
-To trigger the firmware update daemon (hammerd) on this keyboard, a
-signal is required to replace the typical USB hotplug event. This patch
-addresses this by mapping the EC's BASE_ATTACHED event to SW_DOCK.
+>       CPU1:                           CPU2:
+>       gadget_unbind_driver            dwc3_suspend_common
+>       dw3_gadget_stop                 dwc3_gadget_suspend
+>                                       dwc3_disconnect_gadget
+>
 
-Signed-off-by: Ting Shen <phoenixshen@google.com>
----
+The typo hasn't been fixed.
 
-Changes in v2:
-- update commit message
+dw3_gadget_stop -> dwc3_gadget_stop
 
- drivers/input/keyboard/cros_ec_keyb.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
-index 30678a34cf647..d2e0d89d4ffdf 100644
---- a/drivers/input/keyboard/cros_ec_keyb.c
-+++ b/drivers/input/keyboard/cros_ec_keyb.c
-@@ -128,6 +128,11 @@ static const struct cros_ec_bs_map cros_ec_keyb_bs[] = {
- 		.code		= SW_TABLET_MODE,
- 		.bit		= EC_MKBP_TABLET_MODE,
- 	},
-+	{
-+		.ev_type	= EV_SW,
-+		.code		= SW_DOCK,
-+		.bit		= EC_MKBP_BASE_ATTACHED,
-+	},
- };
- 
- /*
--- 
-2.43.0.429.g432eaa2c6b-goog
-
+Thanks,
+Kuen-Han
 
