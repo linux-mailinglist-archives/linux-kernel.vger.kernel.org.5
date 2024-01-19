@@ -1,129 +1,86 @@
-Return-Path: <linux-kernel+bounces-30985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C83183271C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:57:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38D2983271E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:57:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1FCFB248A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:57:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C66B1C2187A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:57:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0CF3C693;
-	Fri, 19 Jan 2024 09:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="HguVySOc"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1184C3C46D;
+	Fri, 19 Jan 2024 09:57:18 +0000 (UTC)
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD39F3C087;
-	Fri, 19 Jan 2024 09:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9986A3C463;
+	Fri, 19 Jan 2024 09:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705658211; cv=none; b=jRDIqJw7Wt7TvfsjwDty0r1UcTmvEu9kRx62Ul8iOLpzhWs7Aj/VB3DLbVvCF9YifoY8povUZtOD6s5jiTauzqXZ5HRHmokFaWEsCdyvNSAcgc3FDkqP03BZXZI3UgvTeGRM/Ab6Jezj85ea6hMM4usjIcU5nn21fkhiQB4lpWw=
+	t=1705658237; cv=none; b=nZ+tRwfhufwz5CJFU2Jx3SJm/9dSj+g5Vr7hJbt65SupSYWkJbfoASbhmcJ8txfn24QBJ8Yq8pSpJd0evtQiZziN0Z25v6ELEtbBhCOSsL16oH0lZgRwuWtNutP7JAYF6QI/M0xO6FvCIubuW2a4h8L3m2V8G5pYoE7XMIY7V5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705658211; c=relaxed/simple;
-	bh=xvXw3OrViAcDcY+1iPZglFRACw6imsSrchWA7GHz1Mk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pXgCmbKotg2CIl9PfagA8TjDbokWZ/HJa/DnQprGS/1ChlLbb3RIKyMWDtzwtOBnyxvYzGg7yGmm9v0P7/E/61zQZwj7jeRCH8Snh7jzOWoDUlAbp3Hr6Rudjba0W8nTn9LJHLvBsi5HTtVHPYjmtOMuLh3AJJ41PPx4Rzes7jI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=HguVySOc; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=2trAH9af6dbF7LZPJlZtibHnB3VOCJ6P35im2rdtrAA=; b=HguVySOc+3B4Jk1p/7UnaZwe0r
-	g0ujbcQqLWZ+oPdUF3UNT89UsXrtL4nlk7ru8Nn/sxxor1hpuKwNloA2Xl/hlgKdz0SVf8ZHPaLXN
-	1FUyYR22Fq9Bgi1dA8DT5+lVSg65ZX9kGrbliejYcTZ0WX8rgZK+KkvtVZlUP/ILjEvOCtAacyQ+W
-	gM/7MiX/yq2OmKhtKcfQUpTNE4x8ecO3wzgv/WF6HMGZvtlLioJ0g5+3Ae5QrX1ImCtENTpAkznQi
-	KEAsT0c0bBepxx5AAGIXlytvh3IAJhjDqHO+RTDQ75zvQGJHsIPXALaLRXx60deyrGLW7ZZLaybwu
-	iDelsQpQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45684)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rQlcB-0006YB-36;
-	Fri, 19 Jan 2024 09:56:44 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rQlcB-0006Zz-P7; Fri, 19 Jan 2024 09:56:43 +0000
-Date: Fri, 19 Jan 2024 09:56:43 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Andre Werner <andre.werner@systec-electronic.com>
-Cc: andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: adin1100: Fix nullptr exception for phy
- interrupts
-Message-ID: <ZapHWw85UAIRqsyt@shell.armlinux.org.uk>
-References: <20240118104341.10832-1-andre.werner@systec-electronic.com>
- <Zald7u8B+uKzCn42@shell.armlinux.org.uk>
- <48245ebe-babf-52ec-407b-9ce32ffe24d2@systec-electronic.com>
+	s=arc-20240116; t=1705658237; c=relaxed/simple;
+	bh=ugcIKYXuuIIdvqm9fPsjbcKxZwNOl92EzCsZNTFQ/Yw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Raypc0yiL9AXWsNOjAhz563NoXq0EVgGESTONKfZT4dKEO2EmWS2jaldSbQVPdZ5+Ui/a+561hGqiUd0oc23bEzkOJgdAKgsBk+yKrTG2NeBahPIoVh2uyF47JggsquMglzQo2lASDzbCIFOxdr8rdFEKCH9nUeiN+Y53rMkELk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W-viV-._1705658228;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0W-viV-._1705658228)
+          by smtp.aliyun-inc.com;
+          Fri, 19 Jan 2024 17:57:09 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: linkinjeon@kernel.org,
+	sfrench@samba.org,
+	senozhatsky@chromium.org,
+	tom@talpey.com
+Cc: linux-cifs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] smb: Fix some kernel-doc comments
+Date: Fri, 19 Jan 2024 17:57:07 +0800
+Message-Id: <20240119095707.120338-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48245ebe-babf-52ec-407b-9ce32ffe24d2@systec-electronic.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 19, 2024 at 04:05:29AM +0100, Andre Werner wrote:
-> On Thu, 18 Jan 2024, Russell King (Oracle) wrote:
-> 
-> > In addition to Andrew's comments:
-> > 
-> > On Thu, Jan 18, 2024 at 11:43:41AM +0100, Andre Werner wrote:
-> > > +static int adin_config_intr(struct phy_device *phydev)
-> > > +{
-> > > +	int ret, regval;
-> > > +
-> > > +	ret = adin_phy_ack_intr(phydev);
-> > > +
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	regval = phy_read_mmd(phydev, MDIO_MMD_VEND2, ADIN_PHY_SUBSYS_IRQ_MASK);
-> > > +	if (regval < 0)
-> > > +		return regval;
-> > > +
-> > > +	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
-> > > +		regval |= ADIN_LINK_STAT_CHNG_IRQ_EN;
-> > > +	else
-> > > +		regval &= ~ADIN_LINK_STAT_CHNG_IRQ_EN;
-> > > +
-> > > +	ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
-> > > +			    ADIN_PHY_SUBSYS_IRQ_MASK,
-> > > +			    regval);
-> > > +	return ret;
-> > 
-> > 	u16 irq_mask;
-> > 
-> > 	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
-> > 		irq_mask = ADIN_LINK_STAT_CHNG_IRQ_EN;
-> > 	else
-> > 		irq_mask = 0;
-> 
-> Unfortunately, I can not do this, because that phy ask for read-modify-write access to
-> registers and some bits in this register are already set after reset and
-> should not being modified.
-> 
-> > 
-> > 	return phy_modify_mmd(phydev, MDIO_MMD_VEND2,
-> > 			      ADIN_PHY_SUBSYS_IRQ_MASK,
-> > 			      ADIN_LINK_STAT_CHNG_IRQ_EN, irq_mask);
+Fix some kernel-doc comments to silence the warnings:
+fs/smb/server/transport_tcp.c:374: warning: Function parameter or struct member 'max_retries' not described in 'ksmbd_tcp_read'
+fs/smb/server/transport_tcp.c:423: warning: Function parameter or struct member 'iface' not described in 'create_socket'
 
-So you don't understand... phy_modify_mmd() will do a read-modify-write
-and because the mask passed is ADIN_LINK_STAT_CHNG_IRQ_EN, this is the
-_only_ bit that will be affected.
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/smb/server/transport_tcp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/fs/smb/server/transport_tcp.c b/fs/smb/server/transport_tcp.c
+index 9d4222154dcc..002a3f0dc7c5 100644
+--- a/fs/smb/server/transport_tcp.c
++++ b/fs/smb/server/transport_tcp.c
+@@ -365,6 +365,7 @@ static int ksmbd_tcp_readv(struct tcp_transport *t, struct kvec *iov_orig,
+  * @t:		TCP transport instance
+  * @buf:	buffer to store read data from socket
+  * @to_read:	number of bytes to read from socket
++ * @max_retries: number of retries if reading from socket fails
+  *
+  * Return:	on success return number of bytes read from socket,
+  *		otherwise return error number
+@@ -416,6 +417,7 @@ static void tcp_destroy_socket(struct socket *ksmbd_socket)
+ 
+ /**
+  * create_socket - create socket for ksmbd/0
++ * @iface:      interface to bind the created socket to
+  *
+  * Return:	0 on success, error number otherwise
+  */
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.20.1.7.g153144c
+
 
