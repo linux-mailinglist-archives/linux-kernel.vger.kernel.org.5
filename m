@@ -1,135 +1,149 @@
-Return-Path: <linux-kernel+bounces-31564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76596833023
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:15:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6208D833029
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35D171F23F3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:15:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1DEBB22D88
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E2858107;
-	Fri, 19 Jan 2024 21:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C466A5789F;
+	Fri, 19 Jan 2024 21:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Npu+jXgd"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i5C8E8IM"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136C938E
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 21:14:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5235A7EF;
+	Fri, 19 Jan 2024 21:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705698898; cv=none; b=iekIKqporAU9EJEVXqd84kFG45tnyWNFtkfSak9KTGTW5V00DbQMPx6h5YVCMcT2Vmg8pQaQCmzRV9Qyr2dSHgHiESM1mhBQuGU3FVNMq9dkwnGrw44L91ggix53ldDdju1yhEK3BMnOOMxpHVdjneqxb3kwzYtDqd8FUZEgM+A=
+	t=1705699122; cv=none; b=b/wdSOn7eHR1GEa/72dC6yeLCrRhSoiv9A/wOHNgydFWVRCpsBAd4/5F1AmpBoTXbNZmw33keWQ/s0W2A/i6t9wunlnJ41b7ZdUyZ9LSUob4gPf1p8GiNS5h7y1zGz5nbF5cPtTysY5mwGsWf/lI+RxwkkaC9agY6bRQ7jefyCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705698898; c=relaxed/simple;
-	bh=F9F2GNKmjLUbux+84Pb89lxHGN+eZi/eIvcnBt3MVnw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Sq/MXvw3hrPMdq9p5lxUJE/+pMOA7mxkeaTiKIj+2bfTv1fFJldXLIG6fopZBeT6rwmcglTYNXyYSpdqlWsRI5Xi1195gYtBOc24JgPL9+wCEY20stCu7/1kkvb4UBfiNxnp4B9CuIHZF0Wpvafb+xxVt9dGG49706Mk+bjT48A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Npu+jXgd; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d5f1e0e32eso8923365ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:14:56 -0800 (PST)
+	s=arc-20240116; t=1705699122; c=relaxed/simple;
+	bh=SFFHPi5z+u3PxypmWvWvji2LjF5Tr3zXIeHvEmMeNq8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GyaTXlnKHajPpCG6gamgglWSmeGmCUrnUttdRmRjZf3V9889BvJfj4qadwGya5vFtJhWMaAjNOdUhBICHOan3Ds56xJqzk4w/2r7UqyDYI0Y+j8d2m/gQfPs/xdSm07aAApy8T66RBvuM+HhP5QSWSJMBgpzwMhwELlzl2N34Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i5C8E8IM; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5cdfed46372so1144770a12.3;
+        Fri, 19 Jan 2024 13:18:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705698896; x=1706303696; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1jO5gTxlFcZqy3fTlQWHVnYXrLv/qAX0Mnxwu0zISok=;
-        b=Npu+jXgdh1m5j24CHVteSOvlcRn7MaK7MqofDUJIix+GgSLeP6O6k2Tdb1ohzCK4ZC
-         nPRTHJhdhxwbJ9dl1oZ2Gn5aGuhcWMSgrFQvEMjunPub5aB9ZlNaznsFBMdObUs82kso
-         +z1973MPe3ZAWGYSKC29TH0D+kevL0dTJDUMI=
+        d=gmail.com; s=20230601; t=1705699120; x=1706303920; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=14fwaY4V0ADmkEmiNtkEZzCmvPzMkUSdeyzXlcYH+mE=;
+        b=i5C8E8IMtap+ED4rU51ng3Rzwe3ETKRP5BeJey9Yk/cdhTrgnUq7fbicyCTzcpaRLP
+         XCw6MZDSWGLJNVHH8dFAnJ1vXE9CQcPdhE7jxxU82Yy/8RZRTfyKi5zReO3Dm+yFjW8g
+         6cSNAm1uT531YN66ICo6QN7SIaaua0p0mdcfg5yPHvl9mV5hfZ3Tgv5RBG/ptfNINEQN
+         PXqeU7ZpfLdXHGTGOaD30nsdcdkxnGuAJ+hpPJnhWgfeQYk0V1DjE2UpdvhgnLLf6FGG
+         +Nhnov9URg2VgpObuOdD7bLb7ci7I9pnj9EAViC5hgNDqFUFht2r3IUCaG2217tcIZxS
+         Uh8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705698896; x=1706303696;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1jO5gTxlFcZqy3fTlQWHVnYXrLv/qAX0Mnxwu0zISok=;
-        b=b0jyZ7k7Gkw2ZGq0O50DYH3SP4kaQG3LaDp/afcddlsvbKTzlSM7E9qsBgbWqwUaz1
-         EBTE8FEk37Y/pJ8haDya6qDiLWgAtEbsMtT+kgb6bWTqy1+3OYmw1AxhheIjYyQkRXPX
-         NlE9gxkkdiF8szWtdjAHiBD72G/xoGCDb2qbn52T/c1+Cz3JHkvM8ogydKnh0PSoj8uG
-         ASma5LAwGd3hcGcp6/4k40h1NQd3hggyolz3Rpctzqi3QX0DgxtNkHYV850EDMxGe2YD
-         R5QhSxMadzq80jO0/3aYOYQymK+twZe1t+iJSe/ROd2sCfPOrWPNYtlKKOuNoNKT4XbC
-         yUDw==
-X-Gm-Message-State: AOJu0YyWUV7k/jNL7KDvLrJY4rWITxTOOxQfR2ZPUGhFeFjUNsri30fM
-	M3mfN9yjnW9ieqKJyQZO8h69Mt2caPN1fnvqvWukBPlYRU/DuhOzgvxqFgLcoA==
-X-Google-Smtp-Source: AGHT+IHteMrsjbxz/XOxufy7SLo0IQwvOQ84Qlzbhc16uTdBfRGUnXUD7sidx0J4g0mfmpxi2kRqHg==
-X-Received: by 2002:a17:902:db05:b0:1d7:20a4:4a91 with SMTP id m5-20020a170902db0500b001d720a44a91mr502945plx.109.1705698896431;
-        Fri, 19 Jan 2024 13:14:56 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id kh6-20020a170903064600b001d5e1353693sm3433530plb.266.2024.01.19.13.14.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 13:14:55 -0800 (PST)
-Date: Fri, 19 Jan 2024 13:14:55 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Andy Whitcroft <apw@canonical.com>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Brian Foster <bfoster@redhat.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Joe Perches <joe@perches.com>, Kees Cook <keescook@chromium.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [GIT PULL] strlcpy removal for v6.8-rc1
-Message-ID: <202401191311.B6AA79D@keescook>
+        d=1e100.net; s=20230601; t=1705699120; x=1706303920;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=14fwaY4V0ADmkEmiNtkEZzCmvPzMkUSdeyzXlcYH+mE=;
+        b=J5sbBFoQ0QJgGd7dhOlEjk2dVsdv1Fd51mI0JCTufA7pzMM8mlIZMbnfRCZWhLZTOU
+         l9CtDRO76OP6c+X3WKUYEMZnfWFUfIhZBBE0ohuANfvDA1Qzx6UtzRRe4w0c457Were+
+         hw291FWbO6/ofU7PkmrKvoTO4jvosTMUrxwgVo93YYDPOTx6GsPH0hRWh7cS+mnsVgYa
+         ChlOWp2KQ3MakFE6LATERDVsfL2uROcZBnk+UW2hbwLoV86sAbtLn1cHJQy1wAk+14bC
+         PPyWf2kQeJ2wRuxztSu8wJ+oF5W9hIJZzuIL/ZHjN2rRiEigQn6+uAgGnHTHVp/BFW4e
+         M47A==
+X-Gm-Message-State: AOJu0YyhJ3GSLJyRUlP7d+lHSGFFcQpGokqackTMfG71w7B7JEc4OIlZ
+	xET+w4QzEkpxwpFLPU8u53SLi2rTrR4BHojM4tVB8ZEz7nQMa8cZW310Hx3THXUWNvK+jJBmC6o
+	E7HWrK8KmBEcv7fpvDym9XrU4TQ6+sbz7
+X-Google-Smtp-Source: AGHT+IE50YTrcJZjLwByxEZiiPtjKgx49jYojao0VcEmi4j52e4ZJhBwVEmXWxDLKj9YZugMKku5LFPY/Kj6sGJhg0U=
+X-Received: by 2002:a05:6a21:150d:b0:199:e4ab:691c with SMTP id
+ nq13-20020a056a21150d00b00199e4ab691cmr594311pzb.8.1705699119687; Fri, 19 Jan
+ 2024 13:18:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240117111000.12763-1-yangtiezhu@loongson.cn> <20240117111000.12763-3-yangtiezhu@loongson.cn>
+In-Reply-To: <20240117111000.12763-3-yangtiezhu@loongson.cn>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 19 Jan 2024 13:18:27 -0800
+Message-ID: <CAEf4BzYXayB91cXKktBXe_SMDLXhjNo3DGML6DuakLOysZ5jbA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/3] libbpf: Move insn_is_pseudo_func() to libbpf_internal.h
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Hou Tao <houtao@huaweicloud.com>, Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Wed, Jan 17, 2024 at 3:10=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
+> wrote:
+>
+> Currently, insn_is_pseudo_func() is only used in libbpf.c, move it
+> to libbpf_internal.h so that it can be used in test_verifier, this
+> is preparation for later patch.
+>
+> Suggested-by: Song Liu <song@kernel.org>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  tools/lib/bpf/libbpf.c          | 5 -----
+>  tools/lib/bpf/libbpf_internal.h | 5 +++++
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index c5a42ac309fd..259d585d6ff5 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -748,11 +748,6 @@ static bool is_call_insn(const struct bpf_insn *insn=
+)
+>         return insn->code =3D=3D (BPF_JMP | BPF_CALL);
+>  }
+>
+> -static bool insn_is_pseudo_func(struct bpf_insn *insn)
+> -{
+> -       return is_ldimm64_insn(insn) && insn->src_reg =3D=3D BPF_PSEUDO_F=
+UNC;
+> -}
+> -
+>  static int
+>  bpf_object__init_prog(struct bpf_object *obj, struct bpf_program *prog,
+>                       const char *name, size_t sec_idx, const char *sec_n=
+ame,
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
+nal.h
+> index 27e4e320e1a6..a9c337345aff 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -532,6 +532,11 @@ static inline bool is_ldimm64_insn(struct bpf_insn *=
+insn)
+>         return insn->code =3D=3D (BPF_LD | BPF_IMM | BPF_DW);
+>  }
+>
+> +static inline bool insn_is_pseudo_func(struct bpf_insn *insn)
+> +{
+> +       return is_ldimm64_insn(insn) && insn->src_reg =3D=3D BPF_PSEUDO_F=
+UNC;
+> +}
+> +
 
-Please pull this strlcpy removal for v6.8-rc1. As promised, it is the
-"part 2" of the hardening tree, late in -rc1 now that all the other trees
-with strlcpy() removals have landed. One new user appeared (in bcachefs)
-but was a trivial refactor. The kernel is now free of the strlcpy() API!
+This just adds more internal code of libbpf used by selftests. While
+we've allowed it in some cases to avoid duplication of more complex
+logic, I don't feel like it's justified in this case. These helpers
+are trivial enough to copy/paste somewhere into selftests helpers
+header, so please do that instead.
 
-Thanks!
-
--Kees
-
-The following changes since commit b0d326da462e20285236e11e4cbc32085de9f363:
-
-  Merge tag 'sched-urgent-2024-01-18' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2024-01-18 11:57:33 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/strlcpy-removal-v6.8-rc1
-
-for you to fetch changes up to d26270061ae66b915138af7cd73ca6f8b85e6b44:
-
-  string: Remove strlcpy() (2024-01-19 11:59:11 -0800)
-
-----------------------------------------------------------------
-strlcpy removal for v6.8-rc1
-
-- Remove of the final (very recent) user of strlcpy() (in bcachefs).
-
-- Remove the strlcpy() API. Long live strscpy().
-
-----------------------------------------------------------------
-Kees Cook (2):
-      bcachefs: Replace strlcpy() with strscpy()
-      string: Remove strlcpy()
-
- fs/bcachefs/super.c                           |  4 +--
- include/linux/fortify-string.h                | 51 ---------------------------
- include/linux/string.h                        |  3 --
- lib/nlattr.c                                  |  2 +-
- lib/string.c                                  | 15 --------
- lib/test_fortify/write_overflow-strlcpy-src.c |  5 ---
- lib/test_fortify/write_overflow-strlcpy.c     |  5 ---
- 7 files changed, 3 insertions(+), 82 deletions(-)
- delete mode 100644 lib/test_fortify/write_overflow-strlcpy-src.c
- delete mode 100644 lib/test_fortify/write_overflow-strlcpy.c
-
--- 
-Kees Cook
+>  /* if fd is stdin, stdout, or stderr, dup to a fd greater than 2
+>   * Takes ownership of the fd passed in, and closes it if calling
+>   * fcntl(fd, F_DUPFD_CLOEXEC, 3).
+> --
+> 2.42.0
+>
 
