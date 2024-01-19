@@ -1,118 +1,130 @@
-Return-Path: <linux-kernel+bounces-30770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A41383242A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:16:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2374583242F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:20:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 558E02852B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:16:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EEB11C21E60
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:20:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BA94A11;
-	Fri, 19 Jan 2024 05:16:15 +0000 (UTC)
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC344A12;
+	Fri, 19 Jan 2024 05:20:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eo3UVTdv"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D462F4691;
-	Fri, 19 Jan 2024 05:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CAB64691;
+	Fri, 19 Jan 2024 05:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705641375; cv=none; b=PxbGae0OaL9uy7UWAZAALQOeaNTFdW93pNoJg/O6BYAOaDursCmxAE+eVcDOEuSs0laGd0l8JoIN77ZyZrE4jejYQAm3u81W74c+Lel4dupvDjTOnSUlZw/pyOb3v0f7JykNF4CDZXgDnOLp7thn4ItCJd23QZ8q04KJOzePW3Q=
+	t=1705641607; cv=none; b=L9B2X18NsA1SBO/s0CpDIvRaHBxBlZiVsstnIHXNTeBHbqhOKLBt2boG6ToA/5yxoHENr2RZcHlBM2Pllde1GprkyU41z6eWh1gfI5LDNgIodPKsymy/w4/1dDhjYgIItZjXJBZ/4LilSoNYxCCyeBGc21dze1OH2zdA0M0Y8tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705641375; c=relaxed/simple;
-	bh=ejefZ9g4beo5ULeSi9akJ+erm9iOsIbAyC+YgW+ABWA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ereGNIUOzYfcB5RtBA6c90JrP0Y9s4SXaJUx99nKGNGaVUxcVJmSOcMBSa43tXhKl7LzOLoHbyTBbt78TpyxSqtuGdK6VW6SMz4MYWXcQHTlQfp9DTMLuXg8qxsX9aSiyd6JogzoslmSmG4VG7nUCQaMHMrsTChw6YZpuKts9fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5986d902ae6so208518eaf.3;
-        Thu, 18 Jan 2024 21:16:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705641373; x=1706246173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cbdcNYh3PJs4LxluryfXeC8R/9613mcJgDoLdh3Fh40=;
-        b=tvyvG27DvtoFW4WflAkr76OBCizeC7N7NYtZ9VARMU/6u61HdMvDHmm/ToIqXFCS5u
-         j2Ar6I3rp0CKy/iOCge1S+qwguO0StNUxVXRQoE4PNkL8rOBzLw4n16h1cvLjraaHIL1
-         OG20YKUVhxr2EUo9AUv4ieCnwypjfnhK8HRtKpMO2dLpvQKX6CFL7WoNip3q5Z4cC00A
-         ic6rwPiK3LnvFzqu9D1wapmBUY2ivkv7GXZMcoQopX5kLUBj/c08T7AQcAA4+/H10diU
-         zoZ+N2Xp5cJYxGacljVMjK9UurSEWGOKygtMLbld/hF5xadjJlSu7HgMbcef49s+Bfz3
-         foIA==
-X-Gm-Message-State: AOJu0YxpsqQ+K13zYQEglNBXWXgl2CBPq6A73v7i4P6MDrtSb3gc8/x8
-	TCSelfYB3tFgapJWXFaMyyL9uHOmNOjQyp+4mBnopD/+1XAI3gS93KFgtj3g8C0HZkPLJgtqG/E
-	tsZcXU2LrPoTlZZxflLXUJ7H/9Dk=
-X-Google-Smtp-Source: AGHT+IH9pPDvMoYr3EpnW1lLxlB7xEeCm0t0CH2COx35Jodtyc/77y3xB0/VIGzvbDr3JTOjspQPG4UdsI9f5XoQmFo=
-X-Received: by 2002:a05:6358:c61f:b0:172:f968:51f1 with SMTP id
- fd31-20020a056358c61f00b00172f96851f1mr1981562rwb.55.1705641372733; Thu, 18
- Jan 2024 21:16:12 -0800 (PST)
+	s=arc-20240116; t=1705641607; c=relaxed/simple;
+	bh=LTCKdtnUk4+lLsKQhuLrP0dxI8tJhkUKERYLhzyYJe0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=adPTekeLxyMtYT12PTZZ7uiMTHRVP+aPYQ6EQ/uXO5YT8KQWDJWmyBz/4t3H3RhHQok/6g4Ufm3MY0aRAAqAMCmO3n1IQFZb6Cb2UiEhwqF6iI8NKukzu4JV60z7OPC09HRtLUsk9xZCxYyCFg4s/gLVNEEPTaaUH7mhYxT66rI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eo3UVTdv; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40J4pOvN010390;
+	Fri, 19 Jan 2024 05:20:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=C7riFBU11nnzW4T8MmC9s11SawHSKgNA/p3lIimK/XM=; b=eo
+	3UVTdvbCdK3WKOlc4cFwn9fzCMMKwE4ISGTK4hERSwAZitPfeakrewelFDRM54By
+	HDol4hYutP2xJ+EBe8GcAXsJAVpD9bFndOm5dqPxnOvPdEyijVR/tiB5HG3RjVWi
+	HXakt4q+AIQyLdCacVcIhgs3R/oX75xm41xO1zhmTS5Tg5pf+rbofzreabaRDF3a
+	UxbGHPkkbtRlLtieSL+havg9fmhEyLOx4YA4dmV+KW4JSTjESrDhjJ9TR90Y7sfP
+	wyeeGJKhc8xqjin8XH38Mk/WpuM7Sr/lywYpaSE+yW/tIevb11/WS2VNMiKwcptM
+	2t8mrgGGx5lG1I0QMYYw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vq2d0jck3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 05:19:59 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40J5Jwec011031
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 05:19:58 GMT
+Received: from [10.217.198.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 18 Jan
+ 2024 21:19:56 -0800
+Message-ID: <7649dd92-4e73-470a-921a-2420bf521537@quicinc.com>
+Date: Fri, 19 Jan 2024 10:49:53 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e0fc158239e73f22405c78d5b3219c266e3763be.1705506665.git.jan.kundrat@cesnet.cz>
-In-Reply-To: <e0fc158239e73f22405c78d5b3219c266e3763be.1705506665.git.jan.kundrat@cesnet.cz>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Thu, 18 Jan 2024 21:16:01 -0800
-Message-ID: <CAM9d7cikvOQvUXMrRPM9g6W34zHJsbNquhJYiV9AgS40eGC3qw@mail.gmail.com>
-Subject: Re: [PATCH] perf build: don't hardcode pkg-config path
-To: =?UTF-8?B?SmFuIEt1bmRyw6F0?= <jan.kundrat@cesnet.cz>
-Cc: linux-perf-users@vger.kernel.org, 
-	"Yann E. MORIN" <yann.morin.1998@free.fr>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Enhance check for VREG in-flight
+ request
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_eberman@quicinc.com>, <quic_collinsd@quicinc.com>,
+        <quic_lsrao@quicinc.com>
+References: <20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com>
+ <9b177f7b-8dbf-4193-9a70-94f7b80f0a87@linaro.org>
+Content-Language: en-US
+From: "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>
+In-Reply-To: <9b177f7b-8dbf-4193-9a70-94f7b80f0a87@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: iUAOo7-oncuFgMQKA_iJY4Sau_xUpq5c
+X-Proofpoint-GUID: iUAOo7-oncuFgMQKA_iJY4Sau_xUpq5c
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_02,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 bulkscore=0 spamscore=0 mlxlogscore=628 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401190012
 
-Hello,
+Hi,
 
-On Wed, Jan 17, 2024 at 7:58=E2=80=AFAM Jan Kundr=C3=A1t <jan.kundrat@cesne=
-t.cz> wrote:
->
-> On Buildroot and when building for Arm using the Bootlin toolchain, the
-> actual `pkg-config` is named just `pkg-config`, not
-> `arm-linux-pkg-config`. This patch allows the external build system
-> (such as Buildroot) to pass a working path.
->
-> This is already done correctly in tools/build/feature/Makefile and
-> tools/thermal/tmon/Makefile and also fixed in other places many years
-> ago (9961aa665b70e47d6c80141c4a2482266010f246), but for some reason it
-> was never fixed in this file.
->
-> Signed-off-by: Jan Kundr=C3=A1t <jan.kundrat@cesnet.cz>
-> To: linux-perf-users@vger.kernel.org
-> Cc: Yann E. MORIN <yann.morin.1998@free.fr>
-> Cc: linux-kernel@vger.kernel.org
+On 1/17/2024 5:19 PM, Konrad Dybcio wrote:
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+>> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+>> index a021dc71807b..5371d7e3090a 100644
+>> --- a/drivers/soc/qcom/rpmh-rsc.c
+>> +++ b/drivers/soc/qcom/rpmh-rsc.c
+>> @@ -1,6 +1,7 @@
+>>   // SPDX-License-Identifier: GPL-2.0
+>>   /*
+>>    * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All 
+>> rights reserved.
+>>    */
+>>   #define pr_fmt(fmt) "%s " fmt, KBUILD_MODNAME
+>> @@ -91,6 +92,15 @@ enum {
+>>   #define CMD_STATUS_ISSUED        BIT(8)
+>>   #define CMD_STATUS_COMPL        BIT(16)
+>> +#define ACCL_TYPE(addr)            ((addr >> 16) & 0xF)
+>> +#define VREG_ADDR(addr)            (addr & ~0xF)
+> 
+> It would be nice to add some #define FNAME GENMASK(x, y) accessed
+> with FIELD_GET(FNAME, foobar), so that the code is a bit more
+> self-explanatory
+> 
+> Konrad
+
+Thanks for the review.
+Updates in v2 to use GENMASK() and FIELD_GET().
 
 Thanks,
-Namhyung
-
-
-> ---
->  tools/perf/Makefile.perf | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 86569f230e60..b69ab2ae77c6 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -188,7 +188,7 @@ HOSTLD  ?=3D ld
->  HOSTAR  ?=3D ar
->  CLANG   ?=3D clang
->
-> -PKG_CONFIG =3D $(CROSS_COMPILE)pkg-config
-> +PKG_CONFIG ?=3D $(CROSS_COMPILE)pkg-config
->
->  RM      =3D rm -f
->  LN      =3D ln -f
-> --
-> 2.43.0
->
->
->
+Maulik
 
