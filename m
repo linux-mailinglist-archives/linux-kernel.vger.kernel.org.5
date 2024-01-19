@@ -1,72 +1,102 @@
-Return-Path: <linux-kernel+bounces-31011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3459832789
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:22:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 176188327AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:31:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 622701F2393E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:22:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 664C02853BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F6B3C697;
-	Fri, 19 Jan 2024 10:22:16 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C893FB04;
+	Fri, 19 Jan 2024 10:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="Nu2l/pF0"
+Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4943C47B;
-	Fri, 19 Jan 2024 10:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E589A3F8F5
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705659736; cv=none; b=YSbFS3zNK1zYn07PlW27v6h8X69VWj+QlRSSHjchYYmfDtj1XJL7o2sZUqNdFJC0MBdHAUBogl4vmAAZzPnk/HixNVrceGmvPnv/+8fVArNUV3aAyeHIIO5OcmTFI/wRblcsF+CkFpAvVrE2nLlYFe0k8SaAeaN6+qtTyiKddAo=
+	t=1705660257; cv=none; b=U63AIk+j+Y3+kISTAHB/vuaLddMyVW0yKMsUa27goVMsuBbHXxOBkW13Qcu/IGtpMUWNNefnNtvLw4s75ZOvBQMNlMxcj3dqb8+fEgyIuwI5OaP41GICv8ocpAGQDmcSR+i2/KZ7fNFpxL8DTvFzbfO4RcpDdANkWPHm66u7B68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705659736; c=relaxed/simple;
-	bh=cFTfeYTEyi2SeQ/I5MLfRnu5AR8LgWP5KCaBATw3Yds=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=n2Ug+j2U73kNkrBEfWI8cT1OPcxFfQDXgmE/+iJUH3xIQAyGgEp6gSztNLacXsyrTSYEFZm9jSdQiESe/5Rfpla8kFv66FSac0ZjF6ltAguko74hkGG8hvmsfLeQMY8uN5ENdpCqv85wmbUu2KcteDGsOOVRgfBlp7y3JcQissI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TGbJG324MzGppL;
-	Fri, 19 Jan 2024 18:21:50 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (unknown [7.185.36.136])
-	by mail.maildlp.com (Postfix) with ESMTPS id 21791180073;
-	Fri, 19 Jan 2024 18:22:11 +0800 (CST)
-Received: from localhost (10.174.242.157) by dggpemm500008.china.huawei.com
- (7.185.36.136) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 19 Jan
- 2024 18:22:10 +0800
-From: Yunjian Wang <wangyunjian@huawei.com>
-To: <willemdebruijn.kernel@gmail.com>, <jasowang@redhat.com>,
-	<kuba@kernel.org>, <davem@davemloft.net>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<xudingke@huawei.com>, Yunjian Wang <wangyunjian@huawei.com>
-Subject: [PATCH net 0/2] fixes for tun 
-Date: Fri, 19 Jan 2024 18:21:09 +0800
-Message-ID: <1705659669-26120-1-git-send-email-wangyunjian@huawei.com>
-X-Mailer: git-send-email 1.9.5.msysgit.1
+	s=arc-20240116; t=1705660257; c=relaxed/simple;
+	bh=PknrStiSFeg+3mCdlUNXpgCw2CuQmXxyTjIZlMddxGQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KLlVPb8bu0SLESKCGaVR6dh1tZjIzK31I9XCScMJS30UdZVYWpO1tO7mmyPYaM0iknOyXK6WGQUljliPgQLjmk5jxglGla/Qe/VP1p1gPln1+nIQI8xDtrVpwZtlVs+rSU+m+hwKK0aR8mzi3QWfLIuxWRwpFURgP4UsVVQDRtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=Nu2l/pF0; arc=none smtp.client-ip=199.247.17.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
+Received: from localhost (unknown [94.142.239.106])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by prime.voidband.net (Postfix) with ESMTPSA id C5A6F635B043;
+	Fri, 19 Jan 2024 11:22:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+	s=dkim-20170712; t=1705659735;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=LttVVa3g+FcMM7+wKG/iSOZzeZ5h749vPmGrbkCjpb8=;
+	b=Nu2l/pF0q6dusVkP/ar33zJYozomAOYl2Cw1WzBjw//WCvwH6X5QKUohAvvmGD+KKSrAtF
+	2h4p2TuT4VT0glHtcO90hvQf1uhdjoewnmeL7ihlgv8SCtLowGZhomW7CwPma4xzm4+2I/
+	O1KdE0FhZnDSTlI+eo/nx6E+FUCzBtY=
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/display: fix typo
+Date: Fri, 19 Jan 2024 11:22:15 +0100
+Message-ID: <20240119102215.201474-1-oleksandr@natalenko.name>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500008.china.huawei.com (7.185.36.136)
+Content-Transfer-Encoding: 8bit
 
-There are few places on the receive path where packet receives and 
-packet drops were not accounted for. This patchset fixes that issue.
+While studying the code I've bumped into a small typo within the
+kernel-doc for two functions, apparently, due to copy-paste.
 
-Yunjian Wang (2):
-  tun: fix missing dropped counter in tun_xdp_act
-  tun: add missing rx stats accounting in tun_xdp_act
+This commit fixes "sizo" word to be "size".
 
- drivers/net/tun.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+---
+ drivers/gpu/drm/display/drm_dp_dual_mode_helper.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c b/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c
+index bd61e20770a5b..14a2a8473682b 100644
+--- a/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c
++++ b/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c
+@@ -52,7 +52,7 @@
+  * @adapter: I2C adapter for the DDC bus
+  * @offset: register offset
+  * @buffer: buffer for return data
+- * @size: sizo of the buffer
++ * @size: size of the buffer
+  *
+  * Reads @size bytes from the DP dual mode adaptor registers
+  * starting at @offset.
+@@ -116,7 +116,7 @@ EXPORT_SYMBOL(drm_dp_dual_mode_read);
+  * @adapter: I2C adapter for the DDC bus
+  * @offset: register offset
+  * @buffer: buffer for write data
+- * @size: sizo of the buffer
++ * @size: size of the buffer
+  *
+  * Writes @size bytes to the DP dual mode adaptor registers
+  * starting at @offset.
 -- 
-2.41.0
+2.43.0
 
 
