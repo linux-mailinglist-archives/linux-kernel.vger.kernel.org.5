@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-30857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18B4483252B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:44:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7DA483252E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:44:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27A91B232AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:44:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA44B1C234BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA80228E0E;
-	Fri, 19 Jan 2024 07:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5578D28E38;
+	Fri, 19 Jan 2024 07:43:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="deYpvKJJ"
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="mchJL3cP"
 Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2043.outbound.protection.outlook.com [40.107.14.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9496B208A6;
-	Fri, 19 Jan 2024 07:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3DB28694;
+	Fri, 19 Jan 2024 07:43:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.43
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705650229; cv=fail; b=gJosAECWaztu8tMa8G+qLU+DZE6aCuu73kLnOluyriXYhg+4LJrLBbetHKbdjqyL3P5IN/Nf4L81s+CnuHOnhxg/89Gtlck6mj/GpBrow+ryct+yu7rLsMjMDPmE2WZT+NZEQplLAUQNDA3OruGZPlrT4FSaCM8nP4s6y2WOulk=
+	t=1705650231; cv=fail; b=rUzMTLyfCAYvWLzw/ordjmCPHafdGNdjzE1NBB69EcngykxgaTCFnlbhAsTcPG6p2Danl1o5VogbF2UpaFv4mwjU9jIK3apIhg7V6wedw47357zVf3gnYVKrgL4De+aC9bTs/gr3gb4Zbo7b7/ZBKIEXlXr8ckOVn3UbuibM/Ok=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705650229; c=relaxed/simple;
-	bh=gW9/7WjGR6RQNmaB7YS/LcaoTQXfAVt/sC5oJPuQ9ho=;
+	s=arc-20240116; t=1705650231; c=relaxed/simple;
+	bh=hvL4n2Dl3P/KD4PHi9ARJLtGktaktbtYa5lDp3HXvas=;
 	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=fq5w1DUlOMQ8qz8joK5P1aXDECNbJGSEPIAdDQ7X03pKJk+BIFfvPz0BCCwf1i7sMW99yMCxcSAod3tuTXX4AHM83FKbsyMs3JUQAytXdlND0aGHpRZAkBRhT9OcWX1BAJDNxfUXXWi6zahfeHMeOcLcWq1SfyX6QxBFBD9mzbk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=deYpvKJJ; arc=fail smtp.client-ip=40.107.14.43
+	 To:Cc:MIME-Version; b=eLed+GxO/z1pT6bfQwVvnoaBuDfgYBCEU1e2iwKTufKeDx/WR81E9Nyd4pb9Oj+zIA3oaVut5Sa7uad+KA7qDw3BCH0Yi0qtZp0v12pBx5m7Thm63x+jn8EF98bKBvPLpur/xV23w9Wh6T2bdjvOm5eRxD3U9c745lWv94xH7ns=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=mchJL3cP; arc=fail smtp.client-ip=40.107.14.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C6TTDNxi/7B4iWeMicit+ROPP4q2zjxAhvQJtPfFlY02Yg4bM47+wT8ZwbcBZEmUIcTpDZDuEdrf3jL8xOMg4C3ErrGnh0TOBgDJkbwOR2syV7XLC5oBlYCL230BJcPNwb8/2zQxGEBW/Fl62JADkH4roGSLaJhjvinTtm1ri0i0UFPvVxo1/HL9RR/GzR/uiGnuQGo8MQ04un2wO/KhM0BedP39TqSOrWJMugAlKNXajFbY41yMjTiQtR+CH53uLxvfX67EIF/HF35CFXnO+p5lQueuxpyyryEBkMM7Vy3aPwWjHhkx/dl/+y5sQm2okHW2oJTaprK4fRpmmjoNMQ==
+ b=i3hML/iHL8HhDqGXBzJ8rt8pXK4wCLUuBFzNM3N2oRRbNAaLTLlZAsjPzvFh1sELedX185UHh7seWHWJE5881fdhNMnAErfzybaGYsnonS5H0zWvw8aVrVkwCQQFHXpOcrQLIKxgLZWu94rUuXFBf8t98SvayFggxP7vgU/lJKbr1xX8xPlM1PcQYJfcdW63m9bfavR3Ut/lrUh0pcCkIw5TlM6Eex04Ts6Z0v/w7tOqrnb2tT0FxdC7daDgvIz+8p/tuZ8Ft0SNSCKgX7DMBtMkLAdOleZpwazIKn3K06pDbeYw0yFzGZwMmQr39hC4SRuTMvkGnSl8xVD+SP81xQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CJ9rnxkotim70jMmadQsdu5KSnVSPKT148zA+J1UI3k=;
- b=j1UXxxiBBORMsTMJmcE7GoGo/7+o3gesfnwWrcjL092AOquVG+AK4dPSBx/Au3t7edtaM/DXLhiZxgXM4q1YjQ8Pligjkigj7OAXVgog7dnesHwMZcVozsY+KZzDVsxd8LyK5tOYszMN+Se3718orWaXAiKxoMnW0fcA9EtZv4dsNTiSQo9jzthcnQy5KxJXsHvIRBBadfKXWd2/y/kRjeKuXm1IPQuUKB+/wVkiKGrBqXyooLrLN9f8K4NisHruUPZpEXIk25/WYBdmd3NyI72Ji0LJJawdy1VCyiVlB9NrTjUgc074Cm2f/WWBnnq2RAkmHQu0Zl6K2+MXS429EA==
+ bh=WwcSUkDHIxrh1gIuZO6QMX0u+NT+wLScv/Yxfan2SxQ=;
+ b=ShqSUXlMs8X2AAWRIG7ySk/w5sU5jqZZtAK9Xj4eerhvz09o9HuPIIAATbyF/gpMnvrKe8gWF3qymw7DhAtlZUAVCM2HIlGyRvAFzRaEad1Jyi7U7bdYrXR5ZQfjNddmiE0O2I/NKr7Zzep7ZEPslz9L5sntHc7JQfUtfZF2+atV6oe7HadLi5ZFxVzvvbCPwcHvyBCzLM+MEYk3HFO8Mna19uqx+YuZuVx0yhEtmjkfmYZyZC1SiumMwa75xzskyyPPrf5vjEIhbcRN0K8/yeEufrl9os6KIxDtMCpfP36L0H9UxQrOuQSkSiYVYCnawTtPHV3lKznBUfcmcme5Aw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wolfvision.net; dmarc=pass action=none
  header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CJ9rnxkotim70jMmadQsdu5KSnVSPKT148zA+J1UI3k=;
- b=deYpvKJJC+dSHMvN5N23eY9ziVbe5eOcOt+xGyxXhWPY4Ek/9OrWoUpI9eNkoYP3al5h+MyUjI4NJ8WcgIfvO0+znglJyFIUAHDGkjQfK6YhZOB2/k6hCXsqh+rAhpqd19FlC+vMJuDe+tJrrymi8wngBTZ9sJuwj5N5CB12MgM=
+ bh=WwcSUkDHIxrh1gIuZO6QMX0u+NT+wLScv/Yxfan2SxQ=;
+ b=mchJL3cPFdnVE9UNhKOkKJnaDXkICr8MqVWbPczJX8ysmUC7lSbBiSbY9Ldn9StMx6tCKORHLV0ULWkQvAID7WNfFyqNwmbh281HL968k/yEWa/++TXUP1w8aafKkw6MbosaVZOSTTVQ7Q3bYpG0yC62uqH6sjegLIJFc1kAcY4=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wolfvision.net;
 Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
  by AM8PR08MB6578.eurprd08.prod.outlook.com (2603:10a6:20b:36a::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
- 2024 07:43:41 +0000
+ 2024 07:43:42 +0000
 Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
  ([fe80::c8ee:9414:a0c6:42ab]) by VE1PR08MB4974.eurprd08.prod.outlook.com
  ([fe80::c8ee:9414:a0c6:42ab%6]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
- 07:43:41 +0000
+ 07:43:42 +0000
 From: Javier Carrasco <javier.carrasco@wolfvision.net>
-Date: Fri, 19 Jan 2024 08:43:34 +0100
-Subject: [PATCH v7 2/4] Input: touch-overlay - Add touchscreen overlay
- handling
+Date: Fri, 19 Jan 2024 08:43:35 +0100
+Subject: [PATCH v7 3/4] dt-bindings: input: touchscreen: st1232: add
+ touch-overlay example
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240119-feature-ts_virtobj_patch-v7-2-eda70985808f@wolfvision.net>
+Message-Id: <20240119-feature-ts_virtobj_patch-v7-3-eda70985808f@wolfvision.net>
 References: <20240119-feature-ts_virtobj_patch-v7-0-eda70985808f@wolfvision.net>
 In-Reply-To: <20240119-feature-ts_virtobj_patch-v7-0-eda70985808f@wolfvision.net>
 To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
@@ -74,13 +74,14 @@ To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
  Jeff LaBundy <jeff@labundy.com>
 Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
  devicetree@vger.kernel.org, 
- Javier Carrasco <javier.carrasco@wolfvision.net>
+ Javier Carrasco <javier.carrasco@wolfvision.net>, 
+ Rob Herring <robh@kernel.org>
 X-Mailer: b4 0.13-dev-4e032
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705650218; l=10472;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705650218; l=2517;
  i=javier.carrasco@wolfvision.net; s=20230509; h=from:subject:message-id;
- bh=gW9/7WjGR6RQNmaB7YS/LcaoTQXfAVt/sC5oJPuQ9ho=;
- b=tF/B+MumsS/cNYR363FV1Ae4Cf3VKbMolgiZ+9a1UUJ92eQg1gDG0nicCb3gdz+hTzitLMX81
- X+xaGq0RTqjAmj1x0szcUwTzEuvXKKEwax3VdNAknZwo69HvqDamGzs
+ bh=hvL4n2Dl3P/KD4PHi9ARJLtGktaktbtYa5lDp3HXvas=;
+ b=2w0TanuP3rYwVb2fuex4PjUEbrKwJAy4TOXPr7yB2KvAPBgnAeCyPOO/PRf7lgjq6c6wVfXft
+ d6cX4T8dpQJAgrssLsm4U3LS8O+bZJsYKRcUBAkzMI156sPIJmVC6HB
 X-Developer-Key: i=javier.carrasco@wolfvision.net; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-ClientProxiedBy: VI1PR0102CA0088.eurprd01.prod.exchangelabs.com
@@ -94,406 +95,124 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|AM8PR08MB6578:EE_
-X-MS-Office365-Filtering-Correlation-Id: ab7e05a9-2c47-444c-a171-08dc18c25b18
+X-MS-Office365-Filtering-Correlation-Id: 06261025-8dfb-4479-745d-08dc18c25b8d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	8IWkuBPEmtVHj1KRNAreFsVOV+9GyrwVwlETNcvJGVH6+B2ELxLIfzlcI4nDj4GSMTphNRHIzbpMg66hWmhVzmT6r9ZAib7nqNtkWnmhmoikd7qOFFkSxLahRDv+1bt+fJhs5beXn2Xc14Wo6Ll8QNRm08yr0GOZpop+8U+0V0RKHkZl5rNNo15gZ2u2zOonjfcdIw9O6FSKi2rf80VeJowl+eCO7DkcWQm4V5wQud1usPQRcHE4W2qMdQZf0nM1JjZafIjLA6Qrq/mFMT//erWCcmqXaHjJcF8cuTVbQiinKNt1WMTFAl7hs+Q/fNQFAZq+4RwEZaoVrV1pK6NuGqJmKsS7GWCAFtI88iaKnktg/B7ezfVMUiANwJjpFNkr2d7knS6oOUryCz33bRvcqYZNI0IwmbO5YycMBTts+EYyhYHmU4hIsFBTBfZbzrFSHD+A2pCZyBNfw8l2+eT4AqT/hSIKFCxyTtfc4N/+P1j6lL0hPcQe3BolEA9HhR5mL8jOXYSOqnaxzAXNlSqb9foN25skNB55mZ8q1kLz1ZrZSYQdFMiaHAY9sxDYR2f0QbNSNxkmht9sCINQW8W0RWJGe5rytgZxsQmqYBzxqn8XQcEi7q5/d6QbLCq3f68k
+	lEqpyRrSsawqF+hcka1AKLqUSdfDiXkPMVXZlm/hLBtnKhTazgzgUI/e6G1cKXbx8NFcmYujTvwiiU0M1vIli9BegVPA7SzzqqPai+3d4fT0AU560aq7x4017K4Lm2efyxyTFyaOCdyyJhirIWAh44RAxkwV+fygK3hXxsh97Bhsr467QR4DlyPiRCg09qq/HAKbJ7YJVR12oxJYSEfKfOHUwHIePBDaVsAEIu+hjEPNDOvqUSH8IOMp1B1cknNSmEVBXE3vLy2mFc/WXdP4lFpU6NvnRFHHgiJ0hYbLRV6ob2N9o5ZwaUAj4h7XVQUGnO+cF925aK8i6wnsVAKHVIw6YiOhaPd9R9J8S/CMQa3KSUGA0NXkWTH1HKvv4FfnfvH6F/EFSkumRq1YDb8OkxrDrFYVYN21Vprr+TyLG1rQJ8lZ6/eKJ4lHidl8F9Mb7di2P7Jm0ubjK+ZolKD31b/awS7WZ3Ywsyvg9CSrHi2LwlKVooqT7iZWP6bXWa/dburVKQWatEIYViHaKuPeRRi/SUKqE4ytGJRunaCPy6qYCsLKBy1sFBLU7zAAj0kM+bPwvYhG6TfZlMCQsBUREneim9fawVjJshGatVwFE/SvautmsglB7DimFb2r1keq
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(346002)(39850400004)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(2906002)(7416002)(4326008)(5660300002)(41300700001)(86362001)(38100700002)(478600001)(6486002)(36756003)(107886003)(83380400001)(2616005)(6666004)(6506007)(6512007)(26005)(52116002)(316002)(8936002)(8676002)(44832011)(38350700005)(110136005)(66946007)(66556008)(66476007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(346002)(39850400004)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(54906003)(2906002)(7416002)(4326008)(5660300002)(41300700001)(86362001)(38100700002)(478600001)(6486002)(36756003)(2616005)(6666004)(6506007)(6512007)(26005)(52116002)(316002)(8936002)(8676002)(44832011)(38350700005)(110136005)(66946007)(66556008)(66476007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OFI1OThoSE5IN0xEblBXRTZUR01TMnVqRlBlYTJFYXp6ZDE0c2RnR2MySEVx?=
- =?utf-8?B?ZU56UUlRYmJsWnZMUldHUkdOT2w2Sms1NTdBenpPOFZ2dUF0Y2lRc2wzeUdP?=
- =?utf-8?B?VGU3K1BWMzJ2U1phRCt3SzlsTmFiTklvRUlyRlB4aFVHa3c4OFdlY2d3REkx?=
- =?utf-8?B?cTdycGxmQ09Xc1pGdnlKNkViaDZJK1B3QUI4L3JDVHFjYktCVHA0YnZBRGpS?=
- =?utf-8?B?c2tXc2FyL2lSVUtiOERCVzZwOVVDN2FtREUwdTkrQlQzYUFkQnNIcWxFZWlU?=
- =?utf-8?B?VjZYc2lkcEZLeWNnQzJYNmJVOVRCNnpIbnJKVFZiWncxMEJ6bDdXM3ZzYzlM?=
- =?utf-8?B?NFl5MDFBNHl2R0w2b3BTL3NtZHNPMzh2L1VhL24vdUVWQUdEcHRJM0pYYUY5?=
- =?utf-8?B?UjVKUm8wOWFjMjNpQ1pOUldhcHUzQVFuK2cvU2Q1WkZ5YXpyQ2x4YnZweW9I?=
- =?utf-8?B?ZXRTalBQcXYwaURmc01nV2RGRnl2ZnB3Tk1yQVNuM0tYYkg2Rkt3MXFlRWt4?=
- =?utf-8?B?Y2xXODhjQ3lvQjNoZUNMUTVSOUh5T1RsTGl0NVcyRVJGT2ZHbG9CT2wzekNH?=
- =?utf-8?B?enFQK3VsSkFhUUVyVXpqUjI4UHBkcWNQRXdodytUUWtSU0FMOFMralNHM1ZW?=
- =?utf-8?B?VFViMmRBcGJNaXJ3MS9SSzVXanJqR2QwUTNGSi84aGJkeWhWTk9iL0xzQSsv?=
- =?utf-8?B?YVpPZlNNeTRsMENrSStaVmxNU0xEdXRUTThIWUIxaTF2NFp3MWNQZmJ3ejM0?=
- =?utf-8?B?UkR1YlJXMFh5aHFOa1VudTlVUm4vY0N2TEdRS1R3QkF3YlkxQjBCN3NYQkhB?=
- =?utf-8?B?VDgxNWZiUDlMaUZsSG9JaEx2SWlLallDbG5aOVZlNlNQeUdoc1JzVnprV2x1?=
- =?utf-8?B?UG1jeDhMWXdIQThWT0xFbk9UejEwdHJxSklTb0o2Y2JiNzJnZWsreVh6ZDBX?=
- =?utf-8?B?cTRJYmNuSlJic1Z2aTIxODhaKzZOeXB5SzJJSlJqWGl2T3VsQnViNTVGM0Vp?=
- =?utf-8?B?enhyYU9rTU1YSEliTXBBWUg5M2oyYkRqMlpKTGpiUG8wdEtTbDMzUldZb3p3?=
- =?utf-8?B?Y0lOTGt5T1ZnU3ZLcjE1bWJFNTNtNzBjVS9qV245RjVFbW1JZ3JPTTRiaGxI?=
- =?utf-8?B?MVdEb0R1SmM0bFZjNHRzRmxJWnExWW1mdG42dGpJZmZ5Und2UzN2VlBUakUw?=
- =?utf-8?B?M1Yxd3JYQW5RSFdCeTR3TTgvdDNyTDFyVExOU0JhMSs2T1JQbHp6d0RXaWQy?=
- =?utf-8?B?RkVaUVRSV3RXbXd5WjJpenBjaXpieVJKejdyT0hMTEhzTUFCUUE4NXFadFdy?=
- =?utf-8?B?S0JzZDBMdE9WeGU2VXNhdnFZeS81L2g5R2MzVy9qV2RNRzhXU080TVFoZW9F?=
- =?utf-8?B?ajdoT1FBZ3BpamRKUTUrRmdoSFpHZHFRK0t2by9uZ043K1JhQlFWMFFMQlFX?=
- =?utf-8?B?R2x4MHZPeU44YytBQnI3cVV0c3dKNzdqY0dKeHBsMTk5Z3IzcWZpVTVWZktH?=
- =?utf-8?B?Yys2a3MzWFBiWFVadU55MXVuR2h0VXZQbzFIRkNMK2k2VkxzNjRMMk5OUyto?=
- =?utf-8?B?Q0U4TG4vN1FmWWJMNDBxVHQ3TzFVK2lWT0tpbk1OcFN2eGRQYXJaTHVTcjV3?=
- =?utf-8?B?cXVNVkpqZGxiYlJtOE56b3hXellLYXVvN1Qva0hteFRPR2o1ODlnMFZZNlli?=
- =?utf-8?B?SjBZUEJJSXVTNHhqYUh5enI2ZGkvS0RPbGRwMnNvaWpnNUQyYkY3RXF6d0pv?=
- =?utf-8?B?UHVuVkY2TVNsVEhHclpVVk1qWVI4eDB2OWZPM3JHc3FSanRDL09WUzF4Tnc3?=
- =?utf-8?B?TGQ0YmhKNGJyKzg3L3dmVzR6ZHV5TDQ1UHJjYSs3M1ZPSU5lWEpoTXM1KzRO?=
- =?utf-8?B?WTJDYm1JT2ovbWVIdWI3dWVQQVZXNDFPdERhM0ZBMHkwWHdGNnVMYVdvZnJM?=
- =?utf-8?B?c2E4QUJreURtNDBnNnVlZERFYitFRmRpOFdUM1VmMEJlZUh4R2YyNFlZeDM5?=
- =?utf-8?B?Q2hPbncvWnNKaTNmMTdMQ2FhSC81SWRUS3lmTm85S09KWTdwYjJIS3pzeXg0?=
- =?utf-8?B?dFdOZHNDbngwbTdpUTR2MkFEKzh0eVUzYmVvVTFQRTdHZWdqcnF4bnhMWXRV?=
- =?utf-8?B?M05lUnQwUWlRUjhkSVFuQU96emJ6b0hWTTBaRVdHYWd5bTdEWlAvenZWQTl5?=
- =?utf-8?Q?5iQCvJ1IdJi4Lh97Wcox3cQ=3D?=
+	=?utf-8?B?a1Jya2VJVmN4bGY3QkZDc2dQZ25GYnZKNWpYc1VJNWREY2U0aUxsMUdIektG?=
+ =?utf-8?B?YlBFZlEySEkxTzltV3gyK1NMV1NVUUZTQ1pWT2dkYlZ1dHdyT29ZdTlTenM5?=
+ =?utf-8?B?QUxwZG9DejAyQmhuMzlCdEVYYWVsbE9Lbk53UHQ1VWl0NGpBeGZVSy9EaERN?=
+ =?utf-8?B?Q3p4Vkw4SVZCa1ZGZjh3OHpWNTdoS3VYMHY1cVBEUm1qeE50aUY5MkVBT3ZS?=
+ =?utf-8?B?YW9EclhDRVdiRkNBNzYrSkRHVjE5TWVKRlRNUDcrVTczcmJuV1JTaWw0WFZ0?=
+ =?utf-8?B?U3A4a0JrSG5qemtEWnFyUC93M3dTdW52ZFhLVldqZ09NdW5pMURId1VzZ042?=
+ =?utf-8?B?L3AyRVdtWjhpRTFJOS8yRTkwY05sbGFuTVdiWFMrbkVYV21nd25ZU3cvLzhn?=
+ =?utf-8?B?dDRuUUU1dDE5RzJ3OTI0T1NiTU9DR2dQcTdUTjVtU0NZb0htclRlZVdJWTM5?=
+ =?utf-8?B?WTRqaGdFNkxJN2RldHhJQXJTTlZjdFNtKzBtdmlIOVRvOHlrUFRGMVRETFJn?=
+ =?utf-8?B?MGdrSGVYbERGS0RseG1VdVhJd0IwRGtESm04Umd1Wkw1cFliVkk4S2wvMGNO?=
+ =?utf-8?B?YmxObXoyV3NidDcyZFI4MFVMSXFMTWY2NGFvLzRjTFFmWHNiSFFtUks5emxQ?=
+ =?utf-8?B?SGJoenJTc3hzeHJRei9LUnBheWl6ekxMV0ZIclh5UG1BRXVLV3dGSlpTZ0lO?=
+ =?utf-8?B?VU9xdnJMRE9qSlJKYUIwemhDa0lWNU5rcEt1cGJsc2RzOHlUbDNiYU5tMkNk?=
+ =?utf-8?B?N3pnTmpORWFhTW41VmdrWXhpa0pZSHNJY3o4WlAyWExKWUJraUxtMEFaYUVO?=
+ =?utf-8?B?dEF0U0t1NytkUkpiL3lXdk5tUmljdXRGWmhOK1kwUGFoMk1Fdk81NzJCYmow?=
+ =?utf-8?B?aTVnSTNXRjdYTVpUekppWVkxRnVUUWU3SldBWjdFaFRjRmNMeUlxQTZTV1RL?=
+ =?utf-8?B?U095WDlsMTdjZTI3U2RqcSt6VFB2eVE5R0NwZkxubVNyam92Y2RiZDZQem1n?=
+ =?utf-8?B?cUZGMFA1akd5TnA2UDl6K1lPZHBtYmtaU256U0JYOXZKSTdLRGwzaHpSUThk?=
+ =?utf-8?B?TXMwS3AyUVlkaVBuUlVWcEpLOWNqWWJMRFZyYmxFdVhja2NkTk1qY3lzRTFE?=
+ =?utf-8?B?aHNLb2xyV3lRSS9kUS9BNExrM3hxT0U2NkE3Qjk0SUZRbURKbGoyMFlyaVl4?=
+ =?utf-8?B?M2wrdktyNWZOM2krV1FDNU9xeUxpWmN2QlBwT3lSNnUxSXE5QTluTWdQaTZv?=
+ =?utf-8?B?bU1qMURFdVN5WnFnQ3h4cFliOEd6ZjVNa1dYN2Z1dHZSeDFrS2hpdFl5am1q?=
+ =?utf-8?B?dXRuZXozOGJkVG10SWRDakZRRGFLQi9qMWt3ZlZIT3BVUUJlc3dXcHg3SU9l?=
+ =?utf-8?B?NXdPK0d6VVFabzNaMFV0alQ2UVJ5ZTErWkVvZ0dQclN0bkRyVFU4S0tUajB2?=
+ =?utf-8?B?VHgwL3BBY1FsYVhsSUNicEV1aUhOemoxZXN4UG1zUUxXZ0lGSnh6eSt2dWlT?=
+ =?utf-8?B?OVJZdGlCRUdxLzA2NjViZVo3ajNaRHlCT2xYaExhRml4Nktaa1R1MXpWejNx?=
+ =?utf-8?B?MnFQalZxZyt1cUFlQ2xlRFN0bnYyWnptTlNrQnErOGxydUh4cGdQWEdXNE5C?=
+ =?utf-8?B?cHlsZVZJTXVlNFJUWjdTdzMwcG5yYmNpS2pab1ovNWVFTWREZThiMDR1bGph?=
+ =?utf-8?B?RExrcTZRZDY0cThJREpzc2w3WkExT2psZmh0c3h6UnkxS3IvU2hsNXNiVm9k?=
+ =?utf-8?B?Z1NTcE90Y1hZc0xWRE5ycXhTd1VtS2k4MjI1MnorOXcrczczNlVWVEVVSkNM?=
+ =?utf-8?B?UkZjeUlNQzViTithcVU4WEpObStQSjlsS29YUGNLbFgyRWxoL3hPVFZ4Z0Ez?=
+ =?utf-8?B?Q1dEblFRYmZLWDhOT21lUzRKMjhSeVNMWnF1aHQxWlIyZHFyMDJwUi9sUGgr?=
+ =?utf-8?B?TXN6ZGdrU2ltZ0R5bGo2TWNpZ0JyLzM0RURqMnFXN2x3QVZVMSsraTVxaGJ2?=
+ =?utf-8?B?SEZBKzJJVHVlck9ZS0VhMDhqVVJMMnYyMzJpWDBhUEJlZ1hnTmtLQXoxQndi?=
+ =?utf-8?B?alBva1MrUXpLRXVkZm5UWHpJWUhYMFpPNys5Z3BhMktyQkdrZ1RTc1FaVFpV?=
+ =?utf-8?B?VmkzYkoyRWNubnpUTGgyV0JJMW0rcmY5dlljMkVleUpmS3M1UEZGQUJXZjNa?=
+ =?utf-8?Q?8TEgwxIuHCnN5cOmfAywOxc=3D?=
 X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab7e05a9-2c47-444c-a171-08dc18c25b18
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06261025-8dfb-4479-745d-08dc18c25b8d
 X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 07:43:41.1779
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 07:43:41.9516
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a/uzbA6eWLclpL1Fw7+yy0O//C7v1Tgu4NNAnrWLN4d7kMYLq9YU0G4fxiD3odq3kEVvQaQZK/exT9QJyM5UvqYtRAmK74dhmQLuBKIjnDM=
+X-MS-Exchange-CrossTenant-UserPrincipalName: ODHvnXwe3NbhSBlIs6uQ7SKj5PhSjGut2v0kiB/80dwjGG5A+rbt5Q2W2FYWqg13OAgT+HfRqNOKOdddk5NnyqXtuZLdCD+OtnuYaiIQs+A=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR08MB6578
 
-Some touch devices provide mechanical overlays with different objects
-like buttons or clipped touchscreen surfaces.
+The touch-overaly feature adds support for segments (touch areas) on the
+touchscreen surface that represent overlays with clipped touchscreen
+areas and printed buttons.
 
-In order to support these objects, add a series of helper functions
-to the input subsystem to transform them into overlay objects via
-device tree nodes.
+Add nodes for a clipped touchscreen and overlay buttons to the existing
+example.
 
-These overlay objects consume the raw touch events and report the
-expected input events depending on the object properties.
-
-Note that the current implementation allows for multiple definitions
-of touchscreen areas (regions that report touch events), but only the
-first one will be used for the touchscreen device that the consumers
-typically provide.
-Should the need for multiple touchscreen areas arise, additional
-touchscreen devices would be required at the consumer side.
-There is no limitation in the number of touch areas defined as buttons.
-
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
 ---
- MAINTAINERS                         |   7 +
- drivers/input/Makefile              |   2 +-
- drivers/input/touch-overlay.c       | 250 ++++++++++++++++++++++++++++++++++++
- include/linux/input/touch-overlay.h |  22 ++++
- 4 files changed, 280 insertions(+), 1 deletion(-)
+ .../input/touchscreen/sitronix,st1232.yaml         | 29 ++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a7c4cf8201e0..668687bf94df 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21961,6 +21961,13 @@ L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
- F:	drivers/platform/x86/toshiba-wmi.c
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/sitronix,st1232.yaml b/Documentation/devicetree/bindings/input/touchscreen/sitronix,st1232.yaml
+index 1d8ca19fd37a..e7ee7a0d74c4 100644
+--- a/Documentation/devicetree/bindings/input/touchscreen/sitronix,st1232.yaml
++++ b/Documentation/devicetree/bindings/input/touchscreen/sitronix,st1232.yaml
+@@ -37,6 +37,7 @@ unevaluatedProperties: false
  
-+TOUCH OVERLAY
-+M:	Javier Carrasco <javier.carrasco@wolfvision.net>
-+L:	linux-input@vger.kernel.org
-+S:	Maintained
-+F:	drivers/input/touch-overlay.c
-+F:	include/linux/input/touch-overlay.h
+ examples:
+   - |
++    #include <dt-bindings/input/linux-event-codes.h>
+     i2c {
+             #address-cells = <1>;
+             #size-cells = <0>;
+@@ -46,5 +47,33 @@ examples:
+                     reg = <0x55>;
+                     interrupts = <2 0>;
+                     gpios = <&gpio1 166 0>;
 +
- TPM DEVICE DRIVER
- M:	Peter Huewe <peterhuewe@gmx.de>
- M:	Jarkko Sakkinen <jarkko@kernel.org>
-diff --git a/drivers/input/Makefile b/drivers/input/Makefile
-index c78753274921..393e9f4d00dc 100644
---- a/drivers/input/Makefile
-+++ b/drivers/input/Makefile
-@@ -7,7 +7,7 @@
- 
- obj-$(CONFIG_INPUT)		+= input-core.o
- input-core-y := input.o input-compat.o input-mt.o input-poller.o ff-core.o
--input-core-y += touchscreen.o
-+input-core-y += touchscreen.o touch-overlay.o
- 
- obj-$(CONFIG_INPUT_FF_MEMLESS)	+= ff-memless.o
- obj-$(CONFIG_INPUT_SPARSEKMAP)	+= sparse-keymap.o
-diff --git a/drivers/input/touch-overlay.c b/drivers/input/touch-overlay.c
-new file mode 100644
-index 000000000000..42b6ad753a00
---- /dev/null
-+++ b/drivers/input/touch-overlay.c
-@@ -0,0 +1,250 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *  Helper functions for overlay objects on touchscreens
-+ *
-+ *  Copyright (c) 2023 Javier Carrasco <javier.carrasco@wolfvision.net>
-+ */
++                    touch-overlay {
++                            segment-0 {
++                                    label = "Touchscreen";
++                                    x-origin = <0>;
++                                    x-size = <240>;
++                                    y-origin = <40>;
++                                    y-size = <280>;
++                            };
 +
-+#include <linux/input.h>
-+#include <linux/input/mt.h>
-+#include <linux/input/touch-overlay.h>
-+#include <linux/list.h>
-+#include <linux/module.h>
-+#include <linux/property.h>
++                            segment-1a {
++                                    label = "Camera light";
++                                    linux,code = <KEY_LIGHTS_TOGGLE>;
++                                    x-origin = <40>;
++                                    x-size = <40>;
++                                    y-origin = <0>;
++                                    y-size = <40>;
++                            };
 +
-+struct touch_overlay_segment {
-+	struct list_head list;
-+	u32 x_origin;
-+	u32 y_origin;
-+	u32 x_size;
-+	u32 y_size;
-+	u32 key;
-+	bool pressed;
-+	int slot;
-+};
-+
-+static int touch_overlay_get_segment(struct fwnode_handle *segment_node,
-+				     struct touch_overlay_segment *segment,
-+				     struct input_dev *input)
-+{
-+	int error;
-+
-+	error = fwnode_property_read_u32(segment_node, "x-origin",
-+					 &segment->x_origin);
-+	if (error)
-+		return error;
-+
-+	error = fwnode_property_read_u32(segment_node, "y-origin",
-+					 &segment->y_origin);
-+	if (error)
-+		return error;
-+
-+	error = fwnode_property_read_u32(segment_node, "x-size",
-+					 &segment->x_size);
-+	if (error)
-+		return error;
-+
-+	error = fwnode_property_read_u32(segment_node, "y-size",
-+					 &segment->y_size);
-+	if (error)
-+		return error;
-+
-+	error = fwnode_property_read_u32(segment_node, "linux,code",
-+					 &segment->key);
-+	if (!error)
-+		input_set_capability(input, EV_KEY, segment->key);
-+	else if (error != -EINVAL)
-+		return error;
-+
-+	return 0;
-+}
-+
-+/**
-+ * touch_overlay_map - map overlay objects from the device tree and set
-+ * key capabilities if buttons are defined.
-+ * @list: pointer to the list that will hold the segments
-+ * @input: pointer to the already allocated input_dev
-+ *
-+ * Returns 0 on success and error number otherwise.
-+ *
-+ * If buttons are defined, key capabilities are set accordingly.
-+ */
-+int touch_overlay_map(struct list_head *list, struct input_dev *input)
-+{
-+	struct fwnode_handle *overlay, *fw_segment;
-+	struct device *dev = input->dev.parent;
-+	struct touch_overlay_segment *segment;
-+	int error;
-+
-+	overlay = device_get_named_child_node(dev, "touch-overlay");
-+	if (!overlay)
-+		return 0;
-+
-+	fwnode_for_each_child_node(overlay, fw_segment) {
-+		segment = devm_kzalloc(dev, sizeof(*segment), GFP_KERNEL);
-+		if (!segment) {
-+			error = -ENOMEM;
-+			fwnode_handle_put(overlay);
-+			break;
-+		}
-+		error = touch_overlay_get_segment(fw_segment, segment, input);
-+		if (error) {
-+			fwnode_handle_put(overlay);
-+			break;
-+		}
-+		list_add_tail(&segment->list, list);
-+	}
-+
-+	return error;
-+}
-+EXPORT_SYMBOL(touch_overlay_map);
-+
-+/**
-+ * touch_overlay_get_touchscreen_abs - get abs size from the touchscreen area.
-+ * @list: pointer to the list that holds the segments
-+ * @x: horizontal abs
-+ * @y: vertical abs
-+ */
-+void touch_overlay_get_touchscreen_abs(struct list_head *list, u16 *x, u16 *y)
-+{
-+	struct touch_overlay_segment *segment;
-+	struct list_head *ptr;
-+
-+	list_for_each(ptr, list) {
-+		segment = list_entry(ptr, struct touch_overlay_segment, list);
-+		if (!segment->key) {
-+			*x = segment->x_size - 1;
-+			*y = segment->y_size - 1;
-+			break;
-+		}
-+	}
-+}
-+EXPORT_SYMBOL(touch_overlay_get_touchscreen_abs);
-+
-+static bool touch_overlay_segment_event(struct touch_overlay_segment *seg,
-+					u32 x, u32 y)
-+{
-+	if (!seg)
-+		return false;
-+
-+	if (x >= seg->x_origin && x < (seg->x_origin + seg->x_size) &&
-+	    y >= seg->y_origin && y < (seg->y_origin + seg->y_size))
-+		return true;
-+
-+	return false;
-+}
-+
-+/**
-+ * touch_overlay_mapped_touchscreen - check if a touchscreen area is mapped
-+ * @list: pointer to the list that holds the segments
-+ *
-+ * Returns true if a touchscreen area is mapped or false otherwise.
-+ */
-+bool touch_overlay_mapped_touchscreen(struct list_head *list)
-+{
-+	struct touch_overlay_segment *segment;
-+	struct list_head *ptr;
-+
-+	list_for_each(ptr, list) {
-+		segment = list_entry(ptr, struct touch_overlay_segment, list);
-+		if (!segment->key)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+EXPORT_SYMBOL(touch_overlay_mapped_touchscreen);
-+
-+static bool touch_overlay_event_on_ts(struct list_head *list, u32 *x, u32 *y)
-+{
-+	struct touch_overlay_segment *segment;
-+	struct list_head *ptr;
-+	bool valid_touch = true;
-+
-+	if (!x || !y)
-+		return false;
-+
-+	list_for_each(ptr, list) {
-+		segment = list_entry(ptr, struct touch_overlay_segment, list);
-+		if (segment->key)
-+			continue;
-+
-+		if (touch_overlay_segment_event(segment, *x, *y)) {
-+			*x -= segment->x_origin;
-+			*y -= segment->y_origin;
-+			return true;
-+		}
-+		/* ignore touch events outside the defined area */
-+		valid_touch = false;
-+	}
-+
-+	return valid_touch;
-+}
-+
-+static bool touch_overlay_button_event(struct input_dev *input,
-+				       struct touch_overlay_segment *segment,
-+				       const u32 *x, const u32 *y, u32 slot)
-+{
-+	bool contact = x && y;
-+
-+	if (!contact && segment->pressed && segment->slot == slot) {
-+		segment->pressed = false;
-+		input_report_key(input, segment->key, false);
-+		input_sync(input);
-+		return true;
-+	} else if (contact && touch_overlay_segment_event(segment, *x, *y)) {
-+		segment->pressed = true;
-+		segment->slot = slot;
-+		input_report_key(input, segment->key, true);
-+		input_sync(input);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+/**
-+ * touch_overlay_process_event - process input events according to the overlay
-+ * mapping. This function acts as a filter to release the calling driver from
-+ * the events that are either related to overlay buttons or out of the overlay
-+ * touchscreen area, if defined.
-+ * @list: pointer to the list that holds the segments
-+ * @input: pointer to the input device associated to the event
-+ * @x: pointer to the x coordinate (NULL if not available - no contact)
-+ * @y: pointer to the y coordinate (NULL if not available - no contact)
-+ * @slot: slot associated to the event
-+ *
-+ * Returns true if the event was processed (reported for valid key events
-+ * and dropped for events outside the overlay touchscreen area) or false
-+ * if the event must be processed by the caller. In that case this function
-+ * shifts the (x,y) coordinates to the overlay touchscreen axis if required.
-+ */
-+bool touch_overlay_process_event(struct list_head *list,
-+				 struct input_dev *input,
-+				 u32 *x, u32 *y, u32 slot)
-+{
-+	struct touch_overlay_segment *segment;
-+	struct list_head *ptr;
-+
-+	/*
-+	 * buttons must be prioritized over overlay touchscreens to account for
-+	 * overlappings e.g. a button inside the touchscreen area.
-+	 */
-+	list_for_each(ptr, list) {
-+		segment = list_entry(ptr, struct touch_overlay_segment, list);
-+		if (segment->key &&
-+		    touch_overlay_button_event(input, segment, x, y, slot)) {
-+			return true;
-+		}
-+	}
-+
-+	/*
-+	 * valid touch events on the overlay touchscreen are left for the client
-+	 * to be processed/reported according to its (possibly) unique features.
-+	 */
-+	return !touch_overlay_event_on_ts(list, x, y);
-+}
-+EXPORT_SYMBOL(touch_overlay_process_event);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Helper functions for overlay objects on touch devices");
-diff --git a/include/linux/input/touch-overlay.h b/include/linux/input/touch-overlay.h
-new file mode 100644
-index 000000000000..cef05c46000d
---- /dev/null
-+++ b/include/linux/input/touch-overlay.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2023 Javier Carrasco <javier.carrasco@wolfvision.net>
-+ */
-+
-+#ifndef _TOUCH_OVERLAY
-+#define _TOUCH_OVERLAY
-+
-+#include <linux/types.h>
-+
-+struct input_dev;
-+
-+int touch_overlay_map(struct list_head *list, struct input_dev *input);
-+
-+void touch_overlay_get_touchscreen_abs(struct list_head *list, u16 *x, u16 *y);
-+
-+bool touch_overlay_mapped_touchscreen(struct list_head *list);
-+
-+bool touch_overlay_process_event(struct list_head *list, struct input_dev *input,
-+				 u32 *x, u32 *y, u32 slot);
-+
-+#endif
++                            segment-2a {
++                                    label = "Power";
++                                    linux,code = <KEY_POWER>;
++                                    x-origin = <160>;
++                                    x-size = <40>;
++                                    y-origin = <0>;
++                                    y-size = <40>;
++                            };
++                    };
+             };
+     };
 
 -- 
 2.39.2
