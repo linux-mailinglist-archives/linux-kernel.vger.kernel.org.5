@@ -1,196 +1,293 @@
-Return-Path: <linux-kernel+bounces-30896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 071B08325A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:22:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8CE48325AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:22:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B8E21C20F13
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:22:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32BC91F2132E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70189224F6;
-	Fri, 19 Jan 2024 08:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8EC2209E;
+	Fri, 19 Jan 2024 08:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S5LXh6Ee"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UmzXh3tK"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8001B1DA44;
-	Fri, 19 Jan 2024 08:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.55.52.93
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705652541; cv=fail; b=pd4r8IYPlhD2gBh4a3+WcUC8OojzWqQX/Q/CEBJsxbroGhsqUHARLw6JXC9AfPBkb1sOgKfGn8ROY4pJUAaoCQoQDqtqO34SRMy3szVNbWojTKZM0BEafzTRI1x/hvoWcnBLjftI/0XRQM/5j0p+qdizupuOq4eD94Sax0eYv2k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705652541; c=relaxed/simple;
-	bh=4lakEl5GO+NnJGyWy8FV42csaMduo+ufaQZK81ygr8E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XI/YqdzTwT4LrNhzLgeDFoVBOnCyVcYENhnL42zaJNp5zkVEyy0IJXTLfPT2H4lsNwsV+j2ZrrLf+zc5USBoax0hwsuRgsl01IvK0QdNa64fghu6LGDFh71LnqHJrLVkKQCkSHrCgoGZWPKvdOjDawdmknP/YF/SwOo/rQKjrkQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S5LXh6Ee; arc=fail smtp.client-ip=192.55.52.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705652539; x=1737188539;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=4lakEl5GO+NnJGyWy8FV42csaMduo+ufaQZK81ygr8E=;
-  b=S5LXh6EecwHlImfrdZk/YG9g57Pqbyrxx8DicpDqAlRLC3OpoJxj3rpk
-   8t9AM9oTYum/+R43s0f93SA2Co8/qsyfIq7XXVPpCrqjVK6QiiQOIw4ho
-   Er11d/C3aqyOKJn+IjWRM+yjwQ3mlmJquYUE8eVw9+CF8k+fB9H0OILQH
-   goazRXRqsKRT25zaEmZjnFVzJZi06X9bOCG6bnmYZDn6WPiAe1WLIa9dX
-   Cc/FDw/ky0sHqpVFR+ERuWycl8f5Izy59AjgnEHEZ/pa9UIRNsEUgBWa8
-   WMJCPdVYugyiTpnPKECp836Ln9h+dEYfhSTfz6gK1R95MFMwCE8vL4Usw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="397860708"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="397860708"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 00:22:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="1116192208"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="1116192208"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Jan 2024 00:22:18 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 19 Jan 2024 00:22:17 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 19 Jan 2024 00:22:17 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 19 Jan 2024 00:22:17 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RvnsauoDOyxqyUxr6r94UTd2DfZJwZPy+Ayld4/DwJUz29Gc1Akiu7YMNLnbqy6PT3Pxy50kXMeNXKIHjagmspQ8o68aX0TGhKgi2d9TlKgPspYKJvOvXGrEjw0WJRfd66JZPn+7N764B0RQp+mgLLtK5gQfQtjWdlQLUj2FuAgJFKyDeWL3ZDzM31e0k6bH+tPlj0re4HVatKldFyD5fU6SE+BsOihDXbVzyA1z53t4q/1bvXWOqC1PZnuHfO3I/ccyt11zLIT8vh0WlMFztbOL808K/j30+iYRyQnk+iuOukDZpV1aaKoC2bVpWdZGr2GxTiAm+uQ0oGGYnvsBvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4lakEl5GO+NnJGyWy8FV42csaMduo+ufaQZK81ygr8E=;
- b=Hl1LzBrg5C5lMho0i3CRAHhuyxBcZMi6R4PqlN36wGxDLuDOhC3DJAW7ANvPl7BUURZy+HiTJ5fKuAtf51a8ySMkDYwws1XXt9P2o7oAw2I//XOp4e3hl4OGC6T5HyQ2lmFx4ePRm4v1IID/IwpfFYCiOoxO0F74blzTG1eb59pHdi0M3cTtRiPt5frUSntsaKAy5amrjadNVnK+4bbgQXuUKGKZx9a/jDa+NxnSXZq5ecn3do94n5CIWYuEReBe4Ahow7A6O9mbv5Uvu6GmWR/fbKQkDXVtraqDBEBPJAcwkWiFGMAR4i/11z1RBF9pM1bycGYQFzbCflU8f3XoeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by PH0PR11MB5032.namprd11.prod.outlook.com (2603:10b6:510:3a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
- 2024 08:22:14 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::a8e9:c80f:9484:f7cb]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::a8e9:c80f:9484:f7cb%3]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
- 08:22:14 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: Ankit Agrawal <ankita@nvidia.com>, Alex Williamson
-	<alex.williamson@redhat.com>
-CC: Jason Gunthorpe <jgg@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "eric.auger@redhat.com"
-	<eric.auger@redhat.com>, "brett.creeley@amd.com" <brett.creeley@amd.com>,
-	"horms@kernel.org" <horms@kernel.org>, Aniket Agashe <aniketa@nvidia.com>,
-	Neo Jia <cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun
- Gupta (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>,
-	"Currid, Andy" <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>,
-	John Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, "Anuj
- Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v16 3/3] vfio/nvgrace-gpu: Add vfio pci variant module for
- grace hopper
-Thread-Topic: [PATCH v16 3/3] vfio/nvgrace-gpu: Add vfio pci variant module
- for grace hopper
-Thread-Index: AQHaR/gI7yTY7IhFHUuQNfBGQwI94bDetk6AgAHKP4CAABFEgIAAPzEw
-Date: Fri, 19 Jan 2024 08:22:14 +0000
-Message-ID: <BN9PR11MB5276124930AE10F1AC563FF38C702@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20240115211516.635852-1-ankita@nvidia.com>
-	<20240115211516.635852-4-ankita@nvidia.com>
- <20240117171311.40583fa7.alex.williamson@redhat.com>
- <SA1PR12MB719904680D5961E6F1806F12B0702@SA1PR12MB7199.namprd12.prod.outlook.com>
- <SA1PR12MB71994FAB7CCB7A39AB4190D4B0702@SA1PR12MB7199.namprd12.prod.outlook.com>
-In-Reply-To: <SA1PR12MB71994FAB7CCB7A39AB4190D4B0702@SA1PR12MB7199.namprd12.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH0PR11MB5032:EE_
-x-ms-office365-filtering-correlation-id: 820765cc-6eaf-48bd-3486-08dc18c7bdcc
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Q1qq6JGAnRRrJuFGMgfhg474yUp4PIN1Nsq4T4DoQBLkmeQ+dOPIiNT6GXlg6XzEnbFMTBQVYIJOCMibval5vdNfY2PiMEyGOgYpK1po7dHJDyrfoEoT4EJHDzci0EigwTUyoYH8EZKIbwnfecfUvQRAgfqxJ18DOzcbltfueyByGT7eGVAe0IqcoPeDN0FUyNISPAg5eXfIiIB8OcvscfA6/SPIVvu6M6skVwu1RLQGKkfjJiC4OQEypbYuhd6LaJOO0XEDaQRArpyFWbBzrVGLAnxeXrwNmmeAH8HeK0cDhRvZ/xSvGongdzK4M3SMBYUXQCzoxw9YLM7eZvEj6xm87765LhfdYVHRQaVFG1WMGWoIx15pSCs46NdZGX9aPxsOf5u8iUbsj8KQPQqtirxj5Pa+eLBRUJJiYO8QuRdIl2K7CwtkkwcNScoR1WRXlBf73xuT2esk8nm5wObhlje3zPm3TlKTxEEg89DEBJsH0DxzhyDgAAS8wUA2XQ4AhMwRgWdmXoJfDhwZFy4ZySqm3hdLE+DPaQ918pZ2bHLEu7QZhJWzycbc5y/iJw6t1qX4HO7WT5WkMCGd/H83mTKahQ0nRH8Utt69QA4usdMxhNoTV+y8N7u06zdckG4S
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(376002)(396003)(366004)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(55016003)(9686003)(6506007)(26005)(7696005)(71200400001)(86362001)(38070700009)(38100700002)(33656002)(82960400001)(2906002)(41300700001)(8676002)(52536014)(122000001)(66476007)(5660300002)(7416002)(4326008)(66556008)(4744005)(76116006)(316002)(8936002)(64756008)(478600001)(110136005)(66946007)(54906003)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DAfbciVettAkiJTftV1s3ifLGMLCVLj5j+t9/cRi7qglyUUzT5Rl6U56rjym?=
- =?us-ascii?Q?7If5KAoAl5jyDElXVk9wbENPegigZEbIegFVTugqmbHTzyyQvzhrE1oAj944?=
- =?us-ascii?Q?OVe0OFRPWRIlbq4gF15wicz3IITFwR/6bgQm+KYWRAd0piimeMDiu0qsvtYZ?=
- =?us-ascii?Q?2z1URTek5lNPCSGpMGCG68HTnh0i2qmlphWBsKvOhddvtN+3DmGelf6KaXJr?=
- =?us-ascii?Q?PNsaBL3nE1z9g2Y5biLx7kZfB363BqRGiMekQhm5HJYEpHJvjdEo7SWhFGpX?=
- =?us-ascii?Q?LFkTWbSvSMSqcl6IFrfKIRjtpow+ore20UXDDgbSZBupynz0Sv2ev6yt3qDK?=
- =?us-ascii?Q?B7kgfS0fs2Ceep1mwbGccBSw+i3r2FQdclEs4+/yrZjxMZdKqJb68G+3mXH2?=
- =?us-ascii?Q?ltoSAlMXvxLNaE9gCWQsR4/XlVLmVneoRqUAIcacmreBmxbpmphq/cviUdAb?=
- =?us-ascii?Q?49RMOcThyGP/b+1rYhz9Qd6PL8cUmUzf20+4sVZ5ooyDnVpeVc1H3k2i3qyg?=
- =?us-ascii?Q?Sk0XuKDyrvhuBP2vEtvtWOLPFwaKhTQ/caCxa37xyEy/qw/2oAJpSFtMdFM0?=
- =?us-ascii?Q?vQIPi870508h9XRxeuiLiDSSGkcxtk5ZUUCAxoewVCdnPyvnhzOLBbfh9dqD?=
- =?us-ascii?Q?0nNgvcpD2DOMttctvKDxdGltJCiWigPeVj7AFcyuU8zAUqNr+XAXEKc2Mcu2?=
- =?us-ascii?Q?ALmcBemucsU+LRvWzZx1DoRrAKY5/dupmp38mmUVy67jbT0sHxacbSel6uhD?=
- =?us-ascii?Q?4PshRTEh7UK3iTFKptr+92uASrWBrL7QrA2bl9glG2ATX2DX4sgDdLeklRwY?=
- =?us-ascii?Q?B50JW9Msec3ZgSRm6tTcCcl9Ek0eIp/Z7JAnNCfJNFHtNrr4mxhOQ+zER14/?=
- =?us-ascii?Q?fhuHiwtsFGbsJZxdzXzd2mwti1s6Ah4qnHsjTP64DZ+TDu3UwCctPkdY3yn7?=
- =?us-ascii?Q?nHEDA5Auq5wYx7TJa2BDGfxHZiZgNhI8J+X5cgdacWcJRYycZv+Ub19rStTw?=
- =?us-ascii?Q?T3aSCe5bv4aZqrINBBmjdLOXVPb000shxVB1l+WS5oA6A58jIHDjLfVxLca9?=
- =?us-ascii?Q?tgclRa5xiOR/lKTMftAJKYEIriEfGb5nwUxl3dsSdJtynTYYLjFBI1qIgMkt?=
- =?us-ascii?Q?+hJxOxcrH+M3nJ/Q97yzGbXObk26aHOIi7Ba5OHBplI14AoPFynTpHHNfl6p?=
- =?us-ascii?Q?okrzisc2NphR5lpIr0ig4A/1SpXOIRDcXhKzWWruXDG/MdBKBLmvahP9oDuW?=
- =?us-ascii?Q?iFbR0Gjbw6e7RgxpBGMqXMaX1vAyBET3mOD0h4t8Isr3Nqvy5TwSeCwlWvQW?=
- =?us-ascii?Q?EAegi4bzY6pjGA6I9lqhh/rRdNQYhI+Hr49SK7sGEdWE8G6a8GOC4azJb/mP?=
- =?us-ascii?Q?bSpqc3nCGFZ8A6L3GHrkpXPObfnb0CGC0u6xxA36Cr3u4r8B0Nt6MvVKFQFQ?=
- =?us-ascii?Q?djd7fiWVs+znYKBLSJbuCV/jqVsClTJyZI5nt8nYx5QW6F6t09IP4H0rgQVO?=
- =?us-ascii?Q?lc5WiTrjT06H83vvb8hoeD9rHeVVqjG9euYHMuiYJLwLQ+7JXuTcfCuAVqnw?=
- =?us-ascii?Q?XEWQqN2ompyrqQKWaxGBwJ1He+si1vX3VBi2O3F6?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6223828DA1
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 08:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705652566; cv=none; b=dGrC9BVrsEsDVVwp1pa5W0ak03ZiEgy1nzyqYguRuFkC18gpSqC5kxlDc+1JBaoz5rAk3DpZEkwbc6jXQG3o7psAt1vjCy5qn6szzkS15CN6Q9HyhRcc/LV81Kp85Pm0rgopMz26Fi0of0aQfD0Inb+0ZDW+0yd7Z1XVZzfBFEk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705652566; c=relaxed/simple;
+	bh=fE4nvdepXcainxleFg2p2rGfLXyNjOvfjkFBTMMXaTU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eLojnkxV5jq6YLyNRLm7NrBKs/pkEViHPrVrQguCA5uL5pgzIG4Ad9Qwzh0JNQHpHyzg9UAOKFX2X+kP+dp7euHBiIO/DlVoyxoK/Soyi+Z8kk2w9krffBqvoXGfOsyyoqF1qN+pCJ/NXpf/sHPTW3BEt5nfQRTNYV19/qJpJgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UmzXh3tK; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d9344f30caso364605b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 00:22:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705652564; x=1706257364; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=32Sy5zn9pzxRmXmijB2NuJFzqsTbhpiZL8r/igtqHEg=;
+        b=UmzXh3tKbcGvCv2U0FnePNwT3KVC4uQQUlszPwolQUgibmjtNRNL3N9vGg1IaRuLrV
+         4e5Ta1lqv+GdMAGH1UvkddNXOy2zz1tClroM9DhfoDiq8U+C+FpiJxYlFVky2uH7HAUC
+         1ASjkwVUJ/Dfn1hKyKaDn/OrhHvLBxGs+uB6S/Q2C63dvgYuWmpYqGIvKJoXzRHVGASi
+         SjxPbw3lX8fn0iEP50oLCUxWhMQR94F4P3/WiBJgWvPgFPlsR4CYrNr3HN3tMo512Jce
+         rGxFyM/peAw8nGD6V6BrKbbhMzXs3nnvYmHA5lDz04CQ4n/8V2O18FLFmCLr3wpd4VXl
+         kL9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705652564; x=1706257364;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=32Sy5zn9pzxRmXmijB2NuJFzqsTbhpiZL8r/igtqHEg=;
+        b=AUXyjXVOHZ9UsM/l5hEd7Z++25+vuy3PeS41GueNnifa87aqZBklVc9YzsdI5qaR3f
+         Jx1be5l469VHLBI+I0nIs5bxp2Llkv2ZtVLbRYzxwZzdpsdQzNqs/rMXqZOmaDw8tMMH
+         3VqRmvEml9tEv3Oz7XB9s6jBOsCSQYvsKjsJR+1Mv/S3WIOFBJAhA0Q/OIUilsiydi2n
+         kjeZhV2YAwyLNehdY2Wqv9kjTohbf8B4qFUB6Wd3I/VJW9hVF0cQWwkZ5pxcvD9wohuT
+         rfXF1JWFfBFrRB6ksgtrJzTSPWB/ZXKnOe7FvvF7AuBJashpGu7pqWRG0vzk6TM0y3ys
+         S9gA==
+X-Gm-Message-State: AOJu0YwcnlY3IPRJlkCDC/wuWNbBsyjUU6hMVkwq8Y8V/DubHZEPn8kv
+	jjVt3a30ls1W0Wmj9zF5/Hn9D3E9FJyl6Nr/xCodM3YbUhtgrXd0OwaDxU+Czg==
+X-Google-Smtp-Source: AGHT+IFMeb9Ejw77pAkfYEpPDGHEgKv3OxR2ZLFWnHGVvr5z23CoC8i1jJjT6oNmGxF+fMDTo5sxyw==
+X-Received: by 2002:a05:6a00:39a4:b0:6db:c577:67d6 with SMTP id fi36-20020a056a0039a400b006dbc57767d6mr331819pfb.0.1705652563679;
+        Fri, 19 Jan 2024 00:22:43 -0800 (PST)
+Received: from thinkpad ([117.248.2.56])
+        by smtp.gmail.com with ESMTPSA id n16-20020aa78a50000000b006cecaff9e29sm4535056pfa.128.2024.01.19.00.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 00:22:43 -0800 (PST)
+Date: Fri, 19 Jan 2024 13:52:33 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
+	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
+	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
+	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
+	shawnguo@kernel.org
+Subject: Re: [PATCH v8 07/16] PCI: imx6: Simplify configure_type() by using
+ mode_off and mode_mask
+Message-ID: <20240119082233.GF2866@thinkpad>
+References: <20240108232145.2116455-1-Frank.Li@nxp.com>
+ <20240108232145.2116455-8-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 820765cc-6eaf-48bd-3486-08dc18c7bdcc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2024 08:22:14.1307
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZybgBhudI2ndre9sTjRcvbqkBwZwAOwTYiBdgB13rw0Wibvg9/9V4YStZLG4pDuJ4AEGpABU6OQeVJvGW30LOw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5032
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240108232145.2116455-8-Frank.Li@nxp.com>
 
-> From: Ankit Agrawal <ankita@nvidia.com>
-> Sent: Friday, January 19, 2024 12:35 PM
->=20
-> >>> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
-> >>> Signed-off-by: Aniket Agashe <aniketa@nvidia.com>
-> >>> Tested-by: Ankit Agrawal <ankita@nvidia.com>
-> >>
-> >> Dunno about others, but I sure hope and assume the author tests ;)
-> >> Sometimes I'm proven wrong.
-> >
-> > Yeah, does not hurt to keep it then I suppose. :)
->=20
-> Sorry I misread the comment. I'll remove the Tested-by as it is
-> redundant with Signed-off-by.
+On Mon, Jan 08, 2024 at 06:21:36PM -0500, Frank Li wrote:
+> Add drvdata::mode_off and drvdata::mode_mask to simplify
+> imx6_pcie_configure_type() logic.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-and your s-o-b should be the last one.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+- Mani
+
+> ---
+> 
+> Notes:
+>     Change from v7 to v8
+>     - replace simple with simplify
+>     - remove reduntant comments about FILED_PREP
+>     Change from v3 to v7
+>     - none
+>     Change from v2 to v3
+>     - none
+>     Change from v1 to v2
+>     - use ffs() to fixe build error.
+>     
+>     Change from v2 to v3
+>     - none
+>     Change from v1 to v2
+>     - use ffs() to fixe build error.
+> 
+>  drivers/pci/controller/dwc/pci-imx6.c | 59 ++++++++++++++++++---------
+>  1 file changed, 39 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 818e73157e724..fd83af238fa60 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -68,6 +68,7 @@ enum imx6_pcie_variants {
+>  
+>  #define IMX6_PCIE_MAX_CLKS       6
+>  
+> +#define IMX6_PCIE_MAX_INSTANCES			2
+>  struct imx6_pcie_drvdata {
+>  	enum imx6_pcie_variants variant;
+>  	enum dw_pcie_device_mode mode;
+> @@ -78,6 +79,8 @@ struct imx6_pcie_drvdata {
+>  	const u32 clks_cnt;
+>  	const u32 ltssm_off;
+>  	const u32 ltssm_mask;
+> +	const u32 mode_off[IMX6_PCIE_MAX_INSTANCES];
+> +	const u32 mode_mask[IMX6_PCIE_MAX_INSTANCES];
+>  };
+>  
+>  struct imx6_pcie {
+> @@ -174,32 +177,24 @@ static unsigned int imx6_pcie_grp_offset(const struct imx6_pcie *imx6_pcie)
+>  
+>  static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
+>  {
+> -	unsigned int mask, val, mode;
+> +	const struct imx6_pcie_drvdata *drvdata = imx6_pcie->drvdata;
+> +	unsigned int mask, val, mode, id;
+>  
+> -	if (imx6_pcie->drvdata->mode == DW_PCIE_EP_TYPE)
+> +	if (drvdata->mode == DW_PCIE_EP_TYPE)
+>  		mode = PCI_EXP_TYPE_ENDPOINT;
+>  	else
+>  		mode = PCI_EXP_TYPE_ROOT_PORT;
+>  
+> -	switch (imx6_pcie->drvdata->variant) {
+> -	case IMX8MQ:
+> -	case IMX8MQ_EP:
+> -		if (imx6_pcie->controller_id == 1) {
+> -			mask = IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE;
+> -			val  = FIELD_PREP(IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE,
+> -					  mode);
+> -		} else {
+> -			mask = IMX6Q_GPR12_DEVICE_TYPE;
+> -			val  = FIELD_PREP(IMX6Q_GPR12_DEVICE_TYPE, mode);
+> -		}
+> -		break;
+> -	default:
+> -		mask = IMX6Q_GPR12_DEVICE_TYPE;
+> -		val  = FIELD_PREP(IMX6Q_GPR12_DEVICE_TYPE, mode);
+> -		break;
+> -	}
+> +	id = imx6_pcie->controller_id;
+> +
+> +	/* If mode_mask[id] is zero, means each controller have its individual gpr */
+> +	if (!drvdata->mode_mask[id])
+> +		id = 0;
+> +
+> +	mask = drvdata->mode_mask[id];
+> +	val = mode << (ffs(mask) - 1);
+>  
+> -	regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12, mask, val);
+> +	regmap_update_bits(imx6_pcie->iomuxc_gpr, drvdata->mode_off[id], mask, val);
+>  }
+>  
+>  static int pcie_phy_poll_ack(struct imx6_pcie *imx6_pcie, bool exp_val)
+> @@ -1389,6 +1384,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.clks_cnt = ARRAY_SIZE(imx6_3clks_bus_pcie_phy),
+>  		.ltssm_off = IOMUXC_GPR12,
+>  		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX6SX] = {
+>  		.variant = IMX6SX,
+> @@ -1400,6 +1397,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.clks_cnt = ARRAY_SIZE(imx6_4clks_bus_pcie_phy_axi),
+>  		.ltssm_off = IOMUXC_GPR12,
+>  		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX6QP] = {
+>  		.variant = IMX6QP,
+> @@ -1412,6 +1411,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.clks_cnt = ARRAY_SIZE(imx6_3clks_bus_pcie_phy),
+>  		.ltssm_off = IOMUXC_GPR12,
+>  		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX7D] = {
+>  		.variant = IMX7D,
+> @@ -1421,6 +1422,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx7d-iomuxc-gpr",
+>  		.clk_names = imx6_3clks_bus_pcie_phy,
+>  		.clks_cnt = ARRAY_SIZE(imx6_3clks_bus_pcie_phy),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX8MQ] = {
+>  		.variant = IMX8MQ,
+> @@ -1429,6 +1432,10 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mq-iomuxc-gpr",
+>  		.clk_names = imx6_4clks_bus_pcie_phy_aux,
+>  		.clks_cnt = ARRAY_SIZE(imx6_4clks_bus_pcie_phy_aux),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+> +		.mode_off[1] = IOMUXC_GPR12,
+> +		.mode_mask[1] = IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE,
+>  	},
+>  	[IMX8MM] = {
+>  		.variant = IMX8MM,
+> @@ -1438,6 +1445,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+>  		.clk_names = imx6_3clks_bus_pcie_aux,
+>  		.clks_cnt = ARRAY_SIZE(imx6_3clks_bus_pcie_aux),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX8MP] = {
+>  		.variant = IMX8MP,
+> @@ -1447,6 +1456,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+>  		.clk_names = imx6_3clks_bus_pcie_aux,
+>  		.clks_cnt = ARRAY_SIZE(imx6_3clks_bus_pcie_aux),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX8MQ_EP] = {
+>  		.variant = IMX8MQ_EP,
+> @@ -1456,6 +1467,10 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mq-iomuxc-gpr",
+>  		.clk_names = imx6_4clks_bus_pcie_phy_aux,
+>  		.clks_cnt = ARRAY_SIZE(imx6_4clks_bus_pcie_phy_aux),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+> +		.mode_off[1] = IOMUXC_GPR12,
+> +		.mode_mask[1] = IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE,
+>  	},
+>  	[IMX8MM_EP] = {
+>  		.variant = IMX8MM_EP,
+> @@ -1464,6 +1479,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+>  		.clk_names = imx6_3clks_bus_pcie_aux,
+>  		.clks_cnt = ARRAY_SIZE(imx6_3clks_bus_pcie_aux),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX8MP_EP] = {
+>  		.variant = IMX8MP_EP,
+> @@ -1472,6 +1489,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+>  		.clk_names = imx6_3clks_bus_pcie_aux,
+>  		.clks_cnt = ARRAY_SIZE(imx6_3clks_bus_pcie_aux),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  };
+>  
+> -- 
+> 2.34.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
