@@ -1,106 +1,138 @@
-Return-Path: <linux-kernel+bounces-30775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873A783243B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:28:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08F8183243D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:30:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6A801C229B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:28:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99E131F23691
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0044F4A11;
-	Fri, 19 Jan 2024 05:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9B3D520;
+	Fri, 19 Jan 2024 05:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tdCuy/NV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WwgkqIFI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EE26FA9;
-	Fri, 19 Jan 2024 05:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4DDD2E0;
+	Fri, 19 Jan 2024 05:30:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705642119; cv=none; b=bDneJu29XzFDRV5LG4nwlduP6PR6pglGdjo9FPwnVzK6T//swr/iogqEnOhxUuQreCX+oskjFsP0Ba/+LKMTuwXtDyUWnaQLQXlsmXjcsb/lPbHJtk5B0ntioPkt5CD+3VnPZZleyunLmaGiDmqJipP7e8HvoWLPBilo79NHmQI=
+	t=1705642224; cv=none; b=qFlIByw9bGxEPNmWu4vWBV1cq9HpcIYoxdx754cX7jI1JhH8kucAazUFkGpxWpzSma8EtgRM97KS+BCRb1jO7dfBkEz6rNB7kL4cJo7z33xVD1HKMQum7V3mRK5r6uJluwDypJ3RboP+f4NO2F/tswwaGDHJ5Rc6cf8DJ5va00s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705642119; c=relaxed/simple;
-	bh=ICBDeNeeXNTzIAVB33ONWU9Tr4HarrY/gXY5TVN1HRE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b6uQHf+bUHl+9E3LYk3oKY9uXa8DgkXdV69DHVJpyKE+tzpWQB6hW7pUTcSzJZT4wWMxeu8BZyIMFj6Q8JlDSukrxRWxK6mEf4iuWYhgCL62uv3K3+1kqIgjxgSDH+iJPongjqXcHKAGr3u1oQyOVZoat5WiarvAzt8J5Rb0HTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tdCuy/NV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFAA1C433F1;
-	Fri, 19 Jan 2024 05:28:36 +0000 (UTC)
+	s=arc-20240116; t=1705642224; c=relaxed/simple;
+	bh=NmRW0qDTinPAXASKC503X0xzvQnEs559g0EoVJTrYj8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KUWq0jpg+sb99ZYFjgyzy/ZKd8Fn6oyykGwxqLMK0QmW/bH3FHpAXACK8w92wjkjaKymBnWxb6IEppl917L/Tj0AAKu8/kefj39dSFpRPB0A9mjbKfwdhLHxseC2I9ZG6x+ERtDJjn+6gwyZjcmiS50GhaRdX/2UGoQ3S62/a4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WwgkqIFI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16C84C43394;
+	Fri, 19 Jan 2024 05:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705642118;
-	bh=ICBDeNeeXNTzIAVB33ONWU9Tr4HarrY/gXY5TVN1HRE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tdCuy/NV2V5HOK/y8FFoitbl0UuUJLKNoVZ0BAMnEDjUwopRgM29BS+1PeT42NBoa
-	 2Aw+p53Su8unxYlUjGM2otJ+X3tF3unsyVKL+yYN7LYQANw9k3JsCJE+77H9JexsLL
-	 uuHehvfCd+wBhxSb92/kK66ypr7FflPZhTkpksYaykXX0QoqjMicjXfJ0j/jbozALd
-	 m487oNAxPY/AI4CgI2CpntSUxW4rw4xhXOFEgJ0aIJaj8eGqDGove0cMwpN7q1zKTG
-	 mkCJBYXEf30zeUH2Dq0VeXvYtdz7c5panPigeHoibGmvV6JQzJLH/o43Xefghq6VYP
-	 cs6/AFFYeUehw==
-Date: Fri, 19 Jan 2024 13:28:34 +0800
-From: Tzung-Bi Shih <tzungbi@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Lukasz Majczak <lma@chromium.org>,
-	Gwendal Grignou <gwendal@chromium.org>,
-	Radoslaw Biernacki <biernacki@google.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chrome-platform@lists.linux.dev
-Subject: Re: [PATCH v2 2/3] watchdog: Add ChromeOS EC-based watchdog driver
-Message-ID: <ZaoIguOBWrahSRkv@google.com>
-References: <20240118195325.2964918-1-lma@chromium.org>
- <20240118195325.2964918-3-lma@chromium.org>
- <Zanvi4ih0zhC4aG7@google.com>
- <17e323d8-f8d3-4e5a-91aa-0788b8026f21@roeck-us.net>
+	s=k20201202; t=1705642224;
+	bh=NmRW0qDTinPAXASKC503X0xzvQnEs559g0EoVJTrYj8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WwgkqIFI+U70JnAykdVxlfjbQUC8j12NSpnOBerRAYU10+jaeBFta7iR692U+mc+L
+	 j9PqZegK1rXZjJ/aufQxqltWKQ24IjKMQA18e8pwwxdAQlSbAWhCTpQdD9LNVSMtGG
+	 XCSGX4xs0wpMn3yhMQw8aN5OZyDzf0cvT9ZQyLONW5xBvDgHHnupO1qMrIfd52Dyr/
+	 hmtxfsfmBQdlM6KdBHt0teA1R+udgjo0Dbe4orutR8xVbcWsyOqtuoE/I+yEyzU4aa
+	 cF8SO4rwn532u9UupgyJ1v6/BewaqdQbuk6uQoJk/KB0Nql6Y+C+/M4cXHh4lCedKh
+	 Mbawo6Z1sihlA==
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-2107f19e331so297935fac.3;
+        Thu, 18 Jan 2024 21:30:24 -0800 (PST)
+X-Gm-Message-State: AOJu0YzDYmuGzqOstfw8Z7nH5dFX2Uc+sCALkLpwAIZEFZ3dH1xW3dU/
+	Rh0HBHc8pDwefQKZf9/5VqsW5ErcOQU/YjQX0cRXLgNNyclNSLl2y91JdZ5JcB2f+Sp0UklsCKM
+	JfkIfq/xGg21//xdOR4HyGjfBduQ=
+X-Google-Smtp-Source: AGHT+IF4bcbwZtibywMPkrWd7UBnetAIV9iyZyPDcz2l3nUG5Rkbj9MaDaPyDoZr0dFQajOR7bSQb8PYiOr1WsClNk4=
+X-Received: by 2002:a05:6870:32d2:b0:210:bd4b:5db3 with SMTP id
+ r18-20020a05687032d200b00210bd4b5db3mr2223943oac.111.1705642223463; Thu, 18
+ Jan 2024 21:30:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17e323d8-f8d3-4e5a-91aa-0788b8026f21@roeck-us.net>
+References: <20240118191727.5547-1-palmer@rivosinc.com>
+In-Reply-To: <20240118191727.5547-1-palmer@rivosinc.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 19 Jan 2024 14:29:47 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQvGpf7zFR49-5TwE-mknGE_Kbw3JuQ+3Qf0dp+DvmSVA@mail.gmail.com>
+Message-ID: <CAK7LNAQvGpf7zFR49-5TwE-mknGE_Kbw3JuQ+3Qf0dp+DvmSVA@mail.gmail.com>
+Subject: Re: [PATCH] Makefile: Add HOST_GCC_SUFFIX and CROSS_GCC_SUFFIX
+To: Palmer Dabbelt <palmer@rivosinc.com>
+Cc: nicolas@fjasle.eu, nathan@kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 18, 2024 at 07:55:39PM -0800, Guenter Roeck wrote:
-> On 1/18/24 19:42, Tzung-Bi Shih wrote:
-> > On Thu, Jan 18, 2024 at 07:53:23PM +0000, Lukasz Majczak wrote:
-> > > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> > > index 7d22051b15a2..4700b218340f 100644
-> > > --- a/drivers/watchdog/Kconfig
-> > > +++ b/drivers/watchdog/Kconfig
-> > > @@ -181,6 +181,17 @@ config BD957XMUF_WATCHDOG
-> > >   	  watchdog. Alternatively say M to compile the driver as a module,
-> > >   	  which will be called bd9576_wdt.
-> > > +config CROS_EC_WATCHDOG
-> > > +	tristate "ChromeOS EC-based watchdog"
-> > > +	select WATCHDOG_CORE
-> > > +	depends on CROS_EC
-> > > +	help
-> > > +	  Watchdog driver for Chromebook devices equipped with embedded controller.
-> > > +	  Trigger event is recorded in EC and checked on the subsequent boot.
-> > 
-> > Perhaps unrelated to the patch, but I'm curious what the mechanism is.  Does
-> > it use any existing paths for checking the saved events in EC?  What it does
-> > if there is a saved WDT reset event?
-> > 
-> 
-> Reporting the reason of the previous reset/restart is part of the watchdog API.
+On Fri, Jan 19, 2024 at 4:20=E2=80=AFAM Palmer Dabbelt <palmer@rivosinc.com=
+> wrote:
+>
+> From: Palmer Dabbelt <palmer@rivosinc.com>
+>
+> I was just trying to track down a build bug with an old toolchain.
+> Turns out Ubuntu installs old GCCs as something like
+> riscv64-linux-gnu-gcc-10, which is a bit clunky to point the build at
+> without a way to append a suffix to CC.
 
-Oh, I see.  It is in cros_ec_wdt_probe(): `wdd->bootstatus`.
 
-+static int cros_ec_wdt_probe(struct platform_device *pdev)
-+{
-[...]
-+	arg.req.command = EC_HANG_DETECT_CMD_GET_STATUS;
-+	ret = cros_ec_wdt_send_cmd(cros_ec, &arg);
-[...]
-+	if (arg.resp.status == EC_HANG_DETECT_AP_BOOT_EC_WDT)
-+		wdd->bootstatus = WDIOF_CARDRESET;
+You can do:
+
+make CROSS_COMPILE=3Driscv64-linux-gnu- CC=3Driscv64-linux-gnu-gcc-10
+
+
+
+
+
+>
+> There's already LLVM_SUFFIX, but nothing similar for GCC.  I've split
+> out the host and target suffixes as users probably don't have the same
+> version of for both (unlike LLVM, where the cross compiler is likely to
+> support the host target).
+>
+> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+> ---
+> I've only given this some very minimal testing, but it at least works
+> for my simple use case.
+> ---
+>  Makefile | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index f1b2fd977275..36ce336cda3b 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -433,8 +433,8 @@ endif
+>  HOSTCC =3D $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
+>  HOSTCXX        =3D $(LLVM_PREFIX)clang++$(LLVM_SUFFIX)
+>  else
+> -HOSTCC =3D gcc
+> -HOSTCXX        =3D g++
+> +HOSTCC =3D gcc$(HOST_GCC_SUFFIX)
+> +HOSTCXX        =3D g++$(HOST_GCC_SUFFIX)
+>  endif
+>  HOSTRUSTC =3D rustc
+>  HOSTPKG_CONFIG =3D pkg-config
+> @@ -480,7 +480,7 @@ OBJDUMP             =3D $(LLVM_PREFIX)llvm-objdump$(L=
+LVM_SUFFIX)
+>  READELF                =3D $(LLVM_PREFIX)llvm-readelf$(LLVM_SUFFIX)
+>  STRIP          =3D $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
+>  else
+> -CC             =3D $(CROSS_COMPILE)gcc
+> +CC             =3D $(CROSS_COMPILE)gcc$(CROSS_GCC_SUFFIX)
+>  LD             =3D $(CROSS_COMPILE)ld
+>  AR             =3D $(CROSS_COMPILE)ar
+>  NM             =3D $(CROSS_COMPILE)nm
+> --
+> 2.43.0
+>
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
