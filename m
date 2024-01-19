@@ -1,139 +1,100 @@
-Return-Path: <linux-kernel+bounces-31596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBC1D83308E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:59:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0EA2833097
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:00:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6140C286AEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:59:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E48271C23B88
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F67558AA6;
-	Fri, 19 Jan 2024 21:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F8F58AB2;
+	Fri, 19 Jan 2024 22:00:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="FP3+C+fT"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FXP9BOi8"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3B75465E
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 21:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D1B58132
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 22:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705701573; cv=none; b=DnrHDMbmoNVS8sYrq3JRJHeUWBGvMytbACqlS2niK7WpmssVnZxa7oz3jVcp76nIvk3vtzw/3Cc6CgbUcnvKRmiu1GzHoI+VYN9+aQtzUD/rb5DxcfMviiSayI8SpvOiEZ9Do8v7xx6Ilg2yDKZXVPRvRBfiVK1UeXYVNMyUU2A=
+	t=1705701636; cv=none; b=hzwLHrX5zLB3uHJmWuNQ9VEQkN1A273j4nMm7yDyDNsT7CR1IR6ME42FccJftjKCXlM5b0mJUraZ/gbzd1It/RTzLrSlrfHl8PrCIZ/dUPiAh3hfUSt6/qKGTDg6s6/Y4QTWTDQQ8aY1Xwt4T0pdkafOtlbHn7gYFnWGXO3Ftqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705701573; c=relaxed/simple;
-	bh=x1rxNQeXYLXk8l6ZOp05BM8JPpIubtZJkqFc265ZIao=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=f/CaHCT+rCTptpOoUU9n6PDMqfDMCDLZoI1/bV5CJHe1b0/fIu07jNhYpRomOHZg7aVvmxCLC2TBU8njC4kvZGzzjT+liv/Aal7KdS1QklUB2LL+CqV2vbmloCsALVzyKqDSMtBYu2f3Hm1rpd65hml1a+OQYLlc6hJKxyHxN8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=FP3+C+fT; arc=none smtp.client-ip=209.85.161.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-59927972125so592863eaf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:59:31 -0800 (PST)
+	s=arc-20240116; t=1705701636; c=relaxed/simple;
+	bh=Xqh2spPXg/36Nd5acHIcaHi1wPMckOnZCFfqASQrpgY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Us0Uzd1wShPZu3JDgXi6YPupWj+PyaUMVg+GA8Atx/zQawy9zEENB9HIKTNZQACSkU6hbOaoQzvswD+8daUq4sLRllx7p/7H4F+w61W9emgBE5+TunK9WEp2uSjlWSMzPv/w9SKrC8/kBzG4Kw9fIh3/fNzoLREvc+VNMWy42mU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FXP9BOi8; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55a02948940so1545509a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:00:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1705701571; x=1706306371; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D5S7IqMYVGKNqJZ35fEQj0xzfnTIX8E84YBSqWvhnC0=;
-        b=FP3+C+fTfp+wcFWfWAhnTtBvrIaKT21yHSUS08fjmeQQIZzr8q0oB7wczJssffGdMw
-         q5JtAHs0jCfpPm3W39eEf+kl6c6IJo61u6DqKwdehF7aXxKJ3m8/qBp8euodsIyD+c5m
-         qFmH0lbgK9x7y5ri0DiVORwDOCEEnor8myV/xco36FOUMmn0RFCnTIsT4bEPr97DyMl2
-         U5+/dfPuiBGzqawT0qoI4Teu99LP0bDYEzhiZU99HnQ7SWHyytAIFedc/wkc7lG8Q370
-         zXlopx8KPyfF172ZlahzkJFuRDHyql0q+hmwcSbNd+AcW4ICza2ZgE0Gx+Fd+Ra9y8OZ
-         TeHw==
+        d=linux-foundation.org; s=google; t=1705701632; x=1706306432; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/xlofjQtofHXFjo9khK5kC3pChLQbc+i5Psd0zeHygA=;
+        b=FXP9BOi8lJxESl4aQoNDvBYdmNGftf8GHq4kmSUcVujGGSTLWLwMpmE2CcGvpgInhR
+         8u014PV3juo9tNlK+V3DJ9BBPYTuvgwxBExSnRIZbiuLYh/yrU1teZ6KGJepiNrZUVW6
+         EakghN4Rv4jwso9qObAvoFX4pF7R9H+87Ld/0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705701571; x=1706306371;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D5S7IqMYVGKNqJZ35fEQj0xzfnTIX8E84YBSqWvhnC0=;
-        b=SL9oden5pqMizKf+3gCQ1Iy1zQ950noLEhcBmm0DHonKc4Q0Mjg8tZ13fsea3j29Li
-         s5a7hdHv9TW39F2wjOikFwunKiaK/Tn0Du63s0mlVnUL2QVdQkPwvOPomLSixE/cub7D
-         rpiV/PsJXqbcGgX7ZbkhU29eWqTXpkKnq7HweKB2Tc+SRzEtkSphbKiwjbnFqYB9QLqH
-         uvw+nhYR/3P3FWL4HSJpC5aRtPMrfm/A9AzWVcUXC9dWXKIo19vutvdZiOykQLwta233
-         nYE8KrxpDiyjDqdwKp3gHPfHhAlBsS414raEdfJV/yoC0S82t9TY2YSGPoW7PWd3ttpA
-         y3Tg==
-X-Gm-Message-State: AOJu0YzEZyCxkdzrCHPpWewmBpgpYTKX87SEiNs9FWkrXqsS9Fc1Ciou
-	v6d7olSML2Pf3wiNimI+anidDfJPTyorvMXB6pNKPgfMbTvwuzx8WiYgPSFYZ4c=
-X-Google-Smtp-Source: AGHT+IESicOUtDUT+5BwgwqSfPXAdnKkq3SaMukVEeCzOBMaA+ge58Litoyb9vV7itnjx54Th0+h3w==
-X-Received: by 2002:a05:6359:4290:b0:175:bf72:cfd4 with SMTP id kp16-20020a056359429000b00175bf72cfd4mr419654rwb.31.1705701570687;
-        Fri, 19 Jan 2024 13:59:30 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id 37-20020a630a25000000b005ceb4a6d72bsm3824521pgk.65.2024.01.19.13.59.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 13:59:30 -0800 (PST)
-Date: Fri, 19 Jan 2024 13:59:30 -0800 (PST)
-X-Google-Original-Date: Fri, 19 Jan 2024 13:58:56 PST (-0800)
-Subject:     Re: [PATCH v5 0/5] RISC-V SBI debug console extension support
-In-Reply-To: <CAK9=C2UV8J52a1pZjsNpFNwpUKn5K3nhS-+bS-3pohDwi3HrfQ@mail.gmail.com>
-CC: Greg KH <gregkh@linuxfoundation.org>, nathan@kernel.org,
-  linux-riscv@lists.infradead.org, Paul Walmsley <paul.walmsley@sifive.com>, jirislaby@kernel.org,
-  Conor Dooley <conor@kernel.org>, ajones@ventanamicro.com, linux-serial@vger.kernel.org,
-  linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: apatel@ventanamicro.com
-Message-ID: <mhng-f5f3ec82-ce6a-4e20-8799-f36fd82d74b6@palmer-ri-x1c9>
+        d=1e100.net; s=20230601; t=1705701632; x=1706306432;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/xlofjQtofHXFjo9khK5kC3pChLQbc+i5Psd0zeHygA=;
+        b=VdBMxs8s2FRSQRuQZF8RHb1IWKz7GDwIgw6X5KXC96KMqbDGuwQFi/w6Yho57swfUB
+         Tlz6EEIbd3aUmjo/LelZJIFf2GHOuZUY+3sF7rzYhkilkDDB8+PcHCpT10pu4QTTM83Q
+         rUy+nlvaOvHMT/QfgImkBm+RUb1a3nn92IlPf/U6WL3Y2tTgGs1R5jFvYOnFTn8oh14+
+         ZHIMhwg2Mr2lDTQinGkomhR5jDsElNGeYnC/33DuQWGMKrnT81h+zy9tkY2BtDn6IsID
+         7DCgx6+99gqjT/EW2aC/6aAMl5v6dQhHhZPyGziNZzchEJNp6Wkl1lmsJNw7br/6kprR
+         Jn7w==
+X-Gm-Message-State: AOJu0Yy0M+JPwQeDAbXhZ5ESxHaunDLVqbsZloc2Q7O2taryQimsqk6i
+	mEOdhT3GfDSjJun8WnWjQsfCLRW8cCg2jFZPs8McwPEvjmpv+Giyri61xJQi+SqhIdNOlyW8sda
+	OXLE2AQ==
+X-Google-Smtp-Source: AGHT+IE3bvtzxGQfh/lO2YMtW1Cv687sDo1zH5sECANYQ3QXn3RGHGr10LO7meadVZcZcfh/d06kvg==
+X-Received: by 2002:a05:6402:3551:b0:559:9588:1bd4 with SMTP id f17-20020a056402355100b0055995881bd4mr283652edd.25.1705701632482;
+        Fri, 19 Jan 2024 14:00:32 -0800 (PST)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
+        by smtp.gmail.com with ESMTPSA id q35-20020a05640224a300b00558a4d01783sm11046952eda.60.2024.01.19.14.00.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jan 2024 14:00:31 -0800 (PST)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so1477238a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:00:31 -0800 (PST)
+X-Received: by 2002:a05:6402:28a2:b0:55a:590f:3464 with SMTP id
+ eg34-20020a05640228a200b0055a590f3464mr186462edb.3.1705701630814; Fri, 19 Jan
+ 2024 14:00:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <202401191311.B6AA79D@keescook>
+In-Reply-To: <202401191311.B6AA79D@keescook>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 19 Jan 2024 14:00:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj0j07B=n1Bt4EkDJpN5CBmxMuZhv+nnFdi0DxDVSiZAA@mail.gmail.com>
+Message-ID: <CAHk-=wj0j07B=n1Bt4EkDJpN5CBmxMuZhv+nnFdi0DxDVSiZAA@mail.gmail.com>
+Subject: Re: [GIT PULL] strlcpy removal for v6.8-rc1
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>, Andy Whitcroft <apw@canonical.com>, 
+	Azeem Shaikh <azeemshaikh38@gmail.com>, Brian Foster <bfoster@redhat.com>, 
+	Dwaipayan Ray <dwaipayanray1@gmail.com>, Joe Perches <joe@perches.com>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 19 Jan 2024 02:09:18 PST (-0800), apatel@ventanamicro.com wrote:
-> On Sat, Jan 13, 2024 at 12:00 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->>
->> On Thu, 11 Jan 2024 06:50:37 PST (-0800), patchwork-bot+linux-riscv@kernel.org wrote:
->> > Hello:
->> >
->> > This series was applied to riscv/linux.git (for-next)
->> > by Palmer Dabbelt <palmer@rivosinc.com>:
->> >
->> > On Fri, 24 Nov 2023 12:39:00 +0530 you wrote:
->> >> The SBI v2.0 specification is now frozen. The SBI v2.0 specification defines
->> >> SBI debug console (DBCN) extension which replaces the legacy SBI v0.1
->> >> functions sbi_console_putchar() and sbi_console_getchar().
->> >> (Refer v2.0-rc5 at https://github.com/riscv-non-isa/riscv-sbi-doc/releases)
->> >>
->> >> This series adds support for SBI debug console (DBCN) extension in
->> >> Linux RISC-V.
->> >>
->> >> [...]
->> >
->> > Here is the summary with links:
->> >   - [v5,1/5] RISC-V: Add stubs for sbi_console_putchar/getchar()
->> >     https://git.kernel.org/riscv/c/f503b167b660
->> >   - [v5,2/5] RISC-V: Add SBI debug console helper routines
->> >     https://git.kernel.org/riscv/c/f43fabf444ca
->> >   - [v5,3/5] tty/serial: Add RISC-V SBI debug console based earlycon
->> >     https://git.kernel.org/riscv/c/c77bf3607a0f
->> >   - [v5,4/5] tty: Add SBI debug console support to HVC SBI driver
->> >     https://git.kernel.org/riscv/c/88ead68e764c
->> >   - [v5,5/5] RISC-V: Enable SBI based earlycon support
->> >     https://git.kernel.org/riscv/c/50942ad6ddb5
->> >
->> > You are awesome, thank you!
->>
->> Nathan points out that this has some semantic conflicts with a patch in
->> Greg's TTY tree: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git/commit/?id=f32fcbedbe9290565e4eac3fd7c4c451d5478787
->>
->> So I think the best bet is to wait on Greg's patch to land in Linus'
->> tree, and then base a v6 of this patch set on that merged patch.  I'm
->> going to drop this one from for-next.
+On Fri, 19 Jan 2024 at 13:14, Kees Cook <keescook@chromium.org> wrote:
 >
-> Greg's patch is now available in upstream Linux so I will rebase and
-> send out v6.
+> The kernel is now free of the strlcpy() API!
 
-Sorry, I forgot about this one and merged it.  I just sent up a fixup: 
-https://lore.kernel.org/all/20240119215612.20529-2-palmer@rivosinc.com/ 
-.
+. still mentioned in docs and checkpatch. Maybe remove that too?
 
->
-> Thanks,
-> Anup
+              Linus
 
