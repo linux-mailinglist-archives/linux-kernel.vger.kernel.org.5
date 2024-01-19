@@ -1,116 +1,103 @@
-Return-Path: <linux-kernel+bounces-30813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A381832493
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:27:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53502832497
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88989282B4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:27:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E9601C22EED
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A4563D9;
-	Fri, 19 Jan 2024 06:27:02 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8337BBA31;
+	Fri, 19 Jan 2024 06:29:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BdUxOKmk"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92BD1392;
-	Fri, 19 Jan 2024 06:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C586944E;
+	Fri, 19 Jan 2024 06:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705645622; cv=none; b=h3kZPWZTIYTYkcSwaEVFRi2O2fsl4TiSaOhXwYJla0cEitwuCNUYmz098JC2JQNB27F/6OmheFHd59+JxhnIDnQqUTigyCzvpBSoY8SEUcX0F2L/yzHlTp31YVxWtYSTjj9aJiGiZAx+zVX4xP+HvOJogkx6lJGaKwfiLPSvgvo=
+	t=1705645757; cv=none; b=R+2RFEMbHlM3smOlQ6E/aaM/SzNh0FscKBDGc9VszGtWOyQZu5IdvH5dNBGHkGGrdY72XMpRHm4cQV/SMgT9EwKInG0f1kxRmscy4m6qJimLeXpgv1WTJxmLC/s/sj42ql9+4Ubdxd+GdeTJTcnzEpEnIDVuTKXK+APHLKh/9wI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705645622; c=relaxed/simple;
-	bh=BJBSrPNRreGjzWMMOUvCDXMWWWf3fGjxnuuwDjC+5Uw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sJHUEfW2htNxz71aTwqLcQDiKsez2C4sxNC2nsTCbDo5a3QqjbqEpHfCARkeTl/hMhbCVL/E3gsF6yQSfzAkSaidnx9Obdug33RXO6TPiXR75nwZxv9U5mdpET9LPxzS97Us/pCcIr3M7hPYF2QvwHSqfovuW1c1WFMz1hI48eU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TGV4J5kQvz1xmS2;
-	Fri, 19 Jan 2024 14:26:08 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id A93B5140558;
-	Fri, 19 Jan 2024 14:26:55 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 19 Jan
- 2024 14:26:28 +0800
-From: Ye Bin <yebin10@huawei.com>
-To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <jack@suse.cz>, Ye Bin
-	<yebin10@huawei.com>
-Subject: [PATCH] ext4: forbid commit inconsistent quota data when errors=remount-ro
-Date: Fri, 19 Jan 2024 14:29:08 +0800
-Message-ID: <20240119062908.3598806-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1705645757; c=relaxed/simple;
+	bh=KpM91AaUX8HFXOLN3PW3rJonDM4bBrfk7asugj1BqkQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t+F7S/upkkm4QmcK2Ugil+Z6qtgMHmYe3khRjmUMueQvvUyqN+P7wGNhwHYgOUugG7sA5e59hlkcDP4hn4rMIK9TPD7fLjd1YCXPR5jUW1E4gDMBjnPgIks4Mnm0VIGLqcTzPDYtNuutZY5G8IJE1i0YHODRnLizuizzA/F4ydE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BdUxOKmk; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705645756; x=1737181756;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=KpM91AaUX8HFXOLN3PW3rJonDM4bBrfk7asugj1BqkQ=;
+  b=BdUxOKmkCnz9G4/t96N4WCgj0KE87CT/YuYLXVpgYm0RyozOlzwlBQ0N
+   /cVOI7ArFXc+/UaiEdxyz/1yEjGp/6X+AK8NRfxXEyAHC3+jT9pFUhjGu
+   kHKwUpK6NnGKCBCCTy0EzFBrkCTwFpqlf/i+w4wexnoP53DbXYZ59zEUI
+   5cFWj+ibhpStS3l8SUaIXddD7/xNheuUWsbdywFMrNTlJ2gU9wKGrI98K
+   3Ft9kAqQiRW+8hwyTzvYxg8nT8y0SYQuplPb0+ZXEQBUEByE32WluDAps
+   ASyEaO9uAFZoaaVnEFX09/KX4PcfzRLukbajwIPG+lM6yGAWvasAZ8jSB
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="22166515"
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="22166515"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 22:29:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="572091"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.39.208])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 22:29:12 -0800
+Message-ID: <3d5266d5-e5e1-49f9-8fb3-b736dc79e5e6@intel.com>
+Date: Fri, 19 Jan 2024 08:29:08 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/5] perf: script: add field 'insn_disam' to display
+ mnemonic instructions
+To: Changbin Du <changbin.du@huawei.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+ Thomas Richter <tmricht@linux.ibm.com>, changbin.du@gmail.com
+References: <20240118041224.2799393-1-changbin.du@huawei.com>
+ <20240118041224.2799393-4-changbin.du@huawei.com>
+ <5766b575-e2db-4a56-9808-31a64bc72402@intel.com>
+ <20240119035735.y427wcmsm7dow6h4@M910t>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20240119035735.y427wcmsm7dow6h4@M910t>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-There's issue as follows When do IO fault injection test:
-Quota error (device dm-3): find_block_dqentry: Quota for id 101 referenced but not present
-Quota error (device dm-3): qtree_read_dquot: Can't read quota structure for id 101
-Quota error (device dm-3): do_check_range: Getting block 2021161007 out of range 1-186
-Quota error (device dm-3): qtree_read_dquot: Can't read quota structure for id 661
+On 19/01/24 05:57, Changbin Du wrote:
+> On Thu, Jan 18, 2024 at 09:49:41PM +0200, Adrian Hunter wrote:
+>> On 18/01/24 06:12, Changbin Du wrote:
+>>> In addition to the 'insn' field, this adds a new field 'insn_disam' to
+>>> display mnemonic instructions instead of the raw code.
+>>
+>> 'disam' seems an unusual abbreviation, and the 'insn' part seems a bit
+>> redundant.  Could this be just 'disasm' instead of 'insn_disam'?
+> 
+> Personally, I'd preserve the insn_ prefix. So we have two related fields 'insn'
+> and 'insn_disasm'.
+> 
 
-Now, ext4_write_dquot()/ext4_acquire_dquot()/ext4_release_dquot() may commit
-inconsistent quota data even if process failed. This may lead to filesystem
-corruption.
-To ensure filesystem consistent when errors=remount-ro there is need to call
-ext4_handle_error() to abort journal.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/super.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 0980845c8b8f..ef41b452173e 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -6873,6 +6873,10 @@ static int ext4_write_dquot(struct dquot *dquot)
- 	if (IS_ERR(handle))
- 		return PTR_ERR(handle);
- 	ret = dquot_commit(dquot);
-+	if (ret < 0)
-+		ext4_error_err(dquot->dq_sb, -ret,
-+			       "Failed to commit dquot type %d",
-+			       dquot->dq_id.type);
- 	err = ext4_journal_stop(handle);
- 	if (!ret)
- 		ret = err;
-@@ -6889,6 +6893,10 @@ static int ext4_acquire_dquot(struct dquot *dquot)
- 	if (IS_ERR(handle))
- 		return PTR_ERR(handle);
- 	ret = dquot_acquire(dquot);
-+	if (ret < 0)
-+		ext4_error_err(dquot->dq_sb, -ret,
-+			      "Failed to acquire dquot type %d",
-+			      dquot->dq_id.type);
- 	err = ext4_journal_stop(handle);
- 	if (!ret)
- 		ret = err;
-@@ -6908,6 +6916,10 @@ static int ext4_release_dquot(struct dquot *dquot)
- 		return PTR_ERR(handle);
- 	}
- 	ret = dquot_release(dquot);
-+	if (ret < 0)
-+		ext4_error_err(dquot->dq_sb, -ret,
-+			       "Failed to release dquot type %d",
-+			       dquot->dq_id.type);
- 	err = ext4_journal_stop(handle);
- 	if (!ret)
- 		ret = err;
--- 
-2.31.1
-
+'ip', 'sym' 'dso' are all related but do not have a common prefix.  Also
+most of the field names lean towards abbreviation.
 
