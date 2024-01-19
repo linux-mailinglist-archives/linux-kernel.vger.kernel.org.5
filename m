@@ -1,129 +1,198 @@
-Return-Path: <linux-kernel+bounces-30667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DBDB8322CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:55:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3571C8322D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:59:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9791728640D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 00:55:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF6F31F2330A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 00:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC38ECE;
-	Fri, 19 Jan 2024 00:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E812C10E4;
+	Fri, 19 Jan 2024 00:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="F1EAAR1S"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="lSBy4ghG"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6C781E
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 00:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3763881F;
+	Fri, 19 Jan 2024 00:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705625738; cv=none; b=lTehbCchKzGbXs8KBAaLNJlfAWT9vYMDc6hsupaxBkiQOCeYLfRaNkiPzLOAd/PAc2cx/jiT+Z08ZR2XXQqLs+OTA1Q8i5BYvuVv7nlJuac+Gib3df8kET3Ndr80AhSeJSUJJjSxRuTpK6qHjVSMXoeYSGuwuhy57HpiJORYGuw=
+	t=1705625933; cv=none; b=tC6wUFvDVf5edrDwCaMcKWpUk58vzYtUEthCbu0ed0XH8GuJkvdoYQuNL8kaZ48P55toagd0Bjo2jNMkfXM0Up9LK58mq4lZab7Ky9AUiJALMtGHJDS4lHl3Ry4duS0YGaT4HUU9N9YfBFrudvu5Sz52SXWZt9Q4UJh2seYSqXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705625738; c=relaxed/simple;
-	bh=aIJvYfmi6HJlaanfsGfkyB5yItcPr3SfQ5xVggiChrI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GEKfj9SXkWDVOoU7Z2vTVZGC9aYrhnMnjQL41qoyyfj66xKGmGuW9z+kJ4iuafA7EszvTEzp2rvKXjGL5r+sk2znLLQDoDpWsoUBei1W8eh3QedMIOHN82A++G7OmqrrRFSGVjX9+y15FYOB4PzWGnN7JqaDJnE3q46STK8+HKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=F1EAAR1S; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-337bcf021a4so160628f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 16:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1705625735; x=1706230535; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zp8xmya7ffNONLsIkwl+dwEuPGDnVZOPk1TpK+AOkSg=;
-        b=F1EAAR1SpdR6TbxgMpNM7DwMVTHGBap9ggblYWepeE5p9W8r4TO8DvmWqmBGmvqvge
-         4dWOiYE+gWDaAsPyx8HOnNI6RRVVJ8/YRzVfiIhZc4ii5SfhSJ7cF03NIs7kOvtUuxcp
-         gb0fCntF5lVKdy3fperiLXbqE2oGABfIpGZJsq4cO59W9y1HER1lz4qO+hs/+KW0IruM
-         zGBsQF28O5ZRTMG6edJEne64oI4iquAf5ZqK7CNNVI87RBT95sbWIeb3g/z+30U3LRbS
-         KLbWkw/5Bt67CdncbpBB2izOJIpf5qUk4P9kObekT3ZixUc6EqCVjam7HRKBv2OAYTm2
-         1ucg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705625735; x=1706230535;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zp8xmya7ffNONLsIkwl+dwEuPGDnVZOPk1TpK+AOkSg=;
-        b=jOyKG18NJsb8X0hsYBWG3PTS1khbn5M47wjGfLQh1U3AWQ36TzWPqauAW8VGRoAReC
-         ieFjANoK2hyK3nHvEa1rubLdkc3phPm5qcrW5lbR7TjlYOPzkSOZMsRQTCJnT78NXNFw
-         XB44tC96MrvHcV1e9mE7sHuVkapH9rriqEeFufEIjt85INzORYfMtZ89nBSU5FzVYHwK
-         Lk0Jdf7KjryiUexNoPlGykh0+qfiVML/GHDDZi80unRrngpt4BlUQmH9Oh3AUgkMqPq3
-         CzN1UoTFTsO6HsxDdJO21EWQZgDkJJjXURmyGLDiyUcIAi9HJ2e8vkLZnyWftb0VFjch
-         QVCw==
-X-Gm-Message-State: AOJu0Yy+xjFkAJ9UX1cb+rammzD8FxGZpPvJpPUC4suwgfZK5KZ/6Rqw
-	jxGiDrClme7QQmEl2ZgaFOdZXRE5JSCa5zPVnsCpoLci7r5fyATOM0LTAyYkyFM9XsZMVkelTw+
-	+
-X-Google-Smtp-Source: AGHT+IEEtt9IXe34jmW2SWZlwSiC3ZqX9bmzujyx2QT1Z1XZwHpyNCAKSldgcj5KlfGZ3ySBlDK1xA==
-X-Received: by 2002:adf:b319:0:b0:337:c91d:e816 with SMTP id j25-20020adfb319000000b00337c91de816mr1089220wrd.1.1705625734915;
-        Thu, 18 Jan 2024 16:55:34 -0800 (PST)
-Received: from ?IPV6:2a10:bac0:b000:7589:26fc:cf3:a5b9:2475? ([2a10:bac0:b000:7589:26fc:cf3:a5b9:2475])
-        by smtp.gmail.com with ESMTPSA id t1-20020a5d5341000000b003378e67fd2asm5183061wrv.86.2024.01.18.16.55.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 16:55:34 -0800 (PST)
-Message-ID: <bd363091-22a6-4203-a7ec-b0ec4abfaf98@suse.com>
-Date: Fri, 19 Jan 2024 02:55:33 +0200
+	s=arc-20240116; t=1705625933; c=relaxed/simple;
+	bh=z0fVImkm7UGSmqgWkIF+werv/LoyB0dHD2X3KsTXHlY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=b7Kw7dkn+vXcdbHFCcgCPOtCSAcMlkSwhEiuqw/pvuCZIvjTjULUGixwk7ETOLHjO5/8wUmzUDbzNPrCIDr/bBDcW+3g7ayE+U4Z/xbXMXiacG99lZiCDI7eM+UWeYkInjD3mTVJV5XUvp1SYGux+ikYTAUiqZ2SS3TY/mPOxn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=lSBy4ghG; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1705625925;
+	bh=43Ub4cxvhf4UbencJZZh1E96E6g/2qxuS/dzdCa2liY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lSBy4ghGe/51Y2lDRsKIun3YhCV07Bi8ZiVOBS3k2yUfyeuOQcflB2Fzoe3vr5W3y
+	 7HQN6425dTl7Gr++PCG736NzCH7tvzCb2aIlcn3fYiKt60mgjfBhYMr5xvt3RmPhG5
+	 raZ7Y2+ZUcfWyGI4EhF4yDGV09fJ8CJyJS2OczvXkwtGpR5K8xhGDY/lWTamMg+ave
+	 gMVwZDoEgyPOgjoOw3Gi9ehiYLdXQco00nRjjs9n8BZktvfxHLT05/yZeBngx3OU+V
+	 YqmtrA5xMuBU3HOW3GqQK2r4ocHVJgzBCrHYJfdWcz9YNUpk0aV4WGiPiDp7URYWzP
+	 7eTbl4pMOrQZg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TGLpY2SD9z4x5m;
+	Fri, 19 Jan 2024 11:58:45 +1100 (AEDT)
+Date: Fri, 19 Jan 2024 11:58:43 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>
+Cc: Abel Vesa <abel.vesa@linaro.org>, Bjorn Andersson
+ <andersson@kernel.org>, Rajendra Nayak <quic_rjendra@quicinc.com>, Sibi
+ Sankar <quic_sibis@quicinc.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the devicetree tree
+Message-ID: <20240119115843.5556189a@canb.auug.org.au>
+In-Reply-To: <20231211160510.0aef871b@canb.auug.org.au>
+References: <20231211160510.0aef871b@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] x86/virt/tdx: Disable KEXEC in the presence of TDX
-Content-Language: en-US
-To: "Huang, Kai" <kai.huang@intel.com>,
- "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
- "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-References: <20240118160118.1899299-1-nik.borisov@suse.com>
- <e75addd3a8af6ef0243999f933df528e975d5ca3.camel@intel.com>
- <fc731bd3-4232-4906-9f78-448a96e3eb5b@suse.com>
- <7695034c0c7bf91532fb5cbd05d9a4b8cb77e70f.camel@intel.com>
-From: Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <7695034c0c7bf91532fb5cbd05d9a4b8cb77e70f.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/S/UQqlq2sNIGyL.SIsfvLS4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/S/UQqlq2sNIGyL.SIsfvLS4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 19.01.24 г. 2:52 ч., Huang, Kai wrote:
-> On Fri, 2024-01-19 at 02:49 +0200, Nikolay Borisov wrote:
->> [Adding Kirill as he has a series in flight about KEXEC]
->>
->> On 18.01.24 г. 23:31 ч., Huang, Kai wrote:
->>> On Thu, 2024-01-18 at 18:01 +0200, Nikolay Borisov wrote:
->>>> TDX doesn't currently support kexec so disable the latter when TDX
->>>> is detected at boot time. If kexec must absolutely be supported then
->>>> TDX can be disabled from the bios.
->>>>
->>>> Making this decision at run time rather than as a compile time option
->>>> allows distribution kernels to have both enabled and delegate to the
->>>> user whether they want to use TDX/Kexec.
->>>>
->>>> Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
->>>
->>> Hi Nikolay,
->>>
->>> Thanks for the patch.
->>>
->>> I am working in progress on patches to make kexec() work with TDX.  I plan to
->>> send them out soon (e.g., next week), but I think perhaps your patch is
->>> reasonable before that is merged.
->>
->> I thought Kirill's series rectifies this ?
->>
-> 
-> No that's for TDX guest.
+On Mon, 11 Dec 2023 16:05:10 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the devicetree tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> drivers/clk/qcom/gcc-x1e80100.c:6786:15: error: variable 'gcc_x1e80100_dr=
+iver' has initializer but incomplete type
+>  6786 | static struct platform_driver gcc_x1e80100_driver =3D {
+>       |               ^~~~~~~~~~~~~~~
+> drivers/clk/qcom/gcc-x1e80100.c:6787:10: error: 'struct platform_driver' =
+has no member named 'probe'
+>  6787 |         .probe =3D gcc_x1e80100_probe,
+>       |          ^~~~~
+> drivers/clk/qcom/gcc-x1e80100.c:6787:18: warning: excess elements in stru=
+ct initializer
+>  6787 |         .probe =3D gcc_x1e80100_probe,
+>       |                  ^~~~~~~~~~~~~~~~~~
+> drivers/clk/qcom/gcc-x1e80100.c:6787:18: note: (near initialization for '=
+gcc_x1e80100_driver')
+> drivers/clk/qcom/gcc-x1e80100.c:6788:10: error: 'struct platform_driver' =
+has no member named 'driver'
+>  6788 |         .driver =3D {
+>       |          ^~~~~~
+> drivers/clk/qcom/gcc-x1e80100.c:6788:19: error: extra brace group at end =
+of initializer
+>  6788 |         .driver =3D {
+>       |                   ^
+> drivers/clk/qcom/gcc-x1e80100.c:6788:19: note: (near initialization for '=
+gcc_x1e80100_driver')
+> drivers/clk/qcom/gcc-x1e80100.c:6788:19: warning: excess elements in stru=
+ct initializer
+> drivers/clk/qcom/gcc-x1e80100.c:6788:19: note: (near initialization for '=
+gcc_x1e80100_driver')
+> drivers/clk/qcom/gcc-x1e80100.c: In function 'gcc_x1e80100_init':
+> drivers/clk/qcom/gcc-x1e80100.c:6796:16: error: implicit declaration of f=
+unction 'platform_driver_register' [-Werror=3Dimplicit-function-declaration]
+>  6796 |         return platform_driver_register(&gcc_x1e80100_driver);
+>       |                ^~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/clk/qcom/gcc-x1e80100.c: In function 'gcc_x1e80100_exit':
+> drivers/clk/qcom/gcc-x1e80100.c:6802:9: error: implicit declaration of fu=
+nction 'platform_driver_unregister'; did you mean 'driver_unregister'? [-We=
+rror=3Dimplicit-function-declaration]
+>  6802 |         platform_driver_unregister(&gcc_x1e80100_driver);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |         driver_unregister
+> drivers/clk/qcom/gcc-x1e80100.c: At top level:
+> drivers/clk/qcom/gcc-x1e80100.c:6786:31: error: storage size of 'gcc_x1e8=
+0100_driver' isn't known
+>  6786 | static struct platform_driver gcc_x1e80100_driver =3D {
+>       |                               ^~~~~~~~~~~~~~~~~~~
+>=20
+> Caused by commit
+>=20
+>   0d18bcdebb2f ("of: Stop circularly including of_device.h and of_platfor=
+m.h")
+>=20
+> interacting with commit
+>=20
+>   161b7c401f4b ("clk: qcom: Add Global Clock controller (GCC) driver for =
+X1E80100")
+>=20
+> from the qcom tree.
+>=20
+> I have applied the following merge resolution patch.  This patch could
+> be applied to the gcom tree.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 11 Dec 2023 15:47:55 +1100
+> Subject: [PATCH] fix up for "of: Stop circularly including of_device.h an=
+d of_platform.h"
+>=20
+> interacting with
+> "clk: qcom: Add Global Clock controller (GCC) driver for X1E80100"
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/clk/qcom/gcc-x1e80100.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/clk/qcom/gcc-x1e80100.c b/drivers/clk/qcom/gcc-x1e80=
+100.c
+> index 74db7fef237b..d7182d6e9783 100644
+> --- a/drivers/clk/qcom/gcc-x1e80100.c
+> +++ b/drivers/clk/qcom/gcc-x1e80100.c
+> @@ -4,8 +4,9 @@
+>   */
+> =20
+>  #include <linux/clk-provider.h>
+> +#include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+> -#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+> =20
+>  #include <dt-bindings/clock/qcom,x1e80100-gcc.h>
+> --=20
+> 2.40.1
 
-Well in this case shouldn't INTEL_TDX_GUEST also be gated on KEXEC_CORE 
-being inoperable either via Kconfig option or via a similar approach to 
-this one (if it's accepted)?
+Did this get lost somewhere among the merges?  I am still applying the patch
+to linux-next.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/S/UQqlq2sNIGyL.SIsfvLS4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWpyUMACgkQAVBC80lX
+0GyWkQf+L0vDJrDDH7ETJZAIiuSjI874TntKzNyCasngpcN2J2sFxUweE51ghqrW
+h3WPB3fpnddjz1IGkIOZEPMWVjxXK+NuyI8XIlvrk0p3Vs8uFNJAtX9vTkcTpAlf
+it4P/WsdikzL1Q0iwzM3RCgIV8OtfvsDKjMZSLU1DxIG82DtAUMx7O4fKdGBnbWM
+VFPhJIPP9EhSX2pjQZXiHcXR5UtYiDACpipAYcF30unu31g5UlWutSpjXiCGklig
+UxAtNhFebWTZbGs0yHdTwWabW5WFvxh0VxNyv+Fv9dWfUKNj1JWQkFnonfZCO1Fh
+gpsnQSXE7WNTTc5NQwd9fna3rB/rBA==
+=2/Ew
+-----END PGP SIGNATURE-----
+
+--Sig_/S/UQqlq2sNIGyL.SIsfvLS4--
 
