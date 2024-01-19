@@ -1,122 +1,179 @@
-Return-Path: <linux-kernel+bounces-31318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4E9832C6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:39:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AC68832C74
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:44:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D6B01F23F58
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:39:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4504E1C23A20
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:44:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E9A54BE0;
-	Fri, 19 Jan 2024 15:39:29 +0000 (UTC)
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EAE754BE0;
+	Fri, 19 Jan 2024 15:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WQCl1BVN"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506E13C465;
-	Fri, 19 Jan 2024 15:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458C554BD0
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705678769; cv=none; b=CiVPM4j9xmZUW5/YKDf4tLlOuvn9vcSGL3kS5cLNmvO7HUdKaiAB4fiBwX9EkhaSnJv5aqQbmfJ6M+eGHgKk5Hv8TCiQKWCkUdXpIBSQRWKoTunM5qU5GdMs6gQfCS6emkhCNcM6ZMoeA1eQUzmk042EoD5/2xZqc3Lp5nbU+yk=
+	t=1705679058; cv=none; b=GK3owy3ImZ+uzBI/8gVzAYA+zxrtqIzkMPz125TbDK76Sw2/LbLBLSfF+An6Kag/Hp7Tb84Ziy2soEKCccgeizPdK64dFdNPMjB2yaCASCHAr9hkLFOh9Rxw4kP+KGGvjNrfn4qnYtDmrBha0BZtxmI3DMJTivL7PB1Qg9m4G10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705678769; c=relaxed/simple;
-	bh=VtiMxsi1+ub0qW/r114MxUAGi/pPUxucnebfcw3ezbc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Eipn1GW45z0naebRbgewEbW+CK/Yax+LhBYdfOhd3Ma9j5gf5KmCvUZr3tRJ/NRN4vrdpKNpzWmbSND/e2RPlAseCwRkrU+qEQauw1l5zsqPbLP/arZPF2R4Htuci3iRISEEc3dhI1ywHUoBNt8odIZ3c8iEABeXaWowIUMelho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 19 Jan
- 2024 18:39:17 +0300
-Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 19 Jan
- 2024 18:39:16 +0300
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To: Chuck Lever <chuck.lever@oracle.com>
-CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Jeff Layton
-	<jlayton@kernel.org>, Amir Goldstein <amir73il@gmail.com>, Alexander Viro
-	<viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara
-	<jack@suse.cz>, <linux-fsdevel@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com>
-Subject: [PATCH] do_sys_name_to_handle(): use kzalloc() to fix kernel-infoleak
-Date: Fri, 19 Jan 2024 07:39:06 -0800
-Message-ID: <20240119153906.4367-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1705679058; c=relaxed/simple;
+	bh=q5UJVGX3yfRfi60/H2zTOA89guV2jb+xgf5zKB4s9SE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=obS9yFdeEqZbpQKVbXF12DB7Bci7b2o+oz+9mL8VQz/mi8zD1bxWmk4fuxjsCEzp9GRcxev+1ccKGNdqU03FviWoKM+LAbwDUBeNJBxsDzIqL/ET4+TXLPuMFh+Zuk9Olkm/NyfuA/bU0xRg3p/SMObzH4IGLFwLIiBcD6JJU50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WQCl1BVN; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705679056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QjYsUi6PYjDB4zhjAZoeXh7tMhPQit/CHnee+lSIhAM=;
+	b=WQCl1BVNmOcQa3DzlZSe3W9Fh1yS1CXd7U/o++24fTlOp00kmPZeyMvt7WSSopQ8hTM4YC
+	PiQvIImzdaxl58aRLkO3ns8IABYXoie3M51AKEPo0a8vX0CGvm+8PZVTT3V2XBTm6eTouj
+	LxYHTBFwBVAlDfmVEV2kSFX1j6SM6IM=
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
+ [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-517-R_fL2xzANGGAEZdcbpmuFA-1; Fri, 19 Jan 2024 10:44:12 -0500
+X-MC-Unique: R_fL2xzANGGAEZdcbpmuFA-1
+Received: by mail-ua1-f72.google.com with SMTP id a1e0cc1a2514c-7d2ca4372d2so332854241.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:44:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705679052; x=1706283852;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QjYsUi6PYjDB4zhjAZoeXh7tMhPQit/CHnee+lSIhAM=;
+        b=Wzo0jd1B2Q5Q8pTBnsepTQJe3k8USb+dAQWCG1qXMmfWImU1DJ4cfbODm/ShQcTQxJ
+         LfURu9xgX+uuS4Pbr3uxWg59hiDqhh1DMbyOxiFVHjLwUjj4cHiIlxlbLgxY+VZu+XuK
+         JXcLBsQvW8P2Xsan21KeZFjdyLT7eJBgOu2hZvqTitkMcG32WTTGj6y/hhTrRko8gE/w
+         2vQj6+Yun4varGCLjulOM1xuO749MmJDM8FbSzpO5TJiDtoqu2m1RQhC1h49jaC6Nl6V
+         sOJV0nMWis0722N1AgeaDMEbXC7bwAylosyb3yJpmwXUXRN97x2t51syAuj0B5bnRFpF
+         WApQ==
+X-Gm-Message-State: AOJu0YzV8R++f+VfscNa6zyaAkuw2rsN33M2+kgOBB4uFbMZbUrQp35C
+	88ghyigqz5z4x+6MGou/oR9qiyNtjTrUOtg10JQQdRz+VQERzwAjFo5NwKejnQ2NGB+uISwV44B
+	4UsKLS8697X7dLsLo0HYZyN5Caowsk23TKDK8K8RZnrLc20DlU1HnMK0npscZcQ==
+X-Received: by 2002:a05:6102:162c:b0:469:a26c:cd40 with SMTP id cu44-20020a056102162c00b00469a26ccd40mr343270vsb.71.1705679051978;
+        Fri, 19 Jan 2024 07:44:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEQAFTPc2F/rZAHEH0XAopgBDhs3oui2/5EzTmX8AuLUGPhO0TyKvAjcXSh+rDUgPiYp2JKLg==
+X-Received: by 2002:a05:6102:162c:b0:469:a26c:cd40 with SMTP id cu44-20020a056102162c00b00469a26ccd40mr343255vsb.71.1705679051642;
+        Fri, 19 Jan 2024 07:44:11 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id ow18-20020a0562143f9200b006849db7c44esm247053qvb.60.2024.01.19.07.44.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 07:44:11 -0800 (PST)
+Date: Fri, 19 Jan 2024 09:44:09 -0600
+From: Andrew Halaney <ahalaney@redhat.com>
+To: Maulik Shah <quic_mkshah@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	quic_eberman@quicinc.com, quic_collinsd@quicinc.com, quic_lsrao@quicinc.com
+Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Enhance check for VREG in-flight
+ request
+Message-ID: <6tnescmrw4j2wzhc2p2lih6624xgt7spoxj2ahus6wzfcmmear@cqdkohjquzr7>
+References: <20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com>
 
-syzbot identified a kernel information leak vulnerability in
-do_sys_name_to_handle() and issued the following report [1].
+On Wed, Jan 17, 2024 at 02:24:10PM +0530, Maulik Shah wrote:
+> Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte aligned
+> addresses associated with it. These control voltage, enable state, mode,
+> and in legacy targets, voltage headroom. The current in-flight request
+> checking logic looks for exact address matches. Requests for different
+> addresses of the same RPMh resource as thus not detected as in-flight.
+> 
+> Enhance the in-flight request check for VREG requests by ignoring the
+> address offset. This ensures that only one request is allowed to be
+> in-flight for a given VREG resource. This is needed to avoid scenarios
+> where request commands are carried out by RPMh hardware out-of-order
+> leading to LDO regulator over-current protection triggering.
+> 
+> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 
-[1]
-"BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
-BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x100 lib/usercopy.c:40
- instrument_copy_to_user include/linux/instrumented.h:114 [inline]
- _copy_to_user+0xbc/0x100 lib/usercopy.c:40
- copy_to_user include/linux/uaccess.h:191 [inline]
- do_sys_name_to_handle fs/fhandle.c:73 [inline]
- __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
- __se_sys_name_to_handle_at+0x949/0xb10 fs/fhandle.c:94
- __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
- ...
+Two minor things:
 
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1006 [inline]
- __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
- kmalloc include/linux/slab.h:604 [inline]
- do_sys_name_to_handle fs/fhandle.c:39 [inline]
- __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
- __se_sys_name_to_handle_at+0x441/0xb10 fs/fhandle.c:94
- __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
- ...
+    1. Does this deserve a Fixes: tag?
+    2. The Signed-off-by chain here confuses me, you sent the patch
+       so your SOB should be last, but then that makes me believe Elliot
+       was the author which I don't think is reflected here (no From:
+       line). Please read [0] for a bit more details
 
-Bytes 18-19 of 20 are uninitialized
-Memory access of size 20 starts at ffff888128a46380
-Data copied to user address 0000000020000240"
+[0] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
 
-Per Chuck Lever's suggestion, use kzalloc() instead of kmalloc() to
-solve the problem.
-
-Fixes: 990d6c2d7aee ("vfs: Add name to file handle conversion support")
-Suggested-by: Chuck Lever III <chuck.lever@oracle.com>
-Reported-and-tested-by: syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
----
-Link to Chuck's suggestion: 
-https://lore.kernel.org/all/B4A8D625-6997-49C8-B105-B2DCFE8C6DDA@oracle.com/
-
- fs/fhandle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/fhandle.c b/fs/fhandle.c
-index 18b3ba8dc8ea..57a12614addf 100644
---- a/fs/fhandle.c
-+++ b/fs/fhandle.c
-@@ -36,7 +36,7 @@ static long do_sys_name_to_handle(const struct path *path,
- 	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
- 		return -EINVAL;
- 
--	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
-+	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
- 			 GFP_KERNEL);
- 	if (!handle)
- 		return -ENOMEM;
--- 
-2.25.1
+> ---
+>  drivers/soc/qcom/rpmh-rsc.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+> index a021dc71807b..5371d7e3090a 100644
+> --- a/drivers/soc/qcom/rpmh-rsc.c
+> +++ b/drivers/soc/qcom/rpmh-rsc.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
+>   */
+>  
+>  #define pr_fmt(fmt) "%s " fmt, KBUILD_MODNAME
+> @@ -91,6 +92,15 @@ enum {
+>  #define CMD_STATUS_ISSUED		BIT(8)
+>  #define CMD_STATUS_COMPL		BIT(16)
+>  
+> +#define ACCL_TYPE(addr)			((addr >> 16) & 0xF)
+> +#define VREG_ADDR(addr)			(addr & ~0xF)
+> +
+> +enum {
+> +	HW_ACCL_CLK = 0x3,
+> +	HW_ACCL_VREG,
+> +	HW_ACCL_BUS,
+> +};
+> +
+>  /*
+>   * Here's a high level overview of how all the registers in RPMH work
+>   * together:
+> @@ -557,7 +567,15 @@ static int check_for_req_inflight(struct rsc_drv *drv, struct tcs_group *tcs,
+>  		for_each_set_bit(j, &curr_enabled, MAX_CMDS_PER_TCS) {
+>  			addr = read_tcs_cmd(drv, drv->regs[RSC_DRV_CMD_ADDR], i, j);
+>  			for (k = 0; k < msg->num_cmds; k++) {
+> -				if (addr == msg->cmds[k].addr)
+> +				/*
+> +				 * Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte
+> +				 * aligned addresses associated with it. Ignore the offset to check
+> +				 * for in-flight VREG requests.
+> +				 */
+> +				if (HW_ACCL_VREG == ACCL_TYPE(msg->cmds[k].addr) &&
+> +				    VREG_ADDR(addr) == VREG_ADDR(msg->cmds[k].addr))
+> +					return -EBUSY;
+> +				else if (addr == msg->cmds[k].addr)
+>  					return -EBUSY;
+>  			}
+>  		}
+> 
+> ---
+> base-commit: 943b9f0ab2cfbaea148dd6ac279957eb08b96904
+> change-id: 20240117-rpmh-rsc-fixes-6c43c7051828
+> 
+> Best regards,
+> -- 
+> Maulik Shah <quic_mkshah@quicinc.com>
+> 
+> 
 
 
