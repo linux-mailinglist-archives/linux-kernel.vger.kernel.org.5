@@ -1,258 +1,111 @@
-Return-Path: <linux-kernel+bounces-31261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9876832B59
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:30:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6C02832B65
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:36:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83492283714
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:30:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56D33B2255D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A825353E1E;
-	Fri, 19 Jan 2024 14:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B949F53E20;
+	Fri, 19 Jan 2024 14:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="fASc8a+3"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MOJbhvWu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B9C53E25;
-	Fri, 19 Jan 2024 14:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020E736AE0;
+	Fri, 19 Jan 2024 14:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705674608; cv=none; b=GgAq7rf3J8yYNDQeWzVL3aYbdGjxlOWpmQ9XHUqkoGJ1cDgfuUw1lwywEZU8LmcKtaVY5BmDHR4sKDqwuiM3McMpBp0DPImDNUdeLIY8Hy4FTHAy+joQgnHh28r9NvgZXQ1YFH49eolLmU7LvNorEQ11US3p9iM4KPTLxxp3eoc=
+	t=1705674966; cv=none; b=ehz5+1fW7FRoxhXLjBIK2tErBEnuXFOE0CrpIqvGske1EUHY+fdjMFgCACVIs/6dk3yoU/vSVJurasJggOHFMkbBwqkzn6QAYzewq+KEnKOUXH6LMb3opjXxl4Gm5gfBnp28EST+jpInUNTtWM0acgH/mduF+RLPUw2clOj/r2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705674608; c=relaxed/simple;
-	bh=bla26PPB/OlD6tPWxkqAhGJY9TUkLE14D0Fo40PLpHI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u/QhVbsqWwXHA2vM5NNS1FKChoJMBgtr4FGKScb3lbkn1ACfhUZYVOpN3jO8B/s98nXVD+vF9boKIAlkvMSJa0ubPlHNSCl/ukDptzHlWBDaJlKV8M5Ha4OjZnntvqW04rGZxLvqOVAprRYSK4ARr6Y4Apb1xY+WkfLoYffCFp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=fASc8a+3; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=Nh+dr8sER5lYrvOiCi2COP+Tbs+aMcxjg9bxrUnh0Uk=; b=fASc8a+3o1v9iAacv6soNk2gpC
-	q0+iTjGYa0zXkJKu8dJz8WTfhS3I/Yn5RZOqCIz93HjowklUcYs/QnL1I5cwwwRfURZh3gRUc5TzN
-	8BYXWjPiHafkJED8uk0RrNsw/IkMbeZDpAgHF/DCmr5r0GtU1yBcS5wc13ccx+raeST4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rQpsV-005Z7m-Dy; Fri, 19 Jan 2024 15:29:51 +0100
-Date: Fri, 19 Jan 2024 15:29:51 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: MD Danish Anwar <danishanwar@ti.com>
-Cc: Rob Herring <robh@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>,
-	Jan Kiszka <jan.kiszka@siemens.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Grygorii Strashko <grygorii.strashko@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Roger Quadros <rogerq@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, srk@ti.com, r-gunasekaran@ti.com
-Subject: Re: [RFC PATCH v2 3/3] net: ti: icssg-prueth: Add support for ICSSG
- switch firmware
-Message-ID: <f1ad5388-8a28-4b83-86d5-604d5ece84c0@lunn.ch>
-References: <20240118071005.1514498-1-danishanwar@ti.com>
- <20240118071005.1514498-4-danishanwar@ti.com>
+	s=arc-20240116; t=1705674966; c=relaxed/simple;
+	bh=HuF2gjruI61tSBMxn8SeRxIPR2u9R5zRnNfHuaZ41JI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kGH2z2Olejm0wFwIqsdOIM71QaaG8f/VNObuKeKDHwLBbRiXF9EnF3JQa/Z218lVt3xOOYZzcYPnEZq4yx1Lem4QbHgyAULLVvPw71XKH2FYoz8kS9vJql9cBzBMhuJwRLWJd5tc/FCsibWViYTv4qwSYznqgJ2IkP2Z+wBUwG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MOJbhvWu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC27CC433F1;
+	Fri, 19 Jan 2024 14:36:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705674965;
+	bh=HuF2gjruI61tSBMxn8SeRxIPR2u9R5zRnNfHuaZ41JI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=MOJbhvWueT1hIFiC4nYcb4itt235fxN63XtfNTTC4lbN2GjRSAKzT/BLina1tmPks
+	 sIJSNpgU4P4gYqY0/sObsoIK2Lt/Z9c9bQcOUJfzbzsm7s1QwRTFvqw/NwunN4fA0p
+	 zSJ7O/+ArAqaJT5oSn2uwrJjTZbJwASzePzxR+wcBOXLjD9D0tA8N3ww+bTBjdMrnX
+	 laKnpMQrKvF14kTj4mccdsAIamqlBnuR1PhsVQ2YAKB1uXQKCk5unaLZp5iDMKUKSD
+	 q08gw3YCM6E2Qp3ULGf+CstDvAX5loFOnl8RXngd/rKjPaxvZCySBbjQnlzJK2lAaa
+	 fowBaLsTtJTJw==
+From: Christian Brauner <brauner@kernel.org>
+To: Rich Felker <dalias@libc.org>,
+	Jens Axboe <axboe@kernel.dk>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	kernel list <linux-kernel@vger.kernel.org>,
+	Linux API <linux-api@vger.kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v2] vfs: add RWF_NOAPPEND flag for pwritev2
+Date: Fri, 19 Jan 2024 15:33:32 +0100
+Message-ID: <20240119-neuverfilmung-aufregend-54a5bd5929dd@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20200831153207.GO3265@brightrain.aerifal.cx>
+References: <20200831153207.GO3265@brightrain.aerifal.cx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118071005.1514498-4-danishanwar@ti.com>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1814; i=brauner@kernel.org; h=from:subject:message-id; bh=HuF2gjruI61tSBMxn8SeRxIPR2u9R5zRnNfHuaZ41JI=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSu6tjpcyOYb3f4fQYn+4IHS0Mb2AMliozXMp3/6ptRm qCZ+HduRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwET6njP8L0pKeLk1sszN54x3 xALHHqtf+5apP/1iZPe2L7v8QPP7Awx/5U/wKahenPX9RkTY9WcqSb9vfJLsCJrA8uBArai8kA4 /LwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 18, 2024 at 12:40:05PM +0530, MD Danish Anwar wrote:
-> Add support for ICSSG switch firmware using existing Dual EMAC driver
-> with switchdev.
+On Mon, 31 Aug 2020 11:32:08 -0400, Rich Felker wrote:
+> The pwrite function, originally defined by POSIX (thus the "p"), is
+> defined to ignore O_APPEND and write at the offset passed as its
+> argument. However, historically Linux honored O_APPEND if set and
+> ignored the offset. This cannot be changed due to stability policy,
+> but is documented in the man page as a bug.
 > 
-> Limitations:
-> VLAN offloading is limited to 0-256 IDs.
-> MDB/FDB static entries are limited to 511 entries and different FDBs can
-> hash to same bucket and thus may not completely offloaded
-
-What are the limits when using Dual EMAC driver? I'm just wondering if
-we need to check that 257 VLANs have been offloaded, we cannot swap to
-switch mode, keep with Dual EMAC?
-
-
-> Switch mode requires loading of new firmware into ICSSG cores. This
-> means interfaces have to taken down and then reconfigured to switch
-> mode.
-
-This is now out of date?
-
+> Now that there's a pwritev2 syscall providing a superset of the pwrite
+> functionality that has a flags argument, the conforming behavior can
+> be offered to userspace via a new flag. Since pwritev2 checks flag
+> validity (in kiocb_set_rw_flags) and reports unknown ones with
+> EOPNOTSUPP, callers will not get wrong behavior on old kernels that
+> don't support the new flag; the error is reported and the caller can
+> decide how to handle it.
 > 
-> Example assuming ETH1 and ETH2 as ICSSG2 interfaces:
-> 
-> Switch to ICSSG Switch mode:
->  ip link set dev eth1 down
->  ip link set dev eth2 down
->  ip link add name br0 type bridge
->  ip link set dev eth1 master br0
->  ip link set dev eth2 master br0
->  ip link set dev br0 up
->  ip link set dev eth1 up
->  ip link set dev eth2 up
->  bridge vlan add dev br0 vid 1 pvid untagged self
-> 
-> Going back to Dual EMAC mode:
-> 
->  ip link set dev br0 down
->  ip link set dev eth1 nomaster
->  ip link set dev eth2 nomaster
->  ip link set dev eth1 down
->  ip link set dev eth2 down
->  ip link del name br0 type bridge
->  ip link set dev eth1 up
->  ip link set dev eth2 up
-> 
-> By default, Dual EMAC firmware is loaded, and can be changed to switch
-> mode by above steps
-> 
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> ---
->  drivers/net/ethernet/ti/Kconfig               |   1 +
->  drivers/net/ethernet/ti/Makefile              |   3 +-
->  drivers/net/ethernet/ti/icssg/icssg_config.c  | 136 +++++++++++-
->  drivers/net/ethernet/ti/icssg/icssg_config.h  |   7 +
->  drivers/net/ethernet/ti/icssg/icssg_prueth.c  | 198 +++++++++++++++++-
->  .../net/ethernet/ti/icssg/icssg_switchdev.c   |   2 +-
->  6 files changed, 333 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/ti/Kconfig b/drivers/net/ethernet/ti/Kconfig
-> index be01450c20dc..c72f26828b04 100644
-> --- a/drivers/net/ethernet/ti/Kconfig
-> +++ b/drivers/net/ethernet/ti/Kconfig
-> @@ -188,6 +188,7 @@ config TI_ICSSG_PRUETH
->  	select TI_ICSS_IEP
->  	select TI_K3_CPPI_DESC_POOL
->  	depends on PRU_REMOTEPROC
-> +	depends on NET_SWITCHDEV
->  	depends on ARCH_K3 && OF && TI_K3_UDMA_GLUE_LAYER
->  	help
->  	  Support dual Gigabit Ethernet ports over the ICSSG PRU Subsystem.
-> diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
-> index d8590304f3df..d295bded7a32 100644
-> --- a/drivers/net/ethernet/ti/Makefile
-> +++ b/drivers/net/ethernet/ti/Makefile
-> @@ -38,5 +38,6 @@ icssg-prueth-y := icssg/icssg_prueth.o \
->  		  icssg/icssg_config.o \
->  		  icssg/icssg_mii_cfg.o \
->  		  icssg/icssg_stats.o \
-> -		  icssg/icssg_ethtool.o
-> +		  icssg/icssg_ethtool.o \
-> +		  icssg/icssg_switchdev.o
->  obj-$(CONFIG_TI_ICSS_IEP) += icssg/icss_iep.o
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_config.c b/drivers/net/ethernet/ti/icssg/icssg_config.c
-> index afc10014ec03..eda08a87c902 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_config.c
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_config.c
-> @@ -105,28 +105,49 @@ static const struct map hwq_map[2][ICSSG_NUM_OTHER_QUEUES] = {
->  	},
->  };
->  
-> +static void icssg_config_mii_init_switch(struct prueth_emac *emac)
+> [...]
 
-I'm surprised you need to configure the MII interface different in
-switch mode. Please could you explain this a bit more.
+The RWF_* and IOCB_* flags were
+aligned so they could be set in one operation. So there was a merge
+conflict when applying. I've resolved it. Please take a look and make
+sure that it's all correct.
 
-> +{
-> +	struct prueth *prueth = emac->prueth;
-> +	int mii = prueth_emac_slice(emac);
-> +	u32 txcfg_reg, pcnt_reg, txcfg;
-> +	struct regmap *mii_rt;
-> +
-> +	mii_rt = prueth->mii_rt;
-> +
-> +	txcfg_reg = (mii == ICSS_MII0) ? PRUSS_MII_RT_TXCFG0 :
-> +				       PRUSS_MII_RT_TXCFG1;
-> +	pcnt_reg = (mii == ICSS_MII0) ? PRUSS_MII_RT_RX_PCNT0 :
-> +				       PRUSS_MII_RT_RX_PCNT1;
-> +
-> +	txcfg = PRUSS_MII_RT_TXCFG_TX_ENABLE |
-> +		PRUSS_MII_RT_TXCFG_TX_AUTO_PREAMBLE |
-> +		PRUSS_MII_RT_TXCFG_TX_IPG_WIRE_CLK_EN;
-> +
-> +	if (emac->phy_if == PHY_INTERFACE_MODE_MII && mii == ICSS_MII1)
-> +		txcfg |= PRUSS_MII_RT_TXCFG_TX_MUX_SEL;
-> +	else if (emac->phy_if != PHY_INTERFACE_MODE_MII && mii == ICSS_MII0)
-> +		txcfg |= PRUSS_MII_RT_TXCFG_TX_MUX_SEL;
-> +
-> +	regmap_write(mii_rt, txcfg_reg, txcfg);
-> +	regmap_write(mii_rt, pcnt_reg, 0x1);
-> +}
-> +
->  static void icssg_config_mii_init(struct prueth_emac *emac)
->  {
-> -	u32 rxcfg, txcfg, rxcfg_reg, txcfg_reg, pcnt_reg;
->  	struct prueth *prueth = emac->prueth;
->  	int slice = prueth_emac_slice(emac);
-> +	u32 txcfg, txcfg_reg, pcnt_reg;
->  	struct regmap *mii_rt;
->  
->  	mii_rt = prueth->mii_rt;
->  
-> -	rxcfg_reg = (slice == ICSS_MII0) ? PRUSS_MII_RT_RXCFG0 :
-> -				       PRUSS_MII_RT_RXCFG1;
->  	txcfg_reg = (slice == ICSS_MII0) ? PRUSS_MII_RT_TXCFG0 :
->  				       PRUSS_MII_RT_TXCFG1;
->  	pcnt_reg = (slice == ICSS_MII0) ? PRUSS_MII_RT_RX_PCNT0 :
->  				       PRUSS_MII_RT_RX_PCNT1;
->  
-> -	rxcfg = MII_RXCFG_DEFAULT;
->  	txcfg = MII_TXCFG_DEFAULT;
->  
-> -	if (slice == ICSS_MII1)
-> -		rxcfg |= PRUSS_MII_RT_RXCFG_RX_MUX_SEL;
-> -
->  	/* In MII mode TX lines swapped inside ICSSG, so TX_MUX_SEL cfg need
->  	 * to be swapped also comparing to RGMII mode.
->  	 */
-> @@ -135,7 +156,6 @@ static void icssg_config_mii_init(struct prueth_emac *emac)
->  	else if (emac->phy_if != PHY_INTERFACE_MODE_MII && slice == ICSS_MII1)
->  		txcfg |= PRUSS_MII_RT_TXCFG_TX_MUX_SEL;
->  
-> -	regmap_write(mii_rt, rxcfg_reg, rxcfg);
->  	regmap_write(mii_rt, txcfg_reg, txcfg);
->  	regmap_write(mii_rt, pcnt_reg, 0x1);
->  }
-> @@ -249,6 +269,66 @@ static int emac_r30_is_done(struct prueth_emac *emac)
->  	return 1;
->  }
->  
-> +static int prueth_switch_buffer_setup(struct prueth_emac *emac)
-> +{
-> +	struct icssg_buffer_pool_cfg __iomem *bpool_cfg;
-> +	struct icssg_rxq_ctx __iomem *rxq_ctx;
-> +	struct prueth *prueth = emac->prueth;
-> +	int slice = prueth_emac_slice(emac);
-> +	u32 addr;
-> +	int i;
-> +
-> +	addr = lower_32_bits(prueth->msmcram.pa);
-> +	if (slice)
-> +		addr += PRUETH_NUM_BUF_POOLS * PRUETH_EMAC_BUF_POOL_SIZE;
-> +
-> +	if (addr % SZ_64K) {
-> +		dev_warn(prueth->dev, "buffer pool needs to be 64KB aligned\n");
-> +		return -EINVAL;
-> +	}
+---
 
-What happens if its not? Do we cleanly stay in Dual EMAC mode without
-any loss of configuration? Or do bad things happen? Maybe this should
-be checked at probe time, so you can deny the swap to switch mode
-quickly and easily?
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-	Andrew
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] vfs: add RWF_NOAPPEND flag for pwritev2
+      https://git.kernel.org/vfs/vfs/c/31081ab305a1
 
