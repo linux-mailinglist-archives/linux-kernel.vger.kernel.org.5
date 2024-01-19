@@ -1,203 +1,126 @@
-Return-Path: <linux-kernel+bounces-30864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C94B7832541
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:48:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031C5832543
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:48:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 513091F23DD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:48:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36AC81C23620
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC404D52F;
-	Fri, 19 Jan 2024 07:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6EC8D52B;
+	Fri, 19 Jan 2024 07:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PhZMrL3n"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dtqw5KNs"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D4E6FAF
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CBAD51D
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705650484; cv=none; b=F4p3l0kxOUZI2ALTgOxWPntspBYoZwDDE4Lw8q1JHRNtP1zj5775nMdjqJ4pUgcc19hd/RE3oZpwPImwJog0N7p4JCtYhv0WvnAghtymQ+0N38hch7T/SvgWUj8udF+LuabfLCAcaIeRDchT8v8GoB5+PRAzQFa8q+iNWIOB5Ek=
+	t=1705650519; cv=none; b=i43P0RhgLycdzDuKG5nWNjnpUN6eO4WZTTQENHgBj8kasWDb8nrgP0g3hE5MJKXQX+ElhlwzjQh9Tb2WqBdm3rOJhCP5oN5NJDiU2SxudRqWtBkj49V87S2cmCT090Vz/KvtnUwNc0qFqGeFRE6yXcA6dBgOPCFrFWEPadSJsMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705650484; c=relaxed/simple;
-	bh=dbAOVjE2Wm0t88Ow3HMtoG1SG9rDYNwruAB84WPN1zo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tz34MLndO3X7O46zL/y/EEfNhUgNjhU5uZPFfEdXzQKyKkifVze+ZDqF20FSW1pIKHjvDlDLl77wa3eqCKKWvo1C9R6/HTQ/J616axkQ6bNxrbf6pFnVtT3u6ThxlYSgfJEVYmPMmJyu7Nngt0xRxDSD2Zmv8yDAphFd/tMEiPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PhZMrL3n; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d72043fa06so45605ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:48:03 -0800 (PST)
+	s=arc-20240116; t=1705650519; c=relaxed/simple;
+	bh=ebbJ6bA1dlgy/6ZtQSvyFQkwF2mZTYLPxjDz3eZfPdU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WiuTsMerZOvZBQ/YcwQ9jWsMe2O2hLK0rhYVImLyyzmHqwGqzE/55P+vpJTlmJJQdWBXzXPvtr7NjtpXy1pRZltjg5dWxoY/1Vz3MsUb1XX6ttlRs80HjsdQgmEh4IqHPYzQJ5olpnv54oRNcJaolkKIGbw1hFu2SHELRX+cLmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dtqw5KNs; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6d9b5c4f332so372480b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:48:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705650483; x=1706255283; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B24ukB2YP6slYCgEIRmf+Hk92TM7//n+GaGioxlv0Yk=;
-        b=PhZMrL3nk+wOOaxOMXQa47MUncl0Hxz0c3CwC9/rFasFzE5q2he0g3fZeyfjzkmOQp
-         Jq/0jFPVhElgp0wpw5tii65jqaqUDay0v4B1Id/CVbg2La9uHdt50CcDkpz1G26lQ8qu
-         /BIaMYRO0uDlbBEmNoZ/lRhcpO6Skdej/KW9gud6BbkXYbDNoeLqVkSkB7IdmCEw+HUE
-         roNRkhA42BLFo/ABEBlBmZbvkjRb3BamPKNZJbJxOBFsRUxBeC23vT4xHEUa/jZAWTD6
-         VC5UCt0f4GiIJDeWLE/CYBmRafe4umiFf7s2mWEA51cUjhb8ahlDoHUzD/LoJZpB+fvf
-         3nVA==
+        d=chromium.org; s=google; t=1705650517; x=1706255317; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nXGjBm0+HOq1i2RiP/xgovqiQd2Jx9NrE+bGhtMDLmQ=;
+        b=dtqw5KNsbDefq64UP+wgTUqnsEAn4ScsQRHKp80TQ+WpAAAH8cOTxN/Aq8rsafVS4y
+         r9aRkUwks1e7cnbxnlc1thPavmNOLrTbaXJRxjuoIof2exp3SctAM4SWgnysMx906EuJ
+         aCTlAILQK7+FAi8A2gK0Hhz6ZHfA623kPKCKU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705650483; x=1706255283;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B24ukB2YP6slYCgEIRmf+Hk92TM7//n+GaGioxlv0Yk=;
-        b=Y7hN8H1AqA/YyVZ4/bQgigGByB4qGPGVM8cav6JRcBj4jOaeO5+4heewTuTZqLKuVp
-         D7iIUkxGr34yCHv0Cx2xb6qtqEWSQB9GQJh1kAEnZasu4JLOzKvvCUGiu19QLgerU1nD
-         gZO9i4H1b0UcAa1RSvFTRTaLRUrCwqCCiQKbInb1W2iFoDlYDdTABN2roI2Wjt/FK61A
-         JhJNZzEplmfp3llHGYm3hRo8aOGXcwWB6q3/mZBfaVwsSVLb2KzNOKPTHMRqNm40mfla
-         3dM2jyHY0K6aWLn4ktpdFrTsqbinX29mUuRu+K/qd2OuCGGa9YKCKC5bK2Y08tapr6NO
-         a0Hw==
-X-Gm-Message-State: AOJu0YyIs6I1psYaEu6IXcaB0WN7Ijzpjjn+p/2EMgfbiqyb93+kkfPd
-	Z8KqNL3B9iBtyJaUd1IZGn3kBES1VxxKKOvueZcnr9N2odwNoJRGks0cLzSUn2lTQ7JwW6hzXWi
-	5womJ9gth8stORAQw/kLsHbDvYiznV2M5j7nY
-X-Google-Smtp-Source: AGHT+IGH3WXcjH0pc0MDrqdUz2dR/fcNlao+XhL+WRfT60dYLM8gHj0I+P+3/OgoIn2uGsadlUi4OA4BIncXcva5REw=
-X-Received: by 2002:a17:903:110c:b0:1d5:4c40:bf01 with SMTP id
- n12-20020a170903110c00b001d54c40bf01mr127187plh.17.1705650482720; Thu, 18 Jan
- 2024 23:48:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705650517; x=1706255317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nXGjBm0+HOq1i2RiP/xgovqiQd2Jx9NrE+bGhtMDLmQ=;
+        b=rRGXIYFZ9MwjIVer0e+lutba+sNqCzaXG1Q8TaYlA+BESncXhKmXkoRIqUXdYpEg4H
+         IfCYqBBHynVVCJ5h0e9jjp793rrTE9kIosj1W7DfIDDxsDW4N/3u+/KdNUA86nQXXhvH
+         uP5oolAz4UXrXMpn2bLZ3+Y0hTPgcBWZPUiszX44EzQAAQyNMdkQexSrEraYPSdwX0Qe
+         n+L92b/J+KWXsc3xCTP6O8leXb3YZNNSJFtUd+HUP+2+cDCNae71K7FEsHUuQdQdFd88
+         7RqH+PKvVjeX/GYco3jz0tpObPv4sFhlkJ82E/Csh572gQprxm89HuEp3nfwMPrZadeO
+         oABQ==
+X-Gm-Message-State: AOJu0YxezBHcq0mnvnQBSPnhCb0dTu2Jnz3D7oD5BrTYpnvJPEMtyTYD
+	/80TLAvk2YLj5P6ima+yu9TjcCFwwChvT9Hhtc6mvXy7qB1Gf8a/IHi1MIcpb6lVfDGWqCr2adM
+	=
+X-Google-Smtp-Source: AGHT+IHQna9e3X42lqrWFOSQZQYMAmVaV6Zoi5bSDcbYwGwoWzErrSZ7syFdmAt05s4X8B7fmLNpGw==
+X-Received: by 2002:a05:6a20:9154:b0:19a:e212:46c with SMTP id x20-20020a056a20915400b0019ae212046cmr1736163pzc.95.1705650516771;
+        Thu, 18 Jan 2024 23:48:36 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:a5a9:5dbc:778d:db07])
+        by smtp.gmail.com with UTF8SMTPSA id j14-20020a170902da8e00b001d4b1d190e3sm2435533plx.58.2024.01.18.23.48.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 23:48:36 -0800 (PST)
+From: Ting Shen <phoenixshen@chromium.org>
+X-Google-Original-From: Ting Shen <phoenixshen@google.com>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: fshao@chromium.org,
+	Ting Shen <phoenixshen@google.com>,
+	Benson Leung <bleung@chromium.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	chrome-platform@lists.linux.dev,
+	=?UTF-8?q?joewu=20=28=E5=90=B3=E4=BB=B2=E6=8C=AF=29?= <joewu@msi.com>,
+	linux-input@vger.kernel.org
+Subject: [PATCH v2] Input: cros_ec_keyb: add support for base attached event
+Date: Fri, 19 Jan 2024 15:48:17 +0800
+Message-ID: <20240119074831.2979671-1-phoenixshen@google.com>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705507931.git.jpoimboe@kernel.org> <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
- <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
- <20240117193915.urwueineol7p4hg7@treble> <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
- <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com> <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
-In-Reply-To: <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Thu, 18 Jan 2024 23:47:51 -0800
-Message-ID: <CALvZod7T=gops1B6gU3M7rOJ8D2mOrSwQ2hfpLaE-tNWZynAug@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Vlastimil Babka <vbabka@suse.cz>, Jeff Layton <jlayton@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Vasily Averin <vasily.averin@linux.dev>, 
-	Michal Koutny <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, 
-	Muchun Song <muchun.song@linux.dev>, Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 17, 2024 at 2:20=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
->
-> On Wed, Jan 17, 2024 at 01:02:19PM -0800, Shakeel Butt wrote:
-> > On Wed, Jan 17, 2024 at 12:21=E2=80=AFPM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > On Wed, 17 Jan 2024 at 11:39, Josh Poimboeuf <jpoimboe@kernel.org> wr=
-ote:
-> > > >
-> > > > That's a good point.  If the microbenchmark isn't likely to be even
-> > > > remotely realistic, maybe we should just revert the revert until if=
-/when
-> > > > somebody shows a real world impact.
-> > > >
-> > > > Linus, any objections to that?
-> > >
-> > > We use SLAB_ACCOUNT for much more common allocations like queued
-> > > signals, so I would tend to agree with Jeff that it's probably just
-> > > some not very interesting microbenchmark that shows any file locking
-> > > effects from SLAB_ALLOC, not any real use.
-> > >
-> > > That said, those benchmarks do matter. It's very easy to say "not
-> > > relevant in the big picture" and then the end result is that
-> > > everything is a bit of a pig.
-> > >
-> > > And the regression was absolutely *ENORMOUS*. We're not talking "a fe=
-w
-> > > percent". We're talking a 33% regression that caused the revert:
-> > >
-> > >    https://lore.kernel.org/lkml/20210907150757.GE17617@xsang-OptiPlex=
--9020/
-> > >
-> > > I wish our SLAB_ACCOUNT wasn't such a pig. Rather than account every
-> > > single allocation, it would be much nicer to account at a bigger
-> > > granularity, possibly by having per-thread counters first before
-> > > falling back to the obj_cgroup_charge. Whatever.
-> > >
-> > > It's kind of stupid to have a benchmark that just allocates and
-> > > deallocates a file lock in quick succession spend lots of time
-> > > incrementing and decrementing cgroup charges for that repeated
-> > > alloc/free.
-> > >
-> > > However, that problem with SLAB_ACCOUNT is not the fault of file
-> > > locking, but more of a slab issue.
-> > >
-> > > End result: I think we should bring in Vlastimil and whoever else is
-> > > doing SLAB_ACCOUNT things, and have them look at that side.
-> > >
-> > > And then just enable SLAB_ACCOUNT for file locks. But very much look
-> > > at silly costs in SLAB_ACCOUNT first, at least for trivial
-> > > "alloc/free" patterns..
-> > >
-> > > Vlastimil? Who would be the best person to look at that SLAB_ACCOUNT
-> > > thing? See commit 3754707bcc3e (Revert "memcg: enable accounting for
-> > > file lock caches") for the history here.
-> > >
-> >
-> > Roman last looked into optimizing this code path. I suspect
-> > mod_objcg_state() to be more costly than obj_cgroup_charge(). I will
-> > try to measure this path and see if I can improve it.
->
-> It's roughly an equal split between mod_objcg_state() and obj_cgroup_char=
-ge().
-> And each is comparable (by order of magnitude) to the slab allocation cos=
-t
-> itself. On the free() path a significant cost comes simple from reading
-> the objcg pointer (it's usually a cache miss).
->
-> So I don't see how we can make it really cheap (say, less than 5% overhea=
-d)
-> without caching pre-accounted objects.
->
-> I thought about merging of charge and stats handling paths, which _maybe_=
- can
-> shave off another 20-30%, but there still will be a double-digit% account=
-ing
-> overhead.
->
-> I'm curious to hear other ideas and suggestions.
->
-> Thanks!
+There is a new type of ChromeOS detachable keyboard that talks to
+the host via CrOS EC host command interface, rather than the USB
+interface.
 
-I profiled (perf record -a) the same benchmark i.e. lock1_processes on
-an icelake machine with 72 cores and got the following results:
+To trigger the firmware update daemon (hammerd) on this keyboard, a
+signal is required to replace the typical USB hotplug event. This patch
+addresses this by mapping the EC's BASE_ATTACHED event to SW_DOCK.
 
-  12.72%  lock1_processes  [kernel.kallsyms]   [k] mod_objcg_state
-  10.89%  lock1_processes  [kernel.kallsyms]   [k] kmem_cache_free
-   8.40%  lock1_processes  [kernel.kallsyms]   [k] slab_post_alloc_hook
-   8.36%  lock1_processes  [kernel.kallsyms]   [k] kmem_cache_alloc
-   5.18%  lock1_processes  [kernel.kallsyms]   [k] refill_obj_stock
-   5.18%  lock1_processes  [kernel.kallsyms]   [k] _copy_from_user
+Signed-off-by: Ting Shen <phoenixshen@google.com>
+---
 
-On annotating mod_objcg_state(), the following irq disabling
-instructions are taking 30% of its time.
+Changes in v2:
+- update commit message
 
-  6.64 =E2=94=82       pushfq
- 10.26=E2=94=82       popq   -0x38(%rbp)
-  6.05 =E2=94=82       mov    -0x38(%rbp),%rcx
-  7.60 =E2=94=82       cli
+ drivers/input/keyboard/cros_ec_keyb.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-For kmem_cache_free() & kmem_cache_alloc(), the following instruction
-was expensive, which corresponds to __update_cpu_freelist_fast().
+diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
+index 30678a34cf647..d2e0d89d4ffdf 100644
+--- a/drivers/input/keyboard/cros_ec_keyb.c
++++ b/drivers/input/keyboard/cros_ec_keyb.c
+@@ -128,6 +128,11 @@ static const struct cros_ec_bs_map cros_ec_keyb_bs[] = {
+ 		.code		= SW_TABLET_MODE,
+ 		.bit		= EC_MKBP_TABLET_MODE,
+ 	},
++	{
++		.ev_type	= EV_SW,
++		.code		= SW_DOCK,
++		.bit		= EC_MKBP_BASE_ATTACHED,
++	},
+ };
+ 
+ /*
+-- 
+2.43.0.429.g432eaa2c6b-goog
 
- 16.33 =E2=94=82      cmpxchg16b %gs:(%rsi)
-
-For slab_post_alloc_hook(), it's all over the place and
-refill_obj_stock() is very similar to mod_objcg_state().
-
-I will dig more in the next couple of days.
 
