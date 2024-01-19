@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-30657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A168B8322AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:42:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232648322AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:43:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A20851C22DA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 00:42:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FE302879AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 00:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307C810F4;
-	Fri, 19 Jan 2024 00:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9344F20E8;
+	Fri, 19 Jan 2024 00:42:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k/ApML9M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Io/QxJib"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B63EC2;
-	Fri, 19 Jan 2024 00:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30A815A4;
+	Fri, 19 Jan 2024 00:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705624962; cv=none; b=f3v0C34x+I0tluE0p+oGI2wfgBZX4VbAHLIRqGU24HD0fml5pyBwPsPD85qpYDkvaTJ6JTVNy4WQIH1nT0Ek2G0qvvZWt5owYEvfkat+nbJeJnwC7f1EfcOGAOQqDwTyIUgmQUe+33RlkIWlIGd23XQKQnghrQcjD78R8SaB5YQ=
+	t=1705624964; cv=none; b=WIAias4aU0QML61J9NRTXhspIg+pRo5aQIQz5DP6TV7gC8ly+dvXEvpFpUJJeVjR2f/b7d3ZX1tDNG2pk1iN5CkiwUEpw5zWZGoYyD6AziQwfkxiPFuPYMHKp/MGQt5GhmQKKpJZjiYcSZ17WtVRAVk1gCPq3XFgyo17L3ifQn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705624962; c=relaxed/simple;
-	bh=KFftwYqFIcoquNtZ1NqkoabheV00jhXZ9kZGcoYTiW4=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=FKPZiCKWUm76t85LPXT0ZeR8kNCAb9tRAA7f9TbJuPmbishjQubNlWB3/LUuMuNkSP1DCM7ih1q00xnWQGbwYGJA/VBDy/0h2RZGsUV6CV5NvmP1lAR53HlWpSv37xjwG9sM9QwoSUaSff6CieVnSJuMWi2ShRXKxAt60x4EIWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k/ApML9M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 41D2CC433F1;
-	Fri, 19 Jan 2024 00:42:42 +0000 (UTC)
+	s=arc-20240116; t=1705624964; c=relaxed/simple;
+	bh=wAfFiwS+y4GzbnfIf20gNvI21wt6KZrRxbm1IOzy4Hk=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Gqhjxw7JF+S5Z0232sJ9tMf/E4ki+8/3n2yFGfOOnwfi91QClxAjlEHSOCi0KgQAR9nFA5SO7kjTDlf5bEF+ilGsTzXeGWx/fc69panpmCLOLEV7zE+MHFJ70ygbBeVWPOVfAxbsegFf2z8aI3PV2jWL7JauZfKPwHQlhLfm/OY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Io/QxJib; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5F4C5C433B1;
+	Fri, 19 Jan 2024 00:42:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705624962;
-	bh=KFftwYqFIcoquNtZ1NqkoabheV00jhXZ9kZGcoYTiW4=;
+	s=k20201202; t=1705624964;
+	bh=wAfFiwS+y4GzbnfIf20gNvI21wt6KZrRxbm1IOzy4Hk=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=k/ApML9MPV4+/iK5OnnqWaG2hNLCHxImi+GXb/OImwyzX/IBOPriqF2J8MXm4t0+t
-	 d0FGPL+XPMaaNXmiGFle6+VSxSI3luAhdT3FcY0mt929R/4Upun2RqvMm3WxgPjmFZ
-	 SMkS7Hi43+JYKSbf3R6uWoDPdfFEQQz1D8KCkUqqXVLwAJdt/6YNkX+CN2Nl6K+k7k
-	 Ni2DomxEYfHO8SLF3Ia0+YHjohRR8MfainNBhARYQuADQ0k65AyFhPvTcme89fmO7+
-	 SsXYf58x7k2EpF/h39/00LZihmner0M1V2XF8/kGRDjU6IbeRfgoSMnEkAIntAujL8
-	 sY+1cR3xMa9Ng==
+	b=Io/QxJibe+eMtKdUyX5pNRyEp5YIw98Juh5qZPvvygF/4TFxb8f2ZPhM/U/IztY9k
+	 uw2IS5byReC7zUwSIug6HG8ssgSyNu0Pa/Tv6Q5t/F6fzOAJGtX1DDuc2mLtVjCAX5
+	 aK58vokgfHPDbA9TLRcIx+QO3fMA0N1g72TVbAH2x2iNpKxriF9LnSputRMEQbsA87
+	 rGZTkX3ZNsmjxEiUubVGOrbZ3CdWxoSYmOQxnce4Q7C6AYzmKZVQiEcWGF3wPRDCtF
+	 CsHiyPcluKeAKJB9t0EyZq670y4Xi7ZkHDP4yA1rBweqYZ92W1q86EvP0Yo/uTFbCt
+	 oHlfMP0rDrrOA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 30AF7DFC697;
-	Fri, 19 Jan 2024 00:42:42 +0000 (UTC)
-Subject: Re: [GIT PULL] Compute Express Link (CXL) for 6.8
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4ED06D8C970;
+	Fri, 19 Jan 2024 00:42:44 +0000 (UTC)
+Subject: Re: [GIT PULL] VFIO updates for v6.8-rc1
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <65a1ecd2b9b02_293042946b@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <65a1ecd2b9b02_293042946b@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <65a1ecd2b9b02_293042946b@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl tags/cxl-for-6.8
-X-PR-Tracked-Commit-Id: 73bf93edeeea866b0b6efbc8d2595bdaaba7f1a5
+In-Reply-To: <20240112123134.2deb3896.alex.williamson@redhat.com>
+References: <20240112123134.2deb3896.alex.williamson@redhat.com>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240112123134.2deb3896.alex.williamson@redhat.com>
+X-PR-Tracked-Remote: https://github.com/awilliam/linux-vfio.git tags/vfio-v6.8-rc1
+X-PR-Tracked-Commit-Id: 78f70c02bdbccb5e9b0b0c728185d4aeb7044ace
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: db5ccb9eb23189e99e244a4915dd31eedd8d428b
-Message-Id: <170562496219.3707.9548987370412862817.pr-tracker-bot@kernel.org>
-Date: Fri, 19 Jan 2024 00:42:42 +0000
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: torvalds@linux-foundation.org, linux-cxl@vger.kernel.org, linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 244aefb1c64ad562b48929e6d85e07bc79e331d6
+Message-Id: <170562496431.3707.17399285529633098993.pr-tracker-bot@kernel.org>
+Date: Fri, 19 Jan 2024 00:42:44 +0000
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, mst@redhat.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Fri, 12 Jan 2024 17:52:18 -0800:
+The pull request you sent on Fri, 12 Jan 2024 12:31:34 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl tags/cxl-for-6.8
+> https://github.com/awilliam/linux-vfio.git tags/vfio-v6.8-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/db5ccb9eb23189e99e244a4915dd31eedd8d428b
+https://git.kernel.org/torvalds/c/244aefb1c64ad562b48929e6d85e07bc79e331d6
 
 Thank you!
 
