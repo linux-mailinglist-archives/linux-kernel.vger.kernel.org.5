@@ -1,155 +1,235 @@
-Return-Path: <linux-kernel+bounces-31059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4C2F83282C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:53:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E7E6832836
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:54:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DAFA281CB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:53:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2EBBB21144
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B394E1D5;
-	Fri, 19 Jan 2024 10:49:24 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC4F4CB3A;
+	Fri, 19 Jan 2024 10:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mGcjhtHe"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A914D593;
-	Fri, 19 Jan 2024 10:49:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C3BDF71;
+	Fri, 19 Jan 2024 10:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705661364; cv=none; b=eKfpUvlfDX+1WCDMSdwNUJ2b276aCg00gA4Rnuqq9uUOmeD4KyEFhXtC7LIhYs1kb7rkQfj3WlpxVGpIP3X2l/18AUy+cMhp/CYQlLIAKMSCyDIUMXnkcrNeM54OSW9ck2rr9Md+sOA6cwWs8lcvbe8nkofvIl7WqdAlBl8+BUI=
+	t=1705661493; cv=none; b=sSe012oiK695Z8sysAlEAO0xMkXuRnl1ggOAevc+z1N3PxRPg0DUS0rKAygrRREFAudR8h5fI6msfvN5Bl4wmElIFXfxOTx+kadgwMi7s3dxQjyWIVjj5eSBb4Vu9XYJ9WLDeuwTlOl9PjsIZyqk/ZiGoGDRf35MaIK03O4KRNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705661364; c=relaxed/simple;
-	bh=doARxESIQHcn5LhLbrsvEUOKGJ1z+Gr3A4mi4OiTP2U=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uVXwYsqH1nBfE9CDKOITeknGzELpqq9P1C/XII+bIULG3LJHOrn5kVAjVtRJQX3aRdOC9HNdrBVw9wCl9eJeZe9wf2xm8vehg+aQ0qVEbSfsvuAc5IP8rbFUpMjoxsNncp+Fpton3wRBPv8KvgVQ7A1uZDLfqDuOfhP4eFcVNX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TGbv42n30zNlJT;
-	Fri, 19 Jan 2024 18:48:32 +0800 (CST)
-Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id D31C0180077;
-	Fri, 19 Jan 2024 18:49:19 +0800 (CST)
-Received: from M910t.huawei.com (10.110.54.157) by
- kwepemd100002.china.huawei.com (7.221.188.184) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Fri, 19 Jan 2024 18:49:18 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-CC: Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Namhyung
- Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
-	<adrian.hunter@intel.com>, <linux-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, Andi Kleen <ak@linux.intel.com>, Thomas
- Richter <tmricht@linux.ibm.com>, <changbin.du@gmail.com>, Changbin Du
-	<changbin.du@huawei.com>
-Subject: [PATCH v4 5/5] perf: script: prefer capstone to XED
-Date: Fri, 19 Jan 2024 18:48:56 +0800
-Message-ID: <20240119104856.3617986-6-changbin.du@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240119104856.3617986-1-changbin.du@huawei.com>
-References: <20240119104856.3617986-1-changbin.du@huawei.com>
+	s=arc-20240116; t=1705661493; c=relaxed/simple;
+	bh=mmJMFX/yMqul7R/1AAX1HbrHQilika2cXTOvDyZmG2Y=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=b78+NW43b6FDrDPHXaThRJxo45ebzZTXY9Rh9+LPyf/NqtgetTZudCGd/49F1uxRxTU2Q+xjLRWEnK3aIjNGFNNBm4TwfHi1eMNHu/zRwoXJKWf+wSOIO+L81WyblS3co5JnYGExnoDGn8j9zji8gkx8jQ9KgE93+D5ySqUZInc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mGcjhtHe; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705661490; x=1737197490;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=mmJMFX/yMqul7R/1AAX1HbrHQilika2cXTOvDyZmG2Y=;
+  b=mGcjhtHe15k4bxnTjmT4Rs3WSZ+EM7kv5aPbG1G2ZkFbXRwBM7V2S+z6
+   sVvd1z/Janxh5jp26h8OG0/T5XLoQQ4X96i9mthNP4NSq7sw2KjoAVCRw
+   DYaDljjRwjZ1avmLpZCQQugoXvzLtswtsf7eBKszMERpl2R0erOYiD6cq
+   Klfl1E2Qj0zUwjy3pgIto1p2+HXz2gsCAe8ByODjbKH1fuOcTB8dFUCVr
+   /aolRQsOTtwT0LQWEal4YveD0wtzfLLmC/rkm3c/jjl0AThN1Td7vfj7U
+   0wlYnqCHJvf6ZVHphe1H7tP4lhGmemuVrDN91dXtoQuEj2lNk2asT2ggn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="464997926"
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="464997926"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 02:51:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="788329742"
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="788329742"
+Received: from vstill-mobl.ger.corp.intel.com (HELO localhost) ([10.252.39.223])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 02:51:24 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Hans de Goede <hdegoede@redhat.com>, Pavel Machek <pavel@ucw.cz>, Werner
+ Sembach <wse@tuxedocomputers.com>
+Cc: jikos@kernel.org, Jelle van der Waa <jelle@vdwaa.nl>, Miguel Ojeda
+ <miguel.ojeda.sandonis@gmail.com>, Lee Jones <lee@kernel.org>,
+ linux-kernel@vger.kernel.org, "dri-devel@lists.freedesktop.org"
+ <dri-devel@lists.freedesktop.org>, linux-input@vger.kernel.org,
+ ojeda@kernel.org, linux-leds@vger.kernel.org, Dmitry Torokhov
+ <dmitry.torokhov@gmail.com>, Jiri Kosina <jikos@kernel.org>, Benjamin
+ Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+In-Reply-To: <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
+ <ZSmg4tqXiYiX18K/@duo.ucw.cz>
+ <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
+ <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
+ <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
+ <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
+ <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+ <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+ <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
+ <ZaljwLe7P+dXHEHb@duo.ucw.cz>
+ <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
+Date: Fri, 19 Jan 2024 12:51:21 +0200
+Message-ID: <87bk9hppee.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd100002.china.huawei.com (7.221.188.184)
 
-Now perf can show assembly instructions with libcapstone for x86, and the
-capstone is better in general.
+On Fri, 19 Jan 2024, Hans de Goede <hdegoede@redhat.com> wrote:
+> For per key controllable rgb LEDs we need to discuss a coordinate
+> system. I propose using a fixed size of 16 rows of 64 keys,
+> so 64x16 in standard WxH notation.
+>
+> And then storing RGB in separate bytes, so userspace will then
+> always send a buffer of 192 bytes per line (64x3) x 14 rows
+> = 3072 bytes. With the kernel driver ignoring parts of
+> the buffer where there are no actual keys.
+>
+> I would then like the map the standard 105 key layout onto this,
+> starting at x.y (column.row) coordinates of 16.6 (with 0.0 being
+> the top left). Leaving plenty of space on the left top and right
+> (and some on the bottom) for extra media key rows, macro keys, etc.
+>
+> The idea to have the standard layout at a fixed place is to allow
+> userspace to have a database of preset patterns which will work
+> everywhere.
+>
+> Note I say standard 105 key layout, but in reality for
+> defining the standardized part of the buffer we should
+> use the maximum amount of keys per row of all the standard layouts,
+> so for row 6 (the ESC row) and for extra keys on the right outside
+> the main block we use the standard layout as shown here:
 
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
----
- tools/perf/Documentation/perf-intel-pt.txt | 11 +++++------
- tools/perf/ui/browsers/res_sample.c        |  2 +-
- tools/perf/ui/browsers/scripts.c           |  2 +-
- 3 files changed, 7 insertions(+), 8 deletions(-)
+Doesn't the input stack already have to have pretty much all of this
+already covered? I can view the keyboard layout in my desktop
+environment, and it's a reasonably accurate match, even if unlikely to
+be pixel perfect. But crucially, it has to have all the possible layouts
+covered already.
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index 2109690b0d5f..8e62f23f7178 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -115,9 +115,8 @@ toggle respectively.
- 
- perf script also supports higher level ways to dump instruction traces:
- 
--	perf script --insn-trace --xed
-+	perf script --insn-trace=disasm
- 
--Dump all instructions. This requires installing the xed tool (see XED below)
- Dumping all instructions in a long trace can be fairly slow. It is usually better
- to start with higher level decoding, like
- 
-@@ -130,12 +129,12 @@ or
- and then select a time range of interest. The time range can then be examined
- in detail with
- 
--	perf script --time starttime,stoptime --insn-trace --xed
-+	perf script --time starttime,stoptime --insn-trace=disasm
- 
- While examining the trace it's also useful to filter on specific CPUs using
- the -C option
- 
--	perf script --time starttime,stoptime --insn-trace --xed -C 1
-+	perf script --time starttime,stoptime --insn-trace=disasm -C 1
- 
- Dump all instructions in time range on CPU 1.
- 
-@@ -1306,7 +1305,7 @@ Without timestamps, --per-thread must be specified to distinguish threads.
- 
- perf script can be used to provide an instruction trace
- 
-- $ perf script --guestkallsyms $KALLSYMS --insn-trace --xed -F+ipc | grep -C10 vmresume | head -21
-+ $ perf script --guestkallsyms $KALLSYMS --insn-trace=disasm -F+ipc | grep -C10 vmresume | head -21
-        CPU 0/KVM  1440  ffffffff82133cdd __vmx_vcpu_run+0x3d ([kernel.kallsyms])                movq  0x48(%rax), %r9
-        CPU 0/KVM  1440  ffffffff82133ce1 __vmx_vcpu_run+0x41 ([kernel.kallsyms])                movq  0x50(%rax), %r10
-        CPU 0/KVM  1440  ffffffff82133ce5 __vmx_vcpu_run+0x45 ([kernel.kallsyms])                movq  0x58(%rax), %r11
-@@ -1407,7 +1406,7 @@ There were none.
- 
- 'perf script' can be used to provide an instruction trace showing timestamps
- 
-- $ perf script -i perf.data.kvm --guestkallsyms $KALLSYMS --insn-trace --xed -F+ipc | grep -C10 vmresume | head -21
-+ $ perf script -i perf.data.kvm --guestkallsyms $KALLSYMS --insn-trace=disasm -F+ipc | grep -C10 vmresume | head -21
-        CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133cdd __vmx_vcpu_run+0x3d ([kernel.kallsyms])                 movq  0x48(%rax), %r9
-        CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133ce1 __vmx_vcpu_run+0x41 ([kernel.kallsyms])                 movq  0x50(%rax), %r10
-        CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133ce5 __vmx_vcpu_run+0x45 ([kernel.kallsyms])                 movq  0x58(%rax), %r11
-diff --git a/tools/perf/ui/browsers/res_sample.c b/tools/perf/ui/browsers/res_sample.c
-index 7cb2d6678039..1022baefaf45 100644
---- a/tools/perf/ui/browsers/res_sample.c
-+++ b/tools/perf/ui/browsers/res_sample.c
-@@ -83,7 +83,7 @@ int res_sample_browse(struct res_sample *res_samples, int num_res,
- 		     r->tid ? "--tid " : "",
- 		     r->tid ? (sprintf(tidbuf, "%d", r->tid), tidbuf) : "",
- 		     extra_format,
--		     rstype == A_ASM ? "-F +insn --xed" :
-+		     rstype == A_ASM ? "-F +insn_disasm" :
- 		     rstype == A_SOURCE ? "-F +srcline,+srccode" : "",
- 		     symbol_conf.inline_name ? "--inline" : "",
- 		     "--show-lost-events ",
-diff --git a/tools/perf/ui/browsers/scripts.c b/tools/perf/ui/browsers/scripts.c
-index 47d2c7a8cbe1..3efc76c621c4 100644
---- a/tools/perf/ui/browsers/scripts.c
-+++ b/tools/perf/ui/browsers/scripts.c
-@@ -107,7 +107,7 @@ static int list_scripts(char *script_name, bool *custom,
- 	if (evsel)
- 		attr_to_script(scriptc.extra_format, &evsel->core.attr);
- 	add_script_option("Show individual samples", "", &scriptc);
--	add_script_option("Show individual samples with assembler", "-F +insn --xed",
-+	add_script_option("Show individual samples with assembler", "-F +insn_disasm",
- 			  &scriptc);
- 	add_script_option("Show individual samples with source", "-F +srcline,+srccode",
- 			  &scriptc);
+And while I would personally hate it, you can imagine a use case where
+you'd like a keypress to have a visual effect around the key you
+pressed. A kind of force feedback, if you will. I don't actually know,
+and correct me if I'm wrong, but feels like implementing that outside of
+the input subsystem would be non-trivial.
+
+Cc: Dmitry, could we at least have some input from the input subsystem
+POV on this? AFAICT we have received none.
+
+
+BR,
+Jani.
+
+
+>
+> http://www.maxkeyboard.com/images/105_ISO_6_25_Key_Layout.jpg
+>
+> For the main area of the keyboard looking at:
+>
+> http://bopqehorizon.weebly.com/uploads/1/3/4/3/134337299/913246919_orig.png
+>
+> We want to max rows per key, so this means that per row we use
+> (from the above image) :
+>
+> row  7: 106/109 - JIS 
+> row  8: 101/104 - ANSI
+> row  9: 102/105 - ISO
+> row 10: 104/107 - ABNT
+> row 11: 106/109 - JIS
+>
+> (with row 7 being the main area top row)
+>
+> This way we can address all the possible keys in the various
+> standard layouts in one standard wat and then the drivers can
+> just skip keys which are not there when preparing the buffer
+> to send to the hw / fw.
+>
+> One open question is if we should add padding after the main
+> area so that the printscreen / ins / del / leftarrow of the
+> "middle" block of 
+>
+> http://www.maxkeyboard.com/images/105_ISO_6_25_Key_Layout.jpg
+>
+> all start at the same x (say 32) or we just pack these directly
+> after the main area.
+>
+> And the same question for the numlock block, do we align
+> this to an x of say 36, or pack it ?
+>
+>
+> As for the actual IOCTL API I think there should be
+> the following ioctls:
+>
+> 1. A get-info ioctl returning a struct with the following members:
+>
+> {
+> char name[64]      /* Keyboard model name / identifier */
+> int row_begin[16]; /* The x address of the first available key per row. On a std 105key kbd this will be 16 for rows 6-11, 0 for other rows */
+> int row_end[16];   /* x+1 for the address of the last available key per row, end - begin gives number of keys in a row */
+> int rgb_zones;     /* number of rgb zones for zoned keyboards. Note both
+>                       zones and per key addressing may be available if
+>                       effects are applied per zone. */
+> ?
+> }
+>
+> 2. A set-leds ioctl which takes the earlier discussed 3092 bytes buffer
+> to set all the LEDs at once, only valid if at least one row has a non 0 lenght.
+>
+> 3. A set-zones ioctl which takes an array of bytes sized 3 * number-of-zones
+> containing RGB values for each zone
+>
+> 4. A enum_effects ioctl which takes a struct with the following members:
+>
+> {
+> long size; /* Size of passed in struct including the size member itself */
+> long effects_mask[]
+> }
+>
+> the idea being that there is an enum with effects, which gets extended
+> as we encounter more effects and the bitmask in effects_mask has a bit set
+> for each effects enum value which is supported. effects_mask is an array
+> so that we don't run out of bits. If older userspace only passes 1 long
+> (size == (2*sizeof(long)) when 2 are needed at some point in the future 
+> then the kernel will simply only fill the first long.
+>
+> 5. A set_effect ioctl which takes a struct with the following members:
+>
+> {
+> long size; /* Size of passed in struct including the size member itself */
+> int effect_nr; /* enum value of the effect to enable, 0 for disable effect */
+> int zone;  /* zone to apply the effect to */
+> int speed; /* cycle speed of the effect in milli-hz */
+> char color1[3]; /* effect dependend may be unused. */
+> char color2[3]; /* effect dependend may be unused. */
+> }
+>
+> Again the idea with the size member is that the struct can be extended with
+> new members if necessary and the kernel will supply a default value for
+> older userspaces which provide a smaller struct (note size being smaller
+> then sizeof(struct-v1) will invalid).
+>
+>
+> Note this is all just a rough sketch suggestions welcome!
+>
+> Regards,
+>
+> Hans
+>
+>
+>
+
 -- 
-2.25.1
-
+Jani Nikula, Intel
 
