@@ -1,184 +1,175 @@
-Return-Path: <linux-kernel+bounces-31020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F0D8327A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:27:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EAE48327A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:26:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E86E285376
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:27:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BD451F22BE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868433C697;
-	Fri, 19 Jan 2024 10:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OBcAWUgT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB9E3C6B9;
+	Fri, 19 Jan 2024 10:26:46 +0000 (UTC)
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01olkn2041.outbound.protection.outlook.com [40.92.66.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7A83C489
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:27:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705660029; cv=none; b=ZtpUVvaQHAf9/7Udo0BPeVLdEjSlFNf7E0G3FbhHl2a0tnW1z1/BDmmLuz5wCWuUv0VNJEq8OqtCVu9cd0GlVOmAixFrZGaMrPDGHooBbuRKKgoemdvqpZzavjMjz2aYt1w9nTIUasHxoagxXhd//h/Z1VtqeFq8+POLqhsU9o4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705660029; c=relaxed/simple;
-	bh=Ki7NeUXLMornTPcFG4xA3JXSwZzus70MOyielb1FkUs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eDZwbWxBirAyMthTOwQGtJE5+PgrHtU8HOLLc+WuJKI9vLheZTw6LvWo2e8AztHHnAEzlEY6SYCGg28jl+K++pVHKD9LbnpJ7RLts7sTAZsxhtjVemVWbyulZcUkBxaxP7OVqdZlkSMgS7TtJdZVeWFF7Ky+/P3iwDRB95EyrvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OBcAWUgT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44C5CC433B2
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705660029;
-	bh=Ki7NeUXLMornTPcFG4xA3JXSwZzus70MOyielb1FkUs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=OBcAWUgT0d+lbwdUQsfuemvNJZs5vFYT1Ko+nzaNLIslrklEuLwV8yIYwcAN6Xivc
-	 SaxDaR7IpR50ODD0uCrP6iTZ5SQjWf62C1/m6VpFLCszA3YeQnwqGCK/Ucbcbzq0Vp
-	 FHqt7UbGehR6AArlIJmdr8zuifkachEnKYd/bj//4ocPCjB6AAnzJAk/wzXj/5WPBk
-	 GpZCovDswvlowjyYNhIPaa1ubz15oKGla2OqC+MJ38S1Y7QtSCQc7222tTyvafNrQa
-	 +Eoprj6Z8GCeHFuFEFrTzjoPyQVxyN1M418Rp9fw7wzYZKP7xg+Yc8toP3NzU+90ph
-	 ilwZrOBPBX4Ig==
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d70696b6faso4283125ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:27:09 -0800 (PST)
-X-Gm-Message-State: AOJu0YwVwhkL86hWOVSb/eYoqEdkb2exX3FZBPOLimkXVFHOp8AjHbYT
-	hJCYt2U9rB6wrAQN/aDRVAPp/B6oYFGsG6pOVpLEu0QT3+hkY/wt51Wu8o97SmPDoW5MRr++SIs
-	MWarAjC0EN+qp4hZf/5p2tCqfqCkQoRV2ASnH
-X-Google-Smtp-Source: AGHT+IGJiZlI1L89mjAO4tevAnp18+BJd7l2XT6y67LMTciUEqihRK9O8jEq1SfQPviLhBihHqJSzuZpLzgWeb/M4fk=
-X-Received: by 2002:a17:90a:728f:b0:290:19bc:2138 with SMTP id
- e15-20020a17090a728f00b0029019bc2138mr1903349pjg.89.1705660028694; Fri, 19
- Jan 2024 02:27:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22AC71E89B;
+	Fri, 19 Jan 2024 10:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.66.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705660005; cv=fail; b=Gsuv5UAcNC1w7WnWWoK3CIu8QDDGQ8p4DqoTUsMX9NMno3deE+HReGywJAOeBWq6MtpfGekmWm0iUtfBQGViazi4pN6V0lmtYOmY0yByQVnZ9Psk/xbDcNwMOXCaUGLrw2UxWQACzTrVqO4xnb7rvsOMd7Yq1oElO2xfJ9pUC2U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705660005; c=relaxed/simple;
+	bh=4zdkACczKrYvDJr2+F1r9UEYGGzW7CRPRbONfv5j+Y4=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=MasAyvwn3q/zMsttH8TX9j+WpBonGSgylR2KKQydhx5RlYCczD3pmKqPmvoTdiFNBF8ac9qiOsalYU4K+PpK42FFbZ/R6VUBm6Lx5d3w+xWvtSd3lyzxRXSi1nPwMdLQk3bA/eqXvZp6rSkESINnVtv/Nn9c3+cYkjkpvaz/4kI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de; spf=pass smtp.mailfrom=hotmail.de; arc=fail smtp.client-ip=40.92.66.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.de
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G6cSfNkzg9JThoIC6hcp3ZUWglfmRJnEH+VAVQbKA9kl6HI5Pc1pbGJXPq7ucSh/CAe9oG4wCx1/U8NWUCzj8lUqfITbS8ixNhfvSrb7HyHcKY+WSb7Lytqzw3Rd77+yy0r+fh8WOfxwMygIpBJLY08fWTG3H7CZGjjZBqQPpz4HUatD1tABIgHzhWng9ZeJ30rnDFOY22cy095ug2R0LFfaSVUlooKIYtPfE7oXSJQkdwNIohotn6NaN27pbbgJJJTW0/uSgjACfTmdSxV7yaCeX77rW3U+TXBEQnRsw8SdRp2tCSbXXOotR3oXJTHZjds2pKgKsj7IJbEBNIkYfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iUzY8vMARfevHJNGQZ/iOTXp7aRCBYwfC35ynE4v59g=;
+ b=eo2sjA5I8hPjoPR5Na/NGFJU20C4rXTHh8gP7KlwBsaJbk8gjyBMEmtQFufbJWC5P3Mkrf/u2J3AbbFmkr50tlsX3FCyzgGj1cnhT88v8Azj6saMKxc3jsWvcZRJNL7Xuqz/dCf7dXsDJCfEdaIgbqonqBHyBEVB0endOJVA6vczA+6AW/iwpOtBCcvz56HKTsyWhaNDLF/dH7tAdOXGtkTVMEAWXVBoeNDAtqljg4VvgL9J/BCnAq/EDaVo/a6ASmluEPt37dT3VEfBiFdemyCcIvALQuYYn17eDSPNk0oZ7k9XeThEfQA2Vd9upj5Gc8STjNhee0kYW/LuNoD77g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:333::21)
+ by AM9P193MB0936.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:1fd::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
+ 2024 10:26:41 +0000
+Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+ ([fe80::897e:cfd5:b29b:c611]) by AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+ ([fe80::897e:cfd5:b29b:c611%6]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
+ 10:26:40 +0000
+Message-ID:
+ <AS8P193MB1285C2DE6BCCDC8DD40E5A64E4702@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+Date: Fri, 19 Jan 2024 11:27:38 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] net: stmmac: Wait a bit for the reset to take effect
+Content-Language: en-US
+To: Paolo Abeni <pabeni@redhat.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jiri Pirko <jiri@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>
+References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <AS8P193MB1285EEAFE30C0DE7B201D33CE46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <f5ddf800df95cdce32637d41bc1539aed0a7b6f3.camel@redhat.com>
+From: Bernd Edlinger <bernd.edlinger@hotmail.de>
+In-Reply-To: <f5ddf800df95cdce32637d41bc1539aed0a7b6f3.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TMN: [H42hYSkfusIgBzAtCP0ZV6/lSomDHaqEx20ukHiAv+PiVAVjSp2KU0KSPiHTY5iT]
+X-ClientProxiedBy: BEXP281CA0016.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10::26)
+ To AS8P193MB1285.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:333::21)
+X-Microsoft-Original-Message-ID:
+ <98a4b2bd-84d8-4fb6-8964-fe3a8eab2fd3@hotmail.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
- <CAJD7tkbQb5nAQdhHXELQsUWs8KhwnoOZ7C8Eu2o7tCYSKeY9Ug@mail.gmail.com>
- <CAJD7tkb7GmMARE9ueyOCZz9wBbANhofUOHnen+b28sxE9tDy1A@mail.gmail.com>
- <7f52ad78-e10b-438a-b380-49451bf6f64f@bytedance.com> <CAJD7tkaeBTforGTQ8ia_6-1fd5hf-zwkBcd_kW8Bk=zdO+Qnvw@mail.gmail.com>
- <CAF8kJuNPPruLDOEqH-f-w1zw-TSuWkUZsQ43Qe_EtycapXgkbQ@mail.gmail.com>
- <3a1b124d-4a97-4400-9714-0cceac53bd34@bytedance.com> <CAF8kJuN_3eaJjwLx_hpwN_ahfHa3qT1kN+NQdYd7vokZj458mA@mail.gmail.com>
- <9b2f8385-735b-4341-b521-a42c9a9cb04c@bytedance.com>
-In-Reply-To: <9b2f8385-735b-4341-b521-a42c9a9cb04c@bytedance.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Fri, 19 Jan 2024 02:26:57 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuNvxZgMvW+7gN1anpASKXdaPfYi=0pSfmJftHkzXnV-ag@mail.gmail.com>
-Message-ID: <CAF8kJuNvxZgMvW+7gN1anpASKXdaPfYi=0pSfmJftHkzXnV-ag@mail.gmail.com>
-Subject: Re: [PATCH 0/2] RFC: zswap tree use xarray instead of RB tree
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	=?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, Yu Zhao <yuzhao@google.com>, 
-	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
-	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8P193MB1285:EE_|AM9P193MB0936:EE_
+X-MS-Office365-Filtering-Correlation-Id: 243c6f85-e25d-4aec-647f-08dc18d91ff9
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rNfKZGVANuS1fqeKkZW4gAHUSEHZqAr0tarbDlOpYvAp+X+sDQitUPo9B7LaBvTv1Sfeb2/hRabiNjvT+C9Ctd6GRqoXH4AYUJ4s2pIFt2FHQMhSVNg/W7IoTliMZ8iDU5r5GewSF1mXt/rGfxWD/KvrtpfrHbeL/IFshhfH1LEx6HDFJx7fBLWEnQbtcllHWE3vqZo14p0ZFr2qCPrQyTUTDUEtqcbyU1KJHbfOVsI0HRoj9BoHiIwEvvwQrpZxsURQXjIbwSrwMC0vSs9pIoQbFnZoITgkJ5Zx07y0q0r4n70wk06aJbzVcNxy0nIW0ZQ6ziEqguxUoX01eA136atXaQzWxxrewm3onvkY0k6PbmDuoANVrCdDNfaoq9W+pw2f6+27qIU2hwmBcmONM4dr6avJNrMey3uelseStlwDRrh0niq9+QNC9jmPTwglKnJYu1UxQly4+1FysGLBtbHD4AGvey9OkmxwyM8pC7oT2ejdFm55vXypd2+7XHVxcwDp2pt3jEHAnAa4xMvNirKT3nZUfiXMWMHggZljBfSFXIqTCHlbMfIhIRttrw0S
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cXgwUkFva09ocW9oY0NTcE9FTmhzU3Y5WmgrRkpCc2VoOTgrYkFNNXhZU0FI?=
+ =?utf-8?B?ZGdEejhacUVKWWh0bWl6UkxkSGVNWWZsVlphMDhiVzZqNGdZd3c5LzBGcnRH?=
+ =?utf-8?B?aEM4STYwYnk3MEVYS0hiczZ5dmZmL1dOVkFydWprNnJndjIzV1V0dm9GaWJv?=
+ =?utf-8?B?c3A0REhKY0xIY1R1VFVINGRQamV2Mnl5M1hHY1NEMC9hQ1hCbGtNeC95VUNZ?=
+ =?utf-8?B?RkNLMXpvWkpEQkdXM0V4ajNibGRVQjZkcDBmYnJ2TnZHYTRBNDVnZEJnV2xB?=
+ =?utf-8?B?YTJpakdVOEp6ZHcvK3lQSkdoYzA4THdxeDBDVU02VUlXLzZQejEveU5CSCty?=
+ =?utf-8?B?SnJKUVBCQllWNGJZV01UWEFxd3QvdXBpSjRUY1hIUGdOcWRmWUZQeVBSWlJI?=
+ =?utf-8?B?YVZDR01lSEQ0TE05ekNHTkxEejFsOGRkRDVERmlnVUZFSHBxdlF4Yzdqcm45?=
+ =?utf-8?B?SE5mMDFmVzVpbm93MDc5NFIrTndvdS9oN05TY21FRklUbTZRQk9ydFFZNFo0?=
+ =?utf-8?B?bmIrZkhTZjhrYW1LNlFTSWxWQVg2cnNTWWxHWHpQWEJ2YURnVXZFS2RyaldW?=
+ =?utf-8?B?UHdSOC9BeEVyUWdaN1RFakhpc3VuSU5kUzh4T05NZ1dpNXVnR3JBMjFYTFVJ?=
+ =?utf-8?B?NjdnMUlRN3E5d2szU0FGMTZJMVZBM0JBcGFQcnFYZVRjdHVFZ2NFU3RjL3dJ?=
+ =?utf-8?B?QVJLRTFZSGwvUWQ4NnNFQ1ZMeVlNQUdIeENIcVZYSTB3NkhXVElxeE5XS2da?=
+ =?utf-8?B?QnM5VEJPQmhZVWxTUHRQQld3aXFwcGtCUjcwWDFXR3E5MEswSGw5dmlESDN5?=
+ =?utf-8?B?YTJxSUJZcnZZcjNPNG9qNlZKdXVOS0ZUZGREY1lPZDZDU2FVVVJoNzk1UGV4?=
+ =?utf-8?B?SFVhR2lEeEpZRVhXRWY4K1drK0FyemFXRU1icHNoTVFIVWFhbk9yLy8vZS9h?=
+ =?utf-8?B?dFlOWStmdkJvUWZJbGQwR2U5ZXZjV0lBV0dQRXR2SmQyZGdoczZMbEJOTXJR?=
+ =?utf-8?B?M0MvZXAramd4YVNHdnFXbVZiSUM1Y1FJalM4SmhhOG9mbW1tcGQ1LzczVkVj?=
+ =?utf-8?B?eTNveFY0ZHVjVVh1UnNSL09zODJHR2ZVYnkrS1B6NC80UkdXTXhpNUlYV0tn?=
+ =?utf-8?B?WFBKWi9HdENBRHRMNU9lYmVKYTB0Tk4vSE5Lc3djQ1hheVd5YVRlY2xzNG9q?=
+ =?utf-8?B?ajZLVUNRaDhuZkRaUVJXUEFlcW9Ia2pIMGJqUjIxejVIVkVHT05xQ0labEtJ?=
+ =?utf-8?B?Q3lRNFg3UkM3bnE3MUxtNjdaOWVxSVhncVA5U1JMdDlzc0FGbWNjczFHVGFl?=
+ =?utf-8?B?bkV1c0pId0l2K0l0OXYwU2xSdUphZjdybUdVSWplVEYyL1lYTnpaLzQrc2dh?=
+ =?utf-8?B?UGFrdFIwNElRMVdCejhkS1hzZU9mOEJOcGVsSHhMbEU1WE9QZnhGc2JPOFIx?=
+ =?utf-8?B?TEZuMXoxMUJSVWFPTHJXeXBESjBmS3Zpcm81OTBDL2x1anA5SzdZS3djUWdp?=
+ =?utf-8?B?bE9od0YzQUJkenphYU9LM1BueXBkTGhySGYzM2duSWJIRE1mTXVZOFRPc0ND?=
+ =?utf-8?B?ZlFkNDVrS2k4UVVuSDN3MUxEcU91VDRHbmlrRUMyY3FzQ1VaUUMwa3dUL0oz?=
+ =?utf-8?B?djBlbGdGSzJKRjFTVUl0UllUUG9UQ0JLQkMyQ01IcHpGYWl1bHg2TTdocXFh?=
+ =?utf-8?B?T3A3MkdWdk53S3l6ODFNUUFDaGkrL2tBcmpXclBMOUV0ME9EY1MzdFpLeTFC?=
+ =?utf-8?Q?d30hszZ7jQjAktY4dA=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-80ceb.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 243c6f85-e25d-4aec-647f-08dc18d91ff9
+X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 10:26:40.6664
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9P193MB0936
 
-On Thu, Jan 18, 2024 at 10:19=E2=80=AFPM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> On 2024/1/19 12:59, Chris Li wrote:
-> > On Wed, Jan 17, 2024 at 11:35=E2=80=AFPM Chengming Zhou
-> > <zhouchengming@bytedance.com> wrote:
-> >
-> >>>>>                     mm-stable           zswap-split-tree    zswap-x=
-array
-> >>>>> real                1m10.442s           1m4.157s            1m9.962=
-s
-> >>>>> user                17m48.232s          17m41.477s          17m45.8=
-87s
-> >>>>> sys                 8m13.517s           5m2.226s            7m59.30=
-5s
-> >>>>>
-> >>>>> Looks like the contention of concurrency is still there, I haven't
-> >>>>> look into the code yet, will review it later.
-> >>>
-> >>> Thanks for the quick test. Interesting to see the sys usage drop for
-> >>> the xarray case even with the spin lock.
-> >>> Not sure if the 13 second saving is statistically significant or not.
-> >>>
-> >>> We might need to have both xarray and split trees for the zswap. It i=
-s
-> >>> likely removing the spin lock wouldn't be able to make up the 35%
-> >>> difference. That is just my guess. There is only one way to find out.
-> >>
-> >> Yes, I totally agree with this! IMHO, concurrent zswap_store paths sti=
-ll
-> >> have to contend for the xarray spinlock even though we would have conv=
-erted
-> >> the rb-tree to the xarray structure at last. So I think we should have=
- both.
-> >>
-> >>>
-> >>> BTW, do you have a script I can run to replicate your results?
-> >
-> > Hi Chengming,
-> >
-> > Thanks for your script.
-> >
-> >>
-> >> ```
-> >> #!/bin/bash
-> >>
-> >> testname=3D"build-kernel-tmpfs"
-> >> cgroup=3D"/sys/fs/cgroup/$testname"
-> >>
-> >> tmpdir=3D"/tmp/vm-scalability-tmp"
-> >> workdir=3D"$tmpdir/$testname"
-> >>
-> >> memory_max=3D"$((2 * 1024 * 1024 * 1024))"
-> >>
-> >> linux_src=3D"/root/zcm/linux-6.6.tar.xz"
-> >> NR_TASK=3D32
-> >>
-> >> swapon ~/zcm/swapfile
-> >
-> > How big is your swapfile here?
->
-> The swapfile is big enough here, I use a 50GB swapfile.
+On 1/16/24 13:22, Paolo Abeni wrote:
+> 
+> A fixes tag is requires, something alike:
+> 
+> Fixes: <blamed commit hash> ("<blamed commit title>")
+> 
+> A bisection is not strictly required, you just need to be reasonably
+> confident about the the culprit.
+> 
 
-Thanks,
+Okay, I think finally I found the commit that introduced
+the broken reset logic:
 
->
-> >
-> > It seems you have only one swapfile there. That can explain the content=
-ion.
-> > Have you tried multiple swapfiles for the same test?
-> > That should reduce the contention without using your patch.
-> Do you mean to have many 64MB swapfiles to swapon at the same time?
+commit c5e4ddbdfa1134a36589c1466ed4abb85fe6f976
+Author: Chen-Yu Tsai <wens@csie.org>
+Date:   Fri Jan 17 21:24:41 2014 +0800
 
-64MB is too small. There are limits to MAX_SWAPFILES. It is less than
-(32 - n) swap files.
-If you want to use 50G swap space, you can have MAX_SWAPFILES, each
-swapfile 50GB / MAX_SWAPFILES.
+    net: stmmac: Add support for optional reset control
+    
+    The DWMAC has a reset assert line, which is used on some SoCs. Add an
+    optional reset control to stmmac driver core.
+    
+    To support reset control deferred probing, this patch changes the driver
+    probe function to return the actual error, instead of just -EINVAL.
+    
+    Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
 
-> Maybe it's feasible to test,
+that commit moved the reset de-assert next to the stmmac_hw_init function,
+without any delay in between.
 
-Of course it is testable, I am curious to see the test results.
+So I think I can now add
+Fixes c5e4ddbdfa11 ("net: stmmac: Add support for optional reset control")
 
-> I'm not sure how swapout will choose.
+> You need to include the relevant target tree into the subj prefix (in
+> this case 'net').
 
-It will rotate through the same priority swap files first.
-swapfile.c: get_swap_pages().
+Will do, but please clarify how exactly I need to change the subject line.
 
-> But in our usecase, we normally have only one swapfile.
 
-Is there a good reason why you can't use more than one swapfile?
-One swapfile will not take the full advantage of the existing code.
-Even if you split the zswap trees within a swapfile. With only one
-swapfile, you will still be having lock contention on "(struct
-swap_info_struct).lock".
-It is one lock per swapfile.
-Using more than one swap file should get you better results.
-
-Chris
+Thanks
+Bernd.
 
