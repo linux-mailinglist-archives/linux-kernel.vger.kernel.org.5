@@ -1,47 +1,85 @@
-Return-Path: <linux-kernel+bounces-31070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14B8D832858
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:07:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1094583285F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44CA91C21137
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:07:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCFBA28370C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7AE4C625;
-	Fri, 19 Jan 2024 11:07:24 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3794CB2C;
+	Fri, 19 Jan 2024 11:08:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="sBbtETSC"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39DB91D690;
-	Fri, 19 Jan 2024 11:07:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CBC04C632
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705662444; cv=none; b=OpC6NQdPQ79ClxzjN4Fy/nQWT6EYThleJ4acdTu5bM3hmvISAubgv365aX6F/m2NEWus6y9Qx8YNxhzksJpqPzpBRW03E62uHNT/tNYuQhd1L6ye7jjD9bJlBYhNWrUQFsToEYNuNtwWGDXmJgwYZcbriPI+ZhbBAiohBRUBfNU=
+	t=1705662530; cv=none; b=OP7RYBlHrnw5O+4sr7VFEJHtdQ67ehCab1Nnf0tqUXYyOtaO5rT6rk4yQEuMuR1eznR3Keg7YkoyI3uQppiamsiJE97IpEI3twDhchBMUiVtqtTC7zwj8GQS3wzWqOLO2g87Zi4bybH1WXJIdsApJXtHE1siBjl+SAZU8tAanbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705662444; c=relaxed/simple;
-	bh=QG7E3xZDv1be+XkDSOyaOlT8BoYaqVCBOneMyW01fZw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=j68ye8g8w1bSYi9zObeLwc4/F2q5zCPcyuN8ovul5tX331dZwV764kit0bULKJLifuYqiM9CKtbyRaADJSJeApQ/9WIXfOcG6FiRw++UcQYdL/LKAXuC5/7oZRjjNEck2RZrcicxCNlMF+P3ur4kTsWYRinkwBXqTrTJ5xc/sWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 373A6C433F1;
-	Fri, 19 Jan 2024 11:07:21 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev,
-	linux-arch@vger.kernel.org,
+	s=arc-20240116; t=1705662530; c=relaxed/simple;
+	bh=M/khVo5w/QaYGS2KbY7GMVMAto7oj95Xs/13fc8sOY8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rZsxLtnCUeWgqmnrUdkzeiOcBsGSOZDxJ98hwuFrjsc+SHbUcyM/FOHbHjB+tWIWIDGDbQceTqT7ZMkAFpHCiYX+39Aw3QxbIU544xMav1UCS5UxJkymBvrdZM+NilyvUvDib6ivQ3JFgU6nWN0XhZtMhYe0AmJzYolC0qqA32E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=sBbtETSC; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2c67be31edso70773666b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 03:08:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1705662526; x=1706267326; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AkX7t6l4nQ/vCuey8Au/m+51v8pi/S+y8K9YAi1mcOo=;
+        b=sBbtETSCA9TEQml4IBa4FeUc3Xjox6F7SbRHlbteJh1DEDoqzIZv643gZcCvcj+Yzj
+         LLCkoutZt/jJRKFxG8/C0CyOE1ln1AX1WuATccrJcMEI1qe2BEUbx7uAe1tpX4eBx/UB
+         c+mLWt2yMycQ/Fy8ZyCwrpb8cOeOuWAsDNhQK5GA7gZ1mYw3Z+98oCn/NeZASelg7jxl
+         Ib3Bfnt20fne+diFtxY9fmnzLohEMEtlbS+iPOKjhsv2nQIdjbvhzsbjeT1zmdN/Rov8
+         6G4OhZ+QzPYl9Ncy37eW1aHoW59Xfutypx7nBzzv4Yv9hj/0/QhwiMa+dxNVewwqg+BA
+         LCyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705662526; x=1706267326;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AkX7t6l4nQ/vCuey8Au/m+51v8pi/S+y8K9YAi1mcOo=;
+        b=KgCv3JlHdnW80pvisxV8f5xbWOyG5UY5D4TTVbeHpPBPBHKsYaSIA2jOphzHjQumED
+         x/G6p0ZcUStsXcGZYycdY1qHnwInkZYYx4Mulnxzee1KV3FXqFJXXqI/L7KAX/3xalan
+         kHNyi7Ii8nsqxg86kmVtmU3Kos6GGPgGjkmdpyqzRkFWvrQW/V92X6ju9eohjJefYghV
+         H+97dEXvF7/0mRjptTTSn30PyVLVx6nOm7NszajB1B3Bo2b+Gd8XULVxro9cP6LmnpAU
+         m0OLuKdirC2Cr5mT1ijM1GAWIF75HctxnhvEA7Z/XgD+QR5fsOpv15E3IkT3/6PvcE0z
+         HTOQ==
+X-Gm-Message-State: AOJu0YyLTPJlJa77A6Y/kUS5f9X4RVXkglZCKphY5jxtRkAwvm+heVwS
+	gYBAdBkmbJ0gfYOeG7WbrrnNePwZoJCzNcNFsihjWqonlps+AzGxS1NwXQLWU4Mxvoy7X4ABwX7
+	9
+X-Google-Smtp-Source: AGHT+IEvKUBsNi++IWYFwDCr/xbC/i0gr1neZ+xh2X5zRMqR6tKq5tdCp7hVArBGP391ED1MdvZVbg==
+X-Received: by 2002:a17:906:6dcc:b0:a2f:d59:d9cb with SMTP id j12-20020a1709066dcc00b00a2f0d59d9cbmr617650ejt.177.1705662526094;
+        Fri, 19 Jan 2024 03:08:46 -0800 (PST)
+Received: from blaptop.baylibre (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id h20-20020a170906261400b00a28d438a1b0sm10091661ejc.83.2024.01.19.03.08.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 03:08:45 -0800 (PST)
+From: Alexandre Bailon <abailon@baylibre.com>
+To: rafael@kernel.org,
+	daniel.lezcano@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: rui.zhang@intel.com,
+	lukasz.luba@arm.com,
+	linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Guo Ren <guoren@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [GIT PULL] LoongArch changes for v6.8
-Date: Fri, 19 Jan 2024 19:07:00 +0800
-Message-Id: <20240119110700.335741-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+	Alexandre Bailon <abailon@baylibre.com>
+Subject: [PATCH v2 0/3] thermal: Add support of multiple sensors
+Date: Fri, 19 Jan 2024 12:08:39 +0100
+Message-ID: <20240119110842.772606-1-abailon@baylibre.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,110 +88,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The following changes since commit 0dd3ee31125508cd67f7e7172247f05b7fd1753a:
+Following this comment [1], this updates thermal_of to support multiple
+sensors.
 
-  Linux 6.7 (2024-01-07 12:18:38 -0800)
+This has some limitations:
+- A sensor must have its own termal zone, even if it is also registered
+  inside a thermal zone supporting multiple sensors.
+- Only support weighted average
 
-are available in the Git repository at:
+Changes in v2:
+- Rebased on 6.7
+- Seperated generic multi sensor and dt specfic code
+- Simplified the code
+- Drop min / max and only do weighted average (seems more adequate for IPA)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-6.8
+[1]: https://patchwork.kernel.org/comment/24723927/
 
-for you to fetch changes up to 6e441fa3ac475be73c03c9a85bd305d66ea476a6:
+Alexandre Bailon (3):
+  dt-bindings: thermal: Restore the thermal-sensors property
+  thermal: Add support of multi sensors to thermal_core
+  thermal: Add support of multi sensors to thermal_of
 
-  MAINTAINERS: Add BPF JIT for LOONGARCH entry (2024-01-17 12:43:13 +0800)
+ .../bindings/thermal/thermal-zones.yaml       |   5 +-
+ drivers/thermal/Makefile                      |   1 +
+ drivers/thermal/thermal_core.h                |   7 +
+ drivers/thermal/thermal_multi.c               | 178 ++++++++++++++++++
+ drivers/thermal/thermal_of.c                  | 139 ++++++++++++++
+ 5 files changed, 327 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/thermal/thermal_multi.c
 
-----------------------------------------------------------------
-LoongArch changes for v6.8
+-- 
+2.41.0
 
-1, Raise minimum clang version to 18.0.0;
-2, Enable initial Rust support for LoongArch;
-3, Add built-in dtb support for LoongArch;
-4, Use generic interface to support crashkernel=X,[high,low];
-5, Some bug fixes and other small changes;
-6, Update the default config file.
-
-----------------------------------------------------------------
-Binbin Zhou (9):
-      dt-bindings: loongarch: Add CPU bindings for LoongArch
-      dt-bindings: loongarch: Add Loongson SoC boards compatibles
-      dt-bindings: interrupt-controller: loongson,liointc: Fix dtbs_check warning for reg-names
-      dt-bindings: interrupt-controller: loongson,liointc: Fix dtbs_check warning for interrupt-names
-      LoongArch: Allow device trees be built into the kernel
-      LoongArch: dts: DeviceTree for Loongson-2K0500
-      LoongArch: dts: DeviceTree for Loongson-2K1000
-      LoongArch: dts: DeviceTree for Loongson-2K2000
-      LoongArch: Parsing CPU-related information from DTS
-
-Hengqi Chen (2):
-      LoongArch: BPF: Support 64-bit pointers to kfuncs
-      LoongArch: BPF: Prevent out-of-bounds memory access
-
-Huacai Chen (4):
-      LoongArch: Add a missing call to efi_esrt_init()
-      LoongArch: Change SHMLBA from SZ_64K to PAGE_SIZE
-      LoongArch: Let cores_io_master cover the largest NR_CPUS
-      LoongArch: Update Loongson-3 default config file
-
-Tiezhu Yang (2):
-      LoongArch: Fix definition of ftrace_regs_set_instruction_pointer()
-      MAINTAINERS: Add BPF JIT for LOONGARCH entry
-
-WANG Rui (2):
-      scripts/min-tool-version.sh: Raise minimum clang version to 18.0.0 for loongarch
-      LoongArch: Enable initial Rust support
-
-WANG Xuerui (1):
-      modpost: Ignore relaxation and alignment marker relocs on LoongArch
-
-Xi Ruoyao (1):
-      LoongArch: Fix and simplify fcsr initialization on execve()
-
-Youling Tang (1):
-      LoongArch: Use generic interface to support crashkernel=X,[high,low]
-
- Documentation/admin-guide/kernel-parameters.txt    |  24 +-
- .../interrupt-controller/loongson,liointc.yaml     |  18 +-
- .../devicetree/bindings/loongarch/cpus.yaml        |  61 +++
- .../devicetree/bindings/loongarch/loongson.yaml    |  34 ++
- Documentation/rust/arch-support.rst                |  13 +-
- MAINTAINERS                                        |   7 +
- arch/loongarch/Kbuild                              |   1 +
- arch/loongarch/Kconfig                             |  22 +
- arch/loongarch/Makefile                            |   6 +-
- arch/loongarch/boot/dts/Makefile                   |   5 +-
- arch/loongarch/boot/dts/loongson-2k0500-ref.dts    |  88 ++++
- arch/loongarch/boot/dts/loongson-2k0500.dtsi       | 266 +++++++++++
- arch/loongarch/boot/dts/loongson-2k1000-ref.dts    | 183 ++++++++
- arch/loongarch/boot/dts/loongson-2k1000.dtsi       | 492 +++++++++++++++++++++
- arch/loongarch/boot/dts/loongson-2k2000-ref.dts    |  72 +++
- arch/loongarch/boot/dts/loongson-2k2000.dtsi       | 300 +++++++++++++
- arch/loongarch/configs/loongson3_defconfig         |  55 ++-
- arch/loongarch/include/asm/bootinfo.h              |   6 +-
- arch/loongarch/include/asm/crash_core.h            |  12 +
- arch/loongarch/include/asm/elf.h                   |   5 -
- arch/loongarch/include/asm/ftrace.h                |   2 +-
- arch/loongarch/include/asm/shmparam.h              |  12 -
- arch/loongarch/kernel/acpi.c                       |   2 +-
- arch/loongarch/kernel/efi.c                        |   2 +
- arch/loongarch/kernel/elf.c                        |   5 -
- arch/loongarch/kernel/env.c                        |  34 +-
- arch/loongarch/kernel/head.S                       |  10 +
- arch/loongarch/kernel/process.c                    |   1 +
- arch/loongarch/kernel/setup.c                      |  56 +--
- arch/loongarch/kernel/smp.c                        |   5 +-
- arch/loongarch/net/bpf_jit.c                       |  10 +-
- scripts/generate_rust_target.rs                    |   7 +
- scripts/min-tool-version.sh                        |   2 +
- scripts/mod/modpost.c                              |  19 +-
- 34 files changed, 1735 insertions(+), 102 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/loongarch/cpus.yaml
- create mode 100644 Documentation/devicetree/bindings/loongarch/loongson.yaml
- create mode 100644 arch/loongarch/boot/dts/loongson-2k0500-ref.dts
- create mode 100644 arch/loongarch/boot/dts/loongson-2k0500.dtsi
- create mode 100644 arch/loongarch/boot/dts/loongson-2k1000-ref.dts
- create mode 100644 arch/loongarch/boot/dts/loongson-2k1000.dtsi
- create mode 100644 arch/loongarch/boot/dts/loongson-2k2000-ref.dts
- create mode 100644 arch/loongarch/boot/dts/loongson-2k2000.dtsi
- create mode 100644 arch/loongarch/include/asm/crash_core.h
- delete mode 100644 arch/loongarch/include/asm/shmparam.h
 
