@@ -1,240 +1,223 @@
-Return-Path: <linux-kernel+bounces-31097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227CD8328D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:32:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B89FE8328D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C65B6286AE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:32:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCB751C23A27
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B09C4CB2D;
-	Fri, 19 Jan 2024 11:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A93E4EB23;
+	Fri, 19 Jan 2024 11:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="o6tF/fIY"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="kT8CILjt"
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3FF4CB21;
-	Fri, 19 Jan 2024 11:32:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB864CB5A
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705663954; cv=none; b=REZYCrleSqbVojHZordLeyGwVzGGCTGY9OUyIeuhHdPgdr9l7vNv2bKKK2LG5G4znb8knN6N1Jk4uq+VKLIJpgI5rZMD5Jlo3rf9fh4lOwLf7CPYV3dfRI4aYWiM4sqpBa4dNmzuXL9J2rV7ITCBXQon+j8lOxTYwYVccAwYsUo=
+	t=1705664041; cv=none; b=nSckZFiDQsgUaj0mbkDZcf/gFjh6gU9gGCkKyaSSnHTPW6LNOMGfrj8Fx1FLKj5Y6OzFSeinaJqNs5Mwj8JBHkyMOJbGudlHWx2pZ86ptU/xOHf5hO4z99Hd3uZ4aUiMYqgrltJgtyuovGx6m18ONqXYQaV/MR8nMYdqLf2kTCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705663954; c=relaxed/simple;
-	bh=94cJkGpzXv6vX96hN3F/qDrT623BbZXlhB7kP/KCPU0=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RM1f0Tx7EhqtPd0B5eu+C9aVIO8WGRaG69dv5USyG5Y/n4SQ2H3pn/LMy1pseRvSvuQQWo1uIPT6VnTtt4V/BG2zFzRIe9b7hz4GgxfQm8CCFznf62/LKp3xY0pQy7bnUGedX5fkWbTZvxy7fnZ1MZRMjdNWxa226hsxevOkGjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=o6tF/fIY; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40J6NCSU030958;
-	Fri, 19 Jan 2024 05:32:05 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=25MQFMZS3s1zoH4
-	I19/D63xOUNBz77KwvoFalDdc0a0=; b=o6tF/fIYvb7vFMsjrKz3mp2tpRdMal4
-	oo8qWqjcKtso9AGdx+aXToJbbVKtp3hkAN/lo4rIkqU++7yhk6oZYeoW9A25wRXD
-	040XZ/Mw7KZTkUoyIdr/zO/vQo/E8IGTXgEIc5Kw3CQu52d29xA8+i72RZy7Ps5u
-	1EU3af4/QMa99F1kQ8xDHZgmjuVlrD0Y9U/U1Qbv4laMAXU4wNQmi1Si4vSG3384
-	JeJSAuyPhKi1FvUVQ73kTD7URZpXA/sI63ec8ICj9LGeBlxfQEUppsHmZOjgrjkX
-	KDH8EcqxrE2zHMhOjqdKSdJGIsUbV2jq4xGjS/vQ/83ZOxU+GYv1FeA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vkrt1gkqd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 05:32:05 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 19 Jan
- 2024 11:32:03 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 19 Jan 2024 11:32:03 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3734211CA;
-	Fri, 19 Jan 2024 11:32:03 +0000 (UTC)
-Date: Fri, 19 Jan 2024 11:32:03 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <andy.shevchenko@gmail.com>
-CC: <broonie@kernel.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linus.walleij@linaro.org>, <vkoul@kernel.org>, <lgirdwood@gmail.com>,
-        <yung-chuan.liao@linux.intel.com>, <sanyog.r.kale@intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <devicetree@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 3/6] mfd: cs42l43: Add support for cs42l43 core driver
-Message-ID: <20240119113203.GA16899@ediswmail.ad.cirrus.com>
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
- <20230804104602.395892-4-ckeepax@opensource.cirrus.com>
- <ZalU8r1OvqKOLHrf@surfacebook.localdomain>
+	s=arc-20240116; t=1705664041; c=relaxed/simple;
+	bh=D+FHOV9VjJQGGct7f49AWQ0x7UfQJ5H32cxu3Gd6Fqw=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=LLFZ7+twdINI9Gk0WEfw35wO8eckqNqNYrQ3FC/G2uP5n3PctVfMFl82h9jipVxzRltiOLiYGkvJa7Yz/cLIx2giF8XLK8oVMLDOi0oRcZrE1yCZI8LHz35B5sZcvVOJv8LASeTVpmz5Fg/6TzVQISrt5IugwguF+AsuWFKzDAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=kT8CILjt; arc=none smtp.client-ip=192.134.164.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=wP/DdvcOGUlJXXy9GljyQe4gdeJG18qvYxNBEfg6bIQ=;
+  b=kT8CILjtbM8maV2fstN7HfufMG+k4rzYOpT9AaxJN0iJroIb+16y9n1z
+   2UF2AYQ2kGtLVBJP1CEEJcm7OmHDe4cln+02ULeZszRKknOgpbn+cqJJW
+   HjDHuYpTTn/GjfZ026fy8zX7JYoiQusC3qM9NayvHCMl0i/BOTbWJ4FGE
+   k=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.05,204,1701126000"; 
+   d="scan'208";a="77272638"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 12:33:55 +0100
+Date: Fri, 19 Jan 2024 12:33:54 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
+    linux-kernel@vger.kernel.org
+Subject: Re: EEVDF and NUMA balancing
+In-Reply-To: <CAKfTPtC9Px_W84YRJqnFNkL8oofO15D-P=VTCMUUu7NJr+xwBA@mail.gmail.com>
+Message-ID: <b9a4f5d2-a579-6844-3d9f-38a59eff6ac4@inria.fr>
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com> <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr> <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
+ <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr> <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr> <CAKfTPtDrULyOB9+RhjoPfCpHKVhx5kRf6dq79DSE6jZgsEairw@mail.gmail.com> <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr> <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr>
+ <CAKfTPtCAcHuzhcDvry6_nH2K29wc-LEo2yOi-J-mnZkwMvGDbw@mail.gmail.com> <cfae246d-9383-59d-ee5b-81ea3dd0a795@inria.fr> <CAKfTPtD0B29zadkeEOCWvry123zWVEEm41ouKj7noXwQdoh2+Q@mail.gmail.com> <7a845b43-bd8e-6c7d-6bca-2e6f174f671@inria.fr> <36f2cc93-db10-5977-78ab-d9d07c3f445@inria.fr>
+ <CAKfTPtA31Z0N9hd4z_GPvoZwK=KTf4fPbx_jDbK653mdVDLEbw@mail.gmail.com> <alpine.DEB.2.22.394.2401182304170.3296@hadrien> <CAKfTPtC9Px_W84YRJqnFNkL8oofO15D-P=VTCMUUu7NJr+xwBA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZalU8r1OvqKOLHrf@surfacebook.localdomain>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: flSMt1ucqoIAeIcEfECS-rqrffURSsu7
-X-Proofpoint-ORIG-GUID: flSMt1ucqoIAeIcEfECS-rqrffURSsu7
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=US-ASCII
 
-On Thu, Jan 18, 2024 at 06:42:26PM +0200, andy.shevchenko@gmail.com wrote:
-> Fri, Aug 04, 2023 at 11:45:59AM +0100, Charles Keepax kirjoitti:
-> > The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
-> > (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
-> > for portable applications. It provides a high dynamic range, stereo
-> > DAC for headphone output, two integrated Class D amplifiers for
-> > loudspeakers, and two ADCs for wired headset microphone input or
-> > stereo line input. PDM inputs are provided for digital microphones.
-> > 
-> > The MFD component registers and initialises the device and provides
-> > PM/system power management.
-> 
 
-Full disclosure probably not going to fix everything here, few
-almost entirely stylistic things and the patch was like merged 4
-month ago. But happy to spin through and do a few fix ups.
 
-> ...
-> 
-> > +#include <linux/err.h>
-> > +#include <linux/errno.h>
-> 
-> It seems errno is not used (as Linux kernel error codes, otherwise err.h
-> already includes necessary header).
-> 
-> Also seems array_size.h, mod_devicetable.h are missing (at least).
-> 
-> ...
+On Fri, 19 Jan 2024, Vincent Guittot wrote:
 
-Thanks for spotting these will spin through and tidy the headers
-up.
+> On Thu, 18 Jan 2024 at 23:13, Julia Lawall <julia.lawall@inria.fr> wrote:
+> >
+> >
+> >
+> > On Thu, 18 Jan 2024, Vincent Guittot wrote:
+> >
+> > > Hi Julia,
+> > >
+> > > Sorry for the delay. I have been involved on other perf regression
+> > >
+> > > On Fri, 5 Jan 2024 at 18:27, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On Fri, 5 Jan 2024, Julia Lawall wrote:
+> > > >
+> > > > >
+> > > > >
+> > > > > On Fri, 5 Jan 2024, Vincent Guittot wrote:
+> > > > >
+> > > > > > On Fri, 5 Jan 2024 at 15:51, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > > > > >
+> > > > > > > > Your system is calling the polling mode and not the default
+> > > > > > > > cpuidle_idle_call() ? This could explain why I don't see such problem
+> > > > > > > > on my system which doesn't have polling
+> > > > > > > >
+> > > > > > > > Are you forcing the use of polling mode ?
+> > > > > > > > If yes, could you check that this problem disappears without forcing
+> > > > > > > > polling mode ?
+> > > > > > >
+> > > > > > > I expanded the code in do_idle to:
+> > > > > > >
+> > > > > > >                 if (cpu_idle_force_poll) { c1++;
+> > > > > > >                         tick_nohz_idle_restart_tick();
+> > > > > > >                         cpu_idle_poll();
+> > > > > > >                 } else if (tick_check_broadcast_expired()) { c2++;
+> > > > > > >                         tick_nohz_idle_restart_tick();
+> > > > > > >                         cpu_idle_poll();
+> > > > > > >                 } else { c3++;
+> > > > > > >                         cpuidle_idle_call();
+> > > > > > >                 }
+> > > > > > >
+> > > > > > > Later, I have:
+> > > > > > >
+> > > > > > >         trace_printk("force poll: %d: c1: %d, c2: %d, c3: %d\n",cpu_idle_force_poll, c1, c2, c3);
+> > > > > > >         flush_smp_call_function_queue();
+> > > > > > >         schedule_idle();
+> > > > > > >
+> > > > > > > force poll, c1 and c2 are always 0, and c3 is always some non-zero value.
+> > > > > > > Sometimes small (often 1), and sometimes large (304 or 305).
+> > > > > > >
+> > > > > > > So I don't think it's calling cpu_idle_poll().
+> > > > > >
+> > > > > > I agree that something else
+> > > > > >
+> > > > > > >
+> > > > > > > x86 has TIF_POLLING_NRFLAG defined to be a non zero value, which I think
+> > > > > > > is sufficient to cause the issue.
+> > > > > >
+> > > > > > Could you trace trace_sched_wake_idle_without_ipi() ans csd traces as well ?
+> > > > > > I don't understand what set need_resched() in your case; having in
+> > > > > > mind that I don't see the problem on my Arm systems and IIRC Peter
+> > > > > > said that he didn't face the problem on his x86 system.
+> > > > >
+> > > > > TIF_POLLING_NRFLAG doesn't seem to be defined on Arm.
+> > > > >
+> > > > > Peter said that he didn't see the problem, but perhaps that was just
+> > > > > random.  It requires a NUMA move to occur.  I make 20 runs to be sure to
+> > > > > see the problem at least once.  But another machine might behave
+> > > > > differently.
+> > > > >
+> > > > > I believe the call chain is:
+> > > > >
+> > > > > scheduler_tick
+> > > > >   trigger_load_balance
+> > > > >     nohz_balancer_kick
+> > > > >       kick_ilb
+> > > > >         smp_call_function_single_async
+> > > > >           generic_exec_single
+> > > > >             __smp_call_single_queue
+> > > > >               send_call_function_single_ipi
+> > > > >                 call_function_single_prep_ipi
+> > > > >                   set_nr_if_polling <====== sets need_resched
+> > > > >
+> > > > > I'll make a trace to reverify that.
+> > > >
+> > > > This is what I see at a tick, which corresponds to the call chain shown
+> > > > above:
+> > > >
+> > > >           bt.B.x-4184  [046]   466.410605: bputs:                scheduler_tick: calling trigger_load_balance
+> > > >           bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling nohz_balancer_kick
+> > > >           bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling kick_ilb
+> > > >           bt.B.x-4184  [046]   466.410607: bprint:               trigger_load_balance: calling smp_call_function_single_async 22
+> > > >           bt.B.x-4184  [046]   466.410607: bputs:                smp_call_function_single_async: calling generic_exec_single
+> > > >           bt.B.x-4184  [046]   466.410607: bputs:                generic_exec_single: calling __smp_call_single_queue
+> > > >           bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling send_call_function_single_ipi
+> > > >           bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling call_function_single_prep_ipi
+> > > >           bt.B.x-4184  [046]   466.410608: bputs:                call_function_single_prep_ipi: calling set_nr_if_polling
+> > > >           bt.B.x-4184  [046]   466.410609: sched_wake_idle_without_ipi: cpu=22
+> > >
+> > > I don't know if you have made progress on this in the meantime.
+> > >
+> > > Regarding the trace above, do you know if anything happens on CPU22
+> > > just before the scheduler tried to kick the ILB on it ?
+> > >
+> > > Have you found why TIF_POLLING_NRFLAG seems to be always set when the
+> > > kick_ilb happens ? It should be cleared once entering the idle state.
+> >
+> > I haven't figured out everything, but the attached graph shows
+> > that TIF_POLLING_NRFLAG is not always set.  Sometimes it is and sometimes
+> > it isn't.
+> >
+> > In the graph, on core 57, the blue box and the green x are before and
+> > after the call to cpuidle_idle_call(), resplectively.  One can't see it in
+> > this graph, but the green x comes before the blue box.  So almost all of
+> > the time, it is in cpuidle_idle_call(), only in the tiny gap between the x
+> > and the box is it back in do_idle with TIF_POLLING_NRFLAG set.
+> >
+> > Afterwards, there is a diamond for the polling case and a triangle for the
+> > non polling case.  These also occur on clock ticks, and may be
+> > microscopically closer to (polling) or further from (not polling) the
+> > green x and blue box.
+>
+> Your problem really looks like weird timing.
+>
+> It would be good to know which idle states are selected ? or even
+> better if it's possible, disable all but one idle state and see if one
+> idle state in particular trigger your problem
+>
+> idle state can be disable here :
+> echo 1 > /sys/devices/system/cpu/cpu*/cpuidle/state*/disable
+>
+> One possible sequence:
+> tick is not stopped on the idle cpu
+> tick fires on busy and idle cpus
+> idle cpu wakes up and the wake up time varies depending of wakeup
+> latency of the entered c-state
+> busy cpu executes call_function_single_prep_ipi() and idle cpu could
+> be already woken or not depending of the time to wake up
+>
+> >
+> > I haven't yet studied what happens afterwards in the non polling case.
+>
+> Side point, according to your trace above, you can 2 consecutives real
+> idle load balance so the patch that I proposed, should be able to
+> trigger active migration because the nr_balance_failed will be != 0
+> the 2nd idle load balance. Are I missing something ?
 
-> 
-> > +#if IS_ENABLED(CONFIG_OF)
-> 
-> We are trying hard to get rid of this ugly ifdefferies (ACPI as well) along
-> with respective macros that are often the PITA for CIs.
-> 
+Thanks for the suggestions.  I will check both issues.
 
-Fair enough, but what is the expected alternative here? Is it now
-preferred to just always include both in the driver? That does
-come at a small cost in driver size, but it doesn't really bother
-me.
-
-> > +static const struct of_device_id cs42l43_of_match[] = {
-> > +	{ .compatible = "cirrus,cs42l43", },
-> > +	{}
-> > +};
-> > +MODULE_DEVICE_TABLE(of, cs42l43_of_match);
-> > +#endif
-> > +
-> > +#if IS_ENABLED(CONFIG_ACPI)
-> > +static const struct acpi_device_id cs42l43_acpi_match[] = {
-> > +	{ "CSC4243", 0 },
-> > +	{}
-> > +};
-> > +MODULE_DEVICE_TABLE(acpi, cs42l43_acpi_match);
-> > +#endif
-> > +
-
-..
-
-> > +	cs42l43->regmap = devm_regmap_init_sdw(sdw, &cs42l43_sdw_regmap);
-> > +	if (IS_ERR(cs42l43->regmap)) {
-> > +		ret = PTR_ERR(cs42l43->regmap);
-> > +		dev_err(cs42l43->dev, "Failed to allocate regmap: %d\n", ret);
-> > +		return ret;
-> > +	}
-> 
-> Can be simplified as
-> 
-> 	cs42l43->regmap = devm_regmap_init_sdw(sdw, &cs42l43_sdw_regmap);
-> 	if (IS_ERR(cs42l43->regmap))
-> 		dev_err_probe(cs42l43->dev, PTR_ERR(cs42l43->regmap),
-> 			      "Failed to allocate regmap: %d\n", ret);
-> 
-
-Oops, yeah looks like I missed the ones in sdw and i2c, will fix
-those up.
-
-> > +#define CS42L43_RESET_DELAY			20
-> > +
-> > +#define CS42L43_SDW_ATTACH_TIMEOUT		500
-> > +#define CS42L43_SDW_DETACH_TIMEOUT		100
-> > +
-> > +#define CS42L43_MCU_POLL			5000
-> > +#define CS42L43_MCU_CMD_TIMEOUT			20000
-> 
-> > +#define CS42L43_MCU_UPDATE_TIMEOUT		500000
-> 
-> > +#define CS42L43_VDDP_DELAY			50
-> > +#define CS42L43_VDDD_DELAY			1000
-> > +
-> > +#define CS42L43_AUTOSUSPEND_TIME		250
-> 
-> Usually we use units for the macro names as suffixes...
-> E.g., _US (for microseconds).
-> 
-
-Can add those, does make it clearer.
-> ...
-> 
-> > +struct cs42l43_patch_header {
-> > +	__le16 version;
-> > +	__le16 size;
-> > +	u8 reserved;
-> > +	u8 secure;
-> 
-> Seems to me that __u8 is appropriate as patch is external to the kernel and
-> it's kinda firmware interface.
-> 
-
-Sure.
-
-> > +	irq_flags = irqd_get_trigger_type(irq_data);
-> > +	switch (irq_flags) {
-> > +	case IRQF_TRIGGER_LOW:
-> > +	case IRQF_TRIGGER_HIGH:
-> > +	case IRQF_TRIGGER_RISING:
-> > +	case IRQF_TRIGGER_FALLING:
-> > +		break;
-> > +	case IRQ_TYPE_NONE:
-> 
-> Are you sure it's a right place to interpret no type flags as a default?
-> 
-
-I mean... no... but I might need more to go on. The chip
-generates an active low IRQ by default so it seems reasonable if
-nothing is specified to assume the chip is doing what it normally
-would.
-
-> > +	default:
-> > +		irq_flags = IRQF_TRIGGER_LOW;
-> > +		break;
-> > +	}
-
-..
-
-> > +EXPORT_NS_GPL_DEV_PM_OPS(cs42l43_pm_ops, MFD_CS42L43) = {
-> > +	SET_SYSTEM_SLEEP_PM_OPS(cs42l43_suspend, cs42l43_resume)
-> > +	SET_RUNTIME_PM_OPS(cs42l43_runtime_suspend, cs42l43_runtime_resume, NULL)
-> > +};
-> 
-> Why do you need SET_*() versions of those macros? They are not supposed to be
-> used with the new macros such as EXPORT_NS_GPL_DEV_PM_OPS().
-> 
-
-Yeah fixed that up already in an earlier fixup patch.
-
-Thanks,
-Charles
+julia
 
