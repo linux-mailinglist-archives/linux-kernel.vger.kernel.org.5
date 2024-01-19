@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-30726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0B2A83239C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 04:24:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D75E83239B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 04:24:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A3BD1F238B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 03:24:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CDCF28421B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 03:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077E9440C;
-	Fri, 19 Jan 2024 03:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B10483C32;
+	Fri, 19 Jan 2024 03:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QO/9kRFN"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="moCEPN6T"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3CD184E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A668186F;
 	Fri, 19 Jan 2024 03:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705634629; cv=none; b=q+9OHTOzQQOQYb/+Hhd0AggBo0hswacvMPsCc+cJ5fYAlIWlaHV7wZABJ9v0ORweVO+/2Njm6T5vjqaKKeuK4QrkXg4U+EkfHpDvuIv3Z91OLvvyyuLQLMuXCz3HKyOrLt5BOQJgyCnheDvqsK1gAovw8ebL3GECMm3tAGYtTkI=
+	t=1705634629; cv=none; b=SKfC4Zstmz0L0LdgAahAdY3QA0rRkAXvyQj7rpk8tzxvfMWiRZRGxtqiL5n/50VWgmm6wGzgk+JT+cIB8cw/aOFqW/ffdtJIRrcxr5ENCwUxhFWucpFlGXkamZC9uW1qrrlbwPW4YkalgO7DabSKOLLj5OO2EOoGEQqjE+s9zrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705634629; c=relaxed/simple;
-	bh=cgbfz7UnFZjE4DwUMn9Qv6lVzekG3Ud8A0D/dBIP/Hs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RVekzpPuog7nsi9pjrZUvNUlSJ1xfKqoVjbDUg/77b//l6eCpHMeCjBTiiAcxsUrWWw7hK6yOgWYLK2FBpkyuuDUAn2w8QNcm9kpZVTj2hIvdHBFq4cTe4RBfuu2aLKQdhSnDMlqpclNW147Fu/KtvNxJXatEamlpS7CF5kvzgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QO/9kRFN; arc=none smtp.client-ip=205.220.180.131
+	bh=Uewh1FnrdtUjaw3IbQp5/cVxlxfhVTRPnk+3maWKx+g=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=khZAeISMvl4xQQNnOce9uezdmtkkmydrbhIAJIkhIlmjvki/kjnenXNvzI8dyFhvqvwRk2EBx25RCRGQo2xRZLEcnZSKRJ8atBbouMlOp7Bsvk/egqDPdf3YsuRVBp8hJ/o/+YF3zhwWb4GH6Ij0VDGVynPJpBrLC2+8BAqT1L0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=moCEPN6T; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40INclhp015642;
-	Fri, 19 Jan 2024 03:23:28 GMT
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40J0f8bZ031574;
+	Fri, 19 Jan 2024 03:23:33 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type
-	:content-transfer-encoding; s=qcppdkim1; bh=NGA/WjBf9Cm9jvhcZda8
-	TuRDuljOfcGefkvABTXzrR8=; b=QO/9kRFN3Mle5wCNzMDdbj1k3JDYHx0OazKK
-	FKXo04T3U2Jj21eLtovQqIPftGPuw006Az/kmpYwGDQD9xwu/f9TgvZDFt4h41z1
-	ZTCpXhbDusYUojLUHwGQJbrNisBgqYa10yg4CIL283GAAX0jKIRsXMzVU2JYc3q9
-	5S+KwabnUAcBd9tQ2fpISS2gwiFDFXyiydnp58QkGfD3fw6biBxlNsDvQCmWguoN
-	w6q2cWMjXebHWgIszr6N7DbtVKK5ktrfeS6JaeYYTPB8E3nGCueL6SeLuSpTP94A
-	lsKCI2n2NpxLS/wq6ybjbOfQN6eklQbKmOY1EdoM81jP4+1NiQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vpxastsd5-1
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-type; s=qcppdkim1; bh=eG0cw3V2V7bP1GdeOMsX
+	cfVKOjDgrWaClaMQX8x+Rcc=; b=moCEPN6Tu3lLFU3iTIFnjd9XAojWFiCJfjkW
+	N+ISLLzZYSWQnUjSIwWnDkgeIrihb9EsrpMNp/I0RR8ZQa0jlLvi2rNCOyQFzDWc
+	dfljbvPajztqrUfo7GXbLJ3f/I9Wve5yIObYX/GN6i0tgv+JgjYrY9Cz+IxPLe04
+	LxY61RU5ULvFVh6IBU83kk+smcPYYzs2uQ5k+2s/3rUSc/JVn1+LSjXhT2FAON5j
+	P+6mJzlP+KDrJp8wLxBmRsgxjLDQzthu3gs0YGgDg8gajybFn1tMfSF1dhDQsonI
+	hN26aoFjgpmYX5ESAc6fm+oeSdANIL/UkPAPPR98OSOfjcDyEg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vq403hue3-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 03:23:28 +0000 (GMT)
+	Fri, 19 Jan 2024 03:23:33 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40J3NRDs025336
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40J3NWCx005461
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 03:23:27 GMT
+	Fri, 19 Jan 2024 03:23:32 GMT
 Received: from taozha-gv.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 18 Jan 2024 19:23:21 -0800
+ 15.2.1118.40; Thu, 18 Jan 2024 19:23:27 -0800
 From: Tao Zhang <quic_taozha@quicinc.com>
 To: Mathieu Poirier <mathieu.poirier@linaro.org>,
         Suzuki K Poulose
@@ -75,156 +76,117 @@ CC: Tao Zhang <quic_taozha@quicinc.com>,
 	<quic_tsoni@quicinc.com>,
         Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
         <andersson@kernel.org>
-Subject: [PATCH v4 00/10] Add support to configure TPDM CMB subunit
-Date: Fri, 19 Jan 2024 11:22:53 +0800
-Message-ID: <1705634583-17631-1-git-send-email-quic_taozha@quicinc.com>
+Subject: [PATCH v4 01/10] coresight-tpdm: Optimize the store function of tpdm simple dataset
+Date: Fri, 19 Jan 2024 11:22:54 +0800
+Message-ID: <1705634583-17631-2-git-send-email-quic_taozha@quicinc.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1705634583-17631-1-git-send-email-quic_taozha@quicinc.com>
+References: <1705634583-17631-1-git-send-email-quic_taozha@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: cZkIMynHISNfIu6J-ulmPVF10CVQw6lE
-X-Proofpoint-ORIG-GUID: cZkIMynHISNfIu6J-ulmPVF10CVQw6lE
+X-Proofpoint-GUID: YKVaIyHCUjWlngrNat9x1vbWd0xlDZWy
+X-Proofpoint-ORIG-GUID: YKVaIyHCUjWlngrNat9x1vbWd0xlDZWy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-18_12,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 malwarescore=0
- mlxscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401190012
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 phishscore=0
+ spamscore=0 adultscore=0 mlxlogscore=882 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2401190012
 
-Introduction of TPDM CMB(Continuous Multi Bit) subunit
-CMB subunit is responsible for creating a dataset element, and is also
-optionally responsible for packing it to fit multiple elements on a
-single ATB transfer if possible in the configuration. The TPDM Core
-Datapath requests timestamps be stored by the TPDA and then delivering
-ATB sized data (depending on ATB width and element size, this could
-be smaller or larger than a dataset element) to the ATB Mast FSM.
-The CMB makes trace elements in two modes. In ‘continuous’ mode, every
-valid data cycle creates an element. In ‘trace on change’ mode, when
-valid data changes on the bus, a trace element is created. In
-continuous mode, all cycles where this condition is true create trace
-elements. In trace on change mode, a data element is only when the
-previously sampled input is different from the current sampled input.
+Replace spin lock/unlock to avoid forgetting to unlock when the
+function exits. And refine methods for handling various conditions.
 
-The CMB subunit must be configured prior to enablement. This series
-adds support for TPDM to configure the configure CMB subunit.
+Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+---
+ drivers/hwtracing/coresight/coresight-tpdm.c | 39 ++++++++++----------
+ 1 file changed, 19 insertions(+), 20 deletions(-)
 
-Once this series patches are applied properly, the new tpdm nodes for
-should be observed at the tpdm path /sys/bus/coresight/devices/tpdm*
-which supports CMB subunit.
-e.g.
-root@qemuarm64:/sys/devices/platform/soc@0/684c000.tpdm/tpdm0# ls -l
--rw-r--r--    1 root     root          4096 Jan  1 00:00 cmb_mode
-drwxr-xr-x    2 root     root             0 Jan  1 00:00 cmb_msr
-drwxr-xr-x    2 root     root             0 Jan  1 00:00 cmb_patt
-drwxr-xr-x    2 root     root             0 Jan  1 00:00 cmb_trig_patt
--rw-r--r--    1 root     root          4096 Jan  1 00:00 cmb_trig_ts
--rw-r--r--    1 root     root          4096 Jan  1 00:00 cmb_ts_all
-drwxr-xr-x    2 root     root             0 Jan  1 00:00 connections
-drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_edge
-drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_msr
-drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_patt
-drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_trig_patt
--rw-r--r--    1 root     root          4096 Jan  1 00:00 enable_source
---w-------    1 root     root          4096 Jan  1 00:00 integration_test
-drwxr-xr-x    2 root     root             0 Ja?  1 00:00 power
---w-------    1 root     root          4096 Jan  1 00:00 reset_dataset
-lrwxrwxrwx    1 root     root             0 Apr  5  2021 subsystem -> ../../../../../bus/coresight
--rw-r--r--    1 root     root          4096 Apr  5  2021 uevent
--r--r--r--    1 root     root          4096 Jan  1 00:00 waiting_for_supplier
-
-We can use the commands are similar to the below to configure the
-TPDMs which support CMB subunit. Enable coresight sink first.
-echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-echo 1 > /sys/bus/coresight/devices/tpdm0/reset_dataset
-echo 1 > /sys/bus/coresight/devices/tpdm0/cmb_mode
-echo 1 > /sys/bus/coresight/devices/tpdm0/cmb_patt/enable_ts
-echo 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm0/cmb_patt/tpmr0
-echo 0 > /sys/bus/coresight/devices/tpdm0/cmb_trig_ts
-echo 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm0/cmb_trig_patt/xpr1
-echo 1 > /sys/bus/coresight/devices/tpdm0/enable_source
-
-codelinaro link:
-https://git.codelinaro.org/clo/linux-kernel/coresight/-/commits/tpdm-cmb-v4
-
-Changes in V4:
-1. Replace spin lock/unlock to avoid forgetting to unlock when the
-function exits.
--- Suzuki K Poulose
-2. Move the helper "tpdm_has_dsb_dataset" to the header file.
--- Suzuki K Poulose
-3. Fix the incorrect property of the sample in the documents.
--- James Clark
-4. Clear the dsb/cmb element size directly in the clear helper.
--- Suzuki K Poulose
-5. Correct the comment of "tpdm_read_element_size".
--- Suzuki K Poulose
-6. Call the helper "tpdm_has_dsb/cmb_dataset" in TPDA driver to
-check what dataset the TPDM supports.
--- Suzuki K Poulose
-7. Refine the dsb/cmb dataset support check in enable/disable functions.
--- Suzuki K Poulose
-8. Get rid of redundant code in function "set_cmb_tier".
--- Suzuki K Poulose
-9. Since one SysFs file should follow "one value", use "dev_ext_attribute"
-to instead of the previous "enable_ts" Sysfs file approach.
--- Suzuki K Poulose
-10. Change the kernel version to 6.9 for the MSR related SysFs file.
--- James Clark
-11. Refine the function "tpdm_simple_dataset_store".
--- Suzuki K Poulose
-
-Changes in V3:
-1. Add 8-bit support to the description in the TPDM devicetree document.
--- Rob Herring
-2. Change how the result is produced in "tpdm_read_element_size".
--- James Clark
-3. Calling "tpdm_clear_element_size" at the beginning of
-"tpda_enable_port".
--- James Clark
-4. Use "dsb_esize" and "cmb_esize" to determine whether multiple TPDMs
-are detected on a TPDA input port in "tpda_get_element_size".
--- James Clark
-5. Modify the judgment logic in "tpda_enable_port".
--- James Clark
-6. Add more description of "cmb_mode" to TPDM SysFS document.
--- James Clark
-
-Changes in V2:
-1. Optimizate and modify this patch series based on the patch series
-"Add support to configure TPDM CMB subunit".
-2. Modify the functions that read the element size of DSB/CMB in TPDA driver.
-
-Tao Zhang (10):
-  coresight-tpdm: Optimize the store function of tpdm simple dataset
-  coresight-tpdm: Optimize the useage of tpdm_has_dsb_dataset
-  dt-bindings: arm: Add support for CMB element size
-  coresight-tpdm: Add CMB dataset support
-  coresight-tpda: Add support to configure CMB element
-  coresight-tpdm: Add support to configure CMB
-  coresight-tpdm: Add pattern registers support for CMB
-  coresight-tpdm: Add timestamp control register support for the CMB
-  dt-bindings: arm: Add support for TPDM CMB MSR register
-  coresight-tpdm: Add msr register support for CMB
-
- .../testing/sysfs-bus-coresight-devices-tpdm  |  87 +++
- .../bindings/arm/qcom,coresight-tpdm.yaml     |  37 ++
- drivers/hwtracing/coresight/coresight-tpda.c  | 123 +++--
- drivers/hwtracing/coresight/coresight-tpda.h  |   6 +
- drivers/hwtracing/coresight/coresight-tpdm.c  | 508 +++++++++++++++---
- drivers/hwtracing/coresight/coresight-tpdm.h  | 113 ++++
- 6 files changed, 757 insertions(+), 117 deletions(-)
-
+diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+index bd13a548375c..0427c0fc0bf3 100644
+--- a/drivers/hwtracing/coresight/coresight-tpdm.c
++++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+@@ -77,51 +77,50 @@ static ssize_t tpdm_simple_dataset_store(struct device *dev,
+ 					 size_t size)
+ {
+ 	unsigned long val;
+-	ssize_t ret = size;
++	ssize_t ret = -EINVAL;
+ 
+ 	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+ 	struct tpdm_dataset_attribute *tpdm_attr =
+ 		container_of(attr, struct tpdm_dataset_attribute, attr);
+ 
+ 	if (kstrtoul(buf, 0, &val))
+-		return -EINVAL;
++		return ret;
+ 
+-	spin_lock(&drvdata->spinlock);
++	guard(spinlock)(&drvdata->spinlock);
+ 	switch (tpdm_attr->mem) {
+ 	case DSB_TRIG_PATT:
+-		if (tpdm_attr->idx < TPDM_DSB_MAX_PATT)
++		if (tpdm_attr->idx < TPDM_DSB_MAX_PATT) {
+ 			drvdata->dsb->trig_patt[tpdm_attr->idx] = val;
+-		else
+-			ret = -EINVAL;
++			ret = size;
++		}
+ 		break;
+ 	case DSB_TRIG_PATT_MASK:
+-		if (tpdm_attr->idx < TPDM_DSB_MAX_PATT)
++		if (tpdm_attr->idx < TPDM_DSB_MAX_PATT) {
+ 			drvdata->dsb->trig_patt_mask[tpdm_attr->idx] = val;
+-		else
+-			ret = -EINVAL;
++			ret = size;
++		}
+ 		break;
+ 	case DSB_PATT:
+-		if (tpdm_attr->idx < TPDM_DSB_MAX_PATT)
++		if (tpdm_attr->idx < TPDM_DSB_MAX_PATT) {
+ 			drvdata->dsb->patt_val[tpdm_attr->idx] = val;
+-		else
+-			ret = -EINVAL;
++			ret = size;
++		}
+ 		break;
+ 	case DSB_PATT_MASK:
+-		if (tpdm_attr->idx < TPDM_DSB_MAX_PATT)
++		if (tpdm_attr->idx < TPDM_DSB_MAX_PATT) {
+ 			drvdata->dsb->patt_mask[tpdm_attr->idx] = val;
+-		else
+-			ret = -EINVAL;
++			ret = size;
++		}
+ 		break;
+ 	case DSB_MSR:
+-		if (tpdm_attr->idx < drvdata->dsb_msr_num)
++		if (tpdm_attr->idx < drvdata->dsb_msr_num) {
+ 			drvdata->dsb->msr[tpdm_attr->idx] = val;
+-		else
+-			ret = -EINVAL;
++			ret = size;
++		}
+ 		break;
+ 	default:
+-		ret = -EINVAL;
++		break;
+ 	}
+-	spin_unlock(&drvdata->spinlock);
+ 
+ 	return ret;
+ }
 -- 
 2.17.1
 
