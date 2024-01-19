@@ -1,158 +1,106 @@
-Return-Path: <linux-kernel+bounces-31542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D77832FB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:23:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECD1832FC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:31:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AE361F2523A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:23:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45855280DA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADCE56755;
-	Fri, 19 Jan 2024 20:23:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4581954BE3;
+	Fri, 19 Jan 2024 20:31:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="W48PXxH9"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dxjRvouq"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A791524B3;
-	Fri, 19 Jan 2024 20:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726858BF6
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 20:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705695783; cv=none; b=QgWPCgHZNqV9U7+W+w/HrH2+rv/+jgXwVt1nNPZ378gFL1seEePp0OzPJD8N3GJXleT+TRVMqLXP4Jp9XHUIjqo7jlRbwewYAhSxJmtmlCcDXIISYvwMaUe4q6XYUxfGx0FNiDA3feSkj8Cck9QvM43MnyjgyQSzgxO35iQ7lyY=
+	t=1705696263; cv=none; b=tlqUqyVE13dwVVRvXT6mQ64tBm7CQW3mTffzhxyiQyy+qQORaARmV9YB7MK9EwEYyMA0H5QEtdxAwxI0mkfNiDJByQbpXrmWQ38PT3MxFjhsSBONjxizQTsDhVcTBe9dQzXNROePEX22539V9OiZivEmazQIxKpFxTUX+tSBzGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705695783; c=relaxed/simple;
-	bh=3F4LzeN8gEbum1S++tjiVyy2gjiMWL3KdUxDscOrH20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=leTlzbVX2N+XYTilA1dllDsMLLpAO07/jvxpLkXaGBPiV60V4oiyjkHWeaNSKMZfUh5yGroTVej6xaQti679oMhosW9HPIGN0uC0KbZK3bOwHeTqoaBAW4ff+lJ5efgn47Xk8l1af73rkN72Y04hTa4HZIeRBkqbcHyilPYwEOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=W48PXxH9; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 64B492FC0077;
-	Fri, 19 Jan 2024 21:22:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1705695777;
+	s=arc-20240116; t=1705696263; c=relaxed/simple;
+	bh=OKJ8VXzhuKQpiVaB1tux2YO5F2PodmPsL/JSVh8TRDY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kAQVYdGqYXJUwC/ospFkLXermlce4t581+soySCARavhFPndGqHuUF6KuQMqk+oA4jwVGLJ87e6wt+dmb80D7V5KYBorEVXUq9G7hJOnnfzmgQam1P3DszCZoPH+gzkj6zni3FI7Wr33Ou+TjnHx2q9P0lhsRszT8u1iDinCW/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dxjRvouq; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705696260;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s3KB8fN1v11h06dDAChI3rThEEmVbSHsahcI++DtPIU=;
-	b=W48PXxH98jl59z8cPo3sKMW1zTP7z+54nd2fx/eDRv/x17PK0rrASStRSulK62Zvx8oC1k
-	c0Lt2w6WRRXqmefYboiY4vSa7hC4gNQ4ZzGNCrioC1rGuZ8TX23lpo2GSMr1K9e4iln8Mr
-	a8PeXyISJub1qytbPrp2YCPSa6SpHLM=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <36973f9d-bf67-417d-998c-ce24c38322c3@tuxedocomputers.com>
-Date: Fri, 19 Jan 2024 21:22:57 +0100
+	bh=Le/B9zszCG4OnIUWJ5vGWVH4S9ibCDvWqCeyzDoHXaY=;
+	b=dxjRvouqBcs8vHHzRnb3z+LuHAJq9UBJryVtRZoSM8KfAO4tW8Hri7gghOg3uVYy/nHnHD
+	0TbRiZpxumPk7uYKEMvUx01cqezB8fYns7D1uKUBfH9dUePFGN/INV6mZ8VujCBLeocPsr
+	CgAMZGEk4aRWuMX+6UxLDuwOE1PEjUQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-675-vwGlXyDEORejeGqeaUGfNA-1; Fri, 19 Jan 2024 15:30:56 -0500
+X-MC-Unique: vwGlXyDEORejeGqeaUGfNA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5CCEA83B82D;
+	Fri, 19 Jan 2024 20:30:56 +0000 (UTC)
+Received: from fedora (unknown [10.22.32.201])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id E9A9A492BC6;
+	Fri, 19 Jan 2024 20:30:55 +0000 (UTC)
+Date: Fri, 19 Jan 2024 15:30:54 -0500
+From: Audra Mitchell <audra@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
+	hirokazu.yamauchi.hk@hitachi.com, ddouwsma@redhat.com,
+	loberman@redhat.com, raquini@redhat.com, rasmus.villemoes@prevas.dk
+Subject: Re: [PATCH v3] workqueue.c: Increase workqueue name length
+Message-ID: <Zarb_u7mZCBGrgSX@fedora>
+References: <20231215193954.1785069-1-audra@redhat.com>
+ <20240115170822.451231-1-audra@redhat.com>
+ <ZabLkep0gOFEyjxH@slm.duckdns.org>
+ <Zafm-hkCI4sbOr78@fedora>
+ <ZagJrod33CPFaXGg@mtj.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-Content-Language: en-US
-To: Pavel Machek <pavel@ucw.cz>, Hans de Goede <hdegoede@redhat.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
- Jelle van der Waa <jelle@vdwaa.nl>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Lee Jones <lee@kernel.org>,
- linux-kernel@vger.kernel.org,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org
-References: <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
- <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
- <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
- <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
- <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
- <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
- <ZaljwLe7P+dXHEHb@duo.ucw.cz>
- <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
- <ZarYSkzISyS+wuYR@duo.ucw.cz>
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <ZarYSkzISyS+wuYR@duo.ucw.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZagJrod33CPFaXGg@mtj.duckdns.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Hi,
+On Wed, Jan 17, 2024 at 07:09:02AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Wed, Jan 17, 2024 at 09:40:58AM -0500, Audra Mitchell wrote:
+> > Thank you for the response. May I humbly mention that I did find the following
+> > while testing my patch:
+> > 
+> > [    0.120298] workqueue: name exceeds WQ_NAME_LEN (32 chars). Truncating to: events_freezable_power_efficien
+> > 
+> > In an effort to be thorough, would you like me to submit a patch shortening
+> > this? Perhaps to "events_freezable_pwr_efficient"?
+> > 
+> > To be clear, I am not pushing the change, however, I do want to make sure that
+> > the changes being submitted are not causing additional clutter. 
+> 
+> Oh yeah, please go ahead.
+> 
+> Thanks.
 
-Am 19.01.24 um 21:15 schrieb Pavel Machek:
-> Hi!
->
->>>> 2. Implement per-key keyboards as auxdisplay
->>>>
->>>>      - Pro:
->>>>
->>>>          - Already has a concept for led positions
->>>>
->>>>          - Is conceptually closer to "multiple leds forming a singular entity"
->>>>
->>>>      - Con:
->>>>
->>>>          - No preexisting UPower support
->>>>
->>>>          - No concept for special hardware lightning modes
->>>>
->>>>          - No support for arbitrary led outlines yet (e.g. ISO style enter-key)
->>> Please do this one.
->> Ok, so based on the discussion so far and Pavel's feedback lets try to
->> design a custom userspace API for this. I do not believe that auxdisplay
->> is a good fit because:
-> Ok, so lets call this a "display". These days, framebuffers and drm
-> handles displays. My proposal is to use similar API as other displays.
->
->> So my proposal would be an ioctl interface (ioctl only no r/w)
->> using /dev/rgbkbd0 /dev/rgbkdb1, etc. registered as a misc chardev.
->>
->> For per key controllable rgb LEDs we need to discuss a coordinate
->> system. I propose using a fixed size of 16 rows of 64 keys,
->> so 64x16 in standard WxH notation.
->>
->> And then storing RGB in separate bytes, so userspace will then
->> always send a buffer of 192 bytes per line (64x3) x 14 rows
->> = 3072 bytes. With the kernel driver ignoring parts of
->> the buffer where there are no actual keys.
-> That's really really weird interface. If you are doing RGB888 64x14,
-> lets make it a ... display? :-).
->
-> ioctl always sending 3072 bytes is really a hack.
->
-> Small displays exist and are quite common, surely we'd handle this as
-> a display:
-> https://pajenicko.cz/displeje/graficky-oled-displej-0-66-64x48-i2c-bily-wemos-d1-mini
-> It is 64x48.
->
-> And then there's this:
-> https://pajenicko.cz/displeje/maticovy-8x8-led-displej-s-radicem-max7219
-> and this:
-> https://pajenicko.cz/displeje/maticovy-8x32-led-displej-s-radicem-max7219
->
-> One of them is 8x8.
->
-> Surely those should be displays, too?
+Hey Tejun,
 
-But what about a light bar with, lets say, 3 zones. Is that a 3x1 display?
+Do you want this as a stand alone patch or do you want me to re-submit both
+patches as a series?
 
-And what about a mouse having lit mousebuttons and a single led light bar at the 
-wrist: a 2x2 display, but one is thin but long and one is not used?
+Thanks
 
-Regards,
-
-Werner
-
->
-> And yes, we'd probably want some extra ioctls on top, for example to
-> map from input device to this and back, and maybe for various effects,
-> too. And yes, I realize that display with holes in it and with some
-> pixels bigger than others is weird, but it still looks like a display
-> to me. (And phones have high-res displays with rounded corners and
-> holes in them, so... we'll need to deal with weird displays anyway).
->
-> Best regards,
-> 								Pavel
 
