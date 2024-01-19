@@ -1,185 +1,382 @@
-Return-Path: <linux-kernel+bounces-30880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDDA283256C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:07:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E00A1832570
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:09:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A10C1F222CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:07:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 577661F222BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54571125C1;
-	Fri, 19 Jan 2024 08:07:27 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57E11DDC3;
+	Fri, 19 Jan 2024 08:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dMES4aKi"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97936DDA0;
-	Fri, 19 Jan 2024 08:07:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A2ED53E;
+	Fri, 19 Jan 2024 08:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705651646; cv=none; b=Z+Tskx7+8hbw+XPsThS+4/2XpR22gmNRj0brEnuFLJobw+Hhv9Y6dFlxiHDdn9PLmKOwwEcfgE/xUSpIJwVaVfjH6QrI464gdOg4iSCnv+WG1XERfhbU4FkynBZhqfjebcTT2jgO704+7mOIauku2FB7CyL3VHUiXxWWKBHSens=
+	t=1705651749; cv=none; b=npC9QR4i6plQqsbpAz85B0Ul5G6f7SNVisUJW7oQFeYVwiwq1xqtQPM18urwyUvqd0LdKLAPrgtCFUqfnQ63uw4IGSS9y61cywjM+FCyg7w447nhHtKBm+n7/eEOk+iBAJ+9a9CN++AwSV1IxUooHDI2LQqgkgw2YxvBSVbB8/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705651646; c=relaxed/simple;
-	bh=QhKAzNtW7wh6yRXN9+zaA6TCQZjmUCaV8eOf29rSVyY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=K+1DQ6RzSUwcEayfKDsp73CCRfo09o4kTPmghuG2Aoaa9vHYumMiQZ3oiPTDvxIanUpRj5/J4F9vlA7M6S096fC9lIqqroRznhq/3vfI3wHeDf6jQTJ6jIMxor0tlR5uKjoxeCN+X3+Y7sf15EBeZxwikqW2M3WTny9AbRyws6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TGXHz6XSrzsW3q;
-	Fri, 19 Jan 2024 16:06:23 +0800 (CST)
-Received: from kwepemd100001.china.huawei.com (unknown [7.221.188.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 15A91140153;
-	Fri, 19 Jan 2024 16:07:20 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
- kwepemd100001.china.huawei.com (7.221.188.240) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Fri, 19 Jan 2024 16:07:19 +0800
-Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
- dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
- Fri, 19 Jan 2024 16:07:18 +0800
-From: wangyunjian <wangyunjian@huawei.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "jasowang@redhat.com"
-	<jasowang@redhat.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, xudingke
-	<xudingke@huawei.com>
-Subject: RE: [PATCH net v3] tun: add missing rx stats accounting in
- tun_xdp_act
-Thread-Topic: [PATCH net v3] tun: add missing rx stats accounting in
- tun_xdp_act
-Thread-Index: AQHaSTdaoh49U62FKkOqzRq1lENoTbDdnv0AgAHaJdD//6fugIABpoCw
-Date: Fri, 19 Jan 2024 08:07:18 +0000
-Message-ID: <b65dae408d6446088c1d09440a62206c@huawei.com>
-References: <1705490503-28844-1-git-send-email-wangyunjian@huawei.com>
- <65a7f560a4643_6ba59294a7@willemb.c.googlers.com.notmuch>
- <ed6fd9c514ae4a449580d11c9c6ba8e7@huawei.com>
- <65a9393d75353_1c8cde294e2@willemb.c.googlers.com.notmuch>
-In-Reply-To: <65a9393d75353_1c8cde294e2@willemb.c.googlers.com.notmuch>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1705651749; c=relaxed/simple;
+	bh=qd+BTb6rH9NIO5HR/wKbO4iEQrU+TISoT2pw6lZuSJI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PVujti2lE+ybYCIB7XRmRruYRW6Cn8aRNHANx3rwd1juF0dMD+TmiyZu9BNLlMx66+2vEil1NjeqTWrqIgNleeHlIGTwpqpgIae/FKs/95r7mNTfCzFMGmlKj6yxrKJ4CrAyT33TM5yi4mapU5eqjgLes7fFFPePQ7kQ4YT6abE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dMES4aKi; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40J7DNDm011457;
+	Fri, 19 Jan 2024 08:08:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=kvg0ufm
+	g1LH0ci+iHAQyCkwG18EJIWxbtdxWL6idM00=; b=dMES4aKiTDFrd+kU2LVdhxQ
+	vrA93N0i3WIX8PChK2HejR+1YwCrdo87e44nm85ocE5w5By6iNR4eST3sSaBfWXJ
+	qI/16cZ5v2rF56B/btMJpR3OS6c/vC3Wug4y0EcHWF17j7E2f22YxS9uHrswQ9lm
+	KyvQm4p554HyeueiQPqAXMT6Ed1CGUIQGE/bdxQNW/0aC+iOeJ7ADoIGDBm4qL0B
+	KUbcIaww/DeRhNK8B3WPG16Htwwf0erWC+9QDaLO6Df7PJaak4/m4msSLiBMpIi3
+	XkpMabeoXmKWJcu5rYUJVwv5vRkv3tS0JZm6SryEhLbqUjp4LPG1tdhT42d4cZQ=
+	=
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vqmgd8345-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 08:08:47 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40J88lX9019216
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 08:08:47 GMT
+Received: from hyiwei-gv.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 19 Jan 2024 00:08:38 -0800
+From: Huang Yiwei <quic_hyiwei@quicinc.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <mark.rutland@arm.com>,
+        <mcgrof@kernel.org>, <keescook@chromium.org>, <j.granados@samsung.com>,
+        <mathieu.desnoyers@efficios.com>, <corbet@lwn.net>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <quic_bjorande@quicinc.com>, <quic_tsoni@quicinc.com>,
+        <quic_satyap@quicinc.com>, <quic_aiquny@quicinc.com>,
+        <kernel@quicinc.com>, Huang Yiwei <quic_hyiwei@quicinc.com>,
+        Ross Zwisler <zwisler@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH v3] tracing: Support to dump instance traces by ftrace_dump_on_oops
+Date: Fri, 19 Jan 2024 16:08:24 +0800
+Message-ID: <20240119080824.907101-1-quic_hyiwei@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: d1sf6dGn5_q50si8XE02nqKgfoVetdDB
+X-Proofpoint-GUID: d1sf6dGn5_q50si8XE02nqKgfoVetdDB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_04,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ phishscore=0 clxscore=1011 priorityscore=1501 mlxscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401190029
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBXaWxsZW0gZGUgQnJ1aWpuIFtt
-YWlsdG86d2lsbGVtZGVicnVpam4ua2VybmVsQGdtYWlsLmNvbV0NCj4gU2VudDogVGh1cnNkYXks
-IEphbnVhcnkgMTgsIDIwMjQgMTA6NDQgUE0NCj4gVG86IHdhbmd5dW5qaWFuIDx3YW5neXVuamlh
-bkBodWF3ZWkuY29tPjsgV2lsbGVtIGRlIEJydWlqbg0KPiA8d2lsbGVtZGVicnVpam4ua2VybmVs
-QGdtYWlsLmNvbT47IGphc293YW5nQHJlZGhhdC5jb207DQo+IGt1YmFAa2VybmVsLm9yZzsgZGF2
-ZW1AZGF2ZW1sb2Z0Lm5ldA0KPiBDYzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2Vy
-bmVsQHZnZXIua2VybmVsLm9yZzsgeHVkaW5na2UNCj4gPHh1ZGluZ2tlQGh1YXdlaS5jb20+DQo+
-IFN1YmplY3Q6IFJFOiBbUEFUQ0ggbmV0IHYzXSB0dW46IGFkZCBtaXNzaW5nIHJ4IHN0YXRzIGFj
-Y291bnRpbmcgaW4gdHVuX3hkcF9hY3QNCj4gDQo+IHdhbmd5dW5qaWFuIHdyb3RlOg0KPiA+ID4g
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IFdpbGxlbSBkZSBCcnVpam4g
-W21haWx0bzp3aWxsZW1kZWJydWlqbi5rZXJuZWxAZ21haWwuY29tXQ0KPiA+ID4gU2VudDogV2Vk
-bmVzZGF5LCBKYW51YXJ5IDE3LCAyMDI0IDExOjQyIFBNDQo+ID4gPiBUbzogd2FuZ3l1bmppYW4g
-PHdhbmd5dW5qaWFuQGh1YXdlaS5jb20+Ow0KPiA+ID4gd2lsbGVtZGVicnVpam4ua2VybmVsQGdt
-YWlsLmNvbTsgamFzb3dhbmdAcmVkaGF0LmNvbTsNCj4gPiA+IGt1YmFAa2VybmVsLm9yZzsgZGF2
-ZW1AZGF2ZW1sb2Z0Lm5ldA0KPiA+ID4gQ2M6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHh1ZGluZ2tlDQo+ID4gPiA8eHVkaW5na2VAaHVhd2Vp
-LmNvbT47IHdhbmd5dW5qaWFuIDx3YW5neXVuamlhbkBodWF3ZWkuY29tPg0KPiA+ID4gU3ViamVj
-dDogUmU6IFtQQVRDSCBuZXQgdjNdIHR1bjogYWRkIG1pc3Npbmcgcnggc3RhdHMgYWNjb3VudGlu
-ZyBpbg0KPiA+ID4gdHVuX3hkcF9hY3QNCj4gPiA+DQo+ID4gPiBZdW5qaWFuIFdhbmcgd3JvdGU6
-DQo+ID4gPiA+IFRoZSBUVU4gY2FuIGJlIHVzZWQgYXMgdmhvc3QtbmV0IGJhY2tlbmQsIGFuZCBp
-dCBpcyBuZWNlc3NhcnkgdG8NCj4gPiA+ID4gY291bnQgdGhlIHBhY2tldHMgdHJhbnNtaXR0ZWQg
-ZnJvbSBUVU4gdG8gdmhvc3QtbmV0L3ZpcnRpby1uZXQuDQo+ID4gPiA+IEhvd2V2ZXIsIHRoZXJl
-IGFyZSBzb21lIHBsYWNlcyBpbiB0aGUgcmVjZWl2ZSBwYXRoIHRoYXQgd2VyZSBub3QNCj4gPiA+
-ID4gdGFrZW4gaW50byBhY2NvdW50IHdoZW4gdXNpbmcgWERQLiBUaGUgY29tbWl0IDhhZTFhZmYw
-YjMzMQ0KPiA+ID4gPiAoInR1bnRhcDogc3BsaXQgb3V0IFhEUCBsb2dpYyIpIG9ubHkgaW5jbHVk
-ZXMgZHJvcHBlZCBjb3VudGVyIGZvcg0KPiA+ID4gPiBYRFBfRFJPUCwgWERQX0FCT1JURUQsIGFu
-ZCBpbnZhbGlkIFhEUCBhY3Rpb25zLiBJdCB3b3VsZCBiZQ0KPiA+ID4gPiBiZW5lZmljaWFsIHRv
-IGFsc28gaW5jbHVkZSBuZXcgYWNjb3VudGluZyBmb3Igc3VjY2Vzc2Z1bGx5DQo+ID4gPiA+IHJl
-Y2VpdmVkIGJ5dGVzIHVzaW5nIGRldl9zd19uZXRzdGF0c19yeF9hZGQgYW5kIGludHJvZHVjZSBu
-ZXcNCj4gPiA+ID4gZHJvcHBlZCBjb3VudGVyIGZvciBYRFAgZXJyb3JzDQo+ID4gPiBvbiBYRFBf
-VFggYW5kIFhEUF9SRURJUkVDVC4NCj4gPiA+DQo+ID4gPiBGcm9tIHRoZSBkZXNjcmlwdGlvbiBp
-dCBpcyBjbGVhciB0aGF0IHRoZXNlIGFyZSB0d28gc2VwYXJhdGUgY2hhbmdlcw0KPiA+ID4gd3Jh
-cHBlZCBpbnRvIG9uZSBwYXRjaC4gSSBzaG91bGQgaGF2ZSBmbGFnZ2VkIHRoaXMgcHJldmlvdXNs
-eS4NCj4gPg0KPiA+IERvIEkgbmVlZCB0byBzcGxpdCB0aGVzZSB0d28gbW9kaWZpY2F0aW9ucyBp
-bnRvIDIgcGF0Y2hlcz8NCj4gPiAxLiBvbmx5IGZpeCBkcm9wcGVkIGNvdW50ZXINCj4gPiAyLiBh
-ZGQgbmV3IGFjY291bnRpbmcgZm9yIHN1Y2Nlc3NmdWxseSByZWNlaXZlZCBieXRlcw0KPiA+IE9y
-Og0KPiA+IE9ubHkgZml4IGRyb3BwZWQgY291bnRlcj8NCj4gDQo+IEl0J3MgZGVmaW5pdGVseSBn
-b29kIHRvIGZpeCBib3RoLg0KPiANCj4gSXQgbWlnaHQgYmUgYSBiaXQgcGVkYW50aWMsIGJ1dCB0
-d28gc2VwYXJhdGUgcGF0Y2hlcyBpcyBtb3JlIGNvcnJlY3QuDQo+IA0KPiBUaGUgc2Vjb25kIGZp
-eCwgYWRkIG1pc3NpbmcgYnl0ZSBjb3VudGVyLCBnb2VzIGJhY2sgdG8gdGhlIG9yaWdpbmFsIGlu
-dHJvZHVjdGlvbg0KPiBvZiBYRFAgZm9yIHR1biwgc28gaGFzIGEgZGlmZmVyZW50IHRhZzoNCj4g
-DQo+IEZpeGVzOiA3NjE4NzZjODU3Y2IgKCJ0YXA6IFhEUCBzdXBwb3J0IikNCg0KT0ssIEkgd2ls
-bCB1cGRhdGUgaXQgdG8gMiBwYXRjaGVzLg0KVGhhbmtzDQoNCj4gDQo+ID4NCj4gPiA+DQo+ID4g
-PiBBY2sgb24gcmV0dXJuaW5nIHRoZSBlcnJvciBjb3VudGVyIHRoYXQgd2FzIHByZXZpb3VzbHkg
-cHJlc2VudCBhbmQNCj4gPiA+IG1hdGNoZXMgdGhlIEZpeGVzIHRhZy4NCj4gPiA+DQo+ID4gPiBG
-b3IgdGhlIHNlY29uZCBjaGFuZ2UsIEkgaGFkIHRvIGNoZWNrIGEgZmV3IG90aGVyIFhEUCBjYXBh
-YmxlDQo+ID4gPiBkcml2ZXJzIHRvIHZlcmlmeSB0aGF0IGl0IGlzIGluZGVlZCBjb21tb24gdG8g
-Y291bnQgc3VjaCBwYWNrZXRzLg0KPiA+ID4NCj4gPiA+ID4gRml4ZXM6IDhhZTFhZmYwYjMzMSAo
-InR1bnRhcDogc3BsaXQgb3V0IFhEUCBsb2dpYyIpDQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFl1
-bmppYW4gV2FuZyA8d2FuZ3l1bmppYW5AaHVhd2VpLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+
-IHYzOiB1cGRhdGUgY29tbWl0IGxvZyBhbmQgY29kZQ0KPiA+ID4gPiB2MjogYWRkIEZpeGVzIHRh
-Zw0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gIGRyaXZlcnMvbmV0L3R1bi5jIHwgMTQgKysrKysrKysr
-LS0tLS0NCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDUgZGVsZXRp
-b25zKC0pDQo+ID4gPiA+DQo+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC90dW4uYyBi
-L2RyaXZlcnMvbmV0L3R1bi5jIGluZGV4DQo+ID4gPiA+IGFmYTU0OTdmN2MzNS4uMDcwNGExN2U3
-NGUxIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9kcml2ZXJzL25ldC90dW4uYw0KPiA+ID4gPiArKysg
-Yi9kcml2ZXJzL25ldC90dW4uYw0KPiA+ID4gPiBAQCAtMTYyNSwxOCArMTYyNSwxNSBAQCBzdGF0
-aWMgc3RydWN0IHNrX2J1ZmYNCj4gPiA+ID4gKl9fdHVuX2J1aWxkX3NrYihzdHJ1Y3QgdHVuX2Zp
-bGUgKnRmaWxlLCAgc3RhdGljIGludA0KPiA+ID4gPiB0dW5feGRwX2FjdChzdHJ1Y3QgdHVuX3N0
-cnVjdCAqdHVuLCBzdHJ1Y3QNCj4gPiA+IGJwZl9wcm9nICp4ZHBfcHJvZywNCj4gPiA+ID4gIAkJ
-ICAgICAgIHN0cnVjdCB4ZHBfYnVmZiAqeGRwLCB1MzIgYWN0KSAgew0KPiA+ID4gPiAtCWludCBl
-cnI7DQo+ID4gPiA+ICsJdW5zaWduZWQgaW50IGRhdGFzaXplID0geGRwLT5kYXRhX2VuZCAtIHhk
-cC0+ZGF0YTsNCj4gPiA+ID4gKwlpbnQgZXJyID0gMDsNCj4gPiA+ID4NCj4gPiA+ID4gIAlzd2l0
-Y2ggKGFjdCkgew0KPiA+ID4gPiAgCWNhc2UgWERQX1JFRElSRUNUOg0KPiA+ID4gPiAgCQllcnIg
-PSB4ZHBfZG9fcmVkaXJlY3QodHVuLT5kZXYsIHhkcCwgeGRwX3Byb2cpOw0KPiA+ID4gPiAtCQlp
-ZiAoZXJyKQ0KPiA+ID4gPiAtCQkJcmV0dXJuIGVycjsNCj4gPiA+ID4gIAkJYnJlYWs7DQo+ID4g
-PiA+ICAJY2FzZSBYRFBfVFg6DQo+ID4gPiA+ICAJCWVyciA9IHR1bl94ZHBfdHgodHVuLT5kZXYs
-IHhkcCk7DQo+ID4gPiA+IC0JCWlmIChlcnIgPCAwKQ0KPiA+ID4gPiAtCQkJcmV0dXJuIGVycjsN
-Cj4gPiA+ID4gIAkJYnJlYWs7DQo+ID4gPiA+ICAJY2FzZSBYRFBfUEFTUzoNCj4gPiA+ID4gIAkJ
-YnJlYWs7DQo+ID4gPiA+IEBAIC0xNjUxLDYgKzE2NDgsMTMgQEAgc3RhdGljIGludCB0dW5feGRw
-X2FjdChzdHJ1Y3QgdHVuX3N0cnVjdA0KPiA+ID4gPiAqdHVuLA0KPiA+ID4gc3RydWN0IGJwZl9w
-cm9nICp4ZHBfcHJvZywNCj4gPiA+ID4gIAkJYnJlYWs7DQo+ID4gPiA+ICAJfQ0KPiA+ID4gPg0K
-PiA+ID4gPiArCWlmIChlcnIgPCAwKSB7DQo+ID4gPiA+ICsJCWFjdCA9IGVycjsNCj4gPiA+ID4g
-KwkJZGV2X2NvcmVfc3RhdHNfcnhfZHJvcHBlZF9pbmModHVuLT5kZXYpOw0KPiA+ID4gPiArCX0g
-ZWxzZSBpZiAoYWN0ID09IFhEUF9SRURJUkVDVCB8fCBhY3QgPT0gWERQX1RYKSB7DQo+ID4gPiA+
-ICsJCWRldl9zd19uZXRzdGF0c19yeF9hZGQodHVuLT5kZXYsIGRhdGFzaXplKTsNCj4gPiA+ID4g
-Kwl9DQo+ID4gPiA+ICsNCj4gPiA+DQo+ID4gPiBMZXQncyBhdm9pZCBhZGRpbmcgeWV0IGFub3Ro
-ZXIgYnJhbmNoIGFuZCBqdXN0IGRvIHRoZXNlIG9wZXJhdGlvbnMNCj4gPiA+IGluIHRoZSBjYXNl
-IHN0YXRlbWVudHMsIGxpa2UgWERQX0RST1AuDQo+ID4NCj4gPiBGaXggaXQgbGlrZSB0aGlzPw0K
-PiANCj4gUGVyaGFwcyBhdm9pZCBjb21wdXRpbmcgZGF0YXNpemUgaXMgYWxsIHBhdGhzLCB3aGVu
-IGl0IGlzIG5vdCB1c2VkIGluIGNvbW1vbg0KPiBYRFBfUEFTUywgaGlnaCBwZXJmb3JtYW5jZSBY
-RFBfRFJPUCBhbmQgYSBmZXcgb3RoZXJzLiBOb3Qgc3VyZSB3aGV0aGVyDQo+IChhbGwpIGNvbXBp
-bGVycyB3b3VsZCBvcHRpbXplIHRoYXQuDQo+IA0KPiAgICAgICAgIGRldl9jb3JlX3N0YXRzX3J4
-X2Ryb3BwZWRfaW5jKHR1bi0+ZGV2LCB4ZHAsDQo+IA0KICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB4ZHAtPmRhdGFfZW5kIC0geGRwLT5kYXRhKTsNCk9LLCBJIGFncmVlLg0K
-DQo+IA0KPiANCj4gPiAtLS0gYS9kcml2ZXJzL25ldC90dW4uYw0KPiA+ICsrKyBiL2RyaXZlcnMv
-bmV0L3R1bi5jDQo+ID4gQEAgLTE2MjUsMTggKzE2MjUsMjUgQEAgc3RhdGljIHN0cnVjdCBza19i
-dWZmICpfX3R1bl9idWlsZF9za2Ioc3RydWN0DQo+ID4gdHVuX2ZpbGUgKnRmaWxlLCAgc3RhdGlj
-IGludCB0dW5feGRwX2FjdChzdHJ1Y3QgdHVuX3N0cnVjdCAqdHVuLCBzdHJ1Y3QNCj4gYnBmX3By
-b2cgKnhkcF9wcm9nLA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IHhkcF9idWZm
-ICp4ZHAsIHUzMiBhY3QpICB7DQo+ID4gKyAgICAgICB1bnNpZ25lZCBpbnQgZGF0YXNpemUgPSB4
-ZHAtPmRhdGFfZW5kIC0geGRwLT5kYXRhOw0KPiA+ICAgICAgICAgaW50IGVycjsNCj4gPg0KPiA+
-ICAgICAgICAgc3dpdGNoIChhY3QpIHsNCj4gPiAgICAgICAgIGNhc2UgWERQX1JFRElSRUNUOg0K
-PiA+ICAgICAgICAgICAgICAgICBlcnIgPSB4ZHBfZG9fcmVkaXJlY3QodHVuLT5kZXYsIHhkcCwg
-eGRwX3Byb2cpOw0KPiA+IC0gICAgICAgICAgICAgICBpZiAoZXJyKQ0KPiA+ICsgICAgICAgICAg
-ICAgICBpZiAoZXJyKSB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZGV2X2NvcmVfc3Rh
-dHNfcnhfZHJvcHBlZF9pbmModHVuLT5kZXYpOw0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
-IHJldHVybiBlcnI7DQo+ID4gKyAgICAgICAgICAgICAgIH0NCj4gPiArICAgICAgICAgICAgICAg
-ZGV2X3N3X25ldHN0YXRzX3J4X2FkZCh0dW4tPmRldiwgZGF0YXNpemUpOw0KPiA+ICAgICAgICAg
-ICAgICAgICBicmVhazsNCj4gPiAgICAgICAgIGNhc2UgWERQX1RYOg0KPiA+ICAgICAgICAgICAg
-ICAgICBlcnIgPSB0dW5feGRwX3R4KHR1bi0+ZGV2LCB4ZHApOw0KPiA+IC0gICAgICAgICAgICAg
-ICBpZiAoZXJyIDwgMCkNCj4gPiArICAgICAgICAgICAgICAgaWYgKGVyciA8IDApIHsNCj4gPiAr
-ICAgICAgICAgICAgICAgICAgICAgICBkZXZfY29yZV9zdGF0c19yeF9kcm9wcGVkX2luYyh0dW4t
-PmRldik7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGVycjsNCj4gPiArICAg
-ICAgICAgICAgICAgfQ0KPiA+ICsgICAgICAgICAgICAgICBkZXZfc3dfbmV0c3RhdHNfcnhfYWRk
-KHR1bi0+ZGV2LCBkYXRhc2l6ZSk7DQo+ID4gICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+ICAg
-ICAgICAgY2FzZSBYRFBfUEFTUzoNCj4gPg0KPiA+ID4NCj4gPiA+ID4gIAlyZXR1cm4gYWN0Ow0K
-PiA+ID4gPiAgfQ0KPiA+ID4gPg0KPiA+ID4gPiAtLQ0KPiA+ID4gPiAyLjQxLjANCj4gPiA+ID4N
-Cj4gPiA+DQo+ID4gPg0KPiA+DQo+IA0KPiANCg0K
+Currently ftrace only dumps the global trace buffer on an OOPs. For
+debugging a production usecase, instance trace will be helpful to
+check specific problems since global trace buffer may be used for
+other purposes.
+
+This patch extend the ftrace_dump_on_oops parameter to dump a specific
+trace instance:
+
+  - ftrace_dump_on_oops=0: as before -- don't dump
+  - ftrace_dump_on_oops[=1]: as before -- dump the global trace buffer
+  on all CPUs
+  - ftrace_dump_on_oops=2 or =orig_cpu: as before -- dump the global
+  trace buffer on CPU that triggered the oops
+  - ftrace_dump_on_oops=<instance_name>: new behavior -- dump the
+  tracing instance matching <instance_name>
+
+Also, the sysctl node can handle the input accordingly.
+
+Cc: Ross Zwisler <zwisler@google.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Huang Yiwei <quic_hyiwei@quicinc.com>
+---
+Link: https://lore.kernel.org/linux-trace-kernel/20221209125310.450aee97@gandalf.local.home/
+
+ .../admin-guide/kernel-parameters.txt         |  9 +--
+ Documentation/admin-guide/sysctl/kernel.rst   | 11 ++--
+ include/linux/ftrace.h                        |  4 +-
+ include/linux/kernel.h                        |  1 +
+ kernel/sysctl.c                               |  4 +-
+ kernel/trace/trace.c                          | 64 ++++++++++++++-----
+ kernel/trace/trace_selftest.c                 |  2 +-
+ 7 files changed, 65 insertions(+), 30 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index a36cf8cc582c..b3aa533253f1 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1559,12 +1559,13 @@
+ 			The above will cause the "foo" tracing instance to trigger
+ 			a snapshot at the end of boot up.
+ 
+-	ftrace_dump_on_oops[=orig_cpu]
++	ftrace_dump_on_oops[=orig_cpu | =<instance>]
+ 			[FTRACE] will dump the trace buffers on oops.
+-			If no parameter is passed, ftrace will dump
+-			buffers of all CPUs, but if you pass orig_cpu, it will
++			If no parameter is passed, ftrace will dump global
++			buffers of all CPUs, if you pass orig_cpu, it will
+ 			dump only the buffer of the CPU that triggered the
+-			oops.
++			oops, or specific instance will be dumped if instance
++			name is passed.
+ 
+ 	ftrace_filter=[function-list]
+ 			[FTRACE] Limit the functions traced by the function
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 6584a1f9bfe3..ecf036b63c48 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -296,11 +296,12 @@ kernel panic). This will output the contents of the ftrace buffers to
+ the console.  This is very useful for capturing traces that lead to
+ crashes and outputting them to a serial console.
+ 
+-= ===================================================
+-0 Disabled (default).
+-1 Dump buffers of all CPUs.
+-2 Dump the buffer of the CPU that triggered the oops.
+-= ===================================================
++=========== ===================================================
++0           Disabled (default).
++1           Dump buffers of all CPUs.
++2(orig_cpu) Dump the buffer of the CPU that triggered the oops.
++<instance>  Dump the specific instance buffer.
++=========== ===================================================
+ 
+ 
+ ftrace_enabled, stack_tracer_enabled
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index e8921871ef9a..f20de4621ec1 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -1151,7 +1151,9 @@ static inline void unpause_graph_tracing(void) { }
+ #ifdef CONFIG_TRACING
+ enum ftrace_dump_mode;
+ 
+-extern enum ftrace_dump_mode ftrace_dump_on_oops;
++#define MAX_TRACER_SIZE		100
++extern char ftrace_dump_on_oops[];
++extern enum ftrace_dump_mode get_ftrace_dump_mode(void);
+ extern int tracepoint_printk;
+ 
+ extern void disable_trace_on_warning(void);
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index d9ad21058eed..de4a76036372 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -255,6 +255,7 @@ enum ftrace_dump_mode {
+ 	DUMP_NONE,
+ 	DUMP_ALL,
+ 	DUMP_ORIG,
++	DUMP_INSTANCE,
+ };
+ 
+ #ifdef CONFIG_TRACING
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 157f7ce2942d..81cc974913bb 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1710,9 +1710,9 @@ static struct ctl_table kern_table[] = {
+ 	{
+ 		.procname	= "ftrace_dump_on_oops",
+ 		.data		= &ftrace_dump_on_oops,
+-		.maxlen		= sizeof(int),
++		.maxlen		= MAX_TRACER_SIZE,
+ 		.mode		= 0644,
+-		.proc_handler	= proc_dointvec,
++		.proc_handler	= proc_dostring,
+ 	},
+ 	{
+ 		.procname	= "traceoff_on_warning",
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index a0defe156b57..9a76a278e5c3 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -130,9 +130,10 @@ cpumask_var_t __read_mostly	tracing_buffer_mask;
+  * /proc/sys/kernel/ftrace_dump_on_oops
+  * Set 1 if you want to dump buffers of all CPUs
+  * Set 2 if you want to dump the buffer of the CPU that triggered oops
++ * Set instance name if you want to dump the specific trace instance
+  */
+-
+-enum ftrace_dump_mode ftrace_dump_on_oops;
++/* Set to string format zero to disable by default */
++char ftrace_dump_on_oops[MAX_TRACER_SIZE] = "0";
+ 
+ /* When set, tracing will stop when a WARN*() is hit */
+ int __disable_trace_on_warning;
+@@ -178,7 +179,6 @@ static void ftrace_trace_userstack(struct trace_array *tr,
+ 				   struct trace_buffer *buffer,
+ 				   unsigned int trace_ctx);
+ 
+-#define MAX_TRACER_SIZE		100
+ static char bootup_tracer_buf[MAX_TRACER_SIZE] __initdata;
+ static char *default_bootup_tracer;
+ 
+@@ -201,19 +201,32 @@ static int __init set_cmdline_ftrace(char *str)
+ }
+ __setup("ftrace=", set_cmdline_ftrace);
+ 
++enum ftrace_dump_mode get_ftrace_dump_mode(void)
++{
++	if (!strcmp("0", ftrace_dump_on_oops))
++		return DUMP_NONE;
++	else if (!strcmp("1", ftrace_dump_on_oops))
++		return DUMP_ALL;
++	else if (!strcmp("orig_cpu", ftrace_dump_on_oops) ||
++			!strcmp("2", ftrace_dump_on_oops))
++		return DUMP_ORIG;
++	else
++		return DUMP_INSTANCE;
++}
++
+ static int __init set_ftrace_dump_on_oops(char *str)
+ {
+-	if (*str++ != '=' || !*str || !strcmp("1", str)) {
+-		ftrace_dump_on_oops = DUMP_ALL;
++	if (!*str) {
++		strscpy(ftrace_dump_on_oops, "1", MAX_TRACER_SIZE);
+ 		return 1;
+ 	}
+ 
+-	if (!strcmp("orig_cpu", str) || !strcmp("2", str)) {
+-		ftrace_dump_on_oops = DUMP_ORIG;
+-                return 1;
+-        }
++	if (*str++ == '=') {
++		strscpy(ftrace_dump_on_oops, str, MAX_TRACER_SIZE);
++		return 1;
++	}
+ 
+-        return 0;
++	return 0;
+ }
+ __setup("ftrace_dump_on_oops", set_ftrace_dump_on_oops);
+ 
+@@ -10085,14 +10098,16 @@ static struct notifier_block trace_die_notifier = {
+ static int trace_die_panic_handler(struct notifier_block *self,
+ 				unsigned long ev, void *unused)
+ {
+-	if (!ftrace_dump_on_oops)
++	enum ftrace_dump_mode dump_mode = get_ftrace_dump_mode();
++
++	if (!dump_mode)
+ 		return NOTIFY_DONE;
+ 
+ 	/* The die notifier requires DIE_OOPS to trigger */
+ 	if (self == &trace_die_notifier && ev != DIE_OOPS)
+ 		return NOTIFY_DONE;
+ 
+-	ftrace_dump(ftrace_dump_on_oops);
++	ftrace_dump(dump_mode);
+ 
+ 	return NOTIFY_DONE;
+ }
+@@ -10133,12 +10148,12 @@ trace_printk_seq(struct trace_seq *s)
+ 	trace_seq_init(s);
+ }
+ 
+-void trace_init_global_iter(struct trace_iterator *iter)
++static void trace_init_iter(struct trace_iterator *iter, struct trace_array *tr)
+ {
+-	iter->tr = &global_trace;
++	iter->tr = tr;
+ 	iter->trace = iter->tr->current_trace;
+ 	iter->cpu_file = RING_BUFFER_ALL_CPUS;
+-	iter->array_buffer = &global_trace.array_buffer;
++	iter->array_buffer = &tr->array_buffer;
+ 
+ 	if (iter->trace && iter->trace->open)
+ 		iter->trace->open(iter);
+@@ -10158,6 +10173,11 @@ void trace_init_global_iter(struct trace_iterator *iter)
+ 	iter->fmt_size = STATIC_FMT_BUF_SIZE;
+ }
+ 
++void trace_init_global_iter(struct trace_iterator *iter)
++{
++	trace_init_iter(iter, &global_trace);
++}
++
+ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+ {
+ 	/* use static because iter can be a bit big for the stack */
+@@ -10168,6 +10188,15 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+ 	unsigned long flags;
+ 	int cnt = 0, cpu;
+ 
++	if (oops_dump_mode == DUMP_INSTANCE) {
++		tr = trace_array_find(ftrace_dump_on_oops);
++		if (!tr) {
++			printk(KERN_TRACE "Instance %s not found\n",
++				ftrace_dump_on_oops);
++			return;
++		}
++	}
++
+ 	/* Only allow one dump user at a time. */
+ 	if (atomic_inc_return(&dump_running) != 1) {
+ 		atomic_dec(&dump_running);
+@@ -10182,12 +10211,12 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+ 	 * If the user does a sysrq-z, then they can re-enable
+ 	 * tracing with echo 1 > tracing_on.
+ 	 */
+-	tracing_off();
++	tracer_tracing_off(tr);
+ 
+ 	local_irq_save(flags);
+ 
+ 	/* Simulate the iterator */
+-	trace_init_global_iter(&iter);
++	trace_init_iter(&iter, tr);
+ 
+ 	for_each_tracing_cpu(cpu) {
+ 		atomic_inc(&per_cpu_ptr(iter.array_buffer->data, cpu)->disabled);
+@@ -10200,6 +10229,7 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+ 
+ 	switch (oops_dump_mode) {
+ 	case DUMP_ALL:
++	case DUMP_INSTANCE:
+ 		iter.cpu_file = RING_BUFFER_ALL_CPUS;
+ 		break;
+ 	case DUMP_ORIG:
+diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+index 529590499b1f..a9750a680324 100644
+--- a/kernel/trace/trace_selftest.c
++++ b/kernel/trace/trace_selftest.c
+@@ -768,7 +768,7 @@ static int trace_graph_entry_watchdog(struct ftrace_graph_ent *trace)
+ 	if (unlikely(++graph_hang_thresh > GRAPH_MAX_FUNC_TEST)) {
+ 		ftrace_graph_stop();
+ 		printk(KERN_WARNING "BUG: Function graph tracer hang!\n");
+-		if (ftrace_dump_on_oops) {
++		if (get_ftrace_dump_mode()) {
+ 			ftrace_dump(DUMP_ALL);
+ 			/* ftrace_dump() disables tracing */
+ 			tracing_on();
+-- 
+2.25.1
+
 
