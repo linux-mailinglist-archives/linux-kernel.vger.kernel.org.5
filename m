@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-31041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BB228327F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:48:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C548327FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:48:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15205286F31
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:48:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 972581C22A32
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EC3B4F205;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D8A4C61C;
 	Fri, 19 Jan 2024 10:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZoYfnBJ9"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MQsE4ZIY"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4C44E1DD
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFC84EB46
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 10:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705661143; cv=none; b=kP6jqSsrcMkqYepStC+x5qJt7nhF4Rh9pA94q0F/BMz6v/oSipqpxC/qLYo7Wbk4c6kcckW7qcRz6xJ/yL7BAd61isb55ELdtJ6jwu82ieiQkWf41hmsUALO0CMTcVmj/+MO+gaucSbJdHsB44gw+6csmOlsgJ4xwkI0WIMAIVY=
+	t=1705661144; cv=none; b=HjzS8GJMvmhoO7IMkQzqfP2qKzaVFwp85XzPgP7+t+nPJy2PHvzEk9mviDfQa/aqLb4XR9Jyyk5XTwHSE54cjmYJ996uLXWZJGDNL6+Wg2v835YXNZQyUegjuEaBYdtl/3uwhaFu8MXmMF5kxm3BEukNoQUC1D+gJvwdIgi5lOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705661143; c=relaxed/simple;
-	bh=8IodzGZ1N5vxfAuWzuMPXTBW5vzjas6eiKlra3jz4ME=;
+	s=arc-20240116; t=1705661144; c=relaxed/simple;
+	bh=Jz188uwP5LRaM+CsdGI2KPSSsJyfUc0rsQSvFPr5zcE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rVoptIZa8ZDv53ALqlGNSeHTxRWzoNzYedBr/aHqStpt7E3UBRFTepAQFNd4TP56Kc2DjKKkHjcACIfoMK+ax3rTpzQSaE646WKavyha2E4yUBQDdoD3fbd4wAZqUZRNgqR6/loC6VOrArUVgRQ9rV1alFDOSVZEngKUaiC3k94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZoYfnBJ9; arc=none smtp.client-ip=209.85.128.45
+	 MIME-Version; b=PO4gmJrN45jfLY4zQxFD7iREOASwbVcQcBqHMDaWytCVjeIRLVGOmVhN/11J1xHhb0SKTvOj7II8AFHROMbaX8hoV8m/Vs2vjx6VqeRrVNGgfC3GdLPoesC5WcoXZHjX8w6cNBwY9HrXv5qs06ventDpJL7Yx7bwLqy4LWuxuUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MQsE4ZIY; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e9ef9853bso1969105e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:45:41 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e76626170so6698275e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:45:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google; t=1705661140; x=1706265940; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sk+f6DMfyT8RxC2Uq+wxFTBwK9isaqVwqfpa2TVfflc=;
-        b=ZoYfnBJ9+EFpi6j/ttlHMPIZ0beXHTh8U+4yhJvsrlkj5U1UIublpUNDUNJR6mnxEl
-         hUOEzAZLAYL7edebw/cYmUwGiBe6boE7iqhwEZJ/X6EkjX7BBz2WbavMr4BTqIZLvXdJ
-         PWplINFEqNSpdFdI+716B2ZzP3wUZpQyJiGB166fgOZSPSr37EEtnPUoNzTjW7QlDyZh
-         DMJFffVCQpoMyFhgNP7hZpvaiFmgo0YSmcz0aJnz85o/yKLZG3WEp9mUGK0qB/8/AcWN
-         838gf90nyYiPWAiOggc/8l403tPxSgLFmJ76tln5rEzNTmnDVnEiyaKVC/zbhXAyCDfy
-         TfuA==
+        bh=z2lQIakjCIKG/8t5br1DwDXAqAW0N+QdSof5GZ/rHIk=;
+        b=MQsE4ZIYVDNmVYjVenFQMZenm5kXZ7to+qH2HF24EioLR/eLeCwRFJV1nmPwf/6i3j
+         +A78rR9mM6cxlp2rCAxRWoWBpM1KsXU94DyDbRd4qR/kbqxCSr/XyVgJ1jbXpXAofMmw
+         Z3ztzeqfwPvVnhXJtBBC0bWwES2+uKoQ/LL1uVTa5p603VbTbN2nQhDyD4ELkWArP8PL
+         xGOFeb9V0ts1hzWV3vn1xy90Uum6FDxrC3Q9eqmqx+bU5NKJczir+5NdMxz35vWLE35h
+         zRQj/Y+1TQrVrB2BOuERtCigy+wZMYTzR5ars+0UdMXXjdr6hyOfbQUOjz3udaay5nR4
+         GzGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1705661140; x=1706265940;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sk+f6DMfyT8RxC2Uq+wxFTBwK9isaqVwqfpa2TVfflc=;
-        b=vU4V2Vex8WK/6IcXuBhC950uhLC0+iMS68SOOua4Fpt0kFliDiRiMvOcbR+ZE5O9aN
-         NvpZE5SsZq5judIM7WvZouDUshsBO4mCjoPlLzEnFzWSYkyqsyk4zu10Mr/JRcJIJbRD
-         GxOYhuM4t0AxqGPKBgwU0MEku2+wAi4IR+6IxAMp1y8NXdJWTHKhIA1hWTHwmQuldYHj
-         og3hmUxfe5CEjDdZe3OEVtAmX83b4ryCnFnsUFCuTaY89/KWL2IAw9ImbVs/TVofWdyk
-         bXSNAR3ERoZuU9W4C1hSFHAHe+P33PAJMS3H7xV/wQqdKW9Wl+CPg2aX6eBQXvYCYnG0
-         y/BA==
-X-Gm-Message-State: AOJu0YxRv81cO899BPtjdNayDLT8EWgzbgPl6yug6Bf0yftg5MAX9VK2
-	n6UJg+auHWmLPiHRbfiTav4/un5a4+Gu60HPcY1uEvU45kkF9PqXZfex/k5iIhU=
-X-Google-Smtp-Source: AGHT+IG8YnM5QzfuxMFX1zhOVACz3KiL73IJvltttYQcWx8JPktpxDFvbwhDtd+mk26mM/jTJgFwfQ==
-X-Received: by 2002:a05:600c:354f:b0:40e:88fb:e8ef with SMTP id i15-20020a05600c354f00b0040e88fbe8efmr417899wmq.4.1705661139905;
-        Fri, 19 Jan 2024 02:45:39 -0800 (PST)
+        bh=z2lQIakjCIKG/8t5br1DwDXAqAW0N+QdSof5GZ/rHIk=;
+        b=NKNEhqdZZ9Bfy31CRdHK5cyyafEtw+KKoI0KELSNTAzlT5yP93jYdHWO7YzPjG1vhe
+         rQOTadQ66tD4k/hEq3DL1FWrviaHLUSZAD6uzVL+30Ac0RVKvshJMG/1lIlVzYn2z/7z
+         y/1ICoVQ3i0ccOdgdvxjTIRN/fj5KynYKJIGR8gBjbZrLjpvbb7RrKT4gBI1FlzqRRqP
+         8GpHTjIBkW+3aS4U5OnFz3V98oGTifgQM2EJ3j4WDUXKH5FTWDeVsxLQlg0Jx+nEtm6u
+         66GwwaJ5o4yVWXvx6Rpw2qq2yVYoFn17VMQpRb3rSbOu9U+fqj2qaTqYucP7qw7UuTjb
+         OBhQ==
+X-Gm-Message-State: AOJu0YzDllF44kmP2THBv7dG52p45kwmNsBxjYmXDx1fN5CFz9YxPAW1
+	p3qKfbCKoYPXQPZm3w67zvr03bsE1lB14a4twtTjm6OsP8uVOXfEI4GsYz1/FyA=
+X-Google-Smtp-Source: AGHT+IHooBhyW3xlDtUtOrRtWsnJD3eWRLbdkXu0zI8InTcaCbu308wM5VwUc4M2ZuUJ65W1vn7Buw==
+X-Received: by 2002:a05:600c:3b26:b0:40d:88c6:b9b with SMTP id m38-20020a05600c3b2600b0040d88c60b9bmr1315643wms.123.1705661140719;
+        Fri, 19 Jan 2024 02:45:40 -0800 (PST)
 Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id fm16-20020a05600c0c1000b0040ea10178f3sm77470wmb.21.2024.01.19.02.45.38
+        by smtp.gmail.com with ESMTPSA id fm16-20020a05600c0c1000b0040ea10178f3sm77470wmb.21.2024.01.19.02.45.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 02:45:39 -0800 (PST)
+        Fri, 19 Jan 2024 02:45:40 -0800 (PST)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -83,9 +83,9 @@ Cc: alim.akhtar@samsung.com,
 	semen.protsenko@linaro.org,
 	willmcvicker@google.com,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2 11/19] tty: serial: samsung: drop superfluous comment
-Date: Fri, 19 Jan 2024 10:45:18 +0000
-Message-ID: <20240119104526.1221243-12-tudor.ambarus@linaro.org>
+Subject: [PATCH v2 12/19] tty: serial: samsung: make max_count unsigned int
+Date: Fri, 19 Jan 2024 10:45:19 +0000
+Message-ID: <20240119104526.1221243-13-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 In-Reply-To: <20240119104526.1221243-1-tudor.ambarus@linaro.org>
 References: <20240119104526.1221243-1-tudor.ambarus@linaro.org>
@@ -97,29 +97,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The comment brings no benefit as we can already see from the method's
-name, ``s3c24xx_serial_pm``, that it deals with power management.
-Drop the superfluous comment.
+``max_count`` negative values are not used. Since ``port->fifosize``
+is an unsigned int, make ``max_count`` the same.
 
 Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/tty/serial/samsung_tty.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/tty/serial/samsung_tty.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-index b6d34c9f46ea..4bb75b1eceef 100644
+index 4bb75b1eceef..f8a8b459a86b 100644
 --- a/drivers/tty/serial/samsung_tty.c
 +++ b/drivers/tty/serial/samsung_tty.c
-@@ -1295,8 +1295,6 @@ static int apple_s5l_serial_startup(struct uart_port *port)
- 	return ret;
- }
- 
--/* power power management control */
--
- static void s3c24xx_serial_pm(struct uart_port *port, unsigned int level,
- 			      unsigned int old)
+@@ -760,8 +760,8 @@ static irqreturn_t s3c24xx_serial_rx_chars_dma(void *dev_id)
+ static void s3c24xx_serial_rx_drain_fifo(struct s3c24xx_uart_port *ourport)
  {
+ 	struct uart_port *port = &ourport->port;
++	unsigned int max_count = port->fifosize;
+ 	unsigned int fifocnt = 0;
+-	int max_count = port->fifosize;
+ 	u32 ufcon, ufstat, uerstat;
+ 	u8 ch, flag;
+ 
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
