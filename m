@@ -1,132 +1,194 @@
-Return-Path: <linux-kernel+bounces-30807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB3583248A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:21:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A823983248B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:21:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC217B23486
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:21:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E610B20BE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BD663C1;
-	Fri, 19 Jan 2024 06:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="iM3gzWnp"
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A32D527;
+	Fri, 19 Jan 2024 06:21:14 +0000 (UTC)
+Received: from esa6.hc1455-7.c3s2.iphmx.com (esa6.hc1455-7.c3s2.iphmx.com [68.232.139.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A325381
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 06:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56A4CA4A
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 06:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705645258; cv=none; b=lzOnxdaMiP7PTH7ZSNqtKmYl4j08qBRr9gF51deVHJunPxKOiCPPLaOGdyX27Qux6ZZ+TtrfAS+eQloaP60ZIJUuT2icYA5zS0UOrFzRIOjSxEaYeKEfg5myGyXPsH5qH/htHYWdQrtuK+cSMYG4W6tEYZmv0+NB1zeePavuSHg=
+	t=1705645273; cv=none; b=CkpF20GcSPQ92eULSicbHrfljCXyKhB+B9NPjHmysBB6V6GerruGeazJyb780a/njRi1vLfa13vjUGN6ZnvARNjVscBrOS9CZJpSzF/hRJCfQoLmtvFwynOT7AQ046TZqUW5+DsXmqBi+agVFuXY+NWQ+vBMk8nRFKUnNZVXMvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705645258; c=relaxed/simple;
-	bh=nkyIhW/V0YN44OOpH475TcG8PZRvB9SjnwfgrEEUXm0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O2eXYkPDI88eNHbRRFXlnSabc5J8N7L5yognyMI+wgL4VP7U6pORknnPkg5WuMdryPa4kABII77NohiIIJAbFlK7xcV4qzAfz5T6VZTt8WusQtyu6yCxi9c5viABE4E0+XXCoH1FF5gVW5kCGxB4BLuaT5hiKjXwxU7ZJ5qJi9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=iM3gzWnp; arc=none smtp.client-ip=209.85.167.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bd4e6a7cb0so258554b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 22:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1705645256; x=1706250056; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D3VHIi4EcMrxvY3GiWV/JZSeHigZUaqOcO0zANnBCwA=;
-        b=iM3gzWnpAtVQ+GmG1tDkICMQTBbTobrgee6jcGUJ4lrtGrWhDlraIgtYEG5FXolS+e
-         JD7wEmCJy54axnCGr7VuatjK3ysvBHCPxPQxrn9OS2nxAFVQCCcbg2ktKijVXV/PfVE/
-         2Dj2aZkkXhMsigk0pNKFwpKUZ7h8kfmjTNGVWH9lKC5NqWpZmQh5WFxI9bOi6yx3YRzc
-         xBwEIObmoMrmS30b+LvzPv6pINgJZTb/blQQUXXpZJABJLLdCT7GS/cJE1wUAhTFXhsg
-         wNIMBXpnvOcUj/OWJM7rm4lgQ+BRdukYX0wddVyw+rO78FFeCbcc6rXKd5TgUhCwFfU1
-         lmEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705645256; x=1706250056;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D3VHIi4EcMrxvY3GiWV/JZSeHigZUaqOcO0zANnBCwA=;
-        b=e/0xeP0EOUsKwlxkswiToko0bjvguXsuaswz+MX9wqUsILt84UufGNZOGddCaXdblE
-         LZuu/eEovQG+C/Yv3y8xAeR/Kc03L0yPj36tvEqVj+x6KrzO7Mfl8EFJE2kYLKW9niAA
-         1NzWokLV9wbsF97jftpkMs+JsVFmMLRC6Fsq2TbKeZ+4XhR4GgAe4xOvlYw1ScSSflau
-         Yh0zus1x0Uk90zzBhli26wkV2At8ob3H2sMVjqc0YsbMFeRkvheAv6bYdqyoc0jEt103
-         ehaeXpzVAUkAkiHravpWf3dIGsrEDBVmX7OmliJUsz+e78F4sCBbwGBtrxRGxG1ySuo3
-         E9kA==
-X-Gm-Message-State: AOJu0Yx5BYLwd5URRb7X8M4SbhMtrUp8ez5GtiYHlO+1fUdC7W93yQ/j
-	DXq3d4c52KFAxYFggh26ZlBnXviPvLpSlYQ7TGIknETbAXBVYwy0rptSMoDf8Ec=
-X-Google-Smtp-Source: AGHT+IFHQiRAGswMNeix8ZpNGARW4PZLfzYqxGE2xol7urxNVgtoqGnAaJW9l0YjX7y5yQQsxZxmKA==
-X-Received: by 2002:a05:6808:2123:b0:3bd:a1bd:a9d9 with SMTP id r35-20020a056808212300b003bda1bda9d9mr1067863oiw.33.1705645256248;
-        Thu, 18 Jan 2024 22:20:56 -0800 (PST)
-Received: from [10.254.224.1] ([139.177.225.241])
-        by smtp.gmail.com with ESMTPSA id s17-20020a62e711000000b006daf14dc95asm4417111pfh.142.2024.01.18.22.20.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 22:20:55 -0800 (PST)
-Message-ID: <fce77b9c-0e5d-4fb5-85cc-ac88d45d8d3d@bytedance.com>
-Date: Fri, 19 Jan 2024 14:20:51 +0800
+	s=arc-20240116; t=1705645273; c=relaxed/simple;
+	bh=2dXpWaC/gA+rQCGSdigv19bRkfr4cEkbCln5JNbcfiE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mjZOJGdJ96nNG8HLWC+bnqbPU0FZyO/wliWX/cRpNsGbhgsG+N1sa1o8VsgZF5XWlQHEeCr/QVYlr352pnkWl0HCx6/VZx1KKd13gG9OYzdchWWT8+R5zhwsc/X+wblPfzw9nAo2kp2LGeCwvLG7YzRPBS+uxeXDVTbgXvq/p8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; arc=none smtp.client-ip=68.232.139.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="148292404"
+X-IronPort-AV: E=Sophos;i="6.05,204,1701097200"; 
+   d="scan'208";a="148292404"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+  by esa6.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 15:21:07 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com [192.168.87.61])
+	by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 0E961D64B1
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:21:05 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 41F56AA47D
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:21:04 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id BF915200968EC
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:21:03 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 1946F1A015E;
+	Fri, 19 Jan 2024 14:21:03 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Julia Lawall <Julia.Lawall@inria.fr>,
+	Nicolas Palix <nicolas.palix@imag.fr>,
+	cocci@inria.fr
+Subject: [PATCH v2] coccinelle: device_attr_show: Adapt to the latest Documentation/filesystems/sysfs.rst
+Date: Fri, 19 Jan 2024 14:20:57 +0800
+Message-Id: <20240119062057.4026888-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] mm/zswap: split zswap rb-tree
-Content-Language: en-US
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, Chris Li <chriscli@google.com>,
- Nhat Pham <nphamcs@gmail.com>
-References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
- <20240117-b4-zswap-lock-optimize-v1-2-23f6effe5775@bytedance.com>
- <20240118151123.GH939255@cmpxchg.org>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <20240118151123.GH939255@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28128.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28128.005
+X-TMASE-Result: 10--8.997200-10.000000
+X-TMASE-MatchedRID: VFz6FHT9KvIRC3tpysE8AO9kW9mxCQvttOtXYgbXjde+f7ap9DJaDSxz
+	RYsJiUav/17ljwcNaRm5hiunv4GcSziJuiRnf5DQKiJEqUFWRggFeeAjqMW+l8ZgSaBgziUc2d8
+	mtRIRsUMkfu0SYDUi3tk+AWND1SQ/1s1AHJ9E8eDfSQNpZkETVFLiJI6ntczPeGHkpR2WBaKp7E
+	+IyeS1Xt9azz0zRbyE1mLuCemy7OOnhintEWTpJ65bb5QEYSkdLYdywTHl7nvZCDeKLir288tMy
+	hlcs3zJTLP4m7if3GSdqC2fLtk9xB8TzIzimOwPC24oEZ6SpSkj80Za3RRg8JU8c6O2cgtdKkXm
+	cQlIhgRkwIxiFgO1Jve1LKdTmTjePJuGM8tMGsU=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-On 2024/1/18 23:11, Johannes Weiner wrote:
-> On Wed, Jan 17, 2024 at 09:23:19AM +0000, Chengming Zhou wrote:
->> Each swapfile has one rb-tree to search the mapping of swp_entry_t to
->> zswap_entry, that use a spinlock to protect, which can cause heavy lock
->> contention if multiple tasks zswap_store/load concurrently.
->>
->> Optimize the scalability problem by splitting the zswap rb-tree into
->> multiple rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M),
->> just like we did in the swap cache address_space splitting.
->>
->> Although this method can't solve the spinlock contention completely, it
->> can mitigate much of that contention. Below is the results of kernel build
->> in tmpfs with zswap shrinker enabled:
->>
->>      linux-next  zswap-lock-optimize
->> real 1m9.181s    1m3.820s
->> user 17m44.036s  17m40.100s
->> sys  7m37.297s   4m54.622s
->>
->> So there are clearly improvements.
->>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> One minor nit:
-> 
->> @@ -265,6 +266,10 @@ static bool zswap_has_pool;
->>  * helpers and fwd declarations
->>  **********************************/
->>  
->> +#define swap_zswap_tree(entry)					\
->> +	(&zswap_trees[swp_type(entry)][swp_offset(entry)	\
->> +		>> SWAP_ADDRESS_SPACE_SHIFT])
-> 
-> Make this a static inline function instead?
+Adapt description, warning message and MODE=patch according to the latest
+Documentation/filesystems/sysfs.rst:
+> show() should only use sysfs_emit() or sysfs_emit_at() when formatting
+> the value to be returned to user space.
 
-Good suggestion, will do.
+After this patch:
+When MODE=report,
+ $ make coccicheck COCCI=scripts/coccinelle/api/device_attr_show.cocci M=drivers/hid/hid-picolcd_core.c MODE=report
+ <...snip...>
+ drivers/hid/hid-picolcd_core.c:304:8-16: WARNING: please use sysfs_emit or sysfs_emit_at
+ drivers/hid/hid-picolcd_core.c:259:9-17: WARNING: please use sysfs_emit or sysfs_emit_at
 
-Thanks.
+When MODE=patch,
+ $ make coccicheck COCCI=scripts/coccinelle/api/device_attr_show.cocci M=drivers/hid/hid-picolcd_core.c MODE=patch
+ <...snip...>
+ diff -u -p a/drivers/hid/hid-picolcd_core.c b/drivers/hid/hid-picolcd_core.c
+ --- a/drivers/hid/hid-picolcd_core.c
+ +++ b/drivers/hid/hid-picolcd_core.c
+ @@ -255,10 +255,12 @@ static ssize_t picolcd_operation_mode_sh
+  {
+         struct picolcd_data *data = dev_get_drvdata(dev);
+
+ -       if (data->status & PICOLCD_BOOTLOADER)
+ -               return snprintf(buf, PAGE_SIZE, "[bootloader] lcd\n");
+ -       else
+ -               return snprintf(buf, PAGE_SIZE, "bootloader [lcd]\n");
+ +       if (data->status & PICOLCD_BOOTLOADER) {
+ +               return sysfs_emit(buf, "[bootloader] lcd\n");
+ +       }
+ +       else {
+ +               return sysfs_emit(buf, "bootloader [lcd]\n");
+ +       }
+  }
+
+  static ssize_t picolcd_operation_mode_store(struct device *dev,
+ @@ -301,7 +303,7 @@ static ssize_t picolcd_operation_mode_de
+  {
+         struct picolcd_data *data = dev_get_drvdata(dev);
+
+ -       return snprintf(buf, PAGE_SIZE, "hello world\n");
+ +       return sysfs_emit(buf, "hello world\n");
+  }
+
+  static ssize_t picolcd_operation_mode_delay_store(struct device *dev,
+
+CC: Julia Lawall <Julia.Lawall@inria.fr>
+CC: Nicolas Palix <nicolas.palix@imag.fr>
+CC: cocci@inria.fr
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+V2:
+- changed title from coccinelle: device_attr_show.cocci: update description and warning message
+- Fix MODE=patch
+- Extract patch from the patch set[1] so that maintainer can accept it separately.
+[1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+---
+ scripts/coccinelle/api/device_attr_show.cocci | 22 +++++++++++--------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/scripts/coccinelle/api/device_attr_show.cocci b/scripts/coccinelle/api/device_attr_show.cocci
+index a28dc061653a..634514937e63 100644
+--- a/scripts/coccinelle/api/device_attr_show.cocci
++++ b/scripts/coccinelle/api/device_attr_show.cocci
+@@ -1,10 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ ///
+ /// From Documentation/filesystems/sysfs.rst:
+-///  show() must not use snprintf() when formatting the value to be
+-///  returned to user space. If you can guarantee that an overflow
+-///  will never happen you can use sprintf() otherwise you must use
+-///  scnprintf().
++///  show() should only use sysfs_emit() or sysfs_emit_at() when formatting
++///  the value to be returned to user space.
+ ///
+ // Confidence: High
+ // Copyright: (C) 2020 Denis Efremov ISPRAS
+@@ -30,15 +28,21 @@ ssize_t show(struct device *dev, struct device_attribute *attr, char *buf)
+ 
+ @rp depends on patch@
+ identifier show, dev, attr, buf;
++expression BUF, SZ, FORMAT, STR;
+ @@
+ 
+ ssize_t show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+ 	<...
++(
+ 	return
+--		snprintf
+-+		scnprintf
+-			(...);
++-		snprintf(BUF, SZ, FORMAT, STR);
+++		sysfs_emit(BUF, FORMAT, STR);
++|
++	return
++-		snprintf(BUF, SZ, STR);
+++		sysfs_emit(BUF, STR);
++)
+ 	...>
+ }
+ 
+@@ -46,10 +50,10 @@ ssize_t show(struct device *dev, struct device_attribute *attr, char *buf)
+ p << r.p;
+ @@
+ 
+-coccilib.report.print_report(p[0], "WARNING: use scnprintf or sprintf")
++coccilib.report.print_report(p[0], "WARNING: please use sysfs_emit or sysfs_emit_at")
+ 
+ @script: python depends on org@
+ p << r.p;
+ @@
+ 
+-coccilib.org.print_todo(p[0], "WARNING: use scnprintf or sprintf")
++coccilib.org.print_todo(p[0], "WARNING: please use sysfs_emit or sysfs_emit_at")
+-- 
+2.29.2
+
 
