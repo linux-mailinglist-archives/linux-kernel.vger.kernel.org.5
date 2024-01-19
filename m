@@ -1,170 +1,105 @@
-Return-Path: <linux-kernel+bounces-31135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7392083298E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:32:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F7A832990
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:34:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AF972833F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:32:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C5F3B21365
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA7D51C2A;
-	Fri, 19 Jan 2024 12:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F4B4EB5B;
+	Fri, 19 Jan 2024 12:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="gtndS8/Y"
-Received: from smtp-1908.mail.infomaniak.ch (smtp-1908.mail.infomaniak.ch [185.125.25.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M1MXdwFT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1AE7524C2
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 12:32:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373C731A61
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 12:34:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705667535; cv=none; b=KV5nvUYH3kDAinhdex9O8b/jyK91tx3Qx4TxL5F/xKEphzThtCZr2/O05aIe5aZB4Ribq+7QOENflkh28JJS6yJLXuO8eqYJn/HZWYjKqoq6nZEt4F+YORPalOAaTkf+hX7uIKxQz83VPwq8po6oMcOyOHfexHQNDWCFU8XF6e4=
+	t=1705667644; cv=none; b=l6Zo1yC+cuMzdMp1leJENIemv8BL9GSmzZVCf8ScZNqqW2BsiI4Ba9yw+2WlY/RmNYwG0m+Wbk0TA7u6f0/2zoFgCls2OsoDqfwMP7e8ZRYbES/wSQqfHhPfMbWcWzmmjX6/s0/h13j0ljoyPiBx6Xk8VDqqbDVhfvHjHIIUgOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705667535; c=relaxed/simple;
-	bh=/rHoGZTfUaI2731SCJ/Ui1obvUcWjbrYkcngo32s3NI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GpmIHIQ0faYe0vCRuDNEkIEy7PJvDHeoH9GgoY24Kr65I8lubrXP8cH8RfwBAJB/WkTVATM1Htru74RWujlERhYI3pbM93t/7kk25Chk4aiS8guqEt1XzXGp5WF9EuTJJQw2B4QefN9I7jszoNrfWhp9B0Vgx4NI1qE8UP4Gupg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=gtndS8/Y; arc=none smtp.client-ip=185.125.25.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TGfBW0CY9zMqsrp;
-	Fri, 19 Jan 2024 13:32:03 +0100 (CET)
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4TGfBT3VQ1z3Y;
-	Fri, 19 Jan 2024 13:32:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1705667522;
-	bh=/rHoGZTfUaI2731SCJ/Ui1obvUcWjbrYkcngo32s3NI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gtndS8/YTII1IUBg6cxIKRVTqllpPrXuv0rGGy+ahVXJ838yhn0MQoFWwMWAOp352
-	 jEpY9qgt/HNKEga06/it/vVXGcuGVm3dtgRLYXAqRXKDuh/4uXdRZdHnagnHv2r/sH
-	 82UnU9NsMyFZT3lQQByOlyR2onA46Nqw3JDEd0rw=
-Date: Fri, 19 Jan 2024 13:31:58 +0100
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Hu Yadi <hu.yadi@h3c.com>
-Cc: jmorris@namei.org, serge@hallyn.com, shuah@kernel.org, 
-	mathieu.desnoyers@efficios.com, amir73il@gmail.com, brauner@kernel.org, avagin@google.com, 
-	linux-api@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org, 514118380@qq.com, 
-	konstantin.meskhidze@huawei.com
-Subject: Re: [PATCH v4] selftests/landlock:Fix two build issues
-Message-ID: <20240119.Ugaehae2ze5b@digikod.net>
-References: <20240115102409.19799-1-hu.yadi@h3c.com>
+	s=arc-20240116; t=1705667644; c=relaxed/simple;
+	bh=6k/8ixRqRz3mjyrw03nskAuYCsAIBXEIWRS9B4IVC8s=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o8hHWrjIzI7i4adas2nOhiUkP1E/HtwfpwhP0UZ6P2UsuNKyy8jtPXbDntMkdcguKXt+lKD7r+xoVstdwzjbMlx4V8TLzfc+ai6BfWJtUsQrlqqRmRLao/Dh/2JyGMyWT7Kmu0FkVlpR9LjPD03iFbh3nVsNVa6vZSX4+yf2QDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M1MXdwFT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB6E9C43390
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 12:34:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705667643;
+	bh=6k/8ixRqRz3mjyrw03nskAuYCsAIBXEIWRS9B4IVC8s=;
+	h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+	b=M1MXdwFTSBP8EKmVSnVFa1QbRAP8GasZ/x+PpB7sAV0Sg0kFLJ7/lch60C6Q+bWRG
+	 +KAzp1CxFKamIbFvZeUHOdRdB6f2SzVnTDva1JmeIh/EqQHMAW9J432uUdYKjIaTIo
+	 Zz1SpazLPSQlKa05PMWkQ2llF5FgZ/6SyXmb9wiX7POu4Bd7gqRWnsSZZgxqBS/DND
+	 Ng1xypcDlEZJgpDa2wRaMvuPHooNJr9vShD8dJQQriVN3focT6PzTgCn/qVTAwZrEc
+	 OuenVRqmh5xW6y1MFzgnPPFiIUH5XBihEexFjQcpqIfYv+0+31OmTA4DBEJWLX0jX5
+	 4XsYoL8r1EPoA==
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5989d8decbfso396556eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 04:34:03 -0800 (PST)
+X-Gm-Message-State: AOJu0YwHkfHAHlB3XPfjvoZSn9JLwnbbhREZpKxoGiKwNVdwDlum3EZm
+	zfVbyO64SvLODkgo55aAtAo0RLTwHV3O1aT7kQRleBeNg4+0ynNSPIJmi0WewhIKlsPj2cvgJ58
+	p8p/RpLA/WUnIiVCve067jBDrdWk=
+X-Google-Smtp-Source: AGHT+IHugEjAkL860HsP3ly2qhA6oeRA7GgKTVOhP4FpZ33tkWNyYhg1mGGjsGgG88bTqCp3AxePdsCdaEUPtCeUrYM=
+X-Received: by 2002:a05:6820:824:b0:596:3aaf:3eca with SMTP id
+ bg36-20020a056820082400b005963aaf3ecamr2488567oob.18.1705667643106; Fri, 19
+ Jan 2024 04:34:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240115102409.19799-1-hu.yadi@h3c.com>
-X-Infomaniak-Routing: alpha
+Received: by 2002:ac9:6c8d:0:b0:513:8ad5:8346 with HTTP; Fri, 19 Jan 2024
+ 04:34:02 -0800 (PST)
+In-Reply-To: <000000000000141046060f4a7031@google.com>
+References: <tencent_1B2ECE8078726E5C2D856C0497A0E80EED0A@qq.com> <000000000000141046060f4a7031@google.com>
+From: Namjae Jeon <linkinjeon@kernel.org>
+Date: Fri, 19 Jan 2024 21:34:02 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd_hjQ_FVx5t_cpNPCxgnOLzVy02h=bsPEepD4NyJ61MKQ@mail.gmail.com>
+Message-ID: <CAKYAXd_hjQ_FVx5t_cpNPCxgnOLzVy02h=bsPEepD4NyJ61MKQ@mail.gmail.com>
+Subject: Re: [syzbot] [exfat?] kernel BUG in iov_iter_revert
+To: syzbot <syzbot+fd404f6b03a58e8bc403@syzkaller.appspotmail.com>, eadavis@qq.com
+Cc: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 15, 2024 at 06:24:09PM +0800, Hu Yadi wrote:
-> From: "Hu.Yadi" <hu.yadi@h3c.com>
-> 
-> Two issues comes up while building selftest/landlock on my side
-> (gcc 7.3/glibc-2.28/kernel-4.19)
-> 
-> the first one is as to gettid
-> 
-> net_test.c: In function ‘set_service’:
-> net_test.c:91:45: warning: implicit declaration of function ‘gettid’; [-Wimplicit-function-declaration]
->     "_selftests-landlock-net-tid%d-index%d", gettid(),
->                                              ^~~~~~
->                                              getgid
-> net_test.c:(.text+0x4e0): undefined reference to `gettid'
-> 
-> the second is compiler error
-> gcc -Wall -O2 -isystem   fs_test.c -lcap -o selftests/landlock/fs_test
-> fs_test.c:4575:9: error: initializer element is not constant
->   .mnt = mnt_tmp,
->          ^~~~~~~
-> 
-> Fixes: 04f9070e99a4 ("selftests/landlock: Add tests for pseudo filesystems")
-> Fixes: a549d055a22e ("selftests/landlock: Add network tests")
+2024-01-19 20:04 GMT+09:00, syzbot
+<syzbot+fd404f6b03a58e8bc403@syzkaller.appspotmail.com>:
+> Hello,
+>
+> syzbot tried to test the proposed patch but the build/boot failed:
+We already have a patch to fix this.
 
-Could you please create two patches as requested for v3, one per fix?
-This is useful because it enables to backport these fixes when
-appropriate.
+https://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git/commit/?h=dev
 
-> 
-> this patch is to fix them
-> 
-> Signed-off-by: Hu.Yadi <hu.yadi@h3c.com>
-> Suggested-by: Jiao <jiaoxupo@h3c.com>
-> Reviewed-by: Berlin <berlin@h3c.com>
-> ---
-> Changes v4 -> v3:
->   fix gettid error from kernel test robot
->   https://lore.kernel.org/oe-kbuild-all/202401151147.T1s11iHJ-lkp@intel.com/
-> Changes v3 -> v2:
->  - add helper of gettid instead of __NR_gettid
->  - add gcc/glibc version info in comments
-> Changes v1 -> v2:
->  - fix whitespace error
->  - replace SYS_gettid with _NR_gettid
-> 
->  tools/testing/selftests/landlock/fs_test.c  | 5 ++++-
->  tools/testing/selftests/landlock/net_test.c | 7 ++++++-
->  2 files changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
-> index 18e1f86a6234..a992cf7c0ad1 100644
-> --- a/tools/testing/selftests/landlock/fs_test.c
-> +++ b/tools/testing/selftests/landlock/fs_test.c
-> @@ -4572,7 +4572,10 @@ FIXTURE_VARIANT(layout3_fs)
->  /* clang-format off */
->  FIXTURE_VARIANT_ADD(layout3_fs, tmpfs) {
->  	/* clang-format on */
-> -	.mnt = mnt_tmp,
-> +	.mnt = {
-> +		.type = "tmpfs",
-> +		.data = "size=4m,mode=700",
-> +	},
+Thanks.
 
-I requested some changes here.
-
->  	.file_path = file1_s1d1,
->  };
-> 
-> diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
-> index 929e21c4db05..d50f2920ed82 100644
-> --- a/tools/testing/selftests/landlock/net_test.c
-> +++ b/tools/testing/selftests/landlock/net_test.c
-> @@ -21,6 +21,11 @@
-
-We should include sys/syscall.h
-
-> 
->  #include "common.h"
-> 
-> +static pid_t landlock_gettid(void)
-
-Please rename to sys_gettid().
-
-> +{
-> +        return syscall(__NR_gettid);
-> +}
-> +
->  const short sock_port_start = (1 << 10);
-> 
->  static const char loopback_ipv4[] = "127.0.0.1";
-> @@ -88,7 +93,7 @@ static int set_service(struct service_fixture *const srv,
->  	case AF_UNIX:
->  		srv->unix_addr.sun_family = prot.domain;
->  		sprintf(srv->unix_addr.sun_path,
-> -			"_selftests-landlock-net-tid%d-index%d", gettid(),
-> +			"_selftests-landlock-net-tid%d-index%d", landlock_gettid(),
->  			index);
->  		srv->unix_addr_len = SUN_LEN(&srv->unix_addr);
->  		srv->unix_addr.sun_path[0] = '\0';
-> --
-> 2.23.0
-> 
+>
+> failed to checkout kernel repo
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git on commit
+> 052d534373b7: failed to run ["git" "fetch" "--force" "--tags"
+> "4d52a57a3858a6eee0d0b25cc3a0c9533f747d8f" "052d534373b7"]: exit status 128
+> fatal: couldn't find remote ref 052d534373b7
+>
+>
+>
+> Tested on:
+>
+> commit:         [unknown
+> git tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> 052d534373b7
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7c8840a4a09eab8
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=fd404f6b03a58e8bc403
+> compiler:
+> patch:          https://syzkaller.appspot.com/x/patch.diff?x=147423afe80000
+>
+>
+>
 
