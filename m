@@ -1,161 +1,106 @@
-Return-Path: <linux-kernel+bounces-31309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8A64832C3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:23:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09BBE832C41
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:24:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6824E287E45
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:23:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E927287D44
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4070154789;
-	Fri, 19 Jan 2024 15:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8018954BEF;
+	Fri, 19 Jan 2024 15:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="s4U0ho16"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PPjR3rN3"
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A895F54672
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E6E554BE2;
+	Fri, 19 Jan 2024 15:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705677822; cv=none; b=DtYRBk/BquE2JCZLDdYQATi0KIRqemoO/5asWTZRZKAxMzA9UnRi1y9OMKpoYmjVKhcaCV68UO+5dDfbMxnMnOhzKpTZV53RohZJiGG0er8y9LQ2th47JFFGXZCJZb2ZsIFG7DmaUIIMt6avO8D0uYGYSg/LdBo6/TU562ujrU0=
+	t=1705677826; cv=none; b=BLelx6gRvGG0ni7eSgY5kDPQUzXRwKVPZCREnE3R9ihx+EtAT6wQDD9B/hVpMfhN6mLXViS1IXtfxO0mKe9msn44JYLyyu2y0dJfzuAcjJanM5r3WyU1HZtZX7aHRZ9HR6gkeOnlrXKdC7teqXP1KZybcXPWcRJJ7jXrGDPHS80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705677822; c=relaxed/simple;
-	bh=7dSFtIOUtnc7d6TIJokRXxaelPW5vKd+VvTdvvJyjLM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pGjrRE3ODn9ZOMK8yvSOBnRmFMOwCAfA6nsv+3CZDsaAfahagB1S/wQb59Im1UkPV1kxmThvaZy4HyqF7PEcdduDKaHmelEWFW3f1DtqzAM1jXLQ27uSql/o8A/dWCXA2vpTMsDDAjAxQnAJQTMHUKZv+oo4Ue8a2c7N3l6AtUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=s4U0ho16; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6dbc57d15daso497721b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:23:40 -0800 (PST)
+	s=arc-20240116; t=1705677826; c=relaxed/simple;
+	bh=cye6k0zRxl2RG68HRw4F2PS2E0vrkf+73ScpXzuyo8w=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=s0o3jkwYTuuR3oPWFfx47oyDr151DJoKHJZRigUBmNClXR2xVhJAxKHSbFDmBfPSLodf2g6CdEhnLlieF5u7A2lz6eQilQt8mGxBFYShsKL1JBFGHauNISiS/GXivE0+XfL6u4peF63/bIQAFgbp6MaIJF6fLp348iYK/noo8/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PPjR3rN3; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bd9ff7c2faso636405b6e.0;
+        Fri, 19 Jan 2024 07:23:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705677820; x=1706282620; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4piK4FlIBshk3S545o0PPe5+IQl2dl/fnP0KWlMUlPE=;
-        b=s4U0ho16nOIx5WDASy6QZ0Rx9eC1MIXWHn22HB+CJZuxGZWYxICBKofYQYLKsLDNnU
-         a5IBvb++eMykZqEOWsOdA8yqGNakJsLL4++23tpUMllmDLejY7J2CHmJEMXXGSSwveKK
-         ne/m25EInCbtdXM1eYSzxOE2zx7IqXGLYUCQaA7V/XV2BT6Jo4hLBK1x3UfxX8ocbPc8
-         Im5evLq5S1JQbq+b2QbV8tLCbfoEfIVq0n7JAOddZc1A3F2y2zaZK1mfhA2aQF9fTEgs
-         obfuNpTLlM3UQ17tnsjW3XCdLGfC3Gx1CsaRAJBBSD1hey49syQweUZzYTkYoXeM0CMx
-         3fQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705677820; x=1706282620;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705677824; x=1706282624; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4piK4FlIBshk3S545o0PPe5+IQl2dl/fnP0KWlMUlPE=;
-        b=Ul2sI3P0qUADQZRU/viHniK8aVKfwwKkLJ09m+dPO8I67k5Z0apuQrRNRpV8ZIVRn9
-         XtnmbzfLeWRQVfInse2kOO21AYvwVkskSV4V9d/0tuZeyvJ/K53FfxHFvoyZuNy5JkMe
-         zmSFNNaT4JcOM5VIWYyonfdxUXFtRc2Q9aEtAznTEIVdSUBE/GTsmkuC+AfQsk0+oDGV
-         QYN7L+2pH61Tq4LmvHNIzD6EOQ+XFSL6kcJY7atgBJidjP/JsQ4fTyWsshH1t6rnN4yq
-         wbi2G9Ux9z4h2gM7XBwgH7/EiiG4ci0q4uKocK/OTl+qUYkyew2xnA56I1ZVfzcQXIMD
-         3oYw==
-X-Gm-Message-State: AOJu0Yz+ROrsW90/q/5vYoSFnWIsnPngS7Tku0qDuSdgUmG/A0BtoTLb
-	QUZZfJHwj11T7U7q0SBDWmQ/+K3ivIx+41xuEX/gdYzqxjrdMA/gjx2Evt8i26Q=
-X-Google-Smtp-Source: AGHT+IEDpAw5jRwxWDGo0pZARDmf9QlhA87xq1E/pHFbxmVfn6Z7N1QSRsRV5TCFojVTVQwO0YNAsA==
-X-Received: by 2002:a05:6a20:4281:b0:19a:25c6:4913 with SMTP id o1-20020a056a20428100b0019a25c64913mr3247900pzj.38.1705677819959;
-        Fri, 19 Jan 2024 07:23:39 -0800 (PST)
-Received: from ghost (50-197-128-209-static.hfc.comcastbusiness.net. [50.197.128.209])
-        by smtp.gmail.com with ESMTPSA id ks11-20020a056a004b8b00b006d6b91c6eb6sm5356928pfb.13.2024.01.19.07.23.39
+        bh=e3ulTy/374JVx5skyyfqoWLrrpxUwjpXxi0yPq7nkqc=;
+        b=PPjR3rN33wR6JDU2Gxn9c6IuTLlQ38VqHaFrqZ35n0CNpd19hAP4AzzMWBv1/hcUke
+         UgYAldwH3xT8WbuZc/+mGKAAQxDXN4/4kDLTQlWE8vA6GRDisH4VZVteEMK9bGfK25/C
+         N1aaYEZQVxMKsCmSxZm9FZ+PrRJpiiPsnTWHzkIQtUuoY7ySU8ylev2ShjhvseGCwip2
+         WTyoqU6kRAlDGzfmn8HgrcRV40w4U+OpuBdykl+wMkAztkbbgoOYXh7g8nKWDMGITQHO
+         guLjWaVdTfLP7OhpEWmuzbSphD2cXc1JJxdAmJSBlREP6m4L/lJAoDmVRyduNrsFcvUE
+         qmtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705677824; x=1706282624;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=e3ulTy/374JVx5skyyfqoWLrrpxUwjpXxi0yPq7nkqc=;
+        b=WSfvpQ2v7TweXVR4EguyzldE/txLflWYdEGu7Ru0hu2mjUJFDEn+5oYG5KFMyPiNIm
+         Shk7w7G7qO1wmac8AmPHkewLAt9x9zAld/k8JNluFL+8/9FjO3KjVOa+3GMFWtvKGgdG
+         IV5xZSuArr757TOFe9OoreeoptKmwMqe29f2qyHyhELECQqNHwh0dFPAtJfoDURhTRSo
+         T6BDRTXBnXpeZlY+ucCq08Q4sVqf2XUkWTfgFBX0qhL1fGGxUnFTPOeeZWUVlSEDqaSj
+         uqMUqOtkZHoXgeGc/tnXfhu/nv+PuJRO3fhbim+PtrMzbp1cE66s1fdeSwKYNMD/T/1v
+         dH7g==
+X-Gm-Message-State: AOJu0YzdHhjZWNnqvXwZJQe0HS7LWeKGlsiBTDFIRxyujcWuJDCAfTgh
+	5fKdGryYcVITttTC/wxfXlmymJksY2NSFwLkX1P6734G7bS645/L
+X-Google-Smtp-Source: AGHT+IFnFA6sm0uOXbC7bM6lDNoqHR79nIW9PZFkSWhQ8QDnZyX9IKetMoWKRcEqlDxQ4bIcoyg3IA==
+X-Received: by 2002:aca:1016:0:b0:3bd:944e:f3c9 with SMTP id 22-20020aca1016000000b003bd944ef3c9mr2526240oiq.98.1705677824388;
+        Fri, 19 Jan 2024 07:23:44 -0800 (PST)
+Received: from localhost (131.65.194.35.bc.googleusercontent.com. [35.194.65.131])
+        by smtp.gmail.com with ESMTPSA id ow24-20020a05620a821800b007831a0f6e75sm6099131qkn.96.2024.01.19.07.23.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 07:23:39 -0800 (PST)
-Date: Fri, 19 Jan 2024 07:23:36 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: lib: Check if output in asm goto supported
-Message-ID: <ZaqT2E0rH3UbdnV0@ghost>
-References: <20240118-csum_remove_output_operands_asm_goto-v2-1-5d1b73cf93d4@rivosinc.com>
- <20240119-1bff4a21b3d2d5c500a14fcc@orel>
+        Fri, 19 Jan 2024 07:23:44 -0800 (PST)
+Date: Fri, 19 Jan 2024 10:23:43 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Yunjian Wang <wangyunjian@huawei.com>, 
+ willemdebruijn.kernel@gmail.com, 
+ jasowang@redhat.com, 
+ kuba@kernel.org, 
+ davem@davemloft.net
+Cc: netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ xudingke@huawei.com, 
+ Yunjian Wang <wangyunjian@huawei.com>
+Message-ID: <65aa93ffe0f7b_29ebd4294f0@willemb.c.googlers.com.notmuch>
+In-Reply-To: <1705659776-21108-1-git-send-email-wangyunjian@huawei.com>
+References: <1705659776-21108-1-git-send-email-wangyunjian@huawei.com>
+Subject: Re: [PATCH net 2/2] tun: add missing rx stats accounting in
+ tun_xdp_act
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119-1bff4a21b3d2d5c500a14fcc@orel>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 19, 2024 at 10:41:14AM +0100, Andrew Jones wrote:
-> On Thu, Jan 18, 2024 at 02:36:45PM -0800, Charlie Jenkins wrote:
-> > The output field of an asm goto statement is not supported by all
-> > compilers. If it is not supported, fallback to the non-optimized code.
-> > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > Fixes: a04c192eabfb ("riscv: Add checksum library")
-> > ---
-> > The OutputOperands field for asm goto statements is only supported
-> > starting from GCC 11. Split the asm goto to remove the use of this
-> > feature.
-> > ---
-> > Changes in v2:
-> > - Use CC_HAS_ASM_GOTO_TIED_OUTPUT
-> > - Link to v1: https://lore.kernel.org/r/20240118-csum_remove_output_operands_asm_goto-v1-1-47c672bb9d4b@rivosinc.com
-> > ---
-> >  arch/riscv/lib/csum.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/arch/riscv/lib/csum.c b/arch/riscv/lib/csum.c
-> > index 06ce8e7250d9..af3df5274ccb 100644
-> > --- a/arch/riscv/lib/csum.c
-> > +++ b/arch/riscv/lib/csum.c
-> > @@ -156,6 +156,7 @@ do_csum_with_alignment(const unsigned char *buff, int len)
-> >  	end = (const unsigned long *)(buff + len);
-> >  	csum = do_csum_common(ptr, end, data);
-> >  
-> > +#ifdef CC_HAS_ASM_GOTO_TIED_OUTPUT
+Yunjian Wang wrote:
+> The TUN can be used as vhost-net backend, and it is necessary to
+> count the packets transmitted from TUN to vhost-net/virtio-net.
+> However, there are some places in the receive path that were not
+> taken into account when using XDP. It would be beneficial to also
+> include new accounting for successfully received bytes using
+> dev_sw_netstats_rx_add.
 > 
-> Can't we just add another IS_ENABLED() to the if rather than this #ifdef?
+> Fixes: 761876c857cb ("tap: XDP support")
+> Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
 
-Unfortunately no. GCC throws syntax before it determines if a branch
-will never be taken, so even though the code is not emitted it will
-still fail with IS_ENABLED.
-
-> 
-> >  	/*
-> >  	 * Zbb support saves 6 instructions, so not worth checking without
-> >  	 * alternatives if supported
-> > @@ -214,6 +215,7 @@ do_csum_with_alignment(const unsigned char *buff, int len)
-> >  		return csum >> 16;
-> >  	}
-> >  no_zbb:
-> > +#endif /* CC_HAS_ASM_GOTO_TIED_OUTPUT */
-> >  #ifndef CONFIG_32BIT
-> >  	csum += ror64(csum, 32);
-> >  	csum >>= 32;
-> 
-> BTW, I wonder how/if the check for CC_HAS_ASM_GOTO_TIED_OUTPUT in
-> init/Kconfig is working as expected. I see $CC, as opposed to $(CC),
-> being used there. I believe $CC is just the expansion of $C with a
-> 'C' appended.
-
-Huh that is strange. It does work but I am not sure how.
-
-- Charlie
-
-> 
-> Thanks,
-> drew
-> 
-> > 
-> > ---
-> > base-commit: 080c4324fa5e81ff3780206a138223abfb57a68e
-> > change-id: 20240118-csum_remove_output_operands_asm_goto-49922c141ce7
-> > -- 
-> > - Charlie
-> > 
-> > 
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 
