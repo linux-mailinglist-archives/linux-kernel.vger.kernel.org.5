@@ -1,94 +1,144 @@
-Return-Path: <linux-kernel+bounces-31426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A811832E2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:29:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EF40832E36
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:31:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D3881C21CEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:29:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0804288274
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1405A56456;
-	Fri, 19 Jan 2024 17:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC4056444;
+	Fri, 19 Jan 2024 17:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="U386wNGe"
-Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d3eVaqJV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E3855E7C;
-	Fri, 19 Jan 2024 17:29:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A93E55C05;
+	Fri, 19 Jan 2024 17:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705685379; cv=none; b=AxmY78IrtmEcKUXfJC2p88QE1fmfeF5RwJ8fe+a2XxhpcvcEG4rTTAYEQodLCL74yWCfmGo3DsfxmwmLhP1eFtjAdv6I/PWHLWV9mfHJpQ7IM7YcnAj4U45GXE75b1ucZnHffmOFvCMf923s9ZekDqDe4G1AS0Hlk5cSRchOc9o=
+	t=1705685500; cv=none; b=u7NZkcTE3BrpOhGH92e7EMtdkW0TTBDqehWpwKvrdzrNMOCBbB7aU8oF2MmN7w64LCfDYNnhUJZtiWMJitIDM+UX83MClA+JgKMGHpLz4ak2yDldhY/yf3br0WUIa4CJMdP/H9Kk6qVRvcXkwjkdq1W+k+KrGnqyNVle04n/Clw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705685379; c=relaxed/simple;
-	bh=wFLS/DRuClG477WloVYRf2DcpMH14Dg3hMZDefXJDs4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OQrvuxK/VKRKgoCuhUCo0/xbENgLAfmrxmYsh8x5RRLw4iIHsLigzQmSCYMevYkytxl+r9HstPjfrvAjQHK/BenGy5d7QuDi1wddklhrfI1wwSXIqAPdVLQ3yd4tdKEHOpEoAcmpbsxR9S7dPTfr5ZUVGyu8uQ3iiGt2iDq9xgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=U386wNGe; arc=none smtp.client-ip=80.12.242.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id QsgFrYNTInarWQsgFrf3Du; Fri, 19 Jan 2024 18:29:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1705685367;
-	bh=JwBsDqoOR8SiedNBXI31hNKQkl0we/KwEcGVoVCDXdU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=U386wNGewBzAthdqhIdujVAu3XxD1xge3Hkts4nbBqvQ1Geu44Q7jwKuf+Qij0377
-	 RI7NJB2U0tzYQQw+aLF8arczrhTNhLwB8g6f+BCu123s0xGISChTRFNpImAk+DaTWe
-	 mWTqTcJTGOtPh95WBtomd3LbbCOykeIxr69gLDDla+KgJt2xxFXWP7RLF10znWjsM2
-	 857qN/+hb4j5WEbcKLKvjKqfjAIrbTfMXdxcwNiYg3Q4FZyP8ykSrXKAN7OBzYk/Ke
-	 4GHKH7AHzMpPkcuZQH29lYqD2zNFLjxyt7YTxKmh6dNyb9Wz/7q/JZD8SOZWzeYSsT
-	 Ow2jA0miGUPHg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 19 Jan 2024 18:29:27 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <51576fbb-c7dd-4ee8-a77f-ae7f62b254ab@wanadoo.fr>
-Date: Fri, 19 Jan 2024 18:29:21 +0100
+	s=arc-20240116; t=1705685500; c=relaxed/simple;
+	bh=bx3dBEafVwA3lVJVceH0Td6l7zSsuteDOXP4YqQuYQQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=iQEERUECthgDV8UCBEucyUFsDBFu2J5lIFktbBfo1qYn/Av9KusCpcjtJ/w/N00OY2Ekmc2oQWfx5dBioi2oQLFjWngGvW7Zpto/BNkaQ3qUK2JXPMT8sLKrnH40nDmplUjCChXvEp6p8CFFkBSF2d3rBHxsKHeQucCsnyL1qC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d3eVaqJV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3592AC433F1;
+	Fri, 19 Jan 2024 17:31:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705685499;
+	bh=bx3dBEafVwA3lVJVceH0Td6l7zSsuteDOXP4YqQuYQQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=d3eVaqJVId8F9SFx2HE7+VtBKBkeoTgOSnCfGcnutVGB8Amu2/NnAr53RHpdJW2cI
+	 HsrCHES1ME2ZiCgLk6EGJZ08QqQamaNwM/dbaSfc1oas1ONNVAI1XEH7Pp3sMe+nQ6
+	 k4w/PAWIWW0rY38M5L0JQwavF9MGjRS/YOEUv5ktyVRdMAslB6F1gZ3sH0a0qDJ8b3
+	 4K29qSzZG6hn5jyt1VLBc2obJvJVFWAQOwauaeBIZ7MUe7eRZKL0jExT4NydchuIVx
+	 SdTIokkHWVIE0KAg0DXmhikeel9INExRR1RqCK0mijGX2qrUNINUVGexcvi5zp43iP
+	 w2pZNvgaL6SZw==
+Date: Fri, 19 Jan 2024 11:31:37 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Vidya Sagar <vidyas@nvidia.com>
+Cc: robh@kernel.org, lpieralisi@kernel.org, kw@linux.com,
+	bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, will@kernel.org, frowand.list@gmail.com,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	treding@nvidia.com, jonathanh@nvidia.com, kthota@nvidia.com,
+	mmaddireddy@nvidia.com, sagar.tv@gmail.com,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH V2 2/2] PCI: Add support for "preserve-boot-config"
+ property
+Message-ID: <20240119173137.GA180921@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] backlight: Add Kinetic KTD2801 driver
-Content-Language: en-MW
-To: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
- Lee Jones <lee@kernel.org>, Daniel Thompson <daniel.thompson@linaro.org>,
- Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>
-Cc: Karel Balej <balejk@matfyz.cz>, ~postmarketos/upstreaming@lists.sr.ht,
- dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-fbdev@vger.kernel.org
-References: <20240118-ktd2801-v2-0-425cf32e0769@skole.hr>
- <20240118-ktd2801-v2-2-425cf32e0769@skole.hr>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240118-ktd2801-v2-2-425cf32e0769@skole.hr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e8f6c52-6149-42c0-affb-d8b072a77956@nvidia.com>
 
-Le 18/01/2024 à 18:32, Duje Mihanović a écrit :
-> Add driver for the Kinetic KTD2801 backlight driver.
+On Mon, Jan 15, 2024 at 08:02:56PM +0530, Vidya Sagar wrote:
+> On 1/12/2024 10:28 PM, Bjorn Helgaas wrote:
+> > On Wed, Jan 10, 2024 at 08:37:25AM +0530, Vidya Sagar wrote:
+> > > Add support for "preserve-boot-config" property that can be used to
+> > > selectively (i.e. per host bridge) instruct the kernel to preserve the
+> > > boot time configuration done by the platform firmware.
+> > > 
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> > > ---
+> > > V2:
+> > > * Addressed issues reported by kernel test robot <lkp@intel.com>
+> > > 
+> > >   drivers/pci/controller/pci-host-common.c |  5 ++++-
+> > >   drivers/pci/of.c                         | 18 ++++++++++++++++++
+> > >   drivers/pci/probe.c                      |  2 +-
+> > >   include/linux/of_pci.h                   |  6 ++++++
+> > >   4 files changed, 29 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/pci-host-common.c b/drivers/pci/controller/pci-host-common.c
+> > > index 6be3266cd7b5..d3475dc9ec44 100644
+> > > --- a/drivers/pci/controller/pci-host-common.c
+> > > +++ b/drivers/pci/controller/pci-host-common.c
+> > > @@ -68,13 +68,16 @@ int pci_host_common_probe(struct platform_device *pdev)
+> > > 
+> > >        of_pci_check_probe_only();
+> > > 
+> > > +     bridge->preserve_config =
+> > > +             of_pci_check_preserve_boot_config(dev->of_node);
+> > 
+> > Thanks for leveraging the existing "preserve_config" support for the
+> > ACPI _DSM.  Is pci_host_common_probe() the best place for this?  I
+> > think there are many DT platform drivers that do not use
+> > pci_host_common_probe(), so I wonder if there's a more generic place
+> > to put this.
+>
+> My understanding is that pci_host_common_probe() is mainly used in
+> systems where the firmware would have taken care of all the platform
+> specific initialization and giving the ECAM and 'ranges' info through DT
+> for the Linux kernel to go ahead and perform the enumeration. This is
+> similar to ACPI way of handing over the system from firmware to the OS.
 > 
-> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
-> 
-> ---
+> If PCIe controllers are getting initialized in the kernel itself, then
+> pci_host_probe() is called directly from the respective host controller
+> drivers which is the case with all the DesignWare based implementations
+> including Tegra194 and Tegra234. In those systems, since the controllers
+> themselves have come up and gotten initialized in the kernel, resource
+> assignment has to happen anyway.
 
-..
+acpi_pci_root_create() sets "preserve_config" based on the
+DSM_PCI_PRESERVE_BOOT_CONFIG _DSM for all ACPI host bridges.
 
-> +	ktd2801->gpiod = devm_gpiod_get(dev, "ctrl", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(ktd2801->gpiod))
-> +		return dev_err_probe(dev, PTR_ERR(dev),
+Similarly, I think we should set "preserve_config" based on the DT
+"preserve-boot-config" property for *all* DT-based host bridges,
+regardless of where the controller init happens.
 
-PTR_ERR(ktd2801->gpiod); ?
+  acpi_pci_root_create
+    pci_create_root_bus
+      pci_alloc_host_bridge
+      pci_register_host_bridge
+    acpi_evaluate_dsm_typed(DSM_PCI_PRESERVE_BOOT_CONFIG)  <--
+    pci_scan_child_bus
 
-CJ
+  pci_host_common_probe
++   of_pci_check_preserve_boot_config       <-- proposed
+    pci_host_probe
+      pci_scan_root_bus_bridge
+        pci_register_host_bridge
+          pci_set_bus_of_node
+        pci_scan_child_bus
+
+Maybe we should do both in pci_register_host_bridge()?  E.g., make a
+function that sets "preserve_config" based on either the ACPI _DSM or
+the DT property, whichever is appropriate, and call it from
+pci_register_host_bridge()?
+
+Bjorn
 
