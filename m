@@ -1,217 +1,171 @@
-Return-Path: <linux-kernel+bounces-31127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97BB083295C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:07:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC7383295A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:07:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1283C1F24EBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:07:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 545D51F24FD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA164F214;
-	Fri, 19 Jan 2024 12:07:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HTUXwQsf";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5m0FZKR8"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7AE4F1EF;
+	Fri, 19 Jan 2024 12:07:06 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF7A24B5E;
-	Fri, 19 Jan 2024 12:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C7B4EB50
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 12:07:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705666027; cv=none; b=Al+GDUT2bJi+cBTSgVIrPCAUL9pdBEyhemvGoV0ah6Wi81MVxqlpoeeUcmttnPZ2D+VMIBRWXswC/mxcsFbVbSWrhi4hEqb1rKDhgkFJ3vohRGA9MXxIzeg1XaSyNHWzbL2GeYtX3n5RMPDKQpqSRFZPK+kOs7Gw7two3iyXOOQ=
+	t=1705666026; cv=none; b=Ewt/DlmDOgdJXZDBSs4b3F0s+Ixz8fexfXzPBz5r+vkVWDyQ8VrZ7M29fLWUwXXvavDNC61Jq/+T1GctUyP8dpnGOnJjBqxlf9q1mUbc9unPvwOKFTgQdZLZCXAfWoeIgBHqFZk+AtbhX0p50jJ3i0Cmqz6IdSy6RuwDsM21cxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705666027; c=relaxed/simple;
-	bh=+29CDlKuajfqGksTzlVhNvMqTuiT8XOUwD2uJoy9moU=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=TF2Owndmjz673T1xbRk8xdHkG+8m3yRkBYXOW+2tM/s+B1dSNVQmjOD71hJcmJQwfI5KhpIMw8nUAJt886O/faD5Y6tN3XrJgVKGOuBHFUU0VE1KMznWqXsQNIWiRaBZ3vHAfq6XowEMAgJdg7PyszfW28F38ZXZMp+s3AHxI9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HTUXwQsf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5m0FZKR8; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 19 Jan 2024 12:06:56 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705666017;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2+V4QgH1BuYPBrs95fl76vL2gGCoC++TEKPMnLkodhc=;
-	b=HTUXwQsfyAJnn5Sf/f7/aK80qCFKCOjQeWFNrHTdYGc7JbqQelN3bUqTCZyA/N6bVXnvp9
-	0VAMD3j4jQi9EDuNFZikkOuE3zo3SuPSoN/6EmI9+BGY29Vz3Y6y5AR8ss8ueQy7+9Jr+H
-	pGyctxcYZL/MJ/soBon4SNayFc80pefStpTGW1OyNLbKPWbQx+WyiBVt2yoaz4DEfN938p
-	lMJSEKUs1rQi57sZutiX5RX1UTZ0UKTUWab1nRp+KOG6aNCg9Xgz1ZI36SqNQbmtU4VKnu
-	EaUh2UaVuFWCU+Bc9o27HMqCjXM71u1zYpFaPvqBvrmVHd+cGMFC0En1drcNnA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705666017;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2+V4QgH1BuYPBrs95fl76vL2gGCoC++TEKPMnLkodhc=;
-	b=5m0FZKR8WWZwfclKJAabjzCBzFO+9HLnmmsSiMxQU334sPOrDND4f+0U3etI0XQjCBnL/h
-	WlHL3RH/8CmQWCAQ==
-From: "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] futex: Prevent the reuse of stale pi_state
-Cc: Jiri Slaby <jirislaby@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240118115451.0TkD_ZhB@linutronix.de>
-References: <20240118115451.0TkD_ZhB@linutronix.de>
+	s=arc-20240116; t=1705666026; c=relaxed/simple;
+	bh=tmd5mZR1ZCIkmdnkG76q4Ufua5t2VjZtTUNZA7tujcs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=LJij5U+rTwv5b9EyG5lShedIIJ2GvV1Wu2TntQCS5Cgt8C2+8BCjLkvAfmQ5JQrwxi6pqE+0nAweb+Br9AD5tIlCQVjzQyUaDIGbGVr0MXeLVfSUny/Hc8QLXg2da1XJG1Do4lwssWFH91MJUUmfkQi6qwA+GuhWg0aGzBd7CHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bbb3de4dcbso99640239f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 04:07:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705666024; x=1706270824;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZmjL8it3vaVyxB9k8RYv05dOTZ1QGE+xOhdnzh/v3Bg=;
+        b=NW1AftIFyg8wiAZkS2e31/CagDUu034F2OotYIHf2o4qYhj8TtGOk2VATouNqI0yKt
+         XhFI0bwzpPTRj9DSg6fyDVFI8QCUF272eBtH/Ry0biqQCGZh7pMuJ/xgMqwhs9qdLlHW
+         wQszHEFjf8heJ+oZ9ONWb2wdGz0VB6/PA7QP/HXfQc7Rdeol4v2s8IwFXTmzzEw4Bg92
+         81PULJUmwDZiDdLU8Xma3ZIsThiDIXZ1d3fWYhc1dloAwENuWHdjtmhoaE0ez3ORrajO
+         3ZfmobuJq5W4+gjMX3tY9lvsDTmy8X7ffm88gKRMmvmA0pUITyCwA+j86nJ8IPZpzkDl
+         qTPg==
+X-Gm-Message-State: AOJu0YymdDayj2psyIByQGrYVpcIGUbsU4EqxQXmLUTFXEIWZ4yrzf8b
+	1rgbieixXn02qIX7NsqX3HK6zjb+LL8vGsBt/NAKh00D6JPtImYOyiHOGaft75icXqPmQdQP6AW
+	PgTTsHICeWEdZvk/+illrwwiLoBOYXhKfXBfIXtP5TkS710Xr7lFbE9g=
+X-Google-Smtp-Source: AGHT+IHDmFYt++YhXJ1nz605+EsfMbqi5iZvYHBQU/zSMlscOx9RkeVNxYHaKIIJCgRySUnkRSC70GQCKGQfXfSjis9IbqAksODA
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170566601687.398.7239390403231385135.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:16ce:b0:361:966c:8504 with SMTP id
+ 14-20020a056e0216ce00b00361966c8504mr366663ilx.6.1705666024097; Fri, 19 Jan
+ 2024 04:07:04 -0800 (PST)
+Date: Fri, 19 Jan 2024 04:07:04 -0800
+In-Reply-To: <20240119114735.2106-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000078d073060f4b51e7@google.com>
+Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
+From: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The following commit has been merged into the locking/urgent branch of tip:
+Hello,
 
-Commit-ID:     e626cb02ee8399fd42c415e542d031d185783903
-Gitweb:        https://git.kernel.org/tip/e626cb02ee8399fd42c415e542d031d185783903
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Thu, 18 Jan 2024 12:54:51 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 19 Jan 2024 12:58:17 +01:00
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: use-after-free Read in ipip_tunnel_xmit
 
-futex: Prevent the reuse of stale pi_state
+==================================================================
+BUG: KASAN: use-after-free in ipip_tunnel_xmit+0x580/0x610 net/ipv4/ipip.c:284
+Read of size 1 at addr ffff88812130000e by task syz-executor.0/5530
 
-Jiri Slaby reported a futex state inconsistency resulting in -EINVAL during
-a lock operation for a PI futex. It requires that the a lock process is
-interrupted by a timeout or signal:
+CPU: 2 PID: 5530 Comm: syz-executor.0 Not tainted 6.7.0-syzkaller-g9d1694dc91ce-dirty #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:488
+ kasan_report+0xda/0x110 mm/kasan/report.c:601
+ ipip_tunnel_xmit+0x580/0x610 net/ipv4/ipip.c:284
+ __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
+ netdev_start_xmit include/linux/netdevice.h:5003 [inline]
+ xmit_one net/core/dev.c:3547 [inline]
+ dev_hard_start_xmit+0x137/0x6d0 net/core/dev.c:3563
+ __dev_queue_xmit+0x7b6/0x3ed0 net/core/dev.c:4351
+ dev_queue_xmit include/linux/netdevice.h:3171 [inline]
+ neigh_connected_output+0x426/0x5d0 net/core/neighbour.c:1592
+ neigh_output include/net/neighbour.h:542 [inline]
+ ip_finish_output2+0x82d/0x2540 net/ipv4/ip_output.c:235
+ __ip_finish_output net/ipv4/ip_output.c:313 [inline]
+ __ip_finish_output+0x38b/0x650 net/ipv4/ip_output.c:295
+ ip_finish_output+0x31/0x310 net/ipv4/ip_output.c:323
+ NF_HOOK_COND include/linux/netfilter.h:303 [inline]
+ ip_mc_output+0x1dd/0x6a0 net/ipv4/ip_output.c:420
+ dst_output include/net/dst.h:451 [inline]
+ ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:129
+ iptunnel_xmit+0x5b4/0x9b0 net/ipv4/ip_tunnel_core.c:88
+ ip_tunnel_xmit+0x1e2d/0x34c0 net/ipv4/ip_tunnel.c:837
+ ipgre_xmit+0x49b/0x980 net/ipv4/ip_gre.c:665
+ __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
+ netdev_start_xmit include/linux/netdevice.h:5003 [inline]
+ xmit_one net/core/dev.c:3547 [inline]
+ dev_hard_start_xmit+0x137/0x6d0 net/core/dev.c:3563
+ __dev_queue_xmit+0x7b6/0x3ed0 net/core/dev.c:4351
+ dev_queue_xmit include/linux/netdevice.h:3171 [inline]
+ __bpf_tx_skb net/core/filter.c:2135 [inline]
+ __bpf_redirect_no_mac net/core/filter.c:2169 [inline]
+ __bpf_redirect+0x745/0xf90 net/core/filter.c:2192
+ ____bpf_clone_redirect net/core/filter.c:2463 [inline]
+ bpf_clone_redirect+0x2b2/0x420 net/core/filter.c:2435
+ ___bpf_prog_run+0x3e44/0xabc0 kernel/bpf/core.c:1986
+ __bpf_prog_run512+0xb7/0xf0 kernel/bpf/core.c:2227
+ bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x3d3/0x9c0 net/bpf/test_run.c:423
+ bpf_prog_test_run_skb+0xb75/0x1dd0 net/bpf/test_run.c:1056
+ bpf_prog_test_run kernel/bpf/syscall.c:4107 [inline]
+ __sys_bpf+0x11bf/0x4a00 kernel/bpf/syscall.c:5475
+ __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5559
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f886727cce9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8867f380c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f886739bf80 RCX: 00007f886727cce9
+RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
+RBP: 00007f88672c947a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f886739bf80 R15: 00007fff1deea708
+ </TASK>
 
-  T1 Owns the futex in user space.
+The buggy address belongs to the physical page:
+page:ffffea000484c000 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x121300
+flags: 0x57ff00000000000(node=1|zone=2|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 057ff00000000000 ffffea000484c008 ffffea000484c008 0000000000000000
+raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner info is not present (never set?)
 
-  T2 Tries to acquire the futex in kernel (futex_lock_pi()). Allocates a
-     pi_state and attaches itself to it.
+Memory state around the buggy address:
+ ffff8881212fff00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8881212fff80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff888121300000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                      ^
+ ffff888121300080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888121300100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
 
-  T2 Times out and removes its rt_waiter from the rt_mutex. Drops the
-     rtmutex lock and tries to acquire the hash bucket lock to remove
-     the futex_q. The lock is contended and T2 schedules out.
 
-  T1 Unlocks the futex (futex_unlock_pi()). Finds a futex_q but no
-     rt_waiter. Unlocks the futex (do_uncontended) and makes it available
-     to user space.
+Tested on:
 
-  T3 Acquires the futex in user space.
+commit:         9d1694dc Merge tag 'for-6.8/block-2024-01-18' of git:/..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=126c4f1be80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=70f4213b9a7b4f3a
+dashboard link: https://syzkaller.appspot.com/bug?extid=bfde3bef047a81b8fde6
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=148fbdc7e80000
 
-  T4 Tries to acquire the futex in kernel (futex_lock_pi()). Finds the
-     existing futex_q of T2 and tries to attach itself to the existing
-     pi_state.  This (attach_to_pi_state()) fails with -EINVAL because uval
-     contains the TID of T3 but pi_state points to T1.
-
-It's incorrect to unlock the futex and make it available for user space to
-acquire as long as there is still an existing state attached to it in the
-kernel.
-
-T1 cannot hand over the futex to T2 because T2 already gave up and started
-to clean up and is blocked on the hash bucket lock, so T2's futex_q with
-the pi_state pointing to T1 is still queued.
-
-T2 observes the futex_q, but ignores it as there is no waiter on the
-corresponding rt_mutex and takes the uncontended path which allows the
-subsequent caller of futex_lock_pi() (T4) to observe that stale state.
-
-To prevent this the unlock path must dequeue all futex_q entries which
-point to the same pi_state when there is no waiter on the rt mutex. This
-requires obviously to make the dequeue conditional in the locking path to
-prevent a double dequeue. With that it's guaranteed that user space cannot
-observe an uncontended futex which has kernel state attached.
-
-Fixes: fbeb558b0dd0d ("futex/pi: Fix recursive rt_mutex waiter state")
-Reported-by: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Jiri Slaby <jirislaby@kernel.org>
-Link: https://lore.kernel.org/r/20240118115451.0TkD_ZhB@linutronix.de
-Closes: https://lore.kernel.org/all/4611bcf2-44d0-4c34-9b84-17406f881003@kernel.org
----
- kernel/futex/core.c | 15 ++++++++++++---
- kernel/futex/pi.c   | 11 ++++++++---
- 2 files changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/futex/core.c b/kernel/futex/core.c
-index e0e8534..1e78ef2 100644
---- a/kernel/futex/core.c
-+++ b/kernel/futex/core.c
-@@ -627,12 +627,21 @@ retry:
- }
- 
- /*
-- * PI futexes can not be requeued and must remove themselves from the
-- * hash bucket. The hash bucket lock (i.e. lock_ptr) is held.
-+ * PI futexes can not be requeued and must remove themselves from the hash
-+ * bucket. The hash bucket lock (i.e. lock_ptr) is held.
-  */
- void futex_unqueue_pi(struct futex_q *q)
- {
--	__futex_unqueue(q);
-+	/*
-+	 * If the lock was not acquired (due to timeout or signal) then the
-+	 * rt_waiter is removed before futex_q is. If this is observed by
-+	 * an unlocker after dropping the rtmutex wait lock and before
-+	 * acquiring the hash bucket lock, then the unlocker dequeues the
-+	 * futex_q from the hash bucket list to guarantee consistent state
-+	 * vs. userspace. Therefore the dequeue here must be conditional.
-+	 */
-+	if (!plist_node_empty(&q->list))
-+		__futex_unqueue(q);
- 
- 	BUG_ON(!q->pi_state);
- 	put_pi_state(q->pi_state);
-diff --git a/kernel/futex/pi.c b/kernel/futex/pi.c
-index 90e5197..5722467 100644
---- a/kernel/futex/pi.c
-+++ b/kernel/futex/pi.c
-@@ -1135,6 +1135,7 @@ retry:
- 
- 	hb = futex_hash(&key);
- 	spin_lock(&hb->lock);
-+retry_hb:
- 
- 	/*
- 	 * Check waiters first. We do not trust user space values at
-@@ -1177,12 +1178,17 @@ retry:
- 		/*
- 		 * Futex vs rt_mutex waiter state -- if there are no rt_mutex
- 		 * waiters even though futex thinks there are, then the waiter
--		 * is leaving and the uncontended path is safe to take.
-+		 * is leaving. The entry needs to be removed from the list so a
-+		 * new futex_lock_pi() is not using this stale PI-state while
-+		 * the futex is available in user space again.
-+		 * There can be more than one task on its way out so it needs
-+		 * to retry.
- 		 */
- 		rt_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
- 		if (!rt_waiter) {
-+			__futex_unqueue(top_waiter);
- 			raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
--			goto do_uncontended;
-+			goto retry_hb;
- 		}
- 
- 		get_pi_state(pi_state);
-@@ -1217,7 +1223,6 @@ retry:
- 		return ret;
- 	}
- 
--do_uncontended:
- 	/*
- 	 * We have no kernel internal state, i.e. no waiters in the
- 	 * kernel. Waiters which are about to queue themselves are stuck
 
