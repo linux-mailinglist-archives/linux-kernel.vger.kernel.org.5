@@ -1,122 +1,101 @@
-Return-Path: <linux-kernel+bounces-31240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D683F832AFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:10:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79B8C832B00
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:11:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 146DA1C2297A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:10:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A3A9B24553
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D762853803;
-	Fri, 19 Jan 2024 14:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6070E5380F;
+	Fri, 19 Jan 2024 14:10:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Uv7CHGWi"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="io8NRcOd"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F2054645
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9EF52F69;
+	Fri, 19 Jan 2024 14:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705673439; cv=none; b=jrDJTRaTDyV0qZCW97O0Av4XtErTe3d1Vcy3cAKLDGYrIBD8g0K7aQ39DzAo9iIabhfbwx3wLRAlXNruj/P7NSXi7boQD3HlNTXspE19AFO1vnkYer8EX83HPMIjK3NAJF1snZ2SVxRTAtUdIW7bIqixn1QJzIxSEHobdqWraO0=
+	t=1705673458; cv=none; b=WGNIcychNfGlgcoe6AWhJe7ssEb1sYkfHUfcu/UJzouCeZHSXD5JAjeYSKVR2G5PgnWQ/x6VrXT0qml8BpAVW6cUkLSyi7rEhZXXArXf09fJ5Lh+tqx86Zq+qQzDFP255luiJOX9Eq5IGc0R49uWKve95tflQZtfITL8SdCuST4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705673439; c=relaxed/simple;
-	bh=nHXK0M/RJcCyXcMUGL3CX69X6MS8uSHqxCI8rFn2VmM=;
+	s=arc-20240116; t=1705673458; c=relaxed/simple;
+	bh=tRPuu7OgdAqiiCc7MB+woDeEMfwHVnY6ViwXozFMqG0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I1+YmM+adLq0Fpa/7Ms4AxRkFQ/NkOaQ9AoijuSI4XlSnRnOngrReixO6RgDUHnNsA/dL64hGt+etsXSDTwn/U/659AX1nos1Zt4Ar8KsIk8XLHMTUXiUx8wpQqcrEGdp6S7vpRl1G24513glWspk7y07UWYmxADkFb1tQFMGxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Uv7CHGWi; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cd0f4f306fso8945131fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 06:10:36 -0800 (PST)
+	 To:Cc:Content-Type; b=nVd2Ygo8IJt0uAuD0HJZp+IhcZj4xJ3BZKGJ5zZYtO2FnTBSNjLRDQPpUha9Vyo/81OqbPSyW6I6V7aaMc9tD6Oo8hq6JP8PnUl2AWzGHtc/6R86F38YApbpWXTG2dLkxA3wWup0Liifm3wIvUTzonDp/oaVHBHBqUYaxEDFecw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=io8NRcOd; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dafe04717baso766456276.1;
+        Fri, 19 Jan 2024 06:10:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705673434; x=1706278234; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705673456; x=1706278256; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nHXK0M/RJcCyXcMUGL3CX69X6MS8uSHqxCI8rFn2VmM=;
-        b=Uv7CHGWicR/WsyJvp9agl3vC0H0xBXdFNhE6lyt0O+KoH8YZVLTiC+/XSzyDJev+EW
-         3OB68hC/p4ngm1T/pV7JFoHHGA9BZpnkr/KB+fFtqDf+w4BSAkQ78Vkf1o2EjjjN6cvk
-         MrUB9YJxWTEOLcJpQG8bvE2/M/+vROgbkJWSA=
+        bh=tRPuu7OgdAqiiCc7MB+woDeEMfwHVnY6ViwXozFMqG0=;
+        b=io8NRcOdXi5KoGwoa2YT7fAxJZBmZXeK/drjeJymAycLa7YFmkPj2XwL+RzahhV+6L
+         aGB0co4RwKAF6dAC2OGhyszFNTemo9D/IHZ3muF3EWyIUoShpnooZvjz5GyfU8Xzxjss
+         B0aWxGL1N3lG7v3hSQlf2jLbDS5/Wx0wpsNd5t1SylBdMWIxsulv9pyqThYYFp+019fT
+         aGOW0FGCVwlplrMiNgErjB98kgzKT+24KphLXpo7n9jyuLnG3b3lKWY1TKBhapSl7G5S
+         Dyo6odOAIvX87t783R++l0ZIjyk3aS8o9w//C4KWqtvvCozojSaC2ecn8+aspw1V2iZN
+         ixkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705673434; x=1706278234;
+        d=1e100.net; s=20230601; t=1705673456; x=1706278256;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nHXK0M/RJcCyXcMUGL3CX69X6MS8uSHqxCI8rFn2VmM=;
-        b=cVzdVki09AOEpEa6Fhn094eO86qx8SykWbb8pec8rHIvYtca6UnXfN+TSQ0/C2xQr/
-         cxb/3H23PkgboFTHidUGzCYUfhgnBytdZWstYuDfcIj1sWh7SoVukcAkCF38qYRDbrP/
-         Mxr7VglAlsOV36dsIdBSUkhfvhRo5n0h4ML2c89GbQ9fFdse0mIV+TRiU4p+DpwkXY6l
-         aq8hcRQSfW4QdJK1Y190MOVBrBeNSFhTTisJwSZqbQ0dEMMjeFpS9+OZ+Ogs1ocYclT7
-         A00ZiPuYefejmvMt5kowmUSCXypjdPnOnCTqZDg7dT8wxqogHff1+LY66rutAmdSd9jI
-         b6Fw==
-X-Gm-Message-State: AOJu0YxuhRNyCsnwBQ6JMjRsE+ZHjQ15Jh/v9d2K0RVt90jWvUygQQYP
-	7u0jYkrdAiLGe4+BWsal3n3zsThaonfPTP14OhW8DRFPJwLGP6IIdgrYfyuj/kInavoigVD6ViW
-	PeQWKtfgWC1wyUbz5JfMPPIsLGm3PDcs56deT
-X-Google-Smtp-Source: AGHT+IEFCjeV0kPn36vLidVc3VqzoEt8h6MuGqJE0fkj1ZsKwfkPt7HEFEvhTaN/u0H5BfClm2yPwTDCwB/jUKb8HV4=
-X-Received: by 2002:a2e:3506:0:b0:2cd:2ac6:9685 with SMTP id
- z6-20020a2e3506000000b002cd2ac69685mr1271557ljz.92.1705673434623; Fri, 19 Jan
- 2024 06:10:34 -0800 (PST)
+        bh=tRPuu7OgdAqiiCc7MB+woDeEMfwHVnY6ViwXozFMqG0=;
+        b=AGW3tQ7mXZN34NXEpFFBdSiApRgQjPwOSSpD4QlYA9lhaG+KcWoK5ixFKiaypEudRq
+         RwSgtidnRdSsURHpNpF6Qe90KxIZyNDd0RfzYB+F5DVd3WlBFe7i6etgJIE+s9yHkmX2
+         znTLAek4C9+PjlthwmerPSdzSgU2fXA7Nj0jKa/UZRCe5xJkEAMROWah5IY09Lg94F7u
+         nQV4BpZHY8d2ZpK+pPmVvX/qArdWTgpyoN2m9UU4Ua7/N8t2CP9J4jKYgrNZzd3sHxCQ
+         p2VI4OiXLg40jYRRJ51wcIw4+hl3V6McqZwRZ5zDm0gW5iimpMTjgPT8jpfny9QO/IiO
+         0/LA==
+X-Gm-Message-State: AOJu0YxboImAbfnVs0gp40XNv5eOMnuY4C63rLooxeiBzGffzWWui2iJ
+	STle9b01BSEfKDxF5wDKLZXkIjTpVsQOiI8A2aGY9C8FyDajdq6wm5aAgzJFzqRkUpwsyLLXswj
+	QHjd11qOsV4AnozFYbGcfhgwrP0Y=
+X-Google-Smtp-Source: AGHT+IG9CrOGmtruOqRrVWXa8Ob5+dEsScbKlLWeNtg9sGIc69623BaNprYguubebqRy+keV9ShuVjRAHf/IG7XJaF4=
+X-Received: by 2002:a5b:4f:0:b0:dbf:15a:c9e4 with SMTP id e15-20020a5b004f000000b00dbf015ac9e4mr2182677ybp.48.1705673456564;
+ Fri, 19 Jan 2024 06:10:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119084328.3135503-1-lma@chromium.org> <d2329494-2c57-41bb-a9ea-2c9903500d1e@roeck-us.net>
-In-Reply-To: <d2329494-2c57-41bb-a9ea-2c9903500d1e@roeck-us.net>
-From: =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@chromium.org>
-Date: Fri, 19 Jan 2024 15:10:23 +0100
-Message-ID: <CAE5UKNrU9YHoCQr8HLFf9-T4-NobQ4jWtryVqq9okFz8nVezgQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Introduce EC-based watchdog
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Gwendal Grignou <gwendal@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Radoslaw Biernacki <biernacki@google.com>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
-	Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>, 
-	Guenter Roeck <groeck@chromium.org>, Krzysztof Kozlowski <krzk@kernel.org>, linux-watchdog@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, chrome-platform@lists.linux.dev
+References: <20240119115104.75456-1-ioworker0@gmail.com> <Zaps_0jnspsheP92@tiehlicka>
+In-Reply-To: <Zaps_0jnspsheP92@tiehlicka>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Fri, 19 Jan 2024 22:10:43 +0800
+Message-ID: <CAK1f24moboTz3FVko-RdpLQhaZU5gqduqtA3sB9npqBb21xrrA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT flag to process_madvise()
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com, 
+	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
+	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org, 
+	linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 19, 2024 at 1:50=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
-wrote:
->
-> On 1/19/24 00:43, Lukasz Majczak wrote:
-> > Chromeos devices are equipped with the embedded controller (EC)
-> > that can be used as a watchdog. The following patches
-> > updates the structures and definitions required to
-> > communicate with EC-based watchdog and implements the
-> > driver itself.
-> >
-> > The previous version of this patch was sent here:
-> > https://patchwork.kernel.org/project/linux-watchdog/list/?series=3D8179=
-25
-> >
-> > Changelog
-> > V2->V3:
-> > * drop "-drv" from driver name
-> > * use format #define<space>NAME<tab>value
-> >
->
-> I am a bit lost here. You dropped my Reviewed-by: tags, even though
-> I specifically said that they applied with those changes made.
-> Also, according to the above patch 1/3 was not changed at all.
->
-> What else did you change that warrants dropping the tags ?
->
-> Guenter
->
-The "-drv" change was related to patch 2 and 3, and I have used
-"format #define<space>NAME<tab>value" only in patch 3 (as
-ec_commands.h is mixing those)
-Sorry for dropping your "Reviewed-by" tag :( I've assumed (wrong) that
-I cannot take it for granted sending V3.
-Alos in such a case if there are changes in patch 2 and 3 and 1
-remains untouched shall I send only 2 and 3 in the next version ?
+Sorry for that.
 
-Best regards,
-Lukasz
+BR,
+Lance
+
+On Fri, Jan 19, 2024 at 8:37=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> Please do not start a new version until all the outstanding points are
+> settled. This just fragments the discussion and makes it hard to follow
+> it.
+>
+> Thanks!
+> --
+> Michal Hocko
+> SUSE Labs
 
