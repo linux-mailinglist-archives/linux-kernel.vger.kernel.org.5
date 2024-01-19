@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-31518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC819832F6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:38:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98DC9832F70
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:38:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D3DDB2336C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:38:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 508D31F24862
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76865645F;
-	Fri, 19 Jan 2024 19:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B32256772;
+	Fri, 19 Jan 2024 19:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="TgnQeH2j"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Y7esV1ww"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07151E492;
-	Fri, 19 Jan 2024 19:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8C71E4A8;
+	Fri, 19 Jan 2024 19:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705693093; cv=none; b=fp5Q816idnUIY4GMEXTbiuOhmMh4DBLwmS/2Y0Gk0Bu92DL+4A/vZoLAi0cJ6FfyIgVp9wd4JtM7q3U7T6elp1GcBxhgN/YuV9Tm0H6EXjFQ6Eq2gNdXo18jJnKnf2i0PBH4Glb3AHNJx3iemQKvjFjcIc+My1gq2wiDvSIjioE=
+	t=1705693094; cv=none; b=aXFNFLQl/Em26Jl1MpRJtdqNEvofqeKDUBXNwej857ry2FKGA5GMiOMNph15BvQuyM9wdHJYT4hcqUYa1uCTbHRc0zWx6uHYBV8DSHVSpU7iEYydHiW3W6KhPN6Jgd98aCjtFI9VcbuQlx22vTdkZonyoAY+i5jAj5PNSZUdPX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705693093; c=relaxed/simple;
-	bh=sj/aqzYfZIDTUDNdCb7eHJppTugbxRlSalOblYODELs=;
+	s=arc-20240116; t=1705693094; c=relaxed/simple;
+	bh=UiKN/wzt2VTmVDCklnrDfyuyegL48RVt7U2udrBOTgo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vda8RbrUZtmNw6zybq58FJm2XSkvBDRp1ZPfFHo9/fUArki9jevvHnkQTqu5n+yAn7wXKVYLB5sk/58bQJNcdin3WJXxK419pt3j2vFc5j1+Pe8h+b6JmVH09IojVgHVzyyYrfRObRofe0c2NqP4KMulcVvyzoA1vw9ueJ56DQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=TgnQeH2j; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=SH1a5yE6Q3gHJKv6T5vXTY9pqS2aWeGLZDQepj+pvXKDKhJYXFtQU6CevRsfaaw49/GNvBpwY2AkaFEIbCiVAIzCmbzOu04E8A0+cgHyX0eXk6+nxr9YR0ncJp2si+EnDUgYjcrnnh/qLp1iUdFFSAGSWMtsE/6ISzS5XcQ80RU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Y7esV1ww; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705693090;
-	bh=sj/aqzYfZIDTUDNdCb7eHJppTugbxRlSalOblYODELs=;
+	s=mail; t=1705693091;
+	bh=UiKN/wzt2VTmVDCklnrDfyuyegL48RVt7U2udrBOTgo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TgnQeH2jS6UZs8ulzz0LUiqetDM2CLH2UuSiA+Jb/Yd1LRFJ9aHWhWlTVHENwKZmH
-	 T+1V4R/WDxV9tAbBliZsZ4SGcMbftX1DO8YkPgGAiJLCNFe2LUhIcEzklERHyyZFM1
-	 TyFiaAVLfMTVvauvreTo6XGs8Mnn14BTonm7eN6pSHVY2/eK5LDmsbiKHqnuh6p2HH
-	 kB3VgwccHAjkvuE3BjV701twB7HnZXB2W4gq4Tv7V18UZ38Lx51NHlfs9RPH5BqTSf
-	 GT5cBZOLRJP3M5PPwp+Ylnu2aF2vmtQvRP5+pZ9pRkTzX2Dpe5Wts5gbkZQ1MaUHKP
-	 VYK55PyWrASCQ==
+	b=Y7esV1ww9FoQwrw6eE23ZrECWdlVd6hxgSo5ucA047ZlPDkVwLqejHHeT/MkkALxx
+	 JeC6QdY5IIQg+2DfATdq0jZ7p9T4oaXCq8F6CAC6TD/zXAiYOmu6O+XJwWOeBgm5R+
+	 YnEj/qOUV79GykMJBV/2i2msA9yRplfM2Pszm3w1XyyF7w13Tk+3e+QtMdTyWX1RNb
+	 zPnM0Nk+hVC6q9VaRX7ZnYoNfSJf0kBgdVuyKfouAgbA9dRepyNCW2Ml0FMkfkXw5/
+	 oyUibKwmOWkxjJ5zlzYJM+uKvfbEMjdRY9nkFc6ufBNaC34OzFWNoRL8iwRwjLBAUy
+	 nRfGe8JwfyJww==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 053373782087;
-	Fri, 19 Jan 2024 19:38:09 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 205CF3782088;
+	Fri, 19 Jan 2024 19:38:11 +0000 (UTC)
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Kishon Vijay Abraham I <kishon@kernel.org>,
@@ -66,9 +66,9 @@ Cc: linux-phy@lists.infradead.org,
 	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com
-Subject: [PATCH 1/3] dt-bindings: soc: rockchip: Add rk3588 hdptxphy syscon
-Date: Fri, 19 Jan 2024 21:38:01 +0200
-Message-ID: <20240119193806.1030214-2-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 2/3] dt-bindings: phy: Add Rockchip HDMI/DP Combo PHY schema
+Date: Fri, 19 Jan 2024 21:38:02 +0200
+Message-ID: <20240119193806.1030214-3-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
 References: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
@@ -80,25 +80,117 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add compatible for the hdptxphy GRF used by rk3588-hdptx-phy.
+Add dt-binding schema for the Rockchip HDMI/DP Transmitter Combo PHY
+found on RK3588 SoC.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ .../phy/rockchip,rk3588-hdptx-phy.yaml        | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/rockchip,rk3588-hdptx-phy.yaml
 
-diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-index 9793ea6f0fe6..61bfe678dc7f 100644
---- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-+++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-@@ -22,6 +22,7 @@ properties:
-               - rockchip,rk3568-usb2phy-grf
-               - rockchip,rk3588-bigcore0-grf
-               - rockchip,rk3588-bigcore1-grf
-+              - rockchip,rk3588-hdptxphy-grf
-               - rockchip,rk3588-ioc
-               - rockchip,rk3588-php-grf
-               - rockchip,rk3588-pipe-phy-grf
+diff --git a/Documentation/devicetree/bindings/phy/rockchip,rk3588-hdptx-phy.yaml b/Documentation/devicetree/bindings/phy/rockchip,rk3588-hdptx-phy.yaml
+new file mode 100644
+index 000000000000..dd357994ba1b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/rockchip,rk3588-hdptx-phy.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/phy/rockchip,rk3588-hdptx-phy.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip SoC HDMI/DP Transmitter Combo PHY
++
++maintainers:
++  - Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
++
++properties:
++  compatible:
++    enum:
++      - rockchip,rk3588-hdptx-phy
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Reference clock
++      - description: APB clock
++
++  clock-names:
++    items:
++      - const: ref
++      - const: apb
++
++  "#phy-cells":
++    const: 0
++
++  resets:
++    items:
++      - description: PHY reset line
++      - description: APB reset line
++      - description: INIT reset line
++      - description: CMN reset line
++      - description: LANE reset line
++      - description: ROPLL reset line
++      - description: LCPLL reset line
++
++  reset-names:
++    items:
++      - const: phy
++      - const: apb
++      - const: init
++      - const: cmn
++      - const: lane
++      - const: ropll
++      - const: lcpll
++
++  rockchip,grf:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: Some PHY related data is accessed through GRF regs.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - "#phy-cells"
++  - resets
++  - reset-names
++  - rockchip,grf
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/rockchip,rk3588-cru.h>
++    #include <dt-bindings/reset/rockchip,rk3588-cru.h>
++
++    soc {
++      #address-cells = <2>;
++      #size-cells = <2>;
++
++      hdptxphy_grf: syscon@fd5e0000 {
++        compatible = "rockchip,rk3588-hdptxphy-grf", "syscon";
++        reg = <0x0 0xfd5e0000 0x0 0x100>;
++      };
++
++      hdptxphy: phy@fed60000 {
++        compatible = "rockchip,rk3588-hdptx-phy";
++        reg = <0x0 0xfed60000 0x0 0x2000>;
++        clocks = <&cru CLK_USB2PHY_HDPTXRXPHY_REF>, <&cru PCLK_HDPTX0>;
++        clock-names = "ref", "apb";
++        #phy-cells = <0>;
++        resets = <&cru SRST_HDPTX0>, <&cru SRST_P_HDPTX0>,
++                 <&cru SRST_HDPTX0_INIT>, <&cru SRST_HDPTX0_CMN>,
++                 <&cru SRST_HDPTX0_LANE>, <&cru SRST_HDPTX0_ROPLL>,
++                 <&cru SRST_HDPTX0_LCPLL>;
++        reset-names = "phy", "apb", "init", "cmn", "lane", "ropll", "lcpll";
++        rockchip,grf = <&hdptxphy_grf>;
++      };
++    };
 -- 
 2.43.0
 
