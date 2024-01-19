@@ -1,164 +1,200 @@
-Return-Path: <linux-kernel+bounces-30701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7958832339
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 03:03:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D648F83233B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 03:05:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE1CEB21DBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:03:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A85C7B21E02
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47EDB4A12;
-	Fri, 19 Jan 2024 02:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HWr+2YqC"
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D37216FD9;
+	Fri, 19 Jan 2024 02:05:28 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4BF4A04
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3686FA9
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 02:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705629799; cv=none; b=SFTzys/fMTlH4I5JKc5GPdgffC/pwwAT+XtnpWZVdJqgcZOc7WLupIGnB6QtigCrrdL6VwQmUVrWYsmLnwApDEBktidvqNivjYg5j18KHo+xii5qmlLrRskG0dNGejCLUUy71c950hnVmPpHQas/fV/vTUAZiPYy7rOUGlllKrI=
+	t=1705629928; cv=none; b=ICuX7m2zW00gy56cm5bS58wmvDw61FmhaGHS3j848H+gffMXE3/xKDy0ryePm7oTumlI4lfPvc+/OQlBIOzM0I8ij/OnnvwNqQ++/dzg4pZHPkaX9rvaRC6Oq1rEsrkFmIvwN+BAJi654XyntrcgvHGIrprTe1KMT+il8kIU/6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705629799; c=relaxed/simple;
-	bh=qRcgxHMJ8VpBBVLzbYNZYouTGZecFbrpSJHdtv6EjmE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mz34eelUzLNIjUnYmK4u4Oyho8ueKtH8Uw4rKjCEe3DxHpmGxyzmxv0vb+bO5J3cKJRo3RNckmVp+Vc/9p9JdaJ68lv+zS59L4qSHIdQehQQANgbtf8BiwpEjFGLF9M+SUPqPn+bAZvjDwKi742oKG27AVj5LLTDzBIqnhqQJg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HWr+2YqC; arc=none smtp.client-ip=209.85.167.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bd932a0cafso203277b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 18:03:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705629797; x=1706234597; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qRcgxHMJ8VpBBVLzbYNZYouTGZecFbrpSJHdtv6EjmE=;
-        b=HWr+2YqClNxLolSyYCxb6CoB2HFjlh4MAV2uLh9UERvM7J8RgYKDfL5OZcwwcQav5y
-         qhXsd34JT3naXqG2s/elDiTm9S9wzPOQDsgniSqHtK5tWp9DoeuKp7NUVsmpGBXVOxOd
-         EIJMVtwzvcVSXpuz3yBRzGmrlLH97LIQ4vBoYldZff8THUd4twDoDLoUQvRxFexnuTrR
-         Z1yCPE51VhFK4ubZFNA4hdcxF9JXXGSBARJqbKvXkAhbFNwhDqa8fJ5L7E0KDIl6XW66
-         1vhn0VHPJ4xnRgmMZqgHdEx7sxO1U5DZNv2To2uo87vT8vm4Wp20//7zqGP8EbXNjEJz
-         UBFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705629797; x=1706234597;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qRcgxHMJ8VpBBVLzbYNZYouTGZecFbrpSJHdtv6EjmE=;
-        b=iI1vHgcErUJmn4prdsrEwYK16mNJ09OSWOvgd1d+xsaSNZCe8A2mgSR6U/jUNjZ0WG
-         ZGDzsxlNgr9WJU3TmAmfKluwPWKYSUHSasUVb2SAuLvkhLsYoePg3Kq6xmiO0hafe2wu
-         h4bgSBo3Pnhfi9FMCyshoDQRi7yIHAwP0D11HUp47s6G7ErcoJvvzDfEFd8Oiwg7w7St
-         BDhZrtclrPayHUauw8+KhfKccI6iyXR7kbVjg4M01yjoQcjaDaUo3ubjmXQ2RuQpBYLP
-         WNc09g91HuwuNi27J8pFvQX66sKZdPYKUkIb/0KrahPS5Z8YzleoXuJnwudrnvMjZMZR
-         PauQ==
-X-Gm-Message-State: AOJu0YzI1A23YvoXA9beI9nGmDaQsSYy7AeA9h/QW7RXTm+fTyscZy7p
-	JCTAy4laGJ5CzXBzPFhGEDBeqQhdvdpp0Av6T/KYihQknsle622zg/96M+oCBRR5zxv5S1KBwkf
-	yX3mW95/AyhgfZuFVZ/Dns4ge3MU=
-X-Google-Smtp-Source: AGHT+IHPRBtEkk0NJMOxUEU6XNvrEYnIieqra4NJuy8hIaLQ51bR4M0BaIjDY5tR8XSjcfiSsqyo/Xt6XOjLNHychL4=
-X-Received: by 2002:a05:6808:2017:b0:3bd:9ff7:428b with SMTP id
- q23-20020a056808201700b003bd9ff7428bmr1244888oiw.51.1705629797154; Thu, 18
- Jan 2024 18:03:17 -0800 (PST)
+	s=arc-20240116; t=1705629928; c=relaxed/simple;
+	bh=rXRStnnMh2Ym0UlNgR9pnyxCPDBNk+CGDr1uCMvUlDg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NvrNBKrCNaohc/3s9y73ETqHT3YWyA9+n713JccwENI1IPlUHhbQRS8y0193qyn8bh6jM5SdR/D/jWBzvJy3sA0X7RqTIGFvtKkMwG21kwDxLgyUdUBInDTIlqC+hOvpKA+EH9e2ZlsjRDrPzl8mQ9VwCIcPDOrROK6ITqFthIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TGNGP43ZBzNlLp;
+	Fri, 19 Jan 2024 10:04:29 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id A1C6A180076;
+	Fri, 19 Jan 2024 10:05:16 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 19 Jan 2024 10:05:16 +0800
+Message-ID: <c7b1cc8e-c434-4c86-972e-4a105524646c@huawei.com>
+Date: Fri, 19 Jan 2024 10:05:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118120347.61817-1-ioworker0@gmail.com> <ZakqQyL9t2ffNUIf@tiehlicka>
-In-Reply-To: <ZakqQyL9t2ffNUIf@tiehlicka>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Fri, 19 Jan 2024 10:03:05 +0800
-Message-ID: <CAK1f24k+=Sskotbct+yGxpDKNv=qyXPkww5i2kaqfzwaUVO_GQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT to process_madvise()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm: memory: move mem_cgroup_charge() into
+ alloc_anon_folio()
+Content-Language: en-US
 To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com, 
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
-	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+CC: Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <ryan.roberts@arm.com>, Matthew Wilcox
+	<willy@infradead.org>, David Hildenbrand <david@redhat.com>
+References: <20240117103954.2756050-1-wangkefeng.wang@huawei.com>
+ <ZalK3suIskEyaR7m@tiehlicka>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <ZalK3suIskEyaR7m@tiehlicka>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 
-Hey Michal,
 
-Thanks for taking the time to review!
 
-On Thu, Jan 18, 2024 at 9:40=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Thu 18-01-24 20:03:46, Lance Yang wrote:
-> [...]
->
-> before we discuss the semantic, let's focus on the usecase.
->
-> > Use Cases
-> >
-> > An immediate user of this new functionality is the Go runtime heap allo=
-cator
-> > that manages memory in hugepage-sized chunks. In the past, whether it w=
-as a
-> > newly allocated chunk through mmap() or a reused chunk released by
-> > madvise(MADV_DONTNEED), the allocator attempted to eagerly back memory =
-with
-> > huge pages using madvise(MADV_HUGEPAGE)[2] and madvise(MADV_COLLAPSE)[3=
-]
-> > respectively. However, both approaches resulted in performance issues; =
-for
-> > both scenarios, there could be entries into direct reclaim and/or compa=
-ction,
-> > leading to unpredictable stalls[4]. Now, the allocator can confidently =
-use
-> > process_madvise(MADV_F_COLLAPSE_LIGHT) to attempt the allocation of hug=
-e pages.
->
-> IIUC the primary reason is the cost of the huge page allocation which
-> can be really high if the memory is heavily fragmented and it is called
-> synchronously from the process directly, correct? Can that be worked
+On 2024/1/18 23:59, Michal Hocko wrote:
+> On Wed 17-01-24 18:39:54, Kefeng Wang wrote:
+>> mem_cgroup_charge() uses the GFP flags in a fairly sophisticated way.
+>> In addition to checking gfpflags_allow_blocking(), it pays attention
+>> to __GFP_NORETRY and __GFP_RETRY_MAYFAIL to ensure that processes within
+>> this memcg do not exceed their quotas. Using the same GFP flags ensures
+>> that we handle large anonymous folios correctly, including falling back
+>> to smaller orders when there is plenty of memory available in the system
+>> but this memcg is close to its limits.
+> 
+> The changelog is not really clear in the actual problem you are trying
+> to fix. Is this pure consistency fix or have you actually seen any
+> misbehavior. From the patch I suspect you are interested in THPs much
+> more than regular order-0 pages because those are GFP_KERNEL like when
+> it comes to charging. THPs have a variety of options on how aggressive
+> the allocation should try. From that perspective NORETRY and
+> RETRY_MAYFAIL are not all that interesting because costly allocations
+> (which THPs are) already do imply MAYFAIL and NORETRY.
 
-Yes, that's correct.
+I don't meet actual issue, it founds from code inspection.
 
-> around by process_madvise and performing the operation from a different
-> context? Are there any other reasons to have a different mode?
+mTHP is introduced by Ryan（19eaf44954df "mm: thp: support allocation of
+anonymous multi-size THP")，so we have similar check for mTHP like PMD 
+THP in alloc_anon_folio(), it will try to allocate large order folio 
+below PMD_ORDER, and fallback to order-0 folio if fails, meanwhile,
+it get GFP flags from vma_thp_gfp_mask() according to user configuration
+like PMD THP allocation, so
 
-In latency-sensitive scenarios, some applications aim to enhance performanc=
-e
-by utilizing huge pages as much as possible. At the same time, in case of
-allocation failure, they prefer a quick return without triggering direct me=
-mory
-reclamation and compaction.
+1) the memory charge failure check should be moved into fallback
+logical, because it will make us to allocated as much as possible large
+order folio, although the memcg's memory usage is close to its limits.
 
->
-> I mean I can think of a more relaxed (opportunistic) MADV_COLLAPSE -
-> e.g. non blocking one to make sure that the caller doesn't really block
-> on resource contention (be it locks or memory availability) because that
-> matches our non-blocking interface in other areas but having a LIGHT
-> operation sounds really vague and the exact semantic would be
-> implementation specific and might change over time. Non-blocking has a
-> clear semantic but it is not really clear whether that is what you
-> really need/want.
+2) using seem GFP flags for allocate/mem charge, be consistent with PMD
+THP firstly, in addition, according to GFP flag returned for 
+vma_thp_gfp_mask(), GFP_TRANSHUGE_LIGHT could make us skip direct 
+reclaim, _GFP_NORETRY will make us skip mem_cgroup_oom and won't kill
+any progress from large order folio charging.
 
-Could you provide me with some suggestions regarding the naming of a
-more relaxed (opportunistic) MADV_COLLAPSE?
+> 
+> GFP_TRANSHUGE_LIGHT is more interesting though because those do not dive
+> into the direct reclaim at all. With the current code they will reclaim
+> charges to free up the space for the allocated THP page and that defeats
+> the light mode. I have a vague recollection of preparing a patch to
 
-Thanks again for your review and your suggestion!
-Lance
+We are interesting to GFP_TRANSHUGE_LIGHT and _GFP_NORETRY as mentioned
+above.
 
->
-> > [1] https://github.com/torvalds/linux/commit/7d8faaf155454f8798ec56404f=
-aca29a82689c77
-> > [2] https://github.com/golang/go/commit/8fa9e3beee8b0e6baa7333740996181=
-268b60a3a
-> > [3] https://github.com/golang/go/commit/9f9bb26880388c5bead158e9eca3be4=
-b3a9bd2af
-> > [4] https://github.com/golang/go/issues/63334
-> >
-> > [v1] https://lore.kernel.org/lkml/20240117050217.43610-1-ioworker0@gmai=
-l.com/
-> --
-> Michal Hocko
-> SUSE Labs
+> address that in the past. Let me have a look at the current code...
+
+Yes, commit 3b3636924dfe ("mm, memcg: sync allocation and memcg charge 
+gfp flags for THP") for PMD THP from you :)
+> 
+> ... So yes, we still do THP charging the way I remember
+> (do_huge_pmd_anonymous_page). Your patch touches handle_pte_fault ->
+> do_anonymous_page path which is not THP AFAICS. Or am I missing
+> something?
+
+mTHP is one kind of THP.
+
+Thanks.
+
+>   
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>> ---
+>> v2:
+>> - fix built when !CONFIG_TRANSPARENT_HUGEPAGE
+>> - update changelog suggested by Matthew Wilcox
+>>
+>>   mm/memory.c | 16 ++++++++--------
+>>   1 file changed, 8 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 5e88d5379127..551f0b21bc42 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -4153,8 +4153,8 @@ static bool pte_range_none(pte_t *pte, int nr_pages)
+>>   
+>>   static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>>   {
+>> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>>   	struct vm_area_struct *vma = vmf->vma;
+>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>>   	unsigned long orders;
+>>   	struct folio *folio;
+>>   	unsigned long addr;
+>> @@ -4206,15 +4206,21 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>>   		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+>>   		folio = vma_alloc_folio(gfp, order, vma, addr, true);
+>>   		if (folio) {
+>> +			if (mem_cgroup_charge(folio, vma->vm_mm, gfp)) {
+>> +				folio_put(folio);
+>> +				goto next;
+>> +			}
+>> +			folio_throttle_swaprate(folio, gfp);
+>>   			clear_huge_page(&folio->page, vmf->address, 1 << order);
+>>   			return folio;
+>>   		}
+>> +next:
+>>   		order = next_order(&orders, order);
+>>   	}
+>>   
+>>   fallback:
+>>   #endif
+>> -	return vma_alloc_zeroed_movable_folio(vmf->vma, vmf->address);
+>> +	return folio_prealloc(vma->vm_mm, vma, vmf->address, true);
+>>   }
+>>   
+>>   /*
+>> @@ -4281,10 +4287,6 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>>   	nr_pages = folio_nr_pages(folio);
+>>   	addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
+>>   
+>> -	if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
+>> -		goto oom_free_page;
+>> -	folio_throttle_swaprate(folio, GFP_KERNEL);
+>> -
+>>   	/*
+>>   	 * The memory barrier inside __folio_mark_uptodate makes sure that
+>>   	 * preceding stores to the page contents become visible before
+>> @@ -4338,8 +4340,6 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>>   release:
+>>   	folio_put(folio);
+>>   	goto unlock;
+>> -oom_free_page:
+>> -	folio_put(folio);
+>>   oom:
+>>   	return VM_FAULT_OOM;
+>>   }
+>> -- 
+>> 2.27.0
+>>
+> 
 
