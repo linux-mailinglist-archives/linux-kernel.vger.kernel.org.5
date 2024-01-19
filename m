@@ -1,155 +1,165 @@
-Return-Path: <linux-kernel+bounces-30753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 117338323F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 04:59:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD3358323F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:00:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B555F28633A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 03:59:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3060E1F2291A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 04:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB572112;
-	Fri, 19 Jan 2024 03:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D44FA3C32;
+	Fri, 19 Jan 2024 03:59:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="RO99e9Xo"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZQ5uodvV"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3B38F48;
-	Fri, 19 Jan 2024 03:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A571C184E
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 03:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705636770; cv=none; b=LgnsZ7zcwKSlWmIVyXWFCUb+1X7c68Q32KdyhDTEc3tVN6g/mO1sMnz5i0bM0ZDlsQmx7VpWyflWwN1qzFkjEDnDpNaLXUufSZE0NTkW7R8xxqe9jtfpKgkq0p2pAVoBm1b0rk3aUQ3k7yVd/IyeUOQwNr3wVmsF0SXN1g5Nr/0=
+	t=1705636798; cv=none; b=Mr20pU1eeCtC+HhUvKsJCdJeVsS+G46hQKwodWbXAVpO2RkkluYpsenjg7bUz+PgUvlQ3zVd3PU0Pp7b2QizxGZPoy/CaIvWTYkeMaAI+1Z3Q//KDtRssHBaBi2vXSLY2EATGUeV5ES05KvvqgrrwY9WIz73vxkliCJwzQlm6mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705636770; c=relaxed/simple;
-	bh=erj5klnlnF8zBpQAMLBV9/ypyQNvxGJzuVGpigf1qvQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NewkTP8HnhJPFXDAVnJ1G2YKfRPMmvBLEKcSkdMJt5tJPdYv6fFV4xsOeyrMq+3LU9J/x1NjeNrqjFf0Hikxv/y4DZhhWyTVCf7q6xL32DWFW1WosG7ViQD27UxhEJVybkdyYzZtm3Oz+lrCt/i5P9cvJ64y2QdN2TDjoXO4VQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=RO99e9Xo; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40J1lcBO023246;
-	Thu, 18 Jan 2024 19:59:19 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=tL//60B5
-	oP2gQd2LSZPPIPCOhrs6XqbosD7E/EYlW+s=; b=RO99e9XobIbZ81stFI0tit++
-	QiZI5UxDvhNYXPlA3w3+M/2Mxl/93iurTY47vczOZp3dLMvCME4GlaKR+9aLoifs
-	W+w2nzhMtTOvDpp0osk/d8MTe2VYK2umnUOg2pwlQWX1nkACmBa6AE6Sk/3ugVLx
-	rBg5ImRKSOTES1nSU0dpFkmEX6JyxJ6lGWbhbYeLnaXZbA/iGyQr1BSmJeyIlemx
-	IvEQhUxyhEFghntSsWLive8U4o+PyiqcCr9YRFfF8Fe6CnmhTgZB6beHBc+rolZs
-	v1Rs+55EIjiIVxXOZ2pVTjsm/rW8sagVwVrMI0ulwYKlandrKetE8W6WD8PlVw==
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vpvex4yvf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Thu, 18 Jan 2024 19:59:19 -0800 (PST)
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 18 Jan
- 2024 19:59:17 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Thu, 18 Jan 2024 19:59:17 -0800
-Received: from localhost.localdomain (unknown [10.111.135.16])
-	by maili.marvell.com (Postfix) with ESMTP id 4D5E23F708C;
-	Thu, 18 Jan 2024 19:59:17 -0800 (PST)
-From: Jenishkumar Maheshbhai Patel <jpatel2@marvell.com>
-To: <marcin.s.wojtas@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: Jenishkumar Maheshbhai Patel <jpatel2@marvell.com>
-Subject: [net v4 PATCH 1/1] net: mvpp2: clear BM pool before initialization
-Date: Thu, 18 Jan 2024 19:59:14 -0800
-Message-ID: <20240119035914.2595665-1-jpatel2@marvell.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1705636798; c=relaxed/simple;
+	bh=5e9g7q6Oan2+OiKIu9+bnga3V9sAcKCrfBAEZwF7lOw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m4akZsRnHUt8aV3Z87XR/CNUYA6oidKIIIHOZPSh0WgvYhe658oQzrbwYIHJpahJN+FyTzddMOQJROPi3VwyjS+53PlMma99n79xUrMUzuQ5Ft/Q224w3KmO7pylYz49KfC0P4cknwOgAsyRTLGLn7WeIN5UQDvpMhfnl8gBH+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZQ5uodvV; arc=none smtp.client-ip=209.85.217.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4672008b2c7so888863137.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 19:59:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705636795; x=1706241595; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TRMPaZA6cVxoYnie+2qHsbMZkkAgDRtDwgtb7B7rVgk=;
+        b=ZQ5uodvVt4G9lZ/jCkSZwICaxSTquaenmKnwuNWl7WZTZOUVyz21nDgWGme/RRfBb6
+         QOjR3IrO1GSeSqJgLf5kmQ2b5Y4OjXEUDeXe34nU+h7/j6v8jQUn/PmSyTQ2b4u8QyVG
+         /0DEFjeD/YXQEtOqhT47GoRRJAynx1v/8BGqfGewfd0iWCGh8m/y4z8kq3CYwGFSZTfU
+         fVF5ukUpihRFsxn1cYOSoRGeV0y39fXfXRy1C7FWChMcxS0o8kMhnnQcyt21T94GTyTA
+         FIhDtsCtKUa6907h3xGrmI1CLrjd7ECCBYB1THzA5OyUGS3c7I4NvyFTpg3pQsqI8z1+
+         HGxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705636795; x=1706241595;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TRMPaZA6cVxoYnie+2qHsbMZkkAgDRtDwgtb7B7rVgk=;
+        b=ICfPF8xzFvY/VJ1pXLemRVEYL0J9DoPeD0o/T2Fsqm7BdDtanprfJqQ1NKsUHQyhE2
+         aTTx5i7Q930P/VAIx5No8s/T2LH5HvIBH5SXWJUY2Bv1hDxwW/I/daoiGjt5qQObF1o2
+         OUUz4fuzV/QCVY3YZPjrJDBowiWCiPWh/0xyxteHndGxKdTLXd0FugoC6X+nIcZ71f6v
+         9jIvxyiPgQzj8WbrWVlOTlzxkvsTac+Yiu6HAF4WHENo4NeA9tnpD9tCxKTHB6Yn76gE
+         aWt3GCPL3fc1YI6F0XAQhIUmEvyrA7FLvqDjN98EoCZmazJX2eGw/BRn0fSvuyGzJnGh
+         3vMw==
+X-Gm-Message-State: AOJu0YxTOVvbVCH8cq5majNOknRBOZpx9iwzUzBB2vZqL34J1LHAC3uV
+	JQiKGwC8h0RJpSp0+WG/E+HcpzG5dHaAgPbRLEqhMuQkp0CXvwytvPCrwMtZ4WJbFagicawToSD
+	+GMUHaGsDCFsTK+S0hoTHYTDCoJSDMD2GhxKeFw==
+X-Google-Smtp-Source: AGHT+IGCG1fEx3hI5i+08dvBfYjHvAtAHA4tYqk2WlJ5JI20qJWhK4NM0fjnnykc6i/Fv8eTnpJMKke4sNcnSNQ/Sn4=
+X-Received: by 2002:a05:6102:3713:b0:469:93ac:6dd4 with SMTP id
+ s19-20020a056102371300b0046993ac6dd4mr267534vst.21.1705636795545; Thu, 18 Jan
+ 2024 19:59:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: n_DiqHUIo33uo9j_Dl5wT7e3FDwMUYd_
-X-Proofpoint-GUID: n_DiqHUIo33uo9j_Dl5wT7e3FDwMUYd_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-18_12,2024-01-17_01,2023-05-22_02
+References: <20240118104320.029537060@linuxfoundation.org> <ab9bef24-a07b-4930-b09a-b3c0f4e04789@gmail.com>
+In-Reply-To: <ab9bef24-a07b-4930-b09a-b3c0f4e04789@gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 19 Jan 2024 09:29:44 +0530
+Message-ID: <CA+G9fYt3TKtjxV6=CQTwe5mDuYP7JYyFpkUb05StTEx7E4Mk3Q@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/150] 6.6.13-rc1 review
+To: Stefan Wiehler <stefan.wiehler@nokia.com>, Florian Fainelli <f.fainelli@gmail.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, 
+	rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-Register value persist after booting the kernel using
-kexec which results in kernel panic. Thus clear the
-BM pool registers before initialisation to fix the issue.
+On Fri, 19 Jan 2024 at 00:52, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> On 1/18/24 02:47, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 6.6.13 release.
+> > There are 150 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sat, 20 Jan 2024 10:42:49 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >       https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.13-rc1.gz
+> > or in the git tree and branch at:
+> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+> Same as with 6.1:
+>
+> ARM and ARM64 builds worked fine and passed tests, however BMIPS_GENERIC
+> fails to build with:
 
-Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
-Signed-off-by: Jenishkumar Maheshbhai Patel <jpatel2@marvell.com>
----
-v1-v2:
--Move comments outside the loop
--remove unrequired brances.
-v2-v3:
--improve readability
--correct register read API
-v3-v4:
--optimize the code
--improve readability
+Following MIPS builds failed on 6.6.y and 6.1.y
+but passed 6.7.y and Linux-next and mainline builds.
 
- .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 27 ++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+mips:
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 820b1fabe297..23adf53c2aa1 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -614,12 +614,38 @@ static void mvpp23_bm_set_8pool_mode(struct mvpp2 *priv)
- 	mvpp2_write(priv, MVPP22_BM_POOL_BASE_ADDR_HIGH_REG, val);
- }
- 
-+/* Cleanup pool before actual initialization in the OS */
-+static void mvpp2_bm_pool_cleanup(struct mvpp2 *priv, int pool_id)
-+{
-+	unsigned int thread = mvpp2_cpu_to_thread(priv, get_cpu());
-+	u32 val;
-+	int i;
-+
-+	/* Drain the BM from all possible residues left by firmware */
-+	for (i = 0; i < MVPP2_BM_POOL_SIZE_MAX; i++)
-+		mvpp2_thread_read(priv, thread, MVPP2_BM_PHY_ALLOC_REG(pool_id));
-+
-+	put_cpu();
-+
-+	/* Stop the BM pool */
-+	val = mvpp2_read(priv, MVPP2_BM_POOL_CTRL_REG(pool_id));
-+	val |= MVPP2_BM_STOP_MASK;
-+	mvpp2_write(priv, MVPP2_BM_POOL_CTRL_REG(pool_id), val);
-+}
-+
- static int mvpp2_bm_init(struct device *dev, struct mvpp2 *priv)
- {
- 	enum dma_data_direction dma_dir = DMA_FROM_DEVICE;
- 	int i, err, poolnum = MVPP2_BM_POOLS_NUM;
- 	struct mvpp2_port *port;
- 
-+	if (priv->percpu_pools)
-+		poolnum = mvpp2_get_nrxqs(priv) * 2;
-+
-+	/* Clean up the pool state in case it contains stale state */
-+	for (i = 0; i < poolnum; i++)
-+		mvpp2_bm_pool_cleanup(priv, i);
-+
- 	if (priv->percpu_pools) {
- 		for (i = 0; i < priv->port_count; i++) {
- 			port = priv->port_list[i];
-@@ -629,7 +655,6 @@ static int mvpp2_bm_init(struct device *dev, struct mvpp2 *priv)
- 			}
- 		}
- 
--		poolnum = mvpp2_get_nrxqs(priv) * 2;
- 		for (i = 0; i < poolnum; i++) {
- 			/* the pool in use */
- 			int pn = i / (poolnum / 2);
--- 
-2.25.1
+  * build/clang-17-defconfig
+  * build/clang-nightly-defconfig
+  * build/gcc-12-allmodconfig
+  * build/gcc-12-cavium_octeon_defconfig
+  * build/gcc-12-defconfig
+  * build/gcc-12-malta_defconfig
+  * build/gcc-8-allmodconfig
+  * build/gcc-8-cavium_octeon_defconfig
+  * build/gcc-8-defconfig
+  * build/gcc-8-malta_defconfig
 
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+>
+> arch/mips/kernel/smp.c: In function 'start_secondary':
+> arch/mips/kernel/smp.c:340:2: error: implicit declaration of function
+> 'rcutree_report_cpu_starting'; did you mean 'rcu_cpu_starting'?
+> [-Werror=implicit-function-declaration]
+>    rcutree_report_cpu_starting(cpu);
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    rcu_cpu_starting
+> cc1: all warnings being treated as errors
+> host-make[5]: *** [scripts/Makefile.build:250: arch/mips/kernel/smp.o]
+> Error 1
+> host-make[4]: *** [scripts/Makefile.build:500: arch/mips/kernel] Error 2
+> host-make[3]: *** [scripts/Makefile.build:500: arch/mips] Error 2
+> host-make[3]: *** Waiting for unfinished jobs....
+
+same here.
+
+> which is caused by 1fa03a4622bb26a31279a453aa251154f11e6c70 ("mips/smp:
+> Call rcutree_report_cpu_starting() earlier").
+>
+> It looks like rcutree_report_cpu_starting() has been introduced
+> 448e9f34d91d1a4799fdb06a93c2c24b34b6fd9d ("rcu: Standardize explicit
+> CPU-hotplug calls") which is in v6.7.
+>
+> For MIPS, it would like an adequate fix would be to
+> 's/rcutree_report_cpu_starting/rcu_cpu_starting/' for the 6.1 and 6.6
+> branches.
+> --
+> Florian
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
