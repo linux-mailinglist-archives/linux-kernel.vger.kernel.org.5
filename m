@@ -1,111 +1,154 @@
-Return-Path: <linux-kernel+bounces-31264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6C02832B65
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDB42832B62
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:34:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56D33B2255D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:36:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F472B217BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B949F53E20;
-	Fri, 19 Jan 2024 14:36:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCDC53810;
+	Fri, 19 Jan 2024 14:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MOJbhvWu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="iC3gOgtT"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020E736AE0;
-	Fri, 19 Jan 2024 14:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE8C9524C8;
+	Fri, 19 Jan 2024 14:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705674966; cv=none; b=ehz5+1fW7FRoxhXLjBIK2tErBEnuXFOE0CrpIqvGske1EUHY+fdjMFgCACVIs/6dk3yoU/vSVJurasJggOHFMkbBwqkzn6QAYzewq+KEnKOUXH6LMb3opjXxl4Gm5gfBnp28EST+jpInUNTtWM0acgH/mduF+RLPUw2clOj/r2U=
+	t=1705674843; cv=none; b=dEMWmvj6kiBd7NJQoxG0TYJ+JvIVgyO9vyTwXbPoesezekppb6ZDi5cIj1c/2Vu7Ch7sXbswqJArXxb7w1wWkdz9WKQV5FPupz2DqupbX9UCPy1BwlA7mf6GP57coMcYXQte7s6Q+TG8XNH3q+ZWLJjuVlckOpOSUmEoBO2Sny0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705674966; c=relaxed/simple;
-	bh=HuF2gjruI61tSBMxn8SeRxIPR2u9R5zRnNfHuaZ41JI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kGH2z2Olejm0wFwIqsdOIM71QaaG8f/VNObuKeKDHwLBbRiXF9EnF3JQa/Z218lVt3xOOYZzcYPnEZq4yx1Lem4QbHgyAULLVvPw71XKH2FYoz8kS9vJql9cBzBMhuJwRLWJd5tc/FCsibWViYTv4qwSYznqgJ2IkP2Z+wBUwG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MOJbhvWu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC27CC433F1;
-	Fri, 19 Jan 2024 14:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705674965;
-	bh=HuF2gjruI61tSBMxn8SeRxIPR2u9R5zRnNfHuaZ41JI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MOJbhvWueT1hIFiC4nYcb4itt235fxN63XtfNTTC4lbN2GjRSAKzT/BLina1tmPks
-	 sIJSNpgU4P4gYqY0/sObsoIK2Lt/Z9c9bQcOUJfzbzsm7s1QwRTFvqw/NwunN4fA0p
-	 zSJ7O/+ArAqaJT5oSn2uwrJjTZbJwASzePzxR+wcBOXLjD9D0tA8N3ww+bTBjdMrnX
-	 laKnpMQrKvF14kTj4mccdsAIamqlBnuR1PhsVQ2YAKB1uXQKCk5unaLZp5iDMKUKSD
-	 q08gw3YCM6E2Qp3ULGf+CstDvAX5loFOnl8RXngd/rKjPaxvZCySBbjQnlzJK2lAaa
-	 fowBaLsTtJTJw==
-From: Christian Brauner <brauner@kernel.org>
-To: Rich Felker <dalias@libc.org>,
-	Jens Axboe <axboe@kernel.dk>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	kernel list <linux-kernel@vger.kernel.org>,
-	Linux API <linux-api@vger.kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2] vfs: add RWF_NOAPPEND flag for pwritev2
-Date: Fri, 19 Jan 2024 15:33:32 +0100
-Message-ID: <20240119-neuverfilmung-aufregend-54a5bd5929dd@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20200831153207.GO3265@brightrain.aerifal.cx>
-References: <20200831153207.GO3265@brightrain.aerifal.cx>
+	s=arc-20240116; t=1705674843; c=relaxed/simple;
+	bh=ApAURFbaKwhO/5kE7JG5AbjfTYMpGMLoDzJEXbOZb18=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dnVCFW59pAz3fV3Ib2IPoDAAmaSw9sQfSM9GY6zalWwx6xkqDCiAGF0/tLX+eGt1/yp6bzO2RcS/ifpAxciVgV1Ly7rEyLdy9J5+7hWAj1+xlviZVn3cdYx+kV5zUZPUQOMK9gGIm9UYbBvkoPcv3/k0p/HK2Q/37AqGfUZnolk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=iC3gOgtT; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=NRMxyhyKCnq4lJJfksQu/hh6wttVDZUbD6dXln6VFMc=; b=iC3gOgtTcOXBmFznTlxc02zoHj
+	nn7DiZRggcMRGUJqDF8CATRQGXr0nQ8JQCwWkzNLVsEDTBO3CcDXHLZNledGDrofl2rgo0Anme3cu
+	EwsHAlzDEXmvgx1tBh9BO//p1AS8eR+VYmTAxtCu+HzNN/8qw8nsHyC7qxu8+pXEV0JCa1eMMhiCW
+	NHcwLnwFAxJ0qCRS/SqVQ97OeMt4rN7u+qiVKLl3b3qO67zlz0HpA8FxniWAHRi8FBOn5K+tC5bpH
+	FparWwQYOYFO8OB8NfLFguMHoLEs/W6wYn2VDKPqdJ/3CW3gMztilcbkeTXhLhYkUdkqaQk/Ndk6v
+	Be19dZ8A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57676)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rQpwD-0006oA-1P;
+	Fri, 19 Jan 2024 14:33:41 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rQpwB-0006jZ-L6; Fri, 19 Jan 2024 14:33:39 +0000
+Date: Fri, 19 Jan 2024 14:33:39 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Josua Mayer <josua@solid-run.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Yazan Shhady <yazan.shhady@solid-run.com>,
+	Jon Nettleton <jon@solid-run.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ARM: dts: imx6qdl-hummingboard: Add rtc0 and rtc1
+ aliases to fix hctosys
+Message-ID: <ZaqIQ7X4/iI3jxtU@shell.armlinux.org.uk>
+References: <20240118-imx6-hb-primary-rtc-v1-1-81b87935c557@solid-run.com>
+ <ZalMsJZKrpwncEDp@shell.armlinux.org.uk>
+ <79f9bd25-a05f-43b2-8d93-5d51adae1824@solid-run.com>
+ <24c24b0b-da49-4452-b6ad-64c4c2d20e11@solid-run.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1814; i=brauner@kernel.org; h=from:subject:message-id; bh=HuF2gjruI61tSBMxn8SeRxIPR2u9R5zRnNfHuaZ41JI=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSu6tjpcyOYb3f4fQYn+4IHS0Mb2AMliozXMp3/6ptRm qCZ+HduRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwET6njP8L0pKeLk1sszN54x3 xALHHqtf+5apP/1iZPe2L7v8QPP7Awx/5U/wKahenPX9RkTY9WcqSb9vfJLsCJrA8uBArai8kA4 /LwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <24c24b0b-da49-4452-b6ad-64c4c2d20e11@solid-run.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Mon, 31 Aug 2020 11:32:08 -0400, Rich Felker wrote:
-> The pwrite function, originally defined by POSIX (thus the "p"), is
-> defined to ignore O_APPEND and write at the offset passed as its
-> argument. However, historically Linux honored O_APPEND if set and
-> ignored the offset. This cannot be changed due to stability policy,
-> but is documented in the man page as a bug.
+On Fri, Jan 19, 2024 at 01:46:26PM +0000, Josua Mayer wrote:
+> Am 19.01.24 um 13:07 schrieb Josua Mayer:
+> > Am 18.01.24 um 17:07 schrieb Russell King (Oracle):
+> >> On Thu, Jan 18, 2024 at 04:01:10PM +0100, Josua Mayer wrote:
+> >>> HummingBoard has two RTCs, first integrated within SoC that can be used to
+> >>> wake up from sleep - and a second on the carrier board including back-up
+> >>> battery which is intended for keeping time during power-off.
+> >>>
+> >>> Add aliases for both, ensuring that the battery-backed clock is primary
+> >>> rtc and used by default during boot for restoring system time.
+> >> Given that the snvs RTC isn't battery backed, should we even be enabling
+> >> that in DT?
+> > In imx6qdl.dtsi it is not disabled.
+> > According to Jon it is useful because it can wake up the soc from sleep,
+> > whereas the external rtc can't.
+> >> Also, have you seen any issues such as:
+> >>
+> >> [    0.933249] rtc-pcf8523 0-0068: failed to set xtal load capacitance: -11
+> >> [    0.933505] rtc-pcf8523: probe of 0-0068 failed with error -11
+> >>
+> >> which seems to be exhibiting itself on my SolidSense board?
+> > Not on my HummingBoard Gate Rev. 1.4., but indeed on my solidsense
+> > unit too, which is probably same age as yours.
+> > Only tested imx6dl-hummingboard2-emmc-som-v15.dtb,
+> > but solidsense one should make no difference.
 > 
-> Now that there's a pwritev2 syscall providing a superset of the pwrite
-> functionality that has a flags argument, the conforming behavior can
-> be offered to userspace via a new flag. Since pwritev2 checks flag
-> validity (in kiocb_set_rw_flags) and reports unknown ones with
-> EOPNOTSUPP, callers will not get wrong behavior on old kernels that
-> don't support the new flag; the error is reported and the caller can
-> decide how to handle it.
+> I was reading control registers 1-3:
+> debian@sr-imx6:~$ sudo i2cget -y -a -f 0 0x68 0x00
+> 0x00
+> debian@sr-imx6:~$ sudo i2cget -y -a -f 0 0x68 0x01
+> 0x00
+> debian@sr-imx6:~$ sudo i2cget -y -a -f 0 0x68 0x02
+> 0x04
 > 
-> [...]
+> ^^ This means low voltage on back up battery
 
-The RWF_* and IOCB_* flags were
-aligned so they could be set in one operation. So there was a merge
-conflict when applying. I've resolved it. Please take a look and make
-sure that it's all correct.
+Interesting - in my case, the solidsense has been powered on for months
+(it's my internet router on the boat).
 
----
+I've rebooted it again today, and this time it seems to have been
+successful, and is using the time from it.
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+> After a few power-cycles that error went away.
+> Why pcf8523_load_capacitance would ever return EAGAIN I don't see.
+> 
+> In any case now that probe succeeded, I read these values:
+> 0x80
+> 0x00
+> 0x04
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+For me, after the last reboot, they contain:
+0x80
+0x00
+0x08
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+> Long story short I don't think the EAGAIN during probe is related
+> to adding aliases.
+> HOWEVER imo pcf8523_probe should return an error when
+> pcf8523_load_capacitance fails.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+I think the real question is where is the EAGAIN coming from and
+why.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] vfs: add RWF_NOAPPEND flag for pwritev2
-      https://git.kernel.org/vfs/vfs/c/31081ab305a1
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
