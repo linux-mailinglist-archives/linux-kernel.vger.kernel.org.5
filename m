@@ -1,134 +1,206 @@
-Return-Path: <linux-kernel+bounces-30793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C2AC832468
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:54:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 852D5832460
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:50:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8734E2843CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:53:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D592AB22162
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CAB7DDD5;
-	Fri, 19 Jan 2024 05:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 907684A34;
+	Fri, 19 Jan 2024 05:50:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DayTSKaJ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="noJb423z"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2054.outbound.protection.outlook.com [40.107.237.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24A4DDA2;
-	Fri, 19 Jan 2024 05:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705643633; cv=none; b=U+jEHemEeVAPar4Ft9VCMwmFvnqZ3mzlSuprzWXCLtajkLZaQ7kHp1VAm0jrXZL30TkUPO7LmvXmUU+X6LEg3Ull15mVA68i6Aydm2hHrdCxjEcW8E/OhhecJ6SPfQwclRHOPxgctFJTXIEBQh3qWpCft+kW8+KLfNy1byvLdOg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705643633; c=relaxed/simple;
-	bh=Vp9nxJexgtr8mdtc7FvGbPvwmq4EfLjttckoabyscb0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KjSGdN6vOdDDpySzqu8JguuYAIh9NxIyGiENHdqDH3YXlden6cCWYA+hXTKCpAO2m4528z9rEvSwxu5X5FC3RmIL4dn51zbqq/UMWtAWnauxBJeb0c0EiM0mwBTgwD6vSQE7pIyG74QTXOqY1aeznZ61RQ2Uj4jpSln1nDd5kOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DayTSKaJ; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705643632; x=1737179632;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Vp9nxJexgtr8mdtc7FvGbPvwmq4EfLjttckoabyscb0=;
-  b=DayTSKaJcKXYuhevcmPTlCaBGS+77Hqh6oUBc76+1k91lKL090GsgHM7
-   9kk2/IJi/y9M9EpWxMwwps+SU38WqnW3DtQO43EkX9VJCKd6l1Bzk4MAg
-   2uTEcKoRu4MMo58dp+B4kwl4ydGxdXjv4VFR2w160pGdR+KRXUMPnxW9v
-   hddtOZ3ta/kykhORWZHeAX3oZtLBBcj+IWjEMPW3SKQz93iD2oGFSbwvu
-   3uH5u3VuE1p939E3KpnlqKnOjaVhnopwwkNzaYaBnfxJRaYmZDvq3ZT1p
-   mi25HJ9ah5lp0o0Q2bGbKX9d8238JpW5xxdZCQV5yB/LIQ1tjaVfscBkn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="399541117"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="399541117"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 21:53:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="568772"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa004.fm.intel.com with ESMTP; 18 Jan 2024 21:53:49 -0800
-Date: Fri, 19 Jan 2024 13:50:38 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
-	Kai Huang <kai.huang@intel.com>
-Subject: Re: [PATCH v2] KVM: x86/mmu: Retry fault before acquiring mmu_lock
- if mapping is changing
-Message-ID: <ZaoNrmgl+DUYdhGk@yilunxu-OptiPlex-7050>
-References: <20240110012045.505046-1-seanjc@google.com>
- <ZalUDLVJSVN/rEf2@yilunxu-OptiPlex-7050>
- <ZaleXWn7reOI5yJY@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AE24A08
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705643446; cv=fail; b=b8aQ8roiYFXXzjmBRt/fKTEnDotldnTWdDOuJlZSBqFdjVAzO1NPtwjBEOu1odAqkqaWNmOd676WlB6NQVO1u0R5ss/7wcP89ooS7W7V7aiX95YfN9TiNddLkERqrZFbLuTxWHUrPkC6mwmFZIitXW+DmI2o29xcUwkr8Dq/UPs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705643446; c=relaxed/simple;
+	bh=JkyS5QTWbtEoAK1z4HQEW3OrA8SPcnfHIdLR7OGtQ7Q=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=FowLWngthgrNGiyqKTmytUP9nDfLjNejaH7jhDnbkzfZwznNn+rlKiM+fILBvJF5bYrBlN5xLn7vnSYv4kkywhDa/m6qLHwRx6kPJrw+I8Aj4GtXbo9A7bO2ggz9DbypaAdjWYLlSuIqdcWw/JbCcGC6ZDCCqvWcrMdFkbg0EIs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=noJb423z; arc=fail smtp.client-ip=40.107.237.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P/exEqH5Vlzug16/kBoqmZiMWsfoc050NiVXXvQXIkh6pAwV93swGQiO/L0ADBfl3GG0fkwyuqKw9ohAEoRKR0s7Xq3KyWJO0l9ROelJYXbtRwMGGeb+nzyZDCQ6PSRL5OJ/zS5Lr2ER9Be45F00ScWojwGts7PFSLKohH4x9VDPi07QsJRhRX2qJ/u/UMQ00u15aPt+wMfFtmj3B/WGHIxlsBOrySIzbGo4zMruh+IdOWrFu+4q8JrNj7XCsFZPcbpEcwOtVPMiUU+35w3TEWh2FC1ZyOqUeCngNEBohfI+/CsQ7e1wyj0uMAua5n+sDd4jLw0ACJ/j6w/lCkR/Xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jv2ZkTv8HJvgY2avtySOjvRV6HUkD1/qp1ZS0z6+sc0=;
+ b=ieTPcJX+b5FnjTCc+hwFvHAZbJnQc31EupujSprqlPN9Gz9LogOd+J2I3xD3fHBDFIclfXAsj2XbN0UXv9Dy4qLKP6VQYvuhLe7Bn6Fp9OlIaNqcJjNuJgbTlOTm6jAeZDoADGWfEUh3BjdFn6i2XfRxGAjurLPrIVSh00TBldKdV0j8dDnAMepMCSpXgyxhAEElD3USKGCzpsN4ARm17GhxxyxPmirnhBQ2ItpPKazl1hF6H8E6jNduFFAifnwatWr885ml7ZOj3r/ioMAZ6c7Vhp3yBawjFK1EEX9i7QZtgOrU0REILs8SbwbOAYKdatNmAk/h0ARI51xNYC1HIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jv2ZkTv8HJvgY2avtySOjvRV6HUkD1/qp1ZS0z6+sc0=;
+ b=noJb423z4fFrsZVBrZDw/2kf3LsyytAvQ4Pxk7OhltY87KTafkpz+U0utkAnaqFzhtdLMZa8TOGD3VKtoapyHKcywlRX077WI6NGFO7kAz1ETcbkBggCW/Z+bNgml/LHAt10E++iubHje6GXb9M1ixa4jivYQgh3wVd5Sa8T+6Y=
+Received: from MW4PR12MB7165.namprd12.prod.outlook.com (2603:10b6:303:21b::14)
+ by PH8PR12MB7255.namprd12.prod.outlook.com (2603:10b6:510:224::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
+ 2024 05:50:41 +0000
+Received: from MW4PR12MB7165.namprd12.prod.outlook.com
+ ([fe80::374b:e99d:5ba7:1ec0]) by MW4PR12MB7165.namprd12.prod.outlook.com
+ ([fe80::374b:e99d:5ba7:1ec0%4]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
+ 05:50:41 +0000
+From: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Tomi Valkeinen
+	<tomi.valkeinen@ideasonboard.com>, "maarten.lankhorst@linux.intel.com"
+	<maarten.lankhorst@linux.intel.com>, "mripard@kernel.org"
+	<mripard@kernel.org>, "tzimmermann@suse.de" <tzimmermann@suse.de>,
+	"airlied@gmail.com" <airlied@gmail.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
+	"Simek, Michal" <michal.simek@amd.com>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] drm: xlnx: zynqmp_dpsub: Make drm bridge discoverable
+Thread-Topic: [PATCH 1/4] drm: xlnx: zynqmp_dpsub: Make drm bridge
+ discoverable
+Thread-Index: AQHaSptvwR6+wKrLckmDc7xgQ1kfYw==
+Date: Fri, 19 Jan 2024 05:50:41 +0000
+Message-ID:
+ <MW4PR12MB7165428B4A7A973D29E953C5E6702@MW4PR12MB7165.namprd12.prod.outlook.com>
+References: <mailman.1627.1705504032.2418.dri-devel@lists.freedesktop.org>
+In-Reply-To: <mailman.1627.1705504032.2418.dri-devel@lists.freedesktop.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW4PR12MB7165:EE_|PH8PR12MB7255:EE_
+x-ms-office365-filtering-correlation-id: f2bfa826-c2eb-496f-99a8-08dc18b291f3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Etl5MWPkleGJrAWN7ZrsXZBgxK1/DtPKCGAJqn0RC2ZJXnJyqXVhG3wOB4bXYoBniHU6nlCoyj5ebQccQORc+gMr26y+Jr3svPf8HsdgNDJ1R1YWcgw1VlGhepSMS5yJuxQWtEteEpOj4/27OeZTFOrxsYm5DrM177WMti5rXPEMNQBTG447EwUUHZIJDmutgM7hUUwi3BJ3bfXRu0k8GoNqdsAlYLBN4XRydRk34LW8pk+ntR4X6JsH5Zjs1lzBWrqu40M5cCfdnZ5xFHMm0umQP5BG3Bk02cjiURWodGqwwNQ3PXJRkHp8396+sd/wD/w5ZOjEXvq0W5JTF1KYtXlVcx9jgS9pLj4wp99xSoDk/AjjCPT5UZQqeVwoFGZm7d2Tjs2YPZFl4cMrGUS4h2zl0cfbqKs+fTKk+sIrpA0WPPOgz7u4pZwlWznsaOl4FCvzQdOQhAA3SUx4Us7n5tbfJTVvARDibf6640yxwPBHNQI0/NyxSclVkAhuznTp+KVQ9T4eljJk7+3hPSxd20hSntn/iXk8lWoQDeBWlipLIBzbpQoYJNmy20qtdBM/YJgqXN0DlP9/FuGlN12L9zv/mU81MM6SApgYFXuM5dXtDJBqc/FrldvCycJBVFCXv+QJIkS6uHsuM/EVtGQUMQ==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7165.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(366004)(136003)(346002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(110136005)(9686003)(66446008)(122000001)(38100700002)(83380400001)(86362001)(33656002)(41300700001)(7696005)(6506007)(8936002)(8676002)(5660300002)(52536014)(316002)(66946007)(71200400001)(64756008)(66476007)(2906002)(7416002)(76116006)(66556008)(26005)(53546011)(478600001)(921011)(38070700009)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?DirRGYh9yjoPmF8/4/nF5Gp5o0KbuT8loftV/yYXnDj2rE7GkSlWRRhFaooM?=
+ =?us-ascii?Q?CLZNH8cqicf7WG4q3x1TC0wrxonqLNHlshpo0UcDYQgxnaQXpyqBaY2fW2Bb?=
+ =?us-ascii?Q?niT+Og8oFdJCbMClUIGCcfdDte74QvwzlEap7Jc+/MyDjG9OyOF6+KbpTvs4?=
+ =?us-ascii?Q?/ibJLGYRY6K2A6at6sn5BHmRlD0eUPu899phjmby1pawn5x6aFYQbxbkKl8p?=
+ =?us-ascii?Q?ZMCs0XmifPS3z/ZzulV4ciFQ6PEbvy3CKskuSzFZ50GVz2RsQqna/W4Oz0pL?=
+ =?us-ascii?Q?VGj3MrJdqvZ8vDDjdVX8IDBoHuda3HcjbN7qUCgvg98oZ9wRihIKxLEfHzJP?=
+ =?us-ascii?Q?/f+y0ev5Fn0fyn4Z4cDNBrVpG8Uf0IrivUXVOrvdjxO87j3j5Vr539rSnso/?=
+ =?us-ascii?Q?v+M8ehTEqEarlV2L/tfFKPT0YpF4/HGkDy7zQZJwghRZ1j0MPhWF71TfwgOr?=
+ =?us-ascii?Q?HeAn1tRDfVnROFjDfxFtSwFb3TasDSmo+Bz3wOEQiZDE6hYumYSDSR5zhOKS?=
+ =?us-ascii?Q?jsXNDhhmy7ILU9Ahu3fGj1OSr/oHByI+TFiNDtxZ55wedmYUGKMkS8JqiMNm?=
+ =?us-ascii?Q?M1wrFgSPqvpanZ8/yvaWAmh/nmefeZ0ZPN7IaJr7NpK3F9p7H2IJtYKrnz2H?=
+ =?us-ascii?Q?T4dOs5A2mqBFT+zCnV9a1qcxXI3NMdA1Prhn4EtEFLq7Ch9OmvQ84JKEnWrd?=
+ =?us-ascii?Q?8n6RX0zv/IdVJijWnBEXgU3OWlxiwpSlSgK5x4HH/w0KdyvtgREYa+5ZP3bh?=
+ =?us-ascii?Q?OwfrScMHETnv95o3X5Gkwo11AlvTW6PYTx66BEyiOwl+t69TOVua+MIvr2GO?=
+ =?us-ascii?Q?rl/mq1HqGncj153y6ly0UZobSnFGEvv5EM9p3azswkuLBSoPDlToCiitm5R0?=
+ =?us-ascii?Q?rXzJ7ZLtBIMs9f3lF5gTzYs99AWAE60gPunOdOEVQQF5GSr0Xp3txS9ra7pc?=
+ =?us-ascii?Q?rNcDrs20VnGTZlYlZeeZrwxdyG2lyioyBRMOykh8UaEd6NsU/c2jUVrwDL7R?=
+ =?us-ascii?Q?Aj8e1zW/2QgtSAc2l6VYriIXqFzZT1LkVFr26XidAN4znUbE7L4psKzjb/cm?=
+ =?us-ascii?Q?/dccNCZ8RCj25cna24mLoPOHpy6EYWzTe5s2BT6HSY6MRFnHoV9jkUkWWXba?=
+ =?us-ascii?Q?rkxOFDRlFlb19Tm0lOTsRVjhKJIEqxDQMsqs2xd/vcMOCW8QYZKb1h2p9lQE?=
+ =?us-ascii?Q?BPZ8/76j29LEgDQEp2jCbzx2/fZV+GA+jST417DvXCjadvziT5Fy3btL7J0i?=
+ =?us-ascii?Q?sUxawYG++xPAYLynnfd+abyQo3zaOZn1mZO0eFRX5Yz6pyC56ki0rBgrSryq?=
+ =?us-ascii?Q?IsFVZoKjJTvV0rVNFf02sn40CsUKCbAFOLZBNJVmTvFkAZNeLlBAZsTyOETP?=
+ =?us-ascii?Q?kvteDowa/rBsSB7P0nQD4W5mikxnfdrdVPk0dM5w29NXtU1QWyvWhQzLJfkb?=
+ =?us-ascii?Q?OacZ0dziUGhhiTLXqDw8HYMjavG6HEsPJdj1jd92XqpEFOcSC2ulBu9zr3Sp?=
+ =?us-ascii?Q?FtJF0+5GGHyukTBGRABLXBLFP2mF7Q4C21o80u+4uIdDwQa8LfBryyQbVBnb?=
+ =?us-ascii?Q?ZfwpxwC8Dyku0DXfH1w=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZaleXWn7reOI5yJY@google.com>
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7165.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2bfa826-c2eb-496f-99a8-08dc18b291f3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2024 05:50:41.1288
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: V+NJ84kJvDeZ2y71S/RqPBu8Bsmon7T6RBeLazlUzGFdQrwtZMXsp5twvMBPiqSh4dcaYKPtakNgVLxwD92oRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7255
 
-On Thu, Jan 18, 2024 at 09:22:37AM -0800, Sean Christopherson wrote:
-> On Fri, Jan 19, 2024, Xu Yilun wrote:
-> > On Tue, Jan 09, 2024 at 05:20:45PM -0800, Sean Christopherson wrote:
-> > > Retry page faults without acquiring mmu_lock if the resolved gfn is covered
-> > > by an active invalidation.  Contending for mmu_lock is especially
-> > > problematic on preemptible kernels as the mmu_notifier invalidation task
-> > > will yield mmu_lock (see rwlock_needbreak()), delay the in-progress
-> > 
-> > Is it possible fault-in task avoids contending mmu_lock by using _trylock()?
-> > Like:
-> > 
-> > 	while (!read_trylock(&vcpu->kvm->mmu_lock))
-> > 		cpu_relax();
-> > 
-> > 	if (is_page_fault_stale(vcpu, fault))
-> > 		goto out_unlock;
-> >   
-> > 	r = kvm_tdp_mmu_map(vcpu, fault);
-> > 
-> > out_unlock:
-> > 	read_unlock(&vcpu->kvm->mmu_lock)
-> 
-> It's definitely possible, but the downsides far outweigh any potential benefits.
-> 
-> Doing trylock means the CPU is NOT put into the queue for acquiring the lock,
-> which means that forward progress isn't guaranteed.  E.g. in a pathological
-> scenario (and by "pathological", I mean if NUMA balancing or KSM is active ;-)),
-> it's entirely possible for a near-endless stream of mmu_lock writers to be in
-> the queue, thus preventing the vCPU from acquiring mmu_lock in a timely manner.
+Hi Laurent,
 
-Ah yes, I forgot the main purpose of yielding is to let vCPU make
-forward progress when the fault-in page is not covered by the invalidation.
+Thank you for the reply.
 
-Thanks,
-Yilun
+> Date: Wed, 17 Jan 2024 16:24:20 +0200
+> From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Cc: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
+>         maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+>         tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+>         michal.simek@amd.com, dri-devel@lists.freedesktop.org,
+>         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.or=
+g
+> Subject: Re: [PATCH 1/4] drm: xlnx: zynqmp_dpsub: Make drm bridge
+>         discoverable
+> Message-ID: <20240117142420.GE17920@pendragon.ideasonboard.com>
+> Content-Type: text/plain; charset=3Dutf-8
+>=20
+> On Wed, Jan 17, 2024 at 04:06:31PM +0200, Tomi Valkeinen wrote:
+> > On 13/01/2024 01:42, Anatoliy Klymenko wrote:
+> > > Assign device of node to bridge prior registering it. This will make
+> > > said bridge discoverable by separate crtc driver.
+> >
+> > I think a few words on why this is needed (and why it wasn't needed
+> > before) would be nice.
+> >
+> > Other than that:
+> >
+> > Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>=20
+> Agreed. With a better commit message,
+>=20
 
-> 
-> And hacking the page fault path to bypass KVM's lock contention detection would
-> be a very willful, deliberate violation of the intent of the MMU's yielding logic
-> for preemptible kernels.
-> 
-> That said, I would love to revisit KVM's use of rwlock_needbreak(), at least in
-> the TDP MMU.  As evidenced by this rash of issues, it's not at all obvious that
-> yielding on mmu_lock contention is *ever* a net positive for KVM, or even for the
-> kernel.  The shadow MMU is probably a different story since it can't parallelize
-> page faults with other operations, e.g. yielding in kvm_zap_obsolete_pages() to
-> allow vCPUs to make forward progress is probably a net positive.
-> 
-> But AFAIK, no one has done any testing to prove that yielding on contention in
-> the TDP MMU is actually a good thing.  I'm 99% certain the only reason the TDP
-> MMU yields on contention is because the shadow MMU yields on contention, i.e.
-> I'm confident that no one ever did performance testing to shadow that there is
-> any benefit whatsoever to yielding mmu_lock in the TDP MMU.
+Sure, I will update commit message in the next version.
 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>=20
+> > > Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+> > > ---
+> > >   drivers/gpu/drm/xlnx/zynqmp_dp.c | 1 +
+> > >   1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> > > b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> > > index a0606fab0e22..d60b7431603f 100644
+> > > --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> > > +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> > > @@ -1721,6 +1721,7 @@ int zynqmp_dp_probe(struct zynqmp_dpsub
+> *dpsub)
+> > >     bridge->ops =3D DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID
+> > >                 | DRM_BRIDGE_OP_HPD;
+> > >     bridge->type =3D DRM_MODE_CONNECTOR_DisplayPort;
+> > > +   bridge->of_node =3D dp->dev->of_node;
+> > >     dpsub->bridge =3D bridge;
+> > >
+> > >     /*
+>=20
+> --
+> Regards,
+>=20
+> Laurent Pinchart
+>=20
+>=20
 
-> 
+Thank you,
+Anatoliy
 
