@@ -1,166 +1,222 @@
-Return-Path: <linux-kernel+bounces-31244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AEE7832B0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:12:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD44A832B0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C7811C2445A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:12:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E0B52889E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E773F54674;
-	Fri, 19 Jan 2024 14:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AF854BD9;
+	Fri, 19 Jan 2024 14:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="vZcfMALE"
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="W+/ioX1b";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3vn4frNM";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="W+/ioX1b";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3vn4frNM"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E883553E2A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:11:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CE15380F
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:11:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705673490; cv=none; b=If8xqQsLxshJ3rwN3dLQz0v8liXcQMyaK1uxMFplFgd0edo8gOyerh0Srvl3yz6k/jCG0kzgW5fZUfvJfF0PXG+WzW1xpbECASaPTCNeTI7EtW3DD7QQYqGo4j2g/QlSKPeZygRX8kyGLPdtc+spxHp+7ypwl6v40voBRlZhq9I=
+	t=1705673493; cv=none; b=sdIicBbFX3OVCBi1smPMatbd/ITv0F75KqAlSNAAm8licaFHBqhsOp2eDP/yvjUy3vLsRR8y29rWB7aOoUEVE6JGgdqVIoIpzFmVV3PPJc0YDeishaptflsNA4sORV14Jnxv0XT5iVjU+ARwlX7EtbqeZNQVEFNrMEoTdfUsfY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705673490; c=relaxed/simple;
-	bh=TqPHp6thk907FTTvm3tboLNknd3v+aqQVcopEpXBIu8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uZLreJBVk3fRXoooleNgNG3xvoKld8JeWH9YNgfyjaxwWCh3oivIwUVbPG1f0AOA9M5FsNYaf5naeKrgcvZV3TpB6HSIV3ZKrxO76HyDp6n3cl6Fly+6P8wpH368XTl/vMWBoSNBBCan1WE0QtrYIrwtQm4hfbIdtvBVrTfiFic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=vZcfMALE; arc=none smtp.client-ip=209.85.160.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-210e9f2c1faso140576fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 06:11:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705673488; x=1706278288; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yve1j093zhPAT03KqE6u8/WuOBcMWVIgTCIkj2nZNFY=;
-        b=vZcfMALEiskUtPprj7p5P4EcBDWlLP3gVBs2HaeH1PzrhMuVWYf0jccfRpjlgrxzfJ
-         edC+w5lLW/B9yohTi5nklamyrZ5Auhq6RmboTNN+hi3COglPggs0JsdM7TqaX0ngZ821
-         VAm2Ue41HJB7YeEWJUGJxRF+rv2pKIMA2ffrPJeMDoGkB1qLPMrEgNRzeZ0Nh6cCKH41
-         UWpH/yMzHRlforjcjL2NFunLWFKap6JoIe8EouBGNdBw7Am8wdKmDudp74wCOiGyzw/Q
-         m03Pp7nM3sUTchSfg6zqlRcSHxwMg4DgyUvVX2YxW2qUklqjXTC9fJzaeXeXk4Sbn6L7
-         Xc7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705673488; x=1706278288;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yve1j093zhPAT03KqE6u8/WuOBcMWVIgTCIkj2nZNFY=;
-        b=CoiembBalyMQuT1RRpu0I8KIx8ZveBeB1Do8NrbTFaZ0VW6D2WC5MmPgsDgkxB9uIX
-         yI503TfDjDXJMX1/6a5HODNpJx2VbCRRJ5NH0P52G55nbTAUxdMbJGWk0oH1yZyi9OSQ
-         +z8Wh+2qf5Hps8oQFKSLosDaFbVJncykadq7M7Ntev8K2IlmkkRMKzaSCiiVYLj8ARXY
-         wvtpP3MvMOTgBbfC9BALRQwgWHgPGnvK8Jj9I8zHWYsBYlnSskQJswYUBCr/FAy4qMgW
-         kiL73ZN/TgNctWhYzl/ib2HqhXnqSBh4nhX/0zC/EQW4nbO+xTp9kwl1f/sR87nRbQZf
-         jTLw==
-X-Gm-Message-State: AOJu0Yxv2m+mZFCPuXCSMsvaCYEK5jnwthlwEPyeXUPyNrXUXSKJS5Lp
-	eVU50GFpdhCytCWMwHE9j7b/Pr0SwKSx4mUyDeH2FtiL+9KjG7+eBwzb+1lneZzzL9rXouOEs3u
-	vM2e7IdzCCCBMrfT70YSm0prbKZCBgDvbSF3nEw==
-X-Google-Smtp-Source: AGHT+IEzKXt1iaQ6NmzAsJq/01qfzT3pF8iI8eJNn96nqR6Ib5KEm8Td2wQBXRzywiLI+5x36vj8wMIivUvhBtXqPv4=
-X-Received: by 2002:a05:6870:548c:b0:20e:364b:eba9 with SMTP id
- f12-20020a056870548c00b0020e364beba9mr2008699oan.9.1705673488006; Fri, 19 Jan
- 2024 06:11:28 -0800 (PST)
+	s=arc-20240116; t=1705673493; c=relaxed/simple;
+	bh=lFZW9MCfcnWmU3wNRocY0y7spmXgH1YpoNJ0jZz+4xA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t/V+x6KQ8nQwpSNcsjZe2vR8/dP7bVAgppa9dq2fbow8t8jWm7aP2UW2NyMToQChUEO6VWHP1pJdV3KC87B3kypZZM7uf/ZBF32SprnXf2m2rP7DGKXHMwTTFg9pImvpgnEO82cKC0ulXFCwBo7nGQenjbptzZIEyK9TfWxXwG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=W+/ioX1b; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=3vn4frNM; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=W+/ioX1b; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=3vn4frNM; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 16B1D21F29;
+	Fri, 19 Jan 2024 14:11:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705673490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TCROTf+McwZw1+8bGOBthfecAv+bg/amZRuGRxQT7w0=;
+	b=W+/ioX1b0ugM2YwMane523xCmqOCyogvY827FJ6ZsUQnRoYM8Si3ARCVgn/gk/NnsGufy4
+	b5T/zj76YjYqEvgcjG3RvR1vFxxkfmVbNFerVyQp5hZw05B1R759p66RgdJbhM6pHLkpEv
+	ecJOI/llcMUBXQASFFlpHRodgi4+evY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705673490;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TCROTf+McwZw1+8bGOBthfecAv+bg/amZRuGRxQT7w0=;
+	b=3vn4frNM21QjlxUPll34BWLlns1j37SJWweY+nkQFovbWcfS5JKkSXz3V170nshVU1w9ap
+	uk5fTBAdJ5vOb2Bg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705673490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TCROTf+McwZw1+8bGOBthfecAv+bg/amZRuGRxQT7w0=;
+	b=W+/ioX1b0ugM2YwMane523xCmqOCyogvY827FJ6ZsUQnRoYM8Si3ARCVgn/gk/NnsGufy4
+	b5T/zj76YjYqEvgcjG3RvR1vFxxkfmVbNFerVyQp5hZw05B1R759p66RgdJbhM6pHLkpEv
+	ecJOI/llcMUBXQASFFlpHRodgi4+evY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705673490;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TCROTf+McwZw1+8bGOBthfecAv+bg/amZRuGRxQT7w0=;
+	b=3vn4frNM21QjlxUPll34BWLlns1j37SJWweY+nkQFovbWcfS5JKkSXz3V170nshVU1w9ap
+	uk5fTBAdJ5vOb2Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 07A331388C;
+	Fri, 19 Jan 2024 14:11:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id x4rZARKDqmVnLAAAD6G6ig
+	(envelope-from <jwiesner@suse.de>); Fri, 19 Jan 2024 14:11:30 +0000
+Received: by incl.suse.cz (Postfix, from userid 1000)
+	id AF1F09C78B; Fri, 19 Jan 2024 15:11:29 +0100 (CET)
+Date: Fri, 19 Jan 2024 15:11:29 +0100
+From: Jiri Wiesner <jwiesner@suse.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>
+Subject: Re: [PATCH v2] clocksource: Skip watchdog check for large watchdog
+ intervals
+Message-ID: <20240119141129.GJ3303@incl>
+References: <20240110192623.GA7158@incl>
+ <875xzyijl5.ffs@tglx>
+ <20240113114400.GH3303@incl>
+ <87cyu4hih1.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117160748.37682-1-brgl@bgdev.pl> <CAA8EJpoQfPqoMVyTmUjPs4c1Uc-p4n7zNcG+USNjXX0Svp362w@mail.gmail.com>
- <CAA8EJpqyK=pkjEofWV595tp29vjkCeWKYr-KOJh_hBiBbkVBew@mail.gmail.com>
- <CAMRc=McUZh0jhjMW7H6aVKbw29WMCQ3wdkVAz=yOZVK5wc45OA@mail.gmail.com>
- <CAA8EJprFV6SS_dGF8tOHcBG+y8j74vO0B40Y=e7Kj1-ZThNqPA@mail.gmail.com>
- <CAMRc=MdOALzkDtpnbqF16suShvP5apGYy4LTQ4dTc3r9Rbb1kg@mail.gmail.com> <CAA8EJpr=PMdOWzp8fahL9e9QC-qgS=hSaTqT1XdUs8Dvvsxqgg@mail.gmail.com>
-In-Reply-To: <CAA8EJpr=PMdOWzp8fahL9e9QC-qgS=hSaTqT1XdUs8Dvvsxqgg@mail.gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Fri, 19 Jan 2024 15:11:16 +0100
-Message-ID: <CAMRc=McdXC8zP4_+a3hBijVLXmLFakfjdXjzPOwaNsPCwPT36w@mail.gmail.com>
-Subject: Re: [PATCH 0/9] PCI: introduce the concept of power sequencing of
- PCIe devices
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
-	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
-	Lukas Wunner <lukas@wunner.de>, Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-pci@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87cyu4hih1.ffs@tglx>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="W+/ioX1b";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=3vn4frNM
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -4.01
+X-Rspamd-Queue-Id: 16B1D21F29
+X-Spam-Flag: NO
 
-On Fri, Jan 19, 2024 at 3:07=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
+On Sun, Jan 14, 2024 at 01:22:18AM +0100, Thomas Gleixner wrote:
+> On Sat, Jan 13 2024 at 12:44, Jiri Wiesner wrote:
+> > On Fri, Jan 12, 2024 at 05:48:22PM +0100, Thomas Gleixner wrote:
+> >> On Wed, Jan 10 2024 at 20:26, Jiri Wiesner wrote:
+> >> > The measured clocksource skew - the absolute difference between cs_nsec
+> >> > and wd_nsec - was 668 microseconds:
+> >> >> cs_nsec - wd_nsec = 14524115132 - 14523447520 = 667612
+> >> >
+> >> > The kernel (based on 5.14.21) used 200 microseconds for the
+> >> > uncertainty_margin of both the clocksource and watchdog, resulting in a
+> >> > threshold of 400 microseconds.  The discrepancy is that the measured
+> >> > clocksource skew was evaluated against a threshold suited for watchdog
+> >> > intervals of roughly WATCHDOG_INTERVAL, i.e. HZ >> 1, which is 0.5
+> >> > second.
+> >> 
+> >> This really took some time to decode. What you are trying to explain is:
+> >> 
+> >>    The comparison between the clocksource and the watchdog is not
+> >>    working for large readout intervals because the conversion to
+> >>    nanoseconds is imprecise. The reason is that the initialization
+> >>    values of the shift/mult pairs which are used for conversion are not
+> >>    sufficiently accurate and the accumulated inaccuracy causes the
+> >>    comparison to exceed the threshold.
+> >
+> > The root cause of the bug does not concern the precision of the conversion 
+> > to nanoseconds. The shift/mult pair of the TSC can convert diffs as large 
+> > as 600 seconds. The HPET is limited to 179.0 seconds on account of being a 
+> > 32-bit counter. The acpi_pm can convert only 4.7 seconds. With the 
+> > CONFIG_CLOCKSOURCE_VALIDATE_LAST_CYCLE option enabled, the ranges are 
+> > reduced to a half. The example above showed the TSC as the clocksource and 
+> > the HPET as a watchdog both of which should be able to convert a diff of 
+> > 14.5 seconds to nanoseconds with sufficient precision.
+> 
+> No. It _is_ an initialization and conversion precision problem, nothing
+> else.
+> 
+> Assume a perfect world where the frequency of the TSC and the frequency
+> of the HPET are precisely known at initialization time and the
+> conversion factors to nanoseconds are precise as well. Assume further
+> that the clock frequencies wont drift over time differently.
+> 
+> Then the relationship between the nanosecond converted readouts of TSC
+> and HPET (or any other watchdog clocksource) would be constant
+> independent of the readout interval with the following prerequisites:
+> 
+>   1) freq(TSC) / freq(HPET) == constant
+> 
+>   2) Conversion from TSC to nanoseconds is correct independent of the
+>      interval
+> 
+>   3) Conversion from HPET to nanoseconds is correct independent of the
+>      interval
+> 
+> So if all apply the uncertainty margin would be correct for any
+> valid non wrapped around readout interval
 
-[snip]
+Agreed.
 
-> > >
-> >
-> > Alright, so let's imagine we do model the PMU on the device tree. It wo=
-uld
-> > look something like this:
-> >
-> > qca6390_pmu: pmic@0 {
-> >         compatible =3D "qcom,qca6390-pmu";
-> >
-> >         bt-gpios =3D <...>;
-> >         wlan-gpios =3D <...>;
-> >
-> >         vdd-supply =3D <&vreg...>;
-> >         ...
-> >
-> >         regulators-0 {
-> >                 vreg_x: foo {
-> >                         ...
-> >                 };
-> >
-> >                 ...
-> >         };
-> > };
-> >
-> > Then the WLAN and BT consume the regulators from &qca6390_pmu. Obviousl=
-y we
-> > cannot go:
-> >
-> > wlan {
-> >         pwrseq =3D &qca6390_pmu;
-> > };
-> >
-> > But it's enough to:
-> >
-> > wlan {
-> >         vdd-supply =3D <&vreg_x>;
-> > };
->
-> I'm not sure this will fly. This means expecting that regulator
-> framework is reentrant, which I think is not the case.
->
+> valid non wrapped around readout interval, which is a completely
+> different issue to take care of.
 
-Oh maybe I didn't make myself clear. That's the DT representation of
-HW. With pwrseq, the BT or ATH11K drivers wouldn't use the regulator
-framework. They would use the pwrseq framework and it could use the
-phandle of the regulator to get into the correct pwrseq device without
-making Rob and Krzysztof angry.
+It is. I did not mean to address that with the patch but did only 
+coincidentally.
 
-Bart
+> Though because neither the frequency values are precise nor the
+> conversion factors to nanoseconds are precise for a larger interval nor
+> there is a guarantee that the clock frequencies of both clocks can't
+> drift differently all prerequisites #1 - #3 above are not there.
+> 
+> As a consequence there _is_ a limitation to the readout interval where
+> the comparison is valid.
 
-[snip]
+I must admit the root cause of both inaccuracy of the shift/mult pairs and 
+conversion precision fits the observed behaviour. The observed behaviour 
+is that watchdog checks may fail for large readout intervals on 8 NUMA node 
+machines. So, my hypothesis was that the size of the skew is directly 
+proportinal to the length of the readout interval. This is what the patch 
+means to address.
+-- 
+Jiri Wiesner
+SUSE Labs
 
