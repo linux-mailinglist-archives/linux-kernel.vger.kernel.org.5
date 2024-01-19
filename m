@@ -1,62 +1,83 @@
-Return-Path: <linux-kernel+bounces-30845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5651383250A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:30:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EF7483250C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:30:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A0C21C22639
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:30:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0FDF1C22A1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AEC428E07;
-	Fri, 19 Jan 2024 07:29:32 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D0CD52F;
+	Fri, 19 Jan 2024 07:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="az0d+tTn"
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F55DC15D;
-	Fri, 19 Jan 2024 07:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FA1D51D
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705649372; cv=none; b=G3UUk9I6sOI+MaTFb+SgDkhah8CH68bf0+0Qgy0Q7ShdxQ0aJFrZ9vM/fAzDFvox/I0L1AFDGJrGm/YmOxRsd+quoEaXk9zcCGh9M0oKOuPY+47DcnP5ZpOEqMokUJa3D33Y2aFX1hevElIq9cQ9ipG/mQf3Hnio/0Gv8fBMbn8=
+	t=1705649417; cv=none; b=NV+LIJNd2R/myRcZc++VrzW/W05Z4Ec4JUCt1c+OCEFtfq1Op0Zt8d8gVgSZffH6ok+M6mVDlC2kLY6wNOtvoeEEM5Odnfym9chnyTjRyEynCOjwbOtlojaoFE5oBCurHZ5r+EJCEW/+wbGwiftz701jMoiXA/qJGYF81XnnjpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705649372; c=relaxed/simple;
-	bh=ozu/HsbZAoRwYY5AZoROB+GuhJcVlIS4+UjK+SDUZg0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cHm6w2pIOXFBXLydYTepZuoIZ+DXPBWJ9uVFETS9nM5be0+Gwjhww2D11l3/6/1AgrkTYy+fHx7waaCo/1T8ekn7VaoSKTn6RUS51COCCFBJQydrSfv+2+uSWe7OfnA74xUEMpMxo9Lmk4keHekg98j3FVjtERy/5Jtr5DKB+ds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TGWTC3v8lz4f3lfX;
-	Fri, 19 Jan 2024 15:29:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B052B1A0AA6;
-	Fri, 19 Jan 2024 15:29:25 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgAX6RHQJKplBOsuBQ--.42435S7;
-	Fri, 19 Jan 2024 15:29:25 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: x86@kernel.org,
-	bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	linux-kernel@vger.kernel.org,
-	xingwei lee <xrivendell7@gmail.com>,
-	Jann Horn <jannh@google.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf 3/3] selftest/bpf: Test the read of vsyscall page under x86-64
-Date: Fri, 19 Jan 2024 15:30:19 +0800
-Message-Id: <20240119073019.1528573-4-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20240119073019.1528573-1-houtao@huaweicloud.com>
-References: <20240119073019.1528573-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1705649417; c=relaxed/simple;
+	bh=d0nzALVx5Huz1UxcaTbDiEGhUtQ5tZ8N/WWCfalo100=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
+	 References; b=K4/zRlf8ZvBvhQC54APFFWq0boies3qYSa4mboMY8VqeaDJZtK5Vi/x/n/P1yGkVS3yHOQi7h46RZohAK40NZAkobmut8rCQLJ3dc5YDOJQx+xf0G16tRVPwEmiaK0dIBQfiL5ZaRyRkB3GT7BirwcPBQMDghxlxliOB4bTMZL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=az0d+tTn; arc=none smtp.client-ip=203.254.224.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240119073012epoutp0336905e0a3b81b203263ad093734e9f7e~rrxqKmMFB2169821698epoutp03S
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:30:12 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240119073012epoutp0336905e0a3b81b203263ad093734e9f7e~rrxqKmMFB2169821698epoutp03S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1705649412;
+	bh=6N9+i2zBdw87P2pvQtZNgxaco3hwd3DwBXjFeRUkiZI=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=az0d+tTnArZsUEgb5Y5rTHV27mrPdhXBVC14mMrJC9drlOZwZ9vJ9rZCRxpWhRsrZ
+	 We12UInvu2SwHQhsgcoflwLPDXRNQboYnnxULyjIbTxXhGSy7emmGYuLhGTehDX5+y
+	 tXK5BQxwuJOgC/daXcLFwcTW1WAPxasySQVmuCmI=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+	20240119073011epcas1p46c1a93c0ee81cddc29dbd436d94106d6~rrxptATOz0138101381epcas1p4w;
+	Fri, 19 Jan 2024 07:30:11 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.36.222]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4TGWVC3nPSz4x9QL; Fri, 19 Jan
+	2024 07:30:11 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+	epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+	26.E0.10211.3052AA56; Fri, 19 Jan 2024 16:30:11 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240119073011epcas1p1841e79c8f673c3c69ef696edc9eb47b0~rrxo8wYtD0610906109epcas1p1j;
+	Fri, 19 Jan 2024 07:30:11 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240119073011epsmtrp1e0b73ff32fb1a601ad574230243e8335~rrxo749Hn3009230092epsmtrp1W;
+	Fri, 19 Jan 2024 07:30:11 +0000 (GMT)
+X-AuditID: b6c32a38-463ff700000027e3-f2-65aa2503c01d
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	A9.65.08817.2052AA56; Fri, 19 Jan 2024 16:30:10 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.101.71]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240119073010epsmtip138dc9e69262c0f67e2c1334577c8685f~rrxopMZht1212312123epsmtip1T;
+	Fri, 19 Jan 2024 07:30:10 +0000 (GMT)
+From: Seunghui Lee <sh043.lee@samsung.com>
+To: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ulf.hansson@linaro.org, gregkh@linuxfoundation.org, avri.altman@wdc.com
+Cc: grant.jung@samsung.com, jt77.jang@samsung.com, dh0421.hwang@samsung.com,
+	junwoo80.lee@samsung.com, jangsub.yi@samsung.com, cw9316.lee@samsung.com,
+	sh8267.baek@samsung.com, wkon.kim@samsung.com, Seunghui Lee
+	<sh043.lee@samsung.com>
+Subject: [PATCH] mmc: core: Fix null pointer dereference in bus_shutdown
+Date: Fri, 19 Jan 2024 16:32:47 +0900
+Message-Id: <20240119073247.7441-1-sh043.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,166 +85,84 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX6RHQJKplBOsuBQ--.42435S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxZry5KrW3Zw4DKr4xKFyUWrg_yoWrtr4kp3
-	Wvy3W3Kr4fJw12yr4xWws8XFWrXr1kJF4Yyr95Wr13Zr47Zr9YqryIga4DtF15Grs3urW5
-	Za97Kas5Kr4UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOJsWRmVeSWpSXmKPExsWy7bCmvi6z6qpUg2NbZCxe/rzKZjHjVBur
+	xb5rJ9ktfv1dz27RvHg9m0XH1slMFjuen2G32PW3mcni8q45bBZH/vczWjT92cdice3MCVaL
+	42vDLTZf+sbiwOdx59oeNo/9c9ewe/RtWcXo8XmTnEf7gW6mANaobJuM1MSU1CKF1Lzk/JTM
+	vHRbJe/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoEOVFMoSc0qBQgGJxcVK+nY2Rfml
+	JakKGfnFJbZKqQUpOQVmBXrFibnFpXnpenmpJVaGBgZGpkCFCdkZhw+3sxX0cFS8mnGUuYHx
+	PFsXIyeHhICJxMkrX1m6GLk4hAR2MEo0n94H5XxilHjXew/K+cYo8eL1YnaYlo19k1hAbCGB
+	vYwS+5eaQNifGSVWb+cHsdkEtCSmb9rCBNIsItDGKNG34jHYJGaBD4wSv/pWAmU4OIQFPCTO
+	nC0CaWARUJU4//sK2FBeAUuJY28eQC2Tl/hzv4cZIi4ocXLmE7AaZqB489bZzCAzJQQaOSRu
+	vF7OAtHgInHv9WZGCFtY4tXxLVCDpCRe9rexQzQ0M0q0NUB8LSEwAei3Ba+YIKrsJZpbm9lA
+	rmMW0JRYv0sfYhufxLuvPawgYQkBXomONiGIamWJl4+WQXVKSixpv8UMYXtIXF16ghkSKrES
+	j363MU9glJuF5IdZSH6YhbBsASPzKkax1ILi3PTUYsMCE3hUJufnbmIEp1Atix2Mc99+0DvE
+	yMTBeIhRgoNZSYTX32BZqhBvSmJlVWpRfnxRaU5q8SFGU2CoTmSWEk3OBybxvJJ4QxNLAxMz
+	IxMLY0tjMyVx3jNXylKFBNITS1KzU1MLUotg+pg4OKUamMK3eyUb6vQnvE1y2uRUZpB7aebZ
+	2MKHUzufrhA7/v5ue7BaZwvHI6OsPw1egpvMxTa4KgRe/3nq1i25r0lb0n+dFUsLXCae8Moq
+	NVjRv/SXZo58bknb3yymSYkB+l6fc0OUbtXNYXE6F/N8akHqjuJ1Jr/e/Hs9Y9K+nAOFNQuX
+	LXh73Kj0x/TeVQoGsx6efCv02zBt0mMj1393TpbGTbx9xuWs9Jf8xzWL3u+8lDHPPiHFx+Yv
+	3/yjr6OVHuflS30JnfGke0HcBt5Y86OTp0wPl/mfNb/2CM+TJdvXqczSkf3JcmK53Iw0rX1m
+	Rf7cF/vddmwI91wmaf9QRU/docDE63/ev7xNun5BSeePXVNiKc5INNRiLipOBADsGfkIKgQA
+	AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrALMWRmVeSWpSXmKPExsWy7bCSnC6T6qpUg5sfLS1e/rzKZjHjVBur
+	xb5rJ9ktfv1dz27RvHg9m0XH1slMFjuen2G32PW3mcni8q45bBZH/vczWjT92cdice3MCVaL
+	42vDLTZf+sbiwOdx59oeNo/9c9ewe/RtWcXo8XmTnEf7gW6mANYoLpuU1JzMstQifbsErozD
+	h9vZCno4Kl7NOMrcwHierYuRk0NCwERiY98kli5GLg4hgd2MEnM6/rJAJCQlFj96CFTEAWQL
+	Sxw+XAxR85FR4tS5d4wgNWwCWhLTN21hArFFBHoYJfp25YEUMQv8YpTYMXUZWLOwgIfEmbNF
+	IDUsAqoS539fAZvPK2ApcezNA3aIXfISf+73MEPEBSVOznwCVsMMFG/eOpt5AiPfLCSpWUhS
+	CxiZVjFKphYU56bnFhsWGOWllusVJ+YWl+al6yXn525iBAe6ltYOxj2rPugdYmTiYDzEKMHB
+	rCTC62+wLFWINyWxsiq1KD++qDQntfgQozQHi5I477fXvSlCAumJJanZqakFqUUwWSYOTqkG
+	pu06Lb416fqHMpL36S5Osj/t7V28MdZ4i0vBtncep7bqbjDe4v8j7nrInXzv+ylLHzJ9//VB
+	wHm+3Iney5VrMhoklY5qbDUIW5DyO0kx/cq9745KUZs7XnBzKdqrsTgz1x7ab6Un21R+O+ED
+	s6vyl65a1ZeLHQ4faNAK6RP8aarqwvrxwtMrXTsOVavNmugY1PVrw/2+neJOW3bP7ihQF2pa
+	cEvH9dbPD7HfDnC37nO+8NG3emNfRK3txIymr89Wr0x0qCn7d+8hy68X69JDV/eYG3xRLpzy
+	dnLZuj/vQ73X/joqe0hR8I/Bc9UH1dy2wTs5V1uHc/THKCoL2/U73JI7d3N2jNS306tDublZ
+	lFiKMxINtZiLihMBrTkCSOMCAAA=
+X-CMS-MailID: 20240119073011epcas1p1841e79c8f673c3c69ef696edc9eb47b0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240119073011epcas1p1841e79c8f673c3c69ef696edc9eb47b0
+References: <CGME20240119073011epcas1p1841e79c8f673c3c69ef696edc9eb47b0@epcas1p1.samsung.com>
 
-From: Hou Tao <houtao1@huawei.com>
+When shutting down removable device,
+it can be occurred null pointer dereference.
 
-Using bpf_probe_read_kernel{_str}() or bpf_probe_read{_str}() to read
-from vsyscall page under x86-64 will trigger oops, so add one test case
-to ensure that the problem is fixed.
+To prevent null pointer dereference,
+At first, check null pointer.
+Next, block rescan worker to scan removable device during shutdown.
 
-Beside those four bpf helpers mentioned above, testing the read of
-vsyscall page by using bpf_probe_read_user{_str} and
-bpf_copy_from_user{_task}() as well.
-
-vsyscall page could be disabled by CONFIG_LEGACY_VSYSCALL_NONE or
-vsyscall=none boot cmd-line, but it doesn't affect the reproduce of the
-problem and the returned error codes.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Seunghui Lee <sh043.lee@samsung.com>
 ---
- .../selftests/bpf/prog_tests/read_vsyscall.c  | 61 +++++++++++++++++++
- .../selftests/bpf/progs/read_vsyscall.c       | 45 ++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
- create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
+ drivers/mmc/core/bus.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-new file mode 100644
-index 0000000000000..d9247cc89cf3e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include "test_progs.h"
-+#include "read_vsyscall.skel.h"
-+
-+#if defined(__x86_64__)
-+/* For VSYSCALL_ADDR */
-+#include <asm/vsyscall.h>
-+#else
-+/* To prevent build failure on non-x86 arch */
-+#define VSYSCALL_ADDR 0UL
-+#endif
-+
-+struct read_ret_desc {
-+	const char *name;
-+	int ret;
-+} all_read[] = {
-+	{ .name = "probe_read_kernel", .ret = -ERANGE },
-+	{ .name = "probe_read_kernel_str", .ret = -ERANGE },
-+	{ .name = "probe_read", .ret = -ERANGE },
-+	{ .name = "probe_read_str", .ret = -ERANGE },
-+	/* __access_ok() will fail */
-+	{ .name = "probe_read_user", .ret = -EFAULT },
-+	/* __access_ok() will fail */
-+	{ .name = "probe_read_user_str", .ret = -EFAULT },
-+	/* access_ok() will fail */
-+	{ .name = "copy_from_user", .ret = -EFAULT },
-+	/* both vma_lookup() and expand_stack() will fail */
-+	{ .name = "copy_from_user_task", .ret = -EFAULT },
-+};
-+
-+void test_read_vsyscall(void)
-+{
-+	struct read_vsyscall *skel;
-+	unsigned int i;
-+	int err;
-+
-+#if !defined(__x86_64__)
-+	test__skip();
-+	return;
-+#endif
-+	skel = read_vsyscall__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "read_vsyscall open_load"))
+diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
+index 0af96548e7da..4f370a6577aa 100644
+--- a/drivers/mmc/core/bus.c
++++ b/drivers/mmc/core/bus.c
+@@ -143,9 +143,17 @@ static void mmc_bus_shutdown(struct device *dev)
+ {
+ 	struct mmc_driver *drv = to_mmc_driver(dev->driver);
+ 	struct mmc_card *card = mmc_dev_to_card(dev);
+-	struct mmc_host *host = card->host;
++	struct mmc_host *host;
+ 	int ret;
+ 
++	if (!drv || !card) {
++		pr_debug("%s: drv or card is NULL.\n", dev_name(dev));
 +		return;
++	}
 +
-+	skel->bss->target_pid = getpid();
-+	err = read_vsyscall__attach(skel);
-+	if (!ASSERT_EQ(err, 0, "read_vsyscall attach"))
-+		goto out;
++	host = card->host;
++	host->rescan_disable = 1;
 +
-+	/* userspace may don't have vsyscall page due to LEGACY_VSYSCALL_NONE,
-+	 * but it doesn't affect the returned error codes.
-+	 */
-+	skel->bss->user_ptr = (void *)VSYSCALL_ADDR;
-+	usleep(1);
-+
-+	for (i = 0; i < ARRAY_SIZE(all_read); i++)
-+		ASSERT_EQ(skel->bss->read_ret[i], all_read[i].ret, all_read[i].name);
-+out:
-+	read_vsyscall__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-new file mode 100644
-index 0000000000000..986f96687ae15
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_misc.h"
-+
-+int target_pid = 0;
-+void *user_ptr = 0;
-+int read_ret[8];
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int do_probe_read(void *ctx)
-+{
-+	char buf[8];
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+
-+	read_ret[0] = bpf_probe_read_kernel(buf, sizeof(buf), user_ptr);
-+	read_ret[1] = bpf_probe_read_kernel_str(buf, sizeof(buf), user_ptr);
-+	read_ret[2] = bpf_probe_read(buf, sizeof(buf), user_ptr);
-+	read_ret[3] = bpf_probe_read_str(buf, sizeof(buf), user_ptr);
-+	read_ret[4] = bpf_probe_read_user(buf, sizeof(buf), user_ptr);
-+	read_ret[5] = bpf_probe_read_user_str(buf, sizeof(buf), user_ptr);
-+
-+	return 0;
-+}
-+
-+SEC("fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int do_copy_from_user(void *ctx)
-+{
-+	char buf[8];
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+
-+	read_ret[6] = bpf_copy_from_user(buf, sizeof(buf), user_ptr);
-+	read_ret[7] = bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
-+					      bpf_get_current_task_btf(), 0);
-+
-+	return 0;
-+}
+ 	if (dev->driver && drv->shutdown)
+ 		drv->shutdown(card);
+ 
 -- 
-2.29.2
+2.29.0
 
 
