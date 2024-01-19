@@ -1,119 +1,92 @@
-Return-Path: <linux-kernel+bounces-31326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A99F832C89
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:50:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0337E832C8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F19BB244D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:50:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BE3F2824FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:51:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE52654BEB;
-	Fri, 19 Jan 2024 15:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jAd3/erb"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E439E54BE2;
+	Fri, 19 Jan 2024 15:51:23 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF5BF54BCA;
-	Fri, 19 Jan 2024 15:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A63A54BCB;
+	Fri, 19 Jan 2024 15:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705679416; cv=none; b=uHGohhPcXngQW+2MAloMPbz29pXPC8sTrwxgBrIJx07MkKfcIBEjntxCgAyhyX6wOtQnU/LMaTiBOmmq4lLy9wC0pjDw7/n7XXbTHEPHx+7MqtMkR1OaziFqHOi5gCzmSO6NELV+2AKZvJstm/B3h4lO8czOhJzkm5BEDe4G87g=
+	t=1705679483; cv=none; b=UDvy9nGg6Nu3qOTaZb5T9vvt96WKDHZJU8Ax+60Fob3rlKY+SZ8vs/E5Il9LuuNidR+sfZw0T07aC32t1AA8L89z0YK1oUwCNNiEwneUN52ZzxrWbCXfGIcNOAg8W5+CVdHhv0VNrGsRbqa6fNoMATYjFvJWPfOxpYSdgxgZ9aM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705679416; c=relaxed/simple;
-	bh=WEVXR1pA/pzCxaNHR1riPhSJRcWD8lgDhDQ+LReDBqM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h599hiBpSFHONWN6BLMFXP8hQ0rcbpn9PpVG9x1EU6XLT9vDS2TaaPo1yTkeplopk05XJaKWXgp+hNbaf+Qs+2KSG3asEFMb9km1EqyjzUO7FLinrh18ONPn/ofCpsnJwKjoAkTiV4JOzsMKzNZJS1dpoiKGWwZJxdkatfxX/hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jAd3/erb; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 26730C000A;
-	Fri, 19 Jan 2024 15:50:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705679405;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=no9Zk1+Ofv930fy1IruQYBJcZcLId9qedsWBTajBqLk=;
-	b=jAd3/erbItSU8bRgfAurVO1vRfyY/x0FFjkEhN5ogLafuPpdFJlYMmw2mvONe7FjotJExF
-	BCJ0M7Lt4+ymTm4ZxxE8hUAKY/pe8tNemwOl1tSMTwHlHpwxf5NQblXa4VMrDmXoQsrNS5
-	5b/Rmf+/gXOlw2geifYAL25tJpZnR5yejCKR8gMnrQ17x0KZP6d/kMzlnHMV5f8bI4EVi7
-	dkvJwUcXwAyhIksBlz/wEdHtqMQyIg4YOvKycNYAi3OZvUi9otL4B/8Q0qUTWFa7aAlIJM
-	jJIjiN22G+zWSX/1su7DBWwGIYuS9eT9gCUYSoahyvjaAQq5ux+PvpfWVOZocw==
-Message-ID: <a4627e51-c851-4abf-a3b2-222b2b315d4e@bootlin.com>
-Date: Fri, 19 Jan 2024 16:50:00 +0100
+	s=arc-20240116; t=1705679483; c=relaxed/simple;
+	bh=uL8bmAJV9MR6t5URe6D74sB4jCxEuSzYMTv3ufe3d70=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Nfr37f5UUcht8FEoIOH7AiwuzWcTfOzkqAPNFM0KW+JmYck2MdJpvv4gIKZxxIRNyFnSwJUiIztJoEJn3m8XxT7w9bd+1ydc/jP5vv98eV8K1aS9JFuC9il7j2k5Yy0jVA6IrpV+72jpiglC34W1V1LPqejrB3+PaivSnKmBhIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 391F5C43394;
+	Fri, 19 Jan 2024 15:51:22 +0000 (UTC)
+Date: Fri, 19 Jan 2024 10:52:43 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Ye Bin <yebin10@huawei.com>, <mathieu.desnoyers@efficios.com>,
+ <linux-trace-kernel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] support '%pd' and '%pD' for print file name
+Message-ID: <20240119105243.05082e5b@gandalf.local.home>
+In-Reply-To: <20240119234356.1598e760edbfa58f5440a941@kernel.org>
+References: <20240119013848.3111364-1-yebin10@huawei.com>
+	<20240119234356.1598e760edbfa58f5440a941@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/14] gpio: pca953x: move suspend/resume to
- suspend_noirq/resume_noirq
-Content-Language: en-US
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
- Tony Lindgren <tony@atomide.com>, Haojian Zhuang
- <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Tom Joseph <tjoseph@cadence.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
- <20240102-j7200-pcie-s2r-v1-1-84e55da52400@bootlin.com>
- <CAHp75VezeBp3Umg4prvdS83WrHViyTs-hBV0SejVD2BBnGYEvg@mail.gmail.com>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <CAHp75VezeBp3Umg4prvdS83WrHViyTs-hBV0SejVD2BBnGYEvg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 1/15/24 20:56, Andy Shevchenko wrote:
-> On Mon, Jan 15, 2024 at 6:16 PM Thomas Richard
-> <thomas.richard@bootlin.com> wrote:
->>
->> Some IOs can be needed during suspend_noirq/resume_noirq.
+On Fri, 19 Jan 2024 23:43:56 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+
+> Thanks for your proposal!
 > 
-> ->suspend_noirq() / ->resume_noirq()
+> Generically, I think this type of hack is not good for the tracing
+> because there are already some ways to do that. e.g.
+>  - Use perf probe to specify dentry->name:string or file->name:string 
+>  - Use BTF to specify in the same way (but only for function entry)
+> And those are more obvious what it does.
 > 
->> So move suspend/resume callbacks to noirq.
+> However, if this is implemented in more generic syntax, it will be
+> acceptable.
+> For example, type specifying with "arg1:printfmt(%pD)" will be
+> more generic because it is apparently one of the printfmt and output
+> string. Or, maybe we can just allow to use ":%pD" as a fetch type
+> (start with '%' means the printfmt)
+
+Yes, I like this idea a lot. Please add the '%' keyword/token to change how
+to display this in the print format.
+
+We may need to add more than one token though. Is that supported?
+
+  $arg1:u32:%08x
+
+or that could also be:
+
+  $arg1:%08x:u32
+
+That is, the order should not be important.
+
+Thoughts?
+
+-- Steve
+
+
 > 
-> ...
-> 
->> -static DEFINE_SIMPLE_DEV_PM_OPS(pca953x_pm_ops, pca953x_suspend, pca953x_resume);
->> +static const struct dev_pm_ops pca953x_pm_ops = {
->> +       SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pca953x_suspend_noirq, pca953x_resume_noirq)
->> +};
-> 
-> Please, use correct / modern macro.
-> 
-
-Hello Andy,
-
-Thanks for the reviews.
-
-I applied your comments for the next iteration.
-
-Regards,
-
--- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+> Also, could you update readme_msg[] in kernel/trace/trace.c if
+> you add a type, and add a testcase of selftests/ftrace, for this
+> feature? Documentation should also be updated with more syntax
+> information.
 
