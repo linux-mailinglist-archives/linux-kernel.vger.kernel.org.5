@@ -1,95 +1,160 @@
-Return-Path: <linux-kernel+bounces-31017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B093832798
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:24:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 472FB832796
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BFA1285C5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:24:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB87F1F23F5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1781E3CF78;
-	Fri, 19 Jan 2024 10:23:07 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED8D3CF5F;
+	Fri, 19 Jan 2024 10:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bHdhVAUY"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988123CF40;
-	Fri, 19 Jan 2024 10:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9114136138;
+	Fri, 19 Jan 2024 10:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705659786; cv=none; b=o2ytE4xZgCWMed1d5B/KUKEZL1QfSDD7BHx9RJO4fbLTNe8Jadyn9dgvRUYwE6FSHg4AJFNOjsPeCIuji7d/AiUJi3xRA+ibPq5aXx376/Xs42VpY3uPj4yWXz0M/s8T8HTcaATWiHlHylsy/Nso6UTFzpzwEryPnnZqjXdRnBc=
+	t=1705659785; cv=none; b=QqZyX0yH3h2NPvtW/52YZBlOUpEGHFt7Hbo6NAWCpef1qZ/z90ANCD3bSC3jkp/yhojb9RrdGm8ygqRV0QxI21akn5ELWjKiCm3sWnO8g3VdPG6u4xVvoRH29cbVXfENVvXbtIIzul68hgaacOjkjHw/j8UYBm/BGd2IWY07+sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705659786; c=relaxed/simple;
-	bh=H+L7PUjG/moR9/SE/ZV68ckNWu2AYzqZAphFxrn/bCw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UrqF/5xUbsOP1+fKAqAkdPdwPEP5LI0NdbmUAMY9Zw9b3go5bWP9rWxoW1rm07reno90ZlVAmvrYJpcKx4R125pXi11aLBNo5yvwi5OE6rXBO0YNRCnfkYeVFAlGi5cAvmQdrZ6o/qp7ADcGunlBA5ygALIaCf3EEJ7XtUqPucI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TGbJP4ZpSzXgTX;
-	Fri, 19 Jan 2024 18:21:57 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (unknown [7.185.36.136])
-	by mail.maildlp.com (Postfix) with ESMTPS id 695F4140153;
-	Fri, 19 Jan 2024 18:23:02 +0800 (CST)
-Received: from localhost (10.174.242.157) by dggpemm500008.china.huawei.com
- (7.185.36.136) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 19 Jan
- 2024 18:23:02 +0800
-From: Yunjian Wang <wangyunjian@huawei.com>
-To: <willemdebruijn.kernel@gmail.com>, <jasowang@redhat.com>,
-	<kuba@kernel.org>, <davem@davemloft.net>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<xudingke@huawei.com>, Yunjian Wang <wangyunjian@huawei.com>
-Subject: [PATCH net 2/2] tun: add missing rx stats accounting in tun_xdp_act
-Date: Fri, 19 Jan 2024 18:22:56 +0800
-Message-ID: <1705659776-21108-1-git-send-email-wangyunjian@huawei.com>
-X-Mailer: git-send-email 1.9.5.msysgit.1
+	s=arc-20240116; t=1705659785; c=relaxed/simple;
+	bh=+J0CO6a+MEvtWB8JYt98J+05IRCxT9Ub3fmh88Ph2k0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GE6VUDHue2PN98z/hocl1TZSUy9jM5Q6KW6NoIpmyupWYgpilRJVCMrxKeltp/hkrgiGMiqsgzskjc9ca7XMSggLrvh3qMzoSOvBsEWRb1vivCX86y6LKowiDGCWGYvSU9hQf56YX+i4ta/pT66WHVwtMdSo6leaD7hLoIZunZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bHdhVAUY; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705659784; x=1737195784;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=+J0CO6a+MEvtWB8JYt98J+05IRCxT9Ub3fmh88Ph2k0=;
+  b=bHdhVAUYEMaywkz8qq1gVtwFb7OeOEInePgboy9jkDOdK9OKrMDp4JQG
+   G0Kq8zzaFah3Vj2ayi1LyrINTx00Azehkc3PEUV+qPJOMAyp9gRuX7ea4
+   0jZcuQ1Yy2PNit0iy6Vn3qiiFyRWu80dzu9GnC02QBun1CcxogBI0foau
+   lAwGcFj5wkPdpfru+EChHHUxYGrk3DXbcWnsVSLBkWE23/AsIjtWhY4Yu
+   VGRgRt0qgYysqz0XfPYlt1LRkkygkVbFzd5b3Ll//Q4kIppxasJGKtCKU
+   1Yomuw7sn90ErdHZBD8g33+nreMaorPJ7ptOWEam61FJ/ZAJZvIVxwBNL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="8088412"
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="8088412"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 02:23:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="928370826"
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="928370826"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2024 02:23:00 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id 0DF5CE3; Fri, 19 Jan 2024 12:22:58 +0200 (EET)
+Date: Fri, 19 Jan 2024 12:22:58 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Esther Shimanovich <eshimanovich@chromium.org>,
+	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Rajat Jain <rajatja@google.com>
+Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
+Message-ID: <20240119102258.GE2543524@black.fi.intel.com>
+References: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
+ <20231228132517.GA12586@wunner.de>
+ <20231228133949.GG2543524@black.fi.intel.com>
+ <CA+Y6NJFQq39WSSwHwm37ZQV8_rwX+6k5r+0uUs_d1+UyGGLqUw@mail.gmail.com>
+ <20240118060002.GV2543524@black.fi.intel.com>
+ <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
+ <ZalOCPrVA52wyFfv@google.com>
+ <20240119053756.GC2543524@black.fi.intel.com>
+ <20240119074829.GD2543524@black.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500008.china.huawei.com (7.185.36.136)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240119074829.GD2543524@black.fi.intel.com>
 
-The TUN can be used as vhost-net backend, and it is necessary to
-count the packets transmitted from TUN to vhost-net/virtio-net.
-However, there are some places in the receive path that were not
-taken into account when using XDP. It would be beneficial to also
-include new accounting for successfully received bytes using
-dev_sw_netstats_rx_add.
+On Fri, Jan 19, 2024 at 09:48:29AM +0200, Mika Westerberg wrote:
+> On Fri, Jan 19, 2024 at 07:37:56AM +0200, Mika Westerberg wrote:
+> > On Thu, Jan 18, 2024 at 08:12:56AM -0800, Dmitry Torokhov wrote:
+> > > On Thu, Jan 18, 2024 at 09:47:07AM -0600, Mario Limonciello wrote:
+> > > > On 1/18/2024 00:00, Mika Westerberg wrote:
+> > > > > > Before my patch, you see that the JHL6540 controller is inaccurately
+> > > > > > labeled “removable”:
+> > > > > > $ udevadm info -a -p /sys/bus/pci/devices/0000:05:00.0 | grep -e
+> > > > > > {removable} -e {device} -e {vendor} -e looking
+> > > > > >    looking at device '/devices/pci0000:00/0000:00:1d.4/0000:05:00.0':
+> > > > > >      ATTR{device}=="0x15d3"
+> > > > > >      ATTR{removable}=="removable"
+> > > > > >      ATTR{vendor}=="0x8086"
+> > > > > 
+> > > > > This is actually accurate. The Thunderbolt controller is itself
+> > > > > hot-removable and that BTW happens to be hot-removed when fwupd applies
+> > > > > firmware upgrades to the device.
+> > > 
+> > > This is quite interesting take. Does fwupd rip the controller out of the
+> > > box to update it? By that account your touchpad is also removable as it
+> > > may stop functioning when its firmware gets updated.
+> > 
+> > The Thunderbolt controller is connected to a hotpluggable PCIe root port
+> > so it will be dissappear from the userspace so that "removable" in that
+> > sense is accurate.
+> 
+> There are systems as well where the Thunderbolt (and/or xHCI) controller
+> only appears if there is anything plugged to the physical Type-C ports
+> and it gets removed pretty soon after the physical device gets
+> unplugged. These are also the same Alpine Ridge and Titan Ridge
+> controllers that this patch is dealing with.
+> 
+> I tried to think about some sort of more generic heuristic how to figure
+> out that the controller is actually inside the physical system but there
+> is a problem that the same controller can appear on the bus as well, eg.
+> you plug in Thunderbolt dock and that one has xHCI controller too. That
+> device should definitely be "removable". With the "software CM" systems
+> we have a couple of additional hints in the ACPI tables that can be used
+> to identify the "tunneled" ports but this does not apply to the older
+> systems I'm afraid.
 
-Fixes: 761876c857cb ("tap: XDP support")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
----
- drivers/net/tun.c | 2 ++
- 1 file changed, 2 insertions(+)
+The below "might" work:
 
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 237fef557ba5..4a4f8c8e79fa 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1634,6 +1634,7 @@ static int tun_xdp_act(struct tun_struct *tun, struct bpf_prog *xdp_prog,
- 			dev_core_stats_rx_dropped_inc(tun->dev);
- 			return err;
- 		}
-+		dev_sw_netstats_rx_add(tun->dev, xdp->data_end - xdp->data);
- 		break;
- 	case XDP_TX:
- 		err = tun_xdp_tx(tun->dev, xdp);
-@@ -1641,6 +1642,7 @@ static int tun_xdp_act(struct tun_struct *tun, struct bpf_prog *xdp_prog,
- 			dev_core_stats_rx_dropped_inc(tun->dev);
- 			return err;
- 		}
-+		dev_sw_netstats_rx_add(tun->dev, xdp->data_end - xdp->data);
- 		break;
- 	case XDP_PASS:
- 		break;
--- 
-2.41.0
+1. A device that is directly behind a PCIe root or downstream port that
+   has ->external_facing == 1.
 
+2. It is a PCIe endpoint.
+
+3. It is a sibling to or has any of the below PCI IDs (see
+   drivers/thunderbolt/nhi.h for the definitions):
+
+   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_4C_NHI
+   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_2C_NHI
+   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_LP_USBONLY_NHI
+   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_USBONLY_NHI
+   PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_USBONLY_NHI
+   PCI_DEVICE_ID_INTEL_TITAN_RIDGE_2C_NHI
+   PCI_DEVICE_ID_INTEL_TITAN_RIDGE_4C_NHI
+
+   And for all USB4 we can use the PCI class:
+
+   PCI_CLASS_SERIAL_USB_USB4
+
+(4. With USB4 systems we could also add the check that the device is not
+below the tunneled PCIe ports but that's kind of redundant).
+
+I think this covers the existing devices as well as future discrete USB4
+controllers and marks both the NHI and the xHCI as "fixed" which we
+could also use to lift the bounce buffering restriction from them.
+
+@Mario, did I miss anything?
 
