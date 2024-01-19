@@ -1,126 +1,214 @@
-Return-Path: <linux-kernel+bounces-30827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 056938324BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:46:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D5F78324BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B9C9B22320
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:46:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D23FB225A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48370539A;
-	Fri, 19 Jan 2024 06:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DEC17484;
+	Fri, 19 Jan 2024 06:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hyI4mMT6"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="EDhQMB5P"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2119.outbound.protection.outlook.com [40.107.237.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF903214;
-	Fri, 19 Jan 2024 06:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705646752; cv=none; b=fF7Z4MdrqY2m8JFBM2axBIbyudtnvicsKUFngUgkVf/oCPfzgix8lmv/MDPc5rfzYWZir4PMIGQs79rUPeobWkxNyan22hLZzvC5OT8S5d6idters1QcD0T1jAuzmUj9IXM81RUmOShRQd+u6DKcmvxB//QKEKFhva2XlBvo/1U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705646752; c=relaxed/simple;
-	bh=wQk4FOUlnnv8BFLKWr2FYKxfjNLY8sHTXI6EqsBnuMk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OUx+uO/wyoVfNn92TGfIzdCJ0OoB9aOTw6csmD1i258ItmjeNJu570fdUPadpeO2j3ebpX3pvSzBp0UQjqww/BHU06eeuU/Xh2xs2S62usX3jSqs4Q3Fug60X5AgEtHefDkI7pk+maJB/XeOuaWqB00NazYMumK2A6uaeu/olcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hyI4mMT6; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d9b13fe9e9so399683b3a.2;
-        Thu, 18 Jan 2024 22:45:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F8B6FAF;
+	Fri, 19 Jan 2024 06:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.119
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705646797; cv=fail; b=AOkmdcXdbu8AnkugIoB1BL5IeezrEA1WRYtX92bhPjJcGeKvVVf2mPCmxQXbVa1srBZ73/dymAWqOYPKGi5HRjHjSqbo3kz/DcuqTkIPT3W/VwdwL0KEMhWO37tMy9d0sENo9+3yRMlPgLiP/bl9FIHz9SihPBOHo7kSXZAZXEs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705646797; c=relaxed/simple;
+	bh=WSfo5lJs6BSrKOfsVlF20X3acurqj2SB9yQTU+FUemk=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=HQ9rT97hGnNIJO2IDvlo2CcRdr0Y4FjHs1sn7vHAZbEY7hR9EaAfVmaX8agqpmqhjdSyjVE5ApmX25GmENgjBSmSMFkKdRcde47CYToIsxodg+TwHgGE2m26K/fXqt0e2YP2F8mXzW+Au3MDimj8FGG9QTTAr/NeclQzRXg+v+c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=EDhQMB5P reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.237.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ToxSrkd73ZGalQ3rTv0/E5aCuSPiZaP7el12HgdzvDghy06BxQTD+Dk+JQ6sT2LvUQ+y6zsce3gmhMFKzShdLDqzfCezyBDBlQx9rObKh9RzDCGEpi6ys2jtDX+0Px95s2kFTxpDfjfctlG4PzXtQ8gnMBkezHCoANQ2hpe0vvOv+ld8470iHdcRt6pSs6ljiaFZWZx4uarOgbAFbyzv5F+c3A6/sSeK7xtgy/TOQzHh673LqEzFbBSexqi9ZBm2d9WLxY5mJEkytUN0ZDaGLg7G8fECr5lqeN2lM0ymwINFh+yioJBcvYx/kbyAtGKuIFMYzySaoY6AqUPj/hwp8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KuvYuY28tX/CjPLdBJzvpF9TuCjSNkmWkt/BUdLf5zE=;
+ b=fs9WqPxOULVVU5dXj5MOlUIwiuaZsT0i26C932y1cSa3hgdm2wWUzFQTIU0yok7y3sDSczhDC4AqrsApwS8uyigzbqmgs84gldfxP1qY/95dJw+Mp7SeiqA+GEONgeRiwieeqi55/UJXBl/iYM5J59G4nkVcb4oK4buP5vrSZzBGnZmrJ2ulLR0zVFux5xqlpb7k5d1jGjF3KJouwqJRRQgbJEBznXuL9dCoAENkQxoK2e9fKBJzvdIe+Iu1WsIIsN4qt/chMLns/2hbxrNdBeAiETyk3e9UZBPx5/wjpQiFcrukikS5Dfa+MwXiB2H3px+Q4pY9EXCMyN2sIP4ikw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705646751; x=1706251551; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wTKVPZWGYFU6FXuHPoulVuF2kETQ9HD+uYcU74cb1xI=;
-        b=hyI4mMT6/pvMtqXyXqkLOIrKxJjgkZdXx0fbjoRCZOffJpQ/1sNKpjoUeMZF9QyHjz
-         MzELqNYOvuwrvupP38dVYtcw8I7it1B1PAfkrx4xIWLR4WmvMdunSn0bMmgmD+jAGtLR
-         4U1ZgtByFjo1LsUnhzoZ6Ov5ULqfXcsvKi2OB63hGOAB3pOA+IZQJnCeCtUy44CPf5pT
-         jI9qTw5NNn8ceCNooSiIMysWibr5ov+d2V3TJqOibLmi5tVTarlh/qu/UavS2r7/hnUy
-         Z0/ks0CxmuT1kOQra0FsKMR9307YDvuFpeTWsG/i3XptkHpR/rpYHiElzP48c62Tzp2V
-         auZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705646751; x=1706251551;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wTKVPZWGYFU6FXuHPoulVuF2kETQ9HD+uYcU74cb1xI=;
-        b=JOHwgnTmd9Ga2PAmHR4zd6wzp8JXh/4eBZurs+crqfCA2Wcd6Kk4Tw/ZiZCH/e3ueC
-         7Y+Xc+G536ULhhxsnPPdMxMvYqzkl4ZSFuHLsa9Wn6eYVE4PNRXqUcGcWTXZR2mrMTxR
-         b7MEs/vlC+fCR5+kdDgkvP6JTBqfJPVYlkAmrHzxRcTMM4lr0r3bkltltyyYr9MNahE2
-         61RGLiYMU827E8MiQ6ZPFUuyg8Z0x8D86ivsTs9/XUY4SQPDtDXzouH+rFQ1BlP0vbJ7
-         eUiqfO93InC49PAJg6T0cx7XpumYabJ36/IGKYDS7UiOHd3fbtMwXEwNcGnwKRyDaDpG
-         ZqPQ==
-X-Gm-Message-State: AOJu0YyU3lfKLCHbwHX9Fktyvw7EsF/sVkNE4e/aK8CkOHWiP/EUzIUe
-	mxRYqMvZMaur7HadAvhCcyKLVnSShInd7r6XLYDGVU9K32o/Nxec
-X-Google-Smtp-Source: AGHT+IE90ay1HpXv0tuY9/Vu/wIY6ULbl1WxalXDALUIyoRxbSFIDXIy8E5Zv0zxEwLjdi5mqeA+BA==
-X-Received: by 2002:a05:6a20:81d5:b0:19a:d795:7ae8 with SMTP id r21-20020a056a2081d500b0019ad7957ae8mr1818901pzb.82.1705646750688;
-        Thu, 18 Jan 2024 22:45:50 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id k9-20020aa792c9000000b006d9bf45436asm4372549pfa.48.2024.01.18.22.45.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 22:45:50 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 9C2C4184DAE02; Fri, 19 Jan 2024 13:45:46 +0700 (WIB)
-Date: Fri, 19 Jan 2024 13:45:46 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com
-Subject: Re: [PATCH 6.7 00/28] 6.7.1-rc1 review
-Message-ID: <Zaoams2Ca2RgKB0F@archie.me>
-References: <20240118104301.249503558@linuxfoundation.org>
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KuvYuY28tX/CjPLdBJzvpF9TuCjSNkmWkt/BUdLf5zE=;
+ b=EDhQMB5PpxrJXQjZx6L+fAyha2CqtyIlxwvTSbuYGg7ae1MiHuye/H1DcEgaFgHkaRPkZ/y4FrDt6/Kv0vnOSM7Q6pYI5/uc4szG78aLPoI65CS1KSBVy9PC9FnzuURNSZHzA3JdXxcbZCNag82i8WYjvhSMj6yKR8ovtjAWh48=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
+Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
+ CO1PR01MB7291.prod.exchangelabs.com (2603:10b6:303:156::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.26; Fri, 19 Jan 2024 06:46:31 +0000
+Received: from PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a])
+ by PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a%6]) with
+ mapi id 15.20.7202.026; Fri, 19 Jan 2024 06:46:31 +0000
+Message-ID: <1cd078fd-c345-4d85-a92f-04c806c20efa@amperemail.onmicrosoft.com>
+Date: Fri, 19 Jan 2024 14:46:16 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] NUMA: Early use of cpu_to_node() returns 0 instead of the
+ correct node id
+To: Yury Norov <yury.norov@gmail.com>,
+ Huang Shijie <shijie@os.amperecomputing.com>
+Cc: gregkh@linuxfoundation.org, patches@amperecomputing.com,
+ rafael@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+ aou@eecs.berkeley.edu, kuba@kernel.org, vschneid@redhat.com,
+ mingo@kernel.org, akpm@linux-foundation.org, vbabka@suse.cz,
+ rppt@kernel.org, tglx@linutronix.de, jpoimboe@kernel.org,
+ ndesaulniers@google.com, mikelley@microsoft.com, mhiramat@kernel.org,
+ arnd@arndb.de, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+ mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org,
+ jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org,
+ cl@os.amperecomputing.com
+References: <20240119033227.14113-1-shijie@os.amperecomputing.com>
+ <Zan9sb0vtSvVvQeA@yury-ThinkPad>
+From: Shijie Huang <shijie@amperemail.onmicrosoft.com>
+In-Reply-To: <Zan9sb0vtSvVvQeA@yury-ThinkPad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: CH0PR07CA0017.namprd07.prod.outlook.com
+ (2603:10b6:610:32::22) To PH0PR01MB7975.prod.exchangelabs.com
+ (2603:10b6:510:26d::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uveMEZpKYU3Kv0ph"
-Content-Disposition: inline
-In-Reply-To: <20240118104301.249503558@linuxfoundation.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|CO1PR01MB7291:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6a71be4b-4d28-4475-f9fb-08dc18ba5e97
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	XkTx/JxRN3LuU7scTj9pZMjdworz1bZPy5bNUWL1hw3KMe9IzHtySEg2FHKKrcMbZp3UwdOqqolDgk87L4uKwGYTAypPcS5i64OcecxaqJK1iu84R2vBzPO5JIemsxt355eLW3zcq++G983X0VaQaLoleirsLt+UiDHTo1jA1IDSXgD8YBSKvZ1yrAF1zLVosD+uawYKkF1SWDtb380DWmYFZ1dPh3gp9hCHUTvOe9K5SqFsKSEMILbofWUnO0PCfzJck7p7tAZOyvjYiEOcXVgzPuD3qIbw50ouDi36YTx8wkU4VnbegUVgeXuOKOsOeMBHniqrpJjH4PSeRYIfPlMvhqpYXNTck8ORHkBMBD9KVylb5sbMJCeXyVqOKCokdaDMkwQer0/CufMCGzsGJ2z/ZW/Tz3zH7aiZszMMlnKYzSM61HMuO9/UjkYWuMDp8/XdcHVyiqoroZeg0y8NB3boRnLYTsLr1FVEmdMFMXdG/my9D3F3zd3Z4TVpBk00R7H3kmg1mWrlClP9T8SCNnGPLpVxrXP5VyY8pUfIqvDXSd4qtdVUVoqn6rMV9cNwrfLmQ7eOZzNDzCdZ1IDAVfHQTwOgfeop3dPkISHa4LTK0OhUMfgXt3gSCBtvWx+u
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(366004)(396003)(39850400004)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(26005)(107886003)(2616005)(42882007)(6666004)(6506007)(6512007)(83380400001)(7416002)(5660300002)(2906002)(41300700001)(478600001)(6486002)(110136005)(4326008)(8676002)(8936002)(66476007)(66556008)(66946007)(316002)(31696002)(38100700002)(83170400001)(31686004)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Wk1OR1hhSFA1L2tFZS8yN012Ykx5Q0ZpbE96N3pEVHg3ZEhPSTl6blFkSmFy?=
+ =?utf-8?B?WGJlYngzQm1wL0NzRVFJQjN5R2hZckpJOEM3dXJTR2ZUV0tBcHlGREtyajc0?=
+ =?utf-8?B?NkR3dEVuRU9lZHZxRVd2YkFSaFJIK0w1RnpOTTZhbVdLaHRLanRVd1RUemQz?=
+ =?utf-8?B?VXIwMnlBcEk3QlIreHkxQnNVeDZ3dkJNZzlIVG84REM4Ni9EWkRCNy96V2t4?=
+ =?utf-8?B?dE5KZ1ZvOVRwVzVVdk1qRVFDZG5tNmJ0T3pjMEF2dldBRVEwTmRsWmxBNVBu?=
+ =?utf-8?B?ZkYxUDQvWVVta1NmOFRaU1FhMWZrV3ltRHN0WlpHL1N1RjNweE5vUnVJM0la?=
+ =?utf-8?B?cUpaR3NlZld5SXowMWYwdnFRbEhWVm9sY3Z5UHRPS1AxUVZBTmxac0c2UGt2?=
+ =?utf-8?B?eDMyaEVSVHg4aWxwNVFOQS9QTDVHY243NGhLd3BzZHlWRVlsMnBIVmU4RUdi?=
+ =?utf-8?B?Wm9yOUQ2b1V1Z1B2T3VENnZLVHNRRWlaOER1cUN6QThJSzF4YXRXUVU4L29r?=
+ =?utf-8?B?eE5KWi9iUkJsU1BtZHF1SXMrdk1uc3pJazJhVmRNMDhlVkxFOHV2b0sxSWJt?=
+ =?utf-8?B?WGk1aGNYS3lCMStKaWJRRG11RllyM2dJckptYnh6ZlVSMHZkQ05ic0w1OHNh?=
+ =?utf-8?B?SWI4WDVhakFYZFZvTmFTU3p2REg4R3BBbnZncVJhREJoYnpjU0R6Qk00a3Ro?=
+ =?utf-8?B?RUkvNjR6WHJVWXhpUFJ4VWNjOEpnT0lTbWpLVENJSzczTll0MldvTjQzQ3dL?=
+ =?utf-8?B?ZVVoK3AzRkloUlVGWkhkMDgrcG04Z3AzMFkza21jb045VTZSUGlpVldvSnhk?=
+ =?utf-8?B?Y2NHQ21SRDlxOUFxU1d6WTdMdWNZMGxQaGxtQml5eFYzdi8vY1pwRi9sR2Zq?=
+ =?utf-8?B?QXFiTkQyU3Fvb0hkLzc2eVc3YlU4UW03RGdJQTdtUlZWSUtkYVQ4OEJCdklL?=
+ =?utf-8?B?L1FTVUl4VTc0cTEvRXByS3lOcDV2OEtxMlJ3a1J1a1ZwYi8yQzYyTkJ2c2dq?=
+ =?utf-8?B?MjYwWmszY1oySlhDRGtKaFN1dGgrQlJRU0RZa0lwQjBxMFNFbWpHV0h3M3ZB?=
+ =?utf-8?B?TkJYdFM0U29pUGxZcmFpcmoxWUdaVldoa3BURE9yUjhLb0pTUS9TQXgwS3Zs?=
+ =?utf-8?B?TGJBUDVYNmNwdWVOUGFVbWZjUGdrNEg1eWNTTnEvb1FTbjZrZllhd01ROHhp?=
+ =?utf-8?B?MWcrNUhJVUROOXlGbk1iOEowWVg5STZZekJPd1BUajZrZHd3RC9zdE02bWVh?=
+ =?utf-8?B?SVc5N0tVbG01eVlmajAvK3VlL1ZkZXM5akFaVlFjaGo0Mk96ZEVpRXovNDZ2?=
+ =?utf-8?B?N0Z5MFNxQkVFMGc1WU1BK1FabEFPSlI5U1k3c1NjSU5vT0NPQUhUSHFsSXY0?=
+ =?utf-8?B?YnVIMTlaUm1jZHZUeERsU2JwWG9xMi9DaFA5T2hhUjM4UUt1cllkK1Zza1Rk?=
+ =?utf-8?B?MVo1TjJVcmZNbyt3SDdxNzhyR2x1d3lFVEdNTVRZdXZ3ODd2eG13cnI0dUNC?=
+ =?utf-8?B?d2N6TmdzcnVnZmx4Ym85YU1zMDBJSzVRNmRwL0xiNXZxdHFKQTcyWEhqNDBX?=
+ =?utf-8?B?S0lwcVZ4UWxwbUFQZHMwNnMrWUNmSER5dnJ5YTFNN01iTm9QMHRrMVBjeFhJ?=
+ =?utf-8?B?YmxYMURrSlRWOVlvd1JvakIvZlE1cDdYYkZBdWcrOEcxTnJLdVZhV2MxRmIy?=
+ =?utf-8?B?YXV4dGRIcXdBV3lXOTNuMmlPZS9NR3VHL1NyVFRwUG1mSWVTRjBPSGVuM1Ev?=
+ =?utf-8?B?dnBvaDFPa0F1Tks0VUdqU3Q1U0wrR1FHT3o4bVhIQjRUY2Uza0Zta2lzVHdR?=
+ =?utf-8?B?NFlPNlA5dTUwMVIxc0crVXcyQlRQa0JMbXhJSlNlR3kySmkyL3FFdjZXVlRi?=
+ =?utf-8?B?QUlFbDJWeVlsMFNqaXFtVjhQWFAvNE9ESTJaRkx5MlpDak5RaGEwN2VTYzk5?=
+ =?utf-8?B?RjRXZnJ1TmNIZjV0dVM1MmNPUHZlMmVRWHQ4Z0xCWU1YUnY2cXRGWWhnSWFr?=
+ =?utf-8?B?c1Y1NmNmQit1aW5VNWJOMFZtd3E3YUR1cVlacUNsM2RneVBUeHJhQTh2VHdO?=
+ =?utf-8?B?aXRuLzRtYUFqM2Y3YTc3bXNoZzhwcGZnS3BQMzhqaGZvK0JRc1NRN3p6RDFl?=
+ =?utf-8?B?aXh1eDMvRjI3b2ZGYWVKaTI1Q1hmQjB2OTl4ZDlSN0dNaTkrM1Fub01laUNo?=
+ =?utf-8?Q?B20T2V3cGUZIlLJgRJacLEQ=3D?=
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a71be4b-4d28-4475-f9fb-08dc18ba5e97
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 06:46:31.2149
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aL3NMB/llKCtTPp63balqZ42Tl4RRBeAJeirXOZ7LmljgdrDW1oFiM1OcbTxQDQK51s68scd4lSctql53pA6PiB5e9R2H2Nsh+LtUUKfylp/AJ3mCRjqaIT1Or84w08p
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB7291
 
 
---uveMEZpKYU3Kv0ph
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+在 2024/1/19 12:42, Yury Norov 写道:
+> This adds another level of indirection, I think. Currently cpu_to_node
+> is a simple inliner. After the patch it would be a real function with
+> all the associate overhead. Can you share a bloat-o-meter output here?
+#./scripts/bloat-o-meter vmlinux vmlinux.new
+add/remove: 6/1 grow/shrink: 61/51 up/down: 1168/-588 (580)
+Function                                     old     new   delta
+numa_update_cpu                              148     244     +96
 
-On Thu, Jan 18, 2024 at 11:48:50AM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.1 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+  ...................................................................................................................................(to many to skip)
 
-Successfully compiled and installed the kernel on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+Total: Before=32990130, After=32990710, chg +0.00%
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
---=20
-An old man doll... just what I always wanted! - Clara
+>
+> Regardless, I don't think that the approach is correct. As per your
+> description, some initialization functions erroneously call
+> cpu_to_node() instead of early_cpu_to_node() which exists specifically
+> for that case.
+>
+> If the above correct, it's clearly a caller problem, and the fix is to
+> simply switch all those callers to use early version.
 
---uveMEZpKYU3Kv0ph
-Content-Type: application/pgp-signature; name="signature.asc"
+It is easy to change to early_cpu_to_node() for sched_init(), 
+init_sched_fair_class()
 
------BEGIN PGP SIGNATURE-----
+and workqueue_init_early(). These three places call the cpu_to_node() in 
+the __init function.
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZaoalQAKCRD2uYlJVVFO
-o67kAPwIbu+cMpTwjCo2YUWCUWcIvqh3zVWY8ZW6VJpDWacXyAEA+DDItFr9LArJ
-/fBg3dEJQ6tw7c5yixxIgn/w5bEKvQg=
-=/zNN
------END PGP SIGNATURE-----
 
---uveMEZpKYU3Kv0ph--
+But it is a little hard to change the early_trace_init(), since it calls 
+cpu_to_node in the deep
+
+function stack:
+
+   early_trace_init() --> ring_buffer_alloc() -->rb_allocate_cpu_buffer()
+
+
+For early_trace_init(), we need to change more code.
+
+
+Anyway, If we think it is not a good idea to change the common code, I 
+am oaky too.
+
+
+>
+> I would also initialize the numa_node with NUMA_NO_NODE at declaration,
+> so that if someone calls cpu_to_node() before the variable is properly
+> initialized at runtime, he'll get NO_NODE, which is obviously an error.
+
+Even we set the numa_node with NUMA_NO_NODE, it does not always produce 
+error.
+
+Please see the alloc_pages_node().
+
+
+Thanks
+
+Huang Shijie
+
 
