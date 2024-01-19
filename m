@@ -1,153 +1,108 @@
-Return-Path: <linux-kernel+bounces-31505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E248832F3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:00:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8341A832F5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 840C41C24F79
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:00:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABBF91C23CCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27ABF55E66;
-	Fri, 19 Jan 2024 19:00:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B618656454;
+	Fri, 19 Jan 2024 19:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Qv0j/v2P"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mMDi64N0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001EC1E520;
-	Fri, 19 Jan 2024 19:00:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E972B1E520
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 19:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705690847; cv=none; b=MdxOzkNbl6kSo18FEB5d3jazxXLZ6mCjxCTtfMCtwkShqGdche4lh/TJhgMnw0pU5dwjuPLsf9KtWuBm/Q4CDUdxzG2ytTvySmD7ZsSe2PHErFhZqIj8wn9QXXq9IwEuHJ0Ces6nts13K4eAqb6LcwmcqSNBORv901wRg6J7i40=
+	t=1705692587; cv=none; b=k9DWSlqwDyQEkt4g2dsazzyzRYYlfq5erCA8XQfJR4e2Yc2raLVOGUPJW+0/rSvwDHEPW+lQpk77dtcbstLPoyxv4bjRg6+1hTwrNr0P14B4RahSexYeCZuZ6/vIWrjMKf8gRoES8GoeG6+zG22jyxHhuT5vcIcavizOBHSkKeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705690847; c=relaxed/simple;
-	bh=ZaEF5YQIRGcqMql2J192zOqBYfhdrbQVff9PSVbXwBs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EiQUGD8Qt99h8PvSs96Gyu+aRqQuvXv3stGREg4BbS+arNPoFRFp1zu1KtoHedaqxue+sKLEAaoiWaBMW2YD+v1sHUoIBNJUMCF1IcGUYwwPgCo8ERyuoHALDLG503SBo0VrpOMPgImTyoY5R1OCEJvamphxLCQF8kNak6Ty+og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Qv0j/v2P; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40JIVGpD020244;
-	Fri, 19 Jan 2024 19:00:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=on0XcPwc+PbykBkSSYRKs
-	qVcF6ETqtHDs5BU2s4PETc=; b=Qv0j/v2Pn4Tq0NVIjAF8VVW6Ul8Pd0AOHMTJq
-	HikJby76arOfaAkBNcm7p6nZYUODbkaMBLOw0DD8W3gWUnx1txxZAQkzyxUmj5M+
-	YoJYdTZQJUZbLvKZ7KTPHnTnw31GRGXUX+uDlYjDZZW0fzcpMlF+wj0lUiMgDjGM
-	S+giJR5+IxXcukChSZq9vYbVLOehv7PvSYIG239sNlH/IuPdpUuDEW8ZxEkhrNm7
-	aFdqwczKCeFH2Ht8jJXluH522nYmvI4YCMhYhVA4x+FA4X/WcuVe9PdwmTc2aLv6
-	tRvA84iHQE3S3u9xZYzWyzHzVc0fBq1PdM2FyhyViC/oEIDfg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vqhpb9p6q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 19:00:29 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40JJ0SWh016889
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 19:00:28 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 19 Jan 2024 11:00:28 -0800
-Date: Fri, 19 Jan 2024 11:00:27 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp: Introduce additional tsens
- instances
-Message-ID: <20240119190027.GQ3013251@hu-bjorande-lv.qualcomm.com>
-References: <20240118-sc8280xp-tsens2_3-v1-1-e86bce14f6bf@quicinc.com>
- <ce77861a-b362-4ecc-8e92-7fb846c7e508@linaro.org>
+	s=arc-20240116; t=1705692587; c=relaxed/simple;
+	bh=FEcAsUZWPrO8gUGoSTTntTr0QKjxJXyVj/rDXuZnSC8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D1C3TUhlw8fabpgVetYC3vZgaO8mF2GExYMtaSEPiQtmJ58C37RG93mVuj3hmRRVrJ+NEKBLjO1CdAsMfcysQcC1gpvOI/giF7b7a1bpaHAR1ckai32Cv7Xakjq21O+K3/V1m8n7s2MhEV0YPfLg+D2MGLpaFXPm8SwM9i8P9Ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mMDi64N0; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705692585; x=1737228585;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FEcAsUZWPrO8gUGoSTTntTr0QKjxJXyVj/rDXuZnSC8=;
+  b=mMDi64N08Mm/jUCLkHoE89Gj1CruUztibfO7zX30EITgcqB3uUthHOKF
+   yTjTBybzzj0HV+gTmNmlVrOlttPuzrNFQ2BC3e5HLkjnpJWSoyRw+M44v
+   Gk2MgYKCG5td0BJ+W/ftP9uupzGQgDY22krF55rhFeG1uhcx+UT8I9lUi
+   ghcEZSoFMJYKgG57016+Fm1UJJeVBZMKra7pTzyU2IsR4il/1FYcVMv/G
+   SC1IauzVKtHl9ifrwF0N1c0PLPNqNqCk0UhN06G9kvkSmUi/Aq1XrdLQf
+   X6ilyl8tWoL6Xc8bFu/wX7Aew3hfvxoCPctjQooL7F68JbvtFg+FqhR6H
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="705486"
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="705486"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 11:29:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="742731"
+Received: from guptapa-mobl1.amr.corp.intel.com (HELO windy) ([10.125.112.71])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 11:29:42 -0800
+Date: Fri, 19 Jan 2024 08:21:04 -0800
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: Sohil Mehta <sohil.mehta@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+	kirill.shutemov@linux.intel.com, daniel.sneddon@linux.intel.com,
+	antonio.gomez.iglesias@linux.intel.com, rick.p.edgecombe@intel.com,
+	alexander.shishkin@intel.com
+Subject: Re: [PATCH] x86/lam: Disable ADDRESS_MASKING in most cases
+Message-ID: <20240119162104.4ehgnj4ptjrfwyhf@windy>
+References: <919b6370a908bb091779ec2eca7ca5e369d57847.1705631230.git.pawan.kumar.gupta@linux.intel.com>
+ <8936e2c6-93b8-417e-9151-041c5f2e1102@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ce77861a-b362-4ecc-8e92-7fb846c7e508@linaro.org>
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: S8dDUsXmc9FWYSVML_owDDxyruCuwhVj
-X-Proofpoint-GUID: S8dDUsXmc9FWYSVML_owDDxyruCuwhVj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-19_11,2024-01-19_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 mlxscore=0 impostorscore=0 spamscore=0 phishscore=0
- clxscore=1015 malwarescore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401190110
+In-Reply-To: <8936e2c6-93b8-417e-9151-041c5f2e1102@intel.com>
 
-On Fri, Jan 19, 2024 at 12:31:06AM +0100, Konrad Dybcio wrote:
+On Fri, Jan 19, 2024 at 09:48:14AM -0800, Sohil Mehta wrote:
+> Hi Pawan,
 > 
-> 
-> On 1/19/24 00:00, Bjorn Andersson wrote:
-> > The SC8280XP contains two additional tsens instances, providing among
-> > other things thermal measurements for the GPU.
+> On 1/18/2024 6:35 PM, Pawan Gupta wrote:
+> >  arch/x86/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
 > > 
-> > Add these and a GPU thermal-zone.
-> > 
-> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> > ---
-> >   arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 37 ++++++++++++++++++++++++++++++++++
-> >   1 file changed, 37 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-> > index febf28356ff8..68b5ac0339a0 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-> > @@ -4033,6 +4033,28 @@ tsens1: thermal-sensor@c265000 {
-> >   			#thermal-sensor-cells = <1>;
-> >   		};
-> > +		tsens2: thermal-sensor@c251000 {
-> > +			compatible = "qcom,sc8280xp-tsens", "qcom,tsens-v2";
-> > +			reg = <0 0x0c251000 0 0x1ff>, /* TM */
-> > +			      <0 0x0c224000 0 0x8>; /* SROT */
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 1566748f16c4..794517df8068 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -2270,6 +2270,7 @@ config RANDOMIZE_MEMORY_PHYSICAL_PADDING
+> >  config ADDRESS_MASKING
+> >  	bool "Linear Address Masking support"
+> >  	depends on X86_64
+> > +	depends on COMPILE_TEST || !SPECULATION_MITIGATIONS # wait for LASS
 > 
-> I've previously called for removing these comments that we've been
-> copypasting around for years and years, and I'm gonna stand by that :P
+> I was wondering if the COMPILE_TEST dependency here is a bit redundant.
 > 
+> Having ADDRESS_MASKING depend on just !SPECULATION_MITIGATIONS might be
+> enough to get the LAM code compile tested through various configurations.
+>
+> I don't have a strong preference here. Mainly looking to understand the
+> reasoning. Other than that the patch looks fine to me.
 
-I'm not against that idea, but are you requesting that I update the
-patch, removing the comments as well. Or that I send another patch
-removing all of them?
-
-> [...]
-> 
-> > +		gpu-thermal {
-> > +			polling-delay-passive = <250>;
-> > +			polling-delay = <1000>;
-> 
-> Hm, did tsens only gain support of non-polled reporting with 8450?
-> 
-> If not, we should definitely update all the relevant SoCs.
-> 
-
-Are you referring to the fact that 8450 seems to set most*
-polling-delays to 0, which are "valid" delays but would cause
-thermal_zone_device_set_polling() to just cancel the timeout every time?
-
-We should be able to do that on all platforms with working interrupts,
-no?
-
-[*] Some of the zones has a passive timeout of 10?
-
-
-That said, as above. Would you like me to fix that now?
-
-Regards,
-Bjorn
+The goal is to compile test it whenever possible. As
+SPECULATION_MITIGATIONS are ON by default, it wont get tested for most
+configuration.
 
