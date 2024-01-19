@@ -1,62 +1,89 @@
-Return-Path: <linux-kernel+bounces-30778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34314832443
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8611D832445
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 06:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 581791C22D51
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:35:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8C771C22A04
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9906117;
-	Fri, 19 Jan 2024 05:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 745924A34;
+	Fri, 19 Jan 2024 05:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="RK5pRqjg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="M8nWbyiV"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448A3523A;
-	Fri, 19 Jan 2024 05:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A7328E8
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705642552; cv=none; b=sWfecSEhKq6vmcy7fc6doCELWS2xGK+YB82oWM+Bg7LP8kueNbKhpWPXrjG5j+68HfjnUBRcGqeoGD+IjLTLJdG4oK9ipH7UD3YkfZ3d6PESAOuDHhFNxbD0RX1vX7VncX4e98H5xJWIGqnZakpUECLzuAAtSZiMQzmq73ExelQ=
+	t=1705642589; cv=none; b=ml4Shao5oFeiGtPH580Y83GL8/oO3P6zZD86RLSifGOjMKziPh0mdkFyXTqxbgm98bPeWHmQHCsRbcy/nx9TQ5qFEBZehIPGADiVJHWkD3tmNEJ+3hz+9EC6gJg4T/vZk7snapY6KEB9/mIWytyBWCn5Q3m3ZexfK1ZmLGsHuTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705642552; c=relaxed/simple;
-	bh=xwIvYirzcQSwftyIx5L3JhM83cF7QaQjlnMuqrVIBW0=;
+	s=arc-20240116; t=1705642589; c=relaxed/simple;
+	bh=UovGzvb+o3TQm+lhjDvRfALrmTsObXHmB90BgTkj5mI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ovSNdYmTdMfqbu0H8DbzFJMv281Eyy4MPr+qidX3L/0HDwurKxhpMxqU06hRIInTl6D6uYl7YAgktKI8eAF8J1qIb8elKuviAI4Yb9Pv4zHq2PKa/C+heOG5ydeJmlh4VqCZ2yl+a2CzBfDDEFMuG+52og4pdHUYKzT5QYkU87k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=RK5pRqjg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 076E6C433C7;
-	Fri, 19 Jan 2024 05:35:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705642551;
-	bh=xwIvYirzcQSwftyIx5L3JhM83cF7QaQjlnMuqrVIBW0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RK5pRqjgi6Jn5tJ8rmDeMlYrbrTcn13P1in9jNFBBmtQye8lmAYZVLH5sgNDwDYcj
-	 G/W7j8+u6jGvZIpeWfD/1/0yVMJWag21Fy71X8+gFqOwq+7MnSVVVpj0QefvOT3yE4
-	 oCGZgYFbu705V1AUa+l476kv25eE1SK0a3p09xGI=
-Date: Fri, 19 Jan 2024 06:35:48 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Huang Shijie <shijie@os.amperecomputing.com>
-Cc: patches@amperecomputing.com, rafael@kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	yury.norov@gmail.com, kuba@kernel.org, vschneid@redhat.com,
-	mingo@kernel.org, akpm@linux-foundation.org, vbabka@suse.cz,
-	rppt@kernel.org, tglx@linutronix.de, jpoimboe@kernel.org,
-	ndesaulniers@google.com, mikelley@microsoft.com,
-	mhiramat@kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-	will@kernel.org, mark.rutland@arm.com, mpe@ellerman.id.au,
-	linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org,
-	jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org,
-	cl@os.amperecomputing.com
-Subject: Re: [PATCH] NUMA: Early use of cpu_to_node() returns 0 instead of
- the correct node id
-Message-ID: <2024011937-multitude-yield-fd4d@gregkh>
-References: <20240119033227.14113-1-shijie@os.amperecomputing.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=eHtRIV1Se+z0nS7mkF4kFtWBZ32NYCimGYvKNxtpILtJz00qYznEsP2s4I4V+Og8s4p8xgx/12XkHHDgFmRe8M8H5UFLfNozJWTXMyKBGOQuaJoL1dyBk1yxuYxiUP76jgk/y3da3CBjkgNkEe6rKYYk0zaFKtly5/emXt2/pB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=M8nWbyiV; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e8801221cso3557955e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 21:36:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705642586; x=1706247386; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ojAQrKurCVDTpDyr9Ud8UUA59iisRxNip7GO8MCjIo=;
+        b=M8nWbyiV3JVQFiqHOTnAgiA21RbmosLbk4Oz6t9/b6rgOIJUcDuiQXUW1/URtYWkY3
+         BBQfoWsGSNLEf8LJ3mom1/sMPIxVsP4O+JL/KE1EWV/zqxbzNIgv+pb33TE6i/S0Y60d
+         xwBRV5QQn0VBWp8v6T3H6f5jRS6i9ps55M4wB4zEoiJ7zhIzTT3YSoyau7aEhMJCzipd
+         59TDAyJrTvgZ9Oewgo6Pg4MTomCoiJULVDaieGqUAmH56+X3Ylznom42CSzKgYorqK4j
+         kXUCbwbAT0ZV8KMvJfpN/vjD2NipIqw+58jsDnepOo1BzPakL0VKz9U2RRnu3ONLE/yG
+         7tvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705642586; x=1706247386;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2ojAQrKurCVDTpDyr9Ud8UUA59iisRxNip7GO8MCjIo=;
+        b=cBnzBAa+qArSj9dw9Y9yTgPWvPUKLzX0N5/KZPXwD1FzI8wBC+6aIpblnK5zjy8TRJ
+         RDM92EQbdsLxKXCY2nRF83SAO5dMALjqrY4cfNwFan2TLxSB7FYIqbN7OfveOreVfTai
+         3FJgoP5NzrmcZpH8Hxn3BfkZGHXSQl8BBN/5ulMkhRlJp4BKgTLhN0tsFNH8Npk7m2kS
+         KyhOWL2slLJEXB9m0+Ui/Yo237RZ8uK2BvkofPO5R4Ivcmq/esFjp+7bLOtBcIq+uCLC
+         2mgf466e80O/Gon+D/PpIUvw8d0bxrHxKGgGytNqH+65KyY5tB/+0jwmfUpYYYU+FUl4
+         oWig==
+X-Gm-Message-State: AOJu0YwxSYFIoxmnX9kacmpQxD7w51sYs7xVEfAgHAcrP9nZif/+kFxD
+	kvHjhuc1f6IBBOqImQoKx0n0Y5ug/MOkmfX40KR2GZQ4WcfSUoN4N1HO2IYTTB8=
+X-Google-Smtp-Source: AGHT+IHrVI4oY2pMxT9TBfDrffE6L2KwXvHH72Vz5VkiemXhVD26PJJFGqJUEoXqdWldgAqugJlPlw==
+X-Received: by 2002:a05:600c:1990:b0:40e:50ac:d24e with SMTP id t16-20020a05600c199000b0040e50acd24emr1438421wmq.13.1705642586217;
+        Thu, 18 Jan 2024 21:36:26 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id l6-20020a7bc346000000b0040d81ca11casm27067641wmj.28.2024.01.18.21.36.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 21:36:25 -0800 (PST)
+Date: Fri, 19 Jan 2024 08:36:21 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: dregan@broadcom.com
+Cc: dregan@mail.com, miquel.raynal@bootlin.com, richard@nod.at,
+	vigneshr@ti.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com,
+	tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
+	william.zhang@broadcom.com, anand.gore@broadcom.com,
+	kursad.oney@broadcom.com, florian.fainelli@broadcom.com,
+	rafal@milecki.pl, bcm-kernel-feedback-list@broadcom.com,
+	andre.przywara@arm.com, baruch@tkos.co.il,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 05/10] mtd: rawnand: brcmnand: Add BCMBCA read data
+ bus interface
+Message-ID: <4b3f4316-0da4-4fde-a806-7b579948db50@moroto.mountain>
+References: <20240118195356.133391-1-dregan@broadcom.com>
+ <20240118195356.133391-6-dregan@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,162 +92,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240119033227.14113-1-shijie@os.amperecomputing.com>
+In-Reply-To: <20240118195356.133391-6-dregan@broadcom.com>
 
-On Fri, Jan 19, 2024 at 11:32:27AM +0800, Huang Shijie wrote:
-> During the kernel booting, the generic cpu_to_node() is called too early in
-> arm64, powerpc and riscv when CONFIG_NUMA is enabled.
-> 
-> There are at least four places in the common code where
-> the generic cpu_to_node() is called before it is initialized:
-> 	   1.) early_trace_init()         in kernel/trace/trace.c
-> 	   2.) sched_init()               in kernel/sched/core.c
-> 	   3.) init_sched_fair_class()    in kernel/sched/fair.c
-> 	   4.) workqueue_init_early()     in kernel/workqueue.c
-> 
-> In order to fix the bug, the patch changes generic cpu_to_node to
-> function pointer, and export it for kernel modules.
-> Introduce smp_prepare_boot_cpu_start() to wrap the original
-> smp_prepare_boot_cpu(), and set cpu_to_node with early_cpu_to_node.
-> Introduce smp_prepare_cpus_done() to wrap the original smp_prepare_cpus(),
-> and set the cpu_to_node to formal _cpu_to_node().
-> 
-> Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
-> ---
->  drivers/base/arch_numa.c | 11 +++++++++++
->  include/linux/topology.h |  6 ++----
->  init/main.c              | 29 +++++++++++++++++++++++++++--
->  3 files changed, 40 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
-> index 5b59d133b6af..867a477fa975 100644
-> --- a/drivers/base/arch_numa.c
-> +++ b/drivers/base/arch_numa.c
-> @@ -61,6 +61,17 @@ EXPORT_SYMBOL(cpumask_of_node);
+On Thu, Jan 18, 2024 at 11:53:51AM -0800, dregan@broadcom.com wrote:
+> diff --git a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+> index 3e2f3b79788d..e97e13ae246c 100644
+> --- a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+> +++ b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+> @@ -26,6 +26,18 @@ enum {
+>  	BCMBCA_CTLRDY		= BIT(4),
+>  };
 >  
->  #endif
->  
-> +#ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
-> +#ifndef cpu_to_node
-> +int _cpu_to_node(int cpu)
-> +{
-> +	return per_cpu(numa_node, cpu);
-> +}
-> +int (*cpu_to_node)(int cpu);
-> +EXPORT_SYMBOL(cpu_to_node);
-> +#endif
+> +#if defined(CONFIG_ARM64)
+> +#define ALIGN_REQ		8
+> +#else
+> +#define ALIGN_REQ		4
 > +#endif
 > +
->  static void numa_update_cpu(unsigned int cpu, bool remove)
+> +static inline bool bcmbca_nand_is_buf_aligned(void *flash_cache,  void *buffer)
+> +{
+> +	return IS_ALIGNED((uintptr_t)buffer, ALIGN_REQ) &&
+> +				IS_ALIGNED((uintptr_t)flash_cache, ALIGN_REQ);
+> +}
+> +
+>  static bool bcmbca_nand_intc_ack(struct brcmnand_soc *soc)
 >  {
->  	int nid = cpu_to_node(cpu);
-> diff --git a/include/linux/topology.h b/include/linux/topology.h
-> index 52f5850730b3..e7ce2bae11dd 100644
-> --- a/include/linux/topology.h
-> +++ b/include/linux/topology.h
-> @@ -91,10 +91,8 @@ static inline int numa_node_id(void)
->  #endif
->  
->  #ifndef cpu_to_node
-> -static inline int cpu_to_node(int cpu)
-> -{
-> -	return per_cpu(numa_node, cpu);
-> -}
-> +extern int (*cpu_to_node)(int cpu);
-> +extern int _cpu_to_node(int cpu);
->  #endif
->  
->  #ifndef set_numa_node
-> diff --git a/init/main.c b/init/main.c
-> index e24b0780fdff..b142e9c51161 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -870,6 +870,18 @@ static void __init print_unknown_bootoptions(void)
->  	memblock_free(unknown_options, len);
+>  	struct bcmbca_nand_soc *priv =
+> @@ -56,6 +68,20 @@ static void bcmbca_nand_intc_set(struct brcmnand_soc *soc, bool en)
+>  	brcmnand_writel(val, mmio);
 >  }
 >  
-> +static void __init smp_prepare_boot_cpu_start(void)
+> +static void bcmbca_read_data_bus(struct brcmnand_soc *soc,
+> +				 void __iomem *flash_cache,  u32 *buffer, int fc_words)
 > +{
-> +	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
-> +
-> +#ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
-> +#ifndef cpu_to_node
-> +	/* The early_cpu_to_node should be ready now. */
-> +	cpu_to_node = early_cpu_to_node;
-> +#endif
-> +#endif
+> +	/*
+> +	 * memcpy can do unaligned aligned access depending on source
+> +	 * and dest address, which is incompatible with nand cache. Fallback
+> +	 * to the memcpy for io version
+> +	 */
+> +	if (bcmbca_nand_is_buf_aligned((void *)flash_cache, buffer))
+> +		memcpy((void *)buffer, (void *)flash_cache, fc_words * 4);
+> +	else
+> +		memcpy_fromio((void *)buffer, flash_cache, fc_words * 4);
 > +}
-> +
->  asmlinkage __visible __init __no_sanitize_address __noreturn __no_stack_protector
->  void start_kernel(void)
->  {
-> @@ -899,7 +911,7 @@ void start_kernel(void)
->  	setup_command_line(command_line);
->  	setup_nr_cpu_ids();
->  	setup_per_cpu_areas();
-> -	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
-> +	smp_prepare_boot_cpu_start();
->  	boot_cpu_hotplug_init();
->  
->  	pr_notice("Kernel command line: %s\n", saved_command_line);
-> @@ -1519,6 +1531,19 @@ void __init console_on_rootfs(void)
->  	fput(file);
->  }
->  
-> +static void __init smp_prepare_cpus_done(unsigned int setup_max_cpus)
-> +{
-> +	/* Different ARCHs may override smp_prepare_cpus() */
-> +	smp_prepare_cpus(setup_max_cpus);
-> +
-> +#ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
-> +#ifndef cpu_to_node
-> +	/* Change to the formal function. */
-> +	cpu_to_node = _cpu_to_node;
-> +#endif
-> +#endif
-> +}
-> +
->  static noinline void __init kernel_init_freeable(void)
->  {
->  	/* Now the scheduler is fully set up and can do blocking allocations */
-> @@ -1531,7 +1556,7 @@ static noinline void __init kernel_init_freeable(void)
->  
->  	cad_pid = get_pid(task_pid(current));
->  
-> -	smp_prepare_cpus(setup_max_cpus);
-> +	smp_prepare_cpus_done(setup_max_cpus);
->  
->  	workqueue_init();
->  
-> -- 
-> 2.40.1
-> 
 
-Hi,
+This comment is confusing or maybe the if statement is reversed...
+We're falling back to memcpy_fromio() for the unaligned accesses but the
+comment says we're falling back to memcpy().
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+regards,
+dan carpenter
 
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
 
