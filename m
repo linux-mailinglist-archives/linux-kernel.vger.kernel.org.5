@@ -1,146 +1,89 @@
-Return-Path: <linux-kernel+bounces-31170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4966D832A0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:05:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C295E832A13
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:07:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2AE71F236B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:05:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79645283F35
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54367524B3;
-	Fri, 19 Jan 2024 13:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D85524BA;
+	Fri, 19 Jan 2024 13:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=8devices.com header.i=@8devices.com header.b="AsKf3Qf+"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="HUz7klK6"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44BD03C470
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D93C4F1F5;
+	Fri, 19 Jan 2024 13:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705669548; cv=none; b=t9Po19Wa+//fTf9PXk09Flf25knLl8AveOS2kuabIYs3DLYfyamdCnKUH8jZJlI7prV0mcg8e7AdgtGa5Mv3f3B0Jk5JUbBou14E8A2q7sRYWEcYvhOtwr2+NeRObhIcNT5m2GjKO9QWJfkm4Bzxk372djzRReDWTBtvYAaTIec=
+	t=1705669643; cv=none; b=R/E7qK3ClSuJnmkK6Z3bEgAF0P0fNQ4xhLO3mDnlBXin3M/ssHegiRjBT2Z2VowkaJJZtx2KenrJp6y11vmRmCFrgrbHI3psJAKexNonIEB5OIIWe7XIPEST7p2mB70SjsVzAfDeMjOS6TNymBSArVOBAKxN0LyYISRz07E0SkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705669548; c=relaxed/simple;
-	bh=T3lgeBprbO2ncEnbB/0Iwitj/QDiDU/VqFEnkGf35mA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=raBVyRqMJVxOQNLN3ZbyqnPlj8bTe5H++o7lw2Oxw48RHwkdK083GGvSKmDOncnwxIMP55mcsAqkZ9yFbTQT5HcLkY48nzVc1omqD5OjLgdriA97V4z/y93PHbldYKsfQ1iddXD81HofthEGGoo+NOraJ2SdlaLOrRmKdMJZnOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=8devices.com; spf=pass smtp.mailfrom=8devices.com; dkim=pass (2048-bit key) header.d=8devices.com header.i=@8devices.com header.b=AsKf3Qf+; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=8devices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8devices.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so552434a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 05:05:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=8devices.com; s=8devices; t=1705669544; x=1706274344; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hFT1caunJL2bjnoz3k5PNtNB8wm9Pwof23zyHAFtsu4=;
-        b=AsKf3Qf+inNV8NbN2puLEss3HIput0h3qsxTClUX77onxpuIZBwkcLURR7M40hTUHT
-         lzvFlqBK9gxylNCnNFnfhq0KyPy2SmprR2CI9um0nyP5KGp2vX+Nw4DcucjoHgtcQPKI
-         1kyPJOBkY13ApRCFcjAiWtZUhQgkkoq/Ck4GAulvLBYJaui/dtahrjFfUoLjE+usjaUD
-         QlJYU+585VCd22xwiKEELaEEqL5cULplBd7Q/Xo9gORkXclQg/ZNaDOHAllAFA2l8CIe
-         UjoK1fnw6CwBG6yc1EqMGlReKvCyVOKJuqjpOGR5ZlILm7yzo4d+WJmZ970BbOvkjn8m
-         Kl9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705669544; x=1706274344;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hFT1caunJL2bjnoz3k5PNtNB8wm9Pwof23zyHAFtsu4=;
-        b=rVqYhrpArNNzXA9WMODk/3+khHCKq+R7vszcvKRNJhqZ/o48SH9k1i7MJaQykOyEYr
-         KbUqiJZ336VDcWwSs7oUW+M7ZXFYg/+LSIYHsK9kUpdM4DtH6YTUKLA+w+oqxIRp0MZX
-         7djFrsfXETkQnm4DhiC5IqA6oBydUP+GpQdenZZd5Luvs5xUajH+7Mr/75Xsz2TBvjlu
-         mVPtSd7HTPQgB4DAhrjZGYGr4sxCuqFUQyQOsH3WlmcM4gcFoVb7Lp9nAUZRrQXd1lOq
-         N2kxelo10yZXLNi+kWyPlpg2bEm75S0GOg1Fg/13nKDpiLkcjh3+GOAVhPElZelP2Mng
-         e9Kg==
-X-Gm-Message-State: AOJu0YzmujiJj4o4onbvRDet5nk/S172rrC3ulkc4MPOLLb/hCCNM7Fp
-	2x0HCWWh3I9w9YUAKes8eyV94mxPnQ/MyBMGX+2AcVDnpbwWSO+yG+Qtr9fDnug=
-X-Google-Smtp-Source: AGHT+IHxS1+RAbPFLI5ItZKd1sI2ZXvV5S3L/s1ArZxM+sVNnpPAujJTaOL9mZNBaYROs53580hgFQ==
-X-Received: by 2002:aa7:c0ce:0:b0:553:5577:dd52 with SMTP id j14-20020aa7c0ce000000b005535577dd52mr1349931edp.81.1705669544444;
-        Fri, 19 Jan 2024 05:05:44 -0800 (PST)
-Received: from [192.168.2.155] (78-62-132-154.static.zebra.lt. [78.62.132.154])
-        by smtp.gmail.com with ESMTPSA id u11-20020a056402110b00b00558aa40f914sm10459377edv.40.2024.01.19.05.05.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jan 2024 05:05:44 -0800 (PST)
-Message-ID: <d6db40e8-c2af-44fa-b8af-b143899b262a@8devices.com>
-Date: Fri, 19 Jan 2024 15:05:43 +0200
+	s=arc-20240116; t=1705669643; c=relaxed/simple;
+	bh=kO/kgFk+pCRzTkAUtMoYWZs6f8duDTJeIKjeZZqGzAE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o5/HAa6jQMi5YbPpxbBGTkdnzdmga171Y+wp0gEVOs7TV3Be6FQcWB6nykD4Kc7qJhB1+CEUC7hwNdtcTzvI3jEte0M/xCSF0O5EGOckBhuUiOaCbm7mwarega7ns7ccdbqMUxD58wQx1fu6viQvrJ3BimeqslRN1fv7Gornof4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=HUz7klK6; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=gfNpdWS77kPbZpDPWIKUcioA/sdtAqPn9TD06jokSFM=; b=HUz7klK6f9YMLOFn8aVhwsoE5X
+	Djl1Xen3icTXUgV2iM+4HNic1Bx0C9Mj0Z1mHBN23WLWLrVG7+2EgHpTbRkwSORWCA+geVvKRvdc3
+	qjyV8ZWJZBnx3pdjfkIyYpKnpvhbXHA4hGR/lEv+4A9OsS52v0LZepO2uwcW3wH0135o=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rQoaR-005YeW-76; Fri, 19 Jan 2024 14:07:07 +0100
+Date: Fri, 19 Jan 2024 14:07:07 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc: hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	richardcochran@gmail.com, Divya.Koppera@microchip.com,
+	maxime.chevallier@bootlin.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net v2 2/2] net: micrel: Fix set/get PHC time for lan8814
+Message-ID: <74772857-670e-4c9b-a6f8-2b59c3e20bcb@lunn.ch>
+References: <20240118085916.1204354-1-horatiu.vultur@microchip.com>
+ <20240118085916.1204354-3-horatiu.vultur@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: gcc-ipq6018: add qdss_at clock needed for wifi
- operation
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <1705486629-25592-1-git-send-email-mantas@8devices.com>
- <9b78a7c3-dea9-4d9c-bfd9-13d819d68890@linaro.org>
-From: Mantas Pucka <mantas@8devices.com>
-In-Reply-To: <9b78a7c3-dea9-4d9c-bfd9-13d819d68890@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118085916.1204354-3-horatiu.vultur@microchip.com>
 
-On 2024-01-18 19:48, Konrad Dybcio wrote:
-> On 1/17/24 11:17, Mantas Pucka wrote:
->> Without it system hangs upon wifi firmware load. Bindings already exist
->> for it, so add it based on vendor code.
->>
->> Signed-off-by: Mantas Pucka <mantas@8devices.com>
->> ---
->>   drivers/clk/qcom/gcc-ipq6018.c | 17 +++++++++++++++++
->>   1 file changed, 17 insertions(+)
->>
->> diff --git a/drivers/clk/qcom/gcc-ipq6018.c 
->> b/drivers/clk/qcom/gcc-ipq6018.c
->> index b366912cd648..7cdaf7751566 100644
->> --- a/drivers/clk/qcom/gcc-ipq6018.c
->> +++ b/drivers/clk/qcom/gcc-ipq6018.c
->> @@ -3522,6 +3522,22 @@ static struct clk_branch gcc_prng_ahb_clk = {
->>       },
->>   };
->>   +static struct clk_branch gcc_qdss_at_clk = {
->
-> Hm, QDSS stands for something something Qualcomm Debug SubSystem
-> if I recall correctly, so coresight and friends.. Are you sure
-> it's necessary?
->
-That's rather strange dependency, I agree. Yet, even manually disabling 
-this
-clock before wifi driver load would cause failure. On the other hand, 
-disabling
-it while wifi is already operational seems to cause no trouble. So it 
-follows
-that clock is only required during wifi startup. Since wifi FW loading 
-is done
-through SCM call, maybe this could be a Qcom TZ firmware requirement.
->> +    .halt_reg = 0x29024,
->> +    .clkr = {
->> +        .enable_reg = 0x29024,
->> +        .enable_mask = BIT(0),
->> +        .hw.init = &(struct clk_init_data){
->> +            .name = "gcc_qdss_at_clk",
->> +            .parent_hws = (const struct clk_hw *[]){
->> +                &qdss_at_clk_src.clkr.hw },
->> +            .num_parents = 1,
->> +            .flags = CLK_SET_RATE_PARENT | CLK_IS_CRITICAL,
->
-> Does it need to be enabled 24/7, or can it be attached to the wifi 
-> device?
->
-In fact, attaching to wifi remoteproc seem to work fine. I'll send v2 
-without
-CLK_IS_CRITICAL if all else is OK.
+On Thu, Jan 18, 2024 at 09:59:16AM +0100, Horatiu Vultur wrote:
+> When setting or getting PHC time, the higher bits of the second time (>32
+> bits) they were ignored. Meaning that setting some time in the future like
+> year 2150, it was failing to set this.
+> 
+> The issue can be reproduced like this:
+> 
+>  # phc_ctl /dev/ptp1 set 10000000000
+>  phc_ctl[118.619]: set clock time to 4294967295.000000000 or Sun Feb  7 06:28:15 2106
+> 
+>  # phc_ctl /dev/ptp1 get
+>  phc_ctl[120.858]: clock time is 1.238620924 or Thu Jan  1 00:00:01 1970
+> 
+> Fixes: ece19502834d ("net: phy: micrel: 1588 support for LAN8814 phy")
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+> Reviewed-by: Divya Koppera <divya.koppera@microchip.com>
 
+When submitted to net-next:
 
-Mantas
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
+    Andrew
 
