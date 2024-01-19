@@ -1,52 +1,50 @@
-Return-Path: <linux-kernel+bounces-31555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E088833004
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:56:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50BF7833005
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:56:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BE741F235AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:56:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C051C1F21E37
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB115731B;
-	Fri, 19 Jan 2024 20:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9628257314;
+	Fri, 19 Jan 2024 20:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="TbxmXlvm"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="m9VX2ryS"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C4B1DFCB;
-	Fri, 19 Jan 2024 20:55:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB45C1E498;
+	Fri, 19 Jan 2024 20:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705697750; cv=none; b=XgJatF2DFK1Fe/pYubLVi64jdgY7dyd+6pAF9zm3Ac/W/Zicqbh0z1M35SLZfJvE8U98X1lzhvoVw/akW9+0lIKNhLcnr3gyhG7mKgu7og3KC1sdxmL/+Mfo9v92Lx/+P59PPui5A4m7Pe7DrHpt1uU5cAPqAsrcWADwlzGtNxo=
+	t=1705697787; cv=none; b=nE8aJffjsEH06TinOYLQO1rLzG+ldDx8MGOvH+iNgh0WSGbgh6SW9TXGb82NHYIaoxPsbfr0JTHa92vyIwh2Pn8CxqciuFclRi7t1WENtBgJXolP0HpeuQkTuki6MuSvYa3796u/6TJXk8wYU20vTPbbBQyRYZp7Rpt6U0Ljil8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705697750; c=relaxed/simple;
-	bh=yiyaYnWRIuAJVuP5d0hq1Vm608wfgBc/+asxYVtVaiI=;
+	s=arc-20240116; t=1705697787; c=relaxed/simple;
+	bh=muiy5JFaVef6TBO8rX0XRJL32UzwlIuJnjxRIfVC5hk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dIy2A1U/5yYqcqmaqck0yrl135u77dw1CaB1bp2lLHp5KXPg2TvOdT6TP8/pmzyzf6PTcQ2L3twpYzV2UvGNCBkGtRq7t6BXfsfPyEH6Oeg/ke6e8apmTdHpw0qrfnzk1RpINUnNmRjI0nxrLBgBnMLSBsblwbyHCuDRcFGNY3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=TbxmXlvm; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1705697733; x=1706302533; i=deller@gmx.de;
-	bh=yiyaYnWRIuAJVuP5d0hq1Vm608wfgBc/+asxYVtVaiI=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=TbxmXlvm3rE7QOQOh4cbM2NQxiKpTAXLemwKMo/FVr5T7JeZOt8qHuCU2SsEnNy+
-	 hFiA57ddfhZb+vSB0Y+gZtMsMASlllXGWykvrrHpmI+JgmudxrIsYZoP018dHJ63h
-	 ST9l8nRvhmq6jdPJOP/QyufQxtgZ0Wt+Q37HLjppY1IQHM++p67AF4TAIWLJZIEhL
-	 KCC42dAY0bGQpfcVqNq4k9eBmJipHVu+1g4nRdAupvd/yzD/6Doa0uKifZ7wIYT1c
-	 SX8R2vtI0x4ZJx1lDtM9x8kiHNTkkxHlnDZp5XrYlkngivlXmGy4IpSOuwL8TDOu9
-	 V92ci9kN9fDCWTUNVg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.146.202]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MLzFr-1rijjQ1iRF-00HviA; Fri, 19
- Jan 2024 21:55:33 +0100
-Message-ID: <0293b14b-6188-4229-9fb6-29fbbdb8dc83@gmx.de>
-Date: Fri, 19 Jan 2024 21:55:32 +0100
+	 In-Reply-To:Content-Type; b=d2crBIjBZCBqDaXr3nUcjrZeqb/9Mj8YiuiGh8uMWwvR8a91s+uHJbKatqrLtQFJkmujNmpM9Hc07gtIyJJpvh9u6sT8FFp170m7JBlHqosnE6ixLkzavGynn5yA402xPXWHG2LNxRjTUoXQZFQ4q5T3X+ePFelEmmS7cozD9QE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=m9VX2ryS; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1705697782;
+	bh=muiy5JFaVef6TBO8rX0XRJL32UzwlIuJnjxRIfVC5hk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=m9VX2rySbl+NQBI6UlFPdkUL3FKfio8RPM9AZxstIGBscu0QhC0qJoaRxKeWswLE+
+	 un+SD/tOx44WKA4TflB4DqEFqhSdXnrR6flMmadWRkDmJvJ1Y/cDXgMxJp9QzPojI0
+	 TskuF9OlFhoW+GfiIjtbae+s6s4BBIGXpFYfvB2y1/LfkcBfZ+DhJlhHUzhNDziMJG
+	 60hoOKSsaA+m0uw5TLpI1IhWAIEEUwytxj2QBxchNAFMmHujUXlq22QeGTT90EcBSi
+	 JHMwSC8EtziUmgfodpgcS/gIz6RftkWRV5MmsOzIFDgW/jLXW39Kz5KfAU7lUaa7zF
+	 tWGVNQmt93gZw==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TGsNQ1mjCzTZP;
+	Fri, 19 Jan 2024 15:56:22 -0500 (EST)
+Message-ID: <cd3f37cc-31ba-4eb4-8d67-852d05570e7b@efficios.com>
+Date: Fri, 19 Jan 2024 15:56:21 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,124 +52,193 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: REGRESSION: no console on current -git
+Subject: Re: [PATCH] ring-buffer: Simplify reservation with try_cmpxchg() loop
 Content-Language: en-US
-To: Jens Axboe <axboe@kernel.dk>, LKML <linux-kernel@vger.kernel.org>,
- "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
- dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
- Thomas Zimmermann <tzimmermann@suse.de>
-Cc: avier Martinez Canillas <javierm@redhat.com>,
- Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-References: <05ea3233-20dd-4af7-86cc-de11ad2efe84@kernel.dk>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <05ea3233-20dd-4af7-86cc-de11ad2efe84@kernel.dk>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Philippe Proulx <pproulx@efficios.com>
+References: <20240118181206.4977da2f@gandalf.local.home>
+ <504085e9-bf91-4948-a158-abae5dcb276a@efficios.com>
+ <20240119103754.154dc009@gandalf.local.home>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20240119103754.154dc009@gandalf.local.home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TXMxecq5B8z4yhyXYaxKHVfKYJk1nHTR6ojUy0qKuDu4dyl9JHQ
- Y+W19o7vK4cWx0PRtOl+3ftJAFWxYEu8aTrab8sQuFDpo8DpZpexX/TRuu9bUX1vTDs0aJH
- n46Qhqg719vyku3VfedvWNY90Pgat1pwtz0xr4eGxDLJq5Z3Wdbq/F8pn0rm+uamVyUy6Qb
- MaPlaHH2T2ry3MoJJnaRw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Cu7OFdiOwGU=;mmr7J1y84JwXPPypeqkeft6THJW
- NTwogCrwOuFFHvj/DGzcGFstlVIbTgp6jVtZm44ApgH4THkU8uvH/KXYtLfzBdbW6vTI96VwV
- MGA9DX5A5sEpu5j2/17LKuKhCoj+rb2SLoFM8Lg+EwZojzhdzezkIYPff9cpoavbs1MLJ/ub4
- sfsDZNS09jnf3JWDyx+etgiL9bFDW2KdfJ6t+ppAnunL/SeIpRSnpgSjDabrJk121Ot2t4emN
- 9TXi7uWMvt7B6Vj57OuI+goVGkOp8cAZtbRYJK6UgtdE/7vYlQxCycCX/10G10qVZ2enFA+Ek
- lg4l2+HR8VXyiarazUfo+z1FrGd+FdytbFSK0TMUgWVxteyIDMh9tO2vUKRjS8P6GCT5tWp7Q
- Zd5wFCwyJipv+xyXdgkQ1eDEA4YlTzccaCcQWMTxPjdtmkpBbgnoasbo6Cakt2un/Mkm7N5cT
- Epj4Tpw/EExStKw+YX0pDoZ1ygUDqVYbcQXDljbHoIZ5+7hNYm+qJYWGwfweHP5zuE5r7DT6S
- c3Sxjhejo8CzAiLqCR4fGt1taRIdPxHA4KDpU19xMGN+YToPHQ94kDI9+uRBS9i6hSUfF33q1
- MhlpkBh12eSjmnQUX688cbhlvtbNrRtSBbVfzGwTiek+5Fz2HrJ4rioCu14+w6P8gpwf6HnQs
- tqm3QcxVHw7RGOl6trbTvtxuLh4rDbwt3pXUoVA3QPUtANKG+IZXVfsGw3SycMzBB/JFgNjd9
- 0oU/Mu4LDJhNgqgvn0gwmRChhMH+HxhyS46mEVOJaEBNyEEotB9NzhAvHtENvGxTIF8UU8Vss
- 6/m9cFWzyg/ZQ/IhE2MvC941efv/kngDTaR1INEzHosSMheJI3OQWkMYF6jfXz8lz1bIQStia
- 98bGnMQGflSZ2Dv/MYcAk/KeYbjW4hofwkn1oWdWJZE32fNk1YGDcURFE/qfQ58R2xrAsdckG
- J62TbrlO9HRxQk8i1UJEHWqEt00=
+Content-Transfer-Encoding: 8bit
 
-Adding Mirsad Todorovac (who reported a similar issue).
+On 2024-01-19 10:37, Steven Rostedt wrote:
+> On Fri, 19 Jan 2024 09:40:27 -0500
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>> On 2024-01-18 18:12, Steven Rostedt wrote:
+>>> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>>>
 
-On 1/19/24 19:39, Jens Axboe wrote:
-> My trusty R7525 test box is failing to show a console, or in fact anythi=
-ng,
-> on current -git. There's no output after:
->
-> Loading Linux 6.7.0+ ...
-> Loading initial ramdisk ...
->
-> and I don't get a console up. I went through the bisection pain and
-> found this was the culprit:
->
-> commit df67699c9cb0ceb70f6cc60630ca938c06773eda
-> Author: Thomas Zimmermann <tzimmermann@suse.de>
-> Date:   Wed Jan 3 11:15:11 2024 +0100
->
->      firmware/sysfb: Clear screen_info state after consuming it
->
-> Reverting this commit, and everything is fine. Looking at dmesg with a
-> buggy kernel, I get no frame or fb messages. On a good kernel, it looks
-> ilke this:
->
-> [    1.416486] efifb: probing for efifb
-> [    1.416602] efifb: framebuffer at 0xde000000, using 3072k, total 3072=
-k
-> [    1.416605] efifb: mode is 1024x768x32, linelength=3D4096, pages=3D1
-> [    1.416607] efifb: scrolling: redraw
-> [    1.416608] efifb: Truecolor: size=3D8:8:8:8, shift=3D24:16:8:0
-> [    1.449746] fb0: EFI VGA frame buffer device
->
-> Happy to test a fix, or barring that, can someone just revert this
-> commit please?
+[...]
 
-I've temporarily added a revert patch into the fbdev for-next tree for now=
-,
-so people should not face the issue in the for-next series:
-https://git.kernel.org/pub/scm/linux/kernel/git/deller/linux-fbdev.git/com=
-mit/?h=3Dfor-next
-I'd like to wait for Thomas to return on monday to check the issue
-as there are some other upcoming patches in this area from him.
+>>> Although, it does not get rid of the double time stamps (before_stamp and
+>>> write_stamp), using cmpxchg() does get rid of the more complex case when
+>>> an interrupting event occurs between getting the timestamps and reserving
+>>> the data, as when that happens, it just tries again instead of dealing
+>>> with it.
+>>
+>> I understand that the reason why you need the before/after stamps and their
+>> associated complexity is because the Ftrace ring buffer ABI encodes event
+>> timestamps as delta from the previous event within the buffer as a mean of
+>> compressing the timestamp fields. If the delta cannot be represented in a
+>> given number of bits, then it inserts a 64-bit timestamp (not sure if that
+>> one is absolute or a delta from previous event).
+> 
+> There's both. An extended timestamp, which is added when the delta is too
+> big, and that too is just a delta from the previous event. And there is the
+> absolute timestamp as well. I could always just use the absolute one. That
+> event came much later.
 
-Helge
+OK
+
+> 
+>>
+>> This timestamp encoding as delta between events introduce a strong
+>> inter-dependency between consecutive (nested) events, and is the reason
+>> why you are stuck with all this timestamp before/after complexity.
+>>
+>> The Common Trace Format specifies (and LTTng implements) a different way
+>> to achieve the same ring buffer space-savings achieved with timestamp deltas
+>> while keeping the timestamps semantically absolute from a given reference,
+>> hence without all the before/after timestamp complexity. You can see the
+>> clock value decoding procedure in the CTF2 SPEC RC9 [1] document. The basic
+> 
+> That points to this:
+> 
+> ---------------------8<-------------------------
+> 6.3. Clock value update procedure
+> To update DEF_CLK_VAL from an unsigned integer field F having the unsigned integer value V and the class C:
+> 
+> Let L be an unsigned integer initialized to, depending on the type property of C:
+> 
+> "fixed-length-unsigned-integer"
+> The value of the length property of C.
+> 
+> "variable-length-unsigned-integer"
+> S ×7, where S is the number of bytes which F occupies with the data stream.
+> 
+> Let MASK be an unsigned integer initialized to 2L − 1.
+> 
+> Let H be an unsigned integer initialized to DEF_CLK_VAL & ~MASK, where “&” is the bitwise AND operator and “~” is the bitwise NOT operator.
+> 
+> Let CUR be an unsigned integer initialized to DEF_CLK_VAL & MASK, where “&” is the bitwise AND operator.
+> 
+> Set DEF_CLK_VAL to:
+> 
+> If V ≥ CUR
+> H + V
+> 
+> Else
+> H + MASK + 1 + V
+> --------------------->8-------------------------
+> 
+> There's a lot of missing context there, so I don't see how it relates.
+
+This explains how the "current time" is reconstructed by a trace reader
+when loading an event header timestamp field. But for the sake of this
+discussion we can focus on the less formal explanation of how the tracer
+generates this timestamp encoding provided below.
+
+>> idea on the producer side is to record the low-order bits of the current
+>> timestamp in the event header (truncating the higher order bits), and
+>> fall back on a full 64-bit value if the number of low-order bits overflows
+>> from the previous timestamp is more than 1, or if it is impossible to figure
+>> out precisely the timestamp of the previous event due to a race. This achieves
+>> the same space savings as delta timestamp encoding without introducing the
+>> strong event inter-dependency.
+> 
+> So when an overflow happens, you just insert a timestamp, and then events
+> after that is based on that?
+
+No. Let's use an example to show how it works.
+
+For reference, LTTng uses 5-bit for event ID and 27-bit for timestamps
+in the compact event header representation. But for the sake of making this
+discussion easier, let's assume a tracer would use 16-bit for timestamps in the
+compact representation.
+
+Let's say we have the following ktime_get() values (monotonic timestamp value) for
+a sequence of events:
+
+                                   Timestamp (Hex)    Encoding in the trace
+
+Packet header timestamp begin     0x12345678         64-bit: 0x12345678
+
+Event 1                           0x12345678         16-bit: 0x5678
+    (When decoded, same value as previous timestamp, no overflow)
+Event 2                           0x12347777         16-bit: 0x7777
+    (When decoded, going from "0x5678" to "0x7777" does not overflow 16-bit)
+Event 3                           0x12350000         16-bit: 0x0000
+    (When decoded, going from "0x7777" to "0x0000" overflow 16-bit exactly once
+     which allows the trace reader to reconstruct timestamp 0x12350000 from the
+     previous timestamp and the 16-bit timestamp encoding.)
+Event 4                           0x12370000         64-bit: 0x12370000
+    (Encoding over 16-bit not possible because going from 0x12350000 to
+     0x12370000 would overflow 16-bit twice, which cannot be detected
+     by a trace reader. Therefore use the full 64-bit timestamp in the
+     "large" event header representation.)
+
+> 
+>>
+>> The fact that Ftrace exposes this ring buffer binary layout as a user-space
+>> ABI makes it tricky to move to the Common Trace Format timestamp encoding.
+>> There are clearly huge simplifications that could be made by moving to this
+>> scheme though. Is there any way to introduce a different timestamp encoding
+>> scheme as an extension to the Ftrace ring buffer ABI ? This would allow us to
+>> introduce this simpler scheme and gradually phase out the more complex delta
+>> encoding when no users are left.
+> 
+> I'm not sure if there's a path forward. The infrastructure can easily swap
+> in and out a new implementation. That is, there's not much dependency on
+> the way the ring buffer works outside the ring buffer itself.
+> 
+> If we were to change the layout, it would likely require a new interface
+> file to read. The trace_pipe_raw is the only file that exposes the current
+> ring buffer. We could create a trace_out_raw or some other named file that
+> has a completely different API and it wouldn't break any existing API.
+
+Or introduce "trace_pipe_raw2" or some kind of versioned file names as new
+ABIs.
+
+> Although, if we want to change the "default" way, it may need some other
+> knobs or something, which wouldn't be hard.
+
+The delta-timestamp-encoding would have to stay there for a while as long
+as users have not switched over to trace_pipe_raw2. Then when it's really
+gone, the trace_pipe_raw could either go away or return an error when
+opened.
+
+> Now I have to ask, what's the motivation for this. The code isn't that
+> complex anymore. Yes it still has the before/after timestamps, but the
+> most complexity in that code was due to what happens in the race of
+> updating the reserved data. But that's no longer the case with the
+> cmpxchg(). If you look at this patch, that entire else statement was
+> deleted. And that deleted code was what made me sick to my stomach ;-)
+> Good riddance!
+
+The motivation for this would be to further simplify the implementation
+of __rb_reserve_next(), rb_add_timestamp(), and rb_try_to_discard(), and
+remove a few useless loads, stores, and conditional branches on the fast-path
+of __rb_reserve_next(). This would turn the before/after timestamp
+stores/loads/comparisons into a simple "last timestamp" field and a comparison
+of the current timestamp against the "last timestamp" value to figure out
+whether the compact representation can be used.
+
+I don't know whether it's worth the trouble or not, it's really up to you. :)
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
