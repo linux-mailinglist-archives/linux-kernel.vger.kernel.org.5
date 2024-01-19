@@ -1,168 +1,169 @@
-Return-Path: <linux-kernel+bounces-31341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B273F832CCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:07:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12D5C832CD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:08:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D67371C216F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:07:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 802FD1F22351
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:08:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0981954BF3;
-	Fri, 19 Jan 2024 16:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9CD54F99;
+	Fri, 19 Jan 2024 16:08:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b="fquh7nS8"
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2120.outbound.protection.outlook.com [40.107.241.120])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oz+I3YlG"
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC8754F83;
-	Fri, 19 Jan 2024 16:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.120
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705680435; cv=fail; b=gOYWJcLEDhZ8g5LQb5ekpHpU3vdHACsUOd0yyF6/W2uMvVKksCJLg8Ri2pOwh+N0vVj66dEi/fFTnoUAuKYpj4c1Iutn/TuZH5YEYjStH4saZdGnEB8ARFLX2ZlE14myU7a606jQqa+49b8qLLdhLqzV4MpSbFLlhWwaqO2PEUQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705680435; c=relaxed/simple;
-	bh=LEbPOsP96D53cRPgeaVZhu+fogKbKKsYHUn6lTRARY8=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=q4NM6gxQFP2hi+e4e4ei6H1nVMw7SNn3SauGI7OFh6siTNp7InUThKyaSaOk46Z4mDHSw0pnGOZAOby5xygeYRiQ2lvBoZcsoif/gI2rZEKh8UV7H42XC14W49ZLR9Wi8zS2+rwlF3MnnRtiGjZGwE+S12uzNPNAbdT1e6XG7KY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com; spf=fail smtp.mailfrom=nokia.com; dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b=fquh7nS8; arc=fail smtp.client-ip=40.107.241.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=agdN22zP1f4sAg64BOhzUTqfumTn6wSdZXnkYlFLfWqxRr3d8IBSKKJsKLtS25YsWbk2dwnwhDO65QJSf5Jyt3KAvz2oyXvgduOkqoS3AziitT94jdVrwp7nL92cJvNwFmLOUgSpBIrDNOGwFwVf/MmyE7egqe184nlIgWgWJdMXZFF8M0nq6TOpfW0ori6QmYWL6R27bF8/ORVQaLUavk/BJjs4h3FphgwGOFAVG5iFO1QTFePkG8uC4+8/yYiywWbAh0PjKlIcTGRBKUl49V8vhbr+t+NWvoEusHQwIR7dqx5HkxS5MZCDENK1Pou2n4l5QeUJD2xFGlBbOuTsPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8WfTOx9HkqesQ/XOy/1jv0TprTm6mMFBII26xw0CQCY=;
- b=DgCNPRyB4H6o9njKJu03+ndvciqmuv3id1tUj1brC/nD50uF71Uitaxu7HvmrEaHwFIf1+jOZbUDL96h00G7oWcJTmEQoP1G7tSztGAQuXm2pp+y1rxfPdlcCg4w9s2wE/phlkiia15QBiF8rooTwwT+b26/5jnTwWgB01ZIXbPqLPeS8u3Ta8ygfqTqOZMBczRur6zYzFTfj+5UYwlQyMhmhQEG37abFpSwmxFRQH1CDc1iqbKCz1F+jrSKlTbEYrb48L1d79upRmbHSIqfOTaBGR2fetMEvm/Dh1bWchdW90pzAPPHXV8Z/B+f5fYgzZZKQsMsaJZqb/R/Jwq5Og==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8WfTOx9HkqesQ/XOy/1jv0TprTm6mMFBII26xw0CQCY=;
- b=fquh7nS8AbbnfB6qxZvap9bZaW6R2BcU6X4EBqKqvBlaSNCSf+2VQ9mC/ehp01wY0p2930IPuYrkhDVHExUavZHk3A56lLTE+JIILDKQqlDemhZ5meSqLbgQK4ouO8GIHGOZiJWTey51SM4Y1jdB/1tO+dqkLkCN9UG+XK+VKtaJzGSCeWOCfFBe8WcxcMHaH00tdKHtEVOb233esHbkIMQYlJ7z9mwQ0K+VUY9fsFlKYW6nsxu3f5Rr2nCbep2yoIfvpXzva2BNfRtwdL1HNdU7Ul78K/K2A4Y5B68QqEP9TK6+8du0vX5d3+AscJ5ehjhYZkkmAXvQ8FoJve8rBQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nokia.com;
-Received: from PAWPR07MB9688.eurprd07.prod.outlook.com (2603:10a6:102:383::17)
- by DBBPR07MB7500.eurprd07.prod.outlook.com (2603:10a6:10:1f0::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
- 2024 16:07:10 +0000
-Received: from PAWPR07MB9688.eurprd07.prod.outlook.com
- ([fe80::22a6:5b92:a2d3:860f]) by PAWPR07MB9688.eurprd07.prod.outlook.com
- ([fe80::22a6:5b92:a2d3:860f%3]) with mapi id 15.20.7202.024; Fri, 19 Jan 2024
- 16:07:10 +0000
-Message-ID: <6d016325-f6af-43e8-ad57-343485439b55@nokia.com>
-Date: Fri, 19 Jan 2024 17:07:08 +0100
-User-Agent: Mozilla Thunderbird
-From: Stefan Wiehler <stefan.wiehler@nokia.com>
-Subject: Re: [PATCH 6.1 000/100] 6.1.74-rc1 review
-To: Florian Fainelli <f.fainelli@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240118104310.892180084@linuxfoundation.org>
- <96dc2b0b-ad51-42f9-a305-744d9d97272e@gmail.com>
-Content-Language: en-US
-Organization: Nokia
-In-Reply-To: <96dc2b0b-ad51-42f9-a305-744d9d97272e@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0127.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:94::13) To PAWPR07MB9688.eurprd07.prod.outlook.com
- (2603:10a6:102:383::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9DB54BCB
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 16:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705680497; cv=none; b=ST55gtyIhk+4Ov6QuAoJakG7rpRpVJwf7ruMpU/JuJymb9pumqwN7XTTggeQz5Cgc97UhyQdursdmCZE+3p5SvhQEeNcXfXx3F+gVXKWilLuq66z6pUevhAwMwBwGG7/GyZZXZdhufLDco1fsxTAbQOZQsgtPAl184SEey0OJuc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705680497; c=relaxed/simple;
+	bh=HlSqlIFfc5jKr34dAQ+ilTv/SnWX7l8eQUBjBNSh61k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LZYD7D1JzLd6Ov8KcOu3jwXntIchn2oUEY16QcckUsnobXRH9OVyW+SyVBbK7GcRVCtLc1/Wl8KrhRgNU8CXdccM2sJ+cFob1Mp3fzlbXVVsZxdX8SV/8l4PbOjSrBihn9Hj8Mhc1avIelpP5HC1vvoKJbiDgyumWvXtls0ytnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oz+I3YlG; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e76706b2-93b0-403b-aad6-4560acb6708c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705680492;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1xkGksszY891okGUH1YxV3glIqAxtzsMsZ6J0aQj1us=;
+	b=oz+I3YlGz/apOzKpkIm3JKN8ieRo7JmVIBfJfQScW4qUIXk54KoVwBsBsr9oq4pob5aYz7
+	5eciChwNqGyGTkrBUtWQGR6niTw2BU2Ic9qtjhC+EHs0tDi5RaijNNgWFHPiveb07CI5Ky
+	eRUkq0Tq+Nfx+ScHy91ZrobIHinFLso=
+Date: Fri, 19 Jan 2024 16:08:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAWPR07MB9688:EE_|DBBPR07MB7500:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad3fd333-95b4-4fae-e82a-08dc1908b11e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	GjcJZl1W/PWI1Oa18T8udQO6TbABnDr0tp0227nhQon0U7/F0T3TftsU8ceN+1U9dYRu5ZxI8e5cc0EikZagoG7fF+eGKZyIRNpvbLQPXca0h9HTfbox1nrDzNZYCx7bi4shV+wQXgD4QhWaLw9MWtZAmb1ydPgzEGz/hJjh3ovxWYX/5ZiIRuAjt1r31wq4ljgF4cgxXEc6LoN2/IyOAhNFpt1kXWj+xmgH9skQ2x6dEPO6wMhTIsLCqJpDDNtFQ//2HUDW7D0RK3XlV4ZmMkSbQPMow9Q3J2wdaKOmk5d+fut1QByb0FldDPTCEpHC6pM5jPhn1srp5IJmwFjua5j5sDsrcK8smWnfLyftUyemVQs6m2sN2Qi8ce3hQKYaW7HKGGD/tS+TmC24v8i8A+G4Ikz6vpZeAKMVjUOpWvvqbWt+kywz070GXhZwaO4P0x25UBFoTyHdl4Btq+j7cfJejMiC055C0k+gReXxrePyBbFrIiguX+YnQHsAYTBhWqEPprxdkdoirqffrFb6LAaqrpzw7sCJr3g5YVVcdtmn/KBENSwbkCZGY7h6ckCvwPfpRtpGmzgCRFVvEt5U0evSYNsQEBw0HJ5GdL2u8D0aMERysvfx3qo09ubNqV9ZqHGMH6/IeDB4RVpu+sF8Ew==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAWPR07MB9688.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(136003)(396003)(39860400002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(8676002)(8936002)(4326008)(110136005)(66556008)(66946007)(66476007)(31686004)(2906002)(4744005)(2616005)(7416002)(5660300002)(44832011)(6512007)(38100700002)(41300700001)(82960400001)(31696002)(6486002)(36916002)(478600001)(6506007)(86362001)(316002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aEdObHIrTWxxT3lsYXEwWisvaG52SHRYLzBvQkh3OUJSVW1YdlRoSDU0Slg2?=
- =?utf-8?B?T0dGMUg3UWM1SWplYmxJMVlWNUF1YTdhY3l5bWJJaUxiQi8yRzVRKzh2alcr?=
- =?utf-8?B?R2NYS2djMGp4MzM2VjNsdndWc29qbnBFaUErWWlBYzc5aDNaM1ZQekRxWUZI?=
- =?utf-8?B?SXRkWjdsdnRtSmJWVzE5TnRnd1pGODh6eGVUYWxOVEpNT3AwUFhobm1Sdkp6?=
- =?utf-8?B?Wk5NblVkcTZnQjgweERLbktyMGRLQ3N0TXhoLy9GVHFENmdwS1lMb2pGVFBN?=
- =?utf-8?B?V0JjaG8zRVpNWDhWbnhVVHR5TFRaZFIzcFdYYzhUYWhkTjI0a1lYTGJCTHR1?=
- =?utf-8?B?V0xjcVhnY0ZUbU5YYzlwbVNRV0ZoNGtDbmtKK2drTmhLS3lld2tlcmdablNZ?=
- =?utf-8?B?VnlqMk5XeTNVcXJYdk5kK0I1S09WRXVJZyt6dlVrNkdmcmUrVGt3UEtJR2lr?=
- =?utf-8?B?UWpFQXhBT241NWdmdXJxR2tyWk9LY0VIUUN0OFp2QzhDTGpDVjdkNUFla1Bm?=
- =?utf-8?B?a0t5QVE4UVNXSEtPOGg0QTVHOTMrZVBZbDc3UWxMcHdCNkdGQTFkUmE5R0o5?=
- =?utf-8?B?SUdNYk1jS2dScEloUzdYV0J4Qldtd3I2K21LV0tNd1poMExGQXRDVjAvWVNQ?=
- =?utf-8?B?VUtrNWpkSXNrMFhhSkI4cGpuSEVOcjZUN3BhYlNPdHdLd2hPejRyMEMzb2l5?=
- =?utf-8?B?ZE1UNjJBZmVwUFdyTmlGUzY4azhXRjRhMHhwbEp0WmwxQVRmSHY2QmhOdmVk?=
- =?utf-8?B?L2F3N2xOS2kxTUtNRnVvWVUwNGJDM21Ba2hnWHhFUGxQT3c0cllXNk10R2FQ?=
- =?utf-8?B?cmRZYTg0ZDVRWFU2TTMxMEUzUXpwV3B2ZG14STkzaWh3Wmcrcy9XcXhwRkRm?=
- =?utf-8?B?ZWZCeS9BQmVhQkxhdTZuZ21SazBXL3lMSVNwWTRSRnBtd2F5Y3FKQk5wZWpv?=
- =?utf-8?B?REhsY3g5ZG5ycjlEVkRzQUIzM2lzdW9BWDZINkQ5cm00YWhyM1ZQNWd3RHQ2?=
- =?utf-8?B?SVV5dEh0QmVJVFZkNDBzNEM4aEFkWENFWTFIc1VZVnRzL1NUQkY2RkdXRnJa?=
- =?utf-8?B?dzlPRkhkdEVaM2I5NWZVVWJpOXBzbmpPU2tNSHJLQjJ4ZEdlcytkOTk1QkdF?=
- =?utf-8?B?MGZMVDQ1VlU5M2x0N0tMR2VNcUNURFR4dkVESUIxc1c2Z1o2cGtQU1JTTUVt?=
- =?utf-8?B?d3RPb3ljWFVTd3hjelRiQzMwVkZrV2tpQjhaUzlzdlFPUU5Uekl0eXR5dzd4?=
- =?utf-8?B?ZFFoeThldG8rNzNDSHllYXFyb0d1VnRWQzUxcHlIOG9mNS9wZ2VIRVJUVTRp?=
- =?utf-8?B?U3oxSGpIaWVYaHhROFV0MXVsRS9tZkZJZTN3elJpeTYwSnZGdStJN3daM3Ix?=
- =?utf-8?B?YTNvUEdGUU5GZTN4VTdPbDRQNitSVVhHWm8wcXVVM3JCYWdHMGhkWFdOV3Jj?=
- =?utf-8?B?cGhoL2ZWeXAxeFRsNW0xRjVKR29ieUJsVm5KZ2dUclB6c2EyM3ZGRE8waDk5?=
- =?utf-8?B?TGVRMkxuNDdxVk1NeWZFNXQvTkFwSkRoaERld1lNSk1hT3FLZitaNkZIMjFq?=
- =?utf-8?B?Rzg4Vm9LRGs3VFlIanc4UEg1azl3UlI1aDlybkhqaGM1MDZ1Q0dycVlLWUlw?=
- =?utf-8?B?VkFoUExTRGM3K2xxZkl4RFZVSU1pZ2MzM25xbmtKYmxBQkxRZyt3Z2V1dlJ3?=
- =?utf-8?B?N0tndklSNmpPYXBKUG1peFo0S2xyNTU1aFlDRHRtci9VckR2a1Zwc3lWUHA3?=
- =?utf-8?B?ZExPakNXK2kweVJJU2xLN3ByMW84U2sxdlZvNUtrZmFsTFB6RTBvY0F0aHhs?=
- =?utf-8?B?NFFwUmlYZENHM1FqQU1ueDZyeXBkRlVaUVhzN0NlSjFsYmx0eXNRUjMyNWZo?=
- =?utf-8?B?Y3BDWkFhejBKUjRvcTJ2YStyVGtHRHExeGhFNWppVTYzL0VyWHZXN0lJK3ln?=
- =?utf-8?B?czFPajE3MTZRVE5XeFhyWFMxdlU5RUZGMmtnUzVJYUVWc1RQa1lZeGNwaTNt?=
- =?utf-8?B?ZFhpcFpnRE5WZThwZHVTOENZaEt3VGJQeG5oVTR1R0lMTGtHWSs5TEErQjJX?=
- =?utf-8?B?VE81MU4wNTZGWSsvL1lZMWs5Y2pZYUtqL0J6NTYyaVBzUjVaRm1ISFYxSWxC?=
- =?utf-8?B?dnMraU1mQzI2NGFwVVIxbjlBWVZ3akxkZGRhelRFNjZjVG9SUllYKzlMb3Jz?=
- =?utf-8?B?QmM0UEI0YmV5cHhpREtVMjVsTHFpbVFoM2NCYmthUWRiMHBzU3VVcjRJcVBH?=
- =?utf-8?B?bWIyT3hwM2Jxb0wrdGpwZnJhWUt3PT0=?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad3fd333-95b4-4fae-e82a-08dc1908b11e
-X-MS-Exchange-CrossTenant-AuthSource: PAWPR07MB9688.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 16:07:10.2826
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sNe1/AT3veuZXLo+DOFvyJPWH7i9kfEMdCUS0mhQp341J/b3V8efYJc/dj4lEFueGESDV/K65uC/Km6dxjLJAIRyUSp4cMAmV3tgAJU9SpQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR07MB7500
+Subject: Re: [PATCH net v6 0/4] dpll: fix unordered unbind/bind registerer
+ issues
+Content-Language: en-US
+To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+ netdev@vger.kernel.org
+Cc: jiri@resnulli.us, davem@davemloft.net, milena.olech@intel.com,
+ linux-kernel@vger.kernel.org, pabeni@redhat.com, kuba@kernel.org,
+ mschmidt@redhat.com
+References: <20240119134304.576956-1-arkadiusz.kubalewski@intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20240119134304.576956-1-arkadiusz.kubalewski@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Florian,
-
-> It looks like rcutree_report_cpu_starting() has been introduced
-> 448e9f34d91d1a4799fdb06a93c2c24b34b6fd9d ("rcu: Standardize explicit
-> CPU-hotplug calls") which is in v6.7.
+On 19/01/2024 13:43, Arkadiusz Kubalewski wrote:
+> Fix issues when performing unordered unbind/bind of a kernel modules
+> which are using a dpll device with DPLL_PIN_TYPE_MUX pins.
+> Currently only serialized bind/unbind of such use case works, fix
+> the issues and allow for unserialized kernel module bind order.
 > 
-> For MIPS, it would like an adequate fix would be to
-> 's/rcutree_report_cpu_starting/rcu_cpu_starting/' for the 6.1 and 6.6
-> branches.
+> The issues are observed on the ice driver, i.e.,
 > 
-> Stefan, do you agree?
+> $ echo 0000:af:00.0 > /sys/bus/pci/drivers/ice/unbind
+> $ echo 0000:af:00.1 > /sys/bus/pci/drivers/ice/unbind
+> 
+> results in:
+> 
+> ice 0000:af:00.0: Removed PTP clock
+> BUG: kernel NULL pointer dereference, address: 0000000000000010
+> PF: supervisor read access in kernel mode
+> PF: error_code(0x0000) - not-present page
+> PGD 0 P4D 0
+> Oops: 0000 [#1] PREEMPT SMP PTI
+> CPU: 7 PID: 71848 Comm: bash Kdump: loaded Not tainted 6.6.0-rc5_next-queue_19th-Oct-2023-01625-g039e5d15e451 #1
+> Hardware name: Intel Corporation S2600STB/S2600STB, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+> RIP: 0010:ice_dpll_rclk_state_on_pin_get+0x2f/0x90 [ice]
+> Code: 41 57 4d 89 cf 41 56 41 55 4d 89 c5 41 54 55 48 89 f5 53 4c 8b 66 08 48 89 cb 4d 8d b4 24 f0 49 00 00 4c 89 f7 e8 71 ec 1f c5 <0f> b6 5b 10 41 0f b6 84 24 30 4b 00 00 29 c3 41 0f b6 84 24 28 4b
+> RSP: 0018:ffffc902b179fb60 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff8882c1398000 RSI: ffff888c7435cc60 RDI: ffff888c7435cb90
+> RBP: ffff888c7435cc60 R08: ffffc902b179fbb0 R09: 0000000000000000
+> R10: ffff888ef1fc8050 R11: fffffffffff82700 R12: ffff888c743581a0
+> R13: ffffc902b179fbb0 R14: ffff888c7435cb90 R15: 0000000000000000
+> FS:  00007fdc7dae0740(0000) GS:ffff888c105c0000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000010 CR3: 0000000132c24002 CR4: 00000000007706e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+>   <TASK>
+>   ? __die+0x20/0x70
+>   ? page_fault_oops+0x76/0x170
+>   ? exc_page_fault+0x65/0x150
+>   ? asm_exc_page_fault+0x22/0x30
+>   ? ice_dpll_rclk_state_on_pin_get+0x2f/0x90 [ice]
+>   ? __pfx_ice_dpll_rclk_state_on_pin_get+0x10/0x10 [ice]
+>   dpll_msg_add_pin_parents+0x142/0x1d0
+>   dpll_pin_event_send+0x7d/0x150
+>   dpll_pin_on_pin_unregister+0x3f/0x100
+>   ice_dpll_deinit_pins+0xa1/0x230 [ice]
+>   ice_dpll_deinit+0x29/0xe0 [ice]
+>   ice_remove+0xcd/0x200 [ice]
+>   pci_device_remove+0x33/0xa0
+>   device_release_driver_internal+0x193/0x200
+>   unbind_store+0x9d/0xb0
+>   kernfs_fop_write_iter+0x128/0x1c0
+>   vfs_write+0x2bb/0x3e0
+>   ksys_write+0x5f/0xe0
+>   do_syscall_64+0x59/0x90
+>   ? filp_close+0x1b/0x30
+>   ? do_dup2+0x7d/0xd0
+>   ? syscall_exit_work+0x103/0x130
+>   ? syscall_exit_to_user_mode+0x22/0x40
+>   ? do_syscall_64+0x69/0x90
+>   ? syscall_exit_work+0x103/0x130
+>   ? syscall_exit_to_user_mode+0x22/0x40
+>   ? do_syscall_64+0x69/0x90
+>   entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> RIP: 0033:0x7fdc7d93eb97
+> Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+> RSP: 002b:00007fff2aa91028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 000000000000000d RCX: 00007fdc7d93eb97
+> RDX: 000000000000000d RSI: 00005644814ec9b0 RDI: 0000000000000001
+> RBP: 00005644814ec9b0 R08: 0000000000000000 R09: 00007fdc7d9b14e0
+> R10: 00007fdc7d9b13e0 R11: 0000000000000246 R12: 000000000000000d
+> R13: 00007fdc7d9fb780 R14: 000000000000000d R15: 00007fdc7d9f69e0
+>   </TASK>
+> Modules linked in: uinput vfio_pci vfio_pci_core vfio_iommu_type1 vfio irqbypass ixgbevf snd_seq_dummy snd_hrtimer snd_seq snd_timer snd_seq_device snd soundcore overlay qrtr rfkill vfat fat xfs libcrc32c rpcrdma sunrpc rdma_ucm ib_srpt ib_isert iscsi_target_mod target_core_mod ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm intel_rapl_msr intel_rapl_common intel_uncore_frequency intel_uncore_frequency_common isst_if_common skx_edac nfit libnvdimm ipmi_ssif x86_pkg_temp_thermal intel_powerclamp coretemp irdma rapl intel_cstate ib_uverbs iTCO_wdt iTCO_vendor_support acpi_ipmi intel_uncore mei_me ipmi_si pcspkr i2c_i801 ib_core mei ipmi_devintf intel_pch_thermal ioatdma i2c_smbus ipmi_msghandler lpc_ich joydev acpi_power_meter acpi_pad ext4 mbcache jbd2 sd_mod t10_pi sg ast i2c_algo_bit drm_shmem_helper drm_kms_helper ice crct10dif_pclmul ixgbe crc32_pclmul drm crc32c_intel ahci i40e libahci ghash_clmulni_intel libata mdio dca gnss wmi fuse [last unloaded: iavf]
+> CR2: 0000000000000010
+> 
 
-Yes, I agree, that is also how the patch looks like in our internal 
-branch based on 5.15.
+For the series:
 
-Kind regards,
+Acked-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
 
-Stefan
+Thanks
+
+
+> v6:
+> - fix memory corruption on error path in patch [v5 2/4]
+> 
+> Arkadiusz Kubalewski (4):
+>    dpll: fix broken error path in dpll_pin_alloc(..)
+>    dpll: fix pin dump crash for rebound module
+>    dpll: fix userspace availability of pins
+>    dpll: fix register pin with unregistered parent pin
+> 
+>   drivers/dpll/dpll_core.c    | 68 +++++++++++++++++++++++++++++++------
+>   drivers/dpll/dpll_core.h    |  4 +--
+>   drivers/dpll/dpll_netlink.c | 57 ++++++++++++++++++++++---------
+>   3 files changed, 100 insertions(+), 29 deletions(-)
+> 
+> 
+> base-commit: dbc153fd3c142909e564bb256da087e13fbf239c
+
 
