@@ -1,169 +1,178 @@
-Return-Path: <linux-kernel+bounces-31488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14E2F832EEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:27:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC3E2832EF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:27:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABB861F2276F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:27:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D62E28817C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E362F56454;
-	Fri, 19 Jan 2024 18:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFAB055E76;
+	Fri, 19 Jan 2024 18:26:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nVng7ozE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="LnZS/RlA"
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CF656455
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78DDD56479
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:26:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705688772; cv=none; b=C8u/Wif8AA21qHmN2HdEzBoZCC1V+iA2DSTlDf3NYk7tSI7L/G7aXi34PcUjwcXbFoN9x7liaGOH8PP02pspkRg4z3isZ6x1Lcx9NXHzl3WJ5CUS0mEOrG9GBvi2bE+Jphi8/P5FQ9rOmUxQ+1mfNKjNdSEqhwn1Faz4qwlPWFc=
+	t=1705688802; cv=none; b=SagCLcTVsa08quQVHmk0yj983YjgKY2h0yzRO2BfVopGvWOahwY1DgPeDR7dDLRML8XPRtFUAnwsLen1Em73+gdYxUvBpsa9CndIh/tYyF+VtxKAbUSq/52ZAxK8qmlqNNXwOykfqZZKkOOBmAIdaizXJ+Ans4dwimA9LAPAzho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705688772; c=relaxed/simple;
-	bh=yOxHF7ZU+mK9du0Tdf/ZFieHEX1hu7B8QVkJ8YihwNk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZFssT0G0vZlVZbMYxGolaMkfA8cwiaxbnRSDucadMLROZidYMzjaGa2MeMlTX0Ks/2b35hI05HayaVBgaEP1za9EKY2jKxTWH83TZsAfP0zH9Sec/dr7VMZ3PXdYbC+SFVP/onzI7fftIm8oKKzvK6YPo0/zssGV9+rvHMvZA3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nVng7ozE; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705688770; x=1737224770;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=yOxHF7ZU+mK9du0Tdf/ZFieHEX1hu7B8QVkJ8YihwNk=;
-  b=nVng7ozERr7Go/KQO0UG5L2G2BUPvwV+Fw79nCG+XPTfUm15L0d4wRNH
-   an1uFT5HDCev1oMXrrSnz5T6OOUgthTaIgrqpnoVDTSmK8aTV8NE/E4Cx
-   ZwgJe/h20MmigWHHZQOKFqottDf50r4tPvpynMQuMBfXNw59CGwldby0P
-   YYj2LAwT7AIpnF5NLAXjl5JcUiJ2FvQcu/wEw2fiWciv5ljHIB52eLcuD
-   mEpRWf3dsjZ4/gUiRDXzeB/AUdWp/hW9hAXP3tpFeGKrj+Z+oi0zBlltF
-   wt8mu13XjYpuUMsIXaf9prZjnUiBd3gFUu+Ug501mTNk55oExyHmVl11F
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="14330735"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="14330735"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 10:25:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="778039172"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="778039172"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga007.jf.intel.com with SMTP; 19 Jan 2024 10:25:52 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 19 Jan 2024 20:25:51 +0200
-Date: Fri, 19 Jan 2024 20:25:51 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
-Cc: dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
-	alexander.deucher@amd.com, christian.koenig@amd.com,
-	Simon Ser <contact@emersion.fr>,
-	Pekka Paalanen <ppaalanen@gmail.com>, daniel@ffwll.ch,
-	Daniel Stone <daniel@fooishbar.org>,
-	'Marek =?utf-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
-	Dave Airlie <airlied@gmail.com>, Xaver Hugl <xaver.hugl@gmail.com>,
-	Joshua Ashton <joshua@froggi.es>,
-	Michel =?iso-8859-1?Q?D=E4nzer?= <michel.daenzer@mailbox.org>
-Subject: Re: [PATCH v2 2/2] drm/amdgpu: Implement check_async_props for planes
-Message-ID: <Zaq-r7UZpEy7_Rrn@intel.com>
-References: <20240119181235.255060-1-andrealmeid@igalia.com>
- <20240119181235.255060-3-andrealmeid@igalia.com>
+	s=arc-20240116; t=1705688802; c=relaxed/simple;
+	bh=Bsn0CtciQRUDtrRkW9gSG+XBJcqYbERCr4RziQIuVjM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ostfdCuAcdFhJyM04l/KJpZe0+fw1PE2ntIVW3c6KIFqinrNcYY2OAtPYxvfaT3AnZbXWugI2evpnLh+V12MwC9nUKUNVxsu1EiwJgujdwmTnVpeTV0MonFhgQPLH6mPC7h9T5aJm8HT7fm2so1gQR3mcDPIrJ7EvIy4yd6NDfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=LnZS/RlA; arc=none smtp.client-ip=35.89.44.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6003a.ext.cloudfilter.net ([10.0.30.151])
+	by cmsmtp with ESMTPS
+	id QsvirIt9fCF6GQtZgr0a6y; Fri, 19 Jan 2024 18:26:40 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id QtZer2qjutzh2QtZfrsxOO; Fri, 19 Jan 2024 18:26:39 +0000
+X-Authority-Analysis: v=2.4 cv=Ra6Dtnhv c=1 sm=1 tr=0 ts=65aabedf
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=NEAV23lmAAAA:8 a=7YfXLusrAAAA:8 a=6BFke60KTf7VZbaxHQkA:9 a=QEXdDO2ut3YA:10
+ a=9cHFzqQdt-sA:10 a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=SLz71HocmBbuEhFRYD3r:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=/mlPQHtQDJOovVjTKZhCPypwsLYuORg1138Lx/Umta0=; b=LnZS/RlAcA+J8mY3mUW9L5oRqi
+	d25JGSC3u5UcrBJi/qJrTNBVwC73rGRNtpvKaaO36thHEM1Vois2sqwaV9sZDelqYqOVhqWt8OFPr
+	f/ZvfJYE52lomb7TK6CH/lAH5WWYGA+9km3b0z9OJB90wH+rh0MO8TGgFsCiyKkYopJnw5IYCYStv
+	LAbppX3xvU0s2YUejxGbhwShBKFTpG+0tmglfB4jJizxu/orZucU45TCR+DGZayAAt2SI99+2ogca
+	iagcMsZhO2gzUkxMSM0rrKtCC3atn4aYLM7ovFLK1rJ7e59SAKyXGgF67krexe2XeItj3fvEJA38L
+	OsXntoHw==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:48556 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rQtZe-001yC5-0h;
+	Fri, 19 Jan 2024 12:26:38 -0600
+Message-ID: <b75129be-04fc-4818-a9f9-eb35dca4b689@embeddedor.com>
+Date: Fri, 19 Jan 2024 12:26:36 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240119181235.255060-3-andrealmeid@igalia.com>
-X-Patchwork-Hint: comment
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] pinctrl: pinctrl-zynqmp: Use devm_kcalloc() instead of
+ devm_kzalloc()
+Content-Language: en-US
+To: Erick Archer <erick.archer@gmx.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Michal Simek
+ <michal.simek@amd.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240119181909.7079-1-erick.archer@gmx.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240119181909.7079-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1rQtZe-001yC5-0h
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:48556
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfOFcxrZte660ZNfZwNIjJPzo4rCzL9FGTTQU3Swpa+2g6MBsUQqXcfUEilLj9WxbYuXzs8azylcZxq/fXLPHazPcNZmZfY9F5BxuFO2T5N9IgrZyK7/z
+ K+sqjmifWELmLEa6POnfAx0fCnS0iUo7fSAvXrOyo+j73GSYvaQXUw3Em22TZ6rOJR1Ugj4Pg7rk7G2rk+0gMUBO4dRylsK1isog2i00i45UoptriFQeIm69
 
-On Fri, Jan 19, 2024 at 03:12:35PM -0300, André Almeida wrote:
-> AMD GPUs can do async flips with changes on more properties than just
-> the FB ID, so implement a custom check_async_props for AMD planes.
+
+
+On 1/19/24 12:19, Erick Archer wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 > 
-> Allow amdgpu to do async flips with IN_FENCE_ID and FB_DAMAGE_CLIPS
-> properties. For userspace to check if a driver support this two
-> properties, the strategy for now is to use TEST_ONLY commits.
+> So, use the purpose specific devm_kcalloc() function instead of the
+> argument size * count in the devm_kzalloc() function.
 > 
-> Signed-off-by: André Almeida <andrealmeid@igalia.com>
-> ---
-> v2: Drop overlay plane option for now
-> 
->  .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 29 +++++++++++++++++++
->  1 file changed, 29 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-> index 116121e647ca..7afe8c1b62d4 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-> @@ -25,6 +25,7 @@
->   */
->  
->  #include <drm/drm_atomic_helper.h>
-> +#include <drm/drm_atomic_uapi.h>
->  #include <drm/drm_blend.h>
->  #include <drm/drm_gem_atomic_helper.h>
->  #include <drm/drm_plane_helper.h>
-> @@ -1430,6 +1431,33 @@ static void amdgpu_dm_plane_drm_plane_destroy_state(struct drm_plane *plane,
->  	drm_atomic_helper_plane_destroy_state(plane, state);
->  }
->  
-> +static int amdgpu_dm_plane_check_async_props(struct drm_property *prop,
-> +					  struct drm_plane *plane,
-> +					  struct drm_plane_state *plane_state,
-> +					  struct drm_mode_object *obj,
-> +					  u64 prop_value, u64 old_val)
-> +{
-> +	struct drm_mode_config *config = &plane->dev->mode_config;
-> +	int ret;
-> +
-> +	if (prop != config->prop_fb_id &&
-> +	    prop != config->prop_in_fence_fd &&
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 
-IN_FENCE should just be allowed always.
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-> +	    prop != config->prop_fb_damage_clips) {
-
-This seems a bit dubious to me. How is amdgpu using the damage
-information during async flips?
-
-> +		ret = drm_atomic_plane_get_property(plane, plane_state,
-> +						    prop, &old_val);
-> +		return drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
-> +	}
-> +
-> +	if (plane_state->plane->type != DRM_PLANE_TYPE_PRIMARY) {
-> +		drm_dbg_atomic(prop->dev,
-> +			       "[OBJECT:%d] Only primary planes can be changed during async flip\n",
-> +			       obj->id);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static const struct drm_plane_funcs dm_plane_funcs = {
->  	.update_plane	= drm_atomic_helper_update_plane,
->  	.disable_plane	= drm_atomic_helper_disable_plane,
-> @@ -1438,6 +1466,7 @@ static const struct drm_plane_funcs dm_plane_funcs = {
->  	.atomic_duplicate_state = amdgpu_dm_plane_drm_plane_duplicate_state,
->  	.atomic_destroy_state = amdgpu_dm_plane_drm_plane_destroy_state,
->  	.format_mod_supported = amdgpu_dm_plane_format_mod_supported,
-> +	.check_async_props = amdgpu_dm_plane_check_async_props,
->  };
->  
->  int amdgpu_dm_plane_init(struct amdgpu_display_manager *dm,
-> -- 
-> 2.43.0
-
+Thanks!
 -- 
-Ville Syrjälä
-Intel
+Gustavo
+
+> ---
+>   drivers/pinctrl/pinctrl-zynqmp.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-zynqmp.c b/drivers/pinctrl/pinctrl-zynqmp.c
+> index f2be341f73e1..5c46b7d7ebcb 100644
+> --- a/drivers/pinctrl/pinctrl-zynqmp.c
+> +++ b/drivers/pinctrl/pinctrl-zynqmp.c
+> @@ -562,7 +562,7 @@ static int zynqmp_pinctrl_prepare_func_groups(struct device *dev, u32 fid,
+>   	const char **fgroups;
+>   	int ret, index, i;
+> 
+> -	fgroups = devm_kzalloc(dev, sizeof(*fgroups) * func->ngroups, GFP_KERNEL);
+> +	fgroups = devm_kcalloc(dev, func->ngroups, sizeof(*fgroups), GFP_KERNEL);
+>   	if (!fgroups)
+>   		return -ENOMEM;
+> 
+> @@ -754,7 +754,7 @@ static int zynqmp_pinctrl_prepare_function_info(struct device *dev,
+>   	if (ret)
+>   		return ret;
+> 
+> -	funcs = devm_kzalloc(dev, sizeof(*funcs) * pctrl->nfuncs, GFP_KERNEL);
+> +	funcs = devm_kcalloc(dev, pctrl->nfuncs, sizeof(*funcs), GFP_KERNEL);
+>   	if (!funcs)
+>   		return -ENOMEM;
+> 
+> @@ -768,7 +768,7 @@ static int zynqmp_pinctrl_prepare_function_info(struct device *dev,
+>   		pctrl->ngroups += funcs[i].ngroups;
+>   	}
+> 
+> -	groups = devm_kzalloc(dev, sizeof(*groups) * pctrl->ngroups, GFP_KERNEL);
+> +	groups = devm_kcalloc(dev, pctrl->ngroups, sizeof(*groups), GFP_KERNEL);
+>   	if (!groups)
+>   		return -ENOMEM;
+> 
+> @@ -830,7 +830,7 @@ static int zynqmp_pinctrl_prepare_pin_desc(struct device *dev,
+>   	if (ret)
+>   		return ret;
+> 
+> -	pins = devm_kzalloc(dev, sizeof(*pins) * *npins, GFP_KERNEL);
+> +	pins = devm_kcalloc(dev, *npins, sizeof(*pins), GFP_KERNEL);
+>   	if (!pins)
+>   		return -ENOMEM;
+> 
+> --
+> 2.25.1
+> 
+> 
 
