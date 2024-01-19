@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-30987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32EE9832723
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:58:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6524E83272C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0093B24E61
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:58:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA8BE1F23BC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:59:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B2E3C473;
-	Fri, 19 Jan 2024 09:58:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724BA3C468;
+	Fri, 19 Jan 2024 09:59:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="X1jNMqVY";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SR5BRVrL"
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="DKhszfyI";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="H3rALSDP"
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1EB83C087;
-	Fri, 19 Jan 2024 09:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9823C467;
+	Fri, 19 Jan 2024 09:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705658293; cv=none; b=KCTZAsfjznwQ35zFdtVajqr9ri9saG2zBXKI5HQe86z3w3lAi3eeS41gqxxOiBmEXkiw8JUQyZ6GWtW04LplR5IjSllWOFt3+a/n9DTB2sMSiVagkhT8+koZO/2G1XQegHuakM0GHkhzPb+BWi+G6pXZ48fVZvcxva7pCxMKNEA=
+	t=1705658364; cv=none; b=W4TcwB2de2MEVekZa9K6CLxL2mk2pWhgzEQTT3c0nkhNUSFluRaVT80bvt9N2TGkONqWV2OsS5KI9aLGMOq+76mHpax64OS4h3FzaTvI1UnOdscHjbmGafjO+s+jVO9ncthgneCP1u0c/CNICtE/3TafZI6z8yvTvPXVnFtLfQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705658293; c=relaxed/simple;
-	bh=laGQpW42lgmBqwhwGuEYTUyeGm+KG2KnoNFzaeak+ik=;
+	s=arc-20240116; t=1705658364; c=relaxed/simple;
+	bh=OqluU7mDwHc9epkbxaNnqsb8DVstYRlLRstztPdHOZU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q3tO85ukXMahziu1/BZPZ+6Am4FtD2IR45qhUZ92oLN10BHdPx+rL8nZitXHQzNfXLMIqpcGKizf2rIP2GwRte0ahWx77HzHiGXeE6DHkXRspLMuM/PMfqJp53acadITdEKiNC+vs+KB8cpAJqK6vs5hUPIpOAvlE+eKHBe1UQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=X1jNMqVY; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SR5BRVrL; arc=none smtp.client-ip=66.111.4.29
+	 In-Reply-To:Content-Type; b=ZUb1n8gGtVKrLdytJ94ApWvWc3Az2n6xYLYJg9JC+lCOaAR6J8obTYKH4Ev4m9k/uqEVpsnRse+50XWXTtVmksCeCkxnRfRfcJ912dqoYchPG97yhwc5FTrf3KbSbjonZ/zN70ywDuNRcufaKzT+cOU/4sKTuaZl8eNWg/msgYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=DKhszfyI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=H3rALSDP; arc=none smtp.client-ip=66.111.4.29
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.nyi.internal (Postfix) with ESMTP id BA3915C0190;
-	Fri, 19 Jan 2024 04:58:10 -0500 (EST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id 5C8FB5C016A;
+	Fri, 19 Jan 2024 04:59:22 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 19 Jan 2024 04:58:10 -0500
+  by compute3.internal (MEProxy); Fri, 19 Jan 2024 04:59:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
 	cc:cc:content-transfer-encoding:content-type:content-type:date
 	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1705658290;
-	 x=1705744690; bh=Y1aAdvlrmWl8c1Tb12LCfyP8q3aR+uk5/BpRCazyGSE=; b=
-	X1jNMqVYz49sOP0C0Vc4PJW97jmxq6UQ2UC0rsJrpsTK00pW+PHYfIBl5zvqGQBw
-	gP3ewePK26vvrxqU7wYnNEzAjXyaiShGt+xNTYxDSWsULztwN4fXUprw7Gl718h3
-	R8EGaTDMgWBfetU8uKn0RRvXug7s1oIrnkZxkbZQX8xVAKrweaxy8Hrzvk6kQ03D
-	1aiIZoXC2WatQgwDRPEo5I7M/JRVaf0nwMGqvij1LJGUxihvN/Dnd9MFOunx8SxE
-	WndofkWplYMtbq2nkO9GPA+yB6pT6i4at1nF/kMRDD+T8dkD+rMjk+hut215HGmC
-	Tlsqxoeo8KfTZs6RNGyibw==
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1705658362;
+	 x=1705744762; bh=iDZNgMSyVfB+3uX66ztDG+g8Lgb/fIB6/4hKx4kafVk=; b=
+	DKhszfyIO1cEG8lYumUlem3C4TtR6xz5NgPqhSt62H1s+wdIalY8i3JG67Y7uq8F
+	Uy3lB2o0X1Qk6n+Dius7m7cllPiW+0qCK3UxSwyUL/osnjCCyXmb45soBiv8DF0M
+	v/gnA7GSWl9+QghduzLOUDdIXVmcHeN97zuurLgpCbbZMaV8qilfATXEL1gP97Ok
+	Szp+KYWSo5HPbug2Z4/aQBou1QR4KGkXKlWkHCzQE7lOVJTYcPcM4li5cP5itIvT
+	Q5+D/otA7JY+HUewPcL7cufmRi8kEsQo9GMoHWlZQ0CUgEWxITKz/ETAOBj88rzt
+	isyUipcRyUBAZNLucjYhxg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705658290; x=
-	1705744690; bh=Y1aAdvlrmWl8c1Tb12LCfyP8q3aR+uk5/BpRCazyGSE=; b=S
-	R5BRVrLaNBjRnwAypJDfgXVDEqfNCgQK7RChbBlfTqPAcU+Jtto41X7fUxnOwnEh
-	laEk5HnCugNoN3Qb2UkKqNA6mn9OjqOpus6Wl/svwq1pK0gNG0I+wgI5QYJq46f4
-	zk+IpymHsNcoaErf84YeXADgTFKerDXxH2lhAtiLq61+5oVa38I/jOzniw5iVvb2
-	eMt8URBC6fajfnqzKM8qi6z6jlnBFOHfzpu2K4NSh0hh4f/EGhRqYtmBDCLBY3pm
-	2yuUSrNw6WZZLMlfdaxni1OX2AW55CiuOZaZaec/Oj18O967bhdd2EgItqQ3/wcR
-	ztFqrZMTCwDdNk8rE+SoQ==
-X-ME-Sender: <xms:skeqZd1ZOwSVwqXKK1H3retPkKzKJ8ryrfB8EnnT1L0FlO7-62rgsQ>
-    <xme:skeqZUHts-VF2y0YHMoIOCJ6HUUGBMWXyeCvYUsnU9vF9d0c1ibrK47wte6APrxUe
-    LUdz1i4DK_toRWu0Lk>
-X-ME-Received: <xmr:skeqZd7CEIJ5dvjkA9bdyp_aagYHvYGVJDJV0uXGr-py0HMrbqgPIWqw6nhqR2OeP7E3wLh8-tItQAObWBwxFSNsv68UyOS7lyqfz5k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdektddgtdelucetufdoteggodetrfdotf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705658362; x=
+	1705744762; bh=iDZNgMSyVfB+3uX66ztDG+g8Lgb/fIB6/4hKx4kafVk=; b=H
+	3rALSDPEsh/TSjVx473PzDjYCQBrBYBaaH0nW8P23Ur1caHzfdddLle3v7TjaeAw
+	W+ZN/Ds84R/PX3GMw6ziI1LXQ8DeRcykVeJUHUc9LHwc1O2nfFmdSM7VVlk8OkBT
+	HSiA24+tao90hidUCF48x4tDLim96GL9udLesvIf9wWACpksM0mlSYRinwDgtTnv
+	4KvPGDC3ZUgwAlCOF44M/jpeXGbiEGIgFEt78UA92qjrrkqDHjY7R08WCM0kiodC
+	LBuDDfxoaw46ImcQayRHZTZxUZZqFTZAAp84eLakQQOXNy5je40ofk4shk0/amJZ
+	YC4U1XEh/rLtKQHCDc/vA==
+X-ME-Sender: <xms:-UeqZanYe8DjV_oeW3qIgn4fAmgUZGYq4d-0K0QyWE8__14qjUBXZQ>
+    <xme:-UeqZR0yJcvzuVpbgc-1f4F-JFwGzUfK3tB4lKaFaOA5d-7_iC5NJGeS587A8hW1Y
+    ldE3bXUU36TLzgsGkc>
+X-ME-Received: <xmr:-UeqZYq8-DmuSM-JnA7ogy6ntU0o0Nskrb2gLd3L3Pi2thqRtp2Vphzb_xOUA16U9wl63zRpvnM6-6FxjhHHz1TDznaq25w_CIs0wo4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdektddguddtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflihgr
@@ -72,15 +72,15 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdektddgtdelucetufdoteggod
     cuggftrfgrthhtvghrnhepleeuffehheegleeuvdelgffhueekjeetueevuefhffdtgfeu
     hfeggfeukefffedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
     hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:skeqZa3Ywd0wWfQ52scga-_H_1nOBPDpGdWOWZzUaTXJtWyRhRGnqw>
-    <xmx:skeqZQF09JVBR1zXR320p0bQD8tUnlDP7i00QiYSGY2VFrNTIU3e8w>
-    <xmx:skeqZb_mIMmgS0izaxwfTNcCTNOGEiUImP7oqktlNmmay5Cdu_kP7g>
-    <xmx:skeqZT8nSsAuJ15SpuM2zujvSGi6sukN62vI4pDV5ZOQP09SICFKBA>
+X-ME-Proxy: <xmx:-UeqZemuZ-g4AoRwi5zlRzJOgK3oR4DhILBXUdb39r3UhD9ti4U-Xg>
+    <xmx:-UeqZY2TWqTSblYKwqRLa5A1WPy-VbYTuG9kQCs9h-JLiwEj9hlrPw>
+    <xmx:-UeqZVsdBChdf6khZZj4a_rW0IoEbcowrcnvGCLZebvF842zjqyrDA>
+    <xmx:-keqZds8GN30sWeAiZ31OMUxDnm58m0izeHnK75AoXKTi-cN9Up0Ew>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Jan 2024 04:58:08 -0500 (EST)
-Message-ID: <57c76891-afca-40e8-ad80-21dc7da9e663@flygoat.com>
-Date: Fri, 19 Jan 2024 09:58:08 +0000
+ 19 Jan 2024 04:59:20 -0500 (EST)
+Message-ID: <76c4a1ac-88f0-4f02-aee9-d07b027ea097@flygoat.com>
+Date: Fri, 19 Jan 2024 09:59:20 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,8 +88,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 04/15] MIPS: traps: Give more explanations if ebase
- doesn't belong to KSEG0
+Subject: Re: [PATCH v6 12/15] MIPS: mobileye: Add EPM5 device tree
 Content-Language: en-US
 To: Gregory CLEMENT <gregory.clement@bootlin.com>,
  Paul Burton <paulburton@kernel.org>,
@@ -103,7 +102,7 @@ Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
  =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 References: <20240118155252.397947-1-gregory.clement@bootlin.com>
- <20240118155252.397947-5-gregory.clement@bootlin.com>
+ <20240118155252.397947-13-gregory.clement@bootlin.com>
 From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Autocrypt: addr=jiaxun.yang@flygoat.com;
  keydata= xsFNBFnp/kwBEADEHKlSYJNLpFE1HPHfvsxjggAIK3ZtHTj5iLuRkEHDPiyyiLtmIgimmD3+
@@ -140,47 +139,64 @@ Autocrypt: addr=jiaxun.yang@flygoat.com;
  7Mg2PDpoOwdpKLKlmIpyDexGVH0Lj/ycBL8ujDYZ2tA9HhEaO4dW6zsQyt1v6mZffpWK+ZXb
  Cs8oFeACbrtNFF0nhNI6LUPH3oaVOkUoRQUYDuX6mIc4VTwMA8EoZlueKEHfZIKrRf2QYbOZ
  HVO98ZmbMeg=
-In-Reply-To: <20240118155252.397947-5-gregory.clement@bootlin.com>
+In-Reply-To: <20240118155252.397947-13-gregory.clement@bootlin.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
 在 2024/1/18 15:52, Gregory CLEMENT 写道:
-> With the expanded support for placing the kernel in XPHYS rather than
-> just KSEG0, scenarios where ebase doesn't belong to KSEG0 are more
-> likely to occur. In such cases, we currently experience a substantial
-> and perplexing stack dump without any accompanying explanation. To
-> rectify this, we aim to replace the uninformative stack dump with a
-> warning that offers a clear explanation of the issue.
+> Add a device tree for the Mobileye EPM5 evaluation board.
 >
 > Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-
 Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-
 > ---
->   arch/mips/kernel/traps.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
+>   arch/mips/boot/dts/mobileye/Makefile       |  4 ++++
+>   arch/mips/boot/dts/mobileye/eyeq5-epm5.dts | 24 ++++++++++++++++++++++
+>   2 files changed, 28 insertions(+)
+>   create mode 100644 arch/mips/boot/dts/mobileye/Makefile
+>   create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
 >
-> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-> index 355d0f0709de8..911d2233d6d0b 100644
-> --- a/arch/mips/kernel/traps.c
-> +++ b/arch/mips/kernel/traps.c
-> @@ -2347,10 +2347,13 @@ void __init trap_init(void)
->   		 * EVA is special though as it allows segments to be rearranged
->   		 * and to become uncached during cache error handling.
->   		 */
-> -		if (!IS_ENABLED(CONFIG_EVA) && !WARN_ON(ebase_pa >= 0x20000000))
-> +		if (!IS_ENABLED(CONFIG_EVA) && ebase_pa < 0x20000000)
->   			ebase = CKSEG0ADDR(ebase_pa);
->   		else
->   			ebase = (unsigned long)phys_to_virt(ebase_pa);
-> +		if (ebase_pa >= 0x20000000)
-> +			pr_warn("ebase(%pa) should better be in KSeg0",
-> +				&ebase_pa);
->   	}
->   
->   	if (cpu_has_mmips) {
+> diff --git a/arch/mips/boot/dts/mobileye/Makefile b/arch/mips/boot/dts/mobileye/Makefile
+> new file mode 100644
+> index 0000000000000..01c01c3aad81d
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/mobileye/Makefile
+> @@ -0,0 +1,4 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +# Copyright 2023 Mobileye Vision Technologies Ltd.
+> +
+> +dtb-$(CONFIG_MACH_EYEQ5)		+= eyeq5-epm5.dtb
+> diff --git a/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
+> new file mode 100644
+> index 0000000000000..ff16c3c760a19
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +/*
+> + * Copyright 2023 Mobileye Vision Technologies Ltd.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "eyeq5.dtsi"
+> +
+> +/ {
+> +	compatible = "mobileye,eyeq5-epm5", "mobileye,eyeq5";
+> +	model = "Mobile EyeQ5 MP5 Evaluation board";
+> +
+> +	chosen {
+> +		bootargs = "earlycon";
+> +		stdout-path = "serial2:115200n8";
+> +	};
+> +
+> +	memory@0 {
+> +		device_type = "memory";
+> +		reg = <0x0 0x08000000 0x0 0x08000000>,
+> +		      <0x8 0x00000000 0x0 0x78000000>;
+> +	};
+> +};
 
 -- 
 ---
