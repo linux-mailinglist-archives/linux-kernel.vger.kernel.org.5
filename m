@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-31520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 822F1832F71
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:38:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC819832F6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:38:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38DE22871F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:38:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D3DDB2336C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:38:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3648456B6D;
-	Fri, 19 Jan 2024 19:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76865645F;
+	Fri, 19 Jan 2024 19:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Rxgl3i8Z"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="TgnQeH2j"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06E61E480;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07151E492;
 	Fri, 19 Jan 2024 19:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705693094; cv=none; b=iYlj4gCV8tsFqvthbScyJcirrcqAZhnma6NX3TpmcXbXYdpJIdhzD+GWgdYPWnmPm8tn7jqTFkR4SOtEXBYyJJeeMDB54s4fu9y7OGu7a9FAXZAcJuDklb6HKazP7PFLZcJ+mAzBZSlWQm8TVXwf4RkErAFQEUlGhEGA2xK4DGc=
+	t=1705693093; cv=none; b=fp5Q816idnUIY4GMEXTbiuOhmMh4DBLwmS/2Y0Gk0Bu92DL+4A/vZoLAi0cJ6FfyIgVp9wd4JtM7q3U7T6elp1GcBxhgN/YuV9Tm0H6EXjFQ6Eq2gNdXo18jJnKnf2i0PBH4Glb3AHNJx3iemQKvjFjcIc+My1gq2wiDvSIjioE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705693094; c=relaxed/simple;
-	bh=MSkJacugMshatNwZ3mm7fqSw/GZZCUd/n7oLLvxCAvs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V/14jxrzlX9J/grTz933y0HY4nyQ0dI1bRfTT4B1aJx4pOgPfwLy8t+zWemi86DZthK04BzCwdd9dmMG/vkeNu+UW/Z2XIzJtR6KjLqaYqw5xskao9cjBBLykksP2HFpPUIwXeilIUV0AwkaVBEkVk956VtnuvHo3NK42udVG3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Rxgl3i8Z; arc=none smtp.client-ip=46.235.227.194
+	s=arc-20240116; t=1705693093; c=relaxed/simple;
+	bh=sj/aqzYfZIDTUDNdCb7eHJppTugbxRlSalOblYODELs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Vda8RbrUZtmNw6zybq58FJm2XSkvBDRp1ZPfFHo9/fUArki9jevvHnkQTqu5n+yAn7wXKVYLB5sk/58bQJNcdin3WJXxK419pt3j2vFc5j1+Pe8h+b6JmVH09IojVgHVzyyYrfRObRofe0c2NqP4KMulcVvyzoA1vw9ueJ56DQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=TgnQeH2j; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705693089;
-	bh=MSkJacugMshatNwZ3mm7fqSw/GZZCUd/n7oLLvxCAvs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Rxgl3i8ZC+YWiCP+rPTZ2QDTXukFQrh1bPTN/H/BfTmKLhgU6mtTkKt8M9ewAtG2D
-	 v9bHvVKanfq7euV1l5e5F7hgbHIsoyYmUYgr6O9zyVcmalzptdw+irJ1OZ8LDYPe4w
-	 +LsczR86kyGUquu21EjkMK0/NvSzblrPC8Z9/Y+gML0e4thm0IsqRv9BSqgRUqJPAB
-	 PJZ1BP4kmAcvYp801UIHTQr5vSjW4XLzeyvCxGv/+ju/iiZga4KLPFdqi7pYDHs+kq
-	 G6ugB+C1lFT2wWgprRXLvfKh0SwUUFTbyjJ9hdSX9d81zGN4Z9yHrkAfMPTvkxN21j
-	 dOVpZAOHWO9Vg==
+	s=mail; t=1705693090;
+	bh=sj/aqzYfZIDTUDNdCb7eHJppTugbxRlSalOblYODELs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=TgnQeH2jS6UZs8ulzz0LUiqetDM2CLH2UuSiA+Jb/Yd1LRFJ9aHWhWlTVHENwKZmH
+	 T+1V4R/WDxV9tAbBliZsZ4SGcMbftX1DO8YkPgGAiJLCNFe2LUhIcEzklERHyyZFM1
+	 TyFiaAVLfMTVvauvreTo6XGs8Mnn14BTonm7eN6pSHVY2/eK5LDmsbiKHqnuh6p2HH
+	 kB3VgwccHAjkvuE3BjV701twB7HnZXB2W4gq4Tv7V18UZ38Lx51NHlfs9RPH5BqTSf
+	 GT5cBZOLRJP3M5PPwp+Ylnu2aF2vmtQvRP5+pZ9pRkTzX2Dpe5Wts5gbkZQ1MaUHKP
+	 VYK55PyWrASCQ==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DB8A03781FF2;
-	Fri, 19 Jan 2024 19:38:08 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 053373782087;
+	Fri, 19 Jan 2024 19:38:09 +0000 (UTC)
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Kishon Vijay Abraham I <kishon@kernel.org>,
@@ -65,10 +66,12 @@ Cc: linux-phy@lists.infradead.org,
 	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com
-Subject: [PATCH 0/3] Add support for RK3588 HDMI/DP Combo PHY
-Date: Fri, 19 Jan 2024 21:38:00 +0200
-Message-ID: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 1/3] dt-bindings: soc: rockchip: Add rk3588 hdptxphy syscon
+Date: Fri, 19 Jan 2024 21:38:01 +0200
+Message-ID: <20240119193806.1030214-2-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
+References: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,28 +80,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add driver and bindings to support the Rockchip HDMI/eDP TX Combo PHY 
-found on RK3588 SoC.
+Add compatible for the hdptxphy GRF used by rk3588-hdptx-phy.
 
-The PHY is based on a Samsung IP block and supports HDMI 2.1 TMDS, FRL
-and eDP links.
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+---
+ Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-The HDMI link has been tested on Rock 5B and EVB1 boards.
-
-Cristian Ciocaltea (3):
-  dt-bindings: soc: rockchip: Add rk3588 hdptxphy syscon
-  dt-bindings: phy: Add Rockchip HDMI/DP Combo PHY schema
-  phy: rockchip: Add Samsung HDMI/DP Combo PHY driver
-
- .../phy/rockchip,rk3588-hdptx-phy.yaml        |   96 +
- .../devicetree/bindings/soc/rockchip/grf.yaml |    1 +
- drivers/phy/rockchip/Kconfig                  |    8 +
- drivers/phy/rockchip/Makefile                 |    1 +
- .../phy/rockchip/phy-rockchip-samsung-hdptx.c | 2045 +++++++++++++++++
- 5 files changed, 2151 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/rockchip,rk3588-hdptx-phy.yaml
- create mode 100644 drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
-
+diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+index 9793ea6f0fe6..61bfe678dc7f 100644
+--- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
++++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+@@ -22,6 +22,7 @@ properties:
+               - rockchip,rk3568-usb2phy-grf
+               - rockchip,rk3588-bigcore0-grf
+               - rockchip,rk3588-bigcore1-grf
++              - rockchip,rk3588-hdptxphy-grf
+               - rockchip,rk3588-ioc
+               - rockchip,rk3588-php-grf
+               - rockchip,rk3588-pipe-phy-grf
 -- 
 2.43.0
 
