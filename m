@@ -1,121 +1,116 @@
-Return-Path: <linux-kernel+bounces-31437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBBC4832E59
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:48:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A75E832E5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:49:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D52AB237DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:48:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 314531F25C9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA59AA21;
-	Fri, 19 Jan 2024 17:48:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ECE45644E;
+	Fri, 19 Jan 2024 17:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A8l2whsR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Lv/MxRHu"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE4B55E4A;
-	Fri, 19 Jan 2024 17:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8435856443;
+	Fri, 19 Jan 2024 17:49:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705686498; cv=none; b=nwQenYjfTuISUbYufS2NhW5m2X/bf4wkGl1iUbV9CD2M0678MjszLtVLuc7As4918OJJLuXzVqKCC5EcrcbRe2at9k8HvDhcpFLg07zTZ5Lh5chgsxPUBNG+S+Zk2ubGTmPuGUIO5pcjVlTY9ARQ1PuXoa+XM6hhZBrj+a5Paj4=
+	t=1705686555; cv=none; b=uHOyllL1paH5ItnbU0yG7KosJz92wdajxhBZklV3z42BKJ18DO+vZIUUMnMEtyCa9uz9Xdk/spRmcsDyQ6dVQl2wjoxUrPjnpippStCE8raDLTjcknGRb2XC5rRpkwLJYJwhHkz1rjKYkjeDwhIBYYvO8IaeXO9k3I7cSoRVcEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705686498; c=relaxed/simple;
-	bh=P0KUF6vFTlftYyWUFDT96WHN8XRiIFXd1b2/AovY2hw=;
+	s=arc-20240116; t=1705686555; c=relaxed/simple;
+	bh=AhM06dWCoS9Yqe/bb9J4wni8RWPqY5xZW8ChtKJK2uQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X8WapgewyzxhgcLamfu0BJqFHlH8Y/PQZy0bGtfGVLsZUSCcKV2L7zRHW47/ngXA7zJIxUHS7izINbcGOXccVZBQlXtJnIQ9hnoTOYrT1Qz8l82v9lxZHRmckfPVSA0xPZUZtONXjJEma0WA1xBWlBO0R3yV9/shct2goMvhzfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A8l2whsR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B518C433F1;
-	Fri, 19 Jan 2024 17:48:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705686497;
-	bh=P0KUF6vFTlftYyWUFDT96WHN8XRiIFXd1b2/AovY2hw=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=XmRukwY6nQdPOsAnquxhXj6pMMcxHTanC/ygqsavCS+gZ7JYu5kjjCfI+RX4096TCUNw72AF2joYrEFbGc5S/pO6sC4ehDaLIBd7F3n8McP1Oe0IKVbcWMQNYCLorDuL//llh8pxPLT4NZsKJrDyWRpNzM3ePbvFqgUk+GxBC2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Lv/MxRHu; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6BF1940E01B2;
+	Fri, 19 Jan 2024 17:49:10 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id HTqOCos1itEC; Fri, 19 Jan 2024 17:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1705686548; bh=N5P0OP32u4vYYJkcq5dn4rKE4JvHTAglrfVwbhPG/40=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A8l2whsRDimVA5MSS/fooSc43HMZGOw3e+psIFF/j1oxW2EmsXHFG1D4YvSgvIuH6
-	 iG1Zb2PwoSl6ZCX8Yrh+isB4kZCErgwIM9kDmhEmcfr9eAKlm6saKW9g6DDl7GpV4i
-	 ZSOGZi2k3LxyfhVWg1LZ8nrNbjSqYxzEg9DkRArtIfeqXDUUIUxgZSiGMUFYpvSUyt
-	 N4KAM+OLfp8736eK6ZLkE540xGh+g5jLNVZRPLQ45c7pXkZ6rO3c8ldkssh2898lih
-	 lMcILIdXvdVRY/4/QMFv6Ci7SgV+SpbvUku4VYZWpuX0TaZa2zaWXia+eRyjbV0bVr
-	 8Zo+PZg/w6ueg==
-Date: Fri, 19 Jan 2024 11:48:15 -0600
-From: Rob Herring <robh@kernel.org>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
-	Matt Coster <matt.coster@imgtec.com>,
-	"H . Nikolaus Schaller" <hns@goldelico.com>,
-	Adam Ford <aford173@gmail.com>,
-	Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	=?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
-	Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
-	linux-mips@vger.kernel.org
-Subject: Re: [PATCH 02/11] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
-Message-ID: <20240119174815.GA633343-robh@kernel.org>
-References: <20240109171950.31010-1-afd@ti.com>
- <20240109171950.31010-3-afd@ti.com>
- <e2fce141-4966-4e70-9a5c-865a2737174c@linaro.org>
- <20240110083857.GB5185@atomide.com>
+	b=Lv/MxRHuM+pgkTF76WNf6wAea7SiPxjGNWgw1Nq3sSFEEZ8LcLa46XqpYcjzNVefP
+	 W9IaeVK4fmGl5MD6SuR5Tk/HPtnNdx58IqpmYbQE9xrBrZR2i1Dtrv8v9tmIfs+nGf
+	 wioqmCGxileSNFUb7EeP6sfZtg2z7oP12PJ7odFCG0+oPpCsn9bSM3LjOX20+U5LXm
+	 zlIxeaWfXn6vdZdWaO1sigObmx6erxqACnQyeQ0/vs3TReFNN0Zj3ZOepDmP/JIJgl
+	 9ivSuwG0HA3QfDXI+hi0Cd9WdP0qxNC07hgjf/iMWHqcLSe/wtmD3ALRLb+rI6Ef2/
+	 odB1fOjl8dVl7C89bBrLoeQkdfeTyxi4IH6mcO7uXeuAJMxKBvN8Ue+av+vd7ThsGZ
+	 ZxMmeUGyzcZDgTT5sv2DfM/Bbzi0dzASOJsBzdtz0ID2gRDBsQgTEoXVt2jXG0kgFx
+	 Z0k4POTM2hje1aJMgArrmB48zGrSXoslJ4RXAva10jaqXdZgSRt1f6j51eNm0+Hcwy
+	 PLsslv7VxhOyoXvaGyMPI8sa8+dRSXCcK9hOdb3rAtKm4fhBgZieh0IRosICOgIafa
+	 GoVX8FCOfcom8e5wkECW/r3UCPpIcR8mzBpPVQR6kosBqL9H9j8kpv8/tNSl1uTFkk
+	 MLifxaMoPKPq4u/YBhDhRKys=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9691B40E01BB;
+	Fri, 19 Jan 2024 17:48:31 +0000 (UTC)
+Date: Fri, 19 Jan 2024 18:48:25 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org,
+	kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+	hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com,
+	seanjc@google.com, vkuznets@redhat.com, jmattson@google.com,
+	luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com,
+	pgonda@google.com, peterz@infradead.org,
+	srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+	tobin@ibm.com, vbabka@suse.cz, kirill@shutemov.name,
+	ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com, liam.merwick@oracle.com
+Subject: Re: [PATCH v1 18/26] crypto: ccp: Handle legacy SEV commands when
+ SNP is enabled
+Message-ID: <20240119174825.GAZaq16f0dlfle65To@fat_crate.local>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-19-michael.roth@amd.com>
+ <20240119171816.GKZaqu2M_1Pu7Q4mBn@fat_crate.local>
+ <6d8260e3-f22b-68c9-03c7-5e0fa351fe05@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240110083857.GB5185@atomide.com>
+In-Reply-To: <6d8260e3-f22b-68c9-03c7-5e0fa351fe05@amd.com>
 
-On Wed, Jan 10, 2024 at 10:38:57AM +0200, Tony Lindgren wrote:
-> * Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> [240109 19:53]:
-> > On 09/01/2024 18:19, Andrew Davis wrote:
-> > > The Imagination PowerVR Series5 "SGX" GPU is part of several SoCs from
-> > > multiple vendors. Describe how the SGX GPU is integrated in these SoC,
-> > > including register space and interrupts. Clocks, reset, and power domain
-> > > information is SoC specific.
-> > > 
-> > > Signed-off-by: Andrew Davis <afd@ti.com>
-> > > Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-> > 
-> > 
-> > > +  clock-names:
-> > > +    minItems: 1
-> > > +    items:
-> > > +      - const: core
-> > > +      - const: mem
-> > > +      - const: sys
-> > 
-> > There are no devices currently using third clock, but I assume it is
-> > expected or possible.
-> 
-> I think the third clock is typically merged with one of the two clocks but
-> yeah possibly it's a separate clocke in some cases.
-> 
-> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> Looks good to me too.
-> 
-> So for merging these, as many of the changes touch the omap variants, I
-> could set up an immutable branch with all the changes after -rc1. Or I can
-> ack the patches too if somebody has better ideas.
+On Fri, Jan 19, 2024 at 11:36:44AM -0600, Tom Lendacky wrote:
+> Using %#x will produce the 0x in the output (except if the value is zero for
+> some reason).
 
-Just take all but patches 10 and 11. I don't think it matters if the 
-binding is there for them as long as it is all there in next. No one is 
-paying that close attention to the warnings I think.
+printf-compatibility:
 
-Rob
+       #      The value should be converted to an "alternate form".  For o conversions,
+              the first character of the output string is made zero (by prefixing  a  0
+              if  it  was not zero already).  For x and X conversions, a nonzero result
+              has the string "0x" (or "0X" for X conversions) prepended to it.
+
+> So I would say make that 0x%x.
+
+Yap, better, unambiguous.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
