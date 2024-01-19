@@ -1,123 +1,110 @@
-Return-Path: <linux-kernel+bounces-31451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9281832E81
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:59:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CE8D832E8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:00:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AC781F24D6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:59:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9023B1C23BD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1586157897;
-	Fri, 19 Jan 2024 17:57:51 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F053A5786C
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 17:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47EB556450;
+	Fri, 19 Jan 2024 17:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BHPVPXhO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA2156445;
+	Fri, 19 Jan 2024 17:59:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705687070; cv=none; b=gf/8RFWNLYGD1jG9UWu8/Kv2/FMtizFKdC/E/Z2WUS5MyOuIoyt124lRvrqLNeV0Gs+yaWz1JgBS1iTFrkR9fqTBPgrQtsprmylVP6HgRBvFB05ZdxWl+/sUZJyaE35JmsrAzTyWQvxmcuURbSlWPRWz2ocRyoR5H+9Q+MyKBsc=
+	t=1705687157; cv=none; b=bJk/sEWnAq+oTzt3Vyd6z4p09d0s/J36iF/Z8uX/Kmf9W9X1yjE6sVkRzcaC5gdfYXGCruwi67QffvXol7cvJexQz033Ih3wpLwClHlqe7WNW41diYDvKa6OV0CBQApPAcvnjNe0+uosebRaPMqQc/Ppe3uRWo6RYX3mNSg8wTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705687070; c=relaxed/simple;
-	bh=voIW9PusSvzcgKBkn4IpN4TfY7zjS3V3Y8OcuBR+d4M=;
+	s=arc-20240116; t=1705687157; c=relaxed/simple;
+	bh=dsWHy6JnTZszNamI0/QSn3jdjPlxnYv/iLVIegPI6d0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UEAxoNkJpPb5OcRAyM8C1X6/LKwXO00jUBs4JRUjiOPrsTrR2SGtpLDrFvJGxQF3f2AFWOWc+JCnx38J7KZT2Y7h4/FW25RYYF8v6MALQV0Nz4oOtfuMUCniN/eEXRInCD/CbXM+/7i2PpepjnC7sxGfb1/eJv00S8cu++aGop0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id 91CC1140186; Fri, 19 Jan 2024 18:57:46 +0100 (CET)
-Date: Fri, 19 Jan 2024 18:57:46 +0100
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: =?iso-8859-1?Q?J=F6rg_R=F6del?= <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: Dell XPS 13 9360: DMAR errors `DRHD: handling fault status reg
- 2` and `[INTR-REMAP] Request device [f0:1f.0] fault index 0x0`
-Message-ID: <Zaq4Gv2SWhd12Lx0@cae.in-ulm.de>
-References: <9a24c335-8ec5-48c9-9bdd-b0dac5ecbca8@molgen.mpg.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iQc/JPFVRnOC5RLstK/i3gED+yBTJp3CvDufG2wvnIXPxWSBkYMg/GlxRItqk2B+iVsOKMvv5OPkdmzeQWpA/n+6s+4oCjT2fecDjRz292558bWCYIo9p8oyCHPxR8UE5/NwW+XOFBnTJIGYwri17/XtSqOZVcJcpdmRoJ31Onc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BHPVPXhO; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705687156; x=1737223156;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dsWHy6JnTZszNamI0/QSn3jdjPlxnYv/iLVIegPI6d0=;
+  b=BHPVPXhOAZHOugZCqwvDgqRddiUrGvzTP4heCcUKhfF3KEPRvDOQRUnk
+   WXYrLwHRvix2ND4dlz8ZM5SbjHdrKDb1DHw8vB53qsCUi6Kuz5fvyjbQ+
+   IwUMWgpmSym8nqum3f/sYcXexLpdzDmFX8PEIVy4K5VtO3ykpTzHnzYZD
+   GYHySpZLZOMoKA68+U15gc5wQ4n9I+GXMGIIfsaXYb24ZOyWIwmg5fh/W
+   ++XC4ykqlyCDDQ/IepX6FCwaxVxdRVPXT5S4qadmqukWoPzn8zTQZIPjs
+   wLIZxq/IhDI3Zo7nifPTJuSnfYOlAWQT7vdKikIofYn4qnOz+/G2DMhNv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="7500981"
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="7500981"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 09:59:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="713160"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 19 Jan 2024 09:59:11 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rQt93-0004KW-1x;
+	Fri, 19 Jan 2024 17:59:09 +0000
+Date: Sat, 20 Jan 2024 01:58:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Dragan Cvetic <dragan.cvetic@amd.com>, arnd@arndb.de,
+	gregkh@linuxfoundation.org, michal.simek@xilinx.com,
+	linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+	mark.rutland@arm.com, devicetree@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	git@amd.com
+Subject: Re: [PATCH 1/2] dt-bindings: misc: xlnx,sd-fec: convert bindings to
+ yaml
+Message-ID: <202401200159.p9T2rwq9-lkp@intel.com>
+References: <20240116111135.3059-2-dragan.cvetic@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9a24c335-8ec5-48c9-9bdd-b0dac5ecbca8@molgen.mpg.de>
+In-Reply-To: <20240116111135.3059-2-dragan.cvetic@amd.com>
 
+Hi Dragan,
 
-Hi Paul,
+kernel test robot noticed the following build warnings:
 
-On Fri, Jan 19, 2024 at 01:59:29PM +0100, Paul Menzel wrote:
-> On a Dell XPS 13 9360 Linux 6.6.8, 6.6.11 and 6.7 (and earlier versions) log
-> the lines below when resuming from ACPI S3 (deep):
-> 
->     [    0.000000] Linux version 6.7-amd64 (debian-kernel@lists.debian.org)
-> (x86_64-linux-gnu-gcc-13 (Debian 13.2.0-9) 13.2.0, GNU ld (GNU Binutils for
-> Debian) 2.41.50.20231227) #1 SMP PREEMPT_DYNAMIC Debian 6.7-1~exp1
-> (2024-01-08)
->     [    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.7-amd64
-> root=UUID=32e29882-d94d-4a92-9ee4-4d03002bfa29 ro quiet pci=noaer
-> mem_sleep_default=deep log_buf_len=8M
->     […]
->     [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
->     […]
->     [   99.711230] PM: suspend entry (deep)
->     […]
->     [   99.722101] printk: Suspending console(s) (use no_console_suspend to
-> debug)
->     [  100.285178] ACPI: EC: interrupt blocked
->     [  100.319908] ACPI: PM: Preparing to enter system sleep state S3
->     [  100.331793] ACPI: EC: event blocked
->     [  100.331798] ACPI: EC: EC stopped
->     [  100.331800] ACPI: PM: Saving platform NVS memory
->     [  100.335224] Disabling non-boot CPUs ...
->     [  100.337412] smpboot: CPU 1 is now offline
->     [  100.341065] smpboot: CPU 2 is now offline
->     [  100.346441] smpboot: CPU 3 is now offline
->     [  100.353086] ACPI: PM: Low-level resume complete
->     [  100.353129] ACPI: EC: EC started
->     [  100.353129] ACPI: PM: Restoring platform NVS memory
->     [  100.355219] Enabling non-boot CPUs ...
->     [  100.355244] smpboot: Booting Node 0 Processor 1 APIC 0x2
->     [  100.355954] CPU1 is up
->     [  100.355972] smpboot: Booting Node 0 Processor 2 APIC 0x1
->     [  100.356698] CPU2 is up
->     [  100.356716] smpboot: Booting Node 0 Processor 3 APIC 0x3
->     [  100.357371] CPU3 is up
->     [  100.360217] ACPI: PM: Waking up from system sleep state S3
->     [  100.668380] ACPI: EC: interrupt unblocked
->     [  100.668598] pcieport 0000:00:1c.0: Intel SPT PCH root port ACS
-> workaround enabled
->     [  100.668606] pcieport 0000:00:1c.4: Intel SPT PCH root port ACS
-> workaround enabled
->     [  100.668643] pcieport 0000:00:1d.0: Intel SPT PCH root port ACS
-> workaround enabled
->     [  100.690996] DMAR: DRHD: handling fault status reg 2
->     [  100.691001] DMAR: [INTR-REMAP] Request device [f0:1f.0] fault index
-> 0x0 [fault reason 0x25] Blocked a compatibility format interrupt request
-> 
-> But I am unable to find the device f0:1f.0:
+[auto build test WARNING on soc/for-next]
+[also build test WARNING on robh/for-next linus/master v6.7 next-20240119]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-This is probably an ACPI enumerated device. These are platform
-devices that pose as a PCI device for the purpose of interrupt
-remapping but do not enumerate via PCI. The PCI ID assigned to
-these hidden devices is enumerated via ANDD entries in the
-DMAR table. You can decode this table with from
-/sys/firmware/acpi/tables/DMAR with iasl to verify.
+url:    https://github.com/intel-lab-lkp/linux/commits/Dragan-Cvetic/dt-bindings-misc-xlnx-sd-fec-convert-bindings-to-yaml/20240116-191349
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+patch link:    https://lore.kernel.org/r/20240116111135.3059-2-dragan.cvetic%40amd.com
+patch subject: [PATCH 1/2] dt-bindings: misc: xlnx,sd-fec: convert bindings to yaml
+reproduce: (https://download.01.org/0day-ci/archive/20240120/202401200159.p9T2rwq9-lkp@intel.com/reproduce)
 
-Your dmesg shows two ANDD records for your I2C controllers,
-so somehwo the I2C controller is sending interrups that DMAR
-doesn't like (probably because the I2C controller is not yet
-resumed properly).
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401200159.p9T2rwq9-lkp@intel.com/
 
-Thus my guess is that this is an issue with the suspend/resume hooks
-of the I2C controllers not with the IOMMU.
+All warnings (new ones prefixed by >>):
 
-      regards   Christian
+>> Warning: Documentation/misc-devices/xilinx_sdfec.rst references a file that doesn't exist: linux-xlnx/Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
