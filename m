@@ -1,74 +1,54 @@
-Return-Path: <linux-kernel+bounces-31148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E89FB8329C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:53:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E5FC8329C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:55:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 541D5B2287B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:53:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E42461F2220F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 488D551C3D;
-	Fri, 19 Jan 2024 12:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B8D51C51;
+	Fri, 19 Jan 2024 12:55:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IsY3ET4a"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="gi25NXZo"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F794F1F6;
-	Fri, 19 Jan 2024 12:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2FC4F1F6;
+	Fri, 19 Jan 2024 12:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705668804; cv=none; b=P9z4IisjmZ4hMPtKTb8e6mXBkRIYWXjB1Hhbjbn20UKTPzGiehY2+Qhv+X+gRJz2Yo0IRmE2r62Z2vPX8F27frPdBhxhDG6IoInbwHkcUtO+fwAgom3EbGk9AqI0ILlm4ldK302LRLu8nkkAl16tdxrZKlu+iPpOX6ZthjoR5Xw=
+	t=1705668922; cv=none; b=kQ8Ie/gpswicmm+YroAlOWDjB/WWkZdvr39o52mgSi/04M0mAclxoHejgLjtg+plRQvvPLDLb2kvbtwai3hKsvXqkSn82nm6jwKla3UGdbxoQkDzqLnc6r60CtZr3B/eHkH6ny7HgN33Jc1vj+FvT/B3iLWLszRCJsyNkBVxVKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705668804; c=relaxed/simple;
-	bh=0y4BSC04otWxDZZPtwZGIu7dgXANcBq9sE7P3QKEXmU=;
+	s=arc-20240116; t=1705668922; c=relaxed/simple;
+	bh=EjVFyi70iDYG2czWyG5owoqc7kRO3Kwh6/BYrb/3DaE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L5aS1EgnJ/p8Ys0VntJjHDrkZv4iFvGNPluxgW22/cxKRtJ62EBk9HBI+iflrhcokGIgHKop25P1INz5g6oYkZYWv0MkxxtZ1jmOh1qqPjGa3a7Rr2fYiIr/yNFijwk7DoEruBsb2QfGc95o4tuaSTrS+96p2ZmSXQNY8NpePJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IsY3ET4a; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6da9c834646so772435b3a.3;
-        Fri, 19 Jan 2024 04:53:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705668802; x=1706273602; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=sQQbktNOdg7q6Z2j6gpx1q2IJTHA1r1uVxnrDVfNaTc=;
-        b=IsY3ET4aFxJ71U7q8T3ww/n/WzwQdXfiWplhrU46SNLVoIAWnkCF7nFnPf9/DbMtuK
-         7ZxrxrfvNoZV2bppYFwhelkfnStO7RhOa3wRFlv+72eD1HRw53vGc07IxLO1vBA8LzOR
-         lKa6X+erqyXdc8bV1jgg1gH7emmKQtZdAQ/vrK9jls0EGk7uGE6zd4vohnmaKAxIFlNN
-         O4Y+PYXqgnXU+GLDb17TBbwxxV8G9ZPlJaIVMClhODDCL8S33MeWJoU+LdYNMlsj4THi
-         N2WhbDlOIN0p22O75JLt70p7GHrzJJihrmtCEpg6eLI7WAVoauVGr73uK4fV12Xd4jYM
-         3UnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705668802; x=1706273602;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sQQbktNOdg7q6Z2j6gpx1q2IJTHA1r1uVxnrDVfNaTc=;
-        b=SRM3NkPSiaobNq2kttTWxyLaJ+b8Ti93nbOYCChhUHYwv+2WN2yPhBndKxr44m/aR2
-         JPdZQz0rD+JV+ezCbL+YZ+XSyNgvDzioQ9+qlkd+EGtGUgkl2GJ8cCc8HP/VVPidxfZu
-         JOHEe/vfsJBckeIWDMHPUV/WxvGq2qykftQVHDirEwFCw9/OA8k6W1eTHPgq1YnEypc9
-         2r4N4fPfyKRghDI3Ip4Q56KML0qo3IUPkNp/uz0I04ftDxg/zKtyo/fs/gIjgG0flEor
-         5CsfSAM3diYq1Q5yz/vXQ0VvmeDubN5pEapQ9T+c7A0ALjgwEcBrZw6loDmQIBxwfETx
-         7LYQ==
-X-Gm-Message-State: AOJu0YwWGwFBerhkj5jXa6qhpYGH42zh7gYiQiOlmf5vh+AulIioprek
-	J7R18cXQgtO4L7tjQSzOng4YD1lIYD94W+kMwazNipxhN2cblW/QbCiVCzhg
-X-Google-Smtp-Source: AGHT+IHGojORXxOYxVl6qe5Xa6DukkMDmiVYFbw44fXXKTU/DcgQo3QIKKY3smQNIVLWry0C7guHYg==
-X-Received: by 2002:a05:6a00:c90:b0:6db:af46:c8af with SMTP id a16-20020a056a000c9000b006dbaf46c8afmr2314864pfv.40.1705668801846;
-        Fri, 19 Jan 2024 04:53:21 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ks11-20020a056a004b8b00b006d6b91c6eb6sm5135977pfb.13.2024.01.19.04.53.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jan 2024 04:53:21 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <dd5a33f7-96b7-4f10-941e-3a597c7537de@roeck-us.net>
-Date: Fri, 19 Jan 2024 04:53:19 -0800
+	 In-Reply-To:Content-Type; b=KLTHVw8KHY3kRS1Ns+P1Z96W7V4ZuR00Ts4tC4AXxLZbvbVk6nt51m6oscsjjTsX2wnLcFlMvd1YAY5RdDOM4G38dV9gi1OC7/sAFEe+vrAhpwWMJSGncj/WXDrT0i3lefBlx5cpNAVbY2d6kEba4JOEk6C94kTN+yNc0cmWhNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=gi25NXZo; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705668918;
+	bh=EjVFyi70iDYG2czWyG5owoqc7kRO3Kwh6/BYrb/3DaE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gi25NXZozg2EM16pBusHJ8U/66PZA9mP1CBI+PoTceS7c0uK1LlgS86/LDw5NgbjA
+	 9rVrgra8maMORZaM6gsp/xxGfsUoqwBbJwCX9XGFUI5z8cb8fp4q1Gbixcj9oXX6MO
+	 OiKUG2exK0dBaEwiu1LH6s3es0NnBoc43mpSkO+Ait5tkIkP7JLlYKBOiMy/2HkzP6
+	 LSz24OcAeADWbq50K8CPlr/sNIZvtV5AfQsVFp98SrSLQEzyUlAX/V6MUCcXBMDID7
+	 k9NhAsBQ8qEpi/sRgMm4rCabeCUOSgzWVP+KVaIRasak67GsGncaBfMfkXCn7Ub4Fg
+	 8ICsFEPKfP/3w==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B767037803EE;
+	Fri, 19 Jan 2024 12:55:17 +0000 (UTC)
+Message-ID: <8834d309-19f2-466f-aed4-ab0f9e2df02d@collabora.com>
+Date: Fri, 19 Jan 2024 13:55:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,103 +56,185 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] watchdog: starfive: Check pm_runtime_enabled() before
- decrementing usage counter
+Subject: Re: [PATCH 2/2] usb: typec: mux: Add ITE IT5205 Alternate Mode
+ Passive MUX driver
 Content-Language: en-US
-To: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
- Xingyu Wu <xingyu.wu@starfivetech.com>,
- Samin Guo <samin.guo@starfivetech.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>,
- Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>,
- linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240119082722.1133024-1-jisheng.teoh@starfivetech.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240119082722.1133024-1-jisheng.teoh@starfivetech.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ heikki.krogerus@linux.intel.com, matthias.bgg@gmail.com,
+ neil.armstrong@linaro.org, andersson@kernel.org, nathan@kernel.org,
+ luca.weiss@fairphone.com, tianping.fang@mediatek.com,
+ linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, kernel@collabora.com
+References: <20240119104550.140061-1-angelogioacchino.delregno@collabora.com>
+ <20240119104550.140061-3-angelogioacchino.delregno@collabora.com>
+ <CAA8EJprroFtKvCeZtP_FySr5d6v4dogYQKFQvzPJLpwWBuMrKw@mail.gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <CAA8EJprroFtKvCeZtP_FySr5d6v4dogYQKFQvzPJLpwWBuMrKw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/19/24 00:27, Ji Sheng Teoh wrote:
-> In the probe function, pm_runtime_put_sync() will fail on platform with
-> runtime PM disabled.
-> Check if runtime PM is enabled before calling pm_runtime_put_sync() to
-> fix it.
+Il 19/01/24 12:44, Dmitry Baryshkov ha scritto:
+> On Fri, 19 Jan 2024 at 12:46, AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> wrote:
+>>
+>> The ITE IT5202 is a USB Type-C Alternate Mode Passive MUX, used for
+>> muxing the SBU lines of a Type-C port with DisplayPort altmode and
+>> also providing an orientation switch.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   drivers/usb/typec/mux/Kconfig  |  10 ++
+>>   drivers/usb/typec/mux/Makefile |   1 +
+>>   drivers/usb/typec/mux/it5205.c | 292 +++++++++++++++++++++++++++++++++
+>>   3 files changed, 303 insertions(+)
+>>   create mode 100644 drivers/usb/typec/mux/it5205.c
+>>
+>> diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
+>> index d2cb5e733e57..399c7b0983df 100644
+>> --- a/drivers/usb/typec/mux/Kconfig
+>> +++ b/drivers/usb/typec/mux/Kconfig
+>> @@ -36,6 +36,16 @@ config TYPEC_MUX_INTEL_PMC
+>>            control the USB role switch and also the multiplexer/demultiplexer
+>>            switches used with USB Type-C Alternate Modes.
+>>
+>> +config TYPEC_MUX_IT5205
+>> +       tristate "ITE IT5205 Type-C USB Alt Mode Passive MUX driver"
+>> +       depends on I2C
+>> +       select REGMAP_I2C
+>> +       help
+>> +         Driver for the ITE IT5205 Type-C USB Alternate Mode Passive MUX
+>> +         which provides support for muxing DisplayPort and sideband signals
+>> +         on a common USB Type-C connector.
+>> +         If compiled as a module, the module will be named it5205.
+>> +
+>>   config TYPEC_MUX_NB7VPQ904M
+>>          tristate "On Semiconductor NB7VPQ904M Type-C redriver driver"
+>>          depends on I2C
+>> diff --git a/drivers/usb/typec/mux/Makefile b/drivers/usb/typec/mux/Makefile
+>> index 57dc9ac6f8dc..bb96f30267af 100644
+>> --- a/drivers/usb/typec/mux/Makefile
+>> +++ b/drivers/usb/typec/mux/Makefile
+>> @@ -4,6 +4,7 @@ obj-$(CONFIG_TYPEC_MUX_FSA4480)         += fsa4480.o
+>>   obj-$(CONFIG_TYPEC_MUX_GPIO_SBU)       += gpio-sbu-mux.o
+>>   obj-$(CONFIG_TYPEC_MUX_PI3USB30532)    += pi3usb30532.o
+>>   obj-$(CONFIG_TYPEC_MUX_INTEL_PMC)      += intel_pmc_mux.o
+>> +obj-$(CONFIG_TYPEC_MUX_IT5205)         += it5205.o
+>>   obj-$(CONFIG_TYPEC_MUX_NB7VPQ904M)     += nb7vpq904m.o
+>>   obj-$(CONFIG_TYPEC_MUX_PTN36502)       += ptn36502.o
+>>   obj-$(CONFIG_TYPEC_MUX_WCD939X_USBSS)  += wcd939x-usbss.o
+>> diff --git a/drivers/usb/typec/mux/it5205.c b/drivers/usb/typec/mux/it5205.c
+>> new file mode 100644
+>> index 000000000000..99203b8a086d
+>> --- /dev/null
+>> +++ b/drivers/usb/typec/mux/it5205.c
+>> @@ -0,0 +1,292 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * ITE IT5205 Type-C USB alternate mode passive mux
+>> + *
+>> + * Copyright (c) 2020 MediaTek Inc.
+>> + * Copyright (c) 2024 Collabora Ltd.
+>> + *                    AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> + *
+>> + */
+>> +#include <linux/i2c.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/module.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/mutex.h>
+>> +#include <linux/of_platform.h>
+>> +#include <linux/regmap.h>
+>> +#include <linux/usb/typec.h>
+>> +#include <linux/usb/typec_mux.h>
+>> +#include <linux/usb/typec_dp.h>
+>> +#include <linux/regulator/consumer.h>
+>> +#include <linux/gpio/consumer.h>
+>> +#include <linux/gpio.h>
+>> +#include <linux/usb/tcpm.h>
 > 
-> Fixes: db728ea9c7be ("drivers: watchdog: Add StarFive Watchdog driver")
-> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
-> Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-> Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
-
-> ---
->   drivers/watchdog/starfive-wdt.c | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
+> I'd say, it is a usual custom to sort this list.
 > 
-> diff --git a/drivers/watchdog/starfive-wdt.c b/drivers/watchdog/starfive-wdt.c
-> index e28ead24c520..df68ae4acbd7 100644
-> --- a/drivers/watchdog/starfive-wdt.c
-> +++ b/drivers/watchdog/starfive-wdt.c
-> @@ -494,8 +494,13 @@ static int starfive_wdt_probe(struct platform_device *pdev)
->   	if (ret)
->   		goto err_exit;
->   
-> -	if (!early_enable)
-> -		pm_runtime_put_sync(&pdev->dev);
-> +	if (!early_enable) {
-> +		if (pm_runtime_enabled(&pdev->dev)) {
-> +			ret = pm_runtime_put_sync(&pdev->dev);
-> +			if (ret)
-> +				goto err_exit;
-> +		}
-> +	}
->   
->   	return 0;
->   
+
+Oh, whoops. Totally forgot to do that, sorry - thanks for pointing that out!
+Done for v2.
+
+> [skipped]
+> 
+>> +
+>> +static int it5205_mux_set(struct typec_mux_dev *mux, struct typec_mux_state *state)
+>> +{
+>> +       struct it5205 *it = typec_mux_get_drvdata(mux);
+>> +       u8 val;
+>> +
+>> +       switch (state->mode) {
+>> +       case TYPEC_STATE_USB:
+>> +               val = IT5205_USB;
+>> +               break;
+>> +       case TYPEC_DP_STATE_C:
+>> +               fallthrough;
+>> +       case TYPEC_DP_STATE_E:
+>> +               val = IT5205_DP;
+>> +               break;
+>> +       case TYPEC_DP_STATE_D:
+>> +               val = IT5205_DP_USB;
+>> +               break;
+>> +       case TYPEC_STATE_SAFE:
+>> +               fallthrough;
+>> +       default:
+>> +               val = 0;
+>> +               break;
+>> +       }
+> 
+> Please add a check for state->altmode. All states at TYPEC_STATE_MODAL
+> and above (which includes TYPEC_DP_STATE_[CDE]) are only relevant with
+> connection to the particular typec->altmode SVID.
+> 
+
+Done for v2.
+
+>> +
+>> +       return regmap_update_bits(it->regmap, IT5205_REG_MUXCR,
+>> +                                 IT5205_DP_USB_CTRL_MASK, val);
+>> +}
+>> +
+>> +static irqreturn_t it5205_irq_handler(int irq, void *data)
+>> +{
+>> +       struct it5205 *it = data;
+>> +       int ret;
+>> +       u32 val;
+>> +
+>> +       ret = regmap_read(it->regmap, IT5205_REG_ISR, &val);
+>> +       if (ret)
+>> +               return IRQ_NONE;
+>> +
+>> +       if (val & IT5205_ISR_CSBU_OVP) {
+>> +               dev_warn(&it->client->dev, "Overvoltage detected!\n");
+> 
+> Will it cut the voltage automatically?
+> 
+
+As far as I understand, yes.
+Unfortunately, there's no datasheet.
+
+>> +
+>> +               /* Reset CSBU */
+>> +               regmap_update_bits(it->regmap, IT5205_REG_CSBUSR,
+>> +                                  IT5205_CSBUSR_SWITCH, 0);
+>> +               regmap_update_bits(it->regmap, IT5205_REG_CSBUSR,
+>> +                                  IT5205_CSBUSR_SWITCH, IT5205_CSBUSR_SWITCH);
+>> +       }
+>> +
+>> +       return IRQ_HANDLED;
+>> +}
+> 
+> The rest LGTM
+> 
+> 
+
+
 
 
