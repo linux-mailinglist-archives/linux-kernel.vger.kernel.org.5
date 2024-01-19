@@ -1,205 +1,422 @@
-Return-Path: <linux-kernel+bounces-30988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6524E83272C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:59:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAB1283272E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA8BE1F23BC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:59:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DC441F233B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724BA3C468;
-	Fri, 19 Jan 2024 09:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="DKhszfyI";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="H3rALSDP"
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9823C467;
-	Fri, 19 Jan 2024 09:59:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F393C46D;
+	Fri, 19 Jan 2024 09:59:52 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369C83C063
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 09:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705658364; cv=none; b=W4TcwB2de2MEVekZa9K6CLxL2mk2pWhgzEQTT3c0nkhNUSFluRaVT80bvt9N2TGkONqWV2OsS5KI9aLGMOq+76mHpax64OS4h3FzaTvI1UnOdscHjbmGafjO+s+jVO9ncthgneCP1u0c/CNICtE/3TafZI6z8yvTvPXVnFtLfQ0=
+	t=1705658392; cv=none; b=Fx+Fyks82pmaJ1q/n5WrXqzKh+RAc2AG2IHaPHTXZc2tjRC59pf+L4f4ejsTNUx0crhWeUUlXfdjOF8cW405i3M+aWAslcztZdFgQ+jJctLrGm9Kbc835OIx6lbolWUxskcHfrB4AQVuyT6HFJpWmYZqXwbZLmyczcAWllSc3yU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705658364; c=relaxed/simple;
-	bh=OqluU7mDwHc9epkbxaNnqsb8DVstYRlLRstztPdHOZU=;
+	s=arc-20240116; t=1705658392; c=relaxed/simple;
+	bh=/Co2E3mPUfaCPVUz1RJAkzK8IFr9HjsRrzIyBG48pCY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZUb1n8gGtVKrLdytJ94ApWvWc3Az2n6xYLYJg9JC+lCOaAR6J8obTYKH4Ev4m9k/uqEVpsnRse+50XWXTtVmksCeCkxnRfRfcJ912dqoYchPG97yhwc5FTrf3KbSbjonZ/zN70ywDuNRcufaKzT+cOU/4sKTuaZl8eNWg/msgYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=DKhszfyI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=H3rALSDP; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id 5C8FB5C016A;
-	Fri, 19 Jan 2024 04:59:22 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 19 Jan 2024 04:59:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1705658362;
-	 x=1705744762; bh=iDZNgMSyVfB+3uX66ztDG+g8Lgb/fIB6/4hKx4kafVk=; b=
-	DKhszfyIO1cEG8lYumUlem3C4TtR6xz5NgPqhSt62H1s+wdIalY8i3JG67Y7uq8F
-	Uy3lB2o0X1Qk6n+Dius7m7cllPiW+0qCK3UxSwyUL/osnjCCyXmb45soBiv8DF0M
-	v/gnA7GSWl9+QghduzLOUDdIXVmcHeN97zuurLgpCbbZMaV8qilfATXEL1gP97Ok
-	Szp+KYWSo5HPbug2Z4/aQBou1QR4KGkXKlWkHCzQE7lOVJTYcPcM4li5cP5itIvT
-	Q5+D/otA7JY+HUewPcL7cufmRi8kEsQo9GMoHWlZQ0CUgEWxITKz/ETAOBj88rzt
-	isyUipcRyUBAZNLucjYhxg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705658362; x=
-	1705744762; bh=iDZNgMSyVfB+3uX66ztDG+g8Lgb/fIB6/4hKx4kafVk=; b=H
-	3rALSDPEsh/TSjVx473PzDjYCQBrBYBaaH0nW8P23Ur1caHzfdddLle3v7TjaeAw
-	W+ZN/Ds84R/PX3GMw6ziI1LXQ8DeRcykVeJUHUc9LHwc1O2nfFmdSM7VVlk8OkBT
-	HSiA24+tao90hidUCF48x4tDLim96GL9udLesvIf9wWACpksM0mlSYRinwDgtTnv
-	4KvPGDC3ZUgwAlCOF44M/jpeXGbiEGIgFEt78UA92qjrrkqDHjY7R08WCM0kiodC
-	LBuDDfxoaw46ImcQayRHZTZxUZZqFTZAAp84eLakQQOXNy5je40ofk4shk0/amJZ
-	YC4U1XEh/rLtKQHCDc/vA==
-X-ME-Sender: <xms:-UeqZanYe8DjV_oeW3qIgn4fAmgUZGYq4d-0K0QyWE8__14qjUBXZQ>
-    <xme:-UeqZR0yJcvzuVpbgc-1f4F-JFwGzUfK3tB4lKaFaOA5d-7_iC5NJGeS587A8hW1Y
-    ldE3bXUU36TLzgsGkc>
-X-ME-Received: <xmr:-UeqZYq8-DmuSM-JnA7ogy6ntU0o0Nskrb2gLd3L3Pi2thqRtp2Vphzb_xOUA16U9wl63zRpvnM6-6FxjhHHz1TDznaq25w_CIs0wo4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdektddguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepleeuffehheegleeuvdelgffhueekjeetueevuefhffdtgfeu
-    hfeggfeukefffedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:-UeqZemuZ-g4AoRwi5zlRzJOgK3oR4DhILBXUdb39r3UhD9ti4U-Xg>
-    <xmx:-UeqZY2TWqTSblYKwqRLa5A1WPy-VbYTuG9kQCs9h-JLiwEj9hlrPw>
-    <xmx:-UeqZVsdBChdf6khZZj4a_rW0IoEbcowrcnvGCLZebvF842zjqyrDA>
-    <xmx:-keqZds8GN30sWeAiZ31OMUxDnm58m0izeHnK75AoXKTi-cN9Up0Ew>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Jan 2024 04:59:20 -0500 (EST)
-Message-ID: <76c4a1ac-88f0-4f02-aee9-d07b027ea097@flygoat.com>
-Date: Fri, 19 Jan 2024 09:59:20 +0000
+	 In-Reply-To:Content-Type; b=CcM4ZdMQE2VW9v7gcM3KR1V1QWIqRcZQUbx9idDC21CnwwveaTxtiAV6+zdwawmgNB5Xr6UuP+O+sDLbdtIDEnkE3sLpAOqL438/Ikk1VJdRpQcx2O3WsT9MtlbT6p2RNHQWDU+GXuNGbxRtHz/GAZiyVgx30mi2THIe43JkiPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F20C1042;
+	Fri, 19 Jan 2024 02:00:32 -0800 (PST)
+Received: from [192.168.1.100] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C96BF3F73F;
+	Fri, 19 Jan 2024 01:59:43 -0800 (PST)
+Message-ID: <cb65b58f-5c6a-ad99-095c-70b9f013b3e5@arm.com>
+Date: Fri, 19 Jan 2024 09:59:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 12/15] MIPS: mobileye: Add EPM5 device tree
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 5/8] coresight: Remove the 'enable' field.
 Content-Language: en-US
-To: Gregory CLEMENT <gregory.clement@bootlin.com>,
- Paul Burton <paulburton@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20240118155252.397947-1-gregory.clement@bootlin.com>
- <20240118155252.397947-13-gregory.clement@bootlin.com>
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Autocrypt: addr=jiaxun.yang@flygoat.com;
- keydata= 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
- HVO98ZmbMeg=
-In-Reply-To: <20240118155252.397947-13-gregory.clement@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Suzuki K Poulose <suzuki.poulose@arm.com>, coresight@lists.linaro.org
+Cc: Mike Leach <mike.leach@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, Tao Zhang
+ <quic_taozha@quicinc.com>, Mao Jinlong <quic_jinlmao@quicinc.com>
+References: <20231212155407.1429121-1-james.clark@arm.com>
+ <20231212155407.1429121-6-james.clark@arm.com>
+ <82e9dbed-281c-4a87-8c0b-a2b1cb0a2247@arm.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <82e9dbed-281c-4a87-8c0b-a2b1cb0a2247@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/1/18 15:52, Gregory CLEMENT 写道:
-> Add a device tree for the Mobileye EPM5 evaluation board.
->
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->   arch/mips/boot/dts/mobileye/Makefile       |  4 ++++
->   arch/mips/boot/dts/mobileye/eyeq5-epm5.dts | 24 ++++++++++++++++++++++
->   2 files changed, 28 insertions(+)
->   create mode 100644 arch/mips/boot/dts/mobileye/Makefile
->   create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
->
-> diff --git a/arch/mips/boot/dts/mobileye/Makefile b/arch/mips/boot/dts/mobileye/Makefile
-> new file mode 100644
-> index 0000000000000..01c01c3aad81d
-> --- /dev/null
-> +++ b/arch/mips/boot/dts/mobileye/Makefile
-> @@ -0,0 +1,4 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +# Copyright 2023 Mobileye Vision Technologies Ltd.
-> +
-> +dtb-$(CONFIG_MACH_EYEQ5)		+= eyeq5-epm5.dtb
-> diff --git a/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
-> new file mode 100644
-> index 0000000000000..ff16c3c760a19
-> --- /dev/null
-> +++ b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +/*
-> + * Copyright 2023 Mobileye Vision Technologies Ltd.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "eyeq5.dtsi"
-> +
-> +/ {
-> +	compatible = "mobileye,eyeq5-epm5", "mobileye,eyeq5";
-> +	model = "Mobile EyeQ5 MP5 Evaluation board";
-> +
-> +	chosen {
-> +		bootargs = "earlycon";
-> +		stdout-path = "serial2:115200n8";
-> +	};
-> +
-> +	memory@0 {
-> +		device_type = "memory";
-> +		reg = <0x0 0x08000000 0x0 0x08000000>,
-> +		      <0x8 0x00000000 0x0 0x78000000>;
-> +	};
-> +};
+On 08/01/2024 14:42, Suzuki K Poulose wrote:
+> Hi James
+> 
+> +Cc: Tao Zhang <quic_taozha@quicinc.com>
+> +Cc: Mao Jinlong <quic_jinlmao@quicinc.com>
+> 
+> On 12/12/2023 15:54, James Clark wrote:
+>> 'enable', which probably should have been 'enabled', is only ever read
+>> in the core code in relation to controlling sources, and specifically
+>> only sources in sysfs mode. Confusingly it's not labelled as such and
+>> relying on it can be a source of bugs like the one fixed by
+>> commit 078dbba3f0c9 ("coresight: Fix crash when Perf and sysfs modes are
+>> used concurrently").
+>>
+>> Most importantly, it can only be used when the coresight_mutex is held
+>> which is only done when enabling and disabling paths in sysfs mode, and
+>> not Perf mode.
+> 
+> 
+> I think we may be able to relax this a bit for the syfs. The sole reason
+> for holding the mutex is for the "build_path" (and get_enabled_sink)
+> where we need to make sure that no devices are removed/added. We hold
+> necessary refcount on the device and the module (via
+> coresight_grab_device()). After which, we should be able to release the
+> mutex and perform the rest without it in coresight_enable()
+> 
 
--- 
----
-Jiaxun Yang
+After looking at the per-sink trace ID maps a bit more, I'm not sure if
+it will be worth the mental effort and risk to relax the sysfs locking
+right now.
 
+We also currently have other things like writing to the global
+tracer_path which are outside of build_path/get_enabled_sink. But for
+the per-sink maps change we'll also have some tracking for sysfs mode
+about which sink map was used for each source and sink. And this state
+will be accessed across multiple sources, and after building the path,
+so it makes sense to leave the locking as-is for now IMO.
+
+I also can't see a realistic gain from doing it, most sysfs use cases
+would be done from a single threaded script. Maybe in the future we
+could do the change to move the per-device locks into struct
+coresight_device, and then the core code can use them for things that
+need to be locked, but don't need the full coresight_mutex. And then
+that would also work for the per-sink case. But at the moment each
+device has its own lock so that's difficult.
+
+>> So to prevent its usage spreading and leaking out to
+>> other devices, remove it.
+>>
+>> It's use is equivalent to checking if the mode is currently sysfs, as
+>> due to the coresight_mutex lock, mode == CS_MODE_SYSFS can only become
+>> true or untrue when that lock is held, and when mode == CS_MODE_SYSFS
+>> the device is both enabled and in sysfs mode.
+> 
+> All of the above makes sense and looks good to me.
+> 
+>>
+>> The one place it was used outside of the core code is in TPDA, but that
+>> pattern is more appropriately represented using refcounts inside the
+>> device's own spinlock.
+> 
+> But, I think we can clean up this code a bit more better. See below.
+> 
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-core.c | 86 +++++++-------------
+>>   drivers/hwtracing/coresight/coresight-tpda.c | 12 ++-
+>>   include/linux/coresight.h                    |  2 -
+>>   3 files changed, 38 insertions(+), 62 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-core.c
+>> b/drivers/hwtracing/coresight/coresight-core.c
+>> index ab226441e5f4..1d0bd1586590 100644
+>> --- a/drivers/hwtracing/coresight/coresight-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+>> @@ -279,29 +279,18 @@ EXPORT_SYMBOL_GPL(coresight_add_helper);
+>>   static int coresight_enable_sink(struct coresight_device *csdev,
+>>                    enum cs_mode mode, void *data)
+>>   {
+>> -    int ret = sink_ops(csdev)->enable(csdev, mode, data);
+>> -
+>> -    if (ret)
+>> -        return ret;
+>> -
+>> -    csdev->enable = true;
+>> -
+>> -    return 0;
+>> +    return sink_ops(csdev)->enable(csdev, mode, data);
+>>   }
+>>     static void coresight_disable_sink(struct coresight_device *csdev)
+>>   {
+>> -    int ret = sink_ops(csdev)->disable(csdev);
+>> -    if (ret)
+>> -        return;
+>> -    csdev->enable = false;
+>> +    sink_ops(csdev)->disable(csdev);
+>>   }
+>>     static int coresight_enable_link(struct coresight_device *csdev,
+>>                    struct coresight_device *parent,
+>>                    struct coresight_device *child)
+>>   {
+>> -    int ret = 0;
+>>       int link_subtype;
+>>       struct coresight_connection *inconn, *outconn;
+>>   @@ -317,19 +306,13 @@ static int coresight_enable_link(struct
+>> coresight_device *csdev,
+>>       if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_SPLIT &&
+>> IS_ERR(outconn))
+>>           return PTR_ERR(outconn);
+>>   -    ret = link_ops(csdev)->enable(csdev, inconn, outconn);
+>> -    if (!ret)
+>> -        csdev->enable = true;
+>> -
+>> -    return ret;
+>> +    return link_ops(csdev)->enable(csdev, inconn, outconn);
+>>   }
+>>     static void coresight_disable_link(struct coresight_device *csdev,
+>>                      struct coresight_device *parent,
+>>                      struct coresight_device *child)
+>>   {
+>> -    int i;
+>> -    int link_subtype;
+>>       struct coresight_connection *inconn, *outconn;
+>>         if (!parent || !child)
+>> @@ -337,26 +320,8 @@ static void coresight_disable_link(struct
+>> coresight_device *csdev,
+>>         inconn = coresight_find_out_connection(parent, csdev);
+>>       outconn = coresight_find_out_connection(csdev, child);
+>> -    link_subtype = csdev->subtype.link_subtype;
+>>         link_ops(csdev)->disable(csdev, inconn, outconn);
+>> -
+>> -    if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_MERG) {
+>> -        for (i = 0; i < csdev->pdata->nr_inconns; i++)
+>> -            if (atomic_read(&csdev->pdata->in_conns[i]->dest_refcnt) !=
+>> -                0)
+>> -                return;
+>> -    } else if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_SPLIT) {
+>> -        for (i = 0; i < csdev->pdata->nr_outconns; i++)
+>> -            if (atomic_read(&csdev->pdata->out_conns[i]->src_refcnt) !=
+>> -                0)
+>> -                return;
+>> -    } else {
+>> -        if (atomic_read(&csdev->refcnt) != 0)
+>> -            return;
+>> -    }
+>> -
+>> -    csdev->enable = false;
+>>   }
+>>     int coresight_enable_source(struct coresight_device *csdev, enum
+>> cs_mode mode,
+>> @@ -364,11 +329,16 @@ int coresight_enable_source(struct
+>> coresight_device *csdev, enum cs_mode mode,
+>>   {
+>>       int ret;
+>>   -    if (!csdev->enable) {
+>> +    /*
+>> +     * Comparison with CS_MODE_SYSFS works without taking any device
+>> +     * specific spinlock because the truthyness of that comparison
+>> can only
+>> +     * change with coresight_mutex held, which we already have here.
+>> +     */
+>> +    lockdep_assert_held(&coresight_mutex);
+>> +    if (local_read(&csdev->mode) != CS_MODE_SYSFS) {
+>>           ret = source_ops(csdev)->enable(csdev, data, mode);
+>>           if (ret)
+>>               return ret;
+>> -        csdev->enable = true;
+>>       }
+>>         atomic_inc(&csdev->refcnt);
+>> @@ -385,22 +355,12 @@ static bool coresight_is_helper(struct
+>> coresight_device *csdev)
+>>   static int coresight_enable_helper(struct coresight_device *csdev,
+>>                      enum cs_mode mode, void *data)
+>>   {
+>> -    int ret = helper_ops(csdev)->enable(csdev, mode, data);
+>> -
+>> -    if (ret)
+>> -        return ret;
+>> -
+>> -    csdev->enable = true;
+>> -    return 0;
+>> +    return helper_ops(csdev)->enable(csdev, mode, data);
+>>   }
+>>     static void coresight_disable_helper(struct coresight_device *csdev)
+>>   {
+>> -    int ret = helper_ops(csdev)->disable(csdev, NULL);
+>> -
+>> -    if (ret)
+>> -        return;
+>> -    csdev->enable = false;
+>> +    helper_ops(csdev)->disable(csdev, NULL);
+>>   }
+>>     static void coresight_disable_helpers(struct coresight_device *csdev)
+>> @@ -445,11 +405,15 @@ EXPORT_SYMBOL_GPL(coresight_disable_source);
+>>   static bool coresight_disable_source_sysfs(struct coresight_device
+>> *csdev,
+>>                          void *data)
+>>   {
+>> +    lockdep_assert_held(&coresight_mutex);
+>> +    if (local_read(&csdev->mode) != CS_MODE_SYSFS)
+>> +        return false;
+>> +
+>>       if (atomic_dec_return(&csdev->refcnt) == 0) {
+>>           coresight_disable_source(csdev, data);
+>> -        csdev->enable = false;
+>> +        return true;
+>>       }
+>> -    return !csdev->enable;
+>> +    return false;
+>>   }
+>>     /*
+>> @@ -1097,7 +1061,13 @@ int coresight_enable(struct coresight_device
+>> *csdev)
+>>       if (ret)
+>>           goto out;
+>>   -    if (csdev->enable) {
+>> +    /*
+>> +     * mode == SYSFS implies that it's already enabled. Don't look at
+>> the
+>> +     * refcount to determine this because we don't claim the source
+>> until
+>> +     * coresight_enable_source() so can still race with Perf mode which
+>> +     * doesn't hold coresight_mutex.
+>> +     */
+>> +    if (local_read(&csdev->mode) == CS_MODE_SYSFS) {
+>>           /*
+>>            * There could be multiple applications driving the software
+>>            * source. So keep the refcount for each such user when the
+>> @@ -1183,7 +1153,7 @@ void coresight_disable(struct coresight_device
+>> *csdev)
+>>       if (ret)
+>>           goto out;
+>>   -    if (!csdev->enable || !coresight_disable_source_sysfs(csdev,
+>> NULL))
+>> +    if (!coresight_disable_source_sysfs(csdev, NULL))
+>>           goto out;
+>>         switch (csdev->subtype.source_subtype) {
+>> @@ -1249,7 +1219,9 @@ static ssize_t enable_source_show(struct device
+>> *dev,
+>>   {
+>>       struct coresight_device *csdev = to_coresight_device(dev);
+>>   -    return scnprintf(buf, PAGE_SIZE, "%u\n", csdev->enable);
+>> +    guard(mutex)(&coresight_mutex);
+>> +    return scnprintf(buf, PAGE_SIZE, "%u\n",
+>> +             local_read(&csdev->mode) == CS_MODE_SYSFS);
+>>   }
+>>     static ssize_t enable_source_store(struct device *dev,
+>> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c
+>> b/drivers/hwtracing/coresight/coresight-tpda.c
+>> index 5f82737c37bb..65c70995ab00 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tpda.c
+>> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
+>> @@ -148,7 +148,11 @@ static int __tpda_enable(struct tpda_drvdata
+>> *drvdata, int port)
+>>         CS_UNLOCK(drvdata->base);
+>>   -    if (!drvdata->csdev->enable)
+>> +    /*
+>> +     * Only do pre-port enable for first port that calls enable when the
+>> +     * device's main refcount is still 0
+>> +     */
+>> +    if (!atomic_read(&drvdata->csdev->refcnt))
+>>           tpda_enable_pre_port(drvdata);
+> 
+> Relying on the "csdev->enable" to do pre-port configuration looks like
+> a complete hack to me. This could have been performed once and for all
+> during the probe time, at say, tpda_init_default_data(). That value is
+> (drvdata->atid) never updated and need not be re-written  unless the
+> value is lost during a power idle.
+> 
+> Mao, Tao, are you able to confirm this ? If that is the case, we don't
+> need this csdev->refcnt.
+> 
+
+  "unless the value is lost during a power idle."
+
+That one might be a reason to do it. I suppose it makes sense to write
+all the registers on enable, but not to keep re-writing the trace ID
+again for every port that's used.
+
+>>         ret = tpda_enable_port(drvdata, port);
+>> @@ -169,6 +173,7 @@ static int tpda_enable(struct coresight_device
+>> *csdev,
+>>           ret = __tpda_enable(drvdata, in->dest_port);
+>>           if (!ret) {
+>>               atomic_inc(&in->dest_refcnt);
+>> +            atomic_inc(&csdev->refcnt);
+>>               dev_dbg(drvdata->dev, "TPDA inport %d enabled.\n",
+>> in->dest_port);
+>>           }
+>>       }
+>> @@ -197,9 +202,10 @@ static void tpda_disable(struct coresight_device
+>> *csdev,
+>>       struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+>>         spin_lock(&drvdata->spinlock);
+>> -    if (atomic_dec_return(&in->dest_refcnt) == 0)
+>> +    if (atomic_dec_return(&in->dest_refcnt) == 0) {
+>>           __tpda_disable(drvdata, in->dest_port);
+>> -
+>> +        atomic_dec(&csdev->refcnt);
+> 
+> If we need this, then: This should be performed outside the if () isn't
+> it ?
+> 
+> e.g.,
+> 
+> Operation:        in_conn->refcnt        csdev->refcnt
+> port_enable : port0    0 - > 1            0 - > 1
+> port_enable : port0     1 - > 2            1 - > 2
+
+I didn't get 1 -> 2 here, because the in->dest_refcnt is only
+incremented once if it was already 0 (although it is once for each port):
+
+  	if (atomic_read(&in->dest_refcnt) == 0) {
+		ret = __tpda_enable(drvdata, in->dest_port);
+		if (!ret) {
+			atomic_inc(&in->dest_refcnt);
+
+That basically makes csdev->refcnt count how many ports were used, but
+each port's refcount can only be used once. And then when each port is
+disabled csdev->refcnt returns to zero on the last port.
+
+> port_disable: port0    2 - > 1            2 (no change)
+> port_disable: port0    1 - > 0            2 - > 1
+> 
+> As you can see the csdev->refcnt skipped a dec.
+> 
+> Suzuki
+> 
+> 
+>> +    }
+>>       spin_unlock(&drvdata->spinlock);
+>>         dev_dbg(drvdata->dev, "TPDA inport %d disabled\n",
+>> in->dest_port);
+>> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+>> index ba817f563ff7..46e6667f72ce 100644
+>> --- a/include/linux/coresight.h
+>> +++ b/include/linux/coresight.h
+>> @@ -233,7 +233,6 @@ struct coresight_sysfs_link {
+>>    *        a non-atomic read would also work.
+>>    * @refcnt:    keep track of what is in use.
+>>    * @orphan:    true if the component has connections that haven't
+>> been linked.
+>> - * @enable:    'true' if component is currently part of an active path.
+>>    * @sysfs_sink_activated: 'true' when a sink has been selected for
+>> use via sysfs
+>>    *        by writing a 1 to the 'enable_sink' file.  A sink can be
+>>    *        activated but not yet enabled.  Enabling for a _sink_ happens
+>> @@ -260,7 +259,6 @@ struct coresight_device {
+>>       local_t    mode;
+>>       atomic_t refcnt;
+>>       bool orphan;
+>> -    bool enable;
+>>       /* sink specific fields */
+>>       bool sysfs_sink_activated;
+>>       struct dev_ext_attribute *ea;
+> 
 
