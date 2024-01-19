@@ -1,194 +1,169 @@
-Return-Path: <linux-kernel+bounces-31490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0939E832EF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 206AE832EF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:33:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 371E31C240F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:33:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 463FA1C2465A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6D620B10;
-	Fri, 19 Jan 2024 18:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3F626AF7;
+	Fri, 19 Jan 2024 18:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OfaV85ex"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z2wnjMVm"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9630E2112;
-	Fri, 19 Jan 2024 18:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=134.134.136.100
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705689186; cv=fail; b=MGJXIuXj4rwNg+TYZc7+Japjs2XZX0RFmI2OYp5FecAztaFUNkSdVtFv0JUxhz5fpRPgrTfmaBnjBEJZM/ADnsplLIu7x1Ph9rdXCF67I5oe5f0Ll9LA0V/KzbHRG5oKlG2vx+JW7e2auTXAC5AnHOuPmjU53f4Zlf2fJaldGHQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705689186; c=relaxed/simple;
-	bh=33+YkFXusdX66li2OPTqKT6VfudK8+EtnU/TqFQXmPg=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=DgZwdEjKb1osioRVdIiQZ2TXK4Ztf6SRHeeKwD2E93syqVumXUECUPYOJFscsAus34Us8Uip2OipXIH9sWh92KQblHs421wNp1Lyns2MLS7dat8subNEB3hU5nOq+tTYXnC7i+G26U4RaEbULC5pNPx9W6I3O6iLcqjedvY37z8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OfaV85ex; arc=fail smtp.client-ip=134.134.136.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705689185; x=1737225185;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=33+YkFXusdX66li2OPTqKT6VfudK8+EtnU/TqFQXmPg=;
-  b=OfaV85exBWZ5yr8XNWPqu9B7tOtwPYFslLKOqDZQ9sb1+sNe9UF1FZxh
-   bphcwW2hLrw/V+LnO4/As/vVW93oWWf7Awjdyhkv5XQJ10ca9lkJuwqjt
-   m/7JDipv3b+nhl3uW6gS/7gkQWDwFCgro9ppcnLdy6tSFeMWcAp8JDJa8
-   gezvjFQWWUFcjGTH61baK8FBSJup17JBcaRX6uZDGFW2G/8pgoqBJ6vkO
-   Ju9CaQSfkvjnZe+7I4f1UL/uNyukFmB3IXFCIaZ8TfSMNQcE5Tt118xHb
-   Wq+1ayKCkyvky8lBTzzJ14nWKLN/SMC9wzxcZIFq0JQAUkuN9owWFg25T
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="467180452"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="467180452"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 10:33:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="785126443"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="785126443"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Jan 2024 10:33:02 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 19 Jan 2024 10:33:01 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 19 Jan 2024 10:33:01 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 19 Jan 2024 10:33:01 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HTCsKN10j/JR7ayfDJ5zfXk1qk7ig491YhS7h1wUEHkZNK5eWqYtbemN7yo8tf3gX8Sb09PZwnwtCn6HL6PHJD2pVnTpKLV5r9PmFC67GlljUIdHni0qpY0pLWo+Rcg0lgaVAXt/0mLqDmXpJfpKDEaHWuWeRQwRysgcIzWKOrawsm39PBlwgYCGD9ZU9L5WB3r+QObU15wiIttgYhL95NwZ7zfWOsYYgHwL2lhqU92tCBFbf2z9/o3y6NsLq79xr98lQ/bo/NQ1oZ4eGjhuewOtiHDRTrjm2FfCBUAsN5NHB3K5babdbC9M/z3Zsb6HycBCNZdWyVWxOpNsEjRgCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aefCIjasdohr5B66JAR9nBP6NRyAQm4vld1AiRUV1lA=;
- b=iats6XRa8AZb9xT+S3Cl9c4YBX92TiDP70DbXYCM09m6yJTG4iA+7exkuHKd80tXUMKbVZeFZ6VzYqZixhul+JefwIl+7s1IiPWbIZCmVvfcRgpxx1EZOP/rKBIp4QSPakqG1H67EDglICj2K4aTcS3nNXd4W4Fb7cQA4dLv8JQaQHI3MVMMLSh18yPJdNaVVd8xJwmWaSBzoGk6KQPoGzO63Q5MAk/50twjTTkCCs0kY3twEyM6nfkEjU2J9T+9u2PIWsvL+dE/FKD6wofz33Kkl1EmfZJFQ7agfgS/wZtDuhvD7m+wr691Cu34rzab1TWEcJmPNPmf6d8IMLOfoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SN7PR11MB6945.namprd11.prod.outlook.com (2603:10b6:806:2a8::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Fri, 19 Jan
- 2024 18:32:58 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa%7]) with mapi id 15.20.7181.018; Fri, 19 Jan 2024
- 18:32:58 +0000
-Message-ID: <ea03f9db-91f1-4f59-b94c-cc351f0bcc29@intel.com>
-Date: Fri, 19 Jan 2024 10:32:54 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth
- Monitoring Counters (ABMC)
-Content-Language: en-US
-To: Babu Moger <babu.moger@amd.com>, <corbet@lwn.net>, <fenghua.yu@intel.com>,
-	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-	<dave.hansen@linux.intel.com>
-CC: <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
-	<rdunlap@infradead.org>, <tj@kernel.org>, <peterz@infradead.org>,
-	<yanjiewtw@gmail.com>, <kim.phillips@amd.com>, <lukas.bulwahn@gmail.com>,
-	<seanjc@google.com>, <jmattson@google.com>, <leitao@debian.org>,
-	<jpoimboe@kernel.org>, <rick.p.edgecombe@intel.com>,
-	<kirill.shutemov@linux.intel.com>, <jithu.joseph@intel.com>,
-	<kai.huang@intel.com>, <kan.liang@linux.intel.com>,
-	<daniel.sneddon@linux.intel.com>, <pbonzini@redhat.com>,
-	<sandipan.das@amd.com>, <ilpo.jarvinen@linux.intel.com>,
-	<peternewman@google.com>, <maciej.wieczor-retman@intel.com>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<eranian@google.com>, James Morse <james.morse@arm.com>
-References: <20231201005720.235639-1-babu.moger@amd.com>
- <cover.1705688538.git.babu.moger@amd.com>
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <cover.1705688538.git.babu.moger@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0231.namprd04.prod.outlook.com
- (2603:10b6:303:87::26) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1A32112;
+	Fri, 19 Jan 2024 18:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705689219; cv=none; b=bB+DAQgW5kD4/7JTfbRFfSA2h7mBDj+bWv4SldvoTDgwpaLafYv0vzXsI8CiogxeHxFY/aMjvIBkkoaKkKoeLGh7ef2a6N27l55oyAX0t4pqg7pcmeSWX/hsfSNNrSM7+XqQfN+vuhCpXX2jcXCCQHQP5C+6P3ECmIzBtQuEXj8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705689219; c=relaxed/simple;
+	bh=2UTEvLs5YWOQsuXjS93MK2My/6R/O8u9HEeLv8CKhG0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=do+6HDDjIwT8KrbpHUysXXUVliABemfeZKsoZE7jQDKmUaPsDLWSs+1Y5t3bsz2J/uuKomDy0uysfO47ycchtTJzB4Yao7x3pp3O9H5fBQ9GkeqlwFI/bSJjF8MAONduPNXJRNwbXhsnXQAprKDGBWjKzQ8EvncvEtk1pMSeYxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z2wnjMVm; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-29065efa06fso23199a91.1;
+        Fri, 19 Jan 2024 10:33:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705689217; x=1706294017; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zkKnoesKahkqO2ThUINQtzJ7lHkLPPLje48Y8+4TcIw=;
+        b=Z2wnjMVmqbKU4URiAB5MWVd7m6hoNZChZS9B+T9HEHRQXoW1QoQZ41wlR/DVovmaMr
+         91bK2XzCUz6ZuMIgjZvW4Vbw9c1u0r4Hi1o3Mob17pqk0A99HS3KzwSAF6RTvQmK2+Mq
+         kJPKQYYykrQIA3im+Jk54Vk3b16bZvdeGSiBacOgE2AWGmsEVltChCmJn+UDe17Ep0KY
+         7fznHTphIhTH7ykH9BCuUdiP1rYKVpCrPIKXhtc+ny/xx3SGsuhBQrydPlhYSV8t0kiM
+         tv9R1+b9EHl1IL4nTNBvVtmBE3hy9BeftjScoVsB+Qm+LnJxmBY4/E4RaXlazYqxIgKr
+         xq7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705689217; x=1706294017;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zkKnoesKahkqO2ThUINQtzJ7lHkLPPLje48Y8+4TcIw=;
+        b=Hgh0KviQhYeyw/p1cREDb1CaP3SaLKfHxU27gCjf45HuQLtAuQRKf/HPH4zCyML0Dm
+         59oIR7Y6Q7lTpH+Bvjw1yV/Mv2HBYPCB3upRW1a8q81SV0gt+Ej8Pbc6Ta1BCI3Isg+J
+         5ObsLCkrY9vk9EudPt6Xen+61RdoPkIfX86rI5JZ3GXrnlSTO7nXK1LS0UMjtlzYj2+V
+         J+Eumnt+T4JPPCc4ppJwpFDxx1CsLVOCK5Qc7dM9j9VBadV1/ns2Xp0y0RnX/UuPIqBK
+         SO7qidDDGGyWg04JaLAQVvoqlHTi58OOTigUWdh54YwegD1FIzmdhDPvYBnijJ47diSe
+         +ZEg==
+X-Gm-Message-State: AOJu0Yw1QZ9k9WSAW5yV7fH3V/47CI1mr9eEqBd4ypSQDE8ILThaLUtu
+	b2rmAasgWCnuhzDr1qeMlFHVXffealFCCXozpaXI4I+dLQis3fiH
+X-Google-Smtp-Source: AGHT+IE3J3mk+o/jaEbN4lFdflrsPSNaC31PQjCmi5eiwC0XemD3b7u1le1I/qswQjFVSQuib1m0zA==
+X-Received: by 2002:a17:90a:c7cb:b0:290:1426:86fc with SMTP id gf11-20020a17090ac7cb00b00290142686fcmr182985pjb.89.1705689217443;
+        Fri, 19 Jan 2024 10:33:37 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:97b4:2663:16e0:cf81])
+        by smtp.gmail.com with ESMTPSA id sy14-20020a17090b2d0e00b0029005525d76sm4412592pjb.16.2024.01.19.10.33.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 10:33:37 -0800 (PST)
+Date: Fri, 19 Jan 2024 10:33:34 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+	Werner Sembach <wse@tuxedocomputers.com>, jikos@kernel.org,
+	Jelle van der Waa <jelle@vdwaa.nl>,
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	linux-input@vger.kernel.org, ojeda@kernel.org,
+	linux-leds@vger.kernel.org,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+Message-ID: <ZarAfg2_5ocfKAWo@google.com>
+References: <87sf61bm8t.fsf@intel.com>
+ <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
+ <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
+ <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
+ <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+ <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+ <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
+ <ZaljwLe7P+dXHEHb@duo.ucw.cz>
+ <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
+ <87bk9hppee.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SN7PR11MB6945:EE_
-X-MS-Office365-Filtering-Correlation-Id: c9d57d5a-8db6-473e-d2cd-08dc191d0f57
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7eGyEUmQHQjPdoZwt2gIg6So036/X+k0QOREpvN1Uc9zQzueJttG0/JaJ15JLKZcKJp6ZjNs97duasKRs2RERK4vk0t2LvVb8Iotb7S6VbRGIr6aoRgvoSY+O+h78gtwDNKEhXmF32/6KZoFB2WMRXljeTbgq3k3zDV6KUDdzcabKe/DpHsv20Swvm1zDuo9CSP3nEXL+IQWntFiY7e+jCucNKYOgz2qNBqfVE2ZklK4OhRBMgxfkE4fzNCgjkwHgLUvKMqa0D00Gn1zyfs4R9D3D/ApINu3KuQTyN4rnh+HvVdA5AWqfMbwqtilGTQHnGys3uURcjrK9H1zbKui0H7nCfEFnb2zf22z4JgF7rOA4Zz8gpUnTKCEoeKTgwQ0tRvze/K99Rea8nwyo8V+bIbONKhYzJlg1T/v6n6uhNIZKvzbiYGEROSD+gihhU1uQQoZMR8pJCVLlnMV5RP6+lzoBxB1XXPUm5ENJfdM8IIjVEIuctFgbO9IkbA0cIk2I0yVxmgWi6HlFGlNOOI5ImBVEqheGNF1h5xv21G6acgFylD/KtHJzOlwzlyzktu0hUk+TQpLyAd+BKevgfANY/norvr/GMksLiBXWdlubT4S3G9gSl4fxpy2itijtOVbX/gcWvBdEdkast2jYfdSPw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(366004)(396003)(39860400002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(6666004)(6512007)(6506007)(53546011)(26005)(2616005)(8676002)(4326008)(36756003)(8936002)(86362001)(316002)(7416002)(44832011)(2906002)(7406005)(558084003)(5660300002)(66476007)(31696002)(66946007)(66556008)(6486002)(41300700001)(478600001)(31686004)(38100700002)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VlljQk9DUGU5U3FQeHJFOXFtQjNWbXF0TXdCdTVETVRFOU1tNzNPd3NTQ0tt?=
- =?utf-8?B?OUFaS3FTaWtycU1PeVZjakhoNTgrRXYxNDEvSHI2QkI0Q3NrNWdMbmpNcEFh?=
- =?utf-8?B?eXd6UWExN0EzNUVJd3dqWUxFdjB0VkVTU3J5U2phbmxKYVlZQjFEaXhhZlJO?=
- =?utf-8?B?WUgzQWNUK3hGRVFocWRrR0tyZkdRZVdjSVhtRjdRcGNISTNiVzlZVXRUdFp4?=
- =?utf-8?B?czRyNFgyUnRKYW9pVnkwczljcHZzK2lIRDRaUnZGamNuTTZta1NLdnBmSElW?=
- =?utf-8?B?S3JGYmJLbENxUUtnOTFLalIzcVlEMGd6bXFISkx3amtxVHBUK0poR2gzaGh3?=
- =?utf-8?B?aDRFNFdlNHVJL2hiZ2l4ZnBUeGVJMVNHTjV0dnlheXJTNzlGTnJVaG5XemU3?=
- =?utf-8?B?Ti81UEY0L3dmMzFTazNzSFczd0J1cXYvL0QzYlA1VWhlb0x3a1U3SEU2U2h4?=
- =?utf-8?B?SDR1UU4xSVo0c2Y4TUdNaU1TTjZEYzFyUnE3VVZ2Myt5dUVyQTgvZkEydi90?=
- =?utf-8?B?bHNRelFEcktqRVBmNWFxTlZ1cUJXeTdiaVBFWG5IWURiQnpKM1RsVWRzY1Rk?=
- =?utf-8?B?WUV1Y21rZTRBS1FVWU93WGcyY3EyNC80VHVZcTBxRjVldkhOejhWU2paWHVn?=
- =?utf-8?B?ZktvYWVFd1Y0b3BPT0kxeDlhYXFFS2d1N3BCSHFKaEVMUzhxRHJPNk93YlJB?=
- =?utf-8?B?TVMvRU95ajBtSWU2MkdxU0hZdTk1c2lBT1U2YXUzYVR1MTdvL043YXJEc3J0?=
- =?utf-8?B?clIyYlRvZlgwbS9VMkp1MUkrdmNVaVZuSWVtTlV1VWxLMmpoZFF6OHN2SUxh?=
- =?utf-8?B?Q3R3NEhHdFZ1elg1a2VmbnB6V2l5L0MvNFlHWlhxL1RTWmcwTW5qMlZMMHdU?=
- =?utf-8?B?WFc2YUJaa3cwZ1dCK3pqNElpYzdhMW11aExabjlSRXJuZUM5TVZjN1c5eURB?=
- =?utf-8?B?aGt1N0ZqMloxb2hyS3BPejlZYzlpTWpUTStOU2Y4ZlE1d3FKMFJpM2sxTUdC?=
- =?utf-8?B?WmVRaVQyVVBXb2RjdDNmdjFSTFdtSUlQNkl3QlVQNVNCYkM1MnRlYkZQc1d3?=
- =?utf-8?B?UDRndVRSZjFhSW01SllZWmlaUTRVZGNLN2t3MnJKTW9DMmNWcmZuUjV0cUYv?=
- =?utf-8?B?OUIxeHZEWUJISktQYTRxSDNpaUlmNjBRS295cXlrVXEybzlpTjdaZ25KeXNZ?=
- =?utf-8?B?QUdQZVhjWjFVNGoxYnRDWWNrRGpqdlJFU3ZGbmdaRCtzUHpCa2MyRHJvT2lq?=
- =?utf-8?B?ZkxqdXdLazdZZ1cyMCtHQ20wY2s1a3ZLOWJGSEpVMUxOdHk5RkxqVDZJcGFS?=
- =?utf-8?B?Tjl0dXcwRFY0N3ljM1VWQ0kxMDVEVEN1M0sreFZrR3hVOTBzTEgwNWltOWZH?=
- =?utf-8?B?dlhPQWJtWDlmdE5TZG9xL1M2WTc4Y2NjSUhvcGc3MEtDTVYzSGZJNjc4NVU4?=
- =?utf-8?B?VkUrUUFYcUpzWjc0cXdLT2lsU0dYKzM2d3RhKzIyU1dHY1NEQ01iNGc4L3hJ?=
- =?utf-8?B?Si9pVVdOZU5QY3JiaDFrZGFpOUZ3eEIydmhKaWQ1Y0pSa3IvS2l5MVY2dlFE?=
- =?utf-8?B?alMxdkI0QStzQnd3ZEY5Z0NlRTl2UCtvQ1hBVktMODhEbjFTU1VEUUptMDFO?=
- =?utf-8?B?akJsSTYzcEdyMVNZK3JGQklTd2FZL1FqNEh2QlJNcjdHcUVEUHV2bElwdjls?=
- =?utf-8?B?a1gwRUV1K284VzRIZ01yc1RrWDJDZzJybGJaMy9IRDdtSjMrQVVpd3NWakxF?=
- =?utf-8?B?V2p1VHpCbGtzbXJQRHd2VVZBUDB3WkY1RXk2clIxS1gwSHlvWlUrL2hMay9z?=
- =?utf-8?B?WlNUTStDbi9COG4xb0NCV3dBa1Z3THRobzU1SnBjbWtVQnJqaUwxdzdvaVR5?=
- =?utf-8?B?Zm9BWHRXZFp5N0dsRGkzQWx4bnJleUd4aDY5MWZkWnk0Ryt4bzE4WDJ1L2tF?=
- =?utf-8?B?bjcrOGUrbkEyVCtvdHNxTjRJclBiTFhwUnA5VGkwWGNSaHNSak1qb1RvSDQ5?=
- =?utf-8?B?NTlleWpoVXkxN29IVjF1ZFl6eU5XcEM1ZlBCaHh5U3cvY2szdVh1cnRReExD?=
- =?utf-8?B?WXB0MUFzQXNQWU8zQ1RUbHd2dFZKM3UzZ3pjYkJXSjhrZmRLU2FvaVBucnRF?=
- =?utf-8?B?UWt1QzdoV1dQNkNMb0ZMWUNBOEt0TG1DbFJYdjV2dWIzUExFRFNPMENWeEM0?=
- =?utf-8?B?eFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9d57d5a-8db6-473e-d2cd-08dc191d0f57
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2024 18:32:58.4039
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1ku/pnUluq2mfdyH9Qezw9puF3vBbiveO5jmWZyn+W6oc43sTzBDR5hVGJVwE0iVrj/CRDsvjM/PivsA+ymkI8l/vtW5W9njEeuvJ5kd08w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6945
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87bk9hppee.fsf@intel.com>
 
-+James
+On Fri, Jan 19, 2024 at 12:51:21PM +0200, Jani Nikula wrote:
+> On Fri, 19 Jan 2024, Hans de Goede <hdegoede@redhat.com> wrote:
+> > For per key controllable rgb LEDs we need to discuss a coordinate
+> > system. I propose using a fixed size of 16 rows of 64 keys,
+> > so 64x16 in standard WxH notation.
+> >
+> > And then storing RGB in separate bytes, so userspace will then
+> > always send a buffer of 192 bytes per line (64x3) x 14 rows
+> > = 3072 bytes. With the kernel driver ignoring parts of
+> > the buffer where there are no actual keys.
+> >
+> > I would then like the map the standard 105 key layout onto this,
+> > starting at x.y (column.row) coordinates of 16.6 (with 0.0 being
+> > the top left). Leaving plenty of space on the left top and right
+> > (and some on the bottom) for extra media key rows, macro keys, etc.
+> >
+> > The idea to have the standard layout at a fixed place is to allow
+> > userspace to have a database of preset patterns which will work
+> > everywhere.
+> >
+> > Note I say standard 105 key layout, but in reality for
+> > defining the standardized part of the buffer we should
+> > use the maximum amount of keys per row of all the standard layouts,
+> > so for row 6 (the ESC row) and for extra keys on the right outside
+> > the main block we use the standard layout as shown here:
+> 
+> Doesn't the input stack already have to have pretty much all of this
+> already covered? I can view the keyboard layout in my desktop
+> environment, and it's a reasonably accurate match, even if unlikely to
+> be pixel perfect. But crucially, it has to have all the possible layouts
+> covered already.
 
-On 1/19/2024 10:22 AM, Babu Moger wrote:
->  
->    f. This series is still work in progress. I am yet to hear from ARM developers. 
+The kernel actually is not aware of the keyboard geometry, it had no
+idea if you are dealing with a standard full 101/102 keys keyboard,
+TKL or even smaller one, if it is split or not, maybe something like
+Kinesis Advantage360. Arguably, it could potentially know about
+101/TLK if vendors would program accurate descriptors into their
+devices, but nobody does... And geometry is not a part of HID interface
+at all. So your desktop environment makes an [un]educated guess.
 
-Please at least include James in your submissions to make Arm aware of this work.
+> 
+> And while I would personally hate it, you can imagine a use case where
+> you'd like a keypress to have a visual effect around the key you
+> pressed. A kind of force feedback, if you will. I don't actually know,
+> and correct me if I'm wrong, but feels like implementing that outside of
+> the input subsystem would be non-trivial.
 
-Reinette
+Actually I think it does not belong to the input subsystem as it is,
+where the goal is to deliver keystrokes and gestures to userspace.  The
+"force feedback" kind of fits, but not really practical, again because
+of lack of geometry info. It is also not really essential to be fully
+and automatically handled by the kernel. So I think the best way is to
+have an API that is flexible enough for the userspace solution to
+control, and that is not restricted by the input core design. The
+hardware drivers are not restricted to using a single API, they can
+implement both an input device and whatever new "rgbled" and userspace
+can associate them by topology/sysfs.
+
+> 
+> Cc: Dmitry, could we at least have some input from the input subsystem
+> POV on this? AFAICT we have received none.
+
+Sorry, I was not CCed and I missed this on the mainling list.
+
+Thanks.
+
+-- 
+Dmitry
 
