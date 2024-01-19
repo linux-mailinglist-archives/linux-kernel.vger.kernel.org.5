@@ -1,380 +1,133 @@
-Return-Path: <linux-kernel+bounces-30878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11F65832567
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:05:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B24C832569
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:06:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DEDC1F21D16
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:05:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB7481F2254D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:06:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B17823776;
-	Fri, 19 Jan 2024 08:05:22 +0000 (UTC)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4697BDDAB;
+	Fri, 19 Jan 2024 08:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iLqIgOTb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00850D52B;
-	Fri, 19 Jan 2024 08:05:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB61D53E;
+	Fri, 19 Jan 2024 08:06:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705651521; cv=none; b=ag1oPKaFiiG2JQHnX/Q4aKReu+XNC9vWJn7EAoSNyuS0BYyad6ZH/RNfX0yAer6h6Q6AB8+uzdhloyfdZb/dxynatl48uFG5pA7vKCan2aVHeorDxtnw9O3ue1/50z3Q/4xt+xgIXqbhQIc+n0Y/onnXfYr8ZdZOHSdS/kn9YNQ=
+	t=1705651566; cv=none; b=m/qnemyX0G2TFXauRZ4mtWBxUYp4pwqHO1Y9VBMAlhUJenfW2bIJHKvmShXnS8yCGcs2C2+knv7GJmFkz8ddvTZtp7EFHMCICXQ4iiW+cEEj23ZkCOFVXtZiZevoWOyM5RNVroUuPToAWYFfuE5L3wlpy3bvEfj/+erP4la/ZOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705651521; c=relaxed/simple;
-	bh=leiwWfJwVuSH6AhK4TamCaravv3a3FKCEyKKAL38dKI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PaTNgDr3Zo2TL3E1/ESlbH4Ukl9FZeD2axgc6CrFY4l+bFCzW4Z8wZUeCDfjxShcZ3yQStX/VMDREzZJtXOqnMcJ3efsF7LzeBAbkdhIj46fN2jibTcRzCWmtreKtGZLEymcpPqCtEZ4vu3bkPZpIAYh64a/WQ7eP/4L985CvFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 69DBB240009;
-	Fri, 19 Jan 2024 08:05:13 +0000 (UTC)
-Message-ID: <069ac01f-9d41-45fc-b26f-38f2d8cec787@ghiti.fr>
-Date: Fri, 19 Jan 2024 09:05:12 +0100
+	s=arc-20240116; t=1705651566; c=relaxed/simple;
+	bh=WPQT+tS6NSneAp94KCLXM+GXH9VM9CTH1xf/mPDf+Lo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sZhHl40aREC6CCdWoVn7avRW7ydrTNZJgCu6oUwNDkyIQyNko2BG9sbiXIVjpXbZi7Gv726jderhWsQgJoiLr4ji5By3Wx0CZdltIu5EIa/hOMeyshQ8FO4Dtui254u7jOWoKUROFxp0zR4vKfoCtO8MnHPnouNWnjVV2gb/4EE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iLqIgOTb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC7EFC433C7;
+	Fri, 19 Jan 2024 08:06:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705651566;
+	bh=WPQT+tS6NSneAp94KCLXM+GXH9VM9CTH1xf/mPDf+Lo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iLqIgOTbpKObnRHe8jUnzJO4m+SsNJiE3A1ihbhfIGWonvm+wVIQRsxR2AhBKYE1P
+	 phOTnPN3oVklYuHkuUP/zNTpo0+39gUqLF9/x+Md8NW7JKBJM3aEgKbihpDm0jrydt
+	 I2wbVIJu0S8VA05wF5mX3fep8pJCCsHRSqOZjLS2rMhzmtFwyCPjmVLtiKI1xcAOK2
+	 gznz2bVWsbpFg5/PwcP3W3ncSiFx/yGLVAy9MSEGaxj03+CDQFOoeRZaCU2svbYBsO
+	 nQC2TbmJsXbsZFRh0q4ENTIaf1KdUJHL/qrQ+l8vcb7/RWwRdftF52RPsVl/7Bvmnr
+	 i/O/OsMpH8slg==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rQjtG-0004aL-2O;
+	Fri, 19 Jan 2024 09:06:14 +0100
+Date: Fri, 19 Jan 2024 09:06:14 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] ASoC: qcom: sc8280xp: limit speaker volumes
+Message-ID: <ZaotdsEutSLfbD3x@hovoldconsulting.com>
+References: <20240118165811.13672-1-johan+linaro@kernel.org>
+ <20240118165811.13672-4-johan+linaro@kernel.org>
+ <ac6eb9f9-9a5c-472d-9a57-ee509d9589f9@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 1/2] riscv: Include riscv_set_icache_flush_ctx prctl
-Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>,
- =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
- Atish Patra <atishp@atishpatra.org>, Randy Dunlap <rdunlap@infradead.org>,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
-References: <20240116-fencei-v8-0-43a42134f021@rivosinc.com>
- <20240116-fencei-v8-1-43a42134f021@rivosinc.com>
- <bb0e976d-7475-4c42-b87e-bf1af389ba5f@ghiti.fr> <Zamxac0S7JnPmJdD@ghost>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <Zamxac0S7JnPmJdD@ghost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac6eb9f9-9a5c-472d-9a57-ee509d9589f9@linaro.org>
 
-On 19/01/2024 00:16, Charlie Jenkins wrote:
-> On Wed, Jan 17, 2024 at 09:42:43AM +0100, Alexandre Ghiti wrote:
->> Hi Charlie,
->>
->> On 17/01/2024 03:54, Charlie Jenkins wrote:
->>> Support new prctl with key PR_RISCV_SET_ICACHE_FLUSH_CTX to enable
->>> optimization of cross modifying code. This prctl enables userspace code
->>> to use icache flushing instructions such as fence.i with the guarantee
->>> that the icache will continue to be clean after thread migration.
->>>
->>> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
->>> Reviewed-by: Atish Patra <atishp@rivosinc.com>
->>> ---
->>>    arch/riscv/include/asm/mmu.h         |  4 +++
->>>    arch/riscv/include/asm/mmu_context.h |  3 ++
->>>    arch/riscv/include/asm/processor.h   |  7 ++++
->>>    arch/riscv/include/asm/switch_to.h   | 17 +++++++++
->>>    arch/riscv/mm/cacheflush.c           | 67 ++++++++++++++++++++++++++++++++++++
->>>    arch/riscv/mm/context.c              | 14 ++++++--
->>>    include/uapi/linux/prctl.h           |  6 ++++
->>>    kernel/sys.c                         |  6 ++++
->>>    8 files changed, 121 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/arch/riscv/include/asm/mmu.h b/arch/riscv/include/asm/mmu.h
->>> index 355504b37f8e..f437b9a7f5b3 100644
->>> --- a/arch/riscv/include/asm/mmu.h
->>> +++ b/arch/riscv/include/asm/mmu.h
->>> @@ -19,6 +19,10 @@ typedef struct {
->>>    #ifdef CONFIG_SMP
->>>    	/* A local icache flush is needed before user execution can resume. */
->>>    	cpumask_t icache_stale_mask;
->>> +	/* Force local icache flush on all migrations. */
->>> +	bool force_icache_flush;
->>> +	/* The most recent cpu a thread in this mm has been migrated to. */
->>> +	unsigned int prev_cpu;
->>
->> Why would we need a prev_cpu on mm? Why don't we only need to have a
->> prev_cpu per thread, i.e. per task_struct? It makes little sense to me to
->> have that on mm since it's shared by multiple threads (by definition), so
->> the prev_cpu on mm could be anything.
->>
-> Yes you are correct, I will remove that.
->
->>>    #endif
->>>    #ifdef CONFIG_BINFMT_ELF_FDPIC
->>>    	unsigned long exec_fdpic_loadmap;
->>> diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
->>> index 7030837adc1a..195a2e90f3f9 100644
->>> --- a/arch/riscv/include/asm/mmu_context.h
->>> +++ b/arch/riscv/include/asm/mmu_context.h
->>> @@ -29,6 +29,9 @@ static inline int init_new_context(struct task_struct *tsk,
->>>    {
->>>    #ifdef CONFIG_MMU
->>>    	atomic_long_set(&mm->context.id, 0);
->>> +#endif
->>> +#ifdef CONFIG_SMP
->>> +	mm->context.prev_cpu = tsk->thread.prev_cpu;
->>>    #endif
->>>    	return 0;
->>>    }
->>> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
->>> index f19f861cda54..1cad05f579ad 100644
->>> --- a/arch/riscv/include/asm/processor.h
->>> +++ b/arch/riscv/include/asm/processor.h
->>> @@ -84,6 +84,10 @@ struct thread_struct {
->>>    	unsigned long vstate_ctrl;
->>>    	struct __riscv_v_ext_state vstate;
->>>    	unsigned long align_ctl;
->>> +#ifdef CONFIG_SMP
->>> +	bool force_icache_flush;
->>> +	unsigned int prev_cpu;
->>> +#endif
->>>    };
->>>    /* Whitelist the fstate from the task_struct for hardened usercopy */
->>> @@ -145,6 +149,9 @@ extern int set_unalign_ctl(struct task_struct *tsk, unsigned int val);
->>>    #define GET_UNALIGN_CTL(tsk, addr)	get_unalign_ctl((tsk), (addr))
->>>    #define SET_UNALIGN_CTL(tsk, val)	set_unalign_ctl((tsk), (val))
->>> +#define RISCV_SET_ICACHE_FLUSH_CTX(arg1, arg2)	riscv_set_icache_flush_ctx(arg1, arg2)
->>> +extern int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long per_thread);
->>> +
->>>    #endif /* __ASSEMBLY__ */
->>>    #endif /* _ASM_RISCV_PROCESSOR_H */
->>> diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
->>> index f90d8e42f3c7..6a94431dc193 100644
->>> --- a/arch/riscv/include/asm/switch_to.h
->>> +++ b/arch/riscv/include/asm/switch_to.h
->>> @@ -8,6 +8,7 @@
->>>    #include <linux/jump_label.h>
->>>    #include <linux/sched/task_stack.h>
->>> +#include <linux/mm_types.h>
->>>    #include <asm/vector.h>
->>>    #include <asm/cpufeature.h>
->>>    #include <asm/processor.h>
->>> @@ -73,6 +74,17 @@ static __always_inline bool has_fpu(void) { return false; }
->>>    extern struct task_struct *__switch_to(struct task_struct *,
->>>    				       struct task_struct *);
->>> +static inline bool switch_to_should_flush_icache(struct task_struct *task)
->>> +{
->>> +	unsigned int cpu = smp_processor_id();
->>> +	bool stale_mm = task->mm && (task->mm->context.force_icache_flush &&
->>> +				     (cpu != task->mm->context.prev_cpu));
->>> +	bool stale_thread = task->thread.force_icache_flush &&
->>> +			    (cpu != task->thread.prev_cpu);
->>> +
->>> +	return stale_mm || stale_thread;
->>
->> Here the test would become:
->>
->> return ((task->mm && task->mm->context.force_icache_flush) ||
->> task->thread.force_icache_flush) && (cpu != task->thread.prev_cpu);
->>
->> And do we really need to check task->mm is not null?
-> mm can be null if the task is associated with a kernel thread. So the
-> check is necessary.
+On Fri, Jan 19, 2024 at 07:37:14AM +0000, Srinivas Kandagatla wrote:
+> 
+> 
+> On 18/01/2024 16:58, Johan Hovold wrote:
+> > The UCM configuration for the Lenovo ThinkPad X13s has up until now
+> > been setting the speaker PA volume to -3 dB when enabling the speakers,
+> > but this does not prevent the user from increasing the volume further.
+> > 
+> > Limit the PA volume to -3 dB in the machine driver to reduce the risk of
+> > speaker damage until we have active speaker protection in place.
+> > 
+> > Note that this will probably need to be generalised using
+> > machine-specific limits, but a common limit should do for now.
+> > 
+> > Cc: stable@vger.kernel.org	# 6.5
+> > Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> > ---
+> >   sound/soc/qcom/sc8280xp.c | 8 +++++---
+> >   1 file changed, 5 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
+> > index ed4bb551bfbb..a19bfa354af8 100644
+> > --- a/sound/soc/qcom/sc8280xp.c
+> > +++ b/sound/soc/qcom/sc8280xp.c
+> > @@ -32,12 +32,14 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
+> >   	case WSA_CODEC_DMA_RX_0:
+> >   	case WSA_CODEC_DMA_RX_1:
+> >   		/*
+> > -		 * set limit of 0dB on Digital Volume for Speakers,
+> > -		 * this can prevent damage of speakers to some extent without
+> > -		 * active speaker protection
+> > +		 * Set limit of 0 dB on Digital Volume and -3 dB on PA Volume
+> > +		 * to reduce the risk of speaker damage until we have active
+> > +		 * speaker protection in place.
+> 
+> I would prefer a 0dB here instead of -3dB, this could become issue if we 
+> are testing speakers without any pluseaudio or any software 
+> amplification. ex: console
 
+I know you want that, but I'm not willing to be the one raising the
+default volume that people have been using so far and that you have
+(unknowingly) used in your tests to verify that you did not break your
+speakers.
 
-Yes, you're right, thanks
+Once you've run some more tests we can easily raise this limit.
 
+I just want to make sure we have something safe in place ASAP now that
+people will soon be able to change the hardware volume control more
+easily (i.e. with the fixed UCM files).
 
->>
->>> +}
->>> +
->>>    #define switch_to(prev, next, last)			\
->>>    do {							\
->>>    	struct task_struct *__prev = (prev);		\
->>> @@ -81,7 +93,12 @@ do {							\
->>>    		__switch_to_fpu(__prev, __next);	\
->>>    	if (has_vector())					\
->>>    		__switch_to_vector(__prev, __next);	\
->>> +	if (switch_to_should_flush_icache(__next))	\
->>> +		local_flush_icache_all();		\
->>>    	((last) = __switch_to(__prev, __next));		\
->>> +	__next->thread.prev_cpu = smp_processor_id();	\
->>> +	if (__next->mm)					\
->>> +		__next->mm->context.prev_cpu = smp_processor_id();	\
->>>    } while (0)
->>
->> And just to make sure I understand this: you moved the test in switch_to()
->> because 2 threads with the same mm could be scheduled one after the other on
->> the same cpu and then switch_mm() would not be called?
->>
-> Yes exactly.
+> >   		 */
+> >   		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
+> >   		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
+> > +		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 1);
+> > +		snd_soc_limit_volume(card, "SpkrRight PA Volume", 1)
+> 
+> It would be nice to consider using component->name_prefix here.
 
+That can possibly be done later.
 
-Very good catch then!
-
-Thanks,
-
-Alex
-
-
->
-> - Charlie
->
->>>    #endif /* _ASM_RISCV_SWITCH_TO_H */
->>> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
->>> index 55a34f2020a8..ff545f19f07a 100644
->>> --- a/arch/riscv/mm/cacheflush.c
->>> +++ b/arch/riscv/mm/cacheflush.c
->>> @@ -5,6 +5,7 @@
->>>    #include <linux/acpi.h>
->>>    #include <linux/of.h>
->>> +#include <linux/prctl.h>
->>>    #include <asm/acpi.h>
->>>    #include <asm/cacheflush.h>
->>> @@ -152,3 +153,69 @@ void __init riscv_init_cbo_blocksizes(void)
->>>    	if (cboz_block_size)
->>>    		riscv_cboz_block_size = cboz_block_size;
->>>    }
->>> +
->>> +/**
->>> + * riscv_set_icache_flush_ctx() - Enable/disable icache flushing instructions in
->>> + * userspace.
->>> + * @ctx: Set the type of icache flushing instructions permitted/prohibited in
->>> + *	 userspace. Supported values described below.
->>> + *
->>> + * Supported values for ctx:
->>> + *
->>> + * * %PR_RISCV_CTX_SW_FENCEI_ON: Allow fence.i in userspace.
->>> + *
->>> + * * %PR_RISCV_CTX_SW_FENCEI_OFF: Disallow fence.i in userspace. When ``scope ==
->>> + *   PR_RISCV_SCOPE_PER_PROCESS``, this will effect all threads in a process.
->>> + *   Therefore, caution must be taken -- only use this flag when you can
->>> + *   guarantee that no thread in the process will emit fence.i from this point
->>> + *   onward.
->>> + *
->>> + * @scope: Set scope of where icache flushing instructions are allowed to be
->>> + *	   emitted. Supported values described below.
->>> + *
->>> + * Supported values for scope:
->>> + *
->>> + * * PR_RISCV_SCOPE_PER_PROCESS: Ensure the icache of any thread in this process
->>> + *                               is coherent with instruction storage upon
->>> + *                               migration.
->>> + *
->>> + * * PR_RISCV_SCOPE_PER_THREAD: Ensure the icache of the current thread is
->>> + *                              coherent with instruction storage upon
->>> + *                              migration.
->>> + *
->>> + * When ``scope == PR_RISCV_SCOPE_PER_PROCESS``, all threads in the process are
->>> + * permitted to emit icache flushing instructions. Whenever any thread in the
->>> + * process is migrated, the corresponding hart's icache will be guaranteed to be
->>> + * consistent with instruction storage. Note this does not enforce any
->>> + * guarantees outside of migration. If a thread modifies an instruction that
->>> + * another thread may attempt to execute, the other thread must still emit an
->>> + * icache flushing instruction before attempting to execute the potentially
->>> + * modified instruction. This must be performed by the userspace program.
->>> + *
->>> + * In per-thread context (eg. ``scope == PR_RISCV_SCOPE_PER_THREAD``), only the
->>> + * thread calling this function is permitted to emit icache flushing
->>> + * instructions. When the thread is migrated, the corresponding hart's icache
->>> + * will be guaranteed to be consistent with instruction storage.
->>> + *
->>> + * On kernels configured without SMP, this function is a nop as migrations
->>> + * across harts will not occur.
->>> + */
->>> +int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long scope)
->>> +{
->>> +#ifdef CONFIG_SMP
->>> +	switch (ctx) {
->>> +	case PR_RISCV_CTX_SW_FENCEI_ON:
->>> +		switch (scope) {
->>> +		case PR_RISCV_SCOPE_PER_PROCESS:
->>> +			current->mm->context.force_icache_flush = true;
->>> +			break;
->>> +		case PR_RISCV_SCOPE_PER_THREAD:
->>> +			current->thread.force_icache_flush = true;
->>> +			break;
->>> +		default:
->>> +			return -EINVAL;
->>> +		}
->>> +	}
->>> +#endif
->>> +	return 0;
->>> +}
->>> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
->>> index 217fd4de6134..b059dc0fae91 100644
->>> --- a/arch/riscv/mm/context.c
->>> +++ b/arch/riscv/mm/context.c
->>> @@ -15,6 +15,7 @@
->>>    #include <asm/tlbflush.h>
->>>    #include <asm/cacheflush.h>
->>>    #include <asm/mmu_context.h>
->>> +#include <asm/switch_to.h>
->>>    #ifdef CONFIG_MMU
->>> @@ -297,19 +298,26 @@ static inline void set_mm(struct mm_struct *prev,
->>>     *
->>>     * The "cpu" argument must be the current local CPU number.
->>>     */
->>> -static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu)
->>> +static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu,
->>> +					 struct task_struct *task)
->>>    {
->>>    #ifdef CONFIG_SMP
->>>    	cpumask_t *mask = &mm->context.icache_stale_mask;
->>>    	if (cpumask_test_cpu(cpu, mask)) {
->>>    		cpumask_clear_cpu(cpu, mask);
->>> +
->>>    		/*
->>>    		 * Ensure the remote hart's writes are visible to this hart.
->>>    		 * This pairs with a barrier in flush_icache_mm.
->>>    		 */
->>>    		smp_mb();
->>> -		local_flush_icache_all();
->>> +
->>> +		/*
->>> +		 * If cache will be flushed in switch_to, no need to flush here.
->>> +		 */
->>> +		if (!(task && switch_to_should_flush_icache(task)))
->>> +			local_flush_icache_all();
->>>    	}
->>>    #endif
->>> @@ -332,5 +340,5 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
->>>    	set_mm(prev, next, cpu);
->>> -	flush_icache_deferred(next, cpu);
->>> +	flush_icache_deferred(next, cpu, task);
->>>    }
->>> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
->>> index 370ed14b1ae0..524d546d697b 100644
->>> --- a/include/uapi/linux/prctl.h
->>> +++ b/include/uapi/linux/prctl.h
->>> @@ -306,4 +306,10 @@ struct prctl_mm_map {
->>>    # define PR_RISCV_V_VSTATE_CTRL_NEXT_MASK	0xc
->>>    # define PR_RISCV_V_VSTATE_CTRL_MASK		0x1f
->>> +#define PR_RISCV_SET_ICACHE_FLUSH_CTX	71
->>> +# define PR_RISCV_CTX_SW_FENCEI_ON	0
->>> +# define PR_RISCV_CTX_SW_FENCEI_OFF	1
->>> +# define PR_RISCV_SCOPE_PER_PROCESS	0
->>> +# define PR_RISCV_SCOPE_PER_THREAD	1
->>> +
->>>    #endif /* _LINUX_PRCTL_H */
->>> diff --git a/kernel/sys.c b/kernel/sys.c
->>> index 420d9cb9cc8e..e806a8a67c36 100644
->>> --- a/kernel/sys.c
->>> +++ b/kernel/sys.c
->>> @@ -146,6 +146,9 @@
->>>    #ifndef RISCV_V_GET_CONTROL
->>>    # define RISCV_V_GET_CONTROL()		(-EINVAL)
->>>    #endif
->>> +#ifndef RISCV_SET_ICACHE_FLUSH_CTX
->>> +# define RISCV_SET_ICACHE_FLUSH_CTX(a, b)	(-EINVAL)
->>> +#endif
->>>    /*
->>>     * this is where the system-wide overflow UID and GID are defined, for
->>> @@ -2739,6 +2742,9 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
->>>    	case PR_RISCV_V_GET_CONTROL:
->>>    		error = RISCV_V_GET_CONTROL();
->>>    		break;
->>> +	case PR_RISCV_SET_ICACHE_FLUSH_CTX:
->>> +		error = RISCV_SET_ICACHE_FLUSH_CTX(arg2, arg3);
->>> +		break;
->>>    	default:
->>>    		error = -EINVAL;
->>>    		break;
->>>
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Johan
 
