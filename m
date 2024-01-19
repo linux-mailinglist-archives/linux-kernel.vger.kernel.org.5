@@ -1,112 +1,110 @@
-Return-Path: <linux-kernel+bounces-31302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84A6A832C27
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:12:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31208832C2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:16:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C9BD283825
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:12:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C54841F23EFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:16:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9E35475D;
-	Fri, 19 Jan 2024 15:12:34 +0000 (UTC)
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DEC54667;
-	Fri, 19 Jan 2024 15:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.99.105.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1941254789;
+	Fri, 19 Jan 2024 15:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="Qwxy2vIL"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8441C3C465
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:16:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705677154; cv=none; b=q5Vg/I0PWRVjeVBU9vqvbzaf+/jGSxxtaki5n4mnpdr0gfU5Wr0Xld+Ys66nIDMlvQZagHmvtAYaxrAu+gsjXdiUWTCF3VixJlikBYB9J3dFStBz2lBA6scWeIMxeHmkMAUwxFJP1wqqQ3NCi3HfFK9JfFESr1iv5C0L/gWg7iQ=
+	t=1705677405; cv=none; b=Qg0gmW/LGSRMeX2qPiqpgpsp0SzQcoXe4HVndotDsk/mkjmPBH/L3QQ5i7G8ONztHQlxqdvzNfdQiCTiwF0mRsEFHTg9na2jW6fqaUb7V0yIvuyiZ+DaSwBRVOJIHANEOoqlBapE2/z8vdMqaErFaQIfTC7dwiOZXD2sajmLCt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705677154; c=relaxed/simple;
-	bh=ZpHwMNKONZyX/hLikKcxxkbOYJIh65C3dQXqbsmkVjI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VvEZXRTeChrI1JAuTcNkJe5UmoH6zUN0X9aQq4ZJvkAnQNKyLAo4DsP+6b5g1eIxoUVsyWkjJYntPWs4cRhldNzhGRd0KSIr2frdXbRRpUtdYCiGH538237EVNPDL7PTiNsrGN/7Vw7kOsls4ATyZXwP5Uwr8VyGIhlML0czUcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=167.99.105.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from cmd.. (unknown [183.159.169.110])
-	by mail-app3 (Coremail) with SMTP id cC_KCgAnLjlNkaplpfZOAA--.43165S2;
-	Fri, 19 Jan 2024 23:12:14 +0800 (CST)
-From: Lin Ma <linma@zju.edu.cn>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvalo@kernel.org
-Cc: Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH wireless v2] nl80211/cfg80211: add nla_policy for S1G band
-Date: Fri, 19 Jan 2024 23:12:01 +0800
-Message-Id: <20240119151201.8670-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705677405; c=relaxed/simple;
+	bh=XS/UGzJlsduOTTq5EzQftnYlXauoUIX8jE5HfWAcKMs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aFo+5ZW09iLpBU72eGyOysRu3jazfUiZsCKPIzWzbtOctyHu0tLmjIbPmfe2B7hKa0rMij1SzdHLCa4ghnrQq6n41vPwdr56I3IYXeG8mNjeJIFQCY8Eo0uzpsCIDbO/nnekm0VCt7NTg8tE1by3ma68RNadTZfAKxkbC+gkgs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=Qwxy2vIL; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e880121efso9202555e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:16:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1705677401; x=1706282201; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XS/UGzJlsduOTTq5EzQftnYlXauoUIX8jE5HfWAcKMs=;
+        b=Qwxy2vILULyh2qJauhuWR4VS8KfUgX6PC+aK5GGjCw2iBOSK91Dti4mNn5LVfqWFDH
+         LwKTlh20z43A6KPes1Xq0+NTmITaK0PAUJtyjhzktz/WDuQca9AUvPIfDHu2HSejSY7n
+         M+5cGQlUdvpd130kpp4P+fE4EUUZCJeWyhRBeDyc/g0Lm9Ea1ID9AQjpBVstqHpJ6FfO
+         sMZgf/VMwv5h9qfVIaf3MWDNyOwCM2cq/T4j9Pev97VKGbt9DMb2iK6z+WBEN6mY8xd9
+         NZqIJg1HSarnvGDd8YllbKjiBM8H/t+m5wiqxBmgsjikLO1beeJEC6TNDSLgwuvUSP4f
+         nMVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705677401; x=1706282201;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XS/UGzJlsduOTTq5EzQftnYlXauoUIX8jE5HfWAcKMs=;
+        b=ar+TaboKjSiubXy0U+De5+rqNZE/H5GVozVNhpliRkqefbouJPbnvN7RZFod+WfSou
+         imwkATRMduSUyjL/EKkNwPspsrm3vOVZGhXlX7MB6gNW6pUA+HhXkSFIK5OqLeOff7K0
+         XYgdYEY5KHpaq8ftH5K3BjOHyXfXxfFPo92OlGmFKB4lZHH6wKX+6Ihi1ZzKltCq0As3
+         0KojzO7SXg8YhbSphRCdyrJXtrr+xF2NF50EMEZ/yuQHay8DSmVXqr/u8YLiRjQ0K6Gi
+         FDbd3eCSBvBKXhfTb+QJyjGllLhzltKr5HWtiYO+VmwhEfOQtwMAk3QqPVu1otRhHmVC
+         9nfA==
+X-Gm-Message-State: AOJu0YymxOKbIw39hzxyiTbtMlRFvYDx1euPWN6/19RL3/3AasYVLGGF
+	TkVXFvtbLX5z57ps3vlEaE/P7NIWiv1OzzBFEbpx/zpz74OERtItIOWNz1fg9Po=
+X-Google-Smtp-Source: AGHT+IG0KxjVDwCtYO1ZcfLfYt1CAC00P/UJqg0tnjxff7dkNav5xy4kvEhMpby3K+m2nTs2estJ+w==
+X-Received: by 2002:a05:600c:4513:b0:40e:4119:cb4a with SMTP id t19-20020a05600c451300b0040e4119cb4amr1741043wmo.15.1705677400700;
+        Fri, 19 Jan 2024 07:16:40 -0800 (PST)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id k9-20020a05600c1c8900b0040d772030c2sm29381969wms.44.2024.01.19.07.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 07:16:40 -0800 (PST)
+Date: Fri, 19 Jan 2024 16:16:39 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Cc: netdev@vger.kernel.org, vadim.fedorenko@linux.dev, davem@davemloft.net,
+	milena.olech@intel.com, linux-kernel@vger.kernel.org,
+	pabeni@redhat.com, kuba@kernel.org, mschmidt@redhat.com,
+	Jan Glaza <jan.glaza@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Subject: Re: [PATCH net v6 2/4] dpll: fix pin dump crash for rebound module
+Message-ID: <ZaqSV-OjYPrSTbew@nanopsycho>
+References: <20240119134304.576956-1-arkadiusz.kubalewski@intel.com>
+ <20240119134304.576956-3-arkadiusz.kubalewski@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cC_KCgAnLjlNkaplpfZOAA--.43165S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cw18tF1xZr4Utw1xCrykZrb_yoW8WFWkpr
-	WkJrWqyr17tw47JFWrCa1xXasrXa1DG34rur4YyFyxZ3Z09w1FqF1Y9a43tr1furs5t34r
-	XF4Dtw15t3ZI9a7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUonmRUU
-	UUU
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119134304.576956-3-arkadiusz.kubalewski@intel.com>
 
-Our detector has identified another case of an incomplete policy.
-Specifically, the commit df78a0c0b67d ("nl80211: S1G band and channel
-definitions") introduced the NL80211_BAND_S1GHZ attribute to
-nl80211_band, but it neglected to update the
-nl80211_match_band_rssi_policy accordingly.
+Fri, Jan 19, 2024 at 02:43:02PM CET, arkadiusz.kubalewski@intel.com wrote:
+>When a kernel module is unbound but the pin resources were not entirely
+>freed (other kernel module instance of the same PCI device have had kept
+>the reference to that pin), and kernel module is again bound, the pin
+>properties would not be updated (the properties are only assigned when
+>memory for the pin is allocated), prop pointer still points to the
+>kernel module memory of the kernel module which was deallocated on the
+>unbind.
+>
+>If the pin dump is invoked in this state, the result is a kernel crash.
+>Prevent the crash by storing persistent pin properties in dpll subsystem,
+>copy the content from the kernel module when pin is allocated, instead of
+>using memory of the kernel module.
+>
+>Fixes: 9431063ad323 ("dpll: core: Add DPLL framework base functions")
+>Fixes: 9d71b54b65b1 ("dpll: netlink: Add DPLL framework base functions")
+>Reviewed-by: Jan Glaza <jan.glaza@intel.com>
+>Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+>Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
 
-Similar commits that add new band types, such as the initial
-commit 1e1b11b6a111 ("nl80211/cfg80211: Specify band specific min RSSI
-thresholds with sched scan"), the commit e548a1c36b11 ("cfg80211: add 6GHz
-in code handling array with NUM_NL80211_BANDS entries"), and the
-commit 63fa04266629 ("nl80211: Add LC placeholder band definition to
-nl80211_band"), all require updates to the policy.
-Failure to do so could result in accessing an attribute of unexpected
-length in the function nl80211_parse_sched_scan_per_band_rssi.
-
-To resolve this issue, this commit adds the policy for the
-NL80211_BAND_S1GHZ attribute.
-
-Fixes: df78a0c0b67d ("nl80211: S1G band and channel definitions")
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
-V1 -> V2: change net-next to wireless as suggested
-
- net/wireless/nl80211.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 60877b532993..980300621a60 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -911,6 +911,7 @@ nl80211_match_band_rssi_policy[NUM_NL80211_BANDS] = {
- 	[NL80211_BAND_5GHZ] = { .type = NLA_S32 },
- 	[NL80211_BAND_6GHZ] = { .type = NLA_S32 },
- 	[NL80211_BAND_60GHZ] = { .type = NLA_S32 },
-+	[NL80211_BAND_S1GHZ] = { .type = NLA_S32 },
- 	[NL80211_BAND_LC]    = { .type = NLA_S32 },
- };
- 
--- 
-2.34.1
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
