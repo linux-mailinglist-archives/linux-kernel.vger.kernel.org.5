@@ -1,91 +1,108 @@
-Return-Path: <linux-kernel+bounces-31365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1467B832D42
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:35:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFDBC832D3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:34:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1753284E71
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:35:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AA22B24AE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712454EB5B;
-	Fri, 19 Jan 2024 16:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Lt4lcHZr"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D475655C02;
+	Fri, 19 Jan 2024 16:34:17 +0000 (UTC)
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348711EA91;
-	Fri, 19 Jan 2024 16:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0886E1F60B;
+	Fri, 19 Jan 2024 16:34:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.95.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705682081; cv=none; b=kJXRDQ6RlD6PT7GnoOMJ5vE+0A/0stZ7Cr7SuWExF62fz06268IafRn1XR8/wGzHW8qoaxvBG/9f8QYMJj5JDrgQsD8b6XijC/kPm7zzoYFKzUOkOQtoOZlzQSlQLXDpn4WKD3sQjJ4yT/YlBjZxawJHGmY0Q1B3JW/eXiqJwJU=
+	t=1705682057; cv=none; b=M7+aqLle61XINW/PZGZX4mYE0JckDjyoV7CNpFYIsxDF6FCG2bJEZ1RvnnFn088p7xfZ2ZhbwAgB+YTHgwh7SbcdBo66Vik2WQnOsoaJN587ha22UNu9ImSkepWzmvyAXbOk3Z0Rc8MEBlMuAs/nGibJa4UQTdN7zfHU+ind/c4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705682081; c=relaxed/simple;
-	bh=p0uhRomXP747eD0lrfKRHR3XfogCxogKEHI4Bqv1SBg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=etOb/KfTR0rja30nw4f32M88Yf00fyjHUDn0Hyg1JJyotkyTALlXq4RtTC3VWqqxhlx/P0nHcQGMJ3xi2RD/uCJbDCvkFY3QNvIIIy8x/4pBHipVN9auso9pWvMlBVX30lmWGJQ6hDOgJS8/Wqs6dKxxRHGSZ8z3ySQYcxM8E+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Lt4lcHZr; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=E2DXX9J+b94QW5GPGfNYquiYbNTYKAfgE95rMIVDquM=; b=Lt4lcHZrYrOo7GYWIA1f9BGqCq
-	7NYGF5wH98DEKKDKQKZWHUSYoI7ImlG7QnlD19/ZjAK4USUFrk4NSHh1HlsluWddhKf0nxncPbviU
-	+aAODSWWqGuB5uQQ5Fr//F0n7rYLw7N3BuPUFGuE6SDesO3UrZy9L6gpRs2ZiuVpQJOvFMuY3kb/w
-	gTXYUJbH0hRF9+77TR8xgpdwc31BS2pREfY0F/plEtounuD+le+DWJqyL9wrpN96ZYnNpQzAwHyXd
-	YRee8sBHBZTYughIQpPk4Sa4ex4ydhYRorXVOdVW+OyoSjnXKBXijUE3Q0eYuyLU4Bu679fb/ubkq
-	hsU4mWow==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rQrpG-00000005hDX-090S;
-	Fri, 19 Jan 2024 16:34:38 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	stable@vger.kernel.org
-Subject: [PATCH] block: Remove unnecessary unlikely()
-Date: Fri, 19 Jan 2024 16:34:00 +0000
-Message-ID: <20240119163434.1357155-1-willy@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1705682057; c=relaxed/simple;
+	bh=D2LgJwRjxJYglnLH2h53TIEgwBrE9PHOgnordbiozD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nkDUpOo0f8dj+RbGMsa8WS2tGpE639ruip02XLo4cyx+rZx37U7ANOtFuX9crAslmdOf3ADFjOLDgbg/gBWgrdnhbGgdF3s+5OMctd3030L6qjpNdJtctGfMm8kk3OBobUWo7PoIcElmiMoRJkTuR83zMauMntlBRK1+aYmmEjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.95.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 6E25130006284;
+	Fri, 19 Jan 2024 17:34:05 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 50F591D3C6; Fri, 19 Jan 2024 17:34:05 +0100 (CET)
+Date: Fri, 19 Jan 2024 17:34:05 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Kalle Valo <kvalo@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	=?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado <nfraprado@collabora.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Peng Fan <peng.fan@nxp.com>, Robert Richter <rrichter@amd.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Terry Bowman <terry.bowman@amd.com>,
+	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Abel Vesa <abel.vesa@linaro.org>, linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 0/9] PCI: introduce the concept of power sequencing of
+ PCIe devices
+Message-ID: <20240119163405.GA32506@wunner.de>
+References: <20240117160748.37682-1-brgl@bgdev.pl>
+ <CAA8EJpoQfPqoMVyTmUjPs4c1Uc-p4n7zNcG+USNjXX0Svp362w@mail.gmail.com>
+ <CAA8EJpqyK=pkjEofWV595tp29vjkCeWKYr-KOJh_hBiBbkVBew@mail.gmail.com>
+ <CAMRc=McUZh0jhjMW7H6aVKbw29WMCQ3wdkVAz=yOZVK5wc45OA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMRc=McUZh0jhjMW7H6aVKbw29WMCQ3wdkVAz=yOZVK5wc45OA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Jens added unlikely() thinking that this was an error path.  It's
-actually just the end of the iteration, so does not warrant an
-unlikely().
+On Fri, Jan 19, 2024 at 12:52:00PM +0100, Bartosz Golaszewski wrote:
+> We have two separate issues: one is powering-up a PCI device so that
+> it can be detected
 
-Fixes: 7bed6f3d08b7 ("block: Fix iterating over an empty bio with bio_for_each_folio_all")
-Cc: stable@vger.kernel.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/bio.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Just wondering, I note in really_probe() we configure the pin controller,
+active the pm_domain etc before probing a driver.
 
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index 875d792bffff..1518f1201ddd 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -286,7 +286,7 @@ static inline void bio_first_folio(struct folio_iter *fi, struct bio *bio,
- {
- 	struct bio_vec *bvec = bio_first_bvec_all(bio) + i;
- 
--	if (unlikely(i >= bio->bi_vcnt)) {
-+	if (i >= bio->bi_vcnt) {
- 		fi->folio = NULL;
- 		return;
- 	}
--- 
-2.43.0
+Would it make sense for the issue you mention above to similarly
+amend pci_scan_device() to enable whatever clocks or regulators
+are described in the devicetree as providers for the given PCI device?
 
+Thanks,
+
+Lukas
 
