@@ -1,211 +1,195 @@
-Return-Path: <linux-kernel+bounces-31455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 170BF832E8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:00:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15EC5832E93
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:02:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B1031F24DD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:00:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E024B21006
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51CBE56746;
-	Fri, 19 Jan 2024 17:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D449956444;
+	Fri, 19 Jan 2024 18:02:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Rq1OrS5m"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cjEt9H6n"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027D05644A;
-	Fri, 19 Jan 2024 17:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B917555C34;
+	Fri, 19 Jan 2024 18:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705687189; cv=none; b=Dt4p6ew/Hi+MBXgUPq7GZx0MporYznWdrzysnMCyBl3ziUK6toZ1iuO16LNWr+vprv5R+JXhYMceJcJbLzWAIvsATlOtb+6QjvGJm1/Dnbd2llWB97LTEaLSkBAmLeFCOUHPpbUxPjTHI7wTvEdGWyScJXIQKxMfY8jS6vmOvzM=
+	t=1705687337; cv=none; b=WKDtrZr3ZEmm0SYDnLiDNvJbMz19pK8IyWs23CpeGIdIOTB4wpFxSzdgAdMOzDmuiO2eZHydGSMQtJ0AzlqRYnAxsDjB/SykINUB6OKoOTH7Xwxvcv4SehqncXoUGfWBpzw0I8EShqwKtVAzFMUx7001MJZMcbReB05D3C9IDIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705687189; c=relaxed/simple;
-	bh=MQu8y0M4Jts4ScVci4hTK3ghT1Vrlk00myLt2cCfWcA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=EIcmHqNNZQX8G3U5Jw6gLEbZa6FqmoFaQr/aYdGYUUvREwF22IOFeLYZcybwkS/FvoUXJBvpkqYB4Qn303McprW+VQ0+osndF9RysndcmVU9xeTQQH1HCG3o6IsTn4W+4LNBDpBJxIWzHALhtV8N+QoVk/fmEEFqBIZCJtU+ySs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Rq1OrS5m; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40JGP8wd001659;
-	Fri, 19 Jan 2024 17:59:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=KsejanrJsczGYRynswMeldvh36vvOWZzU/jvY1bGVDk=; b=Rq
-	1OrS5mRiRDDbXc7jN0hnAHY05n12/KZrkBCfKxYrNY4lfnTvV3pIDpMZzRXt8RP3
-	wEZ6u1Cd7NuF8z8J5ahBa227NXjg5dK1cWaD3iBPDHgWvv/GWUVggIerXIAK4sqq
-	VsHgNe0LHQCrKse9cmjkcE917lBpH+GWiHBzvzX6q/5IFg2HqCSJvbO1NEVbIngt
-	JHd7fovNfdT3Ri/7zQLuDgg8xL8ZX1vNYhWEYDHMlq416Y4iiRVgzRPrvPsgdMR0
-	ti0uadwMGp7xGW/nTlRzaA+XB+7x8S5B+TeO3FH+ASogDTmeGmI0Uh7NGMK1bWLT
-	fn8TFaQtDVrLp0NgS44g==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vqmefh82v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 17:59:42 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40JHxfwQ030865
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 17:59:41 GMT
-Received: from [10.71.108.105] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 19 Jan
- 2024 09:59:39 -0800
-Message-ID: <003c8ea1-c455-4f68-bc8d-7ed9aa968a58@quicinc.com>
-Date: Fri, 19 Jan 2024 09:59:37 -0800
+	s=arc-20240116; t=1705687337; c=relaxed/simple;
+	bh=Vpvm4KefXKpJuW7kEf49W4+4n5jkxACkg0N5JK3WnqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N6DhFe+UzmipYzHhXBaRfid5KRL3vYpq9gFRxNVmuhzht1vbR/CFzMdi1nBaePoUTYidM+vG7z+iKCEANlToFnI/kQHtE+2Stk6NuVmMub74fCNFmJxuO97lZSzydoxYvqjsnKnMeF2Qx0/onl3QsKwiHsA5cbGdbh4O+Paxxjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cjEt9H6n; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5e54d40cca2so8504477b3.3;
+        Fri, 19 Jan 2024 10:02:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705687335; x=1706292135; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5b/i454jUf4ojxYvY+VxBq+cGu5zdwzrcVsmFXePrUc=;
+        b=cjEt9H6nQ3rscFQE99JWn/WbaxZNRZVLVGOwcnl3R6kZeELFAKpZYrbnQQU9icrDHl
+         Xfz7CYSQr9bJsTehUcj66eCKtWkEm+MrZgngnAe0f8uuoclg3pFmpdW11jlwQtGsViqI
+         /NO52s74ekv49dIafEgDTUrhnS3grveRU2O+WIaarPVnpTtaR8kuDUaA1e0PNj/UEQ2a
+         qS0ddmTKJy4V3iBN11EmxBHi2F/rqaWK/Ez22bajvPeTBsK1Z9QAqJ+8MgFjOYNgB240
+         bX2YpJxBdZYrcQa7PSsqdFIqu8F+fbxXWZ5xvVCFqA/OMvycIBegHtHHEah291mjGvAh
+         nAJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705687335; x=1706292135;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5b/i454jUf4ojxYvY+VxBq+cGu5zdwzrcVsmFXePrUc=;
+        b=iJ9L1jHeb4KvuiOEK+DnlBDJbOcOuUE/dU64qBe/FROgNY1Mgm7Tm3aLl0o6QAViQj
+         EghqOT6eVC/sVR8EWO5WZZHqJHyvYS4CjtNE5TZ73711Fk13tmh6A6ZHiZ2+FxcGVJoB
+         iNrhQysOLN48rqcgzM17rQwmz3pn/VzFiPde+AwezF296cNegcDpS+CoKvYk6KCZu3kw
+         z5uMW1NQIMSnp0l5kQ0jveAkClNPmETvQCnY+ItZllUf3xfC5xPOFaCq9E2IQ5eYXJ4s
+         Dy7HMF/JBB/sTtGzP3uSOZB+1OAcJbQHEorewv5kBMGWeDJGLIv/Kcx7e2AyKfuZauXp
+         +66A==
+X-Gm-Message-State: AOJu0Ywlkn3q0iTfLeD+8pcK3G5jRYGuR2jimevfJgUqxngMTndIFehO
+	Ctvspv0rug2Z3eybvSn0vmo/A0PNpTXjuH3kRiYglnADnuZ/JJag
+X-Google-Smtp-Source: AGHT+IH9gcZrsox+4pkG+XVC3K2DCkhX2jg2gbQvfcMMKA5AWgDkyl6PTnKywYab9xjZ/eqMztcaSA==
+X-Received: by 2002:a0d:e003:0:b0:5ff:9567:c81 with SMTP id j3-20020a0de003000000b005ff95670c81mr286738ywe.22.1705687334593;
+        Fri, 19 Jan 2024 10:02:14 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:2288:782e:a717:678d])
+        by smtp.gmail.com with ESMTPSA id n68-20020a0dcb47000000b005ff877093easm1389519ywd.143.2024.01.19.10.02.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 10:02:14 -0800 (PST)
+Date: Fri, 19 Jan 2024 10:02:13 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Shijie Huang <shijie@amperemail.onmicrosoft.com>
+Cc: Mike Rapoport <rppt@kernel.org>,
+	Huang Shijie <shijie@os.amperecomputing.com>,
+	gregkh@linuxfoundation.org, patches@amperecomputing.com,
+	rafael@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+	aou@eecs.berkeley.edu, kuba@kernel.org, vschneid@redhat.com,
+	mingo@kernel.org, akpm@linux-foundation.org, vbabka@suse.cz,
+	tglx@linutronix.de, jpoimboe@kernel.org, ndesaulniers@google.com,
+	mikelley@microsoft.com, mhiramat@kernel.org, arnd@arndb.de,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+	will@kernel.org, mark.rutland@arm.com, mpe@ellerman.id.au,
+	linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org,
+	jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org,
+	cl@os.amperecomputing.com
+Subject: Re: [PATCH] NUMA: Early use of cpu_to_node() returns 0 instead of
+ the correct node id
+Message-ID: <Zaq5JT6SaiogCEkT@yury-ThinkPad>
+References: <20240119033227.14113-1-shijie@os.amperecomputing.com>
+ <Zan9sb0vtSvVvQeA@yury-ThinkPad>
+ <1cd078fd-c345-4d85-a92f-04c806c20efa@amperemail.onmicrosoft.com>
+ <Zao13I4Bb0tur0fZ@kernel.org>
+ <b8786c38-d6c4-4fea-a918-ac6a45682dba@amperemail.onmicrosoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] soc: qcom: rpmh-rsc: Enhance check for VREG in-flight
- request
-Content-Language: en-US
-To: Andrew Halaney <ahalaney@redhat.com>,
-        Maulik Shah
-	<quic_mkshah@quicinc.com>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_collinsd@quicinc.com>, <quic_lsrao@quicinc.com>
-References: <20240119-rpmh-rsc-fixes-v2-1-e42c0a9e36f0@quicinc.com>
- <dahguk6hyo35ydugwno5t5lbteporwkiddhvxp6uni5ggbtxcm@3bu6ptvg7mdg>
-From: Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <dahguk6hyo35ydugwno5t5lbteporwkiddhvxp6uni5ggbtxcm@3bu6ptvg7mdg>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: JmPOcrW9QMXxLhMQs8l5CnEympR6SgkV
-X-Proofpoint-GUID: JmPOcrW9QMXxLhMQs8l5CnEympR6SgkV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-19_10,2024-01-19_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 priorityscore=1501
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401190105
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b8786c38-d6c4-4fea-a918-ac6a45682dba@amperemail.onmicrosoft.com>
 
+On Fri, Jan 19, 2024 at 04:50:53PM +0800, Shijie Huang wrote:
+> 
+> 在 2024/1/19 16:42, Mike Rapoport 写道:
+> > On Fri, Jan 19, 2024 at 02:46:16PM +0800, Shijie Huang wrote:
+> > > 在 2024/1/19 12:42, Yury Norov 写道:
+> > > > This adds another level of indirection, I think. Currently cpu_to_node
+> > > > is a simple inliner. After the patch it would be a real function with
+> > > > all the associate overhead. Can you share a bloat-o-meter output here?
+> > > #./scripts/bloat-o-meter vmlinux vmlinux.new
+> > > add/remove: 6/1 grow/shrink: 61/51 up/down: 1168/-588 (580)
+> > > Function                                     old     new   delta
+> > > numa_update_cpu                              148     244     +96
+> > > 
+> > >   ...................................................................................................................................(to many to skip)
+> > > 
+> > > Total: Before=32990130, After=32990710, chg +0.00%
+> > It's not only about text size, the indirect call also hurts performance
+> 
+> The cpu_to_node() is called at very low frequency, most of the times is in
+> the kernel booting time.
+ 
+That doesn't matter. This function is a simple inliner that dereferences
+a pointer, and I believe all of us want to keep it simple. 
+ 
+> > > > Regardless, I don't think that the approach is correct. As per your
+> > > > description, some initialization functions erroneously call
+> > > > cpu_to_node() instead of early_cpu_to_node() which exists specifically
+> > > > for that case.
+> > > > 
+> > > > If the above correct, it's clearly a caller problem, and the fix is to
+> > > > simply switch all those callers to use early version.
+> > > It is easy to change to early_cpu_to_node() for sched_init(),
+> > > init_sched_fair_class()
+> > > 
+> > > and workqueue_init_early(). These three places call the cpu_to_node() in the
+> > > __init function.
+> > > 
+> > > 
+> > > But it is a little hard to change the early_trace_init(), since it calls
+> > > cpu_to_node in the deep
+> > > 
+> > > function stack:
+> > > 
+> > >    early_trace_init() --> ring_buffer_alloc() -->rb_allocate_cpu_buffer()
+> > > 
+> > > 
+> > > For early_trace_init(), we need to change more code.
+> > > 
+> > > 
+> > > Anyway, If we think it is not a good idea to change the common code, I am
+> > > oaky too.
+> > Is there a fundamental reason to have early_cpu_to_node() at all?
+> 
+> The early_cpu_to_node does not work on some ARCHs (which support the NUMA),
+> such
+> 
+> as  SPARC, MIPS and S390.
 
+So, your approach wouldn't work either, right? I think you've got a
+testing bot report on it already...
 
-On 1/19/2024 7:47 AM, Andrew Halaney wrote:
-> On Fri, Jan 19, 2024 at 01:56:54PM +0530, Maulik Shah wrote:
->> Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte aligned
->> addresses associated with it. These control voltage, enable state, mode,
->> and in legacy targets, voltage headroom. The current in-flight request
->> checking logic looks for exact address matches. Requests for different
->> addresses of the same RPMh resource as thus not detected as in-flight.
->>
->> Enhance the in-flight request check for VREG requests by ignoring the
->> address offset. This ensures that only one request is allowed to be
->> in-flight for a given VREG resource. This is needed to avoid scenarios
->> where request commands are carried out by RPMh hardware out-of-order
->> leading to LDO regulator over-current protection triggering.
->>
->> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
->> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> 
-> Just noticed I commented on v1 when v2 was already out, sorry. Copy
-> pasting this just to keep it on the latest thread:
-> 
-> Two minor things:
-> 
->     1. Does this deserve a Fixes: tag?
->     2. The Signed-off-by chain here confuses me, you sent the patch
->        so your SOB should be last, but then that makes me believe Elliot
->        was the author which I don't think is reflected here (no From:
->        line). Please read [0] for a bit more details
-> 
-> [0] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
-> 
+You can make it like this:
 
-Maulik's S-o-B should be last. This change was authored by him
-in our downstream driver and this change was pointed out as
-also being a fix for the upstream driver. I helped rebase/apply
-the change to upstream to test and shared patch back with him
-for posting to the list.
+  #ifdef CONFIG_ARCH_NO_EARLY_CPU_TO_NODE
+  #define early_cpu_to_node cpu_to_node
+  #endif
+ 
+> > It seems that all the mappings are known by the end of setup_arch() and the
+> > initialization of numa_node can be moved earlier.
+> > > > I would also initialize the numa_node with NUMA_NO_NODE at declaration,
+> > > > so that if someone calls cpu_to_node() before the variable is properly
+> > > > initialized at runtime, he'll get NO_NODE, which is obviously an error.
+> > > Even we set the numa_node with NUMA_NO_NODE, it does not always produce
+> > > error.
 
-When he got the rebased patch, my S-o-B would've been last, but
-now need to be updated again so his is last.
+You can print this error yourself:
 
->> ---
->> Changes in v2:
->> - Use GENMASK() and FIELD_GET()
->> - Link to v1: https://lore.kernel.org/r/20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com
->> ---
->>  drivers/soc/qcom/rpmh-rsc.c | 21 ++++++++++++++++++++-
->>  1 file changed, 20 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
->> index a021dc71807b..e480cde783fe 100644
->> --- a/drivers/soc/qcom/rpmh-rsc.c
->> +++ b/drivers/soc/qcom/rpmh-rsc.c
->> @@ -1,11 +1,13 @@
->>  // SPDX-License-Identifier: GPL-2.0
->>  /*
->>   * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
->> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
->>   */
->>  
->>  #define pr_fmt(fmt) "%s " fmt, KBUILD_MODNAME
->>  
->>  #include <linux/atomic.h>
->> +#include <linux/bitfield.h>
->>  #include <linux/cpu_pm.h>
->>  #include <linux/delay.h>
->>  #include <linux/interrupt.h>
->> @@ -91,6 +93,15 @@ enum {
->>  #define CMD_STATUS_ISSUED		BIT(8)
->>  #define CMD_STATUS_COMPL		BIT(16)
->>  
->> +#define ACCL_TYPE(addr)			FIELD_GET(GENMASK(19, 16), addr)
->> +#define VREG_ADDR(addr)			FIELD_GET(GENMASK(19, 4), addr)
->> +
->> +enum {
->> +	HW_ACCL_CLK = 0x3,
->> +	HW_ACCL_VREG,
->> +	HW_ACCL_BUS,
->> +};
->> +
->>  /*
->>   * Here's a high level overview of how all the registers in RPMH work
->>   * together:
->> @@ -557,7 +568,15 @@ static int check_for_req_inflight(struct rsc_drv *drv, struct tcs_group *tcs,
->>  		for_each_set_bit(j, &curr_enabled, MAX_CMDS_PER_TCS) {
->>  			addr = read_tcs_cmd(drv, drv->regs[RSC_DRV_CMD_ADDR], i, j);
->>  			for (k = 0; k < msg->num_cmds; k++) {
->> -				if (addr == msg->cmds[k].addr)
->> +				/*
->> +				 * Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte
->> +				 * aligned addresses associated with it. Ignore the offset to check
->> +				 * for in-flight VREG requests.
->> +				 */
->> +				if (ACCL_TYPE(msg->cmds[k].addr) == HW_ACCL_VREG &&
->> +				    VREG_ADDR(msg->cmds[k].addr) == VREG_ADDR(addr))
->> +					return -EBUSY;
->> +				else if (addr == msg->cmds[k].addr)
->>  					return -EBUSY;
->>  			}
->>  		}
->>
->> ---
->> base-commit: 943b9f0ab2cfbaea148dd6ac279957eb08b96904
->> change-id: 20240117-rpmh-rsc-fixes-6c43c7051828
->>
->> Best regards,
->> -- 
->> Maulik Shah <quic_mkshah@quicinc.com>
->>
->>
-> 
+  #ifndef cpu_to_node
+  static inline int cpu_to_node(int cpu)
+  {
+        int node = per_cpu(numa_node, cpu);
+
+  #ifdef CONFIG_DEBUG_PER_CPU_MAPS
+        if (node == NUMA_NO_NODE)
+                pr_err(...);
+  #endif
+
+          return node;
+  }
+  #endif
+
 
