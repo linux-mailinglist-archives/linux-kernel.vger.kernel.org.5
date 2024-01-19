@@ -1,109 +1,136 @@
-Return-Path: <linux-kernel+bounces-31339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD3E8832CC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:06:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB99832CC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AB571F2265F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:06:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5055F28879B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2832154BF8;
-	Fri, 19 Jan 2024 16:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1331D54BF3;
+	Fri, 19 Jan 2024 16:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y+U0Ms0d"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cqAGzaJD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C453A52F61;
-	Fri, 19 Jan 2024 16:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4750452F61
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 16:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705680359; cv=none; b=gkixqheqZLGbQ+acXfPSMWzYsFRqo15sbUFSN10n02oviVsJzMl8YYLSf+gs/ZoMqQQbXZvuOCkLH6FeNC1w1nGuQRmkE3NklNNFSsDepMAYzNc+nevgUNv9EeFxrbj/dNYPdD3OgD17PmmIKJ8RNMnMWQ9hpeehOS6EalCPKJ8=
+	t=1705680334; cv=none; b=Ga4JTfFsVeIQz+UPd9uCKQI59s/Nod8gAb47cpdJLZ/UFlQ7p1wzcWJnu6+l1oW/N6jVszO4hbI7LYSoipM2GZS7qhT/dfc+VAPS+FF9jSI88pKXxe5Ie5a1APOqfpQeJ0q8oo9+l+nbEeg/hrZ6idQ/5gIAF4D8kxB9S6HvcXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705680359; c=relaxed/simple;
-	bh=StoFIFphMjA+zLLOVlZeLPt3n3gO7so6YhvB6psnJb8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=raVu9Qt0hTS+uJG9Ber1vlyemVEbKKAZPJUCQpRami3x6KR4sG3AHTnU1SdfgaOBHDHWPWOAcpzhrzdacsOx/ZCihk/pZW8ECmR18QiRVlKdkBNzsKHwp+TFeq721/WGDduJHEqbK9er+Ny2mCtbYytKSVYAhakBtV0MD19cEGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y+U0Ms0d; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e7b273352so1037103e87.1;
-        Fri, 19 Jan 2024 08:05:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705680356; x=1706285156; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nWFRTt9OPmzJxJm1lMS0J5Y2ypp6VhC0+EToiRmq/uU=;
-        b=Y+U0Ms0d2dZFOtcv+hqKNS0jueyZBv4jmf0Ipk0qmzWLk+Z0A782m2mLZ0kyzztaD5
-         5Mhr2IRjAJfumnyNKmeHsm1brrw6qJHnHdXA+P6ju5lHYJm5evYRNMw3+hMAuTjakehq
-         ovFdtSuadfJXOatLm2saQjCas2O0PHSPq4xGlNpZgjvcNw0/ddk7VdnVPGTvRf4aIzaJ
-         7aP9KCW5XjpNbaNfkvWZmxpbWA6cPMZ6wzzZdLUsIZajHCFNBZZUjN3Rc+JR4j+oprio
-         KwOzG+F/uFvPhq6YmsLf/W8SmexMx7q1uPuXU9qFx5hgwuIBt5MtT4j4E7YbVPSXTBSt
-         apAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705680356; x=1706285156;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nWFRTt9OPmzJxJm1lMS0J5Y2ypp6VhC0+EToiRmq/uU=;
-        b=dL2TfXdgGJOSDjBi0csjFJ6wLUSj8ATwKxb7X4JOFOY5Nr8cPLA09njg4Uek3q+bXJ
-         S1NjU4O6AmXFPVwhUj2eLG0e367RP4hLBq7u7TA92dvLuy3AH2T4wkeU0/pbOPWYpjeM
-         d5cmUL1lqGMIqofIMh7sW8l3utKNd1zEYycKF1wR2sdWAlazS8mg6gZHcQ22VfWHklwF
-         WJnS9zxRbLpUsLaLFKeYh04D1o/u5HSh9g+O31JrOMu69rKJ81/dd+te8AZ0PlBUBHph
-         JfWEo7tTyIXVa7sUbnydOlLEssHnNibghO3ri90Yj6zZJ7dXZ8dATDQkNzoBiJ9yIdNY
-         xemA==
-X-Gm-Message-State: AOJu0Yz3FhiXCKhBUh46RVQdtt9E/w1jNv5tyL9D+uMk4+5iGGg2jN4L
-	/QJja7zm0msGv+pHIDMhPcc/WeGr9Nxuc5jo4XSZy+fcymdIHPM6q5Dh3vBra4xirvRhSjLq44/
-	BOqVQEcoOc/heAfUE2PRVBOGOlLcot3t4O2M=
-X-Google-Smtp-Source: AGHT+IFpBsYY27JHGd7MZRAC2YvfPc5SljnKIAj/NynW2aqyFT08f/rCCGp/5/Pt87W2icvC/3/VP5zxRrWHsXRi9Xc=
-X-Received: by 2002:a05:6512:1116:b0:50e:649e:1e42 with SMTP id
- l22-20020a056512111600b0050e649e1e42mr891199lfg.100.1705680355624; Fri, 19
- Jan 2024 08:05:55 -0800 (PST)
+	s=arc-20240116; t=1705680334; c=relaxed/simple;
+	bh=0vsHCEB7uarmRqxKL7SMqn2/4sulPPxduy3Gu7w9gBY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=POftR1ycKvNrLqHFes7cGydZPMbmavCU54bLbSO+LVGWRh6E44sqpN7bqZ7PhEu+pEjVyOBezA6rcbS3F3+VyBKlHA5PM4qDT3hifnukFN/DE3mJRgPBSX6xViF44cFKPcnL9suqjEf41/AfgF/9sJm/gcSy2Qq8HpafwrbFNVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cqAGzaJD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80513C433F1;
+	Fri, 19 Jan 2024 16:05:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705680333;
+	bh=0vsHCEB7uarmRqxKL7SMqn2/4sulPPxduy3Gu7w9gBY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=cqAGzaJDT85GFYQboa5RY7etRf5pZD3PUJvf670EaTTN6cL+Rl/tgkEIjqB5U//Lt
+	 5Xnf7HcZ9nowHWIfmwbnoqb/5hZ5iGCBUYUtcRtoi/1XZQFbqU5HKOytORJgvEwZZk
+	 HJmb4PNAq9QRgm6dQJ2ioPFc1qladJCzSUYr65zmeJdSTB9xKjqTZ41nPp/zpS8VBZ
+	 tFLQRv/V5ePy0r2qFLi5l/37Ub2J1CSfD32OqWM4wfJSksYy07MvN82ua2zBiPxNB/
+	 z6+jPfpKGH2CcFb/YInEyPp07iY1YdZt1W3/vtt5m6qQ+lI5+4XBSs2B7KZVUnVXMU
+	 xYjS+RtRWU9gw==
+Date: Fri, 19 Jan 2024 16:05:28 +0000
+From: Will Deacon <will@kernel.org>
+To: torvalds@linux-foundation.org
+Cc: catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: [GIT PULL] arm64 fixes for -rc1
+Message-ID: <20240119160528.GA5336@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118223301.work.079-kees@kernel.org>
-In-Reply-To: <20240118223301.work.079-kees@kernel.org>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 19 Jan 2024 18:05:19 +0200
-Message-ID: <CAHp75VerSqay6cxRQOihC321BbpAWd_TB6aPigN8XZZ=KPXtHA@mail.gmail.com>
-Subject: Re: [PATCH] string: Remove strlcpy()
-To: Kees Cook <keescook@chromium.org>
-Cc: Andy Shevchenko <andy@kernel.org>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Andy Whitcroft <apw@canonical.com>, 
-	Joe Perches <joe@perches.com>, Dwaipayan Ray <dwaipayanray1@gmail.com>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, linux-hardening@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Fri, Jan 19, 2024 at 12:33=E2=80=AFAM Kees Cook <keescook@chromium.org> =
-wrote:
->
-> With all the users of strlcpy() removed[1] from the kernel, remove the
-> API, self-tests, and other references. Leave mentions in Documentation
-> (about its deprecation), and in checkpatch.pl (to help migrate host-only
-> tools/ usage). Long live strscpy().
+Hi Linus,
 
-..
+Please pull these arm64 fixes for -rc1. I think the main one is fixing
+the dynamic SCS patching when full LTO is enabled (clang was silently
+getting this horribly wrong), but it's all good stuff. Rob just pointed
+out that the fix to the workaround for erratum #2966298 might not be
+necessary, but in the worst case it's harmless and since the official
+description leaves a little to be desired here, I've left it in.
 
->   * Copies at most dstsize - 1 bytes into the destination buffer.
-> - * Unlike strlcpy the destination buffer is always padded out.
-> + * Unlike strscpy the destination buffer is always padded out.
+Cheers,
 
-While at it, please use the strscpy() form to refer to the function.
+Will
 
-With that,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+--->8
 
---=20
-With Best Regards,
-Andy Shevchenko
+The following changes since commit db32cf8e280b46726065c518e90761bb0229bacf:
+
+  Merge branch 'for-next/fixes' into for-next/core (2024-01-04 12:32:33 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+
+for you to fetch changes up to 1b20d0486a602417defb5bf33320d31b2a7a47f8:
+
+  arm64: Fix silcon-errata.rst formatting (2024-01-18 11:15:43 +0000)
+
+----------------------------------------------------------------
+arm64 fixes for -rc1
+
+- Fix shadow call stack patching with LTO=full
+
+- Fix voluntary preemption of the FPSIMD registers from assembly code
+
+- Fix workaround for A520 CPU erratum #2966298 and extend to A510
+
+- Fix SME issues that resulted in corruption of the register state
+
+- Minor fixes (missing includes, formatting)
+
+----------------------------------------------------------------
+Ard Biesheuvel (2):
+      arm64: scs: Work around full LTO issue with dynamic SCS
+      arm64: fpsimd: Bring cond_yield asm macro in line with new rules
+
+Mark Brown (3):
+      arm64/ptrace: Don't flush ZA/ZT storage when writing ZA via ptrace
+      arm64/fpsimd: Remove spurious check for SVE support
+      arm64/sme: Always exit sme_alloc() early with existing storage
+
+Mark Rutland (2):
+      arm64: entry: fix ARM64_WORKAROUND_SPECULATIVE_UNPRIV_LOAD
+      arm64: entry: simplify kernel_exit logic
+
+Rob Herring (2):
+      arm64: Rename ARM64_WORKAROUND_2966298
+      arm64: errata: Add Cortex-A510 speculative unprivileged load workaround
+
+Robin Murphy (1):
+      arm64: Fix silcon-errata.rst formatting
+
+Tudor Ambarus (1):
+      arm64: irq: include <linux/cpumask.h>
+
+ Documentation/arch/arm64/silicon-errata.rst |  4 ++--
+ arch/arm64/Kconfig                          | 18 ++++++++++++++++++
+ arch/arm64/include/asm/assembler.h          | 25 +++++++++----------------
+ arch/arm64/include/asm/irq.h                |  2 ++
+ arch/arm64/kernel/Makefile                  |  8 +++++++-
+ arch/arm64/kernel/asm-offsets.c             |  2 --
+ arch/arm64/kernel/cpu_errata.c              | 21 +++++++++++++++++----
+ arch/arm64/kernel/entry.S                   | 25 ++++++++++++++-----------
+ arch/arm64/kernel/fpsimd.c                  | 12 ++++++------
+ arch/arm64/kernel/ptrace.c                  | 13 +++++++------
+ arch/arm64/tools/cpucaps                    |  2 +-
+ 11 files changed, 83 insertions(+), 49 deletions(-)
 
