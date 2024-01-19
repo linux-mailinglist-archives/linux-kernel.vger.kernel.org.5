@@ -1,96 +1,178 @@
-Return-Path: <linux-kernel+bounces-31180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B084832A2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:16:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96C5A832A21
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AF7F1C209CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:16:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D66591F251AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A206524AC;
-	Fri, 19 Jan 2024 13:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43CC552F8E;
+	Fri, 19 Jan 2024 13:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="hBKAVmmY"
-Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eEkPtlKJ"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3614BABE
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D852F33CE9;
+	Fri, 19 Jan 2024 13:11:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705670153; cv=none; b=AsPbli3KJ2SiFieu13dGLWPUYqTghXcAOC6d7QX022m9xiysVWGRx7QpD6eEO2APWkWw+meioYZ5pgMlJ5qkvmKQ/fcq60XfCOOhTEH7XRu1+6rvoH2m1OijakoC3/ltby3A1tTVGejB7/krs2jcv8A0QAUb7TJKZIsoQ/BIMCo=
+	t=1705669882; cv=none; b=gM1hR1+NhGewmhRUGyLqYDiZo1SCFkevGyLgnU27EIP+Gtx9iT7gvk4PK7BwvNcp6ydBn8ECuGAkA8Bsw6cBKSwoILyR+J0DaGwn7oSaIK4TvcGs8AfQWUUmEp2tf/L1/WQZVunJXZ7qUWrY04YQogOaemJRX7JXh3u+ua/cKVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705670153; c=relaxed/simple;
-	bh=mQu7VFU9CxPqyz6wCupXIRHUakQGJVV4lMuxaSWZRms=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=O65eW1IObbmUcAuWHiUTo0m80rxBNmvi3spq3JtYN4zjutjYHPQ68bng1UM/3qpjdp4k9jgoeA06tKa6FHC7Xcd008dkFZu2364kIkXSipP5X6GPTwc1RiOCB3fBvcUjqceyftC6Ge2fSMCTKfNQfSj8qF2vbg9+Gk4lZPXa8vQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=hBKAVmmY; arc=none smtp.client-ip=162.62.57.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1705669841; bh=Qf6O6gZtpKNKA3Z/+/mENSUoHv6lfarprGF7mIZk6JY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=hBKAVmmYtUljJrODw/V5NV0tBaHvdvPvVq/o4GkszBj7n2XXAqkb7SR36nVEzDNUZ
-	 A3ukDMI4+mZJwAxKG3eDhaYA9hq3s4ckKEvIg63WJjM6hrAkdMfM9lt7N5ktaWYa1J
-	 xPWIQ63MdDwrgP0x7z7sWjdLnFSOqbRfcWs/uVcE=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 2A78DEBD; Fri, 19 Jan 2024 21:10:39 +0800
-X-QQ-mid: xmsmtpt1705669839t5ja6sp2c
-Message-ID: <tencent_A4341BF325BBBA35BBFA336B9E701B144B08@qq.com>
-X-QQ-XMAILINFO: Mdc3TkmnJyI/OQ2aS0u1J2T2zjGZvI780kJo4h2jfiqHPa0ZTW4qpZNFWBDEEX
-	 WAuEIf7xvWoxp/wJz5/RwEBtoei8Fp091DWpFsGVBQql0MDsejb8korljqZ5kLy1bvmrsVrd/wnF
-	 hx+GCXD+WaNc6SAL0itlpEAUTuInS9j5+5S/ENiChcNWSi6zUPwBzUW1Z6Ft29W2GarWLi0IGsWh
-	 dbff1BG6LfcHuAMujzjkIYju3L+ndkwnGdveWG49EXgUbMHBagC8aLl6anmlQoEUgk6232MVK5KC
-	 YBVlLMmB/OmadRKfwOkUqOGowaoCLj34j5OrgJOAGyTuGa5pkMQpdhH03mEU7J7DrTbgLnsyo6IE
-	 pSDM9clVeKucKhqYqLWzu9jHN0N8TFFA/B52gkIpzZK5ZSfonlAXeH2ZJJRni+7suywYSn39XEKr
-	 MG3W5CVnKdMkh8v4m6Tj2ddGac/jQTXadCmaxEpJ5HF+tTTtuJF/w/b7hahb/gJlQF81BAx5G1Tz
-	 om/NE1sB1vyf9N0ECByf3+rzumy0np7Os5F47rlMMAindLU1d7H4LHyX7/RR64b0WD1/vUhVTUeN
-	 lFz4214ErzzJyy371FWqp4ompJjW/JNmnRYI9GBPU69yYAb4NuVXaUgI+ux/YnYUM2gA78XBx/zv
-	 PaWB5WYscVQ98Mis/FZa/lVIJB4Sp69WHsNiXDI7KM7qZh1qYyjZvs5CJ+BhJKIT6VtGm+qdC6Rq
-	 8TNvkVtJT/yJtaW4H+AjI/HUWIWwKbrwd6yYFICTvmVekpPUkNrYwM2xcZp4JXEFpo0Mf0Lk8VFO
-	 YvQWgwSvbi6/4e4xuNSjSTmlqBm91eGcMmjKNco1EvZf8PmPsZwX9UkStkiXNXCxiM4ucyj/JasB
-	 EdkUbULdZD+j/Ysp9mYcUngT6onb0EJfcB0uz/QlAiF0eJsSDNiPm1K8tz3quxKQ+S4vgkH9wW9v
-	 ZsIRrqiFkwjW616AzfMjRaXaTR2tF7cp+N+nbzRYlZ3XCTrd3ePA==
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+fd404f6b03a58e8bc403@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [exfat?] kernel BUG in iov_iter_revert
-Date: Fri, 19 Jan 2024 21:10:40 +0800
-X-OQ-MSGID: <20240119131039.899367-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000007728e060f127eaf@google.com>
-References: <00000000000007728e060f127eaf@google.com>
+	s=arc-20240116; t=1705669882; c=relaxed/simple;
+	bh=0AgduXsuld70K/EMlbZrFK/ZLPaT4SXhbyZdDcrTuzk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZO18uSDivgHYs8Xl6/Qc2iMeNzBP0s6BgIXgYGB7P6f6dYGCELrzQxYXGWj/3NGtCb9nSNA7wN1/n4dx0eySgeBnmNLTVCNuHCuCAatQ48lGz5wrvdV9RWzNoFtlnhmZcBo1Z7pL+gdAuu29jhQa4HGZt8SrBDlUB4s/w73+sNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eEkPtlKJ; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40JD0OLp017291;
+	Fri, 19 Jan 2024 13:11:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=y3roZCLy1ySD+5Ai9Ht2UZyOzehoiSJRmh+F6cP6vxc=;
+ b=eEkPtlKJixGFZWrJc0a0cE7/OPuyE4AQNMvB4RD4MomJoWpHNtzULXT3rUj8Bra2BKac
+ qWF16GxsLGE+tcQpBJbTsD9hLj2TFWYRXspN1fLWKsBEkpL2qRoFNL0P6bAasmJTvX/S
+ nUNoHXi5RuFDeJD0n3RqZgDpwfuU0uH5Lp5ymvlZtkCaQAYPpDmQg8ES5pN24/7GIwEx
+ j4aLL3+RY3wMFdMYKE/YVrbzneQrqb157DazL2Qu0opFfdx/WIvpIoBFksIhDbyq9woI
+ g0FtlH6ZBgQeuk8FRX49KHKwrevYtIsW9m+3HnNITiorZkf0w4h+D//lLEfc0XZUfqX3 eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vqs1jhcrg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 13:11:05 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40JD0nHk018582;
+	Fri, 19 Jan 2024 13:11:05 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vqs1jhcr5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 13:11:05 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40JAM1gl030870;
+	Fri, 19 Jan 2024 13:11:04 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vm72khaks-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 13:11:04 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40JDB13E43188718
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Jan 2024 13:11:01 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 585682004B;
+	Fri, 19 Jan 2024 13:11:01 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9E85B20040;
+	Fri, 19 Jan 2024 13:10:59 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.85.177])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 19 Jan 2024 13:10:59 +0000 (GMT)
+Date: Fri, 19 Jan 2024 14:10:57 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v6 2/3] livepatch: Move tests from lib/livepatch to
+ selftests/livepatch
+Message-ID: <Zap04ddls7ZvbL/U@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240112-send-lp-kselftests-v6-0-79f3e9a46717@suse.com>
+ <20240112-send-lp-kselftests-v6-2-79f3e9a46717@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112-send-lp-kselftests-v6-2-79f3e9a46717@suse.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: p-8a8pwvXQe30bZjF8SmExCBArjrS_A1
+X-Proofpoint-ORIG-GUID: LtCFlP5IylQnTIoJja1a4g7w6R36SAxv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_07,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 mlxlogscore=875
+ bulkscore=0 malwarescore=0 mlxscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2401190067
 
-please test kernel BUG in iov_iter_revert
+On Fri, Jan 12, 2024 at 02:43:51PM -0300, Marcos Paulo de Souza wrote:
+Hi Marcos,
+..
+>  arch/s390/configs/debug_defconfig                  |  1 -
+>  arch/s390/configs/defconfig                        |  1 -
+>  lib/Kconfig.debug                                  | 22 ----------
+..
+> diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+> index 85490d9373fc..5948afeeb56c 100644
+> --- a/arch/s390/configs/debug_defconfig
+> +++ b/arch/s390/configs/debug_defconfig
+> @@ -884,4 +884,3 @@ CONFIG_ATOMIC64_SELFTEST=y
+>  CONFIG_STRING_SELFTEST=y
+>  CONFIG_TEST_BITOPS=m
+>  CONFIG_TEST_BPF=m
+> -CONFIG_TEST_LIVEPATCH=m
+> diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+> index fb690fbbf54b..8d8c2989b6fe 100644
+> --- a/arch/s390/configs/defconfig
+> +++ b/arch/s390/configs/defconfig
+> @@ -813,4 +813,3 @@ CONFIG_KPROBES_SANITY_TEST=m
+>  CONFIG_PERCPU_TEST=m
+>  CONFIG_ATOMIC64_SELFTEST=y
+>  CONFIG_TEST_BPF=m
+> -CONFIG_TEST_LIVEPATCH=m
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 97ce28f4d154..c2147caa7da2 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2853,28 +2853,6 @@ config TEST_MEMCAT_P
+>  
+>  	  If unsure, say N.
+>  
+> -config TEST_LIVEPATCH
+> -	tristate "Test livepatching"
+> -	default n
+> -	depends on DYNAMIC_DEBUG
+> -	depends on LIVEPATCH
+> -	depends on m
+> -	help
+> -	  Test kernel livepatching features for correctness.  The tests will
+> -	  load test modules that will be livepatched in various scenarios.
+> -
+> -	  To run all the livepatching tests:
+> -
+> -	  make -C tools/testing/selftests TARGETS=livepatch run_tests
+> -
+> -	  Alternatively, individual tests may be invoked:
+> -
+> -	  tools/testing/selftests/livepatch/test-callbacks.sh
+> -	  tools/testing/selftests/livepatch/test-livepatch.sh
+> -	  tools/testing/selftests/livepatch/test-shadow-vars.sh
+> -
+> -	  If unsure, say N.
+> -
+>  config TEST_OBJAGG
+>  	tristate "Perform selftest on object aggreration manager"
+>  	default n
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+FWIW, for s390 part:
 
-diff --git a/fs/exfat/inode.c b/fs/exfat/inode.c
-index 522edcbb2ce4..af8870145f67 100644
---- a/fs/exfat/inode.c
-+++ b/fs/exfat/inode.c
-@@ -534,7 +534,8 @@ static ssize_t exfat_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 		size = pos + ret;
- 
- 	/* zero the unwritten part in the partially written block */
--	if (rw == READ && pos < ei->valid_size && ei->valid_size < size) {
-+	if (ret == -EIOCBQUEUED && rw == READ && pos < ei->valid_size && 
-+			ei->valid_size < size) {
- 		iov_iter_revert(iter, size - ei->valid_size);
- 		iov_iter_zero(size - ei->valid_size, iter);
- 	}
+Alexander Gordeev <agordeev@linux.ibm.com>
 
+Thanks!
 
