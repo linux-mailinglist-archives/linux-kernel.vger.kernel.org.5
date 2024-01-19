@@ -1,121 +1,124 @@
-Return-Path: <linux-kernel+bounces-31507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D4AE832F44
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:08:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E041832F47
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B6301C23CCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:08:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DB0E2846F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E9C755E6D;
-	Fri, 19 Jan 2024 19:08:35 +0000 (UTC)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D4256451;
+	Fri, 19 Jan 2024 19:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="exLbPq0g"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4515A52F6F
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 19:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50D22FE1D;
+	Fri, 19 Jan 2024 19:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705691314; cv=none; b=uRtPs37HBdalNcsxPso8/IvgdI0ceeoJT4IkVEtwcmzriPD3b7flQJw/1OzEq+/cHmfBooW7V/305KqC4DSkMtrzVBxq23VaEHqb36WpJxTaW0olmFMTBPaXdAgPe3YQbrCAhEkL1dems12BiXX0R5SZWXOhxMaIZQEwtRtoumE=
+	t=1705691374; cv=none; b=uAClYdx9rx67dRkI6fdjwj30n6crKJhR6RPtBtJnuhE5L2kUIfs1eB4bep+ojuh/qXLsJfEZqW0d577xvkHKR6LIH3SSNKsubDFpyMVDG5PhAwhHYYY+HbwtAjLEQnGqyr3qvCamsMxo/50TWpqVQLNa71X7RkrAlGYl5Yq42Ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705691314; c=relaxed/simple;
-	bh=qYmUwZXCEwwHxrejcnynTHJSvDAkBFIcibt439a8Vro=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dJZMLqbDxiJS23PA1niz8vuauy4cP9R/FOmg9RD15uwXQboe/BJZUHDE+UjH+XBniTl/BrzSl4/LLriNbEL6kRw1NsgT2cYymUI8n8+a06BuFO90jbJS+H8882K7vseCI6/lCl+O1i9cjLrwwruzvjFGQeUR85PqTni3i2yYmq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5ebca94cf74so11155227b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:08:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705691312; x=1706296112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Los1bUQR+nrchlfUsUNrM4jlMLqPsXp3+vKyRRoEhFE=;
-        b=guzkosMOqcZbVrX9L+o3dE+tCeExEGzRjAf5nXAlcBhQLKn1LCiut5Tb346cmGzDT2
-         ZMPhcHnYR/GHijVW0ICuY8OW0QcPa/KbZM3axc1t9+2j8dXgt2ewRXKocbVtYcecJ4xt
-         b2bXzDFj2VpjcU6HbIy+wt+fH/6sU72wdo11wsmU0/lLsnQEt/Ooa/V3bV8I5oHKAhc4
-         tC8qX2icLgnx6XR8F/8TSIWUwOP9mBnHzg4UUXb4jXMZZ5arK9RxqjQ372/HJn/tkLOn
-         Hw5fQCl6VG1tpBIoRWJICM4WLQy84COfbPT3661xX22+Zn5l+ZWW2lgv/ofNb9KJ277z
-         Ztzg==
-X-Gm-Message-State: AOJu0YwS03nmwRDoZ69e6uFTYJ9OsX48u2toT/r0b+buUyTv4xhob0F7
-	6URXEm3yRqVYmdTP5OQX+dCRjV4f5Mturf7m9kg7dMhpXtW1Xu5oERR53rEPgQs=
-X-Google-Smtp-Source: AGHT+IEy/oJhNCXxDcO72+BcpvhibpOCqyX9Wdtw67nLVPLWu5x30m4UE7wWtLCRlde7jleRevvnlg==
-X-Received: by 2002:a81:a24d:0:b0:5ff:483d:d156 with SMTP id z13-20020a81a24d000000b005ff483dd156mr347270ywg.23.1705691312034;
-        Fri, 19 Jan 2024 11:08:32 -0800 (PST)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id g141-20020a0ddd93000000b005ff9a21d042sm785484ywe.46.2024.01.19.11.08.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jan 2024 11:08:31 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc2308fe275so1040784276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:08:30 -0800 (PST)
-X-Received: by 2002:a05:6902:1611:b0:dbe:a537:58cd with SMTP id
- bw17-20020a056902161100b00dbea53758cdmr355239ybb.52.1705691310589; Fri, 19
- Jan 2024 11:08:30 -0800 (PST)
+	s=arc-20240116; t=1705691374; c=relaxed/simple;
+	bh=vwEdk/w7GtA67dnByJO3IYgwwSG6lpQcGUrrPPj2qXQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nQdli9s5HsdRRJcUGP2cIzTJ04T4jqua9jcjcU3x0yzeef62mz5aDOf5ftGFKhjg9QDIJrIFsDih6ywLwY68dSbDcRcxqBjMAuhbMWko7U/wGFi3vAp3Ym0ih1lrH+/sjeQ67tm7zCECN3PZDQyJoLYxjtvlPt+90JezmoU9DjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=exLbPq0g; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40JGwLjl002726;
+	Fri, 19 Jan 2024 19:08:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=ZWLd4ama37Cyr6lzfrcDFFP9xjU4nJJ8S5Ng2lHItfs=;
+ b=exLbPq0gNzGf+z1XrhrHSyOBv+DXeCnOmGi1nSnHsPMxHwOrBJAz5FPwCkWssS0THhhy
+ rXsiBeL0d2a918qnot+bi5vq/h1EQuucaxjz1skEgtGt3Rjjqb3a0QYTzUsvNMCCahht
+ EXCsWtdvSpZON1IYTv9v9cqg2rOB6KXyLJ1eH2XXwadKnjJjCTpstcSA3E/kFcjE48di
+ 8d25VonlzNtYNlmyciWj8KPn04d9sNpBztKYyq1HfUO0YoEx5i2GxQsBoBcHelejRDHq
+ nTsJBJCtplWAP1ySXZCzp1gb0iCfMMhXC6LttWugpvcjLu1AvqIopSbCbaXwUeg22bcO vA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vkk2ufd3s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Jan 2024 19:08:48 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40JIiXHn020046;
+	Fri, 19 Jan 2024 19:08:47 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vkgyfunru-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Jan 2024 19:08:47 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40JJ8lNR032671;
+	Fri, 19 Jan 2024 19:08:47 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3vkgyfunr8-1;
+	Fri, 19 Jan 2024 19:08:46 +0000
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To: Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Sascha Hauer <s.hauer@pengutronix.de>, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com
+Subject: [PATCH] drm/rockchip: vop2: add a missing unlock in vop2_crtc_atomic_enable()
+Date: Fri, 19 Jan 2024 11:08:40 -0800
+Message-ID: <20240119190841.1619443-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111192329.449189-1-urezki@gmail.com> <ZaDSmY5oObFqWCfs@infradead.org>
- <ZaD0L7nkFeTwv_g5@pc636>
-In-Reply-To: <ZaD0L7nkFeTwv_g5@pc636>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 19 Jan 2024 20:08:19 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVoweOFJ8_QG-kxTmHKmpPcVQWki+Dc+wDWmBM3hFKfiQ@mail.gmail.com>
-Message-ID: <CAMuHMdVoweOFJ8_QG-kxTmHKmpPcVQWki+Dc+wDWmBM3hFKfiQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: vmalloc: Fix a warning in the crash_save_vmcoreinfo_init()
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Baoquan He <bhe@redhat.com>, Lorenzo Stoakes <lstoakes@gmail.com>, 
-	Matthew Wilcox <willy@infradead.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Dave Chinner <david@fromorbit.com>, Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>, 
-	kernel test robot <lkp@intel.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_12,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 bulkscore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401190113
+X-Proofpoint-ORIG-GUID: YhbWzf0BGgzwKT-zZSFVivNqHgWwTUMY
+X-Proofpoint-GUID: YhbWzf0BGgzwKT-zZSFVivNqHgWwTUMY
 
-CC linux-m68k
+Unlock before returning on the error path.
 
-On Fri, Jan 12, 2024 at 9:11=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com>=
- wrote:
-> > On Thu, Jan 11, 2024 at 08:23:29PM +0100, Uladzislau Rezki (Sony) wrote=
-:
-> > >  #endif
-> > >     VMCOREINFO_SYMBOL(_stext);
-> > > -   vmcoreinfo_append_str("NUMBER(VMALLOC_START)=3D0x%lx\n", VMALLOC_=
-START);
-> > > +   vmcoreinfo_append_str("NUMBER(VMALLOC_START)=3D0x%lx\n", (unsigne=
-d long) VMALLOC_START);
-> >
-> > Well, the right fix is of course to make sure VMALLOC_START has a
-> > consistent type, else we need to plaster this crud all over.
-> > unsigned long seems like the right type for it, so at least m68k should
-> > be fixed to confirm to that by adding a UL postfix to the definition.
-> >
-> I agree with you. I wanted to focus on fixing that particular place
-> because i wanted to avoid other(on this step), possible side effects
-> or drawbacks if i went with patching the arch/m68k/* files.
->
-> But, in general arch/m68k/* has to be fixed.
+Fixes: 5a028e8f062f ("drm/rockchip: vop2: Add support for rk3588")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is based on static analysis. Only compile tested.
+Note: Smatch found this.
+---
+ drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+index 85b3b4871a1d..fdd768bbd487 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+@@ -1985,8 +1985,10 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
+ 		clock = vop2_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
+ 	}
+ 
+-	if (!clock)
++	if (!clock) {
++		vop2_unlock(vop2);
+ 		return;
++	}
+ 
+ 	if (vcstate->output_mode == ROCKCHIP_OUT_MODE_AAAA &&
+ 	    !(vp_data->feature & VOP2_VP_FEATURE_OUTPUT_10BIT))
+-- 
+2.39.3
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
