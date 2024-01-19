@@ -1,320 +1,286 @@
-Return-Path: <linux-kernel+bounces-31229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F6A1832AD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:56:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B7D832AD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AF0A28844B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:56:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56A521F225BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:57:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2540652F9B;
-	Fri, 19 Jan 2024 13:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645A353E05;
+	Fri, 19 Jan 2024 13:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cXBlGWOO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SwhzfapH"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C84A51C58;
-	Fri, 19 Jan 2024 13:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E7F53811;
+	Fri, 19 Jan 2024 13:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705672552; cv=none; b=KGTDZmNcfpzV1l+a9zjNLQBAYKvMlkPzWacSS5/Bqc68VzJVLLiTs0jOpsDjd3M4BLq02qUsUSc7ayRgObXo3l4tBbWq7XwcRrI7slLI7xY7Dvd0DyDj/JmfYmdB8SIeS44BI8MZ0q7GZFGLndB5RABXTyYCweTT2wBKbCMcBqo=
+	t=1705672621; cv=none; b=idpl+n8DsnIh5tbls+FYCVV7ccELA6buJwlzv+9gsbzTLVmItWU9lKvYh/KzhIuEDtvj+T5Q17VNYttbdOstm13g4TQs7lNpK6KV9lK4jj7Ip32VWTrhFjfeClraqdseEiMzr9z999Qe8D+Hb4C6Z2XMg8MQlwibER6fVXL+uJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705672552; c=relaxed/simple;
-	bh=jgZ0z2QKaNKrU+JKlKY9qTzQooHXYwJjeK1yGSStXZk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OrUKjOakvYgk8bV/P9qo2xsGd3mDnLyTPRBP31uRpEW6RX4BNaIJFms7yjw10r+pl04DO6KJpCfGvGlnGHyIJx3d8hc548Z3REvxWf2NcLs7Ryy07t4jLYXSOWJnwQ47Tj6OyzDT74VgUqgEY3Tp23iQ+0NnNTntjxHWmBJ5XD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cXBlGWOO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE364C433C7;
-	Fri, 19 Jan 2024 13:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705672551;
-	bh=jgZ0z2QKaNKrU+JKlKY9qTzQooHXYwJjeK1yGSStXZk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=cXBlGWOO0305zMrxJguYt57X+vjPv6XtPifLd8RjOlbjBHNF2hBgwJs/rGDUTEcJM
-	 CKZlBejGfftDHiwdWOwt8LD941sWtY005ceDVmv3dap9Bn3JeJheIz9gFpIidQOqzF
-	 RFRzXv3ZXSJyB19S682x2qbMcu/3/iRqJ7CIshyET0By513P5a55KiDiGcOMdxiimI
-	 9DwMLs4mYTRxvSWZ018gGiJljOovSDESLktWpardVFRKbH64vN9YCV68UrH1AfC/by
-	 wstoLQNFZLlGiYy+mcE7LmdxDTrCRCXXC3zs1CQFkcSKI4D/xbmIXvjRcV0DYeJgKs
-	 9lMi+9dUC5PlA==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2ccea11b6bbso8232261fa.0;
-        Fri, 19 Jan 2024 05:55:51 -0800 (PST)
-X-Gm-Message-State: AOJu0YxX/WxwRwToDhYPAAmOtE7WrriFCxS+ylHvK/h5usHRT74QYWvV
-	00iT2EPdjDRFT5IeJMzICc3ODqDigZcKTEU09Rzj3BcPxgigM3WhFL+/e/2hmxaKiUqC6l3SU3j
-	h4ObflFKslCbkgUmYA96myjiJ2w==
-X-Google-Smtp-Source: AGHT+IEVzox0T3UNZ1s/q0bwyluhqytK0MXD5RL8+PG4FTb/u1g+NhvPdEPFxzfRUfz/oFVzAvdiLjJG4UIJRX+yEAw=
-X-Received: by 2002:a2e:88cc:0:b0:2cd:fb91:4b1d with SMTP id
- a12-20020a2e88cc000000b002cdfb914b1dmr730918ljk.21.1705672549835; Fri, 19 Jan
- 2024 05:55:49 -0800 (PST)
+	s=arc-20240116; t=1705672621; c=relaxed/simple;
+	bh=Dzk81ME8LvQSamL1SNsZWxijV64H7yv3CiEQR/Wgfog=;
+	h=Content-Type:Message-ID:Date:Subject:To:Cc:References:From:
+	 In-Reply-To:MIME-Version; b=WM9exwHIWIRyXUArO4rJkD5NrwYaZnAzlFqn13TRjeGurxuIuJG5CqIu71m2QaN3CDiefJl6UpCJpBSgoazYCyeELZBX8WbgPPtulXWSDXCCmAt+LEkjg7Gv6jXb2fSjsFuVJeXNSiVvtCkBwwXUSIpUYyoiNordgYEN7cYfTNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SwhzfapH; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40JDqjlg013770;
+	Fri, 19 Jan 2024 13:56:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ message-id : date : subject : to : cc : references : from : in-reply-to :
+ mime-version; s=pp1; bh=4yJ1PvlhKF5ebvPj66SGf04iGsGLKVD6KL8an/YURt4=;
+ b=SwhzfapH2CJruLYlbjfqzI9nWYPgcRJJTaRXb0q/3r3xVnpWD9BU5b+39QWItCxadFkZ
+ 4+jQSFAs457HkKR44nSzxPfsp8Fqy2uRkAE0pcPaMRcBlGaBElcg42nfcvswb6wPkXGw
+ XZ76Iv+/VroLTOPOFVeDfpF+f+RycD+oehmWGA+IAcl2rwqywMYG56wAhTZ/ffjQt0Sq
+ 83jbCaRcLlooLIGocIoNV+A1o2Hpv1IcCgmqSbZD7onoDnVDWuf3WklTNrVIgkwGZf/p
+ MMTJxNTiGuIr9pgGpiOrK5EaP29rrQXHlUQqtd7A/ip6JpCcvIOGbTJWgGOXHit+ulAC wg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vqtbf02ub-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 13:56:17 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40JDu55W025157;
+	Fri, 19 Jan 2024 13:56:17 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vqtbf02tn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 13:56:16 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40JAfoWI009413;
+	Fri, 19 Jan 2024 13:56:15 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm5up1vhr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 13:56:15 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40JDuCUU18285260
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Jan 2024 13:56:12 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 340A32004B;
+	Fri, 19 Jan 2024 13:56:12 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5F61B20040;
+	Fri, 19 Jan 2024 13:56:11 +0000 (GMT)
+Received: from [9.171.41.26] (unknown [9.171.41.26])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 19 Jan 2024 13:56:11 +0000 (GMT)
+Content-Type: multipart/mixed; boundary="------------efg6hB0FNWC65xkaiJmoB8uN"
+Message-ID: <fc3fd07a-218d-406c-918b-e7f701968eb0@linux.ibm.com>
+Date: Fri, 19 Jan 2024 14:56:10 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: Several tst-robust* tests time out with recent Linux kernel
+Content-Language: en-US
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "peterz@infradead.org" <peterz@infradead.org>
+Cc: "xry111@xry111.site" <xry111@xry111.site>,
+        "andrealmeid@igalia.com" <andrealmeid@igalia.com>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>
+References: <4bda9f2e06512e375e045f9e72edb205104af19c.camel@xry111.site>
+ <d69d50445284a5e0d98a64862877c1e6ec22a9a8.camel@xry111.site>
+ <20231114153100.GY8262@noisy.programming.kicks-ass.net>
+ <20231114154017.GI4779@noisy.programming.kicks-ass.net>
+ <87ttpowajb.fsf@oldenburg.str.redhat.com>
+ <20231114201402.GA25315@noisy.programming.kicks-ass.net>
+ <822f3a867e5661ce61cea075a00ce04a4e4733f3.camel@intel.com>
+ <20231115085102.GY3818@noisy.programming.kicks-ass.net>
+ <564119521b61b5a38f9bdfe6c7a41fcbb07049c9.camel@intel.com>
+ <158f6a47727a40c163e3fa6041a24388549c68f2.camel@intel.com>
+From: Stefan Liebler <stli@linux.ibm.com>
+In-Reply-To: <158f6a47727a40c163e3fa6041a24388549c68f2.camel@intel.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -eYrsRMX54MPeWXAppdYmCFuQVsAPpYK
+X-Proofpoint-ORIG-GUID: S7FEZ5rPc-g0aukt1pdcD6Xvm8J5u36f
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116134142.2092483-1-devarsht@ti.com> <20240116134142.2092483-2-devarsht@ti.com>
- <20240117201342.GA3041972-robh@kernel.org> <57805224-f4f9-7773-03e3-4bdff8936c9c@ti.com>
-In-Reply-To: <57805224-f4f9-7773-03e3-4bdff8936c9c@ti.com>
-From: Rob Herring <robh@kernel.org>
-Date: Fri, 19 Jan 2024 07:55:36 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKVMs92DkzVTmOuJzxzcm90SGOmwQXdk=kydBa5S_ySmg@mail.gmail.com>
-Message-ID: <CAL_JsqKVMs92DkzVTmOuJzxzcm90SGOmwQXdk=kydBa5S_ySmg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] dt-bindings: display: ti,am65x-dss: Add support
- for display sharing mode
-To: Devarsh Thakkar <devarsht@ti.com>
-Cc: jyri.sarha@iki.fi, tomi.valkeinen@ideasonboard.com, airlied@gmail.com, 
-	daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, mripard@kernel.org, 
-	tzimmermann@suse.de, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com, 
-	vigneshr@ti.com, kristo@kernel.org, praneeth@ti.com, a-bhatia1@ti.com, 
-	j-luthra@ti.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_08,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401190074
 
-On Thu, Jan 18, 2024 at 7:59=E2=80=AFAM Devarsh Thakkar <devarsht@ti.com> w=
-rote:
->
-> Hi Rob,
->
-> Thanks for the quick review.
->
-> On 18/01/24 01:43, Rob Herring wrote:
-> > On Tue, Jan 16, 2024 at 07:11:40PM +0530, Devarsh Thakkar wrote:
-> >> Add support for using TI Keystone DSS hardware present in display
-> >> sharing mode.
-> >>
-> >> TI Keystone DSS hardware supports partitioning of resources between
-> >> multiple hosts as it provides separate register space and unique
-> >> interrupt line to each host.
-> >>
-> >> The DSS hardware can be used in shared mode in such a way that one or
-> >> more of video planes can be owned by Linux wherease other planes can b=
-e
-> >> owned by remote cores.
-> >>
-> >> One or more of the video ports can be dedicated exclusively to a
-> >> processing core, wherease some of the video ports can be shared betwee=
-n
-> >> two hosts too with only one of them having write access.
-> >>
-> >> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
-> >> ---
-> >>  .../bindings/display/ti/ti,am65x-dss.yaml     | 82 ++++++++++++++++++=
-+
-> >>  1 file changed, 82 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss=
-yaml b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
-> >> index 55e3e490d0e6..d9bc69fbf1fb 100644
-> >> --- a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
-> >> +++ b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
-> >> @@ -112,6 +112,86 @@ properties:
-> >>        Input memory (from main memory to dispc) bandwidth limit in
-> >>        bytes per second
-> >>
-> >> +  ti,dss-shared-mode:
-> >> +    type: boolean
-> >> +    description:
-> >> +      TI DSS7 supports sharing of display between multiple hosts
-> >> +      as it provides separate register space for display configuratio=
-n and
-> >> +      unique interrupt line to each host.
-> >
-> > If you care about line breaks, you need '|'.
-> >
->
-> Noted.
->
-> >> +      One of the host is provided access to the global display
-> >> +      configuration labelled as "common" region of DSS allows that ho=
-st
-> >> +      exclusive access to global registers of DSS while other host ca=
-n
-> >> +      configure the display for it's usage using a separate register
-> >> +      space labelled as "common1".
-> >> +      The DSS resources can be partitioned in such a way that one or =
-more
-> >> +      of the video planes are owned by Linux whereas other video plan=
-es
-> >
-> > Your h/w can only run Linux?
-> >
-> > What if you want to use this same binding to define the configuration t=
-o
-> > the 'remote processor'? You can easily s/Linux/the OS/, but it all
-> > should be reworded to describe things in terms of the local processor.
-> >
->
-> It can run both Linux and RTOS or for that matter any other OS too. But y=
-es I
-> got your point, will reword accordingly.
->
-> >> +      can be owned by a remote core.
-> >> +      The video port controlling these planes acts as a shared video =
-port
-> >> +      and it can be configured with write access either by Linux or t=
-he
-> >> +      remote core in which case Linux only has read-only access to th=
-at
-> >> +      video port.
-> >
-> > What is the purpose of this property when all the other properties are
-> > required?
-> >
->
-> The ti,dss-shared-mode and below group of properties are optional. But
-> if ti,dss-shared-mode is set then only driver should parse below set of
-> properties.
+This is a multi-part message in MIME format.
+--------------efg6hB0FNWC65xkaiJmoB8uN
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Let me re-phrase. Drop this property. It serves no purpose since all
-the properties have to be present anyway.
+On 17.11.23 02:22, Edgecombe, Rick P wrote:
+> A bit more info...
+> 
+> The error returned to userspace is originating from:
+> https://github.com/torvalds/linux/blob/master/kernel/futex/pi.c#L295
+> 
+> 'uval' is often zero in that error case, but sometimes just a
+> mismatching value like: uval=0x567, task_pid_vnr()=0x564
+> 
+> 
+> Depending on the number of CPUs the VM is running on it reproduces or
+> not. When it does reproduce, the newly added path here is taken:
+> https://github.com/torvalds/linux/blob/master/kernel/futex/pi.c#L1185
+> The path is taken a lot during the test, sometimes >400 times before
+> the above linked error is generated during the syscall. When it doesn't
+> reproduce, I never saw that new path taken.
+> 
+> More print statements make the reproduction less reliable, so it does
+> seem to have a race in the mix at least somewhat. Otherwise, I haven't
+> tried to understand what is going on here with all this highwire
+> locking.
+> 
+> Hope it helps.
+Hi,
 
-> >> +  ti,dss-shared-mode-planes:
-> >> +    description:
-> >> +      The video layer that is owned by processing core running Linux.
-> >> +      The display driver running from Linux has exclusive write acces=
-s to
-> >> +      this video layer.
-> >> +    $ref: /schemas/types.yaml#/definitions/string
-> >> +    enum: [vidl, vid]
-> >> +
-> >> +  ti,dss-shared-mode-vp:
-> >> +    description:
-> >> +      The video port that is being used in context of processing core
-> >> +      running Linux with display susbsytem being used in shared mode.
-> >> +      This can be owned either by the processing core running Linux i=
-n
-> >> +      which case Linux has the write access and the responsibility to
-> >> +      configure this video port and the associated overlay manager or
-> >> +      it can be shared between core running Linux and a remote core
-> >> +      with remote core provided with write access to this video port =
-and
-> >> +      associated overlay managers and remote core configures and driv=
-es
-> >> +      this video port also feeding data from one or more of the
-> >> +      video planes owned by Linux, with Linux only having read-only a=
-ccess
-> >> +      to this video port and associated overlay managers.
-> >> +
-> >> +    $ref: /schemas/types.yaml#/definitions/string
-> >> +    enum: [vp1, vp2]
-> >> +
-> >> +  ti,dss-shared-mode-common:
-> >> +    description:
-> >> +      The DSS register region owned by processing core running Linux.
-> >> +    $ref: /schemas/types.yaml#/definitions/string
-> >> +    enum: [common, common1]
-> >> +
-> >> +  ti,dss-shared-mode-vp-owned:
-> >> +    description:
-> >> +      This tells whether processing core running Linux has write acce=
-ss to
-> >> +      the video ports enlisted in ti,dss-shared-mode-vps.
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >> +    enum: [0, 1]
-> >
-> > This can be boolean. Do writes abort or just get ignored? The latter ca=
-n
-> > be probed and doesn't need a property.
-> >
->
-> Although we have kept all these properties as enums, but actually in driv=
-er we
-> are treating them as array of enums and using device_property_read_u32_ar=
-ray.
->
-> The reason being that for SoCs using am65x-dss bindings they can only hav=
-e
-> single entry either vp1 or vp2 or 0 or 1 as there are only two video port=
-s. So
-> for them the device tree overlay would look like :
-> &dss0 {
->
->         ti,dss-shared-mode;
->
->         ti,dss-shared-mode-vp =3D "vp1";
->
->         ti,dss-shared-mode-vp-owned =3D <0>;
->
->         ti,dss-shared-mode-common =3D "common1";
->
->         ti,dss-shared-mode-planes =3D "vid";
->
->         ti,dss-shared-mode-plane-zorder =3D <0>;
->
->         interrupts =3D <GIC_SPI 85 IRQ_TYPE_LEVEL_>;
-> }
->
-> But we also plan to extend these bindings to SoCs using
-> Documentation/devicetree/bindings/display/ti/ti,j721e-dss.yaml where ther=
-e are
-> multiple video ports. So in that the driver and bindings should support b=
-elow
-> configuration :
+I've also observed fails in glibc testcase nptl/tst-robust8pi with:
+mutex_timedlock of 66 in thread 7 failed with 22
+=> pthread_mutex_timedlock returns 22=EINVAL
 
-What are you waiting for? In that case, all these properties need to
-be in a shared schema file and referenced here. Otherwise you will be
-defining their types twice (and different types too if some are
-changed to arrays).
+I've saw it on s390x. There I've used kernel with
+commit 120d99901eb288f1d21db3976df4ba347b28f9c7
+s390/vfio-ap: do not reset queue removed from host config
 
-> &dss0 {
->
->         ti,dss-shared-mode;
->
->         ti,dss-shared-mode-vp =3D "vp1 vp2";
->
->         ti,dss-shared-mode-vp-owned =3D <0 1>;
->
->         ti,dss-shared-mode-common =3D "common_s1";
->
->         ti,dss-shared-mode-planes =3D "vid1 vidl1";
->
->         ti,dss-shared-mode-plane-zorder =3D <0 1>;
->
->         interrupts =3D <GIC_SPI 85 IRQ_TYPE_LEVEL_>;
-> }
->
-> As I am using device_property_read_u32_array in driver I thought to keep =
-this
-> as uint32 in enum for am65x.yaml which works well with the driver.
+But I also saw it on a x86_64 kvm-guest with Fedora 39 and
+copr-repository with vanilla kernel:
+Linux fedora 6.7.0-0.rc8.20240107gt52b1853b.366.vanilla.fc39.x86_64 #1
+SMP PREEMPT_DYNAMIC Sun Jan  7 06:17:30 UTC 2024 x86_64 GNU/Linux
 
-The type and what accessor functions the kernel uses should match. I
-plan to add (debug) checking on this. Debug only because as there's no
-type info in the DTB, it all has to be extracted from schemas and put
-into the kernel.
+And reported it to libc-alpha ("FAILING nptl/tst-robust8pi"
+https://sourceware.org/pipermail/libc-alpha/2024-January/154150.html)
+where Florian Weimer pointed me to this thread.
 
-> >> +
-> >> +  ti,dss-shared-mode-plane-zorder:
-> >> +    description:
-> >> +      The zorder of the planes owned by Linux.
-> >> +      For the scenario where Linux is not having write access to asso=
-ciated
-> >> +      video port, this field is just for
-> >> +      informational purpose to enumerate the zorder configuration
-> >> +      being used by remote core.
-> >> +
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >> +    enum: [0, 1]
-> >
-> > I don't understand how 0 or 1 defines Z-order.
-> >
->
-> As there are only two planes in total so z-order can be either 0 or 1 for=
- the
-> shared mode plane as there is only a single entry of plane.
-> For e.g. if ti,dss-shared-mode-plane-zorder is 1 then it means the plane =
-owned
-> by Linux is programmed as topmost plane wherease the plane owned by remot=
-e
-> core is programmed as the underneath one.
+I've reduced the test (see attachement) and now have only one process
+with three threads. I only use one mutex with attributes like the
+original testcase: PTHREAD_MUTEX_ROBUST_NP, PTHREAD_PROCESS_SHARED,
+PTHREAD_PRIO_INHERIT.
+Every thread is doing a loop with pthread_mutex_timedlock(abstime={0,0})
+and if locked, pthread_mutex_unlock.
 
-Please reword the description to make all this clear. The index is the
-plane number and value is the z-order with 0 being bottom and N being
-the top. I guess this should be an array as well.
+I've added some uprobes before and after the futex-syscall in
+__futex_lock_pi64(in pthread_mutex_timedlock) and futex_unlock_pi(in
+pthread_mutex_unlock). For me __ASSUME_FUTEX_LOCK_PI2 is not available,
+but __ASSUME_TIME64_SYSCALLS is defined.
 
-Rob
+For me it looks like this (simplified ubprobes-trace):
+<thread> <timestamp>: <probe>
+t1 4309589.419744: before syscall in __futex_lock_pi64
+
+t3 4309589.419745: before syscall in futex_unlock_pi
+t2 4309589.419745: before syscall in __futex_lock_pi64
+
+t3 4309589.419747: after syscall in futex_unlock_pi
+t2 4309589.419747: after syscall in __futex_lock_pi64 ret=-22=EINVAL
+
+t1 4309589.419748: after syscall in __futex_lock_pi64 ret=-110=ETIMEDOUT
+
+Can you please have a look again?
+
+Bye,
+Stefan Liebler
+--------------efg6hB0FNWC65xkaiJmoB8uN
+Content-Type: text/x-csrc; charset=UTF-8; name="tst-robust8pi-20240118.c"
+Content-Disposition: attachment; filename="tst-robust8pi-20240118.c"
+Content-Transfer-Encoding: base64
+
+Ly9DRkxBR1M9LXB0aHJlYWQKLy9MREZMQUdTPS1scHRocmVhZAojaW5jbHVkZSA8c3RkaW8u
+aD4KI2luY2x1ZGUgPHN0ZGxpYi5oPgojaW5jbHVkZSA8cHRocmVhZC5oPgojaW5jbHVkZSA8
+YXNzZXJ0Lmg+CiNpbmNsdWRlIDxlcnJuby5oPgojaW5jbHVkZSA8dW5pc3RkLmg+CgojZGVm
+aW5lIE5VTV9USFJFQURTIDMKI2RlZmluZSBUSFJFQURfRlVOQyB0aHJfZnVuYwojZGVmaW5l
+IFVTRV9CQVJSSUVSIDEKI2lmbmRlZiBST1VORFMKIyBkZWZpbmUgUk9VTkRTIDEwMDAwMDAw
+MAojZW5kaWYKCnR5cGVkZWYgc3RydWN0IHRocl9pbmZvCnsKICBpbnQgbnI7CiAgcHRocmVh
+ZF90IHRocmVhZDsKfSBfX2F0dHJpYnV0ZV9fICgoYWxpZ25lZCAoMjU2KSkpIHRocl9pbmZv
+X3Q7CgojZGVmaW5lIFRIUl9JTklUKCkJCQkJXAogIHRocl9pbmZvX3QgKnRociA9ICh0aHJf
+aW5mb190ICopIGFyZzsKCiNkZWZpbmUgVEhSX1BSSU5URihmbXQsIC4uLikJCQlcCiAgcHJp
+bnRmICgiIyVkOiAiIGZtdCwgdGhyLT5uciwgX19WQV9BUkdTX18pCgojZGVmaW5lIFRIUl9Q
+VVRTKG1zZykJCQkJXAogIHByaW50ZiAoIiMlZDogIiBtc2cgIlxuIiwgdGhyLT5ucikKCiNp
+ZiBVU0VfQkFSUklFUiAhPSAwCnN0YXRpYyBwdGhyZWFkX2JhcnJpZXJfdCB0aHJzX2JhcnJp
+ZXI7CiNlbmRpZgoKc3RhdGljIHB0aHJlYWRfbXV0ZXhfdCBtdHg7CnN0YXRpYyBjb25zdCBz
+dHJ1Y3QgdGltZXNwZWMgYmVmb3JlID0geyAwLCAwIH07CgovKiAjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCiAg
+IHRocmVhZCBmdW5jCiAgICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyAgKi8KCnN0YXRpYyB2b2lkICoKdGhyX2Z1bmMg
+KHZvaWQgKmFyZykKewogIFRIUl9JTklUICgpOwogIGludCBzdGF0ZSA9IDA7CiAgaW50IGZj
+dDsKCiNpZiAwCiAgLyogMyB0aHJlYWRzLCAxeGZjdD0wPXB0aHJlYWRfbXV0ZXhfbG9jaywg
+MnhmY3Q9MT1wdGhyZWFkX211dGV4X3RpbWVkbG9jazogRUlOVkFMLiAgKi8KICBmY3QgPSAo
+dGhyLT5uciArIDEpICUgMjsKI2VsaWYgMAogIC8qIDMgdGhyZWFkcywgMnhmY3Q9MD1wdGhy
+ZWFkX211dGV4X2xvY2ssIDF4ZmN0PTE9cHRocmVhZF9tdXRleF90aW1lZGxvY2s6IG5vIGZh
+aWxzLiAgKi8KICBmY3QgPSAodGhyLT5ucikgJSAyOwojZWxpZiAxCiAgLyogPjMgdGhyZWFk
+cywgZmN0PTE9b25seSBwdGhyZWFkX211dGV4X3RpbWVkbG9jazogRUlOVkFMLiAgKi8KICBm
+Y3QgPSAxOwojZW5kaWYKCiAgaW50IHJvdW5kID0gMDsKICBUSFJfUFJJTlRGICgic3RhcnRl
+ZDogZmN0PSVkXG4iLCBmY3QpOwojaWYgVVNFX0JBUlJJRVIgIT0gMAogIHB0aHJlYWRfYmFy
+cmllcl93YWl0ICgmdGhyc19iYXJyaWVyKTsKI2VuZGlmCiAgd2hpbGUgKDEpCiAgICB7Cgog
+ICAgICBpZiAoc3RhdGUgPT0gMCkKCXsKCSAgcm91bmQgKys7CgkgIGludCBlOwoKCSAgc3dp
+dGNoIChmY3QpCgkgICAgewoJICAgIGNhc2UgMDoKCSAgICAgIGUgPSBwdGhyZWFkX211dGV4
+X2xvY2sgKCZtdHgpOwoJICAgICAgaWYgKGUgIT0gMCkKCQl7CgkJICBUSFJfUFJJTlRGICgi
+bXV0ZXhfbG9jayBmYWlsZWQgd2l0aCAlZCAocm91bmQ9JWQpXG4iLCBlLCByb3VuZCk7CgkJ
+ICBleGl0ICgxKTsKCQl9CgkgICAgICBzdGF0ZSA9IDE7CgkgICAgICBicmVhazsKCSAgICBj
+YXNlIDE6CgkgICAgICBlID0gcHRocmVhZF9tdXRleF90aW1lZGxvY2sgKCZtdHgsICZiZWZv
+cmUpOwoJICAgICAgaWYgKGUgIT0gMCAmJiBlICE9IEVUSU1FRE9VVCkKCQl7CgkJICBUSFJf
+UFJJTlRGICgibXV0ZXhfdGltZWRsb2NrIGZhaWxlZCB3aXRoICVkIChyb3VuZD0lZClcbiIs
+IGUsIHJvdW5kKTsKCQkgIGV4aXQgKDEpOwoJCX0KCSAgICAgIGJyZWFrOwoJICAgIGRlZmF1
+bHQ6CgkgICAgICBlID0gcHRocmVhZF9tdXRleF90cnlsb2NrICgmbXR4KTsKCSAgICAgIGlm
+IChlICE9IDAgJiYgZSAhPSBFQlVTWSkKCQl7CgkJICBUSFJfUFJJTlRGICgibXV0ZXhfdHJ5
+bG9jayBmYWlsZWQgd2l0aCAlZCAocm91bmQ9JWQpXG4iLCBlLCByb3VuZCk7CgkJICBleGl0
+ICgxKTsKCQl9CgkgICAgICBicmVhazsKCSAgICB9CgoJICBpZiAoZSA9PSBFT1dORVJERUFE
+KQoJICAgIHB0aHJlYWRfbXV0ZXhfY29uc2lzdGVudCAoJm10eCk7CgoJICBpZiAoZSA9PSAw
+IHx8IGUgPT0gRU9XTkVSREVBRCkKCSAgICBzdGF0ZSA9IDE7Cgl9CiAgICAgIGVsc2UKCXsK
+CSAgaW50IGUgPSBwdGhyZWFkX211dGV4X3VubG9jayAoJm10eCk7CgkgIGlmIChlICE9IDAp
+CgkgICAgewoJICAgICAgVEhSX1BSSU5URiAoIm11dGV4X3VubG9jayBvZiBmYWlsZWQgd2l0
+aCAlZCAocm91bmQ9JWQpXG4iLCBlLCByb3VuZCk7CgkgICAgICBleGl0ICgxKTsKCSAgICB9
+CgkgIHN0YXRlID0gMDsKCX0KCiAgICAgIGlmIChyb3VuZCA+PSBST1VORFMpCgl7CgkgIFRI
+Ul9QUklOVEYgKCJSRUFDSEVEIHJvdW5kICVkLiA9PiBleGl0XG4iLCBST1VORFMpOwoJICBp
+ZiAoc3RhdGUgIT0gMCkKCSAgICB7CgkgICAgICBpbnQgZSA9IHB0aHJlYWRfbXV0ZXhfdW5s
+b2NrICgmbXR4KTsKCSAgICAgIGlmIChlICE9IDApCgkJewoJCSAgVEhSX1BSSU5URiAoIm11
+dGV4X3VubG9ja0BleGl0IG9mIGZhaWxlZCB3aXRoICVkIChyb3VuZD0lZClcbiIsIGUsIHJv
+dW5kKTsKCQkgIGV4aXQgKDEpOwoJCX0KCSAgICB9CgkgIGJyZWFrOwoJfQogICAgfQoKICBy
+ZXR1cm4gTlVMTDsKfQoKaW50Cm1haW4gKHZvaWQpCnsKICBpbnQgaTsKICBwcmludGYgKCJt
+YWluOiBzdGFydCAlZCB0aHJlYWRzLlxuIiwgTlVNX1RIUkVBRFMpOwoKI2lmIFVTRV9CQVJS
+SUVSICE9IDAKICBwdGhyZWFkX2JhcnJpZXJfaW5pdCAoJnRocnNfYmFycmllciwgTlVMTCwg
+TlVNX1RIUkVBRFMgKyAxKTsKI2VuZGlmCgogIHB0aHJlYWRfbXV0ZXhhdHRyX3QgbWE7CiAg
+aWYgKHB0aHJlYWRfbXV0ZXhhdHRyX2luaXQgKCZtYSkgIT0gMCkKICAgIHsKICAgICAgcHV0
+cyAoIm11dGV4YXR0cl9pbml0IGZhaWxlZCIpOwogICAgICByZXR1cm4gMDsKICAgIH0KICBp
+ZiAocHRocmVhZF9tdXRleGF0dHJfc2V0cm9idXN0ICgmbWEsIFBUSFJFQURfTVVURVhfUk9C
+VVNUX05QKSAhPSAwKQogICAgewogICAgICBwdXRzICgibXV0ZXhhdHRyX3NldHJvYnVzdCBm
+YWlsZWQiKTsKICAgICAgcmV0dXJuIDE7CiAgICB9CiAgaWYgKHB0aHJlYWRfbXV0ZXhhdHRy
+X3NldHBzaGFyZWQgKCZtYSwgUFRIUkVBRF9QUk9DRVNTX1NIQVJFRCkgIT0gMCkKICAgIHsK
+ICAgICAgcHV0cyAoIm11dGV4YXR0cl9zZXRwc2hhcmVkIGZhaWxlZCIpOwogICAgICByZXR1
+cm4gMTsKICAgIH0KICBpZiAocHRocmVhZF9tdXRleGF0dHJfc2V0cHJvdG9jb2wgKCZtYSwg
+UFRIUkVBRF9QUklPX0lOSEVSSVQpICE9IDApCiAgICB7CiAgICAgIHB1dHMgKCJwdGhyZWFk
+X211dGV4YXR0cl9zZXRwcm90b2NvbCBmYWlsZWQiKTsKICAgICAgcmV0dXJuIDE7CiAgICB9
+CgogIGlmIChwdGhyZWFkX211dGV4X2luaXQgKCZtdHgsICZtYSkgIT0gMCkKICAgIHsKICAg
+ICAgcHV0cyAoInB0aHJlYWRfbXV0ZXhfaW5pdCBmYWlsZWQiKTsKICAgICAgcmV0dXJuIDE7
+CiAgICB9CgogIHRocl9pbmZvX3QgdGhyc1tOVU1fVEhSRUFEU107CiAgZm9yIChpID0gMDsg
+aSA8IE5VTV9USFJFQURTOyBpKyspCiAgICB7CiAgICAgIHRocnNbaV0ubnIgPSBpOwogICAg
+ICBhc3NlcnQgKHB0aHJlYWRfY3JlYXRlICgmKHRocnNbaV0udGhyZWFkKSwgTlVMTCwgVEhS
+RUFEX0ZVTkMsICYodGhyc1tpXSkpCgkgICAgICA9PSAwKTs7CiAgICB9CgojaWYgVVNFX0JB
+UlJJRVIgIT0gMAogIC8qIEFsbCB0aHJlYWRzIHN0YXJ0IHdvcmsgYWZ0ZXIgdGhpcyBiYXJy
+aWVyLiAgKi8KICBwdGhyZWFkX2JhcnJpZXJfd2FpdCAoJnRocnNfYmFycmllcik7CiNlbmRp
+ZgoKICBmb3IgKGkgPSAwOyBpIDwgTlVNX1RIUkVBRFM7IGkrKykKICAgIHsKICAgICAgcHRo
+cmVhZF9qb2luICh0aHJzW2ldLnRocmVhZCwgTlVMTCk7CiAgICB9CgojaWYgVVNFX0JBUlJJ
+RVIgIT0gMAogIHB0aHJlYWRfYmFycmllcl9kZXN0cm95ICgmdGhyc19iYXJyaWVyKTsKI2Vu
+ZGlmCgogIHByaW50ZiAoIm1haW46IGVuZC5cbiIpOwogIHJldHVybiBFWElUX1NVQ0NFU1M7
+Cn0K
+
+--------------efg6hB0FNWC65xkaiJmoB8uN--
+
 
