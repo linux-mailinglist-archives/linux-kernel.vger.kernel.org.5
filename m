@@ -1,61 +1,72 @@
-Return-Path: <linux-kernel+bounces-30848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04F6F832514
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:36:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49AF0832516
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:37:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28B15B21C4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:36:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D647B1F23B56
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:37:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACD87D51C;
-	Fri, 19 Jan 2024 07:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7665D51E;
+	Fri, 19 Jan 2024 07:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DBZ9EZbi"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I5+KXAKQ"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D95D518;
-	Fri, 19 Jan 2024 07:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF48D51A
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705649777; cv=none; b=B3MBxfOxdtQ9tTnbTSiTz1XBAfWBRnpHLMzCjQavfiNUc1hoeGJRYcB8Njfg4QJP+Won1jfr29uPFwjPJswSERe0KTVbkXAuoMHIVF42P1O7eJhg0FDKTklqvPMfwfPX3L5/JoqGIql+U2SPo1cC4OTHJtVSqwciqrIKu05pKDs=
+	t=1705649839; cv=none; b=FbVLPrr13BOzrbEHK2hhZ0smZfPHZlETiZnArqk+AT7abEZb5uE4n/eHwtopRdE3NSE4Ne3tXdheEk1g02P5DkOkufnpxsFyXVTgnRMVL5l6dmRTd7GIclVG9z1/skqlTqe//LA988QCEcHWF8dVpGjVMqnR6CnVov2QeOyt8/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705649777; c=relaxed/simple;
-	bh=ATa/wWcVOMvBrwAk92bprGIR7xSGsMx0ZJqndSRwXtg=;
+	s=arc-20240116; t=1705649839; c=relaxed/simple;
+	bh=wnMv6grck/8JUvYsXcxoc9iHXWWkN00HXHmU8cOzKA8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y1Nr33uXHH+r21PWitlQGr3jp/jXeOcwb0whmVgBSBNFwIj/LRMGdwRKvqkirmskD9ucnpy2nix2Xopzz8kbdWftV4OekL0GCf9siBXzeEWLa6pva+Oaeb/jv1rtGyxwUxpPPI96u+6OvqveQ9AM7swmEUalNIr/W8CTF6NBgdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DBZ9EZbi; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705649775; x=1737185775;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ATa/wWcVOMvBrwAk92bprGIR7xSGsMx0ZJqndSRwXtg=;
-  b=DBZ9EZbizy5H8+xomKHwXzShbTVgizzwqNRXDC+OAW1WflW4L/NLQ+t9
-   HzcSAwV/IqxZEN+/0lzVvqy0yErhneN5GmDl8j2T6awPyqZsd+/yfznz5
-   oZJViptdgUripAnh1cOxpdKMCmipS3KTzS21e5dxCeP9Qt3zY8GdS58ob
-   NoT2PfnFMKfcsJllXAxHAu6cbrcyAQioCH1ZNk7Fz+BRVuYOMb9h8qThn
-   GeWP6yMFOYsEYEqo2p8pt8Uc5mxuaAEsVV0pCNwWdz79i2dHN8zQ6Xzqe
-   4O/V2bu/etMXFQqHt4RrYoVdpPvitw/urzcV+2c3njGqES3Zdm7m79cdd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="431854838"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="431854838"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 23:36:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="785009656"
-X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="785009656"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.39.208])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 23:36:11 -0800
-Message-ID: <66cdc5f9-a09a-4841-8fca-252b7c78114b@intel.com>
-Date: Fri, 19 Jan 2024 09:36:06 +0200
+	 In-Reply-To:Content-Type; b=H5o6vqeNFTI2+wUQyX3y0CYUMHDpMGOiwC4kdylmyE84Qo4+5whdxCDgktR9MypgKXOlOROnef6hSQ1zflntFyE68DEBFLQrTZ7gezZOmBbkhAKcwByvxojBgHCtxO7A6B/n76nkDq7DILtG7P/qJp5iOuQTtPn9/870WLYZxnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=I5+KXAKQ; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40e60e135a7so4259475e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:37:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705649835; x=1706254635; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gRVEGEADVnU1rj2ZsZLhkpAgQRXYe6tlf4fK3vtgXN8=;
+        b=I5+KXAKQik2A/4uaJFwGY78VJkT3ikShSZt9pp+gU0mn96D7lMYsT1IEABJZacB0Bk
+         uuxcQ2gR8sczJ8eV7KM9CH9rqVdKZ+MROm1xyCpuaZu0/B0mmgiaspPl84O+DEnrN3Hr
+         Rh5HkvwEpAaCZGtH17deI3J+MVD/dl9VXTTXVD+375JzbOoYztyCYhn529TONifCihvX
+         aw78e2LQtEOJcD+CnlRKNgHDVB4SbDmCMX3931jUSs8gasXkJM38qrvVWdpjq1EIyU8Q
+         xvNaDr+p/gp8PA0VvDu6BcK1rdpmkltlK0AeIrdzfp1tDJpbYBC1jyAJsKDv+9EKiW8U
+         p9yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705649835; x=1706254635;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gRVEGEADVnU1rj2ZsZLhkpAgQRXYe6tlf4fK3vtgXN8=;
+        b=tV172KJUZU8/2qX+QwUpc3d7zpdJk0GBXdXodnNh/XTDrg76EvDkg0bYmSj8BcDcpZ
+         9O76qgaMto3iWVRmiK/PkEGqSmoYtrJNLPtwWJyRf8v3wxDcCfmj0hzuNUvsmsZmG0l6
+         aA2N6BsuWAsFWk5rzOAiIDiVrxBD7bVAP6eoo/42OWPk+HdNk5mcbUSsLxb5DxlqAH0G
+         YqE8mcTEpqQEAa7osJuvBp2uPUMjnVTY2yC4B7YBq/tLraFTn6KxWnT6FDu7ah2ume6y
+         w/dvgjOhocRzv3hjGxVUiXFmdii2+9JfLAFhww0W/ZjAmBzwCVGfOfgix6F+1VD3snb8
+         tXhw==
+X-Gm-Message-State: AOJu0YylYJAUTndYyAmaHAUfdR3MFfrN+FoGpBcwe4mrDMZk4iISKTAR
+	86VgqAzeYj13ARV3Nhobo20SrphZHbIjRZDhatfij+isgQU15/9xcxcaho1FW40=
+X-Google-Smtp-Source: AGHT+IGuGmikPGSsHZHY9FIadEyh4MkIKPIZmnPKnfXBLGan0KHUJRVxzqp0unv1usUGifgHR7kXog==
+X-Received: by 2002:a7b:cbd7:0:b0:40d:87eb:fa98 with SMTP id n23-20020a7bcbd7000000b0040d87ebfa98mr1344916wmi.28.1705649835643;
+        Thu, 18 Jan 2024 23:37:15 -0800 (PST)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id l22-20020a05600c4f1600b0040d6b91efd9sm31782328wmq.44.2024.01.18.23.37.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jan 2024 23:37:15 -0800 (PST)
+Message-ID: <ac6eb9f9-9a5c-472d-9a57-ee509d9589f9@linaro.org>
+Date: Fri, 19 Jan 2024 07:37:14 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,158 +74,75 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf/core: Fix small negative period being ignored
+Subject: Re: [PATCH v3 3/5] ASoC: qcom: sc8280xp: limit speaker volumes
 Content-Language: en-US
-To: Luo Gengkun <luogengkun2@huawei.com>
-Cc: mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org,
- irogers@google.com, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, peterz@infradead.org
-References: <20240116083915.2859302-1-luogengkun2@huawei.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240116083915.2859302-1-luogengkun2@huawei.com>
-Content-Type: text/plain; charset=UTF-8
+To: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc: Banajit Goswami <bgoswami@quicinc.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <20240118165811.13672-1-johan+linaro@kernel.org>
+ <20240118165811.13672-4-johan+linaro@kernel.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20240118165811.13672-4-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 16/01/24 10:39, Luo Gengkun wrote:
-> In perf_adjust_period, we will first calculate period, and then use
-> this period to calculate delta. However, when delta is less than 0,
-> there will be a deviation compared to when delta is greater than or
-> equal to 0. For example, when delta is in the range of [-14,-1], the
-> range of delta = delta + 7 is between [-7,6], so the final value of
-> delta/8 is 0. Therefore, the impact of -1 and -2 will be ignored.
-> This is unacceptable when the target period is very short, because
-> we will lose a lot of samples.
-> 
-> Here are some tests and analyzes:
-> before:
->   # perf record -e cs -F 1000  ./a.out
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 0.022 MB perf.data (518 samples) ]
-> 
->   # perf script
->   ...
->   a.out     396   257.956048:         23 cs:  ffffffff81f4eeec schedul>
->   a.out     396   257.957891:         23 cs:  ffffffff81f4eeec schedul>
->   a.out     396   257.959730:         23 cs:  ffffffff81f4eeec schedul>
->   a.out     396   257.961545:         23 cs:  ffffffff81f4eeec schedul>
->   a.out     396   257.963355:         23 cs:  ffffffff81f4eeec schedul>
->   a.out     396   257.965163:         23 cs:  ffffffff81f4eeec schedul>
->   a.out     396   257.966973:         23 cs:  ffffffff81f4eeec schedul>
->   a.out     396   257.968785:         23 cs:  ffffffff81f4eeec schedul>
->   a.out     396   257.970593:         23 cs:  ffffffff81f4eeec schedul>
->   ...
-> 
-> after:
->   # perf record -e cs -F 1000  ./a.out
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 0.058 MB perf.data (1466 samples) ]
-> 
->   # perf script
->   ...
->   a.out     395    59.338813:         11 cs:  ffffffff81f4eeec schedul>
->   a.out     395    59.339707:         12 cs:  ffffffff81f4eeec schedul>
->   a.out     395    59.340682:         13 cs:  ffffffff81f4eeec schedul>
->   a.out     395    59.341751:         13 cs:  ffffffff81f4eeec schedul>
->   a.out     395    59.342799:         12 cs:  ffffffff81f4eeec schedul>
->   a.out     395    59.343765:         11 cs:  ffffffff81f4eeec schedul>
->   a.out     395    59.344651:         11 cs:  ffffffff81f4eeec schedul>
->   a.out     395    59.345539:         12 cs:  ffffffff81f4eeec schedul>
->   a.out     395    59.346502:         13 cs:  ffffffff81f4eeec schedul>
->   ...
-> 
-> test.c
-> 
-> int main() {
->         for (int i = 0; i < 20000; i++)
->                 usleep(10);
-> 
->         return 0;
-> }
-> 
->   # time ./a.out
->   real    0m1.583s
->   user    0m0.040s
->   sys     0m0.298s
-> 
-> The above results were tested on x86-64 qemu with KVM enabled using
-> test.c as test program. Ideally, we should have around 1500 samples,
-> but the previous algorithm had only about 500, whereas the modified
-> algorithm now has about 1400. Further more, the new version shows 1
-> sample per 0.001s, while the previous one is 1 sample per 0.002s.This
-> indicates that the new algorithm is more sensitive to small negative
-> values compared to old algorithm.
-> 
-> Fixes: bd2b5b12849a ("perf_counter: More aggressive frequency adjustment")
-> Signed-off-by: Luo Gengkun <luogengkun2@huawei.com>
-
-It seems better, and the maths makes sense, so:
-
-Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
 
 
-But the test case still seems to give unexpected results. Usually:
-
-  # time taskset --cpu 1 ./test
-  real    0m 1.25s
-  user    0m 0.03s
-  sys     0m 0.00
-  # taskset --cpu 0 perf record -F 1000 -e cs -- taskset --cpu 1 ./test
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.051 MB perf.data (1290 samples) ]
-
-But occasionally:
-
-  # taskset --cpu 0 perf record -F 1000 -e cs -- taskset --cpu 1 ./test
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.010 MB perf.data (204 samples) ]
-  # perf script
-  ...
-  test   865   265.377846:         16 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.378900:         15 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.379845:         14 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.380770:         14 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.381647:         15 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.382638:         16 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.383647:         16 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.384704:         15 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.385649:         14 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.386578:        152 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.396383:        154 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.406183:        154 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.415839:        154 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.425445:        154 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.435052:        154 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.444708:        154 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.454314:        154 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.463970:        154 cs:  ffffffff832e927b schedule+0x2b
-  test   865   265.473577:        154 cs:  ffffffff832e927b schedule+0x2b
-  ...
-
-
-
+On 18/01/2024 16:58, Johan Hovold wrote:
+> The UCM configuration for the Lenovo ThinkPad X13s has up until now
+> been setting the speaker PA volume to -3 dB when enabling the speakers,
+> but this does not prevent the user from increasing the volume further.
+> 
+> Limit the PA volume to -3 dB in the machine driver to reduce the risk of
+> speaker damage until we have active speaker protection in place.
+> 
+> Note that this will probably need to be generalised using
+> machine-specific limits, but a common limit should do for now.
+> 
+> Cc: stable@vger.kernel.org	# 6.5
+> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 > ---
->  kernel/events/core.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>   sound/soc/qcom/sc8280xp.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 683dc086ef10..cad50d3439f1 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -4078,7 +4078,11 @@ static void perf_adjust_period(struct perf_event *event, u64 nsec, u64 count, bo
->  	period = perf_calculate_period(event, nsec, count);
->  
->  	delta = (s64)(period - hwc->sample_period);
-> -	delta = (delta + 7) / 8; /* low pass filter */
-> +	if (delta >= 0)
-> +		delta += 7;
-> +	else
-> +		delta -= 7;
-> +	delta /= 8; /* low pass filter */
->  
->  	sample_period = hwc->sample_period + delta;
->  
+> diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
+> index ed4bb551bfbb..a19bfa354af8 100644
+> --- a/sound/soc/qcom/sc8280xp.c
+> +++ b/sound/soc/qcom/sc8280xp.c
+> @@ -32,12 +32,14 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
+>   	case WSA_CODEC_DMA_RX_0:
+>   	case WSA_CODEC_DMA_RX_1:
+>   		/*
+> -		 * set limit of 0dB on Digital Volume for Speakers,
+> -		 * this can prevent damage of speakers to some extent without
+> -		 * active speaker protection
+> +		 * Set limit of 0 dB on Digital Volume and -3 dB on PA Volume
+> +		 * to reduce the risk of speaker damage until we have active
+> +		 * speaker protection in place.
 
+I would prefer a 0dB here instead of -3dB, this could become issue if we 
+are testing speakers without any pluseaudio or any software 
+amplification. ex: console
+
+
+>   		 */
+>   		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
+>   		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
+> +		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 1);
+> +		snd_soc_limit_volume(card, "SpkrRight PA Volume", 1)
+
+It would be nice to consider using component->name_prefix here.
+
+
+thanks,
+srini
+;
+
+>   		break;
+>   	default:
+>   		break;
 
