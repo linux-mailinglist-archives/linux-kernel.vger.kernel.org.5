@@ -1,39 +1,72 @@
-Return-Path: <linux-kernel+bounces-31119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 342C4832946
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:54:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0871832948
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:57:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88C33B23F36
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:54:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60E041F24FB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7994F1EF;
-	Fri, 19 Jan 2024 11:54:03 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418D04C600;
-	Fri, 19 Jan 2024 11:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5DB4F1EA;
+	Fri, 19 Jan 2024 11:57:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="a4JdEE+O"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7944C3D0
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705665242; cv=none; b=grpn8djGlC7MvZVP63b97TLhbzlIQUKzIph/gWVqFsvRmSwzEHzR/1VIwf8dsxbNPq00b/v72Ex2+S/txLzA/aHmd3dUNC7dKmVDUExCvSCxKfbPWGlPlSRHL1qSv+82dasu21jQb6e21tRQy0LGJGcOGT1Sz/dqCKlC+RVzBT8=
+	t=1705665425; cv=none; b=BR8jBN5l1DYyf0W87Wl0LpHWf/efzt2Wvdb8+fHg14r+ozGLclh0o0CQIQnd4gP2zuvNdVbSV0BT0oMR+QFHj29sTLdnnKOqrdLF6uoDf+GHiVywVCGtXuXzgUY/iZlguOftXsILZYDFA6SbZF8KD0nIOszxYoHimzKe3MXN8Mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705665242; c=relaxed/simple;
-	bh=vXd4CS3Mkgr2/80T6FU3At1o3GqlfUnp+12tHmpsRdQ=;
+	s=arc-20240116; t=1705665425; c=relaxed/simple;
+	bh=fVuPsl7YWFUpEJh06zIUwD1ZtlwmU2Vm11++xGNKYP8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RgSfXh63MLgXOqR4tB0MQ52gms9fBhitiGLRjPJDbZ/x2IWGWhhkfGzlLNdEgdUrI7HM1BAbUSci4Ohjt3fU1KXclWKVtYsX3D7FDqqWlplkgAm3kRz2EYx9/O7wu8+OegvX6uANixoPwPo/nx65YRPgVkDRnZg88d0n13A2dQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9084A1042;
-	Fri, 19 Jan 2024 03:54:44 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C45443F73F;
-	Fri, 19 Jan 2024 03:53:53 -0800 (PST)
-Message-ID: <03e056cd-bdbc-4807-b86c-0f5b554aac73@arm.com>
-Date: Fri, 19 Jan 2024 11:53:51 +0000
+	 In-Reply-To:Content-Type; b=tlYl/x6DXAMPdyr7p/cF0bBeYi+HBvJYS7JAvb/5P2YRZmbSOiYSbEjEoZJp7nCxEVKRhIhwEhiwBrtzDq3ag1A2L5wZCLFqPVnm7G2lw0F2HdlB0e4eDDqa+pE7jaZfWRPQORsiePOeFKU3joaExwX77G+gvJAaX7gsf/ZpaxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=a4JdEE+O; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29036dc3a63so378938a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 03:57:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tweaklogic.com; s=google; t=1705665423; x=1706270223; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lux3UVQlOyKwmTBEJ+0A8e/kL23oNu9FD/5hw0zpRlM=;
+        b=a4JdEE+OYWzztlQn8ani1jluHRS29verXO9HMovFKZVHdNeKqK6wwyEbzspLAalZzd
+         WFwpXe9SpVyAThmG4phKTrb+vn3EgfrDFjLSPPOfWHaNfeH8Q1nSykmkBr60sWa+/rBi
+         +CssUjhqPlnK9gKI6h4J+ihiaYaYglqqBIee4JX34+K3fPYg+iKgSQM4e7RS/hYN6LMK
+         quBNCfH/mrMZPmSFkXr2+uTVi2IjrE1ZQYqYQ1lU92t3bpnZEjQxy52ZouIjIWvDyMx4
+         59y1tsppLP1pMjpS6Bbzbm+90NKxrwFY+mQGrllQnKOwhnaWZ20wWTaXw//lb5pAPUhs
+         tuWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705665423; x=1706270223;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lux3UVQlOyKwmTBEJ+0A8e/kL23oNu9FD/5hw0zpRlM=;
+        b=E/pbS9IRTRbJexWy4YYZjWu3MkD9JTr8or1TlJwXoe1Dr2q7Gaqz6cHcNCAmGY49Nm
+         H+blizkHAr5y0LsDtawz2QikflCLfmebhrGf8BC70Jfx91IfFQ+rvFALLcEaoZWX/K8b
+         tZJEMdCuj3eSbnKo6vj470dIhYRbExH87AsErY1p/4HHaPieeKVtMdm8ptB/wBpPlzDZ
+         XwoLzif2MTkKKLcpvBxIaxE08/jK4iReeyhjqhxAnCykw2qZmhBAO0YafoWSRpISR1yS
+         FNr4stJBDbMzv0PaZzrTzz2XUJtUZxtIAst4v0lCQ8SLp6asCN5ZIJnDaskx4RxryhK4
+         d42A==
+X-Gm-Message-State: AOJu0Yw2QUe6Dok63XLYkcWJZYR+MFRfKCICu7RpLjmEvWFYKTIMjHEk
+	Sff32G+ghGXuCSPmldK83tLwfZH8XJRyNH/VZWz1jMzr78X5cJm+ucq8l/l/GVI=
+X-Google-Smtp-Source: AGHT+IGEOi+n2nE8jX+7woP4kzEbqceg+eVMp8pOXvm0yamZFKU/n5y16oj5HPGCF91gF/9E98j/XA==
+X-Received: by 2002:a17:90a:fb89:b0:28d:bd12:1812 with SMTP id cp9-20020a17090afb8900b0028dbd121812mr1861942pjb.48.1705665423128;
+        Fri, 19 Jan 2024 03:57:03 -0800 (PST)
+Received: from ?IPV6:2403:580d:82f4:0:179a:c38f:18a2:7cdb? (2403-580d-82f4-0-179a-c38f-18a2-7cdb.ip6.aussiebb.net. [2403:580d:82f4:0:179a:c38f:18a2:7cdb])
+        by smtp.gmail.com with ESMTPSA id sr15-20020a17090b4e8f00b002904cbe8dc9sm1406054pjb.1.2024.01.19.03.57.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jan 2024 03:57:02 -0800 (PST)
+Message-ID: <a41ef2c9-bd74-4b0e-afb7-12e198847609@tweaklogic.com>
+Date: Fri, 19 Jan 2024 22:26:58 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,241 +74,101 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 06/10] coresight-tpdm: Add support to configure CMB
+Subject: Re: [PATCH] iio: gts-helper: Fix division loop
+To: Jonathan Cameron <jic23@kernel.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <ZZZ7pJBGkTdFFqiY@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
+ <20240107162253.66c1f0f1@jic23-huawei>
 Content-Language: en-US
-To: Tao Zhang <quic_taozha@quicinc.com>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
- Yuanfang Zhang <quic_yuanfang@quicinc.com>,
- Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
- linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1705634583-17631-1-git-send-email-quic_taozha@quicinc.com>
- <1705634583-17631-7-git-send-email-quic_taozha@quicinc.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <1705634583-17631-7-git-send-email-quic_taozha@quicinc.com>
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <20240107162253.66c1f0f1@jic23-huawei>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 19/01/2024 03:22, Tao Zhang wrote:
-> TPDM CMB subunits support two forms of CMB data set element creation:
-> continuous and trace-on-change collection mode. Continuous change
-> creates CMB data set elements on every CMBCLK edge. Trace-on-change
-> creates CMB data set elements only when a new data set element differs
-> in value from the previous element in a CMB data set. Set CMB_CR.MODE
-> to 0 for continuous CMB collection mode. Set CMB_CR.MODE to 1 for
-> trace-on-change CMB collection mode.
+On 8/1/24 02:52, Jonathan Cameron wrote:
+> On Thu, 4 Jan 2024 11:34:28 +0200
+> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 > 
-> Reviewed-by: James Clark <james.clark@arm.com>
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
-> ---
->   .../testing/sysfs-bus-coresight-devices-tpdm  | 14 +++++
->   drivers/hwtracing/coresight/coresight-tpdm.c  | 61 +++++++++++++++++++
->   drivers/hwtracing/coresight/coresight-tpdm.h  | 12 ++++
->   3 files changed, 87 insertions(+)
+>> The loop based 64bit division may run for a long time when dividend is a
+>> lot bigger than the divider. Replace the division loop by the
+>> div64_u64() which implementation may be significantly faster.
+>>
+>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+>> Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers")
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> index 4dd49b159543..3ae21ccf3f29 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> @@ -170,3 +170,17 @@ Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_t
->   Description:
->   		(RW) Set/Get the MSR(mux select register) for the DSB subunit
->   		TPDM.
-> +
-> +What:		/sys/bus/coresight/devices/<tpdm-name>/cmb_mode
-> +Date:		March 2023
-> +KernelVersion	6.7
-> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
-> +Description:	(Write) Set the data collection mode of CMB tpdm. Continuous
-> +		change creates CMB data set elements on every CMBCLK edge.
-> +		Trace-on-change creates CMB data set elements only when a new
-> +		data set element differs in value from the previous element
-> +		in a CMB data set.
-> +
-> +		Accepts only one of the 2 values -  0 or 1.
-> +		0 : Continuous CMB collection mode.
-> +		1 : Trace-on-change CMB collection mode.
-> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
-> index 424a2f724d82..b55aee65a856 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-> @@ -137,6 +137,18 @@ static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
->   	return 0;
->   }
->   
-> +static umode_t tpdm_cmb_is_visible(struct kobject *kobj,
-> +				   struct attribute *attr, int n)
-> +{
-> +	struct device *dev = kobj_to_dev(kobj);
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +
-> +	if (drvdata && tpdm_has_cmb_dataset(drvdata))
-> +		return attr->mode;
-> +
-> +	return 0;
-> +}
-> +
->   static umode_t tpdm_dsb_msr_is_visible(struct kobject *kobj,
->   				       struct attribute *attr, int n)
->   {
-> @@ -161,6 +173,9 @@ static void tpdm_reset_datasets(struct tpdm_drvdata *drvdata)
->   		drvdata->dsb->trig_ts = true;
->   		drvdata->dsb->trig_type = false;
->   	}
-> +
-> +	if (tpdm_has_cmb_dataset(drvdata))
+> Hmm. Fix or not perf improvement?  I'm going to take the middle ground
+> and leave the fixes tag, but not rush this in.
+> 
+> So applied to the togreg branch of iio.git and for now just pushed out
+> as testing for 0-day etc to take a look before I rebase that tree after
+> rc1.
+> 
+> 
+> 
+>> ---
+>>
+>> I've implemented also a fixup series for supporting rounding of
+>> gains/scales:
+>> https://lore.kernel.org/lkml/37d3aa193e69577353d314e94463a08d488ddd8d.1701780964.git.mazziesaccount@gmail.com/
+>>
+>> That series does also remove the offending loop.
+>>
+>> We don't currently have any in-tree users of GTS helpers which would
+>> need the rounding support so pushing the rounding is not urgent (and I
+>> haven't heard of Subjahit whose driver required the rounding). Hence, we
+>> may want to only take this loop fix in for now (?) and reconsider
+>> rounding when someone need that.
+>>
+>> Jonathan, what's your take on this?
+> Agreed - let us wait for the rounding to have a user, but makes sense
+> to tidy this corner up in the meantime.
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+>>
+>>   drivers/iio/industrialio-gts-helper.c | 5 ++---
+>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/iio/industrialio-gts-helper.c b/drivers/iio/industrialio-gts-helper.c
+>> index 7653261d2dc2..abcab2d38589 100644
+>> --- a/drivers/iio/industrialio-gts-helper.c
+>> +++ b/drivers/iio/industrialio-gts-helper.c
+>> @@ -34,7 +34,7 @@
+>>   static int iio_gts_get_gain(const u64 max, const u64 scale)
+>>   {
+>>   	u64 full = max;
+>> -	int tmp = 1;
+>> +	int tmp = 0;
+>>   
+>>   	if (scale > full || !scale)
+>>   		return -EINVAL;
+>> @@ -48,8 +48,7 @@ static int iio_gts_get_gain(const u64 max, const u64 scale)
+>>   		tmp++;
+>>   	}
+>>   
+>> -	while (full > scale * (u64)tmp)
+>> -		tmp++;
+>> +	tmp += div64_u64(full, scale);
+>>   
+>>   	return tmp;
+>>   }
+>>
+>> base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
+> 
+> 
+Hi Matti,
 
-This could simply be gated on drvdata->cmb for extra safety ?
+Your fix works beautifully with the latest version of apds9306 driver which I am working on.
+All available scale values can be set without any errors. Thank you.
 
-	if (drvdata->cmb)
-		
-> +		memset(drvdata->cmb, 0, sizeof(struct cmb_dataset));
->   }
->   
->   static void set_dsb_mode(struct tpdm_drvdata *drvdata, u32 *val)
-> @@ -389,6 +404,12 @@ static int tpdm_datasets_setup(struct tpdm_drvdata *drvdata)
->   		if (!drvdata->dsb)
->   			return -ENOMEM;
->   	}
-> +	if (tpdm_has_cmb_dataset(drvdata) && (!drvdata->cmb)) {
-> +		drvdata->cmb = devm_kzalloc(drvdata->dev,
-> +						sizeof(*drvdata->cmb), GFP_KERNEL);
-> +		if (!drvdata->cmb)
-> +			return -ENOMEM;
-> +	}
->   	tpdm_reset_datasets(drvdata);
->   
->   	return 0;
-> @@ -727,6 +748,35 @@ static ssize_t dsb_trig_ts_store(struct device *dev,
->   }
->   static DEVICE_ATTR_RW(dsb_trig_ts);
->   
-> +static ssize_t cmb_mode_show(struct device *dev,
-> +			     struct device_attribute *attr,
-> +			     char *buf)
-> +{
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +
-> +	return sysfs_emit(buf, "%x\n",
-> +			  drvdata->cmb->trace_mode);
+Moving to a new city with a new full time job with the assumption of getting more time
+for my list of opensource projects and contributions proved to be utterly wrong!
 
-minor nit: Don't need to split the line here. Also, for completeness, 
-you need to read it under spinlock, use guard() to unlock implicitly.
-
-> +
-> +}
-> +
-> +static ssize_t cmb_mode_store(struct device *dev,
-> +			      struct device_attribute *attr,
-> +			      const char *buf,
-> +			      size_t size)
-> +{
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +	unsigned long trace_mode;
-> +
-> +	if ((kstrtoul(buf, 0, &trace_mode)) || (trace_mode & ~1UL))
-
-minor nit: drop () around kstrtoul()
-
-Rest looks fine.
-
-Suzuki
-
-> +		return -EINVAL;
-> +
-> +	spin_lock(&drvdata->spinlock);
-> +	drvdata->cmb->trace_mode = trace_mode;
-> +	spin_unlock(&drvdata->spinlock);
-> +	return size;
-> +}
-> +static DEVICE_ATTR_RW(cmb_mode);
-> +
->   static struct attribute *tpdm_dsb_edge_attrs[] = {
->   	&dev_attr_ctrl_idx.attr,
->   	&dev_attr_ctrl_val.attr,
-> @@ -843,6 +893,11 @@ static struct attribute *tpdm_dsb_attrs[] = {
->   	NULL,
->   };
->   
-> +static struct attribute *tpdm_cmb_attrs[] = {
-> +	&dev_attr_cmb_mode.attr,
-> +	NULL,
-> +};
-> +
->   static struct attribute_group tpdm_dsb_attr_grp = {
->   	.attrs = tpdm_dsb_attrs,
->   	.is_visible = tpdm_dsb_is_visible,
-> @@ -872,6 +927,11 @@ static struct attribute_group tpdm_dsb_msr_grp = {
->   	.name = "dsb_msr",
->   };
->   
-> +static struct attribute_group tpdm_cmb_attr_grp = {
-> +	.attrs = tpdm_cmb_attrs,
-> +	.is_visible = tpdm_cmb_is_visible,
-> +};
-> +
->   static const struct attribute_group *tpdm_attr_grps[] = {
->   	&tpdm_attr_grp,
->   	&tpdm_dsb_attr_grp,
-> @@ -879,6 +939,7 @@ static const struct attribute_group *tpdm_attr_grps[] = {
->   	&tpdm_dsb_trig_patt_grp,
->   	&tpdm_dsb_patt_grp,
->   	&tpdm_dsb_msr_grp,
-> +	&tpdm_cmb_attr_grp,
->   	NULL,
->   };
->   
-> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h b/drivers/hwtracing/coresight/coresight-tpdm.h
-> index a442d9c6e4ac..2af92c270ed1 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
-> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
-> @@ -14,6 +14,8 @@
->   
->   /* Enable bit for CMB subunit */
->   #define TPDM_CMB_CR_ENA		BIT(0)
-> +/* Trace collection mode for CMB subunit */
-> +#define TPDM_CMB_CR_MODE	BIT(1)
->   
->   /* DSB Subunit Registers */
->   #define TPDM_DSB_CR		(0x780)
-> @@ -181,6 +183,14 @@ struct dsb_dataset {
->   	bool			trig_type;
->   };
->   
-> +/**
-> + * struct cmb_dataset
-> + * @trace_mode:       Dataset collection mode
-> + */
-> +struct cmb_dataset {
-> +	u32			trace_mode;
-> +};
-> +
->   /**
->    * struct tpdm_drvdata - specifics associated to an TPDM component
->    * @base:       memory mapped base address for this component.
-> @@ -190,6 +200,7 @@ struct dsb_dataset {
->    * @enable:     enable status of the component.
->    * @datasets:   The datasets types present of the TPDM.
->    * @dsb         Specifics associated to TPDM DSB.
-> + * @cmb         Specifics associated to TPDM CMB.
->    * @dsb_msr_num Number of MSR supported by DSB TPDM
->    */
->   
-> @@ -201,6 +212,7 @@ struct tpdm_drvdata {
->   	bool			enable;
->   	unsigned long		datasets;
->   	struct dsb_dataset	*dsb;
-> +	struct cmb_dataset	*cmb;
->   	u32			dsb_msr_num;
->   };
->   
-
+Regards,
+Subhajit Ghosh
 
