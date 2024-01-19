@@ -1,215 +1,225 @@
-Return-Path: <linux-kernel+bounces-31123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F217D832951
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:59:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA767832955
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33640B2132A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:59:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFFC01C23EF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55FC4F1F1;
-	Fri, 19 Jan 2024 11:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8CC14F1F3;
+	Fri, 19 Jan 2024 12:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CZzl1VTL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="OsvDJ6HB"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2EAA4F1E8
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FAB4EB27;
+	Fri, 19 Jan 2024 12:04:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705665560; cv=none; b=l5LK4ix7M932j3Xb83VBisl/TZpWxF1QK9N+Tvbd60x9w0EJy2+sLO1bXMwIO6/IKn07i1oJI0b29PgsbqRc8sD23uqPk0tpevP5aUCoBn7H172SmtzK3ACmYWsrxzIUfmcEZ87YiZ+Fh+258GrFr3++jgfU/sHTEP83xNVYlYI=
+	t=1705665896; cv=none; b=h+UzrfrGgAmuS3M0/GA0YooA801pobhrDulRp1Svs6Kv0sQsWCoAs+MkwKPc92zZAGdCGS1uRsozKlMeLHhaDYEIrLgjPKBZctI0hPv88HbIz6/0xT3zbaGxk2vHV0pGiVIYv8q1BcZCip5FA8IS0u2DSUUIvmRgr8TXi/RBXOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705665560; c=relaxed/simple;
-	bh=bAHJx0yhKKnHDIkSyj/+7VryXHJi2XP5zcuoP570mEY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RxD6zHQM9T/IjM5P3EmmK5gcgoncRGa7vMoIEoiS8LskntRVJwfq1Ob0de8tP+4SaHh+w7w6+Xhv3YlH5bq9ZoZWezIW3+wP0jGWT3Gkx9MzVcEAFYsTMaHBN9UqA95jpK/YwtGBwaw1h93PtLY0gAON7AYU6E42uOHesJIVPgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CZzl1VTL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71C5FC43330
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705665559;
-	bh=bAHJx0yhKKnHDIkSyj/+7VryXHJi2XP5zcuoP570mEY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=CZzl1VTLUCN9HS8jI9iqNBiYprEBRawsVnx/4AwG/RmrD3jCa1ZFtbEbu6RjLtJpu
-	 +h2590qAnFM/u7S00mh6ErcEjpR72sNqKtMh/CIuBgC0Wvc6FE1egjztbt8UCNTtUn
-	 bWZdK7xxwXX/pGUImXbuDayuYGR4yn1WUedv+GIwtvEFRJ5We19mSZ2YS8aok0vj7F
-	 Ebd8Lx0zivRSsdSGeIq5pmsokkWt8I+lWsNSGvU7ssekTY08sp8EGi0yAG8NZ5Yn93
-	 g9Hwnei9dDjkh+86jL+l648GKxh6Igxrr1OHf7Z7JqyLtDS573YYcSF5CvHRo2SjFO
-	 WnOj8tkXo9yLQ==
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cdfbd4e8caso622244a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 03:59:19 -0800 (PST)
-X-Gm-Message-State: AOJu0YyQ1NG+A2Zk8WeqPJba0i5+n7Pra0vZlhU9dz1Ld9G3z3IleOvj
-	x28hr73GfKszK+9WSfF5eTfOYHO6NeWFJxAdFPGiqe+JbqPWZLLb/JPeCYNw49JgF3tjun2aBMy
-	Lj0aNwMuANlgERsIqKwtZWvzzTht1ic4tQal/
-X-Google-Smtp-Source: AGHT+IG7NvN6OZLP/OU1SyMLwKuBCHH9lQsNNtMIExy1C2cP6UjvhwHkcMYz/IAyChNd0xRlcqbqPThF9Dlkj/h0rdI=
-X-Received: by 2002:a05:6a21:150b:b0:199:afd6:2338 with SMTP id
- nq11-20020a056a21150b00b00199afd62338mr3022933pzb.43.1705665558914; Fri, 19
- Jan 2024 03:59:18 -0800 (PST)
+	s=arc-20240116; t=1705665896; c=relaxed/simple;
+	bh=j6iDGS0RH2zPYPqLFo5vTY1M1nOg2boEqT3Tjpt4eYs=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hrPJQcqsEC2uy9PQXOtAkXZmWqdqiwIuh6+H6sN6Z9hyoHWqZ5R+szXSuFrV6QPSikHVT0XjWR/frIDe0u45sBTOihOq7W3JEJJcydsVI45vBHet2HYa/yNl3ecDcjfW1852oT4t5D4RbFizqNTolkiO5H/4YnZ8JQL+C4aL9ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=OsvDJ6HB; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1705665893; x=1737201893;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=j6iDGS0RH2zPYPqLFo5vTY1M1nOg2boEqT3Tjpt4eYs=;
+  b=OsvDJ6HBNaFV7Fe4cRWy+Es8ve9VMExVo/CKWciLVLkVUsJJLC2G03LM
+   4l0XKm88oJs07VGIPT/OzD3vdTLr+j5eM2iShRzHZTRd2yQa1qWG+dzlL
+   TYj5SK2DRk8diNE476Juay3dlyHar/xV7ojjuSMN+lt8boOf/HkAiz857
+   rOxLYE0fTwg7+qNr6PpPBDw9EWc8ZLF1i2S6gqTDTQWymI/THFHfbPfjj
+   NzM5JE1lDesPpZabm3KjaDrbg1UFsHaAShKGveHFr+ZQ8Y55uNy2KDzFv
+   2ck5Im72zEeK4ktbCPoUOr6SxI6BdaO0mcCAJxI8VBml5zgk52Ulu0idq
+   g==;
+X-CSE-ConnectionGUID: A5LlJf7nQL6xcXZAQ6I1bw==
+X-CSE-MsgGUID: tkta2MrESBqXD4cPHCDwpQ==
+X-IronPort-AV: E=Sophos;i="6.05,204,1701154800"; 
+   d="asc'?scan'208";a="14994207"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Jan 2024 05:04:52 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 19 Jan 2024 05:04:24 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 19 Jan 2024 05:04:20 -0700
+Date: Fri, 19 Jan 2024 12:03:43 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: <Dharma.B@microchip.com>
+CC: <conor@kernel.org>, <sam@ravnborg.org>, <bbrezillon@kernel.org>,
+	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <Nicolas.Ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<lee@kernel.org>, <thierry.reding@gmail.com>,
+	<u.kleine-koenig@pengutronix.de>, <linux-pwm@vger.kernel.org>,
+	<Linux4Microchip@microchip.com>
+Subject: Re: [PATCH v3 3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT
+ schema format
+Message-ID: <20240119-character-mardi-43571d7fe7d5@wendy>
+References: <20240118092612.117491-1-dharma.b@microchip.com>
+ <20240118092612.117491-4-dharma.b@microchip.com>
+ <20240118-recent-glorified-fd35d72e006e@spud>
+ <c33868c8-dc42-4800-885c-5e5f24c2044e@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
- <CAJD7tkbQb5nAQdhHXELQsUWs8KhwnoOZ7C8Eu2o7tCYSKeY9Ug@mail.gmail.com>
- <CAJD7tkb7GmMARE9ueyOCZz9wBbANhofUOHnen+b28sxE9tDy1A@mail.gmail.com>
- <7f52ad78-e10b-438a-b380-49451bf6f64f@bytedance.com> <CAJD7tkaeBTforGTQ8ia_6-1fd5hf-zwkBcd_kW8Bk=zdO+Qnvw@mail.gmail.com>
- <CAF8kJuNPPruLDOEqH-f-w1zw-TSuWkUZsQ43Qe_EtycapXgkbQ@mail.gmail.com>
- <3a1b124d-4a97-4400-9714-0cceac53bd34@bytedance.com> <CAF8kJuN_3eaJjwLx_hpwN_ahfHa3qT1kN+NQdYd7vokZj458mA@mail.gmail.com>
- <9b2f8385-735b-4341-b521-a42c9a9cb04c@bytedance.com> <CAF8kJuNvxZgMvW+7gN1anpASKXdaPfYi=0pSfmJftHkzXnV-ag@mail.gmail.com>
- <ad007bf8-ab06-4414-8675-e689c5c84fc9@bytedance.com>
-In-Reply-To: <ad007bf8-ab06-4414-8675-e689c5c84fc9@bytedance.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Fri, 19 Jan 2024 03:59:07 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuM4ybP+4_3zssCfV3-Vf9_gE2P7jiOcD9OGgT4JjFC0bg@mail.gmail.com>
-Message-ID: <CAF8kJuM4ybP+4_3zssCfV3-Vf9_gE2P7jiOcD9OGgT4JjFC0bg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] RFC: zswap tree use xarray instead of RB tree
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	=?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, Yu Zhao <yuzhao@google.com>, 
-	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
-	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="a0WqJfirCmr9EVhF"
+Content-Disposition: inline
+In-Reply-To: <c33868c8-dc42-4800-885c-5e5f24c2044e@microchip.com>
+
+--a0WqJfirCmr9EVhF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 19, 2024 at 3:12=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> On 2024/1/19 18:26, Chris Li wrote:
-> > On Thu, Jan 18, 2024 at 10:19=E2=80=AFPM Chengming Zhou
-> > <zhouchengming@bytedance.com> wrote:
+On Fri, Jan 19, 2024 at 03:32:49AM +0000, Dharma.B@microchip.com wrote:
+> On 18/01/24 9:10 pm, Conor Dooley wrote:
+> > On Thu, Jan 18, 2024 at 02:56:12PM +0530, Dharma Balasubiramani wrote:
+> >> Convert the atmel,hlcdc binding to DT schema format.
 > >>
-> >> On 2024/1/19 12:59, Chris Li wrote:
-> >>> On Wed, Jan 17, 2024 at 11:35=E2=80=AFPM Chengming Zhou
-> >>> <zhouchengming@bytedance.com> wrote:
-> >>>
-> >>>>>>>                     mm-stable           zswap-split-tree    zswap=
--xarray
-> >>>>>>> real                1m10.442s           1m4.157s            1m9.9=
-62s
-> >>>>>>> user                17m48.232s          17m41.477s          17m45=
-887s
-> >>>>>>> sys                 8m13.517s           5m2.226s            7m59.=
-305s
-> >>>>>>>
-> >>>>>>> Looks like the contention of concurrency is still there, I haven'=
-t
-> >>>>>>> look into the code yet, will review it later.
-> >>>>>
-> >>>>> Thanks for the quick test. Interesting to see the sys usage drop fo=
-r
-> >>>>> the xarray case even with the spin lock.
-> >>>>> Not sure if the 13 second saving is statistically significant or no=
-t.
-> >>>>>
-> >>>>> We might need to have both xarray and split trees for the zswap. It=
- is
-> >>>>> likely removing the spin lock wouldn't be able to make up the 35%
-> >>>>> difference. That is just my guess. There is only one way to find ou=
-t.
-> >>>>
-> >>>> Yes, I totally agree with this! IMHO, concurrent zswap_store paths s=
-till
-> >>>> have to contend for the xarray spinlock even though we would have co=
-nverted
-> >>>> the rb-tree to the xarray structure at last. So I think we should ha=
-ve both.
-> >>>>
-> >>>>>
-> >>>>> BTW, do you have a script I can run to replicate your results?
-> >>>
-> >>> Hi Chengming,
-> >>>
-> >>> Thanks for your script.
-> >>>
-> >>>>
-> >>>> ```
-> >>>> #!/bin/bash
-> >>>>
-> >>>> testname=3D"build-kernel-tmpfs"
-> >>>> cgroup=3D"/sys/fs/cgroup/$testname"
-> >>>>
-> >>>> tmpdir=3D"/tmp/vm-scalability-tmp"
-> >>>> workdir=3D"$tmpdir/$testname"
-> >>>>
-> >>>> memory_max=3D"$((2 * 1024 * 1024 * 1024))"
-> >>>>
-> >>>> linux_src=3D"/root/zcm/linux-6.6.tar.xz"
-> >>>> NR_TASK=3D32
-> >>>>
-> >>>> swapon ~/zcm/swapfile
-> >>>
-> >>> How big is your swapfile here?
+> >> Adjust the clock-names property to clarify that the LCD controller exp=
+ects
+> >> one of these clocks (either sys_clk or lvds_pll_clk to be present but =
+not
+> >> both) along with the slow_clk and periph_clk. This alignment with the =
+actual
+> >> hardware requirements will enable accurate device tree configuration f=
+or
+> >> systems using the HLCDC IP.
 > >>
-> >> The swapfile is big enough here, I use a 50GB swapfile.
-> >
-> > Thanks,
-> >
+> >> Signed-off-by: Dharma Balasubiramani<dharma.b@microchip.com>
+> >> ---
+> >> changelog
+> >> v2 -> v3
+> >> - Rename hlcdc-display-controller and hlcdc-pwm to generic names.
+> >> - Modify the description by removing the unwanted comments and '|'.
+> >> - Modify clock-names simpler.
+> >> v1 -> v2
+> >> - Remove the explicit copyrights.
+> >> - Modify title (not include words like binding/driver).
+> >> - Modify description actually describing the hardware and not the driv=
+er.
+> >> - Add details of lvds_pll addition in commit message.
+> >> - Ref endpoint and not endpoint-base.
+> >> - Fix coding style.
+> >> ...
+> >>   .../devicetree/bindings/mfd/atmel,hlcdc.yaml  | 97 +++++++++++++++++=
+++
+> >>   .../devicetree/bindings/mfd/atmel-hlcdc.txt   | 56 -----------
+> >>   2 files changed, 97 insertions(+), 56 deletions(-)
+> >>   create mode 100644 Documentation/devicetree/bindings/mfd/atmel,hlcdc=
+=2Eyaml
+> >>   delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-hlcdc=
+=2Etxt
 > >>
-> >>>
-> >>> It seems you have only one swapfile there. That can explain the conte=
-ntion.
-> >>> Have you tried multiple swapfiles for the same test?
-> >>> That should reduce the contention without using your patch.
-> >> Do you mean to have many 64MB swapfiles to swapon at the same time?
-> >
-> > 64MB is too small. There are limits to MAX_SWAPFILES. It is less than
-> > (32 - n) swap files.
-> > If you want to use 50G swap space, you can have MAX_SWAPFILES, each
-> > swapfile 50GB / MAX_SWAPFILES.
->
-> Right.
->
-> >
-> >> Maybe it's feasible to test,
-> >
-> > Of course it is testable, I am curious to see the test results.
-> >
-> >> I'm not sure how swapout will choose.
-> >
-> > It will rotate through the same priority swap files first.
-> > swapfile.c: get_swap_pages().
-> >
-> >> But in our usecase, we normally have only one swapfile.
-> >
-> > Is there a good reason why you can't use more than one swapfile?
->
-> I think no, but it seems an unneeded change/burden to our admin.
-> So I just tested and optimized for the normal case.
+> >> diff --git a/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml b/=
+Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
+> >> new file mode 100644
+> >> index 000000000000..eccc998ac42c
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
+> >> @@ -0,0 +1,97 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id:http://devicetree.org/schemas/mfd/atmel,hlcdc.yaml#
+> >> +$schema:http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Atmel's HLCD Controller
+> >> +
+> >> +maintainers:
+> >> +  - Nicolas Ferre<nicolas.ferre@microchip.com>
+> >> +  - Alexandre Belloni<alexandre.belloni@bootlin.com>
+> >> +  - Claudiu Beznea<claudiu.beznea@tuxon.dev>
+> >> +
+> >> +description:
+> >> +  The Atmel HLCDC (HLCD Controller) IP available on Atmel SoCs expose=
+s two
+> >> +  subdevices, a PWM chip and a Display Controller.
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    enum:
+> >> +      - atmel,at91sam9n12-hlcdc
+> >> +      - atmel,at91sam9x5-hlcdc
+> >> +      - atmel,sama5d2-hlcdc
+> >> +      - atmel,sama5d3-hlcdc
+> >> +      - atmel,sama5d4-hlcdc
+> >> +      - microchip,sam9x60-hlcdc
+> >> +      - microchip,sam9x75-xlcdc
+> >> +
+> >> +  reg:
+> >> +    maxItems: 1
+> >> +
+> >> +  interrupts:
+> >> +    maxItems: 1
+> >> +
+> >> +  clocks:
+> >> +    maxItems: 3
+> > Hmm, one thing I probably should have said on the previous version, but
+> > I missed somehow: It would be good to add an items list to the clocks
+> > property here to explain what the 3 clocks are/are used for - especially
+> > since there is additional complexity being added here to use either the
+> > sys or lvds clocks.
+> May I inquire if this approach is likely to be effective?
+>=20
+>    clocks:
+>      items:
+>        - description: peripheral clock
+>        - description: generic clock or lvds pll clock
+>            Once the LVDS PLL is enabled, the pixel clock is used as the
+>            clock for LCDC, so its GCLK is no longer needed.
+>        - description: slow clock
+>      maxItems: 3
 
-I understand. Just saying it is not really a kernel limitation per say.
-I blame the user space :-)
+Hmm that sounds very suspect to me. "Once the lvdspll is enabled the
+generic clock is no longer needed" sounds like both clocks can be provided
+to the IP on different pins and their provision is not mutually
+exclusive, just that the IP will only actually use one at a time. If
+that is the case, then this patch is nott correct and the binding should
+allow for 4 clocks, with both the generic clock and the lvds pll being
+present in the DT at the same time.
 
->
-> > One swapfile will not take the full advantage of the existing code.
-> > Even if you split the zswap trees within a swapfile. With only one
-> > swapfile, you will still be having lock contention on "(struct
-> > swap_info_struct).lock".
-> > It is one lock per swapfile.
-> > Using more than one swap file should get you better results.
->
-> IIUC, we already have the per-cpu swap entry cache to not contend for
-> this lock? And I don't see much hot of this lock in the testing.
+I vaguely recall internal discussion about this problem some time back
+but the details all escape me.
 
-Yes. The swap entry cache helps. The cache batching also causes other
-problems, e.g. the long tail in swap faults handling.
-Shameless plug, I have a patch posted earlier to address the swap
-fault long tail latencies.
+Thanks,
+Conor.
 
-https://lore.kernel.org/linux-mm/20231221-async-free-v1-1-94b277992cb0@kern=
-el.org/T/
+--a0WqJfirCmr9EVhF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Chris
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaplHwAKCRB4tDGHoIJi
+0lj2AP9K84iq37Rz1ulvFhMipsNqhqMxklWv5GvyAq1ZD/lqSwEAq0vY9saiWwW2
+ah0UOybo+9cGrmPqOmpiVe3FFc6voAU=
+=dla+
+-----END PGP SIGNATURE-----
+
+--a0WqJfirCmr9EVhF--
 
