@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-31217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5066B832AB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:47:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98ECB832AB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:47:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7E68B23974
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:47:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51BB4283A3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F01F254654;
-	Fri, 19 Jan 2024 13:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3714354675;
+	Fri, 19 Jan 2024 13:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iZ5x56Pi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hZsPZVl+"
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DE453E29;
-	Fri, 19 Jan 2024 13:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185FD54657;
+	Fri, 19 Jan 2024 13:46:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705671982; cv=none; b=T/VmJCGJYcIxyJ7vZCKOIuHtI0VwsUZXfmCSsHGQ1bczeYvvLG/Q86BmA6pIKZhvCyJT6/Y1rLUH82r9uNlH/8h3vzatfU8N5NsQ4qgnvxgCD0Khv85Tp/i9CelVcQQ9n1omoIAYwSAh0bWbTXBqlnSdtVQUUCX17K6/Ta6p29I=
+	t=1705671984; cv=none; b=fMUporev2fPevT1GN9WbqYatdqienBLAR38l6wpxDi6g/TiYDN4+4AOqi/pCEXx0C1272c6up/iBX7xwKqO2Vpfu72BO+R2TUD2nMUMBkxeRYUzsN7QH1wxXt98nNy+AGokMeE7vurVpSHjPm6zY4cKXVWT3NwvBlkCuYfRMJsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705671982; c=relaxed/simple;
-	bh=9Hzv7z/GzbJUoDf2z55H/CEkFHLL/MMLhIxJemRBALY=;
+	s=arc-20240116; t=1705671984; c=relaxed/simple;
+	bh=19xHuiJ0apKtjhO3AmhX1GSEgqLI0utgLP61vPaTEMQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DWxypOtPuz12iuQFgs2yXpppXz/ztu8KgdigWPWUXWW9/8we94rMcpMe1OO0D5d1FeTUlC4Ehi8K9jIGhCkSTs43Q+EvwsQe5Rmgd9+lMOIVLJNZyqwKAvOB3uAW4eUobkFbN/ulvWy5ba1PYAgGxXflNf5znu4sFxjw7xIzGco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iZ5x56Pi; arc=none smtp.client-ip=134.134.136.31
+	 MIME-Version; b=X2oP+Ezbbo6uJ0AY8yx+P4BqyhQuOwwPJWkRansZPCH0A3yCKB2GaBtdbr120oaZTsG7ubX1qoAP+e1onht9NJXNb89Zd4+2qzkTYhYMe7PZvRgI97p0GwGDoy4lrmmx9ouxDQXG39LW8G+S9C/6zcV1COoZQgoUQ3u1ovlRIQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hZsPZVl+; arc=none smtp.client-ip=134.134.136.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705671980; x=1737207980;
+  t=1705671983; x=1737207983;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9Hzv7z/GzbJUoDf2z55H/CEkFHLL/MMLhIxJemRBALY=;
-  b=iZ5x56Piyp1q7zenRPTL/P0eaG+/u3FdGoxP1OV/cOt4GMOjDE1bHxyU
-   Lj1D2SOjLabrDBbdPkS4Qq/EGfESn/dL5qlZOkG1kqFwG9ufDsBxHFm0C
-   x7f6RK6hF5NG056smy1YisZjCdedRfjmkhXZWajfVVlgA/xMjA/5wOVig
-   r6GxG1GM4U4Gbad5BaCOCsUt0jk5DwJS5IeyytoNtqlmVm1ld43t0ariO
-   +pabVuUtopa4rKwdweIpqR100jNuqd8Q8GjArEYPi11MXo3nddXm8zJRA
-   Miz1O+Zt9QEJCMrSf5iCn7ARE/Rslyau7F1YWyKNgimubAGZQEfo7kJM7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="465026909"
+  bh=19xHuiJ0apKtjhO3AmhX1GSEgqLI0utgLP61vPaTEMQ=;
+  b=hZsPZVl+rWbi8XwW3CEAFSfIxjyxzVOZo0pENoEr7+Mc4KavThTjdURZ
+   CcWyl6RlR62BVzmEGaIfXl5AWJwzGGINENfk6evBSXO9NJvrJAdp/+kcB
+   wXF+ETGWJwIWEnqBhcD9QOWk68rLDRK+IQwFM8qqiaRfYk6/OpUp1rNo9
+   vPyNoWdrcrKK9X1Fh0LFiLCuqAMpy30SLBBSXnH/Bijhjb6C4ter7uqAw
+   YrW1kMV37FiYtC+u+ak3rw0kSrGQOarGvkMpodxVqvvIOZRHbZ6UC2csa
+   LamYYWQc9MDrS1t/Jey9ZKJ4hSh5eQ4joas5/nPqMcwRcEK0/JgNYNCX6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="465026916"
 X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="465026909"
+   d="scan'208";a="465026916"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 05:46:19 -0800
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 05:46:22 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="788360397"
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="788360409"
 X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
-   d="scan'208";a="788360397"
+   d="scan'208";a="788360409"
 Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
-  by fmsmga007.fm.intel.com with ESMTP; 19 Jan 2024 05:46:16 -0800
+  by fmsmga007.fm.intel.com with ESMTP; 19 Jan 2024 05:46:19 -0800
 From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
 To: netdev@vger.kernel.org
 Cc: vadim.fedorenko@linux.dev,
@@ -66,10 +66,10 @@ Cc: vadim.fedorenko@linux.dev,
 	mschmidt@redhat.com,
 	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
 	Jan Glaza <jan.glaza@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Subject: [PATCH net v6 2/4] dpll: fix pin dump crash for rebound module
-Date: Fri, 19 Jan 2024 14:43:02 +0100
-Message-Id: <20240119134304.576956-3-arkadiusz.kubalewski@intel.com>
+	Jiri Pirko <jiri@nvidia.com>
+Subject: [PATCH net v6 3/4] dpll: fix userspace availability of pins
+Date: Fri, 19 Jan 2024 14:43:03 +0100
+Message-Id: <20240119134304.576956-4-arkadiusz.kubalewski@intel.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20240119134304.576956-1-arkadiusz.kubalewski@intel.com>
 References: <20240119134304.576956-1-arkadiusz.kubalewski@intel.com>
@@ -81,253 +81,93 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When a kernel module is unbound but the pin resources were not entirely
-freed (other kernel module instance of the same PCI device have had kept
-the reference to that pin), and kernel module is again bound, the pin
-properties would not be updated (the properties are only assigned when
-memory for the pin is allocated), prop pointer still points to the
-kernel module memory of the kernel module which was deallocated on the
-unbind.
+If parent pin was unregistered but child pin was not, the userspace
+would see the "zombie" pins - the ones that were registered with
+a parent pin (dpll_pin_on_pin_register(..)).
+Technically those are not available - as there is no dpll device in the
+system. Do not dump those pins and prevent userspace from any
+interaction with them. Provide a unified function to determine if the
+pin is available and use it before acting/responding for user requests.
 
-If the pin dump is invoked in this state, the result is a kernel crash.
-Prevent the crash by storing persistent pin properties in dpll subsystem,
-copy the content from the kernel module when pin is allocated, instead of
-using memory of the kernel module.
-
-Fixes: 9431063ad323 ("dpll: core: Add DPLL framework base functions")
 Fixes: 9d71b54b65b1 ("dpll: netlink: Add DPLL framework base functions")
 Reviewed-by: Jan Glaza <jan.glaza@intel.com>
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
 ---
 v6:
-- add missing call to dpll_pin_prop_free(..) on failed XA alloc path in
-  dpll_pin_alloc(..)
+- no changes, bump the series version
 
- drivers/dpll/dpll_core.c    | 55 +++++++++++++++++++++++++++++++++++--
- drivers/dpll/dpll_core.h    |  4 +--
- drivers/dpll/dpll_netlink.c | 28 +++++++++----------
- 3 files changed, 69 insertions(+), 18 deletions(-)
+ drivers/dpll/dpll_netlink.c | 29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dpll/dpll_core.c b/drivers/dpll/dpll_core.c
-index c08772ee9fd6..cb62696467d1 100644
---- a/drivers/dpll/dpll_core.c
-+++ b/drivers/dpll/dpll_core.c
-@@ -425,6 +425,53 @@ void dpll_device_unregister(struct dpll_device *dpll,
- }
- EXPORT_SYMBOL_GPL(dpll_device_unregister);
- 
-+static void dpll_pin_prop_free(struct dpll_pin_properties *prop)
-+{
-+	kfree(prop->package_label);
-+	kfree(prop->panel_label);
-+	kfree(prop->board_label);
-+	kfree(prop->freq_supported);
-+}
-+
-+static int dpll_pin_prop_dup(const struct dpll_pin_properties *src,
-+			     struct dpll_pin_properties *dst)
-+{
-+	memcpy(dst, src, sizeof(*dst));
-+	if (src->freq_supported && src->freq_supported_num) {
-+		size_t freq_size = src->freq_supported_num *
-+				   sizeof(*src->freq_supported);
-+		dst->freq_supported = kmemdup(src->freq_supported,
-+					      freq_size, GFP_KERNEL);
-+		if (!src->freq_supported)
-+			return -ENOMEM;
-+	}
-+	if (src->board_label) {
-+		dst->board_label = kstrdup(src->board_label, GFP_KERNEL);
-+		if (!dst->board_label)
-+			goto err_board_label;
-+	}
-+	if (src->panel_label) {
-+		dst->panel_label = kstrdup(src->panel_label, GFP_KERNEL);
-+		if (!dst->panel_label)
-+			goto err_panel_label;
-+	}
-+	if (src->package_label) {
-+		dst->package_label = kstrdup(src->package_label, GFP_KERNEL);
-+		if (!dst->package_label)
-+			goto err_package_label;
-+	}
-+
-+	return 0;
-+
-+err_package_label:
-+	kfree(dst->panel_label);
-+err_panel_label:
-+	kfree(dst->board_label);
-+err_board_label:
-+	kfree(dst->freq_supported);
-+	return -ENOMEM;
-+}
-+
- static struct dpll_pin *
- dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
- 	       const struct dpll_pin_properties *prop)
-@@ -443,7 +490,9 @@ dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
- 		ret = -EINVAL;
- 		goto err_pin_prop;
- 	}
--	pin->prop = prop;
-+	ret = dpll_pin_prop_dup(prop, &pin->prop);
-+	if (ret)
-+		goto err_pin_prop;
- 	refcount_set(&pin->refcount, 1);
- 	xa_init_flags(&pin->dpll_refs, XA_FLAGS_ALLOC);
- 	xa_init_flags(&pin->parent_refs, XA_FLAGS_ALLOC);
-@@ -455,6 +504,7 @@ dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
- err_xa_alloc:
- 	xa_destroy(&pin->dpll_refs);
- 	xa_destroy(&pin->parent_refs);
-+	dpll_pin_prop_free(&pin->prop);
- err_pin_prop:
- 	kfree(pin);
- 	return ERR_PTR(ret);
-@@ -515,6 +565,7 @@ void dpll_pin_put(struct dpll_pin *pin)
- 		xa_destroy(&pin->dpll_refs);
- 		xa_destroy(&pin->parent_refs);
- 		xa_erase(&dpll_pin_xa, pin->id);
-+		dpll_pin_prop_free(&pin->prop);
- 		kfree(pin);
- 	}
- 	mutex_unlock(&dpll_lock);
-@@ -637,7 +688,7 @@ int dpll_pin_on_pin_register(struct dpll_pin *parent, struct dpll_pin *pin,
- 	unsigned long i, stop;
- 	int ret;
- 
--	if (WARN_ON(parent->prop->type != DPLL_PIN_TYPE_MUX))
-+	if (WARN_ON(parent->prop.type != DPLL_PIN_TYPE_MUX))
- 		return -EINVAL;
- 
- 	if (WARN_ON(!ops) ||
-diff --git a/drivers/dpll/dpll_core.h b/drivers/dpll/dpll_core.h
-index 5585873c5c1b..717f715015c7 100644
---- a/drivers/dpll/dpll_core.h
-+++ b/drivers/dpll/dpll_core.h
-@@ -44,7 +44,7 @@ struct dpll_device {
-  * @module:		module of creator
-  * @dpll_refs:		hold referencees to dplls pin was registered with
-  * @parent_refs:	hold references to parent pins pin was registered with
-- * @prop:		pointer to pin properties given by registerer
-+ * @prop:		pin properties copied from the registerer
-  * @rclk_dev_name:	holds name of device when pin can recover clock from it
-  * @refcount:		refcount
-  **/
-@@ -55,7 +55,7 @@ struct dpll_pin {
- 	struct module *module;
- 	struct xarray dpll_refs;
- 	struct xarray parent_refs;
--	const struct dpll_pin_properties *prop;
-+	struct dpll_pin_properties prop;
- 	refcount_t refcount;
- };
- 
 diff --git a/drivers/dpll/dpll_netlink.c b/drivers/dpll/dpll_netlink.c
-index 3370dbddb86b..30f5be020862 100644
+index 30f5be020862..314bb3775465 100644
 --- a/drivers/dpll/dpll_netlink.c
 +++ b/drivers/dpll/dpll_netlink.c
-@@ -303,17 +303,17 @@ dpll_msg_add_pin_freq(struct sk_buff *msg, struct dpll_pin *pin,
- 	if (nla_put_64bit(msg, DPLL_A_PIN_FREQUENCY, sizeof(freq), &freq,
- 			  DPLL_A_PIN_PAD))
- 		return -EMSGSIZE;
--	for (fs = 0; fs < pin->prop->freq_supported_num; fs++) {
-+	for (fs = 0; fs < pin->prop.freq_supported_num; fs++) {
- 		nest = nla_nest_start(msg, DPLL_A_PIN_FREQUENCY_SUPPORTED);
- 		if (!nest)
- 			return -EMSGSIZE;
--		freq = pin->prop->freq_supported[fs].min;
-+		freq = pin->prop.freq_supported[fs].min;
- 		if (nla_put_64bit(msg, DPLL_A_PIN_FREQUENCY_MIN, sizeof(freq),
- 				  &freq, DPLL_A_PIN_PAD)) {
- 			nla_nest_cancel(msg, nest);
- 			return -EMSGSIZE;
- 		}
--		freq = pin->prop->freq_supported[fs].max;
-+		freq = pin->prop.freq_supported[fs].max;
- 		if (nla_put_64bit(msg, DPLL_A_PIN_FREQUENCY_MAX, sizeof(freq),
- 				  &freq, DPLL_A_PIN_PAD)) {
- 			nla_nest_cancel(msg, nest);
-@@ -329,9 +329,9 @@ static bool dpll_pin_is_freq_supported(struct dpll_pin *pin, u32 freq)
- {
- 	int fs;
- 
--	for (fs = 0; fs < pin->prop->freq_supported_num; fs++)
--		if (freq >= pin->prop->freq_supported[fs].min &&
--		    freq <= pin->prop->freq_supported[fs].max)
-+	for (fs = 0; fs < pin->prop.freq_supported_num; fs++)
-+		if (freq >= pin->prop.freq_supported[fs].min &&
-+		    freq <= pin->prop.freq_supported[fs].max)
- 			return true;
- 	return false;
+@@ -553,6 +553,24 @@ __dpll_device_change_ntf(struct dpll_device *dpll)
+ 	return dpll_device_event_send(DPLL_CMD_DEVICE_CHANGE_NTF, dpll);
  }
-@@ -421,7 +421,7 @@ static int
- dpll_cmd_pin_get_one(struct sk_buff *msg, struct dpll_pin *pin,
- 		     struct netlink_ext_ack *extack)
- {
--	const struct dpll_pin_properties *prop = pin->prop;
-+	const struct dpll_pin_properties *prop = &pin->prop;
- 	struct dpll_pin_ref *ref;
- 	int ret;
  
-@@ -717,7 +717,7 @@ dpll_pin_on_pin_state_set(struct dpll_pin *pin, u32 parent_idx,
- 	int ret;
++static bool dpll_pin_available(struct dpll_pin *pin)
++{
++	struct dpll_pin_ref *par_ref;
++	unsigned long i;
++
++	if (!xa_get_mark(&dpll_pin_xa, pin->id, DPLL_REGISTERED))
++		return false;
++	xa_for_each(&pin->parent_refs, i, par_ref)
++		if (xa_get_mark(&dpll_pin_xa, par_ref->pin->id,
++				DPLL_REGISTERED))
++			return true;
++	xa_for_each(&pin->dpll_refs, i, par_ref)
++		if (xa_get_mark(&dpll_device_xa, par_ref->dpll->id,
++				DPLL_REGISTERED))
++			return true;
++	return false;
++}
++
+ /**
+  * dpll_device_change_ntf - notify that the dpll device has been changed
+  * @dpll: registered dpll pointer
+@@ -579,7 +597,7 @@ dpll_pin_event_send(enum dpll_cmd event, struct dpll_pin *pin)
+ 	int ret = -ENOMEM;
+ 	void *hdr;
  
- 	if (!(DPLL_PIN_CAPABILITIES_STATE_CAN_CHANGE &
--	      pin->prop->capabilities)) {
-+	      pin->prop.capabilities)) {
- 		NL_SET_ERR_MSG(extack, "state changing is not allowed");
- 		return -EOPNOTSUPP;
+-	if (WARN_ON(!xa_get_mark(&dpll_pin_xa, pin->id, DPLL_REGISTERED)))
++	if (!dpll_pin_available(pin))
+ 		return -ENODEV;
+ 
+ 	msg = genlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
+@@ -1130,6 +1148,10 @@ int dpll_nl_pin_id_get_doit(struct sk_buff *skb, struct genl_info *info)
  	}
-@@ -753,7 +753,7 @@ dpll_pin_state_set(struct dpll_device *dpll, struct dpll_pin *pin,
- 	int ret;
+ 	pin = dpll_pin_find_from_nlattr(info);
+ 	if (!IS_ERR(pin)) {
++		if (!dpll_pin_available(pin)) {
++			nlmsg_free(msg);
++			return -ENODEV;
++		}
+ 		ret = dpll_msg_add_pin_handle(msg, pin);
+ 		if (ret) {
+ 			nlmsg_free(msg);
+@@ -1179,6 +1201,8 @@ int dpll_nl_pin_get_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
  
- 	if (!(DPLL_PIN_CAPABILITIES_STATE_CAN_CHANGE &
--	      pin->prop->capabilities)) {
-+	      pin->prop.capabilities)) {
- 		NL_SET_ERR_MSG(extack, "state changing is not allowed");
- 		return -EOPNOTSUPP;
+ 	xa_for_each_marked_start(&dpll_pin_xa, i, pin, DPLL_REGISTERED,
+ 				 ctx->idx) {
++		if (!dpll_pin_available(pin))
++			continue;
+ 		hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid,
+ 				  cb->nlh->nlmsg_seq,
+ 				  &dpll_nl_family, NLM_F_MULTI,
+@@ -1441,7 +1465,8 @@ int dpll_pin_pre_doit(const struct genl_split_ops *ops, struct sk_buff *skb,
  	}
-@@ -780,7 +780,7 @@ dpll_pin_prio_set(struct dpll_device *dpll, struct dpll_pin *pin,
- 	int ret;
- 
- 	if (!(DPLL_PIN_CAPABILITIES_PRIORITY_CAN_CHANGE &
--	      pin->prop->capabilities)) {
-+	      pin->prop.capabilities)) {
- 		NL_SET_ERR_MSG(extack, "prio changing is not allowed");
- 		return -EOPNOTSUPP;
- 	}
-@@ -808,7 +808,7 @@ dpll_pin_direction_set(struct dpll_pin *pin, struct dpll_device *dpll,
- 	int ret;
- 
- 	if (!(DPLL_PIN_CAPABILITIES_DIRECTION_CAN_CHANGE &
--	      pin->prop->capabilities)) {
-+	      pin->prop.capabilities)) {
- 		NL_SET_ERR_MSG(extack, "direction changing is not allowed");
- 		return -EOPNOTSUPP;
- 	}
-@@ -838,8 +838,8 @@ dpll_pin_phase_adj_set(struct dpll_pin *pin, struct nlattr *phase_adj_attr,
- 	int ret;
- 
- 	phase_adj = nla_get_s32(phase_adj_attr);
--	if (phase_adj > pin->prop->phase_range.max ||
--	    phase_adj < pin->prop->phase_range.min) {
-+	if (phase_adj > pin->prop.phase_range.max ||
-+	    phase_adj < pin->prop.phase_range.min) {
- 		NL_SET_ERR_MSG_ATTR(extack, phase_adj_attr,
- 				    "phase adjust value not supported");
- 		return -EINVAL;
-@@ -1023,7 +1023,7 @@ dpll_pin_find(u64 clock_id, struct nlattr *mod_name_attr,
- 	unsigned long i;
- 
- 	xa_for_each_marked(&dpll_pin_xa, i, pin, DPLL_REGISTERED) {
--		prop = pin->prop;
-+		prop = &pin->prop;
- 		cid_match = clock_id ? pin->clock_id == clock_id : true;
- 		mod_match = mod_name_attr && module_name(pin->module) ?
- 			!nla_strcmp(mod_name_attr,
+ 	info->user_ptr[0] = xa_load(&dpll_pin_xa,
+ 				    nla_get_u32(info->attrs[DPLL_A_PIN_ID]));
+-	if (!info->user_ptr[0]) {
++	if (!info->user_ptr[0] ||
++	    !dpll_pin_available(info->user_ptr[0])) {
+ 		NL_SET_ERR_MSG(info->extack, "pin not found");
+ 		ret = -ENODEV;
+ 		goto unlock_dev;
 -- 
 2.38.1
 
