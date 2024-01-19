@@ -1,290 +1,123 @@
-Return-Path: <linux-kernel+bounces-31387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F17DB832D99
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:59:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E54AA832D9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:01:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0DA32819C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:59:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 230A91C230D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:01:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F420E55C11;
-	Fri, 19 Jan 2024 16:59:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4008555796;
+	Fri, 19 Jan 2024 17:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Fk4/K4wz"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="M1OURMWY"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81FC83222;
-	Fri, 19 Jan 2024 16:59:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 258D91F60B
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 17:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705683584; cv=none; b=gf17X4mTGsIoaUSpjznDOLnCqoJ1p/nlIJ8P1J/U/IDzBfj9flk0RNcnebihwHGMfBdHmF8hfrm8+vuZoAr/ZEp/yL23S/AZtGNIpQ1RPa/V0TEHo6JvnmZG5xGrVD0oeo9X0MyDwrtg2S99zqP7J6l5I5XY6+Vev77NT4DhyMQ=
+	t=1705683665; cv=none; b=IgIUkto6riasS5hP3+eQas8EyAdkacNicwITS7iBBhMnnzmdDi+yKvVS7Q3+Lmk8JSbK1hlS9pLINTURAeZa3B35tIvSmJpIM3O2JNQvZio7q1F1974vh7RfJXVe7aY8mugUvPjZAXWSHHPyMfDw+QbYroxjZWV/M6M6VfXqxwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705683584; c=relaxed/simple;
-	bh=/RTX58XL94ocwmizyKYw7r77E3GtN+fp1k8zVgqC6ko=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tFAOKBeMUcEPg5KdPkDwT+Q4FdV3a+Rm+qPOPsfidvOpO3BNBoSxB5ijEL0+ebFejyz++hERyuGKOPmVNjlQlJHGWW/vRGKSqC7AowhscOUthyZrePI/teOwoaqfyxETiMhz08epLdbUqKvOm83Yg72BUt7xuUFR8ZjB9x5ir8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Fk4/K4wz; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40J6jRvp022386;
-	Fri, 19 Jan 2024 10:59:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=qbiM0GYn8wffxO9
-	+row5DznyRflJJj1eUICpy3tT4Yg=; b=Fk4/K4wzwAjRsqOkOd/Ra4ITbwvHBWI
-	iK8aTjIrGh8FhyB0WC8fz/SeJv7UTo83o1i2cy/uDLejTFtTLem19Iu75lY0kaCc
-	HV3iuwCzkue4QoFSqwe+YCNU7jJkGCpqNGKrT8rrTmj9N4OGR8pC+3hzyh9Hfh91
-	KQyb2doSchlq5vLT83dtleKzknafMDF9Po7m5RyNxvo6ADlPVlrL10FUSEpZjer2
-	yXBcu2zJk9BdTAweJuWVcbadeKOat1DyFLZ+n1i6YrFuo6/VgOfgZRYIAJJPh7Gv
-	dwOBjY4cIpngPhC9kfqOx1th8+aIi1ZZBQOM1n9hpSHvGM/SDv18pmg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vkrt1gyjw-1
+	s=arc-20240116; t=1705683665; c=relaxed/simple;
+	bh=W5sCI0PITHZFDeHBgbs+W7Bc9g68oVsuBMQjrIfHdF8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=tneegqq4U4D/CyC76gxoDCQ9RiZfeubj+2UTNX8p4v8VMaED7EaFCkNEPre6vB5uuwntJcE/DhDtSbbP/5qF1H56q05UoIK58ka/o3EQOuRw2Cn3o6hYRAdW3vBdWANGzOd+5V8XGYsBWnJ2XOh/VOSp+1xYYhd/iickSg0EE/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=M1OURMWY; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40JCbQb8010388;
+	Fri, 19 Jan 2024 17:00:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Qy1pMhP/rRJ1IzNoHsuqbIjw26g6hcRy+ObDQ8oRG60=; b=M1
+	OURMWYeZjNu87Msk/DWWDq3WAcNenMOtUDr/I17mqxbp0nz5TAx7AK0pZtFDqddz
+	PD3J3/LJnwaSLii5oK3gbwbWs2qAxLsinqg4SqChxiwgO+X2OnDyqiHlTSOTjtkg
+	aDghS70ki9OActoy+puA49g7RNDzbo4avdQDCzrEno7NzjzBXz+W/1gyHlrUAlaY
+	qmzqKveYgFpkjbwRHA1Awbz6CIMD8YYT8i+NFlQXoIv+YYwMN9zRv062d4/p4Heg
+	Hkms5+W8ALH/KGuyphpsrd5hLIyDMkMZD0ohoQQgb1TVuc//LRCcit/ZeKkMj79n
+	EN4vGK+6QsCRi7UQa5Rw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vqpkvguj8-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Jan 2024 10:59:22 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Fri, 19 Jan 2024 17:00:32 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40JH0UMe027236
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 17:00:30 GMT
+Received: from [10.216.49.108] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 19 Jan
- 2024 16:59:17 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Fri, 19 Jan 2024 16:59:17 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D522A475;
-	Fri, 19 Jan 2024 16:59:17 +0000 (UTC)
-Date: Fri, 19 Jan 2024 16:59:17 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <andy.shevchenko@gmail.com>
-CC: <broonie@kernel.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linus.walleij@linaro.org>, <vkoul@kernel.org>, <lgirdwood@gmail.com>,
-        <yung-chuan.liao@linux.intel.com>, <sanyog.r.kale@intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <devicetree@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 6/6] ASoC: cs42l43: Add support for the cs42l43
-Message-ID: <20240119165917.GC16899@ediswmail.ad.cirrus.com>
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
- <20230804104602.395892-7-ckeepax@opensource.cirrus.com>
- <Zali4qxdegY7H6eY@surfacebook.localdomain>
+ 2024 09:00:26 -0800
+Message-ID: <a6f9a1fd-0ce2-b6be-6efe-181c54f950a0@quicinc.com>
+Date: Fri, 19 Jan 2024 22:30:22 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Zali4qxdegY7H6eY@surfacebook.localdomain>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: b67HD8x2PDCOH9BQnW9KX6IsD3Or_uUa
-X-Proofpoint-ORIG-GUID: b67HD8x2PDCOH9BQnW9KX6IsD3Or_uUa
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mm, kmsan: fix infinite recursion due to RCU critical
+ section
+To: Marco Elver <elver@google.com>
+CC: Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko
+	<glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Thomas Gleixner
+	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov
+	<bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, <kasan-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com>
+References: <20240118110022.2538350-1-elver@google.com>
+ <CANpmjNPx0j-x_SDu777gaV1oOFuPmHV3xFfru56UzBXHnZhYLg@mail.gmail.com>
+ <cd742d1d-70a3-586b-4bf5-fcfc94c75b4a@quicinc.com>
+ <CANpmjNNZ6vV7DJ+SBGcSnV6qzkmH_J=WrofrfaAeidvSG2nHbQ@mail.gmail.com>
+Content-Language: en-US
+From: Charan Teja Kalla <quic_charante@quicinc.com>
+In-Reply-To: <CANpmjNNZ6vV7DJ+SBGcSnV6qzkmH_J=WrofrfaAeidvSG2nHbQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: vwcSK_orfgT8C__2D3CJHzd-MY-j7Ask
+X-Proofpoint-ORIG-GUID: vwcSK_orfgT8C__2D3CJHzd-MY-j7Ask
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_10,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=739 phishscore=0 bulkscore=0
+ impostorscore=0 suspectscore=0 priorityscore=1501 adultscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2401190097
 
-On Thu, Jan 18, 2024 at 07:41:54PM +0200, andy.shevchenko@gmail.com wrote:
-> Fri, Aug 04, 2023 at 11:46:02AM +0100, Charles Keepax kirjoitti:
-> > +static const unsigned int cs42l43_accdet_us[] = {
-> > +	20, 100, 1000, 10000, 50000, 75000, 100000, 200000
-> 
-> + comma.
-> 
-> > +};
-> > +
-> > +static const unsigned int cs42l43_accdet_db_ms[] = {
-> > +	0, 125, 250, 500, 750, 1000, 1250, 1500
-> 
-> Ditto.
-> 
 
-Can do.
 
-> > +		device_property_read_u32_array(cs42l43->dev, "cirrus,buttons-ohms",
-> > +					       priv->buttons, ret);
+On 1/18/2024 5:52 PM, Marco Elver wrote:
+> It would be nice to avoid duplicating functions - both options have downsides:
+> 1. Shared pfn_valid(): it might break for KMSAN again in future if new
+> recursion is introduced.
+> 2. KMSAN-version of pfn_valid(): it might break if pfn_valid() changes
+> in future.
 > 
-> Strictly speaking this might fail, better to check the error code again.
+> I suspect #1 is less likely.
 > 
+> What is your main concern by switching to rcu_read_lock_sched()?
 
-Yeah should probably add an error check there.
-
-> > +	int timeout_ms = ((2 * priv->detect_us) / 1000) + 200;
-> 
-> USEC_PER_MSEC ?
-> 
-
-Can do.
-
-> > +	BUILD_BUG_ON(ARRAY_SIZE(cs42l43_jack_override_modes) !=
-> > +		     ARRAY_SIZE(cs42l43_jack_text) - 1);
-> 
-> Use static_assert() instead.
-> 
-
-I am happy either way, but for my own education what is the
-reason to prefer static_assert here, is it just to be able to use
-== rather than !=? Or is there in general a preference to use
-static_assert, there is no obvious since BUILD_BUG_ON is being
-deprecated?
-
-> > +static void cs42l43_mask_to_slots(struct cs42l43_codec *priv, unsigned int mask, int *slots)
-> > +{
-> > +	int i;
-> > +
-> > +	for (i = 0; i < CS42L43_ASP_MAX_CHANNELS; ++i) {
-> > +		int slot = ffs(mask) - 1;
-> > +
-> > +		if (slot < 0)
-> > +			return;
-> > +
-> > +		slots[i] = slot;
-> > +
-> > +		mask &= ~(1 << slot);
-> > +	}
-> 
-> for_each_set_bit() ?
-> 
-> > +	if (mask)
-> > +		dev_warn(priv->dev, "Too many channels in TDM mask\n");
-> > +}
-> 
-
-Can do.
-
-> > +static int cs42l43_decim_get(struct snd_kcontrol *kcontrol,
-> > +			     struct snd_ctl_elem_value *ucontrol)
-> > +{
-> > +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-> > +	struct cs42l43_codec *priv = snd_soc_component_get_drvdata(component);
-> > +	int ret;
-> > +
-> > +	ret = cs42l43_shutter_get(priv, CS42L43_STATUS_MIC_SHUTTER_MUTE_SHIFT);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +	else if (!ret)
-> 
-> Reundant 'else'
-> 
-> > +		ucontrol->value.integer.value[0] = ret;
-> > +	else
-> > +		ret = cs42l43_dapm_get_volsw(kcontrol, ucontrol);
-> 
-> and why not positive check?
-> 
-> > +	return ret;
-> 
-> Or even simply as
-> 
-> 	if (ret > 0)
-> 		ret = cs42l43_dapm_get_volsw(kcontrol, ucontrol);
-> 	else if (ret == 0)
-> 		ucontrol->value.integer.value[0] = ret;
-> 
-> 	return ret;
-
-Yeah will update, that is definitely neater.
-
-> > +	while (freq > cs42l43_pll_configs[ARRAY_SIZE(cs42l43_pll_configs) - 1].freq) {
-> > +		div++;
-> > +		freq /= 2;
-> > +	}
-> 
-> fls() / fls_long()?
-
-Apologies but I might need a little bit more of a pointer here.
-We need to scale freq down to under 3.072MHz and I am struggling
-a little to see how to do that with fls.
-
-> > +	// Don't use devm as we need to get against the MFD device
-> 
-> This is weird...
-> 
-> > +	priv->mclk = clk_get_optional(cs42l43->dev, "mclk");
-> > +	if (IS_ERR(priv->mclk)) {
-> > +		dev_err_probe(priv->dev, PTR_ERR(priv->mclk), "Failed to get mclk\n");
-> > +		goto err_pm;
-> > +	}
-> > +
-> > +	ret = devm_snd_soc_register_component(priv->dev, &cs42l43_component_drv,
-> > +					      cs42l43_dais, ARRAY_SIZE(cs42l43_dais));
-> > +	if (ret) {
-> > +		dev_err_probe(priv->dev, ret, "Failed to register component\n");
-> > +		goto err_clk;
-> > +	}
-> > +
-> > +	pm_runtime_mark_last_busy(priv->dev);
-> > +	pm_runtime_put_autosuspend(priv->dev);
-> > +
-> > +	return 0;
-> > +
-> > +err_clk:
-> > +	clk_put(priv->mclk);
-> > +err_pm:
-> > +	pm_runtime_put_sync(priv->dev);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int cs42l43_codec_remove(struct platform_device *pdev)
-> > +{
-> > +	struct cs42l43_codec *priv = platform_get_drvdata(pdev);
-> > +
-> > +	clk_put(priv->mclk);
-> 
-> You have clocks put before anything else, and your remove order is broken now.
-> 
-> To fix this (in case you may not used devm_clk_get() call), you should drop
-> devm calls all way after the clk_get(). Do we have
-> snd_soc_register_component()? If yes, use it to fix.
-> 
-> I believe you never tested rmmod/modprobe in a loop.
-> 
-
-Hmm... will need to think this through a little bit, so might take
-a little longer on this one. But I guess this only becomes a problem
-if you attempt to remove the driver whilst you are currently playing
-audio, and I would expect the card tear down would stop the clock
-running before we get here.
-
-> > +static const struct dev_pm_ops cs42l43_codec_pm_ops = {
-> > +	SET_RUNTIME_PM_OPS(NULL, cs42l43_codec_runtime_resume, NULL)
-> > +};
-> 
-> Why not new PM macros?
-> 
-
-Already been updated in another patch.
-
-> > +		.pm	= &cs42l43_codec_pm_ops,
-> 
-> pm_sleep_ptr()?
-> 
-
-Can do.
-
-> > +#include <linux/clk.h>
-> > +#include <linux/device.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/soundwire/sdw.h>
-> > +#include <linux/types.h>
-> > +#include <sound/cs42l43.h>
-> > +#include <sound/pcm.h>
-> > +#include <sound/soc-jack.h>
-> 
-> This block is messed up. Some headers can be replaced by forward declarations,
-> some are missing... Please, follow IWYU principle.
-> 
-> > +#ifndef CS42L43_ASOC_INT_H
-> > +#define CS42L43_ASOC_INT_H
-> 
-> Why not guarding other inclusions? It makes build slower!
-> 
-
-Will shuffle these headers around as well.
-
-Thanks,
-Charles
+No concerns from my side. Just wanted to know the thought behind
+changing the pfn_valid instead of kmsan version, like for some
+functions. Thanks for the clarification.
 
