@@ -1,155 +1,131 @@
-Return-Path: <linux-kernel+bounces-30758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 565E08323FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:08:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB6B4832411
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 05:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5A3EB22274
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 04:08:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AA0C1F22864
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 04:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1786FB8;
-	Fri, 19 Jan 2024 04:07:38 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5832946A2;
+	Fri, 19 Jan 2024 04:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="idP2yh0J"
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08651C15;
-	Fri, 19 Jan 2024 04:07:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF9E5C15D
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 04:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705637257; cv=none; b=qaoidY0soZQtN/OY7MF/4j/WnbTfOemktz1m15mdXp2MaZezXFdypPZges+3XpHMOZ2B2EAsLwVB9dxNYAJ1rI7kEODT8qtlTSzByYlB6yZKs3DOgMVT3GfOcP+Fvok4wZzw5jFOArHmSCHeKXWOhiraJRTPRVQV+EiCIsKxg5g=
+	t=1705638665; cv=none; b=Y5TGUwrAD6VImiQcTS4nchFLyHcwRd2hsxqYSaHiVuMImUFDBpuiuFBGKstEe6b1Ok10ANzPNSbcOkL1Pnk/qgepG5ysGifYsYP1PyG0VRu5BKLibV/f0nZ3x5dH9FEya+WJohG8jHndFaOzt0w2nE/BJzLQebK8/b5g1f1bvM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705637257; c=relaxed/simple;
-	bh=AOy4v0CB7AxenOdzrzI/1u6KpR6P+kRay885wVReU9U=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J6e1Hr3onm4wrXG3REfhLXnojFYsRog+NfR1/IRnzFP/U3dQTDc8aCrjjEdqBoh003VNWICTwsLN1FiC4U2AAdDReX0CoPYMG+nZz6pi6WfOK6X5jssPYZGmSekqwMACtQF4P1iEKOz4WAIswkMdHA23A+K+De1HemR7kFbgTcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TGR010Yr9zGpqH;
-	Fri, 19 Jan 2024 12:07:13 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
-	by mail.maildlp.com (Postfix) with ESMTPS id ACEFC1402DE;
-	Fri, 19 Jan 2024 12:07:33 +0800 (CST)
-Received: from ubuntu2204.huawei.com (10.67.174.22) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 19 Jan 2024 12:07:33 +0800
-From: Yang Jihong <yangjihong1@huawei.com>
-To: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-	<namhyung@kernel.org>, <mark.rutland@arm.com>,
-	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-	<irogers@google.com>, <adrian.hunter@intel.com>,
-	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <yangjihong1@huawei.com>
-Subject: [PATCH 3/3] perf data: Minor code style alignment cleanup
-Date: Fri, 19 Jan 2024 04:03:04 +0000
-Message-ID: <20240119040304.3708522-4-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240119040304.3708522-1-yangjihong1@huawei.com>
-References: <20240119040304.3708522-1-yangjihong1@huawei.com>
+	s=arc-20240116; t=1705638665; c=relaxed/simple;
+	bh=yYYIxoLS/fTY0SERJ9JIVKX7ri9WHPUupunuOb2ocG4=;
+	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
+	 MIME-Version:Content-Type; b=ceY3SCW9hDHcjiNcBQaeOftIhEJLMFSOugzJM/S5bx0+JUgTrbxme0YII0seNEBdNsNN72VPipfKE2VLeZiUgWxDhmokIapzTl50MTccN/Bb4h5BlXxbEWTUuzDSGdjvyP/QqONZkMtkDVoBWvU1LbeQRskDXatnNt9bMTwtsic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=idP2yh0J; arc=none smtp.client-ip=44.202.169.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6009a.ext.cloudfilter.net ([10.0.30.184])
+	by cmsmtp with ESMTPS
+	id QgWKr9XzKAxAkQgXArTuox; Fri, 19 Jan 2024 04:31:13 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id QgWtrBQmnjqQkQgWtr8ikr; Fri, 19 Jan 2024 04:30:55 +0000
+X-Authority-Analysis: v=2.4 cv=A7F/goaG c=1 sm=1 tr=0 ts=65a9faff
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=GOK2ftpeLzD+oWdoQAJCQkkPzUkEAfnVyOYW/U+5zoc=; b=idP2yh0JyCEkggwxJvTCl5d3Z/
+	PqaumAc4o/AxRH7PXFAVR5nbr6TeqS/YcF1f3AGI9/fcg5bH7hPGoc/8B0typya3nw7jIzrtj4JJJ
+	eJAkeBwLjf03MDZkmAhbqBF1TdyIpq1r/wnRynudHiJ8Gdit0nGXa4XvhSeQfj0D9oNChA2StyP4z
+	6GB4hsRP82Wzb89VV83vTC6ibeXvn8ho+kUz6J2FgH3DC5zshjxg3N9Ljscwp6ndyu08yl/E67Nfd
+	MLo1j8E+1xx9OCqPORTejm/DuQWU6DJtMuktHyMPK2/qrhhtzcbbBh7wUh2fFOkaw0PkpsjXUvqxc
+	PS9U70Mg==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:35842 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rQgWq-000ehB-2P;
+	Thu, 18 Jan 2024 21:30:52 -0700
+Subject: Re: [PATCH 6.7 00/28] 6.7.1-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240118104301.249503558@linuxfoundation.org>
+In-Reply-To: <20240118104301.249503558@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <69ce639b-0fee-6eb7-8f12-35aef792e243@w6rz.net>
+Date: Thu, 18 Jan 2024 20:30:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600003.china.huawei.com (7.193.23.202)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rQgWq-000ehB-2P
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:35842
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHE5ClEISnfl6xrlTqbDqwX3ftpcGX9r8ZkWuFcRy/xtlu/tues+W0BKgK2n8LnC5sVCYHw4U846dT0VM8bz2QNI+cNNHUMVzoGHNiL/SXm2OxgpD6kp
+ 1Ci1H3EDRjqx1ypyHEGBgwApOXvxzq4K/VmhJ/NIgrYClabPwmbftEYvAzE2GWR4dBX3MJKA256A8IO/Bu3vt5ZqKffor66kdlA=
 
-Minor code style alignment cleanup for perf_data__switch() and
-perf_data__write().
+On 1/18/24 2:48 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.7.1 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 20 Jan 2024 10:42:49 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.1-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-No functional change.
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
----
- tools/perf/builtin-record.c | 7 ++++---
- tools/perf/util/data.c      | 8 ++++----
- tools/perf/util/data.h      | 6 +++---
- 3 files changed, 11 insertions(+), 10 deletions(-)
-
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 5e3ea5cf1429..0b6f29fa0064 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1853,16 +1853,17 @@ record__switch_output(struct record *rec, bool at_exit)
- 	}
- 
- 	fd = perf_data__switch(data, timestamp,
--				    rec->session->header.data_offset,
--				    at_exit, &new_filename);
-+			       rec->session->header.data_offset,
-+			       at_exit, &new_filename);
- 	if (fd >= 0 && !at_exit) {
- 		rec->bytes_written = 0;
- 		rec->session->header.data_size = 0;
- 	}
- 
--	if (!quiet)
-+	if (!quiet) {
- 		fprintf(stderr, "[ perf record: Dump %s.%s ]\n",
- 			data->path, timestamp);
-+	}
- 
- 	if (rec->switch_output.num_files) {
- 		int n = rec->switch_output.cur_file + 1;
-diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-index 550675ce0b78..08c4bfbd817f 100644
---- a/tools/perf/util/data.c
-+++ b/tools/perf/util/data.c
-@@ -413,7 +413,7 @@ ssize_t perf_data_file__write(struct perf_data_file *file,
- }
- 
- ssize_t perf_data__write(struct perf_data *data,
--			      void *buf, size_t size)
-+			 void *buf, size_t size)
- {
- 	if (data->use_stdio) {
- 		if (fwrite(buf, size, 1, data->file.fptr) == 1)
-@@ -424,9 +424,9 @@ ssize_t perf_data__write(struct perf_data *data,
- }
- 
- int perf_data__switch(struct perf_data *data,
--			   const char *postfix,
--			   size_t pos, bool at_exit,
--			   char **new_filepath)
-+		      const char *postfix,
-+		      size_t pos, bool at_exit,
-+		      char **new_filepath)
- {
- 	int ret;
- 
-diff --git a/tools/perf/util/data.h b/tools/perf/util/data.h
-index effcc195d7e9..110f3ebde30f 100644
---- a/tools/perf/util/data.h
-+++ b/tools/perf/util/data.h
-@@ -80,7 +80,7 @@ int perf_data__open(struct perf_data *data);
- void perf_data__close(struct perf_data *data);
- ssize_t perf_data__read(struct perf_data *data, void *buf, size_t size);
- ssize_t perf_data__write(struct perf_data *data,
--			      void *buf, size_t size);
-+			 void *buf, size_t size);
- ssize_t perf_data_file__write(struct perf_data_file *file,
- 			      void *buf, size_t size);
- /*
-@@ -91,8 +91,8 @@ ssize_t perf_data_file__write(struct perf_data_file *file,
-  * Return value is fd of new output.
-  */
- int perf_data__switch(struct perf_data *data,
--			   const char *postfix,
--			   size_t pos, bool at_exit, char **new_filepath);
-+		      const char *postfix,
-+		      size_t pos, bool at_exit, char **new_filepath);
- 
- int perf_data__create_dir(struct perf_data *data, int nr);
- int perf_data__open_dir(struct perf_data *data);
--- 
-2.34.1
+Tested-by: Ron Economos <re@w6rz.net>
 
 
