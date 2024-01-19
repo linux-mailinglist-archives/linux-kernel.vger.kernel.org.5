@@ -1,138 +1,207 @@
-Return-Path: <linux-kernel+bounces-31514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2727832F5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:31:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94B30832F64
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:34:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 660331F227B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43765282295
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 19:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9EB5645A;
-	Fri, 19 Jan 2024 19:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5A95645A;
+	Fri, 19 Jan 2024 19:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ag1eNQAJ"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DrbXh5ZJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E7B55C22
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 19:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CE21E520
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 19:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705692665; cv=none; b=mdPnv4nio4DoOdvRu2X0J2V2r/7LCZMUUpIeh7x1qFeXNtciwT8uHr1kCkfCw4fNaBtMiVd7nTT/xj7rbtVH00fBQKncD1orcgY9vbX78JVPQgLbjzS4zV8HtRdl2Pcy1maTnvTsYVdFAmHsJFufYD0y4vBBJdPnpQ/Jc0to88I=
+	t=1705692857; cv=none; b=eRDszWgT7XBhfSPCCnLUN4o5YKWwk9qhbLKnHBVrPLbyjuA/Yrx+ONWuiiVfyggswwpuXTXQiCqu7UQFpB3fHQvvxv+4ux9ZHk2covoNUC9OXnR5lklJiqynPzQrQtkIJxCB62NPUtCPGUJV6GT1RxuGIHyws25enphIYrqRxK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705692665; c=relaxed/simple;
-	bh=OKoW9Kb//BaTZ8/QW5uOo1sHZX3P0hjEfYgyeWLR2Vw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DyRpzwjDwpPQ30farSPzF6MnXXqUC3zZONGeMmt5T/C52RVdQpl29fnadWVvfoVpgRkwovBoOjzwc0fEyfVEwXM4SStCLru2sQ6WmUFvkS+UUAR/lstI24CEvw0t8xZ1tUoVhkfV8dHz9Iksp3arEPTVVzxxQ194KB6cbxhVoII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ag1eNQAJ; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a2cea0563cbso177814566b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:31:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705692662; x=1706297462; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/ubddLskYXECGJ0tXpTZu2g1Mde5rJ6xI0bsqPnV2qw=;
-        b=Ag1eNQAJDEbTFRwNKXxZfrDroTdigZnISH2U8iDRlR5dlx+cgUN1OQD2+TVUl2nHkS
-         39i1SEaIV9xHk2dhEaM2itgx8GrXaSkraCwpevhFAfZ5f+7Dpj6O6X1Xz7Pvc+woJEB3
-         PrBT82MqU8czOzGxJy3t5ANPLnVpXW8E896xHBZ1xU2B9Sji9BLgkU8P9rJeROfg13vp
-         hb4Lv+GDGl6fRiMPYCkWH3Km1fmHT5W7EZGltnEh7cMH1MPanXVgKMkZW5xHoMfrPF5W
-         4bffrMwldfSZeOV2S9sBMz5XE/jnF2GF10GLV1W8Jme8oHvRLOZRkERgEydpR7gfbung
-         bD+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705692662; x=1706297462;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/ubddLskYXECGJ0tXpTZu2g1Mde5rJ6xI0bsqPnV2qw=;
-        b=QAqDBP1N2AYEq+ABgnlKJ9obbnAW8n1iCpXGLR70FNS473WkiieTORE9Y5GxvoFSjX
-         185st8zCcxSkOGf/xg5DzEPhGBV2M/fICHgmW3qUy8ye49AZ7BjQ7YSeXZjAWLqntNzK
-         UmPCup87Ih9+HKcGP5qrtXl8Ynv8HKJQIg0YQ+96FcJS8Sw/YH1ZV6uB/kvnfm5I2jgq
-         jz18p5h+tsRforxE9A29tOXcZ8UqYEMIM6Dd0yNoh2Vm/tb03cMD/RVOYES/e9U6d86z
-         tTuK7lyEGEk7+b5mDtZ7vULX4eLUJrdkPcKOaBMPde9qdtGyVZpLtbmbDbQX48ScS5PW
-         D+IA==
-X-Gm-Message-State: AOJu0YwTFD0ujbTTr/GE7WxgpItOylTjnZV1c9+5+tphX6FTexZOTJ1a
-	ifGSkrTaoYNIQlbaO7599sVXOxq77z1sv57FQy+aLV+3IDRYUzsflszRHyhZQz6G5U17eILzdfP
-	7gOkLEKWyYGIsvx7f40mm1YHDxj+uL1oySADy
-X-Google-Smtp-Source: AGHT+IFYrODpKofEkDwc//ZP6TaZx3Hd2HhQqXKJfQKuVIkKBYy0k0KAMBi1e5Wz4yMorqeVJV3RiLjSPevtfY04spo=
-X-Received: by 2002:a17:906:3b96:b0:a2c:a9c3:e405 with SMTP id
- u22-20020a1709063b9600b00a2ca9c3e405mr165006ejf.127.1705692661731; Fri, 19
- Jan 2024 11:31:01 -0800 (PST)
+	s=arc-20240116; t=1705692857; c=relaxed/simple;
+	bh=MIEUoP5a2OiOmUoqf2Pw0AaSbvsH2ScnxOrQHtG0L4Y=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=sY8bf1lce8PgnoEwuCNi8HwplHjnm7PgwSe8rkqGA1DSEuq1ZTm7WfeOBrYwAlq9E7Chq0OyIRIM2Jb6ybyIQaZK6G2l0tMbjrg2wfnHlz+5vVN+qb4BVR7zBuGUxQktBcH4WoSvBx4k103Jw00MpCSQrLPCayPu9TmkM2isC8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DrbXh5ZJ; arc=none smtp.client-ip=192.55.52.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705692855; x=1737228855;
+  h=date:from:to:cc:subject:message-id;
+  bh=MIEUoP5a2OiOmUoqf2Pw0AaSbvsH2ScnxOrQHtG0L4Y=;
+  b=DrbXh5ZJo+fhMKqMf0bDOsKJPV/2CI4FR3FhwnF2kNyvWNLdPkJazLdH
+   fqJxhsHIOpz0UjVfs9ZI55dDC489xl+AvhRFVE3JmjJudJhQsSksObQVo
+   hvsq1ZUowpkQajmLUr3ax5m8e37nJvvETublkLZOD0KXQxu8Txw3vplHw
+   0Ddv9vRprVmqPCctIX2EXnCJDTeRm+5cw8prHcWElDquNfXOe6W35pn+M
+   KFQ0z1Iwy86mSOZgHYR/Z1QYSTgjQftCA2D1m+YVnFgWEsgHcUpEpiCk3
+   83raWz0oZQ4cILuuPfyMt4rkMJEsd0TZfAc8EtmeidXXR4q7w3Y84PKIw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="486974480"
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="486974480"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 11:34:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="635584"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 19 Jan 2024 11:34:13 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rQud1-0004NI-0Z;
+	Fri, 19 Jan 2024 19:34:11 +0000
+Date: Sat, 20 Jan 2024 03:33:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ dc053699f17c065a994b99c6a9f6f3a268fd3edf
+Message-ID: <202401200346.CfKUU84Q-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
- <20240117-zswap-xarray-v1-1-6daa86c08fae@kernel.org> <CAJD7tkYEx57CPBoaN9GW4M3Mx-+jEsOMWJ02nLKSKD-MLb-WPA@mail.gmail.com>
- <ZaktH7xc72x4Xr3d@casper.infradead.org> <CAJD7tkapY4nx=uAXuyQhJN=rz7QPj6p9OJzpPwZGr_7+7Ywotw@mail.gmail.com>
- <ZaltEwGXHyFFuI0F@casper.infradead.org> <CAF8kJuPMhbMsjNf7gJF=5s+m0eVXg1juX1e9tVCEffrd5HbGaQ@mail.gmail.com>
-In-Reply-To: <CAF8kJuPMhbMsjNf7gJF=5s+m0eVXg1juX1e9tVCEffrd5HbGaQ@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 19 Jan 2024 11:30:25 -0800
-Message-ID: <CAJD7tkZRR2wwCyu-99+3y7FFOKm7omBZrrj-G5_tb9vOivpjWQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: zswap.c: add xarray tree to zswap
-To: Chris Li <chrisl@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	=?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, Yu Zhao <yuzhao@google.com>, 
-	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
-	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Chengming Zhou <zhouchengming@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 18, 2024 at 9:28=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote:
->
-> On Thu, Jan 18, 2024 at 10:25=E2=80=AFAM Matthew Wilcox <willy@infradead.=
-org> wrote:
-> >
-> > On Thu, Jan 18, 2024 at 08:59:55AM -0800, Yosry Ahmed wrote:
-> > > On Thu, Jan 18, 2024 at 5:52=E2=80=AFAM Matthew Wilcox <willy@infrade=
-ad.org> wrote:
-> > > >
-> > > > On Wed, Jan 17, 2024 at 10:20:29PM -0800, Yosry Ahmed wrote:
-> > > > > >         /* walk the tree and free everything */
-> > > > > >         spin_lock(&tree->lock);
-> > > > > > +
-> > > > > > +       xas_for_each(&xas, e, ULONG_MAX)
-> > > > >
-> > > > > Why not use xa_for_each?
-> > > >
-> > > > xas_for_each() is O(n) while xa_for_each() is O(n log n), as mentio=
-ned
-> > > > in the fine documentation.  If you don't need to drop the lock whil=
-e
-> > > > in the body of the loop, always prefer xas_for_each().
-> > >
-> > > Thanks for pointing this out. Out of ignorance, I skipped reading the
-> > > doc for this one and operated under the general assumption to use xa_=
-*
-> > > functions were possible.
-> > >
-> > > The doc also says we should hold either the RCU read lock or the
-> > > xa_lock while iterating, we are not doing either here, no?
-> >
-> > I have no idea; I haven't studied the patches in detail yet.  I have
-> > debugging assertions for that, so I was assuming that Chris had been
-> > developing with debug options turned on.  If not, I guess the bots will
-> > do it for him.
->
-> It is fine now because we have the extra zswap tree spin lock. When we
-> remove the zswap tree spin lock it does require RCU read lock. You are
-> right I would get assertion failure.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: dc053699f17c065a994b99c6a9f6f3a268fd3edf  Merge branch into tip/master: 'x86/tdx'
 
-I would imagine the assertions are that we are holding either the RCU
-read lock or the xa_lock, how would holding the zswap tree lock help?
+elapsed time: 2109m
+
+configs tested: 119
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20240119   gcc  
+arc                   randconfig-002-20240119   gcc  
+arm                               allnoconfig   gcc  
+arm                       aspeed_g5_defconfig   gcc  
+arm                                 defconfig   clang
+arm                      jornada720_defconfig   gcc  
+arm                            mmp2_defconfig   clang
+arm                           omap1_defconfig   clang
+arm                             pxa_defconfig   gcc  
+arm                   randconfig-001-20240119   gcc  
+arm                   randconfig-002-20240119   gcc  
+arm                   randconfig-003-20240119   gcc  
+arm                   randconfig-004-20240119   gcc  
+arm                        realview_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240119   gcc  
+arm64                 randconfig-002-20240119   gcc  
+arm64                 randconfig-003-20240119   gcc  
+arm64                 randconfig-004-20240119   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240119   gcc  
+csky                  randconfig-002-20240119   gcc  
+hexagon                           allnoconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240119   clang
+hexagon               randconfig-002-20240119   clang
+i386         buildonly-randconfig-001-20240119   gcc  
+i386         buildonly-randconfig-002-20240119   gcc  
+i386         buildonly-randconfig-003-20240119   gcc  
+i386         buildonly-randconfig-004-20240119   gcc  
+i386         buildonly-randconfig-005-20240119   gcc  
+i386         buildonly-randconfig-006-20240119   gcc  
+i386                  randconfig-001-20240119   gcc  
+i386                  randconfig-002-20240119   gcc  
+i386                  randconfig-003-20240119   gcc  
+i386                  randconfig-004-20240119   gcc  
+i386                  randconfig-005-20240119   gcc  
+i386                  randconfig-006-20240119   gcc  
+i386                  randconfig-011-20240119   clang
+i386                  randconfig-012-20240119   clang
+i386                  randconfig-013-20240119   clang
+i386                  randconfig-014-20240119   clang
+i386                  randconfig-015-20240119   clang
+i386                  randconfig-016-20240119   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240119   gcc  
+loongarch             randconfig-002-20240119   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240119   gcc  
+nios2                 randconfig-002-20240119   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240119   gcc  
+parisc                randconfig-002-20240119   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc               randconfig-001-20240119   gcc  
+powerpc               randconfig-002-20240119   gcc  
+powerpc               randconfig-003-20240119   gcc  
+powerpc64             randconfig-001-20240119   gcc  
+powerpc64             randconfig-002-20240119   gcc  
+powerpc64             randconfig-003-20240119   gcc  
+riscv                             allnoconfig   clang
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20240119   gcc  
+riscv                 randconfig-002-20240119   gcc  
+s390                              allnoconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20240119   clang
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240119   gcc  
+sparc64                             defconfig   gcc  
+um                                allnoconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64       buildonly-randconfig-001-20240119   gcc  
+x86_64       buildonly-randconfig-002-20240119   gcc  
+x86_64       buildonly-randconfig-003-20240119   gcc  
+x86_64       buildonly-randconfig-004-20240119   gcc  
+x86_64       buildonly-randconfig-005-20240119   gcc  
+x86_64       buildonly-randconfig-006-20240119   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240119   clang
+x86_64                randconfig-002-20240119   clang
+x86_64                randconfig-003-20240119   clang
+x86_64                randconfig-004-20240119   clang
+x86_64                randconfig-005-20240119   clang
+x86_64                randconfig-006-20240119   clang
+x86_64                randconfig-011-20240119   gcc  
+x86_64                randconfig-012-20240119   gcc  
+x86_64                randconfig-013-20240119   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
