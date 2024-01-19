@@ -1,193 +1,196 @@
-Return-Path: <linux-kernel+bounces-31580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA3CB833051
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:32:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D68833054
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:33:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF23A1C2297A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:32:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65F071F23712
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625EF5914F;
-	Fri, 19 Jan 2024 21:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA2C258220;
+	Fri, 19 Jan 2024 21:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d4mWa9Em"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fbSo464k"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A8158123
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 21:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616CC58100
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 21:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705699919; cv=none; b=JA88Et58JiZIIGVbnmhKyFeqvVm881QNLnh7o+xp61gzyxJ+UOJ5VR1c5xn1sInFnBBAmbjZRualr9OAvMnlSKGp1KS7MKk2bSR/4Cj3QsxCOZ/qy3iq3/VoiEUbQj0nKpubAiL/p0s3kpJ3SfEFF+asTOfVuYYJDdJmKTkgdvM=
+	t=1705699996; cv=none; b=UF6HQh6wfGEKLGB+da6tRICR3mRO32dJoPw6mo1pcBWGQRKhYcVz3ImpCcgAYVuE/+OdbOT9qEsXdl6p6LY9x12JCPVyyOA6Wae1TgewMDNghDgnKjsRNN95sPSBeFSN9WXQeDpv9cJrFRPn8q9yUp7C33CLwK4C5W5wjluHt74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705699919; c=relaxed/simple;
-	bh=FFuVjU3mY+IzP8h5t5jS3m765EvdKkoQi/+p+qZCu84=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i9Bbosh8YBBZZLiTp90Gf5utdKCAalXc3Nsiae39j9U+0zwdTxYZwiSvMhfA2Kekx8lD3BHLy50oVuvv1SjnlO9vPCK/lF2Jsg4cF1CYZ8Mv70lO6Tc6/BBk1BxsQ50tnECrJB0FTtfNESj2P3ZIapon0hTXL9b8zjkH+yCifik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d4mWa9Em; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ABEEC43394
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 21:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705699919;
-	bh=FFuVjU3mY+IzP8h5t5jS3m765EvdKkoQi/+p+qZCu84=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=d4mWa9EmQX4yuKB4EXi5g51uWDIi2sdzsdWZbaRuxcfzcH8VJuuklFBO+SA6fMQs2
-	 xxgPsDsc7/TeEiaZKfsUFn0T1yIQ2hJmHneKa3m5psG+BwhPd0v2aI9/tDM4OIyD2v
-	 lDExuJ9Wcz1nTtEA4NNQtYhLTeJfeJM7SS61NAF1lGCjR1REb/utepZk+W9YCnrkeo
-	 Qzd3Q8DZ/3xZma2JFIHBI5IWLlAU7RYQLXCm9v5VBtzsdoYfUb7XRHdWQQd/DKtAJq
-	 EwbM8eb7unZtBGk3ULLQLVbHhD+Kk8qE6FNqrpIld4zXJ8OIMmn0JYa6TFgOqXqSLY
-	 vuZm+MUk5unjw==
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d5f5a2e828so9477925ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:31:59 -0800 (PST)
-X-Gm-Message-State: AOJu0YyXveSeTou+tz9TIVUZnz9QnhTr/EKNFc5+nkQcSgeDpLGUgmZb
-	b4uo3HtdYDIyX8XSTJdkt8OuN1HRZtyetFBmxqIlwHSJy7SlVezd3I3p1nvaRbwC5ZXIoF85oEE
-	XyG2pEwzs75F2S+KQj9CrDHC3mL/Sd4GxyxPZ
-X-Google-Smtp-Source: AGHT+IH7jPpj5bIa8OCYsO+Psj8QEHoaSqxEzysy3jIV9/sxIC4fXEIhQsIPwKCqX5u1OZblRRB4L/oR3KEZydCuqtw=
-X-Received: by 2002:a17:90b:108c:b0:28a:f0bc:2a9f with SMTP id
- gj12-20020a17090b108c00b0028af0bc2a9fmr342582pjb.21.1705699918523; Fri, 19
- Jan 2024 13:31:58 -0800 (PST)
+	s=arc-20240116; t=1705699996; c=relaxed/simple;
+	bh=EkTj7yDGwdkzAs8tBNlRMDUvXzIDCIPdlE7L2nKM844=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F7EwyoFEoRPB+oWXcJo4f6890kNFP1b8zfJIzvDVRH0FiM0j57oyrW3w+YWmCSmCfWcW/w1zkDNisX/73HPZi36Inf1PXkwvSFvrV93ZeuvKDIgRloR5hofXjdmJaAIzbwfBGGN16SDbisf3lLpPWJwpzcf6W11iz75aVM5wUKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fbSo464k; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705699994;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lzrWPZR5+3QYuqMx3/O+fwKFrZi0Xwysmh/7OAXDcYM=;
+	b=fbSo464k7XvSr96aYW4EOzeJ7XIXlJ4i5DcpvJhnVjvHtD+jxNUXuB3zbABa96Vm4K08mE
+	V79LK4qRjvkT2Ose2rTXDUc0mjqXbNLazAkSsSrxI2nupCpXIr0ptFIl2L8YoyfdQsvQHy
+	L1fIv/BmblvR01IKGPLVFqHbzOeMN68=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-398-uajpGbASMFqstPpvxjAzAw-1; Fri, 19 Jan 2024 16:33:12 -0500
+X-MC-Unique: uajpGbASMFqstPpvxjAzAw-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6855c0719a8so275266d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 13:33:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705699992; x=1706304792;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lzrWPZR5+3QYuqMx3/O+fwKFrZi0Xwysmh/7OAXDcYM=;
+        b=txmUSgnzwupHYKcnzMSpnMu17DGTDFdM44QfMMe7/1xj5/Dl5mTvU0LtNNwZEUWwoJ
+         n6LCmyImUFqVSxBZDMsDMgHFRo8JJ7nv2fZEFdoY8RAYG5oZ8IttcoSVjwMEraqyUPwi
+         lZRLWoI8MG7DZlMVyITX0Gfj75w6JwuizV6cpnX6QJ8ZMUAT5l/4dD2Pcb84SgIy2bai
+         Q5aLbAXqA0Lq9xdm/nHFY6ivU7T882YYORjAsxlB5bXkMWvj/wO84lFyVowPWfGEh3kS
+         C/52K/wociFe4LyepM1x83qihOBHeBP+IN1V6KRSgSAfoiMjAo+WpUH/KozqDxtIhrvW
+         w7gA==
+X-Gm-Message-State: AOJu0YxxQRR9RGYgzZnu7mJgKp2XpJ8qubAK+DHeO9R9Off4Bo8GjBXW
+	HDEj+p694S9l5uQqY9CCn69802bzI/yQ36qc6lHuLGPAYmnxEkCsK5LaozCpNqVAV6kCxUH2MaC
+	4qgeL0hJohlPfbSQ2D7377s7HzcGrPPLCVhE+RBJOBf77Vw/cEYTRzmcnM+WWtw==
+X-Received: by 2002:a05:6214:2686:b0:680:c880:6646 with SMTP id gm6-20020a056214268600b00680c8806646mr668649qvb.22.1705699992321;
+        Fri, 19 Jan 2024 13:33:12 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGzzipQRf/AqpwwysE2kv7ZI6fkFW9M4nW61XT5BD6zZ/s+tUut70peKPfzGaEivdj8NjgXpQ==
+X-Received: by 2002:a05:6214:2686:b0:680:c880:6646 with SMTP id gm6-20020a056214268600b00680c8806646mr668638qvb.22.1705699992064;
+        Fri, 19 Jan 2024 13:33:12 -0800 (PST)
+Received: from localhost (pool-71-184-142-128.bstnma.fios.verizon.net. [71.184.142.128])
+        by smtp.gmail.com with ESMTPSA id di8-20020ad458e8000000b006818a1e269csm39021qvb.102.2024.01.19.13.33.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 13:33:11 -0800 (PST)
+Date: Fri, 19 Jan 2024 16:33:10 -0500
+From: Eric Chanudet <echanude@redhat.com>
+To: Andrew Halaney <ahalaney@redhat.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: Re: [PATCH] scsi: ufs: qcom: avoid re-init quirk when gears
+ match
+Message-ID: <graeyylgohsukni35djpbxibnz5ya7laqvsydharkzcktv2iwz@knbu5uq5fa4x>
+References: <20240119185537.3091366-11-echanude@redhat.com>
+ <3xnedre2d32rkad6n2ln4rrah7sgg6epxnzsdm54uab3zrutnz@fww7wb5mvykj>
+ <otgj6524k6wiy27depeo7ckopmrr2v3xdnaoph4c5djjohnpmg@f7hyetygcyyr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org>
- <20240117-zswap-xarray-v1-2-6daa86c08fae@kernel.org> <CAJD7tkZF102x_8LKAX+sxAttgYD_LNT3cRqeOr7_euwPfNdCFA@mail.gmail.com>
- <CAF8kJuMwF=s-28OPFbCfJf-f3jsfYmyiP6pSBjj8ZgkGmbT9ZA@mail.gmail.com> <CAJD7tkbdT-Bdi4YkOS_Px73dkhthq2qn6Yvy7CobzTBji0WMog@mail.gmail.com>
-In-Reply-To: <CAJD7tkbdT-Bdi4YkOS_Px73dkhthq2qn6Yvy7CobzTBji0WMog@mail.gmail.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Fri, 19 Jan 2024 13:31:46 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuOOwyzGGz21PKsGBdJBU3B+gk1+o78MwGqG5FDNZK9LSA@mail.gmail.com>
-Message-ID: <CAF8kJuOOwyzGGz21PKsGBdJBU3B+gk1+o78MwGqG5FDNZK9LSA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: zswap.c: remove RB tree
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, =?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
-	Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, 
-	Chun-Tse Shao <ctshao@google.com>, =?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Chengming Zhou <zhouchengming@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <otgj6524k6wiy27depeo7ckopmrr2v3xdnaoph4c5djjohnpmg@f7hyetygcyyr>
 
-On Fri, Jan 19, 2024 at 11:37=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
-> > > I think using the xas_* APIs can be avoided here. The only reason we
-> > > need it is that we want to check if there's an existing entry first,
-> > > and return -EEXIST. However, in that case, the caller will replace it
-> > > anyway (and do some operations on the dupentry):
-> >
-> > We might be able to for the insert case if we don't mind changing the
-> > code behavior a bit. My original intent is to keep close to the
-> > original zswap code and not stir the pot too much for the xarray
-> > replacement. We can always make more adjustment once the RB tree is
-> > gone.
->
-> I don't see how this changes code behavior though. The current code in
-> zswap_store() will do the following:
+On Fri, Jan 19, 2024 at 02:33:32PM -0600, Andrew Halaney wrote:
+> On Fri, Jan 19, 2024 at 02:07:15PM -0600, Andrew Halaney wrote:
+> > On Fri, Jan 19, 2024 at 01:55:47PM -0500, Eric Chanudet wrote:
+> > > On sa8775p-ride, probing the hba will go through the
+> > > UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH path although the power info
+> > > are same during the second init.
+> > > 
+> > > If the host is at least v4, ufs_qcom_get_hs_gear() picked the highest
+> > > supported gear when setting the host_params. After the negotiation, if
+> > > the host and device are on the same gear, it is the highest gear
+> > > supported between the two. Skip the re-init to save some time.
+> > > 
+> > > Signed-off-by: Eric Chanudet <echanude@redhat.com>
+> > > ---
+> > > 
+> > > "trace_event=ufs:ufshcd_init" reports the time spent where the re-init
+> > > quirk is performed. On sa8775p-ride:
+> > > Baseline:
+> > >   0.355879: ufshcd_init: 1d84000.ufs: took 103377 usecs, dev_state: UFS_ACTIVE_PWR_MODE, link_state: UIC_LINK_ACTIVE_STATE, err 0
+> > > With this patch:
+> > >   0.297676: ufshcd_init: 1d84000.ufs: took 43553 usecs, dev_state: UFS_ACTIVE_PWR_MODE, link_state: UIC_LINK_ACTIVE_STATE, err 0
+> > > 
+> > >  drivers/ufs/host/ufs-qcom.c | 6 +++++-
+> > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > > index 39eef470f8fa..f9f161340e78 100644
+> > > --- a/drivers/ufs/host/ufs-qcom.c
+> > > +++ b/drivers/ufs/host/ufs-qcom.c
+> > > @@ -738,8 +738,12 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
+> > >  		 * the second init can program the optimal PHY settings. This allows one to start
+> > >  		 * the first init with either the minimum or the maximum support gear.
+> > >  		 */
+> > > -		if (hba->ufshcd_state == UFSHCD_STATE_RESET)
+> > > +		if (hba->ufshcd_state == UFSHCD_STATE_RESET) {
+> > > +			if (host->hw_ver.major >= 0x4 &&
+> > 
+> > Is this check really necessary?
 
-I am referring to the log and update counter happening after the zswap
-mapping was updated. Maybe nobody actually cares about that behavior
-difference. In my mind, there is a difference.
+I *think* so.
 
->
-> - Hold the tree lock to make sure no one else modifies it.
-> - Try to insert, check if there is already a dupentry at the index and
-> return -EEXIST.
-> - Warn, increment zswap_duplicate_entry, and invalidate the dupentry.
-> - Try to insert again (this should always succeed since we are holding
-> the lock).
->
-> What I am proposing is:
-> - zswap_xa_insert() is a thin wrapper around xa_store() (or we can
-> remove it completely).
-> - zswap_store() does the following:
->   - Use zswap_xa_insert() and check if there is a returned dupentry.
->   - Warn, increment zswap_duplicate_entry, and invalidate the dupentry.
->
-> Either way, we always place the entry we have in the tree, and if
-> there is a dupentry we warn and invalidate it. If anything, the latter
-> is more straightforward.
->
-> Am I missing something?
+For example, if hw_ver < 4, ufs_qcom_set_phy_gear() has a comment saying
+"power up the PHY using minimum supported gear (UFS_HS_G2). Switching to
+max gear will be performed during reinit if supported."
 
-No, that is what I would do if I have to use the xa_* API.
+> > 
+> > The initial phy_gear state is something like this (my phrasing of
+> > ufs_qcom_set_phy_gear()):
+> > 
+> >     if hw_ver < 4:
+> >         # Comments about powering up with minimum gear (with no
+> >         # reasoning in the comment afaict), and mentions switching
+> >         # to higher gear in reinit quirk. This is opposite of the later
+> >         # versions which start at the max and scale down
+> >         phy_gear = UFS_HS_G2
 
+IIUC, the device would not be able to negotiate a gear higher than the
+minimum set for the phy_gear on initialization.
 
->
-> > >
-> > > >  }
-> > > >
-> > > >  static bool zswap_erase(struct zswap_tree *tree, struct zswap_entr=
-y *entry)
-> > > >  {
-> > > > +       struct zswap_entry *e;
-> > > >         pgoff_t offset =3D swp_offset(entry->swpentry);
-> > > > -       if (!RB_EMPTY_NODE(&entry->rbnode)) {
-> > > > -               struct zswap_entry *old;
-> > > > -               old =3D xa_erase(&tree->xarray, offset);
-> > > > -               BUG_ON(old !=3D entry);
-> > > > -               rb_erase(&entry->rbnode, &tree->rbroot);
-> > > > -               RB_CLEAR_NODE(&entry->rbnode);
-> > > > -               return true;
-> > > > -       }
-> > > > -       return false;
-> > > > +       XA_STATE(xas, &tree->xarray, offset);
-> > > > +
-> > > > +       do {
-> > > > +               xas_lock_irq(&xas);
-> > > > +               do {
-> > > > +                       e =3D xas_load(&xas);
-> > > > +               } while (xas_retry(&xas, e));
-> > > > +               if (xas_valid(&xas) && e !=3D entry) {
-> > > > +                       xas_unlock_irq(&xas);
-> > > > +                       return false;
-> > > > +               }
-> > > > +               xas_store(&xas, NULL);
-> > > > +               xas_unlock_irq(&xas);
-> > > > +       } while (xas_nomem(&xas, GFP_KERNEL));
-> > > > +       return !xas_error(&xas);
-> > > >  }
-> > >
-> > > Same here, I think we just want:
-> > >
-> > > return !!xa_erase(..);
-> >
-> > For the erase case it is tricky.
-> > The current zswap code does not erase an entry if the tree entry at
-> > the same offset has been changed. It should be fine if the new entry
-> > is NULL. Basically some race to remove the entry already. However, if
-> > the entry is not NULL, then force resetting it to NULL will change
-> > behavior compared to the current.
->
-> I see, very good point. I think we can use xa_cmpxchg() and pass in NULL?
->
-That is certainly possible. Thanks for bringing it up.
-Let me try to combine the tree->lock with xarray lock first. If
-xa_cmpxchg() can simplify the result there, I will use it.
+ufshcd_init_host_params() and ufs_qcom_get_hs_gear() both set the
+controller <v4 host_params to G3. So if the device is HS capable, the
+re-init would set G3, instead of the G2 selected by
+ufs_qcom_set_phy_gear().
 
+Assuming I'm not loosing track somewhere, the sequence of calls would go
+something like this:
 
-> Handling large folios in zswap is a much larger topic that involves a
-> lot more than this xa_* vs. xas_* apis dispute. Let's not worry about
-> this for now.
+ufshcd_init
+ ufshcd_hba_init
+  ufshcd_variant_hba_init
+   ufshcd_vops_init
+    ufs_qcom_init
+     ufs_qcom_set_host_params /* if hw_ver < 4: phy_gear = G2 */
+ ufshcd_hba_enable
+  ufshcd_hba_execute_hce
+   ufshcd_vops_hce_enable_notify(PRE_CHANGE)
+    ufs_qcom_hce_enable_notify /* vops.hce_enable_notify */
+     ufs_qcom_power_up_sequence
+      phy_set_mode_ext(phy, mode, host->phy_gear);
+ async_schedule(ufshcd_async_scan, hba)
+ ...
+ ufshcd_async_scan
+  ufshcd_device_init
+  ufshcd_probe_hba /* where the re-init quirk happens */
+   ufshcd_device_init
+    ufshcd_vops_pwr_change_notify(PRE_CHANGE)
+  
+So that would limit the device to G2? In this circumstances, the re-init
+would instead re-initialize to G3.
 
-Ack. One more reason to use the XAS interface is that zswap currently
-does multiple lookups on typical zswap_load(). It finds entries by
-offset, for the entry (lookup one). Then after folio install to swap
-cache, it deletes the entry, it will performan another lookup to
-delete the entry (look up two). Using XAS might be able to cache the
-node location for the second lookup to avoid the full node walk. That
-is not in my current patch and can be a later improvement patch as
-well.
+> I guess what I'm saying is shouldn't the check be something like:
+> 
+>     if (dev_req_params->gear_tx == host->phy_gear) {
+>         // Skip reinit since we started up in the agreed upon gear
+>         hba->quirks &= ~UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
+>     }
 
-Chris
+-- 
+Eric Chanudet
+
 
