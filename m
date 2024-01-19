@@ -1,106 +1,148 @@
-Return-Path: <linux-kernel+bounces-31543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BECD1832FC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:31:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F460832FC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 21:32:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45855280DA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:31:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 825CE1C24184
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 20:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4581954BE3;
-	Fri, 19 Jan 2024 20:31:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E76556B67;
+	Fri, 19 Jan 2024 20:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dxjRvouq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="NinSCgGW"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726858BF6
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 20:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7335D1E4A5;
+	Fri, 19 Jan 2024 20:32:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705696263; cv=none; b=tlqUqyVE13dwVVRvXT6mQ64tBm7CQW3mTffzhxyiQyy+qQORaARmV9YB7MK9EwEYyMA0H5QEtdxAwxI0mkfNiDJByQbpXrmWQ38PT3MxFjhsSBONjxizQTsDhVcTBe9dQzXNROePEX22539V9OiZivEmazQIxKpFxTUX+tSBzGs=
+	t=1705696365; cv=none; b=X+fHP4NmzXOpwgZSNY9i2syp1aSuWCT403IpM5lV3fP+Di5wjxkGbqGQxZbCOdvuNKpWcNQ0pdpBKNEIBHo9BokhMVb273Zg8PlvKsRO+24fjtpV3e4WFeDR0DjR9IqN6UyoQQoXpnFEwdgC+CcgfZP027yz9q6TzekWDgchLOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705696263; c=relaxed/simple;
-	bh=OKJ8VXzhuKQpiVaB1tux2YO5F2PodmPsL/JSVh8TRDY=;
+	s=arc-20240116; t=1705696365; c=relaxed/simple;
+	bh=+T57t4scphjXmREAryQ2RC2KLCJQWNQkLcAGX8d3N2Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kAQVYdGqYXJUwC/ospFkLXermlce4t581+soySCARavhFPndGqHuUF6KuQMqk+oA4jwVGLJ87e6wt+dmb80D7V5KYBorEVXUq9G7hJOnnfzmgQam1P3DszCZoPH+gzkj6zni3FI7Wr33Ou+TjnHx2q9P0lhsRszT8u1iDinCW/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dxjRvouq; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705696260;
+	 Content-Type:Content-Disposition:In-Reply-To; b=SMw5I8DqpSFx7FKvKz7yRc1Di0bv1wEAFY/wL7DNFRnjknWtgh8TqQqFWsy5N5ohnqUr8AmQUgJQbChAX/2/1Xua/f7OktN0UMUZosXSQPfpx+YBz/xO3utBR0C54UMDsYtU/YV6qOK1x9SkVnSy2KliP0lMrTOzlDEHXp60tRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=NinSCgGW; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 4A3841C0071; Fri, 19 Jan 2024 21:32:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1705696360;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Le/B9zszCG4OnIUWJ5vGWVH4S9ibCDvWqCeyzDoHXaY=;
-	b=dxjRvouqBcs8vHHzRnb3z+LuHAJq9UBJryVtRZoSM8KfAO4tW8Hri7gghOg3uVYy/nHnHD
-	0TbRiZpxumPk7uYKEMvUx01cqezB8fYns7D1uKUBfH9dUePFGN/INV6mZ8VujCBLeocPsr
-	CgAMZGEk4aRWuMX+6UxLDuwOE1PEjUQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-675-vwGlXyDEORejeGqeaUGfNA-1; Fri, 19 Jan 2024 15:30:56 -0500
-X-MC-Unique: vwGlXyDEORejeGqeaUGfNA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5CCEA83B82D;
-	Fri, 19 Jan 2024 20:30:56 +0000 (UTC)
-Received: from fedora (unknown [10.22.32.201])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id E9A9A492BC6;
-	Fri, 19 Jan 2024 20:30:55 +0000 (UTC)
-Date: Fri, 19 Jan 2024 15:30:54 -0500
-From: Audra Mitchell <audra@redhat.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
-	hirokazu.yamauchi.hk@hitachi.com, ddouwsma@redhat.com,
-	loberman@redhat.com, raquini@redhat.com, rasmus.villemoes@prevas.dk
-Subject: Re: [PATCH v3] workqueue.c: Increase workqueue name length
-Message-ID: <Zarb_u7mZCBGrgSX@fedora>
-References: <20231215193954.1785069-1-audra@redhat.com>
- <20240115170822.451231-1-audra@redhat.com>
- <ZabLkep0gOFEyjxH@slm.duckdns.org>
- <Zafm-hkCI4sbOr78@fedora>
- <ZagJrod33CPFaXGg@mtj.duckdns.org>
+	bh=2Z4zR8u3nm1rRi0zh1NzLoJEZgyLkftEGi5YnT+0UVA=;
+	b=NinSCgGWEItpLCFK8x0Plbr7ic7jnW5Xg2ZYjXsM9w+gtEy+UAh0BsWBQQmUsCq0s1Gcrb
+	FOduxoV6A0sLjTsiMplEkepm1nA1DYNxTGdAr5mftTcmZ2Sv1lYCUFw8kVsfLir6lEm9Eq
+	t4D01rdmcjk2BoWgz1riHNWdItpC4+Q=
+Date: Fri, 19 Jan 2024 21:32:39 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Werner Sembach <wse@tuxedocomputers.com>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
+	Jelle van der Waa <jelle@vdwaa.nl>,
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	linux-input@vger.kernel.org, ojeda@kernel.org,
+	linux-leds@vger.kernel.org
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+Message-ID: <ZarcZwQd/2EXjgZP@duo.ucw.cz>
+References: <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
+ <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
+ <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
+ <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+ <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+ <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
+ <ZaljwLe7P+dXHEHb@duo.ucw.cz>
+ <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com>
+ <ZarYSkzISyS+wuYR@duo.ucw.cz>
+ <36973f9d-bf67-417d-998c-ce24c38322c3@tuxedocomputers.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/ZMJYiWSABC/ttn2"
+Content-Disposition: inline
+In-Reply-To: <36973f9d-bf67-417d-998c-ce24c38322c3@tuxedocomputers.com>
+
+
+--/ZMJYiWSABC/ttn2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZagJrod33CPFaXGg@mtj.duckdns.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 07:09:02AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Wed, Jan 17, 2024 at 09:40:58AM -0500, Audra Mitchell wrote:
-> > Thank you for the response. May I humbly mention that I did find the following
-> > while testing my patch:
-> > 
-> > [    0.120298] workqueue: name exceeds WQ_NAME_LEN (32 chars). Truncating to: events_freezable_power_efficien
-> > 
-> > In an effort to be thorough, would you like me to submit a patch shortening
-> > this? Perhaps to "events_freezable_pwr_efficient"?
-> > 
-> > To be clear, I am not pushing the change, however, I do want to make sure that
-> > the changes being submitted are not causing additional clutter. 
-> 
-> Oh yeah, please go ahead.
-> 
-> Thanks.
+Hi!
 
-Hey Tejun,
+> > > And then storing RGB in separate bytes, so userspace will then
+> > > always send a buffer of 192 bytes per line (64x3) x 14 rows
+> > > =3D 3072 bytes. With the kernel driver ignoring parts of
+> > > the buffer where there are no actual keys.
+> > That's really really weird interface. If you are doing RGB888 64x14,
+> > lets make it a ... display? :-).
+> >=20
+> > ioctl always sending 3072 bytes is really a hack.
+> >=20
+> > Small displays exist and are quite common, surely we'd handle this as
+> > a display:
+> > https://pajenicko.cz/displeje/graficky-oled-displej-0-66-64x48-i2c-bily=
+-wemos-d1-mini
+> > It is 64x48.
+> >=20
+> > And then there's this:
+> > https://pajenicko.cz/displeje/maticovy-8x8-led-displej-s-radicem-max7219
+> > and this:
+> > https://pajenicko.cz/displeje/maticovy-8x32-led-displej-s-radicem-max72=
+19
+> >=20
+> > One of them is 8x8.
+> >=20
+> > Surely those should be displays, too?
+>=20
+> But what about a light bar with, lets say, 3 zones. Is that a 3x1 display?
+>=20
+> And what about a mouse having lit mousebuttons and a single led light bar=
+ at
+> the wrist: a 2x2 display, but one is thin but long and one is not used?
 
-Do you want this as a stand alone patch or do you want me to re-submit both
-patches as a series?
+So indeed LEDs can arranged into various shapes. Like a ring, or this:
 
-Thanks
+ * *
+* * *
+ * *
 
+https://pajenicko.cz/led-moduly?page=3D2
+
+Dunno. Sounds like a display is still a best match for them. Some of
+modules are RGB, some are single-color only, I'm sure there will be
+various bit depths.
+
+I guess we can do 3x1 and 2x2 displays. Or we could try to solve
+keyboards and ignore those for now.
+
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--/ZMJYiWSABC/ttn2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZarcZwAKCRAw5/Bqldv6
+8vorAJ44jwibpMssWa1IOTj5wgRqgYAdpACgsblb5qNdHeBKVZp9qFNQLdR24uQ=
+=Qwmz
+-----END PGP SIGNATURE-----
+
+--/ZMJYiWSABC/ttn2--
 
