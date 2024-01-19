@@ -1,175 +1,135 @@
-Return-Path: <linux-kernel+bounces-31598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582D9833098
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:01:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5293C83309A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 23:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB79A1F22928
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:01:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F09FA2875A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 22:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 562B058AAE;
-	Fri, 19 Jan 2024 22:00:55 +0000 (UTC)
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EF258AA9;
+	Fri, 19 Jan 2024 22:03:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="nkRgJE94"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6501058123;
-	Fri, 19 Jan 2024 22:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 719535465E
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 22:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705701654; cv=none; b=dffkENUpsEkuFTd0gmR49q/enfuMEGln0H1Xt9PpxPwRdKHSIlpIDm3yH9TlI4XAQO7zkpuwpGMGnVNA/VJ+I8vLL/T5J/tuAjmjWuQdmVrGYIu9LWQmWrDrcv/sGbsj38zp0rDl9Q5uhZmWi5o2F+dlUUo97eFmyhbHPpFXBhs=
+	t=1705701823; cv=none; b=Exm5mG6G4CAQWZdqseQcHHluP9knaP7NrUNt21yNzh7M9GSj0RDN2hOObzomSRKaIGDGVUy4tJa1TyPTFt+09hzKmOhQT6TdpsdUqLct+fKOqvu3HVFx2Zyy2Z29O+zUwp3PhBnELh07btoT7OsQs0wCi7ZqPbQLic4fE5GM0uU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705701654; c=relaxed/simple;
-	bh=Kse0PIpkp1eW761DnNoy1BgjfnS1ObybWXpfX+UXoFc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C/fKBTtgM/8vIfiYdH2yL9JX/LB+ywhTBKosTsDV0UoCbRlQvT0Sixl8GbL59eQ2CYmMnLbB0V/y+0jgbpuqR+Sa4NKopjLemT6rZ5f000WTUsbLZfxZcO0tGDIkTiaJEWTdLMnjhPdberVlyNtPfOHPQcW+VrH5egNSfw4WBZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-53fa455cd94so774703a12.2;
-        Fri, 19 Jan 2024 14:00:53 -0800 (PST)
+	s=arc-20240116; t=1705701823; c=relaxed/simple;
+	bh=UK0vew5OPvSZbMAryrGZG51aWIjGOLTwWnU0d+JZhpc=;
+	h=Date:Subject:In-Reply-To:Message-ID:Mime-Version:Content-Type:CC:
+	 From:To; b=jMHl+WAyv5H8fSa2El/dHHezqL16WJiZYRseonn0LSxBSn/T25SriHcdzuqbFsfKKf6ikQ7SjnsA2tMUrznGSuXr1cD2LKREMGrmv6OMZyzrXFo+CDva9VZ/O297kM1pv911nDKEPHttaFGw8ohFKv/oWWgRtU3hhyMEC8BjUOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=nkRgJE94; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-28b6218d102so1090175a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 14:03:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705701822; x=1706306622; darn=vger.kernel.org;
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5aaVzBMeeZblMbEUbDFmZomg/HzP8H1Gn+gnGtwevNs=;
+        b=nkRgJE94OGEwBbf4XFDE7WCcKD26VaPWlMlNvY+ay0pGa++pwg7ENvD/7Ejd69vmd2
+         4dfLVOC8FzQ/a/4fw3JNU4d0gNBKV7z+n2hFYmNO+M/q81/ZbVC4+t8fX4MIfiKSN/Tg
+         YN+0J5Y3T8CehtTZUD3GfZRuOz+bL8otbsL5UJ5vg5PV/JYn5rhhL6xTcQo+HmIKPVFx
+         y7hSNYNXF8juGB9DgrJUFlXNePF1vHmSKVhG6Iv0kyHGCG14gc3vChQ6PQgsd4FO/HkH
+         6Td/hBLVKwZKxXefoNpSv2Ub1iIhq0EEVReEQkNmmI4zVyJ+ZEldKn+smkySa3ivZqOE
+         h5Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705701653; x=1706306453;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=12c2ARLo1DzPmVN8NnE58YkJlTXRWZ7lnCmUYNjTW2I=;
-        b=WR0tr6XATHj3kO3vA0nHt0iiRFsee4uGzN/EouyApYXs1wb7UkViwYKUs4TlNhZ3wo
-         gSZP2Lg130R1BQOv3PW3QK7Sc4A6p/mfLcGmrCQZZB8bvzJqVGaPdmZN8vYtYx8BLni/
-         yk7Avvg5Mx6b2xFKJXA7R9gJV+NPBeVAbn5+hXt3649himq0YPeTuyE0pYoV6o2dfrDz
-         dwURGB/TcYXCWOS5hlnoLmxLCpF8eM+svH09PhpR0HOYXx+QyF3uzJw/bKeWetp+sWx3
-         CzObE0tGI6vjqsMxipRdcuD6Bp6jCShxK4ljmhKjMBHeBbVOU7/DxMQ+H60dEIypvnpL
-         T8eQ==
-X-Gm-Message-State: AOJu0YwDKOc4YnSprCyMZS0EfubKRn1f5a98qvo3rKum+HK6u1yUPfIi
-	uCb5qMG82gb0FPSSacCAxhfzoPbQW/7L6b22aGSKmolBpKt+8EOzoRyu+E02kAr9VR5gvDbIJ2i
-	GlWCaMakT4qdhpwEP1sVFBh0+Khw=
-X-Google-Smtp-Source: AGHT+IHjdaVUHskCyMOUbNn6cvOvq8mmYxB4O6Xhj6CxkRtg4NlhYQc5lLCxfgB1l2SO3xq42x42tsux4CId48SeWD0=
-X-Received: by 2002:a17:90a:7562:b0:28c:8478:f4aa with SMTP id
- q89-20020a17090a756200b0028c8478f4aamr455480pjk.66.1705701652722; Fri, 19 Jan
- 2024 14:00:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705701822; x=1706306622;
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5aaVzBMeeZblMbEUbDFmZomg/HzP8H1Gn+gnGtwevNs=;
+        b=AbIS59iYjbqrMFN/V1mi6WRbwMZLSf4hrDCU3D3aIhvPtSHPM061KOdpBPWsubOIhm
+         CmRnhCdrgyrzbX6KEuf2eyEku/xJrf6AH9jUStMtLOo6Q32PBLCM+dkAVPHtmZ3xiXt3
+         GdJpXNq+iCxPWFL20CLsr12/uEmtLD7hNknxxdrt4kjKofusalSqpiKgklGaFsxtOJnw
+         ZXl4enQUVDwV0jpTl+9S9UrgkzQMvt483YUz4ZeVmj0R9vrkjLCo4smcM7qmaemhg5Z4
+         Rr9t7pn6HO2eUtx8XM8WEZe1ksrNT2yKY+Zm7Qa96K0+uYdaArcXfBdzk6gFUZ8CadWu
+         izwQ==
+X-Gm-Message-State: AOJu0Ywdwl5xghGgIpKYHeuPwYjQ/s+dR3dOow5N2sEkDn2uEhjL8sqR
+	f2oY4NuCigDTApZb6Md+EVJU2q8OmJrLR2gT2DuK0zNZLFT6pc34nljPoIw4dDI=
+X-Google-Smtp-Source: AGHT+IGftZP2Jl+VwJV08AVdkfiAwWPWCiEg5yYwDaS6Y+0pO5wM+PStwOKVnAiNRaDx+cdEX7oaxg==
+X-Received: by 2002:a17:90b:30c6:b0:28f:f70f:ee60 with SMTP id hi6-20020a17090b30c600b0028ff70fee60mr415981pjb.8.1705701821779;
+        Fri, 19 Jan 2024 14:03:41 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id e16-20020a170902cf5000b001d5c38bfa33sm3486111plg.307.2024.01.19.14.03.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 14:03:41 -0800 (PST)
+Date: Fri, 19 Jan 2024 14:03:41 -0800 (PST)
+X-Google-Original-Date: Fri, 19 Jan 2024 14:03:11 PST (-0800)
+Subject:     Re: [PATCH] tty: hvc: Fix the RISC-V SBI driver for a refactoring
+In-Reply-To: <20240119215612.20529-2-palmer@rivosinc.com>
+Message-ID: <mhng-dd8222be-f59f-4422-8cf5-dbefccf63f5f@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240116041129.3937800-1-lizhijian@fujitsu.com>
- <20240116045151.3940401-1-lizhijian@fujitsu.com> <20240116045151.3940401-3-lizhijian@fujitsu.com>
-In-Reply-To: <20240116045151.3940401-3-lizhijian@fujitsu.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Fri, 19 Jan 2024 14:00:41 -0800
-Message-ID: <CAM9d7cirhP65hMsgD7Kt+puferoJ76i+p6f7EGJsaoh4a2eLag@mail.gmail.com>
-Subject: Re: [PATCH 05/42] arch/x86/events/intel: Convert snprintf to sysfs_emit
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+CC: linux-riscv@lists.infradead.org, Greg KH <gregkh@linuxfoundation.org>,
+  jirislaby@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+  ajones@ventanamicro.com, Atish Patra <atishp@rivosinc.com>, apatel@ventanamicro.com,
+  linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+  linux-riscv@lists.infradead.org
+From: Palmer Dabbelt <palmer@rivosinc.com>
+To: Palmer Dabbelt <palmer@rivosinc.com>
 
-Hello,
-
-On Mon, Jan 15, 2024 at 8:53=E2=80=AFPM Li Zhijian <lizhijian@fujitsu.com> =
-wrote:
+On Fri, 19 Jan 2024 13:56:13 PST (-0800), Palmer Dabbelt wrote:
+> From: Palmer Dabbelt <palmer@rivosinc.com>
 >
-> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-> or sysfs_emit_at() when formatting the value to be returned to user space=
-.
+> I missed the int->size_t refactoring in f32fcbedbe92 ("tty: hvc: convert
+> to u8 and size_t"), which causes the newly used ops in 88ead68e764c
+> ("tty: Add SBI debug console support to HVC SBI driver") to fail to
+> build due to a
 >
-> coccinelle complains that there are still a couple of functions that use
-> snprintf(). Convert them to sysfs_emit().
+> linux/drivers/tty/hvc/hvc_riscv_sbi.c:59:15: error: incompatible function pointer types initializing 'ssize_t (*)(uint32_t, const u8 *, size_t)' (aka 'long (*)(unsigned int, const unsigned char *, unsigned long)') with an expression of type 'int (uint32_t, const char *, int)' (aka 'int (unsigned int, const char *, int)') [-Wincompatible-function-pointer-types]
+>         .put_chars = hvc_sbi_dbcn_tty_put,
 >
-> > ./arch/x86/events/intel/core.c:5496:8-16: WARNING: please use sysfs_emi=
-t
-> > ./arch/x86/events/intel/core.c:5530:8-16: WARNING: please use sysfs_emi=
-t
-> > ./arch/x86/events/intel/core.c:5546:8-16: WARNING: please use sysfs_emi=
-t
-> > ./arch/x86/events/intel/pt.c:99:8-16: WARNING: please use sysfs_emit
->
-> No functional change intended
->
-> CC: Peter Zijlstra <peterz@infradead.org>
-> CC: Ingo Molnar <mingo@redhat.com>
-> CC: Arnaldo Carvalho de Melo <acme@kernel.org>
-> CC: Mark Rutland <mark.rutland@arm.com>
-> CC: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> CC: Jiri Olsa <jolsa@kernel.org>
-> CC: Namhyung Kim <namhyung@kernel.org>
-> CC: Ian Rogers <irogers@google.com>
-> CC: Adrian Hunter <adrian.hunter@intel.com>
-> CC: Thomas Gleixner <tglx@linutronix.de>
-> CC: Borislav Petkov <bp@alien8.de>
-> CC: Dave Hansen <dave.hansen@linux.intel.com>
-> CC: x86@kernel.org
-> CC: "H. Peter Anvin" <hpa@zytor.com>
-> CC: linux-perf-users@vger.kernel.org
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> Fixes: f32fcbedbe92 ("tty: hvc: convert to u8 and size_t")
+> Fixes: 88ead68e764c ("tty: Add SBI debug console support to HVC SBI driver")
+> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 > ---
->  arch/x86/events/intel/core.c | 6 +++---
->  arch/x86/events/intel/pt.c   | 2 +-
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> I now remember Anup pointing this one out, but looks like I forgot about
+> it.
+> ---
+>  drivers/tty/hvc/hvc_riscv_sbi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index 0f2786d4e405..aa5fa64a923b 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -5493,7 +5493,7 @@ static ssize_t show_sysctl_tfa(struct device *cdev,
->                               struct device_attribute *attr,
->                               char *buf)
+> diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_riscv_sbi.c
+> index 2f3571f17ecd..c08718be8e73 100644
+> --- a/drivers/tty/hvc/hvc_riscv_sbi.c
+> +++ b/drivers/tty/hvc/hvc_riscv_sbi.c
+> @@ -15,7 +15,7 @@
+>
+>  #include "hvc_console.h"
+>
+> -static int hvc_sbi_tty_put(uint32_t vtermno, const char *buf, int count)
+> +static size_t hvc_sbi_tty_put(uint32_t vtermno, const char *buf, int count)
+
+I got a little lost in my branches here, that should be "ssize_t".  I'll 
+send a v2 when I figure out why my tester is acting oddly...
+
 >  {
-> -       return snprintf(buf, 40, "%d\n", allow_tsx_force_abort);
-> +       return sysfs_emit(buf, "%d\n", allow_tsx_force_abort);
-
-I guess the size doesn't matter here..
-
-Anyway there's freeze_on_smi_show() even uses sprintf().
-
-Thanks,
-Namhyung
-
+>  	int i;
+>
+> @@ -25,7 +25,7 @@ static int hvc_sbi_tty_put(uint32_t vtermno, const char *buf, int count)
+>  	return i;
 >  }
 >
->  static ssize_t set_sysctl_tfa(struct device *cdev,
-> @@ -5527,7 +5527,7 @@ static ssize_t branches_show(struct device *cdev,
->                              struct device_attribute *attr,
->                              char *buf)
+> -static int hvc_sbi_tty_get(uint32_t vtermno, char *buf, int count)
+> +static size_t hvc_sbi_tty_get(uint32_t vtermno, char *buf, int count)
 >  {
-> -       return snprintf(buf, PAGE_SIZE, "%d\n", x86_pmu.lbr_nr);
-> +       return sysfs_emit(buf, "%d\n", x86_pmu.lbr_nr);
->  }
->
->  static DEVICE_ATTR_RO(branches);
-> @@ -5543,7 +5543,7 @@ static ssize_t pmu_name_show(struct device *cdev,
->                              struct device_attribute *attr,
->                              char *buf)
->  {
-> -       return snprintf(buf, PAGE_SIZE, "%s\n", pmu_name_str);
-> +       return sysfs_emit(buf, "%s\n", pmu_name_str);
->  }
->
->  static DEVICE_ATTR_RO(pmu_name);
-> diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
-> index 8e2a12235e62..30bba5f3a840 100644
-> --- a/arch/x86/events/intel/pt.c
-> +++ b/arch/x86/events/intel/pt.c
-> @@ -96,7 +96,7 @@ static ssize_t pt_cap_show(struct device *cdev,
->                 container_of(attr, struct dev_ext_attribute, attr);
->         enum pt_capabilities cap =3D (long)ea->var;
->
-> -       return snprintf(buf, PAGE_SIZE, "%x\n", intel_pt_validate_hw_cap(=
-cap));
-> +       return sysfs_emit(buf, "%x\n", intel_pt_validate_hw_cap(cap));
->  }
->
->  static struct attribute_group pt_cap_group __ro_after_init =3D {
-> --
-> 2.29.2
->
+>  	int i, c;
 
