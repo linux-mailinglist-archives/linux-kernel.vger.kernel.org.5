@@ -1,243 +1,121 @@
-Return-Path: <linux-kernel+bounces-31184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1430832A36
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:19:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC053832A3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:20:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A387B22C80
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:19:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C2331F22667
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:20:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79125524D5;
-	Fri, 19 Jan 2024 13:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6EF52F91;
+	Fri, 19 Jan 2024 13:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PZnJIJGt"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BXjmABxR"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DDC3C467;
-	Fri, 19 Jan 2024 13:19:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E704F1E6;
+	Fri, 19 Jan 2024 13:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705670383; cv=none; b=tPbDkPxnay+lIJ0aCsocLHef4QDx+VXNsyuADEGr8Z5SYZTWn/VxyJ7iPSRupNV0kl6Qvvv1/JALfUWFkbkmefqBAqm9M5embRvsyaO7B1XhJQSeyt6VlSF4a33rth3KRY0GQq4lKefTaf9829nR0X0zzWDSjDuXDhGqqkC0KQQ=
+	t=1705670394; cv=none; b=R6L163ncTPxpTudOhKoj2ZySJZLzU1VTc4cg29kwqtNaQmFPQWk+sqcAuEUlekKac6GFe9ne3wevAxitmuYjUEvdvRkTe6nTWWX4JDYAZOWxj+fEkXJcZg1OMuXzTYw9ji54voEKVquv63LpGDUe9c5eMmEfWS4alqaw8INhyak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705670383; c=relaxed/simple;
-	bh=IxHL4UjsYcnST39I2PBwlAiraAkN2ZkkvvIZFXNFVDA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iwXwIYvq3Sk610C0Lr0n/DcybpOVy93rNL74x1A0+fJ9xdEsHby6qzX0gNmhmahiQeeahJ3RnK8vNI0/hiz2R1KpzrYOekjyBgRQjDQIAQjcB4G9rPWOpR5lzYicVp9rgyk0c+paxN3pHQrkFehFzygIcxbIPscBef62MTkUTOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PZnJIJGt; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40JDJXjs130594;
-	Fri, 19 Jan 2024 07:19:33 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705670373;
-	bh=OrSnCm6YBe7QCbBAO+laLJ5oHXHnkGr4ZsBxFZ4MU0M=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=PZnJIJGt0VKAK9AVSh6xflgjo79zKD1emDuYaTOw3g1D/brtzyCVQYcWc/CyJIb6J
-	 6hghM+r2o6581TEVIdAyCZ5NsDK2ULjSJlgu4LLbSAQ16dk02hNbchrNEd7f0GMqlO
-	 rDjAy7nGpgyMwHFVszdu6qPx17EqIv9qAIEXwCxA=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40JDJXGF087733
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 19 Jan 2024 07:19:33 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 19
- Jan 2024 07:19:33 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 19 Jan 2024 07:19:33 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40JDJXsY019795;
-	Fri, 19 Jan 2024 07:19:33 -0600
-Date: Fri, 19 Jan 2024 07:19:33 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Chintan Vankar <c-vankar@ti.com>
-CC: Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Tero
- Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>,
-        <r-gunasekaran@ti.com>, <danishanwar@ti.com>, <tony@atomide.com>
-Subject: Re: [PATCH v2 3/5] arm64: dts: ti: k3-j784s4-main: Add CPSW9G nodes
-Message-ID: <20240119131933.zr3pkehssn4yr64f@cosponsor>
-References: <20240118094454.2656734-1-c-vankar@ti.com>
- <20240118094454.2656734-4-c-vankar@ti.com>
+	s=arc-20240116; t=1705670394; c=relaxed/simple;
+	bh=dJgYMSNA/LU7JWwce+WL2E1J0qhV5ha58/4r5V6HnYM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fOtMdTLeRCOHGkJGC5cBRGDG+x9M2rd5BBkCZpf811OojlhEIzQIwQlNvGHLEx8maw9ZevFWGIqbYRLe6mZjHNErZDUhMXK2qHVsQwUXAk+WpvRDxRNGsVtkWf6Eg17gmuGu+sw0R9k8112wXgRYQ4AAaGTih6pQDuHZJADPGJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=BXjmABxR; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40JCqqq8014644;
+	Fri, 19 Jan 2024 13:19:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Qvu2UtNYQDPQTnD9i9bszivXKf7tCMpnBb8vcZMonug=;
+ b=BXjmABxRmEVa3dgZzvIgAapAMi7y1mCh/C/jsvGDaZ27DVy08dDepFOXimGTmz6vkILN
+ 3swZJ8UmYzfQDEEWbYIWHf8w47KSY8d/FBf47l8PGUui+yUlXEWpSLt7t+84Ba1vrADT
+ vEexTjSIvZKxZi1sT3/nRpLMDzOfZfe6W3CuaOTABNHfy8IW7Iik4tF/umAFRgSZqtmh
+ OB33RVaHerE4+XVW+b/sy0gtecNeNo4JtMN/1HbFblOBq3XcWjxaeMNMMze44pI2lOIM
+ sKSGO7RNGZzxFUSdFGEzTM35ntoa0UmsjKJQ6I8tMTZfi6GXnOf1dCA8UpJV1Q5xqJg+ HA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vqsfcgp2n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 13:19:43 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40JCxs0L030790;
+	Fri, 19 Jan 2024 13:19:43 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vqsfcgp26-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 13:19:43 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40JB0F4r030427;
+	Fri, 19 Jan 2024 13:19:42 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vm72khbn2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 13:19:41 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40JDJdrG22020654
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Jan 2024 13:19:39 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 307EA20040;
+	Fri, 19 Jan 2024 13:19:39 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 02EFA20043;
+	Fri, 19 Jan 2024 13:19:38 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.85.177])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 19 Jan 2024 13:19:37 +0000 (GMT)
+Date: Fri, 19 Jan 2024 14:19:36 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v6 2/3] livepatch: Move tests from lib/livepatch to
+ selftests/livepatch
+Message-ID: <Zap26MINbbxREt4c@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240112-send-lp-kselftests-v6-0-79f3e9a46717@suse.com>
+ <20240112-send-lp-kselftests-v6-2-79f3e9a46717@suse.com>
+ <Zap04ddls7ZvbL/U@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240118094454.2656734-4-c-vankar@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <Zap04ddls7ZvbL/U@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DrA398G5w-678hUFOYdvtmSK8cLVFn6c
+X-Proofpoint-ORIG-GUID: Y9Lss7BHjSHspnm5KUirWOZ-K54LSjfL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_07,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ adultscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=513 suspectscore=0
+ spamscore=0 phishscore=0 priorityscore=1501 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401190069
 
-On 15:14-20240118, Chintan Vankar wrote:
-> From: Siddharth Vadapalli <s-vadapalli@ti.com>
+On Fri, Jan 19, 2024 at 02:11:01PM +0100, Alexander Gordeev wrote:
+> FWIW, for s390 part:
 > 
-> J784S4 SoC has a 9 port Ethernet Switch instance with 8 external
-> ports and 1 host port, referred to as CPSW9G.
-> 
-> Add device-tree nodes for CPSW9G and disable it by default.
-> Device-tree overlays will be used to enable it.
-> 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 114 +++++++++++++++++++++
->  1 file changed, 114 insertions(+)
+> Alexander Gordeev <agordeev@linux.ibm.com>
 
-Any reason why we cant squash this to previous patch with
-something like "Add main cpsw nodes" ?
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> index 191fdbe02877..9aebce8a51ab 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> @@ -54,6 +54,13 @@ cpsw1_phy_gmii_sel: phy@4034 {
->  			#phy-cells = <1>;
->  		};
->  
-> +		cpsw0_phy_gmii_sel: phy@4044 {
-> +			compatible = "ti,j784s4-cpsw9g-phy-gmii-sel";
-> +			ti,qsgmii-main-ports = <7>, <7>;
-> +			reg = <0x4044 0x20>;
-> +			#phy-cells = <1>;
-> +		};
-> +
->  		serdes_ln_ctrl: mux-controller@4080 {
->  			compatible = "reg-mux";
->  			reg = <0x00004080 0x30>;
-> @@ -1248,6 +1255,113 @@ cpts@310d0000 {
->  		};
->  	};
->  
-> +	main_cpsw0: ethernet@c000000 {
-> +		compatible = "ti,j784s4-cpswxg-nuss";
-> +		reg = <0x00 0xc000000 0x00 0x200000>;
-> +		reg-names = "cpsw_nuss";
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges = <0x00 0x00 0x00 0xc000000 0x00 0x200000>;
-> +		dma-coherent;
-> +		clocks = <&k3_clks 64 0>;
-> +		clock-names = "fck";
-> +		power-domains = <&k3_pds 64 TI_SCI_PD_EXCLUSIVE>;
-> +
-> +		dmas = <&main_udmap 0xca00>,
-> +		       <&main_udmap 0xca01>,
-> +		       <&main_udmap 0xca02>,
-> +		       <&main_udmap 0xca03>,
-> +		       <&main_udmap 0xca04>,
-> +		       <&main_udmap 0xca05>,
-> +		       <&main_udmap 0xca06>,
-> +		       <&main_udmap 0xca07>,
-> +		       <&main_udmap 0x4a00>;
-> +		dma-names = "tx0", "tx1", "tx2", "tx3",
-> +			    "tx4", "tx5", "tx6", "tx7",
-> +			    "rx";
-> +
-> +		status = "disabled";
-> +
-> +		ethernet-ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			main_cpsw0_port1: port@1 {
-> +				reg = <1>;
-> +				label = "port1";
-> +				ti,mac-only;
-> +				status = "disabled";
-> +			};
-> +
-> +			main_cpsw0_port2: port@2 {
-> +				reg = <2>;
-> +				label = "port2";
-> +				ti,mac-only;
-> +				status = "disabled";
-> +			};
-> +
-> +			main_cpsw0_port3: port@3 {
-> +				reg = <3>;
-> +				label = "port3";
-> +				ti,mac-only;
-> +				status = "disabled";
-> +			};
-> +
-> +			main_cpsw0_port4: port@4 {
-> +				reg = <4>;
-> +				label = "port4";
-> +				ti,mac-only;
-> +				status = "disabled";
-> +			};
-> +
-> +			main_cpsw0_port5: port@5 {
-> +				reg = <5>;
-> +				label = "port5";
-> +				status = "disabled";
-> +			};
-> +
-> +			main_cpsw0_port6: port@6 {
-> +				reg = <6>;
-> +				label = "port6";
-> +				status = "disabled";
-> +			};
-> +
-> +			main_cpsw0_port7: port@7 {
-> +				reg = <7>;
-> +				label = "port7";
-> +				status = "disabled";
-> +			};
-> +
-> +			main_cpsw0_port8: port@8 {
-> +				reg = <8>;
-> +				label = "port8";
-> +				status = "disabled";
-> +			};
-> +		};
-> +
-> +		main_cpsw0_mdio: mdio@f00 {
-> +			compatible = "ti,cpsw-mdio","ti,davinci_mdio";
-> +			reg = <0x00 0xf00 0x00 0x100>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			clocks = <&k3_clks 64 0>;
-> +			clock-names = "fck";
-> +			bus_freq = <1000000>;
-> +			status = "disabled";
-> +		};
-> +
-> +		cpts@3d000 {
-> +			compatible = "ti,am65-cpts";
-> +			reg = <0x00 0x3d000 0x00 0x400>;
-> +			clocks = <&k3_clks 64 3>;
-> +			clock-names = "cpts";
-> +			interrupts-extended = <&gic500 GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "cpts";
-> +			ti,cpts-ext-ts-inputs = <4>;
-> +			ti,cpts-periodic-outputs = <2>;
-> +		};
-> +	};
-> +
->  	main_cpsw1: ethernet@c200000 {
->  		compatible = "ti,j721e-cpsw-nuss";
->  		#address-cells = <2>;
-> -- 
-> 2.34.1
-> 
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
 
