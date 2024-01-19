@@ -1,116 +1,98 @@
-Return-Path: <linux-kernel+bounces-31443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5DB7832E67
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:54:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC723832E66
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 579CD1F24BB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:54:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E8BC289CD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFFD56460;
-	Fri, 19 Jan 2024 17:54:26 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F41855E76;
+	Fri, 19 Jan 2024 17:54:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lk6c3C3n"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9AE56455
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 17:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088BF1E87C;
+	Fri, 19 Jan 2024 17:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705686866; cv=none; b=VlVsqMoRqK+fx9sGxbELnYyTHaRpunhYAq0RPb4vDtWtgj7sk3gsGevWtFk5SnGkJzv5OUZUD8gghnMmoXreqgUB06vKloNBn/CUQzoLL35WNcCPyzAmmVf6BrHMPcWKl6Iph5RGq6o08ULSNdrsXKm91Nu8yoQZEf1FYfChYHQ=
+	t=1705686859; cv=none; b=g8WbwaP0O1EmYA+5/+dA7DJV8NI3TXbive00l/VtXqC2vKMIIofvi8owoExkEhwPVbTRABnqCSA1vDvsxhRuMybLfBtTa8ubrO0w0me0OUJ99j2oqzpacTX0yAsyQjPYTdPFt3UDMRiT8+wa+9KKuFu+uQDPu6D4Hz9wtH9aaEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705686866; c=relaxed/simple;
-	bh=thj0rbqL/gPURJA3HN4micGmDvafwRuWhOPghAP9hWg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZS63bvoILl719WeVlI0QyRjuocfSCkZSxmw/OG5fIspFgP+XUO3ezQnDOBJ6ZScD6X/peLTGizhj5X4Q0lVq+9vXHsYmXltajp0ocyilGnYipdKoBUYSehhKtMnnIGA7vUAgxvQ/ufWbI6Gf6y8kfxyIvk8V6XL7z/bBhLY5FgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rQt4B-0002Z5-2w; Fri, 19 Jan 2024 18:54:07 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rQt4A-000y8v-1V; Fri, 19 Jan 2024 18:54:06 +0100
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rQt49-000lgo-Uc; Fri, 19 Jan 2024 18:54:05 +0100
-Date: Fri, 19 Jan 2024 18:54:05 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Rob Herring <robh@kernel.org>
-Cc: Sebastian Reichel <sre@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-	linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-	=?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>
-Subject: Re: [RFC PATCH v1 1/7] dt-bindings: power: reset: add generic PSCR
- binding trackers
-Message-ID: <20240119175405.GA163482@pengutronix.de>
-References: <20240119132521.3609945-1-o.rempel@pengutronix.de>
- <20240119132521.3609945-2-o.rempel@pengutronix.de>
- <20240119172838.GA460212-robh@kernel.org>
+	s=arc-20240116; t=1705686859; c=relaxed/simple;
+	bh=E98o89P8+R8YAOCQwVZNOu3BKNa62BrRxKH6/6qwefY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=LKIc2e+/DQ5k4s+YW3tbHALV2d1edLXbBWLXXudTrk/c0VjhlxOsf/qk/Q/CW0g7UYFs/sjvI4K5WxLtQUKWJe8P1zm0x/1gjP7uP7kMjyS5SC8a3/Kpv+SZF9yShPK4oNwW6JVjwajZLy0AdILRkfsgDukqgA3AuEpKN5tZpwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lk6c3C3n; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5cec32dedf3so753409a12.0;
+        Fri, 19 Jan 2024 09:54:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705686857; x=1706291657; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/FKtHrE1aXZwBWr0DhHzM7pDrpBjBv62gCYMzeiuv8I=;
+        b=Lk6c3C3nMxaNidTHOP3amABgUxCQolWDf5WY2PYH/gRhXPwRW11WFU6DdHXOIf/2QQ
+         +dpi7BGKTXfenPcLN1BDeZCtm2CDugiJccyHfiUahf10zzieGVJc49BA3CmTyIMMPc4W
+         RPJs5qNEFT4K0ydw0UWQnkX7SIKA+XtZJIaZpWCp/jKP/sHrlellSSlumNIwpeTkGRk8
+         jJIlfsnMuYgwIH++DXDisVZX5K/QoZqsQ+ZNe//bH69gtzZ4FI5blIhGNPV0zXKlkCnS
+         UOp35Sk1qV8DyOgz5IIhuYQ6IfuCSY0bb5PEX3mfzu/ItDL2g50ZStCWI5leOsulG39I
+         o+Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705686857; x=1706291657;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/FKtHrE1aXZwBWr0DhHzM7pDrpBjBv62gCYMzeiuv8I=;
+        b=ksHpnWEVZbRgWb7Ok99tuU2Kafk1JomktB/vju49kXcpLt7DA+NsnRD8LmOvkIggjj
+         Pbbb/M3Qi7TG7p3qjRM8NfkhxkIdyw+PQqukCL+UhKugrcGKNVm5C+vLBb7Zu5bXkqFJ
+         Df6HYPltrkQ57RhzMiSKDH+CpVPAdai+vDBAjDdpkLZuJatiJ5THOFnh6P1W3V8SQzFu
+         Tj14JoKUfychnk7+E4+MkBUYdnATR5XllXkFPo77NHoMej5blFiM2WL/RMMk/QUJEyrk
+         CZjwAAPlZkZjkXczIUhoZ3eqHY2VdEr6utuYRv1l4x9c1kbj1LRX9YxgrFkYCFYmt9c9
+         W7LQ==
+X-Gm-Message-State: AOJu0YxBnN1/yL61LPCdLCwT0Cij185cTSRPpAYvcwz2cTe2WkwE4guW
+	PR3ISzVt+1rj/WQDof7Jysfz6yAIVOzefe3A05AoEsGFc9mEGgfK+dPi7Ki5
+X-Google-Smtp-Source: AGHT+IEt4VmqIUe/VhRjbnK3usqLmrNWQ2R6dIVG6HfwlqryiDMyULoar3g15PVmOTWKMLHhe0EJmw==
+X-Received: by 2002:a17:90a:1344:b0:28e:6f44:46d5 with SMTP id y4-20020a17090a134400b0028e6f4446d5mr135498pjf.52.1705686857245;
+        Fri, 19 Jan 2024 09:54:17 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id nb17-20020a17090b35d100b00290394b25d5sm2953663pjb.22.2024.01.19.09.54.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jan 2024 09:54:15 -0800 (PST)
+Message-ID: <ea0e69ab-744b-4e75-8a17-6c0b59b16db3@gmail.com>
+Date: Fri, 19 Jan 2024 09:54:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240119172838.GA460212-robh@kernel.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] MIPS: sgi-ip27: Fix missing prototypes
+Content-Language: en-US
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240119133216.83220-1-tsbogend@alpha.franken.de>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240119133216.83220-1-tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 19, 2024 at 11:28:38AM -0600, Rob Herring wrote:
-> On Fri, Jan 19, 2024 at 02:25:15PM +0100, Oleksij Rempel wrote:
-> > Add binding for Power State Change Reason (PSCR) subsystem
+On 1/19/24 05:32, Thomas Bogendoerfer wrote:
+> Fix missing prototypes by making not shared functions static and
+> adding others to ip27-common.h. Also drop ip27-hubio.c as it's
+> not used for a long time.
 > 
-> Why? 
-> 
-> How is this different from the reboot reason binding?
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-I was not able to find "reboot reason", you probably refer to "reboot
-mode".
-
-Reboot Mode:
- Purpose: Dictates how the system should reboot (e.g., normal, recovery,
-   bootloader).
- Usage: Provides instructions for the next boot mode.
- Scenario: Utilized in planned reboots or software-triggered reset scenarios.
-
-PSCR (Power State Change Reasons):
- Purpose: Logs the reason behind a power state change (e.g., voltage drop,
-   over-temperature).
- Usage: Used for rapid logging and post-event analysis, potentially informing
-   automatic decision-making in subsequent boots.
- Scenario: Critical in abrupt power-down situations where immediate, detailed
-   decision-making is not possible.
-
-Regards,
-Oleksij
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Florian
+
 
