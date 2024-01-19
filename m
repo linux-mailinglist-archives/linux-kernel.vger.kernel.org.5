@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-31248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3D15832B20
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17B90832B28
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:15:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D946C1C247CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:14:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AE821C20749
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDD8754665;
-	Fri, 19 Jan 2024 14:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B7754750;
+	Fri, 19 Jan 2024 14:14:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="nihKf29Q"
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="VDmw/5dm"
 Received: from aposti.net (aposti.net [89.234.176.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A6553E1E;
-	Fri, 19 Jan 2024 14:14:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61572524A0;
+	Fri, 19 Jan 2024 14:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705673663; cv=none; b=TFDcpWM0uAOkuXI3OYcCuNAS5kcpRsGY0ehvwEqu0tqB/VjY05xz25hOunhkFbs9EFxVGKKMHIhS5r6AEcr9uMhTUvlQkmrSillre9uik9LO0ki0Fn0NH7DInM5deVnFnK2LSq/RqQgjXjIfNJ/loLq9ZBJ9QlEtV+yihRCwTDQ=
+	t=1705673671; cv=none; b=A5TGi5JvxSgo7TbQ1sBhMe7FIOVFfsAs0auDCje0Zjwu/+BaTyty7Am7FYrsDFlkxuG4azpzEzbBR4S4TSEJB36mR9AlPAA63Km0oXaPscepZmUGQuTmhtlvPXMGSfUeIfg5fe34qHVb+erj3ts1B6Wp5MuqzMptgml0tCUl6xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705673663; c=relaxed/simple;
-	bh=P3boRy4GijUdd5qAAmLJvetYFLnC/Yi9tbpDH7/AzQY=;
+	s=arc-20240116; t=1705673671; c=relaxed/simple;
+	bh=VQlUP12x+lQZqEvOl/IoBXRKwFSDxM+N+0FlrIbqdY8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D6WvFQlafE6+qa1wVE9ac/3CQB7yjQJtWOvMHc05Kqs1AiQaZQ/XGZWdx9FqxJzZ8pLDqypf15jvaiNv7vqRJf7RdgKPtGaQ1fkRlxmVSWaYxrQuw27ZzEWvQKGXv81tlnsDgGyAE4+woQT0tYrgPIrGom+pVv2Z4kt2Ll4uqCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=nihKf29Q; arc=none smtp.client-ip=89.234.176.197
+	 MIME-Version; b=JnB3xo13iWMwZkKVryrNWAKTLcDZxlM9Pz0d4edsWA6czqTYKds5KW17TXCHYl0rGe6lswWSGI5TWXhpgWN8vC0v3tkoVhAHQiKWEn5x3DTGrJ+x76tCDqUqhgRUPYaULHSihavA5cim1jpk+OqdGKeL5lHR/zA9JI+9GZarCjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=VDmw/5dm; arc=none smtp.client-ip=89.234.176.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1705673651;
+	s=mail; t=1705673652;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VqYgKFlSXeXJ+ek05cChLqHNIcn71hJPj0SKGxZRr1E=;
-	b=nihKf29QM3PAzCv1lf02nN0Lm7J1hFfqxSiJIykkJWXBNUWAts3p9naI7FhbAo3qS1vUZ+
-	AQnGMwjj3hS2I+vprXp5cMewxBvtbj1QizrYkrsEZ5nETFXsE//UAy/FMDfPFQvI/KRz1x
-	ZpJEeAwef/CDAgBRqgMIUAVTEo2wVuY=
+	bh=9iIxPbs0dWlzjgcaYm0qZReABojDho1rbr0/l/s8ieo=;
+	b=VDmw/5dmFB8a7DjV5sQY6708zGHT8cN9da4xSjKPmDqd5JoGUoAWZFLA4iBJzYVtLoeMc0
+	534O4/q85cvb0JyL4RkqR4fcFW36IeUqTLCBrV3EPttmKkeaTxQBZIvVT+hfm/hQr1U2rC
+	b1Gx/QWvHOF3f7bFVi1IGm2UPpG4KrU=
 From: Paul Cercueil <paul@crapouillou.net>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jonathan Corbet <corbet@lwn.net>,
@@ -55,9 +55,9 @@ Cc: Jonathan Cameron <jic23@kernel.org>,
 	dri-devel@lists.freedesktop.org,
 	linaro-mm-sig@lists.linaro.org,
 	Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v5 1/6] dma-buf: Add dma_buf_{begin,end}_access()
-Date: Fri, 19 Jan 2024 15:13:57 +0100
-Message-ID: <20240119141402.44262-2-paul@crapouillou.net>
+Subject: [PATCH v5 2/6] dma-buf: udmabuf: Implement .{begin,end}_access
+Date: Fri, 19 Jan 2024 15:13:58 +0100
+Message-ID: <20240119141402.44262-3-paul@crapouillou.net>
 In-Reply-To: <20240119141402.44262-1-paul@crapouillou.net>
 References: <20240119141402.44262-1-paul@crapouillou.net>
 Precedence: bulk
@@ -69,159 +69,64 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam: Yes
 
-These functions should be used by device drivers when they start and
-stop accessing the data of DMABUF. It allows DMABUF importers to cache
-the dma_buf_attachment while ensuring that the data they want to access
-is available for their device when the DMA transfers take place.
+Implement .begin_access() and .end_access() callbacks.
+
+For now these functions will simply sync/flush the CPU cache when
+needed.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
 ---
 v5: New patch
 ---
- drivers/dma-buf/dma-buf.c | 66 +++++++++++++++++++++++++++++++++++++++
- include/linux/dma-buf.h   | 37 ++++++++++++++++++++++
- 2 files changed, 103 insertions(+)
+ drivers/dma-buf/udmabuf.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 8fe5aa67b167..a8bab6c18fcd 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -830,6 +830,8 @@ static struct sg_table * __map_dma_buf(struct dma_buf_attachment *attach,
-  *     - dma_buf_mmap()
-  *     - dma_buf_begin_cpu_access()
-  *     - dma_buf_end_cpu_access()
-+ *     - dma_buf_begin_access()
-+ *     - dma_buf_end_access()
-  *     - dma_buf_map_attachment_unlocked()
-  *     - dma_buf_unmap_attachment_unlocked()
-  *     - dma_buf_vmap_unlocked()
-@@ -1602,6 +1604,70 @@ void dma_buf_vunmap_unlocked(struct dma_buf *dmabuf, struct iosys_map *map)
+diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+index c40645999648..a87d89b58816 100644
+--- a/drivers/dma-buf/udmabuf.c
++++ b/drivers/dma-buf/udmabuf.c
+@@ -179,6 +179,31 @@ static int end_cpu_udmabuf(struct dma_buf *buf,
+ 	return 0;
  }
- EXPORT_SYMBOL_NS_GPL(dma_buf_vunmap_unlocked, DMA_BUF);
  
-+/**
-+ * @dma_buf_begin_access - Call before any hardware access from/to the DMABUF
-+ * @attach:	[in]	attachment used for hardware access
-+ * @sg_table:	[in]	scatterlist used for the DMA transfer
-+ * @direction:  [in]    direction of DMA transfer
-+ */
-+int dma_buf_begin_access(struct dma_buf_attachment *attach,
-+			 struct sg_table *sgt, enum dma_data_direction dir)
++static int begin_udmabuf(struct dma_buf_attachment *attach,
++			 struct sg_table *sgt,
++			 enum dma_data_direction dir)
 +{
-+	struct dma_buf *dmabuf;
-+	bool cookie;
-+	int ret;
++	struct dma_buf *buf = attach->dmabuf;
++	struct udmabuf *ubuf = buf->priv;
++	struct device *dev = ubuf->device->this_device;
 +
-+	if (WARN_ON(!attach))
-+		return -EINVAL;
-+
-+	dmabuf = attach->dmabuf;
-+
-+	if (!dmabuf->ops->begin_access)
-+		return 0;
-+
-+	cookie = dma_fence_begin_signalling();
-+	ret = dmabuf->ops->begin_access(attach, sgt, dir);
-+	dma_fence_end_signalling(cookie);
-+
-+	if (WARN_ON_ONCE(ret))
-+		return ret;
-+
++	dma_sync_sg_for_device(dev, sgt->sgl, sg_nents(sgt->sgl), dir);
 +	return 0;
 +}
-+EXPORT_SYMBOL_NS_GPL(dma_buf_begin_access, DMA_BUF);
 +
-+/**
-+ * @dma_buf_end_access - Call after any hardware access from/to the DMABUF
-+ * @attach:	[in]	attachment used for hardware access
-+ * @sg_table:	[in]	scatterlist used for the DMA transfer
-+ * @direction:  [in]    direction of DMA transfer
-+ */
-+int dma_buf_end_access(struct dma_buf_attachment *attach,
-+		       struct sg_table *sgt, enum dma_data_direction dir)
++static int end_udmabuf(struct dma_buf_attachment *attach,
++		       struct sg_table *sgt,
++		       enum dma_data_direction dir)
 +{
-+	struct dma_buf *dmabuf;
-+	bool cookie;
-+	int ret;
++	struct dma_buf *buf = attach->dmabuf;
++	struct udmabuf *ubuf = buf->priv;
++	struct device *dev = ubuf->device->this_device;
 +
-+	if (WARN_ON(!attach))
-+		return -EINVAL;
-+
-+	dmabuf = attach->dmabuf;
-+
-+	if (!dmabuf->ops->end_access)
-+		return 0;
-+
-+	cookie = dma_fence_begin_signalling();
-+	ret = dmabuf->ops->end_access(attach, sgt, dir);
-+	dma_fence_end_signalling(cookie);
-+
-+	if (WARN_ON_ONCE(ret))
-+		return ret;
-+
++	if (dir != DMA_TO_DEVICE)
++		dma_sync_sg_for_cpu(dev, sgt->sgl, sg_nents(sgt->sgl), dir);
 +	return 0;
 +}
-+EXPORT_SYMBOL_NS_GPL(dma_buf_end_access, DMA_BUF);
 +
- #ifdef CONFIG_DEBUG_FS
- static int dma_buf_debug_show(struct seq_file *s, void *unused)
- {
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 8ff4add71f88..8ba612c7cc16 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -246,6 +246,38 @@ struct dma_buf_ops {
- 	 */
- 	int (*end_cpu_access)(struct dma_buf *, enum dma_data_direction);
+ static const struct dma_buf_ops udmabuf_ops = {
+ 	.cache_sgt_mapping = true,
+ 	.map_dma_buf	   = map_udmabuf,
+@@ -189,6 +214,8 @@ static const struct dma_buf_ops udmabuf_ops = {
+ 	.vunmap		   = vunmap_udmabuf,
+ 	.begin_cpu_access  = begin_cpu_udmabuf,
+ 	.end_cpu_access    = end_cpu_udmabuf,
++	.begin_access      = begin_udmabuf,
++	.end_access        = end_udmabuf,
+ };
  
-+	/**
-+	 * @begin_access:
-+	 *
-+	 * This is called from dma_buf_begin_access() when a device driver
-+	 * wants to access the data of the DMABUF. The exporter can use this
-+	 * to flush/sync the caches if needed.
-+	 *
-+	 * This callback is optional.
-+	 *
-+	 * Returns:
-+	 *
-+	 * 0 on success or a negative error code on failure.
-+	 */
-+	int (*begin_access)(struct dma_buf_attachment *, struct sg_table *,
-+			    enum dma_data_direction);
-+
-+	/**
-+	 * @end_access:
-+	 *
-+	 * This is called from dma_buf_end_access() when a device driver is
-+	 * done accessing the data of the DMABUF. The exporter can use this
-+	 * to flush/sync the caches if needed.
-+	 *
-+	 * This callback is optional.
-+	 *
-+	 * Returns:
-+	 *
-+	 * 0 on success or a negative error code on failure.
-+	 */
-+	int (*end_access)(struct dma_buf_attachment *, struct sg_table *,
-+			  enum dma_data_direction);
-+
- 	/**
- 	 * @mmap:
- 	 *
-@@ -606,6 +638,11 @@ void dma_buf_detach(struct dma_buf *dmabuf,
- int dma_buf_pin(struct dma_buf_attachment *attach);
- void dma_buf_unpin(struct dma_buf_attachment *attach);
- 
-+int dma_buf_begin_access(struct dma_buf_attachment *attach,
-+			 struct sg_table *sgt, enum dma_data_direction dir);
-+int dma_buf_end_access(struct dma_buf_attachment *attach,
-+		       struct sg_table *sgt, enum dma_data_direction dir);
-+
- struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info);
- 
- int dma_buf_fd(struct dma_buf *dmabuf, int flags);
+ #define SEALS_WANTED (F_SEAL_SHRINK)
 -- 
 2.43.0
 
