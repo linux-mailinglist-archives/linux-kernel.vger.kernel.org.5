@@ -1,145 +1,76 @@
-Return-Path: <linux-kernel+bounces-30684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3989832303
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8348B832306
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 02:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64DB21F2209C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:36:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B8B61F2177C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 01:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3841113;
-	Fri, 19 Jan 2024 01:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pnmxjqCf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77A215A4;
+	Fri, 19 Jan 2024 01:36:20 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27ADEC7;
-	Fri, 19 Jan 2024 01:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA66EC7;
+	Fri, 19 Jan 2024 01:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705628159; cv=none; b=i4zLdUSB+WYuD00CRiDVragI/07jHK0wJcfH/YTOyIXve0cFkBfEgmj0AKKMaX94Hj8heYE9+cjyOOyR5iTZot6nWUmoAlVXvOADDgBRMB2cRc1Z+tThp92iv/pHi1yY1SJJ7h1kkpUcuV/31/k8LJIK2OC26wwYI+LxrLLsgEg=
+	t=1705628180; cv=none; b=pMmxCD3VupRCAkMNrdXYq/suZuyIP4nbfRRLtxmzYZB0gyXsqVUu+/2A0h/k2p6jJJPpLMOe0tkP7E7UEHz2gH0cLPLDBCVkSAAn36+x6y4faOCF806Vm6PUNY+8Kfqz775NSMv4dI8ckSVZEVHnByZsnYejWr3wfjlxovtI3oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705628159; c=relaxed/simple;
-	bh=/ZfBCWmKyNYBScnBAqemNsyShCkWcxOBncpAtpEWVpQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cQRU4X09LdTHYLrTa4wwpuqWa1wloYnSGwBIw5lXN+cAzkzOa0206IwYlsnjJg1DwIFdhvQw73PcjqKj6ukTPjvIte8cMWmsjOWdgeifLs3bQZVAtMOHqKe2UluYw4up4lJ400NALb0AQcyqz83awPA5b789YseGnUa4zYjb0fU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pnmxjqCf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61ACAC433C7;
-	Fri, 19 Jan 2024 01:35:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705628157;
-	bh=/ZfBCWmKyNYBScnBAqemNsyShCkWcxOBncpAtpEWVpQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pnmxjqCfMbdtcQd4B/aZ9FYiMlXjDpLoOG5if9v8CV8fFE2+Ckq1ZKGT0saqx8VE3
-	 Rl6gCUzJVaF2ufyuLQR0lu9WDrcW/buZCPitTWDfs+vLE2xDRz79W2O1L9JINJyUnU
-	 LimS0XUSQ7FgR3fXW/L6sGaPlbZRCQCJ8StLrTXPe98HbBJNw63HKKyXv2cHcaPtyK
-	 HA3yD/hG61bInR4Iqp7+mVZ4WMxLmOm/sTYxhup5HfgNhCjUWE3E6TWYvU2A6FafCQ
-	 +ksYWfTKzyTWFQJhNsqh96iha2FSaWOrUd5D2shSOi50ilKgXEJNSLAXRF7NyT+1Jl
-	 +xspb4K52Rtxg==
-Date: Thu, 18 Jan 2024 17:35:56 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-	linux-xfs@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	mpe@ellerman.id.au, mingo@kernel.org, peterz@infradead.org,
-	chandan.babu@oracle.com, anton@tuxera.com
-Subject: Re: [RFC PATCH 2/3] fs: remove duplicate ifdefs
-Message-ID: <20240119013556.GT674499@frogsfrogsfrogs>
-References: <20240118080326.13137-1-sshegde@linux.ibm.com>
- <20240118080326.13137-3-sshegde@linux.ibm.com>
+	s=arc-20240116; t=1705628180; c=relaxed/simple;
+	bh=FuC0kEmZfBf7U/MDt0gJdriiIyRBZ51V3J/u2QRfekI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=n46JAHCFAF33CnSdqXUC2HLJs395QS/c2kpzZWvGEbzTr+BHI+0YGt4RRCyzoNzQ8mBdWPZQWs1m3m50aqPQEph161Q1SXyO/+bQhVjp0XqOR8ngF++3HTEM5azSGsjqtzgyXVqlGZFrlwd8suJ2qJEwKtcBSaRI6kZz43NQtOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TGMdQ2DZ5zGpnJ;
+	Fri, 19 Jan 2024 09:35:54 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id DDBDD18005B;
+	Fri, 19 Jan 2024 09:36:14 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 19 Jan
+ 2024 09:36:14 +0800
+From: Ye Bin <yebin10@huawei.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+	<mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
+Subject: [PATCH 0/3] support '%pd' and '%pD' for print file name
+Date: Fri, 19 Jan 2024 09:38:45 +0800
+Message-ID: <20240119013848.3111364-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118080326.13137-3-sshegde@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-On Thu, Jan 18, 2024 at 01:33:25PM +0530, Shrikanth Hegde wrote:
-> when a ifdef is used in the below manner, second one could be considered as
-> duplicate.
-> 
-> ifdef DEFINE_A
-> ...code block...
-> ifdef DEFINE_A
-> ...code block...
-> endif
-> ...code block...
-> endif
-> 
-> There are few places in fs code where above pattern was seen.
-> No functional change is intended here. It only aims to improve code
-> readability.
-> 
-> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
-> ---
->  fs/ntfs/inode.c    | 2 --
->  fs/xfs/xfs_sysfs.c | 4 ----
->  2 files changed, 6 deletions(-)
-> 
-> diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-> index aba1e22db4e9..d2c8622d53d1 100644
-> --- a/fs/ntfs/inode.c
-> +++ b/fs/ntfs/inode.c
-> @@ -2859,11 +2859,9 @@ int ntfs_truncate(struct inode *vi)
->   *
->   * See ntfs_truncate() description above for details.
->   */
-> -#ifdef NTFS_RW
->  void ntfs_truncate_vfs(struct inode *vi) {
->  	ntfs_truncate(vi);
->  }
-> -#endif
-> 
->  /**
->   * ntfs_setattr - called from notify_change() when an attribute is being changed
-> diff --git a/fs/xfs/xfs_sysfs.c b/fs/xfs/xfs_sysfs.c
-> index 17485666b672..d2391eec37fe 100644
-> --- a/fs/xfs/xfs_sysfs.c
-> +++ b/fs/xfs/xfs_sysfs.c
-> @@ -193,7 +193,6 @@ always_cow_show(
->  }
->  XFS_SYSFS_ATTR_RW(always_cow);
-> 
-> -#ifdef DEBUG
->  /*
->   * Override how many threads the parallel work queue is allowed to create.
->   * This has to be a debug-only global (instead of an errortag) because one of
-> @@ -260,7 +259,6 @@ larp_show(
->  	return snprintf(buf, PAGE_SIZE, "%d\n", xfs_globals.larp);
->  }
->  XFS_SYSFS_ATTR_RW(larp);
-> -#endif /* DEBUG */
-> 
->  STATIC ssize_t
->  bload_leaf_slack_store(
-> @@ -319,10 +317,8 @@ static struct attribute *xfs_dbg_attrs[] = {
->  	ATTR_LIST(log_recovery_delay),
->  	ATTR_LIST(mount_delay),
->  	ATTR_LIST(always_cow),
-> -#ifdef DEBUG
->  	ATTR_LIST(pwork_threads),
->  	ATTR_LIST(larp),
-> -#endif
+During fault locating, the file name needs to be printed based on the
+dentry/file address. The offset needs to be calculated each time, which
+is troublesome. Similar to printk, kprobe supports printing file names
+for dentry/file addresses.
 
-The xfs part seems fine to me bcause I think some bot already
-complained about this...
+Ye Bin (3):
+  tracing/probes: support '%pd' type for print struct dentry's name
+  tracing/probes: support '%pD' type for print struct file's name
+  Documentation: tracing: add new type 'pd' and 'pD' for kprobe
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+ Documentation/trace/kprobetrace.rst |  3 +-
+ kernel/trace/trace_probe.c          | 50 +++++++++++++++++++++++++++++
+ 2 files changed, 52 insertions(+), 1 deletion(-)
 
---D
+-- 
+2.31.1
 
->  	ATTR_LIST(bload_leaf_slack),
->  	ATTR_LIST(bload_node_slack),
->  	NULL,
-> --
-> 2.39.3
-> 
-> 
 
