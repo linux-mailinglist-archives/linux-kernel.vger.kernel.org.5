@@ -1,269 +1,99 @@
-Return-Path: <linux-kernel+bounces-30906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA7E8325C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:32:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90E8E8325CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:33:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AB571F232DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:32:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84907B21DE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BE61E497;
-	Fri, 19 Jan 2024 08:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D1D1E535;
+	Fri, 19 Jan 2024 08:33:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Kip935Gy"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nl15M8by"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1D632CA7;
-	Fri, 19 Jan 2024 08:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89ABC6FAF;
+	Fri, 19 Jan 2024 08:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705653148; cv=none; b=LEZCV4VHzNSb8rkDX/dq95yZCczlr6p8uqqOtDRtWlGspwVYRQv0K3YfFgAZ0hnYsB52wym2Oc0BbS2qsmae6u12qJ+TgNUgjK/IB7MlgeA/cImLJc7ZbqstbU1FmSDoxlfam9n5ei2284pR9IQ0kclnWlQffE3HgmBtZTZPX/s=
+	t=1705653193; cv=none; b=fOUdJ/7MgID9KBEYZp5LNl1kNNBRKqbA87NJhE6q1WIFV4zMDL1SGLi/7jo3c/dprz0mmDkTRortcwW7IIeBkXg34cu5QMBrNoTILuUIASbKW0sxNP4RHy5LPB88UneAp9FmIOCIoGtJt24y156jXcS2GffFJ0XlNrOck9b31ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705653148; c=relaxed/simple;
-	bh=B5EZST53kdv1abDam+dx9qrQWlq0k0yCCk7H82NH+Ow=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NR94M4iomufghXPTXXmVE9G+R8RbWLo9bIb8oRm/NVKFA/dFWyst2TnFpIEn4X+g6S5jj4XEbY/2pQjMBdyXssoHzPv5uCYWcMMC1OnQvwZhJt0A1jSgcXPhL/gScJojLK0jf5S2aKsFr+9pquT1pzuutAWm33aKOWxnSgczBjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Kip935Gy; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1705653146; x=1737189146;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=B5EZST53kdv1abDam+dx9qrQWlq0k0yCCk7H82NH+Ow=;
-  b=Kip935Gy72IezI6pzq6yDXAdW+ZWQjuBElVnsQetK8EtTpXeMBNeuVwh
-   M4qtKIK9KdrHgVkXJJ9rgbw6q9POTgoEDb5MFhBSw1PH3u4z/PsteE2YV
-   SSdfhBvrOgrrOX7to/KVTPVI7stnAgwlVL5PuTwUQdu9FRXZ/QnU3kSpO
-   +GZLG1fyyoHEN62MWAwglf1jPiEwMTMkMfNJaUzOa0H3bHmiDVJxlDxct
-   bYS31fbYZ9OPB8dD/cp1V1wFSRMErNzWXfvXhXu8bXbFpy3+7StvacxiR
-   i7Hi6jrIm4PBs4qmk/+T4oCkCuxk+RMrdVEnA+RV9t895HL49fYuizgn/
-   Q==;
-X-CSE-ConnectionGUID: FsUBvfRcQ/m00ADIAbdE4Q==
-X-CSE-MsgGUID: fLNLkafhTbKnyfpWrMpurQ==
-X-IronPort-AV: E=Sophos;i="6.05,204,1701154800"; 
-   d="asc'?scan'208";a="16207405"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Jan 2024 01:32:24 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 19 Jan 2024 01:32:24 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 19 Jan 2024 01:32:21 -0700
-Date: Fri, 19 Jan 2024 08:31:28 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-CC: "Paller, Kim Seer" <KimSeer.Paller@analog.com>, Conor Dooley
-	<conor@kernel.org>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jonathan
- Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, "Hennerich,
- Michael" <Michael.Hennerich@analog.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Crt Mori <cmo@melexis.com>, Linus Walleij
-	<linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH v6 1/2] dt-bindings: iio: frequency: add admfm2000
-Message-ID: <20240119-squad-unflawed-934627f0e394@wendy>
-References: <20240118085856.70758-1-kimseer.paller@analog.com>
- <20240118085856.70758-2-kimseer.paller@analog.com>
- <20240118-steadily-coauthor-de8275118901@spud>
- <PH0PR03MB71410860593D3C7253B200FCF9702@PH0PR03MB7141.namprd03.prod.outlook.com>
- <0f32caa9a11305333f1f18b97c97d775f4a5bb9a.camel@gmail.com>
+	s=arc-20240116; t=1705653193; c=relaxed/simple;
+	bh=x02Zo5TozJwZXVhDVOAjl++1b8WJv2tMgyiiGfUiNuE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W44n0dUFLcLQK6hFJYPhtXnZuyUZWpqldhJ1oMgAikqCRjrXcaIbOQIKaC9EV8UPtHDQjUO9HYVFHM/fnpLf9+4p1WTNntAHhpp6zy4MvPGvGv6Dq2sld4lKERUqall1dKrTiFfOXZz5dRqPbxKNLAYd0Uh0ZbeX0uSkZoMDins=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nl15M8by; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5ce9555d42eso479286a12.2;
+        Fri, 19 Jan 2024 00:33:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705653192; x=1706257992; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oidjO/sPb4t2zA83y5SntDis2KFVgG2FFB5B51Ra0EQ=;
+        b=Nl15M8byzMVm1zQONaqcpfWyayD+lU7sj+7mqfG9ZH0n7UQE/9RNtkfE79h/eIcEgx
+         Z/SbDxmUDDJJo0ArXu9QArORaXr3EboYdFJVi9LMvF9gv0T0xR3NGKWF46AWZg09qY2s
+         EvBtT9qO+nr5Utd2sdp1idtpmv5XSWmlV/VrJAH4nTUvQkHflXH21SwsJGep9BmF98xj
+         tTBckXKvP3+zd0oH16TVN8e/bUb5cb6nXU3eKBAY6xWAar5PF8qdPCQdvHa2/M9bUhqg
+         DlS1Htkzr0xfDxWD20AqV4mjmFaBzD9krRmBbGIMKj5L/gIHO0o2CmOVT4nfxAklmic3
+         TMVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705653192; x=1706257992;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oidjO/sPb4t2zA83y5SntDis2KFVgG2FFB5B51Ra0EQ=;
+        b=q3bneg69hhAs6eJaCFl4AYhfqDHXRzwW4Ez6NV3jQPPyNMqQgCEW4MDAtAaLipdIAL
+         JqKp6TI0IhGw+sdfZKgR4NDLx7OsUlZ/A0WZfgwy8grWeREL9ZIKUUUFBtLmNtPnXk6i
+         Le4ROzooLTWTpftrop1tQ4YvgbeWwypSbJResZXT27qFHxfCOsZBa5KvF9b7zFrRCwyd
+         VDIi4GLXJbmu3Z8X1y8MKslp1Vrq+m7LMaj44rtltdiPD+i6/IULvdLlI4Ef1Bxs0yI6
+         NgYWxsOV5Sjwwzn3dnLX+puNaAamYZ1K4gGAmvvSfhNcacHA+zVEAwb9kOVGBl1Zt/Ss
+         KjUQ==
+X-Gm-Message-State: AOJu0Yzbm7a2wPjgLzmhRkCw2mADFMcKgWE1Kwq5loEMZEHkvOTVKiGs
+	y5Wg0/ZoPP5sxKKZYjNha4AjN2NYy2d1l4RaTEFCVgjbTgVYyZup
+X-Google-Smtp-Source: AGHT+IHJNgm020XLP4RRk82IlLsGAK0OfkZGDf3m5KrEq8DDKjRmUREQeWSNBeiXlWie69//8el1qw==
+X-Received: by 2002:a05:6a20:3950:b0:19b:5b1c:a36e with SMTP id r16-20020a056a20395000b0019b5b1ca36emr2591577pzg.119.1705653191732;
+        Fri, 19 Jan 2024 00:33:11 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:f04f:73f4:b79:a70c])
+        by smtp.gmail.com with ESMTPSA id fh35-20020a056a00392300b006da1d9f4adcsm4557586pfb.127.2024.01.19.00.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 00:33:11 -0800 (PST)
+Date: Fri, 19 Jan 2024 00:33:08 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: input: silead,gsl1680: do not override
+ firmware-name $ref
+Message-ID: <ZaozxDuUf1p5OhUB@google.com>
+References: <20240115182057.1610195-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TvBkcpPOR1z02xqE"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0f32caa9a11305333f1f18b97c97d775f4a5bb9a.camel@gmail.com>
+In-Reply-To: <20240115182057.1610195-1-krzysztof.kozlowski@linaro.org>
 
---TvBkcpPOR1z02xqE
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jan 15, 2024 at 07:20:57PM +0100, Krzysztof Kozlowski wrote:
+> dtschema package defines firmware-name as string-array, so individual
+> bindings should not make it a string but instead just narrow the number
+> of expected firmware file names.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-On Fri, Jan 19, 2024 at 09:20:01AM +0100, Nuno S=E1 wrote:
-> Hi Kim,
->=20
-> On Fri, 2024-01-19 at 00:30 +0000, Paller, Kim Seer wrote:
-> > > -----Original Message-----
-> > > From: Conor Dooley <conor@kernel.org>
-> > > Sent: Friday, January 19, 2024 12:10 AM
-> > > To: Paller, Kim Seer <KimSeer.Paller@analog.com>
-> > > Cc: linux-iio@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> > > kernel@vger.kernel.org; Jonathan Cameron <jic23@kernel.org>; Lars-Pet=
-er
-> > > Clausen <lars@metafoo.de>; Hennerich, Michael
-> > > <Michael.Hennerich@analog.com>; Rob Herring <robh+dt@kernel.org>;
-> > > Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> > > <conor+dt@kernel.org>; Crt Mori <cmo@melexis.com>; Linus Walleij
-> > > <linus.walleij@linaro.org>; Bartosz Golaszewski <brgl@bgdev.pl>
-> > > Subject: Re: [PATCH v6 1/2] dt-bindings: iio: frequency: add admfm2000
-> > >=20
-> > > [External]
-> > >=20
-> > > Hey,
-> > >=20
-> > > On Thu, Jan 18, 2024 at 04:58:55PM +0800, Kim Seer Paller wrote:
-> > > > Dual microwave down converter module with input RF and LO frequency
-> > > > ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1=
- to
-> > > > 8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
-> > > > for each down conversion path.
-> > > >=20
-> > > > Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
-> > > > ---
-> > > > V5 -> V6: Moved array of switch and attenuation GPIOs to the channe=
-l node.
-> > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0 Changed pin coords with friendly names.=
- Removed Reviewed-by tag.
-> > > > V4 -> V5: Added Reviewed-by tag.
-> > > > V3 -> V4: Updated the description of the properties with multiple e=
-ntries and
-> > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0 defined the order.
-> > > > V2 -> V3: Adjusted indentation to resolve wrong indentation warning.
-> > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0 Changed node name to converter. Updated=
- the descriptions to clarify
-> > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0 the properties.
-> > > > V1 -> V2: Removed '|' after description. Specified the pins connect=
-ed to
-> > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0 the GPIOs. Added additionalProperties: =
-false. Changed node name to
-> > > gpio.
-> > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0 Aligned < syntax with the previous synt=
-ax in the examples.
-> > > >=20
-> > > > =A0.../bindings/iio/frequency/adi,admfm2000.yaml | 129 ++++++++++++=
-++++++
-> > > > =A0MAINTAINERS=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0 7 +
-> > > > =A02 files changed, 136 insertions(+)
-> > > > =A0create mode 100644
-> > > Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
-> > > >=20
-> > > > diff --git
-> > > a/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
-> > > b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..6f2c91c38666
-> > > > --- /dev/null
-> > > > +++
-> > > b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
-> > > > @@ -0,0 +1,129 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +# Copyright 2023 Analog Devices Inc.
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/iio/frequency/adi,admfm2000.yam=
-l#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: ADMFM2000 Dual Microwave Down Converter
-> > > > +
-> > > > +maintainers:
-> > > > +=A0 - Kim Seer Paller <kimseer.paller@analog.com>
-> > > > +
-> > > > +description:
-> > > > +=A0 Dual microwave down converter module with input RF and LO freq=
-uency
-> > > ranges
-> > > > +=A0 from 0.5 to 32 GHz and an output IF frequency range from 0.1 t=
-o 8 GHz.
-> > > > +=A0 It consists of a LNA, mixer, IF filter, DSA, and IF amplifier =
-for each down
-> > > > +=A0 conversion path.
-> > > > +
-> > > > +properties:
-> > > > +=A0 compatible:
-> > > > +=A0=A0=A0 enum:
-> > > > +=A0=A0=A0=A0=A0 - adi,admfm2000
-> > > > +
-> > > > +=A0 '#address-cells':
-> > > > +=A0=A0=A0 const: 1
-> > > > +
-> > > > +=A0 '#size-cells':
-> > > > +=A0=A0=A0 const: 0
-> > > > +
-> > > > +patternProperties:
-> > > > +=A0 "^channel@[0-1]$":
-> > > > +=A0=A0=A0 type: object
-> > > > +=A0=A0=A0 description: Represents a channel of the device.
-> > > > +
-> > > > +=A0=A0=A0 additionalProperties: false
-> > > > +
-> > > > +=A0=A0=A0 properties:
-> > > > +=A0=A0=A0=A0=A0 reg:
-> > > > +=A0=A0=A0=A0=A0=A0=A0 description:
-> > > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0 The channel number.
-> > > > +=A0=A0=A0=A0=A0=A0=A0 minimum: 0
-> > > > +=A0=A0=A0=A0=A0=A0=A0 maximum: 1
-> > > > +
-> > > > +=A0=A0=A0=A0=A0 adi,mode:
-> > > > +=A0=A0=A0=A0=A0=A0=A0 description:
-> > > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0 RF path selected for the channel.
-> > > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 - Direct IF mode
-> > > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1 - Mixer mode
-> > > > +=A0=A0=A0=A0=A0=A0=A0 $ref: /schemas/types.yaml#/definitions/uint32
-> > > > +=A0=A0=A0=A0=A0=A0=A0 enum: [0, 1]
-> > >=20
-> > > How come this is an enum, rather than a boolean property such as
-> > > "adi,mixer-mode"?
-> >=20
-> > I used an enum, perhaps because it was easier to implement. However, th=
-is
-> > could be changed if a boolean property might be more suitable in this c=
-ase.
-> > Is that the preferred option?
-> >=20
->=20
-> Hmmm, How is the enum easier than a boolean property :)? I guess the devi=
-ce has a
-> default mode. So, if it is Direct IF mode you have 'adi,mixer-mode' to en=
-able that
-> mode and that's it. So the code is pretty much just:
->=20
-> if (device_property_read_bool()) {
+Applied, thank you.
 
-device_property_present() is preferred I think.
-
-> 	/* enable mixer mode */
-> }
->=20
-> Also remember that from a bindings point of view being easier to implemen=
-t or not in
-> the driver does not matter much. Take for an example, properties with wel=
-l know units
-> like 'microamp'. It would be much easier to just have an enum with the de=
-vice
-> register values but that's not how we should do it since it wouldn't be i=
-ntuitive at
-> all for people reading devicetrees.
->=20
-> - Nuno S=E1
->=20
-
---TvBkcpPOR1z02xqE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaozYAAKCRB4tDGHoIJi
-0pavAPoCJxw0q0VL+DDLV0NYkjNzXod1GC2lFDHLMpKrRKWX+wEAgIJpzCS0HH5X
-05uzZuJptrminBMC61fwPGckHGVTJAs=
-=Pwxk
------END PGP SIGNATURE-----
-
---TvBkcpPOR1z02xqE--
+-- 
+Dmitry
 
