@@ -1,259 +1,148 @@
-Return-Path: <linux-kernel+bounces-31421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C25A3832E1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:25:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CAEE832E20
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 18:27:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 723EE287F74
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:25:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0E51287CC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C3155E67;
-	Fri, 19 Jan 2024 17:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D5D55E64;
+	Fri, 19 Jan 2024 17:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gN2WSWBD"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="quGWsSGd"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831AF43ABC;
-	Fri, 19 Jan 2024 17:25:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC5D55E50
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 17:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705685126; cv=none; b=QLBGE6g4wWmOr+8uVf/E8sX8A3TcwCYe9naLyyqD+tMy5HPTcIQICcVgxoojHeb3POWIbOX8F0vA62GZeeaMKsjC5KjSzxstOflMyZeIzoCmGrog8tyk+nrp3L91u+Mn9CoUYNJoLRiCiNeiRQTrHO1Jj1ac7hALbk6OlcBA7VQ=
+	t=1705685244; cv=none; b=Ii8zpL/Feevpr/iTqpTf6YusTJoSIuKJJ7yLLpLw9wQhTXpRX5vgTvk9DOem9uCO0Py/WchtbSj5gZesX5eIiNDcEr567U60+IR/jHQixr8FvIywJaSR8AhHnjfsl7J+w4V8YHoMi5WlHoFiKItTN4vQ8jNiMuQCoFEDusT88o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705685126; c=relaxed/simple;
-	bh=iwpLtpC3VoaXo/9dNwwAnOeyq3xO3HPbvtrcusavOkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cZVA6pe5KWXfOb7yhFJQfVIWlouBZgd9fNTqyZGdvEItkf4Fd3i8+v3XetgocTj5RcQRZdbshffRGkPiE0qgLOjLBJk9XQG42ONNpcISCQ17yjLfXA5I+4CxgPUtmiBqeOlCSdFWVwOKD5azIBtyyzkNYy5Tvhd3gjNk2aQZQyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gN2WSWBD; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e7f58c5fbso1287142e87.1;
-        Fri, 19 Jan 2024 09:25:24 -0800 (PST)
+	s=arc-20240116; t=1705685244; c=relaxed/simple;
+	bh=hQAkoZXDTSlJOPauCujJoN2NrBGM5OoV2NNA7O0qjTM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cs2zQ+LpPE0GxmzVLX5EKjnL1xJBz+XSndfOCAZWY1Zxx90d34q1qMM0XeBmbcZlM9go7eP7EJVdPEYPpHjNN18NwEIvKdrqbyaJuL5ffkG+b67muYGkv0EPB4H9+4iUW1GZV6nSUCU8g0mNfYI0oQwqkcBOhtRtpCgQ4kQiV/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=quGWsSGd; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6db599d5cb8so1009937b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 09:27:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705685122; x=1706289922; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k2xwilmGBZvQQTbXPdBchYmIXQPAhkMfZIZcjK72Cz0=;
-        b=gN2WSWBDYtB5U7wB7DVn2BENUuIh29SYfT9KDu3qtdrsle4LZmKq0FCzKpyYCPakwc
-         ZwIGycKBwVs152WUEgyFUgT6muUekWZZcJpxqFgWFF3cnUEWlP7Hn4CJUh5+Xy/hjeMd
-         gIvcMbT4Z16QDi+5JXvWAyjwcJtFWFHsT/n4BPKhLc3ephWmW6qT+iz/fH+vt1edTWLq
-         txYBprhnZ7xGm01lfwpU4/FUXhHN/hI4Cpf0NfXKJHQXIVz7+LhINvjA1yQLkT/GObyG
-         Yfawd6Wwqd1e/V1afdXgr+x62z5kbqpIOFNwtJ6cJXFuK2geFlhZ5GZDbu2Qjzhi2x9y
-         kTjA==
+        d=google.com; s=20230601; t=1705685242; x=1706290042; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=n7a9skkOJDoeDAzXAlrhaoQRm2nSLoLLiCg9+PzsFlc=;
+        b=quGWsSGdOEtcTU9ih2drDjVvCefQO4cs7BSRcO4Es0flrcpXliW1PexXT+RbsXAYEF
+         p2Epbf3X7YseqN8BVVE9nWp55HO44LKdPh1UnVrk72dvv9JHoCxPm7PwahZLLKvbEQMl
+         186aMJYA/K2dhm8KXAe3K2m3BuPATWBn5eC0mLCqVVGNLGFeCpqMxpeiyJGbHoG41CqS
+         u8j2fGGL4z1RBR2KqICyfEBKy2jN6jzbPDsjjJsxUfKinWrY5vfLE6pmn3JIlCa9awjN
+         A5qlk/LUfiMO89gmfIeAKxFw84J/DsLteTI5jJFc6nZUn+T7seFtUGzYtXTWXp1l2TQ9
+         DyKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705685122; x=1706289922;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k2xwilmGBZvQQTbXPdBchYmIXQPAhkMfZIZcjK72Cz0=;
-        b=utCZW8gXW2OxA5Qz5H5FhFLy9TZ/BFEK3zC1gMG8muUwMt9coLhTHJb91L4PRXq4Zd
-         ko+5QtYUd4vzJkR6djczhpqYOE+wUtZA8yN6t8mMz1C4M1E6m7OXMFfXyWxXx4iTrENI
-         eGrki603ZhGCVLvii5PJpRz+DB8m4UruxJH32UgVG1hM9Xz9TnobB469SFfNUsQBugbK
-         HEDd3+gW3zFTGzfGpjzSZi4zxvG62e8ODIZ0djjsoJHnLAAg/Bo+PNZZi9egKSImVUfH
-         9Q+GZY7Y0YG8nu8aAQyUxEFNUw/w11bLH5SjVHWaH/9zY+yIQnsNgypqjf37T9NA79RY
-         GZ0Q==
-X-Gm-Message-State: AOJu0YxOti3jz4Rv3x4r6v7p+baMOI5kX+uYTGBMUQEVmOGxpk8CmTQr
-	I6DcFNXIBUhQQYX9pMvMpTivAt0CrjxfYwHXKmqdDz65xR0eVo4fipxAtQO/SYiuA7SCNGAtSa2
-	OK1dNNh715sDH6dHYn9SlRxnn7c4=
-X-Google-Smtp-Source: AGHT+IF5XBmlwwuB2LVSDw9ikBo4az/a9C2r6G+L3etJbaHVu5L0DLlw90iBG9K5c+qoRpuFYDN6QuG5tfAYOseHeIE=
-X-Received: by 2002:a19:ca18:0:b0:50e:aedd:ed76 with SMTP id
- a24-20020a19ca18000000b0050eaedded76mr463lfg.131.1705685122156; Fri, 19 Jan
- 2024 09:25:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705685242; x=1706290042;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n7a9skkOJDoeDAzXAlrhaoQRm2nSLoLLiCg9+PzsFlc=;
+        b=f4oAFUxztifT0KFS3W3yWGf7pO2YrhQOZPEvAhWZaLbNZNAarWcwEqCVo0ofpqmjgm
+         p/+N4d5mC9mFoIPPQbLFwxNTp+SmBV9mj3c78SI4p/bNFqp35fOpvfTTu+TPWfQ9Aq60
+         gJxa0UEk2HP9o7we0KLoy9Xq2yqvi8VCZt2dJlGSdZ3GURzT426Cw0mSFTkoSb0yAcKo
+         okIU5hCrHZtFutzs3vbXZnZTw56pp9SuqP0EYJMGCy+TbVco+JQ5VKdEJ6/prY4VIxnh
+         1BG2nBKug4wZZYq4QT/rvr9aqj3O93NlWYwZVpwsaQJZgardp8XVuAzWKICpxJvfjPBA
+         J3NA==
+X-Gm-Message-State: AOJu0YzYTdyLVLcVBQTkUppy3MOT8UwcKYaAcKTOx+zEuUuaCHdlIV6Y
+	ej2Nqs93Lqw6umptEF9SIdY3JYC/KS+x0+nT8ZZXzYG2NX3cDb+HPF5+80tKsw==
+X-Google-Smtp-Source: AGHT+IHbPj5dmEcO+DPizzQGXx6W1/gkhwSh7+VkZCpN/lNtDGV1jDgPXi6RNH85CfIegjQ4SZ61pA==
+X-Received: by 2002:a05:6a20:e123:b0:19a:e66e:b155 with SMTP id kr35-20020a056a20e12300b0019ae66eb155mr155863pzb.74.1705685242498;
+        Fri, 19 Jan 2024 09:27:22 -0800 (PST)
+Received: from google.com (77.62.105.34.bc.googleusercontent.com. [34.105.62.77])
+        by smtp.gmail.com with ESMTPSA id i124-20020a62c182000000b006dadc436071sm5574807pfg.36.2024.01.19.09.27.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 09:27:22 -0800 (PST)
+Date: Fri, 19 Jan 2024 17:27:18 +0000
+From: Carlos Llamas <cmllamas@google.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Sherry Yang <sherryy@android.com>, linux-kernel@vger.kernel.org,
+	kernel-team@android.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 05/28] binder: fix unused alloc->free_async_space
+Message-ID: <Zaqw9k4x7IUh6ys-@google.com>
+References: <20231201172212.1813387-1-cmllamas@google.com>
+ <20231201172212.1813387-6-cmllamas@google.com>
+ <Zal9HFZcC3rFjogI@google.com>
+ <2024011955-quotation-zone-7f20@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
- <20230804104602.395892-7-ckeepax@opensource.cirrus.com> <Zali4qxdegY7H6eY@surfacebook.localdomain>
- <20240119165917.GC16899@ediswmail.ad.cirrus.com>
-In-Reply-To: <20240119165917.GC16899@ediswmail.ad.cirrus.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 19 Jan 2024 19:24:45 +0200
-Message-ID: <CAHp75Vd_hnnuHQxmiPTkS5GdpEf3iMik9=51x55_Xgr+7LDJ3Q@mail.gmail.com>
-Subject: Re: [PATCH v7 6/6] ASoC: cs42l43: Add support for the cs42l43
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com, 
-	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com, 
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, 
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024011955-quotation-zone-7f20@gregkh>
 
-On Fri, Jan 19, 2024 at 6:59=E2=80=AFPM Charles Keepax
-<ckeepax@opensource.cirrus.com> wrote:
-> On Thu, Jan 18, 2024 at 07:41:54PM +0200, andy.shevchenko@gmail.com wrote=
-:
-> > Fri, Aug 04, 2023 at 11:46:02AM +0100, Charles Keepax kirjoitti:
+On Fri, Jan 19, 2024 at 06:49:00AM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Jan 18, 2024 at 07:33:48PM +0000, Carlos Llamas wrote:
+> > On Fri, Dec 01, 2023 at 05:21:34PM +0000, Carlos Llamas wrote:
+> > > Each transaction is associated with a 'struct binder_buffer' that stores
+> > > the metadata about its buffer area. Since commit 74310e06be4d ("android:
+> > > binder: Move buffer out of area shared with user space") this struct is
+> > > no longer embedded within the buffer itself but is instead allocated on
+> > > the heap to prevent userspace access to this driver-exclusive info.
+> > > 
+> > > Unfortunately, the space of this struct is still being accounted for in
+> > > the total buffer size calculation, specifically for async transactions.
+> > > This results in an additional 104 bytes added to every async buffer
+> > > request, and this area is never used.
+> > > 
+> > > This wasted space can be substantial. If we consider the maximum mmap
+> > > buffer space of SZ_4M, the driver will reserve half of it for async
+> > > transactions, or 0x200000. This area should, in theory, accommodate up
+> > > to 262,144 buffers of the minimum 8-byte size. However, after adding
+> > > the extra 'sizeof(struct binder_buffer)', the total number of buffers
+> > > drops to only 18,724, which is a sad 7.14% of the actual capacity.
+> > > 
+> > > This patch fixes the buffer size calculation to enable the utilization
+> > > of the entire async buffer space. This is expected to reduce the number
+> > > of -ENOSPC errors that are seen on the field.
+> > > 
+> > > Fixes: 74310e06be4d ("android: binder: Move buffer out of area shared with user space")
+> > > Signed-off-by: Carlos Llamas <cmllamas@google.com>
+> > > ---
+> > 
+> > Sorry, I forgot to Cc: stable@vger.kernel.org.
+> 
+> 
+> <formletter>
+> 
+> This is not the correct way to submit patches for inclusion in the
+> stable kernel tree.  Please read:
+>     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> for how to do this properly.
+> 
+> </formletter>
 
-..
+Oops, here is the complete info:
 
-> > > +   BUILD_BUG_ON(ARRAY_SIZE(cs42l43_jack_override_modes) !=3D
-> > > +                ARRAY_SIZE(cs42l43_jack_text) - 1);
-> >
-> > Use static_assert() instead.
->
-> I am happy either way, but for my own education what is the
-> reason to prefer static_assert here, is it just to be able to use
-> =3D=3D rather than !=3D? Or is there in general a preference to use
-> static_assert, there is no obvious since BUILD_BUG_ON is being
-> deprecated?
+Commit ID: c6d05e0762ab276102246d24affd1e116a46aa0c
+Subject:   "binder: fix unused alloc->free_async_space"
+Reason:    Fixes an incorrect calculation of available space.
+Versions:  v4.19+
 
-It's generally preferred since there are (known) issues with it:
-- it can't be put without the scope (globally);
-- it produces a lot of a noise and hard to read error report;
-- ...anything I forgot / don't know (yet) about...
+Note this patch will also have trivial conflicts in v4.19 and v5.4
+kernels as commit 261e7818f06e is missing there. Please let me know and
+I can send the corresponding patches separately.
 
-BUILD_BUG_ON() might be useful in some cases, but I don't see how.
-
-..
-
-> > > +   ret =3D cs42l43_shutter_get(priv, CS42L43_STATUS_MIC_SHUTTER_MUTE=
-_SHIFT);
-> > > +   if (ret < 0)
-> > > +           return ret;
-> > > +   else if (!ret)
-> >
-> > Reundant 'else'
-> >
-> > > +           ucontrol->value.integer.value[0] =3D ret;
-> > > +   else
-> > > +           ret =3D cs42l43_dapm_get_volsw(kcontrol, ucontrol);
-> >
-> > and why not positive check?
-> >
-> > > +   return ret;
-> >
-> > Or even simply as
-> >
-> >       if (ret > 0)
-> >               ret =3D cs42l43_dapm_get_volsw(kcontrol, ucontrol);
-> >       else if (ret =3D=3D 0)
-> >               ucontrol->value.integer.value[0] =3D ret;
-> >
-> >       return ret;
->
-> Yeah will update, that is definitely neater.
-
-Note before doing that the last one has a downside from the
-
-if (ret < 0)
-  return ret;
-if (ret)
-  ret =3D ...
-else
-  ...
-return ret;
-
-as it assumes that there will be no additional code in between
-'if-else-if' and last 'return'. Purely a maintenance aspect, but
-still... So, think about it which one you would prefer,
-
-..
-
-> > > +   while (freq > cs42l43_pll_configs[ARRAY_SIZE(cs42l43_pll_configs)=
- - 1].freq) {
-> > > +           div++;
-> > > +           freq /=3D 2;
-> > > +   }
-> >
-> > fls() / fls_long()?
->
-> Apologies but I might need a little bit more of a pointer here.
-> We need to scale freq down to under 3.072MHz and I am struggling
-> a little to see how to do that with fls.
-
-The second argument of > operator is invariant to the loop, correct?
-So it can be written as (pseudocode)
-
- y =3D 0;
- while (x > CONST) {
-   x /=3D 2;
-   y++;
- }
-
-This is basically the open coded 'find the scale of x against CONST as
-power of 2 value'. Okay, it might be not directly fls(), but something
-along those types of bit operations (I believe something similar is
-used in spi-pxa2xx.c for calculating the divider for the Intel Quark
-case).
-
-y =3D fls(x) - fls(CONST); // roughly looks like this, needs careful checki=
-ng
-
-..
-
-> > > +   // Don't use devm as we need to get against the MFD device
-> >
-> > This is weird...
-> >
-> > > +   priv->mclk =3D clk_get_optional(cs42l43->dev, "mclk");
-> > > +   if (IS_ERR(priv->mclk)) {
-> > > +           dev_err_probe(priv->dev, PTR_ERR(priv->mclk), "Failed to =
-get mclk\n");
-> > > +           goto err_pm;
-> > > +   }
-> > > +
-> > > +   ret =3D devm_snd_soc_register_component(priv->dev, &cs42l43_compo=
-nent_drv,
-> > > +                                         cs42l43_dais, ARRAY_SIZE(cs=
-42l43_dais));
-> > > +   if (ret) {
-> > > +           dev_err_probe(priv->dev, ret, "Failed to register compone=
-nt\n");
-> > > +           goto err_clk;
-> > > +   }
-> > > +
-> > > +   pm_runtime_mark_last_busy(priv->dev);
-> > > +   pm_runtime_put_autosuspend(priv->dev);
-> > > +
-> > > +   return 0;
-> > > +
-> > > +err_clk:
-> > > +   clk_put(priv->mclk);
-> > > +err_pm:
-> > > +   pm_runtime_put_sync(priv->dev);
-> > > +
-> > > +   return ret;
-> > > +}
-> > > +
-> > > +static int cs42l43_codec_remove(struct platform_device *pdev)
-> > > +{
-> > > +   struct cs42l43_codec *priv =3D platform_get_drvdata(pdev);
-> > > +
-> > > +   clk_put(priv->mclk);
-> >
-> > You have clocks put before anything else, and your remove order is brok=
-en now.
-> >
-> > To fix this (in case you may not used devm_clk_get() call), you should =
-drop
-> > devm calls all way after the clk_get(). Do we have
-> > snd_soc_register_component()? If yes, use it to fix.
-> >
-> > I believe you never tested rmmod/modprobe in a loop.
->
-> Hmm... will need to think this through a little bit, so might take
-> a little longer on this one. But I guess this only becomes a problem
-> if you attempt to remove the driver whilst you are currently playing
-> audio, and I would expect the card tear down would stop the clock
-> running before we get here.
-
-I don't know the HW, it is up to you how to address this. The issue
-really exists and might become a hard to hunt bug (e.g., if there is
-an IRQ fired or async work which would like to access the HW with
-clock off and hang the system).
-
---=20
-With Best Regards,
-Andy Shevchenko
+Thanks,
+--
+Carlos Llamas
 
