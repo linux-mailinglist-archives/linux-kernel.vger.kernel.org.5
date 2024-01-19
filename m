@@ -1,33 +1,37 @@
-Return-Path: <linux-kernel+bounces-31085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F3BA8328B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:22:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB8C8328B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:22:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A22E1C22715
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:22:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7145D1F236EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 11:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5C34C629;
-	Fri, 19 Jan 2024 11:22:35 +0000 (UTC)
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940724CB5A;
+	Fri, 19 Jan 2024 11:22:37 +0000 (UTC)
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2C841C94
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B61E8DF56
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 11:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705663354; cv=none; b=fZht+i89gW4IURtfXkDJFjhu1l6+SYE/58PTYjPwF7WB7PiFNSKQ7NVrObeL58Zim9oBgUnFCmU7m47Njq3Ju+/aeiGLu34gAHIyDF/1AhkRfN2bOWcF/2Q7nkiVLuLa+LdjUKc+lLC2xbsN/b77rGR3ByItNZesBD1EeQSLY60=
+	t=1705663357; cv=none; b=UbaK5MJqy69jUZyhC7t63Ljg1B6exNNhQqgQPxk2i1TNnGyzfgPUbot3/aEiOH2xEC6LV6r2ayAuO5EIipv0ktX937rzBujPitW3dd6By/Sri11IyEtW2cwBzM6N9QTa3vlEztGzin9b/z2sD6l/vmzFH3G3Ae5DKk26Sw/qCpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705663354; c=relaxed/simple;
-	bh=7VNhAqJoyAKSD/hQmtRytM/nCkvMMCR+Dhb06spZMzE=;
-	h=Subject:MIME-Version:Content-Type:From:Date:Message-Id:To:Cc; b=OjJnK/IzHg3AQD5U3xRQ8L69TlCOImTLFlyUvOLLwIKJqN6lUG5rWX0eyjlQLrXMmj1W6B8QwU7ZujkAF9+XMTd0TN1MoApJmti7aYjRl5CQybXFV9U9toJGLkKIeFktFsW6/mvtWhgfaag4ToaZU0ODFAk9H9AYh3c4QzeHOHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.175
+	s=arc-20240116; t=1705663357; c=relaxed/simple;
+	bh=Ww0tpfXtXMIxkPC0TnYSY6Lo486E6iMFggamrlAqd04=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=ZNuja1QasOk3hPnkqvGrTmpTV6cBxBS1l20w8+kYmrkJ8LJY9FlVqYq1X9DeN4YQJZfbacb5+hDxx7YgZ7W3nwLDRlvtSK30hZn3IqGFXEUrRbhGnpQgCAb4YaehgQ1nVz1PximnY9QDVPm71sYM8fRuRVumGZ0OZLb5YhgWudw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Subject: [PATCH v2 0/2] mm/zswap: optimize the scalability of zswap rb-tree
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <zhouchengming@bytedance.com>
+Date: Fri, 19 Jan 2024 11:22:22 +0000
+Subject: [PATCH v2 1/2] mm/zswap: make sure each swapfile always have zswap rb-tree
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -36,71 +40,143 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-b4-tracking: H4sIAG1bqmUC/4WNQQ6CMBBFr0Jm7Zi2FJu48h7GRVsGmQgtaREDhLvbeAFXP+8n7/8dMiWmDNdqh0
- QLZ46hgDpV4HsbnoTcFgYllBZSGnQat/yxEw7RvzBOM4+8EWpNwkgva60MFNnZTOiSDb4vengPQyl7
- znNM6+9skSXuf3cXiQJV3V2o66gxprm5daa27NLZxxEex3F8AdSXtlPFAAAA
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <zhouchengming@bytedance.com>
-Date: Fri, 19 Jan 2024 11:22:21 +0000
-Message-Id: <20240117-b4-zswap-lock-optimize-v2-0-b5cc55479090@bytedance.com>
+Message-Id: <20240117-b4-zswap-lock-optimize-v2-1-b5cc55479090@bytedance.com>
+References: <20240117-b4-zswap-lock-optimize-v2-0-b5cc55479090@bytedance.com>
+In-Reply-To: <20240117-b4-zswap-lock-optimize-v2-0-b5cc55479090@bytedance.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Chris Li <chriscli@google.com>,
  linux-kernel@vger.kernel.org, linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
  Chengming Zhou <zhouchengming@bytedance.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705663348; l=1884;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705663348; l=3856;
  i=zhouchengming@bytedance.com; s=20231204; h=from:subject:message-id;
- bh=7VNhAqJoyAKSD/hQmtRytM/nCkvMMCR+Dhb06spZMzE=;
- b=akpgee1fXkr61CWEO40WVSuXwdZrA981o4Nml3McnVIZ+zr6NdpD3PGRLWNPhgGRQNVjyVdbh
- 3HfD7od0hZmCnhoGo15Elt10ueJlVkwt2zAVES5vITd8tjKnz2itDZA
+ bh=Ww0tpfXtXMIxkPC0TnYSY6Lo486E6iMFggamrlAqd04=;
+ b=RsNXM/3brVq/czYsuZMfYA4JSKEbbtdqGV1hWHOScf1lIt+ZlT5Mg/lkd+fc47r4OgeUxFgEc
+ GcQwCzexskfAeYSEKTUePrWu6U/JYT6UJHgMVkDommVe/YE9URXUvwU
 X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
  pk=xFTmRtMG3vELGJBUiml7OYNdM393WOMv0iWWeQEVVdA=
 X-Migadu-Flow: FLOW_OUT
 
-Changes in v2:
-- Change swap_zswap_tree() to static inline function.
-- Collect Acked-by tags.
-- Link to v1: https://lore.kernel.org/r/20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com
+Not all zswap interfaces can handle the absence of the zswap rb-tree,
+actually only zswap_store() has handled it for now.
 
-When testing the zswap performance by using kernel build -j32 in a tmpfs
-directory, I found the scalability of zswap rb-tree is not good, which
-is protected by the only spinlock. That would cause heavy lock contention
-if multiple tasks zswap_store/load concurrently.
+To make things simple, we make sure each swapfile always have the
+zswap rb-tree prepared before being enabled and used. The preparation
+is unlikely to fail in practice, this patch just make it explicit.
 
-So a simple solution is to split the only one zswap rb-tree into multiple
-rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M). This idea is
-from the commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trunks").
-
-Although this method can't solve the spinlock contention completely, it
-can mitigate much of that contention. Below is the results of kernel build
-in tmpfs with zswap shrinker enabled:
-
-     linux-next  zswap-lock-optimize
-real 1m9.181s    1m3.820s
-user 17m44.036s  17m40.100s
-sys  7m37.297s   4m54.622s
-
-So there are clearly improvements. And it's complementary with the ongoing
-zswap xarray conversion by Chris. Anyway, I think we can also merge this
-first, it's complementary IMHO. So I just refresh and resend this for
-further discussion.
-
-Thanks for review and comment!
-
+Acked-by: Nhat Pham <nphamcs@gmail.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
-Chengming Zhou (2):
-      mm/zswap: make sure each swapfile always have zswap rb-tree
-      mm/zswap: split zswap rb-tree
+ include/linux/zswap.h |  7 +++++--
+ mm/swapfile.c         | 10 +++++++---
+ mm/zswap.c            |  7 ++++---
+ 3 files changed, 16 insertions(+), 8 deletions(-)
 
- include/linux/zswap.h |  7 +++--
- mm/swapfile.c         | 10 +++++--
- mm/zswap.c            | 76 +++++++++++++++++++++++++++++++++------------------
- 3 files changed, 61 insertions(+), 32 deletions(-)
----
-base-commit: ab27740f76654ed58dd32ac0ba0031c18a6dea3b
-change-id: 20240117-b4-zswap-lock-optimize-44e071c13427
+diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+index 0b709f5bc65f..eca388229d9a 100644
+--- a/include/linux/zswap.h
++++ b/include/linux/zswap.h
+@@ -30,7 +30,7 @@ struct zswap_lruvec_state {
+ bool zswap_store(struct folio *folio);
+ bool zswap_load(struct folio *folio);
+ void zswap_invalidate(int type, pgoff_t offset);
+-void zswap_swapon(int type);
++int zswap_swapon(int type);
+ void zswap_swapoff(int type);
+ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+ void zswap_lruvec_state_init(struct lruvec *lruvec);
+@@ -51,7 +51,10 @@ static inline bool zswap_load(struct folio *folio)
+ }
+ 
+ static inline void zswap_invalidate(int type, pgoff_t offset) {}
+-static inline void zswap_swapon(int type) {}
++static inline int zswap_swapon(int type)
++{
++	return 0;
++}
+ static inline void zswap_swapoff(int type) {}
+ static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
+ static inline void zswap_lruvec_state_init(struct lruvec *lruvec) {}
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 3eec686484ef..6c53ea06626b 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -2347,8 +2347,6 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+ 				unsigned char *swap_map,
+ 				struct swap_cluster_info *cluster_info)
+ {
+-	zswap_swapon(p->type);
+-
+ 	spin_lock(&swap_lock);
+ 	spin_lock(&p->lock);
+ 	setup_swap_info(p, prio, swap_map, cluster_info);
+@@ -3166,6 +3164,10 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	if (error)
+ 		goto bad_swap_unlock_inode;
+ 
++	error = zswap_swapon(p->type);
++	if (error)
++		goto free_swap_address_space;
++
+ 	/*
+ 	 * Flush any pending IO and dirty mappings before we start using this
+ 	 * swap device.
+@@ -3174,7 +3176,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	error = inode_drain_writes(inode);
+ 	if (error) {
+ 		inode->i_flags &= ~S_SWAPFILE;
+-		goto free_swap_address_space;
++		goto free_swap_zswap;
+ 	}
+ 
+ 	mutex_lock(&swapon_mutex);
+@@ -3198,6 +3200,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 
+ 	error = 0;
+ 	goto out;
++free_swap_zswap:
++	zswap_swapoff(p->type);
+ free_swap_address_space:
+ 	exit_swap_address_space(p->type);
+ bad_swap_unlock_inode:
+diff --git a/mm/zswap.c b/mm/zswap.c
+index ca25b676048e..d88faea85978 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1519,7 +1519,7 @@ bool zswap_store(struct folio *folio)
+ 	if (folio_test_large(folio))
+ 		return false;
+ 
+-	if (!zswap_enabled || !tree)
++	if (!zswap_enabled)
+ 		return false;
+ 
+ 	/*
+@@ -1772,19 +1772,20 @@ void zswap_invalidate(int type, pgoff_t offset)
+ 	spin_unlock(&tree->lock);
+ }
+ 
+-void zswap_swapon(int type)
++int zswap_swapon(int type)
+ {
+ 	struct zswap_tree *tree;
+ 
+ 	tree = kzalloc(sizeof(*tree), GFP_KERNEL);
+ 	if (!tree) {
+ 		pr_err("alloc failed, zswap disabled for swap type %d\n", type);
+-		return;
++		return -ENOMEM;
+ 	}
+ 
+ 	tree->rbroot = RB_ROOT;
+ 	spin_lock_init(&tree->lock);
+ 	zswap_trees[type] = tree;
++	return 0;
+ }
+ 
+ void zswap_swapoff(int type)
 
-Best regards,
 -- 
-Chengming Zhou <zhouchengming@bytedance.com>
+b4 0.10.1
 
