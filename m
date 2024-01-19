@@ -1,120 +1,118 @@
-Return-Path: <linux-kernel+bounces-31139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBF50832998
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:37:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FCDA83299F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:42:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A59D1284DFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:37:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3CE8285A04
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 12:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF5C524AC;
-	Fri, 19 Jan 2024 12:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187D251C33;
+	Fri, 19 Jan 2024 12:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jY9Y+fhn";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jY9Y+fhn"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t+9ePfNv"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA11524A7;
-	Fri, 19 Jan 2024 12:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A5A4F1F0
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 12:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705667850; cv=none; b=LZjdUxBo0tiy7AJjwKxLvSFwmrTL5g7/YS30PzdmXmlPejY8dStaChpRjPdgu3BHSjsDDZ3YxJfX9PFf7IxvEj3FUM0OWGLgEk19jjawEYxn0tQpJXjOVjjLuzkX1WZL/eZ0iXo0gpEPHQUdm4bGEjQLaJEoLf7hrghukZljdrc=
+	t=1705668116; cv=none; b=pUMKQMCcjg6TVe1Wid4WgEXxs9RxvQbgOHN10DEooerNhJpuqPWm7Rll7M5lajwPle3UA+evXX9yW/M4AHF2LKGBzxAiexXkokBgrMcN4/FqX9P8vHJhCcpkam6cVZvGq4++yL/6dveVeaM8n/+xChtBRd0QOjIEzzeQN2u8nk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705667850; c=relaxed/simple;
-	bh=SjwwPYaDeTn8+WySgdVe2Jy3obiU1LoQMOO+RVjo+a4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GhP0uak7lJqCdK00GGjRrCqicYvA2qBP2z+l3wnmvA98DCzevTCsW5Laj8SksLkbNbtmLPKpyUO6ZGzykcpwhBvDoxoRlqS+8amclxFeYbXjDGOb303eoBTinJ5L+OEuciLqxuHivd3kDDTPGeA0YTR6ZjuwAtInjreyaWNW+nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jY9Y+fhn; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jY9Y+fhn; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A5A4A21E4F;
-	Fri, 19 Jan 2024 12:37:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705667840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UEfBPVEz5WOmoy4eOtA/Y+8nJMYZBVOx5DSCH//+zbI=;
-	b=jY9Y+fhnvNswaq/yxDtvbCiumzDhzm5ENMrwoS4y0n0NiyJXo343INe4d6CoNFycCOmqKV
-	pecs+YiDIxcH4jbh0nSqghSw3JggeLzAM9TdqE+Fv9L692QQIk6dXIRuNpvmidh21+MvKF
-	3qQyKNDdxIBMfsko7doteRIcOkZnCKo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705667840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UEfBPVEz5WOmoy4eOtA/Y+8nJMYZBVOx5DSCH//+zbI=;
-	b=jY9Y+fhnvNswaq/yxDtvbCiumzDhzm5ENMrwoS4y0n0NiyJXo343INe4d6CoNFycCOmqKV
-	pecs+YiDIxcH4jbh0nSqghSw3JggeLzAM9TdqE+Fv9L692QQIk6dXIRuNpvmidh21+MvKF
-	3qQyKNDdxIBMfsko7doteRIcOkZnCKo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D201136F5;
-	Fri, 19 Jan 2024 12:37:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MA54GwBtqmXLDQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 19 Jan 2024 12:37:20 +0000
-Date: Fri, 19 Jan 2024 13:37:19 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com,
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com,
-	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org,
-	linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT flag to
- process_madvise()
-Message-ID: <Zaps_0jnspsheP92@tiehlicka>
-References: <20240119115104.75456-1-ioworker0@gmail.com>
+	s=arc-20240116; t=1705668116; c=relaxed/simple;
+	bh=2cb5Al6biJuuZyVOrVmyIzVVgdjZLf1RVBZLRdAK/Kc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rr0LGniz5gNoqR4aQD8f68M9+asgRqKSYtQPZ6wtH5+43u7TWCq48bI7IfQLeermnX3c0ZaBfgNihN/UN/E2y/kWdJUPNwXNkJsE2h5ElnwJx9hPGb+zUY15IfCxCiof5RNe9oIG63nKloPcm3vG8HtRhQsENMsW5v2BWUVbFfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t+9ePfNv; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5ff9ba70977so6717857b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 04:41:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705668114; x=1706272914; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=23vuA1+7BgcGfSlqZ4nH0qFr70mqNSgh0bqFZoyYKpg=;
+        b=t+9ePfNvhYNx+/khQCkZFXtSyaj07YyMRs3M82d2NLreYcHORg+GSVl1gglcBWI3Qg
+         hBrtPfqOf+Uq7pnx6Gp6gTDBMdlynUfC91pqFwVXhNJ/nKtVMJzbLh8WOJk9dILc2vp9
+         Y5V8LRSpFMBYuCZP3otygBUq+LyE/iTHJBADqPOkTrdH0UaCO3DQAyvg2MKs3LFvbARj
+         foxbv6Ym+jBpABfIHCk6ydxv678vg8wsR8lUWkYgZuGarMZtXFUcDsOJ2qAp9fXfrOE4
+         vnpnQOGHLSbsgMu1mhy7vcYjfaoBpULeedxFhWZT7cGvLG9ustKBHp2Hq9bomkkDE4cI
+         /4pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705668114; x=1706272914;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=23vuA1+7BgcGfSlqZ4nH0qFr70mqNSgh0bqFZoyYKpg=;
+        b=KojVaFTa4wlytTv5CpPmrQ8WOUKr9H5bRImbQUrBblwUll1tkTR33GlU0o5ikW4QkX
+         1GOMYuqLM0cBD1jH0rgS1aQzgEJgGJSCG8wpzJpVfOM6cGgixT2SxP6walhmrO4IAIxS
+         FQ0+rM5ugptZcPbisTlGMXk71kV0hB6T6swckIePfeoZWCVvkQ+lb5/mJzh+1e/H24G6
+         lfeJz0DTYveJzlCPKbjHa9T0lMXrgV/E3IUigwusUEOE07NuKwUNyi3nyNj+BIdlqjne
+         2XLjjN1Wg90WpGlS/0g1iC1qp4ayanG5N/CR/kMhHqIJJFFmu/R+kXuIjKMFCJPnvdqd
+         nLkA==
+X-Gm-Message-State: AOJu0Yx3zxHA5XfX7RN2zu2tpMEZhk4fvE7t74iRGN1wLc3BsXhNA5CR
+	QgCJyHoIeD3SnDgNNSLIssNc8QFg/FZDQehcr/kxs5QyvUlCadEpdYXHeXNMW0+q+mkN/Jl8jEg
+	a9BuppXqo9niS51t0KRx7L8Z+g0qZiLuHSpdwBw==
+X-Google-Smtp-Source: AGHT+IGXaB/Qo5C8K/AVwVpt0k+i3/3nYM44JB7FzXsWZairbE64gJOEa8s/VJ7iEick4vjqREgSJWa6nU4h2xbXln0=
+X-Received: by 2002:a0d:df17:0:b0:5ff:7cca:a434 with SMTP id
+ i23-20020a0ddf17000000b005ff7ccaa434mr2084545ywe.51.1705668113943; Fri, 19
+ Jan 2024 04:41:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119115104.75456-1-ioworker0@gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.45
-X-Spamd-Result: default: False [-1.45 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,google.com,redhat.com,bytedance.com,gmail.com,kernel.org,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.65)[82.59%]
-X-Spam-Flag: NO
+References: <1705526010-597-1-git-send-email-quic_khsieh@quicinc.com>
+In-Reply-To: <1705526010-597-1-git-send-email-quic_khsieh@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 19 Jan 2024 14:41:43 +0200
+Message-ID: <CAA8EJpqm5KW_UOkvV1JhX+LEh_e8bo549NNQ1AgAXMZ=ZPVCOA@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/msm/dp: return correct Colorimetry for
+ DP_TEST_DYNAMIC_RANGE_CEA case
+To: Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc: dri-devel@lists.freedesktop.org, robdclark@gmail.com, sean@poorly.run, 
+	swboyd@chromium.org, dianders@chromium.org, vkoul@kernel.org, daniel@ffwll.ch, 
+	airlied@gmail.com, agross@kernel.org, andersson@kernel.org, 
+	quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com, 
+	quic_sbillaka@quicinc.com, marijn.suijten@somainline.org, 
+	freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Please do not start a new version until all the outstanding points are
-settled. This just fragments the discussion and makes it hard to follow
-it.
+On Wed, 17 Jan 2024 at 23:13, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+> MSA MISC0 bit 1 to 7 contains Colorimetry Indicator Field.
+> dp_link_get_colorimetry_config() returns wrong colorimetry value
+> in the DP_TEST_DYNAMIC_RANGE_CEA case in the current implementation.
+> Hence fix this problem by having dp_link_get_colorimetry_config()
+> return defined CEA RGB colorimetry value in the case of
+> DP_TEST_DYNAMIC_RANGE_CEA.
+>
+> Changes in V2:
+> -- drop retrieving colorimetry from colorspace
+> -- drop dr = link->dp_link.test_video.test_dyn_range assignment
+>
+> Changes in V3:
+> -- move defined MISCr0a Colorimetry vale to dp_reg.h
+> -- rewording commit title
+> -- rewording commit text to more precise describe this patch
+>
+> Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_link.c | 12 +++++++-----
+>  drivers/gpu/drm/msm/dp/dp_reg.h  |  3 +++
+>  2 files changed, 10 insertions(+), 5 deletions(-)
 
-Thanks!
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 -- 
-Michal Hocko
-SUSE Labs
+With best wishes
+Dmitry
 
