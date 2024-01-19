@@ -1,96 +1,80 @@
-Return-Path: <linux-kernel+bounces-31308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44BAA832C3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:23:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8A64832C3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:23:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1DB91F24E94
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:23:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6824E287E45
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 15:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8930A54BCF;
-	Fri, 19 Jan 2024 15:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4070154789;
+	Fri, 19 Jan 2024 15:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="p4dFb6GM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7GbZmExG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uv6/I8/D";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TjocpMhx"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="s4U0ho16"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCF654BC1
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:23:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A895F54672
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 15:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705677796; cv=none; b=BpN5FYoKnLcUIW7z1IXllXtp1cOwywcuhQo3kgwe/rLIDbdQe2OQ0IjqZ8fr/HuY+QN/qQ3XFlIVKmsuuZIe/yETgTlaOU5vgxx5Um+1uLVYtStOJoS3OlO23qBwsP8ox/83rwbkI7sOsVFa3UCgwy1qhb2//URYf4QE7Iypgr0=
+	t=1705677822; cv=none; b=DtYRBk/BquE2JCZLDdYQATi0KIRqemoO/5asWTZRZKAxMzA9UnRi1y9OMKpoYmjVKhcaCV68UO+5dDfbMxnMnOhzKpTZV53RohZJiGG0er8y9LQ2th47JFFGXZCJZb2ZsIFG7DmaUIIMt6avO8D0uYGYSg/LdBo6/TU562ujrU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705677796; c=relaxed/simple;
-	bh=BZHfkaDvaNb/lVEFpgRJfEoNFqi2qK09ZJ8LTvkZg/8=;
+	s=arc-20240116; t=1705677822; c=relaxed/simple;
+	bh=7dSFtIOUtnc7d6TIJokRXxaelPW5vKd+VvTdvvJyjLM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cF4xhX3yMQscnfxPs+3gLJCFRHcqA1DXB5MoSors6atK6PvkWw6m8aUVZPq5LtL6t+1TnHTywdrZt1J83h8nc+jDBetSlFvraDCfCKsWTvygB3yyGGZQ4W+U9noiR70GCjWA+KIfhlSfvjmfSOvL2XDBCzyTlsXzyIy6+A06Imw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=p4dFb6GM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7GbZmExG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uv6/I8/D; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TjocpMhx; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E42E921F0E;
-	Fri, 19 Jan 2024 15:23:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705677793; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UlMhYNvxmdwU88x2GiClfz7jLnVbiymkQwkKTqSWf3I=;
-	b=p4dFb6GMSRo0tZhknWp0pJnU0cXnMMRmhs/hkaguOiNRiUJHsE/ioFUyDkg/V2qD3QVgzp
-	AXhqPWksFbJZvehe8aMjyxJNPs5uwTy+lrH0/UrfAHBEZZ/Ob1FBKQsaVZu8hwXeU7Dfj0
-	tvoFqMZArauYQLSc6F3Nr4PKRU/ryDg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705677793;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UlMhYNvxmdwU88x2GiClfz7jLnVbiymkQwkKTqSWf3I=;
-	b=7GbZmExGbUuvg8YHeHRlbRjMJkr4BYJT1xm9jzKqY+Cz95B2DX/dKt9p4VWRSDSo+lb3Nw
-	SUMfM2Fp4AMNVjCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705677792; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UlMhYNvxmdwU88x2GiClfz7jLnVbiymkQwkKTqSWf3I=;
-	b=uv6/I8/DAEwdii5GhOY2DDxek1tbLfwtJJeQnDG5/iM33eCjj5k7OTy6CxNTGvwRyra9em
-	IlvkNGZQaNCzIRfqulB3WYnKdsno6wb+LTR4alLPqugEiSiQ8IvBBqcZqMsY5fY0UpI+oi
-	EgCTg3SNd0HB5Zac4bZuMc/3+V6YCMQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705677792;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UlMhYNvxmdwU88x2GiClfz7jLnVbiymkQwkKTqSWf3I=;
-	b=TjocpMhxinabRrhyYc09GRqMbbXQIjoZ/y+OdQ8zSfuYh+5s+nDjTuGdcF/ifi9+pNr98H
-	1P7ed6EnA18ACfDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D96231388C;
-	Fri, 19 Jan 2024 15:23:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id X0oONeCTqmXeQwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 19 Jan 2024 15:23:12 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 8D682A0803; Fri, 19 Jan 2024 16:23:12 +0100 (CET)
-Date: Fri, 19 Jan 2024 16:23:12 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, jack@suse.cz, linux-mm@kvack.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=pGjrRE3ODn9ZOMK8yvSOBnRmFMOwCAfA6nsv+3CZDsaAfahagB1S/wQb59Im1UkPV1kxmThvaZy4HyqF7PEcdduDKaHmelEWFW3f1DtqzAM1jXLQ27uSql/o8A/dWCXA2vpTMsDDAjAxQnAJQTMHUKZv+oo4Ue8a2c7N3l6AtUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=s4U0ho16; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6dbc57d15daso497721b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:23:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705677820; x=1706282620; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4piK4FlIBshk3S545o0PPe5+IQl2dl/fnP0KWlMUlPE=;
+        b=s4U0ho16nOIx5WDASy6QZ0Rx9eC1MIXWHn22HB+CJZuxGZWYxICBKofYQYLKsLDNnU
+         a5IBvb++eMykZqEOWsOdA8yqGNakJsLL4++23tpUMllmDLejY7J2CHmJEMXXGSSwveKK
+         ne/m25EInCbtdXM1eYSzxOE2zx7IqXGLYUCQaA7V/XV2BT6Jo4hLBK1x3UfxX8ocbPc8
+         Im5evLq5S1JQbq+b2QbV8tLCbfoEfIVq0n7JAOddZc1A3F2y2zaZK1mfhA2aQF9fTEgs
+         obfuNpTLlM3UQ17tnsjW3XCdLGfC3Gx1CsaRAJBBSD1hey49syQweUZzYTkYoXeM0CMx
+         3fQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705677820; x=1706282620;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4piK4FlIBshk3S545o0PPe5+IQl2dl/fnP0KWlMUlPE=;
+        b=Ul2sI3P0qUADQZRU/viHniK8aVKfwwKkLJ09m+dPO8I67k5Z0apuQrRNRpV8ZIVRn9
+         XtnmbzfLeWRQVfInse2kOO21AYvwVkskSV4V9d/0tuZeyvJ/K53FfxHFvoyZuNy5JkMe
+         zmSFNNaT4JcOM5VIWYyonfdxUXFtRc2Q9aEtAznTEIVdSUBE/GTsmkuC+AfQsk0+oDGV
+         QYN7L+2pH61Tq4LmvHNIzD6EOQ+XFSL6kcJY7atgBJidjP/JsQ4fTyWsshH1t6rnN4yq
+         wbi2G9Ux9z4h2gM7XBwgH7/EiiG4ci0q4uKocK/OTl+qUYkyew2xnA56I1ZVfzcQXIMD
+         3oYw==
+X-Gm-Message-State: AOJu0Yz+ROrsW90/q/5vYoSFnWIsnPngS7Tku0qDuSdgUmG/A0BtoTLb
+	QUZZfJHwj11T7U7q0SBDWmQ/+K3ivIx+41xuEX/gdYzqxjrdMA/gjx2Evt8i26Q=
+X-Google-Smtp-Source: AGHT+IEDpAw5jRwxWDGo0pZARDmf9QlhA87xq1E/pHFbxmVfn6Z7N1QSRsRV5TCFojVTVQwO0YNAsA==
+X-Received: by 2002:a05:6a20:4281:b0:19a:25c6:4913 with SMTP id o1-20020a056a20428100b0019a25c64913mr3247900pzj.38.1705677819959;
+        Fri, 19 Jan 2024 07:23:39 -0800 (PST)
+Received: from ghost (50-197-128-209-static.hfc.comcastbusiness.net. [50.197.128.209])
+        by smtp.gmail.com with ESMTPSA id ks11-20020a056a004b8b00b006d6b91c6eb6sm5356928pfb.13.2024.01.19.07.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 07:23:39 -0800 (PST)
+Date: Fri, 19 Jan 2024 07:23:36 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] flex_proportions: remove unused fprop_local_single
-Message-ID: <20240119152312.qb4xd43zw6jtdihv@quack3>
-References: <20240118201321.759174-1-shikemeng@huaweicloud.com>
+Subject: Re: [PATCH v2] riscv: lib: Check if output in asm goto supported
+Message-ID: <ZaqT2E0rH3UbdnV0@ghost>
+References: <20240118-csum_remove_output_operands_asm_goto-v2-1-5d1b73cf93d4@rivosinc.com>
+ <20240119-1bff4a21b3d2d5c500a14fcc@orel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,187 +83,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240118201321.759174-1-shikemeng@huaweicloud.com>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="uv6/I8/D";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=TjocpMhx
-X-Spamd-Result: default: False [0.19 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 0.19
-X-Rspamd-Queue-Id: E42E921F0E
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+In-Reply-To: <20240119-1bff4a21b3d2d5c500a14fcc@orel>
 
-On Fri 19-01-24 04:13:21, Kemeng Shi wrote:
-> The single variant of flex_proportions is not used. Simply remove it.
+On Fri, Jan 19, 2024 at 10:41:14AM +0100, Andrew Jones wrote:
+> On Thu, Jan 18, 2024 at 02:36:45PM -0800, Charlie Jenkins wrote:
+> > The output field of an asm goto statement is not supported by all
+> > compilers. If it is not supported, fallback to the non-optimized code.
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > Fixes: a04c192eabfb ("riscv: Add checksum library")
+> > ---
+> > The OutputOperands field for asm goto statements is only supported
+> > starting from GCC 11. Split the asm goto to remove the use of this
+> > feature.
+> > ---
+> > Changes in v2:
+> > - Use CC_HAS_ASM_GOTO_TIED_OUTPUT
+> > - Link to v1: https://lore.kernel.org/r/20240118-csum_remove_output_operands_asm_goto-v1-1-47c672bb9d4b@rivosinc.com
+> > ---
+> >  arch/riscv/lib/csum.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/arch/riscv/lib/csum.c b/arch/riscv/lib/csum.c
+> > index 06ce8e7250d9..af3df5274ccb 100644
+> > --- a/arch/riscv/lib/csum.c
+> > +++ b/arch/riscv/lib/csum.c
+> > @@ -156,6 +156,7 @@ do_csum_with_alignment(const unsigned char *buff, int len)
+> >  	end = (const unsigned long *)(buff + len);
+> >  	csum = do_csum_common(ptr, end, data);
+> >  
+> > +#ifdef CC_HAS_ASM_GOTO_TIED_OUTPUT
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Can't we just add another IS_ENABLED() to the if rather than this #ifdef?
 
-Yup. Feel free to add:
+Unfortunately no. GCC throws syntax before it determines if a branch
+will never be taken, so even though the code is not emitted it will
+still fail with IS_ENABLED.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  include/linux/flex_proportions.h | 32 -------------
->  lib/flex_proportions.c           | 77 --------------------------------
->  2 files changed, 109 deletions(-)
 > 
-> diff --git a/include/linux/flex_proportions.h b/include/linux/flex_proportions.h
-> index 3e378b1fb0bc..e9a72fd0bfe7 100644
-> --- a/include/linux/flex_proportions.h
-> +++ b/include/linux/flex_proportions.h
-> @@ -38,38 +38,6 @@ int fprop_global_init(struct fprop_global *p, gfp_t gfp);
->  void fprop_global_destroy(struct fprop_global *p);
->  bool fprop_new_period(struct fprop_global *p, int periods);
->  
-> -/*
-> - *  ---- SINGLE ----
-> - */
-> -struct fprop_local_single {
-> -	/* the local events counter */
-> -	unsigned long events;
-> -	/* Period in which we last updated events */
-> -	unsigned int period;
-> -	raw_spinlock_t lock;	/* Protect period and numerator */
-> -};
-> -
-> -#define INIT_FPROP_LOCAL_SINGLE(name)			\
-> -{	.lock = __RAW_SPIN_LOCK_UNLOCKED(name.lock),	\
-> -}
-> -
-> -int fprop_local_init_single(struct fprop_local_single *pl);
-> -void fprop_local_destroy_single(struct fprop_local_single *pl);
-> -void __fprop_inc_single(struct fprop_global *p, struct fprop_local_single *pl);
-> -void fprop_fraction_single(struct fprop_global *p,
-> -	struct fprop_local_single *pl, unsigned long *numerator,
-> -	unsigned long *denominator);
-> -
-> -static inline
-> -void fprop_inc_single(struct fprop_global *p, struct fprop_local_single *pl)
-> -{
-> -	unsigned long flags;
-> -
-> -	local_irq_save(flags);
-> -	__fprop_inc_single(p, pl);
-> -	local_irq_restore(flags);
-> -}
-> -
->  /*
->   * ---- PERCPU ----
->   */
-> diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
-> index 83332fefa6f4..84ecccddc771 100644
-> --- a/lib/flex_proportions.c
-> +++ b/lib/flex_proportions.c
-> @@ -83,83 +83,6 @@ bool fprop_new_period(struct fprop_global *p, int periods)
->  	return true;
->  }
->  
-> -/*
-> - * ---- SINGLE ----
-> - */
-> -
-> -int fprop_local_init_single(struct fprop_local_single *pl)
-> -{
-> -	pl->events = 0;
-> -	pl->period = 0;
-> -	raw_spin_lock_init(&pl->lock);
-> -	return 0;
-> -}
-> -
-> -void fprop_local_destroy_single(struct fprop_local_single *pl)
-> -{
-> -}
-> -
-> -static void fprop_reflect_period_single(struct fprop_global *p,
-> -					struct fprop_local_single *pl)
-> -{
-> -	unsigned int period = p->period;
-> -	unsigned long flags;
-> -
-> -	/* Fast path - period didn't change */
-> -	if (pl->period == period)
-> -		return;
-> -	raw_spin_lock_irqsave(&pl->lock, flags);
-> -	/* Someone updated pl->period while we were spinning? */
-> -	if (pl->period >= period) {
-> -		raw_spin_unlock_irqrestore(&pl->lock, flags);
-> -		return;
-> -	}
-> -	/* Aging zeroed our fraction? */
-> -	if (period - pl->period < BITS_PER_LONG)
-> -		pl->events >>= period - pl->period;
-> -	else
-> -		pl->events = 0;
-> -	pl->period = period;
-> -	raw_spin_unlock_irqrestore(&pl->lock, flags);
-> -}
-> -
-> -/* Event of type pl happened */
-> -void __fprop_inc_single(struct fprop_global *p, struct fprop_local_single *pl)
-> -{
-> -	fprop_reflect_period_single(p, pl);
-> -	pl->events++;
-> -	percpu_counter_add(&p->events, 1);
-> -}
-> -
-> -/* Return fraction of events of type pl */
-> -void fprop_fraction_single(struct fprop_global *p,
-> -			   struct fprop_local_single *pl,
-> -			   unsigned long *numerator, unsigned long *denominator)
-> -{
-> -	unsigned int seq;
-> -	s64 num, den;
-> -
-> -	do {
-> -		seq = read_seqcount_begin(&p->sequence);
-> -		fprop_reflect_period_single(p, pl);
-> -		num = pl->events;
-> -		den = percpu_counter_read_positive(&p->events);
-> -	} while (read_seqcount_retry(&p->sequence, seq));
-> -
-> -	/*
-> -	 * Make fraction <= 1 and denominator > 0 even in presence of percpu
-> -	 * counter errors
-> -	 */
-> -	if (den <= num) {
-> -		if (num)
-> -			den = num;
-> -		else
-> -			den = 1;
-> -	}
-> -	*denominator = den;
-> -	*numerator = num;
-> -}
-> -
->  /*
->   * ---- PERCPU ----
->   */
-> -- 
-> 2.30.0
+> >  	/*
+> >  	 * Zbb support saves 6 instructions, so not worth checking without
+> >  	 * alternatives if supported
+> > @@ -214,6 +215,7 @@ do_csum_with_alignment(const unsigned char *buff, int len)
+> >  		return csum >> 16;
+> >  	}
+> >  no_zbb:
+> > +#endif /* CC_HAS_ASM_GOTO_TIED_OUTPUT */
+> >  #ifndef CONFIG_32BIT
+> >  	csum += ror64(csum, 32);
+> >  	csum >>= 32;
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> BTW, I wonder how/if the check for CC_HAS_ASM_GOTO_TIED_OUTPUT in
+> init/Kconfig is working as expected. I see $CC, as opposed to $(CC),
+> being used there. I believe $CC is just the expansion of $C with a
+> 'C' appended.
+
+Huh that is strange. It does work but I am not sure how.
+
+- Charlie
+
+> 
+> Thanks,
+> drew
+> 
+> > 
+> > ---
+> > base-commit: 080c4324fa5e81ff3780206a138223abfb57a68e
+> > change-id: 20240118-csum_remove_output_operands_asm_goto-49922c141ce7
+> > -- 
+> > - Charlie
+> > 
+> > 
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
