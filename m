@@ -1,138 +1,232 @@
-Return-Path: <linux-kernel+bounces-31350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F13E7832CF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:14:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F8B832CFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:18:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C0861F244F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:14:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D754B222F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB21054F92;
-	Fri, 19 Jan 2024 16:14:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A0654F99;
+	Fri, 19 Jan 2024 16:18:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GTfpgvYQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Z9jYM9sE";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="DHlg99wG";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="1KKtT2jX";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="bmYrSuuO"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2518A55760;
-	Fri, 19 Jan 2024 16:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B421C54BE3;
+	Fri, 19 Jan 2024 16:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705680859; cv=none; b=R0CtIgDordARuTfZhz5puCAh5n0yP93eIBpZc2tcU4iXw8lwbK0msauxWxUq13BjYHAvPcOd73i2g3l2cFCO4k5W7wtPhWuJG5uH7XNJU92qeau4VmiBl3L9XxiL5xLDj45yJd9Yz40I9cQYaAohHiBDM2R1YLJ15RP3L8Un9Vw=
+	t=1705681080; cv=none; b=EoaLIURQDe5QSVjA5JIDy3C2MxulT4vgextsG4mECPyc/3xGyfc3Ec5VHtPUiD62USWbVLmt37KIK1pD1CUygNxQhrt6okMvH5XfOW5U2b8eUdeXiRkrkKNVihjXTuVicYVtFRZ29Wpx9RTDcFdDaDmQDeXK4F6UWwMx/G4jogU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705680859; c=relaxed/simple;
-	bh=FTiyumdDUu3LG/iF+VkzG7r/ahERdxQdR7At/f8SshE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N1Cm6oNayWf2hKdB5CjfDG84id9uTDcfoWS5XDUt0pryWP9fePcp7wyB4KKt9XxiTn2w9j55I13Nl57Zle4zJIQ+nVESq2gIavtSc0ssYzcA74O2swT3VzdNd9h0imi9/grrkYxp0ent5EdzgWPEogLI84Se6Ujiko87RZjfuRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GTfpgvYQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930A6C43390;
-	Fri, 19 Jan 2024 16:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705680858;
-	bh=FTiyumdDUu3LG/iF+VkzG7r/ahERdxQdR7At/f8SshE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GTfpgvYQliKoCICox/GA4UF2qAAxQTCC01Jg+KSo0KX0XdqZoq4jYqxseI7HESkTO
-	 4vEuUO1984PbcN8UQaD+CcMp5kYGwNe937aToDNy5E6XRcQvUj2iPKj1WqG6hIeDB6
-	 hUwt2sXl37wkfEc7LzkFIxoRM1zrUU74jvIjYtt70gq5M+nubkMjR1ifH38iY/TQ4h
-	 d3ViRA6fvtLvQNHzdlzY6NQ38FJZiVHdHAeRaan5oJEr7MLGLkDBC2PhSBEPcbubhb
-	 +yA16381Zz+VRROSh0ZHPsHAk7KUUtSocsgI9I7FEH7IlvQLmzzNynMv9QohE//pDj
-	 V+4QBJ2XxE56Q==
-Date: Fri, 19 Jan 2024 16:14:12 +0000
-From: Conor Dooley <conor@kernel.org>
-To: "Ghennadi Procopciuc (OSS)" <ghennadi.procopciuc@oss.nxp.com>
-Cc: Chester Lin <chester62515@gmail.com>, Andreas Farber <afaerber@suse.de>,
-	Matthias Brugger <mbrugger@suse.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, NXP S32 Linux Team <s32@nxp.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-	Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>,
-	Ciprian Costea <ciprianmarian.costea@nxp.com>
-Subject: Re: [PATCH 1/3] dt-bindings: clock: s32g: add uSDHC clock IDs
-Message-ID: <20240119-cattle-antarctic-432fa8e1c0ef@spud>
-References: <20240119130231.2854146-1-ghennadi.procopciuc@oss.nxp.com>
- <20240119130231.2854146-2-ghennadi.procopciuc@oss.nxp.com>
- <20240119-magnetic-racing-0adf8e5fbd4a@spud>
+	s=arc-20240116; t=1705681080; c=relaxed/simple;
+	bh=lPPXDt+XvoN6YBh8qHhnZqlV9+3Kqzv4OYpbBiFulr8=;
+	h=Date:Message-ID:From:To:Cc:Subject:MIME-Version:Content-Type; b=D1FvECUUpX7fQIDzuUquD8KMNk0yriBdPZOTOa74pW+dpYzKgkaZ+sFCmWrG+optNad7bu9NI/+94fR/4aON8ZgO48aOdxkfTmmEOdsy+fYbhuq+OT5UTepG8GP+xjC/V2R53dwjGx0dJ63vwNn/IygaozVJNEDxD23abqlHlAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Z9jYM9sE; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=DHlg99wG; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=1KKtT2jX; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=bmYrSuuO; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A58A91FD15;
+	Fri, 19 Jan 2024 16:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705681076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CP2uValOwWCAjeFRvYWAW6amhd5cd0jqCsima+LQWHA=;
+	b=Z9jYM9sEwC8NnxC1Y7RlVqKpUJ85lv11QlK04sOxZbsXFLPJdcyBmjedWPWtwQsGQPE8kK
+	YA1vOzI3l9Q+c9v6eeXij7rjA4nzMpRp6hPpeWdctATL07y3dF6616kVXRtC7y3ePztBAO
+	Qw/bTGPf31AhIJ9hpPnUH6mCaY6frng=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705681076;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CP2uValOwWCAjeFRvYWAW6amhd5cd0jqCsima+LQWHA=;
+	b=DHlg99wGOdciqTLupx/BLRbD6WF7/PAKbQ66rr2pyG5W4aLIXxawegsBc0Ps9iA2ZLkHkJ
+	6esHcdE5BW36oMCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705681075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CP2uValOwWCAjeFRvYWAW6amhd5cd0jqCsima+LQWHA=;
+	b=1KKtT2jXaq45AJYVdez6FOU5AivLF1Lryzi5CfaLCpN8oEEz/DC7e8LOD4EMtQ9bNMx+3M
+	wI9NzBfvehCAo3n++zf9gsUQzUlOzKkwbitMsDcCLonHr4UER5DJ+rtbqw5IR8iRz/JrE+
+	+vK1QsTWp9l5HUO9RYNlnZrpNyyXtPU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705681075;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CP2uValOwWCAjeFRvYWAW6amhd5cd0jqCsima+LQWHA=;
+	b=bmYrSuuO5+eAh1qyU1YU7+c7WConmWYvwZX3eacx6ooc6x87skSpYTH2fr61vHIgVCVLZv
+	fRl18ZvueFhzM7DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 74DB81388C;
+	Fri, 19 Jan 2024 16:17:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hBEBG7OgqmWoVQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 19 Jan 2024 16:17:55 +0000
+Date: Fri, 19 Jan 2024 17:17:55 +0100
+Message-ID: <875xzps3f0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Linux Sound Mailing List <linux-sound@vger.kernel.org>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.8-rc1
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qUpbBLVWlyJG4s+w"
-Content-Disposition: inline
-In-Reply-To: <20240119-magnetic-racing-0adf8e5fbd4a@spud>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=1KKtT2jX;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=bmYrSuuO
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 TO_DN_ALL(0.00)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_CC(0.00)[kernel.org,gmail.com,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -3.51
+X-Rspamd-Queue-Id: A58A91FD15
+X-Spam-Flag: NO
 
+Linus,
 
---qUpbBLVWlyJG4s+w
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+please pull sound fixes for v6.8-rc1 from:
 
-On Fri, Jan 19, 2024 at 04:11:37PM +0000, Conor Dooley wrote:
-> On Fri, Jan 19, 2024 at 03:02:28PM +0200, Ghennadi Procopciuc (OSS) wrote:
-> > From: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
-> >=20
-> > Add the SCMI clock IDs for the uSDHC controller present on
-> > S32G SoCs.
-> >=20
-> > Signed-off-by: Ciprian Costea <ciprianmarian.costea@nxp.com>
-> > Signed-off-by: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
-> > ---
-> >  include/dt-bindings/clock/s32g-scmi-clock.h | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> >  create mode 100644 include/dt-bindings/clock/s32g-scmi-clock.h
-> >=20
-> > diff --git a/include/dt-bindings/clock/s32g-scmi-clock.h b/include/dt-b=
-indings/clock/s32g-scmi-clock.h
-> > new file mode 100644
-> > index 000000000000..739f98a924c3
-> > --- /dev/null
-> > +++ b/include/dt-bindings/clock/s32g-scmi-clock.h
-> > @@ -0,0 +1,14 @@
-> > +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
-> > +/*
-> > + * Copyright 2020-2024 NXP
-> > + */
-> > +#ifndef _DT_BINDINGS_SCMI_CLK_S32G_H
-> > +#define _DT_BINDINGS_SCMI_CLK_S32G_H
-> > +
-> > +/* uSDHC */
-> > +#define S32G_SCMI_CLK_USDHC_AHB		31
-> > +#define S32G_SCMI_CLK_USDHC_MODULE	32
-> > +#define S32G_SCMI_CLK_USDHC_CORE	33
-> > +#define S32G_SCMI_CLK_USDHC_MOD32K	34
->=20
-> Why do these numbers not start at 0?
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix-6.8-rc1
 
-Ah, because these are the SCMI IDs directly. If these are numbers that
-are in the TRM, just use the numbers directly - there's no need to
-create bindings for that.
+The topmost commit is fb3c007fde80d9d3b4207943e74c150c9116cead
 
+----------------------------------------------------------------
 
+sound fixes for 6.8-rc1
 
---qUpbBLVWlyJG4s+w
-Content-Type: application/pgp-signature; name="signature.asc"
+A collection of small fixes:
+- Lots of ASoC SOF fixes and related reworks
+- ASoC TAS codec fixes including DT updates
+- A few HD-audio quirks and regression fixes
+- Minor fixes for aloop, oxygen and scarlett2 mixer
 
------BEGIN PGP SIGNATURE-----
+----------------------------------------------------------------
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaqf1AAKCRB4tDGHoIJi
-0h34AP9TixDJ6YFjXe+5v6wxO9hgfYPUCpxkmHGGn4w/+waszQD/Wzjy8sz++98r
-s+IkN7/DXavVamW4wy7pnsZC9nJwFgI=
-=XE+5
------END PGP SIGNATURE-----
+Amadeusz Sławiński (1):
+      ALSA: hda: Properly setup HDMI stream
 
---qUpbBLVWlyJG4s+w--
+AngeloGioacchino Del Regno (2):
+      ASoC: mediatek: mt8195: Remove afe-dai component and rework codec link
+      ASoC: mediatek: sof-common: Add NULL check for normal_link string
+
+Bin Li (1):
+      ALSA: hda/realtek: Enable headset mic on Lenovo M70 Gen5
+
+Chancel Liu (1):
+      ALSA: aloop: Introduce a function to get if access is interleaved mode
+
+ChiYuan Huang (2):
+      ASoC: codecs: rtq9128: Fix PM_RUNTIME usage
+      ASoC: codecs: rtq9128: Fix TDM enable and DAI format control flow
+
+Heiner Kallweit (1):
+      ALSA: hda: generic: Remove obsolete call to ledtrig_audio_get
+
+Kai Vehmanen (1):
+      ASoC: SOF: ipc4-loader: remove the CPC check warnings
+
+Kuninori Morimoto (1):
+      ASoC: audio-graph-card2: fix index check on graph_parse_node_multi_nm()
+
+Nícolas F. R. A. Prado (1):
+      ASoC: mediatek: mt8192: Check existence of dai_name before dereferencing
+
+Peter Ujfalusi (3):
+      ASoC: Intel: bxt_da7219_max98357a: Fix kernel ops due to COMP_DUMMY change
+      ASoC: Intel: bxt_rt298: Fix kernel ops due to COMP_DUMMY change
+      ASoC: SOF: icp3-dtrace: Revert "Fix wrong kfree() usage"
+
+Rander Wang (1):
+      ASoC: SOF: ipc4-pcm: remove log message for LLP
+
+Shenghao Ding (4):
+      ASoC: dt-bindings: move tas2563 from tas2562.yaml to tas2781.yaml
+      ASoC: tas2562: move tas2563 from tas2562 driver to tas2781 driver
+      ASoC: tas2781: Add tas2563 into header file for DSP mode
+      ASoC: tas2781: Add tas2563 into driver
+
+Takashi Iwai (2):
+      ALSA: oxygen: Fix right channel of capture volume mixer
+      ALSA: scarlett2: Fix yet more -Wformat-truncation warnings
+
+Yo-Jung Lin (1):
+      ALSA: hda/realtek: Enable mute/micmute LEDs and limit mic boost on HP ZBook
+
+Çağhan Demir (1):
+      ALSA: hda/relatek: Enable Mute LED on HP Laptop 15s-fq2xxx
+
+---
+ .../devicetree/bindings/sound/tas2562.yaml         |  2 -
+ .../devicetree/bindings/sound/ti,tas2781.yaml      | 78 +++++++++++++++++-----
+ include/sound/tas2781.h                            |  9 +--
+ sound/drivers/aloop.c                              | 23 +++++--
+ sound/pci/hda/hda_generic.c                        |  1 -
+ sound/pci/hda/patch_hdmi.c                         |  6 ++
+ sound/pci/hda/patch_realtek.c                      |  3 +
+ sound/pci/oxygen/oxygen_mixer.c                    |  2 +-
+ sound/soc/codecs/rtq9128.c                         | 73 +++++++++++---------
+ sound/soc/codecs/tas2562.c                         |  3 -
+ sound/soc/codecs/tas2781-i2c.c                     |  8 ++-
+ sound/soc/generic/audio-graph-card2.c              |  2 +-
+ sound/soc/intel/boards/bxt_da7219_max98357a.c      |  6 ++
+ sound/soc/intel/boards/bxt_rt298.c                 |  3 +-
+ sound/soc/mediatek/common/mtk-dsp-sof-common.c     |  2 +-
+ .../mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c  |  3 +-
+ sound/soc/mediatek/mt8195/mt8195-afe-pcm.c         | 33 +--------
+ sound/soc/mediatek/mt8195/mt8195-mt6359.c          | 41 ++++++++----
+ sound/soc/sof/ipc3-dtrace.c                        |  3 +-
+ sound/soc/sof/ipc4-loader.c                        | 11 ++-
+ sound/soc/sof/ipc4-pcm.c                           |  4 +-
+ sound/usb/mixer_scarlett2.c                        | 42 ++++++------
+ 22 files changed, 209 insertions(+), 149 deletions(-)
+
 
