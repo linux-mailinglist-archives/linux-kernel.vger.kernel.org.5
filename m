@@ -1,99 +1,135 @@
-Return-Path: <linux-kernel+bounces-30866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 729D2832546
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 459C1832554
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 08:58:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A53EC1C236CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:49:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 694841C219BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 07:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F59DDAB;
-	Fri, 19 Jan 2024 07:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD512DDA1;
+	Fri, 19 Jan 2024 07:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cXgcLfOf"
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hf3GLcw1"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36339208A4
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 07:48:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25CBD51D;
+	Fri, 19 Jan 2024 07:58:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705650533; cv=none; b=n/QCxMGR/6AVO8JPhQphLdg4UTJmccpGMNk/czbebfXEnWDVL495D/lfZE4CUE9KMVL2E+h0sito9KGcH8PlD7oY+yU+YBCJT3WFZQvyK3+e8mxQhJ4miQJmADXY1WIK0L4gkazuoc+BVAg6StDPJKVq6EfFtN7B6Ce43m2VGMg=
+	t=1705651107; cv=none; b=BrO3kYXz/Q81gRGoCnzkqaSjh2hVQLBbGd5Xyf7oGYE2l36JLC/8Tn2OpJ5UzLnFMfpkQ3UbcQ8r+XjOJcHEpBG/2wCqOdKl/hEt/AYkRsVhZUM0kTcRRtkeeAabfYkb8CT3ZC0/HYAtWhG1GSTKhW/jSlC5cuZW3CKjXmKVnOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705650533; c=relaxed/simple;
-	bh=437pMwh05AkF7Ma5zrf7H0IpeVqtl0ZFLHqUs70QIko=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J86utiogRjRTqATye9g2BugKZoSDacU8KnHxQjtQobDy1jkFXL4bZ6clcw6nLEHoCvL5jT7S+j0jFr3ywDigW1ZGqk66MJXRBD7NV7xBJ/9Jmxp8PU9w+1T+X60lhWCqhVJgOFSLRTcjpoNQUJKC6qSZW1BvVzMZpqbLm1WQEJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cXgcLfOf; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-428405a0205so122251cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jan 2024 23:48:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705650531; x=1706255331; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=szrFUm5mWLk1fmanvNXQddD8V+/YNa2IQhkuUqvkeaY=;
-        b=cXgcLfOfckJ2/5IWSTFnHIAQ4YxrA5QnxU9Z7QM1cX9/gNnKhUfiMeFFY/EoIIsHeN
-         SQSnE1s89wKEcHxnG6w/aVacR7zQ+qZ9uEdXTXNiX8KMwv2xkaRHnlXBs/zrtP9SoA5w
-         t6tN/jyXAWiQZuslKyDTWhQjLR1NQzl1m7/A2V1cjFhuC0QTeKjQT+WT8bUb8cPNvdTC
-         rWcqKu7CjaKWyLMNV1mDINE5aqpbIy9nb9CQ5WZll5NkxrDBr+7pNtY+A+30XLktVk6z
-         YsJjdHq1ApB0d/EndEG4I7EkF8Y6jbLo32Qbef3liRECRmuwZ3nVL7ib8tnc86DA0iVF
-         zv+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705650531; x=1706255331;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=szrFUm5mWLk1fmanvNXQddD8V+/YNa2IQhkuUqvkeaY=;
-        b=s7r1NqusQvCH9oIlutP2JG09rp2yZkvoCXPLPHLWWxIwGMqhTOb3iHIZUt+kYQAoB+
-         zlwRgj+Xl5bIdxUc4cjDR2Lf3ej6IZY3gv6p27gdvP6dXJ+obxHCn5uRhWNgYLacBzo8
-         KXDTQ4QtcexCDaEWtbCrRwmwQgPmpfehUoH6BqIwnvgYRjnaBz2PJJUeI1cP9oRfGEI1
-         xoHSrY23bkoWRR1Ru13YpDzB7Fsk/rYUJEn9KeTfzCo9B3tzCuT+Tml+b3YQUN35PLlA
-         b48vzcfjKPsuSxlxEn7SjXFhGOAV5pXMf2lLU7DxoRYhzD+YvoBnZ1QOHrT+gFFpD3Q3
-         Ktig==
-X-Gm-Message-State: AOJu0Ywjeii64wHWEVRDJKSkePWTqOfVIrkphn1g5IrHix63Rptrbko5
-	/thfMfzlVlknt1UyKVz8PJgJ39qBnSRvZRNG7tp/XzS71WdyjNbeyPhE80OcQib4rPjFzKCv3c/
-	ahdJ1MAfhLaYFzYVa06eC/89y+1ShDUXJcbhP
-X-Google-Smtp-Source: AGHT+IHKnNuhZdSTnx1fM+MjdP5tLVjtVO/zdHuvi0LGAI4iEjeq+iR6ewAk+XMnAGAxgRorcKOsq8q4G3VClE1oC4U=
-X-Received: by 2002:a05:622a:5104:b0:429:c9cc:daa5 with SMTP id
- ev4-20020a05622a510400b00429c9ccdaa5mr160861qtb.23.1705650531018; Thu, 18 Jan
- 2024 23:48:51 -0800 (PST)
+	s=arc-20240116; t=1705651107; c=relaxed/simple;
+	bh=XfipyyIGq/R+X/vdsGIcSi03h8tMqB6s/DePqcWm/0I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sIDdSQEVfefp6KH1m2+AZTKRAS5IT1Il9IwoJJUtSXrl3Ee78inQCs2IVYBRRoscrD5t1hZaQm1ezmSPD0Hd6Gp7e+MVavylYnGk34mZq4jxiW1LbVHyh5Inc20lTzbuePx76+D0TUGLfK+f9qKhDFVm9JLAMTmkTtv2cHRL5e4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Hf3GLcw1; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705651105; x=1737187105;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XfipyyIGq/R+X/vdsGIcSi03h8tMqB6s/DePqcWm/0I=;
+  b=Hf3GLcw1sUKlh4umzq904PUtC24yhbDeHJFAhmDfAkPkWRDNtw+RhJKu
+   gwlhsQ6UzHhd7IZWZDgZKBVIHpK2QifK/W+vjXVuGlsERTAIHF6WFe7FY
+   l94jGfa7j3Wel87qj3UI4hD+KTSJaKhPaLYFyRzuptGI/X1EAnL2N9zN7
+   5ZbDd2FgzxZ2chSEhymEI5xY0GBOfOmsmtL8JHIE1pXsji39MvHGswWLc
+   Q8M1j4nNR0thKBOZ0ThAjGkaHwadcXTjtpXTNA6GRplLc51sVwxVTiilZ
+   7mEb0czrxqnkbVIRwxkB9eiuQvym+IMSkShb9gFzW/Mkm9hcR80nNJ8zM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="391126288"
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="391126288"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2024 23:58:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="904083616"
+X-IronPort-AV: E=Sophos;i="6.05,204,1701158400"; 
+   d="scan'208";a="904083616"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Jan 2024 23:58:22 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id F1E0035E; Fri, 19 Jan 2024 09:48:29 +0200 (EET)
+Date: Fri, 19 Jan 2024 09:48:29 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Esther Shimanovich <eshimanovich@chromium.org>,
+	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Rajat Jain <rajatja@google.com>
+Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
+Message-ID: <20240119074829.GD2543524@black.fi.intel.com>
+References: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
+ <20231228132517.GA12586@wunner.de>
+ <20231228133949.GG2543524@black.fi.intel.com>
+ <CA+Y6NJFQq39WSSwHwm37ZQV8_rwX+6k5r+0uUs_d1+UyGGLqUw@mail.gmail.com>
+ <20240118060002.GV2543524@black.fi.intel.com>
+ <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
+ <ZalOCPrVA52wyFfv@google.com>
+ <20240119053756.GC2543524@black.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118091146.3101-1-quic_uaggarwa@quicinc.com> <20240119004551.234tvv5w2fhhsqrv@synopsys.com>
-In-Reply-To: <20240119004551.234tvv5w2fhhsqrv@synopsys.com>
-From: Kuen-Han Tsai <khtsai@google.com>
-Date: Fri, 19 Jan 2024 15:48:24 +0800
-Message-ID: <CAKzKK0r8RUqgXy1o5dndU21KuTKtyZ5rn5Fb9sZqTPZqAjT_9A@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: dwc3: gadget: Fix NULL pointer dereference in dwc3_gadget_suspend
-To: Uttkarsh Aggarwal <quic_uaggarwa@quicinc.com>
-Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, 
-	"stable@vger.kernel.org" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240119053756.GC2543524@black.fi.intel.com>
 
-Hi,
+On Fri, Jan 19, 2024 at 07:37:56AM +0200, Mika Westerberg wrote:
+> On Thu, Jan 18, 2024 at 08:12:56AM -0800, Dmitry Torokhov wrote:
+> > On Thu, Jan 18, 2024 at 09:47:07AM -0600, Mario Limonciello wrote:
+> > > On 1/18/2024 00:00, Mika Westerberg wrote:
+> > > > > Before my patch, you see that the JHL6540 controller is inaccurately
+> > > > > labeled “removable”:
+> > > > > $ udevadm info -a -p /sys/bus/pci/devices/0000:05:00.0 | grep -e
+> > > > > {removable} -e {device} -e {vendor} -e looking
+> > > > >    looking at device '/devices/pci0000:00/0000:00:1d.4/0000:05:00.0':
+> > > > >      ATTR{device}=="0x15d3"
+> > > > >      ATTR{removable}=="removable"
+> > > > >      ATTR{vendor}=="0x8086"
+> > > > 
+> > > > This is actually accurate. The Thunderbolt controller is itself
+> > > > hot-removable and that BTW happens to be hot-removed when fwupd applies
+> > > > firmware upgrades to the device.
+> > 
+> > This is quite interesting take. Does fwupd rip the controller out of the
+> > box to update it? By that account your touchpad is also removable as it
+> > may stop functioning when its firmware gets updated.
+> 
+> The Thunderbolt controller is connected to a hotpluggable PCIe root port
+> so it will be dissappear from the userspace so that "removable" in that
+> sense is accurate.
 
->       CPU1:                           CPU2:
->       gadget_unbind_driver            dwc3_suspend_common
->       dw3_gadget_stop                 dwc3_gadget_suspend
->                                       dwc3_disconnect_gadget
->
+There are systems as well where the Thunderbolt (and/or xHCI) controller
+only appears if there is anything plugged to the physical Type-C ports
+and it gets removed pretty soon after the physical device gets
+unplugged. These are also the same Alpine Ridge and Titan Ridge
+controllers that this patch is dealing with.
 
-The typo hasn't been fixed.
+I tried to think about some sort of more generic heuristic how to figure
+out that the controller is actually inside the physical system but there
+is a problem that the same controller can appear on the bus as well, eg.
+you plug in Thunderbolt dock and that one has xHCI controller too. That
+device should definitely be "removable". With the "software CM" systems
+we have a couple of additional hints in the ACPI tables that can be used
+to identify the "tunneled" ports but this does not apply to the older
+systems I'm afraid.
 
-dw3_gadget_stop -> dwc3_gadget_stop
-
-Thanks,
-Kuen-Han
+Now if I understand the reason behind this patch is actually not about
+"removability" that much than about identifying a trusted vs. untrusted
+device and attaching a driver to those. I was under impression that
+there is already a solution to this in ChromeOS kernel. It has an
+allowlist of drivers that are allowed to attach these devices and that
+includes the PCIe port drivers, xhci_hcd and the thunderbolt driver,
+possibly something else too. Is this not working for your case?
 
