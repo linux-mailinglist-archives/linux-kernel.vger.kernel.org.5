@@ -1,63 +1,83 @@
-Return-Path: <linux-kernel+bounces-31221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 947F1832ABE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:48:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8F27832AC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 14:49:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 369E0B246A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:48:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8177B28857F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 13:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F482537EB;
-	Fri, 19 Jan 2024 13:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A7952F8C;
+	Fri, 19 Jan 2024 13:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="B6plm6E5"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="gMbEWgmj"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C929C52F70;
-	Fri, 19 Jan 2024 13:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1485B52F70;
+	Fri, 19 Jan 2024 13:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705672081; cv=none; b=EDNe9ISbFl75DFGoI3dU3zwTnRvZo7RXLcJ7Q8kH4Xl9uInkSOz8GpLc/4mlZ97LTUSsePorXwvRZZ01m7WfudGjy/5SdoxjOxsCB+8UFpkQ3tfstOryOFUb60ZVBMqy15oLkz+ol9UKz7MjKONioXgYsyt89ci27OCqD5j5Llk=
+	t=1705672140; cv=none; b=hB9swjaAVMe4qtx7q7paAdEZdlieHf8dcN7CVvo8wOgX6skvIC/ONClYDFrZRD6uZ7qUtzdZ09489hgIxfJj3LRtFaV8wUM2QWQ4wlY81iiEXvLGCNrYzhn7bj4vNqTonBHXzjF+tIffsGg+vbC/aauAXUSUUdiR7N89a8hLtE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705672081; c=relaxed/simple;
-	bh=zhcvGV8kOfBbv0MXLR/plcj5YNvLUzwmPiQLHiPqLxc=;
+	s=arc-20240116; t=1705672140; c=relaxed/simple;
+	bh=B6tArqyOlxI1H47kNCNJM0kXaH+yQwNZI7lr3yQI7A8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eF7IR3vjHN5V9xJoAQmUm2W8byB7xxnKw0z+yb1SFwOiYf2knRi0x8/S09VADTnyev5fgm5qoeZS8aAaHxFb8FFHfOfpj/ad1rDnFSF7GMwMD7mm+aQfvW050bXT/6YXxvF0/Xyx9m3VCBB1egjgNsgWECGWw/UK9ZZ46FlgDGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=B6plm6E5; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=GucoAa/6UVKHOL0VOQUVOB31wTkV3GnwfxCBx41qa2g=; b=B6plm6E5WlP8bYIr8d7xHzUlgR
-	DR3fg0b/Q5kjY6EGocG+t2kvgDgwkC1zXRIkl1Pt9ExZojWE2fEp0WBXJkrSxXDFsvWA9YTsHS9QK
-	Bb331SpxKTfTJyx8Ccdh/5E6LU9VOsV6RvJ3baIoPCEW660cxcHE5QW7pIHy1AXWGRi8r7FOjLwll
-	C1enRTdmCt0qSVIvk7be7W7AN/5AjUlpSm3Is9c3c6bGmvMrwudHEc+UTwXK0SO0VcNjY0hM7fSTP
-	ii/p4oK3Y+2HeQ3Zu/MAQ1XLEKetbm5QCOstQxH1Ln+81f7fhllPWJBpktLKaM0i2G+jsLN9wbekg
-	pMqaBs1Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rQpDx-000000058Og-3N5Z;
-	Fri, 19 Jan 2024 13:47:57 +0000
-Date: Fri, 19 Jan 2024 13:47:57 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: syzbot <syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com>,
-	wzhmmmmm@gmail.com, johan.hedberg@gmail.com,
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-	luiz.dentz@gmail.com, marcel@holtmann.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] KASAN: null-ptr-deref Read in ida_free (4)
-Message-ID: <Zap9jfjNAb8JHNd4@casper.infradead.org>
-References: <000000000000a135c0060a2260b3@google.com>
- <00000000000037f0f3060af9e763@google.com>
- <CACT4Y+YBGDYbhXvpEAo6iXS--QOSsUxXqkGZxOpUCuCd3CM3aQ@mail.gmail.com>
- <ZakvjMjMYK1HtYGt@casper.infradead.org>
- <CACT4Y+YT-Y=b_oSFNCQgTeh8igSqfYQ40JHGTad9w2+uZ_JvNg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=h+m8a3IkMs2E98ANgayHDTtbPDA9zzdj1ocD8s8L+qyWo7IIiGgTmGtc3i1zLqdX6KuvqdZ8fF/wZGB6rTQNrIerXxXIcj/LmgYuYx1m7R6UPbfFv+6zOCXpGcWlEH+KkOPiDEY+dJxn/by4At++9FFF3jUzm2PI76QZYzNWlzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=gMbEWgmj reason="key not found in DNS"; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d4414ec9c7so5105425ad.0;
+        Fri, 19 Jan 2024 05:48:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705672137; x=1706276937;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=44+0PG1XUq1Z6WTgtSqi90k4/IQaacVFaI25/F2OJSk=;
+        b=Pe8T0wmlnAkY6jdwL7fGgchlbpDdd+c0hYG8XWUSOtsxMtvu7iuUVwqJmCaap5fezz
+         P6PVDa8Rut/qyzuZajQM3GiZ8OVwbYYw5skR/QgEN3Nh+H/ZwuExFWDWCow+dLh4/eU4
+         jo+0jv1tZNSv3hoHURxMP0QpLHXoUj2M8XoXGg6v8Plx/RObaP+MZa3JXIsL2LUAmB+9
+         Fl5VqCCXFLVKm3UOkZtnQW8RrdXbrv4LQ7Nw4t6LBgUV6voJagm/97Q2xFL1OHFJamb5
+         Ntz1NZRdJII3Yd96jT3FEgsCXuT83ABaetNSRyhYk1hufjArYFuOw9MDjvsH0Ouy2DI6
+         Ev2A==
+X-Gm-Message-State: AOJu0Yz/ruC8beNBbjZ/WUR23ctti76zE0Blfff/YrUl5Iup8BEQntQU
+	MPD2yUi94X9fqhlvKvCWJZYDsc/PdsurIyNSMuiM/EOMSECFVTAC
+X-Google-Smtp-Source: AGHT+IEZnmYFzGUAs/4hjDfJ5v4w3mjQG4gnmyhxLexgFOz3I6DEGAPVP6AtfgsgUeL/uz2KmHPZdw==
+X-Received: by 2002:a17:902:d4cc:b0:1d5:e722:1089 with SMTP id o12-20020a170902d4cc00b001d5e7221089mr2886716plg.122.1705672137295;
+        Fri, 19 Jan 2024 05:48:57 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id ke5-20020a170903340500b001d33e6521b9sm3084090plb.14.2024.01.19.05.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 05:48:56 -0800 (PST)
+Date: Fri, 19 Jan 2024 10:49:03 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1705672134;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=44+0PG1XUq1Z6WTgtSqi90k4/IQaacVFaI25/F2OJSk=;
+	b=gMbEWgmjHfcoD6mgwuQzJFkOJmLVtAza2zjo82TzrA/QEUpf1AJh3GwQKxWnsnSgb0Mq5A
+	71tTR3GLtOMJcPTEZf/eItM0mSmHwamS/r5JCXqiobOl7x8sSG4boUxjko8Eq4lZl+LeW/
+	xHrzD9Z62Sd0TbAzhwYCSiUEN1eSlkJsdRJqarwhZEFaeGKa5LVo9fNNZ0tvdLUu3jSMiq
+	iYJTyWhbldg+iI/2Zsd9FLhATouLH2JkBB7wNCpgKrPY+riCiTYoTUrHz0jj/q3ukBVRVN
+	3l1TJPl0RviKGYzzcksIlippWavqWozz3pVt0vO8EXjVE7C8ctZJHW5wu4ZVaQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, 
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, 
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, 
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, 
+	allen.lkml@gmail.com
+Subject: Re: [PATCH 6.7 00/28] 6.7.1-rc1 review
+Message-ID: <obbv2pprfnw2gvgi3lo6stvlmrumwgak5vgmmp7udqvqmgqf3z@ierap4ymxfch>
+References: <20240118104301.249503558@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,74 +86,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+YT-Y=b_oSFNCQgTeh8igSqfYQ40JHGTad9w2+uZ_JvNg@mail.gmail.com>
+In-Reply-To: <20240118104301.249503558@linuxfoundation.org>
 
-On Fri, Jan 19, 2024 at 12:58:21PM +0100, Dmitry Vyukov wrote:
-> On Thu, 18 Jan 2024 at 15:02, Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Thu, Jan 18, 2024 at 11:21:34AM +0100, Dmitry Vyukov wrote:
-> > > On Sat, 25 Nov 2023 at 14:18, syzbot
-> > > <syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com> wrote:
-> > > >
-> > > > syzbot has found a reproducer for the following issue on:
-> > > >
-> > > > HEAD commit:    8c9660f65153 Add linux-next specific files for 20231124
-> > > > git tree:       linux-next
-> > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=1678a3cce80000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ca1e8655505e280
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=51baee846ddab52d5230
-> > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d54c08e80000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160ef1a4e80000
-> > > >
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/345ed4af3a0d/disk-8c9660f6.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/191053c69d57/vmlinux-8c9660f6.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/aac7ee5e55e0/bzImage-8c9660f6.xz
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com
-> > > >
-> > > > Bluetooth: hci0: hardware error 0x00
-> > > > ==================================================================
-> > > > BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-> > > > BUG: KASAN: null-ptr-deref in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
-> > > > BUG: KASAN: null-ptr-deref in ida_free+0x218/0x2e0 lib/idr.c:511
-> > > > Read of size 8 at addr 0000000000000078 by task kworker/u5:1/4455
-> > > >
-> > > > CPU: 1 PID: 4455 Comm: kworker/u5:1 Not tainted 6.7.0-rc2-next-20231124-syzkaller #0
-> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-> > > > Workqueue: hci0 hci_error_reset
-> > > > Call Trace:
-> > > >  <TASK>
-> > > >  __dump_stack lib/dump_stack.c:88 [inline]
-> > > >  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
-> > > >  kasan_report+0xd9/0x110 mm/kasan/report.c:588
-> > > >  check_region_inline mm/kasan/generic.c:182 [inline]
-> > > >  kasan_check_range+0xef/0x190 mm/kasan/generic.c:188
-> > > >  instrument_atomic_read include/linux/instrumented.h:68 [inline]
-> > > >  _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
-> > >
-> > > Wonder if this is fixed with:
-> > >
-> > > ida: Fix crash in ida_free when the bitmap is empty
-> > >
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=af73483f4e8b6f5c68c9aa63257bdd929a9c194a
-> > >
-> > > ?
-> >
-> > Should be.  The backtrace below looks like it's the same bug that got
-> > reported 3-4 weeks ago.
+On 18 Jan 11:48, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.7.1 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On second thought, perhaps the bluetooth stack shouldn't free invalid
-> ids in the first place.
-> It may even take these bogus ids from the wire, which would be pretty bad.
+> Responses should be made by Sat, 20 Jan 2024 10:42:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.1-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Oh, that was my first response.  Unfortunately, the original reporter was
-all "I filed a CVE and this is S3CUR1+Y F!X" so none of that interaction
-is public.
+No noticeable regressions on my system (x86_64).
 
-What my patch will do is convert this NULL pointer dereference into a
-warning (which will still be noticed by syzbot).  The bluetooth stack
-still needs to be fixed to not free invalid IDs.
+Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
+
+Thanks!
 
