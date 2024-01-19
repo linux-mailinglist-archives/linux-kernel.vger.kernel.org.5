@@ -1,36 +1,37 @@
-Return-Path: <linux-kernel+bounces-31370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03559832D5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:40:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A7ED832D5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 17:40:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8950EB22B22
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:40:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AD391F25966
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 16:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2064854FB9;
-	Fri, 19 Jan 2024 16:39:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3533E55766;
+	Fri, 19 Jan 2024 16:39:57 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142654F1FA;
-	Fri, 19 Jan 2024 16:39:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E85155785;
+	Fri, 19 Jan 2024 16:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705682393; cv=none; b=UuWEJTKuwZoUlQ6eYcLuBYFpfO4gLXEj+h0LUadFyS09+lwZ/6eTZX/1tiAwqRHjAmzRc1QCNlZZOnv8uQcgsY6TR/p6YdpxGQnKpDGIPHEDeOPO0RQcEt5XpsJ9jrvMX/qtiiZEZbDnka2lITExJcTQqQmVP7LptrC+KF7GGDI=
+	t=1705682396; cv=none; b=t99A5ywsr6Qo/P8SEzzI1znxozmMDmdOVMAAXB6TDRAMfveTtY7FlAKdmKbBXGVWocnZTKwNUftCMSCZ274RpDHy4UqLYc1U7akrryEFcVAGle6fD5wKTDawzCoR9NYq8VEJOCoyMn14YyiErPdyut07G9pRYdC/yB+3IXxeol0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705682393; c=relaxed/simple;
-	bh=hRwFxaLVM/9prIFMvwSX+LskTGsLe2VRFiqmVSZ/hW0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i9DA8hrPkO6j8sHQ1myn8tAw64qXKwivHbNIEYbnxTcq6sZ+8juyN0540bIEFkSQr7fTHLyPrbstNecRkeTq5i22bXflZ0HdtNBUEDtluD/QbFdXSeLuBxR31ooRWqKw0TBQUzWkSY9hDERJW4p6HnUqPRtfXk1snc4IPvY7oeI=
+	s=arc-20240116; t=1705682396; c=relaxed/simple;
+	bh=lBmSUPtkwtCMjZIkdsZPZkuixbOXHdWTZ6M2mQb6yPM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=JH2oJFuXL4kzx1N/HOuYXjF4+9hA34plqLH2p8aoElIB2z/nJZKeGtVkD1EFrdzTep//iaRwn8EXSQWyIlZqKsAMLhoeZGMKCrg9PG1sOyfJTstBVl/hbmSABhPx3yu9O6yZZdPB8q6znOkybrT/m2XauFy1JIa9WXZimleW2OM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 933021042;
-	Fri, 19 Jan 2024 08:40:35 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC8D311FB;
+	Fri, 19 Jan 2024 08:40:38 -0800 (PST)
 Received: from e126817.. (e126817.cambridge.arm.com [10.2.3.5])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C4CFD3F73F;
-	Fri, 19 Jan 2024 08:39:46 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 168413F73F;
+	Fri, 19 Jan 2024 08:39:49 -0800 (PST)
 From: Ben Gainey <ben.gainey@arm.com>
 To: linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -45,10 +46,12 @@ Cc: peterz@infradead.org,
 	adrian.hunter@intel.com,
 	james.clark@arm.com,
 	Ben Gainey <ben.gainey@arm.com>
-Subject: [PATCH 0/1] Support PERF_SAMPLE_READ with inherit_stat
-Date: Fri, 19 Jan 2024 16:39:23 +0000
-Message-ID: <20240119163924.2801678-1-ben.gainey@arm.com>
+Subject: [PATCH 1/1] perf: Support PERF_SAMPLE_READ with inherit_stat
+Date: Fri, 19 Jan 2024 16:39:24 +0000
+Message-ID: <20240119163924.2801678-2-ben.gainey@arm.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240119163924.2801678-1-ben.gainey@arm.com>
+References: <20240119163924.2801678-1-ben.gainey@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,49 +60,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This change allows events to use PERF_SAMPLE READ with inherit so long 
-as both inherit_stat and PERF_SAMPLE_TID are set.
+This change allows events to use PERF_SAMPLE READ with inherit
+so long as both inherit_stat and PERF_SAMPLE_TID are set.
 
-Currently it is not possible to use PERF_SAMPLE_READ with inherit. This 
-restriction assumes the user is interested in collecting aggregate 
-statistics as per `perf stat`. It prevents a user from collecting 
-per-thread samples using counter groups from a multi-threaded or 
-multi-process application, as with `perf record -e '{....}:S'`. Instead 
-users must use system-wide mode, or forgo the ability to sample counter 
-groups. System-wide mode is often problematic as it requires specific 
-permissions (no CAP_PERFMON / root access), or may lead to capture of 
-significant amounts of extra data from other processes running on the 
-system. 
+In this configuration, and event will be inherited into any
+child processes / threads, allowing convenient profiling of a
+multi-process or multi-threaded application, whilst allowing
+profiling tools to collect per-thread samples, in particular
+of groups of counters.
 
-Perf already supports the ability to collect per-thread counts with 
-`inherit` via the `inherit_stat` flag. This patch changes 
-`perf_event_alloc` relaxing the restriction to combine `inherit` with 
-`PERF_SAMPLE_READ` so that the combination will be allowed so long as 
-`inherit_stat` and `PERF_SAMPLE_TID` are enabled.
-
-In this configuration stream ids (such as may appear in the read_format 
-field of a PERF_RECORD_SAMPLE) are no longer globally unique, rather 
-the pair of (stream id, tid) uniquely identify each event. Tools that 
-rely on this, for example to calculate a delta between samples, would 
-need updating to take this into account. Previously valid event 
-configurations (system-wide, no-inherit and so on) where each stream id 
-is the identifier are unaffected.
-
-This patch has been tested on aarch64 both my manual inspection of the 
-output of `perf script -D` and through a modified version of Arm's 
-commercial profiling tools and the numbers appear to line up as one 
-would expect, but some further validation across other architectures 
-and/or edge cases would be welcome.
-
-This patch was developed and tested on top of v6.7.
-
-
-Ben Gainey (1):
-  perf: Support PERF_SAMPLE_READ with inherit_stat
-
+Signed-off-by: Ben Gainey <ben.gainey@arm.com>
+---
  kernel/events/core.c | 7 +++++--
  1 file changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 9efd0d7775e7c..4b603463d888f 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -11988,10 +11988,13 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+ 	local64_set(&hwc->period_left, hwc->sample_period);
+ 
+ 	/*
+-	 * We currently do not support PERF_SAMPLE_READ on inherited events.
++	 * We do not support PERF_SAMPLE_READ on inherited events unless
++	 * inherit_stat and PERF_SAMPLE_TID are also selected, which allows
++	 * inherited events to collect per-thread samples.
+ 	 * See perf_output_read().
+ 	 */
+-	if (attr->inherit && (attr->sample_type & PERF_SAMPLE_READ))
++	if (attr->inherit && (attr->sample_type & PERF_SAMPLE_READ)
++		&& !(attr->inherit_stat && (attr->sample_type & PERF_SAMPLE_TID)))
+ 		goto err_ns;
+ 
+ 	if (!has_branch_stack(event))
 -- 
 2.43.0
 
