@@ -1,174 +1,155 @@
-Return-Path: <linux-kernel+bounces-30965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-30967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F228326E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:43:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57E748326F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 10:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B9101C221C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:43:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10D49284F44
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jan 2024 09:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D426A3C062;
-	Fri, 19 Jan 2024 09:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6F93C47B;
+	Fri, 19 Jan 2024 09:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XhvwkYrR"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QZjAvf+j"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B36263A5
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 09:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D87625772;
+	Fri, 19 Jan 2024 09:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705657411; cv=none; b=MWB4DC9h8ia1zIvDavzY8+/st0f0VLXW0egyQYVoJwTjuJLD21qUTvicgEApcDlxKbLAZ666MofRbUBIVSWL3LDEDAzaXwhAp+h/KMR8Cl9CvGUMac7yQRjYTIyLCDBUzuWSR7z30LpZXy05WmpMu+v082yyI1RzuvrlD8/G7ck=
+	t=1705657734; cv=none; b=l1Q5R57bmWsbf7GLWNYVqZgbob3HY4fkGYsu2VFFnz8prjJDipqXOva3k1elv/dqRu2a8fxf3IjW4LUzJqvt+oJyzqJ9/ibJJWwQ37lUcP6wkJUdu42xje/c8kF4AoyjAXBTQAKR4MhjTmEbLXfpIhiZpZzgybqt7XhNweNmUd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705657411; c=relaxed/simple;
-	bh=MyrGdixOQh5+O6FNsPkwb0T9MuBcR2dqrxMCHIVf4FI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B5ENXTRepucavSnIfKOymfpRZrkMpR0K7RgxTzzxUaOyWUp2zbuCm9Mu1c03yJCfh275TNOsurUizmPfC36GOPsOgteZgHUpYZmRswV0qJLn4roa2CidHegM+YIKjwS9bYCf8Dt6MGQSLKfl3vWIHER2foOgGqhCardTyxgNde4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XhvwkYrR; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a28bd9ca247so50514066b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 01:43:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705657407; x=1706262207; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O9OhX22hl+mcohFKfAH6L7j9MpKXYgZSlRgX13omB5c=;
-        b=XhvwkYrRv1rIfa9euloU5OA307mjMNKX+OYz+tANigklrWQg0K8ozkOsBOTdWf07GW
-         xy+yfs1u8yqWo7/K5wQC+XZUJmPfne3nqeEHD89rkeNDet50AlxPjBfHMrcjNIb0EPKI
-         ONAq1YRJXNEHvc5jGS4y2OY1F5J5XYpr9KJbthbp0p5blCayAvgwtYsEhe7BN4E/lnG9
-         ZEYVk6aXEWAq+hHt6UxsAuh03/fYCwAKinkbicZNkJuvd+XD9dM0reN7GrrB96b5NTzj
-         v+VmjkZwf4d29/qJ++U5jeypbqyOqNAex5O5sLB54sSdhCnitKq98CEjIjs4A//NitUu
-         RCmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705657407; x=1706262207;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O9OhX22hl+mcohFKfAH6L7j9MpKXYgZSlRgX13omB5c=;
-        b=hraH9KStmWdwzsUdK2ufRrwxHuq5KgnuDDuhsO4ChbLCl9VXCEcwGU7n6uwApJRkUT
-         yRIVowt1qf56zmI70HclL4EYGNLhWnWc0qQPCb3jcTBzXxBK5KcMIW3iOA+91JfT4Y6o
-         yhX3hctWw+32kamP1ZfMoPmALTIcBLIIcqLEj9UHWw8BsNVkFBEhEScb4VYWa96Rdfl6
-         rickBn0/nWtEWzp/1DN9bBQXKN12IVqlTX2NR8b3ehonxj+xYzJy1PlTSCcBhwfn1ABB
-         cxxA9Wjdf3qKXNUcvwQuEE13SrhZBLmydfX+izqZKESpwT0Ln+Y6l4gpa+OimLsCApji
-         jfCw==
-X-Gm-Message-State: AOJu0YyXztvKtJBYPfObJSWVkHVcNNChh4BnlPoTeMFj7BRY86Fxfokr
-	XR3qvehUEoW/p7LcJaGX1KBl4G2j/7idOImvXxqvRpIk1L7RI7mtiaO2yNIhT1c=
-X-Google-Smtp-Source: AGHT+IG2R86stteJmE6OKBrwM4yRlJjCaIoxlvGGlyTrsOLeAz965gWmbFA8ZpAMLP0yP+DiJ7Tinw==
-X-Received: by 2002:a17:907:9871:b0:a27:a258:f340 with SMTP id ko17-20020a170907987100b00a27a258f340mr1241557ejc.65.1705657407623;
-        Fri, 19 Jan 2024 01:43:27 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id wb3-20020a170907d50300b00a2cc6398083sm9055432ejc.10.2024.01.19.01.43.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jan 2024 01:43:27 -0800 (PST)
-Message-ID: <842d36c7-9452-431f-95c4-ff114484d201@linaro.org>
-Date: Fri, 19 Jan 2024 09:43:25 +0000
+	s=arc-20240116; t=1705657734; c=relaxed/simple;
+	bh=qHqcD1XjlCcztEDcxsidNeeRlVSfFXwOAuGVi+/+A+o=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=k0KklHxkIM6lmUnTGcpiaZijujBK5vz7pgo5XRNT6fOw0AQKVGy4CMyave3XfevxddNIKNHOBny5yVQGsGLXG2B6MuCdx+hwBdU404dlMjKmz5Vk2NV2Ik7JeAenTUGy5XA5QGKPa7otunEYGZtDNgyWbEz98xqDPcWbP9UqX5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QZjAvf+j; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40J8gi3f021328;
+	Fri, 19 Jan 2024 09:48:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=GezNeHHYLAtAJNmL7Tj8YSoACy84Zqr//JdvOEMbiDI=; b=QZ
+	jAvf+jlL1wlwp8xin5I1smDsJF5enh9LzHO0dePRQMvVxWZhlvVgUR1soxtAzOI/
+	Yb3WdiBKz6ejr8zeixWyGsUSjymdrTdX7PV7fGQiEwgFkdPvbvywRF+uTKjb9doJ
+	9bF+7w71VfCSXIl74P+qGV7XCVqoy1de5aopbs4O4/zzuTqx9Gk0ErnEsFVVWXsm
+	eiH5vHaXB5VRvbiYS6a212BDOUr/6jfNkCwqlydm8wyauHdv50yWAkkTdB2rLuhU
+	SpA5ZO2heqVVTtCLY4lltF6QPGBD6KDfYrhvOP4iCSjgFcL6rkpQ7ECwnz+bGbT9
+	QDhrONVDXxu0GXHVxbBQ==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vqn89g6f5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 09:48:48 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40J9ml3G028367
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 09:48:47 GMT
+Received: from hu-uaggarwa-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 19 Jan 2024 01:48:45 -0800
+From: Uttkarsh Aggarwal <quic_uaggarwa@quicinc.com>
+To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        "Uttkarsh
+ Aggarwal" <quic_uaggarwa@quicinc.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v3] usb: dwc3: gadget: Fix NULL pointer dereference in dwc3_gadget_suspend
+Date: Fri, 19 Jan 2024 15:18:25 +0530
+Message-ID: <20240119094825.26530-1-quic_uaggarwa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 17/18] tty: serial: samsung: shrink port feature flags to
- u8
-Content-Language: en-US
-To: Jiri Slaby <jirislaby@kernel.org>,
- Sam Protsenko <semen.protsenko@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
- gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, andre.draszik@linaro.org,
- peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-References: <20240110102102.61587-1-tudor.ambarus@linaro.org>
- <20240110102102.61587-18-tudor.ambarus@linaro.org>
- <CAPLW+4k091328krLB_KdHyobG-pR--Rt5WaN6c1ccpgdV8ry7Q@mail.gmail.com>
- <76e1dc42-cabe-4925-8aa1-c8f733fb36a2@linaro.org>
- <8f3f85d0-866e-4e5a-8177-05c26c08b278@kernel.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <8f3f85d0-866e-4e5a-8177-05c26c08b278@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: kmENgVCmMH71Onh7VV_fAZtBusRnAycv
+X-Proofpoint-ORIG-GUID: kmENgVCmMH71Onh7VV_fAZtBusRnAycv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_04,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=900 clxscore=1011
+ suspectscore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 malwarescore=0 impostorscore=0 adultscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401190042
 
+In current scenario if Plug-out and Plug-In performed continuously
+there could be a chance while checking for dwc->gadget_driver in
+dwc3_gadget_suspend, a NULL pointer dereference may occur.
 
+Call Stack:
 
-On 1/19/24 09:07, Jiri Slaby wrote:
+	CPU1:                           CPU2:
+	gadget_unbind_driver            dwc3_suspend_common
+	dwc3_gadget_stop                dwc3_gadget_suspend
+                                        dwc3_disconnect_gadget
 
-Hi, Jiri!
+CPU1 basically clears the variable and CPU2 checks the variable.
+Consider CPU1 is running and right before gadget_driver is cleared
+and in parallel CPU2 executes dwc3_gadget_suspend where it finds
+dwc->gadget_driver which is not NULL and resumes execution and then
+CPU1 completes execution. CPU2 executes dwc3_disconnect_gadget where
+it checks dwc->gadget_driver is already NULL because of which the
+NULL pointer deference occur.
 
-> On 19. 01. 24, 9:56, Tudor Ambarus wrote:
->>
->>
->> On 1/16/24 19:03, Sam Protsenko wrote:
->>> On Wed, Jan 10, 2024 at 4:25 AM Tudor Ambarus
->>> <tudor.ambarus@linaro.org> wrote:
->>>>
->>>> There's a single flag defined as of now. Shrink the feature flags to u8
->>>> and aim for a better memory footprint for ``struct s3c24xx_uart_info``.
->>>>
->>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->>>> ---
->>>>   drivers/tty/serial/samsung_tty.c | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/tty/serial/samsung_tty.c
->>>> b/drivers/tty/serial/samsung_tty.c
->>>> index 5df2bcebf9fb..598d9fe7a492 100644
->>>> --- a/drivers/tty/serial/samsung_tty.c
->>>> +++ b/drivers/tty/serial/samsung_tty.c
->>>> @@ -90,7 +90,7 @@ struct s3c24xx_uart_info {
->>>>
->>>>          /* uart port features */
->>>>
->>>> -       unsigned int            has_divslot:1;
->>>> +       u8                      has_divslot:1;
->>>
->>> But that's already a bit field. Why does it matter which type it is?
->>>
->>
->> If using unsigned int the bitfied is combined with the previous u8
->> fields, whereas if using u8 the bitfield will be independently defined.
->> So no benefit in terms of memory footprint, it's just a cosmetic change
->> to align the bitfield with the previous u8 fields. Allowing u32 for just
->> a bit can be misleading as one would ask itself where are the other
->> bits. Between a u32 bitfield and a bool a u8 bitfield seems like a good
->> compromise.
-> 
-> Why? What's wrong with bool? bitfields have terrible semantics wrt
-> atomic writes for example.
-> 
+Cc: <stable@vger.kernel.org>
+Fixes: 9772b47a4c29 ("usb: dwc3: gadget: Fix suspend/resume during device mode")
+Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Signed-off-by: Uttkarsh Aggarwal <quic_uaggarwa@quicinc.com>
+---
 
-Bool occupies a byte and if more port features will ever be added we'll
-occupy more bytes. Here's how the structure will look like with a bool:
+changes in v3:
+Corrected fixes tag and typo mistake in commit message dw3_gadget_stop -> dwc3_gadget_stop.
 
-struct s3c24xx_uart_info {
-	const char  *              name;                 /*     0     8 */
-	enum s3c24xx_port_type     type;                 /*     8     4 */
-	unsigned int               port_type;            /*    12     4 */
-	unsigned int               fifosize;             /*    16     4 */
-	u32                        rx_fifomask;          /*    20     4 */
-	u32                        rx_fifoshift;         /*    24     4 */
-	u32                        rx_fifofull;          /*    28     4 */
-	u32                        tx_fifomask;          /*    32     4 */
-	u32                        tx_fifoshift;         /*    36     4 */
-	u32                        tx_fifofull;          /*    40     4 */
-	u32                        clksel_mask;          /*    44     4 */
-	u32                        clksel_shift;         /*    48     4 */
-	u32                        ucon_mask;            /*    52     4 */
-	u8                         def_clk_sel;          /*    56     1 */
-	u8                         num_clks;             /*    57     1 */
-	u8                         iotype;               /*    58     1 */
-	bool                       has_divslot;          /*    59     1 */
+Link to v2:
+https://lore.kernel.org/linux-usb/CAKzKK0r8RUqgXy1o5dndU21KuTKtyZ5rn5Fb9sZqTPZqAjT_9A@mail.gmail.com/T/#t
 
-	/* size: 64, cachelines: 1, members: 17 */
-	/* padding: 4 */
-};
+Changes in v2:
+Added cc and fixes tag missing in v1.
 
-What's your preference?
-Thanks,
-ta
+Link to v1:
+https://lore.kernel.org/linux-usb/20240110095532.4776-1-quic_uaggarwa@quicinc.com/T/#u
+
+ drivers/usb/dwc3/gadget.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 019368f8e9c4..564976b3e2b9 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -4709,15 +4709,13 @@ int dwc3_gadget_suspend(struct dwc3 *dwc)
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	if (!dwc->gadget_driver)
+-		return 0;
+-
+ 	ret = dwc3_gadget_soft_disconnect(dwc);
+ 	if (ret)
+ 		goto err;
+ 
+ 	spin_lock_irqsave(&dwc->lock, flags);
+-	dwc3_disconnect_gadget(dwc);
++	if (dwc->gadget_driver)
++		dwc3_disconnect_gadget(dwc);
+ 	spin_unlock_irqrestore(&dwc->lock, flags);
+ 
+ 	return 0;
+-- 
+2.17.1
+
 
