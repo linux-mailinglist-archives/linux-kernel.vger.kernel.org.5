@@ -1,166 +1,370 @@
-Return-Path: <linux-kernel+bounces-31745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96FD0833348
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 09:45:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78806833356
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 10:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79DAAB231AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 08:45:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5ABE1F220BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 09:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5665346A8;
-	Sat, 20 Jan 2024 08:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jwTJDo9U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0380D5382;
+	Sat, 20 Jan 2024 09:13:53 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7133D7F;
-	Sat, 20 Jan 2024 08:45:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1B523CB;
+	Sat, 20 Jan 2024 09:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705740325; cv=none; b=nSmUePOuCXIzJyG8UXKmn3ROKuaJnPr+P5DmSz86M3n8FZxKsuWN+JPk2GIlt15KIrsmqR3eiHKwErH2KaHv3MzyNflzUnBtn22kzK6mccKCiXd5fHRa1xzKEsr8744YQ3Oud408euhdRIhLdvKO4vZqXGuSMwBFmiQJ5WqBNU0=
+	t=1705742032; cv=none; b=rfqRc1AddVovy/2p6ZC19z98Pur1L9/OyuVmY3ktzgnwxwqKEOwHMcF9Wl+bQpoTRkU8FWGaiJFiwkvNrGgUvfOEYXjV4zx5nubUZ3G5ZRgThfBujEbDKGygoEgRz/OMzUZ1v1uFgbPPVX/ucCvSAK+t2OfZXi/CGB7WddVIZcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705740325; c=relaxed/simple;
-	bh=a1DPUX1cmvhpZrjctxn5ECPNE3NiEQ76qsFCiU+2mGg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Z9aFn6zShcd4NfTcK+XtChSmxBa+Ojqfu7DYtWIMT9itj8qXa8qHj/mzKGsYXUz8IF+ouDyAIQZNdngLdvVY/2bbRRxP9HPwM02z3c9pK1pZT42s0a1PM+IG6DnBq/VacCANKyYrpZ5if+/IXLCRCK2y+7UW3yFnAW3E0+1P9P8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jwTJDo9U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F051EC433C7;
-	Sat, 20 Jan 2024 08:45:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705740325;
-	bh=a1DPUX1cmvhpZrjctxn5ECPNE3NiEQ76qsFCiU+2mGg=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=jwTJDo9UY2tJCPoVoo/tdIHgO65sMPVzuwMHYERjh575UroXUF7WUqOuueuQDGjsF
-	 8ohGWzKRWej9TyQ8v0sR+O2JoYNMBs4D4L7KxCfdjdAEHYlgdy1pveZhf0vT49QK0V
-	 JCstGOqY+VSKRSPTRv8kddGiMiNm8zNOs1B+lRWwMQxoWNDpNi1jI/3ckmRq6KTXWB
-	 NzSJ8H+sJJ/qaGlyAnoeQRu4hHXxx2u4S8d1s3O5s0gvUConMKWMYbO2a506pyZTII
-	 qAYoLQjddkfbT1nbueDp97lOPL2S3q20CFEhYckm0p6rylrbPd8yfo+EjoXfN6Zdf/
-	 O96NLVdmLgkng==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D419EC47258;
-	Sat, 20 Jan 2024 08:45:24 +0000 (UTC)
-From: Rudraksha Gupta via B4 Relay <devnull+guptarud.gmail.com@kernel.org>
-Date: Sat, 20 Jan 2024 00:45:23 -0800
-Subject: [PATCH] ARM: dts: qcom: msm8960: expressatt: Add gpio-keys
+	s=arc-20240116; t=1705742032; c=relaxed/simple;
+	bh=l4ACI2p0E5F/LmiRKNLKYIhB1/u4GSpXCd8yjN+OBxs=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e+CeD4bdzclz1xvizlDUUxToYd67Bu1NkyOig6fDPkImvbTHRYqzRbdV2xoZiwsvbtsPulDCgTZky/4ETIGAsKnEm+dtGBLGIqms994f49BTMmzbK2rMRYXx3s+b4wGSr1C9VlFIBntAPx4tQR8kIWvNTK6Gp1k2vesddUuH1Lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TH9jS4wqNzvTvy;
+	Sat, 20 Jan 2024 17:12:12 +0800 (CST)
+Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
+	by mail.maildlp.com (Postfix) with ESMTPS id 85CF3140557;
+	Sat, 20 Jan 2024 17:13:40 +0800 (CST)
+Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
+ (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Sat, 20 Jan
+ 2024 17:13:39 +0800
+Date: Sat, 20 Jan 2024 17:13:28 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+CC: Changbin Du <changbin.du@huawei.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
+	<jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Ian Rogers
+	<irogers@google.com>, <linux-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, Andi Kleen <ak@linux.intel.com>, Thomas
+ Richter <tmricht@linux.ibm.com>, <changbin.du@gmail.com>, Peter Zijlstra
+	<peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Ingo
+ Molnar <mingo@redhat.com>
+Subject: Re: [PATCH v4 2/5] perf: util: use capstone disasm engine to show
+ assembly instructions
+Message-ID: <20240120091328.wmk27ktpps2ky5cl@M910t>
+References: <20240119104856.3617986-1-changbin.du@huawei.com>
+ <20240119104856.3617986-3-changbin.du@huawei.com>
+ <e3463435-b879-4d72-9cab-c4bf951b9084@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240120-expressatt-gpio-keys-v1-1-4da7e37440b1@gmail.com>
-X-B4-Tracking: v=1; b=H4sIACKIq2UC/x2MWwqAIBAAryL73YLak64SfYRttQQWrkQR3j3pc
- 2BmXhAKTAK9eiHQxcKHz2AKBW6b/ErIc2aw2lbaWI10n4FEphhxPfnAnR5B17i608vcmpIgp1l
- Z+P63w5jSBwpOfn9mAAAA
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Rudraksha Gupta <guptarud@gmail.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705740324; l=2136;
- i=guptarud@gmail.com; s=20240120; h=from:subject:message-id;
- bh=T+B5s38HvE5wvfTx+enY1qi1SBEpEVBTYASUCLQBqwU=;
- b=5UsFmbupML19LrX80fkEWOLZlRS9ScDP+D8wWQsRQdb5oi45aWI0aU0X8kJPWiAA2zsSUDwt8
- JJWsV1VM4FBCOU6k8dRT6Emu/ieTQkcfTXdNy7HOfdTvgUn6zzY5diW
-X-Developer-Key: i=guptarud@gmail.com; a=ed25519;
- pk=RGmug3GRHS4XYTXDcT2VrlTGXlEF2gY4L9/swGIU1ko=
-X-Endpoint-Received:
- by B4 Relay for guptarud@gmail.com/20240120 with auth_id=114
-X-Original-From: Rudraksha Gupta <guptarud@gmail.com>
-Reply-To: <guptarud@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <e3463435-b879-4d72-9cab-c4bf951b9084@intel.com>
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
 
-From: Rudraksha Gupta <guptarud@gmail.com>
+On Fri, Jan 19, 2024 at 08:39:19PM +0200, Adrian Hunter wrote:
+> On 19/01/24 12:48, Changbin Du wrote:
+> > Currently, the instructions of samples are shown as raw hex strings
+> > which are hard to read. x86 has a special option '--xed' to disassemble
+> > the hex string via intel XED tool.
+> > 
+> > Here we use capstone as our disassembler engine to give more friendly
+> > instructions. We select libcapstone because capstone can provide more
+> > insn details. Perf will fallback to raw instructions if libcapstone is
+> > not available.
+> > 
+> > The advantages compared to XED tool:
+> >  * Support arm, arm64, x86-32, x86_64 (more could be supported),
+> >    xed only for x86_64.
+> >  * Immediate address operands are shown as symbol+offs.
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> > ---
+> >  tools/perf/builtin-script.c  |   8 +--
+> >  tools/perf/util/Build        |   1 +
+> >  tools/perf/util/print_insn.c | 122 +++++++++++++++++++++++++++++++++++
+> >  tools/perf/util/print_insn.h |  14 ++++
+> >  4 files changed, 140 insertions(+), 5 deletions(-)
+> >  create mode 100644 tools/perf/util/print_insn.c
+> >  create mode 100644 tools/perf/util/print_insn.h
+> > 
+> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> > index b1f57401ff23..4817a37f16e2 100644
+> > --- a/tools/perf/builtin-script.c
+> > +++ b/tools/perf/builtin-script.c
+> > @@ -34,6 +34,7 @@
+> >  #include "util/event.h"
+> >  #include "ui/ui.h"
+> >  #include "print_binary.h"
+> > +#include "print_insn.h"
+> >  #include "archinsn.h"
+> >  #include <linux/bitmap.h>
+> >  #include <linux/kernel.h>
+> > @@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
+> >  	if (PRINT_FIELD(INSNLEN))
+> >  		printed += fprintf(fp, " ilen: %d", sample->insn_len);
+> >  	if (PRINT_FIELD(INSN) && sample->insn_len) {
+> > -		int i;
+> > -
+> > -		printed += fprintf(fp, " insn:");
+> > -		for (i = 0; i < sample->insn_len; i++)
+> > -			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
+> > +		printed += fprintf(fp, " insn: ");
+> 
+> "insn:" seems unnecessary.  Also xed prints 2 tabs, which
+> helps line up the output.  Perhaps 1 tab and 2 spaces is
+> enough.
+>
+The "insn:" is used by xed. So it can not be removed if we preserve xed
+function.
 
-Adds volume up, volume down, and home keys to expressatt
+For 'insn' field, I keep the original output format.
+For 'disasm' field, we can line up the output. I changed to 2 tabs and removed
+'insn:'.
 
-Signed-off-by: Rudraksha Gupta <guptarud@gmail.com>
----
-Adds volume up, volume down, and home keys to expressatt.
+> > +		printed += sample__fprintf_insn_raw(sample, fp);
+> >  	}
+> >  	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
+> >  		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
+> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> > index 988473bf907a..c33aab53d8dd 100644
+> > --- a/tools/perf/util/Build
+> > +++ b/tools/perf/util/Build
+> > @@ -32,6 +32,7 @@ perf-y += perf_regs.o
+> >  perf-y += perf-regs-arch/
+> >  perf-y += path.o
+> >  perf-y += print_binary.o
+> > +perf-y += print_insn.o
+> >  perf-y += rlimit.o
+> >  perf-y += argv_split.o
+> >  perf-y += rbtree.o
+> > diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
+> > new file mode 100644
+> > index 000000000000..162be4856f79
+> > --- /dev/null
+> > +++ b/tools/perf/util/print_insn.c
+> > @@ -0,0 +1,122 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Instruction binary disassembler based on capstone.
+> > + *
+> > + * Author(s): Changbin Du <changbin.du@huawei.com>
+> > + */
+> > +#include "print_insn.h"
+> 
+> Please put with the other non-system includes
+>
+done.
 
-Applies on top of 5c903b859aaced384c0cd01d515f3e43a115fd9e
----
- .../dts/qcom/qcom-msm8960-samsung-expressatt.dts   | 40 ++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+> > +#include <stdlib.h>
+> > +#include <string.h>
+> > +#include <stdbool.h>
+> > +#include "util/debug.h"
+> 
+> util/ not needed
+>
+done.
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8960-samsung-expressatt.dts b/arch/arm/boot/dts/qcom/qcom-msm8960-samsung-expressatt.dts
-index 1a5116336ff0..47e0e26ad9f0 100644
---- a/arch/arm/boot/dts/qcom/qcom-msm8960-samsung-expressatt.dts
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8960-samsung-expressatt.dts
-@@ -4,6 +4,9 @@
- 
- #include "qcom-msm8960.dtsi"
- #include "pm8921.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-+#include <dt-bindings/input/gpio-keys.h>
- 
- / {
- 	model = "Samsung Galaxy Express SGH-I437";
-@@ -19,6 +22,36 @@ aliases {
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&gpio_keys_pin_a>;
-+
-+		key-home {
-+			label = "Home";
-+			gpios = <&msmgpio 40 GPIO_ACTIVE_LOW>;
-+			debounce-interval = <5>;
-+			linux,code = <KEY_HOMEPAGE>;
-+			wakeup-event-action = <EV_ACT_ASSERTED>;
-+			wakeup-source;
-+		};
-+
-+		key-volume-up {
-+			label = "Volume Up";
-+			gpios = <&msmgpio 50 GPIO_ACTIVE_LOW>;
-+			debounce-interval = <5>;
-+			linux,code = <KEY_VOLUMEUP>;
-+		};
-+
-+		key-volume-down {
-+			label = "Volume Down";
-+			gpios = <&msmgpio 81 GPIO_ACTIVE_LOW>;
-+			debounce-interval = <5>;
-+			linux,code = <KEY_VOLUMEDOWN>;
-+		};
-+	};
- };
- 
- &gsbi5 {
-@@ -83,6 +116,13 @@ clk-pins {
- 			bias-disable;
- 		};
- 	};
-+
-+	gpio_keys_pin_a: gpio-keys-active-state {
-+		pins = "gpio40", "gpio50", "gpio81";
-+		function = "gpio";
-+		drive-strength = <8>;
-+		bias-disable;
-+	};
- };
- 
- &pm8921 {
+> > +#include "util/symbol.h"
+> 
+> util/ not needed
+>
+done.
 
----
-base-commit: 9d64bf433c53cab2f48a3fff7a1f2a696bc5229a
-change-id: 20240120-expressatt-gpio-keys-c6c580fd713e
+> > +#include "machine.h"
+> > +
+> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
+> > +{
+> > +	int printed = 0;
+> > +
+> > +	for (int i = 0; i < sample->insn_len; i++)
+> > +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
+> 
+> Why change this to put a space on the end?
+>
+Removed the tailing space.
 
-Best regards,
+> > +	return printed;
+> > +}
+> > +
+> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +#include <capstone/capstone.h>
+> > +
+> > +static int capstone_init(struct machine *machine, csh *cs_handle)
+> > +{
+> > +	cs_arch arch;
+> > +	cs_mode mode;
+> > +
+> > +	if (machine__is(machine, "x86_64")) {
+> > +		arch = CS_ARCH_X86;
+> > +		mode = CS_MODE_64;
+> > +	} else if (machine__normalized_is(machine, "x86")) {
+> > +		arch = CS_ARCH_X86;
+> > +		mode = CS_MODE_32;
+> > +	} else if (machine__normalized_is(machine, "arm64")) {
+> > +		arch = CS_ARCH_ARM64;
+> > +		mode = CS_MODE_ARM;
+> > +	} else if (machine__normalized_is(machine, "arm")) {
+> > +		arch = CS_ARCH_ARM;
+> > +		mode = CS_MODE_ARM + CS_MODE_V8;
+> > +	} else if (machine__normalized_is(machine, "s390")) {
+> > +		arch = CS_ARCH_SYSZ;
+> > +		mode = CS_MODE_BIG_ENDIAN;
+> > +	} else {
+> > +		return -1;
+> > +	}
+> > +
+> > +	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
+> > +		pr_warning_once("cs_open failed\n");
+> > +		return -1;
+> > +	}
+> > +
+> > +	cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
+> 
+> That's only needed for x86 isn't it
+>
+Moved into below branch.
+
+> > +	if (machine__normalized_is(machine, "x86"))
+> > +		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
+> 
+> Why? Could use a comment.
+> 
+		/*
+		 * Resolving address oprands to symbols is implemented
+		 * on x86 by investigating instruction details.
+		 */
+
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
+> > +			     cs_insn *insn, FILE *fp)
+> > +{
+> > +	struct addr_location al;
+> > +	size_t printed = 0;
+> > +
+> > +	if (insn->detail && insn->detail->x86.op_count == 1) {
+> > +		cs_x86_op *op = &insn->detail->x86.operands[0];
+> > +
+> > +		addr_location__init(&al);
+> 
+> Missing addr_location__exit()
+> 
+Fixed.
+
+> > +
+> > +		if (op->type == X86_OP_IMM &&
+> > +		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
+> > +			printed += fprintf(fp, "%s ", insn[0].mnemonic);
+> > +			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
+> > +			return printed;
+> > +		}
+> > +	}
+> > +
+> > +	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
+> > +	return printed;
+> > +}
+> > +
+> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
+> > +			    struct machine *machine, FILE *fp)
+> > +{
+> > +	static csh cs_handle;
+> 
+> Why static?
+>
+Removed. See below.
+
+> > +	cs_insn *insn;
+> > +	size_t count;
+> > +	size_t printed = 0;
+> > +	int ret;
+> > +
+> > +	ret = capstone_init(machine, &cs_handle);
+> 
+> Does this really need to be done every time?
+> 
+Only need to init once exactly. The problem is I cannot find a appropriate
+place to do the initiation.
+
+I tried to initiate on first call but we still need a global mutex to be
+initiated.
+
+So finally I fallback to initiate every time. The redundant initiation is
+acceptable per my test.
+
+> > +	if (ret < 0) {
+> > +		/* fallback */
+> > +		return sample__fprintf_insn_raw(sample, fp);
+> > +	}
+> > +
+> > +	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
+> > +			  sample->ip, 1, &insn);
+> > +	if (count > 0) {
+> > +		if (machine__normalized_is(machine, "x86"))
+> > +			printed += print_insn_x86(sample, thread, &insn[0], fp);
+> > +		else
+> > +			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
+> > +		cs_free(insn, count);
+> > +	} else {
+> > +		printed += fprintf(fp, "illegal instruction");
+> > +	}
+> > +
+> > +	cs_close(&cs_handle);
+> > +	return printed;
+> > +}
+> > +#else
+> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread __maybe_unused,
+> > +			    struct machine *machine __maybe_unused, FILE *fp)
+> > +{
+> > +	return sample__fprintf_insn_raw(sample, fp);
+> > +}
+> > +#endif
+> > diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
+> > new file mode 100644
+> > index 000000000000..af8fa5d01fb7
+> > --- /dev/null
+> > +++ b/tools/perf/util/print_insn.h
+> > @@ -0,0 +1,14 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef PERF_PRINT_ISNS_H
+> 
+> Here and elsewhere
+> 
+> ISNS -> INSN
+> 
+fixed.
+
+> > +#define PERF_PRINT_ISNS_H
+> > +
+> > +#include <stddef.h>
+> > +#include <stdio.h>
+> > +#include "event.h"
+> > +#include "util/thread.h"
+> 
+> Instead of including event.h and thread.h, just forward declare:
+> 
+> struct perf_sample;
+> struct thread;
+> struct machine;
+>
+Why forward declaration?
+
+> > +
+> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
+> > +			    struct machine *machine, FILE *fp);
+> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
+> > +
+> > +#endif /* PERF_PRINT_ISNS_H */
+> 
+
 -- 
-Rudraksha Gupta <guptarud@gmail.com>
-
+Cheers,
+Changbin Du
 
