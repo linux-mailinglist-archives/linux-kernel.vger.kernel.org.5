@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-31902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77773833633
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:10:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39A87833635
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:11:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18B7F1F21B3D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:10:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E48C1282C0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F5E1548F;
-	Sat, 20 Jan 2024 21:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A31156C5;
+	Sat, 20 Jan 2024 21:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q3JVAx1d"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ncG4baLy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81EB414F85;
-	Sat, 20 Jan 2024 21:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82D2154AE;
+	Sat, 20 Jan 2024 21:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705784990; cv=none; b=c0p7UrWgn0v9N98kDZaac3LnNRl3qrNyeuafK8hHOwaNtAhAiH6AjSauDRxlI+sapxyO0E8MIvA/B3664t7JdTaCEasp/7S/shjl3w3X2GTCPK3Qfja6gIJURejoF+lGvT18nBei7SaBpXVB2/mmul0hMc1/FvpU9tjL3bTeMl8=
+	t=1705784992; cv=none; b=PsCyCnus+Hu7j5fo9bO2V4v7igc1Ph5pBii7a6XTP5vDJVvVWvKovTfMXsR/zZnJqcdXtHpV5X60DRxOMdNjz0El/24R2dcxvLHOtqNPtHLwUgsUf5iA21m5L0OZ0c93DyUX8kcB7AN9EuuJFRd8XUVQbv/od+DNffeX+q41Rb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705784990; c=relaxed/simple;
-	bh=4qgLOd9+lbH3Kbu84onZLztZgw4zMTuXW5joJu6tgV4=;
+	s=arc-20240116; t=1705784992; c=relaxed/simple;
+	bh=Rp5EUqsK/zub74udKI73W3OYZb8MEebPJJcJBbBEBqQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=bgY4opEr881FYFl1Iif/ByeGmSXePy5MCYzEzTexq4jJ8oAL1bdmyc4yoT9Q7KPjT5sffxUQ5YsJgvLUtarah2WCI7UGtBNX4ayPiodAk7Iz6G0JqFnCyowf4jq5WhI73BbJbRKDYF9d5ggFphMPqc0Bs+0rNkHcachMZlpDyWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q3JVAx1d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1C3EAC43390;
-	Sat, 20 Jan 2024 21:09:50 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=ExmyYjVKWeaXPOEALthsus/LJQb161E8TEVDrFfyjwD/IFSBEjNEBNfrHETNaMH+6kN8sHiYcbN1DWZykvxEdvNm5XkyppruzjSsaWF0bAMemuPolDhLrjkdM5AUHP/kMyeSR8lBQfPS2xkaKuhXAah6jBiIJQPEhgNm/tBjvGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ncG4baLy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3A8E3C43390;
+	Sat, 20 Jan 2024 21:09:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705784990;
-	bh=4qgLOd9+lbH3Kbu84onZLztZgw4zMTuXW5joJu6tgV4=;
+	s=k20201202; t=1705784992;
+	bh=Rp5EUqsK/zub74udKI73W3OYZb8MEebPJJcJBbBEBqQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Q3JVAx1dr7/DmuB+/yI2CdLuXSn2QhR/aAQsiCxHJoxNdYGJDZykTy8bfepNkBaWC
-	 fyrri6bdqzeQ7JkDfdfxcHZdfEFlwFairsw2Flzvuou8t1LDne0Yjsb/jFYXKrD8qd
-	 fRFsB5YSc58MfEM4BTbPV6zDBq1wttUmrNXmKceU3SaOdzA6o5mx33c4k6D8hy4v6T
-	 0R8TUFHsfTiG7CU9C8W7DrYp8C0gFCMRH9ZdRCeZheSYagCxzekxmi+RhRgGQ3RlQG
-	 cWbmoTuSY2dzUSm68ko6YI4j9IdFiX07VyiaaPj4fvfc3IRzZVSYqatO4Z8qlJDRBO
-	 7UMRKyo0B4Msw==
+	b=ncG4baLylKP+ss4CNXGIlS1a6uVEW90QY99EMGmgpt4V0oF/pEjWEZ3npunq0fl94
+	 6PShq8XUgcdedvfzb/WzPJFqk0JtjmvcUPRYOzk0iNlMKX8YNyCcm+ak7wj9Cs0cQ0
+	 nYdvbHahPXimCBXcoo/hRh31unWRJgPFFXQANqeWvuw1gUb1052zmkYbcwW8lH3JNy
+	 UferhTZ58Bmo4LtIjuw6GElQDqC1PevMsZITHmk7jIkMPCrGudcbfNOBvQcvgU4wUP
+	 b2WVtO6lkZuexwY2RgZZyq4EE1kc6h0RZ0V/MEDn2mCQykMUkd9XAAR3j8w4O3c98P
+	 WXy4hDcSfDJug==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 09F97D8C970;
-	Sat, 20 Jan 2024 21:09:50 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2A88ED8C96C;
+	Sat, 20 Jan 2024 21:09:52 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,48 +51,46 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 0/2] riscv: Enable percpu page first chunk allocator
+Subject: Re: [PATCH v6 0/5] RISC-V SBI debug console extension support
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <170578499003.24348.2691177844867923598.git-patchwork-notify@kernel.org>
-Date: Sat, 20 Jan 2024 21:09:50 +0000
-References: <20231212213457.132605-1-alexghiti@rivosinc.com>
-In-Reply-To: <20231212213457.132605-1-alexghiti@rivosinc.com>
-To: Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, ryabinin.a.a@gmail.com,
- glider@google.com, andreyknvl@gmail.com, dvyukov@google.com,
- vincenzo.frascino@arm.com, arnd@arndb.de, dennis@kernel.org, tj@kernel.org,
- cl@linux.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
- kasan-dev@googlegroups.com, linux-arch@vger.kernel.org, linux-mm@kvack.org
+ <170578499217.24348.10595488871949157918.git-patchwork-notify@kernel.org>
+Date: Sat, 20 Jan 2024 21:09:52 +0000
+References: <20240119113449.492152-1-apatel@ventanamicro.com>
+In-Reply-To: <20240119113449.492152-1-apatel@ventanamicro.com>
+To: Anup Patel <apatel@ventanamicro.com>
+Cc: linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+ paul.walmsley@sifive.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
+ conor@kernel.org, ajones@ventanamicro.com, linux-serial@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 
 Hello:
 
 This series was applied to riscv/linux.git (fixes)
-by Dennis Zhou <dennis@kernel.org>:
+by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Tue, 12 Dec 2023 22:34:55 +0100 you wrote:
-> While working with pcpu variables, I noticed that riscv did not support
-> first chunk allocation in the vmalloc area which may be needed as a fallback
-> in case of a sparse NUMA configuration.
+On Fri, 19 Jan 2024 17:04:44 +0530 you wrote:
+> The SBI v2.0 specification is now frozen. The SBI v2.0 specification defines
+> SBI debug console (DBCN) extension which replaces the legacy SBI v0.1
+> functions sbi_console_putchar() and sbi_console_getchar().
+> (Refer v2.0-rc5 at https://github.com/riscv-non-isa/riscv-sbi-doc/releases)
 > 
-> patch 1 starts by introducing a new function flush_cache_vmap_early() which
-> is needed since a new vmalloc mapping is established and directly accessed:
-> on riscv, this would likely fail in case of a reordered access or if the
-> uarch caches invalid entries in TLB.
-> Note that most architectures do not include asm-generic/cacheflush.h so to
-> avoid build failures, this patch implements the new function on each of
-> those architectures. For all architectures except riscv, this new function
-> is implemented as a no-op to keep the existing behaviour but it likely
-> needs another implementation.
+> This series adds support for SBI debug console (DBCN) extension in
+> Linux RISC-V.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,1/2] mm: Introduce flush_cache_vmap_early()
-    https://git.kernel.org/riscv/c/7a92fc8b4d20
-  - [v2,2/2] riscv: Enable pcpu page first chunk allocator
-    https://git.kernel.org/riscv/c/6b9f29b81b15
+  - [v6,1/5] RISC-V: Add stubs for sbi_console_putchar/getchar()
+    https://git.kernel.org/riscv/c/f503b167b660
+  - [v6,2/5] RISC-V: Add SBI debug console helper routines
+    (no matching commit)
+  - [v6,3/5] tty/serial: Add RISC-V SBI debug console based earlycon
+    https://git.kernel.org/riscv/c/c77bf3607a0f
+  - [v6,4/5] tty: Add SBI debug console support to HVC SBI driver
+    (no matching commit)
+  - [v6,5/5] RISC-V: Enable SBI based earlycon support
+    https://git.kernel.org/riscv/c/50942ad6ddb5
 
 You are awesome, thank you!
 -- 
