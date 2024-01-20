@@ -1,72 +1,38 @@
-Return-Path: <linux-kernel+bounces-31813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F05988334FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:10:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF87B833508
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 026A7B226C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 14:09:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8956D1F22333
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 14:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD381095C;
-	Sat, 20 Jan 2024 14:09:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TowZHYVC"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28BAFC0C;
+	Sat, 20 Jan 2024 14:34:21 +0000 (UTC)
+Received: from mail-m17223.xmail.ntesmail.com (mail-m17223.xmail.ntesmail.com [45.195.17.223])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B346A10785;
-	Sat, 20 Jan 2024 14:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744A3101FB;
+	Sat, 20 Jan 2024 14:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.195.17.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705759786; cv=none; b=Kh+1HCZwtqkkDPI8ygHApoavXiXixcr0mFsLB5cduFQWMImZ3KNoFSnOe0BvwQbHlNJEi9ZtvATvci+pGUefwKetZ500Cln8981VHx3T0QQGrxZqfEzWRTLoMi0Ywkj8TIYN1laS7MUMCVrawhQgIHFK+fQOiIUpRSWV5gHfEkg=
+	t=1705761261; cv=none; b=mB5QVslfzWuLBySYRWbF0sFRyZH8wjBjRgPG7Omrp5wODuUCE2yrxOWSpSplgUeRI/Agk0Xl+/VD0/U+SwLEs0MlGwkeEStcRatTFH9ZgpAlvNkkLH2VG9np6oj0Ss7x+/vK4whu6x8zQC36my/KuqZL1Of7MEW2d61ycW5DcjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705759786; c=relaxed/simple;
-	bh=cof9HA1gs5d67ii3dH1JN87iOJ2ccqcZQ33y3xLHpJw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=T4KFo9ufa7A9tdVbmHk0acDf2+B4LsMC7oCJS3zZ0ENypViNvircFEtDgFIxJhV5fcfUvbO8J0cNgKCfUidl32VzIYqsDHhOCPfIZOXa9VOXLrLB6jTmv1/EsdJZbFKkLKEL+S27BVvjjn7e+tcnQHQBJypP4jfoKTWcRjh+AlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TowZHYVC; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6dbce74f917so260578b3a.0;
-        Sat, 20 Jan 2024 06:09:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705759784; x=1706364584; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DuB2zY/sIBCZIR6AGER+yOmIgXzfGEjeeHajPPcZAEQ=;
-        b=TowZHYVCJO5OkuxOxvt3eb3F15yRVW35xVMXAXvvYK089imwnGD9/oHjfZWx1Bx0fz
-         fQebEidXNxVXCeh9TbsOCN1q25DmfSzV1cPUo1WDOjTlq2AXeYLUMVKd5kHhfM+XsSZt
-         xsq25U6A4W8ie+BQVDVY3wSnuQzN2Y4ph3W61QZTGK5OvqB3vhKUquEgdi9ut/P0uvjk
-         EvumOxrJNosBKajLOk0L28xIb+dKEDmXniqJU1hk0aD0/QkvsReu5lr68n/xkgv0vGzK
-         WMDUN46H6/C2i6lCgoGBvwKwgthzvQbtTnBzYeqqVfYXR+123KYlc4LB17iR4Ig+2jb1
-         L36Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705759784; x=1706364584;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DuB2zY/sIBCZIR6AGER+yOmIgXzfGEjeeHajPPcZAEQ=;
-        b=QAtj6X6VKV78EjJfYJ06BLE9taqrIsepWhpV7SUpKceymNKrjUqZJwa0I4KBIblSnD
-         k2lIzpT/dQPlFkR+pd+hZPYo2U3jDooewg/UYHcYnioPxXbcCkCe3sPLlzSfg25EE4Kg
-         4XrVv9e0vw6p2AacAp9sjPEHa8ix8KX++6IzSHyf60k5m5nK2Jwp/mugfgq7Hf0ntFoD
-         gFL6rB+qVW1Yn10pMpBFI5Pi9FfMHqV+Kpy71OR0KDRZPKPqRk3gjP565ZyShCo7Cxh/
-         vHGFszNGl7PCtRcdzyDQdBV25+h/FfIPZzM5ZxJjx/okvoVCzGwMxyJv/ArgAPR7ivcL
-         aKMQ==
-X-Gm-Message-State: AOJu0Ywr42TaRtAo5ju8lMqNLZ1G2s+x0XcBMEU7lvv6vDbW1tdDiZId
-	6Bvb4Etq9SABO0OWQRiovrKxkeVGnxomJBLTMJVfreOt7UrC7v44
-X-Google-Smtp-Source: AGHT+IFLFjtGlXPL8Rmq+bW+Hpwap+Wq/0srn/1Hn6rHnGXSIvPI9whoZ4Y9N8nn+zaiAVF7GsutcA==
-X-Received: by 2002:a05:6a00:390d:b0:6d9:3d15:d506 with SMTP id fh13-20020a056a00390d00b006d93d15d506mr693067pfb.53.1705759783987;
-        Sat, 20 Jan 2024 06:09:43 -0800 (PST)
-Received: from ?IPV6:2406:7400:94:dd16:106d:864:6ca4:72b7? ([2406:7400:94:dd16:106d:864:6ca4:72b7])
-        by smtp.gmail.com with ESMTPSA id m6-20020a62f206000000b006dbd1678512sm991139pfh.162.2024.01.20.06.09.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Jan 2024 06:09:43 -0800 (PST)
-Message-ID: <df87e88a-adf6-4ba1-ba80-baccde2ecc28@gmail.com>
-Date: Sat, 20 Jan 2024 19:39:40 +0530
+	s=arc-20240116; t=1705761261; c=relaxed/simple;
+	bh=4URthSY15sK7lJQCcSoPDUQBFNGS3hbY/fKmxox0XI4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fHyF/p+dhpwQV1Y/8z9VXf0WdUv/Vfz40i6FWFVWPRXD2MQIGlHUdVK+WEUNQrAZ5g54SqcjVucDyY/aYezc5K125YjLms65uJTDpWlG6xivU7pdHin2v4wh6XnvRW9bgURqOTGqBJSXFOsAeakqMa4WR2y2j7EqaatVDV0WV70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=link.tyut.edu.cn; spf=pass smtp.mailfrom=link.tyut.edu.cn; arc=none smtp.client-ip=45.195.17.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=link.tyut.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=link.tyut.edu.cn
+Received: from [IPV6:2409:8a0c:267:1bc0:8491:d680:3103:8d17] (unknown [IPV6:2409:8a0c:267:1bc0:8491:d680:3103:8d17])
+	by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 2914A800084;
+	Sat, 20 Jan 2024 22:24:43 +0800 (CST)
+Message-ID: <a567932c-d878-44e5-836f-90fa15999ba6@link.tyut.edu.cn>
+Date: Sat, 20 Jan 2024 22:24:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,52 +40,88 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iouring:added boundary value check for io_uring_group
- systl
-Content-Language: en-US
-To: Jens Axboe <axboe@kernel.dk>, corbet@lwn.net, asml.silence@gmail.com,
- ribalda@chromium.org, rostedt@goodmis.org, bhe@redhat.com,
- akpm@linux-foundation.org, matteorizzo@google.com, ardb@kernel.org,
- alexghiti@rivosinc.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-References: <20240115124925.1735-1-subramanya.swamy.linux@gmail.com>
- <71ba9456-45a7-4042-8716-ccd68cc7329f@kernel.dk>
-From: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
-In-Reply-To: <71ba9456-45a7-4042-8716-ccd68cc7329f@kernel.dk>
+Subject: Re: [PATCH] docs/zh_CN/power: Use kcalloc() instead of kzalloc()
+To: Erick Archer <erick.archer@gmx.com>, Alex Shi <alexs@kernel.org>,
+ Yanteng Si <siyanteng@loongson.cn>, Jonathan Corbet <corbet@lwn.net>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <20240120122204.4287-1-erick.archer@gmx.com>
+From: Hu Haowen <2023002089@link.tyut.edu.cn>
+In-Reply-To: <20240120122204.4287-1-erick.archer@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCTBpKVkNCQx0eTx4dQklKSVUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUlPS0JBQxpLGEFJTUxBShkYS0FDT0JKQR9NQ0tBSEpLSEFDH0pMWVdZFhoPEhUdFF
+	lBWU9LSFVKSktISkNVSktLVUtZBg++
+X-HM-Tid: 0a8d274275c5b03akuuu2914a800084
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PSI6Fgw4NjweEAoeEk8OGRws
+	NDpPCgNVSlVKTEtOTE1LTUNPS0lDVTMWGhIXVUlLSUhLS0lLQ0I7FxIVEFUPAg4PVR4fDlUYFUVZ
+	V1kSC1lBWUlPS0JBQxpLGEFJTUxBShkYS0FDT0JKQR9NQ0tBSEpLSEFDH0pMWVdZCAFZQU9LSEo3
+	Bg++
 
-Hi Jens,
 
-            Thank you for reviewing the patch.
-
-On 17/01/24 03:02, Jens Axboe wrote:
-> On 1/15/24 5:49 AM, Subramanya Swamy wrote:
->> diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
->> index 09b6d860deba..0ed91b69643d 100644
->> --- a/io_uring/io_uring.c
->> +++ b/io_uring/io_uring.c
->> @@ -146,7 +146,9 @@ static void io_queue_sqe(struct io_kiocb *req);
->>   struct kmem_cache *req_cachep;
->>   
->>   static int __read_mostly sysctl_io_uring_disabled;
->> -static int __read_mostly sysctl_io_uring_group = -1;
->> +static unsigned int __read_mostly sysctl_io_uring_group;
->> +static unsigned int min_gid;
->> +static unsigned int max_gid  = 4294967294;  /*4294967294 is the max guid*/
-> As per the compile bot, these need to be under CONFIG_SYSCTL. I'd
-> recommend just moving them a few lines further down to do that.
+在 2024/1/20 20:22, Erick Archer 写道:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 >
-> I think this would be cleaner:
+> So, in the example code use the purpose specific kcalloc() function
+> instead of the argument size * count in the kzalloc() function.
 >
-> static unsigned int max_gid = ((gid_t) ~0U) - 1;
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+> ---
+>   Documentation/translations/zh_CN/power/opp.rst | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> however, as it explains why the value is what it is rather than being
-> some magic constant.
-Will add these changes in v2
+> diff --git a/Documentation/translations/zh_CN/power/opp.rst b/Documentation/translations/zh_CN/power/opp.rst
+> index 8d6e3f6f6202..7470fa2d4c43 100644
+> --- a/Documentation/translations/zh_CN/power/opp.rst
+> +++ b/Documentation/translations/zh_CN/power/opp.rst
+> @@ -274,7 +274,7 @@ dev_pm_opp_get_opp_count
+>   	 {
+>   		/* 做一些事情 */
+>   		num_available = dev_pm_opp_get_opp_count(dev);
+> -		speeds = kzalloc(sizeof(u32) * num_available, GFP_KERNEL);
+> +		speeds = kcalloc(num_available, sizeof(u32), GFP_KERNEL);
 
--- 
-Best Regards
-Subramanya
 
+If the translated version is modified, I think the original file should
+follow as well at Documentation/power/opp.rst line 308:
+
+diff --git a/Documentation/power/opp.rst b/Documentation/power/opp.rst
+index a7c03c470980..dca35018214a 100644
+--- a/Documentation/power/opp.rst
++++ b/Documentation/power/opp.rst
+@@ -305,7 +305,7 @@ dev_pm_opp_get_opp_count
+          {
+                 /* Do things */
+                 num_available = dev_pm_opp_get_opp_count(dev);
+-               speeds = kzalloc(sizeof(u32) * num_available, GFP_KERNEL);
++               speeds = kcalloc(sizeof(u32) * num_available, GFP_KERNEL);
+                 /* populate the table in increasing order */
+                 freq = 0;
+                 while (!IS_ERR(opp = dev_pm_opp_find_freq_ceil(dev, 
+&freq))) {
+
+Thanks,
+Hu Haowen
+
+
+>   		/* 按升序填充表 */
+>   		freq = 0;
+>   		while (!IS_ERR(opp = dev_pm_opp_find_freq_ceil(dev, &freq))) {
+> --
+> 2.25.1
+>
+>
+>
 
