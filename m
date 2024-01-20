@@ -1,152 +1,111 @@
-Return-Path: <linux-kernel+bounces-31867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B43CC8335AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:19:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A6A38335AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:23:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E515283917
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:19:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78D2F283809
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:23:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321E61401C;
-	Sat, 20 Jan 2024 18:19:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m358RrbW"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86E0125CB;
+	Sat, 20 Jan 2024 18:22:54 +0000 (UTC)
+Received: from herc.mirbsd.org (bonn.mirbsd.org [217.91.129.195])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CDB312E6A;
-	Sat, 20 Jan 2024 18:19:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702DC11C85;
+	Sat, 20 Jan 2024 18:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.91.129.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705774774; cv=none; b=CErEvBlM8a9Cg/dc7V5547fVe0vwp0uNO+G6JuO5wWDa+J2oQPmD0+NmnRqalq3X/E+LP/l1QeRnv3xzbAgyYPSsvWZmfl++6KgE2zLz2b7Hi0kZl57mnbRRpZadjTKhYXdIMcJNuk37r7XaPFv2F2nqJt2RDFFRHYo5eaTlKzs=
+	t=1705774974; cv=none; b=Y350K0/a+cym9Ax11qbkijb9QiPnZFz2YRL/v6D/jbC0N5XR6NMp0XQMtdHmlb9maW35eoCrwgvexjd5ZS0HdQ0075PimIM182+QBw4MuSOl6MZ3u36sK5Rhzhxre7CFzK/hXNVB5UhqgsnfzuC7lBvDbrwoXjUijScuHZLERNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705774774; c=relaxed/simple;
-	bh=U3XAi1Ve5Pl2g7OLbKI9EKf33X80ddsBcG06qkgZVZk=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=CxqZtrJAQm4hEdt8Oz6+efwajwOqsCRI0svQ0UpbIGxsbqhrsF75dpNy7+fxi+BON0ysqpGkWRmjDzUQ0ItwP4EUXAYcVi7pSoa34Q3x+igNdbGVQCMmMd4qkrCxUfw9NO7e4lxgKWIshaUsKL7JPUtycvvQf1KT2+c6HF7mybc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m358RrbW; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d9cdd0a5e6so1174018b3a.3;
-        Sat, 20 Jan 2024 10:19:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705774772; x=1706379572; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=whe5Iq2BHDs/3IsPCikOFkd0eNlnX9L6osSee0Rh/bs=;
-        b=m358RrbWM36tT4/WPuUcplNvza2W74GwTBVGZ/nLbaXEWrVNHI4cHj/F1tfLwnTZBn
-         uXaxnNjqS6sLOG8fhZGylZ9RQoO3oWGCCKWGCPdOel7ydJ1ST7U7lz7Ob6ScCOIO8ggt
-         ISjiUwRgkhgu7eThAC1sPs1olMqk6DCLl0KixwgpM+cdcq+M5GuCNy+AbtZzRDe9smn3
-         Yqg+RsPmfyuvKTVm3UZfcDhJbKGY2egEekr2dlQ8zf37d3h5xeX73gZfzBzFUWKjB6LX
-         bSmK1RswG+by/sVSs0Ni9a6LszvV+f6/gYc/2kGDqw3O0FPkgDOyFfgG2kLKm1sHdxA5
-         BJWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705774772; x=1706379572;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=whe5Iq2BHDs/3IsPCikOFkd0eNlnX9L6osSee0Rh/bs=;
-        b=wkkZSFCeRJ0h5T0hq/t+6JF/FUe+G8rxXYjs0WKzodKp4DyK0UpHoShME2ojvrFkHI
-         b1Fc2cvIuldxxrZoyjxyfmcHOUMVFOsDEKdscwrQMlq1Fb8YOlpj68QqtxkR3chtjyxu
-         S7UYQJwyK4QNrgxU95v5RIoIY9c+yDZ04+CUxtaaUfMKCaK7v+lhvEhrsxe+MkmW9M94
-         BeZeIqp55DOxEXsMMYzrFRwQ6PVN3PEajU0rsKTR0PNVgyP+4KVTjINF15SGeDAU6XVs
-         MDEeY/UnS41MHnCawuKukkdmEZIeqeO+sCMLWARmhuKOMp9XC6iDHppZqDTJqBQKtksT
-         hLBQ==
-X-Gm-Message-State: AOJu0YzBT7Ww1wFZZV9JLZAkJF8j37mltbbJuUjp8yzlijMAZMaqI2I1
-	uu2Rfk98sMNl/D+/MutF5Mkx7cVkwnPA1aauX1SWqrtqHDpeAjQu
-X-Google-Smtp-Source: AGHT+IGvLbYDu6RYfC9WnOgM0oratNd5JHV8jcjYGL2ljS++jr9nEJ8CBACsM9EodmnnOwarIjLCYw==
-X-Received: by 2002:a05:6a20:12d5:b0:19a:6166:cb09 with SMTP id v21-20020a056a2012d500b0019a6166cb09mr821672pzg.15.1705774772499;
-        Sat, 20 Jan 2024 10:19:32 -0800 (PST)
-Received: from user.. ([106.51.184.63])
-        by smtp.gmail.com with ESMTPSA id q13-20020a170902c74d00b001d71df4bbf4sm3076504plq.125.2024.01.20.10.19.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jan 2024 10:19:32 -0800 (PST)
-From: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
-To: corbet@lwn.net,
-	jmoyer@redhat.com,
-	axboe@kernel.dk,
-	asml.silence@gmail.com,
-	akpm@linux-foundation.org,
-	bhe@redhat.com,
-	ribalda@chromium.org,
-	rostedt@goodmis.org,
-	subramanya.swamy.linux@gmail.com,
-	sshegde@linux.vnet.ibm.com,
-	alexghiti@rivosinc.com,
-	matteorizzo@google.com,
-	ardb@kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	io-uring@vger.kernel.org
-Subject: [PATCH v3] iouring:added boundary value check for io_uring_group systl
-Date: Sat, 20 Jan 2024 18:19:25 +0000
-Message-Id: <20240120181925.1959-1-subramanya.swamy.linux@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705774974; c=relaxed/simple;
+	bh=BvXvGUMu493sjcMKrhy1G9t1wFaTLlo4v1EURwmupMg=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=tHWVUW3ruduqynsG55JITb0qqbX58J6Osg8CaDiYIDJZJT62bYbYf9o1uVx007wQXgYMJpZp8+GHgDoy+WcpL5mY11YhxIl8zwz6qKiOBGm2nAN7V+iQRuRK2FN1N8wTfXEuLzwf6q7Irw0bxQ2qcd+yzmJbbT+vNK5iipC/QQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; arc=none smtp.client-ip=217.91.129.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
+Received: from herc.mirbsd.org (tg@herc.mirbsd.org [192.168.0.82])
+	by herc.mirbsd.org (8.14.9/8.14.5) with ESMTP id 40KILiPg004999
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+	Sat, 20 Jan 2024 18:21:51 GMT
+Date: Sat, 20 Jan 2024 18:21:43 +0000 (UTC)
+From: Thorsten Glaser <tg@debian.org>
+X-X-Sender: tg@herc.mirbsd.org
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+cc: "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+        x86@kernel.org, rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+        linux-toolchains@vger.kernel.org, jpoimboe@redhat.com,
+        alexei.starovoitov@gmail.com, mhiramat@kernel.org
+Subject: disassemblers (was Re: [PATCH 1/2] x86: Remove dynamic NOP selection)
+In-Reply-To: <Pine.BSM.4.64L.2401201711130.29203@herc.mirbsd.org>
+Message-ID: <Pine.BSM.4.64L.2401201816560.29203@herc.mirbsd.org>
+References: <20210312113253.305040674@infradead.org> <20210312115749.065275711@infradead.org>
+ <Pine.BSM.4.64L.2401200654480.19429@herc.mirbsd.org>
+ <CE53F232-3D2D-4910-94B4-A4304F5990C7@zytor.com>
+ <CAHk-=whtFk2DoO8WhtmsbU9nGXUd8sKShV1Dk71krFLBjPUSeg@mail.gmail.com>
+ <Pine.BSM.4.64L.2401201711130.29203@herc.mirbsd.org>
+Content-Language: de-Zsym-DE-1901-u-em-text-rg-denw-tz-utc, en-Zsym-GB-u-cu-eur-em-text-fw-mon-hc-h23-ms-metric-mu-celsius-rg-denw-tz-utc-va-posix
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-/proc/sys/kernel/io_uring_group takes gid as input
-added boundary value check to accept gid in range of
-0<=gid<=4294967294 & Documentation is updated for same
+Dixi quod=E2=80=A6
 
-Fixes: 76d3ccecfa18 ("io_uring: add a sysctl to disable io_uring system-wide")
+>>Is there some sane tool that just does the sane thing and shows this as
+>
+>The only other disassemblers I know don=E2=80=99t know about ELF objects
+>at all, I=E2=80=99m sorry to say.
 
-Signed-off-by: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
----
- Documentation/admin-guide/sysctl/kernel.rst | 4 +---
- io_uring/io_uring.c                         | 8 ++++++--
- 2 files changed, 7 insertions(+), 5 deletions(-)
+I have searched through my bookmarks and found =E2=80=9CAgner Fog=E2=80=99s=
+ objconv=E2=80=9D
+https://www.agner.org/optimize/#objconv which I had not yet tried as
+it comes with a .exe but apparently, the included GPL source builds
+on GNU/Linux (and BSD and MacOSX) as well.
 
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 6584a1f9bfe3..262d92f51fa5 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -471,9 +471,7 @@ io_uring_group
- 
- When io_uring_disabled is set to 1, a process must either be
- privileged (CAP_SYS_ADMIN) or be in the io_uring_group group in order
--to create an io_uring instance.  If io_uring_group is set to -1 (the
--default), only processes with the CAP_SYS_ADMIN capability may create
--io_uring instances.
-+to create an io_uring instance.
- 
- 
- kexec_load_disabled
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index cd9a137ad6ce..bd6cc0391efa 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -154,9 +154,11 @@ static void io_queue_sqe(struct io_kiocb *req);
- struct kmem_cache *req_cachep;
- 
- static int __read_mostly sysctl_io_uring_disabled;
--static int __read_mostly sysctl_io_uring_group = -1;
-+static unsigned int __read_mostly sysctl_io_uring_group;
- 
- #ifdef CONFIG_SYSCTL
-+static unsigned int max_gid  = ((gid_t) ~0U) - 1; /*4294967294 is the max guid*/
-+
- static struct ctl_table kernel_io_uring_disabled_table[] = {
- 	{
- 		.procname	= "io_uring_disabled",
-@@ -172,7 +174,9 @@ static struct ctl_table kernel_io_uring_disabled_table[] = {
- 		.data		= &sysctl_io_uring_group,
- 		.maxlen		= sizeof(gid_t),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_douintvec_minmax,
-+		.extra1         = SYSCTL_ZERO,
-+		.extra2         = &max_gid,
- 	},
- 	{},
- };
--- 
-2.34.1
+Usage is: ./objconv -fgasm filename.o
 
+This will write filename.asm =E2=9A=A0 into the same directory as the .o fi=
+le,
+surprisingly.
+
+It works for i386 and amd64 but not x32 (aka amd64ilp32) which is
+mis-disassembled as if it were i386. Sample output fragment:
+
+tsv_header:
+        sub     rsp, 8                                  # 00E3 _ 48: 83. EC=
+, 08
+        lea     rdi, [.LC7+rip]                         # 00E7 _ 48: 8D. 3D=
+, 00000000(rel)
+        call    puts@PLT                                # 00EE _ E8, 000000=
+00(PLT r)
+        add     rsp, 8                                  # 00F3 _ 48: 83. C4=
+, 08
+        ret                                             # 00F7 _ C3
+
+Bit irritating is it uses decimal numbers=E2=80=A6
+
+        sub     rsp, 232                                # 0102 _ 48: 81. EC=
+, 000000E8
+
+=E2=80=A6 and the way the input is separated with colon, period and comma,
+but it=E2=80=99s legible enough.
+
+Credits to Peter Cordes for the discovery.
+
+bye,
+//mirabilos
+--=20
+When he found out that the m68k port was in a pretty bad shape, he did
+not, like many before him, shrug and move on; instead, he took it upon
+himself to start compiling things, just so he could compile his shell.
+How's that for dedication. -- Wouter, about my Debian/m68k revival
 
