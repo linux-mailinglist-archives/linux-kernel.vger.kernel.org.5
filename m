@@ -1,144 +1,104 @@
-Return-Path: <linux-kernel+bounces-31741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83E53833338
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 09:19:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A33CE833351
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 10:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64ED1C21395
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 08:19:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F9E2282B17
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 09:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926B453A0;
-	Sat, 20 Jan 2024 08:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90B848F55;
+	Sat, 20 Jan 2024 09:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="tZqtANBS";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="+RjBsCXc"
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.221])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Vly5evUB"
+Received: from terminus.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A263A2108;
-	Sat, 20 Jan 2024 08:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.221
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705738767; cv=pass; b=DQGVw0QZF2lbJ3Rb3LnkvKFkbH9o9sCwO2xHSBJnyFijbOdqC8B/xjU9Ht5SvKyy9JW3pWwDMu2BRqi2nPRw/pdmHkogHI4MReAPbff2m4ERK/8aP8eSVIWODoHYdc/RpVv5R50tcASmsopKuXcC0IwB03GjgiaKaijvEMjQv+o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705738767; c=relaxed/simple;
-	bh=g1DEhiUzUT8hQJuyvX7nFIRBR5dtm4ILy3mBqIcTL5c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tyjfWL7FPkjF2FEK0nLhcaC27MrM0XntSNopBWy2FtzN7+pbZggDqGBW/i+mFPetRmvVvQ+WjwkpnSQgcMQhEjZllfXAGzhEgJKN7hUsf20VDcS108JlB4NcsqyH0Hi6zk3X/hv4TMhVY3FrNEzS1zqxeOsYCtV0AC9X2lSunAw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=tZqtANBS; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=+RjBsCXc; arc=pass smtp.client-ip=81.169.146.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-ARC-Seal: i=1; a=rsa-sha256; t=1705738737; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Wh449kVKll+g3dR60kHtxLxSRNSnk80Av/kxU1m0RSJRL5oHI2iJKv5zfouyCUE0Ti
-    t/ofXZGxL1avQKbCYL6lFBHeAQE+OnJeSxYCMUDhU38HjUxjbVgPs7gjpY/W/fH0xhej
-    rMPdx5obVSV4C6YupxlraKs0sDCCR3F3KPTcfLo0s4gUe6c/zKogMFXrdI+xYquepIrR
-    0lOAz91Ee/AMlEz2Rg6eAi1EKo/Z3/dLjBG7trv6hVo7Xrzs7xiyqOA3E8FDopFzriwf
-    anABZNKKghfZyDWlEmiMP5max3tNBR5JQROXUe0/gcqKKpPSIzuRfLGY84UL29iEMXOn
-    J7sA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1705738737;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=e8DAgnOLVfoyEsrKQQgwAc1q1FFLrMJ1P57T5soyOEw=;
-    b=rWPi8d3+Zd2W+uuXOgHEB9u4PdCZtv5LeFv2aj3gvhapIjIofzTW0mHM0XsDN/HLNq
-    CADPAUK100J2bgRJkUvWsv0K5LBn2STEJ0NKX1bnpMCtBHhHFCUTT8eX94t+/Ct3fqq0
-    AsyTLUgls9sKjKsJsKCHuY2uMVCCmaQBiMOmx0hQB8v1U206qwIKL/n+bJLZGQNpKIxS
-    bglFLc3691DqVq3hFt8f5LF7Y7Q4uPvIC2AqN6vEkNhLDP9mgP6zppVVwqHnvxZstjPI
-    wPiPoB/5Kt1L1+it8pek3S8I51LqsXi+w9rS26lsF3HiZw7s0I+Z+Zjl6Mjlwqsavogi
-    4h2w==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1705738737;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=e8DAgnOLVfoyEsrKQQgwAc1q1FFLrMJ1P57T5soyOEw=;
-    b=tZqtANBSVPwsMYRMq7+bdMleVBrsyXz7J8e4nIp/HVGkAdvdfxHoSnE7vqA87jKC5S
-    fEplQVm+ZMVoLKwIWWL3s9j5V3TCJWbF5XyLopZ9z/au9M8Gx5DwdE15/w1KgbHZao4C
-    quxGfVizri+IotQJXXjbA3HkDHTXNcy9JvWUGtbWOG5vcG7bP6SUBSR1XQ5UAWDSiUjc
-    rWvhOsLOo4UXOzEEjyDWHO88DX0euWd9VjolSduoeBnmdE45InLDDLygWHFHDdhoTXWU
-    9U/rXHRHg9Od5s8LSoIt/KjD5bZc1/CU8MaXm4CaM34z6vcXd2B/CcpMSOV/9Ogte+33
-    eiUQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1705738737;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=e8DAgnOLVfoyEsrKQQgwAc1q1FFLrMJ1P57T5soyOEw=;
-    b=+RjBsCXc0lTpUGPMMYJVkHb0cIWfsBtk+pjmDzMzF7ppirqx53yPW9sr4DTgfmHH1R
-    CkaHr97YfYZWl5fHaYAw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFq0USEbDdAnQ=="
-Received: from [IPV6:2a00:6020:4a8e:5000::90c]
-    by smtp.strato.de (RZmta 49.10.2 AUTH)
-    with ESMTPSA id K7b2c200K8IvbRX
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Sat, 20 Jan 2024 09:18:57 +0100 (CET)
-Message-ID: <c3b29cc0-f352-468d-8030-00ed6de3e319@hartkopp.net>
-Date: Sat, 20 Jan 2024 09:18:50 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F755381;
+	Sat, 20 Jan 2024 09:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705741283; cv=none; b=YdsrMpCN7zTr/2jozwZgR1V+e6W97rr4rq2VRc+Qzer96OkvBakKVmhinLi0EBwj0Rs35FnQonAlYzxjKhkAHaN6Lcov48gvWc0T9dAkqAGnnZyjrWzWwBhVol3yxzgX538xbdojrbQMlQk6A/n1/VdkKRgv3IA60D5fj7R99Lk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705741283; c=relaxed/simple;
+	bh=lPXJNVUz1/fxRSsS978CphntnmhX4z/aYDogC1GW6zw=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=VsJqyr1FHVwQzaJjig2GVZBqBWknbLMHBynYn6QaTH0FiIDjlGmmfTnqLD2p3fVbt/cJMni3gnDNad5bYWuJ8YyIIZkcNI30ssdL9hFDAoFPh0Vc95V5275lqwC7RwFE67+a/l1pol9o0qcz7wW/lKJz4KGwEDmMzadNmPkUQzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Vly5evUB; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 40K8N2VF1422225
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Sat, 20 Jan 2024 00:23:04 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 40K8N2VF1422225
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024011201; t=1705738988;
+	bh=aZJr2zzOCbDOkGwxtzRA09fk3E/DAYeJRrK4E21Gt3c=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=Vly5evUBwlByZI3SYmfdzkHI4CXMNuCX8pyZvJeZzeu7xZt3fYyNMWnX+UAepeZLF
+	 TNecSnOrFb6g/VzC7UpOMHQJ4cNaC0KPjibXjvLi+yTwu2BpxUWmWNlDZhmBgf2SoW
+	 MNgrOtThybINUZ1uFmT3O04FS0vre6trudKUndRuaqSstBzMA0JJpshRaC/SXamuhr
+	 bBo67i6WfCXwqixEvyMbelIhFGSfCS67zQV93NxRsQzAMy2sELFdY4KipUo3Y2/aZt
+	 0vGOP1lkjBHdcEY0+SIgYiU+zhLlyfldE4fhYPXyGxgOyCgL+ENDPmOFh5zVsnTzRD
+	 94gHU8qNWzpsg==
+Date: Sat, 20 Jan 2024 00:22:59 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Thorsten Glaser <tg@debian.org>, Peter Zijlstra <peterz@infradead.org>
+CC: x86@kernel.org, rostedt@goodmis.org, torvalds@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        jpoimboe@redhat.com, alexei.starovoitov@gmail.com, mhiramat@kernel.org
+Subject: Re: [PATCH 1/2] x86: Remove dynamic NOP selection
+User-Agent: K-9 Mail for Android
+In-Reply-To: <Pine.BSM.4.64L.2401200654480.19429@herc.mirbsd.org>
+References: <20210312113253.305040674@infradead.org> <20210312115749.065275711@infradead.org> <Pine.BSM.4.64L.2401200654480.19429@herc.mirbsd.org>
+Message-ID: <CE53F232-3D2D-4910-94B4-A4304F5990C7@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] can: bcm: add recvmsg flags for own, local and remote
- traffic
-To: Nicolas Maier <nicolas.maier.dev@gmail.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <4f433c14-94d5-493d-96b1-8a0180026ad5@gmail.com>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <4f433c14-94d5-493d-96b1-8a0180026ad5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Nicolas,
+On January 19, 2024 10:58:56 PM PST, Thorsten Glaser <tg@debian=2Eorg> wrot=
+e:
+>Peter Zijlstra dixit:
+>
+>>-/* generic versions from gas
+>[=E2=80=A6]
+>>-   3: leal 0x00(%esi),%esi
+>>-   4: leal 0x00(,%esi,1),%esi
+>>-   6: leal 0x00000000(%esi),%esi
+>>-   7: leal 0x00000000(,%esi,1),%esi
+>
+>vs=2E
+>
+>>+ * Generic 32bit nops from GAS:
+>[=E2=80=A6]
+>>+ * 3: leal 0x0(%esi),%esi
+>>+ * 4: leal 0x0(%esi,%eiz,1),%esi
+>>+ * 5: leal %ds:0x0(%esi,%eiz,1),%esi
+>>+ * 6: leal 0x0(%esi),%esi
+>>+ * 7: leal 0x0(%esi,%eiz,1),%esi
+>>+ * 8: leal %ds:0x0(%esi,%eiz,1),%esi
+>
+>I think there=E2=80=99s some mistake introduced=2E The BYTES_* are
+>identical for e=2Eg=2E #7, but %eiz must be wrong, it=E2=80=99s not
+>a register=2E Indeed, gas (on Debian bullseye) does not
+>assemble that either=2E
+>
+>(Awful AT&T syntax aside=E2=80=A6)
+>
+>bye,
+>//mirabilos
 
-On 2024-01-14 15:08, Nicolas Maier wrote:
-> v2:
-> * add 'traffic_flags' parameter to bcm_rx_update_and_send and
->    bcm_rx_cmp_to_index, to put the flags in the can frame after its data
->    has been copied
-
-That looks great now!
-
-> @@ -344,8 +360,16 @@ static void bcm_send_to_user(struct bcm_op *op, struct bcm_msg_head *head,
->   		 * relevant for updates that are generated by the
->   		 * BCM, where nframes is 1
->   		 */
-> -		if (head->nframes == 1)
-> +		if (head->nframes == 1) {
-> +			pflags = bcm_flags(skb);
-> +			*pflags = 0;
-
-This initialization of the msg flags always has to be done.
-
-I've sent a 'v3' patch that also simplifies the sock_skb_cb_check_size() 
-usage:
-
-https://lore.kernel.org/linux-can/20240120081018.2319-1-socketcan@hartkopp.net/
-
-Please check if the changes fit for you.
-
-I also created some user space testing code in my can-tests repo to 
-prove the correct msg flags implementation:
-
-https://github.com/hartkopp/can-tests/commit/67957def0b0035d79000f5baad93f8764ec11fc4
-
-Works fine ;-)
-
-Best regards,
-Oliver
+%eiz was something that binutils used to put in when disassembling certain=
+ redundant encodings with SIB at some point=2E
 
