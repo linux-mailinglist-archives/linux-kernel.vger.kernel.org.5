@@ -1,156 +1,177 @@
-Return-Path: <linux-kernel+bounces-31702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E788332AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 05:00:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44A3D8332B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 05:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65438B22E90
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 04:00:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6764F1C21589
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 04:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4380111E;
-	Sat, 20 Jan 2024 04:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765D11368;
+	Sat, 20 Jan 2024 04:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="kxJB7nm6"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="SH/VYrNp"
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D440920E8
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 04:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDA510FD
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 04:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705723224; cv=none; b=trmTtXDigam5xj1LGNp3Hjdmiu+vuTF084xAO727p2fiHlmFq7VUntjhkQrx8ZwHp4WFRQmO5M4t4u+Xnkotfcz32qoi13NAccFfZzLEXdVhrC/wHT2uXSdiaQfqOCBwm+5jh6nTxuHtDgPp6I2krz1En6aUcs34krnx+3AEqXs=
+	t=1705724009; cv=none; b=exD6Rr0f4QFKTKKFLnTLMR1IZFY1NXlqk5l8GkA1xk0J26D/utA7ceGiUOEdj3Pax5u9eoT5CcPGr6DLSUTQX+k4fybnWOLnp0iA95ZUdjbpUN8cn6Tgg/Ka8KOjxhluu4ohNA7EmdpNs/16iyGdaO2+XoNp86vvIXBahkmWvCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705723224; c=relaxed/simple;
-	bh=FbwnOXhtsKqXJeeZ2OFxb3t8jHZNshQnkJChhyol8zQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DvWpaKmiowmjfjuygtu0jVvhSrav+/cXjldmO3D/m4lz8+c6pk5tGOkPKkUpU+647Yz8VHDcLIZZNLaJCIQqj1SxJ/GOImS1s4WjFdUMPYG8gC//oUIfAtoCf6NgnEc59RqCedFmfIko/ZnLX72Yn+NvYAJTmuiZNX/s7i4joQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=kxJB7nm6; arc=none smtp.client-ip=209.85.166.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7bed9f5d35dso72352239f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 20:00:22 -0800 (PST)
+	s=arc-20240116; t=1705724009; c=relaxed/simple;
+	bh=4rthaKCXAcFjjd70A0veeQ2wIRDRjwsa6JFsOI341uY=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=FFohxwLK5soyGnITM2/J7ZoFAabMi9cEc5GwkLmRHMdTM0vhiJvAXemYggfxFOpukpEa0jebnyYNR35zNzNy1FBXDbc0r/th++fYfOMWRI8q7KIF9c+PnT6xkHwbFpoYfwVu8oI0T3h9m7xjHtWp7LEimer3uT+M311MJqsHuV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=SH/VYrNp; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3606ef221dbso6446135ab.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 20:13:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1705723222; x=1706328022; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xm77cdy8sjLxejMosTN9VvQDmoUNl7t40h/yggndkso=;
-        b=kxJB7nm6lordM5Pd46QyW228UFUgNMdp6/mzvNa5t7WUP5B4lh8q1YqlltfxLgs4Ht
-         iU4ULQXUnAPrzRsaj6rDbR3V5DxzFKPnwbAWh9OpIjA+Vd887G+tGT3aM54hsdOMmP1z
-         Em0/slK5AbYCvdfDs3c6gDO/Ad+u/azNnIw8gBf+H4MY/DypYmx6cAOp+Qx3R9ENzPSm
-         UiT09ZA8sAFF9YMYe7lfQ8us3a2YUL5H7e4B4RHfd7xrOsQKRBQyUaAQgIEicIDTe9tw
-         yCruli6DGCPMAcCewLnZbaxziALz2tb3d0PF1+doSqLn04RslZx3r1inFGU1WUhOZpD1
-         IHTA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705724006; x=1706328806; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xEQfFjGG9xeqy4UfcMEbmKUfJ92yD+DVChzT3CuoIZ8=;
+        b=SH/VYrNp/EpuFcJL54/5cWk5BN0FQkkIgvcw43ijWvvsNCz9r1IL/mr6zl/yeUyi5/
+         xUpaB8xCuwgaVzZrnVSs/EptEPGFx1GYf1WWshLsQRFA+9cD0Ze+ugRXM2bDBh9xydf1
+         Ac9UQHAmH6HrcHDzrjXikHQiw63uEktVdlFp+24alM27xk+cFn4gWqEvNnpRj1UzAdub
+         3Q/0wfoSJUhoWRsl9Xh0Q4apQr34CvAc7YhclMDVfxk6iWNKwbIJDTS1tR9OJgVAR8ML
+         0GbBH66AOyehflXx69l1Cqz68tczNbntKvh0JNz+6Ma6oaQ7BNtiP9K3psn2ul8uDsNN
+         gwHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705723222; x=1706328022;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xm77cdy8sjLxejMosTN9VvQDmoUNl7t40h/yggndkso=;
-        b=kEUnyKQP4IVY58pmwQqbcF2ldcaxQg7yxU0Zg17nu1Qe6UCSOwLRC5xqaLsKCx21xJ
-         vgtoOvz2ewMbsZlr1qIM9+fiND4TlySZq6e0kMEPaijhOy8WwZkmFU0iqj0FDqhHyB+B
-         AkbryJuyPox0t2QhFMRpuSS9EBqx6sVu/60h3teiykSi2D2hWa8JfMpOIokOzeG3Pgln
-         Y1FBHaZ3gDQ97NVgtA4MQ94v+n/DQzZ5UsaSv1G/od5Hb3aSWnJtJKnHCJY0Gc64ng7a
-         nkov2TJdARI5LRKWCkx8YXmO9VqAPQsE9MSJQ4qCaDK+olrMHCiXbjJUqnCulpBYo0UY
-         JwLQ==
-X-Gm-Message-State: AOJu0Yy5CGn9LkijUUsECDYM461lrghKORKcX6crQfl6hys5e2N4CdZL
-	x9uM70TW7dJPDkov4WDjJbJrj08lPSWFvmrRAdL/kRpJt5m/TsrKRdi37pQuY2fFc8JTfzjcp30
-	swYu1WFVcFwjrg7vRqoeur+n/LDXK/1xJr66W8LSLjEcPdkuP
-X-Google-Smtp-Source: AGHT+IGg4ZcMYreFV9xlYVnib9lYgAyXv1Hi5hQ3Ji6o35ET/PG3DLNpo8igmEKscRALY1LTjwXa2naZ6EqS+RMFBqM=
-X-Received: by 2002:a05:6602:4f49:b0:7bf:4f95:c10f with SMTP id
- gm9-20020a0566024f4900b007bf4f95c10fmr758470iob.33.1705723221837; Fri, 19 Jan
- 2024 20:00:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705724006; x=1706328806;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xEQfFjGG9xeqy4UfcMEbmKUfJ92yD+DVChzT3CuoIZ8=;
+        b=QT/K/J28OkCwUk4HRA2tMuonmrawXQpvQBsh0CcxdeV8sDottou7cOk4jm6Btzq1RL
+         p822AVVoFM6rwZ7SDcroo4iYjqFHPFX/iUgzonkmW39OBNk2LX3aaApW6NZfAQt9rSqn
+         j+K2SzPwkSYyBJifDGFpLC1eimzNbNVJ1nMpNsQFzJAAbNdSjyCxAlHzwbd4sPSFRcFy
+         qYnyDGdOModZq2y5hhdOY1/uAIhJtExbniMvGvhDkvk8cNpah/44H17AT6O9SyvaaH/C
+         /YgN+exmwLnoxS1X/xKtIjaJCGZ+oc2ks8874FPMaDGeOiHZnL2mR2R0kGFXsjxvHWFL
+         6cZA==
+X-Gm-Message-State: AOJu0Yw5IVWFE0gvTsEhaLJZpRpZ78HFFDr44U36qiIjEI++0MScP1nj
+	HOxYvy8gkq0LTwYevZ12kHrBZTHNYe23Kwov0+ZWtVbJV46MKr+ZhsxS6hAW2dA=
+X-Google-Smtp-Source: AGHT+IHn/lDsj6RpPJ5iOJ3naXMlOTNeOjJPdGGzDt9qU3TE5KrD+gOz+Skv2dSn1c3/Yo+fhVy9cA==
+X-Received: by 2002:a92:c70f:0:b0:361:ab5c:210d with SMTP id a15-20020a92c70f000000b00361ab5c210dmr1150792ilp.32.1705724006287;
+        Fri, 19 Jan 2024 20:13:26 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id kx6-20020a170902f94600b001d5f59fe6aasm3743602plb.37.2024.01.19.20.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 20:13:25 -0800 (PST)
+Date: Fri, 19 Jan 2024 20:13:25 -0800 (PST)
+X-Google-Original-Date: Fri, 19 Jan 2024 20:13:22 PST (-0800)
+Subject:     Re: [PATCH v2] tty: hvc: Fix the RISC-V SBI driver for a refactoring
+In-Reply-To: <CAAhSdy0naZf8aKkAH6MgYyLior3rZEjx0WWWgp4Ljakrb5q5XQ@mail.gmail.com>
+CC: linux-riscv@lists.infradead.org, Greg KH <gregkh@linuxfoundation.org>,
+  jirislaby@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+  ajones@ventanamicro.com, apatel@ventanamicro.com, Atish Patra <atishp@rivosinc.com>,
+  linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+From: Palmer Dabbelt <palmer@rivosinc.com>
+To: anup@brainfault.org
+Message-ID: <mhng-c6ffd557-de85-4e89-b8aa-c4ac80951e81@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CAK9=C2UV8J52a1pZjsNpFNwpUKn5K3nhS-+bS-3pohDwi3HrfQ@mail.gmail.com>
- <mhng-f5f3ec82-ce6a-4e20-8799-f36fd82d74b6@palmer-ri-x1c9>
-In-Reply-To: <mhng-f5f3ec82-ce6a-4e20-8799-f36fd82d74b6@palmer-ri-x1c9>
-From: Anup Patel <anup@brainfault.org>
-Date: Sat, 20 Jan 2024 09:30:10 +0530
-Message-ID: <CAAhSdy1irrxUXTZKVvYB6UmXC6brb4U7xB_k5z2T82qOS=jdug@mail.gmail.com>
-Subject: Re: [PATCH v5 0/5] RISC-V SBI debug console extension support
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: apatel@ventanamicro.com, Greg KH <gregkh@linuxfoundation.org>, nathan@kernel.org, 
-	linux-riscv@lists.infradead.org, Paul Walmsley <paul.walmsley@sifive.com>, 
-	jirislaby@kernel.org, Conor Dooley <conor@kernel.org>, ajones@ventanamicro.com, 
-	linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, Jan 20, 2024 at 3:29=E2=80=AFAM Palmer Dabbelt <palmer@dabbelt.com>=
- wrote:
+On Fri, 19 Jan 2024 19:59:11 PST (-0800), anup@brainfault.org wrote:
+> On Sat, Jan 20, 2024 at 4:15 AM Palmer Dabbelt <palmer@rivosinc.com> wrote:
+>>
+>> From: Palmer Dabbelt <palmer@rivosinc.com>
+>>
+>> I missed the int->size_t refactoring in f32fcbedbe92 ("tty: hvc: convert
+>> to u8 and size_t"), which causes the newly used ops in 88ead68e764c
+>> ("tty: Add SBI debug console support to HVC SBI driver") to fail to
+>> build due to a
+>>
+>> linux/drivers/tty/hvc/hvc_riscv_sbi.c:59:15: error: incompatible function pointer types initializing 'ssize_t (*)(uint32_t, const u8 *, size_t)' (aka 'long (*)(unsigned int, const unsigned char *, unsigned long)') with an expression of type 'int (uint32_t, const char *, int)' (aka 'int (unsigned int, const char *, int)') [-Wincompatible-function-pointer-types]
+>>         .put_chars = hvc_sbi_dbcn_tty_put,
+>>
+>> Fixes: f32fcbedbe92 ("tty: hvc: convert to u8 and size_t")
+>> Fixes: 88ead68e764c ("tty: Add SBI debug console support to HVC SBI driver")
+>> Link: https://lore.kernel.org/r/20240119215612.20529-2-palmer@rivosinc.com
+>> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+>> ---
+>> Changes since v1 <20240119215612.20529-2-palmer@rivosinc.com>:
+>> * Fix the return and arguments correctly.
+>> * Also fix the hvc_sbi_dbcn_tty_{get,put}().
+>> ---
+>>  drivers/tty/hvc/hvc_riscv_sbi.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_riscv_sbi.c
+>> index 2f3571f17ecd..f8cd3310ef35 100644
+>> --- a/drivers/tty/hvc/hvc_riscv_sbi.c
+>> +++ b/drivers/tty/hvc/hvc_riscv_sbi.c
+>> @@ -15,7 +15,7 @@
+>>
+>>  #include "hvc_console.h"
+>>
+>> -static int hvc_sbi_tty_put(uint32_t vtermno, const char *buf, int count)
+>> +static ssize_t hvc_sbi_tty_put(uint32_t vtermno, const u8 *buf, size_t count)
+>>  {
+>>         int i;
+>>
+>> @@ -25,7 +25,7 @@ static int hvc_sbi_tty_put(uint32_t vtermno, const char *buf, int count)
+>>         return i;
+>>  }
+>>
+>> -static int hvc_sbi_tty_get(uint32_t vtermno, char *buf, int count)
+>> +static ssize_t hvc_sbi_tty_get(uint32_t vtermno, u8 *buf, size_t count)
 >
-> On Fri, 19 Jan 2024 02:09:18 PST (-0800), apatel@ventanamicro.com wrote:
-> > On Sat, Jan 13, 2024 at 12:00=E2=80=AFAM Palmer Dabbelt <palmer@dabbelt=
-com> wrote:
-> >>
-> >> On Thu, 11 Jan 2024 06:50:37 PST (-0800), patchwork-bot+linux-riscv@ke=
-rnel.org wrote:
-> >> > Hello:
-> >> >
-> >> > This series was applied to riscv/linux.git (for-next)
-> >> > by Palmer Dabbelt <palmer@rivosinc.com>:
-> >> >
-> >> > On Fri, 24 Nov 2023 12:39:00 +0530 you wrote:
-> >> >> The SBI v2.0 specification is now frozen. The SBI v2.0 specificatio=
-n defines
-> >> >> SBI debug console (DBCN) extension which replaces the legacy SBI v0=
-1
-> >> >> functions sbi_console_putchar() and sbi_console_getchar().
-> >> >> (Refer v2.0-rc5 at https://github.com/riscv-non-isa/riscv-sbi-doc/r=
-eleases)
-> >> >>
-> >> >> This series adds support for SBI debug console (DBCN) extension in
-> >> >> Linux RISC-V.
-> >> >>
-> >> >> [...]
-> >> >
-> >> > Here is the summary with links:
-> >> >   - [v5,1/5] RISC-V: Add stubs for sbi_console_putchar/getchar()
-> >> >     https://git.kernel.org/riscv/c/f503b167b660
-> >> >   - [v5,2/5] RISC-V: Add SBI debug console helper routines
-> >> >     https://git.kernel.org/riscv/c/f43fabf444ca
-> >> >   - [v5,3/5] tty/serial: Add RISC-V SBI debug console based earlycon
-> >> >     https://git.kernel.org/riscv/c/c77bf3607a0f
-> >> >   - [v5,4/5] tty: Add SBI debug console support to HVC SBI driver
-> >> >     https://git.kernel.org/riscv/c/88ead68e764c
-> >> >   - [v5,5/5] RISC-V: Enable SBI based earlycon support
-> >> >     https://git.kernel.org/riscv/c/50942ad6ddb5
-> >> >
-> >> > You are awesome, thank you!
-> >>
-> >> Nathan points out that this has some semantic conflicts with a patch i=
-n
-> >> Greg's TTY tree: https://git.kernel.org/pub/scm/linux/kernel/git/gregk=
-h/tty.git/commit/?id=3Df32fcbedbe9290565e4eac3fd7c4c451d5478787
-> >>
-> >> So I think the best bet is to wait on Greg's patch to land in Linus'
-> >> tree, and then base a v6 of this patch set on that merged patch.  I'm
-> >> going to drop this one from for-next.
-> >
-> > Greg's patch is now available in upstream Linux so I will rebase and
-> > send out v6.
+> The hvc_sbi_tty_put() and hvc_sbi_tty_get() functions are already
+> updated in Linus's tree. We only need to fix hvc_sbi_dbcn_tty_put()
+> and hvc_sbi_dbcn_tty_get()
 >
-> Sorry, I forgot about this one and merged it.  I just sent up a fixup:
-> https://lore.kernel.org/all/20240119215612.20529-2-palmer@rivosinc.com/
+> Please rebase this fix upon Linux-6.8-rc1 whenever that is available.
 
-No issues. Apart from a minor comment, your fixup looks good to me.
+Ya, it's kind of clunky: we added functions at the same time as the 
+refactoring, so there's no good clean tree to apply a patch to.  Right 
+now I've actually got this bundled up into a merge, that's usually the 
+worst option but it's about as good as I could come up with -- Linus 
+still hasn't merged my part 2, so I'm going to send a part 3 once I get 
+through the tests on my end.
 
-Thanks,
-Anup
+So we'll see, likely tomorrow, and then I'll deal with the fallout after 
+rc1...
 
-> .
 >
-> >
-> > Thanks,
-> > Anup
+>>  {
+>>         int i, c;
+>>
+>> @@ -44,12 +44,12 @@ static const struct hv_ops hvc_sbi_v01_ops = {
+>>         .put_chars = hvc_sbi_tty_put,
+>>  };
+>>
+>> -static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int count)
+>> +static ssize_t hvc_sbi_dbcn_tty_put(uint32_t vtermno, const u8 *buf, size_t count)
+>>  {
+>>         return sbi_debug_console_write(buf, count);
+>>  }
+>>
+>> -static int hvc_sbi_dbcn_tty_get(uint32_t vtermno, char *buf, int count)
+>> +static ssize_t hvc_sbi_dbcn_tty_get(uint32_t vtermno, u8 *buf, size_t count)
+>>  {
+>>         return sbi_debug_console_read(buf, count);
+>>  }
+>> --
+>> 2.43.0
+>>
+>>
 >
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+>
+> Thanks,
+> Anup
 
