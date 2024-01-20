@@ -1,295 +1,358 @@
-Return-Path: <linux-kernel+bounces-31779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 871A38333DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:21:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E278333E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:25:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63D181C2125C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 11:21:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E783C1F21ED2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 11:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51AD8EAF6;
-	Sat, 20 Jan 2024 11:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EBD7DDD5;
+	Sat, 20 Jan 2024 11:25:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QwIM+OLE"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DhecMsjC"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0531DDA8;
-	Sat, 20 Jan 2024 11:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F8ED304;
+	Sat, 20 Jan 2024 11:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705749695; cv=none; b=EAqyImsJdGjE3N6/YM1rP5W1Aw50A2nyZkfqtByxgXG/VdKtUkKYP6m/dwYjSn18lqYq6sFdI0IvsZ1dadKKQfQzqO0BxOW3LBxcAOsGJGmCHrtn9ynyyF3Xr0lShVfdkWeTF/rYcc77PKA3nwOGdz2qWp4uoc/ILk9p82Z22uE=
+	t=1705749944; cv=none; b=DiYR4NoGCZkfSzXCu5LvRafXrDSVDEbqTfnviWadf0Kku9IimsbqEWKMhBF2OqDGothpcl2WB+EWw4gOhOpOu7d5mIubaf/wUZE4SJ3M8mZaXUuOd93mdeuofRTiFH8o27d5C42U1FNyHDtXUQB9G3Dar4Iq+rr9/h9rJvrDWrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705749695; c=relaxed/simple;
-	bh=VeJh7bhQMahxyNVxwPqjMr5BnLjO1Euedl/ywXjKduM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VIdG3ZhfTS8iUvhDQZdRi+mQ/5ps+0I4KQ3PACzN1wE4MJ34zwLGGYkn8Le61kncqiugPffxi057SAf9EFOiWPGa3XqNmBCQqy0M4pTwlh8kgKx4iC9AMQmLTBMrPnair4047iZrKHtvQkW3dOxTgAbVcAPyS7/gee2b2uWeoWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QwIM+OLE; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40KAssXH001079;
-	Sat, 20 Jan 2024 11:21:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=Pb7qgEHhgkCX46NdSFSp
-	xy94/yixfRQ/QBM5uzpO9IY=; b=QwIM+OLE9igau3OQ4SxA5dhrpEhDl5brbXPt
-	fQTNqYeNhvrCASRHvol4SmeEUym7Q1xk/ntLK6Ia71hMcT4B1VzraZ8HYxDUIxZp
-	qIBXl0JPXihbGXMsNG83YQ0zwRtW8IpQEJVgriWFI/DWd9nmiomaF4X4gNW3c4nl
-	i/eamJI9yH9482bNspHKXHyRWl58kg6dZ1+AvODpjO4N5127scApbmlyXz1z9uIg
-	eKINZnrhtKi7h/X7GUVHsaTtLFxVImpQyNjUkzFGl1zaTS4W6zAjXxznsAYu+cYQ
-	RNhUyy3S8ckP4e1CDeHfF4s/XXnq+ZKjFPc24Zu0MZlEskX3BQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vr3ht0nr5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 20 Jan 2024 11:21:29 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40KBLSs4004127
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 20 Jan 2024 11:21:28 GMT
-Received: from hu-amrianan-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sat, 20 Jan 2024 03:21:21 -0800
-From: Amrit Anand <quic_amrianan@quicinc.com>
-To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
-        Amrit Anand
-	<quic_amrianan@quicinc.com>,
-        Elliot Berman <quic_eberman@quicinc.com>
-Subject: [PATCH 2/2] dt-bindings: hwinfo: Add Qualcomm's board-id types
-Date: Sat, 20 Jan 2024 16:50:49 +0530
-Message-ID: <1705749649-4708-3-git-send-email-quic_amrianan@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
-References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
+	s=arc-20240116; t=1705749944; c=relaxed/simple;
+	bh=AY0FI0AJyUQnSQk8vNEkT6dsRCLqZvg9Tx/l4TqFhTI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZBrMBA4RGh5pqhJheEfYN1l0ByeAOaU+2iI83MFwR3XLxaqhlsx4yGKW5CgIhHhgXTF/mGBZ364R1wzgIevHE/htNM7S7kCGNMJcOvky+7atrMuE/DYCW9rwLdazSiGtC5jNve15ZHWyFgdBqmDPTQdLGLmS3PD8HFqg4nEP70U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DhecMsjC; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d9b37f4804so1708531b3a.1;
+        Sat, 20 Jan 2024 03:25:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705749942; x=1706354742; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KgsgmfAUCsUK7bv60DL+YeJq8JarB9xRbUnaqW3K3n4=;
+        b=DhecMsjCOvDeQmTiLjnKztBI8KGwq9BrWvcAz8cSMO0wijiSWy25Mc4NUvbF1oCwP9
+         XRD6TG5aXsCT25LJFcKSOTfUv7GqkPZ4gZD5eeofjIalO8rjiO5b5ZPkQs+ddl2PxLNs
+         qhjUJOuODGYWBkH/FR7j5cvX3ByOLC+39h66Wd8DcxsyiJgOe+ivMBB/ZR1NmVSWMVtI
+         MMtbDR9DQChVGRtNaniXSsMIRw9bjHhnmEo9xvxmA1Udu1r0IKk9mS5c6v0VbYyqL+0g
+         fabv4r2MynDJE58VcSp7veldmcXqpN5ung7/r7cHJVij8ikBz0mWWjcQ6yiuIhNLuCQV
+         4svw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705749942; x=1706354742;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KgsgmfAUCsUK7bv60DL+YeJq8JarB9xRbUnaqW3K3n4=;
+        b=MiFCS3k/8pic7G+CYbFdc/rxwjOSNjAqes+v/gwTFbrUX4YN0aMMTetoinSjpz5jlc
+         WXpT+YNl2cLYmWVz0pYkJOCLYJahQalxeMrPq1oQxGXbgR2FQ7Gl/9q/CE+RkyCmjZpH
+         Ge0KysTKExmWc+B761d/sAm4Eettvgh0jOj1OU0O8vVhu5+OgNWg2SRh3IItLb+eJwdA
+         uQOK6FM80TC0zmdJ3/MUrOg4GJhDdbPWNq07WbBAAYUNDrKQsdwdAahT+ZQMXoGqQL1B
+         mLjzQBnV936/wv+ZuH8PLV9grwfTlcloU2Xt8exX5UmV6hgog9gl3fnk/afLLL2D1RLG
+         5J+w==
+X-Gm-Message-State: AOJu0Yy+viNqIcv3Ajuq96H6Mdc/ymYzcQzDtC+X9lZ5SS/b4xrgjTAE
+	pJw2l1P6OVTyUTKTaaLwifHOOfVxCKne8tVoHJZIOLrkNdQBT7JV
+X-Google-Smtp-Source: AGHT+IGczytrLQQdYDK7kvLhiVSmKYX9mhpfTIBfzwvIUl99cMSETuw33MUFEt9naz8OE72mObfRxQ==
+X-Received: by 2002:a05:6a21:32a8:b0:199:fe49:6bb3 with SMTP id yt40-20020a056a2132a800b00199fe496bb3mr1684368pzb.5.1705749941592;
+        Sat, 20 Jan 2024 03:25:41 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id kr8-20020a056a004b4800b006da73b90fe4sm6790103pfb.14.2024.01.20.03.25.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Jan 2024 03:25:40 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 121831846DB12; Sat, 20 Jan 2024 18:25:36 +0700 (WIB)
+Date: Sat, 20 Jan 2024 18:25:36 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Sui Jingfeng <suijingfeng@loongson.cn>, linux-parisc@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Prathu Baronia <prathubaronia2011@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Sam Ravnborg <sam@ravnborg.org>, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [BUG][BISECTED] Freeze at loading init ramdisk
+Message-ID: <ZautsJ6a7_YjW5aQ@archie.me>
+References: <8a6aa228-f2da-4dcd-93c1-e34614cd6471@alu.unizg.hr>
+ <cc813525-5484-443e-a40a-cb98f2ed4e1f@alu.unizg.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: nx_ouLdjrKNNyTnvJz-FDjRH6642YcSq
-X-Proofpoint-ORIG-GUID: nx_ouLdjrKNNyTnvJz-FDjRH6642YcSq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-20_04,2024-01-19_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 mlxlogscore=999 spamscore=0 adultscore=0 clxscore=1015
- priorityscore=1501 malwarescore=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401200092
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Vv+fIX42qDF80RtH"
+Content-Disposition: inline
+In-Reply-To: <cc813525-5484-443e-a40a-cb98f2ed4e1f@alu.unizg.hr>
 
-Qualcomm based DT uses two or three different identifiers. The SoC
-based idenfier which signifies chipset and the revision for those
-chipsets. The board based identifier is used to distinguish different
-boards (e.g. IDP, MTP) along with the different types of same boards.
-The PMIC attached to the board can also be used as a identifier for
-device tree.
 
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
----
- .../devicetree/bindings/hwinfo/qcom,board-id.yaml  | 86 ++++++++++++++++++++++
- include/dt-bindings/arm/qcom,ids.h                 | 68 +++++++++++++++--
- 2 files changed, 146 insertions(+), 8 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
+--Vv+fIX42qDF80RtH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml b/Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
-new file mode 100644
-index 0000000..807f134
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
-@@ -0,0 +1,86 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwinfo/qcom,board-id.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: QCOM Board Identifier for Devicetree Selection
-+
-+maintainers:
-+  - Amrit Anand <quic_amrianan@quicinc.com>
-+  - Elliot Berman <quic_eberman@quicinc.com>
-+
-+description: |
-+  Qualcomm uses two and sometimes three hardware identifiers to describe
-+  its boards
-+      - a SoC identifier is used to match chipsets (e.g. sm8550 vs sm8450)
-+      - a board identifier is used to match board form factor (e.g. MTP, QRD,
-+        ADP, CRD)
-+      - a PMIC identifier is occasionally used when different PMICs are used
-+        for a given board/SoC combination.
-+  Each field and helper macros are defined at::
-+      - include/dt-bindings/arm/qcom,ids.h
-+
-+  For example,
-+    / {
-+        #board-id-cells = <2>;
-+        board-id = <456 0>, <457 0>, <10 0>;
-+        board-id-types = "qcom,soc-id", "qcom,soc-id", "qcom,board-id";
-+     }
-+
-+allOf:
-+  - $ref: board-id.yaml#
-+
-+properties:
-+  board-id:
-+    minItems: 2
-+
-+  board-id-types:
-+    minItems: 2
-+    items:
-+      oneOf:
-+        - const: qcom,soc-id
-+          description: |
-+            Matches Qualcomm Technologies, Inc. boards with the specified SoC.
-+            2 integers are needed to describe a soc-id. The first integer is the
-+            SoC ID and the second integer is the SoC revision.
-+            qcom,soc-id = <soc-id  soc-revision>
-+        - const: qcom,board-id
-+          description: |
-+            Matches Qualcomm Technologies, Inc. boards with the specified board.
-+            2 integers are needed to describe a board-id. The first integer is the
-+            board ID. The second integer is the board-subtype.
-+            qcom,board-id = <board-id  board-subtype>
-+        - const: qcom,pmic-id
-+          description: |
-+            QUALCOMM boards can be atached to mutliple PMICs where slave-id (SID)
-+            indicates the address of the bus on which the PMIC is attached. It can be
-+            any number. The model for a PMIC indicates the PMIC name attached to bus
-+            described by SID along with  major and minor version. 2 integers are needed
-+            to describe qcom,pmic-id. The first integer is the slave-id and the second integer
-+            is the pmic model.
-+            qcom,pmic-id = <pmic-sid pmic-model>
-+
-+  '#board-id-cells':
-+    minimum: 2
-+
-+additionalProperties: true
-+
-+examples:
-+   - |
-+     #include <dt-bindings/arm/qcom,ids.h>
-+     / {
-+         model = "Qualcomm Technologies, Inc. sc7280 IDP SKU1 platform";
-+         compatible = "qcom,sc7280-idp", "google,senor", "qcom,sc7280";
-+
-+         #board-id-cells = <2>;
-+         board-id = <QCOM_SOC_ID(SC7280) QCOM_SOC_REVISION(1)>,
-+                    <QCOM_SOC_ID(SC7280) QCOM_SOC_REVISION(2)>,
-+                    <QCOM_BOARD_ID(IDP, 1, 0) QCOM_BOARD_SUBTYPE(UFS, ANY, 1)>;
-+         board-id-types = "qcom,soc-id",
-+                          "qcom,soc-id",
-+                          "qcom,board-id";
-+
-+         #address-cells = <2>;
-+         #size-cells = <2>;
-+      };
-diff --git a/include/dt-bindings/arm/qcom,ids.h b/include/dt-bindings/arm/qcom,ids.h
-index f724834..c4cd440 100644
---- a/include/dt-bindings/arm/qcom,ids.h
-+++ b/include/dt-bindings/arm/qcom,ids.h
-@@ -8,9 +8,12 @@
- #define _DT_BINDINGS_ARM_QCOM_IDS_H
- 
- /*
-- * The MSM chipset and hardware revision used by Qualcomm bootloaders, DTS for
-- * older chipsets (qcom,msm-id) and in socinfo driver:
-+ * The MSM chipset ID used by Qualcomm bootloaders, DTS for
-+ * older chipsets (soc-id) and in socinfo driver:
-  */
-+
-+#define QCOM_SOC_ID(a)  ((QCOM_ID_##a) && 0xffff)
-+
- #define QCOM_ID_MSM8260			70
- #define QCOM_ID_MSM8660			71
- #define QCOM_ID_APQ8060			86
-@@ -266,16 +269,65 @@
- #define QCOM_ID_IPQ5302			595
- #define QCOM_ID_IPQ5300			624
- 
-+ /* The SOC revision used by Qualcomm bootloaders (soc-revision) */
-+
-+#define QCOM_SOC_REVISION(a)		(a & 0xff)
-+
- /*
-  * The board type and revision information, used by Qualcomm bootloaders and
-- * DTS for older chipsets (qcom,board-id):
-+ * DTS for older chipsets (board-id)
-  */
-+
- #define QCOM_BOARD_ID(a, major, minor) \
--	(((major & 0xff) << 16) | ((minor & 0xff) << 8) | QCOM_BOARD_ID_##a)
-+	(((major & 0xff) << 16) | ((minor & 0xff) << 8) | ((QCOM_BOARD_ID_##a) & 0xff))
-+
-+#define QCOM_BOARD_ID_MTP		0x8
-+#define QCOM_BOARD_ID_DRAGONBOARD	0x10
-+#define QCOM_BOARD_ID_QRD		0x11
-+#define QCOM_BOARD_ID_HDK		0x1F
-+#define QCOM_BOARD_ID_ATP		0x21
-+#define QCOM_BOARD_ID_IDP		0x22
-+#define QCOM_BOARD_ID_SBC		0x24
-+#define QCOM_BOARD_ID_QXR		0x26
-+#define QCOM_BOARD_ID_CRD		0x28
-+
-+/*
-+ * The platform subtype is used by Qualcomm bootloaders and
-+ * DTS (board-subtype)
-+ */
-+#define QCOM_BOARD_SUBTYPE(a, b, SUBTYPE) \
-+	(((QCOM_BOARD_BOOT_##a & 0xf) << 16) | ((QCOM_BOARD_DDRTYPE_##b & 0x7) << 8) | \
-+	(SUBTYPE & 0xff))
-+
-+/* Board DDR Type where each value indicates higher limit */
-+#define QCOM_BOARD_DDRTYPE_ANY		0x0
-+#define QCOM_BOARD_DDRTYPE_128M		0x1
-+#define QCOM_BOARD_DDRTYPE_256M		0x2
-+#define QCOM_BOARD_DDRTYPE_512M		0x3
-+#define QCOM_BOARD_DDRTYPE_1024M	0x4
-+#define QCOM_BOARD_DDRTYPE_2048M	0x5
-+#define QCOM_BOARD_DDRTYPE_3072M	0x6
-+#define QCOM_BOARD_DDRTYPE_4096M	0x7
-+
-+/* Board Boot Device Type */
-+#define QCOM_BOARD_BOOT_EMMC		0x0
-+#define QCOM_BOARD_BOOT_UFS		0x1
-+#define QCOM_BOARD_BOOT_NAND		0x2
-+#define QCOM_BOARD_BOOT_OTHER		0x3
-+
-+/*
-+ * The PMIC slave id is used by Qualcomm bootloaders to
-+ * indicates which PMIC is attached (pmic-sid)
-+ */
-+
-+#define QCOM_PMIC_SID(a)		(a & 0xff)
-+
-+/*
-+ * The PMIC ID is used by Qualcomm bootloaders to describe the ID
-+ * of PMIC attached to bus described by SID (pmic-model)
-+ */
- 
--#define QCOM_BOARD_ID_MTP			8
--#define QCOM_BOARD_ID_DRAGONBOARD		10
--#define QCOM_BOARD_ID_QRD			11
--#define QCOM_BOARD_ID_SBC			24
-+#define QCOM_PMIC_MODEL(ID, major, minor) \
-+	(((major & 0xff) << 16) | ((minor & 0xff) << 8) | (ID & 0xff))
- 
- #endif /* _DT_BINDINGS_ARM_QCOM_IDS_H */
--- 
-2.7.4
+On Wed, Jan 17, 2024 at 07:47:49PM +0100, Mirsad Todorovac wrote:
+> On 1/16/24 01:32, Mirsad Todorovac wrote:
+> > Hi,
+> >=20
+> > On the Ubuntu 22.04 LTS Jammy platform, on a mainline vanilla torvalds =
+tree kernel, the boot
+> > freezes upon first two lines and before any systemd messages.
+> >=20
+> > (Please find the config attached.)
+> >=20
+> > Bisecting the bug led to this result:
+> >=20
+> > marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect good
+> > d97a78423c33f68ca6543de510a409167baed6f5 is the first bad commit
+> > commit d97a78423c33f68ca6543de510a409167baed6f5
+> > Merge: 61da593f4458 689237ab37c5
+> > Author: Linus Torvalds <torvalds@linux-foundation.org>
+> > Date:=C2=A0=C2=A0 Fri Jan 12 14:38:08 2024 -0800
+> >=20
+> >  =C2=A0=C2=A0=C2=A0 Merge tag 'fbdev-for-6.8-rc1' of git://git.kernel.o=
+rg/pub/scm/linux/kernel/git/deller/linux-fbdev
+> >  =C2=A0=C2=A0=C2=A0 Pull fbdev updates from Helge Deller:
+> >  =C2=A0=C2=A0=C2=A0=C2=A0 "Three fbdev drivers (~8500 lines of code) re=
+moved. The Carillo Ranch
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev driver is for an Intel product wh=
+ich was never shipped, and for
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 the intelfb and the amba-clcd drivers t=
+he drm drivers can be used
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 instead.
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 The other code changes are minor: some =
+fb_deferred_io flushing fixes,
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 imxfb margin fixes and stifb cleanups.
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Summary:
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - Remove intelfb fbdev driver (Th=
+omas Zimmermann)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - Remove amba-clcd fbdev driver (=
+Linus Walleij)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - Remove vmlfb Carillo Ranch fbde=
+v driver (Matthew Wilcox)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - fb_deferred_io flushing fixes (=
+Nam Cao)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - imxfb code fixes and cleanups (=
+Dario Binacchi)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - stifb primary screen detection =
+cleanups (Thomas Zimmermann)"
+> >  =C2=A0=C2=A0=C2=A0 * tag 'fbdev-for-6.8-rc1' of git://git.kernel.org/p=
+ub/scm/linux/kernel/git/deller/linux-fbdev: (28 commits)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev/intelfb: Remove driver
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev/hyperv_fb: Do not clear global sc=
+reen_info
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 firmware/sysfb: Clear screen_info state=
+ after consuming it
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev/hyperv_fb: Remove firmware frameb=
+uffers with aperture helpers
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm/hyperv: Remove firmware framebuffer=
+s with aperture helper
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev/sis: Remove dependency on screen_=
+info
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 video/logo: use %u format specifier for=
+ unsigned int values
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 video/sticore: Remove info field from S=
+TI struct
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 arch/parisc: Detect primary video devic=
+e from device instance
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev/stifb: Allocate fb_info instance =
+with framebuffer_alloc()
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 video/sticore: Store ROM device in STI =
+struct
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev: flush deferred IO before closing
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev: flush deferred work in fb_deferr=
+ed_io_fsync()
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev: amba-clcd: Delete the old CLCD d=
+river
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev: Remove support for Carillo Ranch=
+ driver
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev: hgafb: fix kernel-doc comments
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev: mmp: Fix typo and wording in cod=
+e comment
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev: fsl-diu-fb: Fix sparse warning d=
+ue to virt_to_phys() prototype change
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev: imxfb: add '*/' on a separate li=
+ne in block comment
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fbdev: imxfb: use __func__ for function=
+ name
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> >=20
+> >  =C2=A0Documentation/fb/index.rst=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 1 -
+> >  =C2=A0Documentation/fb/intelfb.rst=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 155 --
+> >  =C2=A0Documentation/userspace-api/ioctl/ioctl-number.rst |=C2=A0=C2=A0=
+=C2=A0 1 -
+> >  =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 12 -
+> >  =C2=A0arch/parisc/video/fbdev.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 2 +-
+> >  =C2=A0drivers/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0=C2=A0=C2=A0 3 +-
+> >  =C2=A0drivers/firmware/sysfb.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 14 +-
+> >  =C2=A0drivers/gpu/drm/hyperv/hyperv_drm_drv.c=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 8 +-
+> >  =C2=A0drivers/video/backlight/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0=C2=A0=C2=A0 7 -
+> >  =C2=A0drivers/video/backlight/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |=C2=A0=C2=A0=C2=A0 1 -
+> >  =C2=A0drivers/video/backlight/cr_bllcd.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 =
+264 ---
+> >  =C2=A0drivers/video/fbdev/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 72 -
+> >  =C2=A0drivers/video/fbdev/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 2 -
+> >  =C2=A0drivers/video/fbdev/amba-clcd.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0 986 ---------
+> >  =C2=A0drivers/video/fbdev/core/fb_defio.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
+=A0=C2=A0 8 +-
+> >  =C2=A0drivers/video/fbdev/fsl-diu-fb.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |=C2=A0=C2=A0=C2=A0 2 +-
+> >  =C2=A0drivers/video/fbdev/hgafb.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 13 +-
+> >  =C2=A0drivers/video/fbdev/hyperv_fb.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0=C2=A0 20 +-
+> >  =C2=A0drivers/video/fbdev/imxfb.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 179 +-
+> >  =C2=A0drivers/video/fbdev/intelfb/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=
+=A0 8 -
+> >  =C2=A0drivers/video/fbdev/intelfb/intelfb.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 382 ----
+> >  =C2=A0drivers/video/fbdev/intelfb/intelfb_i2c.c=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 209 --
+> >  =C2=A0drivers/video/fbdev/intelfb/intelfbdrv.c=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 1680 ----------------
+> >  =C2=A0drivers/video/fbdev/intelfb/intelfbhw.c=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 2115 --------------------
+> >  =C2=A0drivers/video/fbdev/intelfb/intelfbhw.h=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 609 ------
+> >  =C2=A0drivers/video/fbdev/mmp/hw/mmp_spi.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=
+=A0 2 +-
+> >  =C2=A0drivers/video/fbdev/sis/sis_main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=
+=C2=A0 37 -
+> >  =C2=A0drivers/video/fbdev/stifb.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 109 +-
+> >  =C2=A0drivers/video/fbdev/vermilion/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 6 -
+> >  =C2=A0drivers/video/fbdev/vermilion/cr_pll.c=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 195 --
+> >  =C2=A0drivers/video/fbdev/vermilion/vermilion.c=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 1175 -----------
+> >  =C2=A0drivers/video/fbdev/vermilion/vermilion.h=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 245 ---
+> >  =C2=A0drivers/video/logo/pnmtologo.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 6 +-
+> >  =C2=A0drivers/video/sticore.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 5 +
+> >  =C2=A0include/linux/amba/clcd-regs.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |=C2=A0=C2=A0 87 -
+> >  =C2=A0include/linux/amba/clcd.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 290 ---
+> >  =C2=A0include/video/sticore.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 6 +-
+> >  =C2=A037 files changed, 208 insertions(+), 8708 deletions(-)
+> >  =C2=A0delete mode 100644 Documentation/fb/intelfb.rst
+> >  =C2=A0delete mode 100644 drivers/video/backlight/cr_bllcd.c
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/amba-clcd.c
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/intelfb/Makefile
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/intelfb/intelfb.h
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/intelfb/intelfb_i2c.c
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/intelfb/intelfbdrv.c
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/intelfb/intelfbhw.c
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/intelfb/intelfbhw.h
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/vermilion/Makefile
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/vermilion/cr_pll.c
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/vermilion/vermilion.c
+> >  =C2=A0delete mode 100644 drivers/video/fbdev/vermilion/vermilion.h
+> >  =C2=A0delete mode 100644 include/linux/amba/clcd-regs.h
+> >  =C2=A0delete mode 100644 include/linux/amba/clcd.h
+> > marvin@defiant:~/linux/kernel/linux_torvalds$
+> >=20
+> > Hope this helps.
+>=20
+> P.S.
+>=20
+> As I see that this is a larger merge commit, with 5K+ lines changed, I do=
+n't think I can
+> bisect further to determine the culprit.
+>=20
+> But I thought later that it would be interesting to see why my hardware t=
+riggered the freeze
+> and probably others did not, or someone would complain already.
+>=20
+> Both of the boxes were AMD Ryzen: Ryzen 7 5700G and Ryzen 9 7950X.
+>=20
+> FWIW, I am attaching both hardware listings and the config used, so anyon=
+e knowledgeable with
+> fbdev could possibly narrow down the search.
+>=20
 
+Hi Mirsad,
+
+There is another report from Jens with similar symptom [1]. Can you check if
+reverting df67699c9cb0ce ("firmware/sysfb: Clear screen_info state after
+consuming it") fixes your regression?
+
+Thanks.
+
+[1]: https://lore.kernel.org/regressions/93ffd2ee-fa83-4469-96fb-fb263c26bb=
+3c@kernel.dk/T/#t
+
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--Vv+fIX42qDF80RtH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZautrAAKCRD2uYlJVVFO
+o29YAP4qDU6M19ID/p65u1gtfVijgmVI7LdZfaouoZtKiSp6qQD+PnHhjXp+whKs
+mfJNPqyLT46rJgrGbCanMlqNG7BeuAA=
+=iFmQ
+-----END PGP SIGNATURE-----
+
+--Vv+fIX42qDF80RtH--
 
