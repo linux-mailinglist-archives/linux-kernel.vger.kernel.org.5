@@ -1,129 +1,145 @@
-Return-Path: <linux-kernel+bounces-31830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9CD583353E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:25:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27384833540
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:26:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 124F1283E58
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:25:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1E72283DE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B881E10788;
-	Sat, 20 Jan 2024 15:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A904010A03;
+	Sat, 20 Jan 2024 15:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="a+J0bbi+"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="ZI0Mll+b";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="ZI0Mll+b"
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E608F12E47;
-	Sat, 20 Jan 2024 15:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2540E101E6;
+	Sat, 20 Jan 2024 15:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705764347; cv=none; b=DHuE42FqXB5QLoCGSughtsixekL0ATyOjZVOU5iEbJm54lUIleIfeg5H4m/V6QceyFgwmicxjv5FpC3YjF+j1w7dJg/Ky30fC6nXzAxlpToBk2a0VQDE+5tcS+d2LwSF3rAWyqRL1m0sG/IkycHDTIzqPsH+7D5QLkKab5UmK7U=
+	t=1705764371; cv=none; b=rSEc4EB6YbN227pUG/0UdSTclgv9M9EqZpzo7nH9aREdriiPwk/ItG0SWxS2LwP2vS8A+iJgWpTl/Kmm9xDPdn5OEJkP/SHRjb9avVyiX/fjAGb/HcKfHx3SKOL5XNrl5hkvkPItjy0ALYFRZbbsRCHDNVGNUSl/BPUYcZodmeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705764347; c=relaxed/simple;
-	bh=0JcJgRwF76wGIs5To2XuhDLeUD7IzHJSy+e2cc+KXys=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XZWOdEssB/ovMeQgzQMcQcVEBrpEGooJZcz0q6AZi3Df4jRNcsgzjQ5hzX6Y9AH1kqV3giJbCE2rHo93oo/j22VWbKtjrS1YOf6uqvlJeCRm9nlpAtDq+rTmE4xctJXH4/hnmguaGjhYs4aGfWrJqr97Ms9aRVZkuJJlWVrEU5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=a+J0bbi+; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705764333; x=1706369133; i=erick.archer@gmx.com;
-	bh=0JcJgRwF76wGIs5To2XuhDLeUD7IzHJSy+e2cc+KXys=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=a+J0bbi+NsDjv0b0ocCwCIWY/37ZnhbzPAf5hYXMlAvFmjEPWUcDi18t0N6wUsC8
-	 QN454ULVBTCAYoj7L6G/yEWDEvuoOnNjONtkeEjqcAjbUS2h6ANeoehuqVgDLZIxU
-	 TELT/VVcdZFjhQM00WLHZtaKnq8sPvWoX9OrfcrqS/o6r4Ezqqo6R+aJmCriTlxIr
-	 XhEPiJv3Jlj3uh66h36tlKC7fdPTMxmk4zkOz3a0amhakJnKCTR8GBq2vrpLaOShA
-	 ZdD77Nf4A0XrRvB6vTb+2VHxUZR+qbhmdHg6dsXkb40AD3i/L8eF/hn0pvTqPpP1X
-	 4CZHGhyuallkx3iHcA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MOzOw-1rm3zl0sIe-00PLJ3; Sat, 20 Jan 2024 16:25:33 +0100
-From: Erick Archer <erick.archer@gmx.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Jeffrey Hugo <quic_jhugo@quicinc.com>,
-	Erick Archer <erick.archer@gmx.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Dan Carpenter <error27@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org,
-	mhi@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] bus: mhi: ep: Use kcalloc() instead of kzalloc()
-Date: Sat, 20 Jan 2024 16:25:18 +0100
-Message-Id: <20240120152518.13006-1-erick.archer@gmx.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1705764371; c=relaxed/simple;
+	bh=a72aMC2x+tlqDGYT+muG6VnM7nK1dGuLlZ5Xnk3fvjs=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=rMxiGyW4aYpk4310fxmnWWWXZ2VLDbKuH5va/wijsTgd3JEAA7H8xp0Y18UfNrw0HA7mY0q8Xl2s2e1kUPaiIi6ysZyoqn9aF2iR6zvnpYELqFeQ7JgTvA9RCIHVWJH1P2PhJZbQ3kZ76QvStQ0et4wwpZSC44h21qo8Nhn0ypw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=ZI0Mll+b; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=ZI0Mll+b; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1705764365;
+	bh=a72aMC2x+tlqDGYT+muG6VnM7nK1dGuLlZ5Xnk3fvjs=;
+	h=Message-ID:Subject:From:To:Date:From;
+	b=ZI0Mll+bcHhH+2Hc/hOiZUlR7pcdoQkzZa8WmsuPybQpTO0gAhkcK/mrINcSClht/
+	 WhD2UyRao86dazLrzo8INAWu1Q8HyRh18P6QXnB26Ba4TWY1kziqfgd9uPfeDXsd1j
+	 USz2E+SU0zGPTsour/77dsKJRzpg21BW177fh9cE=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 5BB741286814;
+	Sat, 20 Jan 2024 10:26:05 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id 60Y5q7ZL7Ovs; Sat, 20 Jan 2024 10:26:05 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1705764365;
+	bh=a72aMC2x+tlqDGYT+muG6VnM7nK1dGuLlZ5Xnk3fvjs=;
+	h=Message-ID:Subject:From:To:Date:From;
+	b=ZI0Mll+bcHhH+2Hc/hOiZUlR7pcdoQkzZa8WmsuPybQpTO0gAhkcK/mrINcSClht/
+	 WhD2UyRao86dazLrzo8INAWu1Q8HyRh18P6QXnB26Ba4TWY1kziqfgd9uPfeDXsd1j
+	 USz2E+SU0zGPTsour/77dsKJRzpg21BW177fh9cE=
+Received: from [172.20.7.151] (adfb31ae.cst.lightpath.net [173.251.49.174])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id BE6091286813;
+	Sat, 20 Jan 2024 10:26:04 -0500 (EST)
+Message-ID: <d2ce7bc75cadd3d39858c02f7f6f0b4286e6319b.camel@HansenPartnership.com>
+Subject: [GIT PULL] final round of SCSI updates for the 6.7+ merge window
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds
+	 <torvalds@linux-foundation.org>
+Cc: linux-scsi <linux-scsi@vger.kernel.org>, linux-kernel
+	 <linux-kernel@vger.kernel.org>
+Date: Sat, 20 Jan 2024 10:26:03 -0500
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:krwpxKzuxrjKJNYG65YRp+r0EkkR1wBIMU1g/OgIxutkIvqq0Oy
- mZ64rNHG3mxwru5Qg74zFseIO0kbYKg68tGcipBH3oOCo0v0eP8OfOwt60nODjBS1n4Ajj6
- h9tE/I57lr+PfQuoKDdjBiw69dpYvjtOSU1cY/JKLvuDhZucSb+0HKijrDEwdzTQI4XVfm8
- WU1YTuzwqOA1qtPUBq+Ew==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:zOxPMh2inqg=;dVBjcptvjRaTcfEepMXErcxwZ5J
- GXQ+fZoR/t5YkQ8aBHovvX/vu751QvIbidTUF018n6kJF5vcNkTZXxpV2kFGCwxCGrncHqi/H
- fUWnQPwFAWrFJq1ruZt6du8tjk5MmKvmhYZAZclNID/KtJuxA9TOr8iAJxIs2Lr8FoJCdsyYH
- BcnONdX2PValbcfleEofllWvCrfPfM8v31J5bwpeci1wGXBR0FHyOdpJLhPsfoKfpr9i5Lz4O
- VxkD53Uzco2bicd80nGcRDAR93T0VAJkG4k3Yl4FUEzr0F/oYNn/Vclrw2EvQVdEMyfUBq4My
- ZCqFlbBbt7Zq6CAJxH0e7kb+YcyZEPhZQG4hYbgZQ38TET0iJds6yITyZvMkt2UvVU1PTGryu
- 1rrArB4aKTN2y8I8LbMULpehbgZDl7YkAFX1JB/0xy5GuSOYTlQCgFo//2Rh+QotMBuCgMSzC
- 2TQmWi3Zj6UT/Z4YSaRVQf6WRNZzVNBkLV5zBgTjFq50Zf2ncJWeIWB1tBhnb+1znaUhNDw4/
- KLZlfslgsg8TXFNvMUuud+vlvfNK/eZ8AqmSucDgy4qpboQf+Aj1p7lTTYNwRyESgYQtoMzLF
- zljPYDW1v7X0Hjaco58FUx7WaMHJ4vI0KnTh42Moba3c+npDIbfLBmquV+FKclXx4Nv41+er+
- n+DxTDIQDFGrmMCNGmYRRf2n2JaSq1ET+l7uyWjpyZWh12GceurwmAaIYvvKM811oVI54QtGp
- YVA54V0Q0GBkrBeDctPYK/eVsYW3qaYmm9iguwC4lsVGTDCaGxF9P6uibznR2NroiqYa7RNy4
- tlE3eEVOdCCauwH2dh6ahnlpbRkQPkuZBEZqnlbzWLTlG5fwCnTuZYEVrisLYgGVZv3t40sd8
- FN/aUoBj8VktX+Pghmief4gH0FS0O1xnbInUUnjeIKniaC4NzSvfD0VDbydFwtYk7gnNek9SO
- 5tWhdeP5E5RqvhfAdX82TNnbm54=
+Content-Transfer-Encoding: 7bit
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+Final round of fixes that came in too late to send in the first
+request.  It's 9 bug fixes and one version update (because of a bug
+fix) and one set of PCI ID additions.  There's one bug fix in the core
+which is really a one liner (except that an additional sdev pointer was
+added for convenience) and the rest are in drivers.
 
-So, use the purpose specific kcalloc() function instead of the argument
-count * size in the kzalloc() function.
+If you're still on a no power trip, these can also wait until -rc1.
 
-Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-co=
-ded-arithmetic-in-allocator-arguments [1]
-Link: https://github.com/KSPP/linux/issues/162
-Signed-off-by: Erick Archer <erick.archer@gmx.com>
-=2D--
- drivers/bus/mhi/ep/main.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+As requested, I did a longer extension of my gpg keys, so my key needs
+refreshing, before you pull, to fix the expiry date.  You can get my
+updates via DANE using:
 
-diff --git a/drivers/bus/mhi/ep/main.c b/drivers/bus/mhi/ep/main.c
-index 65fc1d738bec..8d7a4102bdb7 100644
-=2D-- a/drivers/bus/mhi/ep/main.c
-+++ b/drivers/bus/mhi/ep/main.c
-@@ -1149,8 +1149,9 @@ int mhi_ep_power_up(struct mhi_ep_cntrl *mhi_cntrl)
- 	mhi_ep_mmio_mask_interrupts(mhi_cntrl);
- 	mhi_ep_mmio_init(mhi_cntrl);
+gpg --auto-key-locate dane --recv D5606E73C8B46271BEAD9ADF814AE47C214854D6
 
--	mhi_cntrl->mhi_event =3D kzalloc(mhi_cntrl->event_rings * (sizeof(*mhi_c=
-ntrl->mhi_event)),
--					GFP_KERNEL);
-+	mhi_cntrl->mhi_event =3D kcalloc(mhi_cntrl->event_rings,
-+				       sizeof(*mhi_cntrl->mhi_event),
-+				       GFP_KERNEL);
- 	if (!mhi_cntrl->mhi_event)
- 		return -ENOMEM;
+The patch is available here:
 
-=2D-
-2.25.1
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+
+The short changelog is:
+
+Bart Van Assche (2):
+      scsi: ufs: core: Remove the ufshcd_hba_exit() call from ufshcd_async_scan()
+      scsi: ufs: core: Simplify power management during async scan
+
+ChanWoo Lee (1):
+      scsi: ufs: qcom: Remove unnecessary goto statement from ufs_qcom_config_esi()
+
+Dan Carpenter (1):
+      scsi: fnic: unlock on error path in fnic_queuecommand()
+
+David Strahan (1):
+      scsi: smartpqi: Add new controller PCI IDs
+
+Dmitry Bogdanov (1):
+      scsi: target: core: Add TMF to tmr_list handling
+
+Don Brace (1):
+      scsi: smartpqi: Bump driver version to 2.1.26-030
+
+Harshit Mogalapalli (1):
+      scsi: fcoe: Fix unsigned comparison with zero in store_ctlr_mode()
+
+Mahesh Rajashekhara (1):
+      scsi: smartpqi: Fix logical volume rescan race condition
+
+Niklas Cassel (1):
+      scsi: core: Kick the requeue list after inserting when flushing
+
+Randy Dunlap (1):
+      scsi: mpi3mr: Fix mpi3mr_fw.c kernel-doc warnings
+
+
+And the diffstat
+
+ drivers/scsi/fcoe/fcoe_sysfs.c         |  6 ++-
+ drivers/scsi/fnic/fnic_scsi.c          |  1 +
+ drivers/scsi/mpi3mr/mpi3mr_fw.c        |  6 +--
+ drivers/scsi/scsi_error.c              |  9 ++--
+ drivers/scsi/smartpqi/smartpqi.h       |  1 -
+ drivers/scsi/smartpqi/smartpqi_init.c  | 89 ++++++++++++++++++++++++++++++----
+ drivers/target/target_core_device.c    |  5 --
+ drivers/target/target_core_transport.c |  4 ++
+ drivers/ufs/core/ufshcd.c              | 14 ++----
+ drivers/ufs/host/ufs-qcom.c            |  7 +--
+ 10 files changed, 103 insertions(+), 39 deletions(-)
+
+James
 
 
