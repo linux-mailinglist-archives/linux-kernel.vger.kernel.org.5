@@ -1,180 +1,133 @@
-Return-Path: <linux-kernel+bounces-31734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35D1283331A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 08:27:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E11CB83331C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 08:28:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9227B283D40
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:27:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D9FE1C22069
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE192106;
-	Sat, 20 Jan 2024 07:26:54 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A589523D1;
+	Sat, 20 Jan 2024 07:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KmBIDEJN"
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A6520E0;
-	Sat, 20 Jan 2024 07:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B4B1FD8;
+	Sat, 20 Jan 2024 07:28:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705735613; cv=none; b=ANKs0X0RovSSi+lntaRL82uIBTw+K0fb+G+vWxRgIX4iL3LRIasnixgq46cdT7FgEUjWIZ7HddBe8Dnp/cRiz/vT+2vb8O/Kk3y2dkMb45hfYKevpkk8HpEJgGbwILtBNuAIPrtQmAa3ZalZTpbV18GotnuB+ZLt22touB5w5TE=
+	t=1705735726; cv=none; b=NyV8xBvqlfKhA9YpoaC5KsaMsbc4WJzHSrF4ogJhMR9+ZaWtlp8QYLVDLlwr3gnffSuPWOl2IXJY3kQL7YgiLwo/VUWJyEj36bgcZ2NhUWSBj8erhdvaHMiRnEKfC9MfnfMoZ0E+riyKWEQ9hblsYuq305EoJ7dnkbe0L0Nydm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705735613; c=relaxed/simple;
-	bh=fDiS5PJVy3c8YgT3PhH7ahy/iTnk+XRxlziL/RLR5Vs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bkxPOw4y83+Ejj9fv6gMAGKt79sOjen/tqzVjcfDt4aYNTEYF8Vf2zZUzwNAPYaITwqns7gEu3D0ASD50g4zuCkuhhhYxIp6DImOccbYvIxXq04HrsP/ZN1EhUl1vxugSWWCjIAIwTLSleN3SQUkSmjmO3wMzH/xV4pwJs7cGuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TH7Lb157rzXgVq;
-	Sat, 20 Jan 2024 15:25:43 +0800 (CST)
-Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id 398FB18005D;
-	Sat, 20 Jan 2024 15:26:49 +0800 (CST)
-Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
- (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Sat, 20 Jan
- 2024 15:26:47 +0800
-Date: Sat, 20 Jan 2024 15:26:37 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-CC: Changbin Du <changbin.du@huawei.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
-	<jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Ian Rogers
-	<irogers@google.com>, <linux-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, Andi Kleen <ak@linux.intel.com>, Thomas
- Richter <tmricht@linux.ibm.com>, <changbin.du@gmail.com>, Peter Zijlstra
-	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
- Melo <acme@kernel.org>
-Subject: Re: [PATCH v4 5/5] perf: script: prefer capstone to XED
-Message-ID: <20240120072637.w6stvbdeynppnfa6@M910t>
-References: <20240119104856.3617986-1-changbin.du@huawei.com>
- <20240119104856.3617986-6-changbin.du@huawei.com>
- <adb07ef9-4609-4cb4-b5e4-8e0af00bac16@intel.com>
+	s=arc-20240116; t=1705735726; c=relaxed/simple;
+	bh=kK0kpMYOxiXwLFnjo4FjmVUfSst12YqHg95SBLX5nzk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ahiMM1S5JzHvfz+cAL7YcOzUZ4H2/esxFxbC0TBh8T/bzjNvAl2izW+Ua2CQ/+eN3+0/iFU1CU1Qaq3MUijPFiPrprqbfdkvkH4RlWYy3Q8ndi6CbRRp16HWHbqRr+jGuQEBNeroJM311E45G7vqOlUyQ0i8fsXbFeaG7wL7p4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KmBIDEJN; arc=none smtp.client-ip=209.85.166.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3608cfa5ce6so5551055ab.0;
+        Fri, 19 Jan 2024 23:28:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705735724; x=1706340524; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=op8+puFUBQ0HGhLoj/M968f0BhKOR1Shj+6HmxTCqzA=;
+        b=KmBIDEJNh5R53SUpmcioVHZ/Xf0vXxry8p2YWbvdRiYb7N/gse6/9nGQL6CdRULGWp
+         gFOGwG92TssGymKNSyDW260EZuFbSb3bALiDHz4JzGd90BTA+DreqByZEK4kCy4r7Jy3
+         x2tLwMnLQrW3Vzi+y4OlaeuPtN2kmNRIBMPLTV6zkIMNSIVVUwUQAgHwBWcnky8LNXKw
+         OwzpJJkMZKO/9DxMLUrCmKKmRMo74MCUIRpb5pIeknbEkkETk+6RegB2+IYxh+SPWtxz
+         PBiK3Mr/c1tSGHDhY3wf7d3Crh+1GnclkqsJYXQvFx6+aMoNthSzFEJsY+LLuoD9808a
+         WiFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705735724; x=1706340524;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=op8+puFUBQ0HGhLoj/M968f0BhKOR1Shj+6HmxTCqzA=;
+        b=KTDyD1oYznksBf3nrMORi14fVvgxeeGlR345rhxT6EHW4spvRV4lJ3PjRlIX/ReoEI
+         X6lFXE3m7ZXZCmjFhzXSMpiuCmAJp4+cWVaqBptmi+tZuMzvdJfNU/mTt8f3ZflSGv1g
+         PrTUJRle+HKkfutqDXLWIKEkw24Fjh13tm5lc3QGhO0wG8QhQ5C7x/rAHN84LxQM9yY9
+         INY9OGc/R20PLKtFDWF4SVjdq3X3B8bbHC7F9KTc/kXloA/DwAwkS7/r2bt6tbHqEQ9o
+         xPMyTWfUXFKoseMIsrr0Yk2OHyFIA7J/6y0GCl8kyHFLASzzyWBsUA0sHaA5rp/NKeu2
+         cSog==
+X-Gm-Message-State: AOJu0YynN5i4SHcZ/fwm4PMb5y/JM6LctOEOmgF/d4ZwR0Gj5ks+ePwa
+	571adhBcajjjGHTz9jjbrKHWjhVZ03JZdcZv/VmRlUrT1hlIUqGw
+X-Google-Smtp-Source: AGHT+IFCRPs1/tBVCZVWysUDtfO6FYq2BkYpRS7ZbSw9HL6hXinF0O1vRTzqZ9rM73oHYIUU5tKG1Q==
+X-Received: by 2002:a92:d9c3:0:b0:361:ac32:5c7f with SMTP id n3-20020a92d9c3000000b00361ac325c7fmr1216491ilq.36.1705735723818;
+        Fri, 19 Jan 2024 23:28:43 -0800 (PST)
+Received: from fedora.. ([2402:e280:3e0d:606:d0c9:2a06:9cc6:18a3])
+        by smtp.gmail.com with ESMTPSA id s11-20020a170902ea0b00b001d50766546dsm4017809plg.184.2024.01.19.23.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 23:28:43 -0800 (PST)
+From: Suresh Kumar <suresh2514@gmail.com>
+To: jesse.brandeburg@intel.com,
+	anthony.l.nguyen@intel.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Suresh Kumar <suresh2514@gmail.com>
+Subject: [PATCH iwl v2] i40e: print correct hw max rss count in kernel ring buffer
+Date: Sat, 20 Jan 2024 12:58:06 +0530
+Message-ID: <20240120072806.8554-1-suresh2514@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <adb07ef9-4609-4cb4-b5e4-8e0af00bac16@intel.com>
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd100002.china.huawei.com (7.221.188.184)
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 19, 2024 at 08:40:20PM +0200, Adrian Hunter wrote:
-> On 19/01/24 12:48, Changbin Du wrote:
-> > Now perf can show assembly instructions with libcapstone for x86, and the
-> > capstone is better in general.
-> > 
-> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> > ---
-> >  tools/perf/Documentation/perf-intel-pt.txt | 11 +++++------
-> >  tools/perf/ui/browsers/res_sample.c        |  2 +-
-> >  tools/perf/ui/browsers/scripts.c           |  2 +-
-> >  3 files changed, 7 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-> > index 2109690b0d5f..8e62f23f7178 100644
-> > --- a/tools/perf/Documentation/perf-intel-pt.txt
-> > +++ b/tools/perf/Documentation/perf-intel-pt.txt
-> > @@ -115,9 +115,8 @@ toggle respectively.
-> >  
-> >  perf script also supports higher level ways to dump instruction traces:
-> >  
-> > -	perf script --insn-trace --xed
-> > +	perf script --insn-trace=disasm
-> 
-> Please add also:
-> 
-> or to use the xed disassembler, which requires installing the xed tool
-> (see XED below):
-> 
-> 	perf script --insn-trace --xed
->
-Added, thanks.
+pf->rss_size_max is hardcoded and always prints max rss count as 64.
 
-> >  
-> > -Dump all instructions. This requires installing the xed tool (see XED below)
-> >  Dumping all instructions in a long trace can be fairly slow. It is usually better
-> >  to start with higher level decoding, like
-> >  
-> > @@ -130,12 +129,12 @@ or
-> >  and then select a time range of interest. The time range can then be examined
-> >  in detail with
-> >  
-> > -	perf script --time starttime,stoptime --insn-trace --xed
-> > +	perf script --time starttime,stoptime --insn-trace=disasm
-> >  
-> >  While examining the trace it's also useful to filter on specific CPUs using
-> >  the -C option
-> >  
-> > -	perf script --time starttime,stoptime --insn-trace --xed -C 1
-> > +	perf script --time starttime,stoptime --insn-trace=disasm -C 1
-> >  
-> >  Dump all instructions in time range on CPU 1.
-> >  
-> > @@ -1306,7 +1305,7 @@ Without timestamps, --per-thread must be specified to distinguish threads.
-> >  
-> >  perf script can be used to provide an instruction trace
-> >  
-> > - $ perf script --guestkallsyms $KALLSYMS --insn-trace --xed -F+ipc | grep -C10 vmresume | head -21
-> > + $ perf script --guestkallsyms $KALLSYMS --insn-trace=disasm -F+ipc | grep -C10 vmresume | head -21
-> >         CPU 0/KVM  1440  ffffffff82133cdd __vmx_vcpu_run+0x3d ([kernel.kallsyms])                movq  0x48(%rax), %r9
-> >         CPU 0/KVM  1440  ffffffff82133ce1 __vmx_vcpu_run+0x41 ([kernel.kallsyms])                movq  0x50(%rax), %r10
-> >         CPU 0/KVM  1440  ffffffff82133ce5 __vmx_vcpu_run+0x45 ([kernel.kallsyms])                movq  0x58(%rax), %r11
-> > @@ -1407,7 +1406,7 @@ There were none.
-> >  
-> >  'perf script' can be used to provide an instruction trace showing timestamps
-> >  
-> > - $ perf script -i perf.data.kvm --guestkallsyms $KALLSYMS --insn-trace --xed -F+ipc | grep -C10 vmresume | head -21
-> > + $ perf script -i perf.data.kvm --guestkallsyms $KALLSYMS --insn-trace=disasm -F+ipc | grep -C10 vmresume | head -21
-> >         CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133cdd __vmx_vcpu_run+0x3d ([kernel.kallsyms])                 movq  0x48(%rax), %r9
-> >         CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133ce1 __vmx_vcpu_run+0x41 ([kernel.kallsyms])                 movq  0x50(%rax), %r10
-> >         CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133ce5 __vmx_vcpu_run+0x45 ([kernel.kallsyms])                 movq  0x58(%rax), %r11
-> > diff --git a/tools/perf/ui/browsers/res_sample.c b/tools/perf/ui/browsers/res_sample.c
-> > index 7cb2d6678039..1022baefaf45 100644
-> > --- a/tools/perf/ui/browsers/res_sample.c
-> > +++ b/tools/perf/ui/browsers/res_sample.c
-> > @@ -83,7 +83,7 @@ int res_sample_browse(struct res_sample *res_samples, int num_res,
-> >  		     r->tid ? "--tid " : "",
-> >  		     r->tid ? (sprintf(tidbuf, "%d", r->tid), tidbuf) : "",
-> >  		     extra_format,
-> > -		     rstype == A_ASM ? "-F +insn --xed" :
-> > +		     rstype == A_ASM ? "-F +insn_disasm" :
-> 
-> insn_disasm -> disasm
->
-Fixed. I forgot to commit this change for last version.
+Eg:
+  kernel: i40e 0000:af:00.1: User requested queue count/HW max RSS count:  104/64
 
-> >  		     rstype == A_SOURCE ? "-F +srcline,+srccode" : "",
-> >  		     symbol_conf.inline_name ? "--inline" : "",
-> >  		     "--show-lost-events ",
-> > diff --git a/tools/perf/ui/browsers/scripts.c b/tools/perf/ui/browsers/scripts.c
-> > index 47d2c7a8cbe1..3efc76c621c4 100644
-> > --- a/tools/perf/ui/browsers/scripts.c
-> > +++ b/tools/perf/ui/browsers/scripts.c
-> > @@ -107,7 +107,7 @@ static int list_scripts(char *script_name, bool *custom,
-> >  	if (evsel)
-> >  		attr_to_script(scriptc.extra_format, &evsel->core.attr);
-> >  	add_script_option("Show individual samples", "", &scriptc);
-> > -	add_script_option("Show individual samples with assembler", "-F +insn --xed",
-> > +	add_script_option("Show individual samples with assembler", "-F +insn_disasm",
-> 
-> insn_disasm -> disasm
->
-Fixed.
+whereas  ethtool reports the correct value from "vsi->num_queue_pairs"
 
-> >  			  &scriptc);
-> >  	add_script_option("Show individual samples with source", "-F +srcline,+srccode",
-> >  			  &scriptc);
-> 
+Channel parameters for eno33:
+Pre-set maximums:
+RX:     n/a
+TX:     n/a
+Other:      1
+Combined:   104
+Current hardware settings:
+RX:     n/a
+TX:     n/a
+Other:      1
+Combined:   104  <-------
 
+and is misleading.
+
+Change it to vsi->num_queue_pairs
+
+Signed-off-by: Suresh Kumar <suresh2514@gmail.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index d5519af34657..f5c1ec190f7e 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -12524,7 +12524,7 @@ int i40e_reconfig_rss_queues(struct i40e_pf *pf, int queue_count)
+ 		i40e_pf_config_rss(pf);
+ 	}
+ 	dev_info(&pf->pdev->dev, "User requested queue count/HW max RSS count:  %d/%d\n",
+-		 vsi->req_queue_pairs, pf->rss_size_max);
++		 vsi->req_queue_pairs, vsi->num_queue_pairs);
+ 	return pf->alloc_rss_size;
+ }
+ 
 -- 
-Cheers,
-Changbin Du
+2.43.0
+
 
