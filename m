@@ -1,87 +1,118 @@
-Return-Path: <linux-kernel+bounces-31841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9903383355E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 17:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C00833560
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 17:40:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC0B1F21E73
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:40:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19BDE1F22929
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22EE1FB0;
-	Sat, 20 Jan 2024 16:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB87EBF;
+	Sat, 20 Jan 2024 16:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OIjT7E22"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FN6ejpF+"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B7238E
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 16:39:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5E111718
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 16:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705768792; cv=none; b=ZNC8s0qj6HPdj5n+eqbB324c4NORylUTsB1+FE/UKemAcCPBdJhCG/vjvYVss63T2tT9KsybdlZi0vvNraq5XFF3nNM11LVY/H5sseAnbQdx6vdDnwA3l5SLNPmO50TKXs1xMVaht8zGSQk+W7xFAsM5bQlmzJeSXcA8JjPQjdY=
+	t=1705768833; cv=none; b=HOQp0an+ng9g4JMQ335sr3CmCMJHrAXPAghHqS16lRTo7B5chlGZwURSdDLlDdlNwwVvs6LGACVeO2AYJasaHMYUmqpHNV0hRSVWJ4YrxwvEI+PqctPiBUvEzL7ftwg4H72P72fRLDEkPXwBpWZHWWS4IW48h+9QjVpITcXpS2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705768792; c=relaxed/simple;
-	bh=dNXhnLbERTTkK+JM0UHrIDWMGQkvfagA8c1utd9dZVw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G+z24EeK2atb9ypEa5NNqdyan5HoCk6tqXXKMt1rEUpPyU2GIOeiMh2MjwSWBbXvr60QPbEFxWeyYPJkxCwytcqy0qSLSBuKLpvoA9KMuv1IbDcJ2wf+ToueJcPP516mMIjVzgVo4Tu/JV8IGjCKiugVRvIamtT+3R/zOL4RA6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OIjT7E22; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=oZ5Lc7Bp8fwMVeENZr2kJiceObz8iC2ZU2MJkAmy2xA=; b=OIjT7E22+B05YzjxNI0QFcvxRp
-	GmX570zbOpDgMvC+qrGg95qRD1SwgO5axRHIJcZLpqP/M1YcneGVAdOgH6MCMp1d1JLs0uLwzqT6d
-	TaJjWnbHITuBOb6WJ4ucUzWTMQNo6ygD9UEy71mS5Iz2eVeTZxaXsFZJdIqCJorQBnmksA7z2GnAN
-	B8XvwmWy5UTDGVxgiUPtLUGkAUY+82DSDe4rVz+Suof+/fVHHUD2ma6SkxmMVWMuszrgOBwnKJXew
-	/LHFk/Ud4G9mCdZP2WGeei0edj8lqZ9F26i1YNLIUkddOvzRFN1oNEqsTt/aj1fmMJ1GiDrBncFpV
-	A3tAviHA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rRENk-0000000A8nI-24D5;
-	Sat, 20 Jan 2024 16:39:44 +0000
-Date: Sat, 20 Jan 2024 16:39:44 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Yang Shi <yang@os.amperecomputing.com>, riel@surriel.com,
-	shy828301@gmail.com, cl@linux.com, akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RESEND PATCH] mm: align larger anonymous mappings on THP
- boundaries
-Message-ID: <Zav3UK7ESNxCMjyP@casper.infradead.org>
-References: <20231214223423.1133074-1-yang@os.amperecomputing.com>
- <1e8f5ac7-54ce-433a-ae53-81522b2320e1@arm.com>
+	s=arc-20240116; t=1705768833; c=relaxed/simple;
+	bh=YB/JxYQ/pIR3ToqU03uuFdu3N6gqG3VeZ/Otmp/LweM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Mkcr0gik5EQWokPnHWM+GsuHOUg+FTEUsiMGw0de1RIvZINWNUutSlMGWh2zLX/TPJtOzmCa9xO3San1FJ+ihm3x30BZ+DTzQlMbfL9lIczopONwMW97xIJ/oscmgKtAkAOJCTIPI0ueVyJF1BayZ+Ra916ZBN7udxuza+/7xvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FN6ejpF+; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cd64022164so26218431fa.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 08:40:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1705768828; x=1706373628; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lKz6ORL5rgrlrEyJEOMpjmvWzW5nRmmd6FHj6yauGbM=;
+        b=FN6ejpF+L9dgp8KND9TPj9npiH5QvdRHTOcEDMd34HWarnbpQz9xYHsVXnlDhFcx4v
+         iBDv8ajaxN3O5jk2TTpeeeEVN9REF4FjhfpHCaNo0nJkElHIwnH6/UEKJFfPH7mdZIwE
+         bgCZgnT+GENXeGZl3tlAIZa+ulnTJEYHUvIsk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705768828; x=1706373628;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lKz6ORL5rgrlrEyJEOMpjmvWzW5nRmmd6FHj6yauGbM=;
+        b=K/nvXSgdv7S3JmRLQJKgPlFdblbA5qJwcExBxlFIfrh+ErWbnJzeAQNDsnaGYL3oim
+         RFn2kfmDy+dUBWj+Ml5R+ZuZWdsWgGuoFSE/PQ3EMlw7U8GoapWsoZYmj2isKim87lbJ
+         Johq3es4CCRYIEIyWZzZde1lAVyY16gXQMl8TM9AX1JZVt+9M/WVskb9kLfxoIFhTfNU
+         aSTwu2dqiLFApXHE5QAXaLYd/NbrmhXu8cG+l+B91wYDeb9NsK+CKuf3HSJ9wtgdtOjF
+         Ob1jyQbr1qsFJpYEh2t3aFumKSD4hAtrZBj9ZhSDvPST5wzurW9b1o5aWjXvuvevpx96
+         Y7Cw==
+X-Gm-Message-State: AOJu0Yz5pWZ/wMLGWtLnaz41NHhT6NuHax8nWWQvnG5yCSydd6WN7uJ+
+	64V2kqkANpjaW/9fjjrziYdQgbN0a3lxyiHbi/97oRH/qEFEmxNNxMYtF6JiNR8e211Ns0Iuh3q
+	BNCa0Ow==
+X-Google-Smtp-Source: AGHT+IFBhiKHLfhqhAo+Ajpiyl3MvAUmzevsBWF2y8fQyaO8o7k6bzzHXUSHt+8QKbk1g1lwNXifsw==
+X-Received: by 2002:a05:6512:558:b0:50e:44a5:57b0 with SMTP id h24-20020a056512055800b0050e44a557b0mr605594lfl.121.1705768828378;
+        Sat, 20 Jan 2024 08:40:28 -0800 (PST)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id wk18-20020a170907055200b00a2808ee8ab1sm11528280ejb.150.2024.01.20.08.40.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Jan 2024 08:40:27 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55a6833c21eso1183729a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 08:40:27 -0800 (PST)
+X-Received: by 2002:a50:8d56:0:b0:558:d206:3bba with SMTP id
+ t22-20020a508d56000000b00558d2063bbamr704311edt.20.1705768827089; Sat, 20 Jan
+ 2024 08:40:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1e8f5ac7-54ce-433a-ae53-81522b2320e1@arm.com>
+References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org>
+ <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
+ <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
+ <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com>
+ <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com>
+ <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com>
+ <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com> <78111.1705764224@cvs.openbsd.org>
+In-Reply-To: <78111.1705764224@cvs.openbsd.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 20 Jan 2024 08:40:09 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgdhbLeY=pEY27m4OQuDAn9xkzSLHwE9D8m1Dw8a++n=Q@mail.gmail.com>
+Message-ID: <CAHk-=wgdhbLeY=pEY27m4OQuDAn9xkzSLHwE9D8m1Dw8a++n=Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
+To: Theo de Raadt <deraadt@openbsd.org>
+Cc: Jeff Xu <jeffxu@chromium.org>, =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>, 
+	Jeff Xu <jeffxu@google.com>, akpm@linux-foundation.org, keescook@chromium.org, 
+	jannh@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Jan 20, 2024 at 12:04:27PM +0000, Ryan Roberts wrote:
-> However, after this patch, each allocation is in its own VMA, and there is a 2M
-> gap between each VMA. This causes 2 problems: 1) mmap becomes MUCH slower
-> because there are so many VMAs to check to find a new 1G gap. 2) It fails once
-> it hits the VMA limit (/proc/sys/vm/max_map_count). Hitting this limit then
-> causes a subsequent calloc() to fail, which causes the test to fail.
-> 
-> Looking at the code, I think the problem is that arm64 selects
-> ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT. But __thp_get_unmapped_area() allocates
-> len+2M then always aligns to the bottom of the discovered gap. That causes the
-> 2M hole. As far as I can see, x86 allocates bottom up, so you don't get a hole.
+On Sat, 20 Jan 2024 at 07:23, Theo de Raadt <deraadt@openbsd.org> wrote:
+>
+> There is an one large difference remainig between mimmutable() and mseal(),
+> which is how other system calls behave.
+>
+> We return EPERM for failures in all the system calls that fail upon
+> immutable memory (since Oct 2022).
+>
+> You are returning EACESS.
+>
+> Before it is too late, do you want to reconsider that return value, or
+> do you have a justification for the choice?
 
-As a quick hack, perhaps
-#ifdef ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
-take-the-top-half
-#else
-current-take-bottom-half-code
-#endif
+I don't think there's any real reason for the difference.
 
-?
+Jeff - mind changing the EACESS to EPERM, and we'll have something
+that is more-or-less compatible between Linux and OpenBSD?
+
+             Linus
 
