@@ -1,157 +1,146 @@
-Return-Path: <linux-kernel+bounces-31846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D15C9833568
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:00:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E461F83356A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:00:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CB6F1F242BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 17:00:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 242D8284149
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 17:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4580110961;
-	Sat, 20 Jan 2024 17:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C81010A08;
+	Sat, 20 Jan 2024 17:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iULDNPe1"
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Op9cexCb"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15AD72F34
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 17:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7692110979
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 17:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705770006; cv=none; b=sNNPjIeQVYddmXP1kRF3eRlDs1DQf2SmZlLHzfoB9byZ94LEXIxd0m1/ZCvEspIEZ2yanEgypspmmmegn0c66anbiqSvH8RLqTRw/AUmzgLO26iMFfGvDinHnBRNZX9kNETkkLB358t9/KjRF0mSYyF0KrBDVyKoqe9imSP8cQo=
+	t=1705770036; cv=none; b=ilbqMRNOU8wzLIgOHexFilaKaP6Pu9NUZDmfUQp+CIZKZve60LAUkDtbKaOFWWyDoqIDAHT271LCikUwW04HCXe5cDW3y+pZtoIb8G3xR9oyKmhD5nKIVcXf62C8HQgl+np+qQX+GbbeFqOoQYR5OWdAGVJzWEJEMUfAkr8OYBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705770006; c=relaxed/simple;
-	bh=iiYRqIr14spdDtRX8XbPLGlK7am6yak5pNR2mkT4XUE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iZVFhL5rD4pOmEGIqXKBdAOZjAsryTZ3+SzqDJ74jP/Bzg3kzC1uIc3kTklA153YPZJ9DXaDt4ao3W2QU2/jujzsoWG5taiqNWamnu7EePx3bJZ5CVrbNmf7OzF+AGad7dU247qjI9qAyp5YKNKhhQL9gxI4t5GZ+BzUrhAgvBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iULDNPe1; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-21429ac4dc9so258458fac.1
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 09:00:04 -0800 (PST)
+	s=arc-20240116; t=1705770036; c=relaxed/simple;
+	bh=AjsF/ew79q1rxwqFpLchAi2I9Lgbtykummu8teyFBpI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XZ1UEBG2JlhZtRrix+umdSkX3t0k5zDwfD2vw21ByJ+N8Pn7chl/bjJa1rsbzZjzM9LXB6YRMZpcIo8dZYpd122OA6c1moe4IjSFu6dC8AhL5BjT7QRT0HqBgvICUDpoPuYjjrQixyQAMtZN6dknkWis8hhR/pHGjpD2pLFa/FA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Op9cexCb; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a28cc85e6b5so213514466b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 09:00:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705770004; x=1706374804; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=glGHg+SzqygO0Y5IbZ+h4Ne6PeGtd0PUMlqRFswKyG8=;
-        b=iULDNPe1KwXosNx7GG+sE9gchJN4Tucx3edG8AsXHe42g1JaHZarZwEQb/6FXwiRLY
-         AzQYRoTt/qH5PY+K3KPiJGC981ai6rkP0t7Z8MGFxPDJHvPHD0Y7jbendx24Fn3ucZfe
-         y+iv2NPYHXQutuz6sEd14aH994sdeH37D/DRIFm3nNT/wvUrP1hYEP4lRi7IqinBVMNl
-         KI3Q9Kd9SiYIfVTornSqB0+psWTtvkCLFcjTtKlGEwmnxMNZspU/drpCLWI9figQpbCJ
-         slhZqvL9+S+E8BJUue0SYkVtb3cxe/2Nb+mnkm1JDsII2aJCUuE7GR+25h2e8AXqsdX2
-         fxvA==
+        d=linuxfoundation.org; s=google; t=1705770032; x=1706374832; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DIHej7AiTWXhetxkzClgi5vGZxcxwr+5xqPSPNaw8Uo=;
+        b=Op9cexCbSCOWkq6zLVWGAeqH9U5I9vqqFbdVpmG69641f52gL2G2F4c2a7soihBcvA
+         ADV497rdwwruGUBi53H3ee5JWLjDvZLDhu7kmDot3o6alW2ICV7U4NbVZ25X9JGz62d/
+         aNAR0/+YOgEfoT4LXiTPdmuqGfgg3w6fQgwxs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705770004; x=1706374804;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1705770032; x=1706374832;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=glGHg+SzqygO0Y5IbZ+h4Ne6PeGtd0PUMlqRFswKyG8=;
-        b=SNd8Js2b5sMhkYhjuxm9MgAdIOgwc6VmkHX/5Z1zh1KIwFZ/mdwUTRxGAc51QQhyr9
-         kpXciZqZErgl59dRfaNhfVu+BVDsIsfwXoRYW7oINfBbdVq1kekND70IwnSYdmai4aLt
-         XmsB3JzpO+SarVNk8dtYKZjI5KquL9q6S+8TTZ0NWGZTxn3HxKHFg/KoIxaZv0nQaYQW
-         3GuDYwKzVWGUcTLzJozicha7CWD75s+phb7Q8zZR4BGQb+qzVL+5XvPYBRp36x+ioie0
-         Gzn35SxPW/2JaqyQYz97c3NnZsHvg1D4EWtf7OM36Ytzwd9Dygh0Oo8cz1+HFaWs1TDt
-         AWsA==
-X-Gm-Message-State: AOJu0Yxh3oPvdahOknwme9kylKM2zja/kw4NljgErC4NsAjMWzQroPPJ
-	HBBHKQmuAukJFCgBSMg4RZ5AXoRZ4Qkh/jfyMoYZ6BiO15DlykWzst2DmQxrVjg=
-X-Google-Smtp-Source: AGHT+IFx52Mqg9UvAhyMZxSqoBm68J0eDSmn8idCjQbLNMt+HPNn3t9uPTN0PRxOWKxUjhl+YxVwhg==
-X-Received: by 2002:a05:6870:304a:b0:204:f46f:4ec9 with SMTP id u10-20020a056870304a00b00204f46f4ec9mr1191429oau.46.1705770002445;
-        Sat, 20 Jan 2024 09:00:02 -0800 (PST)
-Received: from localhost ([136.62.192.75])
-        by smtp.gmail.com with ESMTPSA id dt5-20020a0568705a8500b002142f74c5edsm236389oab.14.2024.01.20.09.00.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jan 2024 09:00:01 -0800 (PST)
-From: Sam Protsenko <semen.protsenko@linaro.org>
-To: Andi Shyti <andi.shyti@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Alim Akhtar <alim.akhtar@samsung.com>,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: s3c64xx: Extract FIFO depth calculation to a dedicated macro
-Date: Sat, 20 Jan 2024 11:00:01 -0600
-Message-Id: <20240120170001.3356-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.39.2
+        bh=DIHej7AiTWXhetxkzClgi5vGZxcxwr+5xqPSPNaw8Uo=;
+        b=dP3jlIV/QU6gcXFyEkVqcH/JyroEIOBiwr8SDu8k2WhGO9rUfFO9PBK5Zl9e8AzXDi
+         A/OChitBFa7ACUMZhlfN7c++GAlR3l0F7hPdNafCsxIYTVu0VYSa88Ty2xoyxHzuuNud
+         lGYUdEK7q9BagXm2IfensxG7Ch416LHImwPTXREA5MDhfPnx/M7c0hG//tPMceHHtCQq
+         zJW8irttq7AUf09eqCvVmmO1j2UdPucznFwisYA76H7J0mWbvRLi8lbvrBGkNE1h4sSk
+         p7kchPy28FyxMkyEgGbfbVG3YqAcCZcKIWODA6iakjOlalODeDEvOBp9Jftx2GA2gxQ4
+         kApQ==
+X-Gm-Message-State: AOJu0YwVhToVEfBGIwObAyqQx8vHWYgqzD9iBrMhNWNUaMsf69ppNKs+
+	49ro7HJIhWXe/z2p6guQldwvxXX5r9ShwnumTStU+i0b+NKxA+ZNJ8aAwc6/joUYOxUCWswhzMX
+	o4uWhGA==
+X-Google-Smtp-Source: AGHT+IFjSEZvrcRpExpbjUMzOqTXN1blT++E6RZwvUdHVgwntPsKCp7mSRWwVDKctgPT4SVj5IHMQw==
+X-Received: by 2002:a17:906:cec2:b0:a2a:7404:cf5d with SMTP id si2-20020a170906cec200b00a2a7404cf5dmr529967ejb.114.1705770032389;
+        Sat, 20 Jan 2024 09:00:32 -0800 (PST)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
+        by smtp.gmail.com with ESMTPSA id s2-20020a170906354200b00a293c6cc184sm11527787eja.24.2024.01.20.09.00.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Jan 2024 09:00:31 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-556c3f0d6c5so2366944a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 09:00:31 -0800 (PST)
+X-Received: by 2002:a05:6402:3138:b0:55a:214:c7f7 with SMTP id
+ dd24-20020a056402313800b0055a0214c7f7mr515704edb.84.1705770031241; Sat, 20
+ Jan 2024 09:00:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210312113253.305040674@infradead.org> <20210312115749.065275711@infradead.org>
+ <Pine.BSM.4.64L.2401200654480.19429@herc.mirbsd.org> <CE53F232-3D2D-4910-94B4-A4304F5990C7@zytor.com>
+In-Reply-To: <CE53F232-3D2D-4910-94B4-A4304F5990C7@zytor.com>
+From: Linus Torvalds <torvalds@linuxfoundation.org>
+Date: Sat, 20 Jan 2024 09:00:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whtFk2DoO8WhtmsbU9nGXUd8sKShV1Dk71krFLBjPUSeg@mail.gmail.com>
+Message-ID: <CAHk-=whtFk2DoO8WhtmsbU9nGXUd8sKShV1Dk71krFLBjPUSeg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86: Remove dynamic NOP selection
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Thorsten Glaser <tg@debian.org>, Peter Zijlstra <peterz@infradead.org>, x86@kernel.org, 
+	rostedt@goodmis.org, linux-kernel@vger.kernel.org, 
+	linux-toolchains@vger.kernel.org, jpoimboe@redhat.com, 
+	alexei.starovoitov@gmail.com, mhiramat@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Simplify the code by extracting all cases of FIFO depth calculation into
-a dedicated macro. No functional change.
+On Sat, 20 Jan 2024 at 00:28, H. Peter Anvin <hpa@zytor.com> wrote:
+>
+> %eiz was something that binutils used to put in when disassembling certain redundant encodings with SIB at some point.
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
- drivers/spi/spi-s3c64xx.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Yeah, it's purely (bad) syntactic sugar for "no register". Somebody
+decided that the fact that so many RISC architectures have a "zero
+register" means that they should make x86 look like it has a "zero
+register" too.
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index f7d623ad6ac3..7f7eb8f742e4 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -109,6 +109,7 @@
- #define TX_FIFO_LVL(v, i) (((v) >> 6) & FIFO_LVL_MASK(i))
- #define RX_FIFO_LVL(v, i) (((v) >> (i)->port_conf->rx_lvl_offset) & \
- 					FIFO_LVL_MASK(i))
-+#define FIFO_DEPTH(i) ((FIFO_LVL_MASK(i) >> 1) + 1)
- 
- #define S3C64XX_SPI_MAX_TRAILCNT	0x3ff
- #define S3C64XX_SPI_TRAILCNT_OFF	19
-@@ -406,7 +407,7 @@ static bool s3c64xx_spi_can_dma(struct spi_controller *host,
- 	struct s3c64xx_spi_driver_data *sdd = spi_controller_get_devdata(host);
- 
- 	if (sdd->rx_dma.ch && sdd->tx_dma.ch) {
--		return xfer->len > (FIFO_LVL_MASK(sdd) >> 1) + 1;
-+		return xfer->len > FIFO_DEPTH(sdd);
- 	} else {
- 		return false;
- 	}
-@@ -495,9 +496,7 @@ static u32 s3c64xx_spi_wait_for_timeout(struct s3c64xx_spi_driver_data *sdd,
- 	void __iomem *regs = sdd->regs;
- 	unsigned long val = 1;
- 	u32 status;
--
--	/* max fifo depth available */
--	u32 max_fifo = (FIFO_LVL_MASK(sdd) >> 1) + 1;
-+	u32 max_fifo = FIFO_DEPTH(sdd);
- 
- 	if (timeout_ms)
- 		val = msecs_to_loops(timeout_ms);
-@@ -604,7 +603,7 @@ static int s3c64xx_wait_for_pio(struct s3c64xx_spi_driver_data *sdd,
- 	 * For any size less than the fifo size the below code is
- 	 * executed atleast once.
- 	 */
--	loops = xfer->len / ((FIFO_LVL_MASK(sdd) >> 1) + 1);
-+	loops = xfer->len / FIFO_DEPTH(sdd);
- 	buf = xfer->rx_buf;
- 	do {
- 		/* wait for data to be received in the fifo */
-@@ -741,7 +740,7 @@ static int s3c64xx_spi_transfer_one(struct spi_controller *host,
- 				    struct spi_transfer *xfer)
- {
- 	struct s3c64xx_spi_driver_data *sdd = spi_controller_get_devdata(host);
--	const unsigned int fifo_len = (FIFO_LVL_MASK(sdd) >> 1) + 1;
-+	const unsigned int fifo_len = FIFO_DEPTH(sdd);
- 	const void *tx_buf = NULL;
- 	void *rx_buf = NULL;
- 	int target_len = 0, origin_len = 0;
-@@ -1280,7 +1279,7 @@ static int s3c64xx_spi_probe(struct platform_device *pdev)
- 	dev_dbg(&pdev->dev, "Samsung SoC SPI Driver loaded for Bus SPI-%d with %d Targets attached\n",
- 					sdd->port_id, host->num_chipselect);
- 	dev_dbg(&pdev->dev, "\tIOmem=[%pR]\tFIFO %dbytes\n",
--					mem_res, (FIFO_LVL_MASK(sdd) >> 1) + 1);
-+					mem_res, FIFO_DEPTH(sdd));
- 
- 	pm_runtime_mark_last_busy(&pdev->dev);
- 	pm_runtime_put_autosuspend(&pdev->dev);
--- 
-2.39.2
+I assume it regularized some very silly decoding issue, but it was horrible.
 
+It's not the worst thing I've ever seen - in objdump output, and it's
+easy to just remove with a sed script or a simple search-and-replace
+in the editor.  Unlike some of the other "design" choices of objdump.
+
+On that note, does anybody have a better disassembler than objdump? Or
+even a script around it to make it more useful? I do use "objdump
+--disassemble" a fair amount, and I hate how bad it is.
+
+My pet peeve is the crazy relocation handling (or lack there-of). IOW,
+if I do something like
+
+    objdump --disassemble \
+        --no-show-raw-insn
+        --no-addresses \
+        kernel/exit.o
+
+I get output like this:
+
+        call   <delayed_put_task_struct+0x1a>
+
+whis is garbage: it's not calling delayed_put_task_struct+0x1a at all,
+that's just "the offset bytes are all zero because the data is in the
+relocation".
+
+And if I add "-r" to get relocation info, I get
+
+        call   <delayed_put_task_struct+0x1a>
+                        R_X86_64_PLT32  rethook_flush_task-0x4
+
+which shows the raw relocation data, but with truly mind-bogglingly
+horrendous syntax.
+
+Is there some sane tool that just does the sane thing and shows this as
+
+        call   rethook_flush_task
+
+which is what the thing actually means?
+
+And no, the llvm-objdump thing isn't any better. It isn't compatible
+with the GNU binutils objdump, but it does the same insanely bad
+decoding.
+
+            Linus
 
