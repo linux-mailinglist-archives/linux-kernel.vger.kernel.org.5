@@ -1,168 +1,104 @@
-Return-Path: <linux-kernel+bounces-31828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD81C833538
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:23:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8CE7833547
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:30:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3820F283D75
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:23:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F7A0284A4D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DC8101FB;
-	Sat, 20 Jan 2024 15:23:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510A41078D;
+	Sat, 20 Jan 2024 15:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HMxaR02z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="YicnAI/Z"
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FC1F515;
-	Sat, 20 Jan 2024 15:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B592117;
+	Sat, 20 Jan 2024 15:30:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705764224; cv=none; b=joDKX3gNKHe/4GXkDhQCQmUifeU9SjQtrm5zPbi6IspF31NUqpDs0uKd7kLZUjBZD+QzxqgqUod5o1Ao1DxDpT6l3MI9aIg07ZU1pnztLdo8z+9PTGvnl6YGTDlFb2tuW4ECd22lnTrdaRT/J9xi/iY1bZR8M9hVL7oSNaRvPUA=
+	t=1705764627; cv=none; b=Nc0H27UbOBtNRD6xa7Ttq8WHFr0oeQ1u+5CMjjNhyO1OnGzX/E5iGts7z8RY/032Zs2lrhWgt+A2as+3UktGLEJg8SQ5bLU1FUmt3nXtx8tHR7KkOvJ2AiDq6BCfF0eAlxUk4ye3Swct3Gpbi4Q6W5Mv7CororZidT1ezQTugEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705764224; c=relaxed/simple;
-	bh=7+7RUx7Pil+a2kyG9u8gC474V725SmOCGQ9QaE+x60o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i+C4NOiYbG1I+lXUGkt4SkW3gHNXBhdfMTXjL8l0eEo8Mviv5FegVABB50izzVaexFzvB6faLZvLRsNemgn5CZV5P+5CWOWncl+0OyE0oD1Wrec3/peq6fnKD/OQvX8ZAhtfUDnYfIkU9HMv1+z/Kpr0Qe3jF/wApiPsehlvYoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HMxaR02z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E221CC433F1;
-	Sat, 20 Jan 2024 15:23:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705764224;
-	bh=7+7RUx7Pil+a2kyG9u8gC474V725SmOCGQ9QaE+x60o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HMxaR02zNPkYr4GYoX4GbP5gdggaPIpv+Tv16glt2UIdat2OWnXQ/tVwqgkKFji6U
-	 1LN4tLyTuBpXEQdMIfx86T15FsiVRtj4B/l5NQnR00nn2ypsSITPzY3J2KsMa8PZy5
-	 jat6D92FyKvVu0VLuJRYBfXdjHePJXL9RkQC2Mj+DVQU3O3+1k38m8lW5/b9I43e1x
-	 KB4srI/lqSW25iecwNRrQEOyExtiIw3zAJOfZ0e99MoHNuIcam6R5PEizQ5bEk1nWR
-	 ub9zJ6Evirkkq6GbpKifKjYSqPEmWOyI+vPXjI0e02jmbe7G9TRdEmVuTpL12TBIKF
-	 0FQoQs8t5JzmA==
-Date: Sat, 20 Jan 2024 16:23:38 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Cc: mszeredi@redhat.com, stgraber@stgraber.org, 
-	linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	Bernd Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 6/9] fs/fuse: support idmapped ->setattr op
-Message-ID: <20240120-zeitmanagement-abbezahlen-8a3e2b5de72a@brauner>
-References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
- <20240108120824.122178-7-aleksandr.mikhalitsyn@canonical.com>
+	s=arc-20240116; t=1705764627; c=relaxed/simple;
+	bh=4OWicOUgr4L9XOpIC8Mj/UCoeLP2NtOXMnYVddveOY0=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID; b=LKuxatsSRw1oKV8UdKOhqyUYqQ1U6ycKBxz6ujg5nEz2EHoBiX6DrFHapaxeG5xAgo2N2xsrJy0XnOifEtEn/Sr4d8gZ4OsfxHy5SdvhYdvApf+KI1XKW4NuQATHHcm+96G/NqFokyOnJzCfQOZh/8es5JVGWPa/JWsbAsD0kkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=YicnAI/Z; arc=none smtp.client-ip=199.185.137.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=4OWicOUgr4
+	L9XOpIC8Mj/UCoeLP2NtOXMnYVddveOY0=; h=date:references:in-reply-to:
+	subject:cc:to:from; d=openbsd.org; b=YicnAI/ZhxukTjaldVdclRZFxTLi4itmr
+	tNLKXPemFgAzsDYBZqrDlhF8hKj9fc6mUckUM/iyBV589tt7LViHcOyf2nf6j2zTEslzh4
+	vG/l8dNmRi+jECNxd2ZsgriACFzDRwUff3t4dg1Cw9QlDOyECEPJenw35PZGGBPCBdB7BZ
+	RGFWT8c7WkpMUT/foI2hTNF+F9uQu4ruA0PAFajE6OYwpa+NShTfzbhxK/ff0YFRxH5Hek
+	AMyJ71GI47E6Gm24f6LQryBH1ut63FSj3cg1mVvHLyfzq81KQL3IaM9V/vGpnw9rKT1fjE
+	otMZ+r4bE51rZdAr2FONDv+DyVVGw==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+	by cvs.openbsd.org (OpenSMTPD) with ESMTP id 77142d56;
+	Sat, 20 Jan 2024 08:23:44 -0700 (MST)
+From: "Theo de Raadt" <deraadt@openbsd.org>
+To: Jeff Xu <jeffxu@chromium.org>
+cc: Linus Torvalds <torvalds@linux-foundation.org>,
+    =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>,
+    Jeff Xu <jeffxu@google.com>, akpm@linux-foundation.org,
+    keescook@chromium.org, jannh@google.com, willy@infradead.org,
+    gregkh@linuxfoundation.org, jorgelo@chromium.org,
+    groeck@chromium.org, linux-kernel@vger.kernel.org,
+    linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+    pedro.falcato@gmail.com, dave.hansen@intel.com,
+    linux-hardening@vger.kernel.org
+Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
+In-reply-to: <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com>
+References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org> <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com> <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com> <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com> <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com> <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com> <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com>
+Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
+   message dated "Thu, 14 Dec 2023 14:52:58 -0800."
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240108120824.122178-7-aleksandr.mikhalitsyn@canonical.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <45028.1705764224.1@cvs.openbsd.org>
+Date: Sat, 20 Jan 2024 08:23:44 -0700
+Message-ID: <78111.1705764224@cvs.openbsd.org>
 
-On Mon, Jan 08, 2024 at 01:08:21PM +0100, Alexander Mikhalitsyn wrote:
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Seth Forshee <sforshee@kernel.org>
-> Cc: Miklos Szeredi <miklos@szeredi.hu>
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Bernd Schubert <bschubert@ddn.com>
-> Cc: <linux-fsdevel@vger.kernel.org>
-> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-> ---
->  fs/fuse/dir.c    | 32 +++++++++++++++++++++-----------
->  fs/fuse/file.c   |  2 +-
->  fs/fuse/fuse_i.h |  4 ++--
->  3 files changed, 24 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> index f7c2c54f7122..5fbb7100ad1c 100644
-> --- a/fs/fuse/dir.c
-> +++ b/fs/fuse/dir.c
-> @@ -1739,17 +1739,27 @@ static bool update_mtime(unsigned ivalid, bool trust_local_mtime)
->  	return true;
->  }
->  
-> -static void iattr_to_fattr(struct fuse_conn *fc, struct iattr *iattr,
-> -			   struct fuse_setattr_in *arg, bool trust_local_cmtime)
-> +static void iattr_to_fattr(struct mnt_idmap *idmap, struct fuse_conn *fc,
-> +			   struct iattr *iattr, struct fuse_setattr_in *arg,
-> +			   bool trust_local_cmtime)
->  {
->  	unsigned ivalid = iattr->ia_valid;
->  
->  	if (ivalid & ATTR_MODE)
->  		arg->valid |= FATTR_MODE,   arg->mode = iattr->ia_mode;
-> -	if (ivalid & ATTR_UID)
-> -		arg->valid |= FATTR_UID,    arg->uid = from_kuid(fc->user_ns, iattr->ia_uid);
-> -	if (ivalid & ATTR_GID)
-> -		arg->valid |= FATTR_GID,    arg->gid = from_kgid(fc->user_ns, iattr->ia_gid);
-> +
-> +	if (ivalid & ATTR_UID) {
-> +		kuid_t fsuid = from_vfsuid(idmap, fc->user_ns, iattr->ia_vfsuid);
-> +		arg->valid |= FATTR_UID;
-> +		arg->uid = from_kuid(fc->user_ns, fsuid);
-> +	}
-> +
-> +	if (ivalid & ATTR_GID) {
-> +		kgid_t fsgid = from_vfsgid(idmap, fc->user_ns, iattr->ia_vfsgid);
-> +		arg->valid |= FATTR_GID;
-> +		arg->gid = from_kgid(fc->user_ns, fsgid);
-> +	}
-> +
->  	if (ivalid & ATTR_SIZE)
->  		arg->valid |= FATTR_SIZE,   arg->size = iattr->ia_size;
->  	if (ivalid & ATTR_ATIME) {
-> @@ -1869,8 +1879,8 @@ int fuse_flush_times(struct inode *inode, struct fuse_file *ff)
->   * vmtruncate() doesn't allow for this case, so do the rlimit checking
->   * and the actual truncation by hand.
->   */
-> -int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
-> -		    struct file *file)
-> +int fuse_do_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
-> +		    struct iattr *attr, struct file *file)
->  {
->  	struct inode *inode = d_inode(dentry);
->  	struct fuse_mount *fm = get_fuse_mount(inode);
-> @@ -1890,7 +1900,7 @@ int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
->  	if (!fc->default_permissions)
->  		attr->ia_valid |= ATTR_FORCE;
->  
-> -	err = setattr_prepare(&nop_mnt_idmap, dentry, attr);
-> +	err = setattr_prepare(idmap, dentry, attr);
->  	if (err)
->  		return err;
->  
-> @@ -1949,7 +1959,7 @@ int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
->  
->  	memset(&inarg, 0, sizeof(inarg));
->  	memset(&outarg, 0, sizeof(outarg));
-> -	iattr_to_fattr(fc, attr, &inarg, trust_local_cmtime);
-> +	iattr_to_fattr(idmap, fc, attr, &inarg, trust_local_cmtime);
->  	if (file) {
->  		struct fuse_file *ff = file->private_data;
->  		inarg.valid |= FATTR_FH;
-> @@ -2084,7 +2094,7 @@ static int fuse_setattr(struct mnt_idmap *idmap, struct dentry *entry,
->  	if (!attr->ia_valid)
->  		return 0;
->  
-> -	ret = fuse_do_setattr(entry, attr, file);
-> +	ret = fuse_do_setattr(idmap, entry, attr, file);
->  	if (!ret) {
->  		/*
->  		 * If filesystem supports acls it may have updated acl xattrs in
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index a660f1f21540..e0fe5497a548 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -2870,7 +2870,7 @@ static void fuse_do_truncate(struct file *file)
->  	attr.ia_file = file;
->  	attr.ia_valid |= ATTR_FILE;
->  
-> -	fuse_do_setattr(file_dentry(file), &attr, file);
-> +	fuse_do_setattr(&nop_mnt_idmap, file_dentry(file), &attr, file);
+Some notes about compatibility between mimmutable(2) and mseal().
 
-Same as for the other patch. Please leave a comment in the commit
-message that briefly explains why it's ok to pass &nop_mnt_idmap here.
-It'll help us later. :)
+This morning, the "RW -> R demotion" code in mimmutable(2) was removed.
+As described previously, that was a development crutch to solved a problem
+but we found a better way with a new ELF section which is available at
+compile time with __attribute__((section(".openbsd.mutable"))).   Which
+works great.
+
+I am syncronizing the madvise / msync behaviour further, we will be compatible.
+I have worried about madvise / msync for a long time, and audited vast amounts
+of the software ecosystem to come to a conclusion we can be more strict, but
+I never acted upon it.
+
+BTW, on OpenBSD and probably other related BSD operating systems,
+MADV_DONTNEED is non-destructive.  However we have a destructive
+operation called MADV_FREE.  msync() MS_INVALIDATE is also destructive.
+But all of these operations will now be prohibited, to syncronize the
+error return value situation.
+
+There is an one large difference remainig between mimmutable() and mseal(),
+which is how other system calls behave.
+
+We return EPERM for failures in all the system calls that fail upon
+immutable memory (since Oct 2022).
+
+You are returning EACESS.
+
+Before it is too late, do you want to reconsider that return value, or
+do you have a justification for the choice?
+
+I think this remains the blocker which would prevent software from doing
+
+#define mimmutable(addr, len)  mseal(addr, len, 0)
 
