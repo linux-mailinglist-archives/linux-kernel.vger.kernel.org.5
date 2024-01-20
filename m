@@ -1,106 +1,96 @@
-Return-Path: <linux-kernel+bounces-31751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC54833370
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 10:56:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E936833384
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 11:05:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E9DE1F22325
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 09:56:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84B61B21FE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 10:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32E8D28F;
-	Sat, 20 Jan 2024 09:56:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10476D27A;
+	Sat, 20 Jan 2024 10:05:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="dlikXYNv"
-Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="pYyRL7cI"
+Received: from mail-4321.protonmail.ch (mail-4321.protonmail.ch [185.70.43.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6DFAC8C4
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 09:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D49DD262
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 10:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705744574; cv=none; b=eFgHhZdh0YevGmBnE+cQsa5TU82vPVOo9Foi3wE+i5zQfwbV8OjoWtGU7Nq0uTwY0NW2/gba/wLBqdF8BVViwyKPXvN0fAtJ9gh1tAhvY2oXHvxUIG3PGVAm+IbEJgWOlKgNqMmUoogd9JyS6r9sGkKFc00qNJkQtlmaeGERKu8=
+	t=1705745128; cv=none; b=X9xDrvw1DSUc1d+Xb09gaidzwsGSIL2Mtz9vnKLJevXjbXhEALZ5MmjWIb31zvA9UH2qKW9C6ssjTyfkFH8Nr29p2d5o86fhYaqroS3RnQ+p86rKbzHSAoCCHSGNHp49vrqvzL3wko9E8/C2w57hKTDXB7PGqlvupW+YODNwlHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705744574; c=relaxed/simple;
-	bh=BOcX8KWEnibygk4fjeA6ev0h6FDA5vSRBlJ1zvGoVtc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gzTyNsv8bgg7L+9H4yn6t80c44ZLGqR4e+3Rkhjv06K1/SEbf25C0NF67r8EQ+9Kqurzy61iXqGrlDZg2ljrpfSWNWqgJxTvWNy+hL0W3B30g75IQ8hmrStubXip0pciLsUGjOHttOv0ss9htB9VHVfitOrYu50X8ercW8/jhNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=dlikXYNv; arc=none smtp.client-ip=80.12.242.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id R859rc6amXxngR859rqY8F; Sat, 20 Jan 2024 10:56:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1705744569;
-	bh=6/Q426ZzIQUJLm346t0hoGiEGD7EVC/MiQvvpwN1st0=;
-	h=From:To:Cc:Subject:Date;
-	b=dlikXYNvorCGCI/zMlw+kQotCzT38LYn+0/29+wiIY+D+2X0okIBuyhrqgbaTeGCE
-	 MLiREdT44J3NpJ91NyxVIJW5JAzfiezWkZW4GDFgFi821WNWYGUbNzWWzbCRr6ufYm
-	 nGRStL1OW06bVoduZxNUjOatbL1M7gBTMsquonPrYmJ8uiWol4sU8cEu5fBOY5BxSc
-	 CnCYtDo7by24j06iVPoUz84OMhcVsDts9s9FXWA6xOikHfBwJTEDzltFQsJGbcw/OD
-	 QV3w9sOphKFjXX8Jl8b7kqp5BChAZd90U2SLDORzsqRgQMon3hYjIng0NZ/wx1IDUs
-	 gSdpIxW6k/3Dw==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 20 Jan 2024 10:56:09 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	netdev@vger.kernel.org
-Subject: [PATCH] nfc: hci: Save a few bytes of memory when registering a 'nfc_llc' engine
-Date: Sat, 20 Jan 2024 10:56:06 +0100
-Message-ID: <6d2b8c390907dcac2e4dc6e71f1b2db2ef8abef1.1705744530.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1705745128; c=relaxed/simple;
+	bh=RZoW7TH2kbsBZHb7CsAaI3qYNBh3amIrMgeeFmFKJuY=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=e668ejd0oHp9hVokDk3/TcE6qdeDb82z+su/uu+X8Yqi+yhnTegWmtnx/p4Zd4Uzsc9VWAaY9mAVZ7p7v+VF44RpS5vestqvGWXZ7AV3vLzrHqId3DllCE1cvED1nMmuHg8RhGEJFajN6orZjRU91JrH1PVtfVNqKdDByhxdG40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=pYyRL7cI; arc=none smtp.client-ip=185.70.43.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1705744666; x=1706003866;
+	bh=ctT1Dh+pp05yAwHSySMlMDCmpTuJiBDyOZm4bGAOnd0=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=pYyRL7cIdRdBAA6YqRZO3iNLrQLBMxIntsgJB68GiR8K2XoO4+TGrtTyUvkLDl4+3
+	 X0ta9GEppgeEymZsYOArrHN/SEnCBmaGksealrXOGyUfpkU0pvraegwThHGK6mb+Qb
+	 Sir7LIb1nyg4FlJz/UALDwstMSPBmkBcWP15WFJjg+NKSvFTgaZ08K+5sQ453HAYRw
+	 NKZhLYjtSWbwwMcx/8puwsvuyjhtlKJbLC5l9KKUzSTsLKE8WJtaQMXqmRDXaO47iL
+	 Vjgjuoh7D7btZjm6PKC5KfkTKTjsqdsa77623LRqfvWB6UywURTguKcd1olBxPrrfK
+	 JWrHqJa7FNJWg==
+Date: Sat, 20 Jan 2024 09:57:27 +0000
+To: linux-kernel@vger.kernel.org
+From: Raymond Hackley <raymondhackley@protonmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Stephan Gerhold <stephan@gerhold.net>, Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: [PATCH v3 0/3] arm64: dts: qcom: msm8916-samsung-fortuna: Add initial device trees
+Message-ID: <20240120095715.13689-1-raymondhackley@protonmail.com>
+Feedback-ID: 49437091:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-nfc_llc_register() calls pass a string literal as the 'name' parameter.
+Samsung Galaxy Core Prime and Grand Prime are phones based on MSM8916.
+They are similar to the other Samsung devices based on MSM8916 with only a
+few minor differences.
 
-So kstrdup_const() can be used instead of kfree() to avoid a memory
-allocation in such cases.
+This initial commit adds support for:
+ - fortuna3g (SM-G530H)
+ - gprimeltecan (SM-G530W)
+ - grandprimelte (SM-G530FZ)
+ - rossa (SM-G360G)
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+The device trees contain initial support with:
+ - GPIO keys
+ - Regulator haptic
+ - SDHCI (internal and external storage)
+ - USB Device Mode
+ - UART (on USB connector via the SM5502/SM5504 MUIC)
+ - WCNSS (WiFi/BT)
+ - Regulators
+ - QDSP6 audio
+ - Speaker/earpiece/headphones/microphones via digital/analog codec in
+   MSM8916/PM8916
+ - WWAN Internet via BAM-DMUX
+
+There are different variants of Core Prime and Grand Prime, with some
+differences in accelerometer, NFC and panel.
+Core Prime and Grand Prime are similar, with some differences in MUIC,
+panel and touchscreen.
+
+The common parts are shared in
+msm8916-samsung-fortuna-common.dtsi and msm8916-samsung-rossa-common.dtsi
+to reduce duplication.
+
 ---
- net/nfc/hci/llc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/nfc/hci/llc.c b/net/nfc/hci/llc.c
-index 2140f6724644..8c7b5a817b25 100644
---- a/net/nfc/hci/llc.c
-+++ b/net/nfc/hci/llc.c
-@@ -49,7 +49,7 @@ int nfc_llc_register(const char *name, const struct nfc_llc_ops *ops)
- 	if (llc_engine == NULL)
- 		return -ENOMEM;
- 
--	llc_engine->name = kstrdup(name, GFP_KERNEL);
-+	llc_engine->name = kstrdup_const(name, GFP_KERNEL);
- 	if (llc_engine->name == NULL) {
- 		kfree(llc_engine);
- 		return -ENOMEM;
-@@ -83,7 +83,7 @@ void nfc_llc_unregister(const char *name)
- 		return;
- 
- 	list_del(&llc_engine->entry);
--	kfree(llc_engine->name);
-+	kfree_const(llc_engine->name);
- 	kfree(llc_engine);
- }
- 
--- 
-2.43.0
+v3: Drop fortunaltezt and heatqlte. Add sound and modem.
+    /delete-node/ &muic; in rossa-common.dtsi
+v2: Use interrupt-extended. Drop fuelgauge, sensors and NFC for now.
 
 
