@@ -1,96 +1,76 @@
-Return-Path: <linux-kernel+bounces-31709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8515B8332D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 06:30:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA3058332DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 06:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BD2F1F22E83
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 05:30:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24665B2308B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 05:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C951C30;
-	Sat, 20 Jan 2024 05:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 457231879;
+	Sat, 20 Jan 2024 05:36:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l/0wboCf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aBUlywDe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6165915C5;
-	Sat, 20 Jan 2024 05:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7EE137D;
+	Sat, 20 Jan 2024 05:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705728628; cv=none; b=f3mCLyPFM5YFf2Qv0S5UThmuDTEDLSGqszfQDr0XsiYoVbNU6xueMkQN2SLHv4aeI7cAWiDn/TPMqRt1cG/Yo06+X8G+WTk2W9MwK4Nw093mMOGg99jag+DxiBmTNXtUy6lG+c8b3rOukuwqhz+ou5bZTfRoabm7b+dotMI6u9k=
+	t=1705729002; cv=none; b=T5ZMvYP2MhW/csts5EtWlzUT6E+UHZQoBTGUMAuZ4Lz+Lg8cKywlQht2RQwaZrLDXahnFbQL65si8u/cYupnlsv7/lX7UUcGZ3F//6Rhss4IqXgYQQQefdTCGnBbug4SGRtdw/ChEj5/Lj5f5GIEdT7Q6RtvB0zI7Flv6McRg+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705728628; c=relaxed/simple;
-	bh=yu0MNUNr7CJjkYbwCDv+oNxh8exCAR7GD//KhDccK4M=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=JHyFouBYSS9abkDYcMPqJOXs3vWwDJcXyu7WmAbSa1vH8uINNvA6KHktUhJJ21nDvqtTIlq/WXWJ5zPvmIs3RXkTKBT6wsMyhxY4KJvslvt0+iagrjONnE9WKyXFdIXbd08SiMZeWRomsvUBl+MBwQ2Db6RuQXnKbg0QfER/XJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l/0wboCf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BA3B4C43390;
-	Sat, 20 Jan 2024 05:30:27 +0000 (UTC)
+	s=arc-20240116; t=1705729002; c=relaxed/simple;
+	bh=WWMrQcgQ19Jb6GYSSiSkyx3JOthmaTPXhUVWCPa+lTk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oEhrVvzOMNuxIO9gM7hS50dQHk1nvfH4N9mA0caUIiaeBQT4zZFvNtRL9JYaxAUT9xrPFo61ugwKoqGDdkVAcHeMhnTZMdZksKAF3bNqzr3DzSwrW9bntQADajdZTJDR3eaJvB9RobWObi0U5pml+xrCNJKgagr46EAevFHT790=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aBUlywDe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8653BC433F1;
+	Sat, 20 Jan 2024 05:36:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705728627;
-	bh=yu0MNUNr7CJjkYbwCDv+oNxh8exCAR7GD//KhDccK4M=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=l/0wboCfDDKC+IiD2rBZM4chDl9GSnXH7jPH+eNikgeKvVj02ocfYKGBN+JDehQwC
-	 e5UXTDBst+aBAaZ6/3YrxjNaDU1AQygbyyLTRdTSO61x0dC8Mv/RmepnpWOER6tE0G
-	 up924vYGZo0PV76fHETSf1U0dAguhs9rMf4AtntJkTOkWEQgESJUNdhCRJfBC81k0Y
-	 ONXbrv0eJdfXerUTYn/TrH6mUS34z5mcHRRuTDMPMW5dE/MlaF0S85+O5Ua6LRVpJs
-	 uxiulEnkUr8c/ABHbuO6wX6wIeGMjnNZ7Q5MC1Muo0JRTme4AR5f5O7diYfuo56BBO
-	 wIiXL6LoSD0kw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A1D3AD8C96C;
-	Sat, 20 Jan 2024 05:30:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1705729002;
+	bh=WWMrQcgQ19Jb6GYSSiSkyx3JOthmaTPXhUVWCPa+lTk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=aBUlywDeifY2CTBrgfYUWMbWsQN6adcqI+OfGDtCWSrdw8ukljnt3X41nmMPrWiSo
+	 aQtdSEuaXw3vZainaE1CcNT/G0JTayDJAX2W1psRj6xnXKSuJCJmd9IYa94A3Eq002
+	 sgTuZGVqQ+GpaVZcg/ggWyxhzlftV12cTY79mmZ0Bmm5oZEQXQNpOJF13n4mfbVmTO
+	 sn8kxUAkhulq4L/Q1on4zWqVkDQ7u8H5HnGxS9zufd8Hr5kTkF/vJIVZ+Kmkocrwgd
+	 v6l6HTgQ8/ZOuDqaqqrIXcBToHSLLsAYSP9yAwinC+UAmp5SjWOrxSCLG6fcEu8OHg
+	 +U4SO5IL0AU/w==
+Date: Fri, 19 Jan 2024 21:36:40 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+Cc: patrick@stwcx.xyz, Samuel Mendoza-Jonas <sam@mendozajonas.com>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] NCSI: Add propety : no-channel-monitor and
+ start-redo-probe
+Message-ID: <20240119213640.0b8efe12@kernel.org>
+In-Reply-To: <20240118052220.1906721-1-Delphine_CC_Chiu@wiwynn.com>
+References: <20240118052220.1906721-1-Delphine_CC_Chiu@wiwynn.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] vlan: skip nested type that is not
- IFLA_VLAN_QOS_MAPPING
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170572862765.6535.650925230642049594.git-patchwork-notify@kernel.org>
-Date: Sat, 20 Jan 2024 05:30:27 +0000
-References: <20240118130306.1644001-1-linma@zju.edu.cn>
-In-Reply-To: <20240118130306.1644001-1-linma@zju.edu.cn>
-To: Lin Ma <linma@zju.edu.cn>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Thu, 18 Jan 2024 13:22:20 +0800 Delphine CC Chiu wrote:
+> Add property start-redo-probe to redo probe, because Mellanox cx7 nic card
+> cannot't get mac address after nic card hot-plug.
+> Setup start-redo-probe property so that nic card can get MAC address again.
+> Also setup no-channel-monitor property so that the log won't keep
+> popping up when nic card host-plug.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Thu, 18 Jan 2024 21:03:06 +0800 you wrote:
-> In the vlan_changelink function, a loop is used to parse the nested
-> attributes IFLA_VLAN_EGRESS_QOS and IFLA_VLAN_INGRESS_QOS in order to
-> obtain the struct ifla_vlan_qos_mapping. These two nested attributes are
-> checked in the vlan_validate_qos_map function, which calls
-> nla_validate_nested_deprecated with the vlan_map_policy.
-> 
-> However, this deprecated validator applies a LIBERAL strictness, allowing
-> the presence of an attribute with the type IFLA_VLAN_QOS_UNSPEC.
-> Consequently, the loop in vlan_changelink may parse an attribute of type
-> IFLA_VLAN_QOS_UNSPEC and believe it carries a payload of
-> struct ifla_vlan_qos_mapping, which is not necessarily true.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,v2] vlan: skip nested type that is not IFLA_VLAN_QOS_MAPPING
-    https://git.kernel.org/netdev/net/c/6c21660fe221
-
-You are awesome, thank you!
+Device tree is supposed to describe the hardware (the BMC hardware)
+this seems to me like configuration which can potentially be done
+via the NCSI netlink, can it not?
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+pw-bot: cr
 
