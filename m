@@ -1,111 +1,448 @@
-Return-Path: <linux-kernel+bounces-31868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6A38335AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:23:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C017F8335AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:27:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78D2F283809
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:23:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBDC71C20DD3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86E0125CB;
-	Sat, 20 Jan 2024 18:22:54 +0000 (UTC)
-Received: from herc.mirbsd.org (bonn.mirbsd.org [217.91.129.195])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D3511C94;
+	Sat, 20 Jan 2024 18:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yXpCh+am"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702DC11C85;
-	Sat, 20 Jan 2024 18:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.91.129.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29FBB12E47
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 18:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705774974; cv=none; b=Y350K0/a+cym9Ax11qbkijb9QiPnZFz2YRL/v6D/jbC0N5XR6NMp0XQMtdHmlb9maW35eoCrwgvexjd5ZS0HdQ0075PimIM182+QBw4MuSOl6MZ3u36sK5Rhzhxre7CFzK/hXNVB5UhqgsnfzuC7lBvDbrwoXjUijScuHZLERNs=
+	t=1705775267; cv=none; b=ojukHt0IlE/cATPPxt0j8i1MKWp32wIvvFi+JeXe64q3qF6xPjxB7+qgnVYb6qRZjEREZo5QeAq8A+qPF071y5xLv1tiaXX7H1Odu3G/LGBL2ABEiGyCW1TKvia7PAuQiurOUInyZ51PE7Y0SLRJfcDkRqEeB9P6BKnuObk8D14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705774974; c=relaxed/simple;
-	bh=BvXvGUMu493sjcMKrhy1G9t1wFaTLlo4v1EURwmupMg=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=tHWVUW3ruduqynsG55JITb0qqbX58J6Osg8CaDiYIDJZJT62bYbYf9o1uVx007wQXgYMJpZp8+GHgDoy+WcpL5mY11YhxIl8zwz6qKiOBGm2nAN7V+iQRuRK2FN1N8wTfXEuLzwf6q7Irw0bxQ2qcd+yzmJbbT+vNK5iipC/QQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; arc=none smtp.client-ip=217.91.129.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
-Received: from herc.mirbsd.org (tg@herc.mirbsd.org [192.168.0.82])
-	by herc.mirbsd.org (8.14.9/8.14.5) with ESMTP id 40KILiPg004999
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-	Sat, 20 Jan 2024 18:21:51 GMT
-Date: Sat, 20 Jan 2024 18:21:43 +0000 (UTC)
-From: Thorsten Glaser <tg@debian.org>
-X-X-Sender: tg@herc.mirbsd.org
-To: Linus Torvalds <torvalds@linuxfoundation.org>
-cc: "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
-        x86@kernel.org, rostedt@goodmis.org, linux-kernel@vger.kernel.org,
-        linux-toolchains@vger.kernel.org, jpoimboe@redhat.com,
-        alexei.starovoitov@gmail.com, mhiramat@kernel.org
-Subject: disassemblers (was Re: [PATCH 1/2] x86: Remove dynamic NOP selection)
-In-Reply-To: <Pine.BSM.4.64L.2401201711130.29203@herc.mirbsd.org>
-Message-ID: <Pine.BSM.4.64L.2401201816560.29203@herc.mirbsd.org>
-References: <20210312113253.305040674@infradead.org> <20210312115749.065275711@infradead.org>
- <Pine.BSM.4.64L.2401200654480.19429@herc.mirbsd.org>
- <CE53F232-3D2D-4910-94B4-A4304F5990C7@zytor.com>
- <CAHk-=whtFk2DoO8WhtmsbU9nGXUd8sKShV1Dk71krFLBjPUSeg@mail.gmail.com>
- <Pine.BSM.4.64L.2401201711130.29203@herc.mirbsd.org>
-Content-Language: de-Zsym-DE-1901-u-em-text-rg-denw-tz-utc, en-Zsym-GB-u-cu-eur-em-text-fw-mon-hc-h23-ms-metric-mu-celsius-rg-denw-tz-utc-va-posix
+	s=arc-20240116; t=1705775267; c=relaxed/simple;
+	bh=1hf+qwbJwv3MVMHc/wh7Ygtzwg0tCma3od5Jc10HMcU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YzIrBrXgTsvuqQVdZqFaQ6OOsjUfU0YDziWdDNrVIydYQegN9c+KRHtb9cqNs9gSPXP4XWBfSpkObitELFuloMItSQexD0lhHuTw+05cMYH+pV5/m8cq8C5+q3wygdoAMHCydrNEFYaCeevGOdz2Ck0Hv+HhB32ctqCRFc/lxOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yXpCh+am; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d5ce88b51cso95065ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 10:27:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705775265; x=1706380065; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3854fvVy32prlae+7huGpzU5WMZkqW2CNhkEGD6k6B0=;
+        b=yXpCh+amjJ57qoA6fqAP91tfjWNCeQc/D0vUSHrR0hUWOmszqfb46X0suo1cV/wiK3
+         fSoYxOx8CD0EzI6kB9Po995nBvFTyBhLi+tVB4wtJOLkgt1Y7+ktn3DSFdYbZfpkV++c
+         DMv9Ssae0QLoVbjrPK3pEvTJlsuwCzDaHw5MTWdeYoZwCkyOweSFVjnoaJR0eYjmIOd6
+         8RnaEcCLOdJbxO8dH1di9xPsmK1bpPMTGnh3Few76yuZdf3YZzlXYQuivaobClWNaCgZ
+         UYDWm2Lb+gLaV5Jvo6/SIEirUcU+wDkoIKCe1hS6sENMTtAtsWXLtXASVoAXlww9mvOP
+         3WaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705775265; x=1706380065;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3854fvVy32prlae+7huGpzU5WMZkqW2CNhkEGD6k6B0=;
+        b=NMWn6xAAQXl5GeAhP7HsQt3RTH3Hu/20bVMXHNqqqSwW/bGXHQry7aloC0G2Dt8hwl
+         aB4Yy96XV08cceus5nPIE7gLY5wsxVYn8WuR/cYOM6O6oCC93txTFf68PMG5gnukO4/K
+         msPu7fgYrtz9AZJ4uZMSBW5UETL8Ti8Sy9/BjCitkMMp4jsJG0f+94rgxU2zzJV5Nr3x
+         qmUKwSxyOas2AiYuq+xYkQWFhUAV0sx4BJVDxHsLTJshOQuiilZYUhz1I8j7maV2/b2S
+         69X+sqt3F55vScgAW32X1TM/M2HcY1tRgAzOb5ePh1eXZegl9KBA6gylkHr/trSApQE6
+         mJuA==
+X-Gm-Message-State: AOJu0Ywrpi6HqKfn2FDT78BE4MFghDyePwv9oktMEpWdsK9H+adOAlAs
+	5q4k9Y8AO8+6HK8/28PCoezBXRGx36aTwpzLy3M2eH1R1mTR
+X-Google-Smtp-Source: AGHT+IGNaAuEGNhVmCT+PzwiibXTaI7ucuBwHfkuFKJi8dSkILZkitB5nSeOyE9mvMNsw/tj9E9B8h9vNHsHEv7pQxU=
+X-Received: by 2002:a17:902:a509:b0:1d6:fc65:4633 with SMTP id
+ s9-20020a170902a50900b001d6fc654633mr60019plq.25.1705775265277; Sat, 20 Jan
+ 2024 10:27:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+References: <20240116170348.463479-1-mark.rutland@arm.com>
+In-Reply-To: <20240116170348.463479-1-mark.rutland@arm.com>
+From: Ian Rogers <irogers@google.com>
+Date: Sat, 20 Jan 2024 10:27:33 -0800
+Message-ID: <CAP-5=fVABSBZnsmtRn1uF-k-G1GWM-L5SgiinhPTfHbQsKXb_g@mail.gmail.com>
+Subject: Re: [PATCH] perf print-events: make is_event_supported() more robust
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-kernel@vger.kernel.org, Hector Martin <marcan@marcan.st>, 
+	Marc Zyngier <maz@kernel.org>, acme@redhat.com, james.clark@arm.com, 
+	john.g.garry@oracle.com, leo.yan@linaro.org, 
+	linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org, 
+	mike.leach@linaro.org, namhyung@kernel.org, suzuki.poulose@arm.com, 
+	tmricht@linux.ibm.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Dixi quod=E2=80=A6
-
->>Is there some sane tool that just does the sane thing and shows this as
+On Tue, Jan 16, 2024 at 9:04=E2=80=AFAM Mark Rutland <mark.rutland@arm.com>=
+ wrote:
 >
->The only other disassemblers I know don=E2=80=99t know about ELF objects
->at all, I=E2=80=99m sorry to say.
+> Currently the perf tool doesn't deteect support for extneded event types
 
-I have searched through my bookmarks and found =E2=80=9CAgner Fog=E2=80=99s=
- objconv=E2=80=9D
-https://www.agner.org/optimize/#objconv which I had not yet tried as
-it comes with a .exe but apparently, the included GPL source builds
-on GNU/Linux (and BSD and MacOSX) as well.
+nit: s/deteect/detect/
+nit: s/extneded/extended/
 
-Usage is: ./objconv -fgasm filename.o
+> on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
+> hardware events into per-PMU events. This is due to the detection of
+> extended event types not handling mandatory filters required by the
+> M1/M2 PMU driver.
+>
+> PMU drivers and the core perf_events code can require that
+> perf_event_attr::exclude_* filters are configured in a specific way and
+> may reject certain configurations of filters, for example:
+>
+> (a) Many PMUs lack support for any event filtering, and require all
+>     perf_event_attr::exclude_* bits to be clear. This includes Alpha's
+>     CPU PMU, and ARM CPU PMUs prior to the introduction of PMUv2 in
+>     ARMv7,
+>
+> (b) When /proc/sys/kernel/perf_event_paranoid >=3D 2, the perf core
+>     requires that perf_event_attr::exclude_kernel is set.
+>
+> (c) The Apple M1/M2 PMU requires that perf_event_attr::exclude_guest is
+>     set as the hardware PMU does not count while a guest is running (but
+>     might be extended in future to do so).
+>
+> In is_event_supported(), we try to account for cases (a) and (b), first
+> attempting to open an event without any filters, and if this fails,
+> retrying with perf_event_attr::exclude_kernel set. We do not account for
+> case (c), or any other filters that drivers could theoretically require
+> to be set.
+>
+> Thus is_event_supported() will fail to detect support for any events
+> targetting an Apple M1/M2 PMU, even where events would be supported with
 
-This will write filename.asm =E2=9A=A0 into the same directory as the .o fi=
-le,
-surprisingly.
+nit: s/targetting/targeting/
 
-It works for i386 and amd64 but not x32 (aka amd64ilp32) which is
-mis-disassembled as if it were i386. Sample output fragment:
+> perf_event_attr:::exclude_guest set.
+>
+> Since commit:
+>
+>   82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in =
+perf_event_attr.type")
+>
+> ... we use is_event_supported() to detect support for extended types,
+> with the PMU ID encoded into the perf_event_attr::type. As above, on an
+> Apple M1/M2 system this will always fail to detect that the event is
+> supported, and consequently we fail to detect support for extended types
+> even when these are supported, as they have been since commit:
+>
+>   5c816728651ae425 ("arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capabilit=
+y")
+>
+> Due to this, the perf tool will not automatically expand plain
+> PERF_TYPE_HARDWARE events into per-PMU events, even when all the
+> necessary kernel support is present.
+>
+> This patch updates is_event_supported() to additionally try opening
+> events with perf_event_attr::exclude_guest set, allowing support for
+> events to be detected on Apple M1/M2 systems. I beleive that this is
 
-tsv_header:
-        sub     rsp, 8                                  # 00E3 _ 48: 83. EC=
-, 08
-        lea     rdi, [.LC7+rip]                         # 00E7 _ 48: 8D. 3D=
-, 00000000(rel)
-        call    puts@PLT                                # 00EE _ E8, 000000=
-00(PLT r)
-        add     rsp, 8                                  # 00F3 _ 48: 83. C4=
-, 08
-        ret                                             # 00F7 _ C3
+nit: s/beleive/believe/
 
-Bit irritating is it uses decimal numbers=E2=80=A6
+> sufficient for all contemporary CPU PMU drivers, though in future it may
+> be necessary to check for other combinations of filter bits.
+>
+> I've deliberately changed the check to not expect a specific error code
+> for missing filters, as today ;the kernel may return a number of
+> different error codes for missing filters (e.g. -EACCESS, -EINVAL, or
+> -EOPNOTSUPP) depending on why and where the filter configuration is
+> rejected, and retrying for any error is more robust.
+>
+> Note that this does not remove the need for commit:
+>
+>   a24d9d9dc096fc0d ("perf parse-events: Make legacy events lower priority=
+ than sysfs/JSON")
+>
+> ... which is still necessary so that named-pmu/event/ events work on
+> kernels without extended type support, even if the event name happens to
+> be the same as a PERF_EVENT_TYPE_HARDWARE event (e.g. as is the case for
+> the M1/M2 PMU's 'cycles' and 'instructions' events).
+>
+> Fixes: 82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU numbe=
+r in perf_event_attr.type")
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Cc: Hector Martin <marcan@marcan.st>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: James Clark <james.clark@arm.com>
+> Cc: John Garry <john.g.garry@oracle.com>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Thomas Richter <tmricht@linux.ibm.com>
+> Cc: Will Deacon <will@kernel.org>
+> ---
+>  tools/perf/util/print-events.c | 27 +++++++++++++++++++--------
+>  1 file changed, 19 insertions(+), 8 deletions(-)
+>
+> Hector, Marc, I'd appreciate if either of you could give this a spin on
+> your M1/M2 machines. I've given it local testing with the arm_pmuv3
+> driver modified to behave the same as the apple_m1_pmu driver (requiring
+> exclude_guest, having a 'cycles' event in sysfs), but that might not
+> perfectly replicate your setup.
+>
+> The patch is based on the 'perf-tools-for-v6.8-1-2024-01-09' tag in the
+> perf-tools tree:
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git/
+>
+> ... and I've pushed it out to the 'perf-tools/event-supported-filters'
+> branch in my tree:
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/
+>
+> This patch *should* make it possible to do:
+>
+>         perf stat -e cycles ./workload
+>         perf stat -e instructions ./workload
+>
+> ... with those 'cycles' and 'instructions' events being automatically
+> expanded and reported as separate events per-PMU, which is a nice
+> quality-of-life improvement.
+>
+> Comparing before and after this patch:
+>
+> | # ./perf-before stat -e cycles true
+> |
+> |  Performance counter stats for 'true':
+> |
+> |      <not counted>      cycles                                         =
+                         (0.00%)
+> |
+> |        0.000990250 seconds time elapsed
+> |
+> |        0.000934000 seconds user
+> |        0.000000000 seconds sys
+> |
+> | # ./perf-after stat -e cycles true
+> |
+> |  Performance counter stats for 'true':
+> |
+> |             965175      armv8_pmuv3_0/cycles/
+> |      <not counted>      armv8_pmuv3_1/cycles/                          =
+                         (0.00%)
+> |      <not counted>      armv8_pmuv3_2/cycles/                          =
+                         (0.00%)
+> |      <not counted>      armv8_pmuv3_3/cycles/                          =
+                         (0.00%)
+> |
+> |        0.000836555 seconds time elapsed
+> |
+> |        0.000884000 seconds user
+> |        0.000000000 seconds sys
 
-        sub     rsp, 232                                # 0102 _ 48: 81. EC=
-, 000000E8
+Just to check, this is the expected expansion of cycles? I'm unclear
+why 4 core PMUs.
 
-=E2=80=A6 and the way the input is separated with colon, period and comma,
-but it=E2=80=99s legible enough.
+>
+> This *shouldn't* change the interpetation of named-pmu events, e.g.
+>
+>         perf stat -e apple_whichever_pmu/cycles/ ./workload
+>
+> ... should behave the same as without this patch
+>
+> Comparing before and after this patch:
+>
+> | # ./perf-before stat -e armv8_pmuv3_0/cycles/ -e armv8_pmuv3_1/cycles/ =
+-e armv8_pmuv3_2/cycles/ -e armv8_pmuv3_3/cycles/ true
+> |
+> |  Performance counter stats for 'true':
+> |
+> |      <not counted>      armv8_pmuv3_0/cycles/                          =
+                         (0.00%)
+> |      <not counted>      armv8_pmuv3_1/cycles/                          =
+                         (0.00%)
+> |      <not counted>      armv8_pmuv3_2/cycles/                          =
+                         (0.00%)
+> |             901415      armv8_pmuv3_3/cycles/
+> |
+> |        0.000756590 seconds time elapsed
+> |
+> |        0.000811000 seconds user
+> |        0.000000000 seconds sys
+> |
+> | # ./perf-after stat -e armv8_pmuv3_0/cycles/ -e armv8_pmuv3_1/cycles/ -=
+e armv8_pmuv3_2/cycles/ -e armv8_pmuv3_3/cycles/ true
+> |
+> |  Performance counter stats for 'true':
+> |
+> |             923314      armv8_pmuv3_0/cycles/
+> |      <not counted>      armv8_pmuv3_1/cycles/                          =
+                         (0.00%)
+> |      <not counted>      armv8_pmuv3_2/cycles/                          =
+                         (0.00%)
+> |      <not counted>      armv8_pmuv3_3/cycles/                          =
+                         (0.00%)
+> |
+> |        0.000782420 seconds time elapsed
+> |
+> |        0.000836000 seconds user
+> |        0.000000000 seconds sys
+>
+> One thing I'm still looing into is that this doesn't seem to do anything
+> for a default perf stat session, e.g.
+>
+>         perf stat ./workload
+>
+> ... doesn't automatically expand the implicitly-created events into per-p=
+mu
+> events.
 
-Credits to Peter Cordes for the discovery.
+Ugh, weak symbols. x86 has overridden the default adding of attributes
+to do it for hybrid:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/arch/x86/util/evlist.c?h=3Dperf-tools-next#n36
+I think we should lose the adding events via attributes and just go to
+using parse events for everything. I'll see if I can do some cleanup
+and that should resolve this - I also want to cleanup the default
+events/metrics and the detailed ones as we can drop the unsupported
+events, etc.
 
-bye,
-//mirabilos
---=20
-When he found out that the m68k port was in a pretty bad shape, he did
-not, like many before him, shrug and move on; instead, he took it upon
-himself to start compiling things, just so he could compile his shell.
-How's that for dedication. -- Wouter, about my Debian/m68k revival
+> Comparing before and after this patch:
+>
+> | # ./perf-before stat true
+> |
+> |  Performance counter stats for 'true':
+> |
+> |               0.42 msec task-clock                       #    0.569 CPU=
+s utilized
+> |                  0      context-switches                 #    0.000 /se=
+c
+> |                  0      cpu-migrations                   #    0.000 /se=
+c
+> |                 38      page-faults                      #   89.796 K/s=
+ec
+> |      <not counted>      cycles                                         =
+                         (0.00%)
+> |      <not counted>      instructions                                   =
+                         (0.00%)
+> |      <not counted>      branches                                       =
+                         (0.00%)
+> |      <not counted>      branch-misses                                  =
+                         (0.00%)
+> |
+> |        0.000744185 seconds time elapsed
+> |
+> |        0.000795000 seconds user
+> |        0.000000000 seconds sys
+> |
+> | # ./perf-after stat true
+> |
+> |  Performance counter stats for 'true':
+> |
+> |               0.43 msec task-clock                       #    0.582 CPU=
+s utilized
+> |                  0      context-switches                 #    0.000 /se=
+c
+> |                  0      cpu-migrations                   #    0.000 /se=
+c
+> |                 38      page-faults                      #   88.960 K/s=
+ec
+> |      <not counted>      cycles                                         =
+                         (0.00%)
+> |      <not counted>      instructions                                   =
+                         (0.00%)
+> |      <not counted>      branches                                       =
+                         (0.00%)
+> |      <not counted>      branch-misses                                  =
+                         (0.00%)
+> |
+> |        0.000734120 seconds time elapsed
+> |
+> |        0.000786000 seconds user
+> |        0.000000000 seconds sys
+>
+> Ian, how does that behave on x86? Is that the same, or do the default
+> events get expanded?
+
+The default events are expanded, the not counted is a feature of a
+fast binary (true here). I'm trying to remove custom code paths so
+that things like this don't happen, sorry that you've come across
+another instance but at least I can fix it.
+
+Thanks,
+Ian
+
+> Thanks,
+> Mark.
+>
+> diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-event=
+s.c
+> index b0fc48be623f3..4f67e8f00a4d6 100644
+> --- a/tools/perf/util/print-events.c
+> +++ b/tools/perf/util/print-events.c
+> @@ -232,7 +232,6 @@ void print_sdt_events(const struct print_callbacks *p=
+rint_cb, void *print_state)
+>  bool is_event_supported(u8 type, u64 config)
+>  {
+>         bool ret =3D true;
+> -       int open_return;
+>         struct evsel *evsel;
+>         struct perf_event_attr attr =3D {
+>                 .type =3D type,
+> @@ -246,20 +245,32 @@ bool is_event_supported(u8 type, u64 config)
+>
+>         evsel =3D evsel__new(&attr);
+>         if (evsel) {
+> -               open_return =3D evsel__open(evsel, NULL, tmap);
+> -               ret =3D open_return >=3D 0;
+> +               ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
+>
+> -               if (open_return =3D=3D -EACCES) {
+> +               if (!ret) {
+>                         /*
+> -                        * This happens if the paranoid value
+> +                        * The event may fail to open if the paranoid val=
+ue
+>                          * /proc/sys/kernel/perf_event_paranoid is set to=
+ 2
+> -                        * Re-run with exclude_kernel set; we don't do th=
+at
+> -                        * by default as some ARM machines do not support=
+ it.
+> -                        *
+> +                        * Re-run with exclude_kernel set; we don't do th=
+at by
+> +                        * default as some ARM machines do not support it=
+.
+>                          */
+>                         evsel->core.attr.exclude_kernel =3D 1;
+>                         ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
+>                 }
+> +
+> +               if (!ret) {
+> +                       /*
+> +                        * The event may fail to open if the PMU requires
+> +                        * exclude_guest to be set (e.g. as the Apple M1 =
+PMU
+> +                        * requires).
+> +                        * Re-run with exclude_guest set; we don't do tha=
+t by
+> +                        * default as it's equally legitimate for another=
+ PMU
+> +                        * driver to require that exclude_guest is clear.
+> +                        */
+> +                       evsel->core.attr.exclude_guest =3D 1;
+> +                       ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
+> +               }
+> +
+>                 evsel__delete(evsel);
+>         }
+>
+> --
+> 2.30.2
+>
 
