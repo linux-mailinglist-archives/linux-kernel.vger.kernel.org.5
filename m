@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-31808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A898334E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 14:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4186A8334E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 14:56:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C640283281
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:56:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4F3B283866
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B213FBEB;
-	Sat, 20 Jan 2024 13:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD360101FA;
+	Sat, 20 Jan 2024 13:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b="Y1TNoElf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gC7Mc/MX"
+	dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b="l4w2gcnQ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="r2yLakiM"
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DFA7DF78;
-	Sat, 20 Jan 2024 13:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCADF9FE;
+	Sat, 20 Jan 2024 13:56:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705758960; cv=none; b=dHt7vloqysinIaQrfYSDfLtlxbaRC5bwWdE5cW/bGxz6A83QwzHivL2ow3aHTrvj2lDc6ozdKcpLf8J7tiuWta+/VBr+yDpToD5gjM5o+G5m+hlXP497Vk/SBmkqyk8TYvo5kbwUtsUAMJRBvWPWC2BiDfDAvRv9kR6ctO22UJY=
+	t=1705758967; cv=none; b=M1mi/bCGHhQHNIXbGGC6duCC/aCcjTbOI6+Pb80EMfjmmam//+GAqxLLPURNhGi/R9m3bPgZm5sjALpj9Crvkr6WmjcHb3GZN0SYJrNwxvFR/rT4UhD8jush0GR6pcDags3wjEdPTRTgqTv98OyvOV7fD1dLUwZTjdFwGmiZagk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705758960; c=relaxed/simple;
-	bh=XF1rzcXaPzvVRbMj4jDvYxIkaTS+viUNUKoifgHJfKU=;
+	s=arc-20240116; t=1705758967; c=relaxed/simple;
+	bh=U3i7yUwvOhKXOTUEFBocfxLZ6fxKbUHQANrGjOz6HS0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bDT1OFt7+W5R9+KgaNG8qrfLsj+sjAPRq3HhPN+1JsPlzNUk1A8e68duMs/m125vtGq2/WsMItZ7lFSjrQXRCi5PGhxqhFtYYwPqZdix2ayCXQ5quG1JLgIDGQJ1a8M8g+GQjQNJEIC6Fqh4DQdQ0BKNfMHtRtLyHYq92cnod1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org; spf=pass smtp.mailfrom=feathertop.org; dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b=Y1TNoElf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=gC7Mc/MX; arc=none smtp.client-ip=66.111.4.26
+	 MIME-Version; b=O7SMaYy/E303LNMB2ZpmqOWhdNi6AwrXbPxeLGzk56QV4Gtn+LtiXU1r8lalfu+FKCKB7vZ24pGcccnoiOkRZU32JK10LYod/TvHoGXOTWemvO2usp837v5lohcLXAzoaf0p68lj+DGVpMJh1pysOTo94qej/3NkXheZYb7mpog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org; spf=pass smtp.mailfrom=feathertop.org; dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b=l4w2gcnQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=r2yLakiM; arc=none smtp.client-ip=66.111.4.26
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=feathertop.org
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.nyi.internal (Postfix) with ESMTP id 6C7F65C0111;
-	Sat, 20 Jan 2024 08:55:54 -0500 (EST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id 00B7E5C0109;
+	Sat, 20 Jan 2024 08:56:05 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Sat, 20 Jan 2024 08:55:54 -0500
+  by compute1.internal (MEProxy); Sat, 20 Jan 2024 08:56:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=feathertop.org;
 	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
 	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1705758954; x=
-	1705845354; bh=82nmu2DyJPwmac1Y1zUdWc9LMCywxycb33mNUkKF/Pk=; b=Y
-	1TNoElf7L0Tiz7cvPKzRTJ/Z65vkfcg728xZm32T9V+qHzy4y/ITJYn14uNV1l8n
-	5/8QzBEfbVvvHJpIo+heI3z/LL7euL1ra5wRh9dHiOCm1vgpHtk9PVimuu3mkqEf
-	fpbl1Y+BApk8OQpWbaq6jJengkutKE999WyLmDc9n3NgstoxD7p1SzeIHwQ+OFjR
-	bTpRstCZ5n23Q27IPS17000yhVYfzcPyQJVb7cN3NeVQ0Fxyo8oHp4ewI04kU0/+
-	LJCA+PKbehOYSunreYefwciBTv+j3z6wa/YtOaUFZXvEBohN83hFxbPHNvKK0LCG
-	RkBG7OKmiMk2/XkYPd4Dw==
+	:reply-to:subject:subject:to:to; s=fm2; t=1705758964; x=
+	1705845364; bh=H3ZIhWvDzeIyb6EIczhf//Qpvcp1gbT/BqWghJiTSGw=; b=l
+	4w2gcnQq2kdMz316sGwX2QVWhr127q+uhsCfYs2W7sIQtYJtGDNACi3vxNsMhtvp
+	fOK3quuX0+JRhWAkWuf5i5RshiZlxwKo21F2nXVMYBbnRulIXNe+1x+kM+jk5y6P
+	+cxjUA5X9NGhc6j14OAclMkYx6PV631ItqGkgjWMzHgJoxL/YtcyA3NNmAAk/dUq
+	hXchz+6iyDIK+GyZtHL29OnH1M2nXGzjpMpGkdJe8pvVGs0F5SgShqxZqmJI2dWm
+	5HhvFMFQcijNsiXRAaojm0m7jPuzJwP0KV28SgqH4Xk6gLrj6cLsJQ3T3KgcVZHY
+	qHTwRTbYYVSZa4Df0thYA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705758954; x=
-	1705845354; bh=82nmu2DyJPwmac1Y1zUdWc9LMCywxycb33mNUkKF/Pk=; b=g
-	C7Mc/MXYwOt4TvOfksJ5XlcmEfxsVzsQUFg4DHMJGu0a/IvWr86c2ucFjjRjobsn
-	OemaIBL4/3dZp4/X7SnJo/kCaA/fCPb3aDC8us92KF+u9R1piPXNqfEQXknnMPnW
-	8UdCBTZh706eNyxLs13bptIPjECnBk5KWkuXlA0BWmdMM/JwD4JZ5hQkaGDmHI0G
-	NLpRjGVpApWsuzRbpFwGa+dGYt9vyLK8uzVyDn55l/tGMu5WnLr3n2gdE3V8pIOA
-	tBdsmaJxIo1TuIxzBAJLsFr5OnVVMFwJcE4tsweNtRLS8F1yYmvuMqv6FtobMDl8
-	3ZOosW0dk0zmydYQItKtg==
-X-ME-Sender: <xms:6tCrZTXANXbbU1IQ5RwmaLYKmJJ18C4wl0jiVTGj3W96E6iM5iKS5Q>
-    <xme:6tCrZbmQZA5EH1LyRnxeH0V7eVJcFBrVR41jVXlyx8I0vDfxydH8rdQBvef1KwBAz
-    e-SuiX_NQ>
-X-ME-Received: <xmr:6tCrZfYsxEpw-WtiI9AWyu-TEPAdcTJ9WriCbNkOXtesKtW8rhzPXek2Sx2JyyL178E-XcMg8F5-87LSOx_iZ6rKp-2R8mpv4E8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekvddgheelucetufdoteggodetrfdotf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705758964; x=
+	1705845364; bh=H3ZIhWvDzeIyb6EIczhf//Qpvcp1gbT/BqWghJiTSGw=; b=r
+	2yLakiMPGF5GD9lzyOksYt0B5QuZk5chHFuaSwd6upDhKn2NAIVLJnReX71DIfvS
+	ZZkszwe1nkyrKTjwDfFDX2593jJA3k18HCYw5Oo1vwLIY6IgknLEJpCJE//zGaJJ
+	qEUTHI3aZTnkja34jtaU7qxrmG864wSgg7IZbfDU79TLu3PETcL5NcazcufW3xdP
+	QnyoKXml/rJhfYSC/dka9YPW9Dn358DesFz8KAxh5orux7JI800CUGSw3Cife6Ni
+	TARtGA1L8tbcnypZ+/cPH3YzIpjCly2/SWVJ6UGrME0gOEFLROYmdLRRK+SMZRCc
+	aZckcv2XSh3CbnTL9Iu0A==
+X-ME-Sender: <xms:9NCrZe1FA7NRDZWR9q2mDcBWnVfq77DUhQSpewLNBaAko5n0hdHgCQ>
+    <xme:9NCrZRHQqW3A8OEVI27_Bys2y12gzLSI7UUcseXtvoCxcrNahgiTsrIvDBGtBCSS0
+    2y0mRNbhQ>
+X-ME-Received: <xmr:9NCrZW41Scf-k7zp-Oil-kMDsPkMnPx9UG6_bX0zf0yhukGJibkSAyPF9NCYCjBQUCoYMIu_y4BDtMn9lDz1qKXMDKzCqUqFvk4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekvddgheekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepvfhimhcu
@@ -72,14 +72,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekvddgheelucetufdoteggod
     hnpeefffeuhfetgeeikeejvefgtdefteehgfdvhfetfeeuffeuhffhfeekgfekgeehieen
     ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehtihhmse
     hfvggrthhhvghrthhophdrohhrgh
-X-ME-Proxy: <xmx:6tCrZeWUlyG62ZYA4RfzOrTHMgSmQh_3Pk4oz6DfCrKKCkPz7hqy9Q>
-    <xmx:6tCrZdnnr5JA5Y-jfD1SzwvyYCsfAOb1ceXO-2WuaM3x3liViJos5g>
-    <xmx:6tCrZbdJJerpGTJZNi9a-BmrUosP-uyJUdeZaPMLHipwajjWlCeHww>
-    <xmx:6tCrZfkUz8c2IT2EWWvvYenmdNPcSI-4w5caPsgJikFdt8Srsh5oOA>
+X-ME-Proxy: <xmx:9NCrZf3_d4oQdDrgMQf8h_fiD5pQa2E-fvszlYwohXwKH1HEJ6ul5Q>
+    <xmx:9NCrZRERlWR6xMwR2ytPQgdQpB4fzfFhW6ZSmkHgbpTluXNC33wx9A>
+    <xmx:9NCrZY8mYLuzBrPYKj7sXjZhF-OX_r8byBtAlsi6ZyOsLfpjf7OK6g>
+    <xmx:9NCrZQfj0KdnC7DQDDjLLvP7EyArEEaaIOpGuT_CANDYhjjsJUD_jg>
 Feedback-ID: i1f8241ce:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 20 Jan 2024 08:55:47 -0500 (EST)
-Received: by feathertop.org (sSMTP sendmail emulation); Sun, 21 Jan 2024 00:55:43 +1100
+ 20 Jan 2024 08:55:58 -0500 (EST)
+Received: by feathertop.org (sSMTP sendmail emulation); Sun, 21 Jan 2024 00:55:55 +1100
 From: Tim Lunn <tim@feathertop.org>
 To: linux-rockchip@lists.infradead.org,
 	conor.dooley@microchip.com,
@@ -88,7 +88,6 @@ To: linux-rockchip@lists.infradead.org,
 	devicetree@vger.kernel.org
 Cc: linux-arm-kernel@lists.infradead.org,
 	Tim Lunn <tim@feathertop.org>,
-	Chris Morgan <macromorgan@hotmail.com>,
 	Chris Zhong <zyw@rock-chips.com>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Heiko Stuebner <heiko@sntech.de>,
@@ -96,9 +95,9 @@ Cc: linux-arm-kernel@lists.infradead.org,
 	Lee Jones <lee@kernel.org>,
 	Zhang Qing <zhangqing@rock-chips.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/3] dt-bindings: rockchip: rk809 fix existing example
-Date: Sun, 21 Jan 2024 00:55:27 +1100
-Message-Id: <20240120135529.899403-2-tim@feathertop.org>
+Subject: [PATCH v3 2/3] dt-bindings: rockchip: rk809: Document audio codec properties
+Date: Sun, 21 Jan 2024 00:55:28 +1100
+Message-Id: <20240120135529.899403-3-tim@feathertop.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240120135529.899403-1-tim@feathertop.org>
 References: <20240120135529.899403-1-tim@feathertop.org>
@@ -110,54 +109,82 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The example for rk809 picked up the wrong compatible string when the
-binding was converted to yaml. As a result it also specified too many
-vccX-supply properties.
+Rockchip RK809 shares the same audio codec block as the rk817 mfd, and
+is compatible with the existing rk817_codec driver.
 
-Fix typo in the example specifying wrong compatible string for rk809.
-Remove additional vccX-supply properties that dont exist on rk809 so
-that binding checks pass again.
+This patch introduces to the binding the standard property #sound-dai-cells
+and also an optional codec child node to hold codec specific properties.
+Currently there is only one property in this node however the downstream
+driver shows a number of other properties that are supported by the codec
+hardware, that could be implemented in the future. This maintains the
+existing driver ABI and keeps consistency with the rk817 bindings.
 
 Signed-off-by: Tim Lunn <tim@feathertop.org>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Fixes: 6c38ca03406e ("dt-bindings: mfd: rk808: Convert bindings to yaml")
 
 ---
 
 Changes in v3:
-- Drop label from rk809 node
+- split out clocks into separate patch and group example properties
+  where properties are introduced.
+- remove descriptions from #sound-dai-cells node
 
-Changes in v2:
-- Fix vcc-supply warning detected by dt_binding bot
-
- Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ .../bindings/mfd/rockchip,rk809.yaml          | 23 ++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml b/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
-index 839c0521f1e5..eb057607dc54 100644
+index eb057607dc54..be0616201f52 100644
 --- a/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
 +++ b/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
-@@ -126,8 +126,8 @@ examples:
-         #address-cells = <1>;
-         #size-cells = <0>;
+@@ -12,7 +12,7 @@ maintainers:
  
--        rk808: pmic@1b {
--            compatible = "rockchip,rk808";
-+        pmic@1b {
-+            compatible = "rockchip,rk809";
-             reg = <0x1b>;
-             #clock-cells = <1>;
-             clock-output-names = "xin32k", "rk808-clkout2";
-@@ -146,9 +146,6 @@ examples:
-             vcc7-supply = <&vcc_sysin>;
-             vcc8-supply = <&vcc3v3_sys>;
-             vcc9-supply = <&vcc_sysin>;
--            vcc10-supply = <&vcc_sysin>;
--            vcc11-supply = <&vcc_sysin>;
--            vcc12-supply = <&vcc3v3_sys>;
+ description: |
+   Rockchip RK809 series PMIC. This device consists of an i2c controlled MFD
+-  that includes regulators, an RTC, and power button.
++  that includes regulators, an RTC, a power button, and an audio codec.
  
-             regulators {
-                 vdd_center: DCDC_REG1 {
+ properties:
+   compatible:
+@@ -93,6 +93,22 @@ properties:
+         unevaluatedProperties: false
+     unevaluatedProperties: false
+ 
++  '#sound-dai-cells':
++    const: 0
++
++  codec:
++    description: |
++      The child node for the codec to hold additional properties. If no
++      additional properties are required for the codec, this node can be
++      omitted.
++    type: object
++    additionalProperties: false
++    properties:
++      rockchip,mic-in-differential:
++        type: boolean
++        description:
++          Describes if the microphone uses differential mode.
++
+ allOf:
+   - if:
+       properties:
+@@ -137,6 +153,7 @@ examples:
+             pinctrl-0 = <&pmic_int_l_pin>;
+             rockchip,system-power-controller;
+             wakeup-source;
++            #sound-dai-cells = <0>;
+ 
+             vcc1-supply = <&vcc_sysin>;
+             vcc2-supply = <&vcc_sysin>;
+@@ -281,5 +298,9 @@ examples:
+                     };
+                 };
+             };
++
++            rk817_codec: codec {
++                rockchip,mic-in-differential;
++            };
+         };
+     };
 -- 
 2.40.1
 
