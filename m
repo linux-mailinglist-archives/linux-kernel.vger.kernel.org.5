@@ -1,133 +1,95 @@
-Return-Path: <linux-kernel+bounces-31735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E11CB83331C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 08:28:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7677383331D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 08:29:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D9FE1C22069
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:28:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 910D81C2206A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A589523D1;
-	Sat, 20 Jan 2024 07:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF9BC2D6;
+	Sat, 20 Jan 2024 07:28:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KmBIDEJN"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ugdFxA+M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B4B1FD8;
-	Sat, 20 Jan 2024 07:28:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BAB539D
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 07:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705735726; cv=none; b=NyV8xBvqlfKhA9YpoaC5KsaMsbc4WJzHSrF4ogJhMR9+ZaWtlp8QYLVDLlwr3gnffSuPWOl2IXJY3kQL7YgiLwo/VUWJyEj36bgcZ2NhUWSBj8erhdvaHMiRnEKfC9MfnfMoZ0E+riyKWEQ9hblsYuq305EoJ7dnkbe0L0Nydm8=
+	t=1705735727; cv=none; b=iy/wvS+b980SLtIIDAsE5ubzBl8oedGQDyCuOFxZsuPbBEhHapnkrq9ql0TokldB+Z1Pebd40bs/kz7WFvyg4vuH4GmLi94Bj+gcYfUde5FM1WYo0MEsWRA6sw7DomVX/4BCtKXRfRSeUIRDXv/rIyLuhdKlkacfoR3wcZLy6TM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705735726; c=relaxed/simple;
-	bh=kK0kpMYOxiXwLFnjo4FjmVUfSst12YqHg95SBLX5nzk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ahiMM1S5JzHvfz+cAL7YcOzUZ4H2/esxFxbC0TBh8T/bzjNvAl2izW+Ua2CQ/+eN3+0/iFU1CU1Qaq3MUijPFiPrprqbfdkvkH4RlWYy3Q8ndi6CbRRp16HWHbqRr+jGuQEBNeroJM311E45G7vqOlUyQ0i8fsXbFeaG7wL7p4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KmBIDEJN; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3608cfa5ce6so5551055ab.0;
-        Fri, 19 Jan 2024 23:28:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705735724; x=1706340524; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=op8+puFUBQ0HGhLoj/M968f0BhKOR1Shj+6HmxTCqzA=;
-        b=KmBIDEJNh5R53SUpmcioVHZ/Xf0vXxry8p2YWbvdRiYb7N/gse6/9nGQL6CdRULGWp
-         gFOGwG92TssGymKNSyDW260EZuFbSb3bALiDHz4JzGd90BTA+DreqByZEK4kCy4r7Jy3
-         x2tLwMnLQrW3Vzi+y4OlaeuPtN2kmNRIBMPLTV6zkIMNSIVVUwUQAgHwBWcnky8LNXKw
-         OwzpJJkMZKO/9DxMLUrCmKKmRMo74MCUIRpb5pIeknbEkkETk+6RegB2+IYxh+SPWtxz
-         PBiK3Mr/c1tSGHDhY3wf7d3Crh+1GnclkqsJYXQvFx6+aMoNthSzFEJsY+LLuoD9808a
-         WiFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705735724; x=1706340524;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=op8+puFUBQ0HGhLoj/M968f0BhKOR1Shj+6HmxTCqzA=;
-        b=KTDyD1oYznksBf3nrMORi14fVvgxeeGlR345rhxT6EHW4spvRV4lJ3PjRlIX/ReoEI
-         X6lFXE3m7ZXZCmjFhzXSMpiuCmAJp4+cWVaqBptmi+tZuMzvdJfNU/mTt8f3ZflSGv1g
-         PrTUJRle+HKkfutqDXLWIKEkw24Fjh13tm5lc3QGhO0wG8QhQ5C7x/rAHN84LxQM9yY9
-         INY9OGc/R20PLKtFDWF4SVjdq3X3B8bbHC7F9KTc/kXloA/DwAwkS7/r2bt6tbHqEQ9o
-         xPMyTWfUXFKoseMIsrr0Yk2OHyFIA7J/6y0GCl8kyHFLASzzyWBsUA0sHaA5rp/NKeu2
-         cSog==
-X-Gm-Message-State: AOJu0YynN5i4SHcZ/fwm4PMb5y/JM6LctOEOmgF/d4ZwR0Gj5ks+ePwa
-	571adhBcajjjGHTz9jjbrKHWjhVZ03JZdcZv/VmRlUrT1hlIUqGw
-X-Google-Smtp-Source: AGHT+IFCRPs1/tBVCZVWysUDtfO6FYq2BkYpRS7ZbSw9HL6hXinF0O1vRTzqZ9rM73oHYIUU5tKG1Q==
-X-Received: by 2002:a92:d9c3:0:b0:361:ac32:5c7f with SMTP id n3-20020a92d9c3000000b00361ac325c7fmr1216491ilq.36.1705735723818;
-        Fri, 19 Jan 2024 23:28:43 -0800 (PST)
-Received: from fedora.. ([2402:e280:3e0d:606:d0c9:2a06:9cc6:18a3])
-        by smtp.gmail.com with ESMTPSA id s11-20020a170902ea0b00b001d50766546dsm4017809plg.184.2024.01.19.23.28.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 23:28:43 -0800 (PST)
-From: Suresh Kumar <suresh2514@gmail.com>
-To: jesse.brandeburg@intel.com,
-	anthony.l.nguyen@intel.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Suresh Kumar <suresh2514@gmail.com>
-Subject: [PATCH iwl v2] i40e: print correct hw max rss count in kernel ring buffer
-Date: Sat, 20 Jan 2024 12:58:06 +0530
-Message-ID: <20240120072806.8554-1-suresh2514@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1705735727; c=relaxed/simple;
+	bh=Uml6h9uAYwNMqewrmoFPwoSquZYplcK3FVLAj/jOz/E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cOzUnhl4fYt9ZACtalo1YPKWDXpWIYBoF1N0Q2qW8fsIZVVQpbMO3ShAXG5J06g4b2FtVRKQ+NenpB9ffVZ4cxDD+QPJA+x4kd/9Ik73iE2u+I+ByMgBTzd8rKep+lSHOEydGPcUpnL2pitVAXXpypCgpwDs+2eFTUuWV74FMJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ugdFxA+M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C29F7C433F1;
+	Sat, 20 Jan 2024 07:28:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705735727;
+	bh=Uml6h9uAYwNMqewrmoFPwoSquZYplcK3FVLAj/jOz/E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ugdFxA+MsTD0rQs0aPWRSb9aulIDlJew3KJ8kHlQ4heHHxpYSwk/1S69OZcIA0Ydk
+	 E0hsl4y9Vf9lMHResy5wwgNw72uE3hfmA9129u9AZAMYpBQ+VxFkPIT0wpUrnV7om+
+	 Z9w9uiSXvZyGLUpUGEIovouap8pIKPnQtRfksGypqRCGnjQY1EYxm5yfE5jidbi/9v
+	 RO8WZcMuW6MX3OAlSw9zbMLp/HDLpoS9hUXbiqk5n1d4wGkhO/ipi4ZvPYDISzAYi5
+	 B/6vQzk9VCifilMY3MN1TbRomKk7Z09BQPmF32QbenJtsIcVhd3sYjNj/0092QRHNc
+	 NgSsd6YuQnO0w==
+Date: Sat, 20 Jan 2024 08:28:42 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Fullway Wang <fullwaywang@outlook.com>
+Cc: dhowells@redhat.com, linux-kernel@vger.kernel.org, 
+	fullwaywang@tencent.com, jannh@google.com, akpm@linux-foundation.org
+Subject: Re: [PATCH] fs: romfs: Fix potential uninitialized memory leak
+Message-ID: <20240120-holzrahmen-uninteressant-0fcb180e88c9@brauner>
+References: <PH7PR20MB5925B0893BC44476B0D2E993BF712@PH7PR20MB5925.namprd20.prod.outlook.com>
+ <20240119-heilkraft-umgefahren-8f84c6395f6b@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240119-heilkraft-umgefahren-8f84c6395f6b@brauner>
 
-pf->rss_size_max is hardcoded and always prints max rss count as 64.
+On Fri, Jan 19, 2024 at 03:21:04PM +0100, Christian Brauner wrote:
+> On Thu, 18 Jan 2024 15:14:12 +0800, Fullway Wang wrote:
+> > romfs_dev_read() fetches a caller-supplied number of bytes from the
+> > backing device in an all-or-nothing manner.
+> > 
+> > Commit bcf85fc fixed CVE-2020-29371, which exposed the bug when
+> > the requested length crossed the filesystem size limit, the number
+> > of bytes to requested was truncated. However, in romfs_readdir()
+> > in super.c, the requested number is firstly truncated with
+> > romfs_dev_strnlen() then passed to romfs_dev_read(), leaving
+> > the bug exploitable still.
+> > 
+> > [...]
+> 
+> Applied to the vfs.misc branch of the vfs/vfs.git tree.
+> Patches in the vfs.misc branch should appear in linux-next soon.
+> 
+> Please report any outstanding bugs that were missed during review in a
+> new review to the original patch series allowing us to drop it.
+> 
+> It's encouraged to provide Acked-bys and Reviewed-bys even though the
+> patch has now been applied. If possible patch trailers will be updated.
+> 
+> Note that commit hashes shown below are subject to change due to rebase,
+> trailer updates or similar. If in doubt, please check the listed branch.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+> branch: vfs.misc
+> 
+> [1/1] fs: romfs: Fix potential uninitialized memory leak
+>       https://git.kernel.org/vfs/vfs/c/530041d36e37
 
-Eg:
-  kernel: i40e 0000:af:00.1: User requested queue count/HW max RSS count:  104/64
-
-whereas  ethtool reports the correct value from "vsi->num_queue_pairs"
-
-Channel parameters for eno33:
-Pre-set maximums:
-RX:     n/a
-TX:     n/a
-Other:      1
-Combined:   104
-Current hardware settings:
-RX:     n/a
-TX:     n/a
-Other:      1
-Combined:   104  <-------
-
-and is misleading.
-
-Change it to vsi->num_queue_pairs
-
-Signed-off-by: Suresh Kumar <suresh2514@gmail.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index d5519af34657..f5c1ec190f7e 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -12524,7 +12524,7 @@ int i40e_reconfig_rss_queues(struct i40e_pf *pf, int queue_count)
- 		i40e_pf_config_rss(pf);
- 	}
- 	dev_info(&pf->pdev->dev, "User requested queue count/HW max RSS count:  %d/%d\n",
--		 vsi->req_queue_pairs, pf->rss_size_max);
-+		 vsi->req_queue_pairs, vsi->num_queue_pairs);
- 	return pf->alloc_rss_size;
- }
- 
--- 
-2.43.0
-
+This fails to even compile. Dropped.
 
