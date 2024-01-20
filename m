@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-31838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC4C4833557
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 17:00:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3222883355A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 17:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70A3D28410F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:00:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 465B21C21287
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F090F1094E;
-	Sat, 20 Jan 2024 16:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C590110A03;
+	Sat, 20 Jan 2024 16:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BijnTFU7"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PuWW2Qdo"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33E5101F2;
-	Sat, 20 Jan 2024 16:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCA01078D;
+	Sat, 20 Jan 2024 16:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705766444; cv=none; b=lReFp0qMxn0yKPjc9bUzjNn+2gWgb4IuzouymI5NE22J+sdKZHYCGrBa6kUaYwbOAzOQE3t0TjyxPGA4IqZ2GqeH91ZG+vLaqX8qQf+5/VFg1z7ZSH7EyxJ7GFK4lRAcCGMXpH1G+03UNssesAAZzq7GQ+VNoQr+p2HNM8IvvWI=
+	t=1705767267; cv=none; b=gvHaOLfhrYXJbIsH7v9LJXtJLXgmWVnh6wK0i8XLhjkBSoeDpFtXPh2Qw8jforKipjlGUY0Q3B0wP6jCq9iT+lpodgnfE0jzCk6RqW6IMzRYIWMqjrFOhgA1i8QVVvaYk8HKdKffuCjUwsUaxk9b3YzlJlKDy44S0zuQj3QCWmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705766444; c=relaxed/simple;
-	bh=LjUL/KvSMjBbQYSgDt/NxUG0hDJAe0TjiuGGZaoHnms=;
+	s=arc-20240116; t=1705767267; c=relaxed/simple;
+	bh=3j+/C4jBF5YM3bpknW9hCVPHcnBnTMWzqP9GyKMDxao=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BF6hTf3puWTcColPd4DPPLtqkQo+ciOjOTAb9Y6UR83qh+/C88ub6Tag24qrjEI7IWYurUHD3CY+kYWFHaFRpiuQ5B1sY+ibreoQEeqdeR8yih2GvGYWMKlf95U9KKOjsQMYwyzLpYOOf9VmPL0jTyMeICzfEEbHAPVaRDnZsts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BijnTFU7; arc=none smtp.client-ip=209.85.166.50
+	 In-Reply-To:Content-Type; b=VnFaDlgGj7SSYQ1dyEt5KV+KCDj2For156aIoJ1PpqtubhQ6v6DC92UWCLB3ThaSBlu5RKTB4pguH/A7UFLNy+BDAgGhmeayPkZlHugyPwE5Sdxt+ER5N1ZfEWhE/x6gy1kczRcLesPv+Yp2RpXUXRZG8YZbbAF3bniMblQPkuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PuWW2Qdo; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7bbec1d1c9dso85604739f.1;
-        Sat, 20 Jan 2024 08:00:41 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ea948fe3fso927145e9.0;
+        Sat, 20 Jan 2024 08:14:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705766441; x=1706371241; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1705767264; x=1706372064; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lDMba898QCD1xJMzInkaVLstqNui1SJewd5Xj+Qlc5o=;
-        b=BijnTFU7oGZ8qeK2GWXwaZLudewTM81dDL/ibkhQu6teAobsy9AvXO0s1MI66Nu1qP
-         qlzupJ19pv80cqIrONWcEXVsz+rCLKNMRJhdlvookY9qBSN0+3LlPw/xYwtp0XUFj+19
-         VketJKQAN3mr3AsZG5Jkxt84t1Q/jb7/oFUogfK55w5xNyP1EJcKl+Svk5rMihlhYx3n
-         M9DJFeiEgd1IJnGb75YgZU92WWI3NOU/bYDWOpyVmCmp0kSDOnW+AvXcoT0VZ0ogOgvb
-         G0aJvO1MHKUTuru8ZsloNnu8HUTlEpwzPy1o+oOtmrdW1z87O1nWMxXtYtdus1zm+/gj
-         9iAw==
+        bh=AsRomkLitq2pOiV7IIgul49mE1iK5bxxrTr0pwfbKxo=;
+        b=PuWW2QdoKoXU9RmJgZKMavIXhpndxiwBAbJmty6Fo5pFVU9jKqWUp34I0/330Z+2lW
+         CHHdiS3OtKiN9Mv1OW+lnOVb79r0+pJCA/BRU+PKiHJWsuMyffZX9hnbEux0XRCfXZfJ
+         Ab9Kw7hSzNgD97afwW/1itA8/8aLA07zhT0bRTe1tMC1rlybVHg0FB7KthF7Q8u0MPbs
+         ZHv90/4lWkYcUzDSJvzi5zgwtP7Hb7pu5Zhy/tMtFDrwJh1r9vpfxloHZTFYahfmsCOv
+         gRub3mccmH6uAzv5+1PrOKG0SNNRl88Lu+k+lhiBRTpNuARyBuk1rKMA8IbWoiwRV4J3
+         CCLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705766441; x=1706371241;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1705767264; x=1706372064;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lDMba898QCD1xJMzInkaVLstqNui1SJewd5Xj+Qlc5o=;
-        b=ungMpCuxXPYGy9SSTx+e9QqNT8nQXxCMSueRe+IQ+ERYmFHbhSqVS0Gp+TrPsfQvcp
-         OI7vAEHFmJQ86xzmzbA12Fxcl60V2oFDmnJkxuI2A6hSIk6wL4Hn5eYz8JmdqoiKIQGD
-         00Fzd77LRqe4Jnewr3j/cVoM5I05SLGMYAE5wJkzAq+vi09ueVurk4bbS//+POGzPZkW
-         bDqyNeE92DyFCjNyktuxSALPu1F2EdjL8Exj+8Vl4VfO0X7qOh09vDLPRM0a0wxXx16m
-         FK3uEO5lpnHB8ajjpg4A9RJ1UA50ESyz6K1Z+Gsh4G6+O9PkzhZ9csBfvIOObC1tO/HX
-         At+A==
-X-Gm-Message-State: AOJu0Yy6yIltuRxPgT9+YMroqti3ZMn9hhv73LK4CdRcWP5wQJ7MEWrZ
-	JfSNvfNZm2KZhYQxZOvLNaVA9SMM/cew5p4fAO+1zMQsYDrwHeo=
-X-Google-Smtp-Source: AGHT+IFE4TuOrJtzgHLyBaksg6zWj1nGUuiBUsShGIJO51OPBEs5aW70fx/DlpadBlXHiBtEPvLJgg==
-X-Received: by 2002:a6b:ec12:0:b0:7bf:397a:dbe1 with SMTP id c18-20020a6bec12000000b007bf397adbe1mr2287663ioh.4.1705766440970;
-        Sat, 20 Jan 2024 08:00:40 -0800 (PST)
-Received: from ?IPV6:2a02:810b:f40:4600:279c:2034:6e39:5ea1? ([2a02:810b:f40:4600:279c:2034:6e39:5ea1])
-        by smtp.gmail.com with ESMTPSA id j20-20020a02cc74000000b0046cd8bac20dsm2136149jaq.12.2024.01.20.08.00.37
+        bh=AsRomkLitq2pOiV7IIgul49mE1iK5bxxrTr0pwfbKxo=;
+        b=V9CJ37xYCWXWcbUNfgQ46OQGEiVvYQbDZGxKItR5wGwArcIUAFYhlSl1gh40lBxidE
+         SJ983Acn8FBp70BvQaEqaSF4mwHGcDN4F/oloHvWQWKFRUqvbbhWIQ6S1so71BrnA/Hi
+         N/3uLYI0B/IY7u1mMGXIYSAsRQfNdogeXg1tEPaeC76yRbblxKELUNT9GxWfXB2CykI/
+         5Vtc4MkY6GYKGipGAX4uzEsxEOzIfOdBSAVw0KvgCG+cfJc4tF9+cF3bNr+ZafzXkeyU
+         BzGM0qi2f1RetFrf58My+UDfLIM1zsj7PvyQQR7RUeOLYMWvZKnG1Dh55VC6ccSEKSDG
+         hccA==
+X-Gm-Message-State: AOJu0YzOsk81Uss/aMZMHDTQ1njDYLknUHv9QTawBeN31TZvfhxGGz5R
+	elU70gFM2ixHHoBrH/Uhic5181Pu/HugbcZ8c6Dic+tr/m3fLciu
+X-Google-Smtp-Source: AGHT+IHh3ZkpT9C7+0YrlrpkRX5oWFsCSV7A3DdnMmABdmNlmh2CgGEZerc4uu3CXoVpxT3aRyFY4A==
+X-Received: by 2002:a05:600c:a48:b0:40d:885a:55e with SMTP id c8-20020a05600c0a4800b0040d885a055emr817958wmq.143.1705767263484;
+        Sat, 20 Jan 2024 08:14:23 -0800 (PST)
+Received: from ?IPV6:2a02:8389:41cf:e200:f5df:1797:cf1:de92? (2a02-8389-41cf-e200-f5df-1797-0cf1-de92.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:f5df:1797:cf1:de92])
+        by smtp.gmail.com with ESMTPSA id b3-20020a0564021f0300b005545dffa0bdsm12081218edb.13.2024.01.20.08.14.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Jan 2024 08:00:40 -0800 (PST)
-Message-ID: <e3713300-492c-43eb-aaf9-0add95ef3b19@gmail.com>
-Date: Sat, 20 Jan 2024 17:00:35 +0100
+        Sat, 20 Jan 2024 08:14:23 -0800 (PST)
+Message-ID: <b349fd4a-c7e3-44f8-9908-2abe24bbd69e@gmail.com>
+Date: Sat, 20 Jan 2024 17:14:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,120 +74,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] phy: rockchip: Add Samsung HDMI/DP Combo PHY driver
-Content-Language: en-US, de-DE
-To: Sebastian Reichel <sebastian.reichel@collabora.com>,
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I
- <kishon@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Philipp Zabel <p.zabel@pengutronix.de>, Johan Jonker <jbx6244@gmail.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>,
- Algea Cao <algea.cao@rock-chips.com>, linux-phy@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com
-References: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
- <20240119193806.1030214-4-cristian.ciocaltea@collabora.com>
- <eodlujrytdm6gugcbaz3efnjvgg7sbvsqedwllmleh4ar6e7cr@3ejicokdjzcd>
-From: Alex Bee <knaerzche@gmail.com>
-In-Reply-To: <eodlujrytdm6gugcbaz3efnjvgg7sbvsqedwllmleh4ar6e7cr@3ejicokdjzcd>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v6 3/4] iio: humidity: Add driver for ti HDC302x humidity
+ sensors
+To: Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>,
+ jic23@kernel.org
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231211122201.9598-1-579lpy@gmail.com>
+ <20231211122940.9791-1-579lpy@gmail.com>
+ <d9a84e5b-9e23-4aa9-8e58-0bb9f2b224d7@metafoo.de>
+Content-Language: en-US
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <d9a84e5b-9e23-4aa9-8e58-0bb9f2b224d7@metafoo.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Am 19.01.24 um 23:47 schrieb Sebastian Reichel:
-> Hi Cristian,
-> 
-> On Fri, Jan 19, 2024 at 09:38:03PM +0200, Cristian Ciocaltea wrote:
->> Add driver for the Rockchip HDMI/eDP TX Combo PHY found on RK3588 SoC.
+On 20.01.24 05:17, Lars-Peter Clausen wrote:
+> On 12/11/23 04:29, Li peiyu wrote:
+>> Add support for HDC302x integrated capacitive based relative
+>> humidity (RH) and temperature sensor.
+>> This driver supports reading values, reading the maximum and
+>> minimum of values and controlling the integrated heater of
+>> the sensor.
 >>
->> The PHY is based on a Samsung IP block and supports HDMI 2.1 TMDS, FRL
->> and eDP links.  The maximum data rate is 12Gbps (HDMI 2.1 FRL), while
->> the minimum is 250Mbps (HDMI 2.1 TMDS).
->>
->> Co-developed-by: Algea Cao <algea.cao@rock-chips.com>
->> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
->> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>> Co-developed-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>> Signed-off-by: Li peiyu <579lpy@gmail.com>
 >> ---
+>>   MAINTAINERS                    |   8 +
+>>   drivers/iio/humidity/Kconfig   |  12 +
+>>   drivers/iio/humidity/Makefile  |   1 +
+>>   drivers/iio/humidity/hdc3020.c | 473 +++++++++++++++++++++++++++++++++
+> I was just trying to use this driver. Somehow the Makefile and Kconfig
+> changes were lost when the patch was applied to the IIO tree.
 > 
-> The driver has multiple sequences looking like this (this is just one
-> example of many):
 > 
->> +	hdptx_write(hdptx, CMN_REG0087, 0x04);
->> +	hdptx_write(hdptx, CMN_REG0089, 0x00);
->> +	hdptx_write(hdptx, CMN_REG008A, 0x55);
->> +	hdptx_write(hdptx, CMN_REG008B, 0x25);
->> +	hdptx_write(hdptx, CMN_REG008C, 0x2c);
->> +	hdptx_write(hdptx, CMN_REG008D, 0x22);
->> +	hdptx_write(hdptx, CMN_REG008E, 0x14);
->> +	hdptx_write(hdptx, CMN_REG008F, 0x20);
->> +	hdptx_write(hdptx, CMN_REG0090, 0x00);
->> +	hdptx_write(hdptx, CMN_REG0091, 0x00);
->> +	hdptx_write(hdptx, CMN_REG0092, 0x00);
->> +	hdptx_write(hdptx, CMN_REG0093, 0x00);
->> +	hdptx_write(hdptx, CMN_REG0095, 0x00);
->> +	hdptx_write(hdptx, CMN_REG0097, 0x02);
->> +	hdptx_write(hdptx, CMN_REG0099, 0x04);
->> +	hdptx_write(hdptx, CMN_REG009A, 0x11);
->> +	hdptx_write(hdptx, CMN_REG009B, 0x00);
-> 
-> Instead of the repetitive calls to regmap_write, it's better to do
-> it like this:
-> 
-> static const struct reg_sequence some_init_seq[] = {
-> 	REG_SEQ0(CMN_REG0087, 0x04),
-> 	REG_SEQ0(CMN_REG0089, 0x00),
-> 	REG_SEQ0(CMN_REG008A, 0x55),
-> 	REG_SEQ0(CMN_REG008B, 0x25),
-> 	REG_SEQ0(CMN_REG008C, 0x2c),
-> 	REG_SEQ0(CMN_REG008D, 0x22),
-> 	REG_SEQ0(CMN_REG008E, 0x14),
-> 	REG_SEQ0(CMN_REG008F, 0x20),
-> 	REG_SEQ0(CMN_REG0090, 0x00),
-> 	REG_SEQ0(CMN_REG0091, 0x00),
-> 	REG_SEQ0(CMN_REG0092, 0x00),
-> 	REG_SEQ0(CMN_REG0093, 0x00),
-> 	REG_SEQ0(CMN_REG0095, 0x00),
-> 	REG_SEQ0(CMN_REG0097, 0x02),
-> 	REG_SEQ0(CMN_REG0099, 0x04),
-> 	REG_SEQ0(CMN_REG009A, 0x11),
-> 	REG_SEQ0(CMN_REG009B, 0x00),
-> };
-> 
-> regmap_multi_reg_write(hdptx->regmap, some_init_seq, ARRAY_SIZE(some_init_seq));
-+1 on that.
+Apparently only the driver code was added. The new entry in the
+MAINTAINERS file is also missing.
 
-It' quite hard currently to figure out what the driver is _actually_ doing
-as it has all this hardcoded sequences mixed up with driver logic. Better
-move them at the top as arrays and use regmap_multi_reg_write as Sebastian
-suggests.
-
-Alex
-> 
->> +static const struct of_device_id rockchip_hdptx_phy_of_match[] = {
->> +	{ .compatible = "rockchip,rk3588-hdptx-phy", },
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(of, rockchip_hdptx_phy_of_match);
->> +
->> +static struct platform_driver rockchip_hdptx_phy_driver = {
->> +	.probe  = rockchip_hdptx_phy_probe,
->> +	.driver = {
->> +		.name = "rockchip-hdptx-phy",
->> +		.pm = &rockchip_hdptx_phy_pm_ops,
->> +		.of_match_table = of_match_ptr(rockchip_hdptx_phy_of_match),
-> 
-> Remove of_match_ptr(). It's a nop, since the driver depends on OF.
-> 
-> Greetings,
-> 
-> -- Sebastian
-> 
-> 
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
-
+Best regards,
+Javier Carrasco
 
