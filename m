@@ -1,186 +1,116 @@
-Return-Path: <linux-kernel+bounces-31897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C55833611
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:26:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6C94833614
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:27:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C7241F21CC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 20:26:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9CDD1C20DE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 20:27:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2591112E47;
-	Sat, 20 Jan 2024 20:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5D212E6A;
+	Sat, 20 Jan 2024 20:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ip80SeM2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="YRd4tKq2"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E5F125CC
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 20:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDF6396;
+	Sat, 20 Jan 2024 20:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705782371; cv=none; b=ZbuCpriyos5vd6+UHTrSjyT3RIXL9z/OOB/xKvasT0qjy++fRXi6D85cYwrIm6JE3yalwYgpXuYTpwBDhrZzqFoMErN2H58V5/DmczMIs/9fQRj6VYTfsDjiud4k/Y7901hXIoNptUIVKUTo5jj5CcfPErac7AXshmNqCHRpF+E=
+	t=1705782459; cv=none; b=andHK7L2BKjJWhxOCv/Bd/gComNF/vJZqey5M3IAv2C/8LrKEMSgVD+kudPXeoddSo2+Mqgg5xKy7Hks98izDZz72rUpeywtxctvPC+JgkSj7obndmGVeFgqiTODG/CaXOiNTMPW90bozIps5QCcHgkQfwjNwRWUbYBfw2pTiVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705782371; c=relaxed/simple;
-	bh=E9NsYbZxlVjESIGCacSf+Ik7c/ume2adKqxJLr5Rotg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=d6/MLg/T+uGoPV6lChhFfyLOhNd3adT3/DVg7z9bO5T7C+cwUNDgikJHE8aVjuuFtlTQInkEpjrYyMJ3eLEkqPazl5PBURUIwGzU1/5asQE68V6oEYJsskLCQxLdehr/ZSetiyHFMyTYYl65eyAvP7RfwyhVsiAa9K1pNc5GniI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ip80SeM2; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705782368;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DX4dXMQ9Zd/jP9gKVwQfRx3j8zLRWZtP8Q+HxZciNU4=;
-	b=Ip80SeM2GcYz79zkUf2bxy8d6ITbPZ1gi1vND2S29oQ64VJY5bsNUFxfxphKSq2JgqzK2J
-	/JlPgpxDE7kIZY/7kl2ne6Jk60oBiwAj7+ytEP0LI0lVeKg/N7+4L7A1XXrC69LlHQ3CPo
-	uygZaOw3uIeigUpF89yGlJiW3SE2kSU=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-381-JxLIHuzAOlSXs_LEBypeiQ-1; Sat, 20 Jan 2024 15:26:06 -0500
-X-MC-Unique: JxLIHuzAOlSXs_LEBypeiQ-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2cccd597247so18047381fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 12:26:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705782365; x=1706387165;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DX4dXMQ9Zd/jP9gKVwQfRx3j8zLRWZtP8Q+HxZciNU4=;
-        b=FgZPtpGNo2mCyly1zsGSDw3+IkQXT16Y/bp5kOswvEDTIJX8KSNjdJ5KNRjoYvQOej
-         AiFQJ7H6nqBiKuqkenqYpqSLaHJSICxyMFmFrnk7wu3UOLFwjPI/871DXlKfbazj62SN
-         FKH6LHdpY8e1J0naNSgmIDPo/ZwvL0NIJHxeym9umAYQj38idtCSQ4IZ5IN04LHNL+9w
-         u0OgETBaTFVrGil8aYhtzDYsrYDF9TAHslDLUCfxp9hOnzwMhG7nF/Y4n+Fz0sCcdLYg
-         zJKlVk4ZgnIBzHZbGjzQW7QJ8nk9ZbE3oacSZdQOOmFVDY35AerhzKKmwCfAFULvUid5
-         6Xwg==
-X-Gm-Message-State: AOJu0Yz5Obv+GLJtnlp/NZ7xxmL+R7EZ5QP7DrcryAaKOzf+uRBSRBxr
-	6LzYckXnhdJKYY6Rad+k3Ujlm21D6BKpY2QK0NHpblxTdGqLFYWdKWjU1LOadVAqalGvKKoqIhZ
-	dXZnJRz9fM/3iejfaM76EYBXqSfaYODHXfjndTkJyIhg0riC/1ginPhB2e2seDQ==
-X-Received: by 2002:a2e:91c9:0:b0:2cd:fa79:4cc1 with SMTP id u9-20020a2e91c9000000b002cdfa794cc1mr275565ljg.89.1705782365081;
-        Sat, 20 Jan 2024 12:26:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGSO0D5rt1ubbifU4nVe4zOHGkl8IEXhQH7ZMFwmsWrcpWj5rb7od2jV1jehadOksOEMsSGNw==
-X-Received: by 2002:a2e:91c9:0:b0:2cd:fa79:4cc1 with SMTP id u9-20020a2e91c9000000b002cdfa794cc1mr275561ljg.89.1705782364743;
-        Sat, 20 Jan 2024 12:26:04 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id p16-20020aa7cc90000000b00558a7d36956sm12156869edt.0.2024.01.20.12.26.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Jan 2024 12:26:04 -0800 (PST)
-Message-ID: <f27b491c-2f1c-4e68-804c-24eeaa8d10de@redhat.com>
-Date: Sat, 20 Jan 2024 21:26:03 +0100
+	s=arc-20240116; t=1705782459; c=relaxed/simple;
+	bh=lF/66FvKXAzZ7V3dWtaNTfnZNtgIynhOFGZ/MUB9phw=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lHtEc99+jqSAHE0dHtVZ7LcZSIu/bcJ2WDj9cr0kClnAVCyKKvN53SoeIoxDgJUQCIlWFzAGsLuTpNnBgAfohI64ba2eoSM1paqfM8v/Z58Qa8fNBvSWerb2sr5zqbnS+7xI6mtgM2UaSvmmvZUWW2H1CrJSeY9ix4XrtZeyePY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=YRd4tKq2; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=rkjhyoAITJExRooUi1ksbqNbsSRsxv+GppPIU6XBsUs=;
+	t=1705782456; x=1706992056; b=YRd4tKq2EkpUFXUi6TALLEg4tlmBSl3jNmf7TrUDhbPlwav
+	UPEc26C+4d45zwsmiJ6lhhFK15IZad2jCIB2t7RZNaJAZNdZBRfk/3HwvgDiZi29HRJq42Jk8Rxwf
+	HKlYVWK6RygIgUMx2yV1w0w4zQ9CIuGfvWwDDEuNxCrSiahiVdIJ6Fn9mzTZhwelS1XtTnVR0BgmZ
+	228MUV9CZ3CNu6WlPN5gGahTCVaqx/iDzWv7oYlvw4S3EkT9R06RINO6mR7q+gOcT2g0Mdq1/DGe0
+	SF5o9O3A3GrHZ9Lmlm3yNuERe9cEWAHw4PInOHrqwQfZqC+vcNUckaCe2iwY3/Uw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rRHw0-0000000BEZ7-23ve;
+	Sat, 20 Jan 2024 21:27:20 +0100
+Message-ID: <590fe2823d934af997c515640733eb8889b0560f.camel@sipsolutions.net>
+Subject: Re: [PATCH wireless v2] nl80211/cfg80211: add nla_policy for S1G
+ band
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>, Lin Ma <linma@zju.edu.cn>, 
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com,  linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+  linux-kernel@vger.kernel.org, kvalo@kernel.org
+Date: Sat, 20 Jan 2024 21:27:19 +0100
+In-Reply-To: <9e1db7f3-fd18-4b3b-a912-3cf6efd96fed@quicinc.com>
+References: <20240119151201.8670-1-linma@zju.edu.cn>
+	 <9e1db7f3-fd18-4b3b-a912-3cf6efd96fed@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: PS/2 keyboard of laptop Dell XPS 13 9360 goes missing after S3
-To: Paul Menzel <pmenzel@molgen.mpg.de>, LKML <linux-kernel@vger.kernel.org>
-Cc: linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
- Dell.Client.Kernel@dell.com, regressions@lists.linux.dev
-References: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
-Content-Language: en-US, nl
-In-Reply-To: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 
-Hi Paul,
+On Fri, 2024-01-19 at 15:47 -0800, Jeff Johnson wrote:
+> > --- a/net/wireless/nl80211.c
+> > +++ b/net/wireless/nl80211.c
+> > @@ -911,6 +911,7 @@ nl80211_match_band_rssi_policy[NUM_NL80211_BANDS] =
+=3D {
+> >  	[NL80211_BAND_5GHZ] =3D { .type =3D NLA_S32 },
+> >  	[NL80211_BAND_6GHZ] =3D { .type =3D NLA_S32 },
+> >  	[NL80211_BAND_60GHZ] =3D { .type =3D NLA_S32 },
+> > +	[NL80211_BAND_S1GHZ] =3D { .type =3D NLA_S32 },
+> >  	[NL80211_BAND_LC]    =3D { .type =3D NLA_S32 },
+> >  };
+> > =20
+> something is really suspicious since the NL80211_BAND_* enums are
+> *value* enums, not attribute ID enums, and hence they should never be
+> used in an nla_policy.
 
-On 1/18/24 13:57, Paul Menzel wrote:
-> #regzbot introduced v6.6.11..v6.7
-> 
-> Dear Linux folks,
-> 
-> 
-> There seems to be a regression in Linux 6.7 on the Dell XPS 13 9360 (Intel i7-7500U).
-> 
->     [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
-> 
-> The PS/2 keyboard goes missing after S3 resume¹. The problem does not happen with Linux 6.6.11.
+Yeah, that's what it looks like first, but then they do get used
+anyway...
 
-Thank you for reporting this.
+> what is actually using these as attribute IDs, noting that
+> NL80211_BAND_2GHZ =3D=3D 0 and hence cannot be used as an attribute ID
 
-Can you try adding "i8042.dumbkbd=1" to your kernel commandline?
+Ohh. Good catch!
 
-This should at least lead to the device not disappearing from
+> seems the logic that introduced this policy needs to be revisited.
+>=20
 
-"sudo libinput list-devices"
+Let's just remove it?
 
-The next question is if the keyboard will still actually
-work after suspend/resume with "i8042.dumbkbd=1". If it
-stays in the list, but no longer works then there is
-a problem with the i8042 controller; or interrupt
-delivery to the i8042 controller.
+commit 1e1b11b6a1111cd9e8af1fd6ccda270a9fa3eacf
+Author: vamsi krishna <vamsin@codeaurora.org>
+Date:   Fri Feb 1 18:34:51 2019 +0530
 
-If "i8042.dumbkbd=1" somehow fully fixes things, then I guess
-my atkbd driver fix for other laptop keyboards is somehow
-causing issues for yours.
-
-If "i8042.dumbkbd=1" fully fixes things, can you try building
-your own 6.7.0 kernel with commit 936e4d49ecbc:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=936e4d49ecbc8c404790504386e1422b599dec39
-
-reverted?
-
-Regards,
-
-Hans
+    nl80211/cfg80211: Specify band specific min RSSI thresholds with sched =
+scan
 
 
+As far as I can tell nothing is using that in the first place ...
+Certainly not in the kernel, nor wpa_s, nor anything else I could find
+really ...
 
+We can't completely revert it since we need the attribute number to stay
+allocated, but that's all we cannot remove.
 
-
-
-
-
-> 
->     [    1.435071] i8042: PNP: PS/2 Controller [PNP0303:PS2K,PNP0f13:PS2M] at 0x60,0x64 irq 1,12
->     [    1.435409] i8042: Warning: Keylock active
->     [    1.437624] serio: i8042 KBD port at 0x60,0x64 irq 1
->     [    1.437631] serio: i8042 AUX port at 0x60,0x64 irq 12
->     […]
->     [    1.439743] input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input0
-> 
->     $ sudo libinput list-devices
->     […]
->     Device:           AT Translated Set 2 keyboard
->     Kernel:           /dev/input/event0
->     Group:            15
->     Seat:             seat0, default
->     Capabilities:     keyboard
->     Tap-to-click:     n/a
->     Tap-and-drag:     n/a
->     Tap drag lock:    n/a
->     Left-handed:      n/a
->     Nat.scrolling:    n/a
->     Middle emulation: n/a
->     Calibration:      n/a
->     Scroll methods:   none
->     Click methods:    none
->     Disable-w-typing: n/a
->     Disable-w-trackpointing: n/a
->     Accel profiles:   n/a
->     Rotation:         0.0
-> 
-> `libinput list-devices` does not list the device after resuming from S3. Some of the function keys, like brightness and airplane mode keys, still work, as the events are probably transmitted over the embedded controller or some other mechanism. An external USB keyboard also still works.
-> 
-> I haven’t had time to further analyze this, but wanted to report it. No idea
-> 
-> 
-> Kind regards,
-> 
-> Paul
-> 
-> 
-> ¹ s2idle is not working correctly on the device, in the sense, that energy usage is very high in that state, and the full battery is at 20 % after leaving it for eight hours.
-
-
+johannes
 
