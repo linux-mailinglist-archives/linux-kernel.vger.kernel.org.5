@@ -1,61 +1,58 @@
-Return-Path: <linux-kernel+bounces-31786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E008333F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:54:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 543938333F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 040D0282EA8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 11:54:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E892F1F21FF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187EFE556;
-	Sat, 20 Jan 2024 11:53:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 665CDE555;
+	Sat, 20 Jan 2024 12:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AVPgGS25"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XdJlOK+e"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50646EAC0;
-	Sat, 20 Jan 2024 11:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42F5320F;
+	Sat, 20 Jan 2024 12:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705751628; cv=none; b=BF/vXr1baSnneQv0YfzUAX7xUdXvmon4qO6jcgweh73xxed5+klA5EVdZlG7jzMa1XdY4ofYwrTRVBe0qBS/+8PrceyjiCf2D3GkSF7I8rVySJhxU3tASNIRFuj0G0ERko3Kl8MshhThZZy6aHVkoWS1KXsNppuYm0I6D7lZc4o=
+	t=1705752017; cv=none; b=L4GguXBUzCcK0JkqkVMBmCZMf/Hon1CYUT30UXEqDyO6iBjhDFv07Ic4Xf4FqExmSeoIJgJ211IywJmn3E7DVRRl/QWsd+1JKLvY/evRys0aygiWi5WXD8uaZkmCbeAZo0LRUPjd0PJaCdXTtqzyjEd6gQzhEURe58yTR+q1hgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705751628; c=relaxed/simple;
-	bh=h67AGv+FNXNrQzYDfRzBnkw8TczwwZeIqb6H6msqznM=;
+	s=arc-20240116; t=1705752017; c=relaxed/simple;
+	bh=PkF6YXZLhKQe2Faar9K9DRgJJuZs87C57DbxFN/Fdao=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T5y6QXAVqj12tGtvN8hmld82yruTfs1ngL+p/w/vllAaZZuzn2XlKVJMCrYOIafO7J+w89aCXu7tduJrJBkVX2rvyoLiRmm3XOcD3grVHp3c7mIC97FqyBk9WdMWUoT1PqYVKvskw22DsMdP85hiuGWl+yLNVWDjL9EMWud83qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AVPgGS25; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38C92C433C7;
-	Sat, 20 Jan 2024 11:53:45 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q/PNGbdMnJwqq94GX6dRFqcdDOmbj+rhZm/Me4XnmB6dz3mJyy3hlnYMHDt/6t4hypsVM6BHuyaXnJWvsbh9ej753ccYeiUuRtA5X9tfVdIzYoEy89nKI7UZsW9/fr2u0jGMbH+RGckOQ2OhRj5Kk//vOxrYtSSC4pMdCbA3/EU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XdJlOK+e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A8BC433F1;
+	Sat, 20 Jan 2024 12:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705751627;
-	bh=h67AGv+FNXNrQzYDfRzBnkw8TczwwZeIqb6H6msqznM=;
+	s=k20201202; t=1705752017;
+	bh=PkF6YXZLhKQe2Faar9K9DRgJJuZs87C57DbxFN/Fdao=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AVPgGS25GVL4+3dPNg/aFvLs9imkvzIelHcrYqNbeoah2Yzwz5G+Q57Z4oXej/d/j
-	 8F7Baf4BBHKV1qfplPfwWcYWXQKO/uB4h1RR9yzAua6y/Bo4x72L3VGudZhBohRrGC
-	 XRUukhs234I0sxuHCh/ZTAyMbEcX9zOothgSHzAp4uoEyvkB0osOCv2dyOKHxQeadO
-	 Ttk0f0K69HnTCHbDq7fLzzeCnHZ5qfTnxNBZhVq3YSD/+dGmY+18PSjdI7wH+fSlee
-	 1MjbW64BslledfDFWccKPS35ppNw7qdLnOXYvhkHolEbRN0qZ8WYQqi5zLtKHaEFa6
-	 j+TGmEA5iI9Aw==
-Date: Sat, 20 Jan 2024 11:53:42 +0000
+	b=XdJlOK+e7nkCmuY8GEpBC71Qhb90oU70LQVNzV+NPSZrsZytGT6pG9bjC+vtn2Pu5
+	 Ihv9gnsPzTGdG1FYVLZZzC3do0sdTNtyfkEIiakLKY+M4sYO4kCD+IwODtpXcoO6i2
+	 OaPHogdjT6dSpkjnl7nV3GlTIXv+NS92gjmaH7/7+OiPoTfP4hBWipgnY7mtEZ18e0
+	 YD861k8GB9xZSmjd5ToB0LlfZ8QBp/kw1jdfXn1XOAbFHbC0Iw8THJwKuwZnno0/RY
+	 ADWTIjC7CCDGai/FnbpfXlte7ztP1yAxAB4NrGumKG4nYWUjgn22dyzZkJn30To7OK
+	 LIJpMmfCGNQfg==
+Date: Sat, 20 Jan 2024 12:00:12 +0000
 From: Simon Horman <horms@kernel.org>
 To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next] xdp: Remove usage of the deprecated
- ida_simple_xx() API
-Message-ID: <20240120115342.GD110624@kernel.org>
-References: <8e889d18a6c881b09db4650d4b30a62d76f4fe77.1705734073.git.christophe.jaillet@wanadoo.fr>
+	netdev@vger.kernel.org
+Subject: Re: [PATCH] nfc: hci: Save a few bytes of memory when registering a
+ 'nfc_llc' engine
+Message-ID: <20240120120012.GA118262@kernel.org>
+References: <6d2b8c390907dcac2e4dc6e71f1b2db2ef8abef1.1705744530.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,14 +61,13 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8e889d18a6c881b09db4650d4b30a62d76f4fe77.1705734073.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <6d2b8c390907dcac2e4dc6e71f1b2db2ef8abef1.1705744530.git.christophe.jaillet@wanadoo.fr>
 
-On Sat, Jan 20, 2024 at 08:02:20AM +0100, Christophe JAILLET wrote:
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
+On Sat, Jan 20, 2024 at 10:56:06AM +0100, Christophe JAILLET wrote:
+> nfc_llc_register() calls pass a string literal as the 'name' parameter.
 > 
-> Note that the upper limit of ida_simple_get() is exclusive, but the one of
-> ida_alloc_range() is inclusive. So a -1 has been added when needed.
+> So kstrdup_const() can be used instead of kfree() to avoid a memory
+> allocation in such cases.
 > 
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
