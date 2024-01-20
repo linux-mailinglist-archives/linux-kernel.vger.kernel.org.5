@@ -1,121 +1,184 @@
-Return-Path: <linux-kernel+bounces-31824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55EB6833531
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 344BF833535
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:20:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2202B21DDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:17:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70554B2228C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E99A10785;
-	Sat, 20 Jan 2024 15:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2916310798;
+	Sat, 20 Jan 2024 15:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y+F1rVpi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g+R9ng5Y"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EBA9FC0A;
-	Sat, 20 Jan 2024 15:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47B7FC10;
+	Sat, 20 Jan 2024 15:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705763818; cv=none; b=s0vPhf9l8lcXVAZwiuwANtEF76wTSEkJ6Yxs+vDqdHQh3Nfqwe36oVi+VWMIkLX5IcE1Dm3SGH6//Gocxv945lyRQXSCOLl6mZLVMh1rclGBoRy9tjQ2skfTBSFzeVGTZJt66taaGuU/UtV8a+UWaThDoTg05EVB74Kx5DnV/yQ=
+	t=1705764006; cv=none; b=lK2O3qFWUAzWCu7n4P2r6Fd631LOgJKnKEM/ORbzsT2CYENxoiiCrI6DiL8LSIKqzGZlC6HsTarcIBikBcUAijMGn76Qys+2plr4C3T3mm84IqJcrIqURi4TzIJfuFW7O5tx9B1FWtZdNZsS1Hk5tLcR/QFU0SgUGNSlSBR0CwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705763818; c=relaxed/simple;
-	bh=9SEr9/XdzmIJc8yNG3vWCLsaNfMf/4ZUEDrax18u5Lw=;
+	s=arc-20240116; t=1705764006; c=relaxed/simple;
+	bh=2x7L2nPWKcD/ke7shQz1wJugb8Cya+iMq5jXQicfUGk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K2S+Oxy3x1uNi9g953lpoxK2UFkVKtMPGxip78WofL0jnW/VK0w1oSGvqK4JYI7lf53Y5aZxXRKJA9cnmRon16ba6UIoTjSJ6/R2DChxsnbrXGdQOEtG2Cea4tZ9iNjx9jSugrE0i0oOWITm+tAt6+fB9pjm2kOtw9nMvkXzFgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y+F1rVpi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0D5BC433F1;
-	Sat, 20 Jan 2024 15:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705763817;
-	bh=9SEr9/XdzmIJc8yNG3vWCLsaNfMf/4ZUEDrax18u5Lw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y+F1rVpim1lh58P9Zy9Zh6bCb4LhbBHG1z86l9c38GqIK+VkSDyUYxHPMaOvXSDir
-	 6NJxz3OfvOXSLItgldd5mKhTSj6rbzCYyNkGXTFqY8m3gsrLd3SmbFIC0z2B/w0zou
-	 F9IkN0rRyy5lTKyeHISV0P7TF+yurnUiy8/eF7Ce7I5xqzKZdxE8inZ4H1VOdAyWd4
-	 PsaZpcFt9UaGip2cLCpjtgCvNWOVj2zW9cjPG3vk432FRtNSFmZgpAFOG9RLOwgDSj
-	 NSQkR/UpNnHu9YFBf2fMbuAOLA4rn3n/6RZdkaHHrDbJQiCd6Snfu0dnRtRiesIWH/
-	 Qyrp1fafZIEgA==
-Date: Sat, 20 Jan 2024 20:46:48 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] dt-bindings: PCI: qcom: move to dedicated schema
- (part one)
-Message-ID: <20240120151648.GB6371@thinkpad>
-References: <20240108-dt-bindings-pci-qcom-split-v1-0-d541f05f4de0@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qxTf4DcGxSoEPouespTuXzyWPVbjkEL/l1hRFF/ZCyVZC1GfSNM+HC1rrYGMaLh8G2t1bGCH++x7oCi4AatYbecftgi6Xccfq6xmnfuC1Zt2CISlhwU2KXGPipDzaNmKT3Cxhd7MbIuAH/sKPB3uLSRUlseLQp8WZ2oVlWN937M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g+R9ng5Y; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705764006; x=1737300006;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2x7L2nPWKcD/ke7shQz1wJugb8Cya+iMq5jXQicfUGk=;
+  b=g+R9ng5Yav/TvLCF5Lmc6udv+jytq+CREOXiQX/RUMjtJlEBfLzy3/9d
+   7n/coNIcafioXo4WaC4sWPR5/lChE8ZDh9QSdGdrtoxeBfDChCICv7NWL
+   7f+jSNNcWHAkk1QBxDC1f+PM5YWl3HaqThpGV0SuX2MyO4xiVOiu9z/ZF
+   +Iqnbi4jprLULa+FTP6J4/aM3rgEy0trbmszdXvFlixysCiUEj5vQgh2u
+   yF5ywEgm4jSKoURRUpfHkrkMsWqz1d9q0uQV8aO/WlVAbLlXIa81k9NJ/
+   lJA5l0yynC3JyrbL9FOxoL+vNF5MuvYmDcq5CQyJSdKF+zN8p33iovh3C
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="19521797"
+X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
+   d="scan'208";a="19521797"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2024 07:20:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="1116484887"
+X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
+   d="scan'208";a="1116484887"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga005.fm.intel.com with ESMTP; 20 Jan 2024 07:20:02 -0800
+Date: Sat, 20 Jan 2024 23:16:49 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
+Subject: Re: [PATCH 3/4] KVM: Get reference to VM's address space in the
+ async #PF worker
+Message-ID: <Zavj4U2LYeOsnXOh@yilunxu-OptiPlex-7050>
+References: <20240110011533.503302-1-seanjc@google.com>
+ <20240110011533.503302-4-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240108-dt-bindings-pci-qcom-split-v1-0-d541f05f4de0@linaro.org>
+In-Reply-To: <20240110011533.503302-4-seanjc@google.com>
 
-On Mon, Jan 08, 2024 at 03:19:13PM +0100, Krzysztof Kozlowski wrote:
-> Hi,
+On Tue, Jan 09, 2024 at 05:15:32PM -0800, Sean Christopherson wrote:
+> Get a reference to the target VM's address space in async_pf_execute()
+> instead of gifting a reference from kvm_setup_async_pf().  Keeping the
+> address space alive just to service an async #PF is counter-productive,
+> i.e. if the process is exiting and all vCPUs are dead, then NOT doing
+> get_user_pages_remote() and freeing the address space asap is desirable.
 > 
-> The qcom,pcie.yaml containing all devices results in huge allOf: section
-> with a lot of if:then: clauses making review and changes quite
-> difficult.
+> Handling the mm reference entirely within async_pf_execute() also
+> simplifies the async #PF flows as a whole, e.g. it's not immediately
+> obvious when the worker task vs. the vCPU task is responsible for putting
+> the gifted mm reference.
 > 
-> Split common parts into common schema and then move few devices to
-> dedicated files, so that each file will be easier to review.
-> 
-> I did not split/move all devices yet, so if this gets accepted I plan to
-> send more patches.
-> 
-
-Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
-> Best regards,
-> Krzysztof
-> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
-> Krzysztof Kozlowski (6):
->       dt-bindings: PCI: qcom,pcie-sm8550: move SM8550 to dedicated schema
->       dt-bindings: PCI: qcom,pcie-sm8450: move SM8450 to dedicated schema
->       dt-bindings: PCI: qcom,pcie-sm8250: move SM8250 to dedicated schema
->       dt-bindings: PCI: qcom,pcie-sm8150: move SM8150 to dedicated schema
->       dt-bindings: PCI: qcom,pcie-sm8350: move SM8350 to dedicated schema
->       dt-bindings: PCI: qcom,pcie-sc8280xp: move SC8280XP to dedicated schema
+>  include/linux/kvm_host.h |  1 -
+>  virt/kvm/async_pf.c      | 32 ++++++++++++++++++--------------
+>  2 files changed, 18 insertions(+), 15 deletions(-)
 > 
->  .../devicetree/bindings/pci/qcom,pcie-common.yaml  |  98 ++++++++
->  .../bindings/pci/qcom,pcie-sc8280xp.yaml           | 180 ++++++++++++++
->  .../devicetree/bindings/pci/qcom,pcie-sm8150.yaml  | 157 ++++++++++++
->  .../devicetree/bindings/pci/qcom,pcie-sm8250.yaml  | 180 ++++++++++++++
->  .../devicetree/bindings/pci/qcom,pcie-sm8350.yaml  | 169 +++++++++++++
->  .../devicetree/bindings/pci/qcom,pcie-sm8450.yaml  | 215 +++++++++++++++++
->  .../devicetree/bindings/pci/qcom,pcie-sm8550.yaml  | 171 +++++++++++++
->  .../devicetree/bindings/pci/qcom,pcie.yaml         | 268 ---------------------
->  8 files changed, 1170 insertions(+), 268 deletions(-)
-> ---
-> base-commit: a0bf076e449e022944b440174491f5c583753d84
-> change-id: 20240108-dt-bindings-pci-qcom-split-624737f7ba67
-> 
-> Best regards,
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 7e7fd25b09b3..bbfefd7e612f 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -238,7 +238,6 @@ struct kvm_async_pf {
+>  	struct list_head link;
+>  	struct list_head queue;
+>  	struct kvm_vcpu *vcpu;
+> -	struct mm_struct *mm;
+>  	gpa_t cr2_or_gpa;
+>  	unsigned long addr;
+>  	struct kvm_arch_async_pf arch;
+> diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
+> index d5dc50318aa6..c3f4f351a2ae 100644
+> --- a/virt/kvm/async_pf.c
+> +++ b/virt/kvm/async_pf.c
+> @@ -46,8 +46,8 @@ static void async_pf_execute(struct work_struct *work)
+>  {
+>  	struct kvm_async_pf *apf =
+>  		container_of(work, struct kvm_async_pf, work);
+> -	struct mm_struct *mm = apf->mm;
+>  	struct kvm_vcpu *vcpu = apf->vcpu;
+> +	struct mm_struct *mm = vcpu->kvm->mm;
+>  	unsigned long addr = apf->addr;
+>  	gpa_t cr2_or_gpa = apf->cr2_or_gpa;
+>  	int locked = 1;
+> @@ -56,16 +56,24 @@ static void async_pf_execute(struct work_struct *work)
+>  	might_sleep();
+>  
+>  	/*
+> -	 * This work is run asynchronously to the task which owns
+> -	 * mm and might be done in another context, so we must
+> -	 * access remotely.
+> +	 * Attempt to pin the VM's host address space, and simply skip gup() if
+> +	 * acquiring a pin fail, i.e. if the process is exiting.  Note, KVM
+> +	 * holds a reference to its associated mm_struct until the very end of
+> +	 * kvm_destroy_vm(), i.e. the struct itself won't be freed before this
+> +	 * work item is fully processed.
+>  	 */
+> -	mmap_read_lock(mm);
+> -	get_user_pages_remote(mm, addr, 1, FOLL_WRITE, NULL, &locked);
+> -	if (locked)
+> -		mmap_read_unlock(mm);
+> -	mmput(mm);
+> +	if (mmget_not_zero(mm)) {
+> +		mmap_read_lock(mm);
+> +		get_user_pages_remote(mm, addr, 1, FOLL_WRITE, NULL, &locked);
+> +		if (locked)
+> +			mmap_read_unlock(mm);
+> +		mmput(mm);
+> +	}
+>  
+> +	/*
+> +	 * Notify and kick the vCPU even if faulting in the page failed, e.g.
+
+How about when the process is exiting? Could we just skip the following?
+
+Thanks,
+Yilun
+
+> +	 * so that the vCPU can retry the fault synchronously.
+> +	 */
+>  	if (IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC))
+>  		kvm_arch_async_page_present(vcpu, apf);
+>  
+> @@ -129,10 +137,8 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
+>  #ifdef CONFIG_KVM_ASYNC_PF_SYNC
+>  		flush_work(&work->work);
+>  #else
+> -		if (cancel_work_sync(&work->work)) {
+> -			mmput(work->mm);
+> +		if (cancel_work_sync(&work->work))
+>  			kmem_cache_free(async_pf_cache, work);
+> -		}
+>  #endif
+>  		spin_lock(&vcpu->async_pf.lock);
+>  	}
+> @@ -211,8 +217,6 @@ bool kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  	work->cr2_or_gpa = cr2_or_gpa;
+>  	work->addr = hva;
+>  	work->arch = *arch;
+> -	work->mm = current->mm;
+> -	mmget(work->mm);
+>  
+>  	INIT_WORK(&work->work, async_pf_execute);
+>  
 > -- 
-> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 2.43.0.472.g3155946c3a-goog
 > 
-
--- 
-மணிவண்ணன் சதாசிவம்
 
