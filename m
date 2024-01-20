@@ -1,127 +1,121 @@
-Return-Path: <linux-kernel+bounces-31848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E63B783356B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:00:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EADB383356D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:02:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FEE828426B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 17:00:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2701E1C216D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 17:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178C112B91;
-	Sat, 20 Jan 2024 17:00:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E6614A9E;
+	Sat, 20 Jan 2024 17:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YJAW4Og1"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="lU0cjhKv"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B31E1172D
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 17:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D87214A85
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 17:01:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705770039; cv=none; b=YAsB8SpUOrKRBZLaIfOA4VFzuFL/REkXPgMbsJivX/LfAdcBuloBLMJLH585Ui0qEdBdJS7oCwDV/41y8tyMFLRIM+eeMrM5Rp0YXvMTbLBQ62hNP76a78RvmHsZtOCB9eU18iDaFA9fJ3FadcR6B9hEXSjvcWCoLXOZVpC0Dsc=
+	t=1705770117; cv=none; b=F5eTe1AK0Vc7VT5lQV2I30IfLn/ZNXzHCPwGoI9jQSfrhD8f+sUY+CDGdhUKW1e0XjXTsyFTf4LVcG1QsYdiqTMIi2IjhSwfeP09otHdQ8wMUtU+sUsXnXUleGfxnZvOzh3g5gEGkzYjz7+zsjooSQqiiqtExOeYenn+7WkQcWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705770039; c=relaxed/simple;
-	bh=PKK6HYadXAwZCSYg1nzBG0fYqkoKTKlf+PEjvpx9m6I=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qsZ7Ekf4J5GHuMdVhnxD8hBUYgugan5dpSZGlkyp7BFQTObi3VJi+uouKcRjBKUX9H+/HAj8vJsxGtBzbdYuWVw9aQxuK/Lo1Fa3uE/dXmHoGqr72J31NQBZgrNH8I8Kboygz7Nh9EO2TimihSgC2kTf1jMWKDplCQcXXbD8jgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YJAW4Og1; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33922b66bd7so1008362f8f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 09:00:37 -0800 (PST)
+	s=arc-20240116; t=1705770117; c=relaxed/simple;
+	bh=M0N3JvZSRxhre+AHdg2DAWF69SvD6OJuhG0bltmzIpM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=FDLOu+zSZfzJNxqc/iLgcrhfxzOeItBLYbKIllUmrWatodVBu7ukuCswIBIEGzij4/AH9MqdsW7CRltA8+5YG2sCpBeplRQ4Fs94aXvlF5sjyFk7pUM5iwsqW3bGZNXuUdE2inAA3ftpMIZKNSrJQkf/4Dow+4O3uvGVULURX8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=lU0cjhKv; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5cdbc42f5efso182855a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 09:01:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705770036; x=1706374836; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XyVOGkOkVTm86r/oRSP+lx+TJBopO7lwL7TLREoXTNI=;
-        b=YJAW4Og1tr7LUCMJi6au+y80KjHpsbIFgS7PK5dKAGFPA2KGCWvDEFYaHIiqURmLSu
-         3nnHSgqUC5byd0kR26/9TNNVbNXiI57irzA74oUfeDVlVqMIh7QGo5WAGM1Ye6KBFTxz
-         +61SyTtRhae8aeyFOGDDcc/sUkGy1ir6gUVKwanSpvwgn7VL9DHFAzXPXORXpyaGJHfB
-         e0ndVwzKzbYgj1lIxhUcpFXQRc6XwvURlAqyO2N4COeyt1bHlYafhfUwrassp8zN3V79
-         n+tIfNUz2NvKdf0Ve6qeeW/Tp6IYugzQokhKtvfQEo8g+oQC3dNftUZj7VTw6kxtU7LE
-         82ZQ==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705770113; x=1706374913; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=b8tEllDNlsEDP/jUaFTWEigyTJb7YjOR8aztDaSFSnA=;
+        b=lU0cjhKviuPCNkyum783IabQBtofZGKZr9rytS6YlD6Qie33jroR872HS56OwoFQe7
+         ETOPbCjdumfrZ4upqI/j/CN19AJ50ZzkEQwjCd2aExRekSqs0EVcEiqitqNbd0/aYobD
+         hHE9zPJzTFvQAVklNWEDsLLM1ETke9QDRwNo49I5ntUGvJgxGOi7lUG0qn6ExAW9OlvI
+         2ISj5dC1T7dfVRUcbuGtn857/1nqUNst835oRQgCTxZ2X7uhMeeI8Ww0rx8kpqDk7vNu
+         y+zAd0MYNKMRdeDg6zOq8avVAj45kE4TgTm9V0T9jivEF0TCYIL5H0xt7tBelmhw1xlM
+         IT1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705770036; x=1706374836;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id
+        d=1e100.net; s=20230601; t=1705770113; x=1706374913;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XyVOGkOkVTm86r/oRSP+lx+TJBopO7lwL7TLREoXTNI=;
-        b=RLfqcCqh3CUIqAO5RwRvFXc/yGXcE0O/UYxj8oS2teFhbrk8HHo79tJzBIwVjzIYp3
-         4YJXcmeaEVzxibVndyXp99lxYpxdIl0P/RlWuG/6pWm51Du5J3JWVnOhg2yuQiDFA2di
-         GpyAn9/n/UJulPPDrUfgswr0bKPLdmstwRVt6Dk54U9vWCsSwp8TnjtdtIc1lNFDe8Ph
-         BWS/KN9NWfZm1A1JlHnVNJ9ddtQP8iJIcti4Bc2ir7am7i/dq034v7d7N/6Ljo1CSXRQ
-         /S/Qu8HjWbHBweS0xPWl4hHmw0FFyie8alguXkYpBp1sAsFD06CHSlMHBmj8hGKFCAdn
-         0htw==
-X-Gm-Message-State: AOJu0Yxj8hPDRbBldrN8WgHVp6qNxMl6YjV17ZXkGDOKKRn8/GW/lQnr
-	0LizTMJEnCA2oGkPhm4T6cbq8FdE/62YDliL12RXUxMlajrxt4VS
-X-Google-Smtp-Source: AGHT+IHLy4gpnmo78d749VFJKFbfRCmTRpdtbiW7GiLL3n28JxQvUf8w3AUDWzpxCwoH+TRNaXR9Sw==
-X-Received: by 2002:adf:cd0d:0:b0:337:51c6:8f09 with SMTP id w13-20020adfcd0d000000b0033751c68f09mr734147wrm.109.1705770036119;
-        Sat, 20 Jan 2024 09:00:36 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id x8-20020adfdd88000000b003392ae3aee8sm1567523wrl.97.2024.01.20.09.00.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jan 2024 09:00:35 -0800 (PST)
-Message-ID: <65abfc33.df0a0220.65bf1.4e35@mx.google.com>
-X-Google-Original-Message-ID: <Zav8MF5mLvcBiHhp@Ansuel-xps.>
-Date: Sat, 20 Jan 2024 18:00:32 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Eric DeVolder <eric.devolder@oracle.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Kees Cook <keescook@chromium.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	John Crispin <john@phrozen.org>
-Subject: Re: [PATCH 2/2] ARM: decompressor: add option to ignore MEM ATAGs
-References: <20240119201356.7903-1-ansuelsmth@gmail.com>
- <20240119201356.7903-3-ansuelsmth@gmail.com>
- <CACRpkdaR_gtW6VmenfV5=xounqV18-kZyNprJUtLWkpgXUnkvA@mail.gmail.com>
+        bh=b8tEllDNlsEDP/jUaFTWEigyTJb7YjOR8aztDaSFSnA=;
+        b=Q+akVkmYViGMuE+yNFlF0C9hZu6NfGS+DNHSm/vhDjHjEqV1MXI+kwp9lCXh0Ik9fZ
+         Qk0+Xd1TlGGUARI4UNghMhX5C4+6qXec8aUPUOd1aEL8vFJ16Lv163nn2j8T2qWYBvg6
+         FNiA9z8F8Rfm19YiUG3yGg1e4m87ueRHgFLkFLFt2AsgeRYr5ky4FrdsNHH+DeBr9R5Y
+         6VeAz7mSu/hOVVgfxzKr5lEUIGSjQydCcUVxNV2oD2fgACaFtaST+Huvt1g4kidAUcq6
+         T1NoabvbU7BBJk7eqBzv23O4J6SBEHXvCUVyseLX2wt9bfXz7+NjefXfZ9Pogt0KIpI3
+         3GgA==
+X-Gm-Message-State: AOJu0YyKSrZl59cEEDAretnlKph3jsYuuk7fI2SELdlmaIcboakFy74W
+	tjYzMcY++mI0YHigTpjfP527wxNNZBTl8uztx2Nxmq11jDNmA3Bsy8uZvET39kuA6KcvNDQx/Ze
+	uaas=
+X-Google-Smtp-Source: AGHT+IFXh+gFqOHeoivxhaztHJcWCZc+b5GjJRb1wA9/OfMKsXYHRO7zmpHOEmQ1l+QFte51U8RP3Q==
+X-Received: by 2002:a05:6a21:398f:b0:19b:20e9:90da with SMTP id ad15-20020a056a21398f00b0019b20e990damr5256618pzc.5.1705770113640;
+        Sat, 20 Jan 2024 09:01:53 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id fi33-20020a056a0039a100b006d9aa6592d0sm6969907pfb.82.2024.01.20.09.01.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Jan 2024 09:01:53 -0800 (PST)
+Message-ID: <f48e47b5-0572-4f84-b165-5a9e91788c57@kernel.dk>
+Date: Sat, 20 Jan 2024 10:01:51 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdaR_gtW6VmenfV5=xounqV18-kZyNprJUtLWkpgXUnkvA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] iouring:added boundary value check for io_uring_group
+ systl
+Content-Language: en-US
+To: Subramanya Swamy <subramanya.swamy.linux@gmail.com>, corbet@lwn.net,
+ jmoyer@redhat.com, asml.silence@gmail.com, akpm@linux-foundation.org,
+ bhe@redhat.com, ribalda@chromium.org, rostedt@goodmis.org,
+ sshegde@linux.vnet.ibm.com, alexghiti@rivosinc.com, matteorizzo@google.com,
+ ardb@kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ io-uring@vger.kernel.org
+References: <20240120144411.2564-1-subramanya.swamy.linux@gmail.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240120144411.2564-1-subramanya.swamy.linux@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Jan 20, 2024 at 12:52:33PM +0100, Linus Walleij wrote:
-> On Fri, Jan 19, 2024 at 9:14 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
-> 
-> > +#if defined(CONFIG_ARM_ATAG_DTB_COMPAT_IGNORE_MEM)
-> > +#define do_ignore_mem 1
-> > +#else
-> > +#define do_ignore_mem 0
-> > +#endif
-> 
-> Is there a reason why you can't just use:
-> 
-> if (IS_ENABLED(CONFIG_ARM_ATAG_DTB_COMPAT_IGNORE_MEM))
-> in the code?
-> 
+On 1/20/24 7:44 AM, Subramanya Swamy wrote:
+> /proc/sys/kernel/io_uring_group takes gid as input
+> added boundary value check to accept gid in range of
+> 0<=gid<=4294967294 & Documentation is updated for same
 
-Was following the pattern, yes I can totally do this change... Will send
-a v2 with this changed.
+This should have:
 
-Since the first patch has to be regression tested, is it ok to add the
-Tag in v2 or I should wait that to send v2?
+Fixes: 76d3ccecfa18 ("io_uring: add a sysctl to disable io_uring system-wide")
+
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index 6584a1f9bfe3..a8b61ab3e118 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -470,10 +470,8 @@ io_uring_group
+>  ==============
+>  
+>  When io_uring_disabled is set to 1, a process must either be
+> -privileged (CAP_SYS_ADMIN) or be in the io_uring_group group in order
+> -to create an io_uring instance.  If io_uring_group is set to -1 (the
+> -default), only processes with the CAP_SYS_ADMIN capability may create
+> -io_uring instances.
+> +privledged (CAP_SYS_ADMIN) or be in the io_uring_group group in order
+
+privileged.
 
 -- 
-	Ansuel
+Jens Axboe
+
 
