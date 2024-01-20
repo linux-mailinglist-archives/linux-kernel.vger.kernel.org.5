@@ -1,68 +1,88 @@
-Return-Path: <linux-kernel+bounces-31797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EA9383345B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:44:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFA3483349D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:57:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA8BD283714
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:44:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E011C1C21713
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C42EEDC;
-	Sat, 20 Jan 2024 12:44:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA029EAFA;
+	Sat, 20 Jan 2024 12:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LFchhK4n"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ItHZg+wN"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60CDDDC1;
-	Sat, 20 Jan 2024 12:44:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F5DDDDD
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 12:57:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705754650; cv=none; b=HMVFimsaushaer30O0ysmRZb9H0xeHUT+xkDJ1RpbGi9VxjDrXkm0ukLTIolWBmgh5pwg1pZvEkEt5ft5vS35ySyrXQ4F+PsPYt2XPqWTkPZTXJDG+BRg8dqi7v4epstBUODG+5oBsag7tXDstEWKJZP1cspbOJ28x7PzJvrbwA=
+	t=1705755449; cv=none; b=IErQXORAysVjeEXFpZoDdOs/fA7L4ASDZhQb6dzqInkP8xj1b8XJAnyKvGd4Bsw9DsEm3IwHPpewUJhZbQyEXGLOSyPY6Q7PtR6hArHXnD7z0BcB0XeiTA/P80yonbw3KFQWKuwqteNaf3sffz/h74VnA8816zhYo3wCNRrcY80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705754650; c=relaxed/simple;
-	bh=MJq9EqTMgfUci4DMIWU2In9pgKeV5L7ecAkyQksA8RQ=;
+	s=arc-20240116; t=1705755449; c=relaxed/simple;
+	bh=jnF2KM1vKg9wqMjKd+P885bdyFOk09nDr53wY6ifwwc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jYZYcwVy3Tf8cv8A8QxMCDyVqnz913oA/Ym4KhBwOJP02yOCSDAe6Gq5SlKz8hxvXlxsQLYceJttiD4n5JLiScQOSYDF5TR/s7Orksp96V8fgqMWHNENCdt37Ow/sMRabNHvw4VKBFeaL+cUd3SfVLSaDwbmixR2y9pmen0H6C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LFchhK4n; arc=none smtp.client-ip=192.55.52.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705754648; x=1737290648;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MJq9EqTMgfUci4DMIWU2In9pgKeV5L7ecAkyQksA8RQ=;
-  b=LFchhK4ngkUIzWY3yBpIQb5oq24AVZQnUBBwotSPWXiMV9nlNY3qXeyf
-   oRED9DRmFohDjXr3GcskfBaWKrNeqhngUZQuFfnwapD0qNh45TPQrTPzI
-   eOQxN6Xd+Tud2fLXtww3gKCpdKP+021VVAoslgLXE9uN4s9O+mBEEedb5
-   ifN1ObZCwSED0osDu1YrOlGJy5yKCccLa3WM6CQvSeVKwgSKVM6A6fqZ8
-   BKt4S4ex7ZeHxQLztN9dYWFIEC6YgvBclXEttchS550on7xeztRM2FviF
-   fg6rimMmMt3tgP9FAFDQvS13LbAslArezGQyycI14ccTHBLcf8YRcaCY/
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="487081224"
-X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
-   d="scan'208";a="487081224"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2024 04:44:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
-   d="scan'208";a="895909"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa004.jf.intel.com with ESMTP; 20 Jan 2024 04:44:06 -0800
-Date: Sat, 20 Jan 2024 20:40:53 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH 1/4] KVM: Always flush async #PF workqueue when vCPU is
- being destroyed
-Message-ID: <Zau/VQ0B5MCwoqZT@yilunxu-OptiPlex-7050>
-References: <20240110011533.503302-1-seanjc@google.com>
- <20240110011533.503302-2-seanjc@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tjzPspuwOlaYWkR0qXRsPU55P389syrj6/Pgy9sRj2p12Z+DQd5Ly053+smNg/CITzTh3EgFq6le61E9p8HVnDocfTyVYgPZCI6fdYwoWSXik53Uqa3CwY9KUDXREOUr7ieIKSG4qWwVhyDCyqsYzICzGC6M5v+vAzYuZEpMXUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ItHZg+wN; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40ea25550f7so8656955e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 04:57:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705755446; x=1706360246; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N8mTtjlEuuvHfE+fvWczwMXg7wSqmdVC2KllD4mXk5Y=;
+        b=ItHZg+wNizYsY2fDRR+tBRX2EjVQqsRh5Z+/rrzDrRAJJK4uMHKurNTjFOXSbbAmr1
+         2e4b15MEf8qnY9QCAD2dpeE/QSlCjRb7ia2gPUWQdQsR1GOsENwGJEjCYXMJkwImvdwQ
+         Qxs0UAWLEvLVXwpupRVFKPImWz0kqsUy4sryK/WG0fUvW96fH2Mq/7jWWSii7ZiRrdtR
+         omk9Om1D/5q3yUveIwucXi+IH3APOOr4PomqWwQCSv8ywtaGpZVyi6DL0zJ1/6nLRJVx
+         unJGl1qCDaSNA7YUxFaQValMNlO8GThQohvjqQa/ALLkeySgNpb2cvhZy0gDzcCEM9NH
+         EemQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705755446; x=1706360246;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N8mTtjlEuuvHfE+fvWczwMXg7wSqmdVC2KllD4mXk5Y=;
+        b=KfS8GKci2rRpMUB73c43SCDgz/KlfgyXR/MwOZFbHM8qMD31Kv24/LwEXXQY+sttQX
+         uSQcVZL27wlcYkJ25CZMw/ZDamlhvDbn7B7yg80eu+15coRZMMFZ62FtKi1ZlKfXMlud
+         CQju8eFW6ergflUpsucRUC/WZG1ZhLjfqO04AZsDeaWy8YvCA4cZ+2/yAFKn1Yv2adZW
+         ohau2Uk0UHZVi3cmYt+xFJAxBHkdlh+b5vAH7B11g/pMujvQvdoVH1nBWsZJnTvGmMNT
+         K6qSyYTxsrL5ZJR9/lUgDWqRcqermmUd+AMrqyEGTXhtwUIyEVqW2dgqW55b5Cn+JjIY
+         D9HQ==
+X-Gm-Message-State: AOJu0YwtsR+2mONCl0E6MEnjYviqTgiSkgrLeZA8utU5EqhAzzeaeX++
+	Np9ZcLS+oVwlMg8vJsBDHyFwwd+toMMjMhz7f8u9pF9w1D+V7Rae
+X-Google-Smtp-Source: AGHT+IFHIg1blJCcSg3Jj45gJp8hPZeFSJKFYZ2oaK2duFhsoPa2VzClKDV95xeDtFVIN16FlCiZMA==
+X-Received: by 2002:a05:600c:4f4f:b0:40e:a34c:8cac with SMTP id m15-20020a05600c4f4f00b0040ea34c8cacmr357809wmq.72.1705755445889;
+        Sat, 20 Jan 2024 04:57:25 -0800 (PST)
+Received: from localhost (host86-164-128-169.range86-164.btcentralplus.com. [86.164.128.169])
+        by smtp.gmail.com with ESMTPSA id s7-20020adff807000000b00337d735c193sm5139822wrp.49.2024.01.20.04.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Jan 2024 04:57:24 -0800 (PST)
+Date: Sat, 20 Jan 2024 12:55:10 +0000
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Dave Chinner <david@fromorbit.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 04/11] mm: vmalloc: Remove global vmap_area_root
+ rb-tree
+Message-ID: <2c318a40-9e0f-4d24-b5cc-e712f7b2c334@lucifer.local>
+References: <20240102184633.748113-1-urezki@gmail.com>
+ <20240102184633.748113-5-urezki@gmail.com>
+ <63104f8e-2fe3-46b2-842c-f11f8bb4b336@lucifer.local>
+ <Zakkc5jrxmJj-plk@pc636>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,206 +91,300 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240110011533.503302-2-seanjc@google.com>
+In-Reply-To: <Zakkc5jrxmJj-plk@pc636>
 
-On Tue, Jan 09, 2024 at 05:15:30PM -0800, Sean Christopherson wrote:
-> Always flush the per-vCPU async #PF workqueue when a vCPU is clearing its
-> completion queue, e.g. when a VM and all its vCPUs is being destroyed.
-> KVM must ensure that none of its workqueue callbacks is running when the
-> last reference to the KVM _module_ is put.  Gifting a reference to the
-> associated VM prevents the workqueue callback from dereferencing freed
-> vCPU/VM memory, but does not prevent the KVM module from being unloaded
-> before the callback completes.
-> 
-> Drop the misguided VM refcount gifting, as calling kvm_put_kvm() from
-> async_pf_execute() if kvm_put_kvm() flushes the async #PF workqueue will
-> result in deadlock.  async_pf_execute() can't return until kvm_put_kvm()
-> finishes, and kvm_put_kvm() can't return until async_pf_execute() finishes:
-> 
->  WARNING: CPU: 8 PID: 251 at virt/kvm/kvm_main.c:1435 kvm_put_kvm+0x2d/0x320 [kvm]
->  Modules linked in: vhost_net vhost vhost_iotlb tap kvm_intel kvm irqbypass
->  CPU: 8 PID: 251 Comm: kworker/8:1 Tainted: G        W          6.6.0-rc1-e7af8d17224a-x86/gmem-vm #119
->  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
->  Workqueue: events async_pf_execute [kvm]
->  RIP: 0010:kvm_put_kvm+0x2d/0x320 [kvm]
->  Call Trace:
->   <TASK>
->   async_pf_execute+0x198/0x260 [kvm]
->   process_one_work+0x145/0x2d0
->   worker_thread+0x27e/0x3a0
->   kthread+0xba/0xe0
->   ret_from_fork+0x2d/0x50
->   ret_from_fork_asm+0x11/0x20
->   </TASK>
->  ---[ end trace 0000000000000000 ]---
->  INFO: task kworker/8:1:251 blocked for more than 120 seconds.
->        Tainted: G        W          6.6.0-rc1-e7af8d17224a-x86/gmem-vm #119
->  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->  task:kworker/8:1     state:D stack:0     pid:251   ppid:2      flags:0x00004000
->  Workqueue: events async_pf_execute [kvm]
->  Call Trace:
->   <TASK>
->   __schedule+0x33f/0xa40
->   schedule+0x53/0xc0
->   schedule_timeout+0x12a/0x140
->   __wait_for_common+0x8d/0x1d0
->   __flush_work.isra.0+0x19f/0x2c0
->   kvm_clear_async_pf_completion_queue+0x129/0x190 [kvm]
->   kvm_arch_destroy_vm+0x78/0x1b0 [kvm]
->   kvm_put_kvm+0x1c1/0x320 [kvm]
->   async_pf_execute+0x198/0x260 [kvm]
->   process_one_work+0x145/0x2d0
->   worker_thread+0x27e/0x3a0
->   kthread+0xba/0xe0
->   ret_from_fork+0x2d/0x50
->   ret_from_fork_asm+0x11/0x20
->   </TASK>
-> 
-> If kvm_clear_async_pf_completion_queue() actually flushes the workqueue,
-> then there's no need to gift async_pf_execute() a reference because all
-> invocations of async_pf_execute() will be forced to complete before the
-> vCPU and its VM are destroyed/freed.  And that in turn fixes the module
-> unloading bug as __fput() won't do module_put() on the last vCPU reference
-> until the vCPU has been freed, e.g. if closing the vCPU file also puts the
+On Thu, Jan 18, 2024 at 02:15:31PM +0100, Uladzislau Rezki wrote:
 
-I'm not sure why __fput() of vCPU fd should be mentioned here. I assume
-we just need to say that vCPUs are freed before module_put(KVM the module)
-in kvm_destroy_vm(), then the whole logic for module unloading fix is:
+[snip]
 
-  1. All workqueue callbacks complete when kvm_clear_async_pf_completion_queue(vcpu)
-  2. kvm_clear_async_pf_completion_queue(vcpu) must be executed before vCPU free.
-  3. vCPUs must be freed before module_put(KVM the module).
+>
+> > > +	struct rb_root root;
+> > > +	struct list_head head;
+> > > +	spinlock_t lock;
+> > > +};
+> > > +
+> > > +static struct vmap_node {
+> > > +	/* Bookkeeping data of this node. */
+> > > +	struct rb_list busy;
+> > > +} single;
+> >
+> > This may be a thing about encapsulation/naming or similar, but I'm a little
+> > confused as to why the rb_list type is maintained as a field rather than
+> > its fields embedded?
+> >
+> The "struct vmap_node" will be extended by the following patches in the
+> series.
+>
 
-  So all workqueue callbacks complete before module_put(KVM the module).
+Yeah sorry I missed this, only realising after I sent...!
 
+> > > +
+> > > +static struct vmap_node *vmap_nodes = &single;
+> > > +static __read_mostly unsigned int nr_vmap_nodes = 1;
+> > > +static __read_mostly unsigned int vmap_zone_size = 1;
+> >
+> > It might be worth adding a comment here explaining that we're binding to a
+> > single node for now to maintain existing behaviour (and a brief description
+> > of what these values mean - for instance what unit vmap_zone_size is
+> > expressed in?)
+> >
+> Right. Agree on it :)
+>
 
-__fput() of vCPU fd is not the only trigger of kvm_destroy_vm(), that
-makes me distracted from reason of the fix.
+Indeed :)
 
-> last reference to the KVM module.
-> 
-> Note that kvm_check_async_pf_completion() may also take the work item off
-> the completion queue and so also needs to flush the work queue, as the
-> work will not be seen by kvm_clear_async_pf_completion_queue().  Waiting
-> on the workqueue could theoretically delay a vCPU due to waiting for the
-> work to complete, but that's a very, very small chance, and likely a very
-> small delay.  kvm_arch_async_page_present_queued() unconditionally makes a
-> new request, i.e. will effectively delay entering the guest, so the
-> remaining work is really just:
-> 
->         trace_kvm_async_pf_completed(addr, cr2_or_gpa);
-> 
->         __kvm_vcpu_wake_up(vcpu);
-> 
->         mmput(mm);
-> 
-> and mmput() can't drop the last reference to the page tables if the vCPU is
-> still alive, i.e. the vCPU won't get stuck tearing down page tables.
-> 
-> Add a helper to do the flushing, specifically to deal with "wakeup all"
-> work items, as they aren't actually work items, i.e. are never placed in a
-> workqueue.  Trying to flush a bogus workqueue entry rightly makes
-> __flush_work() complain (kudos to whoever added that sanity check).
-> 
-> Note, commit 5f6de5cbebee ("KVM: Prevent module exit until all VMs are
-> freed") *tried* to fix the module refcounting issue by having VMs grab a
-> reference to the module, but that only made the bug slightly harder to hit
-> as it gave async_pf_execute() a bit more time to complete before the KVM
-> module could be unloaded.
-> 
-> Fixes: af585b921e5d ("KVM: Halt vcpu if page it tries to access is swapped out")
-> Cc: stable@vger.kernel.org
-> Cc: David Matlack <dmatlack@google.com>
-> Cc: Xu Yilun <yilun.xu@linux.intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  virt/kvm/async_pf.c | 37 ++++++++++++++++++++++++++++++++-----
->  1 file changed, 32 insertions(+), 5 deletions(-)
-> 
-> diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-> index e033c79d528e..876927a558ad 100644
-> --- a/virt/kvm/async_pf.c
-> +++ b/virt/kvm/async_pf.c
-> @@ -87,7 +87,25 @@ static void async_pf_execute(struct work_struct *work)
->  	__kvm_vcpu_wake_up(vcpu);
->  
->  	mmput(mm);
-> -	kvm_put_kvm(vcpu->kvm);
-> +}
-> +
-> +static void kvm_flush_and_free_async_pf_work(struct kvm_async_pf *work)
-> +{
-> +	/*
-> +	 * The async #PF is "done", but KVM must wait for the work item itself,
-> +	 * i.e. async_pf_execute(), to run to completion.  If KVM is a module,
-> +	 * KVM must ensure *no* code owned by the KVM (the module) can be run
-> +	 * after the last call to module_put(), i.e. after the last reference
-> +	 * to the last vCPU's file is put.
+[snip]
 
-Maybe drop the i.e? It is not exactly true, other components like VFIO
-may also be the last one to put KVM reference?
+> > >  /* Look up the first VA which satisfies addr < va_end, NULL if none. */
+> > > -static struct vmap_area *find_vmap_area_exceed_addr(unsigned long addr)
+> > > +static struct vmap_area *
+> > > +find_vmap_area_exceed_addr(unsigned long addr, struct rb_root *root)
+> > >  {
+> > >  	struct vmap_area *va = NULL;
+> > > -	struct rb_node *n = vmap_area_root.rb_node;
+> > > +	struct rb_node *n = root->rb_node;
+> > >
+> > >  	addr = (unsigned long)kasan_reset_tag((void *)addr);
+> > >
+> > > @@ -1552,12 +1583,14 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
+> > >   */
+> > >  static void free_vmap_area(struct vmap_area *va)
+> > >  {
+> > > +	struct vmap_node *vn = addr_to_node(va->va_start);
+> > > +
+> >
+> > I'm being nitty here, and while I know it's a vmalloc convention to use
+> > 'va' and 'vm', perhaps we can break away from the super short variable name
+> > convention and use 'vnode' or something for these values?
+> >
+> > I feel people might get confused between 'vm' and 'vn' for instance.
+> >
+> vnode, varea?
 
-> +	 *
-> +	 * Wake all events skip the queue and go straight done, i.e. don't
-> +	 * need to be flushed (but sanity check that the work wasn't queued).
-> +	 */
-> +	if (work->wakeup_all)
-> +		WARN_ON_ONCE(work->work.func);
-> +	else
-> +		flush_work(&work->work);
-> +	kmem_cache_free(async_pf_cache, work);
->  }
->  
->  void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> @@ -114,7 +132,6 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
->  #else
->  		if (cancel_work_sync(&work->work)) {
->  			mmput(work->mm);
-> -			kvm_put_kvm(vcpu->kvm); /* == work->vcpu->kvm */
->  			kmem_cache_free(async_pf_cache, work);
->  		}
->  #endif
-> @@ -126,7 +143,18 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
->  			list_first_entry(&vcpu->async_pf.done,
->  					 typeof(*work), link);
->  		list_del(&work->link);
-> -		kmem_cache_free(async_pf_cache, work);
-> +
-> +		spin_unlock(&vcpu->async_pf.lock);
-> +
-> +		/*
-> +		 * The async #PF is "done", but KVM must wait for the work item
-> +		 * itself, i.e. async_pf_execute(), to run to completion.  If
-> +		 * KVM is a module, KVM must ensure *no* code owned by the KVM
-> +		 * (the module) can be run after the last call to module_put(),
-> +		 * i.e. after the last reference to the last vCPU's file is put.
-> +		 */
-> +		kvm_flush_and_free_async_pf_work(work);
-> +		spin_lock(&vcpu->async_pf.lock);
->  	}
->  	spin_unlock(&vcpu->async_pf.lock);
->  
-> @@ -151,7 +179,7 @@ void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu)
->  
->  		list_del(&work->queue);
->  		vcpu->async_pf.queued--;
-> -		kmem_cache_free(async_pf_cache, work);
-> +		kvm_flush_and_free_async_pf_work(work);
->  	}
->  }
->  
-> @@ -186,7 +214,6 @@ bool kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  	work->arch = *arch;
->  	work->mm = current->mm;
->  	mmget(work->mm);
-> -	kvm_get_kvm(work->vcpu->kvm);
->  
->  	INIT_WORK(&work->work, async_pf_execute);
+I think 'vm' and 'va' are fine, just scanning through easy to mistake 'vn'
+and 'vm'. Obviously a litle nitpicky! You could replace all but a bit
+churny, so I think vn -> vnode works best imo.
 
-Overall LGTM, Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+[snip]
 
->  
-> -- 
-> 2.43.0.472.g3155946c3a-goog
-> 
+> > >  struct vmap_area *find_vmap_area(unsigned long addr)
+> > >  {
+> > > +	struct vmap_node *vn;
+> > >  	struct vmap_area *va;
+> > > +	int i, j;
+> > >
+> > > -	spin_lock(&vmap_area_lock);
+> > > -	va = __find_vmap_area(addr, &vmap_area_root);
+> > > -	spin_unlock(&vmap_area_lock);
+> > > +	/*
+> > > +	 * An addr_to_node_id(addr) converts an address to a node index
+> > > +	 * where a VA is located. If VA spans several zones and passed
+> > > +	 * addr is not the same as va->va_start, what is not common, we
+> > > +	 * may need to scan an extra nodes. See an example:
+> >
+> > For my understading when you say 'scan an extra nodes' do you mean scan
+> > just 1 extra node, or multiple? If the former I'd replace this with 'may
+> > need to scan an extra node' if the latter then 'may ened to scan extra
+> > nodes'.
+> >
+> > It's a nitty language thing, but also potentially changes the meaning of
+> > this!
+> >
+> Typo, i should replace it to: scan extra nodes.
+
+Thanks.
+
+>
+> > > +	 *
+> > > +	 *      <--va-->
+> > > +	 * -|-----|-----|-----|-----|-
+> > > +	 *     1     2     0     1
+> > > +	 *
+> > > +	 * VA resides in node 1 whereas it spans 1 and 2. If passed
+> > > +	 * addr is within a second node we should do extra work. We
+> > > +	 * should mention that it is rare and is a corner case from
+> > > +	 * the other hand it has to be covered.
+> >
+> > A very minor language style nit, but you've already said this is not
+> > common, I don't think you need this 'We should mention...' bit. It's not a
+> > big deal however!
+> >
+> No problem. We can remove it!
+
+Thanks.
+
+>
+> > > +	 */
+> > > +	i = j = addr_to_node_id(addr);
+> > > +	do {
+> > > +		vn = &vmap_nodes[i];
+> > >
+> > > -	return va;
+> > > +		spin_lock(&vn->busy.lock);
+> > > +		va = __find_vmap_area(addr, &vn->busy.root);
+> > > +		spin_unlock(&vn->busy.lock);
+> > > +
+> > > +		if (va)
+> > > +			return va;
+> > > +	} while ((i = (i + 1) % nr_vmap_nodes) != j);
+> >
+> > If you comment above suggests that only 1 extra node might need to be
+> > scanned, should we stop after one iteration?
+> >
+> Not really. Though we can improve it further to scan backward.
+
+I think it'd be good to clarify in the comment above that the VA could span
+more than 1 node then, as the diagram seems to imply only 1 (I think just
+simply because of the example you were showing).
+
+[snip]
+
+> > >  static struct vmap_area *find_unlink_vmap_area(unsigned long addr)
+> > >  {
+> > > +	struct vmap_node *vn;
+> > >  	struct vmap_area *va;
+> > > +	int i, j;
+> > >
+> > > -	spin_lock(&vmap_area_lock);
+> > > -	va = __find_vmap_area(addr, &vmap_area_root);
+> > > -	if (va)
+> > > -		unlink_va(va, &vmap_area_root);
+> > > -	spin_unlock(&vmap_area_lock);
+> > > +	i = j = addr_to_node_id(addr);
+> > > +	do {
+> > > +		vn = &vmap_nodes[i];
+> > >
+> > > -	return va;
+> > > +		spin_lock(&vn->busy.lock);
+> > > +		va = __find_vmap_area(addr, &vn->busy.root);
+> > > +		if (va)
+> > > +			unlink_va(va, &vn->busy.root);
+> > > +		spin_unlock(&vn->busy.lock);
+> > > +
+> > > +		if (va)
+> > > +			return va;
+> > > +	} while ((i = (i + 1) % nr_vmap_nodes) != j);
+> >
+> > Maybe worth adding a comment saying to refer to the comment in
+> > find_vmap_area() to see why this loop is necessary.
+> >
+> OK. We can do it to make it better for reading.
+
+Thanks!
+
+[snip]
+
+> > > @@ -3728,8 +3804,11 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
+> >
+> > Unrelated to your change but makes me feel a little unwell to see 'const
+> > char *addr'! Can we change this at some point? Or maybe I can :)
+> >
+> You are welcome :)
+
+Haha ;) yes I think I might tbh, I have noted it down.
+
+>
+> > >
+> > >  	remains = count;
+> > >
+> > > -	spin_lock(&vmap_area_lock);
+> > > -	va = find_vmap_area_exceed_addr((unsigned long)addr);
+> > > +	/* Hooked to node_0 so far. */
+> > > +	vn = addr_to_node(0);
+> >
+> > Why can't we use addr for this call? We already enforce the node-0 only
+> > thing by setting nr_vmap_nodes to 1 right? And won't this be potentially
+> > subtly wrong when we later increase this?
+> >
+> I used to have 0 here. But please note, it is changed by the next patch in
+> this series.
+
+Yeah sorry, again hadn't noticed this.
+
+[snip]
+
+> > > +		spin_lock(&vn->busy.lock);
+> > > +		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
+> > >  		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
+> > >  				 pcpu_get_vm_areas);
+> > > +		spin_unlock(&vn->busy.lock);
+> >
+> > Hmm, before we were locking/unlocking once before the loop, now we're
+> > locking on each iteration, this seems inefficient.
+> >
+> > Seems like we need logic like:
+> >
+> > /* ... something to check nr_vms > 0 ... */
+> > struct vmap_node *last_node = NULL;
+> >
+> > for (...) {
+> > 	struct vmap_node *vnode = addr_to_node(vas[area]->va_start);
+> >
+> > 	if (vnode != last_node) {
+> > 		spin_unlock(last_node->busy.lock);
+> > 		spin_lock(vnode->busy.lock);
+> > 		last_node = vnode;
+> > 	}
+> >
+> > 	...
+> > }
+> >
+> > if (last_node)
+> > 	spin_unlock(last_node->busy.lock);
+> >
+> > To minimise the lock twiddling. What do you think?
+> >
+> This per-cpu-allocator prefetches several VA units per-cpu. I do not
+> find it as critical because it is not a hot path for the per-cpu allocator.
+> When its buffers are exhausted it does an extra prefetch. So it is not
+> frequent.
+
+OK, sure I mean this is simpler and more readable so if not a huge perf
+concern then not a big deal.
+
+>
+> >
+> > >  	}
+> > > -	spin_unlock(&vmap_area_lock);
+> > >
+> > >  	/*
+> > >  	 * Mark allocated areas as accessible. Do it now as a best-effort
+> > > @@ -4253,55 +4333,57 @@ bool vmalloc_dump_obj(void *object)
+> > >  {
+> > >  	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> > >  	const void *caller;
+> > > -	struct vm_struct *vm;
+> > >  	struct vmap_area *va;
+> > > +	struct vmap_node *vn;
+> > >  	unsigned long addr;
+> > >  	unsigned int nr_pages;
+> > > +	bool success = false;
+> > >
+> > > -	if (!spin_trylock(&vmap_area_lock))
+> > > -		return false;
+> >
+> > Nitpick on style for this, I really don't know why you are removing this
+> > early exit? It's far neater to have a guard clause than to nest a whole
+> > bunch of code below.
+> >
+> Hm... I can return back as it used to be. I do not have a strong opinion here.
+
+Yeah that'd be ideal just for readability.
+
+[snip the rest as broadly fairly trivial comment stuff on which we agree]
+
+>
+> Thank you for the review! I can fix the comments as separate patches if
+> no objections.
+
+Yes, overall it's style/comment improvement stuff nothing major, feel free
+to send as follow-up patches.
+
+I don't want to hold anything up here so for the rest, feel free to add:
+
+Reviewed-by: Lorenzo Stoakes <lstoakes@gmail.com>
+
+>
+> --
+> Uladzislau Rezki
 
