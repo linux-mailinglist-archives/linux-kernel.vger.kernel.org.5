@@ -1,104 +1,120 @@
-Return-Path: <linux-kernel+bounces-31834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8CE7833547
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:30:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B577833543
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F7A0284A4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:30:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B84EB21F6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510A41078D;
-	Sat, 20 Jan 2024 15:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3951078F;
+	Sat, 20 Jan 2024 15:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="YicnAI/Z"
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pu6jsdCh"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B592117;
-	Sat, 20 Jan 2024 15:30:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B98FBEF;
+	Sat, 20 Jan 2024 15:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705764627; cv=none; b=Nc0H27UbOBtNRD6xa7Ttq8WHFr0oeQ1u+5CMjjNhyO1OnGzX/E5iGts7z8RY/032Zs2lrhWgt+A2as+3UktGLEJg8SQ5bLU1FUmt3nXtx8tHR7KkOvJ2AiDq6BCfF0eAlxUk4ye3Swct3Gpbi4Q6W5Mv7CororZidT1ezQTugEo=
+	t=1705764447; cv=none; b=KrZ/l96b/j2PAtxWkFeUGrlZVc0uPTgFH1YuUxXFduq2itwOr8hREpIjIrVSptgpOiHFH9PtGYBt/fzqQ5xb6+cJxUsbHjgjoPMSyIupmfQ05Z71SwcQ4xcZvWOrQhE5ydOZ7xlfW8cV/LkWhbL8jsaoRvy1b9m3avj0thjcP+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705764627; c=relaxed/simple;
-	bh=4OWicOUgr4L9XOpIC8Mj/UCoeLP2NtOXMnYVddveOY0=;
-	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-	 Content-Type:Date:Message-ID; b=LKuxatsSRw1oKV8UdKOhqyUYqQ1U6ycKBxz6ujg5nEz2EHoBiX6DrFHapaxeG5xAgo2N2xsrJy0XnOifEtEn/Sr4d8gZ4OsfxHy5SdvhYdvApf+KI1XKW4NuQATHHcm+96G/NqFokyOnJzCfQOZh/8es5JVGWPa/JWsbAsD0kkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=YicnAI/Z; arc=none smtp.client-ip=199.185.137.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=4OWicOUgr4
-	L9XOpIC8Mj/UCoeLP2NtOXMnYVddveOY0=; h=date:references:in-reply-to:
-	subject:cc:to:from; d=openbsd.org; b=YicnAI/ZhxukTjaldVdclRZFxTLi4itmr
-	tNLKXPemFgAzsDYBZqrDlhF8hKj9fc6mUckUM/iyBV589tt7LViHcOyf2nf6j2zTEslzh4
-	vG/l8dNmRi+jECNxd2ZsgriACFzDRwUff3t4dg1Cw9QlDOyECEPJenw35PZGGBPCBdB7BZ
-	RGFWT8c7WkpMUT/foI2hTNF+F9uQu4ruA0PAFajE6OYwpa+NShTfzbhxK/ff0YFRxH5Hek
-	AMyJ71GI47E6Gm24f6LQryBH1ut63FSj3cg1mVvHLyfzq81KQL3IaM9V/vGpnw9rKT1fjE
-	otMZ+r4bE51rZdAr2FONDv+DyVVGw==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-	by cvs.openbsd.org (OpenSMTPD) with ESMTP id 77142d56;
-	Sat, 20 Jan 2024 08:23:44 -0700 (MST)
-From: "Theo de Raadt" <deraadt@openbsd.org>
-To: Jeff Xu <jeffxu@chromium.org>
-cc: Linus Torvalds <torvalds@linux-foundation.org>,
-    =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>,
-    Jeff Xu <jeffxu@google.com>, akpm@linux-foundation.org,
-    keescook@chromium.org, jannh@google.com, willy@infradead.org,
-    gregkh@linuxfoundation.org, jorgelo@chromium.org,
-    groeck@chromium.org, linux-kernel@vger.kernel.org,
-    linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-    pedro.falcato@gmail.com, dave.hansen@intel.com,
-    linux-hardening@vger.kernel.org
-Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
-In-reply-to: <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com>
-References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org> <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com> <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com> <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com> <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com> <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com> <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com>
-Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
-   message dated "Thu, 14 Dec 2023 14:52:58 -0800."
+	s=arc-20240116; t=1705764447; c=relaxed/simple;
+	bh=Ba1yk/kIdw9umf8+nzddJN9Ry40uVoGOLOWeX9s8zzs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a9Whr9NHFUE0iS+6rnrpPlAYq1K1YqDMeUEmEGYJDFp8y+YJHLdw1X7z4haFmeIgJkBCS7To7jBCeRj2qRsyfTpkfPynsWtedgEhdGGMfSEfXASZEOcWsVONqDYgXlTEym3JPzMugaCQDCRjudpT3k7fo2hBNcaMwLoT4IDh6V8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Pu6jsdCh; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705764445; x=1737300445;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ba1yk/kIdw9umf8+nzddJN9Ry40uVoGOLOWeX9s8zzs=;
+  b=Pu6jsdChHaDcc2uCaFNHuR826hbrOlucsQyOTuVCs2yhWWeATpLKHIvv
+   O8jQcD9Rn05IycMMregs8PJdBFF2d01hD6r9JImGAbzC7lWOsTeBqYBlY
+   B4lbJay6ZkO8RMWV2tiPDXHJzREthHsX75uJyOECQuE5xw3Ewx1dHkSmu
+   yJJeMKcz8kReZxHeeJNqkLGNmCPFL4IQtcIjWOIuG5Gw8EIRY0ZaUQgW9
+   Fq4z7vT0QYqqaOuP6mD80Hml6poEsr1YzLk9SNJIYINMbYy6maz+O4swR
+   wljulDF3f8ZSTs0lpYQ3ANpq/Dhuuh2N+0FodyXxgy9D8Lo8kE3X1ujqX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="820806"
+X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
+   d="scan'208";a="820806"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2024 07:27:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="928631890"
+X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
+   d="scan'208";a="928631890"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga001.fm.intel.com with ESMTP; 20 Jan 2024 07:27:23 -0800
+Date: Sat, 20 Jan 2024 23:24:10 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
+Subject: Re: [PATCH 2/4] KVM: Put mm immediately after async #PF worker
+ completes remote gup()
+Message-ID: <ZavlmuHd37j1I2Ys@yilunxu-OptiPlex-7050>
+References: <20240110011533.503302-1-seanjc@google.com>
+ <20240110011533.503302-3-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <45028.1705764224.1@cvs.openbsd.org>
-Date: Sat, 20 Jan 2024 08:23:44 -0700
-Message-ID: <78111.1705764224@cvs.openbsd.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110011533.503302-3-seanjc@google.com>
 
-Some notes about compatibility between mimmutable(2) and mseal().
+On Tue, Jan 09, 2024 at 05:15:31PM -0800, Sean Christopherson wrote:
+> Put the async #PF worker's reference to the VM's address space as soon as
+> the worker is done with the mm.  This will allow deferring getting a
+> reference to the worker itself without having to track whether or not
+> getting a reference succeeded.
+> 
+> Note, if the vCPU is still alive, there is no danger of the worker getting
+> stuck with tearing down the host page tables, as userspace also holds a
+> reference (obviously), i.e. there is no risk of delaying the page-present
+> notification due to triggering the slow path in mmput().
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-This morning, the "RW -> R demotion" code in mimmutable(2) was removed.
-As described previously, that was a development crutch to solved a problem
-but we found a better way with a new ELF section which is available at
-compile time with __attribute__((section(".openbsd.mutable"))).   Which
-works great.
+Reviewed-by: Xu Yilun <yilun.xu@intel.com>
 
-I am syncronizing the madvise / msync behaviour further, we will be compatible.
-I have worried about madvise / msync for a long time, and audited vast amounts
-of the software ecosystem to come to a conclusion we can be more strict, but
-I never acted upon it.
-
-BTW, on OpenBSD and probably other related BSD operating systems,
-MADV_DONTNEED is non-destructive.  However we have a destructive
-operation called MADV_FREE.  msync() MS_INVALIDATE is also destructive.
-But all of these operations will now be prohibited, to syncronize the
-error return value situation.
-
-There is an one large difference remainig between mimmutable() and mseal(),
-which is how other system calls behave.
-
-We return EPERM for failures in all the system calls that fail upon
-immutable memory (since Oct 2022).
-
-You are returning EACESS.
-
-Before it is too late, do you want to reconsider that return value, or
-do you have a justification for the choice?
-
-I think this remains the blocker which would prevent software from doing
-
-#define mimmutable(addr, len)  mseal(addr, len, 0)
+> ---
+>  virt/kvm/async_pf.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
+> index 876927a558ad..d5dc50318aa6 100644
+> --- a/virt/kvm/async_pf.c
+> +++ b/virt/kvm/async_pf.c
+> @@ -64,6 +64,7 @@ static void async_pf_execute(struct work_struct *work)
+>  	get_user_pages_remote(mm, addr, 1, FOLL_WRITE, NULL, &locked);
+>  	if (locked)
+>  		mmap_read_unlock(mm);
+> +	mmput(mm);
+>  
+>  	if (IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC))
+>  		kvm_arch_async_page_present(vcpu, apf);
+> @@ -85,8 +86,6 @@ static void async_pf_execute(struct work_struct *work)
+>  	trace_kvm_async_pf_completed(addr, cr2_or_gpa);
+>  
+>  	__kvm_vcpu_wake_up(vcpu);
+> -
+> -	mmput(mm);
+>  }
+>  
+>  static void kvm_flush_and_free_async_pf_work(struct kvm_async_pf *work)
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+> 
 
