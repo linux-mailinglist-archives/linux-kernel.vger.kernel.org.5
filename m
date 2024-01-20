@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-31690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29696833285
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ACC90833286
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE4482834BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:52:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65AB62834BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40069DF78;
-	Sat, 20 Jan 2024 02:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73E33F9D6;
+	Sat, 20 Jan 2024 02:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gLvbyuHt"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GQFBWkHG"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FAFD2FA
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 02:51:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD46DDBC
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 02:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705719068; cv=none; b=Wj4WJDhtv719NOfPfwkr2epZujBkf9XUOIyKa79QihzSLJ7zducK8Etx4gxxKCEUNMOYiUpLB/T+qryX8+tsPAIGg1DkJFZJwSCY3urU+8d/Ds7yIK6i3b4V3P07RZB0yuZo8mv0/6t9ZIErzVVLqRlnbMsfJNcbaiGHPAhMOcs=
+	t=1705719069; cv=none; b=hyumcpfLMEifibOqBddMvrdE5fLrqWtz9d6nSEbPJYLkt9Q2GIroCmV8EyQkKup3seJ6vxmNQ3xxcHYyixXxa7FAeloYP7VFUXL9Rj74nNB4fWcFuDvV40f6U3dYXNMZd2TqHpqK/UxMDScyV+GGpHPr3AzTzuxpa/VB3jgxupo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705719068; c=relaxed/simple;
-	bh=bfKkfZdK+j5iNHBICR9hXv9ldRAf+PdIDkkPbpbg0as=;
+	s=arc-20240116; t=1705719069; c=relaxed/simple;
+	bh=g4Q/v+BsQEl39aheDnpAa2RdKnHhflblAdg2pabSwXk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=D45D+dGltoU82AFHGLFZ1HOuv+fDhfGQSFgON0Ri0X8bnjL2Aujvu8CJX0c8YOX2FdcZ9wJp9HgnODTPpDq3eHw1+hq14fs5l+T/JVVsGBjgVaO9AO2zitnsZvSPL67u+3ey8UJ62qfI766IDuackI+aW6lB7H5u1qRR1Ll2B4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gLvbyuHt; arc=none smtp.client-ip=209.85.219.171
+	 MIME-Version; b=W/Qv5RK+I4jnbl43xkx1SzbaOneNAaTuYiEdml2cEePb+kOhrq2Q+7CmKFlcKLsA2InWvFhbBbzzi3v63nxXp+ZgyywvcCNSK7dYBr3aDUsEsE5QPoClCBU8MfB7PFIk5QiUD7lZAHvkDzCXKfedZrTQAKlFqQNuxv17IbNIKbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GQFBWkHG; arc=none smtp.client-ip=209.85.128.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dbed0710c74so1360375276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:51:07 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5f0629e67f4so14828157b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:51:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705719066; x=1706323866; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705719067; x=1706323867; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=khrCIVPglrVXE8B6IKw0gUJXYk/zQUc0AIxevIyXOcA=;
-        b=gLvbyuHtYu5VEXLdBUGGHjGXAIvDDfz4RTzy9tu+03I6BVnr2q+DMrpgF3xPKlV+BH
-         +lWvWqoA4K3hbc6FHANmTqqWjEP97WwcFKsoHAuzNKUy1PjPeWACVSPOIPDKK6tU2Sk7
-         Nh/1Hxa2wAzt1Vxkd7IU+xEQCxwOGhmyoaYgTktYgT6ADo6anzGD/XH++vSsPKVYi8J1
-         EVoxhiOEk3Vet/ynJzkPsKrMHgsC8r7vXilIpxtEWKFcNl/a57z9QTqe573m0J2vk5EC
-         juprm3LqIShVtboKF7ErW5uskqp0em6550CpzFeeIz9nALqmAtCCc9rTsRFz5SLuRvDW
-         l2aQ==
+        bh=SK3MSQRvDzIpKb0PB7VHqnVj86mu8pY62lcMb7kaIwo=;
+        b=GQFBWkHG27Zh41Z4Aecxi2ktaH5NuzK4VanYBIVwEHbsC/JwS9D48nU3WG2kw4s1wZ
+         hfwqvI9Szud0Sxr27AEA9ML4Wi4petizqqfEzUGW3zyrCLQ018s94ZGBCPhMr5tlVP5Y
+         F6+GgkTBKsKRGg8H6jcKvstn3TAzUR2TTFnfwKn3RUg+iEDZDSTs6+YsSRNsigFSnUDQ
+         ZD5/3WM8aXmvXNK9VxitEOkM68xZBBW3RgLSyBo2xZup2bl8R59o3tObRp3ulvE3tar8
+         BVA9V7/k5J10Kui7hpL/r7bmp9r4Fr4YOM1sn+NzO3jIOicmkiC+HKTJ2ezvOQ+dxD8h
+         eRYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705719066; x=1706323866;
+        d=1e100.net; s=20230601; t=1705719067; x=1706323867;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=khrCIVPglrVXE8B6IKw0gUJXYk/zQUc0AIxevIyXOcA=;
-        b=PdpYdhxwydVelCMGV0qS0tRKB0NEOjyvYN+6xYNHdh+PCb2LXpJFXLFJK64KC3Lcv1
-         JwdpK25R6WCpmYu/KZvGTZlSLtYqqRvn7Tj7FSuf9WxGWXiu9UE8hchHku2Lkpi4olaZ
-         ntgeIeXhkfvWULy88fU0tRcRxQq0WtRwgD6Pu1CtIHdBHBtgamrevlKKklbdvt7UdpB4
-         ve9xSAvkbx6nIhIY2JYtnOIRzVdre9X3Gpc9fGR91RlpwjlFtcB4L3nKxblKFlvLJar0
-         ieqxCVPuxBWj0q/JxQReEos7LAP8acSRjKov/qmB7nvEu7sHKOweTB70uurRdqhgBPFL
-         /u4w==
-X-Gm-Message-State: AOJu0Yxbh9HwxfX8rqpoGZwm9FTSPpzPxlMOOXL3kHjQ/VpeGPV26m69
-	XoMf8uSjYryLAqABraTSXEN9QyIEct9lFzQ1yM7FMOMMw7mdB+y2
-X-Google-Smtp-Source: AGHT+IGJAk2hlN5+5Sn7hGHowuv9qXVJkR2kSnp4V7X6LefuFI94JPINworViKWnbNzJ1lazqHyT7g==
-X-Received: by 2002:a25:9243:0:b0:dc2:2327:fcff with SMTP id e3-20020a259243000000b00dc22327fcffmr806679ybo.29.1705719066184;
-        Fri, 19 Jan 2024 18:51:06 -0800 (PST)
+        bh=SK3MSQRvDzIpKb0PB7VHqnVj86mu8pY62lcMb7kaIwo=;
+        b=TnOgrPLWvC8dpbvwBp4FiBCqce8S/TooqTY2gNe1bwEZO0rLGtGxk5sDp5NGfqZuLC
+         7ahUiisfFIW9ZXMKH4I2Rq6Yfl8gGUzyXWpO1OmxnCQYrCQGLYnGOz2ZMOGh1h5h39DC
+         5q5lwPL9EPQcKb18sWzA172vbkn4SoR2wgzShV++DzEq7uP/JgU8CwAyhhGiO2K3Oxey
+         oeJZrNeW6Rbs8ABnI+tBN1zhaWzCoCz6jwmGBYaO8fzhqqpdkhaX9NmIzlOQ3tIf2kLC
+         6/tSYOVR4/SJTXruKVgmR3sEDF46l1xAniauOT3b6lY/kwpeEPCgNZhKV4YCuFAG0pax
+         xCjA==
+X-Gm-Message-State: AOJu0Yz5HC/HlShwXp7He67BQG4CLHJgNr0I4Q2AXupPgmd5VOjQIwYT
+	CbK+nItoZ6Hzs7D4lkczInooFo4U0bPOxcSVHomlmiQDUmxkNauM
+X-Google-Smtp-Source: AGHT+IEwbvhpM0763THgchq4r36P/ykWzE2VFrUoLccf/V/oLviZzmPeNmVu64oa+SGSzgCqwCIfXw==
+X-Received: by 2002:a0d:e811:0:b0:5fa:ea54:f413 with SMTP id r17-20020a0de811000000b005faea54f413mr796695ywe.1.1705719067174;
+        Fri, 19 Jan 2024 18:51:07 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:2288:782e:a717:678d])
-        by smtp.gmail.com with ESMTPSA id k129-20020a256f87000000b00dc24ed83a6csm174854ybc.62.2024.01.19.18.51.05
+        by smtp.gmail.com with ESMTPSA id r74-20020a819a4d000000b005ff8179bbfesm1926501ywg.104.2024.01.19.18.51.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 18:51:05 -0800 (PST)
+        Fri, 19 Jan 2024 18:51:06 -0800 (PST)
 From: Yury Norov <yury.norov@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -76,9 +76,9 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
 	Zi Yan <ziy@nvidia.com>
-Subject: [PATCH 7/9] cpumask: define cleanup function for cpumasks
-Date: Fri, 19 Jan 2024 18:50:51 -0800
-Message-Id: <20240120025053.684838-8-yury.norov@gmail.com>
+Subject: [PATCH 8/9] lib/group_cpus: rework group_cpus_evenly()
+Date: Fri, 19 Jan 2024 18:50:52 -0800
+Message-Id: <20240120025053.684838-9-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240120025053.684838-1-yury.norov@gmail.com>
 References: <20240120025053.684838-1-yury.norov@gmail.com>
@@ -90,62 +90,129 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now we can simplify a code that allocates cpumasks for local needs.
-
-Automatic variables have to be initialized at declaration, or at least
-before any possibility for the logic to return, so that compiler
-wouldn't try to call an associate destructor function on a random stack
-number.
-
-Because cpumask_var_t, depending on the CPUMASK_OFFSTACK config, is
-either a pointer or an array, we have to have a macro for initialization.
-
-So define a CPUMASK_NULL macro, which allows to init struct cpumask
-pointer with NULL when CPUMASK_OFFSTACK is enabled, and effectively
-a no-op when CPUMASK_OFFSTACK is disabled.
+Leverage cleanup machinery and drop most of housekeeping code.
+Particularly, drop unneeded and erroneously initialized with -ENOMEM
+variable ret.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- include/linux/cpumask.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ lib/group_cpus.c | 79 +++++++++++++++---------------------------------
+ 1 file changed, 25 insertions(+), 54 deletions(-)
 
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index 73ff2e0ef090..0dd8e810200f 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -7,6 +7,7 @@
-  * set of CPUs in a system, one bit position per CPU number.  In general,
-  * only nr_cpu_ids (<= NR_CPUS) bits are valid.
-  */
-+#include <linux/cleanup.h>
- #include <linux/kernel.h>
- #include <linux/threads.h>
- #include <linux/bitmap.h>
-@@ -898,6 +899,7 @@ typedef struct cpumask *cpumask_var_t;
- 
- #define this_cpu_cpumask_var_ptr(x)	this_cpu_read(x)
- #define __cpumask_var_read_mostly	__read_mostly
-+#define CPUMASK_NULL			NULL
- 
- bool alloc_cpumask_var_node(cpumask_var_t *mask, gfp_t flags, int node);
- 
-@@ -945,6 +947,7 @@ typedef struct cpumask cpumask_var_t[1];
- 
- #define this_cpu_cpumask_var_ptr(x) this_cpu_ptr(x)
- #define __cpumask_var_read_mostly
-+#define CPUMASK_NULL {}
- 
- static inline bool alloc_cpumask_var(cpumask_var_t *mask, gfp_t flags)
- {
-@@ -988,6 +991,8 @@ static inline bool cpumask_available(cpumask_var_t mask)
+diff --git a/lib/group_cpus.c b/lib/group_cpus.c
+index b8c0c3ae2bbd..4c09df9eb886 100644
+--- a/lib/group_cpus.c
++++ b/lib/group_cpus.c
+@@ -76,6 +76,8 @@ static void free_node_to_cpumask(cpumask_var_t *masks)
+ 	kfree(masks);
  }
- #endif /* CONFIG_CPUMASK_OFFSTACK */
  
-+DEFINE_FREE(free_cpumask_var, struct cpumask *, if (_T) free_cpumask_var(_T));
++DEFINE_FREE(free_node_to_cpumask, cpumask_var_t *, if (_T) free_node_to_cpumask(_T));
 +
- /* It's common to want to use cpu_all_mask in struct member initializers,
-  * so it has to refer to an address rather than a pointer. */
- extern const DECLARE_BITMAP(cpu_all_bits, NR_CPUS);
+ static void build_node_to_cpumask(cpumask_var_t *masks)
+ {
+ 	int cpu;
+@@ -345,26 +347,16 @@ static int __group_cpus_evenly(unsigned int startgrp, unsigned int numgrps,
+  */
+ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+ {
+-	unsigned int curgrp = 0, nr_present = 0, nr_others = 0;
+-	cpumask_var_t *node_to_cpumask;
+-	cpumask_var_t nmsk, npresmsk;
+-	int ret = -ENOMEM;
+-	struct cpumask *masks = NULL;
+-
+-	if (!alloc_cpumask_var(&nmsk, GFP_KERNEL))
++	cpumask_var_t *node_to_cpumask __free(free_node_to_cpumask) = alloc_node_to_cpumask();
++	struct cpumask *masks __free(kfree) = kcalloc(numgrps, sizeof(*masks), GFP_KERNEL);
++	cpumask_var_t npresmsk __free(free_cpumask_var) = CPUMASK_NULL;
++	cpumask_var_t nmsk __free(free_cpumask_var) = CPUMASK_NULL;
++	int curgrp, nr_present, nr_others;
++
++	if (!masks || !node_to_cpumask || !alloc_cpumask_var(&nmsk, GFP_KERNEL)
++			|| !alloc_cpumask_var(&npresmsk, GFP_KERNEL))
+ 		return NULL;
+ 
+-	if (!alloc_cpumask_var(&npresmsk, GFP_KERNEL))
+-		goto fail_nmsk;
+-
+-	node_to_cpumask = alloc_node_to_cpumask();
+-	if (!node_to_cpumask)
+-		goto fail_npresmsk;
+-
+-	masks = kcalloc(numgrps, sizeof(*masks), GFP_KERNEL);
+-	if (!masks)
+-		goto fail_node_to_cpumask;
+-
+ 	build_node_to_cpumask(node_to_cpumask);
+ 
+ 	/*
+@@ -382,11 +374,15 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+ 	cpumask_copy(npresmsk, data_race(cpu_present_mask));
+ 
+ 	/* grouping present CPUs first */
+-	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+-				  npresmsk, nmsk, masks);
+-	if (ret < 0)
+-		goto fail_build_affinity;
+-	nr_present = ret;
++	nr_present = __group_cpus_evenly(0, numgrps, node_to_cpumask, npresmsk, nmsk, masks);
++	if (nr_present < 0)
++		return NULL;
++
++	/* If npresmsk is empty */
++	if (!cpumask_andnot(npresmsk, cpu_possible_mask, npresmsk))
++		return_ptr(masks);
++
++	curgrp = nr_present < numgrps ? nr_present : 0;
+ 
+ 	/*
+ 	 * Allocate non present CPUs starting from the next group to be
+@@ -394,38 +390,13 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+ 	 * group space, assign the non present CPUs to the already
+ 	 * allocated out groups.
+ 	 */
+-	if (nr_present >= numgrps)
+-		curgrp = 0;
+-	else
+-		curgrp = nr_present;
+-
+-	if (cpumask_andnot(npresmsk, cpu_possible_mask, npresmsk))
+-		/* If npresmsk is not empty */
+-		ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+-					  npresmsk, nmsk, masks);
+-	else
+-		ret = 0;
+-
+-	if (ret >= 0)
+-		nr_others = ret;
+-
+- fail_build_affinity:
+-	if (ret >= 0)
+-		WARN_ON(nr_present + nr_others < numgrps);
+-
+- fail_node_to_cpumask:
+-	free_node_to_cpumask(node_to_cpumask);
+-
+- fail_npresmsk:
+-	free_cpumask_var(npresmsk);
+-
+- fail_nmsk:
+-	free_cpumask_var(nmsk);
+-	if (ret < 0) {
+-		kfree(masks);
++	nr_others = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
++					npresmsk, nmsk, masks);
++	if (nr_others < 0)
+ 		return NULL;
+-	}
+-	return masks;
++
++	WARN_ON(nr_present + nr_others < numgrps);
++	return_ptr(masks);
+ }
+ #else /* CONFIG_SMP */
+ struct cpumask *group_cpus_evenly(unsigned int numgrps)
 -- 
 2.40.1
 
