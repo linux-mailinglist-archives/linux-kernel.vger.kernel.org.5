@@ -1,152 +1,119 @@
-Return-Path: <linux-kernel+bounces-31818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 012BF833514
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:44:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AF2D83351C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:52:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26D051C20FB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 14:44:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 094BC2836DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 14:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95638FC1C;
-	Sat, 20 Jan 2024 14:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2923FC1E;
+	Sat, 20 Jan 2024 14:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lG26gPJK"
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="km7MGfgy"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB33FBEB;
-	Sat, 20 Jan 2024 14:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7069BFC01;
+	Sat, 20 Jan 2024 14:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705761861; cv=none; b=JQGKRiVNGpjI7ZmLACfJy+1BzsWqDMqA2UWC4b8VfLyUdwpJ3zSjH7PIren1ZGlIwe99shCRrwV9lw5mH3w9hB8gART6xJalgOezTwJP0frIhQo0lh4omaLSrRAQLWbHWSxOf4oo8mOTbWD7E7FNh0D6BYOHSOEVH8y/ocwuLn0=
+	t=1705762359; cv=none; b=n/vQEn7XWgVKhWbu/mgZtnuaFKbGiGUz3uZx6JI7uEwqo13/qtESagdmVnvMp5PwQDOhAHpCQhTvhW2WC3nm2hnkiFrVKb9DIam2JhoqCR+8g1rR8jBbr7fX5m/BT4oYtTqwq5cbc2xd1M4bAiPFL8FihOBBJBmw8QHr84vUpBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705761861; c=relaxed/simple;
-	bh=HPmQ0al3jf48A0014h/f2dPpfRLn6G7iqgyVLg+H2Fo=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=rhdQZbI11hc2tKuJSl6qmG7Pj8vgBDL9IrKqxtYnGdR02tSwrcvPnItp70YA7S/haOviFvYu2y4Wkkt/3KCNcFgFN4c/voicwHXYfCxJuzfuRLUFwO7mrTcHubscxufUdnos34MdddLeNBAYJMTriLWJ36J6l5e2m5+2brRVhl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lG26gPJK; arc=none smtp.client-ip=209.85.160.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-210a73a5932so1185032fac.3;
-        Sat, 20 Jan 2024 06:44:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705761859; x=1706366659; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IfBwVEpfexQbIPSgBww/5k3Cr6Ag1bm9WDe5/2EYrlU=;
-        b=lG26gPJKXyKMBgPk+7cVh+B0MrH/OUGF7AKU1rmmvB7qAw85F7bRAmBFfwD3bvZnsq
-         yrtd4LnxBar4uCOblzHhDm4RsSdF3uIBoofR/iGd5pgN0xsyWDovVqi8abLswSTlzjbj
-         ZMzbQaCf9FMChJjxGe9hdnXv0eYjWry2pfOkI0iXKZfYSggBGneWOb0Io4YqXTqu7SDx
-         OEa3Dstu47cJgCsBd+wLvmwqcy36AEE6GSCz44Bj/Ne1x4H8Bv6mFeDvWvr4Mgvjyx9w
-         0uQ/depTaRWOd3MT+v4HzRKQOvTjj7mnih6pAZGEqs4VjdusI1bY3SPGv+D8pHX3XImG
-         i9Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705761859; x=1706366659;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IfBwVEpfexQbIPSgBww/5k3Cr6Ag1bm9WDe5/2EYrlU=;
-        b=QUywdipKP+/RkxEzmzYTlUVsrjILQECVF3aisOWhIO+m8lbSTVPfrk4+8cV9HMy5CQ
-         s7QrFCiqgUzcjZW6kE1Prr7PcEuk/GM4YgyXXSpYvWdneexWrONjrLNbp8BqIu846aHG
-         xGIDYf6kFKDT1ld3jZgVXUNc5QTMjD+dBxEdjuad47mk6HdJ3GQfT+ACuNbIEnTu4UmJ
-         ie8hMHvqOhvCfVHHvNdST+wu9dAR49S44eMhW2yzS21eXsqLp8pFxtn8PBD9/to2ZwSr
-         anyhdnmOqfO53xFy/EWRWayerfLcuRv8Uktf+MxGUwrWeYWOxIjfuIy5UFOIJFHhDsxs
-         /1/A==
-X-Gm-Message-State: AOJu0YxynpztCj6cyJnafuWeLstn+g69K2g3pTg70KAh9s76y0RCj0G3
-	bhKgbvBtKDkr0Py8JvxB8lOnGELciNPlaClc2tbADN25KuU2bTUx
-X-Google-Smtp-Source: AGHT+IGDQLZFG/7k7xzDA1DiSebrrV+gTIdvhMQqGug98bRrvWDlEtU0Tk70r8YverpOmatw4Ll9WA==
-X-Received: by 2002:a05:6870:41d4:b0:214:2d23:f68b with SMTP id z20-20020a05687041d400b002142d23f68bmr1306732oac.5.1705761859601;
-        Sat, 20 Jan 2024 06:44:19 -0800 (PST)
-Received: from user.. ([106.51.184.167])
-        by smtp.gmail.com with ESMTPSA id h8-20020a654808000000b005ca0ae17983sm4649637pgs.8.2024.01.20.06.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jan 2024 06:44:19 -0800 (PST)
-From: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
-To: corbet@lwn.net,
-	jmoyer@redhat.com,
-	axboe@kernel.dk,
-	asml.silence@gmail.com,
-	akpm@linux-foundation.org,
-	bhe@redhat.com,
-	ribalda@chromium.org,
-	rostedt@goodmis.org,
-	subramanya.swamy.linux@gmail.com,
-	sshegde@linux.vnet.ibm.com,
-	alexghiti@rivosinc.com,
-	matteorizzo@google.com,
-	ardb@kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	io-uring@vger.kernel.org
-Subject: [PATCH v2] iouring:added boundary value check for io_uring_group systl
-Date: Sat, 20 Jan 2024 14:44:11 +0000
-Message-Id: <20240120144411.2564-1-subramanya.swamy.linux@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705762359; c=relaxed/simple;
+	bh=7y4p5pvIngJ3aP5NdJ2PdSmbuGEVhNmS9q08S5a8BFM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JQV0QrOwGyF1IvLR/EwVdqRP7lCG4xwUHOC9QNUAVwseILufqpUxLIR0g+KZukIjHs914NSJAUHIWdf7C40clrieuPhVJqPXcE4xUY5HM0bS+j46kH3Ic4ZbKtE3GqCRA400ohhjIpku/Bhyky+G66onaCJ0lV8nGa9eRWii/h0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=km7MGfgy; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1705762336; x=1706367136; i=markus.elfring@web.de;
+	bh=7y4p5pvIngJ3aP5NdJ2PdSmbuGEVhNmS9q08S5a8BFM=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=km7MGfgyLOfuo8lXhgVhudRr5SaQ3CDAQ8y1EpIpCIVP8w6/30UXRbXNKur8dSwT
+	 xcdzEa3RQl1nJEVOwukFygMFVrbGWJ3//tkQcSHaedc0gS14xNkbEsu4m7FL94wNT
+	 S/QlyPhKQ+76lq7g4aq/dh6uR09ZUmraTXYDMgTRBDOErLhbAASsKxXhIZBQvJwVu
+	 p61hbswhcFamQniIzCUcE2cfBRaU6kQOZ4Q7CdqOjvfs5tnuwqTbh3bvZP1L7jBBW
+	 kxNPvv5zl7CG94I/XlcYKf5Dvq8UZX7Z3Hxou3EAqPjtzKyC6Y0MdZjC/fwvlwaVr
+	 NRnFuaJvR6NJazoKUg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.89.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MxYbN-1rBITt3fsv-00xdP1; Sat, 20
+ Jan 2024 15:45:24 +0100
+Message-ID: <26ef811d-214c-4ce4-a9f8-4fa4cfdefe29@web.de>
+Date: Sat, 20 Jan 2024 15:45:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] x86/xen: Add some null pointer checking to smp.c
+To: Kunwu Chan <chentao@kylinos.cn>, xen-devel@lists.xenproject.org,
+ kernel-janitors@vger.kernel.org, Boris Ostrovsky
+ <boris.ostrovsky@oracle.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Ingo Molnar <mingo@redhat.com>, =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?=
+ <jgross@suse.com>, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Cc: kernel test robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+ Ilya Dryomov <idryomov@gmail.com>, Jean Delvare <jdelvare@suse.de>,
+ Jonathan Corbet <corbet@lwn.net>
+References: <20240119094948.275390-1-chentao@kylinos.cn>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240119094948.275390-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:f7xX5lxSHQgJlr4n1BCo7mY8k5CxgyoVCcwDx8vDb81qa7iinjp
+ ygTbFkH+h1w/S5ZoMSnj08gwbxWJGFxt9wXsJdUQHSaxAWNG5h3hUKEK/epM8rFwt3ZMsAe
+ GGoA1wFozLQEI4nm9mmzNp+YSVHpveqj6S7m9BzPY8ezDb0rPR16s07u5MxZ71jjWEdHQKJ
+ EXpaFRb580g4W1z9GL0AA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:kvTIFKx34dg=;JrM0jCAeZHWaii5y7r7dOydzsH/
+ uXaPcxEWXRFr2x7CuC9tO4Fowq8H82DgAA9WsJE7G3dF/pGzBlBdX7yg/h3FW1dvxZ7L9Bwq9
+ YZqtkhcz7oiOllmFXulWXXT8TUiwbuWCOGHS9iggwoMw/g+2VnSJGIUJmgTWjS4UzANjh/x8r
+ eV+3HlqoINvOWjVtUuOHipjU4GMkO2781Z9VPLzD7KVuAjRjG1GbHXRkM/V6T+ySE6IBfW4z9
+ yJBjfaG/o+nVaI4+cXQp4LaSAmTJL/mcxR8a1oLSaX/20AYUZtOAFtdXkrbH/zozqQPMVgBO0
+ 338sa0VkYV/U5B7/pshxyVNRbkPcVp1uLHN5CpFbRuo1VPKellG0ELlimWWqkEKK+raOwkm77
+ 65R5IG0fcJI7961Jef2v0osiTeQRTAr1bjx4sOTPNRKUzpn0NC1DNTjT9kgMtaIFA5l/AwkoV
+ 29NZ6m17PJdstEsfstnlaLUFQ+fWKSfE0e6No3OmLgbKXK0LKAauriHYkvhk3ewJ203myG2IU
+ YJwi0gk9FezgwmACzyQT4pSCrgHf4impbKFaitG16dTeUqtdaTI8h6hEg9OkwoMivrwg+8bem
+ 6+xvc0SZnrruIWxGGmMczQKyCn5YwG432j8o8B6bIlMujwOgJJIb7JpRmCDwmhIRWF0qkEgU1
+ JJ17vy64v+HUOs8t7BQFXbIGnlVXzzpLzhhUptkCMiM0HxkAFCTUf2nXlxRhGnOM91PfKNaQ+
+ usRxHngFEVveI06mhCDkJaYP81rbsGAuYhsNKTGOYB2nRbgfO84AC+0J3ghEHIAY+qF8iYBF8
+ nX4ixznIdAaK46dT0S7yj+0kPZyD0h4nXAp+qIF7aTGuuIH7FtFCxT8mO7hK6Qbs6uBydatL8
+ H6fRRzibSyunhrkNZztI73denc0+gR0SCUWmQrnIQtgMFAqoZj5rayKloIyeG+f5/XW9QgxOf
+ ra398Q==
 
-/proc/sys/kernel/io_uring_group takes gid as input
-added boundary value check to accept gid in range of
-0<=gid<=4294967294 & Documentation is updated for same
+> kasprintf() returns a pointer to dynamically allocated memory
+> which can be NULL upon failure. Ensure the allocation was successful
+> by checking the pointer validity.
 
-Signed-off-by: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
----
- Documentation/admin-guide/sysctl/kernel.rst | 6 ++----
- io_uring/io_uring.c                         | 8 ++++++--
- 2 files changed, 8 insertions(+), 6 deletions(-)
+How do you think about to refer to the function name
+instead of the file name in the patch subject?
 
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 6584a1f9bfe3..a8b61ab3e118 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -470,10 +470,8 @@ io_uring_group
- ==============
- 
- When io_uring_disabled is set to 1, a process must either be
--privileged (CAP_SYS_ADMIN) or be in the io_uring_group group in order
--to create an io_uring instance.  If io_uring_group is set to -1 (the
--default), only processes with the CAP_SYS_ADMIN capability may create
--io_uring instances.
-+privledged (CAP_SYS_ADMIN) or be in the io_uring_group group in order
-+to create an io_uring instance.
- 
- 
- kexec_load_disabled
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index cd9a137ad6ce..bd6cc0391efa 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -154,9 +154,11 @@ static void io_queue_sqe(struct io_kiocb *req);
- struct kmem_cache *req_cachep;
- 
- static int __read_mostly sysctl_io_uring_disabled;
--static int __read_mostly sysctl_io_uring_group = -1;
-+static unsigned int __read_mostly sysctl_io_uring_group;
- 
- #ifdef CONFIG_SYSCTL
-+static unsigned int max_gid  = ((gid_t) ~0U) - 1; /*4294967294 is the max guid*/
-+
- static struct ctl_table kernel_io_uring_disabled_table[] = {
- 	{
- 		.procname	= "io_uring_disabled",
-@@ -172,7 +174,9 @@ static struct ctl_table kernel_io_uring_disabled_table[] = {
- 		.data		= &sysctl_io_uring_group,
- 		.maxlen		= sizeof(gid_t),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_douintvec_minmax,
-+		.extra1         = SYSCTL_ZERO,
-+		.extra2         = &max_gid,
- 	},
- 	{},
- };
--- 
-2.34.1
 
+=E2=80=A6
+> +++ b/arch/x86/xen/smp.c
+=E2=80=A6
+> @@ -114,6 +124,8 @@ int xen_smp_intr_init(unsigned int cpu)
+>
+>  	return 0;
+>
+> + fail_mem:
+> +	rc =3D -ENOMEM;
+>   fail:
+>  	xen_smp_intr_free(cpu);
+>  	return rc;
+
+Is it currently preferred to start labels in the first text column?
+
+Regards,
+Markus
 
