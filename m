@@ -1,114 +1,160 @@
-Return-Path: <linux-kernel+bounces-31928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A93833682
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:34:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0978C83368C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:48:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9DE21F21740
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:34:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CB411F219ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AD314A9C;
-	Sat, 20 Jan 2024 21:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE30E14A92;
+	Sat, 20 Jan 2024 21:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="TQuh7LV/"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Zf7leXdT"
+Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15A414A85
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 21:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C875213AC5;
+	Sat, 20 Jan 2024 21:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705786442; cv=none; b=oEqDgpjThADAcKmDgch6Q/POFf/eGdRnnCxkoeaQdRBEZy/Z81rJgJzzHnjOu5IvZVj14MMStWMaanGuPIMMIJs5NykbstZMARz0kTbXFYFWVhIsm/S/TvFQz9iFuomCDbgvlrMYfA6Sxbv93nEwjqWy/zD6KC2qqLTTBKUp5h4=
+	t=1705787323; cv=none; b=HM8+c2ha+7iAPZJzXPYVEkLZqf9K019qUimMtRgqQ+LRiSFsLJuCID497zABDg5+sYE6Y+WjcgNeFQiZlOqU/AM/wSJTWTKorY2ZCkppu/+axXshDCcS1I846UW6VrG3R9mHHzVXXiLdogCOoJ1wig3x+1w9xwzAp30q0yeLhtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705786442; c=relaxed/simple;
-	bh=NarUDJ4tJwqbJmce0ccZJ9bOR2MW+PWmGoMFcPd6dcg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Lb4x6G54rT8UvBk1YSwYLAhWEbzrY6y3I1I/W3u7/zNNGmM7FlJ1NhOJUJbYk8VHSMSahZs/xpEx5YwBuK/BYmPAFZFraDnw6AW54r74sd3OMcb4jMVcQ+0QJjxYNpLc1Ss7aKblpwNeRstjmFf0fzNpTApgKnIJ97nY3dvJtRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=TQuh7LV/; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50eaabc36bcso2111458e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 13:33:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1705786437; x=1706391237; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sN+R63MxRKJ46kffVezEFHdryW46yFIp21fCeYYUqvY=;
-        b=TQuh7LV/cKP9dFy9UPNMj36PiHSSIvIKihYuxexfejXva5yG6bHxIunglsjBRZXmB+
-         xkCg9VZPbI72gwXSWlkFoKQ2QdnTtggZjiQB/zslEfeQTopc+if8GUV77S+3UCDoutCn
-         vLf86MQ7E22TX9wirIglV8hezrMUjDH5PzJ9U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705786437; x=1706391237;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sN+R63MxRKJ46kffVezEFHdryW46yFIp21fCeYYUqvY=;
-        b=GWi8pEGDcMKbD4j7OndaS7fiVyd3hHqEYSXb5nBTYZOKx6Fjy2Y48G1AZqzffjws2Z
-         mlxVS1AG+5e5J+/88TbU7fWcOBZEJR7Ggzj/Qx5mITD89xDL4PUmTVUqGb/Js+70g2Ws
-         EB2xxmHedvTSqNCPWh6TkUrx7fh7XKWZY/D+CaDlvvDpvZhajUOsyHHjIB9zaxtloRuX
-         ZFau1aH5vnokGZhDitykOu0Osm1JBQSzekxxZIkG+53/0rInIDnaGO5ao7ErWcuxXy9i
-         u57yZ3heuC5eaw2XdWRsX1Q2p5f+Wf+2kKCtiXHjUdHO4Ia1OhnZwujimZD4BVEn3RX0
-         J5Rw==
-X-Gm-Message-State: AOJu0YwA0uRttyrT0IgA8C1n0zWCkCOS8zLQP0SeeanblRJpX/B1Uo47
-	qSH9Ao9fZHzCUFOD2Erm+XyB4Zi08IFuuhUO0ffvPt+CBCfy5uyQiKxaNSPwHXm2NK2x9kwlk5/
-	jW9Scqg==
-X-Google-Smtp-Source: AGHT+IHPtBu6kqbkOP992XgwDczjl+jKSkSk8kcQFFBb9jXZJJ1zkTIUm3+AixdfidAgLsiDjNWaFw==
-X-Received: by 2002:a05:6512:1191:b0:50e:3377:a199 with SMTP id g17-20020a056512119100b0050e3377a199mr1035254lfr.81.1705786436762;
-        Sat, 20 Jan 2024 13:33:56 -0800 (PST)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
-        by smtp.gmail.com with ESMTPSA id j15-20020a1709066dcf00b00a2a6e8f693esm11789662ejt.152.2024.01.20.13.33.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Jan 2024 13:33:55 -0800 (PST)
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55a45a453eeso2314051a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 13:33:55 -0800 (PST)
-X-Received: by 2002:a05:6402:1495:b0:559:b870:e868 with SMTP id
- e21-20020a056402149500b00559b870e868mr873233edv.12.1705786434795; Sat, 20 Jan
- 2024 13:33:54 -0800 (PST)
+	s=arc-20240116; t=1705787323; c=relaxed/simple;
+	bh=UTapdXJqd6/GeU/aS6pjbktBrgPfIjkTYoVhQTZ/yQ4=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=eba+WrKPP9YYSkxtlrGmE70vUejaDIYpn2BVCF+j64DAbnSwGW2awTb0M+x6WS9Ilc6+jVLC3dfpKtge61Xy7yRnPk26XLZs4q6E3kjzRaHpQkfxgMRhmxxcNvkRMfgz9j6493Oie5vzUBo3ndXLjZ7ZUsiqXoPCNKi7VULudl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Zf7leXdT; arc=none smtp.client-ip=203.205.221.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1705787311; bh=6U2V9PznT/aHdEhNbmRHZ0xAzvTGSoyQ3tiDTQLv01Y=;
+	h=From:To:Cc:Subject:Date;
+	b=Zf7leXdTRyLHolgwRVNO0JJ8ybL0fo9iCJs/yNoslTvyIEBp+ApMzeOrrcXP6b0rw
+	 0TgoXaq3tj1XNufDdvewTdoAmg2X7MA3OyZrnPYp0b1djY/kXam3si91Jc+wYFQfrk
+	 +qRngseMtYaGWQOYADym1gg+0dspVpY/M2SYr4ro=
+Received: from cyy-pc.lan ([240e:379:2240:ed00:c92f:86c3:e615:ca18])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id C1339C79; Sun, 21 Jan 2024 05:48:19 +0800
+X-QQ-mid: xmsmtpt1705787299tg307jjo8
+Message-ID: <tencent_B2D0435BC011135736262764B511994F4805@qq.com>
+X-QQ-XMAILINFO: N4/evVE7TFO8CtGPtkNoc+aCCKSp85D26BgfmLO7AQ7zZB5kLxc7ZMOak6XQMh
+	 N5crBuRjsO3x8ZFs1oAsBFekPmMPmz5nYhzCQe2TZX/zw50nA7EeP4w3UwHjygsqGl3Zcp9+fhxa
+	 SHX/6J7KCCW2k1Fr8m4VKyxaupTvvRr19cK5JchF1wFI5gQ8mbHaG1KXLSZ9nCGqA81fw3zU6SkZ
+	 sHSmF7pvwdhR5wPwY+tD4XlXykSivnmZKcKD0sElYvZozC9hro7OdVe7G2V+YJokSMbnYSlu04G8
+	 Xf5ooaLq20OxkDho23odc0UNvp+ThlKCSpw3e5KnWaw1v0LFS2Xp0Wloos63E0sBj6cPhtSvwPH6
+	 bXcR5izmnxPBYeafsfPK7DmliQBEENA7ToITc8DrKU2QonDdwVAPbm1FXAzOVoUNckRq6XhdAa9g
+	 Z7DrlxNkZ2KLUuJm65wvTPZx3bXOyY9o1ZIsKmvDF9X3f/mUyYnrI28d6D3B/cmjXDvDtVOI3E1A
+	 U3xhYVnNAfq1ZMPVAQLltcaQ1JUMosqAmCJY1UQOwLiw22/bZAfefrfulDX8vYnPxh3O9DxtZk8+
+	 oSS/KOv1OQ7fT+JfM7qwox9X22hJCntmqBGfKebcVNjHb5OLXhgsDZyPtIqzO+I+3Rf5iNljK79y
+	 EvxKjR09vGb0NUaMqRs61TBZC3mbbMfRgANe7RL0v9a5JmqLf77KCa/oMiadaiWEtcbx3y4DNP0J
+	 rJOul4O5L9qHT25wZGWSShJ6AKEY3GqMsqA7/16wrF0DlRRJOBITjFYEEp4mdMzltp/eT5bf17YO
+	 8kf7HgBf+HlFF5QIXRRwYryYpbCTy8zCxriOaPsZvku6g4Wht26Lg+CtJ5w0LPsddGmFLiYkstt7
+	 mWEPXxtU/r2QsM09bXb9EIJkLbQhJEvetUdBqt2dnmBFcb0RUKvW3T2+gMftgHjEGGPG3hUrVCO+
+	 kjq2pQVcAI9D3NRADA9Z97NIxn/QbpTx6YDghJW48nB18HxzjF9g1NXIcSpgck
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Yangyu Chen <cyy@cyyself.name>
+To: linux-riscv@lists.infradead.org
+Cc: Charlie Jenkins <charlie@rivosinc.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Guo Ren <guoren@kernel.org>,
+	Andy Chiu <andy.chiu@sifive.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yangyu Chen <cyy@cyyself.name>
+Subject: [PATCH v2 0/3] RISC-V: mm: do not treat hint addr on mmap as the upper bound to search
+Date: Sun, 21 Jan 2024 05:48:09 +0800
+X-OQ-MSGID: <20240120214809.291094-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
- <18c6df0d-45ed-450c-9eda-95160a2bbb8e@gmail.com> <CAHk-=wjvM5KiQFpbPMPXH-DcvheNcPGj+ThNEJVm+QL6n05A8A@mail.gmail.com>
- <CAHk-=wjE1eLMtkKqTt0XqNSnKAeDagV=WQU+vxHL_wsLuO8Gag@mail.gmail.com>
- <CAHk-=whkGHOmpM_1kNgzX1UDAs10+UuALcpeEWN29EE0m-my=w@mail.gmail.com>
- <20240110171739.2e2d9de0@canb.auug.org.au> <CAHk-=wj1uqgU7hS=WqDSwEvc6=CwuWYBUmjSJAT6zx86CF=QBQ@mail.gmail.com>
- <ad3a9cf720cd4e1ebe942cdc84a6a670@AcuMS.aculab.com>
-In-Reply-To: <ad3a9cf720cd4e1ebe942cdc84a6a670@AcuMS.aculab.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 20 Jan 2024 13:33:37 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whKAaFmqNBEnY=n8Twnh6AEegHh7OL0YFkNS8b3xVQ-3w@mail.gmail.com>
-Message-ID: <CAHk-=whKAaFmqNBEnY=n8Twnh6AEegHh7OL0YFkNS8b3xVQ-3w@mail.gmail.com>
-Subject: Re: [PATCH next v4 0/5] minmax: Relax type checks in min() and max().
-To: David Laight <David.Laight@aculab.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Jiri Slaby <jirislaby@gmail.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Christoph Hellwig <hch@infradead.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-[ Going through some pending issues now that I've mostly emptied my pull queue ]
+Previous patch series[1] changes a mmap behavior that treats the hint
+address as the upper bound of the mmap address range. The motivation of the
+previous patch series is that some user space software may assume 48-bit
+address space and use higher bits to encode some information, which may
+collide with large virtual address space mmap may return. However, to make
+sv48 by default, we don't need to change the meaning of the hint address on
+mmap as the upper bound of the mmap address range, especially when this
+behavior only shows up on the RISC-V. This behavior also breaks some user
+space software which assumes mmap should try to create mapping on the hint
+address if possible.  As the mmap manpage said: 
 
-On Wed, 10 Jan 2024 at 14:58, David Laight <David.Laight@aculab.com> wrote:
->
-> The first check in __types_ok() can go, the second one (with the '+ 0')
-> (added to promote char to int) includes the first one.
+> If addr is not NULL, then the kernel takes it as a hint about where to
+> place the mapping; on Linux, the kernel will pick a nearby page boundary
+> (but always above or equal to the value  specified by 
+> /proc/sys/vm/mmap_min_addr) and attempt to create the mapping there.
 
-That turns out to not be true. An expression like
+Unfortunately, what mmap said is not true on RISC-V since kernel v6.6.
 
-  min(u8, unsigned int)
+Other ISAs with larger than 48-bit virtual address space like x86, arm64,
+and powerpc do not have this special mmap behavior on hint address. They
+all just make 48-bit / 47-bit virtual address space by default, and if a
+user space software wants to large virtual address space, it only need to
+specify a hint address larger than 48-bit / 47-bit.
 
-is fine because the underlying types are compatible.
+Thus, this patch series keeps the change of mmap to use sv48 by default but
+does not treat the hint address as the upper bound of the mmap address
+range. After this patch, the behavior of mmap will align with existing
+behavior on other ISAs with larger than 48-bit virtual address space like
+x86, arm64, and powerpc. The user space software will no longer need to
+rewrite their code to fit with this special mmap behavior only on RISC-V.
 
-But the promotion to 'int' makes the first argument be a signed
-integer, and is no longer compatible with the second argument.
+My concern is that the change of mmap behavior on the hint address is
+already in the upstream kernel since v6.6, and it might be hard to revert
+it although it already brings some regression on some user space software.
+And it will be harder than adding it since v6.6 because mmap not creating
+mapping on the hint address is very common, especially when running on a
+machine without sv57 / sv48. However, if some user space software already
+adopted this special mmap behavior on RISC-V, we should not return a mmap
+address larger than the hint if the address is larger than BIT(38). My
+opinion is that revert this change on the next kernel release might be a
+good choice as only a few of hardware support sv57 / sv48 now, these
+changes will have no impact on sv39 systems.
 
-             Linus
+Moreover, previous patch series said it make sv48 by default, which is
+in the cover letter, kernel documentation and MMAP_VA_BITS defination.
+However, the code on arch_get_mmap_end and arch_get_mmap_base marco still
+use sv39 by default, which makes me confused, and I still use sv48 by
+default in this patch series including arch_get_mmap_end and
+arch_get_mmap_base.
+
+Changes in v2:
+- correct arch_get_mmap_end and arch_get_mmap_base
+- Add description in documentation about mmap behavior on kernel v6.6-6.7.
+- Improve commit message and cover letter
+- Rebase to newest riscv/for-next branch
+- Link to v1: https://lore.kernel.org/linux-riscv/tencent_F3B3B5AB1C9D704763CA423E1A41F8BE0509@qq.com/
+
+[1]. https://lore.kernel.org/linux-riscv/20230809232218.849726-1-charlie@rivosinc.com/
+
+Yangyu Chen (3):
+  RISC-V: mm: do not treat hint addr on mmap as the upper bound to
+    search
+  RISC-V: mm: only test mmap without hint
+  Documentation: riscv: correct sv57 kernel behavior
+
+ Documentation/arch/riscv/vm-layout.rst        | 54 ++++++++++++-------
+ arch/riscv/include/asm/processor.h            | 38 +++----------
+ .../selftests/riscv/mm/mmap_bottomup.c        | 12 -----
+ .../testing/selftests/riscv/mm/mmap_default.c | 12 -----
+ tools/testing/selftests/riscv/mm/mmap_test.h  | 30 -----------
+ 5 files changed, 41 insertions(+), 105 deletions(-)
+
+-- 
+2.43.0
+
 
