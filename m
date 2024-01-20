@@ -1,159 +1,94 @@
-Return-Path: <linux-kernel+bounces-31692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71A98833287
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:53:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E25883328E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 04:04:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2869C1F22C6A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:53:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB49E1F2294B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D99FC0E;
-	Sat, 20 Jan 2024 02:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8409C10E1;
+	Sat, 20 Jan 2024 03:03:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U/0q5VZ/"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XZ09yivC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DFBEAF1
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 02:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B958EBC
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 03:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705719071; cv=none; b=AYFvBZTtVBeNTOT3YI6VN+42rTJMIyrzIVEOQqW6oO1s8tEnquBJ/C4CpRqNeqIAgo4OP7st60D9dE9KaveCgC2810d0F4IyYSIByTcmnSIcR0ENABgIFO2yrxNv9CwJN4XzYTHgGCLsLSb0RDMK2KeJtiiDT9SjYW3qXeyIS4A=
+	t=1705719834; cv=none; b=dO90VzTweLtlhmtezuXQNiFOvuOF/qaBBo2S8GngLcML1QyJA3eCgXIs1Tb6d+9a4ovOJrAgYVLwHwC4PvaoRGl8+jJlKkI/gklcv9SXCX/iabr+QRDPS5K1NqKu/OhTiUuqJTC9NI9P8qnkKg/H1AvlO/SfgyRVNu70pNOBqgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705719071; c=relaxed/simple;
-	bh=UIQYKYf6qv+31oI5sMl8bv/xnQG3+D90nWie+7vmd3A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VykBEM68inBEg41/JvTH8FNrK/lYqX46V8VYcPJ30/GzdzIdOA46IdapMKGBo6M5Dmm/+gNmWdxIcbUxLElNQHZJc3ImHflFORLG0xjKgNeGw9/o9vtfBqtJjOuHfORgxtF27kCcrz9YQYhetAC+CbXw08LvfDvaLf6zg5JfpLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U/0q5VZ/; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc223f3dd5eso1237950276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:51:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705719068; x=1706323868; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HHN46ZnhVRtGaHejqRmQyDg/24XoRBDottjOY+gFecc=;
-        b=U/0q5VZ/ktJTriBXLaV5A6vyIl1cqBNY9Nt3bCcjafPH+WB/x2nFmanFi8yC9bsRET
-         Mhdgj496ZZV9lTKOdqHJEOvIQ6FgYW7MVlzxru3T7fRJIHQkYd++kO/wt9HZgsyQkTVs
-         CLvKZqflnEdEFbZTrwYfyyh1qf+HOgqvH3AdE9tg0lTvgoHCfzQfINod23wBLpcLRUHr
-         GG+lrPmILnLtKNkqGgsXkmR3lU1veQ+EWCNhgVKt7Edw94ujieR+7pHP0AGOCHDWWxbt
-         J6rfZkJEbgA5gPsc7s4mlQqnktrGnIkvVK2mGc2PnhUqAmrP6saO+PxWs0l6T5LYBJTJ
-         KClQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705719068; x=1706323868;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HHN46ZnhVRtGaHejqRmQyDg/24XoRBDottjOY+gFecc=;
-        b=u+wgAnPncYjBqBhFUjs6A4oreUuVOhbP4Kw4bTqGyeKiAw+Yvz2ofBJ8h5FjDwtSoj
-         wd/RGlgVfWGxODDgVpokX1ZjteF77IWnJGQICi9fX9JQxtO7g3Phg+KAlwttq59jI5qn
-         AzQAtTJLLTmf6uCrWLEB7yqFx6K86ugriaAgrxx8Z1UK6m+ZqHDoHGvdBYH6wzE9VOcp
-         JwXajVoKmRawZ6V4/9J+s3P6N9/YuPQ8xGA3+KjgoHWMhETNO21djlxwdm0H7Zrd18W7
-         5AEXkEFkthEt7dj5mfdD8s5FALsVEeM6TF+S/Ekacy0a6TJuF9o3iKGBDRL09u7cL1Bs
-         rhBw==
-X-Gm-Message-State: AOJu0YyU3dZp6270ps1J9k4qe6LglxyYkKIzx9NNtiLK+6kimN3InUlo
-	1nk6Gd3vmyQSsryYaaRluhNqk89nx8ONpVUOwDEXj2mZyMAADXc1
-X-Google-Smtp-Source: AGHT+IHCZLAVrRY2oNLTx0e7hzc3AHDIllg73ghGrBa88/4cdw1RA9LuKkpABJdDuzgxVwF1pjClBA==
-X-Received: by 2002:a25:e081:0:b0:db5:3e3b:d2bb with SMTP id x123-20020a25e081000000b00db53e3bd2bbmr907407ybg.48.1705719068318;
-        Fri, 19 Jan 2024 18:51:08 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:2288:782e:a717:678d])
-        by smtp.gmail.com with ESMTPSA id s65-20020a25c244000000b00dc2310abe8bsm179790ybf.38.2024.01.19.18.51.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 18:51:07 -0800 (PST)
-From: Yury Norov <yury.norov@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ming Lei <ming.lei@redhat.com>,
-	linux-kernel@vger.kernel.org
-Cc: Yury Norov <yury.norov@gmail.com>,
+	s=arc-20240116; t=1705719834; c=relaxed/simple;
+	bh=YIF0KoiBNvuYIVD9snwLfREDKSNSJzQ8k5c9fKM2oaQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mm9w/zwZuMKHMHqlDgPEFhgtr2x0CREgKEHgNmeE6amnF6kefVRghN+FeG6BTWhjEllfkp1oPXPKZa8bSOFXXMO7dz7CQUXmN5mey72lMeWTk+ciq0MCSad1RUGj9f+UI8VdgI5fzIh4WwQqJ12s3rV+88J0IbmeGC5Z2iH2iNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XZ09yivC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705719832;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YIF0KoiBNvuYIVD9snwLfREDKSNSJzQ8k5c9fKM2oaQ=;
+	b=XZ09yivCcxU1S9f2yhwiOb+BqwQKEgxKO4HdLf2fuJ+aTkH23aRYJjBQAUsxI7f+l1jgbu
+	HmIS4KlMPn57uTmXL29CdTR8hM3r5Pzy1pJcaniMaqLcq/MBami+Qf+nVWuBzCi+V5w+f/
+	xy8b/2lcKwURvNp9alJk4xnG0V7ITbI=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-139-cIr3tsP0P_Cw3AQmS9TEVQ-1; Fri,
+ 19 Jan 2024 22:03:46 -0500
+X-MC-Unique: cIr3tsP0P_Cw3AQmS9TEVQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C36963C0C4BA;
+	Sat, 20 Jan 2024 03:03:45 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.42])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 3896F1C05E0E;
+	Sat, 20 Jan 2024 03:03:40 +0000 (UTC)
+Date: Sat, 20 Jan 2024 11:03:37 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Breno Leitao <leitao@debian.org>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
 	Zi Yan <ziy@nvidia.com>
-Subject: [PATCH 9/9] lib/group_cpus: simplify group_cpus_evenly() for more
-Date: Fri, 19 Jan 2024 18:50:53 -0800
-Message-Id: <20240120025053.684838-10-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240120025053.684838-1-yury.norov@gmail.com>
+Subject: Re: [PATCH 1/9] cpumask: introduce for_each_cpu_and_from()
+Message-ID: <Zas4CeVG6mlfiUM9@fedora>
 References: <20240120025053.684838-1-yury.norov@gmail.com>
+ <20240120025053.684838-2-yury.norov@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240120025053.684838-2-yury.norov@gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-The nmsk parameter is used only in helper function, so move it there.
+On Fri, Jan 19, 2024 at 06:50:45PM -0800, Yury Norov wrote:
+> Similarly to for_each_cpu_and(), introduce a for_each_cpu_and_from(),
+> which is handy when it's needed to traverse 2 cpumasks or bitmaps,
+> starting from a given position.
 
-Suggested-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- lib/group_cpus.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+The new helper is useless, see
 
-diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-index 4c09df9eb886..71e802fca35f 100644
---- a/lib/group_cpus.c
-+++ b/lib/group_cpus.c
-@@ -253,13 +253,17 @@ static void alloc_nodes_groups(unsigned int numgrps,
- static int __group_cpus_evenly(unsigned int startgrp, unsigned int numgrps,
- 			       cpumask_var_t *node_to_cpumask,
- 			       const struct cpumask *cpu_mask,
--			       struct cpumask *nmsk, struct cpumask *masks)
-+			       struct cpumask *masks)
- {
- 	unsigned int i, n, nodes, cpus_per_grp, extra_grps, done = 0;
- 	unsigned int last_grp = numgrps;
- 	unsigned int curgrp = startgrp;
- 	nodemask_t nodemsk = NODE_MASK_NONE;
- 	struct node_groups *node_groups;
-+	cpumask_var_t nmsk __free(free_cpumask_var) = CPUMASK_NULL;
-+
-+	if (!alloc_cpumask_var(&nmsk, GFP_KERNEL))
-+		return -ENOMEM;
- 
- 	nodes = get_nodes_in_cpumask(node_to_cpumask, cpu_mask, &nodemsk);
- 
-@@ -350,11 +354,9 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- 	cpumask_var_t *node_to_cpumask __free(free_node_to_cpumask) = alloc_node_to_cpumask();
- 	struct cpumask *masks __free(kfree) = kcalloc(numgrps, sizeof(*masks), GFP_KERNEL);
- 	cpumask_var_t npresmsk __free(free_cpumask_var) = CPUMASK_NULL;
--	cpumask_var_t nmsk __free(free_cpumask_var) = CPUMASK_NULL;
- 	int curgrp, nr_present, nr_others;
- 
--	if (!masks || !node_to_cpumask || !alloc_cpumask_var(&nmsk, GFP_KERNEL)
--			|| !alloc_cpumask_var(&npresmsk, GFP_KERNEL))
-+	if (!masks || !node_to_cpumask || !alloc_cpumask_var(&npresmsk, GFP_KERNEL))
- 		return NULL;
- 
- 	build_node_to_cpumask(node_to_cpumask);
-@@ -374,7 +376,7 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- 	cpumask_copy(npresmsk, data_race(cpu_present_mask));
- 
- 	/* grouping present CPUs first */
--	nr_present = __group_cpus_evenly(0, numgrps, node_to_cpumask, npresmsk, nmsk, masks);
-+	nr_present = __group_cpus_evenly(0, numgrps, node_to_cpumask, npresmsk, masks);
- 	if (nr_present < 0)
- 		return NULL;
- 
-@@ -390,8 +392,7 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- 	 * group space, assign the non present CPUs to the already
- 	 * allocated out groups.
- 	 */
--	nr_others = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
--					npresmsk, nmsk, masks);
-+	nr_others = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask, npresmsk, masks);
- 	if (nr_others < 0)
- 		return NULL;
- 
--- 
-2.40.1
+https://lore.kernel.org/lkml/ZZNgDb6bzOscrNmk@fedora/
+
+
+Thanks,
+Ming
 
 
