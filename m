@@ -1,176 +1,130 @@
-Return-Path: <linux-kernel+bounces-31650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CEB88331EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00A168331EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:46:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34E24284F71
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:44:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADA61284F3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3E21A3C;
-	Sat, 20 Jan 2024 00:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A060A5A;
+	Sat, 20 Jan 2024 00:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="gd1zjiaQ"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="SsOfTEWx"
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE9039F;
-	Sat, 20 Jan 2024 00:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52973A44
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 00:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705711467; cv=none; b=HTSIh5O1WDRRGDSl4c+bcDAcwnvWFofqoUKNBaGAA5OZvV63OhshnxS/GYwwpTfB1Nk2A7IxXWkjwyLJaBkTFl9CE1teg02Evb2b+gHVYuFrfXn2c69mBaGSKYfTRlOYVzRVmm4RT6ZkHVDI6i6NOSWYLmTMYNF1JrV5X7Zt5uM=
+	t=1705711604; cv=none; b=BnDClXWaODGvOC2HySeuIxD8PWKWvYATEHkDVqLOkELR+LUuRv3gupJvwQhhtGx1k5KF9K/X/bDqR7yAjRhKIBvGDNkN1vXFsci00aAXOzZgwftYx+3YlFRLYc43N6b64cVDiaQiGRxDKGc9mUtdqjBbnFzI/2A70vQpzpKVmLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705711467; c=relaxed/simple;
-	bh=mLAwfTqW3JqPYfITefySSYIm5jxOBfJIzaZejnA2Hek=;
-	h=Date:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JWAt7ImX+Q0/KrmE1XKa7mjkt7JWNRD7MFSWQjRf2hMh5MgqaUQPmx/EqWfhof0SlsaqzIwFFWmamW4UTAZ+VvSPl8p80L2w8xLCJmvSvWksU6uL8KG5YhLncUVi+VrJmuCubZFaZ5XJi5Wfbp3f8/1nZRIpaM1ggDmkE/Wtuvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=gd1zjiaQ; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1705711456;
-	bh=5EXJu33TqPCGL2xgGmr1B8pslMsApecSKH/SB8e0KQk=;
-	h=Date:From:Cc:Subject:In-Reply-To:References:From;
-	b=gd1zjiaQujA9BHI56crV1tmzzoTM2Bw2H+aMihqyVyYmiaL5RclU6TVkXzNM/IphG
-	 2BBJMFqiPJvSPWhAhAqCxDTMmAk7CUQCWO2GKyPweGROkN3AIojHuYS+EcRvuGCyy6
-	 Q+gpG9twBAPkdJ1J/estXqii4zlgwaCrZRsAk/9WvA1lSUzdHoZ/DHzGiKi1DoxOuX
-	 SCE+6dq+qApJduNW8b66JPI3+tyRfJcjylsQcHlv1kGJ93hW1yblC0wVBq1IoFiXAd
-	 edw+zfl8DBesIaM3k/FF5WbDPK1MzzO8HFu/8TjQ3ECpGsDHKzsa9WabQvxkYsYfQG
-	 Gj+rC253P0adg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TGyRM1LtBz4wx8;
-	Sat, 20 Jan 2024 11:44:15 +1100 (AEDT)
-Date: Sat, 20 Jan 2024 11:44:12 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Randy Dunlap
- <rdunlap@infradead.org>, Huacai Chen <chenhuacai@loongson.cn>, Huacai Chen
- <chenhuacai@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao
- <maobibo@loongson.cn>, kvm@vger.kernel.org, loongarch@lists.linux.dev,
- linux-kernel@vger.kernel.org, Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang
- <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH] LoongArch: KVM: Fix build due to API changes
-Message-ID: <20240120114412.2208a8c1@canb.auug.org.au>
-In-Reply-To: <20231220144024.7d9fd46b@canb.auug.org.au>
-References: <20231115090735.2404866-1-chenhuacai@loongson.cn>
-	<15ba5868-42de-4563-9903-ccd0297e2075@infradead.org>
-	<20231220144024.7d9fd46b@canb.auug.org.au>
+	s=arc-20240116; t=1705711604; c=relaxed/simple;
+	bh=XIZsv/RfQm7BgGT+oEhN8pKQIm+tOaegcjtaTUA0ghY=;
+	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
+	 MIME-Version:Content-Type; b=DOYF49JwcKmrZNqzigIY7Df8x1swSOs1UlatBD9/bw+3yR51LohebfoYnuM+rVC7hS3e3hMbVhqHkzga1KyE1YiphfBXRki9xiCLKMQum/t4w4ksjTgCekWRCllvpD1tFjfHvnh1zaEVZpE70t8ut7l8xs55J1VXPoPwdT0SAFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=SsOfTEWx; arc=none smtp.client-ip=35.89.44.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
+	by cmsmtp with ESMTPS
+	id QyLArVAVgMVQiQzVQrQKeL; Sat, 20 Jan 2024 00:46:40 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id QzVPrewtkZKctQzVPrZMWU; Sat, 20 Jan 2024 00:46:39 +0000
+X-Authority-Analysis: v=2.4 cv=a+kjSGeF c=1 sm=1 tr=0 ts=65ab17ef
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=wHu7zF97UQTgv3i/yyCxjGkDLfWtEHfYOEFNAgQbnow=; b=SsOfTEWxmb7hR3n2I54w7H+ysg
+	zrNZYmuSFI6IvyrdM4mCUqfPGTXbQrgRZLnFbB7xRrZPn2LBFrnhY25XvTPE4TMlcEVgH+XOrzMT3
+	eFHscg8G3JCRcU36K5TqMsFNtCtVWFIkL0o8vLPctMdrscFRLVaTe7f9M05XezU1FpzQW02HioqVe
+	jfkZO6l8/hC4PF2ok5ELdrwYFWrF/4SDsyvIM0W2W0xHjbwRBFLk1O3t/RP92o1p8rM/vpvFl9M3P
+	i3TQtdoZkTu8p8IPuhaZ3NJCDJY2yW/inC2YutI22KrE7c1+pYnZUFbefJAfmoqBRB+TVg/z/kvhw
+	9zyzy1hQ==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:36008 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rQzVN-00145A-0F;
+	Fri, 19 Jan 2024 17:46:37 -0700
+Subject: Re: [PATCH 6.1 000/100] 6.1.74-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240118104310.892180084@linuxfoundation.org>
+In-Reply-To: <20240118104310.892180084@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <a136c055-75f7-01b1-9883-dbfcea86d08b@w6rz.net>
+Date: Fri, 19 Jan 2024 16:46:34 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Uo2ujjpjD/I=Dix6LsNA.i+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rQzVN-00145A-0F
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:36008
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfDRodC3VaIh2Jzu20of5fn3tNA3aX1YvvBGGPyCupoQX75dWcDDEEnbaxQsE3d000Wq4HyGZ6JtxqpKDTw7xfUwQGxg0+oEtNqysOts/ZJipHYN0UwMn
+ NlGb2s+wNnCvWhaYLIfMZxzkI2O4BbIQYDEpT+5ZKxWZ81FZet5IruOg44pv675gaV57ZY56hwbvWMzHlhEuVSOp9PAjZXuPtpY=
 
---Sig_/Uo2ujjpjD/I=Dix6LsNA.i+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Wed, 20 Dec 2023 14:40:24 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On 1/18/24 2:48 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.74 release.
+> There are 100 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> On Fri, 15 Dec 2023 21:08:06 -0800 Randy Dunlap <rdunlap@infradead.org> w=
-rote:
-> >
-> > Someone please merge this patch... =20
->=20
-> I have applied it to my merge of the kvm tree today and will keep
-> applying it until it is applied to the kvm tree ...
->=20
-> It looks like this:
->=20
-> From: Huacai Chen <chenhuacai@loongson.cn>
-> To: Paolo Bonzini <pbonzini@redhat.com>,
-> 	Huacai Chen <chenhuacai@kernel.org>,
-> 	Tianrui Zhao <zhaotianrui@loongson.cn>,
-> 	Bibo Mao <maobibo@loongson.cn>
-> Cc: kvm@vger.kernel.org,
-> 	loongarch@lists.linux.dev,
-> 	linux-kernel@vger.kernel.org,
-> 	Xuerui Wang <kernel@xen0n.name>,
-> 	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-> 	Huacai Chen <chenhuacai@loongson.cn>
-> Subject: [PATCH] LoongArch: KVM: Fix build due to API changes
-> Date: Wed, 15 Nov 2023 17:07:35 +0800
->=20
-> Commit 8569992d64b8f750e34b7858eac ("KVM: Use gfn instead of hva for
-> mmu_notifier_retry") replaces mmu_invalidate_retry_hva() usage with
-> mmu_invalidate_retry_gfn() for X86, LoongArch also need similar changes
-> to fix build.
->=20
-> Fixes: 8569992d64b8 ("KVM: Use gfn instead of hva for mmu_notifier_retry")
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  arch/loongarch/kvm/mmu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/loongarch/kvm/mmu.c b/arch/loongarch/kvm/mmu.c
-> index 80480df5f550..9463ebecd39b 100644
-> --- a/arch/loongarch/kvm/mmu.c
-> +++ b/arch/loongarch/kvm/mmu.c
-> @@ -627,7 +627,7 @@ static bool fault_supports_huge_mapping(struct kvm_me=
-mory_slot *memslot,
->   *
->   * There are several ways to safely use this helper:
->   *
-> - * - Check mmu_invalidate_retry_hva() after grabbing the mapping level, =
-before
-> + * - Check mmu_invalidate_retry_gfn() after grabbing the mapping level, =
-before
->   *   consuming it.  In this case, mmu_lock doesn't need to be held durin=
-g the
->   *   lookup, but it does need to be held while checking the MMU notifier.
->   *
-> @@ -807,7 +807,7 @@ static int kvm_map_page(struct kvm_vcpu *vcpu, unsign=
-ed long gpa, bool write)
-> =20
->  	/* Check if an invalidation has taken place since we got pfn */
->  	spin_lock(&kvm->mmu_lock);
-> -	if (mmu_invalidate_retry_hva(kvm, mmu_seq, hva)) {
-> +	if (mmu_invalidate_retry_gfn(kvm, mmu_seq, gfn)) {
->  		/*
->  		 * This can happen when mappings are changed asynchronously, but
->  		 * also synchronously if a COW is triggered by
-> --=20
-> 2.39.3
->=20
-> Though my Signed-off-by is not necessary if it applied to the kvm tree.
+> Responses should be made by Sat, 20 Jan 2024 10:42:49 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.74-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-OK, so it needed to be applied to the merge commit when the loongarch
-tree was merged by Linus, but appears to have been forgotten. :-(
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
---=20
-Cheers,
-Stephen Rothwell
+Tested-by: Ron Economos <re@w6rz.net>
 
---Sig_/Uo2ujjpjD/I=Dix6LsNA.i+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWrF1wACgkQAVBC80lX
-0GznHwf+J9OteK9Y4TvrZARvcVljc/vhMzpH0IOshhkyHVBuTKd4HGZC+feioXt8
-wrw0wYaXqR6UvcOl0ZRbhpIHPjgM5nvDC/YKgmR7i7Mpf+ui7OZ3GtXiOl2VjKWN
-68beXUCalkCnl60EhVVYDHhQhzPn4nCOcfcV7iNAcUcahDHwliglktfsQHL2nB1/
-iCoxmeHjplk/LoeFpe4Vrez+bRfoPxp/xvVaWy5TbtvUpkKb90XuLxnpRyA9CkTt
-0p4BZpGbEaqMh8KLyqu9r4vLfN8pQqrQeTXbpM2Kyz5dSZfQ9hVwvWdcHU3So1lr
-QCKupRyJOOwEpP7m3icFsf7qJz9Kqg==
-=Aan9
------END PGP SIGNATURE-----
-
---Sig_/Uo2ujjpjD/I=Dix6LsNA.i+--
 
