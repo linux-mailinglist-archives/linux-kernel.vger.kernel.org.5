@@ -1,109 +1,117 @@
-Return-Path: <linux-kernel+bounces-31875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C72658335C6
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 20:09:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06C258335C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 20:11:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5206EB21CF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:09:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A401282B77
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF4010940;
-	Sat, 20 Jan 2024 19:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3BBA10942;
+	Sat, 20 Jan 2024 19:10:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="UZCPW6UW";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="UZCPW6UW"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="b6qv0YjJ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D405638E;
-	Sat, 20 Jan 2024 19:09:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53D038E;
+	Sat, 20 Jan 2024 19:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705777774; cv=none; b=fkoxXKddEEVW0wboDbQRiwt5QYcznUxt3L3pkUKvtE1RzprPhWsRTYFQ+a8d9UzaNPnlO8GIZEBGnNnwoDeK/Uly1BMYHODlnaGZdNtVVLS3uPWftSKUIJwIvAsL8GUpIWH9EIFS5NK66a5pxGgfzhATqqNHC1Mf7+p0pcXhfRQ=
+	t=1705777854; cv=none; b=DK4NBWNpgkgYQhGfQD3U6tvHwEh/fPs01BkmZBz/E7ibRS4eLV+PBe+NBmqq9cTu7HrU1CFY6BJzgSNnFuGdPrwHyz4/OP8firXe4UlmIYDEjVUqQ5r4cd09W445bLy2NpigGv3A82Elxl3N6gtN8M6t6E2j/kTbvyA/gyLCuuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705777774; c=relaxed/simple;
-	bh=s7wFiZD6E5tJ/1g6tszfUH13rKB9H0XEvV1JkDjHXZU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TB4Icjio4xl030ai7JdqPFlyaa7ySYb7cl9vppotDDVmrKSa2huo9nwhVRM/D2tXyAgUec9y6PxKRe+h1psj5UBX+Vqd33md6x5kIibJbJct01mMaHm3jspkaQW2TgjVD5QhyegVy5aUI1bZtQIzE2HkTX2cQQe2Uo/gFWRBKHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=UZCPW6UW; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=UZCPW6UW; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1705777770;
-	bh=s7wFiZD6E5tJ/1g6tszfUH13rKB9H0XEvV1JkDjHXZU=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=UZCPW6UWDLaKrlHjJ4728VYiPfJoJnrcchrJRM9HwZVRC6FgoATW94N9Z324fj7JN
-	 Htbr7mHuIRvmxUkTt4I2OhSSHeZa9qAMv9Dphj+qrG2+E8YlMPptbWzs0L95PR8jKK
-	 OQlznhLzLSOpvuH1ppu1fYYGnFXKRSV2ts9zb884=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id E3BAD1286462;
-	Sat, 20 Jan 2024 14:09:30 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id VVxAY1k8rzoF; Sat, 20 Jan 2024 14:09:30 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1705777770;
-	bh=s7wFiZD6E5tJ/1g6tszfUH13rKB9H0XEvV1JkDjHXZU=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=UZCPW6UWDLaKrlHjJ4728VYiPfJoJnrcchrJRM9HwZVRC6FgoATW94N9Z324fj7JN
-	 Htbr7mHuIRvmxUkTt4I2OhSSHeZa9qAMv9Dphj+qrG2+E8YlMPptbWzs0L95PR8jKK
-	 OQlznhLzLSOpvuH1ppu1fYYGnFXKRSV2ts9zb884=
-Received: from [192.168.2.247] (unknown [204.148.121.182])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 319A21280773;
-	Sat, 20 Jan 2024 14:09:30 -0500 (EST)
-Message-ID: <7b104abd42691c3e3720ca6667f5e52d75ab6a92.camel@HansenPartnership.com>
-Subject: Re: [GIT PULL] final round of SCSI updates for the 6.7+ merge window
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-scsi
-	 <linux-scsi@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Date: Sat, 20 Jan 2024 14:09:28 -0500
-In-Reply-To: <CAHk-=wi8-9BCn+KxwtwrZ0g=Xpjin_D3p8ZYoT+4n2hvNeCh+w@mail.gmail.com>
-References: 
-	<d2ce7bc75cadd3d39858c02f7f6f0b4286e6319b.camel@HansenPartnership.com>
-	 <CAHk-=wi8-9BCn+KxwtwrZ0g=Xpjin_D3p8ZYoT+4n2hvNeCh+w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1705777854; c=relaxed/simple;
+	bh=5b67qNmT8ovdAlyPlZflP/DjhI48KrRa1Ytn1JLEqSc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rR8KYv8FlI6xppV1a/qFFAD/6G7dU4G4n3VqqpWgyRa0VDfpr280zh4YtjIFuL3W6H5Adw6t4ov2L/X837e5Mm+OqGAUKWQg9rPRa9nOLmHD2Xpbg8nOKQXtSNNldARIpfBnLJBhoQc/wwEt7+UUCcGhnJBosqSFYL2YIx3PdJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=b6qv0YjJ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40KJAngH013169;
+	Sat, 20 Jan 2024 19:10:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=otwob6cs32dG5UDBoNGyI022yD3cQ7raIIQ+IY6hiuw=; b=b6
+	qv0YjJngwpemfiacBkBK9Jjlb+aIjC4edF3nQKVTyXpJi+Qqnvby5pKEAL2Gw0Re
+	J6cG+8X6CDkWY44HFJm+eXxKyDmqqgC16mqV0J2O5MqjhATr+j0L/lxz1K7TLTYR
+	FKgBhzPxWpmC+vBjQCAS2PkQXkzXHnf24QMyxOR0kkSo/WpAi86I7Ubl6q32FTew
+	QLNXVVmkcP+noyIviqjSJ4QyR/Ulw5YglK8q9WpjDRPoKuHgMKNIU/Wr1W7CY4Se
+	MSL315PTjbEH6QdJ+bDOkm0Cvn/szs0yOqpvhq7d2s+cxGOUaWQ5WpO60C9+OICt
+	bAHChT7CN4ayQRoq9X0g==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vr6d7gxam-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 20 Jan 2024 19:10:48 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40KJAmRm012906
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 20 Jan 2024 19:10:48 GMT
+Received: from [10.110.32.149] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 20 Jan
+ 2024 11:10:44 -0800
+Message-ID: <6e40dd60-884f-be23-0052-d14f7194f844@quicinc.com>
+Date: Sat, 20 Jan 2024 11:10:32 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/2] dt-bindings: hwinfo: Introduce board-id
+Content-Language: en-US
+To: Amrit Anand <quic_amrianan@quicinc.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Elliot Berman
+	<quic_eberman@quicinc.com>
+References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
+ <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
+From: Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: BBVM5LgkdQB1AVt_q61z26E9NFLJB9RV
+X-Proofpoint-ORIG-GUID: BBVM5LgkdQB1AVt_q61z26E9NFLJB9RV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-20_04,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1011 suspectscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 priorityscore=1501 spamscore=0
+ mlxlogscore=436 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401200156
 
-On Sat, 2024-01-20 at 09:52 -0800, Linus Torvalds wrote:
-> On Sat, 20 Jan 2024 at 07:26, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > 
-> > As requested, I did a longer extension of my gpg keys, so my key
-> > needs
-> > refreshing, before you pull, to fix the expiry date.  You can get
-> > my
-> > updates via DANE using:
-> > 
-> > gpg --auto-key-locate dane --recv
-> > D5606E73C8B46271BEAD9ADF814AE47C214854D6
+On 1/20/2024 3:20 AM, Amrit Anand wrote:
+> From: Elliot Berman <quic_eberman@quicinc.com>
 > 
-> No I can't.
+> Device manufacturers frequently ship multiple boards or SKUs under a
+> single software package. These software packages will ship multiple
+> devicetree blobs and require some mechanism to pick the correct DTB for
+> the board the software package was deployed. Introduce a common
+> definition for adding board identifiers to device trees. board-id
+> provides a mechanism for bootloaders to select the appropriate DTB which
+> is vendor/OEM-agnostic.
 
-So this one looks to be a DNS issue.  The secondaries on infradead.org
-hadn't picked up the update (they were still showing old serial numbers
-for the domain).  I've force pushed an update (and verified the new
-serial) so if you have the patience to retry, it should work now
-(fingers crossed).
+Please extend CC list to more architectures? linux-arm-kernel, risc-v etc; since
+the proposal below is not specific to ARM but any architecture is using the 
+devicetree. 
 
-It also seems that this magic option combination works better (just
-tried it on an old laptop that had my expired keys)
-
-gpg --auto-key-locate clear,dane --locate-external-key james.bottomley@hansenpartnership.com
-
-James
+-- 
+---Trilok Soni
 
 
