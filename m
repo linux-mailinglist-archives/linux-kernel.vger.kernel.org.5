@@ -1,191 +1,164 @@
-Return-Path: <linux-kernel+bounces-31938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A48C833711
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 00:30:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46BCB833713
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 00:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E49FE282187
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 23:30:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7EEB1F21AD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 23:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FAD614ABB;
-	Sat, 20 Jan 2024 23:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC4D14AB9;
+	Sat, 20 Jan 2024 23:30:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="cf2HrC8m";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LZjagTr0"
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qw3L5mLr"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A860314A98;
-	Sat, 20 Jan 2024 23:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA1914A98;
+	Sat, 20 Jan 2024 23:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705793399; cv=none; b=XMoJPyYRQAm184jHhIctI1Y3LDMfbaeZ8HXDD8zWp+o9Szbe164hPhl/aknS1l/1HrUlkyPykcQWBGFKR0ywIJrR328Ihw8X7csW6xx+mL7mnLpkrOBimT/4qHrfg6AH/wkO+EBNb61dqXbJdv2Gc4OLE0z6y/Joxl8XASJXSKA=
+	t=1705793422; cv=none; b=L6p8aLJ6eAQha2aKKMVzFjhTIU2tt0gt2ZSmxB7RWmk3nxcXHJbr8ZuvImE56tPSIQZuFQ6eWEtgiKccAqcAX8dkWyrZTcTjI8PtSIlpZNFvhMooeT9phXpeGEOR8Zv3qSPnUgUE/BbENRiyZgnuWSGmou0IcpQk5D9Nm7mAdGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705793399; c=relaxed/simple;
-	bh=gYxQpuVqxVWQkJvr3V8GaYIGnpPdH4JHwRwYm+3Culs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HLhmJwNGRqW4XDU/12pQBjiCgrik17dEdeKUcR4rLXT2+ydgBRSdiFnAQMLuIK6G4eiUUA4cqvcrjHtPrWEEXGzGFTB3IrkoUNzvdKFNMLwKytmkiUWrrK9l6ZpuxJKIR/HiA6E6lTBE0ZtllsoSguf0l9OoA2E4Rwpn3EdSiww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=cf2HrC8m; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LZjagTr0; arc=none smtp.client-ip=64.147.123.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.west.internal (Postfix) with ESMTP id 0DF373200A40;
-	Sat, 20 Jan 2024 18:29:54 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Sat, 20 Jan 2024 18:29:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1705793394; x=
-	1705879794; bh=WGvMaEsDltLoKXJgl9GSQOJtstKvutWc7SjgzovOw38=; b=c
-	f2HrC8mjhLbVIlK7oWYepvY5TStNV+Vh73y2tN6QkizI8WvEprMpH+pc8mGMpPlB
-	Dcvh0pV2AtyO6bRGf9EA4qXmfSJxHT+s0mkhgqJLe/0zX1l2qtEBRIj+UvLYQR8Y
-	qtRV4vjtO7rySI6IZkM75W0mGJvOgwbx/oyyI77OALx9GQHAx8fAYv6ScH4r+114
-	B1mAbgzpLPCRm0hfk+YoQ80j3EQhJh34QkCq29xTRLcRCJEOZjK79UIsUupI3ul7
-	YF3B1a/yvLPA07fXz+cHNXEpHkI408bf7gwg3enE9R8F5WP0b7l5G1AHr7zz2FAZ
-	u7ZFU1M+XSu9R3e+xpRnA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705793394; x=
-	1705879794; bh=WGvMaEsDltLoKXJgl9GSQOJtstKvutWc7SjgzovOw38=; b=L
-	ZjagTr0ocJCNOojS+rhJfy8k9ExRIJ33lirPciH4g64kQ4XrdB2DwR5huqTMQD0a
-	pSc9XZfKSBHdcFv27Wkvj8WkSDwXZ+n0imOillo/FfwtnDLKyVXO8/XF8XzWsypt
-	4V1qZkx/fjf9roAZ/SEeA0z97dKOsKccynGL/uLo+ug7MMDGcnK1kb/Cn8IeYFK6
-	QS8PwJeJUqQ11lgTW3+M5VfwdKdy4cQYieK8i7CjgleBqxRYZ1yGKzLmJKADWl+N
-	feW1LbIGLZQHU5xvHpYG4L/Zur9ojlLu7H4cnzpIM27ibL+c+8mv+lGIw9hO92RX
-	RFVuW7BQGE9SwDnMGPauA==
-X-ME-Sender: <xms:clesZWByInibY4FYPxqB1nGu_XlV39At9fKpylIkPbVt704MGDqPKg>
-    <xme:clesZQgP4xH3SoUxxqPL55zF6YZwVK7hiT77IWUs6PiPW6OT3KREvCaIJacNFZc0p
-    A-zoCnfT-v7jcv5o20>
-X-ME-Received: <xmr:clesZZnu7l-2isMRlta_J9VzXKLK0-BafE_o1CUc4GlLIW3JpoLKN8ULdFQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekfedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgoteeftdduqddtudculdduhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrrhhkucfrvggrrhhs
-    ohhnuceomhhpvggrrhhsohhnqdhlvghnohhvohesshhquhgvsggsrdgtrgeqnecuggftrf
-    grthhtvghrnhepfedtvdejfeelffevhffgjeejheduteetieeguefgkefhhfegjeduueet
-    hefgvdffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epmhhpvggrrhhsohhnqdhlvghnohhvohesshhquhgvsggsrdgtrg
-X-ME-Proxy: <xmx:clesZUx5CGtBy5uUKOVPsx2pIns8lSfnITagzKjQR5US4dD9JefnxA>
-    <xmx:clesZbSx6SVUs_9Mqoq7gr2A_mo0LQnwR-hsTtavQVJSx9kTtdQVlA>
-    <xmx:clesZfb9_oQO58FfShN_i3H-ZbsxtvCtf1oQZmDtYRVB4qCgSoz2Yw>
-    <xmx:clesZcJoZIElVQsRwi7G3FQUrVKDadFgzB8t1ry1RD6kAbrqHg1PIA>
-Feedback-ID: ibe194615:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 20 Jan 2024 18:29:53 -0500 (EST)
-From: Mark Pearson <mpearson-lenovo@squebb.ca>
-To: mpearson-lenovo@squebb.ca
-Cc: corbet@lwn.net,
-	hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: Support for mode FN key
-Date: Sat, 20 Jan 2024 18:29:34 -0500
-Message-ID: <20240120232949.317337-1-mpearson-lenovo@squebb.ca>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <mpearson-lenovo@squebb.ca>
-References: <mpearson-lenovo@squebb.ca>
+	s=arc-20240116; t=1705793422; c=relaxed/simple;
+	bh=DcUKLRgwiZFkhp9wcEX5tI2dHgq/f7IwRqfnpbZJHL8=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=fWzqczJTW4mjYMsRo5CJ3YN9AAdjqYeMA677zmGVkjH6m3yA4Igqk8shOFN8gitVjUGCSxPQg9mIH13TVxgsPdBPoAaKEozh2CH7V5BHixlNRUe2h/B5wuwWx6babYKIyxo6EzFOUMlmRnBRHDzZ8Y0lQ6aO3VCpTWrYpTEAiT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qw3L5mLr; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cceb5f0918so20345821fa.2;
+        Sat, 20 Jan 2024 15:30:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705793418; x=1706398218; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Y75KzhxgwrfADHFUMefA15RKQwEcCqjvVgfnaM5gFUY=;
+        b=Qw3L5mLrAiXqbMp7p7/UC73aHnXAwEAPQOvhkJ9WYuCzqPLAYPpFZZLbWS9pRVm4Ik
+         AA+IrA9uAHh1Ho6VGePvro3TdXLYoZw1S8RmwAlvZ7sqcuMjLv4CqglP2YsttWW2Ku1u
+         OfxDkQfEoxGQsD6/Z2fZq+GrZkq+q9R3qbt6f7F45G18MiOumGe+gSRT6ZzA+OTOz7Y+
+         uc2tyIfjMQmcwoiNM3VuBV73wqscXJdLizMtpflELMyu6TptvT5VIHSDaIChiMvYtih8
+         9vb2MYeS8pobg02tSE/pM5/ABpOpubMJRV6kyrD619Yz+fZyEDuO0T66/AAu3hhFPv05
+         gbnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705793418; x=1706398218;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y75KzhxgwrfADHFUMefA15RKQwEcCqjvVgfnaM5gFUY=;
+        b=MmkmpTtNnsuU4IrYOP3QBcUvGIUw2VGNM7s4UvNGu7NJN2P1ZhLaccdZy05p9tgnbP
+         IbnEqOQQgMH7JSZCqqaa09VYp6XCnRCpbc7oCkScTM+p2t88CV6iBKJeL6K0mRKBs/h5
+         PX0pIm/6bIAC1ymb6gbc/ptoEVN3erxv9qT2GAe1ZEcYyoOiMA/JNvEt6KHmn8Zh6wK9
+         Pm2t/ey/YhtFsfQuLTqi29S/rM3XRyzYK5I3gU6MT3AlGuZ2VKZvrfb+Cb7dCjI/KMSU
+         WLesLwqCrlolwnEZZkm7G1khQuSSaHZbkVAevlgQz/0c0OqvRcrEhwOANMVhyOnspo8E
+         M9jg==
+X-Gm-Message-State: AOJu0YwWWIWm4NRykrqt3siUWvSvYpeGbjcQbBQTtK/Nc4Jbz4sHH594
+	EF8Q7mxcXhBlkTC8VfQZZ1mwsi+Wn3dvrRPBHQzY96tUs45rS9VnXCjujXBt1s7s5JkpMwJjOJO
+	FkxIeAOGYnABk9DGJa63fiBnNoOx58OIejqFpdQ==
+X-Google-Smtp-Source: AGHT+IGTJGPM/uDEtCj925EfBiukOC+KlL13tXB6Mp9uyXrBf82ooqxxvezflaxWITHwZvnqvTZezDX7tSMt98MG0XA=
+X-Received: by 2002:a05:6512:3f15:b0:50e:7dcc:ef51 with SMTP id
+ y21-20020a0565123f1500b0050e7dccef51mr601510lfa.120.1705793418192; Sat, 20
+ Jan 2024 15:30:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Steve French <smfrench@gmail.com>
+Date: Sat, 20 Jan 2024 17:30:06 -0600
+Message-ID: <CAH2r5mvR+MhHoeJiULtRQ2=D8doE31i9nmH0Jr5rLTf1K3KFiA@mail.gmail.com>
+Subject: [GIT PULL] smb3 client fixes
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-New Thinkpads have added a 'Mode' Function key that on Windows allows
-you to choose the active profile (low-power, balanced, performance)
+Please pull the following changes since commit
+84e9a2d5517bf62edda74f382757aa173b8e45fd:
 
-Added suppoort for this hotkey (F8), and have it cycle through the
-options available.
+  Merge tag 'v6.8-rc-part1-smb-client' of
+git://git.samba.org/sfrench/cifs-2.6 (2024-01-10 16:23:30 -0800)
 
-Tested on X1 Carbon G12.
+are available in the Git repository at:
 
-Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
----
- .../admin-guide/laptops/thinkpad-acpi.rst     |  7 ++++++-
- drivers/platform/x86/thinkpad_acpi.c          | 20 ++++++++++++++++++-
- 2 files changed, 25 insertions(+), 2 deletions(-)
+  git://git.samba.org/sfrench/cifs-2.6.git tags/v6.8-rc-part2-smb-client
 
-diff --git a/Documentation/admin-guide/laptops/thinkpad-acpi.rst b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
-index 98d304010170..7f674a6cfa8a 100644
---- a/Documentation/admin-guide/laptops/thinkpad-acpi.rst
-+++ b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
-@@ -444,7 +444,9 @@ event	code	Key		Notes
- 
- 0x1008	0x07	FN+F8		IBM: toggle screen expand
- 				Lenovo: configure UltraNav,
--				or toggle screen expand
-+				or toggle screen expand.
-+				On newer platforms (2024+)
-+				replaced by 0x131f (see below)
- 
- 0x1009	0x08	FN+F9		-
- 
-@@ -504,6 +506,9 @@ event	code	Key		Notes
- 
- 0x1019	0x18	unknown
- 
-+0x131f	...	FN+F8	        Platform Mode change.
-+				Implemented in driver.
-+
- ...	...	...
- 
- 0x1020	0x1F	unknown
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index c4895e9bc714..ceb22f8d8442 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -166,6 +166,7 @@ enum tpacpi_hkey_event_t {
- 	TP_HKEY_EV_VOL_MUTE		= 0x1017, /* Mixer output mute */
- 	TP_HKEY_EV_PRIVACYGUARD_TOGGLE	= 0x130f, /* Toggle priv.guard on/off */
- 	TP_HKEY_EV_AMT_TOGGLE		= 0x131a, /* Toggle AMT on/off */
-+	TP_HKEY_EV_PROFILE_TOGGLE	= 0x131f, /* Toggle platform profile */
- 
- 	/* Reasons for waking up from S3/S4 */
- 	TP_HKEY_EV_WKUP_S3_UNDOCK	= 0x2304, /* undock requested, S3 */
-@@ -3731,6 +3732,7 @@ static bool hotkey_notify_extended_hotkey(const u32 hkey)
- 	switch (hkey) {
- 	case TP_HKEY_EV_PRIVACYGUARD_TOGGLE:
- 	case TP_HKEY_EV_AMT_TOGGLE:
-+	case TP_HKEY_EV_PROFILE_TOGGLE:
- 		tpacpi_driver_event(hkey);
- 		return true;
- 	}
-@@ -11118,7 +11120,23 @@ static void tpacpi_driver_event(const unsigned int hkey_event)
- 		else
- 			dytc_control_amt(!dytc_amt_active);
- 	}
--
-+	if (hkey_event == TP_HKEY_EV_PROFILE_TOGGLE) {
-+		switch (dytc_current_profile) {
-+		case PLATFORM_PROFILE_LOW_POWER:
-+			dytc_profile_set(NULL, PLATFORM_PROFILE_BALANCED);
-+			break;
-+		case PLATFORM_PROFILE_BALANCED:
-+			dytc_profile_set(NULL, PLATFORM_PROFILE_PERFORMANCE);
-+			break;
-+		case PLATFORM_PROFILE_PERFORMANCE:
-+			dytc_profile_set(NULL, PLATFORM_PROFILE_LOW_POWER);
-+			break;
-+		default:
-+			pr_warn("Profile HKEY unexpected profile %d", dytc_current_profile);
-+		}
-+		/* Notify user space the profile changed */
-+		platform_profile_notify();
-+	}
- }
- 
- static void hotkey_driver_event(const unsigned int scancode)
+for you to fetch changes up to 78e727e58e54efca4c23863fbd9e16e9d2d83f81:
+
+  cifs: update iface_last_update on each query-and-update (2024-01-19
+10:33:21 -0600)
+
+----------------------------------------------------------------
+Various smb client fixes, including multichannel and for SMB3.1.1
+POSIX extensions
+- debugging improvement (display start time for stats)
+- two reparse point handling fixes
+- various multichannel improvements and fixes
+- SMB3.1.1 POSIX extensions open/create parsing fix
+- retry (reconnect) improvement including new retrans mount parm, and
+handling of
+  two additional return codes that need to be retried on
+- two minor cleanup patches and another to remove duplicate query info code
+- two documentation cleanup, and one reviewer email correction
+
+This P/R does not include the netfs integration patch series for cifs.ko from
+David Howells (but will start testing that now that the prereq VFS changes
+are in mainline).  It also does not include some additional important
+patches for
+improving reconnect/retry handling that are still being tested, and there are
+two additional important lease key reuse related patches being tested as well,
+and a patch to handle password expiration and key rotation that are not
+included in this P/R.
+----------------------------------------------------------------
+Colin Ian King (1):
+      cifs: remove redundant variable tcon_exist
+
+Paulo Alcantara (4):
+      smb: client: fix parsing of SMB3.1.1 POSIX create context
+      smb: client: parse owner/group when creating reparse points
+      smb: client: get rid of smb311_posix_query_path_info()
+      smb: client: don't clobber ->i_rdev from cached reparse points
+
+Shyam Prasad N (7):
+      cifs: open_cached_dir should not rely on primary channel
+      cifs: pick channel for tcon and tdis
+      cifs: new nt status codes from MS-SMB2
+      cifs: reschedule periodic query for server interfaces
+      cifs: new mount option called retrans
+      cifs: handle servers that still advertise multichannel after disabling
+      cifs: update iface_last_update on each query-and-update
+
+Steve French (5):
+      smb3: show beginning time for per share stats
+      cifs: minor comment cleanup
+      Update MAINTAINERS email address
+      smb3: minor documentation updates
+      cifs: update known bugs mentioned in kernel docs for cifs
+
+ Documentation/admin-guide/cifs/todo.rst  |  44 +++---
+ Documentation/admin-guide/cifs/usage.rst |   8 +-
+ MAINTAINERS                              |   2 +-
+ fs/smb/client/cached_dir.c               |   2 +-
+ fs/smb/client/cifs_debug.c               |   6 +-
+ fs/smb/client/cifsfs.c                   |   2 +
+ fs/smb/client/cifsglob.h                 |   4 +
+ fs/smb/client/connect.c                  |   4 +
+ fs/smb/client/fs_context.c               |   6 +
+ fs/smb/client/fs_context.h               |   2 +
+ fs/smb/client/inode.c                    |  29 ++--
+ fs/smb/client/misc.c                     |   1 +
+ fs/smb/client/readdir.c                  |  12 +-
+ fs/smb/client/smb2inode.c                | 234 ++++++++++++--------------------
+ fs/smb/client/smb2maperror.c             |   2 +
+ fs/smb/client/smb2ops.c                  |  10 +-
+ fs/smb/client/smb2pdu.c                  | 127 ++++++++++-------
+ fs/smb/client/smb2proto.h                |   4 +-
+ fs/smb/client/smb2status.h               |   2 +
+ 19 files changed, 244 insertions(+), 257 deletions(-)
+
 -- 
-2.43.0
+Thanks,
 
+Steve
 
