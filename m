@@ -1,152 +1,146 @@
-Return-Path: <linux-kernel+bounces-31668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07EF083324A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:34:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4307C833253
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:49:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB9B928133B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:34:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0505428356D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1DCA4F;
-	Sat, 20 Jan 2024 01:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4644610F8;
+	Sat, 20 Jan 2024 01:49:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="UCp7uzu2"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="J8KamuWl"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A34F10EC
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 01:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BCBA44;
+	Sat, 20 Jan 2024 01:49:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705714476; cv=none; b=B0alLvirk060tjOjB7HZu25lZFq+SMAo5nKlZfuPd1nIHX+efuCc2SqPW1xKO7UIT3ZvZ3jSUKuDNsy5PlqjlHwQIuo+cy8H5V0s27LHzm8RWF3/sKf1cuGAIto2n7VpXXhyQuSbgcFqs/O2TvDYV5X1QIPyNu4nh+kdFUGqHH4=
+	t=1705715381; cv=none; b=XjqRKmHJXpla3CDBnA28yxSR3SVoct9p4sCCQUN0L8Y0XQFdd0+tw3GjYNj/sM57LNs4bKNcHSkVpu78XLJ5NPXBop+rJo4dwaNpAp/BzS/FbHp84TTQizPAvBRiOxoSvCq8FPeoJBX2JxezvdSqHtgbbz/4NZqCuOHpttGLaXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705714476; c=relaxed/simple;
-	bh=26huEc5Mwf9rHtDTIB9WAm8Uc/lRlNkBs+RET7bxIJ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FIoPp5oi/LZ4FykqKc27DseWqL7DTajR5ZD+L34Ym4F82xFt8zXhMEUr9VKZ+qJ3opWYoO2rszs2zygC9AFKKpgPKauoC5tx8PH1jo1G3j3gzRtTJVkKfdyk6Nr0+4KOTb7VNOkjzO21J0UrQL4OX7GyDUDH1hGY7FUR2je97Og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=UCp7uzu2; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6dac225bf42so980546b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 17:34:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705714474; x=1706319274; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ESr1s1LQuOTutaWHm69OFuVr1y+EY8ccPvGNNNRU7c=;
-        b=UCp7uzu2SrCb+R9eaVctu2pPOqoDuEKPKwXpHR7XkhnHNkbRA3W+8E6RQb/J23CxWC
-         RAL5FkWrxUT1EU6Djq4IiFvT/uWQg2s15zio4t8pyN7OSoPkW/oO5oSh0158ilgdUh6N
-         dMd+oRMs9CqL8nlJGoi9JzSJCCTTaB7K9TztSsFvt0IkQVObSLRTkXrcLIB+YEbLuJ+t
-         JZoKjWH1T3vPRP30Tt+he4KvTS4SnuoqpZoqH+8IuwN5izgYWB89ubnxoGXAw6NkdDiE
-         mlVnBFYjOfqws2vOOy3XIE7c3faHIV7OIxavzWvRuROh9EPdL7BZO2vr1VM0d0XDYhyF
-         ++jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705714474; x=1706319274;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1ESr1s1LQuOTutaWHm69OFuVr1y+EY8ccPvGNNNRU7c=;
-        b=wD1O5ap53ee6VRRMay2IeGuWVk5kAjH2aOehYwu4KcXqeKehP+IKOIy0okgucFwYg0
-         9aUWe4Jv0DIqg3QPL6GwupQ3E1sL/fra0s+Cu1n/yGhvPqDHj+2VUSXAqqnnYRjdCN7o
-         uzbkhxMeufW47YYGdER1XgED47MHvnC9ITOp3H6zpKn1goRfPDV4D3LhvYGRF+3o+JDz
-         GQauuYjva/sniybTP/cwD/S1CaxdzqmlM2AGWH3GnPCd9cgLb9rNnp9GedBXZJmjpO6t
-         DG6jBHFS/8nimSSA8qsGZ0A+FO9jn9yJCU+TOvJ1SnbZFmwXF/YjVoCortbgopK3Gi35
-         cULQ==
-X-Gm-Message-State: AOJu0YxSNhdAOkori66K3PAA0VhV0L6FofFsrUkth6bcraVcHAtDAkIg
-	CJ6V8XW7U/JuHcXOFNypGD4impsuzLJEyYzMmkONEiuZpj14j905Jbqv85/hcO0=
-X-Google-Smtp-Source: AGHT+IFpTaljaK+IhzjIUgqr3GVQ3I9VycDOb1FWOAfJMZG3m5Pa9z8B24GyjvedFp0KN3e6hXYsKA==
-X-Received: by 2002:a05:6a21:185:b0:19a:6830:2334 with SMTP id le5-20020a056a21018500b0019a68302334mr757399pzb.46.1705714474654;
-        Fri, 19 Jan 2024 17:34:34 -0800 (PST)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id r9-20020a170903410900b001d71c89fb32sm1961666pld.269.2024.01.19.17.34.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 17:34:34 -0800 (PST)
-Date: Fri, 19 Jan 2024 17:34:31 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: alexghiti@rivosinc.com, anup@brainfault.org, aou@eecs.berkeley.edu,
-	conor@kernel.org, jrtc27@jrtc27.com, konstantin@linuxfoundation.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-	linux-riscv@lists.infradead.org, mick@ics.forth.gr,
-	palmer@rivosinc.com, paul.walmsley@sifive.com,
-	rdunlap@infradead.org
-Subject: Re: [PATCH v10 0/4] RISC-V: mm: Make SV48 the default address space
-Message-ID: <ZasjJ3HPUVuxr2oG@ghost>
-References: <20230809232218.849726-1-charlie@rivosinc.com>
- <tencent_F9568C6D8872E30EDFAF20ADF686A31D6E06@qq.com>
+	s=arc-20240116; t=1705715381; c=relaxed/simple;
+	bh=0Opo4SL7bQxZDZLjH3qX+DELHtWaX53I4hEh1smH2SU=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=PeF/2TcLklUiWjW+JeBCpoBI9vWYWQX2pwaFrgNRrdOgDuPCVnZPlFlB3J1RwZmszypaxyskFMHiv3R1evpH5bARnq4XHfEZQtr+K4/PXBx1ahLKJ3B01Z/1o7fdsyimET//87nrSZ9yflA2OVcEZet28yJk0bOqYKiGJ2zEv9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=J8KamuWl; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40K1VQOt009752;
+	Sat, 20 Jan 2024 01:49:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2023-11-20;
+ bh=pgN68BYYF10yd6IluPPxE/S8KnXRhW8sTjXIOoC6vyc=;
+ b=J8KamuWl6AHFnGw0bMv2NPX+cN6LxnYclf4JfHN2X2195MTWoHQn94RaJ7pPnXIP/Hb8
+ Al3uLXGdH6Oj+LvbzhWdo68Eu06sofKljWfcl607CJG87c6fzEPDvjqP6Dw8b/MyFEpq
+ YFweLkDQ0anchdGfnnoqGsJ4p+FVH/XLc4p8yyMmMUNyj8gInan3epIq1pGm/kYyMA6I
+ 8QPx+gNAWGGJDnrw1H5lWJhlIl3ogmH0kWTY9ttqv8nJEheamvGB67ehNFqBPuczUDSr
+ oQW2ZYn9vU6NfBku4lcMGPJyEdi53CaNhDo833udbdodLTX7L7llt7aO6lxfB3gbElh2 sw== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vkm2hyqfj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 20 Jan 2024 01:49:24 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40K1XnmS018005;
+	Sat, 20 Jan 2024 01:49:23 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vr4m9geya-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 20 Jan 2024 01:49:23 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40K1nMRn010519;
+	Sat, 20 Jan 2024 01:49:22 GMT
+Received: from lenovo-x390.us.oracle.com (dhcp-10-65-142-245.vpn.oracle.com [10.65.142.245])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3vr4m9gexm-1;
+	Sat, 20 Jan 2024 01:49:22 +0000
+From: Sharath Srinivasan <sharath.srinivasan@oracle.com>
+To: santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, syzkaller@googlegroups.com, chenyuan0y@gmail.com,
+        zzjas98@gmail.com, gerd.rausch@oracle.com,
+        allison.henderson@oracle.com, aron.silverton@oracle.com
+Subject: [PATCH] net/rds: Fix UBSAN: array-index-out-of-bounds in rds_cmsg_recv
+Date: Fri, 19 Jan 2024 17:48:39 -0800
+Message-Id: <1705715319-19199-1-git-send-email-sharath.srinivasan@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_12,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 phishscore=0 suspectscore=0 mlxlogscore=823 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401200013
+X-Proofpoint-GUID: HG9m4QeqPYlVDsjPAKG4ABpV7skwZK1D
+X-Proofpoint-ORIG-GUID: HG9m4QeqPYlVDsjPAKG4ABpV7skwZK1D
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_F9568C6D8872E30EDFAF20ADF686A31D6E06@qq.com>
 
-On Sun, Jan 14, 2024 at 01:26:57AM +0800, Yangyu Chen wrote:
-> Hi, Charlie
-> 
-> Although this patchset has been merged I still have some questions about
-> this patchset. Because it breaks regular mmap if address >= 38 bits on
-> sv48 / sv57 capable systems like qemu. For example, If a userspace program
-> wants to mmap an anonymous page to addr=(1<<45) on an sv48 capable system,
-> it will fail and kernel will mmaped to another sv39 address since it does
+Syzcaller UBSAN crash occurs in rds_cmsg_recv(),
+which reads inc->i_rx_lat_trace[j + 1] with index 4 (3 + 1),
+but with array size of 4 (RDS_RX_MAX_TRACES).
+Here 'j' is assigned from rs->rs_rx_trace[i] and in-turn from
+trace.rx_trace_pos[i] in rds_recv_track_latency(),
+with both arrays sized 3 (RDS_MSG_RX_DGRAM_TRACE_MAX). So fix the
+off-by-one bounds check in rds_recv_track_latency() to prevent
+a potential crash in rds_cmsg_recv().
 
-Thank you for raising this concern. To make sure I am understanding
-correctly, you are passing a hint address of (1<<45) and expecting mmap
-to return 1<<45 and if it returns a different address you are describing
-mmap as failing? If you want an address that is in the sv48 space you
-can pass in an address that is greater than 1<<47.
+Found by syzcaller:
+=================================================================
+UBSAN: array-index-out-of-bounds in net/rds/recv.c:585:39
+index 4 is out of range for type 'u64 [4]'
+CPU: 1 PID: 8058 Comm: syz-executor228 Not tainted 6.6.0-gd2f51b3516da #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.15.0-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x136/0x150 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0xd5/0x130 lib/ubsan.c:348
+ rds_cmsg_recv+0x60d/0x700 net/rds/recv.c:585
+ rds_recvmsg+0x3fb/0x1610 net/rds/recv.c:716
+ sock_recvmsg_nosec net/socket.c:1044 [inline]
+ sock_recvmsg+0xe2/0x160 net/socket.c:1066
+ __sys_recvfrom+0x1b6/0x2f0 net/socket.c:2246
+ __do_sys_recvfrom net/socket.c:2264 [inline]
+ __se_sys_recvfrom net/socket.c:2260 [inline]
+ __x64_sys_recvfrom+0xe0/0x1b0 net/socket.c:2260
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+==================================================================
 
-> not meet the requirement to use sv48 as you wrote:
-> 
-> >	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
-> >		mmap_end = VA_USER_SV48;			\
-> >	else							\
-> >		mmap_end = VA_USER_SV39;			\
-> 
-> Then, How can a userspace program create a mmap with a hint if the address
-> >= (1<<38) after your patch without MAP_FIXED? The only way to do this is
-> to pass a hint >= (1<<47) on mmap syscall then kernel will return a random
-> address in sv48 address space but the hint address gets lost. I think this
+Fixes: 3289025aedc0 ("RDS: add receive message trace used by application")
+Reported-by: Chenyuan Yang <chenyuan0y@gmail.com>
+Closes: https://lore.kernel.org/linux-rdma/CALGdzuoVdq-wtQ4Az9iottBqC5cv9ZhcE5q8N7LfYFvkRsOVcw@mail.gmail.com/
+Signed-off-by: Sharath Srinivasan <sharath.srinivasan@oracle.com>
+---
+ net/rds/af_rds.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In order to force mmap to return the address provided you must use
-MAP_FIXED. Otherwise, the address is a "hint" and has no guarantees. The
-hint address on riscv is used to mean "don't give me an address that
-uses more bits than this". This behavior is not unique to riscv, arm64
-and powerpc use a similar scheme. In arch/arm64/include/asm/processor.h
-there is the following code:
-
-#define arch_get_mmap_base(addr, base) ((addr > DEFAULT_MAP_WINDOW) ? \
-					base + TASK_SIZE - DEFAULT_MAP_WINDOW :\
-					base)
-
-arm64/powerpc are only concerned with a single boundary so the code is simpler.
-
-> violate the principle of mmap syscall as kernel should take the hint and
-> attempt to create the mapping there.
-
-Although the man page for mmap does say "on Linux, the kernel will pick
-a nearby page boundary" it is still a hint address so there is no strict
-requirement (and the precedent has already been set by arm64/powerpc).
-
-> 
-> I don't think patching in this way is right. However, if we only revert
-> this patch, some programs relying on mmap to return address with effective
-> bits <= 48 will still be an issue and it might expand to other ISAs if
-> they implement larger virtual address space like RISC-V sv57. A better way
-> to solve this might be adding a MAP_48BIT flag to mmap like MAP_32BIT has
-> been introduced for decades.
-> 
-> Thanks,
-> Yangyu Chen
-> 
-
-- Charlie
+diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
+index 01c4cdfef45d..8435a20968ef 100644
+--- a/net/rds/af_rds.c
++++ b/net/rds/af_rds.c
+@@ -419,7 +419,7 @@ static int rds_recv_track_latency(struct rds_sock *rs, sockptr_t optval,
+ 
+ 	rs->rs_rx_traces = trace.rx_traces;
+ 	for (i = 0; i < rs->rs_rx_traces; i++) {
+-		if (trace.rx_trace_pos[i] > RDS_MSG_RX_DGRAM_TRACE_MAX) {
++		if (trace.rx_trace_pos[i] >= RDS_MSG_RX_DGRAM_TRACE_MAX) {
+ 			rs->rs_rx_traces = 0;
+ 			return -EFAULT;
+ 		}
+-- 
+1.8.3.1
 
 
