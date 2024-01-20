@@ -1,119 +1,169 @@
-Return-Path: <linux-kernel+bounces-31930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A490083368D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:49:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D566833693
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:50:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27E68B21CB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:49:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CAA11F22141
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE66314F7C;
-	Sat, 20 Jan 2024 21:48:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033F314F76;
+	Sat, 20 Jan 2024 21:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ilwNI162"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="BCTJUEnR"
+Received: from out203-205-221-235.mail.qq.com (out203-205-221-235.mail.qq.com [203.205.221.235])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C0014F73
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 21:48:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0C214F61;
+	Sat, 20 Jan 2024 21:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.235
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705787329; cv=none; b=aYv0o4ssg7qgwCvn0N+M1sCbCtfV7chCVCtUUcC5DTnMgEdDEjK7zne1oF1YsSUsUnZhYO3xYaH0roqNeNYSjVn4g3vzxTSbTaHLTZYjlSl23jZS4sGEk74u8j2BdxeydN3d4CvAH+qMmZHnjShgh3OSt/pL7TBPSm51Gi5NEc8=
+	t=1705787417; cv=none; b=pv0XInkvE2IIsem7Syzt6QChOGGxOmN6nihX9xgIqxuzhZRz509YKIO7U4hM1/CgevdwGsdGHzhxPr7XLwq9D785f5uJVOL25s7BFD2vy6FiCrF144hKT94OfMskkhoXfg9Z9Wo9mjQZZwwRiBo3QjvCsLEPcgeD+fKG5WP3eZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705787329; c=relaxed/simple;
-	bh=w1FzR7rXZDAG95Z4hhOQkThbbze/zcwVMYt1WGmSrk0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LU1XaCFCSS+EFALdbWKYUCbNVN1abfmHLYpH8MawWvwEGESGCvY7SIeugV9fm98JnmhC8Up/ioterNhbStVxlzIN4OuKpYbFha6TTWFaP0G3TLUqdwmPAkQQTd/pHHV3HPH++XO4fztb1KWLss3D/Gx8TT15mGJuRTxYpY6kl0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ilwNI162; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7913C433B2
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 21:48:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705787328;
-	bh=w1FzR7rXZDAG95Z4hhOQkThbbze/zcwVMYt1WGmSrk0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ilwNI162FBpkwnKRHDOoUYOVHZfV77D3iZOoRj31PgMyJ1/Wg2bonK0B7XcAOL27w
-	 nw0THXMEKmFPbyB1YSVxA59V6rjiE/c7/AJrOHxuelLHCzmKd2/9NMin3zz2Fm0RsH
-	 +Pv9Timk/yW4qihHPVkZmiSsDBpqpJpsXWtqv7Fim7D+34d59PkrbmDyaVwivA70nI
-	 KZDIEVAOGUwXiTe4wiQ8hzRrGpppffVQ0gNvSb3tK7anugV4VmH+1Ggg8F5qznKmJ/
-	 Wuliwx9dK5qHHrfNtx373wRFO1JQLTmW7D2IxzUWj7zUh2U+aVxSLOfpK6Z0rVTWQN
-	 59zYOhrwHDgZw==
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5989d8decbfso1294160eaf.2
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 13:48:48 -0800 (PST)
-X-Gm-Message-State: AOJu0YyuZOzB05fT15PCgIpJ9XIHjXe2fSqz0/sIQQiW4jUaOB1jO6eS
-	U5/n+6sBBa3eiarla1JSHF/2shEDqm+ZRGlrI42FS7t7HYwDwoD2TfVL0rZU/Qy69qFmzHENliL
-	JkIHht3T+paxl/G5EDiqqOsrgmJM=
-X-Google-Smtp-Source: AGHT+IEx9PcXx/mfn28Guw9vSLfimEoqe9scEQf7uCCkYLu2lzRy4aA+upl+phU74jIfgxmU+HKxCxrMPVW5TFISuEU=
-X-Received: by 2002:a05:6870:3309:b0:210:c8f8:2a43 with SMTP id
- x9-20020a056870330900b00210c8f82a43mr2032544oae.108.1705787328227; Sat, 20
- Jan 2024 13:48:48 -0800 (PST)
+	s=arc-20240116; t=1705787417; c=relaxed/simple;
+	bh=I9/wMsxiLV+cUqwajTZ6MfQw4qQvC4xIjXaZaxVW514=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=O5/OmfEa9qdkab9ZRjZsVpb39dIgx/LknRQSqpx3Md0pVBrcTI5Ht2K1TFAkqXwAJ5tPCP4s4AWSXzJSBlEjGHKhEncOu0auLJGQfMQZMse/yLMTSwiQqyFR5chWj5z4n03GoqDCTDGHJil9jBwNj7367ii3tegcdoavh/MyNbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=BCTJUEnR; arc=none smtp.client-ip=203.205.221.235
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1705787407; bh=4nmX4hKeh/0WuigJrd8ANC0wflYIcPXPQU4r0VNEKp8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=BCTJUEnRp+uC0d0dRxHQsm/zVTkvWgVkAiSDO/Np0gxMBiylPltmYRRlaUxuRE5dT
+	 JNImCpHL9Z4E39CTM/nzV/g84s+7awuJxhKqNJLPRWtD/xn8+67ZyD+5zra9Iqkfk5
+	 J9hS+sWGY04ORFsXjGfpC4+g8/l88pMguMUorMpg=
+Received: from cyy-pc.lan ([240e:379:2240:ed00:c92f:86c3:e615:ca18])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id C832D4DD; Sun, 21 Jan 2024 05:50:03 +0800
+X-QQ-mid: xmsmtpt1705787403tnr6elyfm
+Message-ID: <tencent_2683632BEE438C6D4854E30BDF9CA0843606@qq.com>
+X-QQ-XMAILINFO: OPDQNGCUQ3qLjMTDsrPToOp8oyErPnL2SII8vV9kBmlMV/zje0JtvQMeaBQSLy
+	 B2QJFDDnOzluHBIoK3YrDakeYq1fWVYfn74YrxBVVRd8tl+v2/yLAywxvW+k44gaNKX0N25jyf+t
+	 WrPkrf8crNxwu7VPCeY43GXT7J1T8nntnPO/6OtzZ27FP6ibc1/EISwFYOuKUF1Ztq1j8CZDEY62
+	 nHhBvzrqDea94mJGzZZ6dTCKXpg8YE6ggXAR1ycnSX1nUuz441T3r9p6eE+dbnEIctVBEgOkYTqY
+	 NZFVL4uwWf6RoC5X3ykYjE9NXqs1aCyf2K7tovE8dlIVLrUAiZTuoIIq04uKiGxF6pKhhtUabb+W
+	 IOscWMkKMcFVpW+LUTdBGEoQ9MgiMAzKEdbRJ01mK5piJuHFw2Rw+PnwunWv3tFZCGKP5yyn5Px9
+	 GtU7ks9X0jco8acac37axmjiySgqH5Sw30F6SAbbCZCK8JwyZQ47x+zrWa35EnSl8FcQDZ5hehbw
+	 qPYQEqQUlgI1Zp5/DNNPJc39PKDeuFD9GOL1WySOS5siYySwsyr04wvTPnPu+iHD37tiMhSmQ2ny
+	 mYsBKzRvjMXAFGRaQKacp39hdh8w1HpeuPmRBoY543PPeXgDQbiPxeAdQWqX+UcQ9GiqV03ul2Rx
+	 BJAqgNlKukFM0q1Cxv8PetFLS2GktGbAjpuuPTBt2dv6uJdZywgTBmm1wWGgkmFGMK2GzBwQRhb4
+	 lUxxrf6bvMi0RNZzzWHQknlNc57BfIoYi9+KlMb6oPd4h2CUgkXcJzylpt23Uw2qiBrJXMO2U0CZ
+	 J6P0lWu2HoLu90um4XA1X+tgwXIvydZVnZzHKOEw7Gpvi1Fi09/ABN4Ub2Pa7RLTIU72Rj87xIkh
+	 bmIN8Db8FDf1vQAURV5C3ZuslG/UO1aJ8Zincg1F4sSugX+WZXDqUYtUCIj2vddR9JwJhuka6alp
+	 ygJd0xxijjWzsLCCayIR99Dfr/ijIim+Z3cuceuUmlob4bU1jZwoh5pvhl8Q2/c10Bj37a/jyDxR
+	 eCDOn+v55wx5G1hZ7R7Lo7MkdxHpg=
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: Yangyu Chen <cyy@cyyself.name>
+To: linux-riscv@lists.infradead.org
+Cc: Charlie Jenkins <charlie@rivosinc.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Guo Ren <guoren@kernel.org>,
+	Andy Chiu <andy.chiu@sifive.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yangyu Chen <cyy@cyyself.name>
+Subject: [PATCH v2 1/3] RISC-V: mm: do not treat hint addr on mmap as the upper bound to search
+Date: Sun, 21 Jan 2024 05:49:58 +0800
+X-OQ-MSGID: <20240120215000.291877-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <tencent_B2D0435BC011135736262764B511994F4805@qq.com>
+References: <tencent_B2D0435BC011135736262764B511994F4805@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231117125807.1058477-1-masahiroy@kernel.org>
-In-Reply-To: <20231117125807.1058477-1-masahiroy@kernel.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sun, 21 Jan 2024 06:48:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAStoCja1gnoFmsKikbzGZmKTcTu+Vc7v9zg8B9hwsH+iQ@mail.gmail.com>
-Message-ID: <CAK7LNAStoCja1gnoFmsKikbzGZmKTcTu+Vc7v9zg8B9hwsH+iQ@mail.gmail.com>
-Subject: Re: [PATCH] riscv: compat_vdso: install compat_vdso.so.dbg to /lib/modules/*/vdso/
-To: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 17, 2023 at 9:58=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
->
-> 'make vdso_install' installs debug vdso files to /lib/modules/*/vdso/.
->
-> Only for the compat vdso on riscv, the installation destination differs;
-> compat_vdso.so.dbg is installed to /lib/module/*/compat_vdso/.
->
-> To follow the standard install destination and simplify the vdso_install
-> logic, change the install destination to standard /lib/modules/*/vdso/.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+This patch reverted the meaning of the addr parameter in the mmap syscall
+change from the previous commit add2cc6b6515 ("RISC-V: mm: Restrict address
+space for sv39,sv48,sv57") from patch[1] which treats hint addr as the
+upper bound of the mmap return address. However, some userspace software
+assumes mmap will attempt to create mapping on the hint address if possible
+without MAP_FIXED set, thus these software will always use the fallback
+path as the return address is not the same as the hint, which may lead to
+some performance overhead. Other ISAs like x86, arm64, and powerpc also
+meet this issue which has userspace virtual address bits larger than 48-bit
+and userspace software may use the MSB beyond 48-bit to store some
+information. Still, these ISAs didn't change the meaning of the hint
+address and only limited the address space to 48-bit when the hint address
+did not go beyond the default map window.
 
+Thus, this patch makes the behavior of mmap syscall on RISC-V sv57 capable
+system align with x86, arm64, powerpc by only limiting the address space to
+DEFAULT_MAP_WINDOW which is defined as not larger than 47-bit. If a user
+program wants to use sv57 address space, it can use mmap with a hint
+address larger than BIT(47) as it is already documented in x86 and arm64.
+And this code is copied from kernel source code on powerpc.
 
-Ping?
-(in case "yet more RISC-V updates" happens)
+[1]. https://lore.kernel.org/r/20230809232218.849726-2-charlie@rivosinc.com
 
+Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+---
+ arch/riscv/include/asm/processor.h | 38 ++++++------------------------
+ 1 file changed, 7 insertions(+), 31 deletions(-)
 
+diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+index a8509cc31ab2..bc604669f18e 100644
+--- a/arch/riscv/include/asm/processor.h
++++ b/arch/riscv/include/asm/processor.h
+@@ -18,37 +18,13 @@
+ #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+ #define STACK_TOP_MAX		TASK_SIZE
+ 
+-#define arch_get_mmap_end(addr, len, flags)			\
+-({								\
+-	unsigned long mmap_end;					\
+-	typeof(addr) _addr = (addr);				\
+-	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
+-		mmap_end = STACK_TOP_MAX;			\
+-	else if ((_addr) >= VA_USER_SV57)			\
+-		mmap_end = STACK_TOP_MAX;			\
+-	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
+-		mmap_end = VA_USER_SV48;			\
+-	else							\
+-		mmap_end = VA_USER_SV39;			\
+-	mmap_end;						\
+-})
+-
+-#define arch_get_mmap_base(addr, base)				\
+-({								\
+-	unsigned long mmap_base;				\
+-	typeof(addr) _addr = (addr);				\
+-	typeof(base) _base = (base);				\
+-	unsigned long rnd_gap = DEFAULT_MAP_WINDOW - (_base);	\
+-	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
+-		mmap_base = (_base);				\
+-	else if (((_addr) >= VA_USER_SV57) && (VA_BITS >= VA_BITS_SV57)) \
+-		mmap_base = VA_USER_SV57 - rnd_gap;		\
+-	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
+-		mmap_base = VA_USER_SV48 - rnd_gap;		\
+-	else							\
+-		mmap_base = VA_USER_SV39 - rnd_gap;		\
+-	mmap_base;						\
+-})
++#define arch_get_mmap_end(addr, len, flags) \
++	(((addr) > DEFAULT_MAP_WINDOW) || \
++	 (((flags) & MAP_FIXED) && ((addr) + (len) > DEFAULT_MAP_WINDOW)) ? TASK_SIZE : \
++									    DEFAULT_MAP_WINDOW)
++
++#define arch_get_mmap_base(addr, base) \
++	(((addr) > DEFAULT_MAP_WINDOW) ? (base) + TASK_SIZE - DEFAULT_MAP_WINDOW : (base))
+ 
+ #else
+ #define DEFAULT_MAP_WINDOW	TASK_SIZE
+-- 
+2.43.0
 
-
->
->  arch/riscv/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> index a74be78678eb..5cbe596345c1 100644
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@ -146,7 +146,7 @@ endif
->  endif
->
->  vdso-install-y                 +=3D arch/riscv/kernel/vdso/vdso.so.dbg
-> -vdso-install-$(CONFIG_COMPAT)  +=3D arch/riscv/kernel/compat_vdso/compat=
-_vdso.so.dbg:../compat_vdso/compat_vdso.so
-> +vdso-install-$(CONFIG_COMPAT)  +=3D arch/riscv/kernel/compat_vdso/compat=
-_vdso.so.dbg
->
->  ifneq ($(CONFIG_XIP_KERNEL),y)
->  ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
-> --
-> 2.40.1
->
-
-
---=20
-Best Regards
-Masahiro Yamada
 
