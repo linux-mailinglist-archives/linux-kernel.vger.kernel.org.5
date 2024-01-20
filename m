@@ -1,144 +1,124 @@
-Return-Path: <linux-kernel+bounces-31865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D800A8335A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:17:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A83DB8335A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 174A61C20DCA
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:17:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21E9B1F221C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 18:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4789B12E6A;
-	Sat, 20 Jan 2024 18:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47CF125C7;
+	Sat, 20 Jan 2024 18:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="GKxhmoYn"
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WGcc8Jl+"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D02125D2
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 18:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4804111A5;
+	Sat, 20 Jan 2024 18:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705774646; cv=none; b=To3S+wW+4pLLSkan4MkrCj6GRKeyW5xl55LvF6gsYMyQLfuZhmsnSBIxuIZILDOkLNkygSMQgaODxPpYM7rrooXo7H58+1aOVsNlfo1Y811ctCKZa+JVv5MzGsn9aiKCBwjdKFfMmkEGvk8yNxI7XOl0tISytd/mWw1QpHphiTE=
+	t=1705774763; cv=none; b=JkApTFJLlzIq0TvLm0UwqNMh3of29c5hFKx3wVoHE6a1sYvtMwqgZaEphNFmx/2YfcSWQxOrDx2Ws5k+jFUek4xayvbx7ElNfSQpZ7fUwOVnXNuR/8g5IsmR3kk4eDM4YRp6tPj9JZemY86zgMPX3BWWy9uAPvJ2zi3eqftLoZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705774646; c=relaxed/simple;
-	bh=fIC8UyA2SJ+rQ9HXjA9+oJdd+ykAcxESDRxWvttEpjE=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=LfwkOoiarrwGWUHAbtz6SQV9uYe7gA+Ya/E2TG4+clFspxFWRUol8cTtMfyFzCEWbafXjfcnYxDmP5MaKY6o2Xzp2HOGk+3zPSlg6JxuLXF+vENXNjxcSQQ544gDdVjWsr5/hhVOJxTJPq3MOF4KjxhPxiaXWxK5ANADOBH7SLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=GKxhmoYn; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ddf1e88e51so1362979a34.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 10:17:24 -0800 (PST)
+	s=arc-20240116; t=1705774763; c=relaxed/simple;
+	bh=wNAHZ7BQJGIl/nkxvr0xvcR4L7QDszxCr3sMQYA2oyY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HaMduoTvqQCU6dO+cHWlcaal8sQvXjJbcQezjy05th3RJfnrZk4+F8m8Ou2/V4iJR7OkyWYiPBHqD3SxRq4IxkW00S+QB2dIyacJDjzFLC2UhGJaUZf6Ah/59UoJT/she4Vr5t19JDRxqo/aLrM24dxl9Q5KPjOLpEmBJz14Vpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WGcc8Jl+; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6dbd0be5f9aso33319b3a.2;
+        Sat, 20 Jan 2024 10:19:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705774643; x=1706379443; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KMn1BToJweaOcxOlaPFoVzSkf5fWzkYqaJwxOtEOARU=;
-        b=GKxhmoYnq7FDglkVeurUdRhm9S6Tz0q+rl02c9EqAliuG0GnOZWgr0jSbb0firJHHI
-         x78NidbTE+R4l+nH0hq6xC6y20yFRzfWFtIB0AvK4epV4ie/NmMHhpP9dsE1KIe+XHxV
-         MPXatI4ydf7bI9rmnBlQp1Nw5lfYQwXjt8UAm7Vcqdy+zdxrZAxtHImHwfl+OP4vR7x4
-         HQxXac4/YqQtwomGbnaKGmwPG7i799WKrQzwncqX3b6ifbTVRZf+47d0rOHEwp6M5DH8
-         rJJd7oZ3SPOjJMedcWirC9bGCOk+7MCx7n7+rXvtcUYZZ6XFGSx8lvTCl5Xord89HzFw
-         53xQ==
+        d=gmail.com; s=20230601; t=1705774761; x=1706379561; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YTRrcFV/jUUF4sC38uPPLRonvSDfiPvNd9MN0RZDRFc=;
+        b=WGcc8Jl+cPDtiPnHQ+Xc7UZCyCvdVyZcvjP6Rebk1c21fL3iR6Po78RzzBLD+uhg4r
+         6t+z1vdLgF/fA1aLcvRY84zsqFkQDKmGATOF2iOipTXz0OGW9rHDah6TUtUlsMJuzL9F
+         YplWXGjw6xSniRoCOcXFHeOR9mZBfa+HZjoYxW5aWPXM1bco5k36qL9Srf/wrUsFy/am
+         m96gPJiBYJAP5u7hTsGZFc+mJzS4ZcWZkr8WJqmcsKAPaGr8agTCMsh8X0Cx9sWvb70s
+         o+miIK/WEFqEMwgLTEMrvACg9ra7KHf92dFJXN/M/b74x24e2bhnro+Z84y2IomiQYDu
+         qToA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705774643; x=1706379443;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KMn1BToJweaOcxOlaPFoVzSkf5fWzkYqaJwxOtEOARU=;
-        b=gQO3KhLJObWhYpNyBMSAMTL+h2ZR7+2m4QAIa2LpveZ/mIwIRfOW83f95yoOEQgFcE
-         DCiGC7rAts95iL39KS3l2Hr6ps6XjFBteaFScAgHh41gUWCBsYhotdJQA5WGnXvq+vOn
-         H/dmENJEF+7J5SqFYQzf4FnFL2Gts0M5joLYxTIqAFUwios36hO9liycx3LePHb46ro9
-         RX9aCjbGxWwrIpO8r1pxjwt8JMU1Gu6vkYiQjnQQ5VxIOxbn8O4L7RCVWy+hhlSH+K3+
-         ntO+bHQLiBPjbc7mCDm8V92Q6ydebQ9VDnyVgCuFCceVS8MOlXz/Hczyd8WAQV8W+8LP
-         12Rw==
-X-Gm-Message-State: AOJu0YzT7/pQ717Thm4Ap5aK3KezUjOgPMNiQqkmTAvRETLUmsSKrK8w
-	vCw8V3zZHGUlatf1bZdMpqWt7iUOYLaLYdPw7yn5objt8i0mYyhB2i6V0yYjaWTyuZdM//6BE2l
-	k
-X-Google-Smtp-Source: AGHT+IEum8xz+FQyjPn5YMF2KgAk6IYGtXt+WEaAbqQ608bG4G6PJg/dlD4Iy3ZTC8KPmWj5nOaw5Q==
-X-Received: by 2002:a05:6808:2227:b0:3bd:99d1:e22c with SMTP id bd39-20020a056808222700b003bd99d1e22cmr2077156oib.26.1705774643490;
-        Sat, 20 Jan 2024 10:17:23 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id sl7-20020a17090b2e0700b0028bbf4c0264sm6339947pjb.10.2024.01.20.10.17.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jan 2024 10:17:22 -0800 (PST)
-Date: Sat, 20 Jan 2024 10:17:22 -0800 (PST)
-X-Google-Original-Date: Sat, 20 Jan 2024 10:03:11 PST (-0800)
-Subject:     Re: [GIT PULL] RISC-V Patches for the 6.8 Merge Window, Part 3
-In-Reply-To: <CAHk-=wimDL8m=hETgzazd4W23PtBQ_K=E80mkuqhx0H=8BpWQA@mail.gmail.com>
-CC: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From: Palmer Dabbelt <palmer@rivosinc.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-14d0b845-9a7e-49aa-b151-7f123a51e0db@palmer-ri-x1c9>
+        d=1e100.net; s=20230601; t=1705774761; x=1706379561;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YTRrcFV/jUUF4sC38uPPLRonvSDfiPvNd9MN0RZDRFc=;
+        b=thAlETn16lMU8NlKAaVXmfkS6ivaOT1jrqQ5LulAw6+1H713YokUN4nS92Opu7UgEQ
+         j0EU4PftSbxNwUh3L4cLRMa9bC2U96OxtplXcl5e+mdbQUpMkU6wSrY7bU7Kpv3LnKiX
+         v9xRkgbU8uv7NHJ4InJH6v0zZUCIE9rglM9GBXxdAyOrkncWeLu1FCb3rjDP2T6ttz/P
+         mgB23TpvzTgeDyWSkcIO9/CFFXeRNYFR/arpvFyt9XOLPAF1aUlP0BNArfQvzy1Jz9lq
+         Fb62YaK1MIiG0XkjWP2ls94ww+wLIbWY087mfmjaUl5SOEAKDO9AjSQGvLrfwEGQJnnZ
+         hbmQ==
+X-Gm-Message-State: AOJu0YzPR64cMjDJy1sBXc4dzensYL0uNlnJUVH5j73mFxJV/KAKN3SW
+	PHC91w1Zm1XLF+6B1Gr+F9WxaHoOt6GJ88gDyfDchV6b7RI/pm5a
+X-Google-Smtp-Source: AGHT+IEFqETe+AEjdKstE9q1UL4BqitOZwIb5KJJK8FpOO5jKwjwxsqH48LIENw8MLMuF+FwIvLV7Q==
+X-Received: by 2002:a62:cd07:0:b0:6d9:a658:16a9 with SMTP id o7-20020a62cd07000000b006d9a65816a9mr754231pfg.69.1705774760871;
+        Sat, 20 Jan 2024 10:19:20 -0800 (PST)
+Received: from ?IPV6:2406:7400:94:ee42:e61e:cfc5:9906:904b? ([2406:7400:94:ee42:e61e:cfc5:9906:904b])
+        by smtp.gmail.com with ESMTPSA id d5-20020a056a00244500b006da19433468sm7008275pfj.61.2024.01.20.10.19.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Jan 2024 10:19:20 -0800 (PST)
+Message-ID: <3585159b-12f1-43ec-bd85-0253a0534c0e@gmail.com>
+Date: Sat, 20 Jan 2024 23:49:15 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] iouring:added boundary value check for io_uring_group
+ systl
+Content-Language: en-US
+To: Jens Axboe <axboe@kernel.dk>, corbet@lwn.net, jmoyer@redhat.com,
+ asml.silence@gmail.com, akpm@linux-foundation.org, bhe@redhat.com,
+ ribalda@chromium.org, rostedt@goodmis.org, sshegde@linux.vnet.ibm.com,
+ alexghiti@rivosinc.com, matteorizzo@google.com, ardb@kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ io-uring@vger.kernel.org
+References: <20240120144411.2564-1-subramanya.swamy.linux@gmail.com>
+ <f48e47b5-0572-4f84-b165-5a9e91788c57@kernel.dk>
+From: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+In-Reply-To: <f48e47b5-0572-4f84-b165-5a9e91788c57@kernel.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-[Moving this back to linux-kernel@vger.kernel.org, for some reason I changed my
-alias to linux-kernel@subspace.kernel.org which doesn't actually exist.]
+Hi Jens,
 
-On Sat, 20 Jan 2024 09:42:08 PST (-0800), Linus Torvalds wrote:
-> On Sat, 20 Jan 2024 at 06:52, Palmer Dabbelt <palmer@rivosinc.com> wrote:
->>
->> The last one is particularly clunky, as I've just squashed the fix into a merge
->> from your tree.
+On 20/01/24 22:31, Jens Axboe wrote:
+> On 1/20/24 7:44 AM, Subramanya Swamy wrote:
+>> /proc/sys/kernel/io_uring_group takes gid as input
+>> added boundary value check to accept gid in range of
+>> 0<=gid<=4294967294 & Documentation is updated for same
+> This should have:
 >
-> _Please_ don't use back-merges to pre-merge things before sending me a
-> pull request.
->
-> Just let me know about the semantic conflict, and send your tree as it
-> works for you. Then, as I merge your tree, I can take care of the
-> actual conflicts.
->
-> IOW, I really _really_ want developers to worry about *their* changes.
->
-> Yes, linux-next is then there to give a heads-up about how these
-> changes end up interacting, and you should be aware of it enough to
-> send me a heads-up. But that's literally all - you should *not* then
-> merge in other peoples changes into your tree.
->
-> IOW, a conflict with other trees that got noticed in linux-next should
-> just result in that note to me about the conflict once you send your
-> tree to me.
->
-> Not a random merge of a random commit that came in through another random tree.
->
-> One result of that random merge is then your messy diffstat. Your pull
-> request claims this:
->
->  443 files changed, 7415 insertions(+), 4420 deletions(-)
->
-> but that's literally because you got that random noise from pulling in
-> the state from the tty tree that had *nothing* to do with your RISC-V
-> changes. The real diffstat if you don't have that last merge is
->
->  71 files changed, 2678 insertions(+), 215 deletions(-)
->
-> and ends up looking much saner (ie it actually lists just arch/riscv/
-> and the incidental changes around selftests etc that actually happened
-> in your tree).
+> Fixes: 76d3ccecfa18 ("io_uring: add a sysctl to disable io_uring system-wide")
+  added fixes to commit msg in v3
+>> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+>> index 6584a1f9bfe3..a8b61ab3e118 100644
+>> --- a/Documentation/admin-guide/sysctl/kernel.rst
+>> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+>> @@ -470,10 +470,8 @@ io_uring_group
+>>   ==============
+>>   
+>>   When io_uring_disabled is set to 1, a process must either be
+>> -privileged (CAP_SYS_ADMIN) or be in the io_uring_group group in order
+>> -to create an io_uring instance.  If io_uring_group is set to -1 (the
+>> -default), only processes with the CAP_SYS_ADMIN capability may create
+>> -io_uring instances.
+>> +privledged (CAP_SYS_ADMIN) or be in the io_uring_group group in order
+> privileged.
+fixed  typo in v3
 
-OK, sorry for that.
+-- 
+Best Regards
+Subramanya
 
-> So please send a new pull request where you just have *your* tree
-> changes, not a random back-merge.
-
-I think it's actually pretty simple for this one, I'm just backing up to 
-the previous commit (as that nasty merge was at the tip of the tree).  
-So I've set along 
-https://lore.kernel.org/r/mhng-878cc879-7aa0-473f-91e4-8288072cdd4e@palmer-ri-x1c9/ 
-, which doesn't have the merge and instead just calls out the diff in 
-the comment.
-
->
->               Linus
 
