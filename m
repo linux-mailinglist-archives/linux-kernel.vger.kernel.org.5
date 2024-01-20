@@ -1,119 +1,141 @@
-Return-Path: <linux-kernel+bounces-31657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 385C583320D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2168B833224
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:30:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C71351F22402
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:08:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE1BF1F222E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60F21809;
-	Sat, 20 Jan 2024 01:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3891B15CA;
+	Sat, 20 Jan 2024 01:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RIeAIHmJ"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="duBD1kdC"
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F648650
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 01:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A047FC
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 01:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705712908; cv=none; b=nDB/87o81iW2lWHtwZO4EhtTTLWM3+ed8Ifip+c/hjVzzxxW4eyeB0b26YoOM36Ra55zY//p9/xsO/6aSx5Kvr6IrZSebfWoL/BgL3nGN2glkQhc2jrtb3WVg2Rz7U3AOeTru232VV/idRbxvFMBdfGtv8ztZZIi5RH4+1c+pew=
+	t=1705714192; cv=none; b=GZDS8TmHzw8e3PnmhW+Sl0mzFBH8NmjLvthctk54wS4SmdAY62J8MJ6giC/efo2bbnhnT2O4cc19NJj2rxBvzxPkou4pTNYtnb/V0dvP6pjFeDMK5mHlAA42enK49OKQdAESiCWKImZPeIvSBaDP3NvA6MLHcj5U0MoGc/OMZWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705712908; c=relaxed/simple;
-	bh=0JlUEmgQLOHzMuAhTteuxg5xb2SSQWi1UYNI4bu6NXQ=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=qXQpVGwhlBKfNW5+BTbgzoqhz7u9FQhTat6ey6P7Zu/wlSYUCNxm5iODnqAI1GiVl1Bfznnf7zrvRhEYZg0UpDCeXTqSLHDQbw7EV8CUvv5HkQzw/JZEHF4meM/9FemJkXmPYTHvQQELMbRw55on/Etu+5IropqjIF0cC2ke5Ro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=RIeAIHmJ; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40JN72gt027918;
-	Sat, 20 Jan 2024 01:08:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2023-11-20;
- bh=sltGnzFHEhyuMAYtQh/kNQsctmX5DQoOH2S/S0KV5tQ=;
- b=RIeAIHmJk59QuXsjd/uSRCa7+TWXXg7wNeUshVTjJOI5UQPcwmlNIQT6V1aSVi68mFB1
- dAwAOiq1BD2wTjivqFeYKExdrIwCdd9z+nCdZ7jybJA9iTwLNByyxEIx4Gxd3Z/por2Y
- EDoJQrdsQkrEj5eET3KUc98jgZQkRs9L1sbdVuONdfEoTWzJgHVErw8VBgKLsN+vn/Y+
- WAPgo5hYXHJZqJto/DxRR/3ZrsxzSr6SOtuTup6TRmONerrb0AkRv/lKDir9uLDYgwjA
- +UJlEFpUI9O41J0Ol3MI2OVUGNLOG3imvwvxQreR2NUzmfsTFVGZT0TfknWUVpPYDJZO vA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vkm2hyper-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 20 Jan 2024 01:08:11 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40JNNUL9010140;
-	Sat, 20 Jan 2024 01:08:10 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vkgygbmwc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=NO);
-	Sat, 20 Jan 2024 01:08:10 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40K18Ack027919;
-	Sat, 20 Jan 2024 01:08:10 GMT
-Received: from pp-thinkcentre-m82.us.oracle.com (dhcp-10-132-95-245.usdhcp.oraclecorp.com [10.132.95.245])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vkgygbmpm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=NO);
-	Sat, 20 Jan 2024 01:08:10 +0000
-From: Prakash Sangappa <prakash.sangappa@oracle.com>
-To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: muchun.song@linux.dev, mike.kravetz@oracle.com, akpm@linux-foundation.org
-Subject: [PATCH] Hugetlb pages should not be reserved by shmat() if SHM_NORESERVE
-Date: Fri, 19 Jan 2024 17:17:52 -0800
-Message-Id: <1705713472-3537-1-git-send-email-prakash.sangappa@oracle.com>
-X-Mailer: git-send-email 2.7.4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-19_12,2024-01-19_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- malwarescore=0 adultscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401200007
-X-Proofpoint-GUID: cGRV4LHMiZcnQF8uuuu02ldcl0LYJsPZ
-X-Proofpoint-ORIG-GUID: cGRV4LHMiZcnQF8uuuu02ldcl0LYJsPZ
+	s=arc-20240116; t=1705714192; c=relaxed/simple;
+	bh=LHbVNbEqiEdv1CSExJcpwn/LewgdPyKKUCS/0i81HZw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r4UlKmDyIoBtZqj5lzW0yDhKq4PubjIEN8QWXLB/1q64hGipzLJrxZABsiDPxF9WpMcv3JAVuzKenrqaco3e/34QakHQSP9pzwPja9vbFAQ0NslslC91wcCvfV0Vxb2zqV4veYpcbdqOuCRrrzPLfqBkVm7RP7VFaD4TeFSdnE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=duBD1kdC; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-2107f19e331so825237fac.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 17:29:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705714189; x=1706318989; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7XgpzCQt3hEaot8WdGgVBTF9LHrWRexjtDxlqMh/xJU=;
+        b=duBD1kdCeWgWjEV5qGR90JmzfenHZg0qRMJYdDw1EPyWQcvy7CYShebuJZO8cL6iqG
+         5ieR20tBBhOWjs5XVhcWi1sjsUdffHEwQIEiaCCjFsrGmYHGAS7bwP5zLjNKY8smzo8J
+         f/aLT7MaEiuPzBUuJ4WwJzhcmm2IdX24DlKc/bIV7FmgMNmr26upBIJn/7XfXBTpHuKK
+         iB048IThwRvi1jaztLPxq+k8YlJWkalnB3rZlgx57NqKsR2HWui1w+tL9/qCo5doWfSx
+         05UOgjk9/UweYIoFFjXq/AmXawPEPg5X95vY54UIctTLcq5F16K8Sf4ItGmJNQ0yERTp
+         SuxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705714189; x=1706318989;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7XgpzCQt3hEaot8WdGgVBTF9LHrWRexjtDxlqMh/xJU=;
+        b=ID7rRwGMjT5qJWimj5IS8zN48VM3ftDO+Z+UpzeymIxawL+DNp8KpPdNaxaJdhE3Dl
+         avMv/nM/F6E8bgJqAPCkOyu/TJSgOZIHn2DQAhpeIHJRwrpNuYJbJGkPorJ6qg3twR99
+         PJn3SWgZqsugLoqz6Nn9UnA90mSvCofUXIr8EFsrpzCommGAooiQIgCi33zbAzrj/+jX
+         bN5FpgVNqRrvqgv/PeOCTohIm0IYkRWfE4k/txtD5o8+CJzWrpvSD4IQvFBfV32tX2xj
+         tG3fk7ZZHsdlwhAI5V2b8UJq9qZ4B21FGNDkbxrS5DBTQoXAIrMm+73bcgLOgMfbILSo
+         Qm6A==
+X-Gm-Message-State: AOJu0Yy+7yqGK3P1fK8AuQj2wUkyLLJS/Zptuqpj2Hx7VD9NVXeb6NjT
+	Du18gfH0jcmcIfZ6LeTWosY0s80TriSSwm1ZZ8F4rGConBUsuMl5Z4F1ukFOnhg=
+X-Google-Smtp-Source: AGHT+IHU9udcHqikg63izQDnv1b9lXiOAxuqYd7ib9PcxDQO3FZ7P2CFmm9WAgdTurKsAQQON0aRaA==
+X-Received: by 2002:a05:6870:718b:b0:207:a3a6:ef9c with SMTP id d11-20020a056870718b00b00207a3a6ef9cmr700537oah.40.1705714189046;
+        Fri, 19 Jan 2024 17:29:49 -0800 (PST)
+Received: from localhost ([136.62.192.75])
+        by smtp.gmail.com with ESMTPSA id fu12-20020a0568705d8c00b00210bc7a74e7sm1016603oab.6.2024.01.19.17.29.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 17:29:48 -0800 (PST)
+From: Sam Protsenko <semen.protsenko@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Tomasz Figa <tomasz.figa@gmail.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-clk@vger.kernel.org
+Subject: [PATCH 0/7] arm64: exynos: Enable SPI for Exynos850
+Date: Fri, 19 Jan 2024 19:29:41 -0600
+Message-Id: <20240120012948.8836-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-For shared memory of type SHM_HUGETLB, hugetlb pages are reserved in
-shmget() call. If SHM_NORESERVE flags is specified then the hugetlb
-pages are not reserved. However when the shared memory is attached
-with the shmat() call the hugetlb pages are getting reserved incorrectly
-for SHM_HUGETLB shared memory created with SHM_NORESERVE.
+This series enables SPI for Exynos850 SoC. The summary:
 
-Ensure that the hugetlb pages are no reserved for SHM_HUGETLB shared
-memory in the shmat() call.
+  1. Enable PDMA, it's needed for SPI (dts, clk)
+  2. Propagate SPI src clock rate change up to DIV clocks, to make it
+     possible to change SPI frequency (clk driver)
+  3. Add Exynos850 support in SPI driver
+  4. Add SPI nodes to Exynos850 SoC dtsi
 
-Signed-off-by: Prakash Sangappa <prakash.sangappa@oracle.com>
----
- fs/hugetlbfs/inode.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+All SPI instances were tested using `spidev_test' tool in all 3 possible
+modes:
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index f757d4f..93cafd2 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -141,7 +141,13 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	file_accessed(file);
- 
- 	ret = -ENOMEM;
--	if (!hugetlb_reserve_pages(inode,
-+
-+	/*
-+	 * for SHM_HUGETLB, the pages are reserved in the shmget() call so skip
-+	 * reserving here. Note only for SHM hugetlbfs file, the inode
-+	 * flag S_PRIVATE is set.
-+	 */
-+	if (!(inode->i_flags & S_PRIVATE) && !hugetlb_reserve_pages(inode,
- 				vma->vm_pgoff >> huge_page_order(h),
- 				len >> huge_page_shift(h), vma,
- 				vma->vm_flags))
+  - Polling mode: xfer_size <= 32
+  - IRQ mode: 64 >= xfer_size >= 32
+  - DMA mode: xfer_size > 64
+
+with 200 kHz ... 49.9 MHz SPI frequencies. The next 3 approaches were
+used:
+
+  1. Software loopback ('-l' option for `spidev_test' tool)
+  2. Hardware loopback (by connecting MISO line to MOSI)
+  3. By communicating with ATMega found on Sensors Mezzanine board [1],
+     programmed to act as an SPI slave device
+
+and all the transactions were additionally checked on my Logic Analyzer
+to make sure the SCK frequencies were actually correct.
+
+[1] https://www.96boards.org/product/sensors-mezzanine/
+
+Sam Protsenko (7):
+  dt-bindings: clock: exynos850: Add PDMA clocks
+  dt-bindings: spi: samsung: Add Exynos850 SPI
+  clk: samsung: exynos850: Add PDMA clocks
+  clk: samsung: exynos850: Propagate SPI IPCLK rate change
+  spi: s3c64xx: Add Exynos850 support
+  arm64: dts: exynos: Add PDMA node for Exynos850
+  arm64: dts: exynos: Add SPI nodes for Exynos850
+
+ .../devicetree/bindings/spi/samsung,spi.yaml  |  1 +
+ arch/arm64/boot/dts/exynos/exynos850.dtsi     | 64 +++++++++++++++++++
+ drivers/clk/samsung/clk-exynos850.c           | 42 +++++++-----
+ drivers/spi/spi-s3c64xx.c                     | 14 ++++
+ include/dt-bindings/clock/exynos850.h         |  2 +
+ 5 files changed, 106 insertions(+), 17 deletions(-)
+
 -- 
-2.7.4
+2.39.2
 
 
