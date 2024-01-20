@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-31695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10D0C833299
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 04:28:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D455883329A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 04:30:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EE601F22964
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:28:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0FE01C2102D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:30:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C19310FC;
-	Sat, 20 Jan 2024 03:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A4010FD;
+	Sat, 20 Jan 2024 03:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RqL7KcxA"
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OOqEMhuu"
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04C8ED6
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 03:28:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B7710E1
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 03:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705721284; cv=none; b=PKv4PK/lGliw0s+RMcS7n6xKkevOACGM8rWRitLzE9YLI6De4oLpFCfHPU5RgaxWKJMH3SmyLZiu41+ZsZ3Hx8O6xkKER6nc0XcwgyCNJoWg1d6E6tU0i20iHQF4GPirJTtDBCg2AFISqRSU1dUeuMhD1VaMTp3HoTKOGgrGHwg=
+	t=1705721394; cv=none; b=kL6iSW4nkvpgqhy0WT6RDdoYdiYwJgfhuwdz9X8lLlKl864GOlxUV+TEACy5J101RIeqMLF7mOT9ksdmnPNCHIKcpHCmNRKKYIyTb6lV4L9S5EN78S1pSxowKt9GfOPzpFbA/KMDj57vPOLbYxgXVbLpWIeg0N3x5IRBl5NZZ+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705721284; c=relaxed/simple;
-	bh=qk3zH/sond1ZY5Cpon/m/ew2ReOaf9OG2Mn+5iCDlxE=;
+	s=arc-20240116; t=1705721394; c=relaxed/simple;
+	bh=xbnQZOx28WmoGt2XT3jLWJumutdYg/I0u6R/G1QTffg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZXET40TfmJPffnLbqM9bgk88uRQ1IRhc0PiN+BoY0tcezr8HRNYdh0AUYzSLjsfG5my3jCs7wTcmEOx5tMYaiX/Ra68oI0QyyLvEqLGY9qhKeM65MwbHcqnUOQmUg6A4JAR8NBJax8atZGqvvG67oK7E/X95FwiavIYDBPxqPs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RqL7KcxA; arc=none smtp.client-ip=209.85.160.49
+	 To:Cc:Content-Type; b=AHgieCOX/JyVSGMncmOL8PToNB9QE5SldRUyZT7UgAiGsnnTxJQgwkWeNflUcrSm6ElNDj9lvd6bboLAfOgxI1lTCMjZu7QNX74Vn9T2aHUefzdqMIpuRp0+oG5+O7sC0l8GbCdCLJcpiW0/w16Ea7ABIiupzDXc0lyV1hsrwZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OOqEMhuu; arc=none smtp.client-ip=209.85.167.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-21424f34003so160249fac.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 19:28:01 -0800 (PST)
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3bb9b28acb4so1276784b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 19:29:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705721281; x=1706326081; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1705721392; x=1706326192; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SFEd7ujpZp03jO09gM8Y/Avww823mrMIDvArhboSb7U=;
-        b=RqL7KcxAK8w1wQ42yjalbPgPBP8aY1Ah9NgOlJ1E5AH3RDHYc9O/BaoLSUg0MqE2MU
-         uF9tfd3tl7PdtrPRZc+PpEDfvo4+usuHkmWbGDWB2oXwDAa0pEcKLq3UQyk5kTkfDYqu
-         /1F5FnZ61iGUUSyS5nSO1wand+RJRVvjOIAVq81uJxGSPaKQpc3GPACHBo4v1+wIS84K
-         EHsFU4neLuUhHRewZyN0eWcSe5IxBcDymEnL0dx1Oc95qnrrofPHHSyFe/4ydSwnGT+l
-         lGm6CwQJJziCxY0+mD3I0kaCb7ZpX0W6WuLxpbJetOq35VNvaICR/BGDMocjKXXAabki
-         iTww==
+        bh=ZBi0MnIhTeHFZnl9T+tnlQ3cfbcTfmn0O/Ru1tIJH1I=;
+        b=OOqEMhuu+YDfXrXgoeC7x2JDL7ISXr25apu3yyIAp/I90e355L8Frb5HuZ2IubeaTx
+         DnpbliGbmbRQimu9vNnGppYb68wbUysi3V5/ro04BJ8/0efW+USucnrcux36Ssdjjko/
+         CIyx8LeBzVgLisssvQU+ssKznY8+Uw/w+tUuaiqX9jbe31PFHitoxStlyQBKGQ+i/I0D
+         6eMyuWlnn+mbg0m0DxPn71odTXIQygje2TiO7Yr65PsSWTGMOFYgftEuSLLVAcJDJ0iB
+         CGC4DmJwm390gMlmpc0kLVkWveXZhJsR1vGdnwP4F/ck+hiAKfTYO1z/cJhYXdDriFr3
+         bA4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705721281; x=1706326081;
+        d=1e100.net; s=20230601; t=1705721392; x=1706326192;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SFEd7ujpZp03jO09gM8Y/Avww823mrMIDvArhboSb7U=;
-        b=szq4AGZGvDFCMO1SNkn+9on7QryZSxs3pCMiAbWWabmgCywZbxfghJQ0/KV1shUMI3
-         gjLLaAFsUrP1hleb6XbOusq86du0gwTnpi2UhGeLc9qDKFbnRzY+4jZFSr0cMF/iw3r3
-         4ms2uow7FDNMuwcK6Phe4BlS/PvdgIXT6S0Gpv14P3qwCfM0bfuee7JJYuJSeTNL7TXY
-         UhoX6v9INH+UMMxoXq+8V+l5J2KBa8UB0qmrbjhkv0E+FBnzrXLecgSMgU/sKa0BU+hp
-         hg0THQNAEja1l60K+RUKysCl1gxwLeBUyq8EQWuWNuJJPCo3gb2dHRqiFLl90VPCdB4k
-         62ig==
-X-Gm-Message-State: AOJu0YyaONjChDrSzVz22l5JMnI908Tr97lKlyTkvpdjUSty98DBKad6
-	Cy2jo3yGLaUwZOjdtR/kaSl0I8CEntaKzDKTqDigTuE9z3fWUPzyNXBs5pxFRmyUatQa+l8i6oh
-	lu67Ty1duAKz8sjbVx3ctYAclkaIt9h7thbFy
-X-Google-Smtp-Source: AGHT+IEflTo/ZT8wOcgMq8IFETMUAehE3B9et+oYhGqZSru7oCNsH1wNBuCkdZZTBl71y2e16ECc47pzS8k59WcNJZ8=
-X-Received: by 2002:a05:6871:148:b0:210:817c:4af4 with SMTP id
- z8-20020a056871014800b00210817c4af4mr828694oab.72.1705721280677; Fri, 19 Jan
- 2024 19:28:00 -0800 (PST)
+        bh=ZBi0MnIhTeHFZnl9T+tnlQ3cfbcTfmn0O/Ru1tIJH1I=;
+        b=jk+D4/uFB05InIqacnacQAUffE3AK0J7jw3/lk2N4YVjqzMmH5MD9SZ/ZRJQgZNVKI
+         diLXgfqpJ4wT72ANc25r3+P/vT3DqQVipUnMUJkTavroxGS3ct0BUwdoLXV3qMYRd8t8
+         YP0qaGUe0dL8jHQJc1VulyD3Y7jz+YftI9oNJxtFkNchXB4tPqQ4wIiGbZFqWgw8yGkO
+         7CRri5ZA+tXXsU/lYlxTRJCs203lGckNPeEYOrwYCTwbgsUf55GBJYIJLXZEfOSG14/J
+         i/aUUtPBn5QTecdaEkPm4g/GtI/IGzLg81v43BGi98+Nh5C5JKicRWbkYf2YcT815WiD
+         3ofQ==
+X-Gm-Message-State: AOJu0YzNN3asaX3UbHa4sEjZIOsJ3deqf6MGxkhxaSRYxlMR+4rD9NX5
+	zYObytWKd9YoYioGSzxOtgNYtnXJsqv9ag/KQ5IA+8ihM/yVlWizLBQPFBxKHxUDJJVleE+qEDl
+	3dLDHUsynh7/B85efY0E7GUj3V/hNb/ozTrCb
+X-Google-Smtp-Source: AGHT+IGma6ybEcKp8hcSGGUi79zBmMI1KIY/puHKMVy1MGXuzTOSbFhURueu5c3+yQhLNk391BMjhapAC6D4v5PZvUo=
+X-Received: by 2002:a54:4198:0:b0:3bd:5b4d:3dfd with SMTP id
+ 24-20020a544198000000b003bd5b4d3dfdmr625510oiy.76.1705721391897; Fri, 19 Jan
+ 2024 19:29:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117192534.1327608-1-dylanbhatch@google.com>
- <20240119141501.GA23739@redhat.com> <20240119141529.GB23739@redhat.com>
-In-Reply-To: <20240119141529.GB23739@redhat.com>
+References: <20240117192534.1327608-1-dylanbhatch@google.com> <20240119141501.GA23739@redhat.com>
+In-Reply-To: <20240119141501.GA23739@redhat.com>
 From: Dylan Hatch <dylanbhatch@google.com>
-Date: Fri, 19 Jan 2024 19:27:49 -0800
-Message-ID: <CADBMgpxC+BP-wfrM-wP1nbZOcRb0LbsmMDQ3LQ8hUKYsF3QECw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] getrusage: use sig->stats_lock
+Date: Fri, 19 Jan 2024 19:29:40 -0800
+Message-ID: <CADBMgpwixDpGxWxFhMup9YD7DoCc3UPz8jYwFvUPQvhJGdeEUQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] getrusage: move thread_group_cputime_adjusted()
+ outside of lock_task_sighand()
 To: Oleg Nesterov <oleg@redhat.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, 
 	Frederic Weisbecker <frederic@kernel.org>, "Joel Fernandes (Google)" <joel@joelfernandes.org>, 
@@ -94,88 +94,102 @@ Content-Transfer-Encoding: quoted-printable
 On Fri, Jan 19, 2024 at 6:16=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wro=
 te:
 >
-> Rather than lock_task_sighand(), sig->stats_lock was specifically designe=
-d
-> for this type of use. This way getrusage runs lockless in the likely case=
-.
+> thread_group_cputime() does its own locking, we can safely shift
+> thread_group_cputime_adjusted() which does another for_each_thread loop
+> outside of ->siglock protected section.
 >
-> TODO:
->         - Change do_task_stat() to use sig->stats_lock too, then we can
->           remove spin_lock_irq(siglock) in wait_task_zombie().
->
->         - Turn sig->stats_lock into seqcount_rwlock_t, this way the
->           readers in the slow mode won't exclude each other. See
->           https://lore.kernel.org/all/20230913154907.GA26210@redhat.com/
->
->         - stats_lock has to disable irqs because ->siglock can be taken
->           in irq context, it would be very nice to change __exit_signal()
->           to avoid the siglock->stats_lock dependency.
+> This is also preparation for the next patch which changes getrusage() to
+> use stats_lock instead of siglock. Currently the deadlock is not possible=
+,
+> if getrusage() enters the slow path and takes stats_lock, read_seqretry()
+> in thread_group_cputime() must always return 0, so thread_group_cputime()
+> will never try to take the same lock. Yet this looks more safe and better
+> performance-wise.
 >
 > Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 > ---
->  kernel/sys.c | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
+>  kernel/sys.c | 34 +++++++++++++++++++---------------
+>  1 file changed, 19 insertions(+), 15 deletions(-)
 >
 > diff --git a/kernel/sys.c b/kernel/sys.c
-> index 70ad06ad852e..f8e543f1e38a 100644
+> index e219fcfa112d..70ad06ad852e 100644
 > --- a/kernel/sys.c
 > +++ b/kernel/sys.c
-> @@ -1788,7 +1788,9 @@ void getrusage(struct task_struct *p, int who, stru=
-ct rusage *r)
->         unsigned long maxrss;
->         struct mm_struct *mm;
->         struct signal_struct *sig =3D p->signal;
-> +       unsigned int seq =3D 0;
->
-> +retry:
->         memset(r, 0, sizeof(*r));
->         utime =3D stime =3D 0;
->         maxrss =3D 0;
-> @@ -1800,8 +1802,7 @@ void getrusage(struct task_struct *p, int who, stru=
-ct rusage *r)
->                 goto out_thread;
->         }
->
-> -       if (!lock_task_sighand(p, &flags))
-> -               return;
-> +       flags =3D read_seqbegin_or_lock_irqsave(&sig->stats_lock, &seq);
->
->         switch (who) {
->         case RUSAGE_BOTH:
-> @@ -1829,14 +1830,23 @@ void getrusage(struct task_struct *p, int who, st=
+> @@ -1785,17 +1785,19 @@ void getrusage(struct task_struct *p, int who, st=
 ruct rusage *r)
->                 r->ru_oublock +=3D sig->oublock;
->                 if (maxrss < sig->maxrss)
->                         maxrss =3D sig->maxrss;
-> +
-> +               rcu_read_lock();
->                 __for_each_thread(sig, t)
->                         accumulate_thread_rusage(t, r);
-> +               rcu_read_unlock();
-> +
->                 break;
+>         struct task_struct *t;
+>         unsigned long flags;
+>         u64 tgutime, tgstime, utime, stime;
+> -       unsigned long maxrss =3D 0;
+> +       unsigned long maxrss;
+> +       struct mm_struct *mm;
+>         struct signal_struct *sig =3D p->signal;
 >
->         default:
->                 BUG();
+> -       memset((char *)r, 0, sizeof (*r));
+> +       memset(r, 0, sizeof(*r));
+>         utime =3D stime =3D 0;
+> +       maxrss =3D 0;
+>
+>         if (who =3D=3D RUSAGE_THREAD) {
+>                 task_cputime_adjusted(current, &utime, &stime);
+>                 accumulate_thread_rusage(p, r);
+>                 maxrss =3D sig->maxrss;
+> -               goto out;
+> +               goto out_thread;
 >         }
-> -       unlock_task_sighand(p, &flags);
-> +
-> +       if (need_seqretry(&sig->stats_lock, seq)) {
-> +               seq =3D 1;
-> +               goto retry;
-> +       }
-> +       done_seqretry_irqrestore(&sig->stats_lock, seq, flags);
 >
->         if (who =3D=3D RUSAGE_CHILDREN)
->                 goto out_children;
+>         if (!lock_task_sighand(p, &flags))
+> @@ -1819,9 +1821,6 @@ void getrusage(struct task_struct *p, int who, stru=
+ct rusage *r)
+>                 fallthrough;
+>
+>         case RUSAGE_SELF:
+> -               thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+> -               utime +=3D tgutime;
+> -               stime +=3D tgstime;
+>                 r->ru_nvcsw +=3D sig->nvcsw;
+>                 r->ru_nivcsw +=3D sig->nivcsw;
+>                 r->ru_minflt +=3D sig->min_flt;
+> @@ -1839,19 +1838,24 @@ void getrusage(struct task_struct *p, int who, st=
+ruct rusage *r)
+>         }
+>         unlock_task_sighand(p, &flags);
+>
+> -out:
+> -       r->ru_utime =3D ns_to_kernel_old_timeval(utime);
+> -       r->ru_stime =3D ns_to_kernel_old_timeval(stime);
+> +       if (who =3D=3D RUSAGE_CHILDREN)
+> +               goto out_children;
+>
+> -       if (who !=3D RUSAGE_CHILDREN) {
+> -               struct mm_struct *mm =3D get_task_mm(p);
+> +       thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+> +       utime +=3D tgutime;
+> +       stime +=3D tgstime;
+>
+> -               if (mm) {
+> -                       setmax_mm_hiwater_rss(&maxrss, mm);
+> -                       mmput(mm);
+> -               }
+> +out_thread:
+> +       mm =3D get_task_mm(p);
+> +       if (mm) {
+> +               setmax_mm_hiwater_rss(&maxrss, mm);
+> +               mmput(mm);
+>         }
+> +
+> +out_children:
+>         r->ru_maxrss =3D maxrss * (PAGE_SIZE / 1024); /* convert pages to=
+ KBs */
+> +       r->ru_utime =3D ns_to_kernel_old_timeval(utime);
+> +       r->ru_stime =3D ns_to_kernel_old_timeval(stime);
+>  }
+>
+>  SYSCALL_DEFINE2(getrusage, int, who, struct rusage __user *, ru)
 > --
 > 2.25.1.362.g51ebf55
 >
 >
-
-I applied these to a 5.10 kernel, and my repro (calling getrusage(RUSAGE_SE=
-LF)
-from 200K threads) is no longer triggering a hard lockup.
 
 Tested-by: Dylan Hatch <dylanbhatch@google.com>
 
