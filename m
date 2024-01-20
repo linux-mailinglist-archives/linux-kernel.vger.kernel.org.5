@@ -1,129 +1,124 @@
-Return-Path: <linux-kernel+bounces-31792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC237833405
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:14:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A9B8833411
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A54782836C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:14:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67268B21DF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:22:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD23EEDC;
-	Sat, 20 Jan 2024 12:14:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E57E558;
+	Sat, 20 Jan 2024 12:22:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fGIP8mTK"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="XT6kwkA0"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0152DF4E;
-	Sat, 20 Jan 2024 12:14:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB913DF46;
+	Sat, 20 Jan 2024 12:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705752885; cv=none; b=hVoRjqab2UVdCBw8/SBtnxLrEZl4sEagdN4CzywcZJyrZAaV1Svy2Xraz2eFMM7GHp22dTyItvNh+9h5/tave1xZiRc21ntV94lSyTyb6W9tNsYex0WXCPgGzFYPGsFap+uVeGoVQiwjjp9iGoU4R3hj/6aXDsAeSJR9OL+0Suc=
+	t=1705753357; cv=none; b=mqNVp4IMUpzWTK4bJnt0Fjz73tluf11JD0h7haHko92lPqwk0YRL0MwX4WrO+gqv/u6vmCifJoVse7+UXtnZyqIoYRRHyUSMr6R9unkIptC8awEfyBUny3PxOtuYClQ/cxvjYQfDrOI1BLfL+ktyuAyZXIrlU27LLZrv1eZL+X0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705752885; c=relaxed/simple;
-	bh=Ho3DF6crRTzmtv55CJ2tz0JrUawUaStPuH3do49eLb4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lx5IZoLfLbhR22rV3SIk9fJPyVEBAXXqdhGAer8vtlcMGsjXgPW/j40LtKgKIDiI/vVQLtLtmareTteCbB/59XnPqJV+WPDhUrFxsN5AcuxtBKtwgyHktkqJAijd6WzdLoj3INZdu0tBkKNKGq4NH/3LIf66XPEGufHwi5Vn9WY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fGIP8mTK; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705752883; x=1737288883;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ho3DF6crRTzmtv55CJ2tz0JrUawUaStPuH3do49eLb4=;
-  b=fGIP8mTK2IaF6+e/Ea4JJMFhP18pUT/W8KRMwmJm0kTWah3qYTn5seoV
-   MR2HTLLagiZvwjxTnU0LHGgQFZ34kVDQ4oZAbQ4NTg+8pvbl1S3ZUmxhI
-   VEnH6M0gnKW4UC10Es1t52t4bxlSIeLbubmTjbVwRorV9J4POqG4s3Zxg
-   pimN8x+1J6dPy+DWxGVnBD9cgfUPvPMtAYb+tx2RIaLrdO4FCiyETxcEK
-   g0lRrwkNb/9achn1kkgvOzPJdYAJHAmHuGlXzC120opOx1lVlMEwEUXD5
-   DFzP33RRJBszayy7PQVHt0p74WYv3wHOTQsiYnR2GGtPvLg7r19HXy4Nx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="404703597"
-X-IronPort-AV: E=Sophos;i="6.05,207,1701158400"; 
-   d="scan'208";a="404703597"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2024 04:14:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,207,1701158400"; 
-   d="scan'208";a="893937"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 20 Jan 2024 04:14:38 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rRAFA-00054o-0v;
-	Sat, 20 Jan 2024 12:14:36 +0000
-Date: Sat, 20 Jan 2024 20:13:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Subramanya Swamy <subramanya.swamy.linux@gmail.com>, corbet@lwn.net,
-	axboe@kernel.dk, asml.silence@gmail.com, ribalda@chromium.org,
-	rostedt@goodmis.org, bhe@redhat.com, akpm@linux-foundation.org,
-	matteorizzo@google.com, ardb@kernel.org, alexghiti@rivosinc.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	io-uring@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH] iouring:added boundary value check for io_uring_group
- systl
-Message-ID: <202401202013.dEvDNaAX-lkp@intel.com>
-References: <20240115124925.1735-1-subramanya.swamy.linux@gmail.com>
+	s=arc-20240116; t=1705753357; c=relaxed/simple;
+	bh=9YDEUzKhTgngX2Z0iAq+z3tHuTcCnH42aT3kTNk1/bc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=fO1hI04yXQM1iaEnxeaiDtf7vp7kFqOWTdjc0xy2QSIMDsuHJTpr3q3o2Y0Mxh6/PPB8VJ2N8DnP5tr0c9M1Lb77EIVBgmzMyxRx12D2seIio1Q9x0vs36h7hQvfrL+NLDsrtXeY0kMGeJjxyuS4v7DcIh0oSDLBLFpl1CuCwO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=XT6kwkA0; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1705753339; x=1706358139; i=erick.archer@gmx.com;
+	bh=9YDEUzKhTgngX2Z0iAq+z3tHuTcCnH42aT3kTNk1/bc=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=XT6kwkA0PE4Tpu0v0Vw04kApyR5BDjRJolmWh6T7rr0mY14wECU9CP3YnL0/jNy/
+	 oOrpChMGpjlTsMFhxcilGJjhQUlS+Pm0TGj0kpWQh2QkVRvaKvMZLGh3qWJwW811l
+	 Em2hNrJhjP2cmwhA9YGGFqyLnQlAmEFIYyYEYav/gBBf7IywS2vJWp+ipeQ9fjkEh
+	 F4KKmaXw5s41KXkgwDBzMqKhBbhXftvtHXbc4L+PLY1Uoq0sWmSZyq9i+EGWkIV+u
+	 O1S9vZjbx2CKgzldYG7GwyRe9xrCEQJh7pDTLftQOpiPdIa5k10DmKJtNbSNCF+Dz
+	 57g7sHbY8VVWJY0VFA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MA7GM-1rFZVB1eAc-00BdHt; Sat, 20 Jan 2024 13:22:19 +0100
+From: Erick Archer <erick.archer@gmx.com>
+To: Alex Shi <alexs@kernel.org>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@gmx.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] docs/zh_CN/power: Use kcalloc() instead of kzalloc()
+Date: Sat, 20 Jan 2024 13:22:04 +0100
+Message-Id: <20240120122204.4287-1-erick.archer@gmx.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115124925.1735-1-subramanya.swamy.linux@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:uvAMfo3WjxMA7hh2WCPD17d33xXJqS6azul4AHtLOu6zMVtuVZA
+ 7x60pap4O16Xd0QCb1NduUWtdD39wAv3pCFKatdFoSqj/SFR6S3vRVjrDGWYeloeWtqApR3
+ PwPJ/Q1oqc0pTT4mAhoWP1Cc/sHEwpyFnKbU/LqNz864WLUnzTnQmB7MUkcZ+2kxuFISbPt
+ anlLMtB8FGOoSnwxe5b8A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:h4GQL3qBzEs=;19EFmJ6zyvHSwjYb2PMIt9/mk0J
+ BUUJ+byVWqUwvJAwrNp2wncC7pkWgOt+yXkiz8N4Ul9IhulpvN3eP8BEAHI86w3FuXo9f18d6
+ wY6gcjRUTISNPgRYT2+22QRXkQZhMGtfEy57QkilIdikwnr8xVd9ZPGRZAy4UQ5XrhwaarOFe
+ QZjzt5Doh7Zly1UZRCre/bDcAEAsalm5mmKT7uogzSwtxuUhzzdnlZ9Egc50RxeLqEQt/81Jc
+ YohJYA0guKsWg1NJEZHv+EOneGb/s3oLjAFPVoPW77+7AG53OE17uWITTGQ6g+lz1FTl4r5Cn
+ m/T/jGkjN+R2cV44LsmhsHDN1Tj++t6sZxvzFMSCS0kdlzG08IFpCS94V0y5MP/+1cEUm+Gc9
+ UUDuc41siqt2NPHr8SB0rtGJtFdRZAR3/+1TcXKLQTNSsf5PKwmVm9Wr2GeOO8EZkGxf1qK9I
+ xvD3FSJ9+ewZhxec7UjsuZbaDD4P5Aj/rVFbJYlPh/jALLM+ZpVIh/6TjeoomR+0wEz7hRJVL
+ R6PhNvIYi+aDIyb335FBIA9rgi1Tq8d28BZRYNAVCmXRlX6E+iRGDocy4kJOxzOAwsL8wUGmd
+ rQc99+DDOFnTUN7A8IoQ6Cpx9i/lpReH6/PikIzBcI8cz0qC1Z5Q9o8MKxkHzLIKZHNvdHUrt
+ Ea1ZrBc6qrgFy0Hd4v45OUWMiAyZlECQOrNq/Uo9JmuN2i6ip98/kS/kIgHmaDoJf2ZcbUGge
+ ZxXO7eIQslMkXwA0fydgEMJ1Hb1XL/mjPc1c5jxjyAWSrsldI5819eZCfUQaHdncLX3HiV4uv
+ FVaZHykPmpGrVDErW1OrGX5/Metty6WrdKZJ0+N/COLekb6DhFDif8MMFMoHy/3++jE20xbQe
+ GhPPainmvySlwSxFnU5LwTUzC7IXcsa+fmjP25hBo/VZvQv7Wc5lOkQ96dHW6Vjp6VKAQVn3F
+ jj/a5EYl2w7XeKqCkzAZX8k5+m8=
 
-Hi Subramanya,
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-kernel test robot noticed the following build warnings:
+So, in the example code use the purpose specific kcalloc() function
+instead of the argument size * count in the kzalloc() function.
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master v6.7 next-20240119]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments [1]
+Link: https://github.com/KSPP/linux/issues/162
+Signed-off-by: Erick Archer <erick.archer@gmx.com>
+=2D--
+ Documentation/translations/zh_CN/power/opp.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Subramanya-Swamy/iouring-added-boundary-value-check-for-io_uring_group-systl/20240115-205112
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20240115124925.1735-1-subramanya.swamy.linux%40gmail.com
-patch subject: [PATCH] iouring:added boundary value check for io_uring_group systl
-config: i386-buildonly-randconfig-002-20240116 (https://download.01.org/0day-ci/archive/20240120/202401202013.dEvDNaAX-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240120/202401202013.dEvDNaAX-lkp@intel.com/reproduce)
+diff --git a/Documentation/translations/zh_CN/power/opp.rst b/Documentatio=
+n/translations/zh_CN/power/opp.rst
+index 8d6e3f6f6202..7470fa2d4c43 100644
+=2D-- a/Documentation/translations/zh_CN/power/opp.rst
++++ b/Documentation/translations/zh_CN/power/opp.rst
+@@ -274,7 +274,7 @@ dev_pm_opp_get_opp_count
+ 	 {
+ 		/* =E5=81=9A=E4=B8=80=E4=BA=9B=E4=BA=8B=E6=83=85 */
+ 		num_available =3D dev_pm_opp_get_opp_count(dev);
+-		speeds =3D kzalloc(sizeof(u32) * num_available, GFP_KERNEL);
++		speeds =3D kcalloc(num_available, sizeof(u32), GFP_KERNEL);
+ 		/* =E6=8C=89=E5=8D=87=E5=BA=8F=E5=A1=AB=E5=85=85=E8=A1=A8 */
+ 		freq =3D 0;
+ 		while (!IS_ERR(opp =3D dev_pm_opp_find_freq_ceil(dev, &freq))) {
+=2D-
+2.25.1
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401202013.dEvDNaAX-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> io_uring/io_uring.c:157:21: warning: unused variable 'min_gid' [-Wunused-variable]
-     157 | static unsigned int min_gid;
-         |                     ^~~~~~~
->> io_uring/io_uring.c:158:21: warning: unused variable 'max_gid' [-Wunused-variable]
-     158 | static unsigned int max_gid  = 4294967294;  /*4294967294 is the max guid*/
-         |                     ^~~~~~~
-   2 warnings generated.
-
-
-vim +/min_gid +157 io_uring/io_uring.c
-
-   154	
-   155	static int __read_mostly sysctl_io_uring_disabled;
-   156	static unsigned int __read_mostly sysctl_io_uring_group;
- > 157	static unsigned int min_gid;
- > 158	static unsigned int max_gid  = 4294967294;  /*4294967294 is the max guid*/
-   159	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
