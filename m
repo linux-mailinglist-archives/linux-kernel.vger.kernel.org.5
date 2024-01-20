@@ -1,92 +1,120 @@
-Return-Path: <linux-kernel+bounces-31731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D4B5833315
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 08:21:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C43C83330B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 08:02:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BA6D1F2251D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:21:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81DA41F233A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1DF2101;
-	Sat, 20 Jan 2024 07:21:15 +0000 (UTC)
-Received: from herc.mirbsd.org (bonn.mirbsd.org [217.91.129.195])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DBBE23D1;
+	Sat, 20 Jan 2024 07:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="YiMuukR6"
+Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CCAA1FD8;
-	Sat, 20 Jan 2024 07:21:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.91.129.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF931FD6
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 07:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705735274; cv=none; b=PhGZ8RrnflpQEiN4pCuqegCm6uftAGaWHkuTQKvmmPq/Ju6gDDVU3cp+onUA5fScAZuLJ2gvqY+9LxriMJpSxMdMK3TydJmYv/2xG820CEGPf9rUZjPRzk2Yxw8v1gYamM8rD5bFT3itJQfLe+tj7DZHC8E6csF/Inw7ou+VTfQ=
+	t=1705734147; cv=none; b=kozBreftmK9l+03TBlyJLgdHOS/dyfi4jzERzAThN9IBUzCOLmzaNELhoYbbiTZ+Hklks8OM72yenb3YoD3olN5nCdBO+vuSD5mC0AC6CS47tfoBDV7x6RSxP8tpFrvCGwGaQ5z/SkKetF+yydOcgRN+++DNJI+7ZJWkef2pzvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705735274; c=relaxed/simple;
-	bh=AUtMTHlxtutjYSVB+7qK1W4n0GnyCXxkh/HEIBxUCKg=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=P7Jq3N24luuQfkryNTVnmgao6/o7ZH431IzXyk5Ctdks1bRJ2gUJIr0fuVpho0eQrWGI7SNN+BVS8kXJzJCeXrxc6jolSk5Fx+SouVzwOA+7J2SRxLXqnru09M3UF0RQVeA2tenradpodFRVENqM4/t87cIhFc9n7LlCNuRDQ8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; arc=none smtp.client-ip=217.91.129.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
-Received: from herc.mirbsd.org (tg@herc.mirbsd.org [192.168.0.82])
-	by herc.mirbsd.org (8.14.9/8.14.5) with ESMTP id 40K6wuil000662
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-	Sat, 20 Jan 2024 06:59:05 GMT
-Date: Sat, 20 Jan 2024 06:58:56 +0000 (UTC)
-From: Thorsten Glaser <tg@debian.org>
-X-X-Sender: tg@herc.mirbsd.org
-To: Peter Zijlstra <peterz@infradead.org>
-cc: x86@kernel.org, rostedt@goodmis.org, hpa@zytor.com,
-        torvalds@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-toolchains@vger.kernel.org, jpoimboe@redhat.com,
-        alexei.starovoitov@gmail.com, mhiramat@kernel.org
-Subject: Re: [PATCH 1/2] x86: Remove dynamic NOP selection
-In-Reply-To: <20210312115749.065275711@infradead.org>
-Message-ID: <Pine.BSM.4.64L.2401200654480.19429@herc.mirbsd.org>
-References: <20210312113253.305040674@infradead.org> <20210312115749.065275711@infradead.org>
-Content-Language: de-Zsym-DE-1901-u-em-text-rg-denw-tz-utc, en-Zsym-GB-u-cu-eur-em-text-fw-mon-hc-h23-ms-metric-mu-celsius-rg-denw-tz-utc-va-posix
+	s=arc-20240116; t=1705734147; c=relaxed/simple;
+	bh=+raE6lOGseWsvkEpBBecN/MtD9iAHPDNgahekW3q5GU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TtXx2OxAAawQjmVwPi6L8axoroMdJkangVuDDQ2txlrZCUFI9/bXZTVFF4PE2c4XaiGAoQZz35bzRgyYEJYk4jMOlQfs0fCBW9Fs5ReeQVxHrGC4UEnRgZp5BVYUFabmUYMLq8FZRpgmvN33Z6ZU8Dy4pSwqAFn4EwqGXHShPC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=YiMuukR6; arc=none smtp.client-ip=80.12.242.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id R5N0rXUqwgeksR5N0rlBX4; Sat, 20 Jan 2024 08:02:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1705734144;
+	bh=18XLp0+EYYrAsuDVOy2pHg/nOe1su8/7QeJJlWWEvhU=;
+	h=From:To:Cc:Subject:Date;
+	b=YiMuukR6dGihg1Gp7l16Aam7/wZ7d2LC+OC01I779DK7RYfMMrugmalINYjN/lSWH
+	 hNYAqPISCeG8kZRyNAJW46GlAf0LOHCXOmvuITWTFRyC4qwHl+EI1PCyqYDWhDB0RE
+	 WMX99n5JDI8qDZgYxYPWIzP9SpphFKt3Dlnf6afAmm9i1ltQoWjgaE+SjhjB8cQVnu
+	 3h/rlrqEXkffCK3f3RWo4t34Ytk/qh07RQeDh6BOPaA43AYWKtlYvCFSkhxTcYCvEP
+	 QnBqFncfz+7iJ/RJ4NlLj9tEDNCyNdOYHE1ejbCOEOthmSwSzUahUVZc1axPngRjbh
+	 2+8MFBNdLsdWQ==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 20 Jan 2024 08:02:24 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next] xdp: Remove usage of the deprecated ida_simple_xx() API
+Date: Sat, 20 Jan 2024 08:02:20 +0100
+Message-ID: <8e889d18a6c881b09db4650d4b30a62d76f4fe77.1705734073.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8bit
 
-Peter Zijlstra dixit:
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
->-/* generic versions from gas
-[=E2=80=A6]
->-   3: leal 0x00(%esi),%esi
->-   4: leal 0x00(,%esi,1),%esi
->-   6: leal 0x00000000(%esi),%esi
->-   7: leal 0x00000000(,%esi,1),%esi
+Note that the upper limit of ida_simple_get() is exclusive, but the one of
+ida_alloc_range() is inclusive. So a -1 has been added when needed.
 
-vs.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ net/core/xdp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->+ * Generic 32bit nops from GAS:
-[=E2=80=A6]
->+ * 3: leal 0x0(%esi),%esi
->+ * 4: leal 0x0(%esi,%eiz,1),%esi
->+ * 5: leal %ds:0x0(%esi,%eiz,1),%esi
->+ * 6: leal 0x0(%esi),%esi
->+ * 7: leal 0x0(%esi,%eiz,1),%esi
->+ * 8: leal %ds:0x0(%esi,%eiz,1),%esi
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 4869c1c2d8f3..27b585f3fa81 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -75,7 +75,7 @@ static void __xdp_mem_allocator_rcu_free(struct rcu_head *rcu)
+ 	xa = container_of(rcu, struct xdp_mem_allocator, rcu);
+ 
+ 	/* Allow this ID to be reused */
+-	ida_simple_remove(&mem_id_pool, xa->mem.id);
++	ida_free(&mem_id_pool, xa->mem.id);
+ 
+ 	kfree(xa);
+ }
+@@ -242,7 +242,7 @@ static int __mem_id_cyclic_get(gfp_t gfp)
+ 	int id;
+ 
+ again:
+-	id = ida_simple_get(&mem_id_pool, mem_id_next, MEM_ID_MAX, gfp);
++	id = ida_alloc_range(&mem_id_pool, mem_id_next, MEM_ID_MAX - 1, gfp);
+ 	if (id < 0) {
+ 		if (id == -ENOSPC) {
+ 			/* Cyclic allocator, reset next id */
+@@ -317,7 +317,7 @@ static struct xdp_mem_allocator *__xdp_reg_mem_model(struct xdp_mem_info *mem,
+ 	/* Insert allocator into ID lookup table */
+ 	ptr = rhashtable_insert_slow(mem_id_ht, &id, &xdp_alloc->node);
+ 	if (IS_ERR(ptr)) {
+-		ida_simple_remove(&mem_id_pool, mem->id);
++		ida_free(&mem_id_pool, mem->id);
+ 		mem->id = 0;
+ 		errno = PTR_ERR(ptr);
+ 		goto err;
+-- 
+2.43.0
 
-I think there=E2=80=99s some mistake introduced. The BYTES_* are
-identical for e.g. #7, but %eiz must be wrong, it=E2=80=99s not
-a register. Indeed, gas (on Debian bullseye) does not
-assemble that either.
-
-(Awful AT&T syntax aside=E2=80=A6)
-
-bye,
-//mirabilos
---=20
-=E2=80=9ECool, /usr/share/doc/mksh/examples/uhr.gz ist ja ein Grund,
-mksh auf jedem System zu installieren.=E2=80=9C
-=09-- XTaran auf der OpenRheinRuhr, ganz begeistert
-(EN: =E2=80=9C[=E2=80=A6]uhr.gz is a reason to install mksh on every system=
-=2E=E2=80=9D)
 
