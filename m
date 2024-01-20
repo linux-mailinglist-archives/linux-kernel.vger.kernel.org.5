@@ -1,125 +1,143 @@
-Return-Path: <linux-kernel+bounces-31789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2305C8333FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:06:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 609FB8333FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:13:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 999572834DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:06:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 939961C20E2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882DEDF68;
-	Sat, 20 Jan 2024 12:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="BrOEHDwk"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DB6320F;
-	Sat, 20 Jan 2024 12:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EF26DF51;
+	Sat, 20 Jan 2024 12:13:30 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51AA4210B
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 12:13:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705752363; cv=none; b=MM9RkNVASByNOxx5Xh9gktDWxPpVre7x5JkVVyn4hNZ2d+AF2HaAz/DWyj+6rVaChvxi8PwhjfNAw+GztEO7gACPUDfGA/HnGgsq4QVFWh84dJrRLDYWXeGs4sJeXXNxinCUSxPC+XILeIvAKU6kTFthNEPJ9WpD9darWh4TqJo=
+	t=1705752809; cv=none; b=TfuHCFilNiy5zcqiBx9qNcbTKuHP8052dt9EUMduuy17i0TiOoD/P8yLWb+Z1CQZrhckAervaATlvMPinfVASZBpsbAZa5zOdZAHcregFQQfsAUZR+g6ZOHtLaVG+iQsNJpFQhxkzy4HpE+N1FNC446LRerwDD0fnB19Pchncjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705752363; c=relaxed/simple;
-	bh=6WljTQzsAyyeU2bPKrlfnVK55eNKnNBym7B97HV0Oq8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tTw6U5eMFM6Q4cIiU6dEnlDDqTHnxy1fFHGwyzbkWiKjVRpYKvjVTRhFZFLVzyuJjVK/C0hhajdYmkNnlQo7c7lSdu14yfAIxmvrrhNqOjYZvvQ8DeBVvrXAd3nkbyfrBalbHLLz+93hT7PrpqBsQ/5i5fG+hBPQSSzsV54Xp34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=BrOEHDwk; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705752347; x=1706357147; i=erick.archer@gmx.com;
-	bh=6WljTQzsAyyeU2bPKrlfnVK55eNKnNBym7B97HV0Oq8=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=BrOEHDwkuzbLg79L4PnWJ5cxHqwsUPGnDQlzwnCN23SVhzi6ijC0Tv1jrg6O68I6
-	 bgKDWf2hDN1oiap2qVwhQbk08J9RJwuiYICzpZq/tC5toKmrV1c2BH3O5R/AndJ6w
-	 6lnMvuQTKXfM6ieXplXycc5ZQxDSY3j6ujnz8S7kfNEP2Zmmm+04z5/NZ967Z+oGl
-	 VBiwji4G0+8IAOO/41O3jtSCoav6fDkwyfgnVEC9YzagVt0Cgx5ip1WI0fAmkl0bU
-	 Ew9BnFALOWwVR6zbNCs2k3xAiXlVjuTtSqhEydplE8j9QbDFzXfokZf/KTg0JHYeO
-	 CO8E59t+xuXfoG+jPw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1M42jK-1rRA6d0MNM-0007t9; Sat, 20 Jan 2024 13:05:47 +0100
-From: Erick Archer <erick.archer@gmx.com>
-To: Viresh Kumar <vireshk@kernel.org>,
-	Nishanth Menon <nm@ti.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Erick Archer <erick.archer@gmx.com>,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] Documentation: power: Use kcalloc() instead of kzalloc()
-Date: Sat, 20 Jan 2024 13:05:27 +0100
-Message-Id: <20240120120527.3866-1-erick.archer@gmx.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1705752809; c=relaxed/simple;
+	bh=kLz0bGigj6z4X/R/chV/NBcqFNcV7F/8HzBwVASdv50=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=hQ1kJnfyUwgOUdRiToOflojg4nl325ZBv64IJ1n7dgNVXzOv4ke+iRjHHqemu7aKd+CCiL2nRcqacwOiIy/sXwsKbYrQqKPxEkodiYqfpzdxYLKyG2N/mM/4lVAjjyJqEMmSozmqgT+Ap+35wge15we4ec1xeEh7yzAV4yOYfSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 435ABDA7;
+	Sat, 20 Jan 2024 04:14:10 -0800 (PST)
+Received: from [10.57.77.97] (unknown [10.57.77.97])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 014EC3F73F;
+	Sat, 20 Jan 2024 04:13:22 -0800 (PST)
+Message-ID: <a914c7f2-cf9f-44a8-99d4-c25a66d39f1c@arm.com>
+Date: Sat, 20 Jan 2024 12:13:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MIB9rwFGn8LGmiHnZumtukOyb3RsmEdtPJtv639NvUDu4wkg9uM
- le8LXDqp2lj65dhD4DGvmd/RgkaUGRutEb5zp+iAzNeRObT2S888ysTeqpbHoA4FjZ42pLk
- 9YGTRAU8XT/RGai5CDlb93x6J5MGbpvFQt4PfhYsyWqBX84cBPsN1h1hcWmIbxJaY/vLSuE
- sGL8nyiOVW2uOmvnoWfnQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:PsIHd0DBSB0=;22SfptT7jfkPKbSIQF/aARbTyJB
- 7CsB1+3GKQZPBMDm6m6A1cLTA+wqnNwt3jQQ+MRxgI/hDEwgHzunaygKkU2IcM0b6RQimNthH
- KP4j7g7yokE/ezd45sO2wVY4/ruxS4HHDPOx0BnYWet8oESRM/Z5yLGEeJPzKjq8/hHIrDSGv
- Fl+2Xn5f5NrsWN8loLa5I9yvgXxWmnheBtPcsGmglHtS6KpcYxjAqktBxd/WG/Jkw9KJPl+xm
- f5HFcurAHxJGCc2q0xPWU51EOtf+s3IpS4yH4JghXX9X7pzh9xdXDoD8hNgIG2NFcDDUygkDl
- UFHtBcyKKEO/FIq6rby3SrTGyOofBc3XQSsGOJXrJBZpGD0/CyDb+BoVNDBVyoGkyDjFXc1x9
- 1i8dIc7wUqoM5gfSudJKYTHVh9zRXN2IlHwhfmoteIO7xvCJd8K5Gy4tTK1Mj4J2o3mQ3B/AO
- 06eTiozOauzv4Ji8eoT5w/5hgZhtNYQPbm0J/zTNa2GSHluJcvoiCaZZiXYhEPBut+rI6vKg8
- KyhHnWCRWeymlBT7AWVACMYh21g7F+CJd5MKEgL9wMb8bzgpV6qNmk0bJGlox50UGXSg+kww2
- 4kNyLOs4k48NTPfklUjgwwSRa8fO2MOIuDmljihXo5Oe/f4WQS40f77+a8RfuCPIxTg8oPtOQ
- ktEQzdDFhlUoqoHuPe7hCzdQnzZB/+U6yprJKu/fwbH4W+J/0zlSM4w5503IR7yEJHyEeA+Oh
- Q8pLJSkXjjDzBPm8Uenw3WkViByynOwibtRixMNAOoWHgpYbYF1vymVYgBMm99v7hbO0AHg0m
- 6Gf14DocWNBTnZZo8fc4rtrLCmvXZPTdaggV/F1UAvrKC75hFvy8LL5HpsQa42hG5XUpRfUod
- Qow3M81VdaPFkn/gkXwrT+993mpPCJmTDpEowFBI5IwP8PsLywlgEY/xc8/FAykVeJlPfv4o/
- dPoRx0KepLuBZYyfTtzcSIcy11g=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH] mm: align larger anonymous mappings on THP
+ boundaries
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: Yang Shi <yang@os.amperecomputing.com>, riel@surriel.com,
+ shy828301@gmail.com, willy@infradead.org, cl@linux.com,
+ akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231214223423.1133074-1-yang@os.amperecomputing.com>
+ <1e8f5ac7-54ce-433a-ae53-81522b2320e1@arm.com>
+In-Reply-To: <1e8f5ac7-54ce-433a-ae53-81522b2320e1@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+On 20/01/2024 12:04, Ryan Roberts wrote:
+> On 14/12/2023 22:34, Yang Shi wrote:
+>> From: Rik van Riel <riel@surriel.com>
+>>
+>> Align larger anonymous memory mappings on THP boundaries by going through
+>> thp_get_unmapped_area if THPs are enabled for the current process.
+>>
+>> With this patch, larger anonymous mappings are now THP aligned.  When a
+>> malloc library allocates a 2MB or larger arena, that arena can now be
+>> mapped with THPs right from the start, which can result in better TLB hit
+>> rates and execution time.
+>>
+>> Link: https://lkml.kernel.org/r/20220809142457.4751229f@imladris.surriel.com
+>> Signed-off-by: Rik van Riel <riel@surriel.com>
+>> Reviewed-by: Yang Shi <shy828301@gmail.com>
+>> Cc: Matthew Wilcox <willy@infradead.org>
+>> Cc: Christopher Lameter <cl@linux.com>
+>> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>> ---
+>> This patch was applied to v6.1, but was reverted due to a regression
+>> report.  However it turned out the regression was not due to this patch.
+>> I ping'ed Andrew to reapply this patch, Andrew may forget it.  This
+>> patch helps promote THP, so I rebased it onto the latest mm-unstable.
+> 
+> Hi Yang,
+> 
+> I'm not sure what regression you are referring to above, but I'm seeing a
+> performance regression in the virtual_address_range mm selftest on arm64, caused
+> by this patch (which is now in v6.7).
+> 
+> I see 2 problems when running the test; 1) it takes much longer to execute, and
+> 2) the test fails. Both are related:
+> 
+> The (first part of the) test allocates as many 1GB anonymous blocks as it can in
+> the low 256TB of address space, passing NULL as the addr hint to mmap. Before
+> this patch, all allocations were abutted and contained in a single, merged VMA.
+> However, after this patch, each allocation is in its own VMA, and there is a 2M
+> gap between each VMA. This causes 2 problems: 1) mmap becomes MUCH slower
+> because there are so many VMAs to check to find a new 1G gap. 2) It fails once
+> it hits the VMA limit (/proc/sys/vm/max_map_count). Hitting this limit then
+> causes a subsequent calloc() to fail, which causes the test to fail.
+> 
+> Looking at the code, I think the problem is that arm64 selects
+> ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT. But __thp_get_unmapped_area() allocates
+> len+2M then always aligns to the bottom of the discovered gap. That causes the
+> 2M hole. As far as I can see, x86 allocates bottom up, so you don't get a hole.
+> 
+> I'm not quite sure what the fix is - perhaps __thp_get_unmapped_area() should be
+> implemented around vm_unmapped_area(), which can manage the alignment more
+> intelligently?
+> 
+> But until/unless someone comes along with a fix, I think this patch should be
+> reverted.
 
-So, in the example code use the purpose specific kcalloc() function
-instead of the argument size * count in the kzalloc() function.
+Looks like this patch is also the cause of `ksm_tests -H -s 100` starting to
+fail on arm64. I haven't looked in detail, but it passes without the change and
+fails with. So this should definitely be reverted, I think.
 
-Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-co=
-ded-arithmetic-in-allocator-arguments [1]
-Link: https://github.com/KSPP/linux/issues/162
-Signed-off-by: Erick Archer <erick.archer@gmx.com>
-=2D--
- Documentation/power/opp.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/power/opp.rst b/Documentation/power/opp.rst
-index a7c03c470980..1b7f1d854f14 100644
-=2D-- a/Documentation/power/opp.rst
-+++ b/Documentation/power/opp.rst
-@@ -305,7 +305,7 @@ dev_pm_opp_get_opp_count
- 	 {
- 		/* Do things */
- 		num_available =3D dev_pm_opp_get_opp_count(dev);
--		speeds =3D kzalloc(sizeof(u32) * num_available, GFP_KERNEL);
-+		speeds =3D kcalloc(num_available, sizeof(u32), GFP_KERNEL);
- 		/* populate the table in increasing order */
- 		freq =3D 0;
- 		while (!IS_ERR(opp =3D dev_pm_opp_find_freq_ceil(dev, &freq))) {
-=2D-
-2.25.1
+> 
+> Thanks,
+> Ryan
+> 
+> 
+>>
+>>
+>>  mm/mmap.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/mm/mmap.c b/mm/mmap.c
+>> index 9d780f415be3..dd25a2aa94f7 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -2232,6 +2232,9 @@ get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
+>>  		 */
+>>  		pgoff = 0;
+>>  		get_area = shmem_get_unmapped_area;
+>> +	} else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+>> +		/* Ensures that larger anonymous mappings are THP aligned. */
+>> +		get_area = thp_get_unmapped_area;
+>>  	}
+>>  
+>>  	addr = get_area(file, addr, len, pgoff, flags);
+> 
 
 
