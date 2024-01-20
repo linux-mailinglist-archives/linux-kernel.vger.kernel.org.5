@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-31904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7BF833637
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:11:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B0FE83363A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:11:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52369282B26
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:11:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE87C1F20FFF
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:11:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6D9156E5;
-	Sat, 20 Jan 2024 21:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A37B156FC;
+	Sat, 20 Jan 2024 21:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hCV1Pi8H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SXYLo9oz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7012B156DB;
-	Sat, 20 Jan 2024 21:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D25413AC5;
+	Sat, 20 Jan 2024 21:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705784994; cv=none; b=JJE2GKc2/T/4QwicjiHJF1/vwbbJMKnGKKdgvly81D+cI2ArgvjXIRSc3Jf3j/CbSznazQDotErpsspCxKKfWoDxvX+CE1BsaUme7IralYfmqbtOpSodxDu4zToOvqPHMx4RYsZSVmvb+GgJWAJ1o7PJLBYoDi9dUGwri+vGNo0=
+	t=1705784996; cv=none; b=n6BQX7kmD7uQSmwEP6QtG7SEQeqjQS+NEzk7ssfM3VPCsg6lnyfCfhwDrxfVpb+nBGv56hD1Ds6RXfE4CMk0g0gZadFJFds1CSfC/s02eX6fxvb9F+iyOm08v1Q50Zt3dRrkBHS4OGd7QqKTdEPf9BmflnEjv40Bm2hLyUFaBKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705784994; c=relaxed/simple;
-	bh=kk7385kyA89gDCaUa5qTgEWS2EMtvZOz94x65C7D7dI=;
+	s=arc-20240116; t=1705784996; c=relaxed/simple;
+	bh=qZBgpjmamHDPlUItPHrxc2aKEFdUoPHs1VKKC2XaTaw=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=RwsrucMad6avDTyl0XnHfuYKzYm46lBxxBNPF17mp6SnSy4evrSrz4uBrdRIJHiDVIYhYrBf6phK7Sx79ZUZ+kNZZh04/RA9vgJUI+kOWaLhQR0fygTxc6inVs+FYueePUHxjlQ1bi+oNV0+rm+QOVXi+NhEedE7IfnA1f9kQRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hCV1Pi8H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E99D1C433F1;
-	Sat, 20 Jan 2024 21:09:53 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=CJAd0eKp8OakkxjcvuhRiOgKja5pBnICP2lOzPlq3Gi+kQbfWrAHCEBl8PfKY1XU8J7Ux2X0fwMf0N455zohJuKBif4A17e4KLJQ+ACbMXf0y8bAZyD68rJ+8xvB4kvGisYLvhfxSvCoxocFabGRulSsfFiTNjUgnAtCgsryTjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SXYLo9oz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 098DAC43390;
+	Sat, 20 Jan 2024 21:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705784994;
-	bh=kk7385kyA89gDCaUa5qTgEWS2EMtvZOz94x65C7D7dI=;
+	s=k20201202; t=1705784996;
+	bh=qZBgpjmamHDPlUItPHrxc2aKEFdUoPHs1VKKC2XaTaw=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hCV1Pi8Hn6xiWKXLnP0V27FJFaQtUKw6fR3Fyl4Qfp0tNieG6dpDNqgVT4z6fteJb
-	 LNetZnccnIspVUdafDdAmiqXVwxzaoIcdNYBlsb1r4elQJyctHa58FuEDa4FYQX1wE
-	 EoohajfIVNKNtCk+OwgwJFzE+oYzBa3birQNrtFCIEuM2qKMtEFqUYJCBMnrNEuoHN
-	 ILE2EnKHXXAjvzxt5XMC5MVC9lHtnvlhmmqRsooA7DHh65IOltewmFSahVJCnY5C24
-	 rIlyggfFM1xt75h65g5zTgdmg/0wLqYSG8g38vPxLDJGhu3xnW5JSwfDlCv79x9m9v
-	 Qg9OC+ZSUshEA==
+	b=SXYLo9ozrMquXpBfJoj1/Fs+vjzeiQrrXgPsDPUGXT8HpTVE/E4ogJ0naAYMt0InN
+	 eP4oQudM7Q3SfBvRFciS19wkPyDwGmXsaNDdtWuJNHF06nLzRP+5qRZUH8WSa9HjIR
+	 n6jw8P5mTSGyEphttSS8GaO/Mb78eBPddpcv3lPpH5+ZBzLoSZtScupta/RDyUeRQA
+	 yIF/ixVC+YFLDDminA2G1U9uKox4v3PC2YscQMPsSFQvXlDV8J1DuIbiwsrcY9W9I9
+	 nnD3pPKFP0WL/ypKIx7kanlTcoaqxQHKpNgnBfSMgLNEYD/lLXYwXu04l6KdNZ1Shg
+	 02yYR7mVijaMw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D7C91D8C96C;
-	Sat, 20 Jan 2024 21:09:53 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EC2CBD8C970;
+	Sat, 20 Jan 2024 21:09:55 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,45 +51,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v12 for-next 0/4] riscv: ftrace: Miscellaneous ftrace
- improvements
+Subject: Re: [PATCH v15 0/5] riscv: Add fine-tuned checksum functions
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <170578499387.24348.15355889386163139110.git-patchwork-notify@kernel.org>
-Date: Sat, 20 Jan 2024 21:09:53 +0000
-References: <20231130121531.1178502-1-bjorn@kernel.org>
-In-Reply-To: <20231130121531.1178502-1-bjorn@kernel.org>
-To: =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm5Aa2VybmVsLm9yZz4=?=@codeaurora.org
-Cc: linux-riscv@lists.infradead.org, rostedt@goodmis.org, mhiramat@kernel.org,
- mark.rutland@arm.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, suagrfillet@gmail.com, guoren@kernel.org,
- bjorn@rivosinc.com, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, songshuaishuai@tinylab.org
+ <170578499596.24348.11397809768578424439.git-patchwork-notify@kernel.org>
+Date: Sat, 20 Jan 2024 21:09:55 +0000
+References: <20240108-optimize_checksum-v15-0-1c50de5f2167@rivosinc.com>
+In-Reply-To: <20240108-optimize_checksum-v15-0-1c50de5f2167@rivosinc.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, palmer@dabbelt.com, conor@kernel.org,
+ samuel.holland@sifive.com, David.Laight@aculab.com, xiao.w.wang@intel.com,
+ evan@rivosinc.com, guoren@kernel.org, linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+ arnd@arndb.de, david.laight@aculab.com, conor.dooley@microchip.com
 
 Hello:
 
 This series was applied to riscv/linux.git (fixes)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Thu, 30 Nov 2023 13:15:27 +0100 you wrote:
-> From: Björn Töpel <bjorn@rivosinc.com>
+On Mon, 08 Jan 2024 15:57:01 -0800 you wrote:
+> Each architecture generally implements fine-tuned checksum functions to
+> leverage the instruction set. This patch adds the main checksum
+> functions that are used in networking. Tested on QEMU, this series
+> allows the CHECKSUM_KUNIT tests to complete an average of 50.9% faster.
 > 
-> NB! Song told me that he would not have the time work on this series,
-> so I picked it up.
-> 
-> This series includes a three ftrace improvements for RISC-V:
+> This patch takes heavy use of the Zbb extension using alternatives
+> patching.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v12,for-next,1/4] riscv: select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
-    https://git.kernel.org/riscv/c/b546d6363af4
-  - [v12,for-next,2/4] riscv: ftrace: Make function graph use ftrace directly
-    https://git.kernel.org/riscv/c/35e61e8827ee
-  - [v12,for-next,3/4] riscv: ftrace: Add DYNAMIC_FTRACE_WITH_DIRECT_CALLS support
-    https://git.kernel.org/riscv/c/196c79f19a92
-  - [v12,for-next,4/4] samples: ftrace: Add RISC-V support for SAMPLE_FTRACE_DIRECT[_MULTI]
-    https://git.kernel.org/riscv/c/629291dd8499
+  - [v15,1/5] asm-generic: Improve csum_fold
+    https://git.kernel.org/riscv/c/1e7196fa5b03
+  - [v15,2/5] riscv: Add static key for misaligned accesses
+    https://git.kernel.org/riscv/c/2ce5729fce8f
+  - [v15,3/5] riscv: Add checksum header
+    https://git.kernel.org/riscv/c/e11e367e9fe5
+  - [v15,4/5] riscv: Add checksum library
+    https://git.kernel.org/riscv/c/a04c192eabfb
+  - [v15,5/5] kunit: Add tests for csum_ipv6_magic and ip_fast_csum
+    https://git.kernel.org/riscv/c/6f4c45cbcb00
 
 You are awesome, thank you!
 -- 
