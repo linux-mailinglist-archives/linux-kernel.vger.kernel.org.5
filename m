@@ -1,116 +1,92 @@
-Return-Path: <linux-kernel+bounces-31898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6C94833614
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:27:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 156D483362C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:10:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9CDD1C20DE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 20:27:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C299E28227A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5D212E6A;
-	Sat, 20 Jan 2024 20:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4641428C;
+	Sat, 20 Jan 2024 21:09:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="YRd4tKq2"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aOPKD02L"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDF6396;
-	Sat, 20 Jan 2024 20:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C30412E5F
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 21:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705782459; cv=none; b=andHK7L2BKjJWhxOCv/Bd/gComNF/vJZqey5M3IAv2C/8LrKEMSgVD+kudPXeoddSo2+Mqgg5xKy7Hks98izDZz72rUpeywtxctvPC+JgkSj7obndmGVeFgqiTODG/CaXOiNTMPW90bozIps5QCcHgkQfwjNwRWUbYBfw2pTiVw=
+	t=1705784988; cv=none; b=ozFn9y5YzZIMeGVU1DKEUDMinuBrvajiFYM27f28k3+0eSzELwie9gV50D9UCRWc+Qml4QEw9ciUC7726OOmNpuurBOAdfbXP7yOjtlBn0BEdPau6kLbNsbYt9lSHRFg7SuhppGaenHh1yQ/SrB6GqWg4aZgrIs8B9SviCA7tAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705782459; c=relaxed/simple;
-	bh=lF/66FvKXAzZ7V3dWtaNTfnZNtgIynhOFGZ/MUB9phw=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lHtEc99+jqSAHE0dHtVZ7LcZSIu/bcJ2WDj9cr0kClnAVCyKKvN53SoeIoxDgJUQCIlWFzAGsLuTpNnBgAfohI64ba2eoSM1paqfM8v/Z58Qa8fNBvSWerb2sr5zqbnS+7xI6mtgM2UaSvmmvZUWW2H1CrJSeY9ix4XrtZeyePY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=YRd4tKq2; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=rkjhyoAITJExRooUi1ksbqNbsSRsxv+GppPIU6XBsUs=;
-	t=1705782456; x=1706992056; b=YRd4tKq2EkpUFXUi6TALLEg4tlmBSl3jNmf7TrUDhbPlwav
-	UPEc26C+4d45zwsmiJ6lhhFK15IZad2jCIB2t7RZNaJAZNdZBRfk/3HwvgDiZi29HRJq42Jk8Rxwf
-	HKlYVWK6RygIgUMx2yV1w0w4zQ9CIuGfvWwDDEuNxCrSiahiVdIJ6Fn9mzTZhwelS1XtTnVR0BgmZ
-	228MUV9CZ3CNu6WlPN5gGahTCVaqx/iDzWv7oYlvw4S3EkT9R06RINO6mR7q+gOcT2g0Mdq1/DGe0
-	SF5o9O3A3GrHZ9Lmlm3yNuERe9cEWAHw4PInOHrqwQfZqC+vcNUckaCe2iwY3/Uw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rRHw0-0000000BEZ7-23ve;
-	Sat, 20 Jan 2024 21:27:20 +0100
-Message-ID: <590fe2823d934af997c515640733eb8889b0560f.camel@sipsolutions.net>
-Subject: Re: [PATCH wireless v2] nl80211/cfg80211: add nla_policy for S1G
- band
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>, Lin Ma <linma@zju.edu.cn>, 
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com,  linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-  linux-kernel@vger.kernel.org, kvalo@kernel.org
-Date: Sat, 20 Jan 2024 21:27:19 +0100
-In-Reply-To: <9e1db7f3-fd18-4b3b-a912-3cf6efd96fed@quicinc.com>
-References: <20240119151201.8670-1-linma@zju.edu.cn>
-	 <9e1db7f3-fd18-4b3b-a912-3cf6efd96fed@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1705784988; c=relaxed/simple;
+	bh=bNkiilsgov/ziqTxm0fKOOWZnPue85pExT1FEtv2t1w=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ALQWfH7jeRqq4S2MQC55VZbRaEQHcyuxH9dZm4gf+dihN3JZ/yW5bZK/CGW1lmsEXY8XWcQ9NKo2jv7DTxtVounZ0SI8S8fXiHcBN0WoZ3up7GN3xiYVPZjBPgutdaAeGU49ujvCwd+gfa3XQ4j7kwmvF5HAJpTBhYpSloNnvn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aOPKD02L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8B6CCC433F1;
+	Sat, 20 Jan 2024 21:09:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705784987;
+	bh=bNkiilsgov/ziqTxm0fKOOWZnPue85pExT1FEtv2t1w=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=aOPKD02LaWcihHz6A2D2EmoHJGpZG+DenkDQxfZo9Vp/DXj/b+9K131PT5VChef1Z
+	 DRwsBO1507eN5pMwbW0oNXW6iwMhBcYh0FZ4ZHe/tBH4roGPDhfsSELwxiwaKZvYbl
+	 ITpvJ67ovyUnDjtvcOpmRsf3DAS5dvX/zrWjrr3HlY00cxT2VpgBKar0eMSTBaP8dY
+	 /1/PJtdv35ZGAjnQ5oTbz0WKdPlDWoQxxBqQoVQlvoJ3gZhopGMO+5pch5Zrybi/aO
+	 UBBvkq27YpD3FCA4MUMjost+pI9Ig19rAMRjRcRnV5j1oDtNvmMT3CSdySFzJ1AyXk
+	 Jkv0LqpS4LVkQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 74393D8C978;
+	Sat, 20 Jan 2024 21:09:47 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] RISC-V: Implement archrandom when Zkr is available
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: 
+ <170578498747.24348.16243159445263810097.git-patchwork-notify@kernel.org>
+Date: Sat, 20 Jan 2024 21:09:47 +0000
+References: <20231130111704.1319081-1-cleger@rivosinc.com>
+In-Reply-To: <20231130111704.1319081-1-cleger@rivosinc.com>
+To: =?utf-8?b?Q2zDqW1lbnQgTMOpZ2VyIDxjbGVnZXJAcml2b3NpbmMuY29tPg==?=@codeaurora.org
+Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+ sameo@rivosinc.com, ben.dooks@codethink.co.uk, conor.dooley@microchip.com
 
-On Fri, 2024-01-19 at 15:47 -0800, Jeff Johnson wrote:
-> > --- a/net/wireless/nl80211.c
-> > +++ b/net/wireless/nl80211.c
-> > @@ -911,6 +911,7 @@ nl80211_match_band_rssi_policy[NUM_NL80211_BANDS] =
-=3D {
-> >  	[NL80211_BAND_5GHZ] =3D { .type =3D NLA_S32 },
-> >  	[NL80211_BAND_6GHZ] =3D { .type =3D NLA_S32 },
-> >  	[NL80211_BAND_60GHZ] =3D { .type =3D NLA_S32 },
-> > +	[NL80211_BAND_S1GHZ] =3D { .type =3D NLA_S32 },
-> >  	[NL80211_BAND_LC]    =3D { .type =3D NLA_S32 },
-> >  };
-> > =20
-> something is really suspicious since the NL80211_BAND_* enums are
-> *value* enums, not attribute ID enums, and hence they should never be
-> used in an nla_policy.
+Hello:
 
-Yeah, that's what it looks like first, but then they do get used
-anyway...
+This patch was applied to riscv/linux.git (fixes)
+by Palmer Dabbelt <palmer@rivosinc.com>:
 
-> what is actually using these as attribute IDs, noting that
-> NL80211_BAND_2GHZ =3D=3D 0 and hence cannot be used as an attribute ID
+On Thu, 30 Nov 2023 12:17:02 +0100 you wrote:
+> From: Samuel Ortiz <sameo@rivosinc.com>
+> 
+> The Zkr extension is ratified and provides 16 bits of entropy seed when
+> reading the SEED CSR.
+> 
+> We can implement arch_get_random_seed_longs() by doing multiple csrrw to
+> that CSR and filling an unsigned long with valid entropy bits.
+> 
+> [...]
 
-Ohh. Good catch!
+Here is the summary with links:
+  - [v2] RISC-V: Implement archrandom when Zkr is available
+    https://git.kernel.org/riscv/c/102434010592
 
-> seems the logic that introduced this policy needs to be revisited.
->=20
-
-Let's just remove it?
-
-commit 1e1b11b6a1111cd9e8af1fd6ccda270a9fa3eacf
-Author: vamsi krishna <vamsin@codeaurora.org>
-Date:   Fri Feb 1 18:34:51 2019 +0530
-
-    nl80211/cfg80211: Specify band specific min RSSI thresholds with sched =
-scan
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-As far as I can tell nothing is using that in the first place ...
-Certainly not in the kernel, nor wpa_s, nor anything else I could find
-really ...
-
-We can't completely revert it since we need the attribute number to stay
-allocated, but that's all we cannot remove.
-
-johannes
 
