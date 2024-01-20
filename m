@@ -1,116 +1,113 @@
-Return-Path: <linux-kernel+bounces-31783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD13F8333ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:49:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F7758333EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EB951F22782
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 11:49:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AA3A2820A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 11:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3983EAE4;
-	Sat, 20 Jan 2024 11:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9D1DDDA;
+	Sat, 20 Jan 2024 11:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DRGFnh4n"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JtTT9M0X"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C051EAF0;
-	Sat, 20 Jan 2024 11:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68A7D28F
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 11:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705751343; cv=none; b=QfDBnR8EOwLHKdjg7xeL1ruXzmCJU8umMw2uNLPTh/FWTdm8KsmUzuN3Bz3uFFS3IF3I5VakXII52DABcQQCwDQk1AgM+j/iq0vG8rBmYY2nF4imocuF8og+/efWyzimW/RiZERYPRP/nYJptK/WMQk8mcvjHHXhJPpaiYWDX/o=
+	t=1705751480; cv=none; b=mPvAFA0hWU+WLJ3umiZfNExv/FgpHHMdJuyC0lDNVC+muSReXypcjXEIVgjsN6O/jAABauGFHWs4QW5rb60A5fty/3ncVl9xvibOpjkEeaI8AzDCHvZSL0SL/tngMonNKWz0yH1U39KZmVDgOonhMKuzchGfUky4VL5noRvTq+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705751343; c=relaxed/simple;
-	bh=mdIkL7GnY9uNIXZjyKw6WvyQU9zXwQu64RRQFYtCffE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xzrf7qFID/vEiLZfY2rpP1UeKpwh1BTe2apl9RSe6boARgrQvRMT6g93pwchkHXPTGGOKudPGBua443+milSlPZrQhBhzirmOlC8vikeSmf6EhArKac0wJvcglBQVIlRJ1atpRYLoBIm0HOUmjULTeIwOKDrCK3SITVsUwMwaks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DRGFnh4n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70187C433F1;
-	Sat, 20 Jan 2024 11:48:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705751342;
-	bh=mdIkL7GnY9uNIXZjyKw6WvyQU9zXwQu64RRQFYtCffE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DRGFnh4nsjrmoor4f9VPm0kMUsN0gfDp6m3jgAwIXy1HraYs8RGJHwLwo00aGmSdn
-	 QflMkVLU3Ep/f4VNwcGy3JyM8yNJjoML9bn7GC2KKI70sVEj8mESA/kshBwKAs6afT
-	 D41s44AQ8TqvoOh734hrScmIezPBTCxHhieN+2OR0DBQTO7yfkNcdhJZ5oJFnVudOn
-	 sbdWZxvGMNpnXf+DvE4egGtSY/pA+5m+mWrfQfpNVOGdyPNd7rTWKcgXjZ8VQ7p/hG
-	 pi+M5x65w5LAMox9P1gdMrddnDnCV16scqR552RkDgEWqWOMZVLSBOQhwzDD/Kr3OQ
-	 CipCVwb8xrCSQ==
-Date: Sat, 20 Jan 2024 11:48:56 +0000
-From: Simon Horman <horms@kernel.org>
-To: Sharath Srinivasan <sharath.srinivasan@oracle.com>
-Cc: santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-	linux-kernel@vger.kernel.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	syzkaller@googlegroups.com, chenyuan0y@gmail.com, zzjas98@gmail.com,
-	gerd.rausch@oracle.com, allison.henderson@oracle.com,
-	aron.silverton@oracle.com
-Subject: Re: [PATCH] net/rds: Fix UBSAN: array-index-out-of-bounds in
- rds_cmsg_recv
-Message-ID: <20240120114856.GC110624@kernel.org>
-References: <1705715319-19199-1-git-send-email-sharath.srinivasan@oracle.com>
+	s=arc-20240116; t=1705751480; c=relaxed/simple;
+	bh=mXR2jSYWZsRdY8dH2XN+EAzXQknljlJIseSJOW5lLlI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PiQ6QLuOp6O8uGiu8Te3LKESwx7VuS11ovVAPRJxkqHbNo5p0HWps7JmJvfk433DeEsAlMoZCfvNwcQrCzyRoDRt9gWfI2SB0lR7exhOYhSPRMOukAtFwJqXW0iHdrRAW9ps/rkDdZbwd6XTFMMu4/YjwzpkTfzwUxwS9bET43w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JtTT9M0X; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5ebca94cf74so15398977b3.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 03:51:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705751478; x=1706356278; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mXR2jSYWZsRdY8dH2XN+EAzXQknljlJIseSJOW5lLlI=;
+        b=JtTT9M0XSkQmyX3/nxcsZ90lWn0Dn8hZhx5xEeiqR03+eD0fP89mz8fH/qHjD2/PyQ
+         jk1Jvoemj/W4r+KaXnC5ipStlLzQq0nrNHrcOv5HCVzulgXtOwTGcuFFi5AdosAxLKwe
+         erWhOld78JNxt6C7Y9pYW2RX5Km50948bQ90mbGbLDK11S4Kz8I2AujnjyXlgixiCoxf
+         xKIj4xfIb/jFbs5x2d8enm1U6AXtkH6rBkmOIf7GnQ4v1+joIcZ6+AcmgBvuB6FZn0eU
+         iKrQkpQgIFrcmrg1NXj0bCETM6QknT1kqXRI74D0zhllk3lo2aA2GJShxHP5aIE2lO/C
+         cZ2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705751478; x=1706356278;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mXR2jSYWZsRdY8dH2XN+EAzXQknljlJIseSJOW5lLlI=;
+        b=kJzTRG6rsWPIdRhboQF5auyMbAMcw9kv4mojs0ej9NXtdJQpDs5+8Qvc9xHow6Iz37
+         5UQ8hEz2SowC5PoQR+LeUH2C4O9haFVZ30o51VgnC6j3Da6rueTEAIA6BMFRYD81c12m
+         1Hq1lh4PCk2Fpkei5K4xTauEtzrrYexOZv7M6wtPAEK6WGyr5Ya6WO75i91eiTOaybJL
+         JKEjnjbQf+AARjUCidPokFNe+e21D43smSbDPvpu+wGuYGSQEhAjvOYNAr+kmuwwi4w9
+         pxqn3KIoG+Xz6+E76qLy7fMdh7JPcCmHVDkRl06bl77CYi6PsYsk3ZCQE0r+0vi4qIRM
+         jz7w==
+X-Gm-Message-State: AOJu0YyAv0Cqyod/FZW8lQxQ6WKFDK/Wzrp/+5IvxD4t+GvpW0EQPJvk
+	18quBcb+62vwYoHBpxMYckmNrooOENEAhf9tAjwqArGlncszLQQg2BqdJubnRtsqY7IyJu3mo8y
+	PQHumPgwE/7Y/TyGrnIPCsszOP3crk7rHp3GvOA==
+X-Google-Smtp-Source: AGHT+IH2cvfxCxXRB4YyKDmP/bhZTr526HrST4UQtCF7koBdUZfxh2XTsHRmUblquQ711jBXIXqt7XSD9OgjJI7DAno=
+X-Received: by 2002:a81:6e84:0:b0:5ff:96a1:c5db with SMTP id
+ j126-20020a816e84000000b005ff96a1c5dbmr899600ywc.12.1705751477547; Sat, 20
+ Jan 2024 03:51:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1705715319-19199-1-git-send-email-sharath.srinivasan@oracle.com>
+References: <20240119201356.7903-1-ansuelsmth@gmail.com> <20240119201356.7903-3-ansuelsmth@gmail.com>
+In-Reply-To: <20240119201356.7903-3-ansuelsmth@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sat, 20 Jan 2024 12:51:06 +0100
+Message-ID: <CACRpkdavA+OL-ek0JGBRFX=n_H4=j8DbB+nCr7=8htscAzrzFg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: decompressor: add option to ignore MEM ATAGs
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>, 
+	Andrew Morton <akpm@linux-foundation.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Thomas Gleixner <tglx@linutronix.de>, Randy Dunlap <rdunlap@infradead.org>, 
+	"Mike Rapoport (IBM)" <rppt@kernel.org>, Eric DeVolder <eric.devolder@oracle.com>, 
+	Nathan Chancellor <nathan@kernel.org>, "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, 
+	Kees Cook <keescook@chromium.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@somainline.org>, John Crispin <john@phrozen.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 19, 2024 at 05:48:39PM -0800, Sharath Srinivasan wrote:
-> Syzcaller UBSAN crash occurs in rds_cmsg_recv(),
-> which reads inc->i_rx_lat_trace[j + 1] with index 4 (3 + 1),
-> but with array size of 4 (RDS_RX_MAX_TRACES).
-> Here 'j' is assigned from rs->rs_rx_trace[i] and in-turn from
-> trace.rx_trace_pos[i] in rds_recv_track_latency(),
-> with both arrays sized 3 (RDS_MSG_RX_DGRAM_TRACE_MAX). So fix the
-> off-by-one bounds check in rds_recv_track_latency() to prevent
-> a potential crash in rds_cmsg_recv().
-> 
-> Found by syzcaller:
-> =================================================================
-> UBSAN: array-index-out-of-bounds in net/rds/recv.c:585:39
-> index 4 is out of range for type 'u64 [4]'
-> CPU: 1 PID: 8058 Comm: syz-executor228 Not tainted 6.6.0-gd2f51b3516da #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS 1.15.0-1 04/01/2014
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x136/0x150 lib/dump_stack.c:106
->  ubsan_epilogue lib/ubsan.c:217 [inline]
->  __ubsan_handle_out_of_bounds+0xd5/0x130 lib/ubsan.c:348
->  rds_cmsg_recv+0x60d/0x700 net/rds/recv.c:585
->  rds_recvmsg+0x3fb/0x1610 net/rds/recv.c:716
->  sock_recvmsg_nosec net/socket.c:1044 [inline]
->  sock_recvmsg+0xe2/0x160 net/socket.c:1066
->  __sys_recvfrom+0x1b6/0x2f0 net/socket.c:2246
->  __do_sys_recvfrom net/socket.c:2264 [inline]
->  __se_sys_recvfrom net/socket.c:2260 [inline]
->  __x64_sys_recvfrom+0xe0/0x1b0 net/socket.c:2260
->  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
->  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> ==================================================================
-> 
-> Fixes: 3289025aedc0 ("RDS: add receive message trace used by application")
-> Reported-by: Chenyuan Yang <chenyuan0y@gmail.com>
-> Closes: https://lore.kernel.org/linux-rdma/CALGdzuoVdq-wtQ4Az9iottBqC5cv9ZhcE5q8N7LfYFvkRsOVcw@mail.gmail.com/
-> Signed-off-by: Sharath Srinivasan <sharath.srinivasan@oracle.com>
+On Fri, Jan 19, 2024 at 9:14=E2=80=AFPM Christian Marangi <ansuelsmth@gmail=
+com> wrote:
 
-Thanks,
+> Some bootloaders can pass broken MEM ATAGs that provide hardcoded
+> information about mounted RAM size and physical location.
+> Example booloader provide RAM of size 1.7Gb but actual mounted RAM
+> size is 512Mb causing kernel panic.
+>
+> Add option CONFIG_ARM_ATAG_DTB_COMPAT_IGNORE_MEM to ignore these ATAG
+> and not augument appended DTB memory node.
+>
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
-looking over the code in question I agree with your analysis, that the
-problem was introduced in the cited commit, and that this is an appropriate
-fix.
+So you cannot just ignore all the ATAGs I guess?
+If it's the command line you need, you can pass an identical one in
+chosen.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+But if you really need this, it should be there.
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
 
