@@ -1,225 +1,140 @@
-Return-Path: <linux-kernel+bounces-31706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0618332BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 05:24:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE8E8332C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 05:53:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20D7A1F23710
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 04:24:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7B29B2311E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 04:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C0D15CA;
-	Sat, 20 Jan 2024 04:24:22 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158881FD2;
+	Sat, 20 Jan 2024 04:53:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IEMnr3ES"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAAF2110C
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 04:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B462D15C5;
+	Sat, 20 Jan 2024 04:53:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705724662; cv=none; b=lnu0wWLzht/JyXAEjSxSWqY7sVhGypqA94me8KDqkScGYPKo7MpxxQrEJLJwNk4CrNgtvDdDzI5AMZBi0a73aY9Mu24O0ofjf9aFsLoqhETXTAR6WstvivGxrp1gUODLA8lx7K/2Z6+sJ4iuGP4YcxJcW/9IGSuGVk/17Gok6Vk=
+	t=1705726414; cv=none; b=uwlX3kXAyhHMTWlazC+CRqud32/Oc+P16gw50uy80IMY+a/E+nm+REw4wiYz/6TsuP4YF43RaGpYxxrIjYwR10qRNxKs4m97aOZPTN7LNgunjMRVaoH9o+/+PEJPjrhVdwBfabo3XfgVV4LABI70YAcV5K8beQyYMhQrdYrQ1D8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705724662; c=relaxed/simple;
-	bh=KdyN9wEWdT0bQTjHqeYxfblMAfg3m/V16MYmKva9iCI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=e4Q7uxJ0OWYVqCWvOIHdFprWs3BClmW+NXLaY4m1QUBb/O6I5GN7/6E0nFvVC7LlVoGDJ+zyYUA+WLGqWQyX6HsFjsJ5fMXHLszT0D/qSeVsxnFQVAQ0rgxr+mICmGBAUnz6CyL5k2uwwdoY7wXcmwhFlElf8+dTzFlxq5B7hNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bf863c324dso23039639f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 20:24:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705724660; x=1706329460;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=clA28dxhqBjfZna6TkPAQv2vWQ3aUV+gbVR8Z7FbiRo=;
-        b=kCxmpydK1x/pj4+f42MYrKxxYGqW9dbWYsRIbRxhd9Ta/dRQfpKA1dGZPN2R/fN6l5
-         MJ9gn8sQwQnW6E0jHNhRFs9RX4xFjFxfI3neK0n5wvG8SpVq5kCILk4SJJE87kD3G4We
-         Z31tvBajZfXETfvysfirGlZqo+Pksv1Ag4FLdV8iFay8fPulMA+9lU2kQxExUfLoBTIN
-         NMA+LLaREixrvNxhzLnfvIdbZ2JniKn9LWPQkecXupBoLa6SmL+PrIQVf3lAhL1ifj8L
-         AQB0Of/YakzbSZKvxcvJgg1uOMUOU7m/b87FQIWcYxK79nZTHeSB6lyfSDj90b20v7fa
-         ZdNg==
-X-Gm-Message-State: AOJu0YzG/YZzy1cN1TN+//T0JIdLwx8YI60Y1z/mkKMDRIOwiUILTrVB
-	G9bkH/fQs1d9hgKjyHpJAlhj1h5l70W1VJ1QHaVJf6JtxSu5LW04QNUr4+OcTmop+7T8nzz3dwM
-	jdUnGfRYlQ8RFiUI8WWgsVPXiRxn2K+hixgxPxN8dwj+2IDk42yXaJJw=
-X-Google-Smtp-Source: AGHT+IGBEm8SQEDghPOdC2w1LCYS7zrzicYx5qZ8AiUofe/QtWz/m8IfDs5/F2tooUKovge+FQPY0cDVrOSS7/yV1pY20vQl/gLv
+	s=arc-20240116; t=1705726414; c=relaxed/simple;
+	bh=ORrLc+xjKGUPxA9uxulNGeyU1mju4Nwt8QJoJJN3VpY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=okVPGNpS6Dx70Wttxh0Os76zYlFkyUj0XXvANMYPyCEGPriSSEpAExK0Agsf1WNO115KgZXdEhUBSn7MBNxn6YBgwxmQDYegJ5O/HODckE/fT20Me/MFQQ+Cij9WK4sGDfzUJC3oA2dDv7P34uw45cZ/tv2CIzu7aOuKuU1Ni5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IEMnr3ES; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705726413; x=1737262413;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ORrLc+xjKGUPxA9uxulNGeyU1mju4Nwt8QJoJJN3VpY=;
+  b=IEMnr3ESivP9hHPUMXyriSDDjC9RkEGCMi/YwmJxc7P2sFXhPx77t+s5
+   TF5+YABcpEMk0Gt3D2n2MCSyK5ObNnd3P8+c6hbWgHa38k5AUHH3W1/q3
+   kghxjTaWH2ZpypBlSSScCgEEhrpIOEDelYgSHMqjot6hAwJ9m7OZnJs2c
+   FxlIeRgevmigqMIvZCruJ8AIOlo1cvpVDZ6LwMnWqaUX30nZkH9JLdZg0
+   d/5L5bpOi6Pp29Po83Ldin/ho0UgzPdycbiXPwpRcLe823At6A0JuScju
+   mnNkZFKsTmM0CFnltowyyEH2MDHyeMXEuNWADmcQbYjznX8Hm1iF0S46T
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="821001"
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="821001"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 20:53:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="928558440"
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="928558440"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2024 20:53:27 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rR3MC-0004lG-2d;
+	Sat, 20 Jan 2024 04:53:24 +0000
+Date: Sat, 20 Jan 2024 12:52:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	gregkh@linuxfoundation.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	heikki.krogerus@linux.intel.com, matthias.bgg@gmail.com,
+	dmitry.baryshkov@linaro.org, neil.armstrong@linaro.org,
+	andersson@kernel.org, nathan@kernel.org, luca.weiss@fairphone.com,
+	tianping.fang@mediatek.com, linux-usb@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, kernel@collabora.com,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2 2/2] usb: typec: mux: Add ITE IT5205 Alternate Mode
+ Passive MUX driver
+Message-ID: <202401201228.eFyUxBzW-lkp@intel.com>
+References: <20240119125812.239197-3-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1488:b0:360:290:902d with SMTP id
- n8-20020a056e02148800b003600290902dmr122450ilk.3.1705724659857; Fri, 19 Jan
- 2024 20:24:19 -0800 (PST)
-Date: Fri, 19 Jan 2024 20:24:19 -0800
-In-Reply-To: <000000000000d7b6f405ee97d4a1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006f83e0060f58f8fb@google.com>
-Subject: Re: [syzbot] [hfs?] possible deadlock in hfsplus_block_free
-From: syzbot <syzbot+8fae81a1f77bf28ef3b5@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, fmdefrancesco@gmail.com, ira.weiny@intel.com, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	slava@dubeyko.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119125812.239197-3-angelogioacchino.delregno@collabora.com>
 
-syzbot has found a reproducer for the following issue on:
+Hi AngeloGioacchino,
 
-HEAD commit:    9d1694dc91ce Merge tag 'for-6.8/block-2024-01-18' of git:/..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13ac11abe80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5142c864fad2684b
-dashboard link: https://syzkaller.appspot.com/bug?extid=8fae81a1f77bf28ef3b5
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1519994fe80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=138ba46fe80000
+kernel test robot noticed the following build errors:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4c0e4097a70a/disk-9d1694dc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9b551b9fa3e4/vmlinux-9d1694dc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6ecfef59fe31/bzImage-9d1694dc.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/2f9f30811e75/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/e5b402bef2f2/mount_2.gz
+[auto build test ERROR on usb/usb-testing]
+[also build test ERROR on usb/usb-next usb/usb-linus robh/for-next westeri-thunderbolt/next linus/master v6.7 next-20240119]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8fae81a1f77bf28ef3b5@syzkaller.appspotmail.com
+url:    https://github.com/intel-lab-lkp/linux/commits/AngeloGioacchino-Del-Regno/dt-bindings-usb-Introduce-ITE-IT5205-Alt-Mode-Passive-MUX/20240119-210119
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+patch link:    https://lore.kernel.org/r/20240119125812.239197-3-angelogioacchino.delregno%40collabora.com
+patch subject: [PATCH v2 2/2] usb: typec: mux: Add ITE IT5205 Alternate Mode Passive MUX driver
+config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20240120/202401201228.eFyUxBzW-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240120/202401201228.eFyUxBzW-lkp@intel.com/reproduce)
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.7.0-syzkaller-12377-g9d1694dc91ce #0 Not tainted
-------------------------------------------------------
-syz-executor275/5161 is trying to acquire lock:
-ffff888029d7a8f8 (&sbi->alloc_mutex){+.+.}-{3:3}, at: hfsplus_block_free+0xbb/0x4d0 fs/hfsplus/bitmap.c:182
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401201228.eFyUxBzW-lkp@intel.com/
 
-but task is already holding lock:
-ffff888079ada988 (&HFSPLUS_I(inode)->extents_lock){+.+.}-{3:3}, at: hfsplus_file_truncate+0x2da/0xb40 fs/hfsplus/extents.c:576
+All errors (new ones prefixed by >>):
 
-which lock already depends on the new lock.
+>> drivers/usb/typec/mux/it5205.c:278:25: error: use of undeclared identifier 'it5205_match_table'; did you mean 'it5205_of_table'?
+     278 | MODULE_DEVICE_TABLE(of, it5205_match_table);
+         |                         ^~~~~~~~~~~~~~~~~~
+         |                         it5205_of_table
+   include/linux/module.h:244:15: note: expanded from macro 'MODULE_DEVICE_TABLE'
+     244 | extern typeof(name) __mod_##type##__##name##_device_table               \
+         |               ^
+   drivers/usb/typec/mux/it5205.c:274:34: note: 'it5205_of_table' declared here
+     274 | static const struct of_device_id it5205_of_table[] = {
+         |                                  ^
+   1 error generated.
 
 
-the existing dependency chain (in reverse order) is:
+vim +278 drivers/usb/typec/mux/it5205.c
 
--> #1 (&HFSPLUS_I(inode)->extents_lock){+.+.}-{3:3}:
-       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:752
-       hfsplus_get_block+0x383/0x14e0 fs/hfsplus/extents.c:260
-       block_read_full_folio+0x422/0xe10 fs/buffer.c:2382
-       filemap_read_folio+0x19c/0x780 mm/filemap.c:2324
-       do_read_cache_folio+0x134/0x810 mm/filemap.c:3701
-       do_read_cache_page+0x30/0x200 mm/filemap.c:3767
-       read_mapping_page include/linux/pagemap.h:888 [inline]
-       hfsplus_block_allocate+0xee/0x8b0 fs/hfsplus/bitmap.c:37
-       hfsplus_file_extend+0xade/0x1b70 fs/hfsplus/extents.c:468
-       hfsplus_get_block+0x406/0x14e0 fs/hfsplus/extents.c:245
-       __block_write_begin_int+0x50b/0x1a70 fs/buffer.c:2103
-       __block_write_begin fs/buffer.c:2152 [inline]
-       block_write_begin+0x9b/0x1e0 fs/buffer.c:2211
-       cont_write_begin+0x643/0x880 fs/buffer.c:2565
-       hfsplus_write_begin+0x8a/0xd0 fs/hfsplus/inode.c:47
-       page_symlink+0x2c5/0x4e0 fs/namei.c:5228
-       hfsplus_symlink+0xca/0x260 fs/hfsplus/dir.c:449
-       vfs_symlink+0x12f/0x2a0 fs/namei.c:4480
-       do_symlinkat+0x222/0x3a0 fs/namei.c:4506
-       __do_sys_symlink fs/namei.c:4527 [inline]
-       __se_sys_symlink fs/namei.c:4525 [inline]
-       __x64_sys_symlink+0x7e/0x90 fs/namei.c:4525
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x63/0x6b
+   273	
+   274	static const struct of_device_id it5205_of_table[] = {
+   275		{ .compatible = "ite,it5205" },
+   276		{ /* sentinel */ }
+   277	};
+ > 278	MODULE_DEVICE_TABLE(of, it5205_match_table);
+   279	
 
--> #0 (&sbi->alloc_mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x1909/0x5ab0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:752
-       hfsplus_block_free+0xbb/0x4d0 fs/hfsplus/bitmap.c:182
-       hfsplus_free_extents+0x17a/0xae0 fs/hfsplus/extents.c:363
-       hfsplus_file_truncate+0x7d0/0xb40 fs/hfsplus/extents.c:591
-       hfsplus_delete_inode+0x174/0x220
-       hfsplus_unlink+0x512/0x790 fs/hfsplus/dir.c:405
-       hfsplus_rename+0xc8/0x1c0 fs/hfsplus/dir.c:547
-       vfs_rename+0xbd3/0xef0 fs/namei.c:4879
-       do_renameat2+0xd94/0x13f0 fs/namei.c:5036
-       __do_sys_renameat2 fs/namei.c:5070 [inline]
-       __se_sys_renameat2 fs/namei.c:5067 [inline]
-       __x64_sys_renameat2+0xd2/0xe0 fs/namei.c:5067
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&HFSPLUS_I(inode)->extents_lock);
-                               lock(&sbi->alloc_mutex);
-                               lock(&HFSPLUS_I(inode)->extents_lock);
-  lock(&sbi->alloc_mutex);
-
- *** DEADLOCK ***
-
-6 locks held by syz-executor275/5161:
- #0: ffff888029204420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:409
- #1: ffff888079ad9740 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:837 [inline]
- #1: ffff888079ad9740 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: lock_rename fs/namei.c:3065 [inline]
- #1: ffff888079ad9740 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: do_renameat2+0x62c/0x13f0 fs/namei.c:4971
- #2: ffff888079ada4c0 (&sb->s_type->i_mutex_key#14){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
- #2: ffff888079ada4c0 (&sb->s_type->i_mutex_key#14){+.+.}-{3:3}, at: lock_two_nondirectories+0xe1/0x170 fs/inode.c:1109
- #3: ffff888079adab80 (&sb->s_type->i_mutex_key#14/4){+.+.}-{3:3}, at: vfs_rename+0x69e/0xef0 fs/namei.c:4850
- #4: ffff888029d7a998 (&sbi->vh_mutex){+.+.}-{3:3}, at: hfsplus_unlink+0x161/0x790 fs/hfsplus/dir.c:370
- #5: ffff888079ada988 (&HFSPLUS_I(inode)->extents_lock){+.+.}-{3:3}, at: hfsplus_file_truncate+0x2da/0xb40 fs/hfsplus/extents.c:576
-
-stack backtrace:
-CPU: 1 PID: 5161 Comm: syz-executor275 Not tainted 6.7.0-syzkaller-12377-g9d1694dc91ce #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- check_noncircular+0x366/0x490 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x1909/0x5ab0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
- __mutex_lock_common kernel/locking/mutex.c:608 [inline]
- __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:752
- hfsplus_block_free+0xbb/0x4d0 fs/hfsplus/bitmap.c:182
- hfsplus_free_extents+0x17a/0xae0 fs/hfsplus/extents.c:363
- hfsplus_file_truncate+0x7d0/0xb40 fs/hfsplus/extents.c:591
- hfsplus_delete_inode+0x174/0x220
- hfsplus_unlink+0x512/0x790 fs/hfsplus/dir.c:405
- hfsplus_rename+0xc8/0x1c0 fs/hfsplus/dir.c:547
- vfs_rename+0xbd3/0xef0 fs/namei.c:4879
- do_renameat2+0xd94/0x13f0 fs/namei.c:5036
- __do_sys_renameat2 fs/namei.c:5070 [inline]
- __se_sys_renameat2 fs/namei.c:5067 [inline]
- __x64_sys_renameat2+0xd2/0xe0 fs/namei.c:5067
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f6db63c6e89
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6db6383218 EFLAGS: 00000246 ORIG_RAX: 000000000000013c
-RAX: ffffffffffffffda RBX: 00007f6db644f6c8 RCX: 00007f6db63c6e89
-RDX: 0000000000000004 RSI: 00000000200000c0 RDI: 0000000000000005
-RBP: 00007f6db644f6c0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000020000180 R11: 0000000000000246 R12: 00007f6db641c168
-R13: 0032656c69662f2e R14: 0073756c70736668 R15: 0031656c69662f2e
- </TASK>
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
