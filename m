@@ -1,105 +1,91 @@
-Return-Path: <linux-kernel+bounces-31676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB0C833267
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:13:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D924E83326A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:19:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB62F1C20EA5
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:13:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8ECE52843D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:19:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F9EAEC4;
-	Sat, 20 Jan 2024 02:13:27 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F05DECD;
+	Sat, 20 Jan 2024 02:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CEVXSzsl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20B5A4D
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 02:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4247BA52;
+	Sat, 20 Jan 2024 02:18:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705716806; cv=none; b=ELLHuox7x9iILYb199NWhgni1t/j0/1lcLNSsiM1h0rhfRt0CK0i0OIusikhpiduo7xaZIstsju9H4wKhJDGGVbjNtbcZNJEoq1pCLuaMxUrS1QhLmAutHc3qbV5kMm1e5hykN4OWcItXHnfoYgT+NRuYE/su/C4uskkE3Trbuw=
+	t=1705717136; cv=none; b=bTerE6ii+CSOf5Q/DHefO8i39/FhBgGRbzbiFHBAcpLji+RSFhNRxy0CzJDE+DI+M+aLjtLRn9Mj5uLTRyxG9iITdNDySxFIk4cXNv+5QizYGfkLcsRxsK212PKFf86HFk6BGtxir4YMT9y+UXxkqFYLZCouMEIkLGo2Xnxuc4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705716806; c=relaxed/simple;
-	bh=Bq/03e/RWTFfEOJTIMM7o5q+Yo+2iJDaqY5hzBPmCJo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mqBJHPp8zpgayc7XuhsR4NYBuQughkNeyg2zFWMHXbo2sRc0cBGnGW4+BSeQ8ATBqaqQqNkff7JxU3j40afOzjHmEeK6t3eQaCD5JG++9AHO+hLw1BFnLRTDWIdSaG0IFr3lCJ7EuafGJId3TR3UsmrKrHdHpTzBaaJeq/up/ik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TH0Pl5smRzGpn8;
-	Sat, 20 Jan 2024 10:12:59 +0800 (CST)
-Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id D5834180017;
-	Sat, 20 Jan 2024 10:13:20 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 20 Jan 2024 10:13:20 +0800
-Message-ID: <2160e2ea-20af-46c4-b6b1-a974eb09b490@huawei.com>
-Date: Sat, 20 Jan 2024 10:13:19 +0800
+	s=arc-20240116; t=1705717136; c=relaxed/simple;
+	bh=ZrcEBW4GytdgEE69kv62JO8lw6WJ/+YvLK7DWu+lxPU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jpknxE2V6KHC7cKyTFgLof9s6pxIKV21oH2uHYpPlKivVPfgZg53PhcpqlnljkilcFi3X+gPTtXzMVgVZp2REHgAmvC3hO4e2CAMyXHqRR2pBpkre4q2GEglEP0HhG4R9Y9ceuUR1LPqBuEeU4ZG7rTYvDx/FUiu4C52Zc1OoQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CEVXSzsl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B6D1C433C7;
+	Sat, 20 Jan 2024 02:18:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705717135;
+	bh=ZrcEBW4GytdgEE69kv62JO8lw6WJ/+YvLK7DWu+lxPU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=CEVXSzslodxuv4nYD7xPyTgjVjkZxDYF8TK5WWT70AD+4eVmTxQ8gbl7mwCWMM7t3
+	 PSeheLuv/rq2/ugNC3eHwOBiKfLUAHsqA8eAj8unqD3xMdicIwNT8oMd+/kzjdwJ1q
+	 9WzQ5I0DRuckjasEqG0D7Qp/r2rnlIWZOV+S7Q96BIZWnhEdWAZhhrPask//pEbd2v
+	 OciQGuuF7YXlGbPzmpYZhUU0MXU+EiqQPAno8BnSa+Towvn8k36GaB65kJSWg6ou3R
+	 Hp4noZzxalgwoyPSIOMUuCLCgS8Z9lmGTQpIwbzuzgx9pmoPbV04Cd8i0o8K7rkBrV
+	 gNONgCqdvMRLw==
+From: Miguel Ojeda <ojeda@kernel.org>
+To: gregkh@linuxfoundation.org
+Cc: akpm@linux-foundation.org,
+	allen.lkml@gmail.com,
+	conor@kernel.org,
+	f.fainelli@gmail.com,
+	jonathanh@nvidia.com,
+	linux-kernel@vger.kernel.org,
+	linux@roeck-us.net,
+	lkft-triage@lists.linaro.org,
+	patches@kernelci.org,
+	patches@lists.linux.dev,
+	pavel@denx.de,
+	rwarsow@gmx.de,
+	shuah@kernel.org,
+	srw@sladewatkins.net,
+	stable@vger.kernel.org,
+	sudipm.mukherjee@gmail.com,
+	torvalds@linux-foundation.org,
+	Miguel Ojeda <ojeda@kernel.org>
+Subject: Re: [PATCH 6.1 000/100] 6.1.74-rc1 review
+Date: Sat, 20 Jan 2024 03:18:39 +0100
+Message-ID: <20240120021839.126002-1-ojeda@kernel.org>
+In-Reply-To: <20240118104310.892180084@linuxfoundation.org>
+References: <20240118104310.892180084@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: memory: move mem_cgroup_charge() into
- alloc_anon_folio()
-Content-Language: en-US
-To: Michal Hocko <mhocko@suse.com>
-CC: Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>, <ryan.roberts@arm.com>, Matthew Wilcox
-	<willy@infradead.org>, David Hildenbrand <david@redhat.com>
-References: <20240117103954.2756050-1-wangkefeng.wang@huawei.com>
- <ZalK3suIskEyaR7m@tiehlicka>
- <c7b1cc8e-c434-4c86-972e-4a105524646c@huawei.com>
- <ZaosK59cRa27K9zW@tiehlicka>
- <14ae628d-a9ef-42f3-9201-e90c5c88c133@huawei.com>
- <ZaqZPxDUOuxRWB5l@tiehlicka>
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <ZaqZPxDUOuxRWB5l@tiehlicka>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm100001.china.huawei.com (7.185.36.93)
+Content-Transfer-Encoding: 8bit
 
+On Thu, 18 Jan 2024 11:48:08 +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.74 release.
+> There are 100 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
+Built and QEMU-booted for Rust:
 
-On 2024/1/19 23:46, Michal Hocko wrote:
-> On Fri 19-01-24 20:59:22, Kefeng Wang wrote:
->>>>> GFP_TRANSHUGE_LIGHT is more interesting though because those do not dive
->>>>> into the direct reclaim at all. With the current code they will reclaim
->>>>> charges to free up the space for the allocated THP page and that defeats
->>>>> the light mode. I have a vague recollection of preparing a patch to
->>>>
->>>> We are interesting to GFP_TRANSHUGE_LIGHT and _GFP_NORETRY as mentioned
->>>> above.
->>>
->>> if mTHP can be smaller than COSTLY_ORDER then you are correct and
->>> NORETRY makes a difference. Please mention that in the changelog as
->>> well.
->>>
->>
->> For memory cgroup charge, _GFP_NORETRY checked to make us directly skip
->> mem_cgroup_oom(), it has no concern with folio order or COSTLY_ORDER when
->> check _GFP_NORETRY in try_charge_memcg(), so I think NORETRY should
->> always make difference for all large order folio.
-> 
-> we do not OOM on COSTLY_ORDER (see mem_cgroup_oom). So NORETRY really
-> makes a difference for small orders.
+Tested-by: Miguel Ojeda <ojeda@kernel.org>
 
-I see what you mean, but we may describe the different processes, if
-GFP_TRANSHUGE | __GFP_NORETRY returned from vma_thp_gfp_mask(),
-then we never involved with mem_cgroup_oom(), since mem_cgroup_oom()
-will be skipped in try_charge_memcg(), that is what I want to say,
-and in this case, no oom for order < COSTLY_ORDER or order > 
-COSTLY_ORDER. But if GFP is GFP_TRANHUGE, then we may enter 
-mem_cgroup_oom(), and maybe oom if order < COSTLY_ORDER.
+Including checking that `--lang_exclude=rust` is passed as expected with a new-enough `pahole`.
 
-So Yes, NORETRY really makes a difference for small orders.
+Cheers,
+Miguel
 
 
