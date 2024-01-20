@@ -1,184 +1,205 @@
-Return-Path: <linux-kernel+bounces-31810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBC598334E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 14:56:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 582EF8334F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 14:58:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C86F2821F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:56:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5A541F22561
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4192FFC0A;
-	Sat, 20 Jan 2024 13:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4007FFBE8;
+	Sat, 20 Jan 2024 13:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b="ADznj0gl";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JhZmH4kZ"
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A4EsLcXF"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D855C1094E;
-	Sat, 20 Jan 2024 13:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66905F9F2;
+	Sat, 20 Jan 2024 13:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705758977; cv=none; b=aqdwXg8U7fL3QuoReDM63fR7klo3J97P3YA/aiFR1lvI0GCNLRqqUdFeww1ehnyWE/6p2Cs3dT1AQ/GkMgBd5dSgzPTmnVPRoFuCw4NoZPvtm9KmdIWcGXH9ckjwA30zkAN+NE0uTyaN4r0OCaojrCPM6Poux/OqMYzHaXoGA0U=
+	t=1705759128; cv=none; b=mp3XwtrotRhyAZKDfGQU1YzLNFkVBKb4F3AtyIGW34fuJtPLTtn8sYuGW1ayZJxvht0nYh4tpwDN6oxVcAaRGJSaHLUyl1AJlKBuCoNx/dd8My+xPMIL6Ap2OHPGFX2sCv2Y2j6hlrhdj/C6CQgHQ3UYAhzNg2ujKqxLjc0G/uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705758977; c=relaxed/simple;
-	bh=G1BajSfR2TDS+zWxcpFImQCmFzmvtbzvPyYBnFF1ITU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tyIYoAoW5i5mtb6iEIJ5XQBC0SzLXXeOiNorN8451f8tkvzcMBLd4BZhICkZSifJJUSsV7PTAIKJfmtH1ZGqWnLKffu1Ys1GHbR83qFwF+0APOUQKcc4LLipi5zaXS1TrPAbpuW/Hkgb9YQmq19dV/Tyq48LOL1xcLNFFEjkX0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org; spf=pass smtp.mailfrom=feathertop.org; dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b=ADznj0gl; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JhZmH4kZ; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=feathertop.org
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.nyi.internal (Postfix) with ESMTP id D613C5C0110;
-	Sat, 20 Jan 2024 08:56:14 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Sat, 20 Jan 2024 08:56:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=feathertop.org;
-	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1705758974; x=
-	1705845374; bh=tyVLqYgWirTx9KCAu+OuFKeKwsREXEGBOgBztayJRGQ=; b=A
-	Dznj0glwb950CRBoGhKJlZKLZcHFthp5aBCt/90elos34umI7QBTIOc8fYAB1tFp
-	kDf5D+Rg0ibcciGFW6eCmB+PEnpfOPb/vfD0AtwK0u4jJn+LYN6tEg+i2nzi4Kpg
-	m5FSFtAvmXBMGz6svZjx11B3P0aMiPjlnrhtw72Gv63kpx9Uv1nmsJ35/JxyhtH7
-	JryWrMlMyHnL74lytv0KG0dHsUF0yvxz/gDpLUDEd21zPl0sTvgdloZxPYF4EkWb
-	ltthWWQuUJVdsg9ewI12z5kJUJOy0xnb2NPedumwaxj7hYWfmnHFxQAmVao+CKPU
-	sqb8jsbnFWFUlYnN1QYog==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705758974; x=
-	1705845374; bh=tyVLqYgWirTx9KCAu+OuFKeKwsREXEGBOgBztayJRGQ=; b=J
-	hZmH4kZXC5IJJKIlmJLpfWOWlgNr1DHHYKGdk8a3QPsYCSSP+T3FBwAR8jsanb6G
-	EOiJgjt8yEsjdl4By1vD7rEgncdLmDmbf3cCTFCV10V+PKmNCf3YgwnUXvWhGNcA
-	pft7rNx+FHjG8tyqSxr3hjOH4yBtS1j2xuA+uW07Mqc4stD0Rb68gmKS7Mi3SKBo
-	g2WdvO124ttKzGuSINLllPLj8FqTJvboyhOmMPIKVpgGH/LMdtqHP5OV8ZxUVMYL
-	IDY98FI6rSFgMbvocSAAeXdcmEbbgqMF2hDVDHt8zuSdV5zoblDKEH1hccTxd1/u
-	vA7dx2YprwlBCqEG7ZEUg==
-X-ME-Sender: <xms:_tCrZUAD0WjiGyVoJO9iL9US9ZNE6SNztXKQ3SliDpRYxNMPN7uP5Q>
-    <xme:_tCrZWj-3zDa_KnkcJUKXs_N9ZMj3ERI2rofCha6S6H6vdC0QhCyPnqo9j3SCHEEC
-    HhJwBwxTQ>
-X-ME-Received: <xmr:_tCrZXkaMb0rWkY1kwB13x-vvG4wB9z-ZmYSUzYacM-22n_1cgsVjXlrno3fMyK-N8PdTlGw4mEjRtwZO3rTRbj9rrl3Dhg4--k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekvddgheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepvfhimhcu
-    nfhunhhnuceothhimhesfhgvrghthhgvrhhtohhprdhorhhgqeenucggtffrrghtthgvrh
-    hnpeefffeuhfetgeeikeejvefgtdefteehgfdvhfetfeeuffeuhffhfeekgfekgeehieen
-    ucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehtihhmse
-    hfvggrthhhvghrthhophdrohhrgh
-X-ME-Proxy: <xmx:_tCrZaxnIEZ7GdC1bMi7qW8CsMs2AP1fvI3Z4i7iAh66UMSSe60TKg>
-    <xmx:_tCrZZRwxO-8BIsLlyTm-iJwbX92SEbL4eN5aFVUAyf9oRlLGNKChQ>
-    <xmx:_tCrZVaDHzW345i3EpuY8kovC1HXGxfDNEKtfCEOG9Njo12Z-ycR4w>
-    <xmx:_tCrZYJSvmacN2IYg0GPImVzMjd--9xe_Q0dDRkruHMEphld1qjgeQ>
-Feedback-ID: i1f8241ce:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 20 Jan 2024 08:56:08 -0500 (EST)
-Received: by feathertop.org (sSMTP sendmail emulation); Sun, 21 Jan 2024 00:56:05 +1100
-From: Tim Lunn <tim@feathertop.org>
-To: linux-rockchip@lists.infradead.org,
-	conor.dooley@microchip.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski@linaro.org,
-	devicetree@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org,
-	Tim Lunn <tim@feathertop.org>,
-	Chris Zhong <zyw@rock-chips.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Lee Jones <lee@kernel.org>,
-	Zhang Qing <zhangqing@rock-chips.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] dt-bindings: rockchip: rk809: Document audio codec clock
-Date: Sun, 21 Jan 2024 00:55:29 +1100
-Message-Id: <20240120135529.899403-4-tim@feathertop.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240120135529.899403-1-tim@feathertop.org>
-References: <20240120135529.899403-1-tim@feathertop.org>
+	s=arc-20240116; t=1705759128; c=relaxed/simple;
+	bh=D7c3vMf9ccSBFZdgQbSr1dRX1CxiKZpITQQp7zG1YTU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ftds1or4uS800/snygX52dEeb0sv/3aV8U1iWDvv5P+bEwHMd/SSCaIe33LhsxmvLOv9I4mrXlkawOSDSQU8m8BqE8gFupLGJsSrtMWwoFQxJS40N0HbHxOFLMBfUr9O7vc9gSJYsHu/mrdDFA+bGMDasADI5jhgEY6a7xT+0DY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A4EsLcXF; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705759126; x=1737295126;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=D7c3vMf9ccSBFZdgQbSr1dRX1CxiKZpITQQp7zG1YTU=;
+  b=A4EsLcXFptu9zt9cMF8vIbGgPveudmdkyPUvuLx3o/5b6NUIzc+jWzYR
+   x7IAbs8mSt9GHXouObLiXJfqQaE5kIHiIQbdrS+C4hnbZ9j0+h04A2liq
+   za5s2k9MmzI6jueH6NJqpFPoPFc3WbThl5oME0Emv1ix6MNJLZynQj3eU
+   D2Q8C/vMH5Kc8TV1yZ2nnctWOKgz3Eo4ug8cPC5l3hFz9xoMB3ojRzQtg
+   qmOrNFhFdn0pfPLhtGX10zZdcWxJ6SzWRRdWAp3lXxI9Bgubq9E7aJxN3
+   q7YVpReXa4Xchnpqc8GAGsbxpo/1j07mUzHYAzw9ftagfB47uMDjwQZNR
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="8314740"
+X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
+   d="scan'208";a="8314740"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2024 05:58:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
+   d="scan'208";a="834696"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 20 Jan 2024 05:58:40 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rRBrq-00058A-04;
+	Sat, 20 Jan 2024 13:58:38 +0000
+Date: Sat, 20 Jan 2024 21:58:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, kexec@lists.infradead.org,
+	x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
+	akpm@linux-foundation.org, ebiederm@xmission.com,
+	hbathini@linux.ibm.com, piliu@redhat.com, viro@zeniv.linux.org.uk,
+	Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH v2 11/14] arm, crash: wrap crash dumping code into crash
+ related ifdefs
+Message-ID: <202401202159.9a6W0aOH-lkp@intel.com>
+References: <20240119145241.769622-12-bhe@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119145241.769622-12-bhe@redhat.com>
 
-Rockchip RK809 shares the same audio codec block as the rk817 mfd, and
-is compatible with the existing rk817_codec driver. This patch
-introduces the clock required for the audio codec.
+Hi Baoquan,
 
-This clock provides the I2S master clock for the audio data. The codec
-driver finds the clock by the name "mclk" and will fail to register if
-this is missing. Clock-names is kept here to keep  compatibility with the
-exisitng driver ABI and also to be consistent with the rk817 binding.
+kernel test robot noticed the following build errors:
 
-This series fixes the following warning from dtb check:
+[auto build test ERROR on linus/master]
+[cannot apply to tip/x86/core arm64/for-next/core powerpc/next powerpc/fixes v6.7 next-20240119]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-pmic@20: '#sound-dai-cells', 'assigned-clock-parents', 'assigned-clocks',
-'clock-names', 'clocks', 'codec' do not match any of the regexes:
-'pinctrl-[0-9]+'
-Signed-off-by: Tim Lunn <tim@feathertop.org>
+url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/kexec-split-crashkernel-reservation-code-out-from-crash_core-c/20240119-225820
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20240119145241.769622-12-bhe%40redhat.com
+patch subject: [PATCH v2 11/14] arm, crash: wrap crash dumping code into crash related ifdefs
+config: arm-allnoconfig (https://download.01.org/0day-ci/archive/20240120/202401202159.9a6W0aOH-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240120/202401202159.9a6W0aOH-lkp@intel.com/reproduce)
 
----
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401202159.9a6W0aOH-lkp@intel.com/
 
-Changes in v3:
-- split out clocks into separate patch and group example properties
-  where properties are introduced.
-- Address review comments
-- drop clock descriptions that arent required
-- set maxitems on clocks
+All errors (new ones prefixed by >>):
 
-Changes in v2:
-- Fix missing include and pinctrl for codec example
+   arch/arm/kernel/setup.c: In function 'reserve_crashkernel':
+>> arch/arm/kernel/setup.c:1036:63: error: 'SECTION_SIZE' undeclared (first use in this function); did you mean 'SECTIONS_SHIFT'?
+    1036 |                 start = memblock_phys_alloc_range(crash_size, SECTION_SIZE,
+         |                                                               ^~~~~~~~~~~~
+         |                                                               SECTIONS_SHIFT
+   arch/arm/kernel/setup.c:1036:63: note: each undeclared identifier is reported only once for each function it appears in
+   In file included from arch/arm/include/asm/efi.h:12,
+                    from arch/arm/kernel/setup.c:37:
+   arch/arm/include/asm/fixmap.h: At top level:
+   arch/arm/include/asm/fixmap.h:39:35: warning: '__end_of_fixed_addresses' defined but not used [-Wunused-const-variable=]
+      39 | static const enum fixed_addresses __end_of_fixed_addresses =
+         |                                   ^~~~~~~~~~~~~~~~~~~~~~~~
 
- .../devicetree/bindings/mfd/rockchip,rk809.yaml      | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml b/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
-index be0616201f52..0174261449ab 100644
---- a/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
-+++ b/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
-@@ -93,6 +93,13 @@ properties:
-         unevaluatedProperties: false
-     unevaluatedProperties: false
- 
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: mclk
-+
-   '#sound-dai-cells':
-     const: 0
- 
-@@ -135,6 +142,7 @@ additionalProperties: false
- 
- examples:
-   - |
-+    #include <dt-bindings/clock/px30-cru.h>
-     #include <dt-bindings/pinctrl/rockchip.h>
-     #include <dt-bindings/interrupt-controller/irq.h>
-     #include <dt-bindings/gpio/gpio.h>
-@@ -149,8 +157,10 @@ examples:
-             clock-output-names = "xin32k", "rk808-clkout2";
-             interrupt-parent = <&gpio3>;
-             interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
-+            clock-names = "mclk";
-+            clocks = <&cru SCLK_I2S1_OUT>;
-             pinctrl-names = "default";
--            pinctrl-0 = <&pmic_int_l_pin>;
-+            pinctrl-0 = <&pmic_int_l_pin>, <&i2s1_2ch_mclk>;
-             rockchip,system-power-controller;
-             wakeup-source;
-             #sound-dai-cells = <0>;
+vim +1036 arch/arm/kernel/setup.c
+
+3c57fb43c8fcbe Mika Westerberg 2010-05-10   995  
+3c57fb43c8fcbe Mika Westerberg 2010-05-10   996  /**
+3c57fb43c8fcbe Mika Westerberg 2010-05-10   997   * reserve_crashkernel() - reserves memory are for crash kernel
+3c57fb43c8fcbe Mika Westerberg 2010-05-10   998   *
+3c57fb43c8fcbe Mika Westerberg 2010-05-10   999   * This function reserves memory area given in "crashkernel=" kernel command
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1000   * line parameter. The memory reserved is used by a dump capture kernel when
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1001   * primary kernel is crashing.
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1002   */
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1003  static void __init reserve_crashkernel(void)
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1004  {
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1005  	unsigned long long crash_size, crash_base;
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1006  	unsigned long long total_mem;
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1007  	int ret;
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1008  
+8f460484669cba Baoquan He      2024-01-19  1009  	if (!IS_ENABLED(CONFIG_CRASH_RESERVE))
+8f460484669cba Baoquan He      2024-01-19  1010  		return;
+8f460484669cba Baoquan He      2024-01-19  1011  
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1012  	total_mem = get_total_mem();
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1013  	ret = parse_crashkernel(boot_command_line, total_mem,
+a9e1a3d84e4a0e Baoquan He      2023-09-14  1014  				&crash_size, &crash_base,
+a9e1a3d84e4a0e Baoquan He      2023-09-14  1015  				NULL, NULL);
+9d17f337230642 Austin Kim      2022-04-01  1016  	/* invalid value specified or crashkernel=0 */
+9d17f337230642 Austin Kim      2022-04-01  1017  	if (ret || !crash_size)
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1018  		return;
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1019  
+61603016e2122b Russell King    2016-03-14  1020  	if (crash_base <= 0) {
+d0506a2395eb07 Russell King    2016-04-01  1021  		unsigned long long crash_max = idmap_to_phys((u32)~0);
+67556d7a851c20 Russell King    2017-07-19  1022  		unsigned long long lowmem_max = __pa(high_memory - 1) + 1;
+67556d7a851c20 Russell King    2017-07-19  1023  		if (crash_max > lowmem_max)
+67556d7a851c20 Russell King    2017-07-19  1024  			crash_max = lowmem_max;
+a7259df7670240 Mike Rapoport   2021-09-02  1025  
+a7259df7670240 Mike Rapoport   2021-09-02  1026  		crash_base = memblock_phys_alloc_range(crash_size, CRASH_ALIGN,
+a7259df7670240 Mike Rapoport   2021-09-02  1027  						       CRASH_ALIGN, crash_max);
+61603016e2122b Russell King    2016-03-14  1028  		if (!crash_base) {
+61603016e2122b Russell King    2016-03-14  1029  			pr_err("crashkernel reservation failed - No suitable area found.\n");
+61603016e2122b Russell King    2016-03-14  1030  			return;
+61603016e2122b Russell King    2016-03-14  1031  		}
+61603016e2122b Russell King    2016-03-14  1032  	} else {
+a7259df7670240 Mike Rapoport   2021-09-02  1033  		unsigned long long crash_max = crash_base + crash_size;
+61603016e2122b Russell King    2016-03-14  1034  		unsigned long long start;
+61603016e2122b Russell King    2016-03-14  1035  
+a7259df7670240 Mike Rapoport   2021-09-02 @1036  		start = memblock_phys_alloc_range(crash_size, SECTION_SIZE,
+a7259df7670240 Mike Rapoport   2021-09-02  1037  						  crash_base, crash_max);
+a7259df7670240 Mike Rapoport   2021-09-02  1038  		if (!start) {
+61603016e2122b Russell King    2016-03-14  1039  			pr_err("crashkernel reservation failed - memory is in use.\n");
+61603016e2122b Russell King    2016-03-14  1040  			return;
+61603016e2122b Russell King    2016-03-14  1041  		}
+61603016e2122b Russell King    2016-03-14  1042  	}
+61603016e2122b Russell King    2016-03-14  1043  
+1b0f6681fcbc0e Olof Johansson  2013-12-05  1044  	pr_info("Reserving %ldMB of memory at %ldMB for crashkernel (System RAM: %ldMB)\n",
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1045  		(unsigned long)(crash_size >> 20),
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1046  		(unsigned long)(crash_base >> 20),
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1047  		(unsigned long)(total_mem >> 20));
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1048  
+f7f0b7dc720f81 Russell King    2016-08-02  1049  	/* The crashk resource must always be located in normal mem */
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1050  	crashk_res.start = crash_base;
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1051  	crashk_res.end = crash_base + crash_size - 1;
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1052  	insert_resource(&iomem_resource, &crashk_res);
+f7f0b7dc720f81 Russell King    2016-08-02  1053  
+f7f0b7dc720f81 Russell King    2016-08-02  1054  	if (arm_has_idmap_alias()) {
+f7f0b7dc720f81 Russell King    2016-08-02  1055  		/*
+f7f0b7dc720f81 Russell King    2016-08-02  1056  		 * If we have a special RAM alias for use at boot, we
+f7f0b7dc720f81 Russell King    2016-08-02  1057  		 * need to advertise to kexec tools where the alias is.
+f7f0b7dc720f81 Russell King    2016-08-02  1058  		 */
+f7f0b7dc720f81 Russell King    2016-08-02  1059  		static struct resource crashk_boot_res = {
+f7f0b7dc720f81 Russell King    2016-08-02  1060  			.name = "Crash kernel (boot alias)",
+f7f0b7dc720f81 Russell King    2016-08-02  1061  			.flags = IORESOURCE_BUSY | IORESOURCE_MEM,
+f7f0b7dc720f81 Russell King    2016-08-02  1062  		};
+f7f0b7dc720f81 Russell King    2016-08-02  1063  
+f7f0b7dc720f81 Russell King    2016-08-02  1064  		crashk_boot_res.start = phys_to_idmap(crash_base);
+f7f0b7dc720f81 Russell King    2016-08-02  1065  		crashk_boot_res.end = crashk_boot_res.start + crash_size - 1;
+f7f0b7dc720f81 Russell King    2016-08-02  1066  		insert_resource(&iomem_resource, &crashk_boot_res);
+f7f0b7dc720f81 Russell King    2016-08-02  1067  	}
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1068  }
+3c57fb43c8fcbe Mika Westerberg 2010-05-10  1069  
+
 -- 
-2.40.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
