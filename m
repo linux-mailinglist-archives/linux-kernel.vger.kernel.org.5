@@ -1,233 +1,179 @@
-Return-Path: <linux-kernel+bounces-31674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B799B833261
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:02:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 900B0833264
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:09:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5DEA1C21655
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:02:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00B65B22A76
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C15110C;
-	Sat, 20 Jan 2024 02:02:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79D42EC0;
+	Sat, 20 Jan 2024 02:09:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="TPoYOfbK"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2081.outbound.protection.outlook.com [40.107.104.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DDNHZ8mZ"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8325EA52;
-	Sat, 20 Jan 2024 02:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.81
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705716129; cv=fail; b=YP50OnfXPRQ0dzA9u05tPGOWUiJawA2HfU9bp55VYa3Cab4vHMMjsiiHCSNcPqTf1lg20I5BnyefqgU4ku5dxgX27lz3EdWcfYgtiMhV16KGYm7MKtiQpnpcqsmf81yxOyDqdMS5D6Qh/gmlwi+QF/XhVG/cygJ7z/eQNvWANRM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705716129; c=relaxed/simple;
-	bh=4MtdlQkPGatUSwpQZsRhSPi2upqtrOx8kAukNrLJ3i4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=QDLyU9SJGdekgm8uISNya+foV5i/JSDDUkqQ30D15yq2cqivundK8E+THIB1zwF3iAgnS/lERUj+LpHk9o5GrXzTIoFSJvnV359IxsSMfaTyYveUM0oIRAstAj3EWh9qkKSyS0kKEfnBy8W2LySpRlRFpNTAbG4AZ/Lu1f3mjWI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=fail (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=TPoYOfbK reason="signature verification failed"; arc=fail smtp.client-ip=40.107.104.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KFCx2bahScwm9Yf7DPxoSjvIWiEQ0x/dmw4aKkAb5gMMoqYfYkIZyn1nx0XQ1v9s+4v7T3OX9GOtE/BidlnVE/g1uc9wsAPoIHnPfr9Fx6QWc84pOfxiTU7r+ujAdGMSLjp3ykWfu2ADyCvKUUjUTfP6kOQR12UlziMAImFYqHj/iWDR/SCaFAL0AP9LIiVHMYkI9BLLVHx0wPZZBFRjtsgceyCwbpAgvSdFsWHlhxjmcg2ExbW8TDgmqf/iaStYt/SfhDFq+d2651ptkZnkv/26TVOmuMyxtM0LWjAyuCunjw0BiCdaRxgmymCLCEy/ufYM3sg0lAcWPuGZLXQFQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kj5XQXn5L+EVxBpk7yA3pTebgM8lKWJFP3W1zlZ6wrg=;
- b=bwsfwk7jrkIQ9Pi9ClEXYDAmf75vowc1IeSLsLz/u3fY9ywyKcwCaKO2PzwWeyj2cIMzzja8Y4/N5WeCQf84ZaB4v0ZCCgyQFvssynjJcKiJfpbfcYOjaYuoUSDs89fgpHlEuVakz5BjgG1pjjbpjs+eYrQ8vzC2Oc4sk6r1zRXhqIPCtIcr4H2VcYdWeGlotz1MXvLrNdrYSfnRdPxI0aFx1wuRj9Ilof+dzGvXck3RJ8mYceEHr0tnICDFD8ZT/LOld5UKRJyx/jvWjWEt4uhhOk0stCVn7N9q+6//1KTD43rkrBpWkO5/NaoP19D1Tv3K3SHiD674KxbUrc9pnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kj5XQXn5L+EVxBpk7yA3pTebgM8lKWJFP3W1zlZ6wrg=;
- b=TPoYOfbKa1ILDW/fCATsA5M6MB+MOTOgoKlXJITIQ2OAhRqj89DyNbrYfExnP6ANsDTK0EIW8T3YXphf+XMyiXv0AJA9ybW/Ov/0Uhur+Ha7EDO6QtwxKjUl921fyGyRa9j5tpnY8wZ3HAi8/15anVL0Aj6Eg/y7BNaQsnazSPk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DBBPR04MB7785.eurprd04.prod.outlook.com (2603:10a6:10:1e7::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Sat, 20 Jan
- 2024 02:02:05 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::b8af:bfe5:dffd:59a9]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::b8af:bfe5:dffd:59a9%4]) with mapi id 15.20.7202.027; Sat, 20 Jan 2024
- 02:02:04 +0000
-Date: Fri, 19 Jan 2024 21:01:57 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v4 1/4] usb: gadget: Support already-mapped DMA SGs
-Message-ID: <Zaspld3SOwDftYhj@lizhi-Precision-Tower-5810>
-References: <20240117122646.41616-1-paul@crapouillou.net>
- <20240117122646.41616-2-paul@crapouillou.net>
- <ZaruU5BpQF8SeZZS@lizhi-Precision-Tower-5810>
- <59799a40d8cc425dc5a847a0c8e25730db4fc5c8.camel@crapouillou.net>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <59799a40d8cc425dc5a847a0c8e25730db4fc5c8.camel@crapouillou.net>
-X-ClientProxiedBy: SJ0PR05CA0137.namprd05.prod.outlook.com
- (2603:10b6:a03:33d::22) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1C5A4D
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 02:09:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705716587; cv=none; b=O1HmDrapQ+XO9j+/hBwbV2e82ENO8j2dPweHnzftYdmi0m2gnmgOiBOM79GENm+BxLmLMlQ/qpdkGo0iGbbu09bgyUqjCa5llRZnc1RQm4s91MA4gmk74A+LVdCoQJJ5VHl6IGoBCHwtOYIrStpm2vlBM+FC+CY0cfDPSer3oX0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705716587; c=relaxed/simple;
+	bh=Z0dTd6MRCU5KWfJPW01fq42KBfk3Nx8D3X3vKSY1Rxo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UwejfsCf1qYgIRzV2KaRSFGXpRXrc2ksGr5BDcAdcw3PIEm1DfWEX8L15RmAaNIKCAG6zZ0GfbuZtsEWa5jEcU2mePG9qr4ElFErvgS+s7EJDMg28LcQoXdTibp5Bpu1AqfPXK7ZDjGLE2WNkk5nIMHvjSL8GQusEaiDV3f0H5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DDNHZ8mZ; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc227feab99so1472748276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:09:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705716583; x=1706321383; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z0dTd6MRCU5KWfJPW01fq42KBfk3Nx8D3X3vKSY1Rxo=;
+        b=DDNHZ8mZ0wjA4Fosk9aE/cwj2Bg8zfo0yWo5zMEfrgDFjUuoyXpxX9PqdwlJ5RMaW+
+         2+2jCr6tq5RJoqyYUufg8NLFdu5Rpf5XUJj7RW/nqWWwLAxdyoc36/vGYZOFqKVxjzaQ
+         X+u0adqLPOzWZGl8W568K1NiXI3Nnb6gJ8hEH7rf7WbL8vut7Kafxk8+eS8xhx0xikOm
+         ZcHw1NYiHuUAnkr3sRBhjiTUUxYiE4tFUzpVLosuDpHnlZQevSTXS1TflTIXBDO8Cze7
+         dRI1kvqMelyQ0Tb6e2XPS+VLnCVubTKFLea/59TzbOwQbJ8BSYT5qz0Imy2jmdNW8Qsn
+         sy8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705716583; x=1706321383;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z0dTd6MRCU5KWfJPW01fq42KBfk3Nx8D3X3vKSY1Rxo=;
+        b=V/PQjCS5n5Z2ieFD3UL8dV+ED5xQfVT0WM0+nmqwqT5Q4eEf1uVxiVgTZtW04S9StI
+         CdJGIB3hjJKFIIlzwed2JA7HlbZQAAslurcdAP7aylqDAmgzy2F8/bGNv7HgG0R6x8PE
+         usUsd7wmMVLOhp24KwoE+LYOhpMM1yqQoe7kAdYGLxkHdYIjFgJVv49caTiDFB3uaBXw
+         849uRut8PkQ1XzGm3TXw7pYL+FGSKEyUOCv2tG8yz4tB28OQpgvgMzXhEjdnvHtTacW2
+         dt8uRJiK1I7gihNW8cl7WnRJyEFFHzub/6j5wotTUu0saf617XR6kgGawGuJ7iJ5JY3j
+         tW1Q==
+X-Gm-Message-State: AOJu0YzA1mwHvDtudb1eP62mMk7t7LsaD3i062x+ieu/pdamwIRwEJsl
+	HFPgHzrDpfZay97SiGwGxP4mus7rwfdsrf09diImCv4s1J5pt5Vgr97VCGUPsi2sB99TEBzwr+4
+	81iBqmZ2mUqP35M7S4FLuJdvlJ8s=
+X-Google-Smtp-Source: AGHT+IHEcW2qLgtQkeTqlQvEvwlyO/nGg+bxkQXGmBFiKo2xBstXNd3UgwuF1BPoZzh3HljOFBWcjS5rmnAhy123joE=
+X-Received: by 2002:a25:9191:0:b0:dc2:66ab:bb6e with SMTP id
+ w17-20020a259191000000b00dc266abbb6emr761725ybl.20.1705716583259; Fri, 19 Jan
+ 2024 18:09:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DBBPR04MB7785:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8d3ce63a-6d60-4a39-9333-08dc195bccbe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	6rBeEKEMyZa5yc+6pKasw98E3TMJA9pt1f9ED+yHZ2m773l4ig9pNwBUQTSxHvAsX4WEqPWf/+EmvxK889sP9KOlJGOCD2sJ9LlnDmpbZCLmo/JDsEIYb9kjSQzZIbi/qy+ONtHWiso1Y09DQziua7ZpgkHHFwsNDkzVc0W3/qV4RLpjUatzRWmjAMjeZD+pVxAZn5p6EjACCbofccCe4bRy3FI2j2e0ML4Y6IJ0Z4jiVR0GFp8/h6HLT172ty6uS76dSJUfNdqK1XZXqbJjRcAnH3S2JIBhLZXLh6e+j14zEfui/vch/e8aYPu4ZBMRk3dWQN8DpgCS1PzWrp9827JLwr/VMszOZkBz0rOqZDg5be+ANjvxCfPGSYP6LoX9gyAt90awq6KHJ0RU8qxBIszgI7giTtxNkboMANlWDBwIi7JNkmVWVZlY2Q16lRnsKNVgKgASBE3gGkS2nJmN/TAis5GsBWTvWeMjDn5+/NYH853MTptObDPiM6LlGwhcV0TqsJIAH0Cqhfsj8TJ/k10pQ4GDNcG6DrCTIRe4HxPXRuc8F03zyBcBtkrf9qO05TfmEepOwmdUDr9RCI26sI7r3stl7aZoQa4uNRFxMI7T3dAsBUD2ezgKSOpu/VpA
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(136003)(396003)(346002)(39860400002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(38100700002)(6666004)(41300700001)(478600001)(6486002)(66574015)(6506007)(52116002)(83380400001)(26005)(6512007)(9686003)(86362001)(2906002)(316002)(6916009)(7416002)(38350700005)(4326008)(54906003)(8676002)(8936002)(5660300002)(66946007)(66556008)(66476007)(33716001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?iso-8859-1?Q?7UuQ305yYTWllyjUv2dZq1I9qsFttpWiI1Zsyl4jxbMC+WQCS3h189a6Hk?=
- =?iso-8859-1?Q?FFWdyM3CF0a5cIiap/f1/i36OeoaLEbJGVcVjpZvFcVLPyzHcD5jnfgd3N?=
- =?iso-8859-1?Q?WRUK0icCxevnIGEmz3P3aXwGMDnx7sBLQChCNZ/mSxVJPkjxIX0Q9efq5M?=
- =?iso-8859-1?Q?BX2tMEtBvpKle/ZD9vnUgYac+oShXdiml+1XQMg/TX68WC0nWwOrXKVFVq?=
- =?iso-8859-1?Q?IJU1TEIiERJBND7vc66M/+NLks3wQkMA4AkA7s+bFyQIv65IaldVXPaWIJ?=
- =?iso-8859-1?Q?sJqrzvUWyS6ChxAIZW/DiRY23zHA6LClX6aESWwwd69cRvm7kGMlwcwuqG?=
- =?iso-8859-1?Q?4UMxi2sXB+VB24an02eKwyNgjbND/MkAnlvHup9n9In90gCnKx1IWS+pQd?=
- =?iso-8859-1?Q?A2CwtHtwSsKWfY1Bs+uCjeCBELL8LomjYsHkCrclFEJ7InhBRkHhoIeSqe?=
- =?iso-8859-1?Q?6+y4AuAmPVvf5JqqszskzCz3geqiBcOIzfXVNxAvE/p6G08T1fErSEz0HS?=
- =?iso-8859-1?Q?SKTpmW2J4jpFiulYyQpM/hX3VgHUU6zYS/WKGNyKbQpWHhFvMj86fb884i?=
- =?iso-8859-1?Q?MqHa6hNLo3Lvbc+EX4bt15fpcyI7AfqFoiwTzIC3hhyWVTTP8JAxnt+bOO?=
- =?iso-8859-1?Q?GZtzTu9hGeo2PWX6c5KbXWyu3fehDQl6t1eRJPpBZ4R4HP6NHU8anmA2tp?=
- =?iso-8859-1?Q?C1cWTBIrOUiLOLh6rkxLA6WvRzPuDo2jEQJWx74vdXLFbiuUJDNFfBBAN4?=
- =?iso-8859-1?Q?tmKLQAn4D8zJfqyGYwXBuFbzb2QRHXvqr2yEcQeXKUE0gqV2q03uspJm26?=
- =?iso-8859-1?Q?G3xcUBBF7tMeDXWsknR7MEbfmHzn4mIpzRnfXUi1jTzEnqApR/7/IwlqeT?=
- =?iso-8859-1?Q?Yqeyqe/znOkm53aXs5QKEmcxTyYxP32sahV8InQRquubWgxIg2VnDef5ZE?=
- =?iso-8859-1?Q?FS37FvRUfx3aTJPPorAupY/GGYSFh547v5f1g2M1Uqf+J1++CD4f6yjcyA?=
- =?iso-8859-1?Q?egFtEH8ezELc1FDeoFY502cziJxJnTY2jAyq1Fs4WOOH9d8hgp+DdsyVPz?=
- =?iso-8859-1?Q?5oDcx7GSfwrPvUwQHDcogK1iOumPErSizl2BFXCJKN5QUpEQEigwQ/dZ4Y?=
- =?iso-8859-1?Q?weQpyLriOIhU5094rPlwco70S67zcCquam4XyhTq0Mw8+MxNcbDK2UjyER?=
- =?iso-8859-1?Q?iESFwHKKg6oKd0Z8tMxY3Xg8PGjted1TzSA9dGe9U5hrJTnNJZfNPjhQRx?=
- =?iso-8859-1?Q?Pd19iam/gRTXaeC1TVpz3aRl7jiKTv61jpbuchL2r6nUOVU6fIveEWyghN?=
- =?iso-8859-1?Q?l1zhjbsAZ2YwPgFyYF5t1q4rslwBhBHdNtliTvYFMHuZlKySynMsWpkPiV?=
- =?iso-8859-1?Q?D1ur0+buy4lU/08Ao0lC+9fDuQZGUGuoBzAAt3ekPR6WQXTt4Iyg/O3WaZ?=
- =?iso-8859-1?Q?6ZUysEwYa0z10hvsIMEnAKFNrFLzgcj2415UgZKZ+XFTNTIFIIdlQFekCC?=
- =?iso-8859-1?Q?VT9ljHEKdoiVkeE7RwaH5Z15pfjpBvKZbanGTZnUAOWD/Vj9OT9UuxHVxR?=
- =?iso-8859-1?Q?AvWZIah1QrHZWaDBECejnfuFCht7pnZURMkXAXc3V0tu+YKJWJ7t9Jc2Xc?=
- =?iso-8859-1?Q?mA6MFyv2bkrLLwUcWJGV5+bPKk+7KuGNgi?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d3ce63a-6d60-4a39-9333-08dc195bccbe
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2024 02:02:04.8370
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Yyt1PYDe3KXT1m0RJt1iRsYz9slJo2lt8Ug/74TwzNzZgSDQVTdZvRMvAPJ8u7gmnWUluggCGMpRoFxdiorVBw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7785
+References: <20240118120347.61817-1-ioworker0@gmail.com> <ZakqQyL9t2ffNUIf@tiehlicka>
+ <CAK1f24k+=Sskotbct+yGxpDKNv=qyXPkww5i2kaqfzwaUVO_GQ@mail.gmail.com> <ZapwWuVTIDeI3W8A@tiehlicka>
+In-Reply-To: <ZapwWuVTIDeI3W8A@tiehlicka>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Sat, 20 Jan 2024 10:09:32 +0800
+Message-ID: <CAK1f24m9oxciHsAht4-cCWo_NT7x+bkoXUO2HOwgMCr0OnwpcA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: add MADV_F_COLLAPSE_LIGHT to process_madvise()
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com, 
+	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
+	mknyszek@google.com, minchan@kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 20, 2024 at 01:14:52AM +0100, Paul Cercueil wrote:
-> Hi Frank,
-> 
-> Le vendredi 19 janvier 2024 à 16:49 -0500, Frank Li a écrit :
-> > On Wed, Jan 17, 2024 at 01:26:43PM +0100, Paul Cercueil wrote:
-> > > Add a new 'sg_was_mapped' field to the struct usb_request. This
-> > > field
-> > > can be used to indicate that the scatterlist associated to the USB
-> > > transfer has already been mapped into the DMA space, and it does
-> > > not
-> > > have to be done internally.
-> > > 
-> > > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > > ---
-> > >  drivers/usb/gadget/udc/core.c | 7 ++++++-
-> > >  include/linux/usb/gadget.h    | 2 ++
-> > >  2 files changed, 8 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/usb/gadget/udc/core.c
-> > > b/drivers/usb/gadget/udc/core.c
-> > > index d59f94464b87..9d4150124fdb 100644
-> > > --- a/drivers/usb/gadget/udc/core.c
-> > > +++ b/drivers/usb/gadget/udc/core.c
-> > > @@ -903,6 +903,11 @@ int usb_gadget_map_request_by_dev(struct
-> > > device *dev,
-> > >  	if (req->length == 0)
-> > >  		return 0;
-> > >  
-> > > +	if (req->sg_was_mapped) {
-> > > +		req->num_mapped_sgs = req->num_sgs;
-> > > +		return 0;
-> > > +	}
-> > > +
-> > >  	if (req->num_sgs) {
-> > >  		int     mapped;
-> > >  
-> > > @@ -948,7 +953,7 @@ EXPORT_SYMBOL_GPL(usb_gadget_map_request);
-> > >  void usb_gadget_unmap_request_by_dev(struct device *dev,
-> > >  		struct usb_request *req, int is_in)
-> > >  {
-> > > -	if (req->length == 0)
-> > > +	if (req->length == 0 || req->sg_was_mapped)
-> > >  		return;
-> > >  
-> > >  	if (req->num_mapped_sgs) {
-> > > diff --git a/include/linux/usb/gadget.h
-> > > b/include/linux/usb/gadget.h
-> > > index a771ccc038ac..c529e4e06997 100644
-> > > --- a/include/linux/usb/gadget.h
-> > > +++ b/include/linux/usb/gadget.h
-> > > @@ -52,6 +52,7 @@ struct usb_ep;
-> > >   * @short_not_ok: When reading data, makes short packets be
-> > >   *     treated as errors (queue stops advancing till cleanup).
-> > >   * @dma_mapped: Indicates if request has been mapped to DMA
-> > > (internal)
-> > > + * @sg_was_mapped: Set if the scatterlist has been mapped before
-> > > the request
-> > >   * @complete: Function called when request completes, so this
-> > > request and
-> > >   *	its buffer may be re-used.  The function will always be
-> > > called with
-> > >   *	interrupts disabled, and it must not sleep.
-> > > @@ -111,6 +112,7 @@ struct usb_request {
-> > >  	unsigned		zero:1;
-> > >  	unsigned		short_not_ok:1;
-> > >  	unsigned		dma_mapped:1;
-> > > +	unsigned		sg_was_mapped:1;
-> > 
-> > why not use dma_mapped direclty?
-> 
-> Because of the unmap case. We want to know whether we should unmap or
-> not.
+On Fri, Jan 19, 2024 at 8:51=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Fri 19-01-24 10:03:05, Lance Yang wrote:
+> > Hey Michal,
+> >
+> > Thanks for taking the time to review!
+> >
+> > On Thu, Jan 18, 2024 at 9:40=E2=80=AFPM Michal Hocko <mhocko@suse.com> =
+wrote:
+> > >
+> > > On Thu 18-01-24 20:03:46, Lance Yang wrote:
+> > > [...]
+> > >
+> > > before we discuss the semantic, let's focus on the usecase.
+> > >
+> > > > Use Cases
+> > > >
+> > > > An immediate user of this new functionality is the Go runtime heap =
+allocator
+> > > > that manages memory in hugepage-sized chunks. In the past, whether =
+it was a
+> > > > newly allocated chunk through mmap() or a reused chunk released by
+> > > > madvise(MADV_DONTNEED), the allocator attempted to eagerly back mem=
+ory with
+> > > > huge pages using madvise(MADV_HUGEPAGE)[2] and madvise(MADV_COLLAPS=
+E)[3]
+> > > > respectively. However, both approaches resulted in performance issu=
+es; for
+> > > > both scenarios, there could be entries into direct reclaim and/or c=
+ompaction,
+> > > > leading to unpredictable stalls[4]. Now, the allocator can confiden=
+tly use
+> > > > process_madvise(MADV_F_COLLAPSE_LIGHT) to attempt the allocation of=
+ huge pages.
+> > >
+> > > IIUC the primary reason is the cost of the huge page allocation which
+> > > can be really high if the memory is heavily fragmented and it is call=
+ed
+> > > synchronously from the process directly, correct? Can that be worked
+> >
+> > Yes, that's correct.
+> >
+> > > around by process_madvise and performing the operation from a differe=
+nt
+> > > context? Are there any other reasons to have a different mode?
+> >
+> > In latency-sensitive scenarios, some applications aim to enhance perfor=
+mance
+> > by utilizing huge pages as much as possible. At the same time, in case =
+of
+> > allocation failure, they prefer a quick return without triggering direc=
+t memory
+> > reclamation and compaction.
+>
+> Could you elaborate some more on why?
+>
+> > > I mean I can think of a more relaxed (opportunistic) MADV_COLLAPSE -
+> > > e.g. non blocking one to make sure that the caller doesn't really blo=
+ck
+> > > on resource contention (be it locks or memory availability) because t=
+hat
+> > > matches our non-blocking interface in other areas but having a LIGHT
+> > > operation sounds really vague and the exact semantic would be
+> > > implementation specific and might change over time. Non-blocking has =
+a
+> > > clear semantic but it is not really clear whether that is what you
+> > > really need/want.
+> >
+> > Could you provide me with some suggestions regarding the naming of a
+> > more relaxed (opportunistic) MADV_COLLAPSE?
+>
+> Naming is not all that important at this stage (it could be
+> MADV_COLLAPSE_NOBLOCK for example). The primary question is whether
+> non-blocking in general is the desired behavior or the implementation
+> should try but not too hard.
 
-I see, Thanks
-Frank
+Hey Michal,
 
-> 
-> > 
-> > Frank
-> 
-> Cheers,
-> -Paul
-> 
-> > 
-> > >  
-> > >  	void			(*complete)(struct usb_ep *ep,
-> > >  					struct usb_request *req);
-> > > -- 
-> > > 2.43.0
-> > > 
-> 
+Thanks for your suggestion!
+
+It seems that the implementation should try but not too hard aligns well
+with my desired behavior. Non-blocking in general is also a great idea.
+Perhaps in the future, we can add a MADV_F_COLLAPSE_NOBLOCK
+flag for scenarios where latency is extremely critical.
+
+Thanks again,
+Lance
+>
+> --
+> Michal Hocko
+> SUSE Labs
 
