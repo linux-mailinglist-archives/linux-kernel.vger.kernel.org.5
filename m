@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-31684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21BC583327F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:51:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BEC6833280
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21AAB1C213AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:51:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391D21C213E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 02:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B549F15C2;
-	Sat, 20 Jan 2024 02:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3F82105;
+	Sat, 20 Jan 2024 02:51:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cZBtEHOe"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H996nqN/"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E998ECD
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 02:50:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA021375
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 02:51:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705719060; cv=none; b=TyLJ5aEXP0TRGPTykgxG0xaecSdYEOB92v3ZuDQ37O6kPVz0Oo1LweJxbytiCdzoLkaphKef6njDOQxYqTwdKLiq8iFO4v/vzD5l9F96cnXElLjdIoXcEUK9306RSKaQs4ehxkqv9sPDLmYK9kqPeVFe24t1eE5+d2AV4DWC2aU=
+	t=1705719061; cv=none; b=kDYzvkVHG4QYGzD07lIWRuIuIjKxamX2ULDOHwn7ugs57O7/52nnIzGzBTfLrzFY+IweBSzKNgm2tQYhtwoauDvE4Elknr0jpcuflznWpGuVPm4zy5pKDbzhwWFA4p+t24eisld6Gj7jRCHgFQxQZi2A5eQdaUiplh407NizjGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705719060; c=relaxed/simple;
-	bh=SVwOa745y/p7doJwcbG2VSsSKIR/sIktsJ8KB1vHWPM=;
+	s=arc-20240116; t=1705719061; c=relaxed/simple;
+	bh=FVVUMvujZhZjmYkcGH7AjE35UQGcTY7BYcUBQUAOERE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Z2owwEFmf3ocAnKkzA3b4eLl2qqxfWT9EXsPko9RAJvIqzaHbfKOkl3pg+HBRLBbjCBHAqipVFiyZRfvbnlWE+0irM0tMwb7A1Wd9Wq3foTgAVaHbnQZr91LraWZut0slrZ9Cq93cFrPw+8591g27cyuaNAZlWZznun2TbWKAgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cZBtEHOe; arc=none smtp.client-ip=209.85.128.176
+	 MIME-Version; b=C83gSIWzNX36YU+MfAEcuV/DH1vGbs86IQmEuObG8k+CnKQg0bFxB8iQhSdY4+Yu8pE4o2PitGj0zjxtwKUHwZLkStgw8khwXQZvNSOCEeYZCF8L1eWR6Ht4kib3w1rCvUdDQczClM51WxfCe7uQ6wBSt36QHuVgOwTh62Ql8CM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H996nqN/; arc=none smtp.client-ip=209.85.219.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5ebca94cf74so13947847b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:50:58 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc2501ed348so1046679276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 18:51:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705719057; x=1706323857; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705719059; x=1706323859; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t+ncE/Ke8W/9eSicUFGfjAMk7XfHt6TzmaC+XB67O8c=;
-        b=cZBtEHOeuUjLoazd/HsZGtCtBfAy7fB5HFRlygF6yNS7WO46pqoen4IkeqB4b/5VV/
-         QmH/Wm0FQmSqcawq9G4riJbsPGm73YjmYfyQpELavf1+Sp5WvGZEBGtnoJKsbkflAcFm
-         Er4J+38+3JUcQNpRSW3E/Z8htroQouIssP9+Kob9hz7RAHjpeke7RJBxlplcZpISHyML
-         2C91epABEvwST5Co9Azz5lsQ7Eq+WL3SG4+M7W3s0bWkZNyPEaeheFQoP/vKwlnvuXCz
-         5hZyb0yREa7+caL8kihNmYtbVD36jDB4HyuDUE+P12NB6NqrYNbCsj/c/vVpRPKz1abk
-         x5OQ==
+        bh=BHRAsDAn8C4kdn9sH3kl576WyN+RLpoPnrMOrraWnqU=;
+        b=H996nqN/BwKi5OJBP+83SlUaIecrSP5MoV2qn66jZq3TYwFyIt++IUoXtp45Md1ZFX
+         W85P/cTsFsQK/GZQ4kt4ukseMdouGpqUhYSEqoxaj99LR5Pl2fQNHLz3y9c06lVYyYYe
+         1uBMs/f2BG5yzkJBu7Dr+3p5hJvN3m17ZyhjXLru4Fk+6fLt16NT8phwbyUlZKM6clqy
+         lbjVFAiad9IuadFnjqFvzuV9JhcOggX+VuwJpfyrKv3MHI3H942UThbVyZ0xnGh6SKr9
+         bpiVRGVOsO3eGQBDq449aQXAt/tZrBmwwR2P3YQGgdr0sk0R4U8BGNP+hIMf/9pnesU+
+         nmnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705719057; x=1706323857;
+        d=1e100.net; s=20230601; t=1705719059; x=1706323859;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t+ncE/Ke8W/9eSicUFGfjAMk7XfHt6TzmaC+XB67O8c=;
-        b=ZZRp2/WT6YOnN0To871NwYbkeM4yUoCGudlHKvVXkJ0Xd6j1w52/rSjV4MdbVXq1v2
-         x6jCVDrE3DMZDG2idoQdg5/6aFneQ9FK8aAvSqUMgqRtZXvJmoCCO7CKGTwc3GAv1kXN
-         187GOzjAQHjryPQgbn1y6DIeCm1+0aw9Q0vGZfFaIOTySNfbXNJMBUTBlaQtJMS+rhEs
-         i86Ihc4d5OqWrgHvNQA3SLCE+D2PRtLacRX18vi5t8NI47HcjfSY3iY1OrPFIC4yeeze
-         CoWIG/r3hDI7sFzSRL9COn0gTzY4xzltVGW9SWXSil132wRn686KabP4MHV6tkOOKEHI
-         pwuw==
-X-Gm-Message-State: AOJu0Yx/KyjZ6AhURcef6L8JR8gCTaUkVKQfsOZhGvJwxdqK3Pz4RXfr
-	zYGIyr2hb6qeIBSvU3c5KKzi66tId4asc758GP3WELMMkSf6y0LX
-X-Google-Smtp-Source: AGHT+IEBemjBN9YRLuTBhZtFCGVJr5mUhG1n1vsbhUWd+Ve5XrfNo27NIhoncvmYKmUNx9+bet0s7g==
-X-Received: by 2002:a81:7bc5:0:b0:5ff:9b17:8cd7 with SMTP id w188-20020a817bc5000000b005ff9b178cd7mr735066ywc.71.1705719057453;
-        Fri, 19 Jan 2024 18:50:57 -0800 (PST)
+        bh=BHRAsDAn8C4kdn9sH3kl576WyN+RLpoPnrMOrraWnqU=;
+        b=UL/7VdS+lkY3r+av9eovVyN0UqTKgEIp94zbWsV6F9Pa4POzH3A+awRshoiqSF+m1W
+         MMvoXvpV50E48BXPqOqTcl+3wfhmHIINmKoT4rcFH0Ml+rAF06kwDLLYo+mLwZGxo85o
+         J8+O6eqBQBl0KCHyBThLY7HLKxU4ldKcEDZ1fW1hrMSg7FsaLBCG2z1PSwZOlVeOOEQe
+         yIEK3Yi2ZgAzNvPChK7yyBCv7+mQlqU1j4/SOswxy5EQ98lmpDtLaXLuhsTfZ2kx0rEf
+         4O3ui55eFtTq5OqMQfZqY3b96vlx+hQBKsvCXar1MzQOnH111oQiDlTIimAu/Za9RNXo
+         gXaw==
+X-Gm-Message-State: AOJu0YzwwmzRFhK1YnMF7wCURy7HrzABcFLpv+N4gqQH9jnb8HNVVb8C
+	XF1L8bUK1d/Q44FZxcHJI/k53cS5I7NMlc2EtfG3OH06Y7Un1q7t
+X-Google-Smtp-Source: AGHT+IF0xskwrMmWrtjLD2ozmMbhaGVUw1PuxJ1m4BaGD7SOiNKnNBc/j4r35lnX/kDTDCHgA1D/Wg==
+X-Received: by 2002:a25:db87:0:b0:dbf:1913:388d with SMTP id g129-20020a25db87000000b00dbf1913388dmr1444200ybf.26.1705719059194;
+        Fri, 19 Jan 2024 18:50:59 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:2288:782e:a717:678d])
-        by smtp.gmail.com with ESMTPSA id s4-20020a0dd004000000b005fb0d1afc7csm7925684ywd.120.2024.01.19.18.50.56
+        by smtp.gmail.com with ESMTPSA id v1-20020a25c501000000b00dc23a0382c6sm180986ybe.6.2024.01.19.18.50.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 18:50:56 -0800 (PST)
+        Fri, 19 Jan 2024 18:50:58 -0800 (PST)
 From: Yury Norov <yury.norov@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -76,9 +76,9 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
 	Zi Yan <ziy@nvidia.com>
-Subject: [PATCH 1/9] cpumask: introduce for_each_cpu_and_from()
-Date: Fri, 19 Jan 2024 18:50:45 -0800
-Message-Id: <20240120025053.684838-2-yury.norov@gmail.com>
+Subject: [PATCH 2/9] lib/group_cpus: optimize inner loop in grp_spread_init_one()
+Date: Fri, 19 Jan 2024 18:50:46 -0800
+Message-Id: <20240120025053.684838-3-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240120025053.684838-1-yury.norov@gmail.com>
 References: <20240120025053.684838-1-yury.norov@gmail.com>
@@ -90,52 +90,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Similarly to for_each_cpu_and(), introduce a for_each_cpu_and_from(),
-which is handy when it's needed to traverse 2 cpumasks or bitmaps,
-starting from a given position.
+The loop starts from the beginning every time we switch to the next
+sibling mask. This is the Schlemiel the Painter's style of coding
+because we know for sure that nmsk is clear up to current CPU, and we
+can just continue from the next CPU.
+
+Also, we can do it nicer if leverage the dedicated for_each() iterator,
+and simplify the logic of clearing a bit in nmsk.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- include/linux/cpumask.h | 11 +++++++++++
- include/linux/find.h    |  3 +++
- 2 files changed, 14 insertions(+)
+ lib/group_cpus.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index cfb545841a2c..73ff2e0ef090 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -332,6 +332,17 @@ unsigned int __pure cpumask_next_wrap(int n, const struct cpumask *mask, int sta
- #define for_each_cpu_and(cpu, mask1, mask2)				\
- 	for_each_and_bit(cpu, cpumask_bits(mask1), cpumask_bits(mask2), small_cpumask_bits)
+diff --git a/lib/group_cpus.c b/lib/group_cpus.c
+index ee272c4cefcc..063ed9ae1b8d 100644
+--- a/lib/group_cpus.c
++++ b/lib/group_cpus.c
+@@ -30,14 +30,14 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
  
-+/**
-+ * for_each_cpu_and_from - iterate over every cpu in both masks starting from a given cpu
-+ * @cpu: the (optionally unsigned) integer iterator
-+ * @mask1: the first cpumask pointer
-+ * @mask2: the second cpumask pointer
-+ *
-+ * After the loop, cpu is >= nr_cpu_ids.
-+ */
-+#define for_each_cpu_and_from(cpu, mask1, mask2)				\
-+	for_each_and_bit_from(cpu, cpumask_bits(mask1), cpumask_bits(mask2), small_cpumask_bits)
+ 		/* If the cpu has siblings, use them first */
+ 		siblmsk = topology_sibling_cpumask(cpu);
+-		for (sibl = -1; cpus_per_grp > 0; ) {
+-			sibl = cpumask_next(sibl, siblmsk);
+-			if (sibl >= nr_cpu_ids)
+-				break;
+-			if (!cpumask_test_and_clear_cpu(sibl, nmsk))
+-				continue;
++		sibl = cpu + 1;
 +
- /**
-  * for_each_cpu_andnot - iterate over every cpu present in one mask, excluding
-  *			 those present in another.
-diff --git a/include/linux/find.h b/include/linux/find.h
-index 5e4f39ef2e72..dfd3d51ff590 100644
---- a/include/linux/find.h
-+++ b/include/linux/find.h
-@@ -563,6 +563,9 @@ unsigned long find_next_bit_le(const void *addr, unsigned
- 	     (bit) = find_next_and_bit((addr1), (addr2), (size), (bit)), (bit) < (size);\
- 	     (bit)++)
- 
-+#define for_each_and_bit_from(bit, addr1, addr2, size) \
-+	for (; (bit) = find_next_and_bit((addr1), (addr2), (size), (bit)), (bit) < (size); (bit)++)
++		for_each_cpu_and_from(sibl, siblmsk, nmsk) {
++			if (cpus_per_grp-- == 0)
++				return;
 +
- #define for_each_andnot_bit(bit, addr1, addr2, size) \
- 	for ((bit) = 0;									\
- 	     (bit) = find_next_andnot_bit((addr1), (addr2), (size), (bit)), (bit) < (size);\
++			cpumask_clear_cpu(sibl, nmsk);
+ 			cpumask_set_cpu(sibl, irqmsk);
+-			cpus_per_grp--;
+ 		}
+ 	}
+ }
 -- 
 2.40.1
 
