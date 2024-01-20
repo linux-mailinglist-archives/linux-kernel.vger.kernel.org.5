@@ -1,176 +1,178 @@
-Return-Path: <linux-kernel+bounces-31700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5D728332A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 04:52:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C3C8332AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 04:59:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C2701F22730
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:52:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5F771F22789
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 03:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08458110F;
-	Sat, 20 Jan 2024 03:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C533111E;
+	Sat, 20 Jan 2024 03:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RUafH5AE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="H1VG32Jh"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C538110E1
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 03:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D0410E1
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 03:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705722736; cv=none; b=XkCNcnTxeVB80SJM72EXqgngIQTofA/MtFEFcunqfnqjX0WqGmXBcCd5YaK5dWdgr6+nnpVmw4ABvNJ5yq0l4+/voqzsFvJ0WkKLOy4qxdYdLNM+mpeuSV4VpIYOr0XhdntBx7TH0xmE10I/aVvtMWVXbH9rYJWyAtzsqba6RzQ=
+	t=1705723165; cv=none; b=puQoDcqTCTXuE3AyynHtEx5CjSvDCa64KsEllYY0x6ovNkYYQfUzCis/LHgWDcwBNf7lN5Hj309N4tup1ggaaoKYGKwKUZme33ukmNAYfE5m77MLNRHRKRrJlpfINScsVWO9/dP0y76LUlH5LUncvW6YWT4oJITvqQ0W9gMsmOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705722736; c=relaxed/simple;
-	bh=mJkTNRzDBZqU10kWG6Ct9fboRldQz/A2W0T4puxRyKc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KqhZa5kRcFgwh4EJl1KWJotI7c5HgwikZyas4pgpoXM57L/dN2XQa+PzuIgjEctaXdiU7nGVoddD3jMGLhaB/EzbGr4ik++qu/NeueDz83SyQ7CATGG3i45YdQXXouPihLO5f2mJnbkGvAew6Muo9pbYW5QgomBZUwEYzNr9nsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RUafH5AE; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705722733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fRDWoFpeQXxzTxwHVNQuyihaKBvu135bEPvcbfLZPLM=;
-	b=RUafH5AEWfuWuZXXLAKTST1DVwCr+rQa9TQ+h43Y83A0N/DlN8rpKHfnotDK5BSGlhcIFV
-	vnZEJxenNiJplUpZsmw4MrnU4EwDAOXWUUeOA3k7jlOFtcRax6ECAO0H1Sil4XwqympjeI
-	Z1CfA0Jxaf0OGsE9Bmtyg7X//wybtL0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-7-qyodwol7PEGw8YyGIV_oiw-1; Fri,
- 19 Jan 2024 22:52:07 -0500
-X-MC-Unique: qyodwol7PEGw8YyGIV_oiw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DA8C929AC02E;
-	Sat, 20 Jan 2024 03:52:06 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.42])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1BA74492BE2;
-	Sat, 20 Jan 2024 03:52:01 +0000 (UTC)
-Date: Sat, 20 Jan 2024 11:51:58 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Breno Leitao <leitao@debian.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Zi Yan <ziy@nvidia.com>, ming.lei@redhat.com
-Subject: Re: [PATCH 4/9] lib/group_cpus: optimize outer loop in
- grp_spread_init_one()
-Message-ID: <ZatDXvhvt0mLTi2m@fedora>
-References: <20240120025053.684838-1-yury.norov@gmail.com>
- <20240120025053.684838-5-yury.norov@gmail.com>
+	s=arc-20240116; t=1705723165; c=relaxed/simple;
+	bh=owW4MPVe7RBYKQzYe4QKg/APdDGIG9NhmwHwHuaMnNs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AjZSojIUd/WA5OfOeILQi1qLje/oybIqOtHooojUpqVc/s0gXqQDZZ0h7ihOVP++E6kPahWoegyYowaCiPMCQYkodXx7tPbBf9yCfaIIUhJr3z+OH7Mbx8N7w5rfAY25SdBw15N8Z0wa6x5cCY4y1sM4t6xzaE0m3udEvFz46wQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=H1VG32Jh; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3606ad581a5so7076335ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 19:59:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1705723163; x=1706327963; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MUdj33zU6WPp9NMXR1jDLao5OoMg89mIJNooFVUpnh0=;
+        b=H1VG32JhcxkcCTJVlDDHMs8zWauAyUFM5l2cmKm1D8qnQ9uYbbgMjvQ/cEKGfQcAn0
+         mhOFjZhBDchoMOl4eddIZpRn6I7feHBEgFoG7jD9jtGKpqN9LG6R42M+X/yViAiXNj8a
+         n41Y2PFH9GITwYHfarPi+9gdIsLMJIVfBn1vH/brQTknm137GyzMcBuG3bOzdYmmqNKL
+         eR9a8By/clLSQ7jwCwtH/29ohe0BC978zCek2d3S/PPKqmzYryofs7vOxzib/bEtl1nB
+         XnfDdDqm9CuNRgstAoRkZzvQd9ykTbPVIxLD3RIGn+0mJjQWqNQ/sfgUGJkRaka6q7Rl
+         g1tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705723163; x=1706327963;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MUdj33zU6WPp9NMXR1jDLao5OoMg89mIJNooFVUpnh0=;
+        b=Y7Tm8wvDMg/Em8/vyk1WB8yLDXP/bjwrz6a9/8KJZ1ktVl89WxIKvxE41FshEawQpp
+         kl6UtTUvE7MSfo/7BRUff8fSO+TIfPGrtWnai9Pfu3+GpAnUUarocZd/zoTDe7BBJOZ+
+         YzcoNOaEQx3zx6ygp5wKeSj/BR5b2l2pP/PwcoxjxK1W3WL0ORXGjnaFcl+nbLQs6w+j
+         7H6X35hJxIRAer7pHCg6qVIcRRKavA1eYH1XljlSLy+ju96EjJ4BBqPlP2YxouBf/uxC
+         HcYomU28swVH5MuBkiwPeYkAYzX/4sFvzZz3Hu9sviNkqZ6YmZctC3+RZSMYfPCh0tqz
+         AsvA==
+X-Gm-Message-State: AOJu0Yw29rO1yNQtxCyv3bX8rUEf7GPsUWCZQGReqpJz304OZfJGnMTP
+	AcEkvDFtI7a4DRqnOd1Ia+w8YmVQ5fOJR219iMK9j+Q0L7+lRWgt4PhJJI7qx8icbbV7Ba3a/SX
+	sgP+bHoqd0XtMDlpOUHQehpck/DC/HLQY8c0bfw==
+X-Google-Smtp-Source: AGHT+IE/vAYx8mnNdDKMAblUXSdltL/8n5TCQTrCXmLC8zaNaqz1vAs/Oe/IS8XQjJqKfiNn3hNoFDPDJZHtazYV8Ls=
+X-Received: by 2002:a92:b70a:0:b0:360:7190:f895 with SMTP id
+ k10-20020a92b70a000000b003607190f895mr854939ili.52.1705723162955; Fri, 19 Jan
+ 2024 19:59:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240120025053.684838-5-yury.norov@gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <20240119224404.26695-2-palmer@rivosinc.com>
+In-Reply-To: <20240119224404.26695-2-palmer@rivosinc.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Sat, 20 Jan 2024 09:29:11 +0530
+Message-ID: <CAAhSdy0naZf8aKkAH6MgYyLior3rZEjx0WWWgp4Ljakrb5q5XQ@mail.gmail.com>
+Subject: Re: [PATCH v2] tty: hvc: Fix the RISC-V SBI driver for a refactoring
+To: Palmer Dabbelt <palmer@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, Greg KH <gregkh@linuxfoundation.org>, 
+	jirislaby@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu, ajones@ventanamicro.com, 
+	apatel@ventanamicro.com, Atish Patra <atishp@rivosinc.com>, 
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 19, 2024 at 06:50:48PM -0800, Yury Norov wrote:
-> Similarly to the inner loop, in the outer loop we can use for_each_cpu()
-> macro, and skip CPUs that have been moved.
-> 
-> With this patch, the function becomes O(1), despite that it's a
-> double-loop.
-> 
-> While here, add a comment why we can't merge outer logic into the inner
-> loop.
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+On Sat, Jan 20, 2024 at 4:15=E2=80=AFAM Palmer Dabbelt <palmer@rivosinc.com=
+> wrote:
+>
+> From: Palmer Dabbelt <palmer@rivosinc.com>
+>
+> I missed the int->size_t refactoring in f32fcbedbe92 ("tty: hvc: convert
+> to u8 and size_t"), which causes the newly used ops in 88ead68e764c
+> ("tty: Add SBI debug console support to HVC SBI driver") to fail to
+> build due to a
+>
+> linux/drivers/tty/hvc/hvc_riscv_sbi.c:59:15: error: incompatible function=
+ pointer types initializing 'ssize_t (*)(uint32_t, const u8 *, size_t)' (ak=
+a 'long (*)(unsigned int, const unsigned char *, unsigned long)') with an e=
+xpression of type 'int (uint32_t, const char *, int)' (aka 'int (unsigned i=
+nt, const char *, int)') [-Wincompatible-function-pointer-types]
+>         .put_chars =3D hvc_sbi_dbcn_tty_put,
+>
+> Fixes: f32fcbedbe92 ("tty: hvc: convert to u8 and size_t")
+> Fixes: 88ead68e764c ("tty: Add SBI debug console support to HVC SBI drive=
+r")
+> Link: https://lore.kernel.org/r/20240119215612.20529-2-palmer@rivosinc.co=
+m
+> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 > ---
->  lib/group_cpus.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-> index 0a8ac7cb1a5d..952aac9eaa81 100644
-> --- a/lib/group_cpus.c
-> +++ b/lib/group_cpus.c
-> @@ -17,16 +17,17 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
->  	const struct cpumask *siblmsk;
->  	int cpu, sibl;
->  
-> -	for ( ; cpus_per_grp > 0; ) {
-> -		cpu = cpumask_first(nmsk);
-> -
-> -		/* Should not happen, but I'm too lazy to think about it */
-> -		if (cpu >= nr_cpu_ids)
-> +	for_each_cpu(cpu, nmsk) {
-> +		if (cpus_per_grp-- == 0)
->  			return;
->  
-> +		/*
-> +		 * If a caller wants to spread IRQa on offline CPUs, we need to
-> +		 * take care of it explicitly because those offline CPUS are not
-> +		 * included in siblings cpumask.
-> +		 */
->  		__cpumask_clear_cpu(cpu, nmsk);
->  		__cpumask_set_cpu(cpu, irqmsk);
-> -		cpus_per_grp--;
->  
->  		/* If the cpu has siblings, use them first */
->  		siblmsk = topology_sibling_cpumask(cpu);
-> @@ -38,6 +39,7 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
->  
->  			__cpumask_clear_cpu(sibl, nmsk);
->  			__cpumask_set_cpu(sibl, irqmsk);
-> +			cpu = sibl + 1;
+> Changes since v1 <20240119215612.20529-2-palmer@rivosinc.com>:
+> * Fix the return and arguments correctly.
+> * Also fix the hvc_sbi_dbcn_tty_{get,put}().
+> ---
+>  drivers/tty/hvc/hvc_riscv_sbi.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_riscv_=
+sbi.c
+> index 2f3571f17ecd..f8cd3310ef35 100644
+> --- a/drivers/tty/hvc/hvc_riscv_sbi.c
+> +++ b/drivers/tty/hvc/hvc_riscv_sbi.c
+> @@ -15,7 +15,7 @@
+>
+>  #include "hvc_console.h"
+>
+> -static int hvc_sbi_tty_put(uint32_t vtermno, const char *buf, int count)
+> +static ssize_t hvc_sbi_tty_put(uint32_t vtermno, const u8 *buf, size_t c=
+ount)
+>  {
+>         int i;
+>
+> @@ -25,7 +25,7 @@ static int hvc_sbi_tty_put(uint32_t vtermno, const char=
+ *buf, int count)
+>         return i;
+>  }
+>
+> -static int hvc_sbi_tty_get(uint32_t vtermno, char *buf, int count)
+> +static ssize_t hvc_sbi_tty_get(uint32_t vtermno, u8 *buf, size_t count)
 
-It has been tricky enough to update condition variable of for_each_cpu()
-(such kind of pattern can't build in Rust at all), and the above line could
-be more tricky actually.
+The hvc_sbi_tty_put() and hvc_sbi_tty_get() functions are already
+updated in Linus's tree. We only need to fix hvc_sbi_dbcn_tty_put()
+and hvc_sbi_dbcn_tty_get()
 
-You can get O(1)(not sure it matters here) by using cpumask_next(), which
-is more readable, isn't it?
+Please rebase this fix upon Linux-6.8-rc1 whenever that is available.
 
-diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-index 564d8e817f65..e0ce878ac4c4 100644
---- a/lib/group_cpus.c
-+++ b/lib/group_cpus.c
-@@ -15,10 +15,10 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
- 				unsigned int cpus_per_grp)
- {
- 	const struct cpumask *siblmsk;
--	int cpu, sibl;
-+	int cpu = -1;
- 
--	for ( ; cpus_per_grp > 0; ) {
--		cpu = cpumask_first(nmsk);
-+	while (cpus_per_grp > 0) {
-+		cpu = cpumask_next(cpu, nmsk);
- 
- 		/* Should not happen, but I'm too lazy to think about it */
- 		if (cpu >= nr_cpu_ids)
-@@ -30,9 +30,9 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
- 
- 		/* If the cpu has siblings, use them first */
- 		siblmsk = topology_sibling_cpumask(cpu);
--		for_each_cpu_and(sibl, siblmsk, nmsk) {
--			cpumask_clear_cpu(sibl, nmsk);
--			cpumask_set_cpu(sibl, irqmsk);
-+		for_each_cpu_and(cpu, siblmsk, nmsk) {
-+			cpumask_clear_cpu(cpu, nmsk);
-+			cpumask_set_cpu(cpu, irqmsk);
- 			if (--cpus_per_grp == 0)
- 				return;
- 		}
+>  {
+>         int i, c;
+>
+> @@ -44,12 +44,12 @@ static const struct hv_ops hvc_sbi_v01_ops =3D {
+>         .put_chars =3D hvc_sbi_tty_put,
+>  };
+>
+> -static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int c=
+ount)
+> +static ssize_t hvc_sbi_dbcn_tty_put(uint32_t vtermno, const u8 *buf, siz=
+e_t count)
+>  {
+>         return sbi_debug_console_write(buf, count);
+>  }
+>
+> -static int hvc_sbi_dbcn_tty_get(uint32_t vtermno, char *buf, int count)
+> +static ssize_t hvc_sbi_dbcn_tty_get(uint32_t vtermno, u8 *buf, size_t co=
+unt)
+>  {
+>         return sbi_debug_console_read(buf, count);
+>  }
+> --
+> 2.43.0
+>
+>
 
-
-
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
 Thanks,
-Ming
-
+Anup
 
