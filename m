@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-31909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23944833647
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:12:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FCDE833648
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:12:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 412401C20D5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:12:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 725121C203BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFAA02577F;
-	Sat, 20 Jan 2024 21:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1949D28360;
+	Sat, 20 Jan 2024 21:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X4V7szfQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d6RpqXL/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E49716425
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 21:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485E91772B;
+	Sat, 20 Jan 2024 21:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705784999; cv=none; b=FWqsMcBUzcGU+HLiJJmfhHudOHkO4bDi2ts5z7qgU3iIOAcsOd/C6CLzAqUhKdA862a7xIRAZGcrhhfatGmoLCo5meNLedejZ8duVxTHYj6f/5+HzW0ZciRPjT/mVScRNUaplySw6UYSPqNIFug702NdnCKesihRGxSnBx6D8GA=
+	t=1705784999; cv=none; b=EsC7VGWt0FchA3ApYShZm16jZj16U2bXjLMBvGTW/m0vZtovnic0c4SnZmNW+eBCGaaK0bqP/K6fG9syaYFkM3SmVvQswFzHb757iF9YVbfHzrvxOI3gGp3xavtSW6o3mS04lg0eGKRPjykOXmdTuJ/EY9VnTKvSUYz+n1Jxgp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705784999; c=relaxed/simple;
-	bh=QASk6X8mHI815lMQx7vHiMYhTE5lGqSmqP8w+R4JeKg=;
+	bh=q+nub84U23nvD+cn7YvgYkoUGFiaXs85dZdXJ4xFhpU=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=kq4e5cHbhZF3aLQzn9rCjHSRbEk6wAP1pu6j0qPm7Jt3qmLw9d3DGeamzH15rgWIviicOxgW22VhcXMQ22mJemt0QJGeT4zqU4StiLaEPtJCTLAv1obTaFCZf6tAl7ZYD9/POIq7OpQIa+nwRj8GyLr+NE+3er8u5VLnsIjNxR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X4V7szfQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E9527C433A6;
+	 In-Reply-To:To:Cc; b=qA5VpQA/38RgucgfkOaby+7+Xd7ylNGR8Eqsnl3aEyH3CR62PSGkKZh7BcvhOppkM/yf9H3yZx6VI52DGMmdfP7VTKQ7wr9Xf9/QSfCXmt98/J42FBqG7pFMZeAtvKYInHWfxmI4qZ3w/A3tp7KH6G6OXh3lYd226Sdwkfnt13Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d6RpqXL/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BECB1C433F1;
 	Sat, 20 Jan 2024 21:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705784998;
-	bh=QASk6X8mHI815lMQx7vHiMYhTE5lGqSmqP8w+R4JeKg=;
+	bh=q+nub84U23nvD+cn7YvgYkoUGFiaXs85dZdXJ4xFhpU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=X4V7szfQDwYJfFcOdTjrWH386mx6c46RbuwBiop3XbWj9B/KpP5P8C8NC4tcUkhbd
-	 I/lEC03ex8YEwRl+POcM796TedTPPd486rqM1J3il9coj6D1bjkXgqP8MyeMFToQt3
-	 KuK+9ZBmbcMOI+nwDAdOa2QAST/rOhKLSSdq0pt+Rlaf3+WMo1otM7sHV3cnzF8FD3
-	 TBCYNbioirus6IFsWMtdoP0Q1G5djUXe3F7tuAkODLYG0odOSBadDHH0JuFWkfdcI9
-	 mkJ1xx8/Zw8CiMbgpx4XiqUIgMD83JW+xakSUZ6xuJYDhlTJmUGFBPE0eJTxx6oH2/
-	 azb2CEYi3YhAg==
+	b=d6RpqXL/1LZrgglNCxscGX37U9C04RSJDlu9mrU8bupnby5ZS4JKTlFT4eeYAlWsC
+	 Rq9sXv9czypfWp6lI5AP8UmCHdyVB/BU1/0vRAbpo3oUfmrKIDev9To7g+kagjcGwt
+	 DPecFerWRld02oOeW9OUjgHXT8uCI5bt1XlZX7+o/HaLB4YZb058QLztbDYN6wjLmk
+	 rtaf91Q6Gp2xnO1AdFujjlrTfI6f1N4QzRCUm47BRCqcSpvyzqYt6Um9rrSsiIzMLt
+	 AW3dUIOZalnqBPYOn0FSC8c7gz007wJU4RrazDsq/0hR8JM06FSCGxYcYRQKLNlv00
+	 rvSGfy6pM1SUw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D9807D8C970;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AE98BD8C96C;
 	Sat, 20 Jan 2024 21:09:58 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,38 +51,38 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] riscv: Optimize hweight API with Zbb extension
+Subject: Re: [PATCH v1] riscv: dts: sophgo: remove address-cells from intc node
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <170578499888.24348.15332028365241008797.git-patchwork-notify@kernel.org>
+ <170578499871.24348.8897896227923136554.git-patchwork-notify@kernel.org>
 Date: Sat, 20 Jan 2024 21:09:58 +0000
-References: <20231112095244.4015351-1-xiao.w.wang@intel.com>
-In-Reply-To: <20231112095244.4015351-1-xiao.w.wang@intel.com>
-To: Xiao Wang <xiao.w.wang@intel.com>
-Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, anup@brainfault.org,
- haicheng.li@intel.com, linux-kernel@vger.kernel.org
+References: <20231024-maternity-slang-fd3dcfb211c0@spud>
+In-Reply-To: <20231024-maternity-slang-fd3dcfb211c0@spud>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-riscv@lists.infradead.org, conor.dooley@microchip.com,
+ chao.wei@sophgo.com, unicorn_wang@outlook.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
 Hello:
 
 This patch was applied to riscv/linux.git (fixes)
-by Palmer Dabbelt <palmer@rivosinc.com>:
+by Conor Dooley <conor.dooley@microchip.com>:
 
-On Sun, 12 Nov 2023 17:52:44 +0800 you wrote:
-> The Hamming Weight of a number is the total number of bits set in it, so
-> the cpop/cpopw instruction from Zbb extension can be used to accelerate
-> hweight() API.
+On Tue, 24 Oct 2023 09:20:35 +0100 you wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
 > 
-> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
-> ---
->  arch/riscv/include/asm/arch_hweight.h | 78 +++++++++++++++++++++++++++
->  arch/riscv/include/asm/bitops.h       |  4 +-
->  2 files changed, 81 insertions(+), 1 deletion(-)
->  create mode 100644 arch/riscv/include/asm/arch_hweight.h
+> A recent submission [1] from Rob has added additionalProperties: false
+> to the interrupt-controller child node of RISC-V cpus, highlighting that
+> the new cv1800b DT has been incorrectly using #address-cells.
+> It has no child nodes, so #address-cells is not needed. Remove it.
+> 
+> [...]
 
 Here is the summary with links:
-  - riscv: Optimize hweight API with Zbb extension
-    https://git.kernel.org/riscv/c/55ca8d7aa2af
+  - [v1] riscv: dts: sophgo: remove address-cells from intc node
+    https://git.kernel.org/riscv/c/e80ed63affc9
 
 You are awesome, thank you!
 -- 
