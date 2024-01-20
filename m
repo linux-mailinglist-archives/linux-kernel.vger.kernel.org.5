@@ -1,121 +1,84 @@
-Return-Path: <linux-kernel+bounces-31833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9182C833544
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:27:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 560F883353C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 16:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D9E61F23062
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:27:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA63BB21DC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 15:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1E412B91;
-	Sat, 20 Jan 2024 15:27:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B51211CB8;
+	Sat, 20 Jan 2024 15:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TMsp9W2X"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S8vAovvF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3618511C94;
-	Sat, 20 Jan 2024 15:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7E111718;
+	Sat, 20 Jan 2024 15:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705764467; cv=none; b=U0fJJ7qwsijK4EVJBJEPRj1D5hKa5DdSeEkKafCYLMVpOFohtK0rQsFqObJh4FSVFfwATrw1ZFL6wo3To8oaZntA4WmXOBnv+r0M/b9RPyC30mU1BB8NKA4VyBzpgIVVIqw5+uPhnkeaXLqzIzplsbOXbt3SvKI+c5MiQ0tuRyI=
+	t=1705764300; cv=none; b=UQFMbaAw54WcfN5OI2VJf8YnLjWQeZcsGUMqsYLho6TfWR4Q0oAbiz4obQZlXYcE8fb/hppKdDXuqeq8msLCoiMgU16CijUMbDJ3lEp12hfgy5S2hQCyP3+qbO/97PNtLeFHkk/U2LFNnsYoPaxvVF1iFCHJbje3gVIwrGSB6YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705764467; c=relaxed/simple;
-	bh=/mXGlIyQCY4NHrPWDhvtkkDReoY5hcLaj9tfxnmilYM=;
+	s=arc-20240116; t=1705764300; c=relaxed/simple;
+	bh=pCRTUE89WbCCD8xmHX5KJpuh7NCmdjg63VnRI9107FQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f+cqgI/b9FYxkl94rDgr2Ky/EKypb8+4wPbXuFNmeyzE/+xF+YcE0TqitBNy9zdV4Ufk+jaKIeNgJxsOr0yc24lectNpPhPtWbKRJ4uTqpFnSiPAwRgkBpJj7KpAedDB7hCQnLGbzBLj3qymspBNWKbZipmF/EghUnfKJoqi2lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TMsp9W2X; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705764466; x=1737300466;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/mXGlIyQCY4NHrPWDhvtkkDReoY5hcLaj9tfxnmilYM=;
-  b=TMsp9W2XjHaAQgP0CojKNXvoKza/TtsECa/fLhVjclIMDO7I18oslPop
-   L2ngBoS4s2GOoG44wd/UwC9Tsb8Ef7sfI4HypS2kD4fsCEuCdtquu7wSK
-   CW7kzMnULIzktPwd+18kHlaQTaIkkKWtids9FPOCeLGyILB+GyHJtPNV0
-   EizggAoc9/FGPXYtwZZ2mxz1fooG+oWuK331tX28WHYOjxJUKihYgF3yP
-   p+mTpwtewfCSqYO7RUJ2yG4Cwwe2QA0vjKIhe8hNfPryb6CN9cvm7lQ0U
-   a+g4+xDdt2WSRYe9Dj2o8mJCi8ZFJg60ZzBrCaZwv/RZ1KH1UUT84HqEx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="820818"
-X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
-   d="scan'208";a="820818"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2024 07:27:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="928631934"
-X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
-   d="scan'208";a="928631934"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Jan 2024 07:27:43 -0800
-Date: Sat, 20 Jan 2024 23:24:31 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH 4/4] KVM: Nullify async #PF worker's "apf" pointer as
- soon as it might be freed
-Message-ID: <Zavlr12AwoPkKrzK@yilunxu-OptiPlex-7050>
-References: <20240110011533.503302-1-seanjc@google.com>
- <20240110011533.503302-5-seanjc@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=eVkZh7/VIexs8sNavbviYXBM/gu5a0PM2SiVg3sxcALyr8qB/oDeVTs3H0y8el+CtzVi92zawZ8RWFRt6si+OBRhgFDgpJohptqnC2MIpcmW5dKZmEnn1+UH8sbOMo4m1bieVx/GqmJ1E2B0AGkD4ATzSOvBvsRUt8whLjER8R4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S8vAovvF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9974C433C7;
+	Sat, 20 Jan 2024 15:24:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705764300;
+	bh=pCRTUE89WbCCD8xmHX5KJpuh7NCmdjg63VnRI9107FQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S8vAovvFDeNN/MP7eTI6VSNy9LiWfk8ZbgU6pAJhhVf+w1ITNlN+Ij9GF4IlwvwnN
+	 lslSdxTjpv8Djs59EUiEPxyo53WTOO9Od9DUpX02UJbPGiu+tbowG2hhvQSUVSk4IJ
+	 fpEOgx5hnKPKpus8MlHoIJ0ATAhBQvP44QVznFapKvi4ugRWaqmhPbyUPBiwpmhlek
+	 tPlFpWLsKImQ9tpRoAi+OWACE3IusA/H26YHQb6hCEj3xoTnUWN7UrP2afW9AA3+vE
+	 +4PKP4MDr94yQbcODV85VXNHgwtc3XLq7zO1MOwzwOpUfckPxCWNatCAHn8p7DWhlg
+	 Y+oisUAICe3pw==
+Date: Sat, 20 Jan 2024 16:24:55 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: mszeredi@redhat.com, stgraber@stgraber.org, 
+	linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	Bernd Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 7/9] fs/fuse: drop idmap argument from __fuse_get_acl
+Message-ID: <20240120-bersten-anarchie-3b0f4dc63b26@brauner>
+References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
+ <20240108120824.122178-8-aleksandr.mikhalitsyn@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240110011533.503302-5-seanjc@google.com>
+In-Reply-To: <20240108120824.122178-8-aleksandr.mikhalitsyn@canonical.com>
 
-On Tue, Jan 09, 2024 at 05:15:33PM -0800, Sean Christopherson wrote:
-> Nullify the async #PF worker's local "apf" pointer immediately after the
-> point where the structure can be freed by the vCPU.  The existing comment
-> is helpful, but easy to overlook as there is no associated code.
+On Mon, Jan 08, 2024 at 01:08:22PM +0100, Alexander Mikhalitsyn wrote:
+> We don't need to have idmap in the __fuse_get_acl as we don't
+> have any use for it.
 > 
-> Update the comment to clarify that it can be freed by as soon as the lock
-> is dropped, as "after this point" isn't strictly accurate, nor does it
-> help understand what prevents the structure from being freed earlier.
+> In the current POSIX ACL implementation, idmapped mounts are
+> taken into account on the userspace/kernel border
+> (see vfs_set_acl_idmapped_mnt() and vfs_posix_acl_to_xattr()).
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-Reviewed-by: Xu Yilun <yilun.xu@intel.com>
-
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Seth Forshee <sforshee@kernel.org>
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Bernd Schubert <bschubert@ddn.com>
+> Cc: <linux-fsdevel@vger.kernel.org>
+> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 > ---
->  virt/kvm/async_pf.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-> index c3f4f351a2ae..1088c6628de9 100644
-> --- a/virt/kvm/async_pf.c
-> +++ b/virt/kvm/async_pf.c
-> @@ -83,13 +83,14 @@ static void async_pf_execute(struct work_struct *work)
->  	apf->vcpu = NULL;
->  	spin_unlock(&vcpu->async_pf.lock);
->  
-> -	if (!IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC) && first)
-> -		kvm_arch_async_page_present_queued(vcpu);
-> -
->  	/*
-> -	 * apf may be freed by kvm_check_async_pf_completion() after
-> -	 * this point
-> +	 * The apf struct may freed by kvm_check_async_pf_completion() as soon
-> +	 * as the lock is dropped.  Nullify it to prevent improper usage.
->  	 */
-> +	apf = NULL;
-> +
-> +	if (!IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC) && first)
-> +		kvm_arch_async_page_present_queued(vcpu);
->  
->  	trace_kvm_async_pf_completed(addr, cr2_or_gpa);
->  
-> -- 
-> 2.43.0.472.g3155946c3a-goog
-> 
+
+Ah, that probably became obsolete when I did the VFS POSIX ACL api.
+Thanks,
+Reviewed-by: Christian Brauner <brauner@kernel.org>
 
