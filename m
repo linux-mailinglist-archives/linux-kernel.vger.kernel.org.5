@@ -1,331 +1,176 @@
-Return-Path: <linux-kernel+bounces-31649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C426A8331EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:44:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CEB88331EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:44:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 746D6284F91
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:44:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34E24284F71
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFDE17D4;
-	Sat, 20 Jan 2024 00:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3E21A3C;
+	Sat, 20 Jan 2024 00:44:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="vvkQbQLb"
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="gd1zjiaQ"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42285650
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 00:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE9039F;
+	Sat, 20 Jan 2024 00:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705711433; cv=none; b=k8yx+CUg+EN+U0RbkIfs4SMfg3nogg2dNlR9gbSolMI7+QV4oRf3oSckBUoK72Zpb7G4pEnYoBt7NOUFRQxdIhlF8EGBusf9AE8BwnVwqcGLz3YYm3sZt/NolDThHpBMmqajVNVdSTLaJpEE8G1wEWc51peTPQ94FlaPFkMGT1o=
+	t=1705711467; cv=none; b=HTSIh5O1WDRRGDSl4c+bcDAcwnvWFofqoUKNBaGAA5OZvV63OhshnxS/GYwwpTfB1Nk2A7IxXWkjwyLJaBkTFl9CE1teg02Evb2b+gHVYuFrfXn2c69mBaGSKYfTRlOYVzRVmm4RT6ZkHVDI6i6NOSWYLmTMYNF1JrV5X7Zt5uM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705711433; c=relaxed/simple;
-	bh=leyeBcFJkOelhkt5ST2SMMVIL20doBYceJpBDtuL/v4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bTKzd9G0SngTTlmVJk85o5Y2SMtSvvJFIk1CxB+xP29zxWiKwvlmNRrkr5CLn7fMJsysEF7OSe9ZV6EcxOAn+mBsx8EEkIJ5tWtbHqR8AUDJ9wD1yi2bgKlbJQa9PEcnWb0wC80wiy/H7GJwDhZu8y75w9Bb7IfJI2/EdAdCO7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=vvkQbQLb; arc=none smtp.client-ip=209.85.166.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-3606dc4fdf2so6401305ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 16:43:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1705711429; x=1706316229; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=46obnkf6HiNspFca0IexytJkMImH/ly796+NnSx1ch0=;
-        b=vvkQbQLblhuJ7aeH9EqTZIwRdx/VIjTWUHgEcxNAOzfzeiJxm9zvXv7dWWk3C5Nl//
-         bNO06zAlN2MP0k96uPqcO8Dvkfjw3ppZpGqiqHcm5FCkZs6WArkq9bgX8j9rYZXcEaJC
-         isgcyzCXRKDBiROTCTSsjWGcSomsOkAaeuv6U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705711429; x=1706316229;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=46obnkf6HiNspFca0IexytJkMImH/ly796+NnSx1ch0=;
-        b=Xn+aOw4x7xYJ7YUentAGZQv251GMEtAJ6CGyZ/Daffe21pj5+nH2NI4Foh8FymtlHz
-         0KUlJd+qV/czOYE9rfN0D7+X4kBV+SdIis6Gun+kK+zqCfmI/e0jPB+preAev0jbO5tY
-         iIP2AQghUqKpXzhBLjM8HQY/BAhYt7LTVznU7Ot1q96zZ0bQqHjH84gatDViMfxCvLvJ
-         Ya1iaMRUFfxtdPABsnPowRecyPhD/vD6Hbzbqdxl64kk5ATSR/OFn5nYFotTM5OZH552
-         Xe2zqQF6G0XRqhDDH2XvvVBZpjvY0AjMam2FEvGvQsBe8y8hB74iu39YiUA8NTYrHDBO
-         A5ZQ==
-X-Gm-Message-State: AOJu0Yxyk+bse9H15+LnERu9PzOsWzV2G5BjZDRvNzFpJ5GuzcFRgiyU
-	+U2M7aH0gdvqDBIhSwBTCC9PXK8073ZM6SjUDxYfoTXhrCWKyuwHjetV2TrhCNI=
-X-Google-Smtp-Source: AGHT+IEiLauMOX12GtSj1Q05/y33vn5vvIkQZdiE2JeowwT1m/qjSZxd/D3a+Q2jcRdJVaLHE4vNdg==
-X-Received: by 2002:a05:6e02:1b0e:b0:35f:b29c:d2ab with SMTP id i14-20020a056e021b0e00b0035fb29cd2abmr919408ilv.34.1705711429426;
-        Fri, 19 Jan 2024 16:43:49 -0800 (PST)
-Received: from localhost.localdomain ([2620:11a:c018:0:ea8:be91:8d1:f59b])
-        by smtp.gmail.com with ESMTPSA id p7-20020a170903248700b001cf6783fd41sm3563800plw.17.2024.01.19.16.43.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 16:43:48 -0800 (PST)
-From: Joe Damato <jdamato@fastly.com>
-To: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: chuck.lever@oracle.com,
-	jlayton@kernel.org,
-	linux-api@vger.kernel.org,
-	edumazet@google.com,
-	davem@davemloft.net,
-	alexander.duyck@gmail.com,
-	sridhar.samudrala@intel.com,
-	kuba@kernel.org,
-	Joe Damato <jdamato@fastly.com>
-Subject: [RFC 1/1] eventpoll: support busy poll per epoll instance
-Date: Sat, 20 Jan 2024 00:42:47 +0000
-Message-Id: <20240120004247.42036-2-jdamato@fastly.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240120004247.42036-1-jdamato@fastly.com>
-References: <20240120004247.42036-1-jdamato@fastly.com>
+	s=arc-20240116; t=1705711467; c=relaxed/simple;
+	bh=mLAwfTqW3JqPYfITefySSYIm5jxOBfJIzaZejnA2Hek=;
+	h=Date:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JWAt7ImX+Q0/KrmE1XKa7mjkt7JWNRD7MFSWQjRf2hMh5MgqaUQPmx/EqWfhof0SlsaqzIwFFWmamW4UTAZ+VvSPl8p80L2w8xLCJmvSvWksU6uL8KG5YhLncUVi+VrJmuCubZFaZ5XJi5Wfbp3f8/1nZRIpaM1ggDmkE/Wtuvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=gd1zjiaQ; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1705711456;
+	bh=5EXJu33TqPCGL2xgGmr1B8pslMsApecSKH/SB8e0KQk=;
+	h=Date:From:Cc:Subject:In-Reply-To:References:From;
+	b=gd1zjiaQujA9BHI56crV1tmzzoTM2Bw2H+aMihqyVyYmiaL5RclU6TVkXzNM/IphG
+	 2BBJMFqiPJvSPWhAhAqCxDTMmAk7CUQCWO2GKyPweGROkN3AIojHuYS+EcRvuGCyy6
+	 Q+gpG9twBAPkdJ1J/estXqii4zlgwaCrZRsAk/9WvA1lSUzdHoZ/DHzGiKi1DoxOuX
+	 SCE+6dq+qApJduNW8b66JPI3+tyRfJcjylsQcHlv1kGJ93hW1yblC0wVBq1IoFiXAd
+	 edw+zfl8DBesIaM3k/FF5WbDPK1MzzO8HFu/8TjQ3ECpGsDHKzsa9WabQvxkYsYfQG
+	 Gj+rC253P0adg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TGyRM1LtBz4wx8;
+	Sat, 20 Jan 2024 11:44:15 +1100 (AEDT)
+Date: Sat, 20 Jan 2024 11:44:12 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Randy Dunlap
+ <rdunlap@infradead.org>, Huacai Chen <chenhuacai@loongson.cn>, Huacai Chen
+ <chenhuacai@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao
+ <maobibo@loongson.cn>, kvm@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang
+ <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH] LoongArch: KVM: Fix build due to API changes
+Message-ID: <20240120114412.2208a8c1@canb.auug.org.au>
+In-Reply-To: <20231220144024.7d9fd46b@canb.auug.org.au>
+References: <20231115090735.2404866-1-chenhuacai@loongson.cn>
+	<15ba5868-42de-4563-9903-ccd0297e2075@infradead.org>
+	<20231220144024.7d9fd46b@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/Uo2ujjpjD/I=Dix6LsNA.i+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Add F_EPOLL_{S,G}ET_BUSY_POLL_USECS to allow setting a busy poll timeout
-per epoll instance so that individual applications can enable (or
-disable) epoll based busy poll as needed.
+--Sig_/Uo2ujjpjD/I=Dix6LsNA.i+
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Prior to this change, epoll-based busy poll could only be enabled
-system-wide, which limits the usefulness of busy poll.
+Hi all,
 
-Signed-off-by: Joe Damato <jdamato@fastly.com>
----
- fs/eventpoll.c                   | 71 ++++++++++++++++++++++++++++++--
- fs/fcntl.c                       |  5 +++
- include/linux/eventpoll.h        |  2 +
- include/uapi/linux/fcntl.h       |  6 +++
- tools/include/uapi/linux/fcntl.h |  6 +++
- tools/perf/trace/beauty/fcntl.c  |  3 +-
- 6 files changed, 88 insertions(+), 5 deletions(-)
+On Wed, 20 Dec 2023 14:40:24 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Fri, 15 Dec 2023 21:08:06 -0800 Randy Dunlap <rdunlap@infradead.org> w=
+rote:
+> >
+> > Someone please merge this patch... =20
+>=20
+> I have applied it to my merge of the kvm tree today and will keep
+> applying it until it is applied to the kvm tree ...
+>=20
+> It looks like this:
+>=20
+> From: Huacai Chen <chenhuacai@loongson.cn>
+> To: Paolo Bonzini <pbonzini@redhat.com>,
+> 	Huacai Chen <chenhuacai@kernel.org>,
+> 	Tianrui Zhao <zhaotianrui@loongson.cn>,
+> 	Bibo Mao <maobibo@loongson.cn>
+> Cc: kvm@vger.kernel.org,
+> 	loongarch@lists.linux.dev,
+> 	linux-kernel@vger.kernel.org,
+> 	Xuerui Wang <kernel@xen0n.name>,
+> 	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+> 	Huacai Chen <chenhuacai@loongson.cn>
+> Subject: [PATCH] LoongArch: KVM: Fix build due to API changes
+> Date: Wed, 15 Nov 2023 17:07:35 +0800
+>=20
+> Commit 8569992d64b8f750e34b7858eac ("KVM: Use gfn instead of hva for
+> mmu_notifier_retry") replaces mmu_invalidate_retry_hva() usage with
+> mmu_invalidate_retry_gfn() for X86, LoongArch also need similar changes
+> to fix build.
+>=20
+> Fixes: 8569992d64b8 ("KVM: Use gfn instead of hva for mmu_notifier_retry")
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  arch/loongarch/kvm/mmu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/loongarch/kvm/mmu.c b/arch/loongarch/kvm/mmu.c
+> index 80480df5f550..9463ebecd39b 100644
+> --- a/arch/loongarch/kvm/mmu.c
+> +++ b/arch/loongarch/kvm/mmu.c
+> @@ -627,7 +627,7 @@ static bool fault_supports_huge_mapping(struct kvm_me=
+mory_slot *memslot,
+>   *
+>   * There are several ways to safely use this helper:
+>   *
+> - * - Check mmu_invalidate_retry_hva() after grabbing the mapping level, =
+before
+> + * - Check mmu_invalidate_retry_gfn() after grabbing the mapping level, =
+before
+>   *   consuming it.  In this case, mmu_lock doesn't need to be held durin=
+g the
+>   *   lookup, but it does need to be held while checking the MMU notifier.
+>   *
+> @@ -807,7 +807,7 @@ static int kvm_map_page(struct kvm_vcpu *vcpu, unsign=
+ed long gpa, bool write)
+> =20
+>  	/* Check if an invalidation has taken place since we got pfn */
+>  	spin_lock(&kvm->mmu_lock);
+> -	if (mmu_invalidate_retry_hva(kvm, mmu_seq, hva)) {
+> +	if (mmu_invalidate_retry_gfn(kvm, mmu_seq, gfn)) {
+>  		/*
+>  		 * This can happen when mappings are changed asynchronously, but
+>  		 * also synchronously if a COW is triggered by
+> --=20
+> 2.39.3
+>=20
+> Though my Signed-off-by is not necessary if it applied to the kvm tree.
 
-diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-index 3534d36a1474..a8087c2b47ef 100644
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -227,6 +227,8 @@ struct eventpoll {
- #ifdef CONFIG_NET_RX_BUSY_POLL
- 	/* used to track busy poll napi_id */
- 	unsigned int napi_id;
-+	/* busy poll timeout */
-+	u64 busy_poll_usecs;
- #endif
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
-@@ -386,12 +388,39 @@ static inline int ep_events_available(struct eventpoll *ep)
- 		READ_ONCE(ep->ovflist) != EP_UNACTIVE_PTR;
- }
- 
-+/**
-+ * busy_loop_ep_timeout - check if busy poll has timed out. The timeout value
-+ * from the epoll instance ep is preferred, but if it is not set fallback to
-+ * the system-wide global via busy_loop_timeout.
-+ */
-+static inline bool busy_loop_ep_timeout(unsigned long start_time, struct eventpoll *ep)
-+{
- #ifdef CONFIG_NET_RX_BUSY_POLL
-+	unsigned long bp_usec = READ_ONCE(ep->busy_poll_usecs);
-+
-+	if (bp_usec) {
-+		unsigned long end_time = start_time + bp_usec;
-+		unsigned long now = busy_loop_current_time();
-+
-+		return time_after(now, end_time);
-+	} else {
-+		return busy_loop_timeout(start_time);
-+	}
-+#endif
-+	return true;
-+}
-+
-+#ifdef CONFIG_NET_RX_BUSY_POLL
-+static bool ep_busy_loop_on(struct eventpoll *ep)
-+{
-+	return !!ep->busy_poll_usecs ^ net_busy_loop_on();
-+}
-+
- static bool ep_busy_loop_end(void *p, unsigned long start_time)
- {
- 	struct eventpoll *ep = p;
- 
--	return ep_events_available(ep) || busy_loop_timeout(start_time);
-+	return ep_events_available(ep) || busy_loop_ep_timeout(start_time, ep);
- }
- 
- /*
-@@ -404,7 +433,7 @@ static bool ep_busy_loop(struct eventpoll *ep, int nonblock)
- {
- 	unsigned int napi_id = READ_ONCE(ep->napi_id);
- 
--	if ((napi_id >= MIN_NAPI_ID) && net_busy_loop_on()) {
-+	if ((napi_id >= MIN_NAPI_ID) && ep_busy_loop_on(ep)) {
- 		napi_busy_loop(napi_id, nonblock ? NULL : ep_busy_loop_end, ep, false,
- 			       BUSY_POLL_BUDGET);
- 		if (ep_events_available(ep))
-@@ -430,7 +459,8 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
- 	struct socket *sock;
- 	struct sock *sk;
- 
--	if (!net_busy_loop_on())
-+	ep = epi->ep;
-+	if (!ep_busy_loop_on(ep))
- 		return;
- 
- 	sock = sock_from_file(epi->ffd.file);
-@@ -442,7 +472,6 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
- 		return;
- 
- 	napi_id = READ_ONCE(sk->sk_napi_id);
--	ep = epi->ep;
- 
- 	/* Non-NAPI IDs can be rejected
- 	 *	or
-@@ -466,6 +495,10 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
- {
- }
- 
-+static inline bool ep_busy_loop_on(struct eventpoll *ep)
-+{
-+	return false;
-+}
- #endif /* CONFIG_NET_RX_BUSY_POLL */
- 
- /*
-@@ -933,6 +966,33 @@ static const struct file_operations eventpoll_fops = {
- 	.llseek		= noop_llseek,
- };
- 
-+unsigned long eventpoll_fcntl(struct file *file, unsigned int cmd, unsigned long arg)
-+{
-+	int ret;
-+	struct eventpoll *ep;
-+
-+	if (!is_file_epoll(file))
-+		return -EINVAL;
-+
-+	ep = file->private_data;
-+
-+	switch (cmd) {
-+#ifdef CONFIG_NET_RX_BUSY_POLL
-+	case F_EPOLL_SET_BUSY_POLL_USECS:
-+		ret = ep->busy_poll_usecs = arg;
-+		break;
-+	case F_EPOLL_GET_BUSY_POLL_USECS:
-+		ret = ep->busy_poll_usecs;
-+		break;
-+#endif
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
- /*
-  * This is called from eventpoll_release() to unlink files from the eventpoll
-  * interface. We need to have this facility to cleanup correctly files that are
-@@ -2058,6 +2118,9 @@ static int do_epoll_create(int flags)
- 		error = PTR_ERR(file);
- 		goto out_free_fd;
- 	}
-+#ifndef CONFIG_NET_RX_BUSY_POLL
-+	ep->busy_poll_usecs = 0;
-+#endif
- 	ep->file = file;
- 	fd_install(fd, file);
- 	return fd;
-diff --git a/fs/fcntl.c b/fs/fcntl.c
-index c80a6acad742..f232e7c2eb9d 100644
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -9,6 +9,7 @@
- #include <linux/init.h>
- #include <linux/mm.h>
- #include <linux/sched/task.h>
-+#include <linux/eventpoll.h>
- #include <linux/fs.h>
- #include <linux/filelock.h>
- #include <linux/file.h>
-@@ -419,6 +420,10 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
- 	case F_SET_RW_HINT:
- 		err = fcntl_rw_hint(filp, cmd, arg);
- 		break;
-+	case F_EPOLL_GET_BUSY_POLL_USECS:
-+	case F_EPOLL_SET_BUSY_POLL_USECS:
-+		err = eventpoll_fcntl(filp, cmd, arg);
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/include/linux/eventpoll.h b/include/linux/eventpoll.h
-index 3337745d81bd..3e6a49d14f52 100644
---- a/include/linux/eventpoll.h
-+++ b/include/linux/eventpoll.h
-@@ -22,6 +22,8 @@ struct file;
- struct file *get_epoll_tfile_raw_ptr(struct file *file, int tfd, unsigned long toff);
- #endif
- 
-+unsigned long eventpoll_fcntl(struct file *file, unsigned int cmd, unsigned long arg);
-+
- /* Used to release the epoll bits inside the "struct file" */
- void eventpoll_release_file(struct file *file);
- 
-diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-index 282e90aeb163..522134ab9580 100644
---- a/include/uapi/linux/fcntl.h
-+++ b/include/uapi/linux/fcntl.h
-@@ -56,6 +56,12 @@
- #define F_GET_FILE_RW_HINT	(F_LINUX_SPECIFIC_BASE + 13)
- #define F_SET_FILE_RW_HINT	(F_LINUX_SPECIFIC_BASE + 14)
- 
-+/*
-+ * Set/Get busy poll usecs for an epoll instance.
-+ */
-+#define F_EPOLL_GET_BUSY_POLL_USECS (F_LINUX_SPECIFIC_BASE + 15)
-+#define F_EPOLL_SET_BUSY_POLL_USECS (F_LINUX_SPECIFIC_BASE + 16)
-+
- /*
-  * Valid hint values for F_{GET,SET}_RW_HINT. 0 is "not set", or can be
-  * used to clear any hints previously set.
-diff --git a/tools/include/uapi/linux/fcntl.h b/tools/include/uapi/linux/fcntl.h
-index 6c80f96049bd..1937f8b74783 100644
---- a/tools/include/uapi/linux/fcntl.h
-+++ b/tools/include/uapi/linux/fcntl.h
-@@ -56,6 +56,12 @@
- #define F_GET_FILE_RW_HINT	(F_LINUX_SPECIFIC_BASE + 13)
- #define F_SET_FILE_RW_HINT	(F_LINUX_SPECIFIC_BASE + 14)
- 
-+/*
-+ * Set/Get busy poll usecs for an epoll instance.
-+ */
-+#define F_EPOLL_GET_BUSY_POLL_USECS (F_LINUX_SPECIFIC_BASE + 15)
-+#define F_EPOLL_SET_BUSY_POLL_USECS (F_LINUX_SPECIFIC_BASE + 16)
-+
- /*
-  * Valid hint values for F_{GET,SET}_RW_HINT. 0 is "not set", or can be
-  * used to clear any hints previously set.
-diff --git a/tools/perf/trace/beauty/fcntl.c b/tools/perf/trace/beauty/fcntl.c
-index 56ef83b3d130..dae5647c5c1a 100644
---- a/tools/perf/trace/beauty/fcntl.c
-+++ b/tools/perf/trace/beauty/fcntl.c
-@@ -94,7 +94,8 @@ size_t syscall_arg__scnprintf_fcntl_arg(char *bf, size_t size, struct syscall_ar
- 	    cmd == F_OFD_SETLK || cmd == F_OFD_SETLKW || cmd == F_OFD_GETLK ||
- 	    cmd == F_GETOWN_EX || cmd == F_SETOWN_EX ||
- 	    cmd == F_GET_RW_HINT || cmd == F_SET_RW_HINT ||
--	    cmd == F_GET_FILE_RW_HINT || cmd == F_SET_FILE_RW_HINT)
-+	    cmd == F_GET_FILE_RW_HINT || cmd == F_SET_FILE_RW_HINT ||
-+	    cmd == F_EPOLL_GET_BUSY_POLL_USECS || cmd == F_EPOLL_SET_BUSY_POLL_USECS)
- 		return syscall_arg__scnprintf_hex(bf, size, arg);
- 
- 	return syscall_arg__scnprintf_long(bf, size, arg);
--- 
-2.25.1
+OK, so it needed to be applied to the merge commit when the loongarch
+tree was merged by Linus, but appears to have been forgotten. :-(
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Uo2ujjpjD/I=Dix6LsNA.i+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWrF1wACgkQAVBC80lX
+0GznHwf+J9OteK9Y4TvrZARvcVljc/vhMzpH0IOshhkyHVBuTKd4HGZC+feioXt8
+wrw0wYaXqR6UvcOl0ZRbhpIHPjgM5nvDC/YKgmR7i7Mpf+ui7OZ3GtXiOl2VjKWN
+68beXUCalkCnl60EhVVYDHhQhzPn4nCOcfcV7iNAcUcahDHwliglktfsQHL2nB1/
+iCoxmeHjplk/LoeFpe4Vrez+bRfoPxp/xvVaWy5TbtvUpkKb90XuLxnpRyA9CkTt
+0p4BZpGbEaqMh8KLyqu9r4vLfN8pQqrQeTXbpM2Kyz5dSZfQ9hVwvWdcHU3So1lr
+QCKupRyJOOwEpP7m3icFsf7qJz9Kqg==
+=Aan9
+-----END PGP SIGNATURE-----
+
+--Sig_/Uo2ujjpjD/I=Dix6LsNA.i+--
 
