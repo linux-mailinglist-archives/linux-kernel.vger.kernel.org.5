@@ -1,172 +1,146 @@
-Return-Path: <linux-kernel+bounces-31714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A148332EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:20:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C26738332E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:18:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E6C9B22940
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 06:19:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A43351C21436
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 06:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2634F1FD8;
-	Sat, 20 Jan 2024 06:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10BF1879;
+	Sat, 20 Jan 2024 06:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="xJ9PCjYI"
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M9DLcIbY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7559A1858;
-	Sat, 20 Jan 2024 06:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890F517D4
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 06:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705731590; cv=none; b=Re0SbUjyBLDdQ840gPt3/VICsev24wOjOAO2iuxRE71bNFhHWitgAEs1QGiEQzW8bVY+62IfeyRziyGaEX2Ibr6kpYnvaeXedqQLWUV3N6RfC2IQrWMc+WFIXxj92NVsQxuOLMHCI0Y9AZ3mXvMdpL+F58LdEj2pE65CxlsL3L4=
+	t=1705731476; cv=none; b=n6OujAoVG20Yz5vQ1QlRWDm3DdN+0oc2BHfVkYj6W3bxlMskYud0i5V+cONgSKz7fGZjypwRE/r43wZ2INIupmJzXIm+8dCI6BT96r8HlALk1AVewowRuEy0XyaOC1rmKlJM/F4k17qB1X8n1Pz6mE39AI+vW+4LI/weFT/FZDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705731590; c=relaxed/simple;
-	bh=FqLLGv/lbGLEEWWEPR0aQ1IfODLoQX9CDS7SfoUmZZE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hMTCGYrHWEQORuFKkJQjyQ2WDbqcWDSBb35wUsLfbip+EpVszhObscSFQcN/L/KxBKV9LcK8TSQqh5fAWPHtVqUuQdRBQolqHHX3Wac8Zv/IEfNeX58RPNFudVKvykePVQ9qaLIz0oL181I+uVPhwCYfjxrNP7SsNHUlngm/PI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=xJ9PCjYI; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1705731576; bh=FSgOORcQO5lgUOwo8yV1k/rvCE07D2OesQo7olHJxB8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=xJ9PCjYIyxS91osERfxhtCS02jfrwfHMGXByfVR8hqIFcqIVdkztL+PVIqavW+46W
-	 H3AdklhYOD7K+/67egWVk30Ksoh8Vb4tzpW8INN3/0HCOYr8h8XJGFH3jg8fXpNyVk
-	 LNfyIPWumwJhgDAb3E9+QFgK/gPhxyqllYrCxeAQ=
-Received: from [IPV6:240e:379:227b:4f00:cd09:8a0a:600e:c38] ([240e:379:227b:4f00:cd09:8a0a:600e:c38])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id 34E26442; Sat, 20 Jan 2024 14:13:14 +0800
-X-QQ-mid: xmsmtpt1705731194tluox7vxj
-Message-ID: <tencent_FE461EBE274178ED6047005CCF98D710B807@qq.com>
-X-QQ-XMAILINFO: NmRjDopJZVxOa26de14HAXFoYHQ08j8Qs7V+SVV1ET7ciwxp9PLNUzI2cE9Wef
-	 JrxZSkfaZRH2wlaa99VkKVAYrKXHu81wW84VPVtM+5epuQxmeSU3dP+DZ57h3v6U9zBUF+Lc17U1
-	 OMU1JxUx/NQSR6AonfLKr2piq76uQC9qAMyeZIwJDhx2rYdLAnP+DH7dxnv/Ak17+EyLH0uDUw00
-	 Y+uvvIOm7OswqTOf5XWyhoEdJRulUGT55UYuaUz8YsFIl8HRCOaYJF2e39+dCtDVpl5S7YVbOybp
-	 X85jc94s0oV+5ODm73hLQWxP1eQRDlZbbwXWViKsDf12XLH9r0RqdDbNstKYiw6ZK2ju+LsgFBzQ
-	 wiwvBvCT4cVrv+z0WpbAMDP/ea1Xd1HC7edRVnSYrXgEIv1uHE4v8DUeGwB1BcoKN40kfyQp+Uk1
-	 aTHzCghkVl9518xsgeizUuEZqIy8xghrdB4Zqa/ay+EVPJjEHgCvTUjUXbv+R+CnKyBft6zhgqXd
-	 dT9E20V3Xeboyfpz345GPnXr1vXMPafyfqixTWXlDq2YKt83amMGKJjfPkhGQNVnNsazXXXaFb6l
-	 NKhy6mt3aQpqbvU3Wm6pN9Lc9pYRBqa9CAJ3Y/sodWZAlQgTxROw8vSq8ZIzjDmv87CYXBAccb5J
-	 YTsTVvXcAKscFKTdrmtbhd22jD+goO1q50QsJS1UrHur5z6C9BSQTZ16uQZlUvJqn/Mrmtm0T/NZ
-	 ajunfU/gCEDC3AQ8fiH+bfg8hjzDi2KoF4SYEu1+YKXwSz1AQ6jotwLFMoVVeO5tlYVZ1yERuI2S
-	 fD+NvLiVc1O2S83eSRdH3vsm5i8nIJFljhyE2tjwZjGfcPj/Uq++mrQQXRWtPUGCiH1a6b2y4+EE
-	 DeP4b+e1PljbZHlr+C2j3NvUM20adqTXEJ+h0FinfDveFc4uMJsK1fsVWhGCw7gYxgHE/k8ose6g
-	 lMbVPBhrwW0Z32xxN8W9j934P0aX02
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-X-OQ-MSGID: <1ee2f17b-4cd2-41c6-89c3-6842d87e03ce@cyyself.name>
-Date: Sat, 20 Jan 2024 14:13:14 +0800
+	s=arc-20240116; t=1705731476; c=relaxed/simple;
+	bh=2TIFv5bWl4QoJ8YY6nQXuOBcbB39LBIAHax5xsKVXQQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BJ44PTvaHXAHlOYd2lOOlkZj+ad5y/SGcnDkBC2xVSVXfiODb4KmF6bctpGNwEoOw3rmrhAGVPorr1pW9EC1iamjID7atFJffvDXEccEGvYS9CeDmU+zl5K6vq9f8mLAEdcTc5JttLHFSwcA9oy9JyUCz2TqsdIvhxYi/5/KaRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M9DLcIbY; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705731473;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KPagYGDCgd4YbmRF67JJPRGuQwCB9qdncajSxilqw6s=;
+	b=M9DLcIbY1PDwXvA5f+Hh+SOWkhWMet76xQH5P8QuZT38yZPNa00AVCkwkayS5Raxg5N7t7
+	N5hvB/rNyi6MHcvnTWYXxUEWlHfIZ1W5T59dbpePiu/8CvYGV11GZomM5OZ/NQkVCr83e9
+	L0MuZrxStWzQUJC4EUQ7WBiEw286egc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-609-I_WqePedOoSQHcCvLPXnfg-1; Sat,
+ 20 Jan 2024 01:17:48 -0500
+X-MC-Unique: I_WqePedOoSQHcCvLPXnfg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DD9422825BA5;
+	Sat, 20 Jan 2024 06:17:47 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.42])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id BCA58C0FDCA;
+	Sat, 20 Jan 2024 06:17:42 +0000 (UTC)
+Date: Sat, 20 Jan 2024 14:17:38 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Breno Leitao <leitao@debian.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Zi Yan <ziy@nvidia.com>, ming.lei@redhat.com
+Subject: Re: [PATCH 4/9] lib/group_cpus: optimize outer loop in
+ grp_spread_init_one()
+Message-ID: <ZatlggW/8SH6od9O@fedora>
+References: <20240120025053.684838-1-yury.norov@gmail.com>
+ <20240120025053.684838-5-yury.norov@gmail.com>
+ <ZatDXvhvt0mLTi2m@fedora>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 0/4] RISC-V: mm: Make SV48 the default address space
-Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: alexghiti@rivosinc.com, anup@brainfault.org, aou@eecs.berkeley.edu,
- conor@kernel.org, jrtc27@jrtc27.com, konstantin@linuxfoundation.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
- linux-riscv@lists.infradead.org, mick@ics.forth.gr, palmer@rivosinc.com,
- paul.walmsley@sifive.com, rdunlap@infradead.org
-References: <20230809232218.849726-1-charlie@rivosinc.com>
- <tencent_F9568C6D8872E30EDFAF20ADF686A31D6E06@qq.com>
- <ZasjJ3HPUVuxr2oG@ghost>
-From: Yangyu Chen <cyy@cyyself.name>
-In-Reply-To: <ZasjJ3HPUVuxr2oG@ghost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZatDXvhvt0mLTi2m@fedora>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-Thanks for your reply.
+On Sat, Jan 20, 2024 at 11:51:58AM +0800, Ming Lei wrote:
+> On Fri, Jan 19, 2024 at 06:50:48PM -0800, Yury Norov wrote:
+> > Similarly to the inner loop, in the outer loop we can use for_each_cpu()
+> > macro, and skip CPUs that have been moved.
+> > 
+> > With this patch, the function becomes O(1), despite that it's a
+> > double-loop.
+> > 
+> > While here, add a comment why we can't merge outer logic into the inner
+> > loop.
+> > 
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > ---
+> >  lib/group_cpus.c | 14 ++++++++------
+> >  1 file changed, 8 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/lib/group_cpus.c b/lib/group_cpus.c
+> > index 0a8ac7cb1a5d..952aac9eaa81 100644
+> > --- a/lib/group_cpus.c
+> > +++ b/lib/group_cpus.c
+> > @@ -17,16 +17,17 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
+> >  	const struct cpumask *siblmsk;
+> >  	int cpu, sibl;
+> >  
+> > -	for ( ; cpus_per_grp > 0; ) {
+> > -		cpu = cpumask_first(nmsk);
+> > -
+> > -		/* Should not happen, but I'm too lazy to think about it */
+> > -		if (cpu >= nr_cpu_ids)
+> > +	for_each_cpu(cpu, nmsk) {
+> > +		if (cpus_per_grp-- == 0)
+> >  			return;
+> >  
+> > +		/*
+> > +		 * If a caller wants to spread IRQa on offline CPUs, we need to
+> > +		 * take care of it explicitly because those offline CPUS are not
+> > +		 * included in siblings cpumask.
+> > +		 */
+> >  		__cpumask_clear_cpu(cpu, nmsk);
+> >  		__cpumask_set_cpu(cpu, irqmsk);
+> > -		cpus_per_grp--;
+> >  
+> >  		/* If the cpu has siblings, use them first */
+> >  		siblmsk = topology_sibling_cpumask(cpu);
+> > @@ -38,6 +39,7 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
+> >  
+> >  			__cpumask_clear_cpu(sibl, nmsk);
+> >  			__cpumask_set_cpu(sibl, irqmsk);
+> > +			cpu = sibl + 1;
+> 
+> It has been tricky enough to update condition variable of for_each_cpu()
+> (such kind of pattern can't build in Rust at all), and the above line could
+> be more tricky actually.
 
-On 1/20/24 09:34, Charlie Jenkins wrote:
-> On Sun, Jan 14, 2024 at 01:26:57AM +0800, Yangyu Chen wrote:
->> Hi, Charlie
->>
->> Although this patchset has been merged I still have some questions about
->> this patchset. Because it breaks regular mmap if address >= 38 bits on
->> sv48 / sv57 capable systems like qemu. For example, If a userspace program
->> wants to mmap an anonymous page to addr=(1<<45) on an sv48 capable system,
->> it will fail and kernel will mmaped to another sv39 address since it does
-> 
-> Thank you for raising this concern. To make sure I am understanding
-> correctly, you are passing a hint address of (1<<45) and expecting mmap
-> to return 1<<45 and if it returns a different address you are describing
-> mmap as failing? If you want an address that is in the sv48 space you
-> can pass in an address that is greater than 1<<47.
-> 
->> not meet the requirement to use sv48 as you wrote:
->>
->>> 	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
->>> 		mmap_end = VA_USER_SV48;			\
->>> 	else							\
->>> 		mmap_end = VA_USER_SV39;			\
->>
->> Then, How can a userspace program create a mmap with a hint if the address
->>> = (1<<38) after your patch without MAP_FIXED? The only way to do this is
->> to pass a hint >= (1<<47) on mmap syscall then kernel will return a random
->> address in sv48 address space but the hint address gets lost. I think this
-> 
-> In order to force mmap to return the address provided you must use
-> MAP_FIXED. Otherwise, the address is a "hint" and has no guarantees. The
-> hint address on riscv is used to mean "don't give me an address that
-> uses more bits than this". This behavior is not unique to riscv, arm64
-> and powerpc use a similar scheme. In arch/arm64/include/asm/processor.h
-> there is the following code:
-> 
-> #define arch_get_mmap_base(addr, base) ((addr > DEFAULT_MAP_WINDOW) ? \
-> 					base + TASK_SIZE - DEFAULT_MAP_WINDOW :\
-> 					base)
-> 
-> arm64/powerpc are only concerned with a single boundary so the code is simpler.
-> 
+Not only the above line is tricky, but also it is wrong, because 'cpu'
+local variable should always point to the 1st bit in 'nmsk'. However, if
+you set it to 'sibl + 1', some bits in 'nmsk' are skipped in the loop,
+aren't they?
 
-As you say, this code in arm64/powerpc will not meet the issue I 
-address. For example, If the addr here is (1<<50) on arm64, the 
-arch_get_mmap_base will return base+TASK_SIZE-DEFAULT_MAP_WINDOW which 
-is (1<<vabits_actual). And this behavior on arm64/powerpc/x86 does not 
-break anything since we will use a larger address space if the hint 
-address is specified on the address > DEFAULT_MAP_WINDOW. The 
-corresponding behavior on RISC-V should be if the hint address > BIT(47) 
-then use Sv57 address space and use Sv48 when the hint address > BIT(38) 
-if we want Sv39 by default.
 
-However, your patch needs the address >= BIT(47) rather than BIT(38) to 
-use Sv48 and address >= BIT(56) to use Sv57, thus breaking existing 
-userspace software to create mapping on the hint address without 
-MAP_FIXED set.
-
->> violate the principle of mmap syscall as kernel should take the hint and
->> attempt to create the mapping there.
-> 
-> Although the man page for mmap does say "on Linux, the kernel will pick
-> a nearby page boundary" it is still a hint address so there is no strict
-> requirement (and the precedent has already been set by arm64/powerpc).
-> 
-
-Yeah. There is no strict requirement. But currently x86/arm64/powerpc 
-works in this situation well. The hint address on these ISAs is not used 
-as the upper bound to allocating the address. However, on RISC-V, you 
-treat this as the upper bound.
-
->>
->> I don't think patching in this way is right. However, if we only revert
->> this patch, some programs relying on mmap to return address with effective
->> bits <= 48 will still be an issue and it might expand to other ISAs if
->> they implement larger virtual address space like RISC-V sv57. A better way
->> to solve this might be adding a MAP_48BIT flag to mmap like MAP_32BIT has
->> been introduced for decades.
->>
->> Thanks,
->> Yangyu Chen
->>
-> 
-> - Charlie
-> 
+Thanks,
+Ming
 
 
