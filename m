@@ -1,196 +1,160 @@
-Return-Path: <linux-kernel+bounces-31638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 378FF8331B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:10:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A649D8331C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 01:15:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA1FF283DEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:10:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FEF71F22932
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 00:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3C67ED;
-	Sat, 20 Jan 2024 00:10:30 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195F87FC;
+	Sat, 20 Jan 2024 00:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="JA265L43"
+Received: from aposti.net (aposti.net [89.234.176.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B3B36A
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 00:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B15170;
+	Sat, 20 Jan 2024 00:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705709430; cv=none; b=HirlL+h1vexX0UQZeDH0bd4ALRmAaQiw36Xhq+wwtpQq8P3gPhkvoRtLmEEJFff2Ob0bKpHW9fM6MgHDtNpKhvm5bY+SryeEUuwZ/ZnOw0H8lVAMegxPiD4WI9vNctOy2BlVf6ZgBCG7Cc9c/OVkW9mWqEfwdvQV4v40exZtD24=
+	t=1705709704; cv=none; b=hvbJLZQhZrZNDpP9jBhcsm/eeSEsP4Y2OuPyWuFaXBx3wUuVkiial0zC5K/NiLeZtVdYXq/6TAuUVSLFK9ZRy4l5fRuCEGHkXoEALfkXPiAkGKvXVKjz8ZhFcHudSsAJL88hUee5gAx96IROx9efyDPsutAeW8SnRKAvGWHPgjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705709430; c=relaxed/simple;
-	bh=TpjuO+9hturNxfceTgvrYXC0vPl+mUZKkcYoB4KY7qE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=NI2Z9JwAl+in3LwgSUh+ACtHDMxWFS+FZrViMHn5aMOKVnyg/i8bXGfqL/a8TLI0dZtDb4+XYnqBs5qgiutWlU4VIyz5IhKzTSB23eAXYp9K8WS44glbD0moUhxtGQZXZMmcTgVWj2nm8vBO2HmdKQB3ddpN8jyflQbH6P8WZTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-361a772a9aaso8912135ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jan 2024 16:10:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705709427; x=1706314227;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dhkNMjQVOB5HvLrNxJgMnjKkdtuka8k8P2aFjXPVvzg=;
-        b=rGTAfk8nMEDQUVoEQTOZk2ZPCEdmhWwslS73sCPR0FoimVqyAYy7xGX+mHoRMQz8IN
-         JTImRawWReUJyPkPsI421Kf5j1Ix+japDCO39Y8rx8/Ae5NYKB81OCaWh6LvKadbic2p
-         3NjHbdnZKrH3zCzukZhqDxMuQwLPWSATQm3Lq2bokqv2F3BJPM9amHetNAbHveftH/D4
-         GSpK1AAwFBabcKpJNoxZ2F8IU9EXUVfu1pYPXeUJw619Ef0aoX9OSNqCS65WVbXA84WQ
-         /G5nabHmr8/jlTk4ooZvInFTJMLqlIl/LP4cxc0GFc3bejvCyAXiAOAFaX165kODCi9h
-         nB+A==
-X-Gm-Message-State: AOJu0Yz64zw8fz6pnTFxKbAbPu7sck9HeHHXxYL7lO/YiHWjGsbBJKDu
-	v8RipHdSR+JJgxICm8O5dWYnopn2aCFj3sa4iTFHIFgfNT36pl8xHym8VUtBscsefMtSGCKnlfI
-	FKJ8OIPgQ7unM+IGPHF0SS/mFhth1/D14FKRBusDcBfwrwXjsqL910ms=
-X-Google-Smtp-Source: AGHT+IENlsaqQKmpztFNm40psPASW8ds8BZji2cekHi1ejZbY6Utl5GS1rYK1eLJPnwVvvZEsLuQGlmA+UtjdZMb0e2EtvWmmk+R
+	s=arc-20240116; t=1705709704; c=relaxed/simple;
+	bh=W7OnWjDgrb5ZNuxFpvFGDTPEYhVuCP6OSB6O3x5tm3Q=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ktus0gD9mvJpeDSd1KfyWUaQSRFqveZLDhWAwaVumMFphV5zjFlIbozVVv7h9TQ7YauGYeDcdt8JuZEDlpcbHWfWeDNl7R1KnCwv2ELCOhv7p6NQlSFKGVBkpW8EIuuV2BGrNor3n76yrEc9Ic4MWSNmVH8jx4Y3clCvT49Cukw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=JA265L43; arc=none smtp.client-ip=89.234.176.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1705709694;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=uTRM9d6bvlbWT4CTU/U4qeImT68CpFKTYfre+yx+3OQ=;
+	b=JA265L43X+KVrNQQpKTeItKpNrS74hBHSilZLefH+GSdoIa6uDIXf4ZrMKJYw2cM106Vp6
+	BQC7TTWrnq9Vj+5LxaM33VHNWqeReEPckoCVSemlDGNc/QfOnOhmwjrJbAGucqHWZWf0ra
+	vjxOzGBKes+Jac25P3fz9YBWxAGp9Tk=
+Message-ID: <59799a40d8cc425dc5a847a0c8e25730db4fc5c8.camel@crapouillou.net>
+Subject: Re: [PATCH v4 1/4] usb: gadget: Support already-mapped DMA SGs
+From: Paul Cercueil <paul@crapouillou.net>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jonathan Corbet
+ <corbet@lwn.net>, Sumit Semwal <sumit.semwal@linaro.org>, Christian
+ =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Jonathan Cameron
+ <jic23@kernel.org>, Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
+ Michael Hennerich <Michael.Hennerich@analog.com>, 
+ linux-usb@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Date: Sat, 20 Jan 2024 01:14:52 +0100
+In-Reply-To: <ZaruU5BpQF8SeZZS@lizhi-Precision-Tower-5810>
+References: <20240117122646.41616-1-paul@crapouillou.net>
+	 <20240117122646.41616-2-paul@crapouillou.net>
+	 <ZaruU5BpQF8SeZZS@lizhi-Precision-Tower-5810>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b4a:b0:360:17a7:d897 with SMTP id
- f10-20020a056e020b4a00b0036017a7d897mr63312ilu.4.1705709427780; Fri, 19 Jan
- 2024 16:10:27 -0800 (PST)
-Date: Fri, 19 Jan 2024 16:10:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000887374060f556c07@google.com>
-Subject: [syzbot] [gfs2?] kernel BUG in qd_put (2)
-From: syzbot <syzbot+43ad5525e32c939e3f22@syzkaller.appspotmail.com>
-To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+Hi Frank,
 
-syzbot found the following issue on:
+Le vendredi 19 janvier 2024 =C3=A0 16:49 -0500, Frank Li a =C3=A9crit=C2=A0=
+:
+> On Wed, Jan 17, 2024 at 01:26:43PM +0100, Paul Cercueil wrote:
+> > Add a new 'sg_was_mapped' field to the struct usb_request. This
+> > field
+> > can be used to indicate that the scatterlist associated to the USB
+> > transfer has already been mapped into the DMA space, and it does
+> > not
+> > have to be done internally.
+> >=20
+> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > ---
+> > =C2=A0drivers/usb/gadget/udc/core.c | 7 ++++++-
+> > =C2=A0include/linux/usb/gadget.h=C2=A0=C2=A0=C2=A0 | 2 ++
+> > =C2=A02 files changed, 8 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/usb/gadget/udc/core.c
+> > b/drivers/usb/gadget/udc/core.c
+> > index d59f94464b87..9d4150124fdb 100644
+> > --- a/drivers/usb/gadget/udc/core.c
+> > +++ b/drivers/usb/gadget/udc/core.c
+> > @@ -903,6 +903,11 @@ int usb_gadget_map_request_by_dev(struct
+> > device *dev,
+> > =C2=A0	if (req->length =3D=3D 0)
+> > =C2=A0		return 0;
+> > =C2=A0
+> > +	if (req->sg_was_mapped) {
+> > +		req->num_mapped_sgs =3D req->num_sgs;
+> > +		return 0;
+> > +	}
+> > +
+> > =C2=A0	if (req->num_sgs) {
+> > =C2=A0		int=C2=A0=C2=A0=C2=A0=C2=A0 mapped;
+> > =C2=A0
+> > @@ -948,7 +953,7 @@ EXPORT_SYMBOL_GPL(usb_gadget_map_request);
+> > =C2=A0void usb_gadget_unmap_request_by_dev(struct device *dev,
+> > =C2=A0		struct usb_request *req, int is_in)
+> > =C2=A0{
+> > -	if (req->length =3D=3D 0)
+> > +	if (req->length =3D=3D 0 || req->sg_was_mapped)
+> > =C2=A0		return;
+> > =C2=A0
+> > =C2=A0	if (req->num_mapped_sgs) {
+> > diff --git a/include/linux/usb/gadget.h
+> > b/include/linux/usb/gadget.h
+> > index a771ccc038ac..c529e4e06997 100644
+> > --- a/include/linux/usb/gadget.h
+> > +++ b/include/linux/usb/gadget.h
+> > @@ -52,6 +52,7 @@ struct usb_ep;
+> > =C2=A0 * @short_not_ok: When reading data, makes short packets be
+> > =C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0 treated as errors (queue stops advanci=
+ng till cleanup).
+> > =C2=A0 * @dma_mapped: Indicates if request has been mapped to DMA
+> > (internal)
+> > + * @sg_was_mapped: Set if the scatterlist has been mapped before
+> > the request
+> > =C2=A0 * @complete: Function called when request completes, so this
+> > request and
+> > =C2=A0 *	its buffer may be re-used.=C2=A0 The function will always be
+> > called with
+> > =C2=A0 *	interrupts disabled, and it must not sleep.
+> > @@ -111,6 +112,7 @@ struct usb_request {
+> > =C2=A0	unsigned		zero:1;
+> > =C2=A0	unsigned		short_not_ok:1;
+> > =C2=A0	unsigned		dma_mapped:1;
+> > +	unsigned		sg_was_mapped:1;
+>=20
+> why not use dma_mapped direclty?
 
-HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1262e4b5e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=878a2a4af11180a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=43ad5525e32c939e3f22
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+Because of the unmap case. We want to know whether we should unmap or
+not.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+>=20
+> Frank
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-052d5343.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/35f5d1189e2a/vmlinux-052d5343.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0405012bdefc/bzImage-052d5343.xz
+Cheers,
+-Paul
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+43ad5525e32c939e3f22@syzkaller.appspotmail.com
+>=20
+> > =C2=A0
+> > =C2=A0	void			(*complete)(struct usb_ep *ep,
+> > =C2=A0					struct usb_request *req);
+> > --=20
+> > 2.43.0
+> >=20
 
-------------[ cut here ]------------
-kernel BUG at fs/gfs2/quota.c:336!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 2 PID: 5207 Comm: syz-executor.0 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:qd_put+0x133/0x190 fs/gfs2/quota.c:336
-Code: 43 70 00 00 00 00 48 8d 73 78 e8 38 46 19 fe 4c 89 e7 e8 f0 44 e1 06 5b 5d 41 5c 41 5d 41 5e e9 93 ab da fd e8 8e ab da fd 90 <0f> 0b e8 86 ab da fd 4c 89 e7 e8 6e 98 b7 00 4c 89 e7 e8 c6 44 e1
-RSP: 0000:ffffc90003b87c38 EFLAGS: 00010293
-
-RAX: 0000000000000000 RBX: ffff88804a1bc000 RCX: ffffffff83ad6445
-RDX: ffff888023370000 RSI: ffffffff83ad6512 RDI: 0000000000000005
-RBP: 00000000ffffff80 R08: 0000000000000005 R09: 0000000000000000
-R10: 00000000ffffff80 R11: 0000000000000000 R12: ffff88804a1bc030
-R13: ffff88804a1bc070 R14: ffff888050da8a68 R15: ffff88801801e808
-FS:  0000000000000000(0000) GS:ffff88802c800000(0063) knlGS:000000005748a400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00007fd6a0c6a42d CR3: 0000000078e90000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- gfs2_quota_sync+0x44b/0x630 fs/gfs2/quota.c:1373
- gfs2_sync_fs+0x44/0xb0 fs/gfs2/super.c:669
- sync_filesystem+0x109/0x280 fs/sync.c:56
- generic_shutdown_super+0x7e/0x3d0 fs/super.c:625
- kill_block_super+0x3b/0x90 fs/super.c:1680
- gfs2_kill_sb+0x361/0x410 fs/gfs2/ops_fstype.c:1804
- deactivate_locked_super+0xbc/0x1a0 fs/super.c:477
- deactivate_super+0xde/0x100 fs/super.c:510
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14d/0x240 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:108 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:201 [inline]
- syscall_exit_to_user_mode+0x281/0x2b0 kernel/entry/common.c:212
- __do_fast_syscall_32+0x86/0x110 arch/x86/entry/common.c:324
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:346
- entry_SYSENTER_compat_after_hwframe+0x70/0x7a
-RIP: 0023:0xf7fbc579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000ffbf1df8 EFLAGS: 00000292 ORIG_RAX: 0000000000000034
-RAX: 0000000000000000 RBX: 00000000ffbf1ea0 RCX: 000000000000000a
-RDX: 00000000f7354ff4 RSI: 00000000f72a53bd RDI: 00000000ffbf2f44
-RBP: 00000000ffbf1ea0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:qd_put+0x133/0x190 fs/gfs2/quota.c:336
-Code: 43 70 00 00 00 00 48 8d 73 78 e8 38 46 19 fe 4c 89 e7 e8 f0 44 e1 06 5b 5d 41 5c 41 5d 41 5e e9 93 ab da fd e8 8e ab da fd 90 <0f> 0b e8 86 ab da fd 4c 89 e7 e8 6e 98 b7 00 4c 89 e7 e8 c6 44 e1
-RSP: 0000:ffffc90003b87c38 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88804a1bc000 RCX: ffffffff83ad6445
-RDX: ffff888023370000 RSI: ffffffff83ad6512 RDI: 0000000000000005
-RBP: 00000000ffffff80 R08: 0000000000000005 R09: 0000000000000000
-R10: 00000000ffffff80 R11: 0000000000000000 R12: ffff88804a1bc030
-R13: ffff88804a1bc070 R14: ffff888050da8a68 R15: ffff88801801e808
-FS:  0000000000000000(0000) GS:ffff88802c800000(0063) knlGS:000000005748a400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00007fd6a0c6a42d CR3: 0000000078e90000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
