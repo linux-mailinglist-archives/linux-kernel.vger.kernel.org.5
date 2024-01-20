@@ -1,123 +1,113 @@
-Return-Path: <linux-kernel+bounces-31720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0BB68332F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:42:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D80C8332F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 07:45:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 509C2B23234
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 06:42:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A64EF1F229C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 06:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C570220F5;
-	Sat, 20 Jan 2024 06:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AD81FD8;
+	Sat, 20 Jan 2024 06:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Ptvn843N"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10D6EC8;
-	Sat, 20 Jan 2024 06:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EcD+dZah"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C059110C
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 06:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705732924; cv=none; b=V6BN8AHLYM1GaZQ1y50jaBVOyXiGwjd8lSO+xA49gdB0fNwKDiaLVR/EqdPdaQv7LmRgqsNOCFs0qNCEXnWT49oi0EfQCTE9bK/Xk3yuwLvAN0Q5/vcaZ6bwrQOv5jUO7C4LuBUEOQLS5WUOLtUSFjEp1GDPYshmIuf/jKClBM4=
+	t=1705733098; cv=none; b=oH+JSwVqvahqmxUBRt8wGxruRHJSCnS2XYI+1ap5y4/LnJz8MLz0e/OeLLcUzjTH1vz2rgffQHH6aVQHv/FGrLzLlBpXKBwFp52aRPQhuKF2TMSXdA7y3XLAy2T38c7JFuaaCrnr53IG2F06Yc6BkA/vfE2akqdGTVqbdcOAVVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705732924; c=relaxed/simple;
-	bh=eIO89xILSdrUTep7U5mjbNLB6mGQy666g44edAJ3Sv4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BK9/uLNMbTeW1AUIUNkQMihyuYONqgReJ/Wscpa1C0ALKgYqXbsp9+637YaFmC2lSVrEAmIhU+KryCs7mw/kkUoIbO2CEPYM2wknmbNy5j5PbMs4/Bw0jj8zb4XhRdmigFdS5E47GlduU8Rm6451g6MWFeDGyCDWg8R6BgL67aU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Ptvn843N; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-	id 64F8320DFE87; Fri, 19 Jan 2024 22:41:56 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 64F8320DFE87
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1705732916;
-	bh=dDZa048057b+mL/IdAmyoRcwV68H5JKdVpgmpVrpWx8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ptvn843NtrBtQ0ZeT/e0IudCy+mQIrIUiWDqfRF22Gd/xSrLYUhxLvH1vWyR/BsU1
-	 ilvk5Qlri5i1pS+0OuAdsbuWuhgOhvGtKhHmEvgUpgsb64I+rPO1EQMa0g93kZkFZd
-	 UUlfWQ83+LYfPDuxCEKYdblQXkORSzDs5EIYqL/g=
-Date: Fri, 19 Jan 2024 22:41:56 -0800
-From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, decui@microsoft.com
-Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
-Message-ID: <20240120064156.GA3130@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com>
- <5736414.DvuYhMxLoT@steina-w>
- <20231212082805.GA3521@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20240104053803.GA16954@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1705733098; c=relaxed/simple;
+	bh=mXISCnVnZDJqJnGivhVUgmM3kBJei0cwIy/Vv3NV2ec=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YgHJLZhPhazOfBv6cm8YtIVm0pBXwNK2Ec6b1evDfdwa2kOvS604277batosAERR5v2yJJV66OPJYmOidEtoM+xB/hgunuLJKxO1QNq9GKRPm9x0gwsIrhwm38yWv6W47ZeOw1DPcvYDJYXMU0NAs23ATz4rw0xqVQhA5sjUbrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EcD+dZah; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=KyVk/SOUXJl8dnnCYM6D4LOj7QVA0hhOE3Pxx0E0hBA=; b=EcD+dZah5jKikYIqbwm00byvbZ
+	GKnVP5FJSKNnitaA+aLoInrWxgfIJEJcJXIPTq7KOeLXt8iA+pVVIwIl9ChEQCNVTtX2ZOf4TepsB
+	ddnp2hRWH1oXabOymclFtX8aGOwMq/ML360oIdmaxdi9eIcGW5Tof2Q4XSFSNYJgM3gtnLWseuS+S
+	cs9jxsJILV0yHBaChKz1IkKOIIpEevux3RZLKjkTgM11qvg2LXaRdZpIrlZ5rrDLK8RHEprPtqxZl
+	2jbhzApDZgxbJ1U9M4d5WLICYB3QKRYi1Ke20ST9OIEpNp/fcoMPWOhO5P7NRz4AAhBHnwqwUtPY4
+	6HrUjK5g==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rR564-007Lqr-1y;
+	Sat, 20 Jan 2024 06:44:53 +0000
+Message-ID: <a7c8ec21-adf5-4dcc-af7d-33662f864596@infradead.org>
+Date: Fri, 19 Jan 2024 22:44:45 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240104053803.GA16954@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/display: fix typo
+To: Oleksandr Natalenko <oleksandr@natalenko.name>,
+ linux-kernel@vger.kernel.org
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org
+References: <20240119102215.201474-1-oleksandr@natalenko.name>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240119102215.201474-1-oleksandr@natalenko.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 03, 2024 at 09:38:03PM -0800, Saurabh Singh Sengar wrote:
-> On Tue, Dec 12, 2023 at 12:28:05AM -0800, Saurabh Singh Sengar wrote:
-> > On Tue, Dec 12, 2023 at 08:19:11AM +0100, Alexander Stein wrote:
-> > > Hi Saurabh,
-> > > 
-> > > thanks for the patch.
-> > > 
-> > > Am Samstag, 9. Dezember 2023, 04:46:16 CET schrieb Saurabh Sengar:
-> > > > Currently there is a race in calling pci_create_resource_files function
-> > > > from two different therads, first therad is triggered by pci_sysfs_init
-> > > > from the late initcall where as the second thread is initiated by
-> > > > pci_bus_add_devices from the respective PCI drivers probe.
-> > > > 
-> > > > The synchronization between these threads relies on the sysfs_initialized
-> > > > flag. However, in pci_sysfs_init, sysfs_initialized is set right before
-> > > > calling pci_create_resource_files which is wrong as it can create race
-> > > > condition with pci_bus_add_devices threads. Fix this by setting
-> > > > sysfs_initialized flag at the end of pci_sysfs_init and direecly call the
-> > > 
-> > > Small typo here: direecly -> directly
-> > > 
-> > > > pci_create_resource_files function from it.
-> > > > 
-> > > > There can be an additional case where driver probe is so delayed that
-> > > > pci_bus_add_devices is called after the sysfs is created by pci_sysfs_init.
-> > > > In such cases, attempting to access already existing sysfs resources is
-> > > > unnecessary. Fix this by adding a check for sysfs attributes and return
-> > > > if they are already allocated.
-> > > > 
-> > > > In both cases, the consequence will be the removal of sysfs resources that
-> > > > were appropriately allocated by pci_sysfs_init following the warning below.
-> > > 
-> > > I'm not sure if this is the way to go. Unfortunately I can't trigger this 
-> > > error on my imx6 platform at the moment (apparently timing is off).
-> > > But reading [1] again, the most expressive way is that pci_bus_add_devices() 
-> > > needs to wait until pci_sysfs_init() has passed.
-> > 
-> > (I correct my self a bit in my earlier reply)
-> > The problem with waiting is that sysfs entries will be created by pci_sysfs_init
-> > already and when pci_bus_add_devices try to create it will observe that the
-> > entries are already existing and in such case PCI code will remove the sysfs
-> > entries created by pci_sysfs_init. Resulting system will be having no sysfs
-> > entries.
+
+
+On 1/19/24 02:22, Oleksandr Natalenko wrote:
+> While studying the code I've bumped into a small typo within the
+> kernel-doc for two functions, apparently, due to copy-paste.
 > 
+> This commit fixes "sizo" word to be "size".
 > 
-> Hi Alexander,
-> Have you got time to check this ? Please let me know if you think there is any
-> concern left with this patch.
+> Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
 
-Hi PCI Maintainers,
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-If there is no objection, can we take this patch in ?
+Thanks.
 
+> ---
+>  drivers/gpu/drm/display/drm_dp_dual_mode_helper.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c b/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c
+> index bd61e20770a5b..14a2a8473682b 100644
+> --- a/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c
+> +++ b/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c
+> @@ -52,7 +52,7 @@
+>   * @adapter: I2C adapter for the DDC bus
+>   * @offset: register offset
+>   * @buffer: buffer for return data
+> - * @size: sizo of the buffer
+> + * @size: size of the buffer
+>   *
+>   * Reads @size bytes from the DP dual mode adaptor registers
+>   * starting at @offset.
+> @@ -116,7 +116,7 @@ EXPORT_SYMBOL(drm_dp_dual_mode_read);
+>   * @adapter: I2C adapter for the DDC bus
+>   * @offset: register offset
+>   * @buffer: buffer for write data
+> - * @size: sizo of the buffer
+> + * @size: size of the buffer
+>   *
+>   * Writes @size bytes to the DP dual mode adaptor registers
+>   * starting at @offset.
 
-Regards,
-Saurabh
-
-
-
-
+-- 
+#Randy
 
