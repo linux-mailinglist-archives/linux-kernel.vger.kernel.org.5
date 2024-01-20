@@ -1,212 +1,143 @@
-Return-Path: <linux-kernel+bounces-31794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8C2883342C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:35:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF60F833430
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 13:36:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 374C9283400
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:35:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 663861F221A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 12:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A2DEAC2;
-	Sat, 20 Jan 2024 12:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00E6EED7;
+	Sat, 20 Jan 2024 12:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XvIfawKS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MReup81g"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D37E23D5
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 12:35:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14963EADD;
+	Sat, 20 Jan 2024 12:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705754143; cv=none; b=D3YTjKMKc9hNvNnw7dZA9V8qv+IqBLo/Lw3FRdr2fon5tOft0CiahonN+XDJow4YbDRMZVRi6Oz+7i2eicmzTNdkXTuvNYmiNmv7GZtRrT+Famsl9dHFuYLLoC4jrjyaqNNAJzhilTY5rKGt1+eV74ZNW9wdWxIHEeyWmPQVhF0=
+	t=1705754202; cv=none; b=rmNmBb6/DbXgjYQPnJNudRIU2GxkjX+amuEIvyeVG5F01JE3sXLNcou8fd5Iy+MKSxWPjB3pHbXL61mDripxlGcYPhle8zwbMrHmRWIWyv63bf1fwuk7/lR0IBavidDZA/2zwCIT5IO0K/Di7wgmYFib7K95D54IBg1ZtGBos6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705754143; c=relaxed/simple;
-	bh=/V3FV0JKqzS/vDNMkqEO81ltZthP15aB2cGXynFFcwY=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Ni/qOKvcGap3j+mFJMYjYc/j0TXRk63o5rlMh/VONd5dZV6SvcG5da1nmDcNWFmeKMyl+GlvPHFhuCYsB3/JiBxbGtngqOiHHFXbCGVw4mnY5Sj5vgnX/4n4AGy7cOsN9CsXPr2prynzosgXRplWWeXZX2lb29UelPHHV8YOEhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XvIfawKS; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705754141; x=1737290141;
-  h=date:from:to:cc:subject:message-id;
-  bh=/V3FV0JKqzS/vDNMkqEO81ltZthP15aB2cGXynFFcwY=;
-  b=XvIfawKSkuSey8bNWjD/gjDXlNdeVcxWwjD3x9coHSyNXyuqJyZ01b+J
-   phUu0vpKhGja72sRaabB1uuNav36We2GMaddExd/zl0T4LfKroO32HoQn
-   INgK9q/zYqDzkSijACWZ8UvomMWgnjAptl/9BQSKfMYlgvPDJ1JOaPMjC
-   IM3llfc0zmEowNnqQWCe9DVCxMqyrIZUsZPujpq+UWCLRj1OUG39Nqyh9
-   3bzRdcpTOQISqlb5bI//3htDaBW8EJ5iwCd+9fOLulCW4qpjJdZGc9EBt
-   lebasA5vTyjZ2pcYCxjjSGBEViQ/V15Lm3yvGqJSRKr0PFBwqsOg/SyPp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="432110985"
-X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
-   d="scan'208";a="432110985"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2024 04:35:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="928612730"
-X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
-   d="scan'208";a="928612730"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Jan 2024 04:35:39 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rRAZU-00055c-2I;
-	Sat, 20 Jan 2024 12:35:36 +0000
-Date: Sat, 20 Jan 2024 20:35:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:locking/urgent] BUILD SUCCESS
- e626cb02ee8399fd42c415e542d031d185783903
-Message-ID: <202401202005.2uELU9Sf-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1705754202; c=relaxed/simple;
+	bh=HFmDm3/WdciK/vzSbErWl4yY40pQaHc9P/M9SAN2U9k=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=Zirjrbno9Hagk/5Cn52XPE1jlyPPbKfiw2OP6rriJp4ZHvggmH9b5+7j5W8iS7dGNggQGHuUb3Tk5yZWY7Mg9JE98FC/KKyK7PLlmbnKkUBwoLkobq9L8vMwAPWUVbT7c2av4n57ecjfJJ4vCHr9IN79GGPsQGJcMxJrJhG9y+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MReup81g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48CE0C433C7;
+	Sat, 20 Jan 2024 12:36:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705754201;
+	bh=HFmDm3/WdciK/vzSbErWl4yY40pQaHc9P/M9SAN2U9k=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=MReup81g44Emsopj1C5whJ1cSADmuwQz4tGoaowgBulU3oEkFLZikUWhZ5/kXOJHt
+	 iLBDXbxQ5IHzKsCNVCbELixvr4bdliui3arn06ZYa9YXPWqbMajwJHG6CaXxrmr/h/
+	 2zgY9RBCXmO5kflcvJarlO+ZiPENgh9qmeGa5jq6pfxAuho+tiGSKI8QDL5JQfPA7X
+	 VCnc7L2GQek3d7jCzgtXzU6+mPU875oKNxj3DcwgJGfXR7aYkA3boLwWHR9tGdf8mW
+	 K8MRT7VtYjDMeSthVIP+hwszPy6DjNV3us9viyAdjg3fJvt/MYK123MlQuTRSQof5x
+	 vtkzaLEWEzZoQ==
+Date: Sat, 20 Jan 2024 06:36:40 -0600
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: Amrit Anand <quic_amrianan@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, conor+dt@kernel.org, robh+dt@kernel.org, 
+ andersson@kernel.org, linux-kernel@vger.kernel.org, agross@kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org, 
+ kernel@quicinc.com, konrad.dybcio@linaro.org, 
+ Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
+References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
+ <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
+Message-Id: <170575419855.2509064.6657399665407807261.robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: hwinfo: Introduce board-id
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
-branch HEAD: e626cb02ee8399fd42c415e542d031d185783903  futex: Prevent the reuse of stale pi_state
 
-elapsed time: 1459m
+On Sat, 20 Jan 2024 16:50:48 +0530, Amrit Anand wrote:
+> From: Elliot Berman <quic_eberman@quicinc.com>
+> 
+> Device manufacturers frequently ship multiple boards or SKUs under a
+> single software package. These software packages will ship multiple
+> devicetree blobs and require some mechanism to pick the correct DTB for
+> the board the software package was deployed. Introduce a common
+> definition for adding board identifiers to device trees. board-id
+> provides a mechanism for bootloaders to select the appropriate DTB which
+> is vendor/OEM-agnostic.
+> 
+> Isn't that what the compatible property is for?
+> -----------------------------------------------
+> The compatible property can be used for board matching, but requires
+> bootloaders and/or firmware to maintain a database of possible strings
+> to match against or have complex compatible string matching. Compatible
+> string matching becomes complicated when there are multiple versions of
+> board: the device tree selector should recognize a DTB that cares to
+> distinguish between v1/v2 and a DTB that doesn't make the distinction.
+> An eeprom either needs to store the compatible strings that could match
+> against the board or the bootloader needs to have vendor-specific
+> decoding logic for the compatible string. Neither increasing eeprom
+> storage nor adding vendor-specific decoding logic is desirable.
+> 
+> The solution proposed here is simpler to implement and doesn't require
+> updating firmware or bootloader for every new board.
+> 
+> How is this better than Qualcomm's qcom,msm-id/qcom,board-id?
+> -------------------------------------------------------------
+> The selection process for devicetrees was Qualcomm-specific and not
+> useful for other devices and bootloaders that were not developed by
+> Qualcomm because a complex algorithm was used to implement. Board-ids
+> provide a matching solution that can be implemented by bootloaders
+> without introducing vendor-specific code. Qualcomm uses three
+> devicetree properties: msm-id (interchangeably: soc-id), board-id, and
+> pmic-id.  This does not scale well for use casese which use identifiers,
+> for example, to distinguish between a display panel. For a display
+> panel, an approach could be to add a new property: display-id,
+> but now	bootloaders need to be updated to also read this property. We
+> want to	avoid requiring to update bootloaders with new hardware
+> identifiers: a bootloader need only recognize the identifiers it can
+> handle.
+> 
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
+> ---
+>  .../devicetree/bindings/hwinfo/board-id.yaml       | 53 ++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwinfo/board-id.yaml
+> 
 
-configs tested: 123
-configs skipped: 2
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+yamllint warnings/errors:
+/Documentation/devicetree/bindings/hwinfo/board-id.yaml:23:11: [error] string value is redundantly quoted with any quotes (quoted-strings)
+/Documentation/devicetree/bindings/hwinfo/board-id.yaml:25:11: [error] string value is redundantly quoted with any quotes (quoted-strings)
 
-tested configs:
-alpha                            alldefconfig   gcc  
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240120   gcc  
-arc                   randconfig-002-20240120   gcc  
-arm                               allnoconfig   gcc  
-arm                       imx_v6_v7_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240120   gcc  
-csky                  randconfig-002-20240120   gcc  
-hexagon                          allmodconfig   clang
-hexagon                          allyesconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386                  randconfig-011-20240120   gcc  
-i386                  randconfig-012-20240120   gcc  
-i386                  randconfig-013-20240120   gcc  
-i386                  randconfig-014-20240120   gcc  
-i386                  randconfig-015-20240120   gcc  
-i386                  randconfig-016-20240120   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240120   gcc  
-loongarch             randconfig-002-20240120   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ip27_defconfig   gcc  
-mips                  maltasmvp_eva_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240120   gcc  
-nios2                 randconfig-002-20240120   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240120   gcc  
-parisc                randconfig-002-20240120   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     asp8347_defconfig   gcc  
-powerpc                    ge_imp3a_defconfig   gcc  
-powerpc                        warp_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20240120   gcc  
-s390                  randconfig-002-20240120   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                     magicpanelr2_defconfig   gcc  
-sh                    randconfig-001-20240120   gcc  
-sh                    randconfig-002-20240120   gcc  
-sh                           se7619_defconfig   gcc  
-sh                           se7780_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240120   gcc  
-sparc64               randconfig-002-20240120   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240120   clang
-x86_64       buildonly-randconfig-002-20240120   clang
-x86_64       buildonly-randconfig-003-20240120   clang
-x86_64       buildonly-randconfig-004-20240120   clang
-x86_64       buildonly-randconfig-005-20240120   clang
-x86_64       buildonly-randconfig-006-20240120   clang
-x86_64                                  kexec   gcc  
-x86_64                randconfig-011-20240120   clang
-x86_64                randconfig-012-20240120   clang
-x86_64                randconfig-013-20240120   clang
-x86_64                randconfig-014-20240120   clang
-x86_64                randconfig-015-20240120   clang
-x86_64                randconfig-016-20240120   clang
-x86_64                randconfig-071-20240120   clang
-x86_64                randconfig-072-20240120   clang
-x86_64                randconfig-073-20240120   clang
-x86_64                randconfig-074-20240120   clang
-x86_64                randconfig-075-20240120   clang
-x86_64                randconfig-076-20240120   clang
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20240120   gcc  
-xtensa                randconfig-002-20240120   gcc  
+dtschema/dtc warnings/errors:
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
