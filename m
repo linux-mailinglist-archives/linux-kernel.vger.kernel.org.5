@@ -1,185 +1,125 @@
-Return-Path: <linux-kernel+bounces-31888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 519868335F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 20:27:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A333F8335F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 20:35:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6230B21F04
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:27:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33F3B282E64
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 19:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89A01172C;
-	Sat, 20 Jan 2024 19:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EF111C94;
+	Sat, 20 Jan 2024 19:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TGQPCNRZ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NSEnFWvh"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A22710940
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 19:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815EEEEC6
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 19:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705778815; cv=none; b=NJCjCut8ZtEFZkXCcfzMrSPF8I6FDEkVhZW7WkzTIomBHvI4fK0M08N8jYU3iLDXoEEXAbRtEotfVUJgG0j/x/dIsk7nRK+5nFAHWWInJyLBHkCqhxKtkFz2wxSPj35voSiB7jrQpNivTdmWYFzXolbkDYpr9awxq6bDkx6Ud0U=
+	t=1705779340; cv=none; b=XmjhPRNKMeTMOMnJs1Kj73Oa+4v41GEk5X5n1V8iCp/J9RO8g91HoVybG5uDzRhlZR/V3iqH6fbl1NhaR4EQuOYU9KXkTHmQ3miePYMrKlaLAsN3Bf4PkBcsMgLjb40Xt+qPE0wWJrZNxLCnLopfrgyZqXYZ1wZhtD0cn0XWRno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705778815; c=relaxed/simple;
-	bh=Mu/iABvyMCFK5VeHYHjoBnLdK7gWCkdv88Mi8DBd/BY=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=SgJT9VV/72KUIZHiFxvOkWHX6fITJPU0H3QbOCtJpIIgZakP1faSUJBF+cWUkYVjPFxVZYx+TLp3JWlk/8Y56T3wMGVFZlYo3+RJ0RYn9FtpUjIgwb5LOhLhItJ/V90B8s3CbQ8oMhQhfMRtzc0ROFEGlEPbnXQzDLrkQ6G2O7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TGQPCNRZ; arc=none smtp.client-ip=192.55.52.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705778814; x=1737314814;
-  h=date:from:to:cc:subject:message-id;
-  bh=Mu/iABvyMCFK5VeHYHjoBnLdK7gWCkdv88Mi8DBd/BY=;
-  b=TGQPCNRZvV8QKcvEv3jjG8G98p/0jUX36bkf/ArQqBtAqFS16YCIunY8
-   xeAsKl1bwW7ALBe8bwrF08AgLBaw/5h+Ng0cCddGT0NyQGK9740/fdeDg
-   ykqvH4eYrRqL1BTBrIn09fEd8I+ZURNSgVLRRFUIs8pUHbTtC0ubWTpXV
-   LwubJfcg/DTt8kDqy7kbWtgY2kbboQeo9wWb5jmVDW4NmcYeRygV7/vyO
-   fPAKl/PsLoAjgP7Nm8deoNjJKMVx/kYbAT7MrZARPXitvQu4KuMDJP3h3
-   dKOu6evIzS2mex+m51AFomq5uSKer4rWZr4Y5Xuxg/QepyWU+rIJOCJkO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="487108155"
-X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
-   d="scan'208";a="487108155"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2024 11:26:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,208,1701158400"; 
-   d="scan'208";a="844727"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 20 Jan 2024 11:26:51 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rRGzQ-0005O8-36;
-	Sat, 20 Jan 2024 19:26:48 +0000
-Date: Sun, 21 Jan 2024 03:25:49 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- 71fee48fb772ac4f6cfa63dbebc5629de8b4cc09
-Message-ID: <202401210344.0q9eX1fw-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1705779340; c=relaxed/simple;
+	bh=NLWKB3iyr61ar4WQVIOUCJqflDtAeQTUkI8JnXa1jLo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SQuHnoQWCZGkqDDUk/ZvOyDHYBjy9KhV5MtmIBGIbqGIxuk9iEmueYr/EO1oUYNg8frS33rPJutj/izGcp2FDtGPhpK9Mz1B/omiMyg4Ikuo162rdOBumWLAfVSKN9e6eACpWvBebkHATTmTagXf0lcsdfHgxD+cHxFPdHGMEmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NSEnFWvh; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55a43f9a6c1so1915669a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 11:35:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1705779336; x=1706384136; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=M/rp5vrGtS2RGHM4ILDxh2i+YzejulCBn4t1151pwRs=;
+        b=NSEnFWvhkbvZRo0au5bHIfCEao9hsDsYxC6VuNXN7fXHaKY2opOC4WizU1oI6ujfsP
+         JGgz2OPNPbJfD8VLokhheQ9Y0x+BGvHZaWQanHIyNTnLGjnTbEWFGRwJwApYAFGqUCns
+         Dn/7JQTePCZxBuMQNggxqp6UG7pKiu1R+hNLY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705779336; x=1706384136;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M/rp5vrGtS2RGHM4ILDxh2i+YzejulCBn4t1151pwRs=;
+        b=EJyG7wWd6dvD+h8f2Yuw6PQ+JuWyOgHJOGXH/6oCq0R/nx5sQfb5PMZjoUaWWsGqmH
+         ORxhrdg42dZE+lCyFmM9jBdCVAVZB6iV5jG0tDkUKXBPae6k6tt48RZv80YfW3HbOx89
+         wZEugP9ZMWphZZymV3Y8GyL0Vnhf4my46Ye6YuQV5e2Fji42hU681Bs8pqDhtnEeEjCq
+         ZlXyAOngijBE2Dgz9c3Mp3747m13n/kv8Yjm9PDPyu3EJFbJahLyRfms/JfS4bQtSLsj
+         EDwhIncWQoS86TeyfhUgxsy0aiUy11fTAzzuzql7jt+FP4q7jd528hNCaaZ3FY4H2erO
+         VvrA==
+X-Gm-Message-State: AOJu0Yw1ZEk1D/xBncd/alVvNd1pbb+MpFREZ1UxgIkRtSiMl313Mk3O
+	sS7fvJFreCokZQfTlux3+00r361GlnumjNETQUzGw1RY2kPuoX3hZx+U2SYTu1AHBbKFkvjphyq
+	QRAp5Rw==
+X-Google-Smtp-Source: AGHT+IFeGJNHT6grKaX3080bcZAFUkT8ZiLt/yAz4pMg69WoDOTV3wA25L8/kZ3LQHr0uXaBe12E1w==
+X-Received: by 2002:a17:906:2dcd:b0:a2e:a4f0:6816 with SMTP id h13-20020a1709062dcd00b00a2ea4f06816mr1015151eji.67.1705779336332;
+        Sat, 20 Jan 2024 11:35:36 -0800 (PST)
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
+        by smtp.gmail.com with ESMTPSA id s23-20020a170906455700b00a2c70ec1533sm11436627ejq.66.2024.01.20.11.35.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Jan 2024 11:35:35 -0800 (PST)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-337d58942c9so1973217f8f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 11:35:35 -0800 (PST)
+X-Received: by 2002:a05:600c:3581:b0:40e:a3aa:a458 with SMTP id
+ p1-20020a05600c358100b0040ea3aaa458mr716415wmq.27.1705779335473; Sat, 20 Jan
+ 2024 11:35:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <d2ce7bc75cadd3d39858c02f7f6f0b4286e6319b.camel@HansenPartnership.com>
+ <CAHk-=wi8-9BCn+KxwtwrZ0g=Xpjin_D3p8ZYoT+4n2hvNeCh+w@mail.gmail.com> <7b104abd42691c3e3720ca6667f5e52d75ab6a92.camel@HansenPartnership.com>
+In-Reply-To: <7b104abd42691c3e3720ca6667f5e52d75ab6a92.camel@HansenPartnership.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 20 Jan 2024 11:35:18 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi03SZ4Yn9FRRsxnMv1ED5Qw25Bk9-+ofZVMYEDarHtHQ@mail.gmail.com>
+Message-ID: <CAHk-=wi03SZ4Yn9FRRsxnMv1ED5Qw25Bk9-+ofZVMYEDarHtHQ@mail.gmail.com>
+Subject: Re: [GIT PULL] final round of SCSI updates for the 6.7+ merge window
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-scsi <linux-scsi@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
-branch HEAD: 71fee48fb772ac4f6cfa63dbebc5629de8b4cc09  tick-sched: Fix idle and iowait sleeptime accounting vs CPU hotplug
+On Sat, 20 Jan 2024 at 11:09, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> It also seems that this magic option combination works better (just
+> tried it on an old laptop that had my expired keys)
+>
+> gpg --auto-key-locate clear,dane --locate-external-key james.bottomley@hansenpartnership.com
 
-elapsed time: 1634m
+So now I have a new subkey.
 
-configs tested: 97
-configs skipped: 0
+However, I note that you really do not seem to have gotten the message:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+  sub   nistp256 2018-01-23 [S] [expires: 2026-01-16]
+        E76040DB76CA3D176708F9AAE742C94CEE98AC85
 
-tested configs:
-arc                   randconfig-001-20240120   gcc  
-arc                   randconfig-002-20240120   gcc  
-arm                   randconfig-001-20240120   clang
-arm                   randconfig-002-20240120   clang
-arm                   randconfig-003-20240120   clang
-arm                   randconfig-004-20240120   clang
-arm64                 randconfig-001-20240120   clang
-arm64                 randconfig-002-20240120   clang
-arm64                 randconfig-003-20240120   clang
-arm64                 randconfig-004-20240120   clang
-csky                  randconfig-001-20240120   gcc  
-csky                  randconfig-002-20240120   gcc  
-hexagon               randconfig-001-20240120   clang
-hexagon               randconfig-002-20240120   clang
-i386         buildonly-randconfig-001-20240120   clang
-i386         buildonly-randconfig-002-20240120   clang
-i386         buildonly-randconfig-003-20240120   clang
-i386         buildonly-randconfig-004-20240120   clang
-i386         buildonly-randconfig-005-20240120   clang
-i386         buildonly-randconfig-006-20240120   clang
-i386                  randconfig-001-20240120   clang
-i386                  randconfig-002-20240120   clang
-i386                  randconfig-003-20240120   clang
-i386                  randconfig-004-20240120   clang
-i386                  randconfig-005-20240120   clang
-i386                  randconfig-006-20240120   clang
-i386                  randconfig-011-20240120   gcc  
-i386                  randconfig-012-20240120   gcc  
-i386                  randconfig-013-20240120   gcc  
-i386                  randconfig-014-20240120   gcc  
-i386                  randconfig-015-20240120   gcc  
-i386                  randconfig-016-20240120   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch             randconfig-001-20240120   gcc  
-loongarch             randconfig-002-20240120   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                       allyesconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                 randconfig-001-20240120   gcc  
-nios2                 randconfig-002-20240120   gcc  
-parisc                randconfig-001-20240120   gcc  
-parisc                randconfig-002-20240120   gcc  
-powerpc               randconfig-001-20240120   clang
-powerpc               randconfig-002-20240120   clang
-powerpc               randconfig-003-20240120   clang
-powerpc64             randconfig-001-20240120   clang
-powerpc64             randconfig-002-20240120   clang
-powerpc64             randconfig-003-20240120   clang
-riscv                 randconfig-001-20240120   clang
-riscv                 randconfig-002-20240120   clang
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                  randconfig-001-20240120   gcc  
-s390                  randconfig-002-20240120   gcc  
-sh                               allmodconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                    randconfig-001-20240120   gcc  
-sh                    randconfig-002-20240120   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64               randconfig-001-20240120   gcc  
-sparc64               randconfig-002-20240120   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                    randconfig-001-20240120   clang
-um                    randconfig-002-20240120   clang
-x86_64       buildonly-randconfig-001-20240120   clang
-x86_64       buildonly-randconfig-002-20240120   clang
-x86_64       buildonly-randconfig-003-20240120   clang
-x86_64       buildonly-randconfig-004-20240120   clang
-x86_64       buildonly-randconfig-005-20240120   clang
-x86_64       buildonly-randconfig-006-20240120   clang
-x86_64                randconfig-001-20240120   gcc  
-x86_64                randconfig-002-20240120   gcc  
-x86_64                randconfig-003-20240120   gcc  
-x86_64                randconfig-004-20240120   gcc  
-x86_64                randconfig-005-20240120   gcc  
-x86_64                randconfig-006-20240120   gcc  
-x86_64                randconfig-011-20240120   clang
-x86_64                randconfig-012-20240120   clang
-x86_64                randconfig-013-20240120   clang
-x86_64                randconfig-014-20240120   clang
-x86_64                randconfig-015-20240120   clang
-x86_64                randconfig-016-20240120   clang
-x86_64                randconfig-071-20240120   clang
-x86_64                randconfig-072-20240120   clang
-x86_64                randconfig-073-20240120   clang
-x86_64                randconfig-074-20240120   clang
-x86_64                randconfig-075-20240120   clang
-x86_64                randconfig-076-20240120   clang
-xtensa                randconfig-001-20240120   gcc  
-xtensa                randconfig-002-20240120   gcc  
+WTF? What happened to "stop doing these idiotic short expirations"?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+What's the advantage of all this stupid and pointless pain? Why didn't
+you extend it by AT LEAST five years?
+
+Has the expiration date *EVER* had a single good reason for it?
+
+From a quick git lookup, in the last year I have pulled from 160
+people. Imagine if they all set two-year expiration dates. Do the
+math: I'd see pointlessly expired keys probably on average once or
+twice a week.
+
+Guess why I don't? BECAUSE NOBODY ELSE DOES THAT POINTLESS EXPIRY DANCE.
+
+Why do you insist on being the problem?
+
+Stop it. Really. I'm tired of the pointless extra work. PGP keys are a
+disaster, and you keep on making things worse than they need to be.
+
+               Linus
 
