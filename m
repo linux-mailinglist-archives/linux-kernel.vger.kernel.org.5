@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-31908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 814D8833641
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:12:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23944833647
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 22:12:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2210C1F215AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:12:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 412401C20D5E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jan 2024 21:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CBBD17992;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFAA02577F;
 	Sat, 20 Jan 2024 21:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gBabWffU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X4V7szfQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B70168B3;
-	Sat, 20 Jan 2024 21:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E49716425
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 21:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705784998; cv=none; b=h8UTB/o/FtnmnT3GAHIdrz4G5Hec1ClfDVp8vvqOr9T11RD71CVrTljdsi2boLIOUo0DuOwMw5tm8CLChAwBmudnW9STtj2ip0CJuFeoaVC7ydSBc9BtAzQSLdvvtvNHhU2VJ+PsmyhlrLhB/kSyl4IAsyiAxsEafAXfkX06ih4=
+	t=1705784999; cv=none; b=FWqsMcBUzcGU+HLiJJmfhHudOHkO4bDi2ts5z7qgU3iIOAcsOd/C6CLzAqUhKdA862a7xIRAZGcrhhfatGmoLCo5meNLedejZ8duVxTHYj6f/5+HzW0ZciRPjT/mVScRNUaplySw6UYSPqNIFug702NdnCKesihRGxSnBx6D8GA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705784998; c=relaxed/simple;
-	bh=Mh4+2rjEl/tfirk6ZrJJo/+D3Z21pmSdnoQgsLi3+Hc=;
+	s=arc-20240116; t=1705784999; c=relaxed/simple;
+	bh=QASk6X8mHI815lMQx7vHiMYhTE5lGqSmqP8w+R4JeKg=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Llq61J9ZrtCELNC323InzjSJbQ+G0whDvJ/0/9nmPKTQ7c90PD4W+q8LfWFGrlL2u+YC+bBA5geZ2zacOt7F8k4PivLRZWGVOTwhcxGYy+H6zUPZP0l2vBZuvD8Z/wSK6TF6Iq27ARcEBaHs32XKDYI0wwlLxnPTDn+OgNWaCPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gBabWffU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3417AC43330;
+	 In-Reply-To:To:Cc; b=kq4e5cHbhZF3aLQzn9rCjHSRbEk6wAP1pu6j0qPm7Jt3qmLw9d3DGeamzH15rgWIviicOxgW22VhcXMQ22mJemt0QJGeT4zqU4StiLaEPtJCTLAv1obTaFCZf6tAl7ZYD9/POIq7OpQIa+nwRj8GyLr+NE+3er8u5VLnsIjNxR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X4V7szfQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E9527C433A6;
 	Sat, 20 Jan 2024 21:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705784998;
-	bh=Mh4+2rjEl/tfirk6ZrJJo/+D3Z21pmSdnoQgsLi3+Hc=;
+	bh=QASk6X8mHI815lMQx7vHiMYhTE5lGqSmqP8w+R4JeKg=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=gBabWffUhXIzoKs5sudLgHP01fwVoOZ8G8XJppwrSIIqTXd2XYdNBCXywvJDVmaR0
-	 VQwuvGapishRyDTmmjTM7bUqzXJpyjK1h9SC1IaTrGptzQuCxjz7cLGSVqLdkBWQRC
-	 u+x7wG5sj4K1RWc1aYbazrFCRwmJWgCgVz0cT4BIYB4v4S9b6GrU/rO9S/reHa6wof
-	 N4QLgOaSg5v+YyptWT1v0cTgFIuK8vPMo5HUtXA80XG+dGvgSS6WLvRIwqNAUwD8ZI
-	 dyzIoechWjSaFhyqfCz2xhvbCtFX2PGS9rCj03lLMuj84C855CJQHmfdu7ymB7dMmg
-	 9WOYs+ahTvD2Q==
+	b=X4V7szfQDwYJfFcOdTjrWH386mx6c46RbuwBiop3XbWj9B/KpP5P8C8NC4tcUkhbd
+	 I/lEC03ex8YEwRl+POcM796TedTPPd486rqM1J3il9coj6D1bjkXgqP8MyeMFToQt3
+	 KuK+9ZBmbcMOI+nwDAdOa2QAST/rOhKLSSdq0pt+Rlaf3+WMo1otM7sHV3cnzF8FD3
+	 TBCYNbioirus6IFsWMtdoP0Q1G5djUXe3F7tuAkODLYG0odOSBadDHH0JuFWkfdcI9
+	 mkJ1xx8/Zw8CiMbgpx4XiqUIgMD83JW+xakSUZ6xuJYDhlTJmUGFBPE0eJTxx6oH2/
+	 azb2CEYi3YhAg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 23795D8C970;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D9807D8C970;
 	Sat, 20 Jan 2024 21:09:58 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,38 +51,38 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 1/2] resource: add walk_system_ram_res_rev()
+Subject: Re: [PATCH] riscv: Optimize hweight API with Zbb extension
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <170578499814.24348.4213715182572913470.git-patchwork-notify@kernel.org>
+ <170578499888.24348.15332028365241008797.git-patchwork-notify@kernel.org>
 Date: Sat, 20 Jan 2024 21:09:58 +0000
-References: <ZVTA6z/06cLnWKUz@MiWiFi-R3L-srv>
-In-Reply-To: <ZVTA6z/06cLnWKUz@MiWiFi-R3L-srv>
-To: Baoquan He <bhe@redhat.com>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- kexec@lists.infradead.org, x86@kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- akpm@linux-foundation.org, ebiederm@xmission.com, takahiro.akashi@linaro.org
+References: <20231112095244.4015351-1-xiao.w.wang@intel.com>
+In-Reply-To: <20231112095244.4015351-1-xiao.w.wang@intel.com>
+To: Xiao Wang <xiao.w.wang@intel.com>
+Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, anup@brainfault.org,
+ haicheng.li@intel.com, linux-kernel@vger.kernel.org
 
 Hello:
 
 This patch was applied to riscv/linux.git (fixes)
-by Andrew Morton <akpm@linux-foundation.org>:
+by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Wed, 15 Nov 2023 21:00:27 +0800 you wrote:
-> This function, being a variant of walk_system_ram_res() introduced in
-> commit 8c86e70acead ("resource: provide new functions to walk through
-> resources"), walks through a list of all the resources of System RAM
-> in reversed order, i.e., from higher to lower.
+On Sun, 12 Nov 2023 17:52:44 +0800 you wrote:
+> The Hamming Weight of a number is the total number of bits set in it, so
+> the cpop/cpopw instruction from Zbb extension can be used to accelerate
+> hweight() API.
 > 
-> It will be used in kexec_file code to load kernel, initrd etc when
-> preparing kexec reboot.
-> 
-> [...]
+> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+> ---
+>  arch/riscv/include/asm/arch_hweight.h | 78 +++++++++++++++++++++++++++
+>  arch/riscv/include/asm/bitops.h       |  4 +-
+>  2 files changed, 81 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/riscv/include/asm/arch_hweight.h
 
 Here is the summary with links:
-  - [v2,1/2] resource: add walk_system_ram_res_rev()
-    https://git.kernel.org/riscv/c/7acf164b259d
+  - riscv: Optimize hweight API with Zbb extension
+    https://git.kernel.org/riscv/c/55ca8d7aa2af
 
 You are awesome, thank you!
 -- 
