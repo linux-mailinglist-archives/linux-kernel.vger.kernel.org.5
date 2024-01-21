@@ -1,349 +1,305 @@
-Return-Path: <linux-kernel+bounces-32032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ED1D835585
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:42:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE19E835591
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:50:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F21DF2820C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 11:42:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 516DE1F21814
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 11:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FDB336AF3;
-	Sun, 21 Jan 2024 11:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD3E36B08;
+	Sun, 21 Jan 2024 11:49:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="KkyUjTSy"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2053.outbound.protection.outlook.com [40.107.20.53])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="PlL2423n"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADCDB101FA;
-	Sun, 21 Jan 2024 11:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705837337; cv=fail; b=poSSJe1OOeJiS1s4mm/kN64AbMrWtj4h0Kxs6+XwHwiQKh05OCVEFU38j3US6ZU/2TjK5D34iisz83zBQ6JlbcIL/PkIE7NQzhvQbrazVpClB4f9W3Axk1r9giSJeGAVl0YcdQg6GeikJaCPgGJDr+/gEGlRSQvI6t4r1ZS/oF0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705837337; c=relaxed/simple;
-	bh=xBMVqWH87uNRd64jKLUKsQqMfTwiSuZJuzRU0a3JoTw=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=duCrzJiSaYi+AwIjcQ90y1moFcwm93kiURvm3gw2H4nJr9fj+ldURWzaHhD638KPnEmFuFR7mL9+sfzQ2w45v/hqHev4yZaBUwVRCp/PozI6keyAb+tZQ7cIyCgXY9fsQG+PSOvT87Qlq81H0OWRsVDNhq5QPriWBz9vXaM1/qo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=KkyUjTSy; arc=fail smtp.client-ip=40.107.20.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CLGHAqmIHsYPmF7Z8YyTp+y9y4mX7i5okssqf5qq7GWPAZrYTSI9QuLb5t88FzAEwqzFwYVO7PSOJE5nvDEPXHEmajEgdxCIcZr84SIyhebzABIoUd1yedTquvmsUXEPOGfP2nMzcV+mYt2+Lj32vHUdk6SqPjWavcBbnGnEqVDGAW6MHVDNzyaww69x9BW2F8CdEJAW2Jh/tK2YGOJCZvzOsX90BVzENKGdkq87VYMnMZqT15dlF511dqJHSFQdIrrEp1c/dzw21LTwHSEjsYnoDpbG8UbxqL7v9FAIVWeeFfkjh1v+oODm2xYxLD230Hanje/USS108dneMSQQ0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4VUcz5uidyb2460oxVqz2vEpXtj9BoNrHH0IMezyXRA=;
- b=DZt16MNKhWtStVZi7XhRfMRXQEr0rzB86uKlrWgZYbE92HxjptxmUwQKb+5NkZ/Lpl+XSpI/j+KjNh7iIGTM2ARKgZ5NkYraQTSWPQlwVQaO2alAE92QRo3fGCuUla9bkaHRMmfOawqf2pbRlTYy3QFEa/FNW9qtscdqrkF13zqxUJXV240R462+Ed1AYghWP7/RZqtcKSFa1kSvWChWll7C4qE8ySVDlUc4fMHbT5yfsFVqpH7KPLJVpZI+heG0RlX1Bjf3V88h7jtj1JqNfyLBAGn4QNLS12yiFRtbfffcpndEZ5cMyOb+lQehTVEaC/RsAcNpt3E9S/JqzAcJQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4VUcz5uidyb2460oxVqz2vEpXtj9BoNrHH0IMezyXRA=;
- b=KkyUjTSyrUcbbrguVZFhsmOHXBeBBP0dKCtXzls8edmNYTdJOLvj234bAgYPr4P0HBN0EQTsLClLgZS3faFI7GMX5LbkdzVweSOHoFhqlinE5fDRqnLrqzXWJttUYFGC1hoCBxfErG6djwRX3kMBM77nAEpZU8niJjiGbxYE6kE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS8PR04MB8117.eurprd04.prod.outlook.com (2603:10a6:20b:3fc::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.30; Sun, 21 Jan
- 2024 11:42:09 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7202.028; Sun, 21 Jan 2024
- 11:42:09 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To: robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	abelvesa@kernel.org,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com
-Cc: devicetree@vger.kernel.org,
-	linux-imx@nxp.com,
-	linux-clk@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] dt-bindings: clock: support NXP i.MX95
-Date: Sun, 21 Jan 2024 19:46:23 +0800
-Message-Id: <20240121114623.1418597-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.37.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR01CA0040.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::14) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653BE10785;
+	Sun, 21 Jan 2024 11:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705837797; cv=none; b=rVy+zYxulJesvWirwDs1TH81+w5p5oh3/Lg9LasszWp7j35ldKcOwpeeeRmv44IdsChYY5hLo9xcw/1IvDo34RuhKJDbQiEybCWlysULhUIUO9T8hPI6+nHWeG7I4JBUYgIa19WMJuPnQpNoybrAn6tu6b92g95HVEyRKVDeejc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705837797; c=relaxed/simple;
+	bh=IX6gX22nuX3ITn82hOSV0I5xTJX8M50BDqDVYqjrdb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S5xRrnZANXqNavfVQvLOggudW/OUfuRotO8XZrHvwQqITCITKuCllDgqd6kL8LKqw/6jUer7WSyaBMdtT+/NNAtB/GrGoxB4sBWQ9L+cyu0upThxVudt6mwkD+YVKYiWNrp3osbfkhsCV54i7iJTIwQBbVJD+5m5Pk+kJDmDCMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=PlL2423n; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BA4F240E016C;
+	Sun, 21 Jan 2024 11:49:46 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id QufI0F2hHmPV; Sun, 21 Jan 2024 11:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1705837783; bh=NjXjwG84zDH31kxmFiKAYsCtuTb3t8NMg29SPEaQwJk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PlL2423nlQeFrtrBAT6D+YTiXUCjiejwKQmjF6Qt76EveRL7nDm5xV42nzDyPpmsB
+	 U2pcNTFIG2xe0ub4ZvTru7rdlcY93m/hbBhlZhJRHqkFp05pSXS0/ZeNLnsE8ZRc31
+	 XlHCJ/UlTUCCnYgKhdfFGLrZuQL4nHirdgTuLLP4IgF8oMbzvYhiEctbcenlaBnD+L
+	 lDZ3y+Kzgxhhke3qG4kDW0dNHc9G3C0SYUgLleJ0NK0GmpXD4sK77WVflFcjixRuXh
+	 inu4MhNGDyGsoa6cEpEfXMS6/wxWlTLxAHs5zDT24B8gBqOIMt9cfxmBAX1Ra/sM5c
+	 flj1ELyoGmNx+HzY0XMJbQsik2QiItZS9wKXc1SzfmbL6SHkKAJ5YLQmVNOrDuNHvF
+	 BolnUhyQiLdf8Av9StDVO5rCwzzssAP3k6bxiIHvQmvBFzH0QRvLF4Zj3Q/nw+anfS
+	 UZGQyn18bC6Bynzp/7Nioxkw5MQeyx6AKNzcvoFL14jcrd8VQ8RV4NtTQTELdz0RVR
+	 oBvGw1lsBFNa5PngqP0q5m1DE9+sXjwKl8Na+tvmY9XG42Jjs0ENcP2RoFrkeByMdJ
+	 iI/s9uwHiDepyvvP7iSBtCvQATuGtkteWIWprDR7wpNfypyv74C7dTTXoALPlENo4q
+	 NeXgzZVABJEBCQVA3nYxk4DQ=
+Received: from zn.tnic (pd953099d.dip0.t-ipconnect.de [217.83.9.157])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2FEF540E0177;
+	Sun, 21 Jan 2024 11:49:07 +0000 (UTC)
+Date: Sun, 21 Jan 2024 12:49:00 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Roth <michael.roth@amd.com>
+Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
+	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com, liam.merwick@oracle.com
+Subject: Re: [PATCH v1 21/26] crypto: ccp: Add panic notifier for SEV/SNP
+ firmware shutdown on kdump
+Message-ID: <20240121114900.GLZa0ErBHIqvook5zK@fat_crate.local>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-22-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB8117:EE_
-X-MS-Office365-Filtering-Correlation-Id: 97749098-abfd-4f9a-5b8b-08dc1a75ffeb
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	3NxRAyl3lFzBVF9zjyAKlb1paiLrMyK4QNrtCGJEqEQ9PQEz7ddn6LLy/havRxVe8mBgr6+nyDKFZaTp9QPL0xgcg3NA1I+BzyjkD83Tp91LjgPfv2U5pSeUM9E57Eb9RAufXhtgNt5y2baQ448arhPEbPMY1FFt8ljo3lUoNN8iZ67frgmTN1ETJ9UsjsiSXDRfTAV4ScUxly1g9KxCK7467ABL71JXFkrdBteW1M/kcC+K25JmPmIC5MQWb8xLUCAozsCBWWya8mxGs4wn+mlPjaqcXIgur/vArmJZn404JTGq6Y8zVqSrO6aF4SNFVT7SIHnqDJ4gAXSShEffn68/4a+Llt/x3GWES13finOfeLslbbImBJN09L/U7e4zV6Q+I5mxgqndXvoT8lIfkO7KnLjAH0cmPHNP6X0YeCabu0wEam0jrhAXTn5xpkgiN5lVlbiyM243TWLM41oQIMugzxjBAwYwjmztdGzEmSAaiiqBdr2XXpowHJTK4snIdjv4kNItUJaplsK5cN3X/DD5LNpY0Ow1xvUVAisQNHOF75eDUDaQkLfp/wSjWEAAepS439anX/a0Pb2q711VuHh8Q7KBOhhp6JBN0S1PtMmsBGz5MvFehgLaasTqGHWE
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(39850400004)(136003)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(921011)(38350700005)(5660300002)(52116002)(7416002)(66556008)(66476007)(66946007)(2906002)(26005)(6486002)(8676002)(6666004)(6506007)(478600001)(316002)(4326008)(8936002)(1076003)(2616005)(6512007)(38100700002)(83380400001)(86362001)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?L2p0Jm6/dzcdDbL0PU9zYWd1oKi9vYS5JJVwZRd46WtTjV4Fo5jUy23ZaruE?=
- =?us-ascii?Q?YwCPRJplaACObelu3/+G667NNPESe8fyW8lMwTrLQntE/kIaw4YzRntZCISc?=
- =?us-ascii?Q?GTVKVbVcSgNFaM8sQgOR3hI+MEVCAQybeagO9itN08GQvw9eXCfDV24uFegD?=
- =?us-ascii?Q?ErQ8bVwTMAqbmGnHX75R1QDjlTyktH1WCVZWcZFn5dUIjFvK1946cLSIXFim?=
- =?us-ascii?Q?Wj2PuB/DymVEVwhJTuQZwhx59EPA/V65DLmU9odS37bk9wcfL3YyWkco8nKM?=
- =?us-ascii?Q?qygUKrR/Em8KfJDXC8FsrfvLz3vTcoZKaVu1hMwTKWBDJ/gPYnSRPmJIwP7l?=
- =?us-ascii?Q?GHCOj+ANyoUalvGSpJcb4n8NRssN/UCh+HEfhjORTILkGIa7+n3Px3SedGBT?=
- =?us-ascii?Q?mcSUSue+HFZj5osn0aQFTEYBe5FszyRxbX58XjTYz5klhyR0ge8+rLT7HfFM?=
- =?us-ascii?Q?rd8EFvAjHEttHLijNH6bWVXD7qx/rPsUoOV9RINAqmO6furiY8B1gcccXhSx?=
- =?us-ascii?Q?7F+s97xa+b+UOODKmk2m6/G4913r8+FGp0H9lpfTo2AoWK7pP753yIsLd2+u?=
- =?us-ascii?Q?8+/gnIVu9eE1mNhGSZCMaV8EFZXcQw+4myjFmJdaVHy1tsDTyR6+BeHkR06i?=
- =?us-ascii?Q?MutoQAI3tATyLXs5y9c5xox2/iWeWr67eySL8AEbCgrl7SlC1YZxUh1YS1gO?=
- =?us-ascii?Q?B8cRhzMPMc8x2Hr5ywtEfxzg7quWFXD7bg2OOt4Ah/iHJAC2UfDPePCGgk41?=
- =?us-ascii?Q?KPziJXbgck58Dvz6I5CjDYxoN4lrH7CubGenY0mSjQRl6Ae9X3oRULbOSVT6?=
- =?us-ascii?Q?kYJucYO7ZlNQ+SfSFmIvOuKF1qGHQ5Aig0gibh2DCx8a6Hky2aEcinzDVik9?=
- =?us-ascii?Q?n0aAArGlwvwunDDhY5tGrWseS7aIbA/St0fniCHCXcDJuvkFprIywMUlqrqg?=
- =?us-ascii?Q?k1I8UNukls9n3ebur9bujjF8Qo0i9z/6HI1ijQfSxbQ7+ogPWiuWObhd8fsQ?=
- =?us-ascii?Q?TbKrXcC8jLoZyGNOxdRdsEWfVOBOzvaO95oZ07qT9uSjZw1saecy3IMC90HV?=
- =?us-ascii?Q?GmaqsAbfINuNPAgFkZzCHkjOLxm+vGSjLqH4XlQUeKT3CiNPIDbU1ILHtGDm?=
- =?us-ascii?Q?hcAwwt32ZCLHsAi4xErgJuYp0CJJKeIGNQ+TZra8InaceH9LtQPAtLGRMB+L?=
- =?us-ascii?Q?jQObXWFUXiPRRiGnsWKMoqGoekNDNsKK7bEjwxkpbzbk9+EeVbo5El35WtoJ?=
- =?us-ascii?Q?ulbnAx4c+R9zesMlSWLleGuSgVmJI27fE8VCQWT4DEMg+vqUkgwb9tRmuXZF?=
- =?us-ascii?Q?fDKpopMFOp9NisIYCrWQMqYYBSEvahZrG+LIdYtVC04t2g3h+nVIpuPoEJqI?=
- =?us-ascii?Q?LmItwTaxgkfJhvDUCvp35mithjki8TULQtENBoSYpbJR+Iro+oK1qxWzCooL?=
- =?us-ascii?Q?AUe/IHTkdEkXyMSgZfXRAiYDGFYdljM3sXcrH3q/trbd5mAYNd1QpHqKtw5g?=
- =?us-ascii?Q?Xmku3i2okzdNN3S1RoZjDu4JmRBB9BVNv3CMW13myPm1OqMFrLSZKMMhr3Cz?=
- =?us-ascii?Q?jbty1TrET6y6o8RkaZqC0iuACWMYszVo2F2E+xX/?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97749098-abfd-4f9a-5b8b-08dc1a75ffeb
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2024 11:42:08.9947
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: p45+LTNKZ+FVV6rttTr4gkKZ/RGXDAL+ry2wruPv0+VxKdj0ZLHR7pSebIPyR1h9bk+SPiWAKO9wsTMvIK9Txw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8117
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231230161954.569267-22-michael.roth@amd.com>
 
-From: Peng Fan <peng.fan@nxp.com>
+On Sat, Dec 30, 2023 at 10:19:49AM -0600, Michael Roth wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> Add a kdump safe version of sev_firmware_shutdown() registered as a
+> crash_kexec_post_notifier, which is invoked during panic/crash to do
+> SEV/SNP shutdown. This is required for transitioning all IOMMU pages
+> to reclaim/hypervisor state, otherwise re-init of IOMMU pages during
+> crashdump kernel boot fails and panics the crashdump kernel. This
+> panic notifier runs in atomic context, hence it ensures not to
+> acquire any locks/mutexes and polls for PSP command completion
+> instead of depending on PSP command completion interrupt.
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> [mdr: remove use of "we" in comments]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
 
-Add i.MX95 clock dt-binding header file
+Cleanups ontop, see if the below works too. Especially:
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
+* I've zapped the WBINVD before the TMR pages are freed because
+__sev_snp_shutdown_locked() will WBINVD anyway.
+
+* The mutex_is_locked() check in snp_shutdown_on_panic() is silly
+because the panic notifier runs on one CPU anyway.
+
+Thx.
+
 ---
- include/dt-bindings/clock/nxp,imx95-clock.h | 187 ++++++++++++++++++++
- 1 file changed, 187 insertions(+)
- create mode 100644 include/dt-bindings/clock/nxp,imx95-clock.h
 
-diff --git a/include/dt-bindings/clock/nxp,imx95-clock.h b/include/dt-bindings/clock/nxp,imx95-clock.h
-new file mode 100644
-index 000000000000..939655f0414e
---- /dev/null
-+++ b/include/dt-bindings/clock/nxp,imx95-clock.h
-@@ -0,0 +1,187 @@
-+/* SPDX-License-Identifier: GPL-2.0-only OR MIT */
-+/*
-+ * Copyright 2024 NXP
-+ */
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index 435ba9bc4510..27323203e593 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -227,6 +227,7 @@ int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct sn
+ void snp_accept_memory(phys_addr_t start, phys_addr_t end);
+ u64 snp_get_unsupported_features(u64 status);
+ u64 sev_get_status(void);
++void kdump_sev_callback(void);
+ #else
+ static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+ static inline void sev_es_ist_exit(void) { }
+@@ -255,6 +256,7 @@ static inline int snp_issue_guest_request(u64 exit_code, struct snp_req_data *in
+ static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
+ static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
+ static inline u64 sev_get_status(void) { return 0; }
++static inline void kdump_sev_callback(void) {  }
+ #endif
+ 
+ #ifdef CONFIG_KVM_AMD_SEV
+diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+index 23ede774d31b..64ae3a1e5c30 100644
+--- a/arch/x86/kernel/crash.c
++++ b/arch/x86/kernel/crash.c
+@@ -40,6 +40,7 @@
+ #include <asm/intel_pt.h>
+ #include <asm/crash.h>
+ #include <asm/cmdline.h>
++#include <asm/sev.h>
+ 
+ /* Used while preparing memory map entries for second kernel */
+ struct crash_memmap_data {
+@@ -59,12 +60,7 @@ static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
+ 	 */
+ 	cpu_emergency_stop_pt();
+ 
+-	/*
+-	 * for SNP do wbinvd() on remote CPUs to
+-	 * safely do SNP_SHUTDOWN on the local CPU.
+-	 */
+-	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+-		wbinvd();
++	kdump_sev_callback();
+ 
+ 	disable_local_APIC();
+ }
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index c67285824e82..dbb2cc6b5666 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -2262,3 +2262,13 @@ static int __init snp_init_platform_device(void)
+ 	return 0;
+ }
+ device_initcall(snp_init_platform_device);
 +
-+#ifndef __DT_BINDINGS_CLOCK_IMX95_H
-+#define __DT_BINDINGS_CLOCK_IMX95_H
-+
-+/* The index should match i.MX95 SCMI Firmware */
-+#define IMX95_CLK_32K                       1
-+#define IMX95_CLK_24M                       2
-+#define IMX95_CLK_FRO                       3
-+#define IMX95_CLK_SYSPLL1_VCO               4
-+#define IMX95_CLK_SYSPLL1_PFD0_UNGATED      5
-+#define IMX95_CLK_SYSPLL1_PFD0              6
-+#define IMX95_CLK_SYSPLL1_PFD0_DIV2         7
-+#define IMX95_CLK_SYSPLL1_PFD1_UNGATED      8
-+#define IMX95_CLK_SYSPLL1_PFD1              9
-+#define IMX95_CLK_SYSPLL1_PFD1_DIV2         10
-+#define IMX95_CLK_SYSPLL1_PFD2_UNGATED      11
-+#define IMX95_CLK_SYSPLL1_PFD2              12
-+#define IMX95_CLK_SYSPLL1_PFD2_DIV2         13
-+#define IMX95_CLK_AUDIOPLL1_VCO             14
-+#define IMX95_CLK_AUDIOPLL1                 15
-+#define IMX95_CLK_AUDIOPLL2_VCO             16
-+#define IMX95_CLK_AUDIOPLL2                 17
-+#define IMX95_CLK_VIDEOPLL1_VCO             18
-+#define IMX95_CLK_VIDEOPLL1                 19
-+#define IMX95_CLK_RESERVED20                20
-+#define IMX95_CLK_RESERVED21                21
-+#define IMX95_CLK_RESERVED22                22
-+#define IMX95_CLK_RESERVED23                23
-+#define IMX95_CLK_ARMPLL_VCO                24
-+#define IMX95_CLK_ARMPLL_PFD0_UNGATED       25
-+#define IMX95_CLK_ARMPLL_PFD0               26
-+#define IMX95_CLK_ARMPLL_PFD1_UNGATED       27
-+#define IMX95_CLK_ARMPLL_PFD1               28
-+#define IMX95_CLK_ARMPLL_PFD2_UNGATED       29
-+#define IMX95_CLK_ARMPLL_PFD2               30
-+#define IMX95_CLK_ARMPLL_PFD3_UNGATED       31
-+#define IMX95_CLK_ARMPLL_PFD3               32
-+#define IMX95_CLK_DRAMPLL_VCO               33
-+#define IMX95_CLK_DRAMPLL                   34
-+#define IMX95_CLK_HSIOPLL_VCO               35
-+#define IMX95_CLK_HSIOPLL                   36
-+#define IMX95_CLK_LDBPLL_VCO                37
-+#define IMX95_CLK_LDBPLL                    38
-+#define IMX95_CLK_EXT1                      39
-+#define IMX95_CLK_EXT2                      40
-+
-+#define IMX95_CCM_NUM_CLK_SRC               41
-+
-+#define IMX95_CLK_ADC                      (IMX95_CCM_NUM_CLK_SRC + 0)
-+#define IMX95_CLK_TMU                      (IMX95_CCM_NUM_CLK_SRC + 1)
-+#define IMX95_CLK_BUSAON                   (IMX95_CCM_NUM_CLK_SRC + 2)
-+#define IMX95_CLK_CAN1                     (IMX95_CCM_NUM_CLK_SRC + 3)
-+#define IMX95_CLK_I3C1                     (IMX95_CCM_NUM_CLK_SRC + 4)
-+#define IMX95_CLK_I3C1SLOW                 (IMX95_CCM_NUM_CLK_SRC + 5)
-+#define IMX95_CLK_LPI2C1                   (IMX95_CCM_NUM_CLK_SRC + 6)
-+#define IMX95_CLK_LPI2C2                   (IMX95_CCM_NUM_CLK_SRC + 7)
-+#define IMX95_CLK_LPSPI1                   (IMX95_CCM_NUM_CLK_SRC + 8)
-+#define IMX95_CLK_LPSPI2                   (IMX95_CCM_NUM_CLK_SRC + 9)
-+#define IMX95_CLK_LPTMR1                   (IMX95_CCM_NUM_CLK_SRC + 10)
-+#define IMX95_CLK_LPUART1                  (IMX95_CCM_NUM_CLK_SRC + 11)
-+#define IMX95_CLK_LPUART2                  (IMX95_CCM_NUM_CLK_SRC + 12)
-+#define IMX95_CLK_M33                      (IMX95_CCM_NUM_CLK_SRC + 13)
-+#define IMX95_CLK_M33SYSTICK               (IMX95_CCM_NUM_CLK_SRC + 14)
-+#define IMX95_CLK_MQS1                     (IMX95_CCM_NUM_CLK_SRC + 15)
-+#define IMX95_CLK_PDM                      (IMX95_CCM_NUM_CLK_SRC + 16)
-+#define IMX95_CLK_SAI1                     (IMX95_CCM_NUM_CLK_SRC + 17)
-+#define IMX95_CLK_SENTINEL                 (IMX95_CCM_NUM_CLK_SRC + 18)
-+#define IMX95_CLK_TPM2                     (IMX95_CCM_NUM_CLK_SRC + 19)
-+#define IMX95_CLK_TSTMR1                   (IMX95_CCM_NUM_CLK_SRC + 20)
-+#define IMX95_CLK_CAMAPB                   (IMX95_CCM_NUM_CLK_SRC + 21)
-+#define IMX95_CLK_CAMAXI                   (IMX95_CCM_NUM_CLK_SRC + 22)
-+#define IMX95_CLK_CAMCM0                   (IMX95_CCM_NUM_CLK_SRC + 23)
-+#define IMX95_CLK_CAMISI                   (IMX95_CCM_NUM_CLK_SRC + 24)
-+#define IMX95_CLK_MIPIPHYCFG               (IMX95_CCM_NUM_CLK_SRC + 25)
-+#define IMX95_CLK_MIPIPHYPLLBYPASS         (IMX95_CCM_NUM_CLK_SRC + 26)
-+#define IMX95_CLK_MIPIPHYPLLREF            (IMX95_CCM_NUM_CLK_SRC + 27)
-+#define IMX95_CLK_MIPITESTBYTE             (IMX95_CCM_NUM_CLK_SRC + 28)
-+#define IMX95_CLK_A55                      (IMX95_CCM_NUM_CLK_SRC + 29)
-+#define IMX95_CLK_A55MTRBUS                (IMX95_CCM_NUM_CLK_SRC + 30)
-+#define IMX95_CLK_A55PERIPH                (IMX95_CCM_NUM_CLK_SRC + 31)
-+#define IMX95_CLK_DRAMALT                  (IMX95_CCM_NUM_CLK_SRC + 32)
-+#define IMX95_CLK_DRAMAPB                  (IMX95_CCM_NUM_CLK_SRC + 33)
-+#define IMX95_CLK_DISPAPB                  (IMX95_CCM_NUM_CLK_SRC + 34)
-+#define IMX95_CLK_DISPAXI                  (IMX95_CCM_NUM_CLK_SRC + 35)
-+#define IMX95_CLK_DISPDP                   (IMX95_CCM_NUM_CLK_SRC + 36)
-+#define IMX95_CLK_DISPOCRAM                (IMX95_CCM_NUM_CLK_SRC + 37)
-+#define IMX95_CLK_DISPUSB31                (IMX95_CCM_NUM_CLK_SRC + 38)
-+#define IMX95_CLK_DISP1PIX                 (IMX95_CCM_NUM_CLK_SRC + 39)
-+#define IMX95_CLK_DISP2PIX                 (IMX95_CCM_NUM_CLK_SRC + 40)
-+#define IMX95_CLK_DISP3PIX                 (IMX95_CCM_NUM_CLK_SRC + 41)
-+#define IMX95_CLK_GPUAPB                   (IMX95_CCM_NUM_CLK_SRC + 42)
-+#define IMX95_CLK_GPU                      (IMX95_CCM_NUM_CLK_SRC + 43)
-+#define IMX95_CLK_HSIOACSCAN480M           (IMX95_CCM_NUM_CLK_SRC + 44)
-+#define IMX95_CLK_HSIOACSCAN80M            (IMX95_CCM_NUM_CLK_SRC + 45)
-+#define IMX95_CLK_HSIO                     (IMX95_CCM_NUM_CLK_SRC + 46)
-+#define IMX95_CLK_HSIOPCIEAUX              (IMX95_CCM_NUM_CLK_SRC + 47)
-+#define IMX95_CLK_HSIOPCIETEST160M         (IMX95_CCM_NUM_CLK_SRC + 48)
-+#define IMX95_CLK_HSIOPCIETEST400M         (IMX95_CCM_NUM_CLK_SRC + 49)
-+#define IMX95_CLK_HSIOPCIETEST500M         (IMX95_CCM_NUM_CLK_SRC + 50)
-+#define IMX95_CLK_HSIOUSBTEST50M           (IMX95_CCM_NUM_CLK_SRC + 51)
-+#define IMX95_CLK_HSIOUSBTEST60M           (IMX95_CCM_NUM_CLK_SRC + 52)
-+#define IMX95_CLK_BUSM7                    (IMX95_CCM_NUM_CLK_SRC + 53)
-+#define IMX95_CLK_M7                       (IMX95_CCM_NUM_CLK_SRC + 54)
-+#define IMX95_CLK_M7SYSTICK                (IMX95_CCM_NUM_CLK_SRC + 55)
-+#define IMX95_CLK_BUSNETCMIX               (IMX95_CCM_NUM_CLK_SRC + 56)
-+#define IMX95_CLK_ENET                     (IMX95_CCM_NUM_CLK_SRC + 57)
-+#define IMX95_CLK_ENETPHYTEST200M          (IMX95_CCM_NUM_CLK_SRC + 58)
-+#define IMX95_CLK_ENETPHYTEST500M          (IMX95_CCM_NUM_CLK_SRC + 59)
-+#define IMX95_CLK_ENETPHYTEST667M          (IMX95_CCM_NUM_CLK_SRC + 60)
-+#define IMX95_CLK_ENETREF                  (IMX95_CCM_NUM_CLK_SRC + 61)
-+#define IMX95_CLK_ENETTIMER1               (IMX95_CCM_NUM_CLK_SRC + 62)
-+#define IMX95_CLK_MQS2                     (IMX95_CCM_NUM_CLK_SRC + 63)
-+#define IMX95_CLK_SAI2                     (IMX95_CCM_NUM_CLK_SRC + 64)
-+#define IMX95_CLK_NOCAPB                   (IMX95_CCM_NUM_CLK_SRC + 65)
-+#define IMX95_CLK_NOC                      (IMX95_CCM_NUM_CLK_SRC + 66)
-+#define IMX95_CLK_NPUAPB                   (IMX95_CCM_NUM_CLK_SRC + 67)
-+#define IMX95_CLK_NPU                      (IMX95_CCM_NUM_CLK_SRC + 68)
-+#define IMX95_CLK_CCMCKO1                  (IMX95_CCM_NUM_CLK_SRC + 69)
-+#define IMX95_CLK_CCMCKO2                  (IMX95_CCM_NUM_CLK_SRC + 70)
-+#define IMX95_CLK_CCMCKO3                  (IMX95_CCM_NUM_CLK_SRC + 71)
-+#define IMX95_CLK_CCMCKO4                  (IMX95_CCM_NUM_CLK_SRC + 72)
-+#define IMX95_CLK_VPUAPB                   (IMX95_CCM_NUM_CLK_SRC + 73)
-+#define IMX95_CLK_VPU                      (IMX95_CCM_NUM_CLK_SRC + 74)
-+#define IMX95_CLK_VPUDSP                   (IMX95_CCM_NUM_CLK_SRC + 75)
-+#define IMX95_CLK_VPUJPEG                  (IMX95_CCM_NUM_CLK_SRC + 76)
-+#define IMX95_CLK_AUDIOXCVR                (IMX95_CCM_NUM_CLK_SRC + 77)
-+#define IMX95_CLK_BUSWAKEUP                (IMX95_CCM_NUM_CLK_SRC + 78)
-+#define IMX95_CLK_CAN2                     (IMX95_CCM_NUM_CLK_SRC + 79)
-+#define IMX95_CLK_CAN3                     (IMX95_CCM_NUM_CLK_SRC + 80)
-+#define IMX95_CLK_CAN4                     (IMX95_CCM_NUM_CLK_SRC + 81)
-+#define IMX95_CLK_CAN5                     (IMX95_CCM_NUM_CLK_SRC + 82)
-+#define IMX95_CLK_FLEXIO1                  (IMX95_CCM_NUM_CLK_SRC + 83)
-+#define IMX95_CLK_FLEXIO2                  (IMX95_CCM_NUM_CLK_SRC + 84)
-+#define IMX95_CLK_FLEXSPI1                 (IMX95_CCM_NUM_CLK_SRC + 85)
-+#define IMX95_CLK_I3C2                     (IMX95_CCM_NUM_CLK_SRC + 86)
-+#define IMX95_CLK_I3C2SLOW                 (IMX95_CCM_NUM_CLK_SRC + 87)
-+#define IMX95_CLK_LPI2C3                   (IMX95_CCM_NUM_CLK_SRC + 88)
-+#define IMX95_CLK_LPI2C4                   (IMX95_CCM_NUM_CLK_SRC + 89)
-+#define IMX95_CLK_LPI2C5                   (IMX95_CCM_NUM_CLK_SRC + 90)
-+#define IMX95_CLK_LPI2C6                   (IMX95_CCM_NUM_CLK_SRC + 91)
-+#define IMX95_CLK_LPI2C7                   (IMX95_CCM_NUM_CLK_SRC + 92)
-+#define IMX95_CLK_LPI2C8                   (IMX95_CCM_NUM_CLK_SRC + 93)
-+#define IMX95_CLK_LPSPI3                   (IMX95_CCM_NUM_CLK_SRC + 94)
-+#define IMX95_CLK_LPSPI4                   (IMX95_CCM_NUM_CLK_SRC + 95)
-+#define IMX95_CLK_LPSPI5                   (IMX95_CCM_NUM_CLK_SRC + 96)
-+#define IMX95_CLK_LPSPI6                   (IMX95_CCM_NUM_CLK_SRC + 97)
-+#define IMX95_CLK_LPSPI7                   (IMX95_CCM_NUM_CLK_SRC + 98)
-+#define IMX95_CLK_LPSPI8                   (IMX95_CCM_NUM_CLK_SRC + 99)
-+#define IMX95_CLK_LPTMR2                   (IMX95_CCM_NUM_CLK_SRC + 100)
-+#define IMX95_CLK_LPUART3                  (IMX95_CCM_NUM_CLK_SRC + 101)
-+#define IMX95_CLK_LPUART4                  (IMX95_CCM_NUM_CLK_SRC + 102)
-+#define IMX95_CLK_LPUART5                  (IMX95_CCM_NUM_CLK_SRC + 103)
-+#define IMX95_CLK_LPUART6                  (IMX95_CCM_NUM_CLK_SRC + 104)
-+#define IMX95_CLK_LPUART7                  (IMX95_CCM_NUM_CLK_SRC + 105)
-+#define IMX95_CLK_LPUART8                  (IMX95_CCM_NUM_CLK_SRC + 106)
-+#define IMX95_CLK_SAI3                     (IMX95_CCM_NUM_CLK_SRC + 107)
-+#define IMX95_CLK_SAI4                     (IMX95_CCM_NUM_CLK_SRC + 108)
-+#define IMX95_CLK_SAI5                     (IMX95_CCM_NUM_CLK_SRC + 109)
-+#define IMX95_CLK_SPDIF                    (IMX95_CCM_NUM_CLK_SRC + 110)
-+#define IMX95_CLK_SWOTRACE                 (IMX95_CCM_NUM_CLK_SRC + 111)
-+#define IMX95_CLK_TPM4                     (IMX95_CCM_NUM_CLK_SRC + 112)
-+#define IMX95_CLK_TPM5                     (IMX95_CCM_NUM_CLK_SRC + 113)
-+#define IMX95_CLK_TPM6                     (IMX95_CCM_NUM_CLK_SRC + 114)
-+#define IMX95_CLK_TSTMR2                   (IMX95_CCM_NUM_CLK_SRC + 115)
-+#define IMX95_CLK_USBPHYBURUNIN            (IMX95_CCM_NUM_CLK_SRC + 116)
-+#define IMX95_CLK_USDHC1                   (IMX95_CCM_NUM_CLK_SRC + 117)
-+#define IMX95_CLK_USDHC2                   (IMX95_CCM_NUM_CLK_SRC + 118)
-+#define IMX95_CLK_USDHC3                   (IMX95_CCM_NUM_CLK_SRC + 119)
-+#define IMX95_CLK_V2XPK                    (IMX95_CCM_NUM_CLK_SRC + 120)
-+#define IMX95_CLK_WAKEUPAXI                (IMX95_CCM_NUM_CLK_SRC + 121)
-+#define IMX95_CLK_XSPISLVROOT              (IMX95_CCM_NUM_CLK_SRC + 122)
-+#define IMX95_CLK_SEL_EXT                  (IMX95_CCM_NUM_CLK_SRC + 123 + 0)
-+#define IMX95_CLK_SEL_A55C0                (IMX95_CCM_NUM_CLK_SRC + 123 + 1)
-+#define IMX95_CLK_SEL_A55C1                (IMX95_CCM_NUM_CLK_SRC + 123 + 2)
-+#define IMX95_CLK_SEL_A55C2                (IMX95_CCM_NUM_CLK_SRC + 123 + 3)
-+#define IMX95_CLK_SEL_A55C3                (IMX95_CCM_NUM_CLK_SRC + 123 + 4)
-+#define IMX95_CLK_SEL_A55C4                (IMX95_CCM_NUM_CLK_SRC + 123 + 5)
-+#define IMX95_CLK_SEL_A55C5                (IMX95_CCM_NUM_CLK_SRC + 123 + 6)
-+#define IMX95_CLK_SEL_A55P                 (IMX95_CCM_NUM_CLK_SRC + 123 + 7)
-+#define IMX95_CLK_SEL_DRAM                 (IMX95_CCM_NUM_CLK_SRC + 123 + 8)
-+#define IMX95_CLK_SEL_TEMPSENSE            (IMX95_CCM_NUM_CLK_SRC + 123 + 9)
-+
-+#endif	/* __DT_BINDINGS_CLOCK_IMX95_H */
++void kdump_sev_callback(void)
++{
++	/*
++	 * Do wbinvd() on remote CPUs when SNP is enabled in order to
++	 * safely do SNP_SHUTDOWN on the the local CPU.
++	 */
++	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++		wbinvd();
++}
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index 598878e760bc..c342e5e54e45 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -161,7 +161,6 @@ static int sev_wait_cmd_ioc(struct sev_device *sev,
+ 
+ 			udelay(10);
+ 		}
+-
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -1654,7 +1653,7 @@ static int sev_update_firmware(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int __sev_snp_shutdown_locked(int *error, bool in_panic)
++static int __sev_snp_shutdown_locked(int *error, bool panic)
+ {
+ 	struct sev_device *sev = psp_master->sev_data;
+ 	struct sev_data_snp_shutdown_ex data;
+@@ -1673,7 +1672,7 @@ static int __sev_snp_shutdown_locked(int *error, bool in_panic)
+ 	 * In that case, a wbinvd() is done on remote CPUs via the NMI
+ 	 * callback, so only a local wbinvd() is needed here.
+ 	 */
+-	if (!in_panic)
++	if (!panic)
+ 		wbinvd_on_all_cpus();
+ 	else
+ 		wbinvd();
+@@ -2199,26 +2198,13 @@ int sev_dev_init(struct psp_device *psp)
+ 	return ret;
+ }
+ 
+-static void __sev_firmware_shutdown(struct sev_device *sev, bool in_panic)
++static void __sev_firmware_shutdown(struct sev_device *sev, bool panic)
+ {
+ 	int error;
+ 
+ 	__sev_platform_shutdown_locked(NULL);
+ 
+ 	if (sev_es_tmr) {
+-		/*
+-		 * The TMR area was encrypted, flush it from the cache
+-		 *
+-		 * If invoked during panic handling, local interrupts are
+-		 * disabled and all CPUs are stopped, so wbinvd_on_all_cpus()
+-		 * can't be used. In that case, wbinvd() is done on remote CPUs
+-		 * via the NMI callback, so a local wbinvd() is sufficient here.
+-		 */
+-		if (!in_panic)
+-			wbinvd_on_all_cpus();
+-		else
+-			wbinvd();
+-
+ 		__snp_free_firmware_pages(virt_to_page(sev_es_tmr),
+ 					  get_order(sev_es_tmr_size),
+ 					  true);
+@@ -2237,7 +2223,7 @@ static void __sev_firmware_shutdown(struct sev_device *sev, bool in_panic)
+ 		snp_range_list = NULL;
+ 	}
+ 
+-	__sev_snp_shutdown_locked(&error, in_panic);
++	__sev_snp_shutdown_locked(&error, panic);
+ }
+ 
+ static void sev_firmware_shutdown(struct sev_device *sev)
+@@ -2262,26 +2248,18 @@ void sev_dev_destroy(struct psp_device *psp)
+ 	psp_clear_sev_irq_handler(psp);
+ }
+ 
+-static int sev_snp_shutdown_on_panic(struct notifier_block *nb,
+-				     unsigned long reason, void *arg)
++static int snp_shutdown_on_panic(struct notifier_block *nb,
++				 unsigned long reason, void *arg)
+ {
+ 	struct sev_device *sev = psp_master->sev_data;
+ 
+-	/*
+-	 * Panic callbacks are executed with all other CPUs stopped,
+-	 * so don't wait for sev_cmd_mutex to be released since it
+-	 * would block here forever.
+-	 */
+-	if (mutex_is_locked(&sev_cmd_mutex))
+-		return NOTIFY_DONE;
+-
+ 	__sev_firmware_shutdown(sev, true);
+ 
+ 	return NOTIFY_DONE;
+ }
+ 
+-static struct notifier_block sev_snp_panic_notifier = {
+-	.notifier_call = sev_snp_shutdown_on_panic,
++static struct notifier_block snp_panic_notifier = {
++	.notifier_call = snp_shutdown_on_panic,
+ };
+ 
+ int sev_issue_cmd_external_user(struct file *filep, unsigned int cmd,
+@@ -2322,7 +2300,7 @@ void sev_pci_init(void)
+ 		"-SNP" : "", sev->api_major, sev->api_minor, sev->build);
+ 
+ 	atomic_notifier_chain_register(&panic_notifier_list,
+-				       &sev_snp_panic_notifier);
++				       &snp_panic_notifier);
+ 	return;
+ 
+ err:
+@@ -2339,5 +2317,5 @@ void sev_pci_exit(void)
+ 	sev_firmware_shutdown(sev);
+ 
+ 	atomic_notifier_chain_unregister(&panic_notifier_list,
+-					 &sev_snp_panic_notifier);
++					 &snp_panic_notifier);
+ }
+
 -- 
-2.37.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
