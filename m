@@ -1,217 +1,210 @@
-Return-Path: <linux-kernel+bounces-31956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3618683543E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 03:49:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F443835446
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 04:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FD591C209F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 02:49:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A29B21F21F78
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 03:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B1F2EB0C;
-	Sun, 21 Jan 2024 02:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8246C3611B;
+	Sun, 21 Jan 2024 03:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CEkf+9pg"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ta4oaK+d"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF472EB1A
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 02:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167A82AE8F
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 03:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705805367; cv=none; b=c3vnum9InaaKzZe+Z5BbGV/Hcjvyj775JSgad0Wl/mhqbICmFQagE3btsqQxxOy6ybBOZ4I7YYo8wKQL9LYmcpBXd1jFhLEmGLC78a+RoEJGPy25IblvajZDjrabRQDQBkQ/uAJrA+s3CHdojlG+b0O9xxt3iwAPDesh1qb40t0=
+	t=1705806294; cv=none; b=KFGvI+/RAlJ+VG5WgLg6yEH2TCHOjIOYQyE+EYKYCwDhlGyiaufay/e+tAu8Skq2uTabB2a8B3KdHStnk3X/fRYAeIMt51e/qACnGnLGJG2gaOVixxBDie7UjQY3ak4ypS286cRG2XJSn5BM27WuYEx3zDeJs+1U/Zb1GbgCGJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705805367; c=relaxed/simple;
-	bh=OKa4bhq0Rio0F1E3oS/YlBqfSZWHLqMzhTTAI3gLa0I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SHjwR3Naqq5pcoXScRxvbKwjEeAprEy92pgUrQJRpVU/Krgz8isYURkaJPhADchkYvM2NmLsNml7zBkBRh319tTQUwHd0TPN9G6BKjpoHHACaY5y48VJ6rv48OobTo449zbr2hbelWLDNtJVwRQb5YnH79qYUjigOBn9Ku1tXTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CEkf+9pg; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 20 Jan 2024 21:49:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705805362;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2MZIC47zq/tFRXBZLU7f3NuxJxn74KUJFQlCBzt+coo=;
-	b=CEkf+9pgjCbf8OZ1kGVpjLhh53FpVHbAX7uHj0jJIvQU3IGZJzoLc720zn1Z2PclQ1bhL1
-	H0NRWZVqXneE+5c/leqqQOfFoqyV8d6CZZSZFJPXuYRT5drdnuv/9So1MrovgMsn7d/Gj/
-	x51jk8HFC3Jgk/dcjl4LrD8W7EC7fjc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, Greg KH <greg@kroah.com>, 
-	Mark Brown <broonie@kernel.org>, Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Nikolai Kondrashov <spbnick@gmail.com>, Philip Li <philip.li@intel.com>, 
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <dtarikpnqff7nkwoq552laovlgbvesuyy7jd2tkwd2tvie7jno@abry5epdlwcl>
-References: <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
- <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
- <20240117055457.GL911245@mit.edu>
- <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+	s=arc-20240116; t=1705806294; c=relaxed/simple;
+	bh=vomMp40zGwEWXYmwIXZy+I2UyrExHpCxRhL+2O4FDSw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H/2uXZ4vtKrM2s2bDMJMbm/nG+aS5WcT1RYYEFbDQFV08asetKfjcDde8aaumnfltzD6vExKYU4u04iOAb5d0O6HjikxvjIpvnBYA8SKESMJI0Imjd2QMMNAa9zaYmR98OW8whyV0F2X3QIiX8uci6fjAO2QASlUpF52GFOL0kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ta4oaK+d; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e5afc18f5so23064095e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 19:04:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705806291; x=1706411091; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M8c7Bt3byd9RTRdaOa3TR1Whczb8x0dQJ8VIo3/hb8M=;
+        b=Ta4oaK+dIINXa2Y/Sa3pKhwVV5Y+vn07xLVH61mWfYRKWmylNB5eX62FIPH6YhnHlJ
+         LAhzXXvMjT5vLEkO4fiaI22GpmsKiGU6ArO+ZrO9XjMbQRv2yIO1gblA9CmgGfCVjnC4
+         3td1O6j5kMDQoHa4wkUasbYjnNbCHF37z/6CY7/LIfmWotT+W3m9IeUXbImt+weZfitk
+         YXq9okao3I78c83N+V7JavDsbypsTI9HWh6oXMz8V5iVrw7jHzTYqGKYUqMNoMCIkyoL
+         7v2XNA52rqGiyU5fqoN428R53o5tMOVS2fP0npURoQilVTz6kHj+PwS24AcBOQ945TtC
+         ay5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705806291; x=1706411091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M8c7Bt3byd9RTRdaOa3TR1Whczb8x0dQJ8VIo3/hb8M=;
+        b=TZYYReFtU7WpGok7oQLADVmoK0eHGQyZwPD5T0xkPXbJkLnq0NOpKQ+RPE79rL4FSz
+         ptwishfzbBxZCty15bqo6fMpjERqPKXHK2SMrGlNOwf27FFM+Y8dJNr7Xn6qMwl7D1TR
+         qOUCFuLSGdmbSPheKcU5EBfmWP5Ab1Hig4s29C3kETb+0HHpxXF2U5kK+3TKXE8lytpz
+         hSA0YpOfPczuIG1YDUlIBoz7TL5BigoZ/VDcjftxCkIhra1+on6VSLzbx2v3IFtiDLZm
+         NzV0xAFSb/iempma2qkv6TGTJqvubOnmNrrwKhz/obgUN6YrM5rY/JhwIpob3V5MuWZr
+         thdQ==
+X-Gm-Message-State: AOJu0Yy5l/qP0G3reao4MqO0Leq6LN3kSZtAJY5RlYHNgAw/orf5p7JR
+	lXhWYhqUt/TLWEj4hSwMZSyVw6pGnP70gbopUxTGa6w0yuSvKmzRM0aCqYxdADfIfBv/G8G5EGV
+	rOvCzJKVpo4mwkebeJOTWDWTI5NI=
+X-Google-Smtp-Source: AGHT+IGF6PbGDBCI59WdnM2lX1xWzGACoC59QUKYUf/NiCcUc7xtWgtcQqS0L0ZFODfR59NAxkkeynLlfp9wSytyiY0=
+X-Received: by 2002:a05:600c:4513:b0:40d:5575:a197 with SMTP id
+ t19-20020a05600c451300b0040d5575a197mr1147431wmo.12.1705806290932; Sat, 20
+ Jan 2024 19:04:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20240117031212.1104034-1-nunes.erico@gmail.com>
+ <20240117031212.1104034-5-nunes.erico@gmail.com> <CAKGbVbv-4e7w8_8AGvFd358j-QcG8KJ1zdUZ3kit9odSCatZ5w@mail.gmail.com>
+In-Reply-To: <CAKGbVbv-4e7w8_8AGvFd358j-QcG8KJ1zdUZ3kit9odSCatZ5w@mail.gmail.com>
+From: Qiang Yu <yuq825@gmail.com>
+Date: Sun, 21 Jan 2024 11:04:38 +0800
+Message-ID: <CAKGbVbugkHADEw_EigJmrVJzc4NSaHRpvL-3HRdw6U_=5B5u7Q@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] drm/lima: handle spurious timeouts due to high irq latency
+To: Erico Nunes <nunes.erico@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org, 
+	anarsoul@gmail.com, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, christian.koenig@amd.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
-> On Wed, 2024-01-17 at 00:54 -0500, Theodore Ts'o wrote:
-> > On Tue, Jan 16, 2024 at 11:41:25PM -0500, Kent Overstreet wrote:
-> > > > > No, it's a leadership/mentorship thing.
-> > > > > 
-> > > > > And this is something that's always been lacking in kernel
-> > > > > culture. Witness the kind of general grousing that goes on at
-> > > > > maintainer summits;maintainers complain about being overworked
-> > > > > and people not stepping up to help with the grungy
-> > > > > responsibilities, while simultaneously we still
-> > 
-> >      <blah blah blah>
-> > 
-> > > > > Tests and test infrastructure fall into the necessary but not
-> > > > > fun category, so they languish.
-> > > > 
-> > > > No, they fall into the "no company wants to pay someone to do the
-> > > > work" category, so it doesn't get done.
-> > > > 
-> > > > It's not a "leadership" issue, what is the "leadership" supposed
-> > > > to do here, refuse to take any new changes unless someone ponys
-> > > > up and does the infrastructure and testing work first?  That's
-> > > > not going to fly, for valid reasons.
-> > 
-> > Greg is absolutely right about this.
-> > 
-> > > But good tools are important beacuse they affect the rate of
-> > > everyday development; they're a multiplier on the money everone is
-> > > spending on salaries.
-> > 
-> > Alas, companies don't see it that way.  They take the value that get
-> > from Linux for granted, and they only care about the multipler effect
-> > of their employees salaries (and sometimes not even that).  They most
-> > certainly care about the salutary effects on the entire ecosyustem.
-> > At least, I haven't seen any company make funding decisions on that
-> > basis.
-> 
-> Actually, this is partly our fault.  Companies behave exactly like a
-> selfish contributor does:
-> 
-> https://archive.fosdem.org/2020/schedule/event/selfish_contributor/
-> 
-> The question they ask is "if I'm putting money into it, what am I
-> getting out of it".  If the answer to that is that it benefits
-> everybody, it's basically charity  to the entity being asked (and not
-> even properly tax deductible at that), which goes way back behind even
-> real charitable donations (which at least have a publicity benefit) and
-> you don't even get to speak to anyone about it when you go calling with
-> the collecting tin.  If you can say it benefits these 5 tasks your
-> current employees are doing, you might have a possible case for the
-> engineering budget (you might get in the door but you'll still be
-> queuing behind every in-plan budget item).  The best case is if you can
-> demonstrate some useful for profit contribution it makes to the actual
-> line of business (or better yet could be used to spawn a new line of
-> business), so when you're asking for a tool, it has to be usable
-> outside the narrow confines of the kernel and you need to be able to
-> articulate why it's generally useful (git is a great example, it was
-> designed to solve a kernel specific problem, but not it's in use pretty
-> much everywhere source control is a thing).
-> 
-> Somewhere between 2000 and now we seem to have lost our ability to
-> frame the argument in the above terms, because the business quid pro
-> quo argument was what got us money for stuff we needed and the Linux
-> Foundation and the TAB formed, but we're not managing nearly as well
-> now.  The environment has hardened against us (we're no longer the new
-> shiny) but that's not the whole explanation.
+On Fri, Jan 19, 2024 at 9:43=E2=80=AFAM Qiang Yu <yuq825@gmail.com> wrote:
+>
+> On Wed, Jan 17, 2024 at 11:12=E2=80=AFAM Erico Nunes <nunes.erico@gmail.c=
+om> wrote:
+> >
+> > There are several unexplained and unreproduced cases of rendering
+> > timeouts with lima, for which one theory is high IRQ latency coming fro=
+m
+> > somewhere else in the system.
+> > This kind of occurrence may cause applications to trigger unnecessary
+> > resets of the GPU or even applications to hang if it hits an issue in
+> > the recovery path.
+> > Panfrost already does some special handling to account for such
+> > "spurious timeouts", it makes sense to have this in lima too to reduce
+> > the chance that it hit users.
+> >
+> > Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
+> > ---
+> >  drivers/gpu/drm/lima/lima_sched.c | 32 ++++++++++++++++++++++++++-----
+> >  drivers/gpu/drm/lima/lima_sched.h |  2 ++
+> >  2 files changed, 29 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/l=
+ima_sched.c
+> > index 66317296d831..9449b81bcd5b 100644
+> > --- a/drivers/gpu/drm/lima/lima_sched.c
+> > +++ b/drivers/gpu/drm/lima/lima_sched.c
+> > @@ -1,6 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0 OR MIT
+> >  /* Copyright 2017-2019 Qiang Yu <yuq825@gmail.com> */
+> >
+> > +#include <linux/hardirq.h>
+> >  #include <linux/iosys-map.h>
+> >  #include <linux/kthread.h>
+> >  #include <linux/slab.h>
+> > @@ -223,10 +224,7 @@ static struct dma_fence *lima_sched_run_job(struct=
+ drm_sched_job *job)
+> >
+> >         task->fence =3D &fence->base;
+> >
+> > -       /* for caller usage of the fence, otherwise irq handler
+> > -        * may consume the fence before caller use it
+> > -        */
+> > -       dma_fence_get(task->fence);
+> > +       task->done_fence =3D dma_fence_get(task->fence);
+> >
+> >         pipe->current_task =3D task;
+> >
+> > @@ -401,9 +399,33 @@ static enum drm_gpu_sched_stat lima_sched_timedout=
+_job(struct drm_sched_job *job
+> >         struct lima_sched_pipe *pipe =3D to_lima_pipe(job->sched);
+> >         struct lima_sched_task *task =3D to_lima_task(job);
+> >         struct lima_device *ldev =3D pipe->ldev;
+> > +       struct lima_ip *ip =3D pipe->processor[0];
+> > +
+> > +       /*
+> > +        * If the GPU managed to complete this jobs fence, the timeout =
+is
+> > +        * spurious. Bail out.
+> > +        */
+> > +       if (dma_fence_is_signaled(task->done_fence)) {
+> > +               DRM_WARN("%s spurious timeout\n", lima_ip_name(ip));
+> > +               return DRM_GPU_SCHED_STAT_NOMINAL;
+> > +       }
+> > +
+> You may just remove this check and left the check after sync irq.
+>
+After more thinking, this is only for handling spurious timeouts more
+efficiently, not for totally reliable timeout handling. So this check shoul=
+d
+be OK.
 
-I think this take is closer to the mark, yeah.
+> > +       /*
+> > +        * Lima IRQ handler may take a long time to process an interrup=
+t
+> > +        * if there is another IRQ handler hogging the processing.
+> > +        * In order to catch such cases and not report spurious Lima jo=
+b
+> > +        * timeouts, synchronize the IRQ handler and re-check the fence
+> > +        * status.
+> > +        */
+> > +       synchronize_irq(ip->irq);
+> This should be done after drm_sched_stop() to prevent drm scheduler
+> run more jobs. And we need to disable interrupt of GP/PP for no more
+> running job triggered fresh INT.
+This is OK too. We just need to solve reliable timeout handling after
+drm_sched_stop() in another patch.
 
-The elephant in the room that I keep seeing is that MBA driven business
-culture in the U.S. has gotten _insane_, and we've all been stewing in
-the same pot together, collectively boiling, and not noticing or talking
-about just how bad it's gotten.
-
-Engineering culture really does matter; it's what makes the difference
-between working effectively or not. And by engineering culture I mean
-things like being able to set effective goals and deliver on them, and
-have a good balance between product based, end user focused development;
-exploratory, prototype-minded research product type stuff; and the
-"clean up your messes and eat your vegetables" type stuff that keeps
-tech debt from getting out of hand.
-
-Culturally, we in the kernel community are quite good on the last front,
-not so good on the first two, and I think a large part of the reason is
-people being immersed in corporate culture where everything is quarterly
-OKRs, "efficiency", et cetera - and everywhere I look, it's hard to find
-senior engineering involved in setting a roadmap. Instead we have a lot
-of "initiatives" and feifdoms, and if you ask me it's a direct result of
-MBA culture run amuck.
-
-Culturally, things seem to be a lot better in Europe - I've been seeing
-a _lot_ more willingness to fund grungy difficult long term projects
-there; the silicon valley mentality of "it must have the potential for a
-massive impact (and we have to get it done as quick as possible) or it's
-not worth looking at" is, thankfully, absent there.
-
-> I also have to say, that for all the complaints there's just not any
-> open source pull for test tools (there's no-one who's on a mission to
-> make them better).  Demanding that someone else do it is proof of this
-> (if you cared enough you'd do it yourself).  That's why all our testing
-> infrastructure is just some random set of scripts that mostly does what
-> I want, because it's the last thing I need to prove the thing I
-> actually care about works.
-
-It's awkward because the people with the greatest need, and therefore
-(in theory?) the greatest understanding for what kind of tools would be
-effective, are the people with massive other responsibilities.
-
-There are things we just can't do without delegating, and delegating is
-something we seem to be consistently not great at in the kernel
-community. And I don't think it needs to be that way, because younger
-engineers would really benefit from working closely with someone more
-senior, and in my experience the way to do a lot of these tooling things
-right is _not_ to build it all at once in a year of full time SWE salary
-time - it's much better to take your time, spend a lot of time learning
-the workflows, letting ideas percolate, and gradually build things up.
-
-Yet the way these projects all seem to go is we have one or a few people
-working full time mostly writing code, building things with a lot of
-_features_... and if you ask me, ending up with something where most of
-the features were things we didn't need or ask for and just make the end
-result harder to use.
-
-Tools are hard to get right; perhaps we should be spending more of our
-bikeshedding time on the lists bikeshedding our tools, and a little bit
-less on coding style minutia.
-
-Personally, I've tried to get the ball rolling multiple times with
-various people asking them what they want and need out of their testing
-tools and how they use them, and it often feels like pulling teeth.
-
-> Finally testing infrastructure is how OSDL (the precursor to the Linux
-> foundation) got started and got its initial funding, so corporations
-> have been putting money into it for decades with not much return (and
-> pretty much nothing to show for a unified testing infrastructure ...
-> ten points to the team who can actually name the test infrastructure
-> OSDL produced) and have finally concluded it's not worth it, making it
-> a 10x harder sell now.
-
-The circle of fail continues :)
+>
+> PP may have more than one IRQ, so we need to wait on all of them.
+>
+> > +
+> > +       if (dma_fence_is_signaled(task->done_fence)) {
+> > +               DRM_WARN("%s unexpectedly high interrupt latency\n", li=
+ma_ip_name(ip));
+> > +               return DRM_GPU_SCHED_STAT_NOMINAL;
+> > +       }
+> >
+> >         if (!pipe->error)
+> > -               DRM_ERROR("lima job timeout\n");
+> > +               DRM_ERROR("%s lima job timeout\n", lima_ip_name(ip));
+> >
+> >         drm_sched_stop(&pipe->base, &task->base);
+> >
+> > diff --git a/drivers/gpu/drm/lima/lima_sched.h b/drivers/gpu/drm/lima/l=
+ima_sched.h
+> > index 6a11764d87b3..34050facb110 100644
+> > --- a/drivers/gpu/drm/lima/lima_sched.h
+> > +++ b/drivers/gpu/drm/lima/lima_sched.h
+> > @@ -29,6 +29,8 @@ struct lima_sched_task {
+> >         bool recoverable;
+> >         struct lima_bo *heap;
+> >
+> > +       struct dma_fence *done_fence;
+> > +
+> >         /* pipe fence */
+> >         struct dma_fence *fence;
+> >  };
+> > --
+> > 2.43.0
+> >
 
