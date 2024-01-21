@@ -1,140 +1,119 @@
-Return-Path: <linux-kernel+bounces-31941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC270833729
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 01:11:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2864D83372E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 01:17:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F8A1B217D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 00:11:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB9F4282753
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 00:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E8D651;
-	Sun, 21 Jan 2024 00:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59FA654;
+	Sun, 21 Jan 2024 00:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="vWin7zMV"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jb6xoVCm"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE88119F
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 00:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2CE361
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 00:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705795864; cv=none; b=sVV6QB5zcEj4Yp5yDuMXijJe7TLj/INZ3g1k9nImfyAjtodMkZby7Z7IrOVR3POS/A0+ZGrdCnmr86oTJJAk9LMXYYYLUYyPNaxLKaqW1vyHO/CauxxgboPSvB5NXPqtGMeGuz5rQ1VTB8UdIOhlSSnbNi4LA0DsGstaId+i08k=
+	t=1705796213; cv=none; b=iIGV2VLXy6MQFH8lRM9y/8t8R+eu6LmLoAoWmelUyFK+A4viYH/QF+AMQlp7n2QLAsVqvW+WE9ANflPNxsc9NIjrsTp9ui9+7Lq6AgNL6kT0a+EUeRv1YJwhUcGyCdEdMzdG6AWFQAqdu3GIOrykri50kH7C0CmoLHsrnDytrdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705795864; c=relaxed/simple;
-	bh=h75tULPlCdor/jvYObh4MOVd0PPsKoCyF3o5yozt/e4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q3Qh1wVr1o2XAwWsWT/otCzj3Os0njiORtF92Knwv8T5GfazZYJG7LwQvw6hZpZaD125R8oeTRv1dVgi/idP7k8P3EcMvS2dKj1bIZKy5wdEY4eXKTNH6ZxC2DUDN75AiE4P4bW41lEp7XDvmJh55GvljnTwHvX5+MQyj5wdF9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=vWin7zMV; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-339289fead2so840977f8f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 16:11:02 -0800 (PST)
+	s=arc-20240116; t=1705796213; c=relaxed/simple;
+	bh=/C66J7wkQwwS2IqQ96WKFgsVf+pRy97LkmCeeYhVdP4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YwnKWebeCCjZiq1oHkwXqUFZaCd5ExFr8Y0spj9KZXg/AcnkkBB94ZbY/fs3mh1PJeymyC/WKdg8wYDUCMVOjsAXMdFOOXwxtUXuD0YZw/jIN6uNb6tbkgidZFEcKzJTFQ3BJL5MCrhP7a3gspkwLjLCQDVHGnf6bMNJ7mhDDvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jb6xoVCm; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-59502aa878aso940294eaf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 16:16:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1705795861; x=1706400661; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sLEQsFpn0ma2xUaIH+LxXcWOgEsaeulT2oHQwdeJmOM=;
-        b=vWin7zMV75pwwr9K8xQOQ/xkCabBE+jTQMLGW9o6uV6ErB7m4P6kvnDdAefwBULtEZ
-         sONuUo0jvsoV+e1E4j4cDMQigsOLrsEMoJP24RQMzGPs4Cc1xX2u1Ejew+2YIWKh91Cq
-         kvzERvZSl4YOLS5LFoRSmQi9TaRboywQlnZalXTXBgl4qXRlOtBOJ5JPFsQ+d5RVbE15
-         Zx/mAmr0OCj2NBKuETbb4AyeR2ErSf2rwD1GpsN6+TWVB8P6TIEUW3+a7fcr12Gsg/wz
-         xc4haxnaN0iyG+79wJBbCNYpOYnt6fyWVJIdNr+NlhuuEEfgBxRDw3uAVQ+8+6/UgETz
-         OjVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705795861; x=1706400661;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1705796211; x=1706401011; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sLEQsFpn0ma2xUaIH+LxXcWOgEsaeulT2oHQwdeJmOM=;
-        b=YJbixihrnJATEIdoV/pTQjFaumEE74rQRySzvU5KlHjpBvQOI0iIiDbn7IHqFF8quP
-         34Z7VyrqmxFdnVLXd/jF1SPS59b2/Zv8KYNyOzNQmHdOyJLwwrpLMkkWfzRowbnewU9g
-         VFv9hjx6duLjU5z8fT3tDqy6krRijMo+2owc5Re2W4ufsdMLSeG83SNrjBeB/e7V7xr1
-         5GgvGhTZnZ/71kXebp+dhbc6FmovHyHJjtNoilEXYTyZhWpOoMFzQyL7pcc9MXOULKOI
-         4oAcbhjSCvuQLSK9VRycd3ZV4xiO6aDoY1PPrpQQl8cZ2GDvx9MO/0VWo8cfMGUvAn3V
-         XXzA==
-X-Gm-Message-State: AOJu0YxCKi12pEQiQir1uAH9XJzdMIIxKAiz/X1dbdrGEWYz4vL4dn1d
-	RdnIFSZ9tl/RtZeyCyU0u21wLBEbWvR6y/Nfb9gEmGDDBcuWnG/Cjnk/gNDGmBOeLFmIwufwi/Y
-	Q4gw=
-X-Google-Smtp-Source: AGHT+IF7u6viM5Lb3cZ7tif/WBvqMkSaSFYfbYaw7cAYAr77IkdL/kqJWrA4UkkDehvUXaLFJ+5y1Q==
-X-Received: by 2002:a05:600c:3c93:b0:40e:596a:9850 with SMTP id bg19-20020a05600c3c9300b0040e596a9850mr1042375wmb.240.1705795860837;
-        Sat, 20 Jan 2024 16:11:00 -0800 (PST)
-Received: from airbuntu ([213.122.231.14])
-        by smtp.gmail.com with ESMTPSA id r7-20020a05600c35c700b0040d1bd0e716sm34257599wmq.9.2024.01.20.16.11.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jan 2024 16:11:00 -0800 (PST)
-Date: Sun, 21 Jan 2024 00:10:59 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux-kernel@vger.kernel.org, Pierre Gondois <Pierre.Gondois@arm.com>
-Subject: Re: [PATCH v4 0/2] sched: Don't trigger misfit if affinity is
- restricted
-Message-ID: <20240121001059.yygptzy6jzmcbbhk@airbuntu>
-References: <20240105222014.1025040-1-qyousef@layalina.io>
+        bh=VGx1uUqBJNwaB067t1zS9OZh+thLjfiev6N5olOliBQ=;
+        b=jb6xoVCm4erIHuii7QR+BQMXQW1udD1XI2eGpmGrRN07v1b8g2Dans3F6BK64Hguzm
+         agWG9o5d4WAs+bSZfi/Q6SQQaidl50E81tkc5ANVEDAw1sEsgqRkaAHEwRGh5ZQ0NAbL
+         EjhBG8lpCf1gr06FhT8gVyDJyUCm3wAkpYBL4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705796211; x=1706401011;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VGx1uUqBJNwaB067t1zS9OZh+thLjfiev6N5olOliBQ=;
+        b=WivO3GxGzvBN4m5orIFqGI6D3Y32F5k4B+WlGLkbkIh9WROhynnrUj5qoIKNTnajib
+         SnyEHlQXW54F6cyzgHW7bE2aNnpl5sOUK12FGIxvLQDPUi3qHshlGAaK332l/Ulx5QdE
+         /xFUjA3k4yIAskpHJMk4svwNV4U9445kKLJqfsSWaAuQYIF/LNf9mrKPVX9qRwjm9TG/
+         vBy03lpwZCzVxqYf2EGHe0bJBvqVXArGUFrJMqS6tIJzCtotMxp7CdIjZxCEcD3/cP1/
+         p3LyEEYPeWdytdT5RxRB66MnSq0DI60UWFep+SkSZjpPKwg1bHeZTPQooLS9y1jXVta6
+         LATg==
+X-Gm-Message-State: AOJu0Yw3UOBiqBIziT1IYKnUSkYJkX0gUGG91syso4BZZjZEvrGobCLs
+	2CgiglnGcrzkptxOAJxhyOnOQ+fgPvaFkNPcgTfd/AToCQoAAFiai0/4l2deNgJix8UlTe94YkC
+	0myBRxJ1UljDwAdjuV/0e0az42GoEeiy/6HA9
+X-Google-Smtp-Source: AGHT+IFwp+DKXCAKoixsZuns+yTYxxlyPCYBxSpYdd1fXnL6rdiY+k7qeKJU05Nn//cgId/cR/5b/LaiwJxnDuIsufc=
+X-Received: by 2002:a05:6870:2e06:b0:210:8df6:3b04 with SMTP id
+ oi6-20020a0568702e0600b002108df63b04mr2269701oab.102.1705796210854; Sat, 20
+ Jan 2024 16:16:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240105222014.1025040-1-qyousef@layalina.io>
+References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org>
+ <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
+ <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
+ <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com>
+ <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com>
+ <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com>
+ <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com>
+ <78111.1705764224@cvs.openbsd.org> <CAHk-=wgdhbLeY=pEY27m4OQuDAn9xkzSLHwE9D8m1Dw8a++n=Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wgdhbLeY=pEY27m4OQuDAn9xkzSLHwE9D8m1Dw8a++n=Q@mail.gmail.com>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Sat, 20 Jan 2024 16:16:39 -0800
+Message-ID: <CABi2SkVXgyG4r-SzkXx0-MOQ2dqhy1ewwhvfXMJLw066i1zJKw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Theo de Raadt <deraadt@openbsd.org>, =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>, 
+	Jeff Xu <jeffxu@google.com>, akpm@linux-foundation.org, keescook@chromium.org, 
+	jannh@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Vincent
+On Sat, Jan 20, 2024 at 8:40=E2=80=AFAM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sat, 20 Jan 2024 at 07:23, Theo de Raadt <deraadt@openbsd.org> wrote:
+> >
+> > There is an one large difference remainig between mimmutable() and msea=
+l(),
+> > which is how other system calls behave.
+> >
+> > We return EPERM for failures in all the system calls that fail upon
+> > immutable memory (since Oct 2022).
+> >
+> > You are returning EACESS.
+> >
+> > Before it is too late, do you want to reconsider that return value, or
+> > do you have a justification for the choice?
+>
+> I don't think there's any real reason for the difference.
+>
+> Jeff - mind changing the EACESS to EPERM, and we'll have something
+> that is more-or-less compatible between Linux and OpenBSD?
+>
+Sounds Good. I will make the necessary changes in the next version.
 
-On 01/05/24 22:20, Qais Yousef wrote:
-> Changes since v3:
-> 
-> 	* Update commit message of patch 2 to be less verbose
-> 
-> Changes since v2:
-> 
-> 	* Convert access of asym_cap_list to be rcu protected
-> 	* Add new patch to sort the list in descending order
-> 	* Move some declarations inside affinity check block
-> 	* Remove now redundant check against max_cpu_capacity in check_misfit_status()
-> 
-> (thanks Pierre!)
-> 
-> Changes since v1:
-> 
-> 	* Use asym_cap_list (thanks Dietmar) to iterate instead of iterating
-> 	  through every cpu which Vincent was concerned about.
-> 	* Use uclamped util to compare with capacity instead of util_fits_cpu()
-> 	  when iterating through capcities (Dietmar).
-> 	* Update commit log with test results to better demonstrate the problem
-> 
-> v1 discussion: https://lore.kernel.org/lkml/20230820203429.568884-1-qyousef@layalina.io/
-> v2 discussion: https://lore.kernel.org/lkml/20231212154056.626978-1-qyousef@layalina.io/
-> v3 discussion: https://lore.kernel.org/lkml/20231231175218.510721-1-qyousef@layalina.io/
-> 
-> Food for thoughts:
-> ------------------
-> 
-> Should misfit cause balance_interval to double? This patch will still be needed
-> if the answer is yes to avoid unnecessary misfit-lb to trigger repeatedly
-> anyway.
-> 
-> Should the doubling be made independent of tick value? As it stands 3 failures
-> for TICK = 1ms will increase it to 8ms. But for 4ms tick this will become 32ms
-> after 3 failures. Which I think is too high too soon.
-> 
-> Should the balance_interval be capped to something more reasonable? On systems
-> that require fast response (interactive Desktop for example);
-> a balance_interval of 64ms and above seem too high.
+-Jeff
 
-Does this series address your concerns about scalability now?
-
-If you have thoughts on the above that'd be great to hear too.
-
-
-Thanks
-
---
-Qais Yousef
+>              Linus
 
