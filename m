@@ -1,89 +1,111 @@
-Return-Path: <linux-kernel+bounces-31964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F570835470
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 05:46:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14E31835477
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 06:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FC9E1F21B69
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 04:46:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8598B2198D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 05:13:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3BE2E40C;
-	Sun, 21 Jan 2024 04:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD10636132;
+	Sun, 21 Jan 2024 05:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SlIpCznQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WMdqzx3j"
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8B726AF5
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 04:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97DEA125D5;
+	Sun, 21 Jan 2024 05:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705812378; cv=none; b=D8l2O0ZlkQUTRLfCGM3CwIcjuvyXH1aMNe2TgikyEWN3HnB8PRCd5D3JSMznsGlfCkKEDUBR0mUhw68mg7ACo9mR3v9YP7GK961fkLCg+Wd/QhKamn4CgE3HW2M/q3ag7GcMLBezh0uj3oUL3tbY739C0yQeE5u7ohwHDsv30jE=
+	t=1705813978; cv=none; b=usHannDFN5aztLJ838zTuWrHIlqXoan5sDyATOq1Zm5vJGAisOtjF+zgeqWRz9JWzT3ZjVqNGTSrCOzSQJkWqiEf9hEuTu8TlubKslAKGL8nDubBfhC6DgZ3GYK/OB7mh0vDE9sUh7EbY34ZN+xt8ddWDlegLjnaxE5j5G8lygM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705812378; c=relaxed/simple;
-	bh=ik35T/x5yL4zn6sAO0sKXnsdeSg2LD9SzPHvJ/0RNT8=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=mOHDN/7ZAHuqrXOeiWUKqJV3Cn9Xiu7JJTo4Dcj2f9i7HaqXavMwIi0ZjO3LeysRMPb6EyuqS8h2FAhkl2x659bAwp+n1oanHFCgpjLcsJi/L34Q/JR3TuRAi4Q/aeuIdWQSvbiSLql/ST1v9Iag5EMRkXU5pAuXRrv1oh9FSxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SlIpCznQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F55EC433C7;
-	Sun, 21 Jan 2024 04:45:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1705812378;
-	bh=ik35T/x5yL4zn6sAO0sKXnsdeSg2LD9SzPHvJ/0RNT8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SlIpCznQNRWUWlmcXdGCIovSY8+l5SbuHVyLXRHORtd6cgidKRGjb8pNEFSGGmY0x
-	 vtp9ZHkjW0EdOoFrMKmuQTYdFqbdYUiIQBnh/E7kaH5BGIMEE+2akIMSMwdL/sFvAh
-	 rTRhPr+wZP2NFO+4GEqQSW7fCgpGuJ+AcmHHiiIo=
-Date: Sat, 20 Jan 2024 20:45:52 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Dylan Hatch <dylanbhatch@google.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Kees Cook <keescook@chromium.org>,
- Frederic Weisbecker <frederic@kernel.org>, "Joel Fernandes (Google)"
- <joel@joelfernandes.org>, Ard Biesheuvel <ardb@kernel.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- "Eric W. Biederman" <ebiederm@xmission.com>, Vincent Whitchurch
- <vincent.whitchurch@axis.com>, Dmitry Vyukov <dvyukov@google.com>, Luis
- Chamberlain <mcgrof@kernel.org>, Mike Christie
- <michael.christie@oracle.com>, David Hildenbrand <david@redhat.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Stefan Roesch
- <shr@devkernel.io>, Joey Gouly <joey.gouly@arm.com>, Josh Triplett
- <josh@joshtriplett.org>, Helge Deller <deller@gmx.de>, Ondrej Mosnacek
- <omosnace@redhat.com>, Florent Revest <revest@chromium.org>, Miguel Ojeda
- <ojeda@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] getrusage: use sig->stats_lock
-Message-Id: <20240120204552.c0708fd10fc8e2442c447049@linux-foundation.org>
-In-Reply-To: <CADBMgpxC+BP-wfrM-wP1nbZOcRb0LbsmMDQ3LQ8hUKYsF3QECw@mail.gmail.com>
-References: <20240117192534.1327608-1-dylanbhatch@google.com>
-	<20240119141501.GA23739@redhat.com>
-	<20240119141529.GB23739@redhat.com>
-	<CADBMgpxC+BP-wfrM-wP1nbZOcRb0LbsmMDQ3LQ8hUKYsF3QECw@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705813978; c=relaxed/simple;
+	bh=mQOJsuXd23AShkPMtF+epCUjAeTRLskXisXs5N1GcX4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fqBsazBKVeCJn2rdbT3M6QPfxpy33u/Dm5fB4cMfKPCFvUNy6COfLqXT3O4im9VB5zu4y5WR5B+obBpfEZMoZxMC0hfifszTjnbXK2j9eJsQCnmCY9y9fyc4Ezr13i10D2vsQbOWH8wS62Dj7HC2iz7gQmZe8vXfGHGQEbH3+t8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WMdqzx3j; arc=none smtp.client-ip=209.85.222.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7831389c7daso203874985a.2;
+        Sat, 20 Jan 2024 21:12:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705813975; x=1706418775; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Wp8poTTbfuGxBjgvA7+dH/hoiaU34wutNBSdFFLmWg=;
+        b=WMdqzx3jjADd7d+Kb35WggYOUnIYlXuSc1JcTfe2nPx9tctNBOcke2tH2my74gasLm
+         YSlCagQ6Ji8f248yu/04/1hQgZSa4qBG9ZVnYWQIrmEBguDnGF1t7JRKwlQhVFuVDYVx
+         Tnh+8vZTHVryCKaXu9q4iq9VFWyp2MDBvr0eiOTE3g/ym8eP/s1DoGtjGue0hiuCJ0uK
+         OXdiZGOeKmJPXn89OdJDqnK+p1AXUvyluTlYMfRE4nXpw6k+JSgJDRx+jjltS9+L4nic
+         V7E/DmOs3fCiQkO5RNYV1P6KkWsyisyFvluqC14nbSzikA773FyXx7BFTfLn7b8WQwvD
+         D6Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705813975; x=1706418775;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Wp8poTTbfuGxBjgvA7+dH/hoiaU34wutNBSdFFLmWg=;
+        b=hU6/qJDlZRwP8JZwQ6m2doTZYAI+rJ8cSt39QB5UvE+gfUSB1eWf6hKDYU0Es6neVL
+         MI+0WpO0rTMVkVS6ogVTTVlyJ0utl5o74jgWLabDwPuaM9bCNbBsF1tsr64HpmCSjhme
+         vTjMNP0zh7oAdHzs5UtF8WkMw4fiqlcPiHNkLrrWEMZ5hcS3KzZCTfKnbpOaAJEyrS7s
+         uvLDqJvlS43ev7Y/TLDvYS6YM6aoVAldFS+j5xdpnRZ54scNAWs+85Qx8zR0fEJQ7Xev
+         JckQtWYTCiEobJl/Tw2KyNKwJbo7ca1plcojbR6lxbfDC65bWXA596OL7XIfS/a5UH/i
+         mzHg==
+X-Gm-Message-State: AOJu0Yyj3uyhX7l5IulpEG/G/v4AZPbZ4LzUcu7h8HTfC7weqPOUV36K
+	dBwPCKx6aXHpKQZ9saOADlZf9ntOm+pQ8c1WlpHcHWvbjTmJbg3SvvydQPtL
+X-Google-Smtp-Source: AGHT+IGHPPNEhj5kLU4qXLxnUNeSJomQCUQ/1gbWqrC/sFhv/QJSLElbwgCdFTtG7TW7kaMcVzhRbg==
+X-Received: by 2002:a92:b706:0:b0:361:98cc:594a with SMTP id k6-20020a92b706000000b0036198cc594amr3467846ili.79.1705813496193;
+        Sat, 20 Jan 2024 21:04:56 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:b227:ab83:6b35:c967])
+        by smtp.gmail.com with ESMTPSA id e12-20020a170902ed8c00b001d5f0daff2bsm5265363plj.59.2024.01.20.21.04.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Jan 2024 21:04:55 -0800 (PST)
+Date: Sat, 20 Jan 2024 21:04:52 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc: devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+	Jeff LaBundy <jeff@labundy.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH RESEND v2] dt-bindings: input: touchscreen: goodix:
+ clarify irq-gpios misleading text
+Message-ID: <Zayl9KC53pFWk5_Q@google.com>
+References: <20240102081934.11293-1-luca.ceresoli@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102081934.11293-1-luca.ceresoli@bootlin.com>
 
-On Fri, 19 Jan 2024 19:27:49 -0800 Dylan Hatch <dylanbhatch@google.com> wrote:
-
+On Tue, Jan 02, 2024 at 09:19:34AM +0100, Luca Ceresoli wrote:
+> The irq-gpios description misleading, apparently saying that driving the
+> IRQ GPIO resets the device, which is even more puzzling as there is a reset
+> GPIO as well.
 > 
-> I applied these to a 5.10 kernel, and my repro (calling getrusage(RUSAGE_SELF)
-> from 200K threads) is no longer triggering a hard lockup.
+> In reality the IRQ pin can be driven during the reset sequence to configure
+> the client address, as it becomes clear after checking both the datasheet
+> and the driver code. Improve the text to clarify that.
+> 
+> Also rephrase to remove reference to the driver, which is not appropriate
+> in the bindings.
+> 
+> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Jeff LaBundy <jeff@labundy.com>
 
-Thanks, but...
+Applied, thank you.
 
-The changelogs don't actually describe any hard lockup.  [1/2] does
-mention "the deadlock" but that's all the info we have.
-
-So could we please have a suitable description of the bug which these are
-addressing?  And a Reported-by:, a Closes: and a Fixes would be great too.
-
-
+-- 
+Dmitry
 
