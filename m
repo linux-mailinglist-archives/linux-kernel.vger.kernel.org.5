@@ -1,56 +1,62 @@
-Return-Path: <linux-kernel+bounces-32031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 220CD835581
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3C9B835587
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:45:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D02E12822C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 11:39:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B2302822F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 11:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6597F36AF2;
-	Sun, 21 Jan 2024 11:39:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0202736AF8;
+	Sun, 21 Jan 2024 11:44:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="nipXggtO"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="dUiAyyKm"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9529364D8;
-	Sun, 21 Jan 2024 11:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3D4101FA;
+	Sun, 21 Jan 2024 11:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705837140; cv=none; b=TCRmaNAzawnoRnpNmGsZsRIpYybp/p8yWbV+FCbLbwQIsrwjlsXh98Mw9HL3U25q+reFPFDUfhhQzms0VKCrst7Xk2wuTH0HzOPp8Bre/3DqxhR6354aDfJSoRdJtvUFCvD3sQLx5meF8jIakeTuryg9POczugfuuBLKKycMXmE=
+	t=1705837494; cv=none; b=L6RhmHEKROdvei/dIfhGl0mx3tTyNtrhPu2pTrqLPjVwJCbyrNCBPbsDwh/59wTLL5YzJX8YOeJfuXdo1s8ytDsIS3R4kCh7ZmO9mXFzELqYHuRwxpDVbYgT6JLI+l/cK0Zf41D5pYBOqjHnirGXsU+v/AwavIZxDUeBalY2UZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705837140; c=relaxed/simple;
-	bh=Nz9E0ewi+wkPtlJl6b62OAa77mlQ6hVzBkiY09YrE+0=;
+	s=arc-20240116; t=1705837494; c=relaxed/simple;
+	bh=/iiOZBUIKMJCyS5qs36JSqDPr7q1cQvorRERzDAmJws=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RboEydC0Bv1qLUJfdnKzVQjrWwuc8OwGChkEU97T1Nn7SLQ673aqORU5o6BM28+Jsyth5n4iV4V4j4qctNqniNaGf5cGKBP+vHrOptnjqYkRclTwzWu4whxwsKIknEymSY1CRsvUJzVX9a46EuNZCWUbjL+vsdNc7jIxINK4sGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=nipXggtO; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1705837135; bh=Nz9E0ewi+wkPtlJl6b62OAa77mlQ6hVzBkiY09YrE+0=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=nipXggtOYkGjhLjzN8YHPF7FbdyfVGFErN4PUPRTwLHTAo+n+wMQifHtRxg7Wy5z2
-	 IBU/jt1QLKmaBEgyskUJ6fOXhUei9U9kCHIa0z7FGLW0ElbnwWr7AD7XhZT1gUTBNu
-	 mx1MUGa24sbNTAGon5IH1pZyEsaunE60g4F6KbHo=
-Date: Sun, 21 Jan 2024 12:38:54 +0100
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Aren Moynihan <aren@peacevolution.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH 1/3] power: supply: axp20x_usb_power: add input current
- limit
-Message-ID: <lz3sm6yxu3d5pgr2ffs4m3ive54lbiis6abmrph3u5wrav7lqu@qh2kivwzwd6z>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Aren Moynihan <aren@peacevolution.org>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Sebastian Reichel <sre@kernel.org>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240121014057.1042466-1-aren@peacevolution.org>
- <20240121014057.1042466-3-aren@peacevolution.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cCn48S4JKTT+6GWPcpIkzJtcWsAk/9Gi8WfHoxGURaMMtmuksj4ySqJcDNsS+h9AcJrJhlWTDTmt+dpd/hptUzErPnxICGpZvKprFVKhwBGUjWgCLFHw0TxFfouy4t5sa8SY3cVCneOR87FAQTgtYlW54ydhLPAtRqdzFMAFLbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=dUiAyyKm; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1705837475; x=1706442275; i=erick.archer@gmx.com;
+	bh=/iiOZBUIKMJCyS5qs36JSqDPr7q1cQvorRERzDAmJws=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:
+	 In-Reply-To;
+	b=dUiAyyKm+7gZQqEs7jaFs8x2W/DQfz0f42OP+RJ5/2PMssz43v68EW6iaqaFtYaG
+	 1LawT22uXpek1K16Y+CBN9MHovfEP+GtkAKAZYY9YDkDJIZVvcOzaeX8LyHriyEOU
+	 rLcqVJ0ysp/bgQOoTrEf00drWm0kS60ft3td5ysSOBYdyLHl9DAzuzlkliudIfxm/
+	 WTHvpt2l1UpRk0uSMBj77tke+pkb+B4plcGN1t0y4IgC5ys1MnwR5IwGKfDBb4quk
+	 n6NwcqF63eMJrBFU/PQY50bcpxOJtBpp0+f4ltEkjGDZne+fcwVtDPViqsn+jpngh
+	 trGvzLpntWwe3x2JaQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from titan ([79.157.194.183]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MacOQ-1qqoaf051u-00cDUT; Sun, 21
+ Jan 2024 12:44:35 +0100
+Date: Sun, 21 Jan 2024 12:44:31 +0100
+From: Erick Archer <erick.archer@gmx.com>
+To: Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@gmx.com>, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] Documentation: power: Use kcalloc() instead of kzalloc()
+Message-ID: <20240121105143.GA4546@titan>
+References: <20240120120527.3866-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,101 +65,72 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240121014057.1042466-3-aren@peacevolution.org>
+In-Reply-To: <20240120120527.3866-1-erick.archer@gmx.com>
+X-Provags-ID: V03:K1:cdmaWmbYoa/RJ2JKUL9HvdAuGmTiRdeyO/6pH/NsKM1VPkMfiVe
+ zNCJ/FMQL313OPf3HK3JFf54Ee98zj09IJEPBtz7nSTdhhAyqRIH91H6IBgJmmFdxiGhwOO
+ 3tTmG8UtCRRkLFxPU0RFQcfef18OIGFz45mXwJDdiUu/zkklKoimC0/DSuomBNksz0hvpoG
+ EpGHa3wUcydWaknK7XPgA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:rERkRzJHHsI=;z3yEKJpJHmLXTIz240asfeTKJ5M
+ p0RBSc5bFwhpJDdkmwWDSxCtDWe772+ijFYA6gHVXjU1c7UO0KBOBvsygol8S9kkTiA6SMKXu
+ KbBdmW5zL7f1vl+xEPBOR1UaSesQcAMNguD+/q1NJxihjuuyks4iqhJP8NtUxSIGbu9hBxCC0
+ KAc+zLsErk9qX+5FqU5EJ9H58oYe/QK1vcO6/1lHOPAPzRBYUPZPEABcLIXLpY2tycRsKDT4l
+ JQXd2oqEwpvXjvszagOL6VZCGjMU5bXT5TPk/1pH6C3K5XPDe+0FzV/j7gFPEMmVJ2RSkxz5X
+ 8E8+x+6j7rHZ0gQK6GbjPV64U1YeKVtPzlk9AEs/Zu6P37r0LLS5wu2ebnnLpln+2xQIjNOMA
+ 39ub25PsstoyU/mDAAQR21Clg2fMoqgmRndD+ptPExwRbn2yPlLMFlnfs1s2achgxifzbYMS+
+ D2CHIG1u6obuzReOCDELsLboJzyxFEbYyx51huSfgcnr75JEM3IV/BXMuM/FV3GACEsN9/+90
+ nPEY1N9T7xZLmCrd7PLCq4W3weEU4u28zmnHu09ujkuiyDCyQ10SON29xpfjhnmgmcOsDJtm9
+ tjhkmGmU0Qf7BSN0LtVsX5xtIaX+3JTb57/k1TshCE+/GQaqUH4Z3+PkticFr+EvlHZoR5GtN
+ SXaumvWfM6m1YnCoPvr2gvCsHCgLCFo6AZORCxlBj7Jbnl+KJF8nJh17b/0KDJ7rdFSQm/8A4
+ umEkVhud8+gp9u0ftgyvBTa0CmFp21zcn4t0RBIgGqWcrdbTWNFQGE1z533XvkPrHevClwKEz
+ vrJXuaYWLyyscqSee313ij6cCwwU3WZwMmcv6MvFiH6i3g62EykLaq+4F2LBFnrY/bargJ2+8
+ xfPM8+wlkPnDLfHn7fCGs4GkgBgSJSOtuxXsdQznZmfklTLFGfWYgmEbx0P2WpQcsmuSY4eAk
+ ZyOyR1unEgqIaTUXYfi58EpNs78=
+Content-Transfer-Encoding: quoted-printable
 
-Hello Aren,
+On Sat, Jan 20, 2024 at 01:05:27PM +0100, Erick Archer wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+>
+> So, in the example code use the purpose specific kcalloc() function
+> instead of the argument size * count in the kzalloc() function.
+>
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-=
+coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 
-On Sat, Jan 20, 2024 at 08:40:00PM -0500, Aren Moynihan wrote:
-> Add properties for setting the maximum current that will be drawn from
-> the usb connection.
-> 
-> These changes don't apply to all axp20x chips, so we need to add new
-> power_desc and power supply property objects for axp813 specifically.
-> These are copied from the axp22x variants that were used before, with
-> extra fields added.
-> 
-> Also add a dev field to the axp20x_usb_power struct, so we can use
-> dev_dbg and dev_err in more places.
-> 
-> Signed-off-by: Aren Moynihan <aren@peacevolution.org>
+Hi,
+
+Drop this patch as a new version has been sent to change at the
+same time the translations.
+
+Thanks,
+Erick
+
 > ---
-> 
->  drivers/power/supply/axp20x_usb_power.c | 127 +++++++++++++++++++++++-
->  1 file changed, 125 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
-> index e23308ad4cc7..8c0c2c25565f 100644
-> --- a/drivers/power/supply/axp20x_usb_power.c
-> +++ b/drivers/power/supply/axp20x_usb_power.c
-> @@ -50,7 +50,10 @@ struct axp_data {
->  	const char * const		*irq_names;
->  	unsigned int			num_irq_names;
->  	const int			*curr_lim_table;
-> +	int				input_curr_lim_table_size;
-> +	const int			*input_curr_lim_table;
->  	struct reg_field		curr_lim_fld;
-> +	struct reg_field		input_curr_lim_fld;
->  	struct reg_field		vbus_valid_bit;
->  	struct reg_field		vbus_mon_bit;
->  	struct reg_field		usb_bc_en_bit;
-> @@ -59,7 +62,9 @@ struct axp_data {
->  };
->  
->  struct axp20x_usb_power {
-> +	struct device *dev;
->  	struct regmap *regmap;
-> +	struct regmap_field *input_curr_lim_fld;
->  	struct regmap_field *curr_lim_fld;
->  	struct regmap_field *vbus_valid_bit;
->  	struct regmap_field *vbus_mon_bit;
-> @@ -115,6 +120,15 @@ static void axp20x_usb_power_poll_vbus(struct work_struct *work)
->  	if (val != power->old_status)
->  		power_supply_changed(power->supply);
->  
-> +	if (power->usb_bc_en_bit && (val & AXP20X_PWR_STATUS_VBUS_PRESENT) !=
-> +		(power->old_status & AXP20X_PWR_STATUS_VBUS_PRESENT)) {
-> +		dev_dbg(power->dev, "Cable status changed, re-enabling USB BC");
-> +		ret = regmap_field_write(power->usb_bc_en_bit, 1);
-> +		if (ret)
-> +			dev_err(power->dev, "failed to enable USB BC: errno %d",
-> +				ret);
-> +	}
-> +
->  	power->old_status = val;
->  	power->online = val & AXP20X_PWR_STATUS_VBUS_USED;
->  
-> @@ -123,6 +137,66 @@ static void axp20x_usb_power_poll_vbus(struct work_struct *work)
->  		mod_delayed_work(system_power_efficient_wq, &power->vbus_detect, DEBOUNCE_TIME);
->  }
->  
-> +static int
-> +axp20x_usb_power_set_input_current_limit(struct axp20x_usb_power *power,
-> +					 int limit)
-> +{
-> +	int ret;
-> +	unsigned int reg;
-> +
-> +	if (!power->axp_data->input_curr_lim_table)
-> +		return -EINVAL;
-> +
-> +	if (limit < power->axp_data->input_curr_lim_table[0])
-> +		return -EINVAL;
-
-I think that you should just set the lowest possible limit. A caller (calling
-driver or userspace or user) has no way to identify what is the lowest possible
-limit on arbitrary PMIC and I kinda like having an option to
-echo 0 > .../axp20x-usb/input_current_limit as a way to limit power consumption from
-USB to a minimum without having to look up what actual minimum is in various
-PMICs dataheets.
-
-I looked through most of the uses of POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT in
-the upstream drivers and both approaches are used. Erroring out when out of range
-is less common.
-
-Otherwise,
-
-Reviewed-By: Ondrej Jirman <megi@xff.cz>
-
-Thank you,
-	Ondrej
+>  Documentation/power/opp.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/power/opp.rst b/Documentation/power/opp.rst
+> index a7c03c470980..1b7f1d854f14 100644
+> --- a/Documentation/power/opp.rst
+> +++ b/Documentation/power/opp.rst
+> @@ -305,7 +305,7 @@ dev_pm_opp_get_opp_count
+>  	 {
+>  		/* Do things */
+>  		num_available =3D dev_pm_opp_get_opp_count(dev);
+> -		speeds =3D kzalloc(sizeof(u32) * num_available, GFP_KERNEL);
+> +		speeds =3D kcalloc(num_available, sizeof(u32), GFP_KERNEL);
+>  		/* populate the table in increasing order */
+>  		freq =3D 0;
+>  		while (!IS_ERR(opp =3D dev_pm_opp_find_freq_ceil(dev, &freq))) {
+> --
+> 2.25.1
+>
 
