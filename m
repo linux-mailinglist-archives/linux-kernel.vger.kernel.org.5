@@ -1,89 +1,99 @@
-Return-Path: <linux-kernel+bounces-32029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E672835579
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:21:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF6B83557E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:35:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34C331F21386
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 11:21:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60189282309
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 11:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD5936AF1;
-	Sun, 21 Jan 2024 11:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="BZZe9MvG"
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDAE36AEB;
+	Sun, 21 Jan 2024 11:35:26 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9F9D36AE3
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 11:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CCBE33CC4
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 11:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705836085; cv=none; b=nxWtPg6gOk6ZQ+68SM5ZkRQL9uNCPmPrhzR7X9t8Sl7rD66WlOE9SKniZAiBDy3qJi6djXVvtGSa0fnx/uEbNDkizDcgy2W0LbEh33Seaxh6jY0v0BmKKh0lZJ+J2/CXlSBZGG5tWtsu+qu75L8+sNx5XH2mWyxbS3+3whKHJc0=
+	t=1705836926; cv=none; b=esG/rPuoMeCT+RXqyE4xSJTBZRbnLnoE5vsgREghzOq4ZCDLrTRfTTxoBDBlGqhZfF7Ia8HlpOEjGHl8ytBuLhIm/VZ9qq4ZQq1ZmRiic9JeUV4kg8Yf9zdnaMSpI2vj7Hn6OYPfIma2qTI9RWAxQhRQmQFxWK3y0ttCDVTnGsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705836085; c=relaxed/simple;
-	bh=8UO3qbjWHZCXyqvXRq6xNC3hqjM0b5QnsPavUA5ujBw=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=LMzvANY3JKCxyCcgMtsqL4+gWxaYYDm/9HMyLDJCinfkhS5ormt2nGMNVfcziwZ0R9UgYO7Q3CZGZEGNnCNNuBZvnJuNTmkxbhy/BG6BqOg1DQzapn43/S0ay1UaRYD1HaQCUQ34JbVlnvvit4H7haKl/VBJ8sYul0Kf1czSYpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=BZZe9MvG; arc=none smtp.client-ip=192.134.164.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=h2WPn6Ego06GRxcMe6RmIAum7jBpuI3hvgZ5Ctv8lLk=;
-  b=BZZe9MvGBm/CybP4VqEyEz4a/w2mz8R8ev0qJQ9qy1AXWkdOJBVhox7Q
-   rcWlD11pNGUDmmMVuyXpUo6zBWbAadnFGIxb9Etu6M/pyU286AtPnTOZZ
-   +GYY8ZuA9hrlaFm2tpPp5GdSLaEfFfM/5MpA1V/KsWeNfa1RsFmS9J99K
-   Y=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.05,209,1701126000"; 
-   d="scan'208";a="147778071"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2024 12:21:19 +0100
-Date: Sun, 21 Jan 2024 12:21:19 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To: Markus Elfring <Markus.Elfring@web.de>
-cc: Li Zhijian <lizhijian@fujitsu.com>, cocci@inria.fr, 
-    LKML <linux-kernel@vger.kernel.org>, Nicolas Palix <nicolas.palix@imag.fr>
-Subject: Re: [cocci] [v2] coccinelle: device_attr_show: Adapt to the latest
- Documentation/filesystems/sysfs.rst
-In-Reply-To: <161c3be1-011c-4ffd-8646-1b95f1a461eb@web.de>
-Message-ID: <alpine.DEB.2.22.394.2401211220480.3743@hadrien>
-References: <20240119062057.4026888-1-lizhijian@fujitsu.com> <alpine.DEB.2.22.394.2401202217550.3267@hadrien> <f34231dc-186b-4cb9-889b-b3be9224c5a9@web.de> <alpine.DEB.2.22.394.2401211159350.3743@hadrien> <161c3be1-011c-4ffd-8646-1b95f1a461eb@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	s=arc-20240116; t=1705836926; c=relaxed/simple;
+	bh=7001/WDSP/ipCvony5yy+geqxc2ISegotECbpugt6cI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Kb3k+24tIjy/jq80WUhVUj8wYxbsmAn2EvQLVRHDvezVlziHe+5X0u0xoJTRzOwqL6+O9ZRyiaX3Ne626ZZi7Y7Czwo4NLEXI3N1WvUW+QpMU0j6izbEhuK/c95lGrBqrMtA7u5Sp3ZdS71cDO6K53d2pQZd5iPkBo9I7GxE+bQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40LBYiUk067932;
+	Sun, 21 Jan 2024 20:34:44 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
+ Sun, 21 Jan 2024 20:34:44 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40LBYiw6067928
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sun, 21 Jan 2024 20:34:44 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <65e403d5-552c-4c29-93ab-cb9913003be5@I-love.SAKURA.ne.jp>
+Date: Sun, 21 Jan 2024 20:34:44 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tty: vt: check for atomic context in con_write()
+Content-Language: en-US
+To: Hillf Danton <hdanton@sina.com>
+Cc: syzbot <syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andrew Morton
+ <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        linux-serial <linux-serial@vger.kernel.org>
+References: <00000000000039f237060f354ef7@google.com>
+ <83414cb6-df16-4b6d-92e3-d54d22ba26cc@I-love.SAKURA.ne.jp>
+ <20240121034817.2280-1-hdanton@sina.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <20240121034817.2280-1-hdanton@sina.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 2024/01/21 12:48, Hillf Danton wrote:
+> On Sat, 20 Jan 2024 19:34:02 +0900 Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>> syzbot is reporting sleep in atomic context, for gsmld_write() is calling
+>> con_write() with spinlock held and IRQs disabled.
+> 
+> ...
+> 
+>> --- a/drivers/tty/vt/vt.c
+>> +++ b/drivers/tty/vt/vt.c
+>> @@ -2856,7 +2856,7 @@ static int do_con_write(struct tty_struct *tty, const u8 *buf, int count)
+>>  	struct vt_notifier_param param;
+>>  	bool rescan;
+>>  
+>> -	if (in_interrupt())
+>> +	if (in_interrupt() || irqs_disabled())
+>>  		return count;
+>>  
+>>  	console_lock();
+> 
+> Given console_lock(), no sense could be made by calling do_con_write()
+> with spin lock held at the first place, regardless irq.
 
+The question was how to detect it. Since in_atomic() is not a reliable method for
+detecting that a spin lock is held, this patch instead chose irqs_disabled(), for
+gsmld_write() is using spin_lock_irqsave(&gsm->tx_lock, flags).
 
-On Sun, 21 Jan 2024, Markus Elfring wrote:
-
-> >> Would you like to consider the application of the following SmPL code variant?
-> >>
-> >> -snprintf
-> >> +sysfs_emit
-> >>          (BUF,
-> >> -         SZ,
-> >>           FORMAT,
-> >>           ...
-> >>          );
-> >
-> > It's ok too.
->
-> Are you going to integrate such a transformation approach?
-
-No.  I already pushed the commit for Linux v6.8, and I don't think the
-change has any practical impact.
-
-julia
 
