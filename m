@@ -1,90 +1,78 @@
-Return-Path: <linux-kernel+bounces-31943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 681488353FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 01:43:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1B9D83540C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 01:59:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65D2B1C21499
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 00:43:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91DDA1F2279E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 00:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86AA515E93;
-	Sun, 21 Jan 2024 00:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55DC11AAB7;
+	Sun, 21 Jan 2024 00:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="xNrlzLrv"
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h7lwKZxN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB8E14AAB;
-	Sun, 21 Jan 2024 00:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0B41AAA2;
+	Sun, 21 Jan 2024 00:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705797815; cv=none; b=N2abBiUY7m71MNBXVi2HICiLqT5s7/IYVHh51nVw1i/BnPi5J3VFVXiHxj2FbC+vJ0VvjRypGAFgdWb2aGsn1BY2ndqDRNoYikzIOg0Dr1qXJxzg4NvQ9sZltCWEtCMtwYExnYkOHr+AphohFN/8AjS/7X2GsutR9C2MOksEoJI=
+	t=1705798781; cv=none; b=fR+vps8iRfw+tQ4bsHCYFrq0qh/1q5lJiLdpQaElooMvmlVN1tcdQJz1rBt+gBHsaEQvWJTYUSUZG0WTI8vtVT0WIwRCM86nfz/fCu4VwrAxndavZGR1kBlDEHkaDlzlf9MdqGKArMIqPpnwpUa4nHdIDDvTnk2oExwNROWE5bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705797815; c=relaxed/simple;
-	bh=6zClxfyv71M0RluUbCbllO0533ZG0kWqfL4wR73NjHM=;
-	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-	 Content-Type:Date:Message-ID; b=tY2psya8QUMrKVNbFfMKW1/SjR5NNXIMlD1QVabFk9/hMCE0cM21Ir9Vxyrh1R2wGW4t8wjBYe0FGAs2U4fdyI3M4lIIFm5pVSddDm+xbcuf361J2cIy9d4XeMPJzfHUeurIowtEwtf6+wCUlT9Fr9tsZWa3Dc5iEQxJNSHWDy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=xNrlzLrv; arc=none smtp.client-ip=199.185.137.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=6zClxfyv71
-	M0RluUbCbllO0533ZG0kWqfL4wR73NjHM=; h=date:references:in-reply-to:
-	subject:cc:to:from; d=openbsd.org; b=xNrlzLrvdn5TiEK+r0xytg+ig0YyyOzsG
-	5h72+KeTLSNfAWSgxuoV28p6LgEBSpKPm2uXpufBZ9QJ/n/+3TV+7DPPn/2NuEmrqFcBst
-	3q9SxFEPMPkmr5ofcpN1Y4nU2IINcyvAo8zpPHQBiQMvYNKFe3+DgFPjV/Mm1y8fRq8WKK
-	bO+y+/L+iBqm1en9uyXnWDP+77ycPtFteeXzwjPFOq31DSjtchzRjeKcMZkkGWXCFazv7r
-	LHMmUTP8KfXq5K8NgRv1dNfIh05fsSBsZnHoCRFpH0J2BNMMosJtSlzpVknRPVr38/fiY3
-	M318gjyH361AmN6EuvpAvkSoNnb6g==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-	by cvs.openbsd.org (OpenSMTPD) with ESMTP id d3cb4755;
-	Sat, 20 Jan 2024 17:43:32 -0700 (MST)
-From: "Theo de Raadt" <deraadt@openbsd.org>
-To: Jeff Xu <jeffxu@chromium.org>
-cc: Linus Torvalds <torvalds@linux-foundation.org>,
-    =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>,
-    Jeff Xu <jeffxu@google.com>, akpm@linux-foundation.org,
-    keescook@chromium.org, jannh@google.com, willy@infradead.org,
-    gregkh@linuxfoundation.org, jorgelo@chromium.org,
-    groeck@chromium.org, linux-kernel@vger.kernel.org,
-    linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-    pedro.falcato@gmail.com, dave.hansen@intel.com,
-    linux-hardening@vger.kernel.org
-Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
-In-reply-to: <CABi2SkVXgyG4r-SzkXx0-MOQ2dqhy1ewwhvfXMJLw066i1zJKw@mail.gmail.com>
-References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org> <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com> <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com> <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com> <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com> <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com> <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com> <78111.1705764224@cvs.openbsd.org> <CAHk-=wgdhbLeY=pEY27m4OQuDAn9xkzSLHwE9D8m1Dw8a++n=Q@mail.gmail.com> <CABi2SkVXgyG4r-SzkXx0-MOQ2dqhy1ewwhvfXMJLw066i1zJKw@mail.gmail.com>
-Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
-   message dated "Sat, 20 Jan 2024 16:16:39 -0800."
+	s=arc-20240116; t=1705798781; c=relaxed/simple;
+	bh=fNRCPPNNJHA9qQsw7PBZuv7haJE79krH5N73O/ICrsQ=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=tevWuP5JE2vPCciW0v9VKTUrAg0OOir5B2xBkAuENITMm0KYUV3o2pSWyaBjLqv8oMHLdIOQTUxYXYVRAlA2vPx6luoOCkVAgHYG65ZLA/Cr1QlVSetjgVbfLex8CE1KA7gQEheZRDf6q4SiUb9ydhkG09WfvDOJcYjBz4CTdks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h7lwKZxN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 72565C43390;
+	Sun, 21 Jan 2024 00:59:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705798781;
+	bh=fNRCPPNNJHA9qQsw7PBZuv7haJE79krH5N73O/ICrsQ=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=h7lwKZxNtBBdp5oznAvybFf98IBI1kih5y3i/lhsFQoibpQ1xaqsLctIXbG3xqm3J
+	 RfFBSRM4f8l5O3c7J1EUXUCm/9+KyMwAWCz/19VxfB5KsmVx6n2nytl/caEW1sHjWs
+	 mbKIpzMB3WNPsb+xhGffIi56eD0h6VT93ECyd13a5K3jb6LJ9/b814YCvFWDT0vF3I
+	 TjGYGj1QT+m3FH9MluUB77TC2Vt5z4YwSXnJ21QLzKoJvHbpPLH00Z1BGK1UD4wqDJ
+	 V3CO5mJHYCcq8coy3gWhpxu/e6zd6AZJ5/yA4CtR2kTKJpZg1pzI0xJAP8MlJsXlCo
+	 8lah35zMUfRWw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 61A6AD8C96C;
+	Sun, 21 Jan 2024 00:59:41 +0000 (UTC)
+Subject: Re: [GIT PULL] smb3 client fixes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <CAH2r5mvR+MhHoeJiULtRQ2=D8doE31i9nmH0Jr5rLTf1K3KFiA@mail.gmail.com>
+References: <CAH2r5mvR+MhHoeJiULtRQ2=D8doE31i9nmH0Jr5rLTf1K3KFiA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5mvR+MhHoeJiULtRQ2=D8doE31i9nmH0Jr5rLTf1K3KFiA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/v6.8-rc-part2-smb-client
+X-PR-Tracked-Commit-Id: 78e727e58e54efca4c23863fbd9e16e9d2d83f81
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7a396820222d6d4c02057f41658b162bdcdadd0e
+Message-Id: <170579878139.11303.4387435807973838893.pr-tracker-bot@kernel.org>
+Date: Sun, 21 Jan 2024 00:59:41 +0000
+To: Steve French <smfrench@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <98518.1705797812.1@cvs.openbsd.org>
-Date: Sat, 20 Jan 2024 17:43:32 -0700
-Message-ID: <44186.1705797812@cvs.openbsd.org>
 
-Jeff Xu <jeffxu@chromium.org> wrote:
+The pull request you sent on Sat, 20 Jan 2024 17:30:06 -0600:
 
-> > Jeff - mind changing the EACESS to EPERM, and we'll have something
-> > that is more-or-less compatible between Linux and OpenBSD?
-> >
-> Sounds Good. I will make the necessary changes in the next version.
+> git://git.samba.org/sfrench/cifs-2.6.git tags/v6.8-rc-part2-smb-client
 
-Thanks!  That is so awesome!
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7a396820222d6d4c02057f41658b162bdcdadd0e
 
-On the OpenBSD side, I am close to landing our madvise / msync changes.
+Thank you!
 
-Then we are mostly in sync.
-
-It was on my radar for a year, but delayed because I was ponderingn
-blocking the destructive madvise / msync ops on regular non-writeable
-pages.  These ops remain a page-zero gadget against regular (mutable)
-readonly pages, and it bothers me.  I've heard rumour this has been used
-in a nasty way, and I think the sloppily defined semantics could use
-a strict modernization.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
