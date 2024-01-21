@@ -1,162 +1,125 @@
-Return-Path: <linux-kernel+bounces-32149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BF9B835744
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:44:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D79E835748
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:49:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0B57281D56
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:44:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0F051F21AC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A048D38392;
-	Sun, 21 Jan 2024 18:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10BA38391;
+	Sun, 21 Jan 2024 18:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fkwIE3fs"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Fq04HTL0"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C847364A1
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 18:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003EC381D3
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 18:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705862683; cv=none; b=GXXb4iGnMw2WoiJ7kAaKDPeLUnuVjjZaenteS0sTil/xcjv4BMzbbMvcuUcb+e+nStPDoDJP1DuHziVp03gOnPWsHg6vETi5DHpt0v1BF5eQsDMLpObaD9c9H4p529NTz5lvj8NzH/6IDnUsCYW2kEWgvCghsSaRF/KOwL+K6m0=
+	t=1705862937; cv=none; b=YJrza5hyPDJscNTjaXfpoNl1aAJVpoBlWmF4/6oENFNbNufvdK+E3iIiiiNzhVcVxEamyzcIHvmj+ylQAvD4YKq9D9NzT/N6ByRbHAtp7kyXMIBp0P756WqoD2Z/PQeVrX6IDMTpxk6nZZ05Yof48W25/tDx3XOpJyRDvruMM70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705862683; c=relaxed/simple;
-	bh=pAwTTU33ri9CTWjjk66csXD8pbCteqoL4Oh7bntQT0k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZQyYUNSr60KtK+HdHvjXoOu/Lq3UF+EtZXsbT9fDaSDf1KLQ2IE5I7+66kAnEFUcpZ+Joxd1yhZVZKjb5LgP48wE7NErFnMAlssK1bUkBao2u0B3QDOntOQm+Kk3Khq2R/3BjkicxEwZ8w7eMMspysneB1DaGW9J5MRC0IaucBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fkwIE3fs; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705862681;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=guMoP2TLsfEqj1Hggx/w0+mwdRN+95oChUYRB7tzFcY=;
-	b=fkwIE3fsYqPUJrAUjl/tXGq68rAl7Is2LgnmQT94mPow7aPsiz9QIDCKW08gu7AoDjNiO5
-	WDA+4mrh+nEVrDj0eBzAd8z9x1WqOCXd630FHrNQdBWMb+9fLltDtoNcz5Qzw7OEeMHF1k
-	/hHWlipsDOq8Qq4rAFJ47NcjdfJAqc0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-318-AFU7wdluMXalsz6oQlJ78w-1; Sun, 21 Jan 2024 13:44:39 -0500
-X-MC-Unique: AFU7wdluMXalsz6oQlJ78w-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-337cfc83240so1675999f8f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 10:44:39 -0800 (PST)
+	s=arc-20240116; t=1705862937; c=relaxed/simple;
+	bh=mokMqXTKDj1fI/PtJ7lX1OLlIpz3PU0kbOQ4wDgKN4o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s4AkEF62k4kvmr3v4uxGIb83Cjg26mJfyWCGGRuqn+qAOL08adwgCPX4p7EsMp2pXpWx5g2iRJPr3hJQZ18WpADy2ahM0pu5Hkxk7s77uh8wQc0HRV/+URs4nSLDbVNymHDO9MbFUlbnK/m2xjEmtJkkEn4mqso/QLv1Ru9BCzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Fq04HTL0; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so2018643a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 10:48:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1705862933; x=1706467733; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CHSltJkcMvkqyQ9k+dJ9VRM/sk8FyM1fdG5DA1EXits=;
+        b=Fq04HTL0SSZPn5uF37jwXwcrzMu8SajsNyAbIHpXZPgh5MicwdmH8oFM3ZJebMMcRW
+         7gREgEj8OOihw2yS50W+9xOcOC8f1hcBEcc2PhP6XF32FBZgHVPXMt4ojJPp2gQFmh4C
+         ApzaSN45qf1nszSCv2K7ndG6XbIFrwjgpiSFY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705862678; x=1706467478;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=guMoP2TLsfEqj1Hggx/w0+mwdRN+95oChUYRB7tzFcY=;
-        b=ku6+ymQ7gA2wTJaueJqs1Jpy1x11gm7seX/gsfIAN+KJ2WgrRDI1ih899/fk32+HOB
-         hU2Zcbk/SE+7Grlfr3jmLq1QgprT/8XczlNjBRJlv1gjRIYfr312sbGaGze+LVhIpv9e
-         l8FOGMpEl8StmMcrPkjTwngP27oqj8az3TKN01RWDj1kLDFdNPX7i7efTufQRy10GQTT
-         I/VDYEfp61ZHySroahKvDRD2wq4n3xtpmKI5dSYBCtuAq/meh5OLlRwgnyzHqu/ZGHEv
-         6opYQ3jXtMs8cH97B6/VQeuCNRAhFu4W/LzQ+YVdAo4kAHO2WTnSwh23HA+EItp41mjz
-         6XPQ==
-X-Gm-Message-State: AOJu0YyyfXWUZCZoDVcX/+pduAo0WldUMkSfOLjdP+ZeuMmo50IyZCYw
-	9qI4WBqqbSGCRiztoEh8n2o4FtU2aTsG5DhC2mSGeAZmCvbI/qiUy1iMWy3dePV+yct98yU0852
-	k3c32aeIEBEVQAnXEqbcjicqVsqQt1lBQqfPxh7xyDTtP/g03q695nPRPH0w9mA==
-X-Received: by 2002:a05:600c:1c85:b0:40e:4789:7842 with SMTP id k5-20020a05600c1c8500b0040e47897842mr1857736wms.236.1705862678255;
-        Sun, 21 Jan 2024 10:44:38 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE1bzkFTUa/tUGQacRJtg45xo0chZy5yADvcP07PoL9frmkMFBtGIdedbJbDN6aNNam0c94GQ==
-X-Received: by 2002:a05:600c:1c85:b0:40e:4789:7842 with SMTP id k5-20020a05600c1c8500b0040e47897842mr1857731wms.236.1705862677920;
-        Sun, 21 Jan 2024 10:44:37 -0800 (PST)
-Received: from redhat.com ([2.52.14.57])
-        by smtp.gmail.com with ESMTPSA id t18-20020a05600c199200b0040e5951f199sm36202366wmq.34.2024.01.21.10.44.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jan 2024 10:44:36 -0800 (PST)
-Date: Sun, 21 Jan 2024 13:44:32 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Tobias Huschle <huschle@linux.ibm.com>
-Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev, netdev@vger.kernel.org
-Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
- sched/fair: Add lag based placement)
-Message-ID: <20240121134311-mutt-send-email-mst@kernel.org>
-References: <CACGkMEuSGT-e-i-8U7hum-N_xEnsEKL+_07Mipf6gMLFFhj2Aw@mail.gmail.com>
- <20231211115329-mutt-send-email-mst@kernel.org>
- <CACGkMEudZnF7hUajgt0wtNPCxH8j6A3L1DgJj2ayJWhv9Bh1WA@mail.gmail.com>
- <20231212111433-mutt-send-email-mst@kernel.org>
- <42870.123121305373200110@us-mta-641.us.mimecast.lan>
- <20231213061719-mutt-send-email-mst@kernel.org>
- <25485.123121307454100283@us-mta-18.us.mimecast.lan>
- <20231213094854-mutt-send-email-mst@kernel.org>
- <20231214021328-mutt-send-email-mst@kernel.org>
- <92916.124010808133201076@us-mta-622.us.mimecast.lan>
+        d=1e100.net; s=20230601; t=1705862933; x=1706467733;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CHSltJkcMvkqyQ9k+dJ9VRM/sk8FyM1fdG5DA1EXits=;
+        b=j/kg8pAscyUKNHFM6v6fwNcZwZWqV/RVGM+C2ArIuE628LhuGXpZ1Uow/nGzhTFjDF
+         FSxoQfqQL+iElDyDVm6rhUjThMZsTsnOMXu04jDCoUW0knrCfRLoh+qFnHtLXE5aPIcR
+         kZPDWyTs569/MYauLWIkBWHSxfhjiRH8uHItD6HEkrYwJz1YYfdKS+tM0XdRgVrDz6xO
+         8q45C2VALotnWzpsC5kQWihdbmFeK2XG/MuQXgsCK4vGRrTDapSe6kRv+7QUzZJODNlI
+         MeCa//jJz45Vmhbr06F13FRCjuJBZ1vRdXaCjoKuWcFDiIu62NXIJyyk/U6vhjRmDjos
+         Bx3g==
+X-Gm-Message-State: AOJu0YxaTxMV5J1alQB7twk0LWLErWgGnRJv/4w76jqHEIAI07t4rj/P
+	NPgQpk0gYzIvT36bDBpwYABzV+oPffW7mgTzDiLlH63ehGHiPWJG7l+vK7gsOXCQeB43I5me4Iy
+	JGto2mg==
+X-Google-Smtp-Source: AGHT+IGVr9Mj0tiGHOci03qh3D2nEk2Jo/pqgfUyLHG92SP0TDQNeFgrWmxHedX1e1GHiBdBa41WHA==
+X-Received: by 2002:aa7:d496:0:b0:559:d389:9fce with SMTP id b22-20020aa7d496000000b00559d3899fcemr1509146edr.49.1705862932937;
+        Sun, 21 Jan 2024 10:48:52 -0800 (PST)
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
+        by smtp.gmail.com with ESMTPSA id q25-20020a056402041900b0055c104274e7sm1285431edv.78.2024.01.21.10.48.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Jan 2024 10:48:52 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33924df7245so1412222f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 10:48:51 -0800 (PST)
+X-Received: by 2002:a05:600c:26c1:b0:40e:9e3b:8f with SMTP id
+ 1-20020a05600c26c100b0040e9e3b008fmr1802625wmv.78.1705862931599; Sun, 21 Jan
+ 2024 10:48:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <92916.124010808133201076@us-mta-622.us.mimecast.lan>
+References: <d2ce7bc75cadd3d39858c02f7f6f0b4286e6319b.camel@HansenPartnership.com>
+ <CAHk-=wi8-9BCn+KxwtwrZ0g=Xpjin_D3p8ZYoT+4n2hvNeCh+w@mail.gmail.com>
+ <7b104abd42691c3e3720ca6667f5e52d75ab6a92.camel@HansenPartnership.com>
+ <CAHk-=wi03SZ4Yn9FRRsxnMv1ED5Qw25Bk9-+ofZVMYEDarHtHQ@mail.gmail.com> <20240121063038.GA1452899@mit.edu>
+In-Reply-To: <20240121063038.GA1452899@mit.edu>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 21 Jan 2024 10:48:35 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whhvPKxpRrZPOnjiKPVqWYC3OVKdGy5Z3joEk4vjbTh6Q@mail.gmail.com>
+Message-ID: <CAHk-=whhvPKxpRrZPOnjiKPVqWYC3OVKdGy5Z3joEk4vjbTh6Q@mail.gmail.com>
+Subject: Re: [GIT PULL] final round of SCSI updates for the 6.7+ merge window
+To: "Theodore Ts'o" <tytso@mit.edu>, Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: G@mit.edu, James Bottomley <James.Bottomley@hansenpartnership.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-scsi <linux-scsi@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 08, 2024 at 02:13:25PM +0100, Tobias Huschle wrote:
-> On Thu, Dec 14, 2023 at 02:14:59AM -0500, Michael S. Tsirkin wrote:
-> > 
-> > Peter, would appreciate feedback on this. When is cond_resched()
-> > insufficient to give up the CPU? Should Documentation/kernel-hacking/hacking.rst
-> > be updated to require schedule() instead?
-> > 
-> 
-> Happy new year everybody!
-> 
-> I'd like to bring this thread back to life. To reiterate:
-> 
-> - The introduction of the EEVDF scheduler revealed a performance
->   regression in a uperf testcase of ~50%.
-> - Tracing the scheduler showed that it takes decisions which are
->   in line with its design.
-> - The traces showed as well, that a vhost instance might run
->   excessively long on its CPU in some circumstance. Those cause
->   the performance regression as they cause delay times of 100+ms
->   for a kworker which drives the actual network processing.
-> - Before EEVDF, the vhost would always be scheduled off its CPU
->   in favor of the kworker, as the kworker was being woken up and
->   the former scheduler was giving more priority to the woken up
->   task. With EEVDF, the kworker, as a long running process, is
->   able to accumulate negative lag, which causes EEVDF to not
->   prefer it on its wake up, leaving the vhost running.
-> - If the kworker is not scheduled when being woken up, the vhost
->   continues looping until it is migrated off the CPU.
-> - The vhost offers to be scheduled off the CPU by calling 
->   cond_resched(), but, the the need_resched flag is not set,
->   therefore cond_resched() does nothing.
-> 
-> To solve this, I see the following options 
->   (might not be a complete nor a correct list)
-> - Along with the wakeup of the kworker, need_resched needs to
->   be set, such that cond_resched() triggers a reschedule.
+On Sat, 20 Jan 2024 at 22:30, Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> Linus, you haven't been complaining about my key, which hopefully
+> means that I'm not causing you headaches
 
-Let's try this? Does not look like discussing vhost itself will
-draw attention from scheduler guys but posting a scheduling
-patch probably will? Can you post a patch?
+Well, honestly, while I pointed out that if everybody was expiring
+keys, I'd have this headache once or twice a week, the reality is that
+pretty much nobody is. There's James, you, and a handful of others.
 
-> - The vhost calls schedule() instead of cond_resched() to give up
->   the CPU. This would of course be a significantly stricter
->   approach and might limit the performance of vhost in other cases.
-> - Preventing the kworker from accumulating negative lag as it is
->   mostly not runnable and if it runs, it only runs for a very short
->   time frame. This might clash with the overall concept of EEVDF.
-> - On cond_resched(), verify if the consumed runtime of the caller
->   is outweighing the negative lag of another process (e.g. the 
->   kworker) and schedule the other process. Introduces overhead
->   to cond_resched.
+So in practice, I hit this every couple of months, not weekly. And if
+I can pick up updates from the usual sources, it's all fine. James'
+setup just doesn't match anybody elses, so it's grating.
 
-Or this last one.
+I do end up having a fair number of signatures that show up as expired
+for me in the tree. Some may well be because it's literally an old key
+that has been left behind - it may have been fine at the time, but now
+it shows as expired. It is what it is, and I'm not going to worry
+about it.
 
+But every time I do a pull, and the key doesn't verify, my git hook
+gives me a warning, and so those things are a somewhat regular
+annoyance just because then I have to go and check.
 
-> 
-> I would be curious on feedback on those ideas and interested in
-> alternative approaches.
+And I just checked: with James key now fixed, it's currently just
+Alexander Gordeev that shows up as recently expired with me not
+knowing where to get an update.
 
+That key expired two days ago - I'm pretty sure it was fine last pull.
+
+Alexander?
+
+              Linus
 
