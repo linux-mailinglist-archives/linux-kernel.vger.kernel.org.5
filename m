@@ -1,138 +1,85 @@
-Return-Path: <linux-kernel+bounces-32141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D401183571F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:34:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C4B0835722
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 138551C20D04
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:34:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D90DF1C20B54
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:37:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26411381CB;
-	Sun, 21 Jan 2024 17:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD4C381CE;
+	Sun, 21 Jan 2024 17:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nF0aQ3+O"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HrRdW3N2"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65CF237713;
-	Sun, 21 Jan 2024 17:34:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A4B27441
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 17:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705858470; cv=none; b=QqlKE5NNnX5naxSS8vNuSg3wZNm1GuVMwTOT9jXTV/g9eUeTgKKDONPPFJFyEfSVigIx4I48JrFbBkVSi7tNqur2EjHLwd7veGtLRH8K/ae2FvIQUew6+1A/p8BodEsH95QaJeGey497UuJ3vfd6stTkwD+3BOOt1yRaxLuXWak=
+	t=1705858643; cv=none; b=GasbYl/8ZpEqAA1WT0NOaAGQDErZYsizY7QxliCDTCgXM+GBLy62XLfKT/jGPuxsVUeJMZXJp4slvE1ZlrAN1IsjKptwCxnrkSc1I21Hc5etE8t1/GSj/g2Cu5f+AtuN8i+e5F8XM38Bev4WDvnFF26eriN4K9qZz+fIjUTbopc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705858470; c=relaxed/simple;
-	bh=OD8Ruv5Z6/0dUrzR7pwmB6jzMRqOWFs8d2TNmfSltsI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d9FSx1wwwJN66J6YlYqwKw2Ej/lsgvNb0k1zaSrvlnZdPI2aVAxSdYnGvPIYf1WK5s777rR+9d8hW6XCss57wdtTTx5nB3hhzWt/g+8bQ0MKw5Vw7o0Oqqi/9klobSO2eOx+s8toli77Z86ylNcwi6I5GqyaXCbiVNKGmG/Wc6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nF0aQ3+O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36B7CC433A6;
-	Sun, 21 Jan 2024 17:34:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705858470;
-	bh=OD8Ruv5Z6/0dUrzR7pwmB6jzMRqOWFs8d2TNmfSltsI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=nF0aQ3+O6diulmjit0YiMdoN31lohxZwj1sUzQEqfPc/9MKsckJUPKtyxQBawWPks
-	 qUFBT68qRJzq4WJ257Gj8fdqvEJ9pKfUrtcfbDcIselG7gdAM4QWdqe9MqiGwMY8hg
-	 pa9fOgHTk3/BbMRRB7OIm5KJtjlS01o8monAaZeHOJCvM+58A1EE1GzKwzkQoSHK8L
-	 TufX9IX9mnFjZbznoqadjo25nNjTdYb4N5e4PYpSf4FzU64FukRkQG9AzTpm4FWX3w
-	 Idn7Mqap1yVSbU5YU4g0+DkevLsSy2rWk1M9i8mzDg9UB7Sn82z+Da5B1eobxxerLS
-	 3r9sqz0XdkV0A==
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-204f50f305cso1616388fac.3;
-        Sun, 21 Jan 2024 09:34:30 -0800 (PST)
-X-Gm-Message-State: AOJu0YywVynnpyqbCGURwdTspb6eaobAxhonNQaYQf/kN7KatMih+0Ar
-	uJB2hM1j50hgRV2RGzAiFJFbbVppQ0lXbHh0CIxL7HcnvPCq0z3tZIjnefRzsSkUYlqHAkhX90v
-	z4zgy+oenvk79DQgaHvldfxYsGYo=
-X-Google-Smtp-Source: AGHT+IEe5FN0kCJ+KSTjldgTQXwg9lRW/yroKqxzuTLy2ozixhvtGENiHHEFHjAWbIJ33l20r+1vbkJy6OexELuWrTM=
-X-Received: by 2002:a05:6870:b489:b0:203:f3b8:411f with SMTP id
- y9-20020a056870b48900b00203f3b8411fmr2826580oap.20.1705858469601; Sun, 21 Jan
- 2024 09:34:29 -0800 (PST)
+	s=arc-20240116; t=1705858643; c=relaxed/simple;
+	bh=JPM9TnkWt8kGJWfSrJL+0v1d7QDwm7HJm+cbOf/RlIk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PoS/xTPPUHpIclcBTUsJaxTJBBls02j4i6cJNAtWSSTPxzboj3becvPcmV1wkFnmCxYLm9okfsl6Un0z3EJlRRmZN8SyLIb1gh5bxLc6CY/+bmwZ67Lvjjm49aI9buV7xXlzdCynKiZSdiXAH6lc3QbkM+ctmgt5H8cqa0KTND4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HrRdW3N2; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sun, 21 Jan 2024 12:37:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705858638;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H7WKtD/jbDjNkLZF9EblEjk8T8MZDbfyWkkGAZ5M55w=;
+	b=HrRdW3N2UQCvIkhj7ZC4z4UMFNCXIM9z2n3XAmgKEDQHBP6vaDlnOFz5Np3bZmr0LGJqAZ
+	AtEU92cSPBVM/Xwo6GeIru5HRGQayQ/9lNg57lqZbhmCk2ASOQ2GWnZxLQyMsmf2TrOgxD
+	hSs0A57nIMBMmbrZushLAvjjBatncSg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, bfoster@redhat.com, jserv@ccns.ncku.edu.tw, 
+	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH 2/5] bcachefs: Introduce parent function for
+ sort_cmp_size()
+Message-ID: <65vkoqenjy52rinrxduonprebumy7beh5fpd5i6ukgg6nr5buv@zybxigfqsj4q>
+References: <20240121153649.2733274-1-visitorckw@gmail.com>
+ <20240121153649.2733274-3-visitorckw@gmail.com>
+ <vrzgjxym2gnawuds54s4lr4zqbldm6sxp5yksrz5467hcrzjtp@lphbsqbidqdm>
+ <Za1O2JDOnTRL0QvL@visitorckw-System-Product-Name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK7LNARX==sMKVTGXutGMmMkfg1idGUYLhBLZvKZ0psdwmiUvQ@mail.gmail.com>
- <20240118141246.370272-1-jtornosm@redhat.com>
-In-Reply-To: <20240118141246.370272-1-jtornosm@redhat.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 22 Jan 2024 02:33:53 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARNgp_oYWf69tw4+y0SMp=Hi2rixAt5h8R5=GaMkQLQYA@mail.gmail.com>
-Message-ID: <CAK7LNARNgp_oYWf69tw4+y0SMp=Hi2rixAt5h8R5=GaMkQLQYA@mail.gmail.com>
-Subject: Re: [PATCH V5 2/2] rpm-pkg: avoid install/remove the running kernel
-To: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-Cc: dcavalca@meta.com, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nathan@kernel.org, ndesaulniers@google.com, 
-	nicolas@fjasle.eu, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Za1O2JDOnTRL0QvL@visitorckw-System-Product-Name>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 18, 2024 at 11:12=E2=80=AFPM Jose Ignacio Tornos Martinez
-<jtornosm@redhat.com> wrote:
->
-> > What is the problem with this?
-> In my opinion, it is risky to remove the kernel that is running, that is
-> the reason why I am trying to protect this.
-> If you try to remove or update (and the running kernel is removed), if th=
-e
-> kernel and modules are already preloaded in memory, it could not happen
-> anything but some extra action could be necessary or automatically starte=
-d,
-> and even the new kernel could not boot.
-> Fedora and others are taking this into account with upper tools and decla=
-re
-> the running kernel as protected avoinding this action. But others
-> (i.e. openSUSE Tumbleweed) allow this behavior.
+On Mon, Jan 22, 2024 at 01:05:28AM +0800, Kuan-Wei Chiu wrote:
+> On Sun, Jan 21, 2024 at 11:17:30AM -0500, Kent Overstreet wrote:
+> > On Sun, Jan 21, 2024 at 11:36:46PM +0800, Kuan-Wei Chiu wrote:
+> > > When dealing with array indices, the parent's index can be obtained
+> > > using the formula (i - 1) / 2. However, when working with byte offsets,
+> > > this approach is not straightforward. To address this, we have
+> > > introduced a branch-free parent function that does not require any
+> > > division operations to calculate the parent's byte offset.
+> > 
+> > This is a good commit message - but it would be even better if it was a
+> > function comment on parent()
+> >
+> Sure, however, it seems that sort_cmp_size() can be directly replaced
+> with the sort function from include/linux. Once we decide on the
+> cleanup tasks, if we still choose to retain this patch, I will make the
+> adjustments.
 
-
-
-As I replied in 1/2, I see an error like this:
-
-
-vagrant@opensuse-tumbleweed20231218:~> sudo rpm -i
-kernel-6.7.0_12924_g660a5f4a53e7-4.x86_64.rpm
-file /lib/modules/6.7.0-12924-g660a5f4a53e7/vmlinuz from install of
-kernel-6.7.0_12924_g660a5f4a53e7-4.x86_64 conflicts with file from
-package kernel-6.7.0_12924_g660a5f4a53e7-3.x86_64
-
-
-
-You can proceed with 'rpm -i --force', but
-that is the user's responsibility if something bad happens.
-
-
-
-
-
-
-
-> It may only be a safety measure but it can also be beneficial to avoid
-> problems, just in case.
-> Besides, in this way, all the tested distributions would have the same
-> behavior.
->
-> If it is ok, I will create a following version patch describing the probl=
-em
-> better and using indentation as you suggested for the other patch.
-
-
-No, not OK.
-
-
-
-
-
->
-> Thanks
->
-> Best regards
-> Jos=C3=A9 Ignacio
->
-
---
-Best Regards
-Masahiro Yamada
+nice catch - looks like sort_r() is the more recent addition, so that's
+how that happened.
 
