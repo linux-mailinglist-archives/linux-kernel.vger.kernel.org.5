@@ -1,104 +1,143 @@
-Return-Path: <linux-kernel+bounces-31979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0751A8354B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 07:31:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FCFD8354C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 07:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 311FD1C2167E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 06:31:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3806F1F23289
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 06:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41D526ADF;
-	Sun, 21 Jan 2024 06:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="fI8Tlpma"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E214B364A6;
+	Sun, 21 Jan 2024 06:56:32 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A1D3D68
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 06:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77D2F36126
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 06:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705818659; cv=none; b=FDmEV8jwSnuoBr9OZu+arZveb7kJMaNlrTXHaLT9c3TB/epL9x1bCCmi6vBSVFv9NX4NuAt9qRbbP6bti7JkEnERdIwwDlsL+ZfyNQu5VxDOOOxvoheg4MEF8YWmQv1/SSNCEZ/1J4zEC9dack83R0Tsz4UGKpMCtSJA/wc+sOw=
+	t=1705820192; cv=none; b=PwLbBOxZYpGiQZRBhlKeKRm8Wg4AQbZa9xZZwPpf3vosA6CFpk12HPxIDWXOY6SXwozsN/NYQIo5FYw9A00DduHWqG+rxCkD0UViszm+R6sAgmb73N2gNSlt4Ce35Leh7kQa6Yc1gCCYX1T/Exh8lxFGJr/3nNbFMr0L1D2lW7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705818659; c=relaxed/simple;
-	bh=tK3UcJvJ5BQkGY+bTb2CdK4v2VbqSQmssmv32Na54XE=;
+	s=arc-20240116; t=1705820192; c=relaxed/simple;
+	bh=H4D65o2qgKezV17qXXj1tv+dOT754Db1R0b4ZWq3T0g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lo4EvkuIj03FqpctCJWqzOq2tIWNIC1J/h5l0hYMZ50taeHTRihJ/5nKPPzIrBVXiKirt9MOUda16D2o3bXJK7nENyh8JGnOHVIBMhnuFAOria3+WS7yo91o4PhXkewiaSl6eaNrWt9AW7EKgY0ouBPjVKls0JY6yRyA133zlHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=fI8Tlpma; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-117-225.bstnma.fios.verizon.net [173.48.117.225])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40L6UdaR023566
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 21 Jan 2024 01:30:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1705818641; bh=sgpy4bLPdBnGfXdgc0vYyKPC4rFyOPZ19TPy1I8VkNY=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=fI8TlpmaI6N8auQGmVuYYwtSQdVLpDYqPbkt+dMB0Evk0vNokom+FCG8JV2/aAiAq
-	 9oWBOMxHqpJQX1Br3BT0QfHqYnsUSAjCZ3BviicSPbheTgEnjUVAT5zouv50szulp+
-	 sr41Ye3EfI2swt1nQpb1YKVnfP79CyG1tXi5UCtrezFYsIYu80q0hXMWQqkyWRyT/o
-	 +YGJMcAW7aVPnIkLCH339V5IZcgDlPI1GfbG6DfNopFp5MtVNnK2W1TptbCSkGdYvu
-	 Q9YWzgLNTb83nidTD20Q1vJyMCCLNlclzNc0lwDE4f9/J+kXHi52//bEwfT8meFcxY
-	 KRrq2DaYcMTwg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id D419715C0278; Sun, 21 Jan 2024 01:30:38 -0500 (EST)
-Date: Sun, 21 Jan 2024 01:30:38 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Linus Torvalds <torvalds@linux-foundation.org>, G@mit.edu
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] final round of SCSI updates for the 6.7+ merge window
-Message-ID: <20240121063038.GA1452899@mit.edu>
-References: <d2ce7bc75cadd3d39858c02f7f6f0b4286e6319b.camel@HansenPartnership.com>
- <CAHk-=wi8-9BCn+KxwtwrZ0g=Xpjin_D3p8ZYoT+4n2hvNeCh+w@mail.gmail.com>
- <7b104abd42691c3e3720ca6667f5e52d75ab6a92.camel@HansenPartnership.com>
- <CAHk-=wi03SZ4Yn9FRRsxnMv1ED5Qw25Bk9-+ofZVMYEDarHtHQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sy6cGSs3RHvcArokimSTfhUEnadfUXmBHc+A8Hn5nqLRO82xaOAjq+wsC1CM/fVwLeyHGQzVcHiu/JW5aFXA+xDkuZ3yB5md8hSKn6Y9xntWf1eTpPeCkmTBQkhh7EBaY0TE4wgUiq6jUJ3Lgz3mPgOos4UprVxpA9gFBMWeCfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rRRka-0006vJ-6d; Sun, 21 Jan 2024 07:56:12 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rRRkY-001JDN-4I; Sun, 21 Jan 2024 07:56:10 +0100
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rRRkY-000zga-1K; Sun, 21 Jan 2024 07:56:10 +0100
+Date: Sun, 21 Jan 2024 07:56:10 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+	linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+	=?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>
+Subject: Re: [RFC PATCH v1 0/7] Introduction of PSCR Framework and Related
+ Components
+Message-ID: <20240121065610.GC163482@pengutronix.de>
+References: <20240119132521.3609945-1-o.rempel@pengutronix.de>
+ <7gadkjffeljjwb2cgcmg6ixco3xtg4t4hrxtetfnjyzuxvfsjt@ze7u4glqnerb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wi03SZ4Yn9FRRsxnMv1ED5Qw25Bk9-+ofZVMYEDarHtHQ@mail.gmail.com>
+In-Reply-To: <7gadkjffeljjwb2cgcmg6ixco3xtg4t4hrxtetfnjyzuxvfsjt@ze7u4glqnerb>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Sat, Jan 20, 2024 at 11:35:18AM -0800, Linus Torvalds wrote:
-> Guess why I don't? BECAUSE NOBODY ELSE DOES THAT POINTLESS EXPIRY DANCE.
+Hi,
 
-So I guess I need to confess.  I haven't been doing the expiry dance
-(which I started doing because GPG revocation certificates are also a
-disaster).  There are certainly those folks who recommend it as a best
-practice[1].
+On Sat, Jan 20, 2024 at 12:19:09AM +0100, Sebastian Reichel wrote:
+> Hi,
+> 
+> On Fri, Jan 19, 2024 at 02:25:14PM +0100, Oleksij Rempel wrote:
+> > This patch series introduces the Power State Change Reasons (PSCR)
+> > tracking framework and its related components into the kernel. The PSCR
+> > framework is designed for systems where traditional methods of storing
+> > power state change reasons, like PMICs or watchdogs, are inadequate. It
+> > provides a structured way to store reasons for system shutdowns and
+> > reboots, such as under-voltage or software-triggered events, in
+> > non-volatile hardware storage.
+> > 
+> > These changes are critical for systems requiring detailed postmortem
+> > analysis and where immediate power-down scenarios limit traditional
+> > storage options. The framework also assists bootloaders and early-stage
+> > system components in making informed recovery decisions.
+> 
+> A couple of things come to my mind:
+> 
+> 1. Do we need the DT based reason-string-to-integer mapping? Can we
+>    just use a fixed mapping instead? It simplifies the binding a
+>    lot. With that the generic part could be dropped completely.
 
-[1] https://www.g-loaded.eu/2010/11/01/change-expiration-date-gpg-key/
+The project I'm working is using RTC for storage. The RTC device in
+question provides 8 bits, 3 bits are assigned for PSCR.
+Currently all reasons provided in this patch set would fit int to 3 bits,
+but soon or later it may expand.
 
-However, I tend to set the expiration 6 to 12 months in
-advance, and make sure I renew them 3 months or so before they expire,
-and then I make a point of sending them to keys@linux.kernel.org to
-update the the kernel keyring, as documented here[2].
+> 2. I would expect the infrastructure to read and clear the reason
+>    during boot. If e.g. a watchdog triggers a reset you will otherwise
+>    get an incorrect value.
 
-[2] https://korg.docs.kernel.org/pgpkeys.html
+Hm.. good point. I'll set a value on the boot that there is currently no
+attempt to shutdown at all. PSCR works only for software assisted
+shutdown/reboot. It should extend, not replace PMIC or watchdog detected
+reasons.
 
-Linus, you haven't been complaining about my key, which hopefully
-means that I'm not causing you headaches (or at least I hope so).
-Would it be perhaps because you are periodically running
-scripts/korg-refresh-keys as documented in [2].  Or perhaps you are
-running it out of cron or a systemd timer (again, as documented in [2])?
+> 3. The reason is only stored, but not used? We have a sysfs ABI to
+>    expose the reboot reason to userspace since half a year ago, see
+>    d40befed9a58 (power: reset: at91-reset: add sysfs interface to
+>    the power on reason).
 
-Unlike James, I've tried to use DANE, since about the only thing that
-has as disastrous a user experience as gpg is DNSSEC.  :-) I just
-manually upload keys to the kernel and Debian keyrings, and it's been
-working out, apparently without much pain for either me or to those
-who rely on my keys --- at least, no one as complained to me so
-far....
+ACK. I'll add sysfs support.
+For my use case, the user is the bootloader. The is one of reasons why
+DT is used for mappings, this is the stable ABI between this systems.
 
-					- Ted
+> 4. Available options should be synced with the list in
+>    include/linux/power/power_on_reason.h
+
+ACK
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
