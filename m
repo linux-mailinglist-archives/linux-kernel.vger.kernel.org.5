@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-32164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0153835783
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AAFEC835789
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 589DC281DB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:46:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 336F4281BA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B840438DE1;
-	Sun, 21 Jan 2024 19:45:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9754C38DE2;
+	Sun, 21 Jan 2024 19:46:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L2qZz7Ie"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EXg9saqs"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713E238F97;
-	Sun, 21 Jan 2024 19:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4199938381;
+	Sun, 21 Jan 2024 19:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705866351; cv=none; b=Lmtw/V/IDHnihxjdfnhviTLN4iokSKwNMDIpopuviqgjldwzj9cRtBc8JzzunQIHeZ4IwvDm4kccIM/mh809pKfaVVyYkVXsuNRF13PdzUkmNayzL6wmF7yBZQdUt4P5NBIQ+OgHkFQTIqeZqABA+XxaRUVynxdscGX8KeYyCqw=
+	t=1705866362; cv=none; b=n/PYVDMPfe4OmR1QrTMvWUsByXgzjvf7C+PAXDNiwZ6qCgVivyHuW8FWqTA9jSo2kHbDWSmObV6JMZ+AxcSdk6kilIUoUoKDyAk+53XsQPgiDs0pJ/EfbpomMKiUcNowaf9LAFcpVyYqYkuv4B4pMZnDyD+iG+09dZ6Vt/91pwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705866351; c=relaxed/simple;
-	bh=jiG8dNM4EeCqicvJq35Mwv8i8fdhtFDvlbFQpXu1o1o=;
+	s=arc-20240116; t=1705866362; c=relaxed/simple;
+	bh=D7vo3Je/ku3YAGxGGEqJYOJM64U+z7ByohhxKjrFtxA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ga3ZdKol7jUZ6qlUJbIQUJtYkji0OP3/FyhKFtAaIAusJFr5/DNy+I4MWJXiiqSCXAKJuRnMg2T9Id0DuDYVbzHgC0Nrx7JkPXLrd6dPR9hGKg9+UIR7xjLfjMP6ja0eEJ1mzeKzRokFzTaFBYOSH8uI/MK/QMcW6AG2MiIpAu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L2qZz7Ie; arc=none smtp.client-ip=209.85.218.54
+	 MIME-Version; b=YnbQOIYpwuyU13q3IlSzPq0IukNnXtaVp78qW1jU/JUXQyPVxCktX6UI3nTy7J6xFmNaZ4y9SKZj/JH39RDPbH/4Q964cqGoJWDUBIjeIpvJGFqL6hrsYS5styqzMIlvEqpslBOdNqXfSuRlY7MJxSMKWf8v26jfu7AQEANkC24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EXg9saqs; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3046221b0eso22095266b.1;
-        Sun, 21 Jan 2024 11:45:49 -0800 (PST)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so526607a12.1;
+        Sun, 21 Jan 2024 11:46:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705866347; x=1706471147; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705866359; x=1706471159; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RSqr1Vk76fk8EOA0eDt1nJ6pOVxZRQ6awuBBes4l838=;
-        b=L2qZz7IebjbkAMEBRU9dwlq/SpT2DD1LnR9sfr2N7iV1c+7XxIrj9Rt+sXUl7Vwiq+
-         T53DUX5zr3TnRFnZGydxr+uzbG0vGu+W/zuPX1IXPGTHMCBE+OWiOO6MJ8zlSl3qo4lj
-         QMmJn0+PdgY+aFYnC0GsKVhXZyRT8DFIrvBSBDHhIbG+0mgrYxknV4Ijj9A/rwHubgHV
-         9zGNW1pcyLPr9jBwfTBUNwhFFCqV9Y73oLlur5KNs1+kCtfkJs5jn5om/lC4rUAdpW/P
-         WClB6KhBoE871yhDbA16A95SmTTZyKckweANK786oysb7cneZNvxVZRl8h2Pb5cKSQPp
-         FqUQ==
+        bh=A2y3IKPyLzXC4v8koqDaasKaIIQSzzqRF+g1mhrKMn4=;
+        b=EXg9saqsoWyQw0qI2MLpO1Z3kN3BHz/SYqx2uzVwUu+2RJOiTF23o71Abad4O3fIAJ
+         YSE4xVV0cfFoOZ6Vty+DrzBm9e7NJDmybPavl6BSdXQixNWQtyTK1wwChHEoKilKwLVf
+         oAeMvnDa5pESPkDzXqJKDYx2+UD5D/JptmkCagEK5Ts2sVeb05rvsmrRCtztIcQaOHaI
+         wpKSbO8MTL5SMP2QZpfSmww2yMANg+ciezR6+2kMPXHhuJ/CwycARNb5Byl49lyvBIyW
+         z/+sHhtzmsBBPpTmD2u75JKbH+ImwDx4qr1WG+dWvERJAwpgyg61B5WAYgBAacXdc3xu
+         mRCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705866347; x=1706471147;
+        d=1e100.net; s=20230601; t=1705866359; x=1706471159;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RSqr1Vk76fk8EOA0eDt1nJ6pOVxZRQ6awuBBes4l838=;
-        b=W+Gp8K6psLyOASJlwxmqLgP8MfPtscnbGfQFFpLtsiC639oMBoPHN3y/BpPq5ZoTp0
-         oM+2AaG+wIdOq0omxKAAyWQvzw5B3CjRqUXYpDnghZTocX0TCygGtVGYv6hrgtKOm+eE
-         LYQgcbY1kysDq2DzmhYOz/3hnGzpZqDwL8OruzECDpxhFzcl0S3yLsVXv9Dlh7H4NjTU
-         SG3vmqxUgzG0Ve0UZJpkmDJk61IUMPh3OzDoofjHTFnUYwdgySqKEdGNtm0SCPFV0yeF
-         N0AHCC/UHqAQ2p/9Y5C4spEH/VYoGRck5J5ZnTG5TYLSCgyP4FBfCV4/+NG7kHnip98K
-         8pOQ==
-X-Gm-Message-State: AOJu0YwEwT1uDbc/SYY341MAhbxWKJu1memlpGUB8TzpGTGw2mOwYNfN
-	VrcAu/YUpntBP7tgmIX384Uef9r8tDA1JQBSbT9Jl07ppx/ORI+t6z+xsSeFlBY=
-X-Google-Smtp-Source: AGHT+IGsCmZv1novA+/rF0kwFG7flhcKuCUpSzseVeBQ6O+PKFUlzXtm9pZWAynzdjUeKyHkgZsWqw==
-X-Received: by 2002:a17:906:f24c:b0:a28:fc03:f199 with SMTP id gy12-20020a170906f24c00b00a28fc03f199mr1456478ejb.107.1705866347749;
-        Sun, 21 Jan 2024 11:45:47 -0800 (PST)
+        bh=A2y3IKPyLzXC4v8koqDaasKaIIQSzzqRF+g1mhrKMn4=;
+        b=pAR8iZlcOIuC0j+EYyLKaovbKxFnWlTWGZg0Y7/dg666O8tH+5J6hqAhsfg4zw5Dxr
+         rDk6zXekg+Px1rtezdlwhbfFcsIf0HjCBGeyx4T3ArHF4h5AYeURhIAY+oyetEwhFLvB
+         uqp7B2oSC7cceHx1DW8zKBfSeJsYGdDnT0B0oxcqVaBjzbFjYN+UAnDZja0/1gGzIAhF
+         qYhGvDUtO0BKLezhxzQUqD1dQDLgnv3FuqOR6s91sodo9Xpdebw/5DJsi21tIYg/Do6w
+         7uRpKfHXEUjIUVKltKu/zWXDSjwEzeSMehMBUUEZzAHJ1pNXTvaIcFZNWnFc8mu5PJzT
+         3Y7Q==
+X-Gm-Message-State: AOJu0YwQUKH/LxQ+nNoNRvjZ81NWwMSDCYvGQy2Dv7FIXKpsjEbEjN+z
+	I1xYeHBxZPTvXZukYvHYggqtNLeddRFCvpZJJw6hbvTAEviv7xOcvGmjo/sehYM=
+X-Google-Smtp-Source: AGHT+IHh8/TU/0VUDooBERyQGy+VFyA6oUokYFyCSTIbUVuzbfxUdGklOUSWy9+BZiEdMA8CJd9+DA==
+X-Received: by 2002:a17:907:c088:b0:a2e:7db2:8f1e with SMTP id st8-20020a170907c08800b00a2e7db28f1emr1593296ejc.79.1705866359290;
+        Sun, 21 Jan 2024 11:45:59 -0800 (PST)
 Received: from localhost.localdomain (byv51.neoplus.adsl.tpnet.pl. [83.30.41.51])
-        by smtp.gmail.com with ESMTPSA id k6-20020a170906128600b00a2b0b0fc80esm12547134ejb.193.2024.01.21.11.45.38
+        by smtp.gmail.com with ESMTPSA id k6-20020a170906128600b00a2b0b0fc80esm12547134ejb.193.2024.01.21.11.45.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jan 2024 11:45:47 -0800 (PST)
+        Sun, 21 Jan 2024 11:45:58 -0800 (PST)
 From: Adam Skladowski <a39.skl@gmail.com>
 To: 
 Cc: phone-devel@vger.kernel.org,
@@ -89,9 +89,9 @@ Cc: phone-devel@vger.kernel.org,
 	freedreno@lists.freedesktop.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/8] arm64: dts: qcom: msm8976: Add Adreno GPU
-Date: Sun, 21 Jan 2024 20:41:04 +0100
-Message-Id: <20240121194221.13513-7-a39.skl@gmail.com>
+Subject: [PATCH 7/8] arm64: dts: qcom: msm8976: Declare and wire SDC pins
+Date: Sun, 21 Jan 2024 20:41:05 +0100
+Message-Id: <20240121194221.13513-8-a39.skl@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240121194221.13513-1-a39.skl@gmail.com>
 References: <20240121194221.13513-1-a39.skl@gmail.com>
@@ -103,90 +103,138 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add Adreno GPU node.
+Declare pinctrls for SDC pins and wire them to consumers.
 
 Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 ---
- arch/arm64/boot/dts/qcom/msm8976.dtsi | 66 +++++++++++++++++++++++++++
- 1 file changed, 66 insertions(+)
+ arch/arm64/boot/dts/qcom/msm8976.dtsi | 100 ++++++++++++++++++++++++++
+ 1 file changed, 100 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/msm8976.dtsi b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-index 2d71ce34f00e..765c90ac14cb 100644
+index 765c90ac14cb..5a7be93a0115 100644
 --- a/arch/arm64/boot/dts/qcom/msm8976.dtsi
 +++ b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-@@ -1068,6 +1068,72 @@ mdss_dsi1_phy: phy@1a96a00 {
+@@ -771,6 +771,96 @@ blsp2_i2c4_sleep: blsp2-i2c4-sleep-state {
+ 				drive-strength = <2>;
+ 				bias-disable;
  			};
- 		};
- 
-+		adreno_gpu: gpu@1c00000 {
-+			compatible = "qcom,adreno-510.0", "qcom,adreno";
 +
-+			reg = <0x01c00000 0x40000>;
-+			reg-names = "kgsl_3d0_reg_memory";
-+
-+			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "kgsl_3d0_irq";
-+
-+			clock-names = "core",
-+				      "iface",
-+				      "mem",
-+				      "mem_iface",
-+				      "rbbmtimer",
-+				      "alwayson";
-+
-+			clocks = <&gcc GCC_GFX3D_OXILI_CLK>,
-+			    <&gcc GCC_GFX3D_OXILI_AHB_CLK>,
-+			    <&gcc GCC_GFX3D_OXILI_GMEM_CLK>,
-+			    <&gcc GCC_GFX3D_BIMC_CLK>,
-+			    <&gcc GCC_GFX3D_OXILI_TIMER_CLK>,
-+			    <&gcc GCC_GFX3D_OXILI_AON_CLK>;
-+
-+			power-domains = <&rpmpd MSM8976_VDDCX>;
-+
-+			iommus = <&gpu_iommu 0>;
-+
-+			status = "disabled";
-+
-+			operating-points-v2 = <&gpu_opp_table>;
-+
-+			gpu_opp_table: opp-table {
-+				compatible  ="operating-points-v2";
-+
-+				opp-200000000 {
-+					opp-hz = /bits/ 64 <200000000>;
-+					opp-level = <RPM_SMD_LEVEL_LOW_SVS>;
-+					opp-supported-hw = <0xff>;
++			sdc1_default: sdc1-default-state {
++				clk-pins {
++					pins = "sdc1_clk";
++					drive-strength = <16>;
++					bias-disable;
 +				};
 +
-+				opp-300000000 {
-+					opp-hz = /bits/ 64 <300000000>;
-+					opp-level = <RPM_SMD_LEVEL_SVS>;
-+					opp-supported-hw = <0xff>;
++				cmd-pins {
++					pins = "sdc1_cmd";
++					drive-strength = <10>;
++					bias-pull-up;
 +				};
 +
-+				opp-400000000 {
-+					opp-hz = /bits/ 64 <400000000>;
-+					opp-level = <RPM_SMD_LEVEL_NOM>;
-+					opp-supported-hw = <0xff>;
++				data-pins {
++					pins = "sdc1_data";
++					drive-strength = <10>;
++					bias-pull-up;
 +				};
 +
-+				opp-480000000 {
-+					opp-hz = /bits/ 64 <480000000>;
-+					opp-level = <RPM_SMD_LEVEL_NOM_PLUS>;
-+					opp-supported-hw = <0xff>;
-+				};
-+
-+				opp-540000000 {
-+					opp-hz = /bits/ 64 <540000000>;
-+					opp-level = <RPM_SMD_LEVEL_TURBO>;
-+					opp-supported-hw = <0xff>;
++				rclk-pins {
++					pins = "sdc1_rclk";
++					bias-pull-down;
 +				};
 +			};
-+		};
 +
- 		apps_iommu: iommu@1e20000 {
- 			compatible = "qcom,msm8976-iommu", "qcom,msm-iommu-v2";
- 			ranges  = <0 0x01e20000 0x20000>;
++			sdc1_sleep: sdc1-sleep-state {
++				clk-pins {
++					pins = "sdc1_clk";
++					drive-strength = <2>;
++					bias-disable;
++				};
++
++				cmd-pins {
++					pins = "sdc1_cmd";
++					drive-strength = <2>;
++					bias-pull-up;
++				};
++
++				data-pins {
++					pins = "sdc1_data";
++					drive-strength = <2>;
++					bias-pull-up;
++				};
++
++				rclk-pins {
++					pins = "sdc1_rclk";
++					bias-pull-down;
++				};
++			};
++
++			sdc2_default: sdc2-default-state {
++				clk-pins {
++					pins = "sdc2_clk";
++					drive-strength = <16>;
++					bias-disable;
++				};
++
++				cmd-pins {
++					pins = "sdc2_cmd";
++					drive-strength = <10>;
++					bias-pull-up;
++				};
++
++				data-pins {
++					pins = "sdc2_data";
++					drive-strength = <10>;
++					bias-pull-up;
++				};
++			};
++
++			sdc2_sleep: sdc2-sleep-state {
++				clk-pins {
++					pins = "sdc2_clk";
++					drive-strength = <2>;
++					bias-disable;
++				};
++
++				cmd-pins {
++					pins = "sdc2_cmd";
++					drive-strength = <2>;
++					bias-pull-up;
++				};
++
++				data-pins {
++					pins = "sdc2_data";
++					drive-strength = <2>;
++					bias-pull-up;
++				};
++			};
+ 		};
+ 
+ 		gcc: clock-controller@1800000 {
+@@ -1246,6 +1336,11 @@ sdhc_1: mmc@7824900 {
+ 				 <&gcc GCC_SDCC1_APPS_CLK>,
+ 				 <&rpmcc RPM_SMD_XO_CLK_SRC>;
+ 			clock-names = "iface", "core", "xo";
++
++			pinctrl-0 = <&sdc1_default>;
++			pinctrl-1 = <&sdc1_sleep>;
++			pinctrl-names = "default", "sleep";
++
+ 			status = "disabled";
+ 		};
+ 
+@@ -1262,6 +1357,11 @@ sdhc_2: mmc@7864900 {
+ 				 <&gcc GCC_SDCC2_APPS_CLK>,
+ 				 <&rpmcc RPM_SMD_XO_CLK_SRC>;
+ 			clock-names = "iface", "core", "xo";
++
++			pinctrl-0 = <&sdc2_default>;
++			pinctrl-1 = <&sdc2_sleep>;
++			pinctrl-names = "default", "sleep";
++
+ 			status = "disabled";
+ 		};
+ 
 -- 
 2.43.0
 
