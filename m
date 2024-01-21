@@ -1,150 +1,88 @@
-Return-Path: <linux-kernel+bounces-32042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF8968355A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:20:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 109528355B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:36:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ED28281E59
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:20:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A9541F21334
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5EF36B18;
-	Sun, 21 Jan 2024 12:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UGshX6PL"
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0D936AFD
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 12:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CDA936B16;
+	Sun, 21 Jan 2024 12:36:03 +0000 (UTC)
+Received: from pokefinder.org (pokefinder.org [135.181.139.117])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDDE26AFA;
+	Sun, 21 Jan 2024 12:35:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.181.139.117
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705839640; cv=none; b=h9afqXKLIP98AzRF9AJD8i78XbSgXwsetT6kStYoUWLTh2GetYvrBmzBcU7G62LTxJpdeGNTqpJLBEAwYhVb4tfjNEYhyhAr+EOgpuPZTTl3DjxtmbCQlKI9ze0nzQhsYusMEITtfBHVvIaPP4NBOhLW6fEGCLuSGXmwSnazH68=
+	t=1705840562; cv=none; b=DI9JykkUUzm1AvhQW6t5/Z5/mWWHA9bGL4SRtRMwTWOHdcKP3SYotllDp/ctsQJlFOHt8HjrsGEUxFU1D3QV+9McZK1hSUQ8rpyD9i9W5wsjQKM3w8rP/RdOZdbRRy9aPjFC02AwilUsd9AK26Leo6XyBMDV0BtTxO5hOnNgULM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705839640; c=relaxed/simple;
-	bh=JfMnjHNkzRw8i9j0k1upUxvHfwH7uPKDpAZHbblJyGo=;
+	s=arc-20240116; t=1705840562; c=relaxed/simple;
+	bh=U6x/Pqa5bsuJf3Rb2m+g6xKom/nhxnVCtBpXz5jdJtU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SLV11LbGaJBmtn6Fxhg4kMUD8kb1RTlrZl0l3ug3tTKfpfP5z6B/yl03pFX8Wk4g1+IiitX6iAU9LB9JW7eBlfmMwDINOGQu3rYm4A0BNWsRM477j3FJ/2eKI2EukmoD32XPt+CHeVzLVAc0pFbPTw+DrrTICP/WbG3hTMHHqik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UGshX6PL; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sun, 21 Jan 2024 07:20:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705839636;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MhNPlaBEpE1xN4v3GTZA0CsrCRKrMbxj54/fyRMaXwg=;
-	b=UGshX6PLCyjkuZXe1ylBJ4pAZyxjp5sCWpvlS9QneLoRnDCEWuea+ffZ/c3Uy6IT3whTls
-	GqSzZQqyWVehRmwvIT0qPH+u/RoEyQ8Rlqd3f15b3le7T5mV3+HYeOw/OPnNRf7PyDYhH+
-	vhW2ETUg2IzOSP9rrlj/g/oFwsSZ5Ys=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, 
-	Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>, Neal Gompa <neal@gompa.dev>, 
-	Kees Cook <keescook@chromium.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Nikolai Kondrashov <spbnick@gmail.com>, 
-	Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <32cn5wzlryvq7z64uwo3ztooh7rthlp2ihmbgfyayvehtdbeyt@pnvumkjz4eve>
-References: <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
- <20240117055457.GL911245@mit.edu>
- <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
- <20240118024922.GB1353741@mit.edu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=urSD9dbl2WOpHOCWBR0QsDXQVszNxMiQUPLpTZH8ctXhKhiqXgptjHyZIpUs9ROk9XPNvxLMQ0bnw1lteRN8N+QkzNMMECpuOlDPUPnj9iss66h8LvumjuJQrleBffumnmda440U2PRRG5DkApbepXQtrEtFnz7d9EqO+8rCYPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=the-dreams.de; spf=pass smtp.mailfrom=the-dreams.de; arc=none smtp.client-ip=135.181.139.117
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=the-dreams.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=the-dreams.de
+Received: from localhost (77-123-142-46.pool.kielnet.net [46.142.123.77])
+	by pokefinder.org (Postfix) with ESMTPSA id 1FB37A43FF3;
+	Sun, 21 Jan 2024 13:27:08 +0100 (CET)
+Date: Sun, 21 Jan 2024 13:27:07 +0100
+From: Wolfram Sang <wsa@the-dreams.de>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patches in the i2c tree
+Message-ID: <Za0Nm2GvQjy51sqN@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20240121200534.57bf614a@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="g8ipBbQwaxWKBXSQ"
+Content-Disposition: inline
+In-Reply-To: <20240121200534.57bf614a@canb.auug.org.au>
+
+
+--g8ipBbQwaxWKBXSQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240118024922.GB1353741@mit.edu>
-X-Migadu-Flow: FLOW_OUT
 
-On Wed, Jan 17, 2024 at 09:49:22PM -0500, Theodore Ts'o wrote:
-> On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
-> > Actually, this is partly our fault.  Companies behave exactly like a
-> > selfish contributor does:
-> > 
-> > https://archive.fosdem.org/2020/schedule/event/selfish_contributor/
-> > 
-> > The question they ask is "if I'm putting money into it, what am I
-> > getting out of it".  If the answer to that is that it benefits
-> > everybody, it's basically charity  to the entity being asked (and not
-> > even properly tax deductible at that), which goes way back behind even
-> > real charitable donations (which at least have a publicity benefit) and
-> > you don't even get to speak to anyone about it when you go calling with
-> > the collecting tin.  If you can say it benefits these 5 tasks your
-> > current employees are doing, you might have a possible case for the
-> > engineering budget (you might get in the door but you'll still be
-> > queuing behind every in-plan budget item).  The best case is if you can
-> > demonstrate some useful for profit contribution it makes to the actual
-> > line of business (or better yet could be used to spawn a new line of
-> > business), so when you're asking for a tool, it has to be usable
-> > outside the narrow confines of the kernel and you need to be able to
-> > articulate why it's generally useful (git is a great example, it was
-> > designed to solve a kernel specific problem, but not it's in use pretty
-> > much everywhere source control is a thing).
-> 
-> I have on occasion tried to make the "it benefits the whole ecosystem"
-> argument, and that will work on the margins.  But it's a lot harder
-> when it's more than a full SWE-year's worth of investment, at least
-> more recently.  I *have* tried to get more test investment. with an
-> eye towards benefitting not just one company, but in a much more
-> general fasion ---- but multi-engineer projects are a very hard sell,
-> especially recently.  If Kent wants to impugn my leadership skills,
-> that's fine; I invite him to try and see if he can get SVP's cough up
-> the dough.  :-)
 
-Well, I've tried talking to you about improving our testing tooling - in
-particular, what we could do if we had better, more self contained
-tools, not just targeted at xfstests, in particular a VM testrunner that
-could run kselftests too - and as I recall, your reaction was pretty
-much "why would I be interested in that? What does that do for me?"
+> The following commits are also in Linus Torvalds' tree as different
+> commits (but the same patches):
 
-So yeah, I would call that a fail in leadership. Us filesystem people
-have the highest testing requirements and ought to know how to do this
-best, and if the poeple with the most experience aren't trying share
-that knowledge and experience in the form of collaborating on tooling,
-what the fuck are we even doing here?
+Thanks, I fixed my trees and pushed out now.
 
-If I sound frustrated, it's because I am.
 
-> I've certainly had a lot more success with the "Business quid pro quo"
-> argument; fscrypt and fsverity was developed for Android and Chrome;
-> casefolding support benefited Android and Steam; ext4 fast commits was
-> targetted at cloud-based NFS and Samba serving, etc.
+--g8ipBbQwaxWKBXSQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Yeah, I keep hearing you talking about the product management angle and
-I have to call bullshit. There's a lot more to maintaining the health of
-projects in the long term than just selling features to customers.
+-----BEGIN PGP SIGNATURE-----
 
-> Unfortunately, this effect fades over time.  It's a lot easier to fund
-> multi-engineer projects which run for more than a year, when a company
-> is just starting out, and when it's still trying to attract upstream
-> developers, and it has a sizeable "investment" budget.  ("IBM will
-> invest a billion dollars in Linux").  But then in later years, the
-> VP's have to justify their budget, and so companies tend to become
-> more and more "selfish".  After all, that's how capitalism works ---
-> "think of the children^H^H^H^H^H^H^H shareholders!"
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWtDZcACgkQFA3kzBSg
+KbZmZA/8CYElVjl73HSe5F+FKVjktM3MGeW2vZNzwBy8phQB9qpgO236hVWycFMp
+XgHIi4UuTMQQoPo+danmaGUH0KaJtJYnnLhqc0hs3NKeZNe1/r8LaSSBcFkIEOwt
+Kan5K/C3IvvxbmO+ijfaq2E5pW1YoWfTOM2w6JZ3mLyi8TitYvAEfMLR7Z36s4TZ
+mbIizwbtamaypz06LWzrAhIxyOA4MLKiE/Egr0tEm8GJ6tewz0JS8dYHsvw3Q0AX
+aCJfaBiuhWX/IwmOewM4x4pdVST0GkDFr4svF1UmI1fhDfmar77bgjzIPpPcp6NM
+LSj8QFi+1Jt9avw7+/9jsgPcvCsl+SHhWmOZdpy7Fkp+mTm1arfllLetyLzQO/mF
+z7wbmeVtXkYKnXg5UbqLo3efCEFCkMNUFJB4rrnJc0KfsFd+eWavheigGqMMI1xB
+I6BrN6kGQvHmEPTL0bn6Q7ihQxePVxdQQVEQac8+LcnsQBgkP/1beP7Ext2qZ2w+
+8jGDK3CiQHDdJ+LhbiiNURkns2nX/inwNw+5xu6LMPOCmYUt707G7xPbOlo0tv7l
+FPKoPgjmBS+HXmGSpZ4fkYPzFVU1D5lI7ZGYIWa4LtcdP/uk33wAv2xKbfSshLbh
+H+4jCOLHAOeUucCtq6NNWwJzccwYnpUT5ogUWrjZGvGH08SOuL4=
+=Rn33
+-----END PGP SIGNATURE-----
 
-This stuff doesn't have to be huge multi engineer-year projects to get
-anything useful done.
-
-ktest has been a tiny side project for me. If I can turn that into a
-full blown CI that runs arbitrary self contained VM tests with quick
-turnaround and a nice git log UI, in my spare time, why can't we pitch
-in together instead of each running in different directions and
-collaborate and communicate a bit better instead of bitching so much?
+--g8ipBbQwaxWKBXSQ--
 
