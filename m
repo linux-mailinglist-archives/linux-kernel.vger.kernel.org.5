@@ -1,221 +1,110 @@
-Return-Path: <linux-kernel+bounces-32207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B20D5835830
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 23:26:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 040C7835816
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 23:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E49D81C20843
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:26:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC0211F21868
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF93F38F99;
-	Sun, 21 Jan 2024 22:26:44 +0000 (UTC)
-Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [5.144.164.162])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7998138F80;
+	Sun, 21 Jan 2024 22:18:41 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C4438F89
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.162
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE8F38DDC
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:18:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705876004; cv=none; b=deulA9hkUDUzVuuajOEt3JpNAdG/Y+gZExLbaqroVNmj/19e4n02iN6pXqnsT3I2/rv/EFj3fMMCF3Hw/UUEzhh0Eg9bsEpBrcaqLs8kyUCynBkAxFu1NZzs0ivgUUhEXQQd/jOvJhD035s0qxA/JXiHErx1axBNUIuYXsvVZQs=
+	t=1705875521; cv=none; b=gq1P9TDJ2n44QJX0E+E5KmW77qZ0MtAHnouxe8fKY/HvUr8V36AUtzeJfJV69SNZJTbfsBMGQ6PSotYNIXbLQUsUpdydRdbGq/WcPr88wXRbAP3DqTKbWAJZE4IfcsNYsCJdjr/lz2ykGlKQUx/iAaJ7K8OSnv28de6bBtn9Vpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705876004; c=relaxed/simple;
-	bh=PXYpMSGdthUXJnhoTPbS8CoFfCy2vmnLSPU/3dNRZrE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dGtilTPPdC0zSxZMVhJIziFyQgnvcpPXadbXPbtOO7sRO8fdAJDOVRXIYp/2nN3kyrl2wYo4/q8xM1fKzcMqz9KYxz7UVPJzFIHk2vcpBNeeYW8Zq/rUSLL2F2iB2ch3UmGmjslb/Nn6OzQYIURTy7IOIb2p/VkrONSqyl7R24U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.162
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 101771FF15;
-	Sun, 21 Jan 2024 23:16:42 +0100 (CET)
-Date: Sun, 21 Jan 2024 23:16:40 +0100
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: Adam Skladowski <a39.skl@gmail.com>
-Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
-	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Krishna Manikandan <quic_mkrishn@quicinc.com>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/8] arm64: dts: qcom: msm8976: Declare and wire SDC pins
-Message-ID: <umllfip5rqeo5q65jbvdpisy5yaxpl54j4zdhi2hisdha5da4y@lwf2mjxuhiga>
-Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>, 
-	Adam Skladowski <a39.skl@gmail.com>, phone-devel@vger.kernel.org, 
-	~postmarketos/upstreaming@lists.sr.ht, Rob Clark <robdclark@gmail.com>, 
-	Abhinav Kumar <quic_abhinavk@quicinc.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Krishna Manikandan <quic_mkrishn@quicinc.com>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240121194221.13513-1-a39.skl@gmail.com>
- <20240121194221.13513-8-a39.skl@gmail.com>
+	s=arc-20240116; t=1705875521; c=relaxed/simple;
+	bh=nygEOmY4tiUQZD8Nz78osBPg27O8u0wY5EOk7X6w99E=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=W+6QShf1AXaSweFh8RAXZxGP3CSgcCUhLRTqztUw2hY1ajhC6JhiBjkIuXygYiOjdMGAajrILyCovxSMZ7JzZheQb7FK0LshwpEBS8kopj5Q5tzo+C5YzQVeXo0WWr9ePGCZoELA2pCgEWBfoxgtxEB/boR5RhLPZkfwXUavp6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-281-eFEnWUa9P2KaNIVFV8PzgA-1; Sun, 21 Jan 2024 22:18:30 +0000
+X-MC-Unique: eFEnWUa9P2KaNIVFV8PzgA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 21 Jan
+ 2024 22:18:06 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 21 Jan 2024 22:18:05 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Linus Torvalds' <torvalds@linux-foundation.org>
+CC: Stephen Rothwell <sfr@canb.auug.org.au>, Jiri Slaby <jirislaby@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Andy
+ Shevchenko" <andriy.shevchenko@linux.intel.com>, Andrew Morton
+	<akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Christoph Hellwig <hch@infradead.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: RE: [PATCH next v4 0/5] minmax: Relax type checks in min() and max().
+Thread-Topic: [PATCH next v4 0/5] minmax: Relax type checks in min() and
+ max().
+Thread-Index: AdnqB/CwAvMQ3gkdSO607JUF4aSKdhZ9C6k7AAacz4AB9HBKgAAztg+A
+Date: Sun, 21 Jan 2024 22:18:05 +0000
+Message-ID: <8aaf72d07b464dc1aeee5f66fba05326@AcuMS.aculab.com>
+References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
+ <18c6df0d-45ed-450c-9eda-95160a2bbb8e@gmail.com>
+ <CAHk-=wjvM5KiQFpbPMPXH-DcvheNcPGj+ThNEJVm+QL6n05A8A@mail.gmail.com>
+ <CAHk-=wjE1eLMtkKqTt0XqNSnKAeDagV=WQU+vxHL_wsLuO8Gag@mail.gmail.com>
+ <CAHk-=whkGHOmpM_1kNgzX1UDAs10+UuALcpeEWN29EE0m-my=w@mail.gmail.com>
+ <20240110171739.2e2d9de0@canb.auug.org.au>
+ <CAHk-=wj1uqgU7hS=WqDSwEvc6=CwuWYBUmjSJAT6zx86CF=QBQ@mail.gmail.com>
+ <ad3a9cf720cd4e1ebe942cdc84a6a670@AcuMS.aculab.com>
+ <CAHk-=whKAaFmqNBEnY=n8Twnh6AEegHh7OL0YFkNS8b3xVQ-3w@mail.gmail.com>
+In-Reply-To: <CAHk-=whKAaFmqNBEnY=n8Twnh6AEegHh7OL0YFkNS8b3xVQ-3w@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240121194221.13513-8-a39.skl@gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On 2024-01-21 20:41:05, Adam Skladowski wrote:
-> Declare pinctrls for SDC pins and wire them to consumers.
-> 
-> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjAgSmFudWFyeSAyMDI0IDIxOjM0DQo+IA0K
+PiBbIEdvaW5nIHRocm91Z2ggc29tZSBwZW5kaW5nIGlzc3VlcyBub3cgdGhhdCBJJ3ZlIG1vc3Rs
+eSBlbXB0aWVkIG15IHB1bGwgcXVldWUgXQ0KPiANCj4gT24gV2VkLCAxMCBKYW4gMjAyNCBhdCAx
+NDo1OCwgRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4N
+Cj4gPiBUaGUgZmlyc3QgY2hlY2sgaW4gX190eXBlc19vaygpIGNhbiBnbywgdGhlIHNlY29uZCBv
+bmUgKHdpdGggdGhlICcrIDAnKQ0KPiA+IChhZGRlZCB0byBwcm9tb3RlIGNoYXIgdG8gaW50KSBp
+bmNsdWRlcyB0aGUgZmlyc3Qgb25lLg0KPiANCj4gVGhhdCB0dXJucyBvdXQgdG8gbm90IGJlIHRy
+dWUuIEFuIGV4cHJlc3Npb24gbGlrZQ0KPiANCj4gICBtaW4odTgsIHVuc2lnbmVkIGludCkNCj4g
+DQo+IGlzIGZpbmUgYmVjYXVzZSB0aGUgdW5kZXJseWluZyB0eXBlcyBhcmUgY29tcGF0aWJsZS4N
+Cj4gDQo+IEJ1dCB0aGUgcHJvbW90aW9uIHRvICdpbnQnIG1ha2VzIHRoZSBmaXJzdCBhcmd1bWVu
+dCBiZSBhIHNpZ25lZA0KPiBpbnRlZ2VyLCBhbmQgaXMgbm8gbG9uZ2VyIGNvbXBhdGlibGUgd2l0
+aCB0aGUgc2Vjb25kIGFyZ3VtZW50Lg0KDQpZZXMsIEkgcmVhbGlzZWQgdGhhdCBhZnRlcndhcmRz
+Lg0KDQpUaGlzIHZlcnNpb24gaXMgbXVjaCBzaW1wbGVyIHRob3VnaC4NCg0KKy8qIEFsbG93IHVu
+c2lnbmVkIGNvbXBhcmVzIGFnYWluc3Qgbm9uLW5lZ2F0aXZlIHNpZ25lZCBjb25zdGFudHMuICov
+DQorI2RlZmluZSBfX2lzX29rX3Vuc2lnbmVkKHgpIFwNCisgICAgICAgKCFpc19zaWduZWRfdHlw
+ZSh0eXBlb2YoeCkpIHx8IChfX2lzX2NvbnN0ZXhwcih4KSA/ICh4KSA+PSAwIDogMCkpDQorDQor
+LyogQ2hlY2sgZm9yIHNpZ25lZCBhZnRlciBwcm9tb3RpbmcgdW5zaWduZWQgY2hhci9zaG9ydCB0
+byBpbnQgKi8NCisjZGVmaW5lIF9faXNfb2tfc2lnbmVkKHgpIGlzX3NpZ25lZF90eXBlKHR5cGVv
+ZigoeCkgKyAwKSkNCisNCisvKiBBbGxvdyBpZiBib3RoIHggYW5kIHkgYXJlIHZhbGlkIGZvciBl
+aXRoZXIgc2lnbmVkIG9yIHVuc2lnbmVkIGNvbXBhcmVzLiAqLw0KKyNkZWZpbmUgX190eXBlc19v
+ayh4LCB5KSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQorICAgICAgICgoX19pc19v
+a19zaWduZWQoeCkgJiYgX19pc19va19zaWduZWQoeSkpIHx8ICAgIFwNCisgICAgICAgIChfX2lz
+X29rX3Vuc2lnbmVkKHgpICYmIF9faXNfb2tfdW5zaWduZWQoeSkpKQ0KDQpBbmQgX1N0YXRjX2Fz
+c2VydCgpIG9ubHkgbmVlZHMgYSBjb21waWxlLXRpbWUgY29uc3RhbnQsIG5vdA0KYSBjb25zdGFu
+dCBleHByZXNzaW9uIC0gc28gbm8gbmVlZCBmb3IgYWxsIHRoZSBfX2J1aWx0aW5fY2hvb3NlX2V4
+cHIoKS4NCg0KSSdsbCBwb3N0IHRoZSBhY3R1YWwgcGF0Y2ggc2VyaWVzIGluIGEgY291cGxlIG9m
+IGRheXMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1s
+ZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJh
+dGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-Where'd the original sign-offs go?
-
-https://lore.kernel.org/linux-arm-msm/20221214232049.703484-1-marijn.suijten@somainline.org/
-
-Thanks taking taking care of this SoC though.  My SM8976 Suzu device finally
-emitted the magic smoke after rebasing on the latest MSM8976 patches, and will
-need board repairs or a replacement before patches can be tested again :(
-
-- Marijn
-
-> ---
->  arch/arm64/boot/dts/qcom/msm8976.dtsi | 100 ++++++++++++++++++++++++++
->  1 file changed, 100 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8976.dtsi b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-> index 765c90ac14cb..5a7be93a0115 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8976.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-> @@ -771,6 +771,96 @@ blsp2_i2c4_sleep: blsp2-i2c4-sleep-state {
->  				drive-strength = <2>;
->  				bias-disable;
->  			};
-> +
-> +			sdc1_default: sdc1-default-state {
-> +				clk-pins {
-> +					pins = "sdc1_clk";
-> +					drive-strength = <16>;
-> +					bias-disable;
-> +				};
-> +
-> +				cmd-pins {
-> +					pins = "sdc1_cmd";
-> +					drive-strength = <10>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				data-pins {
-> +					pins = "sdc1_data";
-> +					drive-strength = <10>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				rclk-pins {
-> +					pins = "sdc1_rclk";
-> +					bias-pull-down;
-> +				};
-> +			};
-> +
-> +			sdc1_sleep: sdc1-sleep-state {
-> +				clk-pins {
-> +					pins = "sdc1_clk";
-> +					drive-strength = <2>;
-> +					bias-disable;
-> +				};
-> +
-> +				cmd-pins {
-> +					pins = "sdc1_cmd";
-> +					drive-strength = <2>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				data-pins {
-> +					pins = "sdc1_data";
-> +					drive-strength = <2>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				rclk-pins {
-> +					pins = "sdc1_rclk";
-> +					bias-pull-down;
-> +				};
-> +			};
-> +
-> +			sdc2_default: sdc2-default-state {
-> +				clk-pins {
-> +					pins = "sdc2_clk";
-> +					drive-strength = <16>;
-> +					bias-disable;
-> +				};
-> +
-> +				cmd-pins {
-> +					pins = "sdc2_cmd";
-> +					drive-strength = <10>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				data-pins {
-> +					pins = "sdc2_data";
-> +					drive-strength = <10>;
-> +					bias-pull-up;
-> +				};
-> +			};
-> +
-> +			sdc2_sleep: sdc2-sleep-state {
-> +				clk-pins {
-> +					pins = "sdc2_clk";
-> +					drive-strength = <2>;
-> +					bias-disable;
-> +				};
-> +
-> +				cmd-pins {
-> +					pins = "sdc2_cmd";
-> +					drive-strength = <2>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				data-pins {
-> +					pins = "sdc2_data";
-> +					drive-strength = <2>;
-> +					bias-pull-up;
-> +				};
-> +			};
->  		};
->  
->  		gcc: clock-controller@1800000 {
-> @@ -1246,6 +1336,11 @@ sdhc_1: mmc@7824900 {
->  				 <&gcc GCC_SDCC1_APPS_CLK>,
->  				 <&rpmcc RPM_SMD_XO_CLK_SRC>;
->  			clock-names = "iface", "core", "xo";
-> +
-> +			pinctrl-0 = <&sdc1_default>;
-> +			pinctrl-1 = <&sdc1_sleep>;
-> +			pinctrl-names = "default", "sleep";
-> +
->  			status = "disabled";
->  		};
->  
-> @@ -1262,6 +1357,11 @@ sdhc_2: mmc@7864900 {
->  				 <&gcc GCC_SDCC2_APPS_CLK>,
->  				 <&rpmcc RPM_SMD_XO_CLK_SRC>;
->  			clock-names = "iface", "core", "xo";
-> +
-> +			pinctrl-0 = <&sdc2_default>;
-> +			pinctrl-1 = <&sdc2_sleep>;
-> +			pinctrl-names = "default", "sleep";
-> +
->  			status = "disabled";
->  		};
->  
-> -- 
-> 2.43.0
-> 
 
