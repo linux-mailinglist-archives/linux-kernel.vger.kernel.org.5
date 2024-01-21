@@ -1,158 +1,174 @@
-Return-Path: <linux-kernel+bounces-32093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 798CF835663
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E027B835668
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:39:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08CD4B22059
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 15:38:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4863FB21F6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 15:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781AE38382;
-	Sun, 21 Jan 2024 15:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8A5376F1;
+	Sun, 21 Jan 2024 15:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SBvRefTY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="A8KQKEVm"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12D6376F2;
-	Sun, 21 Jan 2024 15:37:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F10938F83
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 15:37:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705851430; cv=none; b=irg6hoi4KB+EvdOW+V+eqDXzKkU1awS5yKdiNrDQWzci8X0b/244YELK6W9lxyEGUcmQ9Y8TMn/3Q4zTtD9cu7ggyKp8bbTtFjBuVVFQoL15PfsVMkYAq3ni1f2KeC6KQg0BHDtH2KK9KkGK+4AJ6GqjmnKrHh2dB4tszWRq2s0=
+	t=1705851480; cv=none; b=oA7ejzXtO1I5YQdb1HXF/r1IVbBM/W3vRCFkik1LAP1508vOyHIOwLNpimueQcWfd6lNH1Zs9ihbHlCDRZ7CnTjnVb6pJvT6LcXjTATkautMPe4wbrSYrmKoT8rnCokqSiUHChuZZnCMWCTUGaKu5Qwrq178qr1DjZ6hkZNeV8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705851430; c=relaxed/simple;
-	bh=o9DRoMRGJgeYTuVP+aksfA+RBrVuOJIIhu/hq2XJfI0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rl2NsICS5HETmikOb3+ci7jd6XFKidxn8arm+irxtWyk2mFarxkmM7f8H30/AYasKg12YXH6gbOtBRcTW5XLPL1AVsDX89k/7Bqtbil5sIBiIEwuQiEOLbYdyXU6qkkFlwA9XscTC3RjfSwMyeEAcqnqa/dQs3iyMQoNsqRB8NI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SBvRefTY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57B25C43394;
-	Sun, 21 Jan 2024 15:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705851430;
-	bh=o9DRoMRGJgeYTuVP+aksfA+RBrVuOJIIhu/hq2XJfI0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SBvRefTYDQ7oSyrQ4357cr1D35GquD/G2yLcSCK8Xw3v6g7TQuAPDZGY9ORMNDMIm
-	 oxdjBVMXp5F/Uzzg2TaCVupdsE1mjLsFY3sVNbuV0VnV5FPX1R/Jlm7qOn1+uOVVmE
-	 PgW01O/ZIbcrZIK6yMW1uGddRfamFTjFTTNBKPBip5Z5sUBdK64wgpRmVFpBj5BWaD
-	 iGg+bFW4HkhLj+17hIYQqtA1fDdatj33+TujNPYXnDAdA/Fu+yfnQ8DaINgtH40fUt
-	 L/92GG/5UQnf5J0AVquGA6IJ2COnVgued/gd8CF5sEKmNtTh8Cye3Jki164J5eevum
-	 zu9OFQ81DvoSQ==
-Date: Sun, 21 Jan 2024 15:36:55 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Matti Vaittinen <mazziesaccount@gmail.com>, Andy
- Shevchenko <andriy.shevchenko@linux.intel.com>, Marek Vasut
- <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>, Javier Carrasco
- <javier.carrasco.cruz@gmail.com>, Matt Ranostay <matt@ranostay.sg>, Stefan
- Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] dt-bindings: iio: light: Avago APDS9306
-Message-ID: <20240121153655.5f734180@jic23-huawei>
-In-Reply-To: <20240121051735.32246-3-subhajit.ghosh@tweaklogic.com>
-References: <20240121051735.32246-1-subhajit.ghosh@tweaklogic.com>
-	<20240121051735.32246-3-subhajit.ghosh@tweaklogic.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705851480; c=relaxed/simple;
+	bh=sk89c5wAA9T/eEk0jssFTcZ1m2eTx2B+mBNMYr5joLc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qQYTDKemioj9o1cAU940HrFq/3IO0ASYqEKd46wjXpnz9mLuAt5if52kE+mbV8LMjg6eSfH1JRlpgexFxoQj6GH93/AfUzKlYwOLNsYUIdAtswCUQVdSrhV5bOe94v7HonWjvG+I6FaFkZUqL/2LxWLRDARC05ak346aVPnmo7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=A8KQKEVm; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7163540E01B2;
+	Sun, 21 Jan 2024 15:37:55 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id QxjcWj3ZGZWC; Sun, 21 Jan 2024 15:37:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1705851473; bh=zSxrQvmiuFKpwroAA+fwUMokTVMV35wjeMP3GTqLHvo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A8KQKEVmmfyozyZtGrC0TCKQrRzZb0/O9wkh6sHG5V/j9vKmeBCQFYlhnqeKRyYgG
+	 ejyEAD6OD5tnuUhB7rzAGLwh9wR0r/4l6rd/I5RM9J8TWcFEcRNOk/HAzd2LGFm3SI
+	 5TvRGICkNYeSIJSb3xREMYYmTRfOMUUfdPSHxLjr3hiCi6L3WQ8SpV7LA+fxM6t+k8
+	 PVZ6GZr8zuVxsJCunRWtfIQ2zFZJtTs9BRWKtsmQNPCJ8Cg7froQPHW6SRMv4I7w7b
+	 niUX1q9UE6SfBW+gkvgBdOiMnBjNHWYaQwMAhX3a5kDmgqA+GseckbVgS3gGmDMAqF
+	 nY8OnUK4SpUq5dcVIjLWxKI3TDreLLL+P02n3TO4PumL/1q9lkZTWwJKs6yBvvcTuE
+	 3dWeIuoCi5xT8NE2QSR2wXQQQJWcQ3brKMZaR91n/y1ZeODaaAEiSy/w3TCZ0f7Ub9
+	 Dkv0Iutx6IrbjvW9NNiQligRVhFIH8ClnpLEwyz6kn/uU2TnbxW43r8Sh0U0Bm6KFu
+	 ZEOJJUIdne7C6PSXaTdqDnS8c9zBH/+oAmGcb4d0sy0AQ2RIcNdaymtltcM60I8UaA
+	 bliFNoNOl7f312tOpybQ3I530lF3TqHP2/Z3byBRpmq4/DqWjW8gULDqDudT9nPFQu
+	 BGtkzzAUp2OnQ5X0wrszQRcE=
+Received: from zn.tnic (pd953099d.dip0.t-ipconnect.de [217.83.9.157])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D96C740E0196;
+	Sun, 21 Jan 2024 15:37:08 +0000 (UTC)
+Date: Sun, 21 Jan 2024 16:37:02 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Kevin Loughlin <kevinloughlin@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Pankaj Gupta <pankaj.gupta@amd.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Steve Rutherford <srutherford@google.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Hou Wenlong <houwenlong.hwl@antgroup.com>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Yuntao Wang <ytcoode@gmail.com>,
+	Wang Jinchao <wangjinchao@xfusion.com>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Brian Gerst <brgerst@gmail.com>, Hugh Dickins <hughd@google.com>,
+	Joerg Roedel <jroedel@suse.de>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Brijesh Singh <brijesh.singh@amd.com>,
+	Michael Roth <michael.roth@amd.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	linux-coco@lists.linux.dev, Ashish Kalra <ashish.kalra@amd.com>,
+	Andi Kleen <ak@linux.intel.com>, Adam Dunlap <acdunlap@google.com>,
+	Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>,
+	Sidharth Telang <sidtelang@google.com>
+Subject: Re: [RFC PATCH v2] x86/sev: enforce RIP-relative accesses in early
+ SEV/SME code
+Message-ID: <20240121153702.GAZa06Hvt8b0hQ4LjR@fat_crate.local>
+References: <ZZ7YuEexYSaZYmLK@tassilo>
+ <20240111223650.3502633-1-kevinloughlin@google.com>
+ <20240115204634.GHZaWZqsVyU_fvn_RW@fat_crate.local>
+ <CAMj1kXH=k26nNyB+LQJ7WUJgbD2f3PREyjCzSngMCGc+72XJ6w@mail.gmail.com>
+ <20240117130557.GDZafQtfRyeVFbBUXA@fat_crate.local>
+ <CAMj1kXEML99u7a8mZMhiWXXozsJYhVPaaTzYkegiSJcLw2pNJg@mail.gmail.com>
+ <CAMj1kXGO68zBNXtdxDXbcQ0U7NRFe4m9bF4L_qFmYZ6mkOvmww@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXGO68zBNXtdxDXbcQ0U7NRFe4m9bF4L_qFmYZ6mkOvmww@mail.gmail.com>
 
-On Sun, 21 Jan 2024 15:47:33 +1030
-Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
+On Sun, Jan 21, 2024 at 03:12:56PM +0100, Ard Biesheuvel wrote:
+> My preliminary conclusion confirms that the SEV code is quite
+> problematic in this regard (which is the reason for this patch, so we
+> already knew that, of course).
 
-> Adding device tree support for APDS9306 Ambient Light Sensor.
-> Updating datasheet hyperlinks.
-> Adding interrupt definition macro and header file.
+So we can try to improve the situation gradually so that we don't
+break current usages.
 
-This is an unrelated change, so should probably be in a separate patch.
+> TL;DR I think we will need a way to build certain objects with -fPIC
+> (as we do in other places and on other architectures), but we should
+> add instrumentation to ensure that these issues can be detected at
+> build time. The SEV boot code is especially tricky here as very few
+> people can even test it,
 
-> Adding vdd-supply property.
+No worries about that - us, the Google cloud folks, AWS and a bunch of
+others are people I could think of who could help out. :-)
 
-This one is reasonable to have in same patch as the new device addition
-as, whilst I assume it's valid for the existing devices, you are adding it
-to incorporate something that device also has.
-Could also be a separate precursor patch.
+> so applying this patch and hoping that the compiler will never
+> generate reachable code paths that only work correctly when executed
+> via the ordinary kernel virtual mapping is not sufficient.
 
-> 
-> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-> ---
-> v2 -> v5:
->  - Implemented changes as per previous reviews:
->    Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
->    Link: https://lore.kernel.org/lkml/22e9e5e9-d26a-46e9-8986-5062bbfd72ec@linaro.org/
-> ---
->  .../bindings/iio/light/avago,apds9300.yaml        | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> index c610780346e8..bee73a590424 100644
-> --- a/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> +++ b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> @@ -4,19 +4,21 @@
->  $id: http://devicetree.org/schemas/iio/light/avago,apds9300.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
->  
-> -title: Avago Gesture/RGB/ALS/Proximity sensors
-> +title: Avago (Broadcom) Gesture/RGB/ALS/Proximity sensors
->  
->  maintainers:
->    - Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
->  
->  description: |
-> -  Datasheet: https://www.avagotech.com/docs/AV02-1077EN
-> -  Datasheet: https://www.avagotech.com/docs/AV02-4191EN
-> +  Datasheet: https://docs.broadcom.com/doc/AV02-1077EN
-> +  Datasheet: https://docs.broadcom.com/doc/AV02-4191EN
-> +  Datasheet: https://docs.broadcom.com/doc/AV02-4755EN
+..
 
-Old links seem to still work, so why the change?
+> 1)
+> WARNING: modpost: vmlinux: section mismatch in reference:
+> startup_64_pi+0x33 (section: .pi.text) -> sme_enable (section:
+> .init.text)
 
->  
->  properties:
->    compatible:
->      enum:
->        - avago,apds9300
-> +      - avago,apds9306
->        - avago,apds9960
->  
->    reg:
-> @@ -25,6 +27,8 @@ properties:
->    interrupts:
->      maxItems: 1
->  
-> +  vdd-supply: true
-> +
->  additionalProperties: false
->  
->  required:
-> @@ -33,6 +37,8 @@ required:
->  
->  examples:
->    - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
->      i2c {
->          #address-cells = <1>;
->          #size-cells = <0>;
-> @@ -41,7 +47,8 @@ examples:
->              compatible = "avago,apds9300";
->              reg = <0x39>;
->              interrupt-parent = <&gpio2>;
-> -            interrupts = <29 8>;
-> +            interrupts = <29 IRQ_TYPE_LEVEL_LOW>;
-> +            vdd-supply = <&regulator_3v3>;
->          };
->      };
->  ...
+sme_enable() is in the 1:1 mapping TU
+arch/x86/mm/mem_encrypt_identity.c, see
 
+  1cd9c22fee3a ("x86/mm/encrypt: Move page table helpers into separate translation unit")
+
+so might as well move it to .pi.text
+
+The rest below look like they'd need more serious untangling.
+
+Btw, I just had another idea: we could remove -mcmodel=kernel from the
+build flags of the whole kernel once -fPIC is enabled so that gcc can be
+forced to do rIP-relative addressing.
+
+I'm being told the reason it doesn't allow mcmodel=kernel with -fPIC is
+only a matter of removing that check and that it *should* otherwise work
+but someone needs to try that. And then there are older gccs which we
+cannot fix.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
