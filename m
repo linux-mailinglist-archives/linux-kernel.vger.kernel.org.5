@@ -1,211 +1,148 @@
-Return-Path: <linux-kernel+bounces-32077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA6BC83562B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 15:39:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66EF0835639
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:07:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FEC5B227D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 14:39:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D24241F22E1E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 15:07:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E97374FB;
-	Sun, 21 Jan 2024 14:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PGh8wUsG"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEFA374FE;
+	Sun, 21 Jan 2024 15:07:39 +0000 (UTC)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C8337179
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 14:39:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B362628C;
+	Sun, 21 Jan 2024 15:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705847974; cv=none; b=i/3ULquImmWEVTOhEj6uu2r9IEdcZi5D1W6qWAE/bAqcTBfixyoVoB+dkrTmokjgCyQC6yCNW06Erg/1qkVtX/SHXV7XdAPcrksmzfnseAWYV2XSehnO3mJskuEOjboq3Nq/yFh8githKZ160MXmbhLAe61dt6p/y6rO7fyugQA=
+	t=1705849659; cv=none; b=QwSMA+LM3dzLLNDGghxD0XjhOaezfF5tvYkaa/JODC4Ovut13MQvRbZGXB5FSyTCLdCTPnawKl5pcIYsKQ87jJnwP15I0DB4fYsyMSWkXBkkAbhqIaBpQN8anINKK9mN/nY5SbzlZ/HGVLqIijniOc/LPiI/3FDvGX8OsrHeJcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705847974; c=relaxed/simple;
-	bh=WPNSMifYsEXOyV0y7N1voCjLcd8T8PE8xewtQnv81gY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P+H+455+nfOSMMJWbfkoT49KvEaEVhQ09WU4YhSgw1fzFLl4kbnvFbEWWaOYj7vGiCSzEe1vL5fOusjVqRGMY8NfM2EIxWp9wciKefZ4Prh4nbUbsasVoNrv/qzjXr0SIbXM8UVHvrbJElK22UAYFYTBy9lYi3B6D+uB0iiIMiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PGh8wUsG; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705847971;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zGuA+kzxGPPLBUwgOuRhdYnF6wAZDujDr4dgpXU2wo0=;
-	b=PGh8wUsGVE/5KfbnqwteK8ECny59iMJp3jmb5s7tH1S7hyH8Qz5ZTqG1TMUAVyIWpdW6Nf
-	zUdLwkNc3MXE186539Fd/GLW+5+qeJza8bI82ohoke5e1DQLq5TPPoetn5l+qKyogf5zws
-	nJueIAdke67uLj+ABtaRIIGlDb/GvTQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-581-g6j3fD8CMLuv7abDc7489w-1; Sun, 21 Jan 2024 09:39:29 -0500
-X-MC-Unique: g6j3fD8CMLuv7abDc7489w-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a29bb25df84so102119466b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 06:39:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705847968; x=1706452768;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zGuA+kzxGPPLBUwgOuRhdYnF6wAZDujDr4dgpXU2wo0=;
-        b=VXbIHyPBb8InJOsXnaVAawWgOQMVEw1uS7M2Km/DkRO+gF+uV78tLjx2Mft+uCadMq
-         G4gymnqfSyRntM4rzTGjnRujxbFExjlHhP3kIe3LM/NCnEiqFEAnWd3+GPBwF1tV0A6c
-         MrMzz24ULsTIPyNTdHGWy2Qb4aIXIqxRNeISYrqZIIlq0ZhHL6sMEKPJpTT7GtQYblgH
-         wnRSgYqePKMZGzzC1Oz2OorWvWq/4JkfkYN8mS4VSRtU7warcKYuz/RXh2s+mJrZGSKg
-         o1Lmyq40cpATjyQAyaB5taYEiConqaapCjKFx6PiV52xxNkU9Fypd7ymYirU3glhy6AL
-         yKVg==
-X-Gm-Message-State: AOJu0YxDl2z/uMAHDvb1JqyWHpeDOikqzgwUD6+urL+AU+b7UJOL+tX8
-	+6Fx+n8/EcVVQNU+T5NMibADH9+OucmXy3fwQMAzW2SIFwdEBiv2A0OlBiUmeGTqHyZcGwKYkBL
-	48f0q4pidmuvn/UCnR1YAeVFNbVApjr80XeE6HQ/I8w6GbZIFd6biWLANFJbjkw==
-X-Received: by 2002:a17:906:7b82:b0:a2f:e18:fae3 with SMTP id s2-20020a1709067b8200b00a2f0e18fae3mr1421564ejo.41.1705847968066;
-        Sun, 21 Jan 2024 06:39:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEiDioSRGlpSzhS69cHuRvvDoJ/IoumA6Cmd6yusgVq3OSrViqDkb1/9mJIOh0K19HfIJJSqA==
-X-Received: by 2002:a17:906:7b82:b0:a2f:e18:fae3 with SMTP id s2-20020a1709067b8200b00a2f0e18fae3mr1421561ejo.41.1705847967678;
-        Sun, 21 Jan 2024 06:39:27 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id vk6-20020a170907cbc600b00a2ecec00a88sm5414771ejc.99.2024.01.21.06.39.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jan 2024 06:39:27 -0800 (PST)
-Message-ID: <55f73df1-c735-4cd5-8516-48cd18b23619@redhat.com>
-Date: Sun, 21 Jan 2024 15:39:26 +0100
+	s=arc-20240116; t=1705849659; c=relaxed/simple;
+	bh=0vf7nfJn7HrAvHOdgIzLADBW0X0/fBnQZXV99GsYa28=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gdvGtpdH3a/lQ3458lwPnn2upS575sA1TNNRklx5x0CuGQvD79qby1wFkK5BH5p1+CS79zNhDVsVCPgxq28Bbh37m53B/32PHp5u+TmwJHCze/GyEl3gHIp9p+tCqllppUDwnLzZNl0+HRQFJdXb/5mhz0i6QAt+dk/2SwFmVYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 4374282E39;
+	Sun, 21 Jan 2024 16:07:31 +0100 (CET)
+From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Lee Jones <lee@kernel.org>, Daniel Thompson <daniel.thompson@linaro.org>,
+ Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>,
+ Karel Balej <balejk@matfyz.cz>, ~postmarketos/upstreaming@lists.sr.ht,
+ phone-devel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] leds: ktd2692: move ExpressWire code to library
+Date: Sun, 21 Jan 2024 16:06:53 +0100
+Message-ID: <5747658.DvuYhMxLoT@radijator>
+In-Reply-To:
+ <CACRpkdZJyY9oYMt3TvDEGthN-Wvz3t_40t9P-VsgTKCJQaD=pw@mail.gmail.com>
+References:
+ <20240120-ktd2801-v3-0-fe2cbafffb21@skole.hr>
+ <20240120-ktd2801-v3-1-fe2cbafffb21@skole.hr>
+ <CACRpkdZJyY9oYMt3TvDEGthN-Wvz3t_40t9P-VsgTKCJQaD=pw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: PS/2 keyboard of laptop Dell XPS 13 9360 goes missing after S3
-Content-Language: en-US, nl
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
- Dell.Client.Kernel@dell.com, regressions@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
- <f27b491c-2f1c-4e68-804c-24eeaa8d10de@redhat.com>
- <0b30c88a-6f0c-447f-a08e-29a2a0256c1b@molgen.mpg.de>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <0b30c88a-6f0c-447f-a08e-29a2a0256c1b@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Autocrypt: addr=duje.mihanovic@skole.hr;
+ keydata=
+ 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
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Paul,
+On Sunday, January 21, 2024 3:35:46 PM CET Linus Walleij wrote:
+> > +extern void expresswire_power_off(struct expresswire_common_props 
+*props);
+> > +extern void expresswire_enable(struct expresswire_common_props *props);
+> > +extern void expresswire_start(struct expresswire_common_props *props);
+> > +extern void expresswire_end(struct expresswire_common_props *props);
+> > +extern void expresswire_set_bit(struct expresswire_common_props *props,
+> > bool bit);
+> I would skip the keyword "extern" since it is default I think even
+> checkpatch complains about it these days?
 
-On 1/21/24 15:26, Paul Menzel wrote:
-> Dear Hans,
-> 
-> 
-> As always thank you very much for taking the time to reply.
-> 
-> 
-> Am 20.01.24 um 21:26 schrieb Hans de Goede:
-> 
->> On 1/18/24 13:57, Paul Menzel wrote:
->>> #regzbot introduced v6.6.11..v6.7
-> 
->>> There seems to be a regression in Linux 6.7 on the Dell XPS 13 9360 (Intel i7-7500U).
->>>
->>>      [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
->>>
->>> The PS/2 keyboard goes missing after S3 resume¹. The problem does not happen with Linux 6.6.11.
->>
->> Thank you for reporting this.
->>
->> Can you try adding "i8042.dumbkbd=1" to your kernel commandline?
->>
->> This should at least lead to the device not disappearing from
->>
->> "sudo libinput list-devices"
->>
->> The next question is if the keyboard will still actually
->> work after suspend/resume with "i8042.dumbkbd=1". If it
->> stays in the list, but no longer works then there is
->> a problem with the i8042 controller; or interrupt
->> delivery to the i8042 controller.
->>
->> If "i8042.dumbkbd=1" somehow fully fixes things, then I guess
->> my atkbd driver fix for other laptop keyboards is somehow
->> causing issues for yours.
-> 
-> Just a quick feedback, that booting with `i8042.dumbkbd=1` seems to fix the issue.
-> 
->> If "i8042.dumbkbd=1" fully fixes things, can you try building
->> your own 6.7.0 kernel with commit 936e4d49ecbc:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=936e4d49ecbc8c404790504386e1422b599dec39
->>
->> reverted?
-> 
-> I am going to try that as soon as possible.
+Doesn't seem to, I tried it myself:
 
-Ok, thank you.
+$ git format-patch HEAD~3
+0001-leds-ktd2692-move-ExpressWire-code-to-library.patch
+0002-dt-bindings-backlight-add-Kinetic-KTD2801-binding.patch
+0003-backlight-Add-Kinetic-KTD2801-backlight-support.patch
+$ ./scripts/checkpatch.pl 0001-leds-ktd2692-move-ExpressWire-code-to-
+library.patch            
+total: 0 errors, 0 warnings, 291 lines checked
 
-I'm a bit surprised that my fix which skips sending
-the getid command to the kbd during init would actually
-cause this issue.
+0001-leds-ktd2692-move-ExpressWire-code-to-library.patch has no obvious style 
+problems and is ready for submission.
 
-Can you retest with an unmodified 6.7.0 to make sure
-that this was not some onetime glitch ?
+I'll keep that in mind if a v4 is needed though.
 
 Regards,
-
-Hans
-
-
+--
+Duje
 
 
-
->>>      [    1.435071] i8042: PNP: PS/2 Controller [PNP0303:PS2K,PNP0f13:PS2M] at 0x60,0x64 irq 1,12
->>>      [    1.435409] i8042: Warning: Keylock active
->>>      [    1.437624] serio: i8042 KBD port at 0x60,0x64 irq 1
->>>      [    1.437631] serio: i8042 AUX port at 0x60,0x64 irq 12
->>>      […]
->>>      [    1.439743] input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input0
->>>
->>>      $ sudo libinput list-devices
->>>      […]
->>>      Device:           AT Translated Set 2 keyboard
->>>      Kernel:           /dev/input/event0
->>>      Group:            15
->>>      Seat:             seat0, default
->>>      Capabilities:     keyboard
->>>      Tap-to-click:     n/a
->>>      Tap-and-drag:     n/a
->>>      Tap drag lock:    n/a
->>>      Left-handed:      n/a
->>>      Nat.scrolling:    n/a
->>>      Middle emulation: n/a
->>>      Calibration:      n/a
->>>      Scroll methods:   none
->>>      Click methods:    none
->>>      Disable-w-typing: n/a
->>>      Disable-w-trackpointing: n/a
->>>      Accel profiles:   n/a
->>>      Rotation:         0.0
->>>
->>> `libinput list-devices` does not list the device after resuming
->>> from S3. Some of the function keys, like brightness and airplane
->>> mode keys, still work, as the events are probably transmitted over
->>> the embedded controller or some other mechanism. An external USB
->>> keyboard also still works.
->>>
->>> I haven’t had time to further analyze this, but wanted to report
->>> it. No idea
->>>
->>>
->>> Kind regards,
->>>
->>> Paul
->>>
->>>
->>> ¹ s2idle is not working correctly on the device, in the sense, that
->>> energy usage is very high in that state, and the full battery is at
->>> 20 % after leaving it for eight hours.
-> 
 
 
