@@ -1,190 +1,116 @@
-Return-Path: <linux-kernel+bounces-32187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8A718357CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 21:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6BDA8357DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:12:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 974051C211BA
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:42:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8C101C20BB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 21:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4875E39859;
-	Sun, 21 Jan 2024 20:41:50 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218B438FA3;
-	Sun, 21 Jan 2024 20:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A17438DE0;
+	Sun, 21 Jan 2024 21:11:54 +0000 (UTC)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84625381DC;
+	Sun, 21 Jan 2024 21:11:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705869709; cv=none; b=Ie+OwxdCkjOWLIScxvvCltFl/2ffm5DJpMJSPlhKruFl3npVfMOLVhYhoYc9CnFJ59Spn+YBWYL+v25YFOeLxnSF2hYLwBjF/aYsWeczkmWeol6qV7xpKEUDX7J+KYnF9H/FUc3i6p9zsNAQk+kHLtHuQmJQMKIrt3YMDdt3v2I=
+	t=1705871513; cv=none; b=e1BqUmfIuLrAL00CDxMt8YFUBMD87vKvi0UmOh4L9uvQo8wdhkTjwwDRdRabbVM6kQX8hoKo8x1bGHEz6qJm4SuIQoD66+m5dO3FJScz9BlzkNXSGiLgGIzi6BYyoULmEtcGsNuk9LDB59LT/x9vqgWLwkgJxRNmVbSGXDQJazY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705869709; c=relaxed/simple;
-	bh=525/nQ/RCbmWlPgDj+Mt2E13AsRmF5QqZ/hM3AZ3pkE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=k6ilXTQ2clGQhErg+yKDoodBjh5v47Ov7OH9+0ZcRM6UQAs42aigclOOO2mYRpP85gahg4bkMGR439HH3Wwmk2//QTLgyRIWCz98yq3uIE0Q2HNS6lGDsVtFW7Ci1ufbrz4PZaHOsZgmqbGD8DoiuUMuR3oh7ctisVRgtJjdaQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id D281E1402E4; Sun, 21 Jan 2024 21:41:45 +0100 (CET)
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-usb@vger.kernel.org
-Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
-	Dell.Client.Kernel@dell.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Jack Pham <quic_jackp@quicinc.com>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	=?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] usb: ucsi_acpi: Quirk to ack a connector change ack cmd
-Date: Sun, 21 Jan 2024 21:41:23 +0100
-Message-Id: <20240121204123.275441-4-lk@c--e.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240121204123.275441-1-lk@c--e.de>
-References: <20240121204123.275441-1-lk@c--e.de>
+	s=arc-20240116; t=1705871513; c=relaxed/simple;
+	bh=otOwVFhN9BfjL4K3Po0fXUsJpt+/JO+cvNKKpgo5aKY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=rFm8bA+Ma52fHtg7vcij3e4BZovkAEsMqICnELxt+OzrRBzysBJjjv3PmL5LN/YnwEiT4nzJjZ4vQcftK3JMKnYA974Pj3cn6tm1uTD26MO/OxkT3TFeYOE3m0anUC8v+WX2CzLCSs+QZLnuTFz4ZhWCVsXvpkuixjDWSP8dPSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id E7A6C844EC;
+	Sun, 21 Jan 2024 22:11:46 +0100 (CET)
+From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Date: Sun, 21 Jan 2024 22:11:00 +0100
+Subject: [PATCH] Input - 88pm80x_onkey: add SPDX and drop GPL boilerplate
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Message-Id: <20240121-88pm80x-onkey-spdx-v1-1-b646d4749f5b@skole.hr>
+X-B4-Tracking: v=1; b=H4sIAGOIrWUC/x3MQQqAIBBA0avErBtQsZq6SrSImmqITBTCiO6et
+ HyL/x+IHIQjdMUDgS+JcroMXRYwbaNbGWXOBqOMVdpoJPIHqYSn2/nG6OeEpplU1S41EVnIoQ+
+ 8SPqn/fC+H7sTeDBkAAAA
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1648;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=otOwVFhN9BfjL4K3Po0fXUsJpt+/JO+cvNKKpgo5aKY=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlrYhtTPZRUI09tm+zogjqmzGruDaqzkqcVAPlR
+ gYCPGM+lymJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZa2IbQAKCRCaEZ6wQi2W
+ 4cudD/0Q9HF+pXYPIC8iqWmDKeYyB4vLnYpulp/4UeRerww11Prq0zrf7oJVjetIuqGROgHhpbR
+ LRsVBwHFcb0P/rGxp+ofldYWl5T038Z30Sek0zjmdRkd65njEJeXTiNXnxGseoQ2OtRYRNd4q+u
+ Q5528j3LLssC7tPiF3ByS5vBCIEwlnn60JBmpE/S8Z1gN9B7wNJUftFiQYc1RNPDlg7vNPf5gL5
+ WmUvKolLxNzu4IGYyfkykpgvmbBeZq36AZLKyugGZiKD8w7JPABEsUVPmYGfJU8zI1CY/iSqT0U
+ V8SZAeaZa0jqb2wghPzskkUKEs6msA6jbQVQsYTsAzXkk3IqV2VOZqu4r9NpO8hkwe3hXenyca/
+ oa1H3AYQnOn1e8PI+DMpyAFblQGWAWEYAQFB0Tw97pZl+wCd54kS4zaeKGKDOHMerkPKJPOGz02
+ JtvxpUEXPydXGGwjgKYbS30HkNmm158mlWk0ozFVAy5ycmzANYz7zlnLqwGnBChZzEohmMIBSca
+ R0IKkCroqwsfXJvIVLq8vgjaxqiOWz2yHtdsD52R5ObbSQAQRj3RIw2KN4Z+fIz9y8Mdpk6MW4q
+ EkuNjeAfk8y+AKLKvIq4aq5i/jvM0iMfGHsSgEGFoXPWylnRHX4hhMZh880/Hmzq4xo3LjTUYlx
+ kC07O5C/eTmz63w==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-The PPM on some Dell laptops seems to expect that the ACK_CC_CI
-command to clear the connector change notification is in turn
-followed by another ACK_CC_CI to acknowledge the ACK_CC_CI command
-itself. This is in violation of the UCSI spec that states:
+Add a SPDX-License-Identifier to the 88PM80x onkey driver and drop the
+GPL boilerplate in accordance with current kernel code guidelines.
 
-    "The only notification that is not acknowledged by the OPM is
-     the command completion notification for the ACK_CC_CI or the
-     PPM_RESET command."
-
-Add a quirk to send this ack anyway.
-Apply the quirk to all Dell systems.
-
-On the first command that acks a connector change send a dummy
-command to determine if it runs into a timeout. Only activate
-the quirk if it does. This ensure that we do not break Dell
-systems that do not need the quirk.
-
-Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- drivers/usb/typec/ucsi/ucsi_acpi.c | 71 ++++++++++++++++++++++++++++--
- 1 file changed, 68 insertions(+), 3 deletions(-)
+ drivers/input/misc/88pm80x_onkey.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucsi/ucsi_acpi.c
-index fa222080887d..928eacbeb21a 100644
---- a/drivers/usb/typec/ucsi/ucsi_acpi.c
-+++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
-@@ -25,6 +25,8 @@ struct ucsi_acpi {
- 	unsigned long flags;
- 	guid_t guid;
- 	u64 cmd;
-+	bool dell_quirk_probed;
-+	bool dell_quirk_active;
- };
+diff --git a/drivers/input/misc/88pm80x_onkey.c b/drivers/input/misc/88pm80x_onkey.c
+index 31f0702c3d01..4b0685f96113 100644
+--- a/drivers/input/misc/88pm80x_onkey.c
++++ b/drivers/input/misc/88pm80x_onkey.c
+@@ -1,22 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Marvell 88PM80x ONKEY driver
+  *
+  * Copyright (C) 2012 Marvell International Ltd.
+  * Haojian Zhuang <haojian.zhuang@marvell.com>
+  * Qiao Zhou <zhouqiao@marvell.com>
+- *
+- * This file is subject to the terms and conditions of the GNU General
+- * Public License. See the file "COPYING" in the main directory of this
+- * archive for more details.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  */
  
- static int ucsi_acpi_dsm(struct ucsi_acpi *ua, int func)
-@@ -126,12 +128,73 @@ static const struct ucsi_operations ucsi_zenbook_ops = {
- 	.async_write = ucsi_acpi_async_write
- };
- 
--static const struct dmi_system_id zenbook_dmi_id[] = {
-+/*
-+ * Some Dell laptops expect that an ACK command with the
-+ * UCSI_ACK_CONNECTOR_CHANGE bit set is followed by a (separate)
-+ * ACK command that only has the UCSI_ACK_COMMAND_COMPLETE bit set.
-+ * If this is not done events are not delivered to OSPM and
-+ * subsequent commands will timeout.
-+ */
-+static int
-+ucsi_dell_sync_write(struct ucsi *ucsi, unsigned int offset,
-+		     const void *val, size_t val_len)
-+{
-+	struct ucsi_acpi *ua = ucsi_get_drvdata(ucsi);
-+	u64 cmd = *(u64 *)val, ack = 0;
-+	int ret;
-+
-+	if (UCSI_COMMAND(cmd) == UCSI_ACK_CC_CI &&
-+	    cmd & UCSI_ACK_CONNECTOR_CHANGE)
-+		ack = UCSI_ACK_CC_CI | UCSI_ACK_COMMAND_COMPLETE;
-+
-+	ret = ucsi_acpi_sync_write(ucsi, offset, val, val_len);
-+	if (ret != 0)
-+		return ret;
-+	if (ack == 0)
-+		return ret;
-+
-+	if (!ua->dell_quirk_probed) {
-+		ua->dell_quirk_probed = true;
-+
-+		cmd = UCSI_GET_CAPABILITY;
-+		ret = ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &cmd,
-+					   sizeof(cmd));
-+		if (ret == 0)
-+			return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL,
-+						    &ack, sizeof(ack));
-+		if (ret != -ETIMEDOUT)
-+			return ret;
-+
-+		ua->dell_quirk_active = true;
-+		dev_err(ua->dev, "Firmware bug: Additional ACK required after ACKing a connector change.\n");
-+		dev_err(ua->dev, "Firmware bug: Enabling workaround\n");
-+	}
-+
-+	if (!ua->dell_quirk_active)
-+		return ret;
-+
-+	return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &ack, sizeof(ack));
-+}
-+
-+static const struct ucsi_operations ucsi_dell_ops = {
-+	.read = ucsi_acpi_read,
-+	.sync_write = ucsi_dell_sync_write,
-+	.async_write = ucsi_acpi_async_write
-+};
-+
-+static const struct dmi_system_id ucsi_acpi_quirks[] = {
- 	{
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "ZenBook UX325UA_UM325UA"),
- 		},
-+		.driver_data = (void *)&ucsi_zenbook_ops,
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+		},
-+		.driver_data = (void *)&ucsi_dell_ops,
- 	},
- 	{ }
- };
-@@ -160,6 +223,7 @@ static int ucsi_acpi_probe(struct platform_device *pdev)
- {
- 	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
- 	const struct ucsi_operations *ops = &ucsi_acpi_ops;
-+	const struct dmi_system_id *id;
- 	struct ucsi_acpi *ua;
- 	struct resource *res;
- 	acpi_status status;
-@@ -189,8 +253,9 @@ static int ucsi_acpi_probe(struct platform_device *pdev)
- 	init_completion(&ua->complete);
- 	ua->dev = &pdev->dev;
- 
--	if (dmi_check_system(zenbook_dmi_id))
--		ops = &ucsi_zenbook_ops;
-+	id = dmi_first_match(ucsi_acpi_quirks);
-+	if (id)
-+		ops = id->driver_data;
- 
- 	ua->ucsi = ucsi_create(&pdev->dev, ops);
- 	if (IS_ERR(ua->ucsi))
+ #include <linux/kernel.h>
+
+---
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+change-id: 20240121-88pm80x-onkey-spdx-27c059f68884
+
+Best regards,
 -- 
-2.40.1
+Duje Mihanović <duje.mihanovic@skole.hr>
+
 
 
