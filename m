@@ -1,115 +1,143 @@
-Return-Path: <linux-kernel+bounces-32143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D63F835725
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:42:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4833883572A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:51:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 807CE1C20C1C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:42:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DA25B21B64
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:51:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EC0381D4;
-	Sun, 21 Jan 2024 17:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85FF3381D6;
+	Sun, 21 Jan 2024 17:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SAnE/LP1"
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZItkOn+b"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C7C381C7
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 17:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1124381B2;
+	Sun, 21 Jan 2024 17:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705858921; cv=none; b=iAG5N3COywF1mGb5dUMgT1pwQ7iyh/uwP6xbbQmB8zBPgJYdyDuCvKDu5uN53nP7kj7NXfsHH5wSGOgINgz7e/JA1XGLDKmHk3/aQf4TWNgLyZJWma+nrfGb3jddoSb8joBo5L5gA12avLHA+B1PbpP5zNTo+2M1G9lOCS8PnBs=
+	t=1705859462; cv=none; b=cjHeNsb4fQ14cg1pjVbJ4CR33DiBfEnktF5NiMlRHzdgvw0FYUhwkEyjoCe8iWe6UK9BvdhF1lNVVPoald7CMAGdtN1osQVmMvVoCfhjkgfNAL0GPTHOb+YCZ4fG2MFKwlmF8C+W3WsO4T+CrYoEPR7aNjzXqiAeo7KzJObE/Io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705858921; c=relaxed/simple;
-	bh=N2g0NHGKWWZmb/qlzQ163FWOfAKGzGlUYORWKPpiytI=;
+	s=arc-20240116; t=1705859462; c=relaxed/simple;
+	bh=S2b2p/D2DNsbjy01O3hEZtYO4Xn+sshl3AvTraPHDG4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I+etJqK0Gcp8wKyyFVAHb9qunCyE/IonGo8JqiGrBmpuXI+2tSIC52GZ0IcbwI1CF5thqNjZF7RFjr6HWcxK1/ahaEmvAF71qlPyekNFj2d0UIZVWFXQ3MAxeGk5hJy1HBMEm8dlNTQP1iA/S+D72FPef1eCxvwPEnuSqcz0yqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SAnE/LP1; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sun, 21 Jan 2024 12:41:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705858918;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zEZ5U22ZGrF+dm4NBxH8Qr8fPO+NuB0IQfzMnXwEl2I=;
-	b=SAnE/LP1jwOwzXFkLVsJ3sKoqSTNCqYfTEYCKAmoFk1FmHnZ26Iz4mV15j37lFPDee+j3n
-	sgRxhokF3swjiFCXQMxWTxwVZP3QhEUF+rp94gIAEpt0o4e6y/XV2kDywFSZTWBKXPT5wK
-	JqXTf9UqF55p7CtlVOD/ol70LJ9tJIM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, bfoster@redhat.com, jserv@ccns.ncku.edu.tw, 
-	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 0/5] Optimize number of comparisons for heap/heapsort
- implementaion
-Message-ID: <ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu>
-References: <20240121153649.2733274-1-visitorckw@gmail.com>
- <nl6kvjxg4gia5pbfb4jibxusvavmlwumrvy3swfs33ciub32wt@2kmeqnqycxxh>
- <Za1Ml/ZUBXdYXOIt@visitorckw-System-Product-Name>
+	 Content-Type:Content-Disposition:In-Reply-To; b=W4Q1ZK7Lbs7wKGjGP3MRPZ5LZgnyrHKYUSA+/GK86iWxP7CyPk/QJOVC3GG5mk0MGaA8Y2J90ZN8WAPRgdnudW5VTRp/QegjA1Ex43g+0TBOocWLCe0hvrxssbA2slDrA1a2K5KYRXzIe4pW/cZp5p8T7XWlm8j5tUcwHAdvXXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZItkOn+b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F017AC433C7;
+	Sun, 21 Jan 2024 17:50:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705859462;
+	bh=S2b2p/D2DNsbjy01O3hEZtYO4Xn+sshl3AvTraPHDG4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZItkOn+b56ZHJYmcWMaPMMn+yRtStVFTj8GE5pxMCokoOm+Q24SwIJidnN7IEftlq
+	 7wUBwo/LP5Od8SixrDZKqFo+TRMGixpPL5afTrga1E1aTrp50VHsX6EZZaXmUsubh6
+	 UmJA8e9EKikw8PUr7YfuBhQmH8yerCLtX42u5W+CiVdyTcp4ksmdJSIar2GgtYg3VM
+	 ScZh0MxE3QA9pI9c0t3s+twqsYCjlxx3hyMmyA0x+yneN1aoCgRfhcdD5gLZi+iZqT
+	 OuCSpZlPYqzXJ37pE4a1bGmwpSaxuUky55iJGdCYhKvWKjnu/gawMXrXRpwccYSpeT
+	 C1wUVRnDDoJvQ==
+Date: Sun, 21 Jan 2024 18:50:57 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: mszeredi@redhat.com, stgraber@stgraber.org, 
+	linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	Bernd Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/9] fuse: basic support for idmapped mounts
+Message-ID: <20240121-pfeffer-erkranken-f32c63956aac@brauner>
+References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Za1Ml/ZUBXdYXOIt@visitorckw-System-Product-Name>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
 
-On Mon, Jan 22, 2024 at 12:55:51AM +0800, Kuan-Wei Chiu wrote:
-> On Sun, Jan 21, 2024 at 11:21:06AM -0500, Kent Overstreet wrote:
-> > On Sun, Jan 21, 2024 at 11:36:44PM +0800, Kuan-Wei Chiu wrote:
-> > > Hello,
-> > > 
-> > > The existing implementations of heap/heapsort follow the conventional
-> > > textbook approach, where each heapify operation requires approximately
-> > > 2*log2(n) comparisons. In this series, I introduce a bottom-up variant
-> > > that reduces the number of comparisons during heapify operations to
-> > > approximately log2(n), while maintaining the same number of swap
-> > > operations.
-> > > 
-> > > Thanks,
-> > > Kuan-Wei
-> > > 
-> > > Kuan-Wei Chiu (5):
-> > >   bcachefs: Optimize eytzinger0_sort() using bottom-up heapsort
-> > >   bcachefs: Introduce parent function for sort_cmp_size()
-> > >   bcachefs: Optimize sort_cmp_size() using bottom-up heapsort
-> > >   bcachefs: Optimize number of comparisons in heap_sift_down
-> > >   bcache: Optimize number of comparisons in heap_sift
-> > > 
-> > >  drivers/md/bcache/util.h |  23 +++++----
-> > >  fs/bcachefs/util.c       | 109 ++++++++++++++++++++++++++-------------
-> > >  fs/bcachefs/util.h       |  23 +++++----
-> > >  3 files changed, 98 insertions(+), 57 deletions(-)
-> > 
-> > Good stuff
-> > 
-> > While we're looking at this code, we should be doing some cleanup too -
-> > there's no reason for the heap code to be duplicated in bcache and
-> > bcachefs anymore, and it'd also be nice to get fs/bcachefs/eytzinger.h
-> > moved to include/linux and bcache converted to use it.
-> > 
-> > I also would not be surprised if there's another heap implementation in
-> > include/linux; we'll want to check for that and if there is decide which
-> > is worth keeping.
-> >
-> Yes, we have 'min_heap.h' in include/linux.
+On Mon, Jan 08, 2024 at 01:08:15PM +0100, Alexander Mikhalitsyn wrote:
+> Dear friends,
+> 
+> This patch series aimed to provide support for idmapped mounts
+> for fuse. We already have idmapped mounts support for almost all
+> widely-used filesystems:
+> * local (ext4, btrfs, xfs, fat, vfat, ntfs3, squashfs, f2fs, erofs, ZFS (out-of-tree))
+> * network (ceph)
+> 
+> Git tree (based on https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git/log/?h=for-next):
+> v1: https://github.com/mihalicyn/linux/commits/fuse_idmapped_mounts.v1
+> current: https://github.com/mihalicyn/linux/commits/fuse_idmapped_mounts
 
-So that has the advantage of more readable code - functions instead of
-macros - whereas my version has the type safe interface.
+Great work!
 
-We could combine the two approaches, and put a type-safe interface on
-top of the min_heap.h code with some small macro wrappers - see
-generic-radix-tree.h for an example of how that's done.
+> Things to discuss:
+> - we enable idmapped mounts support only if "default_permissions" mode is enabled,
+> because otherwise, we would need to deal with UID/GID mappings on the userspace side OR
+> provide the userspace with idmapped req->in.h.uid/req->in.h.gid values which is not
+> something that we probably want to do. Idmapped mounts philosophy is not about faking
+> caller uid/gid.
 
-min_heap.h has only one user though? I don't think I can quite believe
-that's the only other code in the kernel using a heap, there must be
-more open coded out there...
+Having VFS idmaps but then outsourcing permission checking to userspace
+is conceptually strange so requiring default_permissions is the correct
+thing to do. 
+
+> - We have a small offlist discussion with Christian about adding fs_type->allow_idmap
+> hook. Christian pointed out that it would be nice to have a superblock flag instead like
+> SB_I_NOIDMAP and we can set this flag during mount time if we see that the filesystem does not
+> support idmappings. But, unfortunately, I didn't succeed here because the kernel will
+> know if the filesystem supports idmapping or not after FUSE_INIT request, but FUSE_INIT request
+> is being sent at the end of the mounting process, so the mount and superblock will exist and
+> visible by the userspace in that time. It seems like setting SB_I_NOIDMAP flag, in this
+> case, is too late as a user may do the trick by creating an idmapped mount while it wasn't
+> restricted by SB_I_NOIDMAP. Alternatively, we can introduce a "positive" version SB_I_ALLOWIDMAP
+
+I see.
+
+> and a "weak" version of FS_ALLOW_IDMAP like FS_MAY_ALLOW_IDMAP. So if FS_MAY_ALLOW_IDMAP is set,
+> then SB_I_ALLOWIDMAP has to be set on the superblock to allow the creation of an idmapped mount.
+> But that's a matter of our discussion.
+
+I dislike making adding a struct super_block method. Because it means that we
+call into the filesystem from generic mount code and specifically with the
+namespace semaphore held. If there's ever any network filesystem that e.g.,
+calls to a hung server it will lockup the whole system. So I'm opposed to
+calling into the filesystem here at all. It's also ugly because this is really
+a vfs level change. The only involvement should be whether the filesystem type
+can actually support this ideally.
+
+I think we should handle this within FUSE. So we allow the creation of idmapped
+mounts just based on FS_ALLOW_IDMAP. And if the server doesn't support the
+FUSE_OWNER_UID_GID_EXT then we simply refuse all creation requests originating
+from an idmapped mount. Either we return EOPNOSUPP or we return EOVERFLOW to
+indicate that we can't represent the owner correctly because the server is
+missing the required extension.
+
+diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+index 3f37ba6a7a10..0726da21150a 100644
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -606,8 +606,16 @@ static int get_create_ext(struct mnt_idmap *idmap,
+                err = get_security_context(dentry, mode, &ext);
+        if (!err && fc->create_supp_group)
+                err = get_create_supp_group(dir, &ext);
+-       if (!err && fc->owner_uid_gid_ext)
+-               err = get_owner_uid_gid(idmap, fc, &ext);
++       if (!err) {
++               /*
++                * If the server doesn't support FUSE_OWNER_UID_GID_EXT and
++                * this is a creation request from an idmapped mount refuse it.
++                */
++               if (fc->owner_uid_gid_ext)
++                       err = get_owner_uid_gid(idmap, fc, &ext);
++               else if (idmap != &nop_mnt_idmap)
++                       err = -EOPNOTSUPP;
++       }
+
+        if (!err && ext.size) {
+                WARN_ON(args->in_numargs >= ARRAY_SIZE(args->in_args));
 
