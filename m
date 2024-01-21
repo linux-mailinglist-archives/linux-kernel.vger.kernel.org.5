@@ -1,64 +1,52 @@
-Return-Path: <linux-kernel+bounces-32085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ED3183564C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:27:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB24835654
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:31:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 083DA281D77
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 15:27:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E7461C20BB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 15:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DACE4376EC;
-	Sun, 21 Jan 2024 15:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AO7VNNGS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA48376E9;
+	Sun, 21 Jan 2024 15:31:49 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2032AF08;
-	Sun, 21 Jan 2024 15:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F4E374FC
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 15:31:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705850853; cv=none; b=rRwUbCd7jHs8vXMifM23LmCI88k8MUpzIUv8zSYBKjw6pNtqjN6V7z4JhdRZsPHCWe2uTdCwRQCeVXF6MlDlTmZVVfucylbP1uZJxQknSeYWnmGuwbm2AGn14J6P4gGq1e2YFXNc/EEOIx+csIGNwvabn5iG4M5XnY9W1Sl9jVU=
+	t=1705851108; cv=none; b=u/58hlc8QBizpkbJAkvIGj186Eq++MQxZIsJTvxP6vZ42FFz7dKT1V38vTXuw0YTybbHvA83hTN4Z0SD4KHT2YEWeBuTAlUtzANo2lq01bKNB4aFKyYlde+hdnDGcvlQsW9FNpyVGG27FAMnD6Epae+5wfeyt7oTbqJEOSKpyak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705850853; c=relaxed/simple;
-	bh=jPBQlN4n2vu1yEgpL6Vpv8aaah2ReKjMEZdhrlZpMzw=;
+	s=arc-20240116; t=1705851108; c=relaxed/simple;
+	bh=evspYiGZ0i+C9FKdqPpeQ0UvzTOyyqes+byQquQjr10=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TI6GgyStzkoEfpTQN8y5bq8oTAIV1ttzYrkjbrnjyuKitEb5ehBWJvwx15ipvrwQb9Cp9a8WrSxEVCZ1YE6lpsSB3bhKDShxoGX8fOACTJfPJHscR+93r27ooPYR1PlcXDz6Oif9aZoJtbtXHislMBbUt1IPQwiVOnhkBlMlkjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AO7VNNGS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08A18C433C7;
-	Sun, 21 Jan 2024 15:27:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705850852;
-	bh=jPBQlN4n2vu1yEgpL6Vpv8aaah2ReKjMEZdhrlZpMzw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AO7VNNGSvK/lCBR0jpKvGsT9KKQtJOs6XP9poQO8tMUi5pHpi+rtFU5M8UsL0J+Op
-	 8e/ZkuH1KRBYWRlfa9XivjSBqoE4dCO5/hgicMAXSbPzRLcoSKWSQ+sz8kMIpvMid5
-	 zoXVwSlYreb0UPaV9LHG52a6XyUuSYXI8kAW0iNCZMyRqaWur114Py4JLUIsbdp3aK
-	 V++DnroJovy8I8qRY1uzdXPUKmh+kywTx21aFUK3DkXD4bfzA/NOo41FXUeuXskLe1
-	 mvpgQZLSOG9v85Ba/NI3Ha/b/Zj51foxhPIp4G8HXEFKYYAJL+BX3FvMvRDpSc+e7+
-	 n+mQi7zDmtRFA==
-Date: Sun, 21 Jan 2024 15:27:18 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Matti Vaittinen <mazziesaccount@gmail.com>, Andy
- Shevchenko <andriy.shevchenko@linux.intel.com>, Marek Vasut
- <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>, Javier Carrasco
- <javier.carrasco.cruz@gmail.com>, Matt Ranostay <matt@ranostay.sg>, Stefan
- Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] dt-bindings: iio: light: Squash APDS9300 and
- APDS9960 schemas
-Message-ID: <20240121152718.35c24f9a@jic23-huawei>
-In-Reply-To: <20240121051735.32246-2-subhajit.ghosh@tweaklogic.com>
-References: <20240121051735.32246-1-subhajit.ghosh@tweaklogic.com>
-	<20240121051735.32246-2-subhajit.ghosh@tweaklogic.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
+	 MIME-Version:Content-Type; b=phu4ex+u3G3Mqw1Tm/Bah08K1bQcge9PHOuaVCSugmHkokpjJ2EggoYN8fxB8XxWw7/McIC6MsZktdZEddQ/WFYortiKXW8Jm/Nj7UTOfGjObQ8b3EDoWZ8mJ5hco24bJi+WFL9m+p6GfTMM5xDtINromiuDt9aJBsPcurvWTxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F0ADC433C7;
+	Sun, 21 Jan 2024 15:31:45 +0000 (UTC)
+Date: Sun, 21 Jan 2024 10:31:44 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, x86@kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Peter Zijlstra <peterz@infradead.org>,
+ linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>, Jinyang
+ He <hejinyang@loongson.cn>, Tiezhu Yang <yangtiezhu@loongson.cn>, "Naveen N
+ . Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH -tip v2] x86/kprobes: Drop removed INT3 handling code
+Message-ID: <20240121103144.4bf735c6@rorschach.local.home>
+In-Reply-To: <f8bbf989-f709-4ceb-af5c-87e1e20de914@kernel.org>
+References: <166981518895.1131462.4693062055762912734.stgit@devnote3>
+	<06cb540e-34ff-4dcd-b936-19d4d14378c9@kernel.org>
+	<20240120170517.5cadbc20@rorschach.local.home>
+	<20240121112852.381ebd7bf37ea6d2236db9f2@kernel.org>
+	<20240121180544.8c663977651d2a18291318d5@kernel.org>
+	<f8bbf989-f709-4ceb-af5c-87e1e20de914@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,126 +56,104 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Sun, 21 Jan 2024 15:47:32 +1030
-Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
+On Sun, 21 Jan 2024 16:23:35 +0100
+Matthieu Baerts <matttbe@kernel.org> wrote:
 
-> Squashing Avago (Broadcom) APDS9300 and APDS9960 schemas into one
-> file and removing the other. This is done as per the below review:
-> Link: https://lore.kernel.org/all/4e785d2e-d310-4592-a75a-13549938dcef@linaro.org/
-
-Sounds like a Suggested-by tag to reflect the ideas would be sensible here.
-
+> Hi Masami, Steven,
 > 
-> This patch series adds the driver support and device tree binding schemas
-> for APDS9306 Ambient Light Sensor. 
-
-This sentence isn't relevant to this patch, so I'd drop it.
-We don't need additional motivation.
-
->It was pointed out in earlier reviews
-> that the schemas for APDS9300 and APDS9960 looks similar and should be
-> merged. This particular patch does the first operation of merging
-> APDS9300 and APDS9960 schema files.
-You have a reference above which is enough.
-
-"Merge very similar schemas for APDS9300 and APDS9960."
-is sufficient description alongside a suggested by tag and if you like
-a link tag to as above. Note however that Link is an official tag
-so belongs in the tag block at the end, not inline in the text.
-
+> On 21/01/2024 10:05, Masami Hiramatsu (Google) wrote:
+> > On Sun, 21 Jan 2024 11:28:52 +0900
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> >   
+> >> On Sat, 20 Jan 2024 17:05:17 -0500
+> >> Steven Rostedt <rostedt@goodmis.org> wrote:
+> >>  
+> >>> On Sat, 20 Jan 2024 18:44:38 +0100
+> >>> Matthieu Baerts <matttbe@kernel.org> wrote:
+> >>>  
+> >>>>
+> >>>> I'm sorry to reply on a patch that is more than one year old, but in  
+> >>>
+> >>> No problem, I've done the same.  
+> >>
+> >> Yeah, thanks for reporting! I realized the problem.  
 > 
-Link: ...
-> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-> ---
-> v2 -> v5:
->  - Removed 'required' for Interrupts and 'oneOf' for compatibility strings
->    as per below reviews:
->    Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
->    Link: https://lore.kernel.org/lkml/22e9e5e9-d26a-46e9-8986-5062bbfd72ec@linaro.org/
-> ---
->  .../bindings/iio/light/avago,apds9300.yaml    | 11 +++--
->  .../bindings/iio/light/avago,apds9960.yaml    | 44 -------------------
->  2 files changed, 7 insertions(+), 48 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/iio/light/avago,apds9960.yaml
+> Thank you both for your quick reply, very useful explanations, analysis
+> and patch!
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> index 206af44f2c43..c610780346e8 100644
-> --- a/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> +++ b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> @@ -4,17 +4,20 @@
->  $id: http://devicetree.org/schemas/iio/light/avago,apds9300.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
->  
-> -title: Avago APDS9300 ambient light sensor
-> +title: Avago Gesture/RGB/ALS/Proximity sensors
->  
->  maintainers:
-> -  - Jonathan Cameron <jic23@kernel.org>
-> +  - Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
->  
->  description: |
-> -  Datasheet at https://www.avagotech.com/docs/AV02-1077EN
-> +  Datasheet: https://www.avagotech.com/docs/AV02-1077EN
-> +  Datasheet: https://www.avagotech.com/docs/AV02-4191EN
->  
->  properties:
->    compatible:
-> -    const: avago,apds9300
-> +    enum:
-> +      - avago,apds9300
-> +      - avago,apds9960
->  
->    reg:
->      maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/iio/light/avago,apds9960.yaml b/Documentation/devicetree/bindings/iio/light/avago,apds9960.yaml
-> deleted file mode 100644
-> index f06e0fda5629..000000000000
-> --- a/Documentation/devicetree/bindings/iio/light/avago,apds9960.yaml
-> +++ /dev/null
-> @@ -1,44 +0,0 @@
-> -# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> -%YAML 1.2
-> ----
-> -$id: http://devicetree.org/schemas/iio/light/avago,apds9960.yaml#
-> -$schema: http://devicetree.org/meta-schemas/core.yaml#
-> -
-> -title: Avago APDS9960 gesture/RGB/ALS/proximity sensor
-> -
-> -maintainers:
-> -  - Matt Ranostay <matt.ranostay@konsulko.com>
-> -
-> -description: |
-> -  Datasheet at https://www.avagotech.com/docs/AV02-4191EN
-> -
-> -properties:
-> -  compatible:
-> -    const: avago,apds9960
-> -
-> -  reg:
-> -    maxItems: 1
-> -
-> -  interrupts:
-> -    maxItems: 1
-> -
-> -additionalProperties: false
-> -
-> -required:
-> -  - compatible
-> -  - reg
-> -
-> -examples:
-> -  - |
-> -    i2c {
-> -        #address-cells = <1>;
-> -        #size-cells = <0>;
-> -
-> -        light-sensor@39 {
-> -            compatible = "avago,apds9960";
-> -            reg = <0x39>;
-> -            interrupt-parent = <&gpio1>;
-> -            interrupts = <16 1>;
-> -        };
-> -    };
-> -...
+> (...)
+> 
+> > So this another solution is already done. I think we need to add the
+> > ghost INT3 check in the exc_int3() as follows;
+> > 
+> > Thank you,
+> > 
+> > From add8cf7da99cdb096a0d6765b3dc5de9a3ea3019 Mon Sep 17 00:00:00 2001
+> > From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+> > Date: Sun, 21 Jan 2024 17:16:50 +0900
+> > Subject: [PATCH] x86: Fixup from the removed INT3 if it is unhandled
+> > 
+> > INT3 is used not only for software breakpoint, but also self modifying
+> > code on x86 in the kernel. For example, jump_label, function tracer etc.
+> > Those may not handle INT3 after removing it but not waiting for
+> > synchronizing CPUs enough. Since such 'ghost' INT3 is not handled by
+> > anyone because they think it has been removed already.
+> > Recheck there is INT3 on the exception address and if not, ignore it.
+> > 
+> > Note that previously kprobes does the same thing by itself, but that is
+> > not a good location to do that because INT3 is commonly used. Do it at
+> > the common place so that it can handle all 'ghost' INT3.  
+> 
+> I just tested it, and I was able to run pings for 3h without any issues!
+> 
+> While at it, and just to be on the safe side, I also re-run the tests
+> after having added a "pr_warn()" -- I know, using printk(), especially
+> when talking to you... but I was not sure what was safe to use at this
+> place in the code :) -- before returning "true" in the new function you
+> added, and we can see that the crash is avoided thanks to the new code:
+> 
+> [   27.422518] traps: crash avoided, addr=18446744071882050317
+> [   27.426182] traps: crash avoided, addr=18446744071882050317
+> 
+> [  370.483208] traps: crash avoided, addr=18446744071882075656
+> [  370.485066] traps: crash avoided, addr=18446744071882075656
+> [  370.485084] traps: crash avoided, addr=18446744071882075656
+> 
+> [  592.866416] traps: crash avoided, addr=18446744071882075656
+> [  592.867937] traps: crash avoided, addr=18446744071882075656
+> 
+> [  980.988342] traps: crash avoided, addr=18446744071882050317
+> [  980.989866] traps: crash avoided, addr=18446744071882050317
+> 
+> (from my VM running with 2 CPU cores)
+> 
+> 
+> Again, thank you for the fix!
+> 
+> (Just in case you need it:)
+> 
+> Tested-by: Matthieu Baerts <matttbe@kernel.org>
+
+The thing is, the bug is with qemu and *not* the kernel. Masami's patch
+just paper's over the real bug, and worse, if the kernel has a bug
+that's not doing proper synchronization, the patch will keep it from
+being detected. So no, I do not think this is the proper solution.
+
+The real problem is that qemu does not seem to be honoring the memory
+barriers of an interrupt. The reason the code does the ipi's is to
+force a full memory barrier across all CPUs so that they all see the
+same memory before going forward to the next step.
+
+My guess is that qemu does not treat the IPI being sent as a memory
+barrier, and then the CPUs do not see a consistent memory view after
+the IPIs are sent. That's a bug in qemu!
+
+This should be reported to the qemu community and should be fixed
+there. In the mean time, feel free to use Masami's patch in your local
+repo until qemu is fixed, but it should not be added to Linux mainline.
+
+-- Steve
+
+
 
 
