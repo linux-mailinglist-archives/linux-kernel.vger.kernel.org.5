@@ -1,119 +1,90 @@
-Return-Path: <linux-kernel+bounces-31942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2864D83372E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 01:17:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 681488353FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 01:43:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB9F4282753
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 00:17:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65D2B1C21499
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 00:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59FA654;
-	Sun, 21 Jan 2024 00:16:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86AA515E93;
+	Sun, 21 Jan 2024 00:43:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jb6xoVCm"
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="xNrlzLrv"
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2CE361
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 00:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB8E14AAB;
+	Sun, 21 Jan 2024 00:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705796213; cv=none; b=iIGV2VLXy6MQFH8lRM9y/8t8R+eu6LmLoAoWmelUyFK+A4viYH/QF+AMQlp7n2QLAsVqvW+WE9ANflPNxsc9NIjrsTp9ui9+7Lq6AgNL6kT0a+EUeRv1YJwhUcGyCdEdMzdG6AWFQAqdu3GIOrykri50kH7C0CmoLHsrnDytrdQ=
+	t=1705797815; cv=none; b=N2abBiUY7m71MNBXVi2HICiLqT5s7/IYVHh51nVw1i/BnPi5J3VFVXiHxj2FbC+vJ0VvjRypGAFgdWb2aGsn1BY2ndqDRNoYikzIOg0Dr1qXJxzg4NvQ9sZltCWEtCMtwYExnYkOHr+AphohFN/8AjS/7X2GsutR9C2MOksEoJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705796213; c=relaxed/simple;
-	bh=/C66J7wkQwwS2IqQ96WKFgsVf+pRy97LkmCeeYhVdP4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YwnKWebeCCjZiq1oHkwXqUFZaCd5ExFr8Y0spj9KZXg/AcnkkBB94ZbY/fs3mh1PJeymyC/WKdg8wYDUCMVOjsAXMdFOOXwxtUXuD0YZw/jIN6uNb6tbkgidZFEcKzJTFQ3BJL5MCrhP7a3gspkwLjLCQDVHGnf6bMNJ7mhDDvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jb6xoVCm; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-59502aa878aso940294eaf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 16:16:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705796211; x=1706401011; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VGx1uUqBJNwaB067t1zS9OZh+thLjfiev6N5olOliBQ=;
-        b=jb6xoVCm4erIHuii7QR+BQMXQW1udD1XI2eGpmGrRN07v1b8g2Dans3F6BK64Hguzm
-         agWG9o5d4WAs+bSZfi/Q6SQQaidl50E81tkc5ANVEDAw1sEsgqRkaAHEwRGh5ZQ0NAbL
-         EjhBG8lpCf1gr06FhT8gVyDJyUCm3wAkpYBL4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705796211; x=1706401011;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VGx1uUqBJNwaB067t1zS9OZh+thLjfiev6N5olOliBQ=;
-        b=WivO3GxGzvBN4m5orIFqGI6D3Y32F5k4B+WlGLkbkIh9WROhynnrUj5qoIKNTnajib
-         SnyEHlQXW54F6cyzgHW7bE2aNnpl5sOUK12FGIxvLQDPUi3qHshlGAaK332l/Ulx5QdE
-         /xFUjA3k4yIAskpHJMk4svwNV4U9445kKLJqfsSWaAuQYIF/LNf9mrKPVX9qRwjm9TG/
-         vBy03lpwZCzVxqYf2EGHe0bJBvqVXArGUFrJMqS6tIJzCtotMxp7CdIjZxCEcD3/cP1/
-         p3LyEEYPeWdytdT5RxRB66MnSq0DI60UWFep+SkSZjpPKwg1bHeZTPQooLS9y1jXVta6
-         LATg==
-X-Gm-Message-State: AOJu0Yw3UOBiqBIziT1IYKnUSkYJkX0gUGG91syso4BZZjZEvrGobCLs
-	2CgiglnGcrzkptxOAJxhyOnOQ+fgPvaFkNPcgTfd/AToCQoAAFiai0/4l2deNgJix8UlTe94YkC
-	0myBRxJ1UljDwAdjuV/0e0az42GoEeiy/6HA9
-X-Google-Smtp-Source: AGHT+IFwp+DKXCAKoixsZuns+yTYxxlyPCYBxSpYdd1fXnL6rdiY+k7qeKJU05Nn//cgId/cR/5b/LaiwJxnDuIsufc=
-X-Received: by 2002:a05:6870:2e06:b0:210:8df6:3b04 with SMTP id
- oi6-20020a0568702e0600b002108df63b04mr2269701oab.102.1705796210854; Sat, 20
- Jan 2024 16:16:50 -0800 (PST)
+	s=arc-20240116; t=1705797815; c=relaxed/simple;
+	bh=6zClxfyv71M0RluUbCbllO0533ZG0kWqfL4wR73NjHM=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID; b=tY2psya8QUMrKVNbFfMKW1/SjR5NNXIMlD1QVabFk9/hMCE0cM21Ir9Vxyrh1R2wGW4t8wjBYe0FGAs2U4fdyI3M4lIIFm5pVSddDm+xbcuf361J2cIy9d4XeMPJzfHUeurIowtEwtf6+wCUlT9Fr9tsZWa3Dc5iEQxJNSHWDy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=xNrlzLrv; arc=none smtp.client-ip=199.185.137.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=6zClxfyv71
+	M0RluUbCbllO0533ZG0kWqfL4wR73NjHM=; h=date:references:in-reply-to:
+	subject:cc:to:from; d=openbsd.org; b=xNrlzLrvdn5TiEK+r0xytg+ig0YyyOzsG
+	5h72+KeTLSNfAWSgxuoV28p6LgEBSpKPm2uXpufBZ9QJ/n/+3TV+7DPPn/2NuEmrqFcBst
+	3q9SxFEPMPkmr5ofcpN1Y4nU2IINcyvAo8zpPHQBiQMvYNKFe3+DgFPjV/Mm1y8fRq8WKK
+	bO+y+/L+iBqm1en9uyXnWDP+77ycPtFteeXzwjPFOq31DSjtchzRjeKcMZkkGWXCFazv7r
+	LHMmUTP8KfXq5K8NgRv1dNfIh05fsSBsZnHoCRFpH0J2BNMMosJtSlzpVknRPVr38/fiY3
+	M318gjyH361AmN6EuvpAvkSoNnb6g==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+	by cvs.openbsd.org (OpenSMTPD) with ESMTP id d3cb4755;
+	Sat, 20 Jan 2024 17:43:32 -0700 (MST)
+From: "Theo de Raadt" <deraadt@openbsd.org>
+To: Jeff Xu <jeffxu@chromium.org>
+cc: Linus Torvalds <torvalds@linux-foundation.org>,
+    =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>,
+    Jeff Xu <jeffxu@google.com>, akpm@linux-foundation.org,
+    keescook@chromium.org, jannh@google.com, willy@infradead.org,
+    gregkh@linuxfoundation.org, jorgelo@chromium.org,
+    groeck@chromium.org, linux-kernel@vger.kernel.org,
+    linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+    pedro.falcato@gmail.com, dave.hansen@intel.com,
+    linux-hardening@vger.kernel.org
+Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
+In-reply-to: <CABi2SkVXgyG4r-SzkXx0-MOQ2dqhy1ewwhvfXMJLw066i1zJKw@mail.gmail.com>
+References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org> <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com> <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com> <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com> <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com> <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com> <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com> <78111.1705764224@cvs.openbsd.org> <CAHk-=wgdhbLeY=pEY27m4OQuDAn9xkzSLHwE9D8m1Dw8a++n=Q@mail.gmail.com> <CABi2SkVXgyG4r-SzkXx0-MOQ2dqhy1ewwhvfXMJLw066i1zJKw@mail.gmail.com>
+Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
+   message dated "Sat, 20 Jan 2024 16:16:39 -0800."
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org>
- <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
- <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
- <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com>
- <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com>
- <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com>
- <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com>
- <78111.1705764224@cvs.openbsd.org> <CAHk-=wgdhbLeY=pEY27m4OQuDAn9xkzSLHwE9D8m1Dw8a++n=Q@mail.gmail.com>
-In-Reply-To: <CAHk-=wgdhbLeY=pEY27m4OQuDAn9xkzSLHwE9D8m1Dw8a++n=Q@mail.gmail.com>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Sat, 20 Jan 2024 16:16:39 -0800
-Message-ID: <CABi2SkVXgyG4r-SzkXx0-MOQ2dqhy1ewwhvfXMJLw066i1zJKw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Theo de Raadt <deraadt@openbsd.org>, =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>, 
-	Jeff Xu <jeffxu@google.com>, akpm@linux-foundation.org, keescook@chromium.org, 
-	jannh@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
-	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
-	dave.hansen@intel.com, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <98518.1705797812.1@cvs.openbsd.org>
+Date: Sat, 20 Jan 2024 17:43:32 -0700
+Message-ID: <44186.1705797812@cvs.openbsd.org>
 
-On Sat, Jan 20, 2024 at 8:40=E2=80=AFAM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sat, 20 Jan 2024 at 07:23, Theo de Raadt <deraadt@openbsd.org> wrote:
-> >
-> > There is an one large difference remainig between mimmutable() and msea=
-l(),
-> > which is how other system calls behave.
-> >
-> > We return EPERM for failures in all the system calls that fail upon
-> > immutable memory (since Oct 2022).
-> >
-> > You are returning EACESS.
-> >
-> > Before it is too late, do you want to reconsider that return value, or
-> > do you have a justification for the choice?
->
-> I don't think there's any real reason for the difference.
->
-> Jeff - mind changing the EACESS to EPERM, and we'll have something
-> that is more-or-less compatible between Linux and OpenBSD?
->
-Sounds Good. I will make the necessary changes in the next version.
+Jeff Xu <jeffxu@chromium.org> wrote:
 
--Jeff
+> > Jeff - mind changing the EACESS to EPERM, and we'll have something
+> > that is more-or-less compatible between Linux and OpenBSD?
+> >
+> Sounds Good. I will make the necessary changes in the next version.
 
->              Linus
+Thanks!  That is so awesome!
+
+On the OpenBSD side, I am close to landing our madvise / msync changes.
+
+Then we are mostly in sync.
+
+It was on my radar for a year, but delayed because I was ponderingn
+blocking the destructive madvise / msync ops on regular non-writeable
+pages.  These ops remain a page-zero gadget against regular (mutable)
+readonly pages, and it bothers me.  I've heard rumour this has been used
+in a nasty way, and I think the sloppily defined semantics could use
+a strict modernization.
 
