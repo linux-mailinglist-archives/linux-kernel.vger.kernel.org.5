@@ -1,189 +1,154 @@
-Return-Path: <linux-kernel+bounces-31982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABD008354D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 08:35:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE868354DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 09:03:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D586E1C21B75
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 07:35:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBB9B282C8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 08:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4679364A8;
-	Sun, 21 Jan 2024 07:35:39 +0000 (UTC)
-Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD6769440;
-	Sun, 21 Jan 2024 07:35:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.89.151.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5777364AF;
+	Sun, 21 Jan 2024 08:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="Q24U5l1W"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61AB514F61;
+	Sun, 21 Jan 2024 08:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705822539; cv=none; b=HabiM3DtUCkqjBFDerqd8zuV53QR4xNHGYWqyiOw43QA1AxSBKT8gr9qNBU5dpNiIQ1PPL5ckX9wIz4PyXPXEDbs1iEt5DGx9HVX+pLLkdviyzbCVS13p9HvPg6IzhJCh6gkuRhV4St++heIo/E6DHi0j99BSM/BPA0ptekfKKc=
+	t=1705824136; cv=none; b=Y3Bq6fFEZ5V4ZpF3oxp24sKqHB9EeW6U5WUgehRo0iAApTDWlmhS4dvvcqTesqoNx+sCv0vHO7pyLMfchXddEDpqk1/dY/HbnDz3ISiFQfjLMZGEXU3g8bYarsmLRD7FSnzCFbXOjtYLtLuYZhmhLZFyzf0p/7DWT+9DWnMtoE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705822539; c=relaxed/simple;
-	bh=1z3w3EMVjzHYdK/jgN7E1nPAR8qS7efsk0Wnz+TfAbQ=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=ohaLkqLxIB1Wd49JL7kSaVBCTokJHXqwiH4ILBgS4krv19N98mZIUgncLQdWJv0Dyk2rVkqZg9aXxpYNUwjqfcKqs1ZAJEivar6sn5nUcTWJsk71hxu26JS5Ckf6vArGxoDhA5cePKAx1JW+/jKSt3ORqd3N2OAyvDaRUXoGLjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=159.89.151.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from localhost.localdomain (unknown [115.206.161.25])
-	by mail-app3 (Coremail) with SMTP id cC_KCgCXnjktyaxlmz1lAA--.38522S4;
-	Sun, 21 Jan 2024 15:35:10 +0800 (CST)
-From: Lin Ma <linma@zju.edu.cn>
-To: linkinjeon@kernel.org,
-	sfrench@samba.org,
-	senozhatsky@chromium.org,
-	tom@talpey.com,
-	lsahlber@redhat.com,
-	hyc.lee@gmail.com,
-	linux-cifs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH v1] ksmbd: fix global oob in ksmbd_nl_policy
-Date: Sun, 21 Jan 2024 15:35:06 +0800
-Message-Id: <20240121073506.84528-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cC_KCgCXnjktyaxlmz1lAA--.38522S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxuw4DJr4UGFy3Cw45AFyxKrg_yoW7ZF4fpa
-	4DXF97Gr48Xry0qF17AFyUJw12qF1UZa4UGr4xKr18AF4rGw17JF1UtFnxtrnxCr90vr12
-	q3WDZFs0yw15J3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUd-B_UUU
-	UU=
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+	s=arc-20240116; t=1705824136; c=relaxed/simple;
+	bh=lmEl2d7HAt/XbGIN81juIpgwCW99VwCJsVaLTSFIR8Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uzmbajFjaU5SF8DRBZtU/Mq+jxwML1i1gcqAEm8MH5YRO5OYIAnz5KhvZeWQ6qrckBQWwCseYwUn80NuCD+zovdVRaHZKBepRljZxv9FFdgmQwko+cxG8RIQaSi5tLfLc5rHeSSxN7L5UNHOLbbe2dOeJrpg/QLqz54/8XobyuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=Q24U5l1W; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1705824117; x=1706428917; i=deller@gmx.de;
+	bh=lmEl2d7HAt/XbGIN81juIpgwCW99VwCJsVaLTSFIR8Y=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Q24U5l1WuGkPh74jae0sAt++EHF353b9Nqzp/snjJj6RD1RKPu2X5HPab3vkJePK
+	 kQbIyXyWSJA8wTLhP3GJJFZB4hfIGuNa+9AytxoWMc+hHnKMip7HKX74mscIJLXRV
+	 rsHG1hfjK6gq9RJOp/Qu8l8E1H0ymdEyPAZ2P+xgm9yoxbaaIVUUOohT+xoRuxjkh
+	 egaqadmuN5+5t9twjl0qAMrIjvV5N7Kwq8QBmdUCrAWKrZbLiLuOn6sTZwxsI8J36
+	 efzV16qLOuaVBRIEybZfMWi5WggDRJ/PZp3MUm8iX7UL5Ls/ODbOl58PSpBpmzbJI
+	 UfESlxeEjPs9LmkCAw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.55] ([94.134.154.190]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUGiJ-1rb38I1faF-00REM1; Sun, 21
+ Jan 2024 09:01:57 +0100
+Message-ID: <fb18e94f-3254-48d1-b260-1c3a7514bd8f@gmx.de>
+Date: Sun, 21 Jan 2024 09:01:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] video: fbdev: sis: Error out if pixclock equals zero
+Content-Language: en-US
+To: Fullway Wang <fullwaywang@outlook.com>, tzimmermann@suse.de,
+ sam@ravnborg.org, javierm@redhat.com
+Cc: linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ fullwaywang@tencent.com
+References: <PH7PR20MB5925C492B7F8CDACB2386DB4BF712@PH7PR20MB5925.namprd20.prod.outlook.com>
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <PH7PR20MB5925C492B7F8CDACB2386DB4BF712@PH7PR20MB5925.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rPKVCaXb0ndO2tg3vgAi1V42uGT3otTXDBMHqCejyzRXKpSEwZl
+ wrBIS0IrqQ0kGRVowQuILGo5vUcd/uXFtbPMqpWHsTc6s5Ahf1asxcU7dqYNVivdH1+1nK/
+ MO4l8gdOaWGjkX/YMgbnxElXpkqLK2iT7AGNWBPJf7VAjl0uEk6QyNapl8wAW5UxH7A9flZ
+ XTEL4vOBYaps/A1OczL4g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:U+LjjRAcEUk=;1D46GZPLBjz3tYeDKRVyT3rZXNG
+ Cy7gdqKck1qX+M3pAlK8zBuGdyhA7m31D7W2OclwfiBuBM6aZr25NFo9isLq1zjr3q353ZjeI
+ /1lGrm7bkQ6cxWeJuwTNC7MZyLsQzLP0mP9ipT1RkWO+Ncan4g5U+wYYr9dJIDudGcEmn+hsc
+ tPwbQWkh+CjIe9Lgag/IXVvIDlsF2sDKY33rQxgdzIZKI0sLWfceYS6tw/TOtbu5ZmlOB16wF
+ aXcGOIOINvGBqV0xInOXdIWd6egqLnQitaEL0UAVrCTKqU4si6jbMgcSF9ilUNyfOn5ZrJRUO
+ yjMNxrqCQpRPegbEe3ABIeI4ttCEvbuFtKRksM3xFc6Bj1mJX9szHFDS08O01AYxgLnDqPSSz
+ H7bAdABJnfH1u1GCZ19HJnfp0YL1NAOkhMXIyugZy1QwcN7kIGJxDP0qQg+SZo2eZneXrKvB9
+ S8xBHTj/fhCMpgPMkgv2JVJLtdNvgynZJiFw74t+XW8KZvgFemjGp/T0j+7IsMm8oeMoOofR7
+ vaSPI7EfsrCFXQgjceo0qc2C3z4usCnzPtxam2aMM8wxVMF0YmcuTq8Jg5nsNLuVZJPXikjbe
+ kyI6J7sEHj8Oi38j4Wo4avJwcZpIOlrErKDka+igCUYZ1jiXA1BJpdD6EHCT4sCq9R5aONldz
+ o6wZ4N4RQxh6OjMf+j4SRWexL/RQwTULfHvDRTxoTyaYOURNTS+EiKcQVIp4GLtUBjjnhBl7E
+ 12D2iElcn83atAxlC/agxh/0YhiQnvux3ck3+9FLbWK5fXoyao+LUjoVizr9gw9SLd7d4OKml
+ 5L7begdQ2+ivPF48hJ7EDoSXzA/JbMszxHJe3tuw/z8wHWvHLWcD8gkpl5ajc4AFIH4H4KJJE
+ nghxVjlWq+uSxNr/j9QczbsMDmzGMHtyIH63On3MV0KuG0euk6mKpC3CQYVLEGOeV8BOmpnQc
+ vOl0Jg==
 
-Similar to a reported issue (check the commit b33fb5b801c6 ("net:
-qualcomm: rmnet: fix global oob in rmnet_policy"), my local fuzzer finds
-another global out-of-bounds read for policy ksmbd_nl_policy. See bug
-trace below:
+On 1/18/24 07:24, Fullway Wang wrote:
+> The userspace program could pass any values to the driver through
+> ioctl() interface. If the driver doesn't check the value of pixclock,
+> it may cause divide-by-zero error.
+>
+> In sisfb_check_var(), var->pixclock is used as a divisor to caculate
+> drate before it is checked against zero. Fix this by checking it
+> at the beginning.
+>
+> This is similar to CVE-2022-3061 in i740fb which was fixed by
+> commit 15cf0b8.
+>
+> Signed-off-by: Fullway Wang <fullwaywang@outlook.com>
+> ---
+>   drivers/video/fbdev/sis/sis_main.c | 2 ++
+>   1 file changed, 2 insertions(+)
 
-==================================================================
-BUG: KASAN: global-out-of-bounds in validate_nla lib/nlattr.c:386 [inline]
-BUG: KASAN: global-out-of-bounds in __nla_validate_parse+0x24af/0x2750 lib/nlattr.c:600
-Read of size 1 at addr ffffffff8f24b100 by task syz-executor.1/62810
+I've applied this patch and your savage patch to fbdev git tree.
 
-CPU: 0 PID: 62810 Comm: syz-executor.1 Tainted: G                 N 6.1.0 #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x8b/0xb3 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:284 [inline]
- print_report+0x172/0x475 mm/kasan/report.c:395
- kasan_report+0xbb/0x1c0 mm/kasan/report.c:495
- validate_nla lib/nlattr.c:386 [inline]
- __nla_validate_parse+0x24af/0x2750 lib/nlattr.c:600
- __nla_parse+0x3e/0x50 lib/nlattr.c:697
- __nlmsg_parse include/net/netlink.h:748 [inline]
- genl_family_rcv_msg_attrs_parse.constprop.0+0x1b0/0x290 net/netlink/genetlink.c:565
- genl_family_rcv_msg_doit+0xda/0x330 net/netlink/genetlink.c:734
- genl_family_rcv_msg net/netlink/genetlink.c:833 [inline]
- genl_rcv_msg+0x441/0x780 net/netlink/genetlink.c:850
- netlink_rcv_skb+0x14f/0x410 net/netlink/af_netlink.c:2540
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:861
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x54e/0x800 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x930/0xe50 net/netlink/af_netlink.c:1921
- sock_sendmsg_nosec net/socket.c:714 [inline]
- sock_sendmsg+0x154/0x190 net/socket.c:734
- ____sys_sendmsg+0x6df/0x840 net/socket.c:2482
- ___sys_sendmsg+0x110/0x1b0 net/socket.c:2536
- __sys_sendmsg+0xf3/0x1c0 net/socket.c:2565
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3b/0x90 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fdd66a8f359
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fdd65e00168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fdd66bbcf80 RCX: 00007fdd66a8f359
-RDX: 0000000000000000 RSI: 0000000020000500 RDI: 0000000000000003
-RBP: 00007fdd66ada493 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc84b81aff R14: 00007fdd65e00300 R15: 0000000000022000
- </TASK>
-
-The buggy address belongs to the variable:
- ksmbd_nl_policy+0x100/0xa80
-
-The buggy address belongs to the physical page:
-page:0000000034f47940 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1ccc4b
-flags: 0x200000000001000(reserved|node=0|zone=2)
-raw: 0200000000001000 ffffea00073312c8 ffffea00073312c8 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffffffff8f24b000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffffff8f24b080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffffff8f24b100: f9 f9 f9 f9 00 00 f9 f9 f9 f9 f9 f9 00 00 07 f9
-                   ^
- ffffffff8f24b180: f9 f9 f9 f9 00 05 f9 f9 f9 f9 f9 f9 00 00 00 05
- ffffffff8f24b200: f9 f9 f9 f9 00 00 03 f9 f9 f9 f9 f9 00 00 04 f9
-==================================================================
-
-To fix it, add a placeholder named __KSMBD_EVENT_MAX and let
-KSMBD_EVENT_MAX to be its original value - 1 according to what other
-netlink families do. Also change two sites that refer the
-KSMBD_EVENT_MAX to correct value.
-
-Fixes: 0626e6641f6b ("cifsd: add server handler for central processing and tranport layers")
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- fs/smb/server/ksmbd_netlink.h | 3 ++-
- fs/smb/server/transport_ipc.c | 4 ++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/fs/smb/server/ksmbd_netlink.h b/fs/smb/server/ksmbd_netlink.h
-index b7521e41402e..0ebf91ffa236 100644
---- a/fs/smb/server/ksmbd_netlink.h
-+++ b/fs/smb/server/ksmbd_netlink.h
-@@ -304,7 +304,8 @@ enum ksmbd_event {
- 	KSMBD_EVENT_SPNEGO_AUTHEN_REQUEST,
- 	KSMBD_EVENT_SPNEGO_AUTHEN_RESPONSE	= 15,
- 
--	KSMBD_EVENT_MAX
-+	__KSMBD_EVENT_MAX,
-+	KSMBD_EVENT_MAX = __KSMBD_EVENT_MAX - 1
- };
- 
- /*
-diff --git a/fs/smb/server/transport_ipc.c b/fs/smb/server/transport_ipc.c
-index b49d47bdafc9..f29bb03f0dc4 100644
---- a/fs/smb/server/transport_ipc.c
-+++ b/fs/smb/server/transport_ipc.c
-@@ -74,7 +74,7 @@ static int handle_unsupported_event(struct sk_buff *skb, struct genl_info *info)
- static int handle_generic_event(struct sk_buff *skb, struct genl_info *info);
- static int ksmbd_ipc_heartbeat_request(void);
- 
--static const struct nla_policy ksmbd_nl_policy[KSMBD_EVENT_MAX] = {
-+static const struct nla_policy ksmbd_nl_policy[KSMBD_EVENT_MAX + 1] = {
- 	[KSMBD_EVENT_UNSPEC] = {
- 		.len = 0,
- 	},
-@@ -403,7 +403,7 @@ static int handle_generic_event(struct sk_buff *skb, struct genl_info *info)
- 		return -EPERM;
- #endif
- 
--	if (type >= KSMBD_EVENT_MAX) {
-+	if (type > KSMBD_EVENT_MAX) {
- 		WARN_ON(1);
- 		return -EINVAL;
- 	}
--- 
-2.17.1
+Thanks!
+Helge
 
 
