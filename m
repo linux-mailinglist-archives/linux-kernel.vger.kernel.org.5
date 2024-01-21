@@ -1,82 +1,103 @@
-Return-Path: <linux-kernel+bounces-32116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B11C8356B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:41:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6B638356B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:46:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 433CB1F21A91
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:41:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 055731C21324
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DF037710;
-	Sun, 21 Jan 2024 16:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2443C37712;
+	Sun, 21 Jan 2024 16:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HDsQ32Go"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="rJIjmPmD"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8AD34CD5;
-	Sun, 21 Jan 2024 16:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38637EC4;
+	Sun, 21 Jan 2024 16:46:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705855299; cv=none; b=JjBDpCXk6/BYlPHZmZv2HAIPmSZ/IkrPrubMPUvwATLD6rCxXPDH3bWvF8mL9M57o1vNn4AaA6J0eEwMijvutyXuvAfu1UFTOhXNdTCYJDCuyDhBfLQnlxKncJJMl5zThRmlhC5wtfJjIj7io+BPekNNAG4IWXy7765wv1xFV0A=
+	t=1705855571; cv=none; b=QD8ZHewLVLD6i6NFTTB5Kdow4w28Be5CVOFydmqgUQnlu4jAyF0gUPseI1H5sDB0Jm7PBb8e26QgEnnuTvdypiKKHw+dFpbsS0BhFJzBVN4Zu9AZFmPG1/O4zYkJ3nfpRvn3Y1q3NrYA8h0wGA1y3uET4kurv0QV23ENOC+3bBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705855299; c=relaxed/simple;
-	bh=51UlQqphSgXsPSJFl8/Rx05VZDKMVQU2uJ0P+iHg1FQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aZVksqcY9P+9t8gOXgunHPCsIC2bJ813KjSqE6eS5Burpl08TUJSv3+yjI7HjkFvTax1nEGnWCtYaA0BMlV9hIwEQVrADsce4o19W/mYaOChTfwWrs3cm1wyVByU3gwEafN1GWVjFC5/FG1DLFx63q6zWoN1HC7K+oO22C4F41Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HDsQ32Go; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DB35C433C7;
-	Sun, 21 Jan 2024 16:41:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705855298;
-	bh=51UlQqphSgXsPSJFl8/Rx05VZDKMVQU2uJ0P+iHg1FQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=HDsQ32GoN42KL6wglqQl+WgBmDJQyBdvAcTk6X6jDY5YhOPS8tv5OLD/c3sNkM3jC
-	 P18uOBmI73k5sIN++GkQzNw35AzG4qPzsfqOExSDryYwWujp/bJ1jWHxSOIighw1sz
-	 oC+EIVVtURl5lclzPSIobI1yd60VVw2i38ROjYynbdvuY4fgkJSA8fka+vBH9q0RNN
-	 hIPSyAw7MUVY7U1hJS0IO5pY5TtOezVkIFEn6NYQ7LXHCwaJcZXY7Rgcc622v3sqtp
-	 gSjPmhRSJ15twM9TlEgbQ0G5Yf05NSsMp+wgsixmz3y2y+BzU8BAjjns4DZt9+F7nZ
-	 u/5LWsoXfurNQ==
-Date: Sun, 21 Jan 2024 16:41:21 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: =?UTF-8?B?TcOlcnRlbg==?= Lindahl <marten.lindahl@axis.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, <linux-iio@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <kernel@axis.com>
-Subject: Re: [PATCH v3] iio: light: vcnl4000: Set ps high definition for
- 4040/4200
-Message-ID: <20240121164121.159aea5e@jic23-huawei>
-In-Reply-To: <20231221-vcnl4000-ps-hd-v3-1-6dcc889372be@axis.com>
-References: <20231221-vcnl4000-ps-hd-v3-1-6dcc889372be@axis.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705855571; c=relaxed/simple;
+	bh=SXpGnpIGQfJuOVAZ0umiygpDbMYgAaWjCZV42ZZzXjM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GQUOoz+D2yaVkKYCzFh1217OsDGJJdL/V+JFXkdeB9tvrh1E1bDSNahMFrz7tG0+GYMe4QRkCqA3kRCs5T5CizG01vMkcf/6cqJg8kMwLaAEJvoozANkBJfpZepwBuEGnDRdxd9CqySIr2lsM11XyBAxWBqnFcB8boTtCowWq24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=rJIjmPmD; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=BHOFZcuTxHKtAFe+5SXsdTjosX9ZtBXP8Ft5m35WZew=; b=rJIjmPmDd+Ls+Hr9hu4nE6G5vU
+	P+4nn6S6zoEq1QaRKrNmnKbBQXlQey7L64fNlXwpar8zVrsIuvXfct4SNX8HYYHQAgtCRlWpTb3TX
+	Xz83hyOOws5wjAE37qqzF+/NYHSoLWQkvgf181YS+chDM4AVLVSjvgD9j5zGdoDcluZw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rRaxL-005f5v-RN; Sun, 21 Jan 2024 17:45:59 +0100
+Date: Sun, 21 Jan 2024 17:45:59 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Ziyang Huang <hzyitc@outlook.com>
+Cc: mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+	richardcochran@gmail.com, p.zabel@pengutronix.de,
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 7/8] arm64: dts: qcom: ipq5018: enable ethernet support
+Message-ID: <b8510b38-3669-4a04-9ca6-dbe937ecbec3@lunn.ch>
+References: <TYZPR01MB55563BD6A2B78402E4BB44D4C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+ <TYZPR01MB5556FA040B07F48AFE544680C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYZPR01MB5556FA040B07F48AFE544680C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
 
-On Mon, 15 Jan 2024 12:44:36 +0100
-M=C3=A5rten Lindahl <marten.lindahl@axis.com> wrote:
+On Sun, Jan 21, 2024 at 08:42:36PM +0800, Ziyang Huang wrote:
+> Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
+> ---
+>  arch/arm64/boot/dts/qcom/ipq5018.dtsi | 120 +++++++++++++++++++++++++-
+>  1 file changed, 116 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+> index e502a3ecf4b7..b36e5c2136b7 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+> @@ -94,6 +94,63 @@ soc: soc@0 {
+>  		#size-cells = <1>;
+>  		ranges = <0 0 0 0xffffffff>;
+>  
+> +		mdio0: mdio@88000 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			compatible = "qcom,ipq5018-mdio", "qcom,qca-mdio";
+> +			reg = <0x88000 0x64>;
+> +			resets = <&gcc GCC_GEPHY_MDC_SW_ARES>,
+> +				 <&gcc GCC_GEPHY_DSP_HW_ARES>;
 
-> The vcnl4040/vcnl4200 proximity sensor defaults to 12 bit data
-> resolution, but the chip also supports 16 bit data resolution, which is
-> called proximity high definition (PS_HD).
->=20
-> Make the vcnl4040/vcnl4200 proximity sensor use the high definition for
-> all data readings. Please note that in order to preserve the 12 bit
-> integer part of the in_proximity_raw output, the format is changed from
-> integer to fixed point.
->=20
-> Signed-off-by: M=C3=A5rten Lindahl <marten.lindahl@axis.com>
-Applied to the togreg branch of iio.git and initially pushed out as testing
-for 0-day to see if it can find anything we missed.
+What do these two resets do? An MDIO bus controller is unlikely to
+have a DSP in it. That is something a PHY is more likely to have. An
+MDIO bus controller does have an MDC line, but why is it
+GCC_GEPHY_MDC_SW_ARES not GCC_MDIO_MDC_SW_ARES? So this again makes me
+think this is a PHY reset, so should be in the PHY node.
 
-Thanks,
+A device tree binding will help sort this out.
 
-Jonathan
+
+    Andrew
+
+---
+pw-bot: cr
 
