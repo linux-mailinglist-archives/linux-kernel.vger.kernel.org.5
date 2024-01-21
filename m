@@ -1,119 +1,361 @@
-Return-Path: <linux-kernel+bounces-31953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95A59835429
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 03:07:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2342A835431
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 03:27:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B85AB21696
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 02:07:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4309D1C2149F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 02:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 189C636128;
-	Sun, 21 Jan 2024 02:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F0836127;
+	Sun, 21 Jan 2024 02:27:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QauSL30y"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (1024-bit key) header.d=altimeter.info header.i=@altimeter.info header.b="kfSADskk"
+Received: from hognose1.porkbun.com (hognose1.porkbun.com [35.82.102.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702153610A;
-	Sun, 21 Jan 2024 02:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25AE610FD;
+	Sun, 21 Jan 2024 02:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.82.102.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705802825; cv=none; b=W4pvHIJ1KSSJqphLi6mD7L/5Sb4Iy+DpciKxckJbVIntX6+bSIAnbjAwyv3Gk8VCQRoQrDu/aJjBZU0HsbpX4bGAMJyjXP1fkTre4i5XDV4jZYy+tXsIhATeiCpmyVrWWRgSuVLNygarLWsijKqMfYnlIK7dQ+AEfbI9X+s6dRg=
+	t=1705804037; cv=none; b=OGyXm6pT9W1tPkVBXh/E1fJshn15t5OqyRojxOGqcLgj254V78BbXOLz5MC6I+rmy0hNYL8gaoUUPL88L7Yfm+z5M2tRaVIKBbF79QZ9E1KUtq22XM420qaUvoz+yl0a3BXGdo9kFGC88E7MZRlQttD478EuAJKauy6Kf+yQNHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705802825; c=relaxed/simple;
-	bh=SYFDB18YSASADrg7kQUk2ZYfq0PEGYsVZP7Xd6Nm+3s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=am3dEsel1rtRy8a6+UNlY8dfpXNX1ORlF34ZPdlESEiGEor+C+cwbXIWHjN7JYT/nzdZIRFLYg7WGZFThlr0eGe28ZHHG4FmvTKFifIaKbaJicMcPJPd0eIoOERAhjWDiWTDwRY7nGJY3M8lPbbCMOdSk+1+92YBlo3yvqPgyEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QauSL30y; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705802824; x=1737338824;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SYFDB18YSASADrg7kQUk2ZYfq0PEGYsVZP7Xd6Nm+3s=;
-  b=QauSL30yLYcKxEAMUR7n5YsiVGxmCsd7mdHHCr779ThhMYo7CX9Guq2L
-   ihkgIKa2uLy+MB7rs5rSUdSqoe51cB4T9dxJkO1jQamfBGjMGnHctvOSA
-   DhtwUSDaakiYBDuNMWCjK/qX9jezgdygHKRUAr0xfme1Pj9unTbFW/MJ6
-   mz0QSg2Y7hXfE01hKQtJKVAL3YhW9FlD37JUl+hJRAMgAeuF7F4gFd4Oq
-   g9HalXhkXlVsn/nFjFX8Ih1xMCc4PBLlfK1ARjEwRmisj9L2lTlfg8MdU
-   wK+UzEehzuaLz0/tQFl50++S0ppM+pYQf+gVKPRz+vMyR5QaPBXXlNZDt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="863136"
-X-IronPort-AV: E=Sophos;i="6.05,209,1701158400"; 
-   d="scan'208";a="863136"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2024 18:07:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="958419171"
-X-IronPort-AV: E=Sophos;i="6.05,209,1701158400"; 
-   d="scan'208";a="958419171"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 20 Jan 2024 18:06:58 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rRNEe-0005bG-1u;
-	Sun, 21 Jan 2024 02:06:56 +0000
-Date: Sun, 21 Jan 2024 10:05:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Amrit Anand <quic_amrianan@quicinc.com>, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org
-Cc: oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	kernel@quicinc.com, Amrit Anand <quic_amrianan@quicinc.com>,
-	Elliot Berman <quic_eberman@quicinc.com>
-Subject: Re: [PATCH 2/2] dt-bindings: hwinfo: Add Qualcomm's board-id types
-Message-ID: <202401210920.aPy2DJwj-lkp@intel.com>
-References: <1705749649-4708-3-git-send-email-quic_amrianan@quicinc.com>
+	s=arc-20240116; t=1705804037; c=relaxed/simple;
+	bh=GlLSfdg6SEM8pbbwe0a19ta9m1tlZBaNcMRvmih8Yz8=;
+	h=MIME-Version:Date:From:To:Cc:Subject:Message-ID:Content-Type; b=oaBclqxF1rZjJAtH2EYOz8/oGQkxdBSJ+6/TmZcYhACD5mxOsNWDo/OiafkFQXGKvMbMJfthk7STFGYVnS5/LDmlzKi2DCRZJcpgvcGTBXKJdbxUyVWLbUhP9lTvuOiHQ1ZBP6ZBU93xffTkeru0wLmSi7gDBw+suFLa4AsPvTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=altimeter.info; spf=pass smtp.mailfrom=altimeter.info; dkim=pass (1024-bit key) header.d=altimeter.info header.i=@altimeter.info header.b=kfSADskk; arc=none smtp.client-ip=35.82.102.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=altimeter.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altimeter.info
+Received: from webmail.porkbun.com (unknown [35.86.129.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client did not present a certificate)
+	(Authenticated sender: linux-kernel@altimeter.info)
+	by hognose1.porkbun.com (Postfix) with ESMTPSA id AD70E448AA;
+	Sun, 21 Jan 2024 02:27:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altimeter.info;
+	s=default; t=1705804028;
+	bh=cPQpBSAUojnCOOh/lXp01TE9KjsI7ZgJIVqD39TL5JY=;
+	h=Date:From:To:Cc:Subject;
+	b=kfSADskkllm6oFs1Z1y0dbsfUs0UJQ1oehgXe3YJ5mIerUvjSyQC66Tn5xkfKkwRr
+	 mCv3gjC8PifSwU04S6Dwhfk1X31eSYqU6oeMebL8TFak13FkxuO12bBZE0+rklInZQ
+	 yf5dXqILeO/0qAQQ4BM0ny0UYQk+EkPsfvJag6no=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1705749649-4708-3-git-send-email-quic_amrianan@quicinc.com>
+Date: Sat, 20 Jan 2024 18:27:06 -0800
+From: Ivan Gorinov <linux-kernel@altimeter.info>
+To: jikos@kernel.org
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Input: hid-winwing module
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <e028ff107ed533627499abde6d197159@altimeter.info>
+X-Sender: linux-kernel@altimeter.info
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Amrit,
+Support for WinWing Orion2 throttle.
 
-kernel test robot noticed the following build warnings:
+On the Orion 2 throttle, buttons 0 .. 63 are reserved for throttle grip;
+the throttle base buttons have numbers 64 .. 110.
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on linus/master v6.7 next-20240119]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Linux kernel HID subsystem only supports up to 80 buttons.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Amrit-Anand/dt-bindings-hwinfo-Introduce-board-id/20240120-192358
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/1705749649-4708-3-git-send-email-quic_amrianan%40quicinc.com
-patch subject: [PATCH 2/2] dt-bindings: hwinfo: Add Qualcomm's board-id types
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20240121/202401210920.aPy2DJwj-lkp@intel.com/reproduce)
+This kernel module remaps throttle base buttons to numbers 32 .. 78,
+reserving only numbers 0 .. 31 for buttons on the throttle grip.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401210920.aPy2DJwj-lkp@intel.com/
+Changes since v1:
+   - Fixed formatting of descriptor byte array;
+   - Using product codes of Winwing grips in config.
 
-dtcheck warnings: (new ones prefixed by >>)
->> Documentation/devicetree/bindings/hwinfo/board-id.yaml:23:11: [error] string value is redundantly quoted with any quotes (quoted-strings)
-   Documentation/devicetree/bindings/hwinfo/board-id.yaml:25:11: [error] string value is redundantly quoted with any quotes (quoted-strings)
->> Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml:70:4: [warning] wrong indentation: expected 2 but found 3 (indentation)
+Signed-off-by: Ivan Gorinov <linux-kernel@altimeter.info>
+---
+  drivers/hid/Kconfig       |  16 +++
+  drivers/hid/Makefile      |   1 +
+  drivers/hid/hid-winwing.c | 227 ++++++++++++++++++++++++++++++++++++++
+  3 files changed, 244 insertions(+)
+  create mode 100644 drivers/hid/hid-winwing.c
 
-vim +70 Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index 4c682c650704..9c8fea72b05d 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -1236,6 +1236,22 @@ config HID_WIIMOTE
+  	To compile this driver as a module, choose M here: the
+  	module will be called hid-wiimote.
 
-    68	
-    69	examples:
-  > 70	   - |
++config HID_WINWING
++	tristate "WinWing Orion2 throttle support"
++	depends on USB_HID
++	depends on NEW_LEDS
++	depends on LEDS_CLASS
++	help
++	  Support for WinWing Orion2 throttle base with the following grips:
++
++	    * TGRIP-16EX
++	    * TGRIP-18
++
++	  This driver enables all buttons and switches on the throttle base.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called hid-winwing.
++
+  config HID_XINMO
+  	tristate "Xin-Mo non-fully compliant devices"
+  	help
+diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+index 082a728eac60..ce71b53ea6c5 100644
+--- a/drivers/hid/Makefile
++++ b/drivers/hid/Makefile
+@@ -150,6 +150,7 @@ wacom-objs			:= wacom_wac.o wacom_sys.o
+  obj-$(CONFIG_HID_WACOM)		+= wacom.o
+  obj-$(CONFIG_HID_WALTOP)	+= hid-waltop.o
+  obj-$(CONFIG_HID_WIIMOTE)	+= hid-wiimote.o
++obj-$(CONFIG_HID_WINWING)	+= hid-winwing.o
+  obj-$(CONFIG_HID_SENSOR_HUB)	+= hid-sensor-hub.o
+  obj-$(CONFIG_HID_SENSOR_CUSTOM_SENSOR)	+= hid-sensor-custom.o
 
+diff --git a/drivers/hid/hid-winwing.c b/drivers/hid/hid-winwing.c
+new file mode 100644
+index 000000000000..f2badd78c194
+--- /dev/null
++++ b/drivers/hid/hid-winwing.c
+@@ -0,0 +1,227 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * HID driver for WinWing Orion 2 throttle
++ *
++ * Copyright (c) 2023 Ivan Gorinov
++ */
++
++#include <linux/device.h>
++#include <linux/hid.h>
++#include <linux/hidraw.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++
++#define MAX_REPORT 16
++
++struct winwing_led {
++	struct led_classdev cdev;
++	struct hid_device *hdev;
++	int number;
++};
++
++struct winwing_led_info {
++	int number;
++	int max_brightness;
++	const char *led_name;
++};
++
++static struct winwing_led_info led_info[3] = {
++	{ 0, 255, "backlight" },
++	{ 1, 1, "a-a" },
++	{ 2, 1, "a-g" },
++};
++
++struct winwing_drv_data {
++	struct hid_device *hdev;
++	__u8 *report_buf;
++	struct mutex lock;
++	unsigned int num_leds;
++	struct winwing_led leds[];
++};
++
++static int winwing_led_write(struct led_classdev *cdev, enum 
+led_brightness br)
++{
++	struct winwing_led *led = (struct winwing_led *) cdev;
++	struct winwing_drv_data *data = hid_get_drvdata(led->hdev);
++	__u8 *buf = data->report_buf;
++	int ret;
++
++	mutex_lock(&data->lock);
++
++	buf[0] = 0x02;
++	buf[1] = 0x60;
++	buf[2] = 0xbe;
++	buf[3] = 0x00;
++	buf[4] = 0x00;
++	buf[5] = 0x03;
++	buf[6] = 0x49;
++	buf[7] = led->number;
++	buf[8] = br;
++	buf[9] = 0x00;
++	buf[10] = 0;
++	buf[11] = 0;
++	buf[12] = 0;
++	buf[13] = 0;
++
++	ret = hid_hw_output_report(led->hdev, buf, 14);
++
++	mutex_unlock(&data->lock);
++
++	return ret;
++}
++
++static int winwing_init_led(struct hid_device *hdev, struct input_dev 
+*input)
++{
++	struct winwing_drv_data *data;
++	struct winwing_led *led;
++	int ret;
++	int i;
++
++	size_t data_size = struct_size(data, leds, 3);
++
++	data = devm_kzalloc(&hdev->dev, data_size, GFP_KERNEL);
++
++	if (!data)
++		return -ENOMEM;
++
++	data->report_buf = devm_kmalloc(&hdev->dev, MAX_REPORT, GFP_KERNEL);
++
++	if (!data->report_buf)
++		return -ENOMEM;
++
++	for (i = 0; i < 3; i += 1) {
++		struct winwing_led_info *info = &led_info[i];
++
++		led = &data->leds[i];
++		led->hdev = hdev;
++		led->number = info->number;
++		led->cdev.max_brightness = info->max_brightness;
++		led->cdev.brightness_set_blocking = winwing_led_write;
++		led->cdev.flags = LED_HW_PLUGGABLE;
++		led->cdev.name = devm_kasprintf(&hdev->dev, GFP_KERNEL,
++						"%s::%s",
++						dev_name(&input->dev),
++						info->led_name);
++
++		ret = devm_led_classdev_register(&hdev->dev, &led->cdev);
++		if (ret)
++			return ret;
++	}
++
++	hid_set_drvdata(hdev, data);
++
++	return ret;
++}
++
++static int winwing_probe(struct hid_device *hdev,
++			const struct hid_device_id *id)
++{
++	unsigned int minor;
++	int ret;
++
++	ret = hid_parse(hdev);
++	if (ret) {
++		hid_err(hdev, "parse failed\n");
++		return ret;
++	}
++
++	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
++	if (ret) {
++		hid_err(hdev, "hw start failed\n");
++		return ret;
++	}
++
++	minor = ((struct hidraw *) hdev->hidraw)->minor;
++
++	return 0;
++}
++
++static int winwing_input_configured(struct hid_device *hdev,
++			struct hid_input *hidinput)
++{
++	int ret;
++
++	ret = winwing_init_led(hdev, hidinput->input);
++
++	if (ret)
++		hid_err(hdev, "led init failed\n");
++
++	return ret;
++}
++
++static __u8 original_rdesc_buttons[] = {
++	0x05, 0x09, 0x19, 0x01, 0x29, 0x6F,
++	0x15, 0x00, 0x25, 0x01, 0x35, 0x00,
++	0x45, 0x01, 0x75, 0x01, 0x95, 0x6F,
++	0x81, 0x02, 0x75, 0x01, 0x95, 0x01,
++	0x81, 0x01
++};
++
++/*
++ * HID report descriptor shows 111 buttons, which exceeds maximum
++ * number of buttons (80) supported by Linux kernel HID subsystem.
++ *
++ * This module skips numbers 32-63, unused on some throttle grips.
++ */
++
++static __u8 *winwing_report_fixup(struct hid_device *hdev, __u8 *rdesc,
++		unsigned int *rsize)
++{
++	int sig_length = sizeof(original_rdesc_buttons);
++	int unused_button_numbers = 32;
++
++	if (*rsize < 34)
++		return rdesc;
++
++	if (memcmp(rdesc + 8, original_rdesc_buttons, sig_length) == 0) {
++
++		/* Usage Maximum */
++		rdesc[13] -= unused_button_numbers;
++
++		/*  Report Count for buttons */
++		rdesc[25] -= unused_button_numbers;
++
++		/*  Report Count for padding [HID1_11, 6.2.2.9] */
++		rdesc[31] += unused_button_numbers;
++
++		hid_info(hdev, "winwing descriptor fixed\n");
++	}
++
++	return rdesc;
++}
++
++static int winwing_raw_event(struct hid_device *hdev,
++		struct hid_report *report, u8 *raw_data, int size)
++{
++	if (size >= 15) {
++		/* Skip buttons 32 .. 63 */
++		memmove(raw_data + 5, raw_data + 9, 6);
++
++		/* Clear the padding */
++		memset(raw_data + 11, 0, 4);
++	}
++
++	return 0;
++}
++
++static const struct hid_device_id winwing_devices[] = {
++	{ HID_USB_DEVICE(0x4098, 0xbe62) },  /* TGRIP-18 */
++	{ HID_USB_DEVICE(0x4098, 0xbe68) },  /* TGRIP-16EX */
++	{}
++};
++
++MODULE_DEVICE_TABLE(hid, winwing_devices);
++
++static struct hid_driver winwing_driver = {
++	.name = "winwing",
++	.id_table = winwing_devices,
++	.probe = winwing_probe,
++	.input_configured = winwing_input_configured,
++	.report_fixup = winwing_report_fixup,
++	.raw_event = winwing_raw_event,
++};
++module_hid_driver(winwing_driver);
++
++MODULE_LICENSE("GPL");
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
 
