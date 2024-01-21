@@ -1,107 +1,118 @@
-Return-Path: <linux-kernel+bounces-32070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B868355FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 14:55:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E705A8355FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 14:51:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA7961C22087
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:55:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BDD5B22DA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6209E374F7;
-	Sun, 21 Jan 2024 13:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06EC4374D1;
+	Sun, 21 Jan 2024 13:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HYYgPYo6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILrkPXEz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667DA374F0;
-	Sun, 21 Jan 2024 13:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0F937160;
+	Sun, 21 Jan 2024 13:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705845306; cv=none; b=bkJoG5uCaKUyMrXFZhFEVAnPFFsowItacgs05oQDeSN4OV+tMG0WBBgLCUkIOQsfeO43qDjOmrbGYqc4qQ0AwjbrKejaUg58ieyqbxARIwsEL40qnldzB+wCrKx1KfC7TXXoKrt/0b2GODfGV5SLxBABxC8FJXCbKFaK2CydvH4=
+	t=1705845088; cv=none; b=KahHLmlN4xZuMDTYNBcL9RIXoIJm+l9cIGdxXJZKw46lMLYg4Gyx8qy7TwGqvw3HIb2DBAoVQ1J2V+AOLhbATKfGWpDxwKGPblF5CikHFfaIgTD7EwDsf75Ni3UwjYODyyiBe4okGwHcrm53FW38eifT8zyEz+gji6RrEkPtR8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705845306; c=relaxed/simple;
-	bh=R48NpmG84koS2tGZXQk7+5epMId7bmv44QQnOetSWZ8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H2YSja7A6ugCwS1Rm8BFKZ3OY2HRYrGNZWj9HeqPzvlP3mGZeIadbGUbjroPHDkDhxk7Mtv+PUQZXKD+xOrrDKEzqEmEiZ9kA1sLhNq+QL7Bp0+AuoHS2beKeY19n+1NQPnq1WwbScaeKN4sZMNJ9P//KHo1n16egEscxr0h0EI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HYYgPYo6; arc=none smtp.client-ip=192.55.52.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705845305; x=1737381305;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=R48NpmG84koS2tGZXQk7+5epMId7bmv44QQnOetSWZ8=;
-  b=HYYgPYo6q4vC38shYL09M0TM6CjIeWtQHBoLPPTtnZOn2r7MMeHI5KtT
-   Avvx0UrMCZPu95AK144VZCILR5r7GLRaAuyUhPTTlZsfvqd6hRj/qcJJD
-   nkKTXax7fUiKyIRuMFe2NK16B2qIis6+1DA3kWdKWKxBf5Tvs17kfiZ11
-   zSLeh/MNqh0ovI7w8MIS6dIDh/4h2G/GGlkDW7NdlxqSaSv7QBFICzh50
-   FUiWySdjOwM45AtrNatrzGLPTHPsNcEVXkA+M0YsyOnOPvqx6KbdLOHCY
-   vuhOMKBohrKFbRfK5iRPVOUlMhh40j/A8MlsH2O6iy39WzCNykDEFpuN7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="398192245"
-X-IronPort-AV: E=Sophos;i="6.05,209,1701158400"; 
-   d="scan'208";a="398192245"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2024 05:55:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="778363190"
-X-IronPort-AV: E=Sophos;i="6.05,209,1701158400"; 
-   d="scan'208";a="778363190"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2024 05:55:00 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rRYCR-0000000FunQ-24vF;
-	Sun, 21 Jan 2024 15:49:23 +0200
-Date: Sun, 21 Jan 2024 15:49:23 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Javier Martinez Canillas <javierm@redhat.com>
-Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v1 2/4] backlight: hx8357: Move OF table closer to its
- consumer
-Message-ID: <Za0g47CgOH4MhdRe@smile.fi.intel.com>
-References: <20240114152759.1040563-1-andriy.shevchenko@linux.intel.com>
- <20240114152759.1040563-3-andriy.shevchenko@linux.intel.com>
- <878r4rovk4.fsf@minerva.mail-host-address-is-not-set>
+	s=arc-20240116; t=1705845088; c=relaxed/simple;
+	bh=RRuaQ9+UZxnjRq0EzIx5cXmNFrlQNvdxgFQYuMRugDs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZCZs0e09+kuuDNBYhik4pv3/R34zd1zgzS1H+zvb245GHV0GyQ/98EJ8VvBkCteZETw77cEIrLmUmcIfkYkflEmh6vbPnB3WrK48SNDa+Ka17MrwHCdxiA5FOzkEcKthwKnz6hU/6Q7IzU65pBAIafml3PfSRwY1zQE/dJXkEIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILrkPXEz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A399CC433C7;
+	Sun, 21 Jan 2024 13:51:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705845087;
+	bh=RRuaQ9+UZxnjRq0EzIx5cXmNFrlQNvdxgFQYuMRugDs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ILrkPXEzoDn/HWJ+Tq1WzkeGUP3ZFCNJMPxvH7UdJzBRLl22nalPQkgg96npJZo/z
+	 BYt6Y5xPNg6EqQOUqzTU2fUDwOv3Anlhi5GX9xpHCh0Tx7yNsYIEjovBP6B90/Jlmb
+	 mpx+Ymtxw0LgE2fzdb2lYmSUacHN0LoyEb8FzjtOF+hMn5BQKDnxXEzdGWq75WRMeR
+	 3A+v5T+yOTKb1wT45ZTM0lBmzHiRF9OUQkauvoYssnjU8ZGP0wSbsG62eGwUjte1ft
+	 N7D9ixepEe26qB0BjC7hQgA3CwQW6aWDMb5s1Q1Jn5GSSGGtLcBYb78pDtI6JH7ETI
+	 zZAEkB9PTrvIg==
+Date: Sun, 21 Jan 2024 13:51:14 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 3/4] iio: humidity: Add driver for ti HDC302x
+ humidity sensors
+Message-ID: <20240121135114.5f2aa0cf@jic23-huawei>
+In-Reply-To: <b349fd4a-c7e3-44f8-9908-2abe24bbd69e@gmail.com>
+References: <20231211122201.9598-1-579lpy@gmail.com>
+	<20231211122940.9791-1-579lpy@gmail.com>
+	<d9a84e5b-9e23-4aa9-8e58-0bb9f2b224d7@metafoo.de>
+	<b349fd4a-c7e3-44f8-9908-2abe24bbd69e@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878r4rovk4.fsf@minerva.mail-host-address-is-not-set>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 15, 2024 at 09:22:19AM +0100, Javier Martinez Canillas wrote:
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
+On Sat, 20 Jan 2024 17:14:21 +0100
+Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
 
-..
+> On 20.01.24 05:17, Lars-Peter Clausen wrote:
+> > On 12/11/23 04:29, Li peiyu wrote: =20
+> >> Add support for HDC302x integrated capacitive based relative
+> >> humidity (RH) and temperature sensor.
+> >> This driver supports reading values, reading the maximum and
+> >> minimum of values and controlling the integrated heater of
+> >> the sensor.
+> >>
+> >> Co-developed-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> >> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> >> Signed-off-by: Li peiyu <579lpy@gmail.com>
+> >> ---
+> >> =C2=A0 MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
+=A0 8 +
+> >> =C2=A0 drivers/iio/humidity/Kconfig=C2=A0=C2=A0 |=C2=A0 12 +
+> >> =C2=A0 drivers/iio/humidity/Makefile=C2=A0 |=C2=A0=C2=A0 1 +
+> >> =C2=A0 drivers/iio/humidity/hdc3020.c | 473 ++++++++++++++++++++++++++=
++++++++ =20
+> > I was just trying to use this driver. Somehow the Makefile and Kconfig
+> > changes were lost when the patch was applied to the IIO tree.
+> >=20
+> >  =20
+> Apparently only the driver code was added. The new entry in the
+> MAINTAINERS file is also missing.
+>=20
+> Best regards,
+> Javier Carrasco
 
-> > +	{}
-> 
-> While at it, maybe add the { /* sentinel */ } convention to the last entry ?
+Gah, I clearly messed up. My guess is a messy merge that went wrong..
 
-Maybe. Is it a common for this subsystem?
+Anyhow, I'll post a patch to put this back in a few mins and pick it direct=
+ly
+given it's just putting in the missing stuff from this patch.
 
-..
+That will be on the fixes-togreg branch of iio.git shortly.
 
-> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+Extra tags etc are fine, but I'm keen to get this into linux-next at least
+quickly so we get some testing before I send a fixes pull request (probably
+next weekend).
 
-Thank you for the review!
+Sorry for the mess up!
 
--- 
-With Best Regards,
-Andy Shevchenko
+Jonathan
+
 
 
 
