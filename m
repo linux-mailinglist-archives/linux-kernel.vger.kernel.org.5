@@ -1,161 +1,197 @@
-Return-Path: <linux-kernel+bounces-32035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A787D83558F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:48:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 285BD835597
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:56:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EA6C1F21831
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 11:48:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12B2A1C20BE8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 11:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E2036AFD;
-	Sun, 21 Jan 2024 11:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBE136AFD;
+	Sun, 21 Jan 2024 11:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="FdwPngbQ"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2057.outbound.protection.outlook.com [40.107.21.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="Kn4NHR4j"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19FA36AEB;
-	Sun, 21 Jan 2024 11:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705837727; cv=fail; b=Cee0FWIhQDzeFGGvgo2YX/c7fhNAJUH0ogSpj8RIDvVDU6D8aCfDWfnWjyVLrOqQQa/Azc773moTogIcPK6MCSXJ4of6GLg7BKaRrmaEP0SSfCg0wubisYqVBXr23Nkc0gYbdgdVgTsiTq16DNzsqRqixk46GTq4ENmhexvTqJI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705837727; c=relaxed/simple;
-	bh=RTAistZp9vaoBjKlc+Zp8egoetdwSyujpsBOBPfQw5w=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=XPF7Hixl8OJEbWRxtnfUr7EMmFL6P1AZSscbbCY8DKiBInhYi9sij1oLLw+ZdkxPGVPDS7il3DXfGQxmbVGhl4qt5J52dgKtgiZ91as1Q/DUeBUVhhnX+85aKqCnMcRtYhtLJmWGSFoKFO61+95A/zA6YxAcOMXZCHJv5Mmmv9A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=FdwPngbQ; arc=fail smtp.client-ip=40.107.21.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cyxOPRZ3uGVxVy58xZpcicvic8PI+1exl3uBMvD+kQJ8o2naVYMYvuaw0LeVhVS/YoSRrtWB5gLDbY2z0KLr4d3HV8US0roXw3UMzj8CpwIrcaPPtBAy3X45v8E1fAxPP0u/gOgjh02/U0TynveWndh9Q4U+xN1z/YeXG/VuzXM3q1L47KnpTMffgKanAJoWj2pOf46VwRz7jkhMhu5d7ZVLlxEL1+d7N4g3kV7DMwCuT4SlFCpSRmjDoDi8rPDxOiAxqBAxeWQ0WsjsZ2lFmaKI9CtmPT/C0VkMVEIgP1kJci1XTGNR3JNZIM2F6w8a8OATT5ZlmxpAkVQWB2tfwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LfBiN53mVri51XJT/WaFRhaco7pv0NZ29+u8B5Kx1JA=;
- b=HmUDDm5GWXszKVlBSylhIRoTiRqlHI2hpXeqhYdXBpdvpqFx37voq/9OetjO9qZwekBMDXVhOHj4VmDu0h31rnZtlQKlQwwf0gKruENvMZ3Ga4Fu1k/bKjsqVvn964gA6yr2upTCOOR15ZsIeAF5QzPo4nZNgAwli+XNPVnaQqDpipcX7ILQkFhwSm+NohWK+eXrDGbemUO7WEeIybMOthP1n9/uGMbVVv9uZ/IoJzDFf4IC/5vn86e9e0ggRXd7YHpsZFwLSbqibkXZ5RctnuV0BeSHfOVJXjh/2TXUMPmZr7SokJkyu1WTB6J8rm29SxAHvy94PIIA8ulOCreiDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LfBiN53mVri51XJT/WaFRhaco7pv0NZ29+u8B5Kx1JA=;
- b=FdwPngbQ6ePz8b+2tXzjc7wR1GqBmC6EBOmr9+fX8iu1CVJnat0onBhdL1yGivsc6bCYidIOEGSS5KtgnOixgkMr+PLZyN18KKiQbaW3wZYIK22576bDGOjcUKeCwhhgNm+8p/Fidh+eedZlekvEDaEsuP0j67PV0zZPRKbq/F8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AM8PR04MB7458.eurprd04.prod.outlook.com (2603:10a6:20b:1c4::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.29; Sun, 21 Jan
- 2024 11:48:42 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7202.028; Sun, 21 Jan 2024
- 11:48:42 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To: gregkh@linuxfoundation.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	jirislaby@kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] dt-bindings: serial: fsl-lpuart: support i.MX95
-Date: Sun, 21 Jan 2024 19:53:01 +0800
-Message-Id: <20240121115301.1420502-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.37.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0001.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::15) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A736364DB;
+	Sun, 21 Jan 2024 11:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705838150; cv=none; b=lK/kab8iT3cS0h/xGkToXVyOXcURDxAv1PU3Wyeo0OmZKIend2xMR22So9iU9ZgKOeoJ5JJKmbzv9f8uaUXigo0Z8uO7QaH7/pdO7M0iDlT+Eg2NTNY4uQyVGy+h70qbAv70JPsevn9Vp3dIH3c88SMRcBSPYzDgipKQ2niL1Ck=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705838150; c=relaxed/simple;
+	bh=VgT/ghWM9Rl0uTNRGxHSL3MLjQYvVBrjftEsvy2LytQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mrjs6fLc9m2uapTGtKdpCvSV3K6IJI/WDwAj7JHQRmlO8/In6KkziifOxP099PQ4euyyLOJVBJfud9iEjVQhXrPV5eH4/ANmvFg2pE8QbHebcQlDAtESyK4MPKgTtFMGZ8c2hFEJpjMXQ30F31K551l2UqnmLMd9p6gdfwOtBFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=Kn4NHR4j; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1705838145; bh=VgT/ghWM9Rl0uTNRGxHSL3MLjQYvVBrjftEsvy2LytQ=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=Kn4NHR4jpd+CKkKFE49IyQqnoq3JTaeBXJLkMRFN4NqCp3HGYh8j6y2ELyY5CPBUi
+	 WuJSklx5BVYnqH8o33UVzaVzUCMNoVD+LSAQYhFS0x5y1BSI/dNQR92/xBk8zHdfKk
+	 SXytiTi5hJ8EeUD7hOlKvCk3oIGSkRShl7Rvlia8=
+Date: Sun, 21 Jan 2024 12:55:43 +0100
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Aren Moynihan <aren@peacevolution.org>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 2/3] power: supply: axp20x_usb_power: enable usb_type
+ reporting
+Message-ID: <yltrgkwj3evlyj6lu6ltdk2kg5bchtzginpx7dyblt6aqtdzwp@noczofep5o5b>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Aren Moynihan <aren@peacevolution.org>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Sebastian Reichel <sre@kernel.org>
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240121014057.1042466-1-aren@peacevolution.org>
+ <20240121014057.1042466-5-aren@peacevolution.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM8PR04MB7458:EE_
-X-MS-Office365-Filtering-Correlation-Id: 01a8ff13-5735-4ff5-cb4d-08dc1a76ea45
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	1NJYd89FdvzknolhtZMNwKnb7Vi9n8zReB9eQi+kArZugXKQIUHa4f1YWBnfHmNwjJJHWzMn62dcC2laaDLoPP22HZL4idgb5ZmuhMIfeGyXoH0Z8Mrm0ywl4c0+Jgo69nyIPM+TslZskvrGKKvwQ59GS0iwZjJeq2TfYdW27EtSRDmHVerh7bV4hnrR0/wkGWTrmZW8HluHfGKrGNhvzTK3WUntqLcBpDS1XIZzaas2NALK+TcuDl6QlMfP6g7odf7gah9mv01Ct9knO3RKVhjmb+0z8/kxAA3ZQHV8mXbmPe56+6GKk4Vmaxw9FTMaxsC+0MIkbNUOcTDg/JUYv/MIgovkKSUHISXjNN5E8Otws01gEyh0rglr7JZPQNf6+li0KFECBF7UwNN+0Z+LIc7qCjgTFdSv6JCSnVvDDh9h7OwN2uRMQMvxp7NHN3YUA3SYfJp51kTGW4fCnix6xkXcszRATwOD3rrxw3bB8ugTs024B4oVNqb9PLtdkyWaV/QjL2QSLmWUR2mx/gbbXUsIWfZt5oXEuOuRI/83Yy1qESLixLjKRqxgr727vsQjyodL7D6cwJGmBJ6bJDbJXRkJZfuiVRHC/dQ//IigiHCRYYr/bFnuqKJoF4jims0E
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(366004)(136003)(396003)(346002)(376002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(8676002)(8936002)(478600001)(6506007)(52116002)(6666004)(66946007)(66476007)(66556008)(6486002)(316002)(2616005)(26005)(1076003)(6512007)(41300700001)(2906002)(4326008)(5660300002)(4744005)(86362001)(38350700005)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?fDhemonXcqoZwExhr+u62IY/EZc24+k4LV0uwtjjbcs/ESNRpw2NFsTswY0T?=
- =?us-ascii?Q?AYGISVv243cQttx8YBq+1ugdeF2x40nALR7v3JMkDWnE8w3yuo5dB/QIrn9f?=
- =?us-ascii?Q?MtXxR1i6dINepnT3LFONUnGxTNYzes9f3vwNcD9UqMUOfjfAUAzOeM0drGFU?=
- =?us-ascii?Q?Hk8YpZ9+EffN0oAPLptS7twHdMBOU637l4fwHWVc3eru4hRE2k2nRqQR13AL?=
- =?us-ascii?Q?f7/WCemZ0JWUWDdW7EMPL2iCgd0/wYfyfdhwI9p1Yb1irwOa2ThY76FhUvFj?=
- =?us-ascii?Q?aTSJF8ysJTsk3J43n/EnRnYuUu0LDGEWQ1kZtnx5PR1rGbulyHX+49q60s+7?=
- =?us-ascii?Q?ExF+Jt5HS9ZptsMwiidTbz1bHjkXxrtnAFaBIJRHu2HSyuVDCinpQ5+TwSRY?=
- =?us-ascii?Q?FpgmOHl/LiNZ5X1zeHphm2ulnjyOWUkx67ALpMNE/yZuK1QwNIKV0KuEXXYv?=
- =?us-ascii?Q?nAcsir8HoYXHG/fWnSGsFf1jO2ChTlB8BbDQFMc3yO5SloEr5nALiLi7kTFX?=
- =?us-ascii?Q?VX8DBWKrGpYX//5oQ6lFKyc0WYI8MKO07XIsAjR1GJ3y68vf+68Axsy/R8AA?=
- =?us-ascii?Q?AJv4ZCDSi8R7137sFVRnEtQZM1BDsFbcwsyu7oj9ucpecd7fbzUJ5BLzpe18?=
- =?us-ascii?Q?WuI5mDZSxu4DcAORLbaI6AC8q9VKZaeDzoIQGcgXvHfhdL8s2p6RHy/6A/ec?=
- =?us-ascii?Q?cSJlkiXhasLdmwmWuYwwoRgJVQBje+1EVvv2VkzF0Km+uUbzrCJDqMstMyvQ?=
- =?us-ascii?Q?TbS3NpUlp74ofoBHbeWgWdeQyfxvvT2iAWVG3KNlkjLc+WMUVdYKO6hwszUA?=
- =?us-ascii?Q?dx9VGRafrNcKXb1LLSV6tMgotqf9zsL/xDkO+1PeZWulo5wt/G8TbpuyAncJ?=
- =?us-ascii?Q?VuXwGkIvErKPz0hDZotQLA+LkkBq2t3M6cmfh4CEgpqf0FDPZIqykRA59zEz?=
- =?us-ascii?Q?x1jwJ+HrtiKPvJyWqHbSneuE4aiAFa8MPAkd0QeMl+zoS1R6AplQuGnivCiU?=
- =?us-ascii?Q?BXScF9mscBtiUfA3Jq15riMZSY4rqzHH9MA4BEj8BPa4qtDWG//kb9J7K8T3?=
- =?us-ascii?Q?jcxDEACeATtLN4DwLWOpl+XPJon8NKG6cCyjSEEBNegfuo0besuEYhHGIfoi?=
- =?us-ascii?Q?XC6kQ2b/2ZvC7NhURsjzlCCttJkslb3Z3Yt9+ATPXXjkjWYM3NSp7mM3o56i?=
- =?us-ascii?Q?JblEHsv0be7jEi9mTxBsJSS97pRy4OdsJVLSZb3vkXOPsTyAFPJu1dcZ+DAW?=
- =?us-ascii?Q?wMakvbK5L9vjgPWchWKc+c0U61pz9/6/9otBz/kbI6bQnq70fUiMUXmwkuAH?=
- =?us-ascii?Q?fM6Z2cdp+EzzOwABWQmOCHJ6SlE91jHNfL8N820zrRzBJAWCKAhmnNeuSvxS?=
- =?us-ascii?Q?oSEMNxHAY7ZwNKAzccKjx+4Z8tvvtTYAVZC/rBccxzLif8u4e0cbbK2R6Rmg?=
- =?us-ascii?Q?58r65sGjZWAJROZ3OzZi6Zfve2xZpABdpAE+bzgm42RL1skhkxRXjKNTXixq?=
- =?us-ascii?Q?Anr/azciOkcW6MQcHkwBk0tMLvMk0a52AZysq577m8zE0ZdKHl2SO4rdVgaq?=
- =?us-ascii?Q?pkctrpG43VYCTASIC2/Wis9Yp4zDxP3SSAV+IuAG?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01a8ff13-5735-4ff5-cb4d-08dc1a76ea45
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2024 11:48:42.1762
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NLsJF0KYoZPRflO9HqQ64+ww0ksa5ZWFdLbX5P/xw+yH2b1/ecUnFNo5Hnu4cy7Cz12ZtEgo2sHZ4woxfb6UmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7458
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240121014057.1042466-5-aren@peacevolution.org>
 
-From: Peng Fan <peng.fan@nxp.com>
+Hello Aren,
 
-Add i.MX95 compatible string. Same as i.MX93, it is compatible
-with i.MX8ULP.
+On Sat, Jan 20, 2024 at 08:40:02PM -0500, Aren Moynihan wrote:
+> Axp803 and axp813 can report the detected usb bc mode. SDP, CDP, and DCP
+> are supported.
+> 
+> Signed-off-by: Aren Moynihan <aren@peacevolution.org>
+> ---
+> 
+>  drivers/power/supply/axp20x_usb_power.c | 52 +++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+> 
+> diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
+> index 8c0c2c25565f..5656f6e57d54 100644
+> --- a/drivers/power/supply/axp20x_usb_power.c
+> +++ b/drivers/power/supply/axp20x_usb_power.c
+> @@ -57,6 +57,7 @@ struct axp_data {
+>  	struct reg_field		vbus_valid_bit;
+>  	struct reg_field		vbus_mon_bit;
+>  	struct reg_field		usb_bc_en_bit;
+> +	struct reg_field		usb_bc_det_fld;
+>  	struct reg_field		vbus_disable_bit;
+>  	bool				vbus_needs_polling: 1;
+>  };
+> @@ -69,6 +70,7 @@ struct axp20x_usb_power {
+>  	struct regmap_field *vbus_valid_bit;
+>  	struct regmap_field *vbus_mon_bit;
+>  	struct regmap_field *usb_bc_en_bit;
+> +	struct regmap_field *usb_bc_det_fld;
+>  	struct regmap_field *vbus_disable_bit;
+>  	struct power_supply *supply;
+>  	const struct axp_data *axp_data;
+> @@ -197,6 +199,37 @@ axp20x_usb_power_get_input_current_limit(struct axp20x_usb_power *power,
+>  	return 0;
+>  }
+>  
+> +static int axp20x_get_usb_type(struct axp20x_usb_power *power,
+> +			       union power_supply_propval *val)
+> +{
+> +	unsigned int reg;
+> +	int ret;
+> +
+> +	if (!power->usb_bc_det_fld)
+> +		return -EINVAL;
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- Documentation/devicetree/bindings/serial/fsl-lpuart.yaml | 1 +
- 1 file changed, 1 insertion(+)
+What if detection is disabled becase custom input current limit was set by the
+user? Does the HW keep the result of previous detection in the register?
 
-diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-index 3a5b59f5d3e3..3f9ace89dee9 100644
---- a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-+++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-@@ -30,6 +30,7 @@ properties:
-       - items:
-           - enum:
-               - fsl,imx93-lpuart
-+              - fsl,imx95-lpuart
-           - const: fsl,imx8ulp-lpuart
-           - const: fsl,imx7ulp-lpuart
-       - items:
--- 
-2.37.1
+Kind regards,
+	Ondrej
 
+> +	ret = regmap_field_read(power->usb_bc_det_fld, &reg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	switch (reg) {
+> +	case 1:
+> +		val->intval = POWER_SUPPLY_USB_TYPE_SDP;
+> +		break;
+> +	case 2:
+> +		val->intval = POWER_SUPPLY_USB_TYPE_CDP;
+> +		break;
+> +	case 3:
+> +		val->intval = POWER_SUPPLY_USB_TYPE_DCP;
+> +		break;
+> +	default:
+> +		val->intval = POWER_SUPPLY_USB_TYPE_UNKNOWN;
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int axp20x_usb_power_get_property(struct power_supply *psy,
+>  	enum power_supply_property psp, union power_supply_propval *val)
+>  {
+> @@ -266,6 +299,8 @@ static int axp20x_usb_power_get_property(struct power_supply *psy,
+>  	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+>  		return axp20x_usb_power_get_input_current_limit(power,
+>  								&val->intval);
+> +	case POWER_SUPPLY_PROP_USB_TYPE:
+> +		return axp20x_get_usb_type(power, val);
+>  	default:
+>  		break;
+>  	}
+> @@ -423,6 +458,14 @@ static enum power_supply_property axp813_usb_power_properties[] = {
+>  	POWER_SUPPLY_PROP_VOLTAGE_MIN,
+>  	POWER_SUPPLY_PROP_CURRENT_MAX,
+>  	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
+> +	POWER_SUPPLY_PROP_USB_TYPE,
+> +};
+> +
+> +static enum power_supply_usb_type axp813_usb_types[] = {
+> +	POWER_SUPPLY_USB_TYPE_SDP,
+> +	POWER_SUPPLY_USB_TYPE_DCP,
+> +	POWER_SUPPLY_USB_TYPE_CDP,
+> +	POWER_SUPPLY_USB_TYPE_UNKNOWN,
+>  };
+>  
+>  static const struct power_supply_desc axp20x_usb_power_desc = {
+> @@ -453,6 +496,8 @@ static const struct power_supply_desc axp813_usb_power_desc = {
+>  	.property_is_writeable = axp20x_usb_power_prop_writeable,
+>  	.get_property = axp20x_usb_power_get_property,
+>  	.set_property = axp20x_usb_power_set_property,
+> +	.usb_types = axp813_usb_types,
+> +	.num_usb_types = ARRAY_SIZE(axp813_usb_types),
+>  };
+>  
+>  static const char * const axp20x_irq_names[] = {
+> @@ -555,6 +600,7 @@ static const struct axp_data axp813_data = {
+>  	.input_curr_lim_table = axp_813_usb_input_curr_lim_table,
+>  	.input_curr_lim_fld = REG_FIELD(AXP22X_CHRG_CTRL3, 4, 7),
+>  	.usb_bc_en_bit	= REG_FIELD(AXP288_BC_GLOBAL, 0, 0),
+> +	.usb_bc_det_fld = REG_FIELD(AXP288_BC_DET_STAT, 5, 7),
+>  	.vbus_disable_bit = REG_FIELD(AXP20X_VBUS_IPSOUT_MGMT, 7, 7),
+>  	.vbus_needs_polling = true,
+>  };
+> @@ -708,6 +754,12 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	ret = axp20x_regmap_field_alloc_optional(&pdev->dev, power->regmap,
+> +						 axp_data->usb_bc_det_fld,
+> +						 &power->usb_bc_det_fld);
+> +	if (ret)
+> +		return ret;
+> +
+>  	ret = axp20x_regmap_field_alloc_optional(&pdev->dev, power->regmap,
+>  						 axp_data->vbus_disable_bit,
+>  						 &power->vbus_disable_bit);
+> -- 
+> 2.43.0
+> 
 
