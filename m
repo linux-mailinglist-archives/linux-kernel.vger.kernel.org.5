@@ -1,102 +1,119 @@
-Return-Path: <linux-kernel+bounces-31977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B4E78354AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 07:01:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 895F58354B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 07:14:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EA891F2376D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 06:01:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E3A81F237CC
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 06:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0403612C;
-	Sun, 21 Jan 2024 06:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r7EBNXJG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FB9364A0;
+	Sun, 21 Jan 2024 06:13:56 +0000 (UTC)
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F0E1E534
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 06:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E02FBF0;
+	Sun, 21 Jan 2024 06:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705816879; cv=none; b=mYDKJE/5yCBGHlN8iv3YPeFNUszARStsCpDSv8i2qjzfxJ+rif92YSKipyrhVIIEIUKvPGR6qTqjEBZ3dzVuK8v7+elbo9VOk/KuN8VTObXkrDGnQpKcktTN/VfvOPiySsUe5XvCS2GnvhpXeze9pWzxdMY+KhOWuy8BTzz1WJ0=
+	t=1705817636; cv=none; b=eWYu4SHn3nyFVC+EN9gLnP/ZYp20DC6532WbPH26l9qocIOzEza9nHe3Ovt7KA+NVh8BX9oq6RN2SNy1HAN90SGEjGllcBJj8wTCnsbSRjQ71wTwnSE2BuBrz+G9PQuiOZWfFFPek56/+H+xp5YkL4QCXWVkI3VxuZEYtvodw9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705816879; c=relaxed/simple;
-	bh=NhuWvOK0Ww7kWbZZ5RP94AqOzv5GR82HM8u8uXEYXoE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XrThdx/NnmozuIOAS/V8S0rr+WaUGj9yYO9JBYoAoKvP5p5iDUcuMj2L3a8fl4qx7TKio5kN7f/1eZmKWuFO8igGSw0BtngEvJqLM1HZNbXcLLzdLJNSV4e3icXJNvEHxteQ+bWWm80gbnaatYDXbgYmcxMGwlapCBNtnmCd98w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r7EBNXJG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67F70C433F1;
-	Sun, 21 Jan 2024 06:01:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705816878;
-	bh=NhuWvOK0Ww7kWbZZ5RP94AqOzv5GR82HM8u8uXEYXoE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=r7EBNXJGZQpC+3aNfH8hPNKK8Moi2IktJH5QBxGfFERpiGuhdBOFsQSw3s4unNLpt
-	 6EM21rgFFfUK62e/vhWco8G3L+IgfgrSddS3JRsqOOKX5guIvElzZRgGdeppIlkc40
-	 x5HKTLHufrkg1m4W+CfX4XmtGYdCkeO2XNfQg5eUc27p3kmzZpFm6xcIBSYRUvGO+Z
-	 mhK6YWKC0AJd4emRusaBFychz/IS2eBeBDiNpAaJc6kP/yUYgIu1MIA4RqS4BTff3Q
-	 zpRtLafeqx7li8Lzfb7jraLfKaf0edOONBICP1LoUbnTNs42gUel74cNNNuvZxJud/
-	 PMWjeyblrmrZg==
-X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
-From: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: aneesh.kumar@kernel.org, linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.8-2 tag
-Date: Sun, 21 Jan 2024 11:31:11 +0530
-Message-ID: <875xznql7c.fsf@kernel.org>
+	s=arc-20240116; t=1705817636; c=relaxed/simple;
+	bh=zWi6IXc9w1aSdxovTTnpQLwjJKktzyOvnzXmRiOlmvg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uOe5oMU6slMF0A2ygmDZf2cIhTiSWZ0+clNnrqQtfOYCwcER2oOW5TNh0duRuQeXkd65PM5T4x/A6oRIIWirzm8QkcG5z2fIP4CKcXAUZjMX+Cia6UVmMwmx5hhBtgDcZf2NOOO7uGVzRlso8/Nw4HD/jT7mphwa4DO5+fjR5HQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ict.ac.cn; spf=pass smtp.mailfrom=ict.ac.cn; arc=none smtp.client-ip=159.226.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ict.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ict.ac.cn
+Received: from localhost.localdomain (unknown [125.59.207.199])
+	by APP-05 (Coremail) with SMTP id zQCowAD3_moQtqxlgCh9CA--.59803S2;
+	Sun, 21 Jan 2024 14:13:39 +0800 (CST)
+From: lixinyu20s@ict.ac.cn
+To: linux-kernel@vger.kernel.org
+Cc: linux-doc@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	tj@kernel.org,
+	Xinyu Li <lixinyu20s@ict.ac.cn>
+Subject: [PATCH] docs: cgroup-v1: add missing code-block tags
+Date: Sun, 21 Jan 2024 14:13:36 +0800
+Message-Id: <20240121061336.3500233-1-lixinyu20s@ict.ac.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowAD3_moQtqxlgCh9CA--.59803S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF18tFyfurWDAF15WrW5GFg_yoW8Cr1Upr
+	9rJryakw13GF9Fkr4xAa1DZr17tw1kWrWj9ryxJw4fGrnxW34xWryIgr1Yqws7ur4fJay8
+	ZrW7XF9Ivr4jg3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvI14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
+	6r4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+	0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC
+	0wCY02Avz4vE5cC_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+	IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+	6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+	IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf
+	9x0JUrGYLUUUUU=
+X-CM-SenderInfo: pol0x0t1xsi2g6lf3hldfou0/
 
+From: Xinyu Li <lixinyu20s@ict.ac.cn>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
+Hugetlb.rst lacks two code-block tags, causing a formatting issue.
 
-Hi Linus,
+Signed-off-by: Xinyu Li <lixinyu20s@ict.ac.cn>
+---
+ .../admin-guide/cgroup-v1/hugetlb.rst         | 20 +++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-Please pull powerpc fixes for 6.8:
+diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
+index 0fa724d82abb..493a8e386700 100644
+--- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
++++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
+@@ -65,10 +65,12 @@ files include::
+ 
+ 1. Page fault accounting
+ 
+-hugetlb.<hugepagesize>.limit_in_bytes
+-hugetlb.<hugepagesize>.max_usage_in_bytes
+-hugetlb.<hugepagesize>.usage_in_bytes
+-hugetlb.<hugepagesize>.failcnt
++::
++
++  hugetlb.<hugepagesize>.limit_in_bytes
++  hugetlb.<hugepagesize>.max_usage_in_bytes
++  hugetlb.<hugepagesize>.usage_in_bytes
++  hugetlb.<hugepagesize>.failcnt
+ 
+ The HugeTLB controller allows users to limit the HugeTLB usage (page fault) per
+ control group and enforces the limit during page fault. Since HugeTLB
+@@ -82,10 +84,12 @@ getting SIGBUS.
+ 
+ 2. Reservation accounting
+ 
+-hugetlb.<hugepagesize>.rsvd.limit_in_bytes
+-hugetlb.<hugepagesize>.rsvd.max_usage_in_bytes
+-hugetlb.<hugepagesize>.rsvd.usage_in_bytes
+-hugetlb.<hugepagesize>.rsvd.failcnt
++::
++
++  hugetlb.<hugepagesize>.rsvd.limit_in_bytes
++  hugetlb.<hugepagesize>.rsvd.max_usage_in_bytes
++  hugetlb.<hugepagesize>.rsvd.usage_in_bytes
++  hugetlb.<hugepagesize>.rsvd.failcnt
+ 
+ The HugeTLB controller allows to limit the HugeTLB reservations per control
+ group and enforces the controller limit at reservation time and at the fault of
+-- 
+2.34.1
 
-The following changes since commit d2441d3e8c0c076d0a2e705fa235c76869a85140:
-
-  MAINTAINERS: powerpc: Add Aneesh & Naveen (2023-12-13 22:35:57 +1100)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.8-2
-
-for you to fetch changes up to 18f14afe281648e31ed35c9ad2fcb724c4838ad9:
-
-  powerpc/64s: Increase default stack size to 32KB (2024-01-19 00:10:14 +0530)
-
-- ------------------------------------------------------------------
-powerpc fixes for 6.8 #2
-
- - 18f14afe2816 powerpc/64s: Increase default stack size to 32KB BY: Michael Ellerman
-
-Thanks to:
-Michael Ellerman
-
-- ------------------------------------------------------------------
-Michael Ellerman (1):
-      powerpc/64s: Increase default stack size to 32KB
-
-
- arch/powerpc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQTYs9CDOrDQRwKRmtrJvCLnGrjHVgUCZayyTgAKCRDJvCLnGrjH
-VlgzAQDkYdg1/DjYNR4Ie/i4MdlYj2cA4s4kTR1x25QHHb6t7AD/URA8U20cMSla
-etAHTJ3/Y/B/C/nL4GsC2uC5nYZ+bgo=
-=WIHK
------END PGP SIGNATURE-----
 
