@@ -1,103 +1,133 @@
-Return-Path: <linux-kernel+bounces-31989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C66AA8354F7
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 10:10:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFF3F8354FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 10:14:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAC3D1C21511
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 09:10:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D2611F225A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 09:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B20232E3FD;
-	Sun, 21 Jan 2024 09:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="WhQdjtZL"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CAE5364B5;
+	Sun, 21 Jan 2024 09:14:18 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577DC22086;
-	Sun, 21 Jan 2024 09:09:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BC515D0;
+	Sun, 21 Jan 2024 09:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705828196; cv=none; b=eHYC+/fk+Z1Q/bikbjUgF2O+thNrZpsIhymMxAP7FgRHPwd6Y45srMyrf7plEL8GKyz+dh2dZ+QxJ1fdgNa+n1YfC4ofo9GYWt57FLo9qRx18hp8PVo1Fxt79r64TTc06rgFMUiNllhnUVFU/ddfiCyG3J27jf8uRYT4B8ljKzo=
+	t=1705828458; cv=none; b=uca73XhRSoOpHMxZ+u2/v8b3+jSwOsz4KQztAS8MaUIHgZmPifRBp2ofcxsxy0WyWVlkWsOZ2ePqi2lq38dZIoSOZYXAqF7JUQ1jYHDEqQw7uNb9NKN2+o/q7F0fE0x2qolESFHIJF0CbbQGm73sqMj2m8vYzoOEMhQBzpp2jPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705828196; c=relaxed/simple;
-	bh=5uUEUl88Mro0xgkG1Sjv5Y/mEVgGHsAyqnd9iXH20Ho=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=M+wzvxMqt5o4e4nry7XEb9itB323P/tGFP83vToFtw5IQe1NYrQpsgg2gF0ZJA70bx9UdhkMhHqrHjFICjKmspHAaiQUcspogQ9gp5UFm/NcLl0iaeRiGW2fQ+fqLMTODxyqoZ0ckz5z3MslpJxlO4zVSVh2mbg8kSiYHcr9E94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=WhQdjtZL; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1705828191;
-	bh=HP/FNm2ibD0SL9ihdibQe3yQULw31Y38Y+OIDXXFAVU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=WhQdjtZLPDXgZ18Y7X04TPm+i7VOgWDt9T0XeHQQmNHnd97TVsUr5gFR1dicxNifg
-	 k9rKWzCyHpSW67RIcnlOLPK8WYjaFRJ8gTou5uPQ/y9n0LqMbe9j9VspDmaImjkL+R
-	 GkdkxvPlJmLR1c9on0ZvENpg6HJPTxQPfFQJyvsQKeaVdXGkknNUM0gj4g84u3/jcQ
-	 /SA84qdrv6duadjheYGbUwZTjTQzOzPlQeOOJdM6vJa/rhR0g4saYnVdzf1Y6xVxUr
-	 Cdb8KqXktCC2dEj4cVbJE7E0V4tLFv+vfc+d5YAiRhQWMVMgFs4By4YQbIeZCORcYP
-	 Mc8w2Q/kmy6yA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4THncG6P9Cz4wd5;
-	Sun, 21 Jan 2024 20:09:50 +1100 (AEDT)
-Date: Sun, 21 Jan 2024 20:09:48 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Kees Cook <keescook@chromium.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the bcachefs tree
-Message-ID: <20240121200948.75a85811@canb.auug.org.au>
+	s=arc-20240116; t=1705828458; c=relaxed/simple;
+	bh=Td9d+m0xjC4n2y33X8sOx/4ELwGjnlLdP6EozkGhBb0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=DyMRZ0fN+mdE7WhT2ZadjB9uFF6qKN7qh1oyfXI0JqGEcI3b6kX/b3uAvRyKmBDQ4w+0xrr7P018ho3VCYRlH9JP6n4LOGxtoRLIIULBJx4DiRv1yemPyXio/T4WpxdYvJ6UAyDS1Fu8Kq2TSzsxTgGtH7L5XEq+WyRs7wnZCjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rRTu9-0000Or-CK; Sun, 21 Jan 2024 10:14:13 +0100
+Message-ID: <d5f4c2d7-0a98-4ff8-9848-a34133199450@leemhuis.info>
+Date: Sun, 21 Jan 2024 10:14:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/HfrPOO2Z2azyRPTIq97chu3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [regressions] ntfs3: empty file on update without forced cache
+ drop
+Content-Language: en-US, de-DE
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+To: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>
+Cc: ntfs3@lists.linux.dev,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ Kari Argillander <kari.argillander@stargateuniverse.net>,
+ Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+ Anton Altaparmakov <anton@tuxera.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+References: <138ed123-0f84-4d7a-8a17-67fe2418cf29@leemhuis.info>
+ <24aa7a8b-40ed-449b-a722-df4abf65f114@leemhuis.info>
+In-Reply-To: <24aa7a8b-40ed-449b-a722-df4abf65f114@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1705828456;17b06d09;
+X-HE-SMSGID: 1rRTu9-0000Or-CK
 
---Sig_/HfrPOO2Z2azyRPTIq97chu3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 05.12.23 13:49, Linux regression tracking (Thorsten Leemhuis) wrote:
+> [adding a bunch of people and two lists to the recipients, as Konstantin
+> apparently hasn't sent any mail to any lists archived on lore for ~six
+> weeks; maybe someone knows what's up or is willing to help out]
 
-Hi all,
+[CCing Linus now as well]
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+JFYI for the VFS maintainers and everyone else who might care:
 
-  9d9487185411 ("bcachefs: Fix strlcpy() usage")
+Konstantin afaics still did not look into below regression. Neither did
+anyone else afaics.
 
-This is commit
+But Konstantin is still around, as he recently showed up to post a patch
+for review:
+https://lore.kernel.org/all/667a5bc4-8cb5-47ce-a7f1-749479b25bec@paragon-software.com/
 
-  e28b0359587f ("bcachefs: Replace strlcpy() with strscpy()")
+I replied to it in the hope of catch his attention and make him look at
+this regression, but that did not work out.
 
-in Linus' tree.
+So it seems we sadly are kinda stuck here. :-/
 
---=20
-Cheers,
-Stephen Rothwell
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
 
---Sig_/HfrPOO2Z2azyRPTIq97chu3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> On 27.11.23 07:18, Thorsten Leemhuis wrote:
+>> Hi, Thorsten here, the Linux kernel's regression tracker.
+>>
+>> Konstantin, I noticed a regression report in bugzilla.kernel.org.
+>> Apparently it's cause by a change of yours.
+>>
+>> As many (most?) kernel developers don't keep an eye on bugzilla, I
+>> decided to forward it by mail. Note, you have to use bugzilla to reach
+>> the reporter, as I sadly[1] can not CCed them in mails like this.
+>>
+>> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218180 :
+> 
+> Konstantin, are you still around? Would be great if you could look into
+> this regression, as this sounds somewhat worrying.
+> 
+>>> The problem I am facing is the following:
+>>> 1. I mount an NTFS partition via NTFS3
+>>> 2. I create a file
+>>> 3. I write to the file
+>>> 4. The file is empty
+>>> 5. I remount the partition
+>>> 6. The file has the changes I made before the remount
+>>>
+>>> I can avoid the remount by doing:
+>>> sudo sysctl vm.drop_caches=3
+>>
+>> See the ticket for more details. It according to the report happens
+>> still happens with 6.7-rc2, but not with 6.1.y. The reporter bisected
+>> the problem to ad26a9c84510af ("fs/ntfs3: Fixing wrong logic in
+>> attr_set_size and ntfs_fallocate") [v6.2-rc1].
+>>
+>> Side note: while briefly checking lore for existing problems caused by
+>> that change I noticed two syzbot reports about it that apparently nobody
+>> looked into:
+>>
+>> https://lore.kernel.org/all/000000000000bdf37505f1a7fc09@google.com/
+>> https://lore.kernel.org/all/00000000000062174006016bc386@google.com/
+>> [...]
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWs31wACgkQAVBC80lX
-0GyW2wf/Vk4DHmPlkXVv1x5rh8nfIOM4H+N36vwE324tVd4HHB87OfLmvf6JsEQg
-DEpgNG4xZjCFBcquabaJHEUN30NF0KsCzcdLRe1WJZKdGm2rbTbrtIHXAsYW6E5R
-vOY3tVmkO3LIHhMWZeHZu1AuCJWg1mlRqRdQ/5q/rpDq4KlZn5797jRsCrUdVyTm
-nrsJEohkNtss7W7dPJhgHNIDO8WKuHw1p+JwXsSgGAMCwjSIRFuE2gZFmGrhqjGi
-k+BKeNWefDXd8Mo8b2FxO0VqFzZOkexwCXgIeuVsYLzPgyragxZ5dWSmvZ2yI0KK
-BxHZWNTyy2UNxnipUXWNyrjUs5k4mQ==
-=h+Ck
------END PGP SIGNATURE-----
-
---Sig_/HfrPOO2Z2azyRPTIq97chu3--
+#regzbot poke
 
