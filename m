@@ -1,89 +1,126 @@
-Return-Path: <linux-kernel+bounces-32210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20DD83583A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 23:32:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2EBA835851
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 23:42:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DC2F1F21A25
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:32:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D85941C212F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:42:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1629738FA1;
-	Sun, 21 Jan 2024 22:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PGaYwXzz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A5783987A;
+	Sun, 21 Jan 2024 22:41:44 +0000 (UTC)
+Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [5.144.164.162])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD9138F86
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 964BF38392
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.162
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705876346; cv=none; b=W9k9sIo/RuMD64A+O+gbrRQjkHgzzIK7GJQGSzXA0YXN2bBHOi9DNPQQB0yS9G+2oUZHquEM0p5CoFzio+jFz/d9yO/k923ByiKPYjRJYBcRxd8moaK1UiijmsL/iuOwoAWxKzKGbXYgWb0Pz/fCU3MrkOyEeXYPzEeqJd2hW2Y=
+	t=1705876903; cv=none; b=R9vWYYkKlbuzXyFBpUULGg+38M4kdBElxPr8FoSKSRvCQ+QubKW9MBIyOmi945VMHMHX/7Z+wkEnt69s0P76whMyi8Dju+Yh4YbNfMc86N61XJDaRdm36Onh/2Bh+eeQUxXJIs6rnupPiCXSY4AhmnMONuYo12/YvTLraUi8Q3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705876346; c=relaxed/simple;
-	bh=ik35T/x5yL4zn6sAO0sKXnsdeSg2LD9SzPHvJ/0RNT8=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=lC65dif1rfjcO/rjKQDrwIrbME50iOV9hwOQ+UGx/mgSFQLH2xEopI1QpAhUe1mAaTf+brhLNLP8W4YyDbya2dej0orkOim8IV+SqCtjeJe/3rjalkGFNo8Bq2v5TRHGG780RDp8kNO6QJoc2qSxv8xIsCB3cHCKYmtQNYNAa8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PGaYwXzz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97F86C433C7;
-	Sun, 21 Jan 2024 22:32:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1705876345;
-	bh=ik35T/x5yL4zn6sAO0sKXnsdeSg2LD9SzPHvJ/0RNT8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=PGaYwXzzHGWG4VgNkuPqLiiBjg4UGPh4GoTikM9xUL+26806esokGGv0cw5IMXIUA
-	 8bcwNJn0eutJGycZcbQAJbum9cklN0otcpN3pUor+wm7zVMftnIkqq8fKSfBg+4VPY
-	 WSceVnFBT67FY6/47CIVu2sZ48OMLuIYDrSIhoDk=
-Date: Sun, 21 Jan 2024 14:32:18 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Dylan Hatch <dylanbhatch@google.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Kees Cook <keescook@chromium.org>,
- Frederic Weisbecker <frederic@kernel.org>, "Joel Fernandes (Google)"
- <joel@joelfernandes.org>, Ard Biesheuvel <ardb@kernel.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- "Eric W. Biederman" <ebiederm@xmission.com>, Vincent Whitchurch
- <vincent.whitchurch@axis.com>, Dmitry Vyukov <dvyukov@google.com>, Luis
- Chamberlain <mcgrof@kernel.org>, Mike Christie
- <michael.christie@oracle.com>, David Hildenbrand <david@redhat.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Stefan Roesch
- <shr@devkernel.io>, Joey Gouly <joey.gouly@arm.com>, Josh Triplett
- <josh@joshtriplett.org>, Helge Deller <deller@gmx.de>, Ondrej Mosnacek
- <omosnace@redhat.com>, Florent Revest <revest@chromium.org>, Miguel Ojeda
- <ojeda@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] getrusage: use sig->stats_lock
-Message-Id: <20240121143218.35d3171018771e5c2b5820e3@linux-foundation.org>
-In-Reply-To: <CADBMgpxC+BP-wfrM-wP1nbZOcRb0LbsmMDQ3LQ8hUKYsF3QECw@mail.gmail.com>
-References: <20240117192534.1327608-1-dylanbhatch@google.com>
-	<20240119141501.GA23739@redhat.com>
-	<20240119141529.GB23739@redhat.com>
-	<CADBMgpxC+BP-wfrM-wP1nbZOcRb0LbsmMDQ3LQ8hUKYsF3QECw@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705876903; c=relaxed/simple;
+	bh=ZjsDfBtfx+AfvdgrvEbs+TSdw0CqYDKGBl6lNghc0SU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=HV+oZ6RUXwktBEU+uEyRfDmhPuvh8wDqjjDxWg7EE/M9AO5gzui+7GaDTY08Y4BaHrEGnYE+resJFJxGDz2Wl2DjWqGxsFL6ywWHOJSWdLK2LU/mIQFktXV8+x3fI0+JS4Qc4ClasEwE/aG+CmdCDYLo2vzqmrckpBWLKAdApDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.162
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
+Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 42C1520313;
+	Sun, 21 Jan 2024 23:33:39 +0100 (CET)
+From: Marijn Suijten <marijn.suijten@somainline.org>
+Subject: [PATCH v2 0/6] arm64: dts: qcom: msm8956-loire: SDCard and USB
+ support
+Date: Sun, 21 Jan 2024 23:33:37 +0100
+Message-Id: <20240121-msm8976-dt-v2-0-7b186a02dc72@somainline.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMKbrWUC/zXMQQ6CMBBA0auQWVtSpo2AK+9hXFSYwhDbkikaE
+ 8LdbUxc/sV/O2QSpgyXagehN2dOsQSeKhhmFydSPJYG1Gh1g40KOXR9e1bjplrjLRKRbx4DlGE
+ V8vz5Ybd7aS8pqG0Wcn8Ci2DRoLZ93WpjO6uK6ISXWOcXLxvFa07BcXxypDrJBMfxBYT8DoKkA
+ AAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Luca Weiss <luca@z3ntu.xyz>, Adam Skladowski <a39.skl@gmail.com>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Martin Botka <martin.botka@somainline.org>, 
+ Jami Kettunen <jami.kettunen@somainline.org>, linux-arm-msm@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+X-Mailer: b4 0.12.4
 
-On Fri, 19 Jan 2024 19:27:49 -0800 Dylan Hatch <dylanbhatch@google.com> wrote:
+Add pinctrl nodes to enable SD Cards to work on the Sony Loire platform,
+and define extcon nodes in PMI8950 to feed into the ci-hdrc driver as it
+cannot figure out the presence of a USB cable (nor the desired role
+based on the ID pin) on its own.  While at it, extend PMI8950 with some
+more channels with now-available VADC_ register constants.
 
-> 
-> I applied these to a 5.10 kernel, and my repro (calling getrusage(RUSAGE_SELF)
-> from 200K threads) is no longer triggering a hard lockup.
+Depends on:
+- dt-bindings: iio: qcom-spmi-vadc: Add definitions for USB DP/DM VADCs:
+  https://lore.kernel.org/linux-arm-msm/20221111120156.48040-2-angelogioacchino.delregno@collabora.com/
 
-Thanks, but...
+Changes since v1:
+- Moved pinctrl-names before pinctrl-N (Konrad);
+- Keep status=okay last in OTG node (Konrad);
+- Rename `adc-chan@` node names to `channel@` (my own patch from a long
+  time ago).
 
-The changelogs don't actually describe any hard lockup.  [1/2] does
-mention "the deadlock" but that's all the info we have.
+v1: https://lore.kernel.org/linux-arm-msm/60a40ace-d4e9-df74-88f9-4354d80efaac@linaro.org/
 
-So could we please have a suitable description of the bug which these are
-addressing?  And a Reported-by:, a Closes: and a Fixes would be great too.
+Marijn Suijten (6):
+  arm64: dts: qcom: pmi8950: Add USB vbus and id sensing nodes
+  arm64: dts: qcom: msm8956-loire: Add usb vbus and id extcons to
+    ci-hdrc
+  arm64: dts: qcom: pmi8950: Add missing ADC channels
+  arm64: dts: qcom: msm8976: Declare and use SDC1 pins
+  arm64: dts: qcom: msm8976: Declare and use SDC2 pins
+  arm64: dts: qcom: msm8956-loire: Add SD Card Detect to SDC2 pin states
 
+ .../qcom/msm8956-sony-xperia-loire-kugo.dts   |   6 ++
+ .../dts/qcom/msm8956-sony-xperia-loire.dtsi   |  25 +++++
+ arch/arm64/boot/dts/qcom/msm8976.dtsi         | 100 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/pmi8950.dtsi         |  38 +++++++
+ 4 files changed, 169 insertions(+)
+
+--
+2.39.0
+
+---
+Marijn Suijten (6):
+      arm64: dts: qcom: pmi8950: Add USB vbus and id sensing nodes
+      arm64: dts: qcom: msm8956-loire: Add usb vbus and id extcons to ci-hdrc
+      arm64: dts: qcom: pmi8950: Add missing ADC channels
+      arm64: dts: qcom: msm8976: Declare and use SDC1 pins
+      arm64: dts: qcom: msm8976: Declare and use SDC2 pins
+      arm64: dts: qcom: msm8956-loire: Add SD Card Detect to SDC2 pin states
+
+ .../dts/qcom/msm8956-sony-xperia-loire-kugo.dts    |   6 ++
+ .../boot/dts/qcom/msm8956-sony-xperia-loire.dtsi   |  25 ++++++
+ arch/arm64/boot/dts/qcom/msm8976.dtsi              | 100 +++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/pmi8950.dtsi              |  38 ++++++++
+ 4 files changed, 169 insertions(+)
+---
+base-commit: ad5c60d66016e544c51ed98635a74073f761f45d
+change-id: 20240121-msm8976-dt-73f42eeef1bc
+
+Best regards,
+-- 
+Marijn Suijten <marijn.suijten@somainline.org>
 
 
