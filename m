@@ -1,108 +1,235 @@
-Return-Path: <linux-kernel+bounces-32169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 548FB8357A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:57:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 041D48357A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:58:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AA59281C2C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:57:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6D1B281CCA
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD78383A9;
-	Sun, 21 Jan 2024 19:57:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AEF383A7;
+	Sun, 21 Jan 2024 19:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GDYIEDED"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VD+yhH89"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EFF0182DC
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 19:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78040182DC;
+	Sun, 21 Jan 2024 19:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705867047; cv=none; b=atHK+U4He9l5QZpLUjnFDWKhqCjlQEsFPJJDiRFk+ZzJ25YITXHhMXc97082nNTBtr7rBAowqve2D+sx7wmSE8KzRi9+PfpvVZYWuLAruceP3BFQMrk/sSd2ri/sraWOSALDW5WQ5WAkw94Ms6DxTisw31F6MoTXiMBXkidspbs=
+	t=1705867094; cv=none; b=EzJEG8mrtueslyZvBtyLbT3VLimtseQa2hkYHEjNIpezCTtW/Cpvb80X926CbtxkJoabKl9X8yydLvOiEYOdm/jeOJDt5vLzS/2QbQiBjIgP1GocS0OkihMT8K6X2XJH4q5xAt2Uv3aN+C8+xbpdv56meu2KzVOMgoBkfVl8gog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705867047; c=relaxed/simple;
-	bh=JoonGw9vQNXaHQmMN+LL9oyTK5rcSC4rZUk0sfhe/Zg=;
+	s=arc-20240116; t=1705867094; c=relaxed/simple;
+	bh=b+7Bh3lzNYG8i8zMid2dE2fci4YL0eLAJ4fJqNACR2Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XmNfVN0h+AHdW8pwZkvMDK8asKQKwC0O4xjdcZoA4UeL50EkYeTmrqRjkt/oA6DY+miu/SxnaxNST0MLq7UbtuLw1a4Z52O6bdeQLBfriTsTfvwCKnuZqRbxMacEFo44yn3wYRKf/0ZLB+W5qNKcqaJasSY+1MyrlfCoGcHFzAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GDYIEDED; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55c33773c0aso305250a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 11:57:26 -0800 (PST)
+	 To:Cc:Content-Type; b=qKnj/Hlx/hycGT5Zaq3K48s/L/TYJ0Q9kwuQwiDTR94k+U23nObOIQTWtWeL86DyJJotDgD/XtA0aff55WsaUZUNB7szDfGESGTaCDIQYImJNUegqpR4Sqw9RtzsV+rwJVv0XALFPrMZUTo8lJ/zsS081T8OaqXvBN1CtuYT8LU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VD+yhH89; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a26fa294e56so243600366b.0;
+        Sun, 21 Jan 2024 11:58:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1705867044; x=1706471844; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=J0/ycZHO2LVW1a2k1bwDkHHCW1t09pgf1oyaA+mSkcw=;
-        b=GDYIEDED4C3IYCD5oBQGC6PdYFX/8Sa4O9cOuPqDCs+YWsSdxJDrhDRCYuqGRHvgZw
-         9vbfqDCyki0SDzE1gRNDqOyCCEb2qYHeHKgwu57nt70j5mJRXJJZD99/9prjzT5ZmieN
-         4+CaLPNLnOFmzOExe8yeWzTyOQLUOjG/J1kdU=
+        d=gmail.com; s=20230601; t=1705867090; x=1706471890; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wAbQEDdwZsefO9D8MBU/Wh50sFP9LP0OeG4eEpAp404=;
+        b=VD+yhH896mlzoC9/5aLXDTewbDF25MYTnylfe/08UXsofS0vkLE2DpV0Xv4/c1uNR9
+         qJMa4mb5BZLKhrKHmlDtEOuGmOcahorW1l0onEgrm6Z+w8nRvPR979C0jYnvjMN5v6nY
+         1VBbRPz3cVz6LU6nhbCM+4qCqlIY7sJJWnolD3bMxZiOInxOwa191kZIbR7gWUMol9uG
+         zvx5IPaFyOYjTA0BarGGTj7BmSGydnwP0YExdm+7dXXAolm6eoJvWtTVjX1ru4TGNvIw
+         lGCSvTdni2p13Tqi1aTmpIdoGywXQn93Geey8ZOBAotSEPWd/dnnrfe+Exxpe7/pKnWL
+         +n3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705867044; x=1706471844;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J0/ycZHO2LVW1a2k1bwDkHHCW1t09pgf1oyaA+mSkcw=;
-        b=GvfD3LA7KTUDPdCOsN8tcGktqSgE17mdS8/TBi1BYxAX4M8v0d6Zm5lgUtG0WxEhH9
-         Jn+lFLk+S1BwcWM4yBLHamzqPIesDnZPW9Jb9vFqt2CxprhpQ2ys8stBim0jzrSkdegK
-         Dw3P5REbgTEUiWSrsuh+zJHVbbH7DSb9G6k76qFazj+EXhavd8OsYIMDQDOin6TC5GsN
-         AvBDzXomuyk0mIz9J6FUJA0TmRgB+kEPoy3oRX+NJ/XkLUtKHK6MiAc/hqkBzbtimOu7
-         DbodjpRBuawnXOMh4lCEUUuQD6tDUtPgOn8Jma3OnGoMmnXQEzlmQAJ2IcU/ZQG2DEO4
-         7MQw==
-X-Gm-Message-State: AOJu0YwNfJNaZOF3+FqgoMwSydwFiWrxL++8EkWUMdgKdrDziZ4VOOkG
-	VhYoKwRHMXmL5vt9Mi2dCpQiPSUDIMalZI9sN4epBIEviYNz7UPPNPNb4Hh3YeGJk4/O7RHj6yc
-	OTN1rFQ==
-X-Google-Smtp-Source: AGHT+IH3IH7I07DRebSBFeazJIMF0q58S0ycKdQVLh2M0BZyNXqt2aSOmyG2CIG6Vip2bEydEDGUaQ==
-X-Received: by 2002:a05:6402:b09:b0:55c:7d:1a9c with SMTP id bm9-20020a0564020b0900b0055c007d1a9cmr1364581edb.53.1705867044506;
-        Sun, 21 Jan 2024 11:57:24 -0800 (PST)
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
-        by smtp.gmail.com with ESMTPSA id i23-20020a0564020f1700b0055c0dba33b7sm1408664eda.18.2024.01.21.11.57.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jan 2024 11:57:24 -0800 (PST)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40e86a9fc4bso33215925e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 11:57:24 -0800 (PST)
-X-Received: by 2002:a05:600c:56c5:b0:40d:8794:8535 with SMTP id
- ju5-20020a05600c56c500b0040d87948535mr1754394wmb.160.1705867043768; Sun, 21
- Jan 2024 11:57:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705867090; x=1706471890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wAbQEDdwZsefO9D8MBU/Wh50sFP9LP0OeG4eEpAp404=;
+        b=Jguzc+OhSdW2r6TqLNG/lPHWT5TRHMS7BaysTguF3Lt0qxWvh7eXkHdORbWdErd881
+         Utcgs8bnAMl9nBgpWvDzzS+VGsB/irUIPg+pX59QEhntwhoANfY5SbWV9d+ver09Gc/j
+         B7q0Jzq4JaxxtrW1lMbqCmceOmW/fDbDIkmN6YyUc/mgVW/CeBuo++QSKmc5rhKZxCtz
+         /3zRLE1isW/AqQDaBZc72ZsJn3goBajpFK5L3CAd3N817l9uWDC6p3VK4hrg2QmIMoJX
+         j8pbIhTG+mQVK5TKTaNXm9oecuTp77jy62gfK+Fw7CkZXrtPs5dzbgjuWM1HWK+poont
+         Q/4A==
+X-Gm-Message-State: AOJu0Yy9gwmNpSfpeZoaiENDd6bkSHP/9WRdovKc33SFZr1zRt+f6PfI
+	xwS+Bm04IShHdkbtCAwLOqs1n3tIZsDIsE1hOuRm+xSnIKDg5QOrv8uDGppbKJOe/8kwcp93Qpg
+	QSFf53Gm1v/Jy4NRjKtwCV9NMe6w=
+X-Google-Smtp-Source: AGHT+IFAB701dJZ0Vxsg39wC+sKGpZzi4at9ikNgixHnT4wOU6IVvrCQEVtymp3cVHsHzzUsMeRc+pitO0uPv3yt37k=
+X-Received: by 2002:a17:906:6852:b0:a2f:62c3:5322 with SMTP id
+ a18-20020a170906685200b00a2f62c35322mr1924685ejs.120.1705867090551; Sun, 21
+ Jan 2024 11:58:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240113183334.1690740-1-aurelien@aurel32.net> <fd143cf8-5e3d-4d80-8b53-b05980558e45@xs4all.nl>
-In-Reply-To: <fd143cf8-5e3d-4d80-8b53-b05980558e45@xs4all.nl>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 21 Jan 2024 11:57:07 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgDh18QD_Z6V96J8_gjbSo-7CvGZb9VLRLSL-JD2F8WqQ@mail.gmail.com>
-Message-ID: <CAHk-=wgDh18QD_Z6V96J8_gjbSo-7CvGZb9VLRLSL-JD2F8WqQ@mail.gmail.com>
-Subject: Re: [PATCH] media: solo6x10: replace max(a, min(b, c)) by clamp(b, a, c)
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: Aurelien Jarno <aurelien@aurel32.net>, linux-kernel@vger.kernel.org, 
-	Bluecherry Maintainers <maintainers@bluecherrydvr.com>, 
-	Anton Sviridenko <anton@corp.bluecherry.net>, Andrey Utkin <andrey_utkin@fastmail.com>, 
-	Ismael Luceno <ismael@iodev.co.uk>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	"open list:SOFTLOGIC 6x10 MPEG CODEC" <linux-media@vger.kernel.org>, 
-	"Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>, 
-	"Andrew Morton'" <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, 
-	"Christoph Hellwig'" <hch@infradead.org>, "Jason A . Donenfeld" <Jason@zx2c4.com>, Jiri Slaby <jirislaby@gmail.com>, 
-	stable@vger.kernel.org, David Laight <David.Laight@aculab.com>
+References: <20240106222357.23835-1-alchark@gmail.com> <20240109192608.5981-1-alchark@gmail.com>
+ <c517f26c-34bc-4b99-b744-8e2549cd28b5@linaro.org>
+In-Reply-To: <c517f26c-34bc-4b99-b744-8e2549cd28b5@linaro.org>
+From: Alexey Charkov <alchark@gmail.com>
+Date: Sun, 21 Jan 2024 23:57:58 +0400
+Message-ID: <CABjd4YxYpsvf+ghHTn1z8TAZxQb-2dFOQaVSm8zHKSSWOokqww@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: rockchip: enable built-in thermal
+ monitoring on rk3588
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Sebastian Reichel <sebastian.reichel@collabora.com>, 
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, 
+	Christopher Obbard <chris.obbard@collabora.com>, =?UTF-8?B?VGFtw6FzIFN6xbFjcw==?= <szucst@iit.uni-miskolc.hu>, 
+	Shreeya Patel <shreeya.patel@collabora.com>, Kever Yang <kever.yang@rock-chips.com>, 
+	Jagan Teki <jagan@edgeble.ai>, Chris Morgan <macromorgan@hotmail.com>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 14 Jan 2024 at 03:04, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+On Fri, Jan 19, 2024 at 8:21=E2=80=AFPM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+Hello Daniel,
+
+Thanks a lot for your review and comments! Please see some reflections belo=
+w.
+
+> On 09/01/2024 20:19, Alexey Charkov wrote:
+> > Include thermal zones information in device tree for rk3588 variants
+> > and enable the built-in thermal sensing ADC on RADXA Rock 5B
+> >
+> > Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> > ---
+> > Changes in v2:
+> >   - Dropped redundant comments
+> >   - Included all CPU cores in cooling maps
+> >   - Split cooling maps into more granular ones utilizing TSADC
+> >     channels 1-3 which measure temperature by separate CPU clusters
+> >     instead of channel 0 which measures the center of the SoC die
+> > ---
+> >   .../boot/dts/rockchip/rk3588-rock-5b.dts      |   4 +
+> >   arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 151 +++++++++++++++++=
++
+> >   2 files changed, 155 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm=
+64/boot/dts/rockchip/rk3588-rock-5b.dts
+> > index a5a104131403..f9d540000de3 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> > @@ -772,3 +772,7 @@ &usb_host1_ehci {
+> >   &usb_host1_ohci {
+> >       status =3D "okay";
+> >   };
+> > +
+> > +&tsadc {
+> > +     status =3D "okay";
+> > +};
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boo=
+t/dts/rockchip/rk3588s.dtsi
+> > index 8aa0499f9b03..8d54998d0ecc 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > @@ -10,6 +10,7 @@
+> >   #include <dt-bindings/reset/rockchip,rk3588-cru.h>
+> >   #include <dt-bindings/phy/phy.h>
+> >   #include <dt-bindings/ata/ahci.h>
+> > +#include <dt-bindings/thermal/thermal.h>
+> >
+> >   / {
+> >       compatible =3D "rockchip,rk3588";
+> > @@ -2112,6 +2113,156 @@ tsadc: tsadc@fec00000 {
+> >               status =3D "disabled";
+> >       };
+> >
+> > +     thermal_zones: thermal-zones {
+> > +             /* sensor near the center of the whole chip */
+> > +             soc_thermal: soc-thermal {
+> > +                     polling-delay-passive =3D <20>;
 >
-> I'll pick this up as a fix for v6.8.
+> There is no mitigation set for this thermal zone. It is pointless to
+> specify a passive polling.
+
+Indeed, it makes sense to me. There seems to be a catch though in that
+the driver calls the generic thermal_of_zone_register during the
+initial probe, which expects both of those polling delays to be
+present in the device tree, otherwise it simply refuses to add the
+respective thermal zone, see drivers/thermal/thermal_of.c:502
+
+> > +                     polling-delay =3D <1000>;
 >
-> Linus, if you prefer to pick this up directly, then that's fine as well.
+> The driver is interrupt driven. No need to poll.
 
-Bah, missed this email, and so a belated note that I picked the patch
-up as commit 31e97d7c9ae3.
+Same here as above
 
-It even got your Reviewed-by thanks to b4 picking that up automatically.
+> > +                     sustainable-power =3D <2100>;
+>
+> There is no mitigation with this thermal zone. Specifying a sustainable
+> power does not make sense.
 
-               Linus
+Thanks, will drop this in v3!
+
+> > +                     thermal-sensors =3D <&tsadc 0>;
+> > +
+> > +                     trips {
+> > +                             soc_crit: soc-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <2000>;
+>
+> This trip point leads to a system shutdown / reboot. It is not necessary
+> to specify a hysteresis.
+
+Similar to the above, the generic thermal_of code refuses to add the
+trip point if it has no hysteresis property defined (regardless of the
+trip type), see drivers/thermal/thermal_of.c:109
+
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             /* sensor between A76 cores 0 and 1 */
+> > +             bigcore0_thermal: bigcore0-thermal {
+> > +                     polling-delay-passive =3D <20>;
+> > +                     polling-delay =3D <1000>;
+>
+> The driver is interrupt driven. No need to poll.
+>
+> > +                     thermal-sensors =3D <&tsadc 1>;
+> > +
+> > +                     trips {
+> > +                             bigcore0_alert: bigcore0-alert {
+> > +                                     temperature =3D <85000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             bigcore0_crit: bigcore0-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +                     cooling-maps {
+> > +                             map0 {
+> > +                                     trip =3D <&bigcore0_alert>;
+> > +                                     cooling-device =3D
+> > +                                             <&cpu_b0 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_b1 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>;
+> > +                                     contribution =3D <1024>;
+>
+> If you specify the contribution, that means it is expected to use the
+> IPA governor. However, this one needs an extra trip point before 'alert'
+> to begin collecting temperatures in order to initialize the PID loop of
+> the IPA.
+
+Thank you! Will add extra passive cooling trip points at 75C to all
+three CPU clusters.
+
+Best regards,
+Alexey
 
