@@ -1,281 +1,198 @@
-Return-Path: <linux-kernel+bounces-32151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0E5E83574E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:57:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BF60835751
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AF0F1C20B12
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:57:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87C62B21771
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64ECF38392;
-	Sun, 21 Jan 2024 18:57:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA02F38392;
+	Sun, 21 Jan 2024 19:15:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XQ4nQryc"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g4R1eft+"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D63374FC;
-	Sun, 21 Jan 2024 18:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705863426; cv=none; b=ZR3Mm/WHTWfN6bQcbJu6BE61m0lwDvOOhjbwtZSlKQ8JW4gyCz41ja1o/DYFQsebOvY9QZ6Y9FsKGhHghiaTrumlJT1ey5tHDvQW8IRhSJFoPED8TPn+nPytk2+FSZHkYjZ0bWqYMSfUg4o2BmEcoIT6dCcTJ7BVWmQycgQrJak=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705863426; c=relaxed/simple;
-	bh=Bdn7qDe8/Sz5W1tIz1blcNpXVkpZFJhPhA80wWB91cg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T3TG+oBf4nWfWViNtZwbKXy52acmQeObIdjhsQFdc9NGpU8XQp38xEx2DFl+SZV0rcQ3aQrdFAG+oTmh/CnZfMNOdhUiUV9bvLIHQRMBjSSX3jJaklGadN0t6kTcyUw5jMB+OFQOduDSWXLw5E4EK4r+twZXwqiJU+IwlLDYTg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XQ4nQryc; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2dd05e02ffso229421766b.3;
-        Sun, 21 Jan 2024 10:57:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705863423; x=1706468223; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YAC/MAs8sDhQ2A52cnBwttm+Y/uqCzYoFUfLNS1dkik=;
-        b=XQ4nQrycJoyifO8dnq5Tf5tqTAaz0mMjkCkqFlwqGhsnYr6FycgPpm98cvqkyCE/Nh
-         pG5igAwVOUCaAbMM7EJoa7Red9u/BFc9viMWV2NPu8Q/LmtMRwXWTwv5U+6Nk8Joke+f
-         nVZ1wgXF4dweyDnLHoEORoOYdnpWO8/IZkRs5tfniHKICtz48s8M/zUra2oJonpX43EF
-         pUQX5YkRPrF7hhca2P/ykveKO9yAqx55IfPwWVcpowrQYO3fvOsO9MgeyqAQZ0eStSjA
-         rjgAwcAJWcI/j34q1PUbOzG8aVRxSDCt/tm3rD3OrWgzEvYr4Wuc6JVHJxBjnUGg5SIM
-         KwjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705863423; x=1706468223;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YAC/MAs8sDhQ2A52cnBwttm+Y/uqCzYoFUfLNS1dkik=;
-        b=dxAVB7Bt3oWFRBHJUpJao7xbOssH5uHVKwcRhJ3ezimFvAW4H5fU6w1kVbNFiTml/7
-         iTs474tXl4l3zuV1Jyu5UV6vvnnsJ2p2fo+cLScMq66NpznPFRKdFougZBCrdOoY/TLV
-         xlCmiGcSXlvwwRWsBRihHulzxG0fsSmT8n8wEcRkksPTASPR4Tk74gFX8lGhe2hk+Br3
-         VvlA0Yczyq2I9ckpaX6uugOuBWusTQOIeoSbfNvgZN5gH8avPDoKN1IXyr3BAmFd676U
-         Kgf28EmxN8OJkD496HXsH1sw9yqoHSSkxUZqQ3f2Gzz8vBGv2hWYEknSoRwfcvuCXsNh
-         YnCA==
-X-Gm-Message-State: AOJu0Yxqv+i7u7Oyel0PJQMQFCEFIgbPDuNbS01KlXNPECmm0hdcTgEH
-	5Grl9fOY1sljeLZ9VM14AA0A9YNvIaphkdxur2QcFgaScYuXiz3JD4uOuvWX6C/9Sn2IeDr+ym3
-	KVHkGBoaU2+pZQo90nMVCI/HWYbY=
-X-Google-Smtp-Source: AGHT+IHJ9Z0SOxpKbs/ZPvQclFjb6eD3X8+HhpiS5bGel15Xf65B+skTcyZhBnwK8JlmDS0HUQcto76rF196oyc9rsg=
-X-Received: by 2002:a17:906:1399:b0:a30:4618:8252 with SMTP id
- f25-20020a170906139900b00a3046188252mr197053ejc.186.1705863422591; Sun, 21
- Jan 2024 10:57:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C7C38385
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 19:15:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.55.52.115
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705864518; cv=fail; b=jKnsaawc61R/4a63w99pwRNbzT2J3Fn/Iz1fUmdsQs4nKP1PfRBXuT+sv3ffboBr00L4sixujpSH+Cs5T3E0jAmkwTA1R03XwmvBoGqe4cxCv1AfrDVjP+TQhlfBsWLVpJJRo+ugn/Nh/p9mdJL6Ecj7kEbNrsOWWnZNZ3NvOwY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705864518; c=relaxed/simple;
+	bh=nnz3+14Y7BFOR99HMts2IdfK5ZGIIXaMov8xu/QGEuU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=qjgKNzMtOkv+5GbNOYfDfcjz/TASdjkffs9me5m3xZ9tNt1CX72cCBXmw66hgg+CetTcDbWIopnRjT/atIicrzksHi1TRY/hiDu+tSBu+OFXlxvvN1wsZF1BOgSUoRj+NvAj0SPSiixFRF1AKfUKAPzp5MKxUKhtuOBn+laxcvc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g4R1eft+; arc=fail smtp.client-ip=192.55.52.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705864516; x=1737400516;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=nnz3+14Y7BFOR99HMts2IdfK5ZGIIXaMov8xu/QGEuU=;
+  b=g4R1eft+RFdAOoEKwMjQJHjLRJKKlpffu8yYnWcHfpu5BQDSAk8Ri7H7
+   wD9jO7nrvPiRyJtbaolwcFbe6N7E2Dovc92h14dWu0Rs+b0qL+rwhtcO1
+   lheLLDZchw9DdaXh7u0KAIpE7DxZq0w9ss1ExLbUgTsV0K3amU4Y1Mdxd
+   NdHDrJiRXFus6rPLBF3rGU0VhGQ69mNyBdxlOP2Xf+1hWbhAEyxXSqMwU
+   gbHFMDj993W4bPFCqdPOS/OPiHgak6dkeJxkeAnEd+3StgmMhGGgObYj9
+   e3RPECwAX8B3GLveGQZMFULQEGG8JITmKzHFAMNDCCqMObjA8BETG1I9x
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="400705864"
+X-IronPort-AV: E=Sophos;i="6.05,210,1701158400"; 
+   d="scan'208";a="400705864"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2024 11:15:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="778410195"
+X-IronPort-AV: E=Sophos;i="6.05,210,1701158400"; 
+   d="scan'208";a="778410195"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Jan 2024 11:15:15 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 21 Jan 2024 11:15:14 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 21 Jan 2024 11:15:14 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 21 Jan 2024 11:15:14 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Oj+QdQQkd5A79Hh1bZXWMIOt+VlgTbm/Pbk8XWM6L+AFvDuxJklrTnDq0YCM0s4pPie/EBw/tOMLwZo+dZHUdH/8HV6Kx0wvwA12qvK9e/WN0gZIGOICOdOYz4t45eJVrB5fbCJRlCnh47wDvCCr7tfMFCiBkvZIKZkTzLFx3ZYs3sqauPH4KEX+OOJkcXdzr0TGw0DLOmtrxDfxlxR0mnPf54z1CcxSsL11GSoL4kgweqgla9Vuhk2jDGBG6XKONeG3Ml9RHosMrV4V+azBtypE/+V7TkoK2hfAQ/wZ6Vf+uev+z0WfGyOPxuxwrocclXXuDPA512OCEwYPYfnHUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4ZD6RqtHkuVkVbnT4eAW2q07OsNAA9NjCJYJhYFs6y0=;
+ b=Y8Q9i0QAiQ2FbWCvrDfLSEac6I+vVeYsFk+vO2kbgJok8WmCWnNLTL70aaM6JFjN8mTmGD0D0f+Sr6OU8lQlHDM0FpUqc2bOFOXAr2Z3U0+nEv/WCe+SnkvK1QlQtOScuFhIjSbyLMLfChHN55KSUIC3s9x1VYN11xfd2fzH/CZLGeKDpKNCEnxfcEncwvkf4GUPSXSIqL5uu9Q5HjZdndeXukFs5p4jTKHFM0bKgHNGYxLtAZWb7u7mmwN3enIVcL55LY45geTnMvflkeQeIcL1ffEdevqFPQIdlytq07YK723YoC9n0qmivVRRkBeBo/OeIZdf+fhHTAAdutj06A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by MW4PR11MB5775.namprd11.prod.outlook.com (2603:10b6:303:181::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Sun, 21 Jan
+ 2024 19:15:11 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7202.031; Sun, 21 Jan 2024
+ 19:15:11 +0000
+Date: Sun, 21 Jan 2024 11:15:09 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Samuel Ortiz <sameo@rivosinc.com>, <biao.lu@intel.com>
+CC: <dan.j.williams@intel.com>, <linux-coco@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v1 0/4] tsm: Runtime measurement registers ABI
+Message-ID: <65ad6d3db040d_107423294de@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20240114223532.290550-1-sameo@rivosinc.com>
+ <20240118033515.2293149-1-biao.lu@intel.com>
+ <Za1eXWiKPQp//1CO@vermeer>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <Za1eXWiKPQp//1CO@vermeer>
+X-ClientProxiedBy: MW4PR03CA0343.namprd03.prod.outlook.com
+ (2603:10b6:303:dc::18) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240106222357.23835-1-alchark@gmail.com> <e0302da12345e5539583b2c96d747592@manjaro.org>
- <CABjd4Yw5wTLyK5OPw2S-ipPVCw7RTUeF2J0RgH-Vyis-ng8rTw@mail.gmail.com> <d7f2f25071a4d7c72bd286b11836dce7@manjaro.org>
-In-Reply-To: <d7f2f25071a4d7c72bd286b11836dce7@manjaro.org>
-From: Alexey Charkov <alchark@gmail.com>
-Date: Sun, 21 Jan 2024 22:56:49 +0400
-Message-ID: <CABjd4Yz11D8ThcT-oCWsQf9jL2idChFYSRYVVu3KNnzwoOwkKQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: enable built-in thermal monitoring
- on rk3588
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Heiko Stuebner <heiko@sntech.de>, Sebastian Reichel <sebastian.reichel@collabora.com>, 
-	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, 
-	Christopher Obbard <chris.obbard@collabora.com>, =?UTF-8?B?VGFtw6FzIFN6xbFjcw==?= <szucst@iit.uni-miskolc.hu>, 
-	Shreeya Patel <shreeya.patel@collabora.com>, Kever Yang <kever.yang@rock-chips.com>, 
-	Chris Morgan <macromorgan@hotmail.com>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|MW4PR11MB5775:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a88a9ed-2cc2-4a51-ef5c-08dc1ab54a35
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0Ph+ttGDA8orC+kebH9E0tgEX4xvNvvIy0snpdU6L2hJOKudl9CBGyUi9rAXj17px5u1kTVhkijirn3ZoNjFTG6X58a9ZIXpAgh5ryrddv5CHOhskdkjdUAcPW+rlpl4D9LOVY6107d21OwVwzCFlooeyVKxxZEeSggTXRFW3/TjQ879gc01/SMendJpTwtw73CPNjRPEoNJfxfiehauUM7gh6gKqzjNJX9FVmSxRqMmfhAnZpGl5uSXnysc5RhYVKSST3Jul/qFnbxOdDAaGSYKjycdTLR+fuCJSsPkPpK42ku7q3AS8dYoRju829lmVYSFJCKQb380YTsBQI4rluwjdtBEsPpWWUs9Uy/VEPyQhzup6VRbfGwvIcvEuPIkRnUi9GH5lgy+nCyii+czTaY0BLBTDTkeIcbEeQm2Yl/JrFKWBYcuRW2sHTLs9vNZStgeL1ckEl2eL4hCVNYgEFiIPu1rtBq+vPHJ+kd7aSHFAHtd/E0EGVSI5CBN37MVlX5/iUiCMiGDKI21Bb6qFkj/k0JbUtG4TgQn0TcI/LeX0EWE9J+ZqsB37HpxWC/+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39860400002)(396003)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(5660300002)(41300700001)(86362001)(38100700002)(82960400001)(83380400001)(478600001)(8676002)(6506007)(4326008)(8936002)(6512007)(316002)(6486002)(6636002)(66556008)(66946007)(66476007)(26005)(2906002)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mFCBYtJI1t8edombRi1dMrq5pSVy67xos1CG88vm29ygJ6LAwOgNyOwK2YVd?=
+ =?us-ascii?Q?7NXoJvwdnRPTwfXWMOlLQPwPtaknk9nMm0tq52md8Q+4DMTpHJokRgKgSj1w?=
+ =?us-ascii?Q?ED7f/gdWXVU0f8qoA8i2uIwWxMdK7GR744rl1rCaHiNkTMuGyHFLwSd4TCIa?=
+ =?us-ascii?Q?3pxdGtJ9eOq0+whcRYTLNf7Qjx2kQJMfo3NdTQ9wmr6RC9fy69Rjf4Jirkwx?=
+ =?us-ascii?Q?LIG1ecS1AyBn3UrAZ4ZdmWcAb679Ny/kWOFnKsP4IOP5m/CyFb+DJLO0FhFC?=
+ =?us-ascii?Q?Ww5PIxcqAgQbaG850Mqu2F+1/PNV+ToVaNyqYscmgv5RMwUjAlY5NrYVlQtm?=
+ =?us-ascii?Q?hh6oUuBj8+s/OfloLESHZ+SYboNJiUkZwlZXrRFostlAnXkLZQqaLecm9EQ9?=
+ =?us-ascii?Q?Q4hP2GIo2a6f+wj+YP5MvxU6TgRp0e3FPkZ9eMssW75o2FJ4TpFBzHobgYgO?=
+ =?us-ascii?Q?381FHnyqy3TCU1ge/MZs01CoqFt8LahnDbNUnCmWa1JfGOr8Rfu2ONI0i6hv?=
+ =?us-ascii?Q?EoqxkTAnOcBA7dZo6kD4dM2g/E2JzY0TWCFVGNhj4F7WJzvVWKzkBjkk1k90?=
+ =?us-ascii?Q?4aUqd8farYlJmw9UoxCbG8iWJrO8IZvIMpGV8es7CvRMpbCmcjkfE69aBpN4?=
+ =?us-ascii?Q?mAlnu2M6LYWaZnWp4l4DUL5t2xYRhmoFdTpVugISfjlM+XVtlocpXNmxRQAb?=
+ =?us-ascii?Q?lIB9JDNzvchDqc6VV7rMsFuhJC0qcNs3hU2VsDQsrHNoYM8z29kcPe/caD7o?=
+ =?us-ascii?Q?lL1hsMPMDg1DyH5vQCIG/cXkeofsFeBs76v9Id28pGIRNlEo4K1tYw0P64rf?=
+ =?us-ascii?Q?0CbDK+vXFULcqJfPyWu3Mh0ixVjHOBZIMEVqudkLkZYQA+kHrNnLULoo+JRn?=
+ =?us-ascii?Q?QhSA22U+2TcQ7Yt9N+IIzgVLTZIaR/Q+9JZ93EFAgPBhEhVVvv6HVLTLZZc1?=
+ =?us-ascii?Q?LtCrxVOH8iFqdHrpKPoF43OuwdHK4zR81EngHsUK0y3C5FikCplmCN4JqV1Y?=
+ =?us-ascii?Q?vjqFc12tLppMeZ/4cYjy/ClLBI87JPqlBFHA8ZC4AxH7Ct5fjLku1EKg4N3O?=
+ =?us-ascii?Q?2EiK9lO/j926kfX+by+ICTFLalqHchrnKv1+nrgywU2VHPA/L7UTFxAgb1oY?=
+ =?us-ascii?Q?elkIEniU4UcYER28ZO9jpsCfgnaEKNdGkm6GsY+g8TGE1L5PPVCIrkuINNhX?=
+ =?us-ascii?Q?QZNEvOhHoipBltqGo3hXtvejF8fy2fYNokgnfcW0DKcz5HEZa6MPc156vk17?=
+ =?us-ascii?Q?1nllN8eDmoZtzfBVWZUnPVOnfTdZHtlVWLFaKoaf/drLSfnQRKzxEBJYlFJK?=
+ =?us-ascii?Q?F1Lb9An6ADEQWN9fbepQXA82EvMD/MPFA8nPuQ4axU00sGAYnymqA2TINjRT?=
+ =?us-ascii?Q?QjysrP/eNn+wJ6PiQM+GHH0HuystYFdYHmsO8126s2OP6tDOLQ+C70zBheeD?=
+ =?us-ascii?Q?lkupI41bQROg0vCP+8RX/nl0wGSLZ98Ov6RPHc1TFGcWunz6IJzfFNBPrEiE?=
+ =?us-ascii?Q?mlvXHfr6n7zwCHeA9kx4sJWGSH8Iw/QVy2LPLEe/dDS/fjfDPN7TwLuI9arx?=
+ =?us-ascii?Q?eYGblWAZ6DhgxCjDhYdUOGljMstCSpZTppcsLFvOfwRurW9gwvUkrg1U6SxJ?=
+ =?us-ascii?Q?pg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a88a9ed-2cc2-4a51-ef5c-08dc1ab54a35
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2024 19:15:11.7632
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sBoe0g+g1v1jokyxCkdO2lWjR+lNWJrMhtS77FZesofeSrUchkO3qw6SFNe7CalEi4py5sxgK0O5shQWJQDvBpVV8hrzNpg45azO6t49Zk4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5775
+X-OriginatorOrg: intel.com
 
-On Thu, Jan 18, 2024 at 10:48=E2=80=AFPM Dragan Simic <dsimic@manjaro.org> =
-wrote:
->
-> On 2024-01-08 14:41, Alexey Charkov wrote:
-> > Hello Dragan,
->
-> Hello Alexey! :)
->
-> I apologize for my delayed response.  It took me almost a month to
-> nearly fully recover from some really nasty flu that eventually went
-> into my lungs.  It was awful and I'm still not back to my 100%. :(
+Samuel Ortiz wrote:
+> On Thu, Jan 18, 2024 at 11:35:15AM +0800, biao.lu@intel.com wrote:
+> > Samuel Ortiz wrote:
+> > > Some confidential computing architectures (Intel TDX, ARM CCA, RISC-V
+> > > CoVE) provide their guests with a set of measurements registers that can
+> > > be extended at runtime, i.e. after the initial, host-initiated
+> > > measurements of the TVM are finalized. Those runtime measurement
+> > > registers (RTMR) are isolated from the host accessible ones but TSMs
+> > > include them in their signed attestation reports.
+> > >
+> > > All architectures supporting RTMRs expose a similar interface to their
+> > > TVMs: An extension command/call that takes a measurement value and an
+> > > RTMR index to extend it with, and a readback command for reading an RTMR
+> > > value back (taking an RTMR index as an argument as well). This patch series
+> > > builds an architecture agnostic, configfs-based ABI for userspace to extend
+> > > and read RTMR values back. It extends the current TSM ops structure and
+> > > each confidential computing architecture can implement this extension to
+> > > provide RTMR support.
+> > 
+> > Hi, Samuel
+> > The ABI does not include eventlog, but eventlog is usually used with RTMR.
+> > What do you think about how to implement eventlog?
+> 
+> Since the event log is typically maintained in the firmware and not in
+> the TSM itself, I don't think we should expose e.g. an event log
+> extension ABI through the config-tsm one.
+> We could decide to check for an EFI CC protocol availability and extend
+> the event log when any RTMR gets extended, and that would be an
+> internal, not userspace visible operation. I'm not sure that this
+> would scale well with e.g. IMA (a lot more events than pre-OS boot
+> afaik).
 
-Ouch, I hope you get well soon!
-
-> > Thanks a lot for your review and comments! Some reflections below.
->
-> Thank you for your work and for your detailed response.  Please see my
-> comments below, which apply to your v2 submission as a well, to which
-> I'll respond separately a bit later.
->
-> > On Sun, Jan 7, 2024 at 2:54=E2=80=AFAM Dragan Simic <dsimic@manjaro.org=
-> wrote:
-> >> On 2024-01-06 23:23, Alexey Charkov wrote:
-> >> > Include thermal zones information in device tree for rk3588 variants
-> >> > and enable the built-in thermal sensing ADC on RADXA Rock 5B
-> >> >
-> >> > Signed-off-by: Alexey Charkov <alchark@gmail.com>
-> >> > ---
-> >> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> >> > b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> >> > index 8aa0499f9b03..8235991e3112 100644
-> >> > --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> >> > +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> >> > @@ -10,6 +10,7 @@
-> >> >  #include <dt-bindings/reset/rockchip,rk3588-cru.h>
-> >> >  #include <dt-bindings/phy/phy.h>
-> >> >  #include <dt-bindings/ata/ahci.h>
-> >> > +#include <dt-bindings/thermal/thermal.h>
-> >> >
-> >> >  / {
-> >> >       compatible =3D "rockchip,rk3588";
-> >> > @@ -2112,6 +2113,148 @@ tsadc: tsadc@fec00000 {
-> >> >               status =3D "disabled";
-> >> >       };
-> >> >
-> >> > +     thermal_zones: thermal-zones {
-> >> > +             soc_thermal: soc-thermal {
-> >>
-> >> It should be better to name it cpu_thermal instead.  In the end,
-> >> that's
-> >> what it is.
-> >
-> > The TRM document says the first TSADC channel (to which this section
-> > applies) measures the temperature near the center of the SoC die,
-> > which implies not only the CPU but also the GPU at least. RADXA's
-> > kernel for Rock 5B also has GPU passive cooling as one of the cooling
-> > maps under this node (not included here, as we don't have the GPU node
-> > in .dtsi just yet). So perhaps naming this one cpu_thermal could be
-> > misleading?
->
-> Ah, I see now, thanks for reminding;  it's all described on page 1,372
-> of the first part of the RK3588 TRM v1.0.
->
-> Having that in mind, I'd suggest that we end up naming it
-> package_thermal.
-> The temperature near the center of the chip is usually considered to be
-> the overall package temperature;  for example, that's how the
-> user-facing
-> CPU temperatures are measured in the x86_64 world.
-
-Sounds good, will rename in v3!
-
-> >> > +                     trips {
-> >> > +                             threshold: trip-point-0 {
-> >>
-> >> It should be better to name it cpu_alert0 instead, because that's what
-> >> other newer dtsi files already use.
-> >
-> > Reflecting on your comments here and below, I'm thinking that maybe it
-> > would be better to define only the critical trip point for the SoC
-> > overall, and then have alerts along with the respective cooling maps
-> > separately for A76-0,1, A76-2,3, A55-0,1,2,3? After all, given that we
-> > have more granular temperature measurement here than in previous RK
-> > chipsets it might be better to only throttle the "offending" cores,
-> > not the full package.
-> >
-> > What do you think?
-> >
-> > Downstream DT doesn't follow this approach though, so maybe there's
-> > something I'm missing here.
->
-> I agree, it's better to fully utilize the higher measurement granularity
-> made possible by having multiple temperature sensors available.
->
-> I also agree that we should have only the critical trip defined for the
-> package-level temperature sensor.  Let's have the separate temperature
-> measurements for the CPU (sub)clusters do the thermal throttling, and
-> let's keep the package-level measurement for the critical shutdowns
-> only.
-> IIRC, some MediaTek SoC dtsi already does exactly that.
->
-> Of course, there are no reasons not to have the critical trips defined
-> for the CPU (sub)clusters as well.
-
-I think I'll also add a board-specific active cooling mechanism on the
-package level in the next iteration, given that Rock 5B has a PWM fan
-defined as a cooling device. That will go in the separate patch that
-updates rk3588-rock-5b.dts (your feedback to v2 of this patch is also
-duly noted, thank you!)
-
-> >> > +                                     temperature =3D <75000>;
-> >> > +                                     hysteresis =3D <2000>;
-> >> > +                                     type =3D "passive";
-> >> > +                             };
-> >> > +                             target: trip-point-1 {
-> >>
-> >> It should be better to name it cpu_alert1 instead, because that's what
-> >> other newer dtsi files already use.
-> >>
-> >> > +                                     temperature =3D <85000>;
-> >> > +                                     hysteresis =3D <2000>;
-> >> > +                                     type =3D "passive";
-> >> > +                             };
-> >> > +                             soc_crit: soc-crit {
-> >>
-> >> It should be better to name it cpu_crit instead, because that's what
-> >> other newer dtsi files already use.
-> >
-> > Seems to me that if I define separate trips for the three groups of
-> > CPU cores as mentioned above this would better stay as soc_crit, as it
-> > applies to the whole die rather than the CPU cluster alone. Then
-> > 'threshold' and 'target' will go altogether, and I'll have separate
-> > *_alert0 and *_alert1 per CPU group.
->
-> It should perhaps be the best to have "passive", "hot" and "critical"
-> trips defined for all three CPU groups/(sub)clusters, separately of
-> course, to have even higher granularity when it comes to the resulting
-> thermal throttling.
-
-I looked through drivers/thermal/rockchip_thermal.c, and it doesn't
-seem to provide any callback for the "hot" trip as part of its struct
-thermal_zone_device_ops, so I guess it would be redundant in our case
-here? I couldn't find any generic mechanism to react to "hot" trips,
-and they seem to be purely driver-specific, thus no-op in case of
-Rockchips - or am I missing something?
-
-> >> > +                                     hysteresis =3D <2000>;
-> >> > +                                     type =3D "critical";
-> >> > +                             };
-> >> > +                     };
-> >> > +                     cooling-maps {
-> >> > +                             map0 {
-> >> > +                                     trip =3D <&target>;
-> >>
-> >> Shouldn't &threshold (i.e. &cpu_alert0) be referenced here instead?
-> >>
-> >> > +                                     cooling-device =3D <&cpu_l0 TH=
-ERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> >>
-> >> Shouldn't all big CPU cores be listed here instead?
-> >
-> > I guess if a separate trip point is defined for cpu_l0,1,2,3 then it
-> > would need to throttle at 75C, and then cpu_b0,1 and cpu_b2,3 at 85C
-> > each. Logic being that if a sensor stacked in the middle of a group of
-> > four cores shows 75C then one of the four might well be in abnormal
-> > temperature range already (85+), while sensors next to only two big
-> > cores each will likely show temperatures similar to the actual core
-> > temperature.
->
-> I think we shouldn't make any assumptions of how the CPU cores heat up
-> and affect each other, because we don't really know the required
-> details.
-> Instead, we should simply define the reasonable values for the
-> "passive",
-> "hot" and "critical" trips, and leave the rest to the standard thermal
-> throttling logic.  I hope you agree.
->
-> In the end, that's why we have separate thermal sensors available.
-
-Indeed! I'll add extra "passive" alerts though (at 75C) to enable the
-power allocation governor to initialize its PID parameters calculation
-before the control temperature setpoint gets hit (per Daniel's
-feedback under separate cover).
-
-Thanks again for your review and comments on this one!
-
-Best regards,
-Alexey
+Another observation after chatting with my colleague Cedric is that the 
+TPM layer that builds on RTMR can maintain an event log that forks from
+the RTMR log. I.e. instead of the TPM event log containig pre-OS events
+starting from 0, it would start from a golden point in the RTMR
+measurements.
 
