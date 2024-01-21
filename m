@@ -1,110 +1,238 @@
-Return-Path: <linux-kernel+bounces-32190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 381538357E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:18:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01FE78357F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:35:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E38D41F216B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 21:18:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 263681C20A25
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 21:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5687338DE9;
-	Sun, 21 Jan 2024 21:18:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E13838DF4;
+	Sun, 21 Jan 2024 21:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhR+7g+N"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hAoMWnEg"
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9749238DDA;
-	Sun, 21 Jan 2024 21:18:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4F8DF51
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 21:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705871880; cv=none; b=VQANal34uNIK2WxlNrdM4kxd0RJgX2wGLk7jLyRDP9MVwCZMp8Phe1gcx1XE5H/grizqAUHr6JuVmSgtvQWe06qu1yezscWligjX8S+UN0diabUzlEHppj45hwsSPpzA3CxBi8E2ao0iM3rh2Q9IFO1tA4MDA5y6GFCF9zTDeWI=
+	t=1705872914; cv=none; b=RoXNMSWuU6HwuPV9VQOqMWgmTd6nsb+L4X0+hG6WWHpGdrOG2u0/n0tnlNA543ousfcfLYHJQ1FvE2gj/d3UVBYwbetNjyKMdFtFg9SatSNVH8lF3f5KNgSkPTv3TM+5OKziEqRDVLgUdcohJPiP+g5d5QYMvOWJ/1vEAFHgaDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705871880; c=relaxed/simple;
-	bh=h45STSfPy1P3Y2GbWo89YV/iBga1C9nJ+uPwiQ9NLLs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jrhXkxUzUXFrJVmf9c48ju/BQ+O8hjIqasNVgIh3AkOIwWzl5YBuBbFScPQYu3UOL8kiVlaNwtpib3DzKMc+6CUbEXIxurX4ETESvf9wZG+wcKjTTNE2+YhVMnKsXFilxZvY3oZsFw7Y51GwWCjSKAUJq5J6Ob5MUaMm9PMmhtE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YhR+7g+N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A64EC433C7;
-	Sun, 21 Jan 2024 21:17:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705871880;
-	bh=h45STSfPy1P3Y2GbWo89YV/iBga1C9nJ+uPwiQ9NLLs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YhR+7g+N26Oh8TUBBWHDR4e4Ao5+BO0iPfaqNrwoueieSZ2Y25fB5bmyNN4lALQOf
-	 ZB6sWAyqtXi9S7gnUaSWKIA+mfRTZi4gUMswHz6vygxOk7mXg6jXDe1Ej8VqgW/2OP
-	 XczGEJz/GK9DaABwFFQjEjhalev7oivpob93FI3hG8uWQ8Ww9CPrBSTxrfmkExenw9
-	 QuSg0PpALT1HsFD/F1KRAM6hmWymcCaP8a+Virr5n8Hl+dneFGBqiIAV52bLtD6ChV
-	 UuCldWKDA1SJ+lcg+QlLfmz2LOt1sFIR0gXw+LNycpe3MIiM5ryukpuPUxN5a3PvqB
-	 bmy4uWMX+nlOg==
-Date: Sun, 21 Jan 2024 21:17:56 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Michael Walle <michael@walle.cc>,
-	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-	tudor.ambarus@linaro.org, pratyush@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sbinding@opensource.cirrus.com, lee@kernel.org,
-	james.schulman@cirrus.com, david.rhodes@cirrus.com,
-	rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
-	michal.simek@amd.com, linux-arm-kernel@lists.infradead.org,
-	alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org, git@amd.com, amitrkcian2002@gmail.com
-Subject: Re: [PATCH v11 03/10] spi: Add multi-cs memories support in SPI core
-Message-ID: <Za2KBNsUmE6xRqD6@finisterre.sirena.org.uk>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <20231125092137.2948-4-amit.kumar-mahapatra@amd.com>
- <3d3a11b1-8396-4d8e-9bb3-61ecb67e7efa@roeck-us.net>
- <d3c93c4c-3754-480c-84c2-9455ec8af702@roeck-us.net>
- <Zaxtm0JlQYU0/K/v@finisterre.sirena.org.uk>
- <ec7e7972-d48d-4a47-bd03-eec0c4334471@roeck-us.net>
- <9806d99fab46c928f337b30b21057b3e@walle.cc>
- <ed1de0d4-9a88-47b1-a280-b872f6fdecb6@roeck-us.net>
+	s=arc-20240116; t=1705872914; c=relaxed/simple;
+	bh=Ds7Qnl2E3+PG4PnCqFoazFIXuc+duwHTLDPZk5Ncimo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=kjnzrenWr3LjjRM7ZdSsw95NrzNZ48QJ4mckciuQS37HyN4YRUOfexD/MazvhU0w3GNBmWJm4xTvhZj5W8bZroQgFaWzkR8d5onLoKtvdJ3RFZ6gzpwfifo57iNFaSiqbSK0cfeR3OxJ9DkAlSnHk+OFjIs9UkS/pIWGOSQ201s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hAoMWnEg; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sun, 21 Jan 2024 16:35:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705872910;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=Ug8HPVmT+R79lekdm1+D7esoiTAn5v7pk1ps73/YWRo=;
+	b=hAoMWnEgRx/6680gy74aQfwimsVm4HV/wjgCA4zqRyVmJivmrC9e+7uXnqATaGsVZSapT1
+	wCHRHXil/akRxx/7bGvulO/dtRqt1eEzEFmgd++QmcGq+dsKUtkcwFeD3ILYKpwu78c8Q3
+	37bnAkg++5O+GuOUUvQ0GVV1WfO5Dpo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] More bcachefs updates for 6.8-rc1
+Message-ID: <a34bqdrz33jw26a5px4ul3eid5zudgaxavc2xqoftk2tywgi5w@ghgoiavnkhtd>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tcmSRZRy9C5FJXV1"
-Content-Disposition: inline
-In-Reply-To: <ed1de0d4-9a88-47b1-a280-b872f6fdecb6@roeck-us.net>
-X-Cookie: You might have mail.
-
-
---tcmSRZRy9C5FJXV1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Jan 21, 2024 at 11:29:48AM -0800, Guenter Roeck wrote:
+Hi Linus, another small bcachefs pull. Some fixes, Some refactoring,
+some minor features.
 
-> So I guess 8 would be the absolute minimum to re-enable support for
-> affected systems.
+Cheers,
+Kent
 
-That's actually the number I went for, just waiting for CI to go
-through before I send it out.
+The following changes since commit 169de41985f53320580f3d347534966ea83343ca:
 
---tcmSRZRy9C5FJXV1
-Content-Type: application/pgp-signature; name="signature.asc"
+  bcachefs: eytzinger0_find() search should be const (2024-01-05 23:24:46 -0500)
 
------BEGIN PGP SIGNATURE-----
+are available in the Git repository at:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWtigMACgkQJNaLcl1U
-h9Bupwf9ElV4f82yrrRTlzrth8zQZIj8vOQ1sXS02CQRaCYayGxIcjYRGvRCtLvO
-Rw0SV2fD+C7t+UMikK/3GPIstF42bYF7hpXWhIyvKXKS3jZiBE3Y21VQtvaDGVSO
-oNkyDqph/hbwQ09ps9TUi6AC5LOQWHdm3QLM9pOrZ2jMr6z56Vge/RlkK4VoLHYg
-PUIgguXVtDEK31eqYfmji9p8xByXg0B+88MH90buxC6H11PG2JIRnIMMTY95C8r4
-VDiaT2HCw+nf36cpv6LbkMr68qARlHcdOA1H3bvy9ofNDbkkLcvV3q8cj0IDeDRV
-xtlgLlOsbzrWoh7pcG6QTXtih3SIWg==
-=X0HL
------END PGP SIGNATURE-----
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-01-21
 
---tcmSRZRy9C5FJXV1--
+for you to fetch changes up to 249f441f83c546281f1c175756c81fac332bb64c:
+
+  bcachefs: Improve inode_to_text() (2024-01-21 13:27:11 -0500)
+
+----------------------------------------------------------------
+More bcachefs updates for 6.7-rc1
+
+ - assorted prep work for disk space accounting rewrite
+ - BTREE_TRIGGER_ATOMIC: after combining our trigger callbacks, this
+   makes our trigger context more explicit
+ - A few fixes to avoid excessive transaction restarts on multithreaded
+   workloads: fstests (in addition to ktest tests) are now checking
+   slowpath counters, and that's shaking out a few bugs
+ - Assorted tracepoint improvements
+ - Starting to break up bcachefs_format.h and move on disk types so
+   they're with the code they belong to; this will make room to start
+   documenting the on disk format better.
+ - A few minor fixes
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      bcachefs: remove redundant variable tmp
+
+Kent Overstreet (42):
+      bcachefs: Don't log errors if BCH_WRITE_ALLOC_NOWAIT
+      bcachefs: eytzinger_for_each() declares loop iter
+      bcachefs: drop to_text code for obsolete bps in alloc keys
+      bcachefs: BTREE_TRIGGER_ATOMIC
+      bcachefs: helpers for printing data types
+      bcachefs: bch2_prt_compression_type()
+      bcachefs: bch_fs_usage_base
+      bcachefs: bch2_trans_account_disk_usage_change()
+      bcachefs: Reduce would_deadlock restarts
+      bcachefs: Don't pass memcmp() as a pointer
+      bcachefs: Add .val_to_text() for KEY_TYPE_cookie
+      bcachefs: bch2_kthread_io_clock_wait() no longer sleeps until full amount
+      bcachefs: Re-add move_extent_write tracepoint
+      bcachefs: Add missing bch2_moving_ctxt_flush_all()
+      bcachefs: Improve move_extent tracepoint
+      bcachefs: Avoid flushing the journal in the discard path
+      bcachefs: Print size of superblock with space allocated
+      bcachefs: Better journal tracepoints
+      bcachefs: bkey_and_val_eq()
+      bcachefs: extents_to_bp_state
+      bcachefs: Fix excess transaction restarts in __bchfs_fallocate()
+      bcachefs: Improve trace_trans_restart_relock
+      bcachefs: bios must be 512 byte algined
+      bcachefs: Prep work for variable size btree node buffers
+      bcachefs: opts->compression can now also be applied in the background
+      bcachefs: add missing __GFP_NOWARN
+      bcachefs: bch_snapshot::btime
+      bcachefs: comment bch_subvolume
+      bcachefs: counters.c -> sb-counters.c
+      bcachefs: sb-counters_format.h
+      bcachefs; quota_format.h
+      bcachefs: inode_format.h
+      bcachefs: dirent_format.h
+      bcachefs: xattr_format.h
+      bcachefs: alloc_background_format.h
+      bcachefs: snapshot_format.h
+      bcachefs: subvolume_format.h
+      bcachefs: ec_format.h
+      bcachefs; extents_format.h
+      bcachefs: reflink_format.h
+      bcachefs: logged_ops_format.h
+      bcachefs: Improve inode_to_text()
+
+Su Yue (3):
+      bcachefs: fix memleak in bch2_split_devs
+      bcachefs: kvfree bch_fs::snapshots in bch2_fs_snapshots_exit
+      bcachefs: grab s_umount only if snapshotting
+
+ fs/bcachefs/Makefile                      |   2 +-
+ fs/bcachefs/alloc_background.c            |  89 +--
+ fs/bcachefs/alloc_background_format.h     |  92 ++++
+ fs/bcachefs/alloc_foreground.c            |   7 +-
+ fs/bcachefs/backpointers.c                | 100 ++--
+ fs/bcachefs/backpointers.h                |   1 +
+ fs/bcachefs/bcachefs.h                    |   5 -
+ fs/bcachefs/bcachefs_format.h             | 888 +-----------------------------
+ fs/bcachefs/bkey.c                        |   2 +-
+ fs/bcachefs/bkey_methods.c                |   9 +
+ fs/bcachefs/bkey_methods.h                |  10 +-
+ fs/bcachefs/bset.c                        |   7 +-
+ fs/bcachefs/bset.h                        |   3 +-
+ fs/bcachefs/btree_cache.c                 |  12 +-
+ fs/bcachefs/btree_cache.h                 |  19 +-
+ fs/bcachefs/btree_gc.c                    |  36 +-
+ fs/bcachefs/btree_io.c                    |  38 +-
+ fs/bcachefs/btree_iter.c                  |   2 +-
+ fs/bcachefs/btree_iter.h                  |   5 +
+ fs/bcachefs/btree_locking.c               |  40 +-
+ fs/bcachefs/btree_locking.h               |   9 +-
+ fs/bcachefs/btree_trans_commit.c          |  35 +-
+ fs/bcachefs/btree_types.h                 |  12 +-
+ fs/bcachefs/btree_update_interior.c       |   8 +-
+ fs/bcachefs/btree_update_interior.h       |  42 +-
+ fs/bcachefs/btree_write_buffer.c          |   7 +-
+ fs/bcachefs/buckets.c                     | 148 ++---
+ fs/bcachefs/buckets.h                     |  17 +
+ fs/bcachefs/buckets_types.h               |  15 +-
+ fs/bcachefs/clock.c                       |   4 +-
+ fs/bcachefs/compress.h                    |   8 +
+ fs/bcachefs/data_update.c                 |   6 +-
+ fs/bcachefs/debug.c                       |  16 +-
+ fs/bcachefs/dirent_format.h               |  42 ++
+ fs/bcachefs/ec.c                          |   6 +-
+ fs/bcachefs/ec_format.h                   |  19 +
+ fs/bcachefs/extents.c                     |  11 +-
+ fs/bcachefs/extents.h                     |   2 +-
+ fs/bcachefs/extents_format.h              | 295 ++++++++++
+ fs/bcachefs/eytzinger.h                   |   4 +-
+ fs/bcachefs/fs-io-direct.c                |   4 +
+ fs/bcachefs/fs-io-pagecache.c             |  37 +-
+ fs/bcachefs/fs-io-pagecache.h             |   2 +-
+ fs/bcachefs/fs-io.c                       |   7 +-
+ fs/bcachefs/fs-ioctl.c                    |  11 +-
+ fs/bcachefs/inode.c                       |  29 +-
+ fs/bcachefs/inode_format.h                | 166 ++++++
+ fs/bcachefs/io_misc.c                     |   4 +-
+ fs/bcachefs/io_write.c                    |  13 +-
+ fs/bcachefs/journal.c                     | 111 ++--
+ fs/bcachefs/journal_io.c                  |   5 +-
+ fs/bcachefs/logged_ops_format.h           |  30 +
+ fs/bcachefs/move.c                        |  65 ++-
+ fs/bcachefs/opts.c                        |   4 +-
+ fs/bcachefs/opts.h                        |   9 +-
+ fs/bcachefs/quota_format.h                |  47 ++
+ fs/bcachefs/rebalance.c                   |  13 +-
+ fs/bcachefs/recovery.c                    |   2 +-
+ fs/bcachefs/reflink.c                     |  21 +-
+ fs/bcachefs/reflink.h                     |   8 +-
+ fs/bcachefs/reflink_format.h              |  33 ++
+ fs/bcachefs/replicas.c                    |  28 +-
+ fs/bcachefs/sb-clean.c                    |   2 +-
+ fs/bcachefs/{counters.c => sb-counters.c} |   2 +-
+ fs/bcachefs/{counters.h => sb-counters.h} |   7 +-
+ fs/bcachefs/sb-counters_format.h          |  98 ++++
+ fs/bcachefs/sb-members.c                  |   4 +-
+ fs/bcachefs/snapshot.c                    |   4 +-
+ fs/bcachefs/snapshot_format.h             |  36 ++
+ fs/bcachefs/subvolume_format.h            |  35 ++
+ fs/bcachefs/super-io.c                    |   6 +-
+ fs/bcachefs/super.c                       |   6 +-
+ fs/bcachefs/sysfs.c                       |  15 +-
+ fs/bcachefs/trace.h                       |  76 +--
+ fs/bcachefs/util.c                        |  15 +-
+ fs/bcachefs/util.h                        |   3 +-
+ fs/bcachefs/xattr.c                       |   5 +-
+ fs/bcachefs/xattr_format.h                |  19 +
+ 78 files changed, 1629 insertions(+), 1426 deletions(-)
+ create mode 100644 fs/bcachefs/alloc_background_format.h
+ create mode 100644 fs/bcachefs/dirent_format.h
+ create mode 100644 fs/bcachefs/ec_format.h
+ create mode 100644 fs/bcachefs/extents_format.h
+ create mode 100644 fs/bcachefs/inode_format.h
+ create mode 100644 fs/bcachefs/logged_ops_format.h
+ create mode 100644 fs/bcachefs/quota_format.h
+ create mode 100644 fs/bcachefs/reflink_format.h
+ rename fs/bcachefs/{counters.c => sb-counters.c} (99%)
+ rename fs/bcachefs/{counters.h => sb-counters.h} (77%)
+ create mode 100644 fs/bcachefs/sb-counters_format.h
+ create mode 100644 fs/bcachefs/snapshot_format.h
+ create mode 100644 fs/bcachefs/subvolume_format.h
+ create mode 100644 fs/bcachefs/xattr_format.h
 
