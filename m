@@ -1,75 +1,58 @@
-Return-Path: <linux-kernel+bounces-32058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BDBA8355DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBDF28355E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 14:09:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D159B1F224B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:56:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 513331F22C42
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E311C37169;
-	Sun, 21 Jan 2024 12:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5869E3716F;
+	Sun, 21 Jan 2024 13:09:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JBkIyFi4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yd3FOdmS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83107364A7;
-	Sun, 21 Jan 2024 12:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9080C273FB;
+	Sun, 21 Jan 2024 13:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705841795; cv=none; b=Cb3MaaEoPtbfVpqlGJHUGkmlNQADBg7zKPXde/2srC3lPsKRudSsnZC09h2sTtLQzll8PeUcxATu0lj+TdzAS0zYQKBKx6dnH2uqvLHWZBkMCxNvrifHiMyVOGS4H9PtAnoInQzPcdSUwW5FZpRK5ruNsxlUJhIVV4YgYdIbguo=
+	t=1705842585; cv=none; b=jHYO4Nn+MMNPizsCstC9YnVrwRg427CzR3A1/5Zzu8w3q6oyHQimBvyXdoInfEamCnoUgd75MjyMOU8dviFeZK1nDY5eDg3j2V/lACCvjLVd+6HxBIOjJiySLZysZ+NyQdO3L82NbWm5LdL95f8jfGqxZfkKsXTqnmRKakj5F+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705841795; c=relaxed/simple;
-	bh=CU8CVt0gIhATyZrqsZlQzuxnGQAXF7t8casXv8CS7Go=;
+	s=arc-20240116; t=1705842585; c=relaxed/simple;
+	bh=9cyDx1F/dYPJrf8RZbUvqLxyHay+cmGJp31p+JZ2tBc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RIWSyWUmlgg9eMv2Q1SlplWUuHZwb284NnQ2dYL7MmS1eUJdhqowxizuJVbwHjiJ3CvMGndeEfDJAYPkednsw5piLHl4owncGbg30pHxdNwx8mYmEk4iyyWxexdJ1N2H6fuYULVRlLQlzJCkufu/o1BwZi29Fqs2oVbX0aE2Skg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JBkIyFi4; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705841794; x=1737377794;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CU8CVt0gIhATyZrqsZlQzuxnGQAXF7t8casXv8CS7Go=;
-  b=JBkIyFi4xXgSeiLUFHzyf7qCHYVmNybE3t9VIGiFODsjoVDrvaEuknL6
-   IIym4B6Op/N64Vlv5kRIs8ntkLlKZ+xyEClMBoF55RKx8bwjm1U2bVvXh
-   88lDVcjwLhFnNZz81Da9HmshFsCjycf0hYLXIc8Y9L3+w2KVFs8V2oWgk
-   o3UgeAo5JOm6JfGkpFm+6RvUZ2LEJYXLCzoa07SAFY7rKDgl9R56F2+2X
-   RVCjHM1DE/9N0Y+0Nrkd4h5Uyp+Lu15ctsCUNs5LlQnwHScCt/TZ6V+YJ
-   VS8ejrIG/NZ25G2wrXeKr2IfxkFP7kxTq1kqQeFWc7DRf4op3BgDlxSyn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="7705119"
-X-IronPort-AV: E=Sophos;i="6.05,209,1701158400"; 
-   d="scan'208";a="7705119"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2024 04:56:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10959"; a="1032341043"
-X-IronPort-AV: E=Sophos;i="6.05,209,1701158400"; 
-   d="scan'208";a="1032341043"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2024 04:56:30 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rRXND-0000000Fcqz-0jn9;
-	Sun, 21 Jan 2024 14:56:27 +0200
-Date: Sun, 21 Jan 2024 14:56:26 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	"open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	linux-acpi@vger.kernel.org, stable@vger.kernel.org,
-	George Melikov <mail@gmelikov.ru>
-Subject: Re: [PATCH] gpiolib: acpi: Ignore touchpad wakeup on GPD G1619-04
-Message-ID: <Za0UenM4CweUNZhW@smile.fi.intel.com>
-References: <20240117142942.5924-1-mario.limonciello@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NiDCQsa+Ox3ysxwcPsbDDurH0zqqDe+V72QHOzurHimcgFp3mJRW0x5V4XZaKMpZAzc6M0mdWoNBclarzxNiD7ktXzWsG/eJZa/VFht2TC+kSXKVn2xkIasyT3gkuQAY7yGyXn4e4g5GgtyAoN234Yi5upmK3Oo62G/gLLpE4dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yd3FOdmS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92A0FC433C7;
+	Sun, 21 Jan 2024 13:09:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705842585;
+	bh=9cyDx1F/dYPJrf8RZbUvqLxyHay+cmGJp31p+JZ2tBc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Yd3FOdmSElZt7EwwlOyHijJCPPd8/8JTm/iNfsZcAFaJlWSUC7ysZMyGRPvUmMxsv
+	 L60jypo5eBKcMvi5iEl9IvUIWaAxmP3x6M3r+d4XUnlT/RMWeK93dvrHosPkKROUUb
+	 ZOkcpxfL2xXss9El/SxQTuICc1VV9/hvl9m9JHYYWjFkWujdXhT+ZPZozsH6rx5nEW
+	 U+3bqCJ1BRYppcvn76KfHmELqQgyUGAYmE1FA1W5u0P91BEASJ383RwsKMEXxet6D9
+	 S/w3yQhIZwS0mrJEgkIJRIsCtZUvFufDAVmkWvUQfRRH769U6ggcFVOygT+/r5/P0A
+	 megt6AA8IgTwQ==
+Date: Sun, 21 Jan 2024 15:09:40 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Zhipeng Lu <alexious@zju.edu.cn>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Ravi Krishnaswamy <ravi.krishnaswamy@intel.com>,
+	Harish Chegondi <harish.chegondi@intel.com>,
+	Brendan Cunningham <brendan.cunningham@intel.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/hfi1: fix a memleak in init_credit_return
+Message-ID: <20240121130940.GA7547@unreal>
+References: <20240112085523.3731720-1-alexious@zju.edu.cn>
+ <20240114090434.GD6404@unreal>
+ <28aeb877-c0b4-4236-87d5-0bbaeb185656@cornelisnetworks.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,19 +61,93 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240117142942.5924-1-mario.limonciello@amd.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <28aeb877-c0b4-4236-87d5-0bbaeb185656@cornelisnetworks.com>
 
-On Wed, Jan 17, 2024 at 08:29:42AM -0600, Mario Limonciello wrote:
-> Spurious wakeups are reported on the GPD G1619-04 which
-> can be absolved by programming the GPIO to ignore wakeups.
+On Thu, Jan 18, 2024 at 06:14:11PM -0500, Dennis Dalessandro wrote:
+> On 1/14/24 4:04 AM, Leon Romanovsky wrote:
+> > On Fri, Jan 12, 2024 at 04:55:23PM +0800, Zhipeng Lu wrote:
+> >> When dma_alloc_coherent fails to allocate dd->cr_base[i].va,
+> >> init_credit_return should deallocate dd->cr_base and
+> >> dd->cr_base[i] that allocated before. Or those resources
+> >> would be never freed and a memleak is triggered.
+> >>
+> >> Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+> >> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+> >> ---
+> >>  drivers/infiniband/hw/hfi1/pio.c | 6 +++++-
+> >>  1 file changed, 5 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
+> >> index 68c621ff59d0..5a91cbda4aee 100644
+> >> --- a/drivers/infiniband/hw/hfi1/pio.c
+> >> +++ b/drivers/infiniband/hw/hfi1/pio.c
+> >> @@ -2086,7 +2086,7 @@ int init_credit_return(struct hfi1_devdata *dd)
+> >>  				   "Unable to allocate credit return DMA range for NUMA %d\n",
+> >>  				   i);
+> >>  			ret = -ENOMEM;
+> >> -			goto done;
+> >> +			goto free_cr_base;
+> >>  		}
+> >>  	}
+> >>  	set_dev_node(&dd->pcidev->dev, dd->node);
+> >> @@ -2094,6 +2094,10 @@ int init_credit_return(struct hfi1_devdata *dd)
+> >>  	ret = 0;
+> >>  done:
+> >>  	return ret;
+> >> +
+> >> +free_cr_base:
+> >> +	free_credit_return(dd);
+> > 
+> > Dennis,
+> > 
+> > The idea of this patch is right, but it made me wonder, if
+> > free_credit_return() is correct.
+> 
+> Yes, I've double checked the call path and if init_credit_return() fails we do
+> not call the free_credit_return().
+> 
+> So this patch:
+> 
+> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+> 
+> 
+> > 
+> > init_credit_return() iterates with help of for_each_node_with_cpus():
+> > 
+> >   2062 int init_credit_return(struct hfi1_devdata *dd)
+> >   2063 {
+> > ...
+> >   2075         for_each_node_with_cpus(i) {
+> >   2076                 int bytes = TXE_NUM_CONTEXTS * sizeof(struct credit_return);
+> >   2077
+> > 
+> > But free_credit_return uses something else:
+> >   2099 void free_credit_return(struct hfi1_devdata *dd)
+> >   2100 {
+> > ...
+> >   2105         for (i = 0; i < node_affinity.num_possible_nodes; i++) {
+> >   2106                 if (dd->cr_base[i].va) {
+> > 
+> > Thanks
+> > 
+> >> +	goto done;
+> >>  }
+> >>  
+> >>  void free_credit_return(struct hfi1_devdata *dd)
+> 
+> I think we are OK because the allocation uses node_affinity.num_possible_nodes
+> and in free_credit_return() we walk that entire array and if something is
+> allocated we free it.
+> 
+> Now why do we use for_each_node_with_cpus() at all? I believe that is because it
+> produces a subset of what is represented by num_possible_nodes(), which is OK
+> and doesn't leak anything.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+You are right, let's wait till merge window ends and we will apply this patch to rdma-rc.
 
+Thanks
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> 
+> -Denny
+> 
 
