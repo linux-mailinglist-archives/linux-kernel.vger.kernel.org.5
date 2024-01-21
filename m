@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-32052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60FA28355C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:44:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3165E8355C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:44:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A31BB2281E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:44:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D7041F21E30
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E738376EC;
-	Sun, 21 Jan 2024 12:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD55D374C1;
+	Sun, 21 Jan 2024 12:43:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="QeEclU/d"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2020.outbound.protection.outlook.com [40.92.107.20])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="qNo3AAna"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2067.outbound.protection.outlook.com [40.92.107.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C298376E6;
-	Sun, 21 Jan 2024 12:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025DD376E6;
+	Sun, 21 Jan 2024 12:43:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.67
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705841005; cv=fail; b=WmWb7oKk5xL3+1/8W5+xgVEabwAMbN35ulkl668DGeXEuk4hbLLgxzi5iGWmOhOkfnQa8dNqSSg40E8Ubdg3e5lE16See40Ek7S2xXUgYzjIXkMSHj7ivurbIHvTcSxhxRfYNoyuBfiM7/kYIVCxh8M25GuKHNrJ5GzK+BGmkuM=
+	t=1705841016; cv=fail; b=JS+4UASEgGXXHAltMZhCD9ZlOhVVfYcs/oypu8CnXPuspiydrQPQFoSMnV7CLlJ8tOeXmlRBfRABottSp09FQZ0g/ukR1l1hxG0fveNpOMC5d2MhjP22Xial094WWOkEy8dcKmUK+qlAyknoZit29WXgRSZeFkBKikl9sxJvxQI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705841005; c=relaxed/simple;
-	bh=UlMaUdaIWviSBMFjRPUAckssO6PwLiu2eKXhiPYTf8s=;
+	s=arc-20240116; t=1705841016; c=relaxed/simple;
+	bh=Yd3sc/A65qEoCUzqW9OHndbiU2nMrQBNLdc7YzNElYg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BA8JTCUAxu7SzBh+MX3l4475yxCu6OgKncQGW2c64RGZ8krilCDtZvqA7auxfO0LhLKzxXE/pvhT3/PZHchxtgqpePbb9J79KGwjZbC6qKz0Bb0dPoSMrk1n4iumdeFxvWd3DDUzBltV+N1CDrCieij321Hpw1RC7Km3g3PBadU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=QeEclU/d; arc=fail smtp.client-ip=40.92.107.20
+	 Content-Type:MIME-Version; b=MoJ/5CUR+ecLXCsJts/BCZH/pbNN0Z+GgokaEwd9UntNz51ZWztte4JCJUVgCmhqhfaxuNars3NgHy/bUCL3pbsLhVFXg8nbzi5EUo3NkbFpLZ/mTPAM0Bwa8qUblfPr55NiZY1g2Mvi3CnTWKeKz/ijwk6MW9GpAOB5AAIMjpg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=qNo3AAna; arc=fail smtp.client-ip=40.92.107.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hv0iS+rlatgYifFRt4zSf1EFcbMgghUjky/uMAdUn1pC0QoEF9PDKUJAxibVnKjsD6nIgCYOVQiuUMounu/1dIf2zlwdq/l/9BYh6MSCIzsy6mKugcyWGN6FNv29OOXMRMY2AsqoYWoav6ZSYKlUqLzyOPZZE5oXWx5KR/Y7IDngIbuexRQOJF8CLIoUaTKe/hVvnRecZMwXdwzFGlP9OIy/cXYaNgjJBlnnmLBYTGHMGV/SX4nWZGHcXSLMT1vrIt0UwQvUITcfY6gu8dMNDJBzcnWs69p9G73VqtVShcOos3kzuR6fycMiMPB6I3sKaQj2ORX6ebhYWLMC2t15eQ==
+ b=Hk0MmBk4V5MW/HOIUdkrFcfQtLzg1JPZCNYT1I94l/yzyRaNAzxbpsFUAtbnia0zBSE2JujWBTb/B7Yi9jmDZ2jQf6DwCBb2HwYANVeQL7oDTi8IknwA+VB0HxhhoQCtij/CjxQUJcr8wbBFCs7+pASm2m/LLITy5GvWcQRPuAqiHMxyXYFNgPOieTNwjaKo9BgVgHFQFyDvLHbZxn5BJXKEtcoJZQy4KqHUvU5B/r2X8e7xQkkWiCVM6KXZIp6RHp/iFInlOggIoMdOIkHTBZrlAwf2GMPJXbCdP9nM9nqg+EQerdYNdKoCadkdwr/ECWRG2bAZ/4l4qYcF8B7zHA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x1jb92RmIt0dCPXHHflbc6kEI6Sa9rqMx59OPWcJtfg=;
- b=OQgoQXaixtpgncgi6lnclHR944jvzGogRN+sw6Zy/rp29V1fs4EYTKw3MFVQEOZzclH5cgrKeR/mwuLT091xz1aOEjmxI+myvrRUMqY3t6wWAku0F4idHM9T9P6MmuDfaDfLo0GHYGEaPbEfTwTgIf/Kl1irILuWqr2Y7hOMB75uCfBsziE52mb3VtPXwEo92An+h2PE4iVDCi1vFnXStNCdLG3crCdibLWhEz04AHziAhycf3aekagfffH/BIE9bhivit9C1RXO/TlaOS664G0FFmRrB/jNCrXklnK6i6BEF0+BXluM2q76UvHs+9BacGeGXCnJrmBT2l7lH2pTYA==
+ bh=TnRRuLNvK/g8gaz8gX6Cg8mwYr7wdgAjVPAAoZnD8zw=;
+ b=dGvDfpJCkA5oKeqtBuM3GHzlUOhM9JVjzQvpTV/rTKt/IxV9XamlAjcXcvNDbW+NYwEBja/Z6KGGgpNh/cQoYmNXSXF0sS87zv/JQ2mz5ktfNbJ51gb2iXDP/pHUDcUshIViolx1eTZ1jIS+0APs/BejodGvfwMfX6hcgw5dDKMFqPdquriZTp76TDpga1BxHSH6s5KXe/22U7lZs8MLcRuvzRQ67U6slsiv9z3sGcV/4xazNSFZ2K8j+ChDjGi7K6ePnm/tNidUSD01Ywiu0ZkUeZOBcB2Esc2bfrTJAUwh1IGWP0AbRk1VhFuWQD6hVB1VMITXPil4dKX/2QzlSQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x1jb92RmIt0dCPXHHflbc6kEI6Sa9rqMx59OPWcJtfg=;
- b=QeEclU/dJ17aBOQJAUObnKVBCV2RXMOz1T6ODBYKdbJBToYhPGmJBbYuCgtyP+tesOroncYZN+4sZWn0BqivzbtH99+XQOobb+Fzdskd/1xHisFC1F0e+X3I7aZR118a7PBJeJejJWkcfjxaAXD1rooGeodZVyoVpYimA6bliehAgszz4U+6Gng4eSiXrWjhdZ7pxKOyE30R5BGCB49p1qRmjY5yxlU3VVg7SZPIj/M/u/X0MAohDrpcxxw7gmTE6E1PSvTrggpeMOPchcXCfDh1DrWiGUM98+VHxCRagAPGqxvqruxuNJlQBrDY4Vj+Rvu1huacFNtlPCna3AsD0A==
+ bh=TnRRuLNvK/g8gaz8gX6Cg8mwYr7wdgAjVPAAoZnD8zw=;
+ b=qNo3AAnaYvXgWxwJZnKq8Qw1mMFofK2HkUSvCbfXtES6Iu4KyKK9jRIFzOaaBygKOMYftmS+jsz3XgufExjiri4MMJndiwEInMlG6m/GX8cJ5/ZDMTjLdwyn5x0iBxOBta2pG8vwz7PFktfzTfWBhTmN+7oTk9tHMuh1EnHnhz8A1f96LVnQmYhjte322FhWDGhQtX1QytkYQ+DdY5D9ngqgbQ9NHx3dWSbOG/pyZjP4irdPtlsUd16jb8HneteEHv3J2aidgxB8knVm7xy5Fss4hZ3Qi1A5PEB7DDbxq7TB3Jn5Bnh3e2Ni9YF0Tkahl3p3xhF7jhTif6v8NCIAJA==
 Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
  (2603:1096:400:363::9) by OSQPR01MB6119.apcprd01.prod.exchangelabs.com
  (2603:1096:604:27b::11) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.30; Sun, 21 Jan
- 2024 12:43:20 +0000
+ 2024 12:43:30 +0000
 Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
  ([fe80::bcb7:50f4:7a16:4ec0]) by TYZPR01MB5556.apcprd01.prod.exchangelabs.com
  ([fe80::bcb7:50f4:7a16:4ec0%7]) with mapi id 15.20.7181.019; Sun, 21 Jan 2024
- 12:43:20 +0000
+ 12:43:30 +0000
 From: Ziyang Huang <hzyitc@outlook.com>
 To: mcoquelin.stm32@gmail.com
 Cc: alexandre.torgue@foss.st.com,
@@ -65,21 +65,23 @@ Cc: alexandre.torgue@foss.st.com,
 	linux-arm-kernel@lists.infradead.org,
 	netdev@vger.kernel.org,
 	linux-mediatek@lists.infradead.org,
+	Praveenkumar I <ipkumar@codeaurora.org>,
+	Abhishek Sahu <absahu@codeaurora.org>,
 	Ziyang Huang <hzyitc@outlook.com>
-Subject: [PATCH 4/8] clk: qcom: gcc-ipq5018: correct gcc_gmac0_sys_clk reg
-Date: Sun, 21 Jan 2024 20:42:33 +0800
+Subject: [PATCH 5/8] clk: qcom: support for duplicate freq in RCG2 freq table
+Date: Sun, 21 Jan 2024 20:42:34 +0800
 Message-ID:
- <TYZPR01MB555644D4AF2C3C528BC6E6C0C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+ <TYZPR01MB5556DEA3D4740441EC561414C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <TYZPR01MB55563BD6A2B78402E4BB44D4C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
 References: <TYZPR01MB55563BD6A2B78402E4BB44D4C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [ww+btxZZBQOC2wakAs5+sapyWmbpq5X6IyU85vlcnhJasKmaU1aNdw==]
+X-TMN: [eYikeWM2GM7qK/WtHoB+cI/jJ5r4GrkIov4uetos/j1E8TsBXaboEw==]
 X-ClientProxiedBy: PH8PR21CA0009.namprd21.prod.outlook.com
  (2603:10b6:510:2ce::26) To TYZPR01MB5556.apcprd01.prod.exchangelabs.com
  (2603:1096:400:363::9)
-X-Microsoft-Original-Message-ID: <20240121124237.3328702-4-hzyitc@outlook.com>
+X-Microsoft-Original-Message-ID: <20240121124237.3328702-5-hzyitc@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,39 +91,46 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: TYZPR01MB5556:EE_|OSQPR01MB6119:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b4a16b5-8d74-4bac-8578-08dc1a7e8c1f
+X-MS-Office365-Filtering-Correlation-Id: 1605bcff-1402-43c9-7ccb-08dc1a7e9247
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	tHsYmrrJYKUXHcO8vMQtk366rZo0YRfSemU+NcvIf1HNhdu/7l2xKMpV4DqZ9mkonCYzyoirabBBjDPe9zYtu+pkE9EvU7mwRcs9mwmo4ptF1LHWtCOWaxp3da+NHrImdsEMzgrAN8gnGP5DmrV1TOSl82bhz9f4RcoNKu7FWVddUeS1l9to/BamJVjMJqx+Tm0rqWLtRk49IaKveRYHeIt5qX2cqSLZvFSV4Ox5mO6f9dvUU7pxNw8eQK8GAq5Va6aB5SoWCfZAn0hN2fiiWSWdXBrZ4d9BT04Rxkwb8JH4VJ1EtGweIDa+ECY2xlaMg9leHRxBbq6iOMFbV3nKs9QY4k+SoaKco1RtLdB6ej1X2EhQFftRYAojVOimk0cOoXjvIXCgbEmEPeEmwBngZeMIH8dbfg539CO/zmICUmMrk3xS/lSV+gPhHQj46g7oeAQTUgiMMimyzDdgZkIMQF/lNJwots9ISlK/CSY+jSFmqGEyuAYWwMGs2XsaiHVuJor/yGzBvX0eQQjGLR7PZ55OcAlx2FijylUny4P3M+lZoMzpYBCKpmcKLCwxKuprMXywSjEX3HeWf9tQcrQKEdkmBdqvUY64YwqCOfF66JsflFK6TbUxxreXpPI0uV1X
+	gDACqTU4RL2Oukh1rNPZerDsRxyS9zGyWZesrSWoxEUke1Ezh2etJtFy4uEGL+N7E9TInuEy2KeZIzmhO+ar2NYJoOfODyoC05NI5OKXRZszacoEQ0KZHI9jMPradhnuzd0pLQnE4is2xroru4BxGDtFtsFN3sZisaujC83QucEUXOdCeCj7b1lAZU9fFIH6kO1KGDmyMX4TutazE8AT35YqLXgoFzWH/A8xgnSrGKKyptEQvYoyh7tuTGLwA4iws15SFVpKpsfC7rO6i/5JU8qkbQIRcUx6xmnshmz672ntDWtwUDGa+5xk+0OVJa+Ew1mb33l+J0RGe0yHAKssdS4XZfUZ93xCpsOPYyOdk0L3VtXaNULvR2x+1t0gmj6tpakBF1beITf4RF7lapRXuoFuu12UArPB3OVO6aZ6pcXKjv17zuptD4bgfTzp0jrU+YR5DRK1oq4imzGK8IUtDjqgDAILUMomnN5wihvlUQ49KyMGGRbqW4L3SgHz+yeIB04LDveDumozTlyZz7K+rWAdBRTBWwL2V1rNh1FvW1GbwskBxkz7t2drTiFeKBLdrfiZQPRmTbcxkb6sJZ78c9q6IrtyaQXtxhOaeYVIQSY94bEhVIRfNF2eVCHUWDM5
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?lYNIfRswU0knkZ26ZjGOsumM7pb0W1MEu8YFdu3TNE2LCze5IStpK9cgldYU?=
- =?us-ascii?Q?atTIP8wactALuNtI6qmvvzVkX0bd7Vn3hIc2euq9Z9N+cMo+eZ42ubPxfkEO?=
- =?us-ascii?Q?d36endhQ5YWkIbkcQ+ZJjJV78M0AQAG3cdpqQyXsY3X1lXjfpay4pkS1mTA6?=
- =?us-ascii?Q?v1pwOq6HB+Qn2zS+OE/flDyTbXJoa2cO8NnVzz9dEVMOTIn8apoZcDVVdqng?=
- =?us-ascii?Q?RClDD2Sze8X79xxXOx42GmxYX1HYc22m65XjjJCjNF+FJF5rVX4uDVUeJwD2?=
- =?us-ascii?Q?/GM45e8l9ND0oS+vxP6ZhDmImjV0I8gQ++ziP0SoSdhw+U27pAOYwcoqZ5xa?=
- =?us-ascii?Q?31VhvnHsAlNKiESJV4JQkp6yHvHlzcvafvaPmJprKbpaGP4TkCDdiF7qgVC6?=
- =?us-ascii?Q?GGgP4G/lHxzhm35Pu6i8KjEvbW/9eVJQN5t69cMJFzg5Ieq3/NEAP75euulM?=
- =?us-ascii?Q?RlA61Z89eJmCF+9z2Xd95GJxdXTvo8M+0ZHJ47GfBbBxM78yopp/RiesKM6t?=
- =?us-ascii?Q?+gVvP0Kw5b0nQ4vnks9WamAkyTfWiXcekeS7uiDJsOIECpkR4UfAMDroxgYT?=
- =?us-ascii?Q?DckULLI/7RBl6uWjUbey4aAjiQCDPNNX8p7kHyDR7uNZf42gLs5Ole3CoAfU?=
- =?us-ascii?Q?M0mF6gYgbiMsiGL77ckR89Y6qMyegu6B2TUgeY9mKh9X38Ag7PGBQSKMELBQ?=
- =?us-ascii?Q?Ydlh8JAxV5Mcv5mKv+qJOGUQNajJmDTb1dmwdhhhvsOJuRn55LffVXT84wOu?=
- =?us-ascii?Q?uQhVYf09Xzkb60GcIdCO7RL3F45H4cRyzTehIZ5Px7QB3mwf00eraRFcEn9H?=
- =?us-ascii?Q?usl2Ou4RiJE7v+RLUtDdfD/q5RVr0xI40GbkemFEkgumVfbe0WsqMM14dHI+?=
- =?us-ascii?Q?ky5CgCs6cDdwYDLoBsEPN0WFzs/1bX1knrUgHT+zbrbJ02rjWl7qGTsatsBG?=
- =?us-ascii?Q?xL9dsyH1GOlAylpIYL+RdOP89IYIIhkIu1luSHP4M5h0O45SWM0tq52Z1zJZ?=
- =?us-ascii?Q?oZOez4lAVTY4mWq3GaDwj+8lGZylhbuYd5UrQD/3SlFyElchId93fUUvNTC6?=
- =?us-ascii?Q?L4c8UcHD//Op8e08u7T2hoUR4gIGQDixKJctmtMGgpCf3hRXz7XXiUPIQb7I?=
- =?us-ascii?Q?vCXDqZl0Hz/Y2CBdHEOCjLFMBFE8P1Un/0oP7OPQXYO37QSmzjvoC9pf1yPz?=
- =?us-ascii?Q?mUQkc9I/zu9nf/SEhtOHGp6mnpYrKR+nR9XtpEH+/7b0DwZGR73t7Rg/Wi9w?=
- =?us-ascii?Q?HJCzjxS2rlT/fpxd/2I/?=
+	=?utf-8?B?SWlPYUJvYlpITWhkanhvUWYrM0FJOUhSOGFPRlk1Nkw5NjJ6MXlwbVg5bGY2?=
+ =?utf-8?B?ZlA0ZFhJcFFrT1VOYU9pVDhSVWJCcSt1UnhOWjJmWDdCTi9oYzdybldYYnU3?=
+ =?utf-8?B?VUhmOWNZZWxDMmZONnhvMElhTEFxNTVlVnNuZCtmeHVtRDdTYWJWeWt0Q01O?=
+ =?utf-8?B?dm1SZFM5RE5OU0pHdEpVT3FMNkV5Sm94aUtTcjJLMTduUnRZQVpGWk1samJr?=
+ =?utf-8?B?MnRiREQ2MjAxUnA2NS9ibUVqK1Fzb3ZVVFVXTG5zbUVPNSs0c3BoaXI5T1pp?=
+ =?utf-8?B?UEtrdUt3dHpGRWdZak1aMFJvNmZUZlI4R2JoUFUwT2NBZ29pbVo3V2MvVWZT?=
+ =?utf-8?B?ZmtFcEJXcTQ2RGtZSThzWnNRc1pWbDFPRXhmL3BIRkJIbW5Zamc0MVVOZEdR?=
+ =?utf-8?B?QlJlTXZ0ZmY3a2FZcTFpLzF0WDVLb2RvcDVaVEZGb0k4ZS8rWkxtWnFRTHZQ?=
+ =?utf-8?B?eXI1SldzWXlXaFZ2dEdsc2VtT3lhWGtndDVvTnlaalp0dUtkeHljbERMZ0FW?=
+ =?utf-8?B?RDlBNEVkK3EyWGFIVXJDVm1KMVVGdjZaMXQvbzcyWWcrSWR6OXBLMEVpMXJD?=
+ =?utf-8?B?blBISGRGbko3Nm9MZW1qZS91YTZkelpGaHEzcGdrOGE2ajJkYWpzQmZNemt4?=
+ =?utf-8?B?cHVmOEZLcFk5dUJGV3Z0TFZYUVB1V0FWVCtpR09NNTNiSkwrUzV0L094VWdG?=
+ =?utf-8?B?Y2VmWE5HWVI2L3pBTmh6RW93aGhjTUF4dGVkdnpsLzdLUnlpcEdpcjJKblBH?=
+ =?utf-8?B?aVBVNVJpbmY5bVVkMzdnUUNIV0FxZWVuMlhEOVRUT09hcUM4MFdqZTlidWhJ?=
+ =?utf-8?B?Z2J3TG9LS1hEWFhESkMxTThVVnNvc2cyRVVZNkF3WEZtQmovWGU2OFNpUVov?=
+ =?utf-8?B?d0t2aFJvRi9aeGl2ZXAzNEwrYm9NRHdXM3hITDlSZ2VzY3NPcUlLSmdMMlN5?=
+ =?utf-8?B?dC8vcE1qWG0ycHZPN0Z5R1R3c1VWclc5U0YrenFET3ZDZXo4WHpXckFwY2xM?=
+ =?utf-8?B?clY5dkhoaDZhSlVrSnVaQVZlSmoxYnNtekcxRlNVZFVRZSsyS3lhTC9NcEJP?=
+ =?utf-8?B?dHJlUWtocDA1NXJxM2ZPMHZQMGRYUHMwcVE5d0I5dEJSZUdBK2dLbGI1WXVH?=
+ =?utf-8?B?RGZVY0V0ek1EQUlFR2ZWaitDeVpzcU5weWlodlNuYnN4YVJTQkU1cmNMYkxJ?=
+ =?utf-8?B?b3JTTWtnWTB0ZDlQbHdQclNmdTFJZGY3bG5XaFVyVjNINXowdklNMFFVYncv?=
+ =?utf-8?B?a0JuMkc5Y0tJYTJ2VVNHVFhJYTdiUmZRQm1aVWN1NTE5MWRwSWpGM2h4clZl?=
+ =?utf-8?B?MG50QnJqdTRDR2RFRUVRZGpJNjRLMXAwSW15WElFVHdpVzkvY0xOaGJ3STly?=
+ =?utf-8?B?OFQwUzg3aE9pU1g5K0poRlgzc1FkRzlvbmlyMEVKV0crT1hwc3hBMHUwOHMx?=
+ =?utf-8?B?RUc2S2ZXTDg0RElEWklVMVBqTCtPeThieURZbWJTN3RybWtJMElmU0VRdDhX?=
+ =?utf-8?B?MGFmdHp0RUhzQndENit3UDNiWVh6NlZRWG9qL04vMUx2S1QyY05HdEhNb3BZ?=
+ =?utf-8?B?bFViS3VWdGdKT1pkZlZKT2t6VmZ1SzY3bndyZnBHTWt5Y042QmZTclhWMlUv?=
+ =?utf-8?B?ckZuaEJTMWZ4a3hUOVRxNEFUdDRvT3Avd2VIdWlHd0ZJb1EzUklPSHpKTm9K?=
+ =?utf-8?Q?siM01/vooJdD3R78MyQu?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b4a16b5-8d74-4bac-8578-08dc1a7e8c1f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1605bcff-1402-43c9-7ccb-08dc1a7e9247
 X-MS-Exchange-CrossTenant-AuthSource: TYZPR01MB5556.apcprd01.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2024 12:43:20.3138
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2024 12:43:30.5979
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -129,24 +138,171 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSQPR01MB6119
 
+From: Praveenkumar I <ipkumar@codeaurora.org>
+
+Currently RCG code looks up the frequency table during set
+rate and return the first available frequency greater than
+requested rate. If CLK_SET_RATE_PARENT flag is set then the
+set_rate request will go to its parent otherwise the clock
+framework will configure pre-div, m and n according to the
+returned frequency table entry. In this case, it is assuming
+that parent clock will run in the same frequency with which
+pre-div, m and n has been derived. But it may be possible
+that the parent clock supports multiple frequency and the
+same frequency can be derived with different pre-div, m and
+n values depending upon current frequency.  Also, the same
+frequency can be derived from different parent sources and
+currently there is no option for having duplicate
+frequencies in frequency table and choosing the best one
+according to current rate.
+
+Now this patch adds the support for having duplicate
+frequencies in frequency table. During set rate, it will
+compare the actual rate for each entry with requested rate
+and will select the best entry in which the difference will
+be less.
+
+The existing functionality won’t be affected with this code
+change since this code change will hit only if frequency
+table has duplicate values.
+
+Change-Id: I97d9e1b55d8f3ee095f6f01729af527ba90e50e5
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+(cherry picked from commit 775e7d3b69ffc97afb5bd5a6c9c423f2f4d8a0b2)
+Signed-off-by: Praveenkumar I <ipkumar@codeaurora.org>
+
+Change-Id: If10193fc79a3c1375ab73597813745ff1f4df0ad
+
+Pick from https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/commit/6dfb368bae130bee58e00ddf8330b55066e1c8c5
+
 Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
 ---
- drivers/clk/qcom/gcc-ipq5018.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/qcom/clk-rcg2.c | 86 ++++++++++++++++++++++++++++---------
+ 1 file changed, 66 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/clk/qcom/gcc-ipq5018.c b/drivers/clk/qcom/gcc-ipq5018.c
-index 19dc2b71cacf..3ba2fd53262d 100644
---- a/drivers/clk/qcom/gcc-ipq5018.c
-+++ b/drivers/clk/qcom/gcc-ipq5018.c
-@@ -1756,7 +1756,7 @@ static struct clk_branch gcc_gmac0_sys_clk = {
- 	.halt_check = BRANCH_HALT_DELAY,
- 	.halt_bit = 31,
- 	.clkr = {
--		.enable_reg = 0x683190,
-+		.enable_reg = 0x68190,
- 		.enable_mask = BIT(0),
- 		.hw.init = &(struct clk_init_data) {
- 			.name = "gcc_gmac0_sys_clk",
+diff --git a/drivers/clk/qcom/clk-rcg2.c b/drivers/clk/qcom/clk-rcg2.c
+index e22baf3a7112..6141e4991fbc 100644
+--- a/drivers/clk/qcom/clk-rcg2.c
++++ b/drivers/clk/qcom/clk-rcg2.c
+@@ -209,26 +209,82 @@ clk_rcg2_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+ 	return __clk_rcg2_recalc_rate(hw, parent_rate, cfg);
+ }
+ 
+-static int _freq_tbl_determine_rate(struct clk_hw *hw, const struct freq_tbl *f,
+-				    struct clk_rate_request *req,
+-				    enum freq_policy policy)
++static const struct freq_tbl *
++clk_rcg2_find_best_freq(struct clk_hw *hw, const struct freq_tbl *f,
++			unsigned long rate, enum freq_policy policy)
+ {
+-	unsigned long clk_flags, rate = req->rate;
+-	struct clk_hw *p;
++	unsigned long req_rate = rate, best = 0, freq;
+ 	struct clk_rcg2 *rcg = to_clk_rcg2(hw);
+ 	int index;
++	u64 tmp;
++	const struct freq_tbl *best_ftable = NULL;
+ 
+ 	switch (policy) {
+ 	case FLOOR:
+-		f = qcom_find_freq_floor(f, rate);
++		f = qcom_find_freq_floor(rcg->freq_tbl, rate);
+ 		break;
+ 	case CEIL:
+-		f = qcom_find_freq(f, rate);
++		f = qcom_find_freq(rcg->freq_tbl, rate);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		return best_ftable;
+ 	}
+ 
++	/*
++	 * Check for duplicate frequencies in frequency table if
++	 * CLK_SET_RATE_PARENT flag is not set
++	 */
++	if (!f || (clk_hw_get_flags(hw) & CLK_SET_RATE_PARENT) ||
++	    ((f->freq && (f + 1)->freq != f->freq)))
++		return f;
++
++	/*
++	 * Check for all the duplicate entries in frequency table and
++	 * calculate the actual rate from current parent rate with each
++	 * entries pre_div, m and n values. The entry, which gives the
++	 * minimum difference in requested rate and actual rate, will be
++	 * selected as the best one.
++	 */
++	for (freq = f->freq; freq == f->freq; f++) {
++		index = qcom_find_src_index(hw, rcg->parent_map, f->src);
++		if (index < 0)
++			continue;
++
++		rate =  clk_hw_get_rate(clk_hw_get_parent_by_index(hw, index));
++		if (rcg->hid_width && f->pre_div) {
++			rate *= 2;
++			rate /= f->pre_div + 1;
++		}
++
++		if (rcg->mnd_width && f->n) {
++			tmp = rate;
++			tmp = tmp * f->n;
++			do_div(tmp, f->m);
++			rate = tmp;
++		}
++
++		if (abs(req_rate - rate) < abs(best - rate)) {
++			best_ftable = f;
++			best = rate;
++
++			if (req_rate == rate)
++				break;
++		}
++	}
++
++	return best_ftable;
++}
++
++static int _freq_tbl_determine_rate(struct clk_hw *hw, const struct freq_tbl *f,
++				    struct clk_rate_request *req,
++				    enum freq_policy policy)
++{
++	unsigned long clk_flags, rate = req->rate;
++	struct clk_hw *p;
++	struct clk_rcg2 *rcg = to_clk_rcg2(hw);
++	int index;
++
++	f = clk_rcg2_find_best_freq(hw, f, rate, policy);
+ 	if (!f)
+ 		return -EINVAL;
+ 
+@@ -360,17 +416,7 @@ static int __clk_rcg2_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	struct clk_rcg2 *rcg = to_clk_rcg2(hw);
+ 	const struct freq_tbl *f;
+ 
+-	switch (policy) {
+-	case FLOOR:
+-		f = qcom_find_freq_floor(rcg->freq_tbl, rate);
+-		break;
+-	case CEIL:
+-		f = qcom_find_freq(rcg->freq_tbl, rate);
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
++	f = clk_rcg2_find_best_freq(hw, rcg->freq_tbl, rate, policy);
+ 	if (!f)
+ 		return -EINVAL;
+ 
+@@ -1032,7 +1078,7 @@ static int clk_rcg2_shared_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	struct clk_rcg2 *rcg = to_clk_rcg2(hw);
+ 	const struct freq_tbl *f;
+ 
+-	f = qcom_find_freq(rcg->freq_tbl, rate);
++	f = clk_rcg2_find_best_freq(hw, rcg->freq_tbl, rate, CEIL);
+ 	if (!f)
+ 		return -EINVAL;
+ 
 -- 
 2.40.1
 
