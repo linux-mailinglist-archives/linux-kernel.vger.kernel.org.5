@@ -1,96 +1,85 @@
-Return-Path: <linux-kernel+bounces-32213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01F0835846
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 23:37:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2D1C835855
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 23:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EA041F21A9E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:37:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E2831C214E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92EE838392;
-	Sun, 21 Jan 2024 22:37:01 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1860D38FB5;
+	Sun, 21 Jan 2024 22:42:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WFdc0s9x"
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B88364CC
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD8038F99
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705876621; cv=none; b=VPK+RzJBWn/Hmj4YKk/ciybtkM4YVuIi9GPlkcCzuCrYVAtUzNDu932k3PTf2UWmwbFo5yyf6s6W31ENd/TWW5IYcGtynjgcF61yo4Y4XJDUlrENNy1CPEKUNv6ID6fRKkQzUYFcm8HPrA1V9yKsE6hK4raleVtQwRwsYbcD6mA=
+	t=1705876971; cv=none; b=bEhXKldhW3i+0IImxoIm/u1/PYBakGGTtjW2jT94lLviSfjT2vxmVcdrdJpunnH9iTB/M7Bf3sf6mJlas63l2l4j1AN/XC3qosB/95olaojpCq7qJwIU4mC7ToVRUIq1upVn+yb8V64xl6g8GrzIofTmkbhEtggSLq8oeVZIMCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705876621; c=relaxed/simple;
-	bh=O16/aqlNrhAUy0Rn/zSc/JnlHLjEK/zg8j64i3+6dB4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=NAWIu2FPKWdcWiHFAjx4xYpwPUlYXLaFQT+685OtGfS2SDetHdj21wWms7llMj9iU17wFr5Y8oFmmIfx/EvlMVwB3XaB9suztZWA+vCap88s07yCGtpM1B0l9gnJG4IqthKPRZxPNFSgi0VxBR+3c9qb9/YLDAZOljKNLEO3SDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-401-MNGqcb9rMUKaTXBdA2fv9g-1; Sun, 21 Jan 2024 22:36:56 +0000
-X-MC-Unique: MNGqcb9rMUKaTXBdA2fv9g-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 21 Jan
- 2024 22:36:32 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 21 Jan 2024 22:36:32 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Linus Torvalds' <torvalds@linuxfoundation.org>, "H. Peter Anvin"
-	<hpa@zytor.com>
-CC: Thorsten Glaser <tg@debian.org>, Peter Zijlstra <peterz@infradead.org>,
-	"x86@kernel.org" <x86@kernel.org>, "rostedt@goodmis.org"
-	<rostedt@goodmis.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-toolchains@vger.kernel.org"
-	<linux-toolchains@vger.kernel.org>, "jpoimboe@redhat.com"
-	<jpoimboe@redhat.com>, "alexei.starovoitov@gmail.com"
-	<alexei.starovoitov@gmail.com>, "mhiramat@kernel.org" <mhiramat@kernel.org>
-Subject: RE: [PATCH 1/2] x86: Remove dynamic NOP selection
-Thread-Topic: [PATCH 1/2] x86: Remove dynamic NOP selection
-Thread-Index: AQHaS8IuwT69O5ELs0iiEbIHzsHfJbDk29wg
-Date: Sun, 21 Jan 2024 22:36:32 +0000
-Message-ID: <c911eadd249d4e4cbc8c247ed677b56a@AcuMS.aculab.com>
-References: <20210312113253.305040674@infradead.org>
- <20210312115749.065275711@infradead.org>
- <Pine.BSM.4.64L.2401200654480.19429@herc.mirbsd.org>
- <CE53F232-3D2D-4910-94B4-A4304F5990C7@zytor.com>
- <CAHk-=whtFk2DoO8WhtmsbU9nGXUd8sKShV1Dk71krFLBjPUSeg@mail.gmail.com>
-In-Reply-To: <CAHk-=whtFk2DoO8WhtmsbU9nGXUd8sKShV1Dk71krFLBjPUSeg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1705876971; c=relaxed/simple;
+	bh=mtq5Ct3DiF2+05ZYvmewRcHnK5+uLUY7o2GpBZ+pM0M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SBLQH5uWJOgNUOYya+CX8PdRXKQZSTg/CEouDxTBX9E9a+A9UFNd5WsBlTYISuRzpI2EJPe/sFjpqGlA/skNeW9bDFkq3YIFDf3MFHX8WdmD4sCk+gxQhGnfkLG+Jw1za/Qg05gMOWehbBf5YxroDnAsRtTGVghuQ1NuU5OcoCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WFdc0s9x; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sun, 21 Jan 2024 17:42:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705876967;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=K8eHWGuuA6Pwmzz/CjhK4EVo4x2Z5WhhRU/5WA4RF1s=;
+	b=WFdc0s9xUyn6nQEJNVxudMARxSnm7N014DcbqDkxHrMtM9UvqsxvsoscvY2tcL69HJI5ZY
+	3ihZAy4JTDeY8OhP9K8ZjUYKdrEbFcXjirw0Z7ZZ0REAAWZ+zuselHFLqksUbtzB/sl+ic
+	pHF42d6ehgj1JgxVpGpxROQgTZyFPfE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] More bcachefs updates for 6.8-rc1
+Message-ID: <ianqurcjmgjvciii3k4dxr5bwargskiwspnfzzy4dqhbn2sdgp@r3v2ysfo5dqq>
+References: <a34bqdrz33jw26a5px4ul3eid5zudgaxavc2xqoftk2tywgi5w@ghgoiavnkhtd>
+ <CAHk-=wjKjvytH19t2mMHZbkY2bpGurGbG4Tb7xmTjfzA71Lb7g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjKjvytH19t2mMHZbkY2bpGurGbG4Tb7xmTjfzA71Lb7g@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjAgSmFudWFyeSAyMDI0IDE3OjAwDQouLi4N
-Cj4gQW5kIGlmIEkgYWRkICItciIgdG8gZ2V0IHJlbG9jYXRpb24gaW5mbywgSSBnZXQNCj4gDQo+
-ICAgICAgICAgY2FsbCAgIDxkZWxheWVkX3B1dF90YXNrX3N0cnVjdCsweDFhPg0KPiAgICAgICAg
-ICAgICAgICAgICAgICAgICBSX1g4Nl82NF9QTFQzMiAgcmV0aG9va19mbHVzaF90YXNrLTB4NA0K
-PiANCj4gd2hpY2ggc2hvd3MgdGhlIHJhdyByZWxvY2F0aW9uIGRhdGEsIGJ1dCB3aXRoIHRydWx5
-IG1pbmQtYm9nZ2xpbmdseQ0KPiBob3JyZW5kb3VzIHN5bnRheC4NCj4gDQo+IElzIHRoZXJlIHNv
-bWUgc2FuZSB0b29sIHRoYXQganVzdCBkb2VzIHRoZSBzYW5lIHRoaW5nIGFuZCBzaG93cyB0aGlz
-IGFzDQo+IA0KPiAgICAgICAgIGNhbGwgICByZXRob29rX2ZsdXNoX3Rhc2sNCj4gDQo+IHdoaWNo
-IGlzIHdoYXQgdGhlIHRoaW5nIGFjdHVhbGx5IG1lYW5zPw0KDQpXaGlsZSB5b3UgYXJlIHJlLXdy
-aXRpbmcgYSBkaXNhc3NlbWJsZXIsIHJlbWVtYmVyIHRvIHByaW50IHRoZQ0KY29udGVudHMgb2Yg
-c3RyaW5nIHdoZW4geW91IGdldCBhIHJlZmVyZW5jZSBpbnRvIC5yb2RhdGEuc3RyIDotKQ0KDQpI
-b3cgbWFueSB0aW1lcyBoYXZlIHlvdSBoYWQgdG8gZGlnIG91dCBhIHByaW50ZiBmb3JtYXQgc3Ry
-aW5nIGluDQpvcmRlciB0byBsb2NhdGUgdGhlIHNvdXJjZSBhc3NvY2lhdGVkIHdpdGggc29tZSBv
-YmplY3QgY29kZT8NCkl0IGlzIHNvIG11Y2ggZWFzaWVyIGlmIHRoZSBkaXNhc3NlbWJsZXIgZG9l
-cyBpdCBmb3IgeW91Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRl
-LCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpS
-ZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Sun, Jan 21, 2024 at 02:05:55PM -0800, Linus Torvalds wrote:
+> On Sun, 21 Jan 2024 at 13:35, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > Hi Linus, another small bcachefs pull. Some fixes, Some refactoring,
+> > some minor features.
+> 
+> I'm taking this, but only because bcachefs is new.
+> 
+> You need to be aware that the merge window is for *merging*. Not for
+> new development.
+> 
+> And almost all of the code here is new development.
+> 
+> What you send during the merge window is stuff that should all have
+> been ready *before* the merge window opened, not whatever random
+> changes you made during it.
+> 
+> Now, fixes happen any time, but for that argument to work they need to
+> be real fixes. Not "reorganize the code to make things easier to fix"
+> with the fix being something small on top of a big change.
 
+I thought the merge window was still open until tonight?
 
