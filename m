@@ -1,151 +1,109 @@
-Return-Path: <linux-kernel+bounces-32183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4126F8357C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 21:35:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBA488357C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 21:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 757851C21657
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:35:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B821C1C20D78
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8476D383AE;
-	Sun, 21 Jan 2024 20:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cLGeSNd+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81471EB52;
-	Sun, 21 Jan 2024 20:35:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D403438DD3;
+	Sun, 21 Jan 2024 20:41:42 +0000 (UTC)
+Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55CC0381A9;
+	Sun, 21 Jan 2024 20:41:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705869321; cv=none; b=T2AWSeqmE8P1pRielDfnwMtn7nm9H5lp+EuG9hSrUWUTnUsUN4h2zsYEIydmWZ1Bw40DXb7Am49Y7vmAoAhEjTddwa+7XxnaqlI3vkZt6G345wMkJD1sYy+ymUsUib9VyIaFKYde1jNvq4g7BugtWUMwVbW45NkG1eBYbdKEiN0=
+	t=1705869702; cv=none; b=pzZJ8DUXSKeM2a1K3SVm2nMEevWEB1StrXB8wjLti3pAZpNfttKtf2bx0a9uKauiZcFWpzar6uUHjKR8iX2W4csgjCBBNVH2wO8eFvZXjbh8Qd94g/iaSo+omOXaSLzQV5vbGiK82LsQtyP32M3kCGOQIY9ccJDyl63XPtriXnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705869321; c=relaxed/simple;
-	bh=kju28fnm0YhQwAXc8auDx07XfLJgrU+ex3+0la1SOE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g6tBjcc6QVvA6NhhFksPDmmsftzwInDJ4X47euhxCuAuGGZunG1x6SOv62f5IwLJEtv7e+XDIkLJHUSGZgAI3RmhPcAxSkY/0k8/mB/z34GnZQC9InQik3gHVMVg2ygQemD7acwOEj/v7gaxMJz/5KB6gKWtWm/V2o2Xl7zMlfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cLGeSNd+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C26CC433F1;
-	Sun, 21 Jan 2024 20:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705869321;
-	bh=kju28fnm0YhQwAXc8auDx07XfLJgrU+ex3+0la1SOE4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cLGeSNd+NTi5H2HTjAtyYNDWRZhNjUJpyn5xCGixeCn2GYeEVhsyNHa+Nv3z3HN4d
-	 FnRWlVtTKbC8LXXnkBjZS0pV781PM2sN9MLZ6QOcKVkNRYSibsCdVXD0CsW+g9mnk3
-	 Am6QEYQS37sEzgOWynSfZP40QxoNX20+6fTHMz30LA9NlKw6z6CZ+fIZYL7+FZ8xrJ
-	 5BUqlzv6inLsdFaIwmm0HOMuGRTdbSKqeCyNDoNhRqSDUrdtH4F5J7yAerpr/WeEiG
-	 Bs82ee2fRHvMFNXOdg6DEuiy2eV238he/HJ4ZrgYClDAjoKz8uQ/mvp5u0UY7RgOhQ
-	 auKFQbfx+xlbg==
-Date: Sun, 21 Jan 2024 21:35:15 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-Cc: Michal Simek <michal.simek@amd.com>, 
-	Ley Foon Tan <leyfoon.tan@starfivetech.com>, linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
+	s=arc-20240116; t=1705869702; c=relaxed/simple;
+	bh=A1sAifn2sBFzYOkWtoxj0vCZieiNpW4Rdqd4QI70m+E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=l97Vdgn7WQ5ECaM2ovzuln5+6TmLHFJ4GQGLeM0WGOeEinW8bx94rsuJl6BtvtnSUoL58epl6MQ7GDF7LTmeoYBll9JWm8FhkZ8bIHGltJqEWlHBqTGaBMURBBv7QUspfhrDSs/rN4P0ldWIIg0p/dk+saNMUa86Db8AxE+yW64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
+Received: by cae.in-ulm.de (Postfix, from userid 1000)
+	id 1D1C01401CF; Sun, 21 Jan 2024 21:41:37 +0100 (CET)
+From: "Christian A. Ehrhardt" <lk@c--e.de>
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	linux-usb@vger.kernel.org
+Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
+	Dell.Client.Kernel@dell.com,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Jack Pham <quic_jackp@quicinc.com>,
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+	=?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 RESEND] i2c: cadence: Add system suspend and resume PM
- support
-Message-ID: <ko44i4n5synf3uugp4wmjoe6eikyw3bzjtmarduwvskmk4d3dr@uewx27aa6ake>
-References: <20240119013326.3405484-1-jisheng.teoh@starfivetech.com>
+Subject: [PATCH v3 0/3] UCSI fixes
+Date: Sun, 21 Jan 2024 21:41:20 +0100
+Message-Id: <20240121204123.275441-1-lk@c--e.de>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119013326.3405484-1-jisheng.teoh@starfivetech.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Ji Sheng,
+This small series contains two general bugfixes to ucsi_acpi
+and a quirk to make the UCSI controller on various Dell laptops
+work. The changes can be applied idependently but all three
+are required to fix the Dell issues.
 
-I'm not fully conviced here.
+For details on the general bugfixes please refer to the individual
+commit messages.
 
-On Fri, Jan 19, 2024 at 09:33:26AM +0800, Ji Sheng Teoh wrote:
-> Enable device system suspend and resume PM support, and mark the device
-> state as suspended during system suspend to reject any data transfer.
-> 
-> Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> ---
-> Initial v2 was archived, previous discussion can be found in [1].
-> [1]: https://lore.kernel.org/all/20231209131516.1916550-1-jisheng.teoh@starfivetech.com/
-> 
-> Changes since v1:
-> - Add missing err assignment in cdns_i2c_resume().
-> ---
->  drivers/i2c/busses/i2c-cadence.c | 33 ++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
-> index de3f58b60dce..4bb7d6756947 100644
-> --- a/drivers/i2c/busses/i2c-cadence.c
-> +++ b/drivers/i2c/busses/i2c-cadence.c
-> @@ -1176,6 +1176,18 @@ static int __maybe_unused cdns_i2c_runtime_suspend(struct device *dev)
->  	return 0;
->  }
->  
-> +static int __maybe_unused cdns_i2c_suspend(struct device *dev)
-> +{
-> +	struct cdns_i2c *xi2c = dev_get_drvdata(dev);
-> +
-> +	i2c_mark_adapter_suspended(&xi2c->adap);
+The UCSI interface on a Dell Latitude 5431 stops working after
+the first async event with:
 
-this should go before the return '0' after checking that
-cdns_i2c_runtime_suspend(), even though we know it always returns
-'0', we still can use likely or unlikely.
+    GET_CONNECTOR_STATUS failed (-110)
 
-> +	if (!pm_runtime_status_suspended(dev))
-> +		return cdns_i2c_runtime_suspend(dev);
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * cdns_i2c_init -  Controller initialisation
->   * @id:		Device private data structure
-> @@ -1219,7 +1231,28 @@ static int __maybe_unused cdns_i2c_runtime_resume(struct device *dev)
->  	return 0;
->  }
->  
-> +static int __maybe_unused cdns_i2c_resume(struct device *dev)
-> +{
-> +	struct cdns_i2c *xi2c = dev_get_drvdata(dev);
-> +	int err;
-> +
-> +	err = cdns_i2c_runtime_resume(dev);
-> +	if (err)
-> +		return err;
-> +
-> +	if (pm_runtime_status_suspended(dev)) {
-> +		err = cdns_i2c_runtime_suspend(dev);
-> +		if (err)
-> +			return err;
+The core problem is that when sending the ACK_CC_CI command to
+clear the connector status changed condition the PPM expects us
+to send anothr ack for the command completion condition. However,
+the UCSI spec states that no ack for the command completion is
+required when the command is ACK_CC_CI (or PPM_RESET).
 
-We call the cdns_i2c_resume() functions to come up from a
-suspended state. But, if we fail to resume, we call the suspend
-and return '0' (because this always returns '0').
+There are various reports that suggest that several Dell laptops
+are affected by this problem. E.g. the kernel bugzilla has this
+report which is most likely an instance of this bug:
 
-In other words, if we take this path, we call resume, but we
-still end up suspended and return success.
+    https://bugzilla.kernel.org/show_bug.cgi?id=216426
 
-Andi
+This led me to the somewhat bold conclusion that the quirk should
+probably be applied to on Dell systems.
 
-> +	}
-> +
-> +	i2c_mark_adapter_resumed(&xi2c->adap);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct dev_pm_ops cdns_i2c_dev_pm_ops = {
-> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(cdns_i2c_suspend, cdns_i2c_resume)
->  	SET_RUNTIME_PM_OPS(cdns_i2c_runtime_suspend,
->  			   cdns_i2c_runtime_resume, NULL)
->  };
-> -- 
-> 2.43.0
-> 
+To mitigate potential problems from this dell quirk includes a
+probe mechanism that detect the need for the quirk once and we
+only deviate from the UCSI spec if the quirk is actually required.
+
+Changes in v3 from v2:
+- Add an info message if the quirk is enabled.
+- Fix checkpatch errors etc.
+- Add Fixes: and CC: stable.
+
+Changes in v2 from v1:
+- Add a second general bugfix.
+- Remove module parmater and generic quirk infrastructure.
+- Implement quirk directly in ucsi_acpi.c
+- Add probe logic to reliably detect the need for the quirk 
+
+Christian A. Ehrhardt (3):
+  usb: ucsi: Add missing ppm_lock
+  usb: ucsi_acpi: Fix command completion handling
+  usb: ucsi_acpi: Quirk to ack a connector change ack cmd
+
+ drivers/usb/typec/ucsi/ucsi.c      |  2 +
+ drivers/usb/typec/ucsi/ucsi_acpi.c | 86 +++++++++++++++++++++++++++---
+ 2 files changed, 81 insertions(+), 7 deletions(-)
+
+-- 
+2.40.1
+
 
