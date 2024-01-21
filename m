@@ -1,141 +1,265 @@
-Return-Path: <linux-kernel+bounces-31988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EED58354F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 10:06:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23E1A8354F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 10:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 587861C21B2D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 09:06:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9091D1F2247D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 09:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28C4364B2;
-	Sun, 21 Jan 2024 09:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE8222622;
+	Sun, 21 Jan 2024 09:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="DzKYx/4F"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRZnycON"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1669440;
-	Sun, 21 Jan 2024 09:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECDD61E4AC
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 09:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705827951; cv=none; b=o8TRkOxXKPrzpsA/Z5sJ5KLwVOvMbENfjJvtryGP+FxRyN4T3LejdvzcFB1XOEhOqj8bEUVY4FNKJRWHkbvp8PUPgKgD5Ab1NKJdgUhvuorRJzVYx4p1PMmqYWTXN+1JlSZ8lZ680G6lCmZx0iGP9/RRkG59PEWnSnGbyrSnquU=
+	t=1705827951; cv=none; b=pLRnKaqXepcdwH2jp+zzVWZUHqSPpmA+3hAlA/yHwTKUU5VF+1ZvrZwuv9GZd1IAKe8DvR/TIQlhT/DM72z77xhd/EK4RMQvwT8vkHyZpbnTpmylCfXY7NGRr8LogmGUynId+UkkhlhddHl9l+7Lv7v8vCnrSAUBxTz7NCYchbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705827951; c=relaxed/simple;
-	bh=MKbjpU5sdimsSX7l8u2+E04IUn/Zu/+4WtarE3L5uMU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=hxYIZ59RlKvIX7i1S1l1p93YW/DwtJ6OOT2yDmtjO682vnjhkDbqy3J/7BE1SH/Wf+fMayTct9h7ZqstfS5S0Nza0LLPU5mlDh1xEWGoR4Wvco16Gt14p4xvTNEzC72pqGjseDZJy8NK/6zhdWeRe9dbgkUCzVVvxW7HQB7HXYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=DzKYx/4F; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1705827936;
-	bh=5O6w/kHSzX9h+rnJrUFkMpN+hbu+Qv+XTF96t46hVUA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=DzKYx/4FYXmn3E/yH6dj1a9DVoOaInZ2EvFbfq2030s/MOPibRmcG3zx0CHMOTJ6i
-	 ojnqaBo38XqgR5pQN9n9VZNpwu1dd98hZc/rbOUTe/yEn5cub7Sh+scMCP/iA7TxZ+
-	 hvgCIt/19GXxzi68KlkKgevGhqU4GMQRKMweSxC1AYyBAakCOE2eHQJGZ25kDQIxNO
-	 WKXwLYCKiUU8uZugmMR4OyhYPF7hEPnJ9fgyc30heaDkySNQD2tlyo/ybJI1jN4hJX
-	 4OiURIWB3bdgZ4MimUP5F/3ehjWtO7Ciq1G8uW8XIWo3y3DSD+/zjLoI3vAUn9knM0
-	 QG6cT3Vl45mwg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4THnWN43hVz4wd5;
-	Sun, 21 Jan 2024 20:05:35 +1100 (AEDT)
-Date: Sun, 21 Jan 2024 20:05:34 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the i2c tree
-Message-ID: <20240121200534.57bf614a@canb.auug.org.au>
+	bh=2QFNQK4ULpJg36zoGi+Yk/5YUMnauOdTJ6dEmOXhlrU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Vp1bBPJLiVho/BY0pQHF/TBZ07S2kIsrJKJsJr86xc64zfBguqRH/t9qTZg8/Qt6qWbeYRNqYDsvwLmnMT9V85cfzXM7x5+zGa3hXwX6dv9Cb41dagcMKzy9sSvMy/7l5/Y434u1q3OKwWaSlhq+BPPjQs+Gj5HA470yWgFAsa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nRZnycON; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58DBBC433C7;
+	Sun, 21 Jan 2024 09:05:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705827950;
+	bh=2QFNQK4ULpJg36zoGi+Yk/5YUMnauOdTJ6dEmOXhlrU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=nRZnycONi1kUhpmWX5dwu3RUC31GiTtqosaNEJoGtGaGKwQ99elgZRP2yFFLSFoZb
+	 eb4+8l0zcSn2hmQV1LJdLy2KsTDua+FPSyIvbWAi0cPjiQE1ykkfysF9MjMRWFzCT8
+	 rXnmS6ggCzwZLnuH3jqYbNKjqLQqR4DCC4C5GSuzVYH5CVNvmu0mFTgcaGh8QmPpFQ
+	 fs/6RpN6o2b75fVKUWrv1x3tHBtHBatm5MGR7iwFgKNE5D1CmwbJVaB9s17qFuVhmE
+	 iVrT9hPLJG5L0gG8KkL8Dn1wtOvDOwzTEEFzvROd/Nr4ac0qYw7pYPVBnPCvKJlop+
+	 R2a5onDR9CpUg==
+Date: Sun, 21 Jan 2024 18:05:44 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Matthieu Baerts
+ <matttbe@kernel.org>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Peter
+ Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, Huacai Chen
+ <chenhuacai@loongson.cn>, Jinyang He <hejinyang@loongson.cn>, Tiezhu Yang
+ <yangtiezhu@loongson.cn>, "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH -tip v2] x86/kprobes: Drop removed INT3 handling code
+Message-Id: <20240121180544.8c663977651d2a18291318d5@kernel.org>
+In-Reply-To: <20240121112852.381ebd7bf37ea6d2236db9f2@kernel.org>
+References: <166981518895.1131462.4693062055762912734.stgit@devnote3>
+	<06cb540e-34ff-4dcd-b936-19d4d14378c9@kernel.org>
+	<20240120170517.5cadbc20@rorschach.local.home>
+	<20240121112852.381ebd7bf37ea6d2236db9f2@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I/y17/T1OdxUPOoPS6dCHwv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/I/y17/T1OdxUPOoPS6dCHwv
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Hi all,
+On Sun, 21 Jan 2024 11:28:52 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-The following commits are also in Linus Torvalds' tree as different
-commits (but the same patches):
+> On Sat, 20 Jan 2024 17:05:17 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > On Sat, 20 Jan 2024 18:44:38 +0100
+> > Matthieu Baerts <matttbe@kernel.org> wrote:
+> > 
+> > > 
+> > > I'm sorry to reply on a patch that is more than one year old, but in
+> > 
+> > No problem, I've done the same.
+> 
+> Yeah, thanks for reporting! I realized the problem.
+> 
+> > 
+> > > short, it looks like it is causing a kernel panic on our side. To be
+> > > honest, I don't understand the link, but I probably missed something.
+> > > 
+> > > A bit of context: for the MPTCP net subsystem, we are testing a new CI
+> > > service to launch a VM and run our test suite (kselftests, kunit, etc.).
+> > > This CI (Github Action) doesn't support KVM acceleration, and QEmu
+> > > (v6.2.0) falls back to TCG ("-machine accel=kvm:tcg"). Before, we were
+> > > always running the tests with QEmu and KVM support, and I don't think we
+> > > had this issue before. Now, in two weeks, this new CI reported 5 kernel
+> > > panic in ~30 runs.
+> > 
+> > I'm guessing that qemu doesn't do something that real hardware will do,
+> > which is causing the bug.
+> 
+> If this is the timing bug, it is not qemu's issue, but ours.
 
-  04b5f2a48c08 ("i2c: npcm7xx: move to per-adapter debugfs directory")
-  0f63441c8232 ("i2c: stm32f7: add support for stm32mp25 soc")
-  15733cb95968 ("i2c: wmt: Reduce redundant: REG_CR setting")
-  19e8abc96017 ("i2c: rcar: add FastMode+ support for Gen4")
-  22c2e038fe7b ("i2c: i801: Add lis3lv02d for Dell Precision 3540")
-  26e1e55cd48a ("i2c: s3c24xx: fix transferring more than one message in po=
-lling mode")
-  30e88a5fe3f3 ("drm: remove I2C_CLASS_DDC support")
-  3194cc4a8949 ("i2c: mux: reg: Remove class-based device auto-detection su=
-pport")
-  354d55c50bd9 ("i2c: wmt: Reduce redundant: clock mode setting")
-  3d59a5a02faf ("i2c: cpm: Remove linux,i2c-index conversion from be32")
-  4636ca7c80f6 ("i2c: stm32f7: perform I2C_ISR read once at beginning of ev=
-ent isr")
-  536e5b9fd01a ("i2c: s3c24xx: add support for atomic transfers")
-  6564042143c2 ("i2c: wmt: Reduce redundant: function parameter")
-  733023103014 ("drm/amd/pm: Remove I2C_CLASS_SPD support")
-  745b8104d2b1 ("i2c: Don't let i2c adapters declare I2C_CLASS_SPD support =
-if they support I2C_CLASS_HWMON")
-  7abf391269c3 ("i2c: rcar: introduce Gen4 devices")
-  7d1e62185178 ("i2c: create debugfs entry per adapter")
-  8a7482ee98fc ("i2c: s3c24xx: fix read transfers in polling mode")
-  8e7265a61975 ("i2c: smbus: Support up to 8 SPD EEPROMs")
-  963baaf5c36f ("i2c: make i2c_bus_type const")
-  9a0517a25901 ("i2c: stm32f7: use dev_err_probe upon calls of devm_request=
-_irq")
-  9ba62215e9fc ("media: netup_unidvb: Don't let i2c adapters declare I2C_CL=
-ASS_SPD support if they support I2C_CLASS_HWMON")
-  a06f7ca66be6 ("i2c: gpio: move to per-adapter debugfs directory")
-  a160ebf13bd4 ("i2c: rk3x: Adjust mask/value offset for i2c2 on rv1126")
-  a76cf6fe8a36 ("MAINTAINERS: use proper email for my I2C work")
-  aad422172b5f ("i2c: stm32f7: simplify status messages in case of errors")
-  abe8bfbf44be ("i2c: stm32f7: perform most of irq job in threaded handler")
-  af1d2beda215 ("i2c: wmt: Reduce redundant: bus busy check")
-  b4f007117170 ("include/linux/i2c.h: remove I2C_CLASS_DDC support")
-  c62966b1824a ("i2c: wmt: Reduce redundant: wait event complete")
-  c692086d74a0 ("dt-bindings: at24: add ROHM BR24G04")
-  dc3293b460db ("i2c: i801: Add lis3lv02d for Dell XPS 15 7590")
-  dd69df0b5f5a ("dt-bindings: i2c: document st,stm32mp25-i2c compatible")
-  e8e745dde833 ("i2c: imx: Make SDA actually optional for bus recovering")
-  ec74a1dfcdd1 ("eeprom: at24: use of_match_ptr()")
-  ef2984d633ce ("fbdev: remove I2C_CLASS_DDC support")
-  f65b8f0c1650 ("staging: greybus: Don't let i2c adapters declare I2C_CLASS=
-_SPD support if they support I2C_CLASS_HWMON")
-  f8fa303e6824 ("i2c: stub: Don't let i2c adapters declare I2C_CLASS_SPD su=
-pport if they support I2C_CLASS_HWMON")
+Hmm, as far as I can see, the jump_label uses text_poke_bp(_batch) which
+send IPI for sync_core() on each core, after replacing INT3 with other opcode.
 
---=20
-Cheers,
-Stephen Rothwell
+void text_poke_sync(void)
+{
+        on_each_cpu(do_sync_core, NULL, 1);
+}
 
---Sig_/I/y17/T1OdxUPOoPS6dCHwv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries)
+{
+[...]
+        /*
+         * Third step: replace the first byte (int3) by the first byte of
+         * replacing opcode.
+         */
+        for (do_sync = 0, i = 0; i < nr_entries; i++) {
+                u8 byte = tp[i].text[0];
 
------BEGIN PGP SIGNATURE-----
+                if (tp[i].len == 6)
+                        byte = 0x0f;
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWs3l4ACgkQAVBC80lX
-0GzL+wf/WQOpwGCIi/vp0tyDXV9INxBAmfvQYWjmV06XD1tNLx9JfOO/wIRh385I
-pA+NelWWuhzIj2/SEBZUErNFGwK9ox18vlzpozqrvgl0II3wpVMK0husfTKr5roD
-l2gMF3lfqkbRV120STdo1syCnR89s5+ubs0uH+LT6zOGG82UQ+8OAr5bB/n2OgM5
-sN+blsLiJfJ05CFSiVmpiIaMtnbDsKCNfIKjehpPfSW0hMvPFysDhXhhxxSmSJvc
-ijXsZRFraDmgV9ZN+oTyjhjucpXkCXS/fJUMlUX5bQQO/VXig22GX2ORP3YQ78aj
-Dxuvihfmxaix6qM61n/39VchyRghlQ==
-=BgTK
------END PGP SIGNATURE-----
+                if (byte == INT3_INSN_OPCODE)
+                        continue;
 
---Sig_/I/y17/T1OdxUPOoPS6dCHwv--
+                text_poke(text_poke_addr(&tp[i]), &byte, INT3_INSN_SIZE);
+                do_sync++;
+        }
+
+        if (do_sync)
+                text_poke_sync();
+[...]
+
+This must ensure those processor should finish running INT3 exception
+handlers because the IPI is handled outside of the INT3 exception.
+
+However, if the I-cache entry servives text_poke() and sync_core(), this
+problem may happen.
+The text_poke() flushes TLB but for the local (!global) PTE, and sync_core()
+just serialize (!= cache flushing?). Thus the other CPUs can still see the
+INT3 after text_poke_sync()? If so, on such CPU, removed INT3 is still
+alive on the I-cache and hit it after text_poke_sync().
+This will be a ghost INT3...
+
+
+> 
+> > > I initially reported the issue on netdev [1], because the CI always got
+> > > the panic when doing some pings between different netns, not using MPTCP
+> > > yet. Eric Dumazet mentioned that it looks like it is an x86 issue, maybe
+> > > with the jump labels. Since then, I tried to 'git bisect' the issue on
+> > > my side, but it was not easy: hard to reproduce and unclear to me what
+> > > is causing it.
+> > 
+> > It could possibly be due to jump_labels/static_branch as they use int3
+> > as well.
+> 
+> Yeah, it seems like. Does jump_labels/static_branch wait until all interrupts
+> exit before removing their object from the "active list"?
+> 
+> kprobes does this but I found it might be *not enough*.
+> When removing a kprobe, we do
+> 
+>  1. disarm int3
+>  2. remove kprobe from hlist ("active list") by hlist_del_rcu()
+>  3. wait for rcu
+>  4. free kprobe's trampoline
+> 
+> The possible scenario is
+> 
+>           CPU0                      CPU1
+>                                  0. hit int3
+>  1. disarm int3
+>  2. remove kprobe from hlist
+>                                 2.1 run do_int3()
+>                                 2.2 kprobe_int3_handler() failed (*)
+>                                 2.3 notify_die() failed
+>                                 2.4 kernel panic
+>  3. wait for rcu
+>  4. free kprobe's trampoline
+> 
+> (*) because the corresponding kprobe is already removed from the
+>     active list.
+> 
+> Thus exc_int3() needs a check whether the int3 is already removed or not
+> before it decides that int3 is a stray int3 (== returning false).
+> 
+> Or, another possible solution is to add another synchronize_rcu()
+> or sync_core() right after disarming int3 so that we ensure all
+> int3 handler at that point are finished.
+
+So this another solution is already done. I think we need to add the
+ghost INT3 check in the exc_int3() as follows;
+
+Thank you,
+
+From add8cf7da99cdb096a0d6765b3dc5de9a3ea3019 Mon Sep 17 00:00:00 2001
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Date: Sun, 21 Jan 2024 17:16:50 +0900
+Subject: [PATCH] x86: Fixup from the removed INT3 if it is unhandled
+
+INT3 is used not only for software breakpoint, but also self modifying
+code on x86 in the kernel. For example, jump_label, function tracer etc.
+Those may not handle INT3 after removing it but not waiting for
+synchronizing CPUs enough. Since such 'ghost' INT3 is not handled by
+anyone because they think it has been removed already.
+Recheck there is INT3 on the exception address and if not, ignore it.
+
+Note that previously kprobes does the same thing by itself, but that is
+not a good location to do that because INT3 is commonly used. Do it at
+the common place so that it can handle all 'ghost' INT3.
+
+Reported-by: Matthieu Baerts <matttbe@kernel.org>
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Fixes: 8e791f7eba4c ("x86/kprobes: Drop removed INT3 handling code")
+---
+ arch/x86/kernel/traps.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index c876f1d36a81..f3e7a99c21fe 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -720,6 +720,25 @@ static bool do_int3(struct pt_regs *regs)
+ }
+ NOKPROBE_SYMBOL(do_int3);
+ 
++static bool fixup_int3(struct pt_regs *regs)
++{
++	unsigned long addr = instruction_pointer(regs) - INT3_INSN_SIZE;
++
++	if (*(u8 *)addr != INT3_INSN_OPCODE) {
++		/*
++		 * The breakpoint instruction was removed right
++		 * after we hit it.  Another cpu has removed it
++		 * from this address.  In this case, no further
++		 * handling of this interrupt is appropriate.
++		 * Back up over the (now missing) int3 and run
++		 * the original instruction.
++		 */
++		instruction_pointer_set(regs, (unsigned long)addr);
++		return true;
++	}
++	return false;
++}
++
+ static void do_int3_user(struct pt_regs *regs)
+ {
+ 	if (do_int3(regs))
+@@ -757,7 +776,7 @@ DEFINE_IDTENTRY_RAW(exc_int3)
+ 		irqentry_state_t irq_state = irqentry_nmi_enter(regs);
+ 
+ 		instrumentation_begin();
+-		if (!do_int3(regs))
++		if (!do_int3(regs) && !fixup_int3(regs))
+ 			die("int3", regs, 0);
+ 		instrumentation_end();
+ 		irqentry_nmi_exit(regs, irq_state);
+-- 
+2.34.1
+
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
