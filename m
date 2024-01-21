@@ -1,91 +1,136 @@
-Return-Path: <linux-kernel+bounces-31959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-31960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB7183544F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 04:17:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F1BB835452
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 04:24:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72D591C20E6E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 03:17:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC060B20DDF
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 03:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D423612D;
-	Sun, 21 Jan 2024 03:17:05 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D8D36135;
+	Sun, 21 Jan 2024 03:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GHwiI4R9"
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A824C2EAE1
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 03:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1703526E
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 03:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705807024; cv=none; b=aFsnd35LceHKr8PrZ4TSmvwMoxs5KTlOsI67xNmOiasePqQsvoVaArdYqSql4PzjbzdE4zeZXux2znqvOcaG8qI+GwRid4Lb2hhT5m9xB691niPyeG8aWyRuu3+okovg959SDAuYbP/Q7TMXmBDwS/jmU8hDQZoGUvvTLU0Ntq4=
+	t=1705807456; cv=none; b=YjuIa1M8ta5mmzSq8ICLnhuH/pY/m9qoQEnwGHBjvLjzyuReN+PKGxadphO90mRH1QzLipdkftZb0D7XjC3MhT/zr8sJ+yYhdnZwtWs+oaIX40I6E9QYNS/Q60LO18boB/1mUVhoGVU4cBHIdCEq0CDrXaGHzRAfTJ6bcZEhN5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705807024; c=relaxed/simple;
-	bh=Y3U3gmSoBpPBqejzWBvJi7czCL1r6vTqCtRFhtN/0lc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=F4NC99S3N0jvoP8dB+CuY76Ceb03HgrVye1KZA4DMXHsiim21wMNHcPxbuRWwZQYPfQaHOmsguctYejeO37bQAjgZyNhplp9r/PvtfGoH85J9VEL5I3NkoY4tPVngbKX+/giS/xJOcYvjUagYS1JPN6e43nHq5P69xzORoAsTEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3608dc76b97so27484315ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jan 2024 19:17:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705807023; x=1706411823;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O5EGxrXRJliwproW9XKS8xWAASP6Q517tHhuqRHfHFo=;
-        b=fny4fmT1PfI+xhn+HzGJAToFvGpnfi1rbWUnXMGcDyJltgxihAp1wVeQgYLjueSnOu
-         HC8mTtwTED0vN4111v8rGwFJZ4zDU7C4DKGi+tDvv5a8Ll8NyQFcqydxKlwhD1DqKSk3
-         qCt7CuVob3kp5t+7IAPuQLgfQ/7ino8UWNyRqsSwxiL3wVZZF0+41Hd4usNIgMeiQRfg
-         b2HuIa+z7kd+fX1pGYwymZ0/FGl2FUje2Bl8JVNYRXdB6WD9mNImJIJTKFF/YVtp9B2P
-         SBib7xAVBdKPOgYsD3NPW8HbX9Rf2A8xVxAzYY043kmFyO28jJuc1ql6quu3r3L53XBT
-         aPeg==
-X-Gm-Message-State: AOJu0YzcLhtQrxncb6d5RnIuKcspowvVgmiOxAjXySABc18NCzwxjajX
-	5yJm7o/ZdcyKM2Y+PntczIYCB0i0gVlnvqtevwb/3SOhvwG+My8uuHMwUOqyM6kSIiUPJnDpJid
-	xLvZRstJc+D8t00AK3+IL1oCwiwVh/E/hH+9HP09JnAu1mQqjOz3nTTo=
-X-Google-Smtp-Source: AGHT+IGRGmSbpZOAandnep2TjFNdtBtmS5GbpJlBkr8Y1TPC2FaHN1DScWFyE7Braf3ZajxeC1wTuTX0WO0vt0Bcv1KhDuzrh6nD
+	s=arc-20240116; t=1705807456; c=relaxed/simple;
+	bh=wcmf/aOorBM5e7eQSiImvkWOPTSRCqUlnSV1FKys9QQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K+nVGh1QInGc1yvqEKnNOVojsI+CRt2w6LXBnwdl0uQ1ZRZtSUeKOIzq0McGj7/9ox/OxKDHmbH+h2DRnfXdu3kwpKdiv/kpkS+q3ik/7yYmRY/+IEvxTltQlx6EVK3pSxumkWD1rIs52XJT1Gz8L2CmZmMCI4wtJ2Pq7GU/qF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GHwiI4R9; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sat, 20 Jan 2024 22:24:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705807452;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jOpZnzgSpAJpw2OiDuuykdPLSgVkSPFMKVCSLSDMYA0=;
+	b=GHwiI4R9s3oMIchWXoZL1K2QaxLiHwJ45PB40kYV+CAscT3//oXAZ/GAF86O0AOVo0qKeM
+	xmA9YmJ3WHV5pINHYzj0AYFy+uj/wbQtyDZ+4fqvcddZTl5wm21gEO3JVou06KGBwplPBM
+	/Z0/M2yrFKefmw73jUgfCKHM74IvnAc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Mark Brown <broonie@kernel.org>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, 
+	Theodore Ts'o <tytso@mit.edu>, Greg KH <greg@kroah.com>, Neal Gompa <neal@gompa.dev>, 
+	Kees Cook <keescook@chromium.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Nikolai Kondrashov <spbnick@gmail.com>, 
+	Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <vm5fwfqtqoy5yl37meflf4yrmzotyi5aszouwthfv6q7nrtxhq@oucmld5ak4uo>
+References: <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+ <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+ <2024011532-mortician-region-8302@gregkh>
+ <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+ <20240117055457.GL911245@mit.edu>
+ <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+ <c69a3103-ae4d-459a-b5f4-d3bbe2af6fb2@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d88:b0:360:d7:186b with SMTP id
- h8-20020a056e021d8800b0036000d7186bmr274095ila.0.1705807022976; Sat, 20 Jan
- 2024 19:17:02 -0800 (PST)
-Date: Sat, 20 Jan 2024 19:17:02 -0800
-In-Reply-To: <0000000000001eae4605f16be009@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a8f68a060f6c259f@google.com>
-Subject: Re: [syzbot] [reiserfs?] kernel BUG in balance_leaf
-From: syzbot <syzbot+6a0877ace12bfad107fc@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	yijiangshan@kylinos.cn
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c69a3103-ae4d-459a-b5f4-d3bbe2af6fb2@sirena.org.uk>
+X-Migadu-Flow: FLOW_OUT
 
-syzbot suspects this issue was fixed by commit:
+On Wed, Jan 17, 2024 at 06:19:43PM +0000, Mark Brown wrote:
+> On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
+> 
+> > I also have to say, that for all the complaints there's just not any
+> > open source pull for test tools (there's no-one who's on a mission to
+> > make them better).  Demanding that someone else do it is proof of this
+> > (if you cared enough you'd do it yourself).  That's why all our testing
+> > infrastructure is just some random set of scripts that mostly does what
+> > I want, because it's the last thing I need to prove the thing I
+> > actually care about works.
+> 
+> > Finally testing infrastructure is how OSDL (the precursor to the Linux
+> > foundation) got started and got its initial funding, so corporations
+> > have been putting money into it for decades with not much return (and
+> > pretty much nothing to show for a unified testing infrastructure ...
+> > ten points to the team who can actually name the test infrastructure
+> > OSDL produced) and have finally concluded it's not worth it, making it
+> > a 10x harder sell now.
+> 
+> I think that's a *bit* pessimistic, at least for some areas of the
+> kernel - there is commercial stuff going on with kernel testing with
+> varying degrees of community engagement (eg, off the top of my head
+> Baylibre, Collabora and Linaro all have offerings of various kinds that
+> I'm aware of), and some of that does turn into investments in reusable
+> things rather than proprietary stuff.  I know that I look at the
+> kernelci.org results for my trees, and that I've fixed issues I saw
+> purely in there.  kselftest is noticably getting much better over time,
+> and LTP is quite active too.  The stuff I'm aware of is more focused
+> around the embedded space than the enterprise/server space but it does
+> exist.  That's not to say that this is all well resourced and there's no
+> problem (far from it), but it really doesn't feel like a complete dead
+> loss either.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+kselftest is pretty exciting to me; "collect all our integration tests
+into one place and start to standarize on running them" is good stuff.
 
-    fs: Block writes to mounted block devices
+You seem to be pretty familiar with all the various testing efforts, I
+wonder if you could talk about what you see that's interesting and
+useful in the various projects?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10cc8ee7e80000
-start commit:   88603b6dc419 Linux 6.2-rc2
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9babfdc3dd4772d0
-dashboard link: https://syzkaller.appspot.com/bug?extid=6a0877ace12bfad107fc
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bdb82a480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=108acc94480000
+I think a lot of this stems from a lack of organization and a lack of
+communication; I see a lot of projects reinventing things in slightly
+different ways and failing to build off of each other.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+> Some of the issues come from the different questions that people are
+> trying to answer with testing, or the very different needs of the
+> tests that people want to run - for example one of the reasons
+> filesystems aren't particularly well covered for the embedded cases is
+> that if your local storage is SD or worse eMMC then heavy I/O suddenly
+> looks a lot more demanding and media durability a real consideration.
 
-#syz fix: fs: Block writes to mounted block devices
+Well, for filesystem testing we (mostly) don't want to be hammering on
+an actual block device if we can help it - there are occasionally bugs
+that will only manifest when you're testing on a device with realistic
+performance characteristics, and we definitely want to be doing some
+amount of performance testing on actual devices, but most of our testing
+is best done in a VM where the scratch devices live entirely in dram on
+the host.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+But that's a minor detail, IMO - that doesn't prevent us from having a
+common test runner for anything that doesn't need special hardware.
 
