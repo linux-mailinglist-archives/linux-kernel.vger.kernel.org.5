@@ -1,120 +1,124 @@
-Return-Path: <linux-kernel+bounces-32157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA28835764
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:37:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D49683576A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 20:44:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D5F91F21880
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:37:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1A51B21131
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0CA438396;
-	Sun, 21 Jan 2024 19:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391D73839E;
+	Sun, 21 Jan 2024 19:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NUITy5wK"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WFb512zS"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CDB3381CC
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 19:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EEB4374EB;
+	Sun, 21 Jan 2024 19:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705865853; cv=none; b=sB/MyGyZUcgGPN6i3wBa/4XWIaQPEMhf9gstKeEISTY49jdx06QESedZd3ALrUOmooRXdhpQTNZtZFGHi5zHxG7BwYW4nOFtvxx2jZyUZ1gqwG6BkAR0eXViljuFF5G9BWMGAKzDiVnkj+039TNvNnPip1uDqdWITNMDx3BxylU=
+	t=1705866281; cv=none; b=LcTGM/wp8GeDtbjC64ahVk+eqDVQZo2Lj32cbvYbfxbcgjpCHRKWzH6os3viPGxHZf6msIZ1G5ojj8gofQfcRYjeHEv8/jQJDLxn0Hd8cuNRMaPxNmTRxMzMIgR4m0xzD2lwz2MBWQ5004OGc2k78q02HSC8YMQ94YWMwDETvpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705865853; c=relaxed/simple;
-	bh=gjTKvJ4mVwTZuyhJPn7lfBzLf+l5KyVBbkDE7y3VjpE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tAwSvFFzYdYs6f2wvLdudylKUbJ8aRH3eCuI10Lke+rDEnNM+1zP8gaLh3yh65M/YxdlEAutswqKZ+wvcm5pn6yHr+xNttRj9sbznHVqUIlK8OsWiHA4Xtkd35I3TA9oB+kjdv9hItlR6ihDsLdcgIJU6JbHldMKZ/YwuEdLDew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NUITy5wK; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5f0c0ca5ef1so23215377b3.2
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 11:37:31 -0800 (PST)
+	s=arc-20240116; t=1705866281; c=relaxed/simple;
+	bh=FgERju/0//bdfNQmRwUlS2ZC4bK0PMzYrsC31E28Ofo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BxGOO4eOI65CB/EeK9kFXa/DEpF0HFizmQGcIcfTMdh+NSDZzlOWG+fmW31zGpW/Om799Bd6o1fV+hCxxrWyVplqcRNjF5kP7wArc3s8JqNTAfF2n229F0yGX+DTjm7svRXBXfSrmV/UvsJ/4TqjinEktlNNnwj+82893A4jKgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WFb512zS; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2d7e2e7fe0so417324366b.1;
+        Sun, 21 Jan 2024 11:44:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705865850; x=1706470650; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gjTKvJ4mVwTZuyhJPn7lfBzLf+l5KyVBbkDE7y3VjpE=;
-        b=NUITy5wKTs+GLltfhGUhNP4eLFcw2YsMJ8QL1jIBoRSsQ9kJV34JjocxsTtP8dqZqj
-         Ks8t+dFP1AqH9Le7rib2MEXhTdG6J3VOJi0l521mmHquRhUQI+kvEDltBbxZz0lHc7hV
-         Yr4bED1GoBZ7qi+Ps0ZOgAUNaSO9aF5DyeVMJfJEoVWp/rt3vugRfdHSvUZww4fdqFoQ
-         qK4gtSUSyAzcfIB9btYdzEWZN7McfcxzSSY4wR/cg+fVcRsrFqrkncPhsAOBPI+0ZscX
-         Huki3XHvboE6Ni4vMFl7DKKPoNB1lkP0/ZWUVMTB4NpiyGKiL4IaPWiPNhyTCkfB9Q77
-         spvA==
+        d=gmail.com; s=20230601; t=1705866278; x=1706471078; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b7qx5rqlh0FWuE9XG787u8jZCcutzKDjwwsd5hGee8k=;
+        b=WFb512zSiu4vLUolHSfo/dQPOAgXNkDXlDiJoPj5l5EIYVx1xPClJ5QEI3PJmdJA+P
+         6AHhFsS/oUrDGknMkWPgjmqgy0XKD72X2z0Sv76zjM90g80Q/fJv3ZGxoJmxXD1x7Iti
+         CG8eZ2OE49GUQ/lzwclctK5bHwwFEYMcQJ0neJJ+LHPQiscOUYZ8k/2RA+HUGmgACGne
+         7SBdjX1NsaCyGaj8HESqkF1re9i2f/l+iXNyysRoKh6Zpb1vpc9fcF+0DQLKQsEUmst0
+         HkFnmEBnTl46WwpVYAo0nodbxok/vX/JNsE8MT9suWU3wkoK/BrHGa3zUrZs8oFisHsx
+         yGfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705865850; x=1706470650;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gjTKvJ4mVwTZuyhJPn7lfBzLf+l5KyVBbkDE7y3VjpE=;
-        b=vWMuTF3uRdexKDPLilEMKfJZ2fzEo4eKgQKPGNi3M7cuCgd5xrSL/FmRkdh7PlEnYh
-         IHju8+M7BBlePD2vPtJ24/m6Bjo6+Tj2HAalVYL1rnIwWaUN+d9tjCuTfgIWlqQD2NTf
-         oDJzyDMgR20thRo0Qp+sR2t8E+DBHKLATObsqCmNouNWefrI6aJ0BEybkk4quZPN2V1t
-         3dwguKD00xk5MXPQEQTpIICMgG0pUqG16wmHGpgtPDeMKYxGQJS+O/Q4keWiA+IJ1kFg
-         HCEVWaC+9UPzZt16kqHAcF9Tycn7kXaIMwO575IKyXF3gj1Z7e+UsBI+Y6LVptxtNoPp
-         UE5Q==
-X-Gm-Message-State: AOJu0YzU7rSPSx1LdMVe6uLUGm8bijz0JGYzHHXbA02FFltXoGddmkOo
-	kO0xpf/ONUeA0pDdIWcqbBseqHjxqwF2GQ+mxQtmlNr2CmrX7dGdZnIA79HHo+qUYd0m5wXBBCD
-	PZXOcb4PR1P96OVrKyZucT4B42sOaOuXibtLO4A==
-X-Google-Smtp-Source: AGHT+IHYFpUhitOX2AdmDFG06pyApujnRuwmVINWEr2J0isFWHjtyNyUMSFT/nF3+dUi0DB8rtIWg+bPhrPNcXMIy1E=
-X-Received: by 2002:a81:5dd7:0:b0:5f6:df70:bdda with SMTP id
- r206-20020a815dd7000000b005f6df70bddamr2639459ywb.32.1705865850566; Sun, 21
- Jan 2024 11:37:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705866278; x=1706471078;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b7qx5rqlh0FWuE9XG787u8jZCcutzKDjwwsd5hGee8k=;
+        b=qENdKixN8xJLWGKCOYSu40MRD9RL8PmBgnutW+aatiRg5+UKchsioWGhvMTfZ1pI9K
+         RERD0dRwrMqcFwAS+DAYQjYnuinYBQSZkJxhwsGfJIJGCi4st3H8xmeN1g5Anwbd2yYJ
+         xVhmdSSL5xLTmHPpxwRRkjZnWUzyUfpCRgMnt7iAe2WCeFTnaWYIC0khiLH+Nq72CGYB
+         M4Nx12ajjVcMnQYoxxspz48iWaOQRZbcJ5quZSx+pxzBsF14WhLeHvxO8RPN3ckDwP0j
+         dtyBVhuylCwUx5EXdOp28fsriW46PoAWeWCTARq7FQkhHjccv4+FzhLVOm6wLbiD8cbM
+         BRzw==
+X-Gm-Message-State: AOJu0YxaILFm7WWCdRmAQL4cQYUOvw6q9jtYh0d+KWUjQGoj1BOsQrHo
+	IrAuz/5lEOxbo+P4jASlHCrGFe0lmCC5y7RFFx1MhwqlyJIrhNhat3xXYW2AnmE=
+X-Google-Smtp-Source: AGHT+IEUIwjgDLvSlIepivXTVds4fmOThAhEeE2VQdGUMP1Ux128ZnPqqT0eEiqb7+oRPEbs1BTjsg==
+X-Received: by 2002:a17:906:70d6:b0:a2d:468c:3845 with SMTP id g22-20020a17090670d600b00a2d468c3845mr3183703ejk.35.1705866278086;
+        Sun, 21 Jan 2024 11:44:38 -0800 (PST)
+Received: from localhost.localdomain (byv51.neoplus.adsl.tpnet.pl. [83.30.41.51])
+        by smtp.gmail.com with ESMTPSA id k6-20020a170906128600b00a2b0b0fc80esm12547134ejb.193.2024.01.21.11.44.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jan 2024 11:44:37 -0800 (PST)
+From: Adam Skladowski <a39.skl@gmail.com>
+To: 
+Cc: phone-devel@vger.kernel.org,
+	~postmarketos/upstreaming@lists.sr.ht,
+	Adam Skladowski <a39.skl@gmail.com>,
+	Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Krishna Manikandan <quic_mkrishn@quicinc.com>,
+	linux-arm-msm@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] MSM8976 MDSS/GPU/WCNSS support
+Date: Sun, 21 Jan 2024 20:40:58 +0100
+Message-Id: <20240121194221.13513-1-a39.skl@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119201356.7903-1-ansuelsmth@gmail.com> <20240119201356.7903-3-ansuelsmth@gmail.com>
- <CACRpkdaR_gtW6VmenfV5=xounqV18-kZyNprJUtLWkpgXUnkvA@mail.gmail.com> <65abfc33.df0a0220.65bf1.4e35@mx.google.com>
-In-Reply-To: <65abfc33.df0a0220.65bf1.4e35@mx.google.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 21 Jan 2024 20:37:19 +0100
-Message-ID: <CACRpkdbr3MqKNEM_AudEnknJOf6VaV7mBQre2puH_HLGWZYn8g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: decompressor: add option to ignore MEM ATAGs
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>, 
-	Andrew Morton <akpm@linux-foundation.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Thomas Gleixner <tglx@linutronix.de>, Randy Dunlap <rdunlap@infradead.org>, 
-	"Mike Rapoport (IBM)" <rppt@kernel.org>, Eric DeVolder <eric.devolder@oracle.com>, 
-	Nathan Chancellor <nathan@kernel.org>, "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, 
-	Kees Cook <keescook@chromium.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@somainline.org>, John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, Jan 20, 2024 at 6:00=E2=80=AFPM Christian Marangi <ansuelsmth@gmail=
-com> wrote:
-> On Sat, Jan 20, 2024 at 12:52:33PM +0100, Linus Walleij wrote:
-> > On Fri, Jan 19, 2024 at 9:14=E2=80=AFPM Christian Marangi <ansuelsmth@g=
-mail.com> wrote:
-> >
-> > > +#if defined(CONFIG_ARM_ATAG_DTB_COMPAT_IGNORE_MEM)
-> > > +#define do_ignore_mem 1
-> > > +#else
-> > > +#define do_ignore_mem 0
-> > > +#endif
-> >
-> > Is there a reason why you can't just use:
-> >
-> > if (IS_ENABLED(CONFIG_ARM_ATAG_DTB_COMPAT_IGNORE_MEM))
-> > in the code?
-> >
->
-> Was following the pattern, yes I can totally do this change... Will send
-> a v2 with this changed.
->
-> Since the first patch has to be regression tested, is it ok to add the
-> Tag in v2 or I should wait that to send v2?
+This patch series provide support for display subsystem, gpu
+and also adds wireless connectivity subsystem support.
 
-Just add the tag.
+Adam Skladowski (8):
+  arm64: dts: qcom: msm8976: Add IOMMU nodes
+  dt-bindings: dsi-controller-main: Document missing msm8976 compatible
+  dt-bindings: msm: qcom,mdss: Include ommited fam-b compatible
+  arm64: dts: qcom: msm8976: Add MDSS nodes
+  dt-bindings: drm/msm/gpu: Document AON clock for A506/A510
+  arm64: dts: qcom: msm8976: Add Adreno GPU
+  arm64: dts: qcom: msm8976: Declare and wire SDC pins
+  arm64: dts: qcom: msm8976: Add WCNSS node
 
-Thanks,
-Linus Walleij
+ .../display/msm/dsi-controller-main.yaml      |   2 +
+ .../devicetree/bindings/display/msm/gpu.yaml  |   6 +-
+ .../bindings/display/msm/qcom,mdss.yaml       |   1 +
+ arch/arm64/boot/dts/qcom/msm8976.dtsi         | 610 +++++++++++++++++-
+ 4 files changed, 613 insertions(+), 6 deletions(-)
+
+-- 
+2.43.0
+
 
