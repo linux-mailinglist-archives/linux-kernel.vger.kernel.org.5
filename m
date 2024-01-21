@@ -1,123 +1,368 @@
-Return-Path: <linux-kernel+bounces-32106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CDD683568B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:58:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D014835690
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:09:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAF1EB227BA
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 15:58:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B8F21C210E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426C137706;
-	Sun, 21 Jan 2024 15:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD79D3770C;
+	Sun, 21 Jan 2024 16:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="gxF88Mqi";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="gxF88Mqi"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mvi1A9fv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8FE364A4;
-	Sun, 21 Jan 2024 15:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF4E376F6;
+	Sun, 21 Jan 2024 16:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705852717; cv=none; b=uTyhV8mxVxzdOyQZYmKQesgXI1AqLeuNiXvVmJaxq5gtZQHX5A8QVzF3NoskhReUHCwRhVkxTpcJoiQWi0tXVhAQ7Whm3wTHtBIhUDHW1FtWSxW0PoroOafZRfqg/uTnNFp3oHF348Q75fV3zimtuNk4RBSMj0K41cOjO2aFPTw=
+	t=1705853354; cv=none; b=H9VsBCk4oU+PducnhtwJil3Te2Ke1xgCV5tty06WKMPodWXiDletIj/Eyni7H9k12MbnmkBKoJRmbOWf4B1TmdJP05LWXW3mU1lxExivf6cqRjIEPisiAoSSABJnOfMKOFtMfiVNDQjywV4eZVgC13L2V3Ib4mP1Az3gnyuN7q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705852717; c=relaxed/simple;
-	bh=vZKUTi/pGvf34rerdB8LD1X0SEf4pI83URewsECcsQ8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fxEW0DAhwGYTUbO1qsiNLCWdLeycI2pfFm6Kd2KQNNuMi7Noth0domQDotmQ2DFCwdtWAekozVva0U2E4xQQIJW2f9rEmgNq4DI8Gowy/Qezg/kJtjIgedteO7ze0qSSfDO4pefHrtF45sP+a+Kb4leYvWQd7EF1IQ0Vd61RIzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=gxF88Mqi; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=gxF88Mqi; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1705852714;
-	bh=vZKUTi/pGvf34rerdB8LD1X0SEf4pI83URewsECcsQ8=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=gxF88MqiU/GafvH4sDGJEarDrnZWJRlter/VpO/KynZEw+/RglAO+/PhZTV5oWZAI
-	 nclI0TW5nsBHZTZfcVh9Td6c75Y+zCR9854fr/PDMkxJfW/jzldVm6qFMcD2DYgPwP
-	 cvdXuGK5fL+CSwWdV6B1rKougVtBELCm35tC8g5c=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id E7E3612810AE;
-	Sun, 21 Jan 2024 10:58:34 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id 6anIjXJcDn9K; Sun, 21 Jan 2024 10:58:34 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1705852714;
-	bh=vZKUTi/pGvf34rerdB8LD1X0SEf4pI83URewsECcsQ8=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=gxF88MqiU/GafvH4sDGJEarDrnZWJRlter/VpO/KynZEw+/RglAO+/PhZTV5oWZAI
-	 nclI0TW5nsBHZTZfcVh9Td6c75Y+zCR9854fr/PDMkxJfW/jzldVm6qFMcD2DYgPwP
-	 cvdXuGK5fL+CSwWdV6B1rKougVtBELCm35tC8g5c=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits))
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1D9A31280FA8;
-	Sun, 21 Jan 2024 10:58:34 -0500 (EST)
-Message-ID: <83d6dca5fec8b2b31e548d56cdf196e39549d9ca.camel@HansenPartnership.com>
-Subject: Re: [GIT PULL] final round of SCSI updates for the 6.7+ merge window
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Theodore Ts'o <tytso@mit.edu>, Linus Torvalds
-	 <torvalds@linux-foundation.org>, G@mit.edu
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-scsi
-	 <linux-scsi@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Date: Sun, 21 Jan 2024 10:58:32 -0500
-In-Reply-To: <20240121063038.GA1452899@mit.edu>
-References: 
-	<d2ce7bc75cadd3d39858c02f7f6f0b4286e6319b.camel@HansenPartnership.com>
-	 <CAHk-=wi8-9BCn+KxwtwrZ0g=Xpjin_D3p8ZYoT+4n2hvNeCh+w@mail.gmail.com>
-	 <7b104abd42691c3e3720ca6667f5e52d75ab6a92.camel@HansenPartnership.com>
-	 <CAHk-=wi03SZ4Yn9FRRsxnMv1ED5Qw25Bk9-+ofZVMYEDarHtHQ@mail.gmail.com>
-	 <20240121063038.GA1452899@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1705853354; c=relaxed/simple;
+	bh=a4b5GGGgma7M5QOtpEFImXDW5Z1+UvUNUmRj57uUPWo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lVA5AeffI30vice1qnYnqJzEFDxIB1umlXKiPauD+LS6tyzx+O+56mavnat5GdtmZqKRss7nTjqeKpwP6eULdw1EKxyrqOqrp5MrDcjLayLCasv1sYL9LctJuK0v9LVvFtIcmeHhtRnijrSSZ9HE0aYagXSx24cGHuWl06unUbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mvi1A9fv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F778C433F1;
+	Sun, 21 Jan 2024 16:09:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705853354;
+	bh=a4b5GGGgma7M5QOtpEFImXDW5Z1+UvUNUmRj57uUPWo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mvi1A9fvr4Ec9Pw8DtOs307vxgvhY0onfUd+hqYMLqbFRJf7I5WiYR3BCKwn0MNqe
+	 f6ujQKBvYNzZrYmmMMn2PRAO+LDoyGh5M6DwaRhSbHT0yAA7GL/UdeL4zBqSXj5qUB
+	 aWH7l3vjJIZpjp0FD9d6w7o7IHXvKGeVQLMh91e18W/wgzZXbqQ/TwyTj3UBSC0avx
+	 uTXtU4egng+IUs+72kI2iFEnZIAAp9+Tdz7bcmvYsuiNf16kHuA/0hJbEXSvkzqEWm
+	 wA1qMh72ZYjTg4AvUyfmoLIDVZB7WWdJHNdhUu050RcRWV/gzbRmvk18TcmPNlUIEx
+	 13VkcSmWZZ05g==
+Date: Sun, 21 Jan 2024 16:09:00 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Kim Seer Paller <kimseer.paller@analog.com>
+Cc: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Michael Hennerich <Michael.Hennerich@analog.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Crt Mori <cmo@melexis.com>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v6 2/2] iio: frequency: admfm2000: New driver
+Message-ID: <20240121160900.308055c7@jic23-huawei>
+In-Reply-To: <20240118085856.70758-3-kimseer.paller@analog.com>
+References: <20240118085856.70758-1-kimseer.paller@analog.com>
+	<20240118085856.70758-3-kimseer.paller@analog.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sun, 2024-01-21 at 01:30 -0500, Theodore Ts'o wrote:
-> Unlike James, I've tried to use DANE, since about the only thing that
-                    ^
-                  never?
+On Thu, 18 Jan 2024 16:58:56 +0800
+Kim Seer Paller <kimseer.paller@analog.com> wrote:
 
-> has as disastrous a user experience as gpg is DNSSEC.  :-) I just
-> manually upload keys to the kernel and Debian keyrings, and it's been
-> working out, apparently without much pain for either me or to those
-> who rely on my keys --- at least, no one as complained to me so
-> far....
+> Dual microwave down converter module with input RF and LO frequency
+> ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1 to
+> 8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
+> for each down conversion path.
+> 
+> Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
+Hi.
 
-Well the theory is sound: if the DNS is secure and trustworthy, getting
-the gpg key from the same domain as the email records proves the tie
-between the uid and the key (obviating the need for all this keysigning
-and web of trust).  Making DNS substitute for all these stupid external
-CAs for web certificates as well (via DANE export of the X509 public
-key) is also a good idea, as is exporting the ssh host keys and things.
+A few comments inline.  Mainly about reducing some code duplication.
+The note about autocleanup of fwnode_handle_put is a reference to:
 
-However, having maintained DNSSEC for almost a decade now, I'm not
-going to pretend it's something a non-expert sysadmin should be trying:
-it's very particular and problems are hard to debug; you really have to
-be in the top tier of expert sysadmins to be successful with it. 
-However, once it is running, bind9 now takes much of the pain out of
-rolling the domain keys and, if you run a dynamic domain (one that can
-be updated with nsupdate), you can actually give all your users scoped
-permission to update their own key records, so if you have an expert
-sysadmin on the domain, they can make DANE usable for all the non
-experts.
+https://lore.kernel.org/linux-iio/Za0NxrgBb0ve233b@smile.fi.intel.com/T/
 
-I think the gpg usability problem is that I can't mark my key as being
-DANE available in the key itself, so gpg would just automatically check
-the DNS for an update and throw a warning if there was a DNS problem
-(but still use the cached key).  The failure is the users having to
-figure out that my key is DANE available and then what combinatoric
-explosion of gpg options they actually need to update it.
+Though I'm not sure that will land exactly as currently implemented, so
+don't base anything on it yet.
 
-James
+> ---
+> V5 -> V6: Used devm_fwnode_gpiod_get_index for getting array of gpios.
+> V4 -> V5: Added missing return -ENODEV in setup function. Reordered variable
+> 	  declarations in probe function.
+> V1 -> V4: No changes.
+> 
+>  MAINTAINERS                       |   1 +
+>  drivers/iio/frequency/Kconfig     |  10 +
+>  drivers/iio/frequency/Makefile    |   1 +
+>  drivers/iio/frequency/admfm2000.c | 307 ++++++++++++++++++++++++++++++
+>  4 files changed, 319 insertions(+)
+>  create mode 100644 drivers/iio/frequency/admfm2000.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3a86f9d6cb98..49d320535105 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1266,6 +1266,7 @@ L:	linux-iio@vger.kernel.org
+>  S:	Supported
+>  W:	https://ez.analog.com/linux-software-drivers
+>  F:	Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+> +F:	drivers/iio/frequency/admfm2000.c
+>  
+>  ANALOG DEVICES INC ADMV1013 DRIVER
+>  M:	Antoniu Miclaus <antoniu.miclaus@analog.com>
+> diff --git a/drivers/iio/frequency/Kconfig b/drivers/iio/frequency/Kconfig
+> index 9e85dfa58508..c455be7d4a1c 100644
+> --- a/drivers/iio/frequency/Kconfig
+> +++ b/drivers/iio/frequency/Kconfig
+> @@ -60,6 +60,16 @@ config ADF4377
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called adf4377.
+>  
+> +config ADMFM2000
+> +	tristate "Analog Devices ADMFM2000 Dual Microwave Down Converter"
+> +	depends on GPIOLIB
+> +	help
+> +	  Say yes here to build support for Analog Devices ADMFM2000 Dual
+> +	  Microwave Down Converter.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called admfm2000.
+> +
+>  config ADMV1013
+>  	tristate "Analog Devices ADMV1013 Microwave Upconverter"
+>  	depends on SPI && COMMON_CLK
+> diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
+> index b616c29b4a08..70d0e0b70e80 100644
+> --- a/drivers/iio/frequency/Makefile
+> +++ b/drivers/iio/frequency/Makefile
+> @@ -8,6 +8,7 @@ obj-$(CONFIG_AD9523) += ad9523.o
+>  obj-$(CONFIG_ADF4350) += adf4350.o
+>  obj-$(CONFIG_ADF4371) += adf4371.o
+>  obj-$(CONFIG_ADF4377) += adf4377.o
+> +obj-$(CONFIG_ADMFM2000) += admfm2000.o
+>  obj-$(CONFIG_ADMV1013) += admv1013.o
+>  obj-$(CONFIG_ADMV1014) += admv1014.o
+>  obj-$(CONFIG_ADMV4420) += admv4420.o
+> diff --git a/drivers/iio/frequency/admfm2000.c b/drivers/iio/frequency/admfm2000.c
+> new file mode 100644
+> index 000000000000..a09ec38fad22
+> --- /dev/null
+> +++ b/drivers/iio/frequency/admfm2000.c
+> @@ -0,0 +1,307 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ADMFM2000 Dual Microwave Down Converter
+> + *
+> + * Copyright 2023 Analog Devices Inc.
+As you are updating in 2024, this might want an update to include this year.
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/err.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
 
+Why this include?
+You are using stuff from property.h not the of specific stuff.
+You should have mod_devicetable.h for the of_device_id definition though.
+
+> +#include <linux/platform_device.h>
+
+
+> +
+> +static int admfm2000_read_raw(struct iio_dev *indio_dev,
+> +			      struct iio_chan_spec const *chan, int *val,
+> +			      int *val2, long mask)
+> +{
+> +	struct admfm2000_state *st = iio_priv(indio_dev);
+> +	int gain;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_HARDWAREGAIN:
+> +		mutex_lock(&st->lock);
+> +		gain = ~(st->gain[chan->channel]) * -1000;
+> +		*val = gain / 1000;
+> +		*val2 = (gain % 1000) * 1000;
+> +		mutex_unlock(&st->lock);
+> +
+> +		return  IIO_VAL_INT_PLUS_MICRO_DB;
+
+Odd extra space after return.
+
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int admfm2000_write_raw(struct iio_dev *indio_dev,
+> +			     struct iio_chan_spec const *chan, int val,
+> +			     int val2, long mask)
+> +{
+> +	struct admfm2000_state *st = iio_priv(indio_dev);
+> +	int gain, ret;
+> +
+> +	if (val < 0)
+> +		gain = (val * 1000) - (val2 / 1000);
+> +	else
+> +		gain = (val * 1000) + (val2 / 1000);
+> +
+> +	if (gain > ADMFM2000_MAX_GAIN || gain < ADMFM2000_MIN_GAIN)
+> +		return -EINVAL;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_HARDWAREGAIN:
+> +		mutex_lock(&st->lock);
+> +		st->gain[chan->channel] = ~((abs(gain) / 1000) & 0x1F);
+> +
+> +		ret = admfm2000_attenuation(indio_dev, chan->channel,
+> +					     st->gain[chan->channel]);
+> +		mutex_unlock(&st->lock);
+> +		break;
+		return ret;
+
+> +	default:
+> +		ret = -EINVAL;
+		return -EINVAL;
+
+> +	}
+> +
+> +	return ret;
+
+Not needed with direct returns above.  Returning early reduces the code
+a reviewer needs to consider for a given flow, which is nice to do!
+
+> +}
+
+> +
+> +static int admfm2000_channel_config(struct admfm2000_state *st,
+> +				    struct iio_dev *indio_dev)
+> +{
+> +	struct platform_device *pdev = to_platform_device(indio_dev->dev.parent);
+> +	struct device *dev = &pdev->dev;
+> +	struct fwnode_handle *child;
+> +	u32 reg, mode;
+> +	int ret, i;
+> +
+> +	device_for_each_child_node(dev, child) {
+> +		ret = fwnode_property_read_u32(child, "reg", &reg);
+> +		if (ret) {
+> +			fwnode_handle_put(child);
+
+Once a proposed auto cleanup solution for fwnode_handle_put() lands
+we an tidy this up a lot as then we can get rid of all these manual
+reference drops.
+
+> +			return dev_err_probe(dev, ret,
+> +					     "Failed to get reg property\n");
+> +		}
+> +
+> +		if (reg >= indio_dev->num_channels) {
+> +			fwnode_handle_put(child);
+> +			return dev_err_probe(dev, -EINVAL, "reg bigger than: %d\n",
+> +					     indio_dev->num_channels);
+> +		}
+> +
+> +		ret = fwnode_property_read_u32(child, "adi,mode", &mode);
+> +		if (ret) {
+> +			fwnode_handle_put(child);
+> +			return dev_err_probe(dev, ret,
+> +					     "Failed to get mode property\n");
+> +		}
+> +
+> +		if (mode >= 2) {
+> +			fwnode_handle_put(child);
+> +			return dev_err_probe(dev, -EINVAL, "mode bigger than: 1\n");
+> +		}
+> +
+> +		switch (reg) {
+> +		case 0:
+
+Use a couple of local variables to avoid the code duplication.
+
+		struct gpio_desc *sw;
+		struct gpio_desc *dsa;
+		switch (ret) {
+		case 0:
+			sw = st->sw1_ch;
+			dsa = st->dsa1_gpios;
+			break;
+		case 1:
+			sw = st->sw2_ch;
+			dsa = st->dsa2_gpios; /* or maybe make these arrays of pointers */
+			break;
+		default:
+			fwnode_handle_put()
+			return;
+		}
+
+		for (i = 0; i < ADMFM2000_MODE_GPIOS; i++) {
+			sw[i] = devm_fdnode...
+etc
+
+
+
+> +			for (i = 0; i < ADMFM2000_MODE_GPIOS; i++) {
+> +				st->sw1_ch[i] = devm_fwnode_gpiod_get_index(dev, child,
+> +									    "switch", i,
+> +									    GPIOD_OUT_LOW,
+> +									    NULL);
+> +				if (IS_ERR(st->sw1_ch[i])) {
+> +					fwnode_handle_put(child);
+> +					return dev_err_probe(dev, PTR_ERR(st->sw1_ch[i]),
+> +							     "Failed to get gpios\n");
+> +				}
+> +			}
+> +
+> +			for (i = 0; i < ADMFM2000_DSA_GPIOS; i++) {
+> +				st->dsa1_gpios[i] = devm_fwnode_gpiod_get_index(dev, child,
+> +										"attenuation", i,
+> +										GPIOD_OUT_LOW,
+> +										NULL);
+> +				if (IS_ERR(st->dsa1_gpios[i])) {
+> +					fwnode_handle_put(child);
+> +					return dev_err_probe(dev, PTR_ERR(st->dsa1_gpios[i]),
+> +							     "Failed to get gpios\n");
+> +				}
+> +			}
+> +			break;
+> +		case 1:
+> +			for (i = 0; i < ADMFM2000_MODE_GPIOS; i++) {
+> +				st->sw2_ch[i] = devm_fwnode_gpiod_get_index(dev, child,
+> +									    "switch", i,
+> +									    GPIOD_OUT_LOW,
+> +									    NULL);
+> +				if (IS_ERR(st->sw2_ch[i])) {
+> +					fwnode_handle_put(child);
+> +					return dev_err_probe(dev, PTR_ERR(st->sw2_ch[i]),
+> +							     "Failed to get gpios\n");
+> +				}
+> +			}
+> +
+> +			for (i = 0; i < ADMFM2000_DSA_GPIOS; i++) {
+> +				st->dsa2_gpios[i] = devm_fwnode_gpiod_get_index(dev, child,
+> +										"attenuation", i,
+> +										GPIOD_OUT_LOW,
+> +										NULL);
+> +				if (IS_ERR(st->dsa2_gpios[i])) {
+> +					fwnode_handle_put(child);
+> +					return dev_err_probe(dev, PTR_ERR(st->dsa2_gpios[i]),
+> +							     "Failed to get gpios\n");
+> +				}
+> +			}
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +
+> +		ret = admfm2000_mode(indio_dev, reg, mode);
+> +		if (ret) {
+> +			fwnode_handle_put(child);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
 
