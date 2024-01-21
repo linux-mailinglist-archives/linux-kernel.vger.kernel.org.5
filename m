@@ -1,110 +1,144 @@
-Return-Path: <linux-kernel+bounces-32198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 040C7835816
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 23:18:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34243835819
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 23:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC0211F21868
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:18:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E6FBB21124
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 22:22:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7998138F80;
-	Sun, 21 Jan 2024 22:18:41 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B988E38F87;
+	Sun, 21 Jan 2024 22:21:54 +0000 (UTC)
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE8F38DDC
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CECB38DF7;
+	Sun, 21 Jan 2024 22:21:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.101.241.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705875521; cv=none; b=gq1P9TDJ2n44QJX0E+E5KmW77qZ0MtAHnouxe8fKY/HvUr8V36AUtzeJfJV69SNZJTbfsBMGQ6PSotYNIXbLQUsUpdydRdbGq/WcPr88wXRbAP3DqTKbWAJZE4IfcsNYsCJdjr/lz2ykGlKQUx/iAaJ7K8OSnv28de6bBtn9Vpk=
+	t=1705875714; cv=none; b=DTmtjcf4ho43PjVSjiRMHJY20lWe8GT4xs8HsJNZIUT7/twudfG2riNxelu18lbxnN3NbfDWcfLIFZb+EStfzk3rJ1X3OY1q6yAB1nWX6AmqdXGuOYWPLUigX4ykTX3O/msHzECti/KpXG/sFnwSMTqc2eQcQptNYhZeW5VDmvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705875521; c=relaxed/simple;
-	bh=nygEOmY4tiUQZD8Nz78osBPg27O8u0wY5EOk7X6w99E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=W+6QShf1AXaSweFh8RAXZxGP3CSgcCUhLRTqztUw2hY1ajhC6JhiBjkIuXygYiOjdMGAajrILyCovxSMZ7JzZheQb7FK0LshwpEBS8kopj5Q5tzo+C5YzQVeXo0WWr9ePGCZoELA2pCgEWBfoxgtxEB/boR5RhLPZkfwXUavp6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-281-eFEnWUa9P2KaNIVFV8PzgA-1; Sun, 21 Jan 2024 22:18:30 +0000
-X-MC-Unique: eFEnWUa9P2KaNIVFV8PzgA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 21 Jan
- 2024 22:18:06 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 21 Jan 2024 22:18:05 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Linus Torvalds' <torvalds@linux-foundation.org>
-CC: Stephen Rothwell <sfr@canb.auug.org.au>, Jiri Slaby <jirislaby@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Andy
- Shevchenko" <andriy.shevchenko@linux.intel.com>, Andrew Morton
-	<akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Christoph Hellwig <hch@infradead.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: RE: [PATCH next v4 0/5] minmax: Relax type checks in min() and max().
-Thread-Topic: [PATCH next v4 0/5] minmax: Relax type checks in min() and
- max().
-Thread-Index: AdnqB/CwAvMQ3gkdSO607JUF4aSKdhZ9C6k7AAacz4AB9HBKgAAztg+A
-Date: Sun, 21 Jan 2024 22:18:05 +0000
-Message-ID: <8aaf72d07b464dc1aeee5f66fba05326@AcuMS.aculab.com>
-References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
- <18c6df0d-45ed-450c-9eda-95160a2bbb8e@gmail.com>
- <CAHk-=wjvM5KiQFpbPMPXH-DcvheNcPGj+ThNEJVm+QL6n05A8A@mail.gmail.com>
- <CAHk-=wjE1eLMtkKqTt0XqNSnKAeDagV=WQU+vxHL_wsLuO8Gag@mail.gmail.com>
- <CAHk-=whkGHOmpM_1kNgzX1UDAs10+UuALcpeEWN29EE0m-my=w@mail.gmail.com>
- <20240110171739.2e2d9de0@canb.auug.org.au>
- <CAHk-=wj1uqgU7hS=WqDSwEvc6=CwuWYBUmjSJAT6zx86CF=QBQ@mail.gmail.com>
- <ad3a9cf720cd4e1ebe942cdc84a6a670@AcuMS.aculab.com>
- <CAHk-=whKAaFmqNBEnY=n8Twnh6AEegHh7OL0YFkNS8b3xVQ-3w@mail.gmail.com>
-In-Reply-To: <CAHk-=whKAaFmqNBEnY=n8Twnh6AEegHh7OL0YFkNS8b3xVQ-3w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1705875714; c=relaxed/simple;
+	bh=Tb/h+cGUzGAV2xeqvibzuCTLaxv4CJ2BINKOQ4QTy+o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ok5O9raX2JoMSUxAO6XPF96mB8IE6jr7wCvr2jHabtNVA2xucG/fac1oTJPRcfBfxtXkUvmyGUumnL3azf0PJbuWrN6EPD8ivrDoA4pi3MvDoV/VXa00wROfBah6SMQ9jpmvOy1IFSrIj1GgSvNIOyCayYzBOScfT5UDeb8WK1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net; spf=pass smtp.mailfrom=just42.net; arc=none smtp.client-ip=150.101.241.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=just42.net
+Received: from marvin.atrad.com.au (marvin.atrad.com.au [192.168.0.2])
+	by server.atrad.com.au (8.17.2/8.17.2) with ESMTPS id 40LMKcoq011184
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Mon, 22 Jan 2024 08:50:40 +1030
+Date: Mon, 22 Jan 2024 08:50:38 +1030
+From: Jonathan Woithe <jwoithe@just42.net>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Igor Mammedov <imammedo@redhat.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] PCI: Solve two bridge window sizing issues
+Message-ID: <Za2YtnwLKKeMquv6@marvin.atrad.com.au>
+References: <20231228165707.3447-1-ilpo.jarvinen@linux.intel.com>
+ <20240104131210.71f44d4b@imammedo.users.ipa.redhat.com>
+ <ZZaiLOR4aO84CG2S@marvin.atrad.com.au>
+ <ZZ+gEmxI/TxdbmyQ@marvin.atrad.com.au>
+ <ZajJzcquyvRebAFN@marvin.atrad.com.au>
+ <Za0T_siv79qz1jkk@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Za0T_siv79qz1jkk@smile.fi.intel.com>
+X-MIMEDefang-action: accept
+X-Scanned-By: MIMEDefang 2.86 on 192.168.0.1
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjAgSmFudWFyeSAyMDI0IDIxOjM0DQo+IA0K
-PiBbIEdvaW5nIHRocm91Z2ggc29tZSBwZW5kaW5nIGlzc3VlcyBub3cgdGhhdCBJJ3ZlIG1vc3Rs
-eSBlbXB0aWVkIG15IHB1bGwgcXVldWUgXQ0KPiANCj4gT24gV2VkLCAxMCBKYW4gMjAyNCBhdCAx
-NDo1OCwgRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4N
-Cj4gPiBUaGUgZmlyc3QgY2hlY2sgaW4gX190eXBlc19vaygpIGNhbiBnbywgdGhlIHNlY29uZCBv
-bmUgKHdpdGggdGhlICcrIDAnKQ0KPiA+IChhZGRlZCB0byBwcm9tb3RlIGNoYXIgdG8gaW50KSBp
-bmNsdWRlcyB0aGUgZmlyc3Qgb25lLg0KPiANCj4gVGhhdCB0dXJucyBvdXQgdG8gbm90IGJlIHRy
-dWUuIEFuIGV4cHJlc3Npb24gbGlrZQ0KPiANCj4gICBtaW4odTgsIHVuc2lnbmVkIGludCkNCj4g
-DQo+IGlzIGZpbmUgYmVjYXVzZSB0aGUgdW5kZXJseWluZyB0eXBlcyBhcmUgY29tcGF0aWJsZS4N
-Cj4gDQo+IEJ1dCB0aGUgcHJvbW90aW9uIHRvICdpbnQnIG1ha2VzIHRoZSBmaXJzdCBhcmd1bWVu
-dCBiZSBhIHNpZ25lZA0KPiBpbnRlZ2VyLCBhbmQgaXMgbm8gbG9uZ2VyIGNvbXBhdGlibGUgd2l0
-aCB0aGUgc2Vjb25kIGFyZ3VtZW50Lg0KDQpZZXMsIEkgcmVhbGlzZWQgdGhhdCBhZnRlcndhcmRz
-Lg0KDQpUaGlzIHZlcnNpb24gaXMgbXVjaCBzaW1wbGVyIHRob3VnaC4NCg0KKy8qIEFsbG93IHVu
-c2lnbmVkIGNvbXBhcmVzIGFnYWluc3Qgbm9uLW5lZ2F0aXZlIHNpZ25lZCBjb25zdGFudHMuICov
-DQorI2RlZmluZSBfX2lzX29rX3Vuc2lnbmVkKHgpIFwNCisgICAgICAgKCFpc19zaWduZWRfdHlw
-ZSh0eXBlb2YoeCkpIHx8IChfX2lzX2NvbnN0ZXhwcih4KSA/ICh4KSA+PSAwIDogMCkpDQorDQor
-LyogQ2hlY2sgZm9yIHNpZ25lZCBhZnRlciBwcm9tb3RpbmcgdW5zaWduZWQgY2hhci9zaG9ydCB0
-byBpbnQgKi8NCisjZGVmaW5lIF9faXNfb2tfc2lnbmVkKHgpIGlzX3NpZ25lZF90eXBlKHR5cGVv
-ZigoeCkgKyAwKSkNCisNCisvKiBBbGxvdyBpZiBib3RoIHggYW5kIHkgYXJlIHZhbGlkIGZvciBl
-aXRoZXIgc2lnbmVkIG9yIHVuc2lnbmVkIGNvbXBhcmVzLiAqLw0KKyNkZWZpbmUgX190eXBlc19v
-ayh4LCB5KSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQorICAgICAgICgoX19pc19v
-a19zaWduZWQoeCkgJiYgX19pc19va19zaWduZWQoeSkpIHx8ICAgIFwNCisgICAgICAgIChfX2lz
-X29rX3Vuc2lnbmVkKHgpICYmIF9faXNfb2tfdW5zaWduZWQoeSkpKQ0KDQpBbmQgX1N0YXRjX2Fz
-c2VydCgpIG9ubHkgbmVlZHMgYSBjb21waWxlLXRpbWUgY29uc3RhbnQsIG5vdA0KYSBjb25zdGFu
-dCBleHByZXNzaW9uIC0gc28gbm8gbmVlZCBmb3IgYWxsIHRoZSBfX2J1aWx0aW5fY2hvb3NlX2V4
-cHIoKS4NCg0KSSdsbCBwb3N0IHRoZSBhY3R1YWwgcGF0Y2ggc2VyaWVzIGluIGEgY291cGxlIG9m
-IGRheXMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1s
-ZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJh
-dGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Sun, Jan 21, 2024 at 02:54:22PM +0200, Andy Shevchenko wrote:
+> On Thu, Jan 18, 2024 at 05:18:45PM +1030, Jonathan Woithe wrote:
+> > On Thu, Jan 11, 2024 at 06:30:22PM +1030, Jonathan Woithe wrote:
+> > > On Thu, Jan 04, 2024 at 10:48:53PM +1030, Jonathan Woithe wrote:
+> > > > On Thu, Jan 04, 2024 at 01:12:10PM +0100, Igor Mammedov wrote:
+> > > > > On Thu, 28 Dec 2023 18:57:00 +0200
+> > > > > Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
+> > > > > 
+> > > > > > Hi all,
+> > > > > > 
+> > > > > > Here's a series that contains two fixes to PCI bridge window sizing
+> > > > > > algorithm. Together, they should enable remove & rescan cycle to work
+> > > > > > for a PCI bus that has PCI devices with optional resources and/or
+> > > > > > disparity in BAR sizes.
+> > > > > > 
+> > > > > > For the second fix, I chose to expose find_empty_resource_slot() from
+> > > > > > kernel/resource.c because it should increase accuracy of the cannot-fit
+> > > > > > decision (currently that function is called find_resource()). In order
+> > > > > > to do that sensibly, a few improvements seemed in order to make its
+> > > > > > interface and name of the function sane before exposing it. Thus, the
+> > > > > > few extra patches on resource side.
+> > > > > > 
+> > > > > > Unfortunately I don't have a reason to suspect these would help with
+> > > > > > the issues related to the currently ongoing resource regression
+> > > > > > thread [1].
+> > > > > 
+> > > > > Jonathan,
+> > > > > can you test this series on affected machine with broken kernel to see if
+> > > > > it's of any help in your case?
+> > > > 
+> > > > Certainly, but it will have to wait until next Thursday (11 Jan 2024).  I'm
+> > > > still on leave this week, and when at work I only have physical access to
+> > > > the machine concerned on Thursdays at present.
+> > > > 
+> > > > Which kernel would you prefer I apply the series to?
+> > > 
+> > > I was very short of time today but I did apply the above series to the
+> > > 5.15.y branch (since I had this source available), resulting in version
+> > > 5.15.141+.  Unfortunately, in the rush I forgot to do a clean after the
+> > > bisect reset, so the resulting kernel was not correctly built.  It booted
+> > > but thought it was a different version and therefore none of the modules
+> > > could be found.  As a result, the test is invalid.
+> > > 
+> > > I will try again in a week when I next have physical access to the system. 
+> > > Apologies for the delay.  In the meantime, if there's a specific kernel I
+> > > should apply the patch series against please let me know.  As I understand
+> > > it, you want it applied to one of the kernels which failed, making 5.15.y
+> > > (for y < 145) a reasonable choice.
+> > 
+> > I did a "make clean" to reset the source tree and recompiled.  However, it
+> > errored out:
+> > 
+> >   drivers/pci/setup-bus.c:988:24: error: ‘RESOURCE_SIZE_MAX’ undeclared
+> >   drivers/pci/setup-bus.c:998:17: error: ‘pci_bus_for_each_resource’ undeclared
+> > 
+> > This was with the patch series applied against 5.15.141.  It seems the patch
+> > targets a kernel that's too far removed from 5.15.x.
+> > 
+> > Which kernel would you like me to apply the patch series to and test?
+> 
+> The rule of thumb is to test against latest vanilla (as of today v6.7).
+> Also makes sense to test against Linux Next. The v5.15 is way too old for
+> a new code.
 
+Thanks, and understood.  In this case the request from Igor was 
+
+    can you test this series on affected machine with broken kernel to see if
+    it's of any help in your case?
+
+The latest vanilla kernel (6.7) has (AFAIK) had the offending commit
+reverted, so it's not a "broken" kernel in this respect.  Therefore, if I've
+understood the request correctly, working with that kernel won't produce the
+desired test.
+
+Regards
+  jonathan
 
