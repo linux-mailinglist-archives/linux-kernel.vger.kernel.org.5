@@ -1,125 +1,119 @@
-Return-Path: <linux-kernel+bounces-32146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF30D835738
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:14:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17199835735
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:12:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 628B61F218D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:14:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43E821C20C53
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E71038380;
-	Sun, 21 Jan 2024 18:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79404381DD;
+	Sun, 21 Jan 2024 18:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=walle.cc header.i=@walle.cc header.b="dbZCBvB/"
-Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="t6T54n+7"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE8BFBFA;
-	Sun, 21 Jan 2024 18:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.201.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2100381C6
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 18:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705860869; cv=none; b=mkUqxYBi8XmwQgaZmt70mHZlK24CwLahC3CHJFhTAHMP7hww7IMl8l2/Mi7BVaStY3zURyFhag43xoeLjiGECMF4QwiCgLOze1HPlwvlcNQgh8Lx5XUgSwcplECeZX5AAkDgPkbeQewNGnr0EhccLOruGhXXSNEeTg/dTiABT/E=
+	t=1705860737; cv=none; b=EbjJiwuA1/0BBw1CPNAG/xsfR7veDIsh/eC62PutT9avAIDaPr63kmMDuBrl3v/7EJpeyA/avE8hjpTf+7luV2XUW3PzFsghsFc/mj4Z6oTI2FJ735o2RaddFRFETJtEjYbqApQF81lYYOClEi6UntbmY7SykmC3VyuJXZLhGZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705860869; c=relaxed/simple;
-	bh=N7OUZjKg0Z42XndQfe4qS1WdjqzPD6BmjTD9CLpxQpk=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=JpFpe+d4ywJ4z6/vff8yIoJ/STT+NwHHR6Zl5ze7IoMQrRSaw5Ta8JUB/Cy7SCG9oqUe8CFqbYoHbFZy0wCjhazCqOm//3YirMR8pkkDm23N7pfVb8Vi7QGto5D3GBSSfO52LtmrwTU5TkpWrFwaz/uuLYfhesjVZUF1Doy6aaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=walle.cc; spf=pass smtp.mailfrom=walle.cc; dkim=pass (2048-bit key) header.d=walle.cc header.i=@walle.cc header.b=dbZCBvB/; arc=none smtp.client-ip=159.69.201.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=walle.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=walle.cc
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id AB16D71;
-	Sun, 21 Jan 2024 19:06:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1705860391;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6LUlRcO6qAUslB/aQvN4+sncIp9HuXImWqN6ii290a0=;
-	b=dbZCBvB/tmsgJl20VVAvUddw5aNNE6egHwf0Na19PhkIglL6ehnwTzxLpop0zmv0cXC0Nu
-	iO3dPOywTLOn7ibsBQXExorSg8oN3hv5wjRi7GmBCXPro+RqCco4nQjju49zx5nGo4cD6w
-	eFqoqxSyvJUXQeBccdkxnnQ0dO1cTRqtP2y/kPUG75RkBRUTUlUYyxY/+esELRuA+jBmkF
-	uqgBW8ppJHC23L2OaH6lz1e2uPczEyMt5varDkqct2DYwS6c0U6yLN3n5AjgLX+3pfgJok
-	puFUea6zpmr+OtBh44bT/X02Hm2P0zrdX3HieqGZRQQAoJwAnv//pn8cf/lX6A==
+	s=arc-20240116; t=1705860737; c=relaxed/simple;
+	bh=V7R3RSzDKGYhZPWJ9ig/EoHQy8yLiErGelH8RUO8qDE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T0yeSAk1zt+VEy8B6iW1s9UQ/cBzLj8R+pIm3UInHaHdxLvK9Xz+kC+7EKmm/TiaWNAd9G6JyazKakAajRqJKOh9CdiwCzDEBxbC5OwhROaQIXr91gHFBrQu1vVjJaSQjwOU9pYFv3Q2BJ1FXq6Yo/e9J73SQsn2is2d/7NjF+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=t6T54n+7; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33931b38b65so506587f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 10:12:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705860734; x=1706465534; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1nnKbsnxsY20xhVcSmfYZXg9QGG5JwLaHd8BDjP1Kj0=;
+        b=t6T54n+7eVVNHs9XCLv0GK/QMHWXySthzxSDGgOjOkrx5RLWNFmth+tsw1VFDxJ7ph
+         /bAbhM/YEtaca+y3OUhsKo2xaQ4KpcJOAHTLuyuH8bpojEyXpKnHBlAIjR90hieEnIkL
+         I59HFDqWyno6opNXqhmRrX5AagsVqFJlAmOpJ7TG95+JLWPO7QgOT+zuDbAB8+6ClngD
+         ubtbrrxXLx8gTydFH4MhC4fAzu7TG7/enqRjKiFCYobffXKF3P3CZTRfysqY2QEl4zjM
+         1byvGmw3LdrepYa0hlkINpk+/7NzBh+nupjxDnRsCSfBGMJJjuy2g5hccWIQ3/17WeYz
+         7abw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705860734; x=1706465534;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1nnKbsnxsY20xhVcSmfYZXg9QGG5JwLaHd8BDjP1Kj0=;
+        b=XwWVGYRJE3hCsVHmRSanFFa7z/CA8wrKxyBNS0wycd4qArlEFQuT2qOeC0F1pPJRpt
+         BR0lde9VbrHOBMYLne+NVrpSNke8xczT7DL4KYaNqFiOGezFCSs+0RBVrQXXQ1kCo1DA
+         re/8+yB/jGpburnyqrtTrxm56o3a040xtKbD7xm9wbanrvAUkM4Iv5XWPlimmXNZPPys
+         35VFC2tZJzzVjZNT487U+HLNWkFshLbYeLJKJwUg65sir7bPVpgqG2zLf9UnAG2zOuHC
+         Yg3/NAKX0fk6rJOv2o0QXklLQaSBa60LPiLEkBkNVQZ8pj7wun0DV4APSlrXRTSPY4CJ
+         fE+Q==
+X-Gm-Message-State: AOJu0Yw9HKJaGA7mRD08n5hkrPo0YTB2yqNYFJTeF7S4vtdV1ncwojpU
+	OsZSWyJSJ/Hi5FmvtsgS1FJCl14mXFSHxose1uegVXLQ5LB4A/pLAnguUFP6U/g=
+X-Google-Smtp-Source: AGHT+IF92bsrQZmY+tgRhf/55ibpl1QJYlh90dPWVCp/zoRaTrolG6ya4uDyNKOjRIZUQeKumr2iIA==
+X-Received: by 2002:adf:f84c:0:b0:337:c2ca:c9fb with SMTP id d12-20020adff84c000000b00337c2cac9fbmr947446wrq.93.1705860733685;
+        Sun, 21 Jan 2024 10:12:13 -0800 (PST)
+Received: from vermeer (lfbn-mon-1-1176-165.w90-113.abo.wanadoo.fr. [90.113.119.165])
+        by smtp.gmail.com with ESMTPSA id h8-20020adfa4c8000000b00337d67a85c1sm8560925wrb.62.2024.01.21.10.12.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jan 2024 10:12:13 -0800 (PST)
+Date: Sun, 21 Jan 2024 19:11:41 +0100
+From: Samuel Ortiz <sameo@rivosinc.com>
+To: biao.lu@intel.com
+Cc: dan.j.williams@intel.com, linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/4] tsm: Runtime measurement registers ABI
+Message-ID: <Za1eXWiKPQp//1CO@vermeer>
+References: <20240114223532.290550-1-sameo@rivosinc.com>
+ <20240118033515.2293149-1-biao.lu@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sun, 21 Jan 2024 19:06:31 +0100
-From: Michael Walle <michael@walle.cc>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Mark Brown <broonie@kernel.org>, Amit Kumar Mahapatra
- <amit.kumar-mahapatra@amd.com>, tudor.ambarus@linaro.org,
- pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, sbinding@opensource.cirrus.com, lee@kernel.org,
- james.schulman@cirrus.com, david.rhodes@cirrus.com,
- rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, nicolas.ferre@microchip.com,
- alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
- michal.simek@amd.com, linux-arm-kernel@lists.infradead.org,
- alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-sound@vger.kernel.org, git@amd.com, amitrkcian2002@gmail.com
-Subject: Re: [PATCH v11 03/10] spi: Add multi-cs memories support in SPI core
-In-Reply-To: <ec7e7972-d48d-4a47-bd03-eec0c4334471@roeck-us.net>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <20231125092137.2948-4-amit.kumar-mahapatra@amd.com>
- <3d3a11b1-8396-4d8e-9bb3-61ecb67e7efa@roeck-us.net>
- <d3c93c4c-3754-480c-84c2-9455ec8af702@roeck-us.net>
- <Zaxtm0JlQYU0/K/v@finisterre.sirena.org.uk>
- <ec7e7972-d48d-4a47-bd03-eec0c4334471@roeck-us.net>
-Message-ID: <9806d99fab46c928f337b30b21057b3e@walle.cc>
-X-Sender: michael@walle.cc
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240118033515.2293149-1-biao.lu@intel.com>
 
->>> FWIW, the problem is due to
->> 
->>> +#define SPI_CS_CNT_MAX 4
->> 
->>> in the offending patch, but apeed2400 FMC supports up to 5 SPI chip 
->>> selects.
->>> 
->>>   static const struct aspeed_spi_data ast2400_fmc_data = {
->>>          .max_cs        = 5,
->>> 	^^^^^^^^^^^^^^^^^^^
->>>          .hastype       = true,
->> 
->>> Limiting .max_cs to 4 or increasing SPI_CS_CNT_MAX to 5 fixes the 
->>> problem,
->>> though of course I don't know if increasing SPI_CS_CNT_MAX has other 
->>> side
->>> effects.
->> 
->> Yeah, I was coming to a similar conclusion myself - the limit is just
->> too low.  I can't see any problem with increasing it.
+On Thu, Jan 18, 2024 at 11:35:15AM +0800, biao.lu@intel.com wrote:
+> Samuel Ortiz wrote:
+> > Some confidential computing architectures (Intel TDX, ARM CCA, RISC-V
+> > CoVE) provide their guests with a set of measurements registers that can
+> > be extended at runtime, i.e. after the initial, host-initiated
+> > measurements of the TVM are finalized. Those runtime measurement
+> > registers (RTMR) are isolated from the host accessible ones but TSMs
+> > include them in their signed attestation reports.
+> >
+> > All architectures supporting RTMRs expose a similar interface to their
+> > TVMs: An extension command/call that takes a measurement value and an
+> > RTMR index to extend it with, and a readback command for reading an RTMR
+> > value back (taking an RTMR index as an argument as well). This patch series
+> > builds an architecture agnostic, configfs-based ABI for userspace to extend
+> > and read RTMR values back. It extends the current TSM ops structure and
+> > each confidential computing architecture can implement this extension to
+> > provide RTMR support.
 > 
-> It would cost a bit of memory and somewhat affect performance sine many
-> of the newly introduced loops are bound by SPI_CS_CNT_MAX and not by
-> num_chipselect.
-> 
-> It also might make sense to document the new limit somewhere. Prior
-> to this commit it was not limited at all.
-> Documentation/devicetree/bindings/spi/spi-davinci.txt lists 5 chip
-> selects in its example for the use of cs-gpios.
-> Documentation/devicetree/bindings/spi/spi-controller.yaml also does not
-> list a limit.
+> Hi, Samuel
+> The ABI does not include eventlog, but eventlog is usually used with RTMR.
+> What do you think about how to implement eventlog?
 
-Given that, that the rest of this series is under discussion (and esp. 
-whether
-it is the correct way to do it) it might make sense to just revert the 
-picked
-patches.
+Since the event log is typically maintained in the firmware and not in
+the TSM itself, I don't think we should expose e.g. an event log
+extension ABI through the config-tsm one.
+We could decide to check for an EFI CC protocol availability and extend
+the event log when any RTMR gets extended, and that would be an
+internal, not userspace visible operation. I'm not sure that this
+would scale well with e.g. IMA (a lot more events than pre-OS boot
+afaik).
 
--michael
+Cheers,
+Samuel.
 
