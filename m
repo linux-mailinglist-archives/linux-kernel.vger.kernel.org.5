@@ -1,188 +1,181 @@
-Return-Path: <linux-kernel+bounces-32123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8BF78356C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 409238356D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:59:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9FF71C21657
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:57:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66AFD1C2176F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61DA381B2;
-	Sun, 21 Jan 2024 16:57:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A420381B9;
+	Sun, 21 Jan 2024 16:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qYHsLh/U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ViVlhbSs"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A5237710;
-	Sun, 21 Jan 2024 16:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A848E376F2;
+	Sun, 21 Jan 2024 16:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705856264; cv=none; b=jnOzUIY92t/llSzVQjgqAt56+FOhgQngzOvBWvD4rMRoKYZHuGfF1fK4unMwvZr8cRbobaQTA2e/eBK70glYt7zW61P9s+Y97zk4iXev9TlIsUg9czaFyANQ+JIu1P4xRwjQepoxTYVgiZHzEJ8wTa92OgqWDXkPwjG2C5weplg=
+	t=1705856359; cv=none; b=Kkb0WRqYR++z4vLEhRAc2kIKJZKpYfzCQnxDI6xnszBzqHKN9H10ej69khWt4G3D0O1OyyEGrGdRJWPpbt0wcbuMLutCgT6rnoBednrt/i2VftdP1N0127GWxdorMxZvdm2fqXGuhH8zKrLqf1UeKY4/n0iGV0mNZO6V08AwJ0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705856264; c=relaxed/simple;
-	bh=xUUsKQdm2DlB30tYaWgBfTBJW/JNnzcZm3pAljhlPUo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OjXpsC9E+a6nF4+vOWpsD0kbEK0N41UXHKw5InJj1Fg21qbaJ8WjK/1zeSVQQ05lEYDeWV3LpFyR6AArrMdPr2+iJqcS6HZvOJAWhUAPap/d0ux761PLS+22KsU5pji8QnvpxGsJuNrMLSmDN+u1PUwocj8qyeNXLy+bU04wxJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qYHsLh/U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC38C433F1;
-	Sun, 21 Jan 2024 16:57:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705856263;
-	bh=xUUsKQdm2DlB30tYaWgBfTBJW/JNnzcZm3pAljhlPUo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qYHsLh/UMbbvCQsscMvS+Iq00Lg1vCjcPBosKItoIyUIFGS3L0+sF6KVrmsdc1gGF
-	 IQ3pzXAgiBdI2ocDZJvX4iRs50NNqtvibnwGx9SAZuj0nEQNWQuim/SKbCq+xwVPTP
-	 ECa4ilJLs+pv/orTO3eG6coMFflPR41+MLPGcfZPLwrtPWzkoC/b/TBFUm/B9G2JJb
-	 LzO/ERQtaZ4PyZjjBoGdhjoTQm5cD6sHMrY2niqVtwpVALpcE4OQMPPnNU1dU9ay6Z
-	 mu9izAeua/ZlSXbEz+G/6iR35j3pLcXQYFq3GfMbIxi++6Dl0aAn1OJGNGoTtgdiEC
-	 xOb9u6pSKbsFg==
-Date: Sun, 21 Jan 2024 16:57:21 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Ceclan Dumitru
- <dumitru.ceclan@analog.com>
-Subject: Re: [PATCH v4 4/5] iio: amplifiers: hmc425a: use pointers in match
- table
-Message-ID: <20240121165721.475d35c2@jic23-huawei>
-In-Reply-To: <20240117125124.8326-5-mitrutzceclan@gmail.com>
-References: <20240117125124.8326-1-mitrutzceclan@gmail.com>
-	<20240117125124.8326-5-mitrutzceclan@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705856359; c=relaxed/simple;
+	bh=V4XRfyu2VuNHj6+ng148/c2sivbOY9FCOFxmgKRmcyg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=beKOzAcjx/LOewUJ9dYzhQFlIIhYNxZBLqdlu8Yv47v1+MWK89LCULd2yE0DlbxTVI0d9e1h3ul4dNGAg0DVylsZJcCibtRbaJYEJMW9YGdAPHTDY1Id2STAWNkr4iKqYM9o3FyKVdXulNbqJ02C2OHgmExbPqFhyWayyUKoFTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ViVlhbSs; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33934567777so410528f8f.1;
+        Sun, 21 Jan 2024 08:59:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705856356; x=1706461156; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iw0lURdtpNdGU/9fKSnj2h+p7EalE0kEm389szngll4=;
+        b=ViVlhbSshFim33epngad8vKNiv8fNnfltH/5R0mN/MsGtlmFd4EctnsA10CrEnGkbL
+         ddTNgRAGuXEpyzJ9oNQdUHoQrkv6hsqVBHpdc0vfUNxg01dWXNicIpMnCi9fK5k+/iLw
+         SidGElEV/fNS35RLFLnh4viaQi7Vq5f7/EaQcxQc/cSddCRiHMmK0YdmEr46Wx25rJ/N
+         1P445qBmQ7cKCTqhXxJrBsvCT6A6RDhI0+BfnMPkmZNhUGz6w+ZX3z+sDyvx80SY3XYl
+         jnPPNjKQSVXHw2UXNaISqznTJBvqkNIXD0ODoisaODaZxQaN7fhPXYjbuSO6dYJzNbJh
+         ei7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705856356; x=1706461156;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Iw0lURdtpNdGU/9fKSnj2h+p7EalE0kEm389szngll4=;
+        b=gEoZdFbqVsChxSyDONas0xMmK5qOP/ugiOefug3pdofhaGiIiTbiTtmc/Ky+bqdSfS
+         0L/0VBxxDEEgJN81IQSLJqCbPtMK6PyoHtR6z3UA2axG930qdYQkWhE2XWv/ZVrB5p8/
+         294ifFIZwqDvtIQecev1AtrHYg6SVnqTSwGXkuycZdrnoXmuT84MaGf/qABrz4Z0b5zu
+         Erg/hdqQzNBrEnwzJ3lAJA3GmLycRfiupkjjwqfUQiCxQTXj3sofCxrX4DcUh4GnAfzC
+         bYnJi/WnHl0jQ52M+rlifQU/OP+lyhc72KMg275W4vh75RQR5ZI3wGssIhrUoa6lxDRO
+         fMTA==
+X-Gm-Message-State: AOJu0YzvLWpMmFWYuX2+UBgry1opKPBcHfxB+TvrG8IcQbOxKZEmlsBf
+	+xPDAN8MyYpLw1nw6YHNqJeAg0x5DC9Rf17rCViOnJCvI7/55ogl
+X-Google-Smtp-Source: AGHT+IERvsYoNAV2dkYnGva5iE/kqnhp/zG/OmHsOop7nVzlgHfM9/vVAwuyxKjyDDvGBKAZBnPP6A==
+X-Received: by 2002:adf:a15d:0:b0:337:6322:de93 with SMTP id r29-20020adfa15d000000b003376322de93mr1486268wrr.103.1705856355783;
+        Sun, 21 Jan 2024 08:59:15 -0800 (PST)
+Received: from david-ryuzu.localdomain ([178.26.111.181])
+        by smtp.googlemail.com with ESMTPSA id q5-20020adff505000000b00339214d70b5sm6541115wro.85.2024.01.21.08.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jan 2024 08:59:15 -0800 (PST)
+From: David Wronek <davidwronek@gmail.com>
+Subject: [PATCH v4 0/8] Add UFS support for SC7180/SM7125
+Date: Sun, 21 Jan 2024 17:57:40 +0100
+Message-Id: <20240121-sm7125-upstream-v4-0-f7d1212c8ebb@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAARNrWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyTHQUlJIzE
+ vPSU3UzU4B8JSMDIxMDQyND3eJcc0MjU93SguKSotTEXF0zCwNzo1RTc0uTpCQloK6CotS0zAq
+ widGxtbUAnGr5zmEAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Herbert Xu <herbert@gondor.apana.org.au>, 
+ "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Alim Akhtar <alim.akhtar@samsung.com>, Avri Altman <avri.altman@wdc.com>, 
+ Bart Van Assche <bvanassche@acm.org>, Andy Gross <agross@kernel.org>, 
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+ cros-qcom-dts-watchers@chromium.org
+Cc: linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org, 
+ ~postmarketos/upstreaming@lists.sr.ht, David Wronek <davidwronek@gmail.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Joe Mason <buddyjojo06@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705856354; l=2765;
+ i=davidwronek@gmail.com; s=20240121; h=from:subject:message-id;
+ bh=V4XRfyu2VuNHj6+ng148/c2sivbOY9FCOFxmgKRmcyg=;
+ b=f0h0X6jbWTIkh/If9Oab7dFen/KOOcROnZAshl6defaOa9stAXyNF18PQKrnsmJk7KQVz6Ufr
+ wLbyCjnnsXCDDuGB4kZz2G7yvKMgp7CN1jv1dQkPNX35yj2DplKu0By
+X-Developer-Key: i=davidwronek@gmail.com; a=ed25519;
+ pk=PJIYyFK3VrK6x+9W6ih8IGSJ5dxRXHiYay+gG1qQzqs=
 
-On Wed, 17 Jan 2024 14:51:13 +0200
-Dumitru Ceclan <mitrutzceclan@gmail.com> wrote:
+This patchset introduces UFS support for SC7180 and SM7125, as well as
+support for the Xiaomi Redmi Note 9S.
 
-> Change the match table to use pointers instead of device ids.
-> Alignment of the hmc425a_state was changed because of the const
->  specifier for hmc425a_chip_info.
-> 
-> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
-Hi Dumitru
+To: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+To: David S. Miller <davem@davemloft.net>
+To: Rob Herring <robh+dt@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Alim Akhtar <alim.akhtar@samsung.com>
+To: Avri Altman <avri.altman@wdc.com>
+To: Bart Van Assche <bvanassche@acm.org>
+To: Andy Gross <agross@kernel.org>
+To: Vinod Koul <vkoul@kernel.org>
+To: Kishon Vijay Abraham I <kishon@kernel.org>
+To:  <cros-qcom-dts-watchers@chromium.org>
+Cc:  <linux-arm-msm@vger.kernel.org>
+Cc:  <linux-crypto@vger.kernel.org>
+Cc:  <devicetree@vger.kernel.org>
+Cc:  <linux-kernel@vger.kernel.org>
+Cc:  <linux-scsi@vger.kernel.org>
+Cc:  <linux-phy@lists.infradead.org>
+CC:  <~postmarketos/upstreaming@lists.sr.ht>
 
-The remaining use of type in here and deriving from structure offsets is
-not nice.  Add a trivial callback for the stuff in write_raw() that needs
-to be different and is currently in a switch statement.
-Then get rid of the type enum completely if possible.
+Signed-off-by: David Wronek <davidwronek@gmail.com>
+---
+Changes in v4:
+ - Add Reviewed-by tag from Dmitry Baryshkov to fifth patch
 
-> ---
->  drivers/iio/amplifiers/hmc425a.c | 39 ++++++++++++++++++--------------
->  1 file changed, 22 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/iio/amplifiers/hmc425a.c b/drivers/iio/amplifiers/hmc425a.c
-> index e1162a500daf..b116b54e4206 100644
-> --- a/drivers/iio/amplifiers/hmc425a.c
-> +++ b/drivers/iio/amplifiers/hmc425a.c
-> @@ -37,11 +37,11 @@ struct hmc425a_chip_info {
->  };
->  
->  struct hmc425a_state {
-> -	struct	mutex lock; /* protect sensor state */
-> -	struct	hmc425a_chip_info *chip_info;
-> -	struct	gpio_descs *gpios;
-> -	enum	hmc425a_type type;
-> -	u32	gain;
-> +	struct				mutex lock; /* protect sensor state */
-> +	const struct			hmc425a_chip_info *chip_info;
-> +	struct				gpio_descs *gpios;
-> +	enum				hmc425a_type type;
-> +	u32				gain;
+Changes in v3:
+ - Use SM7150 UFS PHY compatible as a fallback
+ - Fix dts style issues
+ - Add regulator-allow-set-load and allowed-modes to UFS regulators
 
-This illustrates why I'm not keen on manual alignment like this. Generates 
-churn that makes it hard to spot the actual changes.  To avoid this happening
-again I'd suggest a single space is fine for all lines and don't align them
-at all!
+Changes in v2:
+ - Fix device tree binding for QMP PHY
+ - Separate ICE into its own node
+ - Fix style problems in sc7180.dtsi
 
->  };
->  
->  static int hmc425a_write(struct iio_dev *indio_dev, u32 value)
-> @@ -58,7 +58,7 @@ static int hmc425a_write(struct iio_dev *indio_dev, u32 value)
->  
->  static int hmc425a_gain_dB_to_code(struct hmc425a_state *st, int val, int val2, int *code)
->  {
-> -	struct hmc425a_chip_info *inf = st->chip_info;
-> +	const struct hmc425a_chip_info *inf = st->chip_info;
->  	int gain, temp;
->  
->  	if (val < 0)
-> @@ -187,15 +187,6 @@ static const struct iio_chan_spec hmc425a_channels[] = {
->  	HMC425A_CHAN(0),
->  };
->  
-> -/* Match table for of_platform binding */
-> -static const struct of_device_id hmc425a_of_match[] = {
-> -	{ .compatible = "adi,hmc425a", .data = (void *)ID_HMC425A },
-> -	{ .compatible = "adi,hmc540s", .data = (void *)ID_HMC540S },
-> -	{ .compatible = "adi,adrf5740", .data = (void *)ID_ADRF5740 },
-> -	{},
-> -};
-> -MODULE_DEVICE_TABLE(of, hmc425a_of_match);
-> -
->  static struct hmc425a_chip_info hmc425a_chip_info_tbl[] = {
->  	[ID_HMC425A] = {
->  		.name = "hmc425a",
-> @@ -226,6 +217,18 @@ static struct hmc425a_chip_info hmc425a_chip_info_tbl[] = {
->  	},
->  };
->  
-> +/* Match table for of_platform binding */
-> +static const struct of_device_id hmc425a_of_match[] = {
-> +	{ .compatible = "adi,hmc425a",
-> +	  .data = &hmc425a_chip_info_tbl[ID_HMC425A]},
-> +	{ .compatible = "adi,hmc540s",
-> +	  .data = &hmc425a_chip_info_tbl[ID_HMC540S]},
-> +	{ .compatible = "adi,adrf5740",
-> +	  .data = &hmc425a_chip_info_tbl[ID_ADRF5740]},
-> +	{},
+---
+David Wronek (7):
+      dt-bindings: crypto: ice: Document SC7180 inline crypto engine
+      dt-bindings: ufs: qcom: Add SC7180 compatible string
+      dt-bindings: phy: Add QMP UFS PHY compatible for SC7180
+      dt-bindings: arm: qcom: Add Xiaomi Redmi Note 9S
+      phy: qcom: qmp-ufs: Add SC7180 support
+      arm64: dts: qcom: sc7180: Add UFS nodes
+      arm64: dts: qcom: sm7125-xiaomi-common: Add UFS nodes
 
-Nice to drop that trailing comma whilst here.  No need for one on a 'terminator'
-of such an array as by definition nothing should ever be added after it.
+Joe Mason (1):
+      arm64: dts: qcom: Add support for Xiaomi Redmi Note 9S
 
-> +};
-> +MODULE_DEVICE_TABLE(of, hmc425a_of_match);
-> +
->  static int hmc425a_probe(struct platform_device *pdev)
->  {
->  	struct iio_dev *indio_dev;
-> @@ -237,14 +240,16 @@ static int hmc425a_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	st = iio_priv(indio_dev);
-> -	st->type = (uintptr_t)device_get_match_data(&pdev->dev);
->  
-> -	st->chip_info = &hmc425a_chip_info_tbl[st->type];
-> +	st->chip_info = device_get_match_data(&pdev->dev);
->  	indio_dev->num_channels = st->chip_info->num_channels;
->  	indio_dev->channels = st->chip_info->channels;
->  	indio_dev->name = st->chip_info->name;
->  	st->gain = st->chip_info->default_gain;
->  
-> +	/* Compute index of the acquired chip info in the array */
-> +	st->type = st->chip_info - hmc425a_chip_info_tbl;
+ Documentation/devicetree/bindings/arm/qcom.yaml    |  1 +
+ .../bindings/crypto/qcom,inline-crypto-engine.yaml |  1 +
+ .../bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml    |  2 +
+ .../devicetree/bindings/ufs/qcom,ufs.yaml          |  2 +
+ arch/arm64/boot/dts/qcom/Makefile                  |  1 +
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               | 70 ++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm7125-xiaomi-common.dtsi | 28 +++++++++
+ arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts | 16 +++++
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            |  3 +
+ 9 files changed, 124 insertions(+)
+---
+base-commit: ad5c60d66016e544c51ed98635a74073f761f45d
+change-id: 20240121-sm7125-upstream-68072e5794bb
 
-Definitely not a good idea. If you need a type field, put it in the chip_info_tbl
-but you should not need one anyway because type is rarely what matters
-but rather data or behavior (via a callback) needed for a given device.
-Here it looks like a callback is needed for the few lines in write_raw()
-that are fiddly to express as data.
-
-> +
->  	st->gpios = devm_gpiod_get_array(&pdev->dev, "ctrl", GPIOD_OUT_LOW);
->  	if (IS_ERR(st->gpios))
->  		return dev_err_probe(&pdev->dev, PTR_ERR(st->gpios),
+Best regards,
+-- 
+David Wronek <davidwronek@gmail.com>
 
 
