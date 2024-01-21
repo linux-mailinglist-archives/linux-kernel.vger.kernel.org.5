@@ -1,143 +1,125 @@
-Return-Path: <linux-kernel+bounces-32144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4833883572A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:51:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF30D835738
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 19:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DA25B21B64
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:51:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 628B61F218D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:14:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85FF3381D6;
-	Sun, 21 Jan 2024 17:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E71038380;
+	Sun, 21 Jan 2024 18:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZItkOn+b"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=walle.cc header.i=@walle.cc header.b="dbZCBvB/"
+Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1124381B2;
-	Sun, 21 Jan 2024 17:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE8BFBFA;
+	Sun, 21 Jan 2024 18:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.201.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705859462; cv=none; b=cjHeNsb4fQ14cg1pjVbJ4CR33DiBfEnktF5NiMlRHzdgvw0FYUhwkEyjoCe8iWe6UK9BvdhF1lNVVPoald7CMAGdtN1osQVmMvVoCfhjkgfNAL0GPTHOb+YCZ4fG2MFKwlmF8C+W3WsO4T+CrYoEPR7aNjzXqiAeo7KzJObE/Io=
+	t=1705860869; cv=none; b=mkUqxYBi8XmwQgaZmt70mHZlK24CwLahC3CHJFhTAHMP7hww7IMl8l2/Mi7BVaStY3zURyFhag43xoeLjiGECMF4QwiCgLOze1HPlwvlcNQgh8Lx5XUgSwcplECeZX5AAkDgPkbeQewNGnr0EhccLOruGhXXSNEeTg/dTiABT/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705859462; c=relaxed/simple;
-	bh=S2b2p/D2DNsbjy01O3hEZtYO4Xn+sshl3AvTraPHDG4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W4Q1ZK7Lbs7wKGjGP3MRPZ5LZgnyrHKYUSA+/GK86iWxP7CyPk/QJOVC3GG5mk0MGaA8Y2J90ZN8WAPRgdnudW5VTRp/QegjA1Ex43g+0TBOocWLCe0hvrxssbA2slDrA1a2K5KYRXzIe4pW/cZp5p8T7XWlm8j5tUcwHAdvXXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZItkOn+b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F017AC433C7;
-	Sun, 21 Jan 2024 17:50:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705859462;
-	bh=S2b2p/D2DNsbjy01O3hEZtYO4Xn+sshl3AvTraPHDG4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZItkOn+b56ZHJYmcWMaPMMn+yRtStVFTj8GE5pxMCokoOm+Q24SwIJidnN7IEftlq
-	 7wUBwo/LP5Od8SixrDZKqFo+TRMGixpPL5afTrga1E1aTrp50VHsX6EZZaXmUsubh6
-	 UmJA8e9EKikw8PUr7YfuBhQmH8yerCLtX42u5W+CiVdyTcp4ksmdJSIar2GgtYg3VM
-	 ScZh0MxE3QA9pI9c0t3s+twqsYCjlxx3hyMmyA0x+yneN1aoCgRfhcdD5gLZi+iZqT
-	 OuCSpZlPYqzXJ37pE4a1bGmwpSaxuUky55iJGdCYhKvWKjnu/gawMXrXRpwccYSpeT
-	 C1wUVRnDDoJvQ==
-Date: Sun, 21 Jan 2024 18:50:57 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Cc: mszeredi@redhat.com, stgraber@stgraber.org, 
-	linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	Bernd Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/9] fuse: basic support for idmapped mounts
-Message-ID: <20240121-pfeffer-erkranken-f32c63956aac@brauner>
-References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
+	s=arc-20240116; t=1705860869; c=relaxed/simple;
+	bh=N7OUZjKg0Z42XndQfe4qS1WdjqzPD6BmjTD9CLpxQpk=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=JpFpe+d4ywJ4z6/vff8yIoJ/STT+NwHHR6Zl5ze7IoMQrRSaw5Ta8JUB/Cy7SCG9oqUe8CFqbYoHbFZy0wCjhazCqOm//3YirMR8pkkDm23N7pfVb8Vi7QGto5D3GBSSfO52LtmrwTU5TkpWrFwaz/uuLYfhesjVZUF1Doy6aaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=walle.cc; spf=pass smtp.mailfrom=walle.cc; dkim=pass (2048-bit key) header.d=walle.cc header.i=@walle.cc header.b=dbZCBvB/; arc=none smtp.client-ip=159.69.201.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=walle.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=walle.cc
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id AB16D71;
+	Sun, 21 Jan 2024 19:06:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1705860391;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6LUlRcO6qAUslB/aQvN4+sncIp9HuXImWqN6ii290a0=;
+	b=dbZCBvB/tmsgJl20VVAvUddw5aNNE6egHwf0Na19PhkIglL6ehnwTzxLpop0zmv0cXC0Nu
+	iO3dPOywTLOn7ibsBQXExorSg8oN3hv5wjRi7GmBCXPro+RqCco4nQjju49zx5nGo4cD6w
+	eFqoqxSyvJUXQeBccdkxnnQ0dO1cTRqtP2y/kPUG75RkBRUTUlUYyxY/+esELRuA+jBmkF
+	uqgBW8ppJHC23L2OaH6lz1e2uPczEyMt5varDkqct2DYwS6c0U6yLN3n5AjgLX+3pfgJok
+	puFUea6zpmr+OtBh44bT/X02Hm2P0zrdX3HieqGZRQQAoJwAnv//pn8cf/lX6A==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
+Date: Sun, 21 Jan 2024 19:06:31 +0100
+From: Michael Walle <michael@walle.cc>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Mark Brown <broonie@kernel.org>, Amit Kumar Mahapatra
+ <amit.kumar-mahapatra@amd.com>, tudor.ambarus@linaro.org,
+ pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, sbinding@opensource.cirrus.com, lee@kernel.org,
+ james.schulman@cirrus.com, david.rhodes@cirrus.com,
+ rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, nicolas.ferre@microchip.com,
+ alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+ michal.simek@amd.com, linux-arm-kernel@lists.infradead.org,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-sound@vger.kernel.org, git@amd.com, amitrkcian2002@gmail.com
+Subject: Re: [PATCH v11 03/10] spi: Add multi-cs memories support in SPI core
+In-Reply-To: <ec7e7972-d48d-4a47-bd03-eec0c4334471@roeck-us.net>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <20231125092137.2948-4-amit.kumar-mahapatra@amd.com>
+ <3d3a11b1-8396-4d8e-9bb3-61ecb67e7efa@roeck-us.net>
+ <d3c93c4c-3754-480c-84c2-9455ec8af702@roeck-us.net>
+ <Zaxtm0JlQYU0/K/v@finisterre.sirena.org.uk>
+ <ec7e7972-d48d-4a47-bd03-eec0c4334471@roeck-us.net>
+Message-ID: <9806d99fab46c928f337b30b21057b3e@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 08, 2024 at 01:08:15PM +0100, Alexander Mikhalitsyn wrote:
-> Dear friends,
+>>> FWIW, the problem is due to
+>> 
+>>> +#define SPI_CS_CNT_MAX 4
+>> 
+>>> in the offending patch, but apeed2400 FMC supports up to 5 SPI chip 
+>>> selects.
+>>> 
+>>>   static const struct aspeed_spi_data ast2400_fmc_data = {
+>>>          .max_cs        = 5,
+>>> 	^^^^^^^^^^^^^^^^^^^
+>>>          .hastype       = true,
+>> 
+>>> Limiting .max_cs to 4 or increasing SPI_CS_CNT_MAX to 5 fixes the 
+>>> problem,
+>>> though of course I don't know if increasing SPI_CS_CNT_MAX has other 
+>>> side
+>>> effects.
+>> 
+>> Yeah, I was coming to a similar conclusion myself - the limit is just
+>> too low.  I can't see any problem with increasing it.
 > 
-> This patch series aimed to provide support for idmapped mounts
-> for fuse. We already have idmapped mounts support for almost all
-> widely-used filesystems:
-> * local (ext4, btrfs, xfs, fat, vfat, ntfs3, squashfs, f2fs, erofs, ZFS (out-of-tree))
-> * network (ceph)
+> It would cost a bit of memory and somewhat affect performance sine many
+> of the newly introduced loops are bound by SPI_CS_CNT_MAX and not by
+> num_chipselect.
 > 
-> Git tree (based on https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git/log/?h=for-next):
-> v1: https://github.com/mihalicyn/linux/commits/fuse_idmapped_mounts.v1
-> current: https://github.com/mihalicyn/linux/commits/fuse_idmapped_mounts
+> It also might make sense to document the new limit somewhere. Prior
+> to this commit it was not limited at all.
+> Documentation/devicetree/bindings/spi/spi-davinci.txt lists 5 chip
+> selects in its example for the use of cs-gpios.
+> Documentation/devicetree/bindings/spi/spi-controller.yaml also does not
+> list a limit.
 
-Great work!
+Given that, that the rest of this series is under discussion (and esp. 
+whether
+it is the correct way to do it) it might make sense to just revert the 
+picked
+patches.
 
-> Things to discuss:
-> - we enable idmapped mounts support only if "default_permissions" mode is enabled,
-> because otherwise, we would need to deal with UID/GID mappings on the userspace side OR
-> provide the userspace with idmapped req->in.h.uid/req->in.h.gid values which is not
-> something that we probably want to do. Idmapped mounts philosophy is not about faking
-> caller uid/gid.
-
-Having VFS idmaps but then outsourcing permission checking to userspace
-is conceptually strange so requiring default_permissions is the correct
-thing to do. 
-
-> - We have a small offlist discussion with Christian about adding fs_type->allow_idmap
-> hook. Christian pointed out that it would be nice to have a superblock flag instead like
-> SB_I_NOIDMAP and we can set this flag during mount time if we see that the filesystem does not
-> support idmappings. But, unfortunately, I didn't succeed here because the kernel will
-> know if the filesystem supports idmapping or not after FUSE_INIT request, but FUSE_INIT request
-> is being sent at the end of the mounting process, so the mount and superblock will exist and
-> visible by the userspace in that time. It seems like setting SB_I_NOIDMAP flag, in this
-> case, is too late as a user may do the trick by creating an idmapped mount while it wasn't
-> restricted by SB_I_NOIDMAP. Alternatively, we can introduce a "positive" version SB_I_ALLOWIDMAP
-
-I see.
-
-> and a "weak" version of FS_ALLOW_IDMAP like FS_MAY_ALLOW_IDMAP. So if FS_MAY_ALLOW_IDMAP is set,
-> then SB_I_ALLOWIDMAP has to be set on the superblock to allow the creation of an idmapped mount.
-> But that's a matter of our discussion.
-
-I dislike making adding a struct super_block method. Because it means that we
-call into the filesystem from generic mount code and specifically with the
-namespace semaphore held. If there's ever any network filesystem that e.g.,
-calls to a hung server it will lockup the whole system. So I'm opposed to
-calling into the filesystem here at all. It's also ugly because this is really
-a vfs level change. The only involvement should be whether the filesystem type
-can actually support this ideally.
-
-I think we should handle this within FUSE. So we allow the creation of idmapped
-mounts just based on FS_ALLOW_IDMAP. And if the server doesn't support the
-FUSE_OWNER_UID_GID_EXT then we simply refuse all creation requests originating
-from an idmapped mount. Either we return EOPNOSUPP or we return EOVERFLOW to
-indicate that we can't represent the owner correctly because the server is
-missing the required extension.
-
-diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-index 3f37ba6a7a10..0726da21150a 100644
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -606,8 +606,16 @@ static int get_create_ext(struct mnt_idmap *idmap,
-                err = get_security_context(dentry, mode, &ext);
-        if (!err && fc->create_supp_group)
-                err = get_create_supp_group(dir, &ext);
--       if (!err && fc->owner_uid_gid_ext)
--               err = get_owner_uid_gid(idmap, fc, &ext);
-+       if (!err) {
-+               /*
-+                * If the server doesn't support FUSE_OWNER_UID_GID_EXT and
-+                * this is a creation request from an idmapped mount refuse it.
-+                */
-+               if (fc->owner_uid_gid_ext)
-+                       err = get_owner_uid_gid(idmap, fc, &ext);
-+               else if (idmap != &nop_mnt_idmap)
-+                       err = -EOPNOTSUPP;
-+       }
-
-        if (!err && ext.size) {
-                WARN_ON(args->in_numargs >= ARRAY_SIZE(args->in_args));
+-michael
 
