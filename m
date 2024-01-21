@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-32098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D854B83566E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:41:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65DC4835671
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 16:41:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 906421F22D23
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 15:41:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99B461C2148F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 15:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BB9376F6;
-	Sun, 21 Jan 2024 15:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080AE37703;
+	Sun, 21 Jan 2024 15:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b="q1q7P7rM"
+	dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b="taKDeJHB"
 Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E968B376E7;
-	Sun, 21 Jan 2024 15:41:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A77F3771C;
+	Sun, 21 Jan 2024 15:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705851669; cv=pass; b=QZm/yYcvO1ZE58cdsV8/y0xhI+M4gXLxCLAgpzRHNRXVNWooNBYDhV0JhR4S26GxLqEiSybMiSunc3Lyuf7rUBP2M2Mq5x+QfwT5wy4ioryGsE85WeOTwhzqNMtIkFCF1Gr+LmqKGifCrMRZQcYnbwzYJMZ3FLMj902r0Zsg+8k=
+	t=1705851673; cv=pass; b=OPw0mqnEHD2ffdoc/8YRmBfEuL8lA1flbrrikOVSh39nP5wUxjqH+qA/fTbIfhLZtb1gbSBrUNg/cAueTGl9hfvWBpCeEE5+jYzuLV/wZe9FKlOC0xgUM9e1a1vEwaITAzMa2KgtC1RkmpNe2CtXIYquYS60/jYmjCeOJE2gZ3s=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705851669; c=relaxed/simple;
-	bh=ZWAnbNX2A77f01fY1Jm8qIefZg4RE+HtH8CrZCSOWLQ=;
+	s=arc-20240116; t=1705851673; c=relaxed/simple;
+	bh=ik6qCUEqxmnFHKkHRE328geiO+07leDvG+heycD0R9E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qoVly4yAj0RCJ1QNeOSxM4p4HzFphltwNDO967PHHV+UmcWBr7s5X/inr+e1mm2943bzcbdD0yZZWpUo6M8PwBFEOsYnqtkje7WhPdI4eLyXW7vDjWq3M08B3XYhNvfSUfo3/eIADlbrvhFQso69ukBIHOY40UIIONNKrZRS2Xw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe; spf=pass smtp.mailfrom=rong.moe; dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b=q1q7P7rM; arc=pass smtp.client-ip=136.143.188.15
+	 MIME-Version; b=en49Srg6eA6ToMf9whIuTYidFA8k4m65nUDphDX9Iu3r+QE+UByNfaZAC1Pqiw0pcjP8IxGapfoxsfC9L/rZrnLMgs4/ro1wHh2JvRNYwuL8uLaLGTpfdO7jLU3+deYA+5vXmJvAlnpDb6pdHJ83PU8UHcReqUUZm8dkIaa9044=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe; spf=pass smtp.mailfrom=rong.moe; dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b=taKDeJHB; arc=pass smtp.client-ip=136.143.188.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rong.moe
 Delivered-To: i@rong.moe
-ARC-Seal: i=1; a=rsa-sha256; t=1705851659; cv=none; 
+ARC-Seal: i=1; a=rsa-sha256; t=1705851667; cv=none; 
 	d=zohomail.com; s=zohoarc; 
-	b=Gw666675PWOPgIIu3/i+rbesN7H/JWLT92hLYkK7muB+nS72M6N5VVC4z90hYkMerqN91mDd9EC/GisYKDG5KtIwisXu5wm4Rq+uVACHqu5ImaO/fO2C4TnYwSaXmnMksHG2uBILN3q15NOuuV8mN3RCAI6tbn1pPhOHRTxXt3E=
+	b=l8ep7wAUn+RaA2pPFAi4jmfLgyJvllS+oOm/JJEP4qktQMOMdfgNKbcgC8OcOoU6LJgYcXQvW8nga4x5igs3CZyC0GNnlgMy8Ni+tOxu9tPpPjAJiIsZCoijRhLP2etULQuTNbMn0StzBFCeUK3czvw3DOBuSoR5GpUm5WKJRbI=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1705851659; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=cyagiiBoIXS1dCugNkX9WQAwzX03eRiQHiuPnM6GWHA=; 
-	b=hBEFbgWTBD6qSJCB3Y0iVrqox8WFW8/0mDoHFybZootAWbSI+/ya/laxvzqMGpvNu0eFOKPS8vWpht0Rj8AKIsZ1bWWowtvXUvTA1Lwr5DepjWQrykmGH+ne5TW0/ZZbFfhuybPOGHOTPTJoFsw/u9BXPD3XtKLY8fOhdbgjH9M=
+	t=1705851667; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=QJQSc5Zs0LAGeoCIvUPc8jDMeS43dCWdp6AOjy8XecQ=; 
+	b=Nk6SmmmDkbe7f3IebHO6t5zYZYJGwKSjFmzbFDwKx4TJphqPv8hquKndliAvHFaDWkx5LlbpO5mUreen/SmbNF+rBFKmO7K4FcOtu3RnNL0Ij6fGVdVSa9Of1tBVMjG0KgNjDcdZ0RDGFBEXCali4c8tf+YmRuuepHb7YPkuu7g=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
 	dkim=pass  header.i=rong.moe;
 	spf=pass  smtp.mailfrom=i@rong.moe;
 	dmarc=pass header.from=<i@rong.moe>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1705851659;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1705851667;
 	s=zmail; d=rong.moe; i=i@rong.moe;
 	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=cyagiiBoIXS1dCugNkX9WQAwzX03eRiQHiuPnM6GWHA=;
-	b=q1q7P7rMXL3lsuaYk3bNqhRGXu/AytCi6g3LQd2OcLdb9B3sx2qAgD5DxoVIJyZR
-	mk/y1XIEIiK1CBddsVAW+LK3Zj7Gsaoxe004hrE/4HODQ6CXdHomw1bGtVtjEW88Gg4
-	4adwQBrdDOXgeUw04p/Z7kr5cIzObILtLZs+u7Jg=
+	bh=QJQSc5Zs0LAGeoCIvUPc8jDMeS43dCWdp6AOjy8XecQ=;
+	b=taKDeJHBeCHBsRqGeOEkoDef/m9SyMAhLAmDfle4sCurw/3RQqlJBg8sdqTzo+89
+	AfT66Aj9GPXMLgZ+g9BUu0iwtu0ayZdoYdsZyTexvqcLuR82rpqVmtz/8/tKPxC2euG
+	06F+sBZv/+3Naa1vmZcsTzrWxTc8ACMe1bK82ya8=
 Received: from tb.lan (182.118.232.129 [182.118.232.129]) by mx.zohomail.com
-	with SMTPS id 1705851657832354.4997771838583; Sun, 21 Jan 2024 07:40:57 -0800 (PST)
+	with SMTPS id 1705851666482538.1377714303437; Sun, 21 Jan 2024 07:41:06 -0800 (PST)
 From: Rong Zhang <i@rong.moe>
 To: Bjorn Andersson <andersson@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -62,9 +62,9 @@ Cc: Rong Zhang <i@rong.moe>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Icenowy Zheng <uwu@icenowy.me>
-Subject: [PATCH 1/4] ARM: dts: qcom: msm8974-samsung-klte: Add label on /i2c-gpio-led
-Date: Sun, 21 Jan 2024 23:39:56 +0800
-Message-ID: <20240121154010.168440-2-i@rong.moe>
+Subject: [PATCH 2/4] ARM: dts: qcom: msm8974-samsung-klte: Pin brcm,board-type in wifi
+Date: Sun, 21 Jan 2024 23:39:57 +0800
+Message-ID: <20240121154010.168440-3-i@rong.moe>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240121154010.168440-1-i@rong.moe>
 References: <20240121154010.168440-1-i@rong.moe>
@@ -77,32 +77,33 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-ZohoMailClient: External
 
-Some variants of klte, e.g., the China edition (kltechn), have minor
-differences to differentiate them from klte. This includes the GPIO pins
-connected to /i2c-gpio-led.
+klte variants, namely, klte*, have little difference in the WiFi part.
 
-A label is added on /i2c-gpio-led to allow DT of other variants to
-reference it conveniently. Considering both LEDs and a GPIO expander are
-connected to the node, it is named "i2c_led_gpio".
+Pin brcm,board-type to "samsung,klte" to allow klte* load the same
+firmware.
 
 Signed-off-by: Rong Zhang <i@rong.moe>
 ---
- arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts b/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts
-index b93539e2b87e..013946ccda0f 100644
+index 013946ccda0f..9025345a1ab9 100644
 --- a/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts
 +++ b/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts
-@@ -77,7 +77,7 @@ touchkey@20 {
- 		};
- 	};
+@@ -665,6 +665,12 @@ wifi@1 {
+ 		reg = <1>;
+ 		compatible = "brcm,bcm4329-fmac";
  
--	i2c-gpio-led {
-+	i2c_led_gpio: i2c-gpio-led {
- 		compatible = "i2c-gpio";
- 		#address-cells = <1>;
- 		#size-cells = <0>;
++		/*
++		 * This aims to allow other klte* variants to load the same firmware,
++		 * as klte variants have little differences in the wifi part.
++		 */
++		brcm,board-type = "samsung,klte";
++
+ 		interrupt-parent = <&tlmm>;
+ 		interrupts = <92 IRQ_TYPE_LEVEL_HIGH>;
+ 		interrupt-names = "host-wake";
 -- 
 2.43.0
 
