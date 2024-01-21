@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-32142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C4B0835722
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D63F835725
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 18:42:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D90DF1C20B54
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:37:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 807CE1C20C1C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 17:42:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD4C381CE;
-	Sun, 21 Jan 2024 17:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EC0381D4;
+	Sun, 21 Jan 2024 17:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HrRdW3N2"
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SAnE/LP1"
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A4B27441
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 17:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C7C381C7
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 17:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705858643; cv=none; b=GasbYl/8ZpEqAA1WT0NOaAGQDErZYsizY7QxliCDTCgXM+GBLy62XLfKT/jGPuxsVUeJMZXJp4slvE1ZlrAN1IsjKptwCxnrkSc1I21Hc5etE8t1/GSj/g2Cu5f+AtuN8i+e5F8XM38Bev4WDvnFF26eriN4K9qZz+fIjUTbopc=
+	t=1705858921; cv=none; b=iAG5N3COywF1mGb5dUMgT1pwQ7iyh/uwP6xbbQmB8zBPgJYdyDuCvKDu5uN53nP7kj7NXfsHH5wSGOgINgz7e/JA1XGLDKmHk3/aQf4TWNgLyZJWma+nrfGb3jddoSb8joBo5L5gA12avLHA+B1PbpP5zNTo+2M1G9lOCS8PnBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705858643; c=relaxed/simple;
-	bh=JPM9TnkWt8kGJWfSrJL+0v1d7QDwm7HJm+cbOf/RlIk=;
+	s=arc-20240116; t=1705858921; c=relaxed/simple;
+	bh=N2g0NHGKWWZmb/qlzQ163FWOfAKGzGlUYORWKPpiytI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PoS/xTPPUHpIclcBTUsJaxTJBBls02j4i6cJNAtWSSTPxzboj3becvPcmV1wkFnmCxYLm9okfsl6Un0z3EJlRRmZN8SyLIb1gh5bxLc6CY/+bmwZ67Lvjjm49aI9buV7xXlzdCynKiZSdiXAH6lc3QbkM+ctmgt5H8cqa0KTND4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HrRdW3N2; arc=none smtp.client-ip=95.215.58.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=I+etJqK0Gcp8wKyyFVAHb9qunCyE/IonGo8JqiGrBmpuXI+2tSIC52GZ0IcbwI1CF5thqNjZF7RFjr6HWcxK1/ahaEmvAF71qlPyekNFj2d0UIZVWFXQ3MAxeGk5hJy1HBMEm8dlNTQP1iA/S+D72FPef1eCxvwPEnuSqcz0yqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SAnE/LP1; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sun, 21 Jan 2024 12:37:15 -0500
+Date: Sun, 21 Jan 2024 12:41:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705858638;
+	t=1705858918;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=H7WKtD/jbDjNkLZF9EblEjk8T8MZDbfyWkkGAZ5M55w=;
-	b=HrRdW3N2UQCvIkhj7ZC4z4UMFNCXIM9z2n3XAmgKEDQHBP6vaDlnOFz5Np3bZmr0LGJqAZ
-	AtEU92cSPBVM/Xwo6GeIru5HRGQayQ/9lNg57lqZbhmCk2ASOQ2GWnZxLQyMsmf2TrOgxD
-	hSs0A57nIMBMmbrZushLAvjjBatncSg=
+	bh=zEZ5U22ZGrF+dm4NBxH8Qr8fPO+NuB0IQfzMnXwEl2I=;
+	b=SAnE/LP1jwOwzXFkLVsJ3sKoqSTNCqYfTEYCKAmoFk1FmHnZ26Iz4mV15j37lFPDee+j3n
+	sgRxhokF3swjiFCXQMxWTxwVZP3QhEUF+rp94gIAEpt0o4e6y/XV2kDywFSZTWBKXPT5wK
+	JqXTf9UqF55p7CtlVOD/ol70LJ9tJIM=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Kuan-Wei Chiu <visitorckw@gmail.com>
 Cc: colyli@suse.de, bfoster@redhat.com, jserv@ccns.ncku.edu.tw, 
 	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 2/5] bcachefs: Introduce parent function for
- sort_cmp_size()
-Message-ID: <65vkoqenjy52rinrxduonprebumy7beh5fpd5i6ukgg6nr5buv@zybxigfqsj4q>
+Subject: Re: [PATCH 0/5] Optimize number of comparisons for heap/heapsort
+ implementaion
+Message-ID: <ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu>
 References: <20240121153649.2733274-1-visitorckw@gmail.com>
- <20240121153649.2733274-3-visitorckw@gmail.com>
- <vrzgjxym2gnawuds54s4lr4zqbldm6sxp5yksrz5467hcrzjtp@lphbsqbidqdm>
- <Za1O2JDOnTRL0QvL@visitorckw-System-Product-Name>
+ <nl6kvjxg4gia5pbfb4jibxusvavmlwumrvy3swfs33ciub32wt@2kmeqnqycxxh>
+ <Za1Ml/ZUBXdYXOIt@visitorckw-System-Product-Name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,26 +59,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Za1O2JDOnTRL0QvL@visitorckw-System-Product-Name>
+In-Reply-To: <Za1Ml/ZUBXdYXOIt@visitorckw-System-Product-Name>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jan 22, 2024 at 01:05:28AM +0800, Kuan-Wei Chiu wrote:
-> On Sun, Jan 21, 2024 at 11:17:30AM -0500, Kent Overstreet wrote:
-> > On Sun, Jan 21, 2024 at 11:36:46PM +0800, Kuan-Wei Chiu wrote:
-> > > When dealing with array indices, the parent's index can be obtained
-> > > using the formula (i - 1) / 2. However, when working with byte offsets,
-> > > this approach is not straightforward. To address this, we have
-> > > introduced a branch-free parent function that does not require any
-> > > division operations to calculate the parent's byte offset.
+On Mon, Jan 22, 2024 at 12:55:51AM +0800, Kuan-Wei Chiu wrote:
+> On Sun, Jan 21, 2024 at 11:21:06AM -0500, Kent Overstreet wrote:
+> > On Sun, Jan 21, 2024 at 11:36:44PM +0800, Kuan-Wei Chiu wrote:
+> > > Hello,
+> > > 
+> > > The existing implementations of heap/heapsort follow the conventional
+> > > textbook approach, where each heapify operation requires approximately
+> > > 2*log2(n) comparisons. In this series, I introduce a bottom-up variant
+> > > that reduces the number of comparisons during heapify operations to
+> > > approximately log2(n), while maintaining the same number of swap
+> > > operations.
+> > > 
+> > > Thanks,
+> > > Kuan-Wei
+> > > 
+> > > Kuan-Wei Chiu (5):
+> > >   bcachefs: Optimize eytzinger0_sort() using bottom-up heapsort
+> > >   bcachefs: Introduce parent function for sort_cmp_size()
+> > >   bcachefs: Optimize sort_cmp_size() using bottom-up heapsort
+> > >   bcachefs: Optimize number of comparisons in heap_sift_down
+> > >   bcache: Optimize number of comparisons in heap_sift
+> > > 
+> > >  drivers/md/bcache/util.h |  23 +++++----
+> > >  fs/bcachefs/util.c       | 109 ++++++++++++++++++++++++++-------------
+> > >  fs/bcachefs/util.h       |  23 +++++----
+> > >  3 files changed, 98 insertions(+), 57 deletions(-)
 > > 
-> > This is a good commit message - but it would be even better if it was a
-> > function comment on parent()
+> > Good stuff
+> > 
+> > While we're looking at this code, we should be doing some cleanup too -
+> > there's no reason for the heap code to be duplicated in bcache and
+> > bcachefs anymore, and it'd also be nice to get fs/bcachefs/eytzinger.h
+> > moved to include/linux and bcache converted to use it.
+> > 
+> > I also would not be surprised if there's another heap implementation in
+> > include/linux; we'll want to check for that and if there is decide which
+> > is worth keeping.
 > >
-> Sure, however, it seems that sort_cmp_size() can be directly replaced
-> with the sort function from include/linux. Once we decide on the
-> cleanup tasks, if we still choose to retain this patch, I will make the
-> adjustments.
+> Yes, we have 'min_heap.h' in include/linux.
 
-nice catch - looks like sort_r() is the more recent addition, so that's
-how that happened.
+So that has the advantage of more readable code - functions instead of
+macros - whereas my version has the type safe interface.
+
+We could combine the two approaches, and put a type-safe interface on
+top of the min_heap.h code with some small macro wrappers - see
+generic-radix-tree.h for an example of how that's done.
+
+min_heap.h has only one user though? I don't think I can quite believe
+that's the only other code in the kernel using a heap, there must be
+more open coded out there...
 
