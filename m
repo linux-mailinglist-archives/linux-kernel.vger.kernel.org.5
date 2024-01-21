@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-32055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C882F8355CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:45:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9F08355CC
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 13:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED88F1C20A69
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:45:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E367282328
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jan 2024 12:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A157381B2;
-	Sun, 21 Jan 2024 12:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9CF38389;
+	Sun, 21 Jan 2024 12:43:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="RRN+kwsv"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2014.outbound.protection.outlook.com [40.92.107.14])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Dp9QC2hp"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2080.outbound.protection.outlook.com [40.92.107.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D67374DA;
-	Sun, 21 Jan 2024 12:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F190381D1;
+	Sun, 21 Jan 2024 12:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.80
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705841029; cv=fail; b=O858QcBF6/4e549xMjB35oHHQXIJquPSdpD6PEhQUzqEKRK/UyYP+Z/W1qr0GPuursqi6zyGwlE5BeGcZp8IUB+EsGdtwVg5pxE7Z/tys00rRCGRvJmC8IZlJ4+PpeHTlvP0IevFPYtXhlolyAQ+nea58iGdAxDCSlA8inEqT8o=
+	t=1705841034; cv=fail; b=AYl+JUGqfP5ZoIqIjM5/I8AWqQ2vT9x5I3JwAJ39+rhRVMudkiwj1aeex/4Sgf4lPbBHiFsrQ6Ju+8gwk+yRrQJhCGTM6Fn6EqDe6zEABOXt/0blAZ0wcI4CM2lGEfWOWjJ+0m5w7udZmH5IyOWGnvHREOt2NtdmtpDfb5jBmFU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705841029; c=relaxed/simple;
-	bh=PP6yNIgQ3dF7FGK1gylBrsUtEAf8XdY5N816IMYpj04=;
+	s=arc-20240116; t=1705841034; c=relaxed/simple;
+	bh=kASF0lFs+lu5Mv7AkCZPyWMUAdMlfb9iv6paQNSxHrI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=V7xm9juseiJ3gb8dB2EpZ4cemztOpQPtC9OsT3pU0jixcRpqzp7fxVXCf2fRtzUVI6TBFE64W+D0b+naX2Fk2n2nyuq3VXufoDk6h4hr7/1qHZK7VrbUf8AErnHdW3YaRB/aA9BoV2ss+9eo3AnFq73kqXLwiGwbGMhD3lckcVk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=RRN+kwsv; arc=fail smtp.client-ip=40.92.107.14
+	 Content-Type:MIME-Version; b=t/P8cil3prVcM//k6xwTH62AInazwK38CoDh5LoOhhz/pRYhV4UIn3KUn5xnhpsEsquE47rQjqtJd2vLQPlfkZh1oQiZjJDk1pYBqUdfpMvtQsfmec6FA3UgPvAdpJo9y0Yu1gHeTyigDf/ViSNKh7nn0tM0NDupYWrOL7yzM7M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Dp9QC2hp; arc=fail smtp.client-ip=40.92.107.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dTQxLiGFDNU5e6P0Iu7phS4SVZGeUN1hga6TjfG8Vhv9/yHPaAfNMFsGQYQB2QjQqpjQDskTJVFXCdxVzB/tJT157uruIftJ1eSvXpI68z5U0pmC3SBnoMoh8Fn1BpxIZbVZSHXRktIvKt9Boya/8K566BU+371skh1xMw9HWlNtu/hY+UXWvOXeCaeIvuJYkyA+hTcGWOtj1onO+Pf3D4FFlRYX4uEzZmiT5wLCR2VkOagWITaI9NA1DbW3XiUvYAFd/fdDIIxK70zSBnpUo0ImFBK3CWWOXLMwIYAGsHlgqxU2zphNcZWj5J/Rq03L/tf3kNGbZhoSM8eaiwGcEw==
+ b=C2/oBJ3Me3CwmzfXNQ+VQBfYXBWHggBcbF+79VgoqRHmFU1jE30bX/xJ0DZEVwUew6eW14u1mzVznkLunhP2Is6iBCCKsG9GXkhHdWgKgYXRcSCGOAiN8fAgYshO9kM7hemWKwNJTN5olvQcLj61icN7S2QIZu0nWNSQrM6wZxVZR/d+EJ5xHgNNh0eWN7HmGG0T7lQ84c3+yktyeMhfrOa/HzaonU7HXzfdVtXIgh8lnkv12O6/e7cU5nJ4Ztamameaap2SyUyxBKfq6KdetCb7urxIlzPm3P23S6wA8xO3CgyDv8Qi+x/arAR4mf4dGR9qjw+B1mVQxF1d31FZoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HtCpQ2wOQyssAl/xdemcEv2tYHR8pnJwrmmCj4EIIvo=;
- b=lQHeLRZW4mX7uOgghO93n0N7jyvsZJKzgFft6kGZPYCNSOn5UpVOCTvCNt6czgPFi+52tn70UtZyv3m4Zd+PkB7GkxWKrh09vITlFNT9/kvPprWpqffFvHu8HvY+x7WnBLcluOatSNqU8uI1PxzxO2s6zXTtTB9zi4bdBniEkYY7S6t24b696YbDcr0tORYBJnu4L5ZU0RrUhGjQOYgy+3MYg3vMBrsM1tdYOCJOaJbgqXu+QWL5Nb/VYDfy2ml9P0R7SuRrORDRHr/ouwl+CjhBKXAS3nd7Bmt+cs+WG0El1vbbXH6UGwke+RwVGWuuFFmB/55P1hmT+wI5cUdsIQ==
+ bh=1CPMIzkdmf50QazUC/wEjqlzQtV064B5Hgfgo7BjzRE=;
+ b=obIZjz+m3nPY2iAM9M1S08rlqXalt8AH8A1uu5vYNLF3U6pKB2ydLpE21XqaK41Cxr79zV6iOnQBzn2zci0CHmoe9o42mubQ7v56VlwpnYxioUzoPQtHI9cNNvrqFb6fx49IikKdQAJY2Guz+uqWpCC8iK6EbId79zVry/v8YUWxpBL+znxnJjE6Gg7F+ZufZyiiI4dn6MBxGrlvDtYNbniWtFKdwWxbXrTMsusZ804ThqEeHP2KzlURWJu+xBxJFW4CrEbf7jUIPbpxVkZ9egY+xOJdzIo/8M7AOfP2R0qYvYUPyGGaEbdIMgfq2SQVJbX4m2xkk6A54r3y65SPnw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HtCpQ2wOQyssAl/xdemcEv2tYHR8pnJwrmmCj4EIIvo=;
- b=RRN+kwsvQRbW0VLpcOdA4jL5QnocNrWjaXekYgHuCriYMiELpxrf06kcn8fEoQNYfH8lYFOj2QaSy2t8P9Bld+0P/iHOpwLw/wSeHstg8V2xTrKTAypeiiNxwLCYfUIL9fWu5pBlAso464SvY+3nvyggKyFi3FulHMlDi/i+DqNQTQmSJazq+mdV/UeY+bM9vqS5S+t2GBBSOBAAtv12Jq+KScKUuIdyTrkBSm2RXV5g+k13nzAjy+Pg+Wc7axTvDL+GIi5JV1w+ZKmE5yPTuEzEP3nl4BkjEGS4VN0/L1k8MBgZAcTbIJVYUw87Kxlobz3A5GJ6UWvhW3i7LopZLg==
+ bh=1CPMIzkdmf50QazUC/wEjqlzQtV064B5Hgfgo7BjzRE=;
+ b=Dp9QC2hpQNy+7YcGbLx9UHSAlgL1TxZF0yff6u5gO3A8mMnf+QpfYh2qlV8hDpNdz4M5lD+0KBiEQRvNYufqkEo62yMQcx5Fyp+EprwvzDSFJ561Box5tDDze8IECS6DX9Vh4+iH+Su4uSha/YA4mJKZkNK7PVWdKo6YzSa5+UvrPxktfkzArAwqGOZqQ4WwaMno3qViAUMRvux++0zm5vUS+IM1ZSoccMZTi32DaF+kpQnHpHII0tY4iDZlamrDky+7uxvnYNK2YuDnZUv171ZHBVCmeO5aLuOAUv9bCy0FQJsTGctl57WO/fFLW4ZOGALjT6DkaHl3XXhMf4eBIw==
 Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
  (2603:1096:400:363::9) by OSQPR01MB6119.apcprd01.prod.exchangelabs.com
  (2603:1096:604:27b::11) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.30; Sun, 21 Jan
- 2024 12:43:43 +0000
+ 2024 12:43:49 +0000
 Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
  ([fe80::bcb7:50f4:7a16:4ec0]) by TYZPR01MB5556.apcprd01.prod.exchangelabs.com
  ([fe80::bcb7:50f4:7a16:4ec0%7]) with mapi id 15.20.7181.019; Sun, 21 Jan 2024
- 12:43:43 +0000
+ 12:43:49 +0000
 From: Ziyang Huang <hzyitc@outlook.com>
 To: mcoquelin.stm32@gmail.com
 Cc: alexandre.torgue@foss.st.com,
@@ -66,20 +66,20 @@ Cc: alexandre.torgue@foss.st.com,
 	netdev@vger.kernel.org,
 	linux-mediatek@lists.infradead.org,
 	Ziyang Huang <hzyitc@outlook.com>
-Subject: [PATCH 7/8] arm64: dts: qcom: ipq5018: enable ethernet support
-Date: Sun, 21 Jan 2024 20:42:36 +0800
+Subject: [PATCH 8/8] arm64: dts: qcom: ipq5018-rdp432-c2: enable ethernet support
+Date: Sun, 21 Jan 2024 20:42:37 +0800
 Message-ID:
- <TYZPR01MB5556FA040B07F48AFE544680C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+ <TYZPR01MB5556D3E73D7F7242F810F915C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <TYZPR01MB55563BD6A2B78402E4BB44D4C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
 References: <TYZPR01MB55563BD6A2B78402E4BB44D4C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [j/rJpshu8XuHjzADFwqZnDgqFi3SMIZtImm5+DszXLha21n1C+HflQ==]
+X-TMN: [2qElDWZdksYkyOHEY7OFc81AJPO6++sP9sL6QwoTbGpWTEt6sYOgLg==]
 X-ClientProxiedBy: PH8PR21CA0009.namprd21.prod.outlook.com
  (2603:10b6:510:2ce::26) To TYZPR01MB5556.apcprd01.prod.exchangelabs.com
  (2603:1096:400:363::9)
-X-Microsoft-Original-Message-ID: <20240121124237.3328702-7-hzyitc@outlook.com>
+X-Microsoft-Original-Message-ID: <20240121124237.3328702-8-hzyitc@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,39 +89,39 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: TYZPR01MB5556:EE_|OSQPR01MB6119:EE_
-X-MS-Office365-Filtering-Correlation-Id: d6b8f15b-1670-40af-73f4-08dc1a7e9a15
+X-MS-Office365-Filtering-Correlation-Id: 5de4b3fd-4367-43b9-74b8-08dc1a7e9d42
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	lVfkN+fTFs00yzvi4gQMFmFOXCew8Rq0GmOk/zsnXxnsujJdQ1Scu2wlAI56AZx79Jy1VQjG92Dz5FPoqEodx+3+REAnMojJk8FbjSeiNNz+1Zdc1qICGxyfdHdQBjJMH73q6HfLrPVfuOF8KQ7VaReUhCsytOa74C5nJReMUkRApcp/IKWMpp0tpHD6PdYlIg67s1BepICu593xw8Q4ACct4OvsQL0YsxOBtjITJ/MdEFxROopt5nQHyBl+Dd0lwowwDLmShcdp2LfqLXGpJo2/sDw/xmtoEHq0Q1uqFsDU1CFFoio3bM8xEqcZNye43iq6EPiQO+39p0z53ewlrDDuFMFP1dOVn+PSI62/pV3wIJgNlSd6meq1cish5Db7fKgTGgq8Dco6eIvqjR1nommv9BqR/nmlMJLp3sAAhcsHHyhI48r9KqoZ4OxHaYEGJIhiRhVJ77t0xGm2yzzJU95Bs3d+WcNjiR101exC++ecIjFgReWeV5H9SXmzfq4L9qMTyXV6wZPMAa1Cd0Fm5kkRlH53zbmNIikdGl7FUWvurd/xwVjxov/AgWebno6HfaChG8ly2jFcjK3UZsN69RthPGTO/QTBT5YBRNtPgqGTv4D8lOhgJbrU9eRzBOxx
+	89AleL4TQzsaGy5w+smUi1gHMQ1XHYqcKyQQOF6xsdRI4npKm9i0WOVw2Rrunl0uGmPaKQPxIfUP28rua2ZPQRkd6hcp79p716QP/VtOO62gnivd8wwpEAPQ7jzuTC9Jz9Yjg14FzetKRpWpfo4nU8sptIzgkc53INmprTeQcOw+mBTZjjf0yF5l83RTGzVD+A8tLLcSA1K/vvD0IwYLcpJsL4aGsArBj/dUPMQNfNq4pp8DqQ+6keU3f9Nlt95Qfl0MmbdOKMX4UBBgpUE7j8OP5/UK0UtjN6X2vkIsXQp1BGcBLxhirDCX4IyNAfq9+jqVyrDis41yj0NkOH9W6mP/vm8KDdRIqC1yXJHy55ZbGzur0PvBb42hOZm/nKM63or7OTPUpdQELLhOtyL7oAIA4nyHg974EpTaJ1XlFYy4j9ngvqYF0oeKf/UAPAjd2SzrtLojAeyBp1VMobdlBs4KQ6dzA3j1fLbuzo/DxGgH3rsc12IjITWaOZwbu9mUrlRpMK/8CJrXNWg9WGNmKRIj7xTbEuCRLMSKIXA53Zy7TB5rLJLgB8POYRLMDuNYAxsHWC7qB560DN0zCZjme4XEDvwkjMRrkJyPacSKFPzHGuIqKvCQdrQHnx7hZ4r0
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Q5A08U9v8pxHEHr7jd69B/d3r64/IRCe2ZXtKoQbqABJj2LryhNFwRZZCXAI?=
- =?us-ascii?Q?sBNhghZ8ElUU2wGbIf2VfS9EeV0JQlGR+dNVSJCaQxwPSAA2i6KU+t8pgtHC?=
- =?us-ascii?Q?rKL69jcs7J2wiWHDUlRuazWreIrUJaSuWlnLbQhQ2vqjx5QXOPrODM6WfsNO?=
- =?us-ascii?Q?CWktq7zMwUjiL6LZENE1MuhY0X/da+NMmp/KKV3sh3lhySOXCTlmavW21RPZ?=
- =?us-ascii?Q?WSAtpMgJhIhRIwDlncmp9FMeT4pMGVpAJ2hs+nrUw20H9FUJ7O1DPVjoMAzG?=
- =?us-ascii?Q?ZevM1RGD9r6Cph11WqLY5P0Uxo2Ro2Cfbuq5EFhRHhx3ZJ065bBR39azbzfZ?=
- =?us-ascii?Q?n24k1od7UqOe7+uFGrLq76djR4ltcDc+Ao6/jEW0jlx5kAZzTyMBewnl9eTS?=
- =?us-ascii?Q?i/3Il/jXSi21RaA9NcoAl1IupcBrSNw+iOwulS2CZ/K2r03BlP5zUowVDd/V?=
- =?us-ascii?Q?288YAKihvYaC0RRDtBxaq7l1PC6j2ysZlBqZWYhwLJrHyWMbAQvCY/MJ3UUa?=
- =?us-ascii?Q?ohqhPNKSGtkVrgTpdYqAQBSsZdV4B6OEruzl8RSK/IsVQd/xuecAtcQQtBmj?=
- =?us-ascii?Q?1IwgrAr1gk5Z+zTWwN4MIWAPepWNHhtArUWeEwK+pSx4mFOVlJozzkDhYolm?=
- =?us-ascii?Q?iq1kPbhlY+QuRr/ZRNuuec/CrbpUVRyLu9md05Gr+v4UduiWn0hA1g3lkGvY?=
- =?us-ascii?Q?AhbRJrmKCVVYZS/p+U+2nxDBxyfef8X5ZCvfYnI+TorAJrBC8nIwtSGcGnfl?=
- =?us-ascii?Q?mELfnsYhuZgBmW2f2JWno7Flse98perUJB4llv4zH6ToU94cdmi3Y7gm+vcQ?=
- =?us-ascii?Q?un6QtKVyF/Cgx8L+5YkqklmWF2qFrf9MzjQaq3dt6je+VDyG+QukbWW+DK01?=
- =?us-ascii?Q?h0vLaA5/CwPCHkRpOupzRQF9P4c1y6O4hBW6Ym/CeE40lONTD8adfZKPBN2J?=
- =?us-ascii?Q?kxbCQjqY/aDiLqmNLymSvSJluUDjfXWE/n1eqL9nMjgUB0dTgCgwnadahlWW?=
- =?us-ascii?Q?HcYcxyX8jN0+7HX0Nq2fbW05naRfFXUFbPooh9rjiNGaDwYE74C+vOQu3rFQ?=
- =?us-ascii?Q?DJZ/jWBKzc2OFZhYV9oEsNYiz29fGXHbBlktIiXNKYJDypsCQg0xrt7RH+g9?=
- =?us-ascii?Q?Ze5QhBqOgvMS9286aDPe3ypPjNKpqydM1vR2y7euSEWzrKd1yPLXrI8vqIsM?=
- =?us-ascii?Q?j8p05ZS9gRDQvjFufXmqf9hNvPi8cOVznvN32HCB+OPlodmnbIPFgz9yvoyW?=
- =?us-ascii?Q?1pdB2VGey8M20HDDFcP8?=
+	=?us-ascii?Q?qBErEdBP8zmN2Hp9yXcLqMGfLEolfkJlkEUDDzL7UNxzYWLD8mNxwbVnULav?=
+ =?us-ascii?Q?2xW6oc7Fj7xPnpJu7Q4yFjONwpVjGHkpo/EKf39AV17G1H+MU6494lKG8JM5?=
+ =?us-ascii?Q?sTVCeQ+o/q3vim3WT4wAk6YE/QWGDh9fCRzvfo3dDxVcKx31X4ZPaH8Uc2nS?=
+ =?us-ascii?Q?W7ydiT17Dedn7FzhAVfFSrYs+HnmE8JfIXlRi8E8PYsKLoSDbJBXlsLVDNKR?=
+ =?us-ascii?Q?QwQo5QfXNiqxZw7xhBtES9DbFO9d14HM+QuVwgL2g2UEtjdMz+5wOE1njOnI?=
+ =?us-ascii?Q?8XssP8aRopJgbGOq+bsiZe2K7CdxpU4m7do6TravzrLT8g9f5YnyKkCRJUH+?=
+ =?us-ascii?Q?FlCcQSQWS/mV4W4R+5ng+0ReJDW0x1X/ooVuXOe7oEwbvGPmtNh8dG8vn6fl?=
+ =?us-ascii?Q?Cd7CHpy8CChGigH0DLpsIyp6C1lZTk9239kRT/nGAhmfTamtDilYtbLM5MyN?=
+ =?us-ascii?Q?E4/C9WTW18y3lDjLlZkwSmuTaGVoKAbC6x0H9d2zKPawmrveTA/tK6h/sV/i?=
+ =?us-ascii?Q?Q1Pc64jhEQUPr0GRTAybKweYXsy1iJTWjo1RPnu3HfXuEzU1xn6aJ4e6HH0H?=
+ =?us-ascii?Q?WepI3lRoKsKWdcmmSayn07tamIe563VPjMMS1yYh8UUP55WGFn1dI7eizKBg?=
+ =?us-ascii?Q?RlxtkxoL/GevzCOpiRKk6DQmiVZIrkfN1jT+cx0LvNFJIhmkI8kK4kr24mZd?=
+ =?us-ascii?Q?nY+XjlvZ2BenGHAELMqtwT2W+oMexFQ/g3ZmhU/ah1zvFH2/e7WeLbOOgGjm?=
+ =?us-ascii?Q?uo19PkyrseQ1Q2H3m8N0ROHQ/bCL1Q9zfD9fkkr7ezsus0VV2sGIVRQduwiH?=
+ =?us-ascii?Q?fRfxYOIoQHyik14xrptLnNEpwIXaGv35Gd04piQxVw5goac5Yv8FSyegV7/4?=
+ =?us-ascii?Q?cqbwAaAlB8uW6z1LNN6LWLUL1OKfg9eYxgyoYrgYIySM2tj2Bcz4vZESr0Gf?=
+ =?us-ascii?Q?ofJ9km1fG3be401d2uplU09mYLmpMecsaMGlxOPE2U3vIPgPrrqx9Mg3nrXy?=
+ =?us-ascii?Q?DeF2uKywW7et/zkOTHVwDGptNqOkLczedCWkpqM6DAonCjUTnUq5NhHRIg3y?=
+ =?us-ascii?Q?OZ5r/1FL/ADeUkC4DYIstIdS4Ft7B37DpZs9swJ/jzgXjCfvSEmYwDswbFVH?=
+ =?us-ascii?Q?4g22rqDtV0mOwp4xhvdQRky1iKWNI6a0ta9zXRdjSbFC3hgNJ98H5N+8Ug01?=
+ =?us-ascii?Q?7y9I5BpPlqyEpA18Zr2tZH/tkqwJjJRDHs9sKX6q0/C4faIr5xfOHKhfab1w?=
+ =?us-ascii?Q?SdWMYAYs18msDN9XtJLN?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d6b8f15b-1670-40af-73f4-08dc1a7e9a15
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5de4b3fd-4367-43b9-74b8-08dc1a7e9d42
 X-MS-Exchange-CrossTenant-AuthSource: TYZPR01MB5556.apcprd01.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2024 12:43:43.6975
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2024 12:43:49.0312
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -131,154 +131,83 @@ X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSQPR01MB6119
 
 Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
 ---
- arch/arm64/boot/dts/qcom/ipq5018.dtsi | 120 +++++++++++++++++++++++++-
- 1 file changed, 116 insertions(+), 4 deletions(-)
+ .../arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-index e502a3ecf4b7..b36e5c2136b7 100644
---- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-@@ -94,6 +94,63 @@ soc: soc@0 {
- 		#size-cells = <1>;
- 		ranges = <0 0 0 0xffffffff>;
+diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+index e636a1cb9b77..074b78d7939c 100644
+--- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
++++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+@@ -15,6 +15,9 @@ / {
  
-+		mdio0: mdio@88000 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "qcom,ipq5018-mdio", "qcom,qca-mdio";
-+			reg = <0x88000 0x64>;
-+			resets = <&gcc GCC_GEPHY_MDC_SW_ARES>,
-+				 <&gcc GCC_GEPHY_DSP_HW_ARES>;
-+			clocks = <&gcc GCC_MDIO0_AHB_CLK>;
-+			clock-names = "gcc_mdio_ahb_clk";
-+			status = "disabled";
+ 	aliases {
+ 		serial0 = &blsp1_uart1;
 +
-+			gephy: ethernet-phy@7 {
-+				#clock-cells = <1>;
-+				reg = <7>;
-+				resets = <&gcc GCC_GEPHY_BCR>,
-+					 <&gcc GCC_GEPHY_RX_ARES>,
-+					 <&gcc GCC_GEPHY_TX_ARES>;
-+				clocks = <&gcc GCC_GEPHY_RX_CLK>,
-+					 <&gcc GCC_GEPHY_TX_CLK>;
-+			};
-+		};
-+
-+		mdio1: mdio@90000 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "qcom,ipq5018-mdio";
-+			reg = <0x90000 0x64>;
-+			clocks = <&gcc GCC_MDIO1_AHB_CLK>;
-+			clock-names = "gcc_mdio_ahb_clk";
-+			status = "disabled";
-+		};
-+
-+		uniphy0: eth-uniphy@98000 {
-+			compatible = "qcom,ipq5018-eth-uniphy";
-+			#clock-cells = <1>;
-+			#phy-cells = <0>;
-+			reg = <0x98000 0x800>,
-+			      <0x9b000 0x800>,
-+			      <0x19475c4 0x4>;
-+			reg-names = "uniphy",
-+				    "cmn",
-+				    "tcsr";
-+			clocks = <&gcc GCC_CMN_BLK_AHB_CLK>,
-+				 <&gcc GCC_CMN_BLK_SYS_CLK>,
-+				 <&gcc GCC_UNIPHY_AHB_CLK>,
-+				 <&gcc GCC_UNIPHY_SYS_CLK>,
-+				 <&gcc GCC_UNIPHY_RX_CLK>,
-+				 <&gcc GCC_UNIPHY_TX_CLK>;
-+			resets = <&gcc GCC_UNIPHY_BCR>,
-+				 <&gcc GCC_UNIPHY_AHB_ARES>,
-+				 <&gcc GCC_UNIPHY_SYS_ARES>,
-+				 <&gcc GCC_UNIPHY_RX_ARES>,
-+				 <&gcc GCC_UNIPHY_TX_ARES>;
-+
-+			status = "disabled";
-+		};
-+
- 		tlmm: pinctrl@1000000 {
- 			compatible = "qcom,ipq5018-tlmm";
- 			reg = <0x01000000 0x300000>;
-@@ -120,10 +177,10 @@ gcc: clock-controller@1800000 {
- 				 <0>,
- 				 <0>,
- 				 <0>,
--				 <0>,
--				 <0>,
--				 <0>,
--				 <0>;
-+				 <&gephy 0>,
-+				 <&gephy 1>,
-+				 <&uniphy0 0>,
-+				 <&uniphy0 1>;
- 			#clock-cells = <1>;
- 			#reset-cells = <1>;
- 			#power-domain-cells = <1>;
-@@ -244,6 +301,61 @@ frame@b128000 {
- 				status = "disabled";
- 			};
- 		};
-+
-+		gmac0: ethernet@39c00000 {
-+			compatible = "qcom,ipq50xx-gmac", "snps,dwmac";
-+			reg = <0x39C00000 0x10000>;
-+			clocks = <&gcc GCC_GMAC0_SYS_CLK>,
-+				 <&gcc GCC_GMAC0_CFG_CLK>,
-+				 <&gcc GCC_SNOC_GMAC0_AHB_CLK>,
-+				 <&gcc GCC_SNOC_GMAC0_AXI_CLK>,
-+				 <&gcc GCC_GMAC0_RX_CLK>,
-+				 <&gcc GCC_GMAC0_TX_CLK>,
-+				 <&gcc GCC_GMAC0_PTP_CLK>;
-+			clock-names = "sys",
-+				      "cfg",
-+				      "ahb",
-+				      "axi",
-+				      "rx",
-+				      "tx",
-+				      "ptp";
-+			resets = <&gcc GCC_GMAC0_BCR>;
-+			interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "macirq";
-+
-+			phy-handle = <&gephy>;
-+			phy-mode = "sgmii";
-+
-+			status = "disabled";
-+		};
-+
-+		gmac1: ethernet@39d00000 {
-+			compatible = "qcom,ipq50xx-gmac", "snps,dwmac";
-+			reg = <0x39D00000 0x10000>;
-+			reg-names = "stmmaceth";
-+			clocks = <&gcc GCC_GMAC1_SYS_CLK>,
-+				 <&gcc GCC_GMAC1_CFG_CLK>,
-+				 <&gcc GCC_SNOC_GMAC1_AHB_CLK>,
-+				 <&gcc GCC_SNOC_GMAC1_AXI_CLK>,
-+				 <&gcc GCC_GMAC1_RX_CLK>,
-+				 <&gcc GCC_GMAC1_TX_CLK>,
-+				 <&gcc GCC_GMAC1_PTP_CLK>;
-+			clock-names = "sys",
-+				      "cfg",
-+				      "ahb",
-+				      "axi",
-+				      "rx",
-+				      "tx",
-+				      "ptp";
-+			resets = <&gcc GCC_GMAC1_BCR>;
-+			interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "macirq";
-+
-+			phys = <&uniphy0>;
-+			phy-names = "uniphy";
-+
-+			status = "disabled";
-+		};
++		ethernet0 = &gmac0;
++		ethernet1 = &gmac1;
  	};
  
- 	timer {
+ 	chosen {
+@@ -43,6 +46,22 @@ &sleep_clk {
+ };
+ 
+ &tlmm {
++	mdio1_pins: mdio1_pins {
++		mdc {
++			pins = "gpio36";
++			function = "mdc";
++			drive-strength = <8>;
++			bias-pull-up;
++		};
++
++		mdio {
++			pins = "gpio37";
++			function = "mdio";
++			drive-strength = <8>;
++			bias-pull-up;
++		};
++	};
++
+ 	sdc_default_state: sdc-default-state {
+ 		clk-pins {
+ 			pins = "gpio9";
+@@ -70,3 +89,36 @@ data-pins {
+ &xo_board_clk {
+ 	clock-frequency = <24000000>;
+ };
++
++&mdio0 {
++	status = "ok";
++};
++
++&mdio1 {
++	pinctrl-0 = <&mdio1_pins>;
++	pinctrl-names = "default";
++	status = "ok";
++
++	reset-gpios = <&tlmm 39 GPIO_ACTIVE_LOW>;
++
++	qca8081: ethernet-phy@28 {
++		reg = <28>;
++	};
++};
++
++&uniphy0 {
++	mode = <QCOM_ETH_UNIPHY_MODE_SGMII>;
++	clkout-frequency = <QCOM_ETH_UNIPHY_CLKOUT_FREQ_50M>;
++	clkout-drive-strength = <QCOM_ETH_UNIPHY_CLKOUT_DS_1_5V>;
++	status = "ok";
++};
++
++&gmac0 {
++	status = "ok";
++};
++
++&gmac1 {
++	phy-handle = <&qca8081>;
++	phy-mode = "sgmii";
++	status = "ok";
++};
 -- 
 2.40.1
 
