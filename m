@@ -1,121 +1,159 @@
-Return-Path: <linux-kernel+bounces-34296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FB478377C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:32:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA1A08377C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:37:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15F422866BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:32:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B1031F24426
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:37:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DA5E4E1AC;
-	Mon, 22 Jan 2024 23:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33444E1C3;
+	Mon, 22 Jan 2024 23:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kAsQDr9E"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OwICVcvb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA564BA94;
-	Mon, 22 Jan 2024 23:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BDA3984A;
+	Mon, 22 Jan 2024 23:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705966370; cv=none; b=Cc+NeFNv8VBd25yYO6nMUdahuzrkQiLasjzL/bEg/nfpIsspS1Jgrpmmc3RbfOYwQQTsBipeY6BQR6GpUO96H9rsd+2kyNaEFeQuWLVxSsg9IOLQVcKcMcpDC2kiWt2mD9ozTRBC7vZQTbLl42LAnVStQOajuJCQMpJORsvC4gc=
+	t=1705966654; cv=none; b=mz970picJTHYMjVf4WWpwppdK6EOky+HNxDw1uVi1pJXBwXK/8sq9Xi3eNHCXTAjguJbax16l4v+5vQW7aNB9nf4W0bZxZWxYTuVIU8C0+oJC5nw21p/QKNjGXe1FErv5yU6spUdQxdMao0gC6edH8WXvRPS/pB2drdHeJ/6r8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705966370; c=relaxed/simple;
-	bh=wdogNbU04LOAOQXqJeol5FweB9QazmHCRKAJ8Y2dXfM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FwEO2U65fxQRFW+YYtgoOH1pnDMpX/n/ZYUH2bPDxd9+yIcFmpqqkQ6wFzLaDy/ETZ95S8iwSYpS0MLLm4rdhUI8xIt2YHEHCiU53ye7ucyzZhu4Fkz74UWTEUmRkl/3a/6t4V8fyiCKpY07gPqSDzq+bWeyKdp/UdAcBP5MLII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kAsQDr9E; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705966369; x=1737502369;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=wdogNbU04LOAOQXqJeol5FweB9QazmHCRKAJ8Y2dXfM=;
-  b=kAsQDr9E18/GFTjXsp8pqQf3EoIAP5voG6vPDRjoCpC23WCDcB7ZfxiF
-   ysuYGmW/IkFIeKPoTr8SQ4XpV/aJUAdr3SIYGCAIoZdBuAvhO6m9aJvSL
-   7qtDZEMVVlTjrPk7wQ1kjz36UuBgHcqs3Sr8EcaXeIWORUz0rkZnc5WHg
-   STJ9BceFxwgydjxwxQ83geU8qQEOYpTWih7eC08utZB5RYWo6vBlEo2ut
-   2Mdz+hvucFEs64aujNcGN/ZKC6wMz9xWK7uFRfx4SynIFbtlj4GSxMqpM
-   wP/8W1mtA8ETO0Bj+2EE+ljYHV0wJu3Lzq8ffcVXWwlF5SI3MsPnW+e9q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="8032170"
-X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
-   d="scan'208";a="8032170"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 15:32:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="1117040507"
-X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
-   d="scan'208";a="1117040507"
-Received: from b04f130c83f2.jf.intel.com ([10.165.154.98])
-  by fmsmga005.fm.intel.com with ESMTP; 22 Jan 2024 15:32:47 -0800
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: Heiko Carstens <hca@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org
-Subject: [PATCH] tick-sched: Preserve number of idle sleeps across CPU hotplug events
-Date: Mon, 22 Jan 2024 15:35:34 -0800
-Message-Id: <20240122233534.3094238-1-tim.c.chen@linux.intel.com>
-X-Mailer: git-send-email 2.32.0
+	s=arc-20240116; t=1705966654; c=relaxed/simple;
+	bh=bFI9taIrnXtbiXPEufAdPBtLCLiLu4UVHc3GG4nClhw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=S8cw2/zMnfohoMyFdn5tUUQCGzxNKWlMu1yTy37Ir83CWSz24ujcq42+9m+pIhmoURowwmUFuIlKHGcoxqo+IkigqtPMLo/Vgri1oPKMZZOHGietzRbgpJKzLEvdy93j/tPKyiUzBtn/GR3sP5db554S+8ZWzPq01JnNxuuzvnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OwICVcvb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57147C43394;
+	Mon, 22 Jan 2024 23:37:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705966653;
+	bh=bFI9taIrnXtbiXPEufAdPBtLCLiLu4UVHc3GG4nClhw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=OwICVcvbQxSLC8jasEM24VJKS3vTz+1LDb+FcmZZDLCW7bpfPqjxs0dEHl4ACIFjn
+	 YcnhQuWeJ/IJc/q28szM0TWGQ2E3A4jDGh0jegpsrwaXzNjlLY5EmlP3VhwQt5djZ8
+	 dvYklSc8kUb/da5OKZgd/+PCthhVLxNI17WlTaUY+1ed1duP4ZsD+t6TNvaHa+Q6Yd
+	 hWr+An7oFQQaV3KzfoIrZ2Xq9oh/FzyCS20dGjuQe0/x/KbqjnqYo+10pPWqvmrG2U
+	 81dQwoBE36+Ox3tW3E4UlIrVQ7fohxhRc+OO/N1D6fwteHL8r16J3lcy3OXjEp8PJx
+	 o2wSyCnzhnk/A==
+Date: Mon, 22 Jan 2024 17:37:31 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Jiqian Chen <Jiqian.Chen@amd.com>
+Cc: Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>,
+	xen-devel@lists.xenproject.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+	Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
+	Huang Rui <Ray.Huang@amd.com>
+Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
+Message-ID: <20240122233731.GA291870@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240105062217.349645-4-Jiqian.Chen@amd.com>
 
-Patch 71fee48f ("tick-sched: Fix idle and iowait sleeptime accounting vs
-CPU hotplug") preserved total idle sleep time and iowait sleeptime
-across CPU hotplug events.
+On Fri, Jan 05, 2024 at 02:22:17PM +0800, Jiqian Chen wrote:
+> There is a need for some scenarios to use gsi sysfs.
+> For example, when xen passthrough a device to dumU, it will
+> use gsi to map pirq, but currently userspace can't get gsi
+> number.
+> So, add gsi sysfs for that and for other potential scenarios.
 
-In order to derive average sleep time per sleep event, we should also
-preserve number of sleeps too in idle_calls and idle_sleeps. Fix that.
+Isn't GSI really an ACPI-specific concept?
 
-Fixes: 71fee48f ("tick-sched: Fix idle and iowait sleeptime accounting vs CPU hotplug")
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
----
- kernel/time/tick-sched.c | 5 +++++
- 1 file changed, 5 insertions(+)
+I don't know enough about Xen to know why it needs the GSI in
+userspace.  Is this passthrough brand new functionality that can't be
+done today because we don't expose the GSI yet?
 
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index d2501673028d..01fb50c1b17e 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -1577,6 +1577,7 @@ void tick_cancel_sched_timer(int cpu)
- {
- 	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
- 	ktime_t idle_sleeptime, iowait_sleeptime;
-+	unsigned long idle_calls, idle_sleeps;
- 
- # ifdef CONFIG_HIGH_RES_TIMERS
- 	if (ts->sched_timer.base)
-@@ -1585,9 +1586,13 @@ void tick_cancel_sched_timer(int cpu)
- 
- 	idle_sleeptime = ts->idle_sleeptime;
- 	iowait_sleeptime = ts->iowait_sleeptime;
-+	idle_calls = ts->idle_calls;
-+	idle_sleeps = ts->idle_sleeps;
- 	memset(ts, 0, sizeof(*ts));
- 	ts->idle_sleeptime = idle_sleeptime;
- 	ts->iowait_sleeptime = iowait_sleeptime;
-+	ts->idle_calls = idle_calls;
-+	ts->idle_sleeps = idle_sleeps;
- }
- #endif
- 
--- 
-2.32.0
+How does userspace use the GSI?  I see "to map pirq", but I think we
+should have more concrete details about exactly what is needed and how
+it is used before adding something new in sysfs.
 
+Is there some more generic kernel interface we could use
+for this?
+
+s/dumU/DomU/ ?  (I dunno, but https://www.google.com/search?q=xen+dumu
+suggests it :))
+
+> Co-developed-by: Huang Rui <ray.huang@amd.com>
+> Signed-off-by: Jiqian Chen <Jiqian.Chen@amd.com>
+> ---
+>  drivers/acpi/pci_irq.c  |  1 +
+>  drivers/pci/pci-sysfs.c | 11 +++++++++++
+>  include/linux/pci.h     |  2 ++
+>  3 files changed, 14 insertions(+)
+> 
+> diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
+> index 630fe0a34bc6..739a58755df2 100644
+> --- a/drivers/acpi/pci_irq.c
+> +++ b/drivers/acpi/pci_irq.c
+> @@ -449,6 +449,7 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
+>  		kfree(entry);
+>  		return 0;
+>  	}
+> +	dev->gsi = gsi;
+>  
+>  	rc = acpi_register_gsi(&dev->dev, gsi, triggering, polarity);
+>  	if (rc < 0) {
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 2321fdfefd7d..c51df88d079e 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -71,6 +71,16 @@ static ssize_t irq_show(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RO(irq);
+>  
+> +static ssize_t gsi_show(struct device *dev,
+> +			struct device_attribute *attr,
+> +			char *buf)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	return sysfs_emit(buf, "%u\n", pdev->gsi);
+> +}
+> +static DEVICE_ATTR_RO(gsi);
+> +
+>  static ssize_t broken_parity_status_show(struct device *dev,
+>  					 struct device_attribute *attr,
+>  					 char *buf)
+> @@ -596,6 +606,7 @@ static struct attribute *pci_dev_attrs[] = {
+>  	&dev_attr_revision.attr,
+>  	&dev_attr_class.attr,
+>  	&dev_attr_irq.attr,
+> +	&dev_attr_gsi.attr,
+>  	&dev_attr_local_cpus.attr,
+>  	&dev_attr_local_cpulist.attr,
+>  	&dev_attr_modalias.attr,
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index dea043bc1e38..0618d4a87a50 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -529,6 +529,8 @@ struct pci_dev {
+>  
+>  	/* These methods index pci_reset_fn_methods[] */
+>  	u8 reset_methods[PCI_NUM_RESET_METHODS]; /* In priority order */
+> +
+> +	unsigned int	gsi;
+>  };
+>  
+>  static inline struct pci_dev *pci_physfn(struct pci_dev *dev)
+> -- 
+> 2.34.1
+> 
+> 
 
