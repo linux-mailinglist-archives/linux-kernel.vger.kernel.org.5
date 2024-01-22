@@ -1,177 +1,124 @@
-Return-Path: <linux-kernel+bounces-32766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE1C4835FDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:38:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EEF0835FDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:38:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2DA21C22815
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:38:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00DAF1F2155E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:38:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB4D3A8C2;
-	Mon, 22 Jan 2024 10:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320FC3A8EE;
+	Mon, 22 Jan 2024 10:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ry2b84fv"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RSnJL8jM"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633EB39ACC;
-	Mon, 22 Jan 2024 10:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0033A8C5;
+	Mon, 22 Jan 2024 10:38:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705919901; cv=none; b=YtHjTWnReIWAlrPtYeBEqv/JUMIMsdaLzFmNfr4MR5caxu6yeXMNLnUPDHJzJkbKvLAmcDoH+jUakQhBP8OSeSrHvvXGONNy/6Rx5LPgHrIXZdraxK827cyjllF0Uz7EdhoetTGYldMyNTXv6Z5yRmOpXIQAT+d4h+5IMruk6wo=
+	t=1705919904; cv=none; b=OLAjyrmYuVu9Et9x3VUjt74euOcOFE2Q+InQPYM34L3kR27l4Dwji08ZHf+cnUhGzhBpKSwyBIXbiTSEAHSW/XiGXNiQNHrXcynoqIKi1ah+ut+arnqk/u1TNJOHWa2/yOJIOxNEmRn1gXh2MvszS+qwoRTJp3sNQkgIoVPtFq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705919901; c=relaxed/simple;
-	bh=QOgZWgCo219X/V3HqTTipzGqn3wTwHbInkP56JKp9LU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qcvlpIljEM2OZX0GYt3CG3tovXk8HPy4gZtaNS1bx4+pTGY8ZvDRO1kZQYQJW6JXdHY2XT+tHwvug+kMgRf215yUWPnxQtPWoyyi5NpbLbvHi2bXZFsgOgwxqryhlSbz282CQ9fCReUEOt6buMP49wmKp06YhG5CM3SmGyruLY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ry2b84fv; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705919897;
-	bh=QOgZWgCo219X/V3HqTTipzGqn3wTwHbInkP56JKp9LU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ry2b84fvNF59C0fPB/rOmCrQfkB9UCYyyxjbbVblAutR13mGF1OtEsYNT4P9veMNH
-	 qNGb0ir5fSdO4/aVWMTwKNLlUU4KN+tMfMu64/tonBwHeD1VIHlseBwPfkXoaAHWoL
-	 gNMt/FELnlRq0ivLUOec/jQpoxO2qCVeXjzlOswL3NAJBM7KRH5I23LTC7FwxSwe0B
-	 4MZeDMMZYFG6QD6iFsGlOpEyACqG6GUsEXAdtXbAt7wl1yVFWDEwcExZjeJN09OoNg
-	 bb2AeCvEGX7DEYDkLgAxYVEnt8NlA8nXRW+J+OfUcYS0PFxRe/mST7BTtk5m9gOW9R
-	 dUgN3exk993+g==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 89FCE378045F;
-	Mon, 22 Jan 2024 10:38:16 +0000 (UTC)
-Message-ID: <9c447297-2738-4b63-9da9-0d004660e65d@collabora.com>
-Date: Mon, 22 Jan 2024 11:38:15 +0100
+	s=arc-20240116; t=1705919904; c=relaxed/simple;
+	bh=4hOX0W11VM0UdC7tEUo4g7mVlLXsU6zP1I89BabWmZI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hrXmXvjDMZKnKzye4HOB5KVpMfMdTCilPPN+/u+CFD8r5hU4K9qWbW+9IV6TyATolV8zSMwdvSjtjyDUyURhS5Jz1Zan06daLBQQ8R1iynFmoyR38UNFJ3neAKOQ+7DK3CnW/VDXzyfj0eZK5o5NXGziYpW3lAJtt2cbJKd+A0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RSnJL8jM; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D39EE1C000A;
+	Mon, 22 Jan 2024 10:38:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705919899;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cwtvDDiZVvgrYF8ifmUgl+F8hUZUCOJHlbq4i0YknSQ=;
+	b=RSnJL8jMrMlfPGqVzkOk4/kkTJUAHoGNRnFmUAXNApYP0/xoadajZ2CmLVIT+bwUi91TZq
+	z0S5FZJD5kM6y8bPqevvM+g71nzBYDlT5S+Nq/W3WS8c0alvS5OyZW3k0X4A+w5aLZz+OY
+	1jnRDl+3FI9RTLvlcM5gH/mbwtaKolNE36YkCSyOzYosZD4+/KWdjFP8b16BA9YkkZAxmR
+	gps0M5GK0JEyf7S+f4nRCRW1t7DfWwSyeg32r2lYAKvZ9gkZV29FqQdflCWxoJVpuPA8jd
+	3x+UtyMvAK3PDreCJ4hNfskxsyxOnI/PLlN4ycTx8JZhZfRA19kGAz/bVhOAxA==
+Date: Mon, 22 Jan 2024 11:38:17 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Serge Semin <fancer.lancer@gmail.com>, Gustavo Pimentel
+ <gustavo.pimentel@synopsys.com>, Vinod Koul <vkoul@kernel.org>, Cai Huoqing
+ <cai.huoqing@linux.dev>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, Herve Codina
+ <herve.codina@bootlin.com>
+Subject: Re: [PATCH v6 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
+ setup
+Message-ID: <20240122113817.7c620c8a@kmaincent-XPS-13-7390>
+In-Reply-To: <20240120151340.GA6371@thinkpad>
+References: <20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com>
+	<20231121062629.GA3315@thinkpad>
+	<js3qo4i67tdhbbcopvfaav4c7fzhz4tc2nai45rzfmbpq7l3xa@7ac2colelvnz>
+	<20231121120828.GC3315@thinkpad>
+	<bqtgnsxqmvndog4jtmyy6lnj2cp4kh7c2lcwmjjqbet53vrhhn@i6fc6vxsvbam>
+	<20231122171242.GA266396@thinkpad>
+	<20240112111637.01a5ea21@kmaincent-XPS-13-7390>
+	<20240120151340.GA6371@thinkpad>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] dt-bindings: mailbox: Add mediatek,gce-props.yaml
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>, "Jason-JH.Lin"
- <jason-jh.lin@mediatek.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
- linaro-mm-sig@lists.linaro.org, Jason-ch Chen <jason-ch.chen@mediatek.com>,
- Johnson Wang <johnson.wang@mediatek.com>,
- Singo Chang <singo.chang@mediatek.com>, Nancy Lin <nancy.lin@mediatek.com>,
- Shawn Sung <shawn.sung@mediatek.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20240119063224.29671-1-jason-jh.lin@mediatek.com>
- <20240119063224.29671-2-jason-jh.lin@mediatek.com>
- <20240119-demote-fragment-624a35367a87@spud>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240119-demote-fragment-624a35367a87@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-Il 19/01/24 17:44, Conor Dooley ha scritto:
-> Rob,
-> 
-> On Fri, Jan 19, 2024 at 02:32:22PM +0800, Jason-JH.Lin wrote:
->> Add mediatek,gce-props.yaml for common GCE properties that is used for
->> both mailbox providers and consumers. We place the common property
->> "mediatek,gce-events" in this binding currently.
->>
->> The property "mediatek,gce-events" is used for GCE event ID corresponding
->> to a hardware event signal sent by the hardware or a sofware driver.
->> If the mailbox providers or consumers want to manipulate the value of
->> the event ID, they need to know the specific event ID.
->>
->> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->> ---
->>   .../bindings/mailbox/mediatek,gce-props.yaml  | 52 +++++++++++++++++++
-> 
-> Is bindings/mailbox the correct directory to put this in?
-> 
+On Sat, 20 Jan 2024 20:43:40 +0530
+Manivannan Sadhasivam <mani@kernel.org> wrote:
 
-Well, the GCE is a mailbox :-)
+> On Fri, Jan 12, 2024 at 11:16:37AM +0100, K=C3=B6ry Maincent wrote:
+> > On Wed, 22 Nov 2023 22:42:42 +0530
+> > Manivannan Sadhasivam <mani@kernel.org> wrote:
+> >  =20
+> > > > For all of that you'll need to fix the
+> > > > dw_pcie_edma_find_chip()/dw_pcie_edma_detect() method somehow.
+> > > >=20
+> > > > Alternatively, to keep things simple you can convert the
+> > > > dw_pcie_edma_find_chip()/dw_pcie_edma_detect() methods to just rely=
+ing
+> > > > on the HDMA settings being fully specified by the low-level drivers.
+> > > >    =20
+> > >=20
+> > > This looks like the best possible solution at the moment. Thanks for =
+the
+> > > insight!
+> > >=20
+> > > I will post the patches together with the HDMA enablement ones. =20
+> >=20
+> > Hello Manivannan,
+> >=20
+> > What is the status of this series?
+> > Do you want to wait for designware-ep.c to be HDMA compatible before me=
+rging
+> > the fixes? Do you expect us to do something? We can't work on the
+> > designware-ep.c driver as we do not have such hardware.
+> > Shouldn't fixes be merged as soon as possible?
+> >  =20
+>=20
+> I've reviewed all the patches, but I do not merge them. It is upto the
+> dmaengine maintainer (Vinod) to merge the patches. Anyway, we are in v6.8
+> merge window, so you can rebase on top of v6.8-rc1 once released and post=
+ the
+> patches.
 
-..but I get why you're asking... and I don't think that this should go to
-arm/mediatek/ as it's really just only referring to extra properties for kind of
-"special" mailbox client events...
+Ok, thanks! I will do this then!
 
-Cheers,
-Angelo
-
->>   1 file changed, 52 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml b/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
->> new file mode 100644
->> index 000000000000..68b519ff089f
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mailbox/mediatek,gce-props.yaml
->> @@ -0,0 +1,52 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mailbox/mediatek,gce-props.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: MediaTek Global Command Engine Common Propertes
->> +
->> +maintainers:
->> +  - Houlong Wei <houlong.wei@mediatek.com>
->> +
->> +description:
->> +  The Global Command Engine (GCE) is an instruction based, multi-threaded,
->> +  single-core command dispatcher for MediaTek hardware. The Command Queue
->> +  (CMDQ) mailbox driver is a driver for GCE, implemented using the Linux
->> +  mailbox framework. It is used to receive messages from mailbox consumers
->> +  and configure GCE to execute the specified instruction set in the message.
->> +  We use mediatek,gce-mailbox.yaml to define the properties for CMDQ mailbox
->> +  driver. A device driver that uses the CMDQ driver to configure its hardware
->> +  registers is a mailbox consumer. The mailbox consumer can request a mailbox
->> +  channel corresponding to a GCE hardware thread to send a message, specifying
->> +  that the GCE thread to configure its hardware. The mailbox provider can also
->> +  reserved a mailbox channel to configure GCE hardware register by the spcific
->> +  GCE thread. This binding defines the common GCE properties for both mailbox
->> +  provider and consumers.
->> +
->> +properties:
->> +  mediatek,gce-events:
->> +    description:
->> +      GCE has an event table in SRAM, consisting of 1024 event IDs (0~1023).
->> +      Each event ID has a boolean event value with the default value 0.
->> +      The property mediatek,gce-events is used to obtain the event IDs.
->> +      Some gce-events are hardware-bound and cannot be changed by software.
->> +      For instance, in MT8195, when VDO0_MUTEX is stream done, VDO_MUTEX will
->> +      send an event signal to GCE, setting the value of event ID 597 to 1.
->> +      Similarly, in MT8188, the value of event ID 574 will be set to 1 when
->> +      VOD0_MUTEX is stream done.
->> +      On the other hand, some gce-events are not hardware-bound and can be
->> +      changed by software. For example, in MT8188, we can set the value of
->> +      event ID 855, which is not bound to any hardware, to 1 when the driver
->> +      in the secure world completes a task. However, in MT8195, event ID 855
->> +      is already bound to VDEC_LAT1, so we need to select another event ID to
->> +      achieve the same purpose. This event ID can be any ID that is not bound
->> +      to any hardware and is not yet used in any software driver.
->> +      To determine if the event ID is bound to the hardware or used by a
->> +      software driver, refer to the GCE header
->> +      include/dt-bindings/gce/<chip>-gce.h of each chip.
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    minItems: 1
->> +    maxItems: 1024
->> +
->> +additionalProperties: true
->> -- 
->> 2.18.0
->>
-
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
