@@ -1,124 +1,139 @@
-Return-Path: <linux-kernel+bounces-32398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D180835B35
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:45:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D2BA835B39
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:49:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D2961C22475
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:45:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B09481C214D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8FCDDB8;
-	Mon, 22 Jan 2024 06:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VxAozyKk"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B9CCD52D;
+	Mon, 22 Jan 2024 06:48:59 +0000 (UTC)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80BBF9C4;
-	Mon, 22 Jan 2024 06:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1343953A9;
+	Mon, 22 Jan 2024 06:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705905917; cv=none; b=Y3uwBgVZG4DIcP1LgPoHekRFbWPscZEMyIclkQwhulWH+7xnHO7+VbM45oq6g6xNf4rr3+MzpKg6ZGpxsoH+wEofxSJbZ/DJBOD2PS6dZkOOUbvCoUlcCYNTZVpcM26ge6l8Oau96FlJFjEMQCZq/FA7WE0JWzwsvptufTlmy2A=
+	t=1705906138; cv=none; b=EcVHC1SGOV/faD7zwQBfzScF+wC3w+JcjwFKinxf95/76bq7OEylOhwP9sXv+y5TkGlDO4Qpq2GwEbOL/khD+7eXBSCsKHa4PxZAKK8aTNfijfsfbwdvx3oqSAptc92FXAPRvkncFORMqojIbX+w6ovQvzvs358zNibe2L0OPKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705905917; c=relaxed/simple;
-	bh=u4jJaaRIZOlrsFr7eaMTItXjgdXSz580j+gTB9Sm8es=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kLgV/xnSOPZzlhSNCXs78vNk2eDAG2zi/qh4mpaXh6MlV6JSF5UIWeoY1Z2CTkpae256Y2BtGZiL0LXUDxcpil7zxZV0t6TG/6aznPuWb+sItG7uorXeoIShCN/NhTj1Mm0H3bRtmJMNhTS48sW9M89jeEYiu3BdjEcVHv05Rew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VxAozyKk; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40M6j3OW033655;
-	Mon, 22 Jan 2024 00:45:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705905903;
-	bh=Mtz0KU1wEit+CTv62UpJDF7oKSsLQo5fLRospjPQq74=;
-	h=From:To:CC:Subject:Date;
-	b=VxAozyKkUPgpZy4QTknPBolpPP9BBl+dTJftKnMz7jBpiHtYFb4a30T1RnjoJWfWG
-	 AWmrhDZ9oydyQIUN2vbaHpDPqXRIiAiR6YXxeV1zElJu3kHV51KiMbd4eGRdbOc1co
-	 XMTy/qq9FEHWHGyuT8Q7WAep9oBJBYg3bEDRCptc=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40M6j2tQ012528
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 22 Jan 2024 00:45:03 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 22
- Jan 2024 00:45:02 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 22 Jan 2024 00:45:01 -0600
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40M6ivkB127922;
-	Mon, 22 Jan 2024 00:44:58 -0600
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <vigneshr@ti.com>, <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v2] dt-bindings: PCI: ti,j721e-pci-host: Add support for J722S SoC
-Date: Mon, 22 Jan 2024 12:14:57 +0530
-Message-ID: <20240122064457.664542-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705906138; c=relaxed/simple;
+	bh=iYX5btOvXZ+HVrdCnYVC3rkClh4t1gU4z6NCu1jAYt0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b587g1oajkkq61UYgnoorX5eMiHaFxyx3e3KhWW2NhxWmLvFqAitdpTuP4xZoVp6MWj2WTexTbl2VAkSnipQRvMsROhmr6NkzFbreivcy/ktNmLgv5hB+WgXKUa5uWuRlq+sIVLPm6XRrMfHg9HVQRrRzGrpSPIS5KUdAQeIuU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50eac018059so3593274e87.0;
+        Sun, 21 Jan 2024 22:48:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705906135; x=1706510935;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gcy/WQSoKo8erqj8eiofkaa+oALZyeGyxz+3RjdG26M=;
+        b=GjVA5I9Pxv/eeO44pz13VczPWRzCNYqcMK5Wj8bAvvndw87but8kym8l4IWjXyZ56i
+         xjvqgQccWDgxf9QONkqYNKiQBKZctECMKW68Zgzl2kuKhLo1pkYrS0rG8T7KcUyTEc/Z
+         z3mTJxrBGU0JpbBfYH9DTWxvSFHY/6nS4j5a6VpaZvf0RMpweK4jrQMJXhmzrszuz+oo
+         6mJh+9ZKW2Hr0829c+ePJ75Sf57/0GuaVxLd4zCIDRnPkia5d7LJrKK+YlYKmUkQ6qUA
+         doBBXpE2rj0ypMSJW/EdYZdKD1qT7bk46tf0XE82wJ817mDOw97lubYtBaJzQHA4utAl
+         0zwQ==
+X-Gm-Message-State: AOJu0YynhIqYtWvQZiEuLoNBKpkhRIWLcrKk5rtJnY9ffcD6FWIHYCyt
+	sJG7D4HG+DLS0l3ug3lda+2jolCoQrqn4tu3gHgnZh5nxVGwQ7hr
+X-Google-Smtp-Source: AGHT+IEt1WQjPj+zNKUqzUi7bThL7rb22T1ys+1YdxKFezOOaZygnJ1InxjhfRmK/MWbTYw/mawUOQ==
+X-Received: by 2002:a05:6512:6d2:b0:50b:e713:574d with SMTP id u18-20020a05651206d200b0050be713574dmr1859640lff.75.1705906134688;
+        Sun, 21 Jan 2024 22:48:54 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id k3-20020a170906a38300b00a298d735a1bsm13236294ejz.149.2024.01.21.22.48.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Jan 2024 22:48:53 -0800 (PST)
+Message-ID: <82aa07d4-13ac-4b1d-80cd-0970c71752a5@kernel.org>
+Date: Mon, 22 Jan 2024 07:48:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tty: vt: check for atomic context in con_write()
+Content-Language: en-US
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+ syzbot <syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com>,
+ syzkaller-bugs@googlegroups.com,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-serial <linux-serial@vger.kernel.org>
+References: <00000000000039f237060f354ef7@google.com>
+ <83414cb6-df16-4b6d-92e3-d54d22ba26cc@I-love.SAKURA.ne.jp>
+ <9cd9d3eb-418f-44cc-afcf-7283d51252d6@I-love.SAKURA.ne.jp>
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <9cd9d3eb-418f-44cc-afcf-7283d51252d6@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-TI's J722S SoC has one instance of a Gen3 Single-Lane PCIe controller.
-The controller on J722S SoC is similar to the one present on TI's AM64
-SoC, with the difference being that the controller on AM64 SoC supports
-up to Gen2 link speed while the one on J722S SoC supports Gen3 link speed.
+On 20. 01. 24, 11:34, Tetsuo Handa wrote:
+> syzbot is reporting sleep in atomic context, for gsmld_write() is calling
+> con_write() with spinlock held and IRQs disabled.
 
-Update the bindings with a new compatible for J722S SoC.
+gsm should never be bound to a console in the first place.
 
-Technical Reference Manual of J722S SoC: https://www.ti.com/lit/zip/sprujb3
+Noone has sent a patch to deny that yet.
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
+Follow:
+https://lore.kernel.org/all/49453ebd-b321-4f34-a1a5-d828d8881010@kernel.org/
 
-Hello,
+And feel free to patch that ;).
 
-This patch is based on linux-next tagged next-20240122.
-
-v1:
-https://lore.kernel.org/r/20240117102526.557006-1-s-vadapalli@ti.com/
-Changes since v1:
-- Dropped patches 1/3 and 2/3 of the v1 series as discussed in the v1
-  thread.
-- Updated patch 3/3 which is the v1 for this patch by dropping the checks
-  for the "num-lanes" property and "max-link-speed" property since the PCI
-  driver already validates the "num-lanes" property.
-
-Regards,
-Siddharth.
-
- Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-index b7a534cef24d..a7b5c4ce2744 100644
---- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-+++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-@@ -14,6 +14,7 @@ properties:
-   compatible:
-     oneOf:
-       - const: ti,j721e-pcie-host
-+      - const: ti,j722s-pcie-host
-       - const: ti,j784s4-pcie-host
-       - description: PCIe controller in AM64
-         items:
+thanks,
 -- 
-2.34.1
+js
+suse labs
 
 
