@@ -1,176 +1,96 @@
-Return-Path: <linux-kernel+bounces-32392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D33C5835B22
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:41:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 459F4835B2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:43:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C8331F21217
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:41:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1407B27282
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C68C8FD;
-	Mon, 22 Jan 2024 06:40:52 +0000 (UTC)
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2099.outbound.protection.outlook.com [40.92.91.99])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C790B6ADB;
+	Mon, 22 Jan 2024 06:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="il/ZpNhk"
+Received: from out203-205-221-236.mail.qq.com (out203-205-221-236.mail.qq.com [203.205.221.236])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A37F9C4;
-	Mon, 22 Jan 2024 06:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.91.99
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705905651; cv=fail; b=TvCQO+DTm2U1ZXpPoadwbt23KTMPh7yvnPizd4mtzOdqH2gfSnbNLKyecniFgLWRNcvv1RW5z73SYeC8tFs5Cs5TvoShZMCiKffoivxVl76Rar1J5Oik0sscPf+7Z72E1wPONsXbWF9nnTC5F+EhXKZg1ebn8aGjvgXOH/gxzYY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705905651; c=relaxed/simple;
-	bh=NSkMO4Nac3nz7cejeoqqrvTeOLHmq3mz2ZPJFYeFpjY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=S/ssqyS4DxDs3XJJcsP1GjJR0j5ZnSImAhiyba5tjhJl2uBWuY5CRjHij+teTRg4hjJbG2x4VWnBqJV+gHZKZjeVSclxFway2j8jBajqBqerZjZ85Y9pgxylQgNNV54WoD0LBqjmYutLSgs0YwUPJ4cLdILyEU8UGD2InISV8XE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de; spf=pass smtp.mailfrom=hotmail.de; arc=fail smtp.client-ip=40.92.91.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.de
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ad/oSl/AiIb8OCS9g8JP1R3e0JS1m9zLm3bI9hSIBFBxFVd2yDi2RW7uzZbF12hySgPIVpCUdUMTHZiMWoGN1pJ1UoAg0eOLv3U5T+0MOIpbeC2UG92T2xJsJj3ILmbW2Y5J8eUljph+hRwWns2FiLj9cJXJFdeMD4qG4/dChuuPAqVaksO/0lB4w2iLjcBsALIYU62k3tLMsJ2kMVRgE4+e0qvhFf17j/0e43yj2rpG0r76ZyWtC/qHAZdk05lenLgM5kPo4OU0ZBoTUbz31pON8Orv057wIGZiHAGpYN6cgsFWGeOZYhE4uDtn4597f2WxXAL/tsDkDuvuUp1FMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ytEtmXqaKsOZm1gTjcEc+6KeUtF9uMBuPamMf6HLzIU=;
- b=XHtEb5UvP0Dwcj5YEW/8PZ5vLCDWiH8fv3LXZDPyGRW0RInejELQ+wxfoe+bVF7jbg6gW7cj7p2U+Mw6Ns4ikigBH2Sz1ED6e3DC0bIf8AMBNlo23mibaJpQ/jyQ0LWJ0WPXwj/PcWTLL3jjCf3eWErVtIdCXzS66PcKfxS5mF5hyDu9//6KZCfTvEyDUXGjbFgxDExTII83RUeCBjq8pFKOG46MfTWgnsWmUpX5W7qOlNOujONXKRz1l2ZwdzjS7cWo+Qm2JPS7Hwi1fD06Znqc3vlu//0uPzxMzujejY0fepHvPHXDI41xC8vlw6PH8zZPXX4dmIkzGtb8vj728Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:333::21)
- by DB9P193MB1258.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:250::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Mon, 22 Jan
- 2024 06:40:47 +0000
-Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
- ([fe80::897e:cfd5:b29b:c611]) by AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
- ([fe80::897e:cfd5:b29b:c611%6]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
- 06:40:47 +0000
-Message-ID:
- <AS8P193MB1285D9F82E8065739C0AD962E4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
-Date: Mon, 22 Jan 2024 07:41:46 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] net: stmmac: Wait a bit for the reset to take effect
-To: Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-stm32@st-md-mailman.stormreply.com"
- <linux-stm32@st-md-mailman.stormreply.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jiri Pirko <jiri@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>
-References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB1285EEAFE30C0DE7B201D33CE46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <6e33c038-45a7-4941-b5d9-ce5704e13d48@lunn.ch>
- <AS8P193MB128591BBF397DC664D7D860EE4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <DM4PR12MB50883D41B18E8627FBDF5E32D3722@DM4PR12MB5088.namprd12.prod.outlook.com>
- <AS8P193MB1285B34B71F3143FA9B0A053E4702@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <DM4PR12MB5088435544A3D355C94632DFD3702@DM4PR12MB5088.namprd12.prod.outlook.com>
-Content-Language: en-US
-From: Bernd Edlinger <bernd.edlinger@hotmail.de>
-In-Reply-To: <DM4PR12MB5088435544A3D355C94632DFD3702@DM4PR12MB5088.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TMN: [MbmuCELclWdqPjWjsFMftdLCZiOUMnOFD/HE2Nzg5aQthoxFJl24AEKOaTo1vhkn]
-X-ClientProxiedBy: BE1P281CA0017.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:15::8) To AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:20b:333::21)
-X-Microsoft-Original-Message-ID:
- <5eac8f06-1044-4c84-a77b-435cb4954243@hotmail.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251792913
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 06:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.236
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705905807; cv=none; b=vAu6aQiYDuAj/ViGVDRpIfoseSGhzlEX8nUKPbWz3tfrHFysg8DjNUMeJqspdDPM32QiGDfR3yKGcGez415SWvwJMKkdN7IeHlXQXielFBdDaMq0Mimg0m2cIt0BYxgBNpvri3iCpb7JjI6fqZ7ymd2txKPC7/7ZfNI32xnvcXs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705905807; c=relaxed/simple;
+	bh=zpaIjkgHkPGHrgfWtgVl4af0/imPULca0EYx7pJSUd8=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=cIcEuRp3jO7ssN7ik0Iw9F91urC84WIxRY3D8krdka7JuzhVzdg5QxDFPwFg7a3B31Ff0jKQN9HKOZ0fKtghPhC75vP8a64qd8z3RyC78mYnYfD5Hdknwztyesg/hZK3bGEN1LuZwlmunxmKM2/QLaWc7W6gq+qLn+Ifjezq1Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=il/ZpNhk; arc=none smtp.client-ip=203.205.221.236
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1705905802; bh=oEZhMRw9HdJT4A4ewTuyjJB8RjNCZNkSeMoeyQNKRcU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=il/ZpNhkQJDQbPwgjW2rRDME5f8H2EebHE9h7YxThTyaopD3IHN55AkCJVp4WL/9C
+	 RehCEaX9uF5Z1vuGoGXKR1qOrROmZX39rakre3TurM6aPMmvIBot7C+uV45pFVAqBE
+	 mILTncvIKhq98+TuBvSIz1xXT8l03phNmBwMXKrQ=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+	id AD50D6AE; Mon, 22 Jan 2024 14:43:21 +0800
+X-QQ-mid: xmsmtpt1705905801td6ol7g4w
+Message-ID: <tencent_5A768367E63CF5373E97AC37C24A2A748509@qq.com>
+X-QQ-XMAILINFO: Mdc3TkmnJyI/OQ2aS0u1J2TYmhyDt90b2ECS0ICzA+EBKZsgnFPJhh/wThubjr
+	 /HSb9oqHPNdTB1p+qoPcfv8Pqphezn+yPGZdX+l6Ur6M+dGo1HHuPpMxGCliFDAw4kI5Pu0RJLcd
+	 zoBFqWG+cjTHj/aWM6/mJmVZEafQwor8wM8zDVHvMuh7r6czayrjDmBHCn6i1YN50i4Js0D9v6EL
+	 d2Kkdv04mJTvDrHNkBE5D6t/wLHRx1VUumBYm2hH1hc6CkykFyZHfaqJopnItWXHCSI0/AOmCkFO
+	 zwQ+6BaVoXk2QduyUo1Z60D53QjNA+sTmQxxNyKs3/ZjrcMpz7aYUw+ugYddiGL3YFGALdQtOIdY
+	 qLSQSr2Aa/u3xEThF4FdTDPHgnAhH9LeR1mr0viB0Qgo/ANFe6kYhdxhnl0+ObnkavfBxu8FY/Ws
+	 IJEbtkgfYTqu6IXkfLWHUZvQ/+qd3gg9TejUe9Md2TPtpvCmgeadgO2S8uZk2fQ7X34cMrYtsJiO
+	 MdkUPF6+VGOKLrlPKD7AmTi8EMmv4O2/VcyW/Ecn6yX/5z73lJNHwe+gyWrqZrMkunatQACaxtFo
+	 HQNc5km75m7C+Rc8QjWUh7maqyuC+7jt6fvWdBxkt9QxZseUdxD1JzeJEnzLm8orBkly7Qv60BE2
+	 Ww8s2LbKo6pXa8pg6aEYJqEhIAlEnhsRP7CzLVoMvuaypyEIR06ws/kRmWkCLS7d+Gdgx93VTxaQ
+	 sNYtk1OotR6XYET1Hymfs6JV9vACaptuYMo8Ofe+lzfwybA+h+OmqeVlPgTo6QphmRCXQZjBjhFk
+	 USVxtyNvRoVZtW6QKT/8wE7BPOzEQADdJREFvbTq8G+8GKib7LToZ2nrBSNsPqveYvecgYvoPUQD
+	 QbHLQhkZL9YXG81pewQ6b7wMxqLn/3+SY2SD7Ap60b/XYqWgcsp1tCj24oT7eFXQ==
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+37463f2a5b94a8fdabec@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [hfs?] possible deadlock in hfs_extend_file (2)
+Date: Mon, 22 Jan 2024 14:43:21 +0800
+X-OQ-MSGID: <20240122064320.2058062-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000006347db060f619341@google.com>
+References: <0000000000006347db060f619341@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8P193MB1285:EE_|DB9P193MB1258:EE_
-X-MS-Office365-Filtering-Correlation-Id: 284b56ee-95f6-42ed-fbc0-08dc1b1510e8
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	63Skqt01WyK7Q1lhb+2jxw8EHtAGaOiPnTXXSDeLAY0L1dVYPCiIwmlcx05M1al14dC+QHVrgicvozDGg2oA+JoXTprByrF0JNlqSdhHc31EXPa2YyFnvpS4drSitYrcboqguWBKUEhnmhno7uPMj1K/ivxWV9vs+0vzGaHhib2VRMvVCljU+bz946l+rNKsLJKiDfZaJ4xxeIdO9oLJVOdq4fo+TvePBJ7H1H2nzwdJy1RfqHU1ZmCl+EhScwZwFWJwuaRG/Z71mW6QLnkBtug/lcRkvFODkhtPTN2kS2Oaas/YQKoM2bCH8RkHSWi02LOm0qTZtLzYt0qRgU4UX7iAW+Ex3DJcvPAKxZ7/nNgfOr9fYGmRBHZNFHrYWfMCAo9k9lGLDrHInwlAI5NUCWV+QBfyCo5jmiOyxdJoH6RV7D+v5xiYvwQ5AXVK8THTLlja+1t2hkG13nrO2CD9su+iK0YRAo9aUy+JVAUDA2ccjLbWgVomfXwSDCLkYgk2LKrqv81jIDHlCxs66x2UxbaoAhTrAdAnOtHFAHCglBQdVKfYGjbSUR73SGoysVcn
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZElRMUxQU2hsUUlqcXN0ZEFVQXY2aGxjR09wSHdTeVErNEhEdGVLcXFZUzRH?=
- =?utf-8?B?N3VhTjJmY2pmMWVrTWIzNTdSUEt0bFIyVkQ3VFV1UHRYS2Y1OStNaTVDUE01?=
- =?utf-8?B?YU82VFdReHNrU1U1eDFITExGdzlHc1ZkbVNhV05uZlZFQnRLOEZBNWcvRDk4?=
- =?utf-8?B?dkV4ckgwTXVLdXBPYlVXRzZDK3JHYU02V1Y3aWZrS2oyei8yUXF1RG16dGhw?=
- =?utf-8?B?SVJRZ21oR2dpWVFYU29OaXp6TG40alFWWFYrUk1rTXhqYXZUMCtwbUtMb2pG?=
- =?utf-8?B?UGNxOEF3TVVHNWY4Qnh4VTBXczcvYXRoSk96ak50T3dpZ2tGcDlyM2JOY1Y2?=
- =?utf-8?B?RjB6ditsTlRyYmMwWGVkZm5lTlFzWWsvdE5BQ0NnWWp6anVUbDhUdmhhN3VG?=
- =?utf-8?B?TDZGZ0UvNkVZMVhHbk9QdnkwWEhwZHZleHpHWVVCL2tMQ3Q3WTg4dmtSQlBE?=
- =?utf-8?B?SjVlaTYwRVl5cHRDdnhrSGxsQnh6SEZIU2Z1YVg5Z09WeHJIZDVwRmZRZ3gw?=
- =?utf-8?B?Q2QrS000M3NlWVF6RkpTZnAxRTFXeFphenN5S1hhMTRYdTJUY3ZGay90SmM1?=
- =?utf-8?B?WHZFNXgrYU53eTFFM0ZjUk1xUWsvNmRxV3BDWW0wTHEzNHdSM2Zjbmx3dExZ?=
- =?utf-8?B?Z01NSFJJY3Z6TFdsSU4rcmUzK1didzhBTVpGUEpLR1Q3WFFUdUk4VUF5WUpw?=
- =?utf-8?B?RGM0YVg3ZkkzdnNHbEF3VW14MWJKR2NnL2I0YXJZQ20vMURjQnlld1hOZDhj?=
- =?utf-8?B?VTJpSjdIdHdreFFVVEQwOVJZMFB0aGVERElleDJLTlN2UXkxRVM1K0ttenla?=
- =?utf-8?B?ZTJBYnp5WkZINmgycVFWVnlLWWVIb1h6b0JCV1BnV2VKQXU4LzNONmQvbDh3?=
- =?utf-8?B?MnBUNlFHLzNrbFVLeUNxUU9jSS9wUDNoVjBuZWtXYkJBd3l4cDd4dGVMQjk1?=
- =?utf-8?B?SjR5TnJHNUw3S2ZxNHd4QVViLzZ6bmNCN0FqbXZGdnpTQUR4ZHM5azRqSnpk?=
- =?utf-8?B?di81NlphdllickowSTZxTGdTRVRSKzJyMEJyT2p6VDV0dHBwSWg4czM2MFpU?=
- =?utf-8?B?d3JQRHFLOTd5aFVQM2NySGR5S01tUzlZbFFvOGl6V2pBc1FORjJERXRmaCtq?=
- =?utf-8?B?b3F0NWZ6a1BsNHY2SlM0NXd1aVg5WndJZ0NWRktselV5bDBkSnE1c3NqZzc1?=
- =?utf-8?B?QWk1V3Z2VXhyNHVES1Z6Nk5pWlVyOXZlMk5manp6azVUWGpRQlpXcHJzWnB4?=
- =?utf-8?B?WlpWMWN1L0pOKy8rd2dGcUtwV2ZGWmlwdmxQbHYwZG9BLzUzOE91UFhITVBO?=
- =?utf-8?B?MlBkUFErWUUxTFkvNklWV1JGcE1USE1JSFlwUitFRmFFbmNIRVcyeFl1VUV1?=
- =?utf-8?B?bCt0VUtLMll2a3dmSm9qeTJKVFg2QWNvdXFPNVpWTFR3TUxESnRKLzZRMEFT?=
- =?utf-8?B?WkhmdUo1dkVhT1BSQ3VML1RDZkJ4UmJZL3AveFpNL2NiaXZNV1ZtTkZQaDhK?=
- =?utf-8?B?RUlsY1JwODhFOWxiWHhOaGNublZHdnlsRDhITHFZL3pFWVFSRGk2MlVTNG1w?=
- =?utf-8?B?bmJjM1VISHc3N0xkenJsR1pBVmdsK0QyTzhoY3FoTDVxT2tjWldxMGpST1RF?=
- =?utf-8?B?SE9oRlB4WmxiQWdqWTVWRzZvdExRcXpRQmZLTHRHd3g3Z1RBaWtqdTJpWWNJ?=
- =?utf-8?B?MUpBN1JrVHlVc3VZUC9rQXAvbEp4bGtzeFY0cERMcUVvQ3REaEZFZ3ZzemVk?=
- =?utf-8?Q?lD+qsbDUGF0oSLB4mA=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-80ceb.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 284b56ee-95f6-42ed-fbc0-08dc1b1510e8
-X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 06:40:47.5225
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9P193MB1258
+Content-Transfer-Encoding: 8bit
 
-On 1/19/24 11:38, Jose Abreu wrote:
-> I understand your point, but the delay should be on reset function itself, since it depends
-> on the SoC that stmmac is integrated.
-> 
-> Please refer to reset_simple_reset(), where usleep_range() is used.
-> 
+please test possible deadlock in hfs_extend_file
 
-Okay, in my case the SOC is an Altera CycloneV and reset control seems to be an altr,rst-mgr
-which is indeed based on this reset_simple_reset.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 610a9b8f49fb
 
-So it implements reset_control_assert, reset_control_deassert, and reset_control_reset.
-But the above mentioned delay affects only the width of the reset pulse that is generated
-by the reset_control_reset method.
+diff --git a/fs/hfs/extent.c b/fs/hfs/extent.c
+index 6d1878b99b30..1b02c7b6a10c 100644
+--- a/fs/hfs/extent.c
++++ b/fs/hfs/extent.c
+@@ -197,6 +197,10 @@ static int hfs_ext_read_extent(struct inode *inode, u16 block)
+ 	    block < HFS_I(inode)->cached_start + HFS_I(inode)->cached_blocks)
+ 		return 0;
+ 
++	if (HFS_I(inode)->flags & HFS_FLG_EXT_DIRTY && 
++	    HFS_I(inode)->flags & HFS_FLG_EXT_NEW) 
++		return -ENOENT;
++
+ 	res = hfs_find_init(HFS_SB(inode->i_sb)->ext_tree, &fd);
+ 	if (!res) {
+ 		res = __hfs_ext_cache_extent(&fd, inode, block);
 
-However if you look at the code in stmmac_dvr_proble where the reset pulse is generated,
-you will see that the reset pulse is only generated with reset_control_assert/deassert:
-
-        if (priv->plat->stmmac_rst) {
-                ret = reset_control_assert(priv->plat->stmmac_rst);
-                reset_control_deassert(priv->plat->stmmac_rst);
-                /* Some reset controllers have only reset callback instead of
-                 * assert + deassert callbacks pair.
-                 */
-                if (ret == -ENOTSUPP)
-                        reset_control_reset(priv->plat->stmmac_rst);
-        }
-
-I don't know which reset controller that would be, where only a reset_control_reset is
-available, but in my case ret == 0, and even if I could get the reset_control_reset
-to be used, the issue is not the duration how long the reset line is in active state,
-but the duration that is needed for the device to recover from the reset.
-
-
-Thanks
-Bernd.
 
