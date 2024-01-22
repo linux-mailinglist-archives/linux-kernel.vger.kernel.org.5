@@ -1,152 +1,131 @@
-Return-Path: <linux-kernel+bounces-33110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0A88364B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:48:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9312C8364BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:49:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E32CDB2283F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:48:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24D3B288A2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:49:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8F93D0D4;
-	Mon, 22 Jan 2024 13:48:32 +0000 (UTC)
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63213D0BE;
+	Mon, 22 Jan 2024 13:49:09 +0000 (UTC)
+Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [5.144.164.162])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2733D0B4;
-	Mon, 22 Jan 2024 13:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6433D0B4
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.162
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705931312; cv=none; b=UVMW1ky+tQamkKonBbunBGw1nVRvKqG0wxmdkbCqtlRJOQgyrHxZlbnBENLhgtbVjCS9hvmVm58g6hHYSE2p+6CpCBsbcLQPu96v0EFV0HdZb7fChqJN1Jv64HDQqs2snxZTi1FwmmTL4Se0Gsche4/fEshjSZ1ej9m1dbL4kxk=
+	t=1705931349; cv=none; b=F8wKSAPp/0gVYUkkEr0rjRsW9fIm56nF1wHc4O+F145L6t/AdyodA54ZyH2fEJlUssfBg6cwh4h9y21t9n9dOEIRlHPyyH5dXL4dwPMu1j7qcF0W4rK/OtOIoAExd7ZnSPYmHy63g+KVKzWt/PgEL29bcndj1SAz/O6pW003qh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705931312; c=relaxed/simple;
-	bh=BquSct0x/3PHrMNBVC2M3NsXYQeqttQn96LV68l/gxw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K5wbwGUkLWqM8ZeBSLjYZ20kQtg4whTQDqGdElmajjA4VvHYI0xM/vG86SM1Ql3SRWrAaNacrifZ5VFcN0p3w8jAOdA549vhHWPN5Gt2QZTm2j88E0k1J/i0Bse9VcElw3QlcXoQLjw2kQc1n3yz+/SZbC2FdpRONqhnpE14bnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W.9eXi4_1705931303;
-Received: from 30.221.145.129(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.9eXi4_1705931303)
-          by smtp.aliyun-inc.com;
-          Mon, 22 Jan 2024 21:48:24 +0800
-Message-ID: <7790423f-665e-44cc-b4ae-d3f3d2996af5@linux.alibaba.com>
-Date: Mon, 22 Jan 2024 21:48:23 +0800
+	s=arc-20240116; t=1705931349; c=relaxed/simple;
+	bh=HzGar3lPrx516B+Rz9JdR66wQRHDFkVanbk8QWDlmoU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NKIiXY0/7zrlzwlDk6pU/KYFgSsTH5T01ScKSBH7mHZ66syhLSFPlDnYUmCNIVfIgz7p66ENia/FZeF+XrOQf3KO30NQ7uaxExcC0gzQDjdhh77tfZU8TxNq2lhKcw55WGurJUn2lJ56Jb91QXmXQ5A1ZVpy+6GgmAf0Ky6TG/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.162
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
+Received: from SoMainline.org (82-72-63-87.cable.dynamic.v4.ziggo.nl [82.72.63.87])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id B91341FA5B;
+	Mon, 22 Jan 2024 14:49:03 +0100 (CET)
+Date: Mon, 22 Jan 2024 14:49:01 +0100
+From: Marijn Suijten <marijn.suijten@somainline.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, ~postmarketos/upstreaming@lists.sr.ht, 
+	Luca Weiss <luca@z3ntu.xyz>, Adam Skladowski <a39.skl@gmail.com>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Martin Botka <martin.botka@somainline.org>, 
+	Jami Kettunen <jami.kettunen@somainline.org>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH v2 6/6] arm64: dts: qcom: msm8956-loire: Add SD Card
+ Detect to SDC2 pin states
+Message-ID: <iatieesr52v5au4kkovw3gc34tn3snt454grq7le66oar6x7t4@4jfwxgxov36v>
+References: <20240121-msm8976-dt-v2-0-7b186a02dc72@somainline.org>
+ <20240121-msm8976-dt-v2-6-7b186a02dc72@somainline.org>
+ <9d3623f8-697b-44ab-a9eb-9d2d305b0e5c@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/10] cachefiles, erofs: Fix NULL deref in when
- cachefiles is not doing ondemand-mode
-Content-Language: en-US
-To: David Howells <dhowells@redhat.com>,
- Christian Brauner <christian@brauner.io>
-Cc: Jeff Layton <jlayton@kernel.org>, Matthew Wilcox <willy@infradead.org>,
- netfs@lists.linux.dev, linux-afs@lists.infradead.org,
- linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
- linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Marc Dionne <marc.dionne@auristor.com>, Gao Xiang <xiang@kernel.org>,
- Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>
-References: <20240122123845.3822570-1-dhowells@redhat.com>
- <20240122123845.3822570-7-dhowells@redhat.com>
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-In-Reply-To: <20240122123845.3822570-7-dhowells@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9d3623f8-697b-44ab-a9eb-9d2d305b0e5c@collabora.com>
 
-
-
-On 1/22/24 8:38 PM, David Howells wrote:
-> cachefiles_ondemand_init_object() as called from cachefiles_open_file() and
-> cachefiles_create_tmpfile() does not check if object->ondemand is set
-> before dereferencing it, leading to an oops something like:
+On 2024-01-22 12:48:27, AngeloGioacchino Del Regno wrote:
+> Il 21/01/24 23:33, Marijn Suijten ha scritto:
+> > In addition to the SDC2 pins, set the SD Card Detect pin in a sane state
+> > to be used as an interrupt when an SD Card is slotted in or removed.
+> > 
+> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > ---
+> >   arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi | 17 +++++++++++++++++
+> >   1 file changed, 17 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi b/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi
+> > index b0b83edd3627..75412e37334c 100644
+> > --- a/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi
+> > @@ -264,10 +264,27 @@ &sdhc_1 {
+> >   	status = "okay";
+> >   };
+> >   
+> > +&sdc2_off_state {
+> > +	sd-cd-pins {
+> > +		pins = "gpio100";
+> > +		function = "gpio";
+> > +		drive-strength = <2>;
+> > +		bias-disable;
+> > +	};
 > 
-> 	RIP: 0010:cachefiles_ondemand_init_object+0x9/0x41
-> 	...
-> 	Call Trace:
-> 	 <TASK>
-> 	 cachefiles_open_file+0xc9/0x187
-> 	 cachefiles_lookup_cookie+0x122/0x2be
-> 	 fscache_cookie_state_machine+0xbe/0x32b
-> 	 fscache_cookie_worker+0x1f/0x2d
-> 	 process_one_work+0x136/0x208
-> 	 process_scheduled_works+0x3a/0x41
-> 	 worker_thread+0x1a2/0x1f6
-> 	 kthread+0xca/0xd2
-> 	 ret_from_fork+0x21/0x33
+> Are you sure that you really don't want card detect during system suspend?
+
+Does it make a difference if the rest of pinctrl and the SDHCI controller are
+also turned off?
+
+> You could simply add a sdc2-cd-pins out of sdc2_{on,off}_state and add use it for
+> both default and sleep.
+
+This sounds close to what Konrad suggested by using a new block wit its own
+label rather than extending the existing state.
+
+> pinctrl-0 = <&sdc2_on_state>, <&sdc2_card_det_n>;
+> pinctrl-1 = <&sdc2_off_state>;
+
+You said both, but it's not in pinctrl-1 here?  (And might unselect bias-pull-up
+implicitly instead of explicitly selecting bias-disable via an off node?)
+
+- Marijn
+
+> Cheers,
+> Angelo
 > 
-> Fix this by making the calls to cachefiles_ondemand_init_object()
-> conditional.
+> > +};
+> > +
+> >   &sdc2_on_state {
+> >   	clk-pins {
+> >   		drive-strength = <10>;
+> >   	};
+> > +
+> > +	sd-cd-pins {
+> > +		pins = "gpio100";
+> > +		function = "gpio";
+> > +		drive-strength = <2>;
+> > +		input-enable;
+> > +		bias-pull-up;
+> > +	};
+> >   };
+> >   
+> >   &sdhc_2 {
+> > 
 > 
-> Fixes: 3c5ecfe16e76 ("cachefiles: extract ondemand info field from cachefiles_object")
-> Reported-by: Marc Dionne <marc.dionne@auristor.com>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Gao Xiang <xiang@kernel.org>
-> cc: Chao Yu <chao@kernel.org>
-> cc: Yue Hu <huyue2@coolpad.com>
-> cc: Jeffle Xu <jefflexu@linux.alibaba.com>
-> cc: linux-erofs@lists.ozlabs.org
-> cc: netfs@lists.linux.dev
-> cc: linux-fsdevel@vger.kernel.org
-> ---
->  fs/cachefiles/namei.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
 > 
-> diff --git a/fs/cachefiles/namei.c b/fs/cachefiles/namei.c
-> index 7ade836beb58..180594d24c44 100644
-> --- a/fs/cachefiles/namei.c
-> +++ b/fs/cachefiles/namei.c
-> @@ -473,9 +473,11 @@ struct file *cachefiles_create_tmpfile(struct cachefiles_object *object)
->  	if (!cachefiles_mark_inode_in_use(object, file_inode(file)))
->  		WARN_ON(1);
->  
-> -	ret = cachefiles_ondemand_init_object(object);
-> -	if (ret < 0)
-> -		goto err_unuse;
-> +	if (object->ondemand) {
-> +		ret = cachefiles_ondemand_init_object(object);
-> +		if (ret < 0)
-> +			goto err_unuse;
-> +	}
-
-I'm not sure if object->ondemand shall be checked by the caller or
-inside cachefiles_ondemand_init_object(), as
-cachefiles_ondemand_clean_object() is also called without checking
-object->ondemand. cachefiles_ondemand_clean_object() won't trigger the
-NULL oops as the called cachefiles_ondemand_send_req() will actually
-checks that.
-
-Anyway this patch looks good to me.  Thanks.
-
-Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
-
->  
->  	ni_size = object->cookie->object_size;
->  	ni_size = round_up(ni_size, CACHEFILES_DIO_BLOCK_SIZE);
-> @@ -579,9 +581,11 @@ static bool cachefiles_open_file(struct cachefiles_object *object,
->  	}
->  	_debug("file -> %pd positive", dentry);
->  
-> -	ret = cachefiles_ondemand_init_object(object);
-> -	if (ret < 0)
-> -		goto error_fput;
-> +	if (object->ondemand) {
-> +		ret = cachefiles_ondemand_init_object(object);
-> +		if (ret < 0)
-> +			goto error_fput;
-> +	}
->  
->  	ret = cachefiles_check_auxdata(object, file);
->  	if (ret < 0)
-
--- 
-Thanks,
-Jingbo
 
