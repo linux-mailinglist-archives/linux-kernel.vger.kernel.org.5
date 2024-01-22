@@ -1,195 +1,146 @@
-Return-Path: <linux-kernel+bounces-32947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2559E836260
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:45:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C5D83623C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:43:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 588521C2761E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:45:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8538B1C26186
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51D43A8DB;
-	Mon, 22 Jan 2024 11:44:29 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9570E3D0A1;
+	Mon, 22 Jan 2024 11:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="GqZUmf2R"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D980A39ACC;
-	Mon, 22 Jan 2024 11:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8208B3AC19
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923867; cv=none; b=VGrg8ldCDGnZdjmy86t8bkjyfyj7ZZUvqtudnoar3jva2TjoZ220gLBaUHn5A1+NdglXLgjCoBDNPixA6TQiF19HfmgfFMWgsGeRgu5K/0SxfGGaY5XDihZU9xu6nRzLe7xxPgnqFunz+08Gy1k2xttt/NTvx6/bfSVMI54qQX8=
+	t=1705923572; cv=none; b=hqf99D0nAE+XfZlcUypvHpNHaTRUGPHpdlMhLbIFOi7vx/LZ3h7YpWovg1la0/LcFThsqaZf3CY1b9f1Gvgi7N+2csc8Qve2mxSiChFVo70oz9E9A+JchMgNAzHf7Kp6+SURlhMj0e/e46IE1VNwZzUgP/QjZP9qzHC9p/v9STE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923867; c=relaxed/simple;
-	bh=gTjiJJ3k10zp61AiQqvOuvcvQS0uG1AXQCn4e+++Nc0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MLd9ukoOwzo+aJ4+C7x2yS6unRCNm/biYJidVtxCICGGqfJAd3vrkN0VcGSjUL6SOBv0RHV1KHM1ATktfY5Dc5vkSusopS/AVrmarQwK6Wiy7Dbe1JY3AWMRp6Q7O14W70/5gK/SO/eLqRza4YV8HX+gtV9z0qfmBOhMab5B2oU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 9410ebf670e577ae; Mon, 22 Jan 2024 12:44:22 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 50FDD669540;
-	Mon, 22 Jan 2024 12:44:22 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v1 10/12] PM: sleep: Move some assignments from under a lock
-Date: Mon, 22 Jan 2024 12:39:17 +0100
-Message-ID: <1795169.VLH7GnMWUR@kreacher>
-In-Reply-To: <5760158.DvuYhMxLoT@kreacher>
-References: <5760158.DvuYhMxLoT@kreacher>
+	s=arc-20240116; t=1705923572; c=relaxed/simple;
+	bh=hDOlhtMQCv0ZUcTnLwP3plzcjZq49aIywW1xbB/0o9c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gn5bwZj9lTnzNE6uVkeojIduUL0jSKvBUXTORI7ZSq5aLVxpYOSws8+nI8zp2dG4ix+SuYxM7l1ncU0/DpPtvdzPGBvgaooGKszqF7Q2VOS58PjA4u89RlvaXLGQ9dgZxrjX+GqmenHj2wFX1B8aerYHWPh5WDWdErAV4JwshNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=GqZUmf2R; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6dbd7f1a300so1381088b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 03:39:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tweaklogic.com; s=google; t=1705923570; x=1706528370; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1EUmMR17Pa8J0jAlZypSL6+g8Srm5M13PwsXUfYUP9Y=;
+        b=GqZUmf2RS2u6G9DLvItocko9fkEd5HGlK2QxF64DnFsavfFjh7Y7K5eByT1uxwyFdn
+         6MatjOdQn4Pj6bg8UIbwXaCCHppufkxOGA31S5Rl5SktWyXwRhh5NLZ8QeE0nMh1u+q1
+         D7WZRcAgqcZHL6yDUEgSSx0Kd0AZcnaKzvnM7+Y6CGOrXO2zPBdmVwCc0RPqVPbRO/f+
+         rKZzZtWprWZBWoGRSprcV0vSc/OnpVRMBDMCz0njR39tk+Yrl/wKUbvrC8aTZfIlwTO2
+         NN6raBM6mtiH2DkFXlpqeZIhEwUT+HcduMK9VpGv4Sb1RrJum52J2qjoNWz30u9fyY2Z
+         y5BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705923570; x=1706528370;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1EUmMR17Pa8J0jAlZypSL6+g8Srm5M13PwsXUfYUP9Y=;
+        b=eH5lVuSQ06sDxbPXVUsHjacs/WRA6GGVD2mxDAhjgfuM/4RWgwk4z15/IMiepV9Uhe
+         /wjbeTGgiJkB/vZqFhMpPL5MO22StQtpwyC7EdRKfe5P/3QeLJw9M1KVyxrvyHeEQEyh
+         GoW7cc3w4DjAmkHKUxBv2TMxitb6G0JzNxCf4mSg2286+0uEgd5yVA4tcK7HBYE+KO1X
+         +NBrPamGG5zSV66vG4q5tStiulJOJs7gO21jqnOtBytA4HFNFToaxdxiMdRmN85xsOub
+         Dqc8HRr8bp8clDAdkkmWTFpG/BDIYxKIHQ2iJEfNsTaNagipF8UIfcVKnjMf8+U5sSyR
+         Ht/Q==
+X-Gm-Message-State: AOJu0YzRyGLZuAf6vK02kUTlmovQ4KEjaJuTqmLVIjmMHtiwrTvf8IhK
+	XxZx8tMWEB1+Dmler3yy34ciVMlBiKb2WzIxA3HI+OSWUwpKfHkZS3wJ7SPQLHU=
+X-Google-Smtp-Source: AGHT+IHely7tfA2gE24XEktiw5Yd+K8wVvpQCBuJfsIqOfhQT8xeJ7ethlDWbTCHUoq/dgyt2d1N7g==
+X-Received: by 2002:a05:6a00:a86:b0:6db:ad5c:80b8 with SMTP id b6-20020a056a000a8600b006dbad5c80b8mr5839715pfl.7.1705923569747;
+        Mon, 22 Jan 2024 03:39:29 -0800 (PST)
+Received: from [192.168.20.11] ([180.150.112.156])
+        by smtp.gmail.com with ESMTPSA id t187-20020a6281c4000000b006d99125b114sm9817341pfd.65.2024.01.22.03.39.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 03:39:29 -0800 (PST)
+Message-ID: <05727e6f-3355-4572-96e4-0b2ac4d8dca7@tweaklogic.com>
+Date: Mon, 22 Jan 2024 22:09:19 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgfedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/3] iio: light: Add support for APDS9306 Light Sensor
+Content-Language: en-US
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: andriy.shevchenko@linux.intel.com, anshulusr@gmail.com,
+ conor+dt@kernel.org, devicetree@vger.kernel.org,
+ javier.carrasco.cruz@gmail.com, jic23@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, lars@metafoo.de,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, marex@denx.de,
+ matt@ranostay.sg, mazziesaccount@gmail.com, robh+dt@kernel.org,
+ stefan.windfeldt-prytz@axis.com
+References: <20240121051735.32246-1-subhajit.ghosh@tweaklogic.com>
+ <20240121051735.32246-4-subhajit.ghosh@tweaklogic.com>
+ <8a7f03b6-caca-4fbb-8093-0ba87bd2e850@wanadoo.fr>
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <8a7f03b6-caca-4fbb-8093-0ba87bd2e850@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 21/1/24 19:52, Christophe JAILLET wrote:
+> Le 21/01/2024 à 06:17, Subhajit Ghosh a écrit :
+>> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
+>> It has two channels - ALS and CLEAR. The ALS (Ambient Light Sensor)
+>> channel approximates the response of the human-eye providing direct
+>> read out where the output count is proportional to ambient light levels.
+>> It is internally temperature compensated and rejects 50Hz and 60Hz flicker
+>> caused by artificial light sources. Hardware interrupt configuration is
+>> optional. It is a low power device with 20 bit resolution and has
+>> configurable adaptive interrupt mode and interrupt persistence mode.
+>> The device also features inbuilt hardware gain, multiple integration time
+>> selection options and sampling frequency selection options.
+>>
+>> This driver also uses the IIO GTS (Gain Time Scale) Helpers Namespace for
+>> Scales, Gains and Integration time implementation.
+>>
+>> Signed-off-by: Subhajit Ghosh <subhajit.ghosh-ojZBjWEdjYKukZHgTAicrQ@public.gmane.org>
+>> ---
+> 
+> Hi,
+> 
+> a few nits and a few real comment/question below.
+> 
+> Just my 2c.
+> 
+> CJ
+> ...
 
-The async_error and pm_transition variables are set under dpm_list_mtx
-in multiple places in the system-wide device PM core code, which is
-unnecessary and confusing, so rearrange the code so that the variables
-in question are set before acquiring the lock.
+>> +
+>> +static int apds9306_read_event(struct iio_dev *indio_dev,
+>> +                   const struct iio_chan_spec *chan,
+>> +                   enum iio_event_type type,
+>> +                   enum iio_event_direction dir,
+>> +                   enum iio_event_info info,
+>> +                   int *val, int *val2)
+>> +{
+>> +    struct apds9306_data *data = iio_priv(indio_dev);
+>> +    int ret;
+> 
+> Other functions below that look really similar have a:
+>     guard(mutex)(&data->mutex);
+> 
+> Is it needed here?
+You are right, don't think so. Regmap lock is being used.
+I will review the locking mechanism. Acknowledging all other comments.
 
-While at it, add some empty code lines around locking to improve the
-consistency of the code.
+Thanks for the review.
 
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/base/power/main.c |   28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
-
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -707,9 +707,9 @@ static void dpm_noirq_resume_devices(pm_
- 	trace_suspend_resume(TPS("dpm_resume_noirq"), state.event, true);
- 
- 	async_error = 0;
-+	pm_transition = state;
- 
- 	mutex_lock(&dpm_list_mtx);
--	pm_transition = state;
- 
- 	/*
- 	 * Trigger the resume of "async" devices upfront so they don't have to
-@@ -847,9 +847,9 @@ void dpm_resume_early(pm_message_t state
- 	trace_suspend_resume(TPS("dpm_resume_early"), state.event, true);
- 
- 	async_error = 0;
-+	pm_transition = state;
- 
- 	mutex_lock(&dpm_list_mtx);
--	pm_transition = state;
- 
- 	/*
- 	 * Trigger the resume of "async" devices upfront so they don't have to
-@@ -1012,10 +1012,11 @@ void dpm_resume(pm_message_t state)
- 	trace_suspend_resume(TPS("dpm_resume"), state.event, true);
- 	might_sleep();
- 
--	mutex_lock(&dpm_list_mtx);
- 	pm_transition = state;
- 	async_error = 0;
- 
-+	mutex_lock(&dpm_list_mtx);
-+
- 	/*
- 	 * Trigger the resume of "async" devices upfront so they don't have to
- 	 * wait for the "non-async" ones they don't depend on.
-@@ -1294,10 +1295,12 @@ static int dpm_noirq_suspend_devices(pm_
- 	int error = 0;
- 
- 	trace_suspend_resume(TPS("dpm_suspend_noirq"), state.event, true);
--	mutex_lock(&dpm_list_mtx);
-+
- 	pm_transition = state;
- 	async_error = 0;
- 
-+	mutex_lock(&dpm_list_mtx);
-+
- 	while (!list_empty(&dpm_late_early_list)) {
- 		struct device *dev = to_device(dpm_late_early_list.prev);
- 
-@@ -1320,7 +1323,9 @@ static int dpm_noirq_suspend_devices(pm_
- 		if (error || async_error)
- 			break;
- 	}
-+
- 	mutex_unlock(&dpm_list_mtx);
-+
- 	async_synchronize_full();
- 	if (!error)
- 		error = async_error;
-@@ -1470,11 +1475,14 @@ int dpm_suspend_late(pm_message_t state)
- 	int error = 0;
- 
- 	trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
--	wake_up_all_idle_cpus();
--	mutex_lock(&dpm_list_mtx);
-+
- 	pm_transition = state;
- 	async_error = 0;
- 
-+	wake_up_all_idle_cpus();
-+
-+	mutex_lock(&dpm_list_mtx);
-+
- 	while (!list_empty(&dpm_suspended_list)) {
- 		struct device *dev = to_device(dpm_suspended_list.prev);
- 
-@@ -1498,7 +1506,9 @@ int dpm_suspend_late(pm_message_t state)
- 		if (error || async_error)
- 			break;
- 	}
-+
- 	mutex_unlock(&dpm_list_mtx);
-+
- 	async_synchronize_full();
- 	if (!error)
- 		error = async_error;
-@@ -1745,9 +1755,11 @@ int dpm_suspend(pm_message_t state)
- 	devfreq_suspend();
- 	cpufreq_suspend();
- 
--	mutex_lock(&dpm_list_mtx);
- 	pm_transition = state;
- 	async_error = 0;
-+
-+	mutex_lock(&dpm_list_mtx);
-+
- 	while (!list_empty(&dpm_prepared_list)) {
- 		struct device *dev = to_device(dpm_prepared_list.prev);
- 
-@@ -1771,7 +1783,9 @@ int dpm_suspend(pm_message_t state)
- 		if (error || async_error)
- 			break;
- 	}
-+
- 	mutex_unlock(&dpm_list_mtx);
-+
- 	async_synchronize_full();
- 	if (!error)
- 		error = async_error;
-
-
+Regards,
+Subhajit Ghosh
 
 
