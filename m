@@ -1,58 +1,64 @@
-Return-Path: <linux-kernel+bounces-33562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F7AD836B61
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC73836B66
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05C981F22D8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:44:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9F7D1F23157
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:44:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D9F152DF1;
-	Mon, 22 Jan 2024 15:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DA1152E1A;
+	Mon, 22 Jan 2024 15:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mKfhZgTy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uq+lDxcW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68E3151CCD;
-	Mon, 22 Jan 2024 15:18:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406C9152DED;
+	Mon, 22 Jan 2024 15:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936732; cv=none; b=qUdFAFgWi/cmjPnh6HlCkI0xHDnQ5H3xOM25xR5p0OGIR3H8omnWOVJt1XMFtGzqoE2qnev7wfAUpcmDlpJUvpHDmhTvHXtC35a5BqqRJxoeTSD1/XJDJFuG1xYaLSNhmzMkuv4Ufpq22RThCdGsm14lw8SNZgyt0XgkcLVvlm4=
+	t=1705936734; cv=none; b=s7AaMjubkJ1b6rRHftz0akp4xhMCHI1bx3E5qD2yEGIri6Ui+XxJwYYJuNRI2FG6GBBwoA33j1tTRtuaIbTSY93lttlk3wl/3dbzzO9iC+f+uCG4DclbTki4RyNtD/6SjebDt8zcIsnyTN0krcK2jBLHVTneLVUaJ3XgTGrq2Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936732; c=relaxed/simple;
-	bh=+k2vygah2BYoMsEnvJ8o9+EBu3ToXpgQXFXwdYknDb0=;
+	s=arc-20240116; t=1705936734; c=relaxed/simple;
+	bh=9vp3fgTAMOlr5CFsOf+b2POkJmPdWdYEmPmQKvjJkQI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X2mHddkwyUqa8r5baKcjECmfD4lFybdCdLIfezzUjkzXw+yXmnmfvSbf+K2TSZ953Th0Q3eQSnIQPOCF1RfU41fPzady7LKCrZwsaMSL3oOuKLD3oLPmQvcNQLwAKjbnPP0DUukzzn8RyLdyQt5Y9Hkh60wj69ifvwe+0hgz/Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mKfhZgTy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D901C433F1;
-	Mon, 22 Jan 2024 15:18:50 +0000 (UTC)
+	 MIME-Version; b=Fciwa3hRbW7KUQgVFfruNC3kRdB/SNcO8/TYmULB2IsigRQkleF53mL9FRdxhPtxxsTcBxafL8tLPSEND9VB7o4K04/SXSgr8Nv84W2/Kb4IDQnKCjEpIrHqIGnBkXMXp6d6mogS4BarkYo7l2B03KzX0LsA6NxyyXKKUIUm5do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uq+lDxcW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 549E2C433F1;
+	Mon, 22 Jan 2024 15:18:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936731;
-	bh=+k2vygah2BYoMsEnvJ8o9+EBu3ToXpgQXFXwdYknDb0=;
+	s=k20201202; t=1705936734;
+	bh=9vp3fgTAMOlr5CFsOf+b2POkJmPdWdYEmPmQKvjJkQI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mKfhZgTyqMshqj0eHxeAGLQ+tVQcEfEdiNMJhUq3AnodlE4ldf5AqsnTZ5B5QoIrh
-	 1bA5JxY/Nx1YfyyHCXryEv18Fw+JpsB2GEEITsx/seARVxh6y+L8vM8DgafW8rfvJ2
-	 sO9+L/GfFs/XpWl/Wj0ij51AtGhc4IuxECY11eE6lSVXO8RR+VwQvEhDwW/O8yJRfE
-	 7kff15RW4yAJpQ3M85WdMZNyokC1/Sag+aY92Kdlr1dlVzcy3QS/qfwSiGOpMabp7a
-	 pQxcG77ueiiLalbSP6tHqLq1CFcuH7nrsk2FXKmAN35hCATrk9YfETjsYTHNjPRVZn
-	 c6Lpy8ULaZ4Qg==
+	b=uq+lDxcWD7cO6pOdmwbFfRx8Vb+Qlo8hN0QTCwAXGRKs81plrd88B+ptRhnKMhWLO
+	 Mm34D+3R67V11nO5lLg5XRpq5hsUU6HwV1gSe8p0Vn7xgXOxKy2bSPXjxjbfOFIarE
+	 F4xgaJ30/6ZC9cvVkm51IGHrbaT5E/t3vP+RaUz/d4OtPLxHsaL3Hxs2xRJQMG0bo/
+	 Fy2gyykzkEJoxxPfMKkiIOYJEbTlIPvRdidOCoREMotUQ5IS+NYJmqTjoGBQyzqFhR
+	 y2F8BD+GejxIGunvp/G2wqRK+l1wPzYfhpGQBD9lzXufTmBk9PgWwThw1Gpp9TV34L
+	 OmSzg0eXu78rQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	Jim Cromie <jim.cromie@gmail.com>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	linux-hwmon@vger.kernel.org,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 13/23] hwmon: (pc87360) Bounds check data->innr usage
-Date: Mon, 22 Jan 2024 10:17:53 -0500
-Message-ID: <20240122151823.997644-13-sashal@kernel.org>
+Cc: Douglas Anderson <dianders@chromium.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Inki Dae <inki.dae@samsung.com>,
+	Sasha Levin <sashal@kernel.org>,
+	sw0312.kim@samsung.com,
+	kyungmin.park@samsung.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	krzysztof.kozlowski@linaro.org,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 14/23] drm/exynos: Call drm_atomic_helper_shutdown() at shutdown/unbind time
+Date: Mon, 22 Jan 2024 10:17:54 -0500
+Message-ID: <20240122151823.997644-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122151823.997644-1-sashal@kernel.org>
 References: <20240122151823.997644-1-sashal@kernel.org>
@@ -67,58 +73,84 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit 4265eb062a7303e537ab3792ade31f424c3c5189 ]
+[ Upstream commit 16ac5b21b31b439f03cdf44c153c5f5af94fb3eb ]
 
-Without visibility into the initializers for data->innr, GCC suspects
-using it as an index could walk off the end of the various 14-element
-arrays in data. Perform an explicit clamp to the array size. Silences
-the following warning with GCC 12+:
+Based on grepping through the source code this driver appears to be
+missing a call to drm_atomic_helper_shutdown() at system shutdown time
+and at driver unbind time. Among other things, this means that if a
+panel is in use that it won't be cleanly powered off at system
+shutdown time.
 
-./drivers/hwmon/pc87360.c: In function 'pc87360_update_device':
-./drivers/hwmon/pc87360.c:341:49: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-  341 |                                 data->in_max[i] = pc87360_read_value(data,
-      |                                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-  342 |                                                   LD_IN, i,
-      |                                                   ~~~~~~~~~
-  343 |                                                   PC87365_REG_IN_MAX);
-      |                                                   ~~~~~~~~~~~~~~~~~~~
-./drivers/hwmon/pc87360.c:209:12: note: at offset 255 into destination object 'in_max' of size 14
-  209 |         u8 in_max[14];          /* Register value */
-      |            ^~~~~~
+The fact that we should call drm_atomic_helper_shutdown() in the case
+of OS shutdown/restart and at driver remove (or unbind) time comes
+straight out of the kernel doc "driver instance overview" in
+drm_drv.c.
 
-Cc: Jim Cromie <jim.cromie@gmail.com>
-Cc: Jean Delvare <jdelvare@suse.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-hwmon@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Link: https://lore.kernel.org/r/20231130200207.work.679-kees@kernel.org
-[groeck: Added comment into code clarifying context]
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+A few notes about this fix:
+- When adding drm_atomic_helper_shutdown() to the unbind path, I added
+  it after drm_kms_helper_poll_fini() since that's when other drivers
+  seemed to have it.
+- Technically with a previous patch, ("drm/atomic-helper:
+  drm_atomic_helper_shutdown(NULL) should be a noop"), we don't
+  actually need to check to see if our "drm" pointer is NULL before
+  calling drm_atomic_helper_shutdown(). We'll leave the "if" test in,
+  though, so that this patch can land without any dependencies. It
+  could potentially be removed later.
+- This patch also makes sure to set the drvdata to NULL in the case of
+  bind errors to make sure that shutdown can't access freed data.
+
+Suggested-by: Maxime Ripard <mripard@kernel.org>
+Reviewed-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Inki Dae <inki.dae@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/pc87360.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/exynos/exynos_drm_drv.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/hwmon/pc87360.c b/drivers/hwmon/pc87360.c
-index 7e3697727537..d2b3137dccd4 100644
---- a/drivers/hwmon/pc87360.c
-+++ b/drivers/hwmon/pc87360.c
-@@ -1637,7 +1637,11 @@ static struct pc87360_data *pc87360_update_device(struct device *dev)
- 		}
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_drv.c b/drivers/gpu/drm/exynos/exynos_drm_drv.c
+index b599f74692e5..db09e2055c86 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_drv.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_drv.c
+@@ -410,6 +410,7 @@ static int exynos_drm_bind(struct device *dev)
+ 	drm_release_iommu_mapping(drm);
+ err_free_private:
+ 	kfree(private);
++	dev_set_drvdata(dev, NULL);
+ err_free_drm:
+ 	drm_dev_put(drm);
  
- 		/* Voltages */
--		for (i = 0; i < data->innr; i++) {
-+		/*
-+		 * The min() below does not have any practical meaning and is
-+		 * only needed to silence a warning observed with gcc 12+.
-+		 */
-+		for (i = 0; i < min(data->innr, ARRAY_SIZE(data->in)); i++) {
- 			data->in_status[i] = pc87360_read_value(data, LD_IN, i,
- 					     PC87365_REG_IN_STATUS);
- 			/* Clear bits */
+@@ -424,6 +425,7 @@ static void exynos_drm_unbind(struct device *dev)
+ 
+ 	exynos_drm_fbdev_fini(drm);
+ 	drm_kms_helper_poll_fini(drm);
++	drm_atomic_helper_shutdown(drm);
+ 
+ 	component_unbind_all(drm->dev, drm);
+ 	drm_mode_config_cleanup(drm);
+@@ -461,9 +463,18 @@ static int exynos_drm_platform_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static void exynos_drm_platform_shutdown(struct platform_device *pdev)
++{
++	struct drm_device *drm = platform_get_drvdata(pdev);
++
++	if (drm)
++		drm_atomic_helper_shutdown(drm);
++}
++
+ static struct platform_driver exynos_drm_platform_driver = {
+ 	.probe	= exynos_drm_platform_probe,
+ 	.remove	= exynos_drm_platform_remove,
++	.shutdown = exynos_drm_platform_shutdown,
+ 	.driver	= {
+ 		.name	= "exynos-drm",
+ 		.pm	= &exynos_drm_pm_ops,
 -- 
 2.43.0
 
