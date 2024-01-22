@@ -1,135 +1,97 @@
-Return-Path: <linux-kernel+bounces-32225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C9338358D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 01:03:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 504FF8358D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 01:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F63E1C21882
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 00:03:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E65561F229F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 00:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F26A37B;
-	Mon, 22 Jan 2024 00:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CB536C;
+	Mon, 22 Jan 2024 00:04:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="hNNTIF3V"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V8kyjonA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3754A161;
-	Mon, 22 Jan 2024 00:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11E11FA1;
+	Mon, 22 Jan 2024 00:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705881779; cv=none; b=fr1pbGn2LsPGClnEDWbqGPo7IHkzKU336GdwQ6JHS/Iy18yT5Lhh+XEVpW8d4RpJW52Vt+eWyDfbtkebVn9HoIHXdWc0eswo8nWLcg7X9Dd+ixrYCffC7/JBIiBBew+cVUn64LK09HVc6b1THbDtQnWJObeuS1g4jP7teZ7R9sg=
+	t=1705881840; cv=none; b=ejpdWbkbley3Y0AnPrw5cBZywMk07ZfwxDorPncpL5F78goaGgoFzjNxpB+4PGDBRAXrL7GTtDFUYReq4OGA9QrT8FQaJC9j1hKVwbfY77r0ORHxssn3QcXS37CM/I9Vh2LxeLD6sCpSkOPHWVYhuObIFwyjmzs8/UvQwNDmoL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705881779; c=relaxed/simple;
-	bh=rqcMKeAgbMhwZ3crHRYkkrlt24nu9M2C3C1cYe1BCX4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=rE1AWVuNs9nhuKgjAw45yfE9JcBJCEnSGGyTqQTpOG6AX1wEInAzFsRh6JJDsYHO5dRaAbatBFMZq5f1i3stwS/t5QteMUvOX63JGszuXWSVUG1e83PbSxznSRa1Beklt21tPjKyVTOf5NkeTJ9DK9BgEui2degaO+I+G0tuuZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=hNNTIF3V; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1705881771;
-	bh=8TtaFKTsOl4DrkcENZnMZL+p4TJ3EKqtyAaSNQOEjpc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=hNNTIF3VNXwT5oQbIsAEjK/RIz+NurVECUt8UVrUU0VXMz2No5BWlzmOJslB3+/cr
-	 CpsPlRqsuuhMCqw5gxtkCPZyT8qLCQRJp1C6CsCG1XY7BC1itg8O4WnzG51LDlsEQP
-	 L3TVRhbveddsYMA1lk6pSCl6DRowwO5wwjH5jnJVWMf5DqGarw/oNuRHTFMPS6+U9J
-	 ocKGDXdbFkP3ws/YInI+pZUurcJJHssriyRhPBfd+LlttiyGuDF3jqxwj6oycN/IUy
-	 faAlZkPFBbfn1oC4lusyRCzgdLCpin0jesL9C0RIM/bOLP2Gw7wNbqiv0v1QosMnR3
-	 FAan5IgLQtqvg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TJ9Qg0nvlz4wqN;
-	Mon, 22 Jan 2024 11:02:51 +1100 (AEDT)
-Date: Mon, 22 Jan 2024 11:02:49 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Kees Cook <keescook@chromium.org>
-Cc: Askar Safin <safinaskar@zohomail.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the execve tree with Linus' tree
-Message-ID: <20240122110249.3209c0f6@canb.auug.org.au>
+	s=arc-20240116; t=1705881840; c=relaxed/simple;
+	bh=7oDI1XO154l1iaa0RraSQw5ES7TxoMVaLBOvKr6NGIU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iMCcHpak7TP4gafOBUbvkw8ZLd0lDiWVcZkkM6Eamx3yT3DlFg5A0qM26b0PWogqD9BfwJpaOdIZ7Yez5grp9o7Dpl1CSKX2AAGPo7TdXHGcSVGrYdZ3/RpWT7A3cEUQp4jvj+xrWCC+0V9sBv6gQHJS/TXtXJSUQ1q8M7Asn14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V8kyjonA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 181DDC433C7;
+	Mon, 22 Jan 2024 00:03:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705881840;
+	bh=7oDI1XO154l1iaa0RraSQw5ES7TxoMVaLBOvKr6NGIU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V8kyjonAFPfiubxozhOruWdoQ+UXUjbDUSLOYRIMizyMt/Y/BCZz5sbuvgDDM1qX9
+	 CvMVvcUha21MNi25rvqb5XINYtoNHVzyNTi8rkYfd/bTLwbgJcnZDM5+9lKeYrAe8g
+	 xgs7Pfv5KvD+eWAfBZ74aGZbLgUmkBXiD/0+WL9Zgq5TQQm07M18YfBSZbBgriDJK4
+	 Ad3aH+qNe53hChAvwcQVkyF9ZCdLwInlX3wXe6lbUCLbrvhA4Axl0fn3ST/S10diAo
+	 jlpAHKsB8UIF9EbZs6hPLOQ8LutAmlEvoGlivfAyn4JMreVapHTDWSlt0Z7CxmknB2
+	 3Bir742GDmMrQ==
+Date: Mon, 22 Jan 2024 00:03:55 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] ASoC: qcom: sc8280xp: limit speaker volumes
+Message-ID: <d54d3640-49bf-4a2f-903b-4beeb0ebd56c@sirena.org.uk>
+References: <20240119112420.7446-1-johan+linaro@kernel.org>
+ <20240119112420.7446-3-johan+linaro@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hZ2aOPGhgsIABaJxhpcwnGd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ddqYfjTpQJcp+t1u"
+Content-Disposition: inline
+In-Reply-To: <20240119112420.7446-3-johan+linaro@kernel.org>
+X-Cookie: 1: No code table for op: ++post
 
---Sig_/hZ2aOPGhgsIABaJxhpcwnGd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+--ddqYfjTpQJcp+t1u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Today's linux-next merge of the execve tree got a conflict in:
+On Fri, Jan 19, 2024 at 12:24:18PM +0100, Johan Hovold wrote:
+> The UCM configuration for the Lenovo ThinkPad X13s has up until now
+> been setting the speaker PA volume to the minimum -3 dB when enabling
+> the speakers, but this does not prevent the user from increasing the
+> volume further.
 
-  fs/exec.c
+This doesn't apply against current code, please check and resend.
 
-between commit:
-
-  978ffcbf00d8 ("execve: open the executable file before doing anything els=
-e")
-
-from Linus' tree and commit:
-
-  38132920f430 ("exec: remove useless comment")
-
-from the execve tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/exec.c
-index 8cdd5b2dd09c,d882a6128d4a..000000000000
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@@ -1826,11 -1804,10 +1826,8 @@@ static int exec_binprm(struct linux_bin
-  	return 0;
-  }
- =20
-- /*
--  * sys_execve() executes a new program.
--  */
- -static int bprm_execve(struct linux_binprm *bprm,
- -		       int fd, struct filename *filename, int flags)
- +static int bprm_execve(struct linux_binprm *bprm)
-  {
- -	struct file *file;
-  	int retval;
- =20
-  	retval =3D prepare_bprm_creds(bprm);
-
---Sig_/hZ2aOPGhgsIABaJxhpcwnGd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--ddqYfjTpQJcp+t1u
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWtsKkACgkQAVBC80lX
-0GxGawf/T4aY33IGdVvnk6ie/UbmubkUb9460FmPD/jk1ty08jJtiTJHBYYSchza
-dOqvRMfViwWkFKLGayP9YB3QCPYUUCx9SEM+SkPjXDbsUUyxhf9MWQowXrQrxTW4
-UPJp5Z8xyLRavx0KUZFCod1plQ7RmMUnwNbhbpBj3P3PxgQdUUoE+PiZf5R+IAvB
-yq8n18xvppf0s2bUqk1yc8vldd8U697ulbULhmD27YxA72KopdbT5mDn5xNOPLKj
-ygKZ9Vub41hIzskG0iM7qee5Q9izd/XQiLo+4VGEym67bdVo3+qI9D0POA+Gts02
-bj4CkIR2aYLTAoLbuxsyQAfqeqd8Dg==
-=VMX3
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWtsOoACgkQJNaLcl1U
+h9A6sAf+MNxmG+32Oty1qqRKXBZ5RVX6g9r56r3iFPMAmhMHoSZSvmXUvPk2aG29
+7Oy3y1c5yFMKmSVNq5Oi8XzLAua0Prpx1ziOSwRCgQSdZ+DRjcgxnh3lfFjH4gJI
+8GbfQuWO6XYIU0Poi972LR/dofiuSOkcU6SriIdmoUIdWaplFT/hK0b9LwFMejzD
+7p8XuQw/G0JQgztd/KGtTr1S/UyqTKbcg5hK7ON4woYsSQKWCdKq+hqXx67tyTAv
+4fiRWsQoRqtTeAw2PCt0xi3yT6aMfeciOiScaz1uZwmym3Hs8gQ1H4TSV/ee6ieu
+nUHFZS8Xq3xiYmO7DN+Fnx/eYSi46Q==
+=0JpU
 -----END PGP SIGNATURE-----
 
---Sig_/hZ2aOPGhgsIABaJxhpcwnGd--
+--ddqYfjTpQJcp+t1u--
 
