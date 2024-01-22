@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-32286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 312C6835973
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 03:42:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C26583597C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 03:54:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CBBE1F2148F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 02:42:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B72501F22192
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 02:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F4BF15BA;
-	Mon, 22 Jan 2024 02:42:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5847217FF;
+	Mon, 22 Jan 2024 02:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="i8htcTyQ"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="os1gMFEc"
 Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83295EDD
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929DE15BA
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.26.50.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705891367; cv=none; b=daYQ0Z8KtqP9pXYm3DaTVreKVArUeyZ3lHq4mjc1Ncx334lY+paD/VYwg0kjWd9sAnDpJDBcdX6kumr5xdOfoJyndoz6Hw3hgyjOm9lnSBJ7F/JQy6UJOAJKfpHVNz8bo+dVLRmcetk2LtlaRztLE57rd91XhMnoC+oZtWNrEUk=
+	t=1705892076; cv=none; b=h4VxLaLqqouBjCQ9Qo67H+JbzWri06JeWoJ8Qf2/Kl/3/NVcrjXhK82fbrqe7TeAm7eN5Ki6pSoBj40xPMGnXA4xUxuFQTgcOHApUVaCp/dx+N3CATa9jOnHXlfnqyQKsFlPeTJUMQT5s4SzcLg+9BBKoe8DoySGy/M9P3vAgY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705891367; c=relaxed/simple;
-	bh=CvYfQOkKWx+C9AjwRqK3EZBwCIHL93+bMqOxaoyet6w=;
+	s=arc-20240116; t=1705892076; c=relaxed/simple;
+	bh=mfYD+6v6kk8wYnHrbApXUiZA7Uz73G+QjKzVKWVBrE0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Uyi8J1L8uNZmMbLIVRfPxySIBkZteMMGxNd9NB13GdHDfczrB/VXBiOvXI3zHVFjFiDhFP3P/YIXYGsUX5HtqvGYqV+B4izMB5yhr728ZaeBFA05lj/NinVHDc5Nxuv/Twa7xeoiKcUkFlaSkzO488GDqOv7wbXilk67ZyjIFns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=i8htcTyQ; arc=none smtp.client-ip=91.26.50.163
+	 In-Reply-To:Content-Type; b=R/WV/VRfboP5yQU8tNSHjGs6+hRFMzZ68ostha73FJvugkS5nQdQ7tK93tCCbMDqGEwrKNCktePkr7HS0q+UjiBkWoIaZbY2Ab//wGQGFv9UlagThF2tnP8Kr8AwkVF2CnKQPB3iY6g2qUwMOmpe2uxe5aynUKeSfLhAtoVX0sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=os1gMFEc; arc=none smtp.client-ip=91.26.50.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
 DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-	q=dns/txt; i=@phytec.de; t=1705891351; x=1708483351;
+	q=dns/txt; i=@phytec.de; t=1705892072; x=1708484072;
 	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
 	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=CvYfQOkKWx+C9AjwRqK3EZBwCIHL93+bMqOxaoyet6w=;
-	b=i8htcTyQpLjC1qaF0Rdowv9s9mHYh1rl6HMyG0jYiLKA0ef4D/9V41nzqgZS/XD1
-	zneI0Nb2ZE9cW4BqboMLkTxmF701kOFvsYnbiGd41gsieot++tGA2QYQ1qiQg/Mx
-	niRfL/ugFcw4evHjCsvhYJH0wWRHOOuq7xjAT3Ni9CA=;
-X-AuditID: ac14000a-fbefe7000000290d-06-65add617c3d7
+	bh=mfYD+6v6kk8wYnHrbApXUiZA7Uz73G+QjKzVKWVBrE0=;
+	b=os1gMFEc7p7kxIpbZdaNE0ffEfWybcOwIWl+Gtua2Vrs6Iq6r/qlCPqIRLAkC9/W
+	WqFrvAg/SW0fEthainPJ7TP8Acp9FI1r5ECytO1PJcTw6Z0XiNT+NEuhxzmodwfQ
+	7UY67TAqHc+UqhF+T4k43h7+obvDp7niAyaIMfUyce0=;
+X-AuditID: ac14000a-fadff7000000290d-4f-65add8e7c9f0
 Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
 	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(Client did not present a certificate)
-	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 19.EF.10509.716DDA56; Mon, 22 Jan 2024 03:42:31 +0100 (CET)
-Received: from [10.10.3.173] (172.25.0.11) by Berlix.phytec.de (172.25.0.12)
+	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 1C.EF.10509.7E8DDA56; Mon, 22 Jan 2024 03:54:31 +0100 (CET)
+Received: from [172.25.39.28] (172.25.0.11) by Berlix.phytec.de (172.25.0.12)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Mon, 22 Jan
- 2024 03:42:25 +0100
-Message-ID: <0348afb6-24df-4088-a3f5-6b5df8081c04@phytec.de>
-Date: Mon, 22 Jan 2024 03:42:18 +0100
+ 2024 03:54:27 +0100
+Message-ID: <9a5711b6-5e8e-4fcb-bea6-d5f9893762eb@phytec.de>
+Date: Mon, 22 Jan 2024 03:54:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,290 +58,57 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] arm64: dts: imx93: Add phyBOARD-Segin-i.MX93
- support
-To: Mathieu Othacehe <othacehe@gnu.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
-	<s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, Li
- Yang <leoyang.li@nxp.com>, Primoz Fiser <primoz.fiser@norik.com>, Stefan
- Wahren <wahrenst@gmx.net>, Christoph Stoidner <c.stoidner@phytec.de>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <upstream@list.phytec.de>
-References: <20240119092835.21462-1-othacehe@gnu.org>
- <20240119092835.21462-3-othacehe@gnu.org>
+Subject: Re: [PATCH] arm64: dts: ti: Disable clock output of the ethernet PHY
 Content-Language: en-US
+To: Nathan Morrisson <nmorrisson@phytec.com>, <nm@ti.com>, <vigneshr@ti.com>,
+	<kristo@kernel.org>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <devicetree@vger.kernel.org>, <upstream@lists.phytec.de>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+References: <20240119225257.403222-1-nmorrisson@phytec.com>
 From: Wadim Egorov <w.egorov@phytec.de>
-In-Reply-To: <20240119092835.21462-3-othacehe@gnu.org>
+In-Reply-To: <20240119225257.403222-1-nmorrisson@phytec.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Berlix.phytec.de
+X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
  (172.25.0.12)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsWyRpKBR1f82tpUg31tyhZr9p5jsph/5Byr
-	xcOr/harpu5kseh78ZDZ4lDzASaLTY+vsVp0/VrJbHF51xw2i/N3tzBbnOh6yGrRuvcIu8Xf
-	7ZtYLF5sEbdYtecQq8XxE53MDgIeO2fdZfdYvGk/m0fbNDOPTas62TzuXNvD5nFg52smj81L
-	6j2+f93A6rHx3Q4mj/6/Bh6fN8kFcEdx2aSk5mSWpRbp2yVwZTQsKCpotazoe3qLpYFxu24X
-	IyeHhICJxO+rz5i6GLk4hAQWM0m86bjIBuHcYZRY8HMaO0gVr4CNxPSOs4wgNouAqsThhfPY
-	IOKCEidnPmEBsUUF5CXu35oBVi8sECRxcPkrsEEiAq0sEh93bmAHcZgFWhklNrbNBusWEkiU
-	ePvqPyuIzSwgLnHryXwmEJtNQF3izoZvYHFOATOJs9e/MULUWEgsfnOQHcKWl9j+dg4zxBx5
-	iReXlrNA/CMvMe3ca2YIO1TiyKbVTBMYhWchOXYWknWzkIydhWTsAkaWVYxCuZnJ2alFmdl6
-	BRmVJanJeimpmxhB8SzCwLWDsW+OxyFGJg7GQ4wSHMxKIrz8qqtShXhTEiurUovy44tKc1KL
-	DzFKc7AoifOu7ghOFRJITyxJzU5NLUgtgskycXBKNTAmT+phsriiFiJ7SHn77YB0s8xvK/9l
-	a723bmARE+rg6gi5UHZC9G1oc8ybtepu6pE6LfJPWbnuibAKLWfM69cp7OkQaiv7+6ORw15U
-	YsOczXbfpG+Zhm45r2tv/pnHfVcKx4Pt/0IjlI8ZM3//ZXt74j3NhgOuQgee/O+fKnk3X7jO
-	/sLxJCWW4oxEQy3mouJEANrx5QbVAgAA
-
-Hi,
-
-Am 19.01.24 um 10:28 schrieb Mathieu Othacehe:
-> Add basic support for phyBOARD-Segin-i.MX93.
-> Main features are:
-> * SD-Card
-> * UART
-> * I2C
-
-It seems you did not configured any I2C bus/device. So maybe drop it 
-from the currently supported feature list?
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsWyRpKBR/f5jbWpBm1tphZr9p5jsph/5Byr
+	xfLPs9kt+l48ZLbY9Pgaq8XlXXPYLN78OMtk8aFxM5tF694j7Bbd79Qt/p/9wO7A7bFpVSeb
+	x51re9g8Ni+p9+jvbmH1+HPxHavH8RvbmTw+b5ILYI/isklJzcksSy3St0vgyrhzez97QRNH
+	xYWXB1gbGB+xdTFyckgImEjcfbmXqYuRi0NIYDGTxOStr1ggnLuMEme3/QSq4uDgFbCRWL7I
+	HKSBRUBV4tzHNiYQm1dAUOLkzCcsILaogLzE/Vsz2EFsYQFfiQfLVzCC2MwC4hK3nswHWyAi
+	sJ1RYs3iRcwgDrNAG6PEgw3dYGcICVhLbN7SANbNJqAucWfDN1YQmxNo8ffu26wQkywkFr85
+	yA5hy0tsfzuHGaJXXuLFpeUsEO/IS0w795oZwg6V2PplO9MERuFZSI6dheSoWUjGzkIydgEj
+	yypGodzM5OzUosxsvYKMypLUZL2U1E2MoNgTYeDawdg3x+MQIxMH4yFGCQ5mJRFeftVVqUK8
+	KYmVValF+fFFpTmpxYcYpTlYlMR5V3cEpwoJpCeWpGanphakFsFkmTg4pRoYl/6UPXZwX6LE
+	789eMhbNcR1OhTke5yJ2Wb35u0Wp5LHN+vYjH6f0F5qy/Lly9sXnlmsZ1bnB/RP794gFe3/R
+	ZH0f0xCQzPqEc3fn31jV3Bnr4wWats0StgyZmL7i1e3q61yH7/upG7hW8iyw/r5ni2/1MnbR
+	ezGFnbdnzstbIWvy6POVRZXzlViKMxINtZiLihMBuMx4BasCAAA=
 
 
-> * eMMC
+Am 19.01.24 um 23:52 schrieb Nathan Morrisson:
+> The clock on the ethernet1 PHY is turned on by default. This turns
+> the clock off as we do not use it.
 >
-> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
+> Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
+
+Reviewed-by: Wadim Egorov <w.egorov@phytec.de>
+
+
 > ---
->   arch/arm64/boot/dts/freescale/Makefile        |   1 +
->   .../dts/freescale/imx93-phyboard-segin.dts    | 119 ++++++++++++++++++
->   .../boot/dts/freescale/imx93-phycore-som.dtsi |  56 +++++++++
->   3 files changed, 176 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dts
->   create mode 100644 arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi
+>   arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts | 1 +
+>   1 file changed, 1 insertion(+)
 >
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index 2e027675d7bb..65db918c821c 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -201,6 +201,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-iris-v2.dtb
->   dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
->   dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
->   dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
-> +dtb-$(CONFIG_ARCH_MXC) += imx93-phyboard-segin.dtb
->   dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
->   dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
->   
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dts b/arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dts
-> new file mode 100644
-> index 000000000000..b256c5e42550
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dts
-> @@ -0,0 +1,119 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2023 PHYTEC Messtechnik GmbH
-> + * Christoph Stoidner <c.stoidner@phytec.de>
-
-you dropped me from the Authors list :(
-
-
-> + * Copyright (C) 2024 Mathieu Othacehe <m.othacehe@gmail.com>
-> + *
-
-It would be nice if you could link the product page,
-https://www.phytec.de/produkte/system-on-modules/phycore-imx-91-93/
-
-
-> + */
-> +/dts-v1/;
-> +
-> +#include "imx93-phycore-som.dtsi"
-> +
-> +/{
-> +	model = "PHYTEC phyBOARD-Segin-i.MX93";
-> +	compatible = "phytec,imx93-phyboard-segin", "phytec,imx93-phycore-som",
-> +		     "fsl,imx93";
-> +
-> +	chosen {
-> +		stdout-path = &lpuart1;
-> +	};
-> +
-> +	reg_usdhc2_vmmc: regulator-usdhc2 {
-> +		compatible = "regulator-fixed";
-> +		enable-active-high;
-> +		gpio = <&gpio3 7 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-name = "VSD_3V3";
-
-Regulator name is VCC_SD
-
-
-> +	};
-> +};
-> +
-> +/* Console */
-> +&lpuart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart1>;
-> +	status = "okay";
-> +};
-> +
-> +/* eMMC */
-> +&usdhc1 {
-> +	no-1-8-v;
-> +};
-> +
-> +/* SD-Card */
-> +&usdhc2 {
-> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 = <&pinctrl_usdhc2_default>, <&pinctrl_usdhc2_cd>;
-> +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_cd>;
-> +	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_cd>;
-> +	bus-width = <4>;
-> +	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
-> +	no-mmc;
-> +	no-sdio;
-> +	vmmc-supply = <&reg_usdhc2_vmmc>;
-> +	status = "okay";
-> +};
-> +
-> +/* Watchdog */
-> +&wdog3 {
-> +	status = "okay";
-> +};
-
-Move the watchdog part to the SoM device tree as it not related to the 
-carrier board design.
-
-
-> +
-> +&iomuxc {
-> +	pinctrl_uart1: uart1grp {
-> +		fsl,pins = <
-> +			MX93_PAD_UART1_RXD__LPUART1_RX		0x31e
-> +			MX93_PAD_UART1_TXD__LPUART1_TX		0x30e
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_RESET_B__GPIO3_IO07	0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_cd: usdhc2cdgrp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_CD_B__GPIO3_IO00		0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_default: usdhc2grp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_CLK__USDHC2_CLK		0x179e
-> +			MX93_PAD_SD2_CMD__USDHC2_CMD		0x139e
-> +			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x138e
-> +			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x138e
-> +			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x138e
-> +			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x139e
-> +			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_100mhz: usdhc2grp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_CLK__USDHC2_CLK            0x179e
-> +			MX93_PAD_SD2_CMD__USDHC2_CMD            0x139e
-> +			MX93_PAD_SD2_DATA0__USDHC2_DATA0        0x138e
-> +			MX93_PAD_SD2_DATA1__USDHC2_DATA1        0x138e
-> +			MX93_PAD_SD2_DATA2__USDHC2_DATA2        0x139e
-> +			MX93_PAD_SD2_DATA3__USDHC2_DATA3        0x139e
-> +			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT    0x51e
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_200mhz: usdhc2grp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_CLK__USDHC2_CLK            0x178e
-> +			MX93_PAD_SD2_CMD__USDHC2_CMD            0x139e
-> +			MX93_PAD_SD2_DATA0__USDHC2_DATA0        0x139e
-> +			MX93_PAD_SD2_DATA1__USDHC2_DATA1        0x139e
-> +			MX93_PAD_SD2_DATA2__USDHC2_DATA2        0x139e
-> +			MX93_PAD_SD2_DATA3__USDHC2_DATA3        0x139e
-> +			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT    0x51e
-> +		>;
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi b/arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi
-> new file mode 100644
-> index 000000000000..0cc156b3c24e
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi
-> @@ -0,0 +1,56 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2023 PHYTEC Messtechnik GmbH
-> + * Christoph Stoidner <c.stoidner@phytec.de>
-
-Same here, you dropped me from the Authors list :(
-
-
-> + * Copyright (C) 2024 Mathieu Othacehe <m.othacehe@gmail.com>
-> + *
-> + */
-> +/dts-v1/;
-
-I don't think you need the dts-v1 here as this file gets included by 
-carrier boards that already defining it.
-
-Regards,
-Wadim
-
-> +
-> +#include "imx93.dtsi"
-> +
-> +/{
-> +	model = "PHYTEC phyCORE-i.MX93";
-> +	compatible = "phytec,imx93-phycore-som", "fsl,imx93";
-> +
-> +	reserved-memory {
-> +		ranges;
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +
-> +		linux,cma {
-> +			compatible = "shared-dma-pool";
-> +			reusable;
-> +			alloc-ranges = <0 0x80000000 0 0x40000000>;
-> +			size = <0 0x10000000>;
-> +			linux,cma-default;
-> +		};
-> +	};
-> +};
-> +
-> +/* eMMC */
-> +&usdhc1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usdhc1>;
-> +	bus-width = <8>;
-> +	non-removable;
-> +	status = "okay";
-> +};
-> +
-> +&iomuxc {
-> +	pinctrl_usdhc1: usdhc1grp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD1_CLK__USDHC1_CLK		0x179e
-> +			MX93_PAD_SD1_CMD__USDHC1_CMD		0x1386
-> +			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x138e
-> +			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x1386
-> +			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x138e
-> +			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x1386
-> +			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x1386
-> +			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x1386
-> +			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x1386
-> +			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x1386
-> +			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x179e
-> +		>;
-> +	};
-> +};
+> diff --git a/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts b/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
+> index 4bc0134c987d..3173f6eca7ca 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
+> @@ -222,6 +222,7 @@ &cpsw3g_mdio {
+>   	cpsw3g_phy3: ethernet-phy@3 {
+>   		compatible = "ethernet-phy-id2000.a231", "ethernet-phy-ieee802.3-c22";
+>   		reg = <3>;
+> +		ti,clk-output-sel = <DP83867_CLK_O_SEL_OFF>;
+>   		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+>   		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+>   	};
 
