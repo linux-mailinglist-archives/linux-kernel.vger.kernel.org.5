@@ -1,68 +1,63 @@
-Return-Path: <linux-kernel+bounces-32833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA098360AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:11:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAF0A836058
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:04:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D08D1C2134F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:11:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84DA61F23C30
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:04:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E4B3FB03;
-	Mon, 22 Jan 2024 11:04:51 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA223A8CC;
+	Mon, 22 Jan 2024 11:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WuV6cvDj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DA63EA7B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A653A8C0;
+	Mon, 22 Jan 2024 11:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705921490; cv=none; b=UsIa+N8LnMW2JNqa9spW9tl1RBCyoaZavgdqtTMAxaF+JCcB68a4FMWgNG6/RQmNZO4hzylNQZ/8smh6XoczBsomvwL9/8BgFcbqh8Xomij33ZSOE/TYjSjqpvCeDzWFeJnGV1m32cOu+3KedY6i+f6o3ocWVjcAJFCfVOqAbWY=
+	t=1705921448; cv=none; b=m1HWafvl2kke2E1HImwzgQvB08zkf7ep46yz5EgkR33b4PgO4rpk2mIBPPVEuAji1VlA++gjhiQHxptMY6v8lo6cscURE++keKWfnbH8G0+YGGR98l/KpDZ3gTEX3i2CLySIxNAzKrkdl9Lj6GIZyzqlLDrGw5b9n9TFYtYZgzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705921490; c=relaxed/simple;
-	bh=eqirOGjCZP2NBSEkK8uc5P/vksk2IIWKQWYB/n+5qkY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E2kxXKBPea6hOHXm8U7wp1ZcJWLcoumKJqkc76cpzzeqeGsUnvG0wQ4b3Z/E4+9wkqMuJdNHTm86s3oVVMDAfI0RJNgBVGPSqb3+WHNsqptI8y4AJPTBQ0mRxtZo5222nOAciEiJF2BGJd48MUUaDW52PBeImbhxXvhoDW6+wNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <fpf@pengutronix.de>)
-	id 1rRs6K-0003nV-7r; Mon, 22 Jan 2024 12:04:24 +0100
-Received: from [2a0a:edc0:0:1101:1d::54] (helo=dude05.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <fpf@pengutronix.de>)
-	id 1rRs6I-001Zhh-Mi; Mon, 22 Jan 2024 12:04:22 +0100
-Received: from fpf by dude05.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <fpf@pengutronix.de>)
-	id 1rRs6I-00BSQd-23;
-	Mon, 22 Jan 2024 12:04:22 +0100
-From: Fabian Pfitzner <f.pfitzner@pengutronix.de>
-To: Michael Hennerich <michael.hennerich@analog.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexandru Tachici <alexandru.tachici@analog.com>
-Cc: kernel@pengutronix.de,
-	Fabian Pfitzner <f.pfitzner@pengutronix.de>,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] net: phy: adin: add missing clock option
-Date: Mon, 22 Jan 2024 12:03:12 +0100
-Message-Id: <20240122110311.2725036-1-f.pfitzner@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1705921448; c=relaxed/simple;
+	bh=6WGGhf/BTgLnnKlxdbNPCXyuwYCekxPpegnJq4vX000=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jkGE9vmFaBeFO9sQxtrB7c8K2JxA3AJIGpnc3HfSjbmA7KF6ih3ZNmFQT6NTjZ94ExnQtSexu6s1GzMJuKiPVu9sKF9mkkm/8exDPVYlF281KD06eSrdXXcNh/JCJaI66UT0EOYN3j2ETaNE0XAQyoFoX+VbqPcEeVxMnPoF5SQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WuV6cvDj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CC00C433F1;
+	Mon, 22 Jan 2024 11:04:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705921447;
+	bh=6WGGhf/BTgLnnKlxdbNPCXyuwYCekxPpegnJq4vX000=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WuV6cvDj37O15oSjTHGuaol6bCLP78ejj/Qqj1SW7SBKckvvka5v+47PF1FXP7ypE
+	 z8bPKsEWzCACA0JC2QjeWs5bx4hHkyPxxpf2/rOeSXpfpDwA4EToI+diq8ckf2NpRQ
+	 gT3IDlQYVaCkI8ue4DJEhWrjdt4UClq0ZCqZv34eAaDCNgBrnhDszRFT/ajus6C8Pq
+	 IXAl0s6zN0bR928g3H2mCH46U7WbujMk9bSlgl97yrRcnon3yzPubDbl8y8xv7/78B
+	 DzHXQS7rE/VOJKvdmiuPb+5XWlbzGPmKIB/MRaftvwXs3cqCHcSMTXn4tikwKLJlvP
+	 LUNtsz4+7e+QA==
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To: gregkh@linuxfoundation.org
+Cc: linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	Martin Hostettler <textshell@uchuujin.de>,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v2 00/47] tty: vt: cleanup and documentation
+Date: Mon, 22 Jan 2024 12:03:14 +0100
+Message-ID: <20240122110401.7289-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,61 +65,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: fpf@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-The GP_CLK pin on Adin1300 PHY's offers three different output clocks.
-This patch adds the missing 125MHz recovered clock option which is not
-yet availible in the driver.
+Push the console code (vt.c, vt.h, console.h, ...) into a bit more
+maintainable state. Especially all around consw structure and document
+it.
 
-Signed-off-by: Fabian Pfitzner <f.pfitzner@pengutronix.de>
----
- Documentation/devicetree/bindings/net/adi,adin.yaml | 7 +++++--
- drivers/net/phy/adin.c                              | 2 ++
- 2 files changed, 7 insertions(+), 2 deletions(-)
+CSI parser is also a bit cleaned up. More to follow some time in the
+next round.
 
-diff --git a/Documentation/devicetree/bindings/net/adi,adin.yaml b/Documentation/devicetree/bindings/net/adi,adin.yaml
-index 929cf8c0b0fd..cd1b4efa692b 100644
---- a/Documentation/devicetree/bindings/net/adi,adin.yaml
-+++ b/Documentation/devicetree/bindings/net/adi,adin.yaml
-@@ -38,14 +38,17 @@ properties:
- 
-   adi,phy-output-clock:
-     description: |
--      Select clock output on GP_CLK pin. Two clocks are available:
--      A 25MHz reference and a free-running 125MHz.
-+      Select clock output on GP_CLK pin. Three clocks are available:
-+        - 25MHz reference
-+        - free-running 125MHz 
-+        - recovered 125MHz
-       The phy can alternatively automatically switch between the reference and
-       the 125MHz clocks based on its internal state.
-     $ref: /schemas/types.yaml#/definitions/string
-     enum:
-       - 25mhz-reference
-       - 125mhz-free-running
-+      - 125mhz-recovered
-       - adaptive-free-running
- 
-   adi,phy-output-reference-clock:
-diff --git a/drivers/net/phy/adin.c b/drivers/net/phy/adin.c
-index 2e1a46e121d9..b1ed6fd24763 100644
---- a/drivers/net/phy/adin.c
-+++ b/drivers/net/phy/adin.c
-@@ -508,6 +508,8 @@ static int adin_config_clk_out(struct phy_device *phydev)
- 		sel |= ADIN1300_GE_CLK_CFG_25;
- 	} else if (strcmp(val, "125mhz-free-running") == 0) {
- 		sel |= ADIN1300_GE_CLK_CFG_FREE_125;
-+	} else if (strcmp(val, "125mhz-recovered") == 0) {
-+		sel |= ADIN1300_GE_CLK_CFG_RCVR_125;
- 	} else if (strcmp(val, "adaptive-free-running") == 0) {
- 		sel |= ADIN1300_GE_CLK_CFG_HRT_FREE;
- 	} else {
+[v2] See respective patches for changes. The major changes:
+ * vesa.h introduced
+ * parameters of csi*() simplified
 
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Helge Deller <deller@gmx.de>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: linux-fbdev@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: Martin Hostettler <textshell@uchuujin.de>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+
+Jiri Slaby (SUSE) (47):
+
+  vgacon: inline vc_scrolldelta_helper() into vgacon_scrolldelta()
+  fbcon: make display_desc a static array in fbcon_startup()
+  tty: vt: fix 20 vs 0x20 typo in EScsiignore
+  tty: vt: expect valid vc when in tty ops
+  tty: vt: pass proper pointers from tioclinux()
+  tty: vt: push console lock from tioclinux() down to 2 functions
+  tty: vt: pass vc_resize_user as a parameter
+  tty: vt: make vc_is_sel()'s vc const
+  tty: vt: define an enum for CSI+m codes
+  tty: vt: use case ranges for CSI+m fg/bg colors
+  tty: vt: define an enum for CSI+J codes
+  tty: vt: reflow csi_J()
+  use clamp() for counts in csi_?() handlers
+  don't pass vc->vc_par[0] to csi_?() handlers
+  tty: vt: define an enum for CSI+K codes
+  tty: vt: reflow csi_K()
+  tty: vt: define an enum for ascii characters
+  tty: vt: remove extern from functions in selection.h
+  tty: vt: make consw::con_debug_*() return void
+  tty: vt: make init parameter of consw::con_init() a bool
+  tty: vt: sanitize arguments of consw::con_clear()
+  tty: vt: remove checks for count in consw::con_clear() implementations
+  tty: vt: add con_putc() helper
+  tty: vt: eliminate unneeded consw::con_putc() implementations
+  tty: vt: sanitize consw::con_putc() parameters
+  tty: vt: sanitize consw::con_putcs() parameters
+  consoles: use if instead of switch-case in consw::con_cursor()
+  fbdev/core: simplify cursor_state setting in fbcon_ops::cursor()
+  tty: vt: remove CM_* constants
+  tty: vt: make consw::con_switch() return a bool
+  tty: vt: stop using -1 for blank mode in consw::con_blank()
+  tty: vt: define a common enum for VESA blanking constants
+  tty: vt: use VESA blanking constants
+  tty: vt: use enum constants for VESA blanking modes
+  tty: vt: make types around consw::con_blank() bool
+  tty: vt: make font of consw::con_font_set() const
+  tty: vt: make consw::con_font_default()'s name const
+  tty: vt: change consw::con_set_origin() return type
+  fbcon: remove consw::con_screen_pos()
+  tty: vt: remove consw::con_screen_pos()
+  tty: vt: make types of screenpos() more consistent
+  fbcon: remove fbcon_getxy()
+  tty: vt: remove consw::con_getxy()
+  tty: vt: remove unused consw::con_flush_scrollback()
+  tty: vt: document the rest of struct consw
+  tty: vt: fix up kernel-doc
+  Documentation: add console.rst
+
+ Documentation/driver-api/tty/console.rst |  45 ++
+ Documentation/driver-api/tty/index.rst   |   1 +
+ drivers/tty/vt/selection.c               |  43 +-
+ drivers/tty/vt/vt.c                      | 645 +++++++++++------------
+ drivers/tty/vt/vt_ioctl.c                |   6 +-
+ drivers/video/console/dummycon.c         |  38 +-
+ drivers/video/console/mdacon.c           |  43 +-
+ drivers/video/console/newport_con.c      |  69 +--
+ drivers/video/console/sticon.c           |  79 ++-
+ drivers/video/console/vgacon.c           | 152 +++---
+ drivers/video/fbdev/core/bitblit.c       |  13 +-
+ drivers/video/fbdev/core/fbcon.c         | 123 ++---
+ drivers/video/fbdev/core/fbcon.h         |   4 +-
+ drivers/video/fbdev/core/fbcon_ccw.c     |  13 +-
+ drivers/video/fbdev/core/fbcon_cw.c      |  13 +-
+ drivers/video/fbdev/core/fbcon_ud.c      |  13 +-
+ drivers/video/fbdev/core/tileblit.c      |   4 +-
+ include/linux/console.h                  | 124 +++--
+ include/linux/console_struct.h           |   1 -
+ include/linux/selection.h                |  56 +-
+ include/linux/vt_kern.h                  |  12 +-
+ include/uapi/linux/fb.h                  |   8 +-
+ include/uapi/linux/vesa.h                |  18 +
+ 23 files changed, 755 insertions(+), 768 deletions(-)
+ create mode 100644 Documentation/driver-api/tty/console.rst
+ create mode 100644 include/uapi/linux/vesa.h
+
 -- 
-2.39.2
+2.43.0
 
 
