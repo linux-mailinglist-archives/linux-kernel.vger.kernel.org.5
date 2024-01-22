@@ -1,188 +1,139 @@
-Return-Path: <linux-kernel+bounces-33974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A689837127
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:55:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65DC783713F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAACE1F30644
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:55:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7ED028F5F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256854A9A8;
-	Mon, 22 Jan 2024 18:21:26 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA30E4BA98;
+	Mon, 22 Jan 2024 18:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M9u2NoCl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0C94A9A9
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39864B5B5
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705947685; cv=none; b=BsyNpC5XZhhtL3TWVq/1Kf/OEfdyNIQMf1ToHYg0Pm1N4fOg/Tb+JHWHPoDlKPogJsKI6ShryMRgcaLlTTGlRvza6FxLeIi3Cfxx1yKreDTGnN5vgydqgdju/egQsByPYdg3iGrdO5RB+S7hqIsJHWLhbR6lu2ggaFVytePagR4=
+	t=1705947756; cv=none; b=ty7y+YZKDYqKtT1u9QA0YXSf0yRG2gPSRtSfUj/yfjd06aNW9QaTAbGWv3WRHfYjF3uzneEI1aoGn64A1iRqUXg9w7rU4obnyVTOb3GdP0DKCoiRRXmtA8M2b91yl0a6fAOdsfxMYLU7yP5IWdA8yVJWP0XY4/39pePNiJ80RWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705947685; c=relaxed/simple;
-	bh=6DR+1LiVFRZbmEY9iwTJ7fOLxt9GTZ8JeGRhxI+zL/8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=TIs0pa8TrwSdL0J+DNToueHnuzf0Xcvm3pcsS48+yQEdu/AUSPPnuQqhSZlQFbJ15vegJyIhyibepyRpXbXz73yWO5sVNFxLPbC9iLps7XQ0d/J1ed0+ht9O6n/OMnUqJtrSNYj6x6kt1vQ12Ew26TKjYwL+U3qbRKwgDNLFGQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-361917dccfbso22450435ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:21:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705947683; x=1706552483;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YnaoVp1irieECTQ/9o+xOEHhdBMmk3Nj9+2Kmy+DxVg=;
-        b=H8lZbfJtoKB8SoroBgDD+DeBoiFuCRRMbvcw59FIx+bciRGNapM5jKIIYjINERCdVQ
-         qyUJKrpig5LnX2IPJ0AtE5UiTCBrxlkxMmkZ9HGNUsKqwK4BXWGigamUI8hfaBNAWEA2
-         9Tk2e++yyb6K8DDqRkFUC77Nu60yGWFffULXeXgI6KEkThdThAouFbSYj9uhQc/G7/5K
-         dND4U5EI3UhHcv59I974iyljJ5VbeN9dcireWdKO/etQzWKW0KpL6FE4YEe9CjfPaGEX
-         dPz0Rhk1aVOcZmNojl/pS19laIAM6PYXSrYTteZubCCDz9BAojfMl2Mp7jYJw35+76Ja
-         oXGA==
-X-Gm-Message-State: AOJu0YwvYjMTDLzt0EyqYcCEW3qmcGtn4IjgddlJ8yPc1wjw9BH2q+qz
-	mGusp8558+LxSRT5BqEMu/3m71hfEHChDmpGFkuk20/4M0VFDmuOl5kbOhftp5YMDWg/xRAKlHg
-	QZunGmnPFgeK0o8e0o+oCfg0jCVDvqimSNjTCXrxNLUlZ1nC8hrHVAQY=
-X-Google-Smtp-Source: AGHT+IFqXFii+QXaNjXd/fck1JDCiigaLQ7JN+pX/rX2FewG6k4cg3O5RFBP1m0kld32rTI7PpqWvkWC4x02KFvi0n8v5dDf5Qji
+	s=arc-20240116; t=1705947756; c=relaxed/simple;
+	bh=xYsOp0Tk8CxfErW9ndj/ZZh4AQhtBNipUfa73tFsnSE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=k4bISt5HclR7EdIwlpEngbYEoVLVNm17YdN8pHJM3HFOCYrUPGLFbPPqTnoaQQrV0C2/1zFnZnSgQ1XeCgDsObOtx/wrG0DiT3QL2N5hUkUf1U0IjBHd+r2nv/yWxAn9Yzbb1dzoBLiU9hHFAK0UF4RN5ged6aWHLfIXCE0gSUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M9u2NoCl; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705947753;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FSO+yMs9xgoj4SVBxKHNNZsz8CFzHKkKh5JTeSlWjgQ=;
+	b=M9u2NoClZ9MYQvWyjsc34ninadYJZ/JuWNgT6PttbhyER7S7jzwAuIOP1PG1W1hvkK6Jkr
+	G6k+sD5bLZU90lj0PORUJq2JKyPj0cf0VVCE8y/cgj8z8ke2ZZ2w9XXsnrmJQfmjwzpzdQ
+	AhJ9nVZ+2QZUBUHP3sssbgFTI9ZJT/M=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-344-sTgy8nB2N2u3wr9g8-SUNQ-1; Mon,
+ 22 Jan 2024 13:22:30 -0500
+X-MC-Unique: sTgy8nB2N2u3wr9g8-SUNQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8F78F3C2A1C4;
+	Mon, 22 Jan 2024 18:22:29 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.39.192.175])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 11CC03C2E;
+	Mon, 22 Jan 2024 18:22:26 +0000 (UTC)
+From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+To: masahiroy@kernel.org
+Cc: dcavalca@meta.com,
+	jtornosm@redhat.com,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	nathan@kernel.org,
+	ndesaulniers@google.com,
+	nicolas@fjasle.eu,
+	stable@vger.kernel.org
+Subject: Re: [PATCH V5 1/2] rpm-pkg: simplify installkernel %post
+Date: Mon, 22 Jan 2024 19:22:24 +0100
+Message-ID: <20240122182225.17944-1-jtornosm@redhat.com>
+In-Reply-To: <CAK7LNAQCiBtQ3kQznPDKtkD83wpCzodPVDs8eFnfnx5=Y8E5Cw@mail.gmail.com>
+References: <CAK7LNAQCiBtQ3kQznPDKtkD83wpCzodPVDs8eFnfnx5=Y8E5Cw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b4a:b0:360:17a7:d897 with SMTP id
- f10-20020a056e020b4a00b0036017a7d897mr520922ilu.4.1705947683140; Mon, 22 Jan
- 2024 10:21:23 -0800 (PST)
-Date: Mon, 22 Jan 2024 10:21:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a8bd7b060f8ce57d@google.com>
-Subject: [syzbot] [jfs?] general protection fault in diRead (2)
-From: syzbot <syzbot+8f731999dc47797f064f@syzkaller.appspotmail.com>
-To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Hello,
+> Those installed files should be removed by %ghost markers.
+> I already have a local patch to do this.
+> (see the attachment)
+I like the idea of your new patch, a lot of things can be fixed in that way.
+Ok, I will remove the extra code to remove (%preun) in the patch.
+Just a comment about your patch: for openSUSE /boot/initramfs-* files are
+called /boot/initrd-* and maybe someone would not require it (i.e. embedded
+systems). If it is created it is normally removed and it might not be
+necessary (although I like your idea to control it).
 
-syzbot found the following issue on:
+> I just asked you to fix up the code as I suggested in v4.
+Now I understand why no code was added in %preun.
+Ok, your suggestion was very good, but let me try and explain better with
+commands what I would like to fix after next point. When I said 'update'
+wasn't clear, I think.
+If it doesn't fit with your idea or global usage, I will include your
+suggestion like it is.
 
-HEAD commit:    6613476e225e Linux 6.8-rc1
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17dc7427e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=909746d6edb125d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=8f731999dc47797f064f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> For me (on Fedora 39 and openSUSE Tumbleweed), rpm fails due to file conflict.
+> 
+> vagrant@opensuse-tumbleweed20231218:~> sudo rpm -i
+> kernel-6.7.0_12924_g660a5f4a53e7-4.x86_64.rpm
+> file /lib/modules/6.7.0-12924-g660a5f4a53e7/vmlinuz from install of
+> kernel-6.7.0_12924_g660a5f4a53e7-4.x86_64 conflicts with file from
+> package kernel-6.7.0_12924_g660a5f4a53e7-3.x86_64
+> 
+> So, this does not happen.
+I was refering to the cases when zypper is used to install a new kernel with
+the same release and different build number or when 'rpm -i --replacefiles' 
+is used (in this case it would be necessary to remove the old kernel with
+'rpm -e --justdb' too).
+In this cases we only need the possibility of copying the files from the new
+package and not only if they don't exist.
+I have thought about an easy way (no extra or problematic command) and I think
+I have it.
+In addition to your suggestion (if the file does not exit in /boot), I will
+just compare the file in /boot with the file in /lib/modules/%{KERNELRELEASE}
+and if it is not the same, we allow copying:
+%post
+if [ -x /usr/bin/kernel-install ]; then
+        /usr/bin/kernel-install add %{KERNELRELEASE} /lib/modules/%{KERNELRELEASE}/vmlinuz
+fi
+for file in vmlinuz System.map config; do
+        if [ ! -e "/boot/${file}-%{KERNELRELEASE}" ] || ! cmp --silent "/lib/modules/%{KERNELRELEASE}/${file}" "/boot/${file}-%{KERNELRELEASE}"; then
+                cp "/lib/modules/%{KERNELRELEASE}/${file}" "/boot/${file}-%{KERNELRELEASE}"
+        fi
+done
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Let me try with a new patch to know your opinion.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d0edbd1edbe1/disk-6613476e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9a389b6bdd04/vmlinux-6613476e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/eedf993f8f5d/bzImage-6613476e.xz
+Thanks
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8f731999dc47797f064f@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000104: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000820-0x0000000000000827]
-CPU: 0 PID: 6815 Comm: syz-executor.3 Not tainted 6.8.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:diIAGRead fs/jfs/jfs_imap.c:2662 [inline]
-RIP: 0010:diRead+0x158/0xae0 fs/jfs/jfs_imap.c:316
-Code: 8d 5d 80 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 69 d4 d7 fe 4c 8b 2b 49 8d 9d 20 08 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 49 d4 d7 fe 4c 8b 3b 49 8d 5f 28
-RSP: 0018:ffffc9000486f658 EFLAGS: 00010202
-RAX: 0000000000000104 RBX: 0000000000000820 RCX: 0000000000000001
-RDX: 0000000000000001 RSI: 0000000000000008 RDI: 0000000000000001
-RBP: ffff888037fbf330 R08: ffff888037fbefd7 R09: 1ffff11006ff7dfa
-R10: dffffc0000000000 R11: ffffed1006ff7dfb R12: 0000000000000004
-R13: 0000000000000000 R14: ffff888037fbefc8 R15: dffffc0000000000
-FS:  00007f5fd8fbd6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020010000 CR3: 000000007909f000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- jfs_iget+0x8c/0x3b0 fs/jfs/inode.c:35
- jfs_lookup+0x226/0x410 fs/jfs/namei.c:1469
- lookup_open fs/namei.c:3474 [inline]
- open_last_lookups fs/namei.c:3565 [inline]
- path_openat+0x1012/0x31e0 fs/namei.c:3795
- do_filp_open+0x234/0x490 fs/namei.c:3825
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1404
- do_sys_open fs/open.c:1419 [inline]
- __do_sys_open fs/open.c:1427 [inline]
- __se_sys_open fs/open.c:1423 [inline]
- __x64_sys_open+0x225/0x270 fs/open.c:1423
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f5fd9c7cda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f5fd8fbd0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 00007f5fd9dac120 RCX: 00007f5fd9c7cda9
-RDX: 0000000000000000 RSI: 0000000000088043 RDI: 00000000200022c0
-RBP: 00007f5fd9cc947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f5fd9dac120 R15: 00007ffe5a2a8968
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:diIAGRead fs/jfs/jfs_imap.c:2662 [inline]
-RIP: 0010:diRead+0x158/0xae0 fs/jfs/jfs_imap.c:316
-Code: 8d 5d 80 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 69 d4 d7 fe 4c 8b 2b 49 8d 9d 20 08 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 49 d4 d7 fe 4c 8b 3b 49 8d 5f 28
-RSP: 0018:ffffc9000486f658 EFLAGS: 00010202
-RAX: 0000000000000104 RBX: 0000000000000820 RCX: 0000000000000001
-RDX: 0000000000000001 RSI: 0000000000000008 RDI: 0000000000000001
-RBP: ffff888037fbf330 R08: ffff888037fbefd7 R09: 1ffff11006ff7dfa
-R10: dffffc0000000000 R11: ffffed1006ff7dfb R12: 0000000000000004
-R13: 0000000000000000 R14: ffff888037fbefc8 R15: dffffc0000000000
-FS:  00007f5fd8fbd6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0a9d2d66e4 CR3: 000000007909f000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	8d 5d 80             	lea    -0x80(%rbp),%ebx
-   3:	48 89 d8             	mov    %rbx,%rax
-   6:	48 c1 e8 03          	shr    $0x3,%rax
-   a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
-   f:	74 08                	je     0x19
-  11:	48 89 df             	mov    %rbx,%rdi
-  14:	e8 69 d4 d7 fe       	call   0xfed7d482
-  19:	4c 8b 2b             	mov    (%rbx),%r13
-  1c:	49 8d 9d 20 08 00 00 	lea    0x820(%r13),%rbx
-  23:	48 89 d8             	mov    %rbx,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	48 89 df             	mov    %rbx,%rdi
-  34:	e8 49 d4 d7 fe       	call   0xfed7d482
-  39:	4c 8b 3b             	mov    (%rbx),%r15
-  3c:	49 8d 5f 28          	lea    0x28(%r15),%rbx
+Best regards
+José Ignacio
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
