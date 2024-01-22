@@ -1,95 +1,123 @@
-Return-Path: <linux-kernel+bounces-33755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FDE6836E2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:47:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44AC2836E33
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68D4D28BB51
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:47:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFBDC1F27DD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777AC4A99D;
-	Mon, 22 Jan 2024 17:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78364B5BC;
+	Mon, 22 Jan 2024 17:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="L+GO/3uS"
-Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQhvKgCQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F5D44B5A5;
-	Mon, 22 Jan 2024 17:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263DD4B5A5;
+	Mon, 22 Jan 2024 17:12:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705943526; cv=none; b=jEfGRw0BBWmRMbQOD9g/usGNnujADEQ1BLLQxT9AGU4vYxlLPPND3ycQ58XB3VwGPCF4FcmK5ui0WvgrXyQGNo0Q0/gC/36sk2/DDjE+a9SDkrs94ztCNv8i/BdpX733wW11otHwPPBq2VHnXcKxGbJEU4jLDVRReP2vgEray5A=
+	t=1705943552; cv=none; b=oIoGrK56BFxzN6cEBkXGWvsFAG4SSXDCtlttPzpJGsh+cnXUSN+92QN57Rfl301qZBX1IZmryoOdZOMINO8CrTo4RjnUSS7wQ0Wvfh4dVLmQFOK1WMu3382LumhIe8uCBH+g6FBYJh2HP2ImKDWn2VrAipnITknm+jU+tWzorEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705943526; c=relaxed/simple;
-	bh=a8vk6hZ3TOAkzn/ackfXsaq39NTBfLHYum8B7uhs3mA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rqIP/m2r/yiZKEl6sXdzWSWXNF6aVFiQ+QtUC/bBHUI9WpthmghIP3Xnqa1u2ZbXp+ljg/73/I5S1WqflY3BGV7404+y4UCKsVmbF1iEQ0Oa7e2KHrpcIbumeEGaTdkpwjLS74csQgWy4yGDQ2kIl8hEoT9ypEEHrkD4PpAANCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=L+GO/3uS; arc=none smtp.client-ip=128.199.32.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1705943514; bh=a8vk6hZ3TOAkzn/ackfXsaq39NTBfLHYum8B7uhs3mA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=L+GO/3uS3c16vczNT28Ht/QB0UoI9Lsp6ivS59/FsmIngripMJe9p6CjPKDogNDNF
-	 8feWcbEEenUneCg6blD6o9Nr3Ma7CqrGOrC8vzeOlPZtDMe+tpumKx2b4cUCQmlulP
-	 GmZqLEVSv2BXkDDHPf1I3pg021odHjAbWDjQp9R0=
-From: Luca Weiss <luca@z3ntu.xyz>
-To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: qcom: msm8926-htc-memul: Add rmtfs memory node
-Date: Mon, 22 Jan 2024 18:11:53 +0100
-Message-ID: <12366609.O9o76ZdvQC@z3ntu.xyz>
-In-Reply-To: <e57f3274-46a8-4c42-af29-ff2009127886@linaro.org>
-References:
- <20240121-memul-rmtfs-v1-1-e9da29b1f856@z3ntu.xyz>
- <e57f3274-46a8-4c42-af29-ff2009127886@linaro.org>
+	s=arc-20240116; t=1705943552; c=relaxed/simple;
+	bh=FaIC2T5lnXb5UyX04tjerRUZFs1cl/YjtZm/ySeUnMQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QVJU1nHv0P1ME4qAFICwj3kq2J8BtZ7IedvBUPKpDcEqjaWZ8b6opbHP4G/NjD1Pxjifj69rkH8AJ2rrBw/WXAtIlNwXLL1LssW3Uv06gkr5icIYwqIDKOrXeEl7awUlQOG9qA58sCGooEfq7smX/8aywN9uh9312HnGl/jgdqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UQhvKgCQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9E2DC43390;
+	Mon, 22 Jan 2024 17:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705943551;
+	bh=FaIC2T5lnXb5UyX04tjerRUZFs1cl/YjtZm/ySeUnMQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UQhvKgCQRN7TRWntwh+PHd8vUSluk+R0HJE2SL24r0wGMP7J6YpoYZuaqudXhNj+x
+	 tu8ZFaM32piopWgRudrf4zCsTNYRNMFOY/PlECpHBEJhHtTylB9YR2Hal7I6ERj9/Q
+	 S7wvvTaBULMWVYVC4unRYeMos0y12mOwejsbnDrMs//jBCMtCucoJQuLjJHUdwu6CG
+	 uDbghL3oAxLNaUAPzRrmSkTkuCuaKp3B63eXf2uqVKkg8cCQNJ3FaiQ7+YA+KldJAr
+	 7dfTScH5DHN4AlcWm412RvkLeHbyheujLb7HqCTWZbfbW/Tx3XgYOeQYBxa8aoD4qi
+	 6cIukHf0hJ/vA==
+Date: Mon, 22 Jan 2024 17:12:25 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	geert+renesas@glider.be, magnus.damm@gmail.com,
+	mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de,
+	biju.das.jz@bp.renesas.com, linux-watchdog@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: Re: [PATCH 08/10] dt-bindings: watchdog: renesas,wdt: Document
+ RZ/G3S support
+Message-ID: <20240122-mahogany-dastardly-f8087e9f28e7@spud>
+References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240122111115.2861835-9-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2aXKdcl0xK084Ddu"
+Content-Disposition: inline
+In-Reply-To: <20240122111115.2861835-9-claudiu.beznea.uj@bp.renesas.com>
+
+
+--2aXKdcl0xK084Ddu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
 
-On Montag, 22. J=E4nner 2024 11:53:33 CET Konrad Dybcio wrote:
-> On 21.01.2024 11:21, Luca Weiss wrote:
-> > Add the rmtfs-mem node which was part of one of the "unknown" memory
-> > reservation. Split that one, make sure the reserved-memory in total
-> > still covers the same space.
-> >=20
-> > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> > ---
+On Mon, Jan 22, 2024 at 01:11:13PM +0200, Claudiu wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >=20
-> Could you please test dynamic rmtfs alloc, which should be possible
-> on some (most?) boards after 9265bc6bce6919c771970e5a425a66551a1c78a0?
-
-To be honest, I'd like to not continue to experiment with reserved-memory o=
-n=20
-this board, I've already spent way too much time figuring out how to not ma=
-ke=20
-the phone crash under some circumstances, and now it seems relatively stabl=
-e.
-I might've even put my eMMC into some weird read-only mode where any write =
-to=20
-it just weirdly fails (also original software) by writing to random locatio=
-ns=20
-in the RAM (or well, what Linux thought was non-special RAM).
-
-Regards
-Luca
-
+> Document the support for the watchdog IP available on RZ/G3S SoC. The
+> watchdog IP available on RZ/G3S SoC is identical to the one found on
+> RZ/G2UL SoC.
 >=20
-> Konrad
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
+Cheers,
+Conor.
 
+> ---
+>  Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml =
+b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
+> index 951a7d54135a..220763838df0 100644
+> --- a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
+> @@ -29,6 +29,7 @@ properties:
+>                - renesas,r9a07g043-wdt    # RZ/G2UL and RZ/Five
+>                - renesas,r9a07g044-wdt    # RZ/G2{L,LC}
+>                - renesas,r9a07g054-wdt    # RZ/V2L
+> +              - renesas,r9a08g045-wdt    # RZ/G3S
+>            - const: renesas,rzg2l-wdt
+> =20
+>        - items:
+> --=20
+> 2.39.2
+>=20
 
+--2aXKdcl0xK084Ddu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa6h+QAKCRB4tDGHoIJi
+0j8oAP913+4XCq8gn1k2THbD8Dx+5oJcfz0y3Ia5R2VopsJpEQEAlF3W4mym2WwK
+P5sPOP6qyvqQ6z0lN04L6msIIrB0jAg=
+=Ndlo
+-----END PGP SIGNATURE-----
+
+--2aXKdcl0xK084Ddu--
 
