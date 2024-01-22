@@ -1,129 +1,216 @@
-Return-Path: <linux-kernel+bounces-32989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6B348362DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:13:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D16778362BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:01:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D09161C22709
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:13:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DCD429952C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF603BB33;
-	Mon, 22 Jan 2024 12:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CBE23B199;
+	Mon, 22 Jan 2024 12:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=exia.io header.i=@exia.io header.b="GqA3/afu"
-Received: from h7.fbrelay.privateemail.com (h7.fbrelay.privateemail.com [162.0.218.230])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="crZf+19Z";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="oVwMn2EH";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="crZf+19Z";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="oVwMn2EH"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B893BB21;
-	Mon, 22 Jan 2024 12:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.0.218.230
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F18B4A32;
+	Mon, 22 Jan 2024 12:01:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705925615; cv=none; b=hv79HNtHl4+hPSqVWK9WIbjdIGqyhPVRMyoOYsrTZaiKda+5KmYpzjh+KsJ9xjIySNvjAfAwruLuFWPJRAQSoPA1mhf3HdaGezY11Qlu/JbFLbJctQAibPEsPX+pQSv5p06uNjsJaeGhjDCaJ/+29CfhPQepPkx7oO3XG8BjYjk=
+	t=1705924877; cv=none; b=HYn6Fld/u5VDTOtbXIQSkMxRMXTfcKfuDtzf405/IgjYnYBl8DhVwgcbZ1EXWUKt20bQdJJVS0Fh8d5iR0oevAqhA6YI93OF87LPOcFvINfn5N/p9mTWQPiAfjcvOgGz784VTw/kLz/pKIsZS0OJyX/94oIaYTZJvUHt/D5mADQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705925615; c=relaxed/simple;
-	bh=E+GS8Dp2FPfxmyApAnU8fN/JeF+OsSo7QILwUiphDME=;
-	h=Message-ID:Date:MIME-Version:To:From:Cc:Subject:Content-Type; b=JFxFS1EPpfU14yMJhBz/EsuffFp+lUwy+Gqngl18Qij3mXGsk45FFgaAARHxrlcKNOQ0J4wO752EX8r6TV475DAje6yiyrlxlFx3lkJgtZ7YnQmukxu/WEKCQ2H/z5qG+mNGfVvY5qgP+7frng85vCPfavPZMywJSRyl0fBGf8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=exia.io; spf=pass smtp.mailfrom=exia.io; dkim=pass (2048-bit key) header.d=exia.io header.i=@exia.io header.b=GqA3/afu; arc=none smtp.client-ip=162.0.218.230
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=exia.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=exia.io
-Received: from MTA-05-3.privateemail.com (mta-05.privateemail.com [198.54.127.60])
+	s=arc-20240116; t=1705924877; c=relaxed/simple;
+	bh=1VtZtnBWb4cvksXRELD4PkgDoJHhj3TooLPlCa7TUj0=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=t3h2wAKS+hdieVM14OYUY7q5XR0z5RW3YTr11OneibkFMe7Hqz57ohsPjEKqrdF4O6cvtZsciYBLsD5DzyImMkt/7W6kKylr9WDGQ62blXlrhmBf0K1BB9izQ2Fq7pQ6u6Jv90KPh6apMUniAXYh1tQOtd/Rri6kXEZbF25OjIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=crZf+19Z; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=oVwMn2EH; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=crZf+19Z; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=oVwMn2EH; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by h7.fbrelay.privateemail.com (Postfix) with ESMTPSA id 08F64608CB;
-	Mon, 22 Jan 2024 07:01:29 -0500 (EST)
-Received: from mta-05.privateemail.com (localhost [127.0.0.1])
-	by mta-05.privateemail.com (Postfix) with ESMTP id 964DE18000BB;
-	Mon, 22 Jan 2024 07:01:21 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=exia.io; s=default;
-	t=1705924881; bh=E+GS8Dp2FPfxmyApAnU8fN/JeF+OsSo7QILwUiphDME=;
-	h=Date:To:From:Cc:Subject:From;
-	b=GqA3/afuwdRouPoodV9R1wlpLX5b/02R1XA+chUFOm3GDzzJBCr7S5XqlmFwayahv
-	 3CuADmEIdJb0qv0daT3OTWWye6iPGPzL1a0ecXMCj23Joi9MfUffzkdCiVBVPfdGw/
-	 V2jq/ph8+Ubg1kQrVEk0GKr17L6NnCx3SyHYiycAMOlqzBbaEKKbSn3v1vt5W8Ue/y
-	 3JYxcckn+2z8YYeC1/aMxTz/WYytsIWMi7BepkGL4sDdhhZkPLDLPHkiS0tSF4kwgI
-	 J4/EWYGrNJDTZk6KUrZ/JKAlC0A9u7GO82wP+r9gQNBVprtDmVm1GXgDD5UnnowU/q
-	 Gq8WLRJywFmLQ==
-Received: from [192.168.1.17] (M106073142161.v4.enabler.ne.jp [106.73.142.161])
-	by mta-05.privateemail.com (Postfix) with ESMTPA;
-	Mon, 22 Jan 2024 07:01:13 -0500 (EST)
-Message-ID: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
-Date: Mon, 22 Jan 2024 21:01:06 +0900
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6E6AD1FBF2;
+	Mon, 22 Jan 2024 12:01:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705924874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qMTRRXWQCFQ+HDsmVj133R1M7Raw2++cnrvtPOKdrR8=;
+	b=crZf+19ZMQnOUKvQs5CwJcR8/aITXl8l3kdZm5Ocb1HO8EHROEMb0n5IfUplI7kI9qji3q
+	PFrUwXMN+WZaTzomo1SDMqOnFSnjXElzR4uHHv7WkZz+nT9v1lot03ofsjApAgAotiMn3N
+	pFoLoXqmLwOTzUhRW4acHTNRNNlKvpc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705924874;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qMTRRXWQCFQ+HDsmVj133R1M7Raw2++cnrvtPOKdrR8=;
+	b=oVwMn2EHSXIrGZ/JkxD/yh5MULH4xI9yMHh2MzYg9fACakFIpCnWZxMzDnlh8k8E7PwzXN
+	iMju2STgp4DJ5zDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705924874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qMTRRXWQCFQ+HDsmVj133R1M7Raw2++cnrvtPOKdrR8=;
+	b=crZf+19ZMQnOUKvQs5CwJcR8/aITXl8l3kdZm5Ocb1HO8EHROEMb0n5IfUplI7kI9qji3q
+	PFrUwXMN+WZaTzomo1SDMqOnFSnjXElzR4uHHv7WkZz+nT9v1lot03ofsjApAgAotiMn3N
+	pFoLoXqmLwOTzUhRW4acHTNRNNlKvpc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705924874;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qMTRRXWQCFQ+HDsmVj133R1M7Raw2++cnrvtPOKdrR8=;
+	b=oVwMn2EHSXIrGZ/JkxD/yh5MULH4xI9yMHh2MzYg9fACakFIpCnWZxMzDnlh8k8E7PwzXN
+	iMju2STgp4DJ5zDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF660139A2;
+	Mon, 22 Jan 2024 12:01:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rwHYOAlZrmWKJQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 22 Jan 2024 12:01:13 +0000
+Date: Mon, 22 Jan 2024 13:01:13 +0100
+Message-ID: <87ede9y3ue.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Rob Herring <robh@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH 2/3] ASoC: dt-bindings: xmos,xvf3500: add bindings for XMOS XVF3500
+In-Reply-To: <b888d958-4eb0-4c1f-ace6-b2b85faa5113@wolfvision.net>
+References: <20240115-feature-xvf3500_driver-v1-0-ed9cfb48bb85@wolfvision.net>
+	<20240115-feature-xvf3500_driver-v1-2-ed9cfb48bb85@wolfvision.net>
+	<333c2986-c7c2-4a46-90cf-b59ae206e55a@linaro.org>
+	<96abddcc-fa65-4f27-84fe-2281fe0fcf1c@wolfvision.net>
+	<644f7f02-405d-47fb-bc72-4d54e897255f@linaro.org>
+	<5db4b898-93d5-446f-bfed-b57847f9967a@wolfvision.net>
+	<435f502c-1e1b-4d40-8dcc-34487905d69c@linaro.org>
+	<b7f76546-9998-43e0-abff-a4e73817dbae@wolfvision.net>
+	<47bdc31c-50d2-4d33-9339-5132b6364539@linaro.org>
+	<16027339-0a82-4dd1-86aa-19fda6e23f88@wolfvision.net>
+	<aeeb0dfb-87e2-4024-9d4a-0b9529477315@linaro.org>
+	<b888d958-4eb0-4c1f-ace6-b2b85faa5113@wolfvision.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: ebiederm@xmission.com, keescook@chromium.org
-From: Jan Bujak <j@exia.io>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- viro@zeniv.linux.org.uk, brauner@kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Recent-ish changes in binfmt_elf made my program segfault
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.80
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[dt];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RL17rwhuxjdu7o3ion8yncd616)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linaro.org,kernel.org,gmail.com,perex.cz,suse.com,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-Hi.
+On Tue, 16 Jan 2024 08:29:04 +0100,
+Javier Carrasco wrote:
+> 
+> On 15.01.24 21:43, Krzysztof Kozlowski wrote:
+> > On 15/01/2024 20:43, Javier Carrasco wrote:
+> >> On 15.01.24 19:11, Krzysztof Kozlowski wrote:
+> >>> On 15/01/2024 17:24, Javier Carrasco wrote:
+> >>>> Do you mean that the XVF3500 should not be represented as a platform
+> >>>> device and instead it should turn into an USB device represented as a
+> >>>> node of an USB controller? Something like this (Rockchip SoC):
+> >>>>
+> >>>> &usb_host1_xhci {
+> >>>> 	...
+> >>>>
+> >>>> 	xvf3500 {
+> >>>> 		...
+> >>>> 	};
+> >>>> };
+> >>>>
+> >>>> Did I get you right or is that not the correct representation? Thank you
+> >>>> again.
+> >>>
+> >>> I believe it should be just like onboard hub. I don't understand why
+> >>> onboard hub was limited to hub, because other USB devices also could be
+> >>> designed similarly by hardware folks :/
+> >>>
+> >>> And if we talk about Linux drivers, then your current solution does not
+> >>> support suspend/resume and device unbind.
+> >>>
+> >>> Best regards,
+> >>> Krzysztof
+> >>>
+> >>
+> >> Actually this series is an attempt to get rid of a misuse of the
+> >> onboard_usb_hub driver by a device that is not a HUB, but requires the
+> >> platform-part of that driver for the initialization.
+> > 
+> > That's just naming issue, isn't it?
+> > 
+> >>
+> >> What would be the best approach to provide support upstream? Should I
+> >> turn this driver into a generic USB driver that does what the
+> >> platform-part of the onboard HUB does? Or are we willing to accept
+> > 
+> > No, because you did not solve the problems I mentioned. This is neither
+> > accurate hardware description nor proper Linux driver model handling PM
+> > and unbind.
+> > 
+> You mentioned the PM handling twice, but I am not sure what you mean.
+> The driver provides callbacks for SIMPLE_DEV_PM_OPS, which I tested in
+> freeze and memory power states with positive results. On the other hand,
+> I suppose that you insisted for a good reason, so I would be grateful if
+> you could show me what I am doing wrong. The macro pattern was taken
+> from other devices under sound/, which also check CONFIG_PM_SLEEP,
+> but maybe I took a bad example or missed something.
 
-I recently updated my kernel and one of my programs started segfaulting.
+FWIW, the patterns in sound/ are somewhat outdated and need to be
+refreshed.  Nowadays one should use DEFINE_SIMPLE_DEV_PM_OPS() instead
+(that should work without ifdef).
 
-The issue seems to be related to how the kernel interprets PT_LOAD headers;
-consider the following program headers (from 'readelf' of my reproduction):
 
-Program Headers:
-   Type  Offset   VirtAddr  PhysAddr  FileSiz  MemSiz   Flg Align
-   LOAD  0x001000 0x10000   0x10000   0x000010 0x000010 R   0x1000
-   LOAD  0x002000 0x11000   0x11000   0x000010 0x000010 RW  0x1000
-   LOAD  0x002010 0x11010   0x11010   0x000000 0x000004 RW  0x1000
-   LOAD  0x003000 0x12000   0x12000   0x0000d2 0x0000d2 R E 0x1000
-   LOAD  0x004000 0x20000   0x20000   0x000004 0x000004 RW  0x1000
+thanks,
 
-Old kernels load this ELF file in the following way ('/proc/self/maps'):
-
-00010000-00011000 r--p 00001000 00:02 131  ./bug-reproduction
-00011000-00012000 rw-p 00002000 00:02 131  ./bug-reproduction
-00012000-00013000 r-xp 00003000 00:02 131  ./bug-reproduction
-00020000-00021000 rw-p 00004000 00:02 131  ./bug-reproduction
-
-And new kernels do it like this:
-
-00010000-00011000 r--p 00001000 00:02 131  ./bug-reproduction
-00011000-00012000 rw-p 00000000 00:00 0
-00012000-00013000 r-xp 00003000 00:02 131  ./bug-reproduction
-00020000-00021000 rw-p 00004000 00:02 131  ./bug-reproduction
-
-That map between 0x11000 and 0x12000 is the program's '.data' and '.bss'
-sections to which it tries to write to, and since the kernel doesn't map
-them anymore it crashes.
-
-I bisected the issue to the following commit:
-
-commit 585a018627b4d7ed37387211f667916840b5c5ea
-Author: Eric W. Biederman <ebiederm@xmission.com>
-Date:   Thu Sep 28 20:24:29 2023 -0700
-
-     binfmt_elf: Support segments with 0 filesz and misaligned starts
-
-I can confirm that with this commit the issue reproduces, and with it
-reverted it doesn't.
-
-I have prepared a minimal reproduction of the problem available here,
-along with all of the scripts I used for bisecting:
-
-https://github.com/koute/linux-elf-loading-bug
-
-You can either compile it from source (requires Rust and LLD), or there's
-a prebuilt binary in 'bin/bug-reproduction` which you can run. (It's tiny,
-so you can easily check with 'objdump -d' that it isn't malicious).
-
-On old kernels this will run fine, and on new kernels it will segfault.
-
-Thanks!
-
+Takashi
 
