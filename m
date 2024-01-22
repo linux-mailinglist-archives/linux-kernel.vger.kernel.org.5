@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-33676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 413C0836D1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:24:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC90A836D1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:24:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1FF21F2705C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:24:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E30031C26D9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6D6664B5;
-	Mon, 22 Jan 2024 16:25:41 +0000 (UTC)
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37F5664DC;
+	Mon, 22 Jan 2024 16:25:45 +0000 (UTC)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203583FB0D;
-	Mon, 22 Jan 2024 16:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12182664C8;
+	Mon, 22 Jan 2024 16:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705940741; cv=none; b=n2T/MHDexI3RGHB/IMcJA4my/5XbV+migKgbW7wtiywTdyf9JWIkkTCZyx2IvFARHBcyYvNYd7AkFyjTYjomTvGz1h97rC8tRrWv7r4cdpouLq7FGNO91c/pVzUzyJf1tdIp4IeO2V0Dp4WeGPQg8g+1t3LV0YraClrdjX/xQTM=
+	t=1705940745; cv=none; b=ef4SUQV6z9EYsvdKLTxODQXIKjfyPg30QCfCzjryLXfTVK70dtl8aFRCjcmj43eTSbl2s5csUNIPeeWvwL8+u+UEH3XJEcnriQn34t7x20D9PJgNJnXfVg5sSJ831fs6BDGIP15+Yhff3AK6B8MXXYse25QWZQcqGNYvFRy0ijM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705940741; c=relaxed/simple;
-	bh=Lzg500XdWoPoJzqx8S/twF0nm+rUqhojb4Ctq96JPzc=;
+	s=arc-20240116; t=1705940745; c=relaxed/simple;
+	bh=UhsjRKxsmoF+64XAsg3MFgkxSQPADU/UDysA1nq4m1E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qFCyzIGpQpfJ+JcQhqMcjc1y8XxtclnKGqYoCdHyjusr/suUobSttXdeDKMsPF4ILf0q44T7nzodNb+jz6JrjH1p34/oXxzU7DqykR9CoAhoV/GA9t83anzodqCO9T3ruHdwENHaMEhOz0KqfrOYY8R5TR892kZ3jlmWuNgJsxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+	 MIME-Version:Content-Type; b=Ux0B6n2AslfVN93OVxDUfdLPeChiohfnh3yu0G2uBIaFDmShcH/OKWdv9txjXYeEJbLL7Md35T5EgNXI2ixGSE47h2bZ11h9I5nXr1o/mXkO3COejZapm47YPbE1ZWJopopkKk8erhCe9ZKdpDMO3QmByu7klWM9X6rp+XG3R5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 755E98523E;
-	Mon, 22 Jan 2024 17:25:29 +0100 (CET)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id BBCA383EC6;
+	Mon, 22 Jan 2024 17:25:34 +0100 (CET)
 From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
 To: Daniel Thompson <daniel.thompson@linaro.org>
 Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
@@ -42,14 +42,14 @@ Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
  dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] leds: ktd2692: move ExpressWire code to library
-Date: Mon, 22 Jan 2024 17:24:51 +0100
-Message-ID: <5907190.MhkbZ0Pkbq@radijator>
-In-Reply-To: <20240122101926.GA8596@aspen.lan>
+Subject: Re: [PATCH v3 3/3] backlight: Add Kinetic KTD2801 backlight support
+Date: Mon, 22 Jan 2024 17:24:56 +0100
+Message-ID: <1783156.VLH7GnMWUR@radijator>
+In-Reply-To: <20240122102805.GB8596@aspen.lan>
 References:
  <20240120-ktd2801-v3-0-fe2cbafffb21@skole.hr>
- <20240120-ktd2801-v3-1-fe2cbafffb21@skole.hr>
- <20240122101926.GA8596@aspen.lan>
+ <20240120-ktd2801-v3-3-fe2cbafffb21@skole.hr>
+ <20240122102805.GB8596@aspen.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -112,64 +112,35 @@ Autocrypt: addr=duje.mihanovic@skole.hr;
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 
-On Monday, January 22, 2024 11:19:26 AM CET Daniel Thompson wrote:
-> On Sat, Jan 20, 2024 at 10:26:43PM +0100, Duje Mihanovi=C4=87 wrote:
-> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> > index 6292fddcc55c..d29b6823e7d1 100644
-> > --- a/drivers/leds/Kconfig
-> > +++ b/drivers/leds/Kconfig
-> > @@ -181,6 +181,9 @@ config LEDS_EL15203000
-> >=20
-> >  	  To compile this driver as a module, choose M here: the module
-> >  	  will be called leds-el15203000.
-> >=20
-> > +config LEDS_EXPRESSWIRE
-> > +	bool
-> > +
+On Monday, January 22, 2024 11:28:05 AM CET Daniel Thompson wrote:
+> On Sat, Jan 20, 2024 at 10:26:45PM +0100, Duje Mihanovi=C4=87 wrote:
+> > diff --git a/drivers/video/backlight/ktd2801-backlight.c
+> > b/drivers/video/backlight/ktd2801-backlight.c new file mode 100644
+> > index 000000000000..7b9d1a93aa71
+> > --- /dev/null
+> > <snip>
+> > +/* These values have been extracted from Samsung's driver. */
+> > +#define KTD2801_EXPRESSWIRE_DETECT_DELAY_US	150
+> > +#define KTD2801_EXPRESSWIRE_DETECT_US		270
+> > +#define KTD2801_SHORT_BITSET_US			5
+> > +#define KTD2801_LONG_BITSET_US			(3 *=20
+KTD2801_SHORT_BITSET_US)
+> > +#define KTD2801_DATA_START_US			5
+> > +#define KTD2801_END_OF_DATA_LOW_US		10
+> > +#define KTD2801_END_OF_DATA_HIGH_US		350
+> > +#define KTD2801_PWR_DOWN_DELAY_US		2600
 >=20
-> Shouldn't there be a "select GPIOLIB" here? It seems odd to make the
-> clients responsible for the dependencies.
+> These are a little pointless now. They are all single use constants
+> and have little documentary value.
 >=20
-> BTW there seems to be very little consistency across the kernel between
-> "depends on GPIOLIB" and "select GPIOLIB".. but select is marginally
-> more popular (283 vs. 219 in the kernel I checked).
-
-I believe a "select" would be more appropriate here unless these backlights=
-=20
-should be hidden if GPIOLIB is disabled. The catch with "select" is that th=
-ere=20
-seems to be no way to throw in the "|| COMPILE_TEST" other GPIO-based=20
-backlights have and I'm not sure what to do about that.
-
-> > diff --git a/drivers/leds/flash/leds-ktd2692.c
-> > b/drivers/leds/flash/leds-ktd2692.c index 598eee5daa52..8c17de3d621f=20
-100644
-> > --- a/drivers/leds/flash/leds-ktd2692.c
-> > +++ b/drivers/leds/flash/leds-ktd2692.c
-> >=20
-> >  <snip>
-> >  static void ktd2692_expresswire_write(struct ktd2692_context *led, u8
-> >  value)
-> >  {
-> > =20
-> >  	int i;
-> >=20
-> > -	ktd2692_expresswire_start(led);
-> > +	expresswire_start(&led->props);
-> >=20
-> >  	for (i =3D 7; i >=3D 0; i--)
-> >=20
-> > -		ktd2692_expresswire_set_bit(led, value & BIT(i));
-> > -	ktd2692_expresswire_end(led);
-> > +		expresswire_set_bit(&led->props, value & BIT(i));
-> > +	expresswire_end(&led->props);
-> >=20
-> >  }
+> The lack of documentary value is because, for example,
+> KTD2801_EXPRESSWIRE_DETECT_DELAY_US, is assigned to a structure
+> field called detect_delay_us.
 >=20
-> Is there any reason not to have an expresswire_write_u8() method in the
-> library code? It is a concept that appears in both drivers.
+> Likewise I doubt that explicitly stating that long_bitset_us is 3x
+> bigger than short_bitset_us is important for future driver maintainance.
 
-Not really, I'll add it in v4.
+Does this apply for ktd2692 as well?
 
 Regards,
 =2D-
