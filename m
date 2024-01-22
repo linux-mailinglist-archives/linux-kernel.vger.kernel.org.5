@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-33402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90DDF836940
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:57:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47AE0836945
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:57:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3C0C1C22C64
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:57:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F148F1F21A2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECFAF4CB27;
-	Mon, 22 Jan 2024 15:09:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC9704CDF0;
+	Mon, 22 Jan 2024 15:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gMcJTK1s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UEdzEAHq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3F74C3B9;
-	Mon, 22 Jan 2024 15:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92584CB3F;
+	Mon, 22 Jan 2024 15:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936196; cv=none; b=iwIvZdpMI8svMvABvZlUbNc7e0kU6ujy8mFdFNKCvcHJ74OB4MolCGzmqkEBXq/bGdrtl9nA1JCsyxf5ei8qNEgbUGtX9g28UqKLp106Xu87sewzLKQvJzBCCQ0mN96ZfqZoTnrTETG2GjAA5lMHgOocwekshAVNfAuTh/X90wE=
+	t=1705936198; cv=none; b=EadtaVnUrLD5oFEw2j1iULumHP3nA60x+ex4ALIXOiezCiZeL8Un16khUTGeV4wE+mG8/n73ZddzcKzrKzX8bL4Z3H3/eoAxLw0Phgo9zphB7D/JVkI9StzS1cIGhrn3wSzEQanPMFSSgytPriD7R0IThmZhxewEYx7bOrSA64k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936196; c=relaxed/simple;
-	bh=J3ZoyCqNWoh5B7jt/nT+iHpNhhc/7+h3H7S4EDnayoQ=;
+	s=arc-20240116; t=1705936198; c=relaxed/simple;
+	bh=5G2vFEVxxjljbx2Tfhpnz8wRhi/UN3fGZcr43JDnvzk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PMBMDF6yP/X9Y5iAtWfYbaG3kssnWtP+NExKLOcQ/iISbFyfKzM5dtvsYShJBR2+NEb7zxr6vTvlxnjIwBC6/UAHkS4G9B8waziMpd8lMdf4nmsgDETezaoIFJzlfhXxrvHINbq7dwinaAkPMS/cgCCvStbzCA3mg/5HR0pwWCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gMcJTK1s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54893C433B1;
-	Mon, 22 Jan 2024 15:09:54 +0000 (UTC)
+	 MIME-Version; b=ahGkZAgm8DFG5vBt+UWLfPNSfhPMaXmXNJpd6qZ5aF8KJxuP0gUV3J2n2lwqvKGYgU719DWcdyzHh6GQBga3jPqrwUGrhx1zGqQNLlKIiUiGWNVDVwlwcHeaMaTW3kCWmBs2LFvfft0WgVYd+fNnlBlLBjbYHXpYsoTnJfftuks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UEdzEAHq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3895FC433C7;
+	Mon, 22 Jan 2024 15:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936195;
-	bh=J3ZoyCqNWoh5B7jt/nT+iHpNhhc/7+h3H7S4EDnayoQ=;
+	s=k20201202; t=1705936197;
+	bh=5G2vFEVxxjljbx2Tfhpnz8wRhi/UN3fGZcr43JDnvzk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gMcJTK1sajq0OtpFnQLH0INdD4h12FFdWVzOxil6UmklO8GP2myzl01UuBJxjJs8/
-	 DtxTD9hAWWmpuQmCELrOlNcvhRKLODBR38fZbXbqTLWONhnYSQh0/SS511TAXIsVfr
-	 d/yY/BDeVkbrv5hb0rwr25GsxEa4B23ZAhOHWOQBtwvgib10cHqJqOGrUFoJ3tI6p4
-	 VNdBtY5IMIpAyVvZlc0k8p4VyB62wrYBntn6/Jq8V+ZngmVGmcaXfAsHfhcq7RGg1i
-	 +eSCGtTOmRpRoBfrlcPUvLeOUgPFJ4r6xOCshieNTvswnCFw+d6Vg9Wu//XeVeyDtW
-	 Gf8iAB7IsmpFw==
+	b=UEdzEAHqx53Fvf2HG6PBq0aLeAcUahh+lLOpWc6gYtSYprGFBMD08VigSFx460fEL
+	 R3G+jrfSjKxRxlJmfDrykF7e//nKgE4K6XqCXKjs6XdDLk1cFYb6OQc/5iL5gDuUip
+	 XcPCoS6rijXh/+aAAH4iNcrjItfKjY3DeeGDVOsdlXkgWR6Umi/g39EXyVzBKEdHQp
+	 ZWgNaZmEzzrtunw9zk1ZaLkxpeRNgAEnjSxrJgF9BrLqi58aQCGUIca5wpAMSfqQca
+	 DrRRSVvnxpYLsybtmQxL3hoEyomqNGaKlyUyqPm0cF2ij3lN20tLqcVZwNipaS168v
+	 jriqrq8cFLtag==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>,
+Cc: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	cezary.rojewski@intel.com,
-	broonie@kernel.org,
-	siyanteng@loongson.cn,
-	zhangyiqun@phytium.com.cn,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 02/53] ALSA: hda: Refer to correct stream index at loops
-Date: Mon, 22 Jan 2024 10:08:03 -0500
-Message-ID: <20240122150949.994249-2-sashal@kernel.org>
+	corbet@lwn.net,
+	linux-sound@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 03/53] ASoC: doc: Fix undefined SND_SOC_DAPM_NOPM argument
+Date: Mon, 22 Jan 2024 10:08:04 -0500
+Message-ID: <20240122150949.994249-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150949.994249-1-sashal@kernel.org>
 References: <20240122150949.994249-1-sashal@kernel.org>
@@ -69,68 +69,35 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 
-[ Upstream commit 26257869672fd4a06a60c2da841e15fb2cb47bbe ]
+[ Upstream commit 67c7666fe808c3a7af3cc6f9d0a3dd3acfd26115 ]
 
-In a couple of loops over the all streams, we check the bitmap against
-the loop counter.  A more correct reference would be, however, the
-index of each stream, instead.
+The virtual widget example makes use of an undefined SND_SOC_DAPM_NOPM
+argument passed to SND_SOC_DAPM_MIXER().  Replace with the correct
+SND_SOC_NOPM definition.
 
-This patch corrects the check of bitmaps to the stream index.
-
-Note that this change doesn't fix anything for now; all existing
-drivers set up the stream indices properly, hence the loop count is
-always equal with the stream index.  That said, this change is only
-for consistency.
-
-Link: https://lore.kernel.org/r/20231121154125.4888-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Link: https://lore.kernel.org/r/20231121120751.77355-1-cristian.ciocaltea@collabora.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_stream.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ Documentation/sound/soc/dapm.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index 741a5d17ae4c..ecd3aec57c87 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -629,17 +629,15 @@ void snd_hdac_stream_timecounter_init(struct hdac_stream *azx_dev,
- 	struct hdac_stream *s;
- 	bool inited = false;
- 	u64 cycle_last = 0;
--	int i = 0;
+diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/dapm.rst
+index 8e44107933ab..c3154ce6e1b2 100644
+--- a/Documentation/sound/soc/dapm.rst
++++ b/Documentation/sound/soc/dapm.rst
+@@ -234,7 +234,7 @@ corresponding soft power control. In this case it is necessary to create
+ a virtual widget - a widget with no control bits e.g.
+ ::
  
- 	list_for_each_entry(s, &bus->stream_list, list) {
--		if (streams & (1 << i)) {
-+		if ((streams & (1 << s->index))) {
- 			azx_timecounter_init(s, inited, cycle_last);
- 			if (!inited) {
- 				inited = true;
- 				cycle_last = s->tc.cycle_last;
- 			}
- 		}
--		i++;
- 	}
+-  SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_DAPM_NOPM, 0, 0, NULL, 0),
++  SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_NOPM, 0, 0, NULL, 0),
  
- 	snd_pcm_gettime(runtime, &runtime->trigger_tstamp);
-@@ -684,14 +682,13 @@ void snd_hdac_stream_sync(struct hdac_stream *azx_dev, bool start,
- 			  unsigned int streams)
- {
- 	struct hdac_bus *bus = azx_dev->bus;
--	int i, nwait, timeout;
-+	int nwait, timeout;
- 	struct hdac_stream *s;
+ This can be used to merge to signal paths together in software.
  
- 	for (timeout = 5000; timeout; timeout--) {
- 		nwait = 0;
--		i = 0;
- 		list_for_each_entry(s, &bus->stream_list, list) {
--			if (!(streams & (1 << i++)))
-+			if (!(streams & (1 << s->index)))
- 				continue;
- 
- 			if (start) {
 -- 
 2.43.0
 
