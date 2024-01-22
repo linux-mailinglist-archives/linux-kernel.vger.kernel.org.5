@@ -1,156 +1,101 @@
-Return-Path: <linux-kernel+bounces-34202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A07A837580
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:37:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5976A837582
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9589F1F2AAC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:37:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E884289640
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F6B482C3;
-	Mon, 22 Jan 2024 21:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70294481C4;
+	Mon, 22 Jan 2024 21:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J2Oho5DO"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LBqEgZfD"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 739123A8F9;
-	Mon, 22 Jan 2024 21:36:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A81E47F66
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705959409; cv=none; b=F1x9Z+tJQ2unWZMfGVoZmX/DCZXHKgnsADvgbpKLbSXO17fJ+0Bg/0QmF1m6fQu+1lmjNchlD3nF0YPabgGsFds2vAci0vXxKPbvWE9S26hnXBi+3d2+5yULUFq9Y/A570bp9R9tLVZkgeR56b+vYMkGLfcsfsSsTkVaJJObW40=
+	t=1705959435; cv=none; b=fMiRDg7Si3wSBNf/TCayGv55HMLbHSLydiyPU64VM924ZyGSGuh5KWp8t1fEKL+bMHl9K5DhWFKife3DKDMHOOQH+Q4LT57JoG6HXshzq0pMg2oWuTydvWLuvtHgS3ldwi9r0QUGmQV3TVrS+ZNJ0GU4VkhmAY5yKSqveqfkPHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705959409; c=relaxed/simple;
-	bh=xPn3dhVqdpRwTwdijypjx1UWRDaqJN9bDytv0STNJls=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=htZzLX6Q06qC3n6AEjAgArqJm0FI8PQqKpx2CP6TsSGcSdr/5p+qi4mMAhzrYv1OPk5A1fe15JqEOmzViIVMjFQjad6c+qcIR1o1PllM0eWJHcCJ4I4rp+WeypsCwnJUb1B67VdjCF71XyGQz2PofP+4y37wzxTSFBJFqCgv1ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J2Oho5DO; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a26f73732c5so399073466b.3;
-        Mon, 22 Jan 2024 13:36:47 -0800 (PST)
+	s=arc-20240116; t=1705959435; c=relaxed/simple;
+	bh=HNTtOHdJXNAt7afBOtGBu0agxiWRvw0w3IbNe3pA13s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RtvDw2FsWStkcXZSaHBGZGoC9rzcMq6Fo36Rv1g6lpU9jUL+iLBBRjhjdDUKJTTWobxViwm24fB3sQ/r8hC9X4LH059ue8Vn5Os/leyDuWjSjZm4I7X/6/7lyOzKWyCyXNcrpH17QOXbFC7UIOBsSOHmY6Uek20RIVtAqT5/5Dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LBqEgZfD; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d70b0e521eso26438605ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:37:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705959405; x=1706564205; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Kh1sidT+OYt5uYsBoa3HOhiQe7ArH4ir2l1s+REcQPU=;
-        b=J2Oho5DOTLh5BckM2KFoA6tjfEQph6ZfH9tDiolOfR4tkBobDsJDZKF20xzZWgu7gC
-         qCIBTSwYGemHYCUHo1IQJ0IndW9eZYHMaEmJtgZWPylJMzMSayHP4kpdaUNSv6hsi3oS
-         Z8sn1QaNNyHjDXnuFE1XaYYA7BgWi1ypftt54r0cpa7KTryI1iZhsBEyAjNuOxDPuqcx
-         PQTH1C/bWbiPmtpWASd1Xk5Gi4h5wrPSB6O804yUtbg7ypi/EEObf64QOM9t0BBiw+iN
-         GKrqh9PoMxdCzDD+3G+Vvfsrzj52gJza/vQpy4jkHxDkgw5mXNEqJuhf73dxN5GD04dJ
-         VHJQ==
+        d=chromium.org; s=google; t=1705959434; x=1706564234; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5ohIM+QBLSzmN75oEYt6DocSn1ONwoFPk6+o1PYHvXM=;
+        b=LBqEgZfDtM5qGvIPatKQoM5JBD8E4vd4gVfWjbZh/PQWIZt8CeMUARdrqEekvMe9R6
+         /VuKCnHfTo5CXltB7VXNPWEpvd6lWRglRRV04z4a9WtWf7SQhJbGtz+ONw8C35gHmyls
+         CCbqQBAYw8v+/yaETCwt9hgLqIIsFGM40t6Ko=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705959405; x=1706564205;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Kh1sidT+OYt5uYsBoa3HOhiQe7ArH4ir2l1s+REcQPU=;
-        b=GaXpboMeVjowql7O6AZmDVfQkFIyX8EX2K6h2mloANX5TcgOiJxvgOZD9xG3LCrlyY
-         F5iWkrVMkWRrEJRW16/BErdBdRGen+2wjPMTZyeALNLwIWD451HEloO3biXNAB5+k+gM
-         m/Nw1O+gUxwmydgzHHDwlo1apBjdHqHlYQ5PPwaUXNTiFWWj4GxmZslSSSfLV0a9MDDQ
-         KTttbS3XukRi/v+NcVqqEtA/VfjL4RoUZV1P+Z3EOlotrLbuSU75ijrTUQ9o4FIeJ0f9
-         0cVU2JA/qRUusGe7v+XXghi3cpruocSuoAT8Hf8+TbFJIwZkbxsWtLepZQUdR6ujZ6QM
-         /Cgw==
-X-Gm-Message-State: AOJu0YxregrC5PLjnq15Rjhzp9Eku74iKKTdym1gLM5neYYA3AmSupKq
-	YrYo9QbNsVpzJOlSdN8zBXkNEevE5OqpMzq9ScKs2ICYarxjZTfk9OucoRNLhCprxgJPWLoaMYi
-	SLFW2LqTjB/gNUSTHzjzLEDeoqmI=
-X-Google-Smtp-Source: AGHT+IF/SL58a8hmAkmkCe5q5zm+9sw1I9Kywvqs5C4nI1iPfdBzh55WJjaIzUvjLszirg3nQ/bBqI6uZdDo77QpfCc=
-X-Received: by 2002:a17:906:b2c6:b0:a30:9e78:662f with SMTP id
- cf6-20020a170906b2c600b00a309e78662fmr317678ejb.70.1705959405451; Mon, 22 Jan
- 2024 13:36:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705959434; x=1706564234;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5ohIM+QBLSzmN75oEYt6DocSn1ONwoFPk6+o1PYHvXM=;
+        b=PlarGF2laVPyNNZ4RAATlw9Yu2FMd0MrbpKRLJzOu/miOimpG/vbp92MIBEd0870Vc
+         aTcNCBSUveHMcMXJLpsXF04uX4Z88zcVfwJ1cyG/2UBoiNLX5F2n+hS/Pj+XHdGNiffk
+         3HFEjNeY6/XWM5lOje47v/jQ4BQiOSwXkODuNLoK188sIFZA0Le+mDqWP46cXmxwTYfP
+         QBnWP14fHkvhHSMXRioBOqmpMx5RnEGxSbe8vdoItqwO1u1jbg79TmCmaFQzRqwrOKvX
+         O2qehyeVtvc3s8WQjDEs4pbS6nkEwvSnGH3sbTBANj16bcxesuES5S8tvms7O4a4AiYp
+         M4xw==
+X-Gm-Message-State: AOJu0Yx2OEVhtdid4ZQ6uQPiGk64RUmmzm8FTxUddeeI4EXoVlri4S0J
+	kQXxmsTaoDQOcRhn+AO6N0CGK/5FB6JEJEWeykyJJBMAgT5q6zRCGKcwk0Lyig==
+X-Google-Smtp-Source: AGHT+IHDm3PgnIf8kOCaE+ks0YcNVeiVaAo4XhhQf4tT4YoipxfjtqAWre6bTc+kgyN68SkCyPCLzw==
+X-Received: by 2002:a17:902:d505:b0:1d7:407e:4182 with SMTP id b5-20020a170902d50500b001d7407e4182mr3650157plg.101.1705959433868;
+        Mon, 22 Jan 2024 13:37:13 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x20-20020a170902ea9400b001d0cfd7f6b9sm7649182plb.54.2024.01.22.13.37.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 13:37:13 -0800 (PST)
+Date: Mon, 22 Jan 2024 13:37:12 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
+	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: [PATCH v3 1/2] kselftest/seccomp: Use kselftest output functions
+ for benchmark
+Message-ID: <202401221337.8A3B228688@keescook>
+References: <20240122-b4-kselftest-seccomp-benchmark-ktap-v3-0-785bff4c04fd@kernel.org>
+ <20240122-b4-kselftest-seccomp-benchmark-ktap-v3-1-785bff4c04fd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
- <20240102-j7200-pcie-s2r-v1-14-84e55da52400@bootlin.com> <CAHp75VfPQz4PWdzFUU_n+R=XohBjyXM0zsjD-bUD2jmb42ds8Q@mail.gmail.com>
- <9cb47f37-bd98-4136-b844-33cf2be593df@bootlin.com>
-In-Reply-To: <9cb47f37-bd98-4136-b844-33cf2be593df@bootlin.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 22 Jan 2024 23:36:08 +0200
-Message-ID: <CAHp75Ve30T3t0_vHR7TUVVC_WN23dL_rp1k951Da6Re2DJQezw@mail.gmail.com>
-Subject: Re: [PATCH 14/14] PCI: j721e: add suspend and resume support
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
-	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
-	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
-	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
-	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122-b4-kselftest-seccomp-benchmark-ktap-v3-1-785bff4c04fd@kernel.org>
 
-On Mon, Jan 22, 2024 at 5:30=E2=80=AFPM Thomas Richard
-<thomas.richard@bootlin.com> wrote:
-> On 1/15/24 21:13, Andy Shevchenko wrote:
-> > On Mon, Jan 15, 2024 at 6:16=E2=80=AFPM Thomas Richard
-> > <thomas.richard@bootlin.com> wrote:
+On Mon, Jan 22, 2024 at 09:08:17PM +0000, Mark Brown wrote:
+> In preparation for trying to output the test results themselves in TAP
+> format rework all the prints in the benchmark to use the kselftest output
+> functions. The uses of system() all produce single line output so we can
+> avoid having to deal with fully managing the child process and continue to
+> use system() by simply printing an empty message before we invoke system().
+> We also leave one printf() used to complete a line of output in place.
+> 
+> Tested-by: Anders Roxell <anders.roxell@linaro.org>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-..
+Acked-by: Kees Cook <keescook@chromium.org>
 
-> >> +               if (pcie->reset_gpio)
-> >
-> > Dup, why?
->
-> This pcie->reset_gpio corresponds to PERST# of PCIe endpoints.
-> I assert it during suspend, because I have to deassert it (with a delay)
-> during resume stage [1].
-
-Ah, sorry for being unclear, I meant that gpiod_set_value*() already
-has that check, you don't need it here.
-
-> >> +                       gpiod_set_value_cansleep(pcie->reset_gpio, 0);
-
-..
-
-> >> +               if (pcie->reset_gpio) {
-> >> +                       usleep_range(100, 200);
-> >
-> > fsleep() ?
-> > Btw, why is it needed here, perhaps a comment?
->
-> The comment should be the same than in the probe [1].
-> Should I copy it? Or should I just add a reference to the probe?
->
-> [1]
-> https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/pci/controller/c=
-adence/pci-j721e.c#L535
-
-Either way works for me.
-
-> >> +                       gpiod_set_value_cansleep(pcie->reset_gpio, 1);
-> >> +               }
-
-..
-
-> >> +#define cdns_pcie_to_rc(p) container_of(p, struct cdns_pcie_rc, pcie)
-> >
-> > Is container_of.h included in this file?
->
-> linux/container_of.h is included in linux/kernel.h.
-> And linux/kernel.h is included in pcie-cadence.h
-> (https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/pci/controller/=
-cadence/pcie-cadence.h#L9).
-
-Okay, so, try to clean up pcie-cadence.h so it won't use "proxy" headers.
-There is an IWYU (include what you use) principle, please follow it.
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+Kees Cook
 
