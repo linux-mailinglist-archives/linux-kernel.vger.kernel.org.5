@@ -1,62 +1,67 @@
-Return-Path: <linux-kernel+bounces-33369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E076C8368E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:49:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE7D88368E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:49:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99EEC282E71
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:49:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA84F1C23652
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A011495D0;
-	Mon, 22 Jan 2024 15:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8A16D1B2;
+	Mon, 22 Jan 2024 15:07:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MRTLSHK0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bytXXwgC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82A5495CF;
-	Mon, 22 Jan 2024 15:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3508C495DA;
+	Mon, 22 Jan 2024 15:06:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936014; cv=none; b=JDqwLaW6kJ79WbciI2lQuOusknP/I1r1kueYz5E/rukWtmChe4vrPGedVpewvQ9+kWYyUcOyKZ1xzDCl4CWWxxH0dr46yX8X/xv68j1fzrd65+mCOEM9AssDxG06NKkutaZAnHBwwtPC75+gdAS2Kklgf1q17WZ1fl6RMmRhcfU=
+	t=1705936020; cv=none; b=YrSZlRI/EZnwK5y1REg5pcMKUnlVOovh2oSm6eV98z010K4S3l+jv4ogOOBP/UUU69Ckm8NU5Ltz56s4TTL91Bmq6X8Vj0pKCQ54aTqahKgMnUlXYv5/LeZ4qT3yWCZRCA30rUEUg15hmOdUIEqDM2RuR2mkQ6Dqva0j42kNzhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936014; c=relaxed/simple;
-	bh=0Ksj/HgjXZ/89YGBI3nSIWb2GQHlA0GboIwNC/9NPCs=;
+	s=arc-20240116; t=1705936020; c=relaxed/simple;
+	bh=q2HinNqA/JahO3h55rGwIUPeodaQILiqpXhJsL6cvFA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=V2cB6UJXQzmXrGQ2tlrFTY6tWTJ4y/KEHSfRD2Pj6f4q05YkTDTvtUAKlxFHZjjYQNCFmf5qH3e2ewLIF2JGoID+GWLX8CWO5S6P2IfIXdy4qU7vNhWNQsx9vtq2o2GfNRLG1AEcrYii2mLi94Z66pZK7ETw1hT1m/2rrz82c08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MRTLSHK0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C394BC43394;
-	Mon, 22 Jan 2024 15:06:52 +0000 (UTC)
+	 MIME-Version; b=VGV6rKmkhJipfXEDPT4D0Tp2yD95igGkazBAtK8ASXCxlegD8iOdV/lNx1OFbFovmfzQRzHjaxF9CVrEPC4V8LwH9ca9A3l/yrCq5woazgmJvCN7T2BBgiTQSWa4oKA23OYkP/842ZC8JlWcuVVmROkkBcvayXu0v9xk1w2mnvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bytXXwgC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF3B5C433B2;
+	Mon, 22 Jan 2024 15:06:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936014;
-	bh=0Ksj/HgjXZ/89YGBI3nSIWb2GQHlA0GboIwNC/9NPCs=;
+	s=k20201202; t=1705936019;
+	bh=q2HinNqA/JahO3h55rGwIUPeodaQILiqpXhJsL6cvFA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MRTLSHK0y0W9swz+j3aChREftp6ZdX5fVD6sT9/2IbdUA+Y5ge+KJUPcb5DBcb8pz
-	 5KGFoaZX91g0FdQhBZ/Gk0ePVYeqeBWX3g1Snlae/CRvywU2ztVm51wDqu15Qnw868
-	 W8cI8bMUz7rHbp+q0gynkDozxOmdqs/x1nSTwFez5t9Ix4U6vtWbMObE2/2tv4JmcC
-	 mkBpiCGZEHdPUfpDp6q4SR+JO7pXhByg6iP7ohq698913n3bepDWsJemu2QvWegvev
-	 lJZRHfJDvLPYcN/lpVQpFY7Dg+FopsryPDYXcA3EedM1GHzkqE29Ap4YYFKn+ajhPw
-	 cTBh18zNFGM+Q==
+	b=bytXXwgC1mLcJgr/RvxWSlThnJZh/dVuvpXlehEa7qvqqG8qszHmyfEGSTKlnjxNr
+	 VJ23wEttEnbZqA1Y8ZQBVhiXoTHnP5hEy7qYUDrolwFgNk67YwmbK/ofSdv+D3lM+o
+	 b3FMSM563RTu0ggdcKlaT4tFxwmrZgo5VDAkkV/KiU82ReLKwtxp2N1xfhWo/VbjkK
+	 MfAcn4/LmP+DpqUkCl+7Us1fSA4MKeOX7HNiNgKFJe2yZqxsWi3WqeUnxcbT8qU4Qj
+	 l+fsla0Ou0TjTBhUZomaOXM3Uh9+wIolhNsgkd1XYZUnTS3DT8Qv1s+MmixXYSePhr
+	 HoFCUir7kfFCw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+Cc: Rob Clark <robdclark@chromium.org>,
 	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
 	Sasha Levin <sashal@kernel.org>,
 	robdclark@gmail.com,
 	airlied@gmail.com,
 	daniel@ffwll.ch,
-	marijn.suijten@somainline.org,
-	konrad.dybcio@linaro.org,
+	quic_jesszhan@quicinc.com,
+	quic_khsieh@quicinc.com,
+	quic_vpolimer@quicinc.com,
+	quic_kalyant@quicinc.com,
+	dan.carpenter@linaro.org,
 	linux-arm-msm@vger.kernel.org,
 	dri-devel@lists.freedesktop.org,
 	freedreno@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 47/73] drm/msm/dpu: enable writeback on SM8450
-Date: Mon, 22 Jan 2024 10:02:01 -0500
-Message-ID: <20240122150432.992458-47-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 48/73] drm/msm/dpu: Ratelimit framedone timeout msgs
+Date: Mon, 22 Jan 2024 10:02:02 -0500
+Message-ID: <20240122150432.992458-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -71,64 +76,60 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.13
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Rob Clark <robdclark@chromium.org>
 
-[ Upstream commit eaa647cdbf2e357b4a14903f2f1e47ed9c4f8df3 ]
+[ Upstream commit 2b72e50c62de60ad2d6bcd86aa38d4ccbdd633f2 ]
 
-Enable WB2 hardware block, enabling writeback support on this platform.
+When we start getting these, we get a *lot*.  So ratelimit it to not
+flood dmesg.
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Patchwork: https://patchwork.freedesktop.org/patch/570187/
-Link: https://lore.kernel.org/r/20231203002743.1291956-4-dmitry.baryshkov@linaro.org
+Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
+Patchwork: https://patchwork.freedesktop.org/patch/571584/
+Link: https://lore.kernel.org/r/20231211182000.218088-1-robdclark@gmail.com
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/msm/disp/dpu1/catalog/dpu_8_1_sm8450.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 5 ++++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h     | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_8_1_sm8450.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_8_1_sm8450.h
-index 1b12178dfbca..8a19cfa274de 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_8_1_sm8450.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_8_1_sm8450.h
-@@ -32,6 +32,7 @@ static const struct dpu_mdp_cfg sm8450_mdp = {
- 		[DPU_CLK_CTRL_DMA1] = { .reg_off = 0x2b4, .bit_off = 8 },
- 		[DPU_CLK_CTRL_DMA2] = { .reg_off = 0x2bc, .bit_off = 8 },
- 		[DPU_CLK_CTRL_DMA3] = { .reg_off = 0x2c4, .bit_off = 8 },
-+		[DPU_CLK_CTRL_WB2] = { .reg_off = 0x2bc, .bit_off = 16 },
- 		[DPU_CLK_CTRL_REG_DMA] = { .reg_off = 0x2bc, .bit_off = 20 },
- 	},
- };
-@@ -326,6 +327,21 @@ static const struct dpu_dsc_cfg sm8450_dsc[] = {
- 	},
- };
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index d34e684a4178..da9b171d7979 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -39,6 +39,9 @@
+ #define DPU_ERROR_ENC(e, fmt, ...) DPU_ERROR("enc%d " fmt,\
+ 		(e) ? (e)->base.base.id : -1, ##__VA_ARGS__)
  
-+static const struct dpu_wb_cfg sm8450_wb[] = {
-+	{
-+		.name = "wb_2", .id = WB_2,
-+		.base = 0x65000, .len = 0x2c8,
-+		.features = WB_SM8250_MASK,
-+		.format_list = wb2_formats,
-+		.num_formats = ARRAY_SIZE(wb2_formats),
-+		.clk_ctrl = DPU_CLK_CTRL_WB2,
-+		.xin_id = 6,
-+		.vbif_idx = VBIF_RT,
-+		.maxlinewidth = 4096,
-+		.intr_wb_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 4),
-+	},
-+};
++#define DPU_ERROR_ENC_RATELIMITED(e, fmt, ...) DPU_ERROR_RATELIMITED("enc%d " fmt,\
++		(e) ? (e)->base.base.id : -1, ##__VA_ARGS__)
 +
- static const struct dpu_intf_cfg sm8450_intf[] = {
- 	{
- 		.name = "intf_0", .id = INTF_0,
-@@ -423,6 +439,8 @@ const struct dpu_mdss_cfg dpu_sm8450_cfg = {
- 	.dsc = sm8450_dsc,
- 	.merge_3d_count = ARRAY_SIZE(sm8450_merge_3d),
- 	.merge_3d = sm8450_merge_3d,
-+	.wb_count = ARRAY_SIZE(sm8450_wb),
-+	.wb = sm8450_wb,
- 	.intf_count = ARRAY_SIZE(sm8450_intf),
- 	.intf = sm8450_intf,
- 	.vbif_count = ARRAY_SIZE(sdm845_vbif),
+ /*
+  * Two to anticipate panels that can do cmd/vid dynamic switching
+  * plan is to create all possible physical encoder types, and switch between
+@@ -2327,7 +2330,7 @@ static void dpu_encoder_frame_done_timeout(struct timer_list *t)
+ 		return;
+ 	}
+ 
+-	DPU_ERROR_ENC(dpu_enc, "frame done timeout\n");
++	DPU_ERROR_ENC_RATELIMITED(dpu_enc, "frame done timeout\n");
+ 
+ 	event = DPU_ENCODER_FRAME_EVENT_ERROR;
+ 	trace_dpu_enc_frame_done_timeout(DRMID(drm_enc), event);
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+index b6f53ca6e962..f5473d4dea92 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+@@ -51,6 +51,7 @@
+ 	} while (0)
+ 
+ #define DPU_ERROR(fmt, ...) pr_err("[dpu error]" fmt, ##__VA_ARGS__)
++#define DPU_ERROR_RATELIMITED(fmt, ...) pr_err_ratelimited("[dpu error]" fmt, ##__VA_ARGS__)
+ 
+ /**
+  * ktime_compare_safe - compare two ktime structures
 -- 
 2.43.0
 
