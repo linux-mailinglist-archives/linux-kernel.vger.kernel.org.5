@@ -1,129 +1,130 @@
-Return-Path: <linux-kernel+bounces-33036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D47683638A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:43:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 533B983639F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51D661C22A0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:43:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31693B2AF12
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:38:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F623E48C;
-	Mon, 22 Jan 2024 12:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82D13A8C4;
+	Mon, 22 Jan 2024 12:38:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H9SPVxQH"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RtsW2b7i"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB833CF43
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD98C38FA4
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705927156; cv=none; b=VNdGNeZd/G+lZHiepmsXGgIlj1KCH7kRfI7T7y1C8Kfg2NcToCJ73A7xEKBIGvCq4PEBpkmXDy2f+BZyJSTWUjTjAspcR+veH6vpv1ZtCbV+S28waNkO6YEXovmwr54u5GYsn+WDfBx2CYmT69D+7Kyl1AJq3ySQ8Qv0Qj73SoI=
+	t=1705927127; cv=none; b=OzBU0PkFRP44RdETIcfaGzGVhtjbJ2Zt1AXMjlpTdlZRPzLPOhoXgMKEe2m0Bne+AXveHeI9vbIk9WB+6TYrjHjwlJUUHRMBpf6+CznB09sf6HT+GYhs+ReROSzkvNiYGflyy3Tx4hjgdy4xGf4YP4ET8jxOeMRhF8camyXvaOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705927156; c=relaxed/simple;
-	bh=6H3U2xFlfhw33p6fngsaEo/JwWggI7/BGAeipSgCLFM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z+jfKH+7By4U/T6Z6Yjl8xsp1XyU5xje3VPZsXArckmZ4b4JOa3gY1FKsV1AXsmxvTEI83q7ZFvRXR3mQjFp3treXdFSfS3AQCQLbl6gfQRfk/z/xzwMY/EswtyQA9ZvEu1RemlubXsjTVJsOcZUGP4Nwnw28SgovO8x+xqllS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H9SPVxQH; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705927154;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AQmuqxaeIGZelSODTss8gWd4P9SrQf4vDlsO0SnTpdE=;
-	b=H9SPVxQHF/T8m/Xg+PL+h0/sOVy8oYrsGttidz3Hq+ydhxd/iAAaPizagU+DhHRnlhL7jc
-	SekqssKcun8UCdkE0f49aI+qkRItTxyeFNy5tbZnZAHBA0HLrOxKh5xIWmmUzkAwC2Yv89
-	S8fLxaRKhTZnvioTzhz1blhnFRME3Us=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-494-LKHoZoERMie5-61Ndg59yw-1; Mon,
- 22 Jan 2024 07:39:11 -0500
-X-MC-Unique: LKHoZoERMie5-61Ndg59yw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 958913C000A4;
-	Mon, 22 Jan 2024 12:39:10 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id A65D8492BC6;
-	Mon, 22 Jan 2024 12:39:08 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: Christian Brauner <christian@brauner.io>
-Cc: David Howells <dhowells@redhat.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	netfs@lists.linux.dev,
-	linux-afs@lists.infradead.org,
-	linux-cifs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-erofs@lists.ozlabs.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Marc Dionne <marc.dionne@auristor.com>
-Subject: [PATCH 07/10] afs: Hide silly-rename files from userspace
-Date: Mon, 22 Jan 2024 12:38:40 +0000
-Message-ID: <20240122123845.3822570-8-dhowells@redhat.com>
-In-Reply-To: <20240122123845.3822570-1-dhowells@redhat.com>
-References: <20240122123845.3822570-1-dhowells@redhat.com>
+	s=arc-20240116; t=1705927127; c=relaxed/simple;
+	bh=1YNIMXrGxJfYG0BglCiTV04XPyBS2plrnZryvDSVcWM=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=CPVYeG5HdAXNbNLL2rVoTkDroZWCiIbJHHYDfLYe2NL1saMcWlgFa8HEdcuFLA56p1BA2TJfFjz7jhmRqcarlcUHGTOKd7P6eUKv782xEZm/w5r7OejgSuy0wJuWNnqRskLmgN7c5Sp3v/2b/Ydaeo/UWhfg8fCjQ2RW7e8quHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RtsW2b7i; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705927126; x=1737463126;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=1YNIMXrGxJfYG0BglCiTV04XPyBS2plrnZryvDSVcWM=;
+  b=RtsW2b7iTvGmXg1jqxlhM/MJrgEMp+8E86CuyFECuT0sj22Zg7mSBVur
+   ED5UqsRXyoj2yxbvBqU+0583lCXwpPSOhnBPFBRgUbjNQfZuulFxVwuFi
+   ZxdSw9X+zIpEFVvZgKggRzN/CPXnUTMFlPMgP0GocpgKIdziCBtlOTEvq
+   RPmolDGAuo4WUwRUeFl5S3tvtUIGBxRect8+zrNe3+7H1+X6e7sht69Se
+   LjwLtT0cs/9v886mjLThgQx/ZuWWBefzMAXX7jM7rQdzy1Fc6O7+hgCYF
+   7KhB7Zjq5WpkEdqG+zJA9H33upxs7pOaej4D20INqjYnmvsOYtFNuHs01
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="90369"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="90369"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 04:38:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="904845272"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="904845272"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.173.139]) ([10.249.173.139])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 04:38:43 -0800
+Message-ID: <433452d0-589a-49c8-8044-dcc93d5be90a@linux.intel.com>
+Date: Mon, 22 Jan 2024 20:38:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: DMAR-IR: IRQ remapping was enabled on dmar6 but we are not in
+ kdump mode
+To: Paul Menzel <pmenzel@molgen.mpg.de>, =?UTF-8?B?SsO2cmcgUsO2ZGVs?=
+ <joro@8bytes.org>, Will Deacon <will@kernel.org>
+References: <5517f76a-94ad-452c-bae6-34ecc0ec4831@molgen.mpg.de>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <5517f76a-94ad-452c-bae6-34ecc0ec4831@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-There appears to be a race between silly-rename files being created/removed
-and various userspace tools iterating over the contents of a directory,
-leading to such errors as:
+On 2024/1/19 22:45, Paul Menzel wrote:
+> 
+> On a Dell PowerEdge T640, Linux 5.9 and 6.6.12 warn about kdump:
+> 
+>      [    2.728445] DMAR-IR: IRQ remapping was enabled on dmar6 but we 
+> are not in kdump mode
+>      [    2.736544] DMAR-IR: IRQ remapping was enabled on dmar5 but we 
+> are not in kdump mode
+>      [    2.744620] DMAR-IR: IRQ remapping was enabled on dmar4 but we 
+> are not in kdump mode
+>      [    2.752695] DMAR-IR: IRQ remapping was enabled on dmar3 but we 
+> are not in kdump mode
+>      [    2.760774] DMAR-IR: IRQ remapping was enabled on dmar2 but we 
+> are not in kdump mode
+>      [    2.768847] DMAR-IR: IRQ remapping was enabled on dmar1 but we 
+> are not in kdump mode
+>      [    2.776922] DMAR-IR: IRQ remapping was enabled on dmar0 but we 
+> are not in kdump mode
+>      [    2.784999] DMAR-IR: IRQ remapping was enabled on dmar7 but we 
+> are not in kdump mode
+> 
+> Looking through the logs, this only happens when using kexec to restart 
+> the system.
 
-	find: './kernel/.tmp_cpio_dir/include/dt-bindings/reset/.__afs2080': No such file or directory
-	tar: ./include/linux/greybus/.__afs3C95: File removed before we read it
+The code that warned this is,
 
-when building a kernel.
+  599         if (ir_pre_enabled(iommu)) {
+  600                 if (!is_kdump_kernel()) {
+  601                         pr_warn("IRQ remapping was enabled on %s 
+but we are not in kdump mode\n",
+  602                                 iommu->name);
+  603                         clear_ir_pre_enabled(iommu);
+  604                         iommu_disable_irq_remapping(iommu);
+  605                 }
 
-Fix afs_readdir() so that it doesn't return .__afsXXXX silly-rename files
-to userspace.  This doesn't stop them being looked up directly by name as
-we need to be able to look them up from within the kernel as part of the
-silly-rename algorithm.
+The VT-d interrupt remapping is enabled during boot, but this is not a
+kdump kernel.
 
-Fixes: 79ddbfa500b3 ("afs: Implement sillyrename for unlink and rename")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
----
- fs/afs/dir.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Do you mind checking whether the disable interrupt remapping callback
+was called during kexec reboot?
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 3f73d61f7c8a..eface67ccc06 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -474,6 +474,14 @@ static int afs_dir_iterate_block(struct afs_vnode *dvnode,
- 			continue;
- 		}
- 
-+		/* Don't expose silly rename entries to userspace. */
-+		if (nlen > 6 &&
-+		    dire->u.name[0] == '.' &&
-+		    ctx->actor != afs_lookup_filldir &&
-+		    ctx->actor != afs_lookup_one_filldir &&
-+		    memcmp(dire->u.name, ".__afs", 6) == 0)
-+			continue;
-+
- 		/* found the next entry */
- 		if (!dir_emit(ctx, dire->u.name, nlen,
- 			      ntohl(dire->u.vnode),
+1121 struct irq_remap_ops intel_irq_remap_ops = {
+1122         .prepare                = intel_prepare_irq_remapping,
+1123         .enable                 = intel_enable_irq_remapping,
+1124         .disable                = disable_irq_remapping,
+1125         .reenable               = reenable_irq_remapping,
+1126         .enable_faulting        = enable_drhd_fault_handling,
+1127 };
 
+Best regards,
+baolu
 
