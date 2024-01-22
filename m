@@ -1,190 +1,118 @@
-Return-Path: <linux-kernel+bounces-32343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2FDB835A6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:47:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8206E835A7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12F3A1C21ABA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:47:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39853283E97
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C7C63A7;
-	Mon, 22 Jan 2024 05:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA21CF9C8;
+	Mon, 22 Jan 2024 05:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EzwhgRUu"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EkYZB46N"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7972610C
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 05:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A501CA7F;
+	Mon, 22 Jan 2024 05:48:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705902433; cv=none; b=kMQujQAzNnKN2s7ByfhbOYac9+oK0f8g87veCkHi4KygQvByGuPJoAj1lwVCu899Ejwo/HaZKUb8GJdAb9GSuLcYG0+X2j5zRKT66tsrWqJ81fC/2Z6+w1kBKMGZDRflz9vtskfjgasVTgxsFmreBgq+wBWnu+4Ng3yE57HQiyA=
+	t=1705902524; cv=none; b=Pwh42xzdwoGxRrTc4SabPZ/8ez0Bf9EJ7Aj1fhI6bvxS3KIOvHt1w0SZhU4++RcMhIrCDor0NrY+CBdRsGwSm8sxI6g9PNRsdkIoTI/tv9cReWbetAAYJYDLkmZwJ2iDv3dS0LOFxHqCfmTnsY1GFNZzuxQHWYpwAts0+e9kZ5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705902433; c=relaxed/simple;
-	bh=w0YGYBZ/dh7Vk/tQn34Q3nmnir8jia1dl5Hvefz2fEY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eF0F48h9PByoeU3NBM9c4QucWRutqOdwZAniTeUUX0Ox6Wu01rWA+UKEur7ZGyIE/eRFGdz84FZU4cHk1rwxB3LYaQ8BGNgEz2TRfCQHs55lvGuKSJC7845TGU/1xtQOaOgZC7IUdpOxzSJ0+KDgi61vZ0EVoQapkT9jP1KTshw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EzwhgRUu; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-559f92bf7b6so4829041a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 21:47:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705902430; x=1706507230; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WpZ26oyMw52BtqasRQKvc0RRxoPsrrYn13Naqm6uq6w=;
-        b=EzwhgRUuCIjsQX2nOUO4d1L62QGyAixXytLxgNxkD6R2CVWJopY2hI8/0qxJ54/zXO
-         9hxYOZlLmu8KaGohARjZ0YPtS7X92ezgqU0+Pgg7jvZBOeGGHNK4gYayolau5T8S6r5n
-         CEcSD1P/sPKSjtIr4bPfhgI+GW7q9+uRAkMIK4MJ7krLAXNb3iuN3u1ECSB82s/gXEB2
-         AuXPZS+xIccAUwrl9oBvTijA5hd9kCGJLWrfaMaa3bMztmMnjvRGuT7C3ivfAqcapEAY
-         SMKxqJAj1tw2xNL+1o8LKbv7V1i1khH2hoMkAfE096bh88IzJ7FplHLAgi4VFS9d62Vy
-         ovfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705902430; x=1706507230;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WpZ26oyMw52BtqasRQKvc0RRxoPsrrYn13Naqm6uq6w=;
-        b=Vk9/tnSc9RS/ydB/s0EwrMIrIP8QCCcK7HIZwWOJ802p9zY7M0CRC56UdgVAJWbhxY
-         4UTm2d0rfj1vezN3Ijdrykow4SGCW/rmqiiMEGw7lUwfTxGnBnLadMgAf+KHDC5wmH9a
-         UPH4m0/8FP+0PRrYI5bE+Jks+juKcgBdfS4s/v/SW05DQlM/YY5nvqncWXmH0C+sb5bX
-         3eANuf4lYFIvDepinIMJTP50Q2evRwfBVGz9rf/RP8dqdzonbA6fR36K7QmUntlpv3bF
-         jLS1Gk5MHGb9HiMByzt1TUbwSbc17UPCq/K2wOpmOuPyBDWcuWOjJ56XbxlXoBqtAYgN
-         q8wQ==
-X-Gm-Message-State: AOJu0YzWOV+2kfxHZ+YhVb3B4Rz6inZjJK3pdWRB1zjQihPCUinYJtLf
-	NmU4LX7vI1DcCoXeIDUv8grC1bdJ83ZOUswBgQeu5P7g8TPjJohM12CJZcqxyne6DNHsbXH4oqW
-	oGfrB+XYP4EAP9Du5GerfBCHdGoU=
-X-Google-Smtp-Source: AGHT+IG8KekwYXaPWjcm1ovpIPGbaaDPlX1vP/WNmB8qLpmGxP//yELYJnFVZktgGZ1s/IPIFs7sXSi6Nz3jXeDEPe4=
-X-Received: by 2002:a05:6402:13cb:b0:55c:383f:3cba with SMTP id
- a11-20020a05640213cb00b0055c383f3cbamr1301223edx.29.1705902429832; Sun, 21
- Jan 2024 21:47:09 -0800 (PST)
+	s=arc-20240116; t=1705902524; c=relaxed/simple;
+	bh=fvcqDANsNrlVg8LHXfdCILc7Q6Zm8CII+gZE4TRCJ1E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LVjc8J4kP3kmyorFCezFKLrOYXzOcr+3ai/+fGpCG0xaFtLDQjKV7A8MZTlxk76rf/v60oiXtbAAJAq6oqiYPMzdmSWAzxKU5awQfvZxgxtHgwPXZ6N/A7Ys04q5I7JC0a7dGtRk6ITN/PrMWUh5FHlqES8BmYfRC0gAYcVR7hI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EkYZB46N; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=qTB9lkUu0aOVisiKuKEe2EDq/PJZ2wo5dJ7HSEFZVXM=; b=EkYZB46N02S1j23tS+kXa0o+qz
+	SOGen273Lr1irYsN5If2peuKaIKjSk7cDNkpmSKJ+38isemVUJ0/RMOZ5B1cbVi8G4YC+702/krmb
+	k2Q31MTvaLRkSWpdj4s4oWdx/adOATimCIFljjsQrGo+0lCK4v0v51EsnAfvnzSoDU7fhTc2kdJpf
+	fu+/WqZUtkhcYsm08rzmXNJmqYVvn4iiZgVFpOpWubVTPKoFqro90KJcp+hAJUAsCgorC+aanX5zj
+	U+EuxaNA8592b3Mxa3IPcLCT1+d0yvNNoOD5srt2UM2Bx3uqDA1QYY/0st99QQpH/woUekI/Ha5bg
+	MH9PQOyw==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rRnAk-00Adcx-1H;
+	Mon, 22 Jan 2024 05:48:38 +0000
+Message-ID: <c4cd5048-1838-4464-ba79-26cc595e380f@infradead.org>
+Date: Sun, 21 Jan 2024 21:48:36 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1703502715-11936-1-git-send-email-zhiguo.niu@unisoc.com> <74243f43-c129-4530-970c-4de2afcd307e@kernel.org>
-In-Reply-To: <74243f43-c129-4530-970c-4de2afcd307e@kernel.org>
-From: Zhiguo Niu <niuzhiguo84@gmail.com>
-Date: Mon, 22 Jan 2024 13:46:58 +0800
-Message-ID: <CAHJ8P3KmnN3rc5yXh2ecg21Eu61srUJsJP8=TbPxfSu4dY91EQ@mail.gmail.com>
-Subject: Re: [PATCH V1] f2fs: fix potentail deadloop issue in do_recover_data
-To: Chao Yu <chao@kernel.org>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	ke.wang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Linux Kernel Bug] UBSAN: array-index-out-of-bounds in
+ rds_cmsg_recv
+Content-Language: en-US
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, Chenyuan Yang <chenyuan0y@gmail.com>,
+ santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-kernel@vger.kernel.org
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, "syzkaller@googlegroups.com"
+ <syzkaller@googlegroups.com>, Zijie Zhao <zzjas98@gmail.com>
+References: <CALGdzuoVdq-wtQ4Az9iottBqC5cv9ZhcE5q8N7LfYFvkRsOVcw@mail.gmail.com>
+ <27319d3d-61dd-41e3-be6c-ccc08b9b3688@linux.dev>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <27319d3d-61dd-41e3-be6c-ccc08b9b3688@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Chao
+Hi,
 
-On Mon, Jan 22, 2024 at 11:46=E2=80=AFAM Chao Yu <chao@kernel.org> wrote:
->
-> On 2023/12/25 19:11, Zhiguo Niu wrote:
-> > There is a potentail deadloop issue in the corner case of
-> > CONFIG_F2FS_FAULT_INJECTION is enabled and the return value
-> > of f2fs_reserve_new_block is error but not -ENOSPC, such as
-> > this error case:
-> > if (unlikely(is_inode_flag_set(dn->inode, FI_NO_ALLOC)))
-> >               return -EPERM;
->
-> I don't see any path to trigger this error? am I missing something?
->
-> > besides, the mainly error -ENOSPC has been handled as bug on,
-> > so other error cases can be proecssed normally without looping.
->
-> commit 975756c41332bc5e523e9f843271ed5ab6aaaaaa
-> Author: Jaegeuk Kim <jaegeuk@kernel.org>
-> Date:   Thu May 19 11:57:21 2016 -0700
->
->      f2fs: avoid ENOSPC fault in the recovery process
->
->      This patch avoids impossible error injection, ENOSPC, during recover=
-y process.
->
-> Please check above patch, I guess intention of adding such loop is
-> to avoid mount failure due to fault injection was triggered in
-> f2fs_reserve_new_block().
->
-> What about change as blew?
-> - keep the loop to avoid mount failure.
-> - remove bug_on() to avoid panic due to fault injection error.
->
-> #define DEFAULT_RETRY_COUNT             8
->
->                 for (loops =3D DEFAULT_RETRY_COUNT; loops > 0; loops--) {
->                         err =3D f2fs_reserve_new_block(&dn);
->                         if (!err ||
->                                 !IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION))
->                                 break;
->                 }
 
-Thanks for your detailed explanation and I understand.
-It seems that the original process is also reasonable,
-so it=E2=80=99s okay to keep it as it is.
->
-> Thanks,
->
-> >
-> > Fixes: 956fa1ddc132 ("f2fs: fix to check return value of f2fs_reserve_n=
-ew_block()")
-> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> > ---
-> >   fs/f2fs/recovery.c | 26 ++++++++------------------
-> >   1 file changed, 8 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-> > index 21381b7..5d658f6 100644
-> > --- a/fs/f2fs/recovery.c
-> > +++ b/fs/f2fs/recovery.c
-> > @@ -710,15 +710,10 @@ static int do_recover_data(struct f2fs_sb_info *s=
-bi, struct inode *inode,
-> >                */
-> >               if (dest =3D=3D NEW_ADDR) {
-> >                       f2fs_truncate_data_blocks_range(&dn, 1);
-> > -                     do {
-> > -                             err =3D f2fs_reserve_new_block(&dn);
-> > -                             if (err =3D=3D -ENOSPC) {
-> > -                                     f2fs_bug_on(sbi, 1);
-> > -                                     break;
-> > -                             }
-> > -                     } while (err &&
-> > -                             IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
-> > -                     if (err)
-> > +                     err =3D f2fs_reserve_new_block(&dn);
-> > +                     if (err =3D=3D -ENOSPC)
-> > +                             f2fs_bug_on(sbi, 1);
-> > +                     else if (err)
-> >                               goto err;
-> >                       continue;
-> >               }
-> > @@ -727,15 +722,10 @@ static int do_recover_data(struct f2fs_sb_info *s=
-bi, struct inode *inode,
-> >               if (f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
-> >
-> >                       if (src =3D=3D NULL_ADDR) {
-> > -                             do {
-> > -                                     err =3D f2fs_reserve_new_block(&d=
-n);
-> > -                                     if (err =3D=3D -ENOSPC) {
-> > -                                             f2fs_bug_on(sbi, 1);
-> > -                                             break;
-> > -                                     }
-> > -                             } while (err &&
-> > -                                     IS_ENABLED(CONFIG_F2FS_FAULT_INJE=
-CTION));
-> > -                             if (err)
-> > +                             err =3D f2fs_reserve_new_block(&dn);
-> > +                             if (err =3D=3D -ENOSPC)
-> > +                                     f2fs_bug_on(sbi, 1);
-> > +                             else if (err)
-> >                                       goto err;
-> >                       }
-> >   retry_prev:
+On 1/21/24 00:34, Zhu Yanjun wrote:
+> 在 2024/1/19 22:29, Chenyuan Yang 写道:
+>> Dear Linux Kernel Developers for Network RDS,
+>>
+>> We encountered "UBSAN: array-index-out-of-bounds in rds_cmsg_recv"
+>> when testing the RDS with our generated specifications. The C
+>> reproduce program and logs for this crash are attached.
+>>
+>> This crash happens when RDS receives messages by using
+>> `rds_cmsg_recv`, which reads the `j+1` index of the array
+>> `inc->i_rx_lat_trace`
+>> (https://elixir.bootlin.com/linux/v6.7/source/net/rds/recv.c#L585).
+>> The length of `inc->i_rx_lat_trace` array is 4 (defined by
+>> `RDS_RX_MAX_TRACES`,
+>> https://elixir.bootlin.com/linux/v6.7/source/net/rds/rds.h#L289) while
+>> `j` is the value stored in another array `rs->rs_rx_trace`
+>> (https://elixir.bootlin.com/linux/v6.7/source/net/rds/recv.c#L583),
+>> which is sent from others and could be arbitrary value.
+> 
+> I recommend to use the latest rds to make tests. The rds in linux kernel upstream is too old. The rds in oracle linux is newer.
+
+Why is the upstream kernel lagging behind?  Is the RDS maintainer going
+to submit patches to update mainline?
+
+Thanks.
+
+> Zhu Yanjun
+> 
+>>
+>> This crash might be exploited to read the value out-of-bound from the
+>> array by setting arbitrary values for the array `rs->rs_rx_trace`.
+>>
+>> If you have any questions or require more information, please feel
+>> free to contact us.
+>>
+>> Best,
+>> Chenyuan
+> 
+> 
+
+-- 
+#Randy
 
