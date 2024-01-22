@@ -1,168 +1,188 @@
-Return-Path: <linux-kernel+bounces-34227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 174F18375E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:10:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F9378375D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB66A2850EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:10:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 417E01F26EC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:09:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB72A4878F;
-	Mon, 22 Jan 2024 22:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TLsKLlRe"
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D6A482FF;
+	Mon, 22 Jan 2024 22:08:57 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73ED6482F1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 22:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D207482D6;
+	Mon, 22 Jan 2024 22:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705961432; cv=none; b=gfxdrv75wsLBIzkhF4P9oG5PMBMd7/hWQ8WJn9HrSTHGv2FI/1DzolZoS8yjL9XwmBKmtyvE7BiAeLphXUv+AzCCLoEOL+3RW1MdfPm9jnza11JJyaBe6cZ927YV8zx5bzHLdfJuD35e4u+3IqYNQY5SjtBDkMm+LleXEdU/erQ=
+	t=1705961337; cv=none; b=Y8uLlkU6oAhmVXtaOKPRj5h8rE0WkF1PMpTxq422gHyANYoT9W+iFZogUFRYKVRB8zq3oGjzs5RXpopzEkIXF+deh5OI/wtEaOoXYIxbf3rajVodZhLROJfk+rLTjVTN7ALzvTym1p6VPkxJO3j53tSXXq50kCmDfuhjvkpN0AQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705961432; c=relaxed/simple;
-	bh=MzQ7DHr1+FpuZdH9Hb5BTp+Mv2zN/eGZ0T2pyoGMqW0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UVsogyYjthAUtoTVArBFIXfPyIboERxQRx54cg5Fr9fcM46Vbc4thfd42VAQs1TNyZ5JHa96syLM5PjF5a9S/5R0jzbI0JQFJ50kNLslJtXRXWmK89KT/PJy0PVcdvGXPEhKnYWIaORDXeHuD1zVwpCLqV5mDFfrwCDV3xrFO7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TLsKLlRe; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e0a64d9449so2370096a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:10:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705961429; x=1706566229; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C1De09a1ONpOwX9iKnxbH9ncVw4V2gLmkFQIVKMLMpk=;
-        b=TLsKLlRenqShOF79JLnkpgQgzRZ/atrdOwMGa9o6fzzWbl5aRipvxhHOMtmbf7mlyT
-         MkFduhJHUHvvj0wJ7QzVnL3QpMnUo4KQ9NLV1MJLQd3p0fYx1YUvpH48VktR6QYAlF5+
-         OLZ7uGPeVenkSZEYMbpZFf01WlJy8tWmQr8+Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705961429; x=1706566229;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C1De09a1ONpOwX9iKnxbH9ncVw4V2gLmkFQIVKMLMpk=;
-        b=HB0dM+zUxe5wDlYEgnK3mJW1wEy/DO26vRJpa6ljUQsGhXuAFP5+gPDJBWBD+zDaYT
-         +RdphayzWxNWuK0jTqLbv+cejWeAqdo5IKG8EU4MuXryHbRbj+24+NhizRAhIEKGLq3w
-         xXo2p6zFudcxDVphrXXr2TVYGaKKwA7k8d4iUazmOL2rX5bexyG7g0QZm8pz0jf0lQSk
-         NnzDgrubiQs2aK3ld6x67xmk+SQ9rMj+TnfM1yRDtsnMosxyY6HfI293ijMpuJe1kms+
-         hKkM40VO7TLDIiSLAuetT0N5qsL4j57+xohs0kkMDsH3vuUgLaxaleqk/ZXevFDYIrTR
-         Ed4g==
-X-Gm-Message-State: AOJu0YxufeuPpVFoRTli6emuT82TNt+qFuF7dkQEISpAKQYj6+fTts2c
-	umKrRIjPHYPclxwX/LogljSuQ77iWsIcNxW97F4y7g2QNoCWPzmv979yr7bLRNWGqpbS3EWo9HY
-	kwiqok5X1jCB6oFSg3KXloA5CL2r+/1pYQlGa
-X-Google-Smtp-Source: AGHT+IHcyg299dW8RhR+Matblnlc5rb+jBuh+9Itmq6kqEedZQWTv9HU9MSIZbsIZt9nIEh+qA7ZWFl0NFfvqIFhDM8=
-X-Received: by 2002:a05:6870:e40d:b0:214:807e:8a05 with SMTP id
- n13-20020a056870e40d00b00214807e8a05mr474569oag.2.1705961429485; Mon, 22 Jan
- 2024 14:10:29 -0800 (PST)
+	s=arc-20240116; t=1705961337; c=relaxed/simple;
+	bh=TbcPe1kiQsBe0ap6ckdE+nz3vqbuvrHgQn7Z537dpkA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AOIIYYxM/QaxZSPSVq/CTCCf/ZBQiTTWnq/lmY/S31q5YTcQyM3FsyGXGw4UgbKZbYEEu6VV32FXiZuGdJxjvDc4fVVt54VFmNIUdIIeMa9F3IZ/7gXWMEXqH2mgjECGGEeNANUKLfF2UCfvdndFtV3B82pAzxBLmbLu9UBLih0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 330B7C433C7;
+	Mon, 22 Jan 2024 22:08:56 +0000 (UTC)
+Date: Mon, 22 Jan 2024 17:10:24 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: add trace_seq_reset function
+Message-ID: <20240122171024.4a434c73@gandalf.local.home>
+In-Reply-To: <20240122182225.69061-2-ricardo@marliere.net>
+References: <20240122182225.69061-2-ricardo@marliere.net>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122152905.2220849-1-jeffxu@chromium.org> <726.1705938579@cvs.openbsd.org>
-In-Reply-To: <726.1705938579@cvs.openbsd.org>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Mon, 22 Jan 2024 14:10:17 -0800
-Message-ID: <CABi2SkXrnUZsWvpqS61mHw-SqDBOodqpcfjdoTTyeeYG9tRJGA@mail.gmail.com>
-Subject: Re: [PATCH v7 0/4] Introduce mseal()
-To: Theo de Raadt <deraadt@openbsd.org>
-Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com, 
-	sroettger@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
-	torvalds@linux-foundation.org, usama.anjum@collabora.com, 
-	rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org, 
-	groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
-	dave.hansen@intel.com, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 7:49=E2=80=AFAM Theo de Raadt <deraadt@openbsd.org>=
- wrote:
->
-> Regarding these pieces
->
-> > The PROT_SEAL bit in prot field of mmap(). When present, it marks
-> > the map sealed since creation.
->
-> OpenBSD won't be doing this.  I had PROT_IMMUTABLE as a draft.  In my
-> research I found basically zero circumstances when you userland does
-> that.  The most common circumstance is you create a RW mapping, fill it,
-> and then change to a more restrictve mapping, and lock it.
->
-> There are a few regions in the addressspace that can be locked while RW.
-> For instance, the stack.  But the kernel does that, not userland.  I
-> found regions where the kernel wants to do this to the address space,
-> but there is no need to export useless functionality to userland.
->
-I have a feeling that most apps that need to use mmap() in their code
-are likely using RW mappings. Adding sealing to mmap() could stop
-those mappings from being executable. Of course, those apps would
-need to change their code. We can't do it for them.
+On Mon, 22 Jan 2024 15:22:25 -0300
+"Ricardo B. Marliere" <ricardo@marliere.net> wrote:
 
-Also, I believe adding this to mmap() has no downsides, only
-performance gain, as Pedro Falcato pointed out in [1].
+> Currently, trace_seq_init may be called many times with the intent of
+> resetting the buffer. Add a function trace_seq_reset that does that and
+> replace the relevant occurrences to use it instead.
+> 
 
-[1] https://lore.kernel.org/lkml/CAKbZUD2A+=3Dbp_sd+Q0Yif7NJqMu8p__eb4yguq0=
-agEcmLH8SDQ@mail.gmail.com/
+Hi Ricardo!
 
-> OpenBSD now uses this for a high percent of the address space.  It might
-> be worth re-reading a description of the split of responsibility regardin=
-g
-> who locks different types of memory in a process;
-> - kernel (the majority, based upon what ELF layout tell us),
-> - shared library linker (the next majority, dealing with shared
->   library mappings and left-overs not determinable at kernel time),
-> - libc (a small minority, mostly regarding forced mutable objects)
-> - and the applications themselves (only 1 application today)
->
->     https://lwn.net/Articles/915662/
->
-> > The MAP_SEALABLE bit in the flags field of mmap(). When present, it mar=
-ks
-> > the map as sealable. A map created without MAP_SEALABLE will not suppor=
-t
-> > sealing, i.e. mseal() will fail.
->
-> We definately won't be doing this.  We allow a process to lock any and al=
-l
-> it's memory that isn't locked already, even if it means it is shooting
-> itself in the foot.
->
-> I think you are going to severely hurt the power of this mechanism,
-> because you won't be able to lock memory that has been allocated by a
-> different callsite not under your source-code control which lacks the
-> MAP_SEALABLE flag.  (Which is extremely common with the system-parts of
-> a process, meaning not just libc but kernel allocated objects).
->
-MAP_SEALABLE was an open discussion item called out on V3 [2] and V4 [3].
+It's also OK to add to the commit log that the goal of this is to later
+extend trace_seq to be more flexible in the size of the buffer it holds. To
+do that, we need to differentiate between initializing a trace_seq and just
+resetting it.
 
-I acknowledge that additional coordination would be required if
-mapping were to be allocated by one software component and sealed in
-another. However, this is feasible.
 
-Considering the side effect of not having this flag (as discussed in
-V3/V4) and the significant implications of altering the lifetime of
-the mapping (since unmapping would not be possible), I believe it is
-reasonable to expect developers to exercise additional care and
-caution when utilizing memory sealing.
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+>  include/linux/trace_seq.h    | 8 ++++++++
+>  include/trace/trace_events.h | 2 +-
+>  kernel/trace/trace.c         | 8 ++++----
+>  kernel/trace/trace_seq.c     | 2 +-
+>  4 files changed, 14 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
+> index 9ec229dfddaa..c28e0ccb50bd 100644
+> --- a/include/linux/trace_seq.h
+> +++ b/include/linux/trace_seq.h
+> @@ -29,6 +29,14 @@ trace_seq_init(struct trace_seq *s)
+>  	s->readpos = 0;
+>  }
+>  
+> +static inline void
+> +trace_seq_reset(struct trace_seq *s)
+> +{
+> +	seq_buf_clear(&s->seq);
+> +	s->full = 0;
+> +	s->readpos = 0;
+> +}
+> +
+>  /**
+>   * trace_seq_used - amount of actual data written to buffer
+>   * @s: trace sequence descriptor
+> diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+> index c2f9cabf154d..2bc79998e5ab 100644
+> --- a/include/trace/trace_events.h
+> +++ b/include/trace/trace_events.h
+> @@ -227,7 +227,7 @@ trace_raw_output_##call(struct trace_iterator *iter, int flags,		\
+>  									\
+>  	field = (typeof(field))entry;					\
+>  									\
+> -	trace_seq_init(p);						\
+> +	trace_seq_reset(p);						\
+>  	return trace_output_call(iter, #call, print);			\
 
-[2] https://lore.kernel.org/linux-mm/20231212231706.2680890-2-jeffxu@chromi=
-um.org/
-[3] https://lore.kernel.org/all/20240104185138.169307-1-jeffxu@chromium.org=
-/
+Note, p = &iter->tmp_seq
 
-> It may be fine inside a program like chrome, but I expect that flag to ma=
-ke
-> it harder to use in libc, and it will hinder adoption.
->
-In the case of glibc and linux, as stated in the cover letter, Stephen
-is working on a change to glibc to add sealing support to the dynamic
-linker,  also I plan to make necessary code changes in the linux kernel.
+where it has never been initialized. To do this, we need to add:
+
+	trace_seq_init(&iter->tmp_seq);
+
+where ever iter is created. You need to look at all the locations where
+iter is created ("iter =") and differentiate where it is first used from
+just passing pointers around.
+
+The iter = kzalloc() will be easy, but for example, both seq and tmp_seq
+need to be initialized in tracing_buffers_open().
+
+Perhaps we need a:
+
+	if (WARN_ON_ONCE(!s->seq.size))
+		seq_buf_init(&s->seq, s->buffer, TRACE_SEQ_BUFFER_SIZE);
+	else
+		seq_buf_clear(&s->seq);
+
+
+in the trace_seq_reset() to catch any place that doesn't have it
+initialized yet.
+
+-- Steve
+
+>  }									\
+>  static struct trace_event_functions trace_event_type_funcs_##call = {	\
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 46dbe22121e9..9147f3717b9a 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -6946,7 +6946,7 @@ tracing_read_pipe(struct file *filp, char __user *ubuf,
+>  	/* reset all but tr, trace, and overruns */
+>  	trace_iterator_reset(iter);
+>  	cpumask_clear(iter->started);
+> -	trace_seq_init(&iter->seq);
+> +	trace_seq_reset(&iter->seq);
+>  
+>  	trace_event_read_lock();
+>  	trace_access_lock(iter->cpu_file);
+> @@ -6993,7 +6993,7 @@ tracing_read_pipe(struct file *filp, char __user *ubuf,
+>  	/* Now copy what we have to the user */
+>  	sret = trace_seq_to_user(&iter->seq, ubuf, cnt);
+>  	if (iter->seq.readpos >= trace_seq_used(&iter->seq))
+> -		trace_seq_init(&iter->seq);
+> +		trace_seq_reset(&iter->seq);
+>  
+>  	/*
+>  	 * If there was nothing to send to user, in spite of consuming trace
+> @@ -7125,7 +7125,7 @@ static ssize_t tracing_splice_read_pipe(struct file *filp,
+>  		spd.partial[i].offset = 0;
+>  		spd.partial[i].len = trace_seq_used(&iter->seq);
+>  
+> -		trace_seq_init(&iter->seq);
+> +		trace_seq_reset(&iter->seq);
+>  	}
+>  
+>  	trace_access_unlock(iter->cpu_file);
+> @@ -10274,7 +10274,7 @@ trace_printk_seq(struct trace_seq *s)
+>  
+>  	printk(KERN_TRACE "%s", s->buffer);
+>  
+> -	trace_seq_init(s);
+> +	trace_seq_reset(s);
+>  }
+>  
+>  void trace_init_global_iter(struct trace_iterator *iter)
+> diff --git a/kernel/trace/trace_seq.c b/kernel/trace/trace_seq.c
+> index c158d65a8a88..741b2f3d76c0 100644
+> --- a/kernel/trace/trace_seq.c
+> +++ b/kernel/trace/trace_seq.c
+> @@ -59,7 +59,7 @@ int trace_print_seq(struct seq_file *m, struct trace_seq *s)
+>  	 * do something else with the contents.
+>  	 */
+>  	if (!ret)
+> -		trace_seq_init(s);
+> +		trace_seq_reset(s);
+>  
+>  	return ret;
+>  }
+
 
