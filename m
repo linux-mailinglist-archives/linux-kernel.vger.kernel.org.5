@@ -1,47 +1,48 @@
-Return-Path: <linux-kernel+bounces-32676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 019F9835ED9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:00:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 286E0835EBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:53:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C864B2AC15
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:54:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D21151F2134C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2016D3A1AE;
-	Mon, 22 Jan 2024 09:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF85D39FDE;
+	Mon, 22 Jan 2024 09:53:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="FUdoIHcj"
+	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="cqaWZGyA"
 Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5F839AC6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E6339AF6;
 	Mon, 22 Jan 2024 09:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.51.188.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705917218; cv=none; b=CCQr7CRPXTshxF/hROp9dWfOIXAp6rEnFjzeieLAYhTXqxFWF4XfSPI33sBazC1IJwPXJ2BwoHHYlzfFz7pCViLHHhc/rV+G6AQy7E0wnlOJVgwc7BDDxelaZUbmdNRw9zGUWb6eoVz9HxKV060WrKBdiEBDCqc7pt6sRtWpPYU=
+	t=1705917217; cv=none; b=j+nsDb3TIWXBFk1T/34irSOn1BU16XhBZzSnWu8Xsr0DXhl02WPOv4228U5s+B0QxIBpDB8d0qwJIGlCk1vNrI92j15fHHiElwE/eS0itTT5AcbrY2r25qAh0VuxiglmVgP0uRN60QSD/AOtarV2fZWV77qRopQVV4sHw3i53Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705917218; c=relaxed/simple;
-	bh=Gmlqsch+nU3OHq/zfaK40X9RQ+SCvMPGFhWvnNdBsSY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OKaHvTS0wQnXieaUlB6fL94wSGkZXpJElS7YOObFZIUcJj2unice11Xm+W7aSrWFHK0YjZOuNompIeeV+FcoEsHwFvHGC8Y+TQHSMBOZU+fZzlVzAeafApfD/rut9lrLIX4mmVfP+Lo7sbaG9t2Vb98nrDn5OY6ebFrHGraohZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org; spf=pass smtp.mailfrom=gnu.org; dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b=FUdoIHcj; arc=none smtp.client-ip=209.51.188.92
+	s=arc-20240116; t=1705917217; c=relaxed/simple;
+	bh=kJVxuLKP5/Z88ANSM4+a7AaBGp1c1zLFsdwtovKAask=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=QyHSVvtFvxehd45xDT5LDe7WOM9Veju1k6cZDcYJaBBl2+2mUGDM6z0+8AqGBPTdTgT04ciMV1UI1gnd4MXeSiDCDcC91yL2omX+o1Ta5pXxmA/RdeAwJYUjAgq8o1eVBF0AW4cbRYSSuZv4Uy1B7gnHEtj/stkG/MxfqAlz4Ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org; spf=pass smtp.mailfrom=gnu.org; dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b=cqaWZGyA; arc=none smtp.client-ip=209.51.188.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
 Received: from fencepost.gnu.org ([2001:470:142:3::e])
 	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.90_1)
 	(envelope-from <othacehe@gnu.org>)
-	id 1rRqzj-00047p-Ko; Mon, 22 Jan 2024 04:53:31 -0500
+	id 1rRqzl-00047v-Aj; Mon, 22 Jan 2024 04:53:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-	s=fencepost-gnu-org; h=MIME-Version:Date:Subject:To:From:in-reply-to:
-	references; bh=4enchjbGZZQSpYR+16gx8q2bCR1BddghDI9P1EyTw0U=; b=FUdoIHcji+v83x
-	t3GIeLbGIA7Cs7oi0/0Ai5oFSuo3r7pikd5XmzvEkQAA5GV3BeoGytaFlyhQq2DieCkSUvYiaydCn
-	NPuvlnD9KZy47RNtcDOMBM0GDjB/lE7AUdBfSSAKijzKzB88tTOsnMkf5/aY5wN9dzvhJoUVz2mrU
-	CPsPVO6+N+y2gCuj7tppC7KXJ52EHO2fROyjzR8fNkDzyHegVWVTUSZnUq43GQcwqZEHKoQgLv46g
-	zW62L1GKJIjlnAWDJ5UtttxHnacstdnSP9rHMt2Up6UoWDpS5RDEUpMWP3byNc0FG52zQkglzwAu5
-	rhZJaJs1u0D4/IzU+b1g==;
+	s=fencepost-gnu-org; h=MIME-Version:References:In-Reply-To:Date:Subject:To:
+	From; bh=Nu73J2+itShKzZjYU3N4YG8o/iU7VMkly5/BSbm9Wwc=; b=cqaWZGyAV3q2Gh9pSSEV
+	04Pep/qRPrVSqFE6Xbl9MeucDfljVBU4OshfrdWqXkRxerzkRDxo5Jy38aVa37+H+sc1FTeBbpfvZ
+	ktNRQrBfA6oz/dSpFENB+TncfA+3dDpb2nlyf1hn9RlmP5kSc0ZPESY0eWIOAMlUZV/McR2Hzryh3
+	OBoVOdlUG97+54yJU2XtTOhMrGtvZZ4m+KAD7oEQS2nTpDwfQmV25Pw/UrvvZksAq9d8qzURKbH0M
+	gg11yj2GLpsq2c4F0R3l78RL7LfL0aIXn67X4S5LccGA8g5BrGl2j5Lj2rJi0gptuhxXO36Df9oV2
+	m+pi1ncqmgEdZA==;
 From: Mathieu Othacehe <othacehe@gnu.org>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -59,11 +60,14 @@ To: Rob Herring <robh+dt@kernel.org>,
 Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	Mathieu Othacehe <othacehe@gnu.org>
-Subject: [PATCH v4 0/3] Add phyBOARD-Segin-i.MX93 support
-Date: Mon, 22 Jan 2024 10:53:03 +0100
-Message-ID: <20240122095306.14084-1-othacehe@gnu.org>
+	Mathieu Othacehe <othacehe@gnu.org>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v4 1/3] dt-bindings: arm: fsl: Add phyBOARD-Segin-i.MX93
+Date: Mon, 22 Jan 2024 10:53:04 +0100
+Message-ID: <20240122095306.14084-2-othacehe@gnu.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20240122095306.14084-1-othacehe@gnu.org>
+References: <20240122095306.14084-1-othacehe@gnu.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,51 +76,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
+Add support for phyBOARD-Segin-i.MX93 board.
 
-This adds support for the phyBOARD-Segin-i.MX93 board.
-
-Note that the v4 enables the FEC ethernet port to ease device-tree
-debugging, as well as the heartbeat LED and the gpio-line-names for the
-GPIOs on the phyBOARD X16 header.
-
-It also adds a new documentation patch to fix a dt check warning regarding
-gpio-line-names property.
-
-Thanks,
-
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
 ---
-Changes in v4:
-- Add gpio-line-names to gpio-vf610 dt-bindings documentation
-- Add the heartbeat SoM LED
-- Add support for the FEC ethernet port
-- Restore the original authors in the copyright
-- Add gpio-line-names for the GPIOs on the X16 header
-Changes in v3:
-- Update documentation to match PHYTEC naming
-- Remove useless properties
-- Update pinmux from PHYTEC downstream kernel
-Changes in v2: 
-- Remove useless line
-- Add missing reserved-memory entries
+ Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-v3: https://lore.kernel.org/linux-devicetree/20240119092835.21462-1-othacehe@gnu.org/
-
-Mathieu Othacehe (3):
-  dt-bindings: arm: fsl: Add phyBOARD-Segin-i.MX93
-  dt-bindings: gpio: gpio-vf610: add gpio-line-names
-  arm64: dts: imx93: Add phyBOARD-Segin-i.MX93 support
-
- .../devicetree/bindings/arm/fsl.yaml          |   6 +
- .../devicetree/bindings/gpio/gpio-vf610.yaml  |   1 +
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx93-phyboard-segin.dts    | 141 ++++++++++++++++++
- .../boot/dts/freescale/imx93-phycore-som.dtsi | 127 ++++++++++++++++
- 5 files changed, 276 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dts
- create mode 100644 arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi
-
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 228dcc5c7d6f..b6c523d02d29 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -1275,6 +1275,12 @@ properties:
+           - const: tq,imx93-tqma9352        # TQ-Systems GmbH i.MX93 TQMa93xxCA/LA SOM
+           - const: fsl,imx93
+ 
++      - description: PHYTEC phyCORE-i.MX93 SoM based boards
++        items:
++          - const: phytec,imx93-phyboard-segin # phyBOARD-Segin with i.MX93
++          - const: phytec,imx93-phycore-som    # phyCORE-i.MX93 SoM
++          - const: fsl,imx93
++
+       - description:
+           Freescale Vybrid Platform Device Tree Bindings
+ 
 -- 
 2.41.0
 
