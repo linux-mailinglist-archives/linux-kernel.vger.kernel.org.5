@@ -1,308 +1,214 @@
-Return-Path: <linux-kernel+bounces-32950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3E99836267
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:46:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F54A836223
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:41:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60A2B1F28A50
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:46:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3339296544
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:41:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF103B18D;
-	Mon, 22 Jan 2024 11:44:32 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156C546547;
+	Mon, 22 Jan 2024 11:32:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y2wktsU/"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C67A3C68A;
-	Mon, 22 Jan 2024 11:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C69C482D9;
+	Mon, 22 Jan 2024 11:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923871; cv=none; b=EQ/QnpwlpWlAZA1tMvU3B+bog4WJoOuy2xQ3hy9VmxHHsq9SmPV/xzNVhqEpIt3mOkrviKMVX+Uhf3eltrdAG8SZRhQGG9YHnjNQzcnTfOBDIOxFX1xq3tsl1M9KA/6uz+Gh0LP2YGIUm8WbrirDSx+H0WfTm69+lRJ0GdDS5Vo=
+	t=1705923134; cv=none; b=nXHtPWF0DN3o/o5ppbwFH9H5ZptweqMovV0KuZe95rfyeahIxk7QyLta/pHAA+ZzaYedbFhluuB0kZLcJSJu2MfFdAcdnGuvR9I5U0riDAtmKTIxJQGDrnB5d1DdSAfsKdwBVm/jxESn+S2Xm1c2lszgQr+hHepNKpQnGVEr5VE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923871; c=relaxed/simple;
-	bh=k6I8vIqOm9FPnO/xt7Fix3r2rFtBxf84ZbLyTz5y5kI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gOLCXurH4yG1+Gwyh/qmBR3HbLbYnBTDCj/73SpK98aaJsyWpM8oHN1W1D6A8/Ij/36TEngKjUfvg5u4azO8mGhv+SeBWQcflYbmxoenc14Pzfs6cI6Oo0Ak+PInlnlCkrIpJaN9DLZ+VcxmrhzfJtQxv/ZI88kRhiIt4Wf9bu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 7d18eee11acd6026; Mon, 22 Jan 2024 12:44:25 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 71EAE669541;
-	Mon, 22 Jan 2024 12:44:25 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v1 06/12] PM: sleep: stats: Define suspend_stats next to the code using it
-Date: Mon, 22 Jan 2024 12:31:20 +0100
-Message-ID: <2266871.iZASKD2KPV@kreacher>
-In-Reply-To: <5760158.DvuYhMxLoT@kreacher>
-References: <5760158.DvuYhMxLoT@kreacher>
+	s=arc-20240116; t=1705923134; c=relaxed/simple;
+	bh=jIWbdhazF1DtsVh0QU7A3sMXExHW1xlwHLYRk2ok3JI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mddYbSCA4fm/xHDpdi49hSpZaR99jBFaNSCnLTrJUhISyk44DKWcqcLxKJ0lmtyJMyiQPHoFkDfkDWZd4swTotke4bY76F/F/c7vfCaSg+7ONwrhGyZNy5U9G+cIN24MEoQSED20nRQ6e9K+F5IXlrTLNfPY/p9ayzBK1d8IMME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y2wktsU/; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50ec948ad31so3218903e87.2;
+        Mon, 22 Jan 2024 03:32:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705923130; x=1706527930; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DPbIVtQUATMQ9HXAYvqkNgY9ZzASBXmb6XQmjxVPQJI=;
+        b=Y2wktsU/SQyvf9cBbsO6aW9XDcAo/bjxm6+9SKSf15D2tULKCYhp2RQZ42MvtUSTt8
+         p/tEgv2f5b8xVJ/pmT4u9KKCIpMUWRd/RKgAxzRwMmTeTf9Rc+LWaL8EDpLjXGp+DXDV
+         mSYQfpbdn8kl2PIbvUzPH1SNzH17jbnNC9ACJcw04z65Hyo8Mgbf5xMmTnr6av2O3Gwj
+         8hafpuPUaoksQHJoUlTX9e0hKvMILOmGDnPt+CYlT46gQ86Gmkrqh/nhDsXX6nUEhSNg
+         gjg16c0Fx8XGC30BErSuvv0YdReUeFV+CKNCa5QHZvnqBXG087PxYZ2C6awTRunYB4vk
+         WytQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705923130; x=1706527930;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DPbIVtQUATMQ9HXAYvqkNgY9ZzASBXmb6XQmjxVPQJI=;
+        b=Z4kKvnBvLdlac3DMWHL2WOFRbnKbs1nn+uFlKINxlRegzg96EMs1sfXEihtKLlm/mv
+         Fgyi6WzrQcBxolyx1YQFR6OotyBP7b0oz1tR1VqaRZK6/dwixsjkN73bUUC1KBvMDoPs
+         l9BexicdJXpsMoLEc4zsljxaaXN/UT7mvU2qVkFIxe3bIfLSqZTQRU+qegIFMyY93yFC
+         IAWL4GXpeNU76huZFM3dau1NTDiGXigBi6CBbxA2eGxLh61sj04PIn5eMe6TreMtFomD
+         0Y3E5HmvB5H+IJtbgP+IXmmK6+X7LBV8jB0w7cWfG/IMyRCNoN5eRhwuRuGLiiP8MQ8E
+         a2iQ==
+X-Gm-Message-State: AOJu0Yw+rGDvdTkTdWFINXPbsayARwzEzm7i2zgjgsRIRfb+7+RsurF9
+	7WF7R5pqziykDtlkCXcfkfLvo8keoOKP4Zuq9aItuvqEdAmPh0tdccFHdDiEDjci+BCrTEFPWYi
+	ASBVcJGxXJ4QxyX4owO28+7sjtUE=
+X-Google-Smtp-Source: AGHT+IE8q+aq6bFKrhgG9BSySHiV+tD954Tn/cVZYKhwVGHb0K+uUjH7ovE9Bu9iAyd12VXTVTX6Bsn87zFzzMIkblM=
+X-Received: by 2002:a05:6512:3d1e:b0:50e:80db:3c35 with SMTP id
+ d30-20020a0565123d1e00b0050e80db3c35mr1745864lfv.80.1705923130168; Mon, 22
+ Jan 2024 03:32:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <1850031.1704921100@warthog.procyon.org.uk> <CA+icZUUc_0M_6JU3dZzVqrUUrWJceY1uD8dO2yFMCwtHtkaa_Q@mail.gmail.com>
+ <CA+icZUWYSxfFHf5A56h9b4uOYYaANNxo2Z+cpwP1Bs1pF8MXQQ@mail.gmail.com>
+In-Reply-To: <CA+icZUWYSxfFHf5A56h9b4uOYYaANNxo2Z+cpwP1Bs1pF8MXQQ@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Mon, 22 Jan 2024 12:31:32 +0100
+Message-ID: <CA+icZUV5zbsm4=wceT7+nzCrCw7S8SkKonTevFBpNTgvzbHT8g@mail.gmail.com>
+Subject: Re: [PATCH] keys, dns: Fix size check of V1 server-list header
+To: sedat.dilek@gmail.com
+Cc: David Howells <dhowells@redhat.com>, ceph-devel@vger.kernel.org, davem@davemloft.net, 
+	eadavis@qq.com, edumazet@google.com, horms@kernel.org, jaltman@auristor.com, 
+	jarkko@kernel.org, jlayton@redhat.com, keyrings@vger.kernel.org, 
+	kuba@kernel.org, linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, marc.dionne@auristor.com, markus.suvanto@gmail.com, 
+	netdev@vger.kernel.org, pabeni@redhat.com, pengfei.xu@intel.com, 
+	smfrench@gmail.com, stable@vger.kernel.org, torvalds@linux-foundation.org, 
+	wang840925@gmail.com, sashal@kernel.org, gregkh@linuxfoundation.org, 
+	pvorel@suse.cz
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgfedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Transfer-Encoding: quoted-printable
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Jan 22, 2024 at 12:01=E2=80=AFPM Sedat Dilek <sedat.dilek@gmail.com=
+> wrote:
+>
+> On Mon, Jan 22, 2024 at 8:33=E2=80=AFAM Petr Vorel <pvorel@suse.cz> wrote=
+:
+> >
+> > From: Sedat Dilek <sedat.dilek@gmail.com>
+> >
+> > On Wed, Jan 10, 2024 at 10:12=E2=80=AFPM David Howells <dhowells@redhat=
+com> wrote:
+> > >
+> > >
+> > > Fix the size check added to dns_resolver_preparse() for the V1 server=
+-list
+> > > header so that it doesn't give EINVAL if the size supplied is the sam=
+e as
+> > > the size of the header struct (which should be valid).
+> > >
+> > > This can be tested with:
+> > >
+> > >         echo -n -e '\0\0\01\xff\0\0' | keyctl padd dns_resolver desc =
+@p
+> > >
+> > > which will give "add_key: Invalid argument" without this fix.
+> > >
+> > > Fixes: 1997b3cb4217 ("keys, dns: Fix missing size check of V1 server-=
+list header")
+> >
+> > [ CC stable@vger.kernel.org ]
+> >
+> > Your (follow-up) patch is now upstream.
+> >
+> > https://git.kernel.org/linus/acc657692aed438e9931438f8c923b2b107aebf9
+> >
+> > This misses CC: Stable Tag as suggested by Linus.
+> >
+> > Looks like linux-6.1.y and linux-6.6.y needs it, too.
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
+/?h=3Dv6.6.11&id=3Dda89365158f6f656b28bcdbcbbe9eaf97c63c474
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
+/?h=3Dv6.1.72&id=3D079eefaecfd7bbb8fcc30eccb0dfdf50c91f1805
+> >
+> > BG,
+> > -Sedat-
+> >
+> > Hi Greg, Sasa,
+> >
+> > could you please add this also to linux-6.1.y and linux-6.6.y?  (Easily
+> > applicable to both, needed for both.) Or is there any reason why it's n=
+ot
+> > being added?
+> >
+>
+> Great!
+>
+> I forgot to CC Greg and Sasha directly.
+>
+> Thanks.
+>
 
-It is not necessary to define struct suspend_stats in a header file and the
-suspend_stats variable in the core device system-wide PM code.  They both
-can be defined in kernel/power/main.c, next to the sysfs and debugfs code
-accessing suspend_stats, which can be static.
+Addendum:
 
-Modify the code in question in accordance with the above observation and
-replace the static inline functions manipulating suspend_stats with
-regular ones defined in kernel/power/main.c.
+Linus says:
+"
+Bah. Obvious fix is obvious.
 
-While at it, move the enum suspend_stat_step to the end of suspend.h which
-is a more suitable place for it.
+Mind sending it as a proper patch with sign-off etc, and we'll get
+this fixed and marked for stable.
+"
 
-No intentional functional impact.
+https://lore.kernel.org/all/CAHk-=3DwiyG8BKKZmU7CDHC8+rmvBndrqNSgLV6LtuqN8W=
+_gL3hA@mail.gmail.com/
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/base/power/main.c |    1 
- include/linux/suspend.h   |   70 +++++++++----------------------------------
- kernel/power/main.c       |   74 +++++++++++++++++++++++++++++++++++++---------
- kernel/power/power.h      |    2 +
- kernel/power/suspend.c    |    7 ----
- 5 files changed, 80 insertions(+), 74 deletions(-)
+-Sedat-
 
-Index: linux-pm/include/linux/suspend.h
-===================================================================
---- linux-pm.orig/include/linux/suspend.h
-+++ linux-pm/include/linux/suspend.h
-@@ -40,60 +40,6 @@ typedef int __bitwise suspend_state_t;
- #define PM_SUSPEND_MIN		PM_SUSPEND_TO_IDLE
- #define PM_SUSPEND_MAX		((__force suspend_state_t) 4)
- 
--enum suspend_stat_step {
--	SUSPEND_NONE = 0,
--	SUSPEND_FREEZE,
--	SUSPEND_PREPARE,
--	SUSPEND_SUSPEND,
--	SUSPEND_SUSPEND_LATE,
--	SUSPEND_SUSPEND_NOIRQ,
--	SUSPEND_RESUME_NOIRQ,
--	SUSPEND_RESUME_EARLY,
--	SUSPEND_RESUME,
--	SUSPEND_NR_STEPS
--};
--
--struct suspend_stats {
--	unsigned int step_failures[SUSPEND_NR_STEPS];
--	unsigned int fail;
--#define	REC_FAILED_NUM	2
--	int	last_failed_dev;
--	char	failed_devs[REC_FAILED_NUM][40];
--	int	last_failed_errno;
--	int	errno[REC_FAILED_NUM];
--	int	last_failed_step;
--	u64	last_hw_sleep;
--	u64	total_hw_sleep;
--	u64	max_hw_sleep;
--	enum suspend_stat_step	failed_steps[REC_FAILED_NUM];
--};
--
--extern struct suspend_stats suspend_stats;
--
--static inline void dpm_save_failed_dev(const char *name)
--{
--	strscpy(suspend_stats.failed_devs[suspend_stats.last_failed_dev],
--		name,
--		sizeof(suspend_stats.failed_devs[0]));
--	suspend_stats.last_failed_dev++;
--	suspend_stats.last_failed_dev %= REC_FAILED_NUM;
--}
--
--static inline void dpm_save_failed_errno(int err)
--{
--	suspend_stats.errno[suspend_stats.last_failed_errno] = err;
--	suspend_stats.last_failed_errno++;
--	suspend_stats.last_failed_errno %= REC_FAILED_NUM;
--}
--
--static inline void dpm_save_failed_step(enum suspend_stat_step step)
--{
--	suspend_stats.step_failures[step]++;
--	suspend_stats.failed_steps[suspend_stats.last_failed_step] = step;
--	suspend_stats.last_failed_step++;
--	suspend_stats.last_failed_step %= REC_FAILED_NUM;
--}
--
- /**
-  * struct platform_suspend_ops - Callbacks for managing platform dependent
-  *	system sleep states.
-@@ -621,4 +567,20 @@ static inline void queue_up_suspend_work
- 
- #endif /* !CONFIG_PM_AUTOSLEEP */
- 
-+enum suspend_stat_step {
-+	SUSPEND_NONE = 0,
-+	SUSPEND_FREEZE,
-+	SUSPEND_PREPARE,
-+	SUSPEND_SUSPEND,
-+	SUSPEND_SUSPEND_LATE,
-+	SUSPEND_SUSPEND_NOIRQ,
-+	SUSPEND_RESUME_NOIRQ,
-+	SUSPEND_RESUME_EARLY,
-+	SUSPEND_RESUME,
-+	SUSPEND_NR_STEPS
-+};
-+
-+void dpm_save_failed_dev(const char *name);
-+void dpm_save_failed_step(enum suspend_stat_step step);
-+
- #endif /* _LINUX_SUSPEND_H */
-Index: linux-pm/kernel/power/main.c
-===================================================================
---- linux-pm.orig/kernel/power/main.c
-+++ linux-pm/kernel/power/main.c
-@@ -95,19 +95,6 @@ int unregister_pm_notifier(struct notifi
- }
- EXPORT_SYMBOL_GPL(unregister_pm_notifier);
- 
--void pm_report_hw_sleep_time(u64 t)
--{
--	suspend_stats.last_hw_sleep = t;
--	suspend_stats.total_hw_sleep += t;
--}
--EXPORT_SYMBOL_GPL(pm_report_hw_sleep_time);
--
--void pm_report_max_hw_sleep(u64 t)
--{
--	suspend_stats.max_hw_sleep = t;
--}
--EXPORT_SYMBOL_GPL(pm_report_max_hw_sleep);
--
- int pm_notifier_call_chain_robust(unsigned long val_up, unsigned long val_down)
- {
- 	int ret;
-@@ -319,6 +306,67 @@ static ssize_t pm_test_store(struct kobj
- power_attr(pm_test);
- #endif /* CONFIG_PM_SLEEP_DEBUG */
- 
-+#define REC_FAILED_NUM	2
-+
-+struct suspend_stats {
-+	unsigned int step_failures[SUSPEND_NR_STEPS];
-+	unsigned int fail;
-+	int last_failed_dev;
-+	char failed_devs[REC_FAILED_NUM][40];
-+	int last_failed_errno;
-+	int errno[REC_FAILED_NUM];
-+	int last_failed_step;
-+	u64 last_hw_sleep;
-+	u64 total_hw_sleep;
-+	u64 max_hw_sleep;
-+	enum suspend_stat_step failed_steps[REC_FAILED_NUM];
-+};
-+
-+static struct suspend_stats suspend_stats;
-+
-+void dpm_save_failed_dev(const char *name)
-+{
-+	strscpy(suspend_stats.failed_devs[suspend_stats.last_failed_dev],
-+		name, sizeof(suspend_stats.failed_devs[0]));
-+	suspend_stats.last_failed_dev++;
-+	suspend_stats.last_failed_dev %= REC_FAILED_NUM;
-+}
-+
-+void dpm_save_failed_step(enum suspend_stat_step step)
-+{
-+	suspend_stats.step_failures[step]++;
-+	suspend_stats.failed_steps[suspend_stats.last_failed_step] = step;
-+	suspend_stats.last_failed_step++;
-+	suspend_stats.last_failed_step %= REC_FAILED_NUM;
-+}
-+
-+void dpm_save_errno(int err)
-+{
-+	if (!err) {
-+		suspend_stats.step_failures[SUSPEND_NONE]++;
-+		return;
-+	}
-+
-+	suspend_stats.fail++;
-+
-+	suspend_stats.errno[suspend_stats.last_failed_errno] = err;
-+	suspend_stats.last_failed_errno++;
-+	suspend_stats.last_failed_errno %= REC_FAILED_NUM;
-+}
-+
-+void pm_report_hw_sleep_time(u64 t)
-+{
-+	suspend_stats.last_hw_sleep = t;
-+	suspend_stats.total_hw_sleep += t;
-+}
-+EXPORT_SYMBOL_GPL(pm_report_hw_sleep_time);
-+
-+void pm_report_max_hw_sleep(u64 t)
-+{
-+	suspend_stats.max_hw_sleep = t;
-+}
-+EXPORT_SYMBOL_GPL(pm_report_max_hw_sleep);
-+
- static const char * const suspend_step_names[] = {
- 	[SUSPEND_NONE] = "",
- 	[SUSPEND_FREEZE] = "freeze",
-Index: linux-pm/kernel/power/power.h
-===================================================================
---- linux-pm.orig/kernel/power/power.h
-+++ linux-pm/kernel/power/power.h
-@@ -327,3 +327,5 @@ static inline void pm_sleep_enable_secon
- 	suspend_enable_secondary_cpus();
- 	cpuidle_resume();
- }
-+
-+void dpm_save_errno(int err);
-Index: linux-pm/kernel/power/suspend.c
-===================================================================
---- linux-pm.orig/kernel/power/suspend.c
-+++ linux-pm/kernel/power/suspend.c
-@@ -616,12 +616,7 @@ int pm_suspend(suspend_state_t state)
- 
- 	pr_info("suspend entry (%s)\n", mem_sleep_labels[state]);
- 	error = enter_state(state);
--	if (error) {
--		suspend_stats.fail++;
--		dpm_save_failed_errno(error);
--	} else {
--		suspend_stats.step_failures[SUSPEND_NONE]++;
--	}
-+	dpm_save_errno(error);
- 	pr_info("suspend exit\n");
- 	return error;
- }
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -60,7 +60,6 @@ static LIST_HEAD(dpm_suspended_list);
- static LIST_HEAD(dpm_late_early_list);
- static LIST_HEAD(dpm_noirq_list);
- 
--struct suspend_stats suspend_stats;
- static DEFINE_MUTEX(dpm_list_mtx);
- static pm_message_t pm_transition;
- 
-
-
-
+> BG,
+> -Sedat-
+>
+> > Kind regards,
+> > Petr
+> >
+> > > Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+> > > Link: https://lore.kernel.org/r/ZZ4fyY4r3rqgZL+4@xpf.sh.intel.com/
+> > > Signed-off-by: David Howells <dhowells@redhat.com>
+> > > cc: Edward Adam Davis <eadavis@qq.com>
+> > > cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > > cc: Simon Horman <horms@kernel.org>
+> > > Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> > > Cc: Jeffrey E Altman <jaltman@auristor.com>
+> > > Cc: Wang Lei <wang840925@gmail.com>
+> > > Cc: Jeff Layton <jlayton@redhat.com>
+> > > Cc: Steve French <sfrench@us.ibm.com>
+> > > Cc: Marc Dionne <marc.dionne@auristor.com>
+> > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > Cc: Eric Dumazet <edumazet@google.com>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > Cc: Paolo Abeni <pabeni@redhat.com>
+> > > ---
+> > >  net/dns_resolver/dns_key.c |    2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
+> > > index f18ca02aa95a..c42ddd85ff1f 100644
+> > > --- a/net/dns_resolver/dns_key.c
+> > > +++ b/net/dns_resolver/dns_key.c
+> > > @@ -104,7 +104,7 @@ dns_resolver_preparse(struct key_preparsed_payloa=
+d *prep)
+> > >                 const struct dns_server_list_v1_header *v1;
+> > >
+> > >                 /* It may be a server list. */
+> > > -               if (datalen <=3D sizeof(*v1))
+> > > +               if (datalen < sizeof(*v1))
+> > >                         return -EINVAL;
+> > >
+> > >                 v1 =3D (const struct dns_server_list_v1_header *)data=
+;
+> > >
+> > >
+> >
 
