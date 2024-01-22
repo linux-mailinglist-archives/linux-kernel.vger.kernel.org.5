@@ -1,203 +1,113 @@
-Return-Path: <linux-kernel+bounces-32952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DF4D83626B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:46:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95D23836235
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:42:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE282B23549
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:46:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA3E92895CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F0003D556;
-	Mon, 22 Jan 2024 11:44:33 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E793D0AF;
+	Mon, 22 Jan 2024 11:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fny94JHp"
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9460C3A1BD;
-	Mon, 22 Jan 2024 11:44:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411993A1A2;
+	Mon, 22 Jan 2024 11:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923872; cv=none; b=o3AtZW7AP+dDF5biAOnqDx+oia0MO9qfgtFRx2RSeR/1De8VRJwQt192xYOZVcuxAyWtYymUdRY+VVEYHLIKQd33KRjLhWIBOAXrQWobkibOowkMslez7PYwVbn4wlvhhpZlG+s0g1FKXb3mX7r3p5X08gaf0BHa42ZPWPHPf0Q=
+	t=1705923421; cv=none; b=JFil9ybvhFW6KgB1z++e48S0B9Cr3OXaDYpoUjTMsj0y7TwUbwgO0KTsVnyYK3lZY24mdSHvk1dYRaufs91vJ7uNFJnFdZha7LSIgeh3qu5gtvW+DtQsDDnWALTe15oBs80ziP1ImF9hMbc+amHve+WLxhbNjA+4WnG0sH5wPZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923872; c=relaxed/simple;
-	bh=fw+tx0QLXKQOvFgAfYfyFRwUUJeuGesaym5awIhseJo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eOe+ifPrbmI4NCx7svsdzijU/9pzn8tj8cZCRQXkcRVuHyvNTWPQv+6W4MeF0cQLDqLgphjNpWy8FbOqmsAoPOPfbQoLnjvlJE+FBFph25tkYMSwNd7qXtbR8+OrsXT//9/B55MOBfVwrGC0btD+D5+AFNa4SjEgFAKf/7PbMs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id c437ba25a9c7dce7; Mon, 22 Jan 2024 12:44:23 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 0D45D669540;
-	Mon, 22 Jan 2024 12:44:23 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v1 09/12] PM: sleep: stats: Log errors right after running suspend callbacks
-Date: Mon, 22 Jan 2024 12:35:32 +0100
-Message-ID: <9237520.CDJkKcVGEf@kreacher>
-In-Reply-To: <5760158.DvuYhMxLoT@kreacher>
-References: <5760158.DvuYhMxLoT@kreacher>
+	s=arc-20240116; t=1705923421; c=relaxed/simple;
+	bh=vlRBYdNiixxTaILLeh6MxcF3ZKQkhQilWesTZt+ciJA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iyGjFgqeISGYC+awZWrT4akxmNja53YZIgZ4YVByn1prO6MY/qvuaES9WMHnkhc/yk3sepDSz8lPzE9mwB4SD9chBltITu4EHj8rV403N2gwQb+uOFYwfjUqRwFzPzkEkv3rz0rc7y0kiiZJUk1h3hBHfZI8RUEhYEl39Lb3fv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fny94JHp; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-361ae51a4d9so9631155ab.1;
+        Mon, 22 Jan 2024 03:37:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705923419; x=1706528219; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=M63RrCQAuLU2mfBJIoBlvu0cGr4uAclNR33OskO7lIQ=;
+        b=fny94JHpJmtse1c8/SKhKO3MCc5ZbebZZ+S8BXsim2xA8q6G77SK+NOpOM+B0c3mqI
+         ifbwTe5CPFK3NFXnTKgDc22Z+JUqVNOVguFr+xAp9B00mVdSFas5vKl+1oabSZsjX44g
+         8ioxGKwWPPntGMd9MywuBXeb7TLMYNaYX6uLs2Zspb5mZwsc9gq/R9fxNbbTFax/Y/V4
+         ByR3ai0DojCL8pOPvLUzzdhP5++OM+h57/RIpynI2kZAPQwq8shHS5IwrPw7M+wZ29Mo
+         mA3kZhWzA/F7APpfq2QACM/bMEdDPf3JPbnbii1oBem2CO5SbarBIFKLy4XHo7WSwlSO
+         PDsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705923419; x=1706528219;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M63RrCQAuLU2mfBJIoBlvu0cGr4uAclNR33OskO7lIQ=;
+        b=PX2pB38UsNrZvS8viZ57uqaMAzxkRBbZVdY9R19XMdfEVOgDYUZ/xxVvzh86rXhHB7
+         ar3FtDClu1eI0qo2YDx9EO/h1SduqdVpTy9W8TgQbq/CW6Ynqf/dUyWKSTEtKYlUfzdd
+         /ZoAeBeoA/zmriOPXqVIfNhavitunoa+d8Tc1f08y/6hEEyzu7b3d2vgrOs7JgShgdQH
+         D9Md+QENey6Ck7L4+tqJwCHAOarrxnSF3rsTJOh00U/Tjtd3VnnjNst58Fm7L064B8ri
+         +/tzLsux5iFkDSEKrbgxmnK03D/xZlGlDiNIllGEigLsPO5Lh+h0DAGVWvdgxSSqsINC
+         Fpfg==
+X-Gm-Message-State: AOJu0Yyui5Yb+m4OS8QP89fgREdBAIxWC3LOjdwg8Nv73Idh2AZAfDX9
+	5aoL4VRdPicfgyGppXsLMAxyMUj/L9pL6HKJUrMmxOaZKLyTW1bvgFDo9gty
+X-Google-Smtp-Source: AGHT+IHv0bOfcxBB9d49Mq8AXm1lpOFB86klKQEurZ4/U7A6hkBvEDw449booFlFuzB05GsdCQVn5A==
+X-Received: by 2002:a92:d05:0:b0:35f:97ca:14e6 with SMTP id 5-20020a920d05000000b0035f97ca14e6mr6486398iln.49.1705923419248;
+        Mon, 22 Jan 2024 03:36:59 -0800 (PST)
+Received: from rigel.home.arpa ([220.235.35.85])
+        by smtp.gmail.com with ESMTPSA id l198-20020a633ecf000000b005cda4d88933sm8216412pga.43.2024.01.22.03.36.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 03:36:58 -0800 (PST)
+From: Kent Gibson <warthog618@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	brgl@bgdev.pl,
+	linus.walleij@linaro.org,
+	andy@kernel.org
+Cc: Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH] MAINTAINERS: add Documentation/userspace-api/gpio/ to GPIO UAPI section
+Date: Mon, 22 Jan 2024 19:36:40 +0800
+Message-Id: <20240122113640.93162-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgfedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Transfer-Encoding: 8bit
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Add Documentation/userspace-api/gpio/ to the GPIO UAPI section.
 
-The error logging and failure statistics updates are carried out in two
-places in each system-wide device suspend phase, which is unnecessary
-code duplication, so do that in one place in each phase, right after
-invoking device suspend callbacks.
-
-While at it, add "noirq" or "late" to the "async" string printed when
-the failing device callback in the "noirq" or "late" suspend phase,
-respectively, was run asynchronously.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Kent Gibson <warthog618@gmail.com>
 ---
- drivers/base/power/main.c |   49 ++++++++++++----------------------------------
- 1 file changed, 13 insertions(+), 36 deletions(-)
 
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -1244,6 +1244,8 @@ Run:
- 	error = dpm_run_callback(callback, dev, state, info);
- 	if (error) {
- 		async_error = error;
-+		dpm_save_failed_dev(dev_name(dev));
-+		pm_dev_err(dev, state, async ? " async noirq" : " noirq", error);
- 		goto Complete;
- 	}
- 
-@@ -1273,14 +1275,8 @@ Complete:
- static void async_suspend_noirq(void *data, async_cookie_t cookie)
- {
- 	struct device *dev = data;
--	int error;
--
--	error = __device_suspend_noirq(dev, pm_transition, true);
--	if (error) {
--		dpm_save_failed_dev(dev_name(dev));
--		pm_dev_err(dev, pm_transition, " async", error);
--	}
- 
-+	__device_suspend_noirq(dev, pm_transition, true);
- 	put_device(dev);
- }
- 
-@@ -1312,12 +1308,8 @@ static int dpm_noirq_suspend_devices(pm_
- 
- 		mutex_lock(&dpm_list_mtx);
- 
--		if (error) {
--			pm_dev_err(dev, state, " noirq", error);
--			dpm_save_failed_dev(dev_name(dev));
--		} else if (!list_empty(&dev->power.entry)) {
-+		if (!error && !list_empty(&dev->power.entry))
- 			list_move(&dev->power.entry, &dpm_noirq_list);
--		}
- 
- 		mutex_unlock(&dpm_list_mtx);
- 
-@@ -1437,6 +1429,8 @@ Run:
- 	error = dpm_run_callback(callback, dev, state, info);
- 	if (error) {
- 		async_error = error;
-+		dpm_save_failed_dev(dev_name(dev));
-+		pm_dev_err(dev, state, async ? " async late" : " late", error);
- 		goto Complete;
- 	}
- 	dpm_propagate_wakeup_to_parent(dev);
-@@ -1453,13 +1447,8 @@ Complete:
- static void async_suspend_late(void *data, async_cookie_t cookie)
- {
- 	struct device *dev = data;
--	int error;
- 
--	error = __device_suspend_late(dev, pm_transition, true);
--	if (error) {
--		dpm_save_failed_dev(dev_name(dev));
--		pm_dev_err(dev, pm_transition, " async", error);
--	}
-+	__device_suspend_late(dev, pm_transition, true);
- 	put_device(dev);
- }
- 
-@@ -1500,11 +1489,6 @@ int dpm_suspend_late(pm_message_t state)
- 		if (!list_empty(&dev->power.entry))
- 			list_move(&dev->power.entry, &dpm_late_early_list);
- 
--		if (error) {
--			pm_dev_err(dev, state, " late", error);
--			dpm_save_failed_dev(dev_name(dev));
--		}
--
- 		mutex_unlock(&dpm_list_mtx);
- 
- 		put_device(dev);
-@@ -1719,8 +1703,11 @@ static int __device_suspend(struct devic
- 	dpm_watchdog_clear(&wd);
- 
-  Complete:
--	if (error)
-+	if (error) {
- 		async_error = error;
-+		dpm_save_failed_dev(dev_name(dev));
-+		pm_dev_err(dev, state, async ? " async" : "", error);
-+	}
- 
- 	complete_all(&dev->power.completion);
- 	TRACE_SUSPEND(error);
-@@ -1730,14 +1717,8 @@ static int __device_suspend(struct devic
- static void async_suspend(void *data, async_cookie_t cookie)
- {
- 	struct device *dev = data;
--	int error;
--
--	error = __device_suspend(dev, pm_transition, true);
--	if (error) {
--		dpm_save_failed_dev(dev_name(dev));
--		pm_dev_err(dev, pm_transition, " async", error);
--	}
- 
-+	__device_suspend(dev, pm_transition, true);
- 	put_device(dev);
- }
- 
-@@ -1778,12 +1759,8 @@ int dpm_suspend(pm_message_t state)
- 
- 		mutex_lock(&dpm_list_mtx);
- 
--		if (error) {
--			pm_dev_err(dev, state, "", error);
--			dpm_save_failed_dev(dev_name(dev));
--		} else if (!list_empty(&dev->power.entry)) {
-+		if (!error && !list_empty(&dev->power.entry))
- 			list_move(&dev->power.entry, &dpm_suspended_list);
--		}
- 
- 		mutex_unlock(&dpm_list_mtx);
- 
+Now that the UAPI split out has reached gpio/for-next it can be updated to
+include the new userspace-api documentation.
 
+"No capes!" - Edna Mode.
 
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8d1052fa6a69..2d0bc0e128bb 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9148,6 +9148,7 @@ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git
+ F:	Documentation/ABI/obsolete/sysfs-gpio
+ F:	Documentation/ABI/testing/gpio-cdev
++F:	Documentation/userspace-api/gpio/
+ F:	drivers/gpio/gpiolib-cdev.c
+ F:	include/uapi/linux/gpio.h
+ F:	tools/gpio/
+--
+2.39.2
 
 
