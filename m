@@ -1,141 +1,101 @@
-Return-Path: <linux-kernel+bounces-33663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27614836CDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:19:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF9FF836CE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:20:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59FD31C26CC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:19:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87D5528B740
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F314F5FA;
-	Mon, 22 Jan 2024 16:11:32 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235534F8A0;
+	Mon, 22 Jan 2024 16:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pM1dKqXL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD043DBA9;
-	Mon, 22 Jan 2024 16:11:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8BC3F8E1
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705939891; cv=none; b=iRzQLbyU5Y6G3fwP+bl3lNtBrmGkrt+UC58dECUt9Z92D8O9udoYVhvWwAK2I4siiF781ovVcAHzdEcGpkNmbyvWrF6P0l2SXPJMjDWM1BV/RkCTi9stSBXZXJwfZ4cVRvRmxGhpsHs/SHvvRAakPM/0H+eME9xkOxPR4fedbdg=
+	t=1705939960; cv=none; b=uRkHaSqR1QrcZU3Pb48CUkqqU0V/1K3PoQeKKSoufH3Qa44M5iay+iKgzPA8N+YidE14KieidRukeh/+P8a86H1Z2v/AN2IBSUMkmTUAYZVoduTp4u8CjYiCwA1P1WDXHDXvvMu/u8t1T8+Wvc1EbfNGF56nP4uCmSpdELAapzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705939891; c=relaxed/simple;
-	bh=gd1xG0QVWf2kr1Slio5ktaMDy9hNa5uZog6KlhgzvOc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=S1RVcAnJmCa9DcxXqpXShRWzViexDStQjWoazCTRK88V6cX9epqMJmlijyjPEyjNjwIK34duxpghBRiurQRycx91Kgb4G1z3ZYjSY7PdKggiKQ1UVjbW/hWm7VnI+ywUporal6AqjXGU8oejWN4I0SMJAgyOw8kgK33Gub0NSrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 8cc4570eae3495fb; Mon, 22 Jan 2024 17:11:26 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 50F1166954D;
-	Mon, 22 Jan 2024 17:11:26 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v1] PM: sleep: Use bool for all 1-bit fields in struct dev_pm_info
-Date: Mon, 22 Jan 2024 17:11:26 +0100
-Message-ID: <12380944.O9o76ZdvQC@kreacher>
+	s=arc-20240116; t=1705939960; c=relaxed/simple;
+	bh=u40yPI1eo5OCBcJ6otQkqT3GuoiQ5GJ9+8tgn1ubg/s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u5/DSOkeU2SjPLX2GGH48qs9gHP+WIJBe1uF+DODX72wzgjVNZ0X2ZReCJcMZjEfylhGCF+8Aop63n+jIFAhtbjvUOPweDPzgtzo9K4sJSSs8N2VAtVPn98BkcqvL0zR9/Sk5XgXXp9aigYrGGbtqUh62ZYLqoT+2nnVsSmxVPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pM1dKqXL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 049F9C43390;
+	Mon, 22 Jan 2024 16:12:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705939959;
+	bh=u40yPI1eo5OCBcJ6otQkqT3GuoiQ5GJ9+8tgn1ubg/s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pM1dKqXL0D39T4s644c17DUpE9aVRYMCKqL2DY9cAHmf7KA70sKxHCbT6ZZhifHk7
+	 yzdaiA8XHCVk8NfFE8lNI+/bw4f5Kt9VmTjhBII3SDeGPyxI35pctal+49+XjHn0g6
+	 8G2/p9p3a+MinQq6vII2pli08Lf7iwTQ12+ilub5Rhu6xvMCtvk8fExWs0XhPZ+lxO
+	 j8Fuj0gl2aUeDCe34MpT+uxbmnszi6/1g40H8Y95deHzg3Yoj5u0JBT6503P133d/w
+	 Q6F74z+6A8zlqEcwa1ceG4Z9xG/cjQ61zdpKsyCsz2thqSzEepUn4i2BB31Ke9KGkf
+	 lWCPhFqKQZ2Ow==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Janne Grunau <j@jannau.net>,
+	=?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
+	Hector Martin <marcan@marcan.st>,
+	Sven Peter <sven@svenpeter.dev>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: apple: use strscpy() in place of strlcpy()
+Date: Mon, 22 Jan 2024 17:11:55 +0100
+Message-Id: <20240122161233.125192-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgkeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffffffekgfehheffleetieevfeefvefhleetjedvvdeijeejledvieehueevueffnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohephedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopehs
- thgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Transfer-Encoding: 8bit
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-For some 1-bit fields in struct dev_pm_info the data type is bool, while
-for some other 1-bit fields in there it is unsigned int, and these
-differences are somewhat arbitrary.
+Since commit d26270061ae6 ("string: Remove strlcpy()"), the strlcpy()
+function causes a build failure.
 
-For consistency, change the data type of the latter to bool, so that all
-of the 1-bit fields in struct dev_pm_info fields are bool.
+Since the return value is ignored, changing it to the strscpy()
+causes no change in behavior but fixes the build failure.
 
-This also reduces the size of struct device on my x86 systems by 8 B,
-from 1120 B to 1112 B.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: f237c83e4302 ("drm: apple: DCP AFK/EPIC support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/pm.h |   32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+The apple drm driver is not in mainline linux yet, this patch
+is against https://github.com/AsahiLinux/linux/tree/bits/200-dcp
+---
+ drivers/gpu/drm/apple/afk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: linux-pm/include/linux/pm.h
-===================================================================
---- linux-pm.orig/include/linux/pm.h
-+++ linux-pm/include/linux/pm.h
-@@ -662,8 +662,8 @@ struct pm_subsys_data {
+diff --git a/drivers/gpu/drm/apple/afk.c b/drivers/gpu/drm/apple/afk.c
+index 99d579d5ce47..9fbcd18878e8 100644
+--- a/drivers/gpu/drm/apple/afk.c
++++ b/drivers/gpu/drm/apple/afk.c
+@@ -236,7 +236,7 @@ static void afk_recv_handle_init(struct apple_dcp_afkep *ep, u32 channel,
+ 		return;
+ 	}
  
- struct dev_pm_info {
- 	pm_message_t		power_state;
--	unsigned int		can_wakeup:1;
--	unsigned int		async_suspend:1;
-+	bool			can_wakeup:1;
-+	bool			async_suspend:1;
- 	bool			in_dpm_list:1;	/* Owned by the PM core */
- 	bool			is_prepared:1;	/* Owned by the PM core */
- 	bool			is_suspended:1;	/* Ditto */
-@@ -682,10 +682,10 @@ struct dev_pm_info {
- 	bool			syscore:1;
- 	bool			no_pm_callbacks:1;	/* Owned by the PM core */
- 	bool			async_in_progress:1;	/* Owned by the PM core */
--	unsigned int		must_resume:1;	/* Owned by the PM core */
--	unsigned int		may_skip_resume:1;	/* Set by subsystems */
-+	bool			must_resume:1;	/* Owned by the PM core */
-+	bool			may_skip_resume:1;	/* Set by subsystems */
- #else
--	unsigned int		should_wakeup:1;
-+	bool			should_wakeup:1;
- #endif
- #ifdef CONFIG_PM
- 	struct hrtimer		suspend_timer;
-@@ -696,18 +696,18 @@ struct dev_pm_info {
- 	atomic_t		usage_count;
- 	atomic_t		child_count;
- 	unsigned int		disable_depth:3;
--	unsigned int		idle_notification:1;
--	unsigned int		request_pending:1;
--	unsigned int		deferred_resume:1;
--	unsigned int		needs_force_resume:1;
--	unsigned int		runtime_auto:1;
-+	bool			idle_notification:1;
-+	bool			request_pending:1;
-+	bool			deferred_resume:1;
-+	bool			needs_force_resume:1;
-+	bool			runtime_auto:1;
- 	bool			ignore_children:1;
--	unsigned int		no_callbacks:1;
--	unsigned int		irq_safe:1;
--	unsigned int		use_autosuspend:1;
--	unsigned int		timer_autosuspends:1;
--	unsigned int		memalloc_noio:1;
--	unsigned int		links_count;
-+	bool			no_callbacks:1;
-+	bool			irq_safe:1;
-+	bool			use_autosuspend:1;
-+	bool			timer_autosuspends:1;
-+	bool			memalloc_noio:1;
-+	bool			links_count;
- 	enum rpm_request	request;
- 	enum rpm_status		runtime_status;
- 	enum rpm_status		last_status;
-
-
+-	strlcpy(name, payload, sizeof(name));
++	strscpy(name, payload, sizeof(name));
+ 
+ 	/*
+ 	 * in DCP firmware 13.2 DCP reports interface-name as name which starts
+-- 
+2.39.2
 
 
