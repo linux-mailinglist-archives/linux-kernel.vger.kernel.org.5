@@ -1,158 +1,171 @@
-Return-Path: <linux-kernel+bounces-33574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AF7F836C8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A01A836CF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:21:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60E42B2A590
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:48:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C667B32D2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF21405C0;
-	Mon, 22 Jan 2024 15:20:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D30F44383;
+	Mon, 22 Jan 2024 15:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BfN0cFW6";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BfN0cFW6"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x2b/kduM"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CF03FE4B;
-	Mon, 22 Jan 2024 15:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA4841772
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936837; cv=none; b=nRdQROowWwqZ8pXdomf3njPtxBApafIyHUKM0bNQ6Pfx376P4xhhRW6WuIkyYOcfUxbe8bJNaO5frwNrU1OZow2XAR+kZWyrlf9sMJNnZf/glbW+dZBDpmCTvIRoaYbHRcYDgA6Oj8MhVItxbLuy0jY6TXGQ4NnFS2hXFN9sax4=
+	t=1705937192; cv=none; b=loHD1VLN3cED6+N0C4yPjqsKGjeJJoH37wquDa70elKjJISIM0aijZwR+FDM8nUiuOVX/PFk/Nl090vbjra5t5HK+olSeAeWtsRxX+7v7eLMCkC4mg8lLX+vurEN73wtrszUQRU0ClFlyUFg2aGfBAEY6fJQ0ZDC1KzqgWQJs8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936837; c=relaxed/simple;
-	bh=fVQWgn6dMqT65ij7t8YeQ++AxrnBH2Z/fCv+edloKhg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vA2i6PxLHfZ650OaRs+YnVy0xmqnAtoD8BljTAux+GD9EDWNoijlgiJfIZzzVVSmS0o0Dct3VPZySmVNWfdvDurw6SLesenjbRNZnUJi+eHsZC+xcv2kI+rwoJTQAV9mN6+Y/9OBja2vsStFqOYkxEkholigkqQ5Bt4jmcYKcYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BfN0cFW6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BfN0cFW6; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A497321FD4;
-	Mon, 22 Jan 2024 15:20:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705936832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uI8H29046lEwAQaOE9IkKlCQkju2vmSs/MhQpFiaPtI=;
-	b=BfN0cFW6Ucd4aMQdhtVQZBZPSYYOf8yTXNjWs9Yt1e3RVCU9MYF/u0BQLFDEqbZCCAsSM3
-	cp+GEseEUKQn/4pro5nCyDA8Z9Vll5zOtxQkatPnUGk6G7CtDPIPRQROyuC342ETucdNsS
-	wRJP1ACqRz+G2k0V5aAuku0KL2oDx1Y=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705936832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uI8H29046lEwAQaOE9IkKlCQkju2vmSs/MhQpFiaPtI=;
-	b=BfN0cFW6Ucd4aMQdhtVQZBZPSYYOf8yTXNjWs9Yt1e3RVCU9MYF/u0BQLFDEqbZCCAsSM3
-	cp+GEseEUKQn/4pro5nCyDA8Z9Vll5zOtxQkatPnUGk6G7CtDPIPRQROyuC342ETucdNsS
-	wRJP1ACqRz+G2k0V5aAuku0KL2oDx1Y=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8808D136A4;
-	Mon, 22 Jan 2024 15:20:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mP41IMCHrmU1ZwAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Mon, 22 Jan 2024 15:20:32 +0000
-Date: Mon, 22 Jan 2024 16:20:31 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Shakeel Butt <shakeelb@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
-	Jan Kara <jack@suse.cz>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: writeback: ratelimit stat flush from
- mem_cgroup_wb_stats
-Message-ID: <jazycqhefxn6oigmt6mitn2cfoonscbdwqxy5g7gs2j74w3ia5@qwcu3v7kmk4h>
-References: <20240118184235.618164-1-shakeelb@google.com>
+	s=arc-20240116; t=1705937192; c=relaxed/simple;
+	bh=KLmdfWYDGVa0MGrW5xg1DDwnruZeNPwCPCY+n/p8dKo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=LGAwnzyz//d8/9c0FkXwVl5V1tcHGBup00IVKMUPY3MD2oTyD26dx3IMXTzUnvkdhED69ky9PscjunvSLZ13NJf3XT/kw++3cEFD8IsafyaZYJOhdXGmnbuYnIffDdYHxquOGXIyW4VhtrIWRYjQg2c3Em77BXHJqy/EzyA59BU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=x2b/kduM; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28ab7ae504so264524366b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:26:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705937188; x=1706541988; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L2ssyj7QUsCONwfAWbtgWdWt1RvO5vwbDocJcWnwveQ=;
+        b=x2b/kduMFiHVSYwIPGMMNLV5y8j44bECOjCxCHzpy/jCdJI1GpoKgEUvg+IRFbB5dH
+         Te964RyQXA89envMITmacjRIzhUeCnQq9BRgDFzmT81WjmkScW1w5EDaLQ8uRLkeFsdb
+         aEffUidkKdvBJONQsEnm+F2x8rqE40rp6v7dV1BGMu7RRoERCPHJYmqUuWJeyH+Tc2o2
+         pDFRk2oFmqZpIme/47UmpWmkB6YOSIVlhGs97nUR4FnxQLK1oa8wFYo0MFYCJEHzSpuD
+         f3FjS1p3UANwlLbZh7KtkT8jDokkKRGK/NVM8B1a/mpgT0To9BIvtBOV4t3J23xBcaSz
+         ZTdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705937188; x=1706541988;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L2ssyj7QUsCONwfAWbtgWdWt1RvO5vwbDocJcWnwveQ=;
+        b=J4GG8oM42BET/pQn/04zVz1mEprcg5NtvuRmmHcURrjPOb+5hG9BnWO1pVJSaVf+CI
+         qONAgsnrgnLYKn5Z8v+O3RLCPDhCC8LFzfGz2ZU1zIxTQqNB2cEOgGIrAbb25Wrsn55D
+         GZRUJfecHK7Py8fNzyu094ma9xtVuSMaBARuJi8G6fEWs7elyB+KqEWZH5fhZ4Z8VfgR
+         2RnXNlhhCTkdtRRPS3Viqc3H97e9oLQ2kz2v1JMUsMo+ITgoAEHxn/wpPyRbcSDS2yAr
+         TYO23TZymwEl+76kn1bTmYEWsVTkXNwRkrEryoRjDnmRTfRg6+zSofUWvguvonthInZ8
+         prxA==
+X-Gm-Message-State: AOJu0Yz25HHHVBocUjU2mpCiwm19CVI6k6dmN51PA6PBHRXCm2HcjCku
+	98Run8+PT+IZ/ADXCFX7NqmW6CrjOHEmDjFKPt3wewx3VvEh/2Yzz+Rs8KxMqd4=
+X-Google-Smtp-Source: AGHT+IEzdcu76uoeIojRSyt2U8jaGERGhWiOrHBkUFk7xxsf/jJ/WohyF5RC0zaSfO/NIbgnH4f9ww==
+X-Received: by 2002:a17:907:8b95:b0:a2f:bbc2:8f49 with SMTP id tb21-20020a1709078b9500b00a2fbbc28f49mr2806301ejc.7.1705937188570;
+        Mon, 22 Jan 2024 07:26:28 -0800 (PST)
+Received: from [192.168.231.132] (178235179218.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.218])
+        by smtp.gmail.com with ESMTPSA id hu14-20020a170907a08e00b00a2f15b8cb76sm5302537ejc.184.2024.01.22.07.26.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 07:26:28 -0800 (PST)
+Message-ID: <d7f406f1-fc27-45e6-90a0-a7ee108505a6@linaro.org>
+Date: Mon, 22 Jan 2024 16:26:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nypkyt5neisq55gd"
-Content-Disposition: inline
-In-Reply-To: <20240118184235.618164-1-shakeelb@google.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=BfN0cFW6
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.12 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.01)[47.96%]
-X-Spam-Score: -3.12
-X-Rspamd-Queue-Id: A497321FD4
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [1/4] interconnect: qcom: icc-rpmh: Add QoS config support
+Content-Language: en-US
+To: Odelu Kukatla <quic_okukatla@quicinc.com>, georgi.djakov@linaro.org,
+ Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>,
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240122143030.11904-1-quic_okukatla@quicinc.com>
+ <20240122143030.11904-2-quic_okukatla@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240122143030.11904-2-quic_okukatla@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 22.01.2024 15:30, Odelu Kukatla wrote:
+> Introduce support to initialize QoS settings for QNOC platforms.
+> 
+> Change-Id: I068d49cbcfec5d34c01e5adc930eec72d306ed89
+> Signed-off-by: Odelu Kukatla <quic_okukatla@quicinc.com>
+> ---
+
+[...]
 
 
---nypkyt5neisq55gd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> +
+> +struct qcom_icc_qosbox {
+> +	u32 prio;
+> +	u32 urg_fwd;
 
-Hello.
+Also, why is this field not a bool?
 
-On Thu, Jan 18, 2024 at 06:42:35PM +0000, Shakeel Butt <shakeelb@google.com=
-> wrote:
-> One of our workloads (Postgres 14) has regressed when migrated from 5.10
-> to 6.1 upstream kernel. The regression can be reproduced by sysbench's
-> oltp_write_only benchmark.
-> It seems like the always on rstat flush in
-> mem_cgroup_wb_stats() is causing the regression.
+Everything in here could be const, btw
 
-Is the affected benchmark running in a non-root cgroup?
+> +	bool prio_fwd_disable;
+> +	u32 num_ports;
+> +	u32 offsets[];
+> +};
+> +
+>  #define MAX_LINKS		128
+>  #define MAX_BCMS		64
+>  #define MAX_BCM_PER_NODE	3
+> @@ -58,6 +86,8 @@ struct bcm_db {
+>   * @max_peak: current max aggregate value of all peak bw requests
+>   * @bcms: list of bcms associated with this logical node
+>   * @num_bcms: num of @bcms
+> + * @regmap: used for QOS registers access
+> + * @qosbox: qos config data associated with node
+>   */
+>  struct qcom_icc_node {
+>  	const char *name;
+> @@ -70,6 +100,8 @@ struct qcom_icc_node {
+>  	u64 max_peak[QCOM_ICC_NUM_BUCKETS];
+>  	struct qcom_icc_bcm *bcms[MAX_BCM_PER_NODE];
+>  	size_t num_bcms;
+> +	struct regmap *regmap;
+> +	struct qcom_icc_qosbox *qosbox;
 
-I'm asking whether this would warrant a=20
-  Fixes: fd25a9e0e23b ("memcg: unify memcg stat flushing")=20
-that introduced the global flush (in v6.1) but it was removed later in=20
-  7d7ef0a4686a ("mm: memcg: restore subtree stats flushing")=20
-(so v6.8 could be possibly unaffected).
+this member here as well
 
-Thanks,
-Michal
-
---nypkyt5neisq55gd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZa6HuQAKCRAGvrMr/1gc
-jv0KAP49hs1sQx/Itdzma7JXdOKCH4l9eewELaaWxrVCyuoC0AEA3fgaAGcdTEMr
-hwYxaHAKsxG38pb+QxHQjbOhmP/afgI=
-=9ZXF
------END PGP SIGNATURE-----
-
---nypkyt5neisq55gd--
+Konrad
 
