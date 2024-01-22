@@ -1,200 +1,218 @@
-Return-Path: <linux-kernel+bounces-33085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72053836443
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 21AA2836445
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:18:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 188012892D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:17:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93E7028DC65
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA8D3D3B9;
-	Mon, 22 Jan 2024 13:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fZPEOq2E"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C45713CF7F;
+	Mon, 22 Jan 2024 13:17:23 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E4E3D57C;
-	Mon, 22 Jan 2024 13:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE413D965;
+	Mon, 22 Jan 2024 13:17:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705929418; cv=none; b=mBwbMMZwaoIzc7A/FCtyIOgo42fPwbxcGVJWCWHSSn/1vKgF5VD0b7C6ZSGoTYLdfdZGr8UwhxkvvuWLzDJV9CeNH0uWBTR3LLysuxlAK96U+TGyYaTFX8QznzVSMeL16+ZMCshWeq4VxMkZdnWLqvuaKpp4piAvG14eRaZEaTo=
+	t=1705929443; cv=none; b=qdSinQnfJG0aoeoEFyHUtII/oLUULCUGO6mFEJ93FM2OQuiHvS5FSBAt4tJQzWqs3pbk8FhSj+0O4HCApA8UI+BRBKtAsf1SkV3OBn4DyiobStZ1Y6Yp8Ij6CWu896jDsC27wr60ljnBZSut6pUQMQ7QYFFfYBoLx+RX8fujPEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705929418; c=relaxed/simple;
-	bh=mzal3D5t8xPYi8YMehEc7GD2hfDFDozMDS7SkE/s4d8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uWRz1bdHN5JNkrcFl4tDOljiHfUOiCxxYVexU1K42rHt9QOHb2k4wW811Q10lTQ+EyiYtt950XpqDSR9GhYEbSMgobadMY70cZY5gAhwk6pyqnLItXuF3MFbNPU4ZGtqFjELe/8oGucyYsSEVk+SrYOBaOtSC78hfYIICc5mvDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fZPEOq2E; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40M7N9sN000881;
-	Mon, 22 Jan 2024 13:16:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=YabyEjupAc5T0MWsc3lv
-	nf6oWqMIVj5UD+cMnkaDxrU=; b=fZPEOq2Ee3HsE1kRJ6b91PsKSeVGfHeOZgkn
-	08ABwyAPXFuqGiWrMe/ewGX3tUqb2fqnrrvgXuUwcw/UihG9/g2Mha0vTFUmnViT
-	ZbZsEaOS7c9O+IhgyiGC6C3hYuaI4R/5CDy8CFsrNeZew3Ujtvgz/lqRVJUSpDpD
-	1Td3MhgF+6N1xTdzqRV8+oug7FOhjYVUHbh73rowzYgdrFQ/w8xd6agP9/jmixHz
-	RH3p5oa4drUJprKBUxAWzMNXpNxX2MCP12RfvPWkm3Hrqd7r6ZDYbJ6v1FhZxiau
-	RPjb7lVlYmAFqG7V0/DVuDkXZ8CC2+DEdipZTOSRy9if8CrObg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vsknn0x38-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 13:16:42 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40MDGfU8023582
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 13:16:41 GMT
-Received: from hu-nprakash-blr.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 22 Jan 2024 05:16:35 -0800
-From: Nikhil V <quic_nprakash@quicinc.com>
-To: Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        "Jonathan
- Corbet" <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-CC: Nikhil V <quic_nprakash@quicinc.com>,
-        "Paul E. McKenney"
-	<paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Yan-Jie Wang
-	<yanjiewtw@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Zijlstra
-	<peterz@infradead.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_kprasan@quicinc.com>,
-        <quic_mpilaniy@quicinc.com>, <quic_shrekk@quicinc.com>,
-        <mpleshivenkov@google.com>, <ericyin@google.com>
-Subject: [PATCH v3 4/4] PM: hibernate: Support to select compression algorithm
-Date: Mon, 22 Jan 2024 18:45:28 +0530
-Message-ID: <b31fc68f82722246c888e136074bf24aeae1b3b2.1705927916.git.quic_nprakash@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1705927916.git.quic_nprakash@quicinc.com>
-References: <cover.1705927916.git.quic_nprakash@quicinc.com>
+	s=arc-20240116; t=1705929443; c=relaxed/simple;
+	bh=4yECQoQNlH9bsEd+fvCW5ixKWErUNJAyZS+uhg6KZ+0=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=hcLeCwgCGqLwOZLV9UIF9RKMT/7aU4BKOkbnYlmaKlYm377c6Kzc/khpfwrw/BZhx7mEk13IU6OF1R/zNPR4ueDcD1CC4oGt5uGbOzijcv2LMSLWqn7OgrVDKZ9F5cFhAeUzCLdrxtNdtvPA2O5UDwByAAQVL+2cmEIyt9pJb+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TJW3C1Pvmz4f3jJ3;
+	Mon, 22 Jan 2024 21:17:11 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 15C5C1A0272;
+	Mon, 22 Jan 2024 21:17:15 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgDHlxDZaq5l3XaFBg--.39166S3;
+	Mon, 22 Jan 2024 21:17:14 +0800 (CST)
+Subject: Re: [PATCH RFC 5/5] md: use md_reap_sync_thread() directly for
+ dm-raid
+To: Yu Kuai <yukuai1@huaweicloud.com>, mpatocka@redhat.com,
+ dm-devel@lists.linux.dev, msnitzer@redhat.com, heinzm@redhat.com,
+ song@kernel.org
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240120103734.4155446-1-yukuai1@huaweicloud.com>
+ <20240120103734.4155446-6-yukuai1@huaweicloud.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <b8f80884-74e8-f294-3a84-713ecca88ea3@huaweicloud.com>
+Date: Mon, 22 Jan 2024 21:17:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: -Xw-HTxAMUsrt9j1U_A5NhjK2UI2xK8z
-X-Proofpoint-ORIG-GUID: -Xw-HTxAMUsrt9j1U_A5NhjK2UI2xK8z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-22_02,2024-01-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 adultscore=0 impostorscore=0 clxscore=1015
- bulkscore=0 malwarescore=0 lowpriorityscore=0 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401220093
+In-Reply-To: <20240120103734.4155446-6-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDHlxDZaq5l3XaFBg--.39166S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFWfZw1rKFyrJFy5KFW3Jrb_yoW7Gr1Up3
+	y8JFn8Cr45trW5Xr17Ja4DuayYvwnIgFWDtry3GayfJ3Z3KrsxJF15uF1DZFykAa48G3WU
+	ta15Kay5ZFyIgF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Currently the default compression algorithm is selected based on
-Kconfig. Introduce a kernel command line parameter "hib_compression" to
-override this behaviour.
+Hi,
 
-Different compression algorithms have different characteristics and
-hibernation may benefit when it uses any of these algorithms, especially
-when a secondary algorithm offers better decompression speeds over a
-default algorithm, which in turn reduces hibernation image restore time.
+ÔÚ 2024/01/20 18:37, Yu Kuai Ð´µÀ:
+> The root cause is still not clear yet, however, let's convert dm-raid
+> back to use md_reap_sync_thread() directly. This is not safe but at
+> least there won't be new regressions. We can decide what to do after
+> figuring out the root cause.
 
-Users can set "hib_compression" command line parameter to override the
-default algorithm. Currently LZO and LZ4 are the supported algorithms.
-Usage:
-    LZO: hib_compression=lzo
-    LZ4: hib_compression=lz4
+I think I finally figure out the root cause here. This patch is no
+longer needed after following patch. I already verified in my VM for 3
+times that lvconvert-raid-reshape.sh won't fail(with raid6 patch
+2c265ac5ffde reverted).
 
-LZO is the default compression algorithm used with hibernation.
+I'll run more tests in case there are new regression. Meanwhile I'll try
+to locate root cause of the problem decribed in patch 4.
 
-Signed-off-by: Nikhil V <quic_nprakash@quicinc.com>
----
- .../admin-guide/kernel-parameters.txt         |  6 ++++
- kernel/power/hibernate.c                      | 31 ++++++++++++++++++-
- 2 files changed, 36 insertions(+), 1 deletion(-)
+Thanks,
+Kuai
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 31b3a25680d0..22255bd9a4e3 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1748,6 +1748,12 @@
- 				(that will set all pages holding image data
- 				during restoration read-only).
- 
-+	hib_compression= [COMPRESSION ALGORITHM]
-+		lzo		Select LZO compression algorithm to compress/decompress
-+				hibernation images.
-+		lz4		Select LZ4 compression algorithm to compress/decompress
-+				hibernation images.
+diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+index eb009d6bb03a..108e7e313631 100644
+--- a/drivers/md/dm-raid.c
++++ b/drivers/md/dm-raid.c
+@@ -3241,7 +3241,7 @@ static int raid_ctr(struct dm_target *ti, unsigned 
+int argc, char **argv)
+         rs->md.in_sync = 1;
+
+         /* Keep array frozen until resume. */
+-       set_bit(MD_RECOVERY_FROZEN, &rs->md.recovery);
++       md_frozen_sync_thread(&rs->md);
+
+         /* Has to be held on running the array */
+         mddev_suspend_and_lock_nointr(&rs->md);
+@@ -3722,6 +3722,9 @@ static int raid_message(struct dm_target *ti, 
+unsigned int argc, char **argv,
+         if (!mddev->pers || !mddev->pers->sync_request)
+                 return -EINVAL;
+
++       if (test_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
++               return -EBUSY;
 +
- 	highmem=nn[KMG]	[KNL,BOOT] forces the highmem zone to have an exact
- 			size of <nn>. This works even on boxes that have no
- 			highmem otherwise. This also works to reduce highmem
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 219191d6d0e8..75002fb3ad42 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -748,7 +748,8 @@ int hibernate(void)
- 	 * Query for the compression algorithm support if compression is enabled.
- 	 */
- 	if (!nocompress) {
--		strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
-+		if (!hib_comp_algo[0])
-+			strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
- 		if (crypto_has_comp(hib_comp_algo, 0, 0) != 1) {
- 			pr_err("%s compression is not available\n", hib_comp_algo);
- 			return -EOPNOTSUPP;
-@@ -1422,6 +1423,33 @@ static int __init nohibernate_setup(char *str)
- 	return 1;
- }
- 
-+static const char * const comp_alg_enabled[] = {
-+#if IS_ENABLED(CONFIG_CRYPTO_LZO)
-+	COMPRESSION_ALGO_LZO,
-+#endif
-+#if IS_ENABLED(CONFIG_CRYPTO_LZ4)
-+	COMPRESSION_ALGO_LZ4,
-+#endif
-+};
+         if (!strcasecmp(argv[0], "frozen"))
+                 set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+         else
+@@ -3796,10 +3799,8 @@ static void raid_postsuspend(struct dm_target *ti)
+         struct raid_set *rs = ti->private;
+
+         if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
+-               /* Writes have to be stopped before suspending to avoid 
+deadlocks. */
+-               if (!test_bit(MD_RECOVERY_FROZEN, &rs->md.recovery))
+-                       md_stop_writes(&rs->md);
+-
++               md_frozen_sync_thread(&rs->md);
++               md_stop_writes(&rs->md);
+                 mddev_suspend(&rs->md, false);
+         }
+  }
+@@ -4011,9 +4012,6 @@ static int raid_preresume(struct dm_target *ti)
+                         DMERR("Failed to resize bitmap");
+         }
+
+-       /* Check for any resize/reshape on @rs and adjust/initiate */
+-       /* Be prepared for mddev_resume() in raid_resume() */
+-       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+         if (mddev->recovery_cp && mddev->recovery_cp < MaxSector) {
+                 set_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+                 mddev->resync_min = mddev->recovery_cp;
+@@ -4056,10 +4054,11 @@ static void raid_resume(struct dm_target *ti)
+                         rs_set_capacity(rs);
+
+                 mddev_lock_nointr(mddev);
+-               clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+                 mddev->ro = 0;
+                 mddev->in_sync = 0;
+                 mddev_unlock_and_resume(mddev);
 +
-+static int __init compression_setup(char *str)
++               md_unfrozen_sync_thread(mddev);
+         }
+  }
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 9ef17a769cc2..0638d104fe26 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -4939,7 +4939,7 @@ static void idle_sync_thread(struct mddev *mddev)
+         mutex_unlock(&mddev->sync_mutex);
+  }
+
+-static void frozen_sync_thread(struct mddev *mddev)
++void md_frozen_sync_thread(struct mddev *mddev)
+  {
+         mutex_lock(&mddev->sync_mutex);
+         set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+@@ -4952,6 +4952,18 @@ static void frozen_sync_thread(struct mddev *mddev)
+         stop_sync_thread(mddev, false, false);
+         mutex_unlock(&mddev->sync_mutex);
+  }
++EXPORT_SYMBOL_GPL(md_frozen_sync_thread);
++
++void md_unfrozen_sync_thread(struct mddev *mddev)
 +{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(comp_alg_enabled); i++) {
-+		if (!strcmp(str, comp_alg_enabled[i])) {
-+			strscpy(hib_comp_algo, str, sizeof(hib_comp_algo));
-+			goto setup_done;
-+		}
-+	}
-+	pr_info("Cannot set specified compressor. Falling back to %s\n",
-+		default_compressor);
-+	strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
-+
-+setup_done:
-+	return 1;
++       mutex_lock(&mddev->sync_mutex);
++       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
++       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
++       md_wakeup_thread(mddev->thread);
++       sysfs_notify_dirent_safe(mddev->sysfs_action);
++       mutex_unlock(&mddev->sync_mutex);
 +}
-+
- __setup("noresume", noresume_setup);
- __setup("resume_offset=", resume_offset_setup);
- __setup("resume=", resume_setup);
-@@ -1429,3 +1457,4 @@ __setup("hibernate=", hibernate_setup);
- __setup("resumewait", resumewait_setup);
- __setup("resumedelay=", resumedelay_setup);
- __setup("nohibernate", nohibernate_setup);
-+__setup("hib_compression=", compression_setup);
--- 
-2.17.1
++EXPORT_SYMBOL_GPL(md_unfrozen_sync_thread);
+
+  static ssize_t
+  action_store(struct mddev *mddev, const char *page, size_t len)
+@@ -4963,7 +4975,7 @@ action_store(struct mddev *mddev, const char 
+*page, size_t len)
+         if (cmd_match(page, "idle"))
+                 idle_sync_thread(mddev);
+         else if (cmd_match(page, "frozen"))
+-               frozen_sync_thread(mddev);
++               md_frozen_sync_thread(mddev);
+         else if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
+                 return -EBUSY;
+         else if (cmd_match(page, "resync"))
+diff --git a/drivers/md/md.h b/drivers/md/md.h
+index 8d881cc59799..332520595ed8 100644
+--- a/drivers/md/md.h
++++ b/drivers/md/md.h
+@@ -781,6 +781,8 @@ extern void md_rdev_clear(struct md_rdev *rdev);
+  extern void md_handle_request(struct mddev *mddev, struct bio *bio);
+  extern int mddev_suspend(struct mddev *mddev, bool interruptible);
+  extern void mddev_resume(struct mddev *mddev);
++extern void md_frozen_sync_thread(struct mddev *mddev);
++extern void md_unfrozen_sync_thread(struct mddev *mddev);
+
+  extern void md_reload_sb(struct mddev *mddev, int raid_disk);
+  extern void md_update_sb(struct mddev *mddev, int force);
 
 
