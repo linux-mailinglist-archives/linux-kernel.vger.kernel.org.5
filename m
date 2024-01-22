@@ -1,202 +1,143 @@
-Return-Path: <linux-kernel+bounces-32793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91EE9836022
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AA01836028
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:54:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6C9E1C21818
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:53:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABF011C21D8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D783A8EA;
-	Mon, 22 Jan 2024 10:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3C33A297;
+	Mon, 22 Jan 2024 10:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D0uU6dC/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NMe3Ta0q"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6353A8C6;
-	Mon, 22 Jan 2024 10:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FB83A264
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705920806; cv=none; b=cZVMhHKRe6PkFQtCp/SucLcCDjQQjyH8ZYFTrp8hwempsZlUseUr3rwt1tUp46iLtQQ+EELyO0oBSzldGh22JsfaFXCVl/QV9sSuMnDFRUTGXDjGnCtlJZtx5cWjYGuE3PP7Cf+Hb55zupoQsHQ+Jne7v0ZyBMBP3PUcBfDyaaI=
+	t=1705920889; cv=none; b=ryqxby3RCFavjncM4YjR4q0IsHadUbkVGYyLVNdGRWEfzUDZCaO/2KVTmsqJvZ2c4fCZIwWF3do6pakcfD4eaNW90Nmj90xgMyKVCa6n6ZFN8HYpm8WOpC+77JRqRXCCGHxvvubCa434Qtqx2eAfnJFw7RsPIIKUMsS/lktZR4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705920806; c=relaxed/simple;
-	bh=Mv/eIsF4cLBVJCplW6zKFPzyppMCYU3H18HJx+nE56g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YZwn7EkET5hW6fjn3spvbpGUa3f/HAsZSIi3nZSrHm5O3fI0WaT+eP582DColb4XmVNzCVXEjKsDOg6JsrF+MpZ04JGVatx3iYiCGk0VXZoowT9qaaw9LlXLssImT8FN3K3X3w8ow7xFcRXGb2L1ogkwQqnNYymvaQvk7wEIUtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D0uU6dC/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5C55C43394;
-	Mon, 22 Jan 2024 10:53:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705920805;
-	bh=Mv/eIsF4cLBVJCplW6zKFPzyppMCYU3H18HJx+nE56g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D0uU6dC/KV/ygNWsBOXmuRkS0ZTgQ4EIO/qOPHGKTn91hN9t82/Zci8gvPikvww/Y
-	 9h5mZtDXIBoTuF7y8TFSCvBaY/Im0kugIQrwJn/wtgLNpB94s1enWwg/ASF0joLwno
-	 +TiyD4dVPTE13d0xQLUvlegXkYwothIhOM8vzINL2AuXtxha1Po/n1Rd++QeDibWvk
-	 ZyAAnCHxB6fZ01cRC5anq28UN/tnPQsq1+FgXqEAN+R5PCQ9MN8Aws04NavnFMFp7F
-	 gu9dTGs6aVF2iJWyw9BS5pZvGF5MNitihUImN8Bto9kMeT6zhw3NebN234dYb++NXp
-	 T+mX+WOYxVJqw==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rRrvr-000000007a8-3dba;
-	Mon, 22 Jan 2024 11:53:36 +0100
-Date: Mon, 22 Jan 2024 11:53:35 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Michael Schaller <michael@5challer.de>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev,
-	"Maciej W . Rozycki" <macro@orcam.me.uk>,
-	Ajay Agarwal <ajayagarwal@google.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
-	regressions@leemhuis.info
-Subject: PCI/ASPM locking regression in 6.7-final (was: Re: [PATCH] Revert
- "PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-Message-ID: <Za5JLxRC-K20sIfG@hovoldconsulting.com>
-References: <76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de>
- <20240102232550.1751655-1-helgaas@kernel.org>
- <ZZu0qx2cmn7IwTyQ@hovoldconsulting.com>
+	s=arc-20240116; t=1705920889; c=relaxed/simple;
+	bh=lTnarq8IAg1XM6GxuzQJXH9sGVYsO2Kix1KmRraYVVM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c84sCQjwaT+ui0sfjt9GL5cl2024BsqqqLlvJCI2I/lHDbnzitUdCvngpYnQZg+iDCB/0OqjlRj19EX67lXp6p9c+dxJqM0zk436HbiKrKQprBXzINfM/zAt1tT6jCIgtWkgkML/RuQWCZQSwJLhDKHBBIg4f/feEhnfGKmg+6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NMe3Ta0q; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a28a6cef709so291166266b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705920885; x=1706525685; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OLlrIj6M5dwt//auJ5YhalkWbvV9fgPK8UYw5u29EOM=;
+        b=NMe3Ta0qnOcACRHFFv1ON2x3m5W0Mb+DXhOL0Dc6Ku59X1xmGadMrQLivaDbBYiKYH
+         c4eYf7llvz/jrNdUZjos6GqkGRVpNa6+fkE31r5U/9PnSO4xld66Bgf9zUhc337zsDqN
+         V1sbevvvOAUI9NNV+priwwfj48gfermQXvvDAFr6YufBvc87rVWKW7AZZbmgPHUX6WcU
+         R2rZl2q7NwircYGvgDN7ohPTehtcyhxEXNLB6iDKN+iUtAxHQdVEVCk6hzlW0t+cA2Le
+         4EjLd8QNqiX3Ke4iBm/PtK4O5aY9ZX80hIDfNcZmmXH8pstHIhgqfCsXCsKisT3059Jh
+         sSsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705920885; x=1706525685;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OLlrIj6M5dwt//auJ5YhalkWbvV9fgPK8UYw5u29EOM=;
+        b=Ol61a9L9IblZ8xKRuvsdt5AVbQLE6EJZ6ppFbatk5xQH/hO0rThh2EJljNpB1xOEPw
+         XBhrHC20lKu3/YskhcMwfICRXKIdQSM8boYZvtm3phoXsWCGiGXto6m7XhgqIkTiuJ/i
+         wDnK0jwjvGFJ9Gx5KHE5HlQ7WpRp2LyGPTiTv7EKdsdZvtUzo+vmQj38e1CmO4JDqxM+
+         ly+lF75BL3236AWRg+dfDAXZUKgPihbg838dWZV6if7nDd7NZOC0ZWNfCInF02DrNAEk
+         rEUciar0W+U4OQ23rUVZmrRO23+B+RrrUeLZtnC5hKMMVs3GdqUlqy7BIY5WqFzMJnxp
+         GwoQ==
+X-Gm-Message-State: AOJu0YyEAti5GSvu2YYmxWFnM+0mLxPVHkOVpFGlJimoFni4WZ//wcq3
+	Y8NDpZDY1/6NF69VmOP0CNOwWnAkHgC0k/243trNgv+zADBFTKfs3a1zKHpcmV4=
+X-Google-Smtp-Source: AGHT+IEeBsyedCcVZMmrmZSF2t9z7xJutp8eKLTW8jvjhH6AzUBWIDCLo+LC1PZzVFNgQNtJS1vJyA==
+X-Received: by 2002:a17:907:8dcc:b0:a30:3ba:dae9 with SMTP id tg12-20020a1709078dcc00b00a3003badae9mr1434236ejc.77.1705920885135;
+        Mon, 22 Jan 2024 02:54:45 -0800 (PST)
+Received: from [192.168.231.132] (178235179218.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.218])
+        by smtp.gmail.com with ESMTPSA id q5-20020a170906388500b00a28a297d47esm13243272ejd.73.2024.01.22.02.54.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 02:54:44 -0800 (PST)
+Message-ID: <bef1eaa5-a6e7-466c-b8a7-17537838deb3@linaro.org>
+Date: Mon, 22 Jan 2024 11:54:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZu0qx2cmn7IwTyQ@hovoldconsulting.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: smp2p: fix all kernel-doc warnings
+Content-Language: en-US
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: Bjorn Andersson <andersson@kernel.org>, linux-arm-msm@vger.kernel.org
+References: <20240119032859.4082-1-rdunlap@infradead.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240119032859.4082-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Bjorn,
-
-I never got a reply to this one so resending with updated Subject in
-case it got buried in your inbox.
-
-On Mon, Jan 08, 2024 at 09:39:07AM +0100, Johan Hovold wrote:
- 
-> On Tue, Jan 02, 2024 at 05:25:50PM -0600, Bjorn Helgaas wrote:
-> > From: Bjorn Helgaas <bhelgaas@google.com>
-> > 
-> > This reverts commit 08d0cc5f34265d1a1e3031f319f594bd1970976c.
-> > 
-> > Michael reported that when attempting to resume from suspend to RAM on ASUS
-> > mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1), 08d0cc5f3426
-> > ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") caused a 12-second delay
-> > with no output, followed by a reboot.
-> > 
-> > Workarounds include:
-> > 
-> >   - Reverting 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-> >   - Booting with "pcie_aspm=off"
-> >   - Booting with "pcie_aspm.policy=performance"
-> >   - "echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm"
-> >     before suspending
-> >   - Connecting a USB flash drive
-> > 
-> > Fixes: 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-> > Reported-by: Michael Schaller <michael@5challer.de>
-> > Link: https://lore.kernel.org/r/76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de
-> > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: <stable@vger.kernel.org>
-> > ---
->  
-> > +/* @pdev: the root port or switch downstream port */
-> > +void pcie_aspm_pm_state_change(struct pci_dev *pdev)
-> > +{
-> > +	struct pcie_link_state *link = pdev->link_state;
-> > +
-> > +	if (aspm_disabled || !link)
-> > +		return;
-> > +	/*
-> > +	 * Devices changed PM state, we should recheck if latency
-> > +	 * meets all functions' requirement
-> > +	 */
-> > +	down_read(&pci_bus_sem);
-> > +	mutex_lock(&aspm_lock);
-> > +	pcie_update_aspm_capable(link->root);
-> > +	pcie_config_aspm_path(link);
-> > +	mutex_unlock(&aspm_lock);
-> > +	up_read(&pci_bus_sem);
-> > +}
+On 19.01.2024 04:28, Randy Dunlap wrote:
+> Use the documented notation for nested struct members.
+> Add a Returns: comment for qcom_smp2p_intr().
 > 
-> This function is now restored in 6.7 final and is called in paths which
-> already hold the pci_bus_sem as reported by lockdep (see splat below).
+> These changes prevent these kernel-doc warnings:
 > 
-> This can potentially lead to a deadlock and specifically prevents using
-> lockdep on Qualcomm platforms.
+> smp2p.c:78: warning: Excess struct member 'name' description in 'smp2p_smem_item'
+> smp2p.c:78: warning: Excess struct member 'value' description in 'smp2p_smem_item'
+> smp2p.c:280: warning: No description found for return value of 'qcom_smp2p_intr'
 > 
-> Not sure if you want to propagate whether the bus semaphore is held to
-> pcie_aspm_pm_state_change() or if there was some alternative to
-> restoring this function which should be explored instead.
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Bjorn Andersson <andersson@kernel.org>
+> Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> ---
 
-So to summarise, this patch, which is now commit
+Thanks!
 
-	f93e71aea6c6 ("Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()"")
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-introduced a regression in 6.7-final for Qualcomm platforms (and some
-Intel platforms) similar to the one recently fixed by commit
-
-	f352ce999260 ("PCI: qcom: Fix potential deadlock when enabling ASPM").
-
-Johan
-
-
-#regzbot introduced: f93e71aea6c6
-
->    ============================================
->    WARNING: possible recursive locking detected
->    6.7.0 #40 Not tainted
->    --------------------------------------------
->    kworker/u16:5/90 is trying to acquire lock:
->    ffffacfa78ced000 (pci_bus_sem){++++}-{3:3}, at: pcie_aspm_pm_state_change+0x58/0xdc
->    pcieport 0002:00:00.0: PME: Signaling with IRQ 197
->    
->                but task is already holding lock:
->    ffffacfa78ced000 (pci_bus_sem){++++}-{3:3}, at: pci_walk_bus+0x34/0xbc
->    
->                other info that might help us debug this:
->     Possible unsafe locking scenario:
-> 
->           CPU0
->           ----
->      lock(pci_bus_sem);
->      lock(pci_bus_sem);
->    
->                 *** DEADLOCK ***
-> 
->     May be due to missing lock nesting notation
-> 
->    4 locks held by kworker/u16:5/90:
->     #0: ffff06c5c0008d38 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x150/0x53c
->     #1: ffff800081c0bdd0 ((work_completion)(&entry->work)){+.+.}-{0:0}, at: process_one_work+0x150/0x53c
->     #2: ffff06c5c0b7d0f8 (&dev->mutex){....}-{3:3}, at: __driver_attach_async_helper+0x3c/0xf4
->     #3: ffffacfa78ced000 (pci_bus_sem){++++}-{3:3}, at: pci_walk_bus+0x34/0xbc
->    
->                stack backtrace:
->    CPU: 1 PID: 90 Comm: kworker/u16:5 Not tainted 6.7.0 #40
->    Hardware name: LENOVO 21BYZ9SRUS/21BYZ9SRUS, BIOS N3HET53W (1.25 ) 10/12/2022
->    Workqueue: events_unbound async_run_entry_fn
->    Call trace:
->     dump_backtrace+0x9c/0x11c
->     show_stack+0x18/0x24
->     dump_stack_lvl+0x60/0xac
->     dump_stack+0x18/0x24
->     print_deadlock_bug+0x25c/0x348
->     __lock_acquire+0x10a4/0x2064
->     lock_acquire+0x1e8/0x318
->     down_read+0x60/0x184
->     pcie_aspm_pm_state_change+0x58/0xdc
->     pci_set_full_power_state+0xa8/0x114
->     pci_set_power_state+0xc4/0x120
->     qcom_pcie_enable_aspm+0x1c/0x3c [pcie_qcom]
->     pci_walk_bus+0x64/0xbc
->     qcom_pcie_host_post_init_2_7_0+0x28/0x34 [pcie_qcom]
+Konrad
 
