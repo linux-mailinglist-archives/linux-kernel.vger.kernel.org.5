@@ -1,201 +1,203 @@
-Return-Path: <linux-kernel+bounces-32936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E9183622A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:41:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DF4D83626B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:46:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 079C228240F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:41:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE282B23549
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4073A8FB;
-	Mon, 22 Jan 2024 11:35:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T9H7FdXK"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F0003D556;
+	Mon, 22 Jan 2024 11:44:33 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42AD93A8E4;
-	Mon, 22 Jan 2024 11:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9460C3A1BD;
+	Mon, 22 Jan 2024 11:44:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923331; cv=none; b=lT1iHOJvzjONFelnuT4Yr3ipLmFam/JBTQckhqhdT3WjegSjA9hV2v0IkrTxtxDnjs2dFRpCZithD0f62kMAe9SvVrF5nS6O8dXM+GeHUTaWa0P7ody2Z1ST2GwVvGWGEMeYOiXRtjuaDhz/k4tTqMJeDAZ6Y1JP6kfkqwL1DDk=
+	t=1705923872; cv=none; b=o3AtZW7AP+dDF5biAOnqDx+oia0MO9qfgtFRx2RSeR/1De8VRJwQt192xYOZVcuxAyWtYymUdRY+VVEYHLIKQd33KRjLhWIBOAXrQWobkibOowkMslez7PYwVbn4wlvhhpZlG+s0g1FKXb3mX7r3p5X08gaf0BHa42ZPWPHPf0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923331; c=relaxed/simple;
-	bh=xVnIrGZOCLzup2XEBBV5JwzzhP5mJTK483g5WLjKY3U=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VNMzlmRxAfkKHPCh0G2r7f2jrEfcbl0M6mciFs6zqFO+/h9q2xnyKX9weazxndIdQgDPTvtIPPl9SWPlRwgoLi996MQ4r0TvHqGsFkQQyErDLVYN5ZN0fYhlGXVZuobkZsAR+HYKUBFc5Svo5/mccYnUnaH54wyhQwwz0NtuFuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T9H7FdXK; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705923329; x=1737459329;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=xVnIrGZOCLzup2XEBBV5JwzzhP5mJTK483g5WLjKY3U=;
-  b=T9H7FdXKvnRYmFgoKSWS+yQ7xF9tmcCB72p8BTXSXKPLV8t4zyw+NKyw
-   fp1XaXHiPJDaXbYMSoEdkDb6ZaLS+YYMhmfJftD6As177T5hSHW8TO879
-   LKRSfi7fX/IAWgElbAeK02KT8ZPuldCuDcfDsB5MKK2z/q/d0EyNYY2lH
-   jlqP5eRCb79VKvrLwAv2HPYd3cnAOB1If0pqq8n3wvE9wmGHFC/U9LKmu
-   sziDB5eQjJ5PNcXeWbzlTAi4m54XucMWNiqNcB6EK/Y0CxTWCvd3I0cvq
-   Sh2muvjeEj6yb/2nBxt/7oqRn6a6QUzvxcw71d7xEiAxuMZ/9MxU2O29R
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="432345461"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="432345461"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 03:35:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="27630665"
-Received: from spandruv-desk.jf.intel.com (HELO spandruv-desk.amr.corp.intel.com) ([10.54.75.14])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 03:35:29 -0800
-Message-ID: <c961bae053da7287bfce49b2c1c2e7e6c754710a.camel@linux.intel.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Directly use stored ratios for
- max frequencies
-From: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, rafael@kernel.org, 
-	viresh.kumar@linaro.org
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Mon, 22 Jan 2024 03:35:27 -0800
-In-Reply-To: <6021639.lOV4Wx5bFT@kreacher>
-References: <20240118120513.1018808-1-srinivas.pandruvada@linux.intel.com>
-	 <6021639.lOV4Wx5bFT@kreacher>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
+	s=arc-20240116; t=1705923872; c=relaxed/simple;
+	bh=fw+tx0QLXKQOvFgAfYfyFRwUUJeuGesaym5awIhseJo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eOe+ifPrbmI4NCx7svsdzijU/9pzn8tj8cZCRQXkcRVuHyvNTWPQv+6W4MeF0cQLDqLgphjNpWy8FbOqmsAoPOPfbQoLnjvlJE+FBFph25tkYMSwNd7qXtbR8+OrsXT//9/B55MOBfVwrGC0btD+D5+AFNa4SjEgFAKf/7PbMs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id c437ba25a9c7dce7; Mon, 22 Jan 2024 12:44:23 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 0D45D669540;
+	Mon, 22 Jan 2024 12:44:23 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Subject: [PATCH v1 09/12] PM: sleep: stats: Log errors right after running suspend callbacks
+Date: Mon, 22 Jan 2024 12:35:32 +0100
+Message-ID: <9237520.CDJkKcVGEf@kreacher>
+In-Reply-To: <5760158.DvuYhMxLoT@kreacher>
+References: <5760158.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgfedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 
-T24gTW9uLCAyMDI0LTAxLTIyIGF0IDExOjUzICswMTAwLCBSYWZhZWwgSi4gV3lzb2NraSB3cm90
-ZToKPiBPbiBUaHVyc2RheSwgSmFudWFyeSAxOCwgMjAyNCAxOjA1OjEzIFBNIENFVCBTcmluaXZh
-cyBQYW5kcnV2YWRhCj4gd3JvdGU6Cj4gPiBBdm9pZCB1bm5lY2Vzc2FyeSBjYWxjdWxhdGlvbiBm
-b3IgY29udmVydGluZyBmcmVxdWVuY3kgdG8KPiA+IHBlcmZvcm1hbmNlCj4gPiByYXRpbyBieSB1
-c2luZyBhIHNjYWxpbmcgZmFjdG9yIGZvciB0aGUgbWF4aW11bSBub24gdHVyYm8gYW5kIHR1cmJv
-Cj4gCgpbLi4uXQoKPiAtLS0KPiBGcm9tOiBSYWZhZWwgSi4gV3lzb2NraSA8cmFmYWVsLmoud3lz
-b2NraUBpbnRlbC5jb20+Cj4gU3ViamVjdDogW1BBVENIIHYxXSBjcHVmcmVxOiBpbnRlbF9wc3Rh
-dGU6IFJlZmluZSBjb21wdXRhdGlvbiBvZiBQLQo+IHN0YXRlIGZvciBnaXZlbiBmcmVxdWVuY3kK
-PiAKPiBPbiBzeXN0ZW1zIHVzaW5nIEhXUCwgaWYgYSBnaXZlbiBmcmVxdWVuY3kgaXMgZXF1YWwg
-dG8gdGhlIG1heGltdW0KPiB0dXJibwo+IGZyZXF1ZW5jeSBvciB0aGUgbWF4aW11bSBub24tdHVy
-Ym8gZnJlcXVlbmN5LCB0aGUgSFdQIHBlcmZvcm1hbmNlCj4gbGV2ZWwKPiBjb3JyZXNwb25kaW5n
-IHRvIGl0IGlzIGFscmVhZHkga25vd24gYW5kIGNhbiBiZSB1c2VkIGRpcmVjdGx5IHdpdGhvdXQK
-PiBhbnkgY29tcHV0YXRpb24uCj4gCj4gQWNjb3JkaW5nbHksIGFkanVzdCB0aGUgY29kZSB0byB1
-c2UgdGhlIGtub3duIEhXUCBwZXJmb3JtYW5jZSBsZXZlbHMKPiBpbgo+IHRoZSBjYXNlcyBtZW50
-aW9uZWQgYWJvdmUuCj4gCj4gVGhpcyBhbHNvIGhlbHBzIHRvIGF2b2lkIGxpbWl0aW5nIENQVSBj
-YXBhY2l0eSBhcnRpZmljaWFsbHkgaW4gc29tZQo+IGNhc2VzIHdoZW4gdGhlIEJJT1MgcHJvZHVj
-ZXMgdGhlIEhXUF9DQVAgbnVtYmVycyB1c2luZyBhIGRpZmZlcmVudAo+IEUtY29yZS10by1QLWNv
-cmUgcGVyZm9ybWFuY2Ugc2NhbGluZyBmYWN0b3IgdGhhbiBleHBlY3RlZCBieSB0aGUKPiBrZXJu
-ZWwuCj4gCj4gRml4ZXM6IGY1YzhjZjJhNDk5MiAoImNwdWZyZXE6IGludGVsX3BzdGF0ZTogaHli
-cmlkOiBVc2Uga25vd24KPiBzY2FsaW5nIGZhY3RvciBmb3IgUC1jb3JlcyIpCj4gQ2M6IDYuMSsg
-PHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmc+ICMgNi4xKwo+IFNpZ25lZC1vZmYtYnk6IFJhZmFlbCBK
-LiBXeXNvY2tpIDxyYWZhZWwuai53eXNvY2tpQGludGVsLmNvbT4KPiAtLS0KClRlc3RlZCBvbiB0
-aGUgc3lzdGVtIHdoaWNoIHNob3dlZCB0aGUgaXNzdWUsIHRoaXMgcGF0Y2ggd29yayBmaW5lLgoK
-VGhhbmtzLApTcmluaXZhcwoKPiDCoGRyaXZlcnMvY3B1ZnJlcS9pbnRlbF9wc3RhdGUuYyB8wqDC
-oCA1NSArKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0KPiAtLS0tLS0tLS0tLQo+IMKgMSBm
-aWxlIGNoYW5nZWQsIDM0IGluc2VydGlvbnMoKyksIDIxIGRlbGV0aW9ucygtKQo+IAo+IEluZGV4
-OiBsaW51eC1wbS9kcml2ZXJzL2NwdWZyZXEvaW50ZWxfcHN0YXRlLmMKPiA9PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4g
-LS0tIGxpbnV4LXBtLm9yaWcvZHJpdmVycy9jcHVmcmVxL2ludGVsX3BzdGF0ZS5jCj4gKysrIGxp
-bnV4LXBtL2RyaXZlcnMvY3B1ZnJlcS9pbnRlbF9wc3RhdGUuYwo+IEBAIC01MjksNiArNTI5LDMw
-IEBAIHN0YXRpYyBpbnQgaW50ZWxfcHN0YXRlX2NwcGNfZ2V0X3NjYWxpbmcKPiDCoH0KPiDCoCNl
-bmRpZiAvKiBDT05GSUdfQUNQSV9DUFBDX0xJQiAqLwo+IMKgCj4gK3N0YXRpYyBpbnQgaW50ZWxf
-cHN0YXRlX2ZyZXFfdG9faHdwX3JlbChzdHJ1Y3QgY3B1ZGF0YSAqY3B1LCBpbnQKPiBmcmVxLAo+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBpbnQgcmVsYXRpb24pCj4gK3sKPiArwqDC
-oMKgwqDCoMKgwqBpZiAoZnJlcSA9PSBjcHUtPnBzdGF0ZS50dXJib19mcmVxKQo+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gY3B1LT5wc3RhdGUudHVyYm9fcHN0YXRlOwo+
-ICsKPiArwqDCoMKgwqDCoMKgwqBpZiAoZnJlcSA9PSBjcHUtPnBzdGF0ZS5tYXhfZnJlcSkKPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIGNwdS0+cHN0YXRlLm1heF9wc3Rh
-dGU7Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoHN3aXRjaCAocmVsYXRpb24pIHsKPiArwqDCoMKgwqDC
-oMKgwqBjYXNlIENQVUZSRVFfUkVMQVRJT05fSDoKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgcmV0dXJuIGZyZXEgLyBjcHUtPnBzdGF0ZS5zY2FsaW5nOwo+ICvCoMKgwqDCoMKgwqDC
-oGNhc2UgQ1BVRlJFUV9SRUxBVElPTl9DOgo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqByZXR1cm4gRElWX1JPVU5EX0NMT1NFU1QoZnJlcSwgY3B1LT5wc3RhdGUuc2NhbGluZyk7Cj4g
-K8KgwqDCoMKgwqDCoMKgfQo+ICsKPiArwqDCoMKgwqDCoMKgwqByZXR1cm4gRElWX1JPVU5EX1VQ
-KGZyZXEsIGNwdS0+cHN0YXRlLnNjYWxpbmcpOwo+ICt9Cj4gKwo+ICtzdGF0aWMgaW50IGludGVs
-X3BzdGF0ZV9mcmVxX3RvX2h3cChzdHJ1Y3QgY3B1ZGF0YSAqY3B1LCBpbnQgZnJlcSkKPiArewo+
-ICvCoMKgwqDCoMKgwqDCoHJldHVybiBpbnRlbF9wc3RhdGVfZnJlcV90b19od3BfcmVsKGNwdSwg
-ZnJlcSwKPiBDUFVGUkVRX1JFTEFUSU9OX0wpOwo+ICt9Cj4gKwo+IMKgLyoqCj4gwqAgKiBpbnRl
-bF9wc3RhdGVfaHlicmlkX2h3cF9hZGp1c3QgLSBDYWxpYnJhdGUgSFdQIHBlcmZvcm1hbmNlCj4g
-bGV2ZWxzLgo+IMKgICogQGNwdTogVGFyZ2V0IENQVS4KPiBAQCAtNTQ2LDYgKzU3MCw3IEBAIHN0
-YXRpYyB2b2lkIGludGVsX3BzdGF0ZV9oeWJyaWRfaHdwX2FkanUKPiDCoMKgwqDCoMKgwqDCoMKg
-aW50IHBlcmZfY3RsX3NjYWxpbmcgPSBjcHUtPnBzdGF0ZS5wZXJmX2N0bF9zY2FsaW5nOwo+IMKg
-wqDCoMKgwqDCoMKgwqBpbnQgcGVyZl9jdGxfdHVyYm8gPSBwc3RhdGVfZnVuY3MuZ2V0X3R1cmJv
-KGNwdS0+Y3B1KTsKPiDCoMKgwqDCoMKgwqDCoMKgaW50IHNjYWxpbmcgPSBjcHUtPnBzdGF0ZS5z
-Y2FsaW5nOwo+ICvCoMKgwqDCoMKgwqDCoGludCBmcmVxOwo+IMKgCj4gwqDCoMKgwqDCoMKgwqDC
-oHByX2RlYnVnKCJDUFUlZDogcGVyZl9jdGxfbWF4X3BoeXMgPSAlZFxuIiwgY3B1LT5jcHUsCj4g
-cGVyZl9jdGxfbWF4X3BoeXMpOwo+IMKgwqDCoMKgwqDCoMKgwqBwcl9kZWJ1ZygiQ1BVJWQ6IHBl
-cmZfY3RsX3R1cmJvID0gJWRcbiIsIGNwdS0+Y3B1LAo+IHBlcmZfY3RsX3R1cmJvKTsKPiBAQCAt
-NTU5LDE2ICs1ODQsMTYgQEAgc3RhdGljIHZvaWQgaW50ZWxfcHN0YXRlX2h5YnJpZF9od3BfYWRq
-dQo+IMKgwqDCoMKgwqDCoMKgwqBjcHUtPnBzdGF0ZS5tYXhfZnJlcSA9IHJvdW5kZG93bihjcHUt
-PnBzdGF0ZS5tYXhfcHN0YXRlICoKPiBzY2FsaW5nLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHBlcmZfY3RsX3NjYWxpbmcpOwo+IMKgCj4gLcKgwqDCoMKgwqDCoMKgY3B1LT5wc3RhdGUubWF4
-X3BzdGF0ZV9waHlzaWNhbCA9Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqBESVZfUk9VTkRfVVAocGVyZl9jdGxfbWF4X3BoeXMgKgo+IHBlcmZfY3RsX3Nj
-YWxpbmcsCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2NhbGluZyk7Cj4gK8KgwqDCoMKgwqDCoMKgZnJlcSA9
-IHBlcmZfY3RsX21heF9waHlzICogcGVyZl9jdGxfc2NhbGluZzsKPiArwqDCoMKgwqDCoMKgwqBj
-cHUtPnBzdGF0ZS5tYXhfcHN0YXRlX3BoeXNpY2FsID0KPiBpbnRlbF9wc3RhdGVfZnJlcV90b19o
-d3AoY3B1LCBmcmVxKTsKPiDCoAo+IC3CoMKgwqDCoMKgwqDCoGNwdS0+cHN0YXRlLm1pbl9mcmVx
-ID0gY3B1LT5wc3RhdGUubWluX3BzdGF0ZSAqCj4gcGVyZl9jdGxfc2NhbGluZzsKPiArwqDCoMKg
-wqDCoMKgwqBmcmVxID0gY3B1LT5wc3RhdGUubWluX3BzdGF0ZSAqIHBlcmZfY3RsX3NjYWxpbmc7
-Cj4gK8KgwqDCoMKgwqDCoMKgY3B1LT5wc3RhdGUubWluX2ZyZXEgPSBmcmVxOwo+IMKgwqDCoMKg
-wqDCoMKgwqAvKgo+IMKgwqDCoMKgwqDCoMKgwqAgKiBDYXN0IHRoZSBtaW4gUC1zdGF0ZSB2YWx1
-ZSByZXRyaWV2ZWQgdmlhCj4gcHN0YXRlX2Z1bmNzLmdldF9taW4oKSB0bwo+IMKgwqDCoMKgwqDC
-oMKgwqAgKiB0aGUgZWZmZWN0aXZlIHJhbmdlIG9mIEhXUCBwZXJmb3JtYW5jZSBsZXZlbHMuCj4g
-wqDCoMKgwqDCoMKgwqDCoCAqLwo+IC3CoMKgwqDCoMKgwqDCoGNwdS0+cHN0YXRlLm1pbl9wc3Rh
-dGUgPSBESVZfUk9VTkRfVVAoY3B1LT5wc3RhdGUubWluX2ZyZXEsCj4gc2NhbGluZyk7Cj4gK8Kg
-wqDCoMKgwqDCoMKgY3B1LT5wc3RhdGUubWluX3BzdGF0ZSA9IGludGVsX3BzdGF0ZV9mcmVxX3Rv
-X2h3cChjcHUsIGZyZXEpOwo+IMKgfQo+IMKgCj4gwqBzdGF0aWMgaW5saW5lIHZvaWQgdXBkYXRl
-X3R1cmJvX3N0YXRlKHZvaWQpCj4gQEAgLTI1MjgsMTMgKzI1NTMsMTIgQEAgc3RhdGljIHZvaWQg
-aW50ZWxfcHN0YXRlX3VwZGF0ZV9wZXJmX2xpbQo+IMKgwqDCoMKgwqDCoMKgwqAgKiBhYnN0cmFj
-dCB2YWx1ZXMgdG8gcmVwcmVzZW50IHBlcmZvcm1hbmNlIHJhdGhlciB0aGFuIHB1cmUKPiByYXRp
-b3MuCj4gwqDCoMKgwqDCoMKgwqDCoCAqLwo+IMKgwqDCoMKgwqDCoMKgwqBpZiAoaHdwX2FjdGl2
-ZSAmJiBjcHUtPnBzdGF0ZS5zY2FsaW5nICE9IHBlcmZfY3RsX3NjYWxpbmcpIHsKPiAtwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaW50IHNjYWxpbmcgPSBjcHUtPnBzdGF0ZS5zY2FsaW5n
-Owo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaW50IGZyZXE7Cj4gwqAKPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGZyZXEgPSBtYXhfcG9saWN5X3BlcmYgKiBwZXJm
-X2N0bF9zY2FsaW5nOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBtYXhfcG9saWN5
-X3BlcmYgPSBESVZfUk9VTkRfVVAoZnJlcSwgc2NhbGluZyk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoG1heF9wb2xpY3lfcGVyZiA9IGludGVsX3BzdGF0ZV9mcmVxX3RvX2h3cChj
-cHUsCj4gZnJlcSk7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBmcmVxID0gbWlu
-X3BvbGljeV9wZXJmICogcGVyZl9jdGxfc2NhbGluZzsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgbWluX3BvbGljeV9wZXJmID0gRElWX1JPVU5EX1VQKGZyZXEsIHNjYWxpbmcpOwo+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBtaW5fcG9saWN5X3BlcmYgPSBpbnRlbF9w
-c3RhdGVfZnJlcV90b19od3AoY3B1LAo+IGZyZXEpOwo+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqAK
-PiDCoMKgwqDCoMKgwqDCoMKgcHJfZGVidWcoImNwdTolZCBtaW5fcG9saWN5X3BlcmY6JWQgbWF4
-X3BvbGljeV9wZXJmOiVkXG4iLAo+IEBAIC0yOTA4LDE4ICsyOTMyLDcgQEAgc3RhdGljIGludCBp
-bnRlbF9jcHVmcmVxX3RhcmdldChzdHJ1Y3QgYwo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoGNwdWZy
-ZXFfZnJlcV90cmFuc2l0aW9uX2JlZ2luKHBvbGljeSwgJmZyZXFzKTsKPiDCoAo+IC3CoMKgwqDC
-oMKgwqDCoHN3aXRjaCAocmVsYXRpb24pIHsKPiAtwqDCoMKgwqDCoMKgwqBjYXNlIENQVUZSRVFf
-UkVMQVRJT05fTDoKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdGFyZ2V0X3BzdGF0
-ZSA9IERJVl9ST1VORF9VUChmcmVxcy5uZXcsIGNwdS0KPiA+cHN0YXRlLnNjYWxpbmcpOwo+IC3C
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBicmVhazsKPiAtwqDCoMKgwqDCoMKgwqBjYXNl
-IENQVUZSRVFfUkVMQVRJT05fSDoKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdGFy
-Z2V0X3BzdGF0ZSA9IGZyZXFzLm5ldyAvIGNwdS0+cHN0YXRlLnNjYWxpbmc7Cj4gLcKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJyZWFrOwo+IC3CoMKgwqDCoMKgwqDCoGRlZmF1bHQ6Cj4g
-LcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHRhcmdldF9wc3RhdGUgPSBESVZfUk9VTkRf
-Q0xPU0VTVChmcmVxcy5uZXcsIGNwdS0KPiA+cHN0YXRlLnNjYWxpbmcpOwo+IC3CoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBicmVhazsKPiAtwqDCoMKgwqDCoMKgwqB9Cj4gLQo+ICvCoMKg
-wqDCoMKgwqDCoHRhcmdldF9wc3RhdGUgPSBpbnRlbF9wc3RhdGVfZnJlcV90b19od3BfcmVsKGNw
-dSwgZnJlcXMubmV3LAo+IHJlbGF0aW9uKTsKPiDCoMKgwqDCoMKgwqDCoMKgdGFyZ2V0X3BzdGF0
-ZSA9IGludGVsX2NwdWZyZXFfdXBkYXRlX3BzdGF0ZShwb2xpY3ksCj4gdGFyZ2V0X3BzdGF0ZSwg
-ZmFsc2UpOwo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoGZyZXFzLm5ldyA9IHRhcmdldF9wc3RhdGUg
-KiBjcHUtPnBzdGF0ZS5zY2FsaW5nOwo+IEBAIC0yOTM3LDcgKzI5NTAsNyBAQCBzdGF0aWMgdW5z
-aWduZWQgaW50IGludGVsX2NwdWZyZXFfZmFzdF9zCj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgdXBk
-YXRlX3R1cmJvX3N0YXRlKCk7Cj4gwqAKPiAtwqDCoMKgwqDCoMKgwqB0YXJnZXRfcHN0YXRlID0g
-RElWX1JPVU5EX1VQKHRhcmdldF9mcmVxLCBjcHUtCj4gPnBzdGF0ZS5zY2FsaW5nKTsKPiArwqDC
-oMKgwqDCoMKgwqB0YXJnZXRfcHN0YXRlID0gaW50ZWxfcHN0YXRlX2ZyZXFfdG9faHdwKGNwdSwg
-dGFyZ2V0X2ZyZXEpOwo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoHRhcmdldF9wc3RhdGUgPSBpbnRl
-bF9jcHVmcmVxX3VwZGF0ZV9wc3RhdGUocG9saWN5LAo+IHRhcmdldF9wc3RhdGUsIHRydWUpOwo+
-IMKgCj4gCj4gCj4gCgo=
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+The error logging and failure statistics updates are carried out in two
+places in each system-wide device suspend phase, which is unnecessary
+code duplication, so do that in one place in each phase, right after
+invoking device suspend callbacks.
+
+While at it, add "noirq" or "late" to the "async" string printed when
+the failing device callback in the "noirq" or "late" suspend phase,
+respectively, was run asynchronously.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/base/power/main.c |   49 ++++++++++++----------------------------------
+ 1 file changed, 13 insertions(+), 36 deletions(-)
+
+Index: linux-pm/drivers/base/power/main.c
+===================================================================
+--- linux-pm.orig/drivers/base/power/main.c
++++ linux-pm/drivers/base/power/main.c
+@@ -1244,6 +1244,8 @@ Run:
+ 	error = dpm_run_callback(callback, dev, state, info);
+ 	if (error) {
+ 		async_error = error;
++		dpm_save_failed_dev(dev_name(dev));
++		pm_dev_err(dev, state, async ? " async noirq" : " noirq", error);
+ 		goto Complete;
+ 	}
+ 
+@@ -1273,14 +1275,8 @@ Complete:
+ static void async_suspend_noirq(void *data, async_cookie_t cookie)
+ {
+ 	struct device *dev = data;
+-	int error;
+-
+-	error = __device_suspend_noirq(dev, pm_transition, true);
+-	if (error) {
+-		dpm_save_failed_dev(dev_name(dev));
+-		pm_dev_err(dev, pm_transition, " async", error);
+-	}
+ 
++	__device_suspend_noirq(dev, pm_transition, true);
+ 	put_device(dev);
+ }
+ 
+@@ -1312,12 +1308,8 @@ static int dpm_noirq_suspend_devices(pm_
+ 
+ 		mutex_lock(&dpm_list_mtx);
+ 
+-		if (error) {
+-			pm_dev_err(dev, state, " noirq", error);
+-			dpm_save_failed_dev(dev_name(dev));
+-		} else if (!list_empty(&dev->power.entry)) {
++		if (!error && !list_empty(&dev->power.entry))
+ 			list_move(&dev->power.entry, &dpm_noirq_list);
+-		}
+ 
+ 		mutex_unlock(&dpm_list_mtx);
+ 
+@@ -1437,6 +1429,8 @@ Run:
+ 	error = dpm_run_callback(callback, dev, state, info);
+ 	if (error) {
+ 		async_error = error;
++		dpm_save_failed_dev(dev_name(dev));
++		pm_dev_err(dev, state, async ? " async late" : " late", error);
+ 		goto Complete;
+ 	}
+ 	dpm_propagate_wakeup_to_parent(dev);
+@@ -1453,13 +1447,8 @@ Complete:
+ static void async_suspend_late(void *data, async_cookie_t cookie)
+ {
+ 	struct device *dev = data;
+-	int error;
+ 
+-	error = __device_suspend_late(dev, pm_transition, true);
+-	if (error) {
+-		dpm_save_failed_dev(dev_name(dev));
+-		pm_dev_err(dev, pm_transition, " async", error);
+-	}
++	__device_suspend_late(dev, pm_transition, true);
+ 	put_device(dev);
+ }
+ 
+@@ -1500,11 +1489,6 @@ int dpm_suspend_late(pm_message_t state)
+ 		if (!list_empty(&dev->power.entry))
+ 			list_move(&dev->power.entry, &dpm_late_early_list);
+ 
+-		if (error) {
+-			pm_dev_err(dev, state, " late", error);
+-			dpm_save_failed_dev(dev_name(dev));
+-		}
+-
+ 		mutex_unlock(&dpm_list_mtx);
+ 
+ 		put_device(dev);
+@@ -1719,8 +1703,11 @@ static int __device_suspend(struct devic
+ 	dpm_watchdog_clear(&wd);
+ 
+  Complete:
+-	if (error)
++	if (error) {
+ 		async_error = error;
++		dpm_save_failed_dev(dev_name(dev));
++		pm_dev_err(dev, state, async ? " async" : "", error);
++	}
+ 
+ 	complete_all(&dev->power.completion);
+ 	TRACE_SUSPEND(error);
+@@ -1730,14 +1717,8 @@ static int __device_suspend(struct devic
+ static void async_suspend(void *data, async_cookie_t cookie)
+ {
+ 	struct device *dev = data;
+-	int error;
+-
+-	error = __device_suspend(dev, pm_transition, true);
+-	if (error) {
+-		dpm_save_failed_dev(dev_name(dev));
+-		pm_dev_err(dev, pm_transition, " async", error);
+-	}
+ 
++	__device_suspend(dev, pm_transition, true);
+ 	put_device(dev);
+ }
+ 
+@@ -1778,12 +1759,8 @@ int dpm_suspend(pm_message_t state)
+ 
+ 		mutex_lock(&dpm_list_mtx);
+ 
+-		if (error) {
+-			pm_dev_err(dev, state, "", error);
+-			dpm_save_failed_dev(dev_name(dev));
+-		} else if (!list_empty(&dev->power.entry)) {
++		if (!error && !list_empty(&dev->power.entry))
+ 			list_move(&dev->power.entry, &dpm_suspended_list);
+-		}
+ 
+ 		mutex_unlock(&dpm_list_mtx);
+ 
+
+
 
 
