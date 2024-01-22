@@ -1,126 +1,125 @@
-Return-Path: <linux-kernel+bounces-32799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7D6D836030
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:58:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05A09836032
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:59:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FF5F289AFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:58:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B30A0288E09
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693F43A8CC;
-	Mon, 22 Jan 2024 10:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="DFi+T9kK"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39D23A8C0
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293BE3A292;
+	Mon, 22 Jan 2024 10:59:21 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBEA416439;
+	Mon, 22 Jan 2024 10:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705921083; cv=none; b=U8Xoq39fYBortFu+wdlozD0zZiPyJAMUjbNvPoPGpVPyB+ODlIIcTXq4USwDrbWwWOPosXwluqxY+PXvWFfCVZX9wevNDpK+RhVhvCB0TqUpYuOfCtkRR27o8Lml+2fo+ij6bscL5GcnopUf/kzedvbsjsdIctta6goDYGlWiMI=
+	t=1705921160; cv=none; b=HznUIlgSgpiuJyHaQPTUrKrg5YwUBYBeMZF4HLvPAmXyEasYBQJlVhSGpGDVa3ZRZt5jozTZAUQbdyWVGoBmAF1J72KNcq9L4QvXW0j2lNk1N6PoqsXLeOPyw+WeARBKGojmotwuAH/iXVHDZNJMLGv9NbCq7UNrxc5gjr47cUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705921083; c=relaxed/simple;
-	bh=dq/j3A67sRPpENRKDDsHZpKZNgsUWcP1mECMFwBigvw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PR7Iupr9vj8p2ee9sxAZ4cLpFLIU0/tVz6EvOxOEPZ1ynxsRKD2faN4qrmOLpWkRj4VJLGw0olKiSoNyIzRcvRZ0BPWkOrx9gutYvRlpUQD+3UR6/KnqhcyVJ57+oa3oXqhTLFRGUoc/jtk1ZCN4NvPpz8M9h+0SaDTFNdet3IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=DFi+T9kK; arc=none smtp.client-ip=209.85.161.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-594cb19c5d9so1687331eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:58:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1705921080; x=1706525880; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JyrL3W6llccgMrgGVcBgvlNKkqQHZ86nYnIjTDXIxtE=;
-        b=DFi+T9kKZPbrHqZfqTaduHailMNOVqnXk7UCWnHxsxE4BadTu16WJOi15nxDNtglAE
-         v33nlBDXvEpksZ44YoYspIj/7Ijmn/xZViCGYyl5kj8JiWaY6LwoKqecHpmMsAyxM80Y
-         MLAZKCYV/nMJWV77YVnT3looolQ/uRjfEUaqqN6KZAUp5b/tBWiKdLkFa5cbGmZ/sbI1
-         lswhE/vH04VlJSskyBv8t+GhlgvPTSg/mZDd8+wa3TfLMY1+Sh4oIqmCzmwqIlX+m39i
-         el3hQjtIdGyhcNO7NuxrQTt06hy33Wm3YtDQUnmefTPKSh4G5+TaTQ1y09qDoA3zJkQS
-         ULwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705921080; x=1706525880;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JyrL3W6llccgMrgGVcBgvlNKkqQHZ86nYnIjTDXIxtE=;
-        b=R+/JcJFduoCKPLBSdVQNHoM0PWxTw0Q1YW8L7HtQHaojw8VeYLXKxt/yMf2txqvc/U
-         pPyH7JnxtqfX41HGq5Aloi5d79BQBYYFHfcf9fGijVcb5Jxvi7kBfVvPYKnY+CCnfuXK
-         doavi5YnjgV/7GYuL38Rwemcshqgl8LyC+qwDILNd18vVtL2V2fyPYebJYq3CInDlVoM
-         v3aV4yUyNa5FlJwNFTaTKHmFv8Qz5QzFYWz/dNS48ERKoXWaUDR1xgm7oBjsF4dcIVEH
-         kVe4khxccOO9eKXmAEPQzcp35IktyOYgTYE76kadfJwiQL1EV7GfA59aTx+VN6DnuCrg
-         EP7w==
-X-Gm-Message-State: AOJu0YwP03hU6AxQY6ApqERpnmmQ8A6mkYs/iqyw1ZndHJoKoQfLfGk3
-	r+WwS0joO3bPUI4ro4SeX2fWXBzCQ/1z1OIbNtL1f+/CoplRpakLUzQRFIHRHlxYuSTEJF5lzi9
-	z73xb7SECKwDl1Os51wDM6zaZa5EwyJSNU4Epcw==
-X-Google-Smtp-Source: AGHT+IH/zbah4ktUS7RBxnUb+QZmXGB6Q0Aw2aF+Gzwvh1cuixikSER5a9dsCCz8OiPNs+wmNhu04fK2CIxYdOaBVuo=
-X-Received: by 2002:a05:6870:2112:b0:203:7522:e0db with SMTP id
- f18-20020a056870211200b002037522e0dbmr2055647oae.19.1705921080618; Mon, 22
- Jan 2024 02:58:00 -0800 (PST)
+	s=arc-20240116; t=1705921160; c=relaxed/simple;
+	bh=4VojL6vyX4QOTthvwAA6Yn4UBHckVBnn15bNxPgHjEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kpY/zMTArGeQiIhS47PgJ451o8yx5cnVC+oqyeUsPRMGW9ase+8JPebDP1D8L0Pib0mKLZs+7MSoCe7dWWQjuKdWulvKnFzhnIgIaduZFRUdrEFw6uLTHV5NiGz1lxVJnNFjMKKly8qi9XlLSMqOcBXqpdIAV4GkfdcsbFHsyow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27C211FB;
+	Mon, 22 Jan 2024 03:00:04 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 09FE83F5A1;
+	Mon, 22 Jan 2024 02:59:16 -0800 (PST)
+Date: Mon, 22 Jan 2024 10:59:14 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: sudeep.holla@arm.com, jdelvare@suse.com, linux@roeck-us.net,
+	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH] hwmon: scmi-hwmon: implement change_mode
+Message-ID: <Za5Kgp6_qUEMc-AO@pluto>
+References: <20240122080441.1957022-1-peng.fan@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122013510.55788-1-cuiyunhui@bytedance.com>
- <20240122-boxcar-conical-c728a709aa5c@spud> <CAEEQ3wmX7_VP-YM9NkesAhd+5zetw79AW9bo0YO7KGAeJX4eRQ@mail.gmail.com>
- <20240122-jawline-handling-e190c90ddcfc@spud>
-In-Reply-To: <20240122-jawline-handling-e190c90ddcfc@spud>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Mon, 22 Jan 2024 18:57:49 +0800
-Message-ID: <CAEEQ3wn3vuPMG_=6skXcXNvnktv767nAENp=wmXoD_MAi7EuPw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] RISC-V: cacheinfo: add init_cache_level()
-To: Conor Dooley <conor@kernel.org>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	conor.dooley@microchip.com, robh@kernel.org, sudeep.holla@arm.com, 
-	pierre.gondois@arm.com, suagrfillet@gmail.com, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122080441.1957022-1-peng.fan@oss.nxp.com>
 
-Hi Conor,
+On Mon, Jan 22, 2024 at 04:04:41PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> The sensor maybe disabled before kernel boot, so add change_mode
+> to support configuring the sensor to enabled state.
+> 
 
-On Mon, Jan 22, 2024 at 4:55=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Mon, Jan 22, 2024 at 04:32:15PM +0800, yunhui cui wrote:
-> > Hi Conor,
-> >
-> > On Mon, Jan 22, 2024 at 4:09=E2=80=AFPM Conor Dooley <conor@kernel.org>=
- wrote:
-> > >
-> > > On Mon, Jan 22, 2024 at 09:35:10AM +0800, Yunhui Cui wrote:
-> > > > When cacheinfo_sysfs_init() is executed, the general weak function
-> > > > init_cache_level() returns -ENOENT, causing failure to add the "cac=
-he"
-> > > > node to /sys/devices/system/cpu/cpux/. Implement the init_cache_lev=
-el()
-> > > > function on RISC-V to fix it.
-> > >
-> > > If you recall correctly, I asked you to explain how to reproduce this
-> > > when you sent the patch.
-> >
-> > In fact, the reason has been explained in the commit log. As for how
-> > to reproduce it, you can check whether there is a "cache" node in
-> > /sys/devices/system/cpu/cpux/ on the riscv platform.
->
-> That's the thing - I tried to reproduce this several times and either:
-> a) The system had cache information in DT and the directory was
->    created. If I hot unplugged and re-plugged the directory was
->    re-created.
-> b) The system had no cache information in DT and the directory was never
->    created.
+Hi Peng,
 
-Indeed, I verified it again, it=E2=80=99s because there is no cache node in
-dts, thank you for reminding me.
+minor remarks down below
+
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/hwmon/scmi-hwmon.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+> 
+> diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
+> index 364199b332c0..f7bd63d52d15 100644
+> --- a/drivers/hwmon/scmi-hwmon.c
+> +++ b/drivers/hwmon/scmi-hwmon.c
+> @@ -151,7 +151,36 @@ static int scmi_hwmon_thermal_get_temp(struct thermal_zone_device *tz,
+>  	return ret;
+>  }
+>  
+> +static int scmi_hwmon_thermal_change_mode(struct thermal_zone_device *tz,
+> +					  enum thermal_device_mode new_mode)
+> +{
+> +	int ret;
+> +	u32 config;
+> +	enum thermal_device_mode cur_mode = THERMAL_DEVICE_DISABLED;
+> +	struct scmi_thermal_sensor *th_sensor = thermal_zone_device_priv(tz);
+> +
+> +	ret = sensor_ops->config_get(th_sensor->ph, th_sensor->info->id,
+> +				     &config);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (config & BIT(0))
+
+if SCMI_SENS_CFG_IS_ENABLED(config)
+
+> +		cur_mode = THERMAL_DEVICE_ENABLED;
+> +
+> +	if (cur_mode == new_mode)
+> +		return 0;
+> +
+> +	if (new_mode == THERMAL_DEVICE_ENABLED)
+> +		config |= SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
+> +	else
+> +		config &= ~SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
+> +
+
+Here you are ORing the enable bit to preserve the value obtained by
+config_get (rightly so), BUT unfortunately looking at the spec
+CONFIG_SET uses bits [10:9] for setting the rounding mode while
+CONFIG_GET does NOT report (bits [10:2] are Reserved) so you are
+in fact setting ROUNDING to 00 probably, meaning ROUND_DOWN.
+
+We could have to add (in the future not now) something in CONFIG_GET
+to get the round mode (I'll speak with Souvik) BUT in the meantime I
+wonder if it is not more safe here to just explicitly set the mode to
+10 to signify it is up to the platform to autonomously choose how to
+round. (there are SCMI_SENS_CFG_ROUND_ macros and mask in
+scmi_protocol.h)
+
+Other than these small things, LGTM.
+
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
 
 Thanks,
-Yunhui
+Cristian
 
