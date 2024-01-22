@@ -1,106 +1,180 @@
-Return-Path: <linux-kernel+bounces-33994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2382B83719C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:02:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E42A8371AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:02:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56C271C2A722
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:02:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46AF51C26B9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F132B55771;
-	Mon, 22 Jan 2024 18:38:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1016955C3A;
+	Mon, 22 Jan 2024 18:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m5CZzoWJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PIl3LD3L"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7E054BF8;
-	Mon, 22 Jan 2024 18:38:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729F855C30
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705948713; cv=none; b=TvyKOBwuOmhU+FYy7SLWstg8bGaxv4+opnnFW+rXY2Sb5RvoDMjPqhEFgOxnR/3/6l3m8e8SNbbOhr6bNMc1udwHiLfGM1ylwPuK9Mj6YhwSAi2GC9Uv9CSi2iwQHG+LttSUJDyFZUC5dSLq27qLBhfYRffxEn7pbxkHmCd9ADo=
+	t=1705948817; cv=none; b=FtslDYW6sQcpjV5SKIbcHIyoHOtu4lX5ghfpDhG4q4I9YgifG6BnNREvYrgIs5sdrBK7sFe6WA3aWQw0gG5QGvG2yGwgxGoqcQ58dBAX1fyZ7wu+KJZvFm49ipN564jy0WE3Rfvm9/rx6AHVXX08TPzfn90cNGtMY5qVYu1PYxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705948713; c=relaxed/simple;
-	bh=KVE7Ws4n8dlfxAnlggmPADEvbayua5rMmkRlflKaJvA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S5/F3C0OHvG3Po5XZk9R87uoZuNMcJYHhNJ6Y/hsX3KT1pRy0j02A33n4Q+tj6Sr1G0abK74tNx9ePtuJlS1a7nRnJjvkxgqy0k/ZsWuo+4hqUpmD+X89OGXUo42TTP3lo6m+PmDVhAzItdKhmhSRgJSPrOn7BJz5sUSuq58mis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m5CZzoWJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4BCC433C7;
-	Mon, 22 Jan 2024 18:38:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705948712;
-	bh=KVE7Ws4n8dlfxAnlggmPADEvbayua5rMmkRlflKaJvA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m5CZzoWJ1qckyfLAJTHg8LY+orIVXY8bBoZ3JZgMj+suMPUb0RrF/3OrY4RnpBBJq
-	 5NqxAQj6ZvDwcQ72gCa/3JHDyozbmb5hosHEEIKmVFBdeowRPhucyxlKDax4ZSQKdw
-	 IVk9LbokUgCaTldulfOfeU5vg5kB+RZE2CvFZmI8iSA4e2HrHI8RCJOYKyg3D5LcMn
-	 eXmtB/XRyG8EXSOZgv2qv+dCFfsyLAmfhyxSQsOUD7/pSKZN4XVwBoDlRg7Ohp4yBJ
-	 jEOQgqRnM4Mua02QwMe5NdAvbmg7L70PIURZEhcpw3hFYhGN04Dg0LVkr1xBuXXMte
-	 B/UMOe6vVGtXg==
-Date: Mon, 22 Jan 2024 18:38:27 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Klaus Kudielka <klaus.kudielka@gmail.com>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] SPI updates for v6.8
-Message-ID: <a3b7790b-ce5b-407f-8089-a18c52aa7a1e@sirena.org.uk>
-References: <20240107223817.EDB59C433C7@smtp.kernel.org>
- <d8724cd416494bb5cd5b0350266fce0cb7b3b210.camel@gmail.com>
+	s=arc-20240116; t=1705948817; c=relaxed/simple;
+	bh=1nu2DhOh/V7w6Lm1HJ4NygnNAaN6RKpZ4eSyAXucXx8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HD6xVqjEiBCc+qbtMnbcWBtgbicL5xUOGsh6V07Zzxs03i9nlWo8YiEIKuxKBrp+hJbp8utk300vpOwGyqTY3ZcYUNDHPrBC5dySMrSimPGReU4pYmRsgwNJhpD6Z328W4EKrpkSyRFCMH7Isipdb9xE9fm9LdfAjzDhpGEAEUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PIl3LD3L; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705948815; x=1737484815;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1nu2DhOh/V7w6Lm1HJ4NygnNAaN6RKpZ4eSyAXucXx8=;
+  b=PIl3LD3LdWvLwcoWVXlMy2pyt5ADUQi4yI4wxFfsYd4OqzAd9D47XH3Y
+   x5YxIKb9HtRAC7r6g3JlLkDKVZOLYaG29Qx56bJsYrXquymxWXCsEY+lt
+   1oyZgDmZ9IVSDTgXxdDCvTFo2mabMK5dEGvtNv6AXvU2Kt0c3p4oZmBkn
+   R3vVzSwsN7suE48TAooTUC/UyJtZ+CcMn63gRRbIvqIF1ZKsXqTREL+sm
+   sSjaYx9EuF2ofOSdvdDbdm1iGe8bsAT8qgXucTHK5m+uXaaFEXvvMsPXl
+   Ne2CkoWrOlKTKCFpWJ3ENZlFOFFPLTaAZltLL5gNadTZ7/AVJO3hNi8xK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="14802332"
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
+   d="scan'208";a="14802332"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 10:40:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
+   d="scan'208";a="1292147"
+Received: from lmneiber-mobl1.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.212.176.143])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 10:40:11 -0800
+From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+To: x86@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	hpa@zytor.com,
+	luto@kernel.org,
+	peterz@infradead.org,
+	kirill.shutemov@linux.intel.com,
+	elena.reshetova@intel.com,
+	isaku.yamahata@intel.com,
+	seanjc@google.com,
+	mikelley@microsoft.com,
+	thomas.lendacky@amd.com,
+	decui@microsoft.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com,
+	linux-kernel@vger.kernel.org
+Cc: rick.p.edgecombe@intel.com
+Subject: [PATCH v3] x86/mm/cpa: Warn for set_memory_XXcrypted() VMM fails
+Date: Mon, 22 Jan 2024 10:40:03 -0800
+Message-Id: <20240122184003.129104-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="DTvDgoXj5eUMt50c"
-Content-Disposition: inline
-In-Reply-To: <d8724cd416494bb5cd5b0350266fce0cb7b3b210.camel@gmail.com>
-X-Cookie: Nice guys don't finish nice.
+Content-Transfer-Encoding: 8bit
 
+On TDX it is possible for the untrusted host to cause
+set_memory_encrypted() or set_memory_decrypted() to fail such that an
+error is returned and the resulting memory is shared. Callers need to take
+care to handle these errors to avoid returning decrypted (shared) memory to
+the page allocator, which could lead to functional or security issues.
+In terms of security, the problematic case is guest PTEs mapping the
+shared alias GFNs, since the VMM has control of the shared mapping in the
+EPT/NPT.
 
---DTvDgoXj5eUMt50c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Such conversion errors may herald future system instability, but are
+temporarily survivable with proper handling in the caller. The kernel
+traditionally makes every effort to keep running, but it is expected that
+some coco guests may prefer to play it safe security-wise, and panic in
+this case. To accommodate both cases, warn when the arch breakouts for
+converting memory at the VMM layer return an error to CPA. Security focused
+users can rely on panic_on_warn to defend against bugs in the callers. Some
+VMMs are not known to behave in the troublesome way, so users that would
+like to terminate on any unusual behavior by the VMM around this will be
+covered as well.
 
-On Mon, Jan 22, 2024 at 07:30:09PM +0100, Klaus Kudielka wrote:
-> On Sun, 2024-01-07 at 22:38 +0000, Mark Brown wrote:
+Since the arch breakouts host the logic for handling coco implementation
+specific errors, an error returned from them means that the set_memory()
+call is out of options for handling the error internally. Make this the
+condition to warn about.
 
-> I just booted 6.8.0-rc1 on Turris Omnia (CONFIG_SPI_ORION=3Dy,
-> device tree: arch/arm/boot/dts/marvell/armada-385-turris-omnia.dts)
+It is possible that very rarely these functions could fail due to guest
+memory pressure (in the case of failing to allocate a huge page when
+splitting a page table). Don't warn in this case because it is a lot less
+likely to indicate an attack by the host and it is not clear which
+set_memory() calls should get the same treatment. That corner should be
+addressed by future work that considers the more general problem and not
+just papers over a single set_memory() variant.
 
-> and got the following error:
->=20
-> [    0.090231] spi_master spi0: No. of CS is more than max. no. of suppor=
-ted CS
-> [    0.097358] spi_master spi0: Failed to create SPI device for /soc/spi@=
-10600/flash@0
->=20
-> End result: the three MTD partitions I used to have on the SPI-NOR are go=
-ne.
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Suggested-by: Michael Kelley (LINUX) <mikelley@microsoft.com>
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+---
+ - Rebased on tip/x86/tdx.
+ - Added Reviewed-by's.
+ - Changed subject per Dave's comments.
+ - Moved comment "Notify hypervisor that..." closer to code it refers
+   to.
+---
+ arch/x86/mm/pat/set_memory.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-Actualy looking at the DT it's not immediately obvious why this is
-triggering - there's only one chip select in use, numbered 0 AFAICT.
-Anyway, if you could test the patch I linked hopefully it does fix the
-issue.
+diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+index bda9f129835e..d4323ab7c970 100644
+--- a/arch/x86/mm/pat/set_memory.c
++++ b/arch/x86/mm/pat/set_memory.c
+@@ -2153,7 +2153,7 @@ static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
+ 
+ 	/* Notify hypervisor that we are about to set/clr encryption attribute. */
+ 	if (!x86_platform.guest.enc_status_change_prepare(addr, numpages, enc))
+-		return -EIO;
++		goto vmm_fail;
+ 
+ 	ret = __change_page_attr_set_clr(&cpa, 1);
+ 
+@@ -2166,13 +2166,20 @@ static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
+ 	 */
+ 	cpa_flush(&cpa, 0);
+ 
+-	/* Notify hypervisor that we have successfully set/clr encryption attribute. */
+-	if (!ret) {
+-		if (!x86_platform.guest.enc_status_change_finish(addr, numpages, enc))
+-			ret = -EIO;
+-	}
++	if (ret)
++		return ret;
+ 
+-	return ret;
++	/* Notify hypervisor that we have successfully set/clr encryption attribute. */
++	if (!x86_platform.guest.enc_status_change_finish(addr, numpages, enc))
++		goto vmm_fail;
++
++	return 0;
++
++vmm_fail:
++	WARN_ONCE(1, "CPA VMM failure to convert memory (addr=%p, numpages=%d) to %s.\n",
++		  (void *)addr, numpages, enc ? "private" : "shared");
++
++	return -EIO;
+ }
+ 
+ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
 
---DTvDgoXj5eUMt50c
-Content-Type: application/pgp-signature; name="signature.asc"
+base-commit: 83e1bdc94f32dcf52dfcd2025acc7a2b9376b1e8
+-- 
+2.34.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWutiIACgkQJNaLcl1U
-h9CK0Qf/RkQt+iaRnvCFL1dWSb7Tfy5yMtCUTsGisJqdcuS4rNDLCXH34HJQTKfa
-yT1fiYYMAxCo1z88S3sfG9TLoAbtq2ScJC6/PwpMpSiZy2uimcWBOx1Gnad1sLto
-9lK0PZe9r+kjFn2cBLcFslkXllYSI11nDoj6/Nwe92JUH4rom4/xtmJ09aFhKtxZ
-xPxiEkgX1dfRmg95nXCViae8cEc/3PgZuucyCvww2aJs1tEsSKOflE5szn66kiiR
-/3gj+c1DcNZBYE6wSS0uNaqvdb14ZWV5kcFvNRJOzEx17s6/pTixKCCYu+Stxn+A
-LlvqFT3d9L0bkicmDueOe5c30NkXNQ==
-=QmhZ
------END PGP SIGNATURE-----
-
---DTvDgoXj5eUMt50c--
 
