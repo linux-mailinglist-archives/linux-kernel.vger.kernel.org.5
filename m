@@ -1,154 +1,121 @@
-Return-Path: <linux-kernel+bounces-33874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D33CF8371EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:09:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12A488371D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E30BB34447
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:25:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20A76B285A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749E74F5FF;
-	Mon, 22 Jan 2024 17:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="c6iGIMVa"
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711254F5E4
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:53:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BC85F855;
+	Mon, 22 Jan 2024 18:06:31 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035515F863
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705946031; cv=none; b=DgtXUFZjSgXM2dPvkqa9DWfInpBxskfSE1R8907HPTpL2WX8OnxdVJBQ+YpkPCvm7W1V4DbqZBWgiFaGNElZddpnJTDgbP0HSH7mhomtCvX2h9QMUIHKuT8rlIiLKGrtvuOBBLwbgySVYzc/wLM09iESAvIxNK2DSc1H7pAWjZQ=
+	t=1705946790; cv=none; b=ZaMM3basFFaW2OJ7Fz9iQOwd9fUygy0FbjJPQZee8nlxF0L1y1AV6QCuNKkvmjXzSAn7g5NJv+VSRMsQqJq5TFmQ4YNChJSg6YPqAol8VPtfmpnQLDqObW4ELCoZ6J6NOjhVyoC7RpGu/ipjou2feEN0NDflY7EnDYdIUHyiJ54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705946031; c=relaxed/simple;
-	bh=qELrPQW+cBpnYsG2PAKmtPwimyiW6brT7BtW/BMBCtA=;
+	s=arc-20240116; t=1705946790; c=relaxed/simple;
+	bh=cQLkUPBBLrRH/cRaXmUrTHiSWdeMuSt7rHG+1NHts0Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JK1L9drCl652l4ZqJOWQtQ5pYezajWmhBz2B8rripM5qfbWpZVWTBK5e/YbCQU8IPhz3tz/fWDXFWi/VmoOriS8/R1JREny8+iYcQ8NpsLeW35SM7lpMEdWdcArmU0pViqm8c9G4xgQZojy73AqFGMzKDFEoycTz35QDIUtvP7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=c6iGIMVa; arc=none smtp.client-ip=35.89.44.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
-	by cmsmtp with ESMTPS
-	id RvUnrtZv680oiRyUYrTzpr; Mon, 22 Jan 2024 17:53:50 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id RyUXrovMRyxR5RyUXrGB9p; Mon, 22 Jan 2024 17:53:49 +0000
-X-Authority-Analysis: v=2.4 cv=JYOvEGGV c=1 sm=1 tr=0 ts=65aeabad
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=NEAV23lmAAAA:8 a=7YfXLusrAAAA:8 a=CsOLvDfn09n0XjjTB6sA:9 a=QEXdDO2ut3YA:10
- a=9cHFzqQdt-sA:10 a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=SLz71HocmBbuEhFRYD3r:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=HnBhTN2Qswqklqa5h1VDuRxzPmCKbJjTZLHYO8QIxWw=; b=c6iGIMVa+eG37rAI6qKtUzqRcp
-	xGUl5ldFfByNWlilB8Oci0BltbK/89REty8IxwtOM53jwd8dt7qtz4HUZFwfFZz4TwGM8PRk7Nccr
-	bTB1b1SDEVPpM0jaR70qY1yCd10aQwNwnUKD6krMawX3LRfB1RrnHPaXPOilmXqqsU8anGCKrMSce
-	AEXt+dX2wNOkHRZvvc8NGKtF/gUWNQNWhhp9P5YUWEZyi2WgW3+4U//FTxWDbj+7XHPlBimHWxVPa
-	rM1kmIwpaGgANpVwiNUXvoCNlZuKbL7Czw3PlRgFvums82syh0gKtA8N1oDJuFlCbx8lYzWXDSpfv
-	ANG431Hw==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:37538 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rRyUV-001MU8-17;
-	Mon, 22 Jan 2024 11:53:47 -0600
-Message-ID: <cb313841-4540-419a-bb89-5ae806df12b7@embeddedor.com>
-Date: Mon, 22 Jan 2024 11:53:45 -0600
+	 In-Reply-To:Content-Type; b=gCEh/Pb1h0bKLLkjY4RHYu157nKii54a5iVRKPCS+y2Gryt3QgyLWpEUMDoqBsnLqyUUafq0/BzxLNgdfM4NAe1UubjN9rTg7aMxdWzOoyX9YS3BWVlpHvfDjEaG3S0RNKqLxp1OdDfojnIWCwQbR+uBWrpMxMaGsuuZmXHYs0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4012D1476;
+	Mon, 22 Jan 2024 10:07:13 -0800 (PST)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C6963F5A1;
+	Mon, 22 Jan 2024 10:06:24 -0800 (PST)
+Message-ID: <c4351ab9-9524-595d-9765-f5f50371023e@arm.com>
+Date: Mon, 22 Jan 2024 18:06:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] crypto: sun8i-ce - Use kcalloc() instead of kzalloc()
-Content-Language: en-US
-To: Erick Archer <erick.archer@gmx.com>,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Jonathan Corbet <corbet@lwn.net>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240121153407.8348-1-erick.archer@gmx.com>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240121153407.8348-1-erick.archer@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8 14/24] x86/resctrl: Allow resctrl_arch_rmid_read() to
+ sleep
+Content-Language: en-GB
+To: babu.moger@amd.com, x86@kernel.org, linux-kernel@vger.kernel.org
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+ shameerali.kolothum.thodi@huawei.com,
+ D Scott Phillips OS <scott@os.amperecomputing.com>,
+ carl@os.amperecomputing.com, lcherian@marvell.com,
+ bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+ baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+ Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+ dfustini@baylibre.com, amitsinght@marvell.com
+References: <20231215174343.13872-1-james.morse@arm.com>
+ <20231215174343.13872-15-james.morse@arm.com>
+ <290d6066-236d-4681-8dc5-8a380c878aeb@amd.com>
+From: James Morse <james.morse@arm.com>
+In-Reply-To: <290d6066-236d-4681-8dc5-8a380c878aeb@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1rRyUV-001MU8-17
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:37538
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 40
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfGvK75E4f2xrmLhAnasG3twN9lEppEBlYTGi3llgrnrwvb9fn0uT6cd7NvF9v8Y+sX/g4wjLlxpuTk0u9SOYoI/bOkUA7jhVfOT7o7iwWc4B2mLMwv0A
- avCgSEXnLFIOYZi6PFI9ZdAnmXfZhYIoDtT/IAQfGPh1zcRmR8MlvuDON7oJXpiYgHxGOUdo2s26iLQjxIQYqGhdT7tUusQUYScVcCx/ORSlI+tAY/55k4Iq
 
+Hi Babu,
 
+On 03/01/2024 19:43, Moger, Babu wrote:
+> On 12/15/23 11:43, James Morse wrote:
+>> MPAM's cache occupancy counters can take a little while to settle once
+>> the monitor has been configured. The maximum settling time is described
+>> to the driver via a firmware table. The value could be large enough
+>> that it makes sense to sleep. To avoid exposing this to resctrl, it
+>> should be hidden behind MPAM's resctrl_arch_rmid_read().
+>>
+>> resctrl_arch_rmid_read() may be called via IPI meaning it is unable
+>> to sleep. In this case resctrl_arch_rmid_read() should return an error
+>> if it needs to sleep. This will only affect MPAM platforms where
+>> the cache occupancy counter isn't available immediately, nohz_full is
+>> in use, and there are no housekeeping CPUs in the necessary domain.
+>>
+>> There are three callers of resctrl_arch_rmid_read():
+>> __mon_event_count() and __check_limbo() are both called from a
+>> non-migrateable context. mon_event_read() invokes __mon_event_count()
+>> using smp_call_on_cpu(), which adds work to the target CPUs workqueue.
+>> rdtgroup_mutex() is held, meaning this cannot race with the resctrl
+>> cpuhp callback. __check_limbo() is invoked via schedule_delayed_work_on()
+>> also adds work to a per-cpu workqueue.
+>>
+>> The remaining call is add_rmid_to_limbo() which is called in response
+>> to a user-space syscall that frees an RMID. This opportunistically
+>> reads the LLC occupancy counter on the current domain to see if the
+>> RMID is over the dirty threshold. This has to disable preemption to
+>> avoid reading the wrong domain's value. Disabling pre-emption here
+>> prevents resctrl_arch_rmid_read() from sleeping.
+>>
+>> add_rmid_to_limbo() walks each domain, but only reads the counter
+>> on one domain. If the system has more than one domain, the RMID will
+>> always be added to the limbo list. If the RMIDs usage was not over the
+>> threshold, it will be removed from the list when __check_limbo() runs.
+>> Make this the default behaviour. Free RMIDs are always added to the
+>> limbo list for each domain.
+>>
+>> The user visible effect of this is that a clean RMID is not available
+>> for re-allocation immediately after 'rmdir()' completes, this behaviour
+>> was never portable as it never happened on a machine with multiple
+>> domains.
+>>
+>> Removing this path allows resctrl_arch_rmid_read() to sleep if its called
+>> with interrupts unmasked. Document this is the expected behaviour, and
+>> add a might_sleep() annotation to catch changes that won't work on arm64.
 
-On 1/21/24 09:34, Erick Archer wrote:
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
-> 
-> So, use the purpose specific kcalloc() function instead of the argument
-> size * count in the kzalloc() function.
-> 
-> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/162
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+> Reviewed-by: Babu Moger <babu.moger@amd.com>
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
 Thanks!
--- 
-Gustavo
 
-> ---
->   drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> index d358334e5981..ee2a28c906ed 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> @@ -362,7 +362,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
->   		digestsize = SHA512_DIGEST_SIZE;
-> 
->   	/* the padding could be up to two block. */
-> -	buf = kzalloc(bs * 2, GFP_KERNEL | GFP_DMA);
-> +	buf = kcalloc(2, bs, GFP_KERNEL | GFP_DMA);
->   	if (!buf) {
->   		err = -ENOMEM;
->   		goto theend;
-> --
-> 2.25.1
-> 
+James
 
