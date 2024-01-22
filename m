@@ -1,250 +1,161 @@
-Return-Path: <linux-kernel+bounces-32719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73203835F53
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:19:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E21EF835F60
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:21:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 972C91C228A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:19:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5804B242B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22683A1B2;
-	Mon, 22 Jan 2024 10:19:25 +0000 (UTC)
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC423A8C0;
+	Mon, 22 Jan 2024 10:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hDZH8hZc"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D7739FD1;
-	Mon, 22 Jan 2024 10:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620F73A1BE
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705918765; cv=none; b=uphDbYP7tloHver9NtCSkAuhNBV8EuqSw561wJOHmvqa6oMIiiqtddQYDLKZh0COl196aRim9gUgCbhTMJBcLPw3xgiBfRCwCHHqpi1We0lDymW/g9qwd1CU9+WIAsX3Uihk68ClCv5qA8ilxgxdTsjWrJGrrJqzMfbQrVeoiXI=
+	t=1705918768; cv=none; b=IrczU1Q57EMtscqDahI5gQpJDSQBeahQgTeKQq50gGw0ZLjyiCtXYYCRIffRCxBtLpU/Q6ltXDrLsGCWndG+Pfb6Yefzi5NwG1BUFBdViVJcI7DqKjPJ42Vrjq5wuCTjMw8Figsg7SQXVWzwqq/kaoaVpY+VI8IzC2nHH6ngvXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705918765; c=relaxed/simple;
-	bh=Gkz5hq9DIb0riRgjhpO+7SZV+cd4lEG3ZFpCkyuUELM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eu8lFQJW/srLu95GLIV1G7YxAab+yxp8Ri8KrOTmpIlkE3iLvm4fdtxEDrOPQl5gyhxg/0MjVOYnKbxIqoAkCmOCeWbs3sysTiI6IWIPNRMIYFwtLJ46LciiPYKl2M2BfAWcshy2HvGtFaRaAMT67A7nsbFZMSohzrj4bGogzzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59584f41f1eso508079eaf.1;
-        Mon, 22 Jan 2024 02:19:23 -0800 (PST)
+	s=arc-20240116; t=1705918768; c=relaxed/simple;
+	bh=7ew0NAPyibZscHi7tUqReuVpp5Uimj/jNK4i5Okdy1w=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=cZPVo0M9x/AIGJE+PpzJoXLwx/FJZMWNcW1Uw524Jq2qQZtzHFc3Ze8SG+4cLBbFxUX6iAagba2Ps8emLuuFfMoHohrQti+CbT7KNUuOHbnifm5fowk0THi1za3b+NqKx7Hgyp0WEhspuEbriXPmGaazllmZ+OFmD2Za2mQ9R7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hDZH8hZc; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3392b045e0aso1431187f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:19:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705918764; x=1706523564; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p5KCrRWR4ilF4vEoSC5VCKhwGShhqdS0j9kXD/3Vfb0=;
+        b=hDZH8hZcO4dZAxhic1vdeqfNr8S8aJcyAGDvYNDgS5OfiM4SWe4AptdH6PQqSjhGss
+         p9PhIu+yTEv/Vk26G79MrrH0Xm57PrxHGnZp6DMvTCTeOFTJRN0Oca+aLiWWiwtvda9e
+         fP2ShisCO3cTTgoHnvctJQGG/BKldTb29QeA+HE29ncgMs35egGlw8kqwTl1dXbyVv2V
+         1UbxlkgxGpjp7+gbbSOZzUtyoWT8oWXOxke4SJCmGnm0e3CjVryfWejlM3Mxy71Xl339
+         eZDq6pi0O4fUsvPZJ700tXPUYwIF3wbD7K213+E5sPAlgZLmL7AYu17VRaaPE19L6Biw
+         6mUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705918762; x=1706523562;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=is1qEjGDPTu2FZOuOhWd48UR3MyCDQP16MnZHTWIpiw=;
-        b=JZCWb0mbPBpuO8HgqLN0dWM9ctkl5T8E52bQWdmYUC2KDNwSx2YzfY78BYmGaYxi6G
-         za2xWnR54VOxFUwfqwAWELpGhWu4YhdJnZcwXiysLyIMCVZJ6HMQVFN19oRc7vf2tJog
-         xIQTt7azbD/VXA4Tchhw6VJdLqFUauPZI7gsbPysbN65xtlCqkYsm/CIWXkG681HPv2g
-         AExFcERVa1+YFQpTX/Pt9UMMkCmdUlsthTf3i8agqfLMRpA9K54R6m8RhBmjXhwI8NIX
-         krw3edYbQMxoa4xXn5ahQyRs5an2Dxtud7FONe4MC82jQBv160DDIMj//e+W+8+bJqCe
-         REcg==
-X-Gm-Message-State: AOJu0YzGg58TMnMgida6BuBsOsGUQF+NcItqEfDDIO3+N39Zuz01ot10
-	4AhbwkMfGEsBTUSERt/6+aKqQYtRNvHjY62UMxHInmB9rCbk0Y0qO2JGGKM/oSJv26f6FI0LGdn
-	OOU1RoZ2c7Kabmiva/p/1zADapbA=
-X-Google-Smtp-Source: AGHT+IE83ASFTs88Es21DMA7eEZl8IMPAAdeIYUTI9OoQHXbA0lG0zjeYSg9QpWycB4pXoGYWFDDvnX8/mGTKdUqM1E=
-X-Received: by 2002:a4a:c387:0:b0:599:2b86:993 with SMTP id
- u7-20020a4ac387000000b005992b860993mr5762451oop.0.1705918762556; Mon, 22 Jan
- 2024 02:19:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705918764; x=1706523564;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p5KCrRWR4ilF4vEoSC5VCKhwGShhqdS0j9kXD/3Vfb0=;
+        b=enQbNURbq/czm1Lqy7cZNwgxcDwCzsLKTEfJE7ThCfOCKvx0S04Sul/QnaTwHFUIzp
+         U1vD6xt8irG8qN6Mni8DmOH8N1vw/1G7zRriexk7e3rEk4lk5HOwRfDNcjgXOXa2o7sb
+         2OPKyn1alsofWiF6Imt6YTCa2Ip5vYNsyaaW/ogEC9+Vjh3z6u2doDmHSsZCMu0h+5hg
+         fUSD5+Zq0c5JEYpQYHfC6qN1ZqW1a88lMD/kWbbW0379DwxYB4qaRbaH0nn5eMJJOnbT
+         ZkNix6XUSoHZEZVJU2rMKn+sOKJpifZnMFa0NnLdoQscS442kNyChkfdsOZOHNEFImWb
+         YVHQ==
+X-Gm-Message-State: AOJu0YydzdZsdFK/GoE+yuWuetMjopfR21hNfU1CwN6ihRa6HWEeS5CC
+	/UejvgrwQoBwzUFt8GdnbyGuMSji8+RfqS59Bvz1saPVH8K8Qrr9b3sjcFWAK7w=
+X-Google-Smtp-Source: AGHT+IHe4wXlSjtTn4jr/HiF9w2fGiO/kyyLg3woFILZwp1HItkxcNAd9zaJLjBSjvhxzWb8dh4bXQ==
+X-Received: by 2002:adf:ec05:0:b0:337:39c6:a48d with SMTP id x5-20020adfec05000000b0033739c6a48dmr2495036wrn.25.1705918764139;
+        Mon, 22 Jan 2024 02:19:24 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id q4-20020adfab04000000b00337d603fd01sm10396114wrc.66.2024.01.22.02.19.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 02:19:23 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH 0/2] arm64: qcom: sm8550: add support for the SM8550-HDK
+ board
+Date: Mon, 22 Jan 2024 11:19:18 +0100
+Message-Id: <20240122-topic-sm8550-upstream-hdk8550-v1-0-bff7eb3a17eb@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240106191502.29126-1-quic_manafm@quicinc.com>
- <CAJZ5v0gE6eEpALrfxHvCd5TRqjB+v8pffG4CKLTVXiSvuiWhHg@mail.gmail.com>
- <d7b82fc8-0ed8-80b8-9eb8-c77f9277178f@quicinc.com> <CAJZ5v0g4hnRqRCseRnTjfEF+-2=ZT8U9=2m9FODqh3G8eDd=Sw@mail.gmail.com>
- <921c2f90-fb8b-4e70-9e3d-6e185fec03b6@linaro.org> <CAJZ5v0h+93YBsYsA5rOvzp+b3JMGyjUStHA=J8P7ynv+-ym-4g@mail.gmail.com>
- <41b284d7-e31f-48b5-8b21-0dca3e23cb1c@linaro.org>
-In-Reply-To: <41b284d7-e31f-48b5-8b21-0dca3e23cb1c@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 22 Jan 2024 11:19:08 +0100
-Message-ID: <CAJZ5v0ina=7R6x6Ff=8_rRR9Kkmz2tkojbs_WWCN=JPmzhg+HQ@mail.gmail.com>
-Subject: Re: [PATCH] thermal/sysfs: Always enable hysteresis write support
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>, Zhang Rui <rui.zhang@intel.com>, 
-	Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACZBrmUC/x3M3QpAQBBA4VfRXJva8RPrVeRCdjAJ2w5S8u42l
+ 9+5OA8oB2GFJnkg8CUq+xZBaQLD3G8To7hoyExWGCKLx+5lQF3rsjR4ej0C9yvObvlDbS1byit
+ 2hiA+fOBR7v/fdu/7Ae+DACpvAAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1692;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=7ew0NAPyibZscHi7tUqReuVpp5Uimj/jNK4i5Okdy1w=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlrkEqDU5S9hf5alNl6YJGm698DwtFMj622jrhx2DZ
+ Y1B2aZOJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZa5BKgAKCRB33NvayMhJ0cgcEA
+ CeKDZ4/c4Zvu1/gfShtQOBt1m5KjG8d4zIU6ZNlzng52CjCCpFwXln9vvfiWoOsxpMx+YmtRh0MNEk
+ aaM7roJywNTPN6EkYqjoyx1dF7Sd0P0dngKVcvEixK3QtYnHM7z2sz55UMwaMgzYKbEwkcX3zRES8d
+ FoV7htavkUzRx8F8siLvRTCCK+BydTM/OdVLVJcfJ6gvuDpgBg/JIaO5Cka6ISln/oh449HwxaX2Zv
+ FEuSlebcgqyQXfVQTMRrklvgJtC3I2JVHgRgs26scWEPiqb//qC4ZGmaSIKYwYsAbraqsbNbZaIddF
+ rRXUi5cNbhCvVrAIWRJm4/3lV8ASs+dW/ppCpWOe+uukOTEXrUipCf9kPSXlvxaX2lkNtYqoc0MNYa
+ V1nAGdz1LhYz7iB6LhTkdbqH7psPDFCeCWGlmh131ZD7Jk/TTLm8k1cHiFBKKlIDWbWcta8XPxe0ld
+ HsvXQnGxJ21NEyDU7vwKwbEKP1z9KpgMJmIqzKIKSAnLXWB2S4GkH14uDSf9xwmJfYlXZIoJpxXtdP
+ B4kRKWpio/7F4AI0SErwYxRN2zjRvPgMK5QO9A/v3Tjb5dUasemKcpSeKbG6aW31XjeYtv3WZcbN+L
+ +u9/fQdTyFjJYYjWt9rlwnq3kjGDeRveTN+/8j5XTmojG4mLX3Qf678eErJw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-On Thu, Jan 18, 2024 at 11:25=E2=80=AFAM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> On 17/01/2024 19:49, Rafael J. Wysocki wrote:
-> > On Wed, Jan 17, 2024 at 5:57=E2=80=AFPM Daniel Lezcano
-> > <daniel.lezcano@linaro.org> wrote:
-> >>
-> >> On 10/01/2024 13:48, Rafael J. Wysocki wrote:
-> >>> Hi Manaf,
-> >>>
-> >>> On Wed, Jan 10, 2024 at 9:17=E2=80=AFAM Manaf Meethalavalappu Palliku=
-nhi
-> >>> <quic_manafm@quicinc.com> wrote:
-> >>>>
-> >>>> Hi Rafael,
-> >>>>
-> >>>> On 1/9/2024 7:12 PM, Rafael J. Wysocki wrote:
-> >>>>
-> >>>> On Sat, Jan 6, 2024 at 8:16=E2=80=AFPM Manaf Meethalavalappu Palliku=
-nhi
-> >>>> <quic_manafm@quicinc.com> wrote:
-> >>>>
-> >>>> The commit 2e38a2a981b2("thermal/core: Add a generic
-> >>>> thermal_zone_set_trip() function") adds the support to update
-> >>>> trip hysteresis even if set_trip_hyst() operation is not defined.
-> >>>> But during hysteresis attribute creation, if this operation is
-> >>>> defined then only it enables hysteresis write access. It leads
-> >>>> to a case where hysteresis sysfs will be read only for a thermal
-> >>>> zone when its set_trip_hyst() operation is not defined.
-> >>>>
-> >>>> Which is by design.
-> >>>>
-> >>>> I think it is regression after recent re-work. If a sensor is regist=
-ered with thermal framework via thermal_of,
-> >>>>
-> >>>> sensor driver doesn't need to know the trip configuration and nothin=
-g to do with set_trip_hyst() in driver.
-> >>>>
-> >>>> Without this change, if a sensor needs to be monitored from userspac=
-e(trip/hysteresis),
-> >>>
-> >>> What exactly do you mean by "monitored" here?
-> >>>
-> >>>> it is enforcing sensor driver to add  dummy set_trip_hyst() operatio=
-n. Correct me otherwise
-> >>>
-> >>> With the current design, whether or not trip properties can be update=
-d
-> >>> by user space is a thermal zone property expressed by the presence of
-> >>> the set_trip_* operations, so yes, whoever registers the thermal zone
-> >>> needs to provide those so that user space can update the trip
-> >>> properties.
-> >>>
-> >>>> For some thermal zone types (eg. acpi), updating trip hysteresis via
-> >>>> sysfs might lead to incorrect behavior.
-> >>>>
-> >>>> To address this issue, is it okay to  guard  hysteresis write permis=
-sion under CONFIG_THERMAL_WRITABLE_TRIPS defconfig ?
-> >>>
-> >>> Not really, because it would affect all of the thermal zones then.
-> >>
-> >> It seems like there is an inconsistency here with the writable trip
-> >> points and the writable hysteresis [1].
-> >>
-> >> My understanding is it does not make sense to have the hysteresis
-> >> writable even if the driver has a hysteresis dedicated ops. The code
-> >> allowing to change the hysteresis was done regardless the consistency
-> >> with the trip temperature change and writable trip points kernel optio=
-n IMO.
-> >>
-> >> It would make sense to have:
-> >>
-> >> if enabled(CONFIG_WRITABLE_TRIP_POINT)
-> >>    -> trip_temp RW
-> >>    -> trip_hyst RW
-> >> else
-> >>    -> trip temp RO
-> >>    -> trip hyst RO
-> >> fi
-> >>
-> >> But if the interface exists since a long time, we may not want to chan=
-ge
-> >> it, right ?
-> >
-> > If the platform firmware implements hysteresis by changing trip
-> > temperature (as recommended by the ACPI specification, for example),
-> > modifying the trip hysteresis via sysfs is simply incorrect and user
-> > space may not know that.
-> >
-> >> However, we can take the opportunity to introduce a new 'user' trip
-> >> point type in order to let the userspace to have dedicated trip point
-> >> and receive temperature notifications [2]
-> >>
-> >>> TBH, the exact scenario in which user space needs to update trip
-> >>> hysteresis is not particularly clear to me, so can you provide some
-> >>> more details, please?
-> >>
-> >> IIUC changing the hysteresis value is useful because the temperature
-> >> speed will vary given the thermal contribution of the components
-> >> surrounding the thermal zone, that includes the ambient temperature.
-> >>
-> >> However, that may apply to slow speed temperature sensor like the skin
-> >> temperature sensor where we may to do small hysteresis variation.
-> >>
-> >> The places managed by the kernel have an insane temperature transition
-> >> speed. The userspace is unable to follow this speed and manage the
-> >> hysteresis on the fly.
-> >>
-> >> So that brings us to userspace trip point handling again.
-> >
-> > Well, I've already said that whether hysteresis can be modified via
-> > sysfs is a property of a thermal zone.
->
-> > It may as well be a trip property, for example expressed via a (new)
-> > trip flag set in the trips table used for thermal zone registration.
->
-> Yes, a trip property makes more sense.
->
-> I'm a bit lost about WRITABLE_TRIP_POINT, writable hysteresis, read-only
-> temperature trip.
->
-> Can we have a hysteresis writable but not the temperature ?
->
-> You mentioned above "modifying the trip hysteresis via sysfs is simply
-> incorrect", so shall we allow that at the end?
->
-> Is it possible to recap the situation?
+The SM8550-HDK is an embedded development platforms for the
+Snapdragon 8 Gen 2 SoC aka SM8550, with the followwing features:
+- Qualcomm SM8550 SoC
+- 16GiB On-board LPDDR5
+- On-board WiFi 7 + Bluetooth 5.3/BLE
+- On-board UFS4.0
+- M.2 Key B+M Gen3x2 PCIe Slot
+- HDMI Output
+- USB-C Connector with DP Almode & Audio Accessory mode
+- Micro-SDCard Slot
+- Audio Jack with Playback and Microphone
+- 2 On-board Analog microphones
+- 2 On-board Speakers
+- 96Boards Compatible Low-Speed and High-Speed connectors [1]
+- For Camera, Sensors and external Display cards
+- Compatible with the Linaro Debug board [2]
+- SIM Slot for Modem
+- Debug connectors
+- 6x On-Board LEDs
 
-Sure, which is a good idea BTW.
+On-Board PMICs:
+- PMK8550 2.1
+- PM8550 2.0
+- PM8550VS 2.0 x4
+- PM8550VE 2.0
+- PM8550B 2.0
+- PMR735D 2.0
+- PM8010 1.1 x2
 
-First off, the callers of thermal_zone_device_register_with_trips()
-need to pass a mask of writeable trip points to it.  If the mask is 0,
-none of the trip attributes are writeable for any trips.
+Product Page: [3]
 
-However, the mask only takes effect if CONFIG_THERMAL_WRITABLE_TRIPS
-is set.  Otherwise, it is not taken into account at all.
+Dependencies: None
 
-Now, if CONFIG_THERMAL_WRITABLE_TRIPS is set, it only affects the trip
-temperature, which is a bit inconsistent.
+[1] https://www.96boards.org/specifications/
+[2] https://git.codelinaro.org/linaro/qcomlt/debugboard
+[3] https://www.lantronix.com/products/snapdragon-8-gen-2-mobile-hardware-development-kit/
 
-Moreover, the hysteresis is allowed to be updated unconditionally if
-tz->ops->set_trip_hyst is not NULL, which is even more inconsistent.
-
-So, because it already is only enabled if the creator of the thermal
-zone asks for it explicitly, it would be fine by me to simply allow
-the hysteresis to be updated if the temperature is allowed to be
-updated.
-
-IOW, something like the patch below (unstested, white space messed-up by gm=
-ail).
-
-If this looks OK to everyone from the functionality perspective, I can
-submit it properly with a changelog etc.
-
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/thermal/thermal_sysfs.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Neil Armstrong (2):
+      dt-bindings: arm: qcom: Document the HDK8550 board
+      arm64: dts: qcom: sm8550: add support for the SM8550-HDK board
 
-Index: linux-pm/drivers/thermal/thermal_sysfs.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-+++ linux-pm/drivers/thermal/thermal_sysfs.c
-@@ -474,7 +474,8 @@ static int create_trip_attrs(struct ther
-                     tz->trip_hyst_attrs[indx].name;
-         tz->trip_hyst_attrs[indx].attr.attr.mode =3D S_IRUGO;
-         tz->trip_hyst_attrs[indx].attr.show =3D trip_point_hyst_show;
--        if (tz->ops->set_trip_hyst) {
-+        if (IS_ENABLED(CONFIG_THERMAL_WRITABLE_TRIPS) &&
-+            mask & (1 << indx)) {
-             tz->trip_hyst_attrs[indx].attr.attr.mode |=3D S_IWUSR;
-             tz->trip_hyst_attrs[indx].attr.store =3D
-                     trip_point_hyst_store;
+ Documentation/devicetree/bindings/arm/qcom.yaml |    1 +
+ arch/arm64/boot/dts/qcom/Makefile               |    1 +
+ arch/arm64/boot/dts/qcom/sm8550-hdk.dts         | 1291 +++++++++++++++++++++++
+ 3 files changed, 1293 insertions(+)
+---
+base-commit: 29a509493dd4da77c9109aa54cc4c145ca64ec23
+change-id: 20240119-topic-sm8550-upstream-hdk8550-899e9137ed01
+
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
+
 
