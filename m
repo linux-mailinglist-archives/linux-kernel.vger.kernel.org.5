@@ -1,147 +1,100 @@
-Return-Path: <linux-kernel+bounces-34080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34F738372F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFBDE837303
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:47:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C996B1F2AFCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:46:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F77E1F241E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0BB9482D1;
-	Mon, 22 Jan 2024 19:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8139B3FE5F;
+	Mon, 22 Jan 2024 19:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TmG21VZe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3516340BFB
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 19:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C234A3FE54;
+	Mon, 22 Jan 2024 19:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705952596; cv=none; b=b8wkiFQpxA9Nf6xnS5/MZ7MplrR8WVmNqWcorbq8PqMkNJxXfXrFaswG+8qrVVBYuBublAH0UAXZ2k/iGDCmjGeQZZvsS8i66TETWkNARmCQFmBqVfCzRQURVr2NGTt07RX3fFjya5GQD58ADnVVPtxVyPasmp5+EZMoFXjnGaw=
+	t=1705952760; cv=none; b=rrhOXcQlT/9Jj/XQS+4Plki3Y+R/9wDYx+Xfqi6uTWqfWsBZ4oU1hpfMnFXofL7s/+YQSUzO+NEW6hhVIWHZVwDcPx/WxI6mJ9rOzh1+pjdLvTczy/ShnpRwZTSDS1nIBrdp/bSSvQWn1CpBOClFQZRzV6jiqBMAj6z66fR3PDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705952596; c=relaxed/simple;
-	bh=APLT5/CBDphC8mudeBX/2b3K2clsUaZ7Ahhh3sk29lo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KUnrzGb42wYRr7efjgeHr0RyHlSrLHUL/pbt9mudkBbgs+vZ7UTziZDJthMwMZdum2tiAwLCKkOSESYhNbtyuy8QCm5u8cWDwNDJSdJDBKuEJqPAdNAyfPwUcRoVUsIbBzv9s0xNcIPqTZAri/L+V9s7QkSLdP6Qa3pBr4jNAEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89518C43390;
-	Mon, 22 Jan 2024 19:43:14 +0000 (UTC)
-Date: Mon, 22 Jan 2024 14:44:43 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook
- <keescook@chromium.org>, linux-kernel@vger.kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, Al
- Viro <viro@zeniv.linux.org.uk>, Ajay Kaher <ajay.kaher@broadcom.com>
-Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files
- and directories all be the same
-Message-ID: <20240122144443.0f9cf5b9@gandalf.local.home>
-In-Reply-To: <CAHk-=wiLqJYT2GGSBhKuJS-Uq1DVq3S32oP0SwqQiATuBivxcg@mail.gmail.com>
-References: <20240117143548.595884070@goodmis.org>
-	<20240117143810.531966508@goodmis.org>
-	<CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
-	<20240122100630.6a400dd3@gandalf.local.home>
-	<CAMuHMdXD0weO4oku8g2du6fj-EzxGaF+0i=zrPScSXwphFAZgg@mail.gmail.com>
-	<20240122114743.7e46b7cb@gandalf.local.home>
-	<CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
-	<CAHk-=wjGxVVKvxVf=NDnMhB3=eQ_NMiEY3onG1wRAjJepig=aw@mail.gmail.com>
-	<CAHk-=wiLqJYT2GGSBhKuJS-Uq1DVq3S32oP0SwqQiATuBivxcg@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705952760; c=relaxed/simple;
+	bh=eFoz8C5174Hx4Idtet8wUkXk9kxOMv9MXY1aO/KddUk=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=NWiFpzTOdNqABW1mZuV/duwGMiMs96twShZ2/cbJ9TL11HkawEAM5A2Xm1Yw/QhI5FW0S8QvDGoSxHgM00HyQxE+bwiT+DEovtt9LgJh7LyHodEbmEoTmzcWbeFY8mOo6Ptl6Y988Zg5oyhjYSPp0nrLeK6/TikwihXaqsjt35I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TmG21VZe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C870C433F1;
+	Mon, 22 Jan 2024 19:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705952760;
+	bh=eFoz8C5174Hx4Idtet8wUkXk9kxOMv9MXY1aO/KddUk=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=TmG21VZePMhqeQpkw5vSbgw7XjDSsUIgNsbfwpdlSxAHfsffndFG7qE4B5QIL0cBe
+	 Ru+Oaur76IQb3gs87l95GEHJgfAJE1Ka9o2f/XDrXFHwcJYyZAMGz/dhxsTVfNpvLj
+	 Nvlf2JO3sO5FKj10D+EcbMCfaHNEca5yeIbMs+bGTe03ugglWz5R5dRHfbih1K8Ujn
+	 me6SVkoWGkiXFzLmzo813b4gCvNTw45/Nmjvw7tJc9ZisI2WikNUIRNB24uYB+mCG+
+	 xZBdwnbfThCn9X9EB09gdrmHpm+6eDz0l50LdcKupMeOoP74X8udVXNPYBZgSUx+Xg
+	 9Nrg5AzBGxDng==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 22 Jan 2024 21:45:57 +0200
+Message-Id: <CYLHS5HX5TXF.1CD2QEVLGTHI0@suppilovahvero>
+Cc: "David Howells" <dhowells@redhat.com>, "Eric Biggers"
+ <ebiggers@kernel.org>, <keyrings@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2] keys: update key quotas in key_put()
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Luis Henriques" <lhenriques@suse.de>
+X-Mailer: aerc 0.15.2
+References: <2744563.1702303367@warthog.procyon.org.uk>
+ <20240115120300.27606-1-lhenriques@suse.de>
+ <CYIZP2D9FS0N.1XY2F5VX9STEY@seitikki> <87il3llh8s.fsf@suse.de>
+In-Reply-To: <87il3llh8s.fsf@suse.de>
 
-On Mon, 22 Jan 2024 10:19:12 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> On Mon, 22 Jan 2024 at 09:39, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
+On Mon Jan 22, 2024 at 1:50 PM EET, Luis Henriques wrote:
+> "Jarkko Sakkinen" <jarkko@kernel.org> writes:
+>
+> > On Mon Jan 15, 2024 at 12:03 PM UTC, Luis Henriques wrote:
+> >> Delaying key quotas update when key's refcount reaches 0 in key_put() =
+has
+> >> been causing some issues in fscrypt testing.  This patches fixes this =
+test
+> >                                                 ~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~
+> > 						This commit fixes the test
 > >
-> > Actually, why not juist add an inode number to your data structures,
-> > at least for directories? And just do a static increment on it as they
-> > get registered?
+> >> flakiness by dealing with the quotas immediately, but leaving all the =
+other
+> >> clean-ups to the key garbage collector.  Unfortunately, this means tha=
+t we
+> >> also need to switch to the irq-version of the spinlock that protects q=
+uota.
 > >
-> > That avoids the whole issue with possibly leaking kernel address data.  
-> 
-> The 'nlink = 1' thing doesn't seem to make 'find' any happier for this
-> case, sadly.
-> 
-> But the inode number in the 'struct eventfs_inode' looks trivial. And
-> doesn't even grow that structure on 64-bit architectures at least,
-> because the struct is already 64-bit aligned, and had only one 32-bit
-> entry at the end.
-> 
-> On 32-bit architectures the structure size grows, but I'm not sure the
-> allocation size grows. Our kmalloc() is quantized at odd numbers.
-> 
-> IOW, this trivial patch seems to be much safer than worrying about
-> some pointer exposure.
+> > The commit message fails to describe the implementation changes.
+> >
+> > You have a motivation paragraph but you also need to add implementation
+> > paragraph, which describes how the code changes reflect the motivation.
+>
+> Thank you for your feedback, Jarkko.  I'll address your comments in v3.
+>
+> But before sending another rev, I'll wait a bit more, maybe David also ha=
+s
+> some feedback on the implementation.
+>
+> Cheers,
 
-I originally wanted to avoid the addition of the 4 bytes, but your comment
-about it not making a difference on 64bit due to alignment makes sense.
+Take you time :-)=20
 
-Slightly different version below.
-
--- Steve
-
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 6795fda2af19..6b211522a13e 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -34,7 +34,15 @@ static DEFINE_MUTEX(eventfs_mutex);
- 
- /* Choose something "unique" ;-) */
- #define EVENTFS_FILE_INODE_INO		0x12c4e37
--#define EVENTFS_DIR_INODE_INO		0x134b2f5
-+
-+/* Just try to make something consistent and unique */
-+static int eventfs_dir_ino(struct eventfs_inode *ei)
-+{
-+	if (!ei->ino)
-+		ei->ino = get_next_ino();
-+
-+	return ei->ino;
-+}
- 
- /*
-  * The eventfs_inode (ei) itself is protected by SRCU. It is released from
-@@ -396,7 +404,7 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
- 	inode->i_fop = &eventfs_file_operations;
- 
- 	/* All directories will have the same inode number */
--	inode->i_ino = EVENTFS_DIR_INODE_INO;
-+	inode->i_ino = eventfs_dir_ino(ei);
- 
- 	ti = get_tracefs(inode);
- 	ti->flags |= TRACEFS_EVENT_INODE;
-@@ -802,7 +810,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 
- 		name = ei_child->name;
- 
--		ino = EVENTFS_DIR_INODE_INO;
-+		ino = eventfs_dir_ino(ei_child);
- 
- 		if (!dir_emit(ctx, name, strlen(name), ino, DT_DIR))
- 			goto out_dec;
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 12b7d0150ae9..1a574d306ea9 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -64,6 +64,7 @@ struct eventfs_inode {
- 		struct llist_node	llist;
- 		struct rcu_head		rcu;
- 	};
-+	unsigned int			ino;
- 	unsigned int			is_freed:1;
- 	unsigned int			is_events:1;
- 	unsigned int			nr_entries:30;
+BR, Jarkko
 
