@@ -1,93 +1,88 @@
-Return-Path: <linux-kernel+bounces-34289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C5078377A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:17:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC7888377AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:23:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C912428A3A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:17:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDE901C2343E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:23:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD354C3C8;
-	Mon, 22 Jan 2024 23:17:33 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C834C3A6
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9F884D119;
+	Mon, 22 Jan 2024 23:23:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="iAt7YVGP"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16124CDFF;
+	Mon, 22 Jan 2024 23:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705965453; cv=none; b=RTT3izSq8avM26rLFaNeF3tyXqqZvJnvVfqipgJ/kl7TyEXFUzsaYXK+T0EJ5K8PpL1rFyhh7VAKvykAWrrCvub2O7D+eearyGcswB6mmI1sngLGM3Hc7yQumrI8F3vyZdmFhWdn4BrS9za/fHGLL5SPXpJWytZyB9SbGrSOVTs=
+	t=1705965792; cv=none; b=sRsHdgeYBnVvSBbmVT6WPp9DqKfpNbfX33+5EQp/ppKAyNHLPJ9AZTS+mWt8FERUpiwsj9ngZyoi14XhXfKI1TGjEHoVg3qoJ4MbddJGmhhzu87xlxasINLhnDIy+6FGe3q27NkPVdFevL2UO6JbhbqHRboFq/e7MF6h5txzTPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705965453; c=relaxed/simple;
-	bh=De1JCInzc77IC7IuGuzOyL8MaDikf7sYnOhtt0ucdbg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=U8GlQ5s+dtKWahoJClmQvOJ98zbsZNGfR/WUdYO0ebzSGVWKwEsYYySOdh3owjx8CCattQQ3jUdzOqp7HVWiEVnBRdH9nzk0a/oFA5VpCpWOrVADGGMva4r90yEVdpoMQ9yniYlxn5dClBCRjDmEbecXvfALcQc5gYiYAweNgXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EF60C43390;
-	Mon, 22 Jan 2024 23:17:32 +0000 (UTC)
-Date: Mon, 22 Jan 2024 18:19:01 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Rajneesh Bhardwaj
- <rajneesh.bhardwaj@amd.com>, Felix Kuehling <Felix.Kuehling@amd.com>,
- Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
- dri-devel@lists.freedesktop.org
-Subject: Re: [BUG]  BUG: kernel NULL pointer dereference at
- ttm_device_init+0xb4
-Message-ID: <20240122181901.05a3b9ab@gandalf.local.home>
-In-Reply-To: <20240122181547.16b029d6@gandalf.local.home>
-References: <20240122180605.28daf23a@gandalf.local.home>
-	<20240122181547.16b029d6@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705965792; c=relaxed/simple;
+	bh=eLJhNzdFZj3RlP7C0RvlpZ87zYE+Z2S+CabRM8UsbZQ=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=r5NvJlRdushJJAujNBmxi1ZuIktXic66Fl8TcSlL8ZLyotOMlvEi7/NVb3NFdGACM0KgSLZ+Ki+I3hFFbkEIds7tylzFrsf9cJ3RGmppD8Ufd6NiQmzudYMe1ZSnKkJtIjwgP0a4oSHkXzFq8CSPWtrMco1ZNxg5+t0C37k74BA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=iAt7YVGP; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 75C2120E2C18;
+	Mon, 22 Jan 2024 15:23:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 75C2120E2C18
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1705965790;
+	bh=nTh23HnZRdP/6Sx5yekzRTq2MwUPNWD0l+ejJL4d8AQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=iAt7YVGPAUXBwHjlUekjBctC05U3DbUMvOVJ/UzaRzdQiAEU/111LXnrg/Z5NN25j
+	 kqBFK2rOqeLWa3jp3HsH+GI4WoDJ6nSl+dgT/EWFK1uS1q3xxBsfG3nrTGiwwfzMNB
+	 w0y4vHsDKpaFATKhWRqqR1lmZwxjF7J/2Tz6kI+Y=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	sharmaajay@microsoft.com,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH rdma-next v1 0/3] RDMA/mana_ib: Introduce three helper functions to clean code
+Date: Mon, 22 Jan 2024 15:22:58 -0800
+Message-Id: <1705965781-3235-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Mon, 22 Jan 2024 18:15:47 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-> > 	ttm_pool_init(&bdev->pool, dev, dev_to_node(dev), use_dma_alloc, use_dma32); <<<------- BUG!
-> > 
-> > Specifically, it appears that dev is NULL and dev_to_node() doesn't like
-> > having a NULL pointer passed to it.
-> >   
-> 
-> Yeah, that qxl_ttm_init() has:
-> 
-> 	/* No others user of address space so set it to 0 */
-> 	r = ttm_device_init(&qdev->mman.bdev, &qxl_bo_driver, NULL,
-> 			    qdev->ddev.anon_inode->i_mapping,
-> 			    qdev->ddev.vma_offset_manager,
-> 			    false, false);
-> 
-> Where that NULL is "dev"!
-> 
-> Thus that will never work here.
+This patchset aims to remove code repetitions in mana_ib
+as well as to avoid explicit use of the gdma_dev.
+The gdma_dev was either ethernet or IB device depending on
+the usage, which was often easy to confuse and misuse.
 
-Perhaps this is the real fix?
+Introduced functions:
+1) mdev_to_gc
+2) mana_ib_get_netdev
+3) mana_ib_install_cq_cb
 
--- Steve
+Konstantin Taranov (3):
+  RDMA/mana_ib: introduce mdev_to_gc helper function
+  RDMA/mana_ib: introduce mana_ib_get_netdev helper function
+  RDMA/mana_ib: introduce mana_ib_install_cq_cb helper function
 
-diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
-index f5187b384ae9..bc217b4d6b04 100644
---- a/drivers/gpu/drm/ttm/ttm_device.c
-+++ b/drivers/gpu/drm/ttm/ttm_device.c
-@@ -215,7 +215,8 @@ int ttm_device_init(struct ttm_device *bdev, const struct ttm_device_funcs *func
- 
- 	ttm_sys_man_init(bdev);
- 
--	ttm_pool_init(&bdev->pool, dev, dev_to_node(dev), use_dma_alloc, use_dma32);
-+	ttm_pool_init(&bdev->pool, dev, dev ? dev_to_node(dev) : NUMA_NO_NODE,
-+		      use_dma_alloc, use_dma32);
- 
- 	bdev->vma_manager = vma_manager;
- 	spin_lock_init(&bdev->lru_lock);
+ drivers/infiniband/hw/mana/cq.c      | 25 +++++++-
+ drivers/infiniband/hw/mana/main.c    | 40 +++++--------
+ drivers/infiniband/hw/mana/mana_ib.h | 20 ++++++-
+ drivers/infiniband/hw/mana/mr.c      | 13 +---
+ drivers/infiniband/hw/mana/qp.c      | 88 +++++++++-------------------
+ 5 files changed, 84 insertions(+), 102 deletions(-)
+
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+-- 
+2.43.0
+
 
