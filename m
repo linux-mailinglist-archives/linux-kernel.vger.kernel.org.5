@@ -1,56 +1,62 @@
-Return-Path: <linux-kernel+bounces-33333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C667C836889
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:40:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C911836881
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 605DCB2B9C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:37:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8BD02855B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C212D6166F;
-	Mon, 22 Jan 2024 15:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8194627F3;
+	Mon, 22 Jan 2024 15:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DXbwIliP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekgC1HhC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0D4482C8;
-	Mon, 22 Jan 2024 15:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128216169C;
+	Mon, 22 Jan 2024 15:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935908; cv=none; b=Fbx05r5qB22/f56+hBURhDG/j8bZBpoPmTUPjAMi0X3dN0UNMVDskQ+6JfCa5H0dli6XlZ5Li2m7lN1grLRKXZi01/pxLeTlPLSu0G2hH017pFxZ+j5R4eh4LRQ3stViWUJQSYNywuluxrld1efGr8BD33PwQdgt+nvNmgvrFAA=
+	t=1705935911; cv=none; b=egwIxe6hNDZdmtNwh+mjb7g/0fkFrub4/JrFu8GZZIWk+rVLF2QMIvnz5VYQbupD+HY7xiiXF2Na7LSA+fIE+g0HETzsM0OBZrhS5jC5rMUpCQzTIivc7QjYwtqfuD7RR/eoRq23tGiVf8axwgmGbIoYyy3oUO9kd0nCp6GoSIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935908; c=relaxed/simple;
-	bh=78geT9fVOQTEOWX4gyPh1xA3/6G3VJHkoN6RKZ9rGu4=;
+	s=arc-20240116; t=1705935911; c=relaxed/simple;
+	bh=4WsiqzmZCalFFQa5mWmmulVG52SGUVu9YnuJ4R0nN1g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pYDWOcCzL7aVOZqdeaGK4mYuonQ0fH3LOdO0HzVQv442n7JedfLmg+Y+QnOtVdBQNoM8KiNGbTQPo0NKSWjl/Djp9zCwftTt08RbiaWZsQ0cymCVc9hNDScMH/gHqQD6A8FZ3BGoXmnUvPYBnln4MciKoKZpsTNt5Kh/wc+GIKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DXbwIliP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E5B4C43390;
-	Mon, 22 Jan 2024 15:05:06 +0000 (UTC)
+	 MIME-Version; b=Vicn9IO3WPBctqeHoic4am3jOvcxLPBPrUCe+NPsIDNUaFb/wtUSwvXuT5P7vqWe/5rBQFb6s94WFp8zkKTFV0Sj8AFdazJab2Z4tJZg1KCvKAcDikJlwJrgj+XB84LN6ZlnkfXfzRqccEDrrCX1lNXCMw1qV8wnnx21uBcYmko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekgC1HhC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61887C43394;
+	Mon, 22 Jan 2024 15:05:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935907;
-	bh=78geT9fVOQTEOWX4gyPh1xA3/6G3VJHkoN6RKZ9rGu4=;
+	s=k20201202; t=1705935910;
+	bh=4WsiqzmZCalFFQa5mWmmulVG52SGUVu9YnuJ4R0nN1g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DXbwIliPqn/P2ZpWtB+N7gFXpP7miUZH9xSrxg3YB5vtG/GNJ4z7QY/R3rb5mFVli
-	 7+l9LT6KksGIAxqNRNUjF0kyGRch4VikRpz0Vqg1iTaVfVNzojrq86g+qlLbEmjWJv
-	 sFPSuzGDNUqc8GjHTXriUrU8EMyQwB3jMseQy3R4CNOAUpZNm73DSCbjTrOy6cGxAA
-	 DBp/5kMl9/hj9YOZjjgH1KMz33IfCJVBjLOdjktXw45DOKEYUg6hfunMfKLIZHHEbx
-	 H+G77qsnXnre/nYjw0aHIB/fRirSi1k0visbWmheN/4tiEGunyeN+tfiOxRHCmwVi9
-	 LscWGxVokJIQg==
+	b=ekgC1HhCyLDRcZmuEcLMHZL9GJxToK9Gj0I8BLEP+8sRpdF0BDX3JTs7mwigh/ed+
+	 BJrfzm/pK50mm5IpwYeuD4fo2xHaA6sp/UeVIUckrR0CylF8AyK7cRNcq27e+XaAR7
+	 Z6oaUaW86M+CQfTfeiHlwnVtWBjXCftmGf+1BUtrrhWfuT635LobhTN8jxiRODJgrK
+	 Fvjxr+D/bytohM8lOVw04CpkeILOO1xmtVLUR5G30sf29/DaTO84esJ8wLHWSw28Ca
+	 HeZn22vS+nDbA5vsYB33vlvrLGVrCDUjXzdbCeyuM9g43/W8uYwGWhWrFq3OOP8KYQ
+	 0DGlf+248DCoA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>,
-	Daeho Jeong <daehojeong@google.com>,
+Cc: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	chao@kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 6.6 13/73] f2fs: fix write pointers on zoned device after roll forward
-Date: Mon, 22 Jan 2024 10:01:27 -0500
-Message-ID: <20240122150432.992458-13-sashal@kernel.org>
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	Vijendar.Mukunda@amd.com,
+	posteuca@mutex.one,
+	emil.velikov@collabora.com,
+	cristian.ciocaltea@collabora.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 14/73] ASoC: amd: Add new dmi entries for acp5x platform
+Date: Mon, 22 Jan 2024 10:01:28 -0500
+Message-ID: <20240122150432.992458-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -65,35 +71,53 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.13
 Content-Transfer-Encoding: 8bit
 
-From: Jaegeuk Kim <jaegeuk@kernel.org>
+From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
 
-[ Upstream commit 9dad4d964291295ef48243d4e03972b85138bc9f ]
+[ Upstream commit c3ab23a10771bbe06300e5374efa809789c65455 ]
 
-1. do roll forward recovery
-2. update current segments pointers
-3. fix the entire zones' write pointers
-4. do checkpoint
+Add sys_vendor and product_name dmi entries for acp5x platform.
 
-Reviewed-by: Daeho Jeong <daehojeong@google.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Link: https://lore.kernel.org/r/20231206110620.1695591-1-venkataprasad.potturu@amd.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/recovery.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/amd/acp-config.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-index f0de36ef73c2..c8ba9f1551b6 100644
---- a/fs/f2fs/recovery.c
-+++ b/fs/f2fs/recovery.c
-@@ -917,6 +917,8 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
- 	if (!err && fix_curseg_write_pointer && !f2fs_readonly(sbi->sb) &&
- 			f2fs_sb_has_blkzoned(sbi)) {
- 		err = f2fs_fix_curseg_write_pointer(sbi);
-+		if (!err)
-+			err = f2fs_check_write_pointer(sbi);
- 		ret = err;
- 	}
- 
+diff --git a/sound/soc/amd/acp-config.c b/sound/soc/amd/acp-config.c
+index f27c27580009..955145448c23 100644
+--- a/sound/soc/amd/acp-config.c
++++ b/sound/soc/amd/acp-config.c
+@@ -3,7 +3,7 @@
+ // This file is provided under a dual BSD/GPLv2 license. When using or
+ // redistributing this file, you may do so under either license.
+ //
+-// Copyright(c) 2021 Advanced Micro Devices, Inc.
++// Copyright(c) 2021, 2023 Advanced Micro Devices, Inc.
+ //
+ // Authors: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+ //
+@@ -47,6 +47,19 @@ static const struct config_entry config_table[] = {
+ 			{}
+ 		},
+ 	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_MATCH(DMI_SYS_VENDOR, "Valve"),
++					DMI_MATCH(DMI_PRODUCT_NAME, "Jupiter"),
++				},
++			},
++			{}
++		},
++	},
+ 	{
+ 		.flags = FLAG_AMD_SOF,
+ 		.device = ACP_PCI_DEV_ID,
 -- 
 2.43.0
 
