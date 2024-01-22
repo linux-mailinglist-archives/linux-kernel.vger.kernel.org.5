@@ -1,61 +1,56 @@
-Return-Path: <linux-kernel+bounces-33426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0290383698E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:04:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C39DB836990
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA2C81F23C9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:04:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ADC4283564
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:04:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0840486139;
-	Mon, 22 Jan 2024 15:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550498614D;
+	Mon, 22 Jan 2024 15:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MN+YMWRP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J5VcYy6t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B5E285C73;
-	Mon, 22 Jan 2024 15:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D7C8613D;
+	Mon, 22 Jan 2024 15:10:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936258; cv=none; b=W8d2Oq6TeIwJbNdKUlZdlbw8zrCF1fMlA+gJKNPfCRD+WCJKmDui8msn4Y8lNsLRIPrhNwmwcIwuHIwCrpZVU6fH4/U2tAp94IFg7JWl1zkvKcq11RsMlFBKN2qAG/AJGx03N3LIrG5/Dg1jsDWnWZ1zUbbfFIXuxc1rz6CNMsI=
+	t=1705936259; cv=none; b=TcTFCDI/wE/IX9dPioCSvfbgD9Yfe5C4PBkQjgGSyvLMs7M9VUtn+MoAf9NXcMohzV3BuHwjpKPvw0d0HC9NouBYe0Z2OBixDOdRzulAoCsqxiTkbuCSDmy4rmMyyE6btTV0u1XupUDNYmOgjv9PUVAFCVfpUMlK0T47InA8D90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936258; c=relaxed/simple;
-	bh=pf/v0wZ85xAyYjytsMGV2SWF+8mIl7pFFHxFnpB/rVg=;
+	s=arc-20240116; t=1705936259; c=relaxed/simple;
+	bh=gn8FSfQRkDXq/af0LTXiPw6BZGtSzjQnilXSpioE9l4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b9T1jsbgVcq08220p9ob0KJ+j58JKtPGmFKE8Yb4Nfz5EO4A4smC8SYykvehoQYNDPS9mtykwMwkw9ET9EAAVlgk1kt0aE99lY8EeolZCBSpCDwFKmhhQr/haly2bB4UTd94c9BQnGJLtQZrz2JqlIywSxZuuVhFHIwQks1u6mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MN+YMWRP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4AB7C433F1;
-	Mon, 22 Jan 2024 15:10:55 +0000 (UTC)
+	 MIME-Version; b=heOisxcF5fZZsyYje1BNg+g1J9T/rwia2m4HA+z7ufBcGHPmXFllxALfbgnzhkME5/y1Ytx6+vywHH28UMOobewhCIGokcDPI1veaRmo9K4JOyIk3aNw+uy+rGja8xbFIncmJV/6hrKU3h1R0S2VTtGrDg9yMSDJVv8xUxVUI9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J5VcYy6t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 485FBC43390;
+	Mon, 22 Jan 2024 15:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936257;
-	bh=pf/v0wZ85xAyYjytsMGV2SWF+8mIl7pFFHxFnpB/rVg=;
+	s=k20201202; t=1705936259;
+	bh=gn8FSfQRkDXq/af0LTXiPw6BZGtSzjQnilXSpioE9l4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MN+YMWRPTH7kVygtVMQ4zv5ei4jWzPf9kQmUx+edP24iGRqaxo3hXTRxy1XbjuEsQ
-	 /JjgrfN4p4aacFap1qGUQtDlnosj24z04/Bg7xnrQAwbT3AKoP4NtVtLpSumRVzB7h
-	 Yv1rcNCIH3DPE5mmCCsjIzPrI/hJqKUyl5J+LG6QPiecd6UhM2BIDcOxUnHJhzNumh
-	 sX3VtDGq5mJSsaOwxS89qc+0oQkc5cM3wd2KJqRzaapnvkHoKcMroh4C+j3/iJi0+X
-	 JQ9FbEnNHNZFNmlcHnDgLldXRzH8WyeivxyvQQDszCpbltGGxRm8DDtTB9FQro6fcc
-	 RklGcuO0BP48Q==
+	b=J5VcYy6tjz5HD0h49X0aOcBwBRg/gtl1a5JuziGYTKE+P8/Hq5Pmi3WGukwCB9Jyt
+	 ZZymZefYtjl52+KRvyjqPb1qICxFVGabTazNRKlVUCbDtymVekGWWlMt+TzJ91c4Be
+	 3k0dUf5fpH+3gCsZdfrRd3SIs2zA6wawovOMOn7QJ3COXvp5ZH2a8d3YlXpC5A6Yt1
+	 PkP85yIZoFeTq3xaFgnUESHGnSb/CbnRDrAt49Ew7NzOmBcFT4IeVgD9khMaoRRNOR
+	 rYR4jGtIHLrl7N/il7xwzoozxE+B0yN5ctVW2SDVjbXJ5ZZOe7z0tj6oawlL1/jsxB
+	 mkhpkT2T4rrlg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Adam Ford <aford173@gmail.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
+Cc: Xing Tong Wu <xingtong.wu@siemens.com>,
+	Guenter Roeck <linux@roeck-us.net>,
 	Sasha Levin <sashal@kernel.org>,
-	dafna@fastmail.com,
-	heiko@sntech.de,
-	linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 26/53] media: rkisp1: Fix IRQ disable race issue
-Date: Mon, 22 Jan 2024 10:08:27 -0500
-Message-ID: <20240122150949.994249-26-sashal@kernel.org>
+	jdelvare@suse.com,
+	linux-hwmon@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 27/53] hwmon: (nct6775) Fix fan speed set failure in automatic mode
+Date: Mon, 22 Jan 2024 10:08:28 -0500
+Message-ID: <20240122150949.994249-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150949.994249-1-sashal@kernel.org>
 References: <20240122150949.994249-1-sashal@kernel.org>
@@ -70,97 +65,40 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+From: Xing Tong Wu <xingtong.wu@siemens.com>
 
-[ Upstream commit 870565f063a58576e8a4529f122cac4325c6b395 ]
+[ Upstream commit 8b3800256abad20e91c2698607f9b28591407b19 ]
 
-In rkisp1_isp_stop() and rkisp1_csi_disable() the driver masks the
-interrupts and then apparently assumes that the interrupt handler won't
-be running, and proceeds in the stop procedure. This is not the case, as
-the interrupt handler can already be running, which would lead to the
-ISP being disabled while the interrupt handler handling a captured
-frame.
+Setting the fan speed is only valid in manual mode; it is not possible
+to set the fan's speed in automatic mode.
+Return error when attempting to set the fan speed in automatic mode.
 
-This brings up two issues: 1) the ISP could be powered off while the
-interrupt handler is still running and accessing registers, leading to
-board lockup, and 2) the interrupt handler code and the code that
-disables the streaming might do things that conflict.
-
-It is not clear to me if 2) causes a real issue, but 1) can be seen with
-a suitable delay (or printk in my case) in the interrupt handler,
-leading to board lockup.
-
-Link: https://lore.kernel.org/r/20231207-rkisp-irq-fix-v3-4-358a2c871a3c@ideasonboard.com
-
-Tested-by: Adam Ford <aford173@gmail.com>  #imx8mp-beacon
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
+Link: https://lore.kernel.org/r/20231121081604.2499-3-xingtong_wu@163.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../platform/rockchip/rkisp1/rkisp1-csi.c     | 14 ++++++++++++-
- .../platform/rockchip/rkisp1/rkisp1-isp.c     | 20 ++++++++++++++++---
- 2 files changed, 30 insertions(+), 4 deletions(-)
+ drivers/hwmon/nct6775-core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-index d7acc94e10f8..e862f515cc6d 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-@@ -141,8 +141,20 @@ static void rkisp1_csi_disable(struct rkisp1_csi *csi)
- 	struct rkisp1_device *rkisp1 = csi->rkisp1;
- 	u32 val;
+diff --git a/drivers/hwmon/nct6775-core.c b/drivers/hwmon/nct6775-core.c
+index 80310845fb99..9720ad214c20 100644
+--- a/drivers/hwmon/nct6775-core.c
++++ b/drivers/hwmon/nct6775-core.c
+@@ -2462,6 +2462,13 @@ store_pwm(struct device *dev, struct device_attribute *attr, const char *buf,
+ 	int err;
+ 	u16 reg;
  
--	/* Mask and clear interrupts. */
-+	/* Mask MIPI interrupts. */
- 	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_IMSC, 0);
-+
-+	/* Flush posted writes */
-+	rkisp1_read(rkisp1, RKISP1_CIF_MIPI_IMSC);
-+
 +	/*
-+	 * Wait until the IRQ handler has ended. The IRQ handler may get called
-+	 * even after this, but it will return immediately as the MIPI
-+	 * interrupts have been masked.
++	 * The fan control mode should be set to manual if the user wants to adjust
++	 * the fan speed. Otherwise, it will fail to set.
 +	 */
-+	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MIPI]);
++	if (index == 0 && data->pwm_enable[nr] > manual)
++		return -EBUSY;
 +
-+	/* Clear MIPI interrupt status */
- 	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_ICR, ~0);
- 
- 	val = rkisp1_read(rkisp1, RKISP1_CIF_MIPI_CTRL);
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-index 585cf3f53469..00dca284c122 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-@@ -281,11 +281,25 @@ static void rkisp1_isp_stop(struct rkisp1_isp *isp)
- 	 * ISP(mi) stop in mi frame end -> Stop ISP(mipi) ->
- 	 * Stop ISP(isp) ->wait for ISP isp off
- 	 */
--	/* stop and clear MI and ISP interrupts */
--	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
--	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
- 
-+	/* Mask MI and ISP interrupts */
-+	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
- 	rkisp1_write(rkisp1, RKISP1_CIF_MI_IMSC, 0);
-+
-+	/* Flush posted writes */
-+	rkisp1_read(rkisp1, RKISP1_CIF_MI_IMSC);
-+
-+	/*
-+	 * Wait until the IRQ handler has ended. The IRQ handler may get called
-+	 * even after this, but it will return immediately as the MI and ISP
-+	 * interrupts have been masked.
-+	 */
-+	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_ISP]);
-+	if (rkisp1->irqs[RKISP1_IRQ_ISP] != rkisp1->irqs[RKISP1_IRQ_MI])
-+		synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MI]);
-+
-+	/* Clear MI and ISP interrupt status */
-+	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
- 	rkisp1_write(rkisp1, RKISP1_CIF_MI_ICR, ~0);
- 
- 	/* stop ISP */
+ 	err = kstrtoul(buf, 10, &val);
+ 	if (err < 0)
+ 		return err;
 -- 
 2.43.0
 
