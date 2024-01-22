@@ -1,92 +1,128 @@
-Return-Path: <linux-kernel+bounces-32640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B0E0835E59
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:39:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C0AA835E5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:39:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1AA01F23B00
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:39:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F9041C234A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:39:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F8BF39AE1;
-	Mon, 22 Jan 2024 09:39:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2661439FC8;
+	Mon, 22 Jan 2024 09:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="Hs4z2Ktl"
-Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hsFuu2b2"
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185421EEFC;
-	Mon, 22 Jan 2024 09:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.51.188.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F8539FC5;
+	Mon, 22 Jan 2024 09:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705916354; cv=none; b=mTfTYghRn0TASIriZzUBj5WHsI56jFFQjOGwzh6BE7mUJSBKDsXXJqCeo9zMCBsoPXXMbi/sFOx5dpoEzX1iO9Ohsnh6/NvazdgeUuQPd0YEt/WaCjdpy5uu6aSFb5wdG9gt99wtOx8MP2/sObZuHzYEk2Q57MIB80ajSwxmQ1I=
+	t=1705916363; cv=none; b=LrmuiegyY12ZTVyLgOH9KrSsxHZ2tE8U3gvwXt1My609km4ISZUune88rjeAKRuDFACC8X8/isYC5dxvBWhjFiXCrTfYO8lRskB6rf5mI2ov4UWN00J8qKJBKUdeEFTUDCqlzDLOtQxwGva7M9NeKjardEvBSyMAITCPYOWR2d4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705916354; c=relaxed/simple;
-	bh=qcjz7Bt72S5uBFawiaiVG8JWN0F8ODPYKAykAFUyWIA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=nbI7i3aAGyuUbjlWdeay5fwCqL8N+Ik4b3CJZDKrRsa7rIYS8sLIWZiOrXkoF1yABMQYGaUhHh9r7/V/d1FELccDmkJ15AZuXc1IAqkM287vZAqQhl9u4iq8c5bOs1hqv5lFw90qaXJuTZQXBaYQX3FrDAJJlzyoNw2u08WQ8dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org; spf=pass smtp.mailfrom=gnu.org; dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b=Hs4z2Ktl; arc=none smtp.client-ip=209.51.188.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
-	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <othacehe@gnu.org>)
-	id 1rRqlk-0001PB-SL; Mon, 22 Jan 2024 04:39:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
-	From; bh=qcjz7Bt72S5uBFawiaiVG8JWN0F8ODPYKAykAFUyWIA=; b=Hs4z2KtlU0pQyQfN+0hQ
-	kUmomCycE4eTZU8ajWuZJJL5skZsU/s44aKGdV/9lSP9fNw+acnLVIBIgnJrlKYlvjo6GWdmKuxU/
-	F5k9fz5gvkHCqE1skav4gQAuB1QZwqirGis7hGN+30i6upXTLL8l9GrDk+kYwMFC7V42PHrlbxFVk
-	xHDDxR6/742MxnmT8vN0jOhe/NzoVQY30v3TIuvLhKxL0imW+4zi2CQxQc73mRq9kI4nUwBGsVutD
-	KJ2lkly4qNjXXwgttgWNZPN9KfVfxcJDmJ/eNWfcu0vu0R33pX64oufR/n9jqtpV9l1kV3qKZ8Wl6
-	nJhj71hxPgC/FA==;
-From: Mathieu Othacehe <othacehe@gnu.org>
-To: Stefan Wahren <wahrenst@gmx.net>
-Cc: Rob Herring <robh+dt@kernel.org>,  Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
-  Shawn Guo <shawnguo@kernel.org>,  Sascha Hauer <s.hauer@pengutronix.de>,
-  Pengutronix Kernel Team <kernel@pengutronix.de>,  Fabio Estevam
- <festevam@gmail.com>,  NXP Linux Team <linux-imx@nxp.com>,  Li Yang
- <leoyang.li@nxp.com>,  Primoz Fiser <primoz.fiser@norik.com>,  Christoph
- Stoidner <c.stoidner@phytec.de>,  Wadim Egorov <w.egorov@phytec.de>,
-  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/2] arm64: dts: imx93: Add phyBOARD-Segin-i.MX93
- support
-In-Reply-To: <282689a1-a189-4320-9d70-c6d38dc56d9d@gmx.net> (Stefan Wahren's
-	message of "Fri, 19 Jan 2024 11:11:39 +0100")
-References: <20240119092835.21462-1-othacehe@gnu.org>
-	<20240119092835.21462-3-othacehe@gnu.org>
-	<282689a1-a189-4320-9d70-c6d38dc56d9d@gmx.net>
-Date: Mon, 22 Jan 2024 10:38:36 +0100
-Message-ID: <87jzo1emhv.fsf@gnu.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1705916363; c=relaxed/simple;
+	bh=//UbHTP66T/3Bbp+ALZPOi1OABLSsOFzh5n/KVWypkE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IXlFxWA9NCpB6TMKDFhGNVxizFFW5uqTD/Vqi6vDtQjotOVU7oSWhV6sCwqxUPt3BpahoZeBDSm8XZz479kaGvhsUwZgnSEGr/Zwd8RqUQc70MZJxsTxGUksKOXWbtMhwNsB7rTLYEAZiOw4ysysMD+MBqxhgDZ27QltRRp/Fjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hsFuu2b2; arc=none smtp.client-ip=66.111.4.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id 85D785C00C4;
+	Mon, 22 Jan 2024 04:39:20 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Mon, 22 Jan 2024 04:39:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1705916360; x=1706002760; bh=PotvrWwsMR7MuOH77N/IRKZsV4mk
+	ArNK04ios3YAzIE=; b=hsFuu2b2twCbknwE+EuDoJTW9qkJ2mGnsHoYDbZ8NLCc
+	KiG9Ia2LrUf57XxrJycupOOrY1TX4jLx2XgtavqXsXr0xKTe2nJzENY5mFT1G2t/
+	jXD4XSinaIQmBv+TQwVKQgrHKgF+osHgV+g/7oiPb2gPrLjFOL4UVbU3IBkkPWVU
+	RO5Rv/vAp2EtOgrRXtUAqwjj8f/8/Lcuclim/hrUeIyYWIfr3xCj51cK5sA9kTi2
+	9I8i0KUzdM2VxFT10OVrgPtC94KsGucrknT/arg1XrNjvmwtT+RlunaRH+WZ1kCd
+	sB0qemqQQtIXbw5pxsvF/4dWp91/oZBiLcjmqaYgRA==
+X-ME-Sender: <xms:yDeuZb6TPPVuOY5yfTIFF3yXTScpTerW5Bf8K5dXSwy5OM6nCrZiXQ>
+    <xme:yDeuZQ64pRbjeNOmKtjSAi-9J25szfF4C9ppmCQwAvo_UcuCvo70i6mEE6kJZg0lK
+    VcQff4rExP0osI>
+X-ME-Received: <xmr:yDeuZSdKNFCe-1iSyVs1VM4Ckkr_AdTqLeV7eygihpOdkRgXRIzgERGNCQIB>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgtdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnhepvddufeevkeehueegfedtvdevfefgudeifeduieefgfelkeehgeelgeejjeeg
+    gefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
+    guohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:yDeuZcIIupMje_iHZoxF1OdxwQ2zZW31ChpAcZ5atPYIm-UwYZvtHA>
+    <xmx:yDeuZfLKL5WyuJkX-rkwz6vGtoQzugMiqlVMZ99rGSFjEvEExQ2XtA>
+    <xmx:yDeuZVxxrelR5apV_1K4F8678Zp6Tss3QnIlZiRXj65wRt6gAq0wFg>
+    <xmx:yDeuZcFQzG5cGj0Mp7cLyCABKiWM084MABd998OhUsRMK3JLFz5fFA>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 22 Jan 2024 04:39:19 -0500 (EST)
+Date: Mon, 22 Jan 2024 11:39:16 +0200
+From: Ido Schimmel <idosch@idosch.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Thomas Lamprecht <t.lamprecht@proxmox.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: vxlan: how to expose opt-in RFC conformity with unprocessed
+ header flags
+Message-ID: <Za43xKoWDtL6MxCn@shredder>
+References: <db8b9e19-ad75-44d3-bfb2-46590d426ff5@proxmox.com>
+ <20240116082357.22daf549@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116082357.22daf549@kernel.org>
 
+On Tue, Jan 16, 2024 at 08:23:57AM -0800, Jakub Kicinski wrote:
+> On Fri, 12 Jan 2024 16:13:22 +0100 Thomas Lamprecht wrote:
+> > What would be the accepted way to add a switch of making this RFC conform in
+> > an opt-in way? A module parameter? A sysfs entry? Through netlink?
+> 
+> Thru netlink. 
 
-Hello Stefan,
++1 
 
-> According to the documentation there are GPIOs accessible. Those on the
-> expansion header X16 could be named via gpio-line-name this makes it
-> easier to access via libgpiod. Also there seems to be LEDs and switches
-> on the phyBOARD.
+> My intuition would be to try to add a "ignore bits" mask, rather than
+> "RFC compliance knob" because RFCs may have shorter lifespan than
+> kernel's uAPI guarantees..
 
-I will add gpio-line-name for the two accessible GPIOs on X16 that are
-not mapped to specific functions. I will also add the heartbeat LED that
-is located on the SoM. Regarding the two switches on the phyBOARD, they
-reset the CPU and the board so I am not sure that they can have an entry
-in the device tree.
+Newer Spectrum chips have a 64 bit mask that covers the entire VXLAN
+header. If a bit is set in the mask and the corresponding bit in the
+VXLAN header is not zero, the packet is dropped / trapped.
 
-Thanks,
+Another option, assuming the interface that receives the encapsulated
+packets is known, is to clear the reserved bits in the VXLAN header
+using pedit. This seems to work:
 
-Mathieu
+tc -n ns2 qdisc add dev veth1 clsact
+tc -n ns2 filter add dev veth1 ingress pref 1 proto ip flower ip_proto udp \
+        dst_port 4789 \
+        action pedit munge offset 28 u8 set 0x08
+
+Tested by setting the reserved bits on the other side and making sure
+ping works:
+
+tc -n ns1 qdisc add dev veth0 clsact
+tc -n ns1 filter add dev veth0 egress pref 1 proto ip flower ip_proto udp \
+        dst_port 4789 \
+        action pedit munge offset 28 u8 set 0xff
+
+The advantage is that no kernel changes are required whereas the netlink
+solution will have to be maintained forever, even after the other side
+is fixed.
 
