@@ -1,55 +1,71 @@
-Return-Path: <linux-kernel+bounces-33603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F99A836C1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:57:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9711836C2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:58:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52EF31C2653A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:57:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F0B81F25069
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BF25F861;
-	Mon, 22 Jan 2024 15:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S52r1pOF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3405FB97;
+	Mon, 22 Jan 2024 15:32:05 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A875F855;
-	Mon, 22 Jan 2024 15:30:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC865FB90
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705937444; cv=none; b=Bs5J7LLX2/7W5z6xVdpvYq5SYFWz3rZdR/HzLTbvj13nRc83lrPgAcY0ArZpBjFnPF3C8ravwo+vaVbjhqUPkBTgTIJQBlNi7rl6+QMpPKO1we8EjsoKlWe33CxqxAN8PB8A7tCOpBIylTud8Wfb0hGzphjjf7mHQDOJO8FbjD4=
+	t=1705937525; cv=none; b=SaBOugVf4WIhBTLCFqcw0FbV3y9wm953/qBWQdsU6ppJsW6mPPk/Jrw+y2f2daGrB9rpw989bUQu/w8iJh0LyGUuCxyOIihLd3T9VLC5UlM/B4OPyKRKcvpfjYd3gSlHng5OsbN37PzYKxDo18smqLRLzSBFxh887rD4qAAa3pE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705937444; c=relaxed/simple;
-	bh=9bNnmiH+8UI1sMbYl/o0a2aQj7h/T4wML5jeK7jIfLQ=;
+	s=arc-20240116; t=1705937525; c=relaxed/simple;
+	bh=xsriZU0yMbSL2wG0OpL2voDoCjBcXV3m+2jsk8TrIEA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sR/RLavcNTy1aAvzBQFJqH8vSdt69qgASqJyxKRn9PaxA9D/3McmGQJ9zot3STZsua3o5dLDavMeZI38LSjFd/12xBaqS6Vi+wq3OK1qfBklX3A6ykAbM5D7pncPfqvbP5FN3hHLRZX4H6ZOfNA6kDKvs4J50n+NG/AUFMkKOJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S52r1pOF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF5FEC433F1;
-	Mon, 22 Jan 2024 15:30:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705937443;
-	bh=9bNnmiH+8UI1sMbYl/o0a2aQj7h/T4wML5jeK7jIfLQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S52r1pOFucH6amUFrPplJzUJA6WWuRXyKAGFvS3vhC/9FwYKOleIqdsBF4eyNfcFq
-	 0qGr2So+fGdTUMug81HDddK6ZtJvYO3xypBdB/7/gL4XFXSiakdzN+6E9C1Qi88OYR
-	 VLBpGvgY6P9HPDjtqbqtmj3nDT/Ftf1QIhJ94f6fRa3y1yhqvb4iFi2087NMwpBKGv
-	 vG/Pinz/+zkgXBRgu0Y9WxRYGTXPrGdu62k7HMTpWDBORZzJQ/WK/lokZeiH1IH7Jf
-	 y0MzwEYO1VikY+zMqnmaMc1GoqIqJbskbhzSeBtDTmnOkQ4eItDkD64A0LwTOIr+7H
-	 La+MUVN7brNjQ==
-Date: Mon, 22 Jan 2024 15:30:38 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Abrecht <linux-sound@nodmarc.danielabrecht.ch>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ASoC: soc-core.c: Add "Unknown" and "Unknown Product"
- to dmi_blacklist
-Message-ID: <e90440a5-587b-48b2-a61f-0800aa8200d5@sirena.org.uk>
-References: <7d11d0711ad93f2208efb9ab13fe915b@abrecht.li>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bWnT6SyyeV2EQTAcCrwgp/5X7K7IIgdp9s/kQ+ktkw7VQW+fWqdm3EfVpIccl0SFAWAXVb2w2A/OL7lPVKphffs4MPBpIvPpodu/xmz/ymskrrezqKQHfxZ3OffH/2KNXTRG74INfVEtlBEcBJ2XC8wb9Wo4FjTNEu38z6H8qIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rRwGs-0001yO-Ae; Mon, 22 Jan 2024 16:31:34 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rRwGr-001d3P-D0; Mon, 22 Jan 2024 16:31:33 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id E63BB27B74D;
+	Mon, 22 Jan 2024 15:31:32 +0000 (UTC)
+Date: Mon, 22 Jan 2024 16:31:32 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-riscv@lists.infradead.org, 
+	Conor Dooley <conor.dooley@microchip.com>, Daire McNamara <daire.mcnamara@microchip.com>, 
+	Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] dt-bindings: can: mpfs: add missing required clock
+Message-ID: <20240122-pogo-reputable-b1d06ae1f1f1-mkl@pengutronix.de>
+References: <20240122-catty-roast-d3625dbb02fe@spud>
+ <20240122-breeder-lying-0d3668d98886@spud>
+ <20240122-surely-crimp-ba4a8c55106d-mkl@pengutronix.de>
+ <20240122-cruelly-dainty-002081f0beb2@spud>
+ <20240122-smokeless-ion-63e4148c22e5-mkl@pengutronix.de>
+ <20240122-uncoated-cherub-a29cba1c0035@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,38 +73,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fW75YJszql3fWvoQ"
+	protocol="application/pgp-signature"; boundary="fzilfxiuysgrcoiy"
 Content-Disposition: inline
-In-Reply-To: <7d11d0711ad93f2208efb9ab13fe915b@abrecht.li>
-X-Cookie: Poverty begins at home.
+In-Reply-To: <20240122-uncoated-cherub-a29cba1c0035@spud>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
---fW75YJszql3fWvoQ
-Content-Type: text/plain; charset=us-ascii
+--fzilfxiuysgrcoiy
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 02:44:43PM +0100, Daniel Abrecht wrote:
-> In U-Boot, the default for DMI vendor / product if not set is "Unknown" and
-> "Unknown Product".
-> See https://source.denx.de/u-boot/u-boot/-/blob/v2023.10/lib/smbios.c?ref_type=tags#L272
+On 22.01.2024 14:56:09, Conor Dooley wrote:
+> On Mon, Jan 22, 2024 at 03:46:04PM +0100, Marc Kleine-Budde wrote:
+> > On 22.01.2024 14:21:04, Conor Dooley wrote:
+> > > On Mon, Jan 22, 2024 at 02:13:16PM +0100, Marc Kleine-Budde wrote:
+> > > > On 22.01.2024 12:19:50, Conor Dooley wrote:
+> > > > > From: Conor Dooley <conor.dooley@microchip.com>
+> > > > >=20
+> > > > > The CAN controller on PolarFire SoC has an AHB peripheral clock _=
+and_ a
+> > > > > CAN bus clock. The bus clock was omitted when the binding was wri=
+tten,
+> > > > > but is required for operation. Make up for lost time and add it.
+> > > > >=20
+> > > > > Cautionary tale in adding bindings without having implemented a r=
+eal
+> > > > > user for them perhaps.
+> > > > >=20
+> > > > > Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs C=
+AN controller")
+> > > > > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> > > > > ---
+> > > > >  .../devicetree/bindings/net/can/microchip,mpfs-can.yaml     | 6 =
+++++--
+> > > > >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > > > >=20
+> > > > > diff --git a/Documentation/devicetree/bindings/net/can/microchip,=
+mpfs-can.yaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-ca=
+n.yaml
+> > > > > index 45aa3de7cf01..01e4d4a54df6 100644
+> > > > > --- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-ca=
+n.yaml
+> > > > > +++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-ca=
+n.yaml
+> > > > > @@ -24,7 +24,9 @@ properties:
+> > > > >      maxItems: 1
+> > > > > =20
+> > > > >    clocks:
+> > > > > -    maxItems: 1
+> > > > > +    items:
+> > > > > +      - description: AHB peripheral clock
+> > > > > +      - description: CAN bus clock
+> > > >=20
+> > > > What about adding clock-names, so that the order can be checked
+> > > > automatically?
+> > >=20
+> > > I don't personally care for doing so, but if your heart is set on hav=
+ing
+> > > them, then sure.
+> >=20
+> > Usually the CAN driver needs to have the clock rate of the clocks that
+> > the basis for the CAN bus clock. Looking at the clocks description it's
+> > probably the 2nd one.
+> >=20
+> > With clock-names we can automatically check that the 2nd clock is always
+> > the CAN clock.
+>=20
+> I think we already had this discussion on v1, where I said that the
+> binding requires the clocks to be in that order, regardless of whether
+> or not clock-names is provided. You feel more strongly about it than I
+> do, so I will add them when I get around to sending a v3.
 
-This is still corrupted according to git am unfortunately.  I can't
-immediately spot the issue.
+Yes, this discussion sounded very familiar to me, never mind. Keep it as
+is, and let's get this binding and the CAN driver upstream!
 
---fW75YJszql3fWvoQ
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--fzilfxiuysgrcoiy
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWuih4ACgkQJNaLcl1U
-h9DY9gf/ZxevJ0vqxtuKyX7zMqcY/z9pxHbGxT9P47qpYQ+dcc+1OgwcB1ARTZuL
-wyqDn2q03F+F04rgu+clhRVmtfBAEY0IobyVriEw+bY+ZUbJfQQPdoDQ/7fAsoEC
-GQKPleM1i9KhdQc0/mIS1VN7x5yHykY0z7uj6BaEZo5fHig8gTMHBwGHXoQoXE2q
-0TNTdsjgJZutzp2TqvjJg9phemdm5GzMVgP5vU8xvdynE/yfoczVTXenE0C0DYfH
-UNNYhSlZbKse/oiTAlC+1DqAMrhfLiS6cZjBQOfCMwOLMmOZv87RW44TSQ2wbOIl
-hOlaIZWxqG0Ssic1J70qYIX8T7aX1Q==
-=32Ep
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmWuilEACgkQvlAcSiqK
+BOhCkggAgyHW5AL32kouESoPfzIRkhef/gYpfWj8j5zEKyJ0Honmyt+im5UgOIjS
+etZAqb+sORwDFrLXzPb+BIS4GXyCldkukOcvfgFxvfGAkaxf6ci+keV4UgyMpsgG
+3/yXN/x2it5yA1idu/i8QdLjElTeq7Yoj18nfGbbSE7VzNK3Vh9PD/fR+Eq07wNE
+x3bFsh1YaBU2PeiGYYK08pR6PkPcmQHYRQFOhMxgpWJ72NnPinG8MuQuNtHwlcLh
+YnhmjeBgjEOUF35I+WSZ0056QeeAF7vbmrdAtWIUN2yygsVTbrvDGnZL45ynfFUC
+Xlu+5O2ZopqsqunltpKOZTLJ6Prdbw==
+=vqnx
 -----END PGP SIGNATURE-----
 
---fW75YJszql3fWvoQ--
+--fzilfxiuysgrcoiy--
 
