@@ -1,214 +1,87 @@
-Return-Path: <linux-kernel+bounces-32934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F54A836223
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:41:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F03FF836226
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:41:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3339296544
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:41:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 284EE1C21A8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156C546547;
-	Mon, 22 Jan 2024 11:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859433BB37;
+	Mon, 22 Jan 2024 11:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y2wktsU/"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LeZRFDWB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C69C482D9;
-	Mon, 22 Jan 2024 11:32:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C28B71DFF3;
+	Mon, 22 Jan 2024 11:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923134; cv=none; b=nXHtPWF0DN3o/o5ppbwFH9H5ZptweqMovV0KuZe95rfyeahIxk7QyLta/pHAA+ZzaYedbFhluuB0kZLcJSJu2MfFdAcdnGuvR9I5U0riDAtmKTIxJQGDrnB5d1DdSAfsKdwBVm/jxESn+S2Xm1c2lszgQr+hHepNKpQnGVEr5VE=
+	t=1705923168; cv=none; b=s/LmjE9JzY7lqup1Q0D5PrF7NXUjjOKmnXly8VXx3nxKjdaBAvPe01K7J+gkD/eteXQmOQhe+ZM7zajJZpRk/esFRPEZDx4VqKXmqc4VMJnqIMoo9X7+2F7dLLK1YPUsATX2w15H/0J4i4DwA3hRM+fOsVrKJCCmXB2My/4f5Vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923134; c=relaxed/simple;
-	bh=jIWbdhazF1DtsVh0QU7A3sMXExHW1xlwHLYRk2ok3JI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mddYbSCA4fm/xHDpdi49hSpZaR99jBFaNSCnLTrJUhISyk44DKWcqcLxKJ0lmtyJMyiQPHoFkDfkDWZd4swTotke4bY76F/F/c7vfCaSg+7ONwrhGyZNy5U9G+cIN24MEoQSED20nRQ6e9K+F5IXlrTLNfPY/p9ayzBK1d8IMME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y2wktsU/; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50ec948ad31so3218903e87.2;
-        Mon, 22 Jan 2024 03:32:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705923130; x=1706527930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DPbIVtQUATMQ9HXAYvqkNgY9ZzASBXmb6XQmjxVPQJI=;
-        b=Y2wktsU/SQyvf9cBbsO6aW9XDcAo/bjxm6+9SKSf15D2tULKCYhp2RQZ42MvtUSTt8
-         p/tEgv2f5b8xVJ/pmT4u9KKCIpMUWRd/RKgAxzRwMmTeTf9Rc+LWaL8EDpLjXGp+DXDV
-         mSYQfpbdn8kl2PIbvUzPH1SNzH17jbnNC9ACJcw04z65Hyo8Mgbf5xMmTnr6av2O3Gwj
-         8hafpuPUaoksQHJoUlTX9e0hKvMILOmGDnPt+CYlT46gQ86Gmkrqh/nhDsXX6nUEhSNg
-         gjg16c0Fx8XGC30BErSuvv0YdReUeFV+CKNCa5QHZvnqBXG087PxYZ2C6awTRunYB4vk
-         WytQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705923130; x=1706527930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DPbIVtQUATMQ9HXAYvqkNgY9ZzASBXmb6XQmjxVPQJI=;
-        b=Z4kKvnBvLdlac3DMWHL2WOFRbnKbs1nn+uFlKINxlRegzg96EMs1sfXEihtKLlm/mv
-         Fgyi6WzrQcBxolyx1YQFR6OotyBP7b0oz1tR1VqaRZK6/dwixsjkN73bUUC1KBvMDoPs
-         l9BexicdJXpsMoLEc4zsljxaaXN/UT7mvU2qVkFIxe3bIfLSqZTQRU+qegIFMyY93yFC
-         IAWL4GXpeNU76huZFM3dau1NTDiGXigBi6CBbxA2eGxLh61sj04PIn5eMe6TreMtFomD
-         0Y3E5HmvB5H+IJtbgP+IXmmK6+X7LBV8jB0w7cWfG/IMyRCNoN5eRhwuRuGLiiP8MQ8E
-         a2iQ==
-X-Gm-Message-State: AOJu0Yw+rGDvdTkTdWFINXPbsayARwzEzm7i2zgjgsRIRfb+7+RsurF9
-	7WF7R5pqziykDtlkCXcfkfLvo8keoOKP4Zuq9aItuvqEdAmPh0tdccFHdDiEDjci+BCrTEFPWYi
-	ASBVcJGxXJ4QxyX4owO28+7sjtUE=
-X-Google-Smtp-Source: AGHT+IE8q+aq6bFKrhgG9BSySHiV+tD954Tn/cVZYKhwVGHb0K+uUjH7ovE9Bu9iAyd12VXTVTX6Bsn87zFzzMIkblM=
-X-Received: by 2002:a05:6512:3d1e:b0:50e:80db:3c35 with SMTP id
- d30-20020a0565123d1e00b0050e80db3c35mr1745864lfv.80.1705923130168; Mon, 22
- Jan 2024 03:32:10 -0800 (PST)
+	s=arc-20240116; t=1705923168; c=relaxed/simple;
+	bh=uDy/5VBSa8J4k7spOOc9VWyfuTTwmCdLUf/HonS9y3w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DhmmARDm+pQR5n/WsaulL2MnGU3kFPsMg2lEOFIvpgAa1RNWONhpMG7mRY3PQgvLLe1qCxcN/t4L0jvuc7XLmSzRLFSkhpjxnWGe3QIoHgi0zFlI+dZBnpJjxBE9ND3SOVjMXGk9kfSZxRTziC3oR+w3h9p/BGTGnF2bCHBjqWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LeZRFDWB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC6FAC433C7;
+	Mon, 22 Jan 2024 11:32:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705923168;
+	bh=uDy/5VBSa8J4k7spOOc9VWyfuTTwmCdLUf/HonS9y3w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LeZRFDWBtG4m+vzh0CM0FpBZgpXzK+0ecxKH/VyLqiQSj+G+Je7HBvO5vGED9OJHg
+	 9sV4xhBBF9IIS432+5yOTFnMllWWtFeRih1BT8Bs0GymuFHpuQgAhAnFUBNUFNLl6c
+	 8CUzve+N4QmRypTLWrJTu6ZqFZjfEPHOuXIlQBBEB7BrBqZ9KE84HwTWiE9NTVO3hY
+	 XloT+zFbYb02uk7LZoGvKVZ3C5+0nOhH19+8VTfojS/VOorMPLtJAJEsuxDJAtm8dd
+	 L7iJoht57ux6s3bdQEHbelQmhYzMsz4+iZ3hTx0MGsZfll9oTbkhKjem9svnbkhHQV
+	 FymWMC0lYTdgA==
+Date: Mon, 22 Jan 2024 17:02:43 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: dmaengine@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+Subject: Re: [PATCH 0/3] dmaengine: timb_dma: Adjustments for
+ td_alloc_init_desc()
+Message-ID: <Za5SW6xdsOFylD7x@matsya>
+References: <ebd531dd-60e3-4ac3-821e-aa9890960283@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1850031.1704921100@warthog.procyon.org.uk> <CA+icZUUc_0M_6JU3dZzVqrUUrWJceY1uD8dO2yFMCwtHtkaa_Q@mail.gmail.com>
- <CA+icZUWYSxfFHf5A56h9b4uOYYaANNxo2Z+cpwP1Bs1pF8MXQQ@mail.gmail.com>
-In-Reply-To: <CA+icZUWYSxfFHf5A56h9b4uOYYaANNxo2Z+cpwP1Bs1pF8MXQQ@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Date: Mon, 22 Jan 2024 12:31:32 +0100
-Message-ID: <CA+icZUV5zbsm4=wceT7+nzCrCw7S8SkKonTevFBpNTgvzbHT8g@mail.gmail.com>
-Subject: Re: [PATCH] keys, dns: Fix size check of V1 server-list header
-To: sedat.dilek@gmail.com
-Cc: David Howells <dhowells@redhat.com>, ceph-devel@vger.kernel.org, davem@davemloft.net, 
-	eadavis@qq.com, edumazet@google.com, horms@kernel.org, jaltman@auristor.com, 
-	jarkko@kernel.org, jlayton@redhat.com, keyrings@vger.kernel.org, 
-	kuba@kernel.org, linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, marc.dionne@auristor.com, markus.suvanto@gmail.com, 
-	netdev@vger.kernel.org, pabeni@redhat.com, pengfei.xu@intel.com, 
-	smfrench@gmail.com, stable@vger.kernel.org, torvalds@linux-foundation.org, 
-	wang840925@gmail.com, sashal@kernel.org, gregkh@linuxfoundation.org, 
-	pvorel@suse.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ebd531dd-60e3-4ac3-821e-aa9890960283@web.de>
 
-On Mon, Jan 22, 2024 at 12:01=E2=80=AFPM Sedat Dilek <sedat.dilek@gmail.com=
-> wrote:
->
-> On Mon, Jan 22, 2024 at 8:33=E2=80=AFAM Petr Vorel <pvorel@suse.cz> wrote=
-:
-> >
-> > From: Sedat Dilek <sedat.dilek@gmail.com>
-> >
-> > On Wed, Jan 10, 2024 at 10:12=E2=80=AFPM David Howells <dhowells@redhat=
-com> wrote:
-> > >
-> > >
-> > > Fix the size check added to dns_resolver_preparse() for the V1 server=
--list
-> > > header so that it doesn't give EINVAL if the size supplied is the sam=
-e as
-> > > the size of the header struct (which should be valid).
-> > >
-> > > This can be tested with:
-> > >
-> > >         echo -n -e '\0\0\01\xff\0\0' | keyctl padd dns_resolver desc =
-@p
-> > >
-> > > which will give "add_key: Invalid argument" without this fix.
-> > >
-> > > Fixes: 1997b3cb4217 ("keys, dns: Fix missing size check of V1 server-=
-list header")
-> >
-> > [ CC stable@vger.kernel.org ]
-> >
-> > Your (follow-up) patch is now upstream.
-> >
-> > https://git.kernel.org/linus/acc657692aed438e9931438f8c923b2b107aebf9
-> >
-> > This misses CC: Stable Tag as suggested by Linus.
-> >
-> > Looks like linux-6.1.y and linux-6.6.y needs it, too.
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
-/?h=3Dv6.6.11&id=3Dda89365158f6f656b28bcdbcbbe9eaf97c63c474
-> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
-/?h=3Dv6.1.72&id=3D079eefaecfd7bbb8fcc30eccb0dfdf50c91f1805
-> >
-> > BG,
-> > -Sedat-
-> >
-> > Hi Greg, Sasa,
-> >
-> > could you please add this also to linux-6.1.y and linux-6.6.y?  (Easily
-> > applicable to both, needed for both.) Or is there any reason why it's n=
-ot
-> > being added?
-> >
->
-> Great!
->
-> I forgot to CC Greg and Sasha directly.
->
-> Thanks.
->
+On 25-12-23, 11:15, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Mon, 25 Dec 2023 11:05:45 +0100
+> 
+> A few update suggestions were taken into account
+> from static source code analysis.
 
-Addendum:
+was this anaysis done by you or some tool reported this.
+Frabkly I dont see much value in these patches, can you fix something
+real please
 
-Linus says:
-"
-Bah. Obvious fix is obvious.
+> 
+> Markus Elfring (3):
+>   Return directly after a failed kzalloc()
+>   Improve a size determination
+>   One function call less after error detection
+> 
+>  drivers/dma/timb_dma.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> --
+> 2.43.0
 
-Mind sending it as a proper patch with sign-off etc, and we'll get
-this fixed and marked for stable.
-"
-
-https://lore.kernel.org/all/CAHk-=3DwiyG8BKKZmU7CDHC8+rmvBndrqNSgLV6LtuqN8W=
-_gL3hA@mail.gmail.com/
-
--Sedat-
-
-> BG,
-> -Sedat-
->
-> > Kind regards,
-> > Petr
-> >
-> > > Reported-by: Pengfei Xu <pengfei.xu@intel.com>
-> > > Link: https://lore.kernel.org/r/ZZ4fyY4r3rqgZL+4@xpf.sh.intel.com/
-> > > Signed-off-by: David Howells <dhowells@redhat.com>
-> > > cc: Edward Adam Davis <eadavis@qq.com>
-> > > cc: Linus Torvalds <torvalds@linux-foundation.org>
-> > > cc: Simon Horman <horms@kernel.org>
-> > > Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> > > Cc: Jeffrey E Altman <jaltman@auristor.com>
-> > > Cc: Wang Lei <wang840925@gmail.com>
-> > > Cc: Jeff Layton <jlayton@redhat.com>
-> > > Cc: Steve French <sfrench@us.ibm.com>
-> > > Cc: Marc Dionne <marc.dionne@auristor.com>
-> > > Cc: "David S. Miller" <davem@davemloft.net>
-> > > Cc: Eric Dumazet <edumazet@google.com>
-> > > Cc: Jakub Kicinski <kuba@kernel.org>
-> > > Cc: Paolo Abeni <pabeni@redhat.com>
-> > > ---
-> > >  net/dns_resolver/dns_key.c |    2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
-> > > index f18ca02aa95a..c42ddd85ff1f 100644
-> > > --- a/net/dns_resolver/dns_key.c
-> > > +++ b/net/dns_resolver/dns_key.c
-> > > @@ -104,7 +104,7 @@ dns_resolver_preparse(struct key_preparsed_payloa=
-d *prep)
-> > >                 const struct dns_server_list_v1_header *v1;
-> > >
-> > >                 /* It may be a server list. */
-> > > -               if (datalen <=3D sizeof(*v1))
-> > > +               if (datalen < sizeof(*v1))
-> > >                         return -EINVAL;
-> > >
-> > >                 v1 =3D (const struct dns_server_list_v1_header *)data=
-;
-> > >
-> > >
-> >
+-- 
+~Vinod
 
