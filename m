@@ -1,130 +1,151 @@
-Return-Path: <linux-kernel+bounces-33142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B5DF836521
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:09:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39A7E836520
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:09:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4541228E17E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:09:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6A7E28DDEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F173D397;
-	Mon, 22 Jan 2024 14:09:37 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430DD3D396;
+	Mon, 22 Jan 2024 14:09:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tm/N0MHP"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502393D38D
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6A420DF0
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705932577; cv=none; b=esqupLVcLcahZ7Q0DQz1A2FMvX8AeQdth2VbygwCO73/Gnc85nRNpiXZ4OjsBjSvOKXmuMsecTBK3ZfXsoqPJW6Eae828vTixygR5Ht+T9XcUVJNMAlnmUOLq34RmVHruJoshgXhe9OC0ztKG4LWSqWb5hYxflsI6ezZCdqD0JI=
+	t=1705932559; cv=none; b=uIcSdoRK1mSv88ikzWJeKcjR873/7JLajwJENqpIn3/z+VcrT17dEFU/RjYsulWzhviRRGXk5lHDb1BDFGS2rj+pqvSl84TnReUibwxnX6Qw2jqkxhwsl7l/GkjfykOeIHu1W6D3q8Xv2IIRys+cYW8jyqR1JIpOAia9LwiUlCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705932577; c=relaxed/simple;
-	bh=SAtsYJPDMPLNHQqhKq7UpT8bIcR6I+Eordc5pCOXcCI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nyqi7B4ZtgxFhgKzSpqhh3vZIAyS+9euBUstiXJsnoNEEpzcNyr7GmANTd9gtWGeE+BNHShV5QmzWEoQ2OljhCx3jISK4mx/YuVOznZeTHEeRA7wEVIAbxHd1MNyVvDhsJnbG+Q10TFxVS/8c3BdecTdY7m/qgJEEus9b49BZNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav114.sakura.ne.jp (fsav114.sakura.ne.jp [27.133.134.241])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40ME8XUc057761;
-	Mon, 22 Jan 2024 23:08:33 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav114.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav114.sakura.ne.jp);
- Mon, 22 Jan 2024 23:08:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav114.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40ME8XZ7057758
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Mon, 22 Jan 2024 23:08:33 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <7dc23b9d-5120-4966-b47b-fcabe270d498@I-love.SAKURA.ne.jp>
-Date: Mon, 22 Jan 2024 23:08:29 +0900
+	s=arc-20240116; t=1705932559; c=relaxed/simple;
+	bh=znrIct7rUFWksSd+UC6un02EtdkHnndXakyNpVQ9a5Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Hs7FJG+LsR2LWUbIGczj7JpaMeR7HSLDS3Cj5eymsNcJnNZyfa1Qb7RTk4HJcwGq356FY2UeVNIllOy9Ze7+lnDLpjUbYAcgwZ7sS6kXdOgMvMQzU2uH7anL2tisqHH9D8aCU8tM28lz7v1dlAePTbL1peQLPSVj3JZ1HAtOwro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Tm/N0MHP; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705932556;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=seqmVAFBDnuLvzwL3rN06iKmJlHsjwn1tq37k8ac87U=;
+	b=Tm/N0MHP1bRE93JiRT5A9fkwKpBLB4OFKQs8W7npKkfgf2htGYMjWRJSlR8K/PDacSD8SB
+	wtPntu6lHNrLR1IeGKZ0LtbA9LTtpuypbe4ty58q3w7zy14VnLe7q+eVezMDOSzu481Mdz
+	sIrns0YR2KlliUfXy1ZV4HB5SM2RrCs=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-97-zdwixl2wNleA2iZVv0LN8Q-1; Mon, 22 Jan 2024 09:09:15 -0500
+X-MC-Unique: zdwixl2wNleA2iZVv0LN8Q-1
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5f874219ff9so42977697b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 06:09:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705932554; x=1706537354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=seqmVAFBDnuLvzwL3rN06iKmJlHsjwn1tq37k8ac87U=;
+        b=m06WdKEeCxA72R2uoybkBuKU1Zuz1s387JsSBPIaE7RadUCK/pXq8WrHUnkstkLlkG
+         M2uvFVi2l/e7OZI0l258f9fvXK8w4oXV+ZikJOlHbxaTxOT2z7njMJusTGPW0YA0tszm
+         fZH6dIf820a3zSAhLxrGU/Zp+UnelNkhOdVn/sXNSGui/0Clw5G1G/HQEdvfqeDVcirX
+         7kqnbhG/utTh00vx/gEarqJM8xA8pu54W/2KKwEJD2WkAfSHDTX58PnVJXCEVd6KOAip
+         TSGULDSlwZa38sZk3TKMy7WkQmLNJwFnGKuPklsjomnRgMIuyHT/4//rv/cmAsNTcDOS
+         Xv7w==
+X-Gm-Message-State: AOJu0YyRHfdtLYqXC5x/Oa7AkYCvDb6itPCGxwZ8AwSwSx5rudY9RyTn
+	ukm15HEqgxYhdUhCeAWaB/waYzqxdvOLUWkuc4o3HtVZ3wS8pWrwl3UeawgXD1JXs+BB83P+5cU
+	0UXN4BOwFMmOAKtGvPVkAWJ/EQvLRRayHeXLQTZzpZVztgxlmiGSbETUmwxREzmFu5LO1TTU5nc
+	AbMq/6P0xPvO9jpTv//xPOfp0eeG9B0nnULDzH
+X-Received: by 2002:a81:8411:0:b0:5ff:b07b:e534 with SMTP id u17-20020a818411000000b005ffb07be534mr1742477ywf.9.1705932554313;
+        Mon, 22 Jan 2024 06:09:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF5TYT+m+Db5kWU9mkYv5aX43/bLG4o8DXbKxjOnIgv6IVDOYqnnpHQAvVW5nvty8UP/kaTKK+uoXudOp0V9CI=
+X-Received: by 2002:a81:8411:0:b0:5ff:b07b:e534 with SMTP id
+ u17-20020a818411000000b005ffb07be534mr1742466ywf.9.1705932554072; Mon, 22 Jan
+ 2024 06:09:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tty: vt: check for atomic context in con_write()
-Content-Language: en-US
-To: Jiri Slaby <jirislaby@kernel.org>,
-        syzbot <syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Starke, Daniel" <daniel.starke@siemens.com>,
-        Lee Jones <lee@kernel.org>, Fedor Pchelkin <pchelkin@ispras.ru>
-Cc: linux-kernel@vger.kernel.org, linux-serial <linux-serial@vger.kernel.org>
-References: <00000000000039f237060f354ef7@google.com>
- <83414cb6-df16-4b6d-92e3-d54d22ba26cc@I-love.SAKURA.ne.jp>
- <9cd9d3eb-418f-44cc-afcf-7283d51252d6@I-love.SAKURA.ne.jp>
- <82aa07d4-13ac-4b1d-80cd-0970c71752a5@kernel.org>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <82aa07d4-13ac-4b1d-80cd-0970c71752a5@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240119131429.172448-1-npache@redhat.com> <20240120203904.8f36140cd2f507b25e9a09a3@linux-foundation.org>
+In-Reply-To: <20240120203904.8f36140cd2f507b25e9a09a3@linux-foundation.org>
+From: Nico Pache <npache@redhat.com>
+Date: Mon, 22 Jan 2024 07:08:48 -0700
+Message-ID: <CAA1CXcANbz75MHKkJPEVa8AJBX4g8k7kq8i0ZCe9w_j9Oeg=ZA@mail.gmail.com>
+Subject: Re: [PATCH v2] selftests: mm: fix map_hugetlb failure on 64K page
+ size systems
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, shuah@kernel.org, donettom@linux.vnet.ibm.com, 
+	Christophe Leroy <christophe.leroy@c-s.fr>, Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/01/22 15:48, Jiri Slaby wrote:
-> On 20. 01. 24, 11:34, Tetsuo Handa wrote:
->> syzbot is reporting sleep in atomic context, for gsmld_write() is calling
->> con_write() with spinlock held and IRQs disabled.
-> 
-> gsm should never be bound to a console in the first place.
-> 
-> Noone has sent a patch to deny that yet.
-> 
-> Follow:
-> https://lore.kernel.org/all/49453ebd-b321-4f34-a1a5-d828d8881010@kernel.org/
-> 
-> And feel free to patch that ;).
-> 
-> thanks,
+Hi Andrew,
 
-OK. Here is a deny-listing based filter using device number of sysfs entry.
-(We don't want to compare with the function address of con_write().
-Thus, this patch is comparing with device major/minor numbers.)
+No, I think it's always been broken-- I don't think the test was
+written with 512M huge page sizes in mind.
 
-----------
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 4036566febcb..6f9730dce5aa 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -3630,6 +3630,10 @@ static int gsmld_open(struct tty_struct *tty)
- 	if (tty->ops->write == NULL)
- 		return -EINVAL;
- 
-+	/* Can't be attached to virtual consoles. */
-+	if (tty->dev && MAJOR(tty->dev->devt) == 4 && MINOR(tty->dev->devt) < 64)
-+		return -EINVAL;
-+
- 	/* Attach our ldisc data */
- 	gsm = gsm_alloc_mux();
- 	if (gsm == NULL)
-----------
+-- Nico
 
-Is it possible to use allow-listing based filtering?
-(Attaching on /dev/tty (major=5, minor=0) causes current ssh session
-to be closed. Unexpectedly loosing connection might be a problem for
-fuzz testing...)
-
-----------
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <linux/tty.h>
-
-int main(int argc, char *argv[]) {
-        int ldisc = N_GSM0710;
-
-        return ioctl(open(argv[1], O_RDWR | O_NOCTTY | O_NDELAY), TIOCSETD, &ldisc) == 0;
-}
-----------
+On Sat, Jan 20, 2024 at 9:39=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+>
+> On Fri, 19 Jan 2024 06:14:29 -0700 Nico Pache <npache@redhat.com> wrote:
+>
+> > On systems with 64k page size and 512M huge page sizes, the allocation
+> > and test succeeds but errors out at the munmap. As the comment states,
+> > munmap will failure if its not HUGEPAGE aligned. This is due to the
+> > length of the mapping being 1/2 the size of the hugepage causing the
+> > munmap to not be hugepage aligned. Fix this by making the mapping lengt=
+h
+> > the full hugepage if the hugepage is larger than the length of the
+> > mapping.
+>
+> Is
+>
+> Fixes: fa7b9a805c79 ("tools/selftest/vm: allow choosing mem size and page=
+ size in map_hugetlb")
+>
+> a suitable Fixes: target for this?
+>
+> > --- a/tools/testing/selftests/mm/map_hugetlb.c
+> > +++ b/tools/testing/selftests/mm/map_hugetlb.c
+> > @@ -15,6 +15,7 @@
+> >  #include <unistd.h>
+> >  #include <sys/mman.h>
+> >  #include <fcntl.h>
+> > +#include "vm_util.h"
+> >
+> >  #define LENGTH (256UL*1024*1024)
+> >  #define PROTECTION (PROT_READ | PROT_WRITE)
+> > @@ -58,10 +59,16 @@ int main(int argc, char **argv)
+> >  {
+> >       void *addr;
+> >       int ret;
+> > +     size_t hugepage_size;
+> >       size_t length =3D LENGTH;
+> >       int flags =3D FLAGS;
+> >       int shift =3D 0;
+> >
+> > +     hugepage_size =3D default_huge_page_size();
+> > +     /* munmap with fail if the length is not page aligned */
+> > +     if (hugepage_size > length)
+> > +             length =3D hugepage_size;
+> > +
+> >       if (argc > 1)
+> >               length =3D atol(argv[1]) << 20;
+> >       if (argc > 2) {
+> > --
+> > 2.43.0
+>
 
 
