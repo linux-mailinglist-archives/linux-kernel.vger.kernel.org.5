@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-33363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52F7C836941
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:57:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A91198368CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:48:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E64A8B260C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:47:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59F1E283ACB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6585A6A026;
-	Mon, 22 Jan 2024 15:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09BF6A323;
+	Mon, 22 Jan 2024 15:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/fam52P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VjujWZfn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8AD96A00C;
-	Mon, 22 Jan 2024 15:06:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F436A028;
+	Mon, 22 Jan 2024 15:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935977; cv=none; b=qtpBfmWdP3tOCJsGS0J4UQUPYvaEqZ7SeWjj5et97bagpzpXjuoHNxY8DXVev4Zo7KHYLxN3aqzgXOdDhhUJCklF8s2OTe8EvbEHMnFtCzh+1kaqlcKqUMxAA7JL7wMf6m3bQmUCPL1eOBs5YyEPRKQuuMNd9TXviPqRwt0fK5w=
+	t=1705935979; cv=none; b=CGTWlNSVuXh7aVmcMYiJT8yizoCVxYIvtRtUSIB97rGaq6QgDzgj9BjzqIXFmL5OXBxC1sXwlWucyxRKvlrGlUbQ9aZETQXLJI/4PBLqTEGCWIFJjzkVg6zdPvzMFcNHSrScNkYstJw8APfNdor978Cv0xBnbxaLocXmEVTAolc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935977; c=relaxed/simple;
-	bh=Mak+Lj5rUfA9eGs0UEJTZqDvCPi0Bu/m7ejQSQMOZKE=;
+	s=arc-20240116; t=1705935979; c=relaxed/simple;
+	bh=HGOCg8QCESbMBp+Vvz68wAce56BtcZzkWLlp7eLqbIU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dSga9DORDEBcPKDPoSvHEG5H0iwLrGb35VYMeyY6bp/4eZuYs3bswLEjZwjlqaFZfty/RwbMetOGAWoGCdDWqibz+c7UYvCLej0OtWRzD8PcYPXMDFkazkwtRf2tF8KcNX33ujYzgHpsbb1yQSSG+nEadmZUAYVaKioCy+r2CIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/fam52P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B696CC43399;
-	Mon, 22 Jan 2024 15:06:16 +0000 (UTC)
+	 MIME-Version; b=gfvILkjNjWWSblYO41sh7jZgCaOcfrvkIxgnPrTMhwguND5RRksfogfFLSj8+WOgripV4MdkV2N8rBllmXgDvCGJDoDhGZuoKXxlJHoeA6sYBxQbd/jsGFxweA5R7rIwBh72ZChgkXopSMY335Yu667xDtUIk7yXtB8w17kMxI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VjujWZfn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D9EFC433F1;
+	Mon, 22 Jan 2024 15:06:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935977;
-	bh=Mak+Lj5rUfA9eGs0UEJTZqDvCPi0Bu/m7ejQSQMOZKE=;
+	s=k20201202; t=1705935979;
+	bh=HGOCg8QCESbMBp+Vvz68wAce56BtcZzkWLlp7eLqbIU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I/fam52PExknBpM7g35GIHi4cgw/h05B7VqN+CzeV3WQIaKXw/k7c3C/DtLr/obnV
-	 y85W0nSjd9uCebNOMK4cDL5qd60VgeEsrnw6a7BoQtwFB7DA0oRkAd9J3jVFZUE0Nd
-	 N43jKiWaXQ4LGo3RrrKH5xWxvkbNlDg5lgO4KMpHvBq35mjAMNGjvLH7o0EGTdw7YC
-	 CwWqagilqF2JB9+rtI+OkCHVF2WcsBnFiIwqhafjHdjidcg5SH0R+dQr4pdxsTJeRA
-	 /qP5VwD5J8vSfCCF8IAu/LBKXwSfvwLXUPjHFWqIykszDOn+gESkdROfVh7ETmR4RO
-	 hLSnZKmfdW6Eg==
+	b=VjujWZfnyujklS2Eb5lUSACyicUJysDjAl1ByZ22tMfUL9N8i+dajqKufXINz8EyU
+	 9YBp/Lt4EifYg/kX+62RGP+D+twupCWlf7RHNpJr9TM5lh7mVKsQmHtEPq9hefjnyE
+	 Elofh1TgM9sYH4iT8p6AJGyVJQ2bCwMGIqXS+m0dD52j9q4DhTrv0dU8y8sO3miD8Y
+	 4bDzBzoc8quLVy3B9Br1aVZWCtd5oPyo2jbiqyi3cUG6RMTow7zY+/RArkmXuJGS8g
+	 jpE65Ox93W/tYZ/Lzk6opV69NPrMU+VL2PfZvzlOoNo26Yo/pukAtTNaixA4SgDNe2
+	 B8q+TktQN2S3w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Su Hui <suhui@nfschina.com>,
+Cc: Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>,
 	mchehab@kernel.org,
 	linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 41/73] media: ddbridge: fix an error code problem in ddb_probe
-Date: Mon, 22 Jan 2024 10:01:55 -0500
-Message-ID: <20240122150432.992458-41-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 42/73] media: i2c: imx335: Fix hblank min/max values
+Date: Mon, 22 Jan 2024 10:01:56 -0500
+Message-ID: <20240122150432.992458-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -65,32 +67,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.13
 Content-Transfer-Encoding: 8bit
 
-From: Su Hui <suhui@nfschina.com>
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
-[ Upstream commit 09b4195021be69af1e1936cca995712a6d0f2562 ]
+[ Upstream commit d7b95ad7a8d56248dfc34f861e445fad7a4004f4 ]
 
-Error code is assigned to 'stat', return 'stat' rather than '-1'.
+The V4L2_CID_HBLANK control is marked as readonly and can only be a
+single value.
 
-Signed-off-by: Su Hui <suhui@nfschina.com>
+Set the minimum and maximum value to match the mode value.
+
+Reviewed-by: Umang Jain <umang.jain@ideasonboard.com>
+Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/ddbridge/ddbridge-main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/i2c/imx335.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/pci/ddbridge/ddbridge-main.c b/drivers/media/pci/ddbridge/ddbridge-main.c
-index 91733ab9f58c..363badab7cf0 100644
---- a/drivers/media/pci/ddbridge/ddbridge-main.c
-+++ b/drivers/media/pci/ddbridge/ddbridge-main.c
-@@ -238,7 +238,7 @@ static int ddb_probe(struct pci_dev *pdev,
- 	ddb_unmap(dev);
- 	pci_set_drvdata(pdev, NULL);
- 	pci_disable_device(pdev);
--	return -1;
-+	return stat;
- }
- 
- /****************************************************************************/
+diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
+index 482a0b7f040a..26869abd77a6 100644
+--- a/drivers/media/i2c/imx335.c
++++ b/drivers/media/i2c/imx335.c
+@@ -971,8 +971,8 @@ static int imx335_init_controls(struct imx335 *imx335)
+ 	imx335->hblank_ctrl = v4l2_ctrl_new_std(ctrl_hdlr,
+ 						&imx335_ctrl_ops,
+ 						V4L2_CID_HBLANK,
+-						IMX335_REG_MIN,
+-						IMX335_REG_MAX,
++						mode->hblank,
++						mode->hblank,
+ 						1, mode->hblank);
+ 	if (imx335->hblank_ctrl)
+ 		imx335->hblank_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
 -- 
 2.43.0
 
