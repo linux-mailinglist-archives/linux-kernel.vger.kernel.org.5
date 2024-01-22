@@ -1,453 +1,172 @@
-Return-Path: <linux-kernel+bounces-32588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E16835D92
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EBAD835D88
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:03:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42A61283A75
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:03:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E8B8284BE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0643987D;
-	Mon, 22 Jan 2024 09:03:24 +0000 (UTC)
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BFCB38DD4;
+	Mon, 22 Jan 2024 09:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="c/QAyF23"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C583839A;
-	Mon, 22 Jan 2024 09:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A5B7364C5
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705914203; cv=none; b=JksAcfoNXv4zzZPDlGfZLhxv1m63+EvvFi9Pn7kicRIcS7VLQDrPvbOTeTBLRLYtoG5ilEkW+4OlNeHvjx+Yl1Ni5B4j9UnH0nkoOwpR9sZgyqnrh3xbEjEdQAhNEhHRp2hpbhljcO40ba9Ks/cakD0eOdqS5TRqSdZXRcKfBxw=
+	t=1705914183; cv=none; b=Byyqukr5+hcn76P9NXoQ8oPJBCWTZ1NVfGbOVbScybwPS60zj9wlE0/I80yscfatUKjk51ysK7X0t6VjIMLePlAlFuTX44loZT7YE1usvLGoUUbepR8uY8Duzb+ho7rKy6K3S889GSN7wxSL9YGzC3rD0VDDhMfmz10shGUXxY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705914203; c=relaxed/simple;
-	bh=lRHaot4egaeyfqirzeAl8zZS3FFjuGHngbb2Zm3PB3M=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ulb9HaL5silGINPT60NW7267+ueEgzTMw8gI5PwD715Po4YFMtDIg/o2C20C6RrwCW1sK5OA4YWwDQHyy8ML8lKHietYBEWuhdCXgbAw7vSYyocxLBOSnQihbcOwXn4VZQY9gGPBLVdWf27PckHdNu1dJ4wzhZYRKVngKOeUAnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; arc=none smtp.client-ip=148.163.135.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-	by mx0a-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40M3jHfV006966;
-	Mon, 22 Jan 2024 04:03:03 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3vrby6xcj5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 04:03:03 -0500 (EST)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-	by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 40M931fr053156
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 22 Jan 2024 04:03:01 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Mon, 22 Jan
- 2024 04:03:00 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Mon, 22 Jan 2024 04:03:00 -0500
-Received: from kim-VirtualBox.ad.analog.com (KPALLER2-L03.ad.analog.com [10.117.220.34])
-	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 40M92aX0012545;
-	Mon, 22 Jan 2024 04:02:49 -0500
-From: Kim Seer Paller <kimseer.paller@analog.com>
-To: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Crt
- Mori <cmo@melexis.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz
- Golaszewski <brgl@bgdev.pl>,
-        =?UTF-8?q?Nuno=20S=C3=A1?=
-	<noname.nuno@gmail.com>,
-        Kim Seer Paller <kimseer.paller@analog.com>
-Subject: [PATCH v7 2/2] iio: frequency: admfm2000: New driver
-Date: Mon, 22 Jan 2024 17:02:28 +0800
-Message-ID: <20240122090228.28363-2-kimseer.paller@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240122090228.28363-1-kimseer.paller@analog.com>
-References: <20240122090228.28363-1-kimseer.paller@analog.com>
+	s=arc-20240116; t=1705914183; c=relaxed/simple;
+	bh=wW46cQ3UwS0nraNXjGVR8wst41VmCyfX698Ufto+Ma4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sj33OAo0zXajlaXNyzdVMo/rfuCHqnGV0LBoGk8Mfm2NOTgKKLU7sPrNj/XTZXYlYx31cBhSYN8p8a2sTHDoFseycZhuKlkyA8hR31rR6IYTUSnX8lVs6mND84sCoyhmSAMxdsp9boMK2gaXrBRreF0ojYxiNBHqYgwTXmhIP0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=c/QAyF23; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e8fec0968so38167295e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 01:03:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705914180; x=1706518980; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j20of4/RjuNyS9eIIV2sFplmIp4k//FgJbvHWLk9vyY=;
+        b=c/QAyF232WBTCQfs4pXvRrvNlZ5l/MvahYp2q3vWBq1CoV24aCeVKlOO1epDmHuunY
+         TIbh5w8iT0OVIVqU02TRzceCn63zzybTiAfCHqbNe/IB6jBzx+wkMIikbW5jBXsc+kxh
+         wDp3BNdhGc2mrIkPVRfeUO3Mb4QGby4sIdpnz/2pT34JjbLJW4Ba8JceQUQt51W/8swk
+         CsieYz2p6o40lo9nish7mlPr+UCy3xVkfJ31cgEz6HA2R706XdM4XXHTcIc34gfmzctg
+         55ZF6kxGjI2d8bsQWuIxyEWtWYC78TdA9uWWHSrsxV3jrwDpz87KMEP0XzsQiYMqbzK/
+         EQXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705914180; x=1706518980;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j20of4/RjuNyS9eIIV2sFplmIp4k//FgJbvHWLk9vyY=;
+        b=mDvXZ99BQYbF+D3a59RzxY6RA5ORSVMosvhxGCXTEqcsKexz7DhrWiRxgbmCeHCyzw
+         WkcjxcFUglaRCTkpuVXinR0xO5+p5ArdGdjm+D7wGNNXy5+xR3xBMtsXtODnwI/ElCfX
+         dLhDrqhujtNLv/Ms5eynNGebzbZj2O1k2ZdWWDJ9FZyJGEMBQ3Lv+ZNV+ovxuf+tWev8
+         KFFkGmMooO83CNHkn6rOhdqWG+T3tEqT7UC+7hkN+x7k1PBRWpkPru2vdH8ALytIhBoP
+         HOkU8p6BIHQuZfRlXjYTjeWAm7BzNQsaugGbx5wg2+bjVkpSO/Pi63ps0cNvob0hmnzZ
+         ynuA==
+X-Gm-Message-State: AOJu0YxIR/0Bvo3R7KLlGKytAZGVuRJ/fsCrmdOeXmvehgmyo+kbis8L
+	oVvQeusF/ckfgBBkFu2Kt7GdPEop+olb6GWUUl6Dt8Y+yOayUFC+U+Ne8fcWJoo=
+X-Google-Smtp-Source: AGHT+IEEEn/i9g7Yboj5MSN4LpPMvbj7b/VZJYID0Dtp4cn2r95ftCrYi2/ro0bM9+PsfEqs1s+dQw==
+X-Received: by 2002:a05:600c:458a:b0:40e:6665:2beb with SMTP id r10-20020a05600c458a00b0040e66652bebmr1896275wmo.152.1705914180490;
+        Mon, 22 Jan 2024 01:03:00 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id h17-20020a05600c499100b0040d6e07a147sm37016318wmp.23.2024.01.22.01.02.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 01:03:00 -0800 (PST)
+Message-ID: <0656e87f-04f6-4627-9b9e-2b538b622549@linaro.org>
+Date: Mon, 22 Jan 2024 10:02:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: iU9VCCCquZpSytfPzRehEVocIfLMi2Oc
-X-Proofpoint-ORIG-GUID: iU9VCCCquZpSytfPzRehEVocIfLMi2Oc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-21_04,2024-01-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 impostorscore=0 priorityscore=1501 phishscore=0
- spamscore=0 adultscore=0 mlxscore=0 suspectscore=0 bulkscore=0
- mlxlogscore=999 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2401220065
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/8] clk: qcom: ipq5332: add const qualifier to the
+ clk_init_data structure
+Content-Language: en-US
+To: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240122-ipq5332-nsscc-v4-0-19fa30019770@quicinc.com>
+ <20240122-ipq5332-nsscc-v4-1-19fa30019770@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240122-ipq5332-nsscc-v4-1-19fa30019770@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Dual microwave down converter module with input RF and LO frequency
-ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1 to
-8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
-for each down conversion path.
+On 22/01/2024 06:56, Kathiravan Thirumoorthy wrote:
+> There are few places where clk_init_data structure doesn't carry the const
+> qualifier. Let's add the same.
 
-Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
----
-V6 -> V7: Removed unnecessary include. Used fwnode_property_present for
-	  checking mixer mode property. Reduced code duplicate in channel
-	  config function. Misc changes(extra spaces, year, etc.)
-V5 -> V6: Used devm_fwnode_gpiod_get_index for getting array of gpios.
-V4 -> V5: Added missing return -ENODEV in setup function. Reordered variable
-	  declarations in probe function.
-V1 -> V4: No changes.
+And why should they carry const?
 
- MAINTAINERS                       |   1 +
- drivers/iio/frequency/Kconfig     |  10 ++
- drivers/iio/frequency/Makefile    |   1 +
- drivers/iio/frequency/admfm2000.c | 282 ++++++++++++++++++++++++++++++
- 4 files changed, 294 insertions(+)
- create mode 100644 drivers/iio/frequency/admfm2000.c
+> 
+> Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+> ---
+>  drivers/clk/qcom/gcc-ipq5332.c | 38 +++++++++++++++++++-------------------
+>  1 file changed, 19 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/gcc-ipq5332.c b/drivers/clk/qcom/gcc-ipq5332.c
+> index f98591148a97..66d5399798fe 100644
+> --- a/drivers/clk/qcom/gcc-ipq5332.c
+> +++ b/drivers/clk/qcom/gcc-ipq5332.c
+> @@ -65,7 +65,7 @@ static struct clk_alpha_pll gpll0_main = {
+>  static struct clk_fixed_factor gpll0_div2 = {
+>  	.mult = 1,
+>  	.div = 2,
+> -	.hw.init = &(struct clk_init_data) {
+> +	.hw.init = &(const struct clk_init_data) {
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1f7cd2e848de..e2bd41485107 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1273,6 +1273,7 @@ L:	linux-iio@vger.kernel.org
- S:	Supported
- W:	https://ez.analog.com/linux-software-drivers
- F:	Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
-+F:	drivers/iio/frequency/admfm2000.c
- 
- ANALOG DEVICES INC ADMV1013 DRIVER
- M:	Antoniu Miclaus <antoniu.miclaus@analog.com>
-diff --git a/drivers/iio/frequency/Kconfig b/drivers/iio/frequency/Kconfig
-index 9e85dfa58508..c455be7d4a1c 100644
---- a/drivers/iio/frequency/Kconfig
-+++ b/drivers/iio/frequency/Kconfig
-@@ -60,6 +60,16 @@ config ADF4377
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called adf4377.
- 
-+config ADMFM2000
-+	tristate "Analog Devices ADMFM2000 Dual Microwave Down Converter"
-+	depends on GPIOLIB
-+	help
-+	  Say yes here to build support for Analog Devices ADMFM2000 Dual
-+	  Microwave Down Converter.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called admfm2000.
-+
- config ADMV1013
- 	tristate "Analog Devices ADMV1013 Microwave Upconverter"
- 	depends on SPI && COMMON_CLK
-diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
-index b616c29b4a08..70d0e0b70e80 100644
---- a/drivers/iio/frequency/Makefile
-+++ b/drivers/iio/frequency/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_AD9523) += ad9523.o
- obj-$(CONFIG_ADF4350) += adf4350.o
- obj-$(CONFIG_ADF4371) += adf4371.o
- obj-$(CONFIG_ADF4377) += adf4377.o
-+obj-$(CONFIG_ADMFM2000) += admfm2000.o
- obj-$(CONFIG_ADMV1013) += admv1013.o
- obj-$(CONFIG_ADMV1014) += admv1014.o
- obj-$(CONFIG_ADMV4420) += admv4420.o
-diff --git a/drivers/iio/frequency/admfm2000.c b/drivers/iio/frequency/admfm2000.c
-new file mode 100644
-index 000000000000..c34d79e55a7c
---- /dev/null
-+++ b/drivers/iio/frequency/admfm2000.c
-@@ -0,0 +1,282 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ADMFM2000 Dual Microwave Down Converter
-+ *
-+ * Copyright 2024 Analog Devices Inc.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/iio/iio.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+
-+#define ADMFM2000_MIXER_MODE		0
-+#define ADMFM2000_DIRECT_IF_MODE	1
-+#define ADMFM2000_DSA_GPIOS		5
-+#define ADMFM2000_MODE_GPIOS		2
-+#define ADMFM2000_MAX_GAIN		0
-+#define ADMFM2000_MIN_GAIN		-31000
-+#define ADMFM2000_DEFAULT_GAIN		-0x20
-+
-+struct admfm2000_state {
-+	struct mutex			lock; /* protect sensor state */
-+	struct gpio_desc		*sw1_ch[2];
-+	struct gpio_desc		*sw2_ch[2];
-+	struct gpio_desc		*dsa1_gpios[5];
-+	struct gpio_desc		*dsa2_gpios[5];
-+	u32				gain[2];
-+};
-+
-+static int admfm2000_mode(struct iio_dev *indio_dev, u32 chan, u32 mode)
-+{
-+	struct admfm2000_state *st = iio_priv(indio_dev);
-+	int i;
-+
-+	switch (mode) {
-+	case ADMFM2000_MIXER_MODE:
-+		for (i = 0; i < ADMFM2000_MODE_GPIOS; i++) {
-+			gpiod_set_value_cansleep(st->sw1_ch[i], (chan == 0) ? 1 : 0);
-+			gpiod_set_value_cansleep(st->sw2_ch[i], (chan == 0) ? 0 : 1);
-+		}
-+		return 0;
-+	case ADMFM2000_DIRECT_IF_MODE:
-+		for (i = 0; i < ADMFM2000_MODE_GPIOS; i++) {
-+			gpiod_set_value_cansleep(st->sw1_ch[i], (chan == 0) ? 0 : 1);
-+			gpiod_set_value_cansleep(st->sw2_ch[i], (chan == 0) ? 1 : 0);
-+		}
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int admfm2000_attenuation(struct iio_dev *indio_dev, u32 chan, u32 value)
-+{
-+	struct admfm2000_state *st = iio_priv(indio_dev);
-+	int i;
-+
-+	switch (chan) {
-+	case 0:
-+		for (i = 0; i < ADMFM2000_DSA_GPIOS; i++)
-+			gpiod_set_value_cansleep(st->dsa1_gpios[i], value & (1 << i));
-+		return 0;
-+	case 1:
-+		for (i = 0; i < ADMFM2000_DSA_GPIOS; i++)
-+			gpiod_set_value_cansleep(st->dsa2_gpios[i], value & (1 << i));
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int admfm2000_read_raw(struct iio_dev *indio_dev,
-+			      struct iio_chan_spec const *chan, int *val,
-+			      int *val2, long mask)
-+{
-+	struct admfm2000_state *st = iio_priv(indio_dev);
-+	int gain;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_HARDWAREGAIN:
-+		mutex_lock(&st->lock);
-+		gain = ~(st->gain[chan->channel]) * -1000;
-+		*val = gain / 1000;
-+		*val2 = (gain % 1000) * 1000;
-+		mutex_unlock(&st->lock);
-+
-+		return IIO_VAL_INT_PLUS_MICRO_DB;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int admfm2000_write_raw(struct iio_dev *indio_dev,
-+			       struct iio_chan_spec const *chan, int val,
-+			       int val2, long mask)
-+{
-+	struct admfm2000_state *st = iio_priv(indio_dev);
-+	int gain, ret;
-+
-+	if (val < 0)
-+		gain = (val * 1000) - (val2 / 1000);
-+	else
-+		gain = (val * 1000) + (val2 / 1000);
-+
-+	if (gain > ADMFM2000_MAX_GAIN || gain < ADMFM2000_MIN_GAIN)
-+		return -EINVAL;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_HARDWAREGAIN:
-+		mutex_lock(&st->lock);
-+		st->gain[chan->channel] = ~((abs(gain) / 1000) & 0x1F);
-+
-+		ret = admfm2000_attenuation(indio_dev, chan->channel,
-+					    st->gain[chan->channel]);
-+		mutex_unlock(&st->lock);
-+		return ret;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int admfm2000_write_raw_get_fmt(struct iio_dev *indio_dev,
-+				       struct iio_chan_spec const *chan,
-+				       long mask)
-+{
-+	switch (mask) {
-+	case IIO_CHAN_INFO_HARDWAREGAIN:
-+		return IIO_VAL_INT_PLUS_MICRO_DB;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct iio_info admfm2000_info = {
-+	.read_raw = &admfm2000_read_raw,
-+	.write_raw = &admfm2000_write_raw,
-+	.write_raw_get_fmt = &admfm2000_write_raw_get_fmt,
-+};
-+
-+#define ADMFM2000_CHAN(_channel) {					\
-+	.type = IIO_VOLTAGE,						\
-+	.output = 1,							\
-+	.indexed = 1,							\
-+	.channel = _channel,						\
-+	.info_mask_separate = BIT(IIO_CHAN_INFO_HARDWAREGAIN),		\
-+}
-+
-+static const struct iio_chan_spec admfm2000_channels[] = {
-+	ADMFM2000_CHAN(0),
-+	ADMFM2000_CHAN(1),
-+};
-+
-+static int admfm2000_channel_config(struct admfm2000_state *st,
-+				    struct iio_dev *indio_dev)
-+{
-+	struct platform_device *pdev = to_platform_device(indio_dev->dev.parent);
-+	struct device *dev = &pdev->dev;
-+	struct fwnode_handle *child;
-+	struct gpio_desc **dsa;
-+	struct gpio_desc **sw;
-+	int ret, i;
-+	bool mode;
-+	u32 reg;
-+
-+	device_for_each_child_node(dev, child) {
-+		ret = fwnode_property_read_u32(child, "reg", &reg);
-+		if (ret) {
-+			fwnode_handle_put(child);
-+			return dev_err_probe(dev, ret,
-+					     "Failed to get reg property\n");
-+		}
-+
-+		if (reg >= indio_dev->num_channels) {
-+			fwnode_handle_put(child);
-+			return dev_err_probe(dev, -EINVAL, "reg bigger than: %d\n",
-+					     indio_dev->num_channels);
-+		}
-+
-+		if (fwnode_property_present(child, "adi,mixer-mode"))
-+			mode = ADMFM2000_MIXER_MODE;
-+		else
-+			mode = ADMFM2000_DIRECT_IF_MODE;
-+
-+		switch (reg) {
-+		case 0:
-+			sw = st->sw1_ch;
-+			dsa = st->dsa1_gpios;
-+			break;
-+		case 1:
-+			sw = st->sw2_ch;
-+			dsa = st->dsa2_gpios;
-+			break;
-+		default:
-+			fwnode_handle_put(child);
-+			return -EINVAL;
-+		}
-+
-+		for (i = 0; i < ADMFM2000_MODE_GPIOS; i++) {
-+			sw[i] = devm_fwnode_gpiod_get_index(dev, child, "switch",
-+							    i, GPIOD_OUT_LOW, NULL);
-+			if (IS_ERR(sw[i])) {
-+				fwnode_handle_put(child);
-+				return dev_err_probe(dev, PTR_ERR(sw[i]),
-+						     "Failed to get gpios\n");
-+			}
-+		}
-+
-+		for (i = 0; i < ADMFM2000_DSA_GPIOS; i++) {
-+			dsa[i] = devm_fwnode_gpiod_get_index(dev, child,
-+							     "attenuation", i,
-+							     GPIOD_OUT_LOW, NULL);
-+			if (IS_ERR(dsa[i])) {
-+				fwnode_handle_put(child);
-+				return dev_err_probe(dev, PTR_ERR(dsa[i]),
-+						     "Failed to get gpios\n");
-+			}
-+		}
-+
-+		ret = admfm2000_mode(indio_dev, reg, mode);
-+		if (ret) {
-+			fwnode_handle_put(child);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int admfm2000_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct admfm2000_state *st;
-+	struct iio_dev *indio_dev;
-+	int ret;
-+
-+	indio_dev = devm_iio_device_alloc(dev, sizeof(*st));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	st = iio_priv(indio_dev);
-+
-+	indio_dev->name = "admfm2000";
-+	indio_dev->num_channels = ARRAY_SIZE(admfm2000_channels);
-+	indio_dev->channels = admfm2000_channels;
-+	indio_dev->info = &admfm2000_info;
-+	indio_dev->modes = INDIO_DIRECT_MODE;
-+
-+	st->gain[0] = ADMFM2000_DEFAULT_GAIN;
-+	st->gain[1] = ADMFM2000_DEFAULT_GAIN;
-+
-+	mutex_init(&st->lock);
-+
-+	ret = admfm2000_channel_config(st, indio_dev);
-+	if (ret)
-+		return ret;
-+
-+	return devm_iio_device_register(dev, indio_dev);
-+}
-+
-+static const struct of_device_id admfm2000_of_match[] = {
-+	{ .compatible = "adi,admfm2000" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, admfm2000_of_match);
-+
-+static struct platform_driver admfm2000_driver = {
-+	.driver = {
-+		.name = "admfm2000",
-+		.of_match_table = admfm2000_of_match,
-+	},
-+	.probe = admfm2000_probe,
-+};
-+module_platform_driver(admfm2000_driver);
-+
-+MODULE_AUTHOR("Kim Seer Paller <kimseer.paller@analog.com>");
-+MODULE_DESCRIPTION("ADMFM2000 Dual Microwave Down Converter");
-+MODULE_LICENSE("GPL");
--- 
-2.34.1
+This is a cast, why do you need const? What does it even change?
+
+Best regards,
+Krzysztof
 
 
