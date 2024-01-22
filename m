@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-33322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43DE6836861
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:34:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DD26836864
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:35:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7660F1C2196D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:34:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3637D289522
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD12A481B8;
-	Mon, 22 Jan 2024 15:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7628160860;
+	Mon, 22 Jan 2024 15:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AaKpzhe2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iKCRNF7j"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD6C60860;
-	Mon, 22 Jan 2024 15:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B045B60897;
+	Mon, 22 Jan 2024 15:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935883; cv=none; b=OkuyDJlgiVaYRc6atO8vFxzDXZGIN8N4D12QAEVYB+ZwmK0AisGeIWcYpAWUKkAbVeZqV29QIv/DyblSjCac+I5x4c5mTwKw3mRKSHCsGiwXdPPcIl/EnXpRtwytcowuwmXcddPu6jhiLGAlnOFDJErc9OhTySsKc6NRd7SuwrQ=
+	t=1705935885; cv=none; b=ILOiYYq0H8QsDcfUE2rcAr2B7tULf/nYMPdJ/RDDkJDOLcaLwO3t4KEpK2+HukYMnnGKODCQ41jAe1hwDPzUNGyqfuuE2br72bLhxKx+033tFefeP1eNXSOYLKlAnCF0XiMaRSm/WeK/Q0+43FwbVoSExOEGRA+tUGXdduWO+sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935883; c=relaxed/simple;
-	bh=VPRWKVJwR+x5x+U1V64fzrJg/kZFD58rr+flrh30mIQ=;
+	s=arc-20240116; t=1705935885; c=relaxed/simple;
+	bh=Ilao1wFuUXYFDWjWipfSlhMGNNDHHGQPbzbxse6p9as=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b31jNOHRlZctThzlVvWV1A0MZ84oizyJAVVkjRU63tZ+LysHTzkzZZrDsBwKwd6x037Tyyo0mcWHxq61x2MQTTj0xDYoDpswEU+R1JTYlWV9s1uEPf3bV2pop7qUxeT3dMXh1LrBhUqGG5xV9n9H4Kl8enbDlf3KIe1N0aHktJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AaKpzhe2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2183AC43390;
-	Mon, 22 Jan 2024 15:04:42 +0000 (UTC)
+	 MIME-Version; b=Rdx9IVzfUo8B4xVFOu185/14l4Fz35yTaLCCZ1v8h8QCjtE1DfGBl67Jmkzh3+a5j1I9RJEZihnuaK0R4A8A1WrJPqs8+3PjFLfmuvrvJuaGVSLteSQWSJ1pfwyHb3joyX8RSi5j9q7OH7hBVVVeLBy/n7sl5/hdlTNkiby9Pcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iKCRNF7j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E1CC433A6;
+	Mon, 22 Jan 2024 15:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935882;
-	bh=VPRWKVJwR+x5x+U1V64fzrJg/kZFD58rr+flrh30mIQ=;
+	s=k20201202; t=1705935885;
+	bh=Ilao1wFuUXYFDWjWipfSlhMGNNDHHGQPbzbxse6p9as=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AaKpzhe2mK7PN9Bm/lOVXyR4XnAyEh2sjJDjY0WxtxQ8JQ7yCgi3r/5brgNYNl7py
-	 cdaUx3MBbVlC4thfRCmwvbNbg8DYsbCaYFNO8tj/YiyvNWi0HuXH1L7zMmwvezEhlN
-	 OIirbzqtlfxA13MQaaqZEmEoASMsTF31vxLUlgU2WU6i74dyyI6wKrZ4JotbO/4HLr
-	 zkhb0PoNRIXXYVgPTiXyQkao92ehGG+5hG/F1tZ0GctYPbHueULaH1Dy8RAcGeVNmB
-	 VR64JtlzhFQRyLnx08Sj+MZ/qPRNwTSPp1Blqi24PmG5uH3WiO8uj9hsTYdWBU/Xg3
-	 xbQVYSTYieIFA==
+	b=iKCRNF7j4/csY+66Xg39xpvQCb27cC2GjRvY+MQPbipNBtXITJ5pO57EaPEgZtQLk
+	 EpKp540epikql0rl9NyB4JzrEr3txRU5ZKw9nHud/3JD0ZWhHHihAwXBHUijwOhTvJ
+	 9cbnQ3lU8d5BImamX5GtYc+px737miCY3u28b/7IEhdcphxxhYRviMaWc+RMUglxqp
+	 +oZsvouo2lrQ1qrWcHzuhPHGmlna8gShuDo2rGOKqB8G1ICHqY6F/AN1+0gT3AgtqO
+	 ax0UX4sVLcV6pCIxs4dNCxM5Xft1e64Xf8bJLrUAFaSHfosP/T5xpMVilbURSbI2X1
+	 MpahVmQUvueNw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Jan Kara <jack@suse.cz>,
+	Al Viro <viro@zeniv.linux.org.uk>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 05/73] fast_dput(): handle underflows gracefully
-Date: Mon, 22 Jan 2024 10:01:19 -0500
-Message-ID: <20240122150432.992458-5-sashal@kernel.org>
+	brauner@kernel.org,
+	jlayton@kernel.org,
+	reiserfs-devel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 06/73] reiserfs: Avoid touching renamed directory if parent does not change
+Date: Mon, 22 Jan 2024 10:01:20 -0500
+Message-ID: <20240122150432.992458-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -64,76 +66,141 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.13
 Content-Transfer-Encoding: 8bit
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 504e08cebe1d4e1efe25f915234f646e74a364a8 ]
+[ Upstream commit 49db9b1b86a82448dfaf3fcfefcf678dee56c8ed ]
 
-If refcount is less than 1, we should just warn, unlock dentry and
-return true, so that the caller doesn't try to do anything else.
+The VFS will not be locking moved directory if its parent does not
+change. Change reiserfs rename code to avoid touching renamed directory
+if its parent does not change as without locking that can corrupt the
+filesystem.
 
-Taking care of that leaves the rest of "lockref_put_return() has
-failed" case equivalent to "decrement refcount and rejoin the
-normal slow path after the point where we grab ->d_lock".
-
-NOTE: lockref_put_return() is strictly a fastpath thing - unlike
-the rest of lockref primitives, it does not contain a fallback.
-Caller (and it looks like fast_dput() is the only legitimate one
-in the entire kernel) has to do that itself.  Reasons for
-lockref_put_return() failures:
-	* ->d_lock held by somebody
-	* refcount <= 0
-	* ... or an architecture not supporting lockref use of
-cmpxchg - sparc, anything non-SMP, config with spinlock debugging...
-
-We could add a fallback, but it would be a clumsy API - we'd have
-to distinguish between:
-	(1) refcount > 1 - decremented, lock not held on return
-	(2) refcount < 1 - left alone, probably no sense to hold the lock
-	(3) refcount is 1, no cmphxcg - decremented, lock held on return
-	(4) refcount is 1, cmphxcg supported - decremented, lock *NOT* held
-	    on return.
-We want to return with no lock held in case (4); that's the whole point of that
-thing.  We very much do not want to have the fallback in case (3) return without
-a lock, since the caller might have to retake it in that case.
-So it wouldn't be more convenient than doing the fallback in the caller and
-it would be very easy to screw up, especially since the test coverage would
-suck - no way to test (3) and (4) on the same kernel build.
-
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dcache.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/reiserfs/namei.c | 54 ++++++++++++++++++++++++---------------------
+ 1 file changed, 29 insertions(+), 25 deletions(-)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index 25ac74d30bff..9ae808fba517 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -787,12 +787,12 @@ static inline bool fast_dput(struct dentry *dentry)
- 	 */
- 	if (unlikely(ret < 0)) {
- 		spin_lock(&dentry->d_lock);
--		if (dentry->d_lockref.count > 1) {
--			dentry->d_lockref.count--;
-+		if (WARN_ON_ONCE(dentry->d_lockref.count <= 0)) {
- 			spin_unlock(&dentry->d_lock);
- 			return true;
- 		}
--		return false;
-+		dentry->d_lockref.count--;
-+		goto locked;
+diff --git a/fs/reiserfs/namei.c b/fs/reiserfs/namei.c
+index 9c5704be2435..889341c6b8f0 100644
+--- a/fs/reiserfs/namei.c
++++ b/fs/reiserfs/namei.c
+@@ -1324,8 +1324,8 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 	struct inode *old_inode, *new_dentry_inode;
+ 	struct reiserfs_transaction_handle th;
+ 	int jbegin_count;
+-	umode_t old_inode_mode;
+ 	unsigned long savelink = 1;
++	bool update_dir_parent = false;
+ 
+ 	if (flags & ~RENAME_NOREPLACE)
+ 		return -EINVAL;
+@@ -1375,8 +1375,7 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 		return -ENOENT;
  	}
  
- 	/*
-@@ -850,6 +850,7 @@ static inline bool fast_dput(struct dentry *dentry)
- 	 * else could have killed it and marked it dead. Either way, we
- 	 * don't need to do anything else.
- 	 */
-+locked:
- 	if (dentry->d_lockref.count) {
- 		spin_unlock(&dentry->d_lock);
- 		return true;
+-	old_inode_mode = old_inode->i_mode;
+-	if (S_ISDIR(old_inode_mode)) {
++	if (S_ISDIR(old_inode->i_mode)) {
+ 		/*
+ 		 * make sure that directory being renamed has correct ".."
+ 		 * and that its new parent directory has not too many links
+@@ -1389,24 +1388,28 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 			}
+ 		}
+ 
+-		/*
+-		 * directory is renamed, its parent directory will be changed,
+-		 * so find ".." entry
+-		 */
+-		dot_dot_de.de_gen_number_bit_string = NULL;
+-		retval =
+-		    reiserfs_find_entry(old_inode, "..", 2, &dot_dot_entry_path,
++		if (old_dir != new_dir) {
++			/*
++			 * directory is renamed, its parent directory will be
++			 * changed, so find ".." entry
++			 */
++			dot_dot_de.de_gen_number_bit_string = NULL;
++			retval =
++			    reiserfs_find_entry(old_inode, "..", 2,
++					&dot_dot_entry_path,
+ 					&dot_dot_de);
+-		pathrelse(&dot_dot_entry_path);
+-		if (retval != NAME_FOUND) {
+-			reiserfs_write_unlock(old_dir->i_sb);
+-			return -EIO;
+-		}
++			pathrelse(&dot_dot_entry_path);
++			if (retval != NAME_FOUND) {
++				reiserfs_write_unlock(old_dir->i_sb);
++				return -EIO;
++			}
+ 
+-		/* inode number of .. must equal old_dir->i_ino */
+-		if (dot_dot_de.de_objectid != old_dir->i_ino) {
+-			reiserfs_write_unlock(old_dir->i_sb);
+-			return -EIO;
++			/* inode number of .. must equal old_dir->i_ino */
++			if (dot_dot_de.de_objectid != old_dir->i_ino) {
++				reiserfs_write_unlock(old_dir->i_sb);
++				return -EIO;
++			}
++			update_dir_parent = true;
+ 		}
+ 	}
+ 
+@@ -1486,7 +1489,7 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 
+ 		reiserfs_prepare_for_journal(old_inode->i_sb, new_de.de_bh, 1);
+ 
+-		if (S_ISDIR(old_inode->i_mode)) {
++		if (update_dir_parent) {
+ 			if ((retval =
+ 			     search_by_entry_key(new_dir->i_sb,
+ 						 &dot_dot_de.de_entry_key,
+@@ -1534,14 +1537,14 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 							 new_de.de_bh);
+ 			reiserfs_restore_prepared_buffer(old_inode->i_sb,
+ 							 old_de.de_bh);
+-			if (S_ISDIR(old_inode_mode))
++			if (update_dir_parent)
+ 				reiserfs_restore_prepared_buffer(old_inode->
+ 								 i_sb,
+ 								 dot_dot_de.
+ 								 de_bh);
+ 			continue;
+ 		}
+-		if (S_ISDIR(old_inode_mode)) {
++		if (update_dir_parent) {
+ 			if (item_moved(&dot_dot_ih, &dot_dot_entry_path) ||
+ 			    !entry_points_to_object("..", 2, &dot_dot_de,
+ 						    old_dir)) {
+@@ -1559,7 +1562,7 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 			}
+ 		}
+ 
+-		RFALSE(S_ISDIR(old_inode_mode) &&
++		RFALSE(update_dir_parent &&
+ 		       !buffer_journal_prepared(dot_dot_de.de_bh), "");
+ 
+ 		break;
+@@ -1592,11 +1595,12 @@ static int reiserfs_rename(struct mnt_idmap *idmap,
+ 		savelink = new_dentry_inode->i_nlink;
+ 	}
+ 
+-	if (S_ISDIR(old_inode_mode)) {
++	if (update_dir_parent) {
+ 		/* adjust ".." of renamed directory */
+ 		set_ino_in_dir_entry(&dot_dot_de, INODE_PKEY(new_dir));
+ 		journal_mark_dirty(&th, dot_dot_de.de_bh);
+-
++	}
++	if (S_ISDIR(old_inode->i_mode)) {
+ 		/*
+ 		 * there (in new_dir) was no directory, so it got new link
+ 		 * (".."  of renamed directory)
 -- 
 2.43.0
 
