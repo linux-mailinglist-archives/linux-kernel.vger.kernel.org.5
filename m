@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-33530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 938E0836AD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:34:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74865836AD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:35:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C21721C24ED8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:34:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A78B61C22291
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D401482E0;
-	Mon, 22 Jan 2024 15:17:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1884E1474DB;
+	Mon, 22 Jan 2024 15:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y16tZC94"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lZTo+qaN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E051474D1;
-	Mon, 22 Jan 2024 15:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CCBF1482F0;
+	Mon, 22 Jan 2024 15:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936637; cv=none; b=cM0iodpoyuDPOz79DrZUOaY5f8xGYVXUp0V/u2Bh8fLjh8HfRrKzQgVKvdbxyYMfAGD7QgX8vpQPDjfO98sqZ3HB3a9K2Z9SVrqU+UQWfLTnZE9S/nMisAg/fEq+Wt8VAx7Hglla9DryU3q5RugL/jph9ItCNX5IlZoWPZoaQtU=
+	t=1705936639; cv=none; b=fJV4GPjQHY9dZnnLzQak+WrQ78K8tJsZcnLKuLWkRw93NV5xtDHKsFtTmFayjfO0zl9vcrN33HnsMUR/H7geRKWPowMLehvZeoWmRrxFJMHhkanJbS9DXqd6PNAzdrw3eqlaGjOfvXq896fReA+ODd9onfL6IU/NElhEUGHgX0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936637; c=relaxed/simple;
-	bh=4qfjbcOA7Zrel+cu7YxJM2gsE3yKvkJzvU0GEAB2k/8=;
+	s=arc-20240116; t=1705936639; c=relaxed/simple;
+	bh=/4gtotjwXX/OM490ZBA8EUHzvKc/zyuqzDmHJOrDef4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z4tyutDH9Sq7unXWn9SiQeHbImbje1DRHzW/OMGitTVX4FHOaWZBHXIufOYM+8jvceEISYdn28CNro3B+IE8nDFALICBxPwqE52lz5Bi8i/FIMAy709aRilYuT+ynlJposgFfNgcM64FYwkVdRSuWjcpPgMRLcVB1FnMVCMNy7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y16tZC94; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEED0C43390;
-	Mon, 22 Jan 2024 15:17:15 +0000 (UTC)
+	 MIME-Version; b=jO7Jl2eDeECgvvAG6lGC5Az/GYp7ZnWGIFMfGjsDteltLNcv/PGrUzMwl0oVh6OhLcq2dGV1SsK/laJ35rWgcut13xC27NoUTulrsz9BktgruOvpCkifISCkVRJroE4P34BYqUcSomyC4tONVYbkkNF/CdBLqGtXpXUh1TIvj7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lZTo+qaN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BEBEC433B2;
+	Mon, 22 Jan 2024 15:17:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936637;
-	bh=4qfjbcOA7Zrel+cu7YxJM2gsE3yKvkJzvU0GEAB2k/8=;
+	s=k20201202; t=1705936638;
+	bh=/4gtotjwXX/OM490ZBA8EUHzvKc/zyuqzDmHJOrDef4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Y16tZC94BNIS0sZKgch4HLpMuKkJ/utwwqRxuzpa9EDJpG0ohGTI0FJGA2hT8T1bn
-	 8XvAKNNMKMn/o/mDaHHpT480uKc6DOTxVEXi6eD4fsdizri2aEDWktInFbtErkXa8q
-	 tdYFdXpsmiYTfKN5bdGAcm7+knQ3f40/+lZBbkxxiEBzwQZHjJCKst0HfsKNc7kN8g
-	 wftfajoV8/W5yxI+KUFGSYyg+zyIBitmuV3HdTRXd24LwJzLZTh7xHq3OVyKPMTTuU
-	 1q8a82Qq0ddfVIEvOQNaQDjn0jrhOpZhnU11DncJFalHf67lWaDNRcfmvgaDr59Snh
-	 IMbSyEjYdkO2A==
+	b=lZTo+qaN2BM2pDUn9/YmtptCBuI/JS1rgAEEQWRcBlUSimRKE0BgxiH4sDAEkcjb5
+	 qRhMyWgGq7n9iuNmj/GXgv0bCpv3KNAhDgy807dCWkL8bEtg40/yGRIRK9M6jmw/TB
+	 IEzyejHgscx6sA/ywbX85DR7Xnx/Ux3+org4C40282iP8jJT6eYJgE2X7BNXcA14PF
+	 20ulgPZn4X4Ibdx7vAahrMTsnHkt7VRdwZdu+Wd2G0GJymgijrd8OP2qo4nzsik/hj
+	 d42Q84ImhF/ME8W9MpLUiCXEzi4rH2FYokANb1EBtki9oYYyRp3jCBYijdrqDhqpas
+	 Kwk7wZLiDUDFQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
 	airlied@gmail.com,
 	daniel@ffwll.ch,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 07/24] drm/drm_file: fix use of uninitialized variable
-Date: Mon, 22 Jan 2024 10:16:21 -0500
-Message-ID: <20240122151659.997085-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 08/24] drm/framebuffer: Fix use of uninitialized variable
+Date: Mon, 22 Jan 2024 10:16:22 -0500
+Message-ID: <20240122151659.997085-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122151659.997085-1-sashal@kernel.org>
 References: <20240122151659.997085-1-sashal@kernel.org>
@@ -71,39 +71,38 @@ Content-Transfer-Encoding: 8bit
 
 From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-[ Upstream commit 1d3062fad9c7313fff9970a88e0538a24480ffb8 ]
+[ Upstream commit f9af8f0c1dc567a5a6a6318ff324c45d80d4a60f ]
 
 smatch reports:
 
-drivers/gpu/drm/drm_file.c:967 drm_show_memory_stats() error: uninitialized symbol 'supported_status'.
+drivers/gpu/drm/drm_framebuffer.c:654 drm_mode_getfb2_ioctl() error: uninitialized symbol 'ret'.
 
-'supported_status' is only set in one code path. I'm not familiar with
-the code to say if that path will always be ran in real life, but
-whether that is the case or not, I think it is good to initialize
-'supported_status' to 0 to silence the warning (and possibly fix a bug).
+'ret' is possibly not set when there are no errors, causing the error
+above. I can't say if that ever happens in real-life, but in any case I
+think it is good to initialize 'ret' to 0.
 
 Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 Acked-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231103-uninit-fixes-v2-1-c22b2444f5f5@ideasonboard.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20231103-uninit-fixes-v2-2-c22b2444f5f5@ideasonboard.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_file.c | 2 +-
+ drivers/gpu/drm/drm_framebuffer.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-index ea34bc991858..e27a15a6fe79 100644
---- a/drivers/gpu/drm/drm_file.c
-+++ b/drivers/gpu/drm/drm_file.c
-@@ -369,7 +369,7 @@ int drm_open(struct inode *inode, struct file *filp)
- {
- 	struct drm_device *dev;
- 	struct drm_minor *minor;
--	int retcode;
-+	int retcode = 0;
- 	int need_setup = 0;
+diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+index 57564318ceea..e85fbbbc07f8 100644
+--- a/drivers/gpu/drm/drm_framebuffer.c
++++ b/drivers/gpu/drm/drm_framebuffer.c
+@@ -580,7 +580,7 @@ int drm_mode_dirtyfb_ioctl(struct drm_device *dev,
+ 	struct drm_framebuffer *fb;
+ 	unsigned flags;
+ 	int num_clips;
+-	int ret;
++	int ret = 0;
  
- 	minor = drm_minor_acquire(iminor(inode));
+ 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+ 		return -EOPNOTSUPP;
 -- 
 2.43.0
 
