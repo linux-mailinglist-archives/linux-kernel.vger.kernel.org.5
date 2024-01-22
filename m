@@ -1,130 +1,110 @@
-Return-Path: <linux-kernel+bounces-33017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 597CE836345
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:31:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52840836349
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1315F290AD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:31:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70B61F21CD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7971F3C68A;
-	Mon, 22 Jan 2024 12:31:08 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB1238FA5;
+	Mon, 22 Jan 2024 12:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e5+MoYN6"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816933B194;
-	Mon, 22 Jan 2024 12:31:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5423A31A61;
+	Mon, 22 Jan 2024 12:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705926668; cv=none; b=MeWje550DJWHZuB5j27t6PE/Mxbh6/OuE8SVYp6NH1n2sGMLd0bWVUGpyrI4CosDZJtllYI9Fl6JrgJr3Jf+13KZbkEKf+3PxZo2eP89LULT3rSBzT/JvEvmIFL/XmznIvkv8DFy15OZPHCRFSsdguzp1A9Rv5cRdMpCSFpOkL4=
+	t=1705926835; cv=none; b=FdeCRydcyFojSVxXwp99R13Se/QsM4S66uwpQAcypStoIXuTytUpgHnzE5N2ks2aM0IUZTDhkKFmDnXErhnlozyGb9ZaVdB8jzpEA8Q8MHn5UCwVwK71EIWjQ+3twu+WdrF1dYEWy6ZaZbwxbsXBFdOeWTwlpGMgrFZNthcKu10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705926668; c=relaxed/simple;
-	bh=PzVDQgEDXAINlYBLlMfa+i8t8rPrBLpAvoIASPJEaJ0=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ONbNYTKlbN6Tv57i5WhPPSj8hlRo1VANe0bBe68eurwIzLFQV8zBZ97h9870Au34UiYrliCDKPuKo4UJbCArP8V+5+A3/2lDOrQw+Arrni5iS3NCIaOhev0xVecamaUkLZULiX2NTI5KvmPC+8X+MUZrPkrem1U+Km62gL/NstE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TJTwz0Vzmz1FJgF;
-	Mon, 22 Jan 2024 20:26:43 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 894181A0172;
-	Mon, 22 Jan 2024 20:31:02 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 22 Jan
- 2024 20:31:01 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<libaokun1@huawei.com>, <stable@kernel.org>
-Subject: [PATCH] ext4: correct best extent lstart adjustment logic
-Date: Mon, 22 Jan 2024 20:33:32 +0800
-Message-ID: <20240122123332.555370-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1705926835; c=relaxed/simple;
+	bh=XTDB6//crJGG/H3m1XnEvHrPWpGka2r/ZPypNjVQ76w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZtX0nEL1T3fVJdoDThT46inC30R64wFu+TJDn8Yc5rWBmwYqgytvfnBAGtCDv03hT/j1TQNKREkzxB0v+ZRr8nr7JEm0O3h8QJlPPy23uwadDpwYTju/O+Q3eIli5oXBxYk2gnx+dkbYcsOU+L6TW0JEcy1DhadRy+6MEOXUVT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e5+MoYN6; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50ec948ad31so3291941e87.2;
+        Mon, 22 Jan 2024 04:33:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705926832; x=1706531632; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bFxRSXpfyegZX74xz8OgyH0TqgyPmSRwyVAL2eqo6Q0=;
+        b=e5+MoYN6jNiDGC3rkIDjt65kly1odEFlx95Qv8pbnLFOT9JJU1Je3RH/FBHgp1hEXf
+         Ph3MUr6nBNqxOoAzV9z7JMBkmXyzo+9zWGP9orMd8X5/pW8YTErOWX13Cw+5L/ig6Ipv
+         nhSEZX8HkyKvx6RQ3kV2+1/LyQNKtb1SMVObxnwEpgbq2TnpcjJd+541HC2FiV0My9Wg
+         ydHwI1eCjmztKgoafFRu3MNYNPCD+MNaPuNuB79wPBmiP2sXLjedmMF9hilyNxJbVVJ5
+         Zbl0TckF4QFk7BLNZzz3IP9ckkMosJ4rqlDr79Zp3RwSumaJLNGO6mV/nV5IDHvyqXME
+         jASA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705926832; x=1706531632;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bFxRSXpfyegZX74xz8OgyH0TqgyPmSRwyVAL2eqo6Q0=;
+        b=d8Qpy5gCDVdSb5nOd9NOO6dYM7KTL5re3oDyWi5L2EdOZxS6XsrW7x8Y/bWdG2x3tN
+         sbMlF3OYEV1rcp1pureOojeEVDXuizWmI6lwRTsTtdbB033xmNckA6sK385A8MUg01Jy
+         Eu85hSdSPs+efGQS6gTidHZOBUBXky8az0bNOIPheD4q2il3W2ttrP/gccqTv/FdvSL4
+         0ALVu2fOdBA42v6aBxSkmQkvZV+65iQk77vQr7khHgaiC3zNjLpfQRKn1WfTSwsnIXqr
+         RvlfRiFdeXlQhK1qlQP4bSKvpdp1/2ffN96zgSIU/xWpWio1Lzd5N1vatGHJ/ZFlErQe
+         M3uw==
+X-Gm-Message-State: AOJu0YywLhMdYz2JW4aYrrAOoj7OVdxMxoNNzqPuAp2rIE2mjeNtX7Ev
+	tBUPNoepLatojUZw6HY4l3lZZcgA8C/aE/mfNE5jVmT/b8RVzxSE
+X-Google-Smtp-Source: AGHT+IE27PJB1NHdKUDjIrtru5lVJQa/6wd07V7mmwsTZ2/nxlWmOfso3vPr5kcpEXy5gjqP7xfJ8A==
+X-Received: by 2002:a05:6512:a8b:b0:50e:ccd8:f9d9 with SMTP id m11-20020a0565120a8b00b0050eccd8f9d9mr1771847lfu.24.1705926831991;
+        Mon, 22 Jan 2024 04:33:51 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id q9-20020aa7cc09000000b00558a3e892b3sm14008365edt.41.2024.01.22.04.33.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 04:33:51 -0800 (PST)
+Date: Mon, 22 Jan 2024 14:33:49 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Tim Menninger <tmenninger@purestorage.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, f.fainelli@gmail.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: dsa: mv88e6xxx: Make *_c45 callbacks agree with
+ phy_*_c45 callbacks
+Message-ID: <20240122123349.cxx2i2kzrhuqnasp@skbuf>
+References: <20240116193542.711482-1-tmenninger@purestorage.com>
+ <04d22048-737a-4281-a43f-b125ebe0c896@lunn.ch>
+ <CAO-L_44YVi0HDk4gC9QijMZrYNGoKtfH7qsXOwtDwM4VrFRDHw@mail.gmail.com>
+ <da87ce82-7337-4be4-a2af-bd2136626c56@lunn.ch>
+ <CAO-L_46kqBrDdYP7p3He0cBF1OP7TJKnhYK1NR_gMZf2n_928A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAO-L_46kqBrDdYP7p3He0cBF1OP7TJKnhYK1NR_gMZf2n_928A@mail.gmail.com>
 
-When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
-adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
-extent did not completely cover the original request after adjusting the
-best extent lstart in ext4_mb_new_inode_pa() as follows:
+On Tue, Jan 16, 2024 at 05:51:13PM -0800, Tim Menninger wrote:
+> My impression is still that the read_c45 function should agree with the
+> phy_read_c45 function, but that isn't a hill I care to die on if you still
+> think otherwise. Thoughts?
 
-  original request: 2/10(8)
-  normalized request: 0/64(64)
-  best extent: 0/9(9)
+FWIW, Tim's approach is consistent with what drivers/net/mdio/mdio-mux.c does.
 
-When we check if best ex can be kept at start of goal, ac_o_ex.fe_logical
-is 2 less than the adjusted best extent logical end 9, so we think the
-adjustment is done. But obviously 0/9(9) doesn't cover 2/10(8), so we
-should determine here if the original request logical end is less than or
-equal to the adjusted best extent logical end.
+		if (parent_bus->read)
+			cb->mii_bus->read = mdio_mux_read;
+		if (parent_bus->write)
+			cb->mii_bus->write = mdio_mux_write;
+		if (parent_bus->read_c45)
+			cb->mii_bus->read_c45 = mdio_mux_read_c45;
+		if (parent_bus->write_c45)
+			cb->mii_bus->write_c45 = mdio_mux_write_c45;
 
-Moreover, the best extent len is not modified during the adjustment
-process, and it is already checked by the previous assertion, so replace
-the check for fe_len with a check for the best extent logical end.
-
-Cc: stable@kernel.org
-Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- fs/ext4/mballoc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index f44f668e407f..fa5977fe8d72 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5146,6 +5146,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 			.fe_len = ac->ac_orig_goal_len,
- 		};
- 		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
-+		loff_t o_ex_end = extent_logical_end(sbi, &ac->ac_o_ex);
- 
- 		/* we can't allocate as much as normalizer wants.
- 		 * so, found space must get proper lstart
-@@ -5161,7 +5162,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		 * 1. Check if best ex can be kept at end of goal (before
- 		 *    cr_best_avail trimmed it) and still cover original start
- 		 * 2. Else, check if best ex can be kept at start of goal and
--		 *    still cover original start
-+		 *    still cover original end
- 		 * 3. Else, keep the best ex at start of original request.
- 		 */
- 		ex.fe_len = ac->ac_b_ex.fe_len;
-@@ -5171,7 +5172,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 			goto adjust_bex;
- 
- 		ex.fe_logical = ac->ac_g_ex.fe_logical;
--		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
-+		if (o_ex_end <= extent_logical_end(sbi, &ex))
- 			goto adjust_bex;
- 
- 		ex.fe_logical = ac->ac_o_ex.fe_logical;
-@@ -5179,7 +5180,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		ac->ac_b_ex.fe_logical = ex.fe_logical;
- 
- 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
--		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
-+		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
- 		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
- 	}
- 
--- 
-2.31.1
-
+My only objection to his patch (apart from the commit message which
+should indeed be more detailed) is that I would have preferred the same
+"if" syntax rather than the use of a ternary operator with NULL.
 
