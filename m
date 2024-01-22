@@ -1,138 +1,99 @@
-Return-Path: <linux-kernel+bounces-33891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FB45836FFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:31:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89DCF836FFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:31:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C14728DCE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:31:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A13128E64E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C5455C11;
-	Mon, 22 Jan 2024 18:03:54 +0000 (UTC)
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8163155769;
-	Mon, 22 Jan 2024 18:03:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEEF5C8F8;
+	Mon, 22 Jan 2024 18:05:30 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFC33FB17
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705946633; cv=none; b=m0KmqlLQghRNEXDewsogkOIUMCFgHCBnXSM6ia7mJDb6mtcaxnjSdqym3OU+oBoFT7P/0g8oB4zN5nlwevKMuTOD6oU6JRWEuEu8E8I40x3deC59gCIWuaE7mPS/CJBOU20bHkEgXNCtfDKNWXFqbta092g6hXjYqRySriResLE=
+	t=1705946729; cv=none; b=tqbuP0h/RFOmrytamQorIunNJn4IO1nvugIyLrUMkk1MyXqwzMtvZ2gdyMLWTJJTikQBkctLLyqfETtnP+9+/Cw+sctBhyxmCL3BKsSK7dAQ/WU+WJVIToUqUWdAzmrAwv+sq+KEhY0VYmf+wIytwYpcOQwfJ3wSdylOSpq/tKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705946633; c=relaxed/simple;
-	bh=Fh6Mfh+ZfjN747uqw1yJY2/Biltz7BVQb6iuhi4PHr8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rtYADGuDh0NnJf/KSD0EaVAZwzDP+83qmyrNq3aJbF6eaaL4zEHzuUOBidWZEHKK/FuussvfY1sMjZQQKETkS0R1RqfmQcrhQuE5xbQOiXUxVnM7a2pwlIxiP6UVOI/rPJbviGnkIq1v5O8BuInAHhnRzcnulglq3Jv0xPHmU1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-68197b99138so219246d6.1;
-        Mon, 22 Jan 2024 10:03:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705946631; x=1706551431;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s26G0NnkppbXguh7peNPWPJ5jelauHZoMn0Xk4NSQUw=;
-        b=f9sj8dapz8X8s4X3rV7CprJ4yVeGEoaicBNlidoCaSjayweKFDw/PcvRUBrg/YCxmi
-         a+rpuUJYG3ww7Tx71XUdvnDc+IHZ1UIltCJM38MJzu6ACo1VbbFBz3hQUPvoXJgRVtdm
-         +Duv+eDNfM9T1ILJmxw3/p/26plcEi8Ums4q43FDoD/YPhnW1+La3M2la2iSAHWfUres
-         BGz/iiWlr4lGOQwwjbBwLrLIsvNyr5Ysj+qQYg86jmvBmIxsBOp0clHXDDB3mH1iaWDz
-         SmcR4vaTtgHc/S8updpLDKvE0HmyemNypUaJewLmInX+1YNwdh8irNp9j0fQHwUn0hVw
-         hizw==
-X-Gm-Message-State: AOJu0YzpKSZgMLO8owwP/NzVyChGP+JCTvPwJk7rJh7QVSnjZaC68sV5
-	Ofp8gX/ZrAQWnZ27ua6C5rk3IOTIQfe9P70ZQsBG8GnWKFwqkZezKhpIcwIiF8bqUoCYGSSdJ+y
-	F/qM9B7On8XvDtCou/+FbN1VApeiPS5Zjyos=
-X-Google-Smtp-Source: AGHT+IHydxkoIcTGgPnithAm3ZZ3Lbs6GLo4uCDeUNHWYMYJDcQ7kkQEBWJsEM9NkDfdwTNwYrCyeGF8yf+5uFu9gbc=
-X-Received: by 2002:a4a:cb87:0:b0:599:9e03:68da with SMTP id
- y7-20020a4acb87000000b005999e0368damr789760ooq.0.1705946610762; Mon, 22 Jan
- 2024 10:03:30 -0800 (PST)
+	s=arc-20240116; t=1705946729; c=relaxed/simple;
+	bh=9fAumUvQOX0X6U44eg2upuztW2cUAYClbtHKjipRQUI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ad7TYk8SduKW4GuWp9AQ6U6bhynEdkTNfgWNdad0MOESfyRUULA+S47LWBnO0Tz5QsB/ZZXnmJU22WDbjZ9jYqLrYBeNE9vkAOlKjBasdxbp4Lm5NA6eJT1be+YPb59w2XggAAkyJgDU3un6IZ2VRp6njPLWOMB1COtLPzMHX5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F7101FB;
+	Mon, 22 Jan 2024 10:06:11 -0800 (PST)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D4BE3F5A1;
+	Mon, 22 Jan 2024 10:05:22 -0800 (PST)
+Message-ID: <583e6c89-98c5-5415-0091-8b1758d8f785@arm.com>
+Date: Mon, 22 Jan 2024 18:05:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOg7-00Dvjq-VZ@rmk-PC.armlinux.org.uk>
- <CAJZ5v0je=-oVnSumZs=dzcyVuVUeVeTgO7yOnjGg1igyrS7EHQ@mail.gmail.com> <20240122174449.00002f78@Huawei.com>
-In-Reply-To: <20240122174449.00002f78@Huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 22 Jan 2024 19:03:19 +0100
-Message-ID: <CAJZ5v0gePAsbRecOXDZ+q-Ds+nsoSBq6VU89ikuQoxds7TeQ3g@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 04/21] ACPI: processor: Register all CPUs from acpi_processor_get_info()
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Russell King <rmk+kernel@armlinux.org.uk>, 
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8 01/24] tick/nohz: Move tick_nohz_full_mask declaration
+ outside the #ifdef
+Content-Language: en-GB
+To: Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+ Babu Moger <Babu.Moger@amd.com>, shameerali.kolothum.thodi@huawei.com,
+ D Scott Phillips OS <scott@os.amperecomputing.com>,
+ carl@os.amperecomputing.com, lcherian@marvell.com,
+ bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+ baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+ Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+ dfustini@baylibre.com, amitsinght@marvell.com,
+ Frederic Weisbecker <frederic@kernel.org>
+References: <20231215174343.13872-1-james.morse@arm.com>
+ <20231215174343.13872-2-james.morse@arm.com> <874jgjmclt.ffs@tglx>
+From: James Morse <james.morse@arm.com>
+In-Reply-To: <874jgjmclt.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 6:44=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Mon, 18 Dec 2023 21:30:50 +0100
-> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
->
-> > On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlin=
-ux.org.uk> wrote:
-> > >
-> > > From: James Morse <james.morse@arm.com>
-> > >
-> > > To allow ACPI to skip the call to arch_register_cpu() when the _STA
-> > > value indicates the CPU can't be brought online right now, move the
-> > > arch_register_cpu() call into acpi_processor_get_info().
-> >
-> > This kind of looks backwards to me and has a potential to become
-> > super-confusing.
-> >
-> > I would instead add a way for the generic code to ask the platform
-> > firmware whether or not the given CPU is enabled and so it can be
-> > registered.
->
-> Hi Rafael,
->
-> The ACPI interpreter isn't up at this stage so we'd need to pull that
-> forwards. I'm not sure if we can pull the interpreter init early enough.
+Hi Thomas,
 
-Well, this patch effectively defers the AP registration to the time
-when acpi_processor_get_info() runs and the interpreter is up and
-running then.
+On 15/12/2023 20:31, Thomas Gleixner wrote:
+> On Fri, Dec 15 2023 at 17:43, James Morse wrote:
+>> tick_nohz_full_mask lists the CPUs that are nohz_full. This is only
+>> needed when CONFIG_NO_HZ_FULL is defined. tick_nohz_full_cpu() allows
+>> a specific CPU to be tested against the mask, and evaluates to false
+>> when CONFIG_NO_HZ_FULL is not defined.
+>>
+>> The resctrl code needs to pick a CPU to run some work on, a new helper
+>> prefers housekeeping CPUs by examining the tick_nohz_full_mask. Hiding
+>> the declaration behind #ifdef CONFIG_NO_HZ_FULL forces all the users to
+>> be behind an ifdef too.
+>>
+>> Move the tick_nohz_full_mask declaration, this lets callers drop the
+>> ifdef, and guard access to tick_nohz_full_mask with IS_ENABLED() or
+>> something like tick_nohz_full_cpu().
+>>
+>> The definition does not need to be moved as any callers should be
+>> removed at compile time unless CONFIG_NO_HZ_FULL is defined.
 
-For consistency, it would be better to defer the AP registration in
-general to that point.
 
-> Perhaps pushing the registration back in all cases is the way to go?
-> Given the acpi interpretter is initialized via subsys_initcall() it would
-> need to be after that - I tried pushing cpu_dev_register_generic()
-> immediately after acpi_bus_init() and that seems fine.
+> I can pick that up separately, but I'm fine when it goes with the
+> resctrl lot. For that case:
 
-Sounds promising.
+> Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
-> We can't leave the rest of cpu_dev_init() that late because a bunch
-> of other stuff relies on it (CPU freq blows up first as a core_init()
-> on my setup).
 
-I see.
+Thanks!
 
-> So to make this work we need it to always move the registration later
-> than the necessary infrastructure, perhaps to subsys_initcall_sync()
-> as is done for missing CPUs (we'd need to combine the two given that
-> needs to run after this, or potentially just stop checking for acpi_disab=
-led
-> and don't taint the kernel!).  I think this is probably the most consiste=
-nt
-> option on basis it at least moves the registration to the same point
-> whatever is going on and can easily use the arch callback you suggest
-> to hide away the logic on deciding if a CPU is there or not.
-
-I agree.
+James
 
