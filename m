@@ -1,155 +1,290 @@
-Return-Path: <linux-kernel+bounces-34111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE378373B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:28:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03A278373B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D95C28AD67
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:28:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53224B22DF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6644D46442;
-	Mon, 22 Jan 2024 20:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1F147776;
+	Mon, 22 Jan 2024 20:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OpWIrWI8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hjbtv0+r"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA45C41779;
-	Mon, 22 Jan 2024 20:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94EF547762;
+	Mon, 22 Jan 2024 20:28:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705955292; cv=none; b=fVtOp2ByIbIty71QaMUtbsk34ZMOMXCdNNwIZkLG4FOv5cjtWQnL2LChrWJuKwnZb0EWgN8RwPtA7JDulI5cG2KQlEfAdesDOyVbTwCD42PlS0PdjgNV3FtRuRJORs/S4QcDMdX2VOTD8wwyS4n+6UvXknlbDloAZrRHuRNIuss=
+	t=1705955317; cv=none; b=chE+ER1P98Z6nhAZUxGK87pkIBWIpd1Dcw2YS7qMieuRTWFpupfulO18vgA2zEGAGDs00WY41bgW+1LE79aSXD3TtnCR00AgYQjMG7AgogdKjaT8QVicmzam9hLF0qX4+gHTDHOdaDJK4usy1WWK/lAxaGdGr1yHg4IArYu3ABg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705955292; c=relaxed/simple;
-	bh=uN71bCXA30X74Or5WgrlOA05l7pdmTn+Pla2tjReuL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a+ffVVeNSyLu/KxTdq6/jKj2AFeWodS8PUgP+hnUh+lTL1vog/aYGsurBi7O2bg6wChuPezVjW28u3GkC9Eo2lk6w8ZKca9tA85nc0QA/tH30VuppHxjrX8us7hMcVpA7C0e5xKH6c4EgtXjExW8dFzgMG0O5Y782eq03xtlDjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OpWIrWI8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F62BC43390;
-	Mon, 22 Jan 2024 20:28:09 +0000 (UTC)
+	s=arc-20240116; t=1705955317; c=relaxed/simple;
+	bh=bIGL6tbUXqQ2uLj87tFgXirMYlFANeSqFPG14ELd9/U=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=Vql5tddv27USA38QDY6mu6D1JFvOAYlQtX4ZdQbAdsfLtBBuVJHG8q9ssoTvaGG933aiGz11R54pNXa1+ibFp0MI2VZxcSUE5brpQl2gwlwCtIMhp/GIDt0cUh7MfdTo+Tin5mMCOMO0kgj/MvbICsk8vCJa+ALmwvrLVkLQvGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hjbtv0+r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9625BC43394;
+	Mon, 22 Jan 2024 20:28:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705955292;
-	bh=uN71bCXA30X74Or5WgrlOA05l7pdmTn+Pla2tjReuL4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OpWIrWI8IvL33sZXeUcci+95ckE29z3Ua0TF4vFRsXSi0rKw5kl/vVirmZDQZMXWO
-	 BQsBhzKnIaj4ketTFRUktRInU6T0CA5xBRL9XhQcBCwuPn0McCk7lSW2SauJ1+MbKb
-	 FiOS98LPdjjKD8iz7uY5BZvs3wVNBh/Qs8xBESa/SPKJsn6uo8hpFBQ+xFRpOgc2E+
-	 tfJuxLVBUJPYdKMke4TbEgYPU67dvPykeLNOf1vjgTYDYmdeQOEU0ivEhG5YJOQX16
-	 GYElEYrWLuJ3BgzM+naOhNOznl/B9Rd9tb5acbOR32KrJD9qAKeWHbTN2Yonb6JziD
-	 qkwZanZdN4lQQ==
-Date: Mon, 22 Jan 2024 20:28:06 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-	KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
-	scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
-Subject: Re: [PATCH 2/2] ASoC: nau8325: new driver
-Message-ID: <820c5ff7-4329-46b0-9981-607b1593deb5@sirena.org.uk>
-References: <20240122095650.60523-1-wtli@nuvoton.com>
- <20240122095650.60523-2-wtli@nuvoton.com>
+	s=k20201202; t=1705955317;
+	bh=bIGL6tbUXqQ2uLj87tFgXirMYlFANeSqFPG14ELd9/U=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=hjbtv0+rRmyWkp3KaPcgmOyAdUvYw+so1NMTIFa+bzw+CqfnPutBNvyBuKMixdb8A
+	 hkG+LWyCKf+/xNZ1y5TFp0aMLgZaI7V66qhjV0aapl2XiZ8CL5Ly7GcvOigDKyQc2a
+	 +0AvP9aHdORLNy/zXNGKgULDAgxjdclbPIxeLe5mn1RO0Y6GjM4jwb9APHmjLjYKrW
+	 xvpyZtgH0kIaIF9pSlj/UA3cH0EJCjeJ0WBHkC4Be7YlN0+Xqw400+mjvE1oyk5UFy
+	 gxfORte81L9T7LptxXsAvNqoboobpKEAmLa3m1ylRCTnup034OlW4g4UHA1wNHU6YY
+	 TUrO0D0SdHlnQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="QAZjW4H1wKCsCURa"
-Content-Disposition: inline
-In-Reply-To: <20240122095650.60523-2-wtli@nuvoton.com>
-X-Cookie: Nice guys don't finish nice.
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 22 Jan 2024 22:28:31 +0200
+Message-Id: <CYLIOR19J0SG.2A6LWMNXTERV9@suppilovahvero>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>
+Subject: Re: [PATCH v7 07/15] x86/sgx: Expose sgx_reclaim_pages() for cgroup
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+ <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>
+X-Mailer: aerc 0.15.2
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+ <20240122172048.11953-8-haitao.huang@linux.intel.com>
+In-Reply-To: <20240122172048.11953-8-haitao.huang@linux.intel.com>
 
-
---QAZjW4H1wKCsCURa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 22, 2024 at 05:56:50PM +0800, Seven Lee wrote:
-
-> +++ b/sound/soc/codecs/nau8325.c
-> @@ -0,0 +1,896 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * nau8325.c -- Nuvoton NAU8325 audio codec driver
+On Mon Jan 22, 2024 at 7:20 PM EET, Haitao Huang wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Each EPC cgroup will have an LRU structure to track reclaimable EPC pages=
+.
+> When a cgroup usage reaches its limit, the cgroup needs to reclaim pages
+> from its LRU or LRUs of its descendants to make room for any new
+> allocations.
+>
+> To prepare for reclamation per cgroup, expose the top level reclamation
+> function, sgx_reclaim_pages(), in header file for reuse. Add a parameter
+> to the function to pass in an LRU so cgroups can pass in different
+> tracking LRUs later.  Add another parameter for passing in the number of
+> pages to scan and make the function return the number of pages reclaimed
+> as a cgroup reclaimer may need to track reclamation progress from its
+> descendants, change number of pages to scan in subsequent calls.
+>
+> Create a wrapper for the global reclaimer, sgx_reclaim_pages_global(),
+> to just call this function with the global LRU passed in. When
+> per-cgroup LRU is added later, the wrapper will perform global
+> reclamation from the root cgroup.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> ---
+> V7:
+> - Reworked from patch 9 of V6, "x86/sgx: Restructure top-level EPC reclai=
+m
+> function". Do not split the top level function (Kai)
+> - Dropped patches 7 and 8 of V6.
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 62 +++++++++++++++++++++-------------
+>  arch/x86/kernel/cpu/sgx/sgx.h  |  1 +
+>  2 files changed, 40 insertions(+), 23 deletions(-)
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
+n.c
+> index cde750688e62..60cb3a7b3001 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -286,20 +286,24 @@ static void sgx_reclaimer_write(struct sgx_epc_page=
+ *epc_page,
+>  	mutex_unlock(&encl->lock);
+>  }
+> =20
+> -/*
+> - * Take a fixed number of pages from the head of the active page pool an=
+d
+> - * reclaim them to the enclave's private shmem files. Skip the pages, wh=
+ich have
+> - * been accessed since the last scan. Move those pages to the tail of ac=
+tive
+> - * page pool so that the pages get scanned in LRU like fashion.
+> +/**
+> + * sgx_reclaim_pages() - Reclaim a fixed number of pages from an LRU
 > + *
+> + * Take a fixed number of pages from the head of a given LRU and reclaim=
+ them to the enclave's
+> + * private shmem files. Skip the pages, which have been accessed since t=
+he last scan. Move
+> + * those pages to the tail of the list so that the pages get scanned in =
+LRU like fashion.
+> + *
+> + * Batch process a chunk of pages (at the moment 16) in order to degrade=
+ amount of IPI's and
+> + * ETRACK's potentially required. sgx_encl_ewb() does degrade a bit amon=
+g the HW threads with
+> + * three stage EWB pipeline (EWB, ETRACK + EWB and IPI + EWB) but not su=
+fficiently. Reclaiming
+> + * one page at a time would also be problematic as it would increase the=
+ lock contention too
+> + * much, which would halt forward progress.
+>   *
 
-Please use a C++ comment for the whole block to make things look more
-consistent.
+I'd prefer 80 character paragraphs unless you absolutely need to go
+beyond that. For normal text paragraph there's zero need.
 
-> +static int nau8325_clkdet_put(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *ucontrol)
+
+> - * Batch process a chunk of pages (at the moment 16) in order to degrade=
+ amount
+> - * of IPI's and ETRACK's potentially required. sgx_encl_ewb() does degra=
+de a bit
+> - * among the HW threads with three stage EWB pipeline (EWB, ETRACK + EWB=
+ and IPI
+> - * + EWB) but not sufficiently. Reclaiming one page at a time would also=
+ be
+> - * problematic as it would increase the lock contention too much, which =
+would
+> - * halt forward progress.
+> + * @lru:	The LRU from which pages are reclaimed.
+> + * @nr_to_scan: Pointer to the target number of pages to scan, must be l=
+ess than SGX_NR_TO_SCAN.
+> + * Return:	Number of pages reclaimed.
+>   */
+> -static void sgx_reclaim_pages(void)
+> +unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned in=
+t *nr_to_scan)
+>  {
+>  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
+>  	struct sgx_backing backing[SGX_NR_TO_SCAN];
+> @@ -310,10 +314,10 @@ static void sgx_reclaim_pages(void)
+>  	int ret;
+>  	int i;
+> =20
+> -	spin_lock(&sgx_global_lru.lock);
+> -	for (i =3D 0; i < SGX_NR_TO_SCAN; i++) {
+> -		epc_page =3D list_first_entry_or_null(&sgx_global_lru.reclaimable,
+> -						    struct sgx_epc_page, list);
+> +	spin_lock(&lru->lock);
+> +
+> +	for (; *nr_to_scan > 0; --(*nr_to_scan)) {
+> +		epc_page =3D list_first_entry_or_null(&lru->reclaimable, struct sgx_ep=
+c_page, list);
+>  		if (!epc_page)
+>  			break;
+> =20
+> @@ -328,7 +332,8 @@ static void sgx_reclaim_pages(void)
+>  			 */
+>  			epc_page->flags &=3D ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+>  	}
+> -	spin_unlock(&sgx_global_lru.lock);
+> +
+> +	spin_unlock(&lru->lock);
+> =20
+>  	for (i =3D 0; i < cnt; i++) {
+>  		epc_page =3D chunk[i];
+> @@ -351,9 +356,9 @@ static void sgx_reclaim_pages(void)
+>  		continue;
+> =20
+>  skip:
+> -		spin_lock(&sgx_global_lru.lock);
+> -		list_add_tail(&epc_page->list, &sgx_global_lru.reclaimable);
+> -		spin_unlock(&sgx_global_lru.lock);
+> +		spin_lock(&lru->lock);
+> +		list_add_tail(&epc_page->list, &lru->reclaimable);
+> +		spin_unlock(&lru->lock);
+> =20
+>  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
+> =20
+> @@ -366,6 +371,7 @@ static void sgx_reclaim_pages(void)
+>  			sgx_reclaimer_block(epc_page);
+>  	}
+> =20
+> +	ret =3D 0;
+>  	for (i =3D 0; i < cnt; i++) {
+>  		epc_page =3D chunk[i];
+>  		if (!epc_page)
+> @@ -378,7 +384,10 @@ static void sgx_reclaim_pages(void)
+>  		epc_page->flags &=3D ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+> =20
+>  		sgx_free_epc_page(epc_page);
+> +		ret++;
+>  	}
+> +
+> +	return (unsigned int)ret;
+>  }
+> =20
+>  static bool sgx_should_reclaim(unsigned long watermark)
+> @@ -387,6 +396,13 @@ static bool sgx_should_reclaim(unsigned long waterma=
+rk)
+>  	       !list_empty(&sgx_global_lru.reclaimable);
+>  }
+> =20
+> +static void sgx_reclaim_pages_global(void)
 > +{
-> +	struct soc_mixer_control *mc =
-> +		(struct soc_mixer_control *)kcontrol->private_value;
-> +	struct snd_soc_component *component =
-> +		snd_soc_kcontrol_component(kcontrol);
-> +	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-> +	unsigned int max = mc->max, min = mc->min, val;
-> +	unsigned int mask = (1 << fls(max)) - 1;
-
-AFAICT this will only work well if max is 1, just hard code that.
-
+> +	unsigned int nr_to_scan =3D SGX_NR_TO_SCAN;
 > +
-> +	val = (ucontrol->value.integer.value[0] + min) & mask;
-> +	nau8325->clock_detection = val;
-> +
-> +	if (nau8325->clock_detection)
-> +		regmap_update_bits(nau8325->regmap, NAU8325_R40_CLK_DET_CTRL,
-> +				   NAU8325_CLKPWRUP_DIS, 0);
-> +	else
-> +		regmap_update_bits(nau8325->regmap, NAU8325_R40_CLK_DET_CTRL,
-> +				   NAU8325_CLKPWRUP_DIS, NAU8325_CLKPWRUP_DIS);
-> +
-> +	return nau8325->clock_detection;
+> +	sgx_reclaim_pages(&sgx_global_lru, &nr_to_scan);
 > +}
-
-Please use mixer-test to verify that your controls conform to the
-expected API, the return value here is not what's expected - it should
-be a negative value for an error, 0 for no change and 1 for change.
-
-> +	SOC_SINGLE_EXT("Clock Detection", SND_SOC_NOPM, 0, 1, 0,
-> +		       nau8325_clkdet_get, nau8325_clkdet_put),
-
-Shouldn't this be a Switch?
-
-> +	SOC_SINGLE("ALC Enable", NAU8325_R2E_ALC_CTRL3,
-> +		   NAU8325_ALC_EN_SFT, 1, 0),
-
-ALC Switch.
-
-> +static int nau8325_powerup_event(struct snd_soc_dapm_widget *w,
-> +				 struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_dapm_to_component(w->dapm);
-> +	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
 > +
-> +	if (nau8325->clock_detection)
-> +		return 0;
-> +
+>  /*
+>   * sgx_reclaim_direct() should be called (without enclave's mutex held)
+>   * in locations where SGX memory resources might be low and might be
+> @@ -395,7 +411,7 @@ static bool sgx_should_reclaim(unsigned long watermar=
+k)
+>  void sgx_reclaim_direct(void)
+>  {
+>  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
+> -		sgx_reclaim_pages();
+> +		sgx_reclaim_pages_global();
+>  }
+> =20
+>  static int ksgxd(void *p)
+> @@ -418,7 +434,7 @@ static int ksgxd(void *p)
+>  				     sgx_should_reclaim(SGX_NR_HIGH_PAGES));
+> =20
+>  		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
+> -			sgx_reclaim_pages();
+> +			sgx_reclaim_pages_global();
+> =20
+>  		cond_resched();
+>  	}
+> @@ -605,7 +621,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, =
+bool reclaim)
+>  		 * Need to do a global reclamation if cgroup was not full but free
+>  		 * physical pages run out, causing __sgx_alloc_epc_page() to fail.
+>  		 */
+> -		sgx_reclaim_pages();
+> +		sgx_reclaim_pages_global();
+>  		cond_resched();
+>  	}
+> =20
+> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
+h
+> index 0e99e9ae3a67..2593c013d091 100644
+> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> @@ -110,6 +110,7 @@ void sgx_reclaim_direct(void);
+>  void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
+>  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
+>  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
+> +unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned in=
+t *nr_to_scan);
+> =20
+>  void sgx_ipi_cb(void *info);
+> =20
 
-What happens if someone enables clock detection while things are powered
-up?
-
---QAZjW4H1wKCsCURa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWuz9UACgkQJNaLcl1U
-h9BQjgf/QLIx/6Vn2gRBlBNbQfnoOasSe3itaUJwtDJ6sVFgb6jjZT0ZlOww4+rf
-TX08tOTbrDHhWqh2RCuxxAFCHG9Uu0TYl46QikJIRfZSP/1dWtdY4dptsv+n5Kgh
-UQDmnDiewqFaR4mlDBzgzmeDL+Gfr8L+ucedfTpRpwl7YNv1/Mwubh5U/oDGLGVB
-+2O7QQ8OKWpdUW4XRvH3Rdh7GYrtx0YUPn+Yicp7wOnyKg7qs1OEvpTBpAQVPPvT
-LpE2I+3swtCjetn2maB+cPUgDcOKL6hu9rIj/alple3YU5ux+il+PiJDlfTD5H1C
-XNimTSNbAm/gNjZbrUQbShQj05Upcg==
-=+I7g
------END PGP SIGNATURE-----
-
---QAZjW4H1wKCsCURa--
+BR, Jarkko
 
