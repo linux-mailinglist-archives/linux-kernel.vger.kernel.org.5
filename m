@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-33918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D421483702F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:38:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5FC1837076
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:45:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 134311C293B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:38:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D31FF1C2847F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE64605A8;
-	Mon, 22 Jan 2024 18:08:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5FE657BA;
+	Mon, 22 Jan 2024 18:08:41 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C625FF0C
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C3756775
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705946905; cv=none; b=sa1qRj21AUTEieOEEmjjK61E8KyphDmozNBqq375+4yUKHU+TCjVoAnc1Tu3jLLWYp8zD7m5jdJYL0+rnyUCw1T6csOfmMS0c30cRHpi1CEqvSIJZgljUP4TPja5ugl4x1GBBpZMMAMUbF7PrRRBsaQHRnwQY87stQkQ0XIYvvs=
+	t=1705946921; cv=none; b=gPFKI4ZYJ9noTTSLTQBziMRn7mYwxW4sEiiYJK77h52Y06/eAjB4ieWbagEEneuBPUkEwXsLrAf4zwXRAK1CTOkA2oFWe+GFGWdnrbLwnCNaOFNMz4aUeWzaXSEUtt4ER9YeYsChWfVm7OC90Gr3xTfjGKg/HumxP8CvvqYO8Bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705946905; c=relaxed/simple;
-	bh=mvkeOe3/BbLvpNEiWVNLyrW1b8wBgb11O+XXVA/j11Y=;
+	s=arc-20240116; t=1705946921; c=relaxed/simple;
+	bh=lOy0ZmteWVnevRjqTgakjKZrayLKgyaWmhHjW/PK3Qc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q97iGYdRMvWKMXEUsutq2HZDlSljPC7IlPyvdziFGtrGABTw/4rNkwkqEcA/K7xT7B3WQQBt+09IfBwhr9v9IQduRhdTBEnQNeOzDTsolwtnv1+opPjW25lGZheUbQU2eSEjH/3uKRDZgcuMZUFC17wfSToJ5MNBbAWe6qAuQe8=
+	 MIME-Version:Content-Type; b=NUkPiUd+IpFniP9EALBqiM1W8B0fL15JBxJkLeP2+CV8QHRKhArRlnWGvHp3JmYB3Oxkyy3f3Hmoxdy9Vihe7kenPPmEKmCEQBNRPovTQTiYZCTxuM8lYuIP1J0znCg5hAu12hgHpQ2bS1Q2sGpwlLuK5u0vNzbxT6oytxsN1eY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,24 +32,32 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rRyiY-00023a-Kk; Mon, 22 Jan 2024 19:08:18 +0100
+	id 1rRyiY-000241-Lm; Mon, 22 Jan 2024 19:08:18 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rRyiX-001eQh-LE; Mon, 22 Jan 2024 19:08:17 +0100
+	id 1rRyiX-001eQl-Sf; Mon, 22 Jan 2024 19:08:17 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rRyiX-005ZyR-1r;
+	id 1rRyiX-005ZyV-2Y;
 	Mon, 22 Jan 2024 19:08:17 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Mark Brown <broonie@kernel.org>
 Cc: kernel@pengutronix.de,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 24/33] spi: spidev: Follow renaming of SPI "master" to "controller"
-Date: Mon, 22 Jan 2024 19:07:19 +0100
-Message-ID:  <750a11c6de7f05d4a2b67bd0755ffec9c685ef00.1705944943.git.u.kleine-koenig@pengutronix.de>
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org
+Subject: [PATCH v2 25/33] staging: fbtft: Follow renaming of SPI "master" to "controller"
+Date: Mon, 22 Jan 2024 19:07:20 +0100
+Message-ID:  <d486dbb16fafd93a00013a555658a44e975115fd.1705944943.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
@@ -60,7 +68,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1036; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=mvkeOe3/BbLvpNEiWVNLyrW1b8wBgb11O+XXVA/j11Y=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlrq7fuoBn6fzRmbFYDJIj2kALvEOLDrp6km3Hg 4tYXzqXfJKJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZa6u3wAKCRCPgPtYfRL+ Ts1/CACCRASPL+iccfwcaVlzRk+w7x5SN7bd+3c8RwXU/uUDeQ7iJpN5pLzhjBx1W31sSQ/i1+4 daiiNxgP/bTbAaDmtjAPzACu9qBTERw5mSZiWpG0AWwW3F2fAU/dtLc34aUgKvcdabi7GoKcmyx /sKUxN9rla7/vuSeKJRtIXD0C+MiYs++tyu7PRLbYR3C4hqSJ7I7LRGy9D5CIzkK2sRTcwCn86Z Yo7VPFPjS7quusoKxFeRy3Osb1V/W6oycNfoWs26JvSaWXodXK1LKl9BOaa9QNPSIaN13Edb6x1 79G5UeM98EvCTKH1pPr709fNrxEGsSqXRQvz6CELWQci2BjM
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1528; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=lOy0ZmteWVnevRjqTgakjKZrayLKgyaWmhHjW/PK3Qc=; b=owGbwMvMwMXY3/A7olbonx/jabUkhtR16x44W9/NuexwblKQkcS2eVqdtoxbE2pDa9aufl5So 2JbWHW/k9GYhYGRi0FWTJHFvnFNplWVXGTn2n+XYQaxMoFMYeDiFICJaJuy/zPf0hzD7Xv4XKXA nQ6hKVGCW43/JecF+faw5V2NSIoNXsY1YXm5nNmKKXYS9S8/vzK3nqp7b/PuUv2k5Fr/uGi+iYk nRQOq5/1Ju/K3+FpTk6CUztH44uiXBidcPY35T7bUy7OLrlX7kmPMuK3qWlVDzGuZvLeyUys+CV jbmHIyudxnZTBm6Mr6J8NRU3ApZIrZUb0DvtxGJ3tbfiipm7WV3O01e1/XPOGttuSslTFNkw9fW fdbyTzk8m2bdvVZKRlHXymr7pNt/zLdkuNl7BH1axK6mlZ7c+e8FmvuvPv2cnWky+cFBw+kyu/f kx8wb/oBxd/OjJdPGrkpsT18+rHxpmd+6jLx6yzJbwsB
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -77,22 +85,31 @@ this driver.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/spi/spidev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/fbtft/fbtft-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index 655f2c959cd4..95fb5f1c91c1 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -802,7 +802,7 @@ static int spidev_probe(struct spi_device *spi)
- 		spidev->devt = MKDEV(SPIDEV_MAJOR, minor);
- 		dev = device_create(&spidev_class, &spi->dev, spidev->devt,
- 				    spidev, "spidev%d.%d",
--				    spi->master->bus_num, spi_get_chipselect(spi, 0));
-+				    spi->controller->bus_num, spi_get_chipselect(spi, 0));
- 		status = PTR_ERR_OR_ZERO(dev);
- 	} else {
- 		dev_dbg(&spi->dev, "no minor number available!\n");
+diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fbtft-core.c
+index 3626f429b002..68add4d598ae 100644
+--- a/drivers/staging/fbtft/fbtft-core.c
++++ b/drivers/staging/fbtft/fbtft-core.c
+@@ -794,7 +794,7 @@ int fbtft_register_framebuffer(struct fb_info *fb_info)
+ 	if (par->txbuf.buf && par->txbuf.len >= 1024)
+ 		sprintf(text1, ", %zu KiB buffer memory", par->txbuf.len >> 10);
+ 	if (spi)
+-		sprintf(text2, ", spi%d.%d at %d MHz", spi->master->bus_num,
++		sprintf(text2, ", spi%d.%d at %d MHz", spi->controller->bus_num,
+ 			spi_get_chipselect(spi, 0), spi->max_speed_hz / 1000000);
+ 	dev_info(fb_info->dev,
+ 		 "%s frame buffer, %dx%d, %d KiB video memory%s, fps=%lu%s\n",
+@@ -1215,7 +1215,7 @@ int fbtft_probe_common(struct fbtft_display *display,
+ 
+ 	/* 9-bit SPI setup */
+ 	if (par->spi && display->buswidth == 9) {
+-		if (par->spi->master->bits_per_word_mask & SPI_BPW_MASK(9)) {
++		if (par->spi->controller->bits_per_word_mask & SPI_BPW_MASK(9)) {
+ 			par->spi->bits_per_word = 9;
+ 		} else {
+ 			dev_warn(&par->spi->dev,
 -- 
 2.43.0
 
