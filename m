@@ -1,124 +1,156 @@
-Return-Path: <linux-kernel+bounces-33868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CCF837018
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:35:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7970B836FC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:23:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3962B339F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:23:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C4CB1F31FE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F974D103;
-	Mon, 22 Jan 2024 17:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F55B4D12A;
+	Mon, 22 Jan 2024 17:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="F3SK6Tjl"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="RBTRfLlV"
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC06E3D57C
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED0FC4D12D
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945837; cv=none; b=DIRY7AH2Q/3gIJ7QdsBo0BKDjrLJDNVlI1DGPJD1ISHPFqcbm8DTmhOXIcvWm/OLgg0dqUlI85Okt01IZa9Xdi+MPxallTcA4f+wM+6bQBimjsbqvv33RIyKh2sRcsQuAZ+JGRRiqeLy8Ed8vftucm8vJr0qs9+xWH9dQ5ailmQ=
+	t=1705945841; cv=none; b=to8JdD/ueVKCcXHGWs/GckqoCz0k8otWnCgZpQaBfjdFVD9TPXNzDgZI2Wn+ROAVqnMgA7mgob048RqR43Gou5/ToWJI64FNOCYiUSwI6HI7haUREt9IyrPb+sXCq/WH3ydm6mukAapD7GTpbyzGYdnUeJhYlM/fwCfPawvDv4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945837; c=relaxed/simple;
-	bh=xLPMMOi9U5aA2QOUyNYRwdev7zD4A+KnUqD+T4+EA/Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K4B589bBKi5jJz4OnS0cpIayZ77SyGxsnL3D3MUkTWc1z7sXywTuR4MPyHnZzXO5nmweq/0+zC+S7QjOZQG6Ln/lmlocNAonEcsoJXcP6IP/otCopF3dHrnGSuGylOhH1i5VpO0KJ7pGEwb87PqZOinkpcfiARC9xMeXhOA9kWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=F3SK6Tjl; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3367a304091so3816839f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:50:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705945834; x=1706550634; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=sYGuiuUN/VCPpW9oWOQ4p73+grZOykVwihNpjjDuv0Q=;
-        b=F3SK6TjlNfQnBS4iXAAc0b9u8u04WFz0BR17agbw8LPd7czINCOtAvlubBLCcdN8SN
-         Iptkxj8v2kLA1hD8xExxhw//T+icNkTpoyiLV3tbzGANVQY8vtzflRJ4r49vQ/iL+d/C
-         T2e6K3UOUeJl3D94hie4a2pHfJb0Lp+CWygjk7wPIWElGw2A0AZMOntSoFSLLEXc9IVc
-         LPDmA5F2W5g9kOfjmr+DYpXc9hKbpTnEN5jQ649bqx64YApBYnLYKZBdI/3OFrstB2jA
-         HJgRegE0xklM7YWjyHkSVYILVlofiME+Pzn1sqc4YipxIbM57oRgigJtixgInp/J21m4
-         vVnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705945834; x=1706550634;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sYGuiuUN/VCPpW9oWOQ4p73+grZOykVwihNpjjDuv0Q=;
-        b=mjUGhs0B/8jV3ssB/1GRgO9N+bLLSKd0Q+GiVEd3Pf0UCqz2nZSjdFnq52clry4JHP
-         TUdKuKS99L8AJHtINDKZIL+f84Rl+I9wp/SsdEMZ7ZY6PR6sCCaMAgSTJRuZQGyp8NB3
-         +fBs/AOT3G/udKOWU0M2p++to653jfTYZq5un0FrmcpZ9+mmE9rOH3pgTh/l7r5jgu9v
-         WZ/nEcBT3CgMqj6k8ajBn8p+XzjC/IG+1zkBfPM6ap/OvemqJBg4O8RZehuV2jzv5aHX
-         BhaaQ/glzsofqG/k7SeKU9kZTNY6CcpZrchtdNlM1FJxMSYw0sqFcu47ZzXLlE1RHNlH
-         f88A==
-X-Gm-Message-State: AOJu0YziQbQLMvhGLyKzPe00WUHv+T0N5RFZk6R/aFJxcmvdtw/Az0+Q
-	BV2NgRMxHt3fIFuhnW0KiN4FOra50FqwH6vf751FNu1lR1DB2gMuwPcSRoqrRzNhnsgox5ttY1/
-	yq6M=
-X-Google-Smtp-Source: AGHT+IGMKjXfBPPqRjfBziR7QI5pQ0EzWnQZly3+fsLmJWUOsG/MDJPaYvuxqQs8u+NniIHlytAXNQ==
-X-Received: by 2002:adf:a199:0:b0:337:bdf2:26fe with SMTP id u25-20020adfa199000000b00337bdf226femr2086857wru.161.1705945834114;
-        Mon, 22 Jan 2024 09:50:34 -0800 (PST)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id s15-20020a5d6a8f000000b00336898daceasm11996072wru.96.2024.01.22.09.50.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 09:50:33 -0800 (PST)
-Date: Mon, 22 Jan 2024 17:50:31 +0000
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-	Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Karel Balej <balejk@matfyz.cz>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] leds: ktd2692: move ExpressWire code to library
-Message-ID: <20240122175031.GC8815@aspen.lan>
-References: <20240120-ktd2801-v3-0-fe2cbafffb21@skole.hr>
- <20240122165011.GA8815@aspen.lan>
- <23373359.6Emhk5qWAg@radijator>
- <3603320.R56niFO833@radijator>
+	s=arc-20240116; t=1705945841; c=relaxed/simple;
+	bh=YxrQ8GVGh14WVWu2iVdnBrx1qzBPHiKAvXevqbj+oyw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ThPIanQgjEtaLP9UJRsep6UKGxgJ9x8jEHJdvceEUiaCaMzAPJASKDXKz4dNo0fHxhVHGWCiBPoeK/7oZQTN7tG80BWwIEcWL5Z8LnWIO2WAhVdIEpBGrOxjNvfezrSRQ102FsrsDQ7h5AeYYFZoJn+g+u6RZLZa6X++Hl0KQHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=RBTRfLlV; arc=none smtp.client-ip=35.89.44.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
+	by cmsmtp with ESMTPS
+	id RuqLrgOJUMVQiRyRTriBNl; Mon, 22 Jan 2024 17:50:39 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id RyRSrMvQyBnVCRyRSrzZvy; Mon, 22 Jan 2024 17:50:38 +0000
+X-Authority-Analysis: v=2.4 cv=H+TIfsUi c=1 sm=1 tr=0 ts=65aeaaee
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=NEAV23lmAAAA:8 a=7YfXLusrAAAA:8 a=ciz651twq8eCfWHvLXUA:9 a=QEXdDO2ut3YA:10
+ a=9cHFzqQdt-sA:10 a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=SLz71HocmBbuEhFRYD3r:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=3jl5Rvy1dz3jbfkhQsaWmnIHJyLyzrbXC5qPXJXKIM0=; b=RBTRfLlVX+HBtohsXzyv/w7ZIT
+	6ql3qmCv/NVCF1lIo8QHAC/ilRPCdi4mfKRQ0qX3DABKk+/5tHtIGxTe32885qo1jaAKF2rmBWAjK
+	iy+UmweXOWjMLHmv3kHwwxCUpzLsb7XbfkJs+mHFA1H0lIIoF7zyZGV5HmSimQwg5j9xTl59M5E6d
+	bmfXYJDBIpbKKgZJ5Bj1L6dg4F/LDHa+S8vyivvd3Z00ALRLUZdTx8rkP6/TnrjrYx9MrISv3N/xe
+	pZEgiwdsFcAiL3Q2mGDg0I3hwS04xuy/32Ky06aHXX67o/x1AfntSRrxJ/Pfc9R0L/cquSGoirfUa
+	NYuab93A==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:40442 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rRyRR-001JMH-1I;
+	Mon, 22 Jan 2024 11:50:37 -0600
+Message-ID: <bd8965ec-f2fe-44ae-9b0a-e6aad7a6b7bb@embeddedor.com>
+Date: Mon, 22 Jan 2024 11:50:35 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3603320.R56niFO833@radijator>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bus: mhi: ep: Use kcalloc() instead of kzalloc()
+Content-Language: en-US
+To: Erick Archer <erick.archer@gmx.com>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Jeffrey Hugo <quic_jhugo@quicinc.com>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Dan Carpenter <error27@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240120152518.13006-1-erick.archer@gmx.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240120152518.13006-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1rRyRR-001JMH-1I
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:40442
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 16
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfE3GDzVfYO6qOXmMR/qnxj0KOQWMhG7CPKjeQW4oeS0GPHLgluMm+ZpVqhQLGLCj/N3Q+m/DjTTlELt7nK7StYpYSi18kiDlywlNDoVogq4NDQwdhnc/
+ ERlbiEycdZ09j6L/SEDp8NIekrVqrmh0BQZtb7HXM/KyxV2jAc6hxAEirv9c0V16bSYmGUnTbg02KOSsYO83FPcTgqkDmuW0cKTOYtWJ6Zm1pKwTWJkv2Jy0
 
-On Mon, Jan 22, 2024 at 06:26:04PM +0100, Duje Mihanović wrote:
-> On Monday, January 22, 2024 5:57:53 PM CET Duje Mihanović wrote:
-> > On Monday, January 22, 2024 5:50:11 PM CET Daniel Thompson wrote:
-> > > AFAICT nothing will inhibit setting GPIOLIB so allyes- and allmodconfig
-> > > builds will always end up with GPIOLIB enabled. If we are happy to
-> > > select it then I think that is enough!
-> >
-> > In that case I guess I'll just make it select GPIOLIB.
->
-> Nevermind that, it'll have to be 'depends on' after all:
->
-> drivers/gpio/Kconfig:6:error: recursive dependency detected!
-> drivers/gpio/Kconfig:6: symbol GPIOLIB is selected by LEDS_EXPRESSWIRE
-> drivers/leds/Kconfig:184:       symbol LEDS_EXPRESSWIRE depends on NEW_LEDS
-
-Can this dependency could be broken by declaring LEDS_EXPRESSWIRE at
-the top (or bottom) of the KConfig file (it's an option without a UI
-and does not need to be within the if NEW_LEDS block).
-
-I'm aware this kind of change could provoke an argument about which
-sub-system the expresswire code should live in... but I think it's
-a worthwhile change anyway! We shouldn't need NEW_LEDS for this.
 
 
-Daniel.
+On 1/20/24 09:25, Erick Archer wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> So, use the purpose specific kcalloc() function instead of the argument
+> count * size in the kzalloc() function.
+> 
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks!
+-- 
+Gustavo
+
+> ---
+>   drivers/bus/mhi/ep/main.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/ep/main.c b/drivers/bus/mhi/ep/main.c
+> index 65fc1d738bec..8d7a4102bdb7 100644
+> --- a/drivers/bus/mhi/ep/main.c
+> +++ b/drivers/bus/mhi/ep/main.c
+> @@ -1149,8 +1149,9 @@ int mhi_ep_power_up(struct mhi_ep_cntrl *mhi_cntrl)
+>   	mhi_ep_mmio_mask_interrupts(mhi_cntrl);
+>   	mhi_ep_mmio_init(mhi_cntrl);
+> 
+> -	mhi_cntrl->mhi_event = kzalloc(mhi_cntrl->event_rings * (sizeof(*mhi_cntrl->mhi_event)),
+> -					GFP_KERNEL);
+> +	mhi_cntrl->mhi_event = kcalloc(mhi_cntrl->event_rings,
+> +				       sizeof(*mhi_cntrl->mhi_event),
+> +				       GFP_KERNEL);
+>   	if (!mhi_cntrl->mhi_event)
+>   		return -ENOMEM;
+> 
+> --
+> 2.25.1
+> 
+> 
 
