@@ -1,74 +1,79 @@
-Return-Path: <linux-kernel+bounces-33846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD5C836F71
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:15:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE9A836F72
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE3A11F2E89C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:15:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E1431F2E221
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3AD4643E;
-	Mon, 22 Jan 2024 17:39:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2624645B;
+	Mon, 22 Jan 2024 17:40:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yog+BDAp"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pc8Gs+Og"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D104F4642C;
-	Mon, 22 Jan 2024 17:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107714642C
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945172; cv=none; b=iPn+4zrKq9hIzR4DRxtkbY5V9X/bYxXq/HtLTM98RetPqebqeBe0oHLhufLcAty2qeacnTAZbLsLpKe+MlHNGGdf6nYcn0f+PYqJhhlSQhTMtxe1srJxjXTMvtw8cLJuYPe78Uqspy851Caz4YIThxSNnUUKA+wb1KyIy4vwpxo=
+	t=1705945235; cv=none; b=ekZgNWZpapcXnkblxD0UcC8qW/IXzCIuzZRS03/No+SiH180ee8KZJ6o3NanofjiMPJIqgIk7gPlMx5uB/HNOJp0aha1mrlcdF5vKANh7Y2049ky668HhLqm4cuXhz0FGKMpRhT6WMOdyYX9vmqkxB4xqSv1XQyrLi0VkI5wazc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945172; c=relaxed/simple;
-	bh=hfCd1Y5oYmxXeZ+dlaZix8KLaxz5lElV/rFBFaBiI98=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GuLw/iJZ9jcN3QUBvqA5CVOh5wwND/OsG6NN0wQPYeeWUdQ7i2LBvoq+6BlU3MERV8a7C1RvEwgZhvUmfw+Mx/V5tILbs6kxKX2NQaXQhc3uvAXAKv8+Z3VQpMjxaKkkUlx9SPBVYVbAkxKdYoW231U5yjUy0RdTQpDyWXrvR7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yog+BDAp; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d74dce86f7so10233225ad.2;
-        Mon, 22 Jan 2024 09:39:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705945170; x=1706549970; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=iRlYTVmwRF54QEgOCDB+moTbTPswdx4GRYVGmNIHl68=;
-        b=Yog+BDAp9WKLRGP3QHvNKVUpxA5sGv1LmgSBhB/nDyV0JuOL9lieXlK5yEgTXpZwVm
-         MzQjyRkmlrBfbBihDY1zbi5Z1V5vLgblztnAMwjUpLo0mveaK/N0zPSAuL1Rkj4XIJw4
-         CvklL654x0b8YKmb6dpzRVWfD7bWXZ4ddbZC/QsIaRlMXG9djUslDBhUaawKLArXn8O5
-         15NE3C/ah38VvVYbNQvd5XBnWrfOwL7cMlMXlXkDo5Q/nEKmBRBNJrHCMsUY+mCqQ04+
-         1e6SR9letSfo9T9izEdwiYMUAlkXNoKxWzA4sce3W7ovU6/vthuEG5zKHR70TDCCUW4G
-         QCDg==
+	s=arc-20240116; t=1705945235; c=relaxed/simple;
+	bh=WghicRXomDpwE5yyGYLrfHJIIb1PIr+ARhWQt4GdFxg=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=a8wQtV842++3J9C/2DSQ4fdZ4AQim9vLPUeIOfLnRHJ9lTMoOrsGIim2APBJfU6R4su5uJdBo3Jgx2OrQxgM0RHdYRMfqWwvApJYRVVoM2XHAW1RZjfGglYJqZTluyaCW9Q2Ct6kyudFiXOfzubsh5DPpSDUEUXS5csCVqB3czQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pc8Gs+Og; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705945232;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=vSieiWsfKX8oW3nI5yLHu+6dEIAzye5JEiobA3cuzOU=;
+	b=Pc8Gs+Ognn4CR1YJ69wPdXsv89XGOdvWLhLnwfVstahZq3lDu1hdNpexFZiicxqcSb/XtK
+	IvbA1zjEVps620Qxsanuu5qK4q6dZuhK8lsIsz1a8780X2QJ504+D1XC/1vZurSUpXTQpH
+	uTxgDC8v9Z6UYIeMIwXsVj0soFn9p60=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-515-pWzHALPAP7yD3ZG3cogwGQ-1; Mon, 22 Jan 2024 12:40:30 -0500
+X-MC-Unique: pWzHALPAP7yD3ZG3cogwGQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3371263463fso2531323f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:40:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705945170; x=1706549970;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iRlYTVmwRF54QEgOCDB+moTbTPswdx4GRYVGmNIHl68=;
-        b=WSgBpLU3Y+yU9DY4OkC6XbhvRxGX50KEyH+4mojTWZ+7RSzi4KfFwC5xBc7QGdBxp4
-         MD5DOkFZ1GBVPLdUnlbh7YMNp30VEeofu7M6cfo0P1BN8XhqvB1ZU1tdsHeYfYa9mGSy
-         3Tg4FZBSXuiiPJ8qnju8LoFVIlDT4lyS0Gr1CpzdMSQ+xCaEEVSE9A8IzY9l+LxdPbh9
-         wcaN3klzpqx+EH/D3TkGd1GVCYGl3mcNS8EqXzV+EmE/qq1cJQBunfSX807qoytG0KG1
-         4MwZ8pdS0Dvwh4iasE43vEKr2BYk9ErDdt/olU12tXl6+sCKeC9bX465v1F4jbufGi5w
-         PXSg==
-X-Gm-Message-State: AOJu0Yx+zHKjBc3RHANpcOV3ll1mfTvFAumGcoL3zbY1hDixHo+DaHPe
-	MEQxROeqpIBUT83L6B16zkFYIGlmym4oeKKJqXGMBdAc1najlw1L
-X-Google-Smtp-Source: AGHT+IFdOn4FdPrIQ0ppWcJpcTrHrmkNQ2x1tWtSGsVJVEb3zvx0+1VfIsNOGwNuwwtazqcsdF25Kw==
-X-Received: by 2002:a17:903:25d1:b0:1d7:ebe:9d4e with SMTP id jc17-20020a17090325d100b001d70ebe9d4emr4423977plb.92.1705945170002;
-        Mon, 22 Jan 2024 09:39:30 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v20-20020a170902f0d400b001d74cee458asm2317033pla.107.2024.01.22.09.39.28
+        d=1e100.net; s=20230601; t=1705945230; x=1706550030;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vSieiWsfKX8oW3nI5yLHu+6dEIAzye5JEiobA3cuzOU=;
+        b=opfg6NbZLk//GW1SXjKAipvyA86PuWIgfs+xpmgCWKpF2SS7Mmx+qElgcrctVPEJJR
+         H9KtVqzb8ltRrGMg/+GILuK8+zjKGxkJZOniMiE8lKnPn90Or/sh2oZpBLK1veXymVOp
+         W8l92Igaal9oyLBxzCUYOdS7sQBJfntYmOE81XYoWXvLvUTD+kmn744v9BzM3+Hoz1pi
+         vg/Qvkh1/XAAbPMON4LW705Em8EAfJ1gWW2KIYMdhUkskMsgMJ+xw8nJo63LKVgx0moG
+         Y0EyESKO72odK+cFPsV1hx7jtnTdnRMzb2nPlJwfhHiQX5lS6aSXHOc7Qy3MlCi+4W+R
+         QbvQ==
+X-Gm-Message-State: AOJu0YyPbuwWm2PNmrfyx+It6wwU3iqaLneMiu7yx4HfyKptmvEhUuOK
+	Icu4wUfUgSaQCEJwGr6cJLO46TblvN7/FeFEXA4d5bS0TLQuCS2ycV6YxWS725oHLdKRpqYC4pU
+	DdZh4ib9HvFP9lpXCw8FXTaLMRcZd0FJTfKvVtwyfOH+P1CPAB/ixJJ7Vw6S2mw==
+X-Received: by 2002:adf:e843:0:b0:337:c70f:39cf with SMTP id d3-20020adfe843000000b00337c70f39cfmr2325939wrn.32.1705945229748;
+        Mon, 22 Jan 2024 09:40:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHjmMKgZtyjvMHjkNflzqzl/FvVjZ69YTQjyWC9d6TUmc5L7bwoPq0Qtp+5NxP/VaBYV3vdlQ==
+X-Received: by 2002:adf:e843:0:b0:337:c70f:39cf with SMTP id d3-20020adfe843000000b00337c70f39cfmr2325927wrn.32.1705945229325;
+        Mon, 22 Jan 2024 09:40:29 -0800 (PST)
+Received: from ?IPV6:2003:cb:c737:f400:b194:1841:c4a5:75f5? (p200300cbc737f400b1941841c4a575f5.dip0.t-ipconnect.de. [2003:cb:c737:f400:b194:1841:c4a5:75f5])
+        by smtp.gmail.com with ESMTPSA id l6-20020a5d5606000000b0033922468707sm8918812wrv.83.2024.01.22.09.40.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 09:39:29 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a5a807c1-76ef-4cf7-a2cf-bc432c420ded@roeck-us.net>
-Date: Mon, 22 Jan 2024 09:39:27 -0800
+        Mon, 22 Jan 2024 09:40:28 -0800 (PST)
+Message-ID: <606415b9-27f8-4881-827f-45e8427f46fd@redhat.com>
+Date: Mon, 22 Jan 2024 18:40:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,137 +81,116 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/10] watchdog: rzg2l_wdt: Add suspend/resume support
+Subject: Re: [PATCH v2 28/40] mm/memory: page_remove_rmap() ->
+ folio_remove_rmap_pte()
 Content-Language: en-US
-To: Claudiu <claudiu.beznea@tuxon.dev>, wim@linux-watchdog.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com
-Cc: linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
- <20240122111115.2861835-8-claudiu.beznea.uj@bp.renesas.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240122111115.2861835-8-claudiu.beznea.uj@bp.renesas.com>
+From: David Hildenbrand <david@redhat.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Hugh Dickins <hughd@google.com>, Yin Fengwei <fengwei.yin@intel.com>,
+ Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>,
+ Peter Xu <peterx@redhat.com>
+References: <20231220224504.646757-1-david@redhat.com>
+ <20231220224504.646757-29-david@redhat.com>
+ <2445cedb-61fb-422c-8bfb-caf0a2beed62@arm.com>
+ <007e83fa-16c7-4700-b326-ee8cb7809f9f@redhat.com>
+ <Za6jxXIFjnCnyvPE@casper.infradead.org>
+ <7214a9f5-367c-492c-b1bd-80bdc9b7ba4c@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <7214a9f5-367c-492c-b1bd-80bdc9b7ba4c@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/22/24 03:11, Claudiu wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On 22.01.24 18:34, David Hildenbrand wrote:
+> On 22.01.24 18:20, Matthew Wilcox wrote:
+>> On Mon, Jan 22, 2024 at 06:01:58PM +0100, David Hildenbrand wrote:
+>>>> And folio_mark_dirty() is doing more than just setting teh PG_dirty bit. In my
+>>>> equivalent change, as part of the contpte series, I've swapped set_page_dirty()
+>>>> for folio_mark_dirty().
+>>>
+>>> Good catch, that should be folio_mark_dirty(). Let me send a fixup.
+>>>
+>>> (the difference in naming for both functions really is bad)
+>>
+>> It really is, and I don't know what to do about it.
+>>
+>> We need a function that literally just sets the flag.  For every other
+>> flag, that's folio_set_FLAG.  We can't use __folio_set_flag because that
+>> means "set the flag non-atomically".
+>>
+>> We need a function that does all of the work involved with tracking
+>> dirty folios.  I chose folio_mark_dirty() to align with
+>> folio_mark_uptodate() (ie mark is not just 'set" but also "do some extra
+>> work").
+>>
+>> But because we're converting from set_page_dirty(), the OBVIOUS rename
+>> is to folio_set_dirty(), which is WRONG.
 > 
-> The RZ/G3S supports deep sleep states where power to most of the IP blocks
-> is cut off. To ensure proper working of the watchdog when resuming from
-> such states, the suspend function is stopping the watchdog and the resume
-> function is starting it. There is no need to configure the watchdog
-> in case the watchdog was stopped prior to starting suspend.
+> And I made the same mistake at least also in "mm/huge_memory:
+> page_remove_rmap() -> folio_remove_rmap_pmd()".
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->   drivers/watchdog/rzg2l_wdt.c | 26 ++++++++++++++++++++++++++
->   1 file changed, 26 insertions(+)
+> I better double check all these so-simple-looking conversions that just
+> went upstream.
 > 
-> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
-> index 9333dc1a75ab..186796b739f7 100644
-> --- a/drivers/watchdog/rzg2l_wdt.c
-> +++ b/drivers/watchdog/rzg2l_wdt.c
-> @@ -279,6 +279,7 @@ static int rzg2l_wdt_probe(struct platform_device *pdev)
->   	priv->wdev.timeout = WDT_DEFAULT_TIMEOUT;
->   
->   	watchdog_set_drvdata(&priv->wdev, priv);
-> +	dev_set_drvdata(dev, priv);
->   	ret = devm_add_action_or_reset(&pdev->dev, rzg2l_wdt_pm_disable, &priv->wdev);
->   	if (ret)
->   		return ret;
-> @@ -300,10 +301,35 @@ static const struct of_device_id rzg2l_wdt_ids[] = {
->   };
->   MODULE_DEVICE_TABLE(of, rzg2l_wdt_ids);
->   
-> +static int rzg2l_wdt_suspend_late(struct device *dev)
-> +{
-> +	struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
-> +
-> +	if (!watchdog_active(&priv->wdev))
-> +		return 0;
-> +
-> +	return rzg2l_wdt_stop(&priv->wdev);
-> +}
-> +
-> +static int rzg2l_wdt_resume_early(struct device *dev)
-> +{
-> +	struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
-> +
-> +	if (!watchdog_active(&priv->wdev))
-> +		return 0;
-> +
-> +	return rzg2l_wdt_start(&priv->wdev);
-> +}
-> +
-> +static const struct dev_pm_ops rzg2l_wdt_pm_ops = {
-> +	LATE_SYSTEM_SLEEP_PM_OPS(rzg2l_wdt_suspend_late, rzg2l_wdt_resume_early)
-> +};
-> +
->   static struct platform_driver rzg2l_wdt_driver = {
->   	.driver = {
->   		.name = "rzg2l_wdt",
->   		.of_match_table = rzg2l_wdt_ids,
-> +		.pm = pm_ptr(&rzg2l_wdt_pm_ops),
+> Interestingly, __split_huge_pmd_locked() used SetPageReferenced()
+> instead of
 
-I think this will create a build error if CONFIG_PM=n because rzg2l_wdt_pm_ops
-will be unused but is not marked with __maybe_unused. But then the driver won't be
-operational with CONFIG_PM=n, so I really wonder if it makes sense to include any
-such conditional code instead of making the driver depend on CONFIG_PM.
+Forgot to delete that sentence.
 
-I really don't think it is desirable to suggest that the driver would work with
-CONFIG_PM=n if that isn't really true.
+Anyhow, it's all confusing. My replacement in 91b2978a34807 from 
+SetPageDirty -> folio_set_dirty() was correct. It only operates on anon 
+folios, likely that's why folio_set_dirty() is okay there.
 
-Guenter
+Oh my.
 
->   	},
->   	.probe = rzg2l_wdt_probe,
->   };
+-- 
+Cheers,
+
+David / dhildenb
 
 
