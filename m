@@ -1,119 +1,106 @@
-Return-Path: <linux-kernel+bounces-34063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D4ED8372BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:38:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95CD38372C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:41:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4645328A21E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:38:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB68A1F242F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:41:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4005A3F8F2;
-	Mon, 22 Jan 2024 19:38:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC963F8F8;
+	Mon, 22 Jan 2024 19:40:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IA9+x55Y"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B32OpiG2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE6C3E48B;
-	Mon, 22 Jan 2024 19:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD91E3EA81;
+	Mon, 22 Jan 2024 19:40:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705952320; cv=none; b=m6dfMKuntnaZkPzxjz6n4p36FtGQIev21wI4yeMkxOB3b1Cy2lxxnV1Zdet9xS3DFEZVWDlMKjZswMJMovvsfQWZQdyBZAd9aObXg6OrdHUcKXgd1uAUiEtPzWhKenXj48GxIs6PEKscsKtfRjhA2tLLL/zHLb2GzRcMiVQ2h2c=
+	t=1705952458; cv=none; b=byOnHAEuYQXIxWgiiIM1CSFNJqgUpsFHgTNUKfWTsi+6wtSn2ncQnpHkyH7bAfi0GTvL0I6IKCcTavnKtBvoWmOpvjI7Yqb+1q+Laq+DUu/Dbj9MrtZa9l3QVOp7glyUWH+1fSeaZDq1tHK4B3fk7u4vbnMHmE15GTwvGL5IhMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705952320; c=relaxed/simple;
-	bh=jVDYzTKoeN5seaHXGwaDqhA2K29ijc6wqpC2n+h3Yrg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lPy1IeQlfFHyGQol5PTn0sn9NaazooQfmW4nzSye1pMvB+s0Q9NEuky8djOW+Q+5XJ9nzdRr7cuPggiW1d2Af1jNQP+UhfAZnk7YIixbvTClp/YPGEyGv7PewOKZho/GiAkvdXycWQ13JU8WMobWOGosoWgjP/Uj50ofE1im7m8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IA9+x55Y; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5f254d1a6daso34867827b3.2;
-        Mon, 22 Jan 2024 11:38:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705952318; x=1706557118; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H3nGTriVYNiDa8Acgezp4UDQW22qmr1rfJZKcpn5sq4=;
-        b=IA9+x55YyzYkzKMWpTjsODG7/zaOL3I1X3DaTByZjOiiY2A3oP8HbZIJs42qKCbBfI
-         sBPF/9eJGqQFXfWO344wu9IQiSOCYx3Gt8r/Ur6+80tWZmcJpzsp9iaemUc1bvphL24/
-         hoHFLyt0l1sQZpetoCAg/0se6IgahjXrTTSm+LdDwkgjgIZqICHHd4GILkzlCYkgKvtY
-         DXGh3ocdBlG7ByzQvg2GMPqRIxeO7BPz8Iy91el7HNi8mSgu0qkgUKmvM3N9xNfByGOI
-         sbaQBNiacIEvr03jI6DZLVHw3JqElddzh6/PnzCDzrVrVgZtYKxpZEHSLuxrRjcYzPQY
-         u9nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705952318; x=1706557118;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H3nGTriVYNiDa8Acgezp4UDQW22qmr1rfJZKcpn5sq4=;
-        b=UoKv4vkCdO71dLwm5/1uzZWsi3b0+OmptK/K83y73NVvn0weRqpCHBf1rsfBdQz8O6
-         YgFhpE70VMdibrQkLtzzf7NkcG2kgkJ/WuuFjWVcssxnB9gzTynpiqvRsxLuxiYQV4rA
-         Nit+8yaBkO1JsSf1vdDjGYPxRsDIJhDxyugdt7Ufx68oGUkgcxNK32HJDFaAf/WAUSVV
-         LGpwY6t/Ih7inwS/gLYtgJwXSWTdcfeIANpKuE6ChgTF2GeeB0OVBp0ubVaXqDflxZeg
-         zxpJSvT2LR9wY/BIC73CAOIf68FuI8smayJ7Q4+kMwnWaTVyTzl2mSEzQq9kNw83c8gO
-         viFQ==
-X-Gm-Message-State: AOJu0YzefVRPtAxSCUGUsRrqhqjooNaEBhSp1Z68J4Q1g85c5v5qpuzR
-	fLjjc6KFy5veXQzvHQbxdXvP9Je5P7+VE+JmAFuZdrBvBBgYNkDKIK0HgfsbsSVTQUi+rk41Vdg
-	zAZbnRVugdKZFUnNJnqxtjuSeHsA=
-X-Google-Smtp-Source: AGHT+IFI0WuJaFhUBM3jZxZieoXHqxPdjS0wMkWfijuPxy0V0M5AG/fSKfFvpqMlsz+etL5sn7LOE7Z3RJgOPLnt5Io=
-X-Received: by 2002:a81:5f8b:0:b0:5ff:7c76:888d with SMTP id
- t133-20020a815f8b000000b005ff7c76888dmr3658032ywb.6.1705952318176; Mon, 22
- Jan 2024 11:38:38 -0800 (PST)
+	s=arc-20240116; t=1705952458; c=relaxed/simple;
+	bh=pVtGodeicWDJGJnRxQD9TYUUvY4ml1P1cyQImCYhXeE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YqsEN6rrN+S/DSvgShcGe538a/HjjfkpGHC0a1MwJIIrOkTcT182JhF37aI1xOEB8fAIuFVmxTfevxjyuc/JYZ2ThWxRifr0YxsFJlM2EBf2RgG6Ye26pm2zv/K4K/CaLJcR4amHsytMmx53yj8wsxypp4RCmnkSa5s3/EHiuP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B32OpiG2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6737C433C7;
+	Mon, 22 Jan 2024 19:40:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705952457;
+	bh=pVtGodeicWDJGJnRxQD9TYUUvY4ml1P1cyQImCYhXeE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B32OpiG26rQr9Hr+UduoekLolHO0MhEsx6aRThvVxDKX/JeW2uys7/etwEddPf18/
+	 u4SYBNkVTnimvXhcHCfsm/umRFJplfoU4qRh0Wki6ANXrnOjgWjh/ZiDQvLy896JcQ
+	 wngPjKpEXXgbeeS5DzNnK+l6PrCgNy4EA8xQPkfIKDxWcYbb79Wm9eJ0B3NQpD9DAX
+	 bTn9BiKFLiV8CU65SThM3+UUnR0aAcepvfTstsvTZASmeMSLR/jpRb6GOFbLQIasFy
+	 IUh2MGOGgfhJDldXMXMioYEA0wEQreKlHbUGuK2/RuHQcGN8dCBsiSqeMl02O/D7WS
+	 eCamcXgaaL1SA==
+Date: Mon, 22 Jan 2024 19:40:51 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Seven Lee <wtli@nuvoton.com>, lgirdwood@gmail.com,
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+	conor+dt@kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
+	CTLIN0@nuvoton.com, SJLIN0@nuvoton.com, scott6986@gmail.com,
+	supercraig0719@gmail.com, dardar923@gmail.com
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: Added schema for "nuvoton,nau8325"
+Message-ID: <04945799-eded-42f9-b8fa-8907be44c400@sirena.org.uk>
+References: <20240122095650.60523-1-wtli@nuvoton.com>
+ <20240122-daunting-woof-19fac5689bb2@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122184608.11863-1-dakr@redhat.com>
-In-Reply-To: <20240122184608.11863-1-dakr@redhat.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Mon, 22 Jan 2024 20:38:26 +0100
-Message-ID: <CANiq72kdX-LK=OurnR5ZGDXEf90DxshUX13up4c8kiz0jxHc+Q@mail.gmail.com>
-Subject: Re: [PATCH] rust: str: add to_ascii_{upper,lower}case() to CString
-To: Danilo Krummrich <dakr@redhat.com>
-Cc: ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com, 
-	boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com, 
-	benno.lossin@proton.me, a.hindborg@samsung.com, aliceryhl@google.com, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cJlmuN7wD9uJzDfe"
+Content-Disposition: inline
+In-Reply-To: <20240122-daunting-woof-19fac5689bb2@spud>
+X-Cookie: Nice guys don't finish nice.
 
-On Mon, Jan 22, 2024 at 7:46=E2=80=AFPM Danilo Krummrich <dakr@redhat.com> =
-wrote:
->
-> Add functions to convert a CString to upper- / lowercase assuming all
-> characters are ASCII encoded.
 
-Like Alice mentioned, please mention the use case, i.e. the "why?"
-(perhaps also linking the Zulip discussion if you like [1]).
+--cJlmuN7wD9uJzDfe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-[1] https://rust-for-linux.zulipchat.com/#narrow/stream/288089-General/topi=
-c/String.20manipulation.20in.20kernel.20Rust
+On Mon, Jan 22, 2024 at 06:00:14PM +0000, Conor Dooley wrote:
+> On Mon, Jan 22, 2024 at 05:56:49PM +0800, Seven Lee wrote:
 
-> +    /// Converts the whole CString to lowercase.
+> > +    enum:
+> > +      - 0 # VDDA
+> > +      - 1 # VDDA*1.5/1.8V
+> > +      - 2 # VDDA*1.6/1.8V
+> > +      - 3 # VDDA*1.7/1.8V
 
-Please use Markdown and, if possible, an intra-doc link, i.e.
+> I would also rather than this enum was used to have sensible values for
+> the enum itself (which I suppose means strings here), rather than the
+> register values. Seeing "nuvoton,dac-vref = <2>" in a devicetree is not
+> very meaningful IMO.
 
-    /// Converts the whole [`CString`] to lowercase.
+Do you have a concrete suggestion for how to more clearly write these
+directly?
 
-Also perhaps we should mimic the standard library docs?
+--cJlmuN7wD9uJzDfe
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +    pub fn to_ascii_lowercase(&mut self) {
-> +        self.buf.make_ascii_lowercase();
-> +    }
+-----BEGIN PGP SIGNATURE-----
 
-Why did you choose the `to_ascii_*()` name for these? In the standard
-library, the in-place ones are `make_ascii_*()` (like the one you call
-in the implementation).
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWuxMIACgkQJNaLcl1U
+h9A9wgf9GwcA7Ig0ZhctUzcIuOgFXg+HVs2fAzHGak6ySbki+9ticBmi6pSE85Ss
+VawLZpUX9H/Gp2cV7U/PV81ax0MHTrvo1QWWmSoS+3BBHxgqCIHMNrM1houNIxle
+YrH2Sq3AKOSs8QHUPF7YQu4VuJV7bOCH5C7FaAIXhVNu3l6iwpz4cBXN7Ta49+9Y
+qVYxl0hq+Rk4FCA/7idB0c6I+Xahcz9oQ6YAk+vLkVASFAqgPiY+EDundI2abdW0
+P3DwApDBdBjH/fYSf8WAu4x/R1VLvSKMj9gZBbYZdBnsM+u0kyx/0o9C1Lgg/iav
+WYCEFzYB3Q/cJxIvQi6YFEwLBvty3w==
+=l5dE
+-----END PGP SIGNATURE-----
 
-Should the new-object-returned ones be added, by the way, if we are
-adding these?
-
-Cheers,
-Miguel
+--cJlmuN7wD9uJzDfe--
 
