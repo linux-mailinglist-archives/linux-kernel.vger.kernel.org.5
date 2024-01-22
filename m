@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-32434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949B6835BC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:38:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D275835BC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:38:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE736281BDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:37:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 558D1281D0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD37C15485;
-	Mon, 22 Jan 2024 07:37:52 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0BA16410;
+	Mon, 22 Jan 2024 07:38:12 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2319D16416;
-	Mon, 22 Jan 2024 07:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC6320DEB;
+	Mon, 22 Jan 2024 07:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705909072; cv=none; b=tCJpB3ZWssMxwMwmSiSpq/4HokrxhUzH4LgVxw6N2X8Fqutv/2JY5GIb4wMrU7b8HlGHBi3u2BwjTgUFFMQEqqJHolhp/QA/eOEH6gUWiSo9TkP/GgjkPHchobEiBKZjZgcQAfytMnblyLOEOOJXOwwsg4QPgxWQG6mA4yJTevo=
+	t=1705909092; cv=none; b=QGCbOWPwmdFdcta/nVwjTdDYTlf2hLCKYITdeuKLIyKDuSgQMPS+0FXnayJqAyDp0X4eGuwLZLYdww1+gE5lLhyhCtGK8GfoPlm+9dC2FPPxAIr+eOQIwoGocboMGPdtjfB5TklS2CmfL889Px+L9JV//iWo2DPzda9c70jcOdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705909072; c=relaxed/simple;
-	bh=sBwc0e0LX68ujIGPPtdpEdCtFeOhchnf4ztfTmcCrW4=;
+	s=arc-20240116; t=1705909092; c=relaxed/simple;
+	bh=uRi7b/OnTFYE7tce+ThtNtXL9uYhQDA1900RsEUwyxY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PqdnJLFmR2y4yr6IFpsaa/yKHdTSXPzt3OZqQYX9CUSh8sw5QdTNl2T7fct/lxsUj66XLtH47+7utJiXYORZNx5BSTyOXtgMNRSOsgD1/hmDTl5dJpU+sn70ozaFgIDgu9NG9Z1uqGmlHcxpiZgS1pnXZ3tTfsim5bhHxPrf+jk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=kYJn2o4tGNAsHEab20yi+4Bj2khaofXAdKFOWQEtDlrNXJ3oozQm+P7gtwR3dulFs5+OxX3J0Jk4TcsQv6FptQ5V74Ko67YH5aQKBd/oxIWIpeAVRobippb5Z0o/BHDlNwzrB5ZjjbRASMgT1jN/MHpMVCDJ0rkt0YRD4+1zhjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TJMVC181kzVjFn;
-	Mon, 22 Jan 2024 15:36:35 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TJMV02SKYz1S5NB;
+	Mon, 22 Jan 2024 15:36:24 +0800 (CST)
 Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id 49E9D1400E4;
-	Mon, 22 Jan 2024 15:37:44 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 1DE4C1A0179;
+	Mon, 22 Jan 2024 15:37:52 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
  (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 22 Jan
@@ -42,9 +42,9 @@ From: Ye Bin <yebin10@huawei.com>
 To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
 	<mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
-Subject: [PATCH v2 1/7] string.h: add str_has_suffix() helper for test string ends with specify string
-Date: Mon, 22 Jan 2024 15:40:09 +0800
-Message-ID: <20240122074015.4042575-2-yebin10@huawei.com>
+Subject: [PATCH v2 2/7] tracing/probes: add traceprobe_expand_dentry_args() helper
+Date: Mon, 22 Jan 2024 15:40:10 +0800
+Message-ID: <20240122074015.4042575-3-yebin10@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20240122074015.4042575-1-yebin10@huawei.com>
 References: <20240122074015.4042575-1-yebin10@huawei.com>
@@ -59,42 +59,73 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  canpemm500010.china.huawei.com (7.192.105.118)
 
-str_has_suffix() is test string if ends with specify string.
+Add traceprobe_expand_dentry_args() to expand dentry args. this API is
+prepare to support "%pd" print format for kprobe.
 
 Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- include/linux/string.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ kernel/trace/trace_probe.c | 34 ++++++++++++++++++++++++++++++++++
+ kernel/trace/trace_probe.h |  2 ++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/include/linux/string.h b/include/linux/string.h
-index 433c207a01da..e47e9597af27 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -405,4 +405,24 @@ static __always_inline size_t str_has_prefix(const char *str, const char *prefix
- 	return strncmp(str, prefix, len) == 0 ? len : 0;
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index 4dc74d73fc1d..1599c0c3e6b7 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -1565,6 +1565,40 @@ const char **traceprobe_expand_meta_args(int argc, const char *argv[],
+ 	return ERR_PTR(ret);
  }
  
-+/**
-+ * str_has_suffix - Test if a string has a given suffix
-+ * @str: The string to test
-+ * @suffix: The string to see if @str ends with
-+ *
-+ * Returns:
-+ * * strlen(@suffix) if @str ends with @suffix
-+ * * 0 if @str does not end with @suffix
-+ */
-+static __always_inline size_t str_has_suffix(const char *str, const char *suffix)
++int traceprobe_expand_dentry_args(int argc, const char *argv[], char *buf,
++				  int bufsize)
 +{
-+	size_t len = strlen(suffix);
-+	size_t str_len = strlen(str);
++	int i, used, ret;
 +
-+	if (len > str_len)
-+		return 0;
++	used = 0;
++	for (i = 0; i < argc; i++) {
++		if (str_has_suffix(argv[i], ":%pd")) {
++			char *tmp = kstrdup(argv[i], GFP_KERNEL);
++			char *equal;
 +
-+	return strncmp(str + str_len - len, suffix, len) == 0 ? len : 0;
++			if (!tmp)
++				return -ENOMEM;
++
++			equal = strchr(tmp, '=');
++			if (equal)
++				*equal = '\0';
++			tmp[strlen(argv[i]) - 4] = '\0';
++			ret = snprintf(buf + used, bufsize - used,
++				       "%s%s+0x0(+0x%zx(%s)):string",
++				       equal ? tmp : "", equal ? "=" : "",
++				       offsetof(struct dentry, d_name.name),
++				       equal ? equal + 1 : tmp);
++			kfree(tmp);
++			if (ret >= bufsize - used)
++				return -ENOMEM;
++			argv[i] = buf + used;
++			used += ret + 1;
++		}
++	}
++
++	return 0;
 +}
 +
- #endif /* _LINUX_STRING_H_ */
+ void traceprobe_finish_parse(struct traceprobe_parse_context *ctx)
+ {
+ 	clear_btf_context(ctx);
+diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+index 850d9ecb6765..553371a4e0b1 100644
+--- a/kernel/trace/trace_probe.h
++++ b/kernel/trace/trace_probe.h
+@@ -402,6 +402,8 @@ extern int traceprobe_parse_probe_arg(struct trace_probe *tp, int i,
+ const char **traceprobe_expand_meta_args(int argc, const char *argv[],
+ 					 int *new_argc, char *buf, int bufsize,
+ 					 struct traceprobe_parse_context *ctx);
++extern int traceprobe_expand_dentry_args(int argc, const char *argv[], char *buf,
++					 int bufsize);
+ 
+ extern int traceprobe_update_arg(struct probe_arg *arg);
+ extern void traceprobe_free_probe_arg(struct probe_arg *arg);
 -- 
 2.31.1
 
