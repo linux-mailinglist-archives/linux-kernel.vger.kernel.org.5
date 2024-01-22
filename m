@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-34181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F375A83754A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AB5083754E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 941941F27F4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:30:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B95E1F2829D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E38481C4;
-	Mon, 22 Jan 2024 21:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE45548CC4;
+	Mon, 22 Jan 2024 21:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ExGJlTbB"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ajPUvRGF"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77190481C8;
-	Mon, 22 Jan 2024 21:29:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B2E482ED;
+	Mon, 22 Jan 2024 21:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705958976; cv=none; b=IbMFw45dvFGpFU38XgHsM65kdNkXOaCXfb6en0Vu2XXMZ6oBIyblaxTJlfUIXsRR2dSkqBXtc3qbwKVkM4u9KpLtC47fj24wBYz6yIsIDeQOtNxMIx4h7XRQiSWiuK/n4J0oOVJqKfoyWZchUkZTuaWKrr9hA6ZhPsMHpC5DeIg=
+	t=1705958979; cv=none; b=N735qamUdcGFotAflY9dHzkCIo/+8ToYTg9Tu6bdyBuwNKfkC3vOPFESpUJNBVs9uDeoAQQQIKvLTmPwaaOam/ZTLMbkAGAZGcImKiCWhW/+20DvpWaWAnrNy5pn61j+YnQVVyrEQnVbM9lEEFwu+PWU4tcg2UC7WWaEv2yF8xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705958976; c=relaxed/simple;
-	bh=/WQVGD5RStqq2TMulnJzeOS49hKDoHVe7AeXru/8hBk=;
+	s=arc-20240116; t=1705958979; c=relaxed/simple;
+	bh=Xlt6sMMKAUm7IbZRBGhxEDcRLpN3TDT3XNkJuoLuK4w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qQzEoEqt0WmLX6fOkhx6rN9yeV2xTXNz5FYS2YITtdshelFaYuXSC52b2JAIJiL1Eq9/37R/VT0BUp6O9Un1ZRacpY+dEuwWIudMz/e4y3ochXGQJrrJ47uFqvnAheP8XVRbV8D1ksrwWqfNUt60hzXcBUNtU88YP1EFEGYiUrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ExGJlTbB; arc=none smtp.client-ip=209.85.128.54
+	 MIME-Version; b=HKdDbPcBaGvLrwpgetFS17Tpiv5WDTb8g7hba98NXyHUCKLBqRnapPxHPXxrbxSuKlpf9gggSK9Ghf4TFYVmN3AwWF2BPD4nSRzjbrPTuYgZ/JDcKRUlBLZtLCCsZ47Fz4QyoLL7RVLfhQ+uNICEHTjjaOgG9KkimN/4P4wzLz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ajPUvRGF; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40eb033c1b0so11884025e9.2;
-        Mon, 22 Jan 2024 13:29:34 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a28f66dc7ffso806602066b.0;
+        Mon, 22 Jan 2024 13:29:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705958972; x=1706563772; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705958976; x=1706563776; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=awRh8a2uyaBPV9HuU86fl9/hVsMJE3K/Mn7kByHoWp8=;
-        b=ExGJlTbBnx/HSHcFD3pwcca1Xzd+KD8fm7NooMz2yDMOk/hyyEnt/EcEiq/RAJO7rQ
-         BzfW6NlDFH27WKUmcrLgQ7ucHpT3TvP2PL97JXzrDAo0rIESFcXNexzjGfd7gG2iO73q
-         QPSN/K+o6YkvnmMtNi3wEMbemWPGAcloDnCSTbExPtybe4iN7mAR8evNc/eRKHF8CC14
-         CwfJcwApzUyYGeDqS57OkH8hkzP1fWu3B9GbC7mxTRS583/uDgvpynbDdGFqFkpbgWKT
-         DFMoK+0Hr557hIR7YghST/0BPhNrAvbpJHeTfmQTZgzmrkn1pbhsXRHKhFgKP9rNvOrU
-         /3og==
+        bh=ABA/+6oxHumH7163VNUvqNT1eTr+ehROcpiaVQm4GRM=;
+        b=ajPUvRGF5ssv6lRWYhlfo41cptvxfBEnyzUnhIS7cZJEDj16sn03lxLF0CT2KT/kQo
+         3DecZ3Fu6GT6+xtp5k9k+YX+knRCc1OPJqSkKgK4E+B3+J6jRSbEg5E/5bFMQF58mtxO
+         aSbonJmdlgyphofX6ZcF7H4TwkX2CB14C7xuDlsOXofsyYNz2STLnknG/nCzpAuATNm2
+         zeHN0tC5CZXokNOzqDWWHgkZ1VuwsnjSaoyDpjhYEvskerLfNWk7wLkQJrSHe2ihdiXi
+         eeWTi3o/ZNINiW6MBO8smYx1FV++cZgT056gf5hVapxh8HLia0qti0DgD6EQkCpPKDbO
+         OG6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705958972; x=1706563772;
+        d=1e100.net; s=20230601; t=1705958976; x=1706563776;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=awRh8a2uyaBPV9HuU86fl9/hVsMJE3K/Mn7kByHoWp8=;
-        b=OVNLgcrHEZy+cVBhLtGZV1ZnZBh2muTi3GwKiQadYlOJIlfqKlhNdhUMIemk6UdCmk
-         pz3ggyjz1rDBvdasVaMK9QAMlgy5dZHZez0j7ojoz/zIla3goBWI7eX1v9RNmenE/Qak
-         uRi41IKTM+H+4CHgPxcY97V07JgKCYgbOskb0+M6pwwJ3Uguu0oU5pXXy8H+FjkDdK59
-         Z1ymqBSypVocE3u15zZ6RO5DsKDbf1o2YyagHnyu9pA63ffz7r+Bpfy8z8DBTR8e1tXi
-         Xm8U2MB6upcF3NP4YCKhVinqxM9SPuFLU3M43TpVHnchc9bVYwwg+WvW48vXzH4trwQY
-         I1sw==
-X-Gm-Message-State: AOJu0Yw7K8p7KOMOutOLabeZvNzGBV0zk4ac6+HvUFEulmgIGH3/TiKl
-	mldFexC3ygusaz7DRudw4P2qvOUwHzAvoky843bftKjRRACfmVAU
-X-Google-Smtp-Source: AGHT+IFFOWp+bguLvf1DMyURSpDXOBzhNo0Mu5eclUHg/AEXVIozX+6WTexu834LKa4ZbX6/xBPNXA==
-X-Received: by 2002:a05:600c:1f92:b0:40e:6650:b873 with SMTP id je18-20020a05600c1f9200b0040e6650b873mr2905440wmb.28.1705958972648;
-        Mon, 22 Jan 2024 13:29:32 -0800 (PST)
+        bh=ABA/+6oxHumH7163VNUvqNT1eTr+ehROcpiaVQm4GRM=;
+        b=GJFpEB5pMSEx55yoqsZc+GXER4yDkGEJTrH/a+NmRWGCAE40gw5EMduX+T8VJI+LhC
+         Ncial9yc7MMpNU9LIeEWQOrBN8AUx5ORSrgcSQiek+30cju80c9LEJjeXsYsiZr2xF8W
+         z0ag0moLb7DPv41LvnsyMfJX1lY1pDjSQIcP11QUx/dFNOJYHMg2YMSjZHCMABVne33T
+         SohvJYs2K/7Mdyxxz3u3/6CAU/y1YOps/QulYiqxD/+8yeMaEaEnj4b2RcvXi52TPT4o
+         4C4jK0IKUMJ8f9enr5Td7PohEXfRe9LOWeYbT+jMyV8Qczrxdt5d/eqhp6itnzm+NoSO
+         3DYA==
+X-Gm-Message-State: AOJu0YxeVbKSqYYfS00wvlDgSpZehmB7t2squxceluyOgvx6NOnixf0Q
+	Ffn2FAXag1AgdD1G3oKHW15kXLq6bde5WKi7nN5eK8vGHUYZ9wFX
+X-Google-Smtp-Source: AGHT+IEZ7u0Y1M9h4MrNvyig0ANPhkjW21ElfCa295jmdxao1CQmsoJQ2e//T1v7E7hHEXQ7JldxPw==
+X-Received: by 2002:a17:906:bc45:b0:a28:9546:f92a with SMTP id s5-20020a170906bc4500b00a289546f92amr5044730ejv.67.1705958975603;
+        Mon, 22 Jan 2024 13:29:35 -0800 (PST)
 Received: from debian.fritz.box ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id j25-20020a1709066dd900b00a26af4d96c6sm13823336ejt.4.2024.01.22.13.29.31
+        by smtp.gmail.com with ESMTPSA id j25-20020a1709066dd900b00a26af4d96c6sm13823336ejt.4.2024.01.22.13.29.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 13:29:32 -0800 (PST)
+        Mon, 22 Jan 2024 13:29:35 -0800 (PST)
 From: Dimitri Fedrau <dima.fedrau@gmail.com>
 To: 
 Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
@@ -78,9 +78,9 @@ Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
 	Stefan Eichenberger <eichest@gmail.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 net-next 01/13] net: phy: Add BaseT1 auto-negotiation constants
-Date: Mon, 22 Jan 2024 22:28:34 +0100
-Message-Id: <20240122212848.3645785-2-dima.fedrau@gmail.com>
+Subject: [PATCH v5 net-next 02/13] net: phy: Support 100/1000BT1 linkmode advertisements
+Date: Mon, 22 Jan 2024 22:28:35 +0100
+Message-Id: <20240122212848.3645785-3-dima.fedrau@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240122212848.3645785-1-dima.fedrau@gmail.com>
 References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
@@ -92,28 +92,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Added constants for advertising 100BT1 and 1000BT1 in register BASE-T1
-auto-negotiation advertisement register [31:16] (Register 7.515)
+Extend helper functions mii_t1_adv_m_mod_linkmode_t and
+linkmode_adv_to_mii_t1_adv_m_t to support 100BT1 and 1000BT1 linkmode
+advertisements.
 
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
 ---
- include/uapi/linux/mdio.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/mdio.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/uapi/linux/mdio.h b/include/uapi/linux/mdio.h
-index d03863da180e..020ccc810d23 100644
---- a/include/uapi/linux/mdio.h
-+++ b/include/uapi/linux/mdio.h
-@@ -348,6 +348,8 @@
+diff --git a/include/linux/mdio.h b/include/linux/mdio.h
+index 79ceee3c8673..ecd21acc7eed 100644
+--- a/include/linux/mdio.h
++++ b/include/linux/mdio.h
+@@ -373,6 +373,10 @@ static inline void mii_t1_adv_m_mod_linkmode_t(unsigned long *advertising, u32 l
+ {
+ 	linkmode_mod_bit(ETHTOOL_LINK_MODE_10baseT1L_Full_BIT,
+ 			 advertising, lpa & MDIO_AN_T1_ADV_M_B10L);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_100baseT1_Full_BIT,
++			 advertising, lpa & MDIO_AN_T1_ADV_M_100BT1);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_1000baseT1_Full_BIT,
++			 advertising, lpa & MDIO_AN_T1_ADV_M_1000BT1);
+ }
  
- /* BASE-T1 auto-negotiation advertisement register [31:16] */
- #define MDIO_AN_T1_ADV_M_B10L		0x4000	/* device is compatible with 10BASE-T1L */
-+#define MDIO_AN_T1_ADV_M_1000BT1	0x0080	/* advertise 1000BASE-T1 */
-+#define MDIO_AN_T1_ADV_M_100BT1		0x0020	/* advertise 100BASE-T1 */
- #define MDIO_AN_T1_ADV_M_MST		0x0010	/* advertise master preference */
+ /**
+@@ -409,6 +413,10 @@ static inline u32 linkmode_adv_to_mii_t1_adv_m_t(unsigned long *advertising)
  
- /* BASE-T1 auto-negotiation advertisement register [47:32] */
+ 	if (linkmode_test_bit(ETHTOOL_LINK_MODE_10baseT1L_Full_BIT, advertising))
+ 		result |= MDIO_AN_T1_ADV_M_B10L;
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_100baseT1_Full_BIT, advertising))
++		result |= MDIO_AN_T1_ADV_M_100BT1;
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseT1_Full_BIT, advertising))
++		result |= MDIO_AN_T1_ADV_M_1000BT1;
+ 
+ 	return result;
+ }
 -- 
 2.39.2
 
