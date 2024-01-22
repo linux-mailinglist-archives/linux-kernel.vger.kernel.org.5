@@ -1,141 +1,137 @@
-Return-Path: <linux-kernel+bounces-33880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7EEF83705E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:44:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D936836FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F265B20A27
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:27:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DF4328C5E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:27:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE9A50A76;
-	Mon, 22 Jan 2024 17:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF335BAE0;
+	Mon, 22 Jan 2024 17:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="G6R6J2Tr"
-Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MLhjsgkp"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E1B550272;
-	Mon, 22 Jan 2024 17:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD8E3FE4C
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705946275; cv=none; b=kwSgKP2oSktTUorTPAg/G6SQYrX0Jrss1tENzC8cXRa6kH0Clwj5iK02CyXPO9T9Xxm15OYcJExMcCxjVA8oD32rscGE6ZfUY+J9PDbsbS81GnLxENwk2SNM41sGXIeKWU1f30GBx91a6ejs7htNaeLVXWydOmWIvhVMOqd6GOY=
+	t=1705946298; cv=none; b=E/Du9XmAGznJHkNxqX1r7iSwVCMUboExxHIx7WG43NpMHaAa1Qh6WVl1v5x5wwva1SMbsbr83rCl52vlLTpsbekBmUDrxIYR2jEJVgvwqdhd0O6bNURzz1KFDSCQqxcW90gbXhGmzNGJwNhU9K/HH45SGecT9dpZ0ALlNa5KQG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705946275; c=relaxed/simple;
-	bh=ormRf2c7k0RSk48YWM459e3k1OgtsTd6YXCAGOapFlM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JNtiAjG8g4rVnKpZwpOT3t69anxoK4YXC+iWcEZlrb4NLsZl85G4qAUqG6I4ozR8kXgyZQh6AA+CfYmp27RsnnEfNNmbciH2BVTNvK8oz19r58rSVLTmLHGa/y9ZdTBD7yEkkjoo4dZh749zaCHqjQxWIneSZsvCQsqmxXSUNp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=G6R6J2Tr; arc=none smtp.client-ip=80.12.242.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id RyYJrZyS0CqsFRyYJr2t2P; Mon, 22 Jan 2024 18:57:45 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1705946265;
-	bh=CHlsOFd028+jV0LAUMT3aaajLuOQehNM5ywoohsK5ko=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=G6R6J2Tr0yjFFdDfUw8j4W+vMDSPHcYn7lhH9AsHvWwOS3b2fKv5hQSEnK+v1vEX1
-	 X340Jilt9mvYEM6pn2jHnHMMwco0kxed5Za++jbP/7XuRkzzgBDoetvw4ac7m7CbuJ
-	 v0XwmEa1DdqoP2K+4bf/vaahw7MJJhsMBCKcwXePV7MjqzwRRwAFpNTfMYivbHQc3c
-	 ZW0GAOGyMjn+JKmuzWZpGTpq4ODnItBSjzS3P2k1QvWckVZsQ+PCl6W3bViR54tViM
-	 hF3rLxCHF4Rv41RJnFyCdLaLrmgroDZjbKRkqg4G82K1FrSut3/drmRYD280/lL6vz
-	 a+zdJyvdOZX8A==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 22 Jan 2024 18:57:45 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <d11852b1-6d9c-4ced-83cb-96e753edd45d@wanadoo.fr>
-Date: Mon, 22 Jan 2024 18:57:42 +0100
+	s=arc-20240116; t=1705946298; c=relaxed/simple;
+	bh=CkuGyzR0lrM5lkSkD/Qzrv2Ae6T6p+1m5NcVdimvwYQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Content-Type; b=mMP0hdOJqzma4OmjYUH4SgDyOMtHrApvyxn9AXyhCCulrYl4SligJ7STllyvqZKqDxlJNNX+u3HC6/01/+0IXk9Xqs2UkSsURo1X0vTfUkTuw6YF6DqJLjoDraH1ZjpW9cPPYs+Vfm0UvKk5XgY9yIMbSOwj5ilzJMV5b8WntzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aahila.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MLhjsgkp; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aahila.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5f0fd486b9aso40280687b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:58:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705946296; x=1706551096; darn=vger.kernel.org;
+        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=S42orU1ihCUS+k0y1H/3lg3nrFnf+J6Z4OBgyaukGS4=;
+        b=MLhjsgkpBA3mfeeLcMWzUytC2w+h0DqJh59yP0yQkl6GqsMGezbzGbpunN+/ufm//d
+         C6rrbRe4UeOdJoMcYJX4RCo+ptrxyMeQqO7bJyXBlw3PCXXrJBxP/q9fSW2PIiJKHkLS
+         /D/yTq3axMQqCDJcYqUOnI+CGzdg+jQGXrJfICFJ0uXwzpT+TRlRr15lXQzv4kCeWMia
+         jJYEyVYTKtut9nqGBP4q+V4O0B2kmv08Cm3uCHL2vuMLs/h8NzpYWUkFu34/vyZyLOCj
+         YeEpS+NCUGc9iEUfrvGgx+xQc8nRdt+gTYpSutWsK+dqTVYs4wHDpLJvj7fQgNVslP3t
+         NNxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705946296; x=1706551096;
+        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S42orU1ihCUS+k0y1H/3lg3nrFnf+J6Z4OBgyaukGS4=;
+        b=hojpiY9U3fS0aRljjr450Tdu/o41o4UH4IyhdluaWpWUxnhLdHUHFt2rBKpHRft8Lm
+         zG9xwnlHfWzPW9Jh+BYVNO+dxgsYwDMrpPcKaWBWdKV75WgIXPLzHhuGtTWA6l3+koiR
+         0fmBfY2pXMLquyy+LNTiJd74NwO/juuui5zyVmrRTnCcwS8lrojHNnHtvdepWyNfz5aU
+         qKtg2q6y0Yf/z9AplIFwkm2NOI+Q+jwd0nNGliKBD67q710JsBLNS1AojDBXXlXOPGEO
+         wS7Ixrc8wzmC62unFF2dTfiPV6FBH8S4oSuTu+1MCi9s1es3vTK5nY5j+eDKr5bUCfuS
+         SxRA==
+X-Gm-Message-State: AOJu0Ywtklf5QqvVy+dmDccznN72nPhuE7S20aH5kP5H+RormbM/qMGq
+	a8QRAydPBRjOuLjllY193kAd6KAuNz+EoV2jf91G37uyY4tmtoMzXUYA3ZjAsYvfnL3ZE/Rk462
+	sZg==
+X-Google-Smtp-Source: AGHT+IHohGoie9Nz44OT9czzy1k8AqHO/wQu3+j1Oepb2XbnCPG1gVCpJ84TT/z0goGRgpLg6Wh8BREQ4w4=
+X-Received: from aahila.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2f3])
+ (user=aahila job=sendgmr) by 2002:a25:8b88:0:b0:dc2:3a02:4fc8 with SMTP id
+ j8-20020a258b88000000b00dc23a024fc8mr280667ybl.6.1705946296094; Mon, 22 Jan
+ 2024 09:58:16 -0800 (PST)
+Date: Mon, 22 Jan 2024 17:58:09 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] thunderbolt: Remove usage of the deprecated
- ida_simple_xx() API
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Andreas Noever <andreas.noever@gmail.com>,
- Michael Jamet <michael.jamet@intel.com>,
- Yehezkel Bernat <YehezkelShB@gmail.com>, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org, linux-usb@vger.kernel.org
-References: <7fce4c8c4345d283dbfadd3cea60fdc49f9ca087.1705007397.git.christophe.jaillet@wanadoo.fr>
- <20240122112922.GH2543524@black.fi.intel.com>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240122112922.GH2543524@black.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240122175810.1942504-1-aahila@google.com>
+Subject: [PATCH net-next v3 1/2] bonding: Add independent control state machine
+From: Aahil Awatramani <aahila@google.com>
+To: Aahil Awatramani <aahila@google.com>, David Dillow <dave@thedillows.org>, 
+	Mahesh Bandewar <maheshb@google.com>, Jay Vosburgh <j.vosburgh@gmail.com>, 
+	Hangbin Liu <liuhangbin@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Le 22/01/2024 à 12:29, Mika Westerberg a écrit :
-> On Thu, Jan 11, 2024 at 10:10:21PM +0100, Christophe JAILLET wrote:
->> ida_alloc() and ida_free() should be preferred to the deprecated
->> ida_simple_get() and ida_simple_remove().
->>
->> Note that the upper limit of ida_simple_get() is exclusive, but the one of
->> ida_alloc_range()/ida_alloc_max() is inclusive. So a -1 has been added
->> when needed.
-> 
-> Looks tood to me but wanted to check if you tested this on a real
-> hardware or you just build tested?
-> 
-> 
+Add support for the independent control state machine per IEEE
+802.1AX-2008 5.4.15 in addition to the existing implementation of the
+coupled control state machine.
 
-Hi,
+Introduces two new states, AD_MUX_COLLECTING and AD_MUX_DISTRIBUTING in
+the LACP MUX state machine for separated handling of an initial
+Collecting state before the Collecting and Distributing state. This
+enables a port to be in a state where it can receive incoming packets
+while not still distributing. This is useful for reducing packet loss when
+a port begins distributing before its partner is able to collect.
 
-It was compile tested only.
+Added new functions such as bond_set_slave_tx_disabled_flags and
+bond_set_slave_rx_enabled_flags to precisely manage the port's collecting
+and distributing states. Previously, there was no dedicated method to
+disable TX while keeping RX enabled, which this patch addresses.
 
-Transformation has been done with the help of the cocci script below.
+Note that the regular flow process in the kernel's bonding driver remains
+unaffected by this patch. The extension requires explicit opt-in by the
+user (in order to ensure no disruptions for existing setups) via netlink
+support using the new bonding parameter coupled_control. The default value
+for coupled_control is set to 1 so as to preserve existing behaviour.
 
-CJ
+Signed-off-by: Aahil Awatramani <aahila@google.com>
+---
+ Documentation/networking/bonding.rst | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-
-===
-
-@@
-expression i, gfp;
-@@
--    ida_simple_get(i, 0, 0, gfp)
-+    ida_alloc(i, gfp)
-
-
-@@
-expression e1, e2, gfp;
-@@
--    ida_simple_get(e1, e2, 0, gfp)
-+    ida_alloc_min(e1, e2, gfp)
-
-
-@@
-expression e1, e2, gfp;
-@@
--    ida_simple_get(e1, 0, e2, gfp)
-+    ida_alloc_max(e1, e2 - 1, gfp)
-
-
-@@
-expression e1, e2, gfp;
-@@
--    ida_simple_get(e1, e2, e2+1, gfp)
-+    ida_alloc_range(e1, e2, e2, gfp)
-
-
-@@
-expression e1, e2, e3, gfp;
-@@
--    ida_simple_get(e1, e2, e3, gfp)
-+    ida_alloc_range(e1, e2, e3 - 1, gfp)
-
-
-@@
-expression e1, e2;
-@@
--    ida_simple_remove(e1, e2)
-+    ida_free(e1, e2)
-
+diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+index f7a73421eb76..e774b48de9f5 100644
+--- a/Documentation/networking/bonding.rst
++++ b/Documentation/networking/bonding.rst
+@@ -444,6 +444,18 @@ arp_missed_max
+ 
+ 	The default value is 2, and the allowable range is 1 - 255.
+ 
++coupled_control
++
++    Specifies whether the LACP state machine's MUX in the 802.3ad mode
++    should have separate Collecting and Distributing states.
++
++    This is by implementing the independent control state machine per
++    IEEE 802.1AX-2008 5.4.15 in addition to the existing coupled control
++    state machine.
++
++    The default value is 1. This setting does not separate the Collecting
++    and Distributing states, maintaining the bond in coupled control.
++
+ downdelay
+ 
+ 	Specifies the time, in milliseconds, to wait before disabling
+-- 
+2.43.0.275.g3460e3d667-goog
 
 
