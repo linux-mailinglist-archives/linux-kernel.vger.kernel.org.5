@@ -1,58 +1,61 @@
-Return-Path: <linux-kernel+bounces-33419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44AF88369C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:11:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C81F83697D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:02:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24A67B26EF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:02:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CF501F2113B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D930F81AB4;
-	Mon, 22 Jan 2024 15:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33113823AE;
+	Mon, 22 Jan 2024 15:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ev7CI+fp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="khwrRQR+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2630781AAC;
-	Mon, 22 Jan 2024 15:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735A481ADD;
+	Mon, 22 Jan 2024 15:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936242; cv=none; b=ii3BSHb1zC8DWPrF4fRF2r4xwhN6PX8z0lO+AUJpR8mOeXniesTZbZoUZ8JZgbVTanV7tTtLliUhvpqz6KOX/RNYfPu6GndVz6f59vSP+yZ61lrvGzGRjPF5U30PzyPg12Vh+J4pQLV9u0+JERufgsGKJXmHfFrjbtCkwORSxT4=
+	t=1705936244; cv=none; b=nqSsXRcYgxNhRyfcj5iRJIMjqtYEgC+n2iSmKNdPfx6gsknn08ujHpzgWJI7dmj4OoywjgKy0IQ5vgBGDKaZ4QxegMw0oFtWUrsbONUJN5dUyBpeEZFj+olR5+7mAM84kkKOTHaEnaBfa5zO5wnJvGDSOyCkpMG6EDSC1EcdXO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936242; c=relaxed/simple;
-	bh=WSnveHPssNRx7TdCN2Ea+FpbjEEUboBjA/H5N671na8=;
+	s=arc-20240116; t=1705936244; c=relaxed/simple;
+	bh=ScpW/6WC62ysJwDGUoS4zNo08oaRgl4SxUxfje9EcN8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=as0ppLshYWqYEz2ZjHyursfPyLJ7Uf++EMPRYvrRVF1UAQh5ysMGl3vSYTg7Vdrp93r9f+ii2LSQzvuURgilui1lquD8ckSZ/sFlTFRrE+zBt86GC4kb+b1Y2MnEzMpMLc42hHwK7aILQbkOm2DkTQW8afBHRQZMs7ABjDLfufc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ev7CI+fp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBDD2C433B2;
-	Mon, 22 Jan 2024 15:10:40 +0000 (UTC)
+	 MIME-Version; b=cTjkAhpnEDm7Rzxz3MmnGm0Mg25gEmrie0QkrCoLpYM7uCfHuobd6Oow8o8PyoR27Mdq2UeIExhrG1qFl8LIGhuoh4dcoWBCpeJ3Bg10kXWLBR7dEFzPFimzVzqbEaYgTkKLxXuJ4aUg8qb1QGIn0L7YgoN2H33Cv7hxNjTytUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=khwrRQR+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 855ACC433C7;
+	Mon, 22 Jan 2024 15:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936242;
-	bh=WSnveHPssNRx7TdCN2Ea+FpbjEEUboBjA/H5N671na8=;
+	s=k20201202; t=1705936244;
+	bh=ScpW/6WC62ysJwDGUoS4zNo08oaRgl4SxUxfje9EcN8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ev7CI+fpW+vJGkWiLH1N+GnEX0pgUmL9uPG8S7K3ABJQraHneyBalYKj16pkNYS1N
-	 IxI38C4bE2FjirO9Pvd7KYc+RVduzixYo+7lVIoPDk5JqeBbvDIRVpPcRpMhr9XZSM
-	 ECFNkFzjHbqSoVviqCWZW32LSiJdEuSki0VA5jVXQVXbO9E2opP86i4821DcwEXjoh
-	 EXbsfZuCY7id7KcFYQoYDknuLNUXl+rgsIdgpilJPM1Faqxzpx4XYe0fbO/VRw3JRb
-	 ScftcJXY4KhL1YOiqp+E2Qp34NVAa9wv75oiU6+NvdvSPLfbE/VGet+IlSJ3siBgvG
-	 FPNKO9tpVlpgw==
+	b=khwrRQR+x2gI/rDvj99XRXJFzEz0NseIB5LmxRXXUtg8twnZY7m2v3yONCB2eh6m2
+	 D+RdK7kmqFBecpmgzhYhBBTyPGMkZx+SxYpf//xLjHnP0eWa40YimZvfNcVJXE1eLw
+	 7I0eMOGUFkDR6T+LNNch35UOdjNY26iFOqjPlCRT56H5BcJTAxBa3jZb7mRR9BYmI+
+	 ONzm+j45JPMYm0K/kKjEXgx3iRsTR8Tr4e0nudot6jGBDJ5gCi7LLqj4LUHdQEb5d6
+	 GcQJC8g0uBCMFMJl/z1Gh06qrMI9yQQ/UUnRkfrh2b0BMnOe6F3j9jNiBHuSRj4Sgx
+	 3SD02zTS6Lu2w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
-	Phillip Potter <phil@philpotter.co.uk>,
+Cc: Michael Tretter <m.tretter@pengutronix.de>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>,
+	jacob-chen@iotwrt.com,
 	ezequiel@vanguardiasur.com.ar,
 	mchehab@kernel.org,
-	linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 19/53] media: stk1160: Fixed high volume of stk1160_dbg messages
-Date: Mon, 22 Jan 2024 10:08:20 -0500
-Message-ID: <20240122150949.994249-19-sashal@kernel.org>
+	heiko@sntech.de,
+	linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 20/53] media: rockchip: rga: fix swizzling for RGB formats
+Date: Mon, 22 Jan 2024 10:08:21 -0500
+Message-ID: <20240122150949.994249-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150949.994249-1-sashal@kernel.org>
 References: <20240122150949.994249-1-sashal@kernel.org>
@@ -67,45 +70,72 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 
-From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+From: Michael Tretter <m.tretter@pengutronix.de>
 
-[ Upstream commit b3695e86d25aafbe175dd51f6aaf6f68d341d590 ]
+[ Upstream commit 9e7dc39260edac180c206bb6149595a40eabae3e ]
 
-The function stk1160_dbg gets called too many times, which causes
-the output to get flooded with messages. Since stk1160_dbg uses
-printk, it is now replaced with printk_ratelimited.
+When using 32 bit RGB formats, the RGA on the rk3568 produces wrong
+colors as the wrong color channels are read or written.  The reason is
+that the format description for the channel swizzeling is wrong and the
+wrong bits are configured. For example, when converting ARGB32 to NV12,
+the alpha channel is used as blue channel.. This doesn't happen if the
+color format is the same on both sides.
 
-Suggested-by: Phillip Potter <phil@philpotter.co.uk>
-Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+Fix the color_swap settings of the formats to correctly handle 32 bit
+RGB formats.
+
+For RGA_COLOR_FMT_XBGR8888, the RGA_COLOR_ALPHA_SWAP bit doesn't have an
+effect. Thus, it isn't possible to handle the V4L2_PIX_FMT_XRGB32. Thus,
+it is removed from the list of supported formats.
+
+Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/stk1160/stk1160-video.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/media/platform/rockchip/rga/rga.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
-index 4e966f6bf608..366f0e4a5dc0 100644
---- a/drivers/media/usb/stk1160/stk1160-video.c
-+++ b/drivers/media/usb/stk1160/stk1160-video.c
-@@ -107,8 +107,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 
- 	/*
- 	 * TODO: These stk1160_dbg are very spammy!
--	 * We should 1) check why we are getting them
--	 * and 2) add ratelimit.
-+	 * We should check why we are getting them.
- 	 *
- 	 * UPDATE: One of the reasons (the only one?) for getting these
- 	 * is incorrect standard (mismatch between expected and configured).
-@@ -151,7 +150,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 
- 	/* Let the bug hunt begin! sanity checks! */
- 	if (lencopy < 0) {
--		stk1160_dbg("copy skipped: negative lencopy\n");
-+		printk_ratelimited(KERN_DEBUG "copy skipped: negative lencopy\n");
- 		return;
- 	}
- 
+diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/platform/rockchip/rga/rga.c
+index 61b25fcf826e..9b20cef5afc6 100644
+--- a/drivers/media/platform/rockchip/rga/rga.c
++++ b/drivers/media/platform/rockchip/rga/rga.c
+@@ -187,25 +187,16 @@ static int rga_setup_ctrls(struct rga_ctx *ctx)
+ static struct rga_fmt formats[] = {
+ 	{
+ 		.fourcc = V4L2_PIX_FMT_ARGB32,
+-		.color_swap = RGA_COLOR_RB_SWAP,
++		.color_swap = RGA_COLOR_ALPHA_SWAP,
+ 		.hw_format = RGA_COLOR_FMT_ABGR8888,
+ 		.depth = 32,
+ 		.uv_factor = 1,
+ 		.y_div = 1,
+ 		.x_div = 1,
+ 	},
+-	{
+-		.fourcc = V4L2_PIX_FMT_XRGB32,
+-		.color_swap = RGA_COLOR_RB_SWAP,
+-		.hw_format = RGA_COLOR_FMT_XBGR8888,
+-		.depth = 32,
+-		.uv_factor = 1,
+-		.y_div = 1,
+-		.x_div = 1,
+-	},
+ 	{
+ 		.fourcc = V4L2_PIX_FMT_ABGR32,
+-		.color_swap = RGA_COLOR_ALPHA_SWAP,
++		.color_swap = RGA_COLOR_RB_SWAP,
+ 		.hw_format = RGA_COLOR_FMT_ABGR8888,
+ 		.depth = 32,
+ 		.uv_factor = 1,
+@@ -214,7 +205,7 @@ static struct rga_fmt formats[] = {
+ 	},
+ 	{
+ 		.fourcc = V4L2_PIX_FMT_XBGR32,
+-		.color_swap = RGA_COLOR_ALPHA_SWAP,
++		.color_swap = RGA_COLOR_RB_SWAP,
+ 		.hw_format = RGA_COLOR_FMT_XBGR8888,
+ 		.depth = 32,
+ 		.uv_factor = 1,
 -- 
 2.43.0
 
