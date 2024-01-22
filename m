@@ -1,217 +1,178 @@
-Return-Path: <linux-kernel+bounces-34052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92EDF837280
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:26:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D060B837286
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:27:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 057AE1F29891
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:26:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C12521C23D82
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:27:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3703F8EC;
-	Mon, 22 Jan 2024 19:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC1C3EA8B;
+	Mon, 22 Jan 2024 19:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sq77Rc9L"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="leVghTsS"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1B33E46B;
-	Mon, 22 Jan 2024 19:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB2A3B790
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 19:27:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705951500; cv=none; b=nnHcoX4NsiyQus6MaZd18ukrC6KFc06xkTPyFzKScLXVUfGPOFCqpQykbGZPpDunSZF8Qahvgm65mvn9J6P1tUd+5vS3RY3ymV1YJ/aNi02nXHdA0Pe3Fx4RePUYO2modDWDLQpG2fScGySWw56t311lAmaBS3eu7vChdCzpVQU=
+	t=1705951667; cv=none; b=EksvfzIejcvKODV+wlvZ7qNHfyKTX/ovkit5NhyDCtnA796FYL4FJ6EaMMXdhpd9/vNDF9mO6weQkqe18s18BUsWBVjFqFI7ZUaZxYy9lJCayOZ9GcBspI5tC+I+Szv6w2izEFyCvRV9PEg3T27priJWan67Csjva3LaoEF+E/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705951500; c=relaxed/simple;
-	bh=JYKYjdR3PhfkGGl4WpEt0paoSAx0mC1cwvCa8aHljrM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jG1I0hIVTpSO6GwyGVH5Xu5MNlaJrKUW3u8NEcp5iAY5UcahI12Pd3vCEJvrlNVDhPI9zRx8rCy3yhw9bneuPCXyydKidEv+X2NWm2oTYEELuChJmMF7LEqLWV371TM42gtdFZvEN8oa501wDRM72In8W9jh3h7pYchgsGJlngc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sq77Rc9L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67B59C433C7;
-	Mon, 22 Jan 2024 19:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705951500;
-	bh=JYKYjdR3PhfkGGl4WpEt0paoSAx0mC1cwvCa8aHljrM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sq77Rc9LmdqBXqDJFH8QIME6KdXvbY4SrZPTCej6kdS5rszRS+XOQmNGe1AQTl2aP
-	 dkMCNW6G0+xRYkoaRiEYmFsiuG3zHCHu4jpWjmRreW7MPPFp0OYiw+ZzL+GbpOLopO
-	 4Dwi1cjbL23NXg9oMQjnmOPnAZCKuNdg2GsFhRDTVbiAhdw4w/xg3g+sroQhALgOzB
-	 mQtlYCZjnniyRClmeYvyi2DKAnJ3SeKaiORJCjlVtfcTeFT0Q9Q1ACopFmsYBsrr1I
-	 tz65qWJ11H4tF8pqL9UjaMRFgkHEIIgO0BD3tElGVa0vIS5RKTbEHqGsQn6NTZhOiL
-	 8So9/r7vb6GLA==
-Date: Mon, 22 Jan 2024 19:24:48 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: David Laight <David.Laight@ACULAB.COM>
-Cc: 'Matti Vaittinen' <mazziesaccount@gmail.com>, Subhajit Ghosh
- <subhajit.ghosh@tweaklogic.com>, Matti Vaittinen
- <matti.vaittinen@fi.rohmeurope.com>, Lars-Peter Clausen <lars@metafoo.de>,
- "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: gts-helper: Fix division loop
-Message-ID: <20240122192448.1493ccf7@jic23-huawei>
-In-Reply-To: <2985a200057c4648817094cf747fca35@AcuMS.aculab.com>
-References: <ZZZ7pJBGkTdFFqiY@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
-	<20240107162253.66c1f0f1@jic23-huawei>
-	<a41ef2c9-bd74-4b0e-afb7-12e198847609@tweaklogic.com>
-	<717b7e70-5cf8-4671-8a6b-005eefd0535e@gmail.com>
-	<2985a200057c4648817094cf747fca35@AcuMS.aculab.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705951667; c=relaxed/simple;
+	bh=Mh5Kbe0KU3JUAV7ggZ8bLsdafX+tUQ2V+LveuJGisoA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G3J4GjPq/OnBiKRAyJCSjOZtJ6DBm4m6y1z08SIihfdWD0Xpc49A1A4wuMmUSwCoelZjl51+uxw/oA33OY8z5hh1XcyVCIBb4lKuNSV2LpfaRt0swRW5AIK5FzZudTsL5cThb19R4/AdJk0v5UXwzvgFsjhcwTRB9KIoXNKPjMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=leVghTsS; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6000bbdbeceso9422487b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:27:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705951665; x=1706556465; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ldZM+19i4vknqpEJcz+SwZt7PNLuLGwHmstwFcNRiVw=;
+        b=leVghTsS5sLwDRGNdU9STr4ydNsQaenKuR42v/HGQ3sWt9p3DKxQmwZWYrvgrLPdDj
+         IS3jeZUA3aSwiFQ7Dn8vVhCGTli9ORJ/P7cS/lurnLiBxAf9Q97PZNwkuBxQU8NOkoaN
+         Di+fSgasN3JY1Hf+qOaDK14FZj7b9W4DHTBuo6dzrJh6Ud+UvOlHuCkIprvnHST64PNG
+         UIhwxLf/xCc8YLYKLLekBXH2Vr3V+mc8wjyDxW7ko2Zp7fdsfaDgfyR/eD7OnKUOleFz
+         FQ1grO0UNl1xV/6Ki7iwSP1ZC0l6ftAnYR10wRM8Zn15td2TYkI0i3kxEeXzmPgOCw8K
+         njow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705951665; x=1706556465;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ldZM+19i4vknqpEJcz+SwZt7PNLuLGwHmstwFcNRiVw=;
+        b=edUCe9ShWS43DKDjDU+fIbcJJhk80S56T1NspIBlSd/ASNjLHpHPIvEoU7nb2It3aJ
+         wPFDAcvOTTG72NhS/yT6UyBxXu6NxstmjkjAVHP87a2T1Kf/EFH8XST4ZtPJY57B4o0W
+         VOxdTBIaxuOpMu1ljNtEm0WPizHsK/DE4KGpLMPA+FSCxaTyz6zLG0AvLtjpsYeZDuKJ
+         b3f1TEyC81pRmkWalJMgVLUh769D20SwG42+9fDrWpvxV6k1bC0VhoOXj3yvtaeoIpzx
+         z3qlENgBQKxK8WzOIehDNKpKO/cqZhNMU8abqZi0IVkzr8EkUpduZUhDsrjZCKre/MSL
+         OsJA==
+X-Gm-Message-State: AOJu0Yxn+c1b5/mtq6zDlLukr0SYxNBauLAhMmgvAIAg7kwQW9Z5Jr8I
+	cCgUtaVgBsLVj942McbT6Cbrb8dwwiDz/vPEKHMHxbleFIH7KVXpaAbXrO2huJIrhLoC2e7jl0g
+	SzsDicgw3kIR2pwJ87p5SW/3PG7BzWMQ3uDp2Gw==
+X-Google-Smtp-Source: AGHT+IHiKVYE5aKPqU5kdfeO0Li9GseEmmCf2vRaYQ4qHPENuwALogLS/U/L6qR1t24qPpJkqmQk8KXd8hNpkFYciEc=
+X-Received: by 2002:a81:4a89:0:b0:5ff:96ea:ba12 with SMTP id
+ x131-20020a814a89000000b005ff96eaba12mr3779029ywa.23.1705951665050; Mon, 22
+ Jan 2024 11:27:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
+ <1705749649-4708-3-git-send-email-quic_amrianan@quicinc.com>
+ <54426665-90c5-4355-a174-f512004e11e5@linaro.org> <391f8f48-d1f5-702d-20d4-ae8b8a7ace58@quicinc.com>
+ <065601d3-92e7-46cc-a7aa-116cd02b3c36@quicinc.com>
+In-Reply-To: <065601d3-92e7-46cc-a7aa-116cd02b3c36@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 22 Jan 2024 21:27:34 +0200
+Message-ID: <CAA8EJpquFe5v70A5bh=m0J03uHPfUMM=W1oQ=knHBx-Cgk8QPQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: hwinfo: Add Qualcomm's board-id types
+To: Elliot Berman <quic_eberman@quicinc.com>
+Cc: Amrit Anand <quic_amrianan@quicinc.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	agross@kernel.org, andersson@kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	kernel@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 22 Jan 2024 16:27:13 +0000
-David Laight <David.Laight@ACULAB.COM> wrote:
+On Mon, 22 Jan 2024 at 20:46, Elliot Berman <quic_eberman@quicinc.com> wrote:
+>
+>
+>
+> On 1/22/2024 2:07 AM, Amrit Anand wrote:
+> >
+> > On 1/20/2024 7:02 PM, Konrad Dybcio wrote:
+> >> On 20.01.2024 12:20, Amrit Anand wrote:
+> >>> Qualcomm based DT uses two or three different identifiers. The SoC
+> >>> based idenfier which signifies chipset and the revision for those
+> >>> chipsets. The board based identifier is used to distinguish different
+> >>> boards (e.g. IDP, MTP) along with the different types of same boards.
+> >>> The PMIC attached to the board can also be used as a identifier for
+> >>> device tree.
+> >>>
+> >>> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> >>> Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
+> >>> ---
+> >>>   .../devicetree/bindings/hwinfo/qcom,board-id.yaml  | 86 ++++++++++++++++++++++
+> >>>   include/dt-bindings/arm/qcom,ids.h                 | 68 +++++++++++++++--
+> >>>   2 files changed, 146 insertions(+), 8 deletions(-)
+> >>>   create mode 100644 Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml b/Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
+> >>> new file mode 100644
+> >>> index 0000000..807f134
+> >>> --- /dev/null
+> >>> +++ b/Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
+> >>> @@ -0,0 +1,86 @@
+> >>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >>> +%YAML 1.2
+> >>> +---
+> >>> +$id: http://devicetree.org/schemas/hwinfo/qcom,board-id.yaml#
+> >>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >>> +
+> >>> +title: QCOM Board Identifier for Devicetree Selection
+> >>> +
+> >>> +maintainers:
+> >>> +  - Amrit Anand <quic_amrianan@quicinc.com>
+> >>> +  - Elliot Berman <quic_eberman@quicinc.com>
+> >>> +
+> >>> +description: |
+> >> The '|'s are unnecessary in both commits, IIRC they're used for
+> >> preserving formatting which we don't really need for non-styled
+> >> plaintext
+> > Sure, will do.
+> >>> +  Qualcomm uses two and sometimes three hardware identifiers to describe
+> >>> +  its boards
+> >>> +      - a SoC identifier is used to match chipsets (e.g. sm8550 vs sm8450)
+> >>> +      - a board identifier is used to match board form factor (e.g. MTP, QRD,
+> >>> +        ADP, CRD)
+> >>> +      - a PMIC identifier is occasionally used when different PMICs are used
+> >>> +        for a given board/SoC combination.
+> >>> +  Each field and helper macros are defined at::
+> >>> +      - include/dt-bindings/arm/qcom,ids.h
+> >>> +
+> >>> +  For example,
+> >>> +    / {
+> >>> +        #board-id-cells = <2>;
+> >>> +        board-id = <456 0>, <457 0>, <10 0>;
+> >>> +        board-id-types = "qcom,soc-id", "qcom,soc-id", "qcom,board-id";
+> >>> +     }
+> >>> +
+> >>> +allOf:
+> >>> +  - $ref: board-id.yaml#
+> >>> +
+> >>> +properties:
+> >>> +  board-id:
+> >>> +    minItems: 2
+> >> I believe some older platforms match exclusively based on socid, so
+> >> perhaps 1 would be okay as well.
+> >>
+> >> [...]
+> >
+> > Ok, considering legacy targets we can make it 1.
+> >
+> > But i think ideally it should always be recommended to have a board ID associated with a SoC ID, correct me if my understanding is wrong.
+> >
+>
+> There is no "legacy" support needed here: Qualcomm's bootloaders
+> need to be updated to adhere to the new proposed spec. I suppose
+> we need to consider whether we have targets that only need SoC to
+> differentiate?
 
-> From: Matti Vaittinen
-> > Sent: 22 January 2024 06:51
-> >=20
-> > On 1/19/24 13:56, Subhajit Ghosh wrote: =20
-> > > On 8/1/24 02:52, Jonathan Cameron wrote: =20
-> > >> On Thu, 4 Jan 2024 11:34:28 +0200
-> > >> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> > >> =20
-> > >>> The loop based 64bit division may run for a long time when dividend=
- is a
-> > >>> lot bigger than the divider. Replace the division loop by the
-> > >>> div64_u64() which implementation may be significantly faster.
-> > >>>
-> > >>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-> > >>> Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers") =20
-> > >>
-> > >> Hmm. Fix or not perf improvement?=C2=A0 I'm going to take the middle=
- ground
-> > >> and leave the fixes tag, but not rush this in.
-> > >>
-> > >> So applied to the togreg branch of iio.git and for now just pushed o=
-ut
-> > >> as testing for 0-day etc to take a look before I rebase that tree af=
-ter
-> > >> rc1.
-> > >>
-> > >>
-> > >> =20
-> > >>> ---
-> > >>>
-> > >>> I've implemented also a fixup series for supporting rounding of
-> > >>> gains/scales:
-> > >>> =20
-> > https://lore.kernel.org/lkml/37d3aa193e69577353d314e94463a08d488ddd8d.1=
-701780964.git.mazziesaccount@gm
-> > ail.com/ =20
-> > >>>
-> > >>> That series does also remove the offending loop.
-> > >>>
-> > >>> We don't currently have any in-tree users of GTS helpers which would
-> > >>> need the rounding support so pushing the rounding is not urgent (an=
-d I
-> > >>> haven't heard of Subjahit whose driver required the rounding). Henc=
-e, we
-> > >>> may want to only take this loop fix in for now (?) and reconsider
-> > >>> rounding when someone need that. =20
->=20
-> Why did I look as this crappy code :-)
-> I think the change breaks the rounding.
-> For 'normal' values I think you just want:
-> 	return 1 + (max - 1)/scale.
->=20
-> The 'avoid overflow' test isn't needed if you subtract 1 from max.
-> (Rather than return (max + scale - 1)/scale; where the add can overflow.
-> But you do need something to return 1 (or error) if max is zero.
->=20
-> 	David
-Too late for my brain to process this, so with an abundance
-of caution I've dropped it for now (I'm going to push out as hopefully not
-rebasing in a few mins)
+What is the chance of updating the bootloader for the N year device?
 
-J
 
->=20
-> > >>>
-> > >>> Jonathan, what's your take on this? =20
-> > >> Agreed - let us wait for the rounding to have a user, but makes sense
-> > >> to tidy this corner up in the meantime.
-> > >>
-> > >> Thanks,
-> > >>
-> > >> Jonathan
-> > >> =20
-> > >>>
-> > >>> =C2=A0 drivers/iio/industrialio-gts-helper.c | 5 ++---
-> > >>> =C2=A0 1 file changed, 2 insertions(+), 3 deletions(-)
-> > >>>
-> > >>> diff --git a/drivers/iio/industrialio-gts-helper.c
-> > >>> b/drivers/iio/industrialio-gts-helper.c
-> > >>> index 7653261d2dc2..abcab2d38589 100644
-> > >>> --- a/drivers/iio/industrialio-gts-helper.c
-> > >>> +++ b/drivers/iio/industrialio-gts-helper.c
-> > >>> @@ -34,7 +34,7 @@
-> > >>> =C2=A0 static int iio_gts_get_gain(const u64 max, const u64 scale)
-> > >>> =C2=A0 {
-> > >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 full =3D max;
-> > >>> -=C2=A0=C2=A0=C2=A0 int tmp =3D 1;
-> > >>> +=C2=A0=C2=A0=C2=A0 int tmp =3D 0;
-> > >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (scale > full || !scale)
-> > >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINV=
-AL;
-> > >>> @@ -48,8 +48,7 @@ static int iio_gts_get_gain(const u64 max, const
-> > >>> u64 scale)
-> > >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tmp++;
-> > >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > >>> -=C2=A0=C2=A0=C2=A0 while (full > scale * (u64)tmp)
-> > >>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tmp++;
-> > >>> +=C2=A0=C2=A0=C2=A0 tmp +=3D div64_u64(full, scale);
-> > >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return tmp;
-> > >>> =C2=A0 }
-> > >>>
-> > >>> base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab =20
-> > >>
-> > >> =20
-> > > Hi Matti,
-> > >
-> > > Your fix works beautifully with the latest version of apds9306 driver
-> > > which I am working on.
-> > > All available scale values can be set without any errors. Thank you. =
-=20
-> >=20
-> > Thanks for testing Subhajit! Just to ensure we have no miscommunication
-> > - did you test just this division fix, or the rounding fix here:
-> > https://lore.kernel.org/lkml/37d3aa193e69577353d314e94463a08d488ddd8d.1=
-701780964.git.mazziesaccount@gm
-> > ail.com/
-> >  =20
-> > > Moving to a new city with a new full time job with the assumption of
-> > > getting more time
-> > > for my list of opensource projects and contributions proved to be
-> > > utterly wrong! =20
-> >=20
-> > Well, I can't blame you :) Being in a new work at new city sounds like
-> > you have a lot on your plate right now. Give it half a year and things
-> > will stabilize though :) Oh, and falsely assuming that "when XXX, I will
-> > have the time to do YYY" - been there done that :)
-> >=20
-> > Good luck on the new work and city!
-> >=20
-> > Yours,
-> > 	-- Matti
-> >=20
-> > --
-> > Matti Vaittinen
-> > Linux kernel developer at ROHM Semiconductors
-> > Oulu Finland
-> >=20
-> > ~~ When things go utterly wrong vim users can always type :help! ~~
-> >  =20
->=20
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
- 1PT, UK
-> Registration No: 1397386 (Wales)
-
+-- 
+With best wishes
+Dmitry
 
