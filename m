@@ -1,68 +1,60 @@
-Return-Path: <linux-kernel+bounces-33415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C34836976
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:02:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9410683696B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:01:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EA00B25E62
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:01:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D89A288127
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C93C58004B;
-	Mon, 22 Jan 2024 15:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE1A8004F;
+	Mon, 22 Jan 2024 15:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PzM/1r1w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmODezN3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18FB18004A;
-	Mon, 22 Jan 2024 15:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617F680055;
+	Mon, 22 Jan 2024 15:10:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936234; cv=none; b=tORC7TsyL391O0f+/T0c6NwLL9eSmjsQw3ww3yTyP/rWQ8GHB+LKkYW77PXIMK78JoCfaR2Iq7Ep+gaw3Phn5U/QmSd6hS5RI291lfBGh/Lxj+hyTTw/yv7V/kKMJuCPf4mGPWotakXWO40pE7l1KZzMEj+mDDJ60dQ/BsfiYw4=
+	t=1705936236; cv=none; b=tmnx81vREbxTFa7M87qeUZztJFjdPn1rkkXs3yQRNzRGS8R3Tnq/18nEenxj3tu7+7MueG6/B6Tt8bkkCM3EirEVHxfwjOH2FkzsKqdJqxzqKPuh9Gnvp9iKV70Mo4MuAeGSN3w/04mxLWOthFCoNH89ygSI4/FyIepiRYWDvkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936234; c=relaxed/simple;
-	bh=DmGztIB7qtBTmUG9cjOlqGMETbWx9kFVMNSxt6Q37bM=;
+	s=arc-20240116; t=1705936236; c=relaxed/simple;
+	bh=1zpAfZk3SCNEr2pRRMXhd55UiGljAWLXSiDu3R3vtHU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sd0rG6XV3g3ic5V8GdmSQVecaiGOx9gW3Tnq6nNHvfpcjqV2wwMRnsX9fS41bRaybesbs4LZ9r7+b1NsdnsgdF+aWKNRSX+gvtuIHoRYtdTAa8us986CKyS+7zb/fb/DLtuJwX2OoXVY1TuWBnDvlT3egnY07hjiwrItSJQaMY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PzM/1r1w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F0C3C433C7;
-	Mon, 22 Jan 2024 15:10:31 +0000 (UTC)
+	 MIME-Version; b=OJGY38FJZxivBeQjiwzhFJYORGrByozjUMFT0CuxIWzGz7ELA1yxX/244sti981Ig8jFEtAPwZxqv0NuFSd7Gc1Bt2zrWcw3wUk1QoK4gTdUz/4OHT8CtTlQ9fSnBJ1aL/rLcMTM0C43yucRYnRhvN9SBFYlcCUClVf+M7nLWFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JmODezN3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0017AC43390;
+	Mon, 22 Jan 2024 15:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936233;
-	bh=DmGztIB7qtBTmUG9cjOlqGMETbWx9kFVMNSxt6Q37bM=;
+	s=k20201202; t=1705936236;
+	bh=1zpAfZk3SCNEr2pRRMXhd55UiGljAWLXSiDu3R3vtHU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PzM/1r1w662lOIq3z3GtzdJlQHx/OeXP/l8LpWNLr6MV/NO1yo9ucyV52VePPhbBv
-	 HuKgGIoY2khOpQ8TAna16rBoH+OgX2Mcl+85EDVNliXRZ8A/8nxVsCiy4EZBsBviZk
-	 bFh08110AvHEl/IFIIdz+ilvXVplHrFJyaqi/tjHjBu+zxYoolG700c43gYhbYzpsA
-	 FXrtXYJCmvaeHzDJJavx1h7RPrc9kjTO5ORfws3jbTOq3S7eJ+wUF9IID54Lg8TUFS
-	 XQ244gWeF0dDnFa65QycAaa6Vn+lZea2XN5P2gcGM9PW74g/QGu4oct/+eC3BWeJM4
-	 86cfY6NVNffYA==
+	b=JmODezN3e32Y5IBOr/ugg0wH3Tc1KqqAjvm+INtpu0oDoxzI58kO57Ek7vIoImR6j
+	 eZv7gf8uDGAjk7o+BXGSXYvi1aUVUBK8qrH8PufSL5+BQJB8p9ejWomp/8lYW0IBex
+	 x4Dr1itHdBjZBeedilmpjBggN+LdeFL70li//wJqg7lSmBQhPrzk21vLSoG/fVtKsT
+	 ggJP/4J4guTsqvGBhH/tAqaEcS+8+k0zd/4RRBn9gp9T1qk7mbABJgqKz5iKxKWgeN
+	 46m72fNUTB2tAIMenHLI6MyZXfDJAs/OvhrH6h/BMsktYOOJWOXuq42qiczIvkXog8
+	 v+HfgcO0KxvCg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alex Hung <alex.hung@amd.com>,
-	Harry Wentland <harry.wentland@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	Maxime Ripard <mripard@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	sunpeng.li@amd.com,
-	Rodrigo.Siqueira@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
+	maarten.lankhorst@linux.intel.com,
+	tzimmermann@suse.de,
 	airlied@gmail.com,
 	daniel@ffwll.ch,
-	alvin.lee2@amd.com,
-	jun.lei@amd.com,
-	dillon.varone@amd.com,
-	qingqing.zhuo@amd.com,
-	aurabindo.pillai@amd.com,
-	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 15/53] drm/amd/display: Fix writeback_info is not removed
-Date: Mon, 22 Jan 2024 10:08:16 -0500
-Message-ID: <20240122150949.994249-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 16/53] drm/drm_file: fix use of uninitialized variable
+Date: Mon, 22 Jan 2024 10:08:17 -0500
+Message-ID: <20240122150949.994249-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150949.994249-1-sashal@kernel.org>
 References: <20240122150949.994249-1-sashal@kernel.org>
@@ -77,44 +69,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 
-From: Alex Hung <alex.hung@amd.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-[ Upstream commit 5b89d2ccc8466e0445a4994cb288fc009b565de5 ]
+[ Upstream commit 1d3062fad9c7313fff9970a88e0538a24480ffb8 ]
 
-[WHY]
-Counter j was not updated to present the num of writeback_info when
-writeback pipes are removed.
+smatch reports:
 
-[HOW]
-update j (num of writeback info) under the correct condition.
+drivers/gpu/drm/drm_file.c:967 drm_show_memory_stats() error: uninitialized symbol 'supported_status'.
 
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+'supported_status' is only set in one code path. I'm not familiar with
+the code to say if that path will always be ran in real life, but
+whether that is the case or not, I think it is good to initialize
+'supported_status' to 0 to silence the warning (and possibly fix a bug).
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231103-uninit-fixes-v2-1-c22b2444f5f5@ideasonboard.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_stream.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/drm_file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c b/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
-index 12b73b0ff19e..b59db6c95820 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
-@@ -521,10 +521,11 @@ bool dc_stream_remove_writeback(struct dc *dc,
- 			if (stream->writeback_info[i].dwb_pipe_inst == dwb_pipe_inst)
- 				stream->writeback_info[i].wb_enabled = false;
+diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+index a8b4d918e9a3..d6a0572984b5 100644
+--- a/drivers/gpu/drm/drm_file.c
++++ b/drivers/gpu/drm/drm_file.c
+@@ -406,7 +406,7 @@ int drm_open(struct inode *inode, struct file *filp)
+ {
+ 	struct drm_device *dev;
+ 	struct drm_minor *minor;
+-	int retcode;
++	int retcode = 0;
+ 	int need_setup = 0;
  
--			if (j < i)
--				/* trim the array */
-+			/* trim the array */
-+			if (j < i) {
- 				stream->writeback_info[j] = stream->writeback_info[i];
--			j++;
-+				j++;
-+			}
- 		}
- 	}
- 	stream->num_wb_info = j;
+ 	minor = drm_minor_acquire(iminor(inode));
 -- 
 2.43.0
 
