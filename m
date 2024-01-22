@@ -1,112 +1,141 @@
-Return-Path: <linux-kernel+bounces-33666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 274AF836CE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:20:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1690836CE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:20:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D34A7285282
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:20:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93F2E1F27DB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0B44F60C;
-	Mon, 22 Jan 2024 16:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15635024E;
+	Mon, 22 Jan 2024 16:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RS+FCjUH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hE/QYKBQ"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5937B3F8D1;
-	Mon, 22 Jan 2024 16:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9DC21DA5E;
+	Mon, 22 Jan 2024 16:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705940291; cv=none; b=V8wxdetAMijvwr78meH/LcWhnOwPqbyonzC0XjZaUljzaKEa9Mrb0n3hnaaQYlFbLllnepp3z3a7UL41VrcKVd9KF4Pr7OR0Fgew06m2ZaQx0rZLr7+R6OB3soFpw7Jgv0Zj2fZnGq1rZkv2dNXl3lIU66lRp1LQWJezBtMOSTw=
+	t=1705940449; cv=none; b=XxyOoQ51T/J+y820hZ/NE6P/2bCguYRg+SaXvR4wuUeE8lVKhGqGZugYqWvSkgRjy6o7EjQafPBQUAfn9m5BS3ifPY+9bgDT2k+c24oGQquuuIcTLDbTwcaTU2WExGk14M9aMRRNLlHf4Ga3/SLFxPvyZ2DCyyUB2g3gcQWhWIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705940291; c=relaxed/simple;
-	bh=WDAnCV9Ra1LfdfiCu5KUZtV9r+eTg+bc/y0G1AdYs68=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rHRiNyndcFiZRYmhySFoSYiVjyTHRgXg7uGC9JmDvtXa7b3RvSxFGfLJ3VylLB8/eJfP5c16qB7bZkJ6lv4ZZbtMKrKdi4uOIyNp1pG8TBeqCNDnQpaqspLyYDYjmQWoFMLuAyiTQKl/ioDdulv9Z/DxghHOTPW1VyJgFUmtbGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RS+FCjUH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DF1EC433A6;
-	Mon, 22 Jan 2024 16:18:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705940290;
-	bh=WDAnCV9Ra1LfdfiCu5KUZtV9r+eTg+bc/y0G1AdYs68=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RS+FCjUHhg+ZtvA25siHP9vJuHFDG9pNT0ZYWi9BoJg1/RjWftZzKK/17uqQ/Tpx8
-	 WJVGnWUQXYyZ7pssaMJpxDdg0oAPCp3l/gD/yf9XD1Vj8ZTfm4Q7PTMBpDY3/5Ec9E
-	 UVMYUWswJfsZoai7e4TYHXtXrADib5wJRE0vcOGubW6v6HSQhey3/kX6+5SYFAmAv0
-	 qwT+07n2gsqHjAZJCO6LfjPqdiD0cX7rbF/QU7IwILpFkEGhfvpkbhwCm/UnCRi1lQ
-	 H3qSb5vGJy4zachG7xZN2IIxxiJm5UIA6a5DNVRInn7d0Gaxv4JBIVMZbPbF8K1yU+
-	 Gw05OJGYleqhQ==
-Date: Mon, 22 Jan 2024 17:18:04 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev, Fang Xiang <fangxiang3@xiaomi.com>,
-	Robert Moore <robert.moore@intel.com>
-Subject: Re: [PATCH v4 3/3] irqchip/gic-v3: Enable non-coherent
- redistributors/ITSes ACPI probing
-Message-ID: <Za6VPE76yiR+lb91@lpieralisi>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
- <20231227110038.55453-1-lpieralisi@kernel.org>
- <20231227110038.55453-4-lpieralisi@kernel.org>
+	s=arc-20240116; t=1705940449; c=relaxed/simple;
+	bh=bSPac5w3Ua0/oFHQn7g5yByEiVkWk7NFgy25K0R0z6M=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=OiRynBisCWdsWcfLHqNVsXeWon/4yrWKuMu2Yh5GOkirD4MM+tojuawUDyuap/98TuOEsBEK5hRilr15sYSLMzfoeuQSD0XM1bEq0OxEvvdkfXWEJcx3OkqHG4xbL6TXhTewQ3w7CZk1BgmpKKZWzQ9jaMfED/TeWUI2Gxjvg2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hE/QYKBQ; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d427518d52so23572425ad.0;
+        Mon, 22 Jan 2024 08:20:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705940447; x=1706545247; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=beNCKY2YPTCQZoiFJNHwWZK4ngyBLzXSe58xPdpNeOE=;
+        b=hE/QYKBQA5IfKMo7x331+lBcOC9kNU52VSZHpiycN02hkEPDide5Nxu/tqwqNXXsDs
+         oRsyO7Ui5TkyMEFZ5no3lDMB4KtFpln+VxPuRF11ylZBFTPwa6jSL5WwuqekYTsrc+vz
+         EZCEVpKXeK9mwPjfGBiU0YnoTtoFiDGgciYZyl9ZCTsDRUPkLeQif9PwJ7t7nvcOwHUx
+         UdUDbKUUf+hVtVw4kN0FX+WU4CTjmZglcXgkt+ebFM8MHbPcNM5ASqAtn5i5X1PVh078
+         4CZLHUG9JK+KBidFPpIPoeGKmyQsJpnburfFctp+PkM02q8YuaLhz0QOT6yw88THx6cK
+         voFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705940447; x=1706545247;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=beNCKY2YPTCQZoiFJNHwWZK4ngyBLzXSe58xPdpNeOE=;
+        b=bblL56+7JFO0mfPF/NUca8cQDAWcqWEvM2QJ5+IFLhZ71hnpEvoXLUbjaYYn1pPXsM
+         40ak7UCsHCwHfPLuhQrzqpmAOVBnTjl6Tx3C0RWy8wyr/I6U6+POZfLAiYfN8KCPouPM
+         hccSrD7izxm3E0TlL+ntS4Qf/Q9/On89bT7P/WIJ31/LXkGfE/BLJVwaJYh3Jjxlsvyf
+         w4GyTbNT/tN5x2rkddN5D/djW4KACwUAXsl5SknDgNzyXK2tXLZmzwDB/jYWzrnbDyM5
+         mp0LKgZuCaIB9Gqu37eOGKjh9d1vu3jyCnX0C7R18fRAVUvrNu19/YzG7Aa5ybE1Ug0U
+         h+/A==
+X-Gm-Message-State: AOJu0YzkNupRvAHwINsOh08IuI3XOJHp3RB+jUeyIo+rHUC+UmPiOS0F
+	e4rVGYtjGc9irEw/HVK8JBJtXoTTZZo3BJKZDVntgPmcrHAiJUEF
+X-Google-Smtp-Source: AGHT+IEq4zaOL3uQnFuYGqQgFx0cvUA2U0zZLlFxaZA5UV3GQ7HzTUEsbVt/kQs9dPpoQG/BBdJEiQ==
+X-Received: by 2002:a17:902:aa92:b0:1d7:274e:1573 with SMTP id d18-20020a170902aa9200b001d7274e1573mr5210584plr.60.1705940446972;
+        Mon, 22 Jan 2024 08:20:46 -0800 (PST)
+Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
+        by smtp.gmail.com with ESMTPSA id jx2-20020a170903138200b001d74a674620sm2388514plb.198.2024.01.22.08.20.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 08:20:46 -0800 (PST)
+From: mhkelley58@gmail.com
+X-Google-Original-From: mhklinux@outlook.com
+To: haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH net 1/1] hv_netvsc: Calculate correct ring size when PAGE_SIZE is not 4 Kbytes
+Date: Mon, 22 Jan 2024 08:20:28 -0800
+Message-Id: <20240122162028.348885-1-mhklinux@outlook.com>
+X-Mailer: git-send-email 2.25.1
+Reply-To: mhklinux@outlook.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231227110038.55453-4-lpieralisi@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 27, 2023 at 12:00:38PM +0100, Lorenzo Pieralisi wrote:
+From: Michael Kelley <mhklinux@outlook.com>
 
-[...]
+Current code in netvsc_drv_init() incorrectly assumes that PAGE_SIZE
+is 4 Kbytes, which is wrong on ARM64 with 16K or 64K page size. As a
+result, the default VMBus ring buffer size on ARM64 with 64K page size
+is 8 Mbytes instead of the expected 512 Kbytes. While this doesn't break
+anything, a typical VM with 8 vCPUs and 8 netvsc channels wastes 120
+Mbytes (8 channels * 2 ring buffers/channel * 7.5 Mbytes/ring buffer).
 
-> @@ -2380,6 +2385,10 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
->  		return -ENOMEM;
->  	gic_request_region(gicc->gicr_base_address, size, "GICR");
->  
-> +	if (gic_acpi_non_coherent_flag(gicc->flags,
-> +				       ACPI_MADT_GICC_NON_COHERENT))
-> +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-> +
+Unfortunately, the module parameter specifying the ring buffer size
+is in units of 4 Kbyte pages. Ideally, it should be in units that
+are independent of PAGE_SIZE, but backwards compatibility prevents
+changing that now.
 
-Quick question before reposting it. We run this function for
-every GICC entry, I didn't add a check to make sure all GICC
-entries have the same flag value, please let me know if that's
-OK.
+Fix this by having netvsc_drv_init() hardcode 4096 instead of using
+PAGE_SIZE when calculating the ring buffer size in bytes. Also
+use the VMBUS_RING_SIZE macro to ensure proper alignment when running
+with page size larger than 4K.
 
-I don't think there is a point in keeping a live variable across
-calls to set the flag once for all either.
+Cc: <stable@vger.kernel.org> # 5.15.x
+Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+---
+ drivers/net/hyperv/netvsc_drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Lorenzo
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index 4406427d4617..273bd8a20122 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -44,7 +44,7 @@
+ 
+ static unsigned int ring_size __ro_after_init = 128;
+ module_param(ring_size, uint, 0444);
+-MODULE_PARM_DESC(ring_size, "Ring buffer size (# of pages)");
++MODULE_PARM_DESC(ring_size, "Ring buffer size (# of 4K pages)");
+ unsigned int netvsc_ring_bytes __ro_after_init;
+ 
+ static const u32 default_msg = NETIF_MSG_DRV | NETIF_MSG_PROBE |
+@@ -2807,7 +2807,7 @@ static int __init netvsc_drv_init(void)
+ 		pr_info("Increased ring_size to %u (min allowed)\n",
+ 			ring_size);
+ 	}
+-	netvsc_ring_bytes = ring_size * PAGE_SIZE;
++	netvsc_ring_bytes = VMBUS_RING_SIZE(ring_size * 4096);
+ 
+ 	register_netdevice_notifier(&netvsc_netdev_notifier);
+ 
+-- 
+2.25.1
 
->  	gic_acpi_register_redist(gicc->gicr_base_address, redist_base);
->  	return 0;
->  }
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 54189e0e5f41..a292f2bdb693 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -283,6 +283,9 @@ static inline bool invalid_phys_cpuid(phys_cpuid_t phys_id)
->  	return phys_id == PHYS_CPUID_INVALID;
->  }
->  
-> +
-> +u8 __init acpi_get_madt_revision(void);
-> +
->  /* Validate the processor object's proc_id */
->  bool acpi_duplicate_processor_id(int proc_id);
->  /* Processor _CTS control */
-> -- 
-> 2.34.1
-> 
 
