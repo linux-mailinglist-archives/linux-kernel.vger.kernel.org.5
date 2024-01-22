@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-32559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A92835D26
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:51:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 018EC835D2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:51:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD3B5283390
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:51:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A61D1281491
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:51:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000DD39FC0;
-	Mon, 22 Jan 2024 08:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0C33C488;
+	Mon, 22 Jan 2024 08:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uyQ4HLu0"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gEHTI7hd"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDEB43B287
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9603B795
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705913248; cv=none; b=oaccflRSEwcIPzxTmCtWThbpF3tfd1mR2p1jz2alvaMW4tJNOUWEYdxItmDu+eoAvtQ/JEy85d4OFwOnXiGM3y0s3gSkpqX6KoVc/IcZnxrgnoQKUwdRcJfzKNfXF9jxxZqIFHwKRtPH1NEA4K8/uf8vckJsR3wyqBOivfbrVuw=
+	t=1705913249; cv=none; b=FnFMe3nFw2+zt2CPY8IdVqbzgFdZGKMblJ8VQQwpBKU4Sn3A78cfDryIhaU15LxsUVg6wpVIZy0A+a0jCpdn8ppNAPtAIgq4Hllb1h9itYZQZqawVMmFfl5h/35dwJ4nBcovcP8bHq+tmfe96CW0PSgz7vXOffsDffxTph6Ygws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705913248; c=relaxed/simple;
-	bh=9SSOqOK0Lej5rqz0TF7e31lFUOaMw4aoR6sqSlIKxlM=;
+	s=arc-20240116; t=1705913249; c=relaxed/simple;
+	bh=UXb/zhUic36XW61Rcjli8pQ0rP4sJES/Ouz5+0kZwOY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=gMvab1pq1oMP/MGoKid2S7NdB7m9neCz/ci0AJZg5NkIJr5KbJ37t6vgr27MK4M7srzrbqmyJ28Z5Wv06+G56CVtBtuU4dcgua/uVYcnLIeUg1gnpzeiWz8Be4MhWs8xXXqZxfFZ9Nq9b7zZuuCb1WqVSoXLm4jDuLgVigdlYVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uyQ4HLu0; arc=none smtp.client-ip=209.85.218.45
+	 In-Reply-To:To:Cc; b=dyN+w1qHJ5/Nr/YnTiUUhmTRiUNITPII5o2Lq/oPa5SAwy1e0fXOXtZ1gN7alJGumTjreTa8oBL5vSQ0EuJ8q9Nf1GEvzgy7fKHZbyss2zTyXSHa5sLHXuNsZ1MYUMFoil4s1mXFVIUcWKO25juagSKTkCqgiP0tfYxfqMP9eqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gEHTI7hd; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a30359b97a8so84194166b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:47:25 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-336c8ab0b20so2903102f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:47:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705913244; x=1706518044; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705913246; x=1706518046; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=J+4N5IhDKtfhb9B64JgR/5eRkIAxdmeTyFYBzClQWGo=;
-        b=uyQ4HLu0WuqGvzML8f9CmLZWPak/kP5Yaaa0yV4oNL6PS2kcWsybu5zl4EdCqVrA48
-         3AToPyjHylqg1+lNMViQRod3z48Ac+WqLXC5FIycRW77dA4mwVZrAzowG4yJgc88a/fb
-         z3OsTgm3k1FY2/2SKmX8zXYqKEGptdXYwa1lZKS6RGPUbv7K55tS8knW6078X12BAh5y
-         tH/maTfpOcrAiGTBR6ddonzdfyVl9Q5YxYsfb7i5CMdWr6AXLIAJI5ZhEb8SZDgCFY1Z
-         KkC7pcloaaWVPBsZekUTA58DPKnT7/ND44UoLQSsAwuozAC+CKBrsfypsAIntzJOvxUq
-         RYsQ==
+        bh=BcRJMFQZwuV0Tapr3h2EIPICdXVTao3gMwX1jt7rgns=;
+        b=gEHTI7hdaIulGQDji76af2RiSqGN07s9VZjn4POowwHhVhqdvDyDFAbC99rxyVjy7z
+         uIw7thcJBJKSD9kjY+ijQpC5yoGmL40sHFeTECojHJkU8huf2X4K08UEn0eHXfm5vfpB
+         XY+YtBe0b0Y/DhkaxbcUIWlzHykVEf0vWxjW1OB1ce0LovkMIsP+RGcxTv49EAg5T0eW
+         J90DTir+6ykHSAz5NSer3Igx3wtnib7TToOrIlubSVXPwkoVxHQ1TaXdXxERCQK21d+U
+         9O1m0Y2tYbN3BpOINKVwwWjhXVN8eAMjbLh9GiGjqfnoAJP+bbEZE2k8aBjHB+Pbiv7J
+         a+uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705913244; x=1706518044;
+        d=1e100.net; s=20230601; t=1705913246; x=1706518046;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=J+4N5IhDKtfhb9B64JgR/5eRkIAxdmeTyFYBzClQWGo=;
-        b=JSN7/lbuSF6qAw7KwtQIfgasz68uMFyib9Ad6JfSKhtyEJtFJT8iK/LRYlpJzLrf73
-         JV6c1jhy4db1RQ568Zx0xjuOUn7CDFRMlLghhPH5+DypcfGYhtfcSAPQi5FgvEa8JVqN
-         8cmSxAKdDPzHmwLAjSVobn9sGuNs0NIEuNzSPZkwVn3qpD1MzrFY2BtwA/fGJnjNjB6H
-         ik+pP+IlThOx3MFpodnVSPGvnLjznUcj8Q5JHJjDZbH8hL4REdOkH81M50zzVUN3O6O5
-         fBlw6IQBuOOq5ntqEjJEqLlNGvzMsRnWuUkbIOZm0peTQBnLFJ1psGQVdO/N1HF4nAyP
-         HJbA==
-X-Gm-Message-State: AOJu0YyTUjFLjfYAddgRXDPhv4fC3D6g3QDaQp9jtHVK00HWvxd6Db7q
-	jvzL8y+tNK7WILbEe+RpxAX1F63rxLppX/jnmBZBGssmUktPxDoe4oZmT0tmdcM=
-X-Google-Smtp-Source: AGHT+IF5jY/odVzvuuX2tsOgaxne++vFuGZaQeGK6pDpveTgnv/VnFvr3/C7wt8hPfuKeQMEomU6Ng==
-X-Received: by 2002:a17:906:8302:b0:a30:76b5:fa05 with SMTP id j2-20020a170906830200b00a3076b5fa05mr192533ejx.40.1705913244072;
-        Mon, 22 Jan 2024 00:47:24 -0800 (PST)
+        bh=BcRJMFQZwuV0Tapr3h2EIPICdXVTao3gMwX1jt7rgns=;
+        b=YTMj1gfFH6rsCvq98MRfg/A0PIVLJ4eaNEjfiPQ3mEr9koW6QdI1ntqQaCANJfiO+z
+         jHrrU5dADFyEfLY6mgsmMbvrWKkfk8BhnadVo7Bc5XDVoMoGfZlo7zrwcXcB1V2tFQg6
+         3Nk0LPXwUlOeLpTW3hsr1WIdkhQtj7UqMSo0DZje2/gIhCQ+g0WPy6JmsPOus/2ZSnYo
+         VyCIpnDGlv548Bx6btm6CagFO+UhUsatJgy0mo3aYWfZNelu81gHlaK1SSTgv98lFFFz
+         yDzMZfBTidqMPu56J1q+MHfzSLU4esp+LAMcskFZ768N6ruzkjNTt72ujFpUH10wlKDc
+         qI8A==
+X-Gm-Message-State: AOJu0YxU4kcGhO1/4f4pqhpa0hPNiHGuk6fUHUbYLJt6tl/suWqKzGBS
+	RjcML1HU6ilmFr7uwKtLrzLsVvDV8/rvsh5PViCUqqm7XwvNE1330g5PQCc8iW8=
+X-Google-Smtp-Source: AGHT+IF0r9bLTQ+dQGxBguGSfAgVW/Fw5dT1SwFylYwJoF5qHNQoL2tc2eRB2IbELINhoVkVHIMJbg==
+X-Received: by 2002:a05:600c:4f96:b0:40e:4800:c91f with SMTP id n22-20020a05600c4f9600b0040e4800c91fmr2158579wmq.9.1705913245888;
+        Mon, 22 Jan 2024 00:47:25 -0800 (PST)
 Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id b21-20020a17090630d500b00a2c4c23cd12sm13075462ejb.217.2024.01.22.00.47.22
+        by smtp.gmail.com with ESMTPSA id b21-20020a17090630d500b00a2c4c23cd12sm13075462ejb.217.2024.01.22.00.47.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 00:47:23 -0800 (PST)
+        Mon, 22 Jan 2024 00:47:25 -0800 (PST)
 From: Abel Vesa <abel.vesa@linaro.org>
-Date: Mon, 22 Jan 2024 10:47:02 +0200
-Subject: [PATCH v4 2/5] PM: domains: Add the domain HW-managed mode to the
- summary
+Date: Mon, 22 Jan 2024 10:47:03 +0200
+Subject: [PATCH v4 3/5] clk: qcom: gdsc: Add set and get hwmode callbacks
+ to switch GDSC mode
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240122-gdsc-hwctrl-v4-2-9061e8a7aa07@linaro.org>
+Message-Id: <20240122-gdsc-hwctrl-v4-3-9061e8a7aa07@linaro.org>
 References: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org>
 In-Reply-To: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, 
@@ -98,75 +98,133 @@ Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
  linux-media@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2247; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=9SSOqOK0Lej5rqz0TF7e31lFUOaMw4aoR6sqSlIKxlM=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlriuQcy6GvAlKv75yWNiL+5SW0RsJUO6/56kgP
- JidJnlZ3WSJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZa4rkAAKCRAbX0TJAJUV
- VpP9EADKWrlShjfOHeZMBqfEIYmnGs9ZDExFZPKyfsVQhcKvr6coiF2QWKf6+wuMuqH5iY4nKMx
- nv9qy6yV0iOWi+DwMYZT/PvHti9yebGXkOhah/nOYwhC+6HfZYHCUrfxi7uhKOEaXOJhCHnG4rt
- L/QrICOeo58RbuYwE6DllCq2r6FmkDVFfM+0TQ3c0YBRn0uhmkMU9Yl3utWBZ2ZNwAabi9vqGIw
- VowRsXDLPin8pATypm/WGG1AS77x10VV7n4Du+kDPgrrNU+s0Eog1hk2hxBOcJg/hoysGPevgxM
- s7kbbvrC7+vARF82wj/0S5SwLYQhkMtA6ldpOuURnpCIQwiZQJGXihzLZJ/9kWPSWWU6pLbGu2w
- 7SIyTWaTe5Qf3W2XKr8y2l/81KOoeg4eujaB9EaAmQRA2nyE8RYtrgGIloLZeMN1etit0EUw0Bh
- PaZ/vGdLEwbvWr3Qw9bPAhgbraBokx7GxgsVBZjkpR9ak2+bCB87+8IUjVTf+7qZSgoq5s/ePno
- x9y/abt+Ka55T9QC8yHAEKJDJ8MAwF27UJmvs64kAbfmMNBTnBu4YeA5B1rwVZxfn6fNTi1WXV6
- 0NvJflRNpfKFiM8657hoHU8h9UCrGJQZpcnNu0rjMP9MtuY1vSAcsa3GnYqkd7YaqCg7O+gp76B
- d3aWRxBJUNxpGHA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3441; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=yFQug82ouDh7n9fo6dz4SaANMbWja9vZYjYKARImC8I=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlriuSQCCTGaF/pibhxYWO74SJJuCHfzr0HrkOn
+ I/X3EewY96JAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZa4rkgAKCRAbX0TJAJUV
+ VlvjD/sGWHCathvHXRq0Py3o28RU3KmbxNBAQgGF6R1ucKEF4rXyU+u9djEnWK6kx+RLwUrfW4O
+ jlp559Xhrg7toBjLrDu0bo6rvEobnOCtkLtUpWyfS/cfI8xKE+rqkyNaRGkDJ8d8ZywRzI0qpad
+ OtLANlXACdfcDskAaDZUyDoeZKOuOzu+6Bz9+L+RfMz3LwqOBL5hMM1ZbFsqyKMmh5figAUpo7+
+ dZJQA0kkDqGOIiAFZLDCTPb85/QGuFnNEcHVBnT1qhVMyQFNtTwT6h0tJ1pwkmrJQRiPP51PW+T
+ 9pbueC0r3s/53En7uakqgvQ4z1bUyPzA0nkLhoRqy+k/9xnbwhiG2QEYyH70lx1k7Mo2gc9x/AJ
+ cptH000+sowRAOKm2X8o95/mfkrb0SLOH/VzMLN7occryxVTEhDrhBIcdqPnADgrz0FL2WS1iBv
+ ZoTyQ6hFD4x28HncVLs0G8wrO6WZePeWoni+wuMlO58laFlD1/DwEFbXHRbClnMzNvZNQ65BryH
+ cwMfnmiep7BA3S9Rmh2t73ph34MWQgT8vY8/jWC5phozpmZJuVos40orf4O+rztEeoInDFm4AA3
+ 1JW5ftuUiavXGbTdZ0khgUSF/yfAF2rn6K9RiQ43yHQBwj8mOU7c41Lk8fLAm3+xBxjuiEjzsWG
+ s8NGjP0PBZhGzgw==
 X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
  fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-Now that genpd supports dynamically switching the control for an
-attached device between hardware- and software-mode,  let's add this
-information to the genpd summary in debugfs.
+From: Jagadeesh Kona <quic_jkona@quicinc.com>
 
-Suggested-by: Taniya Das <quic_tdas@quicinc.com>
+Add support for set and get hwmode callbacks to switch the GDSC between
+SW and HW modes. Currently, the GDSC is moved to HW control mode
+using HW_CTRL flag and if this flag is present, GDSC is moved to HW
+mode as part of GDSC enable itself. The intention is to keep the
+HW_CTRL flag functionality as is, since many older chipsets still use
+this flag.
+
+But consumer drivers also require the GDSC mode to be switched dynamically
+at runtime based on requirement for certain usecases. Some of these
+usecases are switching the GDSC to SW mode to keep it ON during the
+enablement of clocks that are dependent on GDSC and while programming
+certain configurations that require GDSC to be ON. Introduce a new
+HW_CTRL_TRIGGER flag to register the set_hwmode_dev and get_hwmode_dev
+callbacks which allows the consumer drivers to switch the GDSC back and
+forth between HW/SW modes dynamically at runtime using new
+dev_pm_genpd_set_hwmode API.
+
+Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
 ---
- drivers/pmdomain/core.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/clk/qcom/gdsc.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/clk/qcom/gdsc.h |  1 +
+ 2 files changed, 55 insertions(+)
 
-diff --git a/drivers/pmdomain/core.c b/drivers/pmdomain/core.c
-index 41b6411d0ef5..841fde9e9f87 100644
---- a/drivers/pmdomain/core.c
-+++ b/drivers/pmdomain/core.c
-@@ -3147,6 +3147,15 @@ static void rtpm_status_str(struct seq_file *s, struct device *dev)
- 	seq_printf(s, "%-25s  ", p);
+diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+index 5358e28122ab..71626eb20101 100644
+--- a/drivers/clk/qcom/gdsc.c
++++ b/drivers/clk/qcom/gdsc.c
+@@ -363,6 +363,56 @@ static int gdsc_disable(struct generic_pm_domain *domain)
+ 	return 0;
  }
  
-+static void mode_status_str(struct seq_file *s, struct device *dev)
++static int gdsc_set_hwmode(struct generic_pm_domain *domain, struct device *dev, bool mode)
 +{
-+	struct generic_pm_domain_data *gpd_data;
++	struct gdsc *sc = domain_to_gdsc(domain);
++	u32 val;
++	int ret;
 +
-+	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
++	if (sc->rsupply && !regulator_is_enabled(sc->rsupply)) {
++		pr_err("Cannot set mode while parent is disabled\n");
++		return -EIO;
++	}
 +
-+	seq_printf(s, "%20s", gpd_data->hw_mode ? "HW" : "SW");
++	ret = gdsc_hwctrl(sc, mode);
++	if (ret)
++		return ret;
++
++	/* Wait for 1usec for mode transition to properly complete */
++	udelay(1);
++
++	if (!mode) {
++		ret = regmap_read(sc->regmap, sc->gdscr, &val);
++		if (ret)
++			return ret;
++
++		/*
++		 * While switching from HW to SW mode, if GDSC is in enabled
++		 * state, poll for GDSC to complete the power up.
++		 */
++		if (!(val & SW_COLLAPSE_MASK))
++			return gdsc_poll_status(sc, GDSC_ON);
++	}
++
++	return 0;
 +}
 +
- static void perf_status_str(struct seq_file *s, struct device *dev)
++static bool gdsc_get_hwmode(struct generic_pm_domain *domain, struct device *dev)
++{
++	struct gdsc *sc = domain_to_gdsc(domain);
++	u32 val;
++	int ret;
++
++	ret = regmap_read(sc->regmap, sc->gdscr, &val);
++	if (ret)
++		return ret;
++
++	if (val & HW_CONTROL_MASK)
++		return true;
++
++	return false;
++}
++
+ static int gdsc_init(struct gdsc *sc)
  {
- 	struct generic_pm_domain_data *gpd_data;
-@@ -3205,6 +3214,7 @@ static int genpd_summary_one(struct seq_file *s,
- 		seq_printf(s, "\n    %-50s  ", kobj_path);
- 		rtpm_status_str(s, pm_data->dev);
- 		perf_status_str(s, pm_data->dev);
-+		mode_status_str(s, pm_data->dev);
- 		kfree(kobj_path);
- 	}
+ 	u32 mask, val;
+@@ -451,6 +501,10 @@ static int gdsc_init(struct gdsc *sc)
+ 		sc->pd.power_off = gdsc_disable;
+ 	if (!sc->pd.power_on)
+ 		sc->pd.power_on = gdsc_enable;
++	if (sc->flags & HW_CTRL_TRIGGER) {
++		sc->pd.set_hwmode_dev = gdsc_set_hwmode;
++		sc->pd.get_hwmode_dev = gdsc_get_hwmode;
++	}
  
-@@ -3221,8 +3231,8 @@ static int summary_show(struct seq_file *s, void *data)
- 	int ret = 0;
- 
- 	seq_puts(s, "domain                          status          children                           performance\n");
--	seq_puts(s, "    /device                                             runtime status\n");
--	seq_puts(s, "----------------------------------------------------------------------------------------------\n");
-+	seq_puts(s, "    /device                                             runtime status                           managed by\n");
-+	seq_puts(s, "------------------------------------------------------------------------------------------------------------\n");
- 
- 	ret = mutex_lock_interruptible(&gpd_list_lock);
+ 	ret = pm_genpd_init(&sc->pd, NULL, !on);
  	if (ret)
+diff --git a/drivers/clk/qcom/gdsc.h b/drivers/clk/qcom/gdsc.h
+index 803512688336..1e2779b823d1 100644
+--- a/drivers/clk/qcom/gdsc.h
++++ b/drivers/clk/qcom/gdsc.h
+@@ -67,6 +67,7 @@ struct gdsc {
+ #define ALWAYS_ON	BIT(6)
+ #define RETAIN_FF_ENABLE	BIT(7)
+ #define NO_RET_PERIPH	BIT(8)
++#define HW_CTRL_TRIGGER	BIT(9)
+ 	struct reset_controller_dev	*rcdev;
+ 	unsigned int			*resets;
+ 	unsigned int			reset_count;
 
 -- 
 2.34.1
