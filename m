@@ -1,476 +1,188 @@
-Return-Path: <linux-kernel+bounces-32488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7D2F835C48
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:06:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 203FE835C35
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A4A4284902
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:06:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42FCC1C2401F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8601BC49;
-	Mon, 22 Jan 2024 08:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34360182DC;
+	Mon, 22 Jan 2024 08:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W8Z3j72X"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="Wux7hChM"
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2040.outbound.protection.outlook.com [40.107.15.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1DF01A708;
-	Mon, 22 Jan 2024 08:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.100
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705910767; cv=none; b=ZAs3ITaIflru/LEQas5A/OgALpSrmBVnqL8ZMh05WoBJsDOPxhlxIZtsVzRnzf7sEM7gWz9F+aNMTz5/SgZmykj5y+snVb1KXIjjYcN77KgaTTgtdF6Nfv3YZt9RUrYHF7Vty/aB630q+OEr9uoHBaboBKpaV3yVnMI70lgIOkU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705910767; c=relaxed/simple;
-	bh=JBDKnQVL6tb8bqKv5trl9rQTUbWDE/j0qE8XT64uxq4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=C99bNP6GgQrL+KaM3AAIgEaQv83tT0nUr1T6JcKwEb0y0BZrlZHa+AkwTrZOSXr8R2ndZyPBbJpXd1SCJHq7PILZxgbtxq5he7HoaB3BSkMYPjXzJ+HTFJOjxo33mApXr+5ATMnQKh5UIXl/MKn09uf505lT2HQAmF4Jmlx6ZdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W8Z3j72X; arc=none smtp.client-ip=134.134.136.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705910765; x=1737446765;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=JBDKnQVL6tb8bqKv5trl9rQTUbWDE/j0qE8XT64uxq4=;
-  b=W8Z3j72X/IPlrcQ0DxwPxI0GO14dQcq82ZNy5U+zXWVftXLbrahuEfm4
-   /mht+BJM4yg0x52aPHrKFfYvs18BaLdCi9hBfu9X9ihlhI+lRs5s2Crlz
-   +0H06TJbJRgMFtHDwSPzati1ZwKLrLzYAkzedZkMPfvINVz3JF+KbBasL
-   ywaIHfBPAgqLuk3hyqFb7PbcfnMddnFyWOeOT2WVCCwv1aIcnsMW2y48W
-   zUe13fGLxHzZBZJfmN7Rpui7POPVb0znNX0TipUuuY8hA06hrsXtJD6hI
-   2BvT49w0FLIkx5emJ+SgY7QU9OLGXk9/UR2l3Li/Hty43lKCZype8K/hS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="467511622"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="467511622"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 00:05:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="1217287"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 00:05:49 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Gregory Price <gourry.memverge@gmail.com>
-Cc: linux-mm@kvack.org,  linux-kernel@vger.kernel.org,
-  linux-doc@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
-  linux-api@vger.kernel.org,  corbet@lwn.net,  akpm@linux-foundation.org,
-  gregory.price@memverge.com,  honggyu.kim@sk.com,  rakie.kim@sk.com,
-  hyeongtak.ji@sk.com,  mhocko@kernel.org,  vtavarespetr@micron.com,
-  jgroves@micron.com,  ravis.opensrc@micron.com,  sthanneeru@micron.com,
-  emirakhur@micron.com,  Hasan.Maruf@amd.com,  seungjun.ha@samsung.com,
-  hannes@cmpxchg.org,  dan.j.williams@intel.com
-Subject: Re: [PATCH v2 1/3] mm/mempolicy: implement the sysfs-based
- weighted_interleave interface
-In-Reply-To: <20240119175730.15484-2-gregory.price@memverge.com> (Gregory
-	Price's message of "Fri, 19 Jan 2024 12:57:28 -0500")
-References: <20240119175730.15484-1-gregory.price@memverge.com>
-	<20240119175730.15484-2-gregory.price@memverge.com>
-Date: Mon, 22 Jan 2024 16:03:53 +0800
-Message-ID: <875xzlx09i.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F57117C68;
+	Mon, 22 Jan 2024 08:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705910431; cv=fail; b=XscHBRFAcRBpEmCw+4wp7l7Qhe0v70AI9B3TLTEmW1rNa8WAJfyPy+SNQyIilRpA4Upb9gm20Q8d7RO5lTpscGR3EI6/RMr4HjNYq9NS31CoGXKzgAeueaShmjH8bY9BXJ97XZbdimrXfsVbTmd5csNLWRHygou+DLnRTtWe/Ak=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705910431; c=relaxed/simple;
+	bh=26Ah53ogv1RuFrHV72FthULZUHBDgAlP66A+g2KntIg=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=CS4PSz9PnZRVAD/v/udm5n+o1UR4sdvcY54mKG/mPumQZ/6867v9/AN4Hco7TLiw3x/BCguaMCvjTEplAQI+AgQ+ogD0eJJ3yhnoaf89Qd3Uv0lhr6M2gD/Zf1mNP8tGTZsN6R3bdKYkuavMYonA7o/IbkRPJWEQqagTOwDiRvs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=Wux7hChM; arc=fail smtp.client-ip=40.107.15.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lkXzRXX3QYPoRXg/Bm3D13EIoL1klRN55u177xwAK5OKJTW1iS7bBc5OTBJJ79BVloD2gOvF6LqYXUF4ljZeovFfLydkZCVpl4cQa+ua1TjXE37N5mQZKgQZ9iQKZey9lHdeybfMAWQqk87OaxennJ4uu1UeYQvQxGZ+JELU9KzDz+YSXKbk6BUeynsIU6tYxNRHEOynioqlZyF4bkHjvgLTHnb18RS1s3KplOJFEJ2UQI8+eU8XZyPfqSvcFSgt1a1CqyjnKmQ9Z7zKwY3kVgQncmHxHGLbshPcwofwXkdcU3viMusxlAoI01NW9xEqASIQ8uIS0c6RW4F2OJwNpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y9kmDS80mo593DsrjqavbETC0IgjsyOsNnaCt6c156E=;
+ b=fOUH37Xv4TNWH8b21OJNJrnZeEyvfjv36jw9pU3JIXdE0NCSa5RpVtk0AReC413YpLHLX0j5yWWMMRFTfeNuwFVBzyOhHdI0/0SlQOl6MJAPLT6YAC+a6XTPSR3p4Y853LbaugS2mHvQgoUweXxQdqRGtXHwHbAd9F4kUKyAz2GV39SW22W4elAP3PyEt2GyWjMFmfyDPNR5PBZ2c3RFjShkCB7y3ikD23zCpw3LtLXqRT7S8rgTOaovm8iqGQoxNmZcta55vFcOkpiPEV979qYYHOuGsDkyHvam1xg1HGgy4pWeAt79AFh93pThLPjRYOrNpwG78VfqQ+dMVl+Wow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y9kmDS80mo593DsrjqavbETC0IgjsyOsNnaCt6c156E=;
+ b=Wux7hChMsVZxEpwjd3UGZqtx5xu+XQBoTbZsWu5UHdQSWO9xl4Ew+48OZ6UQy69FhXQ+Dy3DKnS8TV3GybmwtITM/PCMZVwtP2uupMejB9h7Cnd12T6O+rAvZuiSE7sqUorJKQSt4YF1YppV8aBEAkXMrtyxld2bPezjqo5/30U=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AM8PR04MB7313.eurprd04.prod.outlook.com (2603:10a6:20b:1c5::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Mon, 22 Jan
+ 2024 08:00:24 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
+ 08:00:24 +0000
+From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To: sudeep.holla@arm.com,
+	cristian.marussi@arm.com,
+	jdelvare@suse.com,
+	linux@roeck-us.net
+Cc: linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] hwmon: scmi-hwmon: implement change_mode
+Date: Mon, 22 Jan 2024 16:04:41 +0800
+Message-Id: <20240122080441.1957022-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2P153CA0015.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::21) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM8PR04MB7313:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3d393467-ac53-4c44-faa8-08dc1b202fff
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	7rW6dfvRHvtiQ8r0K0ozpzF5ae+AHNzaCmwy9qEAa6j+qgOyGkiwvqpjYak2PG2YOUp2FlZqGpnFJZTlA1gbBdx3cO0paJamfw58gU6uUcNzZgykVmTI4Qsr1UtrAp5CYaLC5jbVpYQJ07+QFNET6HSzSvaYq0oP66bXrus3pqu/6vZ5A3oTnfdVBv+KkxAGrls/wfLNsTYxl1m3FcutSJzQ49XycyRcQUyB5zhyMCbf5l5KzdeZ1RfQ6TfoFAKe33K8EeZa8hDA/YBiyQC+aC4MDjai0biPBWnPqvUaR5xClU/koyIlflVY5Je0pX1DQJcaMjaDFwiETWy9LKCDLGA1pw7T7msClM5iy15exkFJ2mI88+e5vggsXwJenyeLFroaY2S9uRWbAnrjNj7giEbPEWACh//dgho+0X7Ktng4nzhlfafX0Xy1vC9whLKWaIfH1dl6ty3FmCekrLtzOAaXe6I2iRo8w7dOa34nWBX6Jpu3+832e1wWTVgTeXA3GONx2JNTKUs+JpmDOrPjoCzrAUSzSAmK++wwoMczGMvqSD06usIJyZdkXwTyKVVmlc5qHE2x30o73Nl/g5E7PRYwVmi3pP0RGiDdqbDTiSxNgbgYcg5h4hzKbP0ee7xZ
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(376002)(39860400002)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(41300700001)(1076003)(26005)(38350700005)(6506007)(478600001)(52116002)(2616005)(6666004)(83380400001)(38100700002)(6512007)(6486002)(66476007)(316002)(66946007)(66556008)(86362001)(5660300002)(8676002)(8936002)(2906002)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?1qrBRvoxnAYlD6pz9ntoy2SvfP7b44IplU+VskmRKUL0ztJxebDLfPrLQc4H?=
+ =?us-ascii?Q?w84ej1juNmVlOHVpJN5ANwG8EkDtinbaaCpQJL0BwiHzTs1mBX8kaHrtLVlA?=
+ =?us-ascii?Q?hHwpcClACgVWaEnL+3N6pVSyUCqF48B9RhAAw9GH8M8eDJ3gVMPOKTvXXFfz?=
+ =?us-ascii?Q?7NDFJCVKoRUeBRnkcT7ma+GJQ2kw1Noc14UuIta+XLAbvlCzGzViW88pwqZ6?=
+ =?us-ascii?Q?R7be6xEZPSzSpEkjByf+O8sp1UYVg7DnUWI5xZb+Jv2El8dZWNJSA8RZvI1y?=
+ =?us-ascii?Q?jwAsVTQdih0UV/8PEAHoYJKRrdh/3ocyuaRtfsE3RocbZjEFkUpn6RNM8TpL?=
+ =?us-ascii?Q?FU7pTTERSLllGfYR5qfLFKTCa8S4YYbMEXnurMMlGfQSNbQkObVQO3pBqQWJ?=
+ =?us-ascii?Q?A+ns552Nb1JYZERQGiPhFaROyPquu0nGIXvrUIVW1keyo70lYVgKUlqV8/ES?=
+ =?us-ascii?Q?jBxmXd7HdKUn5uGc8JKIbLIDC+w6kjEQ1woh/cCOHXOXeII+Y02WczJPx/WS?=
+ =?us-ascii?Q?Y9G4/N7wlQX9+KtgOrZVX1QKPMLVPioxQ2q51zVxqnTk8P//0O+JRX7qMWaN?=
+ =?us-ascii?Q?pa1aREcEh8fCfKBrlZwofRfR46VVMzbE2ZpTjSDfL5lfIq7tvIoTWeKtueFl?=
+ =?us-ascii?Q?cTqqqqQtEsCBqzToyN8vr1AsHAqE0rVxxuwTmabUdGGFYtld+xldIaJvGmAW?=
+ =?us-ascii?Q?PyQpMJEQVTliJVDH/DC5aPDIpp+R3u8enBTlWGX6lqfBhFGZ3CGepTBs2YTM?=
+ =?us-ascii?Q?tfYb9AklNKRt8jHPyUtcqMIecgemXVkFcrmkueOt9ixZw8m7bJ2vdc6bixqI?=
+ =?us-ascii?Q?MoCqyzLo4O3rSfFAQLjRlEurKSvdLPy+huyePDkCoy8CwX9Tvw/PBEVqUWWS?=
+ =?us-ascii?Q?AVFoR49BBzdNg3cOFaQfBwvfmPZRvSmWTBhO0UQqMSYeBgzNqPKyIgiXuP6x?=
+ =?us-ascii?Q?2Ig30HrznnLjdDZKhNA+rXJFZwwNNb1PEdD9e7ukHXedEisgBBhabt0Xritq?=
+ =?us-ascii?Q?js2vvTWj0WW7/pbjqAPkavUJvITECZG48MEDhVyGZIDH6kx6mGWKe0mCAygt?=
+ =?us-ascii?Q?dochnGCh89kQoutzjbkO8Bb/oQZo8r3F1BYkq+y/xW6WJ1Wtuiu/oKmuVARG?=
+ =?us-ascii?Q?PxKBd5iAvJm343APPPSCSMsgflsULUBexn7DeCNL7eLIemBRWCYGNSxXEkPo?=
+ =?us-ascii?Q?aSUqFL3a9KuIBR/2yXF2B0kDLc0mRNBn81MHksAhE10FaO+fuLCHrMoCpysF?=
+ =?us-ascii?Q?gNSBIzrY9xI/9RR0zoxuROL4T2EAx8EdNjKJmg8yWE+UYuYlhhsUYieBF9mB?=
+ =?us-ascii?Q?nHsPMyEMym8w2D16nxWsKYWYD99D9iwybmgORzXsgNdsDMnoystJGcvcrlwv?=
+ =?us-ascii?Q?Oadiyg/xdgq4G2NjIw9gKmJtCTWJODOieLblr4vjs6kRpOfyzTN4d3c5bYx/?=
+ =?us-ascii?Q?3ADhwbRYaZBaneWYR4gA6oXIXy1yniW2TgIY15SbFwiXSBIH7QKL68MKpFm0?=
+ =?us-ascii?Q?KvMZDeVJ7Rl9QGMuYgXX0eDNOyO8lp2GFN1HQhzSiiLEejum/DUvUm4gLKZG?=
+ =?us-ascii?Q?BlImLYNMUf065ghp304wjjpESdnr6EWxQP/h01za?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d393467-ac53-4c44-faa8-08dc1b202fff
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 08:00:24.2955
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MC85hmU5e1YXe+nGSDucCKahsOGauiF7rTwRsu4JXy4SyyK+w+6NXma0CNwgWSGOW3j5EJhN+69WVgn1YGRUEg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7313
 
-Gregory Price <gourry.memverge@gmail.com> writes:
+From: Peng Fan <peng.fan@nxp.com>
 
-> From: Rakie Kim <rakie.kim@sk.com>
->
-> This patch provides a way to set interleave weight information under
-> sysfs at /sys/kernel/mm/mempolicy/weighted_interleave/nodeN
->
-> The sysfs structure is designed as follows.
->
->   $ tree /sys/kernel/mm/mempolicy/
->   /sys/kernel/mm/mempolicy/ [1]
->   =E2=94=94=E2=94=80=E2=94=80 weighted_interleave [2]
->       =E2=94=9C=E2=94=80=E2=94=80 node0 [3]
->       =E2=94=94=E2=94=80=E2=94=80 node1
->
-> Each file above can be explained as follows.
->
-> [1] mm/mempolicy: configuration interface for mempolicy subsystem
->
-> [2] weighted_interleave/: config interface for weighted interleave policy
->
-> [3] weighted_interleave/nodeN: weight for nodeN
->
-> If a node value is set to `0`, the system-default value will be used.
-> As of this patch, the system-default for all nodes is always 1.
->
-> Suggested-by: Huang Ying <ying.huang@intel.com>
-> Signed-off-by: Rakie Kim <rakie.kim@sk.com>
-> Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
-> Co-developed-by: Gregory Price <gregory.price@memverge.com>
-> Signed-off-by: Gregory Price <gregory.price@memverge.com>
-> Co-developed-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
-> Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
-> ---
->  .../ABI/testing/sysfs-kernel-mm-mempolicy     |   4 +
->  ...fs-kernel-mm-mempolicy-weighted-interleave |  26 ++
->  mm/mempolicy.c                                | 231 ++++++++++++++++++
->  3 files changed, 261 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-mempolicy
->  create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-mempolicy-w=
-eighted-interleave
->
-> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy b/Docume=
-ntation/ABI/testing/sysfs-kernel-mm-mempolicy
-> new file mode 100644
-> index 000000000000..2dcf24f4384a
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy
-> @@ -0,0 +1,4 @@
-> +What:		/sys/kernel/mm/mempolicy/
-> +Date:		December 2023
-> +Contact:	Linux memory management mailing list <linux-mm@kvack.org>
-> +Description:	Interface for Mempolicy
-> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy-weighted=
--interleave b/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy-weighted-=
-interleave
-> new file mode 100644
-> index 000000000000..e6a38139bf0f
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy-weighted-interl=
-eave
-> @@ -0,0 +1,26 @@
-> +What:		/sys/kernel/mm/mempolicy/weighted_interleave/
-> +Date:		December 2023
+The sensor maybe disabled before kernel boot, so add change_mode
+to support configuring the sensor to enabled state.
 
-May be not a big deal.  The date should be "January 2024"?
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ drivers/hwmon/scmi-hwmon.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-> +Contact:	Linux memory management mailing list <linux-mm@kvack.org>
-> +Description:	Configuration Interface for the Weighted Interleave policy
-> +
-> +What:		/sys/kernel/mm/mempolicy/weighted_interleave/nodeN
-> +Date:		December 2023
-> +Contact:	Linux memory management mailing list <linux-mm@kvack.org>
-> +Description:	Weight configuration interface for nodeN
-> +
-> +		The interleave weight for a memory node (N). These weights are
-> +		utilized by processes which have set their mempolicy to
+diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
+index 364199b332c0..f7bd63d52d15 100644
+--- a/drivers/hwmon/scmi-hwmon.c
++++ b/drivers/hwmon/scmi-hwmon.c
+@@ -151,7 +151,36 @@ static int scmi_hwmon_thermal_get_temp(struct thermal_zone_device *tz,
+ 	return ret;
+ }
+ 
++static int scmi_hwmon_thermal_change_mode(struct thermal_zone_device *tz,
++					  enum thermal_device_mode new_mode)
++{
++	int ret;
++	u32 config;
++	enum thermal_device_mode cur_mode = THERMAL_DEVICE_DISABLED;
++	struct scmi_thermal_sensor *th_sensor = thermal_zone_device_priv(tz);
++
++	ret = sensor_ops->config_get(th_sensor->ph, th_sensor->info->id,
++				     &config);
++	if (ret)
++		return ret;
++
++	if (config & BIT(0))
++		cur_mode = THERMAL_DEVICE_ENABLED;
++
++	if (cur_mode == new_mode)
++		return 0;
++
++	if (new_mode == THERMAL_DEVICE_ENABLED)
++		config |= SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
++	else
++		config &= ~SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
++
++	return sensor_ops->config_set(th_sensor->ph, th_sensor->info->id,
++				      config);
++}
++
+ static const struct thermal_zone_device_ops scmi_hwmon_thermal_ops = {
++	.change_mode = scmi_hwmon_thermal_change_mode,
+ 	.get_temp = scmi_hwmon_thermal_get_temp,
+ };
+ 
+-- 
+2.37.1
 
-s/processes/tasks or memory areas/
-
-> +		MPOL_WEIGHTED_INTERLEAVE and have opted into global weights by
-> +		omitting a task-local weight array.
-
-Now, we haven't introduced task-local weight array.  So, leave this
-until we introduce that?
-
-> +
-> +		These weights only affect new allocations, and changes at runtime
-> +		will not cause migrations on already allocated pages.
-> +
-> +		The minimum weight for a node is always 1.
-> +
-> +		Minimum weight: 1
-> +		Maximum weight: 255
-> +
-> +		Writing an empty string or `0` will reset the weight to the
-> +		system default. The system default may be set by the kernel
-> +		or drivers at boot or during hotplug events.
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 10a590ee1c89..ae925216798f 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -131,6 +131,16 @@ static struct mempolicy default_policy =3D {
->=20=20
->  static struct mempolicy preferred_node_policy[MAX_NUMNODES];
->=20=20
-> +/*
-> + * iw_table is the sysfs-set interleave weight table, a value of 0 denot=
-es
-> + * system-default value should be used. Until system-defaults are implem=
-ented,
-> + * the system-default is always 1.
-> + *
-> + * iw_table is RCU protected
-> + */
-> +static u8 __rcu *iw_table;
-> +static DEFINE_MUTEX(iw_table_lock);
-> +
->  /**
->   * numa_nearest_node - Find nearest node by state
->   * @node: Node id to start the search
-> @@ -3067,3 +3077,224 @@ void mpol_to_str(char *buffer, int maxlen, struct=
- mempolicy *pol)
->  		p +=3D scnprintf(p, buffer + maxlen - p, ":%*pbl",
->  			       nodemask_pr_args(&nodes));
->  }
-> +
-> +#ifdef CONFIG_SYSFS
-> +struct iw_node_attr {
-> +	struct kobj_attribute kobj_attr;
-> +	int nid;
-> +};
-> +
-> +static ssize_t node_show(struct kobject *kobj, struct kobj_attribute *at=
-tr,
-> +			 char *buf)
-> +{
-> +	struct iw_node_attr *node_attr;
-> +	u8 weight;
-> +	u8 __rcu *table;
-> +
-> +	node_attr =3D container_of(attr, struct iw_node_attr, kobj_attr);
-> +
-> +	rcu_read_lock();
-> +	table =3D rcu_dereference(iw_table);
-> +	weight =3D table ? table[node_attr->nid] : 1;
-> +	rcu_read_unlock();
-> +
-> +	return sysfs_emit(buf, "%d\n", weight);
-> +}
-> +
-> +static ssize_t node_store(struct kobject *kobj, struct kobj_attribute *a=
-ttr,
-> +			  const char *buf, size_t count)
-> +{
-> +	struct iw_node_attr *node_attr;
-> +	u8 __rcu *new;
-> +	u8 __rcu *old;
-> +	u8 weight =3D 0;
-> +
-> +	node_attr =3D container_of(attr, struct iw_node_attr, kobj_attr);
-> +	if (count =3D=3D 0 || sysfs_streq(buf, ""))
-> +		weight =3D 0;
-> +	else if (kstrtou8(buf, 0, &weight))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * The default weight is 1 (for now), when the kernel-internal
-> +	 * default weight array is implemented, this should be updated to
-> +	 * collect the system-default weight of the node if the user passes 0.
-> +	 */
-> +	if (!weight)
-> +		weight =3D 1;
-
-From functionality point of view, it's OK to set "weight =3D 1" here now.
-But when we add system default weight table in the future, we need to
-use "weight =3D 0".  Otherwise, we cannot distinguish whether the default
-value have been customized via sysfs.  So, I suggest to use that rule.
-
-> +
-> +	/* We only need to allocate up to the number of possible nodes */
-
-This comment appears not necessary.
-
-> +	new =3D kmalloc(nr_node_ids, GFP_KERNEL);
-> +	if (!new)
-> +		return -ENOMEM;
-> +
-> +	mutex_lock(&iw_table_lock);
-> +	old =3D rcu_dereference_protected(iw_table,
-> +					lockdep_is_held(&iw_table_lock));
-> +	if (old)
-> +		memcpy(new, old, nr_node_ids);
-> +	else
-> +		memset(new, 1, nr_node_ids);
-
-With similar reason as above ("From functionality..."), I suggest to set
-"0" here.
-
-> +	new[node_attr->nid] =3D weight;
-> +	rcu_assign_pointer(iw_table, new);
-> +	mutex_unlock(&iw_table_lock);
-> +	synchronize_rcu();
-> +	kfree(old);
-> +	return count;
-> +}
-> +
-> +static struct iw_node_attr *node_attrs[MAX_NUMNODES];
-
-node_attrs[] can be allocated dynamically too.  Just a suggestion.
-
-> +
-> +static void sysfs_wi_node_release(struct iw_node_attr *node_attr,
-> +				  struct kobject *parent)
-> +{
-> +	if (!node_attr)
-> +		return;
-> +	sysfs_remove_file(parent, &node_attr->kobj_attr.attr);
-> +	kfree(node_attr->kobj_attr.attr.name);
-> +	kfree(node_attr);
-> +}
-> +
-> +static void sysfs_wi_release(struct kobject *wi_kobj)
-> +{
-> +	int i;
-> +
-> +	for (i =3D 0; i < MAX_NUMNODES; i++)
-
-Nitpick, nr_node_ids should be OK here.
-
-> +		sysfs_wi_node_release(node_attrs[i], wi_kobj);
-> +	kobject_put(wi_kobj);
-> +}
-> +
-> +static const struct kobj_type wi_ktype =3D {
-> +	.sysfs_ops =3D &kobj_sysfs_ops,
-> +	.release =3D sysfs_wi_release,
-> +};
-> +
-> +static int add_weight_node(int nid, struct kobject *wi_kobj)
-> +{
-> +	struct iw_node_attr *node_attr;
-> +	char *name;
-> +
-> +	node_attr =3D kzalloc(sizeof(*node_attr), GFP_KERNEL);
-> +	if (!node_attr)
-> +		return -ENOMEM;
-> +
-> +	name =3D kasprintf(GFP_KERNEL, "node%d", nid);
-> +	if (!name) {
-> +		kfree(node_attr);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	sysfs_attr_init(&node_attr->kobj_attr.attr);
-> +	node_attr->kobj_attr.attr.name =3D name;
-> +	node_attr->kobj_attr.attr.mode =3D 0644;
-> +	node_attr->kobj_attr.show =3D node_show;
-> +	node_attr->kobj_attr.store =3D node_store;
-> +	node_attr->nid =3D nid;
-> +
-> +	if (sysfs_create_file(wi_kobj, &node_attr->kobj_attr.attr)) {
-> +		kfree(node_attr->kobj_attr.attr.name);
-> +		kfree(node_attr);
-> +		pr_err("failed to add attribute to weighted_interleave\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	node_attrs[nid] =3D node_attr;
-> +	return 0;
-> +}
-> +
-> +static int add_weighted_interleave_group(struct kobject *root_kobj)
-> +{
-> +	struct kobject *wi_kobj;
-> +	int nid, err;
-> +
-> +	wi_kobj =3D kzalloc(sizeof(struct kobject), GFP_KERNEL);
-> +	if (!wi_kobj)
-> +		return -ENOMEM;
-> +
-> +	err =3D kobject_init_and_add(wi_kobj, &wi_ktype, root_kobj,
-> +				   "weighted_interleave");
-> +	if (err) {
-> +		kfree(wi_kobj);
-> +		return err;
-> +	}
-> +
-> +	memset(node_attrs, 0, sizeof(node_attrs));
-> +	for_each_node_state(nid, N_POSSIBLE) {
-> +		err =3D add_weight_node(nid, wi_kobj);
-> +		if (err) {
-> +			pr_err("failed to add sysfs [node%d]\n", nid);
-> +			break;
-> +		}
-> +	}
-> +	if (err)
-> +		kobject_put(wi_kobj);
-> +	return 0;
-> +}
-> +
-> +static void mempolicy_kobj_release(struct kobject *kobj)
-> +{
-> +	u8 __rcu *old;
-> +
-> +	mutex_lock(&iw_table_lock);
-> +	old =3D rcu_dereference_protected(iw_table,
-> +					lockdep_is_held(&iw_table_lock));
-> +	rcu_assign_pointer(iw_table, NULL);
-> +	mutex_unlock(&iw_table_lock);
-> +	synchronize_rcu();
-> +	/* Never free the default table, it's always in use */
-
-Obsolete comment?
-
-> +	kfree(old);
-
-It appears unnecessary to free iw_table in error path.  But this isn't a
-big deal because error path will almost never be executed in practice.
-
-> +	kfree(kobj);
-> +}
-> +
-> +static const struct kobj_type mempolicy_ktype =3D {
-> +	.release =3D mempolicy_kobj_release
-> +};
-> +
-> +static struct kobject *mempolicy_kobj;
-> +static int __init mempolicy_sysfs_init(void)
-> +{
-> +	int err;
-> +	struct kobject *mempolicy_kobj;
-
-This overrides the global "mempolicy_kobj" defined before function.  But
-I don't think we need the global definition.
-
-> +
-> +	/* A NULL iw_table is interpreted by interleave logic as "all 1s" */
-
-As I suggested above, it will be "all 0s", that is, use default weight.
-
-> +	iw_table =3D NULL;
-
-The default value is NULL already, it appears unnecessary to do this.
-
-> +	mempolicy_kobj =3D kzalloc(sizeof(*mempolicy_kobj), GFP_KERNEL);
-> +	if (!mempolicy_kobj) {
-> +		pr_err("failed to add mempolicy kobject to the system\n");
-> +		return -ENOMEM;
-> +	}
-> +	err =3D kobject_init_and_add(mempolicy_kobj, &mempolicy_ktype, mm_kobj,
-> +				   "mempolicy");
-> +	if (err) {
-> +		kfree(mempolicy_kobj);
-> +		return err;
-> +	}
-> +
-> +	err =3D add_weighted_interleave_group(mempolicy_kobj);
-> +
-> +	if (err) {
-> +		kobject_put(mempolicy_kobj);
-> +		return err;
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static void __exit mempolicy_exit(void)
-> +{
-> +	if (mempolicy_kobj)
-> +		kobject_put(mempolicy_kobj);
-> +}
-> +
-> +#else
-> +static int __init mempolicy_sysfs_init(void)
-> +{
-> +	/* A NULL iw_table is interpreted by interleave logic as "all 1s" */
-> +	iw_table =3D NULL;
-> +	return 0;
-> +}
-> +
-> +static void __exit mempolicy_exit(void) { }
-> +#endif /* CONFIG_SYSFS */
-> +late_initcall(mempolicy_sysfs_init);
-> +module_exit(mempolicy_exit);
-
-mempolicy.c will not be compiled as module, so we don't need
-module_exit().
-
---
-Best Regards,
-Huang, Ying
 
