@@ -1,164 +1,132 @@
-Return-Path: <linux-kernel+bounces-33837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E5B836F3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:12:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93943836F59
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:13:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B60C2285AEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:12:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5F391C26FD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:13:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA5B58AD4;
-	Mon, 22 Jan 2024 17:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FA95A7A2;
+	Mon, 22 Jan 2024 17:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BfY0v7rd"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="LjMw9/h/"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9581059B69
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74EE75A78A
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945042; cv=none; b=V2s5J7iVHtWTJHuuCcbdLFo87RODfR7NZGh6Z8i/02vMqYSaxPl4XJRjje6k3MzVCHT+/Z40YJ+eiCi9NLTFMtT7wZgZxkrhFbjheWQvIGga4IVwscWSfyUM1J9xx/CArPfbisnMX5neP0ld6m1tEiQvFdy0r4w5Arz17foXQyA=
+	t=1705945092; cv=none; b=KD/ZbwfwFz+bJiR5CHCyRrk/YA52gPfPdzgYTLMJCPSEW0e7O6gj+bNyigACzFLkS1PwfNUA1IU1w2YGyBZ51kpp0/qErdTdE/9j67VOxuAXge7rBIKCXHk6Em4dfqMdD7v/Lwg0zIpnrTOboJ4GcevNfY3VogBTSNi58gHrpII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945042; c=relaxed/simple;
-	bh=m8kPm/j1LsdrYXYN+YQDJ7r2rWymD6BOjcIeRkuQtHQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=cMyZCcKfnHiKjkY+Eqa3a8Nkzqz+7cz7Z+5iQPVX/h916gxGvkTLJXHjfyIyjBRs1Cmrt56YfukiVTRNR6/XnZSDH1fkFG6xja5W6O4lXT/uV1/0Qqs0X6mu3fdffDVg3cUOwgvLmDkutV5Xv/TbmLj53dAZxHR+zeyvAmurSzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BfY0v7rd; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ccae380df2so33438761fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:37:20 -0800 (PST)
+	s=arc-20240116; t=1705945092; c=relaxed/simple;
+	bh=ORjgQoCGX6sY9TNPJWaMAKB5cO6XOlCarSbw3Ewmkno=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u/IKHa39Pb2OZ7ikqwDS0dEd7tAHPeecXkAhusJDopLNjP8oBjIDnGRVaaM3VShHchCXGRfQvIFH6fn35tTVscTMDYPdBhKjCdASbCFZcmZypQWB8FeqDo2wq7DxIZMgFDcVIGqev1o1NUNqfJWEWuCUS9Y/hg65Ccb0DWn4VE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=LjMw9/h/; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55c1ac8d2f2so1825606a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:38:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1705945038; x=1706549838; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=s9fIVUDS4JPjZqnrZBBkM7zrxIcZN1SBne4vcNi0x/g=;
-        b=BfY0v7rdDpiZmmLYYWoDuF0YGEp4K60GdHWqajby71boVGC+Cx4MCVWe2LEGjUDLSF
-         W3PgujIF3cQnKaeevPdoqwDC4p6jFFYyZC89Tcpww66tRVUTjpmO19rM2IVK4h9YavVy
-         9mbH4cJuneSFhXQkUvwKzqhmvxCqSEmMIQKFGPsvDMxGvVVTPzJrdeEn6xME3pz3EIFF
-         XbobTiM2JA5pM8Bov8H4Bd+3voY0WLU95PnjM5MZmHUxd5ZwsYQxSJVmgnb5HCsSfxYt
-         pEbW56jgInd/J19p/bpeQ9bRZEezjH6CP2j93CvjnuNANu4L4357o86RMqe23ct+Si3A
-         rf1w==
+        d=linux-foundation.org; s=google; t=1705945088; x=1706549888; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bPMaTABmuCocd7Tl83q+z2HLFXNalK+rLT2nyykRvN4=;
+        b=LjMw9/h/91S/3sbuO0uxQVTEnquNrIWAuMUjZB2ZPsKBBerKdPk4XH/+VtixmmPUeU
+         /iOWSzmPzNiT9gLChmSrpSfcYPMv9enTvvLa+cAAdmh2z7w8PD6ULWl9GOZhXQHfd0uK
+         N8O+oNO9J8S8IURju3PR1Z7cYEWXS3IJaCoko=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705945038; x=1706549838;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s9fIVUDS4JPjZqnrZBBkM7zrxIcZN1SBne4vcNi0x/g=;
-        b=J2m3jjChfkiHC7ShytuZ1Ap+05x6aaEy9YqaSf9un3hKr82+TRVNbsJk+OoZ+V16en
-         SL9D7+M/N/NUREwzzqkf9GQ47AisSer+QgZas5LkyJauxaui3r8D1vp+rWj6ny7URdZP
-         I52IbUxXzbCLFwZmQzE70pj7vdqHYSpoHiylGrDzXmOxqHGSd1F8v8IzaogWajZEZqHI
-         /t7Ck9cbEfg8qCxE630jvf5/vZ+nKQWZMOZubB83tkcvP6ToQEZKSJ8QJPYh2BJJRfKm
-         gUuxQ9FyzB/lUQKM4jLdgPR7cuvISw8YslzN3K+NKVioW0y6HPpFoTbwakoiukBp6znb
-         9CoQ==
-X-Gm-Message-State: AOJu0Yz9tej+0uTiXqSEXTrkjlf52bJvs5ECSn3VMQv19uI8U/MkNhTc
-	xLgHErwKDGNFMClVlW6EXSuj9MWZbESWtqHvxfqUwfUPFXmIbakK6jZ1167Shuo=
-X-Google-Smtp-Source: AGHT+IGtMtcqWkvVLEoaIeMoHtV2CsA0V+GTi7mnCKwegjzg2YjeUcTa13uMM6pmGiJG+dRvm4j+ag==
-X-Received: by 2002:a2e:a4a7:0:b0:2cc:ceb2:372a with SMTP id g7-20020a2ea4a7000000b002ccceb2372amr1541040ljm.96.1705945038673;
-        Mon, 22 Jan 2024 09:37:18 -0800 (PST)
-Received: from ?IPv6:2804:30c:974:ac00:1b02:e2fd:23be:79bc? ([2804:30c:974:ac00:1b02:e2fd:23be:79bc])
-        by smtp.gmail.com with ESMTPSA id j26-20020a056e02221a00b00361a166564csm3015628ilf.4.2024.01.22.09.37.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 09:37:18 -0800 (PST)
-Message-ID: <dfcf46def7a4b27e30bed0e832fbf24fd7b36310.camel@suse.com>
-Subject: Re: [PATCH v6 1/3] kselftests: lib.mk: Add TEST_GEN_MODS_DIR
- variable
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: Shuah Khan <skhan@linuxfoundation.org>, Shuah Khan <shuah@kernel.org>, 
- Jonathan Corbet <corbet@lwn.net>, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Christian Borntraeger
- <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Josh
- Poimboeuf <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>, Miroslav
- Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, Joe Lawrence
- <joe.lawrence@redhat.com>
-Cc: linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
-	live-patching@vger.kernel.org
-Date: Mon, 22 Jan 2024 14:37:09 -0300
-In-Reply-To: <5aceb855-2862-4d53-b27b-50e2956e099b@linuxfoundation.org>
-References: <20240112-send-lp-kselftests-v6-0-79f3e9a46717@suse.com>
-	 <20240112-send-lp-kselftests-v6-1-79f3e9a46717@suse.com>
-	 <5aceb855-2862-4d53-b27b-50e2956e099b@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        d=1e100.net; s=20230601; t=1705945088; x=1706549888;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bPMaTABmuCocd7Tl83q+z2HLFXNalK+rLT2nyykRvN4=;
+        b=XMK2bK/w3DSYA5HUiRbGjtiGpwBICS9WccbmLK9EdqoSrrMZynO2iZ57mr/sA548Pb
+         cEa7th1hS+WE20Ncnlh9knu5JsOjuVtprEoDvI8BwKmietyvT3x5oro+2fWueD6o4iF0
+         VKMHLb42GV+M+J0b3Nw1TVJF+OYKT7VWA/3Qp4CP8JZfJcjFgxmHl6jFtkDqkneLDc89
+         QYlEBVR1FHha0rP3Is+4BNm0Np2eqsgpT45BUI7/1Wa1uvchzAQlTxzZdhmHBIhgP9/C
+         GbGwCwXsSbjuwkksiIHZwJkP8ymhgUzVp+AmBkCR685dTT1kWW1tdPGwW43Va0U0JnXs
+         hHIA==
+X-Gm-Message-State: AOJu0YwPY57fZ6p9LSJ6Ucb281N5UBMp15dX5VMkqArQhjbZtnlwv5rn
+	2JSNcGvkfeqWJ/ru0QJYr1rES1LHtQ4qJ3OkvJHD+sromZi+FA2a4NE4MsjojaXO+gXHi7+48ny
+	5jE3jwA==
+X-Google-Smtp-Source: AGHT+IE7OTAYAnfdFWTZZXMFPRs3a4E8LOpe+dKpYjUf7TctxxVVz9dO6jg6c+JaX15NMvDmROmU3g==
+X-Received: by 2002:a17:906:8a55:b0:a2a:2498:93c5 with SMTP id gx21-20020a1709068a5500b00a2a249893c5mr2129350ejc.73.1705945088544;
+        Mon, 22 Jan 2024 09:38:08 -0800 (PST)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id vk6-20020a170907cbc600b00a2ea02e4162sm7223859ejc.214.2024.01.22.09.38.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 09:38:07 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55c1ac8d2f2so1825562a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:38:07 -0800 (PST)
+X-Received: by 2002:a05:6402:313b:b0:55b:fda0:4f07 with SMTP id
+ dd27-20020a056402313b00b0055bfda04f07mr121004edb.9.1705945086903; Mon, 22 Jan
+ 2024 09:38:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240117143548.595884070@goodmis.org> <20240117143810.531966508@goodmis.org>
+ <CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
+ <20240122100630.6a400dd3@gandalf.local.home> <CAMuHMdXD0weO4oku8g2du6fj-EzxGaF+0i=zrPScSXwphFAZgg@mail.gmail.com>
+ <20240122114743.7e46b7cb@gandalf.local.home>
+In-Reply-To: <20240122114743.7e46b7cb@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 22 Jan 2024 09:37:49 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
+Message-ID: <CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
+Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files and
+ directories all be the same
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook <keescook@chromium.org>, 
+	linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher <ajay.kaher@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 2024-01-22 at 10:15 -0700, Shuah Khan wrote:
-> On 1/12/24 10:43, Marcos Paulo de Souza wrote:
-> > Add TEST_GEN_MODS_DIR variable for kselftests. It can point to
-> > a directory containing kernel modules that will be used by
-> > selftest scripts.
-> >=20
-> > The modules are built as external modules for the running kernel.
-> > As a result they are always binary compatible and the same tests
-> > can be used for older or newer kernels.
-> >=20
-> > The build requires "kernel-devel" package to be installed.
-> > For example, in the upstream sources, the rpm devel package
-> > is produced by "make rpm-pkg"
-> >=20
-> > The modules can be built independently by
-> >=20
-> > =C2=A0=C2=A0 make -C tools/testing/selftests/livepatch/
-> >=20
-> > or they will be automatically built before running the tests via
-> >=20
-> > =C2=A0=C2=A0 make -C tools/testing/selftests/livepatch/ run_tests
-> >=20
-> > Note that they are _not_ built when running the standalone
-> > tests by calling, for example, ./test-state.sh.
-> >=20
-> > Along with TEST_GEN_MODS_DIR, it was necessary to create a new
-> > install
-> > rule. INSTALL_MODS_RULE is needed because INSTALL_SINGLE_RULE would
-> > copy the entire TEST_GEN_MODS_DIR directory to the destination,
-> > even
-> > the files created by Kbuild to compile the modules. The new install
-> > rule copies only the .ko files, as we would expect the gen_tar to
-> > work.
-> >=20
-> > Reviewed-by: Joe Lawrence <joe.lawrence@redhat.com>
-> > Reviewed-by: Petr Mladek <pmladek@suse.com>
-> > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> > ---
-> > =C2=A0 Documentation/dev-tools/kselftest.rst |=C2=A0 4 ++++
-> > =C2=A0 tools/testing/selftests/lib.mk=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 | 26 +++++++++++++++++++++-
-> > ----
->=20
->=20
-> Hi Marcos,
->=20
-> I would like the doc patch and lib.mk patch separate. If lib.mk needs
-> changes
-> we don't have to touch the doc patch.
+On Mon, 22 Jan 2024 at 08:46, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> I can add this patch to make sure directory inodes are unique, as it causes
+> a regression in find, but keep the file inodes the same.
 
-Hi Shuah,
-on patch 2/3 you also said that you would like to have the
-documentation changes split in the future, and that you picked the
-changes into a testing branch. Does it also applies to this patch?
+Yeah, limiting it to directories will at least somewhat help the
+address leaking.
 
-Do I need to resend the three patches and separate the documentation
-part into a new one, or can I apply this rationale to future changes to
-lib.mk? Sorry, I'm confused.
+However, I also note that you never did the "set i_nlink to one"
+trick, which is the traditional thing to do to tell 'find' that it
+cannot do its directory optimization thing.
 
-Thanks in advance,
-  Marcos
+I'm not sure that the nlink trick disables this part of the find
+sanity checks, but the *first* thing to check would be something like
+this
 
->=20
-> thanks,
-> -- Shuah
+  --- a/fs/tracefs/inode.c
+  +++ b/fs/tracefs/inode.c
+  @@ -182,6 +182,7 @@ static int tracefs_getattr(struct mnt_idmap *idmap,
 
+        set_tracefs_inode_owner(inode);
+        generic_fillattr(idmap, request_mask, inode, stat);
+  +     stat->nlink = 1;
+        return 0;
+   }
+
+because it might just fix the issue.
+
+Having nlink == 1 is how non-unix filesystems (like FAT etc) indicate
+that you can't try to count directory entries to optimize traversal.
+
+And it is possible that that is where the whole find thing comes from,
+but who knows, it could be a generic loop detector that runs
+independently of the usual link detection.
+
+               Linus
 
