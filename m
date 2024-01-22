@@ -1,400 +1,461 @@
-Return-Path: <linux-kernel+bounces-32539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D0B4835CE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:42:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3E2B835CE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:43:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C893F1F22489
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:42:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D89B51C2142A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:43:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D0F36120;
-	Mon, 22 Jan 2024 08:42:32 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88EE9347A1;
+	Mon, 22 Jan 2024 08:42:55 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898D51F5F5;
-	Mon, 22 Jan 2024 08:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108FE3839A
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705912952; cv=none; b=kzbkuZ3Lc+1th25512mytxEyHFWDHqTX2DI7VGMRZeW+ReV48TSV2/SedHz28Yl9UCiuHtiCRuw155xEFNTE7BPipfO8shscmis7Texks3Oe0qaeWk+HGyPcda/Z+cOz15+op4vgP9IzLwYPgUWkB9oePOyG+kfCvUY7PTw0qpI=
+	t=1705912974; cv=none; b=bNnUFSJ5y78cDkJTjfn+kxm9hdQuKBAkHdiVQKwuws8mT2XrQzVYBVFQOqUUYtNN5mxvmGMBnBwo7apOVEKv4fY9CgW+Bo3TIksZ5OAz0IXZS9DtKDC+78Pz32yrVEkFaWVU14OGxMt9P7BaNl54DowF/AYmDyygoeQkto+Kq5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705912952; c=relaxed/simple;
-	bh=mBTES/bCEwoivf/jzipdBvln5akYDmEnjyi/uVXSK/c=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RvOeWLtKuOUWEaBAoV+F3E8sKGlKfToipriais6LZBDbs5gZmEAr15GMM/9jYReebiyRUIX1f3dUzdNzTZ8eAvao0jUpIoQ73Nh5Q/O1L80ANDCnGD4RXK3qkoAIzek7nNHm9/pFDOrZOJYuFG85vktA+1LebvXHV98I0T5X3AM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TJNwR5CgHzvVGH;
-	Mon, 22 Jan 2024 16:40:55 +0800 (CST)
-Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id B01AC1404FC;
-	Mon, 22 Jan 2024 16:42:25 +0800 (CST)
-Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
- (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 22 Jan
- 2024 16:42:24 +0800
-Date: Mon, 22 Jan 2024 16:42:16 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-CC: Changbin Du <changbin.du@huawei.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
-	<jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Ian Rogers
-	<irogers@google.com>, <linux-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, Andi Kleen <ak@linux.intel.com>, Thomas
- Richter <tmricht@linux.ibm.com>, <changbin.du@gmail.com>, Peter Zijlstra
-	<peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Ingo
- Molnar <mingo@redhat.com>
-Subject: Re: [PATCH v4 2/5] perf: util: use capstone disasm engine to show
- assembly instructions
-Message-ID: <20240122084216.rhdhco67mvj47ak7@M910t>
-References: <20240119104856.3617986-1-changbin.du@huawei.com>
- <20240119104856.3617986-3-changbin.du@huawei.com>
- <e3463435-b879-4d72-9cab-c4bf951b9084@intel.com>
- <20240120091328.wmk27ktpps2ky5cl@M910t>
- <11a40f8d-baaf-48c8-b921-fbf764722475@intel.com>
+	s=arc-20240116; t=1705912974; c=relaxed/simple;
+	bh=53AcOeGD0p7nbe5TjajfohEKjEBXxQ84zejXF9ZzjXQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bi3EXV10iwz5Kw7BxS5+9BQblZf3u0fUU7TgCS1ee+0chAmyOXToPbvu1fOlp6nWC4JZfoesfMTWBwNvVYQzCsyatUfKPL/sNob4jrjAjxqhiWf4btEPSYvLKJSiXTJX/W/QZq7RBc2chqngudtGlhxlyDae7IM5tw3ABCE3x5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5ff7a8b5e61so22679667b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:42:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705912971; x=1706517771;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wzva1Y3egJkJwaa7xDcetdIkG2yn3nRK1Yg5xorbkj4=;
+        b=ho9gRlmDwOjJia8E4skOcI6PyKeGe0zh76SsqmdkgAEV+y5FAfpdhCFRLnz3Q6/+ef
+         5ze+DR5MwKNP4kd4QFVAsAuacgwMsBzYekaCvgfsj2nm0Zi9yqB69N3rcDT+kPAUQez3
+         9eyfaXkn4Jwzw4lrhCneP4JYngXrdQnRi75rZ3JKubQjstWAWr4xbrQU/zBc5X1x0W/F
+         6eYMWijuEBtOwSH2Aq94yN+T4VboVeewX3+tG0kOiz950McYeYq3+0cX7Gd+21drnvww
+         HiorvNlEjL+kNmmawJhzWsMGLsxN9VL4HQ5f/+zUR+5jjMw6aBvPN7CIRixBSAY6mhRX
+         O/lA==
+X-Gm-Message-State: AOJu0YxP36uDYDKekxXOpCn+IoX3PsPpIJHtORUKrLDykoWsqvjbRbji
+	M5wdXovprCoNjpJIMHgTpEHxHyVDwLqI6tBezwIX0vebEs+p0zq3nYek+3+fNq0=
+X-Google-Smtp-Source: AGHT+IFmHSyd6g56UWErubGlZXiXo6Aeavvban2BS2cQUewD/KuVfqrbbpv9CA774VIT/4ThKXSk2g==
+X-Received: by 2002:a81:83ce:0:b0:5ff:9428:a8af with SMTP id t197-20020a8183ce000000b005ff9428a8afmr3436199ywf.66.1705912970635;
+        Mon, 22 Jan 2024 00:42:50 -0800 (PST)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id s9-20020a819b09000000b005ff81bbfd66sm3370009ywg.136.2024.01.22.00.42.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 00:42:50 -0800 (PST)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-600094c5703so3039407b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:42:50 -0800 (PST)
+X-Received: by 2002:a81:c24c:0:b0:5ff:a51a:8db3 with SMTP id
+ t12-20020a81c24c000000b005ffa51a8db3mr3037461ywg.26.1705912970152; Mon, 22
+ Jan 2024 00:42:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <11a40f8d-baaf-48c8-b921-fbf764722475@intel.com>
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100002.china.huawei.com (7.221.188.184)
+References: <Za4nzDtwGVA+U1OL@rli9-mobl>
+In-Reply-To: <Za4nzDtwGVA+U1OL@rli9-mobl>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 22 Jan 2024 09:42:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWvX-sUaXc=WMOU_yCQWwkTkCb3i+swHKpHQAz1BKUOJg@mail.gmail.com>
+Message-ID: <CAMuHMdWvX-sUaXc=WMOU_yCQWwkTkCb3i+swHKpHQAz1BKUOJg@mail.gmail.com>
+Subject: Re: sound/ac97/bus.c:192: warning: Function parameter or member 'drv'
+ not described in 'snd_ac97_codec_driver_register'
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 10:24:21AM +0200, Adrian Hunter wrote:
-> On 20/01/24 11:13, Changbin Du wrote:
-> > On Fri, Jan 19, 2024 at 08:39:19PM +0200, Adrian Hunter wrote:
-> >> On 19/01/24 12:48, Changbin Du wrote:
-> >>> Currently, the instructions of samples are shown as raw hex strings
-> >>> which are hard to read. x86 has a special option '--xed' to disassemble
-> >>> the hex string via intel XED tool.
-> >>>
-> >>> Here we use capstone as our disassembler engine to give more friendly
-> >>> instructions. We select libcapstone because capstone can provide more
-> >>> insn details. Perf will fallback to raw instructions if libcapstone is
-> >>> not available.
-> >>>
-> >>> The advantages compared to XED tool:
-> >>>  * Support arm, arm64, x86-32, x86_64 (more could be supported),
-> >>>    xed only for x86_64.
-> >>>  * Immediate address operands are shown as symbol+offs.
-> >>>
-> >>> Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> >>> ---
-> >>>  tools/perf/builtin-script.c  |   8 +--
-> >>>  tools/perf/util/Build        |   1 +
-> >>>  tools/perf/util/print_insn.c | 122 +++++++++++++++++++++++++++++++++++
-> >>>  tools/perf/util/print_insn.h |  14 ++++
-> >>>  4 files changed, 140 insertions(+), 5 deletions(-)
-> >>>  create mode 100644 tools/perf/util/print_insn.c
-> >>>  create mode 100644 tools/perf/util/print_insn.h
-> >>>
-> >>> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> >>> index b1f57401ff23..4817a37f16e2 100644
-> >>> --- a/tools/perf/builtin-script.c
-> >>> +++ b/tools/perf/builtin-script.c
-> >>> @@ -34,6 +34,7 @@
-> >>>  #include "util/event.h"
-> >>>  #include "ui/ui.h"
-> >>>  #include "print_binary.h"
-> >>> +#include "print_insn.h"
-> >>>  #include "archinsn.h"
-> >>>  #include <linux/bitmap.h>
-> >>>  #include <linux/kernel.h>
-> >>> @@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
-> >>>  	if (PRINT_FIELD(INSNLEN))
-> >>>  		printed += fprintf(fp, " ilen: %d", sample->insn_len);
-> >>>  	if (PRINT_FIELD(INSN) && sample->insn_len) {
-> >>> -		int i;
-> >>> -
-> >>> -		printed += fprintf(fp, " insn:");
-> >>> -		for (i = 0; i < sample->insn_len; i++)
-> >>> -			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
-> >>> +		printed += fprintf(fp, " insn: ");
-> >>
-> >> "insn:" seems unnecessary.  Also xed prints 2 tabs, which
-> >> helps line up the output.  Perhaps 1 tab and 2 spaces is
-> >> enough.
-> >>
-> > The "insn:" is used by xed. So it can not be removed if we preserve xed
-> > function.
-> 
-> I got mixed up - it is patch 3 that the comment is meant for.
-> 
-> > 
-> > For 'insn' field, I keep the original output format.
-> > For 'disasm' field, we can line up the output. I changed to 2 tabs and removed
-> > 'insn:'.
-> 
-> That is better, thanks!
-> 
-> > 
-> >>> +		printed += sample__fprintf_insn_raw(sample, fp);
-> >>>  	}
-> >>>  	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
-> >>>  		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
-> >>> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> >>> index 988473bf907a..c33aab53d8dd 100644
-> >>> --- a/tools/perf/util/Build
-> >>> +++ b/tools/perf/util/Build
-> >>> @@ -32,6 +32,7 @@ perf-y += perf_regs.o
-> >>>  perf-y += perf-regs-arch/
-> >>>  perf-y += path.o
-> >>>  perf-y += print_binary.o
-> >>> +perf-y += print_insn.o
-> >>>  perf-y += rlimit.o
-> >>>  perf-y += argv_split.o
-> >>>  perf-y += rbtree.o
-> >>> diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
-> >>> new file mode 100644
-> >>> index 000000000000..162be4856f79
-> >>> --- /dev/null
-> >>> +++ b/tools/perf/util/print_insn.c
-> >>> @@ -0,0 +1,122 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0
-> >>> +/*
-> >>> + * Instruction binary disassembler based on capstone.
-> >>> + *
-> >>> + * Author(s): Changbin Du <changbin.du@huawei.com>
-> >>> + */
-> >>> +#include "print_insn.h"
-> >>
-> >> Please put with the other non-system includes
-> >>
-> > done.
-> > 
-> >>> +#include <stdlib.h>
-> >>> +#include <string.h>
-> >>> +#include <stdbool.h>
-> >>> +#include "util/debug.h"
-> >>
-> >> util/ not needed
-> >>
-> > done.
-> > 
-> >>> +#include "util/symbol.h"
-> >>
-> >> util/ not needed
-> >>
-> > done.
-> > 
-> >>> +#include "machine.h"
-> >>> +
-> >>> +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
-> >>> +{
-> >>> +	int printed = 0;
-> >>> +
-> >>> +	for (int i = 0; i < sample->insn_len; i++)
-> >>> +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
-> >>
-> >> Why change this to put a space on the end?
-> >>
-> > Removed the tailing space.
-> > 
-> >>> +	return printed;
-> >>> +}
-> >>> +
-> >>> +#ifdef HAVE_LIBCAPSTONE_SUPPORT
-> >>> +#include <capstone/capstone.h>
-> >>> +
-> >>> +static int capstone_init(struct machine *machine, csh *cs_handle)
-> >>> +{
-> >>> +	cs_arch arch;
-> >>> +	cs_mode mode;
-> >>> +
-> >>> +	if (machine__is(machine, "x86_64")) {
-> >>> +		arch = CS_ARCH_X86;
-> >>> +		mode = CS_MODE_64;
-> >>> +	} else if (machine__normalized_is(machine, "x86")) {
-> >>> +		arch = CS_ARCH_X86;
-> >>> +		mode = CS_MODE_32;
-> >>> +	} else if (machine__normalized_is(machine, "arm64")) {
-> >>> +		arch = CS_ARCH_ARM64;
-> >>> +		mode = CS_MODE_ARM;
-> >>> +	} else if (machine__normalized_is(machine, "arm")) {
-> >>> +		arch = CS_ARCH_ARM;
-> >>> +		mode = CS_MODE_ARM + CS_MODE_V8;
-> >>> +	} else if (machine__normalized_is(machine, "s390")) {
-> >>> +		arch = CS_ARCH_SYSZ;
-> >>> +		mode = CS_MODE_BIG_ENDIAN;
-> >>> +	} else {
-> >>> +		return -1;
-> >>> +	}
-> >>> +
-> >>> +	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
-> >>> +		pr_warning_once("cs_open failed\n");
-> >>> +		return -1;
-> >>> +	}
-> >>> +
-> >>> +	cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-> >>
-> >> That's only needed for x86 isn't it
-> >>
-> > Moved into below branch.
-> > 
-> >>> +	if (machine__normalized_is(machine, "x86"))
-> >>> +		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
-> >>
-> >> Why? Could use a comment.
-> >>
-> > 		/*
-> > 		 * Resolving address oprands to symbols is implemented
-> 
-> oprands -> operands
-Fixed, thanks!
+Hi Kernel Test Robot,
 
-> 
-> > 		 * on x86 by investigating instruction details.
-> > 		 */
-> > 
-> >>> +
-> >>> +	return 0;
-> >>> +}
-> >>> +
-> >>> +static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
-> >>> +			     cs_insn *insn, FILE *fp)
-> >>> +{
-> >>> +	struct addr_location al;
-> >>> +	size_t printed = 0;
-> >>> +
-> >>> +	if (insn->detail && insn->detail->x86.op_count == 1) {
-> >>> +		cs_x86_op *op = &insn->detail->x86.operands[0];
-> >>> +
-> >>> +		addr_location__init(&al);
-> >>
-> >> Missing addr_location__exit()
-> >>
-> > Fixed.
-> > 
-> >>> +
-> >>> +		if (op->type == X86_OP_IMM &&
-> >>> +		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
-> >>> +			printed += fprintf(fp, "%s ", insn[0].mnemonic);
-> >>> +			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
-> >>> +			return printed;
-> >>> +		}
-> >>> +	}
-> >>> +
-> >>> +	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> >>> +	return printed;
-> >>> +}
-> >>> +
-> >>> +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> >>> +			    struct machine *machine, FILE *fp)
-> >>> +{
-> >>> +	static csh cs_handle;
-> >>
-> >> Why static?
-> >>
-> > Removed. See below.
-> > 
-> >>> +	cs_insn *insn;
-> >>> +	size_t count;
-> >>> +	size_t printed = 0;
-> >>> +	int ret;
-> >>> +
-> >>> +	ret = capstone_init(machine, &cs_handle);
-> >>
-> >> Does this really need to be done every time?
-> >>
-> > Only need to init once exactly. The problem is I cannot find a appropriate
-> > place to do the initiation.
-> > 
-> > I tried to initiate on first call but we still need a global mutex to be
-> > initiated.
-> > 
-> > So finally I fallback to initiate every time. The redundant initiation is
-> > acceptable per my test.
-> 
-> OK, could add a FIXME
+On Mon, Jan 22, 2024 at 9:31=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
+> First bad commit (maybe !=3D root cause):
 >
-I added a TODO instead.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   ac865f00af293d081356bec56eea90815094a60e
+> commit: ea00d95200d02ece71f5814d41b14f2eb16d598b ASoC: Use imply for SND_=
+SOC_ALL_CODECS
+> date:   3 years, 11 months ago
+> :::::: branch date: 16 hours ago
+> :::::: commit date: 3 years, 11 months ago
+> config: x86_64-buildonly-randconfig-003-20231102 (https://download.01.org=
+/0day-ci/archive/20240104/202401042239.2zkHgzki-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20240104/202401042239.2zkHgzki-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/r/202401042239.2zkHgzki-lkp@intel.com/
+>
+> All warnings (new ones prefixed by >>):
+>
+> >> sound/ac97/bus.c:192: warning: Function parameter or member 'drv' not =
+described in 'snd_ac97_codec_driver_register'
+> >> sound/ac97/bus.c:192: warning: Excess function parameter 'dev' descrip=
+tion in 'snd_ac97_codec_driver_register'
+> >> sound/ac97/bus.c:205: warning: Function parameter or member 'drv' not =
+described in 'snd_ac97_codec_driver_unregister'
+> >> sound/ac97/bus.c:205: warning: Excess function parameter 'dev' descrip=
+tion in 'snd_ac97_codec_driver_unregister'
+> >> sound/ac97/bus.c:351: warning: Function parameter or member 'codecs_pd=
+ata' not described in 'snd_ac97_controller_register'
 
-/* TODO: Try to initiate capstone only once but need a proper place. */
+Definitely not introduced by my commit.
+Origin is commit 74426fbff66eea8e ("ALSA: ac97: add an ac97 bus") in v4.15.
 
-> > 
-> >>> +	if (ret < 0) {
-> >>> +		/* fallback */
-> >>> +		return sample__fprintf_insn_raw(sample, fp);
-> >>> +	}
-> >>> +
-> >>> +	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
-> >>> +			  sample->ip, 1, &insn);
-> >>> +	if (count > 0) {
-> >>> +		if (machine__normalized_is(machine, "x86"))
-> >>> +			printed += print_insn_x86(sample, thread, &insn[0], fp);
-> >>> +		else
-> >>> +			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> >>> +		cs_free(insn, count);
-> >>> +	} else {
-> >>> +		printed += fprintf(fp, "illegal instruction");
-> >>> +	}
-> >>> +
-> >>> +	cs_close(&cs_handle);
-> >>> +	return printed;
-> >>> +}
-> >>> +#else
-> >>> +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread __maybe_unused,
-> >>> +			    struct machine *machine __maybe_unused, FILE *fp)
-> >>> +{
-> >>> +	return sample__fprintf_insn_raw(sample, fp);
-> >>> +}
-> >>> +#endif
-> >>> diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
-> >>> new file mode 100644
-> >>> index 000000000000..af8fa5d01fb7
-> >>> --- /dev/null
-> >>> +++ b/tools/perf/util/print_insn.h
-> >>> @@ -0,0 +1,14 @@
-> >>> +/* SPDX-License-Identifier: GPL-2.0 */
-> >>> +#ifndef PERF_PRINT_ISNS_H
-> >>
-> >> Here and elsewhere
-> >>
-> >> ISNS -> INSN
-> >>
-> > fixed.
-> > 
-> >>> +#define PERF_PRINT_ISNS_H
-> >>> +
-> >>> +#include <stddef.h>
-> >>> +#include <stdio.h>
-> >>> +#include "event.h"
-> >>> +#include "util/thread.h"
-> >>
-> >> Instead of including event.h and thread.h, just forward declare:
-> >>
-> >> struct perf_sample;
-> >> struct thread;
-> >> struct machine;
-> >>
-> > Why forward declaration?
-> 
-> That is how it is done in perf tools.  It avoids unnecessary dependency
-> among headers.
-ok, done.
 
-> 
-> > 
-> >>> +
-> >>> +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> >>> +			    struct machine *machine, FILE *fp);
-> >>> +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
-> >>> +
-> >>> +#endif /* PERF_PRINT_ISNS_H */
-> >>
-> > 
-> 
+>
+> Kconfig warnings: (for reference only)
+>    WARNING: unmet direct dependencies detected for REGMAP_SPI
+>    Depends on [n]: SPI [=3Dn]
+>    Selected by [m]:
+>    - SND_SOC_ADAU1781_SPI [=3Dm] && SOUND [=3Dy] && !UML && SND [=3Dm] &&=
+ SND_SOC [=3Dm]
+>    - SND_SOC_ADAU1977_SPI [=3Dm] && SOUND [=3Dy] && !UML && SND [=3Dm] &&=
+ SND_SOC [=3Dm]
+>
+>
+> vim +192 sound/ac97/bus.c
+>
+> 74426fbff66eea Robert Jarzmik 2017-09-02  181
+> 74426fbff66eea Robert Jarzmik 2017-09-02  182  /**
+> 74426fbff66eea Robert Jarzmik 2017-09-02  183   * snd_ac97_codec_driver_r=
+egister - register an AC97 codec driver
+> 74426fbff66eea Robert Jarzmik 2017-09-02  184   * @dev: AC97 driver codec=
+ to register
+> 74426fbff66eea Robert Jarzmik 2017-09-02  185   *
+> 74426fbff66eea Robert Jarzmik 2017-09-02  186   * Register an AC97 codec =
+driver to the ac97 bus driver, aka. the AC97 digital
+> 74426fbff66eea Robert Jarzmik 2017-09-02  187   * controller.
+> 74426fbff66eea Robert Jarzmik 2017-09-02  188   *
+> 74426fbff66eea Robert Jarzmik 2017-09-02  189   * Returns 0 on success or=
+ error code
+> 74426fbff66eea Robert Jarzmik 2017-09-02  190   */
+> 74426fbff66eea Robert Jarzmik 2017-09-02  191  int snd_ac97_codec_driver_=
+register(struct ac97_codec_driver *drv)
+> 74426fbff66eea Robert Jarzmik 2017-09-02 @192  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  193   drv->driver.bus =3D &ac97=
+_bus_type;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  194   return driver_register(&d=
+rv->driver);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  195  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  196  EXPORT_SYMBOL_GPL(snd_ac97=
+_codec_driver_register);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  197
+> 74426fbff66eea Robert Jarzmik 2017-09-02  198  /**
+> 74426fbff66eea Robert Jarzmik 2017-09-02  199   * snd_ac97_codec_driver_u=
+nregister - unregister an AC97 codec driver
+> 74426fbff66eea Robert Jarzmik 2017-09-02  200   * @dev: AC97 codec driver=
+ to unregister
+> 74426fbff66eea Robert Jarzmik 2017-09-02  201   *
+> 74426fbff66eea Robert Jarzmik 2017-09-02  202   * Unregister a previously=
+ registered ac97 codec driver.
+> 74426fbff66eea Robert Jarzmik 2017-09-02  203   */
+> 74426fbff66eea Robert Jarzmik 2017-09-02  204  void snd_ac97_codec_driver=
+_unregister(struct ac97_codec_driver *drv)
+> 74426fbff66eea Robert Jarzmik 2017-09-02 @205  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  206   driver_unregister(&drv->d=
+river);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  207  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  208  EXPORT_SYMBOL_GPL(snd_ac97=
+_codec_driver_unregister);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  209
+> 74426fbff66eea Robert Jarzmik 2017-09-02  210  /**
+> 74426fbff66eea Robert Jarzmik 2017-09-02  211   * snd_ac97_codec_get_plat=
+data - get platform_data
+> 74426fbff66eea Robert Jarzmik 2017-09-02  212   * @adev: the ac97 codec d=
+evice
+> 74426fbff66eea Robert Jarzmik 2017-09-02  213   *
+> 74426fbff66eea Robert Jarzmik 2017-09-02  214   * For legacy platforms, i=
+n order to have platform_data in codec drivers
+> 74426fbff66eea Robert Jarzmik 2017-09-02  215   * available, while ac97 d=
+evice are auto-created upon probe, this retrieves the
+> 74426fbff66eea Robert Jarzmik 2017-09-02  216   * platdata which was setu=
+p on ac97 controller registration.
+> 74426fbff66eea Robert Jarzmik 2017-09-02  217   *
+> 74426fbff66eea Robert Jarzmik 2017-09-02  218   * Returns the platform da=
+ta pointer
+> 74426fbff66eea Robert Jarzmik 2017-09-02  219   */
+> 74426fbff66eea Robert Jarzmik 2017-09-02  220  void *snd_ac97_codec_get_p=
+latdata(const struct ac97_codec_device *adev)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  221  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  222   struct ac97_controller *a=
+c97_ctrl =3D adev->ac97_ctrl;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  223
+> 74426fbff66eea Robert Jarzmik 2017-09-02  224   return ac97_ctrl->codecs_=
+pdata[adev->num];
+> 74426fbff66eea Robert Jarzmik 2017-09-02  225  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  226  EXPORT_SYMBOL_GPL(snd_ac97=
+_codec_get_platdata);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  227
+> 74426fbff66eea Robert Jarzmik 2017-09-02  228  static void ac97_ctrl_code=
+cs_unregister(struct ac97_controller *ac97_ctrl)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  229  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  230   int i;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  231
+> 74426fbff66eea Robert Jarzmik 2017-09-02  232   for (i =3D 0; i < AC97_BU=
+S_MAX_CODECS; i++)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  233           if (ac97_ctrl->co=
+decs[i]) {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  234                   ac97_ctrl=
+->codecs[i]->ac97_ctrl =3D &ac97_unbound_ctrl;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  235                   device_un=
+register(&ac97_ctrl->codecs[i]->dev);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  236           }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  237  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  238
+> 74426fbff66eea Robert Jarzmik 2017-09-02  239  static ssize_t cold_reset_=
+store(struct device *dev,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  240                           s=
+truct device_attribute *attr, const char *buf,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  241                           s=
+ize_t len)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  242  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  243   struct ac97_controller *a=
+c97_ctrl;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  244
+> 74426fbff66eea Robert Jarzmik 2017-09-02  245   mutex_lock(&ac97_controll=
+ers_mutex);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  246   ac97_ctrl =3D to_ac97_con=
+troller(dev);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  247   ac97_ctrl->ops->reset(ac9=
+7_ctrl);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  248   mutex_unlock(&ac97_contro=
+llers_mutex);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  249   return len;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  250  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  251  static DEVICE_ATTR_WO(cold=
+_reset);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  252
+> 74426fbff66eea Robert Jarzmik 2017-09-02  253  static ssize_t warm_reset_=
+store(struct device *dev,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  254                           s=
+truct device_attribute *attr, const char *buf,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  255                           s=
+ize_t len)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  256  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  257   struct ac97_controller *a=
+c97_ctrl;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  258
+> 74426fbff66eea Robert Jarzmik 2017-09-02  259   if (!dev)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  260           return -ENODEV;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  261
+> 74426fbff66eea Robert Jarzmik 2017-09-02  262   mutex_lock(&ac97_controll=
+ers_mutex);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  263   ac97_ctrl =3D to_ac97_con=
+troller(dev);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  264   ac97_ctrl->ops->warm_rese=
+t(ac97_ctrl);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  265   mutex_unlock(&ac97_contro=
+llers_mutex);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  266   return len;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  267  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  268  static DEVICE_ATTR_WO(warm=
+_reset);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  269
+> 74426fbff66eea Robert Jarzmik 2017-09-02  270  static struct attribute *a=
+c97_controller_device_attrs[] =3D {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  271   &dev_attr_cold_reset.attr=
+,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  272   &dev_attr_warm_reset.attr=
+,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  273   NULL
+> 74426fbff66eea Robert Jarzmik 2017-09-02  274  };
+> 74426fbff66eea Robert Jarzmik 2017-09-02  275
+> 74426fbff66eea Robert Jarzmik 2017-09-02  276  static struct attribute_gr=
+oup ac97_adapter_attr_group =3D {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  277   .name   =3D "ac97_operati=
+ons",
+> 74426fbff66eea Robert Jarzmik 2017-09-02  278   .attrs  =3D ac97_controll=
+er_device_attrs,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  279  };
+> 74426fbff66eea Robert Jarzmik 2017-09-02  280
+> 74426fbff66eea Robert Jarzmik 2017-09-02  281  static const struct attrib=
+ute_group *ac97_adapter_groups[] =3D {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  282   &ac97_adapter_attr_group,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  283   NULL,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  284  };
+> 74426fbff66eea Robert Jarzmik 2017-09-02  285
+> 74426fbff66eea Robert Jarzmik 2017-09-02  286  static void ac97_del_adapt=
+er(struct ac97_controller *ac97_ctrl)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  287  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  288   mutex_lock(&ac97_controll=
+ers_mutex);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  289   ac97_ctrl_codecs_unregist=
+er(ac97_ctrl);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  290   list_del(&ac97_ctrl->cont=
+rollers);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  291   mutex_unlock(&ac97_contro=
+llers_mutex);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  292
+> 74426fbff66eea Robert Jarzmik 2017-09-02  293   device_unregister(&ac97_c=
+trl->adap);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  294  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  295
+> 74426fbff66eea Robert Jarzmik 2017-09-02  296  static void ac97_adapter_r=
+elease(struct device *dev)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  297  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  298   struct ac97_controller *a=
+c97_ctrl;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  299
+> 74426fbff66eea Robert Jarzmik 2017-09-02  300   ac97_ctrl =3D to_ac97_con=
+troller(dev);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  301   idr_remove(&ac97_adapter_=
+idr, ac97_ctrl->nr);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  302   dev_dbg(&ac97_ctrl->adap,=
+ "adapter unregistered by %s\n",
+> 74426fbff66eea Robert Jarzmik 2017-09-02  303           dev_name(ac97_ctr=
+l->parent));
+> 74426fbff66eea Robert Jarzmik 2017-09-02  304  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  305
+> 74426fbff66eea Robert Jarzmik 2017-09-02  306  static const struct device=
+_type ac97_adapter_type =3D {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  307   .groups         =3D ac97_=
+adapter_groups,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  308   .release        =3D ac97_=
+adapter_release,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  309  };
+> 74426fbff66eea Robert Jarzmik 2017-09-02  310
+> 74426fbff66eea Robert Jarzmik 2017-09-02  311  static int ac97_add_adapte=
+r(struct ac97_controller *ac97_ctrl)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  312  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  313   int ret;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  314
+> 74426fbff66eea Robert Jarzmik 2017-09-02  315   mutex_lock(&ac97_controll=
+ers_mutex);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  316   ret =3D idr_alloc(&ac97_a=
+dapter_idr, ac97_ctrl, 0, 0, GFP_KERNEL);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  317   ac97_ctrl->nr =3D ret;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  318   if (ret >=3D 0) {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  319           dev_set_name(&ac9=
+7_ctrl->adap, "ac97-%d", ret);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  320           ac97_ctrl->adap.t=
+ype =3D &ac97_adapter_type;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  321           ac97_ctrl->adap.p=
+arent =3D ac97_ctrl->parent;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  322           ret =3D device_re=
+gister(&ac97_ctrl->adap);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  323           if (ret)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  324                   put_devic=
+e(&ac97_ctrl->adap);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  325   }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  326   if (!ret)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  327           list_add(&ac97_ct=
+rl->controllers, &ac97_controllers);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  328   mutex_unlock(&ac97_contro=
+llers_mutex);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  329
+> 74426fbff66eea Robert Jarzmik 2017-09-02  330   if (!ret)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  331           dev_dbg(&ac97_ctr=
+l->adap, "adapter registered by %s\n",
+> 74426fbff66eea Robert Jarzmik 2017-09-02  332                   dev_name(=
+ac97_ctrl->parent));
+> 74426fbff66eea Robert Jarzmik 2017-09-02  333   return ret;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  334  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  335
+> 74426fbff66eea Robert Jarzmik 2017-09-02  336  /**
+> 74426fbff66eea Robert Jarzmik 2017-09-02  337   * snd_ac97_controller_reg=
+ister - register an ac97 controller
+> 74426fbff66eea Robert Jarzmik 2017-09-02  338   * @ops: the ac97 bus oper=
+ations
+> 74426fbff66eea Robert Jarzmik 2017-09-02  339   * @dev: the device provid=
+ing the ac97 DC function
+> 74426fbff66eea Robert Jarzmik 2017-09-02  340   * @slots_available: mask =
+of the ac97 codecs that can be scanned and probed
+> 74426fbff66eea Robert Jarzmik 2017-09-02  341   *                   bit0 =
+=3D> codec 0, bit1 =3D> codec 1 ... bit 3 =3D> codec 3
+> 74426fbff66eea Robert Jarzmik 2017-09-02  342   *
+> 74426fbff66eea Robert Jarzmik 2017-09-02  343   * Register a digital cont=
+roller which can control up to 4 ac97 codecs. This is
+> 74426fbff66eea Robert Jarzmik 2017-09-02  344   * the controller side of =
+the AC97 AC-link, while the slave side are the codecs.
+> 74426fbff66eea Robert Jarzmik 2017-09-02  345   *
+> 74426fbff66eea Robert Jarzmik 2017-09-02  346   * Returns a valid control=
+ler upon success, negative pointer value upon error
+> 74426fbff66eea Robert Jarzmik 2017-09-02  347   */
+> 74426fbff66eea Robert Jarzmik 2017-09-02  348  struct ac97_controller *sn=
+d_ac97_controller_register(
+> 74426fbff66eea Robert Jarzmik 2017-09-02  349   const struct ac97_control=
+ler_ops *ops, struct device *dev,
+> 74426fbff66eea Robert Jarzmik 2017-09-02  350   unsigned short slots_avai=
+lable, void **codecs_pdata)
+> 74426fbff66eea Robert Jarzmik 2017-09-02 @351  {
+> 74426fbff66eea Robert Jarzmik 2017-09-02  352   struct ac97_controller *a=
+c97_ctrl;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  353   int ret, i;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  354
+> 74426fbff66eea Robert Jarzmik 2017-09-02  355   ac97_ctrl =3D kzalloc(siz=
+eof(*ac97_ctrl), GFP_KERNEL);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  356   if (!ac97_ctrl)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  357           return ERR_PTR(-E=
+NOMEM);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  358
+> 74426fbff66eea Robert Jarzmik 2017-09-02  359   for (i =3D 0; i < AC97_BU=
+S_MAX_CODECS && codecs_pdata; i++)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  360           ac97_ctrl->codecs=
+_pdata[i] =3D codecs_pdata[i];
+> 74426fbff66eea Robert Jarzmik 2017-09-02  361
+> 74426fbff66eea Robert Jarzmik 2017-09-02  362   ac97_ctrl->ops =3D ops;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  363   ac97_ctrl->slots_availabl=
+e =3D slots_available;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  364   ac97_ctrl->parent =3D dev=
+;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  365   ret =3D ac97_add_adapter(=
+ac97_ctrl);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  366
+> 74426fbff66eea Robert Jarzmik 2017-09-02  367   if (ret)
+> 74426fbff66eea Robert Jarzmik 2017-09-02  368           goto err;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  369   ac97_bus_reset(ac97_ctrl)=
+;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  370   ac97_bus_scan(ac97_ctrl);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  371
+> 74426fbff66eea Robert Jarzmik 2017-09-02  372   return ac97_ctrl;
+> 74426fbff66eea Robert Jarzmik 2017-09-02  373  err:
+> 74426fbff66eea Robert Jarzmik 2017-09-02  374   kfree(ac97_ctrl);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  375   return ERR_PTR(ret);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  376  }
+> 74426fbff66eea Robert Jarzmik 2017-09-02  377  EXPORT_SYMBOL_GPL(snd_ac97=
+_controller_register);
+> 74426fbff66eea Robert Jarzmik 2017-09-02  378
+>
+> :::::: The code at line 192 was first introduced by commit
+> :::::: 74426fbff66eea8e8d1f42c8238c268d1e63a832 ALSA: ac97: add an ac97 b=
+us
+>
+> :::::: TO: Robert Jarzmik <robert.jarzmik@free.fr>
+> :::::: CC: Mark Brown <broonie@kernel.org>
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
--- 
-Cheers,
-Changbin Du
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
