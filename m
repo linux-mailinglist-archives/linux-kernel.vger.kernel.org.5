@@ -1,238 +1,149 @@
-Return-Path: <linux-kernel+bounces-32732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 892DF835F7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:23:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D56E835F6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:22:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B22628307A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:23:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1E211F212F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:22:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718CB3B790;
-	Mon, 22 Jan 2024 10:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707073A1B4;
+	Mon, 22 Jan 2024 10:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="3SQDngBz"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D0yEfhLN"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7755F3A8C9
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:22:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B783A1A6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:22:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705918933; cv=none; b=SflXD33kLdTC86w0f6a9e1diJXLmRzcA3IKj63znC9OTrrokmbgWJXqmaIiymEm5pjrdqf3q/4TA8F5ZA2q3/Fq6IBf0PL/Psxt3Tzv8ke0u99VdkQAL4FZCczRaiI6E43RyyJ/bq1xvi5N3whrXW2Vf6Yl2sPfNlnkpd1FpKg4=
+	t=1705918922; cv=none; b=jVGwNmVC3GbIcdLZ2J9g/xJ4T07Q4yzD2yZuXa+2M3UYukKhSjkBzOXoey+mQB0NcCRF/rRv0+hfpNal+bOEI8tflcue8xpJ6myQE4s0XFcm2htYhOivO6U7rfFcC7lX/kKHV0uW65yAL6zRS8N7hyDrr9y2BOEKhDcvirCo5GY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705918933; c=relaxed/simple;
-	bh=ZpGV2VJFHUgG8JkEU54hepfIDRO8lwBoWxz2kXXXit4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=B9INwZZUb23oqzjTFAbrap1BA/vLRAyns6rJ+pL4MOm3f3myCkOW27HKZyNAir3M94eueGoFIGR4Pq9MFWLKaKMvwd1WIvklEDGwcCRFw1+aCowDZrDqRw3DSSE84jt1a6g8q4fqvXl2AEhY96jd1Y4ik116GCMzid9KfmdZJlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=3SQDngBz; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-336c5b5c163so1745890f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:22:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705918928; x=1706523728; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4erhe8goMZDE7TLr/dsCJoHJXktIjwgA8fkMwhmJPgI=;
-        b=3SQDngBzLpWU07rNpxIA7tHzs3CbCYCKGR13BB9InaUyra5RXNHcTeOB4K+Hs+0fbA
-         xQiuEhCjlmo9xP0IDA1Zs5DAPbj2XjGYgBFoB6JEKaQs8nbM5+NdZqW++FHePpwwvqax
-         JqDz65kxaeUEhglWpM3VwccBRgBD6oeoDyUa0hRqY7SDwx38dK93SsuFonR3Kapp2/3K
-         c/mNvg8S633PFRvC2PB3GSrF42k3rAkjpkXeoHtZH0WCnlBSBiodlC05WgEBEbfecOz/
-         6DHIJyXRaftmb7i367sLfKJgLryS9d1rIem+FbEh0n+pHCKAsZ7K123A1HxMp3P1IAxx
-         ZTUg==
+	s=arc-20240116; t=1705918922; c=relaxed/simple;
+	bh=bWDVLHiEXkota/aGMAny+2TNqX/Ql+/MLRYCOPs96YA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EwnZCy7OWQmbf4wM8JSB9bRM+dypOJ0IHCJxXE4RawUbyCNN9P6YFl/MtqZ+ycgwY8gvMxVqz+OrXXMPENFi2b/xi57gTvgK2VAo1wXzgpjQjOaFCp5dCJuJd/F6OZHltdhQQXl9tC4qSbAzlTAzZH3oWCarwe+nVislIpMIzu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D0yEfhLN; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705918920;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hwPGvN028Z5tPxDaLaEbu18L6ma6HHW3iDZUupdgZD0=;
+	b=D0yEfhLNmLkIS9pBhAHV+zHFwoUqQbOMl7zs1YyVLrXdlibNSABMVKluFgr0UUoD6DtENw
+	h/BX/GBYKSKoy1MiaBjk+pZTSBev0gh2cDuvukmuxGuVCre0L7j62UDg9JJF/mtYVSQCop
+	1vBZpFbbUVB4Geuf1YLVRn0X0TktxrY=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-271-DYLsgKJTOfaY0mAXqRBldQ-1; Mon, 22 Jan 2024 05:21:55 -0500
+X-MC-Unique: DYLsgKJTOfaY0mAXqRBldQ-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-50e7ddf4dacso2133782e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:21:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705918928; x=1706523728;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4erhe8goMZDE7TLr/dsCJoHJXktIjwgA8fkMwhmJPgI=;
-        b=XSeCTJmAxvb3TOHS4/bGIkGUNCEkoc+mWjMJ6GJmqgHGM6mGaI7vM+LOJSH75DfT6d
-         ZwBzK94SKtb0BGXhN3c6N3HbJxMELqQZ5K9EMc4++ymXWamxpECQXTea2ImIZRt91slh
-         v5LRHJ/4PYMYGjaU1aPEv9l63KtamCdQx+IcS9XnIhZANxxQ8qotwbzbAMzaXKE6UF/z
-         9Cgwrte/Yk/Ho/YS/8Zk4vPt2bdUEXwT0Z+TWNTvmwc2p+kTaVNtm9IFuEmNraWur41j
-         JbppdKrUOn6bBIY3SfBKacin3rmIV5/nKzLSQCn2TVTCT8FGMoKOJ4++W2xxgsMStdSq
-         BEfA==
-X-Gm-Message-State: AOJu0YyqoVNDgYDRkMqzNH1b/qxfFL4p7LW/D1o1DVtRDlcTk5Fy3pM2
-	4WWPCcHujwMb35Cmr4JD5FUGKXc0un1+vPn7tD4Ftij6b6VstBMVctibRbfLfaI=
-X-Google-Smtp-Source: AGHT+IFusWT3dEKKX+8JJzIRFia8fYzUDtxg5UHIaV1PDrRe6DyXcIQleAtb9CO7z0Dksq1Ls11GFw==
-X-Received: by 2002:a5d:5049:0:b0:337:420e:36f2 with SMTP id h9-20020a5d5049000000b00337420e36f2mr2004788wrt.17.1705918928754;
-        Mon, 22 Jan 2024 02:22:08 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:92a0:6172:d229:1898])
-        by smtp.gmail.com with ESMTPSA id q7-20020adffec7000000b0033926505eafsm6377904wrs.32.2024.01.22.02.22.07
+        d=1e100.net; s=20230601; t=1705918913; x=1706523713;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hwPGvN028Z5tPxDaLaEbu18L6ma6HHW3iDZUupdgZD0=;
+        b=j7EcRTi7Xr2jfOU10IWyTV2S+QJJVoH1yfA1WJH4yJtj5dkGOs/6HDaznEFauqsrzH
+         bRLB24F2k9ssb69q/mntg19BmoRzvKFi4ArkDttzwbrHXxiUcq8sBLeXuBxYoBDjxnwI
+         F/C5TVpqqwor3fP54Tymk1EpEPtYBIlTnopJnpFhWrJsgiWYtcPcVlg7QoBQN6ZCyNZB
+         6XxXToS3Wu4eYpzZYKHRr6ruiBDTVZrfdIHf7fTYfNMhdVl858JUXisfv2iwr/gxqYHL
+         9bUFHbbZBIVYAaMk85M0y42+AtO7QEbKJZ/bzuevvp/E/g7ywH6e7n7OmkZ9uyCccRVb
+         qt6A==
+X-Gm-Message-State: AOJu0YzXY2OpvbypUlarXhRjW7+fvuyNIBKak+Ragg5s3YFq/C6rwN94
+	P0v9JLGe+JxtPY3Z7RXayv0bycRIuoiaQtlFaqiNAXnKodVZiqpsnbLUNWhSTkg37DSxmciY9JV
+	MDt0Zq3vrFys4t6Z0NCLEdnOKFX5YPXtiewVyEGrACCNswhCPOFSCVvQa+1345A==
+X-Received: by 2002:ac2:5ff0:0:b0:50e:efc4:a318 with SMTP id s16-20020ac25ff0000000b0050eefc4a318mr1261143lfg.64.1705918913697;
+        Mon, 22 Jan 2024 02:21:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEi1995SJjifeXa2VfBTVYgXMiN3lDe07cDVtgpWOi5nt1c/FA3p+x4EsTfhyhrn/vLVrIFhw==
+X-Received: by 2002:ac2:5ff0:0:b0:50e:efc4:a318 with SMTP id s16-20020ac25ff0000000b0050eefc4a318mr1261135lfg.64.1705918913380;
+        Mon, 22 Jan 2024 02:21:53 -0800 (PST)
+Received: from sgarzare-redhat (host-87-12-25-71.business.telecomitalia.it. [87.12.25.71])
+        by smtp.gmail.com with ESMTPSA id q9-20020aa7d449000000b0055a898c3156sm2930603edr.11.2024.01.22.02.21.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 02:22:08 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Elliot Berman <quic_eberman@quicinc.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Guru Das Srinagesh <quic_gurus@quicinc.com>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Maximilian Luz <luzmaximilian@gmail.com>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	kernel@quicinc.com,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Deepti Jaggi <quic_djaggi@quicinc.com>
-Subject: [RESEND PATCH v6 03/12] firmware: qcom: scm: smc: switch to using the SCM allocator
+        Mon, 22 Jan 2024 02:21:52 -0800 (PST)
 Date: Mon, 22 Jan 2024 11:21:48 +0100
-Message-Id: <20240122102157.22761-4-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240122102157.22761-1-brgl@bgdev.pl>
-References: <20240122102157.22761-1-brgl@bgdev.pl>
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Steve Sistare <steven.sistare@oracle.com>
+Cc: virtualization@lists.linux-foundation.org, 
+	linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Jason Wang <jasowang@redhat.com>, Eugenio Perez Martin <eperezma@redhat.com>, 
+	Si-Wei Liu <si-wei.liu@oracle.com>
+Subject: Re: [PATCH V1] vdpa_sim: reset must not run
+Message-ID: <mhnsrwlvqjeftu5aa77iaowdk2wrq366yofjchbn5fwchgcbna@kcjtoj46fawi>
+References: <1705519403-255169-1-git-send-email-steven.sistare@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1705519403-255169-1-git-send-email-steven.sistare@oracle.com>
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Wed, Jan 17, 2024 at 11:23:23AM -0800, Steve Sistare wrote:
+>vdpasim_do_reset sets running to true, which is wrong, as it allows
+>vdpasim_kick_vq to post work requests before the device has been
+>configured.  To fix, do not set running until VIRTIO_CONFIG_S_FEATURES_OK
+>is set.
+>
+>Fixes: 0c89e2a3a9d0 ("vdpa_sim: Implement suspend vdpa op")
+>Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+>Reviewed-by: Eugenio Pérez <eperezma@redhat.com>
+>---
+> drivers/vdpa/vdpa_sim/vdpa_sim.c | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>index be2925d0d283..6304cb0b4770 100644
+>--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>@@ -160,7 +160,7 @@ static void vdpasim_do_reset(struct vdpasim *vdpasim, u32 flags)
+> 		}
+> 	}
+>
+>-	vdpasim->running = true;
+>+	vdpasim->running = false;
+> 	spin_unlock(&vdpasim->iommu_lock);
+>
+> 	vdpasim->features = 0;
+>@@ -483,6 +483,7 @@ static void vdpasim_set_status(struct vdpa_device *vdpa, u8 status)
+>
+> 	mutex_lock(&vdpasim->mutex);
+> 	vdpasim->status = status;
+>+	vdpasim->running = (status & VIRTIO_CONFIG_S_FEATURES_OK) != 0;
+> 	mutex_unlock(&vdpasim->mutex);
 
-We need to allocate, map and pass a buffer to the trustzone if we have
-more than 4 arguments for a given SCM calls. Let's use the new TrustZone
-allocator for that memory and shrink the code in process.
+Should we do something similar also in vdpasim_resume() ?
 
-As this code lives in a different compilation unit than the rest of the
-SCM code, we need to provide a helper in the form of
-qcom_scm_get_tzmem_pool() that allows the SMC low-level routines to
-access the SCM memory pool.
+I mean something like this:
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
-Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
-Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
----
- drivers/firmware/qcom/qcom_scm-smc.c | 30 ++++++++--------------------
- drivers/firmware/qcom/qcom_scm.c     |  5 +++++
- drivers/firmware/qcom/qcom_scm.h     |  3 +++
- 3 files changed, 16 insertions(+), 22 deletions(-)
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index be2925d0d283..55e4633d5442 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -520,7 +520,7 @@ static int vdpasim_resume(struct vdpa_device *vdpa)
+         int i;
 
-diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom/qcom_scm-smc.c
-index 16cf88acfa8e..dca5f3f1883b 100644
---- a/drivers/firmware/qcom/qcom_scm-smc.c
-+++ b/drivers/firmware/qcom/qcom_scm-smc.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2015,2019 The Linux Foundation. All rights reserved.
-  */
- 
-+#include <linux/cleanup.h>
- #include <linux/io.h>
- #include <linux/errno.h>
- #include <linux/delay.h>
-@@ -9,6 +10,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/firmware/qcom/qcom_scm.h>
-+#include <linux/firmware/qcom/qcom_tzmem.h>
- #include <linux/arm-smccc.h>
- #include <linux/dma-mapping.h>
- 
-@@ -150,11 +152,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 		   enum qcom_scm_convention qcom_convention,
- 		   struct qcom_scm_res *res, bool atomic)
- {
-+	struct qcom_tzmem_pool *mempool = qcom_scm_get_tzmem_pool();
- 	int arglen = desc->arginfo & 0xf;
- 	int i, ret;
--	dma_addr_t args_phys = 0;
--	void *args_virt = NULL;
--	size_t alloc_len;
-+	void *args_virt __free(qcom_tzmem) = NULL;
- 	gfp_t flag = atomic ? GFP_ATOMIC : GFP_KERNEL;
- 	u32 smccc_call_type = atomic ? ARM_SMCCC_FAST_CALL : ARM_SMCCC_STD_CALL;
- 	u32 qcom_smccc_convention = (qcom_convention == SMC_CONVENTION_ARM_32) ?
-@@ -172,9 +173,9 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 		smc.args[i + SCM_SMC_FIRST_REG_IDX] = desc->args[i];
- 
- 	if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
--		alloc_len = SCM_SMC_N_EXT_ARGS * sizeof(u64);
--		args_virt = kzalloc(PAGE_ALIGN(alloc_len), flag);
--
-+		args_virt = qcom_tzmem_alloc(mempool,
-+					     SCM_SMC_N_EXT_ARGS * sizeof(u64),
-+					     flag);
- 		if (!args_virt)
- 			return -ENOMEM;
- 
-@@ -192,25 +193,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 						      SCM_SMC_FIRST_EXT_IDX]);
- 		}
- 
--		args_phys = dma_map_single(dev, args_virt, alloc_len,
--					   DMA_TO_DEVICE);
--
--		if (dma_mapping_error(dev, args_phys)) {
--			kfree(args_virt);
--			return -ENOMEM;
--		}
--
--		smc.args[SCM_SMC_LAST_REG_IDX] = args_phys;
-+		smc.args[SCM_SMC_LAST_REG_IDX] = qcom_tzmem_to_phys(args_virt);
- 	}
- 
--	/* ret error check follows after args_virt cleanup*/
- 	ret = __scm_smc_do(dev, &smc, &smc_res, atomic);
--
--	if (args_virt) {
--		dma_unmap_single(dev, args_phys, alloc_len, DMA_TO_DEVICE);
--		kfree(args_virt);
--	}
--
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 0d4c028be0c1..71e98b666391 100644
---- a/drivers/firmware/qcom/qcom_scm.c
-+++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -201,6 +201,11 @@ static void qcom_scm_bw_disable(void)
- enum qcom_scm_convention qcom_scm_convention = SMC_CONVENTION_UNKNOWN;
- static DEFINE_SPINLOCK(scm_query_lock);
- 
-+struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void)
-+{
-+	return __scm->mempool;
-+}
-+
- static enum qcom_scm_convention __get_convention(void)
- {
- 	unsigned long flags;
-diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
-index 4532907e8489..aa7d06939f8e 100644
---- a/drivers/firmware/qcom/qcom_scm.h
-+++ b/drivers/firmware/qcom/qcom_scm.h
-@@ -5,6 +5,7 @@
- #define __QCOM_SCM_INT_H
- 
- struct device;
-+struct qcom_tzmem_pool;
- 
- enum qcom_scm_convention {
- 	SMC_CONVENTION_UNKNOWN,
-@@ -78,6 +79,8 @@ int scm_legacy_call_atomic(struct device *dev, const struct qcom_scm_desc *desc,
- int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
- 		    struct qcom_scm_res *res);
- 
-+struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void);
-+
- #define QCOM_SCM_SVC_BOOT		0x01
- #define QCOM_SCM_BOOT_SET_ADDR		0x01
- #define QCOM_SCM_BOOT_TERMINATE_PC	0x02
--- 
-2.40.1
+         mutex_lock(&vdpasim->mutex);
+-       vdpasim->running = true;
++       vdpasim->running = (vdpasim->status & VIRTIO_CONFIG_S_FEATURES_OK) != 0;
+
+         if (vdpasim->pending_kick) {
+                 /* Process pending descriptors */
+
+Thanks,
+Stefano
 
 
