@@ -1,189 +1,115 @@
-Return-Path: <linux-kernel+bounces-32869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3583836125
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D17D9836129
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:22:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DC3F1F2369C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:22:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87B8D1F21E32
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6621F3D549;
-	Mon, 22 Jan 2024 11:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Gbxtwbdr"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B533D577;
+	Mon, 22 Jan 2024 11:09:10 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3263D548;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDB53D555;
 	Mon, 22 Jan 2024 11:09:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705921748; cv=none; b=db0GTuHAfmWD0ebfiTX9bbYA0XsLPET8ResaRCt06Y7vDsKjAuD55wv+ZyT71YuoGdJG9PEi0BesAZcm27FU9SXDk37oGILNq8ws521dKkp3rf8giepv66DUBhMhQ0k8S/JFkAgoHc3GrFHQ69wIi7viVTch+YvIp5m/sJlQifI=
+	t=1705921749; cv=none; b=nvxORgkV0VBKatS26GFx20zPECbI2sDw+hQVfn9zqeQ9ffW9rrkZgxvt+u4GNadu5tQJ08JhlSZMjvMow/yrBd1ENXzO/c+mEZeAvyJ1HD8NZI8WwKjDcjDDEen61BWwOBVH8N0KZaF20vdrgC3xlHumzVPCBjMGloVqOQRIq3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705921748; c=relaxed/simple;
-	bh=eeltPZ2NiT0CfWaOvBWJTcc8YkSM0Sit2VAouO0viHg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=q1A4NFsplEcb2KlbzbvoIxL5WsL22EgokFyrMbtzWjajLFMPpGA23lipCPthm+scyfNNV74LhaBRCX595esNuTZW+RmrOO1/jpGse83wOM4e6s5oA+cDM67+X4ckCEu1m+LEN70to1jYP5yufi9oO18X2PiI9ZIbjE1fxhEtZXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Gbxtwbdr; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40MB8fP4011812;
-	Mon, 22 Jan 2024 05:08:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705921721;
-	bh=70+2QivnfENxsqhg9qEX9Q5T8tBv+T64OCDj1isNU1w=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=GbxtwbdrPyBC/1R14U/6xhMyFjkqrZArlx00siNnbrGE8aMqgmpRV6tZh9CXXE5sn
-	 2ENCDOX/pEGfZNNGNYPMx0tSE9sLkuAoA5S92tHw7M2Uf4Fnt1cEFXOJs1gsd2BHVT
-	 WycanLTvFQAren9t+AOnAGjcnYIYtkmm2aXSOAEs=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40MB8fEk076694
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 22 Jan 2024 05:08:41 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 22
- Jan 2024 05:08:41 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 22 Jan 2024 05:08:41 -0600
-Received: from [10.24.69.25] (danish-tpc.dhcp.ti.com [10.24.69.25])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40MB8ZHe087837;
-	Mon, 22 Jan 2024 05:08:36 -0600
-Message-ID: <e7328eaa-ac76-4fe9-9173-0ff92c312815@ti.com>
-Date: Mon, 22 Jan 2024 16:38:35 +0530
+	s=arc-20240116; t=1705921749; c=relaxed/simple;
+	bh=RAHCPa5LLeS2+X/yJSngT097aqPs0WTNZ+ONX6kPsPg=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BHLd/qNB6I7OBy6wqbTFqnzJF4C9XfV1T1Q7Mw9SdcOMm06ffNf/NHMFA1O3eifRQeediWN9VZ72fzD+LPxvZTfgiUoNUlNMmJC59CHZXmz7A2zjBnblzRYpBKSx4NCw6z7tTBNwzKFuWpUYqF3xhnc1rIDT9lzqD4yOhRzTnoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TJS815ZyBz6J9gC;
+	Mon, 22 Jan 2024 19:06:09 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id D1921140A90;
+	Mon, 22 Jan 2024 19:09:03 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 22 Jan
+ 2024 11:09:03 +0000
+Date: Mon, 22 Jan 2024 11:09:02 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ceclan Dumitru <mitrutzceclan@gmail.com>
+CC: Jonathan Cameron <jic23@kernel.org>, <linus.walleij@linaro.org>,
+	<brgl@bgdev.pl>, <andy@kernel.org>, <linux-gpio@vger.kernel.org>, "Lars-Peter
+ Clausen" <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Michael Walle <michael@walle.cc>, Andy Shevchenko
+	<andy.shevchenko@gmail.com>, Arnd Bergmann <arnd@arndb.de>, ChiaEn Wu
+	<chiaen_wu@richtek.com>, Niklas Schnelle <schnelle@linux.ibm.com>, Leonard
+ =?ISO-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>, Mike Looijmans
+	<mike.looijmans@topic.nl>, Haibo Chen <haibo.chen@nxp.com>, Hugo Villeneuve
+	<hvilleneuve@dimonoff.com>, David Lechner <dlechner@baylibre.com>, "Ceclan
+ Dumitru" <dumitru.ceclan@analog.com>, <linux-iio@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 2/2] iio: adc: ad7173: add AD7173 driver
+Message-ID: <20240122110902.00004357@Huawei.com>
+In-Reply-To: <57ea42b3-106b-4361-8d07-4e1656bf6e58@gmail.com>
+References: <20240118125001.12809-1-mitrutzceclan@gmail.com>
+	<20240118125001.12809-2-mitrutzceclan@gmail.com>
+	<20240121155041.3fc1a85d@jic23-huawei>
+	<57ea42b3-106b-4361-8d07-4e1656bf6e58@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 2/3] net: ti: icssg-switch: Add switchdev based
- driver for ethernet switch support
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-CC: Rob Herring <robh@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Vladimir Oltean
-	<vladimir.oltean@nxp.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Roger Quadros <rogerq@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Eric
- Dumazet" <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
-References: <20240118071005.1514498-1-danishanwar@ti.com>
- <20240118071005.1514498-3-danishanwar@ti.com>
- <3ea8934e-c41f-4366-a0c4-1894ed4e3d7e@lunn.ch>
-From: MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <3ea8934e-c41f-4366-a0c4-1894ed4e3d7e@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
+On Mon, 22 Jan 2024 12:02:35 +0200
+Ceclan Dumitru <mitrutzceclan@gmail.com> wrote:
 
-On 19/01/24 7:42 pm, Andrew Lunn wrote:
->> +static int prueth_switchdev_stp_state_set(struct prueth_emac *emac,
->> +					  u8 state)
->> +{
->> +	enum icssg_port_state_cmd emac_state;
->> +	int ret = 0;
->> +
->> +	switch (state) {
->> +	case BR_STATE_FORWARDING:
->> +		emac_state = ICSSG_EMAC_PORT_FORWARD;
->> +		break;
->> +	case BR_STATE_DISABLED:
->> +		emac_state = ICSSG_EMAC_PORT_DISABLE;
->> +		break;
->> +	case BR_STATE_LEARNING:
->> +	case BR_STATE_LISTENING:
->> +	case BR_STATE_BLOCKING:
->> +		emac_state = ICSSG_EMAC_PORT_BLOCK;
->> +		break;
+> On 1/21/24 17:50, Jonathan Cameron wrote:
+> >> +	ret = devm_ad_sd_setup_buffer_and_trigger(dev, indio_dev);  
+> > If the error interrupt is provided either first, or as the only interrupt
+> > this is going to use the wrong one.
+> > 
+> > Probably need to have a variant of that which takes an explicit irq so that
+> > figuring out which irq is relevant becomes a driver problem rather than the
+> > library having a go based on spi->irq.  
 > 
-> That is unusual. Does it still learn while in BLOCK? It might be you
-> need to flush the FDB for this port when it changes from BLOCKING to
-> LISTENING or LEARNING?
+> Would it be acceptable to check if spi->irq interrupt number is equal to
+> fwnode_irq_get_byname(dev_fwnode(dev), "rdy")?
 
-ICSSG firmware supports four different states,
-1. ICSSG_EMAC_PORT_DISABLE - port is in completed disable state and no
-traffic is being processed.
-2. ICSSG_EMAC_PORT_BLOCK - All traffic is blocked except for special
-packets (eg LLDP BPDU frames)
-3. ICSSG_EMAC_PORT_FORWARD - Port is fully active and every packet is
-being processed. The port will also learn the mac address.
-4. ICSSG_EMAC_PORT_FORWARD_WO_LEARNING - Port is fully active and every
-packet is being processed but the port will also learn the mac address.
+That would be a good start and probably cover most cases.
+> 
+> If not, a message could be passed that specifies either that "rdy" is
+> needed or that it must be placed first.
 
-We don't have any state where we only learn and not do the forwarding.
-So for BR_STATE_LISTENING and BR_STATE_BLOCKING I think state
-ICSSG_EMAC_PORT_BLOCK is OK. For learning I am not sure what should be
-the state. If both learning and forwarding is OK then we can set the
-state to BR_STATE_FORWARDING.
+If you are mandating the order, that should possibly be reflected in the binding.
+If this was hard to fix, I'd be fine with leaving for when someone runs into
+a case where they have it ordered the other way around, but given it seems simple
+to fix up probably better to just do it and avoid having to remember anything
+about it later.
 
 > 
->> +static void prueth_switchdev_event_work(struct work_struct *work)
->> +{
->> +	struct prueth_switchdev_event_work *switchdev_work =
->> +		container_of(work, struct prueth_switchdev_event_work, work);
->> +	struct prueth_emac *emac = switchdev_work->emac;
->> +	struct switchdev_notifier_fdb_info *fdb;
->> +	int port_id = emac->port_id;
->> +	int ret;
->> +
->> +	rtnl_lock();
->> +	switch (switchdev_work->event) {
->> +	case SWITCHDEV_FDB_ADD_TO_DEVICE:
->> +		fdb = &switchdev_work->fdb_info;
->> +
->> +		netdev_dbg(emac->ndev, "prueth_fdb_add: MACID = %pM vid = %u flags = %u %u -- port %d\n",
->> +			   fdb->addr, fdb->vid, fdb->added_by_user,
->> +			   fdb->offloaded, port_id);
->> +
->> +		if (!fdb->added_by_user)
->> +			break;
->> +		if (memcmp(emac->mac_addr, (u8 *)fdb->addr, ETH_ALEN) == 0)
->> +			break;
 > 
-> ether_addr_equal(). Please review all the code and use these helpers
-> when possible.
-
-Sure.
-
-> 
-> So you don't add an FDB for the interfaces own MAC address? Does the
-> switch know the interfaces MAC address?
+> Another alternative would be adding irq to ad_sigma_delta_info so a
+> driver could specify the desired interrupt to be used for conversions.
 > 
 
-Interface's own mac address isn't needed to be added to FDB. Switch
-already knows the interfaces mac_addr as during emac_ndo_open() we do
-write the interface's mac_addr to MII_G_RT register [1] and adding the
-mac_addr to MII_G_RT register is enough to let the firmware know.
+That works.  Make it optional so if value is 0 use spi->irq as before so
+that you don't need to modify the other drivers.
 
-In case we want interface to have more than 1 mac_addr, the the extra
-mac_addr needs to be added to FDB.
 
->        Andrew
+Jonathan
 
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/ethernet/ti/icssg/icssg_prueth.c?h=v6.8-rc1#n1329
 
-Thanks for the reviews and comments on all the patches. Please let me
-know if more changes are needed in this series.
-
--- 
-Thanks and Regards,
-Danish
 
