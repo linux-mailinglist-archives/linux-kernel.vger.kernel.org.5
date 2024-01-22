@@ -1,75 +1,68 @@
-Return-Path: <linux-kernel+bounces-33366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBC288368D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBCC08368DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:49:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE82B1C228E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:48:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0C8E1C23441
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F3D6A35B;
-	Mon, 22 Jan 2024 15:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96DD48CEF;
+	Mon, 22 Jan 2024 15:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZLFNuCbp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ljIxy1dN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1251348CDD;
-	Mon, 22 Jan 2024 15:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE7C6BB2A;
+	Mon, 22 Jan 2024 15:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935992; cv=none; b=ArOwTGZ31po2LP/Jz/gGIZu1SEgXdgFC9NNiygRo5VRdx4kOBtRPNlzXww/1i+RRHKFKOj+RMYOB8o4GGvS2g0Dts4pXOdgmnFQ/Q1uJC7M1XOgs+vTDw5eWb4Lpgk5sbe2Dq0delAYMJONZr0voU/hPcIrzHqRch1oHVVc6Quw=
+	t=1705935999; cv=none; b=luKH8YzneKQJLRkxq5ITmUVF6ZqGdot5J/O02wY9CJpHmyReWp/atmUN4I9e6761gVvzx2vMBmPqdBU80iaM2IwsbAVE4Vpy1zMp61XZQnuz6e52e37/KU1tz9XHjEavlWmLilBbv77GCoJQMjnEtuHmfN5bWepRse+vgK2RvGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935992; c=relaxed/simple;
-	bh=N/JYfq2P2B6n2iliMdJGT06WbHGJvbszbHCOVodukAg=;
+	s=arc-20240116; t=1705935999; c=relaxed/simple;
+	bh=t4szPEH73ERPUcFP+yabDVdAL8MA+TsN97r2lOYwNvA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=i9fRdQy2hYq+93xPXIAJx2RrwDD7ZshJyiRSTUau0ui4b4ny2kYV4h4Qqb4xvBoz7fyyZMIe+NpcuAnIVXE0v52xmkGwXOl5rH4VjxYuHfVYhDYjrc63rROf3sZPpEJhnRSBivFyXX5Md51VkQM5xuH5vcvlfvqajFQTGOyY1go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZLFNuCbp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB734C43394;
-	Mon, 22 Jan 2024 15:06:28 +0000 (UTC)
+	 MIME-Version; b=rO3Ej1Kf3X9YMHJg0goyMJmZTuMNS89KlHFb4sRVh+WBoCsXbTVYg7QwCBLaA+RVwRoZeOXhoM10kSuoWJMxoCB7EbH7Rpzg1wmgFQIuErjbkM4Pm/3C+QysqdN40h4PWAixuvO2htQJ3I2gxZ2cSwk1r8fT6hOa2wcHxA/5ldQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ljIxy1dN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D763C43399;
+	Mon, 22 Jan 2024 15:06:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935991;
-	bh=N/JYfq2P2B6n2iliMdJGT06WbHGJvbszbHCOVodukAg=;
+	s=k20201202; t=1705935998;
+	bh=t4szPEH73ERPUcFP+yabDVdAL8MA+TsN97r2lOYwNvA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZLFNuCbpzOPt6eLrHwml0rENpUetiqa7lecsNcYP1L0ASWIGgvHHEpdFoaxI3rSOa
-	 QzvYA4WjFV/Udgq+09Qt8nLUjBlBYPePU/FUVne7aXUrRmVG6K8pe/fCzHIJGEJoFP
-	 rk5m/5XFwnfJVBbihUEez5u31keD07mO3L82UaG4/oires0GwTDjv+vgoFwJnS+bnW
-	 CSwdLV+Ygr6/INuOfavK13KOYTAJ/UhiFr91Ovwai+KJR9ZysWlfrFtMwUl2Jjygue
-	 YZnD5pX4upFC0zLfY8SCbENPYrvtZ7bg06U2nPZQbxlB7bZUT4mrXGGN5DWspQr0TW
-	 TYOLgJgPJC/CQ==
+	b=ljIxy1dN2RTA+h6A4CssR3L3btDn2i5Rsz6wXQ6zlGiS9p5cAVMRGmYa+qt1fmXw0
+	 4nndERyYapSlXPNADiGXcKOf5D8U0f9ZF9tLDZoAYoRgkFTM9AcPbhMd++j0pMaiI4
+	 5Rf/ArWI9Yov8KGmzgqzeliOosx8XTb5QkviSrxha9kYO0C5zKrL9fsKXZ+CIK0jMw
+	 gTnE9FI9/MmNViJ8sFXQkQ2owz3tUVHCaypmiEQ/ksuSM926Nqwe3qf4FArbcVyMg+
+	 p5aRacmFPbTlBY9B6sZRFJ4Uwye9OAx62gKd4gMZEA21q1HGsGczNPd4eYf14h/n8W
+	 XCzP/gimF1W9Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alvin Lee <alvin.lee2@amd.com>,
-	Samson Tam <samson.tam@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+Cc: Jonathan Kim <jonathan.kim@amd.com>,
+	Alice Wong <shiwei.wong@amd.com>,
+	Eric Huang <jinhuieric.huang@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	harry.wentland@amd.com,
-	sunpeng.li@amd.com,
-	Rodrigo.Siqueira@amd.com,
 	christian.koenig@amd.com,
 	Xinhui.Pan@amd.com,
 	airlied@gmail.com,
 	daniel@ffwll.ch,
-	hamza.mahfooz@amd.com,
-	jun.lei@amd.com,
-	Qingqing.Zhuo@amd.com,
-	wenjing.liu@amd.com,
-	Wesley.Chalmers@amd.com,
-	Alvin.Lee2@amd.com,
-	mdaenzer@redhat.com,
-	gabe.teeger@amd.com,
-	ilya.bakoulin@amd.com,
-	moadhuri@amd.com,
+	Felix.Kuehling@amd.com,
+	guchun.chen@amd.com,
+	Jack.Xiao@amd.com,
+	shashank.sharma@amd.com,
+	Tim.Huang@amd.com,
+	shaoyun.liu@amd.com,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 44/73] drm/amd/display: Force p-state disallow if leaving no plane config
-Date: Mon, 22 Jan 2024 10:01:58 -0500
-Message-ID: <20240122150432.992458-44-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 45/73] drm/amdkfd: fix mes set shader debugger process management
+Date: Mon, 22 Jan 2024 10:01:59 -0500
+Message-ID: <20240122150432.992458-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -84,74 +77,155 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.13
 Content-Transfer-Encoding: 8bit
 
-From: Alvin Lee <alvin.lee2@amd.com>
+From: Jonathan Kim <jonathan.kim@amd.com>
 
-[ Upstream commit 9a902a9073c287353e25913c0761bfed49d75a88 ]
+[ Upstream commit bd33bb1409b494558a2935f7bbc7842def957fcd ]
 
-[Description]
-- When we're in a no plane config, DCN is always asserting
-  P-State allow
-- This creates a scenario where the P-State blackout can start
-  just as VUPDATE takes place and transitions the DCN config to
-  a one where one or more HUBP's are active which can result in
-  underflow
-- To fix this issue, force p-state disallow and unforce after
-  the transition from no planes case -> one or more planes active
+MES provides the driver a call to explicitly flush stale process memory
+within the MES to avoid a race condition that results in a fatal
+memory violation.
 
-Reviewed-by: Samson Tam <samson.tam@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Alvin Lee <alvin.lee2@amd.com>
+When SET_SHADER_DEBUGGER is called, the driver passes a memory address
+that represents a process context address MES uses to keep track of
+future per-process calls.
+
+Normally, MES will purge its process context list when the last queue
+has been removed.  The driver, however, can call SET_SHADER_DEBUGGER
+regardless of whether a queue has been added or not.
+
+If SET_SHADER_DEBUGGER has been called with no queues as the last call
+prior to process termination, the passed process context address will
+still reside within MES.
+
+On a new process call to SET_SHADER_DEBUGGER, the driver may end up
+passing an identical process context address value (based on per-process
+gpu memory address) to MES but is now pointing to a new allocated buffer
+object during KFD process creation.  Since the MES is unaware of this,
+access of the passed address points to the stale object within MES and
+triggers a fatal memory violation.
+
+The solution is for KFD to explicitly flush the process context address
+from MES on process termination.
+
+Note that the flush call and the MES debugger calls use the same MES
+interface but are separated as KFD calls to avoid conflicting with each
+other.
+
+Signed-off-by: Jonathan Kim <jonathan.kim@amd.com>
+Tested-by: Alice Wong <shiwei.wong@amd.com>
+Reviewed-by: Eric Huang <jinhuieric.huang@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/dcn20/dcn20_hwseq.c    | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c       | 31 +++++++++++++++++++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mes.h       | 10 +++---
+ .../amd/amdkfd/kfd_process_queue_manager.c    |  1 +
+ drivers/gpu/drm/amd/include/mes_v11_api_def.h |  3 +-
+ 4 files changed, 40 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-index a2e1ca3b93e8..2c4bcbca8bb8 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-@@ -1792,6 +1792,8 @@ void dcn20_program_front_end_for_ctx(
- 	int i;
- 	struct dce_hwseq *hws = dc->hwseq;
- 	DC_LOGGER_INIT(dc->ctx->logger);
-+	unsigned int prev_hubp_count = 0;
-+	unsigned int hubp_count = 0;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c
+index 6aa75052309f..15c67fa404ff 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c
+@@ -885,6 +885,11 @@ int amdgpu_mes_set_shader_debugger(struct amdgpu_device *adev,
+ 	op_input.op = MES_MISC_OP_SET_SHADER_DEBUGGER;
+ 	op_input.set_shader_debugger.process_context_addr = process_context_addr;
+ 	op_input.set_shader_debugger.flags.u32all = flags;
++
++	/* use amdgpu mes_flush_shader_debugger instead */
++	if (op_input.set_shader_debugger.flags.process_ctx_flush)
++		return -EINVAL;
++
+ 	op_input.set_shader_debugger.spi_gdbg_per_vmid_cntl = spi_gdbg_per_vmid_cntl;
+ 	memcpy(op_input.set_shader_debugger.tcp_watch_cntl, tcp_watch_cntl,
+ 			sizeof(op_input.set_shader_debugger.tcp_watch_cntl));
+@@ -904,6 +909,32 @@ int amdgpu_mes_set_shader_debugger(struct amdgpu_device *adev,
+ 	return r;
+ }
  
- 	/* Carry over GSL groups in case the context is changing. */
- 	for (i = 0; i < dc->res_pool->pipe_count; i++) {
-@@ -1815,6 +1817,20 @@ void dcn20_program_front_end_for_ctx(
- 		}
- 	}
- 
-+	for (i = 0; i < dc->res_pool->pipe_count; i++) {
-+		if (dc->current_state->res_ctx.pipe_ctx[i].plane_state)
-+			prev_hubp_count++;
-+		if (context->res_ctx.pipe_ctx[i].plane_state)
-+			hubp_count++;
++int amdgpu_mes_flush_shader_debugger(struct amdgpu_device *adev,
++				     uint64_t process_context_addr)
++{
++	struct mes_misc_op_input op_input = {0};
++	int r;
++
++	if (!adev->mes.funcs->misc_op) {
++		DRM_ERROR("mes flush shader debugger is not supported!\n");
++		return -EINVAL;
 +	}
 +
-+	if (prev_hubp_count == 0 && hubp_count > 0) {
-+		if (dc->res_pool->hubbub->funcs->force_pstate_change_control)
-+			dc->res_pool->hubbub->funcs->force_pstate_change_control(
-+					dc->res_pool->hubbub, true, false);
-+		udelay(500);
-+	}
++	op_input.op = MES_MISC_OP_SET_SHADER_DEBUGGER;
++	op_input.set_shader_debugger.process_context_addr = process_context_addr;
++	op_input.set_shader_debugger.flags.process_ctx_flush = true;
 +
- 	/* Set pipe update flags and lock pipes */
- 	for (i = 0; i < dc->res_pool->pipe_count; i++)
- 		dcn20_detect_pipe_changes(&dc->current_state->res_ctx.pipe_ctx[i],
-@@ -1962,6 +1978,10 @@ void dcn20_post_unlock_program_front_end(
- 		}
- 	}
- 
-+	if (dc->res_pool->hubbub->funcs->force_pstate_change_control)
-+		dc->res_pool->hubbub->funcs->force_pstate_change_control(
-+				dc->res_pool->hubbub, false, false);
++	amdgpu_mes_lock(&adev->mes);
 +
- 	for (i = 0; i < dc->res_pool->pipe_count; i++) {
- 		struct pipe_ctx *pipe = &context->res_ctx.pipe_ctx[i];
++	r = adev->mes.funcs->misc_op(&adev->mes, &op_input);
++	if (r)
++		DRM_ERROR("failed to set_shader_debugger\n");
++
++	amdgpu_mes_unlock(&adev->mes);
++
++	return r;
++}
++
+ static void
+ amdgpu_mes_ring_to_queue_props(struct amdgpu_device *adev,
+ 			       struct amdgpu_ring *ring,
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.h
+index a27b424ffe00..c2c88b772361 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.h
+@@ -291,9 +291,10 @@ struct mes_misc_op_input {
+ 			uint64_t process_context_addr;
+ 			union {
+ 				struct {
+-					uint64_t single_memop : 1;
+-					uint64_t single_alu_op : 1;
+-					uint64_t reserved: 30;
++					uint32_t single_memop : 1;
++					uint32_t single_alu_op : 1;
++					uint32_t reserved: 29;
++					uint32_t process_ctx_flush: 1;
+ 				};
+ 				uint32_t u32all;
+ 			} flags;
+@@ -369,7 +370,8 @@ int amdgpu_mes_set_shader_debugger(struct amdgpu_device *adev,
+ 				const uint32_t *tcp_watch_cntl,
+ 				uint32_t flags,
+ 				bool trap_en);
+-
++int amdgpu_mes_flush_shader_debugger(struct amdgpu_device *adev,
++				uint64_t process_context_addr);
+ int amdgpu_mes_add_ring(struct amdgpu_device *adev, int gang_id,
+ 			int queue_type, int idx,
+ 			struct amdgpu_mes_ctx_data *ctx_data,
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+index 77649392e233..7f5aab1fb8f5 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+@@ -87,6 +87,7 @@ void kfd_process_dequeue_from_device(struct kfd_process_device *pdd)
+ 		return;
  
+ 	dev->dqm->ops.process_termination(dev->dqm, &pdd->qpd);
++	amdgpu_mes_flush_shader_debugger(dev->adev, pdd->proc_ctx_gpu_addr);
+ 	pdd->already_dequeued = true;
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/include/mes_v11_api_def.h b/drivers/gpu/drm/amd/include/mes_v11_api_def.h
+index b1db2b190187..e07e93167a82 100644
+--- a/drivers/gpu/drm/amd/include/mes_v11_api_def.h
++++ b/drivers/gpu/drm/amd/include/mes_v11_api_def.h
+@@ -571,7 +571,8 @@ struct SET_SHADER_DEBUGGER {
+ 		struct {
+ 			uint32_t single_memop : 1;  /* SQ_DEBUG.single_memop */
+ 			uint32_t single_alu_op : 1; /* SQ_DEBUG.single_alu_op */
+-			uint32_t reserved : 30;
++			uint32_t reserved : 29;
++			uint32_t process_ctx_flush : 1;
+ 		};
+ 		uint32_t u32all;
+ 	} flags;
 -- 
 2.43.0
 
