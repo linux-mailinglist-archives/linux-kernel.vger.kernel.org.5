@@ -1,63 +1,70 @@
-Return-Path: <linux-kernel+bounces-33444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D23C836A2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:20:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AE7D8369C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:10:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60457B2308E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:10:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1BD11F243E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:10:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD91D4F5E5;
-	Mon, 22 Jan 2024 15:11:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1485E4F60F;
+	Mon, 22 Jan 2024 15:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DDNHjb37"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iSlEDuVI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE0E912AAF0;
-	Mon, 22 Jan 2024 15:11:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC074F5FD;
+	Mon, 22 Jan 2024 15:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936317; cv=none; b=p8/q8NGQ/DBY0owAq04nEM6EiY+VMl1gecvnVzGmL+LiRbLEonzYNxdHIZInEv//OFayFB64l4CnMFoIo8RgJDQ00I2XKVrkKAWL7FyuAA6ipohc3Gy+Y0IBxee/i1taZDBIyLagMFixl7bh9XXKpGzfHYvMkBbLI/IqxhXYKGc=
+	t=1705936327; cv=none; b=TVbrkSpTa7mY3DyBaZDdQdxEUEsbW3o8eU2TI+95UwxuPCeHOfaXaRM8f6ohxfMTXrP0aewrA26eioLMIBRl5kdvmktWnCNZ4u1yCNSMGMBJda+VaT2r5oOshdaTu06F9hMEywYnAA819rJuO9fp49A00S8lyzFq0apgf0ZV2es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936317; c=relaxed/simple;
-	bh=Vnjgf4dqkyGDz4b/kMEZ3z7g1junkaXLE1bZZe7eqvA=;
+	s=arc-20240116; t=1705936327; c=relaxed/simple;
+	bh=oX8dXXdE9VcWMj7gSfRvoBKndwGsFgtPgn5jA9n5IbI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dQX58FVL5pIpy5hYYW9oEZsCDK1VgUscJJHzWgTu02ip4szNU0ADhRnXk19qUay5WRXKL9k+ed07C5HuBQTtRiHNBqoOOeXY/H9k/dSGTyLjObQblS4RCfhmqDFHvLiGoNTE8dHXlD4krukhcxACnW4QfiaotG8hVoj8UUdPqAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DDNHjb37; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2ECDC43390;
-	Mon, 22 Jan 2024 15:11:54 +0000 (UTC)
+	 MIME-Version; b=cwcJLJkYCPUT4iprLfdwBFYQgL4cn4qK3IXaGpC4HyTktewZscHdb8PoAHY7nE2KG8m9issIDTVsWjGQNnnBBgBbeCeXSIXavVqjuxDRXDOne56p55j8xA/509MpZjUsTJcshLrplv5aaf+0boacwZgd251rEXnnnZWF/fx5Ut4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iSlEDuVI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B39C1C43394;
+	Mon, 22 Jan 2024 15:12:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936316;
-	bh=Vnjgf4dqkyGDz4b/kMEZ3z7g1junkaXLE1bZZe7eqvA=;
+	s=k20201202; t=1705936327;
+	bh=oX8dXXdE9VcWMj7gSfRvoBKndwGsFgtPgn5jA9n5IbI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DDNHjb37rYqIAwm0KlnqqkdVlDWCfq1mY4bC0m/XXfaDF+nqv6Oqbp1F7PFI1uUfJ
-	 AvfER1sJqxOLmaEk7dnnyUv0S42ptjPd2dVQ4Mdz2c8W3nBB2nTzP4l7qDfZjjUrP9
-	 fy8EIC4ExwVO8hL3OEgf17oaoWnFvXpAenOxGkF2QK7ord2+K4AfU47RHPTL7LSA+R
-	 /+A2FR5HzOKrwIoArMg+STw32O/EelQrdbhfCRgzZZL7vBUcZ4IizrBP/sUcxWLVwr
-	 xzbPMZxBQ55rnVTUXs3vEmeOJtyG1lwupiEsTbqazU2N+bXI9j1lRmFU5PI/9Tax8G
-	 hoi+tegPugMxg==
+	b=iSlEDuVIDGA3BQyHCxL8F2EcWuKQbtSRpAIRkT8BkzBbZQK2EFIJt4qtzTlltPEC6
+	 In9IO4xf7hHv7rC9BnquZRqUQwKFpLMumHjEKrel6SS07n9bQTe/g9A03gfPxOssYM
+	 aVdN2BIGJ9QTFeFqmtz8uQfS2bC2lNWzk+q5ZDdIGQMsCfLKUFTU1JymFN+DXc97Gj
+	 8AvyE0vKQoj8/hrH6MXQpRfvSWn0GxNMuObitu1M91rV5zb1K3FRSP9eOcZab8mreR
+	 uyH2W77s4k3MDmWpBJ8LkHNMjTo6zNvQ8SKkXwpfU5I6FofgyZAISwTewEBfow3IPK
+	 rjQag1SpB9u+A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	"Oliver F . Brown" <oliver.brown@oss.nxp.com>,
-	Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>,
-	Abel Vesa <abel.vesa@linaro.org>,
+Cc: "Stanley.Yang" <Stanley.Yang@amd.com>,
+	Tao Zhou <tao.zhou1@amd.com>,
+	Hawking Zhang <Hawking.Zhang@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	abelvesa@kernel.org,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	shawnguo@kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-imx@nxp.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 43/53] clk: imx: clk-imx8qxp: fix LVDS bypass, pixel and phy clocks
-Date: Mon, 22 Jan 2024 10:08:44 -0500
-Message-ID: <20240122150949.994249-43-sashal@kernel.org>
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	lijo.lazar@amd.com,
+	asad.kamal@amd.com,
+	Felix.Kuehling@amd.com,
+	le.ma@amd.com,
+	mukul.joshi@amd.com,
+	srinivasan.shanmugam@amd.com,
+	Philip.Yang@amd.com,
+	rajneesh.bhardwaj@amd.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 44/53] drm/amdgpu: Fix ecc irq enable/disable unpaired
+Date: Mon, 22 Jan 2024 10:08:45 -0500
+Message-ID: <20240122150949.994249-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150949.994249-1-sashal@kernel.org>
 References: <20240122150949.994249-1-sashal@kernel.org>
@@ -72,75 +79,122 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
+From: "Stanley.Yang" <Stanley.Yang@amd.com>
 
-[ Upstream commit 3f5f63adeea7e7aa715e101ffe4b4ac9705f9664 ]
+[ Upstream commit a32c6f7f5737cc7e31cd7ad5133f0d96fca12ea6 ]
 
-To be compatible with SCU firmware based on 1.15 a different clock
-routing for LVDS is needed.
+The ecc_irq is disabled while GPU mode2 reset suspending process,
+but not be enabled during GPU mode2 reset resume process.
 
-Signed-off-by: Oliver F. Brown <oliver.brown@oss.nxp.com>
-Signed-off-by: Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
-Link: https://lore.kernel.org/r/20231218122407.2757175-1-alexander.stein@ew.tq-group.com/
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+Changed from V1:
+	only do sdma/gfx ras_late_init in aldebaran_mode2_restore_ip
+	delete amdgpu_ras_late_resume function
+
+Changed from V2:
+	check umc ras supported before put ecc_irq
+
+Signed-off-by: Stanley.Yang <Stanley.Yang@amd.com>
+Reviewed-by: Tao Zhou <tao.zhou1@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/imx/clk-imx8qxp.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/aldebaran.c | 26 +++++++++++++++++++++++++-
+ drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c |  4 ++++
+ drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c |  5 +++++
+ drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  |  4 ++++
+ 4 files changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/imx/clk-imx8qxp.c b/drivers/clk/imx/clk-imx8qxp.c
-index 273de1f29307..1066ea16de62 100644
---- a/drivers/clk/imx/clk-imx8qxp.c
-+++ b/drivers/clk/imx/clk-imx8qxp.c
-@@ -67,6 +67,22 @@ static const char * const lcd_pxl_sels[] = {
- 	"lcd_pxl_bypass_div_clk",
- };
+diff --git a/drivers/gpu/drm/amd/amdgpu/aldebaran.c b/drivers/gpu/drm/amd/amdgpu/aldebaran.c
+index 2b97b8a96fb4..fa6193535d48 100644
+--- a/drivers/gpu/drm/amd/amdgpu/aldebaran.c
++++ b/drivers/gpu/drm/amd/amdgpu/aldebaran.c
+@@ -333,6 +333,7 @@ aldebaran_mode2_restore_hwcontext(struct amdgpu_reset_control *reset_ctl,
+ {
+ 	struct list_head *reset_device_list = reset_context->reset_device_list;
+ 	struct amdgpu_device *tmp_adev = NULL;
++	struct amdgpu_ras *con;
+ 	int r;
  
-+static const char *const lvds0_sels[] = {
-+	"clk_dummy",
-+	"clk_dummy",
-+	"clk_dummy",
-+	"clk_dummy",
-+	"mipi0_lvds_bypass_clk",
-+};
+ 	if (reset_device_list == NULL)
+@@ -358,7 +359,30 @@ aldebaran_mode2_restore_hwcontext(struct amdgpu_reset_control *reset_ctl,
+ 		 */
+ 		amdgpu_register_gpu_instance(tmp_adev);
+ 
+-		/* Resume RAS */
++		/* Resume RAS, ecc_irq */
++		con = amdgpu_ras_get_context(tmp_adev);
++		if (!amdgpu_sriov_vf(tmp_adev) && con) {
++			if (tmp_adev->sdma.ras &&
++				tmp_adev->sdma.ras->ras_block.ras_late_init) {
++				r = tmp_adev->sdma.ras->ras_block.ras_late_init(tmp_adev,
++						&tmp_adev->sdma.ras->ras_block.ras_comm);
++				if (r) {
++					dev_err(tmp_adev->dev, "SDMA failed to execute ras_late_init! ret:%d\n", r);
++					goto end;
++				}
++			}
 +
-+static const char *const lvds1_sels[] = {
-+	"clk_dummy",
-+	"clk_dummy",
-+	"clk_dummy",
-+	"clk_dummy",
-+	"mipi1_lvds_bypass_clk",
-+};
++			if (tmp_adev->gfx.ras &&
++				tmp_adev->gfx.ras->ras_block.ras_late_init) {
++				r = tmp_adev->gfx.ras->ras_block.ras_late_init(tmp_adev,
++						&tmp_adev->gfx.ras->ras_block.ras_comm);
++				if (r) {
++					dev_err(tmp_adev->dev, "GFX failed to execute ras_late_init! ret:%d\n", r);
++					goto end;
++				}
++			}
++		}
 +
- static const char * const mipi_sels[] = {
- 	"clk_dummy",
- 	"clk_dummy",
-@@ -201,9 +217,9 @@ static int imx8qxp_clk_probe(struct platform_device *pdev)
- 	/* MIPI-LVDS SS */
- 	imx_clk_scu("mipi0_bypass_clk", IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_BYPASS);
- 	imx_clk_scu("mipi0_pixel_clk", IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_PER);
--	imx_clk_scu("mipi0_lvds_pixel_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC2);
- 	imx_clk_scu("mipi0_lvds_bypass_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_BYPASS);
--	imx_clk_scu("mipi0_lvds_phy_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC3);
-+	imx_clk_scu2("mipi0_lvds_pixel_clk", lvds0_sels, ARRAY_SIZE(lvds0_sels), IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC2);
-+	imx_clk_scu2("mipi0_lvds_phy_clk", lvds0_sels, ARRAY_SIZE(lvds0_sels), IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC3);
- 	imx_clk_scu2("mipi0_dsi_tx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_MST_BUS);
- 	imx_clk_scu2("mipi0_dsi_rx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_SLV_BUS);
- 	imx_clk_scu2("mipi0_dsi_phy_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_PHY);
-@@ -213,9 +229,9 @@ static int imx8qxp_clk_probe(struct platform_device *pdev)
+ 		amdgpu_ras_resume(tmp_adev);
  
- 	imx_clk_scu("mipi1_bypass_clk", IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_BYPASS);
- 	imx_clk_scu("mipi1_pixel_clk", IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_PER);
--	imx_clk_scu("mipi1_lvds_pixel_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC2);
- 	imx_clk_scu("mipi1_lvds_bypass_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_BYPASS);
--	imx_clk_scu("mipi1_lvds_phy_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC3);
-+	imx_clk_scu2("mipi1_lvds_pixel_clk", lvds1_sels, ARRAY_SIZE(lvds1_sels), IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC2);
-+	imx_clk_scu2("mipi1_lvds_phy_clk", lvds1_sels, ARRAY_SIZE(lvds1_sels), IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC3);
+ 		/* Update PSP FW topology after reset */
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+index d96ee48e1706..35921b41fc27 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+@@ -1144,6 +1144,10 @@ static int gmc_v10_0_hw_fini(void *handle)
  
- 	imx_clk_scu2("mipi1_dsi_tx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_MST_BUS);
- 	imx_clk_scu2("mipi1_dsi_rx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_SLV_BUS);
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
+ 
++	if (adev->gmc.ecc_irq.funcs &&
++		amdgpu_ras_is_supported(adev, AMDGPU_RAS_BLOCK__UMC))
++		amdgpu_irq_put(adev, &adev->gmc.ecc_irq, 0);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+index 7124347d2b6c..310a5607d83b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+@@ -951,6 +951,11 @@ static int gmc_v11_0_hw_fini(void *handle)
+ 	}
+ 
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
++
++	if (adev->gmc.ecc_irq.funcs &&
++		amdgpu_ras_is_supported(adev, AMDGPU_RAS_BLOCK__UMC))
++		amdgpu_irq_put(adev, &adev->gmc.ecc_irq, 0);
++
+ 	gmc_v11_0_gart_disable(adev);
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+index 0d9e9d9dd4a1..409e3aa018f2 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+@@ -1900,6 +1900,10 @@ static int gmc_v9_0_hw_fini(void *handle)
+ 
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
+ 
++	if (adev->gmc.ecc_irq.funcs &&
++		amdgpu_ras_is_supported(adev, AMDGPU_RAS_BLOCK__UMC))
++		amdgpu_irq_put(adev, &adev->gmc.ecc_irq, 0);
++
+ 	return 0;
+ }
+ 
 -- 
 2.43.0
 
