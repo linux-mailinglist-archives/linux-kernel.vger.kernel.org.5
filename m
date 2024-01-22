@@ -1,118 +1,81 @@
-Return-Path: <linux-kernel+bounces-32636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFED3835E4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:33:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DB9A835E52
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:36:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7A30282963
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:33:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 538E21F23878
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FC139AEC;
-	Mon, 22 Jan 2024 09:33:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eSivbJZy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44FB39AD8;
+	Mon, 22 Jan 2024 09:36:43 +0000 (UTC)
+Received: from abrecht.li (75-128-16-94.static.cable.fcom.ch [94.16.128.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4389739AD8;
-	Mon, 22 Jan 2024 09:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B8C1E89B;
+	Mon, 22 Jan 2024 09:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.16.128.75
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705916017; cv=none; b=IVc2PHVUio42Wgg4l5xOLT58Y9u4qEEQ1unScMvCUqHvx9+7mgiVIsVt8CE+6/ZxQ8r+46w/GpDviVXRlyirMEAzvPxKlZmCuDF4GHzBspQHJrXpF0XlbUm5s+POnKhRrWeiog0fyMLsqBy+uGBPltaMzV4Mf88Gt0VGhILXPkE=
+	t=1705916203; cv=none; b=J6FbXBpca7K81LtQr0AQkRBLHtSkHCy/5iHlrQ12XwegTFZ6OfCaDqQsY7xNWTInHgb0XUYiZrb4FWPqJjeP92+LkAb1kUf49bOqaycAfFKV6HU+7UKCFKBxWMRmDM+Y/wKKZ6ccQT+uDnc8VThfh2fDxaetW9/pOfzm6RDWp+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705916017; c=relaxed/simple;
-	bh=FEQhqxSV27zZJ+eMJHKx6BwCXQ+B3EXodIj+ZGRhYMw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aiNG895+TgS8DUdtJd2cqqfXITkT3lDag9y8+fXfoq4L4bNyqGqPTMviiYI8KFpBx02ZWwiuubtFZARdYLBDS3N9dwVRbi3jyKsgL/nU4y4Q4Kylc9F11AfWUyXIY+5IfCXOz5HyLz+L+coEnA73YuZ8QpFmLW0skHusnpyMB6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eSivbJZy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75667C433B1;
-	Mon, 22 Jan 2024 09:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705916016;
-	bh=FEQhqxSV27zZJ+eMJHKx6BwCXQ+B3EXodIj+ZGRhYMw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eSivbJZyjMXi8CBUBLt9HCaLfcfjX3qhxScAt1zF+wbszJMLD6ucqYNQYWIvaNgcv
-	 1kYUaukIW+RDNQQAE1n5lr9fOP/Zi2webjTzn/zjQVvCfKGqArFqR4cEoq81FhofZ/
-	 jEVSaKOdGMi0hgF5FWjBDlPeCHmZ0ATlZ57KWiqtER2upN0ozrOAXcBL0ysxALIg7Y
-	 Ck5QBdKM/L3U8646BfJ1N7npHXohRjTDcy73GpgF3PYyX153eeD98k0dnS8/VoZvo/
-	 ixAo5YdN1YyKQvDWVm2zjVROcTvlBAg+F4Ece4ZdCWbYcwPYSZk2YL3mk9Hge47Nfn
-	 gCzMIgIuaWKug==
-Date: Mon, 22 Jan 2024 09:33:31 +0000
-From: Conor Dooley <conor@kernel.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: aisheng.dong@nxp.com, andi.shyti@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, linux-imx@nxp.com, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] dt-bindings: i2c: imx-lpi2c: add i.MX95 LPI2C
-Message-ID: <20240122-blade-saddling-784b57593913@spud>
-References: <20240122091230.2075378-1-peng.fan@oss.nxp.com>
+	s=arc-20240116; t=1705916203; c=relaxed/simple;
+	bh=P/K2p5qOybuu8S9ukoXzFxZFZq0Al91xSKb0Dcn300M=;
+	h=MIME-Version:Date:From:To:Subject:Message-ID:Content-Type; b=jZz8BRYHA5UK4OxTQsmzI02uEwNSFBMatJywhlmUo0Y7cTAYqtbTLpl9fBqGoOloXNlRVqggaES+y55vnux3Dq7S+e+9bsPbM3JWFBJFjWDO/rn2fPpevWF+IPSrvmDc4M/3auY0xl9EYYu4IJ9LXBCCCfpMzQICgSUEGLCQ0Nw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nodmarc.danielabrecht.ch; spf=pass smtp.mailfrom=nodmarc.danielabrecht.ch; arc=none smtp.client-ip=94.16.128.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nodmarc.danielabrecht.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nodmarc.danielabrecht.ch
+DKIM-Filter: OpenDKIM Filter v2.11.0 abrecht.li 677BA27525E9
+Received: from toucan.dmz.abrecht.li (unknown [IPv6:fc00:4::a3c:111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by abrecht.li (Postfix) with ESMTPSA id 677BA27525E9;
+	Mon, 22 Jan 2024 09:36:31 +0000 (UTC)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="IxqgPqMNTPtHQsCg"
-Content-Disposition: inline
-In-Reply-To: <20240122091230.2075378-1-peng.fan@oss.nxp.com>
+Date: Mon, 22 Jan 2024 10:36:31 +0100
+From: Daniel Abrecht <linux-sound@nodmarc.danielabrecht.ch>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] ASoC: soc-core.c: Add "Unknown" and "Unknown Product" to
+ dmi_blacklist
+Message-ID: <7d11d0711ad93f2208efb9ab13fe915b@abrecht.li>
+X-Sender: linux-sound@nodmarc.danielabrecht.ch
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+In U-Boot, the default for DMI vendor / product if not set is "Unknown" and "Unknown Product".
+See https://source.denx.de/u-boot/u-boot/-/blob/v2023.10/lib/smbios.c?ref_type=tags#L272
 
---IxqgPqMNTPtHQsCg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch adds them to the dmi_blacklist.
 
-On Mon, Jan 22, 2024 at 05:12:30PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> Add i.MX95 LPI2C compatible entry, same as i.MX93 compatible
-> with i.MX7ULP.
->=20
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Daniel Abrecht <public@danielabrecht.ch>
+Acked-by: Jaroslav Kysela <perex@perex.cz>
+---
+ sound/soc/soc-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml b/D=
-ocumentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-> index 4656f5112b84..54d500be6aaa 100644
-> --- a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-> +++ b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-> @@ -24,6 +24,7 @@ properties:
->                - fsl,imx8qm-lpi2c
->                - fsl,imx8ulp-lpi2c
->                - fsl,imx93-lpi2c
-> +              - fsl,imx95-lpi2c
->            - const: fsl,imx7ulp-lpi2c
-> =20
->    reg:
-> --=20
-> 2.37.1
->=20
-
---IxqgPqMNTPtHQsCg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa42awAKCRB4tDGHoIJi
-0sXtAQDqKcW3ThYABJF7wDEf9gUZpjjOYvWKr08fw5UcV1ocwQEAmlvD2zONN6TB
-hDd2AdTmLhZAzGLhgGRhjuV2YDJLBQo=
-=S8yJ
------END PGP SIGNATURE-----
-
---IxqgPqMNTPtHQsCg--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index f8524b5bfb33..aa1a31abbe3a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1804,6 +1804,8 @@ static const char * const dmi_blacklist[] = {
+ 	"Board Manufacturer",
+ 	"Board Vendor Name",
+ 	"Board Product Name",
++	"Unknown",
++	"Unknown Product",
+ 	NULL,	/* terminator */
+ };
+ 
+-- 
+2.39.2
 
