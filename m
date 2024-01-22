@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-33356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCF3383690F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:53:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DA168368BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:46:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4061B2D545
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:45:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15BA92870E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C95C66B5C;
-	Mon, 22 Jan 2024 15:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B926773C;
+	Mon, 22 Jan 2024 15:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LM0bH2uq"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tfhmG9ih"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBFE066B48;
-	Mon, 22 Jan 2024 15:06:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E576772A;
+	Mon, 22 Jan 2024 15:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935963; cv=none; b=gUCv4pm4jqsOFC6YnJa3SAQCXYINEbXpm2IZ66HERXZdRcltWpqVYxtRvkOBUPC7584qKgC8TgpC7LCyPzR7PNGBdevudwhaddQcRtUBbaGNxX0yKI3ZPI74M1wAq0ovfPFbANDqX1VuRU+nu1UImJEufe/EnkxVWS5UteWhgpI=
+	t=1705935965; cv=none; b=Rk6jrTOkdPBBAxMF0CGHewH1nR/qmCRVKUsjIWua6iifMTTka2Ygpr5tXYZWyCPWPKfAR5Tzb9+wzWK6i/q5I7/CpEc0eCiWi7Nk6XbX0v+Z71hr+zIbY0iTlVdsW94pvcLLyhk+GW8gdxPKs2930JD+2K5FaMD1dWVbr+Lka2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935963; c=relaxed/simple;
-	bh=rprisNEsC2uRiF1SxBvUy142ekeuxh+v3vglsrsRGUM=;
+	s=arc-20240116; t=1705935965; c=relaxed/simple;
+	bh=q1gUvMaiNccD6iinqYA1zWgxswaOwb0HYsFemnlGBms=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oLfPYiC2ICa2PBfGATBoeRktovqxzvsF5pNW4Xcd0TqWCl5kvoky6UeVWMYmFlauH+cgtogedNSlMlwCkH7W+ArTuzsRpxfemjplzeqr/DzMvmdl2OTd2Dgi5bdN9wK+5LI62kyh/6Wdhr3jBBLccPEWpOGLICibqEK18KzzDSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LM0bH2uq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFD20C43390;
-	Mon, 22 Jan 2024 15:06:02 +0000 (UTC)
+	 MIME-Version; b=DVb2uUBCtDoFrNS8vnYyvWA5DJP1Q3NWaV1Cdddu5YctwknodqnzJF9pR4BRp5wveoDkbBhnmIAb/bvG8mbHZBzKUj+iJ00Y1Yj0p9H8VflK9Cume9mey78WpSjpdt6yE4dnRDSuYPBrW9V/aQRvtYk2fdhTlQf8lwXJGYug4vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tfhmG9ih; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20C93C433B1;
+	Mon, 22 Jan 2024 15:06:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935963;
-	bh=rprisNEsC2uRiF1SxBvUy142ekeuxh+v3vglsrsRGUM=;
+	s=k20201202; t=1705935965;
+	bh=q1gUvMaiNccD6iinqYA1zWgxswaOwb0HYsFemnlGBms=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LM0bH2uq0UjNEqwquYSqI0kqgxs5KRN55Ku7Afvy8q42eWZ54Y/7735nXS2yS20ag
-	 Bz0BIugAHhZgkuxg6F0tOV6TRQPn/cBYRML3SdtHwBrlKAz7Y50vOk68YjqRnl3rJs
-	 CFOaz3mi+zgsmct4FePRrj0IWL5h/PYi7TC4LzBFValVSOLi37G6Cho5/qBGTEU+UB
-	 APuf3I0kHCumX8cd3YRTv4CO1XEaKk8c+upjPRbmf1v4Zuw3spWkGP7Kpo47Xvr8Sl
-	 TpGRDG+2udkCxwuY4HQi9jhVfEDZVGx6FIKcFEL8NTKjo+3tH/SfSL6Ztrp/ljOxos
-	 0+JmWJv58TUMw==
+	b=tfhmG9ihPvbJIjmws7dgNTjnUjU/e08zMLEvzaIVJ/sPHqMyGTh8YsN1ssozv2HlT
+	 vlAZktu7ZcbdCZndHvr0M5gUMKs/2+8+i7OVjeyp0BB2H5n0plW9WSD51VlB8DucW6
+	 SIYVZZQprwMh2tvxSYia1pwCepXVAr2/olyAdCfdJkWkUtbukIcFfVS/xDAwREwwz5
+	 T83wTMa0mq3CUFyJAUM+5qciRBptd86Or/cyAujgTo3NQgnNQ29guIIdEKxXXKxz15
+	 2V06IQaBC1xpp0y1X5o0CshZltwSG9isU65hI39SPB35H9E1SWErJifhbM+bTirk2D
+	 r31HiLriW0Ipw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Xing Tong Wu <xingtong.wu@siemens.com>,
+Cc: Kees Cook <keescook@chromium.org>,
+	Jim Cromie <jim.cromie@gmail.com>,
+	Jean Delvare <jdelvare@suse.com>,
 	Guenter Roeck <linux@roeck-us.net>,
-	Sasha Levin <sashal@kernel.org>,
-	jdelvare@suse.com,
-	linux-hwmon@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 34/73] hwmon: (nct6775) Fix fan speed set failure in automatic mode
-Date: Mon, 22 Jan 2024 10:01:48 -0500
-Message-ID: <20240122150432.992458-34-sashal@kernel.org>
+	linux-hwmon@vger.kernel.org,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 35/73] hwmon: (pc87360) Bounds check data->innr usage
+Date: Mon, 22 Jan 2024 10:01:49 -0500
+Message-ID: <20240122150432.992458-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -65,40 +67,58 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.13
 Content-Transfer-Encoding: 8bit
 
-From: Xing Tong Wu <xingtong.wu@siemens.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 8b3800256abad20e91c2698607f9b28591407b19 ]
+[ Upstream commit 4265eb062a7303e537ab3792ade31f424c3c5189 ]
 
-Setting the fan speed is only valid in manual mode; it is not possible
-to set the fan's speed in automatic mode.
-Return error when attempting to set the fan speed in automatic mode.
+Without visibility into the initializers for data->innr, GCC suspects
+using it as an index could walk off the end of the various 14-element
+arrays in data. Perform an explicit clamp to the array size. Silences
+the following warning with GCC 12+:
 
-Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
-Link: https://lore.kernel.org/r/20231121081604.2499-3-xingtong_wu@163.com
+./drivers/hwmon/pc87360.c: In function 'pc87360_update_device':
+./drivers/hwmon/pc87360.c:341:49: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+  341 |                                 data->in_max[i] = pc87360_read_value(data,
+      |                                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+  342 |                                                   LD_IN, i,
+      |                                                   ~~~~~~~~~
+  343 |                                                   PC87365_REG_IN_MAX);
+      |                                                   ~~~~~~~~~~~~~~~~~~~
+./drivers/hwmon/pc87360.c:209:12: note: at offset 255 into destination object 'in_max' of size 14
+  209 |         u8 in_max[14];          /* Register value */
+      |            ^~~~~~
+
+Cc: Jim Cromie <jim.cromie@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-hwmon@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Link: https://lore.kernel.org/r/20231130200207.work.679-kees@kernel.org
+[groeck: Added comment into code clarifying context]
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/nct6775-core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/hwmon/pc87360.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/nct6775-core.c b/drivers/hwmon/nct6775-core.c
-index d928eb8ae5a3..92a49fafe2c0 100644
---- a/drivers/hwmon/nct6775-core.c
-+++ b/drivers/hwmon/nct6775-core.c
-@@ -2553,6 +2553,13 @@ store_pwm(struct device *dev, struct device_attribute *attr, const char *buf,
- 	int err;
- 	u16 reg;
+diff --git a/drivers/hwmon/pc87360.c b/drivers/hwmon/pc87360.c
+index a4adc8bd531f..534a6072036c 100644
+--- a/drivers/hwmon/pc87360.c
++++ b/drivers/hwmon/pc87360.c
+@@ -323,7 +323,11 @@ static struct pc87360_data *pc87360_update_device(struct device *dev)
+ 		}
  
-+	/*
-+	 * The fan control mode should be set to manual if the user wants to adjust
-+	 * the fan speed. Otherwise, it will fail to set.
-+	 */
-+	if (index == 0 && data->pwm_enable[nr] > manual)
-+		return -EBUSY;
-+
- 	err = kstrtoul(buf, 10, &val);
- 	if (err < 0)
- 		return err;
+ 		/* Voltages */
+-		for (i = 0; i < data->innr; i++) {
++		/*
++		 * The min() below does not have any practical meaning and is
++		 * only needed to silence a warning observed with gcc 12+.
++		 */
++		for (i = 0; i < min(data->innr, ARRAY_SIZE(data->in)); i++) {
+ 			data->in_status[i] = pc87360_read_value(data, LD_IN, i,
+ 					     PC87365_REG_IN_STATUS);
+ 			/* Clear bits */
 -- 
 2.43.0
 
