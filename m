@@ -1,64 +1,99 @@
-Return-Path: <linux-kernel+bounces-34281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE17837762
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:04:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 208E083776F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66C39282F89
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:04:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 536091C221C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A37495F1;
-	Mon, 22 Jan 2024 23:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43091495C2;
+	Mon, 22 Jan 2024 23:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Rj3ezUeq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="09N6/asb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2W6Ghoz2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="09N6/asb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2W6Ghoz2"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B985495D0;
-	Mon, 22 Jan 2024 23:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3E5364DD;
+	Mon, 22 Jan 2024 23:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705964675; cv=none; b=B2oLIQTzKe9RZaT03tSayU/sIkaGp93URd+jU/ycn9Hmj9NOaQ0R3DZBi52As5pB3JEVqplUPBEnHRKR2i0Zm26U/EuITMZvlEifjcu200rdD4lw7B/ydxkDc7T3DOsMrEugJjnmRMXzCrflkY0xL6K1AjEmOrL83l5Om5/3afI=
+	t=1705964751; cv=none; b=YvN2E4UiP5KhTTmQuo/3zr67DPnms1fgkHy7BoostUi1dYntjCAWblZnUUhHr6HDYXTdzsPYsFGRJie63MD0R06n3bPT4MJjqRZ0IWtJUX0A7tds81ubXbQ4RFCq//2HEFYVHTz6U9TRnB8gGwa4Y+DNC7DbQtg8vByRG4a7IgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705964675; c=relaxed/simple;
-	bh=0WtBFrKbQ+ipOh3xWeUTAfnGIGSgexddLuxNCH/vWcU=;
+	s=arc-20240116; t=1705964751; c=relaxed/simple;
+	bh=SALosj7hPzRWwZS+P+b6rHJSA9Y8WaIYJu0rYoaCQPU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R3x94JYKWCq+07xoe8pxpMwCFG4BIRj5TKWxTUYD8ZKY9ZZ3A31Cbs3qxXDUNqvhhBxspfe4w+mDsW55A6IqDTwytHs8qGJ+SmtdekqT3kstiO7we3Nv9+GOZgTqU5wndlLQ2vteDBE3Qvm4TX9fZCKKKoN9aj3R8OfEMOby76Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Rj3ezUeq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95113C43390;
-	Mon, 22 Jan 2024 23:04:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705964675;
-	bh=0WtBFrKbQ+ipOh3xWeUTAfnGIGSgexddLuxNCH/vWcU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Rj3ezUequMXxmACTz6uTOy5MSeztBwQYkUA9QcmiyOskbQZffb4yBIjyYGfVlnYqn
-	 LL1TLLkmOPHcYlp12jln+Khzjt71kn6jhJFGWN4fmm7IEwiIGHS/m6UBM9WlJLbYxl
-	 +yDgTVdz0hlCkFe8vw8fYVRT06IFqocJqso0N1Qw=
-Date: Mon, 22 Jan 2024 15:04:30 -0800
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: "quic_charante@quicinc.com" <quic_charante@quicinc.com>,
-	"david@redhat.com" <david@redhat.com>,
-	"mhocko@suse.com" <mhocko@suse.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-	"mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"quic_pkondeti@quicinc.com" <quic_pkondeti@quicinc.com>,
-	"vbabka@suse.cz" <vbabka@suse.cz>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	"quic_cgoldswo@quicinc.com" <quic_cgoldswo@quicinc.com>
-Subject: Re: [RESEND PATCH V2] mm: page_alloc: unreserve highatomic page
- blocks before oom
-Message-ID: <2024012210-outshoot-dragonish-fe8e@gregkh>
-References: <1700823445-27531-1-git-send-email-quic_charante@quicinc.com>
- <3fe3b3edd33cd784071dd9b459d20a79605ec918.camel@infinera.com>
- <2024012205-undrilled-those-2435@gregkh>
- <PH0PR10MB461565CEE892267025BC697BF4752@PH0PR10MB4615.namprd10.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZhAwdzb/EQwldPbUV0E/G3bXZZTYUO64rClLEIJg30T2AwUfElSsOo+ssEYRGPisIP1koXG0a/bMKTco+WMPVffh5nyIpiPtnnqlvD+7EqyIBmOPQY0AZrG014FCTLPGL8sOw9DyNUqntp2ab5PpTh/Ug5SMAr11i2glC6/Tpe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=09N6/asb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2W6Ghoz2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=09N6/asb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2W6Ghoz2; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B9FD121FCF;
+	Mon, 22 Jan 2024 23:05:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705964747;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RMmD19Va6uoSBzoselCt3P1uMVFvKzLAPpQQ76TCNpA=;
+	b=09N6/asbA8EdQZS1+Xzdd7gQKmoGJEKaWPSYYXdu/ngXaGDGDV7A4nQl1cqRYEwFzht2mQ
+	VL2dyh46xhr5RvGN07Og6ESJOsBerhbdIU+EQi3b8TUg6gnGwA/6PVwaPXvVTQu4NUxe/5
+	bIpezahq+/25cFO02cehAv4FyaV54CY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705964747;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RMmD19Va6uoSBzoselCt3P1uMVFvKzLAPpQQ76TCNpA=;
+	b=2W6Ghoz2bv1CrviVPmJHPGI3ACFonjz/0HCZriaQw1uPaXCTLKUC/Yy8QJ8NT66nrR+0Xt
+	y/tn+HgKbwYuxlBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705964747;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RMmD19Va6uoSBzoselCt3P1uMVFvKzLAPpQQ76TCNpA=;
+	b=09N6/asbA8EdQZS1+Xzdd7gQKmoGJEKaWPSYYXdu/ngXaGDGDV7A4nQl1cqRYEwFzht2mQ
+	VL2dyh46xhr5RvGN07Og6ESJOsBerhbdIU+EQi3b8TUg6gnGwA/6PVwaPXvVTQu4NUxe/5
+	bIpezahq+/25cFO02cehAv4FyaV54CY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705964747;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RMmD19Va6uoSBzoselCt3P1uMVFvKzLAPpQQ76TCNpA=;
+	b=2W6Ghoz2bv1CrviVPmJHPGI3ACFonjz/0HCZriaQw1uPaXCTLKUC/Yy8QJ8NT66nrR+0Xt
+	y/tn+HgKbwYuxlBQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A3F1813310;
+	Mon, 22 Jan 2024 23:05:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id vsKZJ8v0rmVBDAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Mon, 22 Jan 2024 23:05:47 +0000
+Date: Tue, 23 Jan 2024 00:05:26 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
+Message-ID: <20240122230526.GF31555@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1705946889.git.dsterba@suse.com>
+ <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
+ <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,33 +102,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH0PR10MB461565CEE892267025BC697BF4752@PH0PR10MB4615.namprd10.prod.outlook.com>
+In-Reply-To: <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.00
+X-Spamd-Result: default: False [-1.00 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[37.85%]
+X-Spam-Flag: NO
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+On Mon, Jan 22, 2024 at 02:54:31PM -0800, Linus Torvalds wrote:
+> On Mon, 22 Jan 2024 at 14:34, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Bah. These fixes are garbage. Now my machine doesn't even boot. I'm
+> > bisecting
 
-A: No.
-Q: Should I include quotations after my reply?
+Ah, sorry.
 
-http://daringfireball.net/2007/07/on_top
+> My bisection says
+> 
+>    1e7f6def8b2370ecefb54b3c8f390ff894b0c51b is the first bad commit
 
-On Mon, Jan 22, 2024 at 10:49:32PM +0000, Joakim Tjernlund wrote:
-> Seems like I pasted the wrong commit(sorry), should be: ac3f3b0a55518056bc80ed32a41931c99e1f7d81
-> I only see that one in master.
+We got a report today [1] that this commit is indeed bad,
 
-And what kernels have you tested this on?  How far back should it go?
+https://lore.kernel.org/linux-btrfs/CABq1_vj4GpUeZpVG49OHCo-3sdbe2-2ROcu_xDvUG-6-5zPRXg@mail.gmail.com/
 
-For mm patches like this, that are not explicitly tagged by the
-maintainers to be included in the stable tree, we need their ack to be
-able to apply them based on their requests.  So can you get that for
-this change and provide tested patches, we will be glad to queue them
-up.
+the timing was also unfortuate and too late to recall the pull request.
 
-thanks,
+> but I'll still have to verify by testing the revert on top of my current tree.
+> 
+> It did revert cleanly, but I also note that if the zstd case is wrong,
+> I assume the other very similar commits (for zlib and lzo) are
+> potentially also wrong.
+> 
+> Let me reboot to verify that at least my machine boots.
 
-greg k-h
+Per the report revert makes it work again and zlib and lzo cases are not
+affected.
+
+I can send a pull request reverting all the three until we figure out
+what's wrong, or you can do it as all revert cleanly.
 
