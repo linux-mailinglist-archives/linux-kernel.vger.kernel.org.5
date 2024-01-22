@@ -1,48 +1,55 @@
-Return-Path: <linux-kernel+bounces-34055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95BFA83729B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:32:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4BB8372A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:34:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3819A1F2769D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:32:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 142A31F26FD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20983F8D4;
-	Mon, 22 Jan 2024 19:32:05 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D81E3F8E1;
+	Mon, 22 Jan 2024 19:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="jO/DHwQ3"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75E13D553;
-	Mon, 22 Jan 2024 19:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F953B790;
+	Mon, 22 Jan 2024 19:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705951925; cv=none; b=ogzHtlUIs2EslTLhj+nA+ebXGNuDiffQI3aBu7Jf5sSEZrFfgSntLniZzr2F0AH/tCQyFU2ttcK8xoIM+KrWNt1XOOlcdfJymh8s5obWMLsUM7HDLYycGDMaLowVdB4sZE6HJ4gvwMT4Ys2/ao/Pom+rK+vnf9PmBqj1ILZ655w=
+	t=1705952038; cv=none; b=D8qdVgEe9wBpr47FcfDFLzjyJBlvjf21o6Mlg9pRn9HEew3nA8tlcw/KL0B/E3WnpCxQT9StlXtkzxRS/Xc+hix7jynjBhxZ6vn0xfu2Je/z999ZdLPA3Wd9QkznlhC6LC6eCVIE13lG30sw7Wsi5E9oAk+oCXw3QpmTPvlbdaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705951925; c=relaxed/simple;
-	bh=p6s5VVT4V3wWUeTopZg8BLSWXqDSEU8WgqilLe024xw=;
+	s=arc-20240116; t=1705952038; c=relaxed/simple;
+	bh=p0GdHpTNMv7Dcw3S5KC6jiYf/8HQU0tAijW9BrNacbQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nYbACHxkJQtDYEqKdH7dlE/h/JFyaaNEM+1dTjNXoStCAgqvHe8MEBuByYPKgULj7P04Bn22/q4H3ccEa7C1VPG84XYJgeqzA2WIAKDpTERT0/v5d7duTkYyAj8H/y/PxDDB82jMg4Nn3jiP802T8pq/2lsf0dBh38d78BfCscI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rS010-00082y-1s;
-	Mon, 22 Jan 2024 19:31:27 +0000
-Date: Mon, 22 Jan 2024 19:31:18 +0000
-From: Daniel Golle <daniel@makrotopia.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UVlqK0aCBITsmhTchzJaT9HfaBnbP5LabLnWyxFIzVfiSYdNxx8HcPQWOvOzIvqAZAJD3D0hl3/ttY/EzGwXXHV4D6VZCfa6lOe4LrITtl8BpgN/KG7eFuTkENb/s4FYT9QQgQmbS99J3sZUQkrE7ejl0jTyca7fCRwEwrKHPRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=jO/DHwQ3; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=/Z6SXTn8YhiWrcZlgd1ZQ8j3V9FW9S8AEHmuF/IWI4A=; b=jO/DHwQ3UDrqPgaEKtXlb4KHhO
+	uOoDeXsV8PaWWb+8cBpTjQXStv6T5GVS/7ybW/ZtdJ1r8nBWbNzCHUtWA3OmkVQyxNdroow63o24l
+	u3pH6TnbNKF6aXOkIrgkVw8Ia0qjLYomaVI/PL7XdWk4S9HhXx5mLLyoTnsBu5ggpgO0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rS031-005lA4-Eo; Mon, 22 Jan 2024 20:33:31 +0100
+Date: Mon, 22 Jan 2024 20:33:31 +0100
+From: Andrew Lunn <andrew@lunn.ch>
 To: Breno Leitao <leitao@debian.org>
 Cc: kuba@kernel.org, davem@davemloft.net, abeni@redhat.com,
 	edumazet@google.com, Ioana Ciornei <ioana.ciornei@nxp.com>,
-	Andrew Lunn <andrew@lunn.ch>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
 	Russell King <linux@armlinux.org.uk>,
 	Paolo Abeni <pabeni@redhat.com>, Alexander Couzens <lynxis@fe80.eu>,
+	Daniel Golle <daniel@makrotopia.org>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Jose Abreu <Jose.Abreu@synopsys.com>, dsahern@kernel.org,
@@ -53,7 +60,7 @@ Cc: kuba@kernel.org, davem@davemloft.net, abeni@redhat.com,
 	"moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>
 Subject: Re: [PATCH net-next 03/22] net: fill in MODULE_DESCRIPTION()s for
  PCS Layer
-Message-ID: <Za7ChrR88vvqAJ5X@makrotopia.org>
+Message-ID: <52e39a1b-c551-4eea-9606-62be0cbad39f@lunn.ch>
 References: <20240122184543.2501493-1-leitao@debian.org>
  <20240122184543.2501493-4-leitao@debian.org>
 Precedence: bulk
@@ -66,12 +73,12 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20240122184543.2501493-4-leitao@debian.org>
 
-Hi Breno,
-
 On Mon, Jan 22, 2024 at 10:45:24AM -0800, Breno Leitao wrote:
 > W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
 > Add descriptions to the LynxI PCS MediaTek's SoC.
-> 
+
+That patch now does more than that.
+
 > Signed-off-by: Breno Leitao <leitao@debian.org>
 > ---
 >  drivers/net/pcs/pcs-lynx.c      | 1 +
@@ -89,44 +96,10 @@ On Mon, Jan 22, 2024 at 10:45:24AM -0800, Breno Leitao wrote:
 >  
 > +MODULE_DESCRIPTION("MediaTek SGMII library for Lynx PCS");
 
-Nah, pcs-lynx.c is used by various SoC vendors **other than MediaTek**
-such as Freescale and STMicroelectronics.
+pcs-lynx is for NXP hardware, not MediaTek.
 
-Users of the pcs-lynx.c driver are
-ethernet/stmicro/stmmac/dwmac-socfpga.c
-ethernet/altera/altera_tse_main.c
-ethernet/freescale/dpaa2/dpaa2-mac.c
-ethernet/freescale/enetc/enetc_pf.c
-ethernet/freescale/fman/fman_memac.c
-dsa/ocelot/felix_vsc9959.c
-dsa/ocelot/seville_vsc9953.c
+    Andrew
 
-
->  MODULE_LICENSE("Dual BSD/GPL");
-> diff --git a/drivers/net/pcs/pcs-mtk-lynxi.c b/drivers/net/pcs/pcs-mtk-lynxi.c
-> index 8501dd365279..4f63abe638c4 100644
-> --- a/drivers/net/pcs/pcs-mtk-lynxi.c
-> +++ b/drivers/net/pcs/pcs-mtk-lynxi.c
-> @@ -303,4 +303,5 @@ void mtk_pcs_lynxi_destroy(struct phylink_pcs *pcs)
->  }
->  EXPORT_SYMBOL(mtk_pcs_lynxi_destroy);
->  
-> +MODULE_DESCRIPTION("MediaTek SGMII library for LynxI");
-
-Ack on this one.
-
->  MODULE_LICENSE("GPL");
-> diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
-> index 31f0beba638a..9c020dd3c766 100644
-> --- a/drivers/net/pcs/pcs-xpcs.c
-> +++ b/drivers/net/pcs/pcs-xpcs.c
-> @@ -1456,4 +1456,5 @@ struct dw_xpcs *xpcs_create_mdiodev(struct mii_bus *bus, int addr,
->  }
->  EXPORT_SYMBOL_GPL(xpcs_create_mdiodev);
->  
-> +MODULE_DESCRIPTION("Synopsys DesignWare XPCS helpers");
->  MODULE_LICENSE("GPL v2");
-> -- 
-> 2.39.3
-> 
+---
+pw-bot: cr
 
