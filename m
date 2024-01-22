@@ -1,94 +1,91 @@
-Return-Path: <linux-kernel+bounces-33577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6D33836BA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:49:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5BA836BA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:49:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65F1628697F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:49:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10AF61F24404
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:49:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0554D59B75;
-	Mon, 22 Jan 2024 15:22:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599DA5A0EF;
+	Mon, 22 Jan 2024 15:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="s9JU4E9n"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EpxXo7HQ"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D140C59B78
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369465A0E3
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:22:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936934; cv=none; b=jqVu10AqwtYf+9XN3QCYjk3lWhv77CroJjNDyjlzE4h/s1SLBC8UJZCdTcM4yLcdRAWNFGMXXFzYzNNTVw6+7KIZc9OhIA8tfkFYKkFipNn11/+VCDUrCVLVkNMiVPxtTS8ivWIyNkXnm2Lo3vw/Clu9EsVOypSbrurti3vntr4=
+	t=1705936937; cv=none; b=cJYofbw8pRysZ7ld6DgtKuqJe9Aa4Gw4wH6xu5uTBxMbBFjsce4++QjqYpFc2Gpyv2f3aQaazrYqVqIP/EKlWe2/xxew5eZhp2w92b4TZ4kwJTxCLEOH3wrb5jkwVDZMzQxsHYRH7Zclm3so2eFhI9GwbiiGcBTIBlPXg7enm54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936934; c=relaxed/simple;
-	bh=yUIpNFAl5lX2MSMJsIr4Rt+gHjzzG5IQtNjQFh708So=;
+	s=arc-20240116; t=1705936937; c=relaxed/simple;
+	bh=xeP58IH4kb9w8GJL/zzLJNHDo+3mbpiqzZNNn2ybr7A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PX5v3qHohjCUIOlii4xALx9SaV4Yr3qTxHpfhaeCpFFumUiVxdnv8P3YEojmqC0BXoJDfbnCsdyye7NCyNfFE3LdNvjdQrjllHcAiYJUOapOfg59RKEiyD5jxaS2hm+Ac9Qs/FbqGnq9AJl5fd9OKMHw6t7YVlepe/IFccgkarY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=s9JU4E9n; arc=none smtp.client-ip=209.85.128.181
+	 To:Cc:Content-Type; b=hboC/bASd0pvWA7gPXG7z8xH2+Hk1jZBaTd/W7TSbT5Cack5jCDb/rcsHoZJa4d2d0L5RJ5NwV32tgSrRDNFW8n3DhFqmPQiw+XzMNhSHGr7G/OKkcbNhlUgYnU7FSQJIURrSPOJvP4+xlumrBViOC/MWlmsZ6xAJ9nRLDzzAQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EpxXo7HQ; arc=none smtp.client-ip=209.85.128.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5ec7a5a4b34so30442937b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:22:12 -0800 (PST)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5ff7a098ab8so23641897b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:22:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705936932; x=1706541732; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705936935; x=1706541735; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+b+QYLywqR5igbk2Cu7AUp4ujqL3bIq40/9jub26OfE=;
-        b=s9JU4E9nuEHNYjsJk3ScWiK3Hj7Ke7QhV/4I48Lvm7DVM8NzxVHPoE/0SBYr/65FtZ
-         LrV/Z8Ddihe1Lu5uwGfB8FA2CaIUU35fvaKqNv6smFkQ8IY6NDwb/wuDqE+QMpSbk1Vv
-         M1O/vJofz7zXYoK9S1ECfKc4S+bUo+LcMCyFwVl6IGsOAjxlC0YhuqzoHUNLM5pXyBLh
-         1GIzFqKvQ5MPLrLNrjw+5OeXjww0p67tHb+7wWsKBDavxvwkxiwgC7B0ZfzcJoeknZbr
-         6ZS5ZBBL+qbDN5Aiq+Tj5Gz1BMF6Qmo7db5lUTyKsy9dIBMFRoFlj2luq8Z7iIaPvPbP
-         twCg==
+        bh=QCAhKhxlNboSP5z3UoLufXQw9Hdms1pvWA9BruMBgy8=;
+        b=EpxXo7HQEufR54TXn2VkNYzt4mBYN9pCBjJzLKkhB8b4J/05jpK0AfRFQVJazVnQ5o
+         Kv2C5YQqq2fhKe5/5tWIAo6qvdg4JGWaW8dmlauq7zAj60tEPhCeKcPB9lMgetn0v6q4
+         XYMOxRHsft+nw8zU6b0z7vbD+TJ3ypyMXyzLo2mS25hKX6Vy64TgTtrQYuuDR++Oj+QX
+         rasuQqARBOBlJjOzkD+UBZJuw6KVXPiiAPhT0Sn6FJBpyLZk9kbPNel2Z4iBQFAxp6VY
+         jQtqlDaZZoQ3BspnP56luzGh7WnH14WwmHmIO75s2vfEhu75iJbGqUO4Ssk+xZrWPlEY
+         qNTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705936932; x=1706541732;
+        d=1e100.net; s=20230601; t=1705936935; x=1706541735;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+b+QYLywqR5igbk2Cu7AUp4ujqL3bIq40/9jub26OfE=;
-        b=o37UEOE6d7DTDQJ1wlKQ9al9msN5K4vxf50gVh31ZN14LRywbYY5qgYQ4p2bG09eC1
-         wPlIJgZUH1rLIz/kZmXlcLX0zZok05lG4WxuZQkcZegpa+huBPPg7mECFXizqWJ9BKgw
-         e6I9mSpuNIZIu2cEzFPxVFu0i4MylmnUegDaw+0rUN1ejVtMIhtPHYKsmdgX/YM5YfZ7
-         mHDTeQLX08KEbkKcdZJ06L4GY7VgpbU4IdSkVgf2RS6bN7VBs6jsUSzY+sqHdm1gGXvd
-         pg+lXEJt98rhE6MoO9sFDmC54VWiBetahFbzZFCaG+ysK9iNJ9n596F1tTvSTsN01f2j
-         X+PA==
-X-Gm-Message-State: AOJu0Ywn1b187UNheXTGV4aonFfwMnBcVakLKf52YpSUfQRRQ1LgejFP
-	HYf7WH37h/0JtDhWu698TH+xPGar77QAZ+rFl8RcayyN0utV9SFa3aN1icnYOYbP5qNvFDbpP5c
-	RjiDzoOQ8qRVaXk5PilrLU8dWN7Tei3AbwYYEGGRV+aSZOgDcHWQ=
-X-Google-Smtp-Source: AGHT+IGNMCtOBsrliO9IJvaCQ6wIStKn5JD0Sq28btLAoWmRi2uv8fOhNsIWgC6FelvmFneU7EPoXWCxrHsxLD9PCiw=
-X-Received: by 2002:a0d:db55:0:b0:5e9:fa4a:fd56 with SMTP id
- d82-20020a0ddb55000000b005e9fa4afd56mr3217496ywe.13.1705936931753; Mon, 22
- Jan 2024 07:22:11 -0800 (PST)
+        bh=QCAhKhxlNboSP5z3UoLufXQw9Hdms1pvWA9BruMBgy8=;
+        b=WkWAiBqM1iVM5w333TvacPPMOapzI/nNwdNieggSxjp9xW7VbxTWUACcjrUX7PSTvD
+         oXjHS+ElBkvDwPGSHGBegGSm3ionVhpX3GLO/9AtgigElvPOcLFnkaYblAeOHFg9x80O
+         tIOr4N0ni0vkWOwqMf592L/1J3L4NGW/MLDJSKiqoEBQOk19w3hplhipnhR9r2gl4CA+
+         Ay1DDrVGs5mS1RtCXdDUVSOQ77Mu/O4jeUIiH0NvkSKxqDDZtNnn6TIp0AIHxhPdV6Ou
+         u+tgsw0QIGRtJXXf0t5ysGSEAlOLBDN44RZhUpVF+Wg9SlfL3NsPQGbkxKnQwZhm9TMK
+         oP2g==
+X-Gm-Message-State: AOJu0Yx2CGtGqo09meHDwLA5Uyn1xTAPx7p7Lal67IZ9/4tK4jIaRs1v
+	0k2OB18U+CIXhRawasy/Rew5wxrQ9FWkT8r4TiTYdoNI69rWQ0IErqXeDIhrW3cXRu319VW1Tud
+	xiQm0KYNSN0xOEVDkgxhVpPrAcY2tmtOFrelHcw==
+X-Google-Smtp-Source: AGHT+IED38eHjjKsKwTwHlake7WIjAFshwwfrqlbYigahn2tybClh+eS/93P97aG2765xCGlzD7m+AzmNArNegd8TVk=
+X-Received: by 2002:a25:d607:0:b0:dc2:2b0c:2113 with SMTP id
+ n7-20020a25d607000000b00dc22b0c2113mr2277335ybg.77.1705936935251; Mon, 22 Jan
+ 2024 07:22:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231227-topic-rpmpd_cleanup-v1-1-860ab141b076@linaro.org>
-In-Reply-To: <20231227-topic-rpmpd_cleanup-v1-1-860ab141b076@linaro.org>
+References: <20231227-topic-pmdomain_spam-v1-1-ff0410086b36@linaro.org>
+In-Reply-To: <20231227-topic-pmdomain_spam-v1-1-ff0410086b36@linaro.org>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Mon, 22 Jan 2024 16:21:35 +0100
-Message-ID: <CAPDyKFoMdhNeq22Ji9UZdZ5Ut536q6PGn6EBBVquV-nTW2FqoA@mail.gmail.com>
-Subject: Re: [PATCH] pmdomain: qcom: rpmpd: Keep one RPM handle for all RPMPDs
+Date: Mon, 22 Jan 2024 16:21:39 +0100
+Message-ID: <CAPDyKFr1+vnrhQgSLhD7Kp9WAoJ6qNA0k2WP53wJ0GigdC6P+Q@mail.gmail.com>
+Subject: Re: [PATCH] pmdomain: core: Print a message when unused power domains
+ are disabled
 To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, linux-pm@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 27 Dec 2023 at 02:20, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+On Wed, 27 Dec 2023 at 16:18, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
 >
-> For no apparent reason (as there's just one RPM per SoC), all RPMPDs
-> currently store a copy of a pointer to smd_rpm. Introduce a single,
-> global one to save up on space in each definition.
->
-> bloat-o-meter reports:
->
-> Total: Before=92010, After=91062, chg -1.03%
+> In a similar spirit to commit 12ca59b91d04 ("clk: Print an info line
+> before disabling unused clocks"), print the message in both ignore AND
+> cleanup cases to better inform the user (and more importantly, the
+> developer) when it happens.
 >
 > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
@@ -99,75 +96,25 @@ Uffe
 
 
 > ---
->  drivers/pmdomain/qcom/rpmpd.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
+>  drivers/pmdomain/core.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/pmdomain/qcom/rpmpd.c b/drivers/pmdomain/qcom/rpmpd.c
-> index 7796d65f96e8..90b62767f9d0 100644
-> --- a/drivers/pmdomain/qcom/rpmpd.c
-> +++ b/drivers/pmdomain/qcom/rpmpd.c
-> @@ -16,6 +16,8 @@
->
->  #define domain_to_rpmpd(domain) container_of(domain, struct rpmpd, pd)
->
-> +static struct qcom_smd_rpm *rpmpd_smd_rpm;
-> +
->  /* Resource types:
->   * RPMPD_X is X encoded as a little-endian, lower-case, ASCII string */
->  #define RPMPD_SMPA 0x61706d73
-> @@ -54,7 +56,6 @@ struct rpmpd {
->         bool enabled;
->         const int res_type;
->         const int res_id;
-> -       struct qcom_smd_rpm *rpm;
->         unsigned int max_state;
->         __le32 key;
->         bool state_synced;
-> @@ -879,7 +880,7 @@ static int rpmpd_send_enable(struct rpmpd *pd, bool enable)
->                 .value = cpu_to_le32(enable),
->         };
->
-> -       return qcom_rpm_smd_write(pd->rpm, QCOM_SMD_RPM_ACTIVE_STATE,
-> +       return qcom_rpm_smd_write(rpmpd_smd_rpm, QCOM_SMD_RPM_ACTIVE_STATE,
->                                   pd->res_type, pd->res_id, &req, sizeof(req));
->  }
->
-> @@ -891,7 +892,7 @@ static int rpmpd_send_corner(struct rpmpd *pd, int state, unsigned int corner)
->                 .value = cpu_to_le32(corner),
->         };
->
-> -       return qcom_rpm_smd_write(pd->rpm, state, pd->res_type, pd->res_id,
-> +       return qcom_rpm_smd_write(rpmpd_smd_rpm, state, pd->res_type, pd->res_id,
->                                   &req, sizeof(req));
->  };
->
-> @@ -1004,12 +1005,11 @@ static int rpmpd_probe(struct platform_device *pdev)
->         int i;
->         size_t num;
->         struct genpd_onecell_data *data;
-> -       struct qcom_smd_rpm *rpm;
->         struct rpmpd **rpmpds;
->         const struct rpmpd_desc *desc;
->
-> -       rpm = dev_get_drvdata(pdev->dev.parent);
-> -       if (!rpm) {
-> +       rpmpd_smd_rpm = dev_get_drvdata(pdev->dev.parent);
-> +       if (!rpmpd_smd_rpm) {
->                 dev_err(&pdev->dev, "Unable to retrieve handle to RPM\n");
->                 return -ENODEV;
+> diff --git a/drivers/pmdomain/core.c b/drivers/pmdomain/core.c
+> index a1f6cba3ae6c..69902797a5bb 100644
+> --- a/drivers/pmdomain/core.c
+> +++ b/drivers/pmdomain/core.c
+> @@ -1100,6 +1100,7 @@ static int __init genpd_power_off_unused(void)
+>                 return 0;
 >         }
-> @@ -1039,7 +1039,6 @@ static int rpmpd_probe(struct platform_device *pdev)
->                         continue;
->                 }
 >
-> -               rpmpds[i]->rpm = rpm;
->                 rpmpds[i]->max_state = desc->max_state;
->                 rpmpds[i]->pd.power_off = rpmpd_power_off;
->                 rpmpds[i]->pd.power_on = rpmpd_power_on;
+> +       pr_info("genpd: Disabling unused power domains\n");
+>         mutex_lock(&gpd_list_lock);
+>
+>         list_for_each_entry(genpd, &gpd_list, gpd_list_node)
 >
 > ---
 > base-commit: 39676dfe52331dba909c617f213fdb21015c8d10
-> change-id: 20231227-topic-rpmpd_cleanup-2e043dac9f47
+> change-id: 20231227-topic-pmdomain_spam-2e86227bf02f
 >
 > Best regards,
 > --
