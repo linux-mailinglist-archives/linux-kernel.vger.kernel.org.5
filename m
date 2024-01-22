@@ -1,134 +1,97 @@
-Return-Path: <linux-kernel+bounces-33726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EF09836DC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:38:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 995E9836DC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:38:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25B46289026
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:38:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD3881C265F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AEA33E464;
-	Mon, 22 Jan 2024 16:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1AC4123A;
+	Mon, 22 Jan 2024 16:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D5kwTiZ4"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SnC1gQp9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18D640C14
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:51:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292693FB39;
+	Mon, 22 Jan 2024 16:52:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705942288; cv=none; b=FSJ0vG/mPWXjMcM4IN/ROJoxFDfmXznQMzMKciNKnXFgpQfcnEHq17Rv5kXtPvV5Xv77MaTL//HptPS6PBlXvvrMQd/JqDadbcDl7W/L0jXROiMDCxhi+SN24YG3VGJw5DOZaDspSsDHNz5i/F/qFmpHdlW2pFM1MP0uhChB8Mc=
+	t=1705942361; cv=none; b=lllAnf3w9cgz80YlhY1mJpI8uWqLdf/KOgZfvnrivbCOAXDqLNYBRnNb+c1MZ6uGc7z8S9BdRRpbO/ddByxeTbwHt8yUvtAhFF3LqoUDMZHbPFGT+pZgT4VyjmodMzFnDG09g9mO4KoEKklLJ7AVS2rTlcj+PtO+5LmMNsFe5g4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705942288; c=relaxed/simple;
-	bh=+b00yzntzNaMOB3fvEhCtmlXhPID8D+X7olNpK8KzM0=;
+	s=arc-20240116; t=1705942361; c=relaxed/simple;
+	bh=tNDolk7G27RDHAAmFkC/lBY6IbNU5P8tZGZLlNtwrXA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PkdyHrLWUfXcE8PCzS7/EeCq1EptGlzuvihX3iSKuEsRu+Wi7jtywrk76ju696RbDbpsA6CLKU+mJ4MFBx0u7a38/DZ/4ShVRmg4JeaaorxpwwvFJTGwiHrytEsu/fkJ2iH46qczWGv0E/L5v+0fCTrGS/A+tGb5unMq2pog4Tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D5kwTiZ4; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40e775695c6so33850975e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:51:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705942284; x=1706547084; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9Xb3P5uW0KtHlr1gJq8gbLgJiB2wQ8rCJWCXkjGJUtQ=;
-        b=D5kwTiZ4WknU5u/XVuRikr5TCLZs5eeF4JPi3cVFBFoFsn5EkN2mtcEdJs6tJ79+ah
-         rFFL+8RfHJCsQlpUlKSs8b8YjHYZHBZtWqdPxjBEHij2i2iwlFqTx8dCukYmKNh1mfKi
-         ruOHbInznOWxkVx/kNH+QYTaetdQf8WSgf3tydOtfpu/4qC7SNDQHwJ5ErMnw6g9f2gV
-         PfuXdE0qr5lEVl82kO5hPnn67VAyVMHRAlqpFkVqRW2/U+qXVGy1ZyH4VIA61nXav+iQ
-         QwZMWFE1prBMzKu7A7pm1MDQi2QfHSxLUiI1MjF3l+WqZOtKyrkuGuXwtlbObvsBEtay
-         UxGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705942284; x=1706547084;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Xb3P5uW0KtHlr1gJq8gbLgJiB2wQ8rCJWCXkjGJUtQ=;
-        b=OSD0hZbsdPGm6/nrJaqkb4r/oVr+zLZHhXb2Dl9hVjvEYm5fEDVyUqZk/e/0iNkJG9
-         oBU70iRMZj9rnFXLugJysATEZynCWJKay7Sezgn7TKTLMK6krdR2FEHDz+kHjBDOulZI
-         nuksQu1OwXz9rtb3+4R2tEf8jUYzUYWJlv8HoiO+lE3I9XiDPUJerCizbsthEvZO1z+R
-         XUbRMyYxrSFkA/+i5G/f4c0kfTRUKOvkILe9pz8l3kygf0/p6bmyunVqfuNYjvkjXHe8
-         eE66wm653QBb4n3BYj7FfOuI8Z3HX+ZPKQ3lFE8d7HnD4Z4jM+1keAQgJFidDhxAlQjp
-         +4Ug==
-X-Gm-Message-State: AOJu0YwkTF/cz/m8beQO0df1W9V7OQzVFtY7se7IIWGSkrJH8wVI78pG
-	a4q51u3h3sXDJlvwmhTfQh2E98H6cKjtuaPsIBvFhJI3SmAuGLwt2+yLUaCQ26s=
-X-Google-Smtp-Source: AGHT+IEe3ZCJOUFqqCaZfXUenFubOiJGjr88xxBaUX1UAuvcpYxGpx+soMDWnfmXjkm1SCbpuxpXaQ==
-X-Received: by 2002:a05:600c:b9a:b0:40e:a9c0:31fe with SMTP id fl26-20020a05600c0b9a00b0040ea9c031femr1882939wmb.68.1705942284282;
-        Mon, 22 Jan 2024 08:51:24 -0800 (PST)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id iv11-20020a05600c548b00b0040d8ff79fd8sm39802749wmb.7.2024.01.22.08.51.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 08:51:23 -0800 (PST)
-Date: Mon, 22 Jan 2024 16:51:22 +0000
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-	Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Karel Balej <balejk@matfyz.cz>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] backlight: Add Kinetic KTD2801 backlight support
-Message-ID: <20240122165122.GB8815@aspen.lan>
-References: <20240120-ktd2801-v3-0-fe2cbafffb21@skole.hr>
- <20240120-ktd2801-v3-3-fe2cbafffb21@skole.hr>
- <20240122102805.GB8596@aspen.lan>
- <1783156.VLH7GnMWUR@radijator>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fLw0megkZ5aBcSUlXZAFyn8QgFfS6xkRf6q+ebO/56qreKD6bXHJBShpCAkVAtFtfjdIXm/H//dgXv5ATVQIF5FfWKAIdoUrkSPT0ax2ZP/81D//DGkfOti2XpQRDtLt26tx+mnHSFMdeIapnDSVuhgyGbGc8JqC9grGiFzt/gU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SnC1gQp9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0563C433C7;
+	Mon, 22 Jan 2024 16:52:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705942360;
+	bh=tNDolk7G27RDHAAmFkC/lBY6IbNU5P8tZGZLlNtwrXA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SnC1gQp9+xzRof4stDpgs56vbV+MtAF6qr3ybCYv0zGujMzJqC++Ei6AzH0bl1Wn5
+	 lcHEjeIK7uqDzSZtQQUGbVyfDZVKwGZJhKYL9Tc3zc6aLgFormWz63Jdw6SwVKPE40
+	 QsCmCAe2McfImzw4KzGiapKUo7B9TPhnD4iEl1Dv7/iE7yx1CcBOmOhd2KhZPZ2yOe
+	 SFk8G2X1VhwTgyfEXRwWurx3Twd0pDQktOHNwBsF/jVFEaP7IjPulrFSD/SBJTcBMB
+	 8yW4xodlIQu09kUUn8c+GKq88Nv4aMXO6/cQfy2y/toLvL5SbMo3fMhJsxJ+q57i1F
+	 ZWGWiNwhXae6A==
+Date: Mon, 22 Jan 2024 10:52:37 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Document the HDK8550 board
+Message-ID: <xlg7ddxr6d4fcbpcaacrkvcxucuhm7af4till4t7xxfaw5fpx2@pmbs22brqvqe>
+References: <20240122-topic-sm8550-upstream-hdk8550-v1-0-bff7eb3a17eb@linaro.org>
+ <20240122-topic-sm8550-upstream-hdk8550-v1-1-bff7eb3a17eb@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1783156.VLH7GnMWUR@radijator>
+In-Reply-To: <20240122-topic-sm8550-upstream-hdk8550-v1-1-bff7eb3a17eb@linaro.org>
 
-On Mon, Jan 22, 2024 at 05:24:56PM +0100, Duje Mihanović wrote:
-> On Monday, January 22, 2024 11:28:05 AM CET Daniel Thompson wrote:
-> > On Sat, Jan 20, 2024 at 10:26:45PM +0100, Duje Mihanović wrote:
-> > > diff --git a/drivers/video/backlight/ktd2801-backlight.c
-> > > b/drivers/video/backlight/ktd2801-backlight.c new file mode 100644
-> > > index 000000000000..7b9d1a93aa71
-> > > --- /dev/null
-> > > <snip>
-> > > +/* These values have been extracted from Samsung's driver. */
-> > > +#define KTD2801_EXPRESSWIRE_DETECT_DELAY_US	150
-> > > +#define KTD2801_EXPRESSWIRE_DETECT_US		270
-> > > +#define KTD2801_SHORT_BITSET_US			5
-> > > +#define KTD2801_LONG_BITSET_US			(3 *
-> KTD2801_SHORT_BITSET_US)
-> > > +#define KTD2801_DATA_START_US			5
-> > > +#define KTD2801_END_OF_DATA_LOW_US		10
-> > > +#define KTD2801_END_OF_DATA_HIGH_US		350
-> > > +#define KTD2801_PWR_DOWN_DELAY_US		2600
-> >
-> > These are a little pointless now. They are all single use constants
-> > and have little documentary value.
-> >
-> > The lack of documentary value is because, for example,
-> > KTD2801_EXPRESSWIRE_DETECT_DELAY_US, is assigned to a structure
-> > field called detect_delay_us.
-> >
-> > Likewise I doubt that explicitly stating that long_bitset_us is 3x
-> > bigger than short_bitset_us is important for future driver maintainance.
->
-> Does this apply for ktd2692 as well?
+On Mon, Jan 22, 2024 at 11:19:19AM +0100, Neil Armstrong wrote:
+> Document the Qualcomm SM8550 based HDK (Hardware Development Kit)
+> embedded development platform designed by Qualcomm and sold by Lantronix.
+> 
+> [1] https://www.lantronix.com/products/snapdragon-8-gen-2-mobile-hardware-development-kit/
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index 1a5fb889a444..5a4b267e332f 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -1037,6 +1037,7 @@ properties:
+>            - enum:
+>                - qcom,sm8550-mtp
+>                - qcom,sm8550-qrd
+> +              - qcom,sm8550-hdk
 
-I think so, yes... but I won't get in the way if you (or anyone else)
-decides otherwise.
+Alphabetical please
 
+Regards,
+Bjorn
 
-Daniel.
+>            - const: qcom,sm8550
+>  
+>        - items:
+> 
+> -- 
+> 2.34.1
+> 
 
