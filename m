@@ -1,180 +1,341 @@
-Return-Path: <linux-kernel+bounces-32642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA975835E5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:39:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D6B9835E6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93D48287430
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:39:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C5BF1F2421C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1E239AE9;
-	Mon, 22 Jan 2024 09:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2ABA39AF2;
+	Mon, 22 Jan 2024 09:44:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rQd9QRJW"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MghA8fCp"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE3D39FC5
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD83039FE8
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705916379; cv=none; b=dWa0BRip5c1xJZGy5YI6ujYI9kWRpGPaOw1szKJc8q5/jmyoQQqlpfzpQfBSfjU/0OtTiewsRlFLx/4x+/0jAo/W4mlQjTFyUKjDJdoncrfa4dSI8KxvDV4IFQBD442rYDAsWtnGrA6Bb0ZsplqNaU9ZwM61SiyouogTr24xbOo=
+	t=1705916653; cv=none; b=IOjow5yd6zi1TFREkeTlDxpCHO9+McF+ZhiUGDPsRlwjGK9qdXVuSmGTE0Y4pMtUp/snt0jAEAeGGpkKlMKFrvckvKeSbY2t4U8vSFOGOcNdbmM7bxjcUQptmvYWPwtT9gLKQX+obIYLpn7AB7caXXWxndaYMx6xR+x/3TCpr+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705916379; c=relaxed/simple;
-	bh=a7JCHdX/+Wi5nG0phX5LTfmFq2Y/bGWVDLlTsNSGf+4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MYcw35EA54XXZOC1ycdopY7ToTqSdt8pFCO4O/YwA7elyz0yMYUuJVvVSZsTB4BCzO4sAUhsj4MsCRm22dYIeAw4mgdup8HjI30c99sbijhxUTQklpwz1C7xtP1jEKupwa2tnSfvkTcFVsCkXcfEgUH62kWnnbWswvcWeGVjudw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rQd9QRJW; arc=none smtp.client-ip=209.85.218.50
+	s=arc-20240116; t=1705916653; c=relaxed/simple;
+	bh=hB8g5YkR7Sld/uhp8W4eAEYyFbFhiu2UNkWnfpYjh4w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lLiGb+fJgnb6WqbNxe3Gos/qJwKJqMgDGkuW9DbRXgGc02KJQ+KItaKicXHW58VdKNDNqziCI+oaOarAVK3ofF/zO9ZsRwmusgIB7M5SYyfIbkAnWTsCYMqquEIKU08q5Zlb+sPklDsA1h6tSO25ixkf857YKtPjJkRtMYENkVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MghA8fCp; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2dd05e02ffso280396766b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 01:39:37 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ea5654271so18878045e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 01:44:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705916376; x=1706521176; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=vAD+3c3nndCrNn/ZhmJDqEDMFrTLLYdnCYv1uwPMD+w=;
-        b=rQd9QRJWByBqHWdDvWPZN0FzpJ+O0sLSsSRimKmTIdW5toaMQqyqfK+oYRUO1N36cH
-         A3AQwdO7L7G6aqD7k77lOQr7LZB6LHnl7jyLpV9Gc6S3YFuNKOgYak22qKA8MbhtmSff
-         ogtfg1pZXzVIF4ePulLWg3W25nOe48VsuOZjQt8ZtJX+1jqL+EcmDFlxBCErv9fcshXW
-         Q4mPqwVUqbMT780uQT7dEFqSSah5TU3v2GFWCnPCgYjFAvAFdIGd5JgDSqYonQ56QVLr
-         gwBnNybBnzjVMJZuUpGiWB7tdwD3a9WTjIhMnkot+vgmT0FzOngyV4bt+JVFgW58J29Z
-         FM5w==
+        d=linaro.org; s=google; t=1705916649; x=1706521449; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lyskIm+mWWi2cKlcJh017DM9BpiO7GgRCHqUYIzx2oA=;
+        b=MghA8fCpGFDCRDKH97bXBZz0/CLlQK0fSzY3vxB/61L5mgGjZ5yD0lvxD5kfaVrimV
+         qioUQ71pOHtrrLiSPLmIuGn1L3oWfvZX4pJ7IYtfT+RBEjvGLkzALy8rJXKBvlEjnsDY
+         S6VieROb8tTDfxhceWFFSEpf06imxmI0R1FbO26KI8XyeABe3WxqKSWgEoBTYvKfcau8
+         GgPBuoaH7A+TysgLANOhZ2OaRZLZ/dnjSOxSd67VPQ8zvuX2tkWVQK3HiW+fADIwG4QD
+         Avb2MLMveJGjoVTyNnbKnIfH+11dASHjL1k1ju4ecOgZ81tGI4b6nCxezMHHzjaOzh3I
+         EX+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705916376; x=1706521176;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vAD+3c3nndCrNn/ZhmJDqEDMFrTLLYdnCYv1uwPMD+w=;
-        b=gi3Ik1UBeIJsFOEJ1I+B2dq1XgccBwnae2PWQXPSaCVCMrtw1K4RLKUIkRoCtegPuI
-         F/kN9tyxEYseRX9rV46earTw/OQgqIs2sIkGOvQ+u0KNTSd3zhsYgNsvINcfCs+sJijQ
-         ZkzQoW2nDgw7Oy2QpYXe1AMKfHKOxvxJJBertHw4pcdFgXGMPTwrY7vA9U1Q0bT26BGe
-         3H6NKM8jPuurCBkOVEdo6jnKzD+RlV875fRnbEU2y+oZwbtkJFBUPbrOeghnX7V4AlgE
-         tNYucSx9eTvT9temZnisKCLLZMpn5Mz5oiplQIpI3d2NqElOHC6yfEh97ATnbc7U8BQ+
-         01Pw==
-X-Gm-Message-State: AOJu0Yz8K6842vjd+O9hhnMJzlvwx9p8vBmUIWKo8vWCUgEuAAoIUSbA
-	L6U0WVejOElZot3x/6wd8cTRr0MQcbJBqCRT5R+B2j895gY+TDgpYYJ+guDQD3A=
-X-Google-Smtp-Source: AGHT+IFkxvuMy752Dmx4CvugdWWSDBxv0qZ+2Lg2i8ghmrUXU8Itvgz0RqAVHEGdyTuLEI8F4NVpJw==
-X-Received: by 2002:a17:906:6ad6:b0:a2e:636e:36a7 with SMTP id q22-20020a1709066ad600b00a2e636e36a7mr1311964ejs.88.1705916376263;
-        Mon, 22 Jan 2024 01:39:36 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id vi14-20020a170907d40e00b00a2f1a1259fesm4960469ejc.207.2024.01.22.01.39.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 01:39:35 -0800 (PST)
-Message-ID: <f3be0e57-c984-41a7-bfff-facd0180abcb@linaro.org>
-Date: Mon, 22 Jan 2024 10:39:33 +0100
+        d=1e100.net; s=20230601; t=1705916649; x=1706521449;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lyskIm+mWWi2cKlcJh017DM9BpiO7GgRCHqUYIzx2oA=;
+        b=UMPoRpw7FqnHqBgaxxt99U/AXYyEEy5Zpcm197v+gZt0VUMb/jiLYhjRx9XCimRbtk
+         rOZ7xVkqZeFWZbYveLGd9/PQB4RxuTLv8ehKKVzo57obADgLlSr0/Tsc7YOIEfzl9swI
+         b3JjjXGrpbaGwpX8esZMa8MVJno1CI6M2AqkXFw1BG6cE9d6UHfwD4hSJFh+0rrce16T
+         mWSAiVS31ZWnmswSUtHKvL2bNQvbZGXqoJsKLEQsBKraQU+kksyCtuzNY/k5ddx0tftS
+         D6XxkqgN9mmxytFxY2fLMWBpwV+qXmcaFaK9LbaNrUtnizDpZYoq4/JgGnj+mN/IB2GM
+         EwmA==
+X-Gm-Message-State: AOJu0Yw+nazpDyBWNuxO6Yl4MU1Ix4z/kfjiCcZ/+jwQEBUN6TCaVT9a
+	fh3VBtjo2szEUQw9t8L6GCDetYAWSQQ6ruo5sim4HHlofHPCYSIGGW/5AeGt0BdpPi7ec/3Ns0H
+	2bCU=
+X-Google-Smtp-Source: AGHT+IGav0UAB/Grh4y4yBbUmzGU7vmiQBDd+GRdQyMB9teQXJrum3ZAhKWom3R6HtYu2x7//yrCGg==
+X-Received: by 2002:a05:600c:5491:b0:40e:a964:e6f8 with SMTP id iv17-20020a05600c549100b0040ea964e6f8mr1194790wmb.17.1705916649136;
+        Mon, 22 Jan 2024 01:44:09 -0800 (PST)
+Received: from krzk-bin.. ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id n21-20020a05600c3b9500b0040eaebc4e8fsm2093368wms.1.2024.01.22.01.44.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 01:44:08 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Luca Weiss <luca.weiss@fairphone.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	linux-usb@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2] dt-bindings: usb: add common Type-C USB Switch schema
+Date: Mon, 22 Jan 2024 10:44:06 +0100
+Message-Id: <20240122094406.32198-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: usb: Introduce ITE IT5205 Alt. Mode
- Passive MUX
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- gregkh@linuxfoundation.org
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, heikki.krogerus@linux.intel.com,
- matthias.bgg@gmail.com, dmitry.baryshkov@linaro.org,
- neil.armstrong@linaro.org, andersson@kernel.org, nathan@kernel.org,
- luca.weiss@fairphone.com, tianping.fang@mediatek.com,
- linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, kernel@collabora.com
-References: <20240119125812.239197-1-angelogioacchino.delregno@collabora.com>
- <20240119125812.239197-2-angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240119125812.239197-2-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 19/01/2024 13:58, AngeloGioacchino Del Regno wrote:
-> Introduce a binding for the ITE IT5205 Alternate Mode Passive MUX,
-> used for connecting, disconnecting and switching orientation and
-> control the SBU signals for alternate modes on USB Type-C ports.
-> 
+Several bindings implement parts of Type-C USB orientation and mode
+switching, and retiming.  Keep definition of such properties in one
+place, new usb-switch schema, to avoid duplicate defines.
 
-..
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> +  mode-switch:
-> +    description: Flag the port as possible handle of altmode switching
-> +    type: boolean
-> +
-> +  orientation-switch:
-> +    description: Flag the port as possible handler of orientation switching
-> +    type: boolean
+---
 
-Just FYI, I will be sending v2 of:
-https://lore.kernel.org/all/20240115092923.105275-1-krzysztof.kozlowski@linaro.org/
+Changes in v2:
+1. Fix language typos handle->handler (Luca)
+2. Drop debugging left-over (Luca)
+---
+ .../devicetree/bindings/usb/fcs,fsa4480.yaml  | 12 ++--
+ .../devicetree/bindings/usb/gpio-sbu-mux.yaml | 12 ++--
+ .../devicetree/bindings/usb/nxp,ptn36502.yaml | 12 ++--
+ .../bindings/usb/onnn,nb7vpq904m.yaml         | 13 ++--
+ .../bindings/usb/qcom,wcd939x-usbss.yaml      | 12 ++--
+ .../devicetree/bindings/usb/usb-switch.yaml   | 67 +++++++++++++++++++
+ 6 files changed, 92 insertions(+), 36 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/usb/usb-switch.yaml
 
-which could be used here. If your patch gets first, I will adjust mine.
-
-..
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c2 {
-
-i2c {
-
-
-
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/usb/fcs,fsa4480.yaml b/Documentation/devicetree/bindings/usb/fcs,fsa4480.yaml
+index f9410eb76a62..8b25b9a01ced 100644
+--- a/Documentation/devicetree/bindings/usb/fcs,fsa4480.yaml
++++ b/Documentation/devicetree/bindings/usb/fcs,fsa4480.yaml
+@@ -27,13 +27,8 @@ properties:
+   vcc-supply:
+     description: power supply (2.7V-5.5V)
+ 
+-  mode-switch:
+-    description: Flag the port as possible handle of altmode switching
+-    type: boolean
+-
+-  orientation-switch:
+-    description: Flag the port as possible handler of orientation switching
+-    type: boolean
++  mode-switch: true
++  orientation-switch: true
+ 
+   port:
+     $ref: /schemas/graph.yaml#/$defs/port-base
+@@ -79,6 +74,9 @@ required:
+   - reg
+   - port
+ 
++allOf:
++  - $ref: usb-switch.yaml#
++
+ additionalProperties: false
+ 
+ examples:
+diff --git a/Documentation/devicetree/bindings/usb/gpio-sbu-mux.yaml b/Documentation/devicetree/bindings/usb/gpio-sbu-mux.yaml
+index d3b2b666ec2a..88e1607cf053 100644
+--- a/Documentation/devicetree/bindings/usb/gpio-sbu-mux.yaml
++++ b/Documentation/devicetree/bindings/usb/gpio-sbu-mux.yaml
+@@ -33,13 +33,8 @@ properties:
+   vcc-supply:
+     description: power supply
+ 
+-  mode-switch:
+-    description: Flag the port as possible handle of altmode switching
+-    type: boolean
+-
+-  orientation-switch:
+-    description: Flag the port as possible handler of orientation switching
+-    type: boolean
++  mode-switch: true
++  orientation-switch: true
+ 
+   port:
+     $ref: /schemas/graph.yaml#/properties/port
+@@ -54,6 +49,9 @@ required:
+   - orientation-switch
+   - port
+ 
++allOf:
++  - $ref: usb-switch.yaml#
++
+ additionalProperties: false
+ 
+ examples:
+diff --git a/Documentation/devicetree/bindings/usb/nxp,ptn36502.yaml b/Documentation/devicetree/bindings/usb/nxp,ptn36502.yaml
+index eee548ac1abe..d805dde80796 100644
+--- a/Documentation/devicetree/bindings/usb/nxp,ptn36502.yaml
++++ b/Documentation/devicetree/bindings/usb/nxp,ptn36502.yaml
+@@ -20,13 +20,8 @@ properties:
+   vdd18-supply:
+     description: Power supply for VDD18 pin
+ 
+-  retimer-switch:
+-    description: Flag the port as possible handle of SuperSpeed signals retiming
+-    type: boolean
+-
+-  orientation-switch:
+-    description: Flag the port as possible handler of orientation switching
+-    type: boolean
++  orientation-switch: true
++  retimer-switch: true
+ 
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+@@ -49,6 +44,9 @@ required:
+   - compatible
+   - reg
+ 
++allOf:
++  - $ref: usb-switch.yaml#
++
+ additionalProperties: false
+ 
+ examples:
+diff --git a/Documentation/devicetree/bindings/usb/onnn,nb7vpq904m.yaml b/Documentation/devicetree/bindings/usb/onnn,nb7vpq904m.yaml
+index c0201da002f6..589914d22bf2 100644
+--- a/Documentation/devicetree/bindings/usb/onnn,nb7vpq904m.yaml
++++ b/Documentation/devicetree/bindings/usb/onnn,nb7vpq904m.yaml
+@@ -21,14 +21,8 @@ properties:
+     description: power supply (1.8V)
+ 
+   enable-gpios: true
+-
+-  retimer-switch:
+-    description: Flag the port as possible handle of SuperSpeed signals retiming
+-    type: boolean
+-
+-  orientation-switch:
+-    description: Flag the port as possible handler of orientation switching
+-    type: boolean
++  orientation-switch: true
++  retimer-switch: true
+ 
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+@@ -95,6 +89,9 @@ required:
+   - compatible
+   - reg
+ 
++allOf:
++  - $ref: usb-switch.yaml#
++
+ additionalProperties: false
+ 
+ examples:
+diff --git a/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml b/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml
+index 7ddfd3313a18..96346723f3e9 100644
+--- a/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml
++++ b/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml
+@@ -35,13 +35,8 @@ properties:
+   vdd-supply:
+     description: USBSS VDD power supply
+ 
+-  mode-switch:
+-    description: Flag the port as possible handle of altmode switching
+-    type: boolean
+-
+-  orientation-switch:
+-    description: Flag the port as possible handler of orientation switching
+-    type: boolean
++  mode-switch: true
++  orientation-switch: true
+ 
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+@@ -63,6 +58,9 @@ required:
+   - reg
+   - ports
+ 
++allOf:
++  - $ref: usb-switch.yaml#
++
+ additionalProperties: false
+ 
+ examples:
+diff --git a/Documentation/devicetree/bindings/usb/usb-switch.yaml b/Documentation/devicetree/bindings/usb/usb-switch.yaml
+new file mode 100644
+index 000000000000..da76118e73a5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/usb-switch.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/usb-switch.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: USB Orientation and Mode Switches Common Properties
++
++maintainers:
++  - Greg Kroah-Hartman <gregkh@linuxfoundation.org>
++
++description:
++  Common properties for devices handling USB mode and orientation switching.
++
++properties:
++  mode-switch:
++    description: Possible handler of altmode switching
++    type: boolean
++
++  orientation-switch:
++    description: Possible handler of orientation switching
++    type: boolean
++
++  retimer-switch:
++    description: Possible handler of SuperSpeed signals retiming
++    type: boolean
++
++  port:
++    $ref: /schemas/graph.yaml#/properties/port
++    description:
++      A port node to link the device to a TypeC controller for the purpose of
++      handling altmode muxing and orientation switching.
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Super Speed (SS) Output endpoint to the Type-C connector
++
++      port@1:
++        $ref: /schemas/graph.yaml#/$defs/port-base
++        description:
++          Super Speed (SS) Input endpoint from the Super-Speed PHY
++        unevaluatedProperties: false
++
++        properties:
++          endpoint:
++            $ref: /schemas/graph.yaml#/$defs/endpoint-base
++            unevaluatedProperties: false
++            properties:
++              data-lanes:
++                $ref: /schemas/types.yaml#/definitions/uint32-array
++                minItems: 1
++                maxItems: 8
++                uniqueItems: true
++                items:
++                  maximum: 8
++
++oneOf:
++  - required:
++      - port
++  - required:
++      - ports
++
++additionalProperties: true
+-- 
+2.34.1
 
 
