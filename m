@@ -1,134 +1,150 @@
-Return-Path: <linux-kernel+bounces-34179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A1B837546
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:29:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11E0E837569
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:34:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 010461F281C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:29:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F8E1C2605F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCD947F73;
-	Mon, 22 Jan 2024 21:29:18 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDD647F7D;
+	Mon, 22 Jan 2024 21:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GxM2tPBt"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D4447F64
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:29:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B2D47F73
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705958958; cv=none; b=teZ+txve78jJka8ZnIiBSY3l4KBHBxgcJRsq+Uo+qx2Uw/t2wtxYTxHKYkl8Vr4EFTJfh5FW60jzfOJvtoHZfUgc4BpPP/zzpSVR4+1BbqoRbiGo1n1tdiw8hxrWgYprxF6Sna6xxFUUKpDO0hO14wq1b4GKvScUVbby1LIZ0sQ=
+	t=1705959053; cv=none; b=ilHtTs1VBfSTTLTjow6OYF6EGwKpDlzpYf3G2U35/ehZC7DQK32hdAcb1PGWPS/rSb1z/y/5uJGSGn0KEEmsQKYCqcqJ4Z2/4fc9wsLyMfexH18T8LI3McVbaQEo857eE4jPBbq7fSKpBKmJMlxaF0QhBncK203gU5z25hUPtYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705958958; c=relaxed/simple;
-	bh=q2ZzATdMD+D7lCgML0/NsVHxerbvCAXMrcJCKifmWVE=;
+	s=arc-20240116; t=1705959053; c=relaxed/simple;
+	bh=zoiLe0GmgV6XcV8qaxVsWn9xPRi07vWQTIaZGAPTy18=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZTca82AqSr3YXxiMU+aZYIboD7eMYj3f51ZcH5vp02r1ZWxqMOEvkBIFPyRu3sIElgi1rDv80zTbW2AeVo9PbMrzuucvFJgVudJ5MXVID9kh7I+JRYUPYb4+sG7wbDfrTgwUBUWVDNnxULVUztffQN/fV1PixthfQUTNzFh5kek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rS1qv-0000Ho-PR; Mon, 22 Jan 2024 22:29:09 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rS1qt-001ga9-T1; Mon, 22 Jan 2024 22:29:07 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rS1qt-005hn7-2b;
-	Mon, 22 Jan 2024 22:29:07 +0100
-Date: Mon, 22 Jan 2024 22:29:07 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
-	Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, 
-	Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org, kernel@pengutronix.de, 
-	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH v2 13/33] mtd: rawnand: fsl_elbc: Let .probe retry if
- local bus is missing
-Message-ID: <33kxj5ij25bzkyhuww5kane2sb2f3euyq3uoudlgegfks3xs4f@ru24kc6z55je>
-References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
- <41a042207ef791c4c5bcb46f09f63c40c6aa321b.1705944943.git.u.kleine-koenig@pengutronix.de>
- <20240122191931.17807644@xps-13>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YI3UmysWVr47mXmID9niklXX8f/f5dJ/uUh4v7XsUyforTYkl8Z9XYHZ3sbfsi6z0Jw3mM+Jizs3bo9gs85HmZKpToQCqF2kceme3f4t/Eunacoo92S4eCjG5pnB+gBqDU0ys/xWGn8poG//0TTBgxYPrCeMaSlah2heJHggXao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GxM2tPBt; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2906dffd8ddso1845949a91.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:30:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705959052; x=1706563852; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xKEBr23rbJKu9h7vL24E+EIJQpc/iOsyibRTRHA5Xcc=;
+        b=GxM2tPBt1t3JBPCQCGXTtAnCdO9Ldc417Kde0DIbbhgYphNRBBiKN9zbbCXz77D7is
+         vu18prh4YboCsJTBQ6b6viJp2JevCfRUkbre9TgwaRSGPW4Hy0n9iENFSYJjj/Xnu3/4
+         KLp5uwlGwslDkrb2Y8a6FEy2e2pIjdNY9Rs+4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705959052; x=1706563852;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xKEBr23rbJKu9h7vL24E+EIJQpc/iOsyibRTRHA5Xcc=;
+        b=X4Ym4ZMnOvSTfAA98kF0m8G5oQMLHmGFQJSMbwz7Yr4iJyTbfAboHFch5sB7cQI1X6
+         CxIUNYJHTO8Vd/52kkI5teIoxfVud094KXOJTS0uOh6eqdA9h91iwEhwrf4IkiSNDO8S
+         ZbhLrvebfOJZukQJBW9kGw9qTThVduUVBvjWzkVRCyDn6Sw6W72vVhm4MIySj6SuKaB3
+         7RWE+ZuoUObbC06SG79Psq1ywgimMj6nbiFaWPgLujrAcrirUdSyVF3uYR+lv044vOyc
+         OdTYqHfVXzDkO9H9r8wOrzY7wVgXoKHaEeHz74XLBlNWm1rItfRyoBM/oRIZrDex/HnT
+         gUJA==
+X-Gm-Message-State: AOJu0YxuW6/4lL9U73Dmie3TThmjfLK2ApEFXi9Zg+AueP5riuUM7FS7
+	DPiuvnXa13PCOpMJLN2uNzw5ILGZpYg0uK3uNB3qT6ZZQsogT/+semBr5Q2F+Q==
+X-Google-Smtp-Source: AGHT+IGuu8CRZ67T/sbZ33Kh3Gjp/4gDLn2p+VjWE9BT0X4ASe4DyFux9xBdjaYSy+LIQ61UuJTqIQ==
+X-Received: by 2002:a17:90b:1093:b0:28f:f706:f276 with SMTP id gj19-20020a17090b109300b0028ff706f276mr2415921pjb.80.1705959051711;
+        Mon, 22 Jan 2024 13:30:51 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id l17-20020a17090a409100b00290ae3bf8d7sm2167130pjg.21.2024.01.22.13.30.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 13:30:51 -0800 (PST)
+Date: Mon, 22 Jan 2024 13:30:50 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc: Oleg Nesterov <oleg@redhat.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@suse.com>, Serge Hallyn <serge@hallyn.com>,
+	James Morris <jamorris@linux.microsoft.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Yafang Shao <laoar.shao@gmail.com>, Helge Deller <deller@gmx.de>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Adrian Reber <areber@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+	tiozhang <tiozhang@didiglobal.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	"Paulo Alcantara (SUSE)" <pc@manguebit.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	YueHaibing <yuehaibing@huawei.com>,
+	Paul Moore <paul@paul-moore.com>, Aleksa Sarai <cyphar@cyphar.com>,
+	Stefan Roesch <shr@devkernel.io>, Chao Yu <chao@kernel.org>,
+	xu xin <xu.xin16@zte.com.cn>, Jeff Layton <jlayton@kernel.org>,
+	Jan Kara <jack@suse.cz>, David Hildenbrand <david@redhat.com>,
+	Dave Chinner <dchinner@redhat.com>, Shuah Khan <shuah@kernel.org>,
+	Zheng Yejian <zhengyejian1@huawei.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	David Windsor <dwindsor@gmail.com>,
+	Mateusz Guzik <mjguzik@gmail.com>, Ard Biesheuvel <ardb@kernel.org>,
+	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Hans Liljestrand <ishkamiel@gmail.com>
+Subject: Re: [PATCH v14] exec: Fix dead-lock in de_thread with ptrace_attach
+Message-ID: <202401221328.5E7A82C32@keescook>
+References: <AM8PR10MB470801D01A0CF24BC32C25E7E40E9@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
+ <AM8PR10MB470875B22B4C08BEAEC3F77FE4169@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
+ <AS8P193MB1285DF698D7524EDE22ABFA1E4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <AS8P193MB12851AC1F862B97FCE9B3F4FE4AAA@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <AS8P193MB1285FF445694F149B70B21D0E46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <20240116152210.GA12342@redhat.com>
+ <AS8P193MB128538BC3833E654F56DA801E4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <20240117163739.GA32526@redhat.com>
+ <AS8P193MB1285FDD902CC57C781AF2770E4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wpw5yp3sgfojkufj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240122191931.17807644@xps-13>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <AS8P193MB1285FDD902CC57C781AF2770E4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
 
+On Mon, Jan 22, 2024 at 02:24:37PM +0100, Bernd Edlinger wrote:
+> The main concern was when a set-suid program is executed by execve.
+> Then it makes a difference if the current thread is traced before the
+> execve or not.  That means if the current thread is already traced,
+> the decision, which credentials will be used is different than otherwise.
+> 
+> So currently there are two possbilities, either the trace happens
+> before the execve, and the suid-bit will be ignored, or the trace
+> happens after the execve, but it is checked that the now potentially
+> more privileged credentials allow the tracer to proceed.
+> 
+> With this patch we will have a third prossibility, that is in order
+> to avoid the possible dead-lock we allow the suid-bit to take effect,
+> but only if the tracer's privileges allow both to attach the current
+> credentials and the new credentials.  But I would only do that as
+> a last resort, to avoid the possible dead-lock, and not unless a dead-lock
+> is really expected to happen.
 
---wpw5yp3sgfojkufj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Instead of doing this special cred check (which I am worried could
+become fragile -- I'd prefer all privilege checks happen in the same
+place and in the same way...), could we just fail the ptrace_attach of
+the execve?
 
-Hi Miqu=E8l,
-
-On Mon, Jan 22, 2024 at 07:19:44PM +0100, Miquel Raynal wrote:
-> u.kleine-koenig@pengutronix.de wrote on Mon, 22 Jan 2024 19:07:08 +0100:
->=20
-> > If during probe fsl_lbc_ctrl_dev is NULL that might just be because the
-> > fsl_lbc driver didn't bind yet. So return -EPROBE_DEFER in this case to
-> > make the driver core retry probing later.
->=20
-> Despite the probable usefulness of this change, I don't see any
-> relationship with the current series. So unless there is a good reason
-> I might take this one through the nand tree.
-
-This patch indeed doesn't belong into this series. It just happend to be
-in my tree and shuffled into the middle when I sorted the patches by
-subsystem. Note I already sent it separately at
-
-	https://lore.kernel.org/linux-mtd/20240115141245.3415035-2-u.kleine-koenig=
-@pengutronix.de
-
-> Also, what about a Fixes/Cc: stable tag here?
-
-The problem exists since
-
-	3ab8f2a2e701 ("P4080/eLBC: Make Freescale elbc interrupt common to elbc de=
-vices")
-
-which was included in v2.6.37-rc1. At that time there was no
-EPROBE_DEFER yet. I think I wouldn't add a Fixes: line for that, but
-feel free to add one if you think there should be one.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---wpw5yp3sgfojkufj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWu3iIACgkQj4D7WH0S
-/k46Fgf+LprTnc7f6tqg7kcdC7LeG2KTK7vIZ1pjmaQZRz1lnlpCnTrHGPFgCHuz
-CA50m2x1CNkDqx46qG60SaYDCk0/+/7HzBEhlfOt8DP+8U+qmF/aTkigmWrX6o1r
-uF8FpRxF+Wf5sr32sPV98njmq9Z3rZBHJ3f9vN44TN92xlRvwSSWT/TwqL6clpuw
-wV+dOL8KOmE+6jFkp5qsG9x5IRs6fvssMcLchkxuf2nHSAF5rh7NgY7TRFo7QZn6
-b96c8ttoIn08z8Yl7StEnB5qhFCF2SB3YR2QRMnpGLR0p1H/f6VYncn10/pEFbu2
-Nke5eCouKGSKTpSfwWDJ3LjplrnZNA==
-=QV09
------END PGP SIGNATURE-----
-
---wpw5yp3sgfojkufj--
+-- 
+Kees Cook
 
