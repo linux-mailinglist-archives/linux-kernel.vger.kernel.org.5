@@ -1,301 +1,280 @@
-Return-Path: <linux-kernel+bounces-32460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBBD7835BF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:47:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA42A835BD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:40:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ACE11F25D5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:47:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A53D282118
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2257A38FBB;
-	Mon, 22 Jan 2024 07:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 365AC1643D;
+	Mon, 22 Jan 2024 07:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QQ8PUQLY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WWur+iBH"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD53738FB2
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CEC16427
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705909508; cv=none; b=FAx3QpWwGHDd8vr4J8yHH8nSPE58i7kP2K4PBkhF4ulUvR47NHfk8yKKlRZ606IzF94WZI6Fasp6WRVIP0l74P83aG9In5R6zPKOJIiUsuBfQ6bPIbD9tBSUnS0CJE0KA9V/i7E23ezOV+Bt9aWT2XUdxkf2MVELKB9XUCBwMTg=
+	t=1705909180; cv=none; b=dg8mk7qc2+PNuIcs5J1Xu5fuRRqv82npXNTK9a09ZqiXS0KVzObexGlruKR1dYlBlKCBVHg9e6ogIs74yjl/c9Crv/1ssCBCv2KwUVnv0EF/QHND5egi76wDMdkL80A5PyAGO70vrW5AfYQtg2EJAxydLy8Um1MyTPhI7jgWuMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705909508; c=relaxed/simple;
-	bh=KlmWnPAZToFQvPsiUfP6iSvCOZ56NoSZwovTmOBtG9g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NNbh97RiZvWHkCYP2pWWMH8+OsedA639G/aPQytwPZ4FrwSL+Pu1CzdPB2MyPWYJmZEe0JVKnXKLGACHPaJcYZEVSgyCHYb2OUpip4/rqy7jF7DPAjASHiPYQFJqrGf2cB0yWE9QvMdzw8vGziJXCufbtWG5oDr8IOG57B45UnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QQ8PUQLY; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705909506; x=1737445506;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KlmWnPAZToFQvPsiUfP6iSvCOZ56NoSZwovTmOBtG9g=;
-  b=QQ8PUQLYLAsxCG1uQbS4OyaQhCIUQVwmEBVP8rx+Cm5z6vv12amsmsZz
-   uYuc1/bVsh3cGa7DfIu0B3VTvD2wJRu5uEFc0RXPL9hY2sN2eKXjZedc4
-   m0UbG8wS1OBQtWKWNMdnVWspOBqW7s5B91XYe/omSwz0f4Rwr0Nwr/UTf
-   jfgS2AqYnanB7sCQ0fE2qOOd+A0BgYp+kVmuvZvjXtrGQcejSAPcQFQaX
-   YPa05mkacqkJlgYw/5Cc3OLD4y+5+3SePMrO2Vru49Z/ChQCbSOmquuDP
-   dexq7Tv5od7Ootfmo7lYEU4NagPzeibYGWNfqVeKNhHl+vHdoV2N5LBc3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="22611700"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="22611700"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2024 23:45:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="778505102"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="778505102"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orsmga007.jf.intel.com with ESMTP; 21 Jan 2024 23:45:01 -0800
-From: Lu Baolu <baolu.lu@linux.intel.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Nicolin Chen <nicolinc@nvidia.com>,
-	Yi Liu <yi.l.liu@intel.com>,
-	Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	Joel Granados <j.granados@samsung.com>
-Cc: iommu@lists.linux.dev,
-	virtualization@lists.linux-foundation.org,
-	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 8/8] iommufd/selftest: Add coverage for IOPF test
-Date: Mon, 22 Jan 2024 15:39:03 +0800
-Message-Id: <20240122073903.24406-9-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240122073903.24406-1-baolu.lu@linux.intel.com>
-References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
+	s=arc-20240116; t=1705909180; c=relaxed/simple;
+	bh=1YLwKg5BKYoqNToyVapYiHQayIoXv4396d7rUHJb7vU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=nSvg+cUp5cuPEIdPbwahhhrwgHT+ZEHKtHT9xfKr07Dn89Ybzfhs4oi9C+HZ3uAbNRLx4S045JWRs4gjndDTgXWKD0OpOpIlxtEbSrC8La5soRHIjkaJgxNSL/1JL9AwihsB+Id2tvK3qw+XRhv+iw5cE6/OfkGpucHwINojkac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WWur+iBH; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e9101b5f9so33089695e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 23:39:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705909176; x=1706513976; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4WWozvUtTyFqrcPplojVaddKZbkwJqSzUWQNGORnmds=;
+        b=WWur+iBHH+HO6jb6jRwkOvICUhK9eThe5qxoDi6y0wo3EEF0xCiDiKcjlYGjvyeklr
+         oImXXih0WpRr6l4LEBOgOxhtWs4JZVF7LPKtab5+HEBwZwtzvZXtOdstH081xZZdrnmM
+         a4+bMVIvS0UgA9Sduhf20Y9KrTVf3TyGgCTsy4o6ghD2yN2WsYby5t84Ib6y7Rx7l+2v
+         b19RguKrPu61Iz3J5SduuwsqxwDFjbKnsz/cLwHDBCngCi0R1j6AKkQkYdDL4MuiNpFd
+         Yr1LD913hLU7J3n89EYSTeKQkUoVI8J3RJL4lzi40iWfVzeM1Z69wXJ1mjis609dCTAm
+         BV8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705909176; x=1706513976;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4WWozvUtTyFqrcPplojVaddKZbkwJqSzUWQNGORnmds=;
+        b=oeWTMe+pYN8eifU31msm9K1S+YHCAmP12aMXjEHXe2w6bSQA/AkyYB+0+qia5fFXsg
+         IUxmd3q9/4a9ramQRN7ot/Cg7UlpKNZbHikQX8iCyPCIFhqyBiw5vKtk+nkA+hJ7aojY
+         QQH9pCKNCXJdmNo0xkmXLnis+WjJEuoFeuTUXEczUqcAJSYmHvmkOAh9m8W8hwAPIFu1
+         8P4R76xrX4A5rNhrNaLT5YKZRotKWUW++08zBFxNBFdPiqEJ0/n1ThmCqW27BRQ5twqa
+         8rLuji3Wg/5rf9SgbJGa6xYLgzI/ZLqx8HQLiQt+/snH5Ssr84wUlXkih54KtdZThG0f
+         yfVg==
+X-Gm-Message-State: AOJu0YxjVg4J7PMlApYPCm2I5l88Loio0/9EUWJ3TSo7krWr/Tm7z+2G
+	WZ+ubFFgQUyaYRGfNJSIB4ZlsAf5m7aoiYw816DhhCgVMgOysvvXuV2lNyaiIXw=
+X-Google-Smtp-Source: AGHT+IF3f9HEyXHgZMkSmfxAJedCIp1k/7JyOqsL7kRQv+oTlau4JKHccMmhzoOsz3uboEZQdHAsIQ==
+X-Received: by 2002:a05:600c:4e13:b0:40e:b086:f007 with SMTP id b19-20020a05600c4e1300b0040eb086f007mr108892wmq.51.1705909176062;
+        Sun, 21 Jan 2024 23:39:36 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id p21-20020a05600c359500b0040e3488f16dsm37716986wmq.12.2024.01.21.23.39.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jan 2024 23:39:35 -0800 (PST)
+Date: Mon, 22 Jan 2024 10:39:32 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev,
+	Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+	dlemoal@kernel.org, cassel@kernel.org, richardcochran@gmail.com,
+	piyush.mehta@xilinx.com, axboe@kernel.dk, michal.simek@amd.com
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, linux-ide@vger.kernel.org,
+	linux-kernel@vger.kernel.org, git@amd.com,
+	Piyush Mehta <piyush.mehta@amd.com>,
+	Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Subject: Re: [PATCH 1/2] ata: ahci_ceva: fix error handling for Xilinx GT PHY
+ support
+Message-ID: <7f18c22c-df5d-4eac-b67a-84c5802b8734@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1705604904-471889-2-git-send-email-radhey.shyam.pandey@amd.com>
 
-Extend the selftest tool to add coverage of testing IOPF handling. This
-would include the following tests:
+Hi Radhey,
 
-- Allocating and destorying an iommufd fault object.
-- Allocating and destroying an IOPF-capable HWPT.
-- Attaching/detaching/replacing an IOPF-capable HWPT on a device.
-- Triggering an IOPF on the mock device.
-- Retrieving and responding to the IOPF through the file interface.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- tools/testing/selftests/iommu/iommufd_utils.h | 83 +++++++++++++++++--
- tools/testing/selftests/iommu/iommufd.c       | 17 ++++
- .../selftests/iommu/iommufd_fail_nth.c        |  2 +-
- 3 files changed, 96 insertions(+), 6 deletions(-)
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/tools/testing/selftests/iommu/iommufd_utils.h b/tools/testing/selftests/iommu/iommufd_utils.h
-index c646264aa41f..bf6027f2a16d 100644
---- a/tools/testing/selftests/iommu/iommufd_utils.h
-+++ b/tools/testing/selftests/iommu/iommufd_utils.h
-@@ -153,7 +153,7 @@ static int _test_cmd_mock_domain_replace(int fd, __u32 stdev_id, __u32 pt_id,
- 	EXPECT_ERRNO(_errno, _test_cmd_mock_domain_replace(self->fd, stdev_id, \
- 							   pt_id, NULL))
- 
--static int _test_cmd_hwpt_alloc(int fd, __u32 device_id, __u32 pt_id,
-+static int _test_cmd_hwpt_alloc(int fd, __u32 device_id, __u32 pt_id, __u32 ft_id,
- 				__u32 flags, __u32 *hwpt_id, __u32 data_type,
- 				void *data, size_t data_len)
- {
-@@ -165,6 +165,7 @@ static int _test_cmd_hwpt_alloc(int fd, __u32 device_id, __u32 pt_id,
- 		.data_type = data_type,
- 		.data_len = data_len,
- 		.data_uptr = (uint64_t)data,
-+		.fault_id = ft_id,
- 	};
- 	int ret;
- 
-@@ -177,24 +178,30 @@ static int _test_cmd_hwpt_alloc(int fd, __u32 device_id, __u32 pt_id,
- }
- 
- #define test_cmd_hwpt_alloc(device_id, pt_id, flags, hwpt_id)                  \
--	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, flags,   \
-+	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, 0, flags,   \
- 					  hwpt_id, IOMMU_HWPT_DATA_NONE, NULL, \
- 					  0))
- #define test_err_hwpt_alloc(_errno, device_id, pt_id, flags, hwpt_id)   \
- 	EXPECT_ERRNO(_errno, _test_cmd_hwpt_alloc(                      \
--				     self->fd, device_id, pt_id, flags, \
-+				     self->fd, device_id, pt_id, 0, flags, \
- 				     hwpt_id, IOMMU_HWPT_DATA_NONE, NULL, 0))
- 
- #define test_cmd_hwpt_alloc_nested(device_id, pt_id, flags, hwpt_id,         \
- 				   data_type, data, data_len)                \
--	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, flags, \
-+	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, 0, flags, \
- 					  hwpt_id, data_type, data, data_len))
- #define test_err_hwpt_alloc_nested(_errno, device_id, pt_id, flags, hwpt_id, \
- 				   data_type, data, data_len)                \
- 	EXPECT_ERRNO(_errno,                                                 \
--		     _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, flags, \
-+		     _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, 0, flags, \
- 					  hwpt_id, data_type, data, data_len))
- 
-+#define test_cmd_hwpt_alloc_iopf(device_id, pt_id, fault_id, flags, hwpt_id,    \
-+				   data_type, data, data_len)                   \
-+	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, fault_id, \
-+					  flags, hwpt_id, data_type, data,      \
-+					  data_len))
-+
- #define test_cmd_hwpt_check_iotlb(hwpt_id, iotlb_id, expected)                 \
- 	({                                                                     \
- 		struct iommu_test_cmd test_cmd = {                             \
-@@ -673,3 +680,69 @@ static int _test_cmd_get_hw_info(int fd, __u32 device_id, void *data,
- 
- #define test_cmd_get_hw_capabilities(device_id, caps, mask) \
- 	ASSERT_EQ(0, _test_cmd_get_hw_info(self->fd, device_id, NULL, 0, &caps))
-+
-+static int _test_ioctl_fault_alloc(int fd, __u32 *fault_id, __u32 *fault_fd)
-+{
-+	struct iommu_fault_alloc cmd = {
-+		.size = sizeof(cmd),
-+	};
-+	int ret;
-+
-+	ret = ioctl(fd, IOMMU_FAULT_ALLOC, &cmd);
-+	if (ret)
-+		return ret;
-+	*fault_id = cmd.out_fault_id;
-+	*fault_fd = cmd.out_fault_fd;
-+	return 0;
-+}
-+
-+#define test_ioctl_fault_alloc(fault_id, fault_fd)                       \
-+	({                                                               \
-+		ASSERT_EQ(0, _test_ioctl_fault_alloc(self->fd, fault_id, \
-+						     fault_fd));         \
-+		ASSERT_NE(0, *(fault_id));                               \
-+		ASSERT_NE(0, *(fault_fd));                               \
-+	})
-+
-+static int _test_cmd_trigger_iopf(int fd, __u32 device_id, __u32 fault_fd)
-+{
-+	struct iommu_test_cmd trigger_iopf_cmd = {
-+		.size = sizeof(trigger_iopf_cmd),
-+		.op = IOMMU_TEST_OP_TRIGGER_IOPF,
-+		.trigger_iopf = {
-+			.dev_id = device_id,
-+			.pasid = 0x1,
-+			.grpid = 0x2,
-+			.perm = IOMMU_PGFAULT_PERM_READ | IOMMU_PGFAULT_PERM_WRITE,
-+			.addr = 0xdeadbeaf,
-+		},
-+	};
-+	struct iommu_hwpt_page_response response = {
-+		.size = sizeof(struct iommu_hwpt_page_response),
-+		.dev_id = device_id,
-+		.pasid = 0x1,
-+		.grpid = 0x2,
-+		.code = 0,
-+		.addr = 0xdeadbeaf,
-+	};
-+	struct iommu_hwpt_pgfault fault = {};
-+	ssize_t bytes;
-+	int ret;
-+
-+	ret = ioctl(fd, _IOMMU_TEST_CMD(IOMMU_TEST_OP_TRIGGER_IOPF), &trigger_iopf_cmd);
-+	if (ret)
-+		return ret;
-+
-+	bytes = read(fault_fd, &fault, sizeof(fault));
-+	if (bytes < 0)
-+		return bytes;
-+
-+	bytes = write(fault_fd, &response, sizeof(response));
-+	if (bytes < 0)
-+		return bytes;
-+
-+	return 0;
-+}
-+
-+#define test_cmd_trigger_iopf(device_id, fault_fd) \
-+	ASSERT_EQ(0, _test_cmd_trigger_iopf(self->fd, device_id, fault_fd))
-diff --git a/tools/testing/selftests/iommu/iommufd.c b/tools/testing/selftests/iommu/iommufd.c
-index 1a881e7a21d1..d7049df62ed2 100644
---- a/tools/testing/selftests/iommu/iommufd.c
-+++ b/tools/testing/selftests/iommu/iommufd.c
-@@ -278,6 +278,9 @@ TEST_F(iommufd_ioas, alloc_hwpt_nested)
- 	uint32_t parent_hwpt_id = 0;
- 	uint32_t parent_hwpt_id_not_work = 0;
- 	uint32_t test_hwpt_id = 0;
-+	uint32_t iopf_hwpt_id;
-+	uint32_t fault_id;
-+	uint32_t fault_fd;
- 
- 	if (self->device_id) {
- 		/* Negative tests */
-@@ -325,6 +328,7 @@ TEST_F(iommufd_ioas, alloc_hwpt_nested)
- 					   sizeof(data));
- 
- 		/* Allocate two nested hwpts sharing one common parent hwpt */
-+		test_ioctl_fault_alloc(&fault_id, &fault_fd);
- 		test_cmd_hwpt_alloc_nested(self->device_id, parent_hwpt_id, 0,
- 					   &nested_hwpt_id[0],
- 					   IOMMU_HWPT_DATA_SELFTEST, &data,
-@@ -333,6 +337,10 @@ TEST_F(iommufd_ioas, alloc_hwpt_nested)
- 					   &nested_hwpt_id[1],
- 					   IOMMU_HWPT_DATA_SELFTEST, &data,
- 					   sizeof(data));
-+		test_cmd_hwpt_alloc_iopf(self->device_id, parent_hwpt_id, fault_id,
-+					 IOMMU_HWPT_FAULT_ID_VALID, &iopf_hwpt_id,
-+					 IOMMU_HWPT_DATA_SELFTEST, &data,
-+					 sizeof(data));
- 		test_cmd_hwpt_check_iotlb_all(nested_hwpt_id[0],
- 					      IOMMU_TEST_IOTLB_DEFAULT);
- 		test_cmd_hwpt_check_iotlb_all(nested_hwpt_id[1],
-@@ -503,14 +511,23 @@ TEST_F(iommufd_ioas, alloc_hwpt_nested)
- 			     _test_ioctl_destroy(self->fd, nested_hwpt_id[1]));
- 		test_ioctl_destroy(nested_hwpt_id[0]);
- 
-+		/* Switch from nested_hwpt_id[1] to iopf_hwpt_id */
-+		test_cmd_mock_domain_replace(self->stdev_id, iopf_hwpt_id);
-+		EXPECT_ERRNO(EBUSY,
-+			     _test_ioctl_destroy(self->fd, iopf_hwpt_id));
-+		/* Trigger an IOPF on the device */
-+		test_cmd_trigger_iopf(self->device_id, fault_fd);
-+
- 		/* Detach from nested_hwpt_id[1] and destroy it */
- 		test_cmd_mock_domain_replace(self->stdev_id, parent_hwpt_id);
- 		test_ioctl_destroy(nested_hwpt_id[1]);
-+		test_ioctl_destroy(iopf_hwpt_id);
- 
- 		/* Detach from the parent hw_pagetable and destroy it */
- 		test_cmd_mock_domain_replace(self->stdev_id, self->ioas_id);
- 		test_ioctl_destroy(parent_hwpt_id);
- 		test_ioctl_destroy(parent_hwpt_id_not_work);
-+		test_ioctl_destroy(fault_id);
- 	} else {
- 		test_err_hwpt_alloc(ENOENT, self->device_id, self->ioas_id, 0,
- 				    &parent_hwpt_id);
-diff --git a/tools/testing/selftests/iommu/iommufd_fail_nth.c b/tools/testing/selftests/iommu/iommufd_fail_nth.c
-index f590417cd67a..c5d5e69452b0 100644
---- a/tools/testing/selftests/iommu/iommufd_fail_nth.c
-+++ b/tools/testing/selftests/iommu/iommufd_fail_nth.c
-@@ -615,7 +615,7 @@ TEST_FAIL_NTH(basic_fail_nth, device)
- 	if (_test_cmd_get_hw_info(self->fd, idev_id, &info, sizeof(info), NULL))
- 		return -1;
- 
--	if (_test_cmd_hwpt_alloc(self->fd, idev_id, ioas_id, 0, &hwpt_id,
-+	if (_test_cmd_hwpt_alloc(self->fd, idev_id, ioas_id, 0, 0, &hwpt_id,
- 				 IOMMU_HWPT_DATA_NONE, 0, 0))
- 		return -1;
- 
+url:    https://github.com/intel-lab-lkp/linux/commits/Radhey-Shyam-Pandey/ata-ahci_ceva-fix-error-handling-for-Xilinx-GT-PHY-support/20240119-031129
+base:   linus/master
+patch link:    https://lore.kernel.org/r/1705604904-471889-2-git-send-email-radhey.shyam.pandey%40amd.com
+patch subject: [PATCH 1/2] ata: ahci_ceva: fix error handling for Xilinx GT PHY support
+config: i386-randconfig-141-20240120 (https://download.01.org/0day-ci/archive/20240122/202401220603.dgjTZ08O-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202401220603.dgjTZ08O-lkp@intel.com/
+
+smatch warnings:
+drivers/ata/ahci_ceva.c:335 ceva_ahci_probe() error: uninitialized symbol 'i'.
+
+vim +/i +335 drivers/ata/ahci_ceva.c
+
+a73ed35052ca85 Suneel Garapati      2015-06-09  192  static int ceva_ahci_probe(struct platform_device *pdev)
+a73ed35052ca85 Suneel Garapati      2015-06-09  193  {
+a73ed35052ca85 Suneel Garapati      2015-06-09  194  	struct device_node *np = pdev->dev.of_node;
+a73ed35052ca85 Suneel Garapati      2015-06-09  195  	struct device *dev = &pdev->dev;
+a73ed35052ca85 Suneel Garapati      2015-06-09  196  	struct ahci_host_priv *hpriv;
+a73ed35052ca85 Suneel Garapati      2015-06-09  197  	struct ceva_ahci_priv *cevapriv;
+3bc867de85b5bf Anurag Kumar Vulisha 2017-08-21  198  	enum dev_dma_attr attr;
+b1600f5880a13f Piyush Mehta         2024-01-19  199  	int rc, i;
+
+i needs to be initialized to zero here.
+
+a73ed35052ca85 Suneel Garapati      2015-06-09  200  
+a73ed35052ca85 Suneel Garapati      2015-06-09  201  	cevapriv = devm_kzalloc(dev, sizeof(*cevapriv), GFP_KERNEL);
+a73ed35052ca85 Suneel Garapati      2015-06-09  202  	if (!cevapriv)
+a73ed35052ca85 Suneel Garapati      2015-06-09  203  		return -ENOMEM;
+a73ed35052ca85 Suneel Garapati      2015-06-09  204  
+a73ed35052ca85 Suneel Garapati      2015-06-09  205  	cevapriv->ahci_pdev = pdev;
+a73ed35052ca85 Suneel Garapati      2015-06-09  206  
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  207  	cevapriv->rst = devm_reset_control_get_optional_exclusive(&pdev->dev,
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  208  								  NULL);
+fa4b42b2a968dc Piyush Mehta         2021-03-05  209  	if (IS_ERR(cevapriv->rst))
+fa4b42b2a968dc Piyush Mehta         2021-03-05  210  		dev_err_probe(&pdev->dev, PTR_ERR(cevapriv->rst),
+fa4b42b2a968dc Piyush Mehta         2021-03-05  211  			      "failed to get reset\n");
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  212  
+16af2d65842d34 Kunihiko Hayashi     2018-08-22  213  	hpriv = ahci_platform_get_resources(pdev, 0);
+a73ed35052ca85 Suneel Garapati      2015-06-09  214  	if (IS_ERR(hpriv))
+a73ed35052ca85 Suneel Garapati      2015-06-09  215  		return PTR_ERR(hpriv);
+a73ed35052ca85 Suneel Garapati      2015-06-09  216  
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  217  	if (!cevapriv->rst) {
+a73ed35052ca85 Suneel Garapati      2015-06-09  218  		rc = ahci_platform_enable_resources(hpriv);
+a73ed35052ca85 Suneel Garapati      2015-06-09  219  		if (rc)
+a73ed35052ca85 Suneel Garapati      2015-06-09  220  			return rc;
+
+i is uninitialized on this path.
+
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  221  	} else {
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  222  		rc = ahci_platform_enable_clks(hpriv);
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  223  		if (rc)
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  224  			return rc;
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  225  		/* Assert the controller reset */
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  226  		reset_control_assert(cevapriv->rst);
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  227  
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  228  		for (i = 0; i < hpriv->nports; i++) {
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  229  			rc = phy_init(hpriv->phys[i]);
+b1600f5880a13f Piyush Mehta         2024-01-19  230  			if (rc) {
+b1600f5880a13f Piyush Mehta         2024-01-19  231  				while (--i >= 0)
+b1600f5880a13f Piyush Mehta         2024-01-19  232  					phy_exit(hpriv->phys[i]);
+b1600f5880a13f Piyush Mehta         2024-01-19  233  				goto disable_clks;
+b1600f5880a13f Piyush Mehta         2024-01-19  234  			}
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  235  		}
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  236  
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  237  		/* De-assert the controller reset */
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  238  		reset_control_deassert(cevapriv->rst);
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  239  
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  240  		for (i = 0; i < hpriv->nports; i++) {
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  241  			rc = phy_power_on(hpriv->phys[i]);
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  242  			if (rc) {
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  243  				phy_exit(hpriv->phys[i]);
+b1600f5880a13f Piyush Mehta         2024-01-19  244  				goto disable_phys;
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  245  			}
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  246  		}
+9a9d3abe24bb6b Piyush Mehta         2021-02-08  247  	}
+a73ed35052ca85 Suneel Garapati      2015-06-09  248  
+a73ed35052ca85 Suneel Garapati      2015-06-09  249  	if (of_property_read_bool(np, "ceva,broken-gen2"))
+a73ed35052ca85 Suneel Garapati      2015-06-09  250  		cevapriv->flags = CEVA_FLAG_BROKEN_GEN2;
+a73ed35052ca85 Suneel Garapati      2015-06-09  251  
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  252  	/* Read OOB timing value for COMINIT from device-tree */
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  253  	if (of_property_read_u8_array(np, "ceva,p0-cominit-params",
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  254  					(u8 *)&cevapriv->pp2c[0], 4) < 0) {
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  255  		dev_warn(dev, "ceva,p0-cominit-params property not defined\n");
+b1600f5880a13f Piyush Mehta         2024-01-19  256  		rc = -EINVAL;
+b1600f5880a13f Piyush Mehta         2024-01-19  257  		goto disable_phys;
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  258  	}
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  259  
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  260  	if (of_property_read_u8_array(np, "ceva,p1-cominit-params",
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  261  					(u8 *)&cevapriv->pp2c[1], 4) < 0) {
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  262  		dev_warn(dev, "ceva,p1-cominit-params property not defined\n");
+b1600f5880a13f Piyush Mehta         2024-01-19  263  		rc = -EINVAL;
+b1600f5880a13f Piyush Mehta         2024-01-19  264  		goto disable_phys;
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  265  	}
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  266  
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  267  	/* Read OOB timing value for COMWAKE from device-tree*/
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  268  	if (of_property_read_u8_array(np, "ceva,p0-comwake-params",
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  269  					(u8 *)&cevapriv->pp3c[0], 4) < 0) {
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  270  		dev_warn(dev, "ceva,p0-comwake-params property not defined\n");
+b1600f5880a13f Piyush Mehta         2024-01-19  271  		rc = -EINVAL;
+b1600f5880a13f Piyush Mehta         2024-01-19  272  		goto disable_phys;
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  273  	}
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  274  
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  275  	if (of_property_read_u8_array(np, "ceva,p1-comwake-params",
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  276  					(u8 *)&cevapriv->pp3c[1], 4) < 0) {
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  277  		dev_warn(dev, "ceva,p1-comwake-params property not defined\n");
+b1600f5880a13f Piyush Mehta         2024-01-19  278  		rc = -EINVAL;
+b1600f5880a13f Piyush Mehta         2024-01-19  279  		goto disable_phys;
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  280  	}
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  281  
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  282  	/* Read phy BURST timing value from device-tree */
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  283  	if (of_property_read_u8_array(np, "ceva,p0-burst-params",
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  284  					(u8 *)&cevapriv->pp4c[0], 4) < 0) {
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  285  		dev_warn(dev, "ceva,p0-burst-params property not defined\n");
+b1600f5880a13f Piyush Mehta         2024-01-19  286  		rc = -EINVAL;
+b1600f5880a13f Piyush Mehta         2024-01-19  287  		goto disable_phys;
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  288  	}
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  289  
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  290  	if (of_property_read_u8_array(np, "ceva,p1-burst-params",
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  291  					(u8 *)&cevapriv->pp4c[1], 4) < 0) {
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  292  		dev_warn(dev, "ceva,p1-burst-params property not defined\n");
+b1600f5880a13f Piyush Mehta         2024-01-19  293  		rc = -EINVAL;
+b1600f5880a13f Piyush Mehta         2024-01-19  294  		goto disable_phys;
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  295  	}
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  296  
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  297  	/* Read phy RETRY interval timing value from device-tree */
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  298  	if (of_property_read_u16_array(np, "ceva,p0-retry-params",
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  299  					(u16 *)&cevapriv->pp5c[0], 2) < 0) {
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  300  		dev_warn(dev, "ceva,p0-retry-params property not defined\n");
+b1600f5880a13f Piyush Mehta         2024-01-19  301  		rc = -EINVAL;
+b1600f5880a13f Piyush Mehta         2024-01-19  302  		goto disable_phys;
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  303  	}
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  304  
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  305  	if (of_property_read_u16_array(np, "ceva,p1-retry-params",
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  306  					(u16 *)&cevapriv->pp5c[1], 2) < 0) {
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  307  		dev_warn(dev, "ceva,p1-retry-params property not defined\n");
+b1600f5880a13f Piyush Mehta         2024-01-19  308  		rc = -EINVAL;
+b1600f5880a13f Piyush Mehta         2024-01-19  309  		goto disable_phys;
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  310  	}
+fe8365bbf8ac58 Anurag Kumar Vulisha 2017-08-21  311  
+3bc867de85b5bf Anurag Kumar Vulisha 2017-08-21  312  	/*
+3bc867de85b5bf Anurag Kumar Vulisha 2017-08-21  313  	 * Check if CCI is enabled for SATA. The DEV_DMA_COHERENT is returned
+3bc867de85b5bf Anurag Kumar Vulisha 2017-08-21  314  	 * if CCI is enabled, so check for DEV_DMA_COHERENT.
+3bc867de85b5bf Anurag Kumar Vulisha 2017-08-21  315  	 */
+3bc867de85b5bf Anurag Kumar Vulisha 2017-08-21  316  	attr = device_get_dma_attr(dev);
+3bc867de85b5bf Anurag Kumar Vulisha 2017-08-21  317  	cevapriv->is_cci_enabled = (attr == DEV_DMA_COHERENT);
+3bc867de85b5bf Anurag Kumar Vulisha 2017-08-21  318  
+a73ed35052ca85 Suneel Garapati      2015-06-09  319  	hpriv->plat_data = cevapriv;
+a73ed35052ca85 Suneel Garapati      2015-06-09  320  
+a73ed35052ca85 Suneel Garapati      2015-06-09  321  	/* CEVA specific initialization */
+a73ed35052ca85 Suneel Garapati      2015-06-09  322  	ahci_ceva_setup(hpriv);
+a73ed35052ca85 Suneel Garapati      2015-06-09  323  
+a73ed35052ca85 Suneel Garapati      2015-06-09  324  	rc = ahci_platform_init_host(pdev, hpriv, &ahci_ceva_port_info,
+a73ed35052ca85 Suneel Garapati      2015-06-09  325  					&ahci_platform_sht);
+a73ed35052ca85 Suneel Garapati      2015-06-09  326  	if (rc)
+a73ed35052ca85 Suneel Garapati      2015-06-09  327  		goto disable_resources;
+a73ed35052ca85 Suneel Garapati      2015-06-09  328  
+a73ed35052ca85 Suneel Garapati      2015-06-09  329  	return 0;
+a73ed35052ca85 Suneel Garapati      2015-06-09  330  
+a73ed35052ca85 Suneel Garapati      2015-06-09  331  disable_resources:
+a73ed35052ca85 Suneel Garapati      2015-06-09  332  	ahci_platform_disable_resources(hpriv);
+b1600f5880a13f Piyush Mehta         2024-01-19  333  
+b1600f5880a13f Piyush Mehta         2024-01-19  334  disable_phys:
+b1600f5880a13f Piyush Mehta         2024-01-19 @335  	while (--i >= 0) {
+                                                               ^^^
+
+b1600f5880a13f Piyush Mehta         2024-01-19  336  		phy_power_off(hpriv->phys[i]);
+b1600f5880a13f Piyush Mehta         2024-01-19  337  		phy_exit(hpriv->phys[i]);
+b1600f5880a13f Piyush Mehta         2024-01-19  338  	}
+b1600f5880a13f Piyush Mehta         2024-01-19  339  
+b1600f5880a13f Piyush Mehta         2024-01-19  340  disable_clks:
+b1600f5880a13f Piyush Mehta         2024-01-19  341  	ahci_platform_disable_clks(hpriv);
+b1600f5880a13f Piyush Mehta         2024-01-19  342  
+a73ed35052ca85 Suneel Garapati      2015-06-09  343  	return rc;
+a73ed35052ca85 Suneel Garapati      2015-06-09  344  }
+
 -- 
-2.34.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
