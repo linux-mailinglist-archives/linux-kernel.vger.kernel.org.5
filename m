@@ -1,62 +1,73 @@
-Return-Path: <linux-kernel+bounces-33335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C911836881
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:38:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2AE6836885
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:39:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8BD02855B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:38:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AB8E287396
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8194627F3;
-	Mon, 22 Jan 2024 15:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D3846535;
+	Mon, 22 Jan 2024 15:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekgC1HhC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rGflirC4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128216169C;
-	Mon, 22 Jan 2024 15:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1A2482D9;
+	Mon, 22 Jan 2024 15:05:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935911; cv=none; b=egwIxe6hNDZdmtNwh+mjb7g/0fkFrub4/JrFu8GZZIWk+rVLF2QMIvnz5VYQbupD+HY7xiiXF2Na7LSA+fIE+g0HETzsM0OBZrhS5jC5rMUpCQzTIivc7QjYwtqfuD7RR/eoRq23tGiVf8axwgmGbIoYyy3oUO9kd0nCp6GoSIc=
+	t=1705935920; cv=none; b=Y9QxntV8uMknsWw2UkteynMMhmNkSt1WJihKN39O1MgmErDT9zhhotMIzFHvFvRmKBe46cB1JnERj45Mpbjbl0g5vNsD8wbAUtGos7q0Ydl3OHCywzTc2baPN/H+K4iyKg4vOxLJ8HayV3HcRAT2yt7zLZD+AXF0RIrmtgOPMjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935911; c=relaxed/simple;
-	bh=4WsiqzmZCalFFQa5mWmmulVG52SGUVu9YnuJ4R0nN1g=;
+	s=arc-20240116; t=1705935920; c=relaxed/simple;
+	bh=h9ciZHRUeJ+ceoD40XRUcI/LtNH3l9lBF6kcy1GpEIk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vicn9IO3WPBctqeHoic4am3jOvcxLPBPrUCe+NPsIDNUaFb/wtUSwvXuT5P7vqWe/5rBQFb6s94WFp8zkKTFV0Sj8AFdazJab2Z4tJZg1KCvKAcDikJlwJrgj+XB84LN6ZlnkfXfzRqccEDrrCX1lNXCMw1qV8wnnx21uBcYmko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekgC1HhC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61887C43394;
-	Mon, 22 Jan 2024 15:05:09 +0000 (UTC)
+	 MIME-Version; b=YsAv90l9prqGqPEyY1n+ZSQd80VGfBVjPBRq/BdVhGLHdvXcQuuw6SzXPb/CcKD8GRi7ihWzdNFFX7e/dsWZVzABmj0eQN5GDfXqDcXhP8LE8BKdwOgPX0B2GZjhtUo7TJWjrBXNiZsaViDT+EHZ6kaocMIF0/qhJBc2PsYdft8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rGflirC4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 607D6C433B2;
+	Mon, 22 Jan 2024 15:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935910;
-	bh=4WsiqzmZCalFFQa5mWmmulVG52SGUVu9YnuJ4R0nN1g=;
+	s=k20201202; t=1705935919;
+	bh=h9ciZHRUeJ+ceoD40XRUcI/LtNH3l9lBF6kcy1GpEIk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ekgC1HhCyLDRcZmuEcLMHZL9GJxToK9Gj0I8BLEP+8sRpdF0BDX3JTs7mwigh/ed+
-	 BJrfzm/pK50mm5IpwYeuD4fo2xHaA6sp/UeVIUckrR0CylF8AyK7cRNcq27e+XaAR7
-	 Z6oaUaW86M+CQfTfeiHlwnVtWBjXCftmGf+1BUtrrhWfuT635LobhTN8jxiRODJgrK
-	 Fvjxr+D/bytohM8lOVw04CpkeILOO1xmtVLUR5G30sf29/DaTO84esJ8wLHWSw28Ca
-	 HeZn22vS+nDbA5vsYB33vlvrLGVrCDUjXzdbCeyuM9g43/W8uYwGWhWrFq3OOP8KYQ
-	 0DGlf+248DCoA==
+	b=rGflirC4Z5pzgzbAphG8yPdXTxbpTZP/qn5kl+avR0UDTcuRcSF59dMvvS2VReh5o
+	 ZxQ34hva4pY1CDrBMEKY+LraU3QGKk5BI7WupB0TmDOd7dAazYxoNbQY94UfPmUpeF
+	 qOXS5G02S+7CZYO63Rxb7bw8GzL934ZkhamxNnZhJm9CGwwYiF+uo5DdBlvI+9g6O2
+	 mDDQHGLEeYSKJiCOClaDpkahCGI6Qv0bBw/nQRz3U0OJOWwku2+0SlE2EOHWLtO+Wl
+	 DJSXC8lueTliRYFqLDscOxSG0AqVLDUkFSJ51eDCTOOrcQC9FbfcjBeMxikrgoH1jv
+	 IPzdbG/CbmUkg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Ilya Bakoulin <ilya.bakoulin@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	Wenjing Liu <wenjing.liu@amd.com>,
+	Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	Vijendar.Mukunda@amd.com,
-	posteuca@mutex.one,
-	emil.velikov@collabora.com,
-	cristian.ciocaltea@collabora.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 14/73] ASoC: amd: Add new dmi entries for acp5x platform
-Date: Mon, 22 Jan 2024 10:01:28 -0500
-Message-ID: <20240122150432.992458-14-sashal@kernel.org>
+	harry.wentland@amd.com,
+	sunpeng.li@amd.com,
+	Rodrigo.Siqueira@amd.com,
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	Qingqing.Zhuo@amd.com,
+	jun.lei@amd.com,
+	hamza.mahfooz@amd.com,
+	Jingwen.Zhu@amd.com,
+	peichen.huang@amd.com,
+	camille.cho@amd.com,
+	wayne.lin@amd.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.6 15/73] drm/amd/display: Fix MST PBN/X.Y value calculations
+Date: Mon, 22 Jan 2024 10:01:29 -0500
+Message-ID: <20240122150432.992458-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -71,53 +82,55 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.13
 Content-Transfer-Encoding: 8bit
 
-From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+From: Ilya Bakoulin <ilya.bakoulin@amd.com>
 
-[ Upstream commit c3ab23a10771bbe06300e5374efa809789c65455 ]
+[ Upstream commit 94bbf802efd0a8f13147d6664af6e653637340a8 ]
 
-Add sys_vendor and product_name dmi entries for acp5x platform.
+Changing PBN calculation to be more in line with spec. We don't need to
+inflate PBN_NATIVE value by the 1.006 margin, since that is already
+taken care of in the get_pbn_per_slot function.
 
-Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Link: https://lore.kernel.org/r/20231206110620.1695591-1-venkataprasad.potturu@amd.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Reviewed-by: Wenjing Liu <wenjing.liu@amd.com>
+Acked-by: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
+Signed-off-by: Ilya Bakoulin <ilya.bakoulin@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/amd/acp-config.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/link/link_dpms.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/amd/acp-config.c b/sound/soc/amd/acp-config.c
-index f27c27580009..955145448c23 100644
---- a/sound/soc/amd/acp-config.c
-+++ b/sound/soc/amd/acp-config.c
-@@ -3,7 +3,7 @@
- // This file is provided under a dual BSD/GPLv2 license. When using or
- // redistributing this file, you may do so under either license.
- //
--// Copyright(c) 2021 Advanced Micro Devices, Inc.
-+// Copyright(c) 2021, 2023 Advanced Micro Devices, Inc.
- //
- // Authors: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
- //
-@@ -47,6 +47,19 @@ static const struct config_entry config_table[] = {
- 			{}
- 		},
- 	},
-+	{
-+		.flags = FLAG_AMD_LEGACY,
-+		.device = ACP_PCI_DEV_ID,
-+		.dmi_table = (const struct dmi_system_id []) {
-+			{
-+				.matches = {
-+					DMI_MATCH(DMI_SYS_VENDOR, "Valve"),
-+					DMI_MATCH(DMI_PRODUCT_NAME, "Jupiter"),
-+				},
-+			},
-+			{}
-+		},
-+	},
- 	{
- 		.flags = FLAG_AMD_SOF,
- 		.device = ACP_PCI_DEV_ID,
+diff --git a/drivers/gpu/drm/amd/display/dc/link/link_dpms.c b/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
+index 35d087cf1980..c5f8ce6e30f3 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
++++ b/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
+@@ -1055,18 +1055,21 @@ static struct fixed31_32 get_pbn_from_bw_in_kbps(uint64_t kbps)
+ 	uint32_t denominator = 1;
+ 
+ 	/*
+-	 * margin 5300ppm + 300ppm ~ 0.6% as per spec, factor is 1.006
++	 * The 1.006 factor (margin 5300ppm + 300ppm ~ 0.6% as per spec) is not
++	 * required when determining PBN/time slot utilization on the link between
++	 * us and the branch, since that overhead is already accounted for in
++	 * the get_pbn_per_slot function.
++	 *
+ 	 * The unit of 54/64Mbytes/sec is an arbitrary unit chosen based on
+ 	 * common multiplier to render an integer PBN for all link rate/lane
+ 	 * counts combinations
+ 	 * calculate
+-	 * peak_kbps *= (1006/1000)
+ 	 * peak_kbps *= (64/54)
+-	 * peak_kbps *= 8    convert to bytes
++	 * peak_kbps /= (8 * 1000) convert to bytes
+ 	 */
+ 
+-	numerator = 64 * PEAK_FACTOR_X1000;
+-	denominator = 54 * 8 * 1000 * 1000;
++	numerator = 64;
++	denominator = 54 * 8 * 1000;
+ 	kbps *= numerator;
+ 	peak_kbps = dc_fixpt_from_fraction(kbps, denominator);
+ 
 -- 
 2.43.0
 
