@@ -1,131 +1,105 @@
-Return-Path: <linux-kernel+bounces-33048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC6F8363AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 013098363AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:50:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F27121C26402
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:48:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34E5C1C235C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA5C3BB4F;
-	Mon, 22 Jan 2024 12:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4F83C07B;
+	Mon, 22 Jan 2024 12:50:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WyuARt0X"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="J3GUiVg/"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40973A8D5;
-	Mon, 22 Jan 2024 12:47:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF0B93A1A5
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705927679; cv=none; b=fie/vuYefHlT7QSHy8IFPMVZYmYN3bju+Vcx+h91WznL0z4eGTzHZi2VOsW5TGFO5RuzMNy3cmIxZlfDrwz1r2ioluq9JdK+GiwPI69ly1wsahYDO2N4hjF7m9CK1k6aQ9yrIGtwOcXJxmaUQWhkXFaL3EwMQPyxY4CdFR2qAe4=
+	t=1705927803; cv=none; b=OvxaqjO5hAdtxMRC4/DM6xaAOXwsA98cycAZSIYPDebYBXJfayMH+bM/UCU1pu3E2VVYVG4kfDuKq34YS5LqHXo0Buskpr/7Dyy55mX6iDgcJXfZc5R12Svk8L6Cmq77NXJUtqurB0Xf0oRrPo5ImSpvD7hFuLYmt9F0jSduLl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705927679; c=relaxed/simple;
-	bh=kH2BOO2IN3Vsx+BcqgWW4N0g3Af3C7pA8j9tRuvf2BQ=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=tC0DGp+zas7lsD7cPLDMNvfYgdJtfwOaWBa5uztIcbA+t96S7EUww4/z3I/BA5as0fgcGFjFwxr8dtyAcQjKa7XN4S4xm8zWLT6e8sqAB2qJdTZMZYfXF97y0RgruEfPysjOx9EStVl/Mf0y7T0avmGAP3OIgNuHy9A8jAt8qkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WyuARt0X; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705927678; x=1737463678;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=kH2BOO2IN3Vsx+BcqgWW4N0g3Af3C7pA8j9tRuvf2BQ=;
-  b=WyuARt0XDoQ+x4dzJNc2xuluiI21er+0RB5qjcog8ok6UeXnCa04nKZC
-   glJsj/EumOUwEek2Cpgd+KBYG2uNJcbVImumzy8CTNKWW7X8y/k2n+0fi
-   vuw5zTe+NEwtgCfzfn19tdtvCTIZz5bn37ZUrr49NJcDFkhXvGJ6YI8f3
-   Q/ZZD0imlyBmOfif760uUz8/zegDBDte/m1ffdpON3ZRmdZPCeFI1vvk5
-   fQ6D5IuYgob8wy0r4ooBCKqQNLjMMw4c6HWxZtJWrlG7iXNLa/ON3fzaN
-   KmBz+H5Du+elitU1IBn9WQd/0/M3mEwprix1hQa1tPOuC1Yu5KSa+L7IL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="7947145"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="7947145"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 04:47:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="875973402"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="875973402"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.249.150])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 04:47:54 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 22 Jan 2024 14:47:49 +0200 (EET)
-To: Hans de Goede <hdegoede@redhat.com>
-cc: Armin Wolf <W_Armin@gmx.de>, Andy Shevchenko <andy@kernel.org>, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] platform/x86: wmi: Use ACPI device name in netlink
- event
-In-Reply-To: <1862d74a-7b15-48e3-896b-30dda835f28f@redhat.com>
-Message-ID: <61d23b7d-8e47-acf8-f3b7-bea1544ca8fa@linux.intel.com>
-References: <20240121200824.2778-1-W_Armin@gmx.de> <1862d74a-7b15-48e3-896b-30dda835f28f@redhat.com>
+	s=arc-20240116; t=1705927803; c=relaxed/simple;
+	bh=1zjBwGYdMsAXlcrn+jyEclUY6YzCr9lQ3UokxI0mHmI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MlFiRfNhw65qrOVhj5tKGazyrQxAteRrvuzm3qHGl0eEKjAD/wJZdr06qZshKk1ny15kESUuh94+lQMSWY0GJ/IMFF7zdXCK2g9x74vmUhDF49RB8U3CAFADCfttJe4ZrwMxJaIseFJ2lfTl6cuXiG1STWZ4TTyEG6clugGjRjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=J3GUiVg/; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40LNn4sE007261;
+	Mon, 22 Jan 2024 04:49:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=id42IbT+
+	9R3Nmwuhbw3Ko6YmnXQHuzQozlC7TjeqSVs=; b=J3GUiVg/IevliVceLzUgkBOj
+	Jm0JYkyoaw22ezy/pJiLBmJyJo0RiN71Gb5Q2AR+7Y64ihSipVcpqVkj9HnWrwLO
+	fmvkvqFIxGPMec4VpsIL+q2yPVl0GySghBo4937/CnG3qlQ41h61LS3Ob/lq65n8
+	Ersx/HLi9Cl9zBzURofteCXWM8Z5hLTAmr0aJCDiUZgv1FpP6xhJzuXVVaAwXOCM
+	KPdl61sb3NscOOODMZFlHhMTu5bAB+DUdzggkaEVhLI4Q88QBXX6gfOr3he0KOTD
+	fX2dR8Ix/symlt9LAFV7Dg4RmvEupHeGC4TitIkbedqtcwQbNVgtVaQY2CJj6g==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vrejncu39-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 04:49:40 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 22 Jan
+ 2024 04:49:38 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 22 Jan 2024 04:49:38 -0800
+Received: from IPBU-BLR-SERVER1.marvell.com (IPBU-BLR-SERVER1.marvell.com [10.28.8.41])
+	by maili.marvell.com (Postfix) with ESMTP id CB01B3F7071;
+	Mon, 22 Jan 2024 04:49:35 -0800 (PST)
+From: Gowthami Thiagarajan <gthiagarajan@marvell.com>
+To: <will@kernel.org>, <mark.rutland@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: <sgoutham@marvell.com>, <bbhushan2@marvell.com>,
+        <george.cherian@marvell.com>,
+        Gowthami Thiagarajan <gthiagarajan@marvell.com>
+Subject: [PATCH v3 0/2] Marvell Odyssey uncore performance monitor support
+Date: Mon, 22 Jan 2024 18:19:31 +0530
+Message-ID: <20240122124933.1311925-1-gthiagarajan@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: s7W407-GMlEG5bDQKsMiSpjT_rOlTZNN
+X-Proofpoint-GUID: s7W407-GMlEG5bDQKsMiSpjT_rOlTZNN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-22_02,2024-01-22_01,2023-05-22_02
 
-On Mon, 22 Jan 2024, Hans de Goede wrote:
-> On 1/21/24 21:08, Armin Wolf wrote:
-> > The device name inside the ACPI netlink event is limited to
-> > 15 characters, so the WMI device name will get truncated.
-> > 
-> > This can be observed with kacpimon when receiving an event
-> > from WMI device "9DBB5994-A997-11DA-B012-B622A1EF5492":
-> > 
-> > 	netlink:  9DBB5994-A997- 000000d0 00000000
-> > 
-> > Fix this by using the shorter device name from the ACPI
-> > bus device instead. This still allows users to uniquely
-> > identify the WMI device by using the notify id (0xd0).
-> > 
-> > Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> > ---
-> > Changes since v1:
-> > - use acpi_dev_name() helper function
-> 
-> I'm a bit divided on this patch. I agree the new way of doing
-> things is better, but technically this is a bit of a userspace API
-> break.
-> 
-> I guess we could hope that nothing depends on the old netlink API
-> format / name but I'm not sure we can rely on that ...
-> 
-> Ilpo, Andy do you have any opinion on this ?
+Odyssey is a 64 bit ARM based SoC with multiple performance monitor
+units for various blocks. 
 
-Hi Armin,
+This series of patches introduces support for uncore performance monitor
+units (PMUs) on the Marvell Odyssey platform. The PMUs covered in this
+series include the DDR PMU and LLC-TAD PMU.
 
-Have you tried to conduct debian code search to find the code using this?
+v2->v3:
+- Dropped PEM PMU support, will be sent as a separate patch.
+- Dropped device tree support for DDR PMU and LLC TAD as the acpi table 
+  based probing is used.
+- Added support for Odyssey tad pmu in the existing driver.
+
+Gowthami Thiagarajan(2):
+  perf/marvell: Odyssey DDR Performance monitor support
+  perf/marvell : Odyssey LLC-TAD performance monitor support
+
+ drivers/perf/marvell_cn10k_ddr_pmu.c | 421 +++++++++++++++++++++++----
+ drivers/perf/marvell_cn10k_tad_pmu.c |  41 ++-
+ 2 files changed, 399 insertions(+), 63 deletions(-)
 
 -- 
- i.
+2.25.1
 
-> > ---
-> >  drivers/platform/x86/wmi.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> > index a7cfcbf92432..c61860db66ed 100644
-> > --- a/drivers/platform/x86/wmi.c
-> > +++ b/drivers/platform/x86/wmi.c
-> > @@ -1202,7 +1202,7 @@ static int wmi_notify_device(struct device *dev, void *data)
-> >  	}
-> > 
-> >  	acpi_bus_generate_netlink_event(wblock->acpi_device->pnp.device_class,
-> > -					dev_name(&wblock->dev.dev), *event, 0);
-> > +					acpi_dev_name(wblock->acpi_device), *event, 0);
-> > 
-> >  	return -EBUSY;
-> >  }
-> > --
-> > 2.39.2
-> > 
-> 
 
