@@ -1,204 +1,158 @@
-Return-Path: <linux-kernel+bounces-32381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F09DC835AEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:23:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F997835AEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:25:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 817581F22864
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:23:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 644291C22382
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DAA263B2;
-	Mon, 22 Jan 2024 06:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED33B6ADB;
+	Mon, 22 Jan 2024 06:25:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="ySbi0Bup"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="GaKCRbBm"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E67E544;
-	Mon, 22 Jan 2024 06:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC79C610D
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 06:25:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705904574; cv=none; b=VC2/Hld4+tCIUbTIH1jIe2z43zaa9WO9GuOdoyKy8mwYjGq7yQpHYQeZPivcvTejOq6CGgbHQ141gzYidaYZOIjK5ZuQVIa86yfsDTnwUAjoTa4V4IXA2wC7Cwz5jUsJ65wi73eUTEtp/FUEDv232qP4t7TCqV5uMhQqOd5g6ME=
+	t=1705904746; cv=none; b=j7mFddg6XfnnPogf0Rokf5oVZ/79I8T7xiz2hkU+3ntxhz3IJDi5vfN3FiEVvpI8CqNQ81+0V9RXuws7qDXKiDnLIgmz3buGo8O9G66z/2naoU+Qr+ctWj8ou3QmWLCpaU7OTWqN7wVgvvlq9kJo7kZIj90cXR9kEJLLFKRXel4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705904574; c=relaxed/simple;
-	bh=CzhiHN6u0gpFlsap7Hp3kow/s+0QRoaF21t02f0p+KM=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=Xvh6Sa5AU9uzCx7vk4z7iyTKCLoeq7GkmVlb1MMKgzu6y5guiO1Enkw5QqQ7JpaZg+YgRMVC0yTdChAIKXK5S3kDg0GL5Vs4XpyA45H9ef/PSzCWsbenUejYs+3S6rNqAUlyuzSAF1CIu8EjzfR44WJjPbijltgdfFUILxXa3ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=ySbi0Bup; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1705904746; c=relaxed/simple;
+	bh=rgcXrf6x3g0AFfGNeTRNVD9JonbOcksFUg50spIVZ1E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ms4qxHA/X7iaNbombp1LZsfng3mk+j981onGmBrglA6XHlcuJRHrsItBBkf8ZS4KXxUKglrKMh/jLwhcjCxcd4+4rNIUQAGe8y0CiMLDded3lW3mVPN7qNNaxZrVS/A50leAQJTg4yyNDnIQJnVFJvR7rJ7BY9lNaRwPU5bNbVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=GaKCRbBm; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d711d7a940so23454705ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:25:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google; t=1705904744; x=1706509544; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rgcXrf6x3g0AFfGNeTRNVD9JonbOcksFUg50spIVZ1E=;
+        b=GaKCRbBmdWASrYHXtHLCoCpAwzCarsvomL64rWU76mmnCJ12npJBMU6BuiD23yhtwj
+         7/rJVsGDsxFjgiMHuMDkpQ8g+R4YY0CKLwxZ8O2t/m6aDwBeOiKicusclDLhumopNYhk
+         PkmCp2nJUeQ5Mdr5aa20OMdwyKwfWJOUPtMNoEv4gXKi08e7ZYogXyLs4vxZb+Qfjtqb
+         /KvpjnBHUgS+ia8N6wYwCRzFKYppyckhofU6LZ9Q9vio3oS1grJeFG98TbjYFlqkJhug
+         d1OOBvGFrdt6u9iIadBlWyVuBPqyFH2JmjgxsBWkgBKmiL2nYB6huNL7FcfjSgAYk9Vs
+         JP2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705904744; x=1706509544;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rgcXrf6x3g0AFfGNeTRNVD9JonbOcksFUg50spIVZ1E=;
+        b=hu1XAbh2DWGB3Gf2d1aqkXOc0y2DrotE9wo9DSVlrRGhuWo8lPilzILBsMSROCo97T
+         zlOlco4fCWU4/uIH3/fw2b9z0PY00BfNRj50QkH7v1H4nmq++Tytj8Q7zgxJDRMsv8dC
+         t4feEi3ZMFSuVm0jM68+CIgvPrMNKkhKsh+EgHVRmqEbIBZB41bCPMqyKsUgmDzZELif
+         EksW4625a9BRntFb7wI/mzAVlMJD3J0NJ6FPrO+SaypX1VYpopiQug/SggRYuceBsiKF
+         tyze7Cr95MAvQ8J97BrxPn4KggZTsbnkIZIYRtYLS0r7gcR0/JVGpVK45ovLzzW/Rumr
+         T2gA==
+X-Gm-Message-State: AOJu0YwGTYv4J2HokeH2w/O2jDOhCd8dmBYgch5j32n+XX2VpwlygH8Y
+	R0KdMdwY1xSWZM102Rf8Xs1DJE1gJ+oNj2eox1WDYABxhkgmcNOgK3eBSWJSHA==
+X-Google-Smtp-Source: AGHT+IFUuXuEScIDSh9Tq9jk8/5jxgySvjvuLJrRYEI0gJK1vz8AWdp5b5A93FcLTNQtcaCBy1yI4w==
+X-Received: by 2002:a17:902:b088:b0:1d0:c7f:8eed with SMTP id p8-20020a170902b08800b001d00c7f8eedmr3966816plr.58.1705904744001;
+        Sun, 21 Jan 2024 22:25:44 -0800 (PST)
+Received: from zhadum.home.kylehuey.com (c-76-126-33-191.hsd1.ca.comcast.net. [76.126.33.191])
+        by smtp.gmail.com with ESMTPSA id u5-20020a17090282c500b001d7248fdc26sm4317771plz.69.2024.01.21.22.25.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jan 2024 22:25:43 -0800 (PST)
+From: Kyle Huey <me@kylehuey.com>
+X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
+To: Kyle Huey <khuey@kylehuey.com>,
+	linux-kernel@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Marco Elver <elver@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>
+Cc: Robert O'Callahan <robert@ocallahan.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH v5 0/4] Combine perf and bpf for fast eval of hw breakpoint conditions
+Date: Sun, 21 Jan 2024 22:25:31 -0800
+Message-Id: <20240122062535.8265-1-khuey@kylehuey.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1705904568;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NGW+mj+q9tiz/KdV2tQu1Nhq7mIgOYFGcF0u7JC10Do=;
-	b=ySbi0BupnyQJqV5I0AfVFTNF97XV7NaLZohRQwdLCMBg6d4a6rzdpaii3BHac/f6BAubei
-	KKX0rKndatvwgHUerkUzCB5slKXgdQRXxL4kIDBGuICo/BognxOxgtuuUj3GVLIkVDKxTu
-	uDIS0btQT7zg3P4yCfHreo1pqt2rvYVfhF6lRUXW9qo2FjMhIGM9kCA6iriHeSkadgyaBZ
-	byeXgk49myFXSh3fgyfzIGO/yiAHKbpt8FnoUgeEarSQOl4Qz9kEYtXgaEgsRJeWoli/iH
-	BYr6T9K/nHaw8YNdg74dXTzxnHHPuLfl6FjBsVCIpbU2GJlaoMSCJyfBzUAFyg==
-Date: Mon, 22 Jan 2024 07:22:48 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, Sebastian Reichel
- <sebastian.reichel@collabora.com>, Cristian Ciocaltea
- <cristian.ciocaltea@collabora.com>, Christopher Obbard
- <chris.obbard@collabora.com>, =?UTF-8?Q?Tam=C3=A1s_Sz=C5=B1cs?=
- <szucst@iit.uni-miskolc.hu>, Shreeya Patel <shreeya.patel@collabora.com>,
- Kever Yang <kever.yang@rock-chips.com>, Chris Morgan
- <macromorgan@hotmail.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: rockchip: enable built-in thermal monitoring
- on rk3588
-In-Reply-To: <CABjd4Yy91MAd2wALp4KQiEub9OyxU+MR+ti5KA_c+yvZT5xaqQ@mail.gmail.com>
-References: <20240106222357.23835-1-alchark@gmail.com>
- <e0302da12345e5539583b2c96d747592@manjaro.org>
- <CABjd4Yw5wTLyK5OPw2S-ipPVCw7RTUeF2J0RgH-Vyis-ng8rTw@mail.gmail.com>
- <d7f2f25071a4d7c72bd286b11836dce7@manjaro.org>
- <CABjd4Yz11D8ThcT-oCWsQf9jL2idChFYSRYVVu3KNnzwoOwkKQ@mail.gmail.com>
- <f5c05015e042b11a51a9af26c35f18ed@manjaro.org>
- <CABjd4Yy91MAd2wALp4KQiEub9OyxU+MR+ti5KA_c+yvZT5xaqQ@mail.gmail.com>
-Message-ID: <81a5410c3dbedbd4fe9ce60ab236700c@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On 2024-01-22 07:03, Alexey Charkov wrote:
-> On Mon, Jan 22, 2024 at 8:55 AM Dragan Simic <dsimic@manjaro.org> 
-> wrote:
->> On 2024-01-21 19:56, Alexey Charkov wrote:
->> > On Thu, Jan 18, 2024 at 10:48 PM Dragan Simic <dsimic@manjaro.org> wrote:
->> >> On 2024-01-08 14:41, Alexey Charkov wrote:
->> >> > On Sun, Jan 7, 2024 at 2:54 AM Dragan Simic <dsimic@manjaro.org> wrote:
->> >> >> On 2024-01-06 23:23, Alexey Charkov wrote:
->> >> >> > Include thermal zones information in device tree for rk3588 variants
->> >> >> > and enable the built-in thermal sensing ADC on RADXA Rock 5B
->> >> >> >
->> >> >> > Signed-off-by: Alexey Charkov <alchark@gmail.com>
->> >> >> > ---
->> >> >> > +                     trips {
->> >> >> > +                             threshold: trip-point-0 {
->> >> >>
->> >> >> It should be better to name it cpu_alert0 instead, because that's what
->> >> >> other newer dtsi files already use.
->> >> >
->> >> > Reflecting on your comments here and below, I'm thinking that maybe it
->> >> > would be better to define only the critical trip point for the SoC
->> >> > overall, and then have alerts along with the respective cooling maps
->> >> > separately for A76-0,1, A76-2,3, A55-0,1,2,3? After all, given that we
->> >> > have more granular temperature measurement here than in previous RK
->> >> > chipsets it might be better to only throttle the "offending" cores,
->> >> > not the full package.
->> >> >
->> >> > What do you think?
->> >> >
->> >> > Downstream DT doesn't follow this approach though, so maybe there's
->> >> > something I'm missing here.
->> >>
->> >> I agree, it's better to fully utilize the higher measurement
->> >> granularity
->> >> made possible by having multiple temperature sensors available.
->> >>
->> >> I also agree that we should have only the critical trip defined for
->> >> the
->> >> package-level temperature sensor.  Let's have the separate temperature
->> >> measurements for the CPU (sub)clusters do the thermal throttling, and
->> >> let's keep the package-level measurement for the critical shutdowns
->> >> only.  IIRC, some MediaTek SoC dtsi already does exactly that.
->> >>
->> >> Of course, there are no reasons not to have the critical trips defined
->> >> for the CPU (sub)clusters as well.
->> >
->> > I think I'll also add a board-specific active cooling mechanism on the
->> > package level in the next iteration, given that Rock 5B has a PWM fan
->> > defined as a cooling device. That will go in the separate patch that
->> > updates rk3588-rock-5b.dts (your feedback to v2 of this patch is also
->> > duly noted, thank you!)
->> 
->> Great, thanks.  Sure, making use of the Rock 5B's support for 
->> attaching
->> a PWM-controlled cooling fan is the way to go.
->> 
->> Just to reiterate a bit, any "active" trip points belong to the board
->> dts file(s), because having a cooling fan is a board-specific feature.
->> As a note, you may also want to have a look at the RockPro64 dts(i)
->> files, for example;  the RockPro64 also comes with a cooling fan
->> connector and the associated PWM fan control logic.
-> 
-> Thanks for the pointer! There is also a helpful doc within devicetree
-> bindings descriptions, although it sits under hwmon which was a bit
-> confusing to me. I've already tested it locally (by adding to the
-> board dts), and it spins up and down quite nicely, and even modulates
-> the fan speed swiftly when the load changes - yay!
+rr, a userspace record and replay debugger[0], replays asynchronous events
+such as signals and context switches by essentially[1] setting a breakpoint
+at the address where the asynchronous event was delivered during recording
+with a condition that the program state matches the state when the event
+was delivered.
 
-Nice!  Also, isn't it like magic? :)  To me, turning LEDs on/off and
-controlling fans acts as some kind of a "bridge" between the virtual
-and the real world. :)
+Currently, rr uses software breakpoints that trap (via ptrace) to the
+supervisor, and evaluates the condition from the supervisor. If the
+asynchronous event is delivered in a tight loop (thus requiring the
+breakpoint condition to be repeatedly evaluated) the overhead can be
+immense. A patch to rr that uses hardware breakpoints via perf events with
+an attached BPF program to reject breakpoint hits where the condition is
+not satisfied reduces rr's replay overhead by 94% on a pathological (but a
+real customer-provided, not contrived) rr trace.
 
-As a suggestion, it would be good to test with a couple of different
-fans, to make sure that the PWM values work well for more that one fan
-model.  The Rock 5B requires a 5 V fan, if I'm not mistaken?
+The only obstacle to this approach is that while the kernel allows a BPF
+program to suppress sample output when a perf event overflows it does not
+suppress signalling the perf event fd or sending the perf event's SIGTRAP.
+This patch set redesigns __perf_overflow_handler() and
+bpf_overflow_handler() so that the former invokes the latter directly when
+appropriate rather than through the generic overflow handler machinery,
+passes the return code of the BPF program back to __perf_overflow_handler()
+to allow it to decide whether to execute the regular overflow handler,
+reorders bpf_overflow_handler() and the side effects of perf event
+overflow, changes __perf_overflow_handler() to suppress those side effects
+if the BPF program returns zero, and adds a selftest.
 
->> >> >> > +                                     temperature = <75000>;
->> >> >> > +                                     hysteresis = <2000>;
->> >> >> > +                                     type = "passive";
->> >> >> > +                             };
->> >> >> > +                             target: trip-point-1 {
->> >> >>
->> >> >> It should be better to name it cpu_alert1 instead, because that's what
->> >> >> other newer dtsi files already use.
->> >> >>
->> >> >> > +                                     temperature = <85000>;
->> >> >> > +                                     hysteresis = <2000>;
->> >> >> > +                                     type = "passive";
->> >> >> > +                             };
->> >> >> > +                             soc_crit: soc-crit {
->> >> >>
->> >> >> It should be better to name it cpu_crit instead, because that's what
->> >> >> other newer dtsi files already use.
->> >> >
->> >> > Seems to me that if I define separate trips for the three groups of
->> >> > CPU cores as mentioned above this would better stay as soc_crit, as it
->> >> > applies to the whole die rather than the CPU cluster alone. Then
->> >> > 'threshold' and 'target' will go altogether, and I'll have separate
->> >> > *_alert0 and *_alert1 per CPU group.
->> >>
->> >> It should perhaps be the best to have "passive", "hot" and "critical"
->> >> trips defined for all three CPU groups/(sub)clusters, separately of
->> >> course, to have even higher granularity when it comes to the resulting
->> >> thermal throttling.
->> >
->> > I looked through drivers/thermal/rockchip_thermal.c, and it doesn't
->> > seem to provide any callback for the "hot" trip as part of its struct
->> > thermal_zone_device_ops, so I guess it would be redundant in our case
->> > here? I couldn't find any generic mechanism to react to "hot" trips,
->> > and they seem to be purely driver-specific, thus no-op in case of
->> > Rockchips - or am I missing something?
->> 
->> That's a good question.  Please, let me go through the code in detail,
->> and I'll get back with an update soon.  Also, please wait a bit with
->> sending the v3, until all open questions are addressed.
-> 
-> Of course. Thank you for taking the time to dig through this one with 
-> me!
+The previous version of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@kylehuey.com/
 
-I'm glad to help.  It's important to have working thermal throttling on
-the supported RK3588-based boards.
+Changes since v4:
+
+Patches 1, 2, 3, 4 added various Acked-by.
+
+Patch 4 addresses additional nits from Song.
+
+v3 of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kylehuey.com/
+
+Changes since v3:
+
+Patches 1, 2, 3 added various Acked-by.
+
+Patch 4 addresses Song's review comments by dropping signals_expected and the
+corresponding ASSERT_OKs, handling errors from signal(), and fixing multiline
+comment formatting.
+
+v2 of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehuey.com/
+
+Changes since v2:
+
+Patches 1 and 2 were added from a suggestion by Namhyung Kim to refactor
+this code to implement this feature in a cleaner way. Patch 2 is separated
+for the benefit of the ARM arch maintainers.
+
+Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleaner
+implementation thanks to the earlier refactoring.
+
+Patch 4 is v2's patch 3, and addresses review comments about C++ style
+comments, getting a TRAP_PERF definition into the test, and unnecessary
+NULL checks.
+
+[0] https://rr-project.org/
+[1] Various optimizations exist to skip as much as execution as possible
+before setting a breakpoint, and to determine a set of program state that
+is practical to check and verify.
+
+
 
