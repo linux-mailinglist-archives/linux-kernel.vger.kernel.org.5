@@ -1,107 +1,132 @@
-Return-Path: <linux-kernel+bounces-32910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC8BD8361CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:33:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96AEA8361EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3EE32934B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:33:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8C591C23CE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DAE43D3B8;
-	Mon, 22 Jan 2024 11:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WMrHQv8z"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FAC94776B;
-	Mon, 22 Jan 2024 11:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FB3A47A5D;
+	Mon, 22 Jan 2024 11:26:45 +0000 (UTC)
+Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8D13FB0F;
+	Mon, 22 Jan 2024 11:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.99.105.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705922513; cv=none; b=IRKNQFApo05PYVgESUaRElV+4UhSKGu2Jl1dl5+XqB2GJFR6DMQpq6Ep6/UKoajzkQjQOQijLNSdIgr7rrz30iNR+AkcaqMsp/9gna/Yh8XfWTZC9QFiiSXCWiVJUa8NXXTDGNCxjzpJEEXkiR7lQe0ej+5snNUvljJ2pp7+Oo4=
+	t=1705922804; cv=none; b=fNga8OoNwkuTr58zKl3AKbt114wHPjrKxDTvxu27nrdIESTsSa8Hw9OjTXf1mqWhVMr3k9EUW34ZA4DDUan5FPDwKnCNhXo1EQGXcka04dqVy+nEz3W914CagtkqgTTuc9W4ymgM3AeSNnc+lhV9gGw5rEJVd6P7pisEAZ8t1v0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705922513; c=relaxed/simple;
-	bh=Aoa2uD6JhnOWVhqPLVHgP+kBp2d3drpGdH+IsOITYSQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PDTtodwYEZ3okafor2qeDHQjGbxZw3MkR/l21P5RYYpb6AcQwOcvf8aDJ80vsMpUzctAcA7bR4HuwqC5vR9Fhlg+SexnycCdmxyTlJu6hE5a4BB1AYqnabCmm0fchZjYQUcpbqtdlPGxHzKdI2IUV1GWU9xSP3kvftIyfoE+q5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WMrHQv8z; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5fc2e997804so25452057b3.3;
-        Mon, 22 Jan 2024 03:21:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705922511; x=1706527311; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Aoa2uD6JhnOWVhqPLVHgP+kBp2d3drpGdH+IsOITYSQ=;
-        b=WMrHQv8zwFo3Dvox9r3jp13jSM8o1d0aRYSjxjukF9d863tT1x1PS6CZMYSDofoWKb
-         DNjFpGJfj4++YgUKCmGY+4dNykQKYRYMeIJqAhaDX4i/1YyP0WD3jr/uZzNhHEkrxGMi
-         A6VtFYkweLyuONStIr3feIWV/QOt5/Mm24tJBzvXKN1esXdgV9vTBLcJSF5yvOR4BRuE
-         wW74f/AlmrwcB9BRzZHtWGJgwLIgOs3V7xZmWZINqgYA+u8KQSUtueHU72AfZngOJdot
-         XJg3cqWhukQ86nuIQQTnpe82R1tzHDk78kDj9Z3L4W/ZMYacY62gWSTofz6PltzgBjjT
-         S81Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705922511; x=1706527311;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Aoa2uD6JhnOWVhqPLVHgP+kBp2d3drpGdH+IsOITYSQ=;
-        b=O4nHF3835SjN87MwowKDJCIz2VfSvxwlcMCMlb4bu6zGvIO7D0PA7vsrtW8W6A38hk
-         /rGtPFy1ps04IBOmVha0JKs4+yR0FELT4GKwQUTkbkTCTM2+k7t6R/niVTGeH3kUOSS1
-         9JOQBxmaw+Xufvuf2sQZdmdy98nbdiZp7F1DOO/MQQeW9DPtpOcoMWnWTsVRN/jS/sQv
-         Ts+8pGhWKa/Q+5LdbZU1b7wRY3c/7vCotN6M0deefIUu5Map5ZZUwwvOEMi1Mll3LAN0
-         xR0wQfzeESGJX+/2Z1JMklzWPqbjYDjgaZAtjfuEcPdq1uNpRggPiUbOvYx928CK3/uy
-         T9yQ==
-X-Gm-Message-State: AOJu0Ywohywwu7aVjDgs/JgXi9/GKApYtNpfjcKGvL4iv+rC+IJJ2mUD
-	wU7seCHIub89Z47pIswIEBHBhtceYwTx4wwcCF2MaQsIQSrK4ERtimdvjk2BO/DCjoUJkIUl62A
-	usPgICsqFM7qRhhX19oJKU4zFTA==
-X-Google-Smtp-Source: AGHT+IF3tNBm3AaqbWBH2APl+K+A1l2FMfhzy88eG1EvSwkSOyNPO716qqkCrAEbgCBTWnAKulQ6FYnzhC/hyyHotkE=
-X-Received: by 2002:a81:5384:0:b0:5ff:617e:6edf with SMTP id
- h126-20020a815384000000b005ff617e6edfmr2939801ywb.34.1705922511434; Mon, 22
- Jan 2024 03:21:51 -0800 (PST)
+	s=arc-20240116; t=1705922804; c=relaxed/simple;
+	bh=4MTzk8hRpsL1+wfg2XAn8qvaYkdX9cgM4ufqwTPlx6U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SpF/ucddlPVrf16O3OSdiI74hFRIY6QsapA6jtAhbUgHdY9YuGZjz9X3JgKvUA9msMPsJoUD2XfboOcqqjpw0IkYKdeAkF+X6+4x6mOIzwQlL8L9ZDM+09BHMFvzSfU79exRssQWHMtcdWPjUQmuksH1/XQelSdwJGryQGNKYU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn; spf=pass smtp.mailfrom=hust.edu.cn; arc=none smtp.client-ip=167.99.105.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hust.edu.cn
+Received: from hust.edu.cn (unknown [172.16.0.50])
+	by app1 (Coremail) with SMTP id HgEQrACXmim7UK5lq3KtAQ--.37301S2;
+	Mon, 22 Jan 2024 19:25:47 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.12.190.56])
+	by gateway (Coremail) with SMTP id _____wCHJbasUK5lBlwmAA--.60615S2;
+	Mon, 22 Jan 2024 19:25:47 +0800 (CST)
+From: Mingxuan Xiang <mx_xiang@hust.edu.cn>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Dongliang Mu <dzm91@hust.edu.cn>,
+	Mingxuan Xiang <mx_xiang@hust.edu.cn>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] media: usb: hackrf: add null ptr check in hackrf_ctrl_msg
+Date: Mon, 22 Jan 2024 19:22:10 +0800
+Message-ID: <20240122112210.424698-1-mx_xiang@hust.edu.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122092338.25047-2-rsalvaterra@gmail.com> <0b6f3998-135f-4059-a8a8-e924281353f8@linux.intel.com>
-In-Reply-To: <0b6f3998-135f-4059-a8a8-e924281353f8@linux.intel.com>
-From: Rui Salvaterra <rsalvaterra@gmail.com>
-Date: Mon, 22 Jan 2024 11:21:40 +0000
-Message-ID: <CALjTZvZoH-+yZz5Z7237rhM5BxknFbG_Bt-dkperpgfLKfcAuQ@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: hda: Increase default bdl_pos_adj for Apollo Lake
-To: =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
-Cc: tiwai@suse.com, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:HgEQrACXmim7UK5lq3KtAQ--.37301S2
+Authentication-Results: app1; spf=neutral smtp.mail=mx_xiang@hust.edu.
+	cn;
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFyfCFWxXFW5Kr1kKF18uFg_yoW5Xw45pF
+	yFyrZFkryrXry29wn7Jr1UWFyrZan3AFy5Wryfu395urs8Jw4xXF1jqayqgr4qkrZ2yF90
+	yF9YqrW3tF4UZaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Yb7Iv0xC_tr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+	cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+	v20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK
+	6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4
+	CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8C
+	rVC2j2WlYx0EF7xvrVAajcxG14v26r4UJVWxJr1lYx0E74AGY7Cv6cx26r4fZr1UJr1lYx
+	0Ec7CjxVAajcxG14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vI
+	r41l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uFyUJr1UMxC20s026xCaFV
+	Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
+	x4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r
+	1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_
+	JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+	nIWIevJa73UjIFyTuYvjxUV1xRUUUUU
+X-CM-SenderInfo: jxsqimaruylmo6kx23oohg3hdfq/1tbiAQkEE2WtIjAvbQAAsH
 
-Hi, Amadeusz,
+If the user yanks out the cable before closing the file,
+dev->udev would be set to NULL therefore causing a null-ptr-deref
+in hackrf_ctrl_msg issued by hackrf_stop_streaming.
 
-On Mon, 22 Jan 2024 at 11:05, Amadeusz S=C5=82awi=C5=84ski
-<amadeuszx.slawinski@linux.intel.com> wrote:
->
+This patch adds a check in hackrf_ctrl_msg before using
+dev->udev.
 
-[snipped]
+Found by modified syzkaller.
 
-> And seems like I've missed some IDs, when doing PCI IDs conversion.
-> Anyway, can you use PCI_DEVICE_ID_INTEL_HDA_APL instead of 0x5a98 as it
-> is self describing (no need for comment)?
+BUG: KASAN: null-ptr-deref in hackrf_ctrl_msg+0x6d/0x180 drivers/media/usb/hackrf/hackrf.c:195
+Read of size 4 at addr 0000000000000000 by task syz-executor/579
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x5e/0x7c lib/dump_stack.c:106
+ print_report.cold+0x49a/0x6bb mm/kasan/report.c:436
+ kasan_report+0xa8/0x130 mm/kasan/report.c:495
+ hackrf_ctrl_msg+0x6d/0x180 drivers/media/usb/hackrf/hackrf.c:195
+ hackrf_stop_streaming+0x45/0x140 drivers/media/usb/hackrf/hackrf.c:869
+ __vb2_queue_cancel+0x5c/0x550 drivers/media/common/videobuf2/videobuf2-core.c:1992
+ vb2_core_streamoff+0x2f/0xb0 drivers/media/common/videobuf2/videobuf2-core.c:2149
+ __vb2_cleanup_fileio+0x3e/0xa0 drivers/media/common/videobuf2/videobuf2-core.c:2710
+ vb2_core_queue_release+0x1a/0x50 drivers/media/common/videobuf2/videobuf2-core.c:2430
+ vb2_queue_release drivers/media/common/videobuf2/videobuf2-v4l2.c:947 [inline]
+ _vb2_fop_release+0x110/0x140 drivers/media/common/videobuf2/videobuf2-v4l2.c:1132
+ v4l2_release+0x1b9/0x1e0 drivers/media/v4l2-core/v4l2-dev.c:459
+ __fput+0x12d/0x4b0 fs/file_table.c:320
+ task_work_run+0xa8/0xf0 kernel/task_work.c:177
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:169 [inline]
+ exit_to_user_mode_prepare+0x123/0x130 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
+ syscall_exit_to_user_mode+0x22/0x50 kernel/entry/common.c:294
+ do_syscall_64+0x48/0x90 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Oh, of course! I would have done it if I knew we had those constants define=
-d. :)
+Signed-off-by: Mingxuan Xiang <mx_xiang@hust.edu.cn>
+---
+ drivers/media/usb/hackrf/hackrf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> And if you want more patches in kernel - convert first 0x0f04 & 0x2284
-> to PCI_DEVICE_ID_INTEL_HDA_BYT & PCI_DEVICE_ID_INTEL_HDA_BSW and then do
-> the above change ;)
+diff --git a/drivers/media/usb/hackrf/hackrf.c b/drivers/media/usb/hackrf/hackrf.c
+index 9c0ecd5f056c..9588b8aa6e98 100644
+--- a/drivers/media/usb/hackrf/hackrf.c
++++ b/drivers/media/usb/hackrf/hackrf.c
+@@ -186,6 +186,11 @@ static int hackrf_ctrl_msg(struct hackrf_dev *dev, u8 request, u16 value,
+ 	unsigned int pipe;
+ 	u8 requesttype;
+ 
++	if (!dev->udev) {
++		pr_err("udev is null in %s\n", __func__);
++		ret = -EINVAL;
++		goto err;
++	}
+ 	switch (request) {
+ 	case CMD_SET_TRANSCEIVER_MODE:
+ 	case CMD_SET_FREQ:
+-- 
+2.43.0
 
-Killing magic numbers is always a worthwhile goal. Expect a two-patch
-series soon, then. ;)
-
-Cheers,
-Rui
 
