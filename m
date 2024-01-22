@@ -1,151 +1,135 @@
-Return-Path: <linux-kernel+bounces-33156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC08883655E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:28:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CFF7836561
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:29:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D1E31F213C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:28:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C684B25CBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFCD3D545;
-	Mon, 22 Jan 2024 14:28:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Eo/4/GbP"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5C93C488;
-	Mon, 22 Jan 2024 14:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B873D3AE;
+	Mon, 22 Jan 2024 14:28:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730453D540;
+	Mon, 22 Jan 2024 14:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705933700; cv=none; b=FSKdqZl5aLFzMOrDNRnKC6Nl7sWb0qHULd0njzaG8RFdt9E1FbRT6gdf99N6omJwZwMFOBtJD5o+yUiwo3nREe1zwr7D6bNFb9YFw9JZWE1YlVQ7ZAtjtNawnYUPS3QStOzROKcXVKac8BQTslpt9s05FK+wJrZi8fKuYXBHG6k=
+	t=1705933714; cv=none; b=AGnKKfnOEG+8Qo+0bZqSTanfNEj2yJzbVlirTrd8bvvJVfxrby80nxyYj55I30Rsc+31pjdTQBfFaK2/5mkBW5SajM/SpP4IPpzC+fcVOuqZ1CurKmIl+sk1PlFS2syxykpJL+yOFCqU7FPRTZZ2Bs4UMugKIIO2wYKUAcfCqVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705933700; c=relaxed/simple;
-	bh=cobDFEarhSrpaarf/hflxidRDBHdiSClIDCuWn2EHZs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DwJtNaeIlnH9M5CI7aIkiWxU2S4u8qMh+cbC9FzM4FXZUnscw/UkxNw7QdwsjqQXwLKlpteNL0GN49Gi66HUFlM2gvYEjWnTCKaJM2UTKFOVbXVRA6s5Pmypkgt4y9KipmHYabgS7od464JAPzNFxi5RzZZ3MGR4DCgNOM004eQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Eo/4/GbP; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8BA25C000B;
-	Mon, 22 Jan 2024 14:28:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705933689;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hUHwKKXyN83iQW+8ASCaMDdQ+1ucr+vrFhxoE1hk85s=;
-	b=Eo/4/GbP6NNCg+QhObmRPD/F7PbEwojKkEc+ZqeTp2whemggtZ9XGLV0arqYTPmU3zEKBt
-	t06b5DM+lTctrEpAzlwuUZEwEx4o7ZXF2rnrTHnCeUzCsmmgMwKVD5Yb/l+kKCYqgrV7Y/
-	DqwdaLijb8hL8B2owHwWEVC+o8EDt46F5Yh2ZEFeIhaHmAADA9Qsj/PwoJE2Itqpgq4BFf
-	IuEFB24TUpKpyiOnFztQ2Ystc+LWgI+9uA4y9Gw9D6jmnUptRbBGk9dFJytBKFFEncWyrE
-	rGIfQqx9CiBFmORwpIlqIjIIVVtky6HM7KhZ3mHcE15YBa/lTTEVG3clfQNkZw==
-Message-ID: <27eff12c-6d80-48e3-82b9-3a4aa90ce76c@bootlin.com>
-Date: Mon, 22 Jan 2024 15:28:05 +0100
+	s=arc-20240116; t=1705933714; c=relaxed/simple;
+	bh=wKYLc46OaXYdyZIR8EPFUIwqMGtJkElacXNktfcfIqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TcHK4bcZlXXOIY+k3HvtWmSnjvuYllhRYcNSLDaojOOcIiK1BrS4y+bzjaInWhrbJNej/yjXrOPFpycx1bRxsbjxl6XIdXzf8Y/wXW6gNozsVMVSOSB9Lh2BjY1FRxuAYwNX+wc2qOWqBTibZaSo761AUKytrGo1oH/s5N6+SFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C2121FB;
+	Mon, 22 Jan 2024 06:29:16 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 151A73F73F;
+	Mon, 22 Jan 2024 06:28:28 -0800 (PST)
+Date: Mon, 22 Jan 2024 14:28:26 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: sudeep.holla@arm.com, jdelvare@suse.com, linux@roeck-us.net,
+	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH] hwmon: scmi-hwmon: implement change_mode
+Message-ID: <Za57itGEQtLqCNcg@pluto>
+References: <20240122080441.1957022-1-peng.fan@oss.nxp.com>
+ <Za5Kgp6_qUEMc-AO@pluto>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/14] phy: cadence-torrent: add suspend and resume
- support
-Content-Language: en-US
-To: Philipp Zabel <p.zabel@pengutronix.de>,
- Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
- <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
- Tony Lindgren <tony@atomide.com>, Haojian Zhuang
- <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
- <20240102-j7200-pcie-s2r-v1-11-84e55da52400@bootlin.com>
- <cf6440c08b8b7382e6693e18cdd29325aaea9cc9.camel@pengutronix.de>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <cf6440c08b8b7382e6693e18cdd29325aaea9cc9.camel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Za5Kgp6_qUEMc-AO@pluto>
 
-Hello Philipp,
-
-On 1/17/24 16:12, Philipp Zabel wrote:
-> Hi Thomas,
+On Mon, Jan 22, 2024 at 10:59:18AM +0000, Cristian Marussi wrote:
+> On Mon, Jan 22, 2024 at 04:04:41PM +0800, Peng Fan (OSS) wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> > 
+> > The sensor maybe disabled before kernel boot, so add change_mode
+> > to support configuring the sensor to enabled state.
+> > 
 > 
-> On Mo, 2024-01-15 at 17:14 +0100, Thomas Richard wrote:
->> Add suspend and resume support.
->> The alread_configured flag is cleared during suspend stage to force the
->> phy initialization during the resume stage.
->>
->> Based on the work of Théo Lebrun <theo.lebrun@bootlin.com>
->>
->> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
->> ---
->>  drivers/phy/cadence/phy-cadence-torrent.c | 57 +++++++++++++++++++++++++++++++
->>  1 file changed, 57 insertions(+)
->>
->> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
->> index 70413fca5776..31b2594e5942 100644
->> --- a/drivers/phy/cadence/phy-cadence-torrent.c
->> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
->> @@ -3006,6 +3006,62 @@ static void cdns_torrent_phy_remove(struct platform_device *pdev)
-> [...]
->> +static int cdns_torrent_phy_resume_noirq(struct device *dev)
->> +{
->> +	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(dev);
->> +	int node = cdns_phy->nsubnodes;
->> +	int ret, i;
->> +
->> +	ret = cdns_torrent_clk(cdns_phy);
->> +	if (ret)
->> +		goto clk_cleanup;
->> +
->> +	/* Enable APB */
->> +	reset_control_deassert(cdns_phy->apb_rst);
->> +
->> +	if (cdns_phy->nsubnodes > 1) {
->> +		ret = cdns_torrent_phy_configure_multilink(cdns_phy);
->> +		if (ret)
->> +			goto put_lnk_rst;
->> +	}
->> +
->> +	return 0;
->> +
->> +put_lnk_rst:
->> +	for (i = 0; i < node; i++)
->> +		reset_control_put(cdns_phy->phys[i].lnk_rst);
+> Hi Peng,
 > 
-> What is this intended to do? I expect this to explode in _remove, where
-> the lnk_rst are put again. Should this be:
+> minor remarks down below
 > 
-> 		reset_control_assert(cdns_phy->phys[i].lnk_rst);
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  drivers/hwmon/scmi-hwmon.c | 29 +++++++++++++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> > 
+> > diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
+> > index 364199b332c0..f7bd63d52d15 100644
+> > --- a/drivers/hwmon/scmi-hwmon.c
+> > +++ b/drivers/hwmon/scmi-hwmon.c
+> > @@ -151,7 +151,36 @@ static int scmi_hwmon_thermal_get_temp(struct thermal_zone_device *tz,
+> >  	return ret;
+> >  }
+> >  
+> > +static int scmi_hwmon_thermal_change_mode(struct thermal_zone_device *tz,
+> > +					  enum thermal_device_mode new_mode)
+> > +{
+> > +	int ret;
+> > +	u32 config;
+> > +	enum thermal_device_mode cur_mode = THERMAL_DEVICE_DISABLED;
+> > +	struct scmi_thermal_sensor *th_sensor = thermal_zone_device_priv(tz);
+> > +
+> > +	ret = sensor_ops->config_get(th_sensor->ph, th_sensor->info->id,
+> > +				     &config);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (config & BIT(0))
 > 
-> ?
+> if SCMI_SENS_CFG_IS_ENABLED(config)
+> 
+> > +		cur_mode = THERMAL_DEVICE_ENABLED;
+> > +
+> > +	if (cur_mode == new_mode)
+> > +		return 0;
+> > +
+> > +	if (new_mode == THERMAL_DEVICE_ENABLED)
+> > +		config |= SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
+> > +	else
+> > +		config &= ~SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
+> > +
+> 
+> Here you are ORing the enable bit to preserve the value obtained by
+> config_get (rightly so), BUT unfortunately looking at the spec
+> CONFIG_SET uses bits [10:9] for setting the rounding mode while
+> CONFIG_GET does NOT report (bits [10:2] are Reserved) so you are
+> in fact setting ROUNDING to 00 probably, meaning ROUND_DOWN.
+> 
+> We could have to add (in the future not now) something in CONFIG_GET
+> to get the round mode (I'll speak with Souvik) BUT in the meantime I
+> wonder if it is not more safe here to just explicitly set the mode to
+> 10 to signify it is up to the platform to autonomously choose how to
+> round. (there are SCMI_SENS_CFG_ROUND_ macros and mask in
+> scmi_protocol.h)
 
-Yes indeed, it's reset_control_assert instead of reset_control_put.
+..so after a quick check with ATG, this ROUNDING mode is indeed related
+to this specific CONFIG_SET request being issued...it is not a general
+sensor config, so it is not and will not be needed to be reported from
+CONFIG_GET (and was indeed clear from the spec my bad...).
 
-Thanks for the review.
+Moreover looking better at SENSOR_CONFIG_SET spec the sensor_update_interval
+field can be set to 0 if not required to be updated....so I suppose the
+better policy here is to just clear out all the bits [31:9] before setting
+the enable bit, while KEEPING the original timestamp bit untouched.
 
-Regards,
+A bit tricky...sorry for the confusion.
 
--- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Thanks,
+Cristian
 
