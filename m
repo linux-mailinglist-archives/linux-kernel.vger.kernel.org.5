@@ -1,97 +1,108 @@
-Return-Path: <linux-kernel+bounces-34035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BDBF83722D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:15:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EBD1837234
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:16:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D43C1F321DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:15:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DD3A2910A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97887495D6;
-	Mon, 22 Jan 2024 18:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="W2Dvifm+"
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8FC3F8D2;
+	Mon, 22 Jan 2024 19:01:50 +0000 (UTC)
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9F0495CA
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836AB1EEFB;
+	Mon, 22 Jan 2024 19:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705949885; cv=none; b=XnRdAYDNS2r8p3f1RkGRznMVAvJ4/001HeYKSkYj7WVhivOVKgZyUdJ8dwxVAoO3E0FtMmZaE582oJiConUZvwZoCqFva3vvq6l1jwNuhGtE2z+g+6giT0xbSzo05xhilcbPaBncf+hbM4i8GgHMnQl8goIkNTXGxkLLhMYzcOE=
+	t=1705950110; cv=none; b=M4YJvXTLlPi12zcU4ggzd4YExBuHo1mERzY9y2m7LhCIe+lZcMJEX2PMR6AchbshTDXahsQAp5qvOKBAQ+nDmR95xEIAHTqXqAiswqO5pbMp+UqFVEBkWVI27aH22GBi/VcdBTUHQSmbf1Oy+S8aIQhsacVd9vatNzemV6sVLlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705949885; c=relaxed/simple;
-	bh=VWOf8TrU3RfJgWEayn+bJz3W2oVeMtgyadg74e0TLO8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LoLOs1Uml3R7mKdieLN87ym+eSOY/UDmcKyJDVVQNguNVo+0ITgvyOQFGl+YEnRnLW4XGpKDIGHb0KmbctPYqYolyWBfmJbi+AJQPnaDt4n0qacxIdzqsx4NzIi3+tgFDHssHSJ1fl7L46ZZBH/XI5ZpdvSFeJgDT6aGhhimYtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=W2Dvifm+; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7d2e007751eso1056857241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:58:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705949883; x=1706554683; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VWOf8TrU3RfJgWEayn+bJz3W2oVeMtgyadg74e0TLO8=;
-        b=W2Dvifm+4/mh8atPmMbzY06l4rlAGkxKS+K46U8rUpotqjLrvweTfgv4qMtlxOA1vp
-         p389uyFrAny1REMidvluyijHYFYYiGX0iaxWseaop9RUwCbujIrcADwX1aS+khrcDj9m
-         uQgiXWeeGnCiAAeeqo8Bsy6YI/cRmQxqNjWF3vUICcdyA06G39w9TgVyiXTaGLy4x5op
-         566MwrO9vyXgem/2N2KmiwsJpvpVi386mSUt+kVs8riFGuddf1qtPZddXLJJ6kTqcxMM
-         /JbGG+B6n2maWCbQP/bmaXI5eiAnG6f7cA6J9SBv4bZWA2GVyflitaCWbN9kizUWz5gy
-         Rqtg==
+	s=arc-20240116; t=1705950110; c=relaxed/simple;
+	bh=mYDzATFdSZLIrUKuLjaf6al+ufc/N9bEaNgJX9sx+qk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kqHIytcOUbMc3feSZdxA4xhp5ng5SFmx1oElh+Za9QTR5qj5J9uUbX6mvNMFaPxacjeGe05CwYlXxLKHMudcLRlpOkz3SXGI12QXXqoN9lvdlVWOKfzs3OgcD4mQgyHruC7wOWiZMGDflixK9j7XbE3XcLqedkTCrO6V8mNwnCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a27733ae1dfso368178066b.3;
+        Mon, 22 Jan 2024 11:01:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705949883; x=1706554683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VWOf8TrU3RfJgWEayn+bJz3W2oVeMtgyadg74e0TLO8=;
-        b=Di4f9lqKvXLK3xbP0E/vmBf4eSsG4L2RwwX+VC7zdZfsqfG9yFHzRrlZzQRJ3+EMhd
-         RHtI5WKSuOUCmqw7y4KssCVHSfWOay0rA2eEcqFmxNOCuoTHphUWFxUtJcFBJxgzZB1I
-         eJf9ug7D7D8lu+G79c5M1NIyGNfPkNcxtpaSJIiMCOgJ8XkXByBs7AKe98RlAqSYNW6L
-         OGCbz0wgK9d2zDIOr4QwRbX7/m2/odnXOK0gQRV8F5vbleZYIgd6cvXeb0XlwlYT8oS7
-         +xrL9rEAFed9x1z9r7hoOBP3FwRU0QMKlYsa/et4shhvGm23L41JYO0bFcEanBJk0Pf8
-         os4Q==
-X-Gm-Message-State: AOJu0YypyG3E6+boErClAg8EN8hSZp06PCQb0tfFBPJvLUy5AQj5urQc
-	Kkc9YW1KFkTDLTA7BUOuvp2ATW6+nwJ7QW9X2zx/JOuH74cNYp8856dq/U1gxzt9bm9ksGyWLDi
-	lm3LWnAyGKkBf6hP4K4RRM2QI2QpllMpxBEoZ
-X-Google-Smtp-Source: AGHT+IFxOVGRaBVF6braH2NOqEnij3IhJvpLMlsmKgtebpat1xtlABWJoGhlUaqjDI7jeA6UJ2L7nOY5Wt1qvz6c1nc=
-X-Received: by 2002:a05:6102:3a13:b0:469:93d3:9fed with SMTP id
- b19-20020a0561023a1300b0046993d39fedmr3292716vsu.15.1705949883381; Mon, 22
- Jan 2024 10:58:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705950107; x=1706554907;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r5HXJODmOOJRvsIZW/uuOAT4F9Guqycs6nvFMJM+skQ=;
+        b=hJN5oX9/ZuLwK40Gf5eP9mpvhCkp48b/aUv3vusQAYYAAJ+z/MmijKgunTvxL6Fy4R
+         C8MBNhplZjGxs9GZ9lkxKrbraYozC6/AnoSlqs8K2zmD6h83VEcABIIYskSXRd4S2OmK
+         oKS2NrK7nLCZ+DPCi7+R6H5d0mD8tkmNO+hBZh9QipjgK2oeZPdxlUKQNQlM737hCZ0o
+         cV59VzFFx5m61XnPgsUDZdnwpw7kHDIm7JeUmdZ65yZg38DlqmVkow2ghdWIS9TsytpI
+         /W1yv3ERyhPQ1vgeOPQdjSs3y63FS2+YGHHMjutJ94WcKDlSlUSTEkNixAd9dWEiT+lp
+         3vPg==
+X-Gm-Message-State: AOJu0YxUoXlEEeDN/UmgXwYG91lYLoGnaeR1w7qLZ22s4WLoRAw9GJ7u
+	LOHY2O0KrjeTN20dR/tm+bQGsZqQxtdq/bpHq7hf4H/1hBkBVM+v
+X-Google-Smtp-Source: AGHT+IHuXCLP08KAopDaK2QmU3OaqcAX90CqqOJaRFmeSICBxlPCt3WBhnD+otXlvoO8zyclS3KaWw==
+X-Received: by 2002:a17:906:2b01:b0:a2f:5848:99f8 with SMTP id a1-20020a1709062b0100b00a2f584899f8mr1092335ejg.80.1705950106624;
+        Mon, 22 Jan 2024 11:01:46 -0800 (PST)
+Received: from gmail.com (fwdproxy-cln-116.fbsv.net. [2a03:2880:31ff:74::face:b00c])
+        by smtp.gmail.com with ESMTPSA id d26-20020a1709067f1a00b00a27a7fa8691sm13653235ejr.137.2024.01.22.11.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 11:01:46 -0800 (PST)
+Date: Mon, 22 Jan 2024 11:01:44 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Paolo Abeni <pabeni@redhat.com>, dsahern@kernel.org,
+	weiwan@google.com,
+	"open list:BROADCOM BCM4908 ETHERNET DRIVER" <netdev@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 04/22] net: fill in MODULE_DESCRIPTION()s for
+ Broadcom bgmac
+Message-ID: <Za67mLGJ86qpt1St@gmail.com>
+References: <20240122184543.2501493-1-leitao@debian.org>
+ <20240122184543.2501493-5-leitao@debian.org>
+ <4eff5139-b5ed-46a5-accb-5b2fea9ab212@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122184608.11863-1-dakr@redhat.com>
-In-Reply-To: <20240122184608.11863-1-dakr@redhat.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Mon, 22 Jan 2024 19:57:52 +0100
-Message-ID: <CAH5fLgjG5fJJQTsZF+ztT7E_mHAoct7p8BcERp2nkik1+LH+LQ@mail.gmail.com>
-Subject: Re: [PATCH] rust: str: add to_ascii_{upper,lower}case() to CString
-To: Danilo Krummrich <dakr@redhat.com>
-Cc: ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com, 
-	boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com, 
-	benno.lossin@proton.me, a.hindborg@samsung.com, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4eff5139-b5ed-46a5-accb-5b2fea9ab212@broadcom.com>
 
-On Mon, Jan 22, 2024 at 7:46=E2=80=AFPM Danilo Krummrich <dakr@redhat.com> =
-wrote:
->
-> Add functions to convert a CString to upper- / lowercase assuming all
-> characters are ASCII encoded.
->
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+On Mon, Jan 22, 2024 at 10:50:32AM -0800, Florian Fainelli wrote:
+> On 1/22/24 10:45, Breno Leitao wrote:
+> > W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
+> > Add descriptions to the Broadcom iProc GBit driver.
+> > 
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > ---
+> >   drivers/net/ethernet/broadcom/bcm4908_enet.c    | 1 +
+> >   drivers/net/ethernet/broadcom/bgmac-bcma-mdio.c | 1 +
+> >   drivers/net/ethernet/broadcom/bgmac-bcma.c      | 1 +
+> >   drivers/net/ethernet/broadcom/bgmac-platform.c  | 1 +
+> >   drivers/net/ethernet/broadcom/bgmac.c           | 1 +
+> >   5 files changed, 5 insertions(+)
+> > 
+> > diff --git a/drivers/net/ethernet/broadcom/bcm4908_enet.c b/drivers/net/ethernet/broadcom/bcm4908_enet.c
+> > index 3e7c8671cd11..a6bc5ce70230 100644
+> > --- a/drivers/net/ethernet/broadcom/bcm4908_enet.c
+> > +++ b/drivers/net/ethernet/broadcom/bcm4908_enet.c
+> > @@ -793,5 +793,6 @@ static struct platform_driver bcm4908_enet_driver = {
+> >   };
+> >   module_platform_driver(bcm4908_enet_driver);
+> > +MODULE_DESCRIPTION("Broadcom iProc GBit Ethernet driver");
+> 
+> This should be:
+> 
+> Broadcom BCM4908 Gigabit Ethernet driver
 
-What is this for?
-
-Alice
+Thanks. I will update in v2.
 
