@@ -1,194 +1,461 @@
-Return-Path: <linux-kernel+bounces-34051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E318B83727D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:25:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A924283724E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:19:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 927741F2686A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:25:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC5F61C29E49
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9D341759;
-	Mon, 22 Jan 2024 19:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D973D99D;
+	Mon, 22 Jan 2024 19:19:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b="gyyaOMGF"
-Received: from mail.systec-electronic.com (mail.systec-electronic.com [77.220.239.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yOYx5Vzl"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDA5D405F5;
-	Mon, 22 Jan 2024 19:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.220.239.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5A53D38E
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 19:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705951462; cv=none; b=XKQMA/rEXg9CKwPiSqunkd9wBgKQL8TNWMDqytBX8zY/0OL/KIUiwtsvM+XJPGcxammspTUiQV9KWli3vDTpfa6DmzPnDcSBUW57U+rRX++7BCHpONb6mfhgXRPS2Zpe1cEfnRCXDjfZWTJHZ42KR4Prd1n95obtC8rMxpl+/eA=
+	t=1705951147; cv=none; b=n0LUe0T7l7+yocKwylhv3Dy+Pe7Nq1BeQX3xnVY82wBpm+0GmSjU0WtKs/PJCtjCVBZHin8o96Mp/YsfMV9li93ABo3+bpPp8NS7KW+zMEfeK56vAOPDqDBdTA30AcJpFGAhWJBzrwghSeKb8lNFAxHk+I2jPdzEsjjLMQhPLFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705951462; c=relaxed/simple;
-	bh=Ai3CARrEENYU4ep+MOW7EaLMr7eb+dJKM7gjFW62Ec0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gJDtKqAnExR6n2as53+qZntiqfNad6IBrcSnxcAnxYt09py518zr/ZpiOvKxmDyEMdC2Dgaa3TR5gzH1Nn0GPv45LoftbZfakL3EihGppzsN/+3CnhGZZ7fg5XJO0jRGddwMCLjoPD1rMGrv7x92XCuAM9PKfDL0HJLcW9D3l+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com; spf=pass smtp.mailfrom=systec-electronic.com; dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b=gyyaOMGF; arc=none smtp.client-ip=77.220.239.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=systec-electronic.com
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id C222B9401683;
-	Mon, 22 Jan 2024 20:24:16 +0100 (CET)
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id ni_2G3t3zrlu; Mon, 22 Jan 2024 20:24:16 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id 9BB99941A5CE;
-	Mon, 22 Jan 2024 20:24:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.systec-electronic.com 9BB99941A5CE
+	s=arc-20240116; t=1705951147; c=relaxed/simple;
+	bh=XSUDgtuXxNpkhW2yDS+b0o3+89QZuDc8Zvst5IZ6b7A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kImJPxKs3BdepsVEJ+RxR8LpFHl72genDCdNCtb643LNowMpcHbjl7ouI3zLOG1l+382acogfil7iXKyMz7wWbt1pEQrlsbnDr3NCXxUuZCiUhnaz7GdpS5ArUu+BDNm9RmSRKrxXSb7r4jdZJMI3nS+SQVkmH1DDApGKdoc5e0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yOYx5Vzl; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e7065b7bdso42296505e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:19:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=systec-electronic.com; s=B34D3B04-5DC7-11EE-83E3-4D8CAB78E8CD;
-	t=1705951456; bh=BLVBSipavZztTYx8CwSVW5BhkEJvYHjdnvg38MQ/MRg=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=gyyaOMGFyUUx07vqyMDN7NYM5SLND6NpbUsXh0ofwkOynGVjugL+b2WTdFpUflKok
-	 4P3O47Yn0Z9uLMqPrz/Cz3seGkuhZOTwry3c9Ty1ZXcy5ZGK4NTNVKn55Vqb45LAfG
-	 umIo5iqJrmjb9QokP6uYI7oJyO8grZaH3qQYm/4fdcNtZZNWmryGxOJq1tCFUraJCG
-	 kVt28wrrbNfGrRcmxq/pSL/GadVCTJ5UEhvafpTOMu2f/G9Tujk3E6C3VR9oMnz9hl
-	 hBmiSoulpqQheq/9xI54Z7b1mJFY/8d33vxvLoz9DkWb/ykqu8hFFQQG/toKNtkoNA
-	 wIu5FZUyti2Yg==
-X-Virus-Scanned: amavis at systec-electronic.com
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id JTjcKVjBY-d6; Mon, 22 Jan 2024 20:24:16 +0100 (CET)
-Received: from ws-565760.systec.local (unknown [212.185.67.148])
-	by mail.systec-electronic.com (Postfix) with ESMTPSA id 4815B9401683;
-	Mon, 22 Jan 2024 20:24:16 +0100 (CET)
-From: Andre Werner <andre.werner@systec-electronic.com>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: linux@armlinux.org.uk,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andre Werner <andre.werner@systec-electronic.com>
-Subject: [RFC net-next v5 2/2] net: phy: adin1100: Add interrupt support for link change
-Date: Mon, 22 Jan 2024 20:17:16 +0100
-Message-ID: <20240122192401.26836-3-andre.werner@systec-electronic.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240122192401.26836-1-andre.werner@systec-electronic.com>
-References: <20240122192401.26836-1-andre.werner@systec-electronic.com>
+        d=linaro.org; s=google; t=1705951143; x=1706555943; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a9FQMVlJB1Vojg8ZPFpG9SgluDknPAojvY7olC7F2Nc=;
+        b=yOYx5VzlY7Zwmv5nz2pESjJ9iJgrA6yJrjOwDqkvmTuM0XpLxRkrRCzB9zvcb7rLwz
+         03uhOWxycGTrb3fYahLQMqe+fOXU7+WbVzN51LSnJ8wUBCAZhESVUJGoRmy2KlQwb/KD
+         I7dy8B1Uw9kWObC8Teq5VzwdGesKWYpejrHGxgyJDGkrfDu52Aw3UZ6RbfKhU8lPctzC
+         2SxBeMFk3Dm3H4D4ZtRARULJev4eH8sqLkBS3MmyOy51/4bp4aYq5lCJaeGpr87/QM1R
+         QdcHfAi/t9rul1fnqiQiVRD43IzGVvVeWwAxAp2CM+296fMR9j8JQZISE2KMq7lJIvq8
+         /+Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705951143; x=1706555943;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a9FQMVlJB1Vojg8ZPFpG9SgluDknPAojvY7olC7F2Nc=;
+        b=lNoJ+3UdJs3zmLETAxLo6gziRiUTtswB4ujKKNeyIltc0uLtPE/F4ZUxDDSpdCIi9l
+         rPWurkO1o6lAmcaaOtIBn6FFpBgqg+egaBmXe3+gZhdVFbIwkbVcG2h4FkKmMiuLe9Si
+         FSS87FoRm4QNCR7RvzByekR2eanYihQRI7tp58rUvN4aGCHxT4HGonJEnurQsiglxtv8
+         97xN7Bz4vX0XE3NMIlYIsNumEsN+jz2TwEaUlu4Op/nBV73eFoCUMNJpqtj7PCLH4FWT
+         Vxo3paO4qfhZXSkjIxy/J27O4MZoJX5aHnYeEp066Z9iVi7IdxMX+CjNfP65QPjrB6M3
+         up4w==
+X-Gm-Message-State: AOJu0YwCOLubCxACGNu2XN+gJ6Br3ANPYB0+ZJAMDED4HYoNb467hDyP
+	x29cNbncZqCLT/xT9vEtQXpabo8reZpodKSiQHXopBEB5hSQvWIOEiJDJSKfey4=
+X-Google-Smtp-Source: AGHT+IH63xUnqFx6Z8kjFRhgveuot8biTbbHDjUQoc3HRtf8IvAhFj0ksGtyE6jCdAKoz2grUUsn9A==
+X-Received: by 2002:a1c:4c02:0:b0:40e:5f22:3d1b with SMTP id z2-20020a1c4c02000000b0040e5f223d1bmr1706026wmf.72.1705951142552;
+        Mon, 22 Jan 2024 11:19:02 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id k23-20020a05600c0b5700b0040e596320bfsm4080165wmr.0.2024.01.22.11.19.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 11:19:02 -0800 (PST)
+Message-ID: <45c3a83f-b049-4ef8-9406-84c149f61667@linaro.org>
+Date: Mon, 22 Jan 2024 20:19:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 01/26] thermal: Introduce
+ thermal_zone_device_register() and params structure
+Content-Language: en-US
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: rafael@kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231221124825.149141-1-angelogioacchino.delregno@collabora.com>
+ <20231221124825.149141-2-angelogioacchino.delregno@collabora.com>
+ <7417c498-2439-485d-9f78-fbb22f9ce393@linaro.org>
+ <33c7d36d-c2f5-477f-946a-6ad926a277d7@collabora.com>
+ <9783d2a6-7395-4516-9fd1-d7c42ea35d07@collabora.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <9783d2a6-7395-4516-9fd1-d7c42ea35d07@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-An interrupt handler was added to the driver as well as functions
-to enable interrupts at the phy.
+On 18/01/2024 10:39, AngeloGioacchino Del Regno wrote:
+> Il 16/01/24 10:58, AngeloGioacchino Del Regno ha scritto:
+>> Il 15/01/24 13:39, Daniel Lezcano ha scritto:
+>>> On 21/12/2023 13:48, AngeloGioacchino Del Regno wrote:
+>>>> In preparation for extending the thermal zone devices to actually have
+>>>> a name and disambiguation of thermal zone types/names, introduce a new
+>>>> thermal_zone_device_params structure which holds all of the parameters
+>>>> that are necessary to register a thermal zone device, then add a new
+>>>> function thermal_zone_device_register().
+>>>>
+>>>> The latter takes as parameter the newly introduced structure and is
+>>>> made to eventually replace all usages of the now deprecated function
+>>>> thermal_zone_device_register_with_trips() and of
+>>>> thermal_tripless_zone_device_register().
+>>>>
+>>>> Signed-off-by: AngeloGioacchino Del Regno 
+>>>> <angelogioacchino.delregno@collabora.com>
+>>>> ---
+>>>>   drivers/thermal/thermal_core.c | 27 +++++++++++++++++++++++++++
+>>>>   include/linux/thermal.h        | 33 +++++++++++++++++++++++++++++++++
+>>>>   2 files changed, 60 insertions(+)
+>>>>
+>>>> diff --git a/drivers/thermal/thermal_core.c 
+>>>> b/drivers/thermal/thermal_core.c
+>>>> index e5434cdbf23b..6be508eb2d72 100644
+>>>> --- a/drivers/thermal/thermal_core.c
+>>>> +++ b/drivers/thermal/thermal_core.c
+>>>> @@ -1235,6 +1235,8 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_crit_temp);
+>>>>    *           whether trip points have been crossed (0 for interrupt
+>>>>    *           driven systems)
+>>>>    *
+>>>> + * This function is deprecated. See thermal_zone_device_register().
+>>>> + *
+>>>>    * This interface function adds a new thermal zone device (sensor) to
+>>>>    * /sys/class/thermal folder as thermal_zone[0-*]. It tries to 
+>>>> bind all the
+>>>>    * thermal cooling devices registered at the same time.
+>>>> @@ -1409,6 +1411,7 @@ thermal_zone_device_register_with_trips(const 
+>>>> char *type, struct thermal_trip *t
+>>>>   }
+>>>>   EXPORT_SYMBOL_GPL(thermal_zone_device_register_with_trips);
+>>>> +/* This function is deprecated. See thermal_zone_device_register(). */
+>>>>   struct thermal_zone_device *thermal_tripless_zone_device_register(
+>>>>                       const char *type,
+>>>>                       void *devdata,
+>>>> @@ -1420,6 +1423,30 @@ struct thermal_zone_device 
+>>>> *thermal_tripless_zone_device_register(
+>>>>   }
+>>>>   EXPORT_SYMBOL_GPL(thermal_tripless_zone_device_register);
+>>>> +/**
+>>>> + * thermal_zone_device_register() - register a new thermal zone device
+>>>> + * @tzdp:    Parameters of the new thermal zone device
+>>>> + *        See struct thermal_zone_device_register.
+>>>> + *
+>>>> + * This interface function adds a new thermal zone device (sensor) to
+>>>> + * /sys/class/thermal folder as thermal_zone[0-*]. It tries to bind 
+>>>> all the
+>>>> + * thermal cooling devices registered at the same time.
+>>>> + * thermal_zone_device_unregister() must be called when the device 
+>>>> is no
+>>>> + * longer needed. The passive cooling depends on the .get_trend() 
+>>>> return value.
+>>>> + *
+>>>> + * Return: a pointer to the created struct thermal_zone_device or an
+>>>> + * in case of error, an ERR_PTR. Caller must check return value with
+>>>> + * IS_ERR*() helpers.
+>>>> + */
+>>>> +struct thermal_zone_device *thermal_zone_device_register(struct 
+>>>> thermal_zone_device_params *tzdp)
+>>>> +{
+>>>> +    return thermal_zone_device_register_with_trips(tzdp->type, 
+>>>> tzdp->trips, tzdp->num_trips,
+>>>> +                               tzdp->mask, tzdp->devdata, tzdp->ops,
+>>>> +                               &tzdp->tzp, tzdp->passive_delay,
+>>>> +                               tzdp->polling_delay);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(thermal_zone_device_register);
+>>>> +
+>>>>   void *thermal_zone_device_priv(struct thermal_zone_device *tzd)
+>>>>   {
+>>>>       return tzd->devdata;
+>>>> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+>>>> index 98957bae08ff..c6ed33a7e468 100644
+>>>> --- a/include/linux/thermal.h
+>>>> +++ b/include/linux/thermal.h
+>>>> @@ -258,6 +258,33 @@ struct thermal_zone_params {
+>>>>       int offset;
+>>>>   };
+>>>> +/**
+>>>> + * struct thermal_zone_device_params - parameters for a thermal 
+>>>> zone device
+>>>> + * @type:        the thermal zone device type
+>>>> + * @tzp:        thermal zone platform parameters
+>>>> + * @ops:        standard thermal zone device callbacks
+>>>> + * @devdata:        private device data
+>>>> + * @trips:        a pointer to an array of thermal trips, if any
+>>>> + * @num_trips:        the number of trip points the thermal zone 
+>>>> support
+>>>> + * @mask:        a bit string indicating the writeablility of trip 
+>>>> points
+>>>> + * @passive_delay:    number of milliseconds to wait between polls 
+>>>> when
+>>>> + *            performing passive cooling
+>>>> + * @polling_delay:    number of milliseconds to wait between polls 
+>>>> when checking
+>>>> + *            whether trip points have been crossed (0 for interrupt
+>>>> + *            driven systems)
+>>>> + */
+>>>> +struct thermal_zone_device_params {
+>>>> +    const char *type;
+>>>> +    struct thermal_zone_params tzp;
+>>>> +    struct thermal_zone_device_ops *ops;
+>>>> +    void *devdata;
+>>>> +    struct thermal_trip *trips;
+>>>> +    int num_trips;
+>>>> +    int mask;
+>>>> +    int passive_delay;
+>>>> +    int polling_delay;
+>>>> +};
+>>>
+>>>  From my POV, this "struct thermal_zone_params" has been always a 
+>>> inadequate and catch-all structure. It will confuse with 
+>>> thermal_zone_device_params
+>>>
+>>> I suggest to cleanup a bit that by sorting the parameters in the 
+>>> right structures where the result could be something like:
+>>>
+>>> eg.
+>>>
+>>> struct thermal_zone_params {
+>>>
+>>>      const char *type;
+>>>      struct thermal_zone_device_ops *ops;
+>>>      struct thermal_trip *trips;
+>>>      int num_trips;
+>>>
+>>>      int passive_delay;
+>>>      int polling_delay;
+>>>
+>>>      void *devdata;
+>>>          bool no_hwmon;
+>>> };
+>>>
+>>> struct thermal_governor_ipa_params {
+>>>          u32 sustainable_power;
+>>>          s32 k_po;
+>>>          s32 k_pu;
+>>>          s32 k_i;
+>>>          s32 k_d;
+>>>          s32 integral_cutoff;
+>>>          int slope;
+>>>          int offset;
+>>> };
+>>>
+>>> struct thermal_governor_params {
+>>>      char governor_name[THERMAL_NAME_LENGTH];
+>>>      union {
+>>>          struct thermal_governor_ipa_params ipa_params;
+>>>      };
+>>> };
+>>>
+>>> struct thermal_zone_device_params {
+>>>      struct thermal_zone_params *tzp;
+>>>      struct thermal_governor_params *tgp;
+>>> }
+>>>
+>>> No functional changes just code reorg, being a series to be submitted 
+>>> before the rest on these RFC changes (2->26)
+>>>
+>>
+>> Could work. It's true that thermal_zone_params is a catch-all 
+>> structure, and it's
+>> not really the best... but I also haven't checked how complex and/or 
+>> how much time
+>> would your proposed change take.
+>>
+>> Shouldn't take much as far as I can foresee, but I really have to 
+>> check a bit.
+>> If I'm right as in it's not something huge, the next series will 
+>> directly have
+>> this stuff sorted - if not, I'll reach to you.
+>>
+> 
+> So... I've checked the situation and coded some.
+> 
+> I came to the conclusion that doing it as suggested is possible but 
+> realistically
+> suboptimal, because that will need multiple immutable branches to 
+> actually end up
+> in upstream as changes would otherwise break kernel build.
+> 
+> Then, here I am suggesting a different way forward, while still 
+> performing this
+> much needed cleanup and reorganization:
+> 
+> First, we introduce thermal_zone_device_register() and params structure 
+> with
+> this commit, which will have
+> 
+> /* Structure to define Thermal Zone parameters */
+> struct thermal_zone_params {
+>      /* Scheduled for removal - see struct thermal_zone_governor_params. */
+>      char governor_name[THERMAL_NAME_LENGTH];
 
-There are several interrupts maskable at the phy, but only link change
-interrupts are handled by the driver yet.
+Take the opportunity to introduce a patch before doing a change to:
 
-Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
----
-v5:
-- Add reversed-x-max-notation to variables in adin_config_intr.
-- Delete empty line between function call and if statement.
+	const char *governor_name;
 
-v4:
-- Change read-modify-write behavior as suggested to phy_modify_mmd.
+AFAICS, there is no place in the kernel where it is not a const char * 
+assignation which is by the way wrong:
 
-v3:
-- Correct rashly format error that was reported by checker.
+	char governor_name[THERMAL_NAME_LENGTH];
+	governor_name = "step_wise";
 
-v2:
-- Clean format and reword commit message as suggested by reviewer of
-  first patch submission
----
- drivers/net/phy/adin1100.c | 55 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+	:)
 
-diff --git a/drivers/net/phy/adin1100.c b/drivers/net/phy/adin1100.c
-index 7619d6185801..85f910e2d4fb 100644
---- a/drivers/net/phy/adin1100.c
-+++ b/drivers/net/phy/adin1100.c
-@@ -18,6 +18,12 @@
- #define PHY_ID_ADIN1110				0x0283bc91
- #define PHY_ID_ADIN2111				0x0283bca1
-=20
-+#define ADIN_PHY_SUBSYS_IRQ_MASK		0x0021
-+#define   ADIN_LINK_STAT_CHNG_IRQ_EN		BIT(1)
-+
-+#define ADIN_PHY_SUBSYS_IRQ_STATUS		0x0011
-+#define   ADIN_LINK_STAT_CHNG			BIT(1)
-+
- #define ADIN_FORCED_MODE			0x8000
- #define   ADIN_FORCED_MODE_EN			BIT(0)
-=20
-@@ -136,6 +142,53 @@ static int adin_config_aneg(struct phy_device *phyde=
-v)
- 	return genphy_c45_config_aneg(phydev);
- }
-=20
-+static int adin_phy_ack_intr(struct phy_device *phydev)
-+{
-+	/* Clear pending interrupts */
-+	int rc =3D phy_read_mmd(phydev, MDIO_MMD_VEND2,
-+			      ADIN_PHY_SUBSYS_IRQ_STATUS);
-+
-+	return rc < 0 ? rc : 0;
-+}
-+
-+static int adin_config_intr(struct phy_device *phydev)
-+{
-+	u16 irq_mask;
-+	int ret;
-+
-+	ret =3D adin_phy_ack_intr(phydev);
-+	if (ret)
-+		return ret;
-+
-+	if (phydev->interrupts =3D=3D PHY_INTERRUPT_ENABLED)
-+		irq_mask =3D ADIN_LINK_STAT_CHNG_IRQ_EN;
-+	else
-+		irq_mask =3D 0;
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_VEND2,
-+			      ADIN_PHY_SUBSYS_IRQ_MASK,
-+			      ADIN_LINK_STAT_CHNG_IRQ_EN, irq_mask);
-+}
-+
-+static irqreturn_t adin_phy_handle_interrupt(struct phy_device *phydev)
-+{
-+	int irq_status;
-+
-+	irq_status =3D phy_read_mmd(phydev, MDIO_MMD_VEND2,
-+				  ADIN_PHY_SUBSYS_IRQ_STATUS);
-+	if (irq_status < 0) {
-+		phy_error(phydev);
-+		return IRQ_NONE;
-+	}
-+
-+	if (!(irq_status & ADIN_LINK_STAT_CHNG))
-+		return IRQ_NONE;
-+
-+	phy_trigger_machine(phydev);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int adin_set_powerdown_mode(struct phy_device *phydev, bool en)
- {
- 	int ret;
-@@ -275,6 +328,8 @@ static struct phy_driver adin_driver[] =3D {
- 		.probe			=3D adin_probe,
- 		.config_aneg		=3D adin_config_aneg,
- 		.read_status		=3D adin_read_status,
-+		.config_intr		=3D adin_config_intr,
-+		.handle_interrupt	=3D adin_phy_handle_interrupt,
- 		.set_loopback		=3D adin_set_loopback,
- 		.suspend		=3D adin_suspend,
- 		.resume			=3D adin_resume,
---=20
-2.43.0
+>      /* Scheduled for removal - see struct thermal_zone_governor_params. */
+>      bool no_hwmon;
+> 
+>      /*
+>       * Sustainable power (heat) that this thermal zone can dissipate in
+>       * mW
+>       */
+>      u32 sustainable_power;
+> 
+>      /*
+>       * Proportional parameter of the PID controller when
+>       * overshooting (i.e., when temperature is below the target)
+>       */
+>      s32 k_po;
+> 
+>      /*
+>       * Proportional parameter of the PID controller when
+>       * undershooting
+>       */
+>      s32 k_pu;
+> 
+>      /* Integral parameter of the PID controller */
+>      s32 k_i;
+> 
+>      /* Derivative parameter of the PID controller */
+>      s32 k_d;
+> 
+>      /* threshold below which the error is no longer accumulated */
+>      s32 integral_cutoff;
+> 
+>      /*
+>       * @slope:    slope of a linear temperature adjustment curve.
+>       *         Used by thermal zone drivers.
+>       */
+>      int slope;
+>      /*
+>       * @offset:    offset of a linear temperature adjustment curve.
+>       *         Used by thermal zone drivers (default 0).
+>       */
+>      int offset;
+> };
+> 
+> struct thermal_governor_params {
+>      char governor_name[THERMAL_NAME_LENGTH];
+
+	const char *governor_name;
+
+>      struct thermal_zone_params ipa_params;
+> };
+> 
+> struct thermal_zone_platform_params {
+
+The name sounds inadequate.
+
+May be just thermal_zone_params ?
+
+>      const char *type;
+>      struct thermal_zone_device_ops *ops;
+
+Move the ops in the thermal_zone_device_params
+
+>      struct thermal_trip *trips;
+>      int num_trips;
+>      int mask;
+> 
+>      int passive_delay;
+>      int polling_delay;
+> 
+>      void *devdata;
+
+And devdata also in the thermal_zone_device_params
+
+>      bool no_hwmon;
+> };
+> 
+> 
+> struct thermal_zone_device_params {
+>      struct thermal_zone_platform_params tzp;
+>      struct thermal_governor_params *tgp;
+> };
+> 
+> (Note that the `no_hwmon` and `governor_name` are *temporarily* 
+> duplicated, but
+> there are good reasons to do that!)
+> 
+> Drivers will follow with the migration to `thermal_zone_device_register()`,
+> and that will be done *strictly* like so:
+> 
+> struct thermal_zone_device_params tzdp = {
+>      .tzp = {
+>          .type = "acerhdf",
+>          .tzp = { .governor_name = "bang_bang" },
+>          .ops = &acerhdf_dev_ops,
+>          .trips = trips,
+>          .num_trips = ARRAY_SIZE(trips),
+>          .polling_delay = kernelmode ? interval * 1000 : 0,
+>          /* devdata, no_hwmon go here later in the code */
+>      },
+>      .tgp = { .governor_name = "bang_bang" }
+> };
+> 
+> Notice how in this case we're never *ever* referencing to any struct name,
+> apart from struct thermal_zone_device_params (meaning, I'm never creating
+> vars/pointers to struct thermal_zone_platform_params).
+> 
+> If we follow this style, at least temporarily and at least during this 
+> cleanup,
+> we will end up with a plan such that:
+> 
+> 1. In the first merge window:
+>     - Drivers get migrated to thermal_zone_device_register()
+>     - Functions register_with_trips()/tripless get deprecated but not 
+> yet removed
+ >
+> 2. In the next merge window (expecting all users updated from the first 
+> window):
+>     - Functions register_with_trips/tripless get removed (<- no more 
+> external refs
+>       to struct thermal_zone_params, which can be then safely renamed!)
+>     - Duplicated members governor_name and no_hwmon get removed from
+>       struct thermal_zone_params
+>     - Some structures get renamed to give them the proposed better names 
+> (which
+>       I also genuinely like)
+>     - Only Thermal API internal changes, as users (all the ones that are 
+> not in
+>       drivers/thermal/) won't need to get updated at all!
+>       ... and that's why I said "strictly like so" in the example up there.
+> 
+> I think that this is the best strategy, for both ease of merging the 
+> changes and
+> internal reorganization.
+> 
+> Sure in the first merge window we'll be wasting a byte or two, but I am 
+> confident
+> in that this is a very low price to pay - and even better, only 
+> temporarily - for
+> other bigger benefits.
+> 
+> What do you think?
+
+Sounds like a plan :)
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
