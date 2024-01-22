@@ -1,124 +1,225 @@
-Return-Path: <linux-kernel+bounces-32706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70924835F37
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:12:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F662835F29
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:10:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48113B26B68
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:09:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF8F4B20BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E6EC3A269;
-	Mon, 22 Jan 2024 10:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68F33A1D0;
+	Mon, 22 Jan 2024 10:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="XbLTyj35"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OG0f6K9+"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF323A1C3;
-	Mon, 22 Jan 2024 10:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EED439FEB;
+	Mon, 22 Jan 2024 10:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705918098; cv=none; b=Bi0pHRAkXJEsWN3ZTJUYI9dUg5VcuBNRl8uGqTgGrAD5O8ZuyIa/P8Kb4xKjEOlh1nEhpl4A3Vqq+KoOriK0X0JjLZHf84kcifeVlzlt4XCGqMqZxyEFLXyPo1g3zWEj91VOsTAaymt/TD4lzR4/u5DDvp26GbH25zu9YMUz2IE=
+	t=1705918058; cv=none; b=QZSZhDz9WgNpAxE0inXJE/Uvae+mo6wEN9RLSb7iAezGA97PKgsOQ3fZRn6zQhA6EAj5u+HfkBcq2pOJSUNqmkBRWFcCazxDbh61N7QkRXLePTw/lePAl2/zBGD983KSMhA7ewiQBwBIycyJic7qg8wAZEmx8KlYWrmZaayjfUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705918098; c=relaxed/simple;
-	bh=fTg1GKoElQXtI92ElzyjxQkY95Oc2Gw5CPCoF4BKwq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GSD2bWD1a3RXa/BDZeVyixQu1+BqldzHLA5NhQFspDKA/cy8RNuhOE+6thugGiwfkRP849RUXWtFmGnoG4uKy/k3MLdm9WdXO/PCwuKxeNlwwuVwp6w7fmAzUOqT6EKK6ilsMBWO+AKeY6DsC+3tYAeT+rMaaiILFugFOlRVI7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=XbLTyj35; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1705918023; x=1706522823; i=markus.elfring@web.de;
-	bh=fTg1GKoElQXtI92ElzyjxQkY95Oc2Gw5CPCoF4BKwq8=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=XbLTyj35Lb7jl1Yxk5KWnYotJUTzEV/OahrmTGAuvwBNAl3a+VwS5Yj6WbV0eTWT
-	 F8XF4+XunIdby/uzCcMOOXrbW1nz0ynfe+q8vz86czFsJHriEmDKJWjHye5gDjekJ
-	 3zJdBiB8SvV6FuY74cI9jSzvCGCSRC5rAZdb8vLb9G06jExBKLSY6l4PqdiFcDwB8
-	 Ce3nIBc9znPGdYrOIH8xCam1LgCpl7GlXMfteTWW3HyMt7yYNleZj0VLEuSafpBJX
-	 LdY5ZefXx197/9mhH7YnobqgSJ8w7SeTv9fyjuS3g01X41Md/kH696KNsDSTb+nmR
-	 fDZwscOeNJL4O01/SA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N1d7i-1qzQGl1nD6-011tRs; Mon, 22
- Jan 2024 11:07:03 +0100
-Message-ID: <b0b1ba48-1d48-4163-afc5-ac92121ee14c@web.de>
-Date: Mon, 22 Jan 2024 11:06:57 +0100
+	s=arc-20240116; t=1705918058; c=relaxed/simple;
+	bh=0DBCtBL7EIQT2jBc+2uIH7Ya0F0CfhR/U4M8QK0l2zQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=jbxdbNku1oHTGNl+qRHokns26DjAgtyC4MbmFe00GSxGZL1BPs8KE3A1DKApWpKVNvMl7NRR5hYMGz2mYvesD9Lxeow0i/64yXQxrCRG2vL+E8vf1uTXp1TZMifl2J28vxX40ibuxdEYud/tDO2ZWu7F7/xqwUANZ5/89tpVFY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OG0f6K9+; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40M5brQI028656;
+	Mon, 22 Jan 2024 10:07:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=C/vkJQ/dVUcxOvXvJM0Z+onrH+j+Sst7yDaKR3InxDY=; b=OG
+	0f6K9+9hUXEorDjkYrkxoF1fdAHr7iQrAH82gOHnJwdJad2ESCBUgLaeE77aqxF3
+	z2S2FvBq5Z+O6MjB3OaFPC2jpqss3t+NKsYKmItDd5l73ESgtW+Y3MPICegflLRv
+	nmBoGHgq28G4ep/wc/CNfL8GODnPlzjGqIyO5WdlRVgTKG2X76LteIyvhOHPdDzW
+	Q5KfQuGI05kXp0nF1txktrUIaS6I+nx0pBsjhoswPFzKlXo4eP0udHgfmSdPySG7
+	8dObQ098YhzN20TmfpVFVdHVM0m+xzqlmlUABgkS8QrlvPQzGL3r9dCnWyF3+1yw
+	20OsKnVcra+cipViU3zA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vr54wum0b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 10:07:25 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40MA7OlM029669
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 10:07:24 GMT
+Received: from [10.216.25.125] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 22 Jan
+ 2024 02:07:17 -0800
+Message-ID: <391f8f48-d1f5-702d-20d4-ae8b8a7ace58@quicinc.com>
+Date: Mon, 22 Jan 2024 15:37:14 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v2] x86/xen: Add some null pointer checking to smp.c
-Content-Language: en-GB
-To: Dan Carpenter <dan.carpenter@linaro.org>, Kunwu Chan
- <chentao@kylinos.cn>, xen-devel@lists.xenproject.org,
- kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel test robot <lkp@intel.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
- =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
- Jonathan Corbet <corbet@lwn.net>
-References: <20240117090018.152031-1-chentao@kylinos.cn>
- <1705655941162581.825.seg@mailgw>
- <517fae75-c4e7-4576-81ff-6a14a3eb9cd7@kylinos.cn>
- <dfb6de51-3ebc-41fc-a750-cf5ca2ac05aa@moroto.mountain>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <dfb6de51-3ebc-41fc-a750-cf5ca2ac05aa@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TVWkH58C8d+xxHWHzHB64epa3s2plijd4rtx+6kS7ddQj8Suzvv
- naMuUTuD5EWLL2maurgo9AVz+dfWzvKtULBa/5Ve/rZFZcwKc9G46OszjBW7AP9yBR2RipX
- lK43Pd+vVigt/FjZRtStKTTDI5ju3W3XLb/WimEdl4OICVTk1/YmHkjTr/9CBQ1xYQ94yFA
- aDAE639lz9NSS4qWe7X9A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dU6CzvMVSpk=;fSHtYB/+Ly6z8pY0YGpGVG3ymD3
- S5R+AQd74kyXPO7x6bf/abdvDEWT2fFiA5grBn0s2z1asUGulEyqknQZVKJwf0tKu2SFstgor
- C/k1kCa4Q1jtgtl3ehPa0kPjTNaru70z78epFuFQTTS6fKSCe3ZrV7ekGai8+G8Hk7yOgiQXU
- FgIixZkdWM3rkJ54x8VUy6DnkxGN1mIkWIVQT87i2xg/BRetp7hS+LYad+RpxlHzxvABYaFMS
- yTWm8/CYgyNkKb64NqBPX/4EETyRZmoh4Pg/ONAtpFP6K6RRshD3XLN+LTIsf/dt4hPZ/OO6K
- zhJ3Jcd1jHt3rZbRkLwlP1aQTms2E3DXa/sPOTYIHuawGiZL43TXPy1nvG5Qu5XUD+uLR3UcV
- MSUBMqfOBKib4NuW2aKzkwhtbtHAoj5OPdJkdO0KL00ZXjJYha9ar9z4FwFEyZ1uJuyeyouRP
- /RqzuWH97IyQeevzIJ4G4ujdTPtemaWdj8C97cgBcFTGQaxF+AjXHFLnDnOeGwka7ehoySB4X
- WEQB4wDsnXTCEppwuZwANErLkf/0Pvy94yrRC2T6DmIt6v2LaBYQMXpvj02MO/hbZgv3mS7VR
- WC+u/TOo2Es1jI67Vg0HD/nGJCfItmhF37j4A2V3sXpaVksjIlhhi0btsiu+4OQdcvfv5633N
- daXMmq0nbOUPsumFU3SHFodudI05p3k4JBAYBudav4Z2nhG+sPc9ZQWskqP+FkFUVkln+jFT3
- nhXJMMD1BxRr77e5AdkLzRBhX7B63C6MBSR9TfPXbS0+4aAQs2fzLWb9SsX3rDAPwldNNrgpa
- C3enyvAYKhgNNxSEoKwSHU0BTHyxrTSyvXXnSABRXE+7SqHuxuNl5W1vih1+iMORigNwPmFqs
- w0CgqXRGAAG4XNsHi8qw5xoGBkcwrbwWz964mjZpoza6mVBLAMBLcTHqiNvV8IEoGtqzH/hV/
- lNYuYA==
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 2/2] dt-bindings: hwinfo: Add Qualcomm's board-id types
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Elliot Berman
+	<quic_eberman@quicinc.com>
+References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
+ <1705749649-4708-3-git-send-email-quic_amrianan@quicinc.com>
+ <54426665-90c5-4355-a174-f512004e11e5@linaro.org>
+Content-Language: en-US
+From: Amrit Anand <quic_amrianan@quicinc.com>
+In-Reply-To: <54426665-90c5-4355-a174-f512004e11e5@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _nwZ8vsPmPDLgjgNQrNUDMbBvQBAACKm
+X-Proofpoint-GUID: _nwZ8vsPmPDLgjgNQrNUDMbBvQBAACKm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-21_04,2024-01-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 mlxlogscore=999 clxscore=1015 suspectscore=0 mlxscore=0
+ adultscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401220072
 
->>> How do you think about to use another label like =E2=80=9Ce_nomem=E2=
-=80=9D?
->> I'll add a new label to simply the code.
+
+On 1/20/2024 7:02 PM, Konrad Dybcio wrote:
+> On 20.01.2024 12:20, Amrit Anand wrote:
+>> Qualcomm based DT uses two or three different identifiers. The SoC
+>> based idenfier which signifies chipset and the revision for those
+>> chipsets. The board based identifier is used to distinguish different
+>> boards (e.g. IDP, MTP) along with the different types of same boards.
+>> The PMIC attached to the board can also be used as a identifier for
+>> device tree.
+>>
+>> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+>> Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
+>> ---
+>>   .../devicetree/bindings/hwinfo/qcom,board-id.yaml  | 86 ++++++++++++++++++++++
+>>   include/dt-bindings/arm/qcom,ids.h                 | 68 +++++++++++++++--
+>>   2 files changed, 146 insertions(+), 8 deletions(-)
+>>   create mode 100644 Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml b/Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
+>> new file mode 100644
+>> index 0000000..807f134
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/hwinfo/qcom,board-id.yaml
+>> @@ -0,0 +1,86 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/hwinfo/qcom,board-id.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: QCOM Board Identifier for Devicetree Selection
+>> +
+>> +maintainers:
+>> +  - Amrit Anand <quic_amrianan@quicinc.com>
+>> +  - Elliot Berman <quic_eberman@quicinc.com>
+>> +
+>> +description: |
+> The '|'s are unnecessary in both commits, IIRC they're used for
+> preserving formatting which we don't really need for non-styled
+> plaintext
+Sure, will do.
+>> +  Qualcomm uses two and sometimes three hardware identifiers to describe
+>> +  its boards
+>> +      - a SoC identifier is used to match chipsets (e.g. sm8550 vs sm8450)
+>> +      - a board identifier is used to match board form factor (e.g. MTP, QRD,
+>> +        ADP, CRD)
+>> +      - a PMIC identifier is occasionally used when different PMICs are used
+>> +        for a given board/SoC combination.
+>> +  Each field and helper macros are defined at::
+>> +      - include/dt-bindings/arm/qcom,ids.h
+>> +
+>> +  For example,
+>> +    / {
+>> +        #board-id-cells = <2>;
+>> +        board-id = <456 0>, <457 0>, <10 0>;
+>> +        board-id-types = "qcom,soc-id", "qcom,soc-id", "qcom,board-id";
+>> +     }
+>> +
+>> +allOf:
+>> +  - $ref: board-id.yaml#
+>> +
+>> +properties:
+>> +  board-id:
+>> +    minItems: 2
+> I believe some older platforms match exclusively based on socid, so
+> perhaps 1 would be okay as well.
 >
-> I'm not a Xen maintainer so I can't really comment on their style choice=
-s.
+> [...]
 
-Linux contributors can discuss various implementation details.
+Ok, considering legacy targets we can make it 1.
 
+But i think ideally it should always be recommended to have a board ID 
+associated with a SoC ID, correct me if my understanding is wrong.
 
-> However, as one of the kernel-janitors list people, I would
-> say that not everyone agrees with Markus's style preferences.
+>> +examples:
+>> +   - |
+>> +     #include <dt-bindings/arm/qcom,ids.h>
+>> +     / {
+>> +         model = "Qualcomm Technologies, Inc. sc7280 IDP SKU1 platform";
+>> +         compatible = "qcom,sc7280-idp", "google,senor", "qcom,sc7280";
+>> +
+>> +         #board-id-cells = <2>;
+>> +         board-id = <QCOM_SOC_ID(SC7280) QCOM_SOC_REVISION(1)>,
+>> +                    <QCOM_SOC_ID(SC7280) QCOM_SOC_REVISION(2)>,
+>> +                    <QCOM_BOARD_ID(IDP, 1, 0) QCOM_BOARD_SUBTYPE(UFS, ANY, 1)>;
+>> +         board-id-types = "qcom,soc-id",
+>> +                          "qcom,soc-id",
+>> +                          "qcom,board-id";
+> So, would the matching here would be:
+>
+> loop over disctinct board-id-types
+> 	check if there's at least 1 match for all of them
+> 		use this dtb if that's the case
+>
+> stop booting / "best guess match"
+>
+> ?
+>
+> [...]
 
-Can a corresponding document be improved accordingly?
+Yes, But the "if" checking would have preference in place.
+The preference logic would look something like this,
 
-Centralized exiting of functions
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/coding-style.rst?h=3Dv6.8-rc1#n526
+First will check for SoC-ID, if we have an exact match for SoC-ID then 
+will proceed for board-ID match. Otherwise the DT would be discarded.
+Once (exact) board-ID found, will proceed for subtype , pmic and so on.
+Exact match and best match logic is used. Parameters like SoC-ID, 
+board-ID are required to be best matched. Other few fields follow best 
+match logic and best of the DT can be picked.
 
-Do you find a related information source helpful?
-https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C.+Consider+using+a+go=
-to+chain+when+leaving+a+function+on+error+when+using+and+releasing+resourc=
-es
+>> +#define QCOM_BOARD_ID_MTP		0x8
+>> +#define QCOM_BOARD_ID_DRAGONBOARD	0x10
+>> +#define QCOM_BOARD_ID_QRD		0x11
+>> +#define QCOM_BOARD_ID_HDK		0x1F
+>> +#define QCOM_BOARD_ID_ATP		0x21
+>> +#define QCOM_BOARD_ID_IDP		0x22
+>> +#define QCOM_BOARD_ID_SBC		0x24
+>> +#define QCOM_BOARD_ID_QXR		0x26
+>> +#define QCOM_BOARD_ID_CRD		0x28
+> Missing ADP/QCP/Ride (if they're separate)
 
-Regards,
-Markus
+Sure, will update. Would need to work with teams.
+
+Thanks,
+Amrit.
+
 
