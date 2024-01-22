@@ -1,142 +1,174 @@
-Return-Path: <linux-kernel+bounces-32685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E5E7835EE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:01:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B510A835EDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7B6BB245D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:00:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D58D1F2578A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E8739FE2;
-	Mon, 22 Jan 2024 10:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bg9ZtpNZ"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C9A3A1A6;
-	Mon, 22 Jan 2024 10:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83343A1A0;
+	Mon, 22 Jan 2024 10:00:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3085739FF9;
+	Mon, 22 Jan 2024 09:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705917625; cv=none; b=Z5qyoEXYGPytyTLVNyguX5GGw1gaiEskLkRQvMpN7v1ILS+FgSAS/vzrlTjlubrJEMe5GTdVQx7qF/ftrluz7dTPF6xxmmkkHYtHowJDgbzbiHTMR2FrALoyR6Kv5eQdkso9rDu4Cxz1neeoKPAUL3SaSQYbKFDOcblWamX6+3s=
+	t=1705917601; cv=none; b=NgIvv+NZ9ZfEIpKQbF+0baJDZTWK8kAPSVjE60l3LdLzJ9Dp9DhRS2cLM0M8hHSJGqmBY15piAP86xe8V0sQF+Nhn3T72sXsh405XvTZJx09+gFtz5vrohVc9EuCh+N41jL7Mc6UPbmlAZD5yRtSoi4W4Maam/pd1n/O8gyPCng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705917625; c=relaxed/simple;
-	bh=49AJX6VY7FPav/J8GIc6IM811dRWTTUZp5hEb+YsiPQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c8pgpwmwEJp/enjgD2xS0VK79w9uNJIQ3YzcUY3RTDBOatERhVlT2rLzoWqx1FeE0+oS66lU5emN3mnWTs8TeaAvZpgf25rrQdruEv2rDZTdhMILpUnEHMVmUU7IiIQG8s+QASKJmfX5jt07jv8ab8ZXPikGQhGyBxcQGSsbuV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bg9ZtpNZ; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40M9simF002469;
-	Mon, 22 Jan 2024 10:00:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=7kmzkWN5X0l8xbR7Pr6B24aKphmRnA8uemNbAU9NJo0=;
- b=bg9ZtpNZzSbMf+tN/3Lgq9EsHWLE38BsE/7QAote1yCTvLTxGMNfulkY8xRAYwtxv6yQ
- 4ommGWgTrDp4A3WQaP3o99ncr5ZnKpx6ramlfySTFOR+lhjMrXIa0OVrQJdFRYQlkA9i
- 4JTzq0AkjgMxoyOaerQWdzdKlhxvbVV6OjTzDcvrtMnBp1i9phvg7JaJAROC0P5rjvTX
- d9OrRFV+oBDjoVn15xovDcvjiam20ee09xXzAQrywc7zl1+H72KBZjyBas3l80qD0PgD
- YoCBrUkI9CBSvsRF9hS0Q48F99qKFnpRBf9rEiIGxMcK2/dMdnUitPgU2QjGW3cPDvB1 Iw== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vrj31aa7j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 10:00:11 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40M9u550028287;
-	Mon, 22 Jan 2024 10:00:11 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vru7271m5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 10:00:11 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40MA08iW44892604
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 22 Jan 2024 10:00:08 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5F1292004F;
-	Mon, 22 Jan 2024 10:00:08 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 25B7720049;
-	Mon, 22 Jan 2024 10:00:08 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 22 Jan 2024 10:00:08 +0000 (GMT)
-From: Thomas Richter <tmricht@linux.ibm.com>
-To: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, namhyung@kernel.org
-Cc: svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH v2] perf test: Fix test case perf script tests on s390
-Date: Mon, 22 Jan 2024 10:59:55 +0100
-Message-Id: <20240122095955.2647989-1-tmricht@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1705917601; c=relaxed/simple;
+	bh=uwfu2Su/sc/XbQSWeZAeuqMRHd9Dh7GQ1+M4uoI5ZG0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q/CCFqPeJsdgytBLGgI3ZZiGC0PRo4XqmtAqoh3Jgu99kCL8cS4NeMkB6CBDamFVhMBOYv7jvc+7KC9I3W2TiiNWx95Ub7K+lgG85VNhG7uP1CZZKzMSgh0N4ALzkFAYQgKCaFRcYa2Ce167QIj7wSPpdHvjd3D9rJ9SqYfvnUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 762DDDA7;
+	Mon, 22 Jan 2024 02:00:44 -0800 (PST)
+Received: from [10.1.33.151] (XHFQ2J9959.cambridge.arm.com [10.1.33.151])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95F453F5A1;
+	Mon, 22 Jan 2024 01:59:57 -0800 (PST)
+Message-ID: <06d796a1-1ae2-4f97-8fd6-0e3529ae2799@arm.com>
+Date: Mon, 22 Jan 2024 09:59:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: T3_BgMBRh7sdgEBunwKuIPBJ57eIwhvi
-X-Proofpoint-ORIG-GUID: T3_BgMBRh7sdgEBunwKuIPBJ57eIwhvi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-21_04,2024-01-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- lowpriorityscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- spamscore=0 priorityscore=1501 impostorscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401220070
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/mm: run_vmtests.sh: add missing tests
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
+Cc: kernel@collabora.com, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240116090641.3411660-1-usama.anjum@collabora.com>
+ <ffdba8c4-f1a2-4141-a3d4-0c85dfea6fef@arm.com>
+ <e3b2c142-aaae-481d-8206-5e8f374fd37e@collabora.com>
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <e3b2c142-aaae-481d-8206-5e8f374fd37e@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-In linux next repo, test case 'perf script tests' fails on s390.
-The root case is a command line invocation of perf record with
-call-graph information. On s390 only dwarf formatted call-graphs
-are supported and only on software events.
+On 22/01/2024 08:46, Muhammad Usama Anjum wrote:
+> On 1/19/24 9:09 PM, Ryan Roberts wrote:
+>> Hi Muhammad,
+>>
+>> Afraid this patch is causing a regression on our CI system when it turned up in
+>> linux-next today. Additionally, 2 of thetests you have added are failing because
+>> the scripts are not exported correctly...
+> Andrew has dropped this patch for now.
+> 
+>>
+>> On 16/01/2024 09:06, Muhammad Usama Anjum wrote:
+>>> Add missing tests to run_vmtests.sh. The mm kselftests are run through
+>>> run_vmtests.sh. If a test isn't present in this script, it'll not run
+>>> with run_tests or `make -C tools/testing/selftests/mm run_tests`.
+>>>
+>>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>>> ---
+>>>  tools/testing/selftests/mm/run_vmtests.sh | 3 +++
+>>>  1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+>>> index 246d53a5d7f2..a5e6ba8d3579 100755
+>>> --- a/tools/testing/selftests/mm/run_vmtests.sh
+>>> +++ b/tools/testing/selftests/mm/run_vmtests.sh
+>>> @@ -248,6 +248,9 @@ CATEGORY="hugetlb" run_test ./map_hugetlb
+>>>  CATEGORY="hugetlb" run_test ./hugepage-mremap
+>>>  CATEGORY="hugetlb" run_test ./hugepage-vmemmap
+>>>  CATEGORY="hugetlb" run_test ./hugetlb-madvise
+>>> +CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh
+>>> +CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh
+>>
+>> These 2 tests are failing because the test scripts are not exported. You will
+>> need to add them to the TEST_FILES variable in the Makefile.
+> This must be done. I'll investigate even after adding them if these scripts
+> are robust enough to pass.
 
-Change the command line parameters fors s390.
+Great thanks!
 
-Output before:
- # perf test 89
- 89: perf script tests              : FAILED!
- #
+> 
+>>
+>>> +CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
+>>
+>> The addition of this test causes 2 later tests to fail with ENOMEM. I suspect
+>> its a side-effect of marking the hugetlbs as hwpoisoned? (just a guess based on
+>> the test name!). Once a page is marked poisoned, is there a way to un-poison it?
+>> If not, I suspect that's why it wasn't part of the standard test script in the
+>> first place.
+> hugetlb-read-hwpoison failed as probably the fix in the kernel for the test
+> hasn't been merged in the kernel. The other tests (uffd-stress) aren't
+> failing on my end and on CI [1][2]
 
-Output after:
- # perf test 89
- 89: perf script tests              : Ok
- #
+To be clear, hugetlb-read-hwpoison isn't failing for me, its just causing the
+subsequent tests uffd-stress tests to fail. Both of those subsequent tests are
+allocating hugetlbs so my guess is that since this test is marking some hugetlbs
+as poisoned, there are no longer enough for the subsequent tests.
 
-Fixes: 0dd5041c9a0e ("perf addr_location: Add init/exit/copy functions")
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-Cc: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/shell/script.sh | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> [1] https://lava.collabora.dev/scheduler/job/12577207#L3677
+> [2] https://lava.collabora.dev/scheduler/job/12577229#L4027
+> 
+> Maybe its configurations issue which is exposed now. Not sure. Maybe
+> hugetlb-read-hwpoison is changing some configuration and not restoring it.
 
-diff --git a/tools/perf/tests/shell/script.sh b/tools/perf/tests/shell/script.sh
-index 5ae7bd0031a8..2973adab445d 100755
---- a/tools/perf/tests/shell/script.sh
-+++ b/tools/perf/tests/shell/script.sh
-@@ -54,7 +54,14 @@ def sample_table(*args):
- def call_path_table(*args):
-     print(f'call_path_table({args}')
- _end_of_file_
--	perf record -g -o "${perfdatafile}" true
-+	case $(uname -m)
-+	in s390x)
-+		cmd_flags="--call-graph dwarf -e cpu-clock";;
-+	*)
-+		cmd_flags="-g";;
-+	esac
-+
-+	perf record $cmd_flags -o "${perfdatafile}" true
- 	perf script -i "${perfdatafile}" -s "${db_test}"
- 	echo "DB test [Success]"
- }
--- 
-2.43.0
+Well yes - its marking some hugetlb pages as HWPOISONED.
+
+> Maybe your system has less number of hugetlb pages.
+
+YEs probably; What is hugetlb-read-hwpoison's requirement for size and number of
+hugetlb pages? the run_vmtests.sh script allocates the required number of
+default-sized hugetlb pages before running any tests (I guess this value should
+be increased for hugetlb-read-hwpoison's requirements?).
+
+Additionally, our CI preallocates non-default sizes from the kernel command line
+at boot. Happy to increase these if you can tell me what the new requirement is:
+
+hugepagesz=1G hugepages=0:2,1:2 hugepagesz=32M hugepages=0:2,1:2
+default_hugepagesz=2M hugepages=0:64,1:64 hugepagesz=64K hugepages=0:2,1:2
+
+Thanks,
+Ryan
+
+> 
+>>
+>> These are the tests that start failing:
+>>
+>> # # ------------------------------------
+>> # # running ./uffd-stress hugetlb 128 32
+>> # # ------------------------------------
+>> # # nr_pages: 64, nr_pages_per_cpu: 8
+>> # # ERROR: context init failed (errno=12, @uffd-stress.c:254)
+>> # # [FAIL]
+>> # not ok 18 uffd-stress hugetlb 128 32 # exit=1
+>> # # --------------------------------------------
+>> # # running ./uffd-stress hugetlb-private 128 32
+>> # # --------------------------------------------
+>> # # nr_pages: 64, nr_pages_per_cpu: 8
+>> # # bounces: 31, mode: rnd racing ver poll, ERROR: UFFDIO_COPY error: -12ERROR:
+>> UFFDIO_COPY error: -12 (errno=12, @uffd-common.c:614)
+>> # #  (errno=12, @uffd-common.c:614)
+>> # # [FAIL]
+>>
+>> Quickest way to repo is:
+>>
+>> $ sudo ./run_vmtests.sh -t "userfaultfd hugetlb"
+>>
+>> Thanks,
+>> Ryan
+>>
+>>
+>>>  
+>>>  nr_hugepages_tmp=$(cat /proc/sys/vm/nr_hugepages)
+>>>  # For this test, we need one and just one huge page
+>>
+>>
+> 
 
 
