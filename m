@@ -1,138 +1,221 @@
-Return-Path: <linux-kernel+bounces-32680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE17835ECA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:57:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A049835EC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:57:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 718DA1F22E2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:57:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB6B31C22D6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8469E3A1AA;
-	Mon, 22 Jan 2024 09:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCD139FD5;
+	Mon, 22 Jan 2024 09:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="v25/ui4B"
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b="CoG45rmC"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2059.outbound.protection.outlook.com [40.107.117.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC6139FC8
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705917432; cv=none; b=LH5PP6fjQV1oOpTGgbnftgc+L9gEqoMOuvbDFn5M9LoaABhPHUuYC9ziuSKrtFGYYk28ehvpe2Ysw6Nz16ivrI4r1cD6cGPQzg2S69qtX8HZE5WX/hwF1lk9pj/h9Y7RwpJkuTLCYtVUgSATw9/r4TxV5TXEIFnAnQmOmSnmpyg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705917432; c=relaxed/simple;
-	bh=YkgHXgJDhjgzGUClz+Vy1P/+dt5Hxm+SkSb5hZ8rhgY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YySUMBGzUtBddvU35B0Ikpptg8iHQ+98uujJUpT7gvwv7+guXicH/BjeXp4iepibzNyXy1abxM2FDHj/d4Ngmhn3Dd30MZb52gPT0p+aJ5o3VASwIw0Mbipu/f/Gt+2DTQH+Lbq20iwyDprJaqs5bKC9tdmcO+YL/eqNH9k1cho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=v25/ui4B; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7831b3a48e7so198717385a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 01:57:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705917430; x=1706522230; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2rKc/goBzVwdZogi61XdfYVie6DI5305ZMhUyeoLBnU=;
-        b=v25/ui4B1jVE62i4Exx3jNiqyaaCj6WLSjnqRTfJj72nmVDL5mdz1BMSjHO9ImWdc/
-         TOh99wRWi7iwzfTyz/dg1s+W+/emgHX8f38ZLloZkq53Uxs2QCoddyoBK8s2HvW+Jca/
-         sbmLhIO+frRRtxc/+09OR04qCtaEAto/qDmkGrPBgabdRtxH6gVROonZJelcTs+xzb9H
-         e2Wy7h9utLOtFxESO4HeOQj0BQkgrgjuGLcqhfGYUkgoudp7M3eWBwkKYptiqnZK7VFx
-         WP4Qaz79M5SIK/8sdR5YCrY3RFgNwni/eeXrOCRR0P4Y+635F27jJXdrJRJ0wsKh5OxF
-         K3Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705917430; x=1706522230;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2rKc/goBzVwdZogi61XdfYVie6DI5305ZMhUyeoLBnU=;
-        b=wIiTyuq8r841LOrUKaEgZ+be8jGXYgmW8uk/PwS6wczMA/1+dM1VXlcC+3zn3i81fH
-         dJc7j5570qvwrqh5jHq8pvqw9kZwH2u4NXb2BFKN6KEYyyuM4JeBhCQpLb9fF+sg2OnD
-         BSO51jugD21+RJT9B/0JZgAQeEQQLvV0NlAK10cP65khIVLBH0t7Oik/G7hgneaxYMlB
-         KGQdXp87wNTA9yi27rfgApwQmWKjEdlOP4MoKUUOIS6j8ZPmYx6oWvHLGv48QIcIh9RC
-         jifMsWqhgFpEWdHVg53DcIQMjK+LoPO8jO5rv8F5AZ5aALh6q1d3HS7qorPjRb7rTNJl
-         PYsA==
-X-Gm-Message-State: AOJu0YxjZeQFD1gW/M4lOwQmQ7KNJ3qlwBAuZaojxvTRiujp8J614FsL
-	YRYrLWczIz9uBOp1PV+nnNsy6tivCCLeQKpYg0QXvZ5lkgfB9B4CG2PWdIoJmldEirJBLug6pFk
-	wSh8l+3ffWk+bW0yXsh9L3Eum4+icMQSZ6bXE
-X-Google-Smtp-Source: AGHT+IGYP8VHpM3Oph8CFnz0g/mJ9jSbX248qH2b2vUQpFcyR6bh+yya24MD/KchaFwIIAbaVzmkfJYYsPmNqbQKbCY=
-X-Received: by 2002:a05:6214:20a2:b0:686:1e2:747e with SMTP id
- 2-20020a05621420a200b0068601e2747emr2720892qvd.71.1705917430029; Mon, 22 Jan
- 2024 01:57:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A8C439AF6;
+	Mon, 22 Jan 2024 09:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705917423; cv=fail; b=eNeTxgYbmg49Ub2MiEGiFvEz2qu2F9Oh1OVHSB+qpjw8DrosEiSsMn9CUpJwLvq2JNeY9mhCxQ2sFb3sTgQnWZErjTYHr/tCxHcF8P3QL6LmoKoYxJXCdPrIIpT/dp82kEwgAQicLC8gIijjQrT4otW+uINBhQTKkB6VmbHU1xE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705917423; c=relaxed/simple;
+	bh=Cw9LUkWqLf+p1uKjSB6kqijldO/4Y5vSJRZpg7KwLXU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sla+1Y6rd99LX25SJ1CIM7exLmODWzLZtn58lXwrakE1JOrYsHg8gbi8ptcAbJuc7X62RVNBqPzzPIVrThSN2Tl5beVve+CgWkAHgpKqNU/XPkEjis7h1l7c03wxZR+i5Rs18zVS/UpBpqP70VaTdT4DMN+aZu/QkMSkTp/MKLM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com; spf=pass smtp.mailfrom=nuvoton.com; dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b=CoG45rmC; arc=fail smtp.client-ip=40.107.117.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nuvoton.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kyoArDNsQRO4a2W2AydXCQ3ddJHod+VyiFI1EObjJ/QTaTGQPDSeBGxn5TWEFh1zKRQypZgKj+7Q8KP99PrekZyN9VvMfZMzPEeGUvpGyRULgIFQBtsTtic3z+DB721O8RscBhxrCQu0mBUF6SM8/+dWWc0v3kzD6DJ7E0mOD7uRLVeikPsGsrxHqj3OtyVhW3tBuV41CXNT4v7X/mFeJPt1P8+HZczoJhXJkuphLi2k6pK1sGs3Yf657rlTswk7yiEw5F6AbgPvpeFuCOwt4srs4E0qfqbp3NXCixD84r7vQot7xESeptzKXyffdN70AhHrDaDp+VTw3t/pxA5yqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O7VRYe0I3IM6rlKllm7eKeJGfoggF+J4EvaHVLxshLg=;
+ b=lOcacH9nx6+0+7QFjv9aBcJPf6E7D9GTZTDrvgZHSnBpcBbrjCp85HZLehKYNhX96ud9cKpVmoFj0t3d8lMZijxTvuJk3cRsuFkRQWQTBaiOXU+/bvlFPOYAdINLhabpxosNIIyKD23TI8Jrt+cY4XYZNGmllUUzLEE7LExWyLwrDVqGAx2TgDRddOWShD6hb3Y8bBYyRSxSw7SKKHZxrsIyP4v/17XhUGvJLhB3djMVbb3xXIKoYRavJbK/0nidCKOnRYCRu00n82ywi5jX+ALP/8cBxrFFySOVkwIqRqiwD3b3/NpcaDfiNWtVtpb/uqBrmN5d1cZNkrr1XZwNxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 211.75.126.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O7VRYe0I3IM6rlKllm7eKeJGfoggF+J4EvaHVLxshLg=;
+ b=CoG45rmCSSoPRn3cprBdZ4eQYRatuNt6P8UwQjJThabBs4XSslemOMnbnFxIu5ODSVFz7pMWwKm/ftW7GeFmWrMxUH1iy8z1TUnrZfuoF11h1P/qBF3N1F9VkWaAmjacGgkp566qjdh0c7iWT8DHamD6ZVV412HhOK/paZRz5R0=
+Received: from SI1PR02CA0044.apcprd02.prod.outlook.com (2603:1096:4:1f6::6) by
+ SI2PR03MB7261.apcprd03.prod.outlook.com (2603:1096:4:1bd::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.32; Mon, 22 Jan 2024 09:56:56 +0000
+Received: from SG2PEPF000B66CB.apcprd03.prod.outlook.com
+ (2603:1096:4:1f6:cafe::71) by SI1PR02CA0044.outlook.office365.com
+ (2603:1096:4:1f6::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.31 via Frontend
+ Transport; Mon, 22 Jan 2024 09:56:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nuvoton.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
+Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
+ SG2PEPF000B66CB.mail.protection.outlook.com (10.167.240.24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Mon, 22 Jan 2024 09:56:55 +0000
+Received: from NTHCCAS02.nuvoton.com (10.1.9.121) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 22 Jan
+ 2024 17:56:53 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS02.nuvoton.com
+ (10.1.9.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 22 Jan
+ 2024 17:56:53 +0800
+Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Mon, 22 Jan 2024 17:56:53 +0800
+From: Seven Lee <wtli@nuvoton.com>
+To: <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<robh+dt@kernel.org>, <conor+dt@kernel.org>, <YHCHuang@nuvoton.com>,
+	<KCHSU0@nuvoton.com>, <CTLIN0@nuvoton.com>, <SJLIN0@nuvoton.com>,
+	<wtli@nuvoton.com>, <scott6986@gmail.com>, <supercraig0719@gmail.com>,
+	<dardar923@gmail.com>
+Subject: [PATCH 1/2] ASoC: dt-bindings: Added schema for "nuvoton,nau8325"
+Date: Mon, 22 Jan 2024 17:56:49 +0800
+Message-ID: <20240122095650.60523-1-wtli@nuvoton.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118110022.2538350-1-elver@google.com>
-In-Reply-To: <20240118110022.2538350-1-elver@google.com>
-From: Alexander Potapenko <glider@google.com>
-Date: Mon, 22 Jan 2024 10:56:31 +0100
-Message-ID: <CAG_fn=Wdkv8-=X1j-Rh8u-zhRCW9oY1GQ-=C3n=9eic6Vyr=iQ@mail.gmail.com>
-Subject: Re: [PATCH] mm, kmsan: fix infinite recursion due to RCU critical section
-To: Marco Elver <elver@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com, 
-	Charan Teja Kalla <quic_charante@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CB:EE_|SI2PR03MB7261:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f51fdcc-5198-4e59-059d-08dc1b3077b6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	zAG2AztBZ4c6e56rfSAm0FQ1F4C2VE6UokutDdp1xqUYjp61I34JWU0hMVHV0KdijCqCS70p8LmFZJgXNKcuoHD6KIbIrqZXT3hTGBm5Bm/cJBZMhklFdACr2AEI/VEArpJoT9hQtmi0/14CyEi9FY2ix4OR0yunY0tcUVtnKzNCfRd1kqb7YX3wOW7d42yo8wwXyDNnPBbC5QwNdldKBA83wMOn7teJ4pB91kcuKijnFevEtpwF9mLQmj7iPWXIvnFoz97PvkmepjGUnKAOKlE5nD1gmFR4NpA6o1gEVIoPBhkvPEkrS+4sfcLBQvj/U9XRpXbGas0sl5FfOZ/ZKZdyZ0VhJcs6rTtbRyWd8Ab4117911qs/L2j5ChI9LWVWDfSeFBRHX+pp5shyCqPD879FY5QVTpACJATjprPOtos95Hk8VoO3qlwvaA9FX6LPxLIekSQBPVJXwebOLc8i14uk24OWDRb8U5uGjkWEQJcG/O6sP+Xf2derFJzJRvLp7Db33fc64CcF4M9DyYF3a7hkLIFpxULNpklY2ur8g8LDCgjhY1KD/ISGDYqC3kE7wcfn2eCns4M5NYxCY/wQrjKt7zk4+YqjlvEQVPtkqEqaLaAerWv73dPvvQyY+dfoEVxdcs7OxefU4oHko1IPgtS7Ct1gld9Vf/deIzYeOBhiUFXdesxkjX39t7YHQG7+ngT6WW5H7kfwUWRsfRF0as5z6WAE8Sw53zfc7DxZhU=
+X-Forefront-Antispam-Report:
+	CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(82310400011)(40470700004)(36840700001)(46966006)(40480700001)(40460700003)(336012)(6666004)(426003)(2616005)(1076003)(26005)(356005)(82740400003)(86362001)(81166007)(36756003)(41300700001)(83380400001)(36860700001)(47076005)(5660300002)(7416002)(2906002)(478600001)(966005)(70206006)(4326008)(8936002)(8676002)(70586007)(316002)(54906003)(6916009);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 09:56:55.9471
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f51fdcc-5198-4e59-059d-08dc1b3077b6
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SG2PEPF000B66CB.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR03MB7261
 
-On Thu, Jan 18, 2024 at 12:00=E2=80=AFPM Marco Elver <elver@google.com> wro=
-te:
->
-> Alexander Potapenko writes in [1]: "For every memory access in the code
-> instrumented by KMSAN we call kmsan_get_metadata() to obtain the
-> metadata for the memory being accessed. For virtual memory the metadata
-> pointers are stored in the corresponding `struct page`, therefore we
-> need to call virt_to_page() to get them.
->
-> According to the comment in arch/x86/include/asm/page.h,
-> virt_to_page(kaddr) returns a valid pointer iff virt_addr_valid(kaddr)
-> is true, so KMSAN needs to call virt_addr_valid() as well.
->
-> To avoid recursion, kmsan_get_metadata() must not call instrumented
-> code, therefore ./arch/x86/include/asm/kmsan.h forks parts of
-> arch/x86/mm/physaddr.c to check whether a virtual address is valid or
-> not.
->
-> But the introduction of rcu_read_lock() to pfn_valid() added
-> instrumented RCU API calls to virt_to_page_or_null(), which is called by
-> kmsan_get_metadata(), so there is an infinite recursion now.  I do not
-> think it is correct to stop that recursion by doing
-> kmsan_enter_runtime()/kmsan_exit_runtime() in kmsan_get_metadata(): that
-> would prevent instrumented functions called from within the runtime from
-> tracking the shadow values, which might introduce false positives."
->
-> Fix the issue by switching pfn_valid() to the _sched() variant of
-> rcu_read_lock/unlock(), which does not require calling into RCU. Given
-> the critical section in pfn_valid() is very small, this is a reasonable
-> trade-off (with preemptible RCU).
->
-> KMSAN further needs to be careful to suppress calls into the scheduler,
-> which would be another source of recursion. This can be done by wrapping
-> the call to pfn_valid() into preempt_disable/enable_no_resched(). The
-> downside is that this sacrifices breaking scheduling guarantees;
-> however, a kernel compiled with KMSAN has already given up any
-> performance guarantees due to being heavily instrumented.
->
-> Note, KMSAN code already disables tracing via Makefile, and since
-> mmzone.h is included, it is not necessary to use the notrace variant,
-> which is generally preferred in all other cases.
->
-> Link: https://lkml.kernel.org/r/20240115184430.2710652-1-glider@google.co=
-m [1]
-> Reported-by: Alexander Potapenko <glider@google.com>
-> Reported-by: syzbot+93a9e8a3dea8d6085e12@syzkaller.appspotmail.com
-> Signed-off-by: Marco Elver <elver@google.com>
-> Cc: Charan Teja Kalla <quic_charante@quicinc.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-Tested-by: Alexander Potapenko <glider@google.com>
+Added a DT schema for describing nau8325 audio amplifiers.
+
+Signed-off-by: Seven Lee <wtli@nuvoton.com>
+---
+ .../bindings/sound/nuvoton,nau8325.yaml       | 82 +++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
+new file mode 100644
+index 000000000000..9105985357aa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
+@@ -0,0 +1,82 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nuvoton,nau8325.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NAU8325 audio Amplifier
++
++maintainers:
++  - Seven Lee <WTLI@nuvoton.com>
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: nuvoton,nau8325
++
++  reg:
++    maxItems: 1
++
++  nuvoton,vref-impedance:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      VREF impedance selection.
++    enum:
++      - 0 # Open
++      - 1 # 25kOhm
++      - 2 # 125kOhm
++      - 3 # 2.5kOhm
++    default: 2
++
++  nuvoton,dac-vref:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      DAC Reference Voltage Setting.
++    enum:
++      - 0 # VDDA
++      - 1 # VDDA*1.5/1.8V
++      - 2 # VDDA*1.6/1.8V
++      - 3 # VDDA*1.7/1.8V
++    default: 2
++
++  nuvoton,alc-enable:
++    description:
++      Enable digital automatic level control (ALC) function.
++    type: boolean
++
++  nuvoton,clock-detection-disable:
++    description:
++      When clock detection is enabled, it will detect whether MCLK
++      and FS are within the range. MCLK range is from 2.048MHz to 24.576MHz.
++      FS range is from 8kHz to 96kHz.
++    type: boolean
++
++  nuvoton,clock-det-data:
++    description:
++      Request clock detection to require 2048 non-zero samples before enabling
++      the audio paths. If set then non-zero samples is required, otherwise it
++      doesn't matter.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        codec@21 {
++            compatible = "nuvoton,nau8325";
++            reg = <0x21>;
++            nuvoton,vref-impedance = <2>;
++            nuvoton,dac-vref = <2>;
++            nuvoton,alc-enable;
++            nuvoton,clock-det-data;
++        };
++    };
+-- 
+2.25.1
+
 
