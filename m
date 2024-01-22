@@ -1,133 +1,90 @@
-Return-Path: <linux-kernel+bounces-33172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81FCF8365B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:43:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2605183659D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:39:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0DA7B2585E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:38:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D60E12829CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB993D972;
-	Mon, 22 Jan 2024 14:38:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42CA93D567;
+	Mon, 22 Jan 2024 14:39:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="O8TnIYlY"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="muiakLok"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9083D57F;
-	Mon, 22 Jan 2024 14:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F28B3D550;
+	Mon, 22 Jan 2024 14:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705934297; cv=none; b=Sw/NWG+FWyvssg0tBLxW1k8YwB0Cyq9QBVKpFcoEncKQOEqbN6H6HfPVWz0sel6z56S/LO7yEF9z37RryYDiIEqFyzbGGmrxsLR6RhPeAhOvTK8LxmxVozeahyhcD1o3lhlw6oXLrl38dM9HCgyELOV9pZ5QZG3cKTYykGXNBM0=
+	t=1705934344; cv=none; b=T6fgjD6f9sRmARHiNejP43EqbJxgbzMh4kyyUUUtpN5uA8kH7oiH8Ld0pQuDdtrn5JT1QHLlrC/WFc/fgwXe0lxMfE8a1oBerjQMJRFgXrC2YTHk9XB0G1o5Znd8NlhVmDSuu1vHECGVYbPXfHFlRImWJOdfc8Dp5aBEVAqmMc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705934297; c=relaxed/simple;
-	bh=Glti8t+ZZpqebwMo9dTlaK0QzZUNIArYm7q98n5rPbc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PtQwJy3fX2CLvghWxKmggdor2g4173Mq1cUa5/qc9lrBFLh9mQo0feA3n7+6c0NXuGfV9Z4ffyNI/Q80AS5L/8GtrG/8oTspS9ugFaFi8Z4DDuvhaoToU35P/6G6snnBlu4IztTrkXYgf3LuncvChSXN5USVgn8Qk6IGOwxWwUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=O8TnIYlY; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40MDB74L027059;
-	Mon, 22 Jan 2024 14:37:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=9eZRduKNvGVeB9aJIyquvVMwc8fAl3YaIxTQDqo1WTg=;
- b=O8TnIYlYGZfyYQL8P3i0C8yxN4DRQvasrWwLr0b4OqgDmaI75iRcqmBnf3Lf51wHvqTx
- prcbnFbRJj/s9eg5rNrRlh1L8zxgBRYDnsrWnsOMQb6WOpQpZeEGa5BaiKxu08FOIGPd
- QkER6Y2zHzffdGfKmCzXaCJPvrMb/YP5ZFZF4ygTpjOoKoCiuuunx22Z6KgtXoJL0FWn
- Q0oWbhDZ3Ym/d9Jfq7CnIkpqpx26B8hnUROolFW2Z/1WHG2mgAmyeVDApW2U+F2uNakq
- XEoPnP5uIZJIK1JrBLPQkoHLvGyr8wy/3+1g6JK3SQMssybZulRVfGyZ/LuZwYEKE+Lo GQ== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vsrycjk32-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 14:37:40 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40MBSVlX025636;
-	Mon, 22 Jan 2024 14:37:39 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vrsgnruju-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 14:37:39 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40MEbcMb18285072
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 22 Jan 2024 14:37:38 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 527DB58055;
-	Mon, 22 Jan 2024 14:37:38 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2C46F5804B;
-	Mon, 22 Jan 2024 14:37:35 +0000 (GMT)
-Received: from [9.43.53.45] (unknown [9.43.53.45])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 22 Jan 2024 14:37:34 +0000 (GMT)
-Message-ID: <218f08f9-bc12-47db-aa04-c2058c901986@linux.ibm.com>
-Date: Mon, 22 Jan 2024 20:07:33 +0530
+	s=arc-20240116; t=1705934344; c=relaxed/simple;
+	bh=YSUNPwoWfGMmfWKPSAXl0wleuODMangCwpYPqnFnaIs=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=gDDP/Kh9qOwpzx5lzfsBhuh4UdnvUkk8BqTtQ31lRnCzbjNByBacRWzaSDhpJ6qbtoQfjeepSLitLgpgx2BSisYSLm4BqmJdye27RyEF9+a90hS9jGhqtUBG93x1q0dXNVpkFpot8D3mNP+91CTGFlF5nG9kTjSun8nJJHPzsYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=muiakLok; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7403FC43394;
+	Mon, 22 Jan 2024 14:39:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705934343;
+	bh=YSUNPwoWfGMmfWKPSAXl0wleuODMangCwpYPqnFnaIs=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=muiakLok3r2D9h9GKyLHPrNJKoRdokMJIFJxNmqszHWRjHTp7xC5ca0Cu0xSNhuYi
+	 kBP/mTReYLgN0y8xPQ7tJCOfCALHuGk077uXwQeHXPB9GaZY8kAyapfllCukxEqhZu
+	 WnT4uQLE9k3fOs8wR069QbH4uqTmHxhYaSusahVkKtfg1lboxIfroMbHkyRRvSY/Nh
+	 bTXeFxFLU5BUa5V9nnZU8/jZGp3i+W/gNJfEZyvA99AV+fipj3PBXWa5lTfSPCRcap
+	 7cpVDi5l1XvTtwKgTnmgWyqwaWsEJK9zmGNlWEbwOvTF5qq69wW0mhjAmbU9qu4XYD
+	 c+KM8nOAmbHlA==
+From: Kalle Valo <kvalo@kernel.org>
+To: Johan Hovold <johan@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,  Jeff Johnson
+ <quic_jjohnson@quicinc.com>,  ath11k@lists.infradead.org,
+  linux-wireless@vger.kernel.org,  linux-kernel@vger.kernel.org
+Subject: Re: ath11k: checking RCU usage
+References: <20231019153115.26401-1-johan+linaro@kernel.org>
+	<87o7goxget.fsf@kernel.org> <ZTfgJCBxsNv3bVjv@hovoldconsulting.com>
+	<87zfx98r6a.fsf_-_@kernel.org> <Za5pOIkQ0SN2XzHr@hovoldconsulting.com>
+	<Za5124pntbOOtURc@hovoldconsulting.com>
+Date: Mon, 22 Jan 2024 16:39:00 +0200
+In-Reply-To: <Za5124pntbOOtURc@hovoldconsulting.com> (Johan Hovold's message
+	of "Mon, 22 Jan 2024 15:04:11 +0100")
+Message-ID: <87bk9d301n.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/3] fs: remove duplicate ifdefs
-To: Chandan Babu R <chandanbabu@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au, mingo@kernel.org, peterz@infradead.org,
-        anton@tuxera.com
-References: <20240118080326.13137-1-sshegde@linux.ibm.com>
- <20240118080326.13137-3-sshegde@linux.ibm.com>
- <87cyttedjj.fsf@debian-BULLSEYE-live-builder-AMD64>
-Content-Language: en-US
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <87cyttedjj.fsf@debian-BULLSEYE-live-builder-AMD64>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: wwsiLOWQFOWpM58VonwYO5JiFtGQQtRe
-X-Proofpoint-GUID: wwsiLOWQFOWpM58VonwYO5JiFtGQQtRe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-22_05,2024-01-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
- impostorscore=0 mlxscore=0 spamscore=0 adultscore=0 mlxlogscore=620
- bulkscore=0 priorityscore=1501 lowpriorityscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401220099
+Content-Type: text/plain
 
+Johan Hovold <johan@kernel.org> writes:
 
+> On Mon, Jan 22, 2024 at 02:10:17PM +0100, Johan Hovold wrote:
+>> On Sat, Jan 13, 2024 at 12:26:53PM +0200, Kalle Valo wrote:
+>
+>> > I just found out that sparse has __must_hold():
+>> > 
+>> > https://lore.kernel.org/linux-wireless/87sf31hhfp.fsf@kernel.org/
+>> > 
+>> > That looks promising, should we start using that in ath11k and ath12k to
+>> > check our RCU usage?
+>> 
+>> I see that Johannes already commented on this in the thread above.
+>> 
+>> I'm pretty sure smatch can't be used for this.
+>
+> I meant "sparse"...
 
-On 1/22/24 6:20 PM, Chandan Babu R wrote:
-> On Thu, Jan 18, 2024 at 01:33:25 PM +0530, Shrikanth Hegde wrote:
->> when a ifdef is used in the below manner, second one could be considered as
->> duplicate.
->>
->> ifdef DEFINE_A
->> ...code block...
->> ifdef DEFINE_A
->> ...code block...
->> endif
->> ...code block...
->> endif
->>
->> There are few places in fs code where above pattern was seen.
->> No functional change is intended here. It only aims to improve code
->> readability.
->>
-> 
-> Can you please post the xfs changes as a separate patch along with Darrick's
-> RVB tag? This will make it easy for me to apply the resulting patch to the XFS
-> tree.
+Yeah, that was a disappointment. I should have tested it first :)
 
-Ok. will split the fs patches into two and send v2 soon. 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Thanks.
-
-> 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
