@@ -1,136 +1,88 @@
-Return-Path: <linux-kernel+bounces-33128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 217FB836503
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:05:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D73F836510
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:07:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1F0FB27516
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:04:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D05A01C235F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9485E3E489;
-	Mon, 22 Jan 2024 14:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F2B3D3BB;
+	Mon, 22 Jan 2024 14:04:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QnJRey3F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CzEHrh1l"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDB63E476
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202DD3D388;
+	Mon, 22 Jan 2024 14:03:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705932153; cv=none; b=LhgHAtIFXUbHw1BmkNm4/etPjeXzburZOs07GkoYSamrvNttkFRn79zFybWrQ4IDEOE+UWnZHGesw+e3KXjfDQDAbXYoNRPt0h/d/hc2Wck+nMmcRTypnZCtFvreeXlaEZedIHkVouecW0+yySVdw8uG/bLR1YmA1qTD4Y6W/4g=
+	t=1705932240; cv=none; b=nZtjgkxnRMqcsfLeBOsv+54B+RcZ5vaYO+PhxnuecdCD51PU/yh/sCwQ7/94YfTCW1GzEQwQqgIs55dbrXwsI9jGIP+MTIU9VNKgs6L4xvNRz7PtfZzj/vyPrLDMppF1Fa1SqwvhX2WMJSEOQBzMbqhBTqnvdpNESDuPzo7PBzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705932153; c=relaxed/simple;
-	bh=7tiMOZSQLb1z/spDB4FPLEENtPIT2Dt9gKufpl4mKys=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=F9ruBwsw66HEuscCV6kXliDynyDRFyjc42lvPjwC+7QzDRIkFUmi3Ebr8aWGLoXSdlinGkrpL5mtpsa1rMfDhQCzYIQx/H4dEe2dN3XPPWn129W/wG6iUbDqD04UQzMZUiwQNsLLNdgbIFcLQMw/euSMZBZ5TGey7sLbeDwcgDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QnJRey3F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C0FBC43143;
-	Mon, 22 Jan 2024 14:02:33 +0000 (UTC)
+	s=arc-20240116; t=1705932240; c=relaxed/simple;
+	bh=uB+xAUnhOKylzIpbYFxEwD5Rje9Cwg6aWG5W9GJI7Cs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=irxmVM/1IGY1lHemNmiesYhhfm/1XjBzQZfWO3gdr47LTq8MzrgB5w2IS0NsXmJoVxywI1VR/G2Md+R/vDNarhz6gdt6owkosCIoGCpZhA3nay1eQIDZz69NhoyFBkA9DZuS8Cu/izaO9scs0jCPzhuFcVsv4nN/P5izMXC0jmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CzEHrh1l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ADDCC433F1;
+	Mon, 22 Jan 2024 14:03:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705932153;
-	bh=7tiMOZSQLb1z/spDB4FPLEENtPIT2Dt9gKufpl4mKys=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QnJRey3FVmS3J/JBWJ+ZyAeRBCCIhuc/p0CaRqEx0cJCO2hjELsI8+HVDyDnfe31W
-	 TEJYA1l45p6NWzMJfJRQkkpyXd35CZSqRZEaMncIpt/y03MGqqn/2aAcAFAqDtmH1q
-	 MSig1zTB4mRa8vLx5+N+qGpHkxpvtwKcc/lYHBa2qwz7wcegrId1zKj6fMfdX4niNR
-	 X52Z5seyij11UDz96hDcCy/udl/ru1hEZQdGGZNACwHnKIHzgBHsqxBX3K+h03biOR
-	 LWPizV66/CmjPeaJbsp8zf01a/5j4r6uQzhhgylXQZb6Pm1hegDMfYk6vMsfRV7m/3
-	 K4fVpoBNT0fqg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rRusg-00DbLn-Ld;
-	Mon, 22 Jan 2024 14:02:30 +0000
-Date: Mon, 22 Jan 2024 14:02:29 +0000
-Message-ID: <86r0i98o0a.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Tangnianyao <tangnianyao@huawei.com>
-Cc: <tglx@linutronix.de>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<guoyang2@huawei.com>,
-	<wangwudi@hisilicon.com>
-Subject: Re: [PATCH] irqchip/gic-v4.1:Check whether indirect table is supported in allocate_vpe_l1_table
-In-Reply-To: <5de3da53-9c0d-2a2d-876b-2181e540fa2f@huawei.com>
-References: <20240122160607.1078960-1-tangnianyao@huawei.com>
-	<86sf2p91zt.wl-maz@kernel.org>
-	<5de3da53-9c0d-2a2d-876b-2181e540fa2f@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1705932239;
+	bh=uB+xAUnhOKylzIpbYFxEwD5Rje9Cwg6aWG5W9GJI7Cs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CzEHrh1lPdFqtVb9l+WgSxQUnjB7Aw6g1D1N9dKatukMp6j8UbcCiZDJsth8RLU/u
+	 G73PtI+HjAQsBN7eW9AjxM+QyiGiD35Ny449HnyBltZc6FV4QIZcVS5KH6vWWl3W6x
+	 gyAIh8znB+E3vF6UJlPPFq0gaaITQd7E8zmf40EjDv3RVrYoCpgnj5hewia4Huh/t7
+	 9U34BJhmnQsdGnAfs3p6MAycc/3hGrbTpInJ6fMxHf8qGTAD15XtYqdBQmBi1Pu+9d
+	 106XbGZ4nC7sxWHW8XeBmfVSIkVspsAlJzztUKOUJR71KjL5GWu21GeR0yF7xL78U1
+	 MgwwAVdSWfBwg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rRuuJ-000000008K2-1TOS;
+	Mon, 22 Jan 2024 15:04:11 +0100
+Date: Mon, 22 Jan 2024 15:04:11 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: ath11k: checking RCU usage
+Message-ID: <Za5124pntbOOtURc@hovoldconsulting.com>
+References: <20231019153115.26401-1-johan+linaro@kernel.org>
+ <87o7goxget.fsf@kernel.org>
+ <ZTfgJCBxsNv3bVjv@hovoldconsulting.com>
+ <87zfx98r6a.fsf_-_@kernel.org>
+ <Za5pOIkQ0SN2XzHr@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: tangnianyao@huawei.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, guoyang2@huawei.com, wangwudi@hisilicon.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Za5pOIkQ0SN2XzHr@hovoldconsulting.com>
 
-On Mon, 22 Jan 2024 13:13:09 +0000,
-Tangnianyao <tangnianyao@huawei.com> wrote:
->
-> On 1/22/2024 17:00, Marc Zyngier wrote:
-> > [Fixing the LKML address, which has bits of Stephan's address embedded
-> > in it...]
-> >
-> > On Mon, 22 Jan 2024 16:06:07 +0000,
-> > Nianyao Tang <tangnianyao@huawei.com> wrote:
-> >> In allocate_vpe_l1_table, when we fail to inherit VPE table from other
-> >> redistributors or ITSs, and we allocate a new vpe table for current common 
-> >> affinity field without checking whether indirect table is supported.
-> >> Let's fix it.
-> > Is there an actual implementation that doesn't support the indirect
-> > property for the VPE table? I know this is allowed for consistency
-> > with the original revision of the architecture, but I never expected
-> > an actual GICv4.1 implementation to be *that* bad.
-> >
-> > If that's the case, I'm a bit puzzled/worried.
+On Mon, Jan 22, 2024 at 02:10:17PM +0100, Johan Hovold wrote:
+> On Sat, Jan 13, 2024 at 12:26:53PM +0200, Kalle Valo wrote:
+
+> > I just found out that sparse has __must_hold():
+> > 
+> > https://lore.kernel.org/linux-wireless/87sf31hhfp.fsf@kernel.org/
+> > 
+> > That looks promising, should we start using that in ath11k and ath12k to
+> > check our RCU usage?
 > 
-> I met this problem in a developing implementation and find it's allowed by GIC spec.
-> In such environment,  in a common affinity field with only redistributors and without
-> any ITS in it, forcing its_vpe_id_alloc to allocate a large vpeid(like 65000), and there
-> comes an error message "VPE IRQ allocation failure". It originally comes from
-> allocate_vpe_l2_table, reading GICR_VPROPBASER with GICR_VPROPBASER_4_1_SIZE=1
-> and GICR_VPROPBASER_4_1_INDIRECT=0.
+> I see that Johannes already commented on this in the thread above.
+> 
+> I'm pretty sure smatch can't be used for this.
 
-Really, you should get your HW engineers to fix their GIC
-implementation.  I'm OK with working around this issue for
-completeness, but shipping such an implementation would be a mistake.
+I meant "sparse"...
 
-[...]
-
-> I have another question here. The max number of pages  for GITS_BASER
-> and GICR_VPROPBASER is different here, while GITS_BASER.Size is
-> bit[7:0] with max 256, and GICR_4_1_VPROPBASER.Size is bit[6:0] with max 128.
-> Kernel usually probe ITS basers first and then probe GICR_4_1_VPROPBASER in
-> a common affinity group. Maybe we need to check this in "inherit_vpe_l1_table_from_its" ?
-
-This is because GITS_BASER[] is generic (also works for devices and
-collections), while GICR_VPROPBASER is tailored to the VPE table which
-is usually smaller.
-
-I would expect that GICD_TYPER2.VID reports something that cannot
-result in something going wrong (in this case, the L1 allocation
-cannot be more than 128 pages).
-
-Overall, the kernel isn't a validation suite for the HW, and we expect
-it to have some level of sanity. So if none of this is in shipping HW
-but only in some model with crazy parameters, I don't think we should
-go out of our way to support it.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Johan
 
