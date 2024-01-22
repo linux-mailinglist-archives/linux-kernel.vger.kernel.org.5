@@ -1,129 +1,164 @@
-Return-Path: <linux-kernel+bounces-33835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B666B83707E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:46:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E5B836F3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:12:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D565BB2DFC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:11:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B60C2285AEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51163FE32;
-	Mon, 22 Jan 2024 17:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA5B58AD4;
+	Mon, 22 Jan 2024 17:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NNydHcMc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BfY0v7rd"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD563FE28;
-	Mon, 22 Jan 2024 17:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9581059B69
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945001; cv=none; b=OGRkyB/d1mZ+KeHKbI8cbqbZIN0tVA6F6w1D3MhTNbt0sALGkRjTxj29hYqD1sQOs1QMacZJdVgbI04ZnmXdBzj7F9Od+NDuXlmlATyancA1ZPV8lDPb3hXOuc7HsxgKGVlxpbTS6GnqhMU4kj8fc0QxU8YCgqICtnDKbDYOEkc=
+	t=1705945042; cv=none; b=V2s5J7iVHtWTJHuuCcbdLFo87RODfR7NZGh6Z8i/02vMqYSaxPl4XJRjje6k3MzVCHT+/Z40YJ+eiCi9NLTFMtT7wZgZxkrhFbjheWQvIGga4IVwscWSfyUM1J9xx/CArPfbisnMX5neP0ld6m1tEiQvFdy0r4w5Arz17foXQyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945001; c=relaxed/simple;
-	bh=Do6GH6AFLzNEnY0lWxGGX8GYLxuoxZy9j7mds6kAXtI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=byK4cZRH7HSQx7DPSAFL0xOjk07ujLQcQwFl4egwRPw6q6LiwKHnDgLpo7cR4bzhW8KUI3TX/jk/9LTdWL1G7qjli1pkisODiVmOOK1wTeE/NXNK1J547m8LCs2OT6esc4M6UD9bKwiOXikSu8ApmpsCaMA/dcweztY2uD3xrqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NNydHcMc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E3F0C433F1;
-	Mon, 22 Jan 2024 17:36:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705945000;
-	bh=Do6GH6AFLzNEnY0lWxGGX8GYLxuoxZy9j7mds6kAXtI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NNydHcMc7/QEWugoSfbb5DWGOsn4aK0LhJI/R6p3sYhfcxjihuoQJMsx+CLWiP4Rp
-	 iEjmCVn28bQmDNgNOSCty7gUppgoTTJ5FcGqnSqk1yYwm0oZcfd1F1MaNdFGsQN5Hp
-	 nOCX5iUjak5ju5xd7nDQ0NU4HQAd6ixUqMn6AOJqwyvTzVur3V9rp+ZjN4u3GEOWtT
-	 Ncr++vP9S2Q0J33y/DRBGQpE9xQpt7CTGuOCHMTy8LItf/pZAfCCyDUdEqelwLgOho
-	 QWYZvo5owITvfDI1bS5prylQ1daAB6DvisORykBpQ3ichc1dv+WW5Xe+0c0izoy8Ix
-	 FC+xyP+nhIApA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rRyE7-000000000su-3oVt;
-	Mon, 22 Jan 2024 18:36:52 +0100
-Date: Mon, 22 Jan 2024 18:36:51 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@somainline.org>
-Subject: Re: [PATCH 1/3] arm64: dts: qcom: sc8280xp: Fix PCIe PHY
- power-domains
-Message-ID: <Za6ns-xhN3N-cmIr@hovoldconsulting.com>
-References: <20231227-topic-8280_pcie_dts-v1-0-13d12b1698ff@linaro.org>
- <20231227-topic-8280_pcie_dts-v1-1-13d12b1698ff@linaro.org>
- <ZY6sh8nlEUyEfL0u@hovoldconsulting.com>
- <20231229170334.GA9098@thinkpad>
- <20240122172528.GE3176@thinkpad>
+	s=arc-20240116; t=1705945042; c=relaxed/simple;
+	bh=m8kPm/j1LsdrYXYN+YQDJ7r2rWymD6BOjcIeRkuQtHQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cMyZCcKfnHiKjkY+Eqa3a8Nkzqz+7cz7Z+5iQPVX/h916gxGvkTLJXHjfyIyjBRs1Cmrt56YfukiVTRNR6/XnZSDH1fkFG6xja5W6O4lXT/uV1/0Qqs0X6mu3fdffDVg3cUOwgvLmDkutV5Xv/TbmLj53dAZxHR+zeyvAmurSzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BfY0v7rd; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ccae380df2so33438761fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1705945038; x=1706549838; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=s9fIVUDS4JPjZqnrZBBkM7zrxIcZN1SBne4vcNi0x/g=;
+        b=BfY0v7rdDpiZmmLYYWoDuF0YGEp4K60GdHWqajby71boVGC+Cx4MCVWe2LEGjUDLSF
+         W3PgujIF3cQnKaeevPdoqwDC4p6jFFYyZC89Tcpww66tRVUTjpmO19rM2IVK4h9YavVy
+         9mbH4cJuneSFhXQkUvwKzqhmvxCqSEmMIQKFGPsvDMxGvVVTPzJrdeEn6xME3pz3EIFF
+         XbobTiM2JA5pM8Bov8H4Bd+3voY0WLU95PnjM5MZmHUxd5ZwsYQxSJVmgnb5HCsSfxYt
+         pEbW56jgInd/J19p/bpeQ9bRZEezjH6CP2j93CvjnuNANu4L4357o86RMqe23ct+Si3A
+         rf1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705945038; x=1706549838;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s9fIVUDS4JPjZqnrZBBkM7zrxIcZN1SBne4vcNi0x/g=;
+        b=J2m3jjChfkiHC7ShytuZ1Ap+05x6aaEy9YqaSf9un3hKr82+TRVNbsJk+OoZ+V16en
+         SL9D7+M/N/NUREwzzqkf9GQ47AisSer+QgZas5LkyJauxaui3r8D1vp+rWj6ny7URdZP
+         I52IbUxXzbCLFwZmQzE70pj7vdqHYSpoHiylGrDzXmOxqHGSd1F8v8IzaogWajZEZqHI
+         /t7Ck9cbEfg8qCxE630jvf5/vZ+nKQWZMOZubB83tkcvP6ToQEZKSJ8QJPYh2BJJRfKm
+         gUuxQ9FyzB/lUQKM4jLdgPR7cuvISw8YslzN3K+NKVioW0y6HPpFoTbwakoiukBp6znb
+         9CoQ==
+X-Gm-Message-State: AOJu0Yz9tej+0uTiXqSEXTrkjlf52bJvs5ECSn3VMQv19uI8U/MkNhTc
+	xLgHErwKDGNFMClVlW6EXSuj9MWZbESWtqHvxfqUwfUPFXmIbakK6jZ1167Shuo=
+X-Google-Smtp-Source: AGHT+IGtMtcqWkvVLEoaIeMoHtV2CsA0V+GTi7mnCKwegjzg2YjeUcTa13uMM6pmGiJG+dRvm4j+ag==
+X-Received: by 2002:a2e:a4a7:0:b0:2cc:ceb2:372a with SMTP id g7-20020a2ea4a7000000b002ccceb2372amr1541040ljm.96.1705945038673;
+        Mon, 22 Jan 2024 09:37:18 -0800 (PST)
+Received: from ?IPv6:2804:30c:974:ac00:1b02:e2fd:23be:79bc? ([2804:30c:974:ac00:1b02:e2fd:23be:79bc])
+        by smtp.gmail.com with ESMTPSA id j26-20020a056e02221a00b00361a166564csm3015628ilf.4.2024.01.22.09.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 09:37:18 -0800 (PST)
+Message-ID: <dfcf46def7a4b27e30bed0e832fbf24fd7b36310.camel@suse.com>
+Subject: Re: [PATCH v6 1/3] kselftests: lib.mk: Add TEST_GEN_MODS_DIR
+ variable
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+To: Shuah Khan <skhan@linuxfoundation.org>, Shuah Khan <shuah@kernel.org>, 
+ Jonathan Corbet <corbet@lwn.net>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Josh
+ Poimboeuf <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>, Miroslav
+ Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, Joe Lawrence
+ <joe.lawrence@redhat.com>
+Cc: linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
+	live-patching@vger.kernel.org
+Date: Mon, 22 Jan 2024 14:37:09 -0300
+In-Reply-To: <5aceb855-2862-4d53-b27b-50e2956e099b@linuxfoundation.org>
+References: <20240112-send-lp-kselftests-v6-0-79f3e9a46717@suse.com>
+	 <20240112-send-lp-kselftests-v6-1-79f3e9a46717@suse.com>
+	 <5aceb855-2862-4d53-b27b-50e2956e099b@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122172528.GE3176@thinkpad>
 
-On Mon, Jan 22, 2024 at 10:55:28PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Dec 29, 2023 at 10:33:34PM +0530, Manivannan Sadhasivam wrote:
-> > On Fri, Dec 29, 2023 at 12:24:55PM +0100, Johan Hovold wrote:
-> > > On Wed, Dec 27, 2023 at 11:28:26PM +0100, Konrad Dybcio wrote:
-> > > > The PCIe GDSCs are only related to the RCs. The PCIe PHYs on the other
-> > > > hand, are powered by VDD_MX and their specific VDDA_PHY/PLL regulators.
-> > > 
-> > > No, that does not seem to be entirely correct. I added the power-domains
-> > > here precisely because they were needed to enable the PHYs.
-> > > 
-> > > This is something I stumbled over when trying to figure out how to
-> > > add support for the second lane pair (i.e. four-lane mode), and I just
-> > > went back and confirmed that this is still the case.
-> > > 
-> > > If you try to enable one of these PHYs without the corresponding GDSC
-> > > being enabled, you end up with:
-> > > 
-> > > [   37.709324] ------------[ cut here ]------------
-> > > [   37.718196] gcc_pcie_3b_aux_clk status stuck at 'off'
-> > > [   37.718205] WARNING: CPU: 4 PID: 482 at drivers/clk/qcom/clk-branch.c:86 clk_branch_wait+0x144/0x15c
-> > > 	
-> > 
-> > Technically this patch is correct. PHYs are backed by MX domain only and not
-> > GDSCs. Only the controllers (PCIe, UFS, USB) are backed by GDSCs. The fact that
-> > you are seeing issue with PCIe Aux clock suggests me that this clock may not be
-> > applicable to the PHY but it needs to be enabled for working of the PHY somehow.
-> > I'll try to find the details on how exactly it is needed.
-> > 
-> > But if I get the answer like, "This clock is also sourced to PHY directly", then
-> > we may need to add dual power domain for PHY (both GDSC and MX).
-> > 
-> 
-> So I answer I got from Qcom is that this clock is only applicable to the PCIe
-> controller and not PHYs. On some platforms, there is a separate PCIE_PHY_AUX_CLK
-> coming from GCC that is used during L1SS state. I think that caused confusion
-> while adding PHY support for followup platforms and folks just used PCIE_AUX_CLK
-> since they couldn't find the actual PCIE_PHY_AUX_CLK.
+On Mon, 2024-01-22 at 10:15 -0700, Shuah Khan wrote:
+> On 1/12/24 10:43, Marcos Paulo de Souza wrote:
+> > Add TEST_GEN_MODS_DIR variable for kselftests. It can point to
+> > a directory containing kernel modules that will be used by
+> > selftest scripts.
+> >=20
+> > The modules are built as external modules for the running kernel.
+> > As a result they are always binary compatible and the same tests
+> > can be used for older or newer kernels.
+> >=20
+> > The build requires "kernel-devel" package to be installed.
+> > For example, in the upstream sources, the rpm devel package
+> > is produced by "make rpm-pkg"
+> >=20
+> > The modules can be built independently by
+> >=20
+> > =C2=A0=C2=A0 make -C tools/testing/selftests/livepatch/
+> >=20
+> > or they will be automatically built before running the tests via
+> >=20
+> > =C2=A0=C2=A0 make -C tools/testing/selftests/livepatch/ run_tests
+> >=20
+> > Note that they are _not_ built when running the standalone
+> > tests by calling, for example, ./test-state.sh.
+> >=20
+> > Along with TEST_GEN_MODS_DIR, it was necessary to create a new
+> > install
+> > rule. INSTALL_MODS_RULE is needed because INSTALL_SINGLE_RULE would
+> > copy the entire TEST_GEN_MODS_DIR directory to the destination,
+> > even
+> > the files created by Kbuild to compile the modules. The new install
+> > rule copies only the .ko files, as we would expect the gen_tar to
+> > work.
+> >=20
+> > Reviewed-by: Joe Lawrence <joe.lawrence@redhat.com>
+> > Reviewed-by: Petr Mladek <pmladek@suse.com>
+> > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > ---
+> > =C2=A0 Documentation/dev-tools/kselftest.rst |=C2=A0 4 ++++
+> > =C2=A0 tools/testing/selftests/lib.mk=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 | 26 +++++++++++++++++++++-
+> > ----
+>=20
+>=20
+> Hi Marcos,
+>=20
+> I would like the doc patch and lib.mk patch separate. If lib.mk needs
+> changes
+> we don't have to touch the doc patch.
 
-Thanks for sorting that out.
+Hi Shuah,
+on patch 2/3 you also said that you would like to have the
+documentation changes split in the future, and that you picked the
+changes into a testing branch. Does it also applies to this patch?
 
-> I've prepared a series to fix this mess, but I want to know how you end up
-> seeing the above "clk status stuck at off" issue. Is there an actual usecase for
-> powering up PHY without controller or you just experimented with it?
+Do I need to resend the three patches and separate the documentation
+part into a new one, or can I apply this rationale to future changes to
+lib.mk? Sorry, I'm confused.
 
-As I mentioned, I ran into this when experimenting with how to enable
-the "companion" PHY for four-lane support. There shouldn't be any use
-case for it (apart from using it to determine that the current
-description of the PHY resources is incomplete or incorrect).
+Thanks in advance,
+  Marcos
 
-Johan
+>=20
+> thanks,
+> -- Shuah
+
 
