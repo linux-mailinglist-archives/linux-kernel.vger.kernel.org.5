@@ -1,120 +1,119 @@
-Return-Path: <linux-kernel+bounces-33982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 320B7837150
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:58:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61E32837161
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:58:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45011F297A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:58:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9452B1C29F24
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8894E1A0;
-	Mon, 22 Jan 2024 18:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A192B4F5F1;
+	Mon, 22 Jan 2024 18:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J9ORIfSZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="rgP6a9lU"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE3F3FB3B;
-	Mon, 22 Jan 2024 18:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF86D4F5F3
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705948032; cv=none; b=WX7rqz53ntMi0PnKHlsO6zWCepuCsOIDtXRemmzozXI144T5UmF5NxqD5Dhc6xbOmrRnTb18c4eELymDctHSuunYdYbzfOhxkt7dLawii/ag2AZM8ZEn8Sn2RO4h/WZ+pqEe39vXn4JzlQ9MwAoCl4314jd9tPD+IGgc7AOby+Q=
+	t=1705948047; cv=none; b=KPVzh2bSov2NmPWhSRlvsKcBceH8778j1PgmuqHtyELMwM1uj/6sFhON75mb5Rm4oiIR09m6W/p2FuzO3c0rSEM1pfQSTxxsSdcyk3pjSy1EGtqCSOmkUO71nMbub2uq4ZJm4mS50YDeUyLGaqxklWjGv1kOuIQMkNTvsH56gQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705948032; c=relaxed/simple;
-	bh=oTAlfbxsHwQumPtM8k60cVyd41GO2x5zNL8PvATJItY=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b8DszN7jgP5ei0l+DumZx0D+nvaz7R9Ky2gnj6CqiykXGS9h6R+AlqfUXhi2y8HXkb74dX4xqik7ab3NFIPeCqyh2N243v9dn/KIjq1wzaE+H2A7XD414fplZ+9/gvUZMrPUbR1XW+zSYMKXu9YoDMDNRZGOzxTiy3YX3UodWMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J9ORIfSZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6802C433F1;
-	Mon, 22 Jan 2024 18:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705948031;
-	bh=oTAlfbxsHwQumPtM8k60cVyd41GO2x5zNL8PvATJItY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=J9ORIfSZ+MRVSajWpgmPnnuIchex+Hzj+KIIJ2f2sC0/WGQ/kZEUz31x77bFc+39b
-	 HXos+5aYkRhgqBA7kcW6n9q65adE3yCD6NqNMYtpMOLqe8Vcdgecx5od49itv7o6Qc
-	 rzGRzHuss8mspDWw+cnc5tVIFaCya0ofY/5HZTA/lvQxcYIM2laOPChzgztB1w1XYL
-	 pKjWnUkmKtnoS8jICKdks7Pol52M8NEc+jF0natgh339ow8vcvvsZoReoNZxeSZGTt
-	 Vb3kw2QFdKMECuEETJXCfx939a/L3ElVmGA5OuXpo5ON4FkutuLLnGhMBNe6q3N0yN
-	 en9vkQl6kTumQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rRz0n-00DhTj-J5;
-	Mon, 22 Jan 2024 18:27:09 +0000
-Date: Mon, 22 Jan 2024 18:27:09 +0000
-Message-ID: <86plxt8br6.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Robin Murphy <robin.murphy@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	Fang Xiang <fangxiang3@xiaomi.com>,
-	Robert Moore <robert.moore@intel.com>
-Subject: Re: [PATCH v4 3/3] irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
-In-Reply-To: <Za6VPE76yiR+lb91@lpieralisi>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
-	<20231227110038.55453-1-lpieralisi@kernel.org>
-	<20231227110038.55453-4-lpieralisi@kernel.org>
-	<Za6VPE76yiR+lb91@lpieralisi>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1705948047; c=relaxed/simple;
+	bh=5LcgpOOqbLj9qSMEPJ2zpvvrKBU2HoNgldi9XXiwmX0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jqrNURNWos2pP+evbtZQvoFK/RvUFKrbVz9IWMHPL7WWwBPny9rDvpAFmTSS1gUgp4pq9jSePBVhFA2GXpdaHs9HxZ6CbFSb4z2zBqmfwQc4Hgy67YrXa2TXBSsRkBKbRi+plpW1Yop7DkmJ2YTUN6OVAf5iQn+gIw4OAyyQr30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=rgP6a9lU; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1705948044;
+	bh=5LcgpOOqbLj9qSMEPJ2zpvvrKBU2HoNgldi9XXiwmX0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rgP6a9lU+BoP0ILl/Vl3hBdqjULkPu9a2J/VUgqK17YN0EOz6A6WCRYYnnPm2J7w6
+	 vrEVuEX8fumCAVC8zc5Lkx6NSAPCLrd1vHMTMKN5tyrF+VXvA6AqbPdFJYvvDVqrVn
+	 H5QsCE63Fi2YAj20Ns77Dc69htC1/0VVIT6A01em2mCTwO1YpVADDu1TEzmDTqtzGF
+	 jTneemoWOw0T8UtmPPWwAjczT61WJAi4DXMsxB3ms0iPXCd6APkfkgV8APrRY/A7kI
+	 EsqqBvzwqLXWfiHeLkApQfrOKZ8bmvgGJa7HPJZOZadB1joTWAKvdH9UMruO6lJ7Bg
+	 7aXoef/eWl17Q==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TJdx81lXRzTQC;
+	Mon, 22 Jan 2024 13:27:24 -0500 (EST)
+Message-ID: <bb90c70d-85fa-4228-a333-ab91eea945b2@efficios.com>
+Date: Mon, 22 Jan 2024 13:27:25 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: lpieralisi@kernel.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com, mark.rutland@arm.com, rafael@kernel.org, linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, fangxiang3@xiaomi.com, robert.moore@intel.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files and
+ directories all be the same
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Steven Rostedt <rostedt@goodmis.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+ Ajay Kaher <ajay.kaher@broadcom.com>
+References: <20240117143548.595884070@goodmis.org>
+ <20240117143810.531966508@goodmis.org>
+ <CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
+ <20240122100630.6a400dd3@gandalf.local.home>
+ <CAMuHMdXD0weO4oku8g2du6fj-EzxGaF+0i=zrPScSXwphFAZgg@mail.gmail.com>
+ <20240122114743.7e46b7cb@gandalf.local.home>
+ <CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
+ <CAHk-=wjGxVVKvxVf=NDnMhB3=eQ_NMiEY3onG1wRAjJepig=aw@mail.gmail.com>
+ <CAHk-=wiLqJYT2GGSBhKuJS-Uq1DVq3S32oP0SwqQiATuBivxcg@mail.gmail.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <CAHk-=wiLqJYT2GGSBhKuJS-Uq1DVq3S32oP0SwqQiATuBivxcg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 22 Jan 2024 16:18:04 +0000,
-Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
+On 2024-01-22 13:19, Linus Torvalds wrote:
+> On Mon, 22 Jan 2024 at 09:39, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> Actually, why not juist add an inode number to your data structures,
+>> at least for directories? And just do a static increment on it as they
+>> get registered?
+>>
+>> That avoids the whole issue with possibly leaking kernel address data.
 > 
-> On Wed, Dec 27, 2023 at 12:00:38PM +0100, Lorenzo Pieralisi wrote:
+> The 'nlink = 1' thing doesn't seem to make 'find' any happier for this
+> case, sadly.
 > 
-> [...]
+> But the inode number in the 'struct eventfs_inode' looks trivial. And
+> doesn't even grow that structure on 64-bit architectures at least,
+> because the struct is already 64-bit aligned, and had only one 32-bit
+> entry at the end.
 > 
-> > @@ -2380,6 +2385,10 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
-> >  		return -ENOMEM;
-> >  	gic_request_region(gicc->gicr_base_address, size, "GICR");
-> >  
-> > +	if (gic_acpi_non_coherent_flag(gicc->flags,
-> > +				       ACPI_MADT_GICC_NON_COHERENT))
-> > +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-> > +
+> On 32-bit architectures the structure size grows, but I'm not sure the
+> allocation size grows. Our kmalloc() is quantized at odd numbers.
 > 
-> Quick question before reposting it. We run this function for
-> every GICC entry, I didn't add a check to make sure all GICC
-> entries have the same flag value, please let me know if that's
-> OK.
-> 
-> I don't think there is a point in keeping a live variable across
-> calls to set the flag once for all either.
+> IOW, this trivial patch seems to be much safer than worrying about
+> some pointer exposure.
 
-I don't think that's useful. Once we see the flag being set, we'll
-enforce the non-coherency. If it wasn't set before, it's because it
-wasn't necessary.
-
-If one day we find a firmware that only randomly exposes the flag,
-we'll treat it as a quirk.
+My only concern about the simple ino_counter static increment is what
+happens in the unlikely scenario of a 32-bit overflow. This is why
+I suggested using a bitmap to track inode allocation. It's compact, and
+we don't care that much about the linear bitmap scan overhead because
+it's far from being a fast path.
 
 Thanks,
 
-	M.
+Mathieu
 
 -- 
-Without deviation from the norm, progress is not possible.
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
