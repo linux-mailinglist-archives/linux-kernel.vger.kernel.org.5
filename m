@@ -1,110 +1,247 @@
-Return-Path: <linux-kernel+bounces-33623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3063F836C6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:04:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0641F836C6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:05:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4B821F26BD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:04:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7BF9287787
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C50A460B90;
-	Mon, 22 Jan 2024 15:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E83848CC0;
+	Mon, 22 Jan 2024 15:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fu5qJG7R"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JriZUrUs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07122487AC;
-	Mon, 22 Jan 2024 15:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4341A3D98E;
+	Mon, 22 Jan 2024 15:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705938431; cv=none; b=Kq9GZcIWcEEihMYmyXr6a4V2ssSqibDasTkZN9oUht3/qefhZ81V55p7QVKF65USCiY8dmad7SHZ7NikgjyvUiMLvWdvTyTOfVqOKGmvzrq4YRxg033GyYLHYwWUdhWhEiYMn3/bYsy9FW9vb7ajXMscEzDoQakV5UVKmjZ4snw=
+	t=1705938553; cv=none; b=nhnZkVZbFPM5nnUCbqrdfnmkBcZgArrw+NBCzYLeEsHidVUu1QAL17wNpHStDOxU2+G0ZEa9IDD/kv2+FjtW4hOiMURiETXI4RPx/EYgZL1OX0qCHlAkPeaOn/R2ViwKD4jTA3DZX/W2+iyhzvUWsrgGAU5f5ilV6smNFeizXKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705938431; c=relaxed/simple;
-	bh=MeeGlkv76uplWomLg9ocLHv3pnCOcFvMEIpYsPtsuKo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ff+cJ1jD+dphummLsMBjhywVh3YGumIoHrZqxKhkIm0iUyjARHFuPcxy+G5kNvqy3bL3+CKKzEzXp2eWgoqs1HfM2BFV7F+xEKhwdQs2Igm/eR6VXi5umAeonLQrFh9q1khebXEtKelbnUZRgWVEFo7LIFx/xFnWXW/jaA1DGbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fu5qJG7R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEB36C43390;
-	Mon, 22 Jan 2024 15:47:06 +0000 (UTC)
+	s=arc-20240116; t=1705938553; c=relaxed/simple;
+	bh=r9cek4TNL7iU3rGA42BnO85+Lfv74y24ZpIUL+KRyOo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cm9gCF/Qr/wncADyqOYpLHXUP3ECUiHu+KdkhQ28D2pNAn+t7EpuZFwyHfxk/aRsuh1RxbDUonPv5KOAk9Jl8TK7DI1FTDFO06CoYMj1IYStj6VBU+7Gk/lZVwVZn7qyJ/A3dzKEi9JwQNGSmKCELXxX/Q4t0BGl4xYREVI7lH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JriZUrUs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78EC4C43394;
+	Mon, 22 Jan 2024 15:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705938430;
-	bh=MeeGlkv76uplWomLg9ocLHv3pnCOcFvMEIpYsPtsuKo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fu5qJG7RkhmQ6jgIor5MANwY+t4GvT6yVQsN1DGTMGXKHe9StM1utWQISbbVvd4ac
-	 B1juEMTY3B1GRWCbOe25U9Rr5uCnTDL1xmJ/yWTVXfPM0zCCKa3j9/sQiZCxGooeM9
-	 iMjZ65xo3ahoMRi85ydV+lr0KflLGBU98Ga5NC+ueAdxgXb5eMu34ild0NwwsR7sf0
-	 oAueXHeCXhks5ui/INetc73O1gkav8kikNXkXqCDAmWWe8iNDwYl1KfxKfVoez11Mq
-	 HXJlAKaAHDgVSvShgmDTArxM1ApWambu8Ki5e2/6suTJWJNyQAGcsC93zGNmh4aeJ/
-	 PeL9/w6ECTJwg==
-Date: Mon, 22 Jan 2024 15:47:04 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-riscv@lists.infradead.org,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Wolfgang Grandegger <wg@grandegger.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] dt-bindings: can: mpfs: add missing required clock
-Message-ID: <20240122-duplicate-nutrient-0edf5dfc9c93@spud>
-References: <20240122-catty-roast-d3625dbb02fe@spud>
- <20240122-breeder-lying-0d3668d98886@spud>
- <20240122-surely-crimp-ba4a8c55106d-mkl@pengutronix.de>
- <20240122-cruelly-dainty-002081f0beb2@spud>
- <20240122-smokeless-ion-63e4148c22e5-mkl@pengutronix.de>
- <20240122-uncoated-cherub-a29cba1c0035@spud>
- <20240122-pogo-reputable-b1d06ae1f1f1-mkl@pengutronix.de>
+	s=k20201202; t=1705938552;
+	bh=r9cek4TNL7iU3rGA42BnO85+Lfv74y24ZpIUL+KRyOo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=JriZUrUsaiOjdmfIzlDf3LLVtL2vURl0xlTL/VeV3bl5xiB1Set2DdqzFs4kOULeK
+	 ly6Hrkmhmlj+QO8xetpJQ8h8DE4gNzHS6AxiRm9Lhy1yhZysh4d+8gF51AwwDNo88+
+	 hJIM1mf+JIosoMkg7R1mU/T0tdT7UIH68pZS1etofXNDpahLXw83VkJ2YXRkQtgmG4
+	 ude7J0UeDrh8xbsc+/0ipRt0wDd61mORuxFpNmT525n3iiVJQoEIG3qr2DkyOizP1x
+	 IrXKq6ye/vm6iQmh8PnaG3XsasTJWbVgO3ZJlc3lLs6WG4pW1sp6ueBQDxSwQ+y1I9
+	 cs0KHDHzt5WgQ==
+Message-ID: <7cd4d9f9-e14a-4cd4-92f7-51c43acd23e2@kernel.org>
+Date: Mon, 22 Jan 2024 16:49:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZlbIajEJ0GsLUYlg"
-Content-Disposition: inline
-In-Reply-To: <20240122-pogo-reputable-b1d06ae1f1f1-mkl@pengutronix.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] drm/bridge: add lvds controller support for sam9x7
+Content-Language: en-US
+To: Dharma Balasubiramani <dharma.b@microchip.com>,
+ manikandan.m@microchip.com, andrzej.hajda@intel.com,
+ neil.armstrong@linaro.org, rfoss@kernel.org,
+ Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+ jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: linux4microchip@microchip.com
+References: <20240122082947.21645-1-dharma.b@microchip.com>
+ <20240122082947.21645-3-dharma.b@microchip.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240122082947.21645-3-dharma.b@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 22/01/2024 09:29, Dharma Balasubiramani wrote:
+> Add a new LVDS controller driver for sam9x7 which does the following:
+> - Prepares and enables the LVDS Peripheral clock
+> - Defines its connector type as DRM_MODE_CONNECTOR_LVDS and adds itself
+> to the global bridge list.
+> - Identifies its output endpoint as panel and adds it to the encoder
+> display pipeline
+> - Enables the LVDS serializer
+> 
+> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+> ---
+
+..
+
+> +
+> +static int mchp_lvds_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct mchp_lvds *lvds;
+> +	struct resource *res;
+> +	struct device_node *port;
+> +	int ret;
+> +
+> +	if (!dev->of_node)
+> +		return -ENODEV;
+> +
+> +	lvds = devm_kzalloc(&pdev->dev, sizeof(*lvds), GFP_KERNEL);
+> +	if (!lvds)
+> +		return -ENOMEM;
+> +
+> +	lvds->dev = dev;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	lvds->regs = devm_ioremap_resource(lvds->dev, res);
+
+Why not combining these two?
+
+> +	if (IS_ERR(lvds->regs))
+> +		return PTR_ERR(lvds->regs);
+> +
+> +	lvds->pclk = devm_clk_get(lvds->dev, "pclk");
+> +	if (IS_ERR(lvds->pclk)) {
+> +		DRM_DEV_ERROR(lvds->dev, "could not get pclk_lvds\n");
+
+Handle properly deferred probe. What's DRM wrapper over dev_err_probe()?
+
+> +		return PTR_ERR(lvds->pclk);
+> +	}
+> +
+> +	ret = clk_prepare(lvds->pclk);
+> +	if (ret < 0) {
+> +		DRM_DEV_ERROR(lvds->dev, "failed to prepare pclk_lvds\n");
+> +		return ret;
+> +	}
+> +
+> +	port = of_graph_get_remote_node(dev->of_node, 1, 0);
+> +	if (!port) {
+> +		DRM_DEV_ERROR(dev,
+> +			      "can't find port point, please init lvds panel port!\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	lvds->panel = of_drm_find_panel(port);
+> +	of_node_put(port);
+> +
+> +	if (IS_ERR(lvds->panel)) {
+> +		DRM_DEV_ERROR(dev, "failed to find panel node\n");
+> +		return -EPROBE_DEFER;
+
+OK, that's for sure wrong. Don't print anything on deferred probe.
+
+> +	}
+> +
+> +	lvds->panel_bridge = devm_drm_panel_bridge_add(dev, lvds->panel);
+> +
+> +	if (IS_ERR(lvds->panel_bridge))
+> +		return PTR_ERR(lvds->panel_bridge);
+> +
+> +	lvds->bridge.of_node = dev->of_node;
+> +	lvds->bridge.type = DRM_MODE_CONNECTOR_LVDS;
+> +	lvds->bridge.funcs = &mchp_lvds_bridge_funcs;
+> +
+> +	dev_set_drvdata(dev, lvds);
+> +	pm_runtime_enable(dev);
+> +
+> +	drm_bridge_add(&lvds->bridge);
+> +
+> +	return 0;
+> +}
+> +
+> +static int mchp_lvds_remove(struct platform_device *pdev)
+> +{
+> +	struct mchp_lvds *lvds = platform_get_drvdata(pdev);
+> +
+> +	pm_runtime_disable(&pdev->dev);
+> +	clk_unprepare(lvds->pclk);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id mchp_lvds_dt_ids[] = {
+> +	{
+> +		.compatible = "microchip,sam9x7-lvds",
+> +	},
+> +	{},
+> +};
+> +
+> +struct platform_driver mchp_lvds_driver = {
+> +	.probe = mchp_lvds_probe,
+> +	.remove = mchp_lvds_remove,
+> +	.driver = {
+> +		   .name = "microchip-lvds",
+> +		   .of_match_table = mchp_lvds_dt_ids,
+> +	},
+> +};
+> +module_platform_driver(mchp_lvds_driver);
+> +
+> +MODULE_AUTHOR("Manikandan Muralidharan <manikandan.m@microchip.com>");
+> +MODULE_AUTHOR("Dharma Balasubiramani <dharma.b@microchip.com>");
+> +MODULE_DESCRIPTION("Low Voltage Differential Signaling Controller Driver");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:microchip-lvds");
+
+You should not need MODULE_ALIAS() in normal cases. If you need it,
+usually it means your device ID table is wrong (e.g. misses either
+entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
+for incomplete ID table.
 
 
---ZlbIajEJ0GsLUYlg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Best regards,
+Krzysztof
 
-On Mon, Jan 22, 2024 at 04:31:32PM +0100, Marc Kleine-Budde wrote:
-> let's get this binding and the CAN driver upstream!
-
-FWIW, the driver seems to be in a good state (or as good as it can to
-someone unaware of the goings on of CAN). Hopefully the author gets
-a chance to send it out soon.
-
-Cheers,
-Conor.
-
-
---ZlbIajEJ0GsLUYlg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa6N+AAKCRB4tDGHoIJi
-0h2VAP4w9AGyt9LMjr1fxyGbb5m1B484LsXBg9uqxe4Tx/FZsQD9GwDu25MWq/sI
-nV0HlY2+IRQ8+nMMpcWLtXqwCGwB0w4=
-=MXC9
------END PGP SIGNATURE-----
-
---ZlbIajEJ0GsLUYlg--
 
