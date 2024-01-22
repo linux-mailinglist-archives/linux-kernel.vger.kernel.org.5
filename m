@@ -1,168 +1,123 @@
-Return-Path: <linux-kernel+bounces-32396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBA7A835B30
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:44:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC218835B2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F36B1F21271
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:44:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF89F1C2248E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0E09DDB6;
-	Mon, 22 Jan 2024 06:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43298D282;
+	Mon, 22 Jan 2024 06:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gy3CLvRw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mgeDQ4pI"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB19F500;
-	Mon, 22 Jan 2024 06:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A07CA66
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 06:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705905867; cv=none; b=Zm8uQ0faxIjUeRp9P+TVPoR0+odT8vhYCi4QyhFrdVz5z/8HWdtzgbKwt8TTxQ8l3zOVOIX5BgDtZcR/3Ek+RvhwXYH7TVP1q51ADrO73hBQRd1ut3JVeH3YLw1oRMgAOhnN38q6DXUCZJNB7/jHyheqTlnkWTKO3n2NNGNqzzI=
+	t=1705905851; cv=none; b=Im2wWVucyckzryuMmu+vbJLa2OmQFWDyWUM/OjJrH537OoV0MTgmS43Lxw1aMA1yFfBktQHNHrsuIb+CWtOc6LsHR28wq7s+HqyTp4uqsmpInwg0QmUa1mN5ZbW8mAd424haOCmn+XQP9B8mNhCn1S7HwAzRQDSTYyYAo2KiTmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705905867; c=relaxed/simple;
-	bh=ldrUB48xZDazzp/AyajgHeXxDyEX8P50st74ShQc4Ks=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=AS8kc08U0aaqjXL9oCVwpJI9X7vCUVx4tP4TLb4xY473t7X8+TJXatE2YUs6AwuExH++N2uXYYphZ033e+4FQA/wvqk4pGXvgPUVYolvYpdwwCqNnwz6wnXxajCwHATLCB0L0hr4Oa9wq5EUQCjly8gtXqyFRcURWndIJCVhw9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gy3CLvRw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 55E1EC433F1;
-	Mon, 22 Jan 2024 06:44:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705905866;
-	bh=ldrUB48xZDazzp/AyajgHeXxDyEX8P50st74ShQc4Ks=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=Gy3CLvRwcu6Dbp557Flou6m4aXwteg8Q0YtxqvxEJ84338lRhwyi+hYRtS91Unz8n
-	 pluK8+0UJbPidwN818gA8ty4DYszd3HzspIcWTe4Z8OCsgbWvzvTIiCNlnz/nZ3mIE
-	 5FMo3lINSWUM2/K/eZmOuEV4fLGn7FdfiY1HnOFyBYd8vYPfaam/86iFcItCJ9L4kl
-	 cll8ALoLzoOBFXD3sFgr3aUQ1oMmGyqcV6d5rtsmMrIQ+yAbEh3Dx/360kGRrhz/8O
-	 3JRBHvEiZ2gS9VzRFL94S7cjhM90WtEP9r2yivYgq07ARtiteU/CpqPs4HR3DMhGFg
-	 28GR3+dzK6H7w==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3139BC47DAF;
-	Mon, 22 Jan 2024 06:44:26 +0000 (UTC)
-From: Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
-Date: Mon, 22 Jan 2024 14:43:24 +0800
-Subject: [PATCH v6] arm64: dts: qcom: qcm6490-idp: Add definition for three
- LEDs
+	s=arc-20240116; t=1705905851; c=relaxed/simple;
+	bh=PXG7D7pO3cEeSofvUiEpo7EfpxglZFW9kTHuY80VPqg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pXFgdPLaXENpFVLZqpaXePXTTYdM1JcTvvXmoQKkP4+QutKsPe9WHjEu4zueYUQaMnYrF1EMUdW0q2qNWEI+RqfLV4qFuMoiETP4eYg9sha0j+8xbNwkzUhxOtIMHtm2fVHa/U33yWiC1Ls+6tlW6vaaZ+CzLzpykQPu2VUjSTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mgeDQ4pI; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cdb50d8982so30215231fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:44:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705905848; x=1706510648; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=plBekECwCrnkNSE3tEir64JnXRMMrK6QpZzhIq/r/bU=;
+        b=mgeDQ4pIStB6bKJWPqXUJnwRc0Gg9k5U8woiIokdQuIFFxBMjbHA9w1zZ579LaLm4a
+         s8kQ8YeOKEU24oH9OkpHFTqMEKg9PJIf+boOm9jNUwMysfiRRtsOi1/ZbnQtxSeEPYVf
+         847B52daVSLbsSNkpUwyA+5OqGuzCxDK+aH0qrYtwxGrAEwijA9rANYfy/MmdeBAjLa+
+         aH7hAKtcZTX0kqEc5uomIpn9rz4jlX5YGAqghRHtMr4jTN1dgMlTPd2x3qZ0whooxwS8
+         WWcwhdZPNGhte/NRnFYxxtYoVZpqjLLJdL77FokaOh69gMUtlXFOUPYx1mUVNj1kNBPQ
+         E2iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705905848; x=1706510648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=plBekECwCrnkNSE3tEir64JnXRMMrK6QpZzhIq/r/bU=;
+        b=sViCygo9IVG+fsIEuE3CzlewbCWlqAj3CQUJp/Jk8XO419s1qUGdys9H9pCC+Pd7yo
+         ZOyYQKR8eqV76ow3EKvSbucNPYJbu1rAXNK67fkM50MYl8ty24exkPnzJkXK09AUNhgp
+         3zy2FaA0VIKOgSvjVabR6rLXNyfC4iFL/W7ewWsZ3xRAa4jf88nn8ti9Y4vgxuMaNtVa
+         KwknKi8HvOeCdr6iofu30RF5Z3Ceqh1J04TZx7Fi2DWTYTcXjc29myiu6wN4q9sXJkrl
+         wunht8Xz/ungQjLzFbJfIJlkpnSjm3mLp0duHOAfNdWbd2v79pVshKkbW6A/w26iPY1Y
+         fuKA==
+X-Gm-Message-State: AOJu0YzntA9qX7AaklrIwmqjsaV3SoN92ml4tpiv1UnblHkhbwNafIE5
+	4af/7Vg04zMDpdohngM29kdYmR2bdERvFMqjR/dXknHEGlMYfdIp9TtIEEiP9ph0PQR6gxMC1FL
+	Ln17wPujkymuPXddllE6uafWXtx+up2njGlJdCA==
+X-Google-Smtp-Source: AGHT+IGOg1BfxsoNxvgonZ9HDzH+W3x/q6dSG2+7HqNFv843KuYAHZ+CabnoBUOd6oO7JXrShDpCzWW9ttGyYdv9Vck=
+X-Received: by 2002:a05:651c:2004:b0:2cc:f163:fb6a with SMTP id
+ s4-20020a05651c200400b002ccf163fb6amr1207905ljo.53.1705905848024; Sun, 21 Jan
+ 2024 22:44:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240122-lpg-v6-1-219737cf5beb@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAIwOrmUC/2WOzU7DMBAGX6XyuUZe/6XlxHsghJz1OrHUJq1dL
- FCUd8cJVCXi+Ek7szOxTClSZs+7iSUqMcdxqMPudwx7N3TEo6+bSSEVSDD8dOm4ds571egDgGP
- 18pIoxM/V8vpWd0jjmd/6RO7BAgh+xfH8fiKfeZEcuELnIbQtWuNerh8R44BP9WRR9jHfxvS1d
- hW1iLcJRVWBJulbgdYHEzaCJaLoO6UFgPyhdKVQC6GFtPZg2/+U+Uv9/jJrrLGhacIRCbfUPM/
- f4giaEkcBAAA=
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Hui Liu <quic_huliu@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705905864; l=2220;
- i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
- bh=n8xSHABdt74JEuBzHLY4lYbQGqDaAeo36uTk0NjptXM=;
- b=wTFFnqsHbmf742D/Tk8UBK4kYpSU/L6zoS1MROwEWFyqlYR6qVPBWNWUW7G4QbS2h5T1ra/Tg
- HsC3P6C/DzoCzhq/xfwBkNuCxRRPU2QMgMe+zELya+sidiZeDOvxW3S
-X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
- pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
-X-Endpoint-Received:
- by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
-X-Original-From: Hui Liu <quic_huliu@quicinc.com>
-Reply-To: <quic_huliu@quicinc.com>
+References: <20240116234901.3238852-1-avagin@google.com> <30cd0be4-705f-4d63-bdad-fc57301e7eda@intel.com>
+ <CANaxB-xu+zG=5_EAe4zapC5a_x4CkkDovmVX7LjiLk+E7kU75g@mail.gmail.com>
+ <b3e5456a-7113-4868-b8ce-020421e898ba@intel.com> <CANaxB-zQYC8=7frWGU2pRTDJrkVu0iR8QZCmUxSzGmBG-_b1cg@mail.gmail.com>
+ <87le8mfojz.ffs@tglx>
+In-Reply-To: <87le8mfojz.ffs@tglx>
+From: Andrei Vagin <avagin@gmail.com>
+Date: Sun, 21 Jan 2024 22:43:56 -0800
+Message-ID: <CANaxB-xYp6pWEPT68PJhiLog7jXx=UppSqbB6o_GeTt_SJorOQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/fpu: verify xstate buffer size according with
+ requested features
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Dave Hansen <dave.hansen@intel.com>, Andrei Vagin <avagin@google.com>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, 
+	x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Hui Liu <quic_huliu@quicinc.com>
+On Thu, Jan 18, 2024 at 11:07=E2=80=AFAM Thomas Gleixner <tglx@linutronix.d=
+e> wrote:
+>
+> On Wed, Jan 17 2024 at 23:59, Andrei Vagin wrote:
+> > On Wed, Jan 17, 2024 at 3:52=E2=80=AFPM Dave Hansen <dave.hansen@intel.=
+com> wrote:
+> >> I'm not really following the logic there.  What's the downside of taki=
+ng
+> >> the fault?
+> >
+> > Let's consider a scenario where someone messed up with an fpu state on =
+a
+> > signal frame.
+>
+> Then he can rightfully keep the pieces...
+>
+> > With my approach, a mistake can be promptly detected.
+>
+> How so? Everything which ends up at the 'setfx:' label will just
+> silently fall back to FX only and init all other components.
 
-Add definition for three LEDs to make sure they can
-be enabled base on QCOM LPG LED driver.
+and it will trigger the x86_fpu_xstate_check_failed tracing event.
 
-Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
----
-Changes in v6:
-- Updated the seperate LEDs nodes to multi-led setting.
-- Link to v5: https://lore.kernel.org/r/20240115-lpg-v5-1-3c56f77f9cec@quicinc.com
+Usually, when I want to check that our code generates sigframe fpu states
+properly, I enable this event type, run tests and check that no event
+has been triggered.
 
-Changes in v5:
-- Rephrased commit text, replaced qcs6490-idp to qcm6490-idp.
-- Removed the unnecessary full.
-- Link to v4: https://lore.kernel.org/r/20240112-lpg-v4-1-c4004026686b@quicinc.com
+Plus, we have tests that check fpu register values, so they will fail if
+registers are changed in unexpected values.
 
-Changes in v4:
-- Removed "label" definition and added "function" definition.
-- Link to v3: https://lore.kernel.org/r/20231215-lpg-v3-1-4e2db0c6df5f@quicinc.com
 
-Changes in v3:
-- Rephrased commit text and updated the nodes to qcm6490-idp board file.
-- Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fbbc65a@quicinc.com/
-
-Changes in v2:
-- Rephrased commit text and updated the nodes to board file.
-- Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com
----
- arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-index 37c91fdf3ab9..c9e7ddcbd259 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/leds/common.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "sc7280.dtsi"
- #include "pm7325.dtsi"
-@@ -414,6 +415,33 @@ vreg_bob_3p296: bob {
- 	};
- };
- 
-+&pm8350c_pwm {
-+	status = "okay";
-+
-+	multi-led {
-+		color = <LED_COLOR_ID_RGB>;
-+		function = LED_FUNCTION_STATUS;
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		led@1 {
-+			reg = <1>;
-+			color = <LED_COLOR_ID_RED>;
-+		};
-+
-+		led@2 {
-+			reg = <2>;
-+			color = <LED_COLOR_ID_GREEN>;
-+		};
-+
-+		led@3 {
-+			reg = <3>;
-+			color = <LED_COLOR_ID_BLUE>;
-+		};
-+	};
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-
----
-base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
-change-id: 20231215-lpg-4aadd374811a
-
-Best regards,
--- 
-Hui Liu <quic_huliu@quicinc.com>
-
+Thanks,
+Andrei
 
