@@ -1,146 +1,154 @@
-Return-Path: <linux-kernel+bounces-33098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF6B0836476
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:29:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92CD3836472
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:28:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 879671F23667
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:29:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EA8C1F22919
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870773D388;
-	Mon, 22 Jan 2024 13:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C4E3CF7C;
+	Mon, 22 Jan 2024 13:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PIUvxB/S";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="C6DZJtBA"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Orqi7aiC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794433D0A4;
-	Mon, 22 Jan 2024 13:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7903CF63;
+	Mon, 22 Jan 2024 13:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705930122; cv=none; b=VyAIKQgMrqvMyUgTLfHd7LUgbhH/jiaG5PaS4Rg6lTT9DMpJ76dZhlSW01eg1e5Yctcf1vw0T4/YKNmgPxz+sgCvqmHLLQhpgyJ4bp/fk29UXJSR8S/rIdiZ2OexnHMvM8bb8gYY3aWs7HZ/YuarE7LL0GsMF/Wv/IQJ1AXFWUY=
+	t=1705930120; cv=none; b=m6cS1cQTZjOEu9hGfOOmRmcveM7q8pbFqPclY9Xvha5+OEwqPfIziwcWSGGYqfaoy2SBbkDhYUuk2nyaHU/WPspYddsnX1qMqIrqIS1s3lCD4UKVDqpeu9Gmf5CTOIBx529DmAuaM5z+ZrUFsala4iIdck+LtUM24aMW53sDv+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705930122; c=relaxed/simple;
-	bh=wp8CIgOze8zh7UuHcI2z6RuWp2qimi//9CWSfp979X4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oLhhKe9cUTYo8saZyt6Hodrr409y3KCIWc3EUkDItLO5jzJaAP4vXM4Y+W2Gyvf5C4YiddfLY93XJdTL12DAK4uIuCdYRLzC/JUOhaky3Hw3dlElDmVQXPnKPtS8fyMjb4iCUcX+cOO9QGKYjCTqibBLhoL4Ah9HYvT7uUM8bSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PIUvxB/S; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=C6DZJtBA; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705930119;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GvZno+kHevh2g23gq9x/FGgfnjZz8motFDnpxT/9ixo=;
-	b=PIUvxB/SYWMC8waUFFQ7/UC2TVIVHS+BH/I6SQhE+1L70dC+9ZPyKzdZhFTB3x60g7BVCu
-	1PWjW9qZq7hOmAhcvV9z8N1CvviF0sjarzJAL5i1XiZ16cucMP0CkAqNc+qMg6my4wPxle
-	4ZixEKLw1ewCs7xsmJ1rKPrDZfpmW7+LAIRQPx2T5HLnD6CyzU2Z87A9uxWSLZCeF5BsYA
-	wjmSyhLW7f/o7RddiCzSwOv8OtWuW7xk78UHg4bqGXlxPsNkItbg2rzpPPaqPLCNxLwO3r
-	68iF+TRZHPBmfEVSiztgrvnirt+MG+MnyhmYTJDqMH3Qr9sTEqU4mDH3+2NFGA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705930119;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GvZno+kHevh2g23gq9x/FGgfnjZz8motFDnpxT/9ixo=;
-	b=C6DZJtBAz6GjBt4Hm9vjPbPUg4cy/VfW0WLxpMGcR+y85IU70jGFMPJmYXYx07ZV2x5jOM
-	Q0oXOLBh739O2ZCQ==
-To: linux-doc@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org,
-	Mike Rapoport <rppt@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Marco Elver <elver@google.com>,
-	Alexander Potapenko <glider@google.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Moritz Fischer <mdf@kernel.org>,
-	Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Dipen Patel <dipenp@nvidia.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH 2/2] Documentation: Remove deprecated kernel-doc option 'functions'
-Date: Mon, 22 Jan 2024 14:28:20 +0100
-Message-Id: <20240122132820.46633-3-anna-maria@linutronix.de>
-In-Reply-To: <20240122132820.46633-1-anna-maria@linutronix.de>
-References: <20240122132820.46633-1-anna-maria@linutronix.de>
+	s=arc-20240116; t=1705930120; c=relaxed/simple;
+	bh=AznU8j2SdYTSEwJC02gNSrCDmEKaUE5Gb5SSkPG/ikk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T5anx7uZMEB28NQ9rLf5QBfGVhaMYjLobVh/teqb84YjfhaNi2D3EHK5J2131MWQ2824I+sggrWfm6FH3Si2yGheQ9A/BZEcNO6inJ4ViJTRE6JMYQ/jVuyCHD+WqpOH3k3yYrSvY4+BwxlQrn9tUMh0CeOrb+nsPu1/dcu3BH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Orqi7aiC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 597BAC433F1;
+	Mon, 22 Jan 2024 13:28:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705930119;
+	bh=AznU8j2SdYTSEwJC02gNSrCDmEKaUE5Gb5SSkPG/ikk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Orqi7aiC+MyAfrSUnAhgP70oXz5dI7MFqSKqRDMj+ItUyiUhpnc0EkdZbiF1uRd+D
+	 GdGn4aHFa0wrO8UzM9Lkl+JoDb2gEv35fDMn+p0fxkZTjAIHV6cPgHrcNWIaZ69yvA
+	 qbsE1jDGAnMzcPieSig70g02DgIo49lf3PGqweQlCUmu4y2CayoEBVFM+k8InFT7BV
+	 doe8bzRFgDFwtVt44nIb74UYVfLOyH7TAhKTZT54VlcPWJc1fXJYZRX2QhClsuE54n
+	 7T4BR/ILR3EK8ORRDsOuKacfvP4q01IQZa5WVgNsyWavrLNpSgDt44NtpjTJ+IjyNd
+	 Jj/Cw4KQG62tQ==
+Date: Mon, 22 Jan 2024 14:28:32 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Cc: dlemoal@kernel.org, richardcochran@gmail.com, piyush.mehta@xilinx.com,
+	axboe@kernel.dk, michal.simek@amd.com, linux-ide@vger.kernel.org,
+	linux-kernel@vger.kernel.org, git@amd.com,
+	Piyush Mehta <piyush.mehta@amd.com>
+Subject: Re: [PATCH 2/2] ata: ahci_ceva: add missing enable regulator API for
+ Xilinx GT PHY support
+Message-ID: <Za5tgFKxylHR91KF@x1-carbon>
+References: <1705604904-471889-1-git-send-email-radhey.shyam.pandey@amd.com>
+ <1705604904-471889-3-git-send-email-radhey.shyam.pandey@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1705604904-471889-3-git-send-email-radhey.shyam.pandey@amd.com>
 
-As there are no more users of deprecated kernel-doc option 'functions', remove
-the related parts in documentation and scripts.
+Hello Radhey,
 
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
----
- Documentation/doc-guide/kernel-doc.rst | 3 ---
- Documentation/sphinx/kerneldoc.py      | 5 -----
- 2 files changed, 8 deletions(-)
+On Fri, Jan 19, 2024 at 12:38:24AM +0530, Radhey Shyam Pandey wrote:
+> From: Piyush Mehta <piyush.mehta@amd.com>
+> 
+> The regulators API are disabled and enabled, during suspend and resume,
+> respectively. The following warning notice shows up on the initial suspend
+> because the enable regulators API is unaddressed in the probe:
 
-diff --git a/Documentation/doc-guide/kernel-doc.rst b/Documentation/doc-guide/kernel-doc.rst
-index 6ad72ac6861b..74d6408abcd3 100644
---- a/Documentation/doc-guide/kernel-doc.rst
-+++ b/Documentation/doc-guide/kernel-doc.rst
-@@ -505,9 +505,6 @@ no-identifiers: *[ function/type ...]*
-     .. kernel-doc:: lib/bitmap.c
-        :no-identifiers: bitmap_parselist
- 
--functions: *[ function/type ...]*
--  This is an alias of the 'identifiers' directive and deprecated.
--
- doc: *title*
-   Include documentation for the ``DOC:`` paragraph identified by *title* in
-   *source*. Spaces are allowed in *title*; do not quote the *title*. The *title*
-diff --git a/Documentation/sphinx/kerneldoc.py b/Documentation/sphinx/kerneldoc.py
-index 7acf09963daa..2d57c464c76a 100644
---- a/Documentation/sphinx/kerneldoc.py
-+++ b/Documentation/sphinx/kerneldoc.py
-@@ -53,7 +53,6 @@ class KernelDocDirective(Directive):
-         'internal': directives.unchanged,
-         'identifiers': directives.unchanged,
-         'no-identifiers': directives.unchanged,
--        'functions': directives.unchanged,
-     }
-     has_content = False
- 
-@@ -74,10 +73,6 @@ class KernelDocDirective(Directive):
- 
-         tab_width = self.options.get('tab-width', self.state.document.settings.tab_width)
- 
--        # 'function' is an alias of 'identifiers'
--        if 'functions' in self.options:
--            self.options['identifiers'] = self.options.get('functions')
--
-         # FIXME: make this nicer and more robust against errors
-         if 'export' in self.options:
-             cmd += ['-export']
--- 
-2.39.2
+Please be a bit more specific in your commit message.
 
+e.g. during system suspend, ahci_platform_suspend() calls
+ahci_platform_disable_resources() which calls
+ahci_platform_disable_regulators() which calls
+regulator_disable() for all regulators found in the controller.
+
+
+> 
+> regulator-dummy: Underflow of regulator enable count
+> 
+> Added the ahci_platform_enable_regulators API in probe to maintain the
+> regulator enabled and disabled ref count.
+
+s/Added/Add/
+
+"Describe your changes in imperative mood, e.g. "make xyzzy do frotz" instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy to do frotz", as if you are giving orders to the codebase to change its behaviour."
+
+see:
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
+
+
+> 
+> Fixes: 9a9d3abe24bb ("ata: ahci: ceva: Update the driver to support xilinx GT phy")
+> Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> ---
+>  drivers/ata/ahci_ceva.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
+> index bfc513f1d0b3..1c56f0cabb11 100644
+> --- a/drivers/ata/ahci_ceva.c
+> +++ b/drivers/ata/ahci_ceva.c
+> @@ -219,9 +219,14 @@ static int ceva_ahci_probe(struct platform_device *pdev)
+>  		if (rc)
+>  			return rc;
+>  	} else {
+> -		rc = ahci_platform_enable_clks(hpriv);
+> +		rc = ahci_platform_enable_regulators(hpriv);
+>  		if (rc)
+>  			return rc;
+> +
+> +		rc = ahci_platform_enable_clks(hpriv);
+> +		if (rc)
+> +			goto disable_regulator;
+> +
+
+Like I wrote in patch 1/2, I would prefer if you could somehow get
+ahci_platform_enable_resources() to work for your platform, so that you
+don't need to copy paste all of ahci_platform_enable_resources() to
+your driver.
+
+If it does not work to simply add a reset_control_assert() + usleep(),
+considering that this function is essentially a copy paste of
+ahci_platform_enable_resources(), I would still prefer the addition of
+a new flag, and keep the extra logic needed in libahci_platform.c, so that
+the code is kept in the same place, rather than to copy paste the whole
+function to your driver.
+
+
+Kind regards,
+Niklas
+
+>  		/* Assert the controller reset */
+>  		reset_control_assert(cevapriv->rst);
+>  
+> @@ -340,6 +345,9 @@ static int ceva_ahci_probe(struct platform_device *pdev)
+>  disable_clks:
+>  	ahci_platform_disable_clks(hpriv);
+>  
+> +disable_regulator:
+> +	ahci_platform_disable_regulators(hpriv);
+> +
+>  	return rc;
+>  }
+>  
+> -- 
+> 2.34.1
+> 
 
