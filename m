@@ -1,126 +1,170 @@
-Return-Path: <linux-kernel+bounces-32428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE599835BB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:34:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20953835BB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77849284D1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:34:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CFE91F22985
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E35E12E4B;
-	Mon, 22 Jan 2024 07:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bEls0NK8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1E017739;
+	Mon, 22 Jan 2024 07:35:52 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F49FBE1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3EDFBE1;
+	Mon, 22 Jan 2024 07:35:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705908860; cv=none; b=tTdKxnfNPzjhd2OyBO2d+7RHarsO3WxMrZCsh7nOvdsxOdBLe7zPCgryBMziEvt2kUs2nGuPah5UaTUHdHjk41MQ6/g79NC/oV7AtpxZCaDBvCD71BleYt3rSIFXpgyu6w7WSIan2SBi54Mqz/WNiHyTFPRluB/9NJTUJBL3Hok=
+	t=1705908951; cv=none; b=pHciYUmO6k8qxhnBkVZ7w6GlM6P6o5iMbGRv2Sis6PHTeMHwRPf9C5rTsh/h8Ykee6KRGetGSms08WAz5YFhxSmFb855cLWjWAJmVcHdYiAsYdx0YZbtuoaPD+l1o8yCVMiLU1u8Uvn5f9F8S32bT/UjBPw/glUof2Q4IA81E48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705908860; c=relaxed/simple;
-	bh=FMSjJS1WV5njtl/Y28CewL/VTjUBcIvACGaXMr5ZtWc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tIosu/83oee+/IbINWYovrr3KeYuDIJEoinTWyyD6YpclyOLOx2xVaSrgiIaF3cGLuj7ik9AgajF9z+i4dOT4TnTxtMBjJcVcxCVmZNB8KR0DGaevS3uIuaGQtYrUCbE8cJbpBjDho/LtuBzscH3Mw2uGltfRpsyCFTHGCLbP7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bEls0NK8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59D25C433F1;
-	Mon, 22 Jan 2024 07:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705908860;
-	bh=FMSjJS1WV5njtl/Y28CewL/VTjUBcIvACGaXMr5ZtWc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bEls0NK8UEGPwSV9O5f0KT6MWVj03wkHBHN8PBWz8ns6/D3b/srmK4/3wbmH+V4uQ
-	 FFqAB5aEgMk8pQxWeLXwII9rhB/8Xm1j+WHxC4HufIsJJ0ZGdKXmGjCHbvHpF4nYAy
-	 +BE3Z3RqEGW4YH6K28Pva9ESUeR6U98z4jcXC09CrgNOuxoyOfRiQ7/XPvMCwIk3Lk
-	 wocjF8NhI1B/1cAcejUjRSPOkogeZWVd45so/OsHuCDFWKYlnecPY4cQT76OTgbzJG
-	 WUi508pRBTPTOMt2X9lDajOmvbpnit3kIjah7WPMVMXTsJK8vBsOAPAFuNIQ38OjWY
-	 G2G+NX9zCOJDw==
-Date: Mon, 22 Jan 2024 13:04:16 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
-	yung-chuan.liao@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com, Basavaraj.Hiregoudar@amd.com,
-	Sunil-kumar.Dommati@amd.com, vinod.koul@intel.com,
-	venkataprasad.potturu@amd.com,
-	Sanyog Kale <sanyog.r.kale@intel.com>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2 02/13] drivers: soundwire: amd: update license
-Message-ID: <Za4aeN7vJ-Ln2fxA@matsya>
-References: <20240110094416.853610-1-Vijendar.Mukunda@amd.com>
- <20240110094416.853610-3-Vijendar.Mukunda@amd.com>
+	s=arc-20240116; t=1705908951; c=relaxed/simple;
+	bh=a84Ae00L5X+yF+jz93N/QgllxGAF2cgD93WBqZxUQnU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LW10TVcIURohqx0bQ/7rHrNYFQAJtJUqYCvOAsl2stf/CPvb0akMTZGBAAJJMUvwFAumovSfF+NZphS/s+bS5/+WJU7mET2YxifqrUfys/5/4eOkqeGxd0OPlj3ux4Ix7tPk8mvyBWZYfqmdEceEZ7Edyfz7V54K9j6RbyGWnGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 89f05498b4a1435a833053f4f2fd8887-20240122
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:f3d5e596-f7c8-4dbd-b751-633a1d132f37,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:5
+X-CID-INFO: VERSION:1.1.35,REQID:f3d5e596-f7c8-4dbd-b751-633a1d132f37,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-META: VersionHash:5d391d7,CLOUDID:af3d1c83-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:240119232059I7ZFFJYE,BulkQuantity:6,Recheck:0,SF:44|64|66|24|17|19|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:40,QS:nil,BEC:nil,
+	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
+	TF_CID_SPAM_FSD
+X-UUID: 89f05498b4a1435a833053f4f2fd8887-20240122
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1749565469; Mon, 22 Jan 2024 15:35:30 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id E9923E000EB9;
+	Mon, 22 Jan 2024 15:35:29 +0800 (CST)
+X-ns-mid: postfix-65AE1AC1-869568164
+Received: from [172.20.15.234] (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 810BFE000EB9;
+	Mon, 22 Jan 2024 15:35:23 +0800 (CST)
+Message-ID: <cf3668f1-cf86-49ff-83f4-47ed8a039d0d@kylinos.cn>
+Date: Mon, 22 Jan 2024 15:35:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110094416.853610-3-Vijendar.Mukunda@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] ipvs: Simplify the allocation of ip_vs_conn slab
+ caches
+Content-Language: en-US
+To: Simon Horman <horms@kernel.org>
+Cc: ja@ssi.bg, pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ linux-kernel@vger.kernel.org
+References: <20240117072045.142215-1-chentao@kylinos.cn>
+ <20240117092928.GA618956@kernel.org>
+ <ba5b4e70-365f-476a-9969-6f9a891221a7@kylinos.cn>
+ <20240119152039.GC89683@kernel.org>
+From: Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <20240119152039.GC89683@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 10-01-24, 15:14, Vijendar Mukunda wrote:
-
-Why is the title "drivers: soundwire: "
-
-git log drivers/soundwire/amd*
-Tells me you didnt do that in past why now..?
-
-> Update license to dual license to align with Sound Open Firmware (SOF)
-> driver as SOF uses dual license.
+On 2024/1/19 23:20, Simon Horman wrote:
+> On Thu, Jan 18, 2024 at 10:22:05AM +0800, Kunwu Chan wrote:
+>> Hi Simon,
+>>
+>> Thanks for your reply.
+>>
+>> On 2024/1/17 17:29, Simon Horman wrote:
+>>> On Wed, Jan 17, 2024 at 03:20:45PM +0800, Kunwu Chan wrote:
+>>>> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+>>>> to simplify the creation of SLAB caches.
+>>>>
+>>>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>>>
+>>> Hi Kunwu Chan,
+>>>
+>>> I think this is more of a cleanup than a fix,
+>>> so it should probably be targeted at 'nf-next' rather than 'net'.
+>> Thanks, I'm confused about when to use "nf-next" or "net" or "net-next".
+>> "nf-next" means fixing errors for linux-next.git and linux-stable.git, while
+>> "nf" or "next" just means linux-next.git?
 > 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> ---
->  drivers/soundwire/amd_manager.c   | 4 ++--
->  drivers/soundwire/amd_manager.h   | 2 +-
->  include/linux/soundwire/sdw_amd.h | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
+> Hi Kunwu,
 > 
-> diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
-> index 3a99f6dcdfaf..afa2d83b7e69 100644
-> --- a/drivers/soundwire/amd_manager.c
-> +++ b/drivers/soundwire/amd_manager.c
-> @@ -1,4 +1,4 @@
-> -// SPDX-License-Identifier: GPL-2.0+
-> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
->  /*
->   * SoundWire AMD Manager driver
->   *
-> @@ -1207,5 +1207,5 @@ module_platform_driver(amd_sdw_driver);
->  
->  MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
->  MODULE_DESCRIPTION("AMD SoundWire driver");
-> -MODULE_LICENSE("GPL");
-> +MODULE_LICENSE("Dual BSD/GPL");
->  MODULE_ALIAS("platform:" DRV_NAME);
-> diff --git a/drivers/soundwire/amd_manager.h b/drivers/soundwire/amd_manager.h
-> index 5f040151a259..f57165bbb9d9 100644
-> --- a/drivers/soundwire/amd_manager.h
-> +++ b/drivers/soundwire/amd_manager.h
-> @@ -1,4 +1,4 @@
-> -/* SPDX-License-Identifier: GPL-2.0+ */
-> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
->  /*
->   * Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.
->   */
-> diff --git a/include/linux/soundwire/sdw_amd.h b/include/linux/soundwire/sdw_amd.h
-> index 41dd64941cef..56b4117c087a 100644
-> --- a/include/linux/soundwire/sdw_amd.h
-> +++ b/include/linux/soundwire/sdw_amd.h
-> @@ -1,4 +1,4 @@
-> -/* SPDX-License-Identifier: GPL-2.0+ */
-> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
->  /*
->   * Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.
->   */
-> -- 
-> 2.34.1
+> nf is for fixes for Netfilter (which includes IPVS). The target tree is nf.git
+> nf-next is for non-fixes for Netfilter. The target tree if nf-next.git
+> 
+> net is for fixes for Networking code, which does not have a more specific
+> tree (as is the case for Netfilter). The target tree is net.git.
+> Liikewise, net-next is for non-fixes for Networking code.
+> The target tree is net-next.git
+> 
+Hi Simon,
 
+Thank you very much for your detailed guidance.
+In the future, I will carefully follow the rules you introduced to set 
+the appropriate subject for the patch.
+
+
+> The MAINTAINERS file, and get_maintainers.pl script are useful here.
+> 
+> nf is merged into net on request from the Netfilter maintainers,
+> this is it's path to released kernels.
+> Likewise, nf-next is merged into net-next.
+> 
+Before send the patch, I'll read the MAINTAINERS file, and search in 
+email-list to confirm the correct subject.
+
+And if need a new subject patch, i could resend a new one.
+>>
+>>>
+>>> If it is a fix, then I would suggest targeting it at 'nf'
+>>> and providing a Fixes tag.
+>> I'll keep it in mind in the future.
+>>>
+>>> The above notwithstanding, this looks good to me.
+>>>
+>>> Acked-by: Simon Horman <horms@kernel.org>
+>>>
+>>>> ---
+>>>>    net/netfilter/ipvs/ip_vs_conn.c | 4 +---
+>>>>    1 file changed, 1 insertion(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+>>>> index a743db073887..98d7dbe3d787 100644
+>>>> --- a/net/netfilter/ipvs/ip_vs_conn.c
+>>>> +++ b/net/netfilter/ipvs/ip_vs_conn.c
+>>>> @@ -1511,9 +1511,7 @@ int __init ip_vs_conn_init(void)
+>>>>    		return -ENOMEM;
+>>>>    	/* Allocate ip_vs_conn slab cache */
+>>>> -	ip_vs_conn_cachep = kmem_cache_create("ip_vs_conn",
+>>>> -					      sizeof(struct ip_vs_conn), 0,
+>>>> -					      SLAB_HWCACHE_ALIGN, NULL);
+>>>> +	ip_vs_conn_cachep = KMEM_CACHE(ip_vs_conn, SLAB_HWCACHE_ALIGN);
+>>>>    	if (!ip_vs_conn_cachep) {
+>>>>    		kvfree(ip_vs_conn_tab);
+>>>>    		return -ENOMEM;
+>> -- 
+>> Thanks,
+>>    Kunwu
+>>
 -- 
-~Vinod
+Thanks,
+   Kunwu
+
 
