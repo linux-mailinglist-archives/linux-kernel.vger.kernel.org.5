@@ -1,101 +1,149 @@
-Return-Path: <linux-kernel+bounces-33665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF9FF836CE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:20:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0F61836CE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:19:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87D5528B740
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:20:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520BD1F27C30
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235534F8A0;
-	Mon, 22 Jan 2024 16:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pM1dKqXL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1454F884;
+	Mon, 22 Jan 2024 16:11:39 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8BC3F8E1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76B84F61C;
+	Mon, 22 Jan 2024 16:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705939960; cv=none; b=uRkHaSqR1QrcZU3Pb48CUkqqU0V/1K3PoQeKKSoufH3Qa44M5iay+iKgzPA8N+YidE14KieidRukeh/+P8a86H1Z2v/AN2IBSUMkmTUAYZVoduTp4u8CjYiCwA1P1WDXHDXvvMu/u8t1T8+Wvc1EbfNGF56nP4uCmSpdELAapzw=
+	t=1705939899; cv=none; b=Tiw3fNbmlIH4bRlTizD1+wpMI6RsKk5Vj8QhfF0JXuPc+V/Jrvru+O+KYUx5f/BTHS0FaZbVcvS1Jm6UMphojwZUusV17LG3v4O5RMiMDUKLOiGwoStghwdd7b1DzbrmIOrdWfOc7kf3wsA+DavRmEtqdzNbEwtS6YzHor1KRng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705939960; c=relaxed/simple;
-	bh=u40yPI1eo5OCBcJ6otQkqT3GuoiQ5GJ9+8tgn1ubg/s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u5/DSOkeU2SjPLX2GGH48qs9gHP+WIJBe1uF+DODX72wzgjVNZ0X2ZReCJcMZjEfylhGCF+8Aop63n+jIFAhtbjvUOPweDPzgtzo9K4sJSSs8N2VAtVPn98BkcqvL0zR9/Sk5XgXXp9aigYrGGbtqUh62ZYLqoT+2nnVsSmxVPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pM1dKqXL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 049F9C43390;
-	Mon, 22 Jan 2024 16:12:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705939959;
-	bh=u40yPI1eo5OCBcJ6otQkqT3GuoiQ5GJ9+8tgn1ubg/s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=pM1dKqXL0D39T4s644c17DUpE9aVRYMCKqL2DY9cAHmf7KA70sKxHCbT6ZZhifHk7
-	 yzdaiA8XHCVk8NfFE8lNI+/bw4f5Kt9VmTjhBII3SDeGPyxI35pctal+49+XjHn0g6
-	 8G2/p9p3a+MinQq6vII2pli08Lf7iwTQ12+ilub5Rhu6xvMCtvk8fExWs0XhPZ+lxO
-	 j8Fuj0gl2aUeDCe34MpT+uxbmnszi6/1g40H8Y95deHzg3Yoj5u0JBT6503P133d/w
-	 Q6F74z+6A8zlqEcwa1ceG4Z9xG/cjQ61zdpKsyCsz2thqSzEepUn4i2BB31Ke9KGkf
-	 lWCPhFqKQZ2Ow==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Janne Grunau <j@jannau.net>,
-	=?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
-	Hector Martin <marcan@marcan.st>,
-	Sven Peter <sven@svenpeter.dev>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: apple: use strscpy() in place of strlcpy()
-Date: Mon, 22 Jan 2024 17:11:55 +0100
-Message-Id: <20240122161233.125192-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1705939899; c=relaxed/simple;
+	bh=xVjXRbwY8mo3Dvvjl8WT0u2qoQdRoh8qqox2bCQyV7U=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Z7cWa/zfFtciCbNA6RXK1qx6oo12ObfoSdXnM/uKmoDddTmusTSNyB/y2U1f3Rv3PGxi+//Y17NulbyISjPnqhiL+HT8asghpy8g8YRtE6uQKbOIU7FY2zVa+elR4p1G/py05GdwZxCUXXQZr3etv5s/F4fHeCSxTCYysE6YJaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88AAC433F1;
+	Mon, 22 Jan 2024 16:11:37 +0000 (UTC)
+Date: Mon, 22 Jan 2024 11:13:06 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ye Bin <yebin10@huawei.com>
+Cc: <mhiramat@kernel.org>, <mathieu.desnoyers@efficios.com>,
+ <linux-trace-kernel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/7] tracing/probes: support '%pD' type for print
+ struct file's name
+Message-ID: <20240122111306.4e0a29ab@gandalf.local.home>
+In-Reply-To: <20240122074015.4042575-5-yebin10@huawei.com>
+References: <20240122074015.4042575-1-yebin10@huawei.com>
+	<20240122074015.4042575-5-yebin10@huawei.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, 22 Jan 2024 15:40:12 +0800
+Ye Bin <yebin10@huawei.com> wrote:
 
-Since commit d26270061ae6 ("string: Remove strlcpy()"), the strlcpy()
-function causes a build failure.
+> Similar to '%pD' for printk, use '%pD' for print struct file's name.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  kernel/trace/trace_probe.c | 41 ++++++++++++++++++++++++--------------
+>  1 file changed, 26 insertions(+), 15 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index 1599c0c3e6b7..f9819625de58 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -12,6 +12,7 @@
+>  #define pr_fmt(fmt)	"trace_probe: " fmt
+>  
+>  #include <linux/bpf.h>
+> +#include <linux/fs.h>
+>  #include "trace_btf.h"
+>  
+>  #include "trace_probe.h"
+> @@ -1572,28 +1573,38 @@ int traceprobe_expand_dentry_args(int argc, const char *argv[], char *buf,
+>  
+>  	used = 0;
+>  	for (i = 0; i < argc; i++) {
+> -		if (str_has_suffix(argv[i], ":%pd")) {
+> -			char *tmp = kstrdup(argv[i], GFP_KERNEL);
+> -			char *equal;
+> +		if (!str_has_suffix(argv[i], ":%pd") &&
+> +		    !str_has_suffix(argv[i], ":%pD"))
+> +			continue;
 
-Since the return value is ignored, changing it to the strscpy()
-causes no change in behavior but fixes the build failure.
+And here too:
 
-Fixes: f237c83e4302 ("drm: apple: DCP AFK/EPIC support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-The apple drm driver is not in mainline linux yet, this patch
-is against https://github.com/AsahiLinux/linux/tree/bits/200-dcp
----
- drivers/gpu/drm/apple/afk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+		if (!str_has_suffix(argv[i], ":%pd", &idx) &&
+		    !str_has_suffix(argv[i], ":%pD", &idx))
+			continue;
 
-diff --git a/drivers/gpu/drm/apple/afk.c b/drivers/gpu/drm/apple/afk.c
-index 99d579d5ce47..9fbcd18878e8 100644
---- a/drivers/gpu/drm/apple/afk.c
-+++ b/drivers/gpu/drm/apple/afk.c
-@@ -236,7 +236,7 @@ static void afk_recv_handle_init(struct apple_dcp_afkep *ep, u32 channel,
- 		return;
- 	}
- 
--	strlcpy(name, payload, sizeof(name));
-+	strscpy(name, payload, sizeof(name));
- 
- 	/*
- 	 * in DCP firmware 13.2 DCP reports interface-name as name which starts
--- 
-2.39.2
+
+>  
+> -			if (!tmp)
+> -				return -ENOMEM;
+> +		char *tmp = kstrdup(argv[i], GFP_KERNEL);
+> +		char *equal;
+> +
+> +		if (!tmp)
+> +			return -ENOMEM;
+>  
+> -			equal = strchr(tmp, '=');
+> -			if (equal)
+> -				*equal = '\0';
+> -			tmp[strlen(argv[i]) - 4] = '\0';
+> +		equal = strchr(tmp, '=');
+> +		if (equal)
+> +			*equal = '\0';
+> +		tmp[strlen(argv[i]) - 4] = '\0';
+
+		tmp[idx] = '\0';
+
+> +		if (argv[i][strlen(argv[i]) - 1] == 'd')
+
+To avoid another strlen() call.
+
+		if (tmp[idx + 3] == 'd')
+
+
+-- Steve
+
+
+>  			ret = snprintf(buf + used, bufsize - used,
+>  				       "%s%s+0x0(+0x%zx(%s)):string",
+>  				       equal ? tmp : "", equal ? "=" : "",
+>  				       offsetof(struct dentry, d_name.name),
+>  				       equal ? equal + 1 : tmp);
+> -			kfree(tmp);
+> -			if (ret >= bufsize - used)
+> -				return -ENOMEM;
+> -			argv[i] = buf + used;
+> -			used += ret + 1;
+> -		}
+> +		else
+> +			ret = snprintf(buf + used, bufsize - used,
+> +				       "%s%s+0x0(+0x%zx(+0x%zx(%s))):string",
+> +				       equal ? tmp : "", equal ? "=" : "",
+> +				       offsetof(struct dentry, d_name.name),
+> +				       offsetof(struct file, f_path.dentry),
+> +				       equal ? equal + 1 : tmp);
+> +		kfree(tmp);
+> +		if (ret >= bufsize - used)
+> +			return -ENOMEM;
+> +		argv[i] = buf + used;
+> +		used += ret + 1;
+>  	}
+>  
+>  	return 0;
 
 
