@@ -1,188 +1,189 @@
-Return-Path: <linux-kernel+bounces-32483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 203FE835C35
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:00:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 009A2835C41
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42FCC1C2401F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:00:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C22AB23D1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:05:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34360182DC;
-	Mon, 22 Jan 2024 08:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D0A18C38;
+	Mon, 22 Jan 2024 08:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="Wux7hChM"
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2040.outbound.protection.outlook.com [40.107.15.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FG68kBUD"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F57117C68;
-	Mon, 22 Jan 2024 08:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705910431; cv=fail; b=XscHBRFAcRBpEmCw+4wp7l7Qhe0v70AI9B3TLTEmW1rNa8WAJfyPy+SNQyIilRpA4Upb9gm20Q8d7RO5lTpscGR3EI6/RMr4HjNYq9NS31CoGXKzgAeueaShmjH8bY9BXJ97XZbdimrXfsVbTmd5csNLWRHygou+DLnRTtWe/Ak=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705910431; c=relaxed/simple;
-	bh=26Ah53ogv1RuFrHV72FthULZUHBDgAlP66A+g2KntIg=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=CS4PSz9PnZRVAD/v/udm5n+o1UR4sdvcY54mKG/mPumQZ/6867v9/AN4Hco7TLiw3x/BCguaMCvjTEplAQI+AgQ+ogD0eJJ3yhnoaf89Qd3Uv0lhr6M2gD/Zf1mNP8tGTZsN6R3bdKYkuavMYonA7o/IbkRPJWEQqagTOwDiRvs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=Wux7hChM; arc=fail smtp.client-ip=40.107.15.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lkXzRXX3QYPoRXg/Bm3D13EIoL1klRN55u177xwAK5OKJTW1iS7bBc5OTBJJ79BVloD2gOvF6LqYXUF4ljZeovFfLydkZCVpl4cQa+ua1TjXE37N5mQZKgQZ9iQKZey9lHdeybfMAWQqk87OaxennJ4uu1UeYQvQxGZ+JELU9KzDz+YSXKbk6BUeynsIU6tYxNRHEOynioqlZyF4bkHjvgLTHnb18RS1s3KplOJFEJ2UQI8+eU8XZyPfqSvcFSgt1a1CqyjnKmQ9Z7zKwY3kVgQncmHxHGLbshPcwofwXkdcU3viMusxlAoI01NW9xEqASIQ8uIS0c6RW4F2OJwNpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y9kmDS80mo593DsrjqavbETC0IgjsyOsNnaCt6c156E=;
- b=fOUH37Xv4TNWH8b21OJNJrnZeEyvfjv36jw9pU3JIXdE0NCSa5RpVtk0AReC413YpLHLX0j5yWWMMRFTfeNuwFVBzyOhHdI0/0SlQOl6MJAPLT6YAC+a6XTPSR3p4Y853LbaugS2mHvQgoUweXxQdqRGtXHwHbAd9F4kUKyAz2GV39SW22W4elAP3PyEt2GyWjMFmfyDPNR5PBZ2c3RFjShkCB7y3ikD23zCpw3LtLXqRT7S8rgTOaovm8iqGQoxNmZcta55vFcOkpiPEV979qYYHOuGsDkyHvam1xg1HGgy4pWeAt79AFh93pThLPjRYOrNpwG78VfqQ+dMVl+Wow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y9kmDS80mo593DsrjqavbETC0IgjsyOsNnaCt6c156E=;
- b=Wux7hChMsVZxEpwjd3UGZqtx5xu+XQBoTbZsWu5UHdQSWO9xl4Ew+48OZ6UQy69FhXQ+Dy3DKnS8TV3GybmwtITM/PCMZVwtP2uupMejB9h7Cnd12T6O+rAvZuiSE7sqUorJKQSt4YF1YppV8aBEAkXMrtyxld2bPezjqo5/30U=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AM8PR04MB7313.eurprd04.prod.outlook.com (2603:10a6:20b:1c5::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Mon, 22 Jan
- 2024 08:00:24 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
- 08:00:24 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To: sudeep.holla@arm.com,
-	cristian.marussi@arm.com,
-	jdelvare@suse.com,
-	linux@roeck-us.net
-Cc: linux-hwmon@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50BF17729;
+	Mon, 22 Jan 2024 08:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705910706; cv=none; b=bewVIbRP4/AHEk/OR5i4WnkvhCLaomNuCOWL+1DMHiJSnjQyF2XU1HGT5AK/3gKYSIVrj3F+qobqALI/nLFv4OlhurqiS96Dq4IC/Cg3ynNaD1jKHnHKqID/Si7HvofhezkVeVW4ChnNxU5eMzZW8trKm4Gooft8tDIUagjua0k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705910706; c=relaxed/simple;
+	bh=N3WQRXFO15VCEBO5IuOncnN4FTzCjrq5s3JgJO7VMjs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=koFb/OMMl7ogKvfR9chgXAISGD2mBXJyiz5HS1f57g8V/6NWOxXzJivlUz6V5aLLFs6BPLM2Ib2RvnxqvCsL3SOBQAeyFtgL3PCT5JME7Mjb6SLH5pyi6jdEqf7Ad/DUe+lymisAUcESfPBdToiPcLiLETGAZKraohZM6HXuEp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FG68kBUD; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2901ac9ba23so1252180a91.3;
+        Mon, 22 Jan 2024 00:05:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705910704; x=1706515504; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3G/nUgZ8nqnJBaq446Ylsx7WALmJQMmykwv3P5etgPU=;
+        b=FG68kBUD+4GdGKOZeRfyYqYE4g0styLYleDO0+zZihNagXsI7rZmLJZnpx2wc2Qmq9
+         JSn5AWbAR0Eo6gL1o+IyW69tdYePbxk3Jnu0mwJOnnTcJe9FIOJapPZsW7/a2AUkyNTb
+         JVjLaFu/0+2W+Isej2btuB5AVxTs5yFvRyHeq+6RBukPJpnMtqMJrx7t4nuY7aAYJxj5
+         JuOhKz6TZIpOJP1VWxIktH9Yq+riZTXO0MOc/cnkjwXZlwv0H68ckm1dcJ28lVV64jD1
+         PcgFXF/2jwLJyusD8usxcxskKX2kPrKPKSYm2D9byOzEz9zLuYO5ouByUNQwcLc36Qm2
+         7h8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705910704; x=1706515504;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3G/nUgZ8nqnJBaq446Ylsx7WALmJQMmykwv3P5etgPU=;
+        b=lvcUi1rZiUryGMAJCLOfDq2i33gYkKhvGazZ2NN63O6GWxcK+rBaPiqg+F7dpKGHaM
+         d3KjyOiuznUvau/2DQtbhZd3+JPLATU9PgCnGRVoOOo95+dHar2udlUD09FCt0C+zbgQ
+         zhimeWqivuhbdozsuPxgjjZhNAnUaKMhbPPTNYH/SNv90xP1M1cYMcCUGuN/krtt7gNe
+         N4plaJIusBZ+0GSfYPXIzMypoH7OgAeFCgwHaEzTUFKh6lwatvuNkrDNbeAqrtlmjOxq
+         hvGx4gcS+oO0PAFWI5pQA2XXQ162ShZj7u0+qC7UnTEu6Eu/fGhCuFSliZAhadZr6HGY
+         Ok6A==
+X-Gm-Message-State: AOJu0YxAI8jvMFQlpglB7dsGSN3NoiU6cp/LkR5+ZXh+HHG2ueC+aNoa
+	u6WPdVDxU6hyzew3GSfN6Z0GhId/M5MkF1kRhWICRoNLbY/8AKZI
+X-Google-Smtp-Source: AGHT+IG6xuGCNNzdkl15x7pKZdJp2BUopy0hpxkX5tBlZhkWuue0fZnqs7Tt6Q5i6iecg23byAgWJQ==
+X-Received: by 2002:a17:90a:e547:b0:290:2d2:6a8 with SMTP id ei7-20020a17090ae54700b0029002d206a8mr1006803pjb.58.1705910703702;
+        Mon, 22 Jan 2024 00:05:03 -0800 (PST)
+Received: from localhost ([46.3.240.101])
+        by smtp.gmail.com with ESMTPSA id sy14-20020a17090b2d0e00b0028c89122f8asm8956224pjb.6.2024.01.22.00.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 00:05:03 -0800 (PST)
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+To: alexandre.belloni@bootlin.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	chao.wei@sophgo.com,
+	unicorn_wang@outlook.com,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu
+Cc: linux-rtc@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] hwmon: scmi-hwmon: implement change_mode
-Date: Mon, 22 Jan 2024 16:04:41 +0800
-Message-Id: <20240122080441.1957022-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.37.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2P153CA0015.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::21) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	linux-riscv@lists.infradead.org,
+	dlan@gentoo.org
+Subject: [PATCH v7 0/3] riscv: rtc: sophgo: add rtc support for CV1800
+Date: Mon, 22 Jan 2024 16:04:57 +0800
+Message-ID: <20240122080500.2621-1-qiujingbao.dlmu@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM8PR04MB7313:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3d393467-ac53-4c44-faa8-08dc1b202fff
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	7rW6dfvRHvtiQ8r0K0ozpzF5ae+AHNzaCmwy9qEAa6j+qgOyGkiwvqpjYak2PG2YOUp2FlZqGpnFJZTlA1gbBdx3cO0paJamfw58gU6uUcNzZgykVmTI4Qsr1UtrAp5CYaLC5jbVpYQJ07+QFNET6HSzSvaYq0oP66bXrus3pqu/6vZ5A3oTnfdVBv+KkxAGrls/wfLNsTYxl1m3FcutSJzQ49XycyRcQUyB5zhyMCbf5l5KzdeZ1RfQ6TfoFAKe33K8EeZa8hDA/YBiyQC+aC4MDjai0biPBWnPqvUaR5xClU/koyIlflVY5Je0pX1DQJcaMjaDFwiETWy9LKCDLGA1pw7T7msClM5iy15exkFJ2mI88+e5vggsXwJenyeLFroaY2S9uRWbAnrjNj7giEbPEWACh//dgho+0X7Ktng4nzhlfafX0Xy1vC9whLKWaIfH1dl6ty3FmCekrLtzOAaXe6I2iRo8w7dOa34nWBX6Jpu3+832e1wWTVgTeXA3GONx2JNTKUs+JpmDOrPjoCzrAUSzSAmK++wwoMczGMvqSD06usIJyZdkXwTyKVVmlc5qHE2x30o73Nl/g5E7PRYwVmi3pP0RGiDdqbDTiSxNgbgYcg5h4hzKbP0ee7xZ
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(376002)(39860400002)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(41300700001)(1076003)(26005)(38350700005)(6506007)(478600001)(52116002)(2616005)(6666004)(83380400001)(38100700002)(6512007)(6486002)(66476007)(316002)(66946007)(66556008)(86362001)(5660300002)(8676002)(8936002)(2906002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1qrBRvoxnAYlD6pz9ntoy2SvfP7b44IplU+VskmRKUL0ztJxebDLfPrLQc4H?=
- =?us-ascii?Q?w84ej1juNmVlOHVpJN5ANwG8EkDtinbaaCpQJL0BwiHzTs1mBX8kaHrtLVlA?=
- =?us-ascii?Q?hHwpcClACgVWaEnL+3N6pVSyUCqF48B9RhAAw9GH8M8eDJ3gVMPOKTvXXFfz?=
- =?us-ascii?Q?7NDFJCVKoRUeBRnkcT7ma+GJQ2kw1Noc14UuIta+XLAbvlCzGzViW88pwqZ6?=
- =?us-ascii?Q?R7be6xEZPSzSpEkjByf+O8sp1UYVg7DnUWI5xZb+Jv2El8dZWNJSA8RZvI1y?=
- =?us-ascii?Q?jwAsVTQdih0UV/8PEAHoYJKRrdh/3ocyuaRtfsE3RocbZjEFkUpn6RNM8TpL?=
- =?us-ascii?Q?FU7pTTERSLllGfYR5qfLFKTCa8S4YYbMEXnurMMlGfQSNbQkObVQO3pBqQWJ?=
- =?us-ascii?Q?A+ns552Nb1JYZERQGiPhFaROyPquu0nGIXvrUIVW1keyo70lYVgKUlqV8/ES?=
- =?us-ascii?Q?jBxmXd7HdKUn5uGc8JKIbLIDC+w6kjEQ1woh/cCOHXOXeII+Y02WczJPx/WS?=
- =?us-ascii?Q?Y9G4/N7wlQX9+KtgOrZVX1QKPMLVPioxQ2q51zVxqnTk8P//0O+JRX7qMWaN?=
- =?us-ascii?Q?pa1aREcEh8fCfKBrlZwofRfR46VVMzbE2ZpTjSDfL5lfIq7tvIoTWeKtueFl?=
- =?us-ascii?Q?cTqqqqQtEsCBqzToyN8vr1AsHAqE0rVxxuwTmabUdGGFYtld+xldIaJvGmAW?=
- =?us-ascii?Q?PyQpMJEQVTliJVDH/DC5aPDIpp+R3u8enBTlWGX6lqfBhFGZ3CGepTBs2YTM?=
- =?us-ascii?Q?tfYb9AklNKRt8jHPyUtcqMIecgemXVkFcrmkueOt9ixZw8m7bJ2vdc6bixqI?=
- =?us-ascii?Q?MoCqyzLo4O3rSfFAQLjRlEurKSvdLPy+huyePDkCoy8CwX9Tvw/PBEVqUWWS?=
- =?us-ascii?Q?AVFoR49BBzdNg3cOFaQfBwvfmPZRvSmWTBhO0UQqMSYeBgzNqPKyIgiXuP6x?=
- =?us-ascii?Q?2Ig30HrznnLjdDZKhNA+rXJFZwwNNb1PEdD9e7ukHXedEisgBBhabt0Xritq?=
- =?us-ascii?Q?js2vvTWj0WW7/pbjqAPkavUJvITECZG48MEDhVyGZIDH6kx6mGWKe0mCAygt?=
- =?us-ascii?Q?dochnGCh89kQoutzjbkO8Bb/oQZo8r3F1BYkq+y/xW6WJ1Wtuiu/oKmuVARG?=
- =?us-ascii?Q?PxKBd5iAvJm343APPPSCSMsgflsULUBexn7DeCNL7eLIemBRWCYGNSxXEkPo?=
- =?us-ascii?Q?aSUqFL3a9KuIBR/2yXF2B0kDLc0mRNBn81MHksAhE10FaO+fuLCHrMoCpysF?=
- =?us-ascii?Q?gNSBIzrY9xI/9RR0zoxuROL4T2EAx8EdNjKJmg8yWE+UYuYlhhsUYieBF9mB?=
- =?us-ascii?Q?nHsPMyEMym8w2D16nxWsKYWYD99D9iwybmgORzXsgNdsDMnoystJGcvcrlwv?=
- =?us-ascii?Q?Oadiyg/xdgq4G2NjIw9gKmJtCTWJODOieLblr4vjs6kRpOfyzTN4d3c5bYx/?=
- =?us-ascii?Q?3ADhwbRYaZBaneWYR4gA6oXIXy1yniW2TgIY15SbFwiXSBIH7QKL68MKpFm0?=
- =?us-ascii?Q?KvMZDeVJ7Rl9QGMuYgXX0eDNOyO8lp2GFN1HQhzSiiLEejum/DUvUm4gLKZG?=
- =?us-ascii?Q?BlImLYNMUf065ghp304wjjpESdnr6EWxQP/h01za?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d393467-ac53-4c44-faa8-08dc1b202fff
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 08:00:24.2955
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MC85hmU5e1YXe+nGSDucCKahsOGauiF7rTwRsu4JXy4SyyK+w+6NXma0CNwgWSGOW3j5EJhN+69WVgn1YGRUEg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7313
+Content-Transfer-Encoding: 8bit
 
-From: Peng Fan <peng.fan@nxp.com>
+Real Time Clock (RTC) is an independently powered module
+within the chip, which includes a 32KHz oscillator and
+a Power On Reset/POR submodule. It can be used for time
+display and timed alarm generation.
 
-The sensor maybe disabled before kernel boot, so add change_mode
-to support configuring the sensor to enabled state.
+Power On Reset/POR submodule only using register resources
+so it should be empty. The 32KHz oscillator only provides
+pulses for RTC in hardware.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/hwmon/scmi-hwmon.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+Changes since v6:
+- completely delete POR dt node
+- remove syscon tag
+- use devm_regmap_init_mmio() replace
+  syscon_node_to_regmap
 
-diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
-index 364199b332c0..f7bd63d52d15 100644
---- a/drivers/hwmon/scmi-hwmon.c
-+++ b/drivers/hwmon/scmi-hwmon.c
-@@ -151,7 +151,36 @@ static int scmi_hwmon_thermal_get_temp(struct thermal_zone_device *tz,
- 	return ret;
- }
- 
-+static int scmi_hwmon_thermal_change_mode(struct thermal_zone_device *tz,
-+					  enum thermal_device_mode new_mode)
-+{
-+	int ret;
-+	u32 config;
-+	enum thermal_device_mode cur_mode = THERMAL_DEVICE_DISABLED;
-+	struct scmi_thermal_sensor *th_sensor = thermal_zone_device_priv(tz);
-+
-+	ret = sensor_ops->config_get(th_sensor->ph, th_sensor->info->id,
-+				     &config);
-+	if (ret)
-+		return ret;
-+
-+	if (config & BIT(0))
-+		cur_mode = THERMAL_DEVICE_ENABLED;
-+
-+	if (cur_mode == new_mode)
-+		return 0;
-+
-+	if (new_mode == THERMAL_DEVICE_ENABLED)
-+		config |= SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
-+	else
-+		config &= ~SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
-+
-+	return sensor_ops->config_set(th_sensor->ph, th_sensor->info->id,
-+				      config);
-+}
-+
- static const struct thermal_zone_device_ops scmi_hwmon_thermal_ops = {
-+	.change_mode = scmi_hwmon_thermal_change_mode,
- 	.get_temp = scmi_hwmon_thermal_get_temp,
- };
- 
+v6: https://lore.kernel.org/all/20240115160600.5444-1-qiujingbao.dlmu@gmail.com/
+
+Changes since v5:
+- remove unnecessary lock
+- fix cv1800_rtc_alarm_irq_enable()
+- remove duplicate checks
+- using alrm->enabled instead of unconditionally
+  enabling
+- remove disable alarms on probe
+- using rtc_update_irq() replace mess of alarm
+- remove leak clk
+- useing devm_rtc_allocate_device() and
+  devm_rtc_register_device() instead old way
+- add judgment for rtc_enable_sec_counter()
+- add POR nodes in DTS. This POR device shares
+  the register region with the RTC device
+
+v5: https://lore.kernel.org/all/20240108072253.30183-1-qiujingbao.dlmu@gmail.com/
+
+Changes since v4:
+- remove POR dt-bindings because it empty
+- remove MFD dt-bindings because SoC does
+  not have MFDs
+- add syscon attribute to share registers
+  with POR
+
+v4: https://lore.kernel.org/all/20231229090643.116575-1-qiujingbao.dlmu@gmail.com/
+
+Changes since v3:
+- temporarily not submitting RTC driver code
+  waiting for communication with IC designer
+- add MFD dt-bindings
+- add POR dt-bindings
+
+v3: https://lore.kernel.org/all/20231226100431.331616-1-qiujingbao.dlmu@gmail.com/
+
+Changes since v2:
+- add mfd support for CV1800
+- add rtc to mfd
+- using regmap replace iomap
+- merge register address in dts
+
+v2: https://lore.kernel.org/lkml/20231217110952.78784-1-qiujingbao.dlmu@gmail.com/
+
+Changes since v1
+- fix duplicate names in subject
+- using RTC replace RTC controller
+- improve the properties of dt-bindings
+- using `unevaluatedProperties` replace `additionalProperties`
+- dt-bindings passed the test
+- using `devm_platform_ioremap_resource()` replace
+  `platform_get_resource()` and `devm_ioremap_resource()`
+- fix random order of the code
+- fix wrong wrapping of the `devm_request_irq()` and map the flag with dts
+- using devm_clk_get_enabled replace `devm_clk_get()` and
+  `clk_prepare_enable()`
+- fix return style
+- add rtc clock calibration function
+- use spinlock when write register on read/set time
+
+v1: https://lore.kernel.org/lkml/20231121094642.2973795-1-qiujingbao.dlmu@gmail.com/
+
+Jingbao Qiu (3):
+  dt-bindings: rtc: sophgo: add RTC support for Sophgo CV1800 series SoC
+  rtc: sophgo: add rtc support for Sophgo CV1800 SoC
+  riscv: dts: sophgo: add rtc dt node for CV1800
+
+ .../bindings/rtc/sophgo,cv1800-rtc.yaml       |  53 +++
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi       |   7 +
+ drivers/rtc/Kconfig                           |   7 +
+ drivers/rtc/Makefile                          |   1 +
+ drivers/rtc/rtc-cv1800.c                      | 406 ++++++++++++++++++
+ 5 files changed, 474 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rtc/sophgo,cv1800-rtc.yaml
+ create mode 100644 drivers/rtc/rtc-cv1800.c
+
+
+base-commit: e3d3fe7e7bf08820a83c9d9a4c38c7b29a2927f1
 -- 
-2.37.1
+2.43.0
 
 
