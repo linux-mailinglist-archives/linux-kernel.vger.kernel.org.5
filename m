@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-33803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA306836EBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:01:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CA10836EC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:02:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A05DA1F2E258
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:01:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4432B28C54B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7627354660;
-	Mon, 22 Jan 2024 17:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49519612FA;
+	Mon, 22 Jan 2024 17:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="clNL/NcM"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bitJDir8"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B4853E2D
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F907612D3
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:24:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705944278; cv=none; b=lGwyx85cM7ych2K1jVwMHBeBmq7nVCabvgx+Ux+Ti5whkKiXPOrHBlMmJgN4Lr2nKJw1v6F2Ey0uRk4w8UoMUiFkUcgEHc8QsKy/Cs9Bgbdxbf7czUC9ZUGGuDRIHYI9Qi7TAjaoWTfhJ4tzRkBgYH8D21tUJKXrX6JPOad0QoE=
+	t=1705944288; cv=none; b=riURiWCrSHX4wkj6yg6/uKqs2hwhkcqvk0UVbSHGCabN13AUnvhUU5jEAt4vWCcJtC4+U9H+jCqefv+nIlB1tSjiuG7us18zOiq3R6/myEsuNp5ixXBT1flMf7QDQUS8qTrZw6d0eBKujIM6o+iq/os06YZB109JOlodWOtHyIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705944278; c=relaxed/simple;
-	bh=s5zG+L/VGA4r6opNYDq/X6r4u7Dz3JHhUiw1v8rHzzI=;
+	s=arc-20240116; t=1705944288; c=relaxed/simple;
+	bh=zKxNl6WkG8B4Eq9wfZgbuUODUlpOt/Exm0CtlwBwjts=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=irnAFjD480p3qobaNfjd3zcmGEJYot+hNfnuO36cdD7hwJNZD2bhn0CI+cZAmg5HfR/PSYZ10hsLd0GcjvXd2rLwXURmMA6R6P4DlEEmRdrkzZA0AEkFejagcbH6O3DtYUX/qlDr0Ez7oEBDQHJ2nXMIGGOpAsyRTB7z/luV19A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=clNL/NcM; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=HTt0QEPnt3nthhDIq3yTzLUjICDf/IoI62DTukYmqvU3VfPpzG+enzIzftD7qgWGX7II0kpOoHwAshVMzXER5atxpBc5DKIDHAhJsMAkdl58z+hDW6qysqE/nM0NefF6wzsgs9jV6ddIGUqJeZ+KUQ79+733k8rrkXUA2Nx3YKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bitJDir8; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705944276;
+	s=mimecast20190719; t=1705944286;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Nbn1T5pI3z/UbfuUYU7cHvzOeNQR0JNnB8PBypvklZ8=;
-	b=clNL/NcM1B6zQ5NSaMG/XxX8nj5lVZ1CB9WQI2+z7+Lksm0uAjGl/Mq5+VrXrhbVx5syLA
-	rSsh7Rp65o2zFHgQ2+TkjulCphYT7K6cfiV3+ac8eNjNIDu/GhFeJkFP6UaV0g0bYb04/R
-	SLEuY5vYoKLcyB0xNXMIR+o8qUgptEw=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=n3rKjJ1dBHRScMpZN00CyaIUSPfncYm2oVF6llIbVjU=;
+	b=bitJDir8X5JvhmCHOf230WvB3Ws8GctoQtcsHUHA6BvM2USiAaKyWF4uaRy5WvfoL+oU5Q
+	oRfIJW1jlJE5T3CorvAv20Y2XtUF+e4qA9lzT99QeI0xfLj4RtoM9uF3HOy6yv8Is1Y36A
+	hILybJgL4Pf46+xhoUWvyOHcoYcpWU0=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-197-Ft3HtnJJPl2yqRrJheVuNA-1; Mon, 22 Jan 2024 12:24:35 -0500
-X-MC-Unique: Ft3HtnJJPl2yqRrJheVuNA-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7835bb86ca6so578391385a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:24:34 -0800 (PST)
+ us-mta-659-0E2YbUvUP1iIrW24KfurYA-1; Mon, 22 Jan 2024 12:24:43 -0500
+X-MC-Unique: 0E2YbUvUP1iIrW24KfurYA-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-429a1d383c3so53850481cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:24:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705944271; x=1706549071;
+        d=1e100.net; s=20230601; t=1705944279; x=1706549079;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Nbn1T5pI3z/UbfuUYU7cHvzOeNQR0JNnB8PBypvklZ8=;
-        b=N7rJ68o+Yq64Wtt0XRwvvq+6ELPvWzmrtf6zD/iHCe8i6Q2WAdNnjXakV5o10hfsgU
-         Im5vz7o8P4IsjGQWFiFJBoqS3ukIhVkLZYUhHwFJbzp5h+P+Z2VhF78OORpDaYOMVfum
-         46TRNm0wJXtIb5WaRJyJ1sp5EvBsaCX8kOErxhxMtAjNnuIDWdZ0NosB8l1mqLSEOrW5
-         zyLqGL8w7whzqXk+CUttGtfgwKyWsdgLNwkL5ARfAEFIfjOHyE19mXrD4nWrH6w+/JBz
-         cPNzGhBvNSoKJ901/4gk5UfU2B1I9PA1Av9PHb/KcsLX7m+cdxskTGnyHXCDCvPBsEtZ
-         SLKg==
-X-Gm-Message-State: AOJu0YzLyAUcqx5VZ1pPr6ksym6D/4MaP2Kezb7YFHynFEiKZ9KwkMdF
-	GG2ScCgv6dNFnLNfLao7tw+M1CajTU8rG6Bo5OTfjiXiYfxBLdgp2jBOfetkdsEYS4z3ri4IUut
-	PMP9VaHRru702lZoJ5Nz7IIYBnRipG1P08t6uylEqaGVa6NCSA2oYq82V0j0UPA==
-X-Received: by 2002:a05:620a:4092:b0:783:a2ba:eebc with SMTP id f18-20020a05620a409200b00783a2baeebcmr1181215qko.24.1705944271369;
-        Mon, 22 Jan 2024 09:24:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH+cIRyR7E/BPa15GlhIFB+sJnWKn/RhvzQjmmC1gCPckHcfoCIOnQhcFc6TJFKCb9MtxlDLw==
-X-Received: by 2002:a05:620a:4092:b0:783:a2ba:eebc with SMTP id f18-20020a05620a409200b00783a2baeebcmr1181193qko.24.1705944270958;
-        Mon, 22 Jan 2024 09:24:30 -0800 (PST)
+        bh=n3rKjJ1dBHRScMpZN00CyaIUSPfncYm2oVF6llIbVjU=;
+        b=f9x0I/l0mEnaMrJ0arpyyAnRiXqyNLkWS2tggnUr8dxTU0+eb2tEwTyQ0yVDys8jnf
+         AjCTZv6vHV8908b4EdRBuUJCiRFRgwVvUBSQmNHkAr+lV05RfMiBQYevIWpVzijvqh3e
+         s2zorQnXGpLFv0rwGCcCUPRwSvTnEd0tCD414gmL5Dv5Ix5nDZKM9SUOJA8RuP2pTGkD
+         OEHWwYoziFm6aZ29tFu7QvaRiofWwbGCmHj3+jCcG3bQuHPhC/bL/xkoeW/hE8ANHB9C
+         wWB9QL+UmQoYZ01hrwREYjPPMfz7vwBpZJ1E0N5ZFD5oq+GjO5FlQS8NYtOiirHZjYw6
+         HX4A==
+X-Gm-Message-State: AOJu0YwYQP5+mDDztC8JAFXOkPqCpVP6gz7igIVMD62mQR+9DWXmOlKy
+	89H+3mUmhruag5vaO/jFK8xTOYXq6hpcaSjxoYFa0GXuDzSbqr/zYvgNT7XBTS40Kng2MWfmJrH
+	sapxik9jUp2+6pbnZSruLftvGvx7NwxaORBFEZKm4i6t9xKWxxSsVhJ6HHAlYaw==
+X-Received: by 2002:a05:622a:1347:b0:42a:48e6:3d1d with SMTP id w7-20020a05622a134700b0042a48e63d1dmr681135qtk.8.1705944279385;
+        Mon, 22 Jan 2024 09:24:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEuY55kVsfL50Q7J3H8/c0F80dF+lr4iA1MexthqCvJRSr5PWyDSdjwYzVA9BBQ9jMpLW4EtA==
+X-Received: by 2002:a05:622a:1347:b0:42a:48e6:3d1d with SMTP id w7-20020a05622a134700b0042a48e63d1dmr681119qtk.8.1705944279021;
+        Mon, 22 Jan 2024 09:24:39 -0800 (PST)
 Received: from fedora.redhat.com ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id c7-20020a05620a200700b00781ae860c31sm2280992qka.70.2024.01.22.09.24.29
+        by smtp.gmail.com with ESMTPSA id c7-20020a05620a200700b00781ae860c31sm2280992qka.70.2024.01.22.09.24.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 09:24:30 -0800 (PST)
+        Mon, 22 Jan 2024 09:24:38 -0800 (PST)
 From: Andrew Halaney <ahalaney@redhat.com>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -90,10 +90,10 @@ Cc: Andrew Halaney <ahalaney@redhat.com>,
 	linux-scsi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH RFC v4 06/11] scsi: ufs: cdns-pltfrm: Perform read back
- after writing HCLKDIV
-Date: Mon, 22 Jan 2024 11:24:02 -0600
-Message-ID: <20240122-ufs-reset-ensure-effect-before-delay-v4-6-90a54c832508@redhat.com>
+Subject: [PATCH RFC v4 07/11] scsi: ufs: core: Perform read back after
+ writing UTP_TASK_REQ_LIST_BASE_H
+Date: Mon, 22 Jan 2024 11:24:03 -0600
+Message-ID: <20240122-ufs-reset-ensure-effect-before-delay-v4-7-90a54c832508@redhat.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122-ufs-reset-ensure-effect-before-delay-v4-0-90a54c832508@redhat.com>
 References: <20240122-ufs-reset-ensure-effect-before-delay-v4-0-90a54c832508@redhat.com>
@@ -107,43 +107,44 @@ Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.3
 Content-Transfer-Encoding: quoted-printable
 
-Currently, HCLKDIV is written to and then completed with an mb().=0D
+Currently, the UTP_TASK_REQ_LIST_BASE_L/UTP_TASK_REQ_LIST_BASE_H regs=0D
+are written to and then completed with an mb().=0D
 =0D
 mb() ensure that the write completes, but completion doesn't mean that=0D
 it isn't stored in a buffer somewhere. The recommendation for=0D
-ensuring this bit has taken effect on the device is to perform a read=0D
+ensuring these bits have taken effect on the device is to perform a read=0D
 back to force it to make it all the way to the device. This is=0D
 documented in device-io.rst and a talk by Will Deacon on this can=0D
 be seen over here:=0D
 =0D
     https://youtu.be/i6DayghhA8Q?si=3DMiyxB5cKJXSaoc01&t=3D1678=0D
 =0D
-Let's do that to ensure the bit hits the device. Because the mb()'s=0D
+Let's do that to ensure the bits hit the device. Because the mb()'s=0D
 purpose wasn't to add extra ordering (on top of the ordering guaranteed=0D
 by writel()/readl()), it can safely be removed.=0D
 =0D
-Fixes: d90996dae8e4 ("scsi: ufs: Add UFS platform driver for Cadence UFS")=
-=0D
+Fixes: 88441a8d355d ("scsi: ufs: core: Add hibernation callbacks")=0D
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>=0D
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>=0D
+Reviewed-by: Can Guo <quic_cang@quicinc.com>=0D
 Signed-off-by: Andrew Halaney <ahalaney@redhat.com>=0D
 ---=0D
- drivers/ufs/host/cdns-pltfrm.c | 2 +-=0D
+ drivers/ufs/core/ufshcd.c | 2 +-=0D
  1 file changed, 1 insertion(+), 1 deletion(-)=0D
 =0D
-diff --git a/drivers/ufs/host/cdns-pltfrm.c b/drivers/ufs/host/cdns-pltfrm.=
-c=0D
-index bb30267da471..66811d8d1929 100644=0D
---- a/drivers/ufs/host/cdns-pltfrm.c=0D
-+++ b/drivers/ufs/host/cdns-pltfrm.c=0D
-@@ -136,7 +136,7 @@ static int cdns_ufs_set_hclkdiv(struct ufs_hba *hba)=0D
- 	 * Make sure the register was updated,=0D
- 	 * UniPro layer will not work with an incorrect value.=0D
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c=0D
+index 029d017fc1b6..e2e6002fe46a 100644=0D
+--- a/drivers/ufs/core/ufshcd.c=0D
++++ b/drivers/ufs/core/ufshcd.c=0D
+@@ -10347,7 +10347,7 @@ int ufshcd_system_restore(struct device *dev)=0D
+ 	 * are updated with the latest queue addresses. Only after=0D
+ 	 * updating these addresses, we can queue the new commands.=0D
  	 */=0D
 -	mb();=0D
-+	ufshcd_readl(hba, CDNS_UFS_REG_HCLKDIV);=0D
++	ufshcd_readl(hba, REG_UTP_TASK_REQ_LIST_BASE_H);=0D
  =0D
- 	return 0;=0D
- }=0D
+ 	/* Resuming from hibernate, assume that link was OFF */=0D
+ 	ufshcd_set_link_off(hba);=0D
 =0D
 -- =0D
 2.43.0=0D
