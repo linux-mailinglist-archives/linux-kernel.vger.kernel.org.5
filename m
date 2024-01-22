@@ -1,94 +1,158 @@
-Return-Path: <linux-kernel+bounces-33094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 529AD83646B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:26:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F022C83646C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:26:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 803821C22A70
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:26:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C69328229A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:26:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417FC3CF71;
-	Mon, 22 Jan 2024 13:26:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38AC83D0BF;
+	Mon, 22 Jan 2024 13:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ECz3VvnE"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q1nfMhaa";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AA2wTtB2"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6130D3CF5A
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18B663CF5A
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705929961; cv=none; b=LAS9LmL/K5eSUdlncXhmbrzcSjpNenTC+nAq3YM+KWPfFWJ3iRt2+szok+lqUt0fLDMsLPX8EzSWZr3dAhlDIDXYlKAaYpEyPLH6EycT/I4gqh6F88uKW07vKoVEKj86PK6eAiavAWSS9veBxuznyormYYAHEtQNJvOtMqmELAk=
+	t=1705929966; cv=none; b=e+ScO9/aT7grcZop5kEyvFygu+rIxXLbeUrXBjq2bB6/ANLhhH4kCkI6TuIiOIQZ4PRE/OAlP8GFU1cFXGIp5VRsf69aw0po18+dHEYLPHI1Wys6qB8y6/WDdMF0kU/kmxtvkGf3O+LEU4NwO8GJVcGq2gYW9RyjBcGmz8KOfWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705929961; c=relaxed/simple;
-	bh=+IY+tfOH7zJnbjGk7hYlS29OqszFz0vs9oLxHBldGNI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GWbaD6bf0YpCTI2VAls4B8u09EmDIBgmlNuvr0uy1jYsgfU/MJEndHpVcnzgmXM1Q83qma+/Ph2gNuTYVuLP4Tx2P5MH4dAQcA/V8qaCB88d1GO/b4gc++p8xDwhxvTO9zYvu+dXShwC7hZnDsWJGnbVuynR9GXbT6K8Q9HSAzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ECz3VvnE; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc226dca91aso2697895276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 05:26:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705929959; x=1706534759; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t2EXpV6xqoHqJuzPm5cEvHDlaObu5qMOKhYaowDZaLs=;
-        b=ECz3VvnEFxZWi7u6JxnRrjgfgD77kISD11ctjP9lTLNK3r6he8SPOSyyM40dVlLFMg
-         SD3cn2JBRv7zxaD/BUp6U8SBwbqx+Q18DTE6VEKX2P54a327RsEiq0mQc0mOhKuAeFd7
-         ZuxpXo9lxxFulpXZHoDiynHqQ4m5+UaRyRk8PlasGixOTLUWe7P/L701/bDM2P+dUIvB
-         viw/bavkcUIR9ZjOsGFyAl9H2LJdxSBdSfuhmhHmuR2j0exG42JN6Kx5aehdOZt5t7mM
-         sPjLjgfxTUNivrPlWnElsPuWQ7QxfjDVRUb5A0Tv7srQv2Pv16RfvAdXMqZvdoB5PRgS
-         JvPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705929959; x=1706534759;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t2EXpV6xqoHqJuzPm5cEvHDlaObu5qMOKhYaowDZaLs=;
-        b=qQddVL2fxVeubMMIvcEGlQv1cYNmj7DQmFr4E4j1VAzryiWq4Gwhau4uQLOPJkBrqH
-         uZje/d6e7O9AJ6ATShTzekC57EBvZ4bgsxYmmOs1ByF0CF085HsevHl3Dx51mvNw1wsz
-         o6Ai1QMKJfPUEO3664Jf9FHNWA51fCLU3c6f3XewIroC6f6vOe4a17+ZAOJIsOfOqv/r
-         aI9CriWdar4Rs6khGw8hlOM1FfUMnQEbLxubrZ/bSMjre/86TTGHFaAsUPYghBRk5Zt2
-         cDEDx5pdSUQAPs1Otc+3tqR8reETo3ZxVv/BJZJkn9iefnSxitEwvX1bBxItMTZ/K8li
-         iyMg==
-X-Gm-Message-State: AOJu0YxtUEGxnjDnelLAXozmDtenp+sVwpcUMyHJOg/YlCKDGAiyiLsI
-	RtJZQO8nFOY4ZkT5iVMAUtGgDCbRZMWuLD0Hwk624xVNuT4h/CTeofy+JBtHx55xhExjYcLR7bI
-	tNbqiTC+e9mAf5ma3rvETeRIvQqY=
-X-Google-Smtp-Source: AGHT+IGooEEMFTIvajOh5dXtBxmZl5Gi4scxX5Kl9/CvfMVnSMv/V8qW15MvHBhhCBGQMMHipIZyGAKUnxKkxBF7UuU=
-X-Received: by 2002:a05:6902:2587:b0:dc2:3411:aa4 with SMTP id
- du7-20020a056902258700b00dc234110aa4mr2107163ybb.77.1705929959276; Mon, 22
- Jan 2024 05:25:59 -0800 (PST)
+	s=arc-20240116; t=1705929966; c=relaxed/simple;
+	bh=AdkQZSRn2mxv5gZ8faSB3eUvx2yITrTIfL7sVlooOF4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=p5fS/cDN/YXrBlYrt+4uXmJYh67tGeQlVwBN90ig2LdAdi07IufI/hqraRIOUwzFxhKAFfo6i9Uf7l2F6wnktAfImlS5DBWcvv2kzMW4mll0DuXAdTJPZpbVjOy23Wj0vt73MgxZ8wKCryYKtHxV37vEJS/shhIAac+jBOdTUuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Q1nfMhaa; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AA2wTtB2; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705929962;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/42ekYY9I1DYMe5I59ciu8BkLOqVsXg7fjJStaWmaBQ=;
+	b=Q1nfMhaaYGWZB3nLG8/NJ0JyXepz6AbLtfWS34hs02HOvENNS8y5II53DWOkMicdIK0LOh
+	sq5aJ2a715lP0GtXsilAOBfO+88pSpQjDa7r5aD2bnMt5honXPhorTmvBTvuneeufYr9wt
+	goWCUl4mVzK0kXaxArdrbOe7DPSkPaKI02xi1cfwAXI+oakXDJcPxhImHjsJdHclNdMje6
+	6GfuGAQ8OaRvSavNZIFuMoQn5cFkGgN9VPtFRiSujdskjYrkKInpqJBCGVLT+/c9nUXync
+	ZlESjJ0azB2oS+68IjaL1N4H8x35KNeRAzGRO13DNCcNwthcckUBCXKPSxAn1g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705929962;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/42ekYY9I1DYMe5I59ciu8BkLOqVsXg7fjJStaWmaBQ=;
+	b=AA2wTtB2+KVnci+jSJ7YPI8GWO4VdIGMf8gzCiU1EKe/aB9PFvV+xciQfcuIiDQCHWgzKG
+	kPAeklacqGZhPADw==
+To: Andrei Vagin <avagin@gmail.com>
+Cc: Dave Hansen <dave.hansen@intel.com>, Andrei Vagin <avagin@google.com>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86/fpu: verify xstate buffer size according with
+ requested features
+In-Reply-To: <CANaxB-zaa0nMFmep9jtJh_QDdAj=2K9G5PAKF4iTuNbNnYj4bg@mail.gmail.com>
+References: <20240116234901.3238852-1-avagin@google.com>
+ <30cd0be4-705f-4d63-bdad-fc57301e7eda@intel.com>
+ <CANaxB-xu+zG=5_EAe4zapC5a_x4CkkDovmVX7LjiLk+E7kU75g@mail.gmail.com>
+ <b3e5456a-7113-4868-b8ce-020421e898ba@intel.com>
+ <CANaxB-zQYC8=7frWGU2pRTDJrkVu0iR8QZCmUxSzGmBG-_b1cg@mail.gmail.com>
+ <54bcb902-0fab-4a53-8b8e-85b6e4484b03@intel.com> <87cytyfmd8.ffs@tglx>
+ <5bddbb34-4081-494b-8c12-c2e70898a608@intel.com> <877ck6fg0z.ffs@tglx>
+ <CANaxB-zaa0nMFmep9jtJh_QDdAj=2K9G5PAKF4iTuNbNnYj4bg@mail.gmail.com>
+Date: Mon, 22 Jan 2024 14:26:02 +0100
+Message-ID: <87v87lebyt.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Za5qb8livKA4XTeG@pop-os> <20240122132057.GAZa5ruRCBJzuuVKC9@fat_crate.local>
-In-Reply-To: <20240122132057.GAZa5ruRCBJzuuVKC9@fat_crate.local>
-From: Pranav Athreya <pranavsubbu@gmail.com>
-Date: Mon, 22 Jan 2024 18:55:48 +0530
-Message-ID: <CAP1Lp8_y+p+EZFhHvX7b1L+FpxRdXqit_2BZqGzYBvzVS8ojjg@mail.gmail.com>
-Subject: Re: [PATCH] x86/alternatives: Fix switch block in apply_reloc()
-To: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 6:51=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
-e:
-> It is more compact and faster readable this way. Do not always take what
-> checkpatch tells you to the letter.
+On Sun, Jan 21 2024 at 19:58, Andrei Vagin wrote:
+> On Thu, Jan 18, 2024 at 2:11=E2=80=AFPM Thomas Gleixner <tglx@linutronix.=
+de> wrote:
+>> >> After staring more at it, it's arguable to pass fpstate->user_size to
+>> >> fault_in_readable() and ignore fx_sw->xstate_size completely.
+>> >>
+>> >> That's a guaranteed to be reliable size which prevents endless loops
+>> >> because arguably that's the maximum size which can be touched by XRST=
+OR,
+>> >> no?
+>
+> fpstate->user_size isn't constant.  It can be modified from the XFD #NM
+> handler. For example, it happens when a process invokes one of amx
+> instructions for the first time. It means we have to be able to restore
+> an fpu state from signal frames generated with a smaller
+> fpstate->user_size. Can it trigger any issues?
 
-Understood. Thank you for the feedback, Boris.
+I know, but the #NM handler does not run in the signal restore
+path. fpstate->user_size is guaranteed to be correct at that point.
 
-Regards,
-    Pranav
+The untested below should just work.
+
+Thanks,
+
+        tglx
+---
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -274,8 +274,7 @@ static int __restore_fpregs_from_user(vo
+  * Attempt to restore the FPU registers directly from user memory.
+  * Pagefaults are handled and any errors returned are fatal.
+  */
+-static bool restore_fpregs_from_user(void __user *buf, u64 xrestore,
+-				     bool fx_only, unsigned int size)
++static bool restore_fpregs_from_user(void __user *buf, u64 xrestore, bool =
+fx_only)
+ {
+ 	struct fpu *fpu =3D &current->thread.fpu;
+ 	int ret;
+@@ -309,7 +308,7 @@ static bool restore_fpregs_from_user(voi
+ 		if (ret !=3D X86_TRAP_PF)
+ 			return false;
+=20
+-		if (!fault_in_readable(buf, size))
++		if (!fault_in_readable(buf, fpu->fpstate->user_size))
+ 			goto retry;
+ 		return false;
+ 	}
+@@ -339,7 +338,6 @@ static bool __fpu_restore_sig(void __use
+ 	struct user_i387_ia32_struct env;
+ 	bool success, fx_only =3D false;
+ 	union fpregs_state *fpregs;
+-	unsigned int state_size;
+ 	u64 user_xfeatures =3D 0;
+=20
+ 	if (use_xsave()) {
+@@ -349,17 +347,14 @@ static bool __fpu_restore_sig(void __use
+ 			return false;
+=20
+ 		fx_only =3D !fx_sw_user.magic1;
+-		state_size =3D fx_sw_user.xstate_size;
+ 		user_xfeatures =3D fx_sw_user.xfeatures;
+ 	} else {
+ 		user_xfeatures =3D XFEATURE_MASK_FPSSE;
+-		state_size =3D fpu->fpstate->user_size;
+ 	}
+=20
+ 	if (likely(!ia32_fxstate)) {
+ 		/* Restore the FPU registers directly from user memory. */
+-		return restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
+-						state_size);
++		return restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only);
+ 	}
+=20
+ 	/*
 
