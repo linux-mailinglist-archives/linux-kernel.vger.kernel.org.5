@@ -1,156 +1,146 @@
-Return-Path: <linux-kernel+bounces-32803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0250E83603C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:00:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CDF7836040
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:01:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E958F1C24D5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:00:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3BEB1F2357B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:01:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C8A3A8C5;
-	Mon, 22 Jan 2024 11:00:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qm/AynA5"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E712F3A8C2;
+	Mon, 22 Jan 2024 11:01:29 +0000 (UTC)
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652593A28B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363193A1C2;
+	Mon, 22 Jan 2024 11:01:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705921233; cv=none; b=HIbx1L2nPwZSh46dNVierPrEyNEQqYpP/ig4j79t0n4eP04WhU5LoK9DwBTU/BWets1xErKXLVbzg+2TdXQQpfDs6uPXs2srujWhDV8m4rxTJJnWHQh99X2oaS32A7CzX7L6qBbZ1jtfB8iZaawTaTw9wE7JkCplhvdBJKPKjKk=
+	t=1705921289; cv=none; b=RgOSIaqQbCCp73AV2uplbE08ydhmJSJMLjqtd/PjeR1NjFOi8+gYGuyHqH/OHEQA8Y9PGwdvvFo5hFYsciRgdIfDTRRo/LPcu0/VlVyMcWWgrkuqaQv5tMPQGDkvot/7G1XKO7dYkSHqns/3KkWgb9LjZb9udRouqTaT9Ez4VEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705921233; c=relaxed/simple;
-	bh=ysvgLNQzB00QR5ZsXAsiK1mUPzNf8fhMjm45Mq/c6iA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UpvSkdkSJ8GMA2Wqjo3XNyl95uwRHH5VaH7n/D2rFZaXksKzeDyjRmtU4/aguZoCW5IdMwOpwUsc8/jdkVFTKRvC/PYVvJsYlHyRgMyRjkb82oOKutzKdqaYeso0ApqGRroFsdQ240+WCF2NZYqO8SsdUhLAokDDvePkKcjOWYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Qm/AynA5; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a308e6824ccso16440566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 03:00:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705921229; x=1706526029; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wyz1IFAxX09vDgGT+0zG8TIUnPUcChIgGhfjLTgyrQ4=;
-        b=Qm/AynA5iaQep9Oiuw/yJsSlSivVSwFIWgXasHg0Ia2pwL1RJZhF9yHMKIgp55wNAy
-         PU4UzkswSK5Zx2Ka55BaRpu6UfZn6jen62kDiZwYJFs/dFBN8bBGCd23hQC/v5K3waxQ
-         NrKp4ikbl5I9yg9NvBSHrTDJXDuYKD+TISn5AKytVQx4uWf32vchct5M3bO5LXL5rN73
-         KdSXl1z9ro7Iwj5xocCB4RfhcUrbaJJf+R/cdJQkZVbrVZp6uOy4qLswohumfkSLKocA
-         hsQwSmCKBjSahkZXA9UZMsxqZPTwFnxTBNp1DZd3FkZdtWFnV3j6Z3BK5aJu0dMwIUZ/
-         2m3A==
+	s=arc-20240116; t=1705921289; c=relaxed/simple;
+	bh=0I1hZBX1aIvcU2CFyoaBdQ1SCLCfeODeFuogHzNWc/0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JlQ39wvx2VSg8AUgcI1EtwKV2vHzk9NaDCXmRzvIIEdZUh8yWKSTVx++9bC6MaKAKlNej2PjWMU6OOQgJIoKCfvnbOt1xHDzrK6JOsFekZ++MMwAgzc/mv95orBrtn3lm5YYmFHpAJI20NPcDaJNQ0cpHKW8pgQ0vIAI5Pj5SnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-59910dcc17bso637932eaf.1;
+        Mon, 22 Jan 2024 03:01:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705921229; x=1706526029;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wyz1IFAxX09vDgGT+0zG8TIUnPUcChIgGhfjLTgyrQ4=;
-        b=Uqjow6GsIAsOSUPhR/I4+05hNd6zij6WAAm4XKUDNKbcQ+a1bvO/qw+JCsvM1nZtbM
-         ZTfu3EfePrdSHLAJbZySIUsfMyR2mTSQZXUr7ql1wrFfVW2tRpY5MkOiNqW7wP8eNn1C
-         XqYlOxODYzeuLl0agBofQJ49uJmQnHgzR21Z9cndFurlcwPDCbkw7dbg/y078XI6ELyR
-         IaTmgVf9f7A/plVimgBsfzt/ThP+uu2JkM5Encfp3DZ2WlA7RiRXK4qDkW3Lrwhb3lIy
-         ZzsQP7Ql9ldhBM83xo7yDF8SaMu/doNTPVC6nOYEQdJa9mwyrcfsUVKE5Dnh3QUn/MrN
-         0FWA==
-X-Gm-Message-State: AOJu0Ywc5sIAGNz5P5b2wXqge2LSDzMffBFB006TS9C11pBp5g1fQ3fY
-	0tlRrCvwDCgNEDhM9aUPfCc3L++dguDI68pWlsXTxjig/acbLXeye9LW9exCtxw=
-X-Google-Smtp-Source: AGHT+IH0jHnDxXGh48Y6ibDD48gMITJ4w2DDgSwagJUNNqVBOJSChPUk6bQ6s0PvKkKmXMfIYUxMTw==
-X-Received: by 2002:a17:907:8743:b0:a2d:47f4:300 with SMTP id qo3-20020a170907874300b00a2d47f40300mr2408404ejc.95.1705921229600;
-        Mon, 22 Jan 2024 03:00:29 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id tk4-20020a170907c28400b00a2ce236ed71sm11817710ejc.43.2024.01.22.03.00.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 03:00:29 -0800 (PST)
-Message-ID: <4cc6df4c-504c-499f-be83-3b40d1ee6240@linaro.org>
-Date: Mon, 22 Jan 2024 12:00:26 +0100
+        d=1e100.net; s=20230601; t=1705921287; x=1706526087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bTiz18276Uf+B1qD5cDSM1J5ZYoGHeeO739RJ3mibZ8=;
+        b=SwZNR6VsRPNjCFqtb36npR+fNTmRVuqCxMxrRWe/xPL7Lw6nbPnic4iy9uoLt5zt9L
+         A28XvLZoQh5bnk1YgJK+SDah1Ad0i7iVBb5GteQLqx5iSbKiGf77NWdcsIWL9HWJDRG7
+         BcuNnj3YBAaYHDYimCqX5XCdNfmFZ9cWXLYHklG5BZEfOGFupOnd7BY16AwG/VYeai7/
+         hIPdZSXWXXD4jJgcBOl0K8ANw4myoi8h7ep9LqplzyYN+32YTAX+wuI7gmN9SuIfeovi
+         EFOh7GkbFquNcFS9F8yrEx4x+6ah3h3IicVlc63fwWInDxC19DrXiZ1N/tCWLMmWpbXV
+         uXpw==
+X-Gm-Message-State: AOJu0Yzbw84FTAEyCW7Y3ItwS9Oho/sU5K+s8/XDAW1KsAOGWbLCuEVp
+	b46+pu2iUWHmlpouLjMoLWOAn2RNqqL3LgkS4SFviC6+9XnkxfN5elT8OB5A6Lzoy3A5cllRrkg
+	2xfdFTquKDDm2BKyI24EHMk6XXryJogA+
+X-Google-Smtp-Source: AGHT+IFXJ2Nc6UOX/9bZ6Gbyiif7n0uM7HQKKBupDvCF3JrlgDC9sxcsX8Q0tJCWHyxjp9sqFxLe1ehlPI7NuEBUx/E=
+X-Received: by 2002:a4a:a6c4:0:b0:599:283c:fc53 with SMTP id
+ i4-20020a4aa6c4000000b00599283cfc53mr6629599oom.0.1705921286993; Mon, 22 Jan
+ 2024 03:01:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: timer: exynos4210-mct: Add
- google,gs101-mct compatible
-Content-Language: en-US
-To: Peter Griffin <peter.griffin@linaro.org>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, daniel.lezcano@linaro.org,
- tglx@linutronix.de, conor+dt@kernel.org, alim.akhtar@samsung.com,
- s.nawrocki@samsung.com, tomasz.figa@gmail.com, cw00.choi@samsung.com,
- mturquette@baylibre.com, sboyd@kernel.org
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel-team@android.com,
- tudor.ambarus@linaro.org, andre.draszik@linaro.org,
- semen.protsenko@linaro.org, saravanak@google.com, willmcvicker@google.com
-References: <20231222165355.1462740-1-peter.griffin@linaro.org>
- <20231222165355.1462740-2-peter.griffin@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231222165355.1462740-2-peter.griffin@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240118122340.1034880-1-srinivas.pandruvada@linux.intel.com>
+In-Reply-To: <20240118122340.1034880-1-srinivas.pandruvada@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 22 Jan 2024 12:01:12 +0100
+Message-ID: <CAJZ5v0jVKNEnwuep=Jq=cGTpq=NW9Pbu2AEduzmpv+L5Gec2Lw@mail.gmail.com>
+Subject: Re: [PATCH] thermal: intel: powerclamp: Remove dead code for target
+ mwait value
+To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: rafael@kernel.org, daniel.lezcano@linaro.org, lukasz.luba@arm.com, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 22/12/2023 17:53, Peter Griffin wrote:
-> Add dedicated google,gs101-mct compatible to the dt-schema for
-> representing mct timer of the Google Tensor gs101 SoC.
-> 
-> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+On Thu, Jan 18, 2024 at 1:23=E2=80=AFPM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> After conversion of this driver to use powercap idle_inject core, this
+> driver doesn't use target_mwait value. So remove dead code.
+>
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 > ---
->  .../devicetree/bindings/timer/samsung,exynos4210-mct.yaml       | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+> Non urgent patch. For 6.9+ kernel.
+>
+>  drivers/thermal/intel/intel_powerclamp.c | 32 ------------------------
+>  1 file changed, 32 deletions(-)
+>
+> diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/i=
+ntel/intel_powerclamp.c
+> index 5ac5cb60bae6..bc6eb0dd66a4 100644
+> --- a/drivers/thermal/intel/intel_powerclamp.c
+> +++ b/drivers/thermal/intel/intel_powerclamp.c
+> @@ -49,7 +49,6 @@
+>   */
+>  #define DEFAULT_DURATION_JIFFIES (6)
+>
+> -static unsigned int target_mwait;
+>  static struct dentry *debug_dir;
+>  static bool poll_pkg_cstate_enable;
+>
+> @@ -312,34 +311,6 @@ MODULE_PARM_DESC(window_size, "sliding window in num=
+ber of clamping cycles\n"
+>         "\twindow size results in slower response time but more smooth\n"
+>         "\tclamping results. default to 2.");
+>
+> -static void find_target_mwait(void)
+> -{
+> -       unsigned int eax, ebx, ecx, edx;
+> -       unsigned int highest_cstate =3D 0;
+> -       unsigned int highest_subcstate =3D 0;
+> -       int i;
+> -
+> -       if (boot_cpu_data.cpuid_level < CPUID_MWAIT_LEAF)
+> -               return;
+> -
+> -       cpuid(CPUID_MWAIT_LEAF, &eax, &ebx, &ecx, &edx);
+> -
+> -       if (!(ecx & CPUID5_ECX_EXTENSIONS_SUPPORTED) ||
+> -           !(ecx & CPUID5_ECX_INTERRUPT_BREAK))
+> -               return;
+> -
+> -       edx >>=3D MWAIT_SUBSTATE_SIZE;
+> -       for (i =3D 0; i < 7 && edx; i++, edx >>=3D MWAIT_SUBSTATE_SIZE) {
+> -               if (edx & MWAIT_SUBSTATE_MASK) {
+> -                       highest_cstate =3D i;
+> -                       highest_subcstate =3D edx & MWAIT_SUBSTATE_MASK;
+> -               }
+> -       }
+> -       target_mwait =3D (highest_cstate << MWAIT_SUBSTATE_SIZE) |
+> -               (highest_subcstate - 1);
+> -
+> -}
+> -
+>  struct pkg_cstate_info {
+>         bool skip;
+>         int msr_index;
+> @@ -759,9 +730,6 @@ static int __init powerclamp_probe(void)
+>                 return -ENODEV;
+>         }
+>
+> -       /* find the deepest mwait value */
+> -       find_target_mwait();
+> -
+>         return 0;
+>  }
+>
+> --
 
-I applied remaining two patches. Let me know if I should grab this.
-
-Best regards,
-Krzysztof
-
+Applied as 6.8-rc material, thanks!
 
