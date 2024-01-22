@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-32495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D648835C5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:14:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7336D835C5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A4711F22F22
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:14:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22AB6289027
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74DDE20DE1;
-	Mon, 22 Jan 2024 08:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E1420DE2;
+	Mon, 22 Jan 2024 08:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gSey5DDt"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ak+gy4uU"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F242EEB2
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:14:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215DAEEB2
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705911263; cv=none; b=CRJv2fdVL6Ik9DSKs77TqJfMwyegTw0s6hBeTGSx899DnKg/zrNFoSDZYiRTWrb0icGCX2nrIunCiMiA8qolvRU+tfQUgjH4LTNmyVXi5eIBGj/c8A57V/k4tYgRwZ3GPqx8MEiOTf/xrBYaosqYq/qmXhfDIXOvORO2VKHji8Q=
+	t=1705911371; cv=none; b=jG/LYd5x8Er7OaEDKO/D1Nhel64ZYKwCEmhAHLWopeyY6ObzraSdL6PAs/1Ff/5iHMC1v5UPjicnQM44ksIvqu4hsJ2xMX4to+bYM6Hvv2Bw7OQClPBd7I0Bt3mnMuQ8BgdBjdfQ/wWlbxFZq1BoObFfdSJbzcsTrZbLIMv2G1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705911263; c=relaxed/simple;
-	bh=y2P83ycmoel1+Meq2BbcqsNnKdKTVhqyAN4uhigRT+I=;
+	s=arc-20240116; t=1705911371; c=relaxed/simple;
+	bh=UYYR7OwgH3khebBuqPLci+r4P7sB+RydRY++ZZLIxWk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IGlDEMC9S5/Y7qy7+FcE7sQhhyscHW6c/E6+zw7ASuoef4DjHXYKojFMLlGcVBneoCuVu1k0JLmdjYgjU/ntWhe8tNegQD4p2tx8z6dKugkMGwn22DkuS9nwV6+D1eH3kinaUCrElO4hADUUTBU7l0e+DmNTd2wDzwUWYc4e18s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gSey5DDt; arc=none smtp.client-ip=209.85.218.44
+	 In-Reply-To:Content-Type; b=k9yD8FEBq6IM0H0HOtj01OoU2sU/wdLNnnNgG3fqIxCPcxhBB0O8m5OSgvl7lAHjUNF6FRafRDujYv9koJOz6VES8AxkxVUpmAIK6uol2eq8N23eczHWTe09i/V8/G6zPLVj5DPoRJS1GS2Q6Mk6i6UyhX2SxYvxYb5ZLjVYf0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ak+gy4uU; arc=none smtp.client-ip=209.85.208.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a30799d6aa0so21861566b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:14:22 -0800 (PST)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55c33773c0aso629632a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:16:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705911260; x=1706516060; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705911368; x=1706516168; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=nNT5Xf49Dxj6Y0xrIo/95SANrC+E9gwKQoyFxYF7yeQ=;
-        b=gSey5DDtYWQt1YB5ZKzDUTMwQJs4m+PSs10VwPln6ZdfKlDWqmydTFHIQlqUFDU45F
-         mggbS+q0X4ZkpxyXzRgQ5i5lgriRbJUjSAzywphWhLxY0svRlbj0yLV7nXxGjhC1MK1P
-         B3NNrZnxUfYW3LoCiTaalPFOzLO8V9gcSh6ZSoMzXMtFj/itDWNOubN/PYEOLAaUpbVB
-         /tELELv1kjmjUxBYFn/ddQgGPwaXtt3sAPJ7UhK0rZjCIVWXgv9IRNo73OrXGa7ptBKV
-         1GWRs9agfxlsSCaBx/4xGeGLXdRIV6foyRcmuidRsv+qAprjw/phqcfy1oD/jIZEtxFf
-         t7bQ==
+        bh=Owc8n1zbzRgE2gXB50xab3lSqpbOCJjWc9N5K+ZKWBk=;
+        b=ak+gy4uUuQ/F6kOR4L9O6QG2pMixmHydlRgBzPR1SbQq+W77s8r+SAvQvJEs6xANMV
+         ptp02N51T2diSgld0tsBWXFzsjRFk3KzczObBQ583wjuJmjDQIm6cTYmERCCSnALyzFa
+         hErVk8ouAm2Gtj1S3ehr3+mZGiUK2Moc973IkWk3lykFO5n7we2+qa5YMS12e9e7lJXF
+         QoAK2M3rgobngZieETSlifXMwkWi79MXD0N/TPx6yHG4njHgTg25fTMkCNH3UiKwtf26
+         Xth6FqvAvKte71eiZFpa7MhVp3O8Bz8A/92tIsLtjNJ/zq3YkwaVKM4U1oX7bPHMONRP
+         54MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705911260; x=1706516060;
+        d=1e100.net; s=20230601; t=1705911368; x=1706516168;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nNT5Xf49Dxj6Y0xrIo/95SANrC+E9gwKQoyFxYF7yeQ=;
-        b=MByLG2R2pJnGlaSPb5D6A9eDgMuLPmcI6dlVXWMhw44jbl0S4PcqUK8SfzKmYkSE/F
-         qRL4jdLcNW54iViYNVK2nYNDUHBqrbPvmwiBo8U8MeojCPgDTpD+/PD+Jg05wySsr0rE
-         96pi+y+LPYCFHOwHWzBnGh+CSn7v6+skJOLDXPsLXaQOdgSUPwF1LitTak6AbcFuFA5Y
-         YT3N6iDR2WjWpnWggGTaIfBMrdX8dXIqFBJz/z5gTF29gaEd9gPU2kWX0zcrgbE4K/Jv
-         MoihpTKg34EQA/QBEjyT6y/VD5Y8SJbSa/FFwvUtiTvc6nG65LcMhdIrSzG/UYvwTrYm
-         Iy9Q==
-X-Gm-Message-State: AOJu0Yy27Eq9B11OG/Y1rGo9xorEhLYCNlxzY/NDg4KgZfgAbk2rUJr+
-	b5egfUlwCpBmj48eVkq2bm8mQOA0woSvjGmvaYMB36OJ4qO9ChaNZfDaDW6H/BA=
-X-Google-Smtp-Source: AGHT+IEbonJkUiwY4BOFnbFCdsq4dKTl8r8Wuzmxlnckmrid4ZJejB4zK9Y4Y5Bx8ZqGlN2anS2SmA==
-X-Received: by 2002:a17:907:1c0f:b0:a2d:d9d2:dab4 with SMTP id nc15-20020a1709071c0f00b00a2dd9d2dab4mr1904431ejc.71.1705911260457;
-        Mon, 22 Jan 2024 00:14:20 -0800 (PST)
+        bh=Owc8n1zbzRgE2gXB50xab3lSqpbOCJjWc9N5K+ZKWBk=;
+        b=gIrxhjp2/cdwmyWtz3HTrlCgcLtvUF7+GGCFNsU8u9FJL8gx2dm+CTu+tpARqDRwY8
+         1C6JgT8PVg87nmMszlbyl51+/u/xNvDwfXGuNmoAN+Vo0tgsP30hWOsX+4MUH3nc+E9H
+         JGdzq3xSjih5peO4zbOQ9INFiKllgCfGBiUuaoTlbdyGaNth4BPaEZsvya7+/oFu95lH
+         WJWGfiJKazn3OdcNH2GIQh0u2kww00076EwGvegB1qiDwrA5D3wMmTVIK5uMhRCfG5F+
+         6q0mnIsMHUd8DyoP3qZe3bE1XaV9sZYFJELHlO4cCTfvCVF8CVeSkDRiVoWmmAyY9PPu
+         VJFA==
+X-Gm-Message-State: AOJu0YwLEI8t00m1Iln9wp4h1ExDzDWqahw/Ct/LFkFdncGpbfzeBFnN
+	7LU6e5XD/rhbf9OVCT5bNbKTTKMpl6qt46QlkwxuQWupRvG2/AKC9BFWXDcieq8=
+X-Google-Smtp-Source: AGHT+IGQSNiXcw17V8zHRNvrv7UKglmx6pA5Yy6i5d9HuP0wgsku8/Sy6vouYnYycpUSKcNWzqggWw==
+X-Received: by 2002:a17:906:3649:b0:a30:67c0:8eb6 with SMTP id r9-20020a170906364900b00a3067c08eb6mr320928ejb.104.1705911368235;
+        Mon, 22 Jan 2024 00:16:08 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id ce2-20020a170906b24200b00a26a0145c5esm13045102ejb.116.2024.01.22.00.14.18
+        by smtp.gmail.com with ESMTPSA id j16-20020a1709062a1000b00a2c467ec72bsm13167215eje.60.2024.01.22.00.16.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 00:14:19 -0800 (PST)
-Message-ID: <04ccf5f5-1f02-42f9-b1fc-b781c54d7ae9@linaro.org>
-Date: Mon, 22 Jan 2024 09:14:17 +0100
+        Mon, 22 Jan 2024 00:16:07 -0800 (PST)
+Message-ID: <2e9ae099-18a3-4e22-8868-931d41c81f3f@linaro.org>
+Date: Mon, 22 Jan 2024 09:16:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,8 +74,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: rockchip: rk809: Document audio codec
- properties
+Subject: Re: [PATCH v3 3/3] dt-bindings: rockchip: rk809: Document audio codec
+ clock
 Content-Language: en-US
 To: Tim Lunn <tim@feathertop.org>, linux-rockchip@lists.infradead.org,
  conor.dooley@microchip.com, robh+dt@kernel.org, devicetree@vger.kernel.org
@@ -85,7 +85,7 @@ Cc: linux-arm-kernel@lists.infradead.org, Chris Zhong <zyw@rock-chips.com>,
  Lee Jones <lee@kernel.org>, Zhang Qing <zhangqing@rock-chips.com>,
  linux-kernel@vger.kernel.org
 References: <20240120135529.899403-1-tim@feathertop.org>
- <20240120135529.899403-3-tim@feathertop.org>
+ <20240120135529.899403-4-tim@feathertop.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -131,30 +131,36 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240120135529.899403-3-tim@feathertop.org>
+In-Reply-To: <20240120135529.899403-4-tim@feathertop.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 20/01/2024 14:55, Tim Lunn wrote:
 > Rockchip RK809 shares the same audio codec block as the rk817 mfd, and
-> is compatible with the existing rk817_codec driver.
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
+What rk817 has anything to do with this?
 
+> is compatible with the existing rk817_codec driver. This patch
+
+Please do not use "This commit/patch/change", but imperative mood. See
+longer explanation here:
+https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-patches.rst#L95
+
+
+> introduces the clock required for the audio codec.
 > 
-> This patch introduces to the binding the standard property #sound-dai-cells
-> and also an optional codec child node to hold codec specific properties.
-> Currently there is only one property in this node however the downstream
-> driver shows a number of other properties that are supported by the codec
-> hardware, that could be implemented in the future. This maintains the
-> existing driver ABI and keeps consistency with the rk817 bindings.
+> This clock provides the I2S master clock for the audio data. The codec
+> driver finds the clock by the name "mclk" and will fail to register if
+> this is missing. Clock-names is kept here to keep  compatibility with the
+> exisitng driver ABI and also to be consistent with the rk817 binding.
 
-So you are adding a new node? Just for one property? No, just put it
-into parent node.
+Typo.
 
-Downstream driver does not matter at all in that aspect.
+Also, what consistency with rk817 driver?
+
+I really do not understand which problem you are solving here.
+
+
 
 Best regards,
 Krzysztof
