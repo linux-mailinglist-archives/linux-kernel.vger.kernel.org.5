@@ -1,138 +1,124 @@
-Return-Path: <linux-kernel+bounces-33766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6F1F836E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:50:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 342B6836E57
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F6381F28B10
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:50:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48A851C274BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209FC5EE9E;
-	Mon, 22 Jan 2024 17:16:48 +0000 (UTC)
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [20.231.56.155])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAEDC4D592;
-	Mon, 22 Jan 2024 17:16:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=20.231.56.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D595F56E;
+	Mon, 22 Jan 2024 17:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dq0NSfYF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F8E40C13
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705943807; cv=none; b=hqZK8GaYmK1udIBWBqQOv6thZ0anipOdxn6G7G918K0dca2tNgnImdvQ5PiJi09upqAK0kh/R7WTK8ZPyjPeqXBzLr6L3K9P+ZRJVQaEHfbG7GQ33Wheljx7SYYWfNB7TUxGthu+5HXX/zFhb6YITEkDfEpMklb4k8tZjc4e0yQ=
+	t=1705943874; cv=none; b=b6Y9rD/eDV8E9QNXAkClE2AXCQxrh9X+q7kqmUrsVm8oavHrYRyHdr5koeiwWG03ESeYi7P901K219O8lOEhSC7buYu8TI4z0ITCQOKUU708DQ1wW2BRNl2nlU5OCRkaZ8+4UTHzv7dcySagA/csAEY/IXxx9K/W+CqqhkD7S10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705943807; c=relaxed/simple;
-	bh=J+CE1fjgXdIrGGtCeeEtcrHP/hpRi/SonczTZdsbyEc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VFn0r/Nn0ag0byiKd8NzxS61MxKbTvD/gq+eNPxq/8FlXb++jkFD0J34tr7zDXKsozTWXmvuMHhwhYJCfvF2v8mv6VuLV1a131h30fw/IInZP2GbEP17KZNG99hE4wT8a8N6dKcMhzjCBi4EuWTUySErXFUPbT5k5lG/Y+NoOBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=20.231.56.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [39.174.92.167])
-	by mail-app4 (Coremail) with SMTP id cS_KCgCHhYXsoq5lm0x5AA--.18549S2;
-	Tue, 23 Jan 2024 01:16:29 +0800 (CST)
-From: Zhipeng Lu <alexious@zju.edu.cn>
-To: alexious@zju.edu.cn
-Cc: Kashyap Desai <kashyap.desai@broadcom.com>,
-	Sumit Saxena <sumit.saxena@broadcom.com>,
-	Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-	Chandrakanth patil <chandrakanth.patil@broadcom.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	megaraidlinux.pdl@broadcom.com,
-	linux-scsi@vger.kernel.org,
+	s=arc-20240116; t=1705943874; c=relaxed/simple;
+	bh=cmr8yF5b3znopsdS7F3eRda3NyWqbTYPL2Cz5yi3QOo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=SlxYE2Aiuxuucai9edTMeLybG5j/XvEm1W0IjBDXuRRRngxvmhP/0mntCDcPe4d3+EM5xX5Lh91aUD68C15Cr31yvZ6N2fRaDYNhj8fkrt0FO7dszsGXDx8tuL5hv7/1XBYkkYqs+11Lrv5tfheG0ARXtHrbAu0b4Ku4Hr56l1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dq0NSfYF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705943871;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=dDzoH2ydbaG6uArVRXPWiTruxakYgLL2hFbtSHqrYpg=;
+	b=dq0NSfYF5nWNz1XMCWOEIk7JE+5gBholGvbHJ/WHSp2lad5AGm6WEQwwKy8oZwB5IMPw0R
+	vS6MgEleAIKqMYIT6UeSFHEW1TUXVSgWZrN09tAKXsqMLuVH4ArbW3pwvSI+Gb6ri6IY0J
+	6CgI6DF/LvbKjebC91agQXSZMViZcKk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-693-e-6ynDVzP3GbsK1ChLXfUQ-1; Mon, 22 Jan 2024 12:17:47 -0500
+X-MC-Unique: e-6ynDVzP3GbsK1ChLXfUQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 39380845E37;
+	Mon, 22 Jan 2024 17:17:47 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.26])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 33E3840C1430;
+	Mon, 22 Jan 2024 17:17:45 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon, 22 Jan 2024 18:16:33 +0100 (CET)
+Date: Mon, 22 Jan 2024 18:16:31 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] scsi: megaraid_sas: Fix a memleak in megasas_init_fw
-Date: Tue, 23 Jan 2024 01:16:10 +0800
-Message-Id: <20240122171610.3840351-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+Subject: [PATCH] ptrace_attach: shift send(SIGSTOP) into ptrace_set_stopped()
+Message-ID: <20240122171631.GA29844@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cS_KCgCHhYXsoq5lm0x5AA--.18549S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFyfZr4Dur1xCFyUXrWxCrg_yoW5JF15pr
-	yruw13tr17AayxWrWqkw4F93yYyw48G3s8Kr18J34j93Wagr15XF4vgrW7GF97CFZ5JF9x
-	Zr4Yqr1fCF4UKaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-	8cxan2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFV
-	Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
-	x4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r
-	1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_
-	JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
-	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-In the error-handling paths after allocation of
-fusion->stream_detect_by_ld and fusion->stream_detect_by_ld[i],
-megasas_init_fw should free them or there would be memleaks.
+Turn send_sig_info(SIGSTOP) into send_signal_locked(SIGSTOP) and move
+it from ptrace_attach() to ptrace_set_stopped().
 
-Fixes: 2e47e4e62e40 ("scsi: megaraid_sas: Fail init if heartbeat timer fails")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+This looks more logical and avoids lock(siglock) right after unlock().
+
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 ---
-Changelog:
+ kernel/ptrace.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-v2: remove the unused variable j.
----
- drivers/scsi/megaraid/megaraid_sas_base.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index 3d4f13da1ae8..a7d3c51fc17b 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -6016,7 +6016,7 @@ static int megasas_init_fw(struct megasas_instance *instance)
- 	void *base_addr_phys;
- 	struct megasas_ctrl_info *ctrl_info = NULL;
- 	unsigned long bar_list;
--	int i, j, loop;
-+	int i, loop;
- 	struct IOV_111 *iovPtr;
- 	struct fusion_context *fusion;
- 	bool intr_coalescing;
-@@ -6378,11 +6378,7 @@ static int megasas_init_fw(struct megasas_instance *instance)
- 			if (!fusion->stream_detect_by_ld[i]) {
- 				dev_err(&instance->pdev->dev,
- 					"unable to allocate stream detect by LD\n ");
--				for (j = 0; j < i; ++j)
--					kfree(fusion->stream_detect_by_ld[j]);
--				kfree(fusion->stream_detect_by_ld);
--				fusion->stream_detect_by_ld = NULL;
--				goto fail_get_ld_pd_list;
-+				goto fail_alloc_stream_detect;
- 			}
- 			fusion->stream_detect_by_ld[i]->mru_bit_map
- 				= MR_STREAM_BITMAP;
-@@ -6502,7 +6498,7 @@ static int megasas_init_fw(struct megasas_instance *instance)
- 			megasas_start_timer(instance);
- 		} else {
- 			instance->skip_heartbeat_timer_del = 1;
--			goto fail_get_ld_pd_list;
-+			goto fail_alloc_stream_detect;
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 2fabd497d659..d5f89f9ef29f 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -375,10 +375,13 @@ static int check_ptrace_options(unsigned long data)
+ 	return 0;
+ }
+ 
+-static inline void ptrace_set_stopped(struct task_struct *task)
++static inline void ptrace_set_stopped(struct task_struct *task, bool seize)
+ {
+ 	guard(spinlock)(&task->sighand->siglock);
+ 
++	/* SEIZE doesn't trap tracee on attach */
++	if (!seize)
++		send_signal_locked(SIGSTOP, SEND_SIG_PRIV, task, PIDTYPE_PID);
+ 	/*
+ 	 * If the task is already STOPPED, set JOBCTL_TRAP_STOP and
+ 	 * TRAPPING, and kick it so that it transits to TRACED.  TRAPPING
+@@ -457,14 +460,8 @@ static int ptrace_attach(struct task_struct *task, long request,
+ 				return -EPERM;
+ 
+ 			task->ptrace = flags;
+-
+ 			ptrace_link(task, current);
+-
+-			/* SEIZE doesn't trap tracee on attach */
+-			if (!seize)
+-				send_sig_info(SIGSTOP, SEND_SIG_PRIV, task);
+-
+-			ptrace_set_stopped(task);
++			ptrace_set_stopped(task, seize);
  		}
  	}
  
-@@ -6520,6 +6516,13 @@ static int megasas_init_fw(struct megasas_instance *instance)
- fail_start_watchdog:
- 	if (instance->requestorId && !instance->skip_heartbeat_timer_del)
- 		del_timer_sync(&instance->sriov_heartbeat_timer);
-+fail_alloc_stream_detect:
-+	if (instance->adapter_type >= VENTURA_SERIES) {
-+		for (i = 0; i < MAX_LOGICAL_DRIVES_EXT; ++i)
-+			kfree(fusion->stream_detect_by_ld[i]);
-+		kfree(fusion->stream_detect_by_ld);
-+		fusion->stream_detect_by_ld = NULL;
-+	}
- fail_get_ld_pd_list:
- 	instance->instancet->disable_intr(instance);
- 	megasas_destroy_irqs(instance);
 -- 
-2.34.1
+2.25.1.362.g51ebf55
+
 
 
