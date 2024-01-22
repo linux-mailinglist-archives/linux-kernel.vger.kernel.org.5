@@ -1,85 +1,89 @@
-Return-Path: <linux-kernel+bounces-32888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F0783616F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:27:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A80836173
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:27:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2786B1C260AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:27:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AB631F24ABD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8433F3FE5F;
-	Mon, 22 Jan 2024 11:15:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA98405F0;
+	Mon, 22 Jan 2024 11:15:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FAj2Vecy"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UZvbA9Aw"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4937E3B293
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1573FE51
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:15:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705922110; cv=none; b=Q+clv6rlU6EAZTO8z94HjYpBqnIH/WRFA6SNCJ4CjqOlerFGnuX1U7q53B2JE4dADpT7w+iZ23tXsgUS1i36xcM8dW6QRK4Q3W7mOsW8Gkf+lXKyLns0g590uhrF5NdSG54cjuJ6Lx9Zuvn4mQS2m3lyqe9PjbtzUckqCek5Q8g=
+	t=1705922112; cv=none; b=uzY2bZ3tSCLhAInDM+oDWWczxX1FvrsKCqURK0xgJ6rYVzEKkV//vDhrJeEm5A74qRFkjgnUU3t37W/sle71AQr4Rsh/YrE6noYbD6emU9XL/5621JryzOgU4xBp96BwxtQCQ/SVHv8tI8RkutP7GdgS9I4uVqHpLI8dqTOqm0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705922110; c=relaxed/simple;
-	bh=r8Nk1nx6WxSIMVymXyEYbaNTmlQxretGrAviShA+EBo=;
+	s=arc-20240116; t=1705922112; c=relaxed/simple;
+	bh=FrLltAYAafwmNfsSwZb6drJlItmOLUVtoXUr0w3aI3g=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=N5aMtd/RHrdyGGE/lT8X2wXIvp56N5nj/Y3YmbAixYHkO2kzS7U0NqWl9yJ3d/PeRDvOAIBNrQpv5LcgKJV8rxDw6aH0q+f3f4vH5/DyV022wxTKYmvfnLuVC+QWN6JEPPreF+ngT1+XcAbM/V+nQbpWGO5xmiAUEq4aE57fmhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FAj2Vecy; arc=none smtp.client-ip=209.85.167.46
+	 MIME-Version:Content-Type; b=QDG+syojMynyJnf8hxKgIU8qElL0dZ8UkgxCKlqTIYcd7ZdTckk7LMPcEkBkacN3qiNJ9SxwnqRuiz9iT3FaeRYAbsOqHg6lg7xfW7uVhP1xOKyO5tvcPPjvjyfQRIxHw1IZOSELy74dM3+T3aWn2cUiPeTn86nABEIYoV0FfGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UZvbA9Aw; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50f11e3ba3aso4170996e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 03:15:09 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a354a65afso2613029a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 03:15:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705922107; x=1706526907; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705922108; x=1706526908; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NNov5U8xwt5sXc4zpQlR2bDbhB2WJGrcQShsm6KSU98=;
-        b=FAj2Vecymga4EtujHYU+w8hWUSUX6xMHvVxynewoxu+nQSQDqcYrIZo8YAFLxsFo+r
-         tstfVGrRpSWkvYJqm2fOFu+E7pV9Ga/FxdSCQfkjDANZ6wJX8CqJO169OqhivnhrCb+I
-         cwj11fFqCJsq9Zyw9s0wdNZ0F9Nz9vGbB1TrpbW4eqNZdNF7RbWNZ4ydoe2pnver8BpS
-         yNTRR20QtO6nboBMDMJ+Wz0HDqmaMGhGiopd94FHyBgJcpVgBC5BkPDZEChoVLEpheoD
-         963TC2uKybIzCvUb532jy4P/DnlE4AV6n+zmCWrvlasT40YC8psVCoAemWkG6h5LlBbx
-         VHSg==
+        bh=OHbd+XvZHal91iZVjgEUlEy32Vop+2YCwqb7bnIY+aY=;
+        b=UZvbA9AwHPV41Po3K2xMTI65cdc4d4LKucqsxr1tYCIInF5CwgG/aquP5p+ejn54zw
+         Xmw7fETijokVoKptBaOrFSFEHxhCKQMScg3sGjS36P2w7yPQrKXEtfZbrUG4h8QVJ/6A
+         m/kN4/wBHqRxHZMran8KGAM6a4+AJXt9gPSLhr0gQhXybC9L1KQxc2OMTvwo1ivjZg21
+         GPS3K0n7kEtNkSBgVmbiBP1F3+DvVSVMQ1L9DQIzz8Eh0SYcLiAulw8rTSR81RPiMCJo
+         3UUFp6AZ8cXSkMI8x8xncy4kTRj6XHIbpBLkjgKRArWetbATBCGnUfq3XBuBKGvQcXRT
+         xpYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705922107; x=1706526907;
+        d=1e100.net; s=20230601; t=1705922108; x=1706526908;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NNov5U8xwt5sXc4zpQlR2bDbhB2WJGrcQShsm6KSU98=;
-        b=bwqGZ30PsrucCPGL9KtKlpdmk00tCj1wicSabjYLs0fy16PiX+kDhix2cK5yo2xlya
-         JVJidjGT3oJ1NpwaOTpIGHCxyLuHaGiBLvMupT75EQSDKxyzrXEgaaxLaAxQ8/mYmbMf
-         y0VFmmcSEs+5c3LdjPDz3y6o4FXG/fNjXqzSI7A+pjlXExpRSHflEiNV8RUdSC+ZfaRI
-         AaTB3Wk5BkAa0zR2xWLGtlUVFtLsQ0OHEpyekhIrgG1o4EdpTNhRDRG5kyo73/kI2rbb
-         u//SHfWTF2teNElbYwe14UxZa2VT/IyorP1eA1r3xW6acCLaJl/XW6NzEXj7VrCQottn
-         UF9w==
-X-Gm-Message-State: AOJu0YwV62maIoWMYovWL9HQcvxnINk5ynpaoDO+pA55zQKWqYYOVnrT
-	Cf74mAIy3n0D3gkWAnPOsnWHVepAROZPmvh0RttWiA6xEp9Rk3gR0OwIA290mls=
-X-Google-Smtp-Source: AGHT+IFgx632zKE2RrfuyNYoFBwMDaIkfXdub3lk9XW5AkcMqYmr9BQPIRXB0qcwQPwG3mp6Xa8pAQ==
-X-Received: by 2002:a19:770c:0:b0:50e:7f88:d34e with SMTP id s12-20020a19770c000000b0050e7f88d34emr1578498lfc.33.1705922107286;
-        Mon, 22 Jan 2024 03:15:07 -0800 (PST)
+        bh=OHbd+XvZHal91iZVjgEUlEy32Vop+2YCwqb7bnIY+aY=;
+        b=kU5v2eDgAOpYMg9YrVBKrjvB6PJWFsCnstTQG0nMg7eWMldwAh/qH1fE3g3oANaF3a
+         ARz5ziSH5Y5WRKhJ7Zmaic5972r5WNxNpezpaM0xElwZy/2rdulHkTrTd5GfHhH+KN/x
+         xcc7rGYonT7O2Ew4wE9J7Uv4rLvYLC2XAFN9/NCmgiGxXgWin+MlQDKYI9JupY8iq+Bm
+         uKOafAUx7uLUYgDG9hJwJGy0uHq/brjUnKgM7YGg00pBhmU0HpPDO6lRR0oSkIb0Q6LQ
+         tdWpRbzw88rPvLkt+C1BNJ8D17kckfcNF4WF8B81CyHP7xSs2bzJ4wG93eCAN2BLBqSV
+         5HPg==
+X-Gm-Message-State: AOJu0YxsHEdt6KjNRWr6zbc3OOCMSvukMYVhczyhZZqR/vur4JVxqWH+
+	K/EFe7rAncoBFWPF6y3DWr1wfA0Z/5qNU+ybbzCc5f8mzeiMSRIxBEhEdCht6Wg=
+X-Google-Smtp-Source: AGHT+IGN2jpvmAMaNOzfz+OiH67F8gD9wv2bgKogmBc069zcmzFB9DMlj+GkpZ+chu6sUiM7wjZGoA==
+X-Received: by 2002:aa7:d883:0:b0:559:ac5b:1a8 with SMTP id u3-20020aa7d883000000b00559ac5b01a8mr1589347edq.80.1705922108741;
+        Mon, 22 Jan 2024 03:15:08 -0800 (PST)
 Received: from [127.0.1.1] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id h27-20020a056402095b00b0055c643f4f8asm179422edz.32.2024.01.22.03.15.06
+        by smtp.gmail.com with ESMTPSA id h27-20020a056402095b00b0055c643f4f8asm179422edz.32.2024.01.22.03.15.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 03:15:06 -0800 (PST)
+        Mon, 22 Jan 2024 03:15:08 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Mateusz Majewski <m.majewski2@samsung.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
+To: LKML <linux-kernel@vger.kernel.org>, 
+ Mark Hasemeyer <markhas@chromium.org>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Tzung-Bi Shih <tzungbi@kernel.org>, Raul Rangel <rrangel@chromium.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Andy Shevchenko <andriy.shevchenko@intel.com>, 
+ Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
+ Alim Akhtar <alim.akhtar@samsung.com>, Conor Dooley <conor+dt@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
- Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20240116140839.1029395-1-m.majewski2@samsung.com>
-References: <CGME20240116140859eucas1p138fd10cf371ed1e1681a5bdd7e26e74d@eucas1p1.samsung.com>
- <20240116140839.1029395-1-m.majewski2@samsung.com>
-Subject: Re: [PATCH v2] ARM: dts: exynos: disable polling in Odroid
- XU3-related devices
-Message-Id: <170592210599.45273.13462998358002591317.b4-ty@linaro.org>
-Date: Mon, 22 Jan 2024 12:15:05 +0100
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+In-Reply-To: <20231220165423.v2.6.I06b059021de1bf6103e60a73211f078f2af75d17@changeid>
+References: <20231220235459.2965548-1-markhas@chromium.org>
+ <20231220165423.v2.6.I06b059021de1bf6103e60a73211f078f2af75d17@changeid>
+Subject: Re: (subset) [PATCH v2 06/22] ARM: dts: samsung: exynos5420:
+ Enable cros-ec-spi as wake source
+Message-Id: <170592210746.45273.11030827655294566757.b4-ty@linaro.org>
+Date: Mon, 22 Jan 2024 12:15:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,17 +95,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.4
 
 
-On Tue, 16 Jan 2024 15:08:39 +0100, Mateusz Majewski wrote:
-> After having switched to dynamic trip points, we no longer have a
-> hardware limit for trip point count and can support as many as we want
-> without polling.
+On Wed, 20 Dec 2023 16:54:20 -0700, Mark Hasemeyer wrote:
+> The cros_ec driver currently assumes that cros-ec-spi compatible device
+> nodes are a wakeup-source even though the wakeup-source property is not
+> defined.
 > 
+> Add the wakeup-source property to all cros-ec-spi compatible device
+> nodes to match expected behavior.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] ARM: dts: exynos: disable polling in Odroid XU3-related devices
-      https://git.kernel.org/krzk/linux/c/ccbc2b02c22e79f08edb3d7e1584910c0f38e213
+[06/22] ARM: dts: samsung: exynos5420: Enable cros-ec-spi as wake source
+        https://git.kernel.org/krzk/linux/c/8f51b5290ff4f8a9f1c634cf42ca37cd9e90018c
 
 Best regards,
 -- 
