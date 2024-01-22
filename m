@@ -1,62 +1,47 @@
-Return-Path: <linux-kernel+bounces-32470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 411FC835C18
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F4C835C12
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:54:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEA0B2878DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:55:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6271F287947
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:54:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF5291804D;
-	Mon, 22 Jan 2024 07:55:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB7D17BDB;
+	Mon, 22 Jan 2024 07:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YtRvclCJ"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hTAKZoKL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FED2210F1;
-	Mon, 22 Jan 2024 07:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE8FD20DD2;
+	Mon, 22 Jan 2024 07:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705910109; cv=none; b=Fxa5Xp6qVG/KpjYbFeytf7WF9aORjUuvW627dTi3In0IJll5kT9QPnRKo5aeWQF0KQuSESV7Z0qsg/iz1nETZ2UI1i9V/7fon0eZ47EsOLWW7BQ9msRgVYTk7uQTcGEob01R0TKvdcuAfXkx/jFlX/IO6myI31U59F74EhbfVJM=
+	t=1705910073; cv=none; b=MLCRXvZAuMe0cSzYw6+AmfedyFXq5ZjarWiP8QdrbOwXlBW0Td4LGKtJsNUJEo6bxZF6Af7P9z76lbGA6utVeh/XnqXW3l2+7oJDPwAyrwuwD/NTpncdxLtbpa3vOw5bT6igkXkOMH8eZpqo3ODPBpAZ7nQX+BgEn74nlbIGKzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705910109; c=relaxed/simple;
-	bh=6kV4fffNTKi7F6v40ek7pQmipRLKFkCSO7AULoajTEM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Ng1MFIP8w4vYoVvcB3oBBfBqREJIsgZEG5SCiY5k427TIrhsuyUB98WNs3c4okGXUY/u/qWqca8kHKcnH/sQ8z03fSGI6eEvbOHNZrS+P0jQHu0VRfo7tcJm108ZUM/7x02gVRddegfnTfmFMoBCVzFVxDi0fRSGQbiKkdm7UjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=YtRvclCJ; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40M7sOG9066261;
-	Mon, 22 Jan 2024 01:54:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705910064;
-	bh=gyE302RNTQIm7x3UlXfpEhfye5LytrcQCiTqqBhswEk=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=YtRvclCJ6vxgDAxKIQh8eStTANsHHsUScDH9O91MKsuPoWSvDKaLzuhPf9M2OPeOk
-	 GQktI+r8+K7fKAq9V8T8QVbWNdmEN++4k1org9RCpIehax1ZJW9jZl/Dne9RNi01FM
-	 f8YhCr3BZDdrJ3K6TxKAo1Yfub90qLJF13QGTWC8=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40M7sOCI005427
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 22 Jan 2024 01:54:24 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 22
- Jan 2024 01:54:23 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 22 Jan 2024 01:54:23 -0600
-Received: from [10.24.69.25] (danish-tpc.dhcp.ti.com [10.24.69.25])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40M7qiXV088179;
-	Mon, 22 Jan 2024 01:54:18 -0600
-Message-ID: <f9f770a9-5c49-44e2-ab81-c7eb35f0ed87@ti.com>
-Date: Mon, 22 Jan 2024 13:24:18 +0530
+	s=arc-20240116; t=1705910073; c=relaxed/simple;
+	bh=2su90Gj5IaJlBWuPLJpwINxwihDs/8h9SYfAyTVMhWA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XFF4N4Njmulgkc5LXQ0N1Y78tV4BONSqsZ1tH+j9CzSUoPL10G5A2glxkei/d8ZijdhihVQs2WPZ7ydMZKuQtZP26vNJs7Z4Aqm9OnawtdAQCcVySVLnT08Kd9nGk8BNgBsuQY/2g7qUQnYkTVdo44kicxstKCCbt00iYT/6hb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hTAKZoKL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50038C433C7;
+	Mon, 22 Jan 2024 07:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705910073;
+	bh=2su90Gj5IaJlBWuPLJpwINxwihDs/8h9SYfAyTVMhWA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hTAKZoKLuH2t2yUIgq5LHKfcopj5o9NUM1gYLq++7+wP6PY7JFs6T3gCgeeFtXSik
+	 T2sVtvlVa4Py4S1IwOwV3L/EUnwe55mlkd1Dx/FKOtd6FJZmLxvFYsCGVKWlAjVZO3
+	 prHwnb9QzikZhY4Rk6DYAkjKYU2qxnzudtEJHWwk6Mso/i5aWNJgkY7fedEtVDJ9UA
+	 sRZfgxYEi6KvQTbj5dsoRjtKiaBeA/kjq5drKQ0eLaYUC9DRmeVuDrXPLeQUWejWrX
+	 ua8LxiATeUmVmJvtnGIK9DvUkXUjPUM4qlamgUk6yuJr3IuchUXLdng4pzxeMojuV0
+	 M1LXZIH7hd4sQ==
+Message-ID: <3c40c1fb-fafc-47e2-acd0-360d7456e93b@kernel.org>
+Date: Mon, 22 Jan 2024 08:54:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,88 +49,130 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 2/3] net: ti: icssg-switch: Add switchdev based
- driver for ethernet switch support
+Subject: Re: [PATCH 8/8] arm64: dts: qcom: ipq5018-rdp432-c2: enable ethernet
+ support
+To: Ziyang Huang <hzyitc@outlook.com>, mcoquelin.stm32@gmail.com
+Cc: alexandre.torgue@foss.st.com, richardcochran@gmail.com,
+ p.zabel@pengutronix.de, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+ linux-mediatek@lists.infradead.org
+References: <TYZPR01MB55563BD6A2B78402E4BB44D4C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+ <TYZPR01MB5556D3E73D7F7242F810F915C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
 Content-Language: en-US
-To: Simon Horman <horms@kernel.org>
-CC: Rob Herring <robh@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>, Andrew Lunn <andrew@lunn.ch>,
-        "Vladimir
- Oltean" <vladimir.oltean@nxp.com>,
-        Wolfram Sang
-	<wsa+renesas@sang-engineering.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Grygorii
- Strashko" <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Roger Quadros <rogerq@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        "Jakub
- Kicinski" <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S.
- Miller" <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
-References: <20240118071005.1514498-1-danishanwar@ti.com>
- <20240118071005.1514498-3-danishanwar@ti.com>
- <20240119204043.GC105385@kernel.org>
-From: MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <20240119204043.GC105385@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <TYZPR01MB5556D3E73D7F7242F810F915C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+
+On 21/01/2024 13:42, Ziyang Huang wrote:
+> Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
+
+Missing commit msg.
+
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
+
+Tools like b4 or scripts_getmaintainer.pl provide you proper list of
+people, so fix your workflow. Tools might also fail if you work on some
+ancient tree (don't, use mainline), work on fork of kernel (don't, use
+mainline) or you ignore some maintainers (really don't). Just use b4 and
+all the problems go away.
+
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
+
+Please kindly resend and include all necessary To/Cc entries.
 
 
-
-On 20/01/24 2:10 am, Simon Horman wrote:
-> On Thu, Jan 18, 2024 at 12:40:04PM +0530, MD Danish Anwar wrote:
+> ---
+>  .../arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 52 +++++++++++++++++++
+>  1 file changed, 52 insertions(+)
 > 
-> ...
-> 
->> @@ -211,6 +216,15 @@ struct prueth_pdata {
->>   * @iep0: pointer to IEP0 device
->>   * @iep1: pointer to IEP1 device
->>   * @vlan_tbl: VLAN-FID table pointer
->> + * @hw_bridge_dev: pointer to HW bridge net device
->> + * @br_members: bitmask of bridge member ports
->> + * @prueth_netdevice_nb: netdevice notifier block
->> + * @prueth_switchdevice_nb: switchdev notifier block
-> 
-> nit: s/prueth_switchdevice_nb/prueth_switchdev_nb/
-> 
->      Flagged by ./scripts/kernel-doc -none>
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+> index e636a1cb9b77..074b78d7939c 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+> +++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+> @@ -15,6 +15,9 @@ / {
+>  
+>  	aliases {
+>  		serial0 = &blsp1_uart1;
+> +
 
-Sure Simon. I will fix this.
+Drop.
 
->> + * @prueth_switchdev_bl_nb: switchdev blocking notifier block
->> + * @is_switch_mode: flag to indicate if device is in Switch mode
->> + * @is_switchmode_supported: indicates platform support for switch mode
->> + * @switch_id: ID for mapping switch ports to bridge
->> + * @default_vlan: Default VLAN for host
->>   */
->>  struct prueth {
->>  	struct device *dev;
->> @@ -236,6 +250,16 @@ struct prueth {
->>  	struct icss_iep *iep0;
->>  	struct icss_iep *iep1;
->>  	struct prueth_vlan_tbl *vlan_tbl;
->> +
->> +	struct net_device *hw_bridge_dev;
->> +	u8 br_members;
->> +	struct notifier_block prueth_netdevice_nb;
->> +	struct notifier_block prueth_switchdev_nb;
->> +	struct notifier_block prueth_switchdev_bl_nb;
->> +	bool is_switch_mode;
->> +	bool is_switchmode_supported;
->> +	unsigned char switch_id[MAX_PHYS_ITEM_ID_LEN];
->> +	int default_vlan;
->>  };
->>  
->>  struct emac_tx_ts_response {
-> 
-> ...
+> +		ethernet0 = &gmac0;
+> +		ethernet1 = &gmac1;
 
--- 
-Thanks and Regards,
-Danish
+Keep alphabetical order.
+
+>  	};
+>  
+>  	chosen {
+> @@ -43,6 +46,22 @@ &sleep_clk {
+>  };
+>  
+>  &tlmm {
+> +	mdio1_pins: mdio1_pins {
+
+This wasn't ever tested. NAK.
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+
+Best regards,
+Krzysztof
+
 
