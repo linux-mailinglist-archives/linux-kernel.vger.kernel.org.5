@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-33281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56F7A8367E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:22:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A06508367ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:22:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A3001C22AC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:22:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D44E01C211DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CB85B20A;
-	Mon, 22 Jan 2024 14:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C9A5B5C7;
+	Mon, 22 Jan 2024 14:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IZBrIRWX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kZpNLkNB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47CB05B5A9;
-	Mon, 22 Jan 2024 14:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83095B5B5;
+	Mon, 22 Jan 2024 14:59:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935596; cv=none; b=B8IcQcIeEbG/l3V+USm6qq0cr1QtuBLwizmSxXTyBEaIRqIS/RO681RCZOxo0upyxtiZsRaQHIvlsyBeKb5Ng/rvsVv4tSAAvGIBxe7ioDBxZS+erB01jkqhVZFuJ7EI+OxCgfRDIZ1zhkbsgLANEbnLzcFZuCC29BNn8kbnvrY=
+	t=1705935598; cv=none; b=Bjx4wWKPLkTp/FURnN2IXEaMZgjUmlTRTXBV5ZEJnClk7Yz/M/DYJj0Gi87HyAxwiBlmcoVgilJPYZQnsVh7ZHZQXn0XqOh+4eUILH3SZ2LgXZzR6smnBSkjwRjWRAoVOrOdo5fYyoYwWUryC0dxJgHWSI/qQwVYAC+R4NrmaYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935596; c=relaxed/simple;
-	bh=fOsTqgZAd0vrP6tVW5esPMiUQEc5a6uhT+FU1ciBxb4=;
+	s=arc-20240116; t=1705935598; c=relaxed/simple;
+	bh=gi/zS+FijJoacGOzitI9u1y72nJ7iavRiUxAwlBWS9s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VN3BBoIPGR7JBhjZT1iNNG/YtmOxmW72qkuTYa831BHtHuGTtgPmc+7FWwouy9PsHaPNBt7vYpnLjkiMPkWSPpc4E3Xu482yGYuNqy8FhQ+Vjj4dmw5MuHQFcmBHziMfciRlko5MNK8cIn/reX+o/FReOI8ramHREWuVQWbSvUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IZBrIRWX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C4CFC43394;
-	Mon, 22 Jan 2024 14:59:54 +0000 (UTC)
+	 MIME-Version; b=n81xX3Nshg0/BJleizj6SnpkevfmYCHLec+Y8H5gg8YtbJQYh8gdH2zp5VtaxhuwRpwCNU84JT15lIqEGZH81RATtcA49YtkkKE5olnAN8WYXF3RdjAMRHpcSQ5Y0sMM5EUxJJhuIHBpWNGZKKlRIbT/WYlvPn+M8+ede57LE1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kZpNLkNB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68C7AC43394;
+	Mon, 22 Jan 2024 14:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935595;
-	bh=fOsTqgZAd0vrP6tVW5esPMiUQEc5a6uhT+FU1ciBxb4=;
+	s=k20201202; t=1705935598;
+	bh=gi/zS+FijJoacGOzitI9u1y72nJ7iavRiUxAwlBWS9s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IZBrIRWXC1j1zUoEO9MDjQslkO5/IQI0bObH2KZ5dHUjh6WvG1oCdLEN5hoy3hUdn
-	 BCbneDUxTYA2AFO1DoI0mi21ZUL5YPXQBi/tyvgB9JTSzSoPvxkhPTNpXTjJNe0UkO
-	 y4sGGV7FSsXbA3kMDag78kQs6u3o5O95gw/ZbTmKl4zERHfulzzkUQpKDQzXSVgIaa
-	 40X6EnYZWw5X3wJQiKyqOwCJugpvm27hGaIpsLX57XXcV/hf9lYGSMzUvFpVKbrbVG
-	 9v54PD+6rvvsYtERRo1DsFt3Y9qdMhsU90WDmbTmhGUuqhdoBq7yBNkF6BIUsXHsRY
-	 56kZDiwZhrx5Q==
+	b=kZpNLkNBoACItLuRQxurK1cVKfDWora97NdigFlPqST/Z7VOI9VXIlCCjSadF4AT3
+	 Vt7H4VgNwFxAVukK1G/GGaTSvX7kP6NfzFRSJs43dN+na1ErT4+uJrWPXPxX/deN5h
+	 4IqthMVrTmdJ7v7vWLnAszY/ylOKjy0/iAC9Xo6q4R3yEOteZs7chkFbA53vLz4L8q
+	 ozAwNWWgmadUahcnshs98MZNSzHzeTgughisyyi24VbnXBjdf6G9xU6FxtKiDOMuOl
+	 zFAaX/FSrnetY2Av+YfizlgQusMmZWhqrJ2v6WxY0oSNPvpR6BMENw+89A06ycTvMd
+	 7k6UhoYe+haeg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,14 +47,12 @@ Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Stephen Boyd <sboyd@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	mturquette@baylibre.com,
-	angelogioacchino.delregno@collabora.com,
-	krzysztof.kozlowski@linaro.org,
-	luca.ceresoli@bootlin.com,
-	robh@kernel.org,
+	duje.mihanovic@skole.hr,
+	conor.dooley@microchip.com,
 	linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 59/88] clk: hi3620: Fix memory leak in hi3620_mmc_clk_init()
-Date: Mon, 22 Jan 2024 09:51:32 -0500
-Message-ID: <20240122145608.990137-59-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 60/88] clk: mmp: pxa168: Fix memory leak in pxa168_clk_init()
+Date: Mon, 22 Jan 2024 09:51:33 -0500
+Message-ID: <20240122145608.990137-60-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122145608.990137-1-sashal@kernel.org>
 References: <20240122145608.990137-1-sashal@kernel.org>
@@ -71,37 +69,47 @@ Content-Transfer-Encoding: 8bit
 
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-[ Upstream commit bfbea9e5667cfa9552c3d88f023386f017f6c308 ]
+[ Upstream commit 2fbabea626b6467eb4e6c4cb7a16523da12e43b4 ]
 
-In cases where kcalloc() fails for the 'clk_data->clks' allocation, the
-code path does not handle the failure gracefully, potentially leading
-to a memory leak. This fix ensures proper cleanup by freeing the
-allocated memory for 'clk_data' before returning.
+In cases where mapping of mpmu/apmu/apbc registers fails, the code path
+does not handle the failure gracefully, potentially leading to a memory
+leak. This fix ensures proper cleanup by freeing the allocated memory
+for 'pxa_unit' before returning.
 
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-Link: https://lore.kernel.org/r/20231210165040.3407545-1-visitorckw@gmail.com
+Link: https://lore.kernel.org/r/20231210175232.3414584-1-visitorckw@gmail.com
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/hisilicon/clk-hi3620.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clk/mmp/clk-of-pxa168.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/clk/hisilicon/clk-hi3620.c b/drivers/clk/hisilicon/clk-hi3620.c
-index 2d7186905abd..5d0226530fdb 100644
---- a/drivers/clk/hisilicon/clk-hi3620.c
-+++ b/drivers/clk/hisilicon/clk-hi3620.c
-@@ -466,8 +466,10 @@ static void __init hi3620_mmc_clk_init(struct device_node *node)
+diff --git a/drivers/clk/mmp/clk-of-pxa168.c b/drivers/clk/mmp/clk-of-pxa168.c
+index fb0df64cf053..c5a7ba1deaa3 100644
+--- a/drivers/clk/mmp/clk-of-pxa168.c
++++ b/drivers/clk/mmp/clk-of-pxa168.c
+@@ -308,18 +308,21 @@ static void __init pxa168_clk_init(struct device_node *np)
+ 	pxa_unit->mpmu_base = of_iomap(np, 0);
+ 	if (!pxa_unit->mpmu_base) {
+ 		pr_err("failed to map mpmu registers\n");
++		kfree(pxa_unit);
  		return;
+ 	}
  
- 	clk_data->clks = kcalloc(num, sizeof(*clk_data->clks), GFP_KERNEL);
--	if (!clk_data->clks)
-+	if (!clk_data->clks) {
-+		kfree(clk_data);
+ 	pxa_unit->apmu_base = of_iomap(np, 1);
+ 	if (!pxa_unit->apmu_base) {
+ 		pr_err("failed to map apmu registers\n");
++		kfree(pxa_unit);
  		return;
-+	}
+ 	}
  
- 	for (i = 0; i < num; i++) {
- 		struct hisi_mmc_clock *mmc_clk = &hi3620_mmc_clks[i];
+ 	pxa_unit->apbc_base = of_iomap(np, 2);
+ 	if (!pxa_unit->apbc_base) {
+ 		pr_err("failed to map apbc registers\n");
++		kfree(pxa_unit);
+ 		return;
+ 	}
+ 
 -- 
 2.43.0
 
