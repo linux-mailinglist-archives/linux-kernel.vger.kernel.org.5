@@ -1,247 +1,241 @@
-Return-Path: <linux-kernel+bounces-34097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E68C837366
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:01:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12D9483736F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:02:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 934C1287DEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:01:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3734F1C2402C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8944A405EB;
-	Mon, 22 Jan 2024 20:01:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3C2405EA;
+	Mon, 22 Jan 2024 20:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="Roldsi+e"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="elCw2513"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF523B790;
-	Mon, 22 Jan 2024 20:01:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD12405C0
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 20:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705953692; cv=none; b=LDGEjxQVCAE0UBlE2WUsGaKQoQcafU7mrOboVbfE9Ds0E5Pu6h2MeQy6TN82KZ/l/1UEWg13cjNi5T2OjF4mZCBOMKqeCi3Qtpq/EXgueWdekhh7vPgfdbDyrDTy0wFW4biOCKCo8PjCsnwYT0/2kUO+51OBnRgpMQuZuh/y96o=
+	t=1705953743; cv=none; b=QJM9MBfs3Ob3rYeRx8SFcWbvqSljn9u0lawdSuScpopKW3GWgFMDpA0CPcIbvhENhEiXWZKzbPWsRzHRZrQ2P65t2P1kMTZp7n4RPMUl3LrHmbbFh3C5ess+xoiq0uPks10fkMs0DD2oioXcrwDF1TS6rZ0MnLMqHVR9N6F82wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705953692; c=relaxed/simple;
-	bh=dNelk4kBrgBCghijjRjoFYY9rvEodTp1XYkmBPmw944=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nsNTXAKf6XRnp7FP6czi+rGNmyzSRUOw8ZCLinUYEVsbXTL5x8hV4BsZvkx8NLy5HzGlodpPFmlOMFFP75g+IWfX4MF2XRZ5wOEKTyRlicQ54s5TmM/nBDzjEabLg+68SEuecQvjKMjFatXwu5QYY0znQI9P2pU1HhRsjpKfSeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=Roldsi+e; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1705953660; x=1706558460; i=deller@gmx.de;
-	bh=dNelk4kBrgBCghijjRjoFYY9rvEodTp1XYkmBPmw944=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=Roldsi+e/ixsw0Rufo0TEKAUHwJ964vRlLwtamHVpZ1xrEG7UaEczqqFz4sDeIRS
-	 ic0L8UckEsHeeywccp9evzE4PnUSo4EnXD1rhJETkLPpdbOxdNHOEpJP6Kmv1faQW
-	 MYb0m35MDfLSjtlbbPukc6mmMnB0hOSjkyVTIqClVl/MhfbxNABvktXjaiMw1T9Zh
-	 +C9wUuoa0ePtyS052o7yTMwRKZIBcHdyQq35dINaac6bPPQVtPxZ/QAMVMRWfedFy
-	 YVJ73IupSgKAjZOSd8JYcUP8z1/bUsSVkAouGd8xAd2h1x+W0vDKY+EYNlLj4wkzK
-	 Sm4PA/vmBmYnGU9Mng==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.156.47]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MuDc7-1r7Ahd0JdF-00uZaX; Mon, 22
- Jan 2024 21:01:00 +0100
-Message-ID: <00232392-dc40-4790-9278-91df30e50a04@gmx.de>
-Date: Mon, 22 Jan 2024 21:00:58 +0100
+	s=arc-20240116; t=1705953743; c=relaxed/simple;
+	bh=VdkhAorzBPaH/4Q+W05lpm+qjGuxdMhhs5V7dPnuTyo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f2jqwSqtA1oL8xzoeSXVAKZ8yWXmrPXjZ1vmY99V+jaZONljWl+gVeMoatg/km+LgmWvvseiMGuIBABBVy7HBpErbIXkjsmp/aRGfuIr+x70x9/5BIEAQUWjkIczMozPWXrWWbBym7dmmdevigsaOrIYUHq5UaELuweGtQWry/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=elCw2513; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-339261a6ec2so2103666f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:02:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705953739; x=1706558539; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=S9XdGfwCaFqRS40nSS7oXOASpHTiWciWWg6+rB3mocA=;
+        b=elCw25134BVwV6RfN8JXNOtKbmsUpYd9YOysB48fI+PXuloobbPgxSM/0B2C2aKpt9
+         4LMN2D99w+NSPQ15mVlRQ4L+M1mz8FbFLmBELaBXgsUXnGmb+OQmrKB1tx1fhtUmu8/n
+         6awumyw2WUuhsfW3OfTP+ZMEo//RzIwRiDw/lXxecpMsxNjrdUc0r22ZcOz4BVcWs4lf
+         ALrgNZ9b7qbzZjOWA3zOM0kYjLKHNEu7Q6t7pTM+3gBkseXgdhetnRmgtdGdseVZF+C1
+         K2YvF3du/hSW/FHbyaorOFTUcfnkbcjHV2zAkvC5QpYX2jjO6hAUb7ip5v3jc2jdYevt
+         94BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705953739; x=1706558539;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S9XdGfwCaFqRS40nSS7oXOASpHTiWciWWg6+rB3mocA=;
+        b=j2LmrYP27kVhnhQKPiM1VRuBa9efUqf5ttretgfmTAn51qeQ8pLN2kcR9mFDzHb6uq
+         Ip0jv2idzWqyiMDrdqoGBpbrrvjoA3V5kNR0suEsY4N5UN921C+N3UggqdrDh27CbCzu
+         VQ08+Q/q4K++wKPzag6VLGPcXllhIuFAhJPkZ+1G9qi2BnvgzssJ3XSiraDVXA5BEB2b
+         WhkP1xgis2uXjCmCWypG3bsHkqteaih+hdcJkBh6Ce8oAqkTtNtebWbWbtg9DxJAR/UL
+         Nb3N0pDbrSILIStkW5JT46SssH6OZHFkxz/UH9p/4Pa269Xge6+CJKOazqUwXWybq8dN
+         gQFQ==
+X-Gm-Message-State: AOJu0YymRRQIAfFXh32vCbyqmVMEIl6Gfc+NLiHQHzetE2TYAGMwnELK
+	OnTEk2B2DW/bCpL/KWmbz6uDxgXxusTXUxlv/SroRwBQxFfzFo3PEmFg15Km34VoGlJsO0zz1RM
+	aQf+QNpkEjCbAwrxeWXLTRpIWR4NDCb4iorAC+Q==
+X-Google-Smtp-Source: AGHT+IEP0LsFZ1DHoUGKiydzMLgHty4VJtBb5guXu8UbilwyiD38/IJiB6McSbbUFrxTg/eiRG2KWw2gTlp8GlSr0/A=
+X-Received: by 2002:adf:e68b:0:b0:337:6e32:1811 with SMTP id
+ r11-20020adfe68b000000b003376e321811mr2954342wrm.75.1705953739678; Mon, 22
+ Jan 2024 12:02:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/47] tty: vt: cleanup and documentation
-Content-Language: en-US
-To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>, gregkh@linuxfoundation.org
-Cc: linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
- Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org,
- Martin Hostettler <textshell@uchuujin.de>,
- Thomas Zimmermann <tzimmermann@suse.de>
-References: <20240122110401.7289-1-jirislaby@kernel.org>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20240122110401.7289-1-jirislaby@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+gm3ywaYDIj1z5b8uKNnsDEONVgpeLMuXadHkrhEOpzr6RnNRc7
- MKGXdTFk8i7+n/hahB3Z1Qd8HY06s3puVkp07+cNPf46oh5IMvd3h1bWGRq80KU0k0bugu9
- YObXAsna5CKxrH/v31pd/DN7EvKZxpRVxMGu7Rdl0bJ4eQ/OqbHLZeQ2hFs9tdPdBMSD0qR
- aJAfV/luWPLKrCuWbAFLQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:5N8g+roOATs=;p5v/fSt9MlMDLMws6IHxxqdF0j/
- 9qrDa48mvx+g132niFtZYy4NuzSIoKKuc4JHILs9PXpMu7h3gdSmcDlbkO1H3qTlKIF+FBZBh
- AFG5SD5BhbkjSCLY3hsw/v8IKys0SySa8kiNOGGVZAQoPEhd6OASbF8fgw7hNfDN2okRrZsp0
- eNk38aYHyot3S/jaa6eQYzVuzm/alVU4Vy88eWqnv5fTppyB4NKOaXs9EdaUil7KaH5tlW7dq
- wtYiWTpdOmY9V21fnDsnCuHUyIJm12VVibs+c4BwD3b3nwrru93Q57BpY1RC6dyMtwgXJQKSb
- /vkRuVPj8K0pQae3n+p9i4l5alAZkqkjEbv6Nq3KdgiPTu2Rs9hoceBHQhebrFt8EuR+2x0EK
- HjAM+WDMvo+JrgU6a+3BmoqBcX/gVdaRBOA1sdI5TFjBTn8QMVyGa+/gsiEmYATe/p6zRva+H
- W5TzpfZYuuKOCH2S71kRL0xbL8DewQ9j0J02f4FC2Cw0V3B+z7C5rX4PQtwI5MQoc4vI8TH9/
- cc2iFQRmPYXx/28uwAUKo7K4zZN/0tMhG0rbfTuKC0AOfokwwM7JSaVV0wXVigbNf+O9s0bNc
- 60KVPXtnVwsk+VywgROWfrpPyIuaVTDjiQULY9cNF4RtMTncR1nkDqLY9rlTidwMNHbSUxN2b
- mqz7QbZmPTQWoxWhGERqPJbA1HG8dqPXVq1yDuHa2BtBM175z61NSo2/eWltWau0Elh9EYLo0
- Tn2VF7lX8DIm8fQNGS35Sdiyto/XVfh6OC2In7nex24Wf+qJMc92WRnFp5WgPUffwVlTQQxld
- 5TF1+oRDWqkJWbNoywlACASXzSPMAvAAMGqVGCvtIbo1DZ1UUmhKPLnDLU5XYnZ+ksJ3gUFvB
- LNS64cTPvYnLF0Ydp7l2Y4hdKsCUBTtYg56Vus4plpOwR0zYQPV+I+WHi12KyNMPHp96XBeFJ
- QbQOzA==
+References: <20240105160103.183092-1-ulf.hansson@linaro.org>
+ <20240105160103.183092-4-ulf.hansson@linaro.org> <87801f3e-b7ce-46ba-9856-1321635a11b5@nxp.com>
+In-Reply-To: <87801f3e-b7ce-46ba-9856-1321635a11b5@nxp.com>
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+Date: Mon, 22 Jan 2024 13:02:08 -0700
+Message-ID: <CANLsYkwtNa_-t0f5rhTh5mtF72urKNyqWk0_qfbBwSCQK_6eOg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] remoteproc: imx_rproc: Convert to dev_pm_domain_attach|detach_list()
+To: Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>, 
+	Kevin Hilman <khilman@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Nikunj Kela <nkela@quicinc.com>, 
+	Prasad Sodagudi <psodagud@quicinc.com>, Stephan Gerhold <stephan@gerhold.net>, 
+	Ben Horgan <Ben.Horgan@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-remoteproc@vger.kernel.org, 
+	linux-media@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 1/22/24 12:03, Jiri Slaby (SUSE) wrote:
-> Push the console code (vt.c, vt.h, console.h, ...) into a bit more
-> maintainable state. Especially all around consw structure and document
-> it.
+On Mon, 22 Jan 2024 at 10:51, Iuliana Prodan <iuliana.prodan@nxp.com> wrote:
 >
-> CSI parser is also a bit cleaned up. More to follow some time in the
-> next round.
-
-I've not yet looked through all of those patches, but I
-tried to boot up a machine with the STI console driver
-and I've not seen any issues yet.
-So far:
-
-Tested-by: Helge Deller <deller@gmx.de> # parisc STI console
-
-Helge
-
-> [v2] See respective patches for changes. The major changes:
->   * vesa.h introduced
->   * parameters of csi*() simplified
+> On 1/5/2024 6:01 PM, Ulf Hansson wrote:
+> > Let's avoid the boilerplate code to manage the multiple PM domain case, by
+> > converting into using dev_pm_domain_attach|detach_list().
+> >
+> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > Cc: Bjorn Andersson <andersson@kernel.org>
+> > Cc: Shawn Guo <shawnguo@kernel.org>
+> > Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> > Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
+> > Cc: Daniel Baluta <daniel.baluta@nxp.com>
+> > Cc: <linux-remoteproc@vger.kernel.org>
+> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > ---
+> >
+> > Changes in v2:
+> >       - None.
+> >
+> > Iuliana/Daniel I am ccing you to request help with test/review of this change.
+> > Note that, you will need patch 1/5 in the series too, to be able to test this.
+> >
+> > Kind regards
+> > Ulf Hansson
 >
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: Martin Hostettler <textshell@uchuujin.de>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
->
-> Jiri Slaby (SUSE) (47):
->
->    vgacon: inline vc_scrolldelta_helper() into vgacon_scrolldelta()
->    fbcon: make display_desc a static array in fbcon_startup()
->    tty: vt: fix 20 vs 0x20 typo in EScsiignore
->    tty: vt: expect valid vc when in tty ops
->    tty: vt: pass proper pointers from tioclinux()
->    tty: vt: push console lock from tioclinux() down to 2 functions
->    tty: vt: pass vc_resize_user as a parameter
->    tty: vt: make vc_is_sel()'s vc const
->    tty: vt: define an enum for CSI+m codes
->    tty: vt: use case ranges for CSI+m fg/bg colors
->    tty: vt: define an enum for CSI+J codes
->    tty: vt: reflow csi_J()
->    use clamp() for counts in csi_?() handlers
->    don't pass vc->vc_par[0] to csi_?() handlers
->    tty: vt: define an enum for CSI+K codes
->    tty: vt: reflow csi_K()
->    tty: vt: define an enum for ascii characters
->    tty: vt: remove extern from functions in selection.h
->    tty: vt: make consw::con_debug_*() return void
->    tty: vt: make init parameter of consw::con_init() a bool
->    tty: vt: sanitize arguments of consw::con_clear()
->    tty: vt: remove checks for count in consw::con_clear() implementation=
-s
->    tty: vt: add con_putc() helper
->    tty: vt: eliminate unneeded consw::con_putc() implementations
->    tty: vt: sanitize consw::con_putc() parameters
->    tty: vt: sanitize consw::con_putcs() parameters
->    consoles: use if instead of switch-case in consw::con_cursor()
->    fbdev/core: simplify cursor_state setting in fbcon_ops::cursor()
->    tty: vt: remove CM_* constants
->    tty: vt: make consw::con_switch() return a bool
->    tty: vt: stop using -1 for blank mode in consw::con_blank()
->    tty: vt: define a common enum for VESA blanking constants
->    tty: vt: use VESA blanking constants
->    tty: vt: use enum constants for VESA blanking modes
->    tty: vt: make types around consw::con_blank() bool
->    tty: vt: make font of consw::con_font_set() const
->    tty: vt: make consw::con_font_default()'s name const
->    tty: vt: change consw::con_set_origin() return type
->    fbcon: remove consw::con_screen_pos()
->    tty: vt: remove consw::con_screen_pos()
->    tty: vt: make types of screenpos() more consistent
->    fbcon: remove fbcon_getxy()
->    tty: vt: remove consw::con_getxy()
->    tty: vt: remove unused consw::con_flush_scrollback()
->    tty: vt: document the rest of struct consw
->    tty: vt: fix up kernel-doc
->    Documentation: add console.rst
->
->   Documentation/driver-api/tty/console.rst |  45 ++
->   Documentation/driver-api/tty/index.rst   |   1 +
->   drivers/tty/vt/selection.c               |  43 +-
->   drivers/tty/vt/vt.c                      | 645 +++++++++++------------
->   drivers/tty/vt/vt_ioctl.c                |   6 +-
->   drivers/video/console/dummycon.c         |  38 +-
->   drivers/video/console/mdacon.c           |  43 +-
->   drivers/video/console/newport_con.c      |  69 +--
->   drivers/video/console/sticon.c           |  79 ++-
->   drivers/video/console/vgacon.c           | 152 +++---
->   drivers/video/fbdev/core/bitblit.c       |  13 +-
->   drivers/video/fbdev/core/fbcon.c         | 123 ++---
->   drivers/video/fbdev/core/fbcon.h         |   4 +-
->   drivers/video/fbdev/core/fbcon_ccw.c     |  13 +-
->   drivers/video/fbdev/core/fbcon_cw.c      |  13 +-
->   drivers/video/fbdev/core/fbcon_ud.c      |  13 +-
->   drivers/video/fbdev/core/tileblit.c      |   4 +-
->   include/linux/console.h                  | 124 +++--
->   include/linux/console_struct.h           |   1 -
->   include/linux/selection.h                |  56 +-
->   include/linux/vt_kern.h                  |  12 +-
->   include/uapi/linux/fb.h                  |   8 +-
->   include/uapi/linux/vesa.h                |  18 +
->   23 files changed, 755 insertions(+), 768 deletions(-)
->   create mode 100644 Documentation/driver-api/tty/console.rst
->   create mode 100644 include/uapi/linux/vesa.h
+> Tested-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+> Reviewed-by: Iuliana Prodan <iuliana.prodan@nxp.com>
 >
 
+Thanks for the leg-work on this.  I'll pick this up in rc1 later this week.
+
+> Iulia
+>
+> > ---
+> >   drivers/remoteproc/imx_rproc.c | 73 +++++-----------------------------
+> >   1 file changed, 9 insertions(+), 64 deletions(-)
+> >
+> > diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> > index 8bb293b9f327..3161f14442bc 100644
+> > --- a/drivers/remoteproc/imx_rproc.c
+> > +++ b/drivers/remoteproc/imx_rproc.c
+> > @@ -92,7 +92,6 @@ struct imx_rproc_mem {
+> >
+> >   static int imx_rproc_xtr_mbox_init(struct rproc *rproc);
+> >   static void imx_rproc_free_mbox(struct rproc *rproc);
+> > -static int imx_rproc_detach_pd(struct rproc *rproc);
+> >
+> >   struct imx_rproc {
+> >       struct device                   *dev;
+> > @@ -113,10 +112,8 @@ struct imx_rproc {
+> >       u32                             rproc_pt;       /* partition id */
+> >       u32                             rsrc_id;        /* resource id */
+> >       u32                             entry;          /* cpu start address */
+> > -     int                             num_pd;
+> >       u32                             core_index;
+> > -     struct device                   **pd_dev;
+> > -     struct device_link              **pd_dev_link;
+> > +     struct dev_pm_domain_list       *pd_list;
+> >   };
+> >
+> >   static const struct imx_rproc_att imx_rproc_att_imx93[] = {
+> > @@ -853,7 +850,7 @@ static void imx_rproc_put_scu(struct rproc *rproc)
+> >               return;
+> >
+> >       if (imx_sc_rm_is_resource_owned(priv->ipc_handle, priv->rsrc_id)) {
+> > -             imx_rproc_detach_pd(rproc);
+> > +             dev_pm_domain_detach_list(priv->pd_list);
+> >               return;
+> >       }
+> >
+> > @@ -880,72 +877,20 @@ static int imx_rproc_partition_notify(struct notifier_block *nb,
+> >   static int imx_rproc_attach_pd(struct imx_rproc *priv)
+> >   {
+> >       struct device *dev = priv->dev;
+> > -     int ret, i;
+> > -
+> > -     /*
+> > -      * If there is only one power-domain entry, the platform driver framework
+> > -      * will handle it, no need handle it in this driver.
+> > -      */
+> > -     priv->num_pd = of_count_phandle_with_args(dev->of_node, "power-domains",
+> > -                                               "#power-domain-cells");
+> > -     if (priv->num_pd <= 1)
+> > -             return 0;
+> > -
+> > -     priv->pd_dev = devm_kmalloc_array(dev, priv->num_pd, sizeof(*priv->pd_dev), GFP_KERNEL);
+> > -     if (!priv->pd_dev)
+> > -             return -ENOMEM;
+> > -
+> > -     priv->pd_dev_link = devm_kmalloc_array(dev, priv->num_pd, sizeof(*priv->pd_dev_link),
+> > -                                            GFP_KERNEL);
+> > -
+> > -     if (!priv->pd_dev_link)
+> > -             return -ENOMEM;
+> > -
+> > -     for (i = 0; i < priv->num_pd; i++) {
+> > -             priv->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
+> > -             if (IS_ERR(priv->pd_dev[i])) {
+> > -                     ret = PTR_ERR(priv->pd_dev[i]);
+> > -                     goto detach_pd;
+> > -             }
+> > -
+> > -             priv->pd_dev_link[i] = device_link_add(dev, priv->pd_dev[i], DL_FLAG_STATELESS |
+> > -                                                    DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
+> > -             if (!priv->pd_dev_link[i]) {
+> > -                     dev_pm_domain_detach(priv->pd_dev[i], false);
+> > -                     ret = -EINVAL;
+> > -                     goto detach_pd;
+> > -             }
+> > -     }
+> > -
+> > -     return 0;
+> > -
+> > -detach_pd:
+> > -     while (--i >= 0) {
+> > -             device_link_del(priv->pd_dev_link[i]);
+> > -             dev_pm_domain_detach(priv->pd_dev[i], false);
+> > -     }
+> > -
+> > -     return ret;
+> > -}
+> > -
+> > -static int imx_rproc_detach_pd(struct rproc *rproc)
+> > -{
+> > -     struct imx_rproc *priv = rproc->priv;
+> > -     int i;
+> > +     int ret;
+> > +     struct dev_pm_domain_attach_data pd_data = {
+> > +             .pd_flags = PD_FLAG_DEV_LINK_ON,
+> > +     };
+> >
+> >       /*
+> >        * If there is only one power-domain entry, the platform driver framework
+> >        * will handle it, no need handle it in this driver.
+> >        */
+> > -     if (priv->num_pd <= 1)
+> > +     if (dev->pm_domain)
+> >               return 0;
+> >
+> > -     for (i = 0; i < priv->num_pd; i++) {
+> > -             device_link_del(priv->pd_dev_link[i]);
+> > -             dev_pm_domain_detach(priv->pd_dev[i], false);
+> > -     }
+> > -
+> > -     return 0;
+> > +     ret = dev_pm_domain_attach_list(dev, &pd_data, &priv->pd_list);
+> > +     return ret < 0 ? ret : 0;
+> >   }
+> >
+> >   static int imx_rproc_detect_mode(struct imx_rproc *priv)
 
