@@ -1,61 +1,55 @@
-Return-Path: <linux-kernel+bounces-33213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D02183669D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:05:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6393D836706
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:10:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37533B28AE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:01:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D0EAB28F82
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40C6341766;
-	Mon, 22 Jan 2024 14:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B79847A53;
+	Mon, 22 Jan 2024 14:56:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OZFTQT7X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TlKtlGuJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792474174B;
-	Mon, 22 Jan 2024 14:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDA847789;
+	Mon, 22 Jan 2024 14:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935375; cv=none; b=cQYlD7uY+bKgSFlGXJupFxkK/WH4kpHPyQ+G+o+NnjeUb0tIm+Hx0thN7+3nz5tsCH5+7Uezk4o7bU/BkmmZURcFEjY++oE3XfoJx/dj8fqWY+RG/OHup5U/JxmOiD+2OBMmZPYyQ1gVbRZytVpwupWF11rCu9Bju36O+qyopFA=
+	t=1705935380; cv=none; b=O7/c4mDJFwtSboqAPropO/Wr29lTNNqQdg6j9kBwY6BOHvLYJlmlK9byxGR6+Q4qd7iEnb5/zb7ZvgxlwHoPdcXb3fQ5nBSEHWJIldvVr5T13oCiEBKNi3gvOLFoJfCp31JAxf3JqebfBFEzdrPCm6MVcPjV/chXMTAVs7DoPe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935375; c=relaxed/simple;
-	bh=PQgYt7o+gUgE7d9c9OZP21qdogIkHbNi1GtRSNglT/0=;
+	s=arc-20240116; t=1705935380; c=relaxed/simple;
+	bh=Qz4otPY30jDGvMvYYzPpGOAzqIWzJPvaWEZt9Oj/X98=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VNBaBhkbfr2r5oZzDe29lwnaIhc6cwqyTENsJT2y93EZaYNtpag+utyYJYPiVI3lYDGiqiIzXHa4Xz4MIy0WSKahrwDnZo+evqm8k4WlIWvVvhki8qfoLpNkjGrHOAaHX/5of+Kgn8O86NpHcy4KRqACrgOqRzvmMopaFwcYwzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OZFTQT7X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86185C433C7;
-	Mon, 22 Jan 2024 14:56:13 +0000 (UTC)
+	 MIME-Version; b=MGaxj0c+z/KFft6/KuLN7wbj+N2AN8gTsYsIckuAAALZethzTZCG9gH0gMPzbN+nvIN0cmXCnz3s3iiLiJvSU3hoXq+UqPLQGl7RNeISBzYa+RtayhIuXh+wo+ule6VllNMWelwYISHxxftUPecYkYbaHr6inCZeyzAKpzAnOsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TlKtlGuJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29D01C433F1;
+	Mon, 22 Jan 2024 14:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935375;
-	bh=PQgYt7o+gUgE7d9c9OZP21qdogIkHbNi1GtRSNglT/0=;
+	s=k20201202; t=1705935380;
+	bh=Qz4otPY30jDGvMvYYzPpGOAzqIWzJPvaWEZt9Oj/X98=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OZFTQT7XU9SZCOLVNfzgSDsQ5tgn3R5pfry9tDQkkDakG+L2bw8gSikNF9bvxEVxH
-	 BzgB+9eeGbCVQ391DLxS6doNzIqTrdlk2EpMQbkRVXoaHJVcLz0HAXCymRLDhsJOOa
-	 DJ+heI9Ytkme3k6a0VGS8m7ph1GIOA21sF80IX2pOCL8innjsDkFvAyW8N9pU7ibNm
-	 qyjXdAB+2yxdvfmFnYVS498xo8bgGGiEuh6QUYsqdU/qyT36ZhGL9QoOgcDN/S2O/P
-	 vBu8vGBsI7pyLhF4WPDvgLO+n38jVu+vLdGOpiffSAxb9fWfBOG4wASFLk2AxeRxBi
-	 /y5edUKnjKC/A==
+	b=TlKtlGuJcbpOHxACPcj/IKOMxQ7X6LudBWmlZ2lxNIL8PxFZbFtcNIFysUIFTMf2g
+	 0np7A/F9+5YzFJ1fRy1Xq6LVgpCCdr5ncCdQAc4tXCpiMd5S+WL/s4qjpZ84cq6+TL
+	 fD0cyEWPnzOJGsyKpJ5NVbsi9+hr73eLXUxtg67DMYZPO40sHwTzhGBgCZYWk/Ruom
+	 sXrnP7BfJi2Z+sVoneTM3kHF/vpll9TUJ0P3FLDmE/SP0LBnGIwVjm6A9+12kaQM52
+	 lHwwiqw7W2cUhPXr2M+AOv+HxDK7h+KEE5jZOBcR1JvwbKGpnNznxBB1TlnuAEuR11
+	 jKP+lIdn/ac6w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>,
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	perex@perex.cz,
-	tiwai@suse.com,
-	cezary.rojewski@intel.com,
-	broonie@kernel.org,
-	zhangyiqun@phytium.com.cn,
-	chenhuacai@kernel.org,
-	siyanteng@loongson.cn,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 02/88] ALSA: hda: Refer to correct stream index at loops
-Date: Mon, 22 Jan 2024 09:50:35 -0500
-Message-ID: <20240122145608.990137-2-sashal@kernel.org>
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 05/88] fast_dput(): handle underflows gracefully
+Date: Mon, 22 Jan 2024 09:50:38 -0500
+Message-ID: <20240122145608.990137-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122145608.990137-1-sashal@kernel.org>
 References: <20240122145608.990137-1-sashal@kernel.org>
@@ -70,68 +64,76 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit 26257869672fd4a06a60c2da841e15fb2cb47bbe ]
+[ Upstream commit 504e08cebe1d4e1efe25f915234f646e74a364a8 ]
 
-In a couple of loops over the all streams, we check the bitmap against
-the loop counter.  A more correct reference would be, however, the
-index of each stream, instead.
+If refcount is less than 1, we should just warn, unlock dentry and
+return true, so that the caller doesn't try to do anything else.
 
-This patch corrects the check of bitmaps to the stream index.
+Taking care of that leaves the rest of "lockref_put_return() has
+failed" case equivalent to "decrement refcount and rejoin the
+normal slow path after the point where we grab ->d_lock".
 
-Note that this change doesn't fix anything for now; all existing
-drivers set up the stream indices properly, hence the loop count is
-always equal with the stream index.  That said, this change is only
-for consistency.
+NOTE: lockref_put_return() is strictly a fastpath thing - unlike
+the rest of lockref primitives, it does not contain a fallback.
+Caller (and it looks like fast_dput() is the only legitimate one
+in the entire kernel) has to do that itself.  Reasons for
+lockref_put_return() failures:
+	* ->d_lock held by somebody
+	* refcount <= 0
+	* ... or an architecture not supporting lockref use of
+cmpxchg - sparc, anything non-SMP, config with spinlock debugging...
 
-Link: https://lore.kernel.org/r/20231121154125.4888-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+We could add a fallback, but it would be a clumsy API - we'd have
+to distinguish between:
+	(1) refcount > 1 - decremented, lock not held on return
+	(2) refcount < 1 - left alone, probably no sense to hold the lock
+	(3) refcount is 1, no cmphxcg - decremented, lock held on return
+	(4) refcount is 1, cmphxcg supported - decremented, lock *NOT* held
+	    on return.
+We want to return with no lock held in case (4); that's the whole point of that
+thing.  We very much do not want to have the fallback in case (3) return without
+a lock, since the caller might have to retake it in that case.
+So it wouldn't be more convenient than doing the fallback in the caller and
+it would be very easy to screw up, especially since the test coverage would
+suck - no way to test (3) and (4) on the same kernel build.
+
+Reviewed-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_stream.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ fs/dcache.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index 6ce24e248f8e..610ea7a33cd8 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -671,17 +671,15 @@ void snd_hdac_stream_timecounter_init(struct hdac_stream *azx_dev,
- 	struct hdac_stream *s;
- 	bool inited = false;
- 	u64 cycle_last = 0;
--	int i = 0;
- 
- 	list_for_each_entry(s, &bus->stream_list, list) {
--		if (streams & (1 << i)) {
-+		if ((streams & (1 << s->index))) {
- 			azx_timecounter_init(s, inited, cycle_last);
- 			if (!inited) {
- 				inited = true;
- 				cycle_last = s->tc.cycle_last;
- 			}
+diff --git a/fs/dcache.c b/fs/dcache.c
+index c82ae731df9a..d1ab857a69ca 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -787,12 +787,12 @@ static inline bool fast_dput(struct dentry *dentry)
+ 	 */
+ 	if (unlikely(ret < 0)) {
+ 		spin_lock(&dentry->d_lock);
+-		if (dentry->d_lockref.count > 1) {
+-			dentry->d_lockref.count--;
++		if (WARN_ON_ONCE(dentry->d_lockref.count <= 0)) {
+ 			spin_unlock(&dentry->d_lock);
+ 			return true;
  		}
--		i++;
+-		return false;
++		dentry->d_lockref.count--;
++		goto locked;
  	}
  
- 	snd_pcm_gettime(runtime, &runtime->trigger_tstamp);
-@@ -726,14 +724,13 @@ void snd_hdac_stream_sync(struct hdac_stream *azx_dev, bool start,
- 			  unsigned int streams)
- {
- 	struct hdac_bus *bus = azx_dev->bus;
--	int i, nwait, timeout;
-+	int nwait, timeout;
- 	struct hdac_stream *s;
- 
- 	for (timeout = 5000; timeout; timeout--) {
- 		nwait = 0;
--		i = 0;
- 		list_for_each_entry(s, &bus->stream_list, list) {
--			if (!(streams & (1 << i++)))
-+			if (!(streams & (1 << s->index)))
- 				continue;
- 
- 			if (start) {
+ 	/*
+@@ -850,6 +850,7 @@ static inline bool fast_dput(struct dentry *dentry)
+ 	 * else could have killed it and marked it dead. Either way, we
+ 	 * don't need to do anything else.
+ 	 */
++locked:
+ 	if (dentry->d_lockref.count) {
+ 		spin_unlock(&dentry->d_lock);
+ 		return true;
 -- 
 2.43.0
 
