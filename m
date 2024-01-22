@@ -1,152 +1,129 @@
-Return-Path: <linux-kernel+bounces-32337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F041835A62
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:38:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CA6E835A66
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:40:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA7E31F23594
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:38:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3D85280F1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346E317C68;
-	Mon, 22 Jan 2024 05:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PnL4vkGc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6583A5258;
+	Mon, 22 Jan 2024 05:40:05 +0000 (UTC)
+Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com [207.54.90.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9305681;
-	Mon, 22 Jan 2024 05:35:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2535240
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 05:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705901759; cv=none; b=KMdIp+EIqR9myquDk1OV/M0iHEyfES+6tVC3HzmAgzvELloFKbIyqfw+YpDlCEobsSKC0rbyz5t403gY5wH4HBC5Nyn2u86XaCbmwF0yk64M/TC/yWMrAm8NBJWdx8eV6bno34amnZWhQg57CDZK46HFCUXSJ9jfsreuXWkXWfE=
+	t=1705902005; cv=none; b=JYv+FJZ273Iow/oI/KBKKaYBV0Sm7s2A3ih6E5s9B42o22UI3pndKuXrUOoAovNrzzydcc/qWEmpsQwlRbPN2u+knfq62owvD2zux97jn+ntiCcEhpfatD2zFhfnYRESsgJvnwZV/nS6wxdWzh+nBeHcS6RqndL2LYsWCvA0UdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705901759; c=relaxed/simple;
-	bh=02D8c8Gk39bt/B0GonHwJ2qvn4sYlrkgLzM0SjuJwjk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Ui85SN3TYWvciDGFN8qXHQiv2bUzgNoRtclF2OeivgOqZh2Uc+kyVoo7gaFrdicNv1/AyfqlqxjA/E5O4UDMHSyo0enBsw3qCO1fZL8Lle+gNnZ26ChdOQfRYyWni0OApuadjQYJOVmVoNV9cJfW5ZLMgMcKrVObTMNqjkkRpa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PnL4vkGc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7A8BAC43142;
-	Mon, 22 Jan 2024 05:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705901758;
-	bh=02D8c8Gk39bt/B0GonHwJ2qvn4sYlrkgLzM0SjuJwjk=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=PnL4vkGcfSFlPBy6bjD/rwlbY/fS6UtzUxCRdZtpKRTLIx72EnMsY6WJD/IODjmEU
-	 9TwLLvG6QIORKrch8mJ6WOeCJLozFmhoAXImEWCXN710+vsmLAqaYcW29BkyKAYmJQ
-	 63TuawI2iEQIUzFiAbe6TZpCDZDk6XZ3x0LLmZ2XkRh7tfeI/vzjF0vTH0lKgKiYMY
-	 PwiM7BbMjWxB7/4QKTtegqBJo47L0EKEKMElxOuc7yWcp7DfAihdL+gB+GCcZMLuCs
-	 KaNhxFcMQ7wgte3eTwJtjVUbrOtYiywr583yuivI6yMqsXA36YGVdnzla5BOgaP6dC
-	 v/Bp+DENr7zJA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69553C47DDB;
-	Mon, 22 Jan 2024 05:35:58 +0000 (UTC)
-From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
- <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Mon, 22 Jan 2024 08:35:58 +0300
-Subject: [PATCH net-next v3 7/7] net: dsa: mt7530: do not run
- mt7530_setup_port5() if port 5 is disabled
+	s=arc-20240116; t=1705902005; c=relaxed/simple;
+	bh=T4ARGadbiKu7zg6G4+r1xa0bBGmmR0HB4sJW6kBmIY4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=D2DpBG9VC2bvy4U0AAYEBSUDqa7kSEMoF/crejdfeX9zs97CAAA9AFHSQOvyyx3jzXzZG/9h/3907+g6eXbojqq+FvHjXIZ3w5prW6jLdXWwqSm2Hmbaxf+0c0iXK+jZeDeTURpIZoE7lbJ5JW1VK2kfHoJ5vED/PHb3BnJJ37U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; arc=none smtp.client-ip=207.54.90.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="146838133"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701097200"; 
+   d="scan'208";a="146838133"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+  by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 14:39:55 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
+	by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 8AE0ED64BA
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:39:52 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id C0B3CBF4A0
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:39:51 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 514642007C3DD
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:39:51 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id B18441A0072;
+	Mon, 22 Jan 2024 13:39:50 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	linux1394-devel@lists.sourceforge.net,
+	Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH 1/2] firewire: Kill unnecessary buf check in device_attribute.show
+Date: Mon, 22 Jan 2024 13:39:41 +0800
+Message-Id: <20240122053942.80648-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id:
- <20240122-for-netnext-mt7530-improvements-1-v3-7-042401f2b279@arinc9.com>
-References:
- <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
-In-Reply-To:
- <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
-To: Daniel Golle <daniel@makrotopia.org>, 
- Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>, 
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
- Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Russell King <linux@armlinux.org.uk>
-Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com, 
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705901755; l=1954;
- i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=CX1ZTLft5JNnPSpvgA9ppPM0W5zZnVzbF5jhuxeYZts=;
- b=m7xRK80HiKn4Yf5gYVKbcOAJuPiW2ZQjrweTiy/ng47qxoKCiENascUa+CONss3MADnR3scXe
- bi2arpEKxnkDpyM3moD6BJkZxd+h2xHCHl22YVS7vuxFGjITKlV6wVM
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
-X-Endpoint-Received:
- by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt with auth_id=115
-X-Original-From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Reply-To: <arinc.unal@arinc9.com>
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28134.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28134.004
+X-TMASE-Result: 10--1.868800-10.000000
+X-TMASE-MatchedRID: D7uj3L7FQ3I8c+bQ4YQ9Biy4YbFsZbM/mGrGwE7uWsvcRlVxRCnt1hsk
+	AdaEfeQKasOJoXx/wo/mn3xyPJAJoh2P280ZiGmRGYJhRh6ssetgg7HO8z2tNrs3Yh2IOCYzBv9
+	+XtincoPi8zVgXoAltsIJ+4gwXrEtJ0RPnyOnrZLWVzrtqV3TKmhFx1gLyk1HpHGEjQ7AvuvqhZ
+	R6wV8bh935pBFGMfOOdZE5Rp4uo197PvKHUeGOL5hzxat1GtSzDM8Ug2mxrV7AYLx7rnbR8rDQ8
+	m3TqgloelpCXnG+JjvDGBZ1G8r1Sf2D6gx/0ozp
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+Per Documentation/filesystems/sysfs.rst:
+> sysfs allocates a buffer of size (PAGE_SIZE) and passes it to the
+> method.
 
-There's no need to run all the code on mt7530_setup_port5() if port 5 is
-disabled. The only case for calling mt7530_setup_port5() from
-mt7530_setup() is when PHY muxing is enabled. That is because port 5 is not
-defined as a port on the devicetree, therefore, it cannot be controlled by
-phylink.
+So we can kill the unnecessary buf check safely.
 
-Because of this, run mt7530_setup_port5() if priv->p5_intf_sel is
-P5_INTF_SEL_PHY_P0 or P5_INTF_SEL_PHY_P4. Remove the P5_DISABLED case from
-mt7530_setup_port5().
-
-Stop initialising the interface variable as the remaining cases will always
-call mt7530_setup_port5() with it initialised.
-
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- drivers/net/dsa/mt7530.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/firewire/core-device.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 5394d8c6a40e..cd7673ecea51 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -942,9 +942,6 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
- 		/* MT7530_P5_MODE_GMAC: P5 -> External phy or 2nd GMAC */
- 		val &= ~MHWTRAP_P5_DIS;
- 		break;
--	case P5_DISABLED:
--		interface = PHY_INTERFACE_MODE_NA;
--		break;
- 	default:
- 		dev_err(ds->dev, "Unsupported p5_intf_sel %d\n",
- 			priv->p5_intf_sel);
-@@ -2313,8 +2310,6 @@ mt7530_setup(struct dsa_switch *ds)
- 		 * Set priv->p5_intf_sel to the appropriate value if PHY muxing
- 		 * is detected.
- 		 */
--		interface = PHY_INTERFACE_MODE_NA;
--
- 		for_each_child_of_node(dn, mac_np) {
- 			if (!of_device_is_compatible(mac_np,
- 						     "mediatek,eth-mac"))
-@@ -2346,7 +2341,9 @@ mt7530_setup(struct dsa_switch *ds)
- 			break;
- 		}
+diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
+index 0547253d16fe..47d6cb3dc916 100644
+--- a/drivers/firewire/core-device.c
++++ b/drivers/firewire/core-device.c
+@@ -323,7 +323,7 @@ static ssize_t show_immediate(struct device *dev,
+ 	if (value < 0)
+ 		return -ENOENT;
  
--		mt7530_setup_port5(ds, interface);
-+		if (priv->p5_intf_sel == P5_INTF_SEL_PHY_P0 ||
-+		    priv->p5_intf_sel == P5_INTF_SEL_PHY_P4)
-+			mt7530_setup_port5(ds, interface);
+-	return snprintf(buf, buf ? PAGE_SIZE : 0, "0x%06x\n", value);
++	return snprintf(buf, PAGE_SIZE, "0x%06x\n", value);
+ }
+ 
+ #define IMMEDIATE_ATTR(name, key)				\
+@@ -335,8 +335,6 @@ static ssize_t show_text_leaf(struct device *dev,
+ 	struct config_rom_attribute *attr =
+ 		container_of(dattr, struct config_rom_attribute, attr);
+ 	const u32 *directories[] = {NULL, NULL};
+-	size_t bufsize;
+-	char dummy_buf[2];
+ 	int i, ret = -ENOENT;
+ 
+ 	down_read(&fw_device_rwsem);
+@@ -358,15 +356,9 @@ static ssize_t show_text_leaf(struct device *dev,
+ 		}
  	}
  
- #ifdef CONFIG_GPIOLIB
-
+-	if (buf) {
+-		bufsize = PAGE_SIZE - 1;
+-	} else {
+-		buf = dummy_buf;
+-		bufsize = 1;
+-	}
+-
+ 	for (i = 0; i < ARRAY_SIZE(directories) && !!directories[i]; ++i) {
+-		int result = fw_csr_string(directories[i], attr->key, buf, bufsize);
++		int result = fw_csr_string(directories[i], attr->key, buf,
++					   PAGE_SIZE - 1);
+ 		// Detected.
+ 		if (result >= 0)
+ 			ret = result;
 -- 
-2.40.1
+2.29.2
 
 
