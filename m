@@ -1,128 +1,161 @@
-Return-Path: <linux-kernel+bounces-33195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D50B8365E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF1268365E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CD1C2825F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:54:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E3D3282A84
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F1283D57E;
-	Mon, 22 Jan 2024 14:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BEF3D96D;
+	Mon, 22 Jan 2024 14:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b="P9Bq6stV"
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="irKTd4gk"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2153C3D56D;
-	Mon, 22 Jan 2024 14:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935266; cv=pass; b=Z9yXAWEgpT4lAQxTRTuBKG1sq5aZ1uPew8UEj3HzAzRlCJ2SFxHWcVaFGAr8el3Rq+cMl18rOFFitidlqz81OZWLoc8Vlg2kQxob65xwh17wHl2aC96HXMFVTBaovIEFAoseeRn04QTEWseSWn/WQWYxMwi93QlfEzhTqa3sUP0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935266; c=relaxed/simple;
-	bh=fy3UHK6HOYrFTv/m0+PoNLYHH9w80aFHo8m1KKsHCRw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pLwFfQwFcJgJVw6qN2OZaSJNP5AZSM/ZcB8q8LYtXSkRin4PV45QTJ6Z3YCnq5P66wD0hndWr7H7Ud2iqa5TrEv173mY51oO+XvYHvPHj9GafXKW1cO9EcPxzGBxYCw+q1H/H3VgEvQFt0QGPalqugXOUCF+AvaKiiQ73F+A/UI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe; spf=pass smtp.mailfrom=rong.moe; dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b=P9Bq6stV; arc=pass smtp.client-ip=136.143.188.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rong.moe
-Delivered-To: uwu@icenowy.me
-ARC-Seal: i=1; a=rsa-sha256; t=1705935261; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=POtGExCcsDaAKCEYOWxA3C5glNplyfPlW0kISEnw+r9ensVcP1FWPNYuzxY3A6r1Cua5iEXcQxIKecS0oaFZsAzQoBV1I3AQ0ofm4faDiZE9apibTLOy+S2Vfw6U1TwWOI/VJyjQRJZzj+jTr11QnBtdPuQqcC2599sS4hsL/V4=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1705935261; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=nJiBhLPvPsrIOjSvCVoQ6mqDO5KXSL8mgOu7VVMPH9U=; 
-	b=RYi02WdsYISJI9NpufgawTye8yTFj6dMdh222JmtLv+SESAFeHewnRMbvnpfIaN0Q5PazSAbGHy0KTrlgWeV8mNxa5FprIUuLowza8s+ZlBATkag8wr+B0CVcx1d3k6U1voIQ38mWkcM12JE0/2xbwnwAsf3SXzSyNNVDThppgA=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=rong.moe;
-	spf=pass  smtp.mailfrom=i@rong.moe;
-	dmarc=pass header.from=<i@rong.moe>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1705935261;
-	s=zmail; d=rong.moe; i=i@rong.moe;
-	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-	bh=nJiBhLPvPsrIOjSvCVoQ6mqDO5KXSL8mgOu7VVMPH9U=;
-	b=P9Bq6stVrRlSWa5pBpusGJ6lvjrgtYRPRtAERoKkNoIKM0++NmX4fFMSzJ0oci8Z
-	iFSAYAmqDiEp3foKqsbU5/5M61oAsbcVZDkK0fzxBtfArY/6rR+V0qYI1SGCLjujRTs
-	uZFzPfTq9lP5ZXhYBnqSylgRE1XtEHMHNxgAb8yg=
-Received: from tb.lan (182.118.232.146 [182.118.232.146]) by mx.zohomail.com
-	with SMTPS id 1705935258651526.4153199298788; Mon, 22 Jan 2024 06:54:18 -0800 (PST)
-Message-ID: <3647c5f823260865eb870ff1ce45c787bcaec256.camel@rong.moe>
-Subject: Re: [PATCH 1/4] ARM: dts: qcom: msm8974-samsung-klte: Add label on
- /i2c-gpio-led
-From: Rong Zhang <i@rong.moe>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bjorn Andersson
- <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Icenowy Zheng <uwu@icenowy.me>
-Date: Mon, 22 Jan 2024 22:54:08 +0800
-In-Reply-To: <73d75a74-71db-43c7-935a-65423159ce42@linaro.org>
-References: <20240121154010.168440-1-i@rong.moe>
-	 <20240121154010.168440-2-i@rong.moe>
-	 <73d75a74-71db-43c7-935a-65423159ce42@linaro.org>
-Autocrypt: addr=i@rong.moe; prefer-encrypt=mutual;
- keydata=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
-	cMTsfqztU+orM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3-1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895D33D960;
+	Mon, 22 Jan 2024 14:55:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705935306; cv=none; b=OyxuIzVl+9Xe4AVkgAYqrUCPysArO4Fbgq2zLzYlLaIYseRJX5vZPHx5HEMvlQ5BcFrlsqfax0Qor4O6tpKvC1D8Rxc8VPSZsHEpc2oZ3zB705LUg73i9Rko8sxyTlT3HjGe2WMkQXeJBL4PYUEtQhT1M1a6wYdQO0/HW7SQlpM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705935306; c=relaxed/simple;
+	bh=Nzv63BCkoPcsqWEFiBswGPma2+8hRkcFkANtdVNFiro=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hGSehBz1IOZ3kCsiGh6ZAsam84fu7EtWZid538d9B3xUEdymeyhVEIlGOBet8I9jf4DqcvV6gtGvpe0dLFsJ93eUBv/sPoM2+lLXYx8MpjIg2VMvsFYDTnmZsdlsA6hatYO97VT/zcqS4dsr4kspJCcozj7HMkBAohhsylSYQfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=irKTd4gk; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4b77c843fbeso763403e0c.2;
+        Mon, 22 Jan 2024 06:55:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705935304; x=1706540104; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LjET904TYP/WwjxV83kzot+nYVG1EoymjQ+8BNv7pUg=;
+        b=irKTd4gkA03NZZVeM+/uKOrtuTDuhfZGNTPv+4PXyozitZjwgDy3DQr0RZnUJCQp6s
+         Hejww2vV/09+jnJ3t0hF0zeuSH7T+k4L21M46HH1AUr18CU8aPVWthostlrvji+RAFML
+         iBwIyoGylSSZM3DjQ3pHTQZKyiDobfFpyORIOpXKqPHhYrSzwz53hpOBlecYrQWbJkDW
+         IRLBsD8F1ITGIs7EtlGMlvejp0IzSKweMdIYeIwFpJqgohcpoPB8n1vJweDSW+R7ZXQF
+         gqQsIzuJdRX0npzgXYRFM8qdwL69JYDTVDbJ8aEla1KoIeijsLKUieQeKU9jbIV2iWof
+         pzdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705935304; x=1706540104;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LjET904TYP/WwjxV83kzot+nYVG1EoymjQ+8BNv7pUg=;
+        b=sHV5P878w8KVDO9S0OgyjuJwuOS8lvmJmtWRe6CENZvEvqEpeLm/t63a2QvmrVNWSL
+         2s4i/7pkUbQSzZCQvenPnkgWOS9wddYoUPt8AKJ9lxciHi6mCCNSWlwDVcn3qCFLFHJp
+         BuTBbAeJtjaAMqz8eiK2U897rMUF9eVEYpWHA/cgQypVDNOSIHuawHSSObxfdW5hi1Ez
+         rK8VVyd621ELz76n/iwuH1GqpGkWQ8PZsNk/eRpB74Yt0e9up0JoQLC3MxShit/YW1jO
+         JHyr30TXIL+9Z/9jf5TNzOD77Hy9FI7OCP+IKZ4XQBLB+UX0Ip+1Y2y9wNmmaBa1Uc1D
+         yNSQ==
+X-Gm-Message-State: AOJu0YzB19NpXg+I64KPIsH/lCY+LJaFpS+ZvnrKGPJfNFJWMDUSQ1De
+	L7wx0LlxyYZzdSSKZfT5UEqZ6ip3HuQepNgtyNrnRvMk+s5mYRVvlKByagVh1DfVbmjzIRebKvZ
+	CDH5EfvidFXqkeE8AcCOo1cgn1QM=
+X-Google-Smtp-Source: AGHT+IExbbr5WjMkq6GXFtSkH5uHwA9GL8oL5jWqvfZ9dk2l185iqKslGfr7EIvhkIFxu3lsDyPY/N1lddLUY9GBAnk=
+X-Received: by 2002:ac5:c957:0:b0:4b6:b867:c83f with SMTP id
+ s23-20020ac5c957000000b004b6b867c83fmr1344493vkm.22.1705935304361; Mon, 22
+ Jan 2024 06:55:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ZohoMailClient: External
+References: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
+In-Reply-To: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
+From: Pedro Falcato <pedro.falcato@gmail.com>
+Date: Mon, 22 Jan 2024 14:54:52 +0000
+Message-ID: <CAKbZUD2=W0Ng=rFVDn3UwSxtGQ5c13tRwkpqm54pPCJO0BraWA@mail.gmail.com>
+Subject: Re: Recent-ish changes in binfmt_elf made my program segfault
+To: Jan Bujak <j@exia.io>
+Cc: ebiederm@xmission.com, keescook@chromium.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
+	linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-01-22 at 10:48 +0100, Krzysztof Kozlowski wrote:
-> On 21/01/2024 16:39, Rong Zhang wrote:
-> > Some variants of klte, e.g., the China edition (kltechn), have minor
-> > differences to differentiate them from klte. This includes the GPIO pin=
-s
-> > connected to /i2c-gpio-led.
-> >=20
-> > A label is added on /i2c-gpio-led to allow DT of other variants to
-> > reference it conveniently. Considering both LEDs and a GPIO expander ar=
-e
-> > connected to the node, it is named "i2c_led_gpio".
-> >=20
-> > Signed-off-by: Rong Zhang <i@rong.moe>
-> > ---
-> >  arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts b/=
-arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts
-> > index b93539e2b87e..013946ccda0f 100644
-> > --- a/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts
-> > +++ b/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts
-> > @@ -77,7 +77,7 @@ touchkey@20 {
-> >  		};
-> >  	};
-> > =20
-> > -	i2c-gpio-led {
-> > +	i2c_led_gpio: i2c-gpio-led {
->=20
-> This does not make much sense on its own. 6 commit msg lines just to add
-> a label. Squash it.
+On Mon, Jan 22, 2024 at 12:16=E2=80=AFPM Jan Bujak <j@exia.io> wrote:
+>
+> Hi.
+>
+> I recently updated my kernel and one of my programs started segfaulting.
+>
+> The issue seems to be related to how the kernel interprets PT_LOAD header=
+s;
+> consider the following program headers (from 'readelf' of my reproduction=
+):
+>
+> Program Headers:
+>    Type  Offset   VirtAddr  PhysAddr  FileSiz  MemSiz   Flg Align
+>    LOAD  0x001000 0x10000   0x10000   0x000010 0x000010 R   0x1000
+>    LOAD  0x002000 0x11000   0x11000   0x000010 0x000010 RW  0x1000
+>    LOAD  0x002010 0x11010   0x11010   0x000000 0x000004 RW  0x1000
+>    LOAD  0x003000 0x12000   0x12000   0x0000d2 0x0000d2 R E 0x1000
+>    LOAD  0x004000 0x20000   0x20000   0x000004 0x000004 RW  0x1000
+>
+> Old kernels load this ELF file in the following way ('/proc/self/maps'):
+>
+> 00010000-00011000 r--p 00001000 00:02 131  ./bug-reproduction
+> 00011000-00012000 rw-p 00002000 00:02 131  ./bug-reproduction
+> 00012000-00013000 r-xp 00003000 00:02 131  ./bug-reproduction
+> 00020000-00021000 rw-p 00004000 00:02 131  ./bug-reproduction
+>
+> And new kernels do it like this:
+>
+> 00010000-00011000 r--p 00001000 00:02 131  ./bug-reproduction
+> 00011000-00012000 rw-p 00000000 00:00 0
+> 00012000-00013000 r-xp 00003000 00:02 131  ./bug-reproduction
+> 00020000-00021000 rw-p 00004000 00:02 131  ./bug-reproduction
+>
+> That map between 0x11000 and 0x12000 is the program's '.data' and '.bss'
+> sections to which it tries to write to, and since the kernel doesn't map
+> them anymore it crashes.
+>
+> I bisected the issue to the following commit:
+>
+> commit 585a018627b4d7ed37387211f667916840b5c5ea
+> Author: Eric W. Biederman <ebiederm@xmission.com>
+> Date:   Thu Sep 28 20:24:29 2023 -0700
+>
+>      binfmt_elf: Support segments with 0 filesz and misaligned starts
+>
+> I can confirm that with this commit the issue reproduces, and with it
+> reverted it doesn't.
+>
+> I have prepared a minimal reproduction of the problem available here,
+> along with all of the scripts I used for bisecting:
+>
+> https://github.com/koute/linux-elf-loading-bug
+>
+> You can either compile it from source (requires Rust and LLD), or there's
+> a prebuilt binary in 'bin/bug-reproduction` which you can run. (It's tiny=
+,
+> so you can easily check with 'objdump -d' that it isn't malicious).
+>
+> On old kernels this will run fine, and on new kernels it will segfault.
 
-Will squash it into "[PATCH 4/4] ARM: dts: qcom: msm8974: Add device
-tree for Samsung Galaxy S5 China".
+Hi!
 
-Thanks,
-Rong
+Where did you get that linker script?
 
+FWIW, I catched this possible issue in review, and this was already
+discussed (see my email and Eric's reply):
+https://lore.kernel.org/all/CAKbZUD3E2if8Sncy+M2YKncc_Zh08-86W6U5wR0ZMazShx=
+bHHA@mail.gmail.com/
 
-> Best regards,
-> Krzysztof
->=20
+This was my original testcase
+(https://github.com/heatd/elf-bug-questionmark), which convinced the
+loader to map .data over a cleared .bss. Your bug seems similar, but
+does the inverse: maps .bss over .data.
 
+--=20
+Pedro
 
