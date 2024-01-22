@@ -1,93 +1,146 @@
-Return-Path: <linux-kernel+bounces-34279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34114837755
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:03:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83FEE83775D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0429283DD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:03:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BCBD283113
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35C9147F44;
-	Mon, 22 Jan 2024 23:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D5047F44;
+	Mon, 22 Jan 2024 23:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fyCnRa+M"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a+BTYfW9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78EDE38381;
-	Mon, 22 Jan 2024 23:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD5B487AC
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705964599; cv=none; b=lEEunRSzIgP/v6rBcbg3TijKPY7874/AbSateu6LBiPkzrNdA72Y4p6CFgB6NvW2u2NBvZNWAKwxlIaRXfxzT0zBpvgTSymuQZu/dqNV3UOJyRargeWqfpeHJKgV1svVXi+LWwJZasfm1qRfB8uXg8K6O0YTkRnBIEW08f7ujjI=
+	t=1705964672; cv=none; b=ZuI2IgBd0lF07xSLZJ0lcvKsnVMxN4RzxXMffljpLeN10GiNs5j3XQD4rXAHNjWlD4k2ZoqVf0r62bbX0GHZuY0gyVNuVcRWhTLYz7EDVoImoEeFUEmTa5mm+uzhqAwZOo9kxdNNj3Def0Xy5ANnl/MRuSbOCXOtMJCWAq4R1zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705964599; c=relaxed/simple;
-	bh=9E0yhn+Lc/Wf7cldLrsQEIy48JDSgVb+dkMEu7awprU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c708TkQUOuYt9ze6w+wtup3yiMS4KybDfdi+P8H7Xr9rGs0fbge2sdnyLg2ENQDzuCAJs9FgP00t2wbZ2EKOvAIkhQF7PX5FLU+nFAiS7vyltq4Qsmt/HDQYTaPmzADtTLbULfE6GWM1WespF8hb0tDzEf6LZmVXmvuBo4w1/3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fyCnRa+M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 452EAC433C7;
-	Mon, 22 Jan 2024 23:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705964599;
-	bh=9E0yhn+Lc/Wf7cldLrsQEIy48JDSgVb+dkMEu7awprU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fyCnRa+Ml6gi8FoJ0a6Wq6z/wFvdFCzrnyDATRof2LBkIs88L/Sd/33c2abS/hhdC
-	 qk+zaRsnoLx0PPzhc41zxZGCgRRwjRHstBTywnHITBscZsZuZRXdhA9jJcthFcdzF3
-	 i9ZZPG7Bdmoo70ro+oI5JkXJHW9oHwih+XTNk3iq1HJ4eti4sww3MBu6X83JdBWeD/
-	 le7nD2jFAedef2UTYI3pmAFFucxpZmFJTo5+3UmYNBFcbjiTFmBGIIcTebhOsu61M5
-	 B5poRtVF71CKafkTabLE4+V5SA1c9PMt/v3RZggGpVhGBrqc7GRxPyC98sD5fcUbZM
-	 3ubMUyXmh90EA==
-Date: Mon, 22 Jan 2024 15:03:18 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Ajay Kaher <ajay.kaher@broadcom.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] eventfs: Have the inodes all for files and
- directories all be the same
-Message-ID: <20240122230318.GC6226@frogsfrogsfrogs>
-References: <20240116225531.681181743@goodmis.org>
- <20240116234014.459886712@goodmis.org>
- <20240122215930.GA6184@frogsfrogsfrogs>
- <CAHk-=wiODW+oNdoF4nMqG3Th7HhPGQNQekDvw16CvgKvaZArRg@mail.gmail.com>
+	s=arc-20240116; t=1705964672; c=relaxed/simple;
+	bh=DftyMU53+ApjRX/K58RTxmz1DDZhYiUsMFEdT0jdEYE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hkc38++su4Rq38bLKr4PIcNvOtq4h6eZ/tEuzkdzhHcjvhVG9yK92mLH5HU/o5gyYNllnJLceTHEcE2ZAavASaPjemxz+rWIs+Cq6CRg95KfBXQilRvEJveJwh8ZJiWoYYvZnpgWTu3cFZz8ncKkfSnUIgKrvA9tsNc/qvXiLAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a+BTYfW9; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705964669;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7c3FgscPu0lXJFm3GTXyVD6XcnpcGhNdTIze30CTggI=;
+	b=a+BTYfW9ONqvHN0Ky7VYEav+pvafmc5flRmNviO7GI9QPdMwILGSe/A3fIzQ+1Lr/B4VKW
+	TtngNqV/+fZ9fJhOkKyCrQG2Wlp5+adbH3a92wPhdqirutQocSbj56Y0y6FkI3SY1yu5hj
+	NzD20vGRycv4dM2BMVh4tTYiaBo90cw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-59-sj1WXMpJOM2rd4f5ZliY4g-1; Mon, 22 Jan 2024 18:04:27 -0500
+X-MC-Unique: sj1WXMpJOM2rd4f5ZliY4g-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40e5ebf58fbso15681655e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:04:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705964665; x=1706569465;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7c3FgscPu0lXJFm3GTXyVD6XcnpcGhNdTIze30CTggI=;
+        b=bYc+EFMWCiR6aLUMpRayZcKbG1wxeOZeYCxB9NZr+VkIVJqVBCisB7xCdRr/+oXnHh
+         auiEKuwav28QY1nA5/YMw2qXmAuckO0zdjKOGATu5o5Y/1oS44fpP4ZqHM2IAzoajif7
+         daOwlgmEzKycgRcdoQWn3mAcZkhm8eex2Ju01TlJKLkbwORmerKIhUZaOkBsbJ7kSWp0
+         eiXqRm5eH1h0q0gnNlHGId1Ih5s15pe/ULr4OnqIBH8wDkR0vwP2bI17ylH38A5Z14FC
+         n53ijwlj/ErWRDZdu0D4mtdNXAESJVJ3HHqtjkab3UXiYQ7MPL0zfRsOFRKyBvVp0Pyc
+         EH1Q==
+X-Gm-Message-State: AOJu0Yw1E488UpeSerCX9rV9OR4vSqPnIHiG3Ci/Z3pEbd0nUDbyztFu
+	R1lwbFVYt5QWQOxTCwEWVGXyDf93dJgWpP8cSdhxjEgMDgHnDzZiMM9GQf1KZOEPrC6m012clwS
+	qVviKdi1wSFrXfuzANB1WMtvdiDJLpfAy1SCQMzAs0JdW9SJxD1JecgU0vtB5t6YPdJAPEg==
+X-Received: by 2002:a05:600c:19d0:b0:40e:47f5:c74e with SMTP id u16-20020a05600c19d000b0040e47f5c74emr2213226wmq.23.1705964665579;
+        Mon, 22 Jan 2024 15:04:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG8352cOmaMtQLEHn07VgcDYdo9jNcXTeLbFnRyNs5Xa66msABsScIDJEFKORTq82yXMRla/w==
+X-Received: by 2002:a05:600c:19d0:b0:40e:47f5:c74e with SMTP id u16-20020a05600c19d000b0040e47f5c74emr2213221wmq.23.1705964665204;
+        Mon, 22 Jan 2024 15:04:25 -0800 (PST)
+Received: from ?IPV6:2a02:810d:4b3f:ee94:abf:b8ff:feee:998b? ([2a02:810d:4b3f:ee94:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id j8-20020a05600c190800b0040d7b340e07sm40645479wmq.45.2024.01.22.15.04.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 15:04:24 -0800 (PST)
+Message-ID: <bdc7e401-a676-4040-9138-8dc5cf35bd05@redhat.com>
+Date: Tue, 23 Jan 2024 00:04:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiODW+oNdoF4nMqG3Th7HhPGQNQekDvw16CvgKvaZArRg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] drm/nouveau/fifo/gk104: remove redundant variable
+ ret
+Content-Language: en-US
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Colin Ian King <colin.i.king@gmail.com>
+Cc: nouveau@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ Daniel Vetter <daniel@ffwll.ch>
+References: <20240116111609.2258675-1-colin.i.king@gmail.com>
+ <aafe669f-b322-4f22-a48e-564e3eb3447f@moroto.mountain>
+From: Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <aafe669f-b322-4f22-a48e-564e3eb3447f@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 02:02:28PM -0800, Linus Torvalds wrote:
-> On Mon, 22 Jan 2024 at 13:59, Darrick J. Wong <djwong@kernel.org> wrote:
-> >
-> >          though I don't think
-> > leaking raw kernel pointers is an awesome idea.
+On 1/16/24 13:31, Dan Carpenter wrote:
+> On Tue, Jan 16, 2024 at 11:16:09AM +0000, Colin Ian King wrote:
+>> The variable ret is being assigned a value but it isn't being
+>> read afterwards. The assignment is redundant and so ret can be
+>> removed.
+>>
+>> Cleans up clang scan build warning:
+>> warning: Although the value stored to 'ret' is used in the enclosing
+>> expression, the value is never actually read from 'ret'
+>> [deadcode.DeadStores]
+>>
+>> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+>> ---
+>>   drivers/gpu/drm/nouveau/nvif/fifo.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/nouveau/nvif/fifo.c b/drivers/gpu/drm/nouveau/nvif/fifo.c
+>> index a463289962b2..e96de14ce87e 100644
+>> --- a/drivers/gpu/drm/nouveau/nvif/fifo.c
+>> +++ b/drivers/gpu/drm/nouveau/nvif/fifo.c
+>> @@ -73,9 +73,9 @@ u64
+>>   nvif_fifo_runlist(struct nvif_device *device, u64 engine)
+>>   {
+>>   	u64 runm = 0;
+>> -	int ret, i;
+>> +	int i;
+>>   
+>> -	if ((ret = nvif_fifo_runlists(device)))
+>> +	if (nvif_fifo_runlists(device))
+>>   		return runm;
 > 
-> Yeah, I wasn't all that comfortable even with trying to hash it
-> (because I think the number of source bits is small enough that even
-> with a crypto hash, it's trivially brute-forceable).
-> 
-> See
-> 
->    https://lore.kernel.org/all/20240122152748.46897388@gandalf.local.home/
-> 
-> for the current patch under discussion (and it contains a link _to_
-> said discussion).
+> Could we return a literal zero here?  Otherwise, I'm surprised this
+> doesn't trigger a static checker warning.
 
-Ah, cool, thank you!
+Why do you think so? Conditionally, runm is used later on as well. I don't
+think the checker should complain about keeping the value single source.
 
---D
+If you agree, want to offer your RB?
 
->            Linus
+- Danilo
+
+> 
+> regards,
+> dan carpenter
+> 
+
 
