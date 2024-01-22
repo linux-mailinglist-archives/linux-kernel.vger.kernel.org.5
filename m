@@ -1,56 +1,71 @@
-Return-Path: <linux-kernel+bounces-33442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2293A8369B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:09:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 206328369BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:10:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD73F1F24250
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:09:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40ED21C24202
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:10:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1005F12AAC5;
-	Mon, 22 Jan 2024 15:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262E24F5EB;
+	Mon, 22 Jan 2024 15:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZatEiKc2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QQ7MIOpI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5176612A177;
-	Mon, 22 Jan 2024 15:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693C34F5E5;
+	Mon, 22 Jan 2024 15:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936309; cv=none; b=SNwwE6R5N6B5No4/CTtHycpLo1mN+aaIKnMNItHiqWnLHoKTd95KXVhLp2piYxvkbPFmAvsrCqK10nEqj1z6YdGn7BrjuSFHFQbykRJRB59ZNWDmulAMSXEPyp7DQv36ewWks/5vvliQqowxBYDK2+DKkp25zgJkC2T2yNGT55U=
+	t=1705936314; cv=none; b=GEq23Lidfticrz50WliUcoS4Xy30jmP9GYtA5bYrQwX/u3w+4l7htYnnFJ7VGdMim2sAxUd4pS22m+WP9CHkT0UcPDvboiGA1hx2V9ZRAipyve1sMVQCog5KEYN4qFW3HXG/7pYMFDOBmXtsUebAE+dmN8+NdwLFPYlVeNdVhGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936309; c=relaxed/simple;
-	bh=iixuK5k7tZTGX4UWwRqmbV7O4zWm8JoQ9r2t5AgM3zM=;
+	s=arc-20240116; t=1705936314; c=relaxed/simple;
+	bh=o1xs7JIqRwXyo59t+vI4O/U9bDmpnzviPesjWKaE8UM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MeuG5/0Y79HfbLf1PKrJ9zdiTMHrsP/RM/2nEUtAwQtVsuLct/oEUbg+FZCiE7k7mXYO0A/fHEdxf4mSyWC1+q79qu4FEPRCabhHTTpwDcKqBpPzU0cm6JL3pebgkD7vkDgitzGrZm8xDe9qTR42ZdM7FkVejLNSoyT4T5OMRSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZatEiKc2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A074C433F1;
-	Mon, 22 Jan 2024 15:11:48 +0000 (UTC)
+	 MIME-Version; b=Zkc+OWU/vh2BzKU2IajvLHgWCIO/c7zSf1kTrly+Par42QGEvIMnu4xvKCGFUDdtgiwtsC6SHfOo9GRDdSBccL4BO/cuMRnUmxYOOS0Dgeo9/JJpOSrhJxNo2n6JmdRJ4P2VtiH/4Bq9vL2lTHwDlgPziyf4DBnwzDkn2k0MQ+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QQ7MIOpI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A60CC433F1;
+	Mon, 22 Jan 2024 15:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936309;
-	bh=iixuK5k7tZTGX4UWwRqmbV7O4zWm8JoQ9r2t5AgM3zM=;
+	s=k20201202; t=1705936314;
+	bh=o1xs7JIqRwXyo59t+vI4O/U9bDmpnzviPesjWKaE8UM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZatEiKc26VBMCDa9SSw1nFs0vwBEfHlzEbKXr47LCgWEYvDCterx3u4cBeoBlrAkh
-	 9tEXMHcM9nanI5Z216ZEFBYhp6gtbFkeJ9LOA5E2kOXVJ8+/odp49tNfqEEpUFOZ+E
-	 lcZ98WBPtm0oDb5zDk/vliij+hGSHXQsYJwQscPQkS+k6xyPDIIfjR4upK+FEAU/f2
-	 eu4c4KAqY9TUc/0yWcKrOeYlxii/YgkbTkr8Oq/nRQ/g2w3cq568itdcE6nhoe7ROu
-	 VQbW+GPSuVU/I460dFtFR1i/+xHEHmXTwqjPTIVICTu0LPhmTetVLIxC4Mrx9lrRvU
-	 QXCOCbBwDZCcQ==
+	b=QQ7MIOpIy9X4njg6QBOTF85Y175/bh9Wv6wfLt13OrxRcGcm9DoBCuLmMACYHTs4M
+	 hSG6YliAGdW2A8WYUVjzhY4LVOMqV28zRcHTif82t9b/IMQg6rYq1+7s98DH0k97a4
+	 NhYaJjSI6II2+oosDj3YGRaYXGliLPvPPe+UwrJgaIct/Cat4rmHvkyj9D02Z7fBQs
+	 1X4SA5GIQ2+yOhClxBsdbTvOavM6NFCRfhf+hR8/BlvHUuLT2CFlvU9XLij+70WlIA
+	 GGdUGOz8G7D75jdD5DDKYOTs4hEyHIyLBWTZQ6Noiz09Q6Al1CvDDFWFO3N2UceO0z
+	 hQVJL3vz1JBYQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Werner Fischer <devlists@wefi.net>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
+Cc: Josip Pavic <josip.pavic@amd.com>,
+	Aric Cyr <aric.cyr@amd.com>,
+	Wayne Lin <wayne.lin@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-watchdog@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 41/53] watchdog: it87_wdt: Keep WDTCTRL bit 3 unmodified for IT8784/IT8786
-Date: Mon, 22 Jan 2024 10:08:42 -0500
-Message-ID: <20240122150949.994249-41-sashal@kernel.org>
+	harry.wentland@amd.com,
+	sunpeng.li@amd.com,
+	Rodrigo.Siqueira@amd.com,
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	mario.limonciello@amd.com,
+	qingqing.zhuo@amd.com,
+	hamza.mahfooz@amd.com,
+	wenjing.liu@amd.com,
+	aurabindo.pillai@amd.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 42/53] drm/amd/display: make flip_timestamp_in_us a 64-bit variable
+Date: Mon, 22 Jan 2024 10:08:43 -0500
+Message-ID: <20240122150949.994249-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150949.994249-1-sashal@kernel.org>
 References: <20240122150949.994249-1-sashal@kernel.org>
@@ -65,69 +80,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 
-From: Werner Fischer <devlists@wefi.net>
+From: Josip Pavic <josip.pavic@amd.com>
 
-[ Upstream commit d12971849d71781c1e4ffd1117d4878ce233d319 ]
+[ Upstream commit 6fb12518ca58412dc51054e2a7400afb41328d85 ]
 
-WDTCTRL bit 3 sets the mode choice for the clock input of IT8784/IT8786.
-Some motherboards require this bit to be set to 1 (= PCICLK mode),
-otherwise the watchdog functionality gets broken. The BIOS of those
-motherboards sets WDTCTRL bit 3 already to 1.
+[Why]
+This variable currently overflows after about 71 minutes. This doesn't
+cause any known functional issues but it does make debugging more
+difficult.
 
-Instead of setting all bits of WDTCTRL to 0 by writing 0x00 to it, keep
-bit 3 of it unchanged for IT8784/IT8786 chips. In this way, bit 3 keeps
-the status as set by the BIOS of the motherboard.
+[How]
+Make it a 64-bit variable.
 
-Watchdog tests have been successful with this patch with the following
-systems:
-  IT8784: Thomas-Krenn LES plus v2 (YANLING YL-KBRL2 V2)
-  IT8786: Thomas-Krenn LES plus v3 (YANLING YL-CLU L2)
-  IT8786: Thomas-Krenn LES network 6L v2 (YANLING YL-CLU6L)
-
-Link: https://lore.kernel.org/all/140b264d-341f-465b-8715-dacfe84b3f71@roeck-us.net/
-
-Signed-off-by: Werner Fischer <devlists@wefi.net>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20231213094525.11849-4-devlists@wefi.net
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Reviewed-by: Aric Cyr <aric.cyr@amd.com>
+Acked-by: Wayne Lin <wayne.lin@amd.com>
+Signed-off-by: Josip Pavic <josip.pavic@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/it87_wdt.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/dc_hw_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/watchdog/it87_wdt.c b/drivers/watchdog/it87_wdt.c
-index bb1122909396..843f9f8e3917 100644
---- a/drivers/watchdog/it87_wdt.c
-+++ b/drivers/watchdog/it87_wdt.c
-@@ -255,6 +255,7 @@ static struct watchdog_device wdt_dev = {
- static int __init it87_wdt_init(void)
- {
- 	u8  chip_rev;
-+	u8 ctrl;
- 	int rc;
- 
- 	rc = superio_enter();
-@@ -313,7 +314,18 @@ static int __init it87_wdt_init(void)
- 
- 	superio_select(GPIO);
- 	superio_outb(WDT_TOV1, WDTCFG);
--	superio_outb(0x00, WDTCTRL);
-+
-+	switch (chip_type) {
-+	case IT8784_ID:
-+	case IT8786_ID:
-+		ctrl = superio_inb(WDTCTRL);
-+		ctrl &= 0x08;
-+		superio_outb(ctrl, WDTCTRL);
-+		break;
-+	default:
-+		superio_outb(0x00, WDTCTRL);
-+	}
-+
- 	superio_exit();
- 
- 	if (timeout < 1 || timeout > max_units * 60) {
+diff --git a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
+index 46c2b991aa10..811c117665e7 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
++++ b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
+@@ -244,7 +244,7 @@ enum pixel_format {
+ #define DC_MAX_DIRTY_RECTS 3
+ struct dc_flip_addrs {
+ 	struct dc_plane_address address;
+-	unsigned int flip_timestamp_in_us;
++	unsigned long long flip_timestamp_in_us;
+ 	bool flip_immediate;
+ 	/* TODO: add flip duration for FreeSync */
+ 	bool triplebuffer_flips;
 -- 
 2.43.0
 
