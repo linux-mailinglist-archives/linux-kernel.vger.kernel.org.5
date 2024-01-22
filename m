@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-32876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 168C3836143
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:24:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5853B8361D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:34:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C3591C21DE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:24:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AE8BB2833B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB013EA8D;
-	Mon, 22 Jan 2024 11:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D1B3E48E;
+	Mon, 22 Jan 2024 11:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="j08GBO+H"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="IhcUJMwS"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15453E48B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2751A3EA72
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:11:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705921907; cv=none; b=WCbl58osGsD22Ah98qB20Farh7H6azas4GxthE6UifbhgB+MjaQxBU8DxjGEa7CUFf5BINCjxxcn8NYbPJfK9rft7Dori9qUZGM3O/fHf13i4ncatZgeHcj0K88R2XK90T9JwiaoS04g98ITKBn3uIVVFyYp6fH9W6e1yEPp4Pw=
+	t=1705921909; cv=none; b=ISh3UjKafS5KxUzFuW4XhU5CQUUzVHJ2Zu5GX8XtrCnQOY8LryTSHh2odi22MejsTCZxFUkVDCBjK18KIbGCoVb9HUqx0vSZv3+S9EpFVDOhODWxi9s4Lk2e6U17KauGahBBpqmHHA5gxs+AjnM/b14DrBhzPcdY/7LTG2FEL8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705921907; c=relaxed/simple;
-	bh=P0pml+XvYXypPwvm13fUsxAbzg1yShpyAM0plENv8P0=;
+	s=arc-20240116; t=1705921909; c=relaxed/simple;
+	bh=LIPwfTVYzjHtnuFd0jU3NL/6FuMhnlnEQLJY/PrGiyo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VX2hQsK/Kw0NycpdV+iGdmeDySoTBTU6RXmKcK+8AOavcqVB4in1mNapjfI5jQuVKKWrNXxHoS2WoX9s/Cllsn2AjJs81iOhuheWfJyROxFJcxrWoQAnn5QRgvw1Cyw5eU/ghOxyXWsTsN2RabL9pULnljeOsBY5BJiaUZaVxPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=j08GBO+H; arc=none smtp.client-ip=209.85.167.47
+	 MIME-Version; b=JcCfJ9Ero5pnKGAYKmE9XjZkTZeLicHf5slpX4n1O/CI0JIrR7u5KAtFHyRkJfsH2BJjK8v7kB1O3WDxUHa7vbB1FdM9QOvvG+G89iA1YDqlSw9fwfJYDTEaj7UnvBBrlFe9BXhlqBilbtDjICUruFDdVP6+HsoGlx80Sl0h1Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=IhcUJMwS; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e7c6f0487so3130889e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 03:11:45 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55c4ec68993so491197a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 03:11:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1705921904; x=1706526704; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1705921905; x=1706526705; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bZsglpxv5Ruw+cmAq+FH/8gH/cxWxlJ7CUyURo/5TWs=;
-        b=j08GBO+HdsEhh9qo0bkJ0Iq+yLSlU17x8z4tsHgTSLz3QSK4n1TXEKFSaZLpIIhT11
-         Ciagaz+eq2hept+9BLQunqdMrB3HhMsFnFGIQb1LnLcv2guMU9voif9yadlm/AqilRTv
-         n0Kb9fGF62aBOHnZ/lWJ26VOTTt61VbraAUFGdwIdmhq0UGAYSVl3lZ97U0v6Tl0IJAJ
-         vEhwFy2RtsHKeZSWrP5brLIzCwMliwHwhS5c6Zt9VtG4pK2u3R0x3GIwe2L7fZ1QaL3d
-         8BbPIjrzgVHeCuBPt94j+ACTU7ke/4W/nuj1wJPPsC1+sz+HEQTH5a8VsTpweOikXpVd
-         dGBA==
+        bh=pqtCeRjkRQZF1X7FzpXbbf307qf5/3u+eo/6taxNjjo=;
+        b=IhcUJMwSmBVgnNoSy2KtZk8LT4jyaB6dfGx1vU/CM+Oe4jLPM324OaOtvug7kzCZO3
+         EcEylgyxpCS26STLgoAfklQVfhnrTcMzlcWW+OabsZIZ019tRBTCGkLdUw7Q+TzPcpdb
+         gHwg0VL4cFiqNJI0hNqalvHyP8Ggr+R/2X4Kjw4b84AWLvBrDdDog3DvRc0xA/+uUqku
+         c+Bl7srOSJJKQXqGzER397Ton6iiUyOli2iVh6Eeky1vTbQGHzTZj7j3x0uLyGqFsfsO
+         Nj5vLoqydbKAKC57L0x86AV/L+sBstKi+LHNAOdp0ZDXcWZ/CMEs+WSLZxkM5u/I7zSb
+         JUkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705921904; x=1706526704;
+        d=1e100.net; s=20230601; t=1705921905; x=1706526705;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bZsglpxv5Ruw+cmAq+FH/8gH/cxWxlJ7CUyURo/5TWs=;
-        b=UC6/n5Yoc97mPWOAslqlLRrAAqj/YxCgWNvaKtEmw81OiiDkIpYBQuxr6vSaOQP8Os
-         AUcAxqHNVdjtUb9cuif9MA8PAZ5dZvCUrR9I4XibGEPz85NRZU39W5S/4vX3b6f4WqYL
-         YS0LWuPZ2mm0UJ1FWJbVzjw5hg6linRIC1C1CS+jeH+72ZyPcrH6rnM6nFYbJ48VaL+o
-         QVhWPnBTKzUxy11g73T7NDpGJhSIAZk6No7Bkc4rYKbqpO+H9ryhrkeeOOlp2T1OpMfR
-         wu8Ze9acggnftphtclAaVG22aTeIrQ/kvopXFPKClDBK0F584u4RapKHsNuAHNUmZXwC
-         g3gA==
-X-Gm-Message-State: AOJu0YzQEaIpAfGzbpIFoW/z82cTWNA0XJ9AiJj1ftdBA3LSKc9FQ623
-	edWAIvJLUdoqy1TO6wOik2QRmxHvcGZZKJ3NS1ULfa4aWrndH4I5ztyaQYG22z0=
-X-Google-Smtp-Source: AGHT+IFdtngNav7jLN7NRbMBgpNlKLytDtSGZw9R5aAcExfwEd7H5jWK1DXLkRkagwmRGN3K3IIs2w==
-X-Received: by 2002:a05:6512:3e19:b0:50e:e2e1:9cc8 with SMTP id i25-20020a0565123e1900b0050ee2e19cc8mr1209162lfv.117.1705921903651;
-        Mon, 22 Jan 2024 03:11:43 -0800 (PST)
+        bh=pqtCeRjkRQZF1X7FzpXbbf307qf5/3u+eo/6taxNjjo=;
+        b=aokhQpCDTlOuZ1kNaW8ibUUryqpd7PhUsUZYNVBEKmdd//zNM6WAQMLhNastRVLaZ/
+         CX9SeF3vYKCVgIUwKgZMsQxboT5XrU/gWdV7Lb1m/B2jWRyVNz5UoZnFTPEQjetwVyL1
+         GWTTMDVaYYmhJXH0qmAvkC7Bu5PLSCcUNMhDEk8VXorHQSEtrjFgcRKCdjxXII48ZlTv
+         8vLuiKXwDmJiSYfLZdfunHBRvk9rGPWTPhZ53ghJBVJ0OugaLkTHgkSgSjplN2ObVW3U
+         FpgYuHtotf/LKqub4uAh8wNJ6962OoSWk2CJDvUIS5GFZn0vYP2SYXYazVwI9M6RHgO8
+         B22A==
+X-Gm-Message-State: AOJu0YyGGXRKa01Yq63oGjJSjZ6ory2YJNgp09yat16rGje0mqgJkc3N
+	6dXkX82fnO5GCatykrC/5d/oFc2MxpacUSLZsjPZQN03vV9P1XHBSJ5uRMR3qKg=
+X-Google-Smtp-Source: AGHT+IEgcYIELtC0sF+RvoYDICw9Ux8ufzqP2HIXOse25Hex57bekVk6pO079j4rGH6x+e/vxmiF2w==
+X-Received: by 2002:a50:a6dd:0:b0:559:ccc4:157e with SMTP id f29-20020a50a6dd000000b00559ccc4157emr2518301edc.30.1705921905246;
+        Mon, 22 Jan 2024 03:11:45 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.135])
-        by smtp.gmail.com with ESMTPSA id t34-20020a056402242200b0055823c2ae17sm14194241eda.64.2024.01.22.03.11.42
+        by smtp.gmail.com with ESMTPSA id t34-20020a056402242200b0055823c2ae17sm14194241eda.64.2024.01.22.03.11.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 03:11:43 -0800 (PST)
+        Mon, 22 Jan 2024 03:11:44 -0800 (PST)
 From: Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To: wim@linux-watchdog.org,
@@ -85,9 +85,9 @@ Cc: linux-watchdog@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	claudiu.beznea@tuxon.dev,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH 03/10] watchdog: rzg2l_wdt: Check return status of pm_runtime_put()
-Date: Mon, 22 Jan 2024 13:11:08 +0200
-Message-Id: <20240122111115.2861835-4-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH 04/10] watchdog: rzg2l_wdt: Remove reset de-assert on probe/stop
+Date: Mon, 22 Jan 2024 13:11:09 +0200
+Message-Id: <20240122111115.2861835-5-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
@@ -101,33 +101,96 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-pm_runtime_put() may return an error code. Check its return status.
+There is no need to de-assert the reset signal on probe as the watchdog
+is not used prior executing start. Also, the clocks are not enabled in
+probe (pm_runtime_enable() doesn't do that), thus this is another indicator
+that the watchdog wasn't used previously like this. Instead, keep the
+watchdog hardware in its previous state at probe (by default it is in
+reset state), enable it when it is started and move it to reset state
+when it is stopped. This saves some extra power when the watchdog is
+unused.
 
-Fixes: 2cbc5cd0b55f ("watchdog: Add Watchdog Timer driver for RZ/G2L")
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
- drivers/watchdog/rzg2l_wdt.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/watchdog/rzg2l_wdt.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
-index 4ab9e7c5e771..0554965027cd 100644
+index 0554965027cd..988926e50741 100644
 --- a/drivers/watchdog/rzg2l_wdt.c
 +++ b/drivers/watchdog/rzg2l_wdt.c
-@@ -144,9 +144,13 @@ static int rzg2l_wdt_start(struct watchdog_device *wdev)
- static int rzg2l_wdt_stop(struct watchdog_device *wdev)
- {
- 	struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
-+	int ret;
+@@ -129,6 +129,10 @@ static int rzg2l_wdt_start(struct watchdog_device *wdev)
+ 	if (ret)
+ 		return ret;
  
- 	rzg2l_wdt_reset(priv);
--	pm_runtime_put(wdev->parent);
++	ret = reset_control_deassert(priv->rstc);
++	if (ret)
++		return ret;
 +
-+	ret = pm_runtime_put(wdev->parent);
-+	if (ret < 0)
+ 	/* Initialize time out */
+ 	rzg2l_wdt_init_timeout(wdev);
+ 
+@@ -146,7 +150,9 @@ static int rzg2l_wdt_stop(struct watchdog_device *wdev)
+ 	struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
+ 	int ret;
+ 
+-	rzg2l_wdt_reset(priv);
++	ret = reset_control_assert(priv->rstc);
++	if (ret)
 +		return ret;
  
- 	return 0;
+ 	ret = pm_runtime_put(wdev->parent);
+ 	if (ret < 0)
+@@ -181,6 +187,12 @@ static int rzg2l_wdt_restart(struct watchdog_device *wdev,
+ 	clk_prepare_enable(priv->osc_clk);
+ 
+ 	if (priv->devtype == WDT_RZG2L) {
++		int ret;
++
++		ret = reset_control_deassert(priv->rstc);
++		if (ret)
++			return ret;
++
+ 		/* Generate Reset (WDTRSTB) Signal on parity error */
+ 		rzg2l_wdt_write(priv, 0, PECR);
+ 
+@@ -231,13 +243,11 @@ static const struct watchdog_ops rzg2l_wdt_ops = {
+ 	.restart = rzg2l_wdt_restart,
+ };
+ 
+-static void rzg2l_wdt_reset_assert_pm_disable(void *data)
++static void rzg2l_wdt_pm_disable(void *data)
+ {
+ 	struct watchdog_device *wdev = data;
+-	struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
+ 
+ 	pm_runtime_disable(wdev->parent);
+-	reset_control_assert(priv->rstc);
  }
+ 
+ static int rzg2l_wdt_probe(struct platform_device *pdev)
+@@ -280,10 +290,6 @@ static int rzg2l_wdt_probe(struct platform_device *pdev)
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(priv->rstc),
+ 				     "failed to get cpg reset");
+ 
+-	ret = reset_control_deassert(priv->rstc);
+-	if (ret)
+-		return dev_err_probe(dev, ret, "failed to deassert");
+-
+ 	priv->devtype = (uintptr_t)of_device_get_match_data(dev);
+ 
+ 	if (priv->devtype == WDT_RZV2M) {
+@@ -304,9 +310,7 @@ static int rzg2l_wdt_probe(struct platform_device *pdev)
+ 	priv->wdev.timeout = WDT_DEFAULT_TIMEOUT;
+ 
+ 	watchdog_set_drvdata(&priv->wdev, priv);
+-	ret = devm_add_action_or_reset(&pdev->dev,
+-				       rzg2l_wdt_reset_assert_pm_disable,
+-				       &priv->wdev);
++	ret = devm_add_action_or_reset(&pdev->dev, rzg2l_wdt_pm_disable, &priv->wdev);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.39.2
 
