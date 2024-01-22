@@ -1,160 +1,147 @@
-Return-Path: <linux-kernel+bounces-33852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F59836F83
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:17:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90C6B836F8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:17:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E318F1F26FDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:17:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C48A71C2727C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A03547F74;
-	Mon, 22 Jan 2024 17:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AD563DBA3;
+	Mon, 22 Jan 2024 17:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="n3+7wiRP"
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Tg9sbVRd"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45CA47F6D
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEDA4482D4;
+	Mon, 22 Jan 2024 17:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945537; cv=none; b=HjVoW7wPrtdaNFnwmreLumRx4hYVMW+sKs4GQj7TXAh5mjkmE9Q9BcLzRf5dy18EbDfKA3JszX8/iljIyVl5gf+12iZZK6UVnNx1okwUe1Tz2u+qTtr7mQyrzlTLs+9cFxbFn4CGHE4V54OqQxr5nRkCjRkhVefik4Ik2aXnoQM=
+	t=1705945590; cv=none; b=H/WKnVintPTVpZqlq+UcC7sERXXl0IQyFdyWWXdcIuYqOBwbQ/y/rVUMpjrUTgcUhb+tkdmtDw0yDu+FsfQCGYtGO8okaFjG6DCLp+bpwJA7Fy+CfLCR+4v6uz0ykLNecAhOzQGkD5GPX/6Q/bHAiMmpxO/OljmDwtE3trOfpak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945537; c=relaxed/simple;
-	bh=abkKMctWm+0H/J5RM4zZHydX48MCx7/fwQLGgVanmtY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n7uv3Ac81dV5/I7x6+GgaWHOG730LfNZMoAq7ryeDvDrk8pnXF4pEKXxbowkkNnfdLqIRTwgFI1s+kW5mPyijV5goEWT4eKDTZNU09vjyJ7Nz+5xJowP1G+WF5kU2HQBhtpNyhGDY4IF6e4hg1XcQLwZAikI0gMRjvdPupPolPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=n3+7wiRP; arc=none smtp.client-ip=44.202.169.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
-	by cmsmtp with ESMTPS
-	id Rr63rl05vTHHuRyMTrd3Xx; Mon, 22 Jan 2024 17:45:29 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id RyMRroodFyxR5RyMSrG4iT; Mon, 22 Jan 2024 17:45:28 +0000
-X-Authority-Analysis: v=2.4 cv=JYOvEGGV c=1 sm=1 tr=0 ts=65aea9b8
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=NEAV23lmAAAA:8 a=7YfXLusrAAAA:8 a=lWKqt4ZwYMmOSQLAUVkA:9 a=QEXdDO2ut3YA:10
- a=9cHFzqQdt-sA:10 a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=SLz71HocmBbuEhFRYD3r:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=nzXgY+4E9/m1cHPFb6LChwOFY++sdTtbwz4YGbTrgRc=; b=n3+7wiRP+JuxvMMGo4qhp0XaKk
-	ntYdQmu1vPL0HRLzb0Xjgsu5gVfpRgPAGCi3iU7g3a6+4XzF7KY0H8WEyi7NVc5ZUK/6ODe+JJL03
-	gtl7koEXVSWVIxh9BrwWRdPNYICBEOgSEObEJZlMzWGTOJ6IaFoKW9NboFe+oloOUicVrmpSYhjOb
-	3jZzqCJBY622cN9gleh/XZFh/AA723zNBf0XJ3XKDB/GCecp/YKxFp6teZmmLNwinrAit76vPFEIJ
-	bowEh1zBADupQW7qH+6hWqsJONUbtRHWyLVuYFSE928EK5739PtY9OgrFeSAV2zBYRDzeDaoUgvA+
-	2U6fAAMA==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:41722 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rRyMP-0019jE-22;
-	Mon, 22 Jan 2024 11:45:25 -0600
-Message-ID: <fd635112-c960-49a9-807f-692f47be46ed@embeddedor.com>
-Date: Mon, 22 Jan 2024 11:45:23 -0600
+	s=arc-20240116; t=1705945590; c=relaxed/simple;
+	bh=H4fd0I1xdlUdn8BCMsHZCDCvU+DZCKlUX3cBjWWeYPM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SkWzV5DLMKkGr7K76wRyd/+W3tDtdoMNxG1dRyak8gLLewiHjH1rjSa3d55oEHqpUATb7PeeV+kvFfHcJkUSywLibK5ktNDU3J0stnDEbpCMPkJUOSNORI6BEtVR5KiJR9dtyoj8OQpiQkBMakVV2fXlOsjiDX5W1h6fBiBs6AM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Tg9sbVRd; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40MEkNNO004080;
+	Mon, 22 Jan 2024 17:46:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Iv4kxuMYXz1LyQFxr93MbbXsbilUdrXgi24zSCxnXQQ=; b=Tg
+	9sbVRdDTs1CPPlXAu0pFEnJCUr59ZovHKv8A6gSkHEcwQT0czwSQubMtOX9XiomB
+	+qq8LBDUwieQSbSwr9IgFK2AeABl2MrJ9qJCwJz6rX2DoFAIPfOzsIA74Y/TwOrU
+	ZAbonQcDNvVxqUzEJHoPo4Y4ux+iizEJnIJjiF24OD3z2EFO1OSlj9q4mmCHryOf
+	d9P5FNp7BYr8k5DNNtzogQh9OqkzOhoCjCaWdgr/6uGFxeARqXBrz4MoolmZSr1K
+	HiCjCRZMbEPzXi6V8SoPgRZoF0Z9+x6NFgesbHov8gsOY+ef47HmFTIbYWQ4DipA
+	nLki8JJf7OuZ2LBuM2Og==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vstd98e08-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 17:46:24 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40MHkNCp015656
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 17:46:23 GMT
+Received: from [10.110.32.149] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 22 Jan
+ 2024 09:46:22 -0800
+Message-ID: <41854d97-2ddf-6c0b-8ad4-c028ce15d653@quicinc.com>
+Date: Mon, 22 Jan 2024 09:46:10 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Use kcalloc() instead of kzalloc()
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 0/2] arm64: qcom: sm8550: add support for the SM8550-HDK
+ board
 Content-Language: en-US
-To: Erick Archer <erick.archer@gmx.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Conor Dooley <conor.dooley@microchip.com>,
- Andrew Jones <ajones@ventanamicro.com>, Evan Green <evan@rivosinc.com>,
- =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
- Jisheng Zhang <jszhang@kernel.org>, Charlie Jenkins <charlie@rivosinc.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240120135400.4710-1-erick.archer@gmx.com>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240120135400.4710-1-erick.archer@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240122-topic-sm8550-upstream-hdk8550-v1-0-bff7eb3a17eb@linaro.org>
+From: Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <20240122-topic-sm8550-upstream-hdk8550-v1-0-bff7eb3a17eb@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1rRyMP-0019jE-22
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:41722
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfN8/pIlWIKBW4ux84Ow4ukmeD9/F19s8ExlF4OFTXP/pj3UJjWv3HBmWJOQ4xNV9k+GUDgkb1ZRY6uP8OFCZ6vb+4YHtP8KVGdOQKfrgi/vN6arqGzst
- NJdjSV6ZhX1H16qcXTReh/PNYjNcOom7j/8XXbanIUuL7coxhV14yMfZqemt/Oi9fyjx68g6iUiEuppvuiGzFCt5AR25GLpaa+5yzd4GpfLn6hQjZ7XiiceZ
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: y1ys2rR7_8Zd6CWnQJeXx9KhpV3jDsJ0
+X-Proofpoint-ORIG-GUID: y1ys2rR7_8Zd6CWnQJeXx9KhpV3jDsJ0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-22_07,2024-01-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 impostorscore=0 mlxlogscore=842 mlxscore=0
+ spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401220124
 
-
-
-On 1/20/24 07:54, Erick Archer wrote:
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
+On 1/22/2024 2:19 AM, Neil Armstrong wrote:
+> The SM8550-HDK is an embedded development platforms for the
+> Snapdragon 8 Gen 2 SoC aka SM8550, with the followwing features:
+> - Qualcomm SM8550 SoC
+> - 16GiB On-board LPDDR5
+> - On-board WiFi 7 + Bluetooth 5.3/BLE
+> - On-board UFS4.0
+> - M.2 Key B+M Gen3x2 PCIe Slot
+> - HDMI Output
+> - USB-C Connector with DP Almode & Audio Accessory mode
+> - Micro-SDCard Slot
+> - Audio Jack with Playback and Microphone
+> - 2 On-board Analog microphones
+> - 2 On-board Speakers
+> - 96Boards Compatible Low-Speed and High-Speed connectors [1]
+> - For Camera, Sensors and external Display cards
+> - Compatible with the Linaro Debug board [2]
+> - SIM Slot for Modem
+> - Debug connectors
+> - 6x On-Board LEDs
 > 
-> So, use the purpose specific kcalloc() function instead of the argument
-> count * size in the kzalloc() function.
+> On-Board PMICs:
+> - PMK8550 2.1
+> - PM8550 2.0
+> - PM8550VS 2.0 x4
+> - PM8550VE 2.0
+> - PM8550B 2.0
+> - PMR735D 2.0
+> - PM8010 1.1 x2
 > 
-> Also, it is preferred to use sizeof(*pointer) instead of sizeof(type)
-> due to the type of the variable can change and one needs not change the
-> former (unlike the latter).
+> Product Page: [3]
 > 
-> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/162
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+> Dependencies: None
+> 
+> [1] https://www.96boards.org/specifications/
+> [2] https://git.codelinaro.org/linaro/qcomlt/debugboard
+> [3] https://www.lantronix.com/products/snapdragon-8-gen-2-mobile-hardware-development-kit/
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Thanks!
+Excellent. Thank you for adding the support here and it looks straightforward due to the 
+the MTP support we had added earlier along w/ the 8550 SOC. 
+
 -- 
-Gustavo
+---Trilok Soni
 
-> ---
->   arch/riscv/kernel/cpufeature.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index 89920f84d0a3..549a76e34c4e 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -901,8 +901,7 @@ static int check_unaligned_access_all_cpus(void)
->   {
->   	unsigned int cpu;
->   	unsigned int cpu_count = num_possible_cpus();
-> -	struct page **bufs = kzalloc(cpu_count * sizeof(struct page *),
-> -				     GFP_KERNEL);
-> +	struct page **bufs = kcalloc(cpu_count, sizeof(*bufs), GFP_KERNEL);
-> 
->   	if (!bufs) {
->   		pr_warn("Allocation failure, not measuring misaligned performance\n");
-> --
-> 2.25.1
-> 
-> 
 
