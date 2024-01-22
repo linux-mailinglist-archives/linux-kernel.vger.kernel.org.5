@@ -1,178 +1,103 @@
-Return-Path: <linux-kernel+bounces-34294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D74308377B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:27:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A698377BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:30:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69C691F254C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:27:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F29181F25B23
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6B94E1AE;
-	Mon, 22 Jan 2024 23:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554404E1AA;
+	Mon, 22 Jan 2024 23:30:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rnliwtKo"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EbZWdqQY"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE29A4B5A6;
-	Mon, 22 Jan 2024 23:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A5084B5A6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705966064; cv=none; b=Q5RWkdu1XyZMqWVygBTnB8blBfw8xKlaVzFMYlfpju+amBq4Niw8Z0uVHmbVGVpJPNWfSBKVPE/hLyoNFjyor2x91F7d3Ls39JaHiUmpG99WjMv3ckd/+Iw56V6DaWRHKuDZGik9exzS2Q6IA1HyhGHmoWksoLfmFjXiYeGJmgE=
+	t=1705966205; cv=none; b=m187g2YP8UOmwT8XcL1JiZDPIVadcV6tdj8jl2OJfqEv09vFmbgw9aWErBXEyBHnk5ldQiVsGjlmGXemYq2NvpgJIBW/2v1jr4vmrAPsLRa6uqyhuxKPkRwndQsKf8UqgmqFoqDWkcTrxyJHSc98+cve9XlXeWoUsKsZUXqwfDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705966064; c=relaxed/simple;
-	bh=594BwK7mvu1HQwBaIY2Xo3HEKqrdu9uTJlsJkT01tJg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KatElTQddZL26jqaHXE5Cfznx7J7ksgxnrmpUSQEsJU5mRKXvAdUi+V1CXhesIy/d2diZjhewU9SXa18Q9WD994am12UizYsCENK3/Ar3EWT6xFV381j6Hs4G99MKcQbnvzsH4KZRNfJPxUanx6uPj6YaeuxhnrZyg+fBBajfi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rnliwtKo; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705966058; x=1706570858; i=quwenruo.btrfs@gmx.com;
-	bh=594BwK7mvu1HQwBaIY2Xo3HEKqrdu9uTJlsJkT01tJg=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=rnliwtKognca61/cSz+XRxp6A9uzg58g6Biit17Y32DmvZY1mmo+7CAUkV55BaBX
-	 UxkX3idixNNdCJzUqswWuETTXLI2zX4up0RfEWHRyWKvSgai+wMk8HSY4Y1uG/1Yy
-	 IfNEECjWlMwAq77JgYlEnF+VAaUfvYDPYLh5/Zw1Ro03svDMijtXD24nGAn3TVmhq
-	 p6hnFujTjL14qb893UuUEVxIXYnpLV9AUUY9n7/6RrITBTg1nlAcX8q2szPTqq/2U
-	 rI+9PY4RwOM2I95RLF9BEEHtlie3lBBy8mn/WdCm0Ge15ITaPEN3IsolPJmijUcfi
-	 O49ngM3q+ubEiTYWJw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpDNf-1qkh422EIx-00qkIg; Tue, 23
- Jan 2024 00:27:38 +0100
-Message-ID: <b55a95be-38e8-4db7-9653-f864788b475c@gmx.com>
-Date: Tue, 23 Jan 2024 09:57:33 +1030
+	s=arc-20240116; t=1705966205; c=relaxed/simple;
+	bh=8f5V1pIN+HwrIPe3zxmztqaVm66Xypxbk10pGL6H3AA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=guvefQl95ycpuNxJIEmVklp+EBGPn5qEHHb1SMWPEkX1ZI8JT0CvgsoxpXdHNTl5iNWylSW7rJs/iKuy3Hlzw6+IAbQ+SLoE0YLg2ox5R/UwgI9Ynmehy42zH8nQn6SeRMe/otXAuba/UAOrvsH2opSlH2tryCcdMX71VLK9FVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EbZWdqQY; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6da9c834646so3719018b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:30:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705966204; x=1706571004; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DUOidC22dDHlSk4Qftb/5fCyWMGT9ty7KwSP2qXw47w=;
+        b=EbZWdqQYOgOqJYI5ZydZ3k/ZqMb7O0WcMvwK1LSGDpuDHQi09PFkMxXFvRR6cbm8SD
+         bRmZ6H1biyi33k3j2PwPwKVG3kmZR34OFn9RZGvT0AVqqwCAHcajrqCp3fpMoO+8sjrM
+         wCGk5O4t73qRTJRJIiFHgSB57l89Yl3Fu8H8f+/hMr3oz63zZaHsoFo/prBDF16werCd
+         y8URrxq+/0zN9pWJATMg604C422bBEgx90k6GXLQquysrAW2w6wFQo9r1az2blx5MXyO
+         snEQJv8sD0+ah/cEuKdSbIF9Ix2U38j21zH4PgtC/FROBM/9e5zabIMA87NROfHf4E37
+         amKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705966204; x=1706571004;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DUOidC22dDHlSk4Qftb/5fCyWMGT9ty7KwSP2qXw47w=;
+        b=NSDHwvxtlig6eFJMSV+eGbbbiK2CfuSpibqYlU4l/4PmRX4R9g3pC5UqnLwCR3vVY2
+         R3e5wGzAKzFDlBOnjhc9gBOAdZtNrYMerZr7rgC6zJpNulQkusB9GDhRuq/+0SZGuMhG
+         XoUUYTqjal3mAPj11nZh+yOHoGZpdj/4jVXJPYmEVGgub2IE/yxTf++B/X42IRdXv41T
+         j0Fb7DwMDkXeMZRkBp46tN0Yz2mlqFoz+oUkm3s8k8O0aJrT/7tpwz8WTF7TZL1vp0gL
+         HLpLAcgXd48Z9dJEXdR8XwDOCHFU/nWjSlYnwgnE1YfGHR2HOWtX1Vtew8kPI7j8eynG
+         cVaA==
+X-Gm-Message-State: AOJu0Yx2xOKUb7U9D4m8f0oBTSfOqhEoW7qpMkTy2f2alBaMCOI4lwos
+	O8s2Sp7vFWZiGS7u6BiYLS0ReZ+kk56xP78MQ8B9/Jz9ILpJCuhq
+X-Google-Smtp-Source: AGHT+IGsuieeQgTUkrvX4zvqFlP0YJjBALSTDR4c2hkefINgj+fgj+/O3bqH4oa6zR146MXuactozg==
+X-Received: by 2002:a05:6a20:bb25:b0:19a:4e25:be96 with SMTP id fc37-20020a056a20bb2500b0019a4e25be96mr5084877pzb.67.1705966203509;
+        Mon, 22 Jan 2024 15:30:03 -0800 (PST)
+Received: from LAPTOP-7VGLEE77 (19.216.252.27.dyn.cust.vf.net.nz. [27.252.216.19])
+        by smtp.gmail.com with ESMTPSA id o6-20020a62f906000000b006dbd3aec001sm4077744pfh.146.2024.01.22.15.30.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 15:30:03 -0800 (PST)
+Date: Tue, 23 Jan 2024 12:28:44 +1300
+From: Hoorad Farrokh <hourrad.f@gmail.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: gregkh@linuxfoundation.org, linux-staging@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] staging: rtl8723bs: remove unnecessary braces in
+ while loop
+Message-ID: <delmvvkjuq2t76jrrxxb4a33tuef3m7bhkzpnopp5x7xzjdntb@ceybtr5piecl>
+References: <4ii7ptqhz7ion46dczabnevuj7tjfv4iofvzedms6tvfgsfu2e@6rvcsdyodny2>
+ <39fbf9df-d6da-4275-be3b-191108f94ec2@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
-To: dsterba@suse.cz, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1705946889.git.dsterba@suse.com>
- <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
- <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
- <20240122230526.GF31555@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240122230526.GF31555@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:W1dfWQ5ZXwpCKKhC+n129uDN3Sy9Vd/Lm0aqg7YNd97SRAJ7I7W
- 90DEfSyUZwbvaL3J9hw2OF5IBFnhHPYh+U2GaTtjer8yQSX2xmNZIA6VeeKdEHDUYqC7p/9
- 0OaFAerGpJblGUSgT3W4pYlvsGQ7dwVcmuxqXEinuuSn1+cwem5XU6s103fxXUick9iBICW
- W/f+cnxgZnUMNRNgowNug==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YLR9kyS6L6k=;6lznmeudGg0lYSx7TxfomiCtTTG
- Um5zcO+07YMO40YrUi30k6xFbD44ru58wPyMF5z0RJTNUgfh9B+mfO8ii/kvncZA/BwtN0Rxo
- jto+1hpI1O4jEXfLRWAOtdjoqa+JF2uivpbawepLefKshwSrFbJuhToNbQb2+4qp5PzboVFSP
- nRVoP1IpZpQwR56JV+890luSDx9npfhBHLnTQ4fWn5vmPxqwdqaS0x7phdZdBX8j1Yxbo0xNY
- cCFTSANaC7kSUALvJuCwZcFBVlTpIGAwMcR17Rfljy6H/rk1qYeOBGtuXKBDWxkW+oC25Ml2D
- R+VkzCrjWAuc2fZa8Le+bQEpYR7EkhdEj4kPM2JIvRAAeBW0R7q+lUeLIABaj1mQVdd2XuCng
- aq6es1Par+doh1Acz//CgYQrpLfeX54+C/uSZBxPsXQq8nDvzY9RQ4/eiqlIDj+A1OsHx3Jgu
- ycp6W/P5HdOtHjkl3Y4LieCMc2KKzA3tF4qWE2Dr1SDkahjuONozgf1MVvxGFtgeBsAgYr9rA
- showmK30xFp28Iky1E6N0p161nEzaZp8onbTi3IL0+iRk11Vdpdp5d8GTYWzrpYH3LgXZOsUf
- G6A/6htgQnp9Hrh75c+sOEwlnakDIrIMK6Ha53PZRLFyppAqESnbcFGMV41iu5GIlXddtPO7x
- tXo7OX+PqtbprD8nW4lndu3jSqWOlnKAYqHuf1Wr2hQ1giV+ilRzyfxjlAfbCTgMIQ2Fay6ps
- N9LP8Qf7KF0k9gMyFjik9/qJXEhrRMxoX9zYHaZL9KP2BIrMrRzU4Jr1cJeFcOL6INntfMTiQ
- W2Cf341KsagFObr23ryFigP3lKF226XsWH3B5IREf0pX6Mqb2BQ/1+HNioQCl0/O7AfUdRDjq
- FLXLGLc4yFT0cWjFXDH2u5uFwzUi5mQpHhfrkUIxTQYY9S2+vlnT6EEyGxnnuEt7l8ypdTvD/
- tzGqloq94f7W5R1wCP8v+QnphgA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <39fbf9df-d6da-4275-be3b-191108f94ec2@moroto.mountain>
 
+Hello,
+Thanks for your comment.
 
-
-On 2024/1/23 09:35, David Sterba wrote:
-> On Mon, Jan 22, 2024 at 02:54:31PM -0800, Linus Torvalds wrote:
->> On Mon, 22 Jan 2024 at 14:34, Linus Torvalds
->> <torvalds@linux-foundation.org> wrote:
->>>
->>> Bah. These fixes are garbage. Now my machine doesn't even boot. I'm
->>> bisecting
+> 
+> This function doesn't do anything...  The name says "free_all" but it
+> doesn't free anything.  I would prefer to fix this warning by adding
+> a comment:
 >
-> Ah, sorry.
->
->> My bisection says
->>
->>     1e7f6def8b2370ecefb54b3c8f390ff894b0c51b is the first bad commit
->
-> We got a report today [1] that this commit is indeed bad,
->
-> https://lore.kernel.org/linux-btrfs/CABq1_vj4GpUeZpVG49OHCo-3sdbe2-2ROcu=
-_xDvUG-6-5zPRXg@mail.gmail.com/
->
-> the timing was also unfortuate and too late to recall the pull request.
 
-All my fault.
+I didn't fully understand this part of your comment. Do you mean I should add a comment
+to the while loop + my changes and submit it agian? or 
+do you mean I should find a way to free things in the while loop? then submit again?
 
-The offending line is:
+Great regards,
 
-+	memcpy_to_page(dest_page, dest_pgoff + to_copy, workspace->out_buf.dst,
-+		       to_copy);
-
-I'm using the bad pg_off for the memcpy_to_page() call.
-And zstd is the only affected algo.
-
-All the other algos go like this:
-
-+	memcpy_to_page(dest_page, dest_pgoff, workspace->buf, out_len);
-
-So that's why it's screwing up the zstd compressed inline extent
-decompression, as we can easily write beyond the page boundary and write
-into the next innocent page.
-
-And the existing compression group didn't catch it at all.
-
-Would fix it and add new test cases for the regression.
-
-Thanks,
-Qu
->
->> but I'll still have to verify by testing the revert on top of my curren=
-t tree.
->>
->> It did revert cleanly, but I also note that if the zstd case is wrong,
->> I assume the other very similar commits (for zlib and lzo) are
->> potentially also wrong.
->>
->> Let me reboot to verify that at least my machine boots.
->
-> Per the report revert makes it work again and zlib and lzo cases are not
-> affected.
->
-> I can send a pull request reverting all the three until we figure out
-> what's wrong, or you can do it as all revert cleanly.
->
+Hoorad.
 
