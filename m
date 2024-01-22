@@ -1,81 +1,75 @@
-Return-Path: <linux-kernel+bounces-33089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE51A836457
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:19:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7798D83645D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:21:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 659581F21F79
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:19:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6957AB28165
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418773CF73;
-	Mon, 22 Jan 2024 13:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68B63CF5A;
+	Mon, 22 Jan 2024 13:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="K1ufgytb"
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="k7wJFUTn"
 Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B914F3CF42;
-	Mon, 22 Jan 2024 13:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6B02629F
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705929586; cv=none; b=ZNTbrkBkpUObEbyc5Gp/nEldettYD/ji1xyw3H++rcyI929JJBGEiRMTTC4EQjwz5Fv9gQXkkURPoRoBmOK5GErF4nDVnWV+Fi0f7zFHJ9tDRGHJxQSBh3uN7jzQ07PDc9st1mqnpD8cajm+hX7eGly3Lm3G/SlYFgIzRmGU16c=
+	t=1705929672; cv=none; b=j0bb2546M6BmMY8veY8RCBBD0yxEtthnRRM9bhSywGBWS/cic3llH6UyGgcRwsur1OynSqbTAYIugyt9hleAN0TGKh6XxQt19QOOiMF1XrEFxrpgPCoQ4+YF6jBQww3kO4oHItgLNwcGBvtXpfGTNTZoQiE02smlhrLjXeGS6SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705929586; c=relaxed/simple;
-	bh=mLJ+T9PZQML244q2CvgM8A7x5riW1S4OWUVj5BHSWI0=;
+	s=arc-20240116; t=1705929672; c=relaxed/simple;
+	bh=HnNJBC8+2y7p4meMSHy5WF4C+de8lEpVqAL1/oy+eYA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qKhx/OItzZi2bjwnlv86pOZYuQMyVLzYCJLoKvuBre2TuKOhwbYyaGO9g0zObuJjslsuPeve/F6YAuHyFIMKOmM9e9OC8ZM1WS+piaj0t2/GsTB22LGWHAbqYIKJFw//ePvGAwbCl+N67GK7zPuwqz2GIHtqDbim49Nz25ew0fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=K1ufgytb; arc=none smtp.client-ip=65.109.113.108
+	 Content-Type:Content-Disposition:In-Reply-To; b=rVgB+d8xzSYKrANPQJoCE6S3UfpWqeNOwCg9otHNo0QjgR1fEg6lU4xblSFC2S53aLD3fAp1cSSxoC54OO1uyTxfBjsSueGEvaCv8LI3WbbPbyVi4f1akHKHocSH4ng6kYDdLTo1eSm/cvgjQgdqJDaLIDz9WZU5gItV4DpgEWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=k7wJFUTn; arc=none smtp.client-ip=65.109.113.108
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0AA1E40E0177;
-	Mon, 22 Jan 2024 13:19:42 +0000 (UTC)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AD32540E01B2;
+	Mon, 22 Jan 2024 13:21:08 +0000 (UTC)
 X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
 Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
 	header.d=alien8.de
 Received: from mail.alien8.de ([127.0.0.1])
 	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id kKFjKwbVE80b; Mon, 22 Jan 2024 13:19:40 +0000 (UTC)
+	with ESMTP id qnWR47hUZ0la; Mon, 22 Jan 2024 13:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705929579; bh=O/+tvyIi7hu2G39Na79EAwIAhYkxG5TR/huFmkNcn9E=;
+	t=1705929666; bh=919c1xhHphTCX2RhMAAOfW7c17gtK4ZxzQCfEYVwwaA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=K1ufgytbqAeKU/bbx1LpJre3vS6601/SVnnwLpFjXNGMTjPY9Nm+A+yHTatEKvsrn
-	 jKCRF9Ct9kuq2WaIvEZudPxuW80aQ6sV2DEgv5x5w2nNd1gm+orAggr15hPXn9LnTV
-	 cUfVXHwd6vGk+xfoE0ZhIIDM7KLxFhpAn9H/ju/pxuRmHrVBnfrxOWbrue3jllAb9r
-	 3Ubo8g5GoprkmY0JAoNQ/3/1gO3n8x/H3xEyXKlDPiMSZqF9LxfuaMxSF9QRFcPajr
-	 8NJF5vEyW9gUmzV79jzEDWm0ZuQYIjoELZ3xVbonpik5sMvDXxAiU/QiX8bykQP7Kc
-	 Cw2GHvMV759VKo5cDPP2wPZ9ll2LNdCHOaMqMNDZ39c2R8gi0mtu6DPMMNFiHbF3Yp
-	 2urrXZCC1l8c5a3GmCU6TZPaFSSWTC+ELzhYkcSE3p4AoKMYNd4y7fjZB858BaEaEz
-	 ziUGfyBu2TlOKwvD/W2xUhehBQpzfY5muWbfrm2iSswSPS/3uAfPffHr4k9lTsP+oE
-	 BgFJhOWW1jILISG21BWkJnVsw2RiFaruT3nYvvRqjGhOESDcc0WyJIVXXm/ToE0Ynr
-	 c28ogu11dMvokRps9/KMY/k6zJnVIxhaJczZEIHBpnsctGH7VtFfXrjrnLe3fXVhLk
-	 zJ6/3hP9K7ehKB8eE7xkCFg0=
+	b=k7wJFUTnPp3OfFjuCUl8t9miRfn9pkhct9BTNH7P1tRh5cFvJDmOfMASuNI2xDJEx
+	 b7SodbdHOBdBGw19SxqndTF8OOtillwfjfFNC6gBx6xwGq5HxcoPqQ77QMaOCOVQ+N
+	 YdWzP+KcnhqGawYtIjNFsPb2jHngrZM0RQt9dc/9JZOPDnulZ4MHyh0Dj4Kmzoh6kX
+	 mfDNsdXXEQxOeFUVHu+E/fHQ8Oqpq+zhUQyjyoUn7HQFbp2VpO1Uk4b0oELHjd+L7X
+	 N4orjFkYaFJGRqe7Ms6wvPAbPNmYkvGh7+Dg+uz1lZXJKJyzjXkOY0IRzQbYXrSDwb
+	 5x+PZOcriexSOSIHQALzqNTT9Ya6f2tdcP7vbpP9UNpq14JS5eNmts8uoJRwnXntLp
+	 05s3vxWKwkpvs/3gB86fGVhjZlZpbwAEbTUI6bOyI3yGiHnyKFHxriY+Z4vZ/pBvD1
+	 kAuhmFUvqJSrqn23oQEmUtPAkqkdJ1zHSlculyzhKPYM1xopfjIcG46gFeTvu/ImK8
+	 fZpCCdTzu8s2k/wWn5xTHSthj2MbeDkLdcilxYkFFc+gYBuKVSU/nKbFeELyI4Vi1q
+	 Tnh7h7Q12o9Bxd0WVCXV1vYjHKUCGmDtifnD+yq6cPj3IHLhI119ftO7ubNa2JNQN0
+	 PaSKgAiy0r42WjNX8QXcjPDA=
 Received: from zn.tnic (pd953099d.dip0.t-ipconnect.de [217.83.9.157])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 897B840E01B2;
-	Mon, 22 Jan 2024 13:19:16 +0000 (UTC)
-Date: Mon, 22 Jan 2024 14:19:10 +0100
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 14BFA40E0177;
+	Mon, 22 Jan 2024 13:20:58 +0000 (UTC)
+Date: Mon, 22 Jan 2024 14:20:57 +0100
 From: Borislav Petkov <bp@alien8.de>
-To: Xin Li <xin3.li@intel.com>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, luto@kernel.org, pbonzini@redhat.com,
-	seanjc@google.com, peterz@infradead.org, jgross@suse.com,
-	ravi.v.shankar@intel.com, mhiramat@kernel.org,
-	andrew.cooper3@citrix.com, jiangshanlai@gmail.com,
-	nik.borisov@suse.com, shan.kang@intel.com
-Subject: Re: [PATCH v13 08/35] x86/fred: Disable FRED by default in its early
- stage
-Message-ID: <20240122131910.GRZa5rTpEda4I1YfUX@fat_crate.local>
-References: <20231205105030.8698-1-xin3.li@intel.com>
- <20231205105030.8698-9-xin3.li@intel.com>
+To: Pranav Athreya <pranavsubbu@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+	Pranav Athreya <pranavsubbugmail.com@pop-os.smtp.subspace.kernel.org>
+Subject: Re: [PATCH] x86/alternatives: Fix switch block in apply_reloc()
+Message-ID: <20240122132057.GAZa5ruRCBJzuuVKC9@fat_crate.local>
+References: <Za5qb8livKA4XTeG@pop-os>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,27 +78,16 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231205105030.8698-9-xin3.li@intel.com>
+In-Reply-To: <Za5qb8livKA4XTeG@pop-os>
 
-On Tue, Dec 05, 2023 at 02:49:57AM -0800, Xin Li wrote:
->  			Warning: use of this parameter will taint the kernel
->  			and may cause unknown problems.
->  
-> +	fred		[X86-64]
-> +			Enable flexible return and event delivery
+On Mon, Jan 22, 2024 at 06:45:27PM +0530, Pranav Athreya wrote:
+> -	case 1: apply_reloc_n(8, ptr, diff); break;
+> -	case 2: apply_reloc_n(16, ptr, diff); break;
+> -	case 4: apply_reloc_n(32, ptr, diff); break;
+> -	default: BUG();
 
-Let's make it accept multiple options from the get-go:
-
-fred=on,disable-when,foo,bar,bla...
-
-in case we need to tweak its behavior.
-
-If it is only "fred" it will propagate this way downstream and it'll
-lead to confusion later when people have to update their scripts and
-config files when "fred" alone doesn't do what they're expecting
-anymore.
-
-Thx.
+It is more compact and faster readable this way. Do not always take what
+checkpatch tells you to the letter.
 
 -- 
 Regards/Gruss,
