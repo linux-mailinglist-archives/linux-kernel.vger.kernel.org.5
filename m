@@ -1,152 +1,97 @@
-Return-Path: <linux-kernel+bounces-32925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF5F4836207
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:38:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA0C183620A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:39:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65FB71F28031
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:38:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7108C1F27DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E637841222;
-	Mon, 22 Jan 2024 11:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979D141767;
+	Mon, 22 Jan 2024 11:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ub6j+wMA"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ok8iikra"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2CE44122C
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D8941747;
+	Mon, 22 Jan 2024 11:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705922990; cv=none; b=UUuPySZcm+qlxjXkUuJhjIqF3mKI32PE1K3S/b3TwbI13hLebD1oYJTUQyQeLdGhNYdQy4QvCiflubfDiUIlFxnt3q9QH/yvGnHBITn6g8un5v1mbD9qBwPz87WLQPudhrdPJAw1/UpfbELusNGcFwcg6Z5KQy/GesJZnnFX8hc=
+	t=1705923024; cv=none; b=oVWsSQ5Wkih0nb52mERbDanrTz67a0nFclOVDGCIkyGg/I7wCt9cIIy9E37/UgtmBYOvftyWQVsVLjm77xJ0kPJrJaHuoroOt7KUVdh+dVRprC1nO9uazuh4rDGkxQbNtWYrU5D0cliJ7XJoxMZVX3CU942KqcEMx7Ww36Q9HEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705922990; c=relaxed/simple;
-	bh=JGWqZhVcL7ryCjn+vX9Caw5DAcSD07qOqTKDQaS6LWk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sERBE4SQKFC65qFfpidGWZI6D8cwZUtq3FGRNoL4uf5w7oz+GFf1YJUtybG1B8Lv/bRJiyqhjtVV3b+kOB8KvuvEcBMbVJFSwQaCFOikv7pL9k1MD6fMJSli2v8Vz/FtxKrXjnxUNagtNyd6E3fR6lP2H/5inBkLxL8IvxTg/8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ub6j+wMA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705922987;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R6qQO7GK81UzZzgvu/sQyAjBJMfGdp56pL3agcv6YYc=;
-	b=Ub6j+wMALkafByvzFrZVgY9kPqiZv8wXckNVLlLfB/3eXyHVO2tiZGnY9pb+6wo5/OaKsL
-	w8YXqZiWmXmOSYHxiH0vXb6yqBuVeH4L6v7ZzvaYQz2I1wOArteXYEMMW8AEZPB23irUcm
-	ECK838QnMfCtOrf3qbzqI2a3D1QfrBI=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-689-xEvYJtFnMM2hw43KXGSDNQ-1; Mon, 22 Jan 2024 06:29:46 -0500
-X-MC-Unique: xEvYJtFnMM2hw43KXGSDNQ-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a2b068401b4so231389666b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 03:29:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705922985; x=1706527785;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R6qQO7GK81UzZzgvu/sQyAjBJMfGdp56pL3agcv6YYc=;
-        b=cvpVGGBE1ULHTvvJTa86gp3YDE4+MgapXAufkGO5DCqb3qcrPRQwKQxDm12JL+JFT5
-         EJc80HqifxjDtoM7Xk6RRu9pdIy3ctPnGfpMU6FKWLBWt4sck/p4TJuf56GLVc6bgcLn
-         5P4Zm2ieW3h7xfsO0HPYQrxZ/YNdaAkFP3m1wJ5cTNNXGqukFG0Aazy+59X9I9NVqWWa
-         s57IlqiADPCljJsnmb/SSYaX8CkZi7tq/RCBb2KHYsdwulVjXZRgyYqruUA4XXA8eriu
-         pR+Xb5B4nd2V+9Q5wLXNQHaNrclX/h6Lw2Z8jpe4HXweA36YXPRgyOC7DMDGHu3/eWfG
-         pq2w==
-X-Gm-Message-State: AOJu0YyO5iOpyTfFw95ng/lrB3bbWT0UyFQCY6Z3eNEiPS3Qf6yFNGk5
-	RJFJUPlFsN8na8x6ApsphsPQUUO+nsqbpSa0iBNbyxmvMOtguiOBrNDm6D8s0ljX25aH/QVEQ8j
-	7Tu0xnzd4hvs8/2eXjj6/sWSJPXPFB9UkUxJ0d1Q0FC+gjBS/3FQVY4M3tte42g==
-X-Received: by 2002:a17:906:cd13:b0:a1c:a542:2fcb with SMTP id oz19-20020a170906cd1300b00a1ca5422fcbmr3284224ejb.31.1705922984967;
-        Mon, 22 Jan 2024 03:29:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGyZmThrluJPviG+qJFxpPsN+NEG7+fr7H9zwYXkmv1j1v+6G9VQ+qQolE4vNhExUqTGn44gw==
-X-Received: by 2002:a17:906:cd13:b0:a1c:a542:2fcb with SMTP id oz19-20020a170906cd1300b00a1ca5422fcbmr3284217ejb.31.1705922984675;
-        Mon, 22 Jan 2024 03:29:44 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id fj12-20020a1709069c8c00b00a3076eec436sm423813ejc.5.2024.01.22.03.29.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 03:29:44 -0800 (PST)
-Message-ID: <1862d74a-7b15-48e3-896b-30dda835f28f@redhat.com>
-Date: Mon, 22 Jan 2024 12:29:43 +0100
+	s=arc-20240116; t=1705923024; c=relaxed/simple;
+	bh=RCvTGJ0GZvvie/GIf5ztPAc6OQbXT6q4EjuGKMpAvIE=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=h0epGzg4pGLkrpk2LPJhaxEEJDs+W3JrghPIQFztOpgcD/pg+irne56zO4iBl51ijJKEzyHL03dygV1p5KTGgDlVjqwQpsyiPakz9WvZ0fngvLyOuu6jUZob+q+vPodNjD0R4e2CEi3njTK3KTG3iVyfReKIlOI4bx0E+fdo21c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ok8iikra; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 53417C43390;
+	Mon, 22 Jan 2024 11:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705923024;
+	bh=RCvTGJ0GZvvie/GIf5ztPAc6OQbXT6q4EjuGKMpAvIE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ok8iikraMnHEgdhufQtdsZ33a6OYW6qFs5sNGxvO1e8PqDyQRHE++C7mh2pZKo5WF
+	 Rm78kEfwi7UnwwzjTRazUpy8TA4/OCFoRIMKG6QEJ7CQC6G3X5HckrCIEEbGmjHghl
+	 zJI68QeOW1rEaPgT8Q+V59StTRhNlja0q7BNp8M9KW7XooIlIMw/yEh7HhsWT3wcWZ
+	 un+G6Y3DJ347t2JxsBQb/8XXQzSeXlpETrvZENaRNJFE9PujL2KlxXDfhR7vYc0OKz
+	 FZyxmYvBH4vMiebLM/NER6+YNKKGYamYdDewOnYcXxNa0z7smlb+vNpo5JBt2oKI57
+	 5d+BB2kJO1eFQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3AC45D8C9A8;
+	Mon, 22 Jan 2024 11:30:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] platform/x86: wmi: Use ACPI device name in netlink
- event
-Content-Language: en-US, nl
-To: Armin Wolf <W_Armin@gmx.de>, ilpo.jarvinen@linux.intel.com,
- Andy Shevchenko <andy@kernel.org>
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240121200824.2778-1-W_Armin@gmx.de>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240121200824.2778-1-W_Armin@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net/rds: Fix UBSAN: array-index-out-of-bounds in
+ rds_cmsg_recv
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170592302423.23374.3289939463686065448.git-patchwork-notify@kernel.org>
+Date: Mon, 22 Jan 2024 11:30:24 +0000
+References: <1705715319-19199-1-git-send-email-sharath.srinivasan@oracle.com>
+In-Reply-To: <1705715319-19199-1-git-send-email-sharath.srinivasan@oracle.com>
+To: Sharath Srinivasan <sharath.srinivasan@oracle.com>
+Cc: santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-kernel@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, syzkaller@googlegroups.com,
+ chenyuan0y@gmail.com, zzjas98@gmail.com, gerd.rausch@oracle.com,
+ allison.henderson@oracle.com, aron.silverton@oracle.com
 
-Hi Armin,
+Hello:
 
-On 1/21/24 21:08, Armin Wolf wrote:
-> The device name inside the ACPI netlink event is limited to
-> 15 characters, so the WMI device name will get truncated.
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Fri, 19 Jan 2024 17:48:39 -0800 you wrote:
+> Syzcaller UBSAN crash occurs in rds_cmsg_recv(),
+> which reads inc->i_rx_lat_trace[j + 1] with index 4 (3 + 1),
+> but with array size of 4 (RDS_RX_MAX_TRACES).
+> Here 'j' is assigned from rs->rs_rx_trace[i] and in-turn from
+> trace.rx_trace_pos[i] in rds_recv_track_latency(),
+> with both arrays sized 3 (RDS_MSG_RX_DGRAM_TRACE_MAX). So fix the
+> off-by-one bounds check in rds_recv_track_latency() to prevent
+> a potential crash in rds_cmsg_recv().
 > 
-> This can be observed with kacpimon when receiving an event
-> from WMI device "9DBB5994-A997-11DA-B012-B622A1EF5492":
-> 
-> 	netlink:  9DBB5994-A997- 000000d0 00000000
-> 
-> Fix this by using the shorter device name from the ACPI
-> bus device instead. This still allows users to uniquely
-> identify the WMI device by using the notify id (0xd0).
-> 
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> ---
-> Changes since v1:
-> - use acpi_dev_name() helper function
+> [...]
 
-I'm a bit divided on this patch. I agree the new way of doing
-things is better, but technically this is a bit of a userspace API
-break.
+Here is the summary with links:
+  - net/rds: Fix UBSAN: array-index-out-of-bounds in rds_cmsg_recv
+    https://git.kernel.org/netdev/net/c/13e788deb734
 
-I guess we could hope that nothing depends on the old netlink API
-format / name but I'm not sure we can rely on that ...
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Ilpo, Andy do you have any opinion on this ?
-
-Regards,
-
-Hans
-
-
-
-
-> ---
->  drivers/platform/x86/wmi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> index a7cfcbf92432..c61860db66ed 100644
-> --- a/drivers/platform/x86/wmi.c
-> +++ b/drivers/platform/x86/wmi.c
-> @@ -1202,7 +1202,7 @@ static int wmi_notify_device(struct device *dev, void *data)
->  	}
-> 
->  	acpi_bus_generate_netlink_event(wblock->acpi_device->pnp.device_class,
-> -					dev_name(&wblock->dev.dev), *event, 0);
-> +					acpi_dev_name(wblock->acpi_device), *event, 0);
-> 
->  	return -EBUSY;
->  }
-> --
-> 2.39.2
-> 
 
 
