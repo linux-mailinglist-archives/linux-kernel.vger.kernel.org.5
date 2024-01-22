@@ -1,95 +1,115 @@
-Return-Path: <linux-kernel+bounces-34151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1591B83747F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:50:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3309483748F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E833B22C6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:49:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6681D1C26FF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7DC47A6C;
-	Mon, 22 Jan 2024 20:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3679847A6B;
+	Mon, 22 Jan 2024 20:51:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M1hVgyLq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tlVgspKR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3D73D3A7;
-	Mon, 22 Jan 2024 20:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796103D3A7;
+	Mon, 22 Jan 2024 20:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705956588; cv=none; b=haTpsirdk6FQBbQDCFR6BFfOFVnhmeyxKpvs2vMw0648b3wckt9prYf7lWqujrl4hsjnlJ5abAOUALtrXC3nSZKmDXV5JFMB1vexz9UB+xwHP2ZFLjjWCtKCjU1pz2TYw8ODXSArw5T+meA4HEe9t8IHc+Hyi+yuVdfk6OXBBzA=
+	t=1705956664; cv=none; b=Aocf2QCE+RLkE2yPe5E/hzdonIlER+UfXx2pumEumwvEOQ/ILGUeUGd8yu1X60sOXhM5Pr3Gd7ZKFxEuCrut2CqzGBVmKt1nXzjPLMFzIla4SSCmeoL8qAJLcpP+iQHcslpxB6Kb2eOe1wJx2iWq2pxc+rC7qozv/awN/VY5fs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705956588; c=relaxed/simple;
-	bh=8uQMHUcXhtjhqayjyELeGsTQuyul/RDw0AHVO1zqFyc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gRXmGaXvTAzXQtXbd4IwIl6KykjM7NgF1PLC3VXB8SNpZmO1wv987+rHNF++GK1bqDDCPfLcjRAyxxK7ZsLTQj4ZAEi72LXq4OaPfT625jV3x3Fl+NQijjkBfqurOH5gq8tATcW5tUKj94xnd2qG/d0YbSuMyCETAuAcmUFegck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M1hVgyLq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 775E8C433B1;
-	Mon, 22 Jan 2024 20:49:45 +0000 (UTC)
+	s=arc-20240116; t=1705956664; c=relaxed/simple;
+	bh=cD2X26TCLky80GPoDVS7IZ4B/2/aC8m0TzrgrR2pAl4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=agOyMJW6dFivkecC00edG3epAaV1ybEoIQVO06jq4UAS7J8eAvHQvYoV2BHLjIWJlwExz6knrU8i7O0x8+NTi4F3BlBYoh2UpSto/gukkXiothCRlITEbvXB4quWmhGg2JrbNv4UbTd+Aa1fJTjoM2BFWDSrFhvlMeFnGvHUxU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tlVgspKR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2388EC433F1;
+	Mon, 22 Jan 2024 20:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705956587;
-	bh=8uQMHUcXhtjhqayjyELeGsTQuyul/RDw0AHVO1zqFyc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M1hVgyLqytB+uOHN87/G0Mx0O6oa8OSf0K4e4wc1VVYQIoqwi9xrsFE6x4PEEx/8Y
-	 lr0H/drkLUBoaLo9VKnXH1F5F8BA6la87ESLGGQN7aAFXtpdL8mX4PEmb3kqSX1SE3
-	 06YjGNizjI3n+wh2XLRin7lCLVaJqDFJ49BZpHfCqhUGf0DKgawRJYdNgMToHt7nk3
-	 qOFwgp2AqXaKkwgX20Gh6slmRbXDORYVstZToPkBncThvJa8obBig35ydVnzS5+eAR
-	 jUzFydz+GaIKg2nnmhyOwuNyW6w5xebf2y26X7zJLIohGGQ+4YP1CbYvzuxGbdR7RD
-	 fJlYIJKL8et8A==
-Date: Mon, 22 Jan 2024 20:49:38 +0000
-From: Simon Horman <horms@kernel.org>
-To: mhklinux@outlook.com
-Cc: haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net 1/1] hv_netvsc: Calculate correct ring size when
- PAGE_SIZE is not 4 Kbytes
-Message-ID: <20240122204938.GG126470@kernel.org>
-References: <20240122162028.348885-1-mhklinux@outlook.com>
+	s=k20201202; t=1705956664;
+	bh=cD2X26TCLky80GPoDVS7IZ4B/2/aC8m0TzrgrR2pAl4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=tlVgspKRLXT64aZlDEUrm580u6cSI3uGk3uXztzHuCUOuIn1ir55bWdzRhWh6mqcz
+	 DXBawWcQ8oeo4s7uzmXKf13oB9svg3exL+hNwzEqGeLb4txve2/s5geRtfYIZvk+tP
+	 kJWBh92NpvpZWha4whVzLj0wJAhXIsiYXFaVPVIawBuTO3oTMiMJQILUBHoKysEvM8
+	 TbNhlKyBJJr735OnqYcZokBoomnYkvQVKSe+kgt7ugkYhK0C8b1d4iQycS0cfy8wAE
+	 onPk31WX93H5xNgrLAboH21GZiStC0nF2lH0BghVJCFjLGLp5f8BWdBPe4P2iJPVPE
+	 cO5RpXyAmhBmA==
+From: Rob Herring <robh@kernel.org>
+To: Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Russell King <linux@armlinux.org.uk>
+Cc: dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: display: nxp,tda998x: Fix 'audio-ports' constraints
+Date: Mon, 22 Jan 2024 14:49:58 -0600
+Message-ID: <20240122204959.1665970-1-robh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122162028.348885-1-mhklinux@outlook.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 22, 2024 at 08:20:28AM -0800, mhkelley58@gmail.com wrote:
-> From: Michael Kelley <mhklinux@outlook.com>
-> 
-> Current code in netvsc_drv_init() incorrectly assumes that PAGE_SIZE
-> is 4 Kbytes, which is wrong on ARM64 with 16K or 64K page size. As a
-> result, the default VMBus ring buffer size on ARM64 with 64K page size
-> is 8 Mbytes instead of the expected 512 Kbytes. While this doesn't break
-> anything, a typical VM with 8 vCPUs and 8 netvsc channels wastes 120
-> Mbytes (8 channels * 2 ring buffers/channel * 7.5 Mbytes/ring buffer).
-> 
-> Unfortunately, the module parameter specifying the ring buffer size
-> is in units of 4 Kbyte pages. Ideally, it should be in units that
-> are independent of PAGE_SIZE, but backwards compatibility prevents
-> changing that now.
-> 
-> Fix this by having netvsc_drv_init() hardcode 4096 instead of using
-> PAGE_SIZE when calculating the ring buffer size in bytes. Also
-> use the VMBUS_RING_SIZE macro to ensure proper alignment when running
-> with page size larger than 4K.
-> 
-> Cc: <stable@vger.kernel.org> # 5.15.x
-> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+The constraints for 'audio-ports' don't match the description. There can
+be 1 or 2 DAI entries and each entry is exactly 2 values. Also, the
+values' sizes are 32-bits, not 8-bits. Move the size constraints to the
+outer dimension (number of DAIs) and add constraints on inner array
+values.
 
-Hi Michael,
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/display/bridge/nxp,tda998x.yaml    | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-As a bug fix this probably warrants a fixes tag.
-Perhaps this is appropriate?
+diff --git a/Documentation/devicetree/bindings/display/bridge/nxp,tda998x.yaml b/Documentation/devicetree/bindings/display/bridge/nxp,tda998x.yaml
+index 21d995f29a1e..b8e9cf6ce4e6 100644
+--- a/Documentation/devicetree/bindings/display/bridge/nxp,tda998x.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/nxp,tda998x.yaml
+@@ -29,19 +29,22 @@ properties:
+ 
+   audio-ports:
+     description:
+-      Array of 8-bit values, 2 values per DAI (Documentation/sound/soc/dai.rst).
++      Array of 2 values per DAI (Documentation/sound/soc/dai.rst).
+       The implementation allows one or two DAIs.
+       If two DAIs are defined, they must be of different type.
+     $ref: /schemas/types.yaml#/definitions/uint32-matrix
++    minItems: 1
++    maxItems: 2
+     items:
+-      minItems: 1
+       items:
+         - description: |
+             The first value defines the DAI type: TDA998x_SPDIF or TDA998x_I2S
+             (see include/dt-bindings/display/tda998x.h).
++          enum: [ 1, 2 ]
+         - description:
+             The second value defines the tda998x AP_ENA reg content when the
+             DAI in question is used.
++          maximum: 0xff
+ 
+   '#sound-dai-cells':
+     enum: [ 0, 1 ]
+-- 
+2.43.0
 
-Fixes: 450d7a4b7ace ("Staging: hv: ring parameter")
-
-..
 
