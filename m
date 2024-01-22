@@ -1,328 +1,276 @@
-Return-Path: <linux-kernel+bounces-32372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F239B835ACA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:02:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C15E835ACC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:03:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 750D4283A55
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:02:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 808851C21741
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:03:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37A9612B;
-	Mon, 22 Jan 2024 06:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 434FC5697;
+	Mon, 22 Jan 2024 06:03:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b="mhMclLdF"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CPqsJP+M"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6656AA1;
-	Mon, 22 Jan 2024 06:02:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705903352; cv=fail; b=IarCbpDoJsUltOaJBc511rh9WPLnuXqReLHaDK0feOnOUH5oYK20kZZXOMvAQ2uEve60iuOc+dDQTr6nGRR9TtHM0ihv7zOOpfk/2b2A+ofCd3/PlIYqaY5ZRyNeYKKPWKAkNEQqSSDfH0Nbc2XTtuJnauKPSwvICafK0ZrJOGw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705903352; c=relaxed/simple;
-	bh=tz95/DasosogLa+UZ80GGebLSIBAoWiOuP5BKEiu5Vo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=g6fslSNnawYmLK7ZavWPiFaS8aJMqgDRUAjg5tl70Z8cp2T6+SUkDybAU1ExugvU85Q3xopjj6VurBvti2tNnk6tO7LNS0mDIB9SbeyxFQm1h8883Cj+mltULHRshDpTtNQU0eUyEaSKH1Rg7Dg/2sx0lEGu1NK8y2Or3IhgqQg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b=mhMclLdF; arc=fail smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40M5gKr7007504;
-	Sun, 21 Jan 2024 22:02:10 -0800
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3vsjewr1k6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 21 Jan 2024 22:02:10 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MBYh/2qK6y7UxnEFga0vAnXowXQhNqJpE83fuADYPJEW8W0lENilD0omu4pXDKbTVdUcwl/dP/G46CQRBCsusuRVJGudVbUgvaLj6RmDQ1QbHmHDbr6cu4Smxu5r9tWFVMn/kAam+s86DCJBXAyAdCXg+Y+NYAQbX43ng1bexUQGw8m4sRcgsFcKCQbX1V+tjtrqLpVEKWPsNmuIljSJ9UsSKF3BQm7hoBMW8lc6WdcM6MLxQqsLjYY5UqbK15c7Kkn8wZnE0zEZ1X1IW/5Ic1+FieuV6dzmPyuMZPqSl9X3aBX5vN8ncs5QHGwUNiLZe/SnOW1cHxDrXWYhmiimbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WHX15nx5er5IX/MrIHnXLimq+7dSJmZzZyebyV7WR3E=;
- b=UwtHTckQD6ZzSI8S0Dp1z/uPLEVUIG8lQIRBkkrXsmanBAB8etNvSeAwLqy5DJQwbK4Q8cdKejipYI8xM2e6S6qmqPOcW0L7JvZjAgzxl/q2op6aN9Bm8OhWINNTq5/R5C3ttGsoSgfw66iwbRTDmrZwAtiWFdZcFxn4M2nsKzqkESMVvnzT2oZPpz/bRcVzEwzwueoQgE/fS+kR7GTMGMmrbkX36flXhnne4UqLSU/B9cE8LEJem1Xnli1nFjAzmDALWtuG6qGIORLDwhXGgb2gk5pAN7KRpT/54vQ3oxsOTF6ni2aMAdPDomzvpHY5YLjcLeH+Lz9sk/SoXF0ZVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C4BD525E;
+	Mon, 22 Jan 2024 06:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705903423; cv=none; b=eLPeOoPq0Vk296gByj6uxtW7ix/8H7IpfIeAoNKvotm4bI8paqVhZBDALIaCODWWgCjZly/B9P3k9YDg+ErBOtlw1sS2ELsHT5/a8mtVwTUhbGSqt0XuuCyVXMDtuPa4EufcGPvkNOOnPkwejIC+gPIs7qm8r1yJKa7GSnFzKSc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705903423; c=relaxed/simple;
+	bh=QcdBJu2BJtc1XmUGRo3LhTTt1NXTGmBq79M02ma8ots=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dQ8FyZ3SclB9FAZeSpfKJYMAhajiBDfRA7B2Sg0yl3Z9usKmlE3vKjNYSqv9lO+ZlH51C5rCkH30LukGu5NtBf84t0tmm94Vsb5VFNhITgUHr5Um7y8uEtbS+Ju4z26azBN++OqYzEa2UaUhYVa2/NqVVcEH4pTjGOPZlyHc6sM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CPqsJP+M; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a271a28aeb4so278342266b.2;
+        Sun, 21 Jan 2024 22:03:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WHX15nx5er5IX/MrIHnXLimq+7dSJmZzZyebyV7WR3E=;
- b=mhMclLdFEVABmStKg3TtS4IZobNokmQFb+qr6525YbLWr+vQQTM5TYXnTXsoI0cm9yUNMFVtXDOKm9kmwurjI88p9KSvS8Ai6dHKY9ZghBNOSu3AcporXqfBkHs60oK9mUpjTxE72w+F2TREoGsK68kS6j8x9qMpF5YokmgPGbw=
-Received: from PH0PR18MB4543.namprd18.prod.outlook.com (2603:10b6:510:ac::22)
- by LV3PR18MB5706.namprd18.prod.outlook.com (2603:10b6:408:1ac::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.14; Mon, 22 Jan
- 2024 06:02:07 +0000
-Received: from PH0PR18MB4543.namprd18.prod.outlook.com
- ([fe80::f8e5:bce7:49c8:f0f9]) by PH0PR18MB4543.namprd18.prod.outlook.com
- ([fe80::f8e5:bce7:49c8:f0f9%4]) with mapi id 15.20.7228.019; Mon, 22 Jan 2024
- 06:02:07 +0000
-From: "Jenishkumar Patel [C]" <jpatel2@marvell.com>
-To: 'Maxime Chevallier' <maxime.chevallier@bootlin.com>
-CC: "marcin.s.wojtas@gmail.com" <marcin.s.wojtas@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "davem@davemloft.net"
-	<davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Antoine Tenart
-	<atenart@kernel.org>
-Subject: RE: [EXT] Re: [net v4 PATCH 1/1] net: mvpp2: clear BM pool before
- initialization
-Thread-Topic: [EXT] Re: [net v4 PATCH 1/1] net: mvpp2: clear BM pool before
- initialization
-Thread-Index: AQHaSoviVtEU90vMIk6A5vQHbYZ71LDhK9iAgAQdgyA=
-Date: Mon, 22 Jan 2024 06:02:07 +0000
-Message-ID: 
- <PH0PR18MB4543B5E92792ECD5D3683861EC752@PH0PR18MB4543.namprd18.prod.outlook.com>
-References: <20240119035914.2595665-1-jpatel2@marvell.com>
- <20240119150451.476d6ba2@device-28.home>
-In-Reply-To: <20240119150451.476d6ba2@device-28.home>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-rorf: true
-x-dg-ref: 
- PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcanBhdGVsMlxhcHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4NGJhMjllMzViXG1zZ3NcbXNnLWMwZGY3NTQyLWI4ZWItMTFlZS1iYTA0LTAwMjI0ODZiYjZhNlxhbWUtdGVzdFxjMGRmNzU0My1iOGViLTExZWUtYmEwNC0wMDIyNDg2YmI2YTZib2R5LnR4dCIgc3o9IjM0NDYiIHQ9IjEzMzUwMzc2OTIxMzQ0MjM0MyIgaD0iVVE2bjlFblFydU1Nems4T0c1Nkp2bUtML29BPSIgaWQ9IiIgYmw9IjAiIGJvPSIxIi8+PC9tZXRhPg==
-x-dg-refone: 
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdN?=
- =?us-ascii?Q?QWRRQnpBSFFBYndCdEFGOEFjd0J6QUc0QVh3QnJBR1VBZVFCM0FHOEFjZ0Jr?=
- =?us-ascii?Q?QUhNQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFZd0IxQUhNQWRBQnZBRzBB?=
- =?us-ascii?Q?WHdCekFITUFiZ0JmQUc0QWJ3QmtBR1VBYkFCcEFHMEFhUUIwQUdVQWNnQmZB?=
- =?us-ascii?Q?SFlBTUFBeUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFB?=
- =?us-ascii?Q?QUFJQUFBQUFBSjRBQUFCakFIVUFjd0IwQUc4QWJRQmZBSE1BY3dCdUFGOEFj?=
- =?us-ascii?Q?d0J3QUdFQVl3QmxBRjhBZGdBd0FESUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFB?=
- =?us-ascii?Q?R1FBYkFCd0FGOEFjd0JyQUhrQWNBQmxBRjhBWXdCb0FHRUFkQUJmQUcwQVpR?=
- =?us-ascii?Q?QnpBSE1BWVFCbkFHVUFYd0IyQURBQU1nQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVpBQnNBSEFBWHdCekFH?=
- =?us-ascii?Q?d0FZUUJqQUdzQVh3QmpBR2dBWVFCMEFGOEFiUUJsQUhNQWN3QmhBR2NBWlFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reftwo: 
- =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJrQUd3QWNBQmZB?=
- =?us-ascii?Q?SFFBWlFCaEFHMEFjd0JmQUc4QWJnQmxBR1FBY2dCcEFIWUFaUUJmQUdZQWFR?=
- =?us-ascii?Q?QnNBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
- =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBbmdBQUFHVUFiUUJoQUdrQWJBQmZBR0VBWkFCa0FI?=
- =?us-ascii?Q?SUFaUUJ6QUhNQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFEUUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFB?=
- =?us-ascii?Q?Q2VBQUFBYlFCaEFISUFkZ0JsQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4?=
- =?us-ascii?Q?QWJnQmhBRzBBWlFCekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJo?=
- =?us-ascii?Q?QUd3QVh3QmhBR3dBYndCdUFHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dC?=
- =?us-ascii?Q?MkFHVUFiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFYd0J1QUdFQWJRQmxBSE1B?=
- =?us-ascii?Q?WHdCeUFHVUFjd0IwQUhJQWFRQmpBSFFBWlFCa0FGOEFZUUJzQUc4QWJnQmxB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
- =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcwQVlRQnlBSFlBWlFCc0FGOEFjQUJ5?=
- =?us-ascii?Q?QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZBSElBWlFCekFIUUFj?=
- =?us-ascii?Q?Z0JwQUdNQWRBQmxBR1FBWHdCb0FHVUFlQUJqQUc4QVpBQmxBSE1BQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
- =?us-ascii?Q?QUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFHRUFjZ0J0QUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refthree: 
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJ?=
- =?us-ascii?Q?QUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBWndCdkFHOEFad0Jz?=
- =?us-ascii?Q?QUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBRzBB?=
- =?us-ascii?Q?WVFCeUFIWUFaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJnQmhB?=
- =?us-ascii?Q?RzBBWlFCekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3?=
- =?us-ascii?Q?QnRBR0VBY2dCMkFHVUFiQUJzQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQWJRQmhBSElBZGdCbEFHd0Fi?=
- =?us-ascii?Q?QUJmQUhBQWNnQnZBR29BWlFCakFIUUFYd0J1QUdFQWJRQmxBSE1BWHdCakFH?=
- =?us-ascii?Q?OEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFHRUFiQUJmQUcwQVlRQnlBSFlBWlFC?=
- =?us-ascii?Q?c0FHd0FYd0J2QUhJQVh3QmhBSElBYlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFB?=
- =?us-ascii?Q?QUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4QWFn?=
- =?us-ascii?Q?QmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZBR01BYndCdUFHWUFhUUJrQUdV?=
- =?us-ascii?Q?QWJnQjBBR2tBWVFCc0FGOEFiUUJoQUhJQWRnQmxBR3dBYkFCZkFHOEFjZ0Jm?=
- =?us-ascii?Q?QUdjQWJ3QnZBR2NBYkFCbEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
- =?us-ascii?Q?MEFZUUJ5QUhZQVpRQnNBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhBYmdC?=
- =?us-ascii?Q?aEFHMEFaUUJ6QUY4QWNnQmxBSE1BZEFCeUFHa0FZd0IwQUdVQVpBQmZBRzBB?=
- =?us-ascii?Q?WVFCeUFIWUFaUUJzQUd3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reffour: 
- QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0J5QUdVQWN3QjBBSElBYVFCakFIUUFaUUJrQUY4QWJRQmhBSElBZGdCbEFHd0FiQUJmQUc4QWNnQmZBR0VBY2dCdEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QWR3QnZBSElBWkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVlBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUEiLz48L21ldGE+
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR18MB4543:EE_|LV3PR18MB5706:EE_
-x-ms-office365-filtering-correlation-id: 5081f3fa-aa8d-4d01-2cee-08dc1b0faa38
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- 4T08cYBVFs60pSSWr2GcoVAAUI85PRMrtrX4FBOY9rwEAgWV4Frx+iQzCSH8BsafNkmqLJjKLWWVfL8spDyFSTE/eYEF7xD4J66o/uqylH0klfQM+8mRlukkrGmtczHMXNKgjQeda2PerEbIzqDvfX48IFJD7UAxw6DbJqx8seeK26v/SN0cDl3blkvadTGwfmDd1izD/ep5drF/Dw2qV1CuApsucwxWM44/KLEAp1mFjOuiwPTItaR5Z3dKKxE3qGYc1yeD6LpG7m6qRaHAbGW2dLiR4endtCNv44pnYkQMXG0Jl5Vsud3hE0ofWTsPJ5zwuKe7jENeYft75ry/8KsRk4apV6Jm8bVmi/BvYTA1ihXSf+3XEIbgJuRuqDrGBtk2RcYa+rKq1nD5rEsnh544T4jLcgI05ajLif4d34x+QZ7dwZIItoFxMtrxEuRYV9hMsAhfK0eQSuZ5zHPgxcg9haeLRmY+9g8YfzrZFZlTA8JHud2fYHXGrTjqV+v0MahScAaOk9svVgCqnJfo6bRpAYYCv3QNN1Mw0BaEpvBIXeco/Gwr/WOal1TlxpW8X5PrFuwNs5c7IKkTSSKobZY0N0oCm1K3r7i1TGvtrB8vsun9vGqEAD7fG/9R7rVfCZnDWOIrkNUlCY4q5tjyLI20P7I6vaTspvtR2QASLUo=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB4543.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39860400002)(396003)(346002)(230922051799003)(230173577357003)(230273577357003)(64100799003)(186009)(451199024)(1800799012)(122000001)(41300700001)(33656002)(86362001)(38100700002)(83380400001)(478600001)(7696005)(6506007)(71200400001)(8676002)(8936002)(4326008)(316002)(6916009)(66556008)(66476007)(76116006)(66946007)(54906003)(64756008)(7416002)(66446008)(2906002)(26005)(9686003)(52536014)(53546011)(5660300002)(55016003)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?jxW/kHsnB4x65JvZtE6HdSxQSLdfcQOotUdQ2nwt6FlGi3uS2OSZCb+UDO8w?=
- =?us-ascii?Q?jsjauFY9a2xSk51yKrlQ+E/sGHOKJYfgGqMaJG9s6gF2x7mMJVeHLJL1rGRm?=
- =?us-ascii?Q?e/9WA6Hlsies6NDBQhpupCdFCYV9j3PS+K/MegqNypVnGVfoHL+0mDdW7wQO?=
- =?us-ascii?Q?z4BcyJl1tAEaWxuXGeq4FHCUUVCag+V55nISBYfGplP8a1Pi69FRq2isFpQt?=
- =?us-ascii?Q?EaKzQ3sHRaCKsD6Q7yfJCklpYb2IJU7N6ht7zAMSquuUTG9wwhy12T51fGlz?=
- =?us-ascii?Q?aRLEKOqIF3JAWry9uR81syv1fkCMgaMd1+Z8a9RlL9HgmQMEMsIW3igUwJPg?=
- =?us-ascii?Q?ScGa9U7MBl5Xaz0qyU/m95ce0Gp2iqmmg1vXq8/k18Eu1zOURZkJ7iPIIP81?=
- =?us-ascii?Q?3kG/ysL5dv8FNfYefkejOXl/GGCER9jeXBxyIge3ZZrd6/1NgN06gT9w7q0H?=
- =?us-ascii?Q?vvxDRsT4mohll81+Nx9p/366ZgoVAPrcL5qNgW/3XxaUG2gw1jojJR84Pa0n?=
- =?us-ascii?Q?5OEtzzFluXQu3Ao7iN+2zH2/6q3Hi77V2ZP5E+EmgJw72MITvcB4i7faQQAd?=
- =?us-ascii?Q?HkHq9usN6cqfEM37w5/19G2uPiwaBrvoHO5C+N60FQFdBGgcZtoHlZj4m/An?=
- =?us-ascii?Q?PZYjLukWQIzeOSHOWv7xW4brdRQC8LvWH4qCcajkn9iZm0YFbX+DgMWo08+m?=
- =?us-ascii?Q?mdTtu+b3s8tVeGBoOtJE1z0jez9O4oDKT2qJdkcOIzSAxyWBSG/JqEuvReRW?=
- =?us-ascii?Q?ETDFd2nc4UWlOy3fkyNLyUizEm8ES3lqDw/tbU4pA+RBl+b7/MQwOfm7J2cF?=
- =?us-ascii?Q?lgy5y20ICfzNgYbDhnAQ2mPeTbFO8Vza2X8uC2ul4CJN6Ebp5+rQZYUicl75?=
- =?us-ascii?Q?klGhdYU9lqJcj71hmaRdCDR/zuSKefpdRWZ20rl8krjlqRexD9GiZ3sK1Dez?=
- =?us-ascii?Q?xKudyBCkuIPkJOZROF7a75hBeaXmFObxiFUG94fXItr6VZL24yp07zRuQDwp?=
- =?us-ascii?Q?EwvfgDrQUiz5I49KaGQmLo+qezfY+vBUQmmNuBW0Yog7a7J4z406ZN20Aa50?=
- =?us-ascii?Q?VAEiXlD/ceqJpVqlBAcqObW/XK7oPPHfwN/WbIOsgMCKz75N8b9XHjSdYyJ9?=
- =?us-ascii?Q?4v80x9Rp0me1T9mt/l/ZK5V+MwzmqYYbQpVRQMuW6IY5visjaFuK9q9qEOQD?=
- =?us-ascii?Q?4vOtb/UPeWaodsYm7/48cVyBQmjmdBal5tlPwb5eXzdcVbJJ+7ct7AnLk7Lp?=
- =?us-ascii?Q?OxB441WjlrzQW/9NPdNSEG+qXRW/BzztSmoqWpD5M9awGrawZrtyLpemUJlo?=
- =?us-ascii?Q?3uvF9mHL0K553vvnOHINzf+Iq63TZsfHnWZ26baPC5eXjj2DZpdNlJ0M8L9Q?=
- =?us-ascii?Q?yVXx8funUu0fu76ypYhYl2BoLSu7w2uOOOGSYd4OzXdTcQjIpz2dQEcmDvct?=
- =?us-ascii?Q?NM4cFYSpstKWjNEOjn6vLzh2dUEci0u9IMbRzPJNPOwa7g3wxHoOCK98cfr9?=
- =?us-ascii?Q?gxUMNfVuHqYyYNiUiAwK/dpT04fTURs/5aok8ykegzhChyjFjdkuKEo6P+hT?=
- =?us-ascii?Q?HfqCGrLKq0d7At8iRMw=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20230601; t=1705903420; x=1706508220; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=45sTye5gJqnIY3vvFsAZwYWClF4GnpV+u4KU1/fpkwU=;
+        b=CPqsJP+MOiusoVQcy5tMlTSNVoaFtzK0M6/5sMHxwUIpnJtJJ46ezrMgzF9g74C9Op
+         wnRuRYWaXYUfcG7dB7wgZfyTPpxyEsqzYuu52copp/CMBgDBzoChdl5IdXcBd2R5su1C
+         +MEDBmhEEUzfkeeLcueDlDWZzKa/qppMRHi3z4Pp3MX54k9PPVH/dLGbGKq4KzPQA9Rr
+         tBh9uwF1dZpbu25zrYnC0zm+2d1ZIpKZIzHvEtA6Wg57zDsXEd0NErVWQzwY1E5mAj6x
+         orSzOcmGf1zS7G9hM4XmHY89BQXJf3k6JJuHl1c9yWcYCZJy61Ldc+P8CDVztCKXuSDy
+         3wdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705903420; x=1706508220;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=45sTye5gJqnIY3vvFsAZwYWClF4GnpV+u4KU1/fpkwU=;
+        b=fZUv1yLGvMh33OJgOOviAPSouFVRcWZq7p5Y2BrtXoXdP8Y8LJ7GP2TvfRjsrJmEKy
+         2Bbr1wsu8TyS3R2NlkkTAMQTjXmvWZiriy4b1KQno18U7MQYsZtv56r7posnBwpPhaX3
+         fdOoYqR/unrth7RrzAi8tmA9fObxx0d6qMz2qn9pSYcbobmZsvgnaxuDK2H6tTcnxbaK
+         Gs3lgBhGqGHhdhoAUBbvqT56VFaw7qyNogk4uPUDNPtOIaZroqiTpyaY7g85CO2b7d1j
+         /BTzpDysj83pveUQdF1Frah2rRNcotz8fC7cHh3DODeMcLcn89kdGMDLgjdxp5qbJI+s
+         eIow==
+X-Gm-Message-State: AOJu0YwBRt1ugXHjCqQlNxX3UxuJtAzldvc1peThXK+bk/Al6SHXj5/P
+	HUNzXH+KwV1VPPCyaEuseq+0uaNvPyMKnxKVDWeW4YRPYwEebrm3piG96fHw06DR3r8OUkStAZ2
+	T/VnwRnDe2RBGL2DlJ5pZRpkemqI=
+X-Google-Smtp-Source: AGHT+IHxs6LgpnXwTp1mswrCVo/K2UyvcupYHiBMwvPrFEjVXOvTmS9l0o9hpQ1r9DNTZJF9MEUMT5fSxCH078QK25s=
+X-Received: by 2002:a17:906:dfcc:b0:a2d:a5c4:fc1d with SMTP id
+ jt12-20020a170906dfcc00b00a2da5c4fc1dmr1702750ejc.12.1705903419375; Sun, 21
+ Jan 2024 22:03:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB4543.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5081f3fa-aa8d-4d01-2cee-08dc1b0faa38
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2024 06:02:07.3697
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FlamZJvjRVRAXO8w4tXxuusLXVQnuyT9YS3S+nS7vN1Q5GOWm605X9ToAQ9c4x5GC48E6/IrijNS//t3wPh+OA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR18MB5706
-X-Proofpoint-ORIG-GUID: DaEWjW5DGqgNpM16L_6bHMNGiMSYDDUa
-X-Proofpoint-GUID: DaEWjW5DGqgNpM16L_6bHMNGiMSYDDUa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-21_04,2024-01-19_02,2023-05-22_02
+References: <20240106222357.23835-1-alchark@gmail.com> <e0302da12345e5539583b2c96d747592@manjaro.org>
+ <CABjd4Yw5wTLyK5OPw2S-ipPVCw7RTUeF2J0RgH-Vyis-ng8rTw@mail.gmail.com>
+ <d7f2f25071a4d7c72bd286b11836dce7@manjaro.org> <CABjd4Yz11D8ThcT-oCWsQf9jL2idChFYSRYVVu3KNnzwoOwkKQ@mail.gmail.com>
+ <f5c05015e042b11a51a9af26c35f18ed@manjaro.org>
+In-Reply-To: <f5c05015e042b11a51a9af26c35f18ed@manjaro.org>
+From: Alexey Charkov <alchark@gmail.com>
+Date: Mon, 22 Jan 2024 10:03:27 +0400
+Message-ID: <CABjd4Yy91MAd2wALp4KQiEub9OyxU+MR+ti5KA_c+yvZT5xaqQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: enable built-in thermal monitoring
+ on rk3588
+To: Dragan Simic <dsimic@manjaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Sebastian Reichel <sebastian.reichel@collabora.com>, 
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, 
+	Christopher Obbard <chris.obbard@collabora.com>, =?UTF-8?B?VGFtw6FzIFN6xbFjcw==?= <szucst@iit.uni-miskolc.hu>, 
+	Shreeya Patel <shreeya.patel@collabora.com>, Kever Yang <kever.yang@rock-chips.com>, 
+	Chris Morgan <macromorgan@hotmail.com>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 22, 2024 at 8:55=E2=80=AFAM Dragan Simic <dsimic@manjaro.org> w=
+rote:
+>
+> Hello Alexey,
+>
+> On 2024-01-21 19:56, Alexey Charkov wrote:
+> > On Thu, Jan 18, 2024 at 10:48=E2=80=AFPM Dragan Simic <dsimic@manjaro.o=
+rg>
+> > wrote:
+> >> On 2024-01-08 14:41, Alexey Charkov wrote:
+> >> I apologize for my delayed response.  It took me almost a month to
+> >> nearly fully recover from some really nasty flu that eventually went
+> >> into my lungs.  It was awful and I'm still not back to my 100%. :(
+> >
+> > Ouch, I hope you get well soon!
+>
+> Thank you, let's hope so.  It's been really exhausting. :(
+>
+> >> > On Sun, Jan 7, 2024 at 2:54=E2=80=AFAM Dragan Simic <dsimic@manjaro.=
+org> wrote:
+> >> >> On 2024-01-06 23:23, Alexey Charkov wrote:
+> >> >> > Include thermal zones information in device tree for rk3588 varia=
+nts
+> >> >> > and enable the built-in thermal sensing ADC on RADXA Rock 5B
+> >> >> >
+> >> >> > Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> >> >> > ---
+> >> >> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> >> >> > b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> >> >> > index 8aa0499f9b03..8235991e3112 100644
+> >> >> > --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> >> >> > +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> >> >> > @@ -10,6 +10,7 @@
+> >> >> >  #include <dt-bindings/reset/rockchip,rk3588-cru.h>
+> >> >> >  #include <dt-bindings/phy/phy.h>
+> >> >> >  #include <dt-bindings/ata/ahci.h>
+> >> >> > +#include <dt-bindings/thermal/thermal.h>
+> >> >> >
+> >> >> >  / {
+> >> >> >       compatible =3D "rockchip,rk3588";
+> >> >> > @@ -2112,6 +2113,148 @@ tsadc: tsadc@fec00000 {
+> >> >> >               status =3D "disabled";
+> >> >> >       };
+> >> >> >
+> >> >> > +     thermal_zones: thermal-zones {
+> >> >> > +             soc_thermal: soc-thermal {
+> >> >>
+> >> >> It should be better to name it cpu_thermal instead.  In the end,
+> >> >> that's what it is.
+> >> >
+> >> > The TRM document says the first TSADC channel (to which this section
+> >> > applies) measures the temperature near the center of the SoC die,
+> >> > which implies not only the CPU but also the GPU at least. RADXA's
+> >> > kernel for Rock 5B also has GPU passive cooling as one of the coolin=
+g
+> >> > maps under this node (not included here, as we don't have the GPU no=
+de
+> >> > in .dtsi just yet). So perhaps naming this one cpu_thermal could be
+> >> > misleading?
+> >>
+> >> Ah, I see now, thanks for reminding;  it's all described on page 1,372
+> >> of the first part of the RK3588 TRM v1.0.
+> >>
+> >> Having that in mind, I'd suggest that we end up naming it
+> >> package_thermal.
+> >> The temperature near the center of the chip is usually considered to
+> >> be
+> >> the overall package temperature;  for example, that's how the
+> >> user-facing
+> >> CPU temperatures are measured in the x86_64 world.
+> >
+> > Sounds good, will rename in v3!
+>
+> Thanks, I'm glad you agree.
+>
+> >> >> > +                     trips {
+> >> >> > +                             threshold: trip-point-0 {
+> >> >>
+> >> >> It should be better to name it cpu_alert0 instead, because that's w=
+hat
+> >> >> other newer dtsi files already use.
+> >> >
+> >> > Reflecting on your comments here and below, I'm thinking that maybe =
+it
+> >> > would be better to define only the critical trip point for the SoC
+> >> > overall, and then have alerts along with the respective cooling maps
+> >> > separately for A76-0,1, A76-2,3, A55-0,1,2,3? After all, given that =
+we
+> >> > have more granular temperature measurement here than in previous RK
+> >> > chipsets it might be better to only throttle the "offending" cores,
+> >> > not the full package.
+> >> >
+> >> > What do you think?
+> >> >
+> >> > Downstream DT doesn't follow this approach though, so maybe there's
+> >> > something I'm missing here.
+> >>
+> >> I agree, it's better to fully utilize the higher measurement
+> >> granularity
+> >> made possible by having multiple temperature sensors available.
+> >>
+> >> I also agree that we should have only the critical trip defined for
+> >> the
+> >> package-level temperature sensor.  Let's have the separate temperature
+> >> measurements for the CPU (sub)clusters do the thermal throttling, and
+> >> let's keep the package-level measurement for the critical shutdowns
+> >> only.  IIRC, some MediaTek SoC dtsi already does exactly that.
+> >>
+> >> Of course, there are no reasons not to have the critical trips defined
+> >> for the CPU (sub)clusters as well.
+> >
+> > I think I'll also add a board-specific active cooling mechanism on the
+> > package level in the next iteration, given that Rock 5B has a PWM fan
+> > defined as a cooling device. That will go in the separate patch that
+> > updates rk3588-rock-5b.dts (your feedback to v2 of this patch is also
+> > duly noted, thank you!)
+>
+> Great, thanks.  Sure, making use of the Rock 5B's support for attaching
+> a PWM-controlled cooling fan is the way to go.
+>
+> Just to reiterate a bit, any "active" trip points belong to the board
+> dts
+> file(s), because having a cooling fan is a board-specific feature.  As a
+> note, you may also want to have a look at the RockPro64 dts(i) files,
+> for
+> example;  the RockPro64 also comes with a cooling fan connector and the
+> associated PWM fan control logic.
 
+Thanks for the pointer! There is also a helpful doc within devicetree
+bindings descriptions, although it sits under hwmon which was a bit
+confusing to me. I've already tested it locally (by adding to the
+board dts), and it spins up and down quite nicely, and even modulates
+the fan speed swiftly when the load changes - yay!
 
------Original Message-----
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>=20
-Sent: Friday, January 19, 2024 7:35 PM
-To: Jenishkumar Patel [C] <jpatel2@marvell.com>
-Cc: marcin.s.wojtas@gmail.com; linux@armlinux.org.uk; davem@davemloft.net; =
-edumazet@google.com; kuba@kernel.org; pabeni@redhat.com; netdev@vger.kernel=
-org; linux-kernel@vger.kernel.org; Antoine Tenart <atenart@kernel.org>
-Subject: [EXT] Re: [net v4 PATCH 1/1] net: mvpp2: clear BM pool before init=
-ialization
+> >> >> > +                                     temperature =3D <75000>;
+> >> >> > +                                     hysteresis =3D <2000>;
+> >> >> > +                                     type =3D "passive";
+> >> >> > +                             };
+> >> >> > +                             target: trip-point-1 {
+> >> >>
+> >> >> It should be better to name it cpu_alert1 instead, because that's w=
+hat
+> >> >> other newer dtsi files already use.
+> >> >>
+> >> >> > +                                     temperature =3D <85000>;
+> >> >> > +                                     hysteresis =3D <2000>;
+> >> >> > +                                     type =3D "passive";
+> >> >> > +                             };
+> >> >> > +                             soc_crit: soc-crit {
+> >> >>
+> >> >> It should be better to name it cpu_crit instead, because that's wha=
+t
+> >> >> other newer dtsi files already use.
+> >> >
+> >> > Seems to me that if I define separate trips for the three groups of
+> >> > CPU cores as mentioned above this would better stay as soc_crit, as =
+it
+> >> > applies to the whole die rather than the CPU cluster alone. Then
+> >> > 'threshold' and 'target' will go altogether, and I'll have separate
+> >> > *_alert0 and *_alert1 per CPU group.
+> >>
+> >> It should perhaps be the best to have "passive", "hot" and "critical"
+> >> trips defined for all three CPU groups/(sub)clusters, separately of
+> >> course, to have even higher granularity when it comes to the resulting
+> >> thermal throttling.
+> >
+> > I looked through drivers/thermal/rockchip_thermal.c, and it doesn't
+> > seem to provide any callback for the "hot" trip as part of its struct
+> > thermal_zone_device_ops, so I guess it would be redundant in our case
+> > here? I couldn't find any generic mechanism to react to "hot" trips,
+> > and they seem to be purely driver-specific, thus no-op in case of
+> > Rockchips - or am I missing something?
+>
+> That's a good question.  Please, let me go through the code in detail,
+> and I'll get back with an update soon.  Also, please wait a bit with
+> sending the v3, until all open questions are addressed.
 
-External Email
+Of course. Thank you for taking the time to dig through this one with me!
 
-----------------------------------------------------------------------
-Hello,
-
-On Thu, 18 Jan 2024 19:59:14 -0800
-Jenishkumar Maheshbhai Patel <jpatel2@marvell.com> wrote:
-
-> Register value persist after booting the kernel using kexec which=20
-> results in kernel panic. Thus clear the BM pool registers before=20
-> initialisation to fix the issue.
->=20
-> Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375=20
-> network unit")
-> Signed-off-by: Jenishkumar Maheshbhai Patel <jpatel2@marvell.com>
-> ---
-> v1-v2:
-> -Move comments outside the loop
-> -remove unrequired brances.
-> v2-v3:
-> -improve readability
-> -correct register read API
-> v3-v4:
-> -optimize the code
-> -improve readability
-
-Thanks for taking the reviews into account, however ...
-
->  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 27 ++++++++++++++++++-
->  1 file changed, 26 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c=20
-> b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> index 820b1fabe297..23adf53c2aa1 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -614,12 +614,38 @@ static void mvpp23_bm_set_8pool_mode(struct mvpp2 *=
-priv)
->  	mvpp2_write(priv, MVPP22_BM_POOL_BASE_ADDR_HIGH_REG, val);  }
-> =20
-> +/* Cleanup pool before actual initialization in the OS */ static void=20
-> +mvpp2_bm_pool_cleanup(struct mvpp2 *priv, int pool_id) {
-> +	unsigned int thread =3D mvpp2_cpu_to_thread(priv, get_cpu());
-> +	u32 val;
-> +	int i;
-> +
-> +	/* Drain the BM from all possible residues left by firmware */
-> +	for (i =3D 0; i < MVPP2_BM_POOL_SIZE_MAX; i++)
-> +		mvpp2_thread_read(priv, thread, MVPP2_BM_PHY_ALLOC_REG(pool_id));
-
-.. I think you didn't answer Antoine's comment on that loop from the V2, r=
-egarding what this does exactly. From the other sites this is used, it seem=
-s to perform an allocation from the pool, can you clarify how safe it is to=
- do so here, if for example the BM was never configured by the firmware bef=
-orehand and is therefore already in a Stopped state ?
-
-Reading the register provides a pointer to buffer that is already allocated=
- during BM initialization. When multiple reading is done on the register, i=
-t will drain all the pointers that are stored by previous firmware. Also re=
-ading this register does not perform any allocation as it is only performin=
-g register read operation, thus when the BM is not configured earlier then =
-it will not lead to any stop state.
-
-And are we not risking any leak if there was something in the pool that we =
-don't release ?
-
-The data on the pointer given by register read is written after the read op=
-eration is preformed, which means the pointer does not contain any data, th=
-us there is no leak.
-
-Thanks,
-
-Maxime
-
+Best regards,
+Alexey
 
