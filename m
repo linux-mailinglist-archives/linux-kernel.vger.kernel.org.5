@@ -1,87 +1,161 @@
-Return-Path: <linux-kernel+bounces-32935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F03FF836226
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:41:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAB0C836265
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:46:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 284EE1C21A8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:41:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B1D928D96C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859433BB37;
-	Mon, 22 Jan 2024 11:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LeZRFDWB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BC43D0DF;
+	Mon, 22 Jan 2024 11:44:31 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C28B71DFF3;
-	Mon, 22 Jan 2024 11:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 849913C48D;
+	Mon, 22 Jan 2024 11:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923168; cv=none; b=s/LmjE9JzY7lqup1Q0D5PrF7NXUjjOKmnXly8VXx3nxKjdaBAvPe01K7J+gkD/eteXQmOQhe+ZM7zajJZpRk/esFRPEZDx4VqKXmqc4VMJnqIMoo9X7+2F7dLLK1YPUsATX2w15H/0J4i4DwA3hRM+fOsVrKJCCmXB2My/4f5Vg=
+	t=1705923871; cv=none; b=Y+vkmrjaVx39iSU53KNIjKRwjmNZrK1nCTt0VcnFBPifly2CpPZhA0MrXh5OsMKZGzYrsvmziFZCQZ9IWWT5SJgEcrBKXNjjumb1HTOV/H4nLhTGTFfYIoFC2ao6Fz4WJq9JcBjiTv7TpiWnZp7Lo3DSsqUqfm8KuRWXdENweoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923168; c=relaxed/simple;
-	bh=uDy/5VBSa8J4k7spOOc9VWyfuTTwmCdLUf/HonS9y3w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DhmmARDm+pQR5n/WsaulL2MnGU3kFPsMg2lEOFIvpgAa1RNWONhpMG7mRY3PQgvLLe1qCxcN/t4L0jvuc7XLmSzRLFSkhpjxnWGe3QIoHgi0zFlI+dZBnpJjxBE9ND3SOVjMXGk9kfSZxRTziC3oR+w3h9p/BGTGnF2bCHBjqWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LeZRFDWB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC6FAC433C7;
-	Mon, 22 Jan 2024 11:32:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705923168;
-	bh=uDy/5VBSa8J4k7spOOc9VWyfuTTwmCdLUf/HonS9y3w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LeZRFDWBtG4m+vzh0CM0FpBZgpXzK+0ecxKH/VyLqiQSj+G+Je7HBvO5vGED9OJHg
-	 9sV4xhBBF9IIS432+5yOTFnMllWWtFeRih1BT8Bs0GymuFHpuQgAhAnFUBNUFNLl6c
-	 8CUzve+N4QmRypTLWrJTu6ZqFZjfEPHOuXIlQBBEB7BrBqZ9KE84HwTWiE9NTVO3hY
-	 XloT+zFbYb02uk7LZoGvKVZ3C5+0nOhH19+8VTfojS/VOorMPLtJAJEsuxDJAtm8dd
-	 L7iJoht57ux6s3bdQEHbelQmhYzMsz4+iZ3hTx0MGsZfll9oTbkhKjem9svnbkhHQV
-	 FymWMC0lYTdgA==
-Date: Mon, 22 Jan 2024 17:02:43 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: dmaengine@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-Subject: Re: [PATCH 0/3] dmaengine: timb_dma: Adjustments for
- td_alloc_init_desc()
-Message-ID: <Za5SW6xdsOFylD7x@matsya>
-References: <ebd531dd-60e3-4ac3-821e-aa9890960283@web.de>
+	s=arc-20240116; t=1705923871; c=relaxed/simple;
+	bh=7eySJOq/vVh2sQLWmwb6KJeThhebMt/tVZTV26u+S6Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cjOJru8Q5nYs/gC39YCjzlya/qZCkqD0GbScpbEzQmoLnT1dTgbIkavnOgxrpR1JrOFu6TNFJ5unVQbsxHKmN4adtBFhV4yE939UohI0waXK3u+gf5ahwyB/F7aODhxsv3Gxrs3aoz7EaWWENpllDasUUuX5FEgk4yI0SMbLUnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 3c9ee59df0d63310; Mon, 22 Jan 2024 12:44:25 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id B9DF2669540;
+	Mon, 22 Jan 2024 12:44:24 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Subject: [PATCH v1 07/12] PM: sleep: stats: Call dpm_save_failed_step() at most once per phase
+Date: Mon, 22 Jan 2024 12:32:46 +0100
+Message-ID: <22171159.EfDdHjke4D@kreacher>
+In-Reply-To: <5760158.DvuYhMxLoT@kreacher>
+References: <5760158.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ebd531dd-60e3-4ac3-821e-aa9890960283@web.de>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgfedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 
-On 25-12-23, 11:15, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Mon, 25 Dec 2023 11:05:45 +0100
-> 
-> A few update suggestions were taken into account
-> from static source code analysis.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-was this anaysis done by you or some tool reported this.
-Frabkly I dont see much value in these patches, can you fix something
-real please
+If the handling of two or more devices fails in one suspend-resume
+phase, it should be counted once in the statistics which is not
+guaranteed to happen during system-wide resume of devices due to
+the possible asynchronous execution of device callbacks.
 
-> 
-> Markus Elfring (3):
->   Return directly after a failed kzalloc()
->   Improve a size determination
->   One function call less after error detection
-> 
->  drivers/dma/timb_dma.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> --
-> 2.43.0
+Address this by using the async_error static variable during system-wide
+device resume to indicate that there has been a device resume error and
+the given suspend-resume phase should be counted as failing.
 
--- 
-~Vinod
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/base/power/main.c |   20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+Index: linux-pm/drivers/base/power/main.c
+===================================================================
+--- linux-pm.orig/drivers/base/power/main.c
++++ linux-pm/drivers/base/power/main.c
+@@ -685,7 +685,7 @@ Out:
+ 	TRACE_RESUME(error);
+ 
+ 	if (error) {
+-		dpm_save_failed_step(SUSPEND_RESUME_NOIRQ);
++		async_error = error;
+ 		dpm_save_failed_dev(dev_name(dev));
+ 		pm_dev_err(dev, state, async ? " async noirq" : " noirq", error);
+ 	}
+@@ -705,6 +705,9 @@ static void dpm_noirq_resume_devices(pm_
+ 	ktime_t starttime = ktime_get();
+ 
+ 	trace_suspend_resume(TPS("dpm_resume_noirq"), state.event, true);
++
++	async_error = 0;
++
+ 	mutex_lock(&dpm_list_mtx);
+ 	pm_transition = state;
+ 
+@@ -734,6 +737,9 @@ static void dpm_noirq_resume_devices(pm_
+ 	mutex_unlock(&dpm_list_mtx);
+ 	async_synchronize_full();
+ 	dpm_show_time(starttime, state, 0, "noirq");
++	if (async_error)
++		dpm_save_failed_step(SUSPEND_RESUME_NOIRQ);
++
+ 	trace_suspend_resume(TPS("dpm_resume_noirq"), state.event, false);
+ }
+ 
+@@ -815,7 +821,7 @@ Out:
+ 	complete_all(&dev->power.completion);
+ 
+ 	if (error) {
+-		dpm_save_failed_step(SUSPEND_RESUME_EARLY);
++		async_error = error;
+ 		dpm_save_failed_dev(dev_name(dev));
+ 		pm_dev_err(dev, state, async ? " async early" : " early", error);
+ 	}
+@@ -839,6 +845,9 @@ void dpm_resume_early(pm_message_t state
+ 	ktime_t starttime = ktime_get();
+ 
+ 	trace_suspend_resume(TPS("dpm_resume_early"), state.event, true);
++
++	async_error = 0;
++
+ 	mutex_lock(&dpm_list_mtx);
+ 	pm_transition = state;
+ 
+@@ -868,6 +877,9 @@ void dpm_resume_early(pm_message_t state
+ 	mutex_unlock(&dpm_list_mtx);
+ 	async_synchronize_full();
+ 	dpm_show_time(starttime, state, 0, "early");
++	if (async_error)
++		dpm_save_failed_step(SUSPEND_RESUME_EARLY);
++
+ 	trace_suspend_resume(TPS("dpm_resume_early"), state.event, false);
+ }
+ 
+@@ -971,7 +983,7 @@ static void device_resume(struct device
+ 	TRACE_RESUME(error);
+ 
+ 	if (error) {
+-		dpm_save_failed_step(SUSPEND_RESUME);
++		async_error = error;
+ 		dpm_save_failed_dev(dev_name(dev));
+ 		pm_dev_err(dev, state, async ? " async" : "", error);
+ 	}
+@@ -1030,6 +1042,8 @@ void dpm_resume(pm_message_t state)
+ 	mutex_unlock(&dpm_list_mtx);
+ 	async_synchronize_full();
+ 	dpm_show_time(starttime, state, 0, NULL);
++	if (async_error)
++		dpm_save_failed_step(SUSPEND_RESUME);
+ 
+ 	cpufreq_resume();
+ 	devfreq_resume();
+
+
+
 
