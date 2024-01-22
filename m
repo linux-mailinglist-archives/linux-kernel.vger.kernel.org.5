@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-34147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40687837463
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:47:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA293837468
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:47:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 681291C26708
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:47:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5728CB25F4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1535C4B5B3;
-	Mon, 22 Jan 2024 20:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB7947F70;
+	Mon, 22 Jan 2024 20:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jeH383TZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q64sLgNz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5973A4A9BC;
-	Mon, 22 Jan 2024 20:44:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9924BA85;
+	Mon, 22 Jan 2024 20:44:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705956283; cv=none; b=S59h/aecpv4FnFGe9Tc57h4XTygJ86Mi6Kv6Z5NBb47fPACSanPvk7kOAnRLM2zA2cBinm7njt09YITeSCcIBi0Pnmb033Detjm0u7gOusNmTSfgk64beIPY1IgmjehbVrszFB4mlcJAdUjKL0r+P6+u1kWE/cRoeS0avbtKHxM=
+	t=1705956288; cv=none; b=XGMChzfu8Qb2Kl/nln4rXzFoW6gu45rZng15jZ3xvFoBq5EKEF85fVcuwYgSjJBzGnNRKa3fS9V1U0Q8RtZ0QWnVfuZoW6co52cjRRTaIxZnK/cytPSa7OUXl70sOU2+/imb56hVBLXXuZgnP6VNCJ/v2pdHRB47oiKTQ0eWRj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705956283; c=relaxed/simple;
-	bh=+SdJMHOe0PeCELiFYXNyu7qz9O7e0yR2He2ajEYYGZc=;
+	s=arc-20240116; t=1705956288; c=relaxed/simple;
+	bh=JQvciz5jsv44g++hdQc9lWTAzEqEpcuF2+K9B8lenj4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=YYixHvAMijqu3BEml99O22RhrmbY8zwI7ldhsstRFwQLSL9N5F6bDJ/KUeRjNjbENuFfQjdhjjY4zoDJ8B8rfXqsuZ1oH1SPajF8SDTzvb2nxTuIlPTBcbdYRp+2PygZ7RmrUHGCQtP2cWjV7HpENpiwklLbhXv8noYqUnc3Hx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jeH383TZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51ADBC433C7;
-	Mon, 22 Jan 2024 20:44:42 +0000 (UTC)
+	 MIME-Version:Content-Type; b=PmO7h+4Wv4ICZHvddteKLjNAbhdLCPNO9v7l3ubVcTxLIorhFJ10WWHZ/vDaPeo9YIHgRIG4PH01hoWF+PyJrUa+fwCzkL2WvvBqsG0ehLkk8N/not1IZNn5pQPuLsxZY6FnhP+EW7o7SRyJey8EYLN6t+aBrArcYZmPXcHsIPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q64sLgNz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0ECFC43390;
+	Mon, 22 Jan 2024 20:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705956283;
-	bh=+SdJMHOe0PeCELiFYXNyu7qz9O7e0yR2He2ajEYYGZc=;
+	s=k20201202; t=1705956288;
+	bh=JQvciz5jsv44g++hdQc9lWTAzEqEpcuF2+K9B8lenj4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=jeH383TZijRjDC5SHd+O41N/5Frb9YgGomNcBFoE/ZugU1vXS9omdla5N2gXWQR+m
-	 PdAfqm2z0ZxFYWyxTcE+m6whiq6hzPveySg64xU9ZB9bmRPaXrwKE3RDPxQL6bPHom
-	 7UZPCnZe4G97q4ID1UhRF7v5g9i6q6boh79fi12rptSsftNOAvdc4K7R18a+JOtnrI
-	 PuPXiNe2anya0yKogB77x6OXeaU4OtBl3eL9sJe84542aXfuboaTLbpmAvHI1yGj4S
-	 /+NtPgda1ZWRZOd7CW5xUP/5fL7YqQxokQvLep3S33ZB1iJKM0i75VoIh7z1nD+fEo
-	 1C+Yhd3Daw1sw==
+	b=Q64sLgNzWIimoImgRHbvx3ATfMnHfZHu3TFmnJFYr5xqXnag1ZIKdC/rwXSPBFvaD
+	 SdsK24rappa6uJFYkrQqn0+7FILiCH6Lya0J9hE9uzyZYDtNNU1VHfSzdMjSNl5DcF
+	 gpIlPh7hlyfPB8MwDiAaCnyXWs7YcOIfpRM+gLITT6+8cnqomp+WAJYcqiUAa6kxz3
+	 REdWg3Z/Af84kIvJ2CgNtOEY5QrwUT6CZ0oZS+6XTkiHgWsekmwSlE4Az6k+z6QRJb
+	 1+rSQ69Y65T3iJf1ZfDnVQRR/XkxDI7dFvi2FMwwFhNpDpBXNyO4QsRYBpsnrQe3Lj
+	 A41Wfhbj+ZuiQ==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, 
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <3f990a7b80d72c31371735b24ed08acbb8392c80.1705748586.git.christophe.jaillet@wanadoo.fr>
-References: <3f990a7b80d72c31371735b24ed08acbb8392c80.1705748586.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] regulator: fixed-helper: Save a few bytes of memory
- when registering a 'nfc_llc' engine
-Message-Id: <170595628204.145638.3810647512019655166.b4-ty@kernel.org>
-Date: Mon, 22 Jan 2024 20:44:42 +0000
+To: Andi Shyti <andi.shyti@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>, linux-spi@vger.kernel.org, 
+ linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240120170001.3356-1-semen.protsenko@linaro.org>
+References: <20240120170001.3356-1-semen.protsenko@linaro.org>
+Subject: Re: [PATCH] spi: s3c64xx: Extract FIFO depth calculation to a
+ dedicated macro
+Message-Id: <170595628644.145694.4107677394657864238.b4-ty@kernel.org>
+Date: Mon, 22 Jan 2024 20:44:46 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,24 +63,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-5c066
 
-On Sat, 20 Jan 2024 12:03:26 +0100, Christophe JAILLET wrote:
-> regulator_register_always_on() calls pass a string literal as the 'name'
-> parameter.
-> 
-> So kstrdup_const() can be used instead of kfree() to avoid a memory
-> allocation in such cases.
+On Sat, 20 Jan 2024 11:00:01 -0600, Sam Protsenko wrote:
+> Simplify the code by extracting all cases of FIFO depth calculation into
+> a dedicated macro. No functional change.
 > 
 > 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regulator: fixed-helper: Save a few bytes of memory when registering a 'nfc_llc' engine
-      commit: 4c716711a5c5e89202facc9ca816bc89d4b8c745
+[1/1] spi: s3c64xx: Extract FIFO depth calculation to a dedicated macro
+      commit: 460efee706c2b6a4daba62ec143fea29c2e7b358
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
