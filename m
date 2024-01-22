@@ -1,152 +1,439 @@
-Return-Path: <linux-kernel+bounces-32478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 299EB835C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBDD9835C25
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:58:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CD111C20AF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:58:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CBF81C225BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39B636124;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F4E129418;
 	Mon, 22 Jan 2024 07:57:16 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA2F18C3D;
-	Mon, 22 Jan 2024 07:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FFyAwzpF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6011B210FE
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705910236; cv=none; b=CR6P6gcPJYyEbDgKjiahGlHarW8h5Rj5OredbHG+gNl9vLmstNiZelBpAcUPM2QnQ7mDZAZLoS77lA3Gck8o5C0yy6rl9jDEJpQrqbfxZsAA+VCShpOhAg4clJ2YUfNSUfrE1vlJrL6BUnGl8ewS3LjER9oGE7Tcb/FEUXZiDAE=
+	t=1705910235; cv=none; b=VN7isVisgvJesmpfhoT1ZiEF1opXlY0IpP1y5b1o9bnoT6JzXZdzRDHBWRUEh21b19fEGl8P549k/nCqG628iIHqFhecFEarqiSbd3SfbifvpnnP3hMX44K2UCBod+SM6JOdP7qVixx0GbY3YIpFAZWgyOgwWx9MGKgEXGDpitw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705910236; c=relaxed/simple;
-	bh=l6MfQQw55J1lyN8m43DBpKixXCKLSr/+URZH8IUBdPw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KRQEVhzQpeM4iRuKICzwx4W/xjAPW/PmfUd29qQ7Uq4TseCqqq8FBaMyPqbc45m09rZ8KNxvUtX6LHRMhBbge+XhzIusXJTiUgcY9NtEeT8X1AlSZ0/5g5Ky46mooCimoZMufmSY70Umhl6b7amWiTRiZucwedMEh+d2kw9p7OI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8AxPOnSH65ll20DAA--.3871S3;
-	Mon, 22 Jan 2024 15:57:06 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxf8_NH65lKSIRAA--.13989S5;
-	Mon, 22 Jan 2024 15:57:04 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Hou Tao <houtao@huaweicloud.com>,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v6 3/3] selftests/bpf: Skip callback tests if jit is disabled in test_verifier
-Date: Mon, 22 Jan 2024 15:57:00 +0800
-Message-ID: <20240122075700.7120-4-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240122075700.7120-1-yangtiezhu@loongson.cn>
-References: <20240122075700.7120-1-yangtiezhu@loongson.cn>
+	s=arc-20240116; t=1705910235; c=relaxed/simple;
+	bh=icaWjQBZC0XFd0b4Ij8tJXj4p1YbQUzYrdzVztOJtvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VFAkFxPUMnhnAzlL4r8eKskHR2Di/+WbP1quix5TsJ7mVLdJn72ybe4IoE8jUUati9LXC3qJ4i+6jKDtclbODynHMSBC14p+y1o83HFSk9JP664pUTMS3njyDJGWzwIXFGZKfdzl9XR9jfpaYghJbvGOWU1uL2e3wkCp3MMr1T4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FFyAwzpF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2999EC4166A;
+	Mon, 22 Jan 2024 07:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705910234;
+	bh=icaWjQBZC0XFd0b4Ij8tJXj4p1YbQUzYrdzVztOJtvg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FFyAwzpFmOi8HV2fyl+IpPIMbVo6ypzcz6TX2q163Z0ahwnkaXnvnDJwoAMBRoqCJ
+	 LITW2XeuJMnkG4UZLBQx1fWVftNnKrQu28k6tuMc02NyzJcl9+nMHb0gBq8L5vZXQu
+	 latBee1UMcgpvgtIVcNybctFcdtzErscI80DKoYO26+441eeYHX0z2CpKmuCBjHESu
+	 oPHK+x1aMpdvduohPYulQDMUkJrsa7cbvGuw9/6XRf/2kfRg0CFPT5bb47EgYUB6Np
+	 9LDXD0J6LOkTnO8vscL0cRKg8AT65na8ZEIl3jCDpKtDH8h2GN9JnZp/n2lGjx4a7t
+	 Kl1ZAy/+LdmhA==
+Date: Mon, 22 Jan 2024 13:27:10 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
+	yung-chuan.liao@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com, Basavaraj.Hiregoudar@amd.com,
+	Sunil-kumar.Dommati@amd.com, vinod.koul@intel.com,
+	venkataprasad.potturu@amd.com,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2 03/13] drivers: soundwire: amd: refactor amd soundwire
+ manager device node creation
+Message-ID: <Za4f1rwAXAiJU-j5@matsya>
+References: <20240110094416.853610-1-Vijendar.Mukunda@amd.com>
+ <20240110094416.853610-4-Vijendar.Mukunda@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Cxf8_NH65lKSIRAA--.13989S5
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGFW3tr1UtrW5ur1xGF1fKrX_yoW5Gw45pa
-	y8JF1qkF10qa4I9ry7A393GFWY9w4vqw48JFy5uw48Z3Z5Aw47Xr1fKFyYvasxGrWFqasa
-	vanrurWUWw1UJFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Gr1j6F4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
-	xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
-	Jw0_WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x
-	0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7Cj
-	xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j2MKZUUUUU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110094416.853610-4-Vijendar.Mukunda@amd.com>
 
-If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
-exist 6 failed tests.
+On 10-01-24, 15:14, Vijendar Mukunda wrote:
 
-  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
-  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
-  [root@linux bpf]# ./test_verifier | grep FAIL
-  #106/p inline simple bpf_loop call FAIL
-  #107/p don't inline bpf_loop call, flags non-zero FAIL
-  #108/p don't inline bpf_loop call, callback non-constant FAIL
-  #109/p bpf_loop_inline and a dead func FAIL
-  #110/p bpf_loop_inline stack locations for loop vars FAIL
-  #111/p inline bpf_loop call in a big program FAIL
-  Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
+Same comment on patch title
 
-The test log shows that callbacks are not allowed in non-JITed programs,
-interpreter doesn't support them yet, thus these tests should be skipped
-if jit is disabled, just handle this case in do_test_single().
+> Refactor amd SoundWire manager device node creation logic and implement generic
+> functions to have a common functionality for SoundWire manager platform device
+> creation, start and exit sequence for both legacy(NO DSP) and SOF stack for AMD
+> platforms. These functions will be invoked from legacy and SOF stack.
+> 
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+>  drivers/soundwire/Makefile        |   2 +-
+>  drivers/soundwire/amd_init.c      | 147 ++++++++++++++++++++++++++++++
+>  drivers/soundwire/amd_init.h      |  13 +++
+>  drivers/soundwire/amd_manager.c   |  16 +---
+>  include/linux/soundwire/sdw_amd.h |  54 ++++++++++-
+>  5 files changed, 218 insertions(+), 14 deletions(-)
+>  create mode 100644 drivers/soundwire/amd_init.c
+>  create mode 100644 drivers/soundwire/amd_init.h
+> 
+> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+> index 657f5888a77b..e80a2c2cf3e7 100644
+> --- a/drivers/soundwire/Makefile
+> +++ b/drivers/soundwire/Makefile
+> @@ -20,7 +20,7 @@ soundwire-bus-y += irq.o
+>  endif
+>  
+>  #AMD driver
+> -soundwire-amd-y :=	amd_manager.o
+> +soundwire-amd-y := amd_init.o amd_manager.o
+>  obj-$(CONFIG_SOUNDWIRE_AMD) += soundwire-amd.o
+>  
+>  #Cadence Objs
+> diff --git a/drivers/soundwire/amd_init.c b/drivers/soundwire/amd_init.c
+> new file mode 100644
+> index 000000000000..d732ab0bfd59
+> --- /dev/null
+> +++ b/drivers/soundwire/amd_init.c
+> @@ -0,0 +1,147 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> +/*
+> + * SoundWire AMD Manager Initialize routines
+> + *
+> + * Initializes and creates SDW devices based on ACPI and Hardware values
+> + *
+> + * Copyright 2023 Advanced Micro Devices, Inc.
+ 2023-24..?
 
-With this patch:
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/export.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include "amd_init.h"
+> +
+> +static int sdw_amd_cleanup(struct sdw_amd_ctx *ctx)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ctx->count; i++) {
+> +		if (!(ctx->link_mask & BIT(i)))
+> +			continue;
+> +		platform_device_unregister(ctx->pdev[i]);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct sdw_amd_ctx *sdw_amd_probe_controller(struct sdw_amd_res *res)
+> +{
+> +	struct sdw_amd_ctx *ctx;
+> +	struct acpi_device *adev;
+> +	struct resource *sdw_res;
+> +	struct acp_sdw_pdata sdw_pdata[2];
+> +	struct platform_device_info pdevinfo[2];
+> +	u32 link_mask;
+> +	int count, index;
+> +
+> +	if (!res)
+> +		return NULL;
+> +
+> +	adev = acpi_fetch_acpi_dev(res->handle);
+> +	if (!adev)
+> +		return NULL;
+> +
+> +	if (!res->count)
+> +		return NULL;
+> +
+> +	count = res->count;
+> +	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
+> +
+> +	/*
+> +	 * we need to alloc/free memory manually and can't use devm:
+> +	 * this routine may be called from a workqueue, and not from
+> +	 * the parent .probe.
+> +	 * If devm_ was used, the memory might never be freed on errors.
+> +	 */
+> +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return NULL;
+> +
+> +	ctx->count = count;
+> +	ctx->link_mask = res->link_mask;
+> +	sdw_res = kzalloc(sizeof(*sdw_res), GFP_KERNEL);
+> +	if (!sdw_res) {
+> +		kfree(ctx);
+> +		return NULL;
+> +	}
+> +	sdw_res->flags = IORESOURCE_MEM;
+> +	sdw_res->start = res->addr;
+> +	sdw_res->end = res->addr + res->reg_range;
+> +	memset(&pdevinfo, 0, sizeof(pdevinfo));
+> +	link_mask = ctx->link_mask;
+> +	for (index = 0; index < count; index++) {
+> +		if (!(link_mask & BIT(index)))
+> +			continue;
+> +
+> +		sdw_pdata[index].instance = index;
+> +		sdw_pdata[index].acp_sdw_lock = res->acp_lock;
+> +		pdevinfo[index].name = "amd_sdw_manager";
+> +		pdevinfo[index].id = index;
+> +		pdevinfo[index].parent = res->parent;
+> +		pdevinfo[index].num_res = 1;
+> +		pdevinfo[index].res = sdw_res;
+> +		pdevinfo[index].data = &sdw_pdata[index];
+> +		pdevinfo[index].size_data = sizeof(struct acp_sdw_pdata);
+> +		pdevinfo[index].fwnode = acpi_fwnode_handle(adev);
+> +		ctx->pdev[index] = platform_device_register_full(&pdevinfo[index]);
+> +		if (IS_ERR(ctx->pdev[index]))
+> +			goto err;
+> +	}
+> +	kfree(sdw_res);
+> +	return ctx;
+> +err:
+> +	while (index--) {
+> +		if (!(link_mask & BIT(index)))
+> +			continue;
+> +
+> +		platform_device_unregister(ctx->pdev[index]);
+> +	}
+> +
+> +	kfree(sdw_res);
+> +	kfree(ctx);
+> +	return NULL;
+> +}
+> +
+> +static int sdw_amd_startup(struct sdw_amd_ctx *ctx)
+> +{
+> +	struct amd_sdw_manager *amd_manager;
+> +	int i, ret;
+> +
+> +	/* Startup SDW Manager devices */
+> +	for (i = 0; i < ctx->count; i++) {
+> +		if (!(ctx->link_mask & BIT(i)))
+> +			continue;
+> +		amd_manager = dev_get_drvdata(&ctx->pdev[i]->dev);
+> +		ret = amd_sdw_manager_start(amd_manager);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int sdw_amd_probe(struct sdw_amd_res *res, struct sdw_amd_ctx **sdw_ctx)
+> +{
+> +	*sdw_ctx = sdw_amd_probe_controller(res);
+> +	if (!*sdw_ctx)
+> +		return -ENODEV;
+> +
+> +	return sdw_amd_startup(*sdw_ctx);
+> +}
+> +EXPORT_SYMBOL_NS(sdw_amd_probe, SOUNDWIRE_AMD_INIT);
+> +
+> +void sdw_amd_exit(struct sdw_amd_ctx *ctx)
+> +{
+> +	sdw_amd_cleanup(ctx);
+> +	kfree(ctx->ids);
+> +	kfree(ctx);
+> +}
+> +EXPORT_SYMBOL_NS(sdw_amd_exit, SOUNDWIRE_AMD_INIT);
+> +
+> +MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
+> +MODULE_DESCRIPTION("AMD SoundWire Init Library");
+> +MODULE_LICENSE("Dual BSD/GPL");
+> diff --git a/drivers/soundwire/amd_init.h b/drivers/soundwire/amd_init.h
+> new file mode 100644
+> index 000000000000..f710703ffae9
+> --- /dev/null
+> +++ b/drivers/soundwire/amd_init.h
+> @@ -0,0 +1,13 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
+> +/*
+> + * Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.
+> + */
+> +
+> +#ifndef __AMD_INIT_H
+> +#define __AMD_INIT_H
+> +
+> +#include <linux/soundwire/sdw_amd.h>
+> +
+> +int amd_sdw_manager_start(struct amd_sdw_manager *amd_manager);
+> +
+> +#endif
+> diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
+> index afa2d83b7e69..0fcf8f8545b1 100644
+> --- a/drivers/soundwire/amd_manager.c
+> +++ b/drivers/soundwire/amd_manager.c
+> @@ -19,6 +19,7 @@
+>  #include <sound/pcm_params.h>
+>  #include <sound/soc.h>
+>  #include "bus.h"
+> +#include "amd_init.h"
+>  #include "amd_manager.h"
+>  
+>  #define DRV_NAME "amd_sdw_manager"
+> @@ -864,10 +865,8 @@ static void amd_sdw_irq_thread(struct work_struct *work)
+>  	writel(0x00, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_0TO7);
+>  }
+>  
+> -static void amd_sdw_probe_work(struct work_struct *work)
+> +int amd_sdw_manager_start(struct amd_sdw_manager *amd_manager)
+>  {
+> -	struct amd_sdw_manager *amd_manager = container_of(work, struct amd_sdw_manager,
+> -							   probe_work);
+>  	struct sdw_master_prop *prop;
+>  	int ret;
+>  
+> @@ -876,11 +875,11 @@ static void amd_sdw_probe_work(struct work_struct *work)
+>  		amd_enable_sdw_pads(amd_manager);
+>  		ret = amd_init_sdw_manager(amd_manager);
+>  		if (ret)
+> -			return;
+> +			return ret;
+>  		amd_enable_sdw_interrupts(amd_manager);
+>  		ret = amd_enable_sdw_manager(amd_manager);
+>  		if (ret)
+> -			return;
+> +			return ret;
+>  		amd_sdw_set_frameshape(amd_manager);
+>  	}
+>  	/* Enable runtime PM */
+> @@ -889,6 +888,7 @@ static void amd_sdw_probe_work(struct work_struct *work)
+>  	pm_runtime_mark_last_busy(amd_manager->dev);
+>  	pm_runtime_set_active(amd_manager->dev);
+>  	pm_runtime_enable(amd_manager->dev);
+> +	return 0;
+>  }
+>  
+>  static int amd_sdw_manager_probe(struct platform_device *pdev)
+> @@ -964,11 +964,6 @@ static int amd_sdw_manager_probe(struct platform_device *pdev)
+>  	dev_set_drvdata(dev, amd_manager);
+>  	INIT_WORK(&amd_manager->amd_sdw_irq_thread, amd_sdw_irq_thread);
+>  	INIT_WORK(&amd_manager->amd_sdw_work, amd_sdw_update_slave_status_work);
+> -	INIT_WORK(&amd_manager->probe_work, amd_sdw_probe_work);
+> -	/*
+> -	 * Instead of having lengthy probe sequence, use deferred probe.
+> -	 */
+> -	schedule_work(&amd_manager->probe_work);
+>  	return 0;
+>  }
+>  
+> @@ -978,7 +973,6 @@ static void amd_sdw_manager_remove(struct platform_device *pdev)
+>  	int ret;
+>  
+>  	pm_runtime_disable(&pdev->dev);
+> -	cancel_work_sync(&amd_manager->probe_work);
+>  	amd_disable_sdw_interrupts(amd_manager);
+>  	sdw_bus_master_delete(&amd_manager->bus);
+>  	ret = amd_disable_sdw_manager(amd_manager);
+> diff --git a/include/linux/soundwire/sdw_amd.h b/include/linux/soundwire/sdw_amd.h
+> index 56b4117c087a..1e5ff4c46365 100644
+> --- a/include/linux/soundwire/sdw_amd.h
+> +++ b/include/linux/soundwire/sdw_amd.h
+> @@ -26,6 +26,7 @@
+>  #define AMD_SDW_POWER_OFF_MODE		2
+>  #define ACP_SDW0	0
+>  #define ACP_SDW1	1
+> +#define AMD_SDW_MAX_MANAGER_COUNT	2
+>  
+>  struct acp_sdw_pdata {
+>  	u16 instance;
+> @@ -63,7 +64,6 @@ struct sdw_amd_dai_runtime {
+>   * @reg_mask: register mask structure per manager instance
+>   * @amd_sdw_irq_thread: SoundWire manager irq workqueue
+>   * @amd_sdw_work: peripheral status work queue
+> - * @probe_work: SoundWire manager probe workqueue
+>   * @acp_sdw_lock: mutex to protect acp share register access
+>   * @status: peripheral devices status array
+>   * @num_din_ports: number of input ports
+> @@ -87,7 +87,6 @@ struct amd_sdw_manager {
+>  	struct sdw_manager_reg_mask *reg_mask;
+>  	struct work_struct amd_sdw_irq_thread;
+>  	struct work_struct amd_sdw_work;
+> -	struct work_struct probe_work;
+>  	/* mutex to protect acp common register access */
+>  	struct mutex *acp_sdw_lock;
+>  
+> @@ -120,5 +119,56 @@ struct sdw_amd_acpi_info {
+>  	u32 link_mask;
+>  };
+>  
+> +/**
+> + * struct sdw_amd_ctx - context allocated by the controller
+> + * driver probe
 
-  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
-  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
-  [root@linux bpf]# ./test_verifier | grep FAIL
-  Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
+missing a blank line there
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-by: Hou Tao <houtao1@huawei.com>
-Acked-by: Song Liu <song@kernel.org>
----
- tools/testing/selftests/bpf/test_verifier.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+> + * @count: link count
+> + * @num_slaves: total number of devices exposed across all enabled links
+should this be not per link?
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 1a09fc34d093..cf05448cfe13 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -74,6 +74,7 @@
- 		    1ULL << CAP_BPF)
- #define UNPRIV_SYSCTL "kernel/unprivileged_bpf_disabled"
- static bool unpriv_disabled = false;
-+static bool jit_disabled;
- static int skips;
- static bool verbose = false;
- static int verif_log_level = 0;
-@@ -1622,6 +1623,16 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 	alignment_prevented_execution = 0;
- 
- 	if (expected_ret == ACCEPT || expected_ret == VERBOSE_ACCEPT) {
-+		if (fd_prog < 0 && saved_errno == EINVAL && jit_disabled) {
-+			for (i = 0; i < prog_len; i++, prog++) {
-+				if (!insn_is_pseudo_func(prog))
-+					continue;
-+				printf("SKIP (callbacks are not allowed in non-JITed programs)\n");
-+				skips++;
-+				goto close_fds;
-+			}
-+		}
-+
- 		if (fd_prog < 0) {
- 			printf("FAIL\nFailed to load prog '%s'!\n",
- 			       strerror(saved_errno));
-@@ -1844,6 +1855,8 @@ int main(int argc, char **argv)
- 		return EXIT_FAILURE;
- 	}
- 
-+	jit_disabled = !is_jit_enabled();
-+
- 	/* Use libbpf 1.0 API mode */
- 	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
- 
+> + * @link_mask: bit-wise mask listing SoundWire links reported by the
+> + * Controller
+> + * @ids: array of slave_id, representing Slaves exposed across all enabled
+> + * links
+
+this does not tell us which device to expect in which link..?
+
+> + * @pdev: platform device structure
+> + */
+> +struct sdw_amd_ctx {
+> +	int count;
+> +	int num_slaves;
+> +	u32 link_mask;
+> +	struct sdw_extended_slave_id *ids;
+> +	struct platform_device *pdev[AMD_SDW_MAX_MANAGER_COUNT];
+> +};
+> +
+> +/**
+> + * struct sdw_amd_res - Soundwire AMD global resource structure,
+> + * typically populated by the DSP driver/Legacy driver
+> + *
+> + * @addr: acp pci device resource start address
+> + * @reg_range: ACP register range
+> + * @link_mask: bit-wise mask listing links selected by the DSP driver/
+> + * legacy driver
+> + * @count: link count
+> + * @mmio_base: mmio base of SoundWire registers
+> + * @handle: ACPI parent handle
+> + * @parent: parent device
+> + * @dev: device implementing hwparams and free callbacks
+> + * @acp_lock: mutex protecting acp common registers access
+> + */
+> +struct sdw_amd_res {
+> +	u32 addr;
+> +	u32 reg_range;
+> +	u32 link_mask;
+> +	int count;
+> +	void __iomem *mmio_base;
+> +	acpi_handle handle;
+> +	struct device *parent;
+> +	struct device *dev;
+> +	/* use to protect acp common registers access */
+> +	struct mutex *acp_lock;
+> +};
+> +
+> +int sdw_amd_probe(struct sdw_amd_res *res, struct sdw_amd_ctx **ctx);
+> +
+> +void sdw_amd_exit(struct sdw_amd_ctx *ctx);
+> +
+>  int amd_sdw_scan_controller(struct sdw_amd_acpi_info *info);
+>  #endif
+> -- 
+> 2.34.1
+
 -- 
-2.42.0
-
+~Vinod
 
