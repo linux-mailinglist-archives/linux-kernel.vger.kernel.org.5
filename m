@@ -1,157 +1,84 @@
-Return-Path: <linux-kernel+bounces-33371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 685088368E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:50:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FD8F8368EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:50:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19344285519
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:50:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC8F1287609
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D38A6D1B8;
-	Mon, 22 Jan 2024 15:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09A26DD04;
+	Mon, 22 Jan 2024 15:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DCO8JNh+"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pVq4KqsS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B719495D9;
-	Mon, 22 Jan 2024 15:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353EE6DCF9
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936020; cv=none; b=LzRYYQK2+VunwFDw6La6wxfmfUGVeSbfi7OYD/8Rju0tjPu5UWux3wuP1njvyGtVQq67kkZbtPz4Wt7aOA4281rhN7uxaEr56oKATOncOixDE9pirhbPRouPVtnrxXRybdkOWjkVCPRVZBb/s3HhbW4uyGS28JQ2a2aS3k2U+kY=
+	t=1705936032; cv=none; b=OJlLpFtzj3kc0aV78qn15n2gCFZziYzMoY5kAMy2a1hbgsNxXPpDODRmGaXDJZ5RTiZNylLF41srG1+bgTma4mmEoEUfecrmMmRyXg2EAnnqnZNpAi1EqviGdueI8wlOej0nA7X3HU6hde4LMiDhKkPcSOrDI2mCWq3mSbVgJG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936020; c=relaxed/simple;
-	bh=4UjfoZOWKhz9CUcE2OAu1F/mEKNnn+MN6pIwNPWP0kE=;
+	s=arc-20240116; t=1705936032; c=relaxed/simple;
+	bh=UcxkksHxcsaVz6RDRPnLcMAB+qrTU2YcefyY8O6v3UQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dJTz7LG5Z7SPibbTDRNnIsPrAXSP9I8aQZpWTjLguI59B0gIZFK2uFW6EZhi29khyXTTgq0kIE++UxNaStPaHW6CrqpxQaXyZWbk/KfRo4M66AtXKYjCNS4VOBhRIdZK0j38YPt+18VpqFtmAKskXcICuWoHmI/HuPEX9NjQrf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DCO8JNh+; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d7517fe9d4so836105ad.0;
-        Mon, 22 Jan 2024 07:06:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705936018; x=1706540818; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pB8swrgfuo82HJIoA7WtzOzLJAOPh3SgeZ4ldwd4D6U=;
-        b=DCO8JNh+kOCXQkxFVcIdv8AcW4E/R8N5fKeFvWpNMb+7COl2LdAgDEXLWoZYn9hdQB
-         I1TTWhw/23Uh5CvgsXZH6Fbd/P4FIylo4IH0wJS5vxvsyNwICHtrpzu5Dex4gQ6nzWpc
-         BhgB5CPJl3OLZqIH8Eyhhh3DNT2uP1HHtGNiq0vjdndC9xhgwdE4uqo/qIs8ZuTqSbYV
-         tQqo9WQERPxePqEhTwdhAgLV0+dcnutFDUWh2CraCjnPWCrrtkHe3fJ026G6qfr9Hx/a
-         /ZGFM2AYQwPJpz4NzOAqg+MfG8ocONBSTD6mQmowPZS3/TVVBY6n2Q5CNEi+RfIicdzf
-         xDfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705936018; x=1706540818;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pB8swrgfuo82HJIoA7WtzOzLJAOPh3SgeZ4ldwd4D6U=;
-        b=L8yVn5/VjB7kLjt4jxyODeAFodMFAsMpnKslNcSuX/uYikvETGz9WRS01CCiJCi1jv
-         dtTK+3lLbNo1qBrz7SkrEN12ST/6A1xiwc971hmXgVuwACZfEEVDDtnC4IGKSA2aNG6f
-         4Btkmc6LhPlp/VYLqDfm/TSpehnYBo2zIUTEs31E/9OuxNWfWD/wY9HZoafscjGDVCRr
-         s029z9wAOEf+CXzbc6II9t9rgN/SqlsUtU175l/sEnExIAIWDjQAP4ltNaY0gHXkZWHo
-         lUQDPk7C3Ar1O2rQbNMS5InXa2swgS+DTnB2Q9jXCl+rT6vKuwOkCC4NAdCW2jD1nNt/
-         ucxg==
-X-Gm-Message-State: AOJu0Yz20wVZuVHul23rDwmjfsXs8kXgd0FXq4HAS0mdS1s4mcPXxGjO
-	x9R3HBRIuzLXy+D/0bV7eTuskz8Tg4My+q4xRMLP7zSYFEFIhRnq
-X-Google-Smtp-Source: AGHT+IHqAgflk104ZbHizf63K/+tBR8ze0aFA/FPCHNIZ4lPx6NazJ9AFhqEO6Jbnej/ZCpb1JDW9g==
-X-Received: by 2002:a17:903:54a:b0:1d5:f667:10a1 with SMTP id jo10-20020a170903054a00b001d5f66710a1mr8439165plb.6.1705936018228;
-        Mon, 22 Jan 2024 07:06:58 -0800 (PST)
-Received: from visitorckw-System-Product-Name (IP-216-168.cs.nctu.edu.tw. [140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id t1-20020a1709028c8100b001d7505a6894sm2020913plo.230.2024.01.22.07.06.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 07:06:57 -0800 (PST)
-Date: Mon, 22 Jan 2024 23:06:54 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: colyli@suse.de, bfoster@redhat.com, jserv@ccns.ncku.edu.tw,
-	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 0/5] Optimize number of comparisons for heap/heapsort
- implementaion
-Message-ID: <Za6EjshZWFUPLJef@visitorckw-System-Product-Name>
-References: <20240121153649.2733274-1-visitorckw@gmail.com>
- <nl6kvjxg4gia5pbfb4jibxusvavmlwumrvy3swfs33ciub32wt@2kmeqnqycxxh>
- <Za1Ml/ZUBXdYXOIt@visitorckw-System-Product-Name>
- <ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YUd7gEsYyLkq2w1i08OX7Tk4Z1ACQ/P1yCshLEYjgR1B8PUI8e4hoXuQLliwp/8KboshOvGesu1i8PD1DG/xF9kJw3RWqk2npeDbQ57kjHoshmKtOle3d8mcDz2R/YdvutB1JpQaJPXe5nwqU9H9zMfFB9OwC7e9yAqbQ9wJvXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pVq4KqsS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30555C43399;
+	Mon, 22 Jan 2024 15:07:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705936032;
+	bh=UcxkksHxcsaVz6RDRPnLcMAB+qrTU2YcefyY8O6v3UQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pVq4KqsSzRcW77reefwLad5zgDLuUb4AQfdroqI+EsSUqYSt8bYkYIr4BKk9qBcnG
+	 Adp+qnrOpbrnAaVGmFM7UL36ZVne6N+Yf1kuRFIMWlZSJySbsNjqFleB9hDy5bH6c5
+	 ZLkTP35WhhDTXed3eqKKJISVlriZeCOXXa41XqRpSEAM3NSttRKiFjUlY8WRHxOaaO
+	 mdFXKUTN0RSSOCSzrAFd5kLSr+S57u8BfELg77sskAdUJFTmTXmMe98S1ItAzkn6Qh
+	 j1QyrUqKvCH4+THZtx+JdJhj8D0PtmGwVPbuP3frY5kdxK45BT8pgY2Qe/bSaVXT/O
+	 0WegAouDBqsGg==
+Date: Mon, 22 Jan 2024 15:07:08 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc: microchip: Fix POLARFIRE_SOC_SYS_CTRL input prompt
+Message-ID: <20240122-party-kosher-6c1592d49ffc@spud>
+References: <607c5ba8b95b1a11b6dc532223e9d7abcc2c20e4.1705935812.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kuN3y11A864o183R"
+Content-Disposition: inline
+In-Reply-To: <607c5ba8b95b1a11b6dc532223e9d7abcc2c20e4.1705935812.git.geert+renesas@glider.be>
+
+
+--kuN3y11A864o183R
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu>
 
-On Sun, Jan 21, 2024 at 12:41:55PM -0500, Kent Overstreet wrote:
-> On Mon, Jan 22, 2024 at 12:55:51AM +0800, Kuan-Wei Chiu wrote:
-> > On Sun, Jan 21, 2024 at 11:21:06AM -0500, Kent Overstreet wrote:
-> > > On Sun, Jan 21, 2024 at 11:36:44PM +0800, Kuan-Wei Chiu wrote:
-> > > > Hello,
-> > > > 
-> > > > The existing implementations of heap/heapsort follow the conventional
-> > > > textbook approach, where each heapify operation requires approximately
-> > > > 2*log2(n) comparisons. In this series, I introduce a bottom-up variant
-> > > > that reduces the number of comparisons during heapify operations to
-> > > > approximately log2(n), while maintaining the same number of swap
-> > > > operations.
-> > > > 
-> > > > Thanks,
-> > > > Kuan-Wei
-> > > > 
-> > > > Kuan-Wei Chiu (5):
-> > > >   bcachefs: Optimize eytzinger0_sort() using bottom-up heapsort
-> > > >   bcachefs: Introduce parent function for sort_cmp_size()
-> > > >   bcachefs: Optimize sort_cmp_size() using bottom-up heapsort
-> > > >   bcachefs: Optimize number of comparisons in heap_sift_down
-> > > >   bcache: Optimize number of comparisons in heap_sift
-> > > > 
-> > > >  drivers/md/bcache/util.h |  23 +++++----
-> > > >  fs/bcachefs/util.c       | 109 ++++++++++++++++++++++++++-------------
-> > > >  fs/bcachefs/util.h       |  23 +++++----
-> > > >  3 files changed, 98 insertions(+), 57 deletions(-)
-> > > 
-> > > Good stuff
-> > > 
-> > > While we're looking at this code, we should be doing some cleanup too -
-> > > there's no reason for the heap code to be duplicated in bcache and
-> > > bcachefs anymore, and it'd also be nice to get fs/bcachefs/eytzinger.h
-> > > moved to include/linux and bcache converted to use it.
-> > > 
-> > > I also would not be surprised if there's another heap implementation in
-> > > include/linux; we'll want to check for that and if there is decide which
-> > > is worth keeping.
-> > >
-> > Yes, we have 'min_heap.h' in include/linux.
-> 
-> So that has the advantage of more readable code - functions instead of
-> macros - whereas my version has the type safe interface.
-> 
-> We could combine the two approaches, and put a type-safe interface on
-> top of the min_heap.h code with some small macro wrappers - see
-> generic-radix-tree.h for an example of how that's done.
+On Mon, Jan 22, 2024 at 04:04:14PM +0100, Geert Uytterhoeven wrote:
+> The symbol's prompt should be a one-line description, instead of just
+> duplicating the symbol name.
 
-Without modifying the interface provided by min_heap.h, it seems
-challenging to implement the functionality of heap_add due to the
-relationship with heap_setbackpointer.
+Huh. Why it was ever like that I do not know...
 
-Additionally, when looking into the code in generic-radix-tree.h,
-should we replace type[0] with type[]? This is because zero-length
-arrays are deprecated language features mentioned in document [1].
+--kuN3y11A864o183R
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays [1]
-> 
-> min_heap.h has only one user though? I don't think I can quite believe
-> that's the only other code in the kernel using a heap, there must be
-> more open coded out there...
+-----BEGIN PGP SIGNATURE-----
 
-I'm not sure why, but it seems that in the kernel, other places using
-the heap implement their own subsystem-specific solutions rather than
-utilizing a generic heap interface. For instance,
-kernel/sched/cpudeadline.c and net/sched/sch_cake.c both have their own
-implementations.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa6EnAAKCRB4tDGHoIJi
+0mgCAQCUPR4IiGRpjs5TOekItdDyYZ6FZoid8Hk5P2v5MsmwjAD+L2y9azy5sG5R
+2cd89GWxsKDgC4ZjtrPDhY9LTH1ZAgw=
+=mw6L
+-----END PGP SIGNATURE-----
+
+--kuN3y11A864o183R--
 
