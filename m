@@ -1,146 +1,200 @@
-Return-Path: <linux-kernel+bounces-32417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0842E835B78
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:15:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F278835B79
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 595BAB250AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:15:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1E0F288AB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD90F512;
-	Mon, 22 Jan 2024 07:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801AEF500;
+	Mon, 22 Jan 2024 07:16:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T1a8kOao"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CL5tGsNW"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EDAD17C80
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CD9F4EB;
+	Mon, 22 Jan 2024 07:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705907726; cv=none; b=O5cVG7Xc5OZtCWKUXnjP6VtSSmz1BvJY826XSkRVtl5NCzUwGrhsoUxoQiWrsw2DaNcpEWBI6u5FaZUac5E/Nk1E3l9pZ8qX0EZ0ffv2b4+jMhQeG2iA1QXw6+vfv4+L5N44wWxdBQ+JLbB7iZBIBsKovf/RcB0o55/ciGZVEeA=
+	t=1705907799; cv=none; b=Pm7UWHSVLkdbK2wSgDtSmeckA6sztVp7hbN2xlzYi+MRLWiJ/kkq+weUCwlj5+BqkWECM/C4zhgL/KrADvA9S52tuXzNuex/9Vk7XyKWYR/SDwGHL+/A8qJO97yUsZmsgDPzpMdyouI94AcZpAg/01K/ZibcNdag6+vi9b5B/H8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705907726; c=relaxed/simple;
-	bh=YCFZKMxT5pftMLplwAg4YBXUQE31/i4Ak24i9qQ3Vi0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oxoYXtyvsXivrhWjaC2Bd5+qV3PeERIwHnf8HXB0iqychzGkSNG2liRNr4kVrRhrcPhaGz2NeIYsfE8TP7TYcMWGkyV8M69linYznJqAXh3lFte4NTNbLN/mS+0eqthvbzwXMTCWYhvcB6jLs9yuGepzHVeFP4pWpoQ6hoo/aX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T1a8kOao; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e9101b5f9so32924715e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 23:15:25 -0800 (PST)
+	s=arc-20240116; t=1705907799; c=relaxed/simple;
+	bh=NkAADOM7nb3nJHV0kE9YVtfOI0rFBMbB2vTpVb+wdVM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kNQQVWJMAbOzLeA9bfApZVm8hi8fDQOIsUjbXlSoNSRixmO66RYORvextsFvAvNkWQZFJ1IOPCMf9/BEYgVry3SWinoyLEmjYDnGwZR0F7zLQ3GXkJ6JWKLjsHUONa0MfiArfbgMLGMiSm4mz3XiVD9lseW88LMY/IW3vASwhyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CL5tGsNW; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-429af318342so25663301cf.0;
+        Sun, 21 Jan 2024 23:16:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705907723; x=1706512523; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lHP43ExYfIoYQZnh2Pw1TOnG0wcXeFiwfIKZwpRcOpg=;
-        b=T1a8kOaoYhGotn1q0+RJ62WdYZnxImOo4g7Ox+9L1AKwZIij2twARSPijBh5BakNea
-         pgZa4g8sRzZFii0eN0QnxIoEeztHGL/+npjarAiBJm5+Ac2NNDHl4bVgWRnkwdW77iAa
-         n+yYYkDxCm9QDAgriaadCGdlQa7GgmpqAyVN08a/kX71DEXSNSOZcuIoW9FMovJ5yjNF
-         NAWM5UZZDcwd9G7nf88JDaqefG/DiUkxFlmdFXYo9bY+W5DaTSrf6QkvXcHI/PReWN8l
-         gDJRD8q591AKuHtVY7rF4B1AszyYMybgIY/dXFH7b3jzNmOa19PNYvoBWFEqlN76+SWu
-         vdyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705907723; x=1706512523;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705907795; x=1706512595; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lHP43ExYfIoYQZnh2Pw1TOnG0wcXeFiwfIKZwpRcOpg=;
-        b=JVp24ArK8QQqegoJ6LQUQ7SM9YWBzWZm3/NQMcdxFd27hYfBF53dDnw8CXsCGAQR6s
-         RreRinmFIjWw8X6YV4W1RvdPmcRzltWltcyKuYS27p7iTXWwZo1+nzUpaQMOUjOgm0UT
-         pXABW9H6N0boy3XsTXVXwzxVJz+iQDiJAjg4btTqpzmX1Xtxtqtmy0IhktyydxrF9WD2
-         cJbtfhwIzRY5PbCP1t7sfbbQgI7WiAz5oqTTenDa04im3w/9wo+E/+ap0nybUPebaGEO
-         odp3ZHajJ/r1HQq3F6N0PE9vm5LywF1G7QTmRdmx4xRB2n6GZDhBCq1xMStryaN+hNTq
-         4Yag==
-X-Gm-Message-State: AOJu0YxHYISiWOqP9aSCdqqknfS0HfpEnrptEIvO3FUY1+gV6U7p0dnL
-	X9rd7c+Trk5NSDcJvDgSsOyVxI2K4ELwynK51oo3xd15v7LbTfXQmXyKxh96fYU=
-X-Google-Smtp-Source: AGHT+IG5Alz3MHBgjGmE6oE6CLb/yvjcodQR+lNTfG+1BAcFnW7rpEcukUwXKZxigVRf06Emw/Yw6A==
-X-Received: by 2002:a05:600c:498a:b0:40e:5a80:6177 with SMTP id h10-20020a05600c498a00b0040e5a806177mr1997539wmp.69.1705907723421;
-        Sun, 21 Jan 2024 23:15:23 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id w4-20020a05600c474400b0040d5ae2906esm42185282wmo.30.2024.01.21.23.15.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jan 2024 23:15:23 -0800 (PST)
-Date: Mon, 22 Jan 2024 10:15:20 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Erick Archer <erick.archer@gmx.com>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Jeffrey Hugo <quic_jhugo@quicinc.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Dan Carpenter <error27@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] bus: mhi: ep: Use kcalloc() instead of kzalloc()
-Message-ID: <43614a09-d520-4111-873a-b352bd93ea07@moroto.mountain>
-References: <20240120152518.13006-1-erick.archer@gmx.com>
+        bh=pFrY6G60Aj2NUWP7R4VEsp/j/Y7W4OPZlVPvuZYRf7U=;
+        b=CL5tGsNWaSOg/Ls/nRuIjpQ9221Ah4OyeBq1zx+F8iLgBovI0tPj1usenLTvL0dFeC
+         ckaoFRwSjWtgJ0pPHy03EW7s+uVVMtI0LaahByBcOklh/CmJYnQ4Hg3hj3xlbfaCHE6w
+         pKEiE0G/sxSMo9p7f++oCS+xj13o7suzRRm+v3K8MqGac5PcTMOE2JzV26a6hJpCTHU8
+         4hRAbibHmUmpEID4ggmWgxJ7OTHa90flHLi+tsNewwe/6uiKUsW/amJgVFeopwjjy7HB
+         w4qNkySl/ITKAIHNrJhKi9Nx7yL0xND6HunnxvoSU7JZu2cgMXpVjntLHol4Ug7ikP7p
+         Vn+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705907795; x=1706512595;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pFrY6G60Aj2NUWP7R4VEsp/j/Y7W4OPZlVPvuZYRf7U=;
+        b=sxKPuNumMdMiXAIlIOyP+dossHiMjz6AkAzH43HXVUU6F5HrsfFHrzrz+V3uI15ysY
+         Mq/QNQp8QFqymG/14OU0QWFIcgb37F90L5yFtsYUT/Iac4MKjRu9GsVUiVNcXkmpo0ju
+         HLOlQlJtKY3LIRe3M+R3Z++p+CupTimaZnA7fnyQC7lHj4hAqIlIeZrtP2GWe13/9d/N
+         e/tvHe+TENaHyc3tYfm1HRvQLQdLIsm8/2joR5WLbiBdoPaSNJzO/tPebIAMfhe/sn1F
+         3PWAUPixixZoR2z6+jj+8mgplOzjBzAx7KTxeeGJKBKdih4wORERtuE7LiQUN24R6pwi
+         lFvQ==
+X-Gm-Message-State: AOJu0Yxs8GDUn+4SqdqQSDGB7wXOthBfGmPTQzpR0KokUsBWUuLKIG6s
+	5zwqFxq6lIH97km1f2+JSu2h6j3gPVPhc0hykosg9/LHtjB4LTaCgwiEvWGSJQJvdumlqxPbWIl
+	rXc48BAkgmuYm7hlSgqTNF7Xynm4=
+X-Google-Smtp-Source: AGHT+IFHvFLh501PK0oM3jZ/eFsDEQtqlc7uSmHrZDLn2DY/iKWvCWJ0cNpZSeapYK4yQqc6ua1md893fN8t9VeOsL0=
+X-Received: by 2002:ac8:5a50:0:b0:42a:159d:a955 with SMTP id
+ o16-20020ac85a50000000b0042a159da955mr6553070qta.12.1705907795270; Sun, 21
+ Jan 2024 23:16:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240120152518.13006-1-erick.archer@gmx.com>
+References: <1703556550-2858-1-git-send-email-dongliang.cui@unisoc.com>
+In-Reply-To: <1703556550-2858-1-git-send-email-dongliang.cui@unisoc.com>
+From: dongliang cui <cuidongliang390@gmail.com>
+Date: Mon, 22 Jan 2024 15:16:24 +0800
+Message-ID: <CAPqOJe0H2h+ObwpP=05OtwOTE254kV3LZTVXE6jdNawT1EVzFQ@mail.gmail.com>
+Subject: Re: [PATCH] block: Add ioprio to block_rq tracepoint
+To: Dongliang Cui <dongliang.cui@unisoc.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, Hongyu Jin <hongyu.jin@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This code does not have an integer overflow, but it might have a
-different memory corruption bug.
+Hi,
 
-On Sat, Jan 20, 2024 at 04:25:18PM +0100, Erick Archer wrote:
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
-> 
-> So, use the purpose specific kcalloc() function instead of the argument
-> count * size in the kzalloc() function.
-> 
+Can this submission be uploaded=EF=BC=8Cor is there anything that needs to =
+be modified=EF=BC=9F
 
-This one is more complicated to analyze.  I have built a Smatch cross
-function database so it's easy for me and I will help you.
-
-$ smbd.py where mhi_ep_cntrl event_rings
-drivers/pci/endpoint/functions/pci-epf-mhi.c | pci_epf_mhi_probe              | (struct mhi_ep_cntrl)->event_rings | 0
-drivers/bus/mhi/ep/main.c      | mhi_ep_irq                     | (struct mhi_ep_cntrl)->event_rings | min-max
-drivers/bus/mhi/ep/mmio.c      | mhi_ep_mmio_init               | (struct mhi_ep_cntrl)->event_rings | 0-255
-drivers/bus/mhi/ep/mmio.c      | mhi_ep_mmio_update_ner         | (struct mhi_ep_cntrl)->event_rings | 0-255
-
-The other way to figure this stuff out would be to do:
-
-$ grep -Rn "event_rings = " drivers/bus/mhi/ep/
-drivers/bus/mhi/ep/mmio.c:260:  mhi_cntrl->event_rings = FIELD_GET(MHICFG_NER_MASK, regval);
-drivers/bus/mhi/ep/mmio.c:261:  mhi_cntrl->hw_event_rings = FIELD_GET(MHICFG_NHWER_MASK, regval);
-drivers/bus/mhi/ep/mmio.c:271:  mhi_cntrl->event_rings = FIELD_GET(MHICFG_NER_MASK, regval);
-drivers/bus/mhi/ep/mmio.c:272:  mhi_cntrl->hw_event_rings = FIELD_GET(MHICFG_NHWER_MASK, regval);
-
-That means that this multiplication can never overflow so the patch
-has no effect on runtime.  The patch is still useful because we don't
-want every single person to have to do this analysis.  The kcalloc()
-function is just safer and more obviously correct.
-
-It's a bit concerning that ->event_rings is set multiple times, but only
-allocated one time.  It's either unnecessary or there is a potential
-memory corruption bug.  If it's really necessary then there should be a
-check that the new size is <= the size of the original buffer that we
-allocated.
-
-I work in static analysis and I understand the struggle of trying to
-understand code to see if static checker warnings are a real bug or not.
-I'm not going to insist that you figure everything out, but I am asking
-that you at least try.  If after spending ten minutes reading the code
-you can't figure it out, then it's fine to write something like, "I
-don't know whether this multiply can really overflow or not, but let's
-make it safer by using kcalloc()."  You can put that sort of "I don't
-know information" under the --- cut off line inf you want.
-
-regards,
-dan carpenter
+On Tue, Dec 26, 2023 at 10:10=E2=80=AFAM Dongliang Cui <dongliang.cui@uniso=
+c.com> wrote:
+>
+> Sometimes we need to track the processing order of
+> requests with ioprio set, especially when using
+> mq-deadline. So the ioprio of request can be useful
+> information.
+>
+> Signed-off-by: Dongliang Cui <dongliang.cui@unisoc.com>
+> ---
+>  include/trace/events/block.h | 20 ++++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/trace/events/block.h b/include/trace/events/block.h
+> index 0e128ad..e84ff93 100644
+> --- a/include/trace/events/block.h
+> +++ b/include/trace/events/block.h
+> @@ -82,6 +82,7 @@
+>                 __field(  dev_t,        dev                     )
+>                 __field(  sector_t,     sector                  )
+>                 __field(  unsigned int, nr_sector               )
+> +               __field(  unsigned int, ioprio                  )
+>                 __array(  char,         rwbs,   RWBS_LEN        )
+>                 __dynamic_array( char,  cmd,    1               )
+>         ),
+> @@ -90,16 +91,17 @@
+>                 __entry->dev       =3D rq->q->disk ? disk_devt(rq->q->dis=
+k) : 0;
+>                 __entry->sector    =3D blk_rq_trace_sector(rq);
+>                 __entry->nr_sector =3D blk_rq_trace_nr_sectors(rq);
+> +               __entry->ioprio    =3D rq->ioprio;
+>
+>                 blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
+>                 __get_str(cmd)[0] =3D '\0';
+>         ),
+>
+> -       TP_printk("%d,%d %s (%s) %llu + %u [%d]",
+> +       TP_printk("%d,%d %s (%s) %llu + %u 0x%x [%d]",
+>                   MAJOR(__entry->dev), MINOR(__entry->dev),
+>                   __entry->rwbs, __get_str(cmd),
+>                   (unsigned long long)__entry->sector,
+> -                 __entry->nr_sector, 0)
+> +                 __entry->nr_sector, __entry->ioprio, 0)
+>  );
+>
+>  DECLARE_EVENT_CLASS(block_rq_completion,
+> @@ -112,6 +114,7 @@
+>                 __field(  dev_t,        dev                     )
+>                 __field(  sector_t,     sector                  )
+>                 __field(  unsigned int, nr_sector               )
+> +               __field(  unsigned int, ioprio                  )
+>                 __field(  int   ,       error                   )
+>                 __array(  char,         rwbs,   RWBS_LEN        )
+>                 __dynamic_array( char,  cmd,    1               )
+> @@ -121,17 +124,19 @@
+>                 __entry->dev       =3D rq->q->disk ? disk_devt(rq->q->dis=
+k) : 0;
+>                 __entry->sector    =3D blk_rq_pos(rq);
+>                 __entry->nr_sector =3D nr_bytes >> 9;
+> +               __entry->ioprio    =3D rq->ioprio;
+>                 __entry->error     =3D blk_status_to_errno(error);
+>
+>                 blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
+>                 __get_str(cmd)[0] =3D '\0';
+>         ),
+>
+> -       TP_printk("%d,%d %s (%s) %llu + %u [%d]",
+> +       TP_printk("%d,%d %s (%s) %llu + %u 0x%x [%d]",
+>                   MAJOR(__entry->dev), MINOR(__entry->dev),
+>                   __entry->rwbs, __get_str(cmd),
+>                   (unsigned long long)__entry->sector,
+> -                 __entry->nr_sector, __entry->error)
+> +                 __entry->nr_sector, __entry->ioprio,
+> +                 __entry->error)
+>  );
+>
+>  /**
+> @@ -180,6 +185,7 @@
+>                 __field(  sector_t,     sector                  )
+>                 __field(  unsigned int, nr_sector               )
+>                 __field(  unsigned int, bytes                   )
+> +               __field(  unsigned int, ioprio                  )
+>                 __array(  char,         rwbs,   RWBS_LEN        )
+>                 __array(  char,         comm,   TASK_COMM_LEN   )
+>                 __dynamic_array( char,  cmd,    1               )
+> @@ -190,17 +196,19 @@
+>                 __entry->sector    =3D blk_rq_trace_sector(rq);
+>                 __entry->nr_sector =3D blk_rq_trace_nr_sectors(rq);
+>                 __entry->bytes     =3D blk_rq_bytes(rq);
+> +               __entry->ioprio    =3D rq->ioprio;
+>
+>                 blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
+>                 __get_str(cmd)[0] =3D '\0';
+>                 memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
+>         ),
+>
+> -       TP_printk("%d,%d %s %u (%s) %llu + %u [%s]",
+> +       TP_printk("%d,%d %s %u (%s) %llu + %u 0x%x [%s]",
+>                   MAJOR(__entry->dev), MINOR(__entry->dev),
+>                   __entry->rwbs, __entry->bytes, __get_str(cmd),
+>                   (unsigned long long)__entry->sector,
+> -                 __entry->nr_sector, __entry->comm)
+> +                 __entry->nr_sector, __entry->ioprio,
+> +                 __entry->comm)
+>  );
+>
+>  /**
+> --
+> 1.9.1
+>
 
