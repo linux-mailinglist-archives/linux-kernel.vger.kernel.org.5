@@ -1,113 +1,112 @@
-Return-Path: <linux-kernel+bounces-33002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 242FF836314
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:22:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2D68836320
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42B10B289C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:22:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21E2E1C21CCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:24:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EBD3D964;
-	Mon, 22 Jan 2024 12:20:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA593E477;
+	Mon, 22 Jan 2024 12:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="frXLkzL0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IaObIRu2"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D2D3D55C;
-	Mon, 22 Jan 2024 12:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883A63CF43
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705926036; cv=none; b=t7LmU6JNw/kGdgj3DyyN9XIhVcNMArZT/VLQ66wfMvMcOXD+l32XQwGwheabJVeG4RuF9XID2pLuYiZ30vKwmw0GMX1RW8tHi0t2yJiuPhmjbrgMXds/c0Sta8J5kD5UUP5bFxdETfh+76R1bmQ1idz3d69+BykmebpJiI+FrYo=
+	t=1705926060; cv=none; b=kVVxQgkA2/KHa3WynY1y5jtmR3SEaK9kajzGoge6UjXCdH2cugAe8HrrQC0mLvDTIwbygklolGkUxBwT4hIcjGvPix/lBFIHXzeZiIslN7h2mseywCcezkQN+r0NFPjDnHY18LX4DWOFwpuokkcHp7eZgmdSgD7YUgQ4dANrA2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705926036; c=relaxed/simple;
-	bh=Fst93YHEkoTT1MXwK0wHemZAw7gr0g5iyr/F8HZnIIM=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=de+smXdzHJKokU4bt2i1b6Q9BLQjRcmuxFOdWiXXdz5HS/QhOJB7t6upOB2qdSXjSSKu7ZHiFV9i/XyiEBtUsYqKAdq4SzvtC3TSD1KA3EajXoMAU58kXTN5LEiraZrnbM1BJl7yqwriAHLgfjcqQf10OLpKa/fj6d0dqxQMOVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=frXLkzL0; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705926035; x=1737462035;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=Fst93YHEkoTT1MXwK0wHemZAw7gr0g5iyr/F8HZnIIM=;
-  b=frXLkzL0VjVd39MyvrLetgsGYHs1X5wSqLS4MOJjOHrh6Ep1bFa0Z+dJ
-   Q92er2gbiFW21gaxd6HELDswc+HvSqLOZEi2vuQqRe/q5+DG5nYCVWvAt
-   akvqgINGixQl2/rik0JNlEdxUzlEsCBYPcSUdkhjzLtSTB6gKZua3v9/A
-   sBosI2+6kKPQjNHV2JiX+6mcWGQXEcu7+w+7MJZeCflFMQYwJAU7h/fw1
-   +Le0X5lYenV1cFk/9sE2mRMdJxrQbrO3VkhATwQDduzugQjEaEJyCOTPs
-   3O7+WDYHJcUMZ7z7LztZGf45qoyBiobRYzHSLZRtFi1VIBGcepc5yN3FK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="432355872"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="432355872"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 04:20:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="958720646"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="958720646"
-Received: from avulfx-mobl1.ger.corp.intel.com (HELO localhost) ([10.94.249.150])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 04:20:30 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 22 Jan 2024 14:20:25 +0200 (EET)
-To: Bjorn Helgaas <helgaas@kernel.org>
-cc: Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
-    Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-    Keith Busch <kbusch@kernel.org>, Dongdong Liu <liudongdong3@huawei.com>, 
-    linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] PCI/DPC: Fix TLP Prefix register reading offset
-In-Reply-To: <20240119225923.GA191511@bhelgaas>
-Message-ID: <ad91677a-cce3-03fe-c826-12f8d44e3466@linux.intel.com>
-References: <20240119225923.GA191511@bhelgaas>
+	s=arc-20240116; t=1705926060; c=relaxed/simple;
+	bh=YZ1z2j1kI4ddtowX/6pc2qFb6DJElIuVdVyPI0aRULs=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=i7VbqzDYya1DGYumZN3ALICpJUGmlX8HKpefXuePfMSuCkovCueVdjC4Ti+1cKwVcbPhdDTaZD0RZR+twwZ6mu7dRziy1CHJ00i4jBPT83PZSF521mPca++qk47J/P0Fwg+62InybHQEGI8be0n5VVBbjK1AZz3NhrrJXuNOSjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IaObIRu2; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33934567777so1136082f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 04:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705926057; x=1706530857; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kABQclCWxHgPnu9QJU5EL2/wY8bNoLCbrJHvsKEUK0g=;
+        b=IaObIRu2LGHDgBjnVeOjxwqm2b5YccPLyvTxj1G16DYPhRyhEMEkJN1wWToBIjpYy2
+         Glf64g2ijuCgXNjrA6VYzE8Eva9guW15yCdBR+t/o4R1VyFDF6GSuZ6dG+FFihuLxYz1
+         gnlAYQbMOu9sWzjyBSwLYBvjwrGUFzdr5l/LQEZXmu//7bp+uijA/bJZkIfAJuoqYEDW
+         fKprjcjkFJZRdoHY5TSJf296I6BB96HtTLwkdmktn4gIFUj2TztSEyc7g7DQiAqwoDx2
+         IwZzqauTGZidfT2w6oKjymJEBovlFPW7EhxXqultjXu6CO2GmgQya1KDWshqUfpPa/9M
+         kl5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705926057; x=1706530857;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kABQclCWxHgPnu9QJU5EL2/wY8bNoLCbrJHvsKEUK0g=;
+        b=dIZqwI+yREj6WF+PQL5c6azRi7YUZQYCFMO83G9tUPvOfTbyXJB5JcmnH9TefY/1Q1
+         LWRhjppZFOA4W8BdhkXbiuTDS9efkO0GVIxJdS5w0zAf2fyrsjJRDhFZTQxh0fpPXXOg
+         lKg/Oppvm7EpGHWow+i4yPEexN4IKaT7eiILLOaZljzW9UBelQZSKF6fCq2IvB4dMJYL
+         9YKnBhstj1grS7dxb44iLy/K7Jfmaf/1k2s+YSyKvSmDIPs7RhzQJv0CpR3zfeziAP+O
+         9P9tKTiUU9aiBaYe8WfiDdB0E6unn41y7h0iUGv4NVhSvtDtyv2q3m619ioRj5EDC9PR
+         0LLg==
+X-Gm-Message-State: AOJu0YwqyTZ/j21zKWwtTyRXHI2WRYdFZpQ+UtqPRMrRR08n8fBd7F2Y
+	0xvCR/3uj9k2UaXeaN0OVMPTmalnQw6A1qh3/nF0EDiKRO3IsHmW9wyVeFjISJ8=
+X-Google-Smtp-Source: AGHT+IFhqjuIwtg+QmXyJ4f9r6mNt1zxG6VLayec6ocn6/EHmN5XOjRCUa+vR9FMXnsULV8fzYl/Dg==
+X-Received: by 2002:a05:600c:4d02:b0:40e:49bd:a2ba with SMTP id u2-20020a05600c4d0200b0040e49bda2bamr2368821wmp.86.1705926056443;
+        Mon, 22 Jan 2024 04:20:56 -0800 (PST)
+Received: from [127.0.1.1] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id a17-20020a5d5091000000b003392d3dcf6dsm4585801wrt.0.2024.01.22.04.20.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 04:20:55 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org, 
+ alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com, 
+ cw00.choi@samsung.com, linux-arm-kernel@lists.infradead.org, 
+ linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, andre.draszik@linaro.org, 
+ semen.protsenko@linaro.org, willmcvicker@google.com, 
+ kernel-team@android.com
+In-Reply-To: <20240122114113.2582612-1-tudor.ambarus@linaro.org>
+References: <20240122114113.2582612-1-tudor.ambarus@linaro.org>
+Subject: Re: [PATCH v5] clk: samsung: gs101: add support for cmu_peric0
+Message-Id: <170592605426.49653.1635174301896899185.b4-ty@linaro.org>
+Date: Mon, 22 Jan 2024 13:20:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-1542941559-1705925767=:994"
-Content-ID: <c10c0ccc-5b18-b509-a91c-8375ff8673c8@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323328-1542941559-1705925767=:994
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <ac85c081-d4f5-e715-905e-e955db4eb39c@linux.intel.com>
+On Mon, 22 Jan 2024 11:41:13 +0000, Tudor Ambarus wrote:
+> CMU_PERIC0 is the clock management unit used for the peric0 block which
+> is used for USI and I3C. Add support for all cmu_peric0 clocks but
+> CLK_GOUT_PERIC0_IP (not enough info in the datasheet).
+> 
+> Few clocks are marked as critical because when either of them is
+> disabled, the system hangs even if their clock parents are enabled.
+> 
+> [...]
 
-On Fri, 19 Jan 2024, Bjorn Helgaas wrote:
+Applied, thanks!
 
-> On Thu, Jan 18, 2024 at 01:08:15PM +0200, Ilpo J=E4rvinen wrote:
-> > The TLP Prefix Log Register consists of multiple DWORDs (PCIe r6.1 sec
-> > 7.9.14.13) but the loop in dpc_process_rp_pio_error() keeps reading
-> > from the first DWORD. Add the iteration count based offset calculation
-> > into the config read.
->=20
-> So IIUC the user-visible bug is that we print only the first PIO TLP
-> Prefix (duplicated several times), and we never print the second,
-> third, etc Prefixes, right?
+[1/1] clk: samsung: gs101: add support for cmu_peric0
+      https://git.kernel.org/krzk/linux/c/4bd800aaf96f880d45b1a28b2f78549a0f5a3a1c
 
-Yes.
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> I wish we could print them all in a single pci_err(), as we do for the
-> TLP Header Log, instead of dribbling them out one by one.
-
-I've also done some work towards consolidating AER and DPC TLP=20
-Header/Prefix Log handling which is when I found this bug (the reading=20
-side is already done but printing is still pending).
-
-> > Fixes: f20c4ea49ec4 ("PCI/DPC: Add eDPC support")
-> > Signed-off-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
---8323328-1542941559-1705925767=:994--
 
