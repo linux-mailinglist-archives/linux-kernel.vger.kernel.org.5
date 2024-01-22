@@ -1,62 +1,58 @@
-Return-Path: <linux-kernel+bounces-33532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2299836ADC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:35:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268E1836ADF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:35:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71C732827D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:35:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D25831F2557E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1A0148319;
-	Mon, 22 Jan 2024 15:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B128856B8A;
+	Mon, 22 Jan 2024 15:17:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O7EwWmLc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MlSgGGqo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C3C14830B;
-	Mon, 22 Jan 2024 15:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15B91487C3;
+	Mon, 22 Jan 2024 15:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936641; cv=none; b=iFlXybCylqaqANGIIxn5yNpLOQoJk/An4A6pGWfaCyTdlZzKZk0BI+nfcTtS0e0Xmeiw7ZAbPTxrhr/7qCBUcpCgIbJJUaNzAJLhaZDGSHcb3sm8zMpkCZNAuJ6RV29BjfC0k0pvR3xXE0ZDWS48CXBUwNG8DBf8QbMN7iB7vEM=
+	t=1705936643; cv=none; b=rK+cuhPa5UJtzi3GJUZeuVBrwTOR45bgrgHRkzvIH63qaGzcCoPSOCROH1Kx2kx5GfyYzi+6NucGY5vnrTi8HA+N9uTy2mDym/QbBHzlS1GNk9SxaMH0f2GRkJprGR4eYNQndGImO1jQnM7MmZCEPagosa9k1HRIOlV7wgV7gjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936641; c=relaxed/simple;
-	bh=xTet7s37ZuSUYJAkQIftTDpCZBpxRYm+bQFElqAtA54=;
+	s=arc-20240116; t=1705936643; c=relaxed/simple;
+	bh=VdRpCz7IZslD0fN6wOVHgHdqX/ObRo5Mos+NE/dFVaA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HxO2TYsYCKAyw2hP7dp4hfHErEmOOTDcLg5qbhdK2CfsyiAgO4wdnT9RCchTfGvrUQoKHF+XD4nrLQZRcmK2z77rhbpwCDPS7dA1TwGEqZH8PTiSDSIBOqaYTlWaZsr8ltBvN03mChucQ3n+pQZpnlXUTIEL3XD2E76wfkAlR84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O7EwWmLc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81D39C43399;
-	Mon, 22 Jan 2024 15:17:19 +0000 (UTC)
+	 MIME-Version; b=tu1mNDouVGDwEUZl4upV/DPxUqDvfcpxyAKkovHLYdzV/mSAnZWykgC78YF1G+rHLeIysh2OFzeR4oLb9+wMU4MRliz4vCCk6VOpJzzcImcTz8G3ngo+faWFce9lVFP0jvmho1GfVSBG2+QIjpSujnQgAxsT6beAabXpBcEa34w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MlSgGGqo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C14B4C43390;
+	Mon, 22 Jan 2024 15:17:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936641;
-	bh=xTet7s37ZuSUYJAkQIftTDpCZBpxRYm+bQFElqAtA54=;
+	s=k20201202; t=1705936642;
+	bh=VdRpCz7IZslD0fN6wOVHgHdqX/ObRo5Mos+NE/dFVaA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O7EwWmLcSxSoYEj3qH5Va0VP6DVb8kBZD9X8bi//tZM9znNus8eRAk+Xo67TjMOD9
-	 J1yGOLpDI/pmn1cJBCeJJmy4J1LYWP01BEBcFmhSpBM9T/Gzu5BnFR6EJFPBigrBHR
-	 bREkfuKpZY3qxf0JxQ7R0j5dp/uFwXuhzO9gxNJPPk5mXqj3EJwnI7uFBAUu+5FUfa
-	 Ohle7zukX7Fnwl3QVauTYytA6T8RUhEebHvZMwUhF5Y6+bv2arLm1NkZb1n2Bj5O4w
-	 78iQU3Oi0G3MgYEavgGTxhGRnnNnjsCeUbdJFg3/N7TuXkLMPjslYF77RxWWfN5fHa
-	 cPjUxzxW6UgyQ==
+	b=MlSgGGqok3HcOBNz1xnmAp2K0bQRmUOAoI+ji6+4LOR4FNI10jAwZcAnlJu/w3j8z
+	 +2xEQvlzbqgkufUqiMXfKh1XoAvPDzZFiFFzCkBsOEVY/suE/4r6jtwVb2eaj0vIej
+	 qtc4+KIWod7h+AtvPIxjJl1+hU90QLrjpDnhsgbdi3bjJAJ4Yu7PgunIw732QSmYvj
+	 zfipe/asmnLOKHTCXeeHFvJioazkuPqXcXZXariKuFepBl7q1Q6osb27ftJE26Y1gN
+	 HfqXVTeSpbea7vGyohyJRNXMmPXF/gFcCiaDsDsWW4j9YHPnIPw2kVkJLOwNzPLvXO
+	 l7Mm39sccb3qQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	"H . Nikolaus Schaller" <hns@goldelico.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
-	Tony Lindgren <tony@atomide.com>,
+Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
+	Phillip Potter <phil@philpotter.co.uk>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>,
-	maarten.lankhorst@linux.intel.com,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 09/24] drm/mipi-dsi: Fix detach call without attach
-Date: Mon, 22 Jan 2024 10:16:23 -0500
-Message-ID: <20240122151659.997085-9-sashal@kernel.org>
+	ezequiel@vanguardiasur.com.ar,
+	mchehab@kernel.org,
+	linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 10/24] media: stk1160: Fixed high volume of stk1160_dbg messages
+Date: Mon, 22 Jan 2024 10:16:24 -0500
+Message-ID: <20240122151659.997085-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122151659.997085-1-sashal@kernel.org>
 References: <20240122151659.997085-1-sashal@kernel.org>
@@ -71,136 +67,45 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.267
 Content-Transfer-Encoding: 8bit
 
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
 
-[ Upstream commit 90d50b8d85834e73536fdccd5aa913b30494fef0 ]
+[ Upstream commit b3695e86d25aafbe175dd51f6aaf6f68d341d590 ]
 
-It's been reported that DSI host driver's detach can be called without
-the attach ever happening:
+The function stk1160_dbg gets called too many times, which causes
+the output to get flooded with messages. Since stk1160_dbg uses
+printk, it is now replaced with printk_ratelimited.
 
-https://lore.kernel.org/all/20230412073954.20601-1-tony@atomide.com/
-
-After reading the code, I think this is what happens:
-
-We have a DSI host defined in the device tree and a DSI peripheral under
-that host (i.e. an i2c device using the DSI as data bus doesn't exhibit
-this behavior).
-
-The host driver calls mipi_dsi_host_register(), which causes (via a few
-functions) mipi_dsi_device_add() to be called for the DSI peripheral. So
-now we have a DSI device under the host, but attach hasn't been called.
-
-Normally the probing of the devices continues, and eventually the DSI
-peripheral's driver will call mipi_dsi_attach(), attaching the
-peripheral.
-
-However, if the host driver's probe encounters an error after calling
-mipi_dsi_host_register(), and before the peripheral has called
-mipi_dsi_attach(), the host driver will do cleanups and return an error
-from its probe function. The cleanups include calling
-mipi_dsi_host_unregister().
-
-mipi_dsi_host_unregister() will call two functions for all its DSI
-peripheral devices: mipi_dsi_detach() and mipi_dsi_device_unregister().
-The latter makes sense, as the device exists, but the former may be
-wrong as attach has not necessarily been done.
-
-To fix this, track the attached state of the peripheral, and only detach
-from mipi_dsi_host_unregister() if the peripheral was attached.
-
-Note that I have only tested this with a board with an i2c DSI
-peripheral, not with a "pure" DSI peripheral.
-
-However, slightly related, the unregister machinery still seems broken.
-E.g. if the DSI host driver is unbound, it'll detach and unregister the
-DSI peripherals. After that, when the DSI peripheral driver unbound
-it'll call detach either directly or using the devm variant, leading to
-a crash. And probably the driver will crash if it happens, for some
-reason, to try to send a message via the DSI bus.
-
-But that's another topic.
-
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Tested-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20230921-dsi-detach-fix-v1-1-d0de2d1621d9@ideasonboard.com
+Suggested-by: Phillip Potter <phil@philpotter.co.uk>
+Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_mipi_dsi.c | 17 +++++++++++++++--
- include/drm/drm_mipi_dsi.h     |  2 ++
- 2 files changed, 17 insertions(+), 2 deletions(-)
+ drivers/media/usb/stk1160/stk1160-video.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
-index 17a96f1d9234..963918dc8ad8 100644
---- a/drivers/gpu/drm/drm_mipi_dsi.c
-+++ b/drivers/gpu/drm/drm_mipi_dsi.c
-@@ -300,7 +300,8 @@ static int mipi_dsi_remove_device_fn(struct device *dev, void *priv)
- {
- 	struct mipi_dsi_device *dsi = to_mipi_dsi_device(dev);
+diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
+index 202b084f65a2..4cf540d1b250 100644
+--- a/drivers/media/usb/stk1160/stk1160-video.c
++++ b/drivers/media/usb/stk1160/stk1160-video.c
+@@ -107,8 +107,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
  
--	mipi_dsi_detach(dsi);
-+	if (dsi->attached)
-+		mipi_dsi_detach(dsi);
- 	mipi_dsi_device_unregister(dsi);
+ 	/*
+ 	 * TODO: These stk1160_dbg are very spammy!
+-	 * We should 1) check why we are getting them
+-	 * and 2) add ratelimit.
++	 * We should check why we are getting them.
+ 	 *
+ 	 * UPDATE: One of the reasons (the only one?) for getting these
+ 	 * is incorrect standard (mismatch between expected and configured).
+@@ -151,7 +150,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
  
- 	return 0;
-@@ -323,11 +324,18 @@ EXPORT_SYMBOL(mipi_dsi_host_unregister);
- int mipi_dsi_attach(struct mipi_dsi_device *dsi)
- {
- 	const struct mipi_dsi_host_ops *ops = dsi->host->ops;
-+	int ret;
+ 	/* Let the bug hunt begin! sanity checks! */
+ 	if (lencopy < 0) {
+-		stk1160_dbg("copy skipped: negative lencopy\n");
++		printk_ratelimited(KERN_DEBUG "copy skipped: negative lencopy\n");
+ 		return;
+ 	}
  
- 	if (!ops || !ops->attach)
- 		return -ENOSYS;
- 
--	return ops->attach(dsi->host, dsi);
-+	ret = ops->attach(dsi->host, dsi);
-+	if (ret)
-+		return ret;
-+
-+	dsi->attached = true;
-+
-+	return 0;
- }
- EXPORT_SYMBOL(mipi_dsi_attach);
- 
-@@ -339,9 +347,14 @@ int mipi_dsi_detach(struct mipi_dsi_device *dsi)
- {
- 	const struct mipi_dsi_host_ops *ops = dsi->host->ops;
- 
-+	if (WARN_ON(!dsi->attached))
-+		return -EINVAL;
-+
- 	if (!ops || !ops->detach)
- 		return -ENOSYS;
- 
-+	dsi->attached = false;
-+
- 	return ops->detach(dsi->host, dsi);
- }
- EXPORT_SYMBOL(mipi_dsi_detach);
-diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-index 3057511c88e6..46a84d6b531d 100644
---- a/include/drm/drm_mipi_dsi.h
-+++ b/include/drm/drm_mipi_dsi.h
-@@ -160,6 +160,7 @@ struct mipi_dsi_device_info {
-  * struct mipi_dsi_device - DSI peripheral device
-  * @host: DSI host for this peripheral
-  * @dev: driver model device node for this peripheral
-+ * @attached: the DSI device has been successfully attached
-  * @name: DSI peripheral chip type
-  * @channel: virtual channel assigned to the peripheral
-  * @format: pixel format for video mode
-@@ -175,6 +176,7 @@ struct mipi_dsi_device_info {
- struct mipi_dsi_device {
- 	struct mipi_dsi_host *host;
- 	struct device dev;
-+	bool attached;
- 
- 	char name[DSI_DEV_NAME_SIZE];
- 	unsigned int channel;
 -- 
 2.43.0
 
