@@ -1,123 +1,128 @@
-Return-Path: <linux-kernel+bounces-33506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FCBB836A74
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6E5B836ABA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:33:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC91A282A64
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:28:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F7C4281C65
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F415C13DB8C;
-	Mon, 22 Jan 2024 15:15:54 +0000 (UTC)
-Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [5.144.164.162])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5729556759;
+	Mon, 22 Jan 2024 15:17:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HxgWuOCu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B5355C07;
-	Mon, 22 Jan 2024 15:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.162
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCCD55C0A;
+	Mon, 22 Jan 2024 15:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936554; cv=none; b=bUj4WMzti1vGXNVX9AdOJcDclxZK/g9Xfo6/X6oiy12iO/KtjEKhHRX1iZh+Hpp7Fc1YFvltCgetmu/KhiO3xyR5350Y6GHiLkinh7fVUAKZBrQuqBNT/Lp68Q3kOaC65zVn3kqpYk4gjmMCdoi3c+aICvJ0kfhyW5OMZ1ShRso=
+	t=1705936622; cv=none; b=i1bZSSq9Aqmcs8PMlZ98Yp1cWfV93dciWzJbtjOMUuTKiBnlcaSYYrAp6jAAuAWigyECRpt3SMSlJOirsxYK8Ma2jaDYfbfbo3Z2hqr4BNKVScyIP3ZeQ8KDX2XQQWe5GYe7D4ECqNv/3aDtEO5Gl2/ta/ZAr9i8ST6DhRtXhHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936554; c=relaxed/simple;
-	bh=JLs25aczWYuLmQs1zTJgP5QEDQhbdQ+gViZDEdCvxFQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E+PpnbScrrIavXqRvbTx8s/9o7LsT7o9HmwCgcpqmfFXLgT9pwtoixH6DrmYfX6tmOsqBWdaxUXSjZuMbXZ1nM+8cJoZNqDAjjIrl6v/aF/2nvpO8oGnRTBIngHOlBPRwjE23RSs8SMZj93/JcNWcj+pESOG0xRH89McCy3+6qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.162
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (82-72-63-87.cable.dynamic.v4.ziggo.nl [82.72.63.87])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id C1AFE20046;
-	Mon, 22 Jan 2024 16:15:48 +0100 (CET)
-Date: Mon, 22 Jan 2024 16:15:47 +0100
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, ~postmarketos/upstreaming@lists.sr.ht, 
-	Luca Weiss <luca@z3ntu.xyz>, Adam Skladowski <a39.skl@gmail.com>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Martin Botka <martin.botka@somainline.org>, 
-	Jami Kettunen <jami.kettunen@somainline.org>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH v2 6/6] arm64: dts: qcom: msm8956-loire: Add SD Card
- Detect to SDC2 pin states
-Message-ID: <quqkqv4eer7tmubvsqkbuwammqaa5qqxojedsh42ryax3laah7@v7khc2cq4eti>
-References: <20240121-msm8976-dt-v2-0-7b186a02dc72@somainline.org>
- <20240121-msm8976-dt-v2-6-7b186a02dc72@somainline.org>
- <9d3623f8-697b-44ab-a9eb-9d2d305b0e5c@collabora.com>
- <iatieesr52v5au4kkovw3gc34tn3snt454grq7le66oar6x7t4@4jfwxgxov36v>
- <48946c81-dad0-4e2d-9569-5fbac1675bb6@collabora.com>
+	s=arc-20240116; t=1705936622; c=relaxed/simple;
+	bh=PHlstZOn4P8fYiw3yCJ5n92bZwgwDCDEX6GCLi15oTY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EXSiN5n8yroFnI5NqMhiYUQyyK2XGF1MqkRwh9FWfJsNPZYo4RDBjmos4MLwAG3yukp55AUDoKCWKUIjs2yYPge80r01EILOyZdL9Qe3gDNSkCNh8CqG2wezN77n532R8z0ZHWbOnQOXoGAdHgt+R2f6Ek7Qq/OoZLL+xTA+rLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HxgWuOCu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 763E8C433C7;
+	Mon, 22 Jan 2024 15:17:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705936622;
+	bh=PHlstZOn4P8fYiw3yCJ5n92bZwgwDCDEX6GCLi15oTY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=HxgWuOCuZy8iHc4ax3wwEp6au9fDDN93g+tkSMEQ/hvLrtEDziJLyzKTmqk5NhHzc
+	 PFDlgPALSVtgLbsIJUchV5aNvia9Hc1I0RFFbIfBTVdgwoIJndAFaGf6941qD8mf2p
+	 /jdA32X1OYqTwt7E3Ae/cmDPBxeLU/9+lV+P5Y/q8rTKFZ0VJr979M/mGTP/i0H2ik
+	 g6v9DDhKPFi74lAaJzK3NpLsHYGvfB/KDg8BAhje4y3cGFcJmtv2fI/NHnOlRgJO3Q
+	 8NW6D1UIdB0YnYCiUz6qJ3wxZfKM2u9PPk7HZok6VjTwM4avbsRDv1Qud08aSl0XOB
+	 i37RLpXhcceUA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Chao Yu <chao@kernel.org>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.4 01/24] f2fs: fix to check return value of f2fs_reserve_new_block()
+Date: Mon, 22 Jan 2024 10:16:15 -0500
+Message-ID: <20240122151659.997085-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48946c81-dad0-4e2d-9569-5fbac1675bb6@collabora.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.4.267
+Content-Transfer-Encoding: 8bit
 
-On 2024-01-22 15:59:37, AngeloGioacchino Del Regno wrote:
-> Il 22/01/24 14:49, Marijn Suijten ha scritto:
-> > On 2024-01-22 12:48:27, AngeloGioacchino Del Regno wrote:
-> >> Il 21/01/24 23:33, Marijn Suijten ha scritto:
-> >>> In addition to the SDC2 pins, set the SD Card Detect pin in a sane state
-> >>> to be used as an interrupt when an SD Card is slotted in or removed.
-> >>>
-> >>> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> >>> ---
-> >>>    arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi | 17 +++++++++++++++++
-> >>>    1 file changed, 17 insertions(+)
-> >>>
-> >>> diff --git a/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi b/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi
-> >>> index b0b83edd3627..75412e37334c 100644
-> >>> --- a/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi
-> >>> +++ b/arch/arm64/boot/dts/qcom/msm8956-sony-xperia-loire.dtsi
-> >>> @@ -264,10 +264,27 @@ &sdhc_1 {
-> >>>    	status = "okay";
-> >>>    };
-> >>>    
-> >>> +&sdc2_off_state {
-> >>> +	sd-cd-pins {
-> >>> +		pins = "gpio100";
-> >>> +		function = "gpio";
-> >>> +		drive-strength = <2>;
-> >>> +		bias-disable;
-> >>> +	};
-> >>
-> >> Are you sure that you really don't want card detect during system suspend?
-> > 
-> > Does it make a difference if the rest of pinctrl and the SDHCI controller are
-> > also turned off?
-> > 
-> >> You could simply add a sdc2-cd-pins out of sdc2_{on,off}_state and add use it for
-> >> both default and sleep.
-> > 
-> > This sounds close to what Konrad suggested by using a new block wit its own
-> > label rather than extending the existing state.
-> > 
-> >> pinctrl-0 = <&sdc2_on_state>, <&sdc2_card_det_n>;
-> >> pinctrl-1 = <&sdc2_off_state>;
-> > 
-> > You said both, but it's not in pinctrl-1 here?  (And might unselect bias-pull-up
-> > implicitly instead of explicitly selecting bias-disable via an off node?)
-> > 
-> 
-> I meant to add it to both, sorry.
-> 
-> In any case, take the typo'ed example as a simplification of your first version :-)
+From: Chao Yu <chao@kernel.org>
 
-Okay, I'll resend a version that creates a new pinctrl node and applies it to both cases.
+[ Upstream commit 956fa1ddc132e028f3b7d4cf17e6bfc8cb36c7fd ]
 
-Unfortunately I can no longer test and confirm that it makes a difference
-to have the card-detect IRQ always biased, even while the SDHCI controller
-is "asleep" or off, so I'll trust your word for it.  If I remember correctly
-downstream turns it off as well?
+Let's check return value of f2fs_reserve_new_block() in do_recover_data()
+rather than letting it fails silently.
 
-- Marijn
+Also refactoring check condition on return value of f2fs_reserve_new_block()
+as below:
+- trigger f2fs_bug_on() only for ENOSPC case;
+- use do-while statement to avoid redundant codes;
+
+Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/f2fs/recovery.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
+
+diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+index da123c6d3ce0..7e30326b296c 100644
+--- a/fs/f2fs/recovery.c
++++ b/fs/f2fs/recovery.c
+@@ -611,7 +611,16 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+ 		 */
+ 		if (dest == NEW_ADDR) {
+ 			f2fs_truncate_data_blocks_range(&dn, 1);
+-			f2fs_reserve_new_block(&dn);
++			do {
++				err = f2fs_reserve_new_block(&dn);
++				if (err == -ENOSPC) {
++					f2fs_bug_on(sbi, 1);
++					break;
++				}
++			} while (err &&
++				IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
++			if (err)
++				goto err;
+ 			continue;
+ 		}
+ 
+@@ -619,12 +628,14 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+ 		if (f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
+ 
+ 			if (src == NULL_ADDR) {
+-				err = f2fs_reserve_new_block(&dn);
+-				while (err &&
+-				       IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION))
++				do {
+ 					err = f2fs_reserve_new_block(&dn);
+-				/* We should not get -ENOSPC */
+-				f2fs_bug_on(sbi, err);
++					if (err == -ENOSPC) {
++						f2fs_bug_on(sbi, 1);
++						break;
++					}
++				} while (err &&
++					IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
+ 				if (err)
+ 					goto err;
+ 			}
+-- 
+2.43.0
+
 
