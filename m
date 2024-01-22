@@ -1,85 +1,63 @@
-Return-Path: <linux-kernel+bounces-33381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFB68836909
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:52:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2241983690C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:52:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36DC21F21CC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:52:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDE79284ACA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9764B5A6;
-	Mon, 22 Jan 2024 15:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99C5745C8;
+	Mon, 22 Jan 2024 15:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f26+BTBD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UF27xx5Z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4B24A9B2;
-	Mon, 22 Jan 2024 15:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA7F73197;
+	Mon, 22 Jan 2024 15:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936065; cv=none; b=YF96gMTo9REQRCntvxnPJArNmrxBhNSB7QmMinzgovrfvq00H0UxDt7P2spxhWK5gcTWoGPKsMss/5KgoVWDk2uvFqjcd6UcHdA9vVvyKiSN0bWEr8VrXUzZqNjWIOZj/tA2c0uuzSR/sBxf+m+XtFGbbM/h1EZLS57Csj7fSik=
+	t=1705936067; cv=none; b=mwDHRRFSlecrDXFqdurWZRELRSQw/5Zka9IA47oP6og+RcQtAd7xQaAmGAuJ1iPErWxSkRRmscklVT91rsQcwf9tmx3mX2mbacIL1W61nUoHEjZsKqjc7CnWXnbR0thtLdSWXgwkrxs978C/bXGflrwg8jGh4+S8Qai2UAAAW/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936065; c=relaxed/simple;
-	bh=NxY2BJfXCJWy69+PBMPqNu99DBm4MXohyICZzcRcjo4=;
+	s=arc-20240116; t=1705936067; c=relaxed/simple;
+	bh=1iXArv8FU/ZuQTY0a6RpJOk7tVMeI8eEDuX08ppLVNY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I2h+8oCOPFmX+b5mL8roZGG/LZdSy9HWcGz8acL0BoBwEWLeMjO8EdeN21eU4shEBD2XzQskVHTy4bDt76vPZdQpyl+2wVCD6dcnH+OUHDdXR+Kcf7uNAdA4Tv0U2m1u10muCqNDBX3sYxAFbo9W+A4+WaazisXPEJFtyILR2hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f26+BTBD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A10A1C433F1;
-	Mon, 22 Jan 2024 15:07:40 +0000 (UTC)
+	 MIME-Version; b=WiE951S4dSQGrPJe8aLQfhnyqpgZSg9fylXTKPJUKFC3tfcDUxerQ3Qpol8sfRSoSEi+lg9oFcWM6b0UJApA6B5A1SfReHP5zPsbT357fnp6WTCFurwF62XI0n+fFmmnPDhuQRBVkTdZhSJguhV4myDDAMkfAHNFSf7QA4Jr2BE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UF27xx5Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29586C43394;
+	Mon, 22 Jan 2024 15:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936064;
-	bh=NxY2BJfXCJWy69+PBMPqNu99DBm4MXohyICZzcRcjo4=;
+	s=k20201202; t=1705936066;
+	bh=1iXArv8FU/ZuQTY0a6RpJOk7tVMeI8eEDuX08ppLVNY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f26+BTBDs2JDftTHng7LsyKbxG8hxvkqw0OeIlPVr8habKL9sUnG9LqH3HpwnGue1
-	 9ukhwtUPDwyhoQ63J660yb5hVM+/YjpmrhlcmVmYmNjC7+rHQUIyMJHqNbFVBA1k5S
-	 ws5O8AfTVckGYfI1m2qdU/xslICMe8ooIFpZbkhRNNCDSlr7J9pvzYseK9ZRu38sYL
-	 1y2K8PUPgcHde2RGaqybWNndMkbBsY88V3vr3ab+32ICHZkrivIf5bNuTGm/pTV9vv
-	 Tl1mp7mBNITY0LRC/rKuSy/do4LPAqrW80NvQ1CZ9EmhQbObcOznG+4V0r+F08D1L0
-	 l0EezpcH2VtMg==
+	b=UF27xx5ZWxM1rHkhwGcw68XvMP2AiArZw2HJZWx7V3C3IULRy1fVThBY/Pjy7Ilfp
+	 b7z0qJ3cZXci1y5yFZeHHaYOyTc8OVMeBO00ny83TyfswUIr1dLuFsQBTiVhlWt/eB
+	 d2HucZSC9HjSXhtfj64V9Eqpy7y88glL/nwH6oz9HAyIPZfJdbxEwZbxwJCWPUhMUy
+	 H1iLql00Ky1S3MYhmMdfOTDxYjIHImswu1bhwiyaDcTw5bodMOZLy8MSBU62qyUic5
+	 V9MckK1Vg9NG0/7sNZHtlY5lWqpo17tdLrqXtugQdNm34X5FrhHjufyDxrJtvTj2c8
+	 Du8o7LDq7aiNA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alvin Lee <alvin.lee2@amd.com>,
-	Samson Tam <samson.tam@amd.com>,
-	Wayne Lin <wayne.lin@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	"Oliver F . Brown" <oliver.brown@oss.nxp.com>,
+	Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>,
+	Abel Vesa <abel.vesa@linaro.org>,
 	Sasha Levin <sashal@kernel.org>,
-	harry.wentland@amd.com,
-	sunpeng.li@amd.com,
-	Rodrigo.Siqueira@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	wenjing.liu@amd.com,
-	charlene.liu@amd.com,
-	hamza.mahfooz@amd.com,
-	qingqing.zhuo@amd.com,
-	syed.hassan@amd.com,
-	ahmed.ahmed@amd.com,
-	mario.limonciello@amd.com,
-	Jingwen.Zhu@amd.com,
-	moadhuri@amd.com,
-	jun.lei@amd.com,
-	nicholas.kazlauskas@amd.com,
-	mwen@igalia.com,
-	hanghong.ma@amd.com,
-	Wesley.Chalmers@amd.com,
-	mdaenzer@redhat.com,
-	gabe.teeger@amd.com,
-	ilya.bakoulin@amd.com,
-	Josip.Pavic@amd.com,
-	sungjoon.kim@amd.com,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 57/73] drm/amd/display: Only clear symclk otg flag for HDMI
-Date: Mon, 22 Jan 2024 10:02:11 -0500
-Message-ID: <20240122150432.992458-57-sashal@kernel.org>
+	abelvesa@kernel.org,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	shawnguo@kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-imx@nxp.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 58/73] clk: imx: clk-imx8qxp: fix LVDS bypass, pixel and phy clocks
+Date: Mon, 22 Jan 2024 10:02:12 -0500
+Message-ID: <20240122150432.992458-58-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -94,92 +72,75 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.13
 Content-Transfer-Encoding: 8bit
 
-From: Alvin Lee <alvin.lee2@amd.com>
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-[ Upstream commit dff45f03f508c92cd8eb2050e27b726726b8ae0b ]
+[ Upstream commit 3f5f63adeea7e7aa715e101ffe4b4ac9705f9664 ]
 
-[Description]
-There is a corner case where the symclk otg flag is cleared
-when disabling the phantom pipe for subvp (because the phantom
-and main pipe share the same link). This is undesired because
-we need the maintain the correct symclk otg flag state for
-the main pipe.
+To be compatible with SCU firmware based on 1.15 a different clock
+routing for LVDS is needed.
 
-For now only clear the flag only for HDMI signal type, since
-it's only set for HDMI signal type (phantom is virtual). The
-ideal solution is to not clear it if the stream is phantom but
-currently there's a bug that doesn't allow us to do this. Once
-this issue is fixed the proper fix can be implemented.
-
-Reviewed-by: Samson Tam <samson.tam@amd.com>
-Acked-by: Wayne Lin <wayne.lin@amd.com>
-Signed-off-by: Alvin Lee <alvin.lee2@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Oliver F. Brown <oliver.brown@oss.nxp.com>
+Signed-off-by: Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
+Link: https://lore.kernel.org/r/20231218122407.2757175-1-alexander.stein@ew.tq-group.com/
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c | 3 ++-
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c   | 3 ++-
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c          | 3 ++-
- drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c          | 3 ++-
- 4 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/clk/imx/clk-imx8qxp.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-index 9c78e42418f3..93699176a7e2 100644
---- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-@@ -2124,7 +2124,8 @@ static void dce110_reset_hw_ctx_wrap(
- 				BREAK_TO_DEBUGGER();
- 			}
- 			pipe_ctx_old->stream_res.tg->funcs->disable_crtc(pipe_ctx_old->stream_res.tg);
--			pipe_ctx_old->stream->link->phy_state.symclk_ref_cnts.otg = 0;
-+			if (dc_is_hdmi_tmds_signal(pipe_ctx_old->stream->signal))
-+				pipe_ctx_old->stream->link->phy_state.symclk_ref_cnts.otg = 0;
- 			pipe_ctx_old->plane_res.mi->funcs->free_mem_input(
- 					pipe_ctx_old->plane_res.mi, dc->current_state->stream_count);
+diff --git a/drivers/clk/imx/clk-imx8qxp.c b/drivers/clk/imx/clk-imx8qxp.c
+index 4020aa4b79bf..245761e01897 100644
+--- a/drivers/clk/imx/clk-imx8qxp.c
++++ b/drivers/clk/imx/clk-imx8qxp.c
+@@ -66,6 +66,22 @@ static const char * const lcd_pxl_sels[] = {
+ 	"lcd_pxl_bypass_div_clk",
+ };
  
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-index 13ccb57379c7..db1d7be7fda3 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-@@ -1054,7 +1054,8 @@ static void dcn10_reset_back_end_for_pipe(
- 		if (pipe_ctx->stream_res.tg->funcs->set_drr)
- 			pipe_ctx->stream_res.tg->funcs->set_drr(
- 					pipe_ctx->stream_res.tg, NULL);
--		pipe_ctx->stream->link->phy_state.symclk_ref_cnts.otg = 0;
-+		if (dc_is_hdmi_tmds_signal(pipe_ctx->stream->signal))
-+			pipe_ctx->stream->link->phy_state.symclk_ref_cnts.otg = 0;
- 	}
++static const char *const lvds0_sels[] = {
++	"clk_dummy",
++	"clk_dummy",
++	"clk_dummy",
++	"clk_dummy",
++	"mipi0_lvds_bypass_clk",
++};
++
++static const char *const lvds1_sels[] = {
++	"clk_dummy",
++	"clk_dummy",
++	"clk_dummy",
++	"clk_dummy",
++	"mipi1_lvds_bypass_clk",
++};
++
+ static const char * const mipi_sels[] = {
+ 	"clk_dummy",
+ 	"clk_dummy",
+@@ -200,9 +216,9 @@ static int imx8qxp_clk_probe(struct platform_device *pdev)
+ 	/* MIPI-LVDS SS */
+ 	imx_clk_scu("mipi0_bypass_clk", IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_BYPASS);
+ 	imx_clk_scu("mipi0_pixel_clk", IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_PER);
+-	imx_clk_scu("mipi0_lvds_pixel_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC2);
+ 	imx_clk_scu("mipi0_lvds_bypass_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_BYPASS);
+-	imx_clk_scu("mipi0_lvds_phy_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC3);
++	imx_clk_scu2("mipi0_lvds_pixel_clk", lvds0_sels, ARRAY_SIZE(lvds0_sels), IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC2);
++	imx_clk_scu2("mipi0_lvds_phy_clk", lvds0_sels, ARRAY_SIZE(lvds0_sels), IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC3);
+ 	imx_clk_scu2("mipi0_dsi_tx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_MST_BUS);
+ 	imx_clk_scu2("mipi0_dsi_rx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_SLV_BUS);
+ 	imx_clk_scu2("mipi0_dsi_phy_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_PHY);
+@@ -212,9 +228,9 @@ static int imx8qxp_clk_probe(struct platform_device *pdev)
  
- 	for (i = 0; i < dc->res_pool->pipe_count; i++)
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-index 2c4bcbca8bb8..1e3803739ae6 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-@@ -2533,7 +2533,8 @@ static void dcn20_reset_back_end_for_pipe(
- 		 * the case where the same symclk is shared across multiple otg
- 		 * instances
- 		 */
--		link->phy_state.symclk_ref_cnts.otg = 0;
-+		if (dc_is_hdmi_tmds_signal(pipe_ctx->stream->signal))
-+			link->phy_state.symclk_ref_cnts.otg = 0;
- 		if (link->phy_state.symclk_state == SYMCLK_ON_TX_OFF) {
- 			link_hwss->disable_link_output(link,
- 					&pipe_ctx->link_res, pipe_ctx->stream->signal);
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
-index 2a7f47642a44..22da2007601e 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c
-@@ -523,7 +523,8 @@ static void dcn31_reset_back_end_for_pipe(
- 	if (pipe_ctx->stream_res.tg->funcs->set_odm_bypass)
- 		pipe_ctx->stream_res.tg->funcs->set_odm_bypass(
- 				pipe_ctx->stream_res.tg, &pipe_ctx->stream->timing);
--	pipe_ctx->stream->link->phy_state.symclk_ref_cnts.otg = 0;
-+	if (dc_is_hdmi_tmds_signal(pipe_ctx->stream->signal))
-+		pipe_ctx->stream->link->phy_state.symclk_ref_cnts.otg = 0;
+ 	imx_clk_scu("mipi1_bypass_clk", IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_BYPASS);
+ 	imx_clk_scu("mipi1_pixel_clk", IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_PER);
+-	imx_clk_scu("mipi1_lvds_pixel_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC2);
+ 	imx_clk_scu("mipi1_lvds_bypass_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_BYPASS);
+-	imx_clk_scu("mipi1_lvds_phy_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC3);
++	imx_clk_scu2("mipi1_lvds_pixel_clk", lvds1_sels, ARRAY_SIZE(lvds1_sels), IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC2);
++	imx_clk_scu2("mipi1_lvds_phy_clk", lvds1_sels, ARRAY_SIZE(lvds1_sels), IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC3);
  
- 	if (pipe_ctx->stream_res.tg->funcs->set_drr)
- 		pipe_ctx->stream_res.tg->funcs->set_drr(
+ 	imx_clk_scu2("mipi1_dsi_tx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_MST_BUS);
+ 	imx_clk_scu2("mipi1_dsi_rx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_SLV_BUS);
 -- 
 2.43.0
 
