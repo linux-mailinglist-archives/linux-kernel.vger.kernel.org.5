@@ -1,103 +1,87 @@
-Return-Path: <linux-kernel+bounces-33311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B74836843
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:31:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1DBC83684C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:32:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3773A1F22841
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:31:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E3291C21F10
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C474760250;
-	Mon, 22 Jan 2024 15:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PtQvFDUJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3E9647788;
+	Mon, 22 Jan 2024 15:03:21 +0000 (UTC)
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33835FF0C;
-	Mon, 22 Jan 2024 15:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84AD33D976
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:03:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935754; cv=none; b=QL7aqc3jzU8gNLvwPaZ1yLcdzjsWC7vMiZJ6evKV+ezp7HzohipULnkYBJvrSTWVE+qqKzF5mi8qAWZezdcmI0kOpKFZJ6QPOu4PkhqkeB0eyr7Fn8P60JBv/9WCN40ZjaTTeSq2/QDqgYPs4yN0guMUKseg++Wbcshgt/2XixQ=
+	t=1705935801; cv=none; b=N61Bvcsj5/AiLM0b4va7ZBNROv5/OeYD/k6/GRW9/pISJNZrRcSptAFoge2EXvroQcgA/jaV0Bal20513AyKc1u0m1A7fsZlcknv/oYxI43vTfcmN0/2cBLO0Py3w63GvYj3JE2qz29+vI7zKNy82WsHoVnaovvb5FNlKlcZvpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935754; c=relaxed/simple;
-	bh=kyWsi1lflAk62F6EHmBXI3C2GexH6zr3BdO3AakAaSg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C0VT3xQqPn+IEOz4o/WBoRvrUqUUmZTiXE9CqzUYnhWf/4p7ey3nqeEzRhZVvSKx1vU1A16qp2IVNh54e3hcRm6STcNflgKqvLW/vQ2DZXYLtQ8PESL1NqmjPPs0B2FEyKZ6sIyPTsX5P7YhEJccGOmz+yBhqulNZfHqmkNR0og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=PtQvFDUJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7FB7C433B1;
-	Mon, 22 Jan 2024 15:02:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705935753;
-	bh=kyWsi1lflAk62F6EHmBXI3C2GexH6zr3BdO3AakAaSg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PtQvFDUJAtrOcjflFRQ0iI04ZPcVZ541fBxhg8XqTxh6yY2C+z6QU7W5ScDPb9nk0
-	 bmfPyQqnEFrrhI86mtQz6gY3jag4IJGcXFTw2q442B4O+YY5nrV20ay69AUTfXSgST
-	 jbQEosMvABiE2as/ZBbnGG7cII6G3ltI46of09ik=
-Date: Mon, 22 Jan 2024 07:02:32 -0800
-From: Greg KH <gregkh@linuxfoundation.org>
-To: sedat.dilek@gmail.com
-Cc: David Howells <dhowells@redhat.com>, ceph-devel@vger.kernel.org,
-	davem@davemloft.net, eadavis@qq.com, edumazet@google.com,
-	horms@kernel.org, jaltman@auristor.com, jarkko@kernel.org,
-	jlayton@redhat.com, keyrings@vger.kernel.org, kuba@kernel.org,
-	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-nfs@vger.kernel.org, marc.dionne@auristor.com,
-	markus.suvanto@gmail.com, netdev@vger.kernel.org, pabeni@redhat.com,
-	pengfei.xu@intel.com, smfrench@gmail.com, stable@vger.kernel.org,
-	torvalds@linux-foundation.org, wang840925@gmail.com,
-	sashal@kernel.org, pvorel@suse.cz
-Subject: Re: [PATCH] keys, dns: Fix size check of V1 server-list header
-Message-ID: <2024012218-unlocking-pushy-c7e6@gregkh>
-References: <1850031.1704921100@warthog.procyon.org.uk>
- <CA+icZUUc_0M_6JU3dZzVqrUUrWJceY1uD8dO2yFMCwtHtkaa_Q@mail.gmail.com>
+	s=arc-20240116; t=1705935801; c=relaxed/simple;
+	bh=WOMTvRjBaywwDoiQZYdAyQ3gMBMD/Ts44r2FLWVxMYk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I+tOEP9gcBunw03nzLcdH3lbxZk0sA8VSgN+GeJUZ5zjR/+HykUlkxuLzgCoIU5lfGNHb36Nbkzz3r+t31UdBPwLcmp+RCEO/u2+z8USswzQVEf83Saqz/rzRcU3rfIoSSuLKHpRTp4776cQppZN8yArNwnPEv3CgXuAMdU/Jzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:955e:bba5:7ff4:cfb6])
+	by albert.telenet-ops.be with bizsmtp
+	id dr3B2B0040ZxL6o06r3BKN; Mon, 22 Jan 2024 16:03:11 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rRvob-00GH0P-SX;
+	Mon, 22 Jan 2024 16:03:10 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rRvpO-00CFzl-S0;
+	Mon, 22 Jan 2024 16:03:10 +0100
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] riscv: misaligned: Grammar s/disable/disabled/
+Date: Mon, 22 Jan 2024 16:03:09 +0100
+Message-Id: <c10ca3e18a783f6fc7ada13782e5f789e9fc2e7b.1705935488.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+icZUUc_0M_6JU3dZzVqrUUrWJceY1uD8dO2yFMCwtHtkaa_Q@mail.gmail.com>
 
-On Mon, Jan 22, 2024 at 08:32:20AM +0100, Petr Vorel wrote:
-> From: Sedat Dilek <sedat.dilek@gmail.com>
-> 
-> On Wed, Jan 10, 2024 at 10:12 PM David Howells <dhowells@redhat.com> wrote:
-> >
-> >
-> > Fix the size check added to dns_resolver_preparse() for the V1 server-list
-> > header so that it doesn't give EINVAL if the size supplied is the same as
-> > the size of the header struct (which should be valid).
-> >
-> > This can be tested with:
-> >
-> >         echo -n -e '\0\0\01\xff\0\0' | keyctl padd dns_resolver desc @p
-> >
-> > which will give "add_key: Invalid argument" without this fix.
-> >
-> > Fixes: 1997b3cb4217 ("keys, dns: Fix missing size check of V1 server-list header")
-> 
-> [ CC stable@vger.kernel.org ]
-> 
-> Your (follow-up) patch is now upstream.
-> 
-> https://git.kernel.org/linus/acc657692aed438e9931438f8c923b2b107aebf9
-> 
-> This misses CC: Stable Tag as suggested by Linus.
-> 
-> Looks like linux-6.1.y and linux-6.6.y needs it, too.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v6.6.11&id=da89365158f6f656b28bcdbcbbe9eaf97c63c474
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v6.1.72&id=079eefaecfd7bbb8fcc30eccb0dfdf50c91f1805
+Fix a wrong conjugation of "disabled".
 
-And 5.10.y and 5.15.y.  Now queued up, thanks.
+Fixes: 7c83232161f609bb ("riscv: add support for misaligned trap handling in S-mode")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ arch/riscv/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 69d24f51392206bd..f1b22d11e0b63b32 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -693,7 +693,7 @@ config RISCV_MISALIGNED
+ 	default y
+ 	help
+ 	  Say Y here if you want the kernel to embed support for misaligned
+-	  load/store for both kernel and userspace. When disable, misaligned
++	  load/store for both kernel and userspace. When disabled, misaligned
+ 	  accesses will generate SIGBUS in userspace and panic in kernel.
+ 
+ config RISCV_EFFICIENT_UNALIGNED_ACCESS
+-- 
+2.34.1
+
 
