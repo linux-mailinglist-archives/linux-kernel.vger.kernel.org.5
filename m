@@ -1,144 +1,164 @@
-Return-Path: <linux-kernel+bounces-32984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75778362CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:08:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 977D18362D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:11:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 577271F238F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:08:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9536B1C22923
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A543B282;
-	Mon, 22 Jan 2024 12:07:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E75CF3B19D;
+	Mon, 22 Jan 2024 12:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pciRvT6f";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Cg2KM1A5";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pciRvT6f";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Cg2KM1A5"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aXnfrpx+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F323B781;
-	Mon, 22 Jan 2024 12:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C44F3B18F;
+	Mon, 22 Jan 2024 12:11:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705925271; cv=none; b=oDam3DRXBcg/ILZXOqEpByzjXQ2ZAgP3tod8/I2JGLDPQl2KeT8ams0gcdpHNO6m0eQrtYKWhxECCD9dm3AHnVcB9ElqSGwFafI3comfFm1MeYUbZvu1lI1lMceJjkiVy8tACbR23PT5mNZ91Pbs+uDQ7I99qSFVw0OVffRImM4=
+	t=1705925481; cv=none; b=ESo3Be/iLL05Em/Yc+XHYAcHiWswGKCPPS00cjgIhpi9vew28XVjWE8Ci0ow5b2dOHb9xy8zKejrZehzKZErxhcQfgyR2bXoaZ+n6/rVLERtcSCNJkX6wewlajaLGBZEMvb3+SjHT65FHJvADYumBt0O7awZfrqWFRUAay2Vygg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705925271; c=relaxed/simple;
-	bh=CixXdO6L97yTmXCmrviahH+3fGc5B5cIC/8ZuU/XwmQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YZ8sz+z83DUHA5FA8Q7y3cik77BWiK8y+xRertwps8zVhOaHbl95Wk3vNVUAfp5TXgGYsJzkrCmMCwWKHUpWEHQbLtcpaAXzxjMQZvBxTTaU+amu1m9PQSxDOjf2ZYY0hsK3PJX7d9mjp94iWAdnOSnz90EAiuAULdvwarpeffo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=pciRvT6f; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Cg2KM1A5; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=pciRvT6f; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Cg2KM1A5; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A3008222A0;
-	Mon, 22 Jan 2024 12:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705925268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bdnB6ps93L9KKLDzp3Va5cDDdlG9KAe7wrmPY1lnT9E=;
-	b=pciRvT6fNztMytFXB0YJhHDHYSoJ7JmoNmAyrzD+CbDI6h1wVFkloqnDJnC613MyOJ/Idq
-	5TOFt2lzJZ08lQCUpljlPzKjT065N/QxywhoDfoDbGJVGfH3BRPHrOlIiVRCqJhE0euaHI
-	8AO3uKjNLFdbeKVcdWQqykNI42bMwas=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705925268;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bdnB6ps93L9KKLDzp3Va5cDDdlG9KAe7wrmPY1lnT9E=;
-	b=Cg2KM1A53/c+vBHa0cR11fo/d341fORkHokwieuM44QhLX9aHzpdv8UlrF7vrMBEldAzG+
-	JLtSAbQi7kNr8RAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705925268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bdnB6ps93L9KKLDzp3Va5cDDdlG9KAe7wrmPY1lnT9E=;
-	b=pciRvT6fNztMytFXB0YJhHDHYSoJ7JmoNmAyrzD+CbDI6h1wVFkloqnDJnC613MyOJ/Idq
-	5TOFt2lzJZ08lQCUpljlPzKjT065N/QxywhoDfoDbGJVGfH3BRPHrOlIiVRCqJhE0euaHI
-	8AO3uKjNLFdbeKVcdWQqykNI42bMwas=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705925268;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bdnB6ps93L9KKLDzp3Va5cDDdlG9KAe7wrmPY1lnT9E=;
-	b=Cg2KM1A53/c+vBHa0cR11fo/d341fORkHokwieuM44QhLX9aHzpdv8UlrF7vrMBEldAzG+
-	JLtSAbQi7kNr8RAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6BA2D139B0;
-	Mon, 22 Jan 2024 12:07:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +HwAGZRarmW9JwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 22 Jan 2024 12:07:48 +0000
-Date: Mon, 22 Jan 2024 13:07:47 +0100
-Message-ID: <87a5oxy3jg.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	linux-sound@vger.kernel.org
-Subject: Re: [PATCH] ALSA: synth: Save a few bytes of memory when registering a 'snd_emux'
-In-Reply-To: <9e7b94c852a25ed4be5382e5e48a7dd77e8d4d1a.1705743706.git.christophe.jaillet@wanadoo.fr>
-References: <9e7b94c852a25ed4be5382e5e48a7dd77e8d4d1a.1705743706.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1705925481; c=relaxed/simple;
+	bh=ZSuYkOPFdDpK1fZLp4Ae/COvE6TbipKpnb+Cou9V2kc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vFl1rIbg7ANiAev9PXGzAY3ntxqHHhr3wMfNCSyL/a9WhOFEAPdPS9FNsSaDFTQUycsKHh+OPoQfuQXnsHkBmwcKdI9xbfBhFJRBsrD80RvfXkH74fjqiVyatSgsqVC5iJTgDQ8QzRuIpqQBqQL3dsWrrg///0d8pX4MG7Usi6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aXnfrpx+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A19DBC433C7;
+	Mon, 22 Jan 2024 12:11:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705925480;
+	bh=ZSuYkOPFdDpK1fZLp4Ae/COvE6TbipKpnb+Cou9V2kc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=aXnfrpx+qXveKQLdNUdHMsoH07tfsCiU/ldQiODzE71qufSBnA09ssbsD1UgHeaU7
+	 ucUAkWHl/sMmMG3SWe8Rx5WfqPVIQ7CNRbiPqirRRbrLB2LhQ0DTeXdArg3QZXFMTl
+	 /i9UtdcgAXZTS+WVoMg/2SEiwx2v2hRbBeC1D//Cy1v9s9OF16zas5YuLnwflWa63o
+	 my6k28QlmQXewo8ZbcSgMYsUVPqyTpqJLRmcaLxdS2Z+l0miy8TACQKrFvlhC5Nk3g
+	 0BzyDE3NgzuJh88tYW2wx9pnIoNHB/95TJzg3XVRYQBiXXnVCcKRFbfB0imHHqEfVY
+	 dipskKeYm80FQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 2C95CCE114A; Mon, 22 Jan 2024 04:11:20 -0800 (PST)
+Date: Mon, 22 Jan 2024 04:11:20 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Zqiang <qiang.zhang1211@gmail.com>, quic_neeraju@quicinc.com,
+	joel@joelfernandes.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Check rdp_gp->nocb_timer in
+ __call_rcu_nocb_wake()
+Message-ID: <3f4e50dd-dd16-444b-8b6a-3ab9cdc7ae26@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240117102616.18302-1-qiang.zhang1211@gmail.com>
+ <ZafC_YkTJKsOropE@localhost.localdomain>
+ <3b63cf39-3805-4c1d-b79b-fdd5aeb17db3@paulmck-laptop>
+ <Zart693B-klrEF5I@pavilion.home>
+ <2490b90d-ebce-42bf-8a83-1314e8272df8@paulmck-laptop>
+ <9a656d90-8297-4075-899f-41db8a43dce7@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.26
-X-Spamd-Result: default: False [-3.26 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FREEMAIL_TO(0.00)[wanadoo.fr];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.96)[99.81%]
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9a656d90-8297-4075-899f-41db8a43dce7@paulmck-laptop>
 
-On Sat, 20 Jan 2024 10:42:12 +0100,
-Christophe JAILLET wrote:
+On Mon, Jan 22, 2024 at 04:07:09AM -0800, Paul E. McKenney wrote:
+> On Fri, Jan 19, 2024 at 04:29:52PM -0800, Paul E. McKenney wrote:
+> > On Fri, Jan 19, 2024 at 10:47:23PM +0100, Frederic Weisbecker wrote:
+> > > Le Thu, Jan 18, 2024 at 06:51:57AM -0800, Paul E. McKenney a écrit :
+> > > > On Wed, Jan 17, 2024 at 01:07:25PM +0100, Frederic Weisbecker wrote:
+> > > > > Le Wed, Jan 17, 2024 at 06:26:16PM +0800, Zqiang a écrit :
+> > > > > > Currently, only rdp_gp->nocb_timer is used, for nocb_timer of
+> > > > > > no-rdp_gp structure, the timer_pending() is always return false,
+> > > > > > this commit therefore need to check rdp_gp->nocb_timer in
+> > > > > > __call_rcu_nocb_wake().
+> > > > > > 
+> > > > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > > > > > ---
+> > > > > >  kernel/rcu/tree_nocb.h | 3 ++-
+> > > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > > > 
+> > > > > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > > > > > index 54971afc3a9b..3f85577bddd4 100644
+> > > > > > --- a/kernel/rcu/tree_nocb.h
+> > > > > > +++ b/kernel/rcu/tree_nocb.h
+> > > > > > @@ -564,6 +564,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> > > > > >  	long lazy_len;
+> > > > > >  	long len;
+> > > > > >  	struct task_struct *t;
+> > > > > > +	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+> > > > > >  
+> > > > > >  	// If we are being polled or there is no kthread, just leave.
+> > > > > >  	t = READ_ONCE(rdp->nocb_gp_kthread);
+> > > > > > @@ -608,7 +609,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> > > > > >  		smp_mb(); /* Enqueue before timer_pending(). */
+> > > > > >  		if ((rdp->nocb_cb_sleep ||
+> > > > > >  		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
+> > > > > > -		    !timer_pending(&rdp->nocb_timer)) {
+> > > > > > +		    !timer_pending(&rdp_gp->nocb_timer)) {
+> > > > > 
+> > > > > Hehe, good eyes ;-)
+> > > > > 
+> > > > > I had that change in mind but while checking that area further I actually
+> > > > > wondered what is the actual purpose of this RCU_NOCB_WAKE_FORCE thing. If
+> > > > > we reach that place, it means that the nocb_gp kthread should be awaken
+> > > > > already (or the timer pending), so what does a force wake up solve in that
+> > > > > case?
+> > > > > 
+> > > > > Paul, any recollection of that?
+> > > > 
+> > > > Huh.  We never actually do RCU_NOCB_WAKE_FORCE in v6.7, if I followed
+> > > > all the code paths correctly.
+> > > > 
+> > > > Historically, I have been worried about lost wakeups.  Also, there
+> > > > used to be code paths in which a wakeup was not needed, for example,
+> > > > because we knew that the ending of the current grace period would take
+> > > > care of things.  Unless there was some huge pile of callbacks, in which
+> > > > case an immediate wakeup could avoid falling behind a callback flood.
+> > > 
+> > > Ok then looks like it's time for me to add RCU_NOCB_WAKE_FORCE removal in
+> > > my TODO list...unless Zqiang would like to give it a try? :-)
+> > > 
+> > > > Given that rcutorture does test callback flooding, we appear to be OK,
+> > > > but maybe it is time to crank up the flooding more.
+> > > > 
+> > > > On the other hand, I have started seeing the (very) occasional OOM
+> > > > on TREE03.
+> > > > (In addition to those that show up from time to time on the
+> > > > single-CPU TREE09 scenario.)
+> > > 
+> > > Interesting, are those recent? Bisectable?
+> > 
+> > Bisection in progress, got it down to 10 commits.  Yet again about
+> > ten hours per step on 20 systems...
+> > 
+> > Though maybe I should have put more time into making it happen faster.
+> > Except that I was on travel, so I doubt that I would have made all that
+> > much progress.  ;-)
 > 
-> snd_emux_register() calls pass a string literal as the 'name' parameter.
+> And it hit this one, which you encountered earlier:
 > 
-> So kstrdup_const() can be used instead of kfree() to avoid a memory
-> allocation in such cases.
+> 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Which you fixed with this guy:
+> 
+> 600310bd7ea8 ("rcu: Defer RCU kthreads wakeup when CPU is dying")
+> 
+> Which is not yet in -next.  Which means I have spent an embarrassing
+> amount of time bisecting a bug that you already fixed.  C'est la vie!
+> 
+> Given that v6.8-rc1 is now out, it is time to get a bunch of RCU
+> commits into -next, including that one!  ;-)
 
-Thanks, applied now.
+Now to test your fix on top of the bad commit, and also on top of
+next-20240110.  Just in case...
 
-
-Takashi
+							Thanx, Paul
 
