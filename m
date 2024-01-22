@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-33698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE10F836D70
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:30:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E7E8836E13
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:44:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F12CC1C242A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:30:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0A35B31E38
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E5956EB72;
-	Mon, 22 Jan 2024 16:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FDB873194;
+	Mon, 22 Jan 2024 16:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="L7/FAapq"
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hRUoIKsM"
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE826EB5D
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3743E6EB7E
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705941157; cv=none; b=mvHA7HKPHif+EHhWTeNXLUXv9PJ0n4YIihqQgvlMY89Xjo3dRdrO2NT59O6n5hlSABmMcZkWfoSfG6xlA6g8OB9m/YkzKfaIUwZjrRqxRU6gPbD0gphkmC0mt6WAHctMiR8GiPCntBhV/AzT0/JHR4xLTQNIQA1cbJfHEd4eNYw=
+	t=1705941160; cv=none; b=RLr8sc3fq9Pm3zQqoxcM8mmVHguUKuVu3XMExDGJh9m6HLwuge1bapWDo74ci9/VFufqVqezsnsXo3/OoglZZmdfav2dQW2nLRNyrr721t5JKEvWKHFz1qyqnBEvTInSyB1r5w76yZ4oz5DPixTW0AUdmtu2GtKpnReUncKHEng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705941157; c=relaxed/simple;
-	bh=JhvObS4GQ8Qdgb5wl3GUWBFziCFrID5vp3TWqC6dgJs=;
+	s=arc-20240116; t=1705941160; c=relaxed/simple;
+	bh=NUwOnB7z3Jkgn5qG2ac0cxgyuyamotCv2+iPCv6JTE4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mXYNSaunkumPAR++wEf6nPstdAb6gqfpC1gtUfAWAvOAEk1mxRFYU+UHWntH7SCb63fSRM1/IBOhN5F+Urn639FREdXW4bf5qtLOamVzdiBMMfQ+L8ychtkRg7nT6WMT0fYy8kmDPdl7L18EpiyYPXR8EK40m4jlUUWp5VWNnmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=L7/FAapq; arc=none smtp.client-ip=95.215.58.182
+	 MIME-Version; b=oTizMc62P81X3YZWJsw07D86UlaIleZfn1jrXz5/2dwaRGYDxTJ0tEdNmmLHE3/vj/b6nUQIBYgGez5quuTGStzNjBsNmx1R9hl3t59QUwthbQh38H1kuzssl6OGp+Wgp5Fnyod/IcrZHxmT/PWDRPJZVxtos9Y2vROjd89YRB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hRUoIKsM; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705941154;
+	t=1705941157;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zOQVFSKw3j/viuJ1r9uwPrf0VlEptyybu7p5hJGtU4I=;
-	b=L7/FAapq5/GA78moIR9tbDqaLl+KwawdazCvL79VK9uJYNJjZeHurgVE3jowYQvTiIOyFV
-	GSBgDlmh2QUmpkYssS3+2mBzDVU7Ns2GYjvfvVs9cAaa+EBtpknfHqgWfkkT9sBJFoXNEz
-	wcaIH5I6UVRBIFL9gZo/ycf5uHSXYKw=
+	bh=npqubJ7Bj7Hp+PXoNaKT0QhmaM+1u+5VldbVzcNqcKI=;
+	b=hRUoIKsMG7O90bNfo9wUm9cKlyUIAfVjI4dIh3/xy6G+8thfA1pGQs/f/I5Oi++EeXrUn9
+	0XAc430aKgJPelbVcykvQoJGZFSURld61Ju7l2nauidb8/x/9f3JpOpcrLltpKuC7wjU7K
+	tmZ7Z3BqE4EdU1baTkmqgktMCMufG78=
 From: Sui Jingfeng <sui.jingfeng@linux.dev>
 To: David Airlie <airlied@gmail.com>
 Cc: Neil Armstrong <neil.armstrong@linaro.org>,
@@ -51,9 +51,9 @@ Cc: Neil Armstrong <neil.armstrong@linaro.org>,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Sui Jingfeng <sui.jingfeng@linux.dev>
-Subject: [PATCH 2/5] drm/bridge: simple-bridge: Extend match support for non-DT based systems
-Date: Tue, 23 Jan 2024 00:32:17 +0800
-Message-Id: <20240122163220.110788-3-sui.jingfeng@linux.dev>
+Subject: [PATCH 3/5] drm/bridge: simple-bridge: Allow acquiring the next bridge with fwnode API
+Date: Tue, 23 Jan 2024 00:32:18 +0800
+Message-Id: <20240122163220.110788-4-sui.jingfeng@linux.dev>
 In-Reply-To: <20240122163220.110788-1-sui.jingfeng@linux.dev>
 References: <20240122163220.110788-1-sui.jingfeng@linux.dev>
 Precedence: bulk
@@ -65,64 +65,91 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Which is intended to be used on non-DT environment, where the simple-bridge
-platform device is created by either the display controller driver side or
-platform firmware subsystem. To avoid duplication and to keep consistent,
-we choose to reuse the OF match tables. Because the potentional user may
-not has a of_node attached, nor a ACPI match id. If this is the case,
-a software node string property can be provide to fill the niche.
+Which make it possible to use this driver on non-DT based systems,
+meanwhile, made no functional changes for DT based systems.
 
 Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
 ---
- drivers/gpu/drm/bridge/simple-bridge.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/bridge/simple-bridge.c | 51 ++++++++++++++++++++++----
+ 1 file changed, 44 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/simple-bridge.c b/drivers/gpu/drm/bridge/simple-bridge.c
-index cbe8e778d7c7..595f672745b9 100644
+index 595f672745b9..cfea5a67cc5b 100644
 --- a/drivers/gpu/drm/bridge/simple-bridge.c
 +++ b/drivers/gpu/drm/bridge/simple-bridge.c
-@@ -166,6 +166,24 @@ static const struct drm_bridge_funcs simple_bridge_bridge_funcs = {
- 	.disable	= simple_bridge_disable,
- };
+@@ -184,6 +184,39 @@ static const void *simple_bridge_get_match_data(const struct device *dev)
+ 	return NULL;
+ }
  
-+static const void *simple_bridge_get_match_data(const struct device *dev)
++static int simple_bridge_get_next_bridge_by_fwnode(struct device *dev,
++						   struct drm_bridge **next_bridge)
 +{
-+	const struct of_device_id *matches = dev->driver->of_match_table;
++	struct drm_bridge *bridge;
++	struct fwnode_handle *ep;
++	struct fwnode_handle *remote;
 +
-+	/* Try to get the match data by software node */
-+	while (matches) {
-+		if (!matches->compatible[0])
-+			break;
-+
-+		if (device_is_compatible(dev, matches->compatible))
-+			return matches->data;
-+
-+		matches++;
++	ep = fwnode_graph_get_endpoint_by_id(dev->fwnode, 1, 0, 0);
++	if (!ep) {
++		dev_err(dev, "The endpoint is unconnected\n");
++		return -EINVAL;
 +	}
 +
-+	return NULL;
++	remote = fwnode_graph_get_remote_port_parent(ep);
++	fwnode_handle_put(ep);
++	if (!remote) {
++		dev_err(dev, "No valid remote node\n");
++		return -ENODEV;
++	}
++
++	bridge = drm_bridge_find_by_fwnode(remote);
++	fwnode_handle_put(remote);
++
++	if (!bridge) {
++		dev_warn(dev, "Next bridge not found, deferring probe\n");
++		return -EPROBE_DEFER;
++	}
++
++	*next_bridge = bridge;
++
++	return 0;
 +}
 +
  static int simple_bridge_probe(struct platform_device *pdev)
  {
  	struct simple_bridge *sbridge;
-@@ -176,7 +194,10 @@ static int simple_bridge_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	platform_set_drvdata(pdev, sbridge);
+@@ -199,14 +232,17 @@ static int simple_bridge_probe(struct platform_device *pdev)
+ 	else
+ 		sbridge->info = simple_bridge_get_match_data(&pdev->dev);
  
--	sbridge->info = of_device_get_match_data(&pdev->dev);
-+	if (pdev->dev.of_node)
-+		sbridge->info = of_device_get_match_data(&pdev->dev);
-+	else
-+		sbridge->info = simple_bridge_get_match_data(&pdev->dev);
+-	/* Get the next bridge in the pipeline. */
+-	remote = of_graph_get_remote_node(pdev->dev.of_node, 1, -1);
+-	if (!remote)
+-		return -EINVAL;
+-
+-	sbridge->next_bridge = of_drm_find_bridge(remote);
+-	of_node_put(remote);
++	if (pdev->dev.of_node) {
++		/* Get the next bridge in the pipeline. */
++		remote = of_graph_get_remote_node(pdev->dev.of_node, 1, -1);
++		if (!remote)
++			return -EINVAL;
  
- 	/* Get the next bridge in the pipeline. */
- 	remote = of_graph_get_remote_node(pdev->dev.of_node, 1, -1);
-@@ -309,3 +330,4 @@ module_platform_driver(simple_bridge_driver);
- MODULE_AUTHOR("Maxime Ripard <maxime.ripard@free-electrons.com>");
- MODULE_DESCRIPTION("Simple DRM bridge driver");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:simple-bridge");
++		sbridge->next_bridge = of_drm_find_bridge(remote);
++		of_node_put(remote);
++	} else {
++		simple_bridge_get_next_bridge_by_fwnode(&pdev->dev, &sbridge->next_bridge);
++	}
+ 	if (!sbridge->next_bridge) {
+ 		dev_dbg(&pdev->dev, "Next bridge not found, deferring probe\n");
+ 		return -EPROBE_DEFER;
+@@ -231,6 +267,7 @@ static int simple_bridge_probe(struct platform_device *pdev)
+ 	/* Register the bridge. */
+ 	sbridge->bridge.funcs = &simple_bridge_bridge_funcs;
+ 	sbridge->bridge.of_node = pdev->dev.of_node;
++	sbridge->bridge.fwnode = pdev->dev.fwnode;
+ 	sbridge->bridge.timings = sbridge->info->timings;
+ 
+ 	drm_bridge_add(&sbridge->bridge);
 -- 
 2.25.1
 
