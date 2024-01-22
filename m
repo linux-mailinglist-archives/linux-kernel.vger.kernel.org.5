@@ -1,172 +1,274 @@
-Return-Path: <linux-kernel+bounces-32585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB749835D84
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:01:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8944F835D91
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:03:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B7741C21A85
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:01:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AE501F27080
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CCE39AE9;
-	Mon, 22 Jan 2024 09:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FwEkjkBm"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAB8539848;
+	Mon, 22 Jan 2024 09:03:23 +0000 (UTC)
+Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E99139AD1;
-	Mon, 22 Jan 2024 09:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28EC137143;
+	Mon, 22 Jan 2024 09:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705914029; cv=none; b=QJ5Klbm6ix8mDK9du3GoucSuYNbPVpHHu+qZ5V8WYcdiF+cLWdGn1Hic1URcPNCOL0Q9Ha2DTsMo0VFXfg9Kriv6EDBsPUI6ys0buktF8MFEvEIEPxSHH+aFoWPV3TwpuZJXTxqXkDlh8Xbi+LRAc6ZqzjH0AGt41vqpjF7GKQE=
+	t=1705914203; cv=none; b=KdFeTw5yfKcB7en/kbj3qkkN6VnN0ykzJcYd4+qy3Il55zkPWDrQ6Eyly9i/GfEk0TEPCjtp+yqVkhBSrua8YmeERXhRoExWFg7dbyjQA9pfh3t9tq9GUNdMOcwLvd/qOSLlylrXcd5nwzL+64hLxfCntUg2E3rTrVJvgrrsM9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705914029; c=relaxed/simple;
-	bh=rZe7E8uWF2oeAIbZG2u1TFjJAX1klDazcb6lUv/hnEs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ey2OviouHUIAnZhlmP9jQMUigKhl1K8HBq5j5XLsTPnZT4poywLpFXfW+0KdfHOFu4/wMtKGLeRGKxt+EgFuQ9ycVkD6/PNHPc+jJKr/CkGDqTcMHYKF04tFyzoQkdy6bFW7+iUr/mxdpXoleMeBOlbQOOdSi56yxfWcGbAQGqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FwEkjkBm; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-337b8da1f49so2658726f8f.0;
-        Mon, 22 Jan 2024 01:00:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705914026; x=1706518826; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S9CnsRjAPHv/Nr7rgukGQuH99DHSYEoAqMdSIVVUY+Y=;
-        b=FwEkjkBmuW196qYOR/hE/YPsxyLMzy/QHHfNF3TczfVav3jl/sg6WPbse5J+Ep7Im+
-         IpZHvePxaWlXTGvEG8GPTG4wpbbTlWB8OIuanucbLi6ky8aCE8QdVFJRJSealAGUUu3G
-         fpBiexW9fz+DnO54k/USm3PFQtvw18NRY8/iPFUZdre7mw4CqPsf9Fun1Gv1D9pGlgcr
-         L48yahs/cdrakaqDZAl1GkjH5blZhNbHLD+uoTRvWcvGsDo6zCA9B5oU8l+fQ1IoVlb/
-         rOEorTqGsV0+lKh536hduYaYGi8FfKdpXgJ7FOwRHQS41xTQxTOlGEvOIDCmnq3wLq8t
-         z4iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705914026; x=1706518826;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S9CnsRjAPHv/Nr7rgukGQuH99DHSYEoAqMdSIVVUY+Y=;
-        b=SZkAxIo63GUqewP+vl9u70RNoKmXfMYvyfLntc/+V53i3CU6CskMBCqIBTj+YZ6iu3
-         gh9X68Qen2e5hJIt5wGKlB2DemBauJUdatMByMLssJOLjxtKLhhA9rHojkKAWrcERBXz
-         EtmmasSKioIySLABctocc6pduxUeco7Y1OZub67wWPV0/SWGNbe+iiB/BNHgWvl1pA9v
-         4MPWotcvfqmX2j1PvC4kjikZjbyWrJ4x9K/WBKXrvFFLICxDy5bTwp7wWlsPBa//hdzH
-         Rx51X92UdmAfGXhNKg7UPenPPEE53MQQWZmoPoTt5SYt2UIiGyZTP8s8maon9kzAZYX0
-         6H3Q==
-X-Gm-Message-State: AOJu0YwzDu4HMmNgZ1124v8zEzrs1BzQciqKBDiwKXM7dvaiy+p193WC
-	V0K6wXepMMc00kADeZFdJ1UrzsmygBZ4GzOSWpjTGX/HGpmgGx73
-X-Google-Smtp-Source: AGHT+IFigjk8QEIScQfJdOPaOe1xp96gJJ5P2wdqcKKm0Eh6ljtVPlN/VbmQeEXIMjCF+bLmHxmHRA==
-X-Received: by 2002:adf:e5d2:0:b0:337:cc89:9e58 with SMTP id a18-20020adfe5d2000000b00337cc899e58mr1108905wrn.150.1705914026359;
-        Mon, 22 Jan 2024 01:00:26 -0800 (PST)
-Received: from [192.168.2.177] ([207.188.161.188])
-        by smtp.gmail.com with ESMTPSA id b5-20020a5d4d85000000b00337d5aa55cdsm10241908wru.53.2024.01.22.01.00.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 01:00:25 -0800 (PST)
-Message-ID: <85138fef-8b85-439c-aa74-d0e74bfe84e8@gmail.com>
-Date: Mon, 22 Jan 2024 10:00:24 +0100
+	s=arc-20240116; t=1705914203; c=relaxed/simple;
+	bh=EXy0nVQzZ65wUsrYDem9bvoLzDhSQaMlHTqdoME9Rh8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=juQ9RBiHLe8cbVFZbgs88PVfLnBOo72GFBqbcnqaUrw3BWr//Ym65OPApqAPsSgNLXbCdawN9yMX/Kcok6ctLQ5NEFbpL3QWFKrUCHo4glBSSGy80LbMWsHe2kaV8WPJ3Pi594DG2VFxHTxIRI9uaUNEPgW+lJn2tptoxdBbf5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; arc=none smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
+	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40M8g7K5004018;
+	Mon, 22 Jan 2024 04:02:59 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3vsfxas4rk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 04:02:59 -0500 (EST)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+	by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 40M92v9A053144
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 22 Jan 2024 04:02:57 -0500
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Mon, 22 Jan 2024 04:02:56 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Mon, 22 Jan 2024 04:02:56 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Mon, 22 Jan 2024 04:02:56 -0500
+Received: from kim-VirtualBox.ad.analog.com (KPALLER2-L03.ad.analog.com [10.117.220.34])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 40M92aWx012545;
+	Mon, 22 Jan 2024 04:02:38 -0500
+From: Kim Seer Paller <kimseer.paller@analog.com>
+To: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, "Crt
+ Mori" <cmo@melexis.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Bartosz
+ Golaszewski" <brgl@bgdev.pl>,
+        =?UTF-8?q?Nuno=20S=C3=A1?=
+	<noname.nuno@gmail.com>,
+        Kim Seer Paller <kimseer.paller@analog.com>
+Subject: [PATCH v7 1/2] dt-bindings: iio: frequency: add admfm2000
+Date: Mon, 22 Jan 2024 17:02:27 +0800
+Message-ID: <20240122090228.28363-1-kimseer.paller@analog.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 0/3] mt7988: initial DT changes
-Content-Language: en-US, ca-ES, es-ES
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Daniel Golle <daniel@makrotopia.org>, Hsin-Yi Wang <hsinyi@chromium.org>,
- =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
- jason-ch chen <Jason-ch.Chen@mediatek.com>,
- Macpaul Lin <macpaul.lin@mediatek.com>,
- =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
- Sean Wang <sean.wang@mediatek.com>,
- Frank Wunderlich <frank-w@public-files.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-References: <20240108085228.4727-1-zajec5@gmail.com>
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Autocrypt: addr=matthias.bgg@gmail.com; keydata=
- xsFNBFP1zgUBEAC21D6hk7//0kOmsUrE3eZ55kjc9DmFPKIz6l4NggqwQjBNRHIMh04BbCMY
- fL3eT7ZsYV5nur7zctmJ+vbszoOASXUpfq8M+S5hU2w7sBaVk5rpH9yW8CUWz2+ZpQXPJcFa
- OhLZuSKB1F5JcvLbETRjNzNU7B3TdS2+zkgQQdEyt7Ij2HXGLJ2w+yG2GuR9/iyCJRf10Okq
- gTh//XESJZ8S6KlOWbLXRE+yfkKDXQx2Jr1XuVvM3zPqH5FMg8reRVFsQ+vI0b+OlyekT/Xe
- 0Hwvqkev95GG6x7yseJwI+2ydDH6M5O7fPKFW5mzAdDE2g/K9B4e2tYK6/rA7Fq4cqiAw1+u
- EgO44+eFgv082xtBez5WNkGn18vtw0LW3ESmKh19u6kEGoi0WZwslCNaGFrS4M7OH+aOJeqK
- fx5dIv2CEbxc6xnHY7dwkcHikTA4QdbdFeUSuj4YhIZ+0QlDVtS1QEXyvZbZky7ur9rHkZvP
- ZqlUsLJ2nOqsmahMTIQ8Mgx9SLEShWqD4kOF4zNfPJsgEMB49KbS2o9jxbGB+JKupjNddfxZ
- HlH1KF8QwCMZEYaTNogrVazuEJzx6JdRpR3sFda/0x5qjTadwIW6Cl9tkqe2h391dOGX1eOA
- 1ntn9O/39KqSrWNGvm+1raHK+Ev1yPtn0Wxn+0oy1tl67TxUjQARAQABzSlNYXR0aGlhcyBC
- cnVnZ2VyIDxtYXR0aGlhcy5iZ2dAZ21haWwuY29tPsLBkgQTAQIAPAIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AWIQTmuZIYwPLDJRwsOhfZFAuyVhMC8QUCWt3scQIZAQAKCRDZFAuy
- VhMC8WzRD/4onkC+gCxG+dvui5SXCJ7bGLCu0xVtiGC673Kz5Aq3heITsERHBV0BqqctOEBy
- ZozQQe2Hindu9lasOmwfH8+vfTK+2teCgWesoE3g3XKbrOCB4RSrQmXGC3JYx6rcvMlLV/Ch
- YMRR3qv04BOchnjkGtvm9aZWH52/6XfChyh7XYndTe5F2bqeTjt+kF/ql+xMc4E6pniqIfkv
- c0wsH4CkBHqoZl9w5e/b9MspTqsU9NszTEOFhy7p2CYw6JEa/vmzR6YDzGs8AihieIXDOfpT
- DUr0YUlDrwDSrlm/2MjNIPTmSGHH94ScOqu/XmGW/0q1iar/Yr0leomUOeeEzCqQtunqShtE
- 4Mn2uEixFL+9jiVtMjujr6mphznwpEqObPCZ3IcWqOFEz77rSL+oqFiEA03A2WBDlMm++Sve
- 9jpkJBLosJRhAYmQ6ey6MFO6Krylw1LXcq5z1XQQavtFRgZoruHZ3XlhT5wcfLJtAqrtfCe0
- aQ0kJW+4zj9/So0uxJDAtGuOpDYnmK26dgFN0tAhVuNInEVhtErtLJHeJzFKJzNyQ4GlCaLw
- jKcwWcqDJcrx9R7LsCu4l2XpKiyxY6fO4O8DnSleVll9NPfAZFZvf8AIy3EQ8BokUsiuUYHz
- wUo6pclk55PZRaAsHDX/fNr24uC6Eh5oNQ+v4Pax/gtyyc7BTQRd1TlIARAAm78mTny44Hwd
- IYNK4ZQH6U5pxcJtU45LLBmSr4DK/7er9chpvJ5pgzCGuI25ceNTEg5FChYcgfNMKqwCAekk
- V9Iegzi6UK448W1eOp8QeQDS6sHpLSOe8np6/zvmUvhiLokk7tZBhGz+Xs5qQmJPXcag7AMi
- fuEcf88ZSpChmUB3WflJV2DpxF3sSon5Ew2i53umXLqdRIJEw1Zs2puDJaMqwP3wIyMdrfdI
- H1ZBBJDIWV/53P52mKtYQ0Khje+/AolpKl96opi6o9VLGeqkpeqrKM2cb1bjo5Zmn4lXl6Nv
- JRH/ZT68zBtOKUtwhSlOB2bE8IDonQZCOYo2w0opiAgyfpbij8uiI7siBE6bWx2fQpsmi4Jr
- ZBmhDT6n/uYleGW0DRcZmE2UjeekPWUumN13jaVZuhThV65SnhU05chZT8vU1nATAwirMVeX
- geZGLwxhscduk3nNb5VSsV95EM/KOtilrH69ZL6Xrnw88f6xaaGPdVyUigBTWc/fcWuw1+nk
- GJDNqjfSvB7ie114R08Q28aYt8LCJRXYM1WuYloTcIhRSXUohGgHmh7usl469/Ra5CFaMhT3
- yCVciuHdZh3u+x+O1sRcOhaFW3BkxKEy+ntxw8J7ZzhgFOgi2HGkOGgM9R03A6ywc0sPwbgk
- gF7HCLirshP2U/qxWy3C8DkAEQEAAcLBdgQYAQgAIBYhBOa5khjA8sMlHCw6F9kUC7JWEwLx
- BQJd1TlIAhsMAAoJENkUC7JWEwLxtdcP/jHJ9vI8adFi1HQoWUKCQbZdZ5ZJHayFKIzU9kZE
- /FHzzzMDZYFgcCTs2kmUVyGloStXpZ0WtdCMMB31jBoQe5x9LtICHEip0irNXm80WsyPCEHU
- 3wx91QkOmDJftm6T8+F3lqhlc3CwJGpoPY7AVlevzXNJfATZR0+Yh9NhON5Ww4AjsZntqQKx
- E8rrieLRd+he57ZdRKtRRNGKZOS4wetNhodjfnjhr4Z25BAssD5q+x4uaO8ofGxTjOdrSnRh
- vhzPCgmP7BKRUZA0wNvFxjboIw8rbTiOFGb1Ebrzuqrrr3WFuK4C1YAF4CyXUBL6Z1Lto//i
- 44ziQUK9diAgfE/8GhXP0JlMwRUBlXNtErJgItR/XAuFwfO6BOI43P19YwEsuyQq+rubW2Wv
- rWY2Bj2dXDAKUxS4TuLUf2v/b9Rct36ljzbNxeEWt+Yq4IOY6QHnE+w4xVAkfwjT+Vup8sCp
- +zFJv9fVUpo/bjePOL4PMP1y+PYrp4PmPmRwoklBpy1ep8m8XURv46fGUHUEIsTwPWs2Q87k
- 7vjYyrcyAOarX2X5pvMQvpAMADGf2Z3wrCsDdG25w2HztweUNd9QEprtJG8GNNzMOD4cQ82T
- a7eGvPWPeXauWJDLVR9jHtWT9Ot3BQgmApLxACvwvD1a69jaFKov28SPHxUCQ9Y1Y/Ct
-In-Reply-To: <20240108085228.4727-1-zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: EDV1Buu5bnYXRZ8u_HAFQvaq7Ajxwh0r
+X-Proofpoint-ORIG-GUID: EDV1Buu5bnYXRZ8u_HAFQvaq7Ajxwh0r
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-21_04,2024-01-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 adultscore=0 lowpriorityscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401220065
 
+Dual microwave down converter module with input RF and LO frequency
+ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1 to
+8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
+for each down conversion path.
 
+Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
+---
+V6 -> V7: Changed RF path mode property to boolean.
+V5 -> V6: Moved array of switch and attenuation GPIOs to the channel node.
+          Changed pin coords with friendly names. Removed Reviewed-by tag.
+V4 -> V5: Added Reviewed-by tag.
+V3 -> V4: Updated the description of the properties with multiple entries and
+          defined the order.
+V2 -> V3: Adjusted indentation to resolve wrong indentation warning. 
+          Changed node name to converter. Updated the descriptions to clarify
+          the properties.
+V1 -> V2: Removed '|' after description. Specified the pins connected to
+          the GPIOs. Added additionalProperties: false. Changed node name to gpio.
+          Aligned < syntax with the previous syntax in the examples.
 
-On 08/01/2024 09:52, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> This work is based on linux-next content and was successfully verified
-> using "dtbs_check". It's initial code for MT7988A that will get extended
-> as we get more bindings available (pinctrl is big blocker right now).
-> 
-> AngeloGioacchino, Matthias: is this something you could queue in
-> git://git.kernel.org/pub/scm/linux/kernel/git/mediatek/linux
-> for v6.9?
-> 
+ .../bindings/iio/frequency/adi,admfm2000.yaml | 124 ++++++++++++++++++
+ MAINTAINERS                                   |   7 +
+ 2 files changed, 131 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
 
-Series applied, thanks!
+diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+new file mode 100644
+index 000000000000..9e716f59d678
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+@@ -0,0 +1,124 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright 2024 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/frequency/adi,admfm2000.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ADMFM2000 Dual Microwave Down Converter
++
++maintainers:
++  - Kim Seer Paller <kimseer.paller@analog.com>
++
++description:
++  Dual microwave down converter module with input RF and LO frequency ranges
++  from 0.5 to 32 GHz and an output IF frequency range from 0.1 to 8 GHz.
++  It consists of a LNA, mixer, IF filter, DSA, and IF amplifier for each down
++  conversion path.
++
++properties:
++  compatible:
++    enum:
++      - adi,admfm2000
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++patternProperties:
++  "^channel@[0-1]$":
++    type: object
++    description: Represents a channel of the device.
++
++    additionalProperties: false
++
++    properties:
++      reg:
++        description:
++          The channel number.
++        minimum: 0
++        maximum: 1
++
++      adi,mixer-mode:
++        description:
++          Enable mixer mode.
++        type: boolean
++
++      switch-gpios:
++        description: |
++          GPIOs to select the RF path for the channel.
++          SW-CH1   CTRL-A   CTRL-B
++          SW-CH2   CTRL-A   CTRL-B    CH1 Status        CH2 Status
++                   1        0         Direct IF mode    Mixer mode
++                   0        1         Mixer mode        Direct IF mode
++
++        items:
++          - description: SW-CH-CTRL-A GPIO
++          - description: SW-CH-CTRL-B GPIO
++
++      attenuation-gpios:
++        description: |
++          Choice of attenuation:
++          DSA-V4  DSA-V3  DSA-V2  DSA-V1  DSA-V0
++          1       1       1       1       1        0 dB
++          1       1       1       1       0        -1 dB
++          1       1       1       0       1        -2 dB
++          1       1       0       1       1        -4 dB
++          1       0       1       1       1        -8 dB
++          0       1       1       1       1        -16 dB
++          0       0       0       0       0        -31 dB
++
++        items:
++          - description: DSA-V0 GPIO
++          - description: DSA-V1 GPIO
++          - description: DSA-V2 GPIO
++          - description: DSA-V3 GPIO
++          - description: DSA-V4 GPIO
++
++    required:
++      - reg
++      - switch-gpios
++      - attenuation-gpios
++
++required:
++  - compatible
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    converter {
++      compatible = "adi,admfm2000";
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      channel@0 {
++        reg = <0>;
++        switch-gpios = <&gpio 1 GPIO_ACTIVE_LOW>,
++                       <&gpio 2 GPIO_ACTIVE_HIGH>;
++
++        attenuation-gpios = <&gpio 17 GPIO_ACTIVE_LOW>,
++                            <&gpio 22 GPIO_ACTIVE_LOW>,
++                            <&gpio 23 GPIO_ACTIVE_LOW>,
++                            <&gpio 24 GPIO_ACTIVE_LOW>,
++                            <&gpio 25 GPIO_ACTIVE_LOW>;
++      };
++
++      channel@1 {
++        reg = <1>;
++        adi,mixer-mode;
++        switch-gpios = <&gpio 3 GPIO_ACTIVE_LOW>,
++                       <&gpio 4 GPIO_ACTIVE_HIGH>;
++
++        attenuation-gpios = <&gpio 0 GPIO_ACTIVE_LOW>,
++                            <&gpio 5 GPIO_ACTIVE_LOW>,
++                            <&gpio 6 GPIO_ACTIVE_LOW>,
++                            <&gpio 16 GPIO_ACTIVE_LOW>,
++                            <&gpio 26 GPIO_ACTIVE_LOW>;
++      };
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8d1052fa6a69..1f7cd2e848de 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1267,6 +1267,13 @@ W:	https://ez.analog.com/linux-software-drivers
+ F:	Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml
+ F:	drivers/hwmon/adm1177.c
+ 
++ANALOG DEVICES INC ADMFM2000 DRIVER
++M:	Kim Seer Paller <kimseer.paller@analog.com>
++L:	linux-iio@vger.kernel.org
++S:	Supported
++W:	https://ez.analog.com/linux-software-drivers
++F:	Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
++
+ ANALOG DEVICES INC ADMV1013 DRIVER
+ M:	Antoniu Miclaus <antoniu.miclaus@analog.com>
+ L:	linux-iio@vger.kernel.org
 
-> Rafał Miłecki (3):
->    dt-bindings: arm64: mediatek: Add MT7988A and BPI-R4
->    arm64: dts: mediatek: Add initial MT7988A and BPI-R4
->    arm64: dts: mediatek: mt7988: add clock controllers
-> 
->   .../devicetree/bindings/arm/mediatek.yaml     |   4 +
->   arch/arm64/boot/dts/mediatek/Makefile         |   1 +
->   .../dts/mediatek/mt7988a-bananapi-bpi-r4.dts  |  11 ++
->   arch/arm64/boot/dts/mediatek/mt7988a.dtsi     | 136 ++++++++++++++++++
->   4 files changed, 152 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt7988a.dtsi
-> 
+base-commit: 32f764943a21c1af01016bbcd43605220c076262
+-- 
+2.34.1
+
 
