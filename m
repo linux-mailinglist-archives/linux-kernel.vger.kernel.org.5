@@ -1,264 +1,140 @@
-Return-Path: <linux-kernel+bounces-33493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CADE836A8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:30:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C1878369E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:14:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25710B24D12
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:24:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F7CB1C2444E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:14:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687711386D3;
-	Mon, 22 Jan 2024 15:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03865025B;
+	Mon, 22 Jan 2024 15:12:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ilj/EUst"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g1aLLm/+"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8337E1386D8;
-	Mon, 22 Jan 2024 15:14:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE9F3F8EE;
+	Mon, 22 Jan 2024 15:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936493; cv=none; b=X6lys962f0OKY3i4X9f60Eig746Lm1vbApbZ8zT2k8wCx59uNwK5d3gxKNIae99NhUnH+f/QJnT1LOb5Xptn46zwnINGz8K8qOJwDLYru3vua1FJQS85bZ/pNdHE8lUjSNAI3SNGfDu6BgvssNVITzdrUlip7gyma+U1WEx/yB0=
+	t=1705936377; cv=none; b=UPQ2BkEgrPqT6LTPiRz/vifqTYjLZh/9lOvGap4Q+Y0llgN0DX1GwO52oi4aBLfVnH6cjspsfVzgiwVD/cv0xz2EIj/eT7ARNdALN7tAdbbpTbyJR+P+NjUmgltyAq5hxpd53JBistbeVNyeojH6soIROLEToCM4OyVV5vp08GA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936493; c=relaxed/simple;
-	bh=lBSk9Iku9WqJ8qhPVWZpYB/6j/1OPQkfha0Ku0HQE/g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XmLnJ4Hse2HNCbQYHwG2Jj/JBYzaYsBnSHUscIvF0zddz98E+oD+ATRuWU4nyEZqta9uKKkwNTarDysMa6LqrF+rkvo1puRwCo309wPepSoKZ0kk+uhTJU2qWonWm0yEgNg5SAxaiYHc1v9QeJ4EdVR43BD+41jojiTB5FnbgpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ilj/EUst; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD7E8C43141;
-	Mon, 22 Jan 2024 15:14:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936493;
-	bh=lBSk9Iku9WqJ8qhPVWZpYB/6j/1OPQkfha0Ku0HQE/g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ilj/EUstw7WQyjVEuSKpPtgBnVJ2DKya0hrplWmSpZ8nhzG3WILTvXBOj+qhnMQpm
-	 1rKXiUiaKo82cK147Niu9g6TuIAcfn7+9MYfHTzI+wt/PlFnQNx+hycN+Eucrg4rqe
-	 s59zxAocld3sVBFHTT8UQ48hAAX6rkY9fi12xAOisfkejLiilP+Zp8HFkp/Xgfs6hY
-	 laMJl3WoVKYu6rBaFsQIufQmr2IzByVFkFM+xqzSzjYpepOsTezkJBkZCzp9bGqv4f
-	 rc2BS1SzaUKWyfFXiGUK6AbsFpWbiC6TmiTyE2AX7U+hYu6arR4+qSqM6ftMtAnRny
-	 cpewd4Khm+R3g==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: bo liu <bo.liu@senarytech.com>,
-	Takashi Iwai <tiwai@suse.de>,
-	Sasha Levin <sashal@kernel.org>,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 35/35] ALSA: hda/conexant: Fix headset auto detect fail in cx8070 and SN6140
-Date: Mon, 22 Jan 2024 10:12:32 -0500
-Message-ID: <20240122151302.995456-35-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240122151302.995456-1-sashal@kernel.org>
-References: <20240122151302.995456-1-sashal@kernel.org>
+	s=arc-20240116; t=1705936377; c=relaxed/simple;
+	bh=F8f7LxqnB4DWxevS+3UIAe7bfKrLO5NJPchO5Xp1HuQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DWU8IggbX8i8QhtqiULy4pwDJF9GP90iO/H+yPEgrzDDptB9O8D+5yPJAny3g2KSRm/Q4ys7ThcQ/ICb8xWqlol9SsO1ko+9YZiC70wTRcTSMkoyongeSH68pfXq9TRzlED/rYrTDvcMAwqZyYLaGLXSd735hSTGKon//kT6bI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g1aLLm/+; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-559cef15db5so7657471a12.0;
+        Mon, 22 Jan 2024 07:12:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705936374; x=1706541174; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0LEUEYz+ew2ECb67VWN/zpFNcZ3uWeplc0iWoOX36Ng=;
+        b=g1aLLm/+zUzSv2vIjdR09pRvY8bsH7BIT95mLfp82PETicSSiXI4iz154y8lj0Gl8H
+         cY6rAJSvAummE35yLXx6OZBV+46bBGrEgkySuBYakkV6d2aX73S6X3LgiJS1n3ZorFvC
+         KlG8pO81haBe/Wh2LWeVSOD+QWtvgImzwJ168XasrPRg+NLM8gp4X6WhTU0UUjEwD7/C
+         afqmDd3V7FAm3UrNb+/i5JJaYc15qVTcZpTXMltmchjfRzF9EPAFYO0zNaac9cY9zQLS
+         XA/eyCPmXbr9YS/aKd1qrX4flmCdvpLWLst8KZRHCPqFT0M0nwMDAgjFy2EHrx5i9bsL
+         u1Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705936374; x=1706541174;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0LEUEYz+ew2ECb67VWN/zpFNcZ3uWeplc0iWoOX36Ng=;
+        b=Uv12JvKkoOXpDZKaehv8G9+Rw4d1Gf07meO+UGMESXdBTVqZK7RSaFc74sb/j+jk4V
+         LBuo6pEElSSNlLr+rq41xF4262SmSFkurFzBqtpoyifUHavTzoGBrX4aKkqmvV/miXc2
+         3B51qKOS3xJXKPl+2HaVwf46EfwOI2u7q2UP5BgN0/7wNKCjBHiRdNbo+1FShtqeRdZX
+         qCskuGVFpQYzsoAJu7d0UCoKeKtozPCG1fisXe/KD0htQHSNIb0AbaJtHmvog0RMckA2
+         BIC26CAtOFrILPKkf0ccTroYE7fXtqQtlbIJ0PhU1nqeBDsw80EHswvCG+2vns0cbfAB
+         QScQ==
+X-Gm-Message-State: AOJu0YwuP4Or++PGf83j9kBLilbw4x9GxasXJtIp1yIlZ6FfrDFZE2+M
+	vJZ7ZfCKe4Ilo06cHLXsGKlaZJnizSoEhf47dMnw21vNqeutjZIf
+X-Google-Smtp-Source: AGHT+IGTJDoUzcbPE+cHVrC5chv52od6TNhT61AcXuBecr0U5QGiDYHdEyhTiteGFvtYgAyKPJEV0A==
+X-Received: by 2002:a17:906:ce44:b0:a2e:82db:8c32 with SMTP id se4-20020a170906ce4400b00a2e82db8c32mr4199842ejb.28.1705936373571;
+        Mon, 22 Jan 2024 07:12:53 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id cu12-20020a170906ba8c00b00a2f181266f6sm5343874ejd.148.2024.01.22.07.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 07:12:53 -0800 (PST)
+Date: Mon, 22 Jan 2024 17:12:51 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Tim Menninger <tmenninger@purestorage.com>, f.fainelli@gmail.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: dsa: mv88e6xxx: Make *_c45 callbacks agree with
+ phy_*_c45 callbacks
+Message-ID: <20240122151251.sl6fzxmfi2f6tokf@skbuf>
+References: <20240116193542.711482-1-tmenninger@purestorage.com>
+ <04d22048-737a-4281-a43f-b125ebe0c896@lunn.ch>
+ <CAO-L_44YVi0HDk4gC9QijMZrYNGoKtfH7qsXOwtDwM4VrFRDHw@mail.gmail.com>
+ <da87ce82-7337-4be4-a2af-bd2136626c56@lunn.ch>
+ <CAO-L_46kqBrDdYP7p3He0cBF1OP7TJKnhYK1NR_gMZf2n_928A@mail.gmail.com>
+ <20240122123349.cxx2i2kzrhuqnasp@skbuf>
+ <1aab2398-2fe9-40b6-aa5b-34dde946668a@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.147
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1aab2398-2fe9-40b6-aa5b-34dde946668a@lunn.ch>
 
-From: bo liu <bo.liu@senarytech.com>
+On Mon, Jan 22, 2024 at 03:30:20PM +0100, Andrew Lunn wrote:
+> On Mon, Jan 22, 2024 at 02:33:49PM +0200, Vladimir Oltean wrote:
+> > On Tue, Jan 16, 2024 at 05:51:13PM -0800, Tim Menninger wrote:
+> > > My impression is still that the read_c45 function should agree with the
+> > > phy_read_c45 function, but that isn't a hill I care to die on if you still
+> > > think otherwise. Thoughts?
+> > 
+> > FWIW, Tim's approach is consistent with what drivers/net/mdio/mdio-mux.c does.
+> > 
+> > 		if (parent_bus->read)
+> > 			cb->mii_bus->read = mdio_mux_read;
+> > 		if (parent_bus->write)
+> > 			cb->mii_bus->write = mdio_mux_write;
+> > 		if (parent_bus->read_c45)
+> > 			cb->mii_bus->read_c45 = mdio_mux_read_c45;
+> > 		if (parent_bus->write_c45)
+> > 			cb->mii_bus->write_c45 = mdio_mux_write_c45;
+> > 
+> > My only objection to his patch (apart from the commit message which
+> > should indeed be more detailed) is that I would have preferred the same
+> > "if" syntax rather than the use of a ternary operator with NULL.
+> 
+> I agree it could be fixed this way. But what i don't like about the
+> current code is how C22 and C45 do different things with error
+> codes. Since the current code is trying to use an error code, i would
+> prefer to fix that error code handling, rather than swap to a
+> different way to indicate its not supported.
+> 
+> 	  Andrew
 
-[ Upstream commit 7aeb259086487417f0fecf66e325bee133e8813a ]
+You did write in commit da099a7fb13d ("net: phy: Remove probe_capabilities")
+that the MDIO bus API is now this: "Deciding if to probe of PHYs using
+C45 is now determine by if the bus provides the C45 read method."
 
-When OMTP headset plugin the headset jack of CX8070 and SN6160 sound cards,
-the headset type detection circuit will recognize the headset type as CTIA.
-At this point, plugout and plugin the headset will get the correct headset
-type as OMTP.
-The reason for the failure of headset type recognition is that the sound
-card creation will enable the VREF voltage of the headset mic, which
-interferes with the headset type automatic detection circuit. Plugout and
-plugin the headset will restart the headset detection and get the correct
-headset type.
-The patch is disable the VREF voltage when the headset is not present, and
-will enable the VREF voltage when the headset is present.
+Do you not agree that Tim's approach is the more straightforward
+solution overall to skip C45 PHY probing, given this API, both code wise
+and runtime wise? Are there downsides to it?
 
-Signed-off-by: bo liu <bo.liu@senarytech.com>
-Link: https://lore.kernel.org/r/20240108110235.3867-1-bo.liu@senarytech.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/pci/hda/patch_conexant.c | 115 ++++++++++++++++++++++++++++++++-
- 1 file changed, 113 insertions(+), 2 deletions(-)
+I have no objection to the C22 vs C45 error code handling inconsistency.
+It can be improved, sure. But it also does not matter here, if we agree
+that this problem can be sorted out in a more straightforward way with
+no negative consequences.
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index deff4a3d7a78..0980c7de2183 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -21,6 +21,12 @@
- #include "hda_jack.h"
- #include "hda_generic.h"
- 
-+enum {
-+	CX_HEADSET_NOPRESENT = 0,
-+	CX_HEADSET_PARTPRESENT,
-+	CX_HEADSET_ALLPRESENT,
-+};
-+
- struct conexant_spec {
- 	struct hda_gen_spec gen;
- 
-@@ -42,7 +48,8 @@ struct conexant_spec {
- 	unsigned int gpio_led;
- 	unsigned int gpio_mute_led_mask;
- 	unsigned int gpio_mic_led_mask;
--
-+	unsigned int headset_present_flag;
-+	bool is_cx8070_sn6140;
- };
- 
- 
-@@ -164,6 +171,27 @@ static void cxt_init_gpio_led(struct hda_codec *codec)
- 	}
- }
- 
-+static void cx_fixup_headset_recog(struct hda_codec *codec)
-+{
-+	unsigned int mic_persent;
-+
-+	/* fix some headset type recognize fail issue, such as EDIFIER headset */
-+	/* set micbiasd output current comparator threshold from 66% to 55%. */
-+	snd_hda_codec_write(codec, 0x1c, 0, 0x320, 0x010);
-+	/* set OFF voltage for DFET from -1.2V to -0.8V, set headset micbias registor
-+	 * value adjustment trim from 2.2K ohms to 2.0K ohms.
-+	 */
-+	snd_hda_codec_write(codec, 0x1c, 0, 0x3b0, 0xe10);
-+	/* fix reboot headset type recognize fail issue */
-+	mic_persent = snd_hda_codec_read(codec, 0x19, 0, AC_VERB_GET_PIN_SENSE, 0x0);
-+	if (mic_persent & AC_PINSENSE_PRESENCE)
-+		/* enable headset mic VREF */
-+		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24);
-+	else
-+		/* disable headset mic VREF */
-+		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20);
-+}
-+
- static int cx_auto_init(struct hda_codec *codec)
- {
- 	struct conexant_spec *spec = codec->spec;
-@@ -174,6 +202,9 @@ static int cx_auto_init(struct hda_codec *codec)
- 	cxt_init_gpio_led(codec);
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
- 
-+	if (spec->is_cx8070_sn6140)
-+		cx_fixup_headset_recog(codec);
-+
- 	return 0;
- }
- 
-@@ -192,6 +223,77 @@ static void cx_auto_free(struct hda_codec *codec)
- 	snd_hda_gen_free(codec);
- }
- 
-+static void cx_process_headset_plugin(struct hda_codec *codec)
-+{
-+	unsigned int val;
-+	unsigned int count = 0;
-+
-+	/* Wait headset detect done. */
-+	do {
-+		val = snd_hda_codec_read(codec, 0x1c, 0, 0xca0, 0x0);
-+		if (val & 0x080) {
-+			codec_dbg(codec, "headset type detect done!\n");
-+			break;
-+		}
-+		msleep(20);
-+		count++;
-+	} while (count < 3);
-+	val = snd_hda_codec_read(codec, 0x1c, 0, 0xcb0, 0x0);
-+	if (val & 0x800) {
-+		codec_dbg(codec, "headset plugin, type is CTIA\n");
-+		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24);
-+	} else if (val & 0x400) {
-+		codec_dbg(codec, "headset plugin, type is OMTP\n");
-+		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24);
-+	} else {
-+		codec_dbg(codec, "headphone plugin\n");
-+	}
-+}
-+
-+static void cx_update_headset_mic_vref(struct hda_codec *codec, unsigned int res)
-+{
-+	unsigned int phone_present, mic_persent, phone_tag, mic_tag;
-+	struct conexant_spec *spec = codec->spec;
-+
-+	/* In cx8070 and sn6140, the node 16 can only be config to headphone or disabled,
-+	 * the node 19 can only be config to microphone or disabled.
-+	 * Check hp&mic tag to process headset pulgin&plugout.
-+	 */
-+	phone_tag = snd_hda_codec_read(codec, 0x16, 0, AC_VERB_GET_UNSOLICITED_RESPONSE, 0x0);
-+	mic_tag = snd_hda_codec_read(codec, 0x19, 0, AC_VERB_GET_UNSOLICITED_RESPONSE, 0x0);
-+	if ((phone_tag & (res >> AC_UNSOL_RES_TAG_SHIFT)) ||
-+	    (mic_tag & (res >> AC_UNSOL_RES_TAG_SHIFT))) {
-+		phone_present = snd_hda_codec_read(codec, 0x16, 0, AC_VERB_GET_PIN_SENSE, 0x0);
-+		if (!(phone_present & AC_PINSENSE_PRESENCE)) {/* headphone plugout */
-+			spec->headset_present_flag = CX_HEADSET_NOPRESENT;
-+			snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20);
-+			return;
-+		}
-+		if (spec->headset_present_flag == CX_HEADSET_NOPRESENT) {
-+			spec->headset_present_flag = CX_HEADSET_PARTPRESENT;
-+		} else if (spec->headset_present_flag == CX_HEADSET_PARTPRESENT) {
-+			mic_persent = snd_hda_codec_read(codec, 0x19, 0,
-+							 AC_VERB_GET_PIN_SENSE, 0x0);
-+			/* headset is present */
-+			if ((phone_present & AC_PINSENSE_PRESENCE) &&
-+			    (mic_persent & AC_PINSENSE_PRESENCE)) {
-+				cx_process_headset_plugin(codec);
-+				spec->headset_present_flag = CX_HEADSET_ALLPRESENT;
-+			}
-+		}
-+	}
-+}
-+
-+static void cx_jack_unsol_event(struct hda_codec *codec, unsigned int res)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+
-+	if (spec->is_cx8070_sn6140)
-+		cx_update_headset_mic_vref(codec, res);
-+
-+	snd_hda_jack_unsol_event(codec, res);
-+}
-+
- #ifdef CONFIG_PM
- static int cx_auto_suspend(struct hda_codec *codec)
- {
-@@ -205,7 +307,7 @@ static const struct hda_codec_ops cx_auto_patch_ops = {
- 	.build_pcms = snd_hda_gen_build_pcms,
- 	.init = cx_auto_init,
- 	.free = cx_auto_free,
--	.unsol_event = snd_hda_jack_unsol_event,
-+	.unsol_event = cx_jack_unsol_event,
- #ifdef CONFIG_PM
- 	.suspend = cx_auto_suspend,
- 	.check_power_status = snd_hda_gen_check_power_status,
-@@ -1042,6 +1144,15 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 	codec->spec = spec;
- 	codec->patch_ops = cx_auto_patch_ops;
- 
-+	/* init cx8070/sn6140 flag and reset headset_present_flag */
-+	switch (codec->core.vendor_id) {
-+	case 0x14f11f86:
-+	case 0x14f11f87:
-+		spec->is_cx8070_sn6140 = true;
-+		spec->headset_present_flag = CX_HEADSET_NOPRESENT;
-+		break;
-+	}
-+
- 	cx_auto_parse_eapd(codec);
- 	spec->gen.own_eapd_ctl = 1;
- 
--- 
-2.43.0
-
+I sort of don't understand the desire to have the smallest patch in
+terms of lines of code, when the end result will end up being suboptimal
+compared to something with just a little more lines (1 vs 4).
 
