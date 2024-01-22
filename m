@@ -1,266 +1,170 @@
-Return-Path: <linux-kernel+bounces-34205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2880083758B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:40:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68CDB83758D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:41:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B6BB28434D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:40:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1819E283460
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:41:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB36482C4;
-	Mon, 22 Jan 2024 21:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FA3482CA;
+	Mon, 22 Jan 2024 21:41:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="lvQ7qsLf"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hsg/Qqoo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C43481BA
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1AE482D2;
+	Mon, 22 Jan 2024 21:41:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705959600; cv=none; b=QwYHnD+4+OW+QKXNHyDkJKyDHDrh8CWINT2Iij6NMdC0lD9LQIYf1mS/H3qjcp3byqkQZ9/mXdJQYO+oh0nH7tuGjm27D30zu+eprwiJB/I9A+i9Wp2CDSp4n59M0f9EVWB2zbJJyoFV2w6AxpxY0X+goxjPLSyRdSl2i3IKTY8=
+	t=1705959668; cv=none; b=tPAN2yQ8Cgz9ukIt+BjjhHByeztfJRcjxbymbv1UB6D6HkyWPQH6d2VGS8SUQQidkwPitpSIROa0lQ8iVv+0lsEg7nyGEafN1SYmDEEX7o3PjmHzv/F675+TDNgxbeTpZMoyJzKR73SndFgkJFYDVmPWXXmb8fkHakfJFwxNXqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705959600; c=relaxed/simple;
-	bh=0Yo7/+bEKqpWf6UK9EnJCv29oqgf3hWqvTgmDOjmObE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B++4rMotvDWSXyvAbyNDMOsq4c0CqUpI4VOtvKdFzd7tpUv2sPx1Yxon5+qPflNhNJcT6I/oN+J6zKBhBu0vS8ioWraTlGcajqazfeh7/fINvWZVMN2sqGmd0CYLbSKnGbx+3HOhD0vasMR8YMFZyhMAsp51iUc1ojlXR47Z3Cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lvQ7qsLf; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a277339dcf4so401677866b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:39:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705959595; x=1706564395; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OJl69jgvDfPjiM2uB3CG3ZOcpFE/TqmJUUOEN3Q1aTs=;
-        b=lvQ7qsLfJBvTQY61R1kNGMkswh8BeEcbSa+hJQoeRYjrCfA/YVKcP30wQwWl1DC0UQ
-         Y3sU3qCYX9A50wz+ehC3ApPJfJc4gAQ02ixUvcD3ax9H8KMd5CyhjL/I38B4z5TbeCdN
-         z3Ah1kvdEWJj7P5mvzGsoNzOMTN+vDZVhgX8sO9pSXJ5Vz3Em5uZKTsrTEMNpsjwKY8E
-         W1Vkc+5X3JbV0zviHfzPNgHh1IfIJvzZZloL7j4ICoeqTbM9Fc3don10hL8X8BmO5F0Y
-         FsFxzuSu18nXublaA3cCL1phziiaiWRnaq2KF9XOQjyIKLWfbQI0VIIJxsIPOFNqmoL3
-         crkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705959595; x=1706564395;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OJl69jgvDfPjiM2uB3CG3ZOcpFE/TqmJUUOEN3Q1aTs=;
-        b=N3BWnko+4IwZMR71Z2T6WUmLkmtLYJqvqWEdjXjW6wpAm+FN90oCZZKUh3ZqzKcRZS
-         Kc7ktQ5CPqsaItQXTz0s/t70YWGvDGqKG4NL4mHov+5f88ZZZP4Pcvi761wuE3cSR4+I
-         6jngwDO3N+6SAYmmy8SfZQ5nLwUgXFI6oULEB5W8bVsJLKyJJECxmfAJDyJN7tJXZKwa
-         4jFpOEVWKvoARtesftiuftLVtIHommlciqSJOVEvjXrSP6T20TDAYcK2x5CW9QZYhMiB
-         YqgOdm8GjiaaCMWERtBI7ni52fPPDYtlmANgPLaLD1sCubtGKRDcWNHBdtBCuiNqxEZX
-         jwfA==
-X-Gm-Message-State: AOJu0YySDDRM3YfXutgeiFPlOjHK9qwVxthQSPLF/J8068vJw1VdawW7
-	zgqenjFcR1whJVskotJD8Z1Ar/npSI6WSD+0wnkQCdRltb1WFfWTMBTKEhn6Ac3QGScRs4SjjLZ
-	aE4mx5n2gJO9gdtIdnJQaeJ5zWfmP3Peq1E/l
-X-Google-Smtp-Source: AGHT+IFNt0YCom8kIcDqsIQbiBf39l15C3VxyveKkoMqocLWukEgOsuQSRo135FaSfm9uwdrkIiU5v4TEQUqKhERWXg=
-X-Received: by 2002:a17:906:5a47:b0:a2e:d3fe:9bb7 with SMTP id
- my7-20020a1709065a4700b00a2ed3fe9bb7mr2129319ejc.124.1705959595177; Mon, 22
- Jan 2024 13:39:55 -0800 (PST)
+	s=arc-20240116; t=1705959668; c=relaxed/simple;
+	bh=YsHS0ZZEP2Bk1kL+EnIJRY5cx/54afjFcYQU58t6/mE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WS51MV4QQUaIiaXKI1nLMdVZgCJtJ7KW4/zHUd3HH1DBSRFJljySDC4yKTh4WgKrz5YKicv34wDoDCa0wg9A9pUgNW31KSSyHF56faLMwyrrnKyFNngrpM+cooIO+4ondKHA4OA+bqwqVdv9Wokj+uG6KJTqyqOnPPVU7ghgr0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hsg/Qqoo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9412C433F1;
+	Mon, 22 Jan 2024 21:41:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705959668;
+	bh=YsHS0ZZEP2Bk1kL+EnIJRY5cx/54afjFcYQU58t6/mE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hsg/Qqoo3FoOso4rbFR367xAeNyvcBJMHR1o3TQ3XMpAD05HNATtqu8IbLe/5SU13
+	 L/v8BuJ/u+aEmOGPJZXL0AmEVtAApHHb7SFGv9UNhgx0y1tV/ByERIB9P01ZO8IwON
+	 wKtjGhiP9PHqV7LZ9s6lJ2PrIyJyhI2PasfG/zSe665R+euXfkSC6k3r2+xUNa/9v6
+	 OWx40jHmehYUnjb6GwDrgELT2mGACzJOMN15QYkIQaQA152HFoAtxZ4KY9xLq1IoXJ
+	 vGbeWPBw2Pw/hA5xAa4Ycz43/dEb0io3GoiQ7c1Pp4TYWCTymU2vJd403KfPShzRoM
+	 UjJuSl6Ui7IYg==
+Date: Mon, 22 Jan 2024 22:41:04 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Zqiang <qiang.zhang1211@gmail.com>, quic_neeraju@quicinc.com,
+	joel@joelfernandes.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Check rdp_gp->nocb_timer in
+ __call_rcu_nocb_wake()
+Message-ID: <Za7g8O_zCnJ5THJx@pavilion.home>
+References: <20240117102616.18302-1-qiang.zhang1211@gmail.com>
+ <ZafC_YkTJKsOropE@localhost.localdomain>
+ <3b63cf39-3805-4c1d-b79b-fdd5aeb17db3@paulmck-laptop>
+ <Zart693B-klrEF5I@pavilion.home>
+ <2490b90d-ebce-42bf-8a83-1314e8272df8@paulmck-laptop>
+ <9a656d90-8297-4075-899f-41db8a43dce7@paulmck-laptop>
+ <3f4e50dd-dd16-444b-8b6a-3ab9cdc7ae26@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202401221624.cb53a8ca-oliver.sang@intel.com>
-In-Reply-To: <202401221624.cb53a8ca-oliver.sang@intel.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 22 Jan 2024 13:39:19 -0800
-Message-ID: <CAJD7tka0o+jn3UkXB+ZfZvRw1v+KysJbaGQvJdHcSmAhYC5TQA@mail.gmail.com>
-Subject: Re: [linus:master] [mm] 8d59d2214c: vm-scalability.throughput -36.6% regression
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Domenico Cerasuolo <cerasuolodomenico@gmail.com>, Shakeel Butt <shakeelb@google.com>, 
-	Chris Li <chrisl@kernel.org>, Greg Thelen <gthelen@google.com>, 
-	Ivan Babrou <ivan@cloudflare.com>, Michal Hocko <mhocko@kernel.org>, 
-	Michal Koutny <mkoutny@suse.com>, Muchun Song <muchun.song@linux.dev>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Wei Xu <weixugc@google.com>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, ying.huang@intel.com, feng.tang@intel.com, 
-	fengwei.yin@intel.com
-Content-Type: multipart/mixed; boundary="000000000000acf02c060f8fab3d"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3f4e50dd-dd16-444b-8b6a-3ab9cdc7ae26@paulmck-laptop>
 
---000000000000acf02c060f8fab3d
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Le Mon, Jan 22, 2024 at 04:11:20AM -0800, Paul E. McKenney a écrit :
+> On Mon, Jan 22, 2024 at 04:07:09AM -0800, Paul E. McKenney wrote:
+> > On Fri, Jan 19, 2024 at 04:29:52PM -0800, Paul E. McKenney wrote:
+> > > On Fri, Jan 19, 2024 at 10:47:23PM +0100, Frederic Weisbecker wrote:
+> > > > Le Thu, Jan 18, 2024 at 06:51:57AM -0800, Paul E. McKenney a écrit :
+> > > > > On Wed, Jan 17, 2024 at 01:07:25PM +0100, Frederic Weisbecker wrote:
+> > > > > > Le Wed, Jan 17, 2024 at 06:26:16PM +0800, Zqiang a écrit :
+> > > > > > > Currently, only rdp_gp->nocb_timer is used, for nocb_timer of
+> > > > > > > no-rdp_gp structure, the timer_pending() is always return false,
+> > > > > > > this commit therefore need to check rdp_gp->nocb_timer in
+> > > > > > > __call_rcu_nocb_wake().
+> > > > > > > 
+> > > > > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > > > > > > ---
+> > > > > > >  kernel/rcu/tree_nocb.h | 3 ++-
+> > > > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > > > > 
+> > > > > > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > > > > > > index 54971afc3a9b..3f85577bddd4 100644
+> > > > > > > --- a/kernel/rcu/tree_nocb.h
+> > > > > > > +++ b/kernel/rcu/tree_nocb.h
+> > > > > > > @@ -564,6 +564,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> > > > > > >  	long lazy_len;
+> > > > > > >  	long len;
+> > > > > > >  	struct task_struct *t;
+> > > > > > > +	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+> > > > > > >  
+> > > > > > >  	// If we are being polled or there is no kthread, just leave.
+> > > > > > >  	t = READ_ONCE(rdp->nocb_gp_kthread);
+> > > > > > > @@ -608,7 +609,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> > > > > > >  		smp_mb(); /* Enqueue before timer_pending(). */
+> > > > > > >  		if ((rdp->nocb_cb_sleep ||
+> > > > > > >  		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
+> > > > > > > -		    !timer_pending(&rdp->nocb_timer)) {
+> > > > > > > +		    !timer_pending(&rdp_gp->nocb_timer)) {
+> > > > > > 
+> > > > > > Hehe, good eyes ;-)
+> > > > > > 
+> > > > > > I had that change in mind but while checking that area further I actually
+> > > > > > wondered what is the actual purpose of this RCU_NOCB_WAKE_FORCE thing. If
+> > > > > > we reach that place, it means that the nocb_gp kthread should be awaken
+> > > > > > already (or the timer pending), so what does a force wake up solve in that
+> > > > > > case?
+> > > > > > 
+> > > > > > Paul, any recollection of that?
+> > > > > 
+> > > > > Huh.  We never actually do RCU_NOCB_WAKE_FORCE in v6.7, if I followed
+> > > > > all the code paths correctly.
+> > > > > 
+> > > > > Historically, I have been worried about lost wakeups.  Also, there
+> > > > > used to be code paths in which a wakeup was not needed, for example,
+> > > > > because we knew that the ending of the current grace period would take
+> > > > > care of things.  Unless there was some huge pile of callbacks, in which
+> > > > > case an immediate wakeup could avoid falling behind a callback flood.
+> > > > 
+> > > > Ok then looks like it's time for me to add RCU_NOCB_WAKE_FORCE removal in
+> > > > my TODO list...unless Zqiang would like to give it a try? :-)
+> > > > 
+> > > > > Given that rcutorture does test callback flooding, we appear to be OK,
+> > > > > but maybe it is time to crank up the flooding more.
+> > > > > 
+> > > > > On the other hand, I have started seeing the (very) occasional OOM
+> > > > > on TREE03.
+> > > > > (In addition to those that show up from time to time on the
+> > > > > single-CPU TREE09 scenario.)
+> > > > 
+> > > > Interesting, are those recent? Bisectable?
+> > > 
+> > > Bisection in progress, got it down to 10 commits.  Yet again about
+> > > ten hours per step on 20 systems...
+> > > 
+> > > Though maybe I should have put more time into making it happen faster.
+> > > Except that I was on travel, so I doubt that I would have made all that
+> > > much progress.  ;-)
+> > 
+> > And it hit this one, which you encountered earlier:
+> > 
+> > 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
+> > 
+> > Which you fixed with this guy:
+> > 
+> > 600310bd7ea8 ("rcu: Defer RCU kthreads wakeup when CPU is dying")
+> > 
+> > Which is not yet in -next.  Which means I have spent an embarrassing
+> > amount of time bisecting a bug that you already fixed.  C'est la vie!
+> > 
+> > Given that v6.8-rc1 is now out, it is time to get a bunch of RCU
+> > commits into -next, including that one!  ;-)
+> 
+> Now to test your fix on top of the bad commit, and also on top of
+> next-20240110.  Just in case...
 
-On Mon, Jan 22, 2024 at 12:39=E2=80=AFAM kernel test robot
-<oliver.sang@intel.com> wrote:
->
->
->
-> hi, Yosry Ahmed,
->
-> per your suggestion in
-> https://lore.kernel.org/all/CAJD7tkameJBrJQxRj+ibKL6-yd-i0wyoyv2cgZdh3Zep=
-A1p7wA@mail.gmail.com/
-> "I think it would be useful to know if there are
-> regressions/improvements in other microbenchmarks, at least to
-> investigate whether they represent real regressions."
->
-> we still report below two regressions to you just FYI what we observed in=
- our
-> microbenchmark tests.
-> (we still captured will-it-scale::fallocate regression but ignore here pe=
-r
-> your commit message)
->
->
-> Hello,
->
-> kernel test robot noticed a -36.6% regression of vm-scalability.throughpu=
-t on:
->
->
-> commit: 8d59d2214c2362e7a9d185d80b613e632581af7b ("mm: memcg: make stats =
-flushing threshold per-memcg")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->
-> testcase: vm-scalability
-> test machine: 224 threads 4 sockets Intel(R) Xeon(R) Platinum 8380H CPU @=
- 2.90GHz (Cooper Lake) with 192G memory
-> parameters:
->
->         runtime: 300s
->         size: 1T
->         test: lru-shm
->         cpufreq_governor: performance
->
-> test-description: The motivation behind this suite is to exercise functio=
-ns and regions of the mm/ of the Linux kernel which are of interest to us.
-> test-url: https://git.kernel.org/cgit/linux/kernel/git/wfg/vm-scalability=
-git/
->
-> In addition to that, the commit also has significant impact on the follow=
-ing tests:
->
-> +------------------+-----------------------------------------------------=
------------------------------------------------+
-> | testcase: change | will-it-scale: will-it-scale.per_process_ops -32.3% =
-regression                                     |
-> | test machine     | 104 threads 2 sockets (Skylake) with 192G memory    =
-                                               |
-> | test parameters  | cpufreq_governor=3Dperformance                      =
-                                                 |
-> |                  | mode=3Dprocess                                      =
-                                                 |
-> |                  | nr_task=3D50%                                       =
-                                                 |
-> |                  | test=3Dtlb_flush2                                   =
-                                                 |
-> +------------------+-----------------------------------------------------=
------------------------------------------------+
->
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202401221624.cb53a8ca-oliver.san=
-g@intel.com
+Thanks!
 
-Thanks for reporting this. We have had these patches running on O(10K)
-machines in our production for a while now, and there haven't been any
-complaints (at least not yet). OTOH, we do see significant CPU savings
-on reading memcg stats.
+I may send a v2 at some point within next week. No big change, just a comment
+and also expand the swake_up_one_online() logic to nocb kthreads as well.
 
-That being said, I think we can improve the performance here by
-caching pointers to the parent_memcg->vmstats_percpu and
-memcg->vmstats in struct memcg_vmstat_percpu. This should
-significantly reduce the memory fetches in the loop in
-memcg_rstat_updated().
 
-Oliver, would you be able to test if the attached patch helps? It's
-based on 8d59d2214c236.
-
-[..]
-
---000000000000acf02c060f8fab3d
-Content-Type: application/octet-stream; 
-	name="0001-mm-memcg-optimize-parent-iteration-in-memcg_rstat_up.patch"
-Content-Disposition: attachment; 
-	filename="0001-mm-memcg-optimize-parent-iteration-in-memcg_rstat_up.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lrpg9pbu0>
-X-Attachment-Id: f_lrpg9pbu0
-
-RnJvbSA4ZDA0YzM4MTM3YzcxZDE1NzdhODU3NmZiNzVkYjA3ZjNiZjkyNDkxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBZb3NyeSBBaG1lZCA8eW9zcnlhaG1lZEBnb29nbGUuY29tPgpE
-YXRlOiBNb24sIDIyIEphbiAyMDI0IDIxOjM1OjI5ICswMDAwClN1YmplY3Q6IFtQQVRDSF0gbW06
-IG1lbWNnOiBvcHRpbWl6ZSBwYXJlbnQgaXRlcmF0aW9uIGluIG1lbWNnX3JzdGF0X3VwZGF0ZWQo
-KQoKU2lnbmVkLW9mZi1ieTogWW9zcnkgQWhtZWQgPHlvc3J5YWhtZWRAZ29vZ2xlLmNvbT4KLS0t
-CiBtbS9tZW1jb250cm9sLmMgfCA0NSArKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0t
-LS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyOCBpbnNlcnRpb25zKCspLCAxNyBkZWxldGlv
-bnMoLSkKCmRpZmYgLS1naXQgYS9tbS9tZW1jb250cm9sLmMgYi9tbS9tZW1jb250cm9sLmMKaW5k
-ZXggYzVhYTBjMmNiNjhiMi4uYjVlYzRhODQxMzIxNSAxMDA2NDQKLS0tIGEvbW0vbWVtY29udHJv
-bC5jCisrKyBiL21tL21lbWNvbnRyb2wuYwpAQCAtNjM0LDYgKzYzNCwxMCBAQCBzdHJ1Y3QgbWVt
-Y2dfdm1zdGF0c19wZXJjcHUgewogCiAJLyogU3RhdHMgdXBkYXRlcyBzaW5jZSB0aGUgbGFzdCBm
-bHVzaCAqLwogCXVuc2lnbmVkIGludAkJc3RhdHNfdXBkYXRlczsKKworCS8qIENhY2hlZCBwb2lu
-dGVycyBmb3IgZmFzdCB1cGRhdGVzIGluIG1lbWNnX3JzdGF0X3VwZGF0ZWQoKSAqLworCXN0cnVj
-dCBtZW1jZ192bXN0YXRzX3BlcmNwdQkqcGFyZW50OworCXN0cnVjdCBtZW1jZ192bXN0YXRzCQkq
-dm1zdGF0czsKIH07CiAKIHN0cnVjdCBtZW1jZ192bXN0YXRzIHsKQEAgLTY5OCwzNiArNzAyLDM0
-IEBAIHN0YXRpYyB2b2lkIG1lbWNnX3N0YXRzX3VubG9jayh2b2lkKQogfQogCiAKLXN0YXRpYyBi
-b29sIG1lbWNnX3Nob3VsZF9mbHVzaF9zdGF0cyhzdHJ1Y3QgbWVtX2Nncm91cCAqbWVtY2cpCitz
-dGF0aWMgYm9vbCBtZW1jZ192bXN0YXRzX25lZWRzX2ZsdXNoKHN0cnVjdCBtZW1jZ192bXN0YXRz
-ICp2bXN0YXRzKQogewotCXJldHVybiBhdG9taWM2NF9yZWFkKCZtZW1jZy0+dm1zdGF0cy0+c3Rh
-dHNfdXBkYXRlcykgPgorCXJldHVybiBhdG9taWM2NF9yZWFkKCZ2bXN0YXRzLT5zdGF0c191cGRh
-dGVzKSA+CiAJCU1FTUNHX0NIQVJHRV9CQVRDSCAqIG51bV9vbmxpbmVfY3B1cygpOwogfQogCiBz
-dGF0aWMgaW5saW5lIHZvaWQgbWVtY2dfcnN0YXRfdXBkYXRlZChzdHJ1Y3QgbWVtX2Nncm91cCAq
-bWVtY2csIGludCB2YWwpCiB7CisJc3RydWN0IG1lbWNnX3Ztc3RhdHNfcGVyY3B1ICpzdGF0YzsK
-IAlpbnQgY3B1ID0gc21wX3Byb2Nlc3Nvcl9pZCgpOwotCXVuc2lnbmVkIGludCB4OwogCiAJaWYg
-KCF2YWwpCiAJCXJldHVybjsKIAogCWNncm91cF9yc3RhdF91cGRhdGVkKG1lbWNnLT5jc3MuY2dy
-b3VwLCBjcHUpOwotCi0JZm9yICg7IG1lbWNnOyBtZW1jZyA9IHBhcmVudF9tZW1fY2dyb3VwKG1l
-bWNnKSkgewotCQl4ID0gX190aGlzX2NwdV9hZGRfcmV0dXJuKG1lbWNnLT52bXN0YXRzX3BlcmNw
-dS0+c3RhdHNfdXBkYXRlcywKLQkJCQkJICBhYnModmFsKSk7Ci0KLQkJaWYgKHggPCBNRU1DR19D
-SEFSR0VfQkFUQ0gpCisJc3RhdGMgPSB0aGlzX2NwdV9wdHIobWVtY2ctPnZtc3RhdHNfcGVyY3B1
-KTsKKwlmb3IgKDsgc3RhdGM7IHN0YXRjID0gc3RhdGMtPnBhcmVudCkgeworCQlzdGF0Yy0+c3Rh
-dHNfdXBkYXRlcyArPSBhYnModmFsKTsKKwkJaWYgKHN0YXRjLT5zdGF0c191cGRhdGVzIDwgTUVN
-Q0dfQ0hBUkdFX0JBVENIKQogCQkJY29udGludWU7CiAKIAkJLyoKIAkJICogSWYgQG1lbWNnIGlz
-IGFscmVhZHkgZmx1c2gtYWJsZSwgaW5jcmVhc2luZyBzdGF0c191cGRhdGVzIGlzCiAJCSAqIHJl
-ZHVuZGFudC4gQXZvaWQgdGhlIG92ZXJoZWFkIG9mIHRoZSBhdG9taWMgdXBkYXRlLgogCQkgKi8K
-LQkJaWYgKCFtZW1jZ19zaG91bGRfZmx1c2hfc3RhdHMobWVtY2cpKQotCQkJYXRvbWljNjRfYWRk
-KHgsICZtZW1jZy0+dm1zdGF0cy0+c3RhdHNfdXBkYXRlcyk7Ci0JCV9fdGhpc19jcHVfd3JpdGUo
-bWVtY2ctPnZtc3RhdHNfcGVyY3B1LT5zdGF0c191cGRhdGVzLCAwKTsKKwkJaWYgKCFtZW1jZ192
-bXN0YXRzX25lZWRzX2ZsdXNoKHN0YXRjLT52bXN0YXRzKSkKKwkJCWF0b21pYzY0X2FkZCh4LCAm
-c3RhdGMtPnZtc3RhdHMtPnN0YXRzX3VwZGF0ZXMpOworCQlzdGF0Yy0+c3RhdHNfdXBkYXRlcyA9
-IDA7CiAJfQogfQogCkBAIC03NTEsNyArNzUzLDcgQEAgc3RhdGljIHZvaWQgZG9fZmx1c2hfc3Rh
-dHModm9pZCkKIAogdm9pZCBtZW1fY2dyb3VwX2ZsdXNoX3N0YXRzKHZvaWQpCiB7Ci0JaWYgKG1l
-bWNnX3Nob3VsZF9mbHVzaF9zdGF0cyhyb290X21lbV9jZ3JvdXApKQorCWlmIChtZW1jZ192bXN0
-YXRzX25lZWRzX2ZsdXNoKHJvb3RfbWVtX2Nncm91cC0+dm1zdGF0cykpCiAJCWRvX2ZsdXNoX3N0
-YXRzKCk7CiB9CiAKQEAgLTc2NSw3ICs3NjcsNyBAQCB2b2lkIG1lbV9jZ3JvdXBfZmx1c2hfc3Rh
-dHNfcmF0ZWxpbWl0ZWQodm9pZCkKIHN0YXRpYyB2b2lkIGZsdXNoX21lbWNnX3N0YXRzX2R3b3Jr
-KHN0cnVjdCB3b3JrX3N0cnVjdCAqdykKIHsKIAkvKgotCSAqIERlbGliZXJhdGVseSBpZ25vcmUg
-bWVtY2dfc2hvdWxkX2ZsdXNoX3N0YXRzKCkgaGVyZSBzbyB0aGF0IGZsdXNoaW5nCisJICogRGVs
-aWJlcmF0ZWx5IGlnbm9yZSBtZW1jZ192bXN0YXRzX25lZWRzX2ZsdXNoKCkgaGVyZSBzbyB0aGF0
-IGZsdXNoaW5nCiAJICogaW4gbGF0ZW5jeS1zZW5zaXRpdmUgcGF0aHMgaXMgYXMgY2hlYXAgYXMg
-cG9zc2libGUuCiAJICovCiAJZG9fZmx1c2hfc3RhdHMoKTsKQEAgLTU0NTMsMTAgKzU0NTUsMTEg
-QEAgc3RhdGljIHZvaWQgbWVtX2Nncm91cF9mcmVlKHN0cnVjdCBtZW1fY2dyb3VwICptZW1jZykK
-IAlfX21lbV9jZ3JvdXBfZnJlZShtZW1jZyk7CiB9CiAKLXN0YXRpYyBzdHJ1Y3QgbWVtX2Nncm91
-cCAqbWVtX2Nncm91cF9hbGxvYyh2b2lkKQorc3RhdGljIHN0cnVjdCBtZW1fY2dyb3VwICptZW1f
-Y2dyb3VwX2FsbG9jKHN0cnVjdCBtZW1fY2dyb3VwICpwYXJlbnQpCiB7CisJc3RydWN0IG1lbWNn
-X3Ztc3RhdHNfcGVyY3B1ICpzdGF0YywgKnBzdGF0YzsKIAlzdHJ1Y3QgbWVtX2Nncm91cCAqbWVt
-Y2c7Ci0JaW50IG5vZGU7CisJaW50IG5vZGUsIGNwdTsKIAlpbnQgX19tYXliZV91bnVzZWQgaTsK
-IAlsb25nIGVycm9yID0gLUVOT01FTTsKIApAQCAtNTQ4MCw2ICs1NDgzLDE0IEBAIHN0YXRpYyBz
-dHJ1Y3QgbWVtX2Nncm91cCAqbWVtX2Nncm91cF9hbGxvYyh2b2lkKQogCWlmICghbWVtY2ctPnZt
-c3RhdHNfcGVyY3B1KQogCQlnb3RvIGZhaWw7CiAKKwlmb3JfZWFjaF9wb3NzaWJsZV9jcHUoY3B1
-KSB7CisJCWlmIChwYXJlbnQpCisJCQlwc3RhdGMgPSBwZXJfY3B1X3B0cihwYXJlbnQtPnZtc3Rh
-dHNfcGVyY3B1LCBjcHUpOworCQlzdGF0YyA9IHBlcl9jcHVfcHRyKG1lbWNnLT52bXN0YXRzX3Bl
-cmNwdSwgY3B1KTsKKwkJc3RhdGMtPnBhcmVudCA9IHBhcmVudCA/IHBzdGF0YyA6IE5VTEw7CisJ
-CXN0YXRjLT52bXN0YXRzID0gbWVtY2ctPnZtc3RhdHM7CisJfQorCiAJZm9yX2VhY2hfbm9kZShu
-b2RlKQogCQlpZiAoYWxsb2NfbWVtX2Nncm91cF9wZXJfbm9kZV9pbmZvKG1lbWNnLCBub2RlKSkK
-IAkJCWdvdG8gZmFpbDsKQEAgLTU1MjUsNyArNTUzNiw3IEBAIG1lbV9jZ3JvdXBfY3NzX2FsbG9j
-KHN0cnVjdCBjZ3JvdXBfc3Vic3lzX3N0YXRlICpwYXJlbnRfY3NzKQogCXN0cnVjdCBtZW1fY2dy
-b3VwICptZW1jZywgKm9sZF9tZW1jZzsKIAogCW9sZF9tZW1jZyA9IHNldF9hY3RpdmVfbWVtY2co
-cGFyZW50KTsKLQltZW1jZyA9IG1lbV9jZ3JvdXBfYWxsb2MoKTsKKwltZW1jZyA9IG1lbV9jZ3Jv
-dXBfYWxsb2MocGFyZW50KTsKIAlzZXRfYWN0aXZlX21lbWNnKG9sZF9tZW1jZyk7CiAJaWYgKElT
-X0VSUihtZW1jZykpCiAJCXJldHVybiBFUlJfQ0FTVChtZW1jZyk7Ci0tIAoyLjQzLjAuNDI5Lmc0
-MzJlYWEyYzZiLWdvb2cKCg==
---000000000000acf02c060f8fab3d--
+> 
+> 							Thanx, Paul
 
