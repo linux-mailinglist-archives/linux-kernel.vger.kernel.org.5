@@ -1,119 +1,115 @@
-Return-Path: <linux-kernel+bounces-32961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39D1D83627E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:49:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14DAA836282
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:49:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F7ADB25172
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:49:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCF371F28889
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF953C6A4;
-	Mon, 22 Jan 2024 11:45:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LD9UqSaX"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D37163C469;
+	Mon, 22 Jan 2024 11:46:58 +0000 (UTC)
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB94E3A8DB;
-	Mon, 22 Jan 2024 11:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2242439ACC;
+	Mon, 22 Jan 2024 11:46:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923950; cv=none; b=O9XSmmxZ1k9+pCVzphxN7dFRC1E+SOSA1wv+ju/wwUBEyl3wOZ9dD6sC0CrTCT7cCr/FvaI094qOKgr1DMSBDlUoaFLkhLeWO5SCwKwyaw3EGE1tvPTaBCN/S28Ee8PgJkkAtluViCINV4cCEhgYzJnSTVom7YZXYHP8MuBpyrA=
+	t=1705924018; cv=none; b=CwLKnJNsxmNEgYYBS26tY2h29C0nA4gw5HvqzRSOeivXNfRNCJLmHeJT8JEGWkS0jDgGJKSgY0fOu6o+mHDgV9DwEd6VVcnGBrBY1XpNEUqLBzCVsgGFzknUJBnJqGAPHMQpafgZlD+VDYGsTL/7NnQ44Dg60tI8LsJ9mVsRZkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923950; c=relaxed/simple;
-	bh=SvFVbC+C++WLfOGYirGg6Fwp2Bp27iB5saetpjSVeo8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LUITgksOPghOeoXawdfnu79AlZ+0LwUsV6ZITtTHoPLQycxw/wL4NUAeaK2BQu5gnvb8j9LSB+bRNua4guplfYgXHjny9w1KIzDRSgxw6tGs5uSy0QSSEdvIN0Uq6ugi/l9D9ywCkVHrUQsuh2xd125c/C8C49IiAdUkXxwxjlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LD9UqSaX; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1705924018; c=relaxed/simple;
+	bh=Xu9dO42e0kGtP2iek34Ct8qcatx6D34+espsKKYUB0k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d2RCdLdLKUHBvIbbsnvIpmBPNkpXC5JFMY+9FUycI3JSjwZyUsACjj6Ydjq/eXtrgiYsi6IonJDXe8K+SQBWYOwQLkYRwGAGIkrlYIcB+wfUXPHsbJrDx+Mmrmi1N0y3DrekXdBudrapY2dZ7iNq/h2+fdB9BCNjJoBe94csT5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e9d288f45so36678925e9.2;
-        Mon, 22 Jan 2024 03:45:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705923947; x=1706528747; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I2NxgDZZ+RtYFKDvLqUW2ETrJtJHmkdaPJy40LrEhoc=;
-        b=LD9UqSaXbGBEn64nIR0dupauQdjjJk8HDxv0oRJPQzyqeBjAfFdCN9T3EODiAfxJ+j
-         Fc5K2KG68OEhDBT/3WGamsJSWRQBYkF4cfyKHHH0ZkadWZWu8oHBJ+RzXYzC1m1W1Icr
-         Lvz92syz9zFXUObcwJt3XWhB6Ga8BzI+Z4xlv7k0Lo9RJ0LP0eaceQenq58iGXnG2D49
-         kVRzjh3NJTOSqdtTXzDbrttRN+5OA4ul2OjENBfb5gWB1W5maQgCihUqwGfgy/2q4jQL
-         j+FcQC6HPsmIcT/EsLWJ0XX2ARjPPt6YkgT2xIWrUQcxOuerhWsq0yG7SB72tDm8hFQI
-         vrpA==
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-598afd970e4so444465eaf.0;
+        Mon, 22 Jan 2024 03:46:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705923947; x=1706528747;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1705924016; x=1706528816;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I2NxgDZZ+RtYFKDvLqUW2ETrJtJHmkdaPJy40LrEhoc=;
-        b=bvfTQKbkTZ6OETLosuLMXvPbl/I0sNbAru96T25lZ+lJXXl+riycn1KMESRkVhbGww
-         JVWTFtMAhfnG5p3y3VN9/xvk+NVbBu6veJ1/yVpDXIN8lVkvjai18MM6xSvHa7SfrHdI
-         C+92Ek7rvfuhiKiq0yTR3u8t66utVtS1XsODRwYQ0UlGtPuccYqkPSJ1ps/6sJtQdGjG
-         LNwWGIFOuY/Dl2+FNWVdB1OOxO2D3ZxDzrO/a/FxWTHqhFfu0I07d1aYokHRQzEb9/Ba
-         ezEWritg4PGeVxG1Xka8XJw114LVgTZ2ArMF63FLJDQP3n46wEqLypiUfs9dI3e+3SQn
-         E/8g==
-X-Gm-Message-State: AOJu0YxlJssCcWiGP1mIf5R5zIdKK+o/f8B0fS0f/1l1RQkBXGqaq4ft
-	v2biYr4JCRdo8XAro1a7W4PAZ6XxrTo7zziplAQXXLJY/OYoQVE=
-X-Google-Smtp-Source: AGHT+IE3rLwGkX8ekqtF+WBWNT64BYf/HYPMyTRd0JcpBIG5vt4S4e+w96fZxl/DhTHQgouWfRnVHw==
-X-Received: by 2002:a05:600c:502a:b0:40e:5d1b:b1a1 with SMTP id n42-20020a05600c502a00b0040e5d1bb1a1mr1607731wmr.67.1705923946681;
-        Mon, 22 Jan 2024 03:45:46 -0800 (PST)
-Received: from phoenix.rocket.std.lan (a95-93-126-153.cpe.netcabo.pt. [95.93.126.153])
-        by smtp.gmail.com with ESMTPSA id j8-20020a05600c190800b0040d7b340e07sm38990358wmq.45.2024.01.22.03.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 03:45:46 -0800 (PST)
-From: Rui Salvaterra <rsalvaterra@gmail.com>
-To: amadeuszx.slawinski@linux.intel.com,
-	tiwai@suse.com
-Cc: linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Rui Salvaterra <rsalvaterra@gmail.com>
-Subject: [PATCH 2/2] ALSA: hda: Increase default bdl_pos_adj for Apollo Lake
-Date: Mon, 22 Jan 2024 11:45:13 +0000
-Message-ID: <20240122114512.55808-3-rsalvaterra@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240122114512.55808-2-rsalvaterra@gmail.com>
-References: <20240122114512.55808-2-rsalvaterra@gmail.com>
+        bh=Xu9dO42e0kGtP2iek34Ct8qcatx6D34+espsKKYUB0k=;
+        b=t40yxUAs45IY8vOSH07VRXYtgly+2p0OSwT6psBy0nY+w3T06u2mljjfDeTrjAF4Z+
+         ZLL8sMEbDYla+OR1gW7lzBhNUE4GyDlZ3ZkzlZONSiJPm2fZVgLBSVOGPj6nGP6o4FSR
+         1PI6qFz1ft5A9CBf6RRNMdSuQcWp1qDTa73osllZJYSsdUk+gimKgSozVBhSNHlskRxR
+         Waxa6ipAOpqfOCH2w+LFBn9tY7BA3p1sTP0QVPf0UyNsgofajLNJPQmiQSVK21tb1hUI
+         Gjmn3vvI4p+eDH0v0vrlSn2RiAoH76emtRUCA3FduAvO3qoLLQBGzGR/W6aKYW/ienwX
+         DC/g==
+X-Gm-Message-State: AOJu0YyqFNYi/KK35scnejnPIqBm7ADiIitKMXpOKY8NP1dGWSXMr3B3
+	hWqNOCS1zK007N8zOhFMIfo81ukyc7dtduzk3TduyveCH15DumYIPR2ux/uB5O56h5SWSdInOeb
+	aoUAgRXCGx6SsiNC6nF1UHJpDMek=
+X-Google-Smtp-Source: AGHT+IEaFNyIRXDCFBQIZlnYyvRFTeKr3IUazcDdu4f58xNCxAzZX4sK6mBZno00mYuQRKofhbbeEQFm/nzeRqdDtcM=
+X-Received: by 2002:a05:6870:2193:b0:214:2425:9962 with SMTP id
+ l19-20020a056870219300b0021424259962mr5660544oae.0.1705924016139; Mon, 22 Jan
+ 2024 03:46:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240118120513.1018808-1-srinivas.pandruvada@linux.intel.com>
+ <6021639.lOV4Wx5bFT@kreacher> <c961bae053da7287bfce49b2c1c2e7e6c754710a.camel@linux.intel.com>
+In-Reply-To: <c961bae053da7287bfce49b2c1c2e7e6c754710a.camel@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 22 Jan 2024 12:46:44 +0100
+Message-ID: <CAJZ5v0iFAPW5x3gWFnjYKLQQvWoJ65gdpwRhnyEgLD2p2pWUcA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Directly use stored ratios for max frequencies
+To: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, rafael@kernel.org, viresh.kumar@linaro.org, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Apollo Lake seems to also suffer from IRQ timing issues. After being up for ~4
-minutes, a Pentium N4200 system ends up falling back to workqueue-based IRQ
-handling:
+On Mon, Jan 22, 2024 at 12:35=E2=80=AFPM srinivas pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> On Mon, 2024-01-22 at 11:53 +0100, Rafael J. Wysocki wrote:
+> > On Thursday, January 18, 2024 1:05:13 PM CET Srinivas Pandruvada
+> > wrote:
+> > > Avoid unnecessary calculation for converting frequency to
+> > > performance
+> > > ratio by using a scaling factor for the maximum non turbo and turbo
+> >
+>
+> [...]
+>
+> > ---
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Subject: [PATCH v1] cpufreq: intel_pstate: Refine computation of P-
+> > state for given frequency
+> >
+> > On systems using HWP, if a given frequency is equal to the maximum
+> > turbo
+> > frequency or the maximum non-turbo frequency, the HWP performance
+> > level
+> > corresponding to it is already known and can be used directly without
+> > any computation.
+> >
+> > Accordingly, adjust the code to use the known HWP performance levels
+> > in
+> > the cases mentioned above.
+> >
+> > This also helps to avoid limiting CPU capacity artificially in some
+> > cases when the BIOS produces the HWP_CAP numbers using a different
+> > E-core-to-P-core performance scaling factor than expected by the
+> > kernel.
+> >
+> > Fixes: f5c8cf2a4992 ("cpufreq: intel_pstate: hybrid: Use known
+> > scaling factor for P-cores")
+> > Cc: 6.1+ <stable@vger.kernel.org> # 6.1+
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+>
+> Tested on the system which showed the issue, this patch work fine.
 
-[  208.019906] snd_hda_intel 0000:00:0e.0: IRQ timing workaround is activated
-for card #0. Suggest a bigger bdl_pos_adj.
-
-Unfortunately, the Baytrail and Braswell workaround value of 32 samples isn't
-enough to fix the issue here. Default to 64 samples.
-
-Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
----
- sound/pci/hda/hda_intel.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 66f013ee160d..1b550c42db09 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1732,6 +1732,8 @@ static int default_bdl_pos_adj(struct azx *chip)
- 		case PCI_DEVICE_ID_INTEL_HDA_BYT:
- 		case PCI_DEVICE_ID_INTEL_HDA_BSW:
- 			return 32;
-+		case PCI_DEVICE_ID_INTEL_HDA_APL:
-+			return 64;
- 		}
- 	}
- 
--- 
-2.43.0
-
+So I'm going to add a Tested-by from you to it or please let me know
+if you don't want me to do so.
 
