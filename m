@@ -1,129 +1,135 @@
-Return-Path: <linux-kernel+bounces-33742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E040836E06
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:43:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9E24836E10
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:44:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC1261F23AC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:43:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62718288ECE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C91B482E4;
-	Mon, 22 Jan 2024 17:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7EC48CE2;
+	Mon, 22 Jan 2024 17:05:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iQYopB1j"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ls8LeXzS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BED93D990;
-	Mon, 22 Jan 2024 17:05:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160F73D99C;
+	Mon, 22 Jan 2024 17:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705943116; cv=none; b=a56ewaOFwt1BIlWXxHKt6Nx/xlXuRmVahDMdQmoOKGbNmQpRDhIe9L770gPNfu8w+WIuVTBiEPLUIodpKPXkfzNXcc1+VRY5QT74EtUS8/7GBQDPEFCyfIJsHRlmgGlp5hNq1T+KFURuQQ2aI06u8P6f4fRZOcC5jtRcQUDWj4M=
+	t=1705943133; cv=none; b=h7OyCLU7BYUEddkFubkYcwlRT+Cedh92mjYSZKW/84hW/jHongEt0Ge9AsfRzw1hQ4rDivwgMaehtu91lEDgZGdXzwPNkwcR5Cs6Ikpj97FwRjenJGXOj23gZZOhRrsbt5gBNfmJElXxECuXs3v/B5NZ9t97LRoCFSHl5mmAMSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705943116; c=relaxed/simple;
-	bh=8xWIV59LI2WPpxdJlA1amusaILQRvyy3HD+894TUW6A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=t3RUDCdZVYQlF4RlHrhDIMTozXVg3IS4ZyLdlUbGp/6A19w29cIrjFzr+mvw8B2OorH+cx1mRZ0TSIdu7+8YdidnA3UVS2GMMk6gDAykcuw5+DSEGryxFdP41QW6DTcnKQ+iWZiEDfvGYaP79MeFPURhy8r61yhn10C3SlNCZHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iQYopB1j; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40MDx3hA023315;
-	Mon, 22 Jan 2024 17:04:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Ir2TH4bQ8UNy996Ok/fKDZNCHGxSrx9t4G+izCKVTkk=; b=iQ
-	YopB1jEpidvbcQGOVDcjSLuxhCIkPasW3PhNt6zTOj3eL2V5nyNLGt71R8b1eBje
-	zLQpIexGYHyugLzevF5owscrCXk/oJlMWAc/TANhC8L2x5ji43c2qSEIXbap7Dw8
-	9UfbwPGrDxXD0PTF7obJe1G8o5UcrA2Besdqtz/xe36wrLLDfmUJKqOlx81tMavA
-	qUVArjyqas4S/5sUwuIOWvl3WTDSmcU0dMOod+qZ+gwdx9c1Msl8dSZ3iduhdqtb
-	0M7BXpi4UYcY7Cv6NqzAoSUIChUb1uDJd5bwoiqhWQ+ZbsP66wWSlGHhqqB6xyTh
-	9FoEEEhnxSAmF1aas3hA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vsq7w0y1r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 17:04:56 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40MH4tPk020019
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 17:04:55 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 22 Jan
- 2024 09:04:54 -0800
-Message-ID: <8c9b157b-4698-70a3-57b7-c588998eeda7@quicinc.com>
-Date: Mon, 22 Jan 2024 10:04:54 -0700
+	s=arc-20240116; t=1705943133; c=relaxed/simple;
+	bh=u+x2WqX+nY6J7+OJiu4BqOVl1NPhZVvy6votpSfLE0c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BwWz6O7sMcoHKvdy3qLBOSiTwBo3vgXIbT+eoN+Okj0dL8ld1ABtbvQATD7pBayMQZkIUXsIuPt6pJkqIAhvO4Rs1mKstpK1lfw4DsKwyat73nf2ChN2sP7mdG45XIv4rKy7oadfAquKLF5CPiAXExAAHptHRP5wevtGsxhSwsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ls8LeXzS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A419C43399;
+	Mon, 22 Jan 2024 17:05:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705943132;
+	bh=u+x2WqX+nY6J7+OJiu4BqOVl1NPhZVvy6votpSfLE0c=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Ls8LeXzSsBDex36hOEm07Q1pH2lApQFpET1O3m9R72GJwx1Ny2qNTo810BCKU+yzd
+	 bzrCLfNBiukHr+NuXvRx4K9kTrH923dwcUHlEBlLKxYEQrakBMezpZkcVOaDgGICBe
+	 UilMbxPHOYAc70nxLnyvu8p2DqrPD71PzCEUDR+u61C6jfWK6YIejcVjkh7StG2S7S
+	 sl/SvB8ODCV5YN0LXLJy6na0/Tdtl9vS+UBaTaNlLsNEW7ysJm0S2rvDu4UemTGZp2
+	 /O8rLlOvGN67ym9iYYkIIaSHGfpPLKa6sGNrvsjhFd8Vl1enslebadYsKmMTFWkTEa
+	 nOsqzR2ypckBQ==
+Received: by wens.tw (Postfix, from userid 1000)
+	id 8E58C5FEE9; Tue, 23 Jan 2024 01:05:29 +0800 (CST)
+From: Chen-Yu Tsai <wens@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Vinod Koul <vkoul@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-sound@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] arm64: sun50i-h616: Add DMA and SPDIF controllers
+Date: Tue, 23 Jan 2024 01:05:11 +0800
+Message-Id: <20240122170518.3090814-1-wens@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH 0/2] Remove QDF2xxx pinctrl drivers
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin
- Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-CC: Marijn Suijten <marijn.suijten@somainline.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-References: <20240122-topic-qdf_cleanup_pinctrl-v1-0-0c619ea25091@linaro.org>
-From: Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <20240122-topic-qdf_cleanup_pinctrl-v1-0-0c619ea25091@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: AdxjN5akuBy3XCYN-ut4F8rIWpAcidnV
-X-Proofpoint-ORIG-GUID: AdxjN5akuBy3XCYN-ut4F8rIWpAcidnV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-22_07,2024-01-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1011 suspectscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0
- mlxlogscore=427 phishscore=0 mlxscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401220118
+Content-Transfer-Encoding: 8bit
 
-On 1/22/2024 4:57 AM, Konrad Dybcio wrote:
-> The SoC line was never productized, remove the maintenance burden.
-> 
-> Compile-tested only.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
-> Konrad Dybcio (2):
->        pinctrl: qcom: Remove QDF2xxx support
->        arm64: defconfig: Remove QDF24XX pinctrl
-> 
->   arch/arm64/configs/defconfig           |   1 -
->   drivers/pinctrl/qcom/Kconfig.msm       |   7 --
->   drivers/pinctrl/qcom/Makefile          |   1 -
->   drivers/pinctrl/qcom/pinctrl-qdf2xxx.c | 164 ---------------------------------
->   4 files changed, 173 deletions(-)
-> ---
-> base-commit: 319fbd8fc6d339e0a1c7b067eed870c518a13a02
-> change-id: 20240122-topic-qdf_cleanup_pinctrl-98e17cdb375b
-> 
-> Best regards,
+From: Chen-Yu Tsai <wens@csie.org>
 
-NACK.
+Hi everyone,
 
-This was productized, there are some out in the wild, and the platform 
-is still in (limited) use.
+This series adds DMA and SPDIF controllers for the H616 and H618.
+There's also a fix for SPDIF on H6: the controller also has a
+receiver that was not correctly modeled.
 
-I'd like to see support hang around for a few more years yet.
+Patch 1 fixes the binding for the SPDIF controller on the H6 by adding
+the RX DMA channel.
+
+Patch 2 adds a compatible string for the H616's SPDIF transmitter to the
+binding.
+
+Patch 3 adds a compatible string for the H616's SPDIF transmitter to the
+driver.
+
+Patch 4 adds a compatible string for the H616's DMA controller.
+
+Patch 5 adds the RX DMA channel to the SPDIF controller on the H6.
+
+Patch 6 adds a device node for the H616's DMA controller.
+
+Patch 7 adds a device node for the H616's SPDIF controller.
+
+
+This was tested on the Orange Pi Zero 3 with SPI flash transfers and
+SPDIF audio output. The H6 SPDIF change is superficial as the driver
+does not support receiving / capturing an audio stream.
+
+Please have a look. I expect the first three patches to go through the
+ASoC tree, the fourth patch to either go through the DMA tree, or
+through the sunxi tree with an Ack, and the last three through the sunxi
+tree.
+
+
+Thanks
+ChenYu
+
+
+Chen-Yu Tsai (7):
+  dt-bindings: sound: sun4i-spdif: Fix requirements for H6
+  dt-bindings: sound: sun4i-spdif: Add Allwinner H616 compatible
+  ASoC: sunxi: sun4i-spdif: Add support for Allwinner H616
+  dt-bindings: dma: allwinner,sun50i-a64-dma: Add compatible for H616
+  arm64: dts: allwinner: h6: Add RX DMA channel for SPDIF
+  arm64: dts: allwinner: h616: Add DMA controller and DMA channels
+  arm64: dts: allwinner: h616: Add SPDIF device node
+
+ .../dma/allwinner,sun50i-a64-dma.yaml         | 15 +++--
+ .../sound/allwinner,sun4i-a10-spdif.yaml      |  5 +-
+ .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |  2 +
+ .../boot/dts/allwinner/sun50i-h6-tanix.dtsi   |  2 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  7 +--
+ .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 59 +++++++++++++++++++
+ sound/soc/sunxi/sun4i-spdif.c                 |  5 ++
+ 7 files changed, 86 insertions(+), 9 deletions(-)
+
+-- 
+2.39.2
+
 
