@@ -1,65 +1,58 @@
-Return-Path: <linux-kernel+bounces-33512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1899D836A83
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:29:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EF0C836A85
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:30:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BA181C24BC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:29:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D31501F24BEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1CB14077A;
-	Mon, 22 Jan 2024 15:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C52014078E;
+	Mon, 22 Jan 2024 15:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kFZQpZfM"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="paKKmeUC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759B5140772;
-	Mon, 22 Jan 2024 15:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF6514077C;
+	Mon, 22 Jan 2024 15:16:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936565; cv=none; b=OJktyk8vdBKZw0ovbJVUOyftdpyGDtRFM3XYmb7v+9bzP8HhnBDGOIo4KMTPRAlwSA+w8NJxvNB74khyKDQqqgzWBM8wqFEWUOZoJCJY8rcAU9pNxLhpFggUU+itIjEV3E5KsbRrR+WZdzgKTa/UV6J5RtKN8TY34G9FhrucyCY=
+	t=1705936566; cv=none; b=bZS2BCNeU5u3pYq316QV24C9+qme1as3UWRcoPH5PLuf6eqOZnoLJS0fZ+daM/IVc3BaOIr99x8xwHMXbfRng4Ok2Tmfyxqvxu988MSlurasVRKu9KFGTiAuFeQN1m1ewJXZdYDtCy9LrSrrZ6yWV8sywRVvMxgbncdtL2+DCzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936565; c=relaxed/simple;
-	bh=Co1hU6h6+FfNMHYhM0Md9CxnsIPY+jOY59OLGlmZ50w=;
+	s=arc-20240116; t=1705936566; c=relaxed/simple;
+	bh=i5bEYdSRw06a6/t8+Y9FAvU0Xv7Oumy6T+7uuOFPK4I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Cj1w+sWaNZIyAkBkb22pKu+2a0SQGJl5KQB4OUHvqyiYc242l8S/jRoMTZYR3Vg9Zi8PY2mG2AYxaz/5/Qt8oa6M11xSdAdGtCqRygRoiJDj5C0dk7hGnuSSsZjsaqUK2Xhn6frRB5tevhM8T4UYZf5CpBmH32yDHYrSUZ6lRnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kFZQpZfM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05475C43390;
-	Mon, 22 Jan 2024 15:16:02 +0000 (UTC)
+	 MIME-Version; b=csKnKLCl8w5OmZL5UORdOgHk4Qq2VouR3RRPcctoo5UKnQXYuaGmZxTkAaG29/JOmM45ufg869mG/fVqK6bntHyIDAA7Rl8bqswtxtQAYIUCPs08CK9Amh1stKoDPAbMUtYF+4iy2BKYovtH5biAKjpiw10ZRAyixyc3omi9ceI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=paKKmeUC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85EBEC433C7;
+	Mon, 22 Jan 2024 15:16:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936565;
-	bh=Co1hU6h6+FfNMHYhM0Md9CxnsIPY+jOY59OLGlmZ50w=;
+	s=k20201202; t=1705936566;
+	bh=i5bEYdSRw06a6/t8+Y9FAvU0Xv7Oumy6T+7uuOFPK4I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kFZQpZfMFi94Kk8P6hSYVRMN78MpurDwVwMK3dekw9A/tELvavEK7X+rofiQ88Bnd
-	 fJFMv5xqCkSwWropP2eqtYghUdSm1Kd6FWYJUMvVDcC3GdTi3WgqjecL3nWdCP1QG+
-	 eWi3ycwW5+0QDdhVVCLarC2Mt9c3YL0fE9vdCdiok02HQ/+Sq6JItSRERDHJho9SpH
-	 BTI9Pnipy6gS57VR5FhSzT5vnGQX81M0iT4ZIOoe93Lob16yBKzwSuWxRZy/oT8rbC
-	 yLtgsyzJQ2dX9BeBfU/+/o3gVoZoCv8eqotf+tkDPGRKFmefwV6TDLXN1Bsm+Mq8G2
-	 t2UPKDDzM1wyw==
+	b=paKKmeUCGYRTPw6ikQ3VvULT4VwDqsgHYZ6uSG98juutTKe3pNGYKisxefGGmuTCV
+	 sJZYlIreGn8LrdBamsGkK8q2tt7DNh37WvIrJRT2d0qDIGsqW9TdS3KJE91YJbhljs
+	 mWXs/ZWk50LKVGUgsujOw0UhV5XWHPy6zgQV3JlY6lAmjYWYWCB+lCntv5ESd6lZjn
+	 2FGIx/y2sItDMxTGeFyQbyYq9K0WK6MOQMOJSEibzVAHA8udfGyqR9GBdsaUdyFoXV
+	 9tDsiI4gYNV/vHqy4MRw8zo3xQUhzehHUo5mJLMwzUjG443sI0V6wUA7zV5YDIOE9C
+	 lNy4hpotNDT/A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Takashi Iwai <tiwai@suse.de>,
-	Sasha Levin <sashal@kernel.org>,
-	perex@perex.cz,
-	tiwai@suse.com,
-	yung-chuan.liao@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	amadeuszx.slawinski@linux.intel.com,
-	markhas@chromium.org,
-	bradynorander@gmail.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 17/28] ALSA: hda: intel-dspcfg: add filters for ARL-S and ARL
-Date: Mon, 22 Jan 2024 10:14:43 -0500
-Message-ID: <20240122151521.996443-17-sashal@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Jim Cromie <jim.cromie@gmail.com>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	linux-hwmon@vger.kernel.org,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 18/28] hwmon: (pc87360) Bounds check data->innr usage
+Date: Mon, 22 Jan 2024 10:14:44 -0500
+Message-ID: <20240122151521.996443-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122151521.996443-1-sashal@kernel.org>
 References: <20240122151521.996443-1-sashal@kernel.org>
@@ -69,50 +62,63 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 7a9d6bbe8a663c817080be55d9fecf19a4a8fd8f ]
+[ Upstream commit 4265eb062a7303e537ab3792ade31f424c3c5189 ]
 
-Same usual filters, SOF is required for DMIC and/or SoundWire support.
+Without visibility into the initializers for data->innr, GCC suspects
+using it as an index could walk off the end of the various 14-element
+arrays in data. Perform an explicit clamp to the array size. Silences
+the following warning with GCC 12+:
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Acked-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20231204212710.185976-4-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+./drivers/hwmon/pc87360.c: In function 'pc87360_update_device':
+./drivers/hwmon/pc87360.c:341:49: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+  341 |                                 data->in_max[i] = pc87360_read_value(data,
+      |                                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+  342 |                                                   LD_IN, i,
+      |                                                   ~~~~~~~~~
+  343 |                                                   PC87365_REG_IN_MAX);
+      |                                                   ~~~~~~~~~~~~~~~~~~~
+./drivers/hwmon/pc87360.c:209:12: note: at offset 255 into destination object 'in_max' of size 14
+  209 |         u8 in_max[14];          /* Register value */
+      |            ^~~~~~
+
+Cc: Jim Cromie <jim.cromie@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-hwmon@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Link: https://lore.kernel.org/r/20231130200207.work.679-kees@kernel.org
+[groeck: Added comment into code clarifying context]
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/intel-dsp-config.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/hwmon/pc87360.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 48c78388c1d2..ea0a2b1d23a3 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -372,6 +372,16 @@ static const struct config_entry config_table[] = {
- 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
- 		.device = 0x7e28,
- 	},
-+	/* ArrowLake-S */
-+	{
-+		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
-+		.device = PCI_DEVICE_ID_INTEL_HDA_ARL_S,
-+	},
-+	/* ArrowLake */
-+	{
-+		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
-+		.device = PCI_DEVICE_ID_INTEL_HDA_ARL,
-+	},
- #endif
+diff --git a/drivers/hwmon/pc87360.c b/drivers/hwmon/pc87360.c
+index 94f4b8b4a2ba..0cf603c8c9f9 100644
+--- a/drivers/hwmon/pc87360.c
++++ b/drivers/hwmon/pc87360.c
+@@ -1605,7 +1605,11 @@ static struct pc87360_data *pc87360_update_device(struct device *dev)
+ 		}
  
- /* Lunar Lake */
+ 		/* Voltages */
+-		for (i = 0; i < data->innr; i++) {
++		/*
++		 * The min() below does not have any practical meaning and is
++		 * only needed to silence a warning observed with gcc 12+.
++		 */
++		for (i = 0; i < min(data->innr, ARRAY_SIZE(data->in)); i++) {
+ 			data->in_status[i] = pc87360_read_value(data, LD_IN, i,
+ 					     PC87365_REG_IN_STATUS);
+ 			/* Clear bits */
 -- 
 2.43.0
 
