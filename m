@@ -1,117 +1,188 @@
-Return-Path: <linux-kernel+bounces-34106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 966E383739D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:19:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC86383739E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:20:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C70491C27D41
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:19:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 089901C27AB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:20:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521C64121B;
-	Mon, 22 Jan 2024 20:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361E640BF8;
+	Mon, 22 Jan 2024 20:20:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="Q6yuwbop"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="er0lMKV+"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C76F41201
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 20:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30EDE40BE2
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 20:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705954756; cv=none; b=s4/nkNoreCZWbnqUzUO7qmhTqDVE3kC99xeXqHTrB2oWQ3FypOr3k7pVfZhXFYxPS/g2PBG/sGCK8wOo2nU7YE2/8mk6u5bTxu/qfUlOFvUIAU5jcQ5sXF9t8JjYCFlbbkM9saF+IwgLxnJL0nABM5A5wStGYrn5xwTgv1JvX28=
+	t=1705954839; cv=none; b=al6UNAe/c2nGRoK6uLdCGNHmQ7UMJJySz2JgySFrBnws/w7hYc3u+nfVuS3iq2LCqt+vkIpGH+F4cN7G7nqXJ+1sSLlQm8oh0CWyc0sofWv3Tzwjw/Eoi9/6p55xzEnHKQEZJWJ24rODqROlFw5rMmjRWi6m9aMNpyB9hRiKj3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705954756; c=relaxed/simple;
-	bh=WGRz3yDXQ7ZugsNq5s4km9+e2+Bm1ZZBHh/607Zj9BE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OPKVvZJTLmLPkp91euZQPwj9FlDdUBEdu6zzUERVN4LiLCqFGJDrdMx8XE3SIiEMwa+N47NRyR2QHnkbGGsVErWFFSjSxxrkzIWF80dsKZlWt/NSfu5v0nRSbhGNzJyl4WzSVcuR/mFaou9eCUbmYC6z2jsvnyRb/Brr8VO5DRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=Q6yuwbop; arc=none smtp.client-ip=209.85.161.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-59502aa878aso1620548eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:19:13 -0800 (PST)
+	s=arc-20240116; t=1705954839; c=relaxed/simple;
+	bh=dLNOfAM0vOpUBKxzAhGg/x8vkLaHHzSIuzvAfx08kxM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QSZ2tGMX7J68wDEjqoUzow7vsM56f4s/p5mJ3KhXhGPDgCU9V/23O8QAP2ls6zXKnU56hE+dnxcdzqIg1InwoKlVO56qwbbBiVIlC85QC1K7oJBNuupWi+bS15HlIpy0zP0YVoTXbXYqCCuq1f9/bYMG9O6PMjqcFIadTuiZdy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=er0lMKV+; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5cedfc32250so1743431a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:20:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705954753; x=1706559553; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5NoT11zTLPPNLq7U/0Tn/LKj8E+qKVGOinPojsoujb0=;
-        b=Q6yuwbopu/K3wfuaYkZdL4MgOTZPk2PtmSI1SeWLRA6FZ+epu80wXzq3fmfDH+uNhZ
-         L1vKwXuLgCRYjCpX0nSxaeGxplhWZy5rB1U+VS/PwbcsSWn7vuTuqRPqM953vuDTX37M
-         fICVw5WCc5wKwgEzXJtfYUI2Df8CD0CZBNW0/e6AlpFEdDw8mLvicetK3XhvGG8QCD8p
-         R3AhjD6s4dinROXmUeyLk9+zDMz2tz24kmXXh5EczDaTR2ncgVnIOJLj4gQJIOSbm1Oh
-         JbZTFdTdbSUDlAg3tQs3M9ImIdscJazSt6tlAeRc3gChoXBcXF7+NpKIc1/QcE/SVgEo
-         Hdkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705954753; x=1706559553;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705954837; x=1706559637; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5NoT11zTLPPNLq7U/0Tn/LKj8E+qKVGOinPojsoujb0=;
-        b=TkiNfJxXW+2j6SbfdDXHW3QV1faUDRAQqB+1GeAAs0sevn0kNODaDUP9wcTiV+ZPrE
-         tG5OZ+/9Un62hDlhNvHfUVkmmEpjX2VGFqOo3mcB0qBmYIxZHzEshceODDm5bLeIXQEq
-         AihFFN+QjeCJ8TXNDgusWk7OCs9NZe2XzhycplpipZ9IlMwol84f0EhIhqH5kC0cxm/t
-         Ylt1Ky05gcQmBf3yFrkctUmpJZJwNkIGWXy5Sje0dRvJo2J9FXbleOz578SD16IwKfjV
-         oSX2I/ZVvdth0JbbE0xsSa1jqTyXNXdI9CeRa7s9T1fqFFahvROOK+N+AHbTAuguDpaT
-         Ibiw==
-X-Gm-Message-State: AOJu0YzDKROW0Bz7nwWl072btjIb3YKZSO9jKRVLz6ojp2iBBWNvsmE4
-	Vlp+cPsc5z8/mkQbG1NitOJdXhjBGw3YS2ikptlDw0Bwx5xQPKev1aEngPZqNFo=
-X-Google-Smtp-Source: AGHT+IHda6lcIOzqckRc7eaql4DUk3B6/+M4uucKIEuwx7759ORha0DAlnI5e/7+CNHGPUraRGcvOA==
-X-Received: by 2002:a05:6359:5181:b0:176:5615:3de4 with SMTP id od1-20020a056359518100b0017656153de4mr1316841rwb.6.1705954753008;
-        Mon, 22 Jan 2024 12:19:13 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id pd10-20020a056214490a00b006845032c973sm354776qvb.124.2024.01.22.12.19.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 12:19:12 -0800 (PST)
-Date: Mon, 22 Jan 2024 15:19:06 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>,
-	Chengming Zhou <zhouchengming@bytedance.com>,
-	Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
- zswap_swapoff()
-Message-ID: <20240122201906.GA1567330@cmpxchg.org>
-References: <20240120024007.2850671-1-yosryahmed@google.com>
- <20240120024007.2850671-3-yosryahmed@google.com>
+        bh=4yiVnaa7fFjiQFr9rzWcLPD6FI515d8YZDTG1m7LqNw=;
+        b=er0lMKV+uatFmbQ2Uyr9WBWkwnSKQrATqtESwvBkyu9+i9XtJSWDI/FnzFbUnMV4/7
+         xlpb6WZFAji+LTQzdlXx3v99rL2594zNgrx5ILEe2edqQHT4pxsgrfNGZ6giNrO2DEnD
+         XX71kusHQ14yHTk6ABQWRqGezJGho+A0z/zSdLKAxDQFzZ/131RKcXJlU5XuB2pRdQ5u
+         KBENT6H0Sv00Etb5+8103Fi8EvgD1mFR2mtY/HKDw5BzcK70FvVTciuUgMIvSQrTDwAR
+         7wxOSpqmIEi3Hc7pHxhmad27Qwu75o6xKbNfdKoVDeRk+ebSP7zdpXJJHIgKYfxkKbHC
+         2TeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705954837; x=1706559637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4yiVnaa7fFjiQFr9rzWcLPD6FI515d8YZDTG1m7LqNw=;
+        b=LwIvzioKr8gXf0EIwUGZgsDNaLymfY5E83IgbHZ/NPKTTkVg7I9A4pmvpqKNcMeyJH
+         Z1c1lYAJnERwjthghj2Fw8cywbDFUEulStZqc7QfCGemNWSMkRV+vkCXQNLMD8TPbM0G
+         ytkCSKiJD6fueI+BgR2BJ1clrYBmxcVnovp4qjz/78inSxcEUU28iBPsGRJ0GKtJspaA
+         Fiv8vGflnThIEzzNbVtiKf4iwKzqbGHSs/3mZq605QrbOX/+EERreymQ/xIla62BYNjW
+         icgJM06jz9w+Ti5zuREK56dXhEvEFaIyA7cmdqhXO83yR3cgI7hBgvhHOF9L8+I/JvHL
+         J09g==
+X-Gm-Message-State: AOJu0YxYbVj3rSpNLElOw8EUlOHhsNXzHwrk0rpnbTy4TN+YskHwZW7K
+	QWV9kmpPICJtxh2tTuu23nQG5MJjHqDx/M6aS7agdWxs7e4FfH2eNiamjA7zZS+5d/8g6ecfT91
+	3sLbpxoB0Texq9y8rYpqbSg19qso=
+X-Google-Smtp-Source: AGHT+IGfRRLp0QpMJf2c6UALTE0QEAbr/CTZWAiG37n+VmoEXFSobckpPUKU+13in2atzfiDB52SqVvM9/NXvWp1kUI=
+X-Received: by 2002:a17:90a:65c5:b0:290:a1c8:91e5 with SMTP id
+ i5-20020a17090a65c500b00290a1c891e5mr1193537pjs.61.1705954837336; Mon, 22 Jan
+ 2024 12:20:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240120024007.2850671-3-yosryahmed@google.com>
+References: <20231214223423.1133074-1-yang@os.amperecomputing.com>
+ <1e8f5ac7-54ce-433a-ae53-81522b2320e1@arm.com> <Zav3UK7ESNxCMjyP@casper.infradead.org>
+ <b75cb59a-734f-43d5-b565-fc9bb8c5ed05@arm.com>
+In-Reply-To: <b75cb59a-734f-43d5-b565-fc9bb8c5ed05@arm.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Mon, 22 Jan 2024 12:20:25 -0800
+Message-ID: <CAHbLzko2+v0Urf3BxavV9tRvJ4+zyx6=nhKNN9OdFnB7auSrqg@mail.gmail.com>
+Subject: Re: [RESEND PATCH] mm: align larger anonymous mappings on THP boundaries
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Matthew Wilcox <willy@infradead.org>, Yang Shi <yang@os.amperecomputing.com>, riel@surriel.com, 
+	cl@linux.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 20, 2024 at 02:40:07AM +0000, Yosry Ahmed wrote:
-> During swapoff, try_to_unuse() makes sure that zswap_invalidate() is
-> called for all swap entries before zswap_swapoff() is called. This means
-> that all zswap entries should already be removed from the tree. Simplify
-> zswap_swapoff() by removing the tree cleanup loop, and leaving an
-> assertion in its place.
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+On Mon, Jan 22, 2024 at 3:37=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
+ wrote:
+>
+> On 20/01/2024 16:39, Matthew Wilcox wrote:
+> > On Sat, Jan 20, 2024 at 12:04:27PM +0000, Ryan Roberts wrote:
+> >> However, after this patch, each allocation is in its own VMA, and ther=
+e is a 2M
+> >> gap between each VMA. This causes 2 problems: 1) mmap becomes MUCH slo=
+wer
+> >> because there are so many VMAs to check to find a new 1G gap. 2) It fa=
+ils once
+> >> it hits the VMA limit (/proc/sys/vm/max_map_count). Hitting this limit=
+ then
+> >> causes a subsequent calloc() to fail, which causes the test to fail.
+> >>
+> >> Looking at the code, I think the problem is that arm64 selects
+> >> ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT. But __thp_get_unmapped_area() a=
+llocates
+> >> len+2M then always aligns to the bottom of the discovered gap. That ca=
+uses the
+> >> 2M hole. As far as I can see, x86 allocates bottom up, so you don't ge=
+t a hole.
+> >
+> > As a quick hack, perhaps
+> > #ifdef ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+> > take-the-top-half
+> > #else
+> > current-take-bottom-half-code
+> > #endif
+> >
+> > ?
+>
+> There is a general problem though that there is a trade-off between abutt=
+ing
+> VMAs, and aligning them to PMD boundaries. This patch has decided that in
+> general the latter is preferable. The case I'm hitting is special though,=
+ in
+> that both requirements could be achieved but currently are not.
+>
+> The below fixes it, but I feel like there should be some bitwise magic th=
+at
+> would give the correct answer without the conditional - but my head is go=
+ne and
+> I can't see it. Any thoughts?
+>
+> Beyond this, though, there is also a latent bug where the offset provided=
+ to
+> mmap() is carried all the way through to the get_unmapped_area()
+> impelementation, even for MAP_ANONYMOUS - I'm pretty sure we should be
+> force-zeroing it for MAP_ANONYMOUS? Certainly before this change, for arc=
+hes
+> that use the default get_unmapped_area(), any non-zero offset would not h=
+ave
+> been used. But this change starts using it, which is incorrect. That said=
+, there
+> are some arches that override the default get_unmapped_area() and do use =
+the
+> offset. So I'm not sure if this is a bug or a feature that user space can=
+ pass
+> an arbitrary value to the implementation for anon memory??
+>
+> Finally, the second test failure I reported (ksm_tests) is actually cause=
+d by a
+> bug in the test code, but provoked by this change. So I'll send out a fix=
+ for
+> the test code separately.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Thanks for figuring this out.
 
-That's a great simplification.
-
-Removing the tree->lock made me double take, but at this point the
-swapfile and its cache should be fully dead and I don't see how any of
-the zswap operations that take tree->lock could race at this point.
-
-> ---
-> Chengming, Chris, I think this should make the tree split and the xarray
-> conversion patches simpler (especially the former). If others agree,
-> both changes can be rebased on top of this.
-
-The resulting code is definitely simpler, but this patch is not a
-completely trivial cleanup, either. If you put it before Chengming's
-patch and it breaks something, it would be difficult to pull out
-without affecting the tree split.
-
+>
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 4f542444a91f..68ac54117c77 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -632,7 +632,7 @@ static unsigned long __thp_get_unmapped_area(struct f=
+ile *filp,
+>  {
+>         loff_t off_end =3D off + len;
+>         loff_t off_align =3D round_up(off, size);
+> -       unsigned long len_pad, ret;
+> +       unsigned long len_pad, ret, off_sub;
+>
+>         if (off_end <=3D off_align || (off_end - off_align) < size)
+>                 return 0;
+> @@ -658,7 +658,13 @@ static unsigned long __thp_get_unmapped_area(struct =
+file *filp,
+>         if (ret =3D=3D addr)
+>                 return addr;
+>
+> -       ret +=3D (off - ret) & (size - 1);
+> +       off_sub =3D (off - ret) & (size - 1);
+> +
+> +       if (current->mm->get_unmapped_area =3D=3D arch_get_unmapped_area_=
+topdown &&
+> +           !off_sub)
+> +               return ret + size;
+> +
+> +       ret +=3D off_sub;
+>         return ret;
+>  }
 
