@@ -1,173 +1,115 @@
-Return-Path: <linux-kernel+bounces-33900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E7083700F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:34:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FE0837010
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:34:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96E821C2854A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:34:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94D421C284C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184EC5F544;
-	Mon, 22 Jan 2024 18:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+44kknI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4825F55F;
-	Mon, 22 Jan 2024 18:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B32925F848;
+	Mon, 22 Jan 2024 18:06:25 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11FB55EE9D
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705946782; cv=none; b=rZTynsweiSFzK6R05MsrQZIQPK4TLtUBFg8qSWMS3ExMC84eRDkg8ucGNLYU5XAO8VqD03lMLZbnkhuaEvm9ZLTmf4HV+xqCcSh99ucejJpZg2hwgG/bqeAH/AkDaUgdkIVhWlXlc6KNRC7f/OGbQ0O/ti7uc4E87Y4WMx3Isdg=
+	t=1705946785; cv=none; b=IQoWi2gF+5bEqPVPnMnV1n6PJlWJkE9dWnduW9v8DExr3xDxw4A0zwTUdsicGORU5kOpFXc1sIL0AKas6J4J2jOaLxp4Bem29tWvrYAFwNZSIUIr51vYl2TA39oKzivj8E9ZxYrbXIXBZaxuqcOTyzm/V3eSu/l9+Yl2eF3mmYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705946782; c=relaxed/simple;
-	bh=qrDyQthPZZTKjHUK3BaRkyooNaTHr0ABooQXcmIORQo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g6yi8ZnfdrBMCoHz5f9GstOrzKMXXGhnSYcVze57s2uRthl9YFBYjCg7vM/jiYm8Y6XOyE52FYq6P6B+fHQ3cpclokdzCr+tffnh46qCvl3kkZs4M1Y/f7xmImC6Tdk9UU/wHYguYHemK1lpIk+66s8/8x4a/o+PD7rIGo5AP7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+44kknI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8585BC43394;
-	Mon, 22 Jan 2024 18:06:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705946781;
-	bh=qrDyQthPZZTKjHUK3BaRkyooNaTHr0ABooQXcmIORQo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P+44kknIgGDYv8m/O3mTLyLItJU55Rtb5gFxpjypN10+/ZEXGmmUxwRQjHAlIv/c8
-	 pCx0E/U3QajTejHTcF2O5VxBnLVdEJk2prnWp/3xXGkmB7utitaBIFr5iO5jAsE/o3
-	 OYyTteZjco9WgFPR7gamNwaqutu65BfUGewtFzsysjuGvFz5rfu8Oy7rGRn2Y8iY5s
-	 AQomliXDiCxgKi/N0Q6nJgCeGbSdkfy8phy9qTsdPfsX+mzHX8EWdGhp2EB8PGQEYx
-	 oMwD7KsIVosusXZljtvb6a+JtUyEJzDwUmhfaTbIMPnlDOqZxmTcVLEm/mXIypHtJx
-	 miGEozKLymj3w==
-Date: Mon, 22 Jan 2024 18:06:15 +0000
-From: Conor Dooley <conor@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	heikki.krogerus@linux.intel.com, matthias.bgg@gmail.com,
-	dmitry.baryshkov@linaro.org, neil.armstrong@linaro.org,
-	andersson@kernel.org, nathan@kernel.org, luca.weiss@fairphone.com,
-	tianping.fang@mediatek.com, linux-usb@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v2 1/2] dt-bindings: usb: Introduce ITE IT5205 Alt. Mode
- Passive MUX
-Message-ID: <20240122-delouse-popsicle-a6f94cce9fb4@spud>
-References: <20240119125812.239197-1-angelogioacchino.delregno@collabora.com>
- <20240119125812.239197-2-angelogioacchino.delregno@collabora.com>
- <20240119-remedial-unripe-2a3a46b4f117@spud>
- <9605c20a-12ad-49ad-8114-d59f2f772514@collabora.com>
+	s=arc-20240116; t=1705946785; c=relaxed/simple;
+	bh=Pi4h6swE+i8pYTDukMHiZgPIdJvq2y30molNGDLekRk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Snl53cFx9dLxE78Zi0BR5NNCMtvMQ5vNMMs1HD6d+pG/eNtl/771vUjJUWKZ59TpbaYNad6wHN9orAcWP/dHSRnH/tqiT50amKz3PwqCfbMzvrZj4Zw3meAdMK3iHofwkIrf39Q7NMLsKPd4u16m4zzRyvt7FXgUR+b9KX53B3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E4C9143D;
+	Mon, 22 Jan 2024 10:07:08 -0800 (PST)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB4913F5A1;
+	Mon, 22 Jan 2024 10:06:19 -0800 (PST)
+Message-ID: <93c86af6-7eaa-4cd5-3599-34f2f033a1f5@arm.com>
+Date: Mon, 22 Jan 2024 18:06:18 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nmjJ86xFFhBOL+Dl"
-Content-Disposition: inline
-In-Reply-To: <9605c20a-12ad-49ad-8114-d59f2f772514@collabora.com>
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8 13/24] x86/resctrl: Queue mon_event_read() instead of
+ sending an IPI
+Content-Language: en-GB
+To: babu.moger@amd.com, x86@kernel.org, linux-kernel@vger.kernel.org
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+ shameerali.kolothum.thodi@huawei.com,
+ D Scott Phillips OS <scott@os.amperecomputing.com>,
+ carl@os.amperecomputing.com, lcherian@marvell.com,
+ bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+ baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+ Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+ dfustini@baylibre.com, amitsinght@marvell.com
+References: <20231215174343.13872-1-james.morse@arm.com>
+ <20231215174343.13872-14-james.morse@arm.com>
+ <cf72ab6a-83b7-4609-8dec-7756f8ae5808@amd.com>
+From: James Morse <james.morse@arm.com>
+In-Reply-To: <cf72ab6a-83b7-4609-8dec-7756f8ae5808@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Hi Babu,
+
+On 03/01/2024 19:43, Moger, Babu wrote:
+> On 12/15/23 11:43, James Morse wrote:
+>> Intel is blessed with an abundance of monitors, one per RMID, that can be
+>> read from any CPU in the domain. MPAMs monitors reside in the MMIO MSC,
+>> the number implemented is up to the manufacturer. This means when there are
+>> fewer monitors than needed, they need to be allocated and freed.
+>>
+>> MPAM's CSU monitors are used to back the 'llc_occupancy' monitor file. The
+>> CSU counter is allowed to return 'not ready' for a small number of
+>> micro-seconds after programming. To allow one CSU hardware monitor to be
+>> used for multiple control or monitor groups, the CPU accessing the
+>> monitor needs to be able to block when configuring and reading the
+>> counter.
+>>
+>> Worse, the domain may be broken up into slices, and the MMIO accesses
+>> for each slice may need performing from different CPUs.
+>>
+>> These two details mean MPAMs monitor code needs to be able to sleep, and
+>> IPI another CPU in the domain to read from a resource that has been sliced.
+>>
+>> mon_event_read() already invokes mon_event_count() via IPI, which means
+>> this isn't possible. On systems using nohz-full, some CPUs need to be
+>> interrupted to run kernel work as they otherwise stay in user-space
+>> running realtime workloads. Interrupting these CPUs should be avoided,
+>> and scheduling work on them may never complete.
+>>
+>> Change mon_event_read() to pick a housekeeping CPU, (one that is not using
+>> nohz_full) and schedule mon_event_count() and wait. If all the CPUs
+>> in a domain are using nohz-full, then an IPI is used as the fallback.
+>>
+>> This function is only used in response to a user-space filesystem request
+>> (not the timing sensitive overflow code).
+>>
+>> This allows MPAM to hide the slice behaviour from resctrl, and to keep
+>> the monitor-allocation in monitor.c. When the IPI fallback is used on
+>> machines where MPAM needs to make an access on multiple CPUs, the counter
+>> read will always fail.
+
+> Reviewed-by: Babu Moger <babu.moger@amd.com>
 
 
---nmjJ86xFFhBOL+Dl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks!
 
-On Mon, Jan 22, 2024 at 11:27:11AM +0100, AngeloGioacchino Del Regno wrote:
-> Il 19/01/24 17:18, Conor Dooley ha scritto:
-> > On Fri, Jan 19, 2024 at 01:58:11PM +0100, AngeloGioacchino Del Regno wr=
-ote:
-> > > Introduce a binding for the ITE IT5205 Alternate Mode Passive MUX,
-> > > used for connecting, disconnecting and switching orientation and
-> > > control the SBU signals for alternate modes on USB Type-C ports.
-> > >=20
-> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@=
-collabora.com>
-> > > ---
-> > >   .../devicetree/bindings/usb/ite,it5205.yaml   | 72 ++++++++++++++++=
-+++
-> > >   1 file changed, 72 insertions(+)
-> > >   create mode 100644 Documentation/devicetree/bindings/usb/ite,it5205=
-=2Eyaml
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/usb/ite,it5205.yaml b/=
-Documentation/devicetree/bindings/usb/ite,it5205.yaml
-> > > new file mode 100644
-> > > index 000000000000..36ec4251b5f2
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/usb/ite,it5205.yaml
-> > > @@ -0,0 +1,72 @@
-> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/usb/ite,it5205.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: ITE IT5202 Type-C USB Alternate Mode Passive MUX
-> > > +
-> > > +maintainers:
-> > > +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.=
-com>
-> > > +  - Tianping Fang <tianping.fang@mediatek.com>
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: ite,it5205
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  vcc-supply:
-> > > +    description: Power supply for VCC pin (3.3V)
-> > > +
-> > > +  mode-switch:
-> > > +    description: Flag the port as possible handle of altmode switchi=
-ng
-> > > +    type: boolean
-> > > +
-> > > +  orientation-switch:
-> > > +    description: Flag the port as possible handler of orientation sw=
-itching
-> > > +    type: boolean
-> > > +
-> > > +  ite,ovp-enable:
-> > > +    description: Enable Over Voltage Protection functionality
-> > > +    type: boolean
-> >=20
-> > Bitta devil's advocacy perhaps, but why is this DT property? Is it not
-> > known whether or not this is supported based on the compatible, and
-> > whether or not to enable it is a decision for the operating system to
-> > make?
-> >=20
-> >=20
->=20
-> AFAIK, not all board designs can use the OVP. On some, this may be unstab=
-le - the
-> use case where this can be safely enabled is when there's nothing in betw=
-een the
-> mux and the controller, and between the mux and the port.
+James
 
-Okay, if it varies based on the configuration that makes sense. Perhaps
-in the future consider mentioning stuff like that in the commit message.
-
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
---nmjJ86xFFhBOL+Dl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa6ulwAKCRB4tDGHoIJi
-0teFAQDYntozsnG0qrbeJtl0OkXFU7kXZH/5/2m68HTIZLIOKQEA0vZa72Ejv9TG
-DZbeNEl/1O99qdsZnvfvk/zLcQdjyQ4=
-=xdmh
------END PGP SIGNATURE-----
-
---nmjJ86xFFhBOL+Dl--
 
