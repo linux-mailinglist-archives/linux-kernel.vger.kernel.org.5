@@ -1,130 +1,170 @@
-Return-Path: <linux-kernel+bounces-33820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBA51836EF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:07:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 769E9837008
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:32:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A2E91C2965E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:07:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60372B29CEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213C3657C7;
-	Mon, 22 Jan 2024 17:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B02655C21;
+	Mon, 22 Jan 2024 17:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vMJTWOsG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="RX/YM9Pw"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDBB46B99;
-	Mon, 22 Jan 2024 17:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21AF1366;
+	Mon, 22 Jan 2024 17:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705944541; cv=none; b=vFN2kjXvT/lAm7BSGdmzv7afn+LwiRH1rL6RkV8DHPgt6BjDoGipIA3Jt74f7fFNRSDaC+0x71Gabl3QPnSZPC5eVer1T/rVilgLRYpwJPcxNGY0EicFDOCn6J3UvoJgrbhwQofpcVdUUp2KI7We4KTIQcryRn0XCt4X9Zj68Cg=
+	t=1705944612; cv=none; b=uuceAu28MuarZOoszuwrF8Fmc2A4kI/6lUCdM8bDdRlnDXhSn7F11WD1dNT4pVKOv2NNV6Rryadlk4vBzz60sAoQr3mH7ziBwCMuKumFQQEbc+MWZExKPFXVoJvVjmPy1cxQp9hFEw8Fga4UuvQfjEegH0IY0Ep13Hu70pT8R4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705944541; c=relaxed/simple;
-	bh=6FeAIXLL4BMXxP3NQlpVvmV8ek7N+/33fe5B2RSSNM4=;
+	s=arc-20240116; t=1705944612; c=relaxed/simple;
+	bh=oisddIVCSvEu5TDLFqhbkrWXTfVLsyPwSrs8LV1BFts=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oLEc/Hnw+hGbkgvfmKgxDroTfUcqXyrDgbgZg9gYUHVeoa3FZr2GcSwVm+YtMdzYHKMMrSgxD9RYP82fNai2Pdg6oRQLgRh6ECIJLSI7efle/V2wUVdeuWr/Kx36a7xwPw2jvc5fW3q39GwRspbLiWkIYYQqJULgGH+ze22qgA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vMJTWOsG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DADACC43390;
-	Mon, 22 Jan 2024 17:29:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705944540;
-	bh=6FeAIXLL4BMXxP3NQlpVvmV8ek7N+/33fe5B2RSSNM4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vMJTWOsGivJR62sg5NtIpQ4+SkzwUTtajCJivqs3X5LFdwl1WJMKpC9/sPpycZ7RE
-	 EMVL/5OB5lQHH2qXPZWRHyt9Z2IgGJB+gWzhEEVTd/XAC83KWiS45P087CIHvjBXMx
-	 doyKBdZB9FWdUx53efJBAi/UpMov+/tW9Ysm4o9ZRzOsENuhC3PuDGm7MKF/9BeY4j
-	 PnaV01wZHf/fxQLG5NQIEpUKVoNRzb1jarK1IBUSJsljfjam5k7Xcda5G/vWeCPvE8
-	 sSwuyaHTRs/FpHfSkZte7dAYMmW7pAXzevefBWDpXkGwnu6igaTC0TyUN8yjFcVLB/
-	 cMAsPztStzxaA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rRy6i-000000000rG-2U1d;
-	Mon, 22 Jan 2024 18:29:12 +0100
-Date: Mon, 22 Jan 2024 18:29:12 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] ASoC: qcom: sc8280xp: limit speaker volumes
-Message-ID: <Za6l6EP7OqXPU9mj@hovoldconsulting.com>
-References: <20240119112420.7446-1-johan+linaro@kernel.org>
- <20240119112420.7446-3-johan+linaro@kernel.org>
- <d54d3640-49bf-4a2f-903b-4beeb0ebd56c@sirena.org.uk>
- <Za4cR90XoAaATq8X@hovoldconsulting.com>
- <aca2b125-acf8-4791-a3eb-ea19826d3ee4@sirena.org.uk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ov81L58ca6egF+63MSD9qAnm/gt7yU9hfqQGH2NB9h6eeXp3+QQoDiHmgYk83OxMjJKVHfUUMfYSCu8CXkg8ltGz+qIKPUPPgvXn0zbwrHzMiG/5vC4PFuSRBmrOgwAmdhQCpo/05n3H7VT3uICwFYbfVWtPP99rs7a4KObis4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=RX/YM9Pw; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=tqeHdyzk9+LqVKL+Enz5ftndgdvcVseYfwgC7K5xJtc=; b=RX/YM9PwgXxnH0nCr+3iTk8zEu
+	evRNa8qak5GpCSjIuF9kG8Ay111DoUzbNpfuCblFeFkBV/fTl433eI5+zAwCHTum0KS01/4Egw5yl
+	CtcuTmz+CxuTQRXWXGvmhc7nGHZlb2VvQz+1yrMEKR7yDDAIdbmQaT5B4MQMK5DwYKhXFzXm9VySw
+	jZW0uiJxM2NHvoRc0cunafkRBO7+IXV3Ba5DRwtXMnzKPSFxTpf0q/YJhA0/0zbu9jdfzOawjKtoM
+	VbvdA1aeq1giRiAjuDGeujTIeI1BX41XMKWx1yFIWgavtQCfYdrinAa3q975nzSh5mU9bJXuzi2RC
+	xS+GfMUg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:34032)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rRy7a-0001Gs-09;
+	Mon, 22 Jan 2024 17:30:06 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rRy7Z-0001C6-GD; Mon, 22 Jan 2024 17:30:05 +0000
+Date: Mon, 22 Jan 2024 17:30:05 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 03/21] ACPI: processor: Register CPUs that are
+ online, but not described in the DSDT
+Message-ID: <Za6mHRJVjb6M1mun@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOg2-00Dvjk-RI@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0ju1JHgpjuFLHZVs4NZiARG6iBZN_wza6c2e0kDhZjK0w@mail.gmail.com>
+ <ZaURtUvWQyjYfiiO@shell.armlinux.org.uk>
+ <20240122160227.00002d83@Huawei.com>
+ <CAJZ5v0hamuXJ_w-TSmVb=5jGide=Lb7sCjbzzNb_rFuPrvkgxQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zuPb1ptY6OeW5Twe"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aca2b125-acf8-4791-a3eb-ea19826d3ee4@sirena.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0hamuXJ_w-TSmVb=5jGide=Lb7sCjbzzNb_rFuPrvkgxQ@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
+On Mon, Jan 22, 2024 at 05:22:46PM +0100, Rafael J. Wysocki wrote:
+> On Mon, Jan 22, 2024 at 5:02 PM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Mon, 15 Jan 2024 11:06:29 +0000
+> > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> >
+> > > On Mon, Dec 18, 2023 at 09:22:03PM +0100, Rafael J. Wysocki wrote:
+> > > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > > > >
+> > > > > From: James Morse <james.morse@arm.com>
+> > > > >
+> > > > > ACPI has two descriptions of CPUs, one in the MADT/APIC table, the other
+> > > > > in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Processors"
+> > > > > says "Each processor in the system must be declared in the ACPI
+> > > > > namespace"). Having two descriptions allows firmware authors to get
+> > > > > this wrong.
+> > > > >
+> > > > > If CPUs are described in the MADT/APIC, they will be brought online
+> > > > > early during boot. Once the register_cpu() calls are moved to ACPI,
+> > > > > they will be based on the DSDT description of the CPUs. When CPUs are
+> > > > > missing from the DSDT description, they will end up online, but not
+> > > > > registered.
+> > > > >
+> > > > > Add a helper that runs after acpi_init() has completed to register
+> > > > > CPUs that are online, but weren't found in the DSDT. Any CPU that
+> > > > > is registered by this code triggers a firmware-bug warning and kernel
+> > > > > taint.
+> > > > >
+> > > > > Qemu TCG only describes the first CPU in the DSDT, unless cpu-hotplug
+> > > > > is configured.
+> > > >
+> > > > So why is this a kernel problem?
+> > >
+> > > So what are you proposing should be the behaviour here? What this
+> > > statement seems to be saying is that QEMU as it exists today only
+> > > describes the first CPU in DSDT.
+> >
+> > This confuses me somewhat, because I'm far from sure which machines this
+> > is true for in QEMU.  I'm guessing it's a legacy thing with
+> > some old distro version of QEMU - so we'll have to paper over it anyway
+> > but for current QEMU I'm not sure it's true.
+> >
+> > Helpfully there are a bunch of ACPI table tests so I've been checking
+> > through all the multi CPU cases.
+> >
+> > CPU hotplug not enabled.
+> > pc/DSDT.dimmpxm  - 4x Processor entries.  -smp 4
+> > pc/DSDT.acpihmat - 2x Processor entries.  -smp 2
+> > q35/DSDT.acpihmat - 2x Processor entries. -smp 2
+> > virt/DSDT.acpihmatvirt - 4x ACPI0007 entries -smp 4
+> > q35/DSDT.acpihmat-noinitiator - 4 x Processor () entries -smp 4
+> > virt/DSDT.topology - 8x ACPI0007 entries
+> >
+> > I've also looked at the code and we have various types of
+> > CPU hotplug on x86 but they all build appropriate numbers of
+> > Processor() entries in DSDT.
+> > Arm likewise seems to build the right number of ACPI0007 entries
+> > (and doesn't yet have CPU HP support).
+> >
+> > If anyone can add a reference on why this is needed that would be very
+> > helpful.
+> 
+> Yes, it would.
+> 
+> Personally, I would prefer to assume that it is not necessary until it
+> turns out that (1) there is firmware with this issue actually in use
+> and (2) updating the firmware in question to follow the specification
+> is not practical.
+> 
+> Otherwise, we'd make it easier to ship non-compliant firmware for no
+> good reason.
 
---zuPb1ptY6OeW5Twe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If Salil can't come up with a reason, then I'm in favour of dropping
+the patch like already done for patch 2. If the code change serves no
+useful purpose, there's no point in making the change.
 
-On Mon, Jan 22, 2024 at 04:05:37PM +0000, Mark Brown wrote:
-> On Mon, Jan 22, 2024 at 08:41:59AM +0100, Johan Hovold wrote:
-> > On Mon, Jan 22, 2024 at 12:03:55AM +0000, Mark Brown wrote:
->=20
-> > > This doesn't apply against current code, please check and resend.
->=20
-> > These patches are based on Linus's tree after merging the sound updates
-> > and I just verified that they apply cleanly to 6.8-rc1.
->=20
-> > I couldn't find anything related in either linux-next or your ASoC tree
-> > that should interfere.
->=20
-> > Could you please try again or let me know which branch to rebase on?
->=20
-> I was applying it against v6.8-rc1.
-
-That's what I assumed, but I still don't understand why it doesn't apply
-on your end:
-
-	$ git checkout -b tmp v6.8-rc1
-	$ b4 am 20240119112420.7446-1-johan+linaro@kernel.org
-	...
- 	$ git am ./v4_20240119_johan_linaro_asoc_qcom_volume_fixes_and_codec_clea=
-nups.mbx
-	Applying: ASoC: codecs: wsa883x: fix PA volume control
-	Applying: ASoC: qcom: sc8280xp: limit speaker volumes
-	Applying: ASoC: codecs: lpass-wsa-macro: fix compander volume hack
-	Applying: ASoC: codecs: wcd9335: drop unused gain hack remnant
-
-And if I generate patches from this branch, the diffs are identical to
-the v4 patches I sent.
-
-Could you please try again, and tell me which patch fails to apply and
-how it fails?
-
-Johan
-
---zuPb1ptY6OeW5Twe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCZa6l5AAKCRALxc3C7H1l
-CDS1AP9v09QUe0W/JBDJqz8b7Z8aLnAKxR6EToN186tpJEhmQQD/ZITVhd2YTnO0
-WgezFd6GQaMqTSjOQhoI/Zrt8Qu8Vw8=
-=IyN/
------END PGP SIGNATURE-----
-
---zuPb1ptY6OeW5Twe--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
