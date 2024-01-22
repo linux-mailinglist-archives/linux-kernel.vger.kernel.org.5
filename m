@@ -1,56 +1,64 @@
-Return-Path: <linux-kernel+bounces-33884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 502DD836FEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B280836FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:29:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE421287848
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:28:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD00A2866C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E5E51C4C;
-	Mon, 22 Jan 2024 18:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2864152F8A;
+	Mon, 22 Jan 2024 18:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OYOl3uZ/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p31vfK3S"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4785151026;
-	Mon, 22 Jan 2024 18:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E259553E18;
+	Mon, 22 Jan 2024 18:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705946420; cv=none; b=oGBjMTEM2fqxtuuJAIqHzYejyKV17yWJ+iUuvxxMYP6jJ/x3XzzRNNCEG07dSJLtJrz0uPQkK/XeHpVSv/NMGidwJCbR6QzrpKB9rcOTI577l9+qPVZBRgXaSPKMa5np68bIleWo9/dW4KUKm4++tvLNTtN/0XCzfRzIvdZmbzQ=
+	t=1705946482; cv=none; b=jUTVN4XEe5txGtljnv7JSSLWWHAqnjwpiJXLSJvAcrJNBXAhN35lfv0V02jwYXdkFp8z2pI2A9ANfQiMEI9KfPP/dWITrSSE5q8M8JD0oo+73/RasEYQy7pBRijLS2kVNV29eLS7cGBHrSBSwW71GAouRFMrNP+7QpRkttu7vhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705946420; c=relaxed/simple;
-	bh=MEx6fJrAlgplstfDKSw5stdpiSQ0xarAZZIl0igTa4I=;
+	s=arc-20240116; t=1705946482; c=relaxed/simple;
+	bh=oEbbC2q8F+AF5T397yDBPdDm6rnnpagXKXo3DxyprZQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g5SsZOZpwaZTygPirr3oz8z/+9/h9yjUa01jcCy/eeblX+/zbR/sG7xLBcfAtL2j0uHVLorNVAL+jLNawySGt6sjomZ/K9hMbCsfjpLifZDPMJWJaKPAUyz0g/oZOVcUWlGqTIBPMZSJt3joSQUzR+G8Rrivfp0ltRg5yzDlAd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OYOl3uZ/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4213C433C7;
-	Mon, 22 Jan 2024 18:00:16 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=pu4eVOasi3zcTobfqyHSJ65aSDnzqX/yGrkWMe7/8j4R0sZB/M5dql8sXuim1oOVzMkFPrAhoOUoLnqdk7uSe0nkUmXm0vvHT5J0Zh5aVYGoXQxztD4ps3kliLkBVOsmTqa1qTG0Tr633IhX5GwueHsBD2iEAh2WPo6xWw+6MFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p31vfK3S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5793C43390;
+	Mon, 22 Jan 2024 18:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705946419;
-	bh=MEx6fJrAlgplstfDKSw5stdpiSQ0xarAZZIl0igTa4I=;
+	s=k20201202; t=1705946481;
+	bh=oEbbC2q8F+AF5T397yDBPdDm6rnnpagXKXo3DxyprZQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OYOl3uZ/r/W9FEr43Av1g/VvFBhS8477EX6xGQkw18n+z38oKrbqIYspDxp8hpZNC
-	 BNHKIYJ37+3uERL9o6h/aasj4a4EAZqwOVAtqRrgBs/KkmbTVopfHclCP/6XRMpGP5
-	 5PT+1vxqw3g6/F78QXEGVhjJCsR8xbDjOLTYz4R6h0A1h1pl73Yr11z2h+GW0tgtqr
-	 txju67JyQsoOegaCTfrJej8qmplWdsXedmkgCXf3Ainb0Tm34XkCyrrtXQ86FFInJC
-	 WLpvY/Q+c461BzVMh3YuEUmWXf/siqJT1PCtmm98V733zIw306ykojjpJY7308x54c
-	 +xDY5yviZFq3Q==
-Date: Mon, 22 Jan 2024 18:00:14 +0000
+	b=p31vfK3SVEwVWGy0cxtiYygJLuWHKJBYZu7xOHxVjG8KP+mp3Uvi3Y/6pJ1jo1Cp0
+	 biFPvU5XjWR/c8YkX5BEdpY3t59I6rW/TCGwe2VPVlboWGtV4gihKee2N95GDIkp+L
+	 XhlgkAGmHCZCVaPvXDkUpkVZQ2bldl+UmdV5s4iCaQB9x6b2FdMDNJsDsqDqhq4kDO
+	 RYvan+wEjYsmLppfsMxuJ+9ywQeI4a5bag4vgsMazZtQ1HlLSZCQeQztlh4hn8+4Rx
+	 kSHKQJTtfT1PYnxs5Tl7SeN9FnaxpuIVH4Lgb43FVHVRkXwzShZYXymmF3oiPdTddT
+	 ttSYie78V8X3A==
+Date: Mon, 22 Jan 2024 18:01:15 +0000
 From: Conor Dooley <conor@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-	KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
-	scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: Added schema for "nuvoton,nau8325"
-Message-ID: <20240122-daunting-woof-19fac5689bb2@spud>
-References: <20240122095650.60523-1-wtli@nuvoton.com>
+To: Mathieu Othacehe <othacehe@gnu.org>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+	Primoz Fiser <primoz.fiser@norik.com>,
+	Stefan Wahren <wahrenst@gmx.net>,
+	Christoph Stoidner <c.stoidner@phytec.de>,
+	Wadim Egorov <w.egorov@phytec.de>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/3] dt-bindings: gpio: gpio-vf610: add gpio-line-names
+Message-ID: <20240122-earmuff-naming-b3a09908d14a@spud>
+References: <20240122095306.14084-1-othacehe@gnu.org>
+ <20240122095306.14084-3-othacehe@gnu.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,150 +66,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ozOZKuBm4zqCXBiO"
+	protocol="application/pgp-signature"; boundary="vjIPSd7XCLzMGIkr"
 Content-Disposition: inline
-In-Reply-To: <20240122095650.60523-1-wtli@nuvoton.com>
+In-Reply-To: <20240122095306.14084-3-othacehe@gnu.org>
 
 
---ozOZKuBm4zqCXBiO
+--vjIPSd7XCLzMGIkr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 05:56:49PM +0800, Seven Lee wrote:
-> Added a DT schema for describing nau8325 audio amplifiers.
+On Mon, Jan 22, 2024 at 10:53:05AM +0100, Mathieu Othacehe wrote:
+> Describe common "gpio-line-names" property to fix dtbs_check warnings
+> like:
 >=20
-> Signed-off-by: Seven Lee <wtli@nuvoton.com>
-> ---
->  .../bindings/sound/nuvoton,nau8325.yaml       | 82 +++++++++++++++++++
->  1 file changed, 82 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau83=
-25.yaml
+> /home/mathieu/linux/arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dt=
+b:
+> gpio@43830000: 'gpio-line-names' does not match any of the regexes:
+> '^.+-hog(-[0-9]+)?$', 'pinctrl-[0-9]+' from schema $id:
+> http://devicetree.org/schemas/gpio/gpio-vf610.yaml#
 >=20
-> diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml=
- b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
-> new file mode 100644
-> index 000000000000..9105985357aa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
-> @@ -0,0 +1,82 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/nuvoton,nau8325.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NAU8325 audio Amplifier
-> +
-> +maintainers:
-> +  - Seven Lee <WTLI@nuvoton.com>
-> +
-> +allOf:
-> +  - $ref: dai-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: nuvoton,nau8325
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  nuvoton,vref-impedance:
+> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
 
-I know this property already has users, but this is a new device and you
-are writing a new driver from scratch, could you instead call it
-"nuvoton,vref-impedance-ohms" and make the options the impednances
-themselves?
-
-The absence of the property could then be used to indicate that it is an
-open circuit?
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      VREF impedance selection.
-> +    enum:
-> +      - 0 # Open
-> +      - 1 # 25kOhm
-> +      - 2 # 125kOhm
-> +      - 3 # 2.5kOhm
-> +    default: 2
-> +
-> +  nuvoton,dac-vref:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      DAC Reference Voltage Setting.
-> +    enum:
-> +      - 0 # VDDA
-> +      - 1 # VDDA*1.5/1.8V
-> +      - 2 # VDDA*1.6/1.8V
-> +      - 3 # VDDA*1.7/1.8V
-
-I would also rather than this enum was used to have sensible values for
-the enum itself (which I suppose means strings here), rather than the
-register values. Seeing "nuvoton,dac-vref =3D <2>" in a devicetree is not
-very meaningful IMO.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Cheers,
 Conor.
 
-> +    default: 2
-> +
-> +  nuvoton,alc-enable:
-> +    description:
-> +      Enable digital automatic level control (ALC) function.
-> +    type: boolean
-> +
-> +  nuvoton,clock-detection-disable:
-> +    description:
-> +      When clock detection is enabled, it will detect whether MCLK
-> +      and FS are within the range. MCLK range is from 2.048MHz to 24.576=
-MHz.
-> +      FS range is from 8kHz to 96kHz.
-> +    type: boolean
-> +
-> +  nuvoton,clock-det-data:
-> +    description:
-> +      Request clock detection to require 2048 non-zero samples before en=
-abling
-> +      the audio paths. If set then non-zero samples is required, otherwi=
-se it
-> +      doesn't matter.
-> +    type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +        codec@21 {
-> +            compatible =3D "nuvoton,nau8325";
-> +            reg =3D <0x21>;
-> +            nuvoton,vref-impedance =3D <2>;
-> +            nuvoton,dac-vref =3D <2>;
-> +            nuvoton,alc-enable;
-> +            nuvoton,clock-det-data;
-> +        };
-> +    };
+> ---
+>  Documentation/devicetree/bindings/gpio/gpio-vf610.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml b/Doc=
+umentation/devicetree/bindings/gpio/gpio-vf610.yaml
+> index a27f92950257..7230ba1a386a 100644
+> --- a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+> @@ -50,6 +50,7 @@ properties:
+>      const: 2
+> =20
+>    gpio-controller: true
+> +  gpio-line-names: true
+> =20
+>    clocks:
+>      items:
 > --=20
-> 2.25.1
+> 2.41.0
 >=20
 
---ozOZKuBm4zqCXBiO
+--vjIPSd7XCLzMGIkr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa6tLgAKCRB4tDGHoIJi
-0kInAQD2wiz5P1EmfjIPuiLPGoHAsvUKWrqo4jhy7dEavxbbPQEAsqYcBXruVOBh
-gFGDyeRQY1oic2J6Iyn8ZbI3S+PANgc=
-=vEaT
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa6tawAKCRB4tDGHoIJi
+0u47APwMrEzzVWM0oQscLmV+zo/2+o2UzPHxSk3CEgmvDLnVGwEA8bDPZyO2/lhI
+DGlTeOilh65nzS752iylG9w07c5a5wY=
+=xD75
 -----END PGP SIGNATURE-----
 
---ozOZKuBm4zqCXBiO--
+--vjIPSd7XCLzMGIkr--
 
