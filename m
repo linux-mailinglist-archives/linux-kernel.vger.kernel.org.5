@@ -1,211 +1,183 @@
-Return-Path: <linux-kernel+bounces-33164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD905836579
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D74983657C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:33:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D704283913
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:33:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE514285250
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48BB83D56A;
-	Mon, 22 Jan 2024 14:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CED3D3B6;
+	Mon, 22 Jan 2024 14:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BJauv7QT"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Dd4yie9m"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F63F3D55A
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:32:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705933969; cv=fail; b=dcIboaTifWD4l+iDk1MGyHtI0C2lo7RwLDa6xprvpRXEAG+wvXt2KHQcnapYLdO9SomS2n9LOUlhg05//n5+Nz+GlaWb1AXHjbDPSCnopzGAs4V6dOzz68TJXB/gkxhDnLYzcWsMq9imicag09V/WZtsQriO+Mc/sKmd07xFwbU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705933969; c=relaxed/simple;
-	bh=DCi/Jb/jpJ3QRqxttBEwraDlwFNp4zTXIzBjIppWJkU=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=qmafCXq84VAUNk7kS4sA3RzdrBygvdghroOf4eO5T0h1C6Tjdnluuq+bzdfLo1TIGXkfMk9eCeiYycsS/pDwEJysYkLvFtNGCwEJaSrZqMhi9AOkxl31ULXYtx9lK9lJfOlsD60S1l6BML6zJ5kPxVmBOyvrNRTOgcrKg9bdyhc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BJauv7QT; arc=fail smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705933967; x=1737469967;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=DCi/Jb/jpJ3QRqxttBEwraDlwFNp4zTXIzBjIppWJkU=;
-  b=BJauv7QTZDSGn/U12W6vJNf07nNIyHmwl16BwObeHtC48FgxQtFlku+u
-   NcBeSOhb/1AAjpsABmf6wNGfLuXFhKsBZbH2FuUZCPFCTTorDKuQLhon2
-   pVo9vHwA9SUdDwwAhkqujlMtWj7wmx0fMQXzYr8QPrixIQX0PD/soEZ/6
-   7BLXLDjwZMsng3UAtXqNHTV5s2yyHVIfcqiqyPRAeeF4Zvzq97AiziBdS
-   hWIXzoboBOZOdtPDYKeYyBXniNsjdf2XZRbOfossyrZYevYAJFCAUsyAN
-   zY9syk6bAZWYbc3zKeZDuV//kilX0+Vn9xn5Msfbu+B0zx+qR9K+xE8rE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="14563360"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="14563360"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 06:32:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="1307649"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Jan 2024 06:32:46 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 22 Jan 2024 06:32:45 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 22 Jan 2024 06:32:45 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 22 Jan 2024 06:32:45 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N+VhSgm8qcIU0LVf84qeoVJipiAisCqwYcZ+yz8Vurx9p4LiZqwxT7s5ooMd91ClYNUGG0KHO6ZZQ0V9fm8ReTr0oc/zlAyeEJrGuvfiMuNVQJDZ13IpXE5ek/ny9uxOowiIgckiiWBQb1F91BtTlMLsxM3chLqp8KqnjfO3Wb2WQpV/XFi9kUCSqpvjb6lzfpGMwEm4b6SaqyeetFQ7NWVu/LlT9wGFc9wIDfDf/RCWW6ZPs23cFrCid96y5JI9/hPHhIROQLXMQjh7BXSrcOmG+F9+mw/0YdChyFvd7duwmtx1NQ5lM3I80rZcBBXdUkUxVvqQFadu3jnPDdFCqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QqkYcZxfZJ5rJ1jin75o8ATzWD+Qlhj8l4gAwN0xizY=;
- b=RG4lOd311ZjC2r8KSymX1hZIbCCY/6w1qq6BlPIRcCayCMFEJwJiVnJYYUqudEwjRh83fR72eZwKk7G/3PqRm8SBwbkqWXrFdAEBHidBxr0FhHDHUcN38najoXHpn8skaROHmhVac4DbdZNNuSUOZiVQvhEIaLRTLNXdQvjisdPSItNIrkoRg6DfdnjdT3rXyJEa0teNCedH/lzM4b/ezKxE3+5t1xMkCUD/754hz1O1W+uRT9ltxkB5qIBext/dIGfNMdUvquPxkmphcd62N236bOAo1ttPcM5Egbeum3MyCf4qYFE2sJlDlLuyaxN5AN0k0d8Pburz34o2BD/t8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH3PR11MB8414.namprd11.prod.outlook.com (2603:10b6:610:17e::19)
- by SN7PR11MB8067.namprd11.prod.outlook.com (2603:10b6:806:2e8::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Mon, 22 Jan
- 2024 14:32:40 +0000
-Received: from CH3PR11MB8414.namprd11.prod.outlook.com
- ([fe80::ed34:4cf2:df58:f708]) by CH3PR11MB8414.namprd11.prod.outlook.com
- ([fe80::ed34:4cf2:df58:f708%4]) with mapi id 15.20.7202.034; Mon, 22 Jan 2024
- 14:32:40 +0000
-Date: Mon, 22 Jan 2024 22:32:33 +0800
-From: kernel test robot <lkp@intel.com>
-To: ruanjinjie <ruanjinjie@huawei.com>
-CC: <oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>, "Lyude
- Paul" <lyude@redhat.com>
-Subject: drivers/gpu/drm/nouveau/dispnv50/disp.c:134:31: sparse: sparse:
- subtraction of different types can't work (different address spaces)
-Message-ID: <Za58gfqV9jOmFRcg@rli9-mobl>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SG2PR04CA0160.apcprd04.prod.outlook.com (2603:1096:4::22)
- To CH3PR11MB8414.namprd11.prod.outlook.com (2603:10b6:610:17e::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DFB83D55B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705933970; cv=none; b=YclioGjBpyG44r+/h4bkqwG69eyX6NUT8aqjs8QHidWVCGQsT/zpbPtOmQwXqyTG9IWU938N9/oBWo8LlTQRzLppBrQe8OJikdJ6Xd5WoBqaaZ3839PFlt7yazyVInjYybzsWL0CCdF6LPnYfNn28bkm/MXhvpimQUR+NDU13Xk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705933970; c=relaxed/simple;
+	bh=P1NuWwg0ehuf+T8vDagxKBny0SgDrfNwIdh6z8AQNDI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qEse3AhBUzVlkqdGN4SAkUUXKUCPoptVmPUQKPP64WcwcBGiVogYYez7YsAX5plBHHoldx3aec7ZgMGMXVYnvwm+L4hVvRwoj+nRkGihh8UwMhpksBt8lG+39TuPeWlEjCpsVt5xzRLubib8y3j6KZ6YlPQcRd9645FZIuGRZwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Dd4yie9m; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55c1ac8d2f2so1559436a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 06:32:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705933967; x=1706538767; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=57hHxLCu6iEEROEwucBeUB8JIMVHa7C+K5VoPIscvfw=;
+        b=Dd4yie9moxOcNIUfNxjBHarBvCCLP6oUw3cvFYwlsb2GppWuAafpJ5JICmcDFnfpJP
+         xwqlyMQZRten4P85zu2SIp9K+WPpLtGI84iiO0fXLZbdCnFVwdON3rTTJNfILluWyfX1
+         d7Yn/P+FW8i8tr1lqxfbpMIhzZmrJS5/QxcjXpu6Kip0lSRQiaKDFw0ZzzOUCnao76sz
+         Vqy8gj0TaNRN6865WMjdMgopaSJqafrIakqFRJxvW20b3m1mvk99VyONB0w/hFeIcHog
+         hOYEZ0LikpKGUYTAdHJoaV2Rm7zTp13wDFvXu6d8m3wHNyIp1ErbRAhDpwS/M5CIOFRn
+         VaWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705933967; x=1706538767;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=57hHxLCu6iEEROEwucBeUB8JIMVHa7C+K5VoPIscvfw=;
+        b=DJNhGOOs5iUa4C0WFtd8VxwuKz1U4cTvS/T+xQ8mg6DaAdYbSCnCkEvd4H2JgLjTQo
+         wc4cTWVJV/QEaiejBUl5nkjowS43OlQoEtrY1vMY9v68xh9WvdD+Q5Cjq6dbI3Sv/axF
+         EqhsBNaeob3o9wOVe3u4MyZlWeoKwXSfKtzPZft5DdF6vJSGen+AOURa9EpizRk2PUWk
+         GrUvVGnz8ji+p/5M7Bb6TyEZgGLzSt+8jqKzLNQl0RihmFnmLCNSXRXKx750AHccBm1w
+         y9GULM8IfN/Znx7Rh4OGQscoVQxTAL2IShBolnRIQNDpOK4O0RtKdMWsPgo/ZisXw49T
+         HHwg==
+X-Gm-Message-State: AOJu0YxetYJhFuY7YFWcxzlptZ9B/l85GxgvKWodLhN8/OUKepcp9+ed
+	PdHMSlhCZaze5s4JDKTPnBxoBJcrz8HtC/A3dFH0vvd5gpdtSgpYqEsrBkTu71s=
+X-Google-Smtp-Source: AGHT+IHXnR7VO4ZsjYPbwRylj6GzKSqKjx7Pe/tHHzMmNRyMjKhVQNqj220Us6olAwcvZKe/xJMX0w==
+X-Received: by 2002:aa7:c68f:0:b0:55a:399d:e93e with SMTP id n15-20020aa7c68f000000b0055a399de93emr2064390edq.72.1705933967590;
+        Mon, 22 Jan 2024 06:32:47 -0800 (PST)
+Received: from [192.168.231.132] (178235179218.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.218])
+        by smtp.gmail.com with ESMTPSA id c15-20020a0564021f8f00b005598e3d6d23sm8124302edc.16.2024.01.22.06.32.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 06:32:46 -0800 (PST)
+Message-ID: <548e2f24-a51e-4593-9463-09506488c70e@linaro.org>
+Date: Mon, 22 Jan 2024 15:32:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR11MB8414:EE_|SN7PR11MB8067:EE_
-X-MS-Office365-Filtering-Correlation-Id: 468dc3b1-9772-4613-cca7-08dc1b56fcec
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xfl9ppiEXhk9/eCcce12IBY7pK/UQA5RNwbSHtvVoLNMegaKHP68JUFK983J+BWzoWl49byk1bKTJOw6kZcsIlrefaM+9wW+PxNj1B2aYaASsdVoLT8Ne7SBGTdl7/nMiloMjiDNID0lM/Rdyo00JaFXp13gtp1WbJ30oaaG+toaehrvT9/go25S8XC0P6RUI7yfb70W/9w41jj1G8BVzy1IvZesjqrFNGCIkYzNRp2VRgyNfbyYurS2v5tOcb57L2leVcgs+IwhbGYFpS1JP7YRRWRICVVKUDsLxvoKYq93dQK8pWyedciIau7+lLyqnqI+jCnnglCFus/ro/psmfKyqePyY4J1b71dm65UCiXDhyrf6BcYpY23eA0w0gH9v7DrEpolwhgVSYxKW3EjqIvdQJXVrdjnvmFAzEzYIWblvY0SiTyh2OXmqqMaVhJYFm1Ad0oxIOdqMevtqn+bAi0nbmvOeucFlEmo7aVa6RPj2bxB7C3Crw8nxPkS4OMKHQUYWdq5G0N4uvonQWin/6WH+3dCnn/6AAl6jWWpBPG5E9la3xH2y/qtJxajs0Q5DlXkSxEbsFZia0kTrem+QjQTmdz9kNjzxuy14ADNcVYdxECzWgi+OJXboE16xxgKuvOFo9DkWwt3g4zd2LHmGx+p4wSvGL4H7vtXAH/ZQIY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8414.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(136003)(376002)(366004)(396003)(39860400002)(230273577357003)(230173577357003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(6666004)(26005)(6506007)(6512007)(9686003)(83380400001)(478600001)(5660300002)(2906002)(33716001)(41300700001)(966005)(66556008)(6486002)(8936002)(66476007)(8676002)(4326008)(316002)(6916009)(66946007)(82960400001)(38100700002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3JSo9iVJ7mt4dGDobC9YgNUbrRudYNXkcL8lcUT8WDAeR9TOvSFpZcOOyW3J?=
- =?us-ascii?Q?Qcta21QdTu191olIRMF8FjCvlHD8wU4b7QTVUPml/JFMing/Cmtl1peOINxt?=
- =?us-ascii?Q?URSsBwCkeoi8wfKkMPtkkys3QQmvfcaUml0K7GMOfNvTYlZ+qPEy8Xs0q3YA?=
- =?us-ascii?Q?w+03e/uAWrGivnDjqy2c9kt3NlQZEhVVoKe48tVka4352HNp4dTbEE6t018R?=
- =?us-ascii?Q?ehfys/aWGQy+K0KADTQRsH0/oVkC3NE66jOHJgHQVHdh9/hg4/KDz3E6+S1M?=
- =?us-ascii?Q?RDwNLI+IkuwzqDFs9X9Q7JzrW95FbR6XUR5AWeOBzZEFTtjq0VsLP9Bhwgz3?=
- =?us-ascii?Q?trUtoaCA1++loah40mZb27hC2z8ZTxMJrtJoFtR7UkxGMn5/WctMIy8H0E9B?=
- =?us-ascii?Q?nyGV/DlAkLG/ypRbcmVNJ866obNz2pi+KxD78wSBXAZxJc+DDxRmTJ0GN9PG?=
- =?us-ascii?Q?dMsz5jYixuZgYfUfv2WDWWFLbq7hr4U4Kq//dXd9AiYPXy0mFThiJnNKNqEM?=
- =?us-ascii?Q?E2RE0lewQavz6HPiGwjxI/Vhlv+SeQinYcrRuvHl6+UrZhaN/MrfZpeA3Ok7?=
- =?us-ascii?Q?zg129AvJxeibLEd4RNlEEv89JDRkqAEfXigpbtcqE2X5v5R/dZ9gru3db9Zy?=
- =?us-ascii?Q?VxMzQdOLmG94DhrolzHnPn/uXjXLzoU+4Rcm1eFrLde1rtvQ/FAFsQsw7AuB?=
- =?us-ascii?Q?rjwC2keh4SXz3otamN35YRDS/n/p6Z1Tu1idCxF1En0ksf2LkGiuL3BBfot+?=
- =?us-ascii?Q?XdQfdYAm62mXp9K7ad+kcQmf5nON6wjM19YkBZo3EjZy49CKECKcm1hNFFlX?=
- =?us-ascii?Q?t8pHq26tp1O+YsECsLJLJMUk/M4r3/NTtrAg1hSFgMNDj8KNJB41tLIj/A7V?=
- =?us-ascii?Q?Hf3/hZK3zr8TN3yX1IejWqbOF/ywi9W8AJHKvFD6nNrOL4TdlTkwMihSgbe4?=
- =?us-ascii?Q?p/OKts4HxIdLSfhMGopqvadJl8AyM6gLD9yOZFmFsliaWldRYWSaB9KXKkDn?=
- =?us-ascii?Q?z5wh9Nnquz2tzJ3VWvLlWDsoUgK7jdbmUjDj8QlVI84XTgADy84POPbW94RE?=
- =?us-ascii?Q?+uXEHT5bfS58EN/4uYw2aG1KPFk+KuWt0ZoXdknBQMm51C5eWjT7l/t9VIHE?=
- =?us-ascii?Q?wS0KWqfvBS6X5kursQ0+Q6JF4UKYbCAIiJ6Y2SVEVgz4YCx46ebgCL9Ug7Ix?=
- =?us-ascii?Q?J65pxL/1RW7ILuOCG4ZhMlgw96RzDWzL1YGCVVahrSoosIXqVgrwmJBD+tKg?=
- =?us-ascii?Q?Rrd1sgFvIgC44B/tIoGviRl39uR5BRI70kVANUvE0hYnHKuQGqa0yKIw9BB4?=
- =?us-ascii?Q?1FdVu1dqhP8sWRzh2K00480oV0guxXlpsqUqc194g+IO8m1cjWGPqCJqB6ex?=
- =?us-ascii?Q?GV7avDt2B/hEjf3vQsqOkpYmH5bb3H7vMlh1YegTv/94ARd+yMH7yV01fldh?=
- =?us-ascii?Q?e7Uyl00ObYQ4teentUn+SIDY8darcJsvBoSV1DBoAWjUggfO9BxrAs8rNC68?=
- =?us-ascii?Q?Tee15/Df/zHvD5bbV+cWARM//nlAZ4NYrJNHUsmvP/ktFdnUUA6MwlHzsAIL?=
- =?us-ascii?Q?t10xvdqW6gKmO+s4CXke/KggeUQB3j8eVw0MFq8HRvckVX5lixphXdA1+sXY?=
- =?us-ascii?Q?mg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 468dc3b1-9772-4613-cca7-08dc1b56fcec
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8414.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 14:32:40.7254
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: reAthBB6o+eIuWKzWGKc3zqTG8fz6EQKHsR63jVQeWIYCiTESb3ZztjO6In5kTX45sTep4ab2nsoRT66ZkH8Eg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB8067
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] thermal/drivers/tsens: Add suspend to RAM support for
+ tsens
+To: Priyansh Jain <quic_priyjain@quicinc.com>,
+ Amit Kucheria <amitk@kernel.org>, Thara Gopinath <thara.gopinath@gmail.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ "Rafael J . Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: quic_manafm@quicinc.com
+References: <20240122100726.16993-1-quic_priyjain@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240122100726.16993-1-quic_priyjain@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
-commit: 9cf06d6ef7fd08adf51568b704ab7ba6007b6fe8 drm/nouveau/disp: fix cast removes address space of expression warnings
-date:   1 year, 3 months ago
-:::::: branch date: 7 hours ago
-:::::: commit date: 1 year, 3 months ago
-config: i386-randconfig-062-20240106 (https://download.01.org/0day-ci/archive/20240107/202401071050.UrV4A3qz-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401071050.UrV4A3qz-lkp@intel.com/reproduce)
+On 22.01.2024 11:07, Priyansh Jain wrote:
+> Add suspend callback support for tsens which disables tsens interrupts
+> in suspend to RAM callback.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/r/202401071050.UrV4A3qz-lkp@intel.com/
+Would it not be preferrable to have the "critical overheat", wakeup-
+capable interrupts be enabled, even if the system is suspended?
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/nouveau/dispnv50/disp.c:134:31: sparse: sparse: subtraction of different types can't work (different address spaces)
-   drivers/gpu/drm/nouveau/dispnv50/disp.c:197:31: sparse: sparse: subtraction of different types can't work (different address spaces)
-   drivers/gpu/drm/nouveau/dispnv50/disp.c:257:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *ptr @@     got void [noderef] __iomem *ptr @@
-   drivers/gpu/drm/nouveau/dispnv50/disp.c:261:25: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bgn @@     got void [noderef] __iomem *ptr @@
+> Add resume callback support for tsens which reinitializes tsens hardware
+> and enables back tsens interrupts in resume callback.
+> 
+> Signed-off-by: Priyansh Jain <quic_priyjain@quicinc.com>
+> ---
 
-vim +134 drivers/gpu/drm/nouveau/dispnv50/disp.c
+[...]
 
-2853ccf09255aa Ben Skeggs 2020-06-20  128  
-2853ccf09255aa Ben Skeggs 2020-06-20  129  static void
-2853ccf09255aa Ben Skeggs 2020-06-20  130  nv50_dmac_kick(struct nvif_push *push)
-2853ccf09255aa Ben Skeggs 2020-06-20  131  {
-2853ccf09255aa Ben Skeggs 2020-06-20  132  	struct nv50_dmac *dmac = container_of(push, typeof(*dmac), _push);
-0a96099691c8cd Ben Skeggs 2020-07-21  133  
-9cf06d6ef7fd08 ruanjinjie 2022-09-24 @134  	dmac->cur = push->cur - (u32 __iomem *)dmac->_push.mem.object.map.ptr;
-0a96099691c8cd Ben Skeggs 2020-07-21  135  	if (dmac->put != dmac->cur) {
-0a96099691c8cd Ben Skeggs 2020-07-21  136  		/* Push buffer fetches are not coherent with BAR1, we need to ensure
-0a96099691c8cd Ben Skeggs 2020-07-21  137  		 * writes have been flushed right through to VRAM before writing PUT.
-0a96099691c8cd Ben Skeggs 2020-07-21  138  		 */
-0a96099691c8cd Ben Skeggs 2020-07-21  139  		if (dmac->push->mem.type & NVIF_MEM_VRAM) {
-0a96099691c8cd Ben Skeggs 2020-07-21  140  			struct nvif_device *device = dmac->base.device;
-0a96099691c8cd Ben Skeggs 2020-07-21  141  			nvif_wr32(&device->object, 0x070000, 0x00000001);
-0a96099691c8cd Ben Skeggs 2020-07-21  142  			nvif_msec(device, 2000,
-0a96099691c8cd Ben Skeggs 2020-07-21  143  				if (!(nvif_rd32(&device->object, 0x070000) & 0x00000002))
-0a96099691c8cd Ben Skeggs 2020-07-21  144  					break;
-0a96099691c8cd Ben Skeggs 2020-07-21  145  			);
-0a96099691c8cd Ben Skeggs 2020-07-21  146  		}
-0a96099691c8cd Ben Skeggs 2020-07-21  147  
-0a96099691c8cd Ben Skeggs 2020-07-21  148  		NVIF_WV32(&dmac->base.user, NV507C, PUT, PTR, dmac->cur);
-0a96099691c8cd Ben Skeggs 2020-07-21  149  		dmac->put = dmac->cur;
-0a96099691c8cd Ben Skeggs 2020-07-21  150  	}
-0a96099691c8cd Ben Skeggs 2020-07-21  151  
-0a96099691c8cd Ben Skeggs 2020-07-21  152  	push->bgn = push->cur;
-0a96099691c8cd Ben Skeggs 2020-07-21  153  }
-0a96099691c8cd Ben Skeggs 2020-07-21  154  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +
+> +int tsens_suspend_common(struct tsens_priv *priv)
+> +{
+> +	switch (pm_suspend_target_state) {
+> +	case PM_SUSPEND_MEM:
+> +		if (priv->combo_irq > 0) {
+> +			disable_irq_nosync(priv->combo_irq);
+> +			disable_irq_wake(priv->combo_irq);
+> +		}
+> +
+> +		if (priv->uplow_irq > 0) {
+> +			disable_irq_nosync(priv->uplow_irq);
+> +			disable_irq_wake(priv->uplow_irq);
+> +		}
+> +
+> +		if (priv->crit_irq > 0) {
+> +			disable_irq_nosync(priv->crit_irq);
+> +			disable_irq_wake(priv->crit_irq);
+> +		}
+> +		break;
+> +	default:
+> +		break;
+> +	}
 
+if (pm_suspend_target_state != PM_SUSPEND_MEM)
+	return 0;
+
+<rest of the code>
+
+[...]
+
+>  
+> +	/* For saving irq number to re-use later */
+
+This is rather self-explanatory
+
+Konrad
 
