@@ -1,129 +1,130 @@
-Return-Path: <linux-kernel+bounces-33018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F346B836347
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:33:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 597CE836345
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9B2E290F8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:33:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1315F290AD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:31:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007BC383BC;
-	Mon, 22 Jan 2024 12:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="PTPR8+Tr"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7971F3C68A;
+	Mon, 22 Jan 2024 12:31:08 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02FBE1C20;
-	Mon, 22 Jan 2024 12:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816933B194;
+	Mon, 22 Jan 2024 12:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705926776; cv=none; b=kbnYQ2bWG4ziq3bf++mLRJ3HlOCqTMhOj5Y/NRFa3dGddEHCZMAIYjpYIQT9Y51P2BAcKAc4Li6A9gQlvyuNy3gbQFm4S94MShogx24Oni19CFBwFaMkoTcDzrw+bfyKnsNzpcojEFkNwo2HPAWyeYvZaRYQqr2ZJ1q5NEfkTds=
+	t=1705926668; cv=none; b=MeWje550DJWHZuB5j27t6PE/Mxbh6/OuE8SVYp6NH1n2sGMLd0bWVUGpyrI4CosDZJtllYI9Fl6JrgJr3Jf+13KZbkEKf+3PxZo2eP89LULT3rSBzT/JvEvmIFL/XmznIvkv8DFy15OZPHCRFSsdguzp1A9Rv5cRdMpCSFpOkL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705926776; c=relaxed/simple;
-	bh=m4yg/uTaxSFSsVGNh/moyXbzRJ66JeZYtZp5y+z2OmQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lj1AowVARc3bC5Ikgr24fCL6Qn2ahs4S5VqOVu1osGtQYqoJnygJDNJ+Q1VJSilR17hShIt1JK/+IS+Z3gyRbV3Y85PJg/dHDR6g9soWMqbQa3Kab/pLVSB1xnNkDt5UMR2J4t47MeZFM7PqfKnkG54y+BT9dY5MMi1vnmGfClQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=PTPR8+Tr; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1705926742; x=1706531542; i=wahrenst@gmx.net;
-	bh=m4yg/uTaxSFSsVGNh/moyXbzRJ66JeZYtZp5y+z2OmQ=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=PTPR8+TrpMhuxLd3fX+WJU9QjJg/4PnPhEnFgXrfFTZA/O7jEBypK3rIroNNFUlP
-	 xuK0oED/0dp5/8nSAeghlwtOV6seKmI9ESb42dmnlDsJ3II9uoPk5ggTDCETptFIT
-	 I2lspeXHnvOIifoHDmf1K58HhCzZR7wvcTto0Vk3OobI0eJQn1Rm4RNZHLtsx1Wug
-	 mVJ4RGkIAkWWFwXkDwK7zF/oE9kgN1dQzZ7nxxfgIkJWVRrhxyHdDwvzANZcQfLuE
-	 JNeE+Uj2Pz+MpeY5OcV/HUyn5CraWXEvRwEVzsaauawYiAdyUAZolvW8rkQmIRwJi
-	 bdB25tGOdlrtbcgErg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MQ5rU-1rnqAX3ke0-00M26S; Mon, 22
- Jan 2024 13:32:21 +0100
-Message-ID: <83233559-8c31-4568-a943-8bdb9ca20bdc@gmx.net>
-Date: Mon, 22 Jan 2024 13:32:20 +0100
+	s=arc-20240116; t=1705926668; c=relaxed/simple;
+	bh=PzVDQgEDXAINlYBLlMfa+i8t8rPrBLpAvoIASPJEaJ0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ONbNYTKlbN6Tv57i5WhPPSj8hlRo1VANe0bBe68eurwIzLFQV8zBZ97h9870Au34UiYrliCDKPuKo4UJbCArP8V+5+A3/2lDOrQw+Arrni5iS3NCIaOhev0xVecamaUkLZULiX2NTI5KvmPC+8X+MUZrPkrem1U+Km62gL/NstE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TJTwz0Vzmz1FJgF;
+	Mon, 22 Jan 2024 20:26:43 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 894181A0172;
+	Mon, 22 Jan 2024 20:31:02 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 22 Jan
+ 2024 20:31:01 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+	<libaokun1@huawei.com>, <stable@kernel.org>
+Subject: [PATCH] ext4: correct best extent lstart adjustment logic
+Date: Mon, 22 Jan 2024 20:33:32 +0800
+Message-ID: <20240122123332.555370-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] dt-bindings: gpio: gpio-vf610: add gpio-line-names
-To: Mathieu Othacehe <othacehe@gnu.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Li Yang <leoyang.li@nxp.com>, Primoz Fiser <primoz.fiser@norik.com>,
- Christoph Stoidner <c.stoidner@phytec.de>, Wadim Egorov <w.egorov@phytec.de>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240122095306.14084-1-othacehe@gnu.org>
- <20240122095306.14084-3-othacehe@gnu.org>
-Content-Language: en-US
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <20240122095306.14084-3-othacehe@gnu.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:V6p4+fte5woXIrETEXXt1d44iD0rPrg6HritPpkFjcyrZVeQQtT
- if8ShQfNrShhUKFrD23chAIxUt/4B2URyUKW5LkQ6C6ebJUhowj+WSM81QgAUvJz15plLQr
- ZNe9a0zKBUl0JCYj6+m9rIwVnrpGJH7G71fPecDO2sgUq+wHkbMssZcZzSAPFSRn+2VFUuW
- DwAYN9SC4sYpPrMv1Q8jA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XCv6kFjnUmY=;V93RjjE7MKqQtGGse44zMWh6okp
- tkQrq4OHr6nhBKDy5hqJpqmXFkMFFW0MPkmlx2PtUHVvEZBLIaeKw7HpJtBI5hpQL8QitCkA2
- IOeJGhp9ACGcdPjqvtpSf8uYk3YW8HpE+Bz3mD9PH5ktD/J4sUIOY7oYSJSLz0+REtKjQdfpV
- zk6q6to/xVry9UUXiq1dxyzq/YpYQKwh2ZM7pdmVTyO8fauonwGYrzwk17s7Ohw3JN/XLGfH5
- yYyo49iEV8BAoGEOsQFRG6cQW6HTVPMq8pC0ZXm+KnvemLgtX61QyuLbTLRWexZimmb0FSz//
- qGvfmDzJQC0l/mt65rDv//slz8Q+eJxY4Aevoun3XR7jyuON8+zx7E0EYL2kqp1yFXSgqpxSc
- TIsPPfICEOTGTbKeQ8lEndGUR/UtYuZeBnPLFcn937oa0u9+B5yVrQtIWZUGFfJKmqIh0Kr+S
- 4zZOh6w1V5Tq5UZkIXbFgvv0DVtqSW8gJ7yPMQ8xAELWRmjTIu+vuxpCoznDd83rycb8jNx1M
- qQSdB3TcHbpQTDn6810gkvpUWxuJ/YgY6WzW50pxoLv0ETmwe3hjVjdBnPJOy/SM0zAZAPTQL
- Z7sz71jRzYPbhUJiItF+WOoprWl3FMzok2MJuectAQ/0fchHQV3M0dHb9S1ebk9d6a1IvFaft
- kDLkvyejhsWZTxFmyu/C+3SY4ADV/owilYq9Pc7azZacMh+ubEmeu6FkOUVzotjRaPzURtDMr
- x92j6gyO14xiu7C2Axe7/98zek00m1t3UMqSZ4U4ppKmnv5BUAZ8QHO8qsh23M7tWgvuobFuC
- mkyopOSu+mSZp/EbxOsvCl7oxUGdb+Izp9II20CciQuCilXP88aZ3OmpNtnHRbnWYqSmB2FNf
- lO6AZ12sl5/NVQYRbceuiSS6UK/biF/2BIWKZbwU863y1DrIDZN2GI1dYLTsqL8eOUHZTpQZM
- va38KA==
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-Hi Mathieu,
+When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
+adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
+extent did not completely cover the original request after adjusting the
+best extent lstart in ext4_mb_new_inode_pa() as follows:
 
-Am 22.01.24 um 10:53 schrieb Mathieu Othacehe:
-> Describe common "gpio-line-names" property to fix dtbs_check warnings
-> like:
->
-> /home/mathieu/linux/arch/arm64/boot/dts/freescale/imx93-phyboard-segin.d=
-tb:
-> gpio@43830000: 'gpio-line-names' does not match any of the regexes:
-> '^.+-hog(-[0-9]+)?$', 'pinctrl-[0-9]+' from schema $id:
-> http://devicetree.org/schemas/gpio/gpio-vf610.yaml#
->
-> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
-> ---
->   Documentation/devicetree/bindings/gpio/gpio-vf610.yaml | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml b/Do=
-cumentation/devicetree/bindings/gpio/gpio-vf610.yaml
-> index a27f92950257..7230ba1a386a 100644
-> --- a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-> @@ -50,6 +50,7 @@ properties:
->       const: 2
->
->     gpio-controller: true
-> +  gpio-line-names: true
-thanks for addressing this. Could you please add an extra newline
-between gpio-controller and gpio-line-names?
->
->     clocks:
->       items:
+  original request: 2/10(8)
+  normalized request: 0/64(64)
+  best extent: 0/9(9)
+
+When we check if best ex can be kept at start of goal, ac_o_ex.fe_logical
+is 2 less than the adjusted best extent logical end 9, so we think the
+adjustment is done. But obviously 0/9(9) doesn't cover 2/10(8), so we
+should determine here if the original request logical end is less than or
+equal to the adjusted best extent logical end.
+
+Moreover, the best extent len is not modified during the adjustment
+process, and it is already checked by the previous assertion, so replace
+the check for fe_len with a check for the best extent logical end.
+
+Cc: stable@kernel.org
+Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
+Signed-off-by: yangerkun <yangerkun@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ fs/ext4/mballoc.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index f44f668e407f..fa5977fe8d72 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5146,6 +5146,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+ 			.fe_len = ac->ac_orig_goal_len,
+ 		};
+ 		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
++		loff_t o_ex_end = extent_logical_end(sbi, &ac->ac_o_ex);
+ 
+ 		/* we can't allocate as much as normalizer wants.
+ 		 * so, found space must get proper lstart
+@@ -5161,7 +5162,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+ 		 * 1. Check if best ex can be kept at end of goal (before
+ 		 *    cr_best_avail trimmed it) and still cover original start
+ 		 * 2. Else, check if best ex can be kept at start of goal and
+-		 *    still cover original start
++		 *    still cover original end
+ 		 * 3. Else, keep the best ex at start of original request.
+ 		 */
+ 		ex.fe_len = ac->ac_b_ex.fe_len;
+@@ -5171,7 +5172,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+ 			goto adjust_bex;
+ 
+ 		ex.fe_logical = ac->ac_g_ex.fe_logical;
+-		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
++		if (o_ex_end <= extent_logical_end(sbi, &ex))
+ 			goto adjust_bex;
+ 
+ 		ex.fe_logical = ac->ac_o_ex.fe_logical;
+@@ -5179,7 +5180,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+ 		ac->ac_b_ex.fe_logical = ex.fe_logical;
+ 
+ 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
+-		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
++		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
+ 		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
+ 	}
+ 
+-- 
+2.31.1
 
 
