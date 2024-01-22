@@ -1,119 +1,188 @@
-Return-Path: <linux-kernel+bounces-33975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4BB983712F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:56:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A689837127
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A322287A69
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:55:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAACE1F30644
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:55:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55B64A9AF;
-	Mon, 22 Jan 2024 18:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="V75w95Cg"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256854A9A8;
+	Mon, 22 Jan 2024 18:21:26 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F5E4A9A9
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0C94A9A9
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705947711; cv=none; b=Z7oOMFsKOiO/nGDvfwDngdf1oEjL0xXP4fFZdyH2pGM3vNHrbKekmErucCRZyjs+Q2/2AvITk/ZHgBdJnOg7qc0d4rV6/jJmDZkpCKcxY0ckE2nzaHhRRRPjoZ7Kxq6d3ny/f9UPt59grf4oHmMdkD6lDPpeum4RcD10M1fbOII=
+	t=1705947685; cv=none; b=BsyNpC5XZhhtL3TWVq/1Kf/OEfdyNIQMf1ToHYg0Pm1N4fOg/Tb+JHWHPoDlKPogJsKI6ShryMRgcaLlTTGlRvza6FxLeIi3Cfxx1yKreDTGnN5vgydqgdju/egQsByPYdg3iGrdO5RB+S7hqIsJHWLhbR6lu2ggaFVytePagR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705947711; c=relaxed/simple;
-	bh=5CwBINpwIZ1I1d44NZjFZQKvYM/hTAqqoE/+9rbtQeM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MBQVXdnf/hJs6gf6AbwNyw9i0Tnp7lAD2hjdWm1o7NiOxr8fPLiWD/bgI6D9xodmKot+dWcuNpQ6cRTSzmRrOGq0+QJKzTBupUARNqPiVdPfDeiaN/BWOu2/N0cXbD054JVxP8VKX+ikfw4x8BlORaZJjfOywZafAT2WZ1Q8O6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=V75w95Cg; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0D31840E0196;
-	Mon, 22 Jan 2024 18:21:47 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id catqAuf140-i; Mon, 22 Jan 2024 18:21:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705947704; bh=Ea4MnZg3naLyJOTRFGD9v/aFCpyGZVJ7QpiMOtY7j9k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V75w95Cg41NPBBKBnK5VKZXFGQZPcONR8+KNJly1sd5XPFe9zprDKc8R9QFGM3lRD
-	 6J/ep1tjOYTGXp1ImX7DfllbnEFTFe6vUsLYke8iJiRdb55HQDVF6ZrP7979qXS3Mv
-	 FkMNAshvi02OH104ahkE8UT8J0+9vHw5t5VHC23px1nVNRiTkhiqUSmkV8z50n/aRu
-	 OdMwZvFplQMl1HuLCfvaT59S72GDqwNP9Yjn5ExujphNpCFfkSfldn0UzXv0A3hTDZ
-	 wRxqA4g5X3XGkkygZXyaTCp2jJGh0Bu/jVxE7nkUjjaHDOhh2l5Po/PeKXHHUZ3n8n
-	 hzhbmIsyyLmd/3yXo8tlM2QeaC7DmTqR4D2RrSEynJyslpf2UCPavHUaOt49PJeyRI
-	 uMEBYR4RqmbggMHUUeCdgdHfjB5Qe7IffipErXqQkAlMjFhOMX1hbVw+/ktMUp+0Ms
-	 9gcN1xwR69nppqgFPo8K+kkuEcCSknSyEChNX5U+xmHqGchnU2AJjbVtBkxVkc5TT7
-	 vdDIAZvdx9IDkqQq9GBl+2cFGL3D6WLKDDcTN8rp3zQHXfiqbEX8RmumYfkPNy7ju8
-	 WFTTPyuUfvtcC2JSJGsqglMAgJXS0NW74CqKmA/8EyrPZtOcSFtuoHQbIU2iEPCaEQ
-	 ATp17NNYNouF1NKkD1HAWr14=
-Received: from zn.tnic (pd953099d.dip0.t-ipconnect.de [217.83.9.157])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 58B6040E01B4;
-	Mon, 22 Jan 2024 18:21:33 +0000 (UTC)
-Date: Mon, 22 Jan 2024 19:21:21 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: "Luck, Tony" <tony.luck@intel.com>,
-	"Yu, Fenghua" <fenghua.yu@intel.com>,
-	Peter Newman <peternewman@google.com>,
-	"x86@kernel.org" <x86@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	Jamie Iles <quic_jiles@quicinc.com>,
-	Babu Moger <babu.moger@amd.com>,
-	"Shen, Xiaochen" <xiaochen.shen@intel.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [PATCH v2] x86/resctrl: Implement new mba_MBps throttling
- heuristic
-Message-ID: <20240122182121.GBZa6yIYPtHQx44EU9@fat_crate.local>
-References: <20231201214737.104444-1-tony.luck@intel.com>
- <20240118214213.59596-1-tony.luck@intel.com>
- <45d2891e-989a-45c9-a527-8b14ff5f8748@intel.com>
- <SJ1PR11MB60837D4884419BDC2DCAA2D2FC752@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <bfa5104f-b887-4cc4-a24c-0497b86d9dde@intel.com>
+	s=arc-20240116; t=1705947685; c=relaxed/simple;
+	bh=6DR+1LiVFRZbmEY9iwTJ7fOLxt9GTZ8JeGRhxI+zL/8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=TIs0pa8TrwSdL0J+DNToueHnuzf0Xcvm3pcsS48+yQEdu/AUSPPnuQqhSZlQFbJ15vegJyIhyibepyRpXbXz73yWO5sVNFxLPbC9iLps7XQ0d/J1ed0+ht9O6n/OMnUqJtrSNYj6x6kt1vQ12Ew26TKjYwL+U3qbRKwgDNLFGQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-361917dccfbso22450435ab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:21:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705947683; x=1706552483;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YnaoVp1irieECTQ/9o+xOEHhdBMmk3Nj9+2Kmy+DxVg=;
+        b=H8lZbfJtoKB8SoroBgDD+DeBoiFuCRRMbvcw59FIx+bciRGNapM5jKIIYjINERCdVQ
+         qyUJKrpig5LnX2IPJ0AtE5UiTCBrxlkxMmkZ9HGNUsKqwK4BXWGigamUI8hfaBNAWEA2
+         9Tk2e++yyb6K8DDqRkFUC77Nu60yGWFffULXeXgI6KEkThdThAouFbSYj9uhQc/G7/5K
+         dND4U5EI3UhHcv59I974iyljJ5VbeN9dcireWdKO/etQzWKW0KpL6FE4YEe9CjfPaGEX
+         dPz0Rhk1aVOcZmNojl/pS19laIAM6PYXSrYTteZubCCDz9BAojfMl2Mp7jYJw35+76Ja
+         oXGA==
+X-Gm-Message-State: AOJu0YwvYjMTDLzt0EyqYcCEW3qmcGtn4IjgddlJ8yPc1wjw9BH2q+qz
+	mGusp8558+LxSRT5BqEMu/3m71hfEHChDmpGFkuk20/4M0VFDmuOl5kbOhftp5YMDWg/xRAKlHg
+	QZunGmnPFgeK0o8e0o+oCfg0jCVDvqimSNjTCXrxNLUlZ1nC8hrHVAQY=
+X-Google-Smtp-Source: AGHT+IFqXFii+QXaNjXd/fck1JDCiigaLQ7JN+pX/rX2FewG6k4cg3O5RFBP1m0kld32rTI7PpqWvkWC4x02KFvi0n8v5dDf5Qji
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <bfa5104f-b887-4cc4-a24c-0497b86d9dde@intel.com>
+X-Received: by 2002:a05:6e02:b4a:b0:360:17a7:d897 with SMTP id
+ f10-20020a056e020b4a00b0036017a7d897mr520922ilu.4.1705947683140; Mon, 22 Jan
+ 2024 10:21:23 -0800 (PST)
+Date: Mon, 22 Jan 2024 10:21:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a8bd7b060f8ce57d@google.com>
+Subject: [syzbot] [jfs?] general protection fault in diRead (2)
+From: syzbot <syzbot+8f731999dc47797f064f@syzkaller.appspotmail.com>
+To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 22, 2024 at 10:18:01AM -0800, Reinette Chatre wrote:
-> The fixes I have as pending are:
-> 
-> [PATCH v2] x86/resctrl: Fix unused variable warning in cache_alloc_hsw_probe()
-> 	https://lore.kernel.org/lkml/ZULCd%2FTGJL9Dmncf@agluck-desk3/
-> 
-> [PATCH v5 1/2] x86/resctrl: Remove hard-coded memory bandwidth limit
-> 	https://lore.kernel.org/lkml/c26a8ca79d399ed076cf8bf2e9fbc58048808289.1705359148.git.babu.moger@amd.com/
-> 
-> [PATCH v5 2/2] x86/resctrl: Read supported bandwidth sources using CPUID command
-> 	https://lore.kernel.org/lkml/669896fa512c7451319fa5ca2fdb6f7e015b5635.1705359148.git.babu.moger@amd.com/
-> 
-> [PATCH v3] x86/resctrl: Implement new mba_MBps throttling heuristic
-> 	https://lore.kernel.org/lkml/20240122180807.70518-1-tony.luck@intel.com/
+Hello,
 
-Is that the order I should start queueing them in?
+syzbot found the following issue on:
 
-If not, pls send me a note and I can start picking up stuff.
+HEAD commit:    6613476e225e Linux 6.8-rc1
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17dc7427e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=909746d6edb125d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=8f731999dc47797f064f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Thx.
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
-Regards/Gruss,
-    Boris.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d0edbd1edbe1/disk-6613476e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9a389b6bdd04/vmlinux-6613476e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/eedf993f8f5d/bzImage-6613476e.xz
 
-https://people.kernel.org/tglx/notes-about-netiquette
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8f731999dc47797f064f@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000104: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000820-0x0000000000000827]
+CPU: 0 PID: 6815 Comm: syz-executor.3 Not tainted 6.8.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:diIAGRead fs/jfs/jfs_imap.c:2662 [inline]
+RIP: 0010:diRead+0x158/0xae0 fs/jfs/jfs_imap.c:316
+Code: 8d 5d 80 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 69 d4 d7 fe 4c 8b 2b 49 8d 9d 20 08 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 49 d4 d7 fe 4c 8b 3b 49 8d 5f 28
+RSP: 0018:ffffc9000486f658 EFLAGS: 00010202
+RAX: 0000000000000104 RBX: 0000000000000820 RCX: 0000000000000001
+RDX: 0000000000000001 RSI: 0000000000000008 RDI: 0000000000000001
+RBP: ffff888037fbf330 R08: ffff888037fbefd7 R09: 1ffff11006ff7dfa
+R10: dffffc0000000000 R11: ffffed1006ff7dfb R12: 0000000000000004
+R13: 0000000000000000 R14: ffff888037fbefc8 R15: dffffc0000000000
+FS:  00007f5fd8fbd6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020010000 CR3: 000000007909f000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ jfs_iget+0x8c/0x3b0 fs/jfs/inode.c:35
+ jfs_lookup+0x226/0x410 fs/jfs/namei.c:1469
+ lookup_open fs/namei.c:3474 [inline]
+ open_last_lookups fs/namei.c:3565 [inline]
+ path_openat+0x1012/0x31e0 fs/namei.c:3795
+ do_filp_open+0x234/0x490 fs/namei.c:3825
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1404
+ do_sys_open fs/open.c:1419 [inline]
+ __do_sys_open fs/open.c:1427 [inline]
+ __se_sys_open fs/open.c:1423 [inline]
+ __x64_sys_open+0x225/0x270 fs/open.c:1423
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f5fd9c7cda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f5fd8fbd0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 00007f5fd9dac120 RCX: 00007f5fd9c7cda9
+RDX: 0000000000000000 RSI: 0000000000088043 RDI: 00000000200022c0
+RBP: 00007f5fd9cc947a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f5fd9dac120 R15: 00007ffe5a2a8968
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:diIAGRead fs/jfs/jfs_imap.c:2662 [inline]
+RIP: 0010:diRead+0x158/0xae0 fs/jfs/jfs_imap.c:316
+Code: 8d 5d 80 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 69 d4 d7 fe 4c 8b 2b 49 8d 9d 20 08 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 49 d4 d7 fe 4c 8b 3b 49 8d 5f 28
+RSP: 0018:ffffc9000486f658 EFLAGS: 00010202
+RAX: 0000000000000104 RBX: 0000000000000820 RCX: 0000000000000001
+RDX: 0000000000000001 RSI: 0000000000000008 RDI: 0000000000000001
+RBP: ffff888037fbf330 R08: ffff888037fbefd7 R09: 1ffff11006ff7dfa
+R10: dffffc0000000000 R11: ffffed1006ff7dfb R12: 0000000000000004
+R13: 0000000000000000 R14: ffff888037fbefc8 R15: dffffc0000000000
+FS:  00007f5fd8fbd6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0a9d2d66e4 CR3: 000000007909f000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	8d 5d 80             	lea    -0x80(%rbp),%ebx
+   3:	48 89 d8             	mov    %rbx,%rax
+   6:	48 c1 e8 03          	shr    $0x3,%rax
+   a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
+   f:	74 08                	je     0x19
+  11:	48 89 df             	mov    %rbx,%rdi
+  14:	e8 69 d4 d7 fe       	call   0xfed7d482
+  19:	4c 8b 2b             	mov    (%rbx),%r13
+  1c:	49 8d 9d 20 08 00 00 	lea    0x820(%r13),%rbx
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+  2f:	74 08                	je     0x39
+  31:	48 89 df             	mov    %rbx,%rdi
+  34:	e8 49 d4 d7 fe       	call   0xfed7d482
+  39:	4c 8b 3b             	mov    (%rbx),%r15
+  3c:	49 8d 5f 28          	lea    0x28(%r15),%rbx
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
