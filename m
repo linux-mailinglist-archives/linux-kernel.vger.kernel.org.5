@@ -1,208 +1,120 @@
-Return-Path: <linux-kernel+bounces-33981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C395B837146
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 320B7837150
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:58:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3692E1F27DAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:57:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45011F297A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 927804D125;
-	Mon, 22 Jan 2024 18:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8894E1A0;
+	Mon, 22 Jan 2024 18:27:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sbF57wLp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J9ORIfSZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EE24D10E;
-	Mon, 22 Jan 2024 18:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE3F3FB3B;
+	Mon, 22 Jan 2024 18:27:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705947977; cv=none; b=m04GXNAyYGtrC+z93+dE6i2lm9nM8txf3aByv7nwd+ZbPTtupdfX1zU//SGHxgAVPeMO8dBDkGIr4or+50peMJZHqzP2mCnRLu7RsOZLTcif/sgejgmBac6rgeEFZxQts6soaL0HAWOZgTEBsDVtv2futT4qqzHorP/nAJSe/TY=
+	t=1705948032; cv=none; b=WX7rqz53ntMi0PnKHlsO6zWCepuCsOIDtXRemmzozXI144T5UmF5NxqD5Dhc6xbOmrRnTb18c4eELymDctHSuunYdYbzfOhxkt7dLawii/ag2AZM8ZEn8Sn2RO4h/WZ+pqEe39vXn4JzlQ9MwAoCl4314jd9tPD+IGgc7AOby+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705947977; c=relaxed/simple;
-	bh=xqaElstZ6Be2KexYuJuX9vmqnmJZ8Y7gmDJsiNOQ56Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Wo/96XAL3APwKThy/wSaTZmAjibcnyquk1LWdobjDYwgPU4sCmVaCwsBOgK9XE2U2QL0NcOuTYtw0NmmNwpAjD++qSaJZxatxH6AVMhwoYq1xUAGqtzFctdh2onVX4zF/YcatYXWpZ81oBEGxYa4pkCKrvBHHAQtTQNo8X1n3rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sbF57wLp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1769C433C7;
-	Mon, 22 Jan 2024 18:26:16 +0000 (UTC)
+	s=arc-20240116; t=1705948032; c=relaxed/simple;
+	bh=oTAlfbxsHwQumPtM8k60cVyd41GO2x5zNL8PvATJItY=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=b8DszN7jgP5ei0l+DumZx0D+nvaz7R9Ky2gnj6CqiykXGS9h6R+AlqfUXhi2y8HXkb74dX4xqik7ab3NFIPeCqyh2N243v9dn/KIjq1wzaE+H2A7XD414fplZ+9/gvUZMrPUbR1XW+zSYMKXu9YoDMDNRZGOzxTiy3YX3UodWMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J9ORIfSZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6802C433F1;
+	Mon, 22 Jan 2024 18:27:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705947977;
-	bh=xqaElstZ6Be2KexYuJuX9vmqnmJZ8Y7gmDJsiNOQ56Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=sbF57wLpzO4Po/5GpjgYQjSECzQjLbxSiNv/RKB8wRHfNNYDrfybv1BM0T+rwpu13
-	 WXBW4KZf0YWrt1XaNQpp3Hl67mdkmKjBMm10UrSe1YtlB/jlWvemQbqfZuLtOPugV7
-	 w7zmscDHsgJyt9pCLUdy4K+WKwdOJJpQ3FOQmgSkL2jGVV98ELA1IJyO15yK9on5jV
-	 VC9xEDPpXQjYMabsXM2bkSsDb+HZW462zvO1CPzN+F7m0wmEkizHIv1x1NG7IONcso
-	 8MTlsPoksu0gnKedabN5/EDAjZJhLwQE5iKmSugXt0ALOpa2XjuZhtiIBNbXTIbBTi
-	 EA0XaD5Y4jSgA==
-Date: Mon, 22 Jan 2024 12:26:15 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: Michael Schaller <michael@5challer.de>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev,
-	"Maciej W . Rozycki" <macro@orcam.me.uk>,
-	Ajay Agarwal <ajayagarwal@google.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
-	regressions@leemhuis.info
-Subject: Re: PCI/ASPM locking regression in 6.7-final (was: Re: [PATCH]
- Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-Message-ID: <20240122182615.GA277100@bhelgaas>
+	s=k20201202; t=1705948031;
+	bh=oTAlfbxsHwQumPtM8k60cVyd41GO2x5zNL8PvATJItY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=J9ORIfSZ+MRVSajWpgmPnnuIchex+Hzj+KIIJ2f2sC0/WGQ/kZEUz31x77bFc+39b
+	 HXos+5aYkRhgqBA7kcW6n9q65adE3yCD6NqNMYtpMOLqe8Vcdgecx5od49itv7o6Qc
+	 rzGRzHuss8mspDWw+cnc5tVIFaCya0ofY/5HZTA/lvQxcYIM2laOPChzgztB1w1XYL
+	 pKjWnUkmKtnoS8jICKdks7Pol52M8NEc+jF0natgh339ow8vcvvsZoReoNZxeSZGTt
+	 Vb3kw2QFdKMECuEETJXCfx939a/L3ElVmGA5OuXpo5ON4FkutuLLnGhMBNe6q3N0yN
+	 en9vkQl6kTumQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rRz0n-00DhTj-J5;
+	Mon, 22 Jan 2024 18:27:09 +0000
+Date: Mon, 22 Jan 2024 18:27:09 +0000
+Message-ID: <86plxt8br6.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Robin Murphy <robin.murphy@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Fang Xiang <fangxiang3@xiaomi.com>,
+	Robert Moore <robert.moore@intel.com>
+Subject: Re: [PATCH v4 3/3] irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
+In-Reply-To: <Za6VPE76yiR+lb91@lpieralisi>
+References: <20230905104721.52199-1-lpieralisi@kernel.org>
+	<20231227110038.55453-1-lpieralisi@kernel.org>
+	<20231227110038.55453-4-lpieralisi@kernel.org>
+	<Za6VPE76yiR+lb91@lpieralisi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Za5JLxRC-K20sIfG@hovoldconsulting.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: lpieralisi@kernel.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com, mark.rutland@arm.com, rafael@kernel.org, linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, fangxiang3@xiaomi.com, robert.moore@intel.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Mon, Jan 22, 2024 at 11:53:35AM +0100, Johan Hovold wrote:
-> Hi Bjorn,
+On Mon, 22 Jan 2024 16:18:04 +0000,
+Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
 > 
-> I never got a reply to this one so resending with updated Subject in
-> case it got buried in your inbox.
-
-I did see it but decided it was better to fix the problem with resume
-causing an unintended reboot, even though fixing that meant breaking
-lockdep again, since I don't think we have user reports of the
-potential deadlock lockdep finds.
-
-08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") was a
-start at fixing other problems and also improving the ASPM style, so I
-hope somebody steps up to fix both it and the lockdep issue.  I
-haven't looked at it enough to have a preference for *how* to fix it.
-
-Bjorn
-
-> On Mon, Jan 08, 2024 at 09:39:07AM +0100, Johan Hovold wrote:
->  
-> > On Tue, Jan 02, 2024 at 05:25:50PM -0600, Bjorn Helgaas wrote:
-> > > From: Bjorn Helgaas <bhelgaas@google.com>
-> > > 
-> > > This reverts commit 08d0cc5f34265d1a1e3031f319f594bd1970976c.
-> > > 
-> > > Michael reported that when attempting to resume from suspend to RAM on ASUS
-> > > mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1), 08d0cc5f3426
-> > > ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") caused a 12-second delay
-> > > with no output, followed by a reboot.
-> > > 
-> > > Workarounds include:
-> > > 
-> > >   - Reverting 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-> > >   - Booting with "pcie_aspm=off"
-> > >   - Booting with "pcie_aspm.policy=performance"
-> > >   - "echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm"
-> > >     before suspending
-> > >   - Connecting a USB flash drive
-> > > 
-> > > Fixes: 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-> > > Reported-by: Michael Schaller <michael@5challer.de>
-> > > Link: https://lore.kernel.org/r/76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de
-> > > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > Cc: <stable@vger.kernel.org>
-> > > ---
+> On Wed, Dec 27, 2023 at 12:00:38PM +0100, Lorenzo Pieralisi wrote:
+> 
+> [...]
+> 
+> > @@ -2380,6 +2385,10 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
+> >  		return -ENOMEM;
+> >  	gic_request_region(gicc->gicr_base_address, size, "GICR");
 > >  
-> > > +/* @pdev: the root port or switch downstream port */
-> > > +void pcie_aspm_pm_state_change(struct pci_dev *pdev)
-> > > +{
-> > > +	struct pcie_link_state *link = pdev->link_state;
-> > > +
-> > > +	if (aspm_disabled || !link)
-> > > +		return;
-> > > +	/*
-> > > +	 * Devices changed PM state, we should recheck if latency
-> > > +	 * meets all functions' requirement
-> > > +	 */
-> > > +	down_read(&pci_bus_sem);
-> > > +	mutex_lock(&aspm_lock);
-> > > +	pcie_update_aspm_capable(link->root);
-> > > +	pcie_config_aspm_path(link);
-> > > +	mutex_unlock(&aspm_lock);
-> > > +	up_read(&pci_bus_sem);
-> > > +}
-> > 
-> > This function is now restored in 6.7 final and is called in paths which
-> > already hold the pci_bus_sem as reported by lockdep (see splat below).
-> > 
-> > This can potentially lead to a deadlock and specifically prevents using
-> > lockdep on Qualcomm platforms.
-> > 
-> > Not sure if you want to propagate whether the bus semaphore is held to
-> > pcie_aspm_pm_state_change() or if there was some alternative to
-> > restoring this function which should be explored instead.
+> > +	if (gic_acpi_non_coherent_flag(gicc->flags,
+> > +				       ACPI_MADT_GICC_NON_COHERENT))
+> > +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
+> > +
 > 
-> So to summarise, this patch, which is now commit
+> Quick question before reposting it. We run this function for
+> every GICC entry, I didn't add a check to make sure all GICC
+> entries have the same flag value, please let me know if that's
+> OK.
 > 
-> 	f93e71aea6c6 ("Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()"")
-> 
-> introduced a regression in 6.7-final for Qualcomm platforms (and some
-> Intel platforms) similar to the one recently fixed by commit
-> 
-> 	f352ce999260 ("PCI: qcom: Fix potential deadlock when enabling ASPM").
-> 
-> Johan
-> 
-> 
-> #regzbot introduced: f93e71aea6c6
-> 
-> >    ============================================
-> >    WARNING: possible recursive locking detected
-> >    6.7.0 #40 Not tainted
-> >    --------------------------------------------
-> >    kworker/u16:5/90 is trying to acquire lock:
-> >    ffffacfa78ced000 (pci_bus_sem){++++}-{3:3}, at: pcie_aspm_pm_state_change+0x58/0xdc
-> >    pcieport 0002:00:00.0: PME: Signaling with IRQ 197
-> >    
-> >                but task is already holding lock:
-> >    ffffacfa78ced000 (pci_bus_sem){++++}-{3:3}, at: pci_walk_bus+0x34/0xbc
-> >    
-> >                other info that might help us debug this:
-> >     Possible unsafe locking scenario:
-> > 
-> >           CPU0
-> >           ----
-> >      lock(pci_bus_sem);
-> >      lock(pci_bus_sem);
-> >    
-> >                 *** DEADLOCK ***
-> > 
-> >     May be due to missing lock nesting notation
-> > 
-> >    4 locks held by kworker/u16:5/90:
-> >     #0: ffff06c5c0008d38 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x150/0x53c
-> >     #1: ffff800081c0bdd0 ((work_completion)(&entry->work)){+.+.}-{0:0}, at: process_one_work+0x150/0x53c
-> >     #2: ffff06c5c0b7d0f8 (&dev->mutex){....}-{3:3}, at: __driver_attach_async_helper+0x3c/0xf4
-> >     #3: ffffacfa78ced000 (pci_bus_sem){++++}-{3:3}, at: pci_walk_bus+0x34/0xbc
-> >    
-> >                stack backtrace:
-> >    CPU: 1 PID: 90 Comm: kworker/u16:5 Not tainted 6.7.0 #40
-> >    Hardware name: LENOVO 21BYZ9SRUS/21BYZ9SRUS, BIOS N3HET53W (1.25 ) 10/12/2022
-> >    Workqueue: events_unbound async_run_entry_fn
-> >    Call trace:
-> >     dump_backtrace+0x9c/0x11c
-> >     show_stack+0x18/0x24
-> >     dump_stack_lvl+0x60/0xac
-> >     dump_stack+0x18/0x24
-> >     print_deadlock_bug+0x25c/0x348
-> >     __lock_acquire+0x10a4/0x2064
-> >     lock_acquire+0x1e8/0x318
-> >     down_read+0x60/0x184
-> >     pcie_aspm_pm_state_change+0x58/0xdc
-> >     pci_set_full_power_state+0xa8/0x114
-> >     pci_set_power_state+0xc4/0x120
-> >     qcom_pcie_enable_aspm+0x1c/0x3c [pcie_qcom]
-> >     pci_walk_bus+0x64/0xbc
-> >     qcom_pcie_host_post_init_2_7_0+0x28/0x34 [pcie_qcom]
+> I don't think there is a point in keeping a live variable across
+> calls to set the flag once for all either.
+
+I don't think that's useful. Once we see the flag being set, we'll
+enforce the non-coherency. If it wasn't set before, it's because it
+wasn't necessary.
+
+If one day we find a firmware that only randomly exposes the flag,
+we'll treat it as a quirk.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
