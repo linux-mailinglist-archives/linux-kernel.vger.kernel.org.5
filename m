@@ -1,110 +1,276 @@
-Return-Path: <linux-kernel+bounces-32446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E340D835BD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:42:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 825A0835BD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:42:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5462831A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:41:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5FA91C2189A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7691643D;
-	Mon, 22 Jan 2024 07:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N1uaOB34"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E621643D;
+	Mon, 22 Jan 2024 07:42:36 +0000 (UTC)
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B846B16410;
-	Mon, 22 Jan 2024 07:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDEF916410
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705909309; cv=none; b=oNauoG96/P4snj4Y30c1PnuFLCAkWY+4g3B+OtnwYaqX6KpKpiNFwbtCPqfzdPy/tc2oAhA5miX560rudAPwZ4MpREuc4IQrS+WH5fvnVWX6UfCw1dc4AoJnmArxmGlSjvtnU77pbULpze45FFdY1ex+JfoeemCmcTo8GKuzWS0=
+	t=1705909356; cv=none; b=LPG6xAIphQWLw53m9tvQ0v11iYz2nt55qaP0LIbhGi5qf5jlGLwSz6bE97yACiRSSIkaTTquiZ4ePnLizayMwSHe2V+vtuYjYhbP58Rv8hTO0WKapQd75U+YWcvSC+KuVueh2hPDQyhMMHDS70BkKirWWub/lNf6dTbtutjw3wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705909309; c=relaxed/simple;
-	bh=bNCnQp0ND/Bhd8jsEriViBmV+pDcacpd6HBwU8PIoQ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qt7rX/FWFSJrkHbfWz0jJi58j7jzfblFd2CYsokAHOuw8+EVpLt1eB+NvS03SgwKdUiPb65OgGvmq+ml/lLB0aM8+Bg90ciGZLISInxtGxGfZ5kVv+kp/nEW4seJ0UPpYcK/ZFT7xVhPSiTTS+N6qzBp+3BLXHUVz+TThBDHRHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N1uaOB34; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D970C43390;
-	Mon, 22 Jan 2024 07:41:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705909309;
-	bh=bNCnQp0ND/Bhd8jsEriViBmV+pDcacpd6HBwU8PIoQ0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=N1uaOB34gDFPl5VgCSojvtB3kJLoAuXALTXH8M8PXB48+q0RzPXLgeiOZWpGlithi
-	 qkFsXXxAmmVdkaObyI1c5dBA0XZvmGmQS5ZjOmsdELsxbqFHd/o1fgSu21/Qub1xzc
-	 4QWHiAXJlV+pgMtIWN7G/5uSZUkb79z6lK7eWfIQ2XLpScPtr6nsBxmRU7CgsiM53k
-	 7/JBW3HKmwzdTRZl5desoUu2GpDNwD1xNn8OXJWdeTOI5RU0VtPYgjRbAhIK/8fPR+
-	 VZs5/t9m/cS8yIQPJlHnAK9sS/D2ASIRHn2Oa9MbSZScGYOJOxE26iu3WP369JHIxT
-	 NEsU/yw3Jvv/w==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rRowR-0000000071i-3V5n;
-	Mon, 22 Jan 2024 08:41:59 +0100
-Date: Mon, 22 Jan 2024 08:41:59 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] ASoC: qcom: sc8280xp: limit speaker volumes
-Message-ID: <Za4cR90XoAaATq8X@hovoldconsulting.com>
-References: <20240119112420.7446-1-johan+linaro@kernel.org>
- <20240119112420.7446-3-johan+linaro@kernel.org>
- <d54d3640-49bf-4a2f-903b-4beeb0ebd56c@sirena.org.uk>
+	s=arc-20240116; t=1705909356; c=relaxed/simple;
+	bh=QQq6KTnP0WmvdI8XmZN4b2caZL5FR5s2VyyfXtsD6zQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p5MXEaruYXp9gY4lwlA06hiJzsSpLXV65DMoX6kqT45MC2ddNUD5tGtxLcUHfB1NwbkMp/edOC9nnW4clfwclBoDLeuXsPtDCCkq6AusWfFF4h94gPphEyMnblCjP+coZ1ADhdSzwJ5w++gpC/6DpjdDwXQ9BVwFrJnz8BKAIwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W.3muj._1705909349;
+Received: from 30.97.48.216(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W.3muj._1705909349)
+          by smtp.aliyun-inc.com;
+          Mon, 22 Jan 2024 15:42:30 +0800
+Message-ID: <d99929c8-9bf2-4a99-8507-617eb3419b98@linux.alibaba.com>
+Date: Mon, 22 Jan 2024 15:42:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6hBlhn91CWqsWzU0"
-Content-Disposition: inline
-In-Reply-To: <d54d3640-49bf-4a2f-903b-4beeb0ebd56c@sirena.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] erofs: make iov_iter describe target buffer when read
+ from fscache
+To: Jingbo Xu <jefflexu@linux.alibaba.com>, xiang@kernel.org,
+ chao@kernel.org, linux-erofs@lists.ozlabs.org
+Cc: huyue2@coolpad.com, linux-kernel@vger.kernel.org
+References: <20240122071253.119004-1-jefflexu@linux.alibaba.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20240122071253.119004-1-jefflexu@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi Jingbo,
+
+On 2024/1/22 15:12, Jingbo Xu wrote:
+> So far the fscache mode supports uncompressed data only, and the data
+> read from fscache is put directly into the target page cache.  As the
+> support for compressed data in fscache mode is going to be introduced,
+> refactor the interface of reading fscache so that the following
+> compressed part could make the raw data read from fscache be directed to
+> the target buffer it wants, decompress the raw data, and finally fill
+> the page cache with the decompressed data.
+> 
+> As the first step, a new structure, i.e. erofs_fscache_io (cio), is
+
+I'd suggest just using io instead of cio here.
+
+. i.e. erofs_fscache_io (io) ...
+
+> introduced to describe a generic read request from the fscache, while
+> the caller can specify the target buffer it wants in the iov_iter
+> structure (cio->iter).  Besides, the caller can also specify its
+
+. structure (io->iter) ...
+
+> completion callback and private data through cio, which will be called
+> to make further handling, e.g. unlocking the page cache for uncompressed
+> data or decompressing the read raw data, when the read request from the
+> fscache completes.  Now erofs_fscache_read_io_async() serves as a
+> generic interface for reading raw data from fscache for both compressed
+> and uncompressed data.
+> 
+> The erofs_fscache_request structure is kept to describe a request to
+> fill the page cache in the specified range.
+> 
+> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+> ---
+>   fs/erofs/fscache.c | 219 ++++++++++++++++++++++++---------------------
+>   1 file changed, 118 insertions(+), 101 deletions(-)
+> 
+> diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
+> index bc12030393b2..10709f20bef5 100644
+> --- a/fs/erofs/fscache.c
+> +++ b/fs/erofs/fscache.c
+> @@ -13,8 +13,6 @@ static LIST_HEAD(erofs_domain_cookies_list);
+>   static struct vfsmount *erofs_pseudo_mnt;
+>   
+>   struct erofs_fscache_request {
+> -	struct erofs_fscache_request *primary;
+> -	struct netfs_cache_resources cache_resources;
+>   	struct address_space	*mapping;	/* The mapping being accessed */
+>   	loff_t			start;		/* Start position */
+>   	size_t			len;		/* Length of the request */
+> @@ -23,42 +21,13 @@ struct erofs_fscache_request {
+>   	refcount_t		ref;
+>   };
+>   
+> -static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
+> -					     loff_t start, size_t len)
+> -{
+> -	struct erofs_fscache_request *req;
+> -
+> -	req = kzalloc(sizeof(struct erofs_fscache_request), GFP_KERNEL);
+> -	if (!req)
+> -		return ERR_PTR(-ENOMEM);
+> -
+> -	req->mapping = mapping;
+> -	req->start   = start;
+> -	req->len     = len;
+> -	refcount_set(&req->ref, 1);
+> -
+> -	return req;
+> -}
+> -
+> -static struct erofs_fscache_request *erofs_fscache_req_chain(struct erofs_fscache_request *primary,
+> -					     size_t len)
+> -{
+> -	struct erofs_fscache_request *req;
+> -
+> -	/* use primary request for the first submission */
+> -	if (!primary->submitted) {
+> -		refcount_inc(&primary->ref);
+> -		return primary;
+> -	}
+> -
+> -	req = erofs_fscache_req_alloc(primary->mapping,
+> -			primary->start + primary->submitted, len);
+> -	if (!IS_ERR(req)) {
+> -		req->primary = primary;
+> -		refcount_inc(&primary->ref);
+> -	}
+> -	return req;
+> -}
+> +struct erofs_fscache_io {
+> +	struct netfs_cache_resources cache_resources;
+
+	struct netfs_cache_resources cres;
+
+> +	struct iov_iter		iter;
+> +	netfs_io_terminated_t	end_io;
+> +	void			*private;
+> +	refcount_t		ref;
+> +};
+>   
+>   static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
+>   {
+> @@ -83,82 +52,116 @@ static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
+>   static void erofs_fscache_req_put(struct erofs_fscache_request *req)
+>   {
+>   	if (refcount_dec_and_test(&req->ref)) {
+> -		if (req->cache_resources.ops)
+> -			req->cache_resources.ops->end_operation(&req->cache_resources);
+> -		if (!req->primary)
+> -			erofs_fscache_req_complete(req);
+> -		else
+> -			erofs_fscache_req_put(req->primary);
+> +		erofs_fscache_req_complete(req);
+>   		kfree(req);
+>   	}
+>   }
+>   
+> -static void erofs_fscache_subreq_complete(void *priv,
+> +static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
+> +						loff_t start, size_t len)
+> +{
+> +	struct erofs_fscache_request *req;
+> +
+> +	req = kzalloc(sizeof(*req), GFP_KERNEL);
+> +	if (req) {
+> +		req->mapping = mapping;
+> +		req->start = start;
+> +		req->len = len;
+> +		refcount_set(&req->ref, 1);
+> +	}
+> +	return req;
+
+The following part may be better? to save an indentation:
+
+	req = kzalloc(sizeof(*req), GFP_KERNEL);
+	if (!req)
+		return NULL;
+	req->mapping = mapping;
+	req->start = start;
+	req->len = len;
+	refcount_set(&req->ref, 1);
+	return req;
+
+> +}
+> +
+> +static bool erofs_fscache_io_put(struct erofs_fscache_io *cio)
+> +{
+> +	if (refcount_dec_and_test(&cio->ref)) {
+> +		if (cio->cache_resources.ops)
+> +			cio->cache_resources.ops->end_operation(&cio->cache_resources);
+> +		kfree(cio);
+> +		return true;
+> +	}
+> +	return false;
 
 
---6hBlhn91CWqsWzU0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	if (!refcount_dec_and_test(&io->ref))
+		return false;
+	if (io->cres.ops)
+		io->cres.ops->end_operation(&io->cres);
+	kfree(io);
+	return true;
 
-On Mon, Jan 22, 2024 at 12:03:55AM +0000, Mark Brown wrote:
-> On Fri, Jan 19, 2024 at 12:24:18PM +0100, Johan Hovold wrote:
-> > The UCM configuration for the Lenovo ThinkPad X13s has up until now
-> > been setting the speaker PA volume to the minimum -3 dB when enabling
-> > the speakers, but this does not prevent the user from increasing the
-> > volume further.
->=20
-> This doesn't apply against current code, please check and resend.
+> +}
+> +
+> +static void erofs_fscache_req_io_put(struct erofs_fscache_io *cio)
 
-These patches are based on Linus's tree after merging the sound updates
-and I just verified that they apply cleanly to 6.8-rc1.
+cio -> io
 
-I couldn't find anything related in either linux-next or your ASoC tree
-that should interfere.
+> +{
+> +	struct erofs_fscache_request *req = cio->private;
+> +
+> +	if (erofs_fscache_io_put(cio))
+> +		erofs_fscache_req_put(req);
+> +}
+> +
+> +static void erofs_fscache_req_end_io(void *priv,
+>   		ssize_t transferred_or_error, bool was_async)
+>   {
+> -	struct erofs_fscache_request *req = priv;
+> +	struct erofs_fscache_io *cio = priv;
+> +	struct erofs_fscache_request *req = cio->private;
+> +
+> +	if (IS_ERR(transferred_or_error))
+> +		req->error = transferred_or_error;
+> +	erofs_fscache_req_io_put(cio);
+> +}
+> +
+> +static struct erofs_fscache_io *erofs_fscache_req_io_alloc(struct erofs_fscache_request *req)
+> +{
+> +	struct erofs_fscache_io *cio;
+>   
+> -	if (IS_ERR_VALUE(transferred_or_error)) {
+> -		if (req->primary)
+> -			req->primary->error = transferred_or_error;
+> -		else
+> -			req->error = transferred_or_error;
+> +	cio = kzalloc(sizeof(*cio), GFP_KERNEL);
+> +	if (cio) {
+> +		cio->end_io = erofs_fscache_req_end_io;
+> +		cio->private = req;
+> +		refcount_inc(&req->ref);
+> +		refcount_set(&cio->ref, 1);
+>   	}
+> -	erofs_fscache_req_put(req);
+> +	return cio;
 
-Could you please try again or let me know which branch to rebase on?
 
-Johan
+	io = kzalloc(sizeof(*io), GFP_KERNEL);
+	if (!io)
+		return NULL;
+	io->end_io = erofs_fscache_req_end_io;
+	io->private = req;
+	refcount_inc(&req->ref);
+	refcount_set(&io->ref, 1);
+	return io;
 
---6hBlhn91CWqsWzU0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCZa4cQwAKCRALxc3C7H1l
-CIxuAP40ZX5S3hcjEvbXjMLdYeKr/Nckfcn4BA2prKLZ4aqX+wD+Nete6gxhBX0l
-Ms5y+h/uAsuqbIqbgFwhpapBjxXd+w0=
-=Ejix
------END PGP SIGNATURE-----
-
---6hBlhn91CWqsWzU0--
+Thanks,
+Gao Xiang
 
