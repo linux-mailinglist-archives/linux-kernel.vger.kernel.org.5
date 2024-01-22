@@ -1,44 +1,85 @@
-Return-Path: <linux-kernel+bounces-33789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24AA5836E89
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:57:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A3B9836E7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:54:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5759C1C263E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:56:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2BDB2868C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0A05025B;
-	Mon, 22 Jan 2024 17:21:17 +0000 (UTC)
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA7660885
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:21:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.99.105.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9445FF11;
+	Mon, 22 Jan 2024 17:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dI7eIKGS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC025FDA6;
+	Mon, 22 Jan 2024 17:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705944076; cv=none; b=r/ndtETasfRYMyRc5jEt/W1rTqENBabaY5z0bebWLBqAOs193Nlob/3jHC12e/BLluH3dG34hBNyjiUazMxBoeqFRlxWkhQYmSZDQjio2yWmO79FEKBAIYwL1gwL+XJUgBTYUjnGBq1nZnZAy503/qdPqK5t++tTx23S1pOZtOc=
+	t=1705944058; cv=none; b=NBoVe67W3AJow6f9hewGjS4ziqkKuVtHsR89wAiychyi3oultFRzV5bbfj+fjeq/adW1dXOqtlLxlyB8Ufz6/qHCEPGblsXHnWI2PpWEuNuQWS6xhyGz3ehfYKUmNGZboukUPJpXukxkllbQTkfV88O1bmv11ULSkFd3tU6g4hQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705944076; c=relaxed/simple;
-	bh=2V9Iq+B/eJMgiMP5UOIZEY6gJkg/us4u+IV6rDI2l0E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rhHkTF6xEMQX5fL1s4idfrqSxD7AwaYgo0MOm0wj0vk8aCqMFHp4fsNB0Q4JpJxW2MnMk7zRNy0S6tQlVubsTnvJ/Vf8V5l63gd2juGCt+FnuGJMWnqqhGsTv5+9DqpIe74aUQJ9PEe1TYKvDpw+x9n+2Pl72nTGNOtZQh+u+7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=167.99.105.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [39.174.92.167])
-	by mail-app4 (Coremail) with SMTP id cS_KCgDHBIUBpK5lxVh5AA--.20045S2;
-	Tue, 23 Jan 2024 01:21:05 +0800 (CST)
-From: Zhipeng Lu <alexious@zju.edu.cn>
-To: alexious@zju.edu.cn
-Cc: Parthiban Veerasooran <parthiban.veerasooran@microchip.com>,
-	Christian Gromm <christian.gromm@microchip.com>,
-	Dan Carpenter <error27@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] most: fix a memleak in audio_probe_channel
-Date: Tue, 23 Jan 2024 01:20:44 +0800
-Message-Id: <20240122172044.3840976-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705944058; c=relaxed/simple;
+	bh=jNh+Ec0INav17U2QsXl1QxO3Tk5wsz1LnWFitqVAk5k=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=S34ma9zvmwilvCXc/LRKnI9Fq1InJElg0+788s5if771NrMX7FvaqjLQZl06gZo8dHtJpwjlXkHtVlMErqJ+/Y/Nd1BALQ+qP8VYy5LjWePKu1MTipJOZo5l7Szfa9IuA2ATs+4AlPvsA9vWZ0xUlNHCpiXMrKDxJaxr6gkt+Ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dI7eIKGS; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705944058; x=1737480058;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jNh+Ec0INav17U2QsXl1QxO3Tk5wsz1LnWFitqVAk5k=;
+  b=dI7eIKGSSKXQHbkVEIb+Ggdfp8QYIa9FT9CKHGBxxTd5DaDZCK5bWLIv
+   CaVELQlMQQTRYU4MigWkQ9V1Y2IR7/UzHBo4Br8EW75dPiJdKhIrCc6kq
+   iQ1uNSBmtVRxJsjB12kpgCP8jxZeUDERUm0E94ggbjKr0KDGaIhbwNSRj
+   2NDaA0Bl4RLPcEpOeQ0+r9D5eTT3/WjYC+4tM46mUp92N1Zc9bSTftL8X
+   nCTddOi2qy7aCl9+SNPwZab4anuyThiUhFSmL6NywXztksHrjRUukM/8i
+   Zs38BHzQ63Bdb3gMA3MiLMOhCesUolUcy8HdhqWqdNLP1/X95BNK78sYz
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="1150200"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="1150200"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 09:20:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="1262887"
+Received: from b4969161e530.jf.intel.com ([10.165.56.46])
+  by orviesa005.jf.intel.com with ESMTP; 22 Jan 2024 09:20:50 -0800
+From: Haitao Huang <haitao.huang@linux.intel.com>
+To: jarkko@kernel.org,
+	dave.hansen@linux.intel.com,
+	tj@kernel.org,
+	mkoutny@suse.com,
+	linux-kernel@vger.kernel.org,
+	linux-sgx@vger.kernel.org,
+	x86@kernel.org,
+	cgroups@vger.kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	hpa@zytor.com,
+	sohil.mehta@intel.com
+Cc: zhiquan1.li@intel.com,
+	kristen@linux.intel.com,
+	seanjc@google.com,
+	zhanb@microsoft.com,
+	anakrish@microsoft.com,
+	mikko.ylinen@linux.intel.com,
+	yangjie@microsoft.com
+Subject: [PATCH v7 11/15] x86/sgx: Abstract check for global reclaimable pages
+Date: Mon, 22 Jan 2024 09:20:44 -0800
+Message-Id: <20240122172048.11953-12-haitao.huang@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,50 +87,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cS_KCgDHBIUBpK5lxVh5AA--.20045S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruFyDuFy3uF43XF18CrWUtwb_yoWfuFX_Cw
-	4fZrnrXr109ry7Zw13K345CryFkr1j9ryxZw4ktFWaqFW7ua45G34jvrn5JFWUCF12kr92
-	y3y5XrZIy342kjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbskFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1lc2xSY4AK67AK6r4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-	14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-	IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-	IFyTuYvjfU1fHUDUUUU
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-When get_channel fails, audio_probe_channel should free adpt like all
-its following error-handling paths after get_channel. Otherwise there
-could be a memleak.
+From: Kristen Carlson Accardi <kristen@linux.intel.com>
 
-Fixes: 15600aea2754 ("staging: most: sound: create one sound card w/ multiple PCM devices per MOST device")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+To determine if any page available for reclamation at the global level,
+only checking for emptiness of the global LRU is not adequate when pages
+are tracked in multiple LRUs, one per cgroup. For this purpose, create a
+new helper, sgx_can_reclaim(), currently only checks the global LRU,
+later will check emptiness of LRUs of all cgroups when per-cgroup
+tracking is turned on. Replace all the checks of the global LRU,
+list_empty(&sgx_global_lru.reclaimable), with calls to
+sgx_can_reclaim().
+
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 ---
- drivers/most/most_snd.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+v7:
+- Split this out from the big patch, #10 in V6. (Dave, Kai)
+---
+ arch/x86/kernel/cpu/sgx/main.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/most/most_snd.c b/drivers/most/most_snd.c
-index 45d762804c5e..6cccc9c26796 100644
---- a/drivers/most/most_snd.c
-+++ b/drivers/most/most_snd.c
-@@ -564,7 +564,8 @@ static int audio_probe_channel(struct most_interface *iface, int channel_id,
- 	if (get_channel(iface, channel_id)) {
- 		pr_err("channel (%s:%d) is already linked\n",
- 		       iface->description, channel_id);
--		return -EEXIST;
-+		ret = -EEXIST;
-+		goto err_free_adpt;
- 	}
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index b43d51eff5ef..7b13bcf3e75d 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -37,6 +37,11 @@ static inline struct sgx_epc_lru_list *sgx_lru_list(struct sgx_epc_page *epc_pag
+ 	return &sgx_global_lru;
+ }
  
- 	if (cfg->direction == MOST_CH_TX) {
++static inline bool sgx_can_reclaim(void)
++{
++	return !list_empty(&sgx_global_lru.reclaimable);
++}
++
+ static atomic_long_t sgx_nr_free_pages = ATOMIC_LONG_INIT(0);
+ 
+ /* Nodes with one or more EPC sections. */
+@@ -395,7 +400,7 @@ unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned int *nr_to
+ static bool sgx_should_reclaim(unsigned long watermark)
+ {
+ 	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
+-	       !list_empty(&sgx_global_lru.reclaimable);
++		sgx_can_reclaim();
+ }
+ 
+ static void sgx_reclaim_pages_global(bool indirect)
+@@ -599,7 +604,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+ 			break;
+ 		}
+ 
+-		if (list_empty(&sgx_global_lru.reclaimable)) {
++		if (!sgx_can_reclaim()) {
+ 			page = ERR_PTR(-ENOMEM);
+ 			break;
+ 		}
 -- 
-2.34.1
+2.25.1
 
 
