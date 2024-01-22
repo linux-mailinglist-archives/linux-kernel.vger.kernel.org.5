@@ -1,248 +1,156 @@
-Return-Path: <linux-kernel+bounces-32423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3008835B8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:24:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F3F6835B97
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73EA2281150
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:24:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 744271C215CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069C2F9F4;
-	Mon, 22 Jan 2024 07:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E0B3125CB;
+	Mon, 22 Jan 2024 07:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="U+cP2u51"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DhPWwvvh"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF892F4F9
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 065E3F9C8;
+	Mon, 22 Jan 2024 07:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705908245; cv=none; b=bkvAzT7TGhUzjjr9JPGKPdvP2HucYrrJQq6qCH6xkE6LioZVqmvp+c/W5G+be0MOP3kMyP7GaqzdL8DVSoKIN2MQUhyzj8iieoPV+YNd1YZ0s4aevN1pL7Bc8LC/g6Mwp8EJ33zxXdzkov9IQA9OYDsOJcIcuygJoPDlUJUlHN8=
+	t=1705908542; cv=none; b=iCbxhhE7J8xi6197gZZG7SsQ8pQTllCRXYEYCAaeVIEv8adhXfC6mDugJ0zRoh5AyOKrbgsMO0+SYqwSCwhNbhmST81PniR1cqFtMiDVEcd1m+Lbs3I3Z14nv1NvCSL41w80BdcnGu4YKvQ5wb5SV5r2ZK3oGUUokowP9EgcZQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705908245; c=relaxed/simple;
-	bh=rWbUSyZEdxipvf2E7+M0Iv4K+d7cHRQC1vlYFO3g8Sc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S737Ckhp6UinVx1YnRTn8wKyTlONk9H9jNdbIo0DrkkaMHvQbO50uVoUYLunNz4qVp+wHOSw9e7cQva/Ee0z5l4VI12EZRStHvqUMwqTBi4VHBA/rcfCaohqYR/4DBVJ6eSvY0coQ6eFDvjtWlrObbJqD1WwUxWPNB/PNPDxCUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U+cP2u51; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6001449a2beso970377b3.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 23:24:02 -0800 (PST)
+	s=arc-20240116; t=1705908542; c=relaxed/simple;
+	bh=mjVuk28xGKx++YNM88arr39E7aC+e8ExFCRToXn8ZhM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c7E+mTl5+0FncmLrURntwmJO+Z/JyTqaDzoICbN4EoiGvgaIQX8QQ29sozzaoXMeCYCQxCJVViQPn3AbdiJukz5fX3GXmQ8D2XK1bXcYToopilxX6zgZl1F2HeNEVlgqp6j9u8hrYQxR4/YyFx5Mu9QLa0Xfxh+ANCfPO3abgTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DhPWwvvh; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e800461baso34971295e9.3;
+        Sun, 21 Jan 2024 23:29:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705908241; x=1706513041; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6nULwB4h5pXORlWHrU8L4yn/qG7KobE3skZQ7okWTvc=;
-        b=U+cP2u51f3YwhAgQNTpHPuyfH1glroHQnsjqtgJHhgPnKpNvowu1RZtdDeXsFmqMUj
-         hFPIgmgfFpauxMXLHqqp1mHtQ8g7fL3eT/gXTtC4oO9OvABpTdUOabdDj9atj6vvaGIv
-         CWGGoulHITWyXo4mnzJ8bsf8qMQ7lNbOZKbOK7Dla4fAh2xt16o3hPp/209w7IscRL9j
-         qWQwWUJvwZ/nOZ6/gGkEP9YNrqDKiwt22obN5GgvRQpYCIRNFPolSO4rGoQZ+H6DKD4C
-         sMpAfkwFnGOkJcciAeACSQBsBD4OBBvttmLGvs+MRWdhekFuhC2pF7M3L6wX+tnEHYoe
-         hqFA==
+        d=gmail.com; s=20230601; t=1705908539; x=1706513339; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lCnmdq66XmjZoBv44BM5Iul1c6YAS75MAAm26+CD69Q=;
+        b=DhPWwvvh3w/INTPcwVKX2jfLX8AVOLlsaXk/wBMvD/ViGAclTJjBsWYNB1Bbw0/Bps
+         gtia6mQx/oBDiqEQo6sp3Kc+oMpETK0s5oTgKlOgP4vKz341CIwxGxe4gZ0z6hWtldLg
+         0nji1k2xxfCGoIH0q3xEZow9j1kY6bZR0mJbyATRID3j+yIWD8sReAEUElVSCi31i9yj
+         VFEa3vxgLwg1Z2eid3V/rZjKJiIIgu2uBdZ0eC3DI/4sfbJq2sFELcCLuU0ZY7ZBo+Uv
+         AjlQV99yv0UAjezN4wmkXY3p26Zcq2kmDcMQLIPsm3mp3fuOc4DBVEZtPsgfWHelRgOf
+         kP6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705908242; x=1706513042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6nULwB4h5pXORlWHrU8L4yn/qG7KobE3skZQ7okWTvc=;
-        b=F66ml3pdfZ5p3t8JJglFQqvGv6U4mtxegYkyLk9sCQmV+VKBm733RbAqbw5XJZMvNh
-         JU/9vcwKJ5N7CN2+sp3MZTjZwyYf6HSSSSYYNMhaHbWxNRwvh7kbtGL31ufo8jMcK1zH
-         /Ms4SZZiORDEZOsqSDapBoqGyP+58ceyBc652Cmq9uJqgZsH9qnOIiCcfVliO6e7Tgp5
-         isnOndg+yljecXFnNT05icRyR+OA3mfo/S80z7A7fyVVhjV5YxeaazlTC7bA5or1uYu+
-         WxqwhGQCpKkXNB3q3UOvXH3o9KONmev/WLDKz1azz2NgIQWQMrhejZPk1IiNXufwg6Rk
-         V8DA==
-X-Gm-Message-State: AOJu0YxIoNcYpnVLPLPckwCdrDD4MwtsJArXaQ0w3qZ6GfM3SBOS0Snh
-	rbHq0NuZ6617Qio1pSxub2kZd2HloURXC1cOxOdbMWKeTeOxnRgq0PC5qnE2ZyShHEh9YrLNFTz
-	ykohJswHWMLckQxmJx5Z0teg2XqQWzpujHuD3
-X-Google-Smtp-Source: AGHT+IE6F//wT29st6eFFtAeRUskoVww8wNftQF3w1WeZzm+OMGiSq08/v3R/eN+cXzIAeOSU7Yv/rOii9evC7i0dCs=
-X-Received: by 2002:a81:5383:0:b0:5ff:6587:19fd with SMTP id
- h125-20020a815383000000b005ff658719fdmr3099226ywb.86.1705908240727; Sun, 21
- Jan 2024 23:24:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705908539; x=1706513339;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lCnmdq66XmjZoBv44BM5Iul1c6YAS75MAAm26+CD69Q=;
+        b=ppIIEI+dyav1loCuF3HTAM0i+xPWScV+X91xVL/TfVzDDHum61qrBtx0P/UGAD78xh
+         RTYswY3HXdkwE2Pin98AnVG9m7uScBP2Htxz64OQ7cBnKseb2nqexXK5mk5YK2V/ZSXb
+         NOwI9ytKvdITUFfMzcu3YajajSFo9hjjUPwijA+6mHM9jkOmTbP75QbBnj7DWfvrhF2w
+         eK8ylzlsLRZgIMXClhpY8co6N3bv61912b0FelUq0/sM0ygCLZU/TbvpZaRueK0dXm6v
+         OK1KIed1X4xBRladhtC6k8+g2cRv33BT5QWdu3CPZqMwnHPk3VzkKPTa7Ob9o82fjEBA
+         AXVg==
+X-Gm-Message-State: AOJu0YxHlxSIxbrkA5URrGmBl7W4lz/Vuf3WB6i0GiUYx/H89AvRy1m4
+	dCvy4ovSigo1EfUb2CerjLGNpDpecEng7LRXOE+mJ6IbuNZEKwrP
+X-Google-Smtp-Source: AGHT+IFDqWE0bKaWplinhKBKsebEIUM6fNGea7VOyi6s7g6ktFVDEYnKaJ3WD+0OmZgk6Q9UKMAAcw==
+X-Received: by 2002:a05:600c:2213:b0:40e:702c:3430 with SMTP id z19-20020a05600c221300b0040e702c3430mr943239wml.212.1705908539067;
+        Sun, 21 Jan 2024 23:28:59 -0800 (PST)
+Received: from [192.168.2.177] ([207.188.161.188])
+        by smtp.gmail.com with ESMTPSA id c2-20020a5d4cc2000000b003392d3dcf60sm3912210wrt.88.2024.01.21.23.28.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Jan 2024 23:28:58 -0800 (PST)
+Message-ID: <035bd556-f9a3-4255-907f-5e119f94c976@gmail.com>
+Date: Mon, 22 Jan 2024 08:28:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115183837.205694-1-surenb@google.com> <1bc8a5df-b413-4869-8931-98f5b9e82fe5@suse.cz>
- <74005ee1-b6d8-4ab5-ba97-92bec302cc4b@suse.cz> <CAJuCfpGTVEy=ZURbL3c7k+CduDR8wSfqsujN+OecPwuns7LiGQ@mail.gmail.com>
- <CAJuCfpHsNP7C2aDrgG=ANS+O2jh1ptEcAn2Gp0JhpM33=sf9UA@mail.gmail.com>
-In-Reply-To: <CAJuCfpHsNP7C2aDrgG=ANS+O2jh1ptEcAn2Gp0JhpM33=sf9UA@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Sun, 21 Jan 2024 23:23:47 -0800
-Message-ID: <CAJuCfpFAmTfmTpd_8gJ1KYAT2ujiJKCjrJjEfp2pjrfqZzr+gg@mail.gmail.com>
-Subject: Re: [RFC 0/3] reading proc/pid/maps under RCU
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
-	jack@suse.cz, dchinner@redhat.com, casey@schaufler-ca.com, 
-	ben.wolsieffer@hefring.com, paulmck@kernel.org, david@redhat.com, 
-	avagin@google.com, usama.anjum@collabora.com, peterx@redhat.com, 
-	hughd@google.com, ryan.roberts@arm.com, wangkefeng.wang@huawei.com, 
-	Liam.Howlett@oracle.com, yuzhao@google.com, axelrasmussen@google.com, 
-	lstoakes@gmail.com, talumbau@google.com, willy@infradead.org, 
-	mgorman@techsingularity.net, jhubbard@nvidia.com, vishal.moola@gmail.com, 
-	mathieu.desnoyers@efficios.com, dhowells@redhat.com, jgg@ziepe.ca, 
-	sidhartha.kumar@oracle.com, andriy.shevchenko@linux.intel.com, 
-	yangxingui@huawei.com, keescook@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/15] arm64: dts: mediatek: radxa-nio-12l: Add external
+ MT6360 PMIC on I2C6
+Content-Language: en-US, ca-ES, es-ES
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-mediatek@lists.infradead.org
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, wenst@chromium.org, hsinyi@chromium.org,
+ nfraprado@collabora.com, macpaul.lin@mediatek.com, sean.wang@mediatek.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20240112094632.66310-1-angelogioacchino.delregno@collabora.com>
+ <20240112094632.66310-5-angelogioacchino.delregno@collabora.com>
+ <6a1d612a-200e-4868-8577-49de933cf2bb@linaro.org>
+From: Matthias Brugger <matthias.bgg@gmail.com>
+Autocrypt: addr=matthias.bgg@gmail.com; keydata=
+ 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
+In-Reply-To: <6a1d612a-200e-4868-8577-49de933cf2bb@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 18, 2024 at 9:58=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Tue, Jan 16, 2024 at 9:57=E2=80=AFAM Suren Baghdasaryan <surenb@google=
-com> wrote:
-> >
-> > On Tue, Jan 16, 2024 at 6:46=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
-> wrote:
-> > >
-> > > On 1/16/24 15:42, Vlastimil Babka wrote:
-> > > > On 1/15/24 19:38, Suren Baghdasaryan wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > >> The issue this patchset is trying to address is mmap_lock contenti=
-on when
-> > > >> a low priority task (monitoring, data collecting, etc.) blocks a h=
-igher
-> > > >> priority task from making updated to the address space. The conten=
-tion is
-> > > >> due to the mmap_lock being held for read when reading proc/pid/map=
-s.
-> > > >> With maple_tree introduction, VMA tree traversals are RCU-safe and=
- per-vma
-> > > >> locks make VMA access RCU-safe. this provides an opportunity for l=
-ock-less
-> > > >> reading of proc/pid/maps. We still need to overcome a couple obsta=
-cles:
-> > > >> 1. Make all VMA pointer fields used for proc/pid/maps content gene=
-ration
-> > > >> RCU-safe;
-> > > >> 2. Ensure that proc/pid/maps data tearing, which is currently poss=
-ible at
-> > > >> page boundaries only, does not get worse.
-> > > >
-> > > > Hm I thought we were to only choose this more complicated in case a=
-dditional
-> > > > tearing becomes a problem, and at first assume that if software can=
- deal
-> > > > with page boundary tearing, it can deal with sub-page tearing too?
-> >
-> > Hi Vlastimil,
-> > Thanks for the feedback!
-> > Yes, originally I thought we wouldn't be able to avoid additional
-> > tearing without a big change but then realized it's not that hard, so
-> > I tried to keep the change in behavior transparent to the userspace.
->
-> In the absence of other feedback I'm going to implement and post the
-> originally envisioned approach: remove validation step and avoid any
-> possibility of blocking but allowing for sub-page tearing. Will use
-> Matthew's rwsem_wait() to deal with possible inconsistent maple_tree
-> state.
 
-I posted v1 at
-https://lore.kernel.org/all/20240122071324.2099712-1-surenb@google.com/
-In the RFC I used mm_struct.mm_lock_seq to detect if mm is being
-changed but then I realized that won't work. mm_struct.mm_lock_seq is
-incremented after mm is changed and right before mmap_lock is
-write-unlocked. Instead I need a counter that changes once we
-write-lock mmap_lock and before any mm changes. So the new patchset
-introduces a separate counter to detect possible mm changes. In
-addition, I could not use rwsem_wait() and instead had to take
-mmap_lock for read to wait for the writer to finish and then record
-the new counter while holding mmap_lock for read. That prevents
-concurrent mm changes while we are recording the new counter value.
 
-> Thanks,
-> Suren.
->
-> >
-> > > >
-> > > >> The patchset deals with these issues but there is a downside which=
- I would
-> > > >> like to get input on:
-> > > >> This change introduces unfairness towards the reader of proc/pid/m=
-aps,
-> > > >> which can be blocked by an overly active/malicious address space m=
-odifyer.
-> > > >
-> > > > So this is a consequence of the validate() operation, right? We cou=
-ld avoid
-> > > > this if we allowed sub-page tearing.
-> >
-> > Yes, if we don't care about sub-page tearing then we could get rid of
-> > validate step and this issue with updaters blocking the reader would
-> > go away. If we choose that direction there will be one more issue to
-> > fix, namely the maple_tree temporary inconsistent state when a VMA is
-> > replaced with another one and we might observe NULL there. We might be
-> > able to use Matthew's rwsem_wait() to deal with that issue.
-> >
-> > > >
-> > > >> A couple of ways I though we can address this issue are:
-> > > >> 1. After several lock-less retries (or some time limit) to fall ba=
-ck to
-> > > >> taking mmap_lock.
-> > > >> 2. Employ lock-less reading only if the reader has low priority,
-> > > >> indicating that blocking it is not critical.
-> > > >> 3. Introducing a separate procfs file which publishes the same dat=
-a in
-> > > >> lock-less manner.
-> > >
-> > > Oh and if this option 3 becomes necessary, then such new file shouldn=
-'t
-> > > validate() either, and whoever wants to avoid the reader contention a=
-nd
-> > > converts their monitoring to the new file will have to account for th=
-is
-> > > possible extra tearing from the start. So I would suggest trying to c=
-hange
-> > > the existing file with no validate() first, and if existing userspace=
- gets
-> > > broken, employ option 3. This would mean no validate() in either case=
-?
-> >
-> > Yes but I was trying to avoid introducing additional file which
-> > publishes the same content in a slightly different way. We will have
-> > to explain when userspace should use one vs the other and that would
-> > require going into low level implementation details, I think. Don't
-> > know if that's acceptable/preferable.
-> > Thanks,
-> > Suren.
-> >
-> > >
-> > > >> I imagine a combination of these approaches can also be employed.
-> > > >> I would like to get feedback on this from the Linux community.
-> > > >>
-> > > >> Note: mmap_read_lock/mmap_read_unlock sequence inside validate_map=
-()
-> > > >> can be replaced with more efficiend rwsem_wait() proposed by Matth=
-ew
-> > > >> in [1].
-> > > >>
-> > > >> [1] https://lore.kernel.org/all/ZZ1+ZicgN8dZ3zj3@casper.infradead.=
-org/
-> > > >>
-> > > >> Suren Baghdasaryan (3):
-> > > >>   mm: make vm_area_struct anon_name field RCU-safe
-> > > >>   seq_file: add validate() operation to seq_operations
-> > > >>   mm/maps: read proc/pid/maps under RCU
-> > > >>
-> > > >>  fs/proc/internal.h        |   3 +
-> > > >>  fs/proc/task_mmu.c        | 130 +++++++++++++++++++++++++++++++++=
-+----
-> > > >>  fs/seq_file.c             |  24 ++++++-
-> > > >>  include/linux/mm_inline.h |  10 ++-
-> > > >>  include/linux/mm_types.h  |   3 +-
-> > > >>  include/linux/seq_file.h  |   1 +
-> > > >>  mm/madvise.c              |  30 +++++++--
-> > > >>  7 files changed, 181 insertions(+), 20 deletions(-)
-> > > >>
-> > > >
-> > >
+On 16/01/2024 09:16, Krzysztof Kozlowski wrote:
+> On 12/01/2024 10:46, AngeloGioacchino Del Regno wrote:
+>> In preparation for adding the power tree for this board, add a node for
+>> the MT6360 PMIC, connected to I2C6.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> 
+> Why do you add new device in pieces? Logical change is "new device", not
+
+Well we have done that in the past, so somehow for MediaTek tree that's ok to 
+do. From my personal maintainer position it's easier to review 15 small patches 
+then one or two huge ones.
+
+Regards,
+Matthias
 
