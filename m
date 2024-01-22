@@ -1,183 +1,185 @@
-Return-Path: <linux-kernel+bounces-32420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52D04835B7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:17:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22BB4835B7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:17:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76DB31C214B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:17:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8667B260DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C1FF505;
-	Mon, 22 Jan 2024 07:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bs0puiRU"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063ABF9E6;
+	Mon, 22 Jan 2024 07:17:25 +0000 (UTC)
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBA2FC17
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73002564;
+	Mon, 22 Jan 2024 07:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705907854; cv=none; b=uKuafUJFexxwUoOJiWonA8MtFR3LxvVdOtgPJfKa10xU/y0N41y3asURJR+B57Lf0SCV1L/xINsTLXiDlMfYM/QtXZOiQIjTR/WND+0KRcK0T8e2k5v/izkt1fPD93KpOwiSPpZE3YeWpw4Yr9+48hZeu5K7eeK7HG1NXf31DKo=
+	t=1705907844; cv=none; b=p+/bz/pYTxFffi+s7eQLZqf2o3rIZmihJ/3xO6FWB4shGsbtQa9DuNI0sP/pkEWerEzukbzDoa/bmpVgKTTpW7UgLQj+kB2G5LIdsQ/dcax6Sjs7mr7fcYsf63EXsdwwLXabF0HR6omjKklA0WAede4VURO1lhjbknzkBAeY2RY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705907854; c=relaxed/simple;
-	bh=cuRhoD25kV5AtO2UPG+DNNvqeNk47kF0D6+CgaIKqg0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=SeWTTfvBeEWD1oSCvYhUH5w8VJXsIz9pDPUIA84vVgyYmVti9AGOxro6orFpnF1ZX+AaNPoaiBRU6tImwdc9d1pkw+zcbWDtUPFWD+LzwV11JDxV/nT/9ZhOHZL4dAwUlUxEGFz+4F8EHyTaW0HSm6v8SFEEiLxdvIshVvvD1qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bs0puiRU; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e86a9fc4bso37121925e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 23:17:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705907849; x=1706512649; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qgtcM0W/h7dz9GnGdFCBPRNX03Z4V/NkqN0UrdV3BGc=;
-        b=Bs0puiRUjJAVc1Qdn1esaggL9ifhYvoZJYhxzeeRYdjDTK3fpfz9VFMTGj8j6DQjuW
-         gUO3SIyPqbhIgivppTiK3YWyl3kMQZw/S+JvzvQT03j/IDDE8FsjSm8+43qbFQmEbmid
-         ZF+0IBT0jOcYB1BrhLXNkn51b12BoPg4uzoqmOQTKJR2Qo/P2fbt9v/KvcQa4jyHE/Rp
-         LE3UQaUkOOjJLOX8NDefUUH0r2eehPL7cRYERg/ATC46J2b2RpVVhOE6M/ZGUkwFtNGW
-         aV7jMsU7TIXBungu3BKB84BMJDaswBqJLBpXXnlC+p99dJFWWYp2nZIR85Q5cBKGv97Z
-         y4Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705907849; x=1706512649;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qgtcM0W/h7dz9GnGdFCBPRNX03Z4V/NkqN0UrdV3BGc=;
-        b=EgnHRkzsUI7UrpWLPJde2ORNfeTHbpmeBsxD1a20ugLP2lDQ9sVDxQkGP/pirRuPds
-         TZ0bHovh8cWghUp2XiXsnhiDWpwTuyiD6bgM39ENU7Lv7XiW3mRN/CuVkrdpzm34G5HI
-         QgyLSks3miXZlj/Np7JwVcSnulI1gTJpkf4rQ/6Cij1dC16fEM1BmUHffceW6d/u66cD
-         a8Ryd1s3kHPnkm/hAxfsmZMaX/vmCGsscaPZViA77xkA9myraDopg9UxTIHOBsJI4bCA
-         WSQ2Up39tngtyuKULNtvZzFt1YqMvpLuXQaFrY+ml5GyZ3UYKJibBMbm81sCne4XKDb2
-         I48w==
-X-Gm-Message-State: AOJu0YzvFWEXLOT7hKuPfoqiRFPAOKGFbZXAnFuHQb27x+sam5OjGF9v
-	+qc8UnuKD75oeCdDxcacDVnQU23pbt7aNJSKk5UBSATIkNWA9+ii+cpCs0Cq01s=
-X-Google-Smtp-Source: AGHT+IFsPYePyh4MiR1Zs+B10Cs0JfvYc19AdlDGwYR24yPPdyHjYSD2i1XOCIX0PSyBS1BzXa7vbQ==
-X-Received: by 2002:a7b:c454:0:b0:40e:44ad:2e47 with SMTP id l20-20020a7bc454000000b0040e44ad2e47mr2087634wmi.185.1705907849606;
-        Sun, 21 Jan 2024 23:17:29 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id hn33-20020a05600ca3a100b0040e621feca9sm35726315wmb.17.2024.01.21.23.17.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jan 2024 23:17:29 -0800 (PST)
-Date: Mon, 22 Jan 2024 10:17:26 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Patrisious Haddad <phaddad@nvidia.com>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
-	Mark Bloch <mbloch@nvidia.com>
-Subject: drivers/net/ethernet/mellanox/mlx5/core/lib/ipsec_fs_roce.c:170
- ipsec_fs_roce_rx_rule_setup() warn: missing error code 'err'
-Message-ID: <57817f40-9979-44d7-9f76-d1bf1e06cf39@moroto.mountain>
+	s=arc-20240116; t=1705907844; c=relaxed/simple;
+	bh=EIzMyARXnac3YZNByVm9pg65cpv8PgZg6NgmGDtv5xY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Dt5pZnRG0wfB0cH2M/P5w9q0VDDRovnTMoAALM0HdGhuOXN08LlJcwMNwclrm7xcssVIK2r1Znmu7nT8eVIs6A+zEdBpoMQTBT97h+MRD4Bu7pDqhP0GThQmuf82FtHXqLuP7ch3haFqYU9WeXZOKW+dF5Pae2M2y8tABjlr8Ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W.2pzwi_1705907838;
+Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W.2pzwi_1705907838)
+          by smtp.aliyun-inc.com;
+          Mon, 22 Jan 2024 15:17:18 +0800
+Message-ID: <8f52414c-e0f2-4931-9b32-5c22f1d581f0@linux.alibaba.com>
+Date: Mon, 22 Jan 2024 15:17:50 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fs: improve dump_mapping() robustness
+To: Charan Teja Kalla <quic_charante@quicinc.com>,
+ Al Viro <viro@zeniv.linux.org.uk>
+Cc: akpm@linux-foundation.org, willy@infradead.org, brauner@kernel.org,
+ jack@suse.cz, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <937ab1f87328516821d39be672b6bc18861d9d3e.1705391420.git.baolin.wang@linux.alibaba.com>
+ <20240118013857.GO1674809@ZenIV>
+ <d5979f89-7a84-423a-a1c7-29bdbf7c2bc1@linux.alibaba.com>
+ <c85fffe6-e455-d0fa-e332-87e81e0a0e86@quicinc.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <c85fffe6-e455-d0fa-e332-87e81e0a0e86@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   80fc600fafee8ba981da6ed41a572800c8e11de6
-commit: f2f0231cfe8905af217e5bf1a08bfb8e4d3b74fb net/mlx5: Configure IPsec steering for ingress RoCEv2 MPV traffic
-config: x86_64-randconfig-161-20240120 (https://download.01.org/0day-ci/archive/20240121/202401210739.xiykyqPN-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202401210739.xiykyqPN-lkp@intel.com/
 
-smatch warnings:
-drivers/net/ethernet/mellanox/mlx5/core/lib/ipsec_fs_roce.c:170 ipsec_fs_roce_rx_rule_setup() warn: missing error code 'err'
+On 1/19/2024 11:48 PM, Charan Teja Kalla wrote:
+> Hi Matthew/Baolin,
+> 
+> On 1/18/2024 8:13 AM, Baolin Wang wrote:
+>>
+>>
+>> On 1/18/2024 9:38 AM, Al Viro wrote:
+>>> On Tue, Jan 16, 2024 at 03:53:35PM +0800, Baolin Wang wrote:
+>>>
+>>>> With checking the 'dentry.parent' and 'dentry.d_name.name' used by
+>>>> dentry_name(), I can see dump_mapping() will output the invalid dentry
+>>>> instead of crashing the system when this issue is reproduced again.
+>>>
+>>>>        dentry_ptr = container_of(dentry_first, struct dentry,
+>>>> d_u.d_alias);
+>>>> -    if (get_kernel_nofault(dentry, dentry_ptr)) {
+>>>> +    if (get_kernel_nofault(dentry, dentry_ptr) ||
+>>>> +        !dentry.d_parent || !dentry.d_name.name) {
+>>>>            pr_warn("aops:%ps ino:%lx invalid dentry:%px\n",
+>>>>                    a_ops, ino, dentry_ptr);
+>>>>            return;
+>>>
+>>> That's nowhere near enough.  Your ->d_name.name can bloody well be
+>>> pointing
+>>> to an external name that gets freed right under you.  Legitimately so.
+>>>
+>>> Think what happens if dentry has a long name (longer than would fit into
+>>> the embedded array) and gets renamed name just after you copy it into
+>>> a local variable.  Old name will get freed.  Yes, freeing is RCU-delayed,
+>>> but I don't see anything that would prevent your thread losing CPU
+>>> and not getting it back until after the sucker's been freed.
+>>
+>> Yes, that's possible. And this appears to be a use-after-free issue in
+>> the existing code, which is different from the issue that my patch
+>> addressed.
+>>
+>> So how about adding a rcu_read_lock() before copying the dentry to a
+>> local variable in case the old name is freed?
+>>
+> 
+> We too seen the below crash while printing the dentry name.
+> 
+> aops:shmem_aops ino:5e029 dentry name:"dev/zero"
+> flags:
+> 0x8000000000080006(referenced|uptodate|swapbacked|zone=2|kasantag=0x0)
+> raw: 8000000000080006 ffffffc033b1bb60 ffffffc033b1bb60 ffffff8862537600
+> raw: 0000000000000001 0000000000000000 00000003ffffffff ffffff807fe64000
+> page dumped because: migration failure
+> migrating pfn aef223 failed ret:1
+> page:000000009e72a120 refcount:3 mapcount:0 mapping:000000003325dda1
+> index:0x1 pfn:0xaef223
+> memcg:ffffff807fe64000
+> Unable to handle kernel NULL pointer dereference at virtual address
+> 0000000000000000
+> Mem abort info:
+>    ESR = 0x0000000096000005
+>    EC = 0x25: DABT (current EL), IL = 32 bits
+>    SET = 0, FnV = 0
+>    EA = 0, S1PTW = 0
+>    FSC = 0x05: level 1 translation fault
+> Data abort info:
+>    ISV = 0, ISS = 0x00000005
+>    CM = 0, WnR = 0
+> user pgtable: 4k pages, 39-bit VAs, pgdp=000000090c12d000
+> [0000000000000000] pgd=0000000000000000, p4d=0000000000000000,
+> pud=0000000000000000
+> Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
+> 
+> dentry_name+0x1f8/0x3a8
+> pointer+0x3b0/0x6b8
+> vsnprintf+0x4a4/0x65c
+> vprintk_store+0x168/0x4a8
+> vprintk_emit+0x98/0x218
+> vprintk_default+0x44/0x70
+> vprintk+0xf0/0x138
+> _printk+0x54/0x80
+> dump_mapping+0x17c/0x188
+> dump_page+0x1d0/0x2e8
+> offline_pages+0x67c/0x898
+> 
+> 
+> 
+> Not much comfortable with block layer internals, TMK, the below is what
+> happening in the my case:
+> memoffline	     		dput()
+> (offline_pages)		 (as part of closing of the shmem file)
+> ------------		 --------------------------------------
+> 					.......
+> 			1) dentry_unlink_inode()
+> 			      hlist_del_init(&dentry->d_u.d_alias);
+> 
+> 			2) iput():
+> 			    a) inode->i_state |= I_FREEING
+> 				.....
+> 			    b) evict_inode()->..->shmem_undo_range
+> 			       1) get the folios with elevated refcount
+> 3) do_migrate_range():
+>     a) Because of the elevated
+>     refcount in 2.b.1, the
+>     migration of this page will
+>     be failed.
+> 
+> 			       2) truncate_inode_folio() ->
+> 				     filemap_remove_folio():
+>   				(deletes from the page cache,
+> 				 set page->mapping=NULL,
+> 				 decrement the refcount on folio)
+>    b) Call dump_page():
+>       1) mapping = page_mapping(page);
+>       2) dump_mapping(mapping)
+> 	  a) We unlinked the dentry in 1)
+>             thus dentry_ptr from host->i_dentry.first
+>             is not a proper one.
+> 
+>           b) dentry name print with %pd is resulting into
+> 	   the mentioned crash.
+> 
+> 
+> At least in this case, I think __this patchset in its current form can
+> help us__.
 
-vim +/err +170 drivers/net/ethernet/mellanox/mlx5/core/lib/ipsec_fs_roce.c
-
-899577600b25b3 Mark Zhang        2023-01-04  122  static int
-899577600b25b3 Mark Zhang        2023-01-04  123  ipsec_fs_roce_rx_rule_setup(struct mlx5_core_dev *mdev,
-899577600b25b3 Mark Zhang        2023-01-04  124  			    struct mlx5_flow_destination *default_dst,
-899577600b25b3 Mark Zhang        2023-01-04  125  			    struct mlx5_ipsec_rx_roce *roce)
-899577600b25b3 Mark Zhang        2023-01-04  126  {
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  127  	bool is_mpv_slave = mlx5_core_is_mp_slave(mdev);
-899577600b25b3 Mark Zhang        2023-01-04  128  	struct mlx5_flow_destination dst = {};
-899577600b25b3 Mark Zhang        2023-01-04  129  	MLX5_DECLARE_FLOW_ACT(flow_act);
-899577600b25b3 Mark Zhang        2023-01-04  130  	struct mlx5_flow_handle *rule;
-899577600b25b3 Mark Zhang        2023-01-04  131  	struct mlx5_flow_spec *spec;
-899577600b25b3 Mark Zhang        2023-01-04  132  	int err = 0;
-899577600b25b3 Mark Zhang        2023-01-04  133  
-899577600b25b3 Mark Zhang        2023-01-04  134  	spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
-899577600b25b3 Mark Zhang        2023-01-04  135  	if (!spec)
-899577600b25b3 Mark Zhang        2023-01-04  136  		return -ENOMEM;
-899577600b25b3 Mark Zhang        2023-01-04  137  
-899577600b25b3 Mark Zhang        2023-01-04  138  	ipsec_fs_roce_setup_udp_dport(spec, ROCE_V2_UDP_DPORT);
-899577600b25b3 Mark Zhang        2023-01-04  139  
-899577600b25b3 Mark Zhang        2023-01-04  140  	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_FWD_DEST;
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  141  	if (is_mpv_slave) {
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  142  		dst.type = MLX5_FLOW_DESTINATION_TYPE_FLOW_TABLE;
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  143  		dst.ft = roce->goto_alias_ft;
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  144  	} else {
-899577600b25b3 Mark Zhang        2023-01-04  145  		dst.type = MLX5_FLOW_DESTINATION_TYPE_TABLE_TYPE;
-899577600b25b3 Mark Zhang        2023-01-04  146  		dst.ft = roce->ft_rdma;
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  147  	}
-899577600b25b3 Mark Zhang        2023-01-04  148  	rule = mlx5_add_flow_rules(roce->ft, spec, &flow_act, &dst, 1);
-899577600b25b3 Mark Zhang        2023-01-04  149  	if (IS_ERR(rule)) {
-899577600b25b3 Mark Zhang        2023-01-04  150  		err = PTR_ERR(rule);
-899577600b25b3 Mark Zhang        2023-01-04  151  		mlx5_core_err(mdev, "Fail to add RX RoCE IPsec rule err=%d\n",
-899577600b25b3 Mark Zhang        2023-01-04  152  			      err);
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  153  		goto out;
-899577600b25b3 Mark Zhang        2023-01-04  154  	}
-899577600b25b3 Mark Zhang        2023-01-04  155  
-899577600b25b3 Mark Zhang        2023-01-04  156  	roce->rule = rule;
-899577600b25b3 Mark Zhang        2023-01-04  157  
-899577600b25b3 Mark Zhang        2023-01-04  158  	memset(spec, 0, sizeof(*spec));
-899577600b25b3 Mark Zhang        2023-01-04  159  	rule = mlx5_add_flow_rules(roce->ft, spec, &flow_act, default_dst, 1);
-899577600b25b3 Mark Zhang        2023-01-04  160  	if (IS_ERR(rule)) {
-899577600b25b3 Mark Zhang        2023-01-04  161  		err = PTR_ERR(rule);
-899577600b25b3 Mark Zhang        2023-01-04  162  		mlx5_core_err(mdev, "Fail to add RX RoCE IPsec miss rule err=%d\n",
-899577600b25b3 Mark Zhang        2023-01-04  163  			      err);
-899577600b25b3 Mark Zhang        2023-01-04  164  		goto fail_add_default_rule;
-899577600b25b3 Mark Zhang        2023-01-04  165  	}
-899577600b25b3 Mark Zhang        2023-01-04  166  
-899577600b25b3 Mark Zhang        2023-01-04  167  	roce->roce_miss.rule = rule;
-899577600b25b3 Mark Zhang        2023-01-04  168  
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  169  	if (!is_mpv_slave)
-f2f0231cfe8905 Patrisious Haddad 2023-09-21 @170  		goto out;
-
-error code here?  Or perhaps if not an error code, then a comment?
-
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  171  
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  172  	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_FWD_DEST;
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  173  	dst.type = MLX5_FLOW_DESTINATION_TYPE_TABLE_TYPE;
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  174  	dst.ft = roce->ft_rdma;
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  175  	rule = mlx5_add_flow_rules(roce->nic_master_ft, NULL, &flow_act, &dst,
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  176  				   1);
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  177  	if (IS_ERR(rule)) {
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  178  		err = PTR_ERR(rule);
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  179  		mlx5_core_err(mdev, "Fail to add RX RoCE IPsec rule for alias err=%d\n",
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  180  			      err);
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  181  		goto fail_add_nic_master_rule;
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  182  	}
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  183  	roce->nic_master_rule = rule;
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  184  
-899577600b25b3 Mark Zhang        2023-01-04  185  	kvfree(spec);
-899577600b25b3 Mark Zhang        2023-01-04  186  	return 0;
-899577600b25b3 Mark Zhang        2023-01-04  187  
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  188  fail_add_nic_master_rule:
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  189  	mlx5_del_flow_rules(roce->roce_miss.rule);
-899577600b25b3 Mark Zhang        2023-01-04  190  fail_add_default_rule:
-899577600b25b3 Mark Zhang        2023-01-04  191  	mlx5_del_flow_rules(roce->rule);
-f2f0231cfe8905 Patrisious Haddad 2023-09-21  192  out:
-899577600b25b3 Mark Zhang        2023-01-04  193  	kvfree(spec);
-899577600b25b3 Mark Zhang        2023-01-04  194  	return err;
-899577600b25b3 Mark Zhang        2023-01-04  195  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+This looks another case of NULL pointer access. Thanks for the detailed 
+analysis. Could you provide a Tested-by or Reviewed-by tag if it can 
+solve your problem?
 
