@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-33476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E82E7836A20
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:19:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30C90836A23
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:19:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E3522844AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:19:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDA50285139
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E513E134723;
-	Mon, 22 Jan 2024 15:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92388134741;
+	Mon, 22 Jan 2024 15:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CwGwIs4/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ikKYr9Bf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E6051035;
-	Mon, 22 Jan 2024 15:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8300134732;
+	Mon, 22 Jan 2024 15:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936433; cv=none; b=IQszeQfjWa1sUDW1JjtOO0lu5dj9f3RhB+IjlIWuUkEa3DOYjUkN8WVNXU0KM4CzH5d8pgrmAKYXiEI4CVK+8I3qEDwQsNWXwPwydoCA9uOgf4kvOl24F1qkX7Fa7E751+MjO9UY5Tp/pY/svi6UqTOjp7DDYkJlrZyt5EMJ864=
+	t=1705936434; cv=none; b=Zqof4NJHKnJmpDYOCt6vS7Bd7BUJosa+AwcEVTt1QGhV2r3Vi1VzDmD9smqYSBHhC2QVUMF7BU8bZwnWpkd7Z7qPKb3/pKBwiDL8DYu4mdaNoYUmawCv1mM0MZsZS6lEo+PVtGH87yWoN0D+xEUMuSWlm+HMfIx/4tRhpS58lMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936433; c=relaxed/simple;
-	bh=1k1pGNrKTsklnD8BKwb6FHu8pDnA77/OUaTVe5QJaZU=;
+	s=arc-20240116; t=1705936434; c=relaxed/simple;
+	bh=Sa6kKliqi6TRKNMJZrqcEHRWzDRql/cto/qdXv2ICOk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pjEnYB2+UeiN6tQuu11s/o6Anr0z9l+OL9e3tvHXZvbBVebV2PToZS1c2R98rjRFWeuaNsR6ug8u9aBO2kL87envHfOgkA+PpnqQHRrldLTwZ0ARncDdnfplVsyJBhkdOcFkb7jtIT6fzBYAXmUHpL678tOYRswFVHBicD2KKK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CwGwIs4/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5035C433F1;
-	Mon, 22 Jan 2024 15:13:51 +0000 (UTC)
+	 MIME-Version; b=eKNmQs3BVh/nehgeXCk6Ro2GHIlbqRjoMadAugF0lZO7jx0WBq8QBmfssLL9CnzOOqrSgZcFqG062ATrrvptrK/gH+1gcw2clo8t1gz/unTmySj3aVDu3Hc+6Xt6AM8H6Oi08sRiSbGfs8fAMwxc+9VqJTUqCvkoLBP/GndyKAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ikKYr9Bf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAAE2C43601;
+	Mon, 22 Jan 2024 15:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936433;
-	bh=1k1pGNrKTsklnD8BKwb6FHu8pDnA77/OUaTVe5QJaZU=;
+	s=k20201202; t=1705936434;
+	bh=Sa6kKliqi6TRKNMJZrqcEHRWzDRql/cto/qdXv2ICOk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CwGwIs4/De0tue3O58asOkMxTKpLxHCUr+aZ4gcDMxL3XSd+SImNcCgFPHZYFoO67
-	 rhohgc6PjvHfqfn3dbDXMG15r4aDfPtUQcXZdl5P31t9Nfnyz1CQvD6ChXqTHcUjsb
-	 5GRh89ecd5L3Ck1GapaI8y18gyTSoZsaGxZdVEyZB8fp04mmz8g9BMisTTw505yTdU
-	 j75nWjDI5i4muN+OilFgCCxKzQLhW1ny1HEK1Gzx9ou9W/7kOIkjAgLXkstCxios/z
-	 BzDrSt8ozfpWVeeQsJKBdm8Wqt80maKgV4UBKEeL9JI02RB0I9BYnW+J779Ji4ak0B
-	 o/Q/Y/O/ra0jQ==
+	b=ikKYr9BfXOVNjlsGPgomkuQRSZBkaOz7V9d+QAzc9T/zDzhNY19QZv9nsWDUziD9Q
+	 sqLOmJqEHY1L6aQQ+bfrjrRvmPTJukeBKOFz4NA8uzuT6orhEp96r58txgeJZ2Oqhg
+	 /A18eppTcghSjix7slI4JBy2qXTXnKB5gUU0lmmoHaeNv8oRslRsiUBYvDqGvAQY+S
+	 zGec+TPZu3L9CQPqpOX9HF8KJqRfM3K7/9Lq4HoSbVSiS756TJtG8PtJsvoByTnPFI
+	 14g8EdtBRupzT2YT9of06NruI7mpwtMt4/stkXqYTbOtYvK2SnyJd4jO84CrwsSbuj
+	 ybZNNcGt1IUPA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	Jim Cromie <jim.cromie@gmail.com>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	linux-hwmon@vger.kernel.org,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.15 19/35] hwmon: (pc87360) Bounds check data->innr usage
-Date: Mon, 22 Jan 2024 10:12:16 -0500
-Message-ID: <20240122151302.995456-19-sashal@kernel.org>
+Cc: Chao Yu <chao@kernel.org>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.15 20/35] f2fs: fix to tag gcing flag on page during block migration
+Date: Mon, 22 Jan 2024 10:12:17 -0500
+Message-ID: <20240122151302.995456-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122151302.995456-1-sashal@kernel.org>
 References: <20240122151302.995456-1-sashal@kernel.org>
@@ -67,58 +64,62 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit 4265eb062a7303e537ab3792ade31f424c3c5189 ]
+[ Upstream commit 4961acdd65c956e97c1a000c82d91a8c1cdbe44b ]
 
-Without visibility into the initializers for data->innr, GCC suspects
-using it as an index could walk off the end of the various 14-element
-arrays in data. Perform an explicit clamp to the array size. Silences
-the following warning with GCC 12+:
+It needs to add missing gcing flag on page during block migration,
+in order to garantee migrated data be persisted during checkpoint,
+otherwise out-of-order persistency between data and node may cause
+data corruption after SPOR.
 
-./drivers/hwmon/pc87360.c: In function 'pc87360_update_device':
-./drivers/hwmon/pc87360.c:341:49: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-  341 |                                 data->in_max[i] = pc87360_read_value(data,
-      |                                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-  342 |                                                   LD_IN, i,
-      |                                                   ~~~~~~~~~
-  343 |                                                   PC87365_REG_IN_MAX);
-      |                                                   ~~~~~~~~~~~~~~~~~~~
-./drivers/hwmon/pc87360.c:209:12: note: at offset 255 into destination object 'in_max' of size 14
-  209 |         u8 in_max[14];          /* Register value */
-      |            ^~~~~~
+Similar issue was fixed by commit 2d1fe8a86bf5 ("f2fs: fix to tag
+gcing flag on page during file defragment").
 
-Cc: Jim Cromie <jim.cromie@gmail.com>
-Cc: Jean Delvare <jdelvare@suse.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-hwmon@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Link: https://lore.kernel.org/r/20231130200207.work.679-kees@kernel.org
-[groeck: Added comment into code clarifying context]
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/pc87360.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/f2fs/compress.c | 4 +++-
+ fs/f2fs/file.c     | 2 ++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/pc87360.c b/drivers/hwmon/pc87360.c
-index 6a9ba23cd302..3519f486f0b7 100644
---- a/drivers/hwmon/pc87360.c
-+++ b/drivers/hwmon/pc87360.c
-@@ -1605,7 +1605,11 @@ static struct pc87360_data *pc87360_update_device(struct device *dev)
- 		}
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 3982b4a7618c..7b4479d5b531 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1037,8 +1037,10 @@ static void set_cluster_dirty(struct compress_ctx *cc)
+ 	int i;
  
- 		/* Voltages */
--		for (i = 0; i < data->innr; i++) {
-+		/*
-+		 * The min() below does not have any practical meaning and is
-+		 * only needed to silence a warning observed with gcc 12+.
-+		 */
-+		for (i = 0; i < min(data->innr, ARRAY_SIZE(data->in)); i++) {
- 			data->in_status[i] = pc87360_read_value(data, LD_IN, i,
- 					     PC87365_REG_IN_STATUS);
- 			/* Clear bits */
+ 	for (i = 0; i < cc->cluster_size; i++)
+-		if (cc->rpages[i])
++		if (cc->rpages[i]) {
+ 			set_page_dirty(cc->rpages[i]);
++			set_page_private_gcing(cc->rpages[i]);
++		}
+ }
+ 
+ static int prepare_compress_overwrite(struct compress_ctx *cc,
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 58fd32db025d..5c63cbb06faa 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -1278,6 +1278,7 @@ static int __clone_blkaddrs(struct inode *src_inode, struct inode *dst_inode,
+ 			}
+ 			f2fs_copy_page(psrc, pdst);
+ 			set_page_dirty(pdst);
++			set_page_private_gcing(pdst);
+ 			f2fs_put_page(pdst, 1);
+ 			f2fs_put_page(psrc, 1);
+ 
+@@ -3976,6 +3977,7 @@ static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
+ 			break;
+ 		}
+ 		set_page_dirty(page);
++		set_page_private_gcing(page);
+ 		f2fs_put_page(page, 1);
+ 		f2fs_put_page(page, 0);
+ 	}
 -- 
 2.43.0
 
