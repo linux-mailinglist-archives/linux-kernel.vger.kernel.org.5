@@ -1,163 +1,338 @@
-Return-Path: <linux-kernel+bounces-33592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2AFE836BEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 314F1836BFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:55:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B7221F24A6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:54:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F21D1F2542A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CEFA46449;
-	Mon, 22 Jan 2024 15:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2B55DF03;
+	Mon, 22 Jan 2024 15:29:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GIiOoEA3"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="O1jM10gZ"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDFA4643C
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243125D8E3
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:29:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705937301; cv=none; b=ha7JhEfDIp86IzFJKv0qchsy6lbP3QvxxXBHIT9ZKxuUOGdblOnnytFANMeVrkugvbwYJUuZWMXRkLdqj7dnN9UbvnruF/ga9+M4MY3dxIDZAES4qWSILGw8EnykY2xz5ZR6nMa55JCyI2yw1FozzBbqbIoPoiG0EhFhsH+yh0g=
+	t=1705937350; cv=none; b=AIVgum7kP4w6KBU0NzLSrKjW/n0rQKLISlL3y7poBOU6xWR6niQXdvWUf7AVI3EAobMB74C81qc66i5bNe9Tn9hz1I7R7LLsDq2/pomm/FldMjiaUEEx7QI7QJvOh9GcNhV1tQ/3ICZk5z7gM4XNXAKos9Lc9bMBmXBpMwyh2g8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705937301; c=relaxed/simple;
-	bh=gJy6V6En8oglansz0+6dCHlstxS4CBQ5FEsC6dHHVuA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=YVHATWeJnLM00VS8PKxMdCtJ0Gu4+/Hiwo7xXcB0/BdkZ/NiKKck/5+FNoxOq3wwF0+6WMmPESQf4vso/o6f/gRnfUKEuKUqplUhWPVP7hP0ttO47exaH4Q9YfXCNIs6PGL9epdWjngWib4rSpZoSlh+CPztvlMOBinnkBXFb1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GIiOoEA3; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55a9008c185so3218595a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:28:19 -0800 (PST)
+	s=arc-20240116; t=1705937350; c=relaxed/simple;
+	bh=tqYclGki0Ep8eWqwJNFxv5GiMcJQcDYtapo8Vs1igTo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=aLzPWIOi9OcFYdDIRgsOVcFQdyncqvvbslnc4MvrRt8e93QwHnulk1W/kbnyBoUJbQa91XvgqklBJl2RDG2qAwlPzAbiUzqdqKrelSbSP2IPi/3k2Q4XwZe7agGShjNwppnh6YDs4RkpgyfqZFyC4bx7m/KhOognT6uSIyCPOFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=O1jM10gZ; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d70b0e521eso23676625ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:29:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705937298; x=1706542098; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ivoj0IdiB6s2UMY3NlBWWJcKrLIKVYX5ec1XAbyGp20=;
-        b=GIiOoEA3ZCj7/E1zfiMZqxry/s2q5+oFkfJ1xChenKyFyjhQXU0oeysgxmUe9Ss4Dw
-         7pNciGtfNchvzOPGpOP0W8e8mxgwk7cD3Ld1+DzX2YXQcmOlG2QWYKWaFFrB/q8sWOFd
-         vR7caWMloP5qh0jJTMqD14PgT7wyo/4mEUpenQc0YZ0N9fOWsAil5mmqTiKdeGfvFyZq
-         4v5nCgA1LsVBjvWVuoeRns3WOb9+9mdLbv8fBjWLpPmTbNWRwo80boXpGoXJE0C0ugak
-         +Ble7txpkFfqYZCCHllDv8qfuYR5gd7IUDNLMvx+NDXGx2R50qNGfZNCXaLjVmRAwDvz
-         dttg==
+        d=chromium.org; s=google; t=1705937348; x=1706542148; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7wQcbezNT+/RjXYY8eCSxvRyrPZ4DMIc5I/z5N1RfdQ=;
+        b=O1jM10gZo3UnNBaoVLMbSm1Sb1V28mx0KyI4W47mlgMXrEcwQW0jy2B11A3JKIv6Jz
+         1/H1aG4p0H4raV99ppfMpAI5RTTrNcde2H5lkCisvHdIo/tQUZh3HDSr2YnowUZmGZ0O
+         EffjYKbVBUEtxOFjIPbnGN7v0B8DLFKwe4vcY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705937298; x=1706542098;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ivoj0IdiB6s2UMY3NlBWWJcKrLIKVYX5ec1XAbyGp20=;
-        b=fQgtaHh6xB3Rk+5sTQfxjs/UrP9FjVPjUx9Ka/XgMmDtoQQiC8n+FMQ3yr3tcJCGtY
-         ThxFiDFMp7hYUuSeWtocsT1ocsQdjufd+ehb+Eqv837PWm+zuzkm49eGKKGKXBDG5tv5
-         33hJ/fKiNh8I0nKXP6PE0pLFKWr+k0xl1SoyG2gcTlETaOQmT/MzgPrAFJJACLOEbndZ
-         3td9zcPXVwwFCfH/DEAGQjlyugcyVqF6ZpBGwPKMSskAjR/JfnFBP1iv91T96lVuyRdg
-         38bkE0sVUv392wZ99dtyohTpDxQAOU1sd/y+knS68KMdVSQAbURSYiQBBrkhsTq4OBfa
-         Br+g==
-X-Gm-Message-State: AOJu0YyhKrmXpAG9DFCzUqQxNyyAMjTqvRz09Hn+O1E+lKm3bgZQs1tP
-	gHtkPxxcMnToPXdNLfoOKuzQeMJnNEDzb3mA0mNKVSJg+8kPNM6Xs5uh/4yW+Zs=
-X-Google-Smtp-Source: AGHT+IG05z7/zQiSaBaTxMhSPIN7Oz0gWhKCEPa2yIsUouLEDwJED54o+9fiThp56KqzXZOvMwGJTA==
-X-Received: by 2002:a50:fc18:0:b0:55a:1e6a:496f with SMTP id i24-20020a50fc18000000b0055a1e6a496fmr84736edr.33.1705937297885;
-        Mon, 22 Jan 2024 07:28:17 -0800 (PST)
-Received: from [192.168.231.132] (178235179218.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.218])
-        by smtp.gmail.com with ESMTPSA id j9-20020a508a89000000b00554930be765sm14754031edj.97.2024.01.22.07.28.16
+        d=1e100.net; s=20230601; t=1705937348; x=1706542148;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7wQcbezNT+/RjXYY8eCSxvRyrPZ4DMIc5I/z5N1RfdQ=;
+        b=MVLfOsXCy2vmgWRg0mNA7X845iYvwUtUnkNT5VFglE46rF8E+mrCe0ol38kZ7WYjga
+         6l/QRDmnHiYIMvHiGmhfUf/436Zm1oN6/pJtguqdCXWI0W0VDtWpLTNK+LDW6rXeWQgB
+         wY6EbRkFfEBPcXzjsd9ZF7zjUev+eVOE5LD8rPoHf0G/tc2yq1+i92WQFShjTEu1O2pe
+         rb7tgoHUWfMnh8nxQN12BuIzvrrvD8FQ8RUGiEW5GLUOEF0fStmhL9AZCY8aO4UIpyfd
+         /BctF68WzJrTN4aWwW9F5ka8eN33Tj7SKQRHoeI3A9V+oPoMcrlpFTHScXyfgwzUzBbx
+         btzw==
+X-Gm-Message-State: AOJu0YyJakaty82QXE59GiUKe4eCxXhJUYlqz0REaxYmFZABFDGRqN0L
+	PiXI0PK0/uwldoKeA13f8QJ0jYljTteNZRRgafziSMr7O5rTO8+32oJKBy9cDA==
+X-Google-Smtp-Source: AGHT+IHZ79GK1aXYnnWb9q7+P5nP9QYQp8e6sdlkbYXp1r4C5vMOT6bSo0SU5Rd+GH1MWjerbZ5/EA==
+X-Received: by 2002:a17:902:b702:b0:1d7:57d:2792 with SMTP id d2-20020a170902b70200b001d7057d2792mr4475806pls.103.1705937348244;
+        Mon, 22 Jan 2024 07:29:08 -0800 (PST)
+Received: from localhost (34.85.168.34.bc.googleusercontent.com. [34.168.85.34])
+        by smtp.gmail.com with UTF8SMTPSA id u9-20020a170903124900b001d60a705628sm7285775plh.246.2024.01.22.07.29.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 07:28:17 -0800 (PST)
-Message-ID: <ebed24aa-e190-4735-b618-7d74fadd900c@linaro.org>
-Date: Mon, 22 Jan 2024 16:28:15 +0100
+        Mon, 22 Jan 2024 07:29:07 -0800 (PST)
+From: jeffxu@chromium.org
+To: akpm@linux-foundation.org,
+	keescook@chromium.org,
+	jannh@google.com,
+	sroettger@google.com,
+	willy@infradead.org,
+	gregkh@linuxfoundation.org,
+	torvalds@linux-foundation.org,
+	usama.anjum@collabora.com,
+	rdunlap@infradead.org
+Cc: jeffxu@google.com,
+	jorgelo@chromium.org,
+	groeck@chromium.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org,
+	pedro.falcato@gmail.com,
+	dave.hansen@intel.com,
+	linux-hardening@vger.kernel.org,
+	deraadt@openbsd.org,
+	Jeff Xu <jeffxu@chromium.org>
+Subject: [PATCH v7 0/4] Introduce mseal()
+Date: Mon, 22 Jan 2024 15:28:46 +0000
+Message-ID: <20240122152905.2220849-1-jeffxu@chromium.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [2/4] interconnect: qcom: sc7280: enable qos programming
-Content-Language: en-US
-To: Odelu Kukatla <quic_okukatla@quicinc.com>, georgi.djakov@linaro.org,
- Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>,
- linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240122143030.11904-1-quic_okukatla@quicinc.com>
- <20240122143030.11904-3-quic_okukatla@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240122143030.11904-3-quic_okukatla@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 22.01.2024 15:30, Odelu Kukatla wrote:
-> Enable QoS for the master ports with predefined values
-> for priority and urgency.
-> 
-> Change-Id: I1c4515402bcd6df8eed814be096aa5e1fc16cef6
-> Signed-off-by: Odelu Kukatla <quic_okukatla@quicinc.com>
-> ---
->  drivers/interconnect/qcom/sc7280.c | 250 +++++++++++++++++++++++++++++
->  1 file changed, 250 insertions(+)
-> 
-> diff --git a/drivers/interconnect/qcom/sc7280.c b/drivers/interconnect/qcom/sc7280.c
-> index 7d33694368e8..719844c34894 100644
-> --- a/drivers/interconnect/qcom/sc7280.c
-> +++ b/drivers/interconnect/qcom/sc7280.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) 2021, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
->   *
->   */
->  
-> @@ -16,29 +17,59 @@
->  #include "icc-rpmh.h"
->  #include "sc7280.h"
->  
-> +static const struct regmap_config icc_regmap_config = {
-> +	.reg_bits = 32,
-> +	.reg_stride = 4,
-> +	.val_bits = 32,
+From: Jeff Xu <jeffxu@chromium.org>
 
-If you don't bother having .max_register, perhaps it could be defined
-in a common file?
+This patchset proposes a new mseal() syscall for the Linux kernel.
 
-Also, do you really need locking between each access? If not, add
-fast_io = true
+In a nutshell, mseal() protects the VMAs of a given virtual memory
+range against modifications, such as changes to their permission bits.
 
-Konrad
+Modern CPUs support memory permissions, such as the read/write (RW)
+and no-execute (NX) bits. Linux has supported NX since the release of
+kernel version 2.6.8 in August 2004 [1]. The memory permission feature
+improves the security stance on memory corruption bugs, as an attacker
+cannot simply write to arbitrary memory and point the code to it. The
+memory must be marked with the X bit, or else an exception will occur.
+Internally, the kernel maintains the memory permissions in a data
+structure called VMA (vm_area_struct). mseal() additionally protects
+the VMA itself against modifications of the selected seal type.
+
+Memory sealing is useful to mitigate memory corruption issues where a
+corrupted pointer is passed to a memory management system. For
+example, such an attacker primitive can break control-flow integrity
+guarantees since read-only memory that is supposed to be trusted can
+become writable or .text pages can get remapped. Memory sealing can
+automatically be applied by the runtime loader to seal .text and
+rodata pages and applications can additionally seal security critical
+data at runtime. A similar feature already exists in the XNU kernel
+with the VM_FLAGS_PERMANENT [3] flag and on OpenBSD with the
+mimmutable syscall [4]. Also, Chrome wants to adopt this feature for
+their CFI work [2] and this patchset has been designed to be
+compatible with the Chrome use case.
+
+Two system calls are involved in sealing the map:  mmap() and mseal().
+
+The new mseal() is an syscall on 64 bit CPU, and with
+following signature:
+
+int mseal(void addr, size_t len, unsigned long flags)
+addr/len: memory range.
+flags: reserved.
+
+mseal() blocks following operations for the given memory range.
+
+1> Unmapping, moving to another location, and shrinking the size,
+   via munmap() and mremap(), can leave an empty space, therefore can
+   be replaced with a VMA with a new set of attributes.
+
+2> Moving or expanding a different VMA into the current location,
+   via mremap().
+
+3> Modifying a VMA via mmap(MAP_FIXED).
+
+4> Size expansion, via mremap(), does not appear to pose any specific
+   risks to sealed VMAs. It is included anyway because the use case is
+   unclear. In any case, users can rely on merging to expand a sealed VMA.
+
+5> mprotect() and pkey_mprotect().
+
+6> Some destructive madvice() behaviors (e.g. MADV_DONTNEED) for anonymous
+   memory, when users don't have write permission to the memory. Those
+   behaviors can alter region contents by discarding pages, effectively a
+   memset(0) for anonymous memory.
+
+In addition: mmap() has two related changes.
+
+The PROT_SEAL bit in prot field of mmap(). When present, it marks
+the map sealed since creation.
+
+The MAP_SEALABLE bit in the flags field of mmap(). When present, it marks
+the map as sealable. A map created without MAP_SEALABLE will not support
+sealing, i.e. mseal() will fail.
+
+Applications that don't care about sealing will expect their behavior
+unchanged. For those that need sealing support, opt-in by adding
+MAP_SEALABLE in mmap().
+
+The idea that inspired this patch comes from Stephen Röttger’s work in
+V8 CFI [5]. Chrome browser in ChromeOS will be the first user of this
+API.
+
+Indeed, the Chrome browser has very specific requirements for sealing,
+which are distinct from those of most applications. For example, in
+the case of libc, sealing is only applied to read-only (RO) or
+read-execute (RX) memory segments (such as .text and .RELRO) to
+prevent them from becoming writable, the lifetime of those mappings
+are tied to the lifetime of the process.
+
+Chrome wants to seal two large address space reservations that are
+managed by different allocators. The memory is mapped RW- and RWX
+respectively but write access to it is restricted using pkeys (or in
+the future ARM permission overlay extensions). The lifetime of those
+mappings are not tied to the lifetime of the process, therefore, while
+the memory is sealed, the allocators still need to free or discard the
+unused memory. For example, with madvise(DONTNEED).
+
+However, always allowing madvise(DONTNEED) on this range poses a
+security risk. For example if a jump instruction crosses a page
+boundary and the second page gets discarded, it will overwrite the
+target bytes with zeros and change the control flow. Checking
+write-permission before the discard operation allows us to control
+when the operation is valid. In this case, the madvise will only
+succeed if the executing thread has PKEY write permissions and PKRU
+changes are protected in software by control-flow integrity.
+
+Although the initial version of this patch series is targeting the
+Chrome browser as its first user, it became evident during upstream
+discussions that we would also want to ensure that the patch set
+eventually is a complete solution for memory sealing and compatible
+with other use cases. The specific scenario currently in mind is
+glibc's use case of loading and sealing ELF executables. To this end,
+Stephen is working on a change to glibc to add sealing support to the
+dynamic linker, which will seal all non-writable segments at startup.
+Once this work is completed, all applications will be able to
+automatically benefit from these new protections.
+
+In closing, I would like to formally acknowledge the valuable
+contributions received during the RFC process, which were instrumental
+in shaping this patch:
+
+Jann Horn: raising awareness and providing valuable insights on the
+destructive madvise operations.
+Linus Torvalds: assisting in defining system call signature and scope.
+Pedro Falcato: suggesting sealing in the mmap().
+Theo de Raadt: sharing the experiences and insights gained from
+implementing mimmutable() in OpenBSD.
+
+Change history:
+===============
+V7:
+- fix index.rst (Randy Dunlap)
+- fix arm build (Randy Dunlap)
+- return EPERM for blocked operations (Theo de Raadt)
+
+V6:
+- Drop RFC from subject, Given Linus's general approval.
+- Adjust syscall number for mseal (main Jan.11/2024) 
+- Code style fix (Matthew Wilcox)
+- selftest: use ksft macros (Muhammad Usama Anjum)
+- Document fix. (Randy Dunlap)
+https://lore.kernel.org/all/20240111234142.2944934-1-jeffxu@chromium.org/
+
+V5:
+- fix build issue in mseal-Wire-up-mseal-syscall
+  (Suggested by Linus Torvalds, and Greg KH)
+- updates on selftest.
+https://lore.kernel.org/lkml/20240109154547.1839886-1-jeffxu@chromium.org/#r
+
+V4:
+(Suggested by Linus Torvalds)
+- new signature: mseal(start,len,flags)
+- 32 bit is not supported. vm_seal is removed, use vm_flags instead.
+- single bit in vm_flags for sealed state.
+- CONFIG_MSEAL kernel config is removed.
+- single bit of PROT_SEAL in the "Prot" field of mmap().
+Other changes:
+- update selftest (Suggested by Muhammad Usama Anjum)
+- update documentation.
+https://lore.kernel.org/all/20240104185138.169307-1-jeffxu@chromium.org/
+
+V3:
+- Abandon per-syscall approach, (Suggested by Linus Torvalds).
+- Organize sealing types around their functionality, such as
+  MM_SEAL_BASE, MM_SEAL_PROT_PKEY.
+- Extend the scope of sealing from calls originated in userspace to
+  both kernel and userspace. (Suggested by Linus Torvalds)
+- Add seal type support in mmap(). (Suggested by Pedro Falcato)
+- Add a new sealing type: MM_SEAL_DISCARD_RO_ANON to prevent
+  destructive operations of madvise. (Suggested by Jann Horn and
+  Stephen Röttger)
+- Make sealed VMAs mergeable. (Suggested by Jann Horn)
+- Add MAP_SEALABLE to mmap()
+- Add documentation - mseal.rst
+https://lore.kernel.org/linux-mm/20231212231706.2680890-2-jeffxu@chromium.org/
+
+v2:
+Use _BITUL to define MM_SEAL_XX type.
+Use unsigned long for seal type in sys_mseal() and other functions.
+Remove internal VM_SEAL_XX type and convert_user_seal_type().
+Remove MM_ACTION_XX type.
+Remove caller_origin(ON_BEHALF_OF_XX) and replace with sealing bitmask.
+Add more comments in code.
+Add a detailed commit message.
+https://lore.kernel.org/lkml/20231017090815.1067790-1-jeffxu@chromium.org/
+
+v1:
+https://lore.kernel.org/lkml/20231016143828.647848-1-jeffxu@chromium.org/
+
+----------------------------------------------------------------
+[1] https://kernelnewbies.org/Linux_2_6_8
+[2] https://v8.dev/blog/control-flow-integrity
+[3] https://github.com/apple-oss-distributions/xnu/blob/1031c584a5e37aff177559b9f69dbd3c8c3fd30a/osfmk/mach/vm_statistics.h#L274
+[4] https://man.openbsd.org/mimmutable.2
+[5] https://docs.google.com/document/d/1O2jwK4dxI3nRcOJuPYkonhTkNQfbmwdvxQMyXgeaRHo/edit#heading=h.bvaojj9fu6hc
+[6] https://lore.kernel.org/lkml/CAG48ez3ShUYey+ZAFsU2i1RpQn0a5eOs2hzQ426FkcgnfUGLvA@mail.gmail.com/
+[7] https://lore.kernel.org/lkml/20230515130553.2311248-1-jeffxu@chromium.org/
+
+Jeff Xu (4):
+  mseal: Wire up mseal syscall
+  mseal: add mseal syscall
+  selftest mm/mseal memory sealing
+  mseal:add documentation
+
+ Documentation/userspace-api/index.rst       |    1 +
+ Documentation/userspace-api/mseal.rst       |  183 ++
+ arch/alpha/kernel/syscalls/syscall.tbl      |    1 +
+ arch/arm/tools/syscall.tbl                  |    1 +
+ arch/arm64/include/asm/unistd.h             |    2 +-
+ arch/arm64/include/asm/unistd32.h           |    2 +
+ arch/m68k/kernel/syscalls/syscall.tbl       |    1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl |    1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl   |    1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl   |    1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl   |    1 +
+ arch/parisc/kernel/syscalls/syscall.tbl     |    1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl    |    1 +
+ arch/s390/kernel/syscalls/syscall.tbl       |    1 +
+ arch/sh/kernel/syscalls/syscall.tbl         |    1 +
+ arch/sparc/kernel/syscalls/syscall.tbl      |    1 +
+ arch/x86/entry/syscalls/syscall_32.tbl      |    1 +
+ arch/x86/entry/syscalls/syscall_64.tbl      |    1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl     |    1 +
+ include/linux/mm.h                          |   48 +
+ include/linux/syscalls.h                    |    1 +
+ include/uapi/asm-generic/mman-common.h      |    8 +
+ include/uapi/asm-generic/unistd.h           |    5 +-
+ kernel/sys_ni.c                             |    1 +
+ mm/Makefile                                 |    4 +
+ mm/madvise.c                                |   12 +
+ mm/mmap.c                                   |   27 +
+ mm/mprotect.c                               |   10 +
+ mm/mremap.c                                 |   31 +
+ mm/mseal.c                                  |  343 ++++
+ tools/testing/selftests/mm/.gitignore       |    1 +
+ tools/testing/selftests/mm/Makefile         |    1 +
+ tools/testing/selftests/mm/mseal_test.c     | 1997 +++++++++++++++++++
+ 33 files changed, 2690 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/userspace-api/mseal.rst
+ create mode 100644 mm/mseal.c
+ create mode 100644 tools/testing/selftests/mm/mseal_test.c
+
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
