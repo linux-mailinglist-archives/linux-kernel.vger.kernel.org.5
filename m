@@ -1,264 +1,304 @@
-Return-Path: <linux-kernel+bounces-32994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B1168362EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:16:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37FF88362F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:17:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE9EA1F264A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:16:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DACDD2852A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3173B2A6;
-	Mon, 22 Jan 2024 12:16:37 +0000 (UTC)
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547FD3B78E;
+	Mon, 22 Jan 2024 12:17:24 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE273B18D;
-	Mon, 22 Jan 2024 12:16:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7093B282;
+	Mon, 22 Jan 2024 12:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705925796; cv=none; b=ZKWr7KXSi95eDT0FUcGIyCi0vTi48eUAlRLFn2NXGbN7Cg+y6c1+ZqsbID4JY4USb7RF+/KS4VbuINVTgmaYguOS+PawICsCferrh6zoOpXclYrJCRtmPv59JiY5y2sOwzyuIiP0Gx0+Zxn40q3ZSkv2ilmmN/rNMfUwtbfYdek=
+	t=1705925843; cv=none; b=RB9UmCuegLzZ9L5FlkLUsxEHr4eFX0aagdLFkVO2Yg77zH7BCQ44YyoCl9qeRGIOSEz8nFXnOPXJIdvPqjHQx0Jfs84kqP65h+Ej+F/OG2cj01Ms5ZBGQzk5U7SJYxArTmxOlwZTvYxWamiB4wFg+xJYU1XKRxmiQsJ0Wt6JyVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705925796; c=relaxed/simple;
-	bh=khMbC9WBL9kCXqma5V4jmh3o9tYUeemxhqD4KZ3qQdg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nwdxgW9/NBgWeRQONECcbKzAvB+TUEL/hnAfxLA/+rVu0hfMjYI89x6ReDJgvVa/hBRpp56VwBWCqqgI734E/nebSWe5RjknyyNCE93kLm9jl+pAL60EM+t5dJKJmdRvha80Qs8t7s24FDernzO+hnTBxGzJuc10yc+NZujtkfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bc1e4d0fd8so428894b6e.0;
-        Mon, 22 Jan 2024 04:16:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705925794; x=1706530594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nfT7X2kMzMMEPUHYOfWuqlodXoPKXpatbvpSfjvWKIM=;
-        b=SBimiv7YgFtdak0cqEc/vMcsx7NOvP0Bv2patA2y2X8hNtyIu2xrc5z2X1JOUcZrur
-         VwkdQOspyQvbpsPqc/eoxeShes091IojUuRKFNATW1kIOHl71p980DUI9G5btXaq1rpG
-         ftJXwAFGY/jSkop1htmcmJ6u/spKZdmtm9lzxyINJYAc9zvu47npsyWPf1g71PBLh3dy
-         ANY8wkiB7CUIS3qITM6PoEsUymHj0F79SgKfWJIPoSYucTVKECjKzB20VDadMXP3Vq4W
-         +XIaEaVLoxzcanMrsQErT8pwwgUSsM/Oyx/f57EsTs3FW1DMjt/ccFaTuQum4MAA45/u
-         42PQ==
-X-Gm-Message-State: AOJu0YxIjnrAGUiXaz3AZI/JtEzKaet71XflBdHIHtaa7aSueMNluAHn
-	mgMPsuXkutExOgPdGu2OUZVigmV6VWjTKA9K5p3HX3h2F1bHqalg+rk32l64jMjISNqa7MysQB7
-	vZ64ILy8KZ2wVRb3rTQEcDyV3KPoE8iDm
-X-Google-Smtp-Source: AGHT+IHiPl9YQYobmVCLUA1KZEtdiUxavV00DxNt9jZRYeghdxNtC+i3rwvK4QK8IHVrvt/w7wohqDANJoiFC6+T9q0=
-X-Received: by 2002:a05:6870:d14f:b0:210:b3ca:43e2 with SMTP id
- f15-20020a056870d14f00b00210b3ca43e2mr6547205oac.4.1705925793908; Mon, 22 Jan
- 2024 04:16:33 -0800 (PST)
+	s=arc-20240116; t=1705925843; c=relaxed/simple;
+	bh=7aKVXurem33k/1z2Bwp/iO5Bd28myCRdPoS1dST9u/s=;
+	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To; b=YrrWOqSc/M+18/eLJk4xVzM6Y1HkAFuwcnadsrFXBcFHiXlM75F4yTtxknbZilvb4/qkTOVQ32DsRw3qVOzacyvnMZYObMoKyB7sNWyrrztpMANBWSmHm4usDV2SpFCyGEnCSqgCAevrtZfc1X5XReMM3d2HCwbHJpiIG+TFOYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.53] (ip5f5ae9f4.dynamic.kabel-deutschland.de [95.90.233.244])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 32BEE61E646C7;
+	Mon, 22 Jan 2024 13:16:26 +0100 (CET)
+Content-Type: multipart/mixed; boundary="------------EBz23e30HntQKxViUq8E5TGn"
+Message-ID: <f1658459-1b77-41b1-9e58-99c16a83e1d1@molgen.mpg.de>
+Date: Mon, 22 Jan 2024 13:16:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1700048610.git.quic_nprakash@quicinc.com>
- <2153c549-2a45-3d1d-a407-e175a34b77bf@quicinc.com> <CAJZ5v0jqDEEw0CCAxCOcK+u+BtEa1M1B4t3OZj8umw=rxigu_g@mail.gmail.com>
- <dfa3747f-4ed6-299f-1a43-0c0f13d103d9@quicinc.com>
-In-Reply-To: <dfa3747f-4ed6-299f-1a43-0c0f13d103d9@quicinc.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 22 Jan 2024 13:16:22 +0100
-Message-ID: <CAJZ5v0gaaTj+_LNCyX-Ugw+gNea7QKwrG59ZjbSZcHMvgXp3Hg@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2 0/4] PM: hibernate: LZ4 compression support
-To: Nikhil V <quic_nprakash@quicinc.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, 
-	Peter Zijlstra <peterz@infradead.org>, "Steven Rostedt (Google)" <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, linux-pm@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	quic_pkondeti@quicinc.com, quic_kprasan@quicinc.com, 
-	quic_mpilaniy@quicinc.com, quic_shrekk@quicinc.com, mpleshivenkov@google.com, 
-	ericyin@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Dell XPS 13 9360: DMAR errors `DRHD: handling fault status reg 2`
+ and `[INTR-REMAP] Request device [f0:1f.0] fault index 0x0`
+Content-Language: en-US
+To: "Christian A. Ehrhardt" <lk@c--e.de>
+Cc: =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, Mike Jones <mike@mjones.io>,
+ linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>
+References: <9a24c335-8ec5-48c9-9bdd-b0dac5ecbca8@molgen.mpg.de>
+ <Zaq4Gv2SWhd12Lx0@cae.in-ulm.de>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <Zaq4Gv2SWhd12Lx0@cae.in-ulm.de>
 
-On Mon, Jan 22, 2024 at 1:14=E2=80=AFPM Nikhil V <quic_nprakash@quicinc.com=
-> wrote:
->
->
->
-> On 12/12/2023 6:14 PM, Rafael J. Wysocki wrote:
-> > Hi,
-> >
-> > On Wed, Nov 29, 2023 at 11:20=E2=80=AFAM Nikhil V <quic_nprakash@quicin=
-c.com> wrote:
-> >>
-> >>
-> >> On 11/15/2023 5:52 PM, Nikhil V wrote:
-> >>> This patch series covers the following:
-> >>> 1. Renaming lzo* to generic names, except for lzo_xxx() APIs. This is
-> >>> used in the next patch where we move to crypto based APIs for
-> >>> compression. There are no functional changes introduced by this
-> >>> approach.
-> >>>
-> >>>
-> >>> 2. Replace LZO library calls with crypto generic APIs
-> >>>
-> >>> Currently for hibernation, LZO is the only compression algorithm
-> >>> available and uses the existing LZO library calls. However, there
-> >>> is no flexibility to switch to other algorithms which provides better
-> >>> results. The main idea is that different compression algorithms have
-> >>> different characteristics and hibernation may benefit when it uses
-> >>> alternate algorithms.
-> >>>
-> >>> By moving to crypto based APIs, it lays a foundation to use other
-> >>> compression algorithms for hibernation.
-> >>>
-> >>>
-> >>> 3. LZ4 compression
-> >>>
-> >>> Extend the support for LZ4 compression to be used with hibernation.
-> >>> The main idea is that different compression algorithms have different
-> >>> characteristics and hibernation may benefit when it uses any of these
-> >>> algorithms: a default algorithm, having higher compression rate but i=
-s
-> >>> slower(compression/decompression) and a secondary algorithm, that is
-> >>> faster(compression/decompression) but has lower compression rate.
-> >>>
-> >>> LZ4 algorithm has better decompression speeds over LZO. This reduces
-> >>> the hibernation image restore time.
-> >>> As per test results:
-> >>>                                       LZO             LZ4
-> >>> Size before Compression(bytes)   682696704       682393600
-> >>> Size after Compression(bytes)    146502402       155993547
-> >>> Decompression Rate               335.02 MB/s     501.05 MB/s
-> >>> Restore time                       4.4s             3.8s
-> >>>
-> >>> LZO is the default compression algorithm used for hibernation. Enable
-> >>> CONFIG_HIBERNATION_DEF_COMP_LZ4 to set the default compressor as LZ4.
-> >>>
-> >>> Compression Benchmarks: https://github.com/lz4/lz4
-> >>>
-> >>>
-> >>> 4. Support to select compression algorithm
-> >>>
-> >>> Currently the default compression algorithm is selected based on
-> >>> Kconfig. Introduce a kernel command line parameter "hib_compression" =
-to
-> >>> override this behaviour.
-> >>>
-> >>> Users can set "hib_compression" command line parameter to specify
-> >>> the algorithm.
-> >>> Usage:
-> >>>       LZO: hib_compression=3Dlzo
-> >>>       LZ4: hib_compression=3Dlz4
-> >>> LZO is the default compression algorithm used with hibernation.
-> >>>
-> >>>
-> >>> Changes in v2:
-> >>>    - Fixed build issues reported by kernel test robot for ARCH=3Dsh, =
-[1].
-> >>> [1] https://lore.kernel.org/oe-kbuild-all/202310171226.pLUPeuC7-lkp@i=
-ntel.com/
-> >>>
-> >>> Nikhil V (4):
-> >>>     PM: hibernate: Rename lzo* to make it generic
-> >>>     PM: hibernate: Move to crypto APIs for LZO compression
-> >>>     PM: hibernate: Add support for LZ4 compression for hibernation
-> >>>     PM: hibernate: Support to select compression algorithm
-> >>>
-> >>>    .../admin-guide/kernel-parameters.txt         |   6 +
-> >>>    kernel/power/Kconfig                          |  26 ++-
-> >>>    kernel/power/hibernate.c                      |  85 +++++++-
-> >>>    kernel/power/power.h                          |  19 ++
-> >>>    kernel/power/swap.c                           | 189 +++++++++++---=
-----
-> >>>    5 files changed, 251 insertions(+), 74 deletions(-)
-> >>>
-> >>>
-> >>> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-> >>
-> >> Hi @Rafael/@Pavel/@Len,
-> >>
-> >> Could you please let me know if you have any concerns on this approach=
-?
-> >
-> > Not really a concern, but that is a significant change that I would
-> > rather make early in the cycle, which means after the 6.8 merge
-> > window.
-> >
-> > No need to resend unless there is something to address in which case
-> > I'll let you know.
-> >
-> > Thanks!
-> >
-> >> FYI: We have tested this on QEMU and its working fine.
-> >>
-> >> Logs(suspend):
-> >> [   75.242227] PM: Using 3 thread(s) for lz4 compression
-> >> [   75.243043] PM: Compressing and saving image data (17495 pages)...
-> >> [   75.243917] PM: Image saving progress:   0%
-> >> [   75.261727] PM: Image saving progress:  10%
-> >> [   75.277968] PM: Image saving progress:  20%
-> >> [   75.290927] PM: Image saving progress:  30%
-> >> [   75.305186] PM: Image saving progress:  40%
-> >> [   75.318252] PM: Image saving progress:  50%
-> >> [   75.330310] PM: Image saving progress:  60%
-> >> [   75.345906] PM: Image saving progress:  70%
-> >> [   75.359054] PM: Image saving progress:  80%
-> >> [   75.372176] PM: Image saving progress:  90%
-> >> [   75.388411] PM: Image saving progress: 100%
-> >> [   75.389775] PM: Image saving done
-> >> [   75.390397] PM: hibernation: Wrote 69980 kbytes in 0.14 seconds
-> >> (499.85 MB/s)
-> >> [   75.391591] PM: Image size after compression: 28242 kbytes
-> >> [   75.393089] PM: S|
-> >> [   75.399784] sd 0:0:0:0: [sda] Synchronizing SCSI cache
-> >> [   75.439170] sd 0:0:0:0: [sda] Stopping disk
-> >> [   75.501461] ACPI: PM: Preparing to enter system sleep state S5
-> >> [   75.502766] reboot: Power down
-> >>
-> >>
-> >>
-> >> Logs(resume):
-> >> [    1.063248] PM: hibernation: resume from hibernation
-> >> [    1.072868] Freezing user space processes
-> >> [    1.073707] Freezing user space processes completed (elapsed 0.000
-> >> seconds)
-> >> [    1.075192] OOM killer disabled.
-> >> [    1.075837] Freezing remaining freezable tasks
-> >> [    1.078010] Freezing remaining freezable tasks completed (elapsed
-> >> 0.001 seconds)
-> >> [    1.087489] PM: Using 3 thread(s) for lz4 decompression
-> >> [    1.088570] PM: Loading and decompressing image data (17495 pages).=
-.
-> >> [    1.125549] PM: Image loading progress:   0%
-> >> [    1.190380] PM: Image loading progress:  10%
-> >> [    1.204963] PM: Image loading progress:  20%
-> >> [    1.218988] PM: Image loading progress:  30%
-> >> [    1.233697] PM: Image loading progress:  40%
-> >> [    1.248658] PM: Image loading progress:  50%
-> >> [    1.262910] PM: Image loading progress:  60%
-> >> [    1.276966] PM: Image loading progress:  70%
-> >> [    1.290517] PM: Image loading progress:  80%
-> >> [    1.305427] PM: Image loading progress:  90%
-> >> [    1.320666] PM: Image loading progress: 100%
-> >> [    1.321866] PM: Image loading done
-> >> [    1.322599] PM: hibernation: Read 69980 kbytes in 0.23 seconds
-> >> (304.26 MB/s)
-> >> [    1.324795] printk: Suspending console(s) (use no_console_suspend t=
-o
-> >> debug)
-> >> [   74.943801] ata1.00: Entering standby power mode
-> >>
-> >>
-> >> Thanks,
-> >> Nikhil V
->
->
-> Hi @Rafael
->
-> We have picked this patch series on 6.8-rc1 and tested the functionality
-> on QEMU. Its working fine. However, while applying the patches we could
-> see minor conflicts. Could you please let me know if we need to push a
-> new version after resolving these conflicts?
+This is a multi-part message in MIME format.
+--------------EBz23e30HntQKxViUq8E5TGn
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-It will help.
+[Cc: +linux-i2c, +linux-acpi, +Hans, cf original message [1]]
 
-I can resolve the conflicts, but I may make mistakes in the process.
+Dear Christian,
 
-Thanks!
+
+Thank you for your reply.
+
+Am 19.01.24 um 18:57 schrieb Christian A. Ehrhardt:
+
+> On Fri, Jan 19, 2024 at 01:59:29PM +0100, Paul Menzel wrote:
+>> On a Dell XPS 13 9360 Linux 6.6.8, 6.6.11 and 6.7 (and earlier versions) log
+>> the lines below when resuming from ACPI S3 (deep):
+>>
+>>      [    0.000000] Linux version 6.7-amd64 (debian-kernel@lists.debian.org) (x86_64-linux-gnu-gcc-13 (Debian 13.2.0-9) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41.50.20231227) #1 SMP PREEMPT_DYNAMIC Debian 6.7-1~exp1 (2024-01-08)
+>>      [    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.7-amd64 root=UUID=32e29882-d94d-4a92-9ee4-4d03002bfa29 ro quiet pci=noaer mem_sleep_default=deep log_buf_len=8M
+>>      […]
+>>      [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
+>>      […]
+>>      [   99.711230] PM: suspend entry (deep)
+>>      […]
+>>      [   99.722101] printk: Suspending console(s) (use no_console_suspend to debug)
+>>      [  100.285178] ACPI: EC: interrupt blocked
+>>      [  100.319908] ACPI: PM: Preparing to enter system sleep state S3
+>>      [  100.331793] ACPI: EC: event blocked
+>>      [  100.331798] ACPI: EC: EC stopped
+>>      [  100.331800] ACPI: PM: Saving platform NVS memory
+>>      [  100.335224] Disabling non-boot CPUs ...
+>>      [  100.337412] smpboot: CPU 1 is now offline
+>>      [  100.341065] smpboot: CPU 2 is now offline
+>>      [  100.346441] smpboot: CPU 3 is now offline
+>>      [  100.353086] ACPI: PM: Low-level resume complete
+>>      [  100.353129] ACPI: EC: EC started
+>>      [  100.353129] ACPI: PM: Restoring platform NVS memory
+>>      [  100.355219] Enabling non-boot CPUs ...
+>>      [  100.355244] smpboot: Booting Node 0 Processor 1 APIC 0x2
+>>      [  100.355954] CPU1 is up
+>>      [  100.355972] smpboot: Booting Node 0 Processor 2 APIC 0x1
+>>      [  100.356698] CPU2 is up
+>>      [  100.356716] smpboot: Booting Node 0 Processor 3 APIC 0x3
+>>      [  100.357371] CPU3 is up
+>>      [  100.360217] ACPI: PM: Waking up from system sleep state S3
+>>      [  100.668380] ACPI: EC: interrupt unblocked
+>>      [  100.668598] pcieport 0000:00:1c.0: Intel SPT PCH root port ACS workaround enabled
+>>      [  100.668606] pcieport 0000:00:1c.4: Intel SPT PCH root port ACS workaround enabled
+>>      [  100.668643] pcieport 0000:00:1d.0: Intel SPT PCH root port ACS workaround enabled
+>>      [  100.690996] DMAR: DRHD: handling fault status reg 2
+>>      [  100.691001] DMAR: [INTR-REMAP] Request device [f0:1f.0] fault index 0x0 [fault reason 0x25] Blocked a compatibility format interrupt request
+>>
+>> But I am unable to find the device f0:1f.0:
+> 
+> This is probably an ACPI enumerated device. These are platform
+> devices that pose as a PCI device for the purpose of interrupt
+> remapping but do not enumerate via PCI. The PCI ID assigned to
+> these hidden devices is enumerated via ANDD entries in the
+> DMAR table. You can decode this table with from
+> /sys/firmware/acpi/tables/DMAR with iasl to verify.
+
+I disassembled it with `iasl -d` (attached), and there are indeed two 
+devices:
+
+     [058h 0088 001h]           Device Scope Type : 03 [IOAPIC Device]
+     [059h 0089 001h]                Entry Length : 08
+     [05Ah 0090 002h]                    Reserved : 0000
+     [05Ch 0092 001h]              Enumeration ID : 02
+     [05Dh 0093 001h]              PCI Bus Number : F0
+
+     [05Eh 0094 002h]                    PCI Path : 1F,00
+
+
+     [060h 0096 001h]           Device Scope Type : 04 [Message-capable 
+HPET Device]
+     [061h 0097 001h]                Entry Length : 08
+     [062h 0098 002h]                    Reserved : 0000
+     [064h 0100 001h]              Enumeration ID : 00
+     [065h 0101 001h]              PCI Bus Number : 00
+
+     [066h 0102 002h]                    PCI Path : 1F,00
+
+     $ grep Name DMAR.dsl
+      * Format: [HexOffset DecimalOffset ByteLength]  FieldName : 
+FieldValue (in hex)
+     [068h 0104 001h]           Device Scope Type : 05 [Namespace Device]
+     [070h 0112 001h]           Device Scope Type : 05 [Namespace Device]
+     [0B8h 0184 002h]               Subtable Type : 0004 [ACPI Namespace 
+Device Declaration]
+     [0C0h 0192 00Fh]                 Device Name : "\_SB.PCI0.I2C0"
+     [0D4h 0212 002h]               Subtable Type : 0004 [ACPI Namespace 
+Device Declaration]
+     [0DCh 0220 00Fh]                 Device Name : "\_SB.PCI0.I2C1"
+
+> Your dmesg shows two ANDD records for your I2C controllers,
+> so somehow the I2C controller is sending interrupts that DMAR
+> doesn't like (probably because the I2C controller is not yet
+> resumed properly).
+> 
+> Thus my guess is that this is an issue with the suspend/resume hooks
+> of the I2C controllers not with the IOMMU.
+
+I am adding the Linux I2C and ACPI folks. Maybe they have an idea.
+
+
+Kind regards,
+
+Paul
+
+
+[1]: 
+https://lore.kernel.org/all/5517f76a-94ad-452c-bae6-34ecc0ec4831@molgen.mpg.de/
+--------------EBz23e30HntQKxViUq8E5TGn
+Content-Type: text/x-dsl; charset=UTF-8; name="DMAR.dsl"
+Content-Disposition: attachment; filename="DMAR.dsl"
+Content-Transfer-Encoding: base64
+
+LyoKICogSW50ZWwgQUNQSSBDb21wb25lbnQgQXJjaGl0ZWN0dXJlCiAqIEFNTC9BU0wrIERp
+c2Fzc2VtYmxlciB2ZXJzaW9uIDIwMjMwNjI4ICg2NC1iaXQgdmVyc2lvbikKICogQ29weXJp
+Z2h0IChjKSAyMDAwIC0gMjAyMyBJbnRlbCBDb3Jwb3JhdGlvbgogKiAKICogRGlzYXNzZW1i
+bHkgb2YgRE1BUiwgU2F0IEphbiAyMCAwOTozNDoyMCAyMDI0CiAqCiAqIEFDUEkgRGF0YSBU
+YWJsZSBbRE1BUl0KICoKICogRm9ybWF0OiBbSGV4T2Zmc2V0IERlY2ltYWxPZmZzZXQgQnl0
+ZUxlbmd0aF0gIEZpZWxkTmFtZSA6IEZpZWxkVmFsdWUgKGluIGhleCkKICovCgpbMDAwaCAw
+MDAwIDAwNGhdICAgICAgICAgICAgICAgICAgIFNpZ25hdHVyZSA6ICJETUFSIiAgICBbRE1B
+IFJlbWFwcGluZyBUYWJsZV0KWzAwNGggMDAwNCAwMDRoXSAgICAgICAgICAgICAgICBUYWJs
+ZSBMZW5ndGggOiAwMDAwMDBGMApbMDA4aCAwMDA4IDAwMWhdICAgICAgICAgICAgICAgICAg
+ICBSZXZpc2lvbiA6IDAxClswMDloIDAwMDkgMDAxaF0gICAgICAgICAgICAgICAgICAgIENo
+ZWNrc3VtIDogMDgKWzAwQWggMDAxMCAwMDZoXSAgICAgICAgICAgICAgICAgICAgICBPZW0g
+SUQgOiAiSU5URUwgIgpbMDEwaCAwMDE2IDAwOGhdICAgICAgICAgICAgICAgIE9lbSBUYWJs
+ZSBJRCA6ICJLQkwgIgpbMDE4aCAwMDI0IDAwNGhdICAgICAgICAgICAgICAgIE9lbSBSZXZp
+c2lvbiA6IDAwMDAwMDAxClswMUNoIDAwMjggMDA0aF0gICAgICAgICAgICAgQXNsIENvbXBp
+bGVyIElEIDogIklOVEwiClswMjBoIDAwMzIgMDA0aF0gICAgICAgQXNsIENvbXBpbGVyIFJl
+dmlzaW9uIDogMDAwMDAwMDEKClswMjRoIDAwMzYgMDAxaF0gICAgICAgICAgSG9zdCBBZGRy
+ZXNzIFdpZHRoIDogMjYKWzAyNWggMDAzNyAwMDFoXSAgICAgICAgICAgICAgICAgICAgICAg
+RmxhZ3MgOiAwMQpbMDI2aCAwMDM4IDAwQWhdICAgICAgICAgICAgICAgICAgICBSZXNlcnZl
+ZCA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCgpbMDMwaCAwMDQ4IDAwMmhdICAg
+ICAgICAgICAgICAgU3VidGFibGUgVHlwZSA6IDAwMDAgW0hhcmR3YXJlIFVuaXQgRGVmaW5p
+dGlvbl0KWzAzMmggMDA1MCAwMDJoXSAgICAgICAgICAgICAgICAgICAgICBMZW5ndGggOiAw
+MDE4CgpbMDM0aCAwMDUyIDAwMWhdICAgICAgICAgICAgICAgICAgICAgICBGbGFncyA6IDAw
+ClswMzVoIDAwNTMgMDAxaF0gICAgICAgICAgICAgICAgICAgIFJlc2VydmVkIDogMDAKWzAz
+NmggMDA1NCAwMDJoXSAgICAgICAgICBQQ0kgU2VnbWVudCBOdW1iZXIgOiAwMDAwClswMzho
+IDAwNTYgMDA4aF0gICAgICAgUmVnaXN0ZXIgQmFzZSBBZGRyZXNzIDogMDAwMDAwMDBGRUQ5
+MDAwMAoKWzA0MGggMDA2NCAwMDFoXSAgICAgICAgICAgRGV2aWNlIFNjb3BlIFR5cGUgOiAw
+MSBbUENJIEVuZHBvaW50IERldmljZV0KWzA0MWggMDA2NSAwMDFoXSAgICAgICAgICAgICAg
+ICBFbnRyeSBMZW5ndGggOiAwOApbMDQyaCAwMDY2IDAwMmhdICAgICAgICAgICAgICAgICAg
+ICBSZXNlcnZlZCA6IDAwMDAKWzA0NGggMDA2OCAwMDFoXSAgICAgICAgICAgICAgRW51bWVy
+YXRpb24gSUQgOiAwMApbMDQ1aCAwMDY5IDAwMWhdICAgICAgICAgICAgICBQQ0kgQnVzIE51
+bWJlciA6IDAwCgpbMDQ2aCAwMDcwIDAwMmhdICAgICAgICAgICAgICAgICAgICBQQ0kgUGF0
+aCA6IDAyLDAwCgoKWzA0OGggMDA3MiAwMDJoXSAgICAgICAgICAgICAgIFN1YnRhYmxlIFR5
+cGUgOiAwMDAwIFtIYXJkd2FyZSBVbml0IERlZmluaXRpb25dClswNEFoIDAwNzQgMDAyaF0g
+ICAgICAgICAgICAgICAgICAgICAgTGVuZ3RoIDogMDAzMAoKWzA0Q2ggMDA3NiAwMDFoXSAg
+ICAgICAgICAgICAgICAgICAgICAgRmxhZ3MgOiAwMQpbMDREaCAwMDc3IDAwMWhdICAgICAg
+ICAgICAgICAgICAgICBSZXNlcnZlZCA6IDAwClswNEVoIDAwNzggMDAyaF0gICAgICAgICAg
+UENJIFNlZ21lbnQgTnVtYmVyIDogMDAwMApbMDUwaCAwMDgwIDAwOGhdICAgICAgIFJlZ2lz
+dGVyIEJhc2UgQWRkcmVzcyA6IDAwMDAwMDAwRkVEOTEwMDAKClswNThoIDAwODggMDAxaF0g
+ICAgICAgICAgIERldmljZSBTY29wZSBUeXBlIDogMDMgW0lPQVBJQyBEZXZpY2VdClswNTlo
+IDAwODkgMDAxaF0gICAgICAgICAgICAgICAgRW50cnkgTGVuZ3RoIDogMDgKWzA1QWggMDA5
+MCAwMDJoXSAgICAgICAgICAgICAgICAgICAgUmVzZXJ2ZWQgOiAwMDAwClswNUNoIDAwOTIg
+MDAxaF0gICAgICAgICAgICAgIEVudW1lcmF0aW9uIElEIDogMDIKWzA1RGggMDA5MyAwMDFo
+XSAgICAgICAgICAgICAgUENJIEJ1cyBOdW1iZXIgOiBGMAoKWzA1RWggMDA5NCAwMDJoXSAg
+ICAgICAgICAgICAgICAgICAgUENJIFBhdGggOiAxRiwwMAoKClswNjBoIDAwOTYgMDAxaF0g
+ICAgICAgICAgIERldmljZSBTY29wZSBUeXBlIDogMDQgW01lc3NhZ2UtY2FwYWJsZSBIUEVU
+IERldmljZV0KWzA2MWggMDA5NyAwMDFoXSAgICAgICAgICAgICAgICBFbnRyeSBMZW5ndGgg
+OiAwOApbMDYyaCAwMDk4IDAwMmhdICAgICAgICAgICAgICAgICAgICBSZXNlcnZlZCA6IDAw
+MDAKWzA2NGggMDEwMCAwMDFoXSAgICAgICAgICAgICAgRW51bWVyYXRpb24gSUQgOiAwMApb
+MDY1aCAwMTAxIDAwMWhdICAgICAgICAgICAgICBQQ0kgQnVzIE51bWJlciA6IDAwCgpbMDY2
+aCAwMTAyIDAwMmhdICAgICAgICAgICAgICAgICAgICBQQ0kgUGF0aCA6IDFGLDAwCgoKWzA2
+OGggMDEwNCAwMDFoXSAgICAgICAgICAgRGV2aWNlIFNjb3BlIFR5cGUgOiAwNSBbTmFtZXNw
+YWNlIERldmljZV0KWzA2OWggMDEwNSAwMDFoXSAgICAgICAgICAgICAgICBFbnRyeSBMZW5n
+dGggOiAwOApbMDZBaCAwMTA2IDAwMmhdICAgICAgICAgICAgICAgICAgICBSZXNlcnZlZCA6
+IDAwMDAKWzA2Q2ggMDEwOCAwMDFoXSAgICAgICAgICAgICAgRW51bWVyYXRpb24gSUQgOiAw
+MQpbMDZEaCAwMTA5IDAwMWhdICAgICAgICAgICAgICBQQ0kgQnVzIE51bWJlciA6IDAwCgpb
+MDZFaCAwMTEwIDAwMmhdICAgICAgICAgICAgICAgICAgICBQQ0kgUGF0aCA6IDE1LDAwCgoK
+WzA3MGggMDExMiAwMDFoXSAgICAgICAgICAgRGV2aWNlIFNjb3BlIFR5cGUgOiAwNSBbTmFt
+ZXNwYWNlIERldmljZV0KWzA3MWggMDExMyAwMDFoXSAgICAgICAgICAgICAgICBFbnRyeSBM
+ZW5ndGggOiAwOApbMDcyaCAwMTE0IDAwMmhdICAgICAgICAgICAgICAgICAgICBSZXNlcnZl
+ZCA6IDAwMDAKWzA3NGggMDExNiAwMDFoXSAgICAgICAgICAgICAgRW51bWVyYXRpb24gSUQg
+OiAwMgpbMDc1aCAwMTE3IDAwMWhdICAgICAgICAgICAgICBQQ0kgQnVzIE51bWJlciA6IDAw
+CgpbMDc2aCAwMTE4IDAwMmhdICAgICAgICAgICAgICAgICAgICBQQ0kgUGF0aCA6IDE1LDAx
+CgoKWzA3OGggMDEyMCAwMDJoXSAgICAgICAgICAgICAgIFN1YnRhYmxlIFR5cGUgOiAwMDAx
+IFtSZXNlcnZlZCBNZW1vcnkgUmVnaW9uXQpbMDdBaCAwMTIyIDAwMmhdICAgICAgICAgICAg
+ICAgICAgICAgIExlbmd0aCA6IDAwMjAKClswN0NoIDAxMjQgMDAyaF0gICAgICAgICAgICAg
+ICAgICAgIFJlc2VydmVkIDogMDAwMApbMDdFaCAwMTI2IDAwMmhdICAgICAgICAgIFBDSSBT
+ZWdtZW50IE51bWJlciA6IDAwMDAKWzA4MGggMDEyOCAwMDhoXSAgICAgICAgICAgICAgICBC
+YXNlIEFkZHJlc3MgOiAwMDAwMDAwMDY0RUMyMDAwClswODhoIDAxMzYgMDA4aF0gICAgICAg
+ICBFbmQgQWRkcmVzcyAobGltaXQpIDogMDAwMDAwMDA2NEVFMUZGRgoKWzA5MGggMDE0NCAw
+MDFoXSAgICAgICAgICAgRGV2aWNlIFNjb3BlIFR5cGUgOiAwMSBbUENJIEVuZHBvaW50IERl
+dmljZV0KWzA5MWggMDE0NSAwMDFoXSAgICAgICAgICAgICAgICBFbnRyeSBMZW5ndGggOiAw
+OApbMDkyaCAwMTQ2IDAwMmhdICAgICAgICAgICAgICAgICAgICBSZXNlcnZlZCA6IDAwMDAK
+WzA5NGggMDE0OCAwMDFoXSAgICAgICAgICAgICAgRW51bWVyYXRpb24gSUQgOiAwMApbMDk1
+aCAwMTQ5IDAwMWhdICAgICAgICAgICAgICBQQ0kgQnVzIE51bWJlciA6IDAwCgpbMDk2aCAw
+MTUwIDAwMmhdICAgICAgICAgICAgICAgICAgICBQQ0kgUGF0aCA6IDE0LDAwCgoKWzA5OGgg
+MDE1MiAwMDJoXSAgICAgICAgICAgICAgIFN1YnRhYmxlIFR5cGUgOiAwMDAxIFtSZXNlcnZl
+ZCBNZW1vcnkgUmVnaW9uXQpbMDlBaCAwMTU0IDAwMmhdICAgICAgICAgICAgICAgICAgICAg
+IExlbmd0aCA6IDAwMjAKClswOUNoIDAxNTYgMDAyaF0gICAgICAgICAgICAgICAgICAgIFJl
+c2VydmVkIDogMDAwMApbMDlFaCAwMTU4IDAwMmhdICAgICAgICAgIFBDSSBTZWdtZW50IE51
+bWJlciA6IDAwMDAKWzBBMGggMDE2MCAwMDhoXSAgICAgICAgICAgICAgICBCYXNlIEFkZHJl
+c3MgOiAwMDAwMDAwMDdBMDAwMDAwClswQThoIDAxNjggMDA4aF0gICAgICAgICBFbmQgQWRk
+cmVzcyAobGltaXQpIDogMDAwMDAwMDA3QzdGRkZGRgoKWzBCMGggMDE3NiAwMDFoXSAgICAg
+ICAgICAgRGV2aWNlIFNjb3BlIFR5cGUgOiAwMSBbUENJIEVuZHBvaW50IERldmljZV0KWzBC
+MWggMDE3NyAwMDFoXSAgICAgICAgICAgICAgICBFbnRyeSBMZW5ndGggOiAwOApbMEIyaCAw
+MTc4IDAwMmhdICAgICAgICAgICAgICAgICAgICBSZXNlcnZlZCA6IDAwMDAKWzBCNGggMDE4
+MCAwMDFoXSAgICAgICAgICAgICAgRW51bWVyYXRpb24gSUQgOiAwMApbMEI1aCAwMTgxIDAw
+MWhdICAgICAgICAgICAgICBQQ0kgQnVzIE51bWJlciA6IDAwCgpbMEI2aCAwMTgyIDAwMmhd
+ICAgICAgICAgICAgICAgICAgICBQQ0kgUGF0aCA6IDAyLDAwCgoKWzBCOGggMDE4NCAwMDJo
+XSAgICAgICAgICAgICAgIFN1YnRhYmxlIFR5cGUgOiAwMDA0IFtBQ1BJIE5hbWVzcGFjZSBE
+ZXZpY2UgRGVjbGFyYXRpb25dClswQkFoIDAxODYgMDAyaF0gICAgICAgICAgICAgICAgICAg
+ICAgTGVuZ3RoIDogMDAxQwoKWzBCQ2ggMDE4OCAwMDNoXSAgICAgICAgICAgICAgICAgICAg
+UmVzZXJ2ZWQgOiAwMDAwMDAKWzBCRmggMDE5MSAwMDFoXSAgICAgICAgICAgICAgIERldmlj
+ZSBOdW1iZXIgOiAwMQpbMEMwaCAwMTkyIDAwRmhdICAgICAgICAgICAgICAgICBEZXZpY2Ug
+TmFtZSA6ICJcX1NCLlBDSTAuSTJDMCIKClswRDRoIDAyMTIgMDAyaF0gICAgICAgICAgICAg
+ICBTdWJ0YWJsZSBUeXBlIDogMDAwNCBbQUNQSSBOYW1lc3BhY2UgRGV2aWNlIERlY2xhcmF0
+aW9uXQpbMEQ2aCAwMjE0IDAwMmhdICAgICAgICAgICAgICAgICAgICAgIExlbmd0aCA6IDAw
+MUMKClswRDhoIDAyMTYgMDAzaF0gICAgICAgICAgICAgICAgICAgIFJlc2VydmVkIDogMDAw
+MDAwClswREJoIDAyMTkgMDAxaF0gICAgICAgICAgICAgICBEZXZpY2UgTnVtYmVyIDogMDIK
+WzBEQ2ggMDIyMCAwMEZoXSAgICAgICAgICAgICAgICAgRGV2aWNlIE5hbWUgOiAiXF9TQi5Q
+Q0kwLkkyQzEiCgpSYXcgVGFibGUgRGF0YTogTGVuZ3RoIDI0MCAoMHhGMCkKCiAgICAwMDAw
+OiA0NCA0RCA0MSA1MiBGMCAwMCAwMCAwMCAwMSAwOCA0OSA0RSA1NCA0NSA0QyAyMCAgLy8g
+RE1BUi4uLi4uLklOVEVMIAogICAgMDAxMDogNEIgNDIgNEMgMjAgMDAgMDAgMDAgMDAgMDEg
+MDAgMDAgMDAgNDkgNEUgNTQgNEMgIC8vIEtCTCAuLi4uLi4uLklOVEwKICAgIDAwMjA6IDAx
+IDAwIDAwIDAwIDI2IDAxIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAvLyAuLi4u
+Ji4uLi4uLi4uLi4uCiAgICAwMDMwOiAwMCAwMCAxOCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBE
+OSBGRSAwMCAwMCAwMCAwMCAgLy8gLi4uLi4uLi4uLi4uLi4uLgogICAgMDA0MDogMDEgMDgg
+MDAgMDAgMDAgMDAgMDIgMDAgMDAgMDAgMzAgMDAgMDEgMDAgMDAgMDAgIC8vIC4uLi4uLi4u
+Li4wLi4uLi4KICAgIDAwNTA6IDAwIDEwIEQ5IEZFIDAwIDAwIDAwIDAwIDAzIDA4IDAwIDAw
+IDAyIEYwIDFGIDAwICAvLyAuLi4uLi4uLi4uLi4uLi4uCiAgICAwMDYwOiAwNCAwOCAwMCAw
+MCAwMCAwMCAxRiAwMCAwNSAwOCAwMCAwMCAwMSAwMCAxNSAwMCAgLy8gLi4uLi4uLi4uLi4u
+Li4uLgogICAgMDA3MDogMDUgMDggMDAgMDAgMDIgMDAgMTUgMDEgMDEgMDAgMjAgMDAgMDAg
+MDAgMDAgMDAgIC8vIC4uLi4uLi4uLi4gLi4uLi4KICAgIDAwODA6IDAwIDIwIEVDIDY0IDAw
+IDAwIDAwIDAwIEZGIDFGIEVFIDY0IDAwIDAwIDAwIDAwICAvLyAuIC5kLi4uLi4uLmQuLi4u
+CiAgICAwMDkwOiAwMSAwOCAwMCAwMCAwMCAwMCAxNCAwMCAwMSAwMCAyMCAwMCAwMCAwMCAw
+MCAwMCAgLy8gLi4uLi4uLi4uLiAuLi4uLgogICAgMDBBMDogMDAgMDAgMDAgN0EgMDAgMDAg
+MDAgMDAgRkYgRkYgN0YgN0MgMDAgMDAgMDAgMDAgIC8vIC4uLnouLi4uLi4ufC4uLi4KICAg
+IDAwQjA6IDAxIDA4IDAwIDAwIDAwIDAwIDAyIDAwIDA0IDAwIDFDIDAwIDAwIDAwIDAwIDAx
+ICAvLyAuLi4uLi4uLi4uLi4uLi4uCiAgICAwMEMwOiA1QyA1RiA1MyA0MiAyRSA1MCA0MyA0
+OSAzMCAyRSA0OSAzMiA0MyAzMCAwMCAwMCAgLy8gXF9TQi5QQ0kwLkkyQzAuLgogICAgMDBE
+MDogMDAgMDAgMDAgMDAgMDQgMDAgMUMgMDAgMDAgMDAgMDAgMDIgNUMgNUYgNTMgNDIgIC8v
+IC4uLi4uLi4uLi4uLlxfU0IKICAgIDAwRTA6IDJFIDUwIDQzIDQ5IDMwIDJFIDQ5IDMyIDQz
+IDMxIDAwIDAwIDAwIDAwIDAwIDAwICAvLyAuUENJMC5JMkMxLi4uLi4uCg==
+
+--------------EBz23e30HntQKxViUq8E5TGn--
 
