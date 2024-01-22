@@ -1,294 +1,88 @@
-Return-Path: <linux-kernel+bounces-34234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32AB883760E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:19:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A671C837610
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:22:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0DBB28454D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:19:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35AC01F26FC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F6148CCE;
-	Mon, 22 Jan 2024 22:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5988495C7;
+	Mon, 22 Jan 2024 22:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="oDBZ8SaT"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KeP6ojzk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE9448CC0;
-	Mon, 22 Jan 2024 22:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08669495C0
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 22:22:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705961964; cv=none; b=n8djckjB6o8nGQs8/F/9hhWvNShgffsJikkHiKLwS7tueR+e/yHU22zZtNwH66vcyAuAUvPSvxqa7F3R02xaqI5CeLjX2Bdt0wYJVNU5WOVC6QNmvS/jy4B5kvNNd28qrxImD/oaRNiEpbeY8Sj4fBLLq3FVA2VcdcnlG6zy16E=
+	t=1705962137; cv=none; b=RTcNcz73uJ5/nG4Vd8cFWHXEfUmQgFdaCSXRODn6MXmhCwyhxW33SgdWmcgiPcF62nGnsD+5sB2ESVX1+O6NH4BwDTXOWjVxchoRX9n6GnGFvKE4r+NMNdi1HwdKAbigUTzjd0ZIVTFL5snxHvN4bHr8dDcxFIbzN9rVTTzAchg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705961964; c=relaxed/simple;
-	bh=6QqaJa+R0eSslqaIYUHG9G5MoLVCrBrGnAwX9i1pi1A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=p0twrqWf2sAjrFiqixNexrqA522AdbbHiwfJAUV6hdvoQozfUKLJllKT4g59DIrEmMs77WiSzddYVXi89suwrqUbLb9vPAKl9gA7MwQ+aBku+eK/QQ2hEieGeAfvjnsoOD0zSVkJVqrl52qxsdy17ueEUJx2bBPSmJVwUNXE/Cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=oDBZ8SaT; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-Received: from localhost (c-98-53-138-11.hsd1.co.comcast.net [98.53.138.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id A02407AE7;
-	Mon, 22 Jan 2024 22:19:19 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A02407AE7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1705961959; bh=UCaHks5kiefiwx5cbHtEd3yYdX3zSyQmcLrd8ZN1uXw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=oDBZ8SaTHJstT/aJhJbbXDVz4nSDbt4ocPtKBvsfYCGl3tq0q4zQcyVyoZV/8skAI
-	 +cfRiN+nDAcqgDsk1v12o6l2ocFB6SUUjQvYDyWUBLc5pwVED4tSDk79VeMXitUsey
-	 r5mbeHXGAK6ArhfiC8KKfZOWr0fIp59B5FoA8At2UVb2OHF4rDubk85yQvSpelELOp
-	 /xARVKqnwLA1PPBoSO6L9FrTMh0NkuUl+6DmNIe8973uI1YnCUUyAWmhW/Ycg8cOw7
-	 0cClROXo8iF13udpdWAA0Szw//hRtRQjuvW3Jdz8BsPyxO6zXrwnjwCOfnmI3TqDPF
-	 5KaW+mBw0xpGw==
-From: Jonathan Corbet <corbet@lwn.net>
-To: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: rework the driver-api top-level page
-Date: Mon, 22 Jan 2024 15:19:19 -0700
-Message-ID: <87plxtm2oo.fsf@meer.lwn.net>
+	s=arc-20240116; t=1705962137; c=relaxed/simple;
+	bh=d/fxVaGOVO5QVu91c1mmmWvSIRLFiaURtHGFApvsPj0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rw7o4cK/YN1a3BpLD37OfyjvCzfewrjDEi51ne89MV503HYK93cGFIsRxnVqiuT3AcPriiKWQdiUN0ErzAZSvbg5zCbCIqOKguG6bqXQFU1fXUbfR71glq6A47B3F04G8rweFzyLZDWIXcF+qdCeOSX72VnZ40hOwO9ttjG19bI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KeP6ojzk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAC8FC43390;
+	Mon, 22 Jan 2024 22:22:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705962136;
+	bh=d/fxVaGOVO5QVu91c1mmmWvSIRLFiaURtHGFApvsPj0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KeP6ojzkPZbUSVxkh/i+B/wvV+O+aLt1a0etxXSJ8LWMkBIdBLYELD4JncziA3TRo
+	 hAd4lWovaEF1xU14/rU9Z8yA9l/2H9kIeYZ6ZB9bq3tC77qAaBU0QzYRgBPnvwOdK2
+	 GQcPK9oddstNZmW1jGeEQFu/dnGz3hA7cYwo8E9NiIOKIhy09/d/Y/iUG60812TE0c
+	 j320bYaCfQi5r3SfNuoTF5Ub8pDgVqwwSnp+3ESr1YPzo2ZAw5QqGiwTvPq41JnOFZ
+	 gpxwrxKus07NLw0P4IToAJlHdXfbzpSXnmKFS61egIy5TaXcaZ8nowddd7+QsP0kRu
+	 GRa7BLaH20smw==
+Date: Mon, 22 Jan 2024 23:22:13 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10 04/20] timers: Optimization for
+ timer_base_try_to_set_idle()
+Message-ID: <Za7qlSikzxTaaUq4@pavilion.home>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-5-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240115143743.27827-5-anna-maria@linutronix.de>
 
-Add subsections in an attempt to bring a bit order to this page; also sort
-most subsections into alphabetical order.  With luck all this will help to
-prevent merge conflicts on this page due to everybody adding entries at the
-end.
+Le Mon, Jan 15, 2024 at 03:37:27PM +0100, Anna-Maria Behnsen a écrit :
+> When tick is stopped also the timer base is_idle flag is set. When
+> reentering the timer_base_try_to_set_idle() with the tick stopped, there is
+> no need to check whether the timer base needs to be set idle again. When a
+> timer was enqueued in the meantime, this is already handled by the
+> tick_nohz_next_event() call which was executed before
+> tick_nohz_stop_tick().
+> 
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
----
- Documentation/driver-api/index.rst | 169 +++++++++++++++++------------
- 1 file changed, 100 insertions(+), 69 deletions(-)
-
-diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/=
-index.rst
-index eba851605388..f10decc2c14b 100644
---- a/Documentation/driver-api/index.rst
-+++ b/Documentation/driver-api/index.rst
-@@ -9,110 +9,141 @@ of device drivers.  This document is an only somewhat o=
-rganized collection
- of some of those interfaces =E2=80=94 it will hopefully get better over ti=
-me!  The
- available subsections can be seen below.
-=20
-+
-+General information for driver authors
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+This section contains documentation that should, at some point or other, be
-+of interest to most developers working on device drivers.
-+
- .. toctree::
--   :caption: Table of contents
--   :maxdepth: 2
-+   :maxdepth: 1
-=20
--   driver-model/index
-    basics
-+   driver-model/index
-+   device_link
-    infrastructure
-    ioctl
--   early-userspace/index
-    pm/index
--   clk
-+
-+Useful support libraries
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+This section contains documentation that should, at some point or other, be
-+of interest to most developers working on device drivers.
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   early-userspace/index
-+   connector
-    device-io
-+   devfreq
-    dma-buf
--   device_link
-    component
--   message-based
--   infiniband
--   aperture
--   frame-buffer
--   regulator
--   reset
--   iio/index
--   input
--   usb/index
--   firewire
--   pci/index
-+   io-mapping
-+   io_ordering
-+   uio-howto
-+   vfio-mediated-device
-+   vfio
-+   vfio-pci-device-specific-driver-acceptance
-+
-+Bus-level documentation
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   auxiliary_bus
-    cxl/index
--   spi
--   i2c
--   ipmb
--   ipmi
-+   eisa
-+   firewire
-    i3c/index
--   interconnect
--   devfreq
--   hsi
--   edac
--   scsi
--   libata
--   target
--   mailbox
--   mtdnand
--   miscellaneous
--   mei/index
--   mtd/index
--   mmc/index
--   nvdimm/index
--   w1
-+   isa
-+   men-chameleon-bus
-+   pci/index
-    rapidio/index
--   s390-drivers
-+   slimbus
-+   usb/index
-+   virtio/index
-    vme
-+   w1
-+   xillybus
-+
-+
-+Subsystem-specific APIs
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-    80211/index
--   uio-howto
-+   acpi/index
-+   backlight/lp855x-driver.rst
-+   clk
-+   console
-+   crypto/index
-+   dmaengine/index
-+   dpll
-+   edac
-    firmware/index
--   pin-control
-+   fpga/index
-+   frame-buffer
-+   aperture
-+   generic-counter
-    gpio/index
-+   hsi
-+   hte/index
-+   i2c
-+   iio/index
-+   infiniband
-+   input
-+   interconnect
-+   ipmb
-+   ipmi
-+   libata
-+   mailbox
-    md/index
-    media/index
-+   mei/index
-+   memory-devices/index
-+   message-based
-    misc_devices
-+   miscellaneous
-+   mmc/index
-+   mtd/index
-+   mtdnand
-    nfc/index
--   dmaengine/index
--   slimbus
--   soundwire/index
--   thermal/index
--   fpga/index
--   acpi/index
--   auxiliary_bus
--   backlight/lp855x-driver.rst
--   connector
--   console
--   eisa
--   isa
--   io-mapping
--   io_ordering
--   generic-counter
--   memory-devices/index
--   men-chameleon-bus
-    ntb
-+   nvdimm/index
-    nvmem
-    parport-lowlevel
-+   phy/index
-+   pin-control
-+   pldmfw/index
-    pps
-    ptp
--   phy/index
-    pwm
--   pldmfw/index
-+   regulator
-+   reset
-    rfkill
-+   s390-drivers
-+   scsi
-    serial/index
-    sm501
-+   soundwire/index
-+   spi
-    surface_aggregator/index
-    switchtec
-    sync_file
-+   target
-+   tee
-+   thermal/index
-    tty/index
--   vfio-mediated-device
--   vfio
--   vfio-pci-device-specific-driver-acceptance
--   virtio/index
-+   wbrf
-+   wmi
-    xilinx/index
--   xillybus
-    zorro
--   hte/index
--   wmi
--   dpll
--   wbrf
--   crypto/index
--   tee
-=20
- .. only::  subproject and html
-=20
---=20
-2.43.0
-
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
