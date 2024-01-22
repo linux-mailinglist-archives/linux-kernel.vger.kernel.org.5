@@ -1,239 +1,172 @@
-Return-Path: <linux-kernel+bounces-32584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E1EF835D82
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB749835D84
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:01:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FD4D1C21B9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:01:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B7741C21A85
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A09B39ACF;
-	Mon, 22 Jan 2024 09:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CCE39AE9;
+	Mon, 22 Jan 2024 09:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d+PZDNlF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FwEkjkBm"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B2239AC3
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E99139AD1;
+	Mon, 22 Jan 2024 09:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705914027; cv=none; b=NiK03DKGyYDQ3FdMA4uU2UK7NLgdPFgS5EPS14SqaOrL2WEZqjrIRHMYe0CEsF1uT08ycCD0AyZo2P5bLMv7oTQuvUxcLUgK37QJGe1fkhd6Tpuc6fq7n5mCp/fjk4zi0DrfauFmGaUegrnuW4DbxTapJjzAB4IKcVNdvB/PNX4=
+	t=1705914029; cv=none; b=QJ5Klbm6ix8mDK9du3GoucSuYNbPVpHHu+qZ5V8WYcdiF+cLWdGn1Hic1URcPNCOL0Q9Ha2DTsMo0VFXfg9Kriv6EDBsPUI6ys0buktF8MFEvEIEPxSHH+aFoWPV3TwpuZJXTxqXkDlh8Xbi+LRAc6ZqzjH0AGt41vqpjF7GKQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705914027; c=relaxed/simple;
-	bh=M1TqWzuYGMAOlVXyny/8l/psSIQooyQf8WaHwuG26Yw=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=unBaJ6j4C9xVgtJwXhap6Qk2XxsBvHJrcPDgVH2fneNKvhEL2iiOWmsmj6oCioX2b4D4pYaD2W9fSC47GM+zOXJ94qexgYCM6CqPuzL9QTuUZZLi/h9lAKr+5+fIefgi3q5wqKJadH5HzsrwhvKyYbdaYnF+16MytzW44H+w4tQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d+PZDNlF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E017CC433F1;
-	Mon, 22 Jan 2024 09:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705914026;
-	bh=M1TqWzuYGMAOlVXyny/8l/psSIQooyQf8WaHwuG26Yw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=d+PZDNlFc1l85hemBexvjACkEmOojaPjpK70bZ9KHaY0roQa2SNNsbsk9Ei5fbSRG
-	 ARqZbVCWV+qkFrzrF3uTL3AgqDI1ZSZa69SSYiRQBmfc6A8t3MYGrVOckGebuRICUj
-	 PgoYzwqqDijSEw+I4E1FWlNIO/QZL0QPMMihga5q94vQAp3sykPkPFNYRKcrPPp5hB
-	 H+tH8CqhSfICT3mKSgevAlgIsToncFISumUQw2lXt81+U1jzstB5+55ZmBHTOBttNQ
-	 WP/bnDayS467ZXY4kdiIfxQjV0jp4/2PpX4Jdlj835/b/yc8bUKajhLQ7GTRlssNhe
-	 b7Te9qVKi3B6g==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rRqAJ-00DVPJ-58;
-	Mon, 22 Jan 2024 09:00:24 +0000
-Date: Mon, 22 Jan 2024 09:00:22 +0000
-Message-ID: <86sf2p91zt.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Nianyao Tang <tangnianyao@huawei.com>
-Cc: <tglx@linutronix.de>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<guoyang2@huawei.com>,
-	<wangwudi@hisilicon.com>
-Subject: Re: [PATCH] irqchip/gic-v4.1:Check whether indirect table is supported in allocate_vpe_l1_table
-In-Reply-To: <20240122160607.1078960-1-tangnianyao@huawei.com>
-References: <20240122160607.1078960-1-tangnianyao@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1705914029; c=relaxed/simple;
+	bh=rZe7E8uWF2oeAIbZG2u1TFjJAX1klDazcb6lUv/hnEs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ey2OviouHUIAnZhlmP9jQMUigKhl1K8HBq5j5XLsTPnZT4poywLpFXfW+0KdfHOFu4/wMtKGLeRGKxt+EgFuQ9ycVkD6/PNHPc+jJKr/CkGDqTcMHYKF04tFyzoQkdy6bFW7+iUr/mxdpXoleMeBOlbQOOdSi56yxfWcGbAQGqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FwEkjkBm; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-337b8da1f49so2658726f8f.0;
+        Mon, 22 Jan 2024 01:00:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705914026; x=1706518826; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S9CnsRjAPHv/Nr7rgukGQuH99DHSYEoAqMdSIVVUY+Y=;
+        b=FwEkjkBmuW196qYOR/hE/YPsxyLMzy/QHHfNF3TczfVav3jl/sg6WPbse5J+Ep7Im+
+         IpZHvePxaWlXTGvEG8GPTG4wpbbTlWB8OIuanucbLi6ky8aCE8QdVFJRJSealAGUUu3G
+         fpBiexW9fz+DnO54k/USm3PFQtvw18NRY8/iPFUZdre7mw4CqPsf9Fun1Gv1D9pGlgcr
+         L48yahs/cdrakaqDZAl1GkjH5blZhNbHLD+uoTRvWcvGsDo6zCA9B5oU8l+fQ1IoVlb/
+         rOEorTqGsV0+lKh536hduYaYGi8FfKdpXgJ7FOwRHQS41xTQxTOlGEvOIDCmnq3wLq8t
+         z4iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705914026; x=1706518826;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S9CnsRjAPHv/Nr7rgukGQuH99DHSYEoAqMdSIVVUY+Y=;
+        b=SZkAxIo63GUqewP+vl9u70RNoKmXfMYvyfLntc/+V53i3CU6CskMBCqIBTj+YZ6iu3
+         gh9X68Qen2e5hJIt5wGKlB2DemBauJUdatMByMLssJOLjxtKLhhA9rHojkKAWrcERBXz
+         EtmmasSKioIySLABctocc6pduxUeco7Y1OZub67wWPV0/SWGNbe+iiB/BNHgWvl1pA9v
+         4MPWotcvfqmX2j1PvC4kjikZjbyWrJ4x9K/WBKXrvFFLICxDy5bTwp7wWlsPBa//hdzH
+         Rx51X92UdmAfGXhNKg7UPenPPEE53MQQWZmoPoTt5SYt2UIiGyZTP8s8maon9kzAZYX0
+         6H3Q==
+X-Gm-Message-State: AOJu0YwzDu4HMmNgZ1124v8zEzrs1BzQciqKBDiwKXM7dvaiy+p193WC
+	V0K6wXepMMc00kADeZFdJ1UrzsmygBZ4GzOSWpjTGX/HGpmgGx73
+X-Google-Smtp-Source: AGHT+IFigjk8QEIScQfJdOPaOe1xp96gJJ5P2wdqcKKm0Eh6ljtVPlN/VbmQeEXIMjCF+bLmHxmHRA==
+X-Received: by 2002:adf:e5d2:0:b0:337:cc89:9e58 with SMTP id a18-20020adfe5d2000000b00337cc899e58mr1108905wrn.150.1705914026359;
+        Mon, 22 Jan 2024 01:00:26 -0800 (PST)
+Received: from [192.168.2.177] ([207.188.161.188])
+        by smtp.gmail.com with ESMTPSA id b5-20020a5d4d85000000b00337d5aa55cdsm10241908wru.53.2024.01.22.01.00.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 01:00:25 -0800 (PST)
+Message-ID: <85138fef-8b85-439c-aa74-d0e74bfe84e8@gmail.com>
+Date: Mon, 22 Jan 2024 10:00:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: tangnianyao@huawei.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, guoyang2@huawei.com, wangwudi@hisilicon.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 0/3] mt7988: initial DT changes
+Content-Language: en-US, ca-ES, es-ES
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Daniel Golle <daniel@makrotopia.org>, Hsin-Yi Wang <hsinyi@chromium.org>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ jason-ch chen <Jason-ch.Chen@mediatek.com>,
+ Macpaul Lin <macpaul.lin@mediatek.com>,
+ =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
+ Sean Wang <sean.wang@mediatek.com>,
+ Frank Wunderlich <frank-w@public-files.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+References: <20240108085228.4727-1-zajec5@gmail.com>
+From: Matthias Brugger <matthias.bgg@gmail.com>
+Autocrypt: addr=matthias.bgg@gmail.com; keydata=
+ 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
+In-Reply-To: <20240108085228.4727-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-[Fixing the LKML address, which has bits of Stephan's address embedded
-in it...]
 
-On Mon, 22 Jan 2024 16:06:07 +0000,
-Nianyao Tang <tangnianyao@huawei.com> wrote:
+
+On 08/01/2024 09:52, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> In allocate_vpe_l1_table, when we fail to inherit VPE table from other
-> redistributors or ITSs, and we allocate a new vpe table for current common 
-> affinity field without checking whether indirect table is supported.
-> Let's fix it.
-
-Is there an actual implementation that doesn't support the indirect
-property for the VPE table? I know this is allowed for consistency
-with the original revision of the architecture, but I never expected
-an actual GICv4.1 implementation to be *that* bad.
-
-If that's the case, I'm a bit puzzled/worried.
-
+> This work is based on linux-next content and was successfully verified
+> using "dtbs_check". It's initial code for MT7988A that will get extended
+> as we get more bindings available (pinctrl is big blocker right now).
 > 
-> Signed-off-by: Nianyao Tang <tangnianyao@huawei.com>
-> ---
->  drivers/irqchip/irq-gic-v3-its.c   | 28 ++++++++++++++++++++++------
->  include/linux/irqchip/arm-gic-v3.h |  1 +
->  2 files changed, 23 insertions(+), 6 deletions(-)
+> AngeloGioacchino, Matthias: is this something you could queue in
+> git://git.kernel.org/pub/scm/linux/kernel/git/mediatek/linux
+> for v6.9?
 > 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index d097001c1e3e..4146d1e285ec 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -2836,6 +2836,7 @@ static int allocate_vpe_l1_table(void)
->  	unsigned int psz = SZ_64K;
->  	unsigned int np, epp, esz;
->  	struct page *page;
-> +	bool indirect = false;
 
-Why the upfront initialisation?
+Series applied, thanks!
 
->  
->  	if (!gic_rdists->has_rvpeid)
->  		return 0;
-> @@ -2890,6 +2891,12 @@ static int allocate_vpe_l1_table(void)
->  		break;
->  	}
->  
-> +	/* probe the indirect */
-> +	val = GICR_VPROPBASER_4_1_INDIRECT;
-> +	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
-> +	val = gicr_read_vpropbaser(vlpi_base + GICR_VPROPBASER);
-> +	indirect = !!(val & GICR_VPROPBASER_4_1_INDIRECT);
-
-You can probe the indirect bit as part of the page-size probe, no need
-for an extra R/W sequence.
-
-> +
->  	/*
->  	 * Start populating the register from scratch, including RO fields
->  	 * (which we want to print in debug cases...)
-> @@ -2907,15 +2914,24 @@ static int allocate_vpe_l1_table(void)
->  	 * as indirect and compute the number of required L1 pages.
->  	 */
->  	if (epp < ITS_MAX_VPEID) {
-> -		int nl2;
-> +		if (indirect) {
-> +			int nl2;
->  
-> -		val |= GICR_VPROPBASER_4_1_INDIRECT;
-> +			val |= GICR_VPROPBASER_4_1_INDIRECT;
->  
-> -		/* Number of L2 pages required to cover the VPEID space */
-> -		nl2 = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
-> +			/* Number of L2 pages required to cover the VPEID space */
-> +			nl2 = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
->  
-> -		/* Number of L1 pages to point to the L2 pages */
-> -		npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
-> +			/* Number of L1 pages to point to the L2 pages */
-> +			npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
-> +		} else {
-> +			npg = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
-> +			if (npg > GICR_VPROPBASER_PAGES_MAX) {
-> +				pr_warn("GICR_VPROPBASER pages too large, reduce %llu->%u\n",
-> +					npg, GICR_VPROPBASER_PAGES_MAX);
-> +				npg = GICR_VPROPBASER_PAGES_MAX;
-> +			}
-> +		}
->  	} else {
->  		npg = 1;
-
-Why don't you treat the two indirect cases at the same point? It
-really should read:
-
-	if (epp < ITS_MAX_VPEID && indirect) {
-		[unchanged]
-	} else {
-		[compute the number of L1 pages in the !indirect case]
-	}
-
->  	}
-> diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
-> index 728691365464..ace37dfbff20 100644
-> --- a/include/linux/irqchip/arm-gic-v3.h
-> +++ b/include/linux/irqchip/arm-gic-v3.h
-> @@ -303,6 +303,7 @@
->  #define GICR_VPROPBASER_4_1_Z		(1ULL << 52)
->  #define GICR_VPROPBASER_4_1_ADDR	GENMASK_ULL(51, 12)
->  #define GICR_VPROPBASER_4_1_SIZE	GENMASK_ULL(6, 0)
-> +#define GICR_VPROPBASER_PAGES_MAX  128
-
-Don't hardcode numbers. Use the definition of the SIZE field
-instead. And if you must have a new #define, please use the 4_1
-indication so that it isn't confused with the v4.0 layout.
-
-I'd expect something like the following (untested) hack.
-
-	M.
-
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 9a7a74239eab..555b86f375e1 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -2836,6 +2836,7 @@ static int allocate_vpe_l1_table(void)
- 	unsigned int psz = SZ_64K;
- 	unsigned int np, epp, esz;
- 	struct page *page;
-+	bool indirect;
- 
- 	if (!gic_rdists->has_rvpeid)
- 		return 0;
-@@ -2870,10 +2871,12 @@ static int allocate_vpe_l1_table(void)
- 
- 	/* First probe the page size */
- 	val = FIELD_PREP(GICR_VPROPBASER_4_1_PAGE_SIZE, GIC_PAGE_SIZE_64K);
-+	val |= GICR_VPROPBASER_4_1_INDIRECT;
- 	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
- 	val = gicr_read_vpropbaser(vlpi_base + GICR_VPROPBASER);
- 	gpsz = FIELD_GET(GICR_VPROPBASER_4_1_PAGE_SIZE, val);
- 	esz = FIELD_GET(GICR_VPROPBASER_4_1_ENTRY_SIZE, val);
-+	indirect = !!(val & GICR_VPROPBASER_4_1_INDIRECT);
- 
- 	switch (gpsz) {
- 	default:
-@@ -2906,7 +2909,7 @@ static int allocate_vpe_l1_table(void)
- 	 * If we need more than just a single L1 page, flag the table
- 	 * as indirect and compute the number of required L1 pages.
- 	 */
--	if (epp < ITS_MAX_VPEID) {
-+	if (epp < ITS_MAX_VPEID && indirect) {
- 		int nl2;
- 
- 		val |= GICR_VPROPBASER_4_1_INDIRECT;
-@@ -2917,7 +2920,8 @@ static int allocate_vpe_l1_table(void)
- 		/* Number of L1 pages to point to the L2 pages */
- 		npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
- 	} else {
--		npg = 1;
-+		npg = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
-+		npg = clamp_val(npg, 1, (GICR_VPROPBASER_4_1_SIZE + 1));
- 	}
- 
- 	val |= FIELD_PREP(GICR_VPROPBASER_4_1_SIZE, npg - 1);
-
--- 
-Without deviation from the norm, progress is not possible.
+> Rafał Miłecki (3):
+>    dt-bindings: arm64: mediatek: Add MT7988A and BPI-R4
+>    arm64: dts: mediatek: Add initial MT7988A and BPI-R4
+>    arm64: dts: mediatek: mt7988: add clock controllers
+> 
+>   .../devicetree/bindings/arm/mediatek.yaml     |   4 +
+>   arch/arm64/boot/dts/mediatek/Makefile         |   1 +
+>   .../dts/mediatek/mt7988a-bananapi-bpi-r4.dts  |  11 ++
+>   arch/arm64/boot/dts/mediatek/mt7988a.dtsi     | 136 ++++++++++++++++++
+>   4 files changed, 152 insertions(+)
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4.dts
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt7988a.dtsi
+> 
 
