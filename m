@@ -1,152 +1,176 @@
-Return-Path: <linux-kernel+bounces-33007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B68D836334
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:28:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10731836323
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:24:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09090B28DDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:24:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42D341C22928
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F383CF72;
-	Mon, 22 Jan 2024 12:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 096D23BB37;
+	Mon, 22 Jan 2024 12:22:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="NB8KyfIb"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TRNzik+5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA203BB21
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C6743B290;
+	Mon, 22 Jan 2024 12:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705926100; cv=none; b=ms+gLFILakAjTdY4W7iMiyjpVi/3TeIeyaFYKIQKQxwFW6Qo07k3k+AlMKnBWNvGWLGnr+q8SVf7eUuBo4h2JEn5mSN66UPwLiF1kQDQyOpryOKcb3yenXbQG+sDKBl7uOgasAZx3NxcM/ySe8cI0WNnCWwAElVMVNTRNVQHzus=
+	t=1705926144; cv=none; b=siiqDzHTycOhBWxcxQqQbJb5LonlPZB5XdNBHfSS9NzTi2wWPnTUKGd0hyDUWCLRRA49pLmVKs4bcT+QhEsfdYl3I0++CjYKJ+RA6WPKNU4BfaQpAFkfadUyoM4WuQ4SIDjkFfJp/zlVpctZ2RcTsRVQM8QiUatnpM530VgXdHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705926100; c=relaxed/simple;
-	bh=vNrKTN+Psy0M2VFW5VqZf+0AB0x8oBNn3f2wlhE/7W8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a2tVl8jJwSjqTAQ3VqlTiPBFHfKwaVkMXLi6VnbeGviuZCOrQCRli4yvhCdxJwVk1ZiQBqf/+MmikqzF9oGsLIbVmpNvlKf2cny8IOr+mgpIwige2AwYHk0LO6q5DViQgSr8antUxAqD62vBDAvY8ZtOELI9FShXeWdnc2ib5pU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=NB8KyfIb; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-337cf4ac600so2897080f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 04:21:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1705926095; x=1706530895; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pNyn/qnqC01DO5aYO0gaP3LnuG+kGrelMJHPp637j+Q=;
-        b=NB8KyfIbFNBVYQ1ufr3ciONyyzqZnvIv3ZeQMM709cDbP6zdSH4PN4XqLfchyAGs8u
-         962FohRvql4G37TQ1wcv1IWqA1UPMsZOM53AM9XHPXhwxP0qsKIX0tF3JDpidGXe96to
-         SiJ+TxzV/JykIbZiNn2fJsJiOBqQwttiPU/1rCExbi1N4Ggh3wy12MjvWZH9Thg7qk7I
-         2NJdeNfxc+8O56Wf6sokLJmvXCm09OtQ6ThZuG1rV1BampBdDG5vcaMrgQ9IsKiMetRR
-         XWhrnPBPM5qX3wdmbQ/2/pdxDePIAA10H8XLv7q+bvtuA/I0foyQ3uEydrfr7NUZm2UW
-         pEMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705926095; x=1706530895;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pNyn/qnqC01DO5aYO0gaP3LnuG+kGrelMJHPp637j+Q=;
-        b=r8RCX9XBL04XMnfdyLCPBaVYTJjiphlErK98OVGU9zSjn8b0n+dpaQ+N664uw3+OOu
-         1mwn4vZNLoTNcy6R4jtqjvMtRVr2dzn0uOc+ony0TJmoQaeEIyGyONR6mLF4rJOB8XuE
-         aBn2QzLWDliLBCbfAeoaodYf2rNhKnjH/1XTk6075z4hNi/r/EeGR6TyFVMDeGqoHknY
-         0FNgYFZSlEGa/X1caOKNUV8Z4vv9yHt3AWGw3TeTxUnSoUPwvs5heNz4gL/OjZgnu+0U
-         8y8wUnh/Rl+vyIB75bKJfYu7OmF6QqO96lcoKcWFE8o3kV5YNWmd6qUsERmFU6xuNqDW
-         gA5Q==
-X-Gm-Message-State: AOJu0Yzxaa93XZRe0CKeN2HmtZ5YjSjS/iQNQv1nppUfqHrd6vXZLQUd
-	K3g6Nv8zlZ7Txcz8kLvvwBOQfU4VokGyrsI1T16ffdyNeSOw/w4GNQwJRbD4LZc=
-X-Google-Smtp-Source: AGHT+IGjstD5P6UroceP4UshiLynFM2AqV73RXt9NzLqzEsWwmxRvB3J0Fsa/nFM64CECZlIeo29pg==
-X-Received: by 2002:a5d:44ce:0:b0:337:c538:6db with SMTP id z14-20020a5d44ce000000b00337c53806dbmr1979837wrr.2.1705926095352;
-        Mon, 22 Jan 2024 04:21:35 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id bw12-20020a0560001f8c00b00337cef427f8sm11306084wrb.70.2024.01.22.04.21.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 04:21:34 -0800 (PST)
-Date: Mon, 22 Jan 2024 13:21:33 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Haibo Xu <haibo1.xu@intel.com>
-Cc: xiaobo55x@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>, 
-	Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
-	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>, 
-	Conor Dooley <conor.dooley@microchip.com>, Mayuresh Chitale <mchitale@ventanamicro.com>, 
-	wchen <waylingii@gmail.com>, Daniel Henrique Barboza <dbarboza@ventanamicro.com>, 
-	Samuel Holland <samuel@sholland.org>, Jisheng Zhang <jszhang@kernel.org>, 
-	Minda Chen <minda.chen@starfivetech.com>, Sean Christopherson <seanjc@google.com>, 
-	Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>, Vipin Sharma <vipinsh@google.com>, 
-	Aaron Lewis <aaronlewis@google.com>, Thomas Huth <thuth@redhat.com>, 
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v5 02/12] KVM: arm64: selftests: Data type cleanup for
- arch_timer test
-Message-ID: <20240122-0ddedacdeb64808477a7911d@orel>
-References: <cover.1705916069.git.haibo1.xu@intel.com>
- <173c9b64c4c43cd585f6b177a7d434dcedc905fa.1705916069.git.haibo1.xu@intel.com>
+	s=arc-20240116; t=1705926144; c=relaxed/simple;
+	bh=3FFt8SSpVUT/GHTKltUwl1wgL2n2OngX2hrrhAwjZps=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MMnNCf+8jqj63e+Z1FfTbJajfWe3/g5sCe5Yz5Uh7yUbSv717OVU7WFHkmP3+yH9sFD0jaIr8ceXOzXkqyBU28rT2r1fmtEWtg4iD2vwJsVUopZqe0AwRhquJJPbg2i+2Y1ylnWJuY60uaYMnuhtKNLQ2wfk48DG/ixB7OTVHpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TRNzik+5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C534CC43390;
+	Mon, 22 Jan 2024 12:22:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705926143;
+	bh=3FFt8SSpVUT/GHTKltUwl1wgL2n2OngX2hrrhAwjZps=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=TRNzik+5Fsp1kUhZwA4nbRBPfN00Jip/FSBBp4lQKE0ud0pSjazwIARwe19RTfMtk
+	 KuT3QGmeZGE6M5WmT6zmG9UJJz2c25BWULeXdLLXt7/WxRiZAiPDx6wtPv95I9+ZwR
+	 ctREPM14caIVHwDDD0YFy+ma83qVvlGpVHqCkwki48r099J05ngNauCh8ZiImnVxID
+	 qPhPAHWfjBh8vIHrYXn5RqunY0P+dXzQk8UC5IZPzRBzHuGjOVqM3xzZLh9w9jG/47
+	 XEpLYfyu+MWaOV9CZPgJADv4nXksOwP8QFYZq7RMTUA+91SdyidR1diDRfmiY6+cyG
+	 fEvtO3xu8lx4g==
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e0e99adb3bso701435a34.3;
+        Mon, 22 Jan 2024 04:22:23 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxr9stM1AVxgqFohSH+EWiNB5mRJnJguuf1lM4cLRe10nI+MYuJ
+	m1juGR99HX2cMLjCu+1+spf7ydzDHuqC/V87AlO3YiySv+UdhX3GQrF+rEGLqEFVIbyi1o0gYlC
+	f2Ioy/jR9uohLPu9759yq66Kjf9k=
+X-Google-Smtp-Source: AGHT+IFnNAe3IguRgQdsiUA9LkC30HR7r3lHg+/oSBbAnsi0vW7h+GN1Qy+y+Ku72f6/QvbQpW99t/9BtlrE06lkX44=
+X-Received: by 2002:a05:6870:96aa:b0:205:fd5a:9ca0 with SMTP id
+ o42-20020a05687096aa00b00205fd5a9ca0mr1957281oaq.73.1705926143200; Mon, 22
+ Jan 2024 04:22:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <173c9b64c4c43cd585f6b177a7d434dcedc905fa.1705916069.git.haibo1.xu@intel.com>
+References: <be1abcda-4cf0-4441-9a27-831eaef28f2e@linux.alibaba.com>
+In-Reply-To: <be1abcda-4cf0-4441-9a27-831eaef28f2e@linux.alibaba.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Mon, 22 Jan 2024 21:21:46 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQQLP2jmy=mwvi9euFM=YOtKBDOJWQcO4Pr_J=Gtu5MFA@mail.gmail.com>
+Message-ID: <CAK7LNAQQLP2jmy=mwvi9euFM=YOtKBDOJWQcO4Pr_J=Gtu5MFA@mail.gmail.com>
+Subject: Re: [MAYBE REGRESSION] kbuild time of kernel compiling
+To: Jingbo Xu <jefflexu@linux.alibaba.com>
+Cc: linux-kbuild@vger.kernel.org, nathan@kernel.org, ndesaulniers@google.com, 
+	nicolas@fjasle.eu, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 05:58:32PM +0800, Haibo Xu wrote:
-> Change signed type to unsigned in test_args struct which
-> only make sense for unsigned value.
-> 
-> Suggested-by: Andrew Jones <ajones@ventanamicro.com>
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> ---
->  tools/testing/selftests/kvm/aarch64/arch_timer.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> index 274b8465b42a..3260fefcc1b3 100644
-> --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> @@ -42,10 +42,10 @@
->  #define TIMER_TEST_MIGRATION_FREQ_MS	2
->  
->  struct test_args {
-> -	int nr_vcpus;
-> -	int nr_iter;
-> -	int timer_period_ms;
-> -	int migration_freq_ms;
-> +	uint32_t nr_vcpus;
-> +	uint32_t nr_iter;
-> +	uint32_t timer_period_ms;
-> +	uint32_t migration_freq_ms;
->  	struct kvm_arm_counter_offset offset;
->  };
->  
-> @@ -57,7 +57,7 @@ static struct test_args test_args = {
->  	.offset = { .reserved = 1 },
->  };
->  
-> -#define msecs_to_usecs(msec)		((msec) * 1000LL)
-> +#define msecs_to_usecs(msec)		((msec) * 1000ULL)
->  
->  #define GICD_BASE_GPA			0x8000000ULL
->  #define GICR_BASE_GPA			0x80A0000ULL
-> @@ -72,7 +72,7 @@ enum guest_stage {
->  
->  /* Shared variables between host and guest */
->  struct test_vcpu_shared_data {
-> -	int nr_iter;
-> +	uint32_t nr_iter;
->  	enum guest_stage guest_stage;
->  	uint64_t xcnt;
->  };
-> -- 
-> 2.34.1
+On Mon, Jan 22, 2024 at 5:32=E2=80=AFPM Jingbo Xu <jefflexu@linux.alibaba.c=
+om> wrote:
+>
+> Hi,
+>
+> I noticed a regression of kbuild time in v6.7, especially when running
+> `make` command when all images have already been compiled.  In v6.6 it
+> takes ~3s, while in v6.7 it takes ~18s.
+>
+> I'm not sure if it's a known issue, or an extra action configurable with
+> a "CONFIG_XX" option.
+>
+>
+> Following is the kbuild time in v6.6 versus v7.7, with
+> arch/x86/configs/x86_64_defconfig used here:
+>
+>
+> v6.6
+> ```
+> make clean
+> make olddefconfig
+>
+> # first full compiling
+> $time make bzImage -j128 -s
+>
+> real    1m9.896s
+> user    36m56.153s
+> sys     4m21.748s
+>
+> # second time with image already compiled
+> $time make bzImage -j128 -s
+>
+> real    0m2.776s
+> user    0m13.823s
+> sys     0m3.936s
+> ```
+>
+>
+> v6.7
+> ```
+> make clean
+> make olddefconfig
+>
+> # first full compiling
+> $time make bzImage -j128 -s
+>
+> real    1m22.865s
+> user    37m25.977s
+> sys     4m22.094s
+>
+> # second time with image already compiled
+> $time make bzImage -j128 -s
+>
+> real    0m18.209s
+> user    0m29.243s
+> sys     0m4.330s
+> ```
+>
+>
+> I tried to bisect, while commit d4e175f2c460 ("Merge tag 'vfs-6.7.super'
+> of gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs") is identified
+> as the first bad commit, which is obviously wrong.  As I'm not familiar
+> with the structure of the merge commit, the further investigation has
+> not been made yet.
+
+
+
+
+If you use olddefconfig, git-bisect will not produce the correct result.
+
+'make olddefconfig' updates the existing .config.
+The resulting .config depends on what you had
+before running 'make olddefconfig'.
+
+You need to use a deterministic target (e.g. defconfig)
+during the git-bisect.
+
+
+
+
+
+>
+>
+> Besides, it seems that it will take most of the time before "CALL
+> scripts/checksyscalls.sh" is printed (with "INSTALL libsubcmd_headers"
+> has already printed).
+>
+> $time make bzImage -j128
+>   DESCEND objtool
+>   INSTALL libsubcmd_headers
+>
+>   CALL    scripts/checksyscalls.sh
+>   BUILD   arch/x86/boot/bzImage
+> Kernel: arch/x86/boot/bzImage is ready  (#437)
+>
+> --
+> Thanks,
+> Jingbo
 >
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+
+--
+Best Regards
+Masahiro Yamada
 
