@@ -1,276 +1,199 @@
-Return-Path: <linux-kernel+bounces-32448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 825A0835BD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:42:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2AB8835BDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:43:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5FA91C2189A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:42:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 816411F2254E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E621643D;
-	Mon, 22 Jan 2024 07:42:36 +0000 (UTC)
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6011C18AF1;
+	Mon, 22 Jan 2024 07:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="RZDNb1BD"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDEF916410
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87CCF18053;
+	Mon, 22 Jan 2024 07:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705909356; cv=none; b=LPG6xAIphQWLw53m9tvQ0v11iYz2nt55qaP0LIbhGi5qf5jlGLwSz6bE97yACiRSSIkaTTquiZ4ePnLizayMwSHe2V+vtuYjYhbP58Rv8hTO0WKapQd75U+YWcvSC+KuVueh2hPDQyhMMHDS70BkKirWWub/lNf6dTbtutjw3wA=
+	t=1705909412; cv=none; b=i40sBpfs8X36hpnpSSf5iubDe87CeD32Foi2hPnhuVdS4mFAgGs5xjsE3bVn+U/drup3bTrI2CAKaRW2BEY2Z8QsHBfnl5Cik/mr7+v/WEL9lSBDLgHkBSNHrQWdo3FXrN1HFh0+uxp4EbJhkf2/HWdD8jiiyRfPYA0w5KDMA0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705909356; c=relaxed/simple;
-	bh=QQq6KTnP0WmvdI8XmZN4b2caZL5FR5s2VyyfXtsD6zQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p5MXEaruYXp9gY4lwlA06hiJzsSpLXV65DMoX6kqT45MC2ddNUD5tGtxLcUHfB1NwbkMp/edOC9nnW4clfwclBoDLeuXsPtDCCkq6AusWfFF4h94gPphEyMnblCjP+coZ1ADhdSzwJ5w++gpC/6DpjdDwXQ9BVwFrJnz8BKAIwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W.3muj._1705909349;
-Received: from 30.97.48.216(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W.3muj._1705909349)
-          by smtp.aliyun-inc.com;
-          Mon, 22 Jan 2024 15:42:30 +0800
-Message-ID: <d99929c8-9bf2-4a99-8507-617eb3419b98@linux.alibaba.com>
-Date: Mon, 22 Jan 2024 15:42:28 +0800
+	s=arc-20240116; t=1705909412; c=relaxed/simple;
+	bh=S066ACWnpDFLMSrXOafm8Oz7IICr0G50mN3vio3lPcA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sfp1II7px3CG0efaZ/cZcem720UKjLTO6/5oSJrioy3IlbccMZmsJy6vOkG3J1UkemGK0J1VZmbkbGDQAKR0f2KT8dO8/95KTNbNnHnLSRcm+mGiEobdGWBUIFVWT05Wi74i/qMyfko0XYK2Mpbd68LVkQ0xI8juG7dMn55xNzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=RZDNb1BD; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1705909410; x=1737445410;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=S066ACWnpDFLMSrXOafm8Oz7IICr0G50mN3vio3lPcA=;
+  b=RZDNb1BDFFOCDaT1zHk7jFg2vlyTZcGj1zEVITh6E9crOUgG/tzgQHSm
+   G7RQk8DQz91v+GVNQ+XJDhKJMJMF7loV4aH9ylgnGMV9SGsUE/HBr0j9x
+   K6esp+0k7+gTAZEikrusd1RkywtibjFw0nwk4axtYUenhli9NsQbtUGA4
+   Oyr+SAq5+Fz26mu73kIM2/KiCOz+wT8JXrNe6kM8awbEmH/JnoYRIKvUj
+   3c2AMo6sD6EIx/Hvi3R9fHi25kQMtswFed7Z1Gev65FBGLWfktWKGJLU+
+   ezd9AzQjp4Plu1CZodrt9FI5fL+QT75i2jyZeFTJj10P3jUiKTtzhpgV7
+   Q==;
+X-CSE-ConnectionGUID: ulOQJgl/RJCokYS78RbMAw==
+X-CSE-MsgGUID: 97GFvzoATnCDFpPTLTbNmw==
+X-IronPort-AV: E=Sophos;i="6.05,211,1701154800"; 
+   d="scan'208";a="182323138"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Jan 2024 00:43:27 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Jan 2024 00:42:59 -0700
+Received: from localhost (10.10.85.11) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Mon, 22 Jan 2024 00:42:59 -0700
+Date: Mon, 22 Jan 2024 08:42:58 +0100
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: Andre Werner <andre.werner@systec-electronic.com>
+CC: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<linux@armlinux.org.uk>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [RFC net-next v4 2/2] net: phy: adin1100: Add interrupt support
+ for link change
+Message-ID: <20240122074258.zmbzngrl7dzhkvwo@DEN-DL-M31836.microchip.com>
+References: <20240121201511.8997-1-andre.werner@systec-electronic.com>
+ <20240121201511.8997-3-andre.werner@systec-electronic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] erofs: make iov_iter describe target buffer when read
- from fscache
-To: Jingbo Xu <jefflexu@linux.alibaba.com>, xiang@kernel.org,
- chao@kernel.org, linux-erofs@lists.ozlabs.org
-Cc: huyue2@coolpad.com, linux-kernel@vger.kernel.org
-References: <20240122071253.119004-1-jefflexu@linux.alibaba.com>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20240122071253.119004-1-jefflexu@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20240121201511.8997-3-andre.werner@systec-electronic.com>
 
-Hi Jingbo,
+The 01/21/2024 20:54, Andre Werner wrote:
 
-On 2024/1/22 15:12, Jingbo Xu wrote:
-> So far the fscache mode supports uncompressed data only, and the data
-> read from fscache is put directly into the target page cache.  As the
-> support for compressed data in fscache mode is going to be introduced,
-> refactor the interface of reading fscache so that the following
-> compressed part could make the raw data read from fscache be directed to
-> the target buffer it wants, decompress the raw data, and finally fill
-> the page cache with the decompressed data.
+Hi Andre,
+
+ 
+> An interrupt handler was added to the driver as well as functions
+> to enable interrupts at the phy.
 > 
-> As the first step, a new structure, i.e. erofs_fscache_io (cio), is
-
-I'd suggest just using io instead of cio here.
-
-. i.e. erofs_fscache_io (io) ...
-
-> introduced to describe a generic read request from the fscache, while
-> the caller can specify the target buffer it wants in the iov_iter
-> structure (cio->iter).  Besides, the caller can also specify its
-
-. structure (io->iter) ...
-
-> completion callback and private data through cio, which will be called
-> to make further handling, e.g. unlocking the page cache for uncompressed
-> data or decompressing the read raw data, when the read request from the
-> fscache completes.  Now erofs_fscache_read_io_async() serves as a
-> generic interface for reading raw data from fscache for both compressed
-> and uncompressed data.
+> There are several interrupts maskable at the phy, but only link change
+> interrupts are handled by the driver yet.
 > 
-> The erofs_fscache_request structure is kept to describe a request to
-> fill the page cache in the specified range.
-> 
-> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+> Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
 > ---
->   fs/erofs/fscache.c | 219 ++++++++++++++++++++++++---------------------
->   1 file changed, 118 insertions(+), 101 deletions(-)
+> v4:
+> - Change read-modify-write behavior as suggested to phy_modify_mmd.
+
+Usually it is good to keep the change log also from the previous
+versions, so it is easier to see what has been changed.
+
+> ---
+>  drivers/net/phy/adin1100.c | 56 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
 > 
-> diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
-> index bc12030393b2..10709f20bef5 100644
-> --- a/fs/erofs/fscache.c
-> +++ b/fs/erofs/fscache.c
-> @@ -13,8 +13,6 @@ static LIST_HEAD(erofs_domain_cookies_list);
->   static struct vfsmount *erofs_pseudo_mnt;
->   
->   struct erofs_fscache_request {
-> -	struct erofs_fscache_request *primary;
-> -	struct netfs_cache_resources cache_resources;
->   	struct address_space	*mapping;	/* The mapping being accessed */
->   	loff_t			start;		/* Start position */
->   	size_t			len;		/* Length of the request */
-> @@ -23,42 +21,13 @@ struct erofs_fscache_request {
->   	refcount_t		ref;
->   };
->   
-> -static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
-> -					     loff_t start, size_t len)
-> -{
-> -	struct erofs_fscache_request *req;
-> -
-> -	req = kzalloc(sizeof(struct erofs_fscache_request), GFP_KERNEL);
-> -	if (!req)
-> -		return ERR_PTR(-ENOMEM);
-> -
-> -	req->mapping = mapping;
-> -	req->start   = start;
-> -	req->len     = len;
-> -	refcount_set(&req->ref, 1);
-> -
-> -	return req;
-> -}
-> -
-> -static struct erofs_fscache_request *erofs_fscache_req_chain(struct erofs_fscache_request *primary,
-> -					     size_t len)
-> -{
-> -	struct erofs_fscache_request *req;
-> -
-> -	/* use primary request for the first submission */
-> -	if (!primary->submitted) {
-> -		refcount_inc(&primary->ref);
-> -		return primary;
-> -	}
-> -
-> -	req = erofs_fscache_req_alloc(primary->mapping,
-> -			primary->start + primary->submitted, len);
-> -	if (!IS_ERR(req)) {
-> -		req->primary = primary;
-> -		refcount_inc(&primary->ref);
-> -	}
-> -	return req;
-> -}
-> +struct erofs_fscache_io {
-> +	struct netfs_cache_resources cache_resources;
-
-	struct netfs_cache_resources cres;
-
-> +	struct iov_iter		iter;
-> +	netfs_io_terminated_t	end_io;
-> +	void			*private;
-> +	refcount_t		ref;
-> +};
->   
->   static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
->   {
-> @@ -83,82 +52,116 @@ static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
->   static void erofs_fscache_req_put(struct erofs_fscache_request *req)
->   {
->   	if (refcount_dec_and_test(&req->ref)) {
-> -		if (req->cache_resources.ops)
-> -			req->cache_resources.ops->end_operation(&req->cache_resources);
-> -		if (!req->primary)
-> -			erofs_fscache_req_complete(req);
-> -		else
-> -			erofs_fscache_req_put(req->primary);
-> +		erofs_fscache_req_complete(req);
->   		kfree(req);
->   	}
->   }
->   
-> -static void erofs_fscache_subreq_complete(void *priv,
-> +static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
-> +						loff_t start, size_t len)
-> +{
-> +	struct erofs_fscache_request *req;
+> diff --git a/drivers/net/phy/adin1100.c b/drivers/net/phy/adin1100.c
+> index 7619d6185801..7c82384e5d30 100644
+> --- a/drivers/net/phy/adin1100.c
+> +++ b/drivers/net/phy/adin1100.c
+> @@ -18,6 +18,12 @@
+>  #define PHY_ID_ADIN1110                                0x0283bc91
+>  #define PHY_ID_ADIN2111                                0x0283bca1
+> 
+> +#define ADIN_PHY_SUBSYS_IRQ_MASK               0x0021
+> +#define   ADIN_LINK_STAT_CHNG_IRQ_EN           BIT(1)
 > +
-> +	req = kzalloc(sizeof(*req), GFP_KERNEL);
-> +	if (req) {
-> +		req->mapping = mapping;
-> +		req->start = start;
-> +		req->len = len;
-> +		refcount_set(&req->ref, 1);
-> +	}
-> +	return req;
-
-The following part may be better? to save an indentation:
-
-	req = kzalloc(sizeof(*req), GFP_KERNEL);
-	if (!req)
-		return NULL;
-	req->mapping = mapping;
-	req->start = start;
-	req->len = len;
-	refcount_set(&req->ref, 1);
-	return req;
-
+> +#define ADIN_PHY_SUBSYS_IRQ_STATUS             0x0011
+> +#define   ADIN_LINK_STAT_CHNG                  BIT(1)
+> +
+>  #define ADIN_FORCED_MODE                       0x8000
+>  #define   ADIN_FORCED_MODE_EN                  BIT(0)
+> 
+> @@ -136,6 +142,54 @@ static int adin_config_aneg(struct phy_device *phydev)
+>         return genphy_c45_config_aneg(phydev);
+>  }
+> 
+> +static int adin_phy_ack_intr(struct phy_device *phydev)
+> +{
+> +       /* Clear pending interrupts */
+> +       int rc = phy_read_mmd(phydev, MDIO_MMD_VEND2,
+> +                             ADIN_PHY_SUBSYS_IRQ_STATUS);
+> +
+> +       return rc < 0 ? rc : 0;
 > +}
 > +
-> +static bool erofs_fscache_io_put(struct erofs_fscache_io *cio)
+> +static int adin_config_intr(struct phy_device *phydev)
 > +{
-> +	if (refcount_dec_and_test(&cio->ref)) {
-> +		if (cio->cache_resources.ops)
-> +			cio->cache_resources.ops->end_operation(&cio->cache_resources);
-> +		kfree(cio);
-> +		return true;
-> +	}
-> +	return false;
+> +       int ret;
+> +       u16 irq_mask;
 
+Please use reverse x-mas notation here.
 
-	if (!refcount_dec_and_test(&io->ref))
-		return false;
-	if (io->cres.ops)
-		io->cres.ops->end_operation(&io->cres);
-	kfree(io);
-	return true;
+> +
+> +       ret = adin_phy_ack_intr(phydev);
+> +
 
+No new line here, between ret and if.
+
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
+> +               irq_mask = ADIN_LINK_STAT_CHNG_IRQ_EN;
+> +       else
+> +               irq_mask = 0;
+> +
+> +       return phy_modify_mmd(phydev, MDIO_MMD_VEND2,
+> +                             ADIN_PHY_SUBSYS_IRQ_MASK,
+> +                             ADIN_LINK_STAT_CHNG_IRQ_EN, irq_mask);
 > +}
 > +
-> +static void erofs_fscache_req_io_put(struct erofs_fscache_io *cio)
-
-cio -> io
-
+> +static irqreturn_t adin_phy_handle_interrupt(struct phy_device *phydev)
 > +{
-> +	struct erofs_fscache_request *req = cio->private;
+> +       int irq_status;
 > +
-> +	if (erofs_fscache_io_put(cio))
-> +		erofs_fscache_req_put(req);
+> +       irq_status = phy_read_mmd(phydev, MDIO_MMD_VEND2,
+> +                                 ADIN_PHY_SUBSYS_IRQ_STATUS);
+> +       if (irq_status < 0) {
+> +               phy_error(phydev);
+> +               return IRQ_NONE;
+> +       }
+> +
+> +       if (!(irq_status & ADIN_LINK_STAT_CHNG))
+> +               return IRQ_NONE;
+> +
+> +       phy_trigger_machine(phydev);
+> +
+> +       return IRQ_HANDLED;
 > +}
 > +
-> +static void erofs_fscache_req_end_io(void *priv,
->   		ssize_t transferred_or_error, bool was_async)
->   {
-> -	struct erofs_fscache_request *req = priv;
-> +	struct erofs_fscache_io *cio = priv;
-> +	struct erofs_fscache_request *req = cio->private;
-> +
-> +	if (IS_ERR(transferred_or_error))
-> +		req->error = transferred_or_error;
-> +	erofs_fscache_req_io_put(cio);
-> +}
-> +
-> +static struct erofs_fscache_io *erofs_fscache_req_io_alloc(struct erofs_fscache_request *req)
-> +{
-> +	struct erofs_fscache_io *cio;
->   
-> -	if (IS_ERR_VALUE(transferred_or_error)) {
-> -		if (req->primary)
-> -			req->primary->error = transferred_or_error;
-> -		else
-> -			req->error = transferred_or_error;
-> +	cio = kzalloc(sizeof(*cio), GFP_KERNEL);
-> +	if (cio) {
-> +		cio->end_io = erofs_fscache_req_end_io;
-> +		cio->private = req;
-> +		refcount_inc(&req->ref);
-> +		refcount_set(&cio->ref, 1);
->   	}
-> -	erofs_fscache_req_put(req);
-> +	return cio;
+>  static int adin_set_powerdown_mode(struct phy_device *phydev, bool en)
+>  {
+>         int ret;
+> @@ -275,6 +329,8 @@ static struct phy_driver adin_driver[] = {
+>                 .probe                  = adin_probe,
+>                 .config_aneg            = adin_config_aneg,
+>                 .read_status            = adin_read_status,
+> +               .config_intr            = adin_config_intr,
+> +               .handle_interrupt       = adin_phy_handle_interrupt,
+>                 .set_loopback           = adin_set_loopback,
+>                 .suspend                = adin_suspend,
+>                 .resume                 = adin_resume,
+> --
+> 2.43.0
+> 
+> 
 
-
-	io = kzalloc(sizeof(*io), GFP_KERNEL);
-	if (!io)
-		return NULL;
-	io->end_io = erofs_fscache_req_end_io;
-	io->private = req;
-	refcount_inc(&req->ref);
-	refcount_set(&io->ref, 1);
-	return io;
-
-Thanks,
-Gao Xiang
+-- 
+/Horatiu
 
