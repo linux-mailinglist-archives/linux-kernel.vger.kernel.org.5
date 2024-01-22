@@ -1,125 +1,104 @@
-Return-Path: <linux-kernel+bounces-34276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E0D837744
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:01:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFEC3837747
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAB001F259D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:01:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50949B22D13
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:01:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D612B4A9A2;
-	Mon, 22 Jan 2024 23:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A7811D683;
+	Mon, 22 Jan 2024 23:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gRB+oBBx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Rb+4YSUj"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E07136B0C;
-	Mon, 22 Jan 2024 23:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A66A29418
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:01:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705964429; cv=none; b=RRD5So1mhtsvSlJJVQx2zU4Km7gFy/k8jOWP+MiUHR/qDqDyDC+Lv63YihR1Me5MjyweE5html1lGmM6K46Szt0HTTIPjn70rhRWszk6yoSTQ/WzKqen8tM9zApym/HHfxp3ANZyN4lvdToSRGPQx+a+Rdi3lH9fueehVKUFgZo=
+	t=1705964495; cv=none; b=e3G/ce/DaSdWbZrmdbgLJfku1gCe3tDWvMIzXXBhqJF/wnrdx4hkhY+wPWgREyEY0rvppQcn5QcV4G4WDGJU+a46Hp9r0lE+2uLW77QSThgOtK41b1q+Ds2WwPPpASiE5Elj5Uv2VbltS6SJcgQzko+vOFNzbpmSYU41TUkSvxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705964429; c=relaxed/simple;
-	bh=zSGD4Ci6DJ0vZvzDYCjqP9tLlzmLMqoKbD5SnqjHrqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Z0DI7MHcdFw5gQbXbhUL9E5S/utvSDsMJ8Vt2HjZ7X7OppypKq40t+O4hXw/t1ZPc7msaTGDtQBFq3T99+jczIVTBfiV7Yt3UOSjAtKH4+S6n88oVPvOK+2wUxdbVDOLgSifMpVkNmR0Mio0cgQycqwopwB0kvxbyjvy2ChQia4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gRB+oBBx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57EF4C433B2;
-	Mon, 22 Jan 2024 23:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705964428;
-	bh=zSGD4Ci6DJ0vZvzDYCjqP9tLlzmLMqoKbD5SnqjHrqs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=gRB+oBBxCsHW4pSCQmACISlVPmO4dMDjO4Cn9S3dF5ck4Z+5JA2wTVILKH8FgrVcx
-	 l7/QUAceIbSWIy+0kT0yfljPPAPyc060ppSh7gWfgYXJkneSPdba+05IFNidF4N/Di
-	 QDmhO7bj3z2SGCHZArOWD7zJqdhnPK7LQmIPwAqSUVWx5O0JAPIItxym31M/Rroga8
-	 SVsRX3svYuUggxsRUjsoisORJ/9g3J1Vj59UplZr5C7cyDkI7/ArTW5cYv/ggu0pYS
-	 ZLuzY1TxFGRkmnibjxs9rDoo9P6+AkDkLkFrLf62HIv/jLWnBFDNk123yXf4SjTcBw
-	 RU5aYDugc+Bbw==
-Date: Mon, 22 Jan 2024 17:00:26 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Vidya Sagar <vidyas@nvidia.com>
-Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, treding@nvidia.com,
-	jonathanh@nvidia.com, kthota@nvidia.com, mmaddireddy@nvidia.com,
-	sagar.tv@gmail.com
-Subject: Re: [PATCH V2] PCI: Clear errors logged in Secondary Status Register
-Message-ID: <20240122230026.GA290856@bhelgaas>
+	s=arc-20240116; t=1705964495; c=relaxed/simple;
+	bh=8cQOxzwWYJnNCmVmBs4ce9ATA/N4mz/+qpEV4kUBcOQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aWxpjFSiUxqEfCL/ntxSl0OkFsdNqha5P+d5mMDGBDZNa9QhOBL6Mifxkaj5UXVuy0wRfWU2BkjiLejKHecNcabbfgOSqrMaaEuz87HHUQxHpRGfNdEm3/YIDf4mNXXcOEvzSJ+hMCnvzx99OppkhOWQy9b6PFVZHbbog1Qbap8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Rb+4YSUj; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a3a875f7fso4071046a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:01:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1705964492; x=1706569292; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TPlzJOHJ8wV3hedKz1a7v4FHImLT+aZ8tnfdq+8evgM=;
+        b=Rb+4YSUjWdveoStXtotD3xXwIpIqsuOXpPCqkNYAKiZmRlDv7fZBwMjoPRIBI/d1+N
+         Z41fnfedkU4+MU73dgdLoBiHs5+zIuLttQ3k29N1nU1k3jxvVt+1EMnaucXh2YP6Bsp8
+         6J6na2OxokLFQc42/wpcHYJ7q/yKSr+x6p2rw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705964492; x=1706569292;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TPlzJOHJ8wV3hedKz1a7v4FHImLT+aZ8tnfdq+8evgM=;
+        b=cobW2vaX681ixV8//5IJ17XLMpObMj6IGqjw4RpVy+TLr7TpMasflHT3LR8c0uZOax
+         CzumOCKC3yxQvKVzCGROfaSEDORNKRJTGXa3R6Mt7E1QT2RzlN4dV9gFxV5vEEnjWAj4
+         H8n//d0yPYogb5jWoSRDpiQ28ljaBRkE5Il/CNRtBQV8+kWJjT+cW5lSlNypnlpI9hYX
+         6PoFho4i48ZReSJxzJWEaty5wiGHy/pr7i5IYfXxTsq6kCN0hUaDqILwqg1loOIKPixz
+         yHuN2+hhVdMtU6IXsAJ5XuCGC3s9kO37CRNQF/M5ywI6lwZreH1ecAjjGcesAlEdgzeu
+         fhaA==
+X-Gm-Message-State: AOJu0Yz5WRPksIVy7ocWcdshxFCWo3j5sqs6PkP/8RmjAAmHQhjwui+H
+	r80/jwWyuspVXTn1E/TQlSI7q6shIV9QCA36NVqP2Zg89ZQibsVMODiLP4XKZ025c1QXgIyIPQB
+	PVsY+ZQ==
+X-Google-Smtp-Source: AGHT+IGHlCgAHP60yg7M8S1gt5Gd1QSsVwm4L5LjAFsO3JW55x45FWVBNtf+x/tGjKWXlUusCD2IHA==
+X-Received: by 2002:a17:906:9c44:b0:a2c:5ed5:7bfb with SMTP id fg4-20020a1709069c4400b00a2c5ed57bfbmr2306012ejc.91.1705964491815;
+        Mon, 22 Jan 2024 15:01:31 -0800 (PST)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id tk4-20020a170907c28400b00a2ce236ed71sm12381063ejc.43.2024.01.22.15.01.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 15:01:31 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso4165788a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:01:31 -0800 (PST)
+X-Received: by 2002:aa7:cfd2:0:b0:55a:9212:33d2 with SMTP id
+ r18-20020aa7cfd2000000b0055a921233d2mr364232edy.26.1705964490997; Mon, 22 Jan
+ 2024 15:01:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116143258.483235-1-vidyas@nvidia.com>
+References: <cover.1705946889.git.dsterba@suse.com> <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
+ <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
+In-Reply-To: <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 22 Jan 2024 15:01:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjTVe-ZY5jd4tX4=rYEuuUVPECPU3_LvX9qu4nM8pd6_w@mail.gmail.com>
+Message-ID: <CAHk-=wjTVe-ZY5jd4tX4=rYEuuUVPECPU3_LvX9qu4nM8pd6_w@mail.gmail.com>
+Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
+To: David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 16, 2024 at 08:02:58PM +0530, Vidya Sagar wrote:
-> The enumeration process leaves the 'Received Master Abort' bit set in
-> the Secondary Status Register of the downstream port in the following
-> scenarios.
-> 
-> (1) The device connected to the downstream port has ARI capability
->     and that makes the kernel set the 'ARI Forwarding Enable' bit in
->     the Device Control 2 Register of the downstream port. This
->     effectively makes the downstream port forward the configuration
->     requests targeting the devices downstream of it, even though they
->     don't exist in reality. It causes the downstream devices return
->     completions with UR set in the status in turn causing 'Received
->     Master Abort' bit set.
-> 
->     In contrast, if the downstream device doesn't have ARI capability,
->     the 'ARI Forwarding Enable' bit in the downstream port is not set
->     and any configuration requests targeting the downstream devices
->     that don't exist are terminated (section 6.13 of PCI Express Base
->     6.0 spec) in the downstream port itself resulting in no change of
->     the 'Received Master Abort' bit.
-> 
-> (2) A PCIe switch is connected to the downstream port and when the
->     enumeration flow tries to explore the presence of devices that
->     don't really exist downstream of the switch, the downstream
->     port receives the completions with UR set causing the 'Received
->     Master Abort' bit set.
+On Mon, 22 Jan 2024 at 14:54, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Let me reboot to verify that at least my machine boots.
 
-Are these the only possible ways this error is logged?  I expected
-them to be logged when we enumerate below a Root Port that has nothing
-attached, for example.
+My tree with that commit reverted does indeed boot:
 
-Does clearing them in pci_scan_bridge_extend() cover all ways this
-error might be logged during enumeration?  I can't remember whether
-all enumeration goes through this path.
+  Revert "btrfs: zstd: fix and simplify the inline extent decompression"
 
-> Clear 'Received Master Abort' bit to keep the bridge device in a clean
-> state post enumeration.
-> 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> ---
-> V2:
-> * Changed commit message based on Bjorn's feedback
-> 
->  drivers/pci/probe.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 795534589b98..640d2871b061 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -1470,6 +1470,9 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
->  	}
->  
->  out:
-> +	/* Clear errors in the Secondary Status Register */
-> +	pci_write_config_word(dev, PCI_SEC_STATUS, 0xffff);
-> +
->  	pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bctl);
->  
->  	pm_runtime_put(&dev->dev);
-> -- 
-> 2.25.1
-> 
+is working ok for me.
+
+I do not think I have anything odd in my Kconfig, and I didn't see any
+messages, and there is nothing logged either - just a hang at boot.
+
+                Linus
 
