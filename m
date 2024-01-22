@@ -1,179 +1,109 @@
-Return-Path: <linux-kernel+bounces-33605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9711836C2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:58:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51972836C23
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:58:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F0B81F25069
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:58:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BA52287E2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3405FB97;
-	Mon, 22 Jan 2024 15:32:05 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643185F56E;
+	Mon, 22 Jan 2024 15:31:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VkWjM9Lx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC865FB90
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1324654B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705937525; cv=none; b=SaBOugVf4WIhBTLCFqcw0FbV3y9wm953/qBWQdsU6ppJsW6mPPk/Jrw+y2f2daGrB9rpw989bUQu/w8iJh0LyGUuCxyOIihLd3T9VLC5UlM/B4OPyKRKcvpfjYd3gSlHng5OsbN37PzYKxDo18smqLRLzSBFxh887rD4qAAa3pE=
+	t=1705937518; cv=none; b=ToZjZ7XhDTDR154MlZ+dPhr67UOdP0j0x19SJxF8jHIYfdNp720N6May/vebUaGH+uO1eJHSJr7gD7uBV15OCyp7niIFZw7RPlTsMpgxbJOk1sh4tN0tY5tNBU6KKpAp7Q9PDwSXwhmtvmmkPrlllap2iqEGZKdyP9S1czwHx8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705937525; c=relaxed/simple;
-	bh=xsriZU0yMbSL2wG0OpL2voDoCjBcXV3m+2jsk8TrIEA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bWnT6SyyeV2EQTAcCrwgp/5X7K7IIgdp9s/kQ+ktkw7VQW+fWqdm3EfVpIccl0SFAWAXVb2w2A/OL7lPVKphffs4MPBpIvPpodu/xmz/ymskrrezqKQHfxZ3OffH/2KNXTRG74INfVEtlBEcBJ2XC8wb9Wo4FjTNEu38z6H8qIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rRwGs-0001yO-Ae; Mon, 22 Jan 2024 16:31:34 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rRwGr-001d3P-D0; Mon, 22 Jan 2024 16:31:33 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id E63BB27B74D;
-	Mon, 22 Jan 2024 15:31:32 +0000 (UTC)
-Date: Mon, 22 Jan 2024 16:31:32 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, 
-	Conor Dooley <conor.dooley@microchip.com>, Daire McNamara <daire.mcnamara@microchip.com>, 
-	Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] dt-bindings: can: mpfs: add missing required clock
-Message-ID: <20240122-pogo-reputable-b1d06ae1f1f1-mkl@pengutronix.de>
-References: <20240122-catty-roast-d3625dbb02fe@spud>
- <20240122-breeder-lying-0d3668d98886@spud>
- <20240122-surely-crimp-ba4a8c55106d-mkl@pengutronix.de>
- <20240122-cruelly-dainty-002081f0beb2@spud>
- <20240122-smokeless-ion-63e4148c22e5-mkl@pengutronix.de>
- <20240122-uncoated-cherub-a29cba1c0035@spud>
+	s=arc-20240116; t=1705937518; c=relaxed/simple;
+	bh=D8noVwkJbNFmPqK4QAu8yfNP4zdZTow0yqFrOd9rct8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tAzJ0Rn4GArRsGL8LC49/uVVFuli3D5+ZwMwfr35hEv3yeoUEMJW10dnKqUOAnuuXssS5+qIygeXkngBY3l1z6ZrmFsHD+IFbro4kcX0TlykZ61eRtaYArB0B6hMKSb6ZkM8LY8+pNBBeq4SMpEY0Lsxj4TBqZcfF/vszyPD4Ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VkWjM9Lx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44CF6C433B2
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:31:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705937518;
+	bh=D8noVwkJbNFmPqK4QAu8yfNP4zdZTow0yqFrOd9rct8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VkWjM9LxRHTMDjO5n7LOZXU20gi+Rhaa+1IZe42qX0FSxU4DQswh6rjsXGtyB0ii/
+	 h1kTMa0jspsYdsmmCAE7ROk9sU9l72iVXmrWHDOOV34c14+UMoxWRFxfQR2dka4C4m
+	 e4xqZq7O4eT4rHVyi+jbLOcHY8bjKyK0xAbJ4JU09RHHhNMUUQZWRyapzfOYALhnK7
+	 pTZcbpRlrqNN0SLIFgCcRZ98Ddvo+RTlVFWkSed6QM6Iw3Jha3pCyhtUG+oZmqD7EO
+	 ulC8G4KpqxxQtdtwnXOuhBJzRAVSEnsjj4+dAvGvqtacDsNYxJCxMXI1JzVzUylcjZ
+	 DZQaU3RRTVDpw==
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc22597dbfeso3556397276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:31:58 -0800 (PST)
+X-Gm-Message-State: AOJu0YzgHa1mlnfXOqJANXuqseJcmiXWQg1Cf4TPI+9bl/osdMxcZgZI
+	dJNPMXG+T7OuPBM+VCUXvbUA4MPS7RGz+tfZd8qLyfOSNT1VLKZrmkfhZ2RnRCt+rKFJLbPk0JR
+	tI34qf7NXwm9XHv8y2tZHSewGuJ4QIGkUqKtYsw==
+X-Google-Smtp-Source: AGHT+IGacHQ2jjBe3z+ou1J6C3EfhjG0Tf1WNr+KFO3I8aWqbXNgOFC5++PenZAwL8K7yrYNRAbtGSMgwN7ecVW7x+0=
+X-Received: by 2002:a25:8885:0:b0:dbd:ac60:bcd4 with SMTP id
+ d5-20020a258885000000b00dbdac60bcd4mr2355277ybl.75.1705937517525; Mon, 22 Jan
+ 2024 07:31:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fzilfxiuysgrcoiy"
-Content-Disposition: inline
-In-Reply-To: <20240122-uncoated-cherub-a29cba1c0035@spud>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---fzilfxiuysgrcoiy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20231119101445.4737-1-hkallweit1@gmail.com> <20231119101445.4737-12-hkallweit1@gmail.com>
+In-Reply-To: <20231119101445.4737-12-hkallweit1@gmail.com>
+From: Robert Foss <rfoss@kernel.org>
+Date: Mon, 22 Jan 2024 16:31:46 +0100
+X-Gmail-Original-Message-ID: <CAN6tsi4HmKF6tnnjD6qsi=+nj_1wWhGio+WYzUs972wMCWbSNQ@mail.gmail.com>
+Message-ID: <CAN6tsi4HmKF6tnnjD6qsi=+nj_1wWhGio+WYzUs972wMCWbSNQ@mail.gmail.com>
+Subject: Re: [PATCH v3 11/20] drivers/gpu/drm/bridge/synopsys/dw-hdmi.c:
+ remove I2C_CLASS_DDC support
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Wolfram Sang <wsa@kernel.org>, Andrzej Hajda <andrzej.hajda@intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jonas Karlman <jonas@kwiboo.se>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	linux-i2c@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 22.01.2024 14:56:09, Conor Dooley wrote:
-> On Mon, Jan 22, 2024 at 03:46:04PM +0100, Marc Kleine-Budde wrote:
-> > On 22.01.2024 14:21:04, Conor Dooley wrote:
-> > > On Mon, Jan 22, 2024 at 02:13:16PM +0100, Marc Kleine-Budde wrote:
-> > > > On 22.01.2024 12:19:50, Conor Dooley wrote:
-> > > > > From: Conor Dooley <conor.dooley@microchip.com>
-> > > > >=20
-> > > > > The CAN controller on PolarFire SoC has an AHB peripheral clock _=
-and_ a
-> > > > > CAN bus clock. The bus clock was omitted when the binding was wri=
-tten,
-> > > > > but is required for operation. Make up for lost time and add it.
-> > > > >=20
-> > > > > Cautionary tale in adding bindings without having implemented a r=
-eal
-> > > > > user for them perhaps.
-> > > > >=20
-> > > > > Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs C=
-AN controller")
-> > > > > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> > > > > ---
-> > > > >  .../devicetree/bindings/net/can/microchip,mpfs-can.yaml     | 6 =
-++++--
-> > > > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > > > >=20
-> > > > > diff --git a/Documentation/devicetree/bindings/net/can/microchip,=
-mpfs-can.yaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-ca=
-n.yaml
-> > > > > index 45aa3de7cf01..01e4d4a54df6 100644
-> > > > > --- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-ca=
-n.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-ca=
-n.yaml
-> > > > > @@ -24,7 +24,9 @@ properties:
-> > > > >      maxItems: 1
-> > > > > =20
-> > > > >    clocks:
-> > > > > -    maxItems: 1
-> > > > > +    items:
-> > > > > +      - description: AHB peripheral clock
-> > > > > +      - description: CAN bus clock
-> > > >=20
-> > > > What about adding clock-names, so that the order can be checked
-> > > > automatically?
-> > >=20
-> > > I don't personally care for doing so, but if your heart is set on hav=
-ing
-> > > them, then sure.
-> >=20
-> > Usually the CAN driver needs to have the clock rate of the clocks that
-> > the basis for the CAN bus clock. Looking at the clocks description it's
-> > probably the 2nd one.
-> >=20
-> > With clock-names we can automatically check that the 2nd clock is always
-> > the CAN clock.
->=20
-> I think we already had this discussion on v1, where I said that the
-> binding requires the clocks to be in that order, regardless of whether
-> or not clock-names is provided. You feel more strongly about it than I
-> do, so I will add them when I get around to sending a v3.
+On Sun, Nov 19, 2023 at 11:15=E2=80=AFAM Heiner Kallweit <hkallweit1@gmail.=
+com> wrote:
+>
+> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+> Class-based device auto-detection is a legacy mechanism and shouldn't
+> be used in new code. So we can remove this class completely now.
+>
+> Preferably this series should be applied via the i2c tree.
+>
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+>
+> ---
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c |    1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/=
+bridge/synopsys/dw-hdmi.c
+> index 52d91a0df..aca5bb086 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> @@ -515,7 +515,6 @@ static struct i2c_adapter *dw_hdmi_i2c_adapter(struct=
+ dw_hdmi *hdmi)
+>         init_completion(&i2c->cmp);
+>
+>         adap =3D &i2c->adap;
+> -       adap->class =3D I2C_CLASS_DDC;
+>         adap->owner =3D THIS_MODULE;
+>         adap->dev.parent =3D hdmi->dev;
+>         adap->algo =3D &dw_hdmi_algorithm;
+>
 
-Yes, this discussion sounded very familiar to me, never mind. Keep it as
-is, and let's get this binding and the CAN driver upstream!
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---fzilfxiuysgrcoiy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmWuilEACgkQvlAcSiqK
-BOhCkggAgyHW5AL32kouESoPfzIRkhef/gYpfWj8j5zEKyJ0Honmyt+im5UgOIjS
-etZAqb+sORwDFrLXzPb+BIS4GXyCldkukOcvfgFxvfGAkaxf6ci+keV4UgyMpsgG
-3/yXN/x2it5yA1idu/i8QdLjElTeq7Yoj18nfGbbSE7VzNK3Vh9PD/fR+Eq07wNE
-x3bFsh1YaBU2PeiGYYK08pR6PkPcmQHYRQFOhMxgpWJ72NnPinG8MuQuNtHwlcLh
-YnhmjeBgjEOUF35I+WSZ0056QeeAF7vbmrdAtWIUN2yygsVTbrvDGnZL45ynfFUC
-Xlu+5O2ZopqsqunltpKOZTLJ6Prdbw==
-=vqnx
------END PGP SIGNATURE-----
-
---fzilfxiuysgrcoiy--
+Acked-by: Robert Foss <rfoss@kernel.org>
 
