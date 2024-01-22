@@ -1,163 +1,164 @@
-Return-Path: <linux-kernel+bounces-32553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 640E5835D09
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:49:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AFD1835D1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9635B1C22607
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:49:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AE83B25623
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D8939859;
-	Mon, 22 Jan 2024 08:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7436539AF9;
+	Mon, 22 Jan 2024 08:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="HeHbWEzb"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="H2JTazOf"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602FD37143;
-	Mon, 22 Jan 2024 08:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8BF39AE7
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:47:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705913207; cv=none; b=EylsWLHr5rimf/2xvbPdl0/4NG/2my0W/dLnXQsGU2mlDCvfwhCZFwhu1KbrlpL+GoEQYAInQuBWSjsmyHpqzTR25Dujx7b0d0QO9REi34IRzEe31T+zoXZftj0iATydQ5pfnQL6gFafdEznDFQ9X92DDuQ3wVictR1s1ZbrXig=
+	t=1705913243; cv=none; b=kYgw2Ys3o66JPn99SlUCQAPonFB05TJhJjHHFFHJkoDayDWKLKfyvyCgvhvQupX5eHQvcWYcDXh2bxlaOMg58gc4191RZB5Nz2lLbfn9sKDm//A7HKMvlr0ohqHKKXXhiaa+BrarnrvdsehEt5cpbZjqDD160Tj4oYduwOnSQow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705913207; c=relaxed/simple;
-	bh=BfEXGsOXX4GChLHbaYjozjYrk5u5mZPB4gS0W8ChVUU=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=CnLtE1pFxzqc6CCzEU4lqsStsJgYmVdMkFZmz/t+fvb4Xf9+1yQr1v2lZP4YGan0S3hp2lKh+I/Zx6i+9CsPf5vce/nmYt4brGVRrx4vZsZyiKAj7QFz7oCgUz4EHI9sE8jTU9PLG0hwGnIqpHZOWvMdeN/FRuOi8jwZhTNyLds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=HeHbWEzb; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705913198;
-	bh=BfEXGsOXX4GChLHbaYjozjYrk5u5mZPB4gS0W8ChVUU=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=HeHbWEzbiuiEtykd/PFD1bdJGpruJxNO64WFI1aVW/Iqnc6KVSLD35/NcZASVjsD1
-	 7W+QNpvNAAIi9X7oc2P3LKFtoTNBgDU7T13iwYlFbvOhtBbrQWffUobk4X+LSewzpT
-	 MuIKSAvwSz6bDWtXmriUkr0mI5jzAxbDjAxCTVJp59AVCBWO6eBlC3RKSqwwLAX5zJ
-	 drp3cLtNBDsGS1Dg0qHVERohB7tzjobkIIpZJcWCOGHL5JRAJoD8kSo8MEYHuj6Mxu
-	 QwZFA9ADDgJ7zZ68yV9OA9bpXfJD6/vtFdkxK7pO0nSDqCivDlhgY6feC/ucJ3Qqee
-	 dq0balxQAtmag==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7F5883781FD3;
-	Mon, 22 Jan 2024 08:46:36 +0000 (UTC)
-Message-ID: <e3b2c142-aaae-481d-8206-5e8f374fd37e@collabora.com>
-Date: Mon, 22 Jan 2024 13:46:49 +0500
+	s=arc-20240116; t=1705913243; c=relaxed/simple;
+	bh=PuHh3PbCyA0LlLQilbmkPYe3nWD0aK16atA4Eh810a8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=GEYPigQoe4CZHraHB4H5PHnSrUDprmY8uGQMqu6TxnwiLj9dDvhIGq2su8FWn03Bn84G34I6EBTattBd3MNI/E/KwcgMrobAv2AIhdNesRbOrSCr2ApFkh0pjdMZKN6OWE3X2HRFbdYIsvbiNZKKKL+84CzEkemYFxQngCEuYBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=H2JTazOf; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so2398688a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:47:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705913240; x=1706518040; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x39o7uppt38NkcUrSwijK0oeJl+InnHX1d+Fyj766CM=;
+        b=H2JTazOf0BTot0LPtoHhf+jWd2VKTt6/xgg33AVFsIgNVvpZbZDQ7deLumq7lPIr4E
+         bh/UX+GHtgez9grFuPVS2dvzZyz5/7dZw+JWznltOjlDp0a0E+PNN8iLA1cJXULt1t5K
+         ZRZWkQodXE/dnEI9iJFHveSycizdqwSihMsrriB2Rc5zVmnbTbAcVaVY1SNn3LleoZiY
+         hVnNwf2ZJAywWmpjRaA8tXuEtY4ezfLABEhZzVVMh+qIw8cHMIY/0PUWSiJVVroz0dl/
+         Zoqcll4ZPEX+0G1PfugHqFIUBsNW2XAWFbAg9V8rD4iGBrJhR512Q3wXqPROV27WKCIQ
+         U24Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705913240; x=1706518040;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x39o7uppt38NkcUrSwijK0oeJl+InnHX1d+Fyj766CM=;
+        b=X1Yf3mx6PbcjuSXlF2iPy5WU4PLSN7q8b7qNlseNGVsJitjUiFubxb79XBUxH0Jokd
+         dad9gqeroObbbYkzf+YP1D8MxfYl6rfQOaMGYN3AjUAqxBI72HOb7Mob0obD5ZU62fGk
+         ONVT+4vl6CygiByoJ02uUwrIek+WQ2wEyuNJr7uPvy937kjBKFn45pxzU+WT8suu+/xy
+         5nwP7EldhId4A7Ud7pGT/5b2Vwga/Ye0tid/6eeDYQNdiUDOXPwgiTpBhb12iH3qNEoV
+         hIodkxAfDbvY6kLF5X6fZRz6MJJJGwMLdjY1W/k6Zbnakhgzqqj4UAjLH9rIfXLkFA9r
+         vDPg==
+X-Gm-Message-State: AOJu0Yzi5VnVsOUuD6xC7JSn5ktlQ6Bbs+BnqogEEcH0AWyOj0v4eyio
+	xsF2wdwf4ZVyyXq4MuU8h+Xs9DirLGM1XpvMMQEQ/60t2y/xPeB6YZCNEkAHO90=
+X-Google-Smtp-Source: AGHT+IE6awfpcmrylrKwFE9aaBFI7uxMe9cZn7J8roUwX5TaaK9T99ZQlI7zvDPHuwy/K7NAkbCIQA==
+X-Received: by 2002:a17:907:a08b:b0:a27:d14b:215 with SMTP id hu11-20020a170907a08b00b00a27d14b0215mr2448384ejc.98.1705913240309;
+        Mon, 22 Jan 2024 00:47:20 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id b21-20020a17090630d500b00a2c4c23cd12sm13075462ejb.217.2024.01.22.00.47.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 00:47:19 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v4 0/5] PM: domains: Add control for switching back and
+ forth to HW control
+Date: Mon, 22 Jan 2024 10:47:00 +0200
+Message-Id: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/mm: run_vmtests.sh: add missing tests
-To: Ryan Roberts <ryan.roberts@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-References: <20240116090641.3411660-1-usama.anjum@collabora.com>
- <ffdba8c4-f1a2-4141-a3d4-0c85dfea6fef@arm.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <ffdba8c4-f1a2-4141-a3d4-0c85dfea6fef@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIQrrmUC/x2NQQrCMBAAv1L27NKkFQ9+RTwkm22zoKnuFiuU/
+ t3E48AMs4OxChtcux2UP2KylArnUweUQ5kZJVWGwQ2j987jnIwwb7TqA/04Oc/h4igmqEUMxhg
+ 1FMqtedPy7Jvf5w1b0JyX8iTf//F2P44f/H1R7IEAAAA=
+To: "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Kevin Hilman <khilman@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
+ Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, 
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
+ Vikash Garodia <quic_vgarodia@quicinc.com>, 
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Taniya Das <quic_tdas@quicinc.com>, Jagadeesh Kona <quic_jkona@quicinc.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-media@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2048; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=PuHh3PbCyA0LlLQilbmkPYe3nWD0aK16atA4Eh810a8=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlriuJ0l53IZcMLPr1+7bSqoYv5mqCND8EPAhwY
+ CkOnHbuRAmJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZa4riQAKCRAbX0TJAJUV
+ VtiwEADGnPGPijJh6gpXLFpi8areOxQMLPDJOWpQGrgGInW5uSgmLfVzb9+3QtPPgncP85KXC/b
+ bFcWjMZpvHnTnjmYebbkRqj5dtwPEGwzCf3aVWC2HmpVa6p+YVsgY8z53nWTCq5sGjEUi3fP5oC
+ TKFtdiwM+23W+1q9NSBv3RQaxSoWamtMaXlhZRXvXIeWdVUuaOH8RFElM+706jwNeWWcSz0KDdB
+ 5gtxKGFv+32Ai0obNJaZ9RsvsabRwWMCM+8eYf1sapex2XLELEvd2vUe7nyWgvVDnjhj6Y9EthE
+ 9aenwCqeLntDMo/kkLEc1lPE99h1tkyKomiRY9DRLMHcCvRbBKl0+QjVx6W+MZMxbUmpDLbL4NY
+ CjlajTKHv3KLdwGbRJ3LwXZQSmUQIk+3WmT7+MWA0M6PRZNN4aDtrC2rEZl1+JsFn2HBVO9SJY2
+ Ln/HPhDvWtKUXkQ9sLnu/mm/uLEh4irA3JAz5xqGRoHXvGfhAkZ5UnXa67Qmt0kTLk2dnaC5aQ0
+ WiXw4ScoBhd7XWMCfG+NF/4DgfGBKUMtXamJXwI6HJAFleLC80h1Hnqbr9ofAA4J8ys8syPZXY8
+ 4N8XQDCYANBNV8GIu/kLrGGY7uBUCshnNHsgeLhYOrwAhLbAw2Ij2hYIrPOYKm2QNSVo+CgIpVg
+ ISsS3AmftmxuhmA==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-On 1/19/24 9:09 PM, Ryan Roberts wrote:
-> Hi Muhammad,
-> 
-> Afraid this patch is causing a regression on our CI system when it turned up in
-> linux-next today. Additionally, 2 of thetests you have added are failing because
-> the scripts are not exported correctly...
-Andrew has dropped this patch for now.
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v4:
+- Re-worded 1st patch commit message, as per Bjorn's suggestion, and added
+  Dmitry's R-b tag
+- Added Bjorn's and Dmitry's R-b tags to the 2nd patch
+- Re-worded 3rd patch commit message, to better explain the HW_CTRL_TRIGGER flag.
+- Added mode transition delay when setting mode for GDSC
+- Added status polling if GDSSC is enabled when transitioning from HW to SW
+- Re-worded 4th patch commit message to better explain why the
+  HW_CTRL_TRIGGER needs to be used instead
+- Drop changes to SC7180, SDM845 and SM8550 video CC drivers, as only
+  SC7280 and SM8250 have been tested so far. More platforms (with v6 venus)
+  will be added eventually.
+- Call genpd set_hwmode API only for v6 and dropped the vcodec_pmdomains_hwctrl.
+- Re-worded 5th patch commit message accordingly. 
+- Link to v3:
+  https://lore.kernel.org/r/20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org/
 
-> 
-> On 16/01/2024 09:06, Muhammad Usama Anjum wrote:
->> Add missing tests to run_vmtests.sh. The mm kselftests are run through
->> run_vmtests.sh. If a test isn't present in this script, it'll not run
->> with run_tests or `make -C tools/testing/selftests/mm run_tests`.
->>
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->>  tools/testing/selftests/mm/run_vmtests.sh | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
->> index 246d53a5d7f2..a5e6ba8d3579 100755
->> --- a/tools/testing/selftests/mm/run_vmtests.sh
->> +++ b/tools/testing/selftests/mm/run_vmtests.sh
->> @@ -248,6 +248,9 @@ CATEGORY="hugetlb" run_test ./map_hugetlb
->>  CATEGORY="hugetlb" run_test ./hugepage-mremap
->>  CATEGORY="hugetlb" run_test ./hugepage-vmemmap
->>  CATEGORY="hugetlb" run_test ./hugetlb-madvise
->> +CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh
->> +CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh
-> 
-> These 2 tests are failing because the test scripts are not exported. You will
-> need to add them to the TEST_FILES variable in the Makefile.
-This must be done. I'll investigate even after adding them if these scripts
-are robust enough to pass.
+---
+Abel Vesa (1):
+      PM: domains: Add the domain HW-managed mode to the summary
 
-> 
->> +CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
-> 
-> The addition of this test causes 2 later tests to fail with ENOMEM. I suspect
-> its a side-effect of marking the hugetlbs as hwpoisoned? (just a guess based on
-> the test name!). Once a page is marked poisoned, is there a way to un-poison it?
-> If not, I suspect that's why it wasn't part of the standard test script in the
-> first place.
-hugetlb-read-hwpoison failed as probably the fix in the kernel for the test
-hasn't been merged in the kernel. The other tests (uffd-stress) aren't
-failing on my end and on CI [1][2]
+Jagadeesh Kona (3):
+      clk: qcom: gdsc: Add set and get hwmode callbacks to switch GDSC mode
+      clk: qcom: Use HW_CTRL_TRIGGER flag to switch video GDSC to HW mode
+      venus: pm_helpers: Use dev_pm_genpd_set_hwmode to switch GDSC mode
 
-[1] https://lava.collabora.dev/scheduler/job/12577207#L3677
-[2] https://lava.collabora.dev/scheduler/job/12577229#L4027
+Ulf Hansson (1):
+      PM: domains: Allow devices attached to genpd to be managed by HW
 
-Maybe its configurations issue which is exposed now. Not sure. Maybe
-hugetlb-read-hwpoison is changing some configuration and not restoring it.
-Maybe your system has less number of hugetlb pages.
+ drivers/clk/qcom/gdsc.c                        | 54 +++++++++++++++++
+ drivers/clk/qcom/gdsc.h                        |  1 +
+ drivers/clk/qcom/videocc-sc7280.c              |  2 +-
+ drivers/clk/qcom/videocc-sm8250.c              |  4 +-
+ drivers/media/platform/qcom/venus/pm_helpers.c | 23 +++----
+ drivers/pmdomain/core.c                        | 83 +++++++++++++++++++++++++-
+ include/linux/pm_domain.h                      | 17 ++++++
+ 7 files changed, 169 insertions(+), 15 deletions(-)
+---
+base-commit: 319fbd8fc6d339e0a1c7b067eed870c518a13a02
+change-id: 20231101-gdsc-hwctrl-13f01ea60cbd
 
-> 
-> These are the tests that start failing:
-> 
-> # # ------------------------------------
-> # # running ./uffd-stress hugetlb 128 32
-> # # ------------------------------------
-> # # nr_pages: 64, nr_pages_per_cpu: 8
-> # # ERROR: context init failed (errno=12, @uffd-stress.c:254)
-> # # [FAIL]
-> # not ok 18 uffd-stress hugetlb 128 32 # exit=1
-> # # --------------------------------------------
-> # # running ./uffd-stress hugetlb-private 128 32
-> # # --------------------------------------------
-> # # nr_pages: 64, nr_pages_per_cpu: 8
-> # # bounces: 31, mode: rnd racing ver poll, ERROR: UFFDIO_COPY error: -12ERROR:
-> UFFDIO_COPY error: -12 (errno=12, @uffd-common.c:614)
-> # #  (errno=12, @uffd-common.c:614)
-> # # [FAIL]
-> 
-> Quickest way to repo is:
-> 
-> $ sudo ./run_vmtests.sh -t "userfaultfd hugetlb"
-> 
-> Thanks,
-> Ryan
-> 
-> 
->>  
->>  nr_hugepages_tmp=$(cat /proc/sys/vm/nr_hugepages)
->>  # For this test, we need one and just one huge page
-> 
-> 
-
+Best regards,
 -- 
-BR,
-Muhammad Usama Anjum
+Abel Vesa <abel.vesa@linaro.org>
+
 
