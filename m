@@ -1,112 +1,201 @@
-Return-Path: <linux-kernel+bounces-34100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C451F837378
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:04:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55740837382
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:08:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C0AA285942
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:04:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79B9D1C27ED5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02EF240BE5;
-	Mon, 22 Jan 2024 20:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B82540BE8;
+	Mon, 22 Jan 2024 20:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQAwLy/u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UPusDtoh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F63A3FE44;
-	Mon, 22 Jan 2024 20:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60CEE405DA
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 20:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705953845; cv=none; b=JJpuU38+oRYp/Mwm/7hwOf1jKbP2cRq2lDcsLw/4y4GigEFGIaMnxFeLujkSAysy40Yk+NXL5w6YqSk0JPKcD6Wzl4NatYUJTVopT2fYaA5Dcv7zzGCIbV6USxDkSofyYwtdPolPhzDqHdOapqmWy399oahwJ1V6EPIaxROYics=
+	t=1705954114; cv=none; b=jcrC8TeI9lTdVGKG3OKP215mRbh1TExjXmxIhUT6+QFf3xE8mbOQVJuu38d6MshLLIKh12DF0aOjMf+lKzW5SGDpjvIy55zHuXwlmcTnlKEHC/Y8ZDLQbL7sgpVOP6tFb6PhQ1eyrPH444+MZY/ND5k8VNChJSjlvxalAxcZhQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705953845; c=relaxed/simple;
-	bh=DqCAIQYyLQtiRtdIQyFNxcTujon3m1C7VDl4g+mOOvI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RIZXddsw42b+u8hqXAcZ50pbdfIQ3zTJbMMJ5w2EukrCbN730q6haznE23uMrOuuwq32sty3Syd7X4YBhb8b7jU22eqGZ5ilqnRDQcsQzWuVIftcd9/1yVGLpGuXkUfyNqVNcUMdP42zrE1X8EyhQVT/jSE+dsiNUN/cL/Zakks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQAwLy/u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5461CC433F1;
-	Mon, 22 Jan 2024 20:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705953844;
-	bh=DqCAIQYyLQtiRtdIQyFNxcTujon3m1C7VDl4g+mOOvI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eQAwLy/uWO02Ef7F/clV8+0/xhihN6Z5+qIOiVfRonKQDTYoX2/HjIL1dV9N4nnLH
-	 82k/2wx6gkTTPV9wRjp2ykRY5GfeKKK4f+/Cje2Wqpaa5GjNFUdAMOOUpMtzLS9yKw
-	 DbAjXzfr835g6X3b8xHb0Di5aqsyUOFbzuqgy8lYEn5A3GvWkBrw3NwgMNBMo4liFL
-	 /L1ksCJojLAKc+DkO7USTPPjC5qmVnrJcH5L67dm/lKhLrSeb+TUad8gE3TlrqtVUV
-	 cm5Hfz4LQ7QXmgaB4YH0u1W/j+oV5f163f5LZU1+xDIN0PqOTL82OTG1Jx/ubjk+y8
-	 zUOCZZISW0/HA==
-Date: Mon, 22 Jan 2024 20:03:57 +0000
-From: Simon Horman <horms@kernel.org>
-To: Danielle Ratson <danieller@nvidia.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"corbet@lwn.net" <corbet@lwn.net>,
-	"linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-	"sdf@google.com" <sdf@google.com>,
-	"kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
-	"maxime.chevallier@bootlin.com" <maxime.chevallier@bootlin.com>,
-	"vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
-	"przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
-	"ahmed.zaki@intel.com" <ahmed.zaki@intel.com>,
-	"richardcochran@gmail.com" <richardcochran@gmail.com>,
-	"shayagr@amazon.com" <shayagr@amazon.com>,
-	"paul.greenwalt@intel.com" <paul.greenwalt@intel.com>,
-	"jiri@resnulli.us" <jiri@resnulli.us>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	mlxsw <mlxsw@nvidia.com>, Petr Machata <petrm@nvidia.com>,
-	Ido Schimmel <idosch@nvidia.com>
-Subject: Re: [RFC PATCH net-next 7/9] ethtool: cmis_cdb: Add a layer for
- supporting CDB commands
-Message-ID: <20240122200357.GF126470@kernel.org>
-References: <20240122084530.32451-1-danieller@nvidia.com>
- <20240122084530.32451-8-danieller@nvidia.com>
- <20240122103100.GA126470@kernel.org>
- <DM6PR12MB45168A412E91A73A01965331D8752@DM6PR12MB4516.namprd12.prod.outlook.com>
+	s=arc-20240116; t=1705954114; c=relaxed/simple;
+	bh=z5uM5OZjv/G1w3yuWwSEb6giYuSWp5QrDCaBnZEn+yE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H6hlSMYKEkIx1qwt9UUFfDXYY9+F2pyZbD7t4ZucvoFVDzbJOhtge6+ieSuTIYpD2XWopzmOUql0PyoohIaHvFfNFXCiXxdc8gyEV7wkqRuhZnt6gFfLpT36awnQGmiibSLSlEI/nyVf4RztaY03UJlUOM+fdXcf0tLFPSYG3vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UPusDtoh; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705954112;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=74vQSZ9Ib6W2cdwmSu4B7EOliPKMRAyQqJMwdDwvZic=;
+	b=UPusDtohGcricQhdqTeH6ZQNjFht8PzZ7BEwt1SYTQp+aS+yy0rq64eYinIZper6Gq3UO9
+	SFMM77HP+cjeOB0hUQK49eAhREJAS89Gcd7JxyyGfISR1z9dq75G4NQR69zobQCCujjNoH
+	3bgg8RIf6vFX/fwX56ewVHIR+ks3PKE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-482-rr7iqbORPoO9NwS01H4psg-1; Mon, 22 Jan 2024 15:08:28 -0500
+X-MC-Unique: rr7iqbORPoO9NwS01H4psg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40eaf5c52d3so9063125e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:08:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705954107; x=1706558907;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=74vQSZ9Ib6W2cdwmSu4B7EOliPKMRAyQqJMwdDwvZic=;
+        b=aqfT6b4x327gHpfhJnW7pFLDfVCIL+ir1BaPuxyPUEhCZIzWwzKrgzptx/k0ccxzxa
+         YYGLKJex5BKCZoBPq3tUlW8cptFQlRGK90ISyb0HCXcfX5xKwvUfhCutGuBYgxybSVso
+         5Lw1xenbfTb9XXezZpmJ7gKvXhsndNvUb19XChBmpKbzyK1tZjmQ2nADA7RH3y58Ea2R
+         PeIjque66V057dj0quajZSaflBZM/Arv88BeorHu8iQ5mFZRgq7EZ7AfbHzbbiBVnyS5
+         H2yvqpjHn3uvGzVxzMnbBe+rzokuBpp7xiYgsABEsbRQz1kD3U/DjFBNjSKeTYe+25sI
+         ID2A==
+X-Gm-Message-State: AOJu0Yy3VYgSZT8erb2KHESetKLq6/fK3s6bdxRfS5OJIgTlziCb4fCF
+	4WcP8JB96CXi5uBU/e3TOPUh2MRtLiube+C5BHOuWAXY/GWMQH9U+0EVtBevRhMIMi8mrI3shYh
+	2muSRxmJCT0l4D6u1Li3/mC1nkODZTAVhX9UJ3/JLTQrJmzkfQNqR/UTSbR8OfA==
+X-Received: by 2002:a05:600c:4f4a:b0:40e:b207:37ad with SMTP id m10-20020a05600c4f4a00b0040eb20737admr585135wmq.130.1705954106936;
+        Mon, 22 Jan 2024 12:08:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHK8OlAl3XA9eIoNh6f85JWWWd6CdUDvuraIncansW9lJ4yoYjQun4BKcSrDUo/pFZGmSKIpg==
+X-Received: by 2002:a05:600c:4f4a:b0:40e:b207:37ad with SMTP id m10-20020a05600c4f4a00b0040eb20737admr585125wmq.130.1705954106524;
+        Mon, 22 Jan 2024 12:08:26 -0800 (PST)
+Received: from ?IPV6:2003:cb:c737:f400:b194:1841:c4a5:75f5? (p200300cbc737f400b1941841c4a575f5.dip0.t-ipconnect.de. [2003:cb:c737:f400:b194:1841:c4a5:75f5])
+        by smtp.gmail.com with ESMTPSA id v16-20020a5d4b10000000b00337d4eed87asm11594671wrq.115.2024.01.22.12.08.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 12:08:26 -0800 (PST)
+Message-ID: <01aa95ee-0abd-4d65-b03b-2191285d1ac3@redhat.com>
+Date: Mon, 22 Jan 2024 21:08:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR12MB45168A412E91A73A01965331D8752@DM6PR12MB4516.namprd12.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 04/11] risc: pgtable: define PFN_PTE_SHIFT
+Content-Language: en-US
+To: Alexandre Ghiti <alex@ghiti.fr>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Ryan Roberts <ryan.roberts@arm.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240122194200.381241-1-david@redhat.com>
+ <20240122194200.381241-5-david@redhat.com>
+ <5601b896-f67c-432d-a169-0f08928123fc@ghiti.fr>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <5601b896-f67c-432d-a169-0f08928123fc@ghiti.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 02:35:59PM +0000, Danielle Ratson wrote:
-
-..
-
-> Hi Simon,
+On 22.01.24 21:03, Alexandre Ghiti wrote:
+> Hi David,
 > 
-> Thanks for the feedback.
+> On 22/01/2024 20:41, David Hildenbrand wrote:
+>> We want to make use of pte_next_pfn() outside of set_ptes(). Let's
+>> simpliy define PFN_PTE_SHIFT, required by pte_next_pfn().
+>>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>    arch/riscv/include/asm/pgtable.h | 2 ++
+>>    1 file changed, 2 insertions(+)
+>>
+>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>> index 0c94260b5d0c1..add5cd30ab34d 100644
+>> --- a/arch/riscv/include/asm/pgtable.h
+>> +++ b/arch/riscv/include/asm/pgtable.h
+>> @@ -523,6 +523,8 @@ static inline void __set_pte_at(pte_t *ptep, pte_t pteval)
+>>    	set_pte(ptep, pteval);
+>>    }
+>>    
+>> +#define PFN_PTE_SHIFT		_PAGE_PFN_SHIFT
+>> +
+>>    static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+>>    		pte_t *ptep, pte_t pteval, unsigned int nr)
+>>    {
 > 
-> Ill fix that, something like:
 > 
-> diff --git a/net/ethtool/cmis_cdb.c b/net/ethtool/cmis_cdb.c
-> index b27e12871816..888b02e6eade 100644
-> --- a/net/ethtool/cmis_cdb.c
-> +++ b/net/ethtool/cmis_cdb.c
-> @@ -521,7 +521,7 @@ int ethtool_cmis_cdb_execute_cmd(struct net_device *dev,
->         }
+> There is a typo in the commit title: risc -> riscv. Otherwise, this is
+> right so:
+
+Whops :)
+
 > 
->         err = ethtool_cmis_page_init(&page_data, ETHTOOL_CMIS_CDB_CMD_PAGE, 0,
-> -                                    ETHTOOL_CMIS_CDB_LPL_MAX_PL_LENGTH);
-> +                                    sizeof(args->req.body));
->         if (err < 0)
->                 return err;
+> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 
-Thanks Danielle,
+Thanks!
 
-I also think something like that should fix the problem.
+-- 
+Cheers,
 
+David / dhildenb
 
 
