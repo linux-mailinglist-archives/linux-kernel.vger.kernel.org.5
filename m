@@ -1,161 +1,165 @@
-Return-Path: <linux-kernel+bounces-32933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DCB383621A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:40:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D59C8836216
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:40:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41F321C241FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:40:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EBB41C250A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:40:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DF1946449;
-	Mon, 22 Jan 2024 11:31:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADC08481DD;
+	Mon, 22 Jan 2024 11:31:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="C1E3gLN+"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PMEggpjE"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D429D4643B;
-	Mon, 22 Jan 2024 11:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7BE46425
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923113; cv=none; b=TaLlfO12iiAQtPUR9PfBJb7lspgbZFKz4lubn2nAYuBdS0dTbtLI5CuzZBDRGzZMOvWPbkG0nj0a2x6R7nZg9clNnwN5cURftPbTQHrukhgTjsU7fJiWrOkbXc85nWWVW6rVbKOU08Xk29MxCuzViBE4BdFZFRgjUkoTt8NAt6g=
+	t=1705923088; cv=none; b=hEcdnQDD8lbOOiT7GOMGcXkY6Qb4v6VJLGYrLIA1CiN8JXQQq5VA85mFfDQzk9/mTCjfifBHBuR1srXnl/wRnX/oPkGS+8rdLEklyjivt0qmvdSPdu6cYOpt7DIVvglaRRBWhPdh25sVSieCcuZ1X0NLB4hWLL2Zdso2xrqkoQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923113; c=relaxed/simple;
-	bh=QJRXftv5htaGrRJpvd/RlmMy4vOMeaylsoskctG39LU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gX3/GpBvvT80WmIoBcc29aZeTk3JV7KxNvM39od8a/hFHnBaRVLsKXUeVMc7ar4UcHZk/wcx3YLweMLUqiXQX+WqsDKNAQA6B970m3AGIB+ykIxkcpy0WzMkzN7uFu28WtqFO12T0dthjVowa91zWKoFE69mq8Bgxx18xPTl/ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=C1E3gLN+; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from fpc.intra.ispras.ru (unknown [10.10.165.9])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 8FEF940F1DE6;
-	Mon, 22 Jan 2024 11:31:47 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 8FEF940F1DE6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1705923107;
-	bh=GIiZsYrmgQCjlr/AmrPL2dhePcSW3bDC4ZjkPnqyyw0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C1E3gLN+RWBe7hsAeyUQlphmiR9c466+8dSVYEblMCzqS096G05/SIHIJ50sdsViT
-	 9oj+VIuEvcLmepxPBbJAtSP8QgJ5stFMZ6AMLZLuhusSDjh2DD1JwNZDjFsb4XW3yd
-	 DuVI9tm0XSPDosXsRJ384m3RSMUWcLM6VwdOzFts=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	stable@vger.kernel.org
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	Pengfei Xu <pengfei.xu@intel.com>
-Subject: [PATCH 5.10/5.15 1/1] kprobes: Fix to handle forcibly unoptimized kprobes on freeing_list
-Date: Mon, 22 Jan 2024 14:30:31 +0300
-Message-Id: <20240122113031.301202-2-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240122113031.301202-1-pchelkin@ispras.ru>
-References: <20240122113031.301202-1-pchelkin@ispras.ru>
+	s=arc-20240116; t=1705923088; c=relaxed/simple;
+	bh=a5aWRSqDic3RGuhp7PJTTAFqYVrXgPZUgnQH0v0MQeo=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=CgWdAGMCa/R9Hz6MjKaEOsZsKkBE0JttFeZDdE2PQoj2ANye+S3oui3mZ7bZxxU9VVIxWzrEDcuJSnsMNSeJCbXNsMkCM97jr5MLVUfG2qrBmsUh1QLwVQ7tsyZS9/u/yQDH0xCCUOZAAQz5i9J/y+EmjpVtjSDSmeQ+//3ZrlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PMEggpjE; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705923083;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W4RSY4mP4w+4iqUvb0NCuJ+3jjeweVzC37FLV3OpmyE=;
+	b=PMEggpjEinAWwbzcD5dsOZTBv+LWhJWHnECOalXLXbkco2R5QUmojHUGekv7iVGWCNdlqJ
+	1iokj5dqbZHDfE82iyZcqQ1BH/iID1dNGsBM/Kg6MD+/NJT/7I2kgWfpTiiDj0cViSHQs5
+	JgDKLshkJryYN29JnEWUDaj5dkfRdBs=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Subject: Re: [PATCH v4 6/7] hugetlb: parallelize 2M hugetlb allocation and
+ initialization
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <14e38e95-2bc6-4571-b502-4e3954b4bcc4@linux.dev>
+Date: Mon, 22 Jan 2024 19:30:39 +0800
+Cc: David Hildenbrand <david@redhat.com>,
+ David Rientjes <rientjes@google.com>,
+ Mike Kravetz <mike.kravetz@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Tim Chen <tim.c.chen@linux.intel.com>,
+ Linux-MM <linux-mm@kvack.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ ligang.bdlg@bytedance.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <849D7EA4-BCF4-4587-8A78-F3B35B63EAE9@linux.dev>
+References: <20240118123911.88833-1-gang.li@linux.dev>
+ <20240118123911.88833-7-gang.li@linux.dev>
+ <ddf37da4-4cbc-478a-be9b-3060b0aebc90@linux.dev>
+ <14e38e95-2bc6-4571-b502-4e3954b4bcc4@linux.dev>
+To: Gang Li <gang.li@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 
-commit 4fbd2f83fda0ca44a2ec6421ca3508b355b31858 upstream.
 
-Since forcibly unoptimized kprobes will be put on the freeing_list directly
-in the unoptimize_kprobe(), do_unoptimize_kprobes() must continue to check
-the freeing_list even if unoptimizing_list is empty.
+> On Jan 22, 2024, at 18:12, Gang Li <gang.li@linux.dev> wrote:
+>=20
+> On 2024/1/22 15:10, Muchun Song wrote:> On 2024/1/18 20:39, Gang Li =
+wrote:
+>>> +static void __init hugetlb_alloc_node(unsigned long start, unsigned =
+long end, void *arg)
+>>>   {
+>>> -    unsigned long i;
+>>> +    struct hstate *h =3D (struct hstate *)arg;
+>>> +    int i, num =3D end - start;
+>>> +    nodemask_t node_alloc_noretry;
+>>> +    unsigned long flags;
+>>> +    int next_node =3D 0;
+>> This should be first_online_node which may be not zero.
+>=20
+> That's right. Thanks!
+>=20
+>>> -    for (i =3D 0; i < h->max_huge_pages; ++i) {
+>>> -        if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
+>>> +    /* Bit mask controlling how hard we retry per-node =
+allocations.*/
+>>> +    nodes_clear(node_alloc_noretry);
+>>> +
+>>> +    for (i =3D 0; i < num; ++i) {
+>>> +        struct folio *folio =3D alloc_pool_huge_folio(h, =
+&node_states[N_MEMORY],
+>>> +                        &node_alloc_noretry, &next_node);
+>>> +        if (!folio)
+>>>               break;
+>>> +        spin_lock_irqsave(&hugetlb_lock, flags);
+>> > I suspect there will more contention on this lock when =
+parallelizing.
+>=20
+> In the worst case, there are only 'numa node number' of threads in
+> contention. And in my testing, it doesn't degrade performance, but
+> rather improves performance due to the reduced granularity.
 
-This bug can happen if a kprobe is put in an instruction which is in the
-middle of the jump-replaced instruction sequence of an optprobe, *and* the
-optprobe is recently unregistered and queued on unoptimizing_list.
-In this case, the optprobe will be unoptimized forcibly (means immediately)
-and put it into the freeing_list, expecting the optprobe will be handled in
-do_unoptimize_kprobe().
-But if there is no other optprobes on the unoptimizing_list, current code
-returns from the do_unoptimize_kprobe() soon and does not handle the
-optprobe which is on the freeing_list. Then the optprobe will hit the
-WARN_ON_ONCE() in the do_free_cleaned_kprobes(), because it is not handled
-in the latter loop of the do_unoptimize_kprobe().
+So, the performance does not change if you move the lock out of
+loop?
 
-To solve this issue, do not return from do_unoptimize_kprobes() immediately
-even if unoptimizing_list is empty.
+>=20
+>> I want to know why you chose to drop prep_and_add_allocated_folios()
+>> call in the original hugetlb_pages_alloc_boot()?
+>=20
+> Splitting him to parallelize hugetlb_vmemmap_optimize_folios.
 
-Moreover, this change affects another case. kill_optimized_kprobes() expects
-kprobe_optimizer() will just free the optprobe on freeing_list.
-So I changed it to just do list_move() to freeing_list if optprobes are on
-unoptimizing list. And the do_unoptimize_kprobe() will skip
-arch_disarm_kprobe() if the probe on freeing_list has gone flag.
+Unfortunately, HVO should be enabled before pages go to the pool list.
 
-Link: https://lore.kernel.org/all/Y8URdIfVr3pq2X8w@xpf.sh.intel.com/
-Link: https://lore.kernel.org/all/167448024501.3253718.13037333683110512967.stgit@devnote3/
-
-Fixes: e4add247789e ("kprobes: Fix optimize_kprobe()/unoptimize_kprobe() cancellation logic")
-Reported-by: Pengfei Xu <pengfei.xu@intel.com>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: stable@vger.kernel.org
-Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-[fp: adjust comment conflict regarding commit 223a76b268c9 ("kprobes: Fix
- coding style issues")]
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
- kernel/kprobes.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 07d36cee2a80..5d713a7d7e87 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -549,17 +549,15 @@ static void do_unoptimize_kprobes(void)
- 	/* See comment in do_optimize_kprobes() */
- 	lockdep_assert_cpus_held();
- 
--	/* Unoptimization must be done anytime */
--	if (list_empty(&unoptimizing_list))
--		return;
-+	if (!list_empty(&unoptimizing_list))
-+		arch_unoptimize_kprobes(&unoptimizing_list, &freeing_list);
- 
--	arch_unoptimize_kprobes(&unoptimizing_list, &freeing_list);
--	/* Loop free_list for disarming */
-+	/* Loop on 'freeing_list' for disarming and removing from kprobe hash list */
- 	list_for_each_entry_safe(op, tmp, &freeing_list, list) {
- 		/* Switching from detour code to origin */
- 		op->kp.flags &= ~KPROBE_FLAG_OPTIMIZED;
--		/* Disarm probes if marked disabled */
--		if (kprobe_disabled(&op->kp))
-+		/* Disarm probes if marked disabled and not gone */
-+		if (kprobe_disabled(&op->kp) && !kprobe_gone(&op->kp))
- 			arch_disarm_kprobe(&op->kp);
- 		if (kprobe_unused(&op->kp)) {
- 			/*
-@@ -788,14 +786,13 @@ static void kill_optimized_kprobe(struct kprobe *p)
- 	op->kp.flags &= ~KPROBE_FLAG_OPTIMIZED;
- 
- 	if (kprobe_unused(p)) {
--		/* Enqueue if it is unused */
--		list_add(&op->list, &freeing_list);
- 		/*
--		 * Remove unused probes from the hash list. After waiting
--		 * for synchronization, this probe is reclaimed.
--		 * (reclaiming is done by do_free_cleaned_kprobes().)
-+		 * Unused kprobe is on unoptimizing or freeing list. We move it
-+		 * to freeing_list and let the kprobe_optimizer() remove it from
-+		 * the kprobe hash list and free it.
- 		 */
--		hlist_del_rcu(&op->kp.hlist);
-+		if (optprobe_queued_unopt(op))
-+			list_move(&op->list, &freeing_list);
- 	}
- 
- 	/* Don't touch the code, because it is already freed. */
--- 
-2.39.2
+>=20
+>>> +static unsigned long __init hugetlb_pages_alloc_boot(struct hstate =
+*h)
+>>> +{
+>>> +    struct padata_mt_job job =3D {
+>>> +        .fn_arg        =3D h,
+>>> +        .align        =3D 1,
+>>> +        .numa_aware    =3D true
+>>> +    };
+>>> +
+>>> +    job.thread_fn    =3D hugetlb_alloc_node;
+>>> +    job.start    =3D 0;
+>>> +    job.size    =3D h->max_huge_pages;
+>>> +    job.min_chunk    =3D h->max_huge_pages / =
+num_node_state(N_MEMORY) / 2;
+>>> +    job.max_threads    =3D num_node_state(N_MEMORY) * 2;
+>> I am curious the magic number of 2 used in assignments of ->min_chunk
+>> and ->max_threads, does it from your experiment? I thinke it should
+>> be a comment here.
+>=20
+> This is tested and I can perform more detailed tests and provide data.
+>=20
+>> And I am also sceptical about the optimization for a small amount of
+>> allocation of hugepages. Given 4 hugepags needed to be allocated on =
+UMA
+>> system, job.min_chunk will be 2, job.max_threads will be 2. Then, 2
+>> workers will be scheduled, however each worker will just allocate 2 =
+pages,
+>> how much the cost of scheduling? What if allocate 4 pages in single
+>> worker? Do you have any numbers on parallelism vs non-parallelism in
+>> a small allocation case? If we cannot gain from this case, I think we =
+shold
+>> assign a reasonable value to ->min_chunk based on experiment.
+>> Thanks.
+>>=20
+>=20
+> That's a good suggestion, I'll run some tests and choose the best
+> values.
+>=20
+>=20
 
 
