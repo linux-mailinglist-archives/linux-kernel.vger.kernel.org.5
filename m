@@ -1,185 +1,118 @@
-Return-Path: <linux-kernel+bounces-32768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36EB6835FDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:39:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E2C835FE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:41:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C0921C228FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:39:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40E1C1F223CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 952333A1A9;
-	Mon, 22 Jan 2024 10:39:09 +0000 (UTC)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BBF53A1BF;
+	Mon, 22 Jan 2024 10:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z8uwKABG"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B683A1A5
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BF73A1A6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705919949; cv=none; b=TB2+GyWsjP+b0C0cNgX3iN+/CcmCM7g6kx+vKVVuGT+6cOa+RJQau4TVKJ8TiDakWKGWw1EZy5scLGhYpcPvpUvqLnaZGmPrtTHeypDdGwyLYeI6EMHy3RZktrE29T9Do1jJ88gnelvRjAMYBJooiajUXP2hIoa51LdVzUEbGvY=
+	t=1705920085; cv=none; b=KWrHoocM5wqjK158A8geIYkjhGKqwkPzOV+goP9E25uXrCZ8ODLKLM08Pj7Cna8Qv6lxMM0KGjM8v0qm0ObqyUtFQ2bXV88+KPXV3Lw7q4kbgSnhrew7StmbRr76TR3j0nVtgsyGXInLvKmhR0+7BE7OqpKm+CPIxLSIu4j2O7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705919949; c=relaxed/simple;
-	bh=e4ZNh0t5m8mNFdYjsZkQomsZVBuev49+S8UF/acXUh8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LyNMmZe5JDSXZigrkG1ilWqtRz4RZpVB5Tm0KiiDEQzHaK2lz6LP4qJPuq1hbPr3U10+qXlFA/byu8x6CkbmrEwTpSpRaQqPw9cnC1VMKguWY+vmhUbFFYFeGhufCZ78Ob8MACoDi4bRy7hXWnvlbAuPb1fRJVHMCsue/bQEAdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5ec7a5a4b34so27202177b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:39:06 -0800 (PST)
+	s=arc-20240116; t=1705920085; c=relaxed/simple;
+	bh=HZ0Hdg/F68IPYAxwGbTZxdDbtscFYuGai9J7k/bcoEo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=SOa6RGzzlkpaU7UHy3MPyubt2PZQb/i7DRGWMo/kg8wnbaTGwMYE8afjsg4sNFBs3YVYOIZ1Ugm6tg2U+1GLUsAfSdpSWgBo4oUJC51tyN8bdL9ozL5tDrPC1Ci+kQoTOsx8emVPBLK3bbjtylDcff3t7rjnkxpn5ITSig1E5xY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z8uwKABG; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40eac352733so10183545e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:41:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705920082; x=1706524882; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tJBEU9hHJcfzWOiHAuwhZ3FGFs6n9fqS4Ii6C+nRlzU=;
+        b=Z8uwKABGOicDo2gIUJJG6UDuqdfLX/HOwze7vvb5eBEh9LsyFpodxnrd1nk/Ct6akW
+         /GEY8AZKC4isW9BjGtlwvzLZ7XIYTOqgASSht2nnuJ4kPhsW1mU+j+/z04VFHh6QdXW+
+         2evjzBiP3SHkOHSB0ZNgllM509UD2qJy0ZLIZuXkUip/NpIMaJ9qJTfHDj3prZl0EW4t
+         yR6FfPAxWAqOUuNfJZZ88JY6kXi0N4kEkuFqbGduj3+vy4w0J+qJQ9hfSGf4NKOlO8oi
+         RmBmLknFf3DNVWF82HcmZ21Uec5JDkEuP8npkYzDK/rEOAkyKc/P6fKugmtN+LGttP/X
+         FlQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705919946; x=1706524746;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1705920082; x=1706524882;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mTkrQdMsguybEbxdmAQd2brBEIw95bzdMTfoE/2G8gA=;
-        b=XLejVs+mYtQo5XHZdHBBvrJ/q21b9lo5cIVjiD6H6dxpHiQtKvtwEGqijAv5HHPjy6
-         soFXhLhkQtGjzKBaA/gvy52P8aJPgpsGDpLd1teHKY2FSXYKh8q+p+GjN3Hiwz/Zpbps
-         yvZr4hYRfBIQx0Rg7yjstp0BadTqnk6SbXofSUwlCcrkrJ0rPeFvfoepHOYZMU8oxwdH
-         qikecqlKSxJBBRnAGiXQbMVE3u395P6XjxV9PKEWwN9rWiMlPwkcaaL7fuj267r3YnNF
-         HACga6izgtxuDzy/ZY3KTyZF2bMEc9347WRPpk6ajN1mnFpi+CREx4ydSJwLPEBGsRfU
-         Kx2Q==
-X-Gm-Message-State: AOJu0YzId1hMj/gAXE0jMuAnaDofG76wB76OQMbNtmB8vl1JhpprZrre
-	vki9ShR8wMBfPrgS+dNLqgx5X3r/3JdLHwcLc7B9WYbItGK7FUOAgmDpETqcNzA=
-X-Google-Smtp-Source: AGHT+IFUq0U0zJ1bVLpE1cIDp+MbCVooj67AJMLu/heHZU4uTv9cilTvQzt6Qj43xEjxs/KB+VZIaw==
-X-Received: by 2002:a0d:fe07:0:b0:5de:83bf:39d9 with SMTP id o7-20020a0dfe07000000b005de83bf39d9mr3010469ywf.98.1705919944909;
-        Mon, 22 Jan 2024 02:39:04 -0800 (PST)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id x65-20020a0dd544000000b005ff7cda85c5sm3519178ywd.69.2024.01.22.02.39.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 02:39:04 -0800 (PST)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5ec7a5a4b34so27202037b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:39:04 -0800 (PST)
-X-Received: by 2002:a25:81c7:0:b0:dbe:a175:3440 with SMTP id
- n7-20020a2581c7000000b00dbea1753440mr1730878ybm.92.1705919944453; Mon, 22 Jan
- 2024 02:39:04 -0800 (PST)
+        bh=tJBEU9hHJcfzWOiHAuwhZ3FGFs6n9fqS4Ii6C+nRlzU=;
+        b=FOwJgY7swdoIfb/+x+opprFQ75/GeTDNkJrWuV3POKCuYvoj165hpS8zW/CvXGeBvT
+         R95d5IW+Dc79py7sSKJyWFdK0obvTCG9pMrMKobtn+7D81md2TyldMO2jVJYs6UlUNbM
+         jUPgh07Ee6/93Xh/lM4LyIjA9PE7gpgzcBqu3udahrdOtXOYX5NznHlydwUNy6XSBFOY
+         TFws7+wdB1RiFL431nN2gz8EKoU34xAabAT+UBDQgZtm1azGO4NsdoH4m2MJjQctA3Rl
+         iTknbA61gKnYRJwuhjtjGeaIvuBClDjq9uVsOdyMcttXMo1IPwnovyyiE34lCggyQlYG
+         lBtg==
+X-Gm-Message-State: AOJu0YyoKpRzUXgLK4JcsQ4J1SuKUvLCcLjbJ5cSNfpRBK93FM2C/ZO0
+	F5d375u+ccG/YimbzqUI/PoBOFQKj0dT2rC1rUZXlaYQUZMvc4BzfsmBpvUVoZU=
+X-Google-Smtp-Source: AGHT+IHIKMd1D6GufkmdDAUEkH6X9Zo/gAkdVkY6970R1/IWSOsKtCHbix6qN81ySf5gXV1iFmui+w==
+X-Received: by 2002:a05:600c:4286:b0:40e:596a:985b with SMTP id v6-20020a05600c428600b0040e596a985bmr2207230wmc.160.1705920082126;
+        Mon, 22 Jan 2024 02:41:22 -0800 (PST)
+Received: from [127.0.1.1] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id fc11-20020a05600c524b00b0040e86fbd772sm20129483wmb.38.2024.01.22.02.41.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 02:41:21 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org, 
+ peter.griffin@linaro.org, Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org, 
+ alim.akhtar@samsung.com, s.nawrocki@samsung.com, tomasz.figa@gmail.com, 
+ cw00.choi@samsung.com, semen.protsenko@linaro.org, 
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, andre.draszik@linaro.org, 
+ kernel-team@android.com, willmcvicker@google.com
+In-Reply-To: <20240109114908.3623645-1-tudor.ambarus@linaro.org>
+References: <20240109114908.3623645-1-tudor.ambarus@linaro.org>
+Subject: Re: [PATCH v2 0/3] GS101: rename cmu_misc clock-names
+Message-Id: <170592008004.38238.17769921542052483911.b4-ty@linaro.org>
+Date: Mon, 22 Jan 2024 11:41:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117143548.595884070@goodmis.org> <20240117143810.531966508@goodmis.org>
-In-Reply-To: <20240117143810.531966508@goodmis.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 22 Jan 2024 11:38:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
-Message-ID: <CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
-Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files and
- directories all be the same
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher <ajay.kaher@broadcom.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
-Hi Stephen,
 
-On Wed, Jan 17, 2024 at 3:37=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->
-> The dentries and inodes are created in the readdir for the sole purpose o=
-f
-> getting a consistent inode number. Linus stated that is unnecessary, and
-> that all inodes can have the same inode number. For a virtual file system
-> they are pretty meaningless.
->
-> Instead use a single unique inode number for all files and one for all
-> directories.
->
-> Link: https://lore.kernel.org/all/20240116133753.2808d45e@gandalf.local.h=
-ome/
-> Link: https://lore.kernel.org/linux-trace-kernel/20240116211353.412180363=
-@goodmis.org
->
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Al  Viro <viro@ZenIV.linux.org.uk>
-> Cc: Ajay Kaher <ajay.kaher@broadcom.com>
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+On Tue, 09 Jan 2024 11:49:05 +0000, Tudor Ambarus wrote:
+> Rename the cmu_misc clock-names to just "bus" and "sss" because
+> naming is local to the module, so cmu_misc is implied. As the bindings
+> and the device tree have not made a release yet (v6.8), comply with the
+> renamed clocks in the device tree and the clock driver.
+> 
+> The patch set is expected to be queued through Krzysztof's tree as he
+> was the one that queued all the previous gs101 patches.
+> 
+> [...]
 
-Thanks for your patch, which is now commit 53c41052ba312176 ("eventfs:
-Have the inodes all for files and directories all be the same") in
-v6.8-rc1, to which I have bisected the issue below.
+Applied, thanks!
 
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -32,6 +32,10 @@
->   */
->  static DEFINE_MUTEX(eventfs_mutex);
->
-> +/* Choose something "unique" ;-) */
-> +#define EVENTFS_FILE_INODE_INO         0x12c4e37
-> +#define EVENTFS_DIR_INODE_INO          0x134b2f5
-> +
->  /*
->   * The eventfs_inode (ei) itself is protected by SRCU. It is released fr=
-om
->   * its parent's list and will have is_freed set (under eventfs_mutex).
-> @@ -352,6 +356,9 @@ static struct dentry *create_file(const char *name, u=
-mode_t mode,
->         inode->i_fop =3D fop;
->         inode->i_private =3D data;
->
-> +       /* All files will have the same inode number */
-> +       inode->i_ino =3D EVENTFS_FILE_INODE_INO;
-> +
->         ti =3D get_tracefs(inode);
->         ti->flags |=3D TRACEFS_EVENT_INODE;
->         d_instantiate(dentry, inode);
-> @@ -388,6 +395,9 @@ static struct dentry *create_dir(struct eventfs_inode=
- *ei, struct dentry *parent
->         inode->i_op =3D &eventfs_root_dir_inode_operations;
->         inode->i_fop =3D &eventfs_file_operations;
->
-> +       /* All directories will have the same inode number */
-> +       inode->i_ino =3D EVENTFS_DIR_INODE_INO;
-> +
->         ti =3D get_tracefs(inode);
->         ti->flags |=3D TRACEFS_EVENT_INODE;
+[1/3] dt-bindings: clock: gs101: rename cmu_misc clock-names
+      https://git.kernel.org/krzk/linux/c/1755c4b0372a2cf1e7124956b8cfebcb51083208
+[2/3] arm64: dts: exynos: gs101: comply with the new cmu_misc clock names
+      https://git.kernel.org/krzk/linux/c/80c86ff6800b857c8008cebe7b8d22a6e574e68d
+[3/3] clk: samsung: clk-gs101: comply with the new dt cmu_misc clock names
+      https://git.kernel.org/krzk/linux/c/d76c762e7ee04af79e1c127422e0bbcb5f123018
 
-This confuses "find".
-Running "find /sys/" now prints lots of error messages to stderr:
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-find: File system loop detected;
-=E2=80=98/sys/kernel/debug/tracing/events/initcall/initcall_finish=E2=80=99=
- is part of
-the same file system loop as
-=E2=80=98/sys/kernel/debug/tracing/events/initcall=E2=80=99.
-find: File system loop detected;
-=E2=80=98/sys/kernel/debug/tracing/events/initcall/initcall_start=E2=80=99 =
-is part of
-the same file system loop as
-=E2=80=98/sys/kernel/debug/tracing/events/initcall=E2=80=99.
-find: File system loop detected;
-=E2=80=98/sys/kernel/debug/tracing/events/initcall/initcall_level=E2=80=99 =
-is part of
-the same file system loop as
-=E2=80=98/sys/kernel/debug/tracing/events/initcall=E2=80=99.
-[...]
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
