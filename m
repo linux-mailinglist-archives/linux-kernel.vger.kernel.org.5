@@ -1,211 +1,282 @@
-Return-Path: <linux-kernel+bounces-32757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 627AB835FBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4B52835FC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E8401C24BA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:32:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FED31C24388
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B58C31A78;
-	Mon, 22 Jan 2024 10:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5284F3A8DD;
+	Mon, 22 Jan 2024 10:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rCu0/mcs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="bxFFjgOU"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2068.outbound.protection.outlook.com [40.107.94.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B878A3A262;
-	Mon, 22 Jan 2024 10:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705919515; cv=none; b=AnTRGq3HEHpb0Fs3dBJpVwmveZ2F3EaT5pP8cqTvH5FYKABHmRM8TmIEPI5QsCSVr2Kh1UGi2cWU9cXl6wGB/X7v27youXsuLl2A052fLx3AmGvYStSjKKrqzTPrgW9jYilcr/2uZj2rkdysfgQKYjpDcW//6To0RZ4uOsO31DA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705919515; c=relaxed/simple;
-	bh=3MlX9iGWyIhVvgtO5vkH1utrGmEPUsa+siylSAZ+4FE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=pRNQF/BAz8y1rRyMUC4uiyKy9OVVzNp9KjkN0NIL4JiEkB5S6EoNqkdEBNZ+4xDj4KdLnA6KMgspUS4Ocr5JJhDMIGcRAO3ydUz3iVR5Zdewd1Ln4euUIRsNtWNXoo3cxvQ9rZjJkK3lfzGRMMbP2RDCMDtZ7RUwC2qC5CbBkbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rCu0/mcs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64BA2C433F1;
-	Mon, 22 Jan 2024 10:31:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705919515;
-	bh=3MlX9iGWyIhVvgtO5vkH1utrGmEPUsa+siylSAZ+4FE=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=rCu0/mcsmI0Ix8l017V62+/Elst5qRKhRr/59QLPK9ERjpJ+q8N8YY1RpBAw6NsOT
-	 b5OqMB1FoXP9+S7e/LWXMMqQS+EEOn4SizRrzRil/xYA0YFW6hotcSLm3J5FuEA2hr
-	 9cZxuzxGVe6t19KWiLPDKMT7iu0dwdmI7TlbOofJZFYSF6BoqFFp1DXcXT5y3c8hGB
-	 hILUnPVGg0TSflYoV0VBDCAYoIFL4fUrUG1Ka+41Q/Pzguxfk++k3t1sGUj/H7EZoK
-	 KHPNVPWk8NWXlhJTan+SODgvd674q+pcc9fhechF2jScASGfpmWEKvkZePOny9KVrL
-	 MmFyBHyIA5C7Q==
-Message-ID: <1e7b8590-7dc7-47a8-8105-6d01db627f85@kernel.org>
-Date: Mon, 22 Jan 2024 11:31:47 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3368F2AE90;
+	Mon, 22 Jan 2024 10:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705919530; cv=fail; b=RjVnyZZ8/JfMnmfJb8gA43UqbNi+5vd0amTz277avfNgAOhUGDO0QgvWi/SJaapT97t1pVdmKIcTbqRkp11YD5nJ93CBsZG8ShdiysdrvG0SuJCzfQrEDHAbnx5znbYKBxbqpqtVTcFwT+beqVGLwIy0ZQ8c151MOK0sR9YiS60=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705919530; c=relaxed/simple;
+	bh=C0jcUvlbYSexw2p84QEP5pHujKKRytl9U+sM5BrH30k=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Jcx6jYReufJaF6EUnd8u2W6+gJLDNObKuV+LwEBRSYrKvxTH/QvbhpqPrrcqICheoNCv+48Le7IlJSat23vyAw35Dh67xcpmKBnEDDxVG53U5XWCNvMXXFCTRZKy6Bx1RP3k1QY3eiEcr3PJPI1xyMssNsrnztY6EP7l3hzo5K8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=bxFFjgOU; arc=fail smtp.client-ip=40.107.94.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eCbKXgdDCFyiaXh+hyJxRL7F5Rupppxo8XDHxSQx4dFQKIHD/18DBp4I9pPQ7o14IyYrI57vRB37HkVGDfgo7Zsq1WG42OGDpjSA1DRZEPKpNC5LSxJ9XKEjp9/9kyaIA+l/SVBqY5wYth+JWIwUIGROlBQ9g6St81FDLT8NVyL+PO0CKlhyGb5K9G28390waUjlPUTxNWuj+yWYRyu4/KceDYjrMlyFPiEKiOS8JwSewqMPauVvf/2/vYaGic5afg2QvklIlMkb0tUK+S8MdPr3uumIEvJGKZ5i6tJEZ/LYZ5JKVSMAkOwMX0zQIYRMMY/uoMlwIQ2+uJS8fAX8iA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bC73+wYHjIOkN9LZwFnzu7iowRybV7KPW50bgjX7ROA=;
+ b=MKQUvDrg7m6JorTin2i1IopILXQqzuwiyx+pra7eVTxJDt17dzxKgXscL/dsI1HWxzL2IHhfCSC1NY8TBC139H3oxEikLis1J7Tr6orRiMwKmFgwl5jaSEt1bfreoaP+jQs4lyWdv3P/7Mk+p3vsvBsYCROkYqnaCT7SIbdVwOghDHW4B6S/hz+DVs39RIBAM5HSWpcmLyKFcOSMhlP576O/DgEe4/e24NXulPEezgw+mPYiLhPkyf4cp4C9k8Lt1N2J9EhpeKXeFbcijqSZWaLGiaK+BfaPlbCTcU9Vs+6oEa73Ym9H+YMqRhl9GsmnoC2MnjF/IgpS4fkJaJ1bMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bC73+wYHjIOkN9LZwFnzu7iowRybV7KPW50bgjX7ROA=;
+ b=bxFFjgOUHOvjhVCzifNogVxaOMHErFBuVuczcFIpfxYkIjJgwLyEAIgHDC/2Ykt/YJLDkNTAcWOjYnwtqI5X7rj3hTpGeAu7pMdBlzbELGYV3y7dLL+tNw+UwsOvh8AUVTwRNC9BBg3oKf+qZDnC5xNKTOGJoM0KU4UIrUwd5uM=
+Received: from DM4PR12MB5938.namprd12.prod.outlook.com (2603:10b6:8:69::9) by
+ CH2PR12MB4875.namprd12.prod.outlook.com (2603:10b6:610:35::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.32; Mon, 22 Jan 2024 10:32:01 +0000
+Received: from DM4PR12MB5938.namprd12.prod.outlook.com
+ ([fe80::2436:a622:c7ca:cbcb]) by DM4PR12MB5938.namprd12.prod.outlook.com
+ ([fe80::2436:a622:c7ca:cbcb%4]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
+ 10:32:01 +0000
+From: "Sayyed, Mubin" <mubin.sayyed@amd.com>
+To: "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>, "dlemoal@kernel.org"
+	<dlemoal@kernel.org>, "cassel@kernel.org" <cassel@kernel.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "linus.walleij@linaro.org"
+	<linus.walleij@linaro.org>, "brgl@bgdev.pl" <brgl@bgdev.pl>, "Simek, Michal"
+	<michal.simek@amd.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Mehta, Piyush"
+	<piyush.mehta@amd.com>, "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>
+CC: "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-usb@vger.kernel.org"
+	<linux-usb@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>
+Subject: RE: [PATCH] dt-bindings: xilinx: replace Piyush Mehta maintainership
+Thread-Topic: [PATCH] dt-bindings: xilinx: replace Piyush Mehta maintainership
+Thread-Index: AQHaSsvSozYxmIi7AkmoVI8kTsLKPbDlpl8Q
+Date: Mon, 22 Jan 2024 10:32:01 +0000
+Message-ID:
+ <DM4PR12MB59388E96AFBE5C1AD3A7C9FF9D752@DM4PR12MB5938.namprd12.prod.outlook.com>
+References: <1705664181-722937-1-git-send-email-radhey.shyam.pandey@amd.com>
+In-Reply-To: <1705664181-722937-1-git-send-email-radhey.shyam.pandey@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR12MB5938:EE_|CH2PR12MB4875:EE_
+x-ms-office365-filtering-correlation-id: 23e7ea79-c137-42c5-32ab-08dc1b355eb4
+x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ TFrhBBMnGZeHrf8xH0ToqazzC+oklNOzn9Czlw/SosxfaoT2lnETrMgvfrIaoWvqq71eRqORmw3KCkUhFrcDzMG7rLezqY3jJYcJn99zsC5tEqwYEl7jaisciLdrBU1AXL7kQx5i7N1g/3WFcfhJlHsw7vCik1k/CUMVJTONJtKB7yfGGofirL/krn0GVZ2DsWG9UZ4S4djw+/neN7davcfLeDPxNAUqejqgLjKri1sTphyTh0KkJX1ZA0IsuNZIVVHKHe6L2SX0bnDYUA3AAgQdAVf2OEZ1dJUybux2ZfLbF765rm8xuMDGAGudljbWVsgBOeJlGoDHuYE3VQkAMc9se/t5z1dy4pJLgLNHkEBIVNSVYo97eGzvx7Kff/QC4p+g9aRlen8n5FSzUy1aK6/R4/QgwCQInFPG70cITcdGDO5uqzaBF/ZXkAhUS5QzCaZswwcblW1xa5aTTDYrlaN9u44tuLIEA2Mr4ah563fMESHvmFtev6e8hVz0aWfXh/kkGRVTMjTtCzHZI/1ZswxVazfde7hkJ5IU85dsdxfmtYivZC05MPAazm6tQyw1Xe8ihyXj/tHiiEe9L6oTfnsuSv8ejuz42F4xHKMmOr2mMFYqw+Ok7OP/LE5rHbB0
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5938.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(39860400002)(366004)(396003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(921011)(38070700009)(7696005)(6506007)(53546011)(122000001)(71200400001)(478600001)(966005)(55016003)(9686003)(316002)(8676002)(8936002)(4326008)(52536014)(38100700002)(76116006)(54906003)(110136005)(64756008)(66446008)(66946007)(6636002)(66476007)(66556008)(83380400001)(26005)(86362001)(41300700001)(33656002)(5660300002)(2906002)(7416002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?SATEIX7X+jgRdRxXOtXdYt1v67jKHnZZxJyFyBUpzny0jyAPBjJEERZQCvvo?=
+ =?us-ascii?Q?JLYKTBRA0p5pED1HBzVBZlW/BAa46Y+1ho0jhDkGGDY5UPqjt0ncaGxkHUY5?=
+ =?us-ascii?Q?NdcavuJRVMCHjPbWmodrVDsbH9+4hR0fzRSOIn5oL93SYZmAWqTiT/ChtDfC?=
+ =?us-ascii?Q?ui6eKEk4CpKr1tuPcC4wGNz48TZoexHtOB2VOoyvRXuXlmct1yz85qV0yGxq?=
+ =?us-ascii?Q?ZA3mtarOJdCRiZDpX6S11AaAjhO/fKvFjAVHjudVrPnEYq73fcAcVhhn6MIl?=
+ =?us-ascii?Q?FYftv9WApNWaOu8CebrZ2NiMef1vilsYFGQgtVUF+evUhUoAz2RmG2EBYgqG?=
+ =?us-ascii?Q?P4RshIIaQzx8jERNA5N0K9jlr8+86AVwsSgYhltXqsn3U/8NsDNX7GQtMoUl?=
+ =?us-ascii?Q?lHiUty4ozmEyAflD6xEp5bnOLmoLRjLWd02M2FpjofHpNKs69splAWcoc8y1?=
+ =?us-ascii?Q?RGObphxbMvacP2gG0A5uQQWJtY4xJXxMAUEDXtRNExyXflED6Hy+3KJ0U1eZ?=
+ =?us-ascii?Q?PesdF75D6vf7MxE6fZL2ONnZf6ir5o2hGHbEeMYLqaeiREJpSzYdI57MHHzE?=
+ =?us-ascii?Q?5x5GzctD0E5cJJJoX2TH5aAVk4YngwjzmOmjjn+IgK0ZcHH2H9Li5N4ruwgv?=
+ =?us-ascii?Q?pKJsoA/lfwUjN+Ezy7QX0cuXGUUrxTWzM0SysAkd7njnumVlr9Twy7txs+TT?=
+ =?us-ascii?Q?0z0vikP3PLpedxgY5RuPJHrkYQzZxeMi28KoPZNnqwP2chSiDTZWQnrVZvWx?=
+ =?us-ascii?Q?Bku/qkJiQ4T5wYLfApt0u7Bl5jy5XHp1KbGFlVI6B2HqxEPVY38eqrDFNr0Q?=
+ =?us-ascii?Q?qfmQCA898j5okPxkfe7Xvmu2VESOHF9bb+r0WNfYF5oFY3vqY5GnH2BSTeVG?=
+ =?us-ascii?Q?kY/gOyxjUmc/PLeN6Kw37XCAV5rLQKBCeLjCL9CNDztyJ1Ej3jg00dZbxh/g?=
+ =?us-ascii?Q?TTecOEtme9iqjK24o0P8pZkyY7U1UWYKXgl2n/OE/6CCmCYlIq1KWgUnNmbU?=
+ =?us-ascii?Q?TQ3xdQaEycq9kb1AfDs670S8mIMPqNMwzXv8mCSgir2KDhd4IJ7qTqcSPBuI?=
+ =?us-ascii?Q?ZqUhqZ5x7TYeXWm9cDm0/eaIQppgbf16dwVECDKEiImNBqmYlhKUiiu5yLVK?=
+ =?us-ascii?Q?JCg2JHLw0IXFk3aWo9GumrN6ly8f8YE7OmgPQsdMg8RvSfFLOkPWuwvOc6LA?=
+ =?us-ascii?Q?8LYsWY2130GGx/5suA9DCKhBMO2+oOd2XUhzWvGxSOAenlTAsiSPY4ByXp3h?=
+ =?us-ascii?Q?URgVOKhQHlNZ7V04I6APGKP29cehoDQnpOTeW4h1GWaxyVi8bzhtRfJQb+dn?=
+ =?us-ascii?Q?p4+T3HoQaG7gTTz/7ILLS8/DfLFmlqwPqwVQKB6fY1ngTfDujdb/iZxz/cCB?=
+ =?us-ascii?Q?Ze5+AyXN9ipZQiU0xNbnPq3MqyVdfKdtZrTVFrOPHpaSDmSBQurTkLjAftCs?=
+ =?us-ascii?Q?/DUgn8pnfJNQiwGRL8DcenxSwJHwgd0aKIqRkF0JNGgMtAVryef2GpsNddZs?=
+ =?us-ascii?Q?F0I03QLXqDRP+YTR+fIKaCZ+9MYcPgCfOTV//fPORYlylwGYD0MdsOPron1Y?=
+ =?us-ascii?Q?qME0+vSchA/bLsswwYg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] watchdog: Add ChromeOS EC-based watchdog driver
-Content-Language: en-US
-To: Lukasz Majczak <lma@chromium.org>, Gwendal Grignou
- <gwendal@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
- Radoslaw Biernacki <biernacki@google.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>, Lee Jones <lee@kernel.org>,
- Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>,
- linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
- chrome-platform@lists.linux.dev
-References: <20240119084328.3135503-1-lma@chromium.org>
- <20240119084328.3135503-3-lma@chromium.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240119084328.3135503-3-lma@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5938.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 23e7ea79-c137-42c5-32ab-08dc1b355eb4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2024 10:32:01.5765
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X8EwNoiF+NF5gh9YOm7Zxt3PBMInuwetlP2ulmQamAkv83RMBrk5fF8LzoUDtfa1pA7b6Orxe4Tr8L94z7Yr+g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4875
 
-On 19/01/2024 09:43, Lukasz Majczak wrote:
-> Embedded Controller (EC) present on Chromebook devices
-> can be used as a watchdog.
-> Implement a driver to support it.
-> 
+> -----Original Message-----
+> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> Sent: Friday, January 19, 2024 5:06 PM
+> To: dlemoal@kernel.org; cassel@kernel.org; robh+dt@kernel.org;
+> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+> linus.walleij@linaro.org; brgl@bgdev.pl; Simek, Michal
+> <michal.simek@amd.com>; p.zabel@pengutronix.de;
+> gregkh@linuxfoundation.org; Mehta, Piyush <piyush.mehta@amd.com>;
+> Sayyed, Mubin <mubin.sayyed@amd.com>; Pandey, Radhey Shyam
+> <radhey.shyam.pandey@amd.com>
+> Cc: linux-ide@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; linux-gpio@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-usb@vger.kernel.org; git (AMD-Xilinx)
+> <git@amd.com>
+> Subject: [PATCH] dt-bindings: xilinx: replace Piyush Mehta maintainership
+>=20
+> As Piyush is leaving AMD, he handed over ahci-ceva, ZynqMP Mode Pin GPIO
+> controller, Zynq UltraScale+ MPSoC and Versal reset, Xilinx SuperSpeed
+> DWC3 USB SoC controller, Microchip USB5744 4-port Hub Controller and Xili=
+nx
+> udc controller maintainership duties to Mubin and Radhey.
+>=20
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Acked-by: Mubin Sayyed <mubin.sayyed@amd.com>
 
-
-..
-
-> +static int cros_ec_wdt_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct cros_ec_dev *ec_dev = dev_get_drvdata(dev->parent);
-> +	struct cros_ec_device *cros_ec = ec_dev->ec_dev;
-> +	struct watchdog_device *wdd;
-> +	union cros_ec_wdt_data arg;
-> +	int ret = 0;
-> +
-> +	wdd = devm_kzalloc(&pdev->dev, sizeof(struct watchdog_device), GFP_KERNEL);
-
-sizeof(*)
-
-> +	if (!wdd)
-> +		return -ENOMEM;
-> +
-> +	arg.req.command = EC_HANG_DETECT_CMD_GET_STATUS;
-> +	ret = cros_ec_wdt_send_cmd(cros_ec, &arg);
-> +	if (ret < 0)
-> +		return dev_err_probe(dev, ret, "Failed to get watchdog bootstatus");
-> +
-> +	wdd->parent = &pdev->dev;
-> +	wdd->info = &cros_ec_wdt_ident;
-> +	wdd->ops = &cros_ec_wdt_ops;
-> +	wdd->timeout = CROS_EC_WATCHDOG_DEFAULT_TIME;
-> +	wdd->min_timeout = EC_HANG_DETECT_MIN_TIMEOUT;
-> +	wdd->max_timeout = EC_HANG_DETECT_MAX_TIMEOUT;
-> +	if (arg.resp.status == EC_HANG_DETECT_AP_BOOT_EC_WDT)
-> +		wdd->bootstatus = WDIOF_CARDRESET;
-> +
-> +	arg.req.command = EC_HANG_DETECT_CMD_CLEAR_STATUS;
-> +	ret = cros_ec_wdt_send_cmd(cros_ec, &arg);
-> +	if (ret < 0)
-> +		return dev_err_probe(dev, ret, "Failed to clear watchdog bootstatus");
-> +
-> +	watchdog_stop_on_reboot(wdd);
-> +	watchdog_stop_on_unregister(wdd);
-> +	watchdog_set_drvdata(wdd, cros_ec);
-> +	platform_set_drvdata(pdev, wdd);
-> +
-> +	return devm_watchdog_register_device(dev, wdd);
-> +}
-> +
-> +static int __maybe_unused cros_ec_wdt_suspend(struct platform_device *pdev, pm_message_t state)
-> +{
-> +	struct watchdog_device *wdd = platform_get_drvdata(pdev);
-> +	int ret = 0;
-> +
-> +	if (watchdog_active(wdd))
-> +		ret = cros_ec_wdt_stop(wdd);
-> +
-> +	return ret;
-> +}
-> +
-> +static int __maybe_unused cros_ec_wdt_resume(struct platform_device *pdev)
-> +{
-> +	struct watchdog_device *wdd = platform_get_drvdata(pdev);
-> +	int ret = 0;
-> +
-> +	if (watchdog_active(wdd))
-> +		ret = cros_ec_wdt_start(wdd);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct platform_driver cros_ec_wdt_driver = {
-> +	.probe		= cros_ec_wdt_probe,
-> +	.suspend	= pm_ptr(cros_ec_wdt_suspend),
-> +	.resume		= pm_ptr(cros_ec_wdt_resume),
-> +	.driver		= {
-> +		.name	= DRV_NAME,
-> +	},
-> +};
-> +
-> +module_platform_driver(cros_ec_wdt_driver);
-> +
-> +static const struct platform_device_id cros_ec_wdt_id[] = {
-> +	{ DRV_NAME, 0 },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(platform, cros_ec_wdt_id);
-
-device_id is not placed here, please open existing drivers for
-reference. Why this isn't referenced in driver structure?
-
-> +MODULE_DESCRIPTION("Cros EC Watchdog Device Driver");
-> +MODULE_LICENSE("GPL");
-
-Best regards,
-Krzysztof
+Thanks,
+Mubin
+> ---
+>  Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml      | 3 ++-
+>  .../devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml     | 3 ++-
+>  Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml | 3 ++-
+>  Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml         | 3 ++-
+>  Documentation/devicetree/bindings/usb/microchip,usb5744.yaml   | 3 ++-
+>  Documentation/devicetree/bindings/usb/xlnx,usb2.yaml           | 3 ++-
+>  6 files changed, 12 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
+> b/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
+> index b29ce598f9aa..9952e0ef7767 100644
+> --- a/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
+> +++ b/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
+> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Ceva AHCI SATA Controller
+>=20
+>  maintainers:
+> -  - Piyush Mehta <piyush.mehta@amd.com>
+> +  - Mubin Sayyed <mubin.sayyed@amd.com>
+> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>=20
+>  description: |
+>    The Ceva SATA controller mostly conforms to the AHCI interface with so=
+me
+> diff --git a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-
+> modepin.yaml b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-
+> modepin.yaml
+> index b1fd632718d4..bb93baa88879 100644
+> --- a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-
+> modepin.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-
+> modepin.ya
+> +++ ml
+> @@ -12,7 +12,8 @@ description:
+>    PS_MODE). Every pin can be configured as input/output.
+>=20
+>  maintainers:
+> -  - Piyush Mehta <piyush.mehta@amd.com>
+> +  - Mubin Sayyed <mubin.sayyed@amd.com>
+> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>=20
+>  properties:
+>    compatible:
+> diff --git a/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.ya=
+ml
+> b/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml
+> index 49db66801429..1f1b42dde94d 100644
+> --- a/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml
+> +++ b/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml
+> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Zynq UltraScale+ MPSoC and Versal reset
+>=20
+>  maintainers:
+> -  - Piyush Mehta <piyush.mehta@amd.com>
+> +  - Mubin Sayyed <mubin.sayyed@amd.com>
+> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>=20
+>  description: |
+>    The Zynq UltraScale+ MPSoC and Versal has several different resets.
+> diff --git a/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
+> b/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
+> index bb373eb025a5..00f87a558c7d 100644
+> --- a/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
+> +++ b/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
+> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Xilinx SuperSpeed DWC3 USB SoC controller
+>=20
+>  maintainers:
+> -  - Piyush Mehta <piyush.mehta@amd.com>
+> +  - Mubin Sayyed <mubin.sayyed@amd.com>
+> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>=20
+>  properties:
+>    compatible:
+> diff --git a/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> index 6d4cfd943f58..445183d9d6db 100644
+> --- a/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> +++ b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> @@ -16,8 +16,9 @@ description:
+>    USB 2.0 traffic.
+>=20
+>  maintainers:
+> -  - Piyush Mehta <piyush.mehta@amd.com>
+>    - Michal Simek <michal.simek@amd.com>
+> +  - Mubin Sayyed <mubin.sayyed@amd.com>
+> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>=20
+>  properties:
+>    compatible:
+> diff --git a/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
+> b/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
+> index 868dffe314bc..a7f75fe36665 100644
+> --- a/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
+> +++ b/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
+> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Xilinx udc controller
+>=20
+>  maintainers:
+> -  - Piyush Mehta <piyush.mehta@amd.com>
+> +  - Mubin Sayyed <mubin.sayyed@amd.com>
+> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>=20
+>  properties:
+>    compatible:
+> --
+> 2.34.1
 
 
