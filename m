@@ -1,143 +1,146 @@
-Return-Path: <linux-kernel+bounces-33883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2467F836FE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:28:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1BA836FEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4932E1C28ED2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:28:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 916861F2C04B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B1751007;
-	Mon, 22 Jan 2024 18:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iuBJLLG8"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D2FB5102B;
+	Mon, 22 Jan 2024 18:00:21 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D141862D;
-	Mon, 22 Jan 2024 18:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8814851023;
+	Mon, 22 Jan 2024 18:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705946407; cv=none; b=KBSne2XajvuRMnw/NOtvqSq67RQ5sBrTI9IqBCeeRR3G3TeBX7LEC4e/YvSZ+zfSD5cmSAYmEGS+WzEKTnGjp31GcgikUm3OIVHGA9dONqqTORWCuTaOiIbj0EaSIFdoErnLEkztdoX3rW2Rtq+YOj1OMzLqO4htyciYo2r6adY=
+	t=1705946420; cv=none; b=COhhDyP3I0brm5h6VOn3XOFfDk7henD/Vkk9Rh2HVGKouaNvo2hl9PKnE0CzQU6hvnsFQ0ox9O8eI51UGWS8yaIrbRdyKta/xHGpyO0sB7bvsRApiwizSk6FXMDGHSsAUMuFbK+f35fHaU6bki18IAXlPUqW1ZGh0c9hSTnBgkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705946407; c=relaxed/simple;
-	bh=YxA3FciUh7WHWBP8rVCXFrEYIPVi1Wiu8BGAwLHobBE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jDjW0FFdL5DMRviDqmImWYBrAYVoTbkBW6nuqjtPAs8kLxbhSP65al9Z0nnzg35dIFdj4qgC7U51KIxKs7by/r/zhw9e/FnLTau51d4BBhCPM3NVXc4v/vYZmUjDL8ZOwkFRv7/BlxsxOoBW/8fOh+CRa8o1KbfUZNZ016IIYZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iuBJLLG8; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6818aa08a33so23933716d6.0;
-        Mon, 22 Jan 2024 10:00:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705946405; x=1706551205; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zWHeU5nfhZzhpJGxwjKpWMEQyqrAZX6MeJJ3MaBUJ7I=;
-        b=iuBJLLG8KCNxtDWCpJPHporTd6zJrQRq/ZCewBkdRPX6au+0wIOtRu2tjfydoOIk7Q
-         1Hz8UiFB6SyEQjkbPTfbZIVfSKDgQyKU6bnknydy2jUIuw8kvfUQ+jzwnoqKh9yHxtV6
-         nAgDdjhA4H7l83/OsgjFUecgHo9Jac27AWtyD1/v9YPKmftWVDjH9XhDVjKTkiun9vcK
-         ab6g1X4sM/cDEU7zu/k0NUlQiq+QUisvyBQJQGUJVyje6Cufk3jfSZOutFFghkG2E6Dn
-         s/TU7rkGCWIr4/RocAMeea9ImUv8cgJ9N6zpw2VQBW0esEdzlADi3O6Ks1AAkWtcnzwO
-         EnkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705946405; x=1706551205;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zWHeU5nfhZzhpJGxwjKpWMEQyqrAZX6MeJJ3MaBUJ7I=;
-        b=MrFUjVIn0IyayqkoTk70FKy/BTlDxUVYgMzuyKckuP9A7Eu6o8QYuSe+htotwdmAO3
-         818T9LK9iiDckKKaLbXnYLaPvEGiBtaVnzisUrJ2xt4KmTIt/HoRlZG3M0Ib0zUoIPAK
-         q9L9ju75ajdrhBRQO1Eu/b0ydHBVnxv8+xswnGaX7NITeBnl9WczcR5X5HQ3TMW+3XXK
-         bQAbCnsTDQWAjRyyORHJsr5J5lzai449TxAARA78qAXNbZN74eu23py7cyd2fGLY1PFF
-         K9AKeNpAGauHxVS68IodE39gFRT2Hc0yBOnwTJBydj7OLx8ahtsCQ+kK2WGuCdykBwdu
-         QQRA==
-X-Gm-Message-State: AOJu0YzRq/mhPn8CqnsHg0VS5Vg2doivp8qa2H2naU2HXP1i6XrPI91r
-	TwGb2Llmk/c0o39KbdE0va3rvuzzUPnQkmkLW16vdggfrYqf06IL
-X-Google-Smtp-Source: AGHT+IGUIjD0P1Ej78kJM2emWkqZB/fgUU1RLgTBmY0AF4qHo9R8F4UrRs4yhvEtBHsUgxzdHBtoFA==
-X-Received: by 2002:a05:6214:caf:b0:685:29b1:19da with SMTP id s15-20020a0562140caf00b0068529b119damr5878000qvs.12.1705946404774;
-        Mon, 22 Jan 2024 10:00:04 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id kv2-20020a056214534200b0067f0a06c1e3sm2587292qvb.132.2024.01.22.10.00.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 10:00:04 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 859A227C0068;
-	Mon, 22 Jan 2024 13:00:03 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 22 Jan 2024 13:00:03 -0500
-X-ME-Sender: <xms:Iq2uZQ4OCUiSXsg-lxbfibO1GPZyq7CceE0aZ95Qdh3Fwnj2RG_6FA>
-    <xme:Iq2uZR6sWS9D1yTjeMavCki5EoJBrDa3yAE577gwP4BAVrnT7J2_GzAKFYiMlErAb
-    rd6K1wLkP2kDg4tMw>
-X-ME-Received: <xmr:Iq2uZfeU2WDBqYJgtm0RGP1IJLzzdksyYwWopyA_14YvdWw_DOWImzJEqHA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedguddthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:Iq2uZVLDEYP1o0zeuOeFpzf3i49A7AP0FReTKAiP0CZpB5fZ8QUjLQ>
-    <xmx:Iq2uZUKa5yubdzpJCJyV7MDSAiBlgHTClCD9Ucx1msIrrxwxZ4wZKA>
-    <xmx:Iq2uZWyW8rdTlsXR2DHdsad9Bm64tdYBGLHUB5GZHUmu-5thzabZjg>
-    <xmx:I62uZUBafyQ-NpUprxsnp341muA_GdXRQuRTRuxGKMf8So3XwMRlvQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 22 Jan 2024 13:00:01 -0500 (EST)
-Date: Mon, 22 Jan 2024 09:59:25 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Kees Cook <keescook@chromium.org>,	Matthew Wilcox <willy@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 8/9] rust: file: add `DeferredFdCloser`
-Message-ID: <Za6s_dzKKJBwP2mc@boqun-archlinux>
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com>
- <20240118-alice-file-v3-8-9694b6f9580c@google.com>
+	s=arc-20240116; t=1705946420; c=relaxed/simple;
+	bh=1QPBYp1cuVlPzvmIrkvDtRmi9tk3BbCt5QfOkc4KoTA=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oNYcKz0LIXIuDfoVseADQ+wbhY/PxzZL+hDYsVttKEi4SsPnzZaEvgJeVY86/PdCMllRsfJ7z+6xvqJFvlpntca6QpEyLQvycsXODO/hMhE8btP6tezSbS1hs/wPOfifpYHKKmWXlqhUbH54CNAbwQOnuWcay96BUo5/yZ1Kumw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TJdGS60Srz67ZCr;
+	Tue, 23 Jan 2024 01:57:20 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id DA1F61400F4;
+	Tue, 23 Jan 2024 02:00:14 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 22 Jan
+ 2024 18:00:14 +0000
+Date: Mon, 22 Jan 2024 18:00:13 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+CC: Russell King <rmk+kernel@armlinux.org.uk>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
+	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
+	<justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
+ 'present'
+Message-ID: <20240122180013.000016d5@Huawei.com>
+In-Reply-To: <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
+	<CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118-alice-file-v3-8-9694b6f9580c@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, Jan 18, 2024 at 02:36:49PM +0000, Alice Ryhl wrote:
-[...]
-> +        // SAFETY: This is safe no matter what `fd` is. If the `fd` is valid (that is, if the
-> +        // pointer is non-null), then we call `filp_close` on the returned pointer as required by
-> +        // `close_fd_get_file`.
-> +        let file = unsafe { bindings::close_fd_get_file(fd) };
+On Mon, 18 Dec 2023 21:35:16 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-FYI, this function was renamed at:
+> On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlinux=
+org.uk> wrote:
+> >
+> > From: James Morse <james.morse@arm.com>
+> >
+> > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
+> > present. =20
+>=20
+> Right.
+>=20
+> > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
+> > CPUs can be taken offline as a power saving measure. =20
+>=20
+> But still there is the case in which a non-present CPU can become
+> present, isn't it there?
 
-	a88c955fcfb4 ("file: s/close_fd_get_file()/file_close_fd()/g")
+Not yet defined by the architectures (and I'm assuming it probably never wi=
+ll be).
 
-Regards,
-Boqun
+The original proposal we took to ARM was to do exactly that - they pushed
+back hard on the basis there was no architecturally safe way to implement i=
+t.
+Too much of the ARM arch has to exist from the start of time.
+
+https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f879ad=
+95@arm.com/
+is one of the relevant threads of the kernel side of that discussion.
+
+Not to put specific words into the ARM architects mouths, but the
+short description is that there is currently no demand for working
+out how to make physical CPU hotplug possible, as such they will not
+provide an architecturally compliant way to do it for virtual CPU hotplug a=
+nd
+another means is needed (which is why this series doesn't use the present b=
+it
+for that purpose and we have the Online capable bit in MADT/GICC)
+
+It was a 'fun' dance of several years to get to that clarification.
+As another fun fact, the same is defined for x86, but I don't think
+anyone has used it yet (GICC for ARM has an online capable bit in the flags=
+ to
+enable this, which was remarkably similar to the online capable bit in the
+flags of the Local APIC entries as added fairly recently).
+
+>=20
+> > On arm64 an offline CPU may be disabled by firmware, preventing it from
+> > being brought back online, but it remains present throughout.
+> >
+> > Adding code to prevent user-space trying to online these disabled CPUs
+> > needs some additional terminology.
+> >
+> > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
+> > that it makes possible CPUs present. =20
+>=20
+> Honestly, I don't think that this change is necessary or even useful.
+
+Whilst it's an attempt to avoid future confusion, the rename is
+not something I really care about so my advice to Russell is drop
+it unless you are attached to it!
+
+Jonathan
+
+
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
 
