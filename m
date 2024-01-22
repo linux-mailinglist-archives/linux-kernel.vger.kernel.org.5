@@ -1,154 +1,91 @@
-Return-Path: <linux-kernel+bounces-33818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3500836EF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:06:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8962C836EF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:06:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76E101F2C4FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:06:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9E9B280FAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C92A65195;
-	Mon, 22 Jan 2024 17:27:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A80C657A2;
+	Mon, 22 Jan 2024 17:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="k2RTabvp"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T5Whsgbe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1A764CF3;
-	Mon, 22 Jan 2024 17:27:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAD1651AE;
+	Mon, 22 Jan 2024 17:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705944475; cv=none; b=IiW1my2hweiB/7c0OKC2aUOMJGQ/GYSNHXiDdBVUlf3iw7KonByRFJUx7aRskv7UgguqV8OGNFi/hCVWAmnhzSjsJqY80/eFx1458TqE6cx7n3Y7DPF3U2xaRIAlVORopNQ0wzx3gg3lKKww+g1iUxEBvcR1Sks/reBszJFcQhE=
+	t=1705944486; cv=none; b=EZVGwLJTsaAQ1ZOfkBPxQTCm//fji549OJXxA65laHcOIHSZbjWbfgpG0ZLW3PFYQahEgPFkVnUT6KVQeb/7p7/hYEdA2uI+CgyQD3atXSSi1CtwUg0zHYludQSkXJOtXdv1VB+WI3rt8dTOloyN2BGve7fTxK2xRKs5O/DIZBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705944475; c=relaxed/simple;
-	bh=HxKy5Bibhf+2B00lsgPRKpJNJzyu7ueJfD16Tr2+GJg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XoYYi6D/A7GiGaMGZ+UxyabrgoMSI+fmrWjLGFwcHxcqep4+h3gzbe8zsCrhEMsO965JdyK7eZlAl8Xl2X9oJ/FldO9D6RGqXkHsumA+qGN9WF2cJ6O1iSo/U3NWpWcQYo6+3/1UZ1ATjalxnl1pHnmGsrO/BFMYL366XRJLSh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=k2RTabvp; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=4s5ASXue467nLReommt3Qb/xh4/CleRrf7HABCgDhAc=; b=k2RTabvplP91YS/X8q/zqV21/0
-	qq9DgaiMgmZJiqO3jB55Q9chgwQ35eB1+eA7x7jhEHzaKdet6hSaC52CWHQUgwvG7gkDXSgFaHYat
-	F0fK7xJGkii9k+DKttPiUF0xErSZBLXj7z3pTPWSb7ke6hMhA8Q1+WfuHcA4kdmfF4+MTDeWJqrHn
-	DKxdjxQtMmdbZ+GjpYGGO2++xFou5Tg1sahLJn3m0tXgnSlLLVFyRoEFSuaMmiAwqWqCQ62AkNjs/
-	r8m/fC/O5qBwbiu03pbM8QcCyTyuegbDsHWC+bqv2hZ/QYcKy7OJpQoabZft8xMDIEc6qarES6VyY
-	n51mtm7A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60388)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rRy5I-0001Gc-2T;
-	Mon, 22 Jan 2024 17:27:44 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rRy5D-0001Bz-Ok; Mon, 22 Jan 2024 17:27:39 +0000
-Date: Mon, 22 Jan 2024 17:27:39 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 03/21] ACPI: processor: Register CPUs that are
- online, but not described in the DSDT
-Message-ID: <Za6li4NhfvL6x6Vl@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOg2-00Dvjk-RI@rmk-PC.armlinux.org.uk>
- <CAJZ5v0ju1JHgpjuFLHZVs4NZiARG6iBZN_wza6c2e0kDhZjK0w@mail.gmail.com>
- <ZaURtUvWQyjYfiiO@shell.armlinux.org.uk>
- <20240122160227.00002d83@Huawei.com>
+	s=arc-20240116; t=1705944486; c=relaxed/simple;
+	bh=52IzLNkZxh7QhXFoV4ABbKrbI7QGTj3FNCgGcZDHDww=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SYPoBqgvMTnLEeEkHFGPDdNF7K2kxB+szXCr8nINy6JejawB4IVbRs7/UpZketMybAb2RmOopjI3O1QqSrb3JE2811prLFNMbIKq1ueS5J2QYGGj2D1wfQSF3GMsZltUZzoAg8Z44o8tqtH9X3LSf1MZq180d13ncTiAi0rKCIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T5Whsgbe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B031BC43394;
+	Mon, 22 Jan 2024 17:28:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705944485;
+	bh=52IzLNkZxh7QhXFoV4ABbKrbI7QGTj3FNCgGcZDHDww=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=T5WhsgbeEW3ZXKO2vbH5I1UYpsnZqe5JDc8V6Rov7Jf2+l7MdWyUX0FPeZTcL43/V
+	 +bkrnIMdKgWhiI3urV/0L9JZh2amhfdc1SG/luKrsXSXFt7W1n/Mqs3onHkPBPRqYX
+	 /aHnuQgdbuRFSPSipZZkoQwANsE8D31l/IDFtLMLCX8J5jsxfiyMdq6hLFM8ZOZI8A
+	 mwaMppQ+KKZOTO2fJS/zyc22CimfJRAiDoM3WMTZ9q9LuUntyG7ik9oNwrjjK39U5Y
+	 04oemuiJf5uWFZBlzTSl/BusxVckG0a9XPhwztucndTp9wnxq0Pu2dpK+mMNzO0Fyf
+	 KtN7EOem8qN1w==
+Date: Mon, 22 Jan 2024 09:28:04 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>, Netdev <netdev@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Kernel panic in netif_rx_internal after v6 pings between netns
+Message-ID: <20240122092804.3535b652@kernel.org>
+In-Reply-To: <5340b60d-a09a-4865-a648-d1a45e9e6d5f@kernel.org>
+References: <98724dcd-ddf3-4f78-a386-f966ffbc9528@kernel.org>
+	<CANn89iLAYXpRiGaGi+rvOZyxMfpUmW2cOg6hLhqE=+2JJS8rkw@mail.gmail.com>
+	<65c4f6a2-207f-45e0-9ec3-bad81a05b196@kernel.org>
+	<5340b60d-a09a-4865-a648-d1a45e9e6d5f@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240122160227.00002d83@Huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 04:02:27PM +0000, Jonathan Cameron wrote:
-> On Mon, 15 Jan 2024 11:06:29 +0000
-> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+On Sat, 20 Jan 2024 18:53:50 +0100 Matthieu Baerts wrote:
+> FYI, I managed to find a commit that seems to be causing the issue:
 > 
-> > On Mon, Dec 18, 2023 at 09:22:03PM +0100, Rafael J. Wysocki wrote:
-> > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:  
-> > > >
-> > > > From: James Morse <james.morse@arm.com>
-> > > >
-> > > > ACPI has two descriptions of CPUs, one in the MADT/APIC table, the other
-> > > > in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Processors"
-> > > > says "Each processor in the system must be declared in the ACPI
-> > > > namespace"). Having two descriptions allows firmware authors to get
-> > > > this wrong.
-> > > >
-> > > > If CPUs are described in the MADT/APIC, they will be brought online
-> > > > early during boot. Once the register_cpu() calls are moved to ACPI,
-> > > > they will be based on the DSDT description of the CPUs. When CPUs are
-> > > > missing from the DSDT description, they will end up online, but not
-> > > > registered.
-> > > >
-> > > > Add a helper that runs after acpi_init() has completed to register
-> > > > CPUs that are online, but weren't found in the DSDT. Any CPU that
-> > > > is registered by this code triggers a firmware-bug warning and kernel
-> > > > taint.
-> > > >
-> > > > Qemu TCG only describes the first CPU in the DSDT, unless cpu-hotplug
-> > > > is configured.  
-> > > 
-> > > So why is this a kernel problem?  
-> > 
-> > So what are you proposing should be the behaviour here? What this
-> > statement seems to be saying is that QEMU as it exists today only
-> > describes the first CPU in DSDT.
+>   8e791f7eba4c ("x86/kprobes: Drop removed INT3 handling code")
 > 
-> This confuses me somewhat, because I'm far from sure which machines this
-> is true for in QEMU.  I'm guessing it's a legacy thing with
-> some old distro version of QEMU - so we'll have to paper over it anyway
-> but for current QEMU I'm not sure it's true.
+> It is not clear why, but if I revert it, I can no longer reproduce the
+> issue. I reported the issue to the patch's author and the x86's ML:
 > 
-> Helpfully there are a bunch of ACPI table tests so I've been checking
-> through all the multi CPU cases.
+> https://lore.kernel.org/r/06cb540e-34ff-4dcd-b936-19d4d14378c9@kernel.org
 > 
-> CPU hotplug not enabled.
-> pc/DSDT.dimmpxm  - 4x Processor entries.  -smp 4
-> pc/DSDT.acpihmat - 2x Processor entries.  -smp 2
-> q35/DSDT.acpihmat - 2x Processor entries. -smp 2
-> virt/DSDT.acpihmatvirt - 4x ACPI0007 entries -smp 4
-> q35/DSDT.acpihmat-noinitiator - 4 x Processor () entries -smp 4 
-> virt/DSDT.topology - 8x ACPI0007 entries
-> 
-> I've also looked at the code and we have various types of
-> CPU hotplug on x86 but they all build appropriate numbers of
-> Processor() entries in DSDT.
-> Arm likewise seems to build the right number of ACPI0007 entries
-> (and doesn't yet have CPU HP support).
-> 
-> If anyone can add a reference on why this is needed that would be very
-> helpful.
+> Thank you again for your help.
 
-Maybe Salil can shed some light on this?
+Hi Matthieu!
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Somewhat related. What do you do currently to ignore crashes?
+I was seeing a lot of:
+https://netdev-2.bots.linux.dev/vmksft-net-mp/results/431181/vm-crash-thr0-2
+
+So I hacked up this function to filter the crash from NIPA CI:
+https://github.com/kuba-moo/nipa/blob/master/contest/remote/lib/vm.py#L50
+It tries to get first 5 function names from the stack, to form 
+a "fingerprint". But I seem to recall a discussion at LPC's testing
+track that there are existing solutions for generating fingerprints.
+Are you aware of any?
+
+(FWIW the crash from above seems to be gone on latest linux.git,
+this night's CIs run are crash-free.)
 
