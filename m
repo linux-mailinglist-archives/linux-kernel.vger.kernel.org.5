@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-33121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D18008364F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:02:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7028364F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:03:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62C81B26196
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:02:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3A741F262F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 411713D564;
-	Mon, 22 Jan 2024 14:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E3B3D965;
+	Mon, 22 Jan 2024 14:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hzS/xlOL"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HmTO/tUZ"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615723D3AE;
-	Mon, 22 Jan 2024 14:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B01333D3B7;
+	Mon, 22 Jan 2024 14:02:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705932137; cv=none; b=LfZbLk9bytilJ9tEtIaJkwuyS5DAPXUGpNTtbiZLFmH/aUjgvfqLyOoLXzEt0y3jPEO2M5mfXYn8Al4buSiQIfKWAeFe8KaEtsNxeigpbb78aNoZRxhKXZdCXt3rpnTJ5v2eYWP6TRHE+qXD7If/VnoPtplsAURD1zuJ2Hduo80=
+	t=1705932139; cv=none; b=tGjWibXLqWzXqn/o8GiUyC+pma/E8eGo8Q1hKNo0qZuj/On8acy9lYWP98Iqq2/Qm26uPN4lw+czr/RqRF08pMoaMq2wUt1DjsuYmwbwR7vEECu48fjRqjjVCFGMUO7CwMF1uSKBQwKB47pNBspvWR2klT4ef8Rs10LpbKCGZaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705932137; c=relaxed/simple;
-	bh=2H4lFZS69C/XBONPgR70jIXsN2kH5j6TPru8M4UOQUo=;
+	s=arc-20240116; t=1705932139; c=relaxed/simple;
+	bh=ERbftZ3Vd+XCk1UE8noci/tViuxyTk7z6UOt+ZHs2Xs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dPRK6as0uGXFiF49gL2CTad3qx/fEgtCQkfMCDrZY4txlTRv6i2EHvBRVpxjP3a3o3JHEcD7B3MqjCVJzroL18XVaq2QHBQZyPR2scJcIPr/DkHslD3Ij4Wx2RDWF5O3LNuZPqE8WKuRmpPe5uz8BOP3KJy/I/c4m9YJQj2efq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hzS/xlOL; arc=none smtp.client-ip=209.85.210.172
+	 MIME-Version; b=gLhxRKHs9BzvJxLHeZvLjgYTLovlbcm1edEGJGul/BlRooz47/OTDANA3wSYadBlzEUwetGEUVcYVH67BiABqUjFk1GHCteMnpYn0xLuV0LSzHgEi3GdpY/eEx3EYf/AXuzlzvL4izRaE/rMmpMAA0pD3TjAOhMhjeLjcdrWneY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HmTO/tUZ; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6dbda9a4facso536894b3a.3;
-        Mon, 22 Jan 2024 06:02:16 -0800 (PST)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6dbd7f1a300so1523259b3a.1;
+        Mon, 22 Jan 2024 06:02:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705932135; x=1706536935; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705932138; x=1706536938; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3saB5AnYd5a6SwBp3LUujaI+Q8bdmZIuksz8EpNWVpk=;
-        b=hzS/xlOLYq1jZYZ6ihK1V70UF1jIY+qMYlHYtw+sjway6PlG4xhdOh6Fe01KJG4lK3
-         rru/ikZ26uOhMDFvacs3Qb9qtJ2rGYH79KX29dCVpLKvx2w7u3tfhdRAYgLBug8hSL5+
-         tzYcW0RKVbPb1yCIWFUisQArca2Fhn9uNdQ9twEDx7R97oiucj0Q7lucJcsWjGLHsuSR
-         C75E8a+yeE3Fh01mYKK94FFnuD8lD7L9N6TKbK0+tRXHKx45O6YrVTK1whxekf4gKhy+
-         s3rj7wNOaE/DFtS4QAKtknRT4YRNkCUXvKZ4Jn3vNUK5a5G54TYGbEq0pLlKwfJVlIfL
-         ADLg==
+        bh=la+vRQhSHTIGLMc3mcFeHM8AWwBAMUAN3NmM93QvSNo=;
+        b=HmTO/tUZfZnGamOKh+7vE8eZjCdP6/9GG8dCth0ufrmF81EQ43xXJXuyvE+4XPkUbf
+         ADK0fcCISS69A/lFukyWolPBckDAj+Xj9L556QVZl/alk0r9Vg0k1ghsNPUshFLGBZ52
+         ohhehxfGVVbBReAvkXMUcTKVTsShfm1Vm43S2cHf0pPwe+CGQJzB+tcwhh1kjnGMJfC2
+         MNYP8fXnu4HdIQPbQCn7LgElVaT3dxmAE1fLJ8bgoLvEvLkUZCG79+3kFkybI+4S1XLm
+         PzYbujbKzd4JCCdXcZbM8Aq1lzoBLsHErE/H3N/MIjLeuzal47Ya8UeQdetyMJHxW6KJ
+         T4PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705932135; x=1706536935;
+        d=1e100.net; s=20230601; t=1705932138; x=1706536938;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3saB5AnYd5a6SwBp3LUujaI+Q8bdmZIuksz8EpNWVpk=;
-        b=vYkJXlzkqB8rhWARzTWursBpT8cTnMHAdtTo3DZcxPyi3mljte1cY+vsbsEOUoyA12
-         vL7fefU5QRXEMdbEBkIGVvaKnz9sHCaC4CbAQSukNJOVGINyBu9EQgaFg9gKoQr2799E
-         61vv1Nb6yrotgVEuCa4gEC3rpgNVoLh5RUzeUsHzQqq8uzIHway/h5n68ApN0hw8NbF8
-         nZGvtlBzGfTbOyanD24MVPRYcybbSG4hMgkG3FBj0nDtirKS/Zh8HKmKXu9REp7Jlnbq
-         ZfJBZBAZN6Xoi8bdAIcTACbWOoRRn8k/i9w3HBehcRWBVeqXIEq9rUtaGPzWLETmr60i
-         4E9g==
-X-Gm-Message-State: AOJu0YzUziCVrBPQoEx1hdIQLKuw/rHIKvClHGSukfMIi3RqK4GcK1Pb
-	cuAcZhAXoinUUjgxKxDwQ4Rf5WJPIVH+5nqmrbyUdcVv1pJ2VdBd
-X-Google-Smtp-Source: AGHT+IEgsc3djFTFny58gr9cIUPawPb9DoRNWpB2eJWgMYGXwAetzri5V58ysQB0T35kHliBbno1xg==
-X-Received: by 2002:a05:6a00:1c9f:b0:6db:cf40:3ab8 with SMTP id y31-20020a056a001c9f00b006dbcf403ab8mr1448379pfw.21.1705932135266;
-        Mon, 22 Jan 2024 06:02:15 -0800 (PST)
+        bh=la+vRQhSHTIGLMc3mcFeHM8AWwBAMUAN3NmM93QvSNo=;
+        b=f9C8G4PgsYIzSkJ8COIdK7PKqAhBgFiyZTeMrmVMK6ahXWRekLXaQNT1GvL15ZDSLD
+         hp8SvLbUUb72dSc1WnD1XnGn3WZ4CIqhlm+cwIHwATVvayxjabwPi8kVt41lyLbiGng2
+         MWdY6MoFtkeEnd+zGn1t2FJIFS0WZPke55QGayo1iX2PZxieS33lgnc4rX80pMGQUecq
+         4BgMm963wfKHP8nSuZBmKO8eY+jV+bXUyZPUYfvgh19uXB0+orRESAhamvZPgwSysbU5
+         dGFUrLAJqGSMEj3lbUaGTbLm2ptJt91J8+f2H9NYZ1usy5BnlS9QaH2nAVdIrKM6ULQl
+         agWw==
+X-Gm-Message-State: AOJu0YzSBabZquII3/Wk+4aNWRuFWz4EynDMz/Lw1r7LGbv7eyDBy+2X
+	dtVcQAK6AgVJweGRpZeIHqZ+/czeC0nl/wfEh+vusTxtq7cw1JIIH4xdtibx
+X-Google-Smtp-Source: AGHT+IFlXVgxNNHnv4gj6Aw8Z8TH+81SJh+E6YLgOwRxh8uEMRp/HM4YCuvNOpXpCv3mXTzq3MGOqg==
+X-Received: by 2002:a62:d44b:0:b0:6db:3103:a1e3 with SMTP id u11-20020a62d44b000000b006db3103a1e3mr5131122pfl.27.1705932137894;
+        Mon, 22 Jan 2024 06:02:17 -0800 (PST)
 Received: from carrot.. (i223-218-154-72.s42.a014.ap.plala.or.jp. [223.218.154.72])
-        by smtp.gmail.com with ESMTPSA id n14-20020a62e50e000000b006da2aad58adsm9901913pff.176.2024.01.22.06.02.12
+        by smtp.gmail.com with ESMTPSA id n14-20020a62e50e000000b006da2aad58adsm9901913pff.176.2024.01.22.06.02.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 06:02:13 -0800 (PST)
+        Mon, 22 Jan 2024 06:02:16 -0800 (PST)
 From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-nilfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 02/15] nilfs2: convert segment buffer to use kmap_local
-Date: Mon, 22 Jan 2024 23:01:49 +0900
-Message-Id: <20240122140202.6950-3-konishi.ryusuke@gmail.com>
+Subject: [PATCH 03/15] nilfs2: convert nilfs_copy_buffer() to use kmap_local
+Date: Mon, 22 Jan 2024 23:01:50 +0900
+Message-Id: <20240122140202.6950-4-konishi.ryusuke@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122140202.6950-1-konishi.ryusuke@gmail.com>
 References: <20240122140202.6950-1-konishi.ryusuke@gmail.com>
@@ -83,31 +83,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In the segment buffer code used for log writing, a CRC calculation
-routine uses the deprecated kmap_atomic(), so convert it to use
-kmap_local.
+The routine nilfs_copy_buffer() that copies a block buffer still uses
+the deprecated kmap_atomic(), so convert it to use kmap_local.
 
 Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 ---
- fs/nilfs2/segbuf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/nilfs2/page.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/nilfs2/segbuf.c b/fs/nilfs2/segbuf.c
-index 6e59dc19a732..dc431b4c34c9 100644
---- a/fs/nilfs2/segbuf.c
-+++ b/fs/nilfs2/segbuf.c
-@@ -220,9 +220,9 @@ static void nilfs_segbuf_fill_in_data_crc(struct nilfs_segment_buffer *segbuf,
- 		crc = crc32_le(crc, bh->b_data, bh->b_size);
- 	}
- 	list_for_each_entry(bh, &segbuf->sb_payload_buffers, b_assoc_buffers) {
--		kaddr = kmap_atomic(bh->b_page);
-+		kaddr = kmap_local_page(bh->b_page);
- 		crc = crc32_le(crc, kaddr + bh_offset(bh), bh->b_size);
--		kunmap_atomic(kaddr);
-+		kunmap_local(kaddr);
- 	}
- 	raw_sum->ss_datasum = cpu_to_le32(crc);
- }
+diff --git a/fs/nilfs2/page.c b/fs/nilfs2/page.c
+index 5c2eba1987bd..14e470fb8870 100644
+--- a/fs/nilfs2/page.c
++++ b/fs/nilfs2/page.c
+@@ -103,11 +103,11 @@ void nilfs_copy_buffer(struct buffer_head *dbh, struct buffer_head *sbh)
+ 	struct page *spage = sbh->b_page, *dpage = dbh->b_page;
+ 	struct buffer_head *bh;
+ 
+-	kaddr0 = kmap_atomic(spage);
+-	kaddr1 = kmap_atomic(dpage);
++	kaddr0 = kmap_local_page(spage);
++	kaddr1 = kmap_local_page(dpage);
+ 	memcpy(kaddr1 + bh_offset(dbh), kaddr0 + bh_offset(sbh), sbh->b_size);
+-	kunmap_atomic(kaddr1);
+-	kunmap_atomic(kaddr0);
++	kunmap_local(kaddr1);
++	kunmap_local(kaddr0);
+ 
+ 	dbh->b_state = sbh->b_state & NILFS_BUFFER_INHERENT_BITS;
+ 	dbh->b_blocknr = sbh->b_blocknr;
 -- 
 2.34.1
 
