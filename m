@@ -1,107 +1,145 @@
-Return-Path: <linux-kernel+bounces-34232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E194983760A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:18:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE57183760C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:18:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96FA1280D5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:18:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D2C81F254E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3658448CC6;
-	Mon, 22 Jan 2024 22:17:42 +0000 (UTC)
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF374487B5;
+	Mon, 22 Jan 2024 22:18:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="pSLL7Qw/"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D784878F;
-	Mon, 22 Jan 2024 22:17:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.95.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D688B48791;
+	Mon, 22 Jan 2024 22:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705961861; cv=none; b=L/c8ipRS7v2sY2kD3YmQyZdqDVe6cgRp+4AfJ3ZP2M/rOSiH4O/4zNUOjzR6VsSbmLtYgn0NSrx0Oc+Sa+NHup67BAsqjh6/T4SW4YXHy6ZJtXBZxlP46E2GCYRtEDM5AvNi6tdm10xX/zujvVElt3Aq0VPFikqC5wVA/8xNZ9Y=
+	t=1705961926; cv=none; b=dSh+MnH9NZe24nGamOcTrmaH5PTsGSmonfZBkKXJDiLyTjVqKvcsVaxs2+OYENXwLwYyGnOhsC/fKnb69eWQ6vVXIZ6rwFf3VSi/cZUWG8lBFcODFqo7bzqb5xsnsDfJkN+jtKuV7Ap5DAtUqr2xg/9p/WVrTDSrTy3ZhmxEejI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705961861; c=relaxed/simple;
-	bh=VXI2zyva/FA7xQVMN8/hQAUXyYWMmB149msEZZUc1/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eLAPQwlAvwMV6HOL4evE0DT4GDHmlzBeEx/xg6Ai3JOWTtuShgCyqlUNyutkNuOAU3mIYysdDs62fjP9MmS7VuUjRCc72kSN5vU/vcWwYmYP4ZuTATqhNvAm42U4boKB75phOnH2BTJ/9DDyNGjAWaAsdYsc6c7imbyx9bY5liQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.95.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 2230F300002D2;
-	Mon, 22 Jan 2024 23:17:30 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 1681A30501F; Mon, 22 Jan 2024 23:17:30 +0100 (CET)
-Date: Mon, 22 Jan 2024 23:17:30 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Alex Williamson <alex.williamson@redhat.com>
-Cc: linux-pci@vger.kernel.org, bhelgaas@google.com,
-	linux-kernel@vger.kernel.org, eric.auger@redhat.com,
-	mika.westerberg@linux.intel.com, rafael.j.wysocki@intel.com,
-	Sanath.S@amd.com
-Subject: Re: [PATCH v2 2/2] PCI: Fix runtime PM race with PME polling
-Message-ID: <20240122221730.GA16831@wunner.de>
-References: <20230803171233.3810944-1-alex.williamson@redhat.com>
- <20230803171233.3810944-3-alex.williamson@redhat.com>
- <20240118115049.3b5efef0.alex.williamson@redhat.com>
+	s=arc-20240116; t=1705961926; c=relaxed/simple;
+	bh=mG5F7SUsP6kKkF9smZNF8bWdG0CxZ7Yyt+hCYsTEz5M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=o02AlWhoG7ZEWKZMBGcSPhUJnsOfAEB/3/PARQ3+lBRmBijemlB8xlnyEOSooI63ea1TkqTdqZp7ioH5GLVrwFIQ4IlnILSfY9KmxClGmiLMfuDnwyk4dTuCZ5b4WU1gHyeVhXW8O3S9Xjqk7mJnApT+2p5UxdoXVPfTfChqjpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=pSLL7Qw/; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+Received: from localhost (c-98-53-138-11.hsd1.co.comcast.net [98.53.138.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 8599C7AE6;
+	Mon, 22 Jan 2024 22:18:31 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 8599C7AE6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1705961911; bh=pPubC4Tc/qioeTfzHE0ZV6nqaXDRWuZN7VqWyXjBsGo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pSLL7Qw/fkxTNf/tDoC0C51wggAoNI8BKIGIniIvDsBrD5cCmYm8Ufb6nCCb5J/g7
+	 X0EPs0CaWryLirf4tgfPmAe7q/Di/b7gCvECnV3v/HJP7iaDHeOqlQ4mNLbjdW/U96
+	 Fih37z01w0ZHjknKEU5LQRI4e13wvsH9YxDziaSDWm6JhyMsxyj1ua+cxDjuN0erD2
+	 S5PJvOWhBvDgxzkBaa9U5WzuMeST5+v2BRZ9QgKHBg3J5yn/e7ZxWsEJ8SYjNcmYUv
+	 KzCNfzT59n8ppI3TeWxNmEZzxWCxji1/HQ84aMDfBh0lFnWviwunlWi7xpM5WE2VN7
+	 VJ4oomkWkWukg==
+From: Jonathan Corbet <corbet@lwn.net>
+To: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: rework the userspace-api top page
+Date: Mon, 22 Jan 2024 15:18:30 -0700
+Message-ID: <87ttn5m2q1.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118115049.3b5efef0.alex.williamson@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 
-On Thu, Jan 18, 2024 at 11:50:49AM -0700, Alex Williamson wrote:
-> On Thu,  3 Aug 2023 11:12:33 -0600 Alex Williamson <alex.williamson@redhat.com wrote:
-> > Testing that a device is not currently in a low power state provides no
-> > guarantees that the device is not immenently transitioning to such a state.
-> > We need to increment the PM usage counter before accessing the device.
-> > Since we don't wish to wake the device for PME polling, do so only if the
-> > device is already active by using pm_runtime_get_if_active().
-> > 
-> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> > ---
-> >  drivers/pci/pci.c | 23 ++++++++++++++++-------
-> >  1 file changed, 16 insertions(+), 7 deletions(-)
-> 
-> Resurrecting this patch (currently commit d3fcd7360338) for discussion
-> as it's been identified as the source of a regression in:
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=218360
-> 
-> Copying Mika, Lukas, and Rafael as it's related to:
-> 
-> 000dd5316e1c ("PCI: Do not poll for PME if the device is in D3cold")
-> 
-> where we skip devices in D3cold when processing the PME list.
-> 
-> I think the issue in the above bz is that the downstream TB3/USB4 port
-> is in D3 (presumably D3hot) and I therefore infer the device is in state
-> RPM_SUSPENDED.  This commit is attempting to make sure the device power
-> state is stable across the call such that it does not transition into
-> D3cold while we're accessing it.
-> 
-> To do that I used pm_runtime_get_if_active(), but in retrospect this
-> requires the device to be in RPM_ACTIVE so we end up skipping anything
-> suspended or transitioning.
+Add some subsection headings and reorder entries so that the page makes a
+bit more sense.  With luck, adding some ordering will also reduce merge
+conflicts due to everybody adding new entries at the end.
 
-How about dropping the calls to pm_runtime_get_if_active() and
-pm_runtime_put() and instead simply do:
+Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+---
+ Documentation/userspace-api/index.rst | 48 ++++++++++++++++++++-------
+ 1 file changed, 36 insertions(+), 12 deletions(-)
 
-			if (pm_runtime_suspended(&pdev->dev) &&
-			    pdev->current_state != PCI_D3cold)
-				pci_pme_wakeup(pdev, NULL);
+diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
+index 09f61bd2ac2e..99a388fdefb5 100644
+--- a/Documentation/userspace-api/index.rst
++++ b/Documentation/userspace-api/index.rst
+@@ -9,31 +9,55 @@ While much of the kernel's user-space API is documented elsewhere
+ also be found in the kernel tree itself.  This manual is intended to be the
+ place where this information is gathered.
+ 
++
++System calls
++============
++
+ .. toctree::
+-   :caption: Table of contents
+-   :maxdepth: 2
++   :maxdepth: 1
++
++   unshare
++   futex2
++   ebpf/index
++   ioctl/index
++
++Security-related interfaces
++===========================
++
++.. toctree::
++   :maxdepth: 1
+ 
+    no_new_privs
+    seccomp_filter
+    landlock
+-   unshare
++   lsm
+    spec_ctrl
++   tee
++
++Devices and I/O
++===============
++
++.. toctree::
++   :maxdepth: 1
++
+    accelerators/ocxl
+    dma-buf-alloc-exchange
+-   ebpf/index
+-   ELF
+-   ioctl/index
+    iommu
+    iommufd
+    media/index
+-   netlink/index
+-   sysfs-platform_profile
++   dcdbas
+    vduse
+-   futex2
+-   lsm
+-   tee
+    isapnp
+-   dcdbas
++
++Everything else
++===============
++
++.. toctree::
++   :maxdepth: 1
++
++   ELF
++   netlink/index
++   sysfs-platform_profile
+ 
+ .. only::  subproject and html
+ 
+-- 
+2.43.0
 
-Thanks,
-
-Lukas
 
