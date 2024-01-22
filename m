@@ -1,94 +1,96 @@
-Return-Path: <linux-kernel+bounces-33797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 753D1836EA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:59:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53C2F836EAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CB301F2D0F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:59:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CAC628D904
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECAC651029;
-	Mon, 22 Jan 2024 17:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C627B52F7B;
+	Mon, 22 Jan 2024 17:22:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Elw7hBqy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PyPltJOG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE523FB11
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894B552F6A;
+	Mon, 22 Jan 2024 17:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705944161; cv=none; b=Qk6UCRV8kf5DilFzRL4xFLBp4sVA2CdF71s2yqLXNOUOFr4ZMbb5EYSoL0re2+n2ROs36JaJggEXAZTi8V7e32s6J4EApDLhnDH+8bHEW/lBw9ZYUgcB5lB/6eK8wFHGEfdBjKZs0UfnliZLwiElDMYv5ewhmQpLgThqrcmpLyM=
+	t=1705944173; cv=none; b=G/5TZDSr7S/lWEwKl00XKvn0T4ARBjF6kiwhDxFxFdL2qbWtZ3OloyYW5sEFhoRBWBlG5iBsKTjNkUwuNlKlDg3iwF2QcfenCm+Wbfarwnv0xWqqQm0ePVZp5HWu2aJrYP8GbBbTu24Ej01whxISLm6NESt+OT9e4WFMeIRUuG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705944161; c=relaxed/simple;
-	bh=BK4/OCHtn9ZOarkwg23KKNRxOtPDGGPmaFy8ysvVxZ8=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=G/83Jn60SEeSAHIddZq3tZfaPhmp2nnIYOJuEl5PuhvuaqTNb4DRZUGEZFCWC19WHv10yi4ERYgsjvEx+nqh7lpM+7TUtF/kjraqXkH8069TO/rx+XZMj9KTPXSdE2bMmhwfsDEZR+wP214cx02r8CdG7VJwrsqPOnNfKy789C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Elw7hBqy; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705944159;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dyL8HkrfuDx15VmmUYeIG1cK/wCgWeV9TZeHPttzNv8=;
-	b=Elw7hBqygp+L/3dAmcCElBWsjPP/GyQ7+plyiK+G80DqAzMSjZsCNufhyLX4tDh2z3hYUx
-	6STzNJQjDULR71Jk6aa6e1x7+oKDJWwPm4Y/Wfd/Ckl0cwiY2/gSfpfv9gcaFvOtavshMs
-	0PkN62unhPo+IIHM9Pm6sD5VkN4QauA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-692-HhQdjMHnNSCeJf9HAxnqqg-1; Mon, 22 Jan 2024 12:22:35 -0500
-X-MC-Unique: HhQdjMHnNSCeJf9HAxnqqg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A236285A597;
-	Mon, 22 Jan 2024 17:22:34 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id B2C10C0FDCA;
-	Mon, 22 Jan 2024 17:22:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <c9091df8de30a2c79364698b72e67834d0ac87c7.camel@kernel.org>
-References: <c9091df8de30a2c79364698b72e67834d0ac87c7.camel@kernel.org> <20240122123845.3822570-1-dhowells@redhat.com> <20240122123845.3822570-2-dhowells@redhat.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: dhowells@redhat.com, Christian Brauner <christian@brauner.io>,
-    Matthew Wilcox <willy@infradead.org>, netfs@lists.linux.dev,
-    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-    v9fs@lists.linux.dev, linux-erofs@lists.ozlabs.org,
-    linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-    linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
-Subject: Re: [PATCH 01/10] netfs: Don't use certain internal folio_*() functions
+	s=arc-20240116; t=1705944173; c=relaxed/simple;
+	bh=nMd8l1R4VjnN4kwtNc6jWq5EKtW15kh24YWU3Q+Oyi4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=etNyUP2T/R0rqCpX5MoBE6WX4/DaVE63riUFACeK+hD86LH4rmxI+ymwrBsLwvambpFY3SzF0x4a9MkY5vkTYOFc3tfMw9RM9XKU6PzGp8tcgtN6QKGnluUJ+XGzW0oZyOsS3G83OY4BdP1ekodb9LsoFEMYMFG/WkdT6J9utps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PyPltJOG; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705944172; x=1737480172;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=nMd8l1R4VjnN4kwtNc6jWq5EKtW15kh24YWU3Q+Oyi4=;
+  b=PyPltJOGt7QrF0nktKDt8ECABUJ4lCMkGQZt27K0DT6vAhQZc0MkKbCH
+   pxOZ/x6VxYXzNd4KymGP2zw42uIyiCT0qyHtd5YKDe96lDKCSSLO7f75x
+   7epaRecX7zp2Cv0mJNavA/JzFQ4NTx9zS6BCSkwO1fl8wChyQ6LdkHkrj
+   4aBDPUXhTsEadhYVTyNQopFacJVVw8QYjdXwxtzeeAdSGPldW3VQm0Gsi
+   yJ4UBj2RQP63PVIjuIVi1o/95WjlGZMMnRQl9RsHwvmSAia0rxQ9lccC/
+   y9sHWxDzbBT+OpT1Ez5O6+Xx0717B5VY0H/byB+vYPbtie/Ruh2p3wSzF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="8379604"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="8379604"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 09:22:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="735237565"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="735237565"
+Received: from mshelego-mobl3.ger.corp.intel.com (HELO localhost) ([10.252.40.242])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 09:22:39 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, Joonas Lahtinen
+ <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Intel Graphics <intel-gfx@lists.freedesktop.org>, DRI
+ <dri-devel@lists.freedesktop.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm-intel tree
+In-Reply-To: <20240122092520.68a86f48@canb.auug.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231114141715.6f435118@canb.auug.org.au>
+ <8734x8u4la.fsf@intel.com> <87y1f0sol1.fsf@intel.com>
+ <20240122092520.68a86f48@canb.auug.org.au>
+Date: Mon, 22 Jan 2024 19:22:35 +0200
+Message-ID: <87o7ddnuzo.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3931925.1705944151.1@warthog.procyon.org.uk>
-Date: Mon, 22 Jan 2024 17:22:32 +0000
-Message-ID: <3931926.1705944152@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: text/plain
 
-Jeff Layton <jlayton@kernel.org> wrote:
+On Mon, 22 Jan 2024, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>> [1] https://patchwork.freedesktop.org/patch/msgid/20231114081033.27343-1-bagasdotme@gmail.com
+>
+> This is still not fixed.
 
-> > Filesystems should not be using folio->index not folio_index(folio) and
-> 
-> I think you mean "should be" here.
+Thanks for the reminder. Commit 1a84c213146a ("drm/dp_mst: Separate
+@failing_port list in drm_dp_mst_atomic_check_mgr() comment") in
+drm-misc-fixes, likely to show up in -rc2.
 
-Ach.  I forgot to update the patch descriptions!
+BR,
+Jani.
 
-David
 
+-- 
+Jani Nikula, Intel
 
