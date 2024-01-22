@@ -1,283 +1,181 @@
-Return-Path: <linux-kernel+bounces-33921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 590D3837035
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A541B83701C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6271C295C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:39:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C820E1C2934B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DF0460BB8;
-	Mon, 22 Jan 2024 18:08:30 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11C7604A3
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962161E481;
+	Mon, 22 Jan 2024 18:07:39 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121171EF01
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705946908; cv=none; b=b9WQWYBQkDdsVLmOnUnrb/nhUx3PnACLHQBKRNi3tlZ5xjuPHOFlYvvCYCM+4yQARQhjvgjEy/6hHXUuxxontEGZlxoQ0eolaxWkzl+28hR5VJL6mNN+yEDfwZwBnzyYdRyUrEs8Gq6GgUn/wnVJIdxCWrcgJLjhgeb2Opl+4qw=
+	t=1705946859; cv=none; b=GqL2s9Id8emz/O5aEZ5JlTTKjfdlvjcv7WnLTMod+H9xpI0jEUDu1t6SD/MpeR4CDgwxbUgABRXu5wfJFE1cYUZcwov/wfIgqfxVw7jbXv2mgj5xeChyo9glVOKW5cIdnQ20QZKbBkHUQYH5JIk37PrqaBKh0iF1ReznpvuSWCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705946908; c=relaxed/simple;
-	bh=sQ6ShUO9P91Z71Z9eUInF/6anBXkr+dkZHVTCaJV1R0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=t7zbkoUi5yEsqd+yeZhfH4rVhBL13z3hujx9XmL/BuJskcn1zYYxvef4Z3Ed+8O9liM2TS/FC+n10HVtOPLJn6Xr6rybhLGz3LWtUpPxg4Lx/JbIT5lN9oBYTj1fYjo6PsoQKaoKaQgOMWuOCIZbFkN7/q8fzaHf0Vun9ZxASEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rRyiZ-00029c-W5; Mon, 22 Jan 2024 19:08:20 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rRyiZ-001eRI-Cw; Mon, 22 Jan 2024 19:08:19 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rRyiZ-005Zz0-12;
-	Mon, 22 Jan 2024 19:08:19 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: kernel@pengutronix.de,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 33/33] Documentation: spi: Update documentation for renaming "master" to "controller"
-Date: Mon, 22 Jan 2024 19:07:28 +0100
-Message-ID:  <d912f9ac0f35a8900698b2a06349adcda7afcd43.1705944943.git.u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1705946859; c=relaxed/simple;
+	bh=a1V8nMlLGuaoXYkm95iLtidMc039ORpQ5I8LW9TY0OA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mYZ9XiYJ1tOswjmLa7SFrqfdc5lxGdzHhXJXA9LdYbHAsm3c1C9Us3Mvv3s5g26ZIgy1qkl2CojhynkcznEcTm+buFbRyR5IlPPTsJ5aJxAbtsHHxviYxes8phT0QC5buowdtPUY8V/lwhyiRE6kvbv6GdSVa+CmpkEfIHmormI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA7E61474;
+	Mon, 22 Jan 2024 10:08:22 -0800 (PST)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 352643F5A1;
+	Mon, 22 Jan 2024 10:07:34 -0800 (PST)
+Message-ID: <b1f38afc-2dc6-5663-393f-4c1a4b4e2ac8@arm.com>
+Date: Mon, 22 Jan 2024 18:07:32 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [EXT] [PATCH v7 06/24] x86/resctrl: Access per-rmid structures by
+ index
+Content-Language: en-GB
+To: Amit Singh Tomar <amitsinght@marvell.com>, "x86@kernel.org"
+ <x86@kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+ Babu Moger <Babu.Moger@amd.com>,
+ "shameerali.kolothum.thodi@huawei.com"
+ <shameerali.kolothum.thodi@huawei.com>,
+ D Scott Phillips OS <scott@os.amperecomputing.com>,
+ "carl@os.amperecomputing.com" <carl@os.amperecomputing.com>,
+ Linu Cherian <lcherian@marvell.com>,
+ "bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
+ "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
+ "baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
+ Jamie Iles <quic_jiles@quicinc.com>, Xin Hao <xhao@linux.alibaba.com>,
+ "peternewman@google.com" <peternewman@google.com>,
+ "dfustini@baylibre.com" <dfustini@baylibre.com>,
+ "muhammad.zahid@nokia.com" <muhammad.zahid@nokia.com>
+References: <20231025180345.28061-1-james.morse@arm.com>
+ <20231025180345.28061-7-james.morse@arm.com>
+ <MW4PR18MB5084AC18E19386E5B83C0F0EC6A0A@MW4PR18MB5084.namprd18.prod.outlook.com>
+ <27ddb859-a67e-9a9d-7135-c4829c5b27db@arm.com>
+ <MW4PR18MB5084D16A8BE24416D05F8853C6762@MW4PR18MB5084.namprd18.prod.outlook.com>
+From: James Morse <james.morse@arm.com>
+In-Reply-To: <MW4PR18MB5084D16A8BE24416D05F8853C6762@MW4PR18MB5084.namprd18.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10588; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=sQ6ShUO9P91Z71Z9eUInF/6anBXkr+dkZHVTCaJV1R0=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlrq7p9pCE3UR2T4LUDkeRZyajhkllhGjyaASLA o11iop7sIaJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZa6u6QAKCRCPgPtYfRL+ ThPBB/9lkasrkau2kxEnBDMwvFzHTuJgmxAfhOUFnnMEADGpgS1g1c3s/luUIZeZrfTF/Jt7nZY BbpQs8tCgwierXPpaGfGDv0BH/Tkcms4PNTyidPJzbXJj6tL/I2h/M482l3O4alVjHUtTIpDoz0 neuXI9rvfVTcM2U16YZe1vDS3PUZnDOYA7AJkKRYbdIUOR9bL6il+YZkfnLwMn0c9a8yXIq3m6l ll3L3DPlG4UYIRAAwLK/q9JvWbkLnKdEjXuMwF5+g09xXjRglsBl2M33gRiwhGP8Juvc+kbtsnS 6o72i5yu5q5yZ488BhfKsyKY5ERzyxzyZMjZGhkZZOyf33Cm
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
 
-In commit 8caab75fd2c2 ("spi: Generalize SPI "master" to "controller"")
-some functions and struct members were renamed. Adapt the documentation
-accordingly.
+Hi Amit,
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- Documentation/spi/spi-summary.rst | 74 +++++++++++++++----------------
- 1 file changed, 37 insertions(+), 37 deletions(-)
+On 21/01/2024 10:27, Amit Singh Tomar wrote:
+> -----Original Message-----
+> From: James Morse <james.morse@arm.com> 
+> Sent: Monday, December 11, 2023 8:03 PM
+> To: Amit Singh Tomar <amitsinght@marvell.com>; x86@kernel.org; linux-kernel@vger.kernel.org
+> Cc: Fenghua Yu <fenghua.yu@intel.com>; Reinette Chatre <reinette.chatre@intel.com>; Thomas Gleixner <tglx@linutronix.de>; Ingo Molnar <mingo@redhat.com>; Borislav Petkov <bp@alien8.de>; H Peter Anvin <hpa@zytor.com>; Babu Moger <Babu.Moger@amd.com>; shameerali.kolothum.thodi@huawei.com; D Scott Phillips OS <scott@os.amperecomputing.com>; carl@os.amperecomputing.com; Linu Cherian <lcherian@marvell.com>; bobo.shaobowang@huawei.com; tan.shaopeng@fujitsu.com; baolin.wang@linux.alibaba.com; Jamie Iles <quic_jiles@quicinc.com>; Xin Hao <xhao@linux.alibaba.com>; peternewman@google.com; dfustini@baylibre.com; muhammad.zahid@nokia.com
+> Subject: Re: [EXT] [PATCH v7 06/24] x86/resctrl: Access per-rmid structures by index
 
-diff --git a/Documentation/spi/spi-summary.rst b/Documentation/spi/spi-summary.rst
-index 33f05901ccf3..e714472007f1 100644
---- a/Documentation/spi/spi-summary.rst
-+++ b/Documentation/spi/spi-summary.rst
-@@ -9,7 +9,7 @@ What is SPI?
- The "Serial Peripheral Interface" (SPI) is a synchronous four wire serial
- link used to connect microcontrollers to sensors, memory, and peripherals.
- It's a simple "de facto" standard, not complicated enough to acquire a
--standardization body.  SPI uses a master/slave configuration.
-+standardization body.  SPI uses a host/target configuration.
- 
- The three signal wires hold a clock (SCK, often on the order of 10 MHz),
- and parallel data lines with "Master Out, Slave In" (MOSI) or "Master In,
-@@ -19,11 +19,11 @@ commonly used.  Each clock cycle shifts data out and data in; the clock
- doesn't cycle except when there is a data bit to shift.  Not all data bits
- are used though; not every protocol uses those full duplex capabilities.
- 
--SPI masters use a fourth "chip select" line to activate a given SPI slave
-+SPI hosts use a fourth "chip select" line to activate a given SPI slave
- device, so those three signal wires may be connected to several chips
- in parallel.  All SPI slaves support chipselects; they are usually active
- low signals, labeled nCSx for slave 'x' (e.g. nCS0).  Some devices have
--other signals, often including an interrupt to the master.
-+other signals, often including an interrupt to the host.
- 
- Unlike serial busses like USB or SMBus, even low level protocols for
- SPI slave functions are usually not interoperable between vendors
-@@ -45,8 +45,8 @@ SPI slave functions are usually not interoperable between vendors
- 
- In the same way, SPI slaves will only rarely support any kind of automatic
- discovery/enumeration protocol.  The tree of slave devices accessible from
--a given SPI master will normally be set up manually, with configuration
--tables.
-+a given SPI host controller will normally be set up manually, with
-+configuration tables.
- 
- SPI is only one of the names used by such four-wire protocols, and
- most controllers have no problem handling "MicroWire" (think of it as
-@@ -62,8 +62,8 @@ course they won't handle full duplex transfers.  You may find such
- chips described as using "three wire" signaling: SCK, data, nCSx.
- (That data line is sometimes called MOMI or SISO.)
- 
--Microcontrollers often support both master and slave sides of the SPI
--protocol.  This document (and Linux) supports both the master and slave
-+Microcontrollers often support both host and target sides of the SPI
-+protocol.  This document (and Linux) supports both the host and target
- sides of SPI interactions.
- 
- 
-@@ -118,7 +118,7 @@ starting low (CPOL=0) and data stabilized for sampling during the
- trailing clock edge (CPHA=1), that's SPI mode 1.
- 
- Note that the clock mode is relevant as soon as the chipselect goes
--active.  So the master must set the clock to inactive before selecting
-+active.  So the host must set the clock to inactive before selecting
- a slave, and the slave can tell the chosen polarity by sampling the
- clock level when its select line goes active.  That's why many devices
- support for example both modes 0 and 3:  they don't care about polarity,
-@@ -179,7 +179,7 @@ shows up in sysfs in several locations::
-    /sys/bus/spi/drivers/D ... driver for one or more spi*.* devices
- 
-    /sys/class/spi_master/spiB ... symlink to a logical node which could hold
--	class related state for the SPI master controller managing bus "B".
-+	class related state for the SPI host controller managing bus "B".
- 	All spiB.* devices share one physical SPI bus segment, with SCLK,
- 	MOSI, and MISO.
- 
-@@ -316,7 +316,7 @@ sharing a bus with a device that interprets chipselect "backwards" is
- not possible until the infrastructure knows how to deselect it.
- 
- Then your board initialization code would register that table with the SPI
--infrastructure, so that it's available later when the SPI master controller
-+infrastructure, so that it's available later when the SPI host controller
- driver is registered::
- 
- 	spi_register_board_info(spi_board_info, ARRAY_SIZE(spi_board_info));
-@@ -474,34 +474,34 @@ How do I write an "SPI Master Controller Driver"?
- An SPI controller will probably be registered on the platform_bus; write
- a driver to bind to the device, whichever bus is involved.
- 
--The main task of this type of driver is to provide an "spi_master".
--Use spi_alloc_master() to allocate the master, and spi_master_get_devdata()
--to get the driver-private data allocated for that device.
-+The main task of this type of driver is to provide an "spi_controller".
-+Use spi_alloc_host() to allocate the host controller, and
-+spi_controller_get_devdata() to get the driver-private data allocated for that
-+device.
- 
- ::
- 
--	struct spi_master	*master;
-+	struct spi_controller	*ctlr;
- 	struct CONTROLLER	*c;
- 
--	master = spi_alloc_master(dev, sizeof *c);
--	if (!master)
-+	ctlr = spi_alloc_host(dev, sizeof *c);
-+	if (!ctlr)
- 		return -ENODEV;
- 
--	c = spi_master_get_devdata(master);
-+	c = spi_controller_get_devdata(ctlr);
- 
--The driver will initialize the fields of that spi_master, including the
--bus number (maybe the same as the platform device ID) and three methods
--used to interact with the SPI core and SPI protocol drivers.  It will
--also initialize its own internal state.  (See below about bus numbering
--and those methods.)
-+The driver will initialize the fields of that spi_controller, including the bus
-+number (maybe the same as the platform device ID) and three methods used to
-+interact with the SPI core and SPI protocol drivers.  It will also initialize
-+its own internal state.  (See below about bus numbering and those methods.)
- 
--After you initialize the spi_master, then use spi_register_master() to
-+After you initialize the spi_controller, then use spi_register_controller() to
- publish it to the rest of the system. At that time, device nodes for the
- controller and any predeclared spi devices will be made available, and
- the driver model core will take care of binding them to drivers.
- 
--If you need to remove your SPI controller driver, spi_unregister_master()
--will reverse the effect of spi_register_master().
-+If you need to remove your SPI controller driver, spi_unregister_controller()
-+will reverse the effect of spi_register_controller().
- 
- 
- Bus Numbering
-@@ -519,10 +519,10 @@ then be replaced by a dynamically assigned number. You'd then need to treat
- this as a non-static configuration (see above).
- 
- 
--SPI Master Methods
--^^^^^^^^^^^^^^^^^^
-+SPI Host Controller Methods
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
--``master->setup(struct spi_device *spi)``
-+``ctlr->setup(struct spi_device *spi)``
- 	This sets up the device clock rate, SPI mode, and word sizes.
- 	Drivers may change the defaults provided by board_info, and then
- 	call spi_setup(spi) to invoke this routine.  It may sleep.
-@@ -534,34 +534,34 @@ SPI Master Methods
- 	.. note::
- 
- 		BUG ALERT:  for some reason the first version of
--		many spi_master drivers seems to get this wrong.
-+		many spi_controller drivers seems to get this wrong.
- 		When you code setup(), ASSUME that the controller
- 		is actively processing transfers for another device.
- 
--``master->cleanup(struct spi_device *spi)``
-+``ctlr->cleanup(struct spi_device *spi)``
- 	Your controller driver may use spi_device.controller_state to hold
- 	state it dynamically associates with that device.  If you do that,
- 	be sure to provide the cleanup() method to free that state.
- 
--``master->prepare_transfer_hardware(struct spi_master *master)``
-+``ctlr->prepare_transfer_hardware(struct spi_controller *ctlr)``
- 	This will be called by the queue mechanism to signal to the driver
- 	that a message is coming in soon, so the subsystem requests the
- 	driver to prepare the transfer hardware by issuing this call.
- 	This may sleep.
- 
--``master->unprepare_transfer_hardware(struct spi_master *master)``
-+``ctlr->unprepare_transfer_hardware(struct spi_controller *ctlr)``
- 	This will be called by the queue mechanism to signal to the driver
- 	that there are no more messages pending in the queue and it may
- 	relax the hardware (e.g. by power management calls). This may sleep.
- 
--``master->transfer_one_message(struct spi_master *master, struct spi_message *mesg)``
-+``ctlr->transfer_one_message(struct spi_controller *ctlr, struct spi_message *mesg)``
- 	The subsystem calls the driver to transfer a single message while
- 	queuing transfers that arrive in the meantime. When the driver is
- 	finished with this message, it must call
- 	spi_finalize_current_message() so the subsystem can issue the next
- 	message. This may sleep.
- 
--``master->transfer_one(struct spi_master *master, struct spi_device *spi, struct spi_transfer *transfer)``
-+``ctrl->transfer_one(struct spi_controller *ctlr, struct spi_device *spi, struct spi_transfer *transfer)``
- 	The subsystem calls the driver to transfer a single transfer while
- 	queuing transfers that arrive in the meantime. When the driver is
- 	finished with this transfer, it must call
-@@ -576,15 +576,15 @@ SPI Master Methods
- 	* 0: transfer is finished
- 	* 1: transfer is still in progress
- 
--``master->set_cs_timing(struct spi_device *spi, u8 setup_clk_cycles, u8 hold_clk_cycles, u8 inactive_clk_cycles)``
--	This method allows SPI client drivers to request SPI master controller
-+``ctrl->set_cs_timing(struct spi_device *spi, u8 setup_clk_cycles, u8 hold_clk_cycles, u8 inactive_clk_cycles)``
-+	This method allows SPI client drivers to request SPI host controller
- 	for configuring device specific CS setup, hold and inactive timing
- 	requirements.
- 
- Deprecated Methods
- ^^^^^^^^^^^^^^^^^^
- 
--``master->transfer(struct spi_device *spi, struct spi_message *message)``
-+``ctrl->transfer(struct spi_device *spi, struct spi_message *message)``
- 	This must not sleep. Its responsibility is to arrange that the
- 	transfer happens and its complete() callback is issued. The two
- 	will normally happen later, after other transfers complete, and
--- 
-2.43.0
+> On 31/10/2023 07:43, Amit Singh Tomar wrote:
+>> -----Original Message-----
+>> From: James Morse <james.morse@arm.com>
+>> Sent: Wednesday, October 25, 2023 11:33 PM
+>> Subject: [EXT] [PATCH v7 06/24] x86/resctrl: Access per-rmid 
+>> structures by index
 
+>> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c 
+>> b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> index 2a0233cd0bc9..c02cf32cd17c 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> @@ -735,19 +768,20 @@ void mbm_setup_overflow_handler(struct 
+>> rdt_domain *dom, unsigned long delay_ms)
+>>  
+>>  static int dom_data_init(struct rdt_resource *r)  {
+>> +	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
+>>  	struct rmid_entry *entry = NULL;
+>> -	int i, nr_rmids;
+>> +	u32 idx;
+>> +	int i;
+>>  
+>> -	nr_rmids = r->num_rmid;
+>> -	rmid_ptrs = kcalloc(nr_rmids, sizeof(struct rmid_entry), GFP_KERNEL);
+>> +	rmid_ptrs = kcalloc(idx_limit, sizeof(struct rmid_entry), 
+>> +GFP_KERNEL);
+>>
+>> [>>] Is there a chance, it could result in "ZERO_SIZE_PTR", and we should guard it against ZERO_OR_NULL_PTR in the following if condition?
+>>         It might be related, while testing the snapshot[1] (and subsequent snapshots has similar change) on x86 platform, Zahid is seeing Kernel panic:
+>>         
+>> https://urldefense.proofpoint.com/v2/url?u=https-3A__git.kernel.org_pu
+>> b_scm_linux_kernel_git_morse_linux.git_tree_fs_resctrl_monitor.c-3Fh-3
+>> Dmpam_snapshot_v6.2-23n695&d=DwICaQ&c=nKjWec2b6R0mOyPaz7xtfQ&r=V_GK7jR
+>> uCHDErm6txmgDK1-MbUihtnSQ3gPgB-A-JKU&m=yHcjuc1ZrYfPWXGxTPifeglinf_gMfy
+>> AgnvZfOw-ZD2zRG8G61IfH8hignwaxlV6&s=X3Ie_NqTHtzN2ttkl3yiTYHzNpkWW2wPPI
+>> DJ7XTWW40&e=
+> 
+> Interesting - I didn't think this could happen. Could you share the full splat?
+
+
+(this bit here is your reply?:)
+
+> Unfortunately, I don't have  access to the test set-up where this splat has been observed.
+> However, I have requested Zahid (Cc) to provide the splat logs.
+> Additionally, from what I've learned, this splat has been observed on an x86 machine that
+> doesn't support monitor groups. Do you see this as problem?
+
+
+
+> This would imply idx_limit was zero, so boot_cpu_data.x86_cache_max_rmid would be -1.
+> But wouldn't this happen before this patch? idx_limit has the same value as nr_rmids on x86,
+> its only MPAM that needs a different value.
+
+Your 'doesn't support monitor groups' explains why boot_cpu_data.x86_cache_max_rmid is -1.
+
+As you've said you're testing the whole tree - not this series, I suspect this is coming
+from "x86/resctrl: Move monitor init work to a resctrl init call", which moves
+initialisation of filesystem structures to filesystem code.
+
+It looks like I missed that get_rdt_mon_resources() can bale out before calling
+rdt_get_mon_l3_config(), which I think would explain what you hint at here.
+
+
+Adding this to the "x86/resctrl: Move monitor init work to a resctrl init call" should fix
+that. (It'll be in the next snapshot I push)
+---------------------%<---------------------
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index b3f245c85e00..791554db7c69 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -1030,12 +1030,14 @@ int resctrl_mon_resource_init(void)
+        struct rdt_resource *r = resctrl_arch_get_resource(RDT_RESOURCE_L3);
+        int ret;
+
++       if (!r->mon_capable)
++               return 0;
++
+        ret = dom_data_init(r);
+        if (ret)
+                return ret;
+
+-       if (r->mon_capable)
+-               l3_mon_evt_init(r);
++       l3_mon_evt_init(r);
+
+        return 0;
+ }
+---------------------%<---------------------
+
+
+Thanks,
+
+James
 
