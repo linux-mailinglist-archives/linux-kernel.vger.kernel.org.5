@@ -1,71 +1,63 @@
-Return-Path: <linux-kernel+bounces-34136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98CF6837432
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:44:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F107E837436
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:44:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A6D11F23996
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:44:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACFEE28EFBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FAFB47773;
-	Mon, 22 Jan 2024 20:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C3E347F56;
+	Mon, 22 Jan 2024 20:44:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JbJZySkp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ESppTKry"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7684E482C0;
-	Mon, 22 Jan 2024 20:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A870947A7C;
+	Mon, 22 Jan 2024 20:44:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705956255; cv=none; b=e7nn0xLo3zX/gAMmqEsHu7A3Cx5j/vK7yhYhuYzFeVzvcqKORnvJ/cDbTUWiW3hmxL5mb5qV6MuzGUKaLp3muFmBMZjahh9YLD6xQ5II3tFDIQK/SXnjpUj5ZzsAQnV37q8Spnc7/OxAWU/UP1iYLUaLNfRyyR1XaMPLk1cAbqo=
+	t=1705956259; cv=none; b=oQ9bDrfTZqKmVL/qbh5/uo1ONvhecXhrAw3XBj6d/fazZzG9gPEaqYIWdpoCRDPRuuM3/jO3KhRkT6TwzgCE8W60GElXCeySen4SfK+gY0hKUpRf6EA4a6UHvRPMRS1tu7LtWJhqhO17vIoKH1QHIodeivY/U4gHHwBSu7TbFWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705956255; c=relaxed/simple;
-	bh=jP30lAx8kMXkg0eWAT8+e0vfehU+8oEqT+be6BiK5j8=;
+	s=arc-20240116; t=1705956259; c=relaxed/simple;
+	bh=lozOmd/cqGod0cy3wd2A6y+CaR5n7riM80HCoDoyZuM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=fSm4XKWCN1vRu4IwWGQeP955xei8zEZWlw7nM4a0FcISqzy530qR7OUAJMw5AQFJmqdHe4UXViAs+AKlmJZuH6i1Bb0foOvTCbgiURwi5paYHimHieH4xPwOW5lAyaXiVLReqT14sRrWblLqQL8vu2i7onIz4jfcPhmLswV2KyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JbJZySkp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6614C433C7;
-	Mon, 22 Jan 2024 20:44:10 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Edu2BK6+O2eWZq4q/O/vsXmLfMj/FXTixAldqo7O3HAQL6abQ+7XZ9LJ5AcvLzWIpOjBJAUdMR1Zc6C3ntn2qvzBpiBv4es0oNlPpMeApa6+z0QEMEFXKkTfTx3cXPyGULPDZWEyizpcu8IqhSp68HZiq6re5vx0oePwTnGFMgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ESppTKry; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B49C8C43394;
+	Mon, 22 Jan 2024 20:44:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705956255;
-	bh=jP30lAx8kMXkg0eWAT8+e0vfehU+8oEqT+be6BiK5j8=;
+	s=k20201202; t=1705956259;
+	bh=lozOmd/cqGod0cy3wd2A6y+CaR5n7riM80HCoDoyZuM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=JbJZySkp7+mBwZvUK6oOtNcqB9fuLRH6BA+jpdkh7Gxyd5VdU7cZ/r5onQQ/fq7sd
-	 CTM44adcuaXzgkRZz1sMAx9qzCUKX+aGkOVFxtK/rnYRayWKL36GQUd+CexLazoU0Y
-	 0qF8/E/MUziz8YXjrvJDMRN63zH9S4CmI6Fg5LtnSbaN3pa2xqIZyp92Uld375KEHK
-	 9GWIT2gNsiYL+WbHZATaraf02EBXWZhz2tSvm7T/Xkr7a5m/BEAj6NI4FbPPMd63Zd
-	 XF24TalYJ1sr5jjmzU+Pjjzg4iEYWoQ05YTCUHwDP7inI3123uNpyvcGnHFFPFtEqY
-	 jhLt78GUK+0Ag==
+	b=ESppTKryqkRXLyxvtT1SCiVm+RGydcihr8lSh1lpoHOYJ0qH8j67gaVF1cLOmQCJq
+	 fD0aWHqGwuYGGAkbduME5fOHtYMNkz+F0hD90SWaDn83OoPZbbe16t1MCJ5EG2Vc1y
+	 +ttFpWsXlLAwHwqK67ozQnSCGuFhSyo7MzLqfOTy8mhTFC+5IvYpZxbs5mkYyep6cD
+	 pNhHOOt5NE6WNzrbO42enP5QjlGU5BLbBVq2Nsed3xbh05mjEKF9eN9wA2Ls1JdAtH
+	 mAtsaY+qa2rxCeKbXrFlTBm50VbGZ8RycBnE9H0i3StP2Izz0JwihTy0wQRo+E7Y5z
+	 s4oD1T1bkCXSQ==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, 
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
- Bard Liao <yung-chuan.liao@linux.intel.com>, 
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, 
- Daniel Baluta <daniel.baluta@nxp.com>, 
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, 
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>, 
- Emil Velikov <emil.velikov@collabora.com>, 
- Syed Saba Kareem <Syed.SabaKareem@amd.com>, 
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
- Alper Nebi Yasak <alpernebiyasak@gmail.com>, 
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>, 
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>, 
- Mastan Katragadda <Mastan.Katragadda@amd.com>, 
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, 
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
- sound-open-firmware@alsa-project.org, kernel@collabora.com
-In-Reply-To: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
-References: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
-Subject: Re: [PATCH v2 0/8] Improve SOF support for Steam Deck OLED
-Message-Id: <170595625065.145475.12588005064775574769.b4-ty@kernel.org>
-Date: Mon, 22 Jan 2024 20:44:10 +0000
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+ Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Neil Armstrong <neil.armstrong@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, 
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231219-topic-sm8650-upstream-wcd939x-codec-v4-0-1c3bbff2d7ab@linaro.org>
+References: <20231219-topic-sm8650-upstream-wcd939x-codec-v4-0-1c3bbff2d7ab@linaro.org>
+Subject: Re: [PATCH v4 0/5] ASoC: codecs: add support for WCD939x Codec
+Message-Id: <170595625545.145475.5243509079608923207.b4-ty@kernel.org>
+Date: Mon, 22 Jan 2024 20:44:15 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,15 +68,14 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-5c066
 
-On Tue, 19 Dec 2023 05:07:18 +0200, Cristian Ciocaltea wrote:
-> This patch series is a continuation of [1] to provide several fixes and
-> improvements to the SOF drivers targeting the Vangogh platform, as found on
-> Valve's Steam Deck OLED.  The previous series only handled the legacy ACP
-> drivers.
-> 
-> Also note that, since v2, this patch series requires an updated SOF
-> topology to provide a correct DAI link ID for the BT codec.  The binary
-> file should be located under:
+On Tue, 19 Dec 2023 13:45:33 +0100, Neil Armstrong wrote:
+> Add the main WCD9390/WCD9395 Audio Codec driver to support:
+> - 4 ADC inputs for up to 5 Analog Microphones
+> - 4 DMIC inputs for up to 8 Digital Microphones
+> - 4 Microphone BIAS
+> - Stereo Headphone output
+> - Mono EAR output
+> - MBHC engine for Headset Detection
 > 
 > [...]
 
@@ -94,22 +85,16 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: amd: acp: Drop redundant initialization of machine driver data
-      commit: f0f1021fc9cb88ebdc241b6121107399ee4f2eb7
-[2/8] ASoC: amd: acp: Make use of existing *_CODEC_DAI macros
-      commit: 68ab29426d88294d16170919a6a6e764f375113f
-[3/8] ASoC: amd: acp: Add missing error handling in sof-mach
-      commit: d0ada20279db2649a7549a2b8a4a3379c59f238d
-[4/8] ASoC: amd: acp: Update MODULE_DESCRIPTION for sof-mach
-      commit: a4832a94688000662d4ebb8a1c05f086a9c98826
-[5/8] ASoC: SOF: amd: Fix memory leak in amd_sof_acp_probe()
-      commit: 222be59e5eed1554119294edc743ee548c2371d0
-[6/8] ASoC: SOF: amd: Optimize quirk for Valve Galileo
-      commit: a13f0c3c0e8fb3e61fbfd99c6b350cf9be0c4660
-[7/8] ASoC: SOF: core: Skip firmware test for custom loaders
-      commit: 369b997a1371aeecd0a1fb0f9f4ef3747a1d07a4
-[8/8] ASoC: SOF: amd: Compute file paths on firmware load
-      commit: d9cacc1a2af2e1cd781b5cd2a3e57fbde64f5a2d
+[1/5] ASoC: dt-bindings: qcom,wcd938x: move out common properties
+      commit: 166ee0b3bfbb3611579c77fc84e44cd27a0099ef
+[2/5] ASoC: dt-bindings: document WCD939x Audio Codec
+      commit: edf647d1335fd55c81cdb8cc8cbf1da7d97739df
+[3/5] ASoC: codec: wcd-mbhc-v2: add support when connected behind an USB-C audio mux
+      commit: 0c105997eefd98603796c4e5890615527578eb04
+[4/5] ASoC: codecs: Add WCD939x Soundwire devices driver
+      commit: be2af391cea018eaea61f929eaef9394c78faaf2
+[5/5] ASoC: codecs: Add WCD939x Codec driver
+      commit: 10f514bd172a40b9d03d759678e4711612d671a1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
