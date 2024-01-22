@@ -1,156 +1,112 @@
-Return-Path: <linux-kernel+bounces-33871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 593DA836FCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:24:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C01B836FCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:24:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B1871C28AF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:24:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4299C1F3206A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E5284EB24;
-	Mon, 22 Jan 2024 17:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA274EB50;
+	Mon, 22 Jan 2024 17:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="pd3bElU0"
-Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="TfFR7Z4f"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9D13F8CE
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:51:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE8F4EB39
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945916; cv=none; b=HlYDshYLgIs+M4/g+X0BDYp49xuYLSETtf1gplcHEgV6J8pH2kWdxpiCazty20AS8s/aHXoOKJP3Wzz1piEiu2DPpvnp+OgOIa7B5aARWFapTfLNCxZrbeuxKtV/YMfJqA14b0js/rInmgyrXvoRQd+2Tj95UMDvuilFWkUtnqk=
+	t=1705945928; cv=none; b=RiR/yOZ2ZGvgZZA7Uu+b4eIcint/P6HAKRX2VCvAFNGjww0pLKBzfMsSQG7GKGZJkH1qCyIxOhaFgmH0/khU2CkvT8GBN5cIKy9QV0xtExbpqe1UqSAM1+iBCKIi/v3E0smQgdV8Q5h+j0VoaOWbXeSWWAt2YlF+HWpbWu/ujCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945916; c=relaxed/simple;
-	bh=owMXn5/UTsrMQS2BtQGc3ge2yqhtI0C0ELbKT3M/yjE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NBy/fIQoDybZ2sqhQvFMPuI0NwF2nt3Ew/Y/hGbG6YHgq3qRL1zdL1IY9fe4gsReKEKb3++LuGa0f5zS9mye23PbcKBb0vTKGKkJgIYg/wQda0JBH8Ia18QmmAwrFy7PMw8HK06yQa+dZL/s6QIB8uQHklHxEpLsLz2pn6NShx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=pd3bElU0; arc=none smtp.client-ip=35.89.44.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
-	by cmsmtp with ESMTPS
-	id RwibrVq3WCF6GRySfrLDfA; Mon, 22 Jan 2024 17:51:54 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id RySerWymPRT1bRySfrCxQm; Mon, 22 Jan 2024 17:51:53 +0000
-X-Authority-Analysis: v=2.4 cv=MKVzJeVl c=1 sm=1 tr=0 ts=65aeab39
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=NEAV23lmAAAA:8 a=7YfXLusrAAAA:8 a=ej3Yaj9vPbnurUtvnZYA:9 a=QEXdDO2ut3YA:10
- a=9cHFzqQdt-sA:10 a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=SLz71HocmBbuEhFRYD3r:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=7hCmgKmn2q+Ph8u4I5kiPW/QetBMHfbxFqikOfCMiAE=; b=pd3bElU0BAm2/39AGANe0PiTc0
-	OhNGobE9XqvPCsMwyrqLqvUo3RQO6xB689iEI7Jq2NTWlyqKaFLLbtMT46u+nl54mLSHE/GNZXuX2
-	ok6qICo5VjRiPM+kbNxQuinW5jII5XuD5FDucvC+fJBjncPdmHBdng41Q8XDHyEEnocrjxo2E3A3c
-	HvSZ3IupNdeiPCLPDBzp+qAUzAgU5TB/yCRNmI1DSmsWipYppFJk0pSmkbGsPdpC6ZMcv12fIQAf6
-	/6r0HwMhGjE3lwNd5G7ZOrEk2wMqBV7lUKVBCvgcRF4UV4uL272niC+vNIePtiyNVjeczzJJW9zIn
-	BWv8I1SA==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:40442 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rRySc-001JMH-35;
-	Mon, 22 Jan 2024 11:51:50 -0600
-Message-ID: <b21d9eb5-eeb7-460f-99c1-9878532be148@embeddedor.com>
-Date: Mon, 22 Jan 2024 11:51:49 -0600
+	s=arc-20240116; t=1705945928; c=relaxed/simple;
+	bh=T/9atzQ+lsfJpVq4rVjcojR7wtS+meio7H0bTtXDqOU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=byBIRC/Xxo3ngGCtnQCJf9/hBHCc62nnodj9ZxXGo0ObxN+uw4FnokzaY2bvrqIOuRtnH58ewhDy5D1oRpUMZ/DBMiCJEILJVPHSXxjhDuAl/opwj0vjAsAoEVSvnBIRRGCAQXaXeHgQ6EcHJFFUPY5+qYwdJOlpscFtgnb7GVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=TfFR7Z4f; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6db9e52bbccso1830681b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:52:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1705945926; x=1706550726; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QSWAH2h2yO14oAYqsgN1KrIEfgODNEl2dQs2ayTirC8=;
+        b=TfFR7Z4fYlpu5q2DiVgOnOsIqfY32+MiEKA5ls0TSuLZr06E2ygTTLZxbdzsdSGsYA
+         t0xgYevO7CXRBaMxzDR0wFTjlbcOqedWFQ7qtMG+m9FpBFa64x1wesH2x+d9TGP9VwqZ
+         1JRwqunQEdtHXzCuQjMxRLlVAa0UAdSYhib22ocBv0RAoqCKIuf2ElaBmssuJbv52/Rr
+         AyTV12USZeMAhGiBbRrapm0vpQMrDGagWBnaVB6Z05R5PdymuhByi5AjZzS8f15CjNUI
+         krMEquswNlXwqxIC0LxihcdrP5PlsCPtPFlGnG35SuE90HYTApklOr27jtv2EulX0rvu
+         YByw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705945926; x=1706550726;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QSWAH2h2yO14oAYqsgN1KrIEfgODNEl2dQs2ayTirC8=;
+        b=D4gZ0uuB/D7+UEA4CtQdw5Aya24YeG1m05KBzUatgq3PKc+91XSzO4+DQ7Ayhlkogx
+         Fkig/elzlNEq6XqUJuOOc0o51RgyeG7HYtbOTadH6z2DwATu73D4a0YECOcomLqDoCBL
+         oesaf50UKpTQFSAk8xVkqL7XxJrOH5JYPmaswgrOU1ybUypFClOj/mNCyOC/LmHjy4Kg
+         W29Wgxaf1ZB+aRfrP/Xl+qVHZDylayPzMaUxaMWR1kdpPd+AXCBIt/P4b5uHDZWSpeIT
+         FOyEUBvlF44bq0mxDwXFWp+mHfwJEIMf/J/NF6aaGQT/E6vyl/+7nB16zaB6xBQQf13i
+         7RFw==
+X-Gm-Message-State: AOJu0YxZcogbAgzWBkN5VScUeguJ0zjNxwK3GGyoHrmJln4MXKAKu44f
+	xl+zpNJ4KWoB6wOKpGHa7aDbgBCpbHdaeiTrWlN6TRQ5anba+FKPxu14CNr7GFQ=
+X-Google-Smtp-Source: AGHT+IGfEmU7Y0GXncAuI5uEVMFJA8FBQOiUEOthF03g+BeQxP7YLhrCmPsfmbi9UrbKJWW5TptqEg==
+X-Received: by 2002:a05:6a00:2d09:b0:6db:d1d8:2e68 with SMTP id fa9-20020a056a002d0900b006dbd1d82e68mr1924330pfb.14.1705945926479;
+        Mon, 22 Jan 2024 09:52:06 -0800 (PST)
+Received: from sw06.internal.sifive.com ([4.53.31.132])
+        by smtp.gmail.com with ESMTPSA id x126-20020a626384000000b006dbd7e5bd1esm3232377pfb.52.2024.01.22.09.52.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 09:52:06 -0800 (PST)
+From: Samuel Holland <samuel.holland@sifive.com>
+To: Sami Tolvanen <samitolvanen@google.com>,
+	Will Deacon <will@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	Samuel Holland <samuel.holland@sifive.com>
+Subject: [PATCH] scs: add CONFIG_MMU dependency for vfree_atomic()
+Date: Mon, 22 Jan 2024 09:52:01 -0800
+Message-ID: <20240122175204.2371009-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: hisilicon: Use devm_kcalloc() instead of
- devm_kzalloc()
-Content-Language: en-US
-To: Erick Archer <erick.archer@gmx.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Conor Dooley <conor.dooley@microchip.com>,
- Heiko Stuebner <heiko@sntech.de>, Dinh Nguyen <dinguyen@kernel.org>,
- Rob Herring <robh@kernel.org>, Nick Alcock <nick.alcock@oracle.com>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240121142946.2796-1-erick.archer@gmx.com>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240121142946.2796-1-erick.archer@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1rRySc-001JMH-35
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:40442
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 27
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfNfN+wyS78pB6ChqUASuQG8ftn+bnF+jvADiYk52EfsDlYxL5stwFf1Zy8ukVs/ks5IkjNN6UQiFE9wcyDJjO/ej/nCkjht7MmFwD1Oxhnx21vcPEKtn
- jrrpBwxnUVZJ2RiiDF1FEGY0/R1DM7CsKL4de9uJWi+bnpJsnum1vOWyz+8aLg+hoj4aQeZTO6KqHk7IkB6TzkVD4iVtZ2L0u0UWz5ayLxBGpiGmqzr+3N6/
+Content-Transfer-Encoding: 8bit
 
+The shadow call stack implementation fails to build without CONFIG_MMU:
 
+  ld.lld: error: undefined symbol: vfree_atomic
+  >>> referenced by scs.c
+  >>>               kernel/scs.o:(scs_free) in archive vmlinux.a
 
-On 1/21/24 08:29, Erick Archer wrote:
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
-> 
-> So, use the purpose specific devm_kcalloc() function instead of the
-> argument size * count in the devm_kzalloc() function.
-> 
-> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/162
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+Fixes: a2abe7cbd8fe ("scs: switch to vmapped shadow stacks")
+Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+---
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+ arch/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks!
+diff --git a/arch/Kconfig b/arch/Kconfig
+index c91917b50873..a5af0edd3eb8 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -673,6 +673,7 @@ config SHADOW_CALL_STACK
+ 	bool "Shadow Call Stack"
+ 	depends on ARCH_SUPPORTS_SHADOW_CALL_STACK
+ 	depends on DYNAMIC_FTRACE_WITH_ARGS || DYNAMIC_FTRACE_WITH_REGS || !FUNCTION_GRAPH_TRACER
++	depends on MMU
+ 	help
+ 	  This option enables the compiler's Shadow Call Stack, which
+ 	  uses a shadow stack to protect function return addresses from
 -- 
-Gustavo
+2.43.0
 
-> ---
->   drivers/clk/hisilicon/clk-hi3559a.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisilicon/clk-hi3559a.c
-> index ff4ca0edce06..da476f940326 100644
-> --- a/drivers/clk/hisilicon/clk-hi3559a.c
-> +++ b/drivers/clk/hisilicon/clk-hi3559a.c
-> @@ -461,8 +461,7 @@ static void hisi_clk_register_pll(struct hi3559av100_pll_clock *clks,
->   	struct clk_init_data init;
->   	int i;
-> 
-> -	p_clk = devm_kzalloc(dev, sizeof(*p_clk) * nums, GFP_KERNEL);
-> -
-> +	p_clk = devm_kcalloc(dev, nums, sizeof(*p_clk), GFP_KERNEL);
->   	if (!p_clk)
->   		return;
-> 
-> --
-> 2.25.1
-> 
-> 
 
