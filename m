@@ -1,216 +1,158 @@
-Return-Path: <linux-kernel+bounces-32774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EA9F835FEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:44:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 085B0835FF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:44:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91BA41F254BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:44:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7730FB21486
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8014D3B18F;
-	Mon, 22 Jan 2024 10:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449B13A27B;
+	Mon, 22 Jan 2024 10:44:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="leSP+l+3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9xAcknqy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SqW+JgTp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1JDCaYUA"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r2Ddwpgk"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47B213AC0C;
-	Mon, 22 Jan 2024 10:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD0B3A1D5
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:44:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705920230; cv=none; b=eP6GCqFpZzcqHqqMcyg7K0NC4RiIdlmctsWiHrMNqF4Pf5fOkpj5hVVuFlZFyeduMw2/XDPZyykLONfKtXhXMR1lt/kHjyk+R0be2WAxRB3tWM2KSGq4fSxtkmEPxzCjPvrGsCjhz8Aw8M74ug1CEbc+GFgAqcHXrQ4xe6/Pf3E=
+	t=1705920276; cv=none; b=tM4agU+cB1t3+wl/YS5B/FdnTvrvnFW9RjowZBD2kybZxPZl4w5UwMt9uKax+rrDS+cc8pxLzSMgj4TlEoiKumJWb4H+hRO51yftTUfyOP+LpyZFhKpOizugzO/Z4h57mLHtZHSub6dZXIj2u8jqFRfrALTbGUn02sfR6iJeiUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705920230; c=relaxed/simple;
-	bh=NSBs+uABJkGB61m7svoBs6j0aHvwxQa7qKTnvMtgV5U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e4LOn8c3FjtCEbMDYtZdO6mAqt9THxa4XMwcdRcSRclaT8Fw+2Vsf8dHJLFxrorDLBxFlVI6JHGeGOzBd0fqRUTn28Nts4M+1BYrdbbr2SJoMaWFZr55XlaBxfiz+xLrCCdJsZGMXkzpUD1vkSM9Ze1cbwUXB4s+7FXPnUJUXms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=leSP+l+3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9xAcknqy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SqW+JgTp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1JDCaYUA; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1D40D1F385;
-	Mon, 22 Jan 2024 10:43:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705920226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmC+DrXD0VE+1TM4mtYcFfIi/ngzxSqDf/3wGBo/yNk=;
-	b=leSP+l+3dEnIufDGPeKYxT+VdfNlFtbFaKAnqOD8euXSe0/LRydWdQ8GVh5YBqWDljh9I+
-	ysXKgeGW4LM9g1uTpKqMNOLZS9V62cah3Klo1WtIjvEU5k+vMLrDgpo8O8KX6q3J8pwvk9
-	jUr/VwES0HMCuxB8DZknmgOEaw4s2gQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705920226;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmC+DrXD0VE+1TM4mtYcFfIi/ngzxSqDf/3wGBo/yNk=;
-	b=9xAcknqyiZaqFxvLwCOZf4c3pqyEG5VJRyZGg79j+ysCTE2JzDCZRqttZh63UJSzzZeT1M
-	dk2HTXuDqA5JVnDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705920225; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmC+DrXD0VE+1TM4mtYcFfIi/ngzxSqDf/3wGBo/yNk=;
-	b=SqW+JgTpQS1X9tbcVdyVdCwzg24fBy0Y0CtYYC5dAisanj0Uu7HeD6ed4J1FLDbcqnBtu1
-	z8JWfbMqtrkFxaNpAh4WOc9lwwQsF63CRRodKtAIsiLqullYRUJrK6/L6pubAMPK5KL7ex
-	ZdPQxLyqRTaj/zkAvhOZX1xsiGsVoSM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705920225;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmC+DrXD0VE+1TM4mtYcFfIi/ngzxSqDf/3wGBo/yNk=;
-	b=1JDCaYUAQOv8BxqBt+V5RA3AIYRPbXp9vv3R+rWza0yurYjU7OK3loX+yzawtLsNNHJXS4
-	Wc1pRf99OCF9xGAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E1B213995;
-	Mon, 22 Jan 2024 10:43:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 245sA+FGrmVTDAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 22 Jan 2024 10:43:45 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A9D8CA0803; Mon, 22 Jan 2024 11:43:44 +0100 (CET)
-Date: Mon, 22 Jan 2024 11:43:44 +0100
-From: Jan Kara <jack@suse.cz>
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com
-Subject: Re: [PATCH] do_sys_name_to_handle(): use kzalloc() to fix
- kernel-infoleak
-Message-ID: <20240122104344.egvhl4m4xiakuq55@quack3>
-References: <20240119153906.4367-1-n.zhandarovich@fintech.ru>
+	s=arc-20240116; t=1705920276; c=relaxed/simple;
+	bh=Q5IhBYcwPvBhNH3wzEDza+AtOhG3qLK6wZ3eA1Q+J0s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PYu25lZG8v7uh2vUgFi8BvwLV+f6eqpBaEY0R0hdJlmhITuXSNeGPNw86//3u5L5r4Axa2rpsmwMLPnAqePR+q7rHEIjFYe7JaEnF6Yd/jr3tJzqzwLnwX+qUrjnNaPUlxZDwkl1eRQUoZbtlzrXAlzyN3+6BSRhTHO2Cgh/NpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r2Ddwpgk; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40e913e3f03so38507975e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:44:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705920273; x=1706525073; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nuar+kAkkGz47qh6RYxwSNi1tRVlEN4ihxC/V1hL4ts=;
+        b=r2DdwpgktGpOWrn481jG+/zK4vw8xZ8CFcLqz/E3fp+fQ+bCKeWNkuZJGE/bixmalu
+         TWK19wR1LT0S1zXsAXjnpjwbYgDh0nkdzWe8dYLvMPIGoJ8iMF4y6zyMR7X6QgMtbNWO
+         FWHjxWKi3db6ZRRBh6NP33QvYolT7mJ9viYMrtlERt4FOMezNacVtKL4xVnzh1om00Ri
+         HfePh2kf+LBHq4WLarr+3Re0xeFA5DKURPeCp+zahsPLX4zi7/h9q3o12jkbd7iFzNX2
+         vLgTXGg7+VGza3hwd7bD9yyBODj+dLnPi6yl996WAydbKb3uKE0Ye/vakkL4lYBMrxC4
+         DIUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705920273; x=1706525073;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nuar+kAkkGz47qh6RYxwSNi1tRVlEN4ihxC/V1hL4ts=;
+        b=ly+eNYErE+MlMixmVq/6OLpd972VrjoQ36zvXoInj/0kc23ghJIiG8o4GTB7iPoUNJ
+         pRA1jgKcNaxSjXpgLATxxtU3PUMgwSbQ+tdGswDL67zQkL8Reb5/blf7w1NZqPkd3nq2
+         7sol625CuCrN1QhLyR2FdZtpIFhjstwNXJQIlIzrOgjVVAQN9Hkl/0JtVLJOVCee9yz0
+         PWRxQGwHa2fLwt5Y0zGB3JFSlj7XOiFkEb+FgCmcyTRf2Iww7qejydumnJmPRvB2Idwk
+         /MUQHLDIKZhNzxwiEOLlP1IVBjjb1ktZXUEWQPOqd0WfDekCNlgAgprAVcAWz+z0e6tN
+         Txiw==
+X-Gm-Message-State: AOJu0YxrIcNNw9/b2GYl+Aiq45kkeBhx/iMC6RCukPV/uMZJeGfaGX3p
+	E7y56HKUlx9CKpJdJvybYOrcmc+RkmXL1dg+1bc8R5/xFHEz+Wwr/yJV47e0DVc=
+X-Google-Smtp-Source: AGHT+IEoMM5Ktzeju5vnLOedttGHTyUOKSHdeFm390nnjOvc8Iy4TZZi3+ql+iXa08jO7ZTNiVsJnQ==
+X-Received: by 2002:a05:600c:298:b0:40e:7b48:a38d with SMTP id 24-20020a05600c029800b0040e7b48a38dmr2411352wmk.139.1705920273157;
+        Mon, 22 Jan 2024 02:44:33 -0800 (PST)
+Received: from [192.168.231.132] (178235179218.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.218])
+        by smtp.gmail.com with ESMTPSA id lz3-20020a170906fb0300b00a26a061eef8sm13254236ejb.69.2024.01.22.02.44.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 02:44:32 -0800 (PST)
+Message-ID: <2b43e7f9-9394-4ed2-b6d7-46fdc1e515c5@linaro.org>
+Date: Mon, 22 Jan 2024 11:44:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119153906.4367-1-n.zhandarovich@fintech.ru>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SqW+JgTp;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1JDCaYUA
-X-Spamd-Result: default: False [-1.31 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[09b349b3066c2e0b1e96];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,suse.com:email,oracle.com:email,fintech.ru:email,suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[oracle.com,kernel.org,gmail.com,zeniv.linux.org.uk,suse.cz,vger.kernel.org,syzkaller.appspotmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 1D40D1F385
-X-Spam-Level: 
-X-Spam-Score: -1.31
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] soc: qcom: aoss: Add debugfs interface for sending
+ messages
+To: Bjorn Andersson <quic_bjorande@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Andrew Lunn <andrew@lunn.ch>, Stephen Hemminger <stephen@networkplumber.org>
+References: <20240117-qcom-aoss-debugfs-v2-v3-1-1aa779124822@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240117-qcom-aoss-debugfs-v2-v3-1-1aa779124822@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri 19-01-24 07:39:06, Nikita Zhandarovich wrote:
-> syzbot identified a kernel information leak vulnerability in
-> do_sys_name_to_handle() and issued the following report [1].
+On 18.01.2024 03:31, Bjorn Andersson wrote:
+> In addition to the normal runtime commands, the Always On Processor
+> (AOP) provides a number of debug commands which can be used during
+> system debugging for things such as preventing power collapse or placing
+> floor votes for certain resources. Some of these are documented in the
+> Robotics RB5 "Debug AOP ADB" linked below.
 > 
-> [1]
-> "BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
-> BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x100 lib/usercopy.c:40
->  instrument_copy_to_user include/linux/instrumented.h:114 [inline]
->  _copy_to_user+0xbc/0x100 lib/usercopy.c:40
->  copy_to_user include/linux/uaccess.h:191 [inline]
->  do_sys_name_to_handle fs/fhandle.c:73 [inline]
->  __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
->  __se_sys_name_to_handle_at+0x949/0xb10 fs/fhandle.c:94
->  __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
->  ...
+> Provide a debugfs interface for the developer/tester to send some of
+> these commands to the AOP, which allow the user to override the DDR
+> frequency, preventing power collapse of cx and ddr, and prevent AOSS
+> from going to sleep.
 > 
-> Uninit was created at:
->  slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
->  slab_alloc_node mm/slub.c:3478 [inline]
->  __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
->  __do_kmalloc_node mm/slab_common.c:1006 [inline]
->  __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
->  kmalloc include/linux/slab.h:604 [inline]
->  do_sys_name_to_handle fs/fhandle.c:39 [inline]
->  __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
->  __se_sys_name_to_handle_at+0x441/0xb10 fs/fhandle.c:94
->  __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
->  ...
-> 
-> Bytes 18-19 of 20 are uninitialized
-> Memory access of size 20 starts at ffff888128a46380
-> Data copied to user address 0000000020000240"
-> 
-> Per Chuck Lever's suggestion, use kzalloc() instead of kmalloc() to
-> solve the problem.
-> 
-> Fixes: 990d6c2d7aee ("vfs: Add name to file handle conversion support")
-> Suggested-by: Chuck Lever III <chuck.lever@oracle.com>
-> Reported-and-tested-by: syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com
-> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-
-Makes sense. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> Link: https://docs.qualcomm.com/bundle/publicresource/topics/80-88500-3/85_Debugging_AOP_ADB.html
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 > ---
-> Link to Chuck's suggestion: 
-> https://lore.kernel.org/all/B4A8D625-6997-49C8-B105-B2DCFE8C6DDA@oracle.com/
-> 
->  fs/fhandle.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/fhandle.c b/fs/fhandle.c
-> index 18b3ba8dc8ea..57a12614addf 100644
-> --- a/fs/fhandle.c
-> +++ b/fs/fhandle.c
-> @@ -36,7 +36,7 @@ static long do_sys_name_to_handle(const struct path *path,
->  	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
->  		return -EINVAL;
+
+[...]
+
 >  
-> -	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
-> +	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
->  			 GFP_KERNEL);
->  	if (!handle)
->  		return -ENOMEM;
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> +struct qmp_debugfs_entry {
+> +	const char *name;
+> +	const char *fmt;
+> +	bool is_bool;
+
+This can also be const
+
+> +	const char *true_val;
+> +	const char *false_val;
+
+All of these strings can be const ptrs to const data
+
+Konrad
 
