@@ -1,299 +1,251 @@
-Return-Path: <linux-kernel+bounces-32951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 555B5836269
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:46:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 774AD8361F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C2A91F28D13
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:46:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D1851C269AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1196B3B795;
-	Mon, 22 Jan 2024 11:44:33 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D37B3FE31;
+	Mon, 22 Jan 2024 11:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GOFz3uNI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508753A8C6;
-	Mon, 22 Jan 2024 11:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449E93FE20;
+	Mon, 22 Jan 2024 11:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923872; cv=none; b=pZI+zcX3LtZMM6VWwYWXrSmUADUCbly8VjSVDSlotA+02GM7dsIf1qREtaI25iuondIir2EGGOmikrjlCJZEdE91w4lHl5lkkl/xFhaTNDgXBJmAKG2Xo8CbQUgpXT7aMsbEe6TWGt9Y9xBgzgio8lWHh68XuqAlILq9+pnHjxg=
+	t=1705922854; cv=none; b=PCG2Zb1VUwQR4svPN9uOCULR1mpwq9KeXwXy+xkC6EW/m2dhMpjRD8aZxNOywc48Oq+ra/nUISpo7NtxpzlgiUtieQYMrfxDdToQFy5y8bIizQ6mOUWNq1f52KBwHBchcOMaAWjVlVtk/4FY8hxaJz2Ng5TuvHXR6fcvfvnW0xU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923872; c=relaxed/simple;
-	bh=C/KXr/lcTZWCiZDT+UIkSX2uZE5rIBwzwiKbDIbMQwY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OMjiah9i4QHnJKlNvwI6DMWTjFgj3S+pHJ4BjvQ8ZI/DaE/S3sfwyjXWkB2rzWhh/4AEHV8SXKFfsJgwXS41orzB/VuQEGk+1sKB3DvcELhQw2tDVcNp1e+4ZQ0eJ4DGkkpJxCfDxxRUURYRrBCGISJdo22pZBjmbLoivtY7HWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 0a2be78f0dfab9bd; Mon, 22 Jan 2024 12:44:27 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id DC004669540;
-	Mon, 22 Jan 2024 12:44:26 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v1 04/12] PM: sleep: stats: Use an array of step failure counters
-Date: Mon, 22 Jan 2024 12:27:21 +0100
-Message-ID: <2932420.e9J7NaK4W3@kreacher>
-In-Reply-To: <5760158.DvuYhMxLoT@kreacher>
-References: <5760158.DvuYhMxLoT@kreacher>
+	s=arc-20240116; t=1705922854; c=relaxed/simple;
+	bh=IOtL/1l3eNennUM4no86ztpLcWr9CqAsQwvfWH0uZJU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uPhpDa6RtqIoFrSbDkpg9B47iSOkodNBd2A46Cd62ucVxEh9OfAyCUJmnLQU1DeEsN7eY76F49uCAZ2bUsOXKMXuBgcmcQ3ITUhNzfuTH9iaURW2xlcue8K8q7z7U3Bn1kXIe3HZm+1fOGx+GokH69XKBdXMQMko8F3GaFXCMmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GOFz3uNI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 057B6C433C7;
+	Mon, 22 Jan 2024 11:27:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705922853;
+	bh=IOtL/1l3eNennUM4no86ztpLcWr9CqAsQwvfWH0uZJU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GOFz3uNIQq0tLT6FSbdqdug4jloaxHBf9c4w3FnUBckfbeu4RHdt2Bc5pNjMQakkZ
+	 SoyPTuC9Cpl/GulchIEIfZ6X8bBaDpnGTDzJwkR6yQ0P/5K9wPQNskCdgYsvh0WaGu
+	 Y+3c8th1q9SJ1tN2TwobMzl4Q2nWjKi+XL6MDbCng2ffXaJ4yuIbNwk6nCeeWTbKaM
+	 W2xkeE+6jxY+hpk1zCuJBy4UFM1LSrg6x7HPR1om8silys1OfIgFyx2joLj1B73GtD
+	 1u+l6JCOtiUwTWqRHFyEIDiOYJNg6FAknfVXV/9ewOzEGTm1sez21tr1o9C+Gw7Naa
+	 RHeoh7+GP+nWw==
+Date: Mon, 22 Jan 2024 16:57:29 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Frank Li <Frank.Li@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+	Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <festevam@denx.de>,
+	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev
+Subject: Re: [PATCH] dmaengine: fsl-edma: fix Makefile logic
+Message-ID: <Za5RIcRK6sXglPxp@matsya>
+References: <20240110232255.1099757-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgfedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110232255.1099757-1-arnd@kernel.org>
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Hey Arnd,
 
-Instead of using a set of individual struct suspend_stats fields
-representing suspend step failure counters, use an array of counters
-indexed by enum suspend_stat_step for this purpose, which allows
-dpm_save_failed_step() to increment the appropriate counter
-automatically, so that its callers don't need to do that directly.
+On 11-01-24, 00:03, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> A change to remove some unnecessary exports ended up removing some
+> necessary ones as well, and caused a build regression by trying to
+> link a single source file into two separate modules:
+> 
+> scripts/Makefile.build:243: drivers/dma/Makefile: fsl-edma-common.o is added to multiple modules: fsl-edma mcf-edma
+> 
+> While the two drivers cannot be used on the same CPU architecture,
+> building both is still possible for compile testing.
 
-It also allows suspend_stats_show() to carry out a loop over the
-counters array to print their values.
+Do you have an update for this patch? I noticed kbot complain as well
 
-Because the counters cannot become negative, use unsigned int for
-representing them.
+> 
+> Fixes: 66aac8ea0a6c ("dmaengine: fsl-edma: clean up EXPORT_SYMBOL_GPL in fsl-edma-common.c")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/dma/Makefile          |  8 ++++----
+>  drivers/dma/fsl-edma-common.c | 17 +++++++++++++++++
+>  2 files changed, 21 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+> index dfd40d14e408..302b7b0fbb8e 100644
+> --- a/drivers/dma/Makefile
+> +++ b/drivers/dma/Makefile
+> @@ -31,10 +31,10 @@ obj-$(CONFIG_DW_AXI_DMAC) += dw-axi-dmac/
+>  obj-$(CONFIG_DW_DMAC_CORE) += dw/
+>  obj-$(CONFIG_DW_EDMA) += dw-edma/
+>  obj-$(CONFIG_EP93XX_DMA) += ep93xx_dma.o
+> -obj-$(CONFIG_FSL_DMA) += fsldma.o
+> -fsl-edma-objs := fsl-edma-main.o fsl-edma-common.o
+> -obj-$(CONFIG_FSL_EDMA) += fsl-edma.o
+> -mcf-edma-objs := mcf-edma-main.o fsl-edma-common.o
+> +obj-$(CONFIG_FSL_DMA) += fsldma.o fsl-edma-common.o
+> +fsl-edma-objs := fsl-edma-main.o
+> +obj-$(CONFIG_FSL_EDMA) += fsl-edma.o fsl-edma-common.o
+> +mcf-edma-objs := mcf-edma-main.o
+>  obj-$(CONFIG_MCF_EDMA) += mcf-edma.o
+>  obj-$(CONFIG_FSL_QDMA) += fsl-qdma.o
+>  obj-$(CONFIG_FSL_RAID) += fsl_raid.o
+> diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
+> index b53f46245c37..05b31985a93b 100644
+> --- a/drivers/dma/fsl-edma-common.c
+> +++ b/drivers/dma/fsl-edma-common.c
+> @@ -67,6 +67,7 @@ void fsl_edma_tx_chan_handler(struct fsl_edma_chan *fsl_chan)
+>  
+>  	spin_unlock(&fsl_chan->vchan.lock);
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_tx_chan_handler);
+>  
+>  static void fsl_edma3_enable_request(struct fsl_edma_chan *fsl_chan)
+>  {
+> @@ -159,6 +160,7 @@ void fsl_edma_disable_request(struct fsl_edma_chan *fsl_chan)
+>  		iowrite8(EDMA_CEEI_CEEI(ch), regs->ceei);
+>  	}
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_disable_request);
+>  
+>  static void mux_configure8(struct fsl_edma_chan *fsl_chan, void __iomem *addr,
+>  			   u32 off, u32 slot, bool enable)
+> @@ -212,6 +214,7 @@ void fsl_edma_chan_mux(struct fsl_edma_chan *fsl_chan,
+>  	else
+>  		mux_configure8(fsl_chan, muxaddr, ch_off, slot, enable);
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_chan_mux);
+>  
+>  static unsigned int fsl_edma_get_tcd_attr(enum dma_slave_buswidth addr_width)
+>  {
+> @@ -235,6 +238,7 @@ void fsl_edma_free_desc(struct virt_dma_desc *vdesc)
+>  			      fsl_desc->tcd[i].ptcd);
+>  	kfree(fsl_desc);
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_free_desc);
+>  
+>  int fsl_edma_terminate_all(struct dma_chan *chan)
+>  {
+> @@ -255,6 +259,7 @@ int fsl_edma_terminate_all(struct dma_chan *chan)
+>  
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_terminate_all);
+>  
+>  int fsl_edma_pause(struct dma_chan *chan)
+>  {
+> @@ -270,6 +275,7 @@ int fsl_edma_pause(struct dma_chan *chan)
+>  	spin_unlock_irqrestore(&fsl_chan->vchan.lock, flags);
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_pause);
+>  
+>  int fsl_edma_resume(struct dma_chan *chan)
+>  {
+> @@ -285,6 +291,7 @@ int fsl_edma_resume(struct dma_chan *chan)
+>  	spin_unlock_irqrestore(&fsl_chan->vchan.lock, flags);
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_resume);
+>  
+>  static void fsl_edma_unprep_slave_dma(struct fsl_edma_chan *fsl_chan)
+>  {
+> @@ -345,6 +352,7 @@ int fsl_edma_slave_config(struct dma_chan *chan,
+>  
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_slave_config);
+>  
+>  static size_t fsl_edma_desc_residue(struct fsl_edma_chan *fsl_chan,
+>  		struct virt_dma_desc *vdesc, bool in_progress)
+> @@ -425,6 +433,7 @@ enum dma_status fsl_edma_tx_status(struct dma_chan *chan,
+>  
+>  	return fsl_chan->status;
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_tx_status);
+>  
+>  static void fsl_edma_set_tcd_regs(struct fsl_edma_chan *fsl_chan,
+>  				  struct fsl_edma_hw_tcd *tcd)
+> @@ -644,6 +653,7 @@ struct dma_async_tx_descriptor *fsl_edma_prep_dma_cyclic(
+>  
+>  	return vchan_tx_prep(&fsl_chan->vchan, &fsl_desc->vdesc, flags);
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_prep_dma_cyclic);
+>  
+>  struct dma_async_tx_descriptor *fsl_edma_prep_slave_sg(
+>  		struct dma_chan *chan, struct scatterlist *sgl,
+> @@ -740,6 +750,7 @@ struct dma_async_tx_descriptor *fsl_edma_prep_slave_sg(
+>  
+>  	return vchan_tx_prep(&fsl_chan->vchan, &fsl_desc->vdesc, flags);
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_prep_slave_sg);
+>  
+>  struct dma_async_tx_descriptor *fsl_edma_prep_memcpy(struct dma_chan *chan,
+>  						     dma_addr_t dma_dst, dma_addr_t dma_src,
+> @@ -762,6 +773,7 @@ struct dma_async_tx_descriptor *fsl_edma_prep_memcpy(struct dma_chan *chan,
+>  
+>  	return vchan_tx_prep(&fsl_chan->vchan, &fsl_desc->vdesc, flags);
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_prep_memcpy);
+>  
+>  void fsl_edma_xfer_desc(struct fsl_edma_chan *fsl_chan)
+>  {
+> @@ -797,6 +809,7 @@ void fsl_edma_issue_pending(struct dma_chan *chan)
+>  
+>  	spin_unlock_irqrestore(&fsl_chan->vchan.lock, flags);
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_issue_pending);
+>  
+>  int fsl_edma_alloc_chan_resources(struct dma_chan *chan)
+>  {
+> @@ -807,6 +820,7 @@ int fsl_edma_alloc_chan_resources(struct dma_chan *chan)
+>  				32, 0);
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_alloc_chan_resources);
+>  
+>  void fsl_edma_free_chan_resources(struct dma_chan *chan)
+>  {
+> @@ -830,6 +844,7 @@ void fsl_edma_free_chan_resources(struct dma_chan *chan)
+>  	fsl_chan->is_sw = false;
+>  	fsl_chan->srcid = 0;
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_free_chan_resources);
+>  
+>  void fsl_edma_cleanup_vchan(struct dma_device *dmadev)
+>  {
+> @@ -841,6 +856,7 @@ void fsl_edma_cleanup_vchan(struct dma_device *dmadev)
+>  		tasklet_kill(&chan->vchan.task);
+>  	}
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_cleanup_vchan);
+>  
+>  /*
+>   * On the 32 channels Vybrid/mpc577x edma version, register offsets are
+> @@ -877,5 +893,6 @@ void fsl_edma_setup_regs(struct fsl_edma_engine *edma)
+>  		edma->regs.inth = edma->membase + EDMA64_INTH;
+>  	}
+>  }
+> +EXPORT_SYMBOL_GPL(fsl_edma_setup_regs);
+>  
+>  MODULE_LICENSE("GPL v2");
+> -- 
+> 2.39.2
+> 
 
-The only user-observable impact of this change is a different
-ordering of entries in the suspend_stats debugfs file which is not
-expected to matter.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/base/power/main.c |   22 ++++++++-----------
- include/linux/suspend.h   |   13 +++--------
- kernel/power/main.c       |   51 ++++++++++++++++++++++++----------------------
- kernel/power/suspend.c    |    1 
- 4 files changed, 40 insertions(+), 47 deletions(-)
-
-Index: linux-pm/include/linux/suspend.h
-===================================================================
---- linux-pm.orig/include/linux/suspend.h
-+++ linux-pm/include/linux/suspend.h
-@@ -49,20 +49,14 @@ enum suspend_stat_step {
- 	SUSPEND_SUSPEND_NOIRQ,
- 	SUSPEND_RESUME_NOIRQ,
- 	SUSPEND_RESUME_EARLY,
--	SUSPEND_RESUME
-+	SUSPEND_RESUME,
-+	SUSPEND_NR_STEPS
- };
- 
- struct suspend_stats {
-+	unsigned int step_failures[SUSPEND_NR_STEPS];
- 	int	success;
- 	int	fail;
--	int	failed_freeze;
--	int	failed_prepare;
--	int	failed_suspend;
--	int	failed_suspend_late;
--	int	failed_suspend_noirq;
--	int	failed_resume;
--	int	failed_resume_early;
--	int	failed_resume_noirq;
- #define	REC_FAILED_NUM	2
- 	int	last_failed_dev;
- 	char	failed_devs[REC_FAILED_NUM][40];
-@@ -95,6 +89,7 @@ static inline void dpm_save_failed_errno
- 
- static inline void dpm_save_failed_step(enum suspend_stat_step step)
- {
-+	suspend_stats.step_failures[step]++;
- 	suspend_stats.failed_steps[suspend_stats.last_failed_step] = step;
- 	suspend_stats.last_failed_step++;
- 	suspend_stats.last_failed_step %= REC_FAILED_NUM;
-Index: linux-pm/kernel/power/main.c
-===================================================================
---- linux-pm.orig/kernel/power/main.c
-+++ linux-pm/kernel/power/main.c
-@@ -341,18 +341,28 @@ static struct kobj_attribute _name = __A
- 
- suspend_attr(success, "%d\n");
- suspend_attr(fail, "%d\n");
--suspend_attr(failed_freeze, "%d\n");
--suspend_attr(failed_prepare, "%d\n");
--suspend_attr(failed_suspend, "%d\n");
--suspend_attr(failed_suspend_late, "%d\n");
--suspend_attr(failed_suspend_noirq, "%d\n");
--suspend_attr(failed_resume, "%d\n");
--suspend_attr(failed_resume_early, "%d\n");
--suspend_attr(failed_resume_noirq, "%d\n");
- suspend_attr(last_hw_sleep, "%llu\n");
- suspend_attr(total_hw_sleep, "%llu\n");
- suspend_attr(max_hw_sleep, "%llu\n");
- 
-+#define suspend_step_attr(_name, step)		\
-+static ssize_t _name##_show(struct kobject *kobj,		\
-+		struct kobj_attribute *attr, char *buf)		\
-+{								\
-+	return sprintf(buf, "%u\n",				\
-+		       suspend_stats.step_failures[step]);	\
-+}								\
-+static struct kobj_attribute _name = __ATTR_RO(_name)
-+
-+suspend_step_attr(failed_freeze, SUSPEND_FREEZE);
-+suspend_step_attr(failed_prepare, SUSPEND_PREPARE);
-+suspend_step_attr(failed_suspend, SUSPEND_SUSPEND);
-+suspend_step_attr(failed_suspend_late, SUSPEND_SUSPEND_LATE);
-+suspend_step_attr(failed_suspend_noirq, SUSPEND_SUSPEND_NOIRQ);
-+suspend_step_attr(failed_resume, SUSPEND_RESUME);
-+suspend_step_attr(failed_resume_early, SUSPEND_RESUME_EARLY);
-+suspend_step_attr(failed_resume_noirq, SUSPEND_RESUME_NOIRQ);
-+
- static ssize_t last_failed_dev_show(struct kobject *kobj,
- 		struct kobj_attribute *attr, char *buf)
- {
-@@ -439,6 +449,7 @@ static const struct attribute_group susp
- static int suspend_stats_show(struct seq_file *s, void *unused)
- {
- 	int i, index, last_dev, last_errno, last_step;
-+	enum suspend_stat_step step;
- 
- 	last_dev = suspend_stats.last_failed_dev + REC_FAILED_NUM - 1;
- 	last_dev %= REC_FAILED_NUM;
-@@ -446,22 +457,14 @@ static int suspend_stats_show(struct seq
- 	last_errno %= REC_FAILED_NUM;
- 	last_step = suspend_stats.last_failed_step + REC_FAILED_NUM - 1;
- 	last_step %= REC_FAILED_NUM;
--	seq_printf(s, "%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n"
--			"%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n",
--			"success", suspend_stats.success,
--			"fail", suspend_stats.fail,
--			"failed_freeze", suspend_stats.failed_freeze,
--			"failed_prepare", suspend_stats.failed_prepare,
--			"failed_suspend", suspend_stats.failed_suspend,
--			"failed_suspend_late",
--				suspend_stats.failed_suspend_late,
--			"failed_suspend_noirq",
--				suspend_stats.failed_suspend_noirq,
--			"failed_resume", suspend_stats.failed_resume,
--			"failed_resume_early",
--				suspend_stats.failed_resume_early,
--			"failed_resume_noirq",
--				suspend_stats.failed_resume_noirq);
-+
-+	seq_printf(s, "success: %d\nfail: %d\n",
-+		   suspend_stats.success, suspend_stats.fail);
-+
-+	for (step = SUSPEND_FREEZE; step < SUSPEND_NR_STEPS; step++)
-+		seq_printf(s, "failed_%s: %u\n", suspend_step_names[step],
-+			   suspend_stats.step_failures[step]);
-+
- 	seq_printf(s,	"failures:\n  last_failed_dev:\t%-s\n",
- 			suspend_stats.failed_devs[last_dev]);
- 	for (i = 1; i < REC_FAILED_NUM; i++) {
-Index: linux-pm/kernel/power/suspend.c
-===================================================================
---- linux-pm.orig/kernel/power/suspend.c
-+++ linux-pm/kernel/power/suspend.c
-@@ -367,7 +367,6 @@ static int suspend_prepare(suspend_state
- 	if (!error)
- 		return 0;
- 
--	suspend_stats.failed_freeze++;
- 	dpm_save_failed_step(SUSPEND_FREEZE);
- 	pm_notifier_call_chain(PM_POST_SUSPEND);
-  Restore:
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -686,7 +686,6 @@ Out:
- 	TRACE_RESUME(error);
- 
- 	if (error) {
--		suspend_stats.failed_resume_noirq++;
- 		dpm_save_failed_step(SUSPEND_RESUME_NOIRQ);
- 		dpm_save_failed_dev(dev_name(dev));
- 		pm_dev_err(dev, state, async ? " async noirq" : " noirq", error);
-@@ -817,7 +816,6 @@ Out:
- 	complete_all(&dev->power.completion);
- 
- 	if (error) {
--		suspend_stats.failed_resume_early++;
- 		dpm_save_failed_step(SUSPEND_RESUME_EARLY);
- 		dpm_save_failed_dev(dev_name(dev));
- 		pm_dev_err(dev, state, async ? " async early" : " early", error);
-@@ -974,7 +972,6 @@ static void device_resume(struct device
- 	TRACE_RESUME(error);
- 
- 	if (error) {
--		suspend_stats.failed_resume++;
- 		dpm_save_failed_step(SUSPEND_RESUME);
- 		dpm_save_failed_dev(dev_name(dev));
- 		pm_dev_err(dev, state, async ? " async" : "", error);
-@@ -1323,10 +1320,9 @@ static int dpm_noirq_suspend_devices(pm_
- 	if (!error)
- 		error = async_error;
- 
--	if (error) {
--		suspend_stats.failed_suspend_noirq++;
-+	if (error)
- 		dpm_save_failed_step(SUSPEND_SUSPEND_NOIRQ);
--	}
-+
- 	dpm_show_time(starttime, state, error, "noirq");
- 	trace_suspend_resume(TPS("dpm_suspend_noirq"), state.event, false);
- 	return error;
-@@ -1509,8 +1505,8 @@ int dpm_suspend_late(pm_message_t state)
- 	async_synchronize_full();
- 	if (!error)
- 		error = async_error;
-+
- 	if (error) {
--		suspend_stats.failed_suspend_late++;
- 		dpm_save_failed_step(SUSPEND_SUSPEND_LATE);
- 		dpm_resume_early(resume_event(state));
- 	}
-@@ -1789,10 +1785,10 @@ int dpm_suspend(pm_message_t state)
- 	async_synchronize_full();
- 	if (!error)
- 		error = async_error;
--	if (error) {
--		suspend_stats.failed_suspend++;
-+
-+	if (error)
- 		dpm_save_failed_step(SUSPEND_SUSPEND);
--	}
-+
- 	dpm_show_time(starttime, state, error, NULL);
- 	trace_suspend_resume(TPS("dpm_suspend"), state.event, false);
- 	return error;
-@@ -1943,11 +1939,11 @@ int dpm_suspend_start(pm_message_t state
- 	int error;
- 
- 	error = dpm_prepare(state);
--	if (error) {
--		suspend_stats.failed_prepare++;
-+	if (error)
- 		dpm_save_failed_step(SUSPEND_PREPARE);
--	} else
-+	else
- 		error = dpm_suspend(state);
-+
- 	dpm_show_time(starttime, state, error, "start");
- 	return error;
- }
-
-
-
+-- 
+~Vinod
 
