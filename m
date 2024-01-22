@@ -1,758 +1,486 @@
-Return-Path: <linux-kernel+bounces-33115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E49738364E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:56:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 481A48364E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:57:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15A871C22121
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:56:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB22028E142
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22143D3A1;
-	Mon, 22 Jan 2024 13:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3100D3D38E;
+	Mon, 22 Jan 2024 13:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PQcImdyj"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="EHUdOVzg"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFDF3D0BC;
-	Mon, 22 Jan 2024 13:56:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930B33D546;
+	Mon, 22 Jan 2024 13:56:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705931787; cv=none; b=bhj2+rrQnDCLGGFhnCihF8na4WArTLN7/prWPX1LAEJvqRs0bINIF+x24pGhY5W1V9NJXXQzFngSSwsEPELs5p17kQb3HOZFYIs6kFjwfPPJXbjYZnYccLNfLz1o4cH9yrPw30rFVlTv48snd7OS2yOJQVwLWOjUuKO7rWBgB4o=
+	t=1705931817; cv=none; b=D4jnhRDuR+fSgCj1eCsAZysv3gYnYArhLzZGufqVaSo7Uc9ZeX5XlmHiTvn5uiw8H5wyGxXeOXAtc+AERriaj61LoALCrS+cXSwk199a/MU55RocHzv54jm2VR+B1tOEa2v0s7RqcXvqLrqZrKkg9wpqRwqcFniq3zEvQVxdyco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705931787; c=relaxed/simple;
-	bh=9Ptx+A83euIyL8WhZekoOPIjvyyV1H/kK/XJo7K/kxk=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
-	 In-Reply-To:Content-Type; b=iNZLc1PUjg+BiEuND8S/GTfwyYHT7djLjFAh+pcSj+WYOe5XMWS91jAgHD7++Vf99DVFmzeiiDEJ33Urj2/hLMP+lyEt2g+8OJp+brkWk5MVwI6IsV4HrXNXUoLR2XBQ9gWVyw8NkQHmp1XdzKcTzLcyKsbwaC+qyPQcwh0z/JI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PQcImdyj; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40MAc2L1006066;
-	Mon, 22 Jan 2024 13:55:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:from:subject:to:cc:references
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=86w3yguDEs33I+HmwkQtPGS6YqsmWAvpHxI5zEtuqrk=; b=PQ
-	cImdyjslOMvGccRMde4QcVFcghWNRPRgFlhHB3c934v82deiFNHkv7v8/hqnEgb8
-	ji+ghdtJWB01ptHWhPObW5l7eQKXjuvvmFlo2q4Gsm7zf/lvQszs6/rHXdcifg3q
-	hvn/EZ772p6uMUAjqgBUmfn1G8EsCdypPtEsptIVEQpyeEkezCvdYp9AzA2bRVRL
-	Fs6TPmwMlU0QeCf3n3/U1V1tLTj40Y72RYFZpW16WNCaEM58PgOP4EqNDKmePi6V
-	Vp5KGteS8bQ+85pcdYF1DO85aac1iQvuOVMzT6+uNDSmaFuP3rHi13mhEoKUeH6m
-	2dTBm3xHY7OyRL7kUIFA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vr7bqm290-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 13:55:30 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40MDtTMA022218
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 13:55:29 GMT
-Received: from [10.253.14.163] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 22 Jan
- 2024 05:55:18 -0800
-Message-ID: <749136bc-3db9-4b2d-a9ca-e5fb5985f639@quicinc.com>
-Date: Mon, 22 Jan 2024 21:55:16 +0800
+	s=arc-20240116; t=1705931817; c=relaxed/simple;
+	bh=ERv68mc0kAOOBrrsOQrSCKbNHTqfl4niUvp0iKwBJmk=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=WTXHL0+cRYAys/r9vfL5ZbDnOySR8lfiKyQ2Qcf2c9ctIBGcW2YMUgd3/Zq66mOKu+LW6Q50feHxg4GWcE+uhN5DUtKb2hGE4gyqD3wgofj5OhuUrwg/M8n5SyshudPjqcv8LjKKDVeUjtl6zP9NnZNT+oOAmoyQzOrp52Lm3gE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=EHUdOVzg; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240122135646euoutp02b2c04da39b6dd049ed94f6df9fa59afd~sr-CHuuo00164801648euoutp02M;
+	Mon, 22 Jan 2024 13:56:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240122135646euoutp02b2c04da39b6dd049ed94f6df9fa59afd~sr-CHuuo00164801648euoutp02M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1705931806;
+	bh=lwXHUo3YOPn1e8acuxHZCDouH7gmWyeeZ78kTv3eatQ=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=EHUdOVzg5Cm7vMHaYYez4LrCYX/E6YDM9hvpDrupuOcyM8AA03wmS4fz67K21J6Cn
+	 I7tzPGfEEhjICgFLgQcbyvVX2kf1/jzKqdOBFPkQEcYNV3qBCrvX3NVJ0jdFbl+DoT
+	 mBhFBXjfkt8VfpOo3cHFRjDzndFt4glaN5H6aqV4=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240122135646eucas1p18bf3873c150cdec6b7b96e195e8415e8~sr-B4F3PS1433914339eucas1p1A;
+	Mon, 22 Jan 2024 13:56:46 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id 58.00.09539.D147EA56; Mon, 22
+	Jan 2024 13:56:46 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240122135645eucas1p124f0705306531c0355ad222391c83e8b~sr-BRveqT2326523265eucas1p1e;
+	Mon, 22 Jan 2024 13:56:45 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240122135645eusmtrp1acfbecd5a701c4c205fa636bdc1b2dd3~sr-BQ3ySJ0064000640eusmtrp1_;
+	Mon, 22 Jan 2024 13:56:45 +0000 (GMT)
+X-AuditID: cbfec7f2-52bff70000002543-7c-65ae741d492e
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 83.51.10702.D147EA56; Mon, 22
+	Jan 2024 13:56:45 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240122135645eusmtip2bc20b6093e3b90c9e046a19826774474~sr-A_SoW81403014030eusmtip2d;
+	Mon, 22 Jan 2024 13:56:45 +0000 (GMT)
+Received: from localhost (106.110.32.133) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Mon, 22 Jan 2024 13:56:44 +0000
+Date: Mon, 22 Jan 2024 14:56:45 +0100
+From: Joel Granados <j.granados@samsung.com>
+To: Huang Yiwei <quic_hyiwei@quicinc.com>
+CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <mark.rutland@arm.com>,
+	<mcgrof@kernel.org>, <keescook@chromium.org>,
+	<mathieu.desnoyers@efficios.com>, <corbet@lwn.net>,
+	<linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<quic_bjorande@quicinc.com>, <quic_tsoni@quicinc.com>,
+	<quic_satyap@quicinc.com>, <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
+	Ross Zwisler <zwisler@google.com>, Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v3] tracing: Support to dump instance traces by
+ ftrace_dump_on_oops
+Message-ID: <20240122135645.danb777cc5e7i77z@localhost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Jie Luo <quic_luoj@quicinc.com>
-Subject: Re: [PATCH net-next 02/20] dt-bindings: net: qcom,ppe: Add bindings
- yaml file
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <corbet@lwn.net>, <catalin.marinas@arm.com>, <will@kernel.org>,
-        <p.zabel@pengutronix.de>, <linux@armlinux.org.uk>,
-        <shannon.nelson@amd.com>, <anthony.l.nguyen@intel.com>,
-        <jasowang@redhat.com>, <brett.creeley@amd.com>,
-        <rrameshbabu@nvidia.com>, <joshua.a.hay@intel.com>, <arnd@arndb.de>,
-        <geert+renesas@glider.be>, <neil.armstrong@linaro.org>,
-        <dmitry.baryshkov@linaro.org>, <nfraprado@collabora.com>,
-        <m.szyprowski@samsung.com>, <u-kumar1@ti.com>,
-        <jacob.e.keller@intel.com>, <andrew@lunn.ch>
-CC: <netdev@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <ryazanov.s.a@gmail.com>, <ansuelsmth@gmail.com>,
-        <quic_kkumarcs@quicinc.com>, <quic_suruchia@quicinc.com>,
-        <quic_soni@quicinc.com>, <quic_pavir@quicinc.com>,
-        <quic_souravp@quicinc.com>, <quic_linchen@quicinc.com>,
-        <quic_leiwei@quicinc.com>
-References: <20240110114033.32575-1-quic_luoj@quicinc.com>
- <20240110114033.32575-3-quic_luoj@quicinc.com>
- <1d1116da-9af3-49e4-a180-cff721df5df5@linaro.org>
-Content-Language: en-US
-In-Reply-To: <1d1116da-9af3-49e4-a180-cff721df5df5@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: chDJtnwMoK9Acncpdo2EZLaSICOENM7b
-X-Proofpoint-ORIG-GUID: chDJtnwMoK9Acncpdo2EZLaSICOENM7b
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-22_05,2024-01-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 phishscore=0 adultscore=0
- clxscore=1011 spamscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401220095
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="b6jh6rk622azxbdb"
+Content-Disposition: inline
+In-Reply-To: <20240119080824.907101-1-quic_hyiwei@quicinc.com>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDJsWRmVeSWpSXmKPExsWy7djPc7pyJetSDT5MZrZ4cqCd0WJZg6rF
+	me5ci1nrpjBaLGxbwmKxZ+9JFovLu+awWRxZf5bFYun1i0wWm8+eYba4MeEpo8Xi5WoW/d//
+	Mlk0Pp7BaPH59m9mi527NzFZ3L69k9ViX8cDJostnx8wOQh7rJm3htFjdsNFFo+lp9+webTs
+	u8XusWBTqcfCT19ZPTat6mTzWNw3mdVj4p46j8+b5AK4orhsUlJzMstSi/TtErgypvz8xFjw
+	Obli9alGlgbGu4FdjJwcEgImEk9a2tm7GLk4hARWMEqs6JoC5XxhlGi6OZkRwvnMKLHz1Bt2
+	mJbD/e3MEInljBI9P6aBJcCq3rfbQCS2MEo8v7EELMEioCrRMqmBEcRmE9CROP/mDjOILSKg
+	KXHqxE+wOLNAN4vEjysaILawQKTE2wl3wOK8AuYSTQ/fMEHYghInZz5h6WLkAKqvkJh9LxTC
+	lJZY/o8DpIJTwE7i4oReFog7lSS+vullhbBrJU5tucUEcpqEQBeXxJmvL6GKXCTedD+BKhKW
+	eHV8C9STMhKnJ/ewQDRMZpTY/+8DO4SzmlFiWeNXJogqa4mWK0+gOhwlps6dwgpykYQAn8SN
+	t4IQf/FJTNo2nRkizCvR0SYEUa0msfreG5YJjMqzkHw2C+GzWQifzQKboyOxYPcnNgxhbYll
+	C18zQ9i2EuvWvWdZwMi+ilE8tbQ4Nz212DAvtVyvODG3uDQvXS85P3cTIzDRnv53/NMOxrmv
+	PuodYmTiYDzEqALU/GjD6guMUix5+XmpSiK8NyTXpQrxpiRWVqUW5ccXleakFh9ilOZgURLn
+	VU2RTxUSSE8sSc1OTS1ILYLJMnFwSjUwmbIyrl8RqKq4t0grJd5n6YWSoPMcHo0sJ0MPH6s0
+	331dwqKL/8S/k4lMi77fPKPS3PHGqM/5waJ4s2bu0H7JDF+939umTW0UtWX8Vnu3pOVb/2/5
+	d5FrDnzu2RjBwFxxdccTY4PCecyZ1ZMSDqpOrrooOHn3e17jifMLWPY//bYzo+QIm/R9aenZ
+	+yarp7vuTH/pPlVWydJqfpxH25ueq3FfDz9KaORmYjDoezpbwL9aIdBeN35HM+faPkaRcPPy
+	+x/ne0WUPPk3VSbdyWran2tTCtM/h245+CWAvXjXl4SA1zpW6wMynS73CdYknxeTSJa+zuVu
+	JXj/j7uRm0pS1emktKP/+hIyD/349UWJpTgj0VCLuag4EQCCRfaeLwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsVy+t/xe7qyJetSDQ41SVk8OdDOaLGsQdXi
+	THeuxax1UxgtFrYtYbHYs/cki8XlXXPYLI6sP8tisfT6RSaLzWfPMFvcmPCU0WLxcjWL/u9/
+	mSwaH89gtPh8+zezxc7dm5gsbt/eyWqxr+MBk8WWzw+YHIQ91sxbw+gxu+Eii8fS02/YPFr2
+	3WL3WLCp1GPhp6+sHptWdbJ5LO6bzOoxcU+dx+dNcgFcUXo2RfmlJakKGfnFJbZK0YYWRnqG
+	lhZ6RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZW+ZvZi34mFzx+dsatgbG24FdjJwcEgIm
+	Eof725m7GLk4hASWMkqsOL6dESIhI7Hxy1VWCFtY4s+1LjaIoo+MEpderGGBcLYwSmw69JsJ
+	pIpFQFWiZVIDWDebgI7E+Td3mEFsEQFNiVMnfoLFmQW6WSR+XNEAsYUFIiXeTrgDFucVMJdo
+	evgGbI6QwERGibNbdCHighInZz5hgegtk3i3up+9i5EDyJaWWP6PAyTMKWAncXFCLwvEoUoS
+	X9/0Qh1dK/H57zPGCYzCs5BMmoVk0iyESRBhLYkb/14yYQhrSyxb+JoZwraVWLfuPcsCRvZV
+	jCKppcW56bnFRnrFibnFpXnpesn5uZsYgQln27GfW3Ywrnz1Ue8QIxMH4yFGFaDORxtWX2CU
+	YsnLz0tVEuG9IbkuVYg3JbGyKrUoP76oNCe1+BCjKTAQJzJLiSbnA1NhXkm8oZmBqaGJmaWB
+	qaWZsZI4r2dBR6KQQHpiSWp2ampBahFMHxMHp1QDU5Vm9w+Haf/yvqexXtk7SThXRepKx8TH
+	xWEXP5yc3tt5caM2959ZHG2zAz4mL7xiLdx6sbgvKn/TJvOWDxOtncvmWBhvq9xSoJ5jcbhb
+	8deUhdN+7923UyjZ0f/H7qZLIpuNLa3mzzVkuWBpVyqx/7bGnQsvbv9YV/jyVPwPj6M39+6Q
+	idHUXN0tvOZT3tSAPd+d1JMlj9/d6yYfcjyEwWxvtsFUKbUDs3q38MQt+lMWuVT/5yTW+26n
+	xTvWVrZxvDTxV2iwrV/E/3ZL1eyDvSKHz/c9Uwr9sWDmxAwxwZYPt5vKF7vcDO4XvGayPenZ
+	kpi0A6kLmUodS93nbGOZvCwvs9+osTxw7RLHZ+ekgpRYijMSDbWYi4oTAWRivTfNAwAA
+X-CMS-MailID: 20240122135645eucas1p124f0705306531c0355ad222391c83e8b
+X-Msg-Generator: CA
+X-RootMTR: 20240119080907eucas1p12c357eae722d3a60d82c66b81cfc05ba
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240119080907eucas1p12c357eae722d3a60d82c66b81cfc05ba
+References: <CGME20240119080907eucas1p12c357eae722d3a60d82c66b81cfc05ba@eucas1p1.samsung.com>
+	<20240119080824.907101-1-quic_hyiwei@quicinc.com>
 
+--b6jh6rk622azxbdb
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Jan 19, 2024 at 04:08:24PM +0800, Huang Yiwei wrote:
+> Currently ftrace only dumps the global trace buffer on an OOPs. For
+> debugging a production usecase, instance trace will be helpful to
+> check specific problems since global trace buffer may be used for
+> other purposes.
+>=20
+> This patch extend the ftrace_dump_on_oops parameter to dump a specific
+> trace instance:
+>=20
+>   - ftrace_dump_on_oops=3D0: as before -- don't dump
+>   - ftrace_dump_on_oops[=3D1]: as before -- dump the global trace buffer
+>   on all CPUs
+>   - ftrace_dump_on_oops=3D2 or =3Dorig_cpu: as before -- dump the global
+>   trace buffer on CPU that triggered the oops
+>   - ftrace_dump_on_oops=3D<instance_name>: new behavior -- dump the
+>   tracing instance matching <instance_name>
+>=20
+> Also, the sysctl node can handle the input accordingly.
+>=20
+> Cc: Ross Zwisler <zwisler@google.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Huang Yiwei <quic_hyiwei@quicinc.com>
+> ---
+> Link: https://lore.kernel.org/linux-trace-kernel/20221209125310.450aee97@=
+gandalf.local.home/
+>=20
+>  .../admin-guide/kernel-parameters.txt         |  9 +--
+>  Documentation/admin-guide/sysctl/kernel.rst   | 11 ++--
+>  include/linux/ftrace.h                        |  4 +-
+>  include/linux/kernel.h                        |  1 +
+>  kernel/sysctl.c                               |  4 +-
+>  kernel/trace/trace.c                          | 64 ++++++++++++++-----
+>  kernel/trace/trace_selftest.c                 |  2 +-
+>  7 files changed, 65 insertions(+), 30 deletions(-)
+>=20
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentat=
+ion/admin-guide/kernel-parameters.txt
+> index a36cf8cc582c..b3aa533253f1 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1559,12 +1559,13 @@
+>  			The above will cause the "foo" tracing instance to trigger
+>  			a snapshot at the end of boot up.
+> =20
+> -	ftrace_dump_on_oops[=3Dorig_cpu]
+> +	ftrace_dump_on_oops[=3Dorig_cpu | =3D<instance>]
+>  			[FTRACE] will dump the trace buffers on oops.
+> -			If no parameter is passed, ftrace will dump
+> -			buffers of all CPUs, but if you pass orig_cpu, it will
+> +			If no parameter is passed, ftrace will dump global
+> +			buffers of all CPUs, if you pass orig_cpu, it will
+>  			dump only the buffer of the CPU that triggered the
+> -			oops.
+> +			oops, or specific instance will be dumped if instance
+> +			name is passed.
+> =20
+>  	ftrace_filter=3D[function-list]
+>  			[FTRACE] Limit the functions traced by the function
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/=
+admin-guide/sysctl/kernel.rst
+> index 6584a1f9bfe3..ecf036b63c48 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -296,11 +296,12 @@ kernel panic). This will output the contents of the=
+ ftrace buffers to
+>  the console.  This is very useful for capturing traces that lead to
+>  crashes and outputting them to a serial console.
+> =20
+> -=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> -0 Disabled (default).
+> -1 Dump buffers of all CPUs.
+> -2 Dump the buffer of the CPU that triggered the oops.
+> -=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +0           Disabled (default).
+> +1           Dump buffers of all CPUs.
+> +2(orig_cpu) Dump the buffer of the CPU that triggered the oops.
+> +<instance>  Dump the specific instance buffer.
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+> =20
+>  ftrace_enabled, stack_tracer_enabled
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index e8921871ef9a..f20de4621ec1 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -1151,7 +1151,9 @@ static inline void unpause_graph_tracing(void) { }
+>  #ifdef CONFIG_TRACING
+>  enum ftrace_dump_mode;
+> =20
+> -extern enum ftrace_dump_mode ftrace_dump_on_oops;
+> +#define MAX_TRACER_SIZE		100
+> +extern char ftrace_dump_on_oops[];
+> +extern enum ftrace_dump_mode get_ftrace_dump_mode(void);
+>  extern int tracepoint_printk;
+> =20
+>  extern void disable_trace_on_warning(void);
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index d9ad21058eed..de4a76036372 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -255,6 +255,7 @@ enum ftrace_dump_mode {
+>  	DUMP_NONE,
+>  	DUMP_ALL,
+>  	DUMP_ORIG,
+> +	DUMP_INSTANCE,
+>  };
+> =20
+>  #ifdef CONFIG_TRACING
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 157f7ce2942d..81cc974913bb 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -1710,9 +1710,9 @@ static struct ctl_table kern_table[] =3D {
+>  	{
+>  		.procname	=3D "ftrace_dump_on_oops",
+>  		.data		=3D &ftrace_dump_on_oops,
+> -		.maxlen		=3D sizeof(int),
+> +		.maxlen		=3D MAX_TRACER_SIZE,
+>  		.mode		=3D 0644,
+> -		.proc_handler	=3D proc_dointvec,
+> +		.proc_handler	=3D proc_dostring,
+>  	},
+>  	{
+>  		.procname	=3D "traceoff_on_warning",
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index a0defe156b57..9a76a278e5c3 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -130,9 +130,10 @@ cpumask_var_t __read_mostly	tracing_buffer_mask;
+>   * /proc/sys/kernel/ftrace_dump_on_oops
+>   * Set 1 if you want to dump buffers of all CPUs
+>   * Set 2 if you want to dump the buffer of the CPU that triggered oops
+> + * Set instance name if you want to dump the specific trace instance
+>   */
+> -
+> -enum ftrace_dump_mode ftrace_dump_on_oops;
+> +/* Set to string format zero to disable by default */
+> +char ftrace_dump_on_oops[MAX_TRACER_SIZE] =3D "0";
+> =20
+>  /* When set, tracing will stop when a WARN*() is hit */
+>  int __disable_trace_on_warning;
+> @@ -178,7 +179,6 @@ static void ftrace_trace_userstack(struct trace_array=
+ *tr,
+>  				   struct trace_buffer *buffer,
+>  				   unsigned int trace_ctx);
+> =20
+> -#define MAX_TRACER_SIZE		100
+>  static char bootup_tracer_buf[MAX_TRACER_SIZE] __initdata;
+>  static char *default_bootup_tracer;
+> =20
+> @@ -201,19 +201,32 @@ static int __init set_cmdline_ftrace(char *str)
+>  }
+>  __setup("ftrace=3D", set_cmdline_ftrace);
+> =20
+> +enum ftrace_dump_mode get_ftrace_dump_mode(void)
+> +{
+> +	if (!strcmp("0", ftrace_dump_on_oops))
+Would using a strncmp be better in this case? And this question goes for
+all the strcmp in the patch. Something like strncmp("0",
+ftrace_dump_on_oops, 1); when they are equal, it would avoid 2
+assignments and two comparisons. Also might avoid runaway comparisons if
+the first string constant changes in the future.
 
-On 1/10/2024 8:22 PM, Krzysztof Kozlowski wrote:
-> On 10/01/2024 12:40, Luo Jie wrote:
->> Qualcomm PPE(packet process engine) is supported on
->> IPQ SOC platform.
->>
-> 
-> A nit, subject: drop second/last, redundant "bindings". The
-> "dt-bindings" prefix is already stating that these are bindings.
-> See also:
-> https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
-> 
-> Basically your subject has only prefix and nothing else useful.
-> 
-> Limited review follows, I am not wasting my time much on this.
+Or maybe strncmp("0", ftrace_dump_on_oops, 2); if you want to check if
+they are both null terminated.
 
-Will remove the redundant words, and follow up the guidance
-mentioned in the link. Will correct the subject as well.
+> +		return DUMP_NONE;
+> +	else if (!strcmp("1", ftrace_dump_on_oops))
+> +		return DUMP_ALL;
+> +	else if (!strcmp("orig_cpu", ftrace_dump_on_oops) ||
+> +			!strcmp("2", ftrace_dump_on_oops))
+> +		return DUMP_ORIG;
+> +	else
+> +		return DUMP_INSTANCE;
+> +}
+> +
+>  static int __init set_ftrace_dump_on_oops(char *str)
+>  {
+> -	if (*str++ !=3D '=3D' || !*str || !strcmp("1", str)) {
+> -		ftrace_dump_on_oops =3D DUMP_ALL;
+> +	if (!*str) {
+> +		strscpy(ftrace_dump_on_oops, "1", MAX_TRACER_SIZE);
+>  		return 1;
+>  	}
+> =20
+> -	if (!strcmp("orig_cpu", str) || !strcmp("2", str)) {
+> -		ftrace_dump_on_oops =3D DUMP_ORIG;
+> -                return 1;
+> -        }
+> +	if (*str++ =3D=3D '=3D') {
+> +		strscpy(ftrace_dump_on_oops, str, MAX_TRACER_SIZE);
+> +		return 1;
+> +	}
+> =20
+> -        return 0;
+> +	return 0;
+>  }
+>  __setup("ftrace_dump_on_oops", set_ftrace_dump_on_oops);
+> =20
+> @@ -10085,14 +10098,16 @@ static struct notifier_block trace_die_notifier=
+ =3D {
+>  static int trace_die_panic_handler(struct notifier_block *self,
+>  				unsigned long ev, void *unused)
+>  {
+> -	if (!ftrace_dump_on_oops)
+> +	enum ftrace_dump_mode dump_mode =3D get_ftrace_dump_mode();
+> +
+> +	if (!dump_mode)
+>  		return NOTIFY_DONE;
+> =20
+>  	/* The die notifier requires DIE_OOPS to trigger */
+>  	if (self =3D=3D &trace_die_notifier && ev !=3D DIE_OOPS)
+>  		return NOTIFY_DONE;
+> =20
+> -	ftrace_dump(ftrace_dump_on_oops);
+> +	ftrace_dump(dump_mode);
+> =20
+>  	return NOTIFY_DONE;
+>  }
+> @@ -10133,12 +10148,12 @@ trace_printk_seq(struct trace_seq *s)
+>  	trace_seq_init(s);
+>  }
+> =20
+> -void trace_init_global_iter(struct trace_iterator *iter)
+> +static void trace_init_iter(struct trace_iterator *iter, struct trace_ar=
+ray *tr)
+>  {
+> -	iter->tr =3D &global_trace;
+> +	iter->tr =3D tr;
+>  	iter->trace =3D iter->tr->current_trace;
+>  	iter->cpu_file =3D RING_BUFFER_ALL_CPUS;
+> -	iter->array_buffer =3D &global_trace.array_buffer;
+> +	iter->array_buffer =3D &tr->array_buffer;
+> =20
+>  	if (iter->trace && iter->trace->open)
+>  		iter->trace->open(iter);
+> @@ -10158,6 +10173,11 @@ void trace_init_global_iter(struct trace_iterato=
+r *iter)
+>  	iter->fmt_size =3D STATIC_FMT_BUF_SIZE;
+>  }
+> =20
+> +void trace_init_global_iter(struct trace_iterator *iter)
+> +{
+> +	trace_init_iter(iter, &global_trace);
+> +}
+> +
+>  void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+>  {
+>  	/* use static because iter can be a bit big for the stack */
+> @@ -10168,6 +10188,15 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump=
+_mode)
+>  	unsigned long flags;
+>  	int cnt =3D 0, cpu;
+> =20
+> +	if (oops_dump_mode =3D=3D DUMP_INSTANCE) {
+> +		tr =3D trace_array_find(ftrace_dump_on_oops);
+> +		if (!tr) {
+> +			printk(KERN_TRACE "Instance %s not found\n",
+> +				ftrace_dump_on_oops);
+> +			return;
+> +		}
+> +	}
+> +
+>  	/* Only allow one dump user at a time. */
+>  	if (atomic_inc_return(&dump_running) !=3D 1) {
+>  		atomic_dec(&dump_running);
+> @@ -10182,12 +10211,12 @@ void ftrace_dump(enum ftrace_dump_mode oops_dum=
+p_mode)
+>  	 * If the user does a sysrq-z, then they can re-enable
+>  	 * tracing with echo 1 > tracing_on.
+>  	 */
+> -	tracing_off();
+> +	tracer_tracing_off(tr);
+> =20
+>  	local_irq_save(flags);
+> =20
+>  	/* Simulate the iterator */
+> -	trace_init_global_iter(&iter);
+> +	trace_init_iter(&iter, tr);
+> =20
+>  	for_each_tracing_cpu(cpu) {
+>  		atomic_inc(&per_cpu_ptr(iter.array_buffer->data, cpu)->disabled);
+> @@ -10200,6 +10229,7 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_=
+mode)
+> =20
+>  	switch (oops_dump_mode) {
+>  	case DUMP_ALL:
+> +	case DUMP_INSTANCE:
+>  		iter.cpu_file =3D RING_BUFFER_ALL_CPUS;
+>  		break;
+>  	case DUMP_ORIG:
+> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+> index 529590499b1f..a9750a680324 100644
+> --- a/kernel/trace/trace_selftest.c
+> +++ b/kernel/trace/trace_selftest.c
+> @@ -768,7 +768,7 @@ static int trace_graph_entry_watchdog(struct ftrace_g=
+raph_ent *trace)
+>  	if (unlikely(++graph_hang_thresh > GRAPH_MAX_FUNC_TEST)) {
+>  		ftrace_graph_stop();
+>  		printk(KERN_WARNING "BUG: Function graph tracer hang!\n");
+> -		if (ftrace_dump_on_oops) {
+> +		if (get_ftrace_dump_mode()) {
+>  			ftrace_dump(DUMP_ALL);
+>  			/* ftrace_dump() disables tracing */
+>  			tracing_on();
+> --=20
+> 2.25.1
+>=20
 
-> 
->> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->> ---
->>   .../devicetree/bindings/net/qcom,ppe.yaml     | 1330 +++++++++++++++++
->>   1 file changed, 1330 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/net/qcom,ppe.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/net/qcom,ppe.yaml b/Documentation/devicetree/bindings/net/qcom,ppe.yaml
->> new file mode 100644
->> index 000000000000..6afb2ad62707
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/net/qcom,ppe.yaml
->> @@ -0,0 +1,1330 @@
->> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/net/qcom,ppe.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm Packet Process Engine Ethernet controller
-> 
-> Where is the ref to ethernet controllers schema?
-Sorry, the title above is not describing the device for this dtbindings
-correctly.  It should say "Qualcomm Packet Process Engine". The
-reference to the schema for PPE is mentioned above.
+--=20
 
-> 
->> +
->> +maintainers:
->> +  - Luo Jie <quic_luoj@quicinc.com>
->> +
->> +description:
->> +  The PPE(packet process engine) is comprised of three componets, Ethernet
->> +  DMA, Switch core and Port wrapper, Ethernet DMA is used to transmit and
->> +  receive packets between Ethernet subsytem and host. The Switch core has
->> +  maximum 8 ports(maximum 6 front panel ports and two FIFO interfaces),
->> +  among which there are GMAC/XGMACs used as external interfaces and FIFO
->> +  interfaces connected the EDMA/EIP, The port wrapper provides connections
->> +  from the GMAC/XGMACS to SGMII/QSGMII/PSGMII/USXGMII/10G-BASER etc, there
->> +  are maximu 3 UNIPHY(PCS) instances supported by PPE.
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - qcom,ipq5332-ppe
->> +      - qcom,ipq9574-ppe
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  "#address-cells":
->> +    const: 1
->> +
->> +  "#size-cells":
->> +    const: 1
->> +
->> +  ranges: true
->> +
->> +  clocks: true
-> 
-> These cannot be true, we expect here widest constraints.
+Joel Granados
 
-Got it, will update to add the right constraints for the properties.
+--b6jh6rk622azxbdb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
->> +
->> +  clock-names: true
->> +
->> +  resets: true
->> +
->> +  reset-names: true
->> +
->> +  tdm-config:
->> +    type: object
->> +    additionalProperties: false
->> +    description: |
->> +      PPE TDM(time-division multiplexing) config includes buffer management
->> +      and port scheduler.
->> +
->> +    properties:
->> +      qcom,tdm-bm-config:
->> +        $ref: /schemas/types.yaml#/definitions/uint32-array
->> +        description:
->> +          The TDM buffer scheduler configs of PPE, there are multiple
->> +          entries supported, each entry includes valid, direction
->> +          (ingress or egress), port, second port valid, second port.
->> +
->> +      qcom,tdm-port-scheduler-config:
->> +        $ref: /schemas/types.yaml#/definitions/uint32-array
->> +        description:
->> +          The TDM port scheduler management configs of PPE, there
->> +          are multiple entries supported each entry includes ingress
->> +          scheduler port bitmap, ingress scheduler port, egress
->> +          scheduler port, second egress scheduler port valid and
->> +          second egress scheduler port.
->> +
->> +    required:
->> +      - qcom,tdm-bm-config
->> +      - qcom,tdm-port-scheduler-config
->> +
->> +  buffer-management-config:
->> +    type: object
->> +    additionalProperties: false
->> +    description: |
->> +      PPE buffer management config, which supports configuring group
->> +      buffer and per port buffer, which decides the threshold of the
->> +      flow control frame generated.
->> +
-> 
-> I don't understand this sentence. Rephrase it to proper sentence and
-> proper hardware, not driver, description.
+-----BEGIN PGP SIGNATURE-----
 
-Ok, I  will edit the description to make it more clear. This information 
-determines the number of hardware buffers configured per port in the 
-PPE. This configuration influences flow control behavior of the port.
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmWudBYACgkQupfNUreW
+QU/Zqwv/UjKk+jF6A+KqQnvRrJSXNadeNCtlKCzVBzNn0nEVBNZ5fxm5pSCAMhC6
+mvAYTUkLw1p/fS4xyo8NJnjdr2davTii/xgBi59VORZoSmoM9MIJV/g/3/WeTHZ7
+5gCMZT9EsknmkX2MawqdrFqqObCljB+B8s0NJLHeGyP0YDNnDvE901pihdcnMyYd
+UfGOAN536WT/8+3IMgzL09JS2xvdhLDlgcEd+II4pyQR67+GDz0KWqTbYW+3Dnv4
+yh04q0oK+KCTm2MLV/RaJ9H54yiI03cKviNHk/GmDObs1pIbUXHi5e8LyMxJIXhr
+rYBQjX7BWDBuXWJSwHxQ9UGXWmenFAk2qSXhL2s3JApjBm4p6+brWp0eEjMlkfjb
+BCJWsTRIpxgqo+6ElKUOubgUo5v7RAOqj5NnhBPn4vsmoFc5UHPMTUiy8ei6CeTD
+P7mI92IDyy/+eJ6pqCcJoSPfrOGP4kmblOIlSeakVI6AnnCL4qm+3m/Z4Y1fy4gS
+FzL7uGST
+=C0pm
+-----END PGP SIGNATURE-----
 
-> 
->> +    properties:
->> +      qcom,group-config:
->> +        $ref: /schemas/types.yaml#/definitions/uint32-array
->> +        description:
->> +          The PPE buffer support 4 groups, the entry includes
->> +          the group ID and group buffer numbers, each buffer
->> +          has 256 bytes.
-> 
-> Missing constraints, like min/max and number of items.
-
-Ok, will add these constraints.
-
-> 
->> +
->> +      qcom,port-config:
->> +        $ref: /schemas/types.yaml#/definitions/uint32-array
->> +        description:
->> +          The PPE buffer number is also assigned per BM port ID,
->> +          there are 10 BM ports supported on ipq5332, and 15 BM
->> +          ports supported on ipq9574. Each entry includs group
->> +          ID, BM port ID, dedicated buffer, the buffer numbers
->> +          for receiving packet after pause frame sent, the
->> +          threshold for pause frame, weight, restore ceil and
->> +          dynamic buffer or static buffer management.
->> +
->> +    required:
->> +      - qcom,group-config
->> +      - qcom,port-config
->> +
->> +  queue-management-config:
->> +    type: object
->> +    additionalProperties: false
->> +    description: |
->> +      PPE queue management config, which supports configuring group
->> +      and per queue buffer limitation, which decides the threshold
->> +      to drop the packet on the egress port.
->> +
->> +    properties:
->> +      qcom,group-config:
->> +        $ref: /schemas/types.yaml#/definitions/uint32-array
->> +        description:
->> +          The PPE queue management support 4 groups, the entry
->> +          includes the group ID, group buffer number, dedicated
->> +          buffer number, threshold to drop packet and restore
->> +          ceil.
->> +
->> +      qcom,queue-config:
->> +        $ref: /schemas/types.yaml#/definitions/uint32-array
->> +        description:
->> +          PPE has 256 unicast queues and 44 multicast queues, the
->> +          entry includes queue base, queue number, group ID,
->> +          dedicated buffer, the threshold to drop packet, weight,
->> +          restore ceil and dynamic or static queue management.
->> +
->> +    required:
->> +      - qcom,group-config
->> +      - qcom,queue-config
->> +
->> +  port-scheduler-resource:
->> +    type: object
->> +    additionalProperties: false
->> +    description: The scheduler resource available in PPE.
->> +    patternProperties:
->> +      "^port[0-7]$":
-> 
-> port-
-
-Ok. will do.
-
-> 
->> +        description: Each subnode represents the scheduler resource per port.
->> +        type: object
->> +        properties:
->> +          port-id:
->> +            $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: |
-> 
-> Do not need '|' unless you need to preserve formatting. This applies
-> everywhere.
-
-Got it, will remove it everywhere applicable.
-
-> 
->> +              The PPE port ID, there are maximum 6 physical port,
->> +              EIP port and CPU port.
-> 
-> Your node  name suffix says 8 ports. Anyway, missing min/max.
-
-will add the constraints.
-
-> 
-> All these nodes (before, here and further) looks like dump of vendor code.
-> 
-> I expect some good explanation why we should accept this. Commit msg you
-> wrote is meaningless. It literally brings zero information about hardware.
-> 
-> You have been asked to provide accurate hardware description yet you
-> keep ignoring people's feedback.
-
-We are reviewing the current DTS to include only relevant information 
-which varies per board, and move rest of the configuration to driver. We 
-will update the commit message and the descriptions in dtbindings about 
-the details of the hardware information for the updated DTS/dtbindings
-when this patch series resumes.
-
-
-> ...
-> 
->> +
->> +patternProperties:
-> 
-> 
-> phy@
-> 
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-Got it, thanks. Will refer the link and update accordingly.
-
-> 
-> 
->> +  "^qcom-uniphy@[0-9a-f]+$":
->> +    type: object
->> +    additionalProperties: false
->> +    description: uniphy configuration and clock provider
->> +    properties:
->> +      reg:
->> +        minItems: 2
->> +        items:
->> +          - description: The first uniphy register range
->> +          - description: The second uniphy register range
->> +          - description: The third uniphy register range
-> 
-> first, second and third are really useless descriptions. We expect
-> something useful.
-> 
-
-I will rephrase the descriptions here to clarify. Depending on the SoC 
-type (IPQ5332 or IPQ9574) there can be two or three UNIPHY(PCS) in the 
-PPE. This property defines the address ranges for the register space of 
-these UNIPHY(PCS) of PPE.
-
-
->> +
->> +      "#clock-cells":
->> +        const: 1
->> +
->> +      clock-output-names:
->> +        minItems: 4
->> +        maxItems: 6
->> +
->> +    required:
->> +      - reg
->> +      - "#clock-cells"
->> +      - clock-output-names
->> +
->> +allOf:
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: qcom,ipq5332-ppe
->> +    then:
->> +      properties:
->> +        clocks:
->> +          items:
->> +            - description: Display common AHB clock from gcc
->> +            - description: Display common system clock from gcc
->> +            - description: Display uniphy0 AHB clock from gcc
->> +            - description: Display uniphy1 AHB clock from gcc
->> +            - description: Display uniphy0 system clock from gcc
->> +            - description: Display uniphy1 system clock from gcc
->> +            - description: Display nss clock from gcc
->> +            - description: Display nss noc snoc clock from gcc
->> +            - description: Display nss noc snoc_1 clock from gcc
->> +            - description: Display sleep clock from gcc
->> +            - description: Display PPE clock from nsscc
->> +            - description: Display PPE config clock from nsscc
->> +            - description: Display NSSNOC PPE clock from nsscc
->> +            - description: Display NSSNOC PPE config clock from nsscc
->> +            - description: Display EDMA clock from nsscc
->> +            - description: Display EDMA config clock from nsscc
->> +            - description: Display PPE IPE clock from nsscc
->> +            - description: Display PPE BTQ clock from nsscc
->> +            - description: Display port1 MAC clock from nsscc
->> +            - description: Display port2 MAC clock from nsscc
->> +            - description: Display port1 RX clock from nsscc
->> +            - description: Display port1 TX clock from nsscc
->> +            - description: Display port2 RX clock from nsscc
->> +            - description: Display port2 TX clock from nsscc
->> +            - description: Display UNIPHY port1 RX clock from nsscc
->> +            - description: Display UNIPHY port1 TX clock from nsscc
->> +            - description: Display UNIPHY port2 RX clock from nsscc
->> +            - description: Display UNIPHY port2 TX clock from nsscc
->> +        clock-names:
->> +          items:
->> +            - const: cmn_ahb
->> +            - const: cmn_sys
->> +            - const: uniphy0_ahb
->> +            - const: uniphy1_ahb
->> +            - const: uniphy0_sys
->> +            - const: uniphy1_sys
->> +            - const: gcc_nsscc
->> +            - const: gcc_nssnoc_snoc
->> +            - const: gcc_nssnoc_snoc_1
->> +            - const: gcc_im_sleep
->> +            - const: nss_ppe
->> +            - const: nss_ppe_cfg
->> +            - const: nssnoc_ppe
->> +            - const: nssnoc_ppe_cfg
->> +            - const: nss_edma
->> +            - const: nss_edma_cfg
->> +            - const: nss_ppe_ipe
->> +            - const: nss_ppe_btq
->> +            - const: port1_mac
->> +            - const: port2_mac
->> +            - const: nss_port1_rx
->> +            - const: nss_port1_tx
->> +            - const: nss_port2_rx
->> +            - const: nss_port2_tx
->> +            - const: uniphy_port1_rx
->> +            - const: uniphy_port1_tx
->> +            - const: uniphy_port2_rx
->> +            - const: uniphy_port2_tx
->> +
->> +        resets:
->> +          items:
->> +            - description: Reset PPE
->> +            - description: Reset uniphy0 software config
->> +            - description: Reset uniphy1 software config
->> +            - description: Reset uniphy0 AHB
->> +            - description: Reset uniphy1 AHB
->> +            - description: Reset uniphy0 system
->> +            - description: Reset uniphy1 system
->> +            - description: Reset uniphy0 XPCS
->> +            - description: Reset uniphy1 SPCS
->> +            - description: Reset uniphy port1 RX
->> +            - description: Reset uniphy port1 TX
->> +            - description: Reset uniphy port2 RX
->> +            - description: Reset uniphy port2 TX
->> +            - description: Reset PPE port1 RX
->> +            - description: Reset PPE port1 TX
->> +            - description: Reset PPE port2 RX
->> +            - description: Reset PPE port2 TX
->> +            - description: Reset PPE port1 MAC
->> +            - description: Reset PPE port2 MAC
->> +
->> +        reset-names:
->> +          items:
->> +            - const: ppe
->> +            - const: uniphy0_soft
->> +            - const: uniphy1_soft
->> +            - const: uniphy0_ahb
->> +            - const: uniphy1_ahb
->> +            - const: uniphy0_sys
->> +            - const: uniphy1_sys
->> +            - const: uniphy0_xpcs
->> +            - const: uniphy1_xpcs
->> +            - const: uniphy_port1_rx
->> +            - const: uniphy_port1_tx
->> +            - const: uniphy_port2_rx
->> +            - const: uniphy_port2_tx
->> +            - const: nss_port1_rx
->> +            - const: nss_port1_tx
->> +            - const: nss_port2_rx
->> +            - const: nss_port2_tx
->> +            - const: nss_port1_mac
->> +            - const: nss_port2_mac
->> +
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: qcom,ipq9574-ppe
->> +    then:
->> +      properties:
->> +        clocks:
->> +          items:
->> +            - description: Display common AHB clock from gcc
->> +            - description: Display common system clock from gcc
->> +            - description: Display uniphy0 AHB clock from gcc
->> +            - description: Display uniphy1 AHB clock from gcc
->> +            - description: Display uniphy2 AHB clock from gcc
->> +            - description: Display uniphy0 system clock from gcc
->> +            - description: Display uniphy1 system clock from gcc
->> +            - description: Display uniphy2 system clock from gcc
->> +            - description: Display nss clock from gcc
->> +            - description: Display nss noc clock from gcc
->> +            - description: Display nss noc snoc clock from gcc
->> +            - description: Display nss noc snoc_1 clock from gcc
->> +            - description: Display PPE clock from nsscc
->> +            - description: Display PPE config clock from nsscc
->> +            - description: Display NSSNOC PPE clock from nsscc
->> +            - description: Display NSSNOC PPE config clock from nsscc
->> +            - description: Display EDMA clock from nsscc
->> +            - description: Display EDMA config clock from nsscc
->> +            - description: Display PPE IPE clock from nsscc
->> +            - description: Display PPE BTQ clock from nsscc
->> +            - description: Display port1 MAC clock from nsscc
->> +            - description: Display port2 MAC clock from nsscc
->> +            - description: Display port3 MAC clock from nsscc
->> +            - description: Display port4 MAC clock from nsscc
->> +            - description: Display port5 MAC clock from nsscc
->> +            - description: Display port6 MAC clock from nsscc
->> +            - description: Display port1 RX clock from nsscc
->> +            - description: Display port1 TX clock from nsscc
->> +            - description: Display port2 RX clock from nsscc
->> +            - description: Display port2 TX clock from nsscc
->> +            - description: Display port3 RX clock from nsscc
->> +            - description: Display port3 TX clock from nsscc
->> +            - description: Display port4 RX clock from nsscc
->> +            - description: Display port4 TX clock from nsscc
->> +            - description: Display port5 RX clock from nsscc
->> +            - description: Display port5 TX clock from nsscc
->> +            - description: Display port6 RX clock from nsscc
->> +            - description: Display port6 TX clock from nsscc
->> +            - description: Display UNIPHY port1 RX clock from nsscc
->> +            - description: Display UNIPHY port1 TX clock from nsscc
->> +            - description: Display UNIPHY port2 RX clock from nsscc
->> +            - description: Display UNIPHY port2 TX clock from nsscc
->> +            - description: Display UNIPHY port3 RX clock from nsscc
->> +            - description: Display UNIPHY port3 TX clock from nsscc
->> +            - description: Display UNIPHY port4 RX clock from nsscc
->> +            - description: Display UNIPHY port4 TX clock from nsscc
->> +            - description: Display UNIPHY port5 RX clock from nsscc
->> +            - description: Display UNIPHY port5 TX clock from nsscc
->> +            - description: Display UNIPHY port6 RX clock from nsscc
->> +            - description: Display UNIPHY port6 TX clock from nsscc
->> +            - description: Display port5 RX clock source from nsscc
->> +            - description: Display port5 TX clock source from nsscc
->> +        clock-names:
->> +          items:
->> +            - const: cmn_ahb
->> +            - const: cmn_sys
->> +            - const: uniphy0_ahb
->> +            - const: uniphy1_ahb
->> +            - const: uniphy2_ahb
->> +            - const: uniphy0_sys
->> +            - const: uniphy1_sys
->> +            - const: uniphy2_sys
->> +            - const: gcc_nsscc
->> +            - const: gcc_nssnoc_nsscc
->> +            - const: gcc_nssnoc_snoc
->> +            - const: gcc_nssnoc_snoc_1
->> +            - const: nss_ppe
->> +            - const: nss_ppe_cfg
->> +            - const: nssnoc_ppe
->> +            - const: nssnoc_ppe_cfg
->> +            - const: nss_edma
->> +            - const: nss_edma_cfg
->> +            - const: nss_ppe_ipe
->> +            - const: nss_ppe_btq
->> +            - const: port1_mac
->> +            - const: port2_mac
->> +            - const: port3_mac
->> +            - const: port4_mac
->> +            - const: port5_mac
->> +            - const: port6_mac
->> +            - const: nss_port1_rx
->> +            - const: nss_port1_tx
->> +            - const: nss_port2_rx
->> +            - const: nss_port2_tx
->> +            - const: nss_port3_rx
->> +            - const: nss_port3_tx
->> +            - const: nss_port4_rx
->> +            - const: nss_port4_tx
->> +            - const: nss_port5_rx
->> +            - const: nss_port5_tx
->> +            - const: nss_port6_rx
->> +            - const: nss_port6_tx
->> +            - const: uniphy_port1_rx
->> +            - const: uniphy_port1_tx
->> +            - const: uniphy_port2_rx
->> +            - const: uniphy_port2_tx
->> +            - const: uniphy_port3_rx
->> +            - const: uniphy_port3_tx
->> +            - const: uniphy_port4_rx
->> +            - const: uniphy_port4_tx
->> +            - const: uniphy_port5_rx
->> +            - const: uniphy_port5_tx
->> +            - const: uniphy_port6_rx
->> +            - const: uniphy_port6_tx
->> +            - const: nss_port5_rx_clk_src
->> +            - const: nss_port5_tx_clk_src
->> +
->> +        resets:
->> +          items:
->> +            - description: Reset PPE
->> +            - description: Reset uniphy0 software config
->> +            - description: Reset uniphy1 software config
->> +            - description: Reset uniphy2 software config
->> +            - description: Reset uniphy0 AHB
->> +            - description: Reset uniphy1 AHB
->> +            - description: Reset uniphy2 AHB
->> +            - description: Reset uniphy0 system
->> +            - description: Reset uniphy1 system
->> +            - description: Reset uniphy2 system
->> +            - description: Reset uniphy0 XPCS
->> +            - description: Reset uniphy1 XPCS
->> +            - description: Reset uniphy2 XPCS
->> +            - description: Assert uniphy port1
->> +            - description: Assert uniphy port2
->> +            - description: Assert uniphy port3
->> +            - description: Assert uniphy port4
->> +            - description: Reset PPE port1
->> +            - description: Reset PPE port2
->> +            - description: Reset PPE port3
->> +            - description: Reset PPE port4
->> +            - description: Reset PPE port5
->> +            - description: Reset PPE port6
->> +            - description: Reset PPE port1 MAC
->> +            - description: Reset PPE port2 MAC
->> +            - description: Reset PPE port3 MAC
->> +            - description: Reset PPE port4 MAC
->> +            - description: Reset PPE port5 MAC
->> +            - description: Reset PPE port6 MAC
->> +
->> +        reset-names:
->> +          items:
->> +            - const: ppe
->> +            - const: uniphy0_soft
->> +            - const: uniphy1_soft
->> +            - const: uniphy2_soft
->> +            - const: uniphy0_ahb
->> +            - const: uniphy1_ahb
->> +            - const: uniphy2_ahb
->> +            - const: uniphy0_sys
->> +            - const: uniphy1_sys
->> +            - const: uniphy2_sys
->> +            - const: uniphy0_xpcs
->> +            - const: uniphy1_xpcs
->> +            - const: uniphy2_xpcs
->> +            - const: uniphy0_port1_dis
->> +            - const: uniphy0_port2_dis
->> +            - const: uniphy0_port3_dis
->> +            - const: uniphy0_port4_dis
->> +            - const: nss_port1
->> +            - const: nss_port2
->> +            - const: nss_port3
->> +            - const: nss_port4
->> +            - const: nss_port5
->> +            - const: nss_port6
->> +            - const: nss_port1_mac
->> +            - const: nss_port2_mac
->> +            - const: nss_port3_mac
->> +            - const: nss_port4_mac
->> +            - const: nss_port5_mac
->> +            - const: nss_port6_mac
->> +
->> +required:
-> 
-> allOf: goes after required:
-
-Ok.
-
-> 
->> +  - compatible
->> +  - reg
->> +  - "#address-cells"
->> +  - "#size-cells"
->> +  - ranges
->> +  - clocks
->> +  - clock-names
->> +  - resets
->> +  - reset-names
->> +  - tdm-config
->> +  - buffer-management-config
->> +  - queue-management-config
->> +  - port-scheduler-resource
->> +  - port-scheduler-config
->> +
->> +additionalProperties: false
-> 
-> 
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
->> +    #include <dt-bindings/reset/qcom,ipq9574-gcc.h>
->> +    #include <dt-bindings/clock/qcom,ipq9574-nsscc.h>
->> +    #include <dt-bindings/reset/qcom,ipq9574-nsscc.h>
->> +
->> +    soc {
->> +      #address-cells = <1>;
->> +      #size-cells = <1>;
->> +      qcom_ppe: qcom-ppe@3a000000 {
-> 
-> Drop label, Generic node names.
-
-Ok. We are trying to identify an appropriate generic name for the PPE 
-from the device tree documentation, since it comprises of many hardware 
-functions such as ethernet MAC and other packet processing blocks. We 
-are planning to update the node name to a generic name 'ethernet'.
-
-> 
->> +              compatible = "qcom,ipq9574-ppe";
-> 
-> Entire indentation of example is broken. Use one described in the
-> bindings coding style.
-
-will correct it, thanks for pointing out.
-
-> 
-> Best regards,
-> Krzysztof
-> 
+--b6jh6rk622azxbdb--
 
