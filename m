@@ -1,167 +1,243 @@
-Return-Path: <linux-kernel+bounces-32593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DB34835DA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:08:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C0C835DD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 801D61F25BE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:08:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAF9A1F21862
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:14:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEDB39847;
-	Mon, 22 Jan 2024 09:08:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AC639860;
+	Mon, 22 Jan 2024 09:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="Tav0W2wU"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2057.outbound.protection.outlook.com [40.107.104.57])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PuYn4nY3"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80E517BD3;
-	Mon, 22 Jan 2024 09:08:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705914499; cv=fail; b=qptHYXeip6olYG0jgYoDzxx8Uj0ZznjHY9QFnFWNT+wGUtIHv8uSeMj4EMd4tJbx6VdDRH9Ic3SJCAOFJt63Hb5ooWi0SbXv5CWT2sGH3VSaJDyOITpgCwdFwpf4FfSUeOU621Ls9dQ+17Ifa4EbqQBdHA28ptzq9yhO9hm9pQk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705914499; c=relaxed/simple;
-	bh=jc6MguscBLczYZ3uf0NsvqpwNgGwuLxsxN10V8cmh+4=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=CyE1q8FvOgOTfG2OR9/UiemAqptUyAs1Fv18XRVz7QYNi11/r3FxdqAIGHodF/7XavBLeNSldBM9/YaEzWUmB78qaTOShq9YbyOJedJo9m14kieFnBWbyzFYXaJtIC7l2GAJ2/hA7HIrgtp1zJEHgvENPDx69h4Zhc9iq01616s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=Tav0W2wU; arc=fail smtp.client-ip=40.107.104.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dR+Z/OHKMlxKY4lmERrOpVFS0UhPOQzjpWQgXR3rfUXPmCqQzYDcYoU1njU1RDrRNBN9TxyJHkB2J/hz0eI+R6DmrtFongk5rLbNGHnUSxehWhOitQ/vg+3VieuHzo1jRo2RXj8D8ZnU44E3raMr2RYk+ProKt5eUngALaIF/GxuJq3KPx2uEEeYxUICtj9f8blhRbQQVET6LDUD8NVn62+jl1IDFPcg75hyP1ga7VmxRWgORPu4i4kU6Y0kc8C5viv9VyycLcpzsjbWcUHXGkWiD5e3+jPKGyuPWzx1JjTIlpsVynow4OnTaotXe5DOFw0xCRN6yjnm6WCclo5GYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YgrkD6+0Sg+M9n1zwLX7vF//KN3I9GvDilqPWeQVsK0=;
- b=CF/d2E2/2hbkDCl+5BYEdsZ5Pa8Bjcr7BLCMaj+UrL/8sjtIJv3O6gK4HMcOzd9ijx7YOLnQ2lTkzUlliwbzjs3IxH97oTQHbuU26T8XISS6CT1nM7XbRISeEiXhxkg1+Xi2BIsZce97MXAiWRaP8UIb6IUS9wywvyyT0fIMQbvcCaseaod2euGEivhlbXv+s8N3vSb642eDOo4823GO4HxyOUT917mVE7p3ar+z6d0p5kfM+lUd8QHv7istKe85yl0t9M26eObfKhoD3NNsMTqP3SzDvH1zJ6m7gj2+2q+n8JFDmKqQfUCbTQmTW9RwNGaVzyuUunJWhfgBlpO+eg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YgrkD6+0Sg+M9n1zwLX7vF//KN3I9GvDilqPWeQVsK0=;
- b=Tav0W2wUz5tKwwHe4cT07sTTffzrAeUR5yY11gWVvkWVlf6IPJq5kzdKd46IEgQwIgQ8+KvZVZswWft4wHNW/OYDhaNHalyLONJHbae48AW7zXQ9+HakDbV6ffDMJ6iSG0g2omWv3HK0+Z0kyr20a7bvb0uIhmMjoFzZXkZ7z0Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AM0PR04MB7122.eurprd04.prod.outlook.com (2603:10a6:208:19c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Mon, 22 Jan
- 2024 09:08:14 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
- 09:08:14 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To: aisheng.dong@nxp.com,
-	andi.shyti@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com
-Cc: linux-imx@nxp.com,
-	linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] dt-bindings: i2c: imx-lpi2c: add i.MX95 LPI2C
-Date: Mon, 22 Jan 2024 17:12:30 +0800
-Message-Id: <20240122091230.2075378-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.37.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2P153CA0006.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::22) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0AA33984F
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705914828; cv=none; b=ZGP2rBsVVo5Q2pDZwLPdjBdLN8fUZhq/21u77CvcYYRC3hi2ce9x23ovQJCCUdHV3KZkJlylmy1Nh2g2pb4XBg+QDjIQCVDn+UsFqMVBeLCFzDBWOe78Fb/bBFGCjsJ8QVwTV9rWKppf6v6cF85yBeX/tukaPL6UXAs9kyV3CTs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705914828; c=relaxed/simple;
+	bh=nzm4l9wGyLKSG4gMdjJg8x/7QeqWvJkUmog7K/MZX9c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=PJuvYbbl52gujmGy0gkCzfTnu2dedcQR57d+gNfO++rJ9ixxH1V7QK8tKHto1BiKWTFQSGQMN5DAd6f3dRnXMCQycdirCcajlolEXeTk0ezUGYZqoxszbDCuNixFPStRNNj02fm+dH7oZJliv2YWLHSjTz2M876fj7LH6Kk9BaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=fail smtp.mailfrom=grimberg.me; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PuYn4nY3; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=grimberg.me
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description;
+	bh=+Wy2XtWwQ0x99+ziY1b6T3UKhjW8TTVJUKu86nA7Cvw=; b=PuYn4nY3sS4Fbo7jRH3DyJXC7s
+	AU5b8c/losoqihsgR5iVQBbzgURv5xsXN0xRhESMeDO7SD99LKJBE7Hcz+aQlQGpndbZ9fxVI5Efi
+	864bO7KSG/0diHB0VDrdczzM6E53QC+p4Bn5IbGB8MFYecC9b7ARzVTWsoGXQ20Ks64ktsuh+NYXi
+	oqBvMP0jXdNdbkzZqWYxlfqbHekS/7Sl+T73JK2NGnslm+OLZeyYU/YXD9HIKt9AAeP8emXtr7k2S
+	tjWzuQaO4PB/ufGb5/717nMEulBDbw7DOm9anpn/TXbNNusfR9iivvPvkSnaUyvcYS9VnJUscWzwd
+	aGq3cA2A==;
+Received: from bzq-219-42-90.isdn.bezeqint.net ([62.219.42.90] helo=[192.168.64.172])
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rRqN8-00000003CrT-39uy;
+	Mon, 22 Jan 2024 09:13:41 +0000
+Message-ID: <189cde89-9750-476f-8fbb-1c95dc056efb@grimberg.me>
+Date: Mon, 22 Jan 2024 11:13:15 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM0PR04MB7122:EE_
-X-MS-Office365-Filtering-Correlation-Id: e2bf3a9b-b226-4cf7-bef0-08dc1b29aa1d
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Pq6Lt5C+KOoqy+TwhVReTjGWOKx00Q8W2IJlbpFoJPRuau9OUvH1zs+G7K3Qq1Pj7/Eq6RTrw/SQzdkXt5oyCZNdHtpYoU+iORxQ/XwrF/RdzJPbTqKjB64U9CutafoQFwVMuGF1OyDIZjOgF6rcDUV5if6J/EqZY26dQaxXPD+SIn6wIH5UEEfR8s0riA132wv3OgxKI4YBM7UbrOiNie97WjtYw4dhxme2VweJ/jRJPumrDN9Fyqq04rwsWRxj1B/pXPQlXuZ+N21sR8u8+g1Br+Ie8SMDXPneZCLwgzDqy+mtoxLhCqdx3NErro2LOIOGKqPZXAC5W4hfNLwB068T9CnIR0qX9I9liFVMi28jYIxLv/958nm/QdZBaExUHPhR0nyIizfVrybw5BTVg+00klwwToSInRlw9xbTaOLpHDewyyFTB3xe7HXpOQlZ/wVw4CxKxls/cQ8moY1EmDtDtgURg8sJ1pgR+lIHsVAtuMDWQf5BkMb5/60xStFTYeMMFi21THzrKfhAFtk+fJHVA9WsoA6pU8spE4CE6Y1BFGiPOv4OSLvAH+veQDaODIEl2Li1vEOi0pdwG6OBYmoRxQOLT+jz8U2U7o/1GIVVJqrxgh6+f+2rIYG2ZU4h
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(136003)(366004)(376002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(6666004)(2616005)(26005)(6506007)(6512007)(1076003)(52116002)(5660300002)(7416002)(4326008)(8936002)(8676002)(2906002)(6486002)(478600001)(316002)(66476007)(66946007)(66556008)(4744005)(41300700001)(86362001)(38100700002)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?aWqRdltSed72EIHHK5SKNI3Pmz/28l33/X/Q3O9C0iQItQgG7M4Ak/sn0iiz?=
- =?us-ascii?Q?aI7cexN2XhYFjw4nPbDC7mk68mjOetwfAna54RwTECA78CZzU2akq2HqkuSF?=
- =?us-ascii?Q?3RznDIGlfR6Jv7g8UITllzA8HV02D/MQ/0xuveQh1szOgzo0Tecx0mMFnOW3?=
- =?us-ascii?Q?iqUEfdUCUFlJ4pu2pI4K2ExoruuVXngdcwwKJDQocBNaVW1DSrC+bOhG6Tmp?=
- =?us-ascii?Q?+gPzDVzYO3UmaHCcYiQ+RhDElM2dD69nz5BvdWLGMBhE3RHRIjY8E9Xhm1DB?=
- =?us-ascii?Q?A+Gw+oIDs+Tt3a8A/87axhip0cglWISCXJrMSXHR7jZ8kRP3yrvG1Wni75rV?=
- =?us-ascii?Q?IYkJWx7okS9mLXBPbjWKDzL2XSV741i0uF6Wlz1K0dWReDUrhKKYqycIF/Rh?=
- =?us-ascii?Q?/pOKnQ09mMwDYFL2pgnoQGPVKsxKIw1QGOiCmyBC0f2SIfimYREtzGhUa4If?=
- =?us-ascii?Q?MZauvduORFU8ckxGsRGswIrb49C/vDcuBOeaFZoVWIjiuRV9ZzRQYLtFZdkx?=
- =?us-ascii?Q?x7sRjp0n5leJDkOSlvfav6C2J31CJjHDmNaj/pKfsqoQqmXNCxzuaU4edrv+?=
- =?us-ascii?Q?ajAvodRWyvSj6FmlQKdyYnl8yWejMuW2VpP0qQXkx+vqqundbbL0IqauU7bM?=
- =?us-ascii?Q?eCy17Yx8RSPLpcVR8iBv64lNwNFveKeG9/JuXbt580jrhL1U4gTOinQ8vTxE?=
- =?us-ascii?Q?Bv3+Qxa//brVRq+FTVVqjQfAjcXhu2ZxK30FXlsZZrsJyTYmadpCwCD7tn/g?=
- =?us-ascii?Q?adZldJwXx7D9M+h+119N/DFufcweG28iKnPrqb1qMlB1jr5VAS7a9hVrQhfD?=
- =?us-ascii?Q?7bPoYfi8VSO4HIwjp6xE3XgazGheW7ywMDzkr9+yqTO/KujW3PmjeA4uaxpF?=
- =?us-ascii?Q?yFUKHMETXDQLj8M031n28j8V72x6iPldSpSuL44006UL6DShY3FYLxoVIC/s?=
- =?us-ascii?Q?qDQaU5zVS8keXpC6PY3qDswiXc160ZB1MZKfec5/+gzip2haLFYvVM5c4bt0?=
- =?us-ascii?Q?iNcS0IrZrLj+ge34MQdkgVBqILeSdV7Hx8KEcyfAw7fHzR8CD1c4cNMkOaIm?=
- =?us-ascii?Q?mtmZHy25IYTVFxLeFei2qKbN9rnV1wVpEeV4gMhWGTHe3D5/iVNv3Hm37Ba7?=
- =?us-ascii?Q?6F0jx/ZeXZr+Dw8uBUjkEV33KzURiBWaPxlguhDYPkaV4+HRqLLxMi1su6Tf?=
- =?us-ascii?Q?P4CL7xy5E1srfQnAYWepMA4onzkSWuMNXEK+KmFOjwRgwJJLu9fLRi5WPlIG?=
- =?us-ascii?Q?7sV0nAziaVBogWFPur6UYqXCEl6nC4dGCgVrGcYOu+3RuT0AXUPUzjqD6A7S?=
- =?us-ascii?Q?JcvztiQ3HDMr6hfS0FnOFDslxXFUElXr91DGT1VnL8N9ceF+g74p286DKEsE?=
- =?us-ascii?Q?O20GN2y5nhsT0DpbCWdIS+XjZsJsjc+Q2uljKXCsBP+9QkFeZnKG1XTmAQDY?=
- =?us-ascii?Q?nX13Or6N8lnWdbrZC+FAHhKTbQBi1A5Do/zmfZeKKCdYC72j3xNu5h2masqA?=
- =?us-ascii?Q?QbrKSsGe/txwvL9JKXwbDgmRp9hq2nwocFXw4IXYqv5oIFO4Wv+9h+My8xlw?=
- =?us-ascii?Q?upW2jWajPl0DTKrUjwjJCmhGYaoP77UgxFQaLfyb?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2bf3a9b-b226-4cf7-bef0-08dc1b29aa1d
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 09:08:14.6437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W2X95OHQ8Yru1sGwGWMBE9kogwBFtlk9ufa4bL2vhwn1yI4N++Bl1KA04xyExf2nBVoijUgo0pXxIkcrZcFjQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7122
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] nvme_core: scan namespaces asynchronously
+Content-Language: en-US
+To: Stuart Hayes <stuart.w.hayes@gmail.com>, linux-kernel@vger.kernel.org,
+ Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org
+References: <20240118210303.10484-1-stuart.w.hayes@gmail.com>
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20240118210303.10484-1-stuart.w.hayes@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Peng Fan <peng.fan@nxp.com>
 
-Add i.MX95 LPI2C compatible entry, same as i.MX93 compatible
-with i.MX7ULP.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml | 1 +
- 1 file changed, 1 insertion(+)
+On 1/18/24 23:03, Stuart Hayes wrote:
+> Use async function calls to make namespace scanning happen in parallel.
+> 
+> Without the patch, NVME namespaces are scanned serially, so it can take a
+> long time for all of a controller's namespaces to become available,
+> especially with a slower (TCP) interface with large number of namespaces.
+> 
+> The time it took for all namespaces to show up after connecting (via TCP)
+> to a controller with 1002 namespaces was measured:
+> 
+> network latency   without patch   with patch
+>       0                 6s            1s
+>      50ms             210s           10s
+>     100ms             417s           18s
+> 
 
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-index 4656f5112b84..54d500be6aaa 100644
---- a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-+++ b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-@@ -24,6 +24,7 @@ properties:
-               - fsl,imx8qm-lpi2c
-               - fsl,imx8ulp-lpi2c
-               - fsl,imx93-lpi2c
-+              - fsl,imx95-lpi2c
-           - const: fsl,imx7ulp-lpi2c
- 
-   reg:
--- 
-2.37.1
+Impressive speedup. Not a very common use-case though...
 
+> Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
+> 
+> --
+> V2: remove module param to enable/disable async scanning
+>      add scan time measurements to commit message
+> 
+> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> index 0af612387083..069350f85b83 100644
+> --- a/drivers/nvme/host/core.c
+> +++ b/drivers/nvme/host/core.c
+> @@ -4,6 +4,7 @@
+>    * Copyright (c) 2011-2014, Intel Corporation.
+>    */
+>   
+> +#include <linux/async.h>
+>   #include <linux/blkdev.h>
+>   #include <linux/blk-mq.h>
+>   #include <linux/blk-integrity.h>
+> @@ -3812,12 +3813,38 @@ static void nvme_validate_ns(struct nvme_ns *ns, struct nvme_ns_info *info)
+>   		nvme_ns_remove(ns);
+>   }
+>   
+> -static void nvme_scan_ns(struct nvme_ctrl *ctrl, unsigned nsid)
+> +/*
+> + * struct nvme_scan_state - keeps track of controller & NSIDs to scan
+> + * @ctrl:	Controller on which namespaces are being scanned
+> + * @count:	Next NSID to scan (for sequential scan), or
+> + *		Index of next NSID to scan in ns_list (for list scan)
+> + * @ns_list:	pointer to list of NSIDs to scan (NULL if sequential scan)
+> + */
+> +struct nvme_scan_state {
+> +	struct nvme_ctrl *ctrl;
+> +	atomic_t count;
+> +	__le32 *ns_list;
+> +};
+> +
+> +static void nvme_scan_ns(void *data, async_cookie_t cookie)
+
+I think its better to call it nvme_scan_ns_async to indicate what
+it is.
+
+>   {
+> -	struct nvme_ns_info info = { .nsid = nsid };
+> +	struct nvme_ns_info info = {};
+> +	struct nvme_scan_state *scan_state;
+> +	struct nvme_ctrl *ctrl;
+> +	u32 nsid;
+>   	struct nvme_ns *ns;
+>   	int ret;
+>   
+> +	scan_state = data;
+> +	ctrl = scan_state->ctrl;
+
+I think these assignments can be done on the declaration.
+
+> +	nsid = (u32)atomic_fetch_add(1, &scan_state->count);
+> +	/*
+> +	 * get NSID from list (if scanning from a list, not sequentially)
+> +	 */
+> +	if (scan_state->ns_list)
+> +		nsid = le32_to_cpu(scan_state->ns_list[nsid]);
+> +
+
+This is awkward. ns_list passed in optionally.
+How about we limit this change to only operate on nvme_scan_ns_list?
+If the controller is old or quirked to support only a sequential scan
+it does not benefit from a parallel scan. I doubt that these controllers
+are likely to expose a large number of namespaces anyways.
+
+> +	info.nsid = nsid;
+>   	if (nvme_identify_ns_descs(ctrl, &info))
+>   		return;
+>   
+> @@ -3881,11 +3908,15 @@ static int nvme_scan_ns_list(struct nvme_ctrl *ctrl)
+>   	__le32 *ns_list;
+>   	u32 prev = 0;
+>   	int ret = 0, i;
+> +	ASYNC_DOMAIN(domain);
+> +	struct nvme_scan_state scan_state;
+>   
+>   	ns_list = kzalloc(NVME_IDENTIFY_DATA_SIZE, GFP_KERNEL);
+>   	if (!ns_list)
+>   		return -ENOMEM;
+>   
+> +	scan_state.ctrl = ctrl;
+> +	scan_state.ns_list = ns_list;
+
+Is there a need to have a local ns_list variable here?
+
+>   	for (;;) {
+>   		struct nvme_command cmd = {
+>   			.identify.opcode	= nvme_admin_identify,
+> @@ -3901,19 +3932,25 @@ static int nvme_scan_ns_list(struct nvme_ctrl *ctrl)
+>   			goto free;
+>   		}
+>   
+> +		/*
+> +		 * scan list starting at list offset 0
+> +		 */
+> +		atomic_set(&scan_state.count, 0);
+>   		for (i = 0; i < nr_entries; i++) {
+>   			u32 nsid = le32_to_cpu(ns_list[i]);
+>   
+>   			if (!nsid)	/* end of the list? */
+>   				goto out;
+> -			nvme_scan_ns(ctrl, nsid);
+> +			async_schedule_domain(nvme_scan_ns, &scan_state, &domain);
+>   			while (++prev < nsid)
+>   				nvme_ns_remove_by_nsid(ctrl, prev);
+>   		}
+> +		async_synchronize_full_domain(&domain);
+>   	}
+>    out:
+>   	nvme_remove_invalid_namespaces(ctrl, prev);
+
+Is it a good idea to remove the invalid namespaces before synchronizing
+the async scans?
+
+>    free:
+> +	async_synchronize_full_domain(&domain);
+>   	kfree(ns_list);
+>   	return ret;
+>   }
+> @@ -3922,14 +3959,23 @@ static void nvme_scan_ns_sequential(struct nvme_ctrl *ctrl)
+>   {
+>   	struct nvme_id_ctrl *id;
+>   	u32 nn, i;
+> +	ASYNC_DOMAIN(domain);
+> +	struct nvme_scan_state scan_state;
+>   
+>   	if (nvme_identify_ctrl(ctrl, &id))
+>   		return;
+>   	nn = le32_to_cpu(id->nn);
+>   	kfree(id);
+>   
+> +	scan_state.ctrl = ctrl;
+> +	/*
+> +	 * scan sequentially starting at NSID 1
+> +	 */
+> +	atomic_set(&scan_state.count, 1);
+> +	scan_state.ns_list = NULL;
+>   	for (i = 1; i <= nn; i++)
+> -		nvme_scan_ns(ctrl, i);
+> +		async_schedule_domain(nvme_scan_ns, &scan_state, &domain);
+> +	async_synchronize_full_domain(&domain);
+>   
+>   	nvme_remove_invalid_namespaces(ctrl, nn);
+>   }
+
+I think we need a blktest for this. ns scanning has been notorious when
+running simultaneously with controller reset/reconnect/remove
+sequences... Ideally a test with a larger number of namespaces to
+exercise the code.
+
+Also, make sure that blktest suite does not complain about anything
+else.
 
