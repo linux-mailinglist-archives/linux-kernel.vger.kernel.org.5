@@ -1,121 +1,118 @@
-Return-Path: <linux-kernel+bounces-32637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B3DD835E4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:34:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFED3835E4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:33:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF0D9282789
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:33:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7A30282963
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:33:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E6F39FC9;
-	Mon, 22 Jan 2024 09:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FC139AEC;
+	Mon, 22 Jan 2024 09:33:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="mCg0coWk"
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eSivbJZy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2034239AD6
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:33:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4389739AD8;
+	Mon, 22 Jan 2024 09:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705916021; cv=none; b=RaxR2Q6M6jjw0mhiH0HuGMKhEr1m8ZEx5OJ/EMked8LiAkWEjEmcUmIP+NOOdhpLWdWhiOU6XW9FMd6TuFed90i/FrqLwV4AD+bm6GFTff63OHb63DnTJz4Jrhkycm7xmlv1HhaUHjIK57EtVJ7RHgVg1LlAWC3ITtP9mRjnEqM=
+	t=1705916017; cv=none; b=IVc2PHVUio42Wgg4l5xOLT58Y9u4qEEQ1unScMvCUqHvx9+7mgiVIsVt8CE+6/ZxQ8r+46w/GpDviVXRlyirMEAzvPxKlZmCuDF4GHzBspQHJrXpF0XlbUm5s+POnKhRrWeiog0fyMLsqBy+uGBPltaMzV4Mf88Gt0VGhILXPkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705916021; c=relaxed/simple;
-	bh=A4OLVR1U5sP3BcJwe2KfRh8bKYvqXPPv7B/ABm1pOgU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Zi+94b21jWkI3LSRhewzfrCOaDXZQ/u8wdqNICwvpG4v5qGKRNNOavIcP0WwVqXn9CCQxyr+hVukTF4pYcDcFJLhA2+42tXHZa8dScRf0IrjYWuhVAMH09t6gdho6gHIXq39UDF1JPERoCA14cF2I1GYJgh1h4qQs9f75dosxeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=mCg0coWk; arc=none smtp.client-ip=209.85.222.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7cecc0a662dso901357241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 01:33:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705916019; x=1706520819; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OB0KQZsTaykP5uaI0wj0BAvpVtT3DPRwwyH1LKYHhoo=;
-        b=mCg0coWkBjwnf7wK7DC161CYnF2ZyxFAiWVYPCy5b4H6fJmnYQxdLN4gZkgS5j9suw
-         ATi5hX845GjlCfppl1K2Fqoicx6edSahUeAXYpDaOecctovkPtpfCzmUbcolLYEsl75h
-         Szgiy6/j0pn65B0+ikJUPqjLDoIFgkR2q2l2flUuqww6Cab96Cz8+AeoTbnp1XS+HQ1E
-         13LM86MkbcV+oB/Cn/HOdZemKOX/1bXNzwiImWlLsLgpQU76IkGyXSzXUZ5FVJjIGco6
-         8vkltjpEaX23na4NAsJ5wUNSNx8fu5FFVzVFqVQZPC6CqpPYaxKhmXZAZop8oLeocycP
-         P0EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705916019; x=1706520819;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OB0KQZsTaykP5uaI0wj0BAvpVtT3DPRwwyH1LKYHhoo=;
-        b=SrwCyb882P+N9OVJRZVqb9qhY7BPmlM0Bp3yWPKyAbwiYxUnyFPh7DJPfmvpaCd3gL
-         mIBoqUVgJdfj9M+cyUqczTo5p/g62CFtm3mqEaoxlM6a+VAY4nVu+tFjRXeCO152ypB4
-         Emh3lwlJYsZheb6snh7z9QLXrmCEplti7ao+whHgc46t+tFdBbzTe3KD9b+OC9tX+3PO
-         86xFgXsoCHvnzeOGAVh22luEN5cpanulMf+rOP+Zj6wCh24ZQTU1wcHImKbQcdLYQpfH
-         D52/uF+3WuSvF6KcAYGI4aBF3uAoxqjb6ze71D2aCI+3OwtT8zbE0w45RgRsvbwKZBBz
-         +hOQ==
-X-Gm-Message-State: AOJu0Yz/ZDWQIoT0JrhPx+mYWXMmEk5526YJPoUi6sPtlJ0eG/x3dnA0
-	KNAwS0fJG4AB/uPnfzKfQoCFy36+y+QhToxGOtLBwvNggHubcwxP1o3jnOXvuZnauposSaaVsQH
-	372Nybc3crIAhAWJTtqKoeAkv+HZtSLqSrD3uWA==
-X-Google-Smtp-Source: AGHT+IFpe/zMWRW1pGpT6CeZ0tmnmNb2Td5Ajn3RviQSYC9NVUJEaRRmoCGLuplnb/dOV9OwpbBaqVjkAInLQpJCjfc=
-X-Received: by 2002:a1f:4a87:0:b0:4b7:6c2f:fdb0 with SMTP id
- x129-20020a1f4a87000000b004b76c2ffdb0mr733556vka.0.1705916019043; Mon, 22 Jan
- 2024 01:33:39 -0800 (PST)
+	s=arc-20240116; t=1705916017; c=relaxed/simple;
+	bh=FEQhqxSV27zZJ+eMJHKx6BwCXQ+B3EXodIj+ZGRhYMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aiNG895+TgS8DUdtJd2cqqfXITkT3lDag9y8+fXfoq4L4bNyqGqPTMviiYI8KFpBx02ZWwiuubtFZARdYLBDS3N9dwVRbi3jyKsgL/nU4y4Q4Kylc9F11AfWUyXIY+5IfCXOz5HyLz+L+coEnA73YuZ8QpFmLW0skHusnpyMB6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eSivbJZy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75667C433B1;
+	Mon, 22 Jan 2024 09:33:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705916016;
+	bh=FEQhqxSV27zZJ+eMJHKx6BwCXQ+B3EXodIj+ZGRhYMw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eSivbJZyjMXi8CBUBLt9HCaLfcfjX3qhxScAt1zF+wbszJMLD6ucqYNQYWIvaNgcv
+	 1kYUaukIW+RDNQQAE1n5lr9fOP/Zi2webjTzn/zjQVvCfKGqArFqR4cEoq81FhofZ/
+	 jEVSaKOdGMi0hgF5FWjBDlPeCHmZ0ATlZ57KWiqtER2upN0ozrOAXcBL0ysxALIg7Y
+	 Ck5QBdKM/L3U8646BfJ1N7npHXohRjTDcy73GpgF3PYyX153eeD98k0dnS8/VoZvo/
+	 ixAo5YdN1YyKQvDWVm2zjVROcTvlBAg+F4Ece4ZdCWbYcwPYSZk2YL3mk9Hge47Nfn
+	 gCzMIgIuaWKug==
+Date: Mon, 22 Jan 2024 09:33:31 +0000
+From: Conor Dooley <conor@kernel.org>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: aisheng.dong@nxp.com, andi.shyti@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, linux-imx@nxp.com, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH] dt-bindings: i2c: imx-lpi2c: add i.MX95 LPI2C
+Message-ID: <20240122-blade-saddling-784b57593913@spud>
+References: <20240122091230.2075378-1-peng.fan@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109073849.10791-1-Wenhua.Lin@unisoc.com>
-In-Reply-To: <20240109073849.10791-1-Wenhua.Lin@unisoc.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 22 Jan 2024 10:33:28 +0100
-Message-ID: <CAMRc=Mei0w8tCXFd-vO_SZLxYkNUWCqbEBV59Go-2LdXKs11nA@mail.gmail.com>
-Subject: Re: [PATCH V4 0/2] gpio: sprd: Modification of UNISOC Platform EIC Driver
-To: Wenhua Lin <Wenhua.Lin@unisoc.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
-	Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Chunyan Zhang <zhang.lyra@gmail.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, wenhua lin <wenhua.lin1994@gmail.com>, 
-	Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="IxqgPqMNTPtHQsCg"
+Content-Disposition: inline
+In-Reply-To: <20240122091230.2075378-1-peng.fan@oss.nxp.com>
+
+
+--IxqgPqMNTPtHQsCg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 9, 2024 at 8:39=E2=80=AFAM Wenhua Lin <Wenhua.Lin@unisoc.com> w=
-rote:
->
-> Recently, some bugs have been discovered during use, and patch1
-> are bug fixes. Also, this patchset add optimization:
-> patch2 optimization the calculation method of eic number.
->
-> Change in V4:
->
-> -Add Fixes tag in PATCH 1/2.
-> -Change commit message in PATCH 1/2.
-> -Add clearing interrupt to debounce and latch mode in PATCH 1/2.
->
-> -Change commit message in PATCH 2/2.
-> -Delete SPRD_EIC_VAR_DATA macro in PATCH 2/2.
->
-> Wenhua Lin (2):
->   gpio: eic-sprd: Clear interrupt after set the interrupt type
->   gpio: eic-sprd: Optimize the calculation method of eic number
->
->  drivers/gpio/gpio-eic-sprd.c | 42 +++++++++++++++++++++++++++---------
->  1 file changed, 32 insertions(+), 10 deletions(-)
->
-> --
-> 2.17.1
->
->
+On Mon, Jan 22, 2024 at 05:12:30PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+>=20
+> Add i.MX95 LPI2C compatible entry, same as i.MX93 compatible
+> with i.MX7ULP.
+>=20
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-Hey,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Can we get an Ack and (preferably) a Tested-by from the SPRD
-maintainers, please?
+Cheers,
+Conor.
 
-Bart
+> ---
+>  Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml b/D=
+ocumentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
+> index 4656f5112b84..54d500be6aaa 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
+> @@ -24,6 +24,7 @@ properties:
+>                - fsl,imx8qm-lpi2c
+>                - fsl,imx8ulp-lpi2c
+>                - fsl,imx93-lpi2c
+> +              - fsl,imx95-lpi2c
+>            - const: fsl,imx7ulp-lpi2c
+> =20
+>    reg:
+> --=20
+> 2.37.1
+>=20
+
+--IxqgPqMNTPtHQsCg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa42awAKCRB4tDGHoIJi
+0sXtAQDqKcW3ThYABJF7wDEf9gUZpjjOYvWKr08fw5UcV1ocwQEAmlvD2zONN6TB
+hDd2AdTmLhZAzGLhgGRhjuV2YDJLBQo=
+=S8yJ
+-----END PGP SIGNATURE-----
+
+--IxqgPqMNTPtHQsCg--
 
