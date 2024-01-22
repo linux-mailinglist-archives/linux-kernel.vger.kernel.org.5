@@ -1,133 +1,106 @@
-Return-Path: <linux-kernel+bounces-33993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B52FD837190
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:01:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2382B83719C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:02:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5474C1F31A12
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:01:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56C271C2A722
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1F03D38E;
-	Mon, 22 Jan 2024 18:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F132B55771;
+	Mon, 22 Jan 2024 18:38:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F+Ihr1J/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m5CZzoWJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFE11EEE6;
-	Mon, 22 Jan 2024 18:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7E054BF8;
+	Mon, 22 Jan 2024 18:38:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705948620; cv=none; b=Myu6C00g8lMaVT31ernlNe2Ww4jvngvqmsBgGbwmJzS+glH2V6YA4Taoy3xoMLWTtnHaRSlpSXSvHd0At/OzeRhtUwoBvCqBGhlw37ZZDtu4a3d1RnbDqnNyqaRWYKH5FZWWTylcbBlru2L+KxKcqzVd0Xi6F+k70OUuyWM+TnI=
+	t=1705948713; cv=none; b=TvyKOBwuOmhU+FYy7SLWstg8bGaxv4+opnnFW+rXY2Sb5RvoDMjPqhEFgOxnR/3/6l3m8e8SNbbOhr6bNMc1udwHiLfGM1ylwPuK9Mj6YhwSAi2GC9Uv9CSi2iwQHG+LttSUJDyFZUC5dSLq27qLBhfYRffxEn7pbxkHmCd9ADo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705948620; c=relaxed/simple;
-	bh=hrwjbRp1ado/yW8ClBvMvhONAHhRUekw/nstehGSnZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FzKE46IbBt7UQ8iC9L8oOtjAkNiKScKZh2/H1KweBlkreom4G0KRod9FEYTR9Tkw7U8iHUureUkqzhEaVR4ub7u77iK0HF7eWU2dky/y1TF1M+TrI/8zfFQGKWsNX6zuxBw0zqe90GHe6fBe+oQWnB42tgBqVzatHKU6vtSKxJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F+Ihr1J/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7198C433C7;
-	Mon, 22 Jan 2024 18:36:59 +0000 (UTC)
+	s=arc-20240116; t=1705948713; c=relaxed/simple;
+	bh=KVE7Ws4n8dlfxAnlggmPADEvbayua5rMmkRlflKaJvA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S5/F3C0OHvG3Po5XZk9R87uoZuNMcJYHhNJ6Y/hsX3KT1pRy0j02A33n4Q+tj6Sr1G0abK74tNx9ePtuJlS1a7nRnJjvkxgqy0k/ZsWuo+4hqUpmD+X89OGXUo42TTP3lo6m+PmDVhAzItdKhmhSRgJSPrOn7BJz5sUSuq58mis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m5CZzoWJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4BCC433C7;
+	Mon, 22 Jan 2024 18:38:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705948620;
-	bh=hrwjbRp1ado/yW8ClBvMvhONAHhRUekw/nstehGSnZM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=F+Ihr1J/rinwBofu3hFnmERu66u6Qwd2ohTRAek0EaKIh8OOXpybSPROymf+a2WYD
-	 kTNKzxkLmXUsQvYgnvAZRD00i7/LvXcpfwOHAlJ/qwp49Mns8P0AbVLSpwepqAC4Og
-	 1nGQYA5lDvN/Kn3i7jvxw6T8xhW6QEkMDeguab5SXgxxr06M0qbLNibIDV2PCEOljV
-	 JBUNxKlFRw1xs4kzZeAB72eSKKEfaTA9X//NR7/plFd6tNryUjO51hN1wWimXStzq7
-	 lbyDMdQNh3OT4SWjJXlzGb5JVyxp9ZBA9YpvZrRPcal/fecMkOJWTxPXpGD8bXeoOp
-	 PJOrbj8Ih7pDA==
-Date: Mon, 22 Jan 2024 10:36:58 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Matthieu Baerts <matttbe@kernel.org>
-Cc: Eric Dumazet <edumazet@google.com>, Netdev <netdev@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Kernel panic in netif_rx_internal after v6 pings between netns
-Message-ID: <20240122103658.592962d1@kernel.org>
-In-Reply-To: <f96b33ab-56d5-4a43-a1ff-2e68e2c55ac2@kernel.org>
-References: <98724dcd-ddf3-4f78-a386-f966ffbc9528@kernel.org>
-	<CANn89iLAYXpRiGaGi+rvOZyxMfpUmW2cOg6hLhqE=+2JJS8rkw@mail.gmail.com>
-	<65c4f6a2-207f-45e0-9ec3-bad81a05b196@kernel.org>
-	<5340b60d-a09a-4865-a648-d1a45e9e6d5f@kernel.org>
-	<20240122092804.3535b652@kernel.org>
-	<f96b33ab-56d5-4a43-a1ff-2e68e2c55ac2@kernel.org>
+	s=k20201202; t=1705948712;
+	bh=KVE7Ws4n8dlfxAnlggmPADEvbayua5rMmkRlflKaJvA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=m5CZzoWJ1qckyfLAJTHg8LY+orIVXY8bBoZ3JZgMj+suMPUb0RrF/3OrY4RnpBBJq
+	 5NqxAQj6ZvDwcQ72gCa/3JHDyozbmb5hosHEEIKmVFBdeowRPhucyxlKDax4ZSQKdw
+	 IVk9LbokUgCaTldulfOfeU5vg5kB+RZE2CvFZmI8iSA4e2HrHI8RCJOYKyg3D5LcMn
+	 eXmtB/XRyG8EXSOZgv2qv+dCFfsyLAmfhyxSQsOUD7/pSKZN4XVwBoDlRg7Ohp4yBJ
+	 jEOQgqRnM4Mua02QwMe5NdAvbmg7L70PIURZEhcpw3hFYhGN04Dg0LVkr1xBuXXMte
+	 B/UMOe6vVGtXg==
+Date: Mon, 22 Jan 2024 18:38:27 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Klaus Kudielka <klaus.kudielka@gmail.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] SPI updates for v6.8
+Message-ID: <a3b7790b-ce5b-407f-8089-a18c52aa7a1e@sirena.org.uk>
+References: <20240107223817.EDB59C433C7@smtp.kernel.org>
+ <d8724cd416494bb5cd5b0350266fce0cb7b3b210.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="DTvDgoXj5eUMt50c"
+Content-Disposition: inline
+In-Reply-To: <d8724cd416494bb5cd5b0350266fce0cb7b3b210.camel@gmail.com>
+X-Cookie: Nice guys don't finish nice.
+
+
+--DTvDgoXj5eUMt50c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 22 Jan 2024 19:22:42 +0100 Matthieu Baerts wrote:
-> > Somewhat related. What do you do currently to ignore crashes? =20
+On Mon, Jan 22, 2024 at 07:30:09PM +0100, Klaus Kudielka wrote:
+> On Sun, 2024-01-07 at 22:38 +0000, Mark Brown wrote:
+
+> I just booted 6.8.0-rc1 on Turris Omnia (CONFIG_SPI_ORION=3Dy,
+> device tree: arch/arm/boot/dts/marvell/armada-385-turris-omnia.dts)
+
+> and got the following error:
 >=20
-> I was wondering why you wanted to ignore crashes :) ... but then I saw
-> the new "Test ignored" and "Crashes ignored" sections on the status
-> page. Just to be sure: you don't want to report issues that have not
-> been introduced by the new patches, right?
-
-Initially, yes, but going forward I bet we'll always see crashes and
-breakage introduced downstream. So we need some knobs to selectively
-silence failing things.
-
-In an ideal world we'd also have some form of "last seen" stat
-displayed to know when to retire these entries..
-
-> We don't need to do that on MPTCP side:
-> - either it is a new crash with patches that are in reviewed and that's
-> not impacting others =E2=86=92 we test each series individually, not a ba=
-tch of
-> series.
-> - or there are issues with recent patches, not in netdev yet =E2=86=92 we=
- fix,
-> or revert.
-> - or there is an issue elsewhere, like the kernel panic we reported
-> here: usually I try to quickly apply a workaround, e.g. applying a fix,
-> or a revert. I don't think we ever had an issue really impacting us
-> where we couldn't find a quick solution in one or two days. With the
-> panic we reported here, ~15% of the tests had an issue, that's "OK" to
-> have that for a few days/weeks
+> [    0.090231] spi_master spi0: No. of CS is more than max. no. of suppor=
+ted CS
+> [    0.097358] spi_master spi0: Failed to create SPI device for /soc/spi@=
+10600/flash@0
 >=20
-> With fewer tests and a smaller community, it is easier for us to just
-> say on the ML and weekly meetings: "this is a known issue, please ignore
-> for the moment". But if possible, I try to add a workaround/fix in our
-> repo used by the CI and devs (not upstreamed).
->=20
-> For NIPA CI, do you want to do like with the build and compare with a
-> reference? Or multiple ones to take into account unstable tests? Or
-> maintain a list of known issues (I think you started to do that,
-> probably safer/easier for the moment)?
+> End result: the three MTD partitions I used to have on the SPI-NOR are go=
+ne.
 
-Exactly - where we can a before/after diff is the best. We do that for
-all static checker / building kind of tests. But for selftests I'm not
-sure how effective and applicable that is. Even the stack trace I
-posted here happens somewhat unreliably :( We can try to develop more
-intelligent ways going forward, obviously :)
+Actualy looking at the DT it's not immediately obvious why this is
+triggering - there's only one chip select in use, numbered 0 AFAICT.
+Anyway, if you could test the patch I linked hopefully it does fix the
+issue.
 
-> > I was seeing a lot of:
-> > https://netdev-2.bots.linux.dev/vmksft-net-mp/results/431181/vm-crash-t=
-hr0-2
-> >=20
-> > So I hacked up this function to filter the crash from NIPA CI:
-> > https://github.com/kuba-moo/nipa/blob/master/contest/remote/lib/vm.py#L=
-50
-> > It tries to get first 5 function names from the stack, to form=20
-> > a "fingerprint". But I seem to recall a discussion at LPC's testing
-> > track that there are existing solutions for generating fingerprints.
-> > Are you aware of any? =20
->=20
-> No, sorry. But I guess they are using that with syzkaller, no?
->=20
-> I have to admit that crashes (or warnings) are quite rare, so there was
-> no need to have an automation there. But if it is easy to have a
-> fingerprint, I will be interested as well, it can help for the tracking:
-> to find occurrences of crashes/warnings that are very hard to reproduce.
+--DTvDgoXj5eUMt50c
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Indeed, I'll keep my ear to the ground. I believe it was discussed in
-relation to KCIDB.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWutiIACgkQJNaLcl1U
+h9CK0Qf/RkQt+iaRnvCFL1dWSb7Tfy5yMtCUTsGisJqdcuS4rNDLCXH34HJQTKfa
+yT1fiYYMAxCo1z88S3sfG9TLoAbtq2ScJC6/PwpMpSiZy2uimcWBOx1Gnad1sLto
+9lK0PZe9r+kjFn2cBLcFslkXllYSI11nDoj6/Nwe92JUH4rom4/xtmJ09aFhKtxZ
+xPxiEkgX1dfRmg95nXCViae8cEc/3PgZuucyCvww2aJs1tEsSKOflE5szn66kiiR
+/3gj+c1DcNZBYE6wSS0uNaqvdb14ZWV5kcFvNRJOzEx17s6/pTixKCCYu+Stxn+A
+LlvqFT3d9L0bkicmDueOe5c30NkXNQ==
+=QmhZ
+-----END PGP SIGNATURE-----
+
+--DTvDgoXj5eUMt50c--
 
