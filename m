@@ -1,107 +1,171 @@
-Return-Path: <linux-kernel+bounces-32317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C98FA8359FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:13:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26601835A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:13:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 080C21C213A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 04:13:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B9DD1C21894
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 04:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 990E45240;
-	Mon, 22 Jan 2024 04:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1DB6139;
+	Mon, 22 Jan 2024 04:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ealvJ81/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PLWbGf8D"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D3445221
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 04:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0DA610C
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 04:13:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705896790; cv=none; b=VnAjEIMra0QszEsK/QpHucKbhD3fe5fOmTAEsNSiUIe8/gc9XHMXr4EootHuwCIrAN8Yi4aBX9EpsblTGOJ5E8VrdF/mtVSTytFijRlrOqHJOppmHy03b41G3WczvENv8njWDZaISfhA0ij9+2pVS5S9De7Qs9QS6b6f3y+pWkc=
+	t=1705896829; cv=none; b=Nsp8frD0+kIHcfrd6zOJ+Dlj6lacYopcfTQywMfYbU9G+dINdvsCpTwMhStqxcMkVXO3c/3DWwLfZUX90v+IYk04PzIGgBHZz6jwaQwyCe5qqGggk4+X5aHs/4m/os+9/KeM15Bl+d8T4gcl/n2Q0j3aiCG22L/Ze8DCF13Ibls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705896790; c=relaxed/simple;
-	bh=od+8DOkUnVAgYBK9LoM9tr2QwuVYSslesQSRWHme8E8=;
+	s=arc-20240116; t=1705896829; c=relaxed/simple;
+	bh=sFyv+jUWRXd/cynW/u9ytP1g1fYNXA9LJzShvHGdwP4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ME4V0TBmvy972oekkE9H7mS5gBRpRzB3jYB0RLXOfjJ99AjqrU/YEhgk3bbZYRPMm+yKu8Qj0nypP0v29YR0nZhjkZ4Q5pB3j7hWi4SH+t4KYfzTlogxIV7sm3gsrHWXCZL6TVMF2yBTImPAmvKK/H4+/LsDb0anSihLNPk2aFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ealvJ81/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705896788;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BFYZB1OK0jELPTabxPuV0ZEWUgH0u/k7Ra6Xc9f/czc=;
-	b=ealvJ81/IM6XUWpBAyPaEP/E25aRvREZad+Ewghap7ghZrj/8/KmrH0h8IBhmnqsysFBZp
-	s3sSif/8eBfbOGwQkEuNvb/lW/OzTqzwtZ4FUxruIhVlBjDMI61/0FcBcvjLdIAdRDDRYq
-	3Qp8NYbK1s8swqo24Pnm/c+kOnywlOc=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-612-znO1VQpgMN6GfJ8D8hTFOA-1; Sun, 21 Jan 2024 23:13:06 -0500
-X-MC-Unique: znO1VQpgMN6GfJ8D8hTFOA-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6da0d1d6674so4267750b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 20:13:06 -0800 (PST)
+	 To:Cc:Content-Type; b=s2AcTHdZsk19UzLMb+8SJxEWFUQV+knffXpmdQwkU/dFZr7XM2uZ6xgkjKJmS9a6X7wPGXlviJtYa93D00AkDhBuukwlknV3YUqycQCteRRVRdFbIQNFls5chvLmFolO5+F7nbWVPsOTfYztYF9Auc8YkNGTe7i50j8eDgZPwyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PLWbGf8D; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2e0be86878so688055166b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 20:13:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705896826; x=1706501626; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sFyv+jUWRXd/cynW/u9ytP1g1fYNXA9LJzShvHGdwP4=;
+        b=PLWbGf8DqqZRS4ebVQlJSYwWox8ZDlQyT7ITPMLl02ogjtg5nsiuz/Pu72c3d/CZTc
+         m7LBh2ecbB+5deg4Tuax94+Az1YuTm3jWxNmAZbzkCSc7WX6jQWjfyUbofq0BBmH+QQH
+         1ZknQhY5ls23SnTr4NG8HH5lZeV3rPL5BdxRw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705896785; x=1706501585;
+        d=1e100.net; s=20230601; t=1705896826; x=1706501626;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BFYZB1OK0jELPTabxPuV0ZEWUgH0u/k7Ra6Xc9f/czc=;
-        b=D7cTk6fHK2a3qX2UDgGzuj7ZxmOc7SqWIDHWCP6hKIk7qp0ZX7J8drl7Y90EXmlftP
-         pG2fK6KKIxEP3ISfDBlN4RUbzVCer+L9XKT/RVIHZYzxVpYc6AlHKdBKO9+BiWJ4tbIp
-         t5s33zyZUFhtxCB2mqtNpxo57dzrX0t724Rb6vnrTvy1DsasDIjuqQSO9JzNmb5MjuiH
-         gcU5D9kHq25Hr56ZKECO1mzNfic3VW2CvgqoFnP+qUnAQlM4O97MuPqYrQd+dx+8oR/F
-         ZAuosMEOo0inIdl/xK79L6CE0IToBsGkLBE8bpetUXT9xchDB22Dr8ahLVh4tTg5zOz6
-         zbnA==
-X-Gm-Message-State: AOJu0YwLa+MRDuwVhzjuKBKtq+4PUN/rXSEIg4sl6r3/TYMwKqzOn3Eg
-	Q0M9VxnSEz07VkFEUlQCQjIRiDZbhOjWDfJebPkPt1o3h9qKLqfkUqxbBSs1rB+ANBChmKGURGs
-	u4DK+2CUSsKJv+zr4reH8jNEFwHETsNX3gyqa7HZjNDM3J5I29KfDadADpXGZNeRQJ47MF66I/N
-	mMQ5H81KaTfxDCZAUO8VM0FRzaenk2wfWP0xr6
-X-Received: by 2002:a05:6a00:cca:b0:6db:dd0e:8d6c with SMTP id b10-20020a056a000cca00b006dbdd0e8d6cmr2338372pfv.50.1705896785533;
-        Sun, 21 Jan 2024 20:13:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHw6L7G8t4oEO9wMWCBYZqdoa5n5KMgma3CQ7su1LP6qvgNWE1mvqDtNGJ2VEeIUfZzPuoLjHMkocgktDrNNwA=
-X-Received: by 2002:a05:6a00:cca:b0:6db:dd0e:8d6c with SMTP id
- b10-20020a056a000cca00b006dbdd0e8d6cmr2338366pfv.50.1705896785313; Sun, 21
- Jan 2024 20:13:05 -0800 (PST)
+        bh=sFyv+jUWRXd/cynW/u9ytP1g1fYNXA9LJzShvHGdwP4=;
+        b=vrip6WnwLcGRGygT2zB9i3Tp5Wj2yS7MEZ2StgMMZe6jsCJ1FAy2/bgDFNgy6XsDvb
+         h62gZqfBzXMbsuiqzdEo24CEAx9QlIEh2+GTGto5KTUn5ZLb3qUaHYkmznGE8MZji65c
+         ilXvGoYIyd9oaKx1CqLwkS7htsRl7HsxRlgc/aVuSdPyGWjyRTxRGvRsB8F0xoehk+Vx
+         Vn+oDyA2B22u4Cuvfd7MbDRjLZ/tpIVyWJ2DvRR6vpn8W6SxHhDQEAcxuyoNhXKEpTL+
+         aeh1HUpyPlXYzLk2QqnT8PAYvoBhjJALWejC11+hflQF1u2MoFO/Kye47MFgyAL1caHJ
+         Ex5A==
+X-Gm-Message-State: AOJu0YwmbfS5mr9/fFSvsU4ToOMPN/nBzLVcV5uahhbZG6+/o+9OvojA
+	3BAKlInd7u/Iib9AXvuicEDpZjXZMiYbXk52TQnsGuM5HiscrMTyyuIL6B20O+LYzu/ctskcraU
+	=
+X-Google-Smtp-Source: AGHT+IH8xW89+ydmroaFKMhuiR1Th5l7g/UM5ogg1jugn8TR5MK+xNOMEZ7ym7Isvvc0+aNgcC/WBA==
+X-Received: by 2002:a17:906:d99:b0:a2e:9f2c:980c with SMTP id m25-20020a1709060d9900b00a2e9f2c980cmr3377775eji.72.1705896825793;
+        Sun, 21 Jan 2024 20:13:45 -0800 (PST)
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
+        by smtp.gmail.com with ESMTPSA id d3-20020a170906544300b00a2693ce340csm12869214ejp.59.2024.01.21.20.13.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Jan 2024 20:13:45 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3392b15ca41so686896f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 20:13:44 -0800 (PST)
+X-Received: by 2002:adf:f641:0:b0:337:b36d:72a4 with SMTP id
+ x1-20020adff641000000b00337b36d72a4mr1723451wrp.36.1705896824443; Sun, 21 Jan
+ 2024 20:13:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1705519403-255169-1-git-send-email-steven.sistare@oracle.com>
-In-Reply-To: <1705519403-255169-1-git-send-email-steven.sistare@oracle.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Mon, 22 Jan 2024 12:12:54 +0800
-Message-ID: <CACGkMEsSjtkYk3++aqmPxrivrDzyGxNumiancRxAfY=7D3SsiA@mail.gmail.com>
-Subject: Re: [PATCH V1] vdpa_sim: reset must not run
-To: Steve Sistare <steven.sistare@oracle.com>
-Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Eugenio Perez Martin <eperezma@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
-	Stefano Garzarella <sgarzare@redhat.com>
+References: <20231228054630.3595093-1-tfiga@chromium.org> <CAK7LNATBipJtprjvvRVYg8JcYOFXQdpLEyEc+4+8j1PtBQ+PUg@mail.gmail.com>
+ <CAAFQd5C3vAUJhKiQ1LPkZv3dJxNvK4QinRezV9Q8rz_Ov6FSUQ@mail.gmail.com>
+ <CAK7LNAQcaDneE4rnjvV+GTSBBMozm5deu_q9+STTn60ervZJbA@mail.gmail.com>
+ <CAAFQd5DcxL80cb8w9OZs0mpD=Y3K=LmM7exG7U_DaSsMkfni7Q@mail.gmail.com>
+ <CAK7LNASyiYasGa2_Ppp54nEq2m08q_Z_keViZDCavmNN0rBAzQ@mail.gmail.com> <ZaZv_TNR5_1zOCji@reykjavik.ads.avm.de>
+In-Reply-To: <ZaZv_TNR5_1zOCji@reykjavik.ads.avm.de>
+From: Tomasz Figa <tfiga@chromium.org>
+Date: Mon, 22 Jan 2024 13:13:27 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5BUBnCcg5nBfL-McdkR3dVEjqxFgz+amkhURxBpdRGaSA@mail.gmail.com>
+Message-ID: <CAAFQd5BUBnCcg5nBfL-McdkR3dVEjqxFgz+amkhURxBpdRGaSA@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: menuconfig: Make hidden options show as dim
+To: Nicolas Schier <n.schier@avm.de>, Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Jesse Taube <Mr.Bossman075@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 18, 2024 at 3:23=E2=80=AFAM Steve Sistare <steven.sistare@oracl=
-e.com> wrote:
+On Tue, Jan 16, 2024 at 9:01=E2=80=AFPM Nicolas Schier <n.schier@avm.de> wr=
+ote:
 >
-> vdpasim_do_reset sets running to true, which is wrong, as it allows
-> vdpasim_kick_vq to post work requests before the device has been
-> configured.  To fix, do not set running until VIRTIO_CONFIG_S_FEATURES_OK
-> is set.
+> On Tue, Jan 16, 2024 at 07:58:05PM +0900, Masahiro Yamada wrote:
+> > On Mon, Jan 15, 2024 at 2:04=E2=80=AFPM Tomasz Figa <tfiga@chromium.org=
+> wrote:
+> > >
+> > > On Sat, Jan 13, 2024 at 8:23=E2=80=AFPM Masahiro Yamada <masahiroy@ke=
+rnel.org> wrote:
+> > > >
+> > > > On Wed, Jan 10, 2024 at 10:05=E2=80=AFPM Tomasz Figa <tfiga@chromiu=
+m.org> wrote:
+> > > > >
+> > > > > On Fri, Dec 29, 2023 at 1:10=E2=80=AFAM Masahiro Yamada <masahiro=
+y@kernel.org> wrote:
+> > > > > >
+> > > > > > On Thu, Dec 28, 2023 at 2:46=E2=80=AFPM Tomasz Figa <tfiga@chro=
+mium.org> wrote:
+> > > > > > >
+> > > > > > > When hidden options are toggled on (using 'z'), the number of=
+ options
+> > > > > > > on the screen can be overwhelming and may make it hard to dis=
+tinguish
+> > > > > > > between available and hidden ones. Make them easier to distin=
+guish by
+> > > > > > > displaying the hidden one as dim (using the A_DIM curses attr=
+ibute).
+> > > > > > >
+> > > > > > > Signed-off-by: Tomasz Figa <tfiga@chromium.org>
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > > Do you think this is useful?
+> > > > > >
+> > > > > > This changes the color only when you select a hidden item.
+> > > > > >
+> > > > > >
+> > > > > > For unselected items, you cannot distinguish hidden ones,
+> > > > > > as A_DIM has no effect to black text.
+> > > > > >
+> > > > > >
+> > > > >
+> > > > > Hmm, are you sure about that? For me it seems to dim the text. it
+> > > > > seems to be also used in the existing code for dlg.button_inactiv=
+e.atr
+> > > > > of the mono theme:
+> > > > >
+> > > > > https://elixir.bootlin.com/linux/latest/source/scripts/kconfig/lx=
+dialog/util.c#L26
+> > > >
+> > > >
+> > > >
+> > > > Then, your code works only on the mono theme.
+> > > > (when your terminal does not support color, or
+> > > > "MENUCONFIG_COLOR=3Dmono make menuconfig")
+> > > >
+> > >
+> > > No, that's not what I meant. It works for me for all themes, see the
+> > > screenshot at https://postimg.cc/sBsM0twT . The terminal is tmux
+> > > inside hterm (which in turn is supposed to be compatible with xterm).
+> > > I guess I can test a couple of different terminals.
+> > >
+> > > In which terminal is it not working for you?
+> >
+> >
+> > I use gnome-terminal.
+> > The disto is Ubuntu 23.10
 >
-> Fixes: 0c89e2a3a9d0 ("vdpa_sim: Implement suspend vdpa op")
-> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-> Reviewed-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+> I see the same behaviour as Masahiro described with foot 1.13.1 on
+> Debian 12.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Thanks for testing! I'll use the two for my testing as well and try to
+figure out something more portable.
 
-Thanks
-
+Best regards,
+Tomasz
 
