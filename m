@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-32532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34BAC835CC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:37:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A44B835CC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:38:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54BAA1C21121
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:37:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 108881F23C89
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:38:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D578364A0;
-	Mon, 22 Jan 2024 08:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14435364C5;
+	Mon, 22 Jan 2024 08:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="F/nHb0tV"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="npus38s0"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCCA2110B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB5B39843
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:37:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705912651; cv=none; b=Bc8R0c7vCQFKh84Ea5DwUE2qrcwL9s12JniPMvuKR6cgUCjazvqAzl/ZjouLncr52R81rt/26FTLdR9U91zgjkPSRqIap9d9JlV/+cj96lHfIVLjq2c2EIFa6dWxl+D80+kE95bsJSAdUHmdE4s7B8k6xzLKhgZBlHCnXppCUX0=
+	t=1705912676; cv=none; b=T7kqs3Ma68OX7Sr1l1SZjA8DNr3c6L0SFTzVjzeB4RcdxVTLmM34Ffvf5Afpez1cART9XNmghOZIT69rTMEMWRlEQ1pSV0sfVUeDbjJV1CtY1A9NFO2GdmPnXLMKokobiWSm+XZJwgZ/PH31c3UO4uWpVMlqWYWQzbC9Wk/WC5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705912651; c=relaxed/simple;
-	bh=50VnyOQ5yU0OvmhTui00lfaV6jIlkxhVrH3tn6U37kw=;
+	s=arc-20240116; t=1705912676; c=relaxed/simple;
+	bh=MwPaCJPw++E8PIn4Hqnux05BstFuVu+QoD5HGY5qUZU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=udHozwdqQUkJ6Y3Ku9pHES7ItWIvsQjoTNzi+ZI7m9PDbup0eL6NvZO+dXEt34wT7sVtuHS19Ip/bmkDVgFPPaUcL8NEzrNsq3jRzzZqk74N9n08GmAs8MhmwOoA8y2IW0/YNwwktmsokCgAAq6z/7pyieS8unrvLaOPHxkkizY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=F/nHb0tV; arc=none smtp.client-ip=209.85.208.182
+	 In-Reply-To:Content-Type; b=Z1UwKzF4bV0DaoyY73s4jS+R6iN6YzUh/CgoHOym9XT/iCC3ATSZte8QpBGU6mVDtpBlCttV11JwXSl6JS80DtlgViX9yx1wK5Aa8Ejnaq6QWT07m9lM2THQoGOmhGNTSzr1FC7dtHb+Ibdcuxbt8hhJCry4Er1M8shpALNsX3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=npus38s0; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cef994d4e6so9242371fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:37:29 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-337d58942c9so3142321f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:37:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705912648; x=1706517448; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705912672; x=1706517472; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sUhLxvQpB2444R2OwanB1oURS4LSeIrP1mx21iy3zi4=;
-        b=F/nHb0tVP449PH9sWdLy8KERT3NSwI7P5HMIH/OlH2YThUOVM9fOfiPJuDoV9msrpw
-         60dEnBNZML5PiAP4tH+u/0FTusyKKITkRxo0+ZDGdLVMsF4NQSpwmkbTERBpV1EOnIne
-         7wVda/4Jd/ldiSxqzkv+apNDI6SNcNhDV6DJT+J/U1HybGc2kXrOgp+vauMMHW+xONEN
-         tozgnw4CpwxahytgDC7G4LqrSm0ghKeVpny12XgFHnDMEhODA6rXhcg80GhirnSd/FgZ
-         4QlQDUCTY6n1p3wHaxn3T3LLw1ADaSZC9dU2oQshzGXNdl1bhwuYmbuAWLMdlMCuYi6b
-         cz7g==
+        bh=4EXdpsgY4Ktaq7S3kqrhLz4Kg2ZClMQ4mxi2Kzi2GZk=;
+        b=npus38s0l2MrQsqmNZfczASYAsVbZkqjGm01j34AQrwAKgV243PHFSTigLBrjBoz9a
+         ALfdIuOcAXml4aj+NMY4kON/ufQQ/cq89DhBODJSEnePS8UCEE5yWZCqh4D9ZuTMrjwV
+         6msmo0BsAhmkvZtLCi9ZugpGXuRX9WRWQDkoCBfoRPyuIjFRuPJjXmhzyPfl+XKQEjF3
+         7bvF/ygxXBV4XRHuygNU8xiNNq7OOoOgjjkxMk11D1VqKPMk9bxXwkhDB+/12FloP5ha
+         xZMpDLDxDSoBhH1aQjcHkA42K/u3ybw27BPCdjC6/6EUfB3fkT4hp3Q0kzHh4IulNAcy
+         5A1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705912648; x=1706517448;
+        d=1e100.net; s=20230601; t=1705912672; x=1706517472;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sUhLxvQpB2444R2OwanB1oURS4LSeIrP1mx21iy3zi4=;
-        b=QzaxIL7XUGgymDtGyElk9iqE+toOUhbvHEFI9pdgb7vOYtmbcsZRY3IKlEj8xtOFsx
-         kiArDHFDkMUjVkIR/+v7DGtoM4KkEE/eHBNCsztjyQn4eZEWTmtdedGZDWDydNuXKfm7
-         iCbRx6ZKE1BsV65I/NJgKtpmwrpZ1TPOgDBd0JmDDw0QBvV8QJUQLncF+EekCD3lU8I9
-         VaMiYQsVPbpj62cTxOMb+0DRdwCk7JEj9B/cu2FE2sCLnwVdCtLqxfFLdNFVposUsQyr
-         smWJWmGramoSC8CUTbwM0CFrq6IzvQ5vrGUGyL1hPd+gaSwwb9acWgbjKqkrqBdGk/BC
-         WFRg==
-X-Gm-Message-State: AOJu0YyqzGsqmgQMzxaeL/sdWFbiLyaG9A4EExj10IKeNF1XAPPIcPk+
-	uK0kD62pdmwZSuUDzEluXBjxc/M4ulIpX1dwhOpNv5Ou/szT5watEvs3niqihqE=
-X-Google-Smtp-Source: AGHT+IEUJOQf4Ld0srroyNXWH3OQiDWPRqtkiPiCuP69Ymdllv/sFpV9ONm/e4QkT1gx5Ahl5reJJw==
-X-Received: by 2002:a2e:9d99:0:b0:2cc:78be:9551 with SMTP id c25-20020a2e9d99000000b002cc78be9551mr1222957ljj.2.1705912647781;
-        Mon, 22 Jan 2024 00:37:27 -0800 (PST)
+        bh=4EXdpsgY4Ktaq7S3kqrhLz4Kg2ZClMQ4mxi2Kzi2GZk=;
+        b=PVE/5nU82O+pAn7XQo9F9fp6CGSpNjL4lTrEKAy8RiVYb8JP3xlWBYyCDMZ4Wa9VtO
+         Up+fD/SVDkByWzrQ8UWloKtXXbpI4yIh1W+p1IrZf6MwDvJePUX0LWJmJWBZkCBE1Hgl
+         hdaqxh/esPZUHmcafP7uutVFrfdZIuYktloAbp8sCzCsLC2Q4jeKbXPl9UV5HODMFVcK
+         MHIedf+/1TMCyxp3V0juZDHl/EnlFnzSoMkE/dJ5hfyI0LnP91kEAumYMHK+9Q18fTFU
+         bnY7W316DhB8sMgkbPXvGLUFIvkKvqqcddDwU/+pu1Wl1VCR8bVemqMwgsxho4YSS7j5
+         urMQ==
+X-Gm-Message-State: AOJu0YxeR+ctR6yZGVrhVOOcvdKXmFIk67j6j0Vyk4AZFYme5zgKy93D
+	ZmCVHHvoMIDSfas8pbx2/HyeUFV8parNGLo69CMRfJW6qcp4xa/RTYDIZbbY4XM=
+X-Google-Smtp-Source: AGHT+IEy0UeH8Xm2sFRTbxlsME68iEVkpyNkH2TnynIHzbzOg0KnzfcgBkoEvxHlOjjkwDPi4Mhf1Q==
+X-Received: by 2002:a5d:6383:0:b0:336:7b79:3caa with SMTP id p3-20020a5d6383000000b003367b793caamr2196812wru.76.1705912672108;
+        Mon, 22 Jan 2024 00:37:52 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id q6-20020a5d6586000000b0033921f48044sm7892690wru.55.2024.01.22.00.37.26
+        by smtp.gmail.com with ESMTPSA id q6-20020a5d6586000000b0033921f48044sm7892690wru.55.2024.01.22.00.37.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 00:37:27 -0800 (PST)
-Message-ID: <fcd64bbb-9f3c-4e62-96a4-84cb1e3ac59d@linaro.org>
-Date: Mon, 22 Jan 2024 09:37:25 +0100
+        Mon, 22 Jan 2024 00:37:51 -0800 (PST)
+Message-ID: <92ee0b1a-f383-4a37-8758-a62b56ef0310@linaro.org>
+Date: Mon, 22 Jan 2024 09:37:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,19 +74,17 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/3] rtc: sophgo: add rtc support for Sophgo CV1800 SoC
+Subject: Re: [PATCH] dt-bindings: xilinx: replace Piyush Mehta maintainership
 Content-Language: en-US
-To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, chao.wei@sophgo.com, unicorn_wang@outlook.com,
- paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
- linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- dlan@gentoo.org
-References: <20240122080631.2880-1-qiujingbao.dlmu@gmail.com>
- <20240122081722868bdda5@mail.local>
- <CAJRtX8QU8iHY1oQJ1uDN3YOmCeN7SH+vPC8nD29WS5+2DT1oKQ@mail.gmail.com>
+To: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>, dlemoal@kernel.org,
+ cassel@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, linus.walleij@linaro.org, brgl@bgdev.pl,
+ michal.simek@amd.com, p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+ piyush.mehta@amd.com, mubin.sayyed@amd.com
+Cc: linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org, git@amd.com
+References: <1705664181-722937-1-git-send-email-radhey.shyam.pandey@amd.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -132,32 +130,20 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAJRtX8QU8iHY1oQJ1uDN3YOmCeN7SH+vPC8nD29WS5+2DT1oKQ@mail.gmail.com>
+In-Reply-To: <1705664181-722937-1-git-send-email-radhey.shyam.pandey@amd.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 22/01/2024 09:34, Jingbao Qiu wrote:
-> On Mon, Jan 22, 2024 at 4:17 PM Alexandre Belloni
-> <alexandre.belloni@bootlin.com> wrote:
->>
->> On 22/01/2024 16:06:30+0800, Jingbao Qiu wrote:
->>> Implement the RTC driver for CV1800, which able to provide time alarm
->>> and calibrate functionality.
->>>
->>> Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
->>> ---
->>>
->>> Depends on https://lore.kernel.org/all/IA1PR20MB4953C774D41EDF1EADB6EC18BB6D2@IA1PR20MB4953.namprd20.prod.outlook.com/
->>
->> What is the dependency?
->>
+On 19/01/2024 12:36, Radhey Shyam Pandey wrote:
+> As Piyush is leaving AMD, he handed over ahci-ceva, ZynqMP Mode Pin GPIO
+> controller, Zynq UltraScale+ MPSoC and Versal reset, Xilinx SuperSpeed
+> DWC3 USB SoC controller, Microchip USB5744 4-port Hub Controller and
+> Xilinx udc controller maintainership duties to Mubin and Radhey.
 > 
-> Thank you, this driver requires support from the CLK driver.
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> ---
 
-How? This is really unusual. Just to remind: we talk about build
-dependencies. Other do not matter for new drivers, right? Otherwise what
-is being broken and how it could be even broken?
-
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
