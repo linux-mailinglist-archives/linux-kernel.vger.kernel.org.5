@@ -1,50 +1,51 @@
-Return-Path: <linux-kernel+bounces-33489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53425836A44
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:23:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29681836A49
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:23:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B079287650
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:23:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C7FB1C24E8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A034137C34;
-	Mon, 22 Jan 2024 15:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1042137C54;
+	Mon, 22 Jan 2024 15:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KemMJ8ht"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CGTxT5AG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED87137C26;
-	Mon, 22 Jan 2024 15:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22501137C35;
+	Mon, 22 Jan 2024 15:14:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936482; cv=none; b=msCFUH/9hH6GLlZ/WF0YoYUhjhqdNthrPv8X/abhrAc6bMHP6FXmzxxE6uzib9tTeX5oERn7DhobtRhcRm44JejBZrV2QQOIAFzIiKi8XTcYFJNkMI/kjlyCBgVFaEZHdS0A75X13ckKQCB3hkLj6PU0aUssBsukNWEqNk33aqU=
+	t=1705936485; cv=none; b=udXNsrA1te+2InNM6Vcx90zq/2Cu/8Mxayi7KKHRGwhfho0w2jlV8qBgeDP+FDLFYCYqD4IiQAjTa3q+eU9gT9U0XyrQQ9ublstQchaXnWPwYo3wiCYGTAazrHg94UcVRInuGFB86xshYhz9NMZaeKbw4iwRHicLxR/HTxjNpzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936482; c=relaxed/simple;
-	bh=CUVrPHTH8Bl42ciFheRbDL09XZRQRK4djqg71B1JyFo=;
+	s=arc-20240116; t=1705936485; c=relaxed/simple;
+	bh=XMQtYES5Vjil/zZSzSxYp8Rhrmr/mGjpeAmg+2hH3C4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Shek9EZFrCPVNyZBEGUJchPKIJ20V+0mF/2ac9cRQMf5G1vvXlZXbAkCoL21QJCK3X5sZTZ3ZsWyKC2ZuaaGKSVa4ryF81DFR+WGJm2F1SqKJ0JLsiWrI4S7l0FmURD9rPXJ8cWjkMgul9Szl9a2MRdOANHN61rlxLP0jl79/yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KemMJ8ht; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B75B8C433F1;
-	Mon, 22 Jan 2024 15:14:40 +0000 (UTC)
+	 MIME-Version; b=J43RsLrTfEdMlXel3Vx5DbtGSBN1P3SfscxMwGkYRaopDUq6xTRX1GM75zx+yNtc+8ik2K+F1OWiNzYcq45FZUT5vUzxoSP4ygeIdbI6cuaoQE5EfBgbaxqc2Tq8JdjteM0Zsb+be0ZGuLwGahMJ6cD7wwzhub6cjGljs5AdfAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CGTxT5AG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E836FC433C7;
+	Mon, 22 Jan 2024 15:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936482;
-	bh=CUVrPHTH8Bl42ciFheRbDL09XZRQRK4djqg71B1JyFo=;
+	s=k20201202; t=1705936484;
+	bh=XMQtYES5Vjil/zZSzSxYp8Rhrmr/mGjpeAmg+2hH3C4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KemMJ8htdOjv3edhUKsXsSRw0rooIHobzLaKGKs8fnGkRHxMUQs26koMdZB8pmjYR
-	 WdbbpxK//cFVGDiZL8COwqS3XVMlgAeOxVPGo2HCwS3IKGTxjzvU/VhrBU/zP0mpuo
-	 73WAcgB/erAlA/WB50jCMF0MGmZB+nSxKqCIh46NyyQlwhH2SULVNWQVcfFejZOTJb
-	 EulHtQDRR7Ar9r52PHaccg4Ajp6ZIde7K3H3Q4NY7Bs2wo2iZPmEBDlpKz6vwFfzOk
-	 /DBaqivyvPvXUZN6yES7UOpHwRiyTuT7UpZ6b/DvOf+q0ZZgv9XYdEJLOKSOtLeRmq
-	 TsGiAtNWDzqkw==
+	b=CGTxT5AGgV8ugCwfKObCBIOUqM8jB08Rq2UunMO5UT/Wi+aYra6pQFTITiY9zBYE/
+	 4/Srnhq82E2LP+OIQpbFVfolJ1THddgzVHkz7XgF2/8b2DU3FKHfB4JC3vjSOcRsP3
+	 kpqXG2SsnBhl4k8wJHmwlVkPIKOuq2ORZbX5W9EiJ3kS1J/vkbffBvkqiEVhrqLp4U
+	 ikZQumbvmIiH5poacg/bQTV7m1vFRaxmYH1vkioz2yICZjPXdrnq8HZXU4vEyTSOXC
+	 qe390Thpl0YaDoIncMGSesh13Cyxzv/dAJoUzL7wEjOWk15YGOCycetBEGfsWt0Dc2
+	 e5s3epGPlqMqg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
-	Peng Fan <peng.fan@nxp.com>,
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	"Oliver F . Brown" <oliver.brown@oss.nxp.com>,
+	Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>,
 	Abel Vesa <abel.vesa@linaro.org>,
 	Sasha Levin <sashal@kernel.org>,
 	abelvesa@kernel.org,
@@ -54,9 +55,9 @@ Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
 	linux-clk@vger.kernel.org,
 	linux-imx@nxp.com,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.15 31/35] clk: imx: scu: Fix memory leak in __imx_clk_gpr_scu()
-Date: Mon, 22 Jan 2024 10:12:28 -0500
-Message-ID: <20240122151302.995456-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 32/35] clk: imx: clk-imx8qxp: fix LVDS bypass, pixel and phy clocks
+Date: Mon, 22 Jan 2024 10:12:29 -0500
+Message-ID: <20240122151302.995456-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122151302.995456-1-sashal@kernel.org>
 References: <20240122151302.995456-1-sashal@kernel.org>
@@ -71,40 +72,75 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-[ Upstream commit 21c0efbcb45cf94724d17b040ebc03fcd4a81f22 ]
+[ Upstream commit 3f5f63adeea7e7aa715e101ffe4b4ac9705f9664 ]
 
-In cases where imx_clk_is_resource_owned() returns false, the code path
-does not handle the failure gracefully, potentially leading to a memory
-leak. This fix ensures proper cleanup by freeing the allocated memory
-for 'clk_node' before returning.
+To be compatible with SCU firmware based on 1.15 a different clock
+routing for LVDS is needed.
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-Reviewed-by: Peng Fan <peng.fan@nxp.com>
-Link: https://lore.kernel.org/all/20231210171907.3410922-1-visitorckw@gmail.com/
+Signed-off-by: Oliver F. Brown <oliver.brown@oss.nxp.com>
+Signed-off-by: Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
+Link: https://lore.kernel.org/r/20231218122407.2757175-1-alexander.stein@ew.tq-group.com/
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/imx/clk-scu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clk/imx/clk-imx8qxp.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
-index 1cee88b073fa..89a914a15d62 100644
---- a/drivers/clk/imx/clk-scu.c
-+++ b/drivers/clk/imx/clk-scu.c
-@@ -841,8 +841,10 @@ struct clk_hw *__imx_clk_gpr_scu(const char *name, const char * const *parent_na
- 	if (!clk_node)
- 		return ERR_PTR(-ENOMEM);
+diff --git a/drivers/clk/imx/clk-imx8qxp.c b/drivers/clk/imx/clk-imx8qxp.c
+index 32df47c56621..ef560b59df11 100644
+--- a/drivers/clk/imx/clk-imx8qxp.c
++++ b/drivers/clk/imx/clk-imx8qxp.c
+@@ -67,6 +67,22 @@ static const char * const lcd_pxl_sels[] = {
+ 	"lcd_pxl_bypass_div_clk",
+ };
  
--	if (!imx_scu_clk_is_valid(rsrc_id))
-+	if (!imx_scu_clk_is_valid(rsrc_id)) {
-+		kfree(clk_node);
- 		return ERR_PTR(-EINVAL);
-+	}
++static const char *const lvds0_sels[] = {
++	"clk_dummy",
++	"clk_dummy",
++	"clk_dummy",
++	"clk_dummy",
++	"mipi0_lvds_bypass_clk",
++};
++
++static const char *const lvds1_sels[] = {
++	"clk_dummy",
++	"clk_dummy",
++	"clk_dummy",
++	"clk_dummy",
++	"mipi1_lvds_bypass_clk",
++};
++
+ static const char * const mipi_sels[] = {
+ 	"clk_dummy",
+ 	"clk_dummy",
+@@ -201,9 +217,9 @@ static int imx8qxp_clk_probe(struct platform_device *pdev)
+ 	/* MIPI-LVDS SS */
+ 	imx_clk_scu("mipi0_bypass_clk", IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_BYPASS);
+ 	imx_clk_scu("mipi0_pixel_clk", IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_PER);
+-	imx_clk_scu("mipi0_lvds_pixel_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC2);
+ 	imx_clk_scu("mipi0_lvds_bypass_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_BYPASS);
+-	imx_clk_scu("mipi0_lvds_phy_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC3);
++	imx_clk_scu2("mipi0_lvds_pixel_clk", lvds0_sels, ARRAY_SIZE(lvds0_sels), IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC2);
++	imx_clk_scu2("mipi0_lvds_phy_clk", lvds0_sels, ARRAY_SIZE(lvds0_sels), IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC3);
+ 	imx_clk_scu2("mipi0_dsi_tx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_MST_BUS);
+ 	imx_clk_scu2("mipi0_dsi_rx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_SLV_BUS);
+ 	imx_clk_scu2("mipi0_dsi_phy_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_PHY);
+@@ -213,9 +229,9 @@ static int imx8qxp_clk_probe(struct platform_device *pdev)
  
- 	clk = kzalloc(sizeof(*clk), GFP_KERNEL);
- 	if (!clk) {
+ 	imx_clk_scu("mipi1_bypass_clk", IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_BYPASS);
+ 	imx_clk_scu("mipi1_pixel_clk", IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_PER);
+-	imx_clk_scu("mipi1_lvds_pixel_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC2);
+ 	imx_clk_scu("mipi1_lvds_bypass_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_BYPASS);
+-	imx_clk_scu("mipi1_lvds_phy_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC3);
++	imx_clk_scu2("mipi1_lvds_pixel_clk", lvds1_sels, ARRAY_SIZE(lvds1_sels), IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC2);
++	imx_clk_scu2("mipi1_lvds_phy_clk", lvds1_sels, ARRAY_SIZE(lvds1_sels), IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC3);
+ 
+ 	imx_clk_scu2("mipi1_dsi_tx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_MST_BUS);
+ 	imx_clk_scu2("mipi1_dsi_rx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_SLV_BUS);
 -- 
 2.43.0
 
