@@ -1,133 +1,156 @@
-Return-Path: <linux-kernel+bounces-34201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9362883757B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:36:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A07A837580
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DFF028956D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:36:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9589F1F2AAC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A425648CC5;
-	Mon, 22 Jan 2024 21:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F6B482C3;
+	Mon, 22 Jan 2024 21:36:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="V4Rk67bh"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J2Oho5DO"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E3B48CF3
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:35:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 739123A8F9;
+	Mon, 22 Jan 2024 21:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705959323; cv=none; b=F02r8OCrE/V/ZWLAKDJNxBX4ZiHqTZL0CY/BarsXEp6W7UsRT67a1h8EUT2eThHu2tGOnQ/fBTgdBZ23KFJJDKzYgd4VPuhBsEDYFqBniVPccHSDzT43f1H+kEspLCX8cmgDG3Kyi1L16DA9lTB20Rkn/HIPpE0hlYwOZ97Qzy0=
+	t=1705959409; cv=none; b=F1x9Z+tJQ2unWZMfGVoZmX/DCZXHKgnsADvgbpKLbSXO17fJ+0Bg/0QmF1m6fQu+1lmjNchlD3nF0YPabgGsFds2vAci0vXxKPbvWE9S26hnXBi+3d2+5yULUFq9Y/A570bp9R9tLVZkgeR56b+vYMkGLfcsfsSsTkVaJJObW40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705959323; c=relaxed/simple;
-	bh=tir7kge5xaX08VMRW1qUzxTUu9x6OO0aQSyK1LncuuY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cgxo6GIr7KCZ1Hk5ZznS1h2y+gSc0eVO461dLv/Nz23N7+/VDI+zMD/ComPxqakVkAU8jlc4m1gBA912MRcuULqsVOnN71kpv5bECIZ5zDx1R/qzyCuBit+MhlG8HOdl7PEjiDggl5e7WQs0HzzEO/Ny4DHGev8HSypW2JvAtO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=V4Rk67bh; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6db0fdd2b8fso1716043b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:35:20 -0800 (PST)
+	s=arc-20240116; t=1705959409; c=relaxed/simple;
+	bh=xPn3dhVqdpRwTwdijypjx1UWRDaqJN9bDytv0STNJls=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=htZzLX6Q06qC3n6AEjAgArqJm0FI8PQqKpx2CP6TsSGcSdr/5p+qi4mMAhzrYv1OPk5A1fe15JqEOmzViIVMjFQjad6c+qcIR1o1PllM0eWJHcCJ4I4rp+WeypsCwnJUb1B67VdjCF71XyGQz2PofP+4y37wzxTSFBJFqCgv1ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J2Oho5DO; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a26f73732c5so399073466b.3;
+        Mon, 22 Jan 2024 13:36:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705959320; x=1706564120; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=La/pQA6UxU8t2n1gEI32Cqq0uc4Tew1m9B7OoRZQ8SI=;
-        b=V4Rk67bhj38bUYpTgO1fXNT7hlYfhelV36xIeufYYXG/jyrFnpW3z+ZFIoQNE/eiSz
-         7F7EblPvj8mBUqZ4tkfYTHThHDwRYOueP8p409VYLs5dsXEPMFIurqLUt9qGQ1wNQpvW
-         yxofseEB9WDEY9pPwhthu+mwYY3hrzwhMJeb0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705959320; x=1706564120;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705959405; x=1706564205; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=La/pQA6UxU8t2n1gEI32Cqq0uc4Tew1m9B7OoRZQ8SI=;
-        b=StMaJIp4Lc8V+YjAKyWbawZiEGTK0A3wpqJvZ0trzmjpacoMqazD6Ky61ZeW7yJmoa
-         rfU8ZBX1j7APhjywP/PxaCA/k+HD+cHQFtxuespu7fjLtM0M21vYxeG5E+M2OyoPHExD
-         WOPpwQWfYQk+AZAUx/HPDorSGXbFMLOUXpSmxe7hWeobnP4pMOG5hsr1S8qWcC53Hgx2
-         t3FfibGC9zILJKbeAn9Os2GhtgHzzRhgyRswdgfdpgP78NwiXNugz3neYh+brk3e70Oo
-         ohGr7PE2w1g4pit5zwZrdLo0pvRepSUifEGO+nuhrqPCO9yiLNmcwNAcwnuMe1At5LIi
-         M3rA==
-X-Gm-Message-State: AOJu0YxRWbjPM7FONF9n8wpE5qvtO443eJkbS1LDm/aDy+rebkO/NOUx
-	FE8/8j8YhD8hfR/idhLpawQDV/pTterQpNn+PzWXzQ3P7yHe2gf3xOFi/GlEGA==
-X-Google-Smtp-Source: AGHT+IEhye246jTya1RIC7tJ0lpkhYypKWEZO4ePXa0bxP/yrVeg7EyStXAcy9+TrTGZeyn+aV1J5Q==
-X-Received: by 2002:a17:90a:c0f:b0:28a:b5ac:514f with SMTP id 15-20020a17090a0c0f00b0028ab5ac514fmr1976731pjs.95.1705959319837;
-        Mon, 22 Jan 2024 13:35:19 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id pd5-20020a17090b1dc500b0028c5585fb41sm10145282pjb.45.2024.01.22.13.35.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 13:35:19 -0800 (PST)
-Date: Mon, 22 Jan 2024 13:35:18 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] eventfs: Save directory inodes in the eventfs_inode
- structure
-Message-ID: <202401221334.A6BC4754@keescook>
-References: <20240122152748.46897388@gandalf.local.home>
+        bh=Kh1sidT+OYt5uYsBoa3HOhiQe7ArH4ir2l1s+REcQPU=;
+        b=J2Oho5DOTLh5BckM2KFoA6tjfEQph6ZfH9tDiolOfR4tkBobDsJDZKF20xzZWgu7gC
+         qCIBTSwYGemHYCUHo1IQJ0IndW9eZYHMaEmJtgZWPylJMzMSayHP4kpdaUNSv6hsi3oS
+         Z8sn1QaNNyHjDXnuFE1XaYYA7BgWi1ypftt54r0cpa7KTryI1iZhsBEyAjNuOxDPuqcx
+         PQTH1C/bWbiPmtpWASd1Xk5Gi4h5wrPSB6O804yUtbg7ypi/EEObf64QOM9t0BBiw+iN
+         GKrqh9PoMxdCzDD+3G+Vvfsrzj52gJza/vQpy4jkHxDkgw5mXNEqJuhf73dxN5GD04dJ
+         VHJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705959405; x=1706564205;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Kh1sidT+OYt5uYsBoa3HOhiQe7ArH4ir2l1s+REcQPU=;
+        b=GaXpboMeVjowql7O6AZmDVfQkFIyX8EX2K6h2mloANX5TcgOiJxvgOZD9xG3LCrlyY
+         F5iWkrVMkWRrEJRW16/BErdBdRGen+2wjPMTZyeALNLwIWD451HEloO3biXNAB5+k+gM
+         m/Nw1O+gUxwmydgzHHDwlo1apBjdHqHlYQ5PPwaUXNTiFWWj4GxmZslSSSfLV0a9MDDQ
+         KTttbS3XukRi/v+NcVqqEtA/VfjL4RoUZV1P+Z3EOlotrLbuSU75ijrTUQ9o4FIeJ0f9
+         0cVU2JA/qRUusGe7v+XXghi3cpruocSuoAT8Hf8+TbFJIwZkbxsWtLepZQUdR6ujZ6QM
+         /Cgw==
+X-Gm-Message-State: AOJu0YxregrC5PLjnq15Rjhzp9Eku74iKKTdym1gLM5neYYA3AmSupKq
+	YrYo9QbNsVpzJOlSdN8zBXkNEevE5OqpMzq9ScKs2ICYarxjZTfk9OucoRNLhCprxgJPWLoaMYi
+	SLFW2LqTjB/gNUSTHzjzLEDeoqmI=
+X-Google-Smtp-Source: AGHT+IF/SL58a8hmAkmkCe5q5zm+9sw1I9Kywvqs5C4nI1iPfdBzh55WJjaIzUvjLszirg3nQ/bBqI6uZdDo77QpfCc=
+X-Received: by 2002:a17:906:b2c6:b0:a30:9e78:662f with SMTP id
+ cf6-20020a170906b2c600b00a309e78662fmr317678ejb.70.1705959405451; Mon, 22 Jan
+ 2024 13:36:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122152748.46897388@gandalf.local.home>
+References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
+ <20240102-j7200-pcie-s2r-v1-14-84e55da52400@bootlin.com> <CAHp75VfPQz4PWdzFUU_n+R=XohBjyXM0zsjD-bUD2jmb42ds8Q@mail.gmail.com>
+ <9cb47f37-bd98-4136-b844-33cf2be593df@bootlin.com>
+In-Reply-To: <9cb47f37-bd98-4136-b844-33cf2be593df@bootlin.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 22 Jan 2024 23:36:08 +0200
+Message-ID: <CAHp75Ve30T3t0_vHR7TUVVC_WN23dL_rp1k951Da6Re2DJQezw@mail.gmail.com>
+Subject: Re: [PATCH 14/14] PCI: j721e: add suspend and resume support
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
+	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 03:27:48PM -0500, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> The eventfs inodes and directories are allocated when referenced. But this
-> leaves the issue of keeping consistent inode numbers and the number is
-> only saved in the inode structure itself. When the inode is no longer
-> referenced, it can be freed. When the file that the inode was representing
-> is referenced again, the inode is once again created, but the inode number
-> needs to be the same as it was before.
-> 
-> Just making the inode numbers the same for all files is fine, but that
-> does not work with directories. The find command will check for loops via
-> the inode number and having the same inode number for directories triggers:
-> 
->   # find /sys/kernel/tracing
-> find: File system loop detected;
-> '/sys/kernel/debug/tracing/events/initcall/initcall_finish' is part of the same file system loop as
-> '/sys/kernel/debug/tracing/events/initcall'.
-> [..]
-> 
-> Linus pointed out that the eventfs_inode structure ends with a single
-> 32bit int, and on 64 bit machines, there's likely a 4 byte hole due to
-> alignment. We can use this hole to store the inode number for the
-> eventfs_inode. All directories in eventfs are represented by an
-> eventfs_inode and that data structure can hold its inode number.
-> 
-> That last int was also purposely placed at the end of the structure to
-> prevent holes from within. Now that there's a 4 byte number to hold the
-> inode, both the inode number and the last integer can be moved up in the
-> structure for better cache locality, where the llist and rcu fields can be
-> moved to the end as they are only used when the eventfs_inode is being
-> deleted.
-> 
-> Link: https://lore.kernel.org/all/CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com/
-> 
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Fixes: 53c41052ba31 ("eventfs: Have the inodes all for files and directories all be the same")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+On Mon, Jan 22, 2024 at 5:30=E2=80=AFPM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
+> On 1/15/24 21:13, Andy Shevchenko wrote:
+> > On Mon, Jan 15, 2024 at 6:16=E2=80=AFPM Thomas Richard
+> > <thomas.richard@bootlin.com> wrote:
 
-Since I reviewed the earlier patch, I will repeat here for the formal
-one too. :) Thanks for avoiding the hashing!
+..
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> >> +               if (pcie->reset_gpio)
+> >
+> > Dup, why?
+>
+> This pcie->reset_gpio corresponds to PERST# of PCIe endpoints.
+> I assert it during suspend, because I have to deassert it (with a delay)
+> during resume stage [1].
 
--- 
-Kees Cook
+Ah, sorry for being unclear, I meant that gpiod_set_value*() already
+has that check, you don't need it here.
+
+> >> +                       gpiod_set_value_cansleep(pcie->reset_gpio, 0);
+
+..
+
+> >> +               if (pcie->reset_gpio) {
+> >> +                       usleep_range(100, 200);
+> >
+> > fsleep() ?
+> > Btw, why is it needed here, perhaps a comment?
+>
+> The comment should be the same than in the probe [1].
+> Should I copy it? Or should I just add a reference to the probe?
+>
+> [1]
+> https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/pci/controller/c=
+adence/pci-j721e.c#L535
+
+Either way works for me.
+
+> >> +                       gpiod_set_value_cansleep(pcie->reset_gpio, 1);
+> >> +               }
+
+..
+
+> >> +#define cdns_pcie_to_rc(p) container_of(p, struct cdns_pcie_rc, pcie)
+> >
+> > Is container_of.h included in this file?
+>
+> linux/container_of.h is included in linux/kernel.h.
+> And linux/kernel.h is included in pcie-cadence.h
+> (https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/pci/controller/=
+cadence/pcie-cadence.h#L9).
+
+Okay, so, try to clean up pcie-cadence.h so it won't use "proxy" headers.
+There is an IWYU (include what you use) principle, please follow it.
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
