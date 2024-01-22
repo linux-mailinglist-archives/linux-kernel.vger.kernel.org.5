@@ -1,203 +1,183 @@
-Return-Path: <linux-kernel+bounces-32725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96D61835F6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB6A835F71
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:22:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAA8EB269A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:21:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9E69B23FF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89DC43A1BB;
-	Mon, 22 Jan 2024 10:21:19 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA653A29C;
+	Mon, 22 Jan 2024 10:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="HYdOk9Wf"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706973A1A1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 785383A1A6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705918879; cv=none; b=LO2ZpwqgjKaBjOLFsCif0wl9vHG010Ltv3nrkow1mBSCUmrqBShbZny772mkgFnvWKV+6Big3uk1eB4+Eye7alvNH9pIXSC0LMsw/gMFkhajy99aV2LunZF3GM7pHH7fpXUv9ZpZUVIs4NsSvfaU4ePgjswNRALO6zqev7RKWeU=
+	t=1705918929; cv=none; b=D2K4BabGsDoPkK38IwncpaHSEOz/SzlvIlTZQFBqIUpopoltDliinxixRkhsUtgUogWS2XI4MrEUdQLcaO8Y+WGa4xo3ghibd+KXPZE2PdgieeVnAyv4HgpviTctGOG1q4ZaurSfCeAniudCxEJ8PZeuwYIc/ZewolNjnAr3fgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705918879; c=relaxed/simple;
-	bh=z5/qqF7CrLgPHHHN1stH49GDrMHD9J/2vZYYyNgNNYk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ed+Gz1krz8W7eHRJsTjlbsz6DlB3Zyw8T82dMZ94wdHaMyytbqpZluOle4bVDrwe3RMaFfK8Hf/DIWMPR0yYLs1dbOXHGvuXkJd6fMP6cZB7hrLZbBgxrs0T5X81NcbCB+kYIFDsJKaGv2Rhjls2FF797I44cO/yVIyfKvx16mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rRrQC-0007gd-F7; Mon, 22 Jan 2024 11:20:52 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rRrQA-001ZRC-9s; Mon, 22 Jan 2024 11:20:50 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rRrQA-005FLD-0d;
-	Mon, 22 Jan 2024 11:20:50 +0100
-Date: Mon, 22 Jan 2024 11:20:50 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, Javier Martinez Canillas <javierm@redhat.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Prathu Baronia <prathubaronia2011@gmail.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Sui Jingfeng <suijingfeng@loongson.cn>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
-	linux-parisc@vger.kernel.org
-Subject: Re: [BUG][BISECTED] Freeze at loading init ramdisk
-Message-ID: <2q2t7mgnpuk2t7wq2tmymxv72oki4uetojkz72xofn7wh45l64@smk3wi6zw54g>
-References: <8a6aa228-f2da-4dcd-93c1-e34614cd6471@alu.unizg.hr>
- <cc813525-5484-443e-a40a-cb98f2ed4e1f@alu.unizg.hr>
- <gevqxytidg5efylozindaqntkbl4yeoyzqnh5m3ylitmipgum3@sgmv7qieo7rs>
- <1fe9b78c-7fb5-4d7b-a754-afd563950829@alu.unizg.hr>
+	s=arc-20240116; t=1705918929; c=relaxed/simple;
+	bh=lIUkRttEekWpxAjFmsZgcf73IMsJZGjVAfLGW8ifIeg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=i52geQy20S7HECBvJd4+0xOOlu+cmzkewWWVSTLzTfocwUYsFya4m3yni+w8jphIciUdfJpofkGdu/sGFZGaLOEbNergJDhXbMF7Zs2+ePhKyz3lW1RNMYhs4M2EVivOAr+uw7OyQzlm3DTLT8YInx5WncF2cq26qamh9PmqVfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=HYdOk9Wf; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e86a9fc4bso38857145e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:22:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705918926; x=1706523726; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rf1BoFdqtUASlu+bDRkAxrtXf+RijsyUfpG8EnvAHFE=;
+        b=HYdOk9WfhYK7mFVGtFF/S7bNGZXgv5Zw9USmG6so8T9zGjw/Bu0ty9IN3c3HizSzZT
+         NXWv+4bWI9TuQHJcnfT4wH4Yez2zdk7BIOOLYZk2DTXrV73b6F+U/7FNydVjWvnN+DJG
+         5gmsMWKddahvQWS1Mq0xfqt2YOu/UsXCJRf05Q9138Y4LrQ/njaCAh/Vn6HU1kJIXb0R
+         u7xBzjTxrekYmc6O16Pa0nziBg4liPsbzYF292UgwOvgxNqfMAZhb2ORt9W8p/5UFXdX
+         i8oS/FGe2EjwhmQrF8bmsB8I4PeEt5cIoGn5ueCzUvTiUolAqZcSgekxU5dzae/6RWdp
+         +44Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705918926; x=1706523726;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Rf1BoFdqtUASlu+bDRkAxrtXf+RijsyUfpG8EnvAHFE=;
+        b=QSyV4Bvpj1Now+VG9Zo5cVRLByitKnl4djMuIClcOxLmdAhZMeGNbipt264k56Em7m
+         JO52Uz59HbbXCNikeP9VrUCMdnGRmDKo7yaQLtT6zYahNDHsdIHxCXiMMGoAoclSe61p
+         4+dhbsp5hMe9/zxd3EFjulBe3ruhmnJsTyYXVe7fwZruA2xwWfAYs8Cy/B1DK3p13p88
+         pGgYOD2lI1COHbKAHMlz0cIoKpflziE0UmVpKP2HnzpKkMqxNpO3gfTifqf8dV8W3YlG
+         zGWXg3jh5o4nvgKLwGyJZvVB/8RMcBsgK89ksNCDhsCp7TMb6oNLoGrZ/LrS1HNZit55
+         EZqQ==
+X-Gm-Message-State: AOJu0Yz1Ko02wGdHIGWZ/XKrla/lXfe+x+hy9pXXkztnQCZHw924PRay
+	kIdjTieJ1rPCBQD4p2ftLY4dsFIfLimjPqobxxOdgDZsBzydo0pLk9eoRe58tpw=
+X-Google-Smtp-Source: AGHT+IEdNK6nO0KwNdSrht0sUYc/g9kz76RCgf//L7woN5+hF39GrB6vClpm0hmQ1N0RwLSfUG6vZQ==
+X-Received: by 2002:a05:600c:5492:b0:40e:710d:7c1c with SMTP id iv18-20020a05600c549200b0040e710d7c1cmr2079899wmb.32.1705918925540;
+        Mon, 22 Jan 2024 02:22:05 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:92a0:6172:d229:1898])
+        by smtp.gmail.com with ESMTPSA id q7-20020adffec7000000b0033926505eafsm6377904wrs.32.2024.01.22.02.22.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 02:22:04 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Elliot Berman <quic_eberman@quicinc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Guru Das Srinagesh <quic_gurus@quicinc.com>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Maximilian Luz <luzmaximilian@gmail.com>,
+	Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	kernel@quicinc.com,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [RESEND PATCH v6 00/12] arm64: qcom: add and enable SHM Bridge support
+Date: Mon, 22 Jan 2024 11:21:45 +0100
+Message-Id: <20240122102157.22761-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ysfre7wk3l4bhl2f"
-Content-Disposition: inline
-In-Reply-To: <1fe9b78c-7fb5-4d7b-a754-afd563950829@alu.unizg.hr>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
---ysfre7wk3l4bhl2f
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Resending after the merge window. I dropped the first patch which was a
+fix and was picked up last release cycle.
 
-On Thu, Jan 18, 2024 at 09:04:05PM +0100, Mirsad Todorovac wrote:
->=20
->=20
-> On 1/18/24 08:45, Uwe Kleine-K=F6nig wrote:
-> > Hello Mirsad,
-> >=20
-> > On Wed, Jan 17, 2024 at 07:47:49PM +0100, Mirsad Todorovac wrote:
-> > > On 1/16/24 01:32, Mirsad Todorovac wrote:
-> > > > On the Ubuntu 22.04 LTS Jammy platform, on a mainline vanilla torva=
-lds tree kernel, the boot
-> > > > freezes upon first two lines and before any systemd messages.
-> > > >=20
-> > > > (Please find the config attached.)
-> > > >=20
-> > > > Bisecting the bug led to this result:
-> > > >=20
-> > > > marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect good
-> > > > d97a78423c33f68ca6543de510a409167baed6f5 is the first bad commit
-> > > > commit d97a78423c33f68ca6543de510a409167baed6f5
-> > > > Merge: 61da593f4458 689237ab37c5
-> > > > Author: Linus Torvalds <torvalds@linux-foundation.org>
-> > > > Date:=A0=A0 Fri Jan 12 14:38:08 2024 -0800
-> > > >=20
-> > > > [...]
-> > > >=20
-> > > > Hope this helps.
-> > >=20
-> > > P.S.
-> > >=20
-> > > As I see that this is a larger merge commit, with 5K+ lines changed, =
-I don't think I can
-> > > bisect further to determine the culprit.
-> >=20
-> > Actually it's not that hard. If a merge commit is the first bad commit
-> > for a bisection, either the merge wasn't done correctly (less likely,
-> > looking at d97a78423c33f68ca6543de510a409167baed6f5 I'd bet this isn't
-> > the problem); or changes on different sides conflict or you did
-> > something wrong during bisection.
-> >=20
-> > To rule out the third option, you can just retest d97a78423c33,
-> > 61da593f4458 and 689237ab37c5. If d97a78423c33 is the only bad one, you
-> > did it right.
->=20
-> This was confirmed.
->=20
-> > Then to further debug the second option you can find out the offending
-> > commit on each side with a bisection as follows, here for the RHS (i.e.
-> > 689237ab37c5):
-> >=20
-> > 	git bisect start 689237ab37c5 $(git merge-base 61da593f4458 689237ab37=
-c5)
-> >=20
-> > and then in each bisection step do:
-> >=20
-> > 	git merge --no-commit 61da593f4458
-> > 	test if the problem is present
-> > 	git reset --hard
-> > 	git bisect good/bad
-> >=20
-> > In this case you get merge conflicts in drivers/video/fbdev/amba-clcd.c
-> > and drivers/video/fbdev/vermilion/vermilion.c. In the assumption that
-> > you don't have these enabled in your .config, you can just ignore these.
-> >=20
-> > Side note: A problem during bisection can be that the .config changes
-> > along the process. You should put your config into (say)
-> > arch/x86/configs/lala_defconfig and do
-> >=20
-> > 	make lala_defconfig
-> >=20
-> > before building each step to prevent this.
->=20
-> I must have done something wrong:
->=20
-> marvin@defiant:~/linux/kernel/linux_torvalds$ git bisect log
-> # bad: [689237ab37c59b9909bc9371d7fece3081683fba] fbdev/intelfb: Remove d=
-river
-> # good: [de927f6c0b07d9e698416c5b287c521b07694cac] Merge tag 's390-6.8-1'=
- of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
-> git bisect start '689237ab37c5' 'de927f6c0b07d9e698416c5b287c521b07694cac'
-> # good: [d9f25b59ed85ae45801cf45fe17eb269b0ef3038] fbdev: Remove support =
-for Carillo Ranch driver
-> git bisect good d9f25b59ed85ae45801cf45fe17eb269b0ef3038
-> # good: [e2e0b838a1849f92612a8305c09aaf31bf824350] video/sticore: Remove =
-info field from STI struct
-> git bisect good e2e0b838a1849f92612a8305c09aaf31bf824350
-> # good: [778e73d2411abc8f3a2d60dbf038acaec218792e] drm/hyperv: Remove fir=
-mware framebuffers with aperture helper
-> git bisect good 778e73d2411abc8f3a2d60dbf038acaec218792e
-> # good: [df67699c9cb0ceb70f6cc60630ca938c06773eda] firmware/sysfb: Clear =
-screen_info state after consuming it
-> git bisect good df67699c9cb0ceb70f6cc60630ca938c06773eda
+We've established the need for using separate secured memory pools for
+SCM and QSEECOM as well as the upcoming scminvoke driver.
 
-FTR: Now that you identified df67699c9cb0ce as the culprit, calling
-git bisect good on it was wrong, so something was fishy in your testing
-and it's no surprise the bisection found a wrong result.
+It's also become clear that in order to be future-proof, the new
+allocator must be an abstraction layer of a higher level as the SHM
+Bridge will not be the only memory protection mechanism that we'll see
+upstream. Hence the rename to TrustZone Memory rather than SCM Memory
+allocator.
 
-Best regards
-Uwe
+Also to that end: the new allocator is its own module now and provides a
+Kconfig choice menu for selecting the mode of operation (currently
+default and SHM Bridge).
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Tested on sm8550 and sa8775p with the Inline Crypto Engine and
+remoteproc.
 
---ysfre7wk3l4bhl2f
-Content-Type: application/pgp-signature; name="signature.asc"
+v5 -> v6:
+Fixed two issues reported by autobuilders:
+- add a fix for memory leaks in the qseecom driver as the first patch for
+  easier backporting to the v6.6.y branch
+- explicitly cast the bus address stored in a variable of type dma_addr_t
+  to phys_addr_t expected by the genpool API
 
------BEGIN PGP SIGNATURE-----
+v4 -> v5:
+- fix the return value from qcom_tzmem_init() if SHM Bridge is not supported
+- remove a comment that's no longer useful
+- collect tags
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWuQXwACgkQj4D7WH0S
-/k7BUwf/c+o/iSAwOCv43dqEm/CcfvKOaq7nnRskQii51OdMDOpIVHur9IOFEGX9
-lEng0n7/jCsjTmNbYFaiWvyEBMI0hJgsjEseA+nt3mPkcmhREWN5RJ/KIh/53rxN
-0scUgXo1PBWQCm8cUWQLsQu1hvT7jLUbwkQifp9pEeoNVLToAaBii1jYl3epShIE
-WhGSfwc3rgdd2OXqtx25vuN0Sf/qkC9JHNW1TjQkkGuquh1mNbSjMr6CznfjwnZ4
-bHskT+3UyO9OcpGG/6hDhUO6aiObcoLxnulX7y3YH5UtsIxVyWl4ya7KPfvjz/Bc
-7lXF2uvftGaPoEttybS9sjjtA25pCA==
-=hK1d
------END PGP SIGNATURE-----
+v3 -> v4:
+- include linux/sizes.h for SZ_X macros
+- use dedicated RCU APIs to dereference radix tree slots
+- fix kerneldocs
+- fix the comment in patch 14/15: it's the hypervisor, not the TrustZone
+  that creates the SHM bridge
 
---ysfre7wk3l4bhl2f--
+v2 -> v3:
+- restore pool management and use separate pools for different users
+- don't use the new allocator in qcom_scm_pas_init_image() as the
+  TrustZone will create an SHM bridge for us here
+- rewrite the entire series again for most part
+
+v1 -> v2:
+- too many changes to list, it's a complete rewrite as explained above
+
+Bartosz Golaszewski (12):
+  firmware: qcom: add a dedicated TrustZone buffer allocator
+  firmware: qcom: scm: enable the TZ mem allocator
+  firmware: qcom: scm: smc: switch to using the SCM allocator
+  firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
+  firmware: qcom: scm: make qcom_scm_ice_set_key() use the TZ allocator
+  firmware: qcom: scm: make qcom_scm_lmh_dcvsh() use the TZ allocator
+  firmware: qcom: scm: make qcom_scm_qseecom_app_get_id() use the TZ
+    allocator
+  firmware: qcom: qseecom: convert to using the TZ allocator
+  firmware: qcom: scm: add support for SHM bridge operations
+  firmware: qcom: tzmem: enable SHM Bridge support
+  firmware: qcom: scm: clarify the comment in qcom_scm_pas_init_image()
+  arm64: defconfig: enable SHM Bridge support for the TZ memory
+    allocator
+
+ MAINTAINERS                                   |   8 +
+ arch/arm64/configs/defconfig                  |   1 +
+ drivers/firmware/qcom/Kconfig                 |  30 ++
+ drivers/firmware/qcom/Makefile                |   1 +
+ .../firmware/qcom/qcom_qseecom_uefisecapp.c   | 281 +++++---------
+ drivers/firmware/qcom/qcom_scm-smc.c          |  30 +-
+ drivers/firmware/qcom/qcom_scm.c              | 179 +++++----
+ drivers/firmware/qcom/qcom_scm.h              |   6 +
+ drivers/firmware/qcom/qcom_tzmem.c            | 365 ++++++++++++++++++
+ drivers/firmware/qcom/qcom_tzmem.h            |  13 +
+ include/linux/firmware/qcom/qcom_qseecom.h    |   4 +-
+ include/linux/firmware/qcom/qcom_scm.h        |   6 +
+ include/linux/firmware/qcom/qcom_tzmem.h      |  28 ++
+ 13 files changed, 684 insertions(+), 268 deletions(-)
+ create mode 100644 drivers/firmware/qcom/qcom_tzmem.c
+ create mode 100644 drivers/firmware/qcom/qcom_tzmem.h
+ create mode 100644 include/linux/firmware/qcom/qcom_tzmem.h
+
+-- 
+2.40.1
+
 
