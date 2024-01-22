@@ -1,262 +1,239 @@
-Return-Path: <linux-kernel+bounces-32583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1FFA835D81
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:00:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E1EF835D82
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:01:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69B9D1F26786
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:00:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FD4D1C21B9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A81D39852;
-	Mon, 22 Jan 2024 09:00:05 +0000 (UTC)
-Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A09B39ACF;
+	Mon, 22 Jan 2024 09:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d+PZDNlF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5078938FAA
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.243.244.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B2239AC3
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705914004; cv=none; b=r0LVBhx8pP9XjMQfQvtwypaYZt28JBIFGUbfBbsrQe+MljEXFX9+6VvKOUZBcbjAEIzkQp7F0qgJMeG4HP52e9eI2XAeEi2sLcs0wSaF6LDp/KCnquXnt/L6HR6B3HmGqSroQrRm3iK2dc5PS0a5BHQ5/omt7KYCs2SdU2IP9bk=
+	t=1705914027; cv=none; b=NiK03DKGyYDQ3FdMA4uU2UK7NLgdPFgS5EPS14SqaOrL2WEZqjrIRHMYe0CEsF1uT08ycCD0AyZo2P5bLMv7oTQuvUxcLUgK37QJGe1fkhd6Tpuc6fq7n5mCp/fjk4zi0DrfauFmGaUegrnuW4DbxTapJjzAB4IKcVNdvB/PNX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705914004; c=relaxed/simple;
-	bh=uxENKhOvRgNs7e0CFAgdfeJK75RGIjs6471T66UAAcc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gjEF53ATo3x7YpAGGYZuzbg4wbcXTw/pLzNIiRkQjIPX3GoCu8rBg7O9FrfoKaYYnLQKil930gMiB+QLF3qUu5lwAXf5OsI/VrhT3xBmsnnqMyl2t6YwymsLUqpkoLeXYTLZSBlh8gcYR6VeUBOjM1Ck2m+7r2u3RGja0scnsqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.243.244.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp78t1705913974t57cu8k8
-X-QQ-Originating-IP: s/TlBuwIYZZTyK7aGHMX5P4SXDcbXIo8PDZLExa747k=
-Received: from localhost ( [183.209.108.228])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 22 Jan 2024 16:59:33 +0800 (CST)
-X-QQ-SSF: 01400000000000504000000A0000000
-X-QQ-FEAT: XBN7tc9DADK7QBXL2kByKL2tvBKd77LE3lWppuxmnlTTAGPJhU5/1Q2qHw60Y
-	vIpo+KzaBtErcYPYaqZ5kMN9JoyroipuWSBY9bTq1MnBlHXOc4wj/7GCXFjQcbjnK656Ot+
-	GOrqeCsTY8psboq1gwc7tlKlEERzJirpC9jBKJKAlcHAS1doAU9Agq7iimlBkrHbtWogeRP
-	1WWUE4N0fKjo3z4MKkAfC23FHZM271cwYzdrLDfB7a2PWtAffqjoQwYkTIJIKG46JF2yvDr
-	QAjkU8yYTmCVPxDGhcHe7rV2/JhTzeNWFsLUv7JTlicTn9tDf2mLvINCbdfUcSMucSbuR5E
-	cKj5IIixcjoz7fGFWh1TxrE+JWWJaRNErJUhT5zPtCV1ganS8EMW8dZKObTBFL8vDelCtVH
-	PqsVCfytt640sX5QmlZfYA==
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 6969862050616083631
-From: Dawei Li <dawei.li@shingroup.cn>
-To: tglx@linutronix.de,
-	maz@kernel.org
-Cc: sdonthineni@nvidia.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	dawei.li@shingroup.cn,
-	set_pte_at@outlook.com
-Subject: [PATCH v2 5/5] genirq: Introduce generic init_desc()
-Date: Mon, 22 Jan 2024 16:57:16 +0800
-Message-Id: <20240122085716.2999875-6-dawei.li@shingroup.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20240122085716.2999875-1-dawei.li@shingroup.cn>
-References: <20240122085716.2999875-1-dawei.li@shingroup.cn>
+	s=arc-20240116; t=1705914027; c=relaxed/simple;
+	bh=M1TqWzuYGMAOlVXyny/8l/psSIQooyQf8WaHwuG26Yw=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=unBaJ6j4C9xVgtJwXhap6Qk2XxsBvHJrcPDgVH2fneNKvhEL2iiOWmsmj6oCioX2b4D4pYaD2W9fSC47GM+zOXJ94qexgYCM6CqPuzL9QTuUZZLi/h9lAKr+5+fIefgi3q5wqKJadH5HzsrwhvKyYbdaYnF+16MytzW44H+w4tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d+PZDNlF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E017CC433F1;
+	Mon, 22 Jan 2024 09:00:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705914026;
+	bh=M1TqWzuYGMAOlVXyny/8l/psSIQooyQf8WaHwuG26Yw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=d+PZDNlFc1l85hemBexvjACkEmOojaPjpK70bZ9KHaY0roQa2SNNsbsk9Ei5fbSRG
+	 ARqZbVCWV+qkFrzrF3uTL3AgqDI1ZSZa69SSYiRQBmfc6A8t3MYGrVOckGebuRICUj
+	 PgoYzwqqDijSEw+I4E1FWlNIO/QZL0QPMMihga5q94vQAp3sykPkPFNYRKcrPPp5hB
+	 H+tH8CqhSfICT3mKSgevAlgIsToncFISumUQw2lXt81+U1jzstB5+55ZmBHTOBttNQ
+	 WP/bnDayS467ZXY4kdiIfxQjV0jp4/2PpX4Jdlj835/b/yc8bUKajhLQ7GTRlssNhe
+	 b7Te9qVKi3B6g==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rRqAJ-00DVPJ-58;
+	Mon, 22 Jan 2024 09:00:24 +0000
+Date: Mon, 22 Jan 2024 09:00:22 +0000
+Message-ID: <86sf2p91zt.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Nianyao Tang <tangnianyao@huawei.com>
+Cc: <tglx@linutronix.de>,
+	<linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>,
+	<guoyang2@huawei.com>,
+	<wangwudi@hisilicon.com>
+Subject: Re: [PATCH] irqchip/gic-v4.1:Check whether indirect table is supported in allocate_vpe_l1_table
+In-Reply-To: <20240122160607.1078960-1-tangnianyao@huawei.com>
+References: <20240122160607.1078960-1-tangnianyao@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tangnianyao@huawei.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, guoyang2@huawei.com, wangwudi@hisilicon.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Those two functions below share much duplicated codes for
-initialization for irq_desc:
-- alloc_desc() CONFIG_SPARSE_IRQ
-- early_irq_init() !CONFIG_SPARSE_IRQ
+[Fixing the LKML address, which has bits of Stephan's address embedded
+in it...]
 
-Implement a dedicated function to fully initialize irq_desc.
+On Mon, 22 Jan 2024 16:06:07 +0000,
+Nianyao Tang <tangnianyao@huawei.com> wrote:
+> 
+> In allocate_vpe_l1_table, when we fail to inherit VPE table from other
+> redistributors or ITSs, and we allocate a new vpe table for current common 
+> affinity field without checking whether indirect table is supported.
+> Let's fix it.
 
-Also, make free_masks() global to implement exception handling in
-early_irq_init.
+Is there an actual implementation that doesn't support the indirect
+property for the VPE table? I know this is allowed for consistency
+with the original revision of the architecture, but I never expected
+an actual GICv4.1 implementation to be *that* bad.
 
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
----
- kernel/irq/irqdesc.c | 112 ++++++++++++++++++++++++-------------------
- 1 file changed, 64 insertions(+), 48 deletions(-)
+If that's the case, I'm a bit puzzled/worried.
 
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index 371eb1711d34..4c6b32318ce3 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -92,11 +92,23 @@ static void desc_smp_init(struct irq_desc *desc, int node,
- #endif
- }
+> 
+> Signed-off-by: Nianyao Tang <tangnianyao@huawei.com>
+> ---
+>  drivers/irqchip/irq-gic-v3-its.c   | 28 ++++++++++++++++++++++------
+>  include/linux/irqchip/arm-gic-v3.h |  1 +
+>  2 files changed, 23 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index d097001c1e3e..4146d1e285ec 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -2836,6 +2836,7 @@ static int allocate_vpe_l1_table(void)
+>  	unsigned int psz = SZ_64K;
+>  	unsigned int np, epp, esz;
+>  	struct page *page;
+> +	bool indirect = false;
+
+Why the upfront initialisation?
+
+>  
+>  	if (!gic_rdists->has_rvpeid)
+>  		return 0;
+> @@ -2890,6 +2891,12 @@ static int allocate_vpe_l1_table(void)
+>  		break;
+>  	}
+>  
+> +	/* probe the indirect */
+> +	val = GICR_VPROPBASER_4_1_INDIRECT;
+> +	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
+> +	val = gicr_read_vpropbaser(vlpi_base + GICR_VPROPBASER);
+> +	indirect = !!(val & GICR_VPROPBASER_4_1_INDIRECT);
+
+You can probe the indirect bit as part of the page-size probe, no need
+for an extra R/W sequence.
+
+> +
+>  	/*
+>  	 * Start populating the register from scratch, including RO fields
+>  	 * (which we want to print in debug cases...)
+> @@ -2907,15 +2914,24 @@ static int allocate_vpe_l1_table(void)
+>  	 * as indirect and compute the number of required L1 pages.
+>  	 */
+>  	if (epp < ITS_MAX_VPEID) {
+> -		int nl2;
+> +		if (indirect) {
+> +			int nl2;
+>  
+> -		val |= GICR_VPROPBASER_4_1_INDIRECT;
+> +			val |= GICR_VPROPBASER_4_1_INDIRECT;
+>  
+> -		/* Number of L2 pages required to cover the VPEID space */
+> -		nl2 = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
+> +			/* Number of L2 pages required to cover the VPEID space */
+> +			nl2 = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
+>  
+> -		/* Number of L1 pages to point to the L2 pages */
+> -		npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
+> +			/* Number of L1 pages to point to the L2 pages */
+> +			npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
+> +		} else {
+> +			npg = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
+> +			if (npg > GICR_VPROPBASER_PAGES_MAX) {
+> +				pr_warn("GICR_VPROPBASER pages too large, reduce %llu->%u\n",
+> +					npg, GICR_VPROPBASER_PAGES_MAX);
+> +				npg = GICR_VPROPBASER_PAGES_MAX;
+> +			}
+> +		}
+>  	} else {
+>  		npg = 1;
+
+Why don't you treat the two indirect cases at the same point? It
+really should read:
+
+	if (epp < ITS_MAX_VPEID && indirect) {
+		[unchanged]
+	} else {
+		[compute the number of L1 pages in the !indirect case]
+	}
+
+>  	}
+> diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
+> index 728691365464..ace37dfbff20 100644
+> --- a/include/linux/irqchip/arm-gic-v3.h
+> +++ b/include/linux/irqchip/arm-gic-v3.h
+> @@ -303,6 +303,7 @@
+>  #define GICR_VPROPBASER_4_1_Z		(1ULL << 52)
+>  #define GICR_VPROPBASER_4_1_ADDR	GENMASK_ULL(51, 12)
+>  #define GICR_VPROPBASER_4_1_SIZE	GENMASK_ULL(6, 0)
+> +#define GICR_VPROPBASER_PAGES_MAX  128
+
+Don't hardcode numbers. Use the definition of the SIZE field
+instead. And if you must have a new #define, please use the 4_1
+indication so that it isn't confused with the v4.0 layout.
+
+I'd expect something like the following (untested) hack.
+
+	M.
+
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 9a7a74239eab..555b86f375e1 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -2836,6 +2836,7 @@ static int allocate_vpe_l1_table(void)
+ 	unsigned int psz = SZ_64K;
+ 	unsigned int np, epp, esz;
+ 	struct page *page;
++	bool indirect;
  
-+static void free_masks(struct irq_desc *desc)
-+{
-+#ifdef CONFIG_GENERIC_PENDING_IRQ
-+	free_cpumask_var(desc->pending_mask);
-+#endif
-+	free_cpumask_var(desc->irq_common_data.affinity);
-+#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
-+	free_cpumask_var(desc->irq_common_data.effective_affinity);
-+#endif
-+}
-+
- #else
- static inline int
- alloc_masks(struct irq_desc *desc, int node) { return 0; }
- static inline void
- desc_smp_init(struct irq_desc *desc, int node, const struct cpumask *affinity) { }
-+static inline void free_masks(struct irq_desc *desc) { }
- #endif
+ 	if (!gic_rdists->has_rvpeid)
+ 		return 0;
+@@ -2870,10 +2871,12 @@ static int allocate_vpe_l1_table(void)
  
- static void desc_set_defaults(unsigned int irq, struct irq_desc *desc, int node,
-@@ -165,6 +177,39 @@ static void delete_irq_desc(unsigned int irq)
- 	mas_erase(&mas);
- }
+ 	/* First probe the page size */
+ 	val = FIELD_PREP(GICR_VPROPBASER_4_1_PAGE_SIZE, GIC_PAGE_SIZE_64K);
++	val |= GICR_VPROPBASER_4_1_INDIRECT;
+ 	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
+ 	val = gicr_read_vpropbaser(vlpi_base + GICR_VPROPBASER);
+ 	gpsz = FIELD_GET(GICR_VPROPBASER_4_1_PAGE_SIZE, val);
+ 	esz = FIELD_GET(GICR_VPROPBASER_4_1_ENTRY_SIZE, val);
++	indirect = !!(val & GICR_VPROPBASER_4_1_INDIRECT);
  
-+#ifdef CONFIG_SPARSE_IRQ
-+static const struct kobj_type irq_kobj_type;
-+#endif
-+
-+static int init_desc(struct irq_desc *desc, int irq, int node,
-+		     unsigned int flags,
-+		     const struct cpumask *affinity,
-+		     struct module *owner)
-+{
-+	desc->kstat_irqs = alloc_percpu(unsigned int);
-+	if (!desc->kstat_irqs)
-+		return -ENOMEM;
-+
-+	if (alloc_masks(desc, node)) {
-+		free_percpu(desc->kstat_irqs);
-+		return -ENOMEM;
-+	}
-+
-+	raw_spin_lock_init(&desc->lock);
-+	lockdep_set_class(&desc->lock, &irq_desc_lock_class);
-+	mutex_init(&desc->request_mutex);
-+	init_waitqueue_head(&desc->wait_for_threads);
-+	desc_set_defaults(irq, desc, node, affinity, owner);
-+	irqd_set(&desc->irq_data, flags);
-+	irq_resend_init(desc);
-+#ifdef CONFIG_SPARSE_IRQ
-+	kobject_init(&desc->kobj, &irq_kobj_type);
-+	init_rcu_head(&desc->rcu);
-+#endif
-+
-+	return 0;
-+}
-+
- #ifdef CONFIG_SPARSE_IRQ
+ 	switch (gpsz) {
+ 	default:
+@@ -2906,7 +2909,7 @@ static int allocate_vpe_l1_table(void)
+ 	 * If we need more than just a single L1 page, flag the table
+ 	 * as indirect and compute the number of required L1 pages.
+ 	 */
+-	if (epp < ITS_MAX_VPEID) {
++	if (epp < ITS_MAX_VPEID && indirect) {
+ 		int nl2;
  
- static void irq_kobj_release(struct kobject *kobj);
-@@ -384,21 +429,6 @@ struct irq_desc *irq_to_desc(unsigned int irq)
- EXPORT_SYMBOL_GPL(irq_to_desc);
- #endif
- 
--#ifdef CONFIG_SMP
--static void free_masks(struct irq_desc *desc)
--{
--#ifdef CONFIG_GENERIC_PENDING_IRQ
--	free_cpumask_var(desc->pending_mask);
--#endif
--	free_cpumask_var(desc->irq_common_data.affinity);
--#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
--	free_cpumask_var(desc->irq_common_data.effective_affinity);
--#endif
--}
--#else
--static inline void free_masks(struct irq_desc *desc) { }
--#endif
--
- void irq_lock_sparse(void)
- {
- 	mutex_lock(&sparse_irq_lock);
-@@ -414,36 +444,19 @@ static struct irq_desc *alloc_desc(int irq, int node, unsigned int flags,
- 				   struct module *owner)
- {
- 	struct irq_desc *desc;
-+	int ret;
- 
- 	desc = kzalloc_node(sizeof(*desc), GFP_KERNEL, node);
- 	if (!desc)
- 		return NULL;
--	/* allocate based on nr_cpu_ids */
--	desc->kstat_irqs = alloc_percpu(unsigned int);
--	if (!desc->kstat_irqs)
--		goto err_desc;
--
--	if (alloc_masks(desc, node))
--		goto err_kstat;
- 
--	raw_spin_lock_init(&desc->lock);
--	lockdep_set_class(&desc->lock, &irq_desc_lock_class);
--	mutex_init(&desc->request_mutex);
--	init_rcu_head(&desc->rcu);
--	init_waitqueue_head(&desc->wait_for_threads);
--
--	desc_set_defaults(irq, desc, node, affinity, owner);
--	irqd_set(&desc->irq_data, flags);
--	kobject_init(&desc->kobj, &irq_kobj_type);
--	irq_resend_init(desc);
-+	ret = init_desc(desc, irq, node, flags, affinity, owner);
-+	if (unlikely(ret)) {
-+		kfree(desc);
-+		return NULL;
-+	}
- 
- 	return desc;
--
--err_kstat:
--	free_percpu(desc->kstat_irqs);
--err_desc:
--	kfree(desc);
--	return NULL;
- }
- 
- static void irq_kobj_release(struct kobject *kobj)
-@@ -583,26 +596,29 @@ struct irq_desc irq_desc[NR_IRQS] __cacheline_aligned_in_smp = {
- int __init early_irq_init(void)
- {
- 	int count, i, node = first_online_node;
--	struct irq_desc *desc;
-+	int ret;
- 
- 	init_irq_default_affinity();
- 
- 	printk(KERN_INFO "NR_IRQS: %d\n", NR_IRQS);
- 
--	desc = irq_desc;
- 	count = ARRAY_SIZE(irq_desc);
- 
- 	for (i = 0; i < count; i++) {
--		desc[i].kstat_irqs = alloc_percpu(unsigned int);
--		alloc_masks(&desc[i], node);
--		raw_spin_lock_init(&desc[i].lock);
--		lockdep_set_class(&desc[i].lock, &irq_desc_lock_class);
--		mutex_init(&desc[i].request_mutex);
--		init_waitqueue_head(&desc[i].wait_for_threads);
--		desc_set_defaults(i, &desc[i], node, NULL, NULL);
--		irq_resend_init(&desc[i]);
-+		ret = init_desc(irq_desc + i, i, node, 0, NULL, NULL);
-+		if (unlikely(ret))
-+			goto __free_desc_res;
+ 		val |= GICR_VPROPBASER_4_1_INDIRECT;
+@@ -2917,7 +2920,8 @@ static int allocate_vpe_l1_table(void)
+ 		/* Number of L1 pages to point to the L2 pages */
+ 		npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
+ 	} else {
+-		npg = 1;
++		npg = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
++		npg = clamp_val(npg, 1, (GICR_VPROPBASER_4_1_SIZE + 1));
  	}
-+
- 	return arch_early_irq_init();
-+
-+__free_desc_res:
-+	while (--i >= 0) {
-+		free_masks(irq_desc + i);
-+		free_percpu(irq_desc[i].kstat_irqs);
-+	}
-+
-+	return ret;
- }
  
- struct irq_desc *irq_to_desc(unsigned int irq)
--- 
-2.27.0
+ 	val |= FIELD_PREP(GICR_VPROPBASER_4_1_SIZE, npg - 1);
 
+-- 
+Without deviation from the norm, progress is not possible.
 
