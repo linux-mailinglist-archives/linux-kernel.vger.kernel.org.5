@@ -1,93 +1,153 @@
-Return-Path: <linux-kernel+bounces-32914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC8948361D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:34:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77E1983626D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:47:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82A2E1F2273E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:34:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0005290973
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D533D577;
-	Mon, 22 Jan 2024 11:23:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lybWg096"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E693D968;
+	Mon, 22 Jan 2024 11:44:33 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC633AC1A;
-	Mon, 22 Jan 2024 11:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E6B53CF7C;
+	Mon, 22 Jan 2024 11:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705922634; cv=none; b=l6Tcm0sPRK/1yI9eD88aczQmM63wRuxCR5kBaNCj6a9kV6lwVRIkcX6idj2mNY6YdP5/dqazedXr31HNJtjXPApc3r41VLUxSm7yhTYk1/+SGEWQVcijzslNkFF0ps32XPpkdqamkdjCvNwdXY7ttuTTohS5O0UsBQ5xUvuldEk=
+	t=1705923873; cv=none; b=qjOSBp6+11rmOymCBTGoHAou7j+fDibLJ4tZ+H7WslDJ5LQOY8QjfcJV6T7y/w2crfF+Nepo4gNx7uaGOyEXTK/Wa9VYUu/Rbo1ICQPSxko9zM5zVfjsdzL0mHEw5r6iMSm0OJRjs8RzckNexukZdwETun3j4Hr9mM7fyk4SY6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705922634; c=relaxed/simple;
-	bh=TxrQIO/al2GpWVkrfoDOU0cuM/hyz+aCVqOTBlEjz+E=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=XoYcA978gAMO/7exkOz/dwMRjIINIbFLJtKFQmwUW5lraGwblxzwx3FB3j1OyvNgZ1CF2oftkEfeX/G4b4/az94A42A0esSF9/4jLkZewBoKGQVxQ30bpmfBErZ+fDY9/Hj3knC5puXKI0hizTyL+z+C2PdfBZwPF1HGljvEaTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lybWg096; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2E3B8C433F1;
-	Mon, 22 Jan 2024 11:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705922634;
-	bh=TxrQIO/al2GpWVkrfoDOU0cuM/hyz+aCVqOTBlEjz+E=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=lybWg096e++sBoglThrFVRtkfC+B0mQsXLbOr2TbdDXl5s38zX+Hl+bjzANohFp1P
-	 a+GCBlo2bG3KgTrLSXFNJ14UmqGCpYf4xXFJA7I/iH856cDEujaJdJzWNAs3y9f2Ae
-	 zNcQXI05cI+UZ5zFgrt+izVWTW7l14fTi4zHfoxsGA/kfpB7f0Eja8t4RYZk+OuUiX
-	 YlpdAzoKW/b0Ft+r1Q2xy6Xa2a5mdzDzl/Rd/zTFBo+kNSw5EBFaLauS7q3sHdZ3xB
-	 kIothxjAuEp7pRrL/WM23KEQx7kJsIhaqgXtoL2VyrH2Q9jg75uND0RBJdkvbGna1X
-	 TrG4DgwK/ecAA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1C24DE0B62F;
-	Mon, 22 Jan 2024 11:23:54 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1705923873; c=relaxed/simple;
+	bh=hzzxCxYHKJlV//EcCCMyFY5XRICC4MkyQFC2eFI+AqU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CHR9I3YBdvnm7BzD6tQYw3U8thue/b0X/1RKMvUlJknh9gM2U9qtEWlOv1Gua6+L3IqcZAWEmGMWPTsR13FN1JbgEHDTwQo9YeYApQ/FNHM6zyt85aTdXTM071FtU+yFqg5WFwU4Ccl5bJDWbJ/YbRsb2TCQb9qBSFGXuLwAIaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id c0f29add93c09374; Mon, 22 Jan 2024 12:44:28 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 53F7A669540;
+	Mon, 22 Jan 2024 12:44:28 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Subject: [PATCH v1 02/12] PM: sleep: Relocate two device PM core functions
+Date: Mon, 22 Jan 2024 12:24:21 +0100
+Message-ID: <4876491.GXAFRqVoOG@kreacher>
+In-Reply-To: <5760158.DvuYhMxLoT@kreacher>
+References: <5760158.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/2] fixes for tun 
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170592263411.5359.10540209008963512195.git-patchwork-notify@kernel.org>
-Date: Mon, 22 Jan 2024 11:23:54 +0000
-References: <1705659669-26120-1-git-send-email-wangyunjian@huawei.com>
-In-Reply-To: <1705659669-26120-1-git-send-email-wangyunjian@huawei.com>
-To: Yunjian Wang <wangyunjian@huawei.com>
-Cc: willemdebruijn.kernel@gmail.com, jasowang@redhat.com, kuba@kernel.org,
- davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- xudingke@huawei.com
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgfedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 
-Hello:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-This series was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+Move is_async() and dpm_async_fn() in the PM core to a more suitable
+place.
 
-On Fri, 19 Jan 2024 18:21:09 +0800 you wrote:
-> There are few places on the receive path where packet receives and
-> packet drops were not accounted for. This patchset fixes that issue.
-> 
-> Yunjian Wang (2):
->   tun: fix missing dropped counter in tun_xdp_act
->   tun: add missing rx stats accounting in tun_xdp_act
-> 
-> [...]
+No functional impact.
 
-Here is the summary with links:
-  - [net,1/2] tun: fix missing dropped counter in tun_xdp_act
-    https://git.kernel.org/netdev/net/c/5744ba05e7c4
-  - [net,2/2] tun: add missing rx stats accounting in tun_xdp_act
-    https://git.kernel.org/netdev/net/c/f1084c427f55
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/base/power/main.c |   58 +++++++++++++++++++++++-----------------------
+ 1 file changed, 29 insertions(+), 29 deletions(-)
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Index: linux-pm/drivers/base/power/main.c
+===================================================================
+--- linux-pm.orig/drivers/base/power/main.c
++++ linux-pm/drivers/base/power/main.c
+@@ -578,6 +578,35 @@ bool dev_pm_skip_resume(struct device *d
+ 	return !dev->power.must_resume;
+ }
+ 
++static bool is_async(struct device *dev)
++{
++	return dev->power.async_suspend && pm_async_enabled
++		&& !pm_trace_is_enabled();
++}
++
++static bool dpm_async_fn(struct device *dev, async_func_t func)
++{
++	reinit_completion(&dev->power.completion);
++
++	if (is_async(dev)) {
++		dev->power.async_in_progress = true;
++
++		get_device(dev);
++
++		if (async_schedule_dev_nocall(func, dev))
++			return true;
++
++		put_device(dev);
++	}
++	/*
++	 * Because async_schedule_dev_nocall() above has returned false or it
++	 * has not been called at all, func() is not running and it is safe to
++	 * update the async_in_progress flag without extra synchronization.
++	 */
++	dev->power.async_in_progress = false;
++	return false;
++}
++
+ /**
+  * device_resume_noirq - Execute a "noirq resume" callback for given device.
+  * @dev: Device to handle.
+@@ -664,35 +693,6 @@ Out:
+ 	}
+ }
+ 
+-static bool is_async(struct device *dev)
+-{
+-	return dev->power.async_suspend && pm_async_enabled
+-		&& !pm_trace_is_enabled();
+-}
+-
+-static bool dpm_async_fn(struct device *dev, async_func_t func)
+-{
+-	reinit_completion(&dev->power.completion);
+-
+-	if (is_async(dev)) {
+-		dev->power.async_in_progress = true;
+-
+-		get_device(dev);
+-
+-		if (async_schedule_dev_nocall(func, dev))
+-			return true;
+-
+-		put_device(dev);
+-	}
+-	/*
+-	 * Because async_schedule_dev_nocall() above has returned false or it
+-	 * has not been called at all, func() is not running and it is safe to
+-	 * update the async_in_progress flag without extra synchronization.
+-	 */
+-	dev->power.async_in_progress = false;
+-	return false;
+-}
+-
+ static void async_resume_noirq(void *data, async_cookie_t cookie)
+ {
+ 	struct device *dev = data;
+
 
 
 
