@@ -1,350 +1,110 @@
-Return-Path: <linux-kernel+bounces-34157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F7883749D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:52:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BBFC8374A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:53:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37C372857BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:52:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC9231F24FB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4815C47A6D;
-	Mon, 22 Jan 2024 20:52:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976A047A6C;
+	Mon, 22 Jan 2024 20:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TylESYXc"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TSxyO73Q"
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41CA3481A3
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 20:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A095B47A58
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 20:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705956737; cv=none; b=pPTXU9XTmNizkQyOmVzQ2XGURSS+hkgHUDLtjEEYA0uYsOrDFGL93Vlr+MIkNd8z0vbMycyiBbhVCgbeaqVMsPICk4KmR+SyWvurCgBqgQlsQKwEWCaiCL4buJlSvvgAQVuerLb01i89wcUz2yS6CKLctTUXzUdRZDGnrd0/gKY=
+	t=1705956817; cv=none; b=IbJWKieBCcpERHa0fwG2XUEVYNRfDQP2b0snvP/fphalfIdsgLe33IKsoRDCOJoCqX8NSAEHQBbrQm7c/GaloLzhzbQZ0UN7oUGaWgUA00koAdw3WaM+vkguP49Mh8sG0dm//midgMY6LjrcT8/Tkw/WZNZxrBwpLKvwSXF4viQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705956737; c=relaxed/simple;
-	bh=0NNt2kh++PivBuSInt33gb5IO1kUgM0lDgzPBYNT4VQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=mbb4wZ1EiXUXAwIk4PR2ESTTAnlvjOgzH3a34kGI/RizPO13Mu6gtaI/VYHr41VwIFy3QcUz7CzfODGK7RsFjBTjy349EEK5eKMgW1+8AX0XI4jCTT9KTyt8rkLmIK6cjHajQFk1OIXJrAH36mpjJ3Kb4EasCm2TCXvhG+iOnX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TylESYXc; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e80046246so21542945e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:52:13 -0800 (PST)
+	s=arc-20240116; t=1705956817; c=relaxed/simple;
+	bh=pQZ/0oJYyx8RBYUqEkKQbxBgGICsFMfIGmf7BMkDDnU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CXLzlYVSFM9P4FZ7IYS58HjhcpLXR91qeqxn8P01SAe/aP7h01qTyJLrW5z4ZoVs9zgsWqMwkIH3unPft4fZQsgUunyCQArdB+HJI7Cfm9Tgcy6MnFrRdbP8TS8KEiRlc1qPyPD9SOBcsKmoTbImSWA2ikM3R7N1vvz5ssq/uoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TSxyO73Q; arc=none smtp.client-ip=209.85.161.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59927972125so1870457eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:53:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705956732; x=1706561532; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LLpVIbfL3jS2RDwaMp5J2M72JeDQu5AitrT2Un9osZw=;
-        b=TylESYXcYVtGimYlbJZLZ5hKvUSTwDlw/2vjw3y+0eL4W9Dbqi0cgJKQPLooKc3jls
-         UrKWkkYdygMGdgIPK0CsY+wmWPihWy+U8aABbVS29weHAp5STzVeUYyITgiqIC9Rg6Xy
-         zKrfrt9IQysdL+O/oKZmM3LLNAEk55E288MwNlAkkSLvsby8d2DrSRshU0C2yRGBqNot
-         xsnLgY884g9zaVDYcPUhRADh0fXpj55b6nx5y2jUx4PS1LJiO4cmMdV/fFzPxZNTGyWZ
-         tkxXEUWxwlb8amcpUiw7s3hdp/x1KEwR+OXx3wTbcVpxH09xJtu8iKOHbT6OWbK9XlAW
-         qOLQ==
+        d=chromium.org; s=google; t=1705956815; x=1706561615; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KHLpdc+s1DN3hjZ1+Wn70z3BiqgmQibATYm0MQ7joBo=;
+        b=TSxyO73QFgkNr/O5Ie6a+Vo14DtBPzY1FgYc0Q61r259bTdjX10ZFDQ8bJcOkYoRZx
+         AyeVPzUy4eeOm6fevtDySSMcM0Zsnhw9DuMkc2s31kPG2rMqEVrb42UVXVxEpN2LP83x
+         SxgWWKSNQfY0L/BndOpzGSQX1em3l6YRXlmcQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705956732; x=1706561532;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LLpVIbfL3jS2RDwaMp5J2M72JeDQu5AitrT2Un9osZw=;
-        b=T2bff+i+NMsC0BqNWZUApXFdHCXmh2cLQMFRGbzW0gMi2BVfUakj99CmouOGvFi4c/
-         goso22xdVnYT2MAB0Qyx4/q1Y+8dG72tjKNDZ9vp2htzMeLFWyD1SEOGRaltTKAVcVQ0
-         jQxLBvQgypJ6Q75+W97AIhkwIEgAwkPxnDkR2lgdUH2KI2sEo2pMxMwTAU1Lyutz9TWc
-         G5dByfftWQAQZKSwV+jFSR0H+InU8YI4bHlyIHK77vN2fjUjxWPZawblYx9zboIOqN4b
-         a0/k0YLeha2pFRXcbEBxiDK9A4YrKfXbkocyikaSo2/dz67kmgRqFkuwI6s3J7Dqsfn2
-         nyjw==
-X-Gm-Message-State: AOJu0Yyl06PtRjVBW0d3MHiIjS15eYQ6bkYAjx8na0AsqBq9ZphwYGtd
-	JzWSA9AS3hf5s1pZeNpW5TftjzK+/75pIpcbhEH/eV5aHK2j75aJd5LaTnCGAt0DBgXjlXqWLqj
-	l
-X-Google-Smtp-Source: AGHT+IGjlxS8LdXj01eroDCU1lix/NGPOxpO6X1wfpctzNIBrpkb0Bgzf2XKA+ZCXnKAqqvKceoiow==
-X-Received: by 2002:a05:600c:3151:b0:40e:4ab3:d06e with SMTP id h17-20020a05600c315100b0040e4ab3d06emr2624682wmo.22.1705956732290;
-        Mon, 22 Jan 2024 12:52:12 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id r17-20020a05600c459100b0040e88fbe051sm20349768wmo.48.2024.01.22.12.52.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 12:52:11 -0800 (PST)
-Message-ID: <c2963862-9d22-438a-8357-eccf14fead7d@linaro.org>
-Date: Mon, 22 Jan 2024 21:52:10 +0100
+        d=1e100.net; s=20230601; t=1705956815; x=1706561615;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KHLpdc+s1DN3hjZ1+Wn70z3BiqgmQibATYm0MQ7joBo=;
+        b=H/Z13eI0j8YBN1zW1rt/gIPlnngKB5xrGrHUkaLrbhlNvp5tXJsKiFxtSGFZwEYPbi
+         RyQYDT3XN/pI9+zyyCOBExcd/jD+SVgliP4GO3cVsH92Z2aU8YgSqsq4VCp4+UEv9qxK
+         gvNsJ6D5vyAQa/kZMOuAtAu04asPtj4Mn8cmqm/Ql7q+jpoapC2MoI0WcowG3r/evLYu
+         ttu+nFzEesIpkQAsjUEH7se1Mk85Dq2SIieNirRvbVR+ZMb+CuXWmfBEo04NnpcR+bFl
+         MPW/9GEdPpycHSiiANcldhopQnysQrzlzdoTEvTfa1g7+0ovM6WBXsZGGS+k75ziH0mg
+         nYlg==
+X-Gm-Message-State: AOJu0Yx9BcgAqmKJ4eWMZ1NCrwqF1I5Bm8hS6KlgXI24yKiwL3N0ONAC
+	uR3+XNLyjTAG1ZIfShiOIV8fT+dvJb5ScV8qL+hd/lUwkOG4SRlZfWJ0+1604A==
+X-Google-Smtp-Source: AGHT+IG/TsXyZtkk1k/hwUr+fNS9q+PRnByIwu5fpMOy5PEaaP0vT1BkK07OjchmNIFEHImbtVdfaA==
+X-Received: by 2002:a05:6358:3a1c:b0:175:c7bb:5bbb with SMTP id g28-20020a0563583a1c00b00175c7bb5bbbmr2203322rwe.42.1705956815668;
+        Mon, 22 Jan 2024 12:53:35 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k31-20020a634b5f000000b005cfb2c44a3esm6884300pgl.3.2024.01.22.12.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 12:53:34 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc: Kees Cook <keescook@chromium.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3] Fix error handling in begin_new_exec
+Date: Mon, 22 Jan 2024 12:53:03 -0800
+Message-Id: <170595678126.1295697.13621931577825110324.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <AS8P193MB128517ADB5EFF29E04389EDAE4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+References: <AM8PR10MB47081071E64EAAB343196D5AE4399@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM> <AS8P193MB1285304CE97348D62021C878E46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM> <AS8P193MB128517ADB5EFF29E04389EDAE4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: rockchip: Add the rk3588 thermal zones
-Content-Language: en-US
-To: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Sebastian Reichel <sebastian.reichel@collabora.com>,
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- =?UTF-8?B?VGFtw6FzIFN6xbFjcw==?= <szucst@iit.uni-miskolc.hu>,
- Christopher Obbard <chris.obbard@collabora.com>,
- Shreeya Patel <shreeya.patel@collabora.com>, John Clark <inindev@gmail.com>,
- Dragan Simic <dsimic@manjaro.org>, Chris Morgan <macromorgan@hotmail.com>,
- Andy Yan <andy.yan@rock-chips.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- Alexey Charkov <alchark@gmail.com>
-References: <20240122203502.3311520-1-linkmauve@linkmauve.fr>
- <20240122203502.3311520-2-linkmauve@linkmauve.fr>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20240122203502.3311520-2-linkmauve@linkmauve.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+On Mon, 22 Jan 2024 19:34:21 +0100, Bernd Edlinger wrote:
+> If get_unused_fd_flags() fails, the error handling is incomplete
+> because bprm->cred is already set to NULL, and therefore
+> free_bprm will not unlock the cred_guard_mutex.
+> Note there are two error conditions which end up here,
+> one before and one after bprm->cred is cleared.
+> 
+> 
+> [...]
 
-Hi Emmanuel,
+Applied to for-next/execve, thanks!
 
-please sync up with Alexey Charkov (added in Cc) who is doing a similar 
-configuration [1] which was reviewed.
+[1/1] Fix error handling in begin_new_exec
+      https://git.kernel.org/kees/c/84c39ec57d40
 
-Thanks
-   -- Daniel
-
-[1] 
-https://lore.kernel.org/all/CABjd4YyL1ZwNOJrWPwZtc7=e4h18a9tQOnuKP6soy=iTHv-WEA@mail.gmail.com/
-
-On 22/01/2024 21:34, Emmanuel Gil Peyrot wrote:
-> The driver got added back in 45d7b3867a5cabb97fc31f16122cda8540c3a30c,
-> but the dts never got updated, so here it is!
-> 
-> I’ve added it to the rk3588s because that’s where most of the
-> definitions are, but I’ve only tested on a rk3588 so maybe there are
-> subtle changes.
-> 
-> The rk3588 TRM also documents slightly different values (in part 1
-> section 14.5.3) than the driver, but I’ve left the values alone since I
-> have no way to determine which one is (more) correct.
-> 
-> Only the CPU is properly mapped, as neither the GPU nor the NPU have
-> been added to the dts for now, I’ve left some TODOs there.
-> 
-> All of the thermal zones report almost the same value on my rock-5b
-> board, I’m not sure if this is due to a programming error or if this is
-> to be expected.  For instance, after running for a while, all of the
-> zones report 44384 m℃, despite having used neither the GPU nor the NPU.
-> 
-> Additionally, the alert and crit temperatures have been arbitrarily
-> chosen based on other dts files, not based on any knowledge of the
-> thermal behaviours of this specific SoC.
-> 
-> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-> ---
->   arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 181 ++++++++++++++++++++++
->   1 file changed, 181 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> index 36b1b7acfe6a..c7a2078960b7 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> @@ -10,6 +10,7 @@
->   #include <dt-bindings/reset/rockchip,rk3588-cru.h>
->   #include <dt-bindings/phy/phy.h>
->   #include <dt-bindings/ata/ahci.h>
-> +#include <dt-bindings/thermal/thermal.h>
->   
->   / {
->   	compatible = "rockchip,rk3588";
-> @@ -436,6 +437,186 @@ scmi_shmem: sram@0 {
->   		};
->   	};
->   
-> +	thermal_zones: thermal-zones {
-> +		soc-thermal {
-> +			polling-delay-passive = <250>; /* milliseconds */
-> +			polling-delay = <1000>; /* milliseconds */
-> +			thermal-sensors = <&tsadc 0>;
-> +
-> +			trips {
-> +				soc_alert: trip-alert {
-> +					temperature = <80000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				soc_crit: trip-crit {
-> +					temperature = <100000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&soc_alert>;
-> +					cooling-device = <&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_b2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_b3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_l0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_l1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_l2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_l3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cluster1-thermal {
-> +			polling-delay-passive = <250>; /* milliseconds */
-> +			polling-delay = <1000>; /* milliseconds */
-> +			thermal-sensors = <&tsadc 1>;
-> +
-> +			trips {
-> +				cluster1_alert: trip-alert {
-> +					temperature = <80000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				cluster1_crit: trip-crit {
-> +					temperature = <100000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cluster1_alert>;
-> +					cooling-device = <&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cluster2-thermal {
-> +			polling-delay-passive = <250>; /* milliseconds */
-> +			polling-delay = <1000>; /* milliseconds */
-> +			thermal-sensors = <&tsadc 2>;
-> +
-> +			trips {
-> +				cluster2_alert: trip-alert {
-> +					temperature = <80000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				cluster2_crit: trip-crit {
-> +					temperature = <100000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cluster2_alert>;
-> +					cooling-device = <&cpu_b2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_b3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cluster0-thermal {
-> +			polling-delay-passive = <250>; /* milliseconds */
-> +			polling-delay = <1000>; /* milliseconds */
-> +			thermal-sensors = <&tsadc 3>;
-> +
-> +			trips {
-> +				cluster0_alert: trip-alert {
-> +					temperature = <80000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				cluster0_crit: trip-crit {
-> +					temperature = <100000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cluster0_alert>;
-> +					cooling-device = <&cpu_l0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_l1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_l2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +					                 <&cpu_l3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		center-thermal {
-> +			polling-delay-passive = <250>; /* milliseconds */
-> +			polling-delay = <1000>; /* milliseconds */
-> +			thermal-sensors = <&tsadc 4>;
-> +
-> +			trips {
-> +				center_alert: trip-alert {
-> +					temperature = <80000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				center_crit: trip-crit {
-> +					temperature = <100000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +			cooling-maps {
-> +				/* TODO: what exactly is "center"? */
-> +			};
-> +		};
-> +
-> +		gpu-thermal {
-> +			polling-delay-passive = <250>; /* milliseconds */
-> +			polling-delay = <1000>; /* milliseconds */
-> +			thermal-sensors = <&tsadc 5>;
-> +
-> +			trips {
-> +				gpu_alert: trip-alert {
-> +					temperature = <80000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				gpu_crit: trip-crit {
-> +					temperature = <100000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +			cooling-maps {
-> +				/* TODO: Add the GPU here once it is supported. */
-> +			};
-> +		};
-> +
-> +		npu-thermal {
-> +			polling-delay-passive = <250>; /* milliseconds */
-> +			polling-delay = <1000>; /* milliseconds */
-> +			thermal-sensors = <&tsadc 6>;
-> +
-> +			trips {
-> +				npu_alert: trip-alert {
-> +					temperature = <80000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				npu_crit: trip-crit {
-> +					temperature = <100000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +			cooling-maps {
-> +				/* TODO: Add the NPU here once it is supported. */
-> +			};
-> +		};
-> +	};
-> +
->   	usb_host0_ehci: usb@fc800000 {
->   		compatible = "rockchip,rk3588-ehci", "generic-ehci";
->   		reg = <0x0 0xfc800000 0x0 0x40000>;
+Take care,
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Kees Cook
 
 
