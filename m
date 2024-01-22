@@ -1,197 +1,145 @@
-Return-Path: <linux-kernel+bounces-32401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F225835B3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:51:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEF94835B46
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:55:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0753F1F22500
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:51:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66B5528368A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589C3DDB8;
-	Mon, 22 Jan 2024 06:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD39DDB8;
+	Mon, 22 Jan 2024 06:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G1gy25Je"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xbzs7y+9"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4CFFC8FD;
-	Mon, 22 Jan 2024 06:50:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762D0F4EB
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 06:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705906255; cv=none; b=RRrIGH5yPSjhEGeybR+BbqX8Vj0EH/WcBctwFAYP3AbdHj9m3lmq/Rb+82K6KBYx1PPMGFVshjW8N34NudU7XXlG4q4EeewJCmKT1xnhwbqiHL4fKzt6ObEwiRdKhuMR8t4vMwDoRVNKYclXkdfOoOmTvZiQcWYsJqUCL980JH8=
+	t=1705906518; cv=none; b=SX2XYPJqVXrfNRS+xIjUIKZ6CluRClRxSOZeqqfCorNRjAtoOUFySzdn+gK7gsZg/JAwQeOArFh2Rafqf90nxdMMp2HxxBRd6fYT6I0+AXhql5ODiRwGxVrlpJLKUqKZBX+iRp2GtTzw9hEbDvxWtelKv6494kkGnEsbbcrrvOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705906255; c=relaxed/simple;
-	bh=Ht+ghLd9qWXBMuExQZSOUYSlEhQGLmOqr3q1wB2EdGI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T0Hg0MsjraGso226Dbk9oI0CzJIMg1EcNvFSBCCUqU+caC1Uvp2XHjnpGJg+7wMojb7CgWKyRhlsj1smk4FDF/S/ydKZvcdymvJkjUJBSkkvsdRtkaLNCUMQ5rMvDeGXtA2Q6u0z+3rfYsUvP4rsSxydSYM2rA2Ii10OUHlXW/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G1gy25Je; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cca5d81826so32378061fa.2;
-        Sun, 21 Jan 2024 22:50:53 -0800 (PST)
+	s=arc-20240116; t=1705906518; c=relaxed/simple;
+	bh=kurIw7V3rZKMF/Ht1fnXn8epEvVoc15GU/v6IoSqneU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g/lQrX9C2QQ7qz+EbajVDuGovl1dMbZVOH9y9g2WJth5v42HkTOrcUbJBfDBIsz+ddG/0QSSGdmSja/QfkIYcgi8x7+eoGyPbeVS2kwgwE3L0hfwODlfJI01Va10pv++M/d53UIxfkbmVraSR0R3qgvJbekM5nmfdWwl+JBes+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xbzs7y+9; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e775695c6so28326235e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 22:55:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705906252; x=1706511052; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M5fz13Ad4HCdkTb+naupdkUwXzh9ES8pqhqbkx5imjA=;
-        b=G1gy25JeM3TkNkwk29oLXU0/bTZPQAOFVF4VkELIU3ZFQteCcLrCn15INr/Bi1oU6N
-         gNkEOr7gr9gL/ZFcMEKBBwo2U4AYfWDdzhnLRfMgHU3VzmdDQon9OzC36q6j1F/ap0Qd
-         /+ufdmS8ddNIMOWIgHJVB+GJP3A/+h+2Dm3KjjyNwzfqjuC6iwDpjSbdDBY9b7I74zrM
-         jIgy/A2DZycnoGVEXaYA7vX2u7UD1CokxzQWK7AWS5GI/4LoSI750CLikj/QnQHf3sRp
-         6ZqNQEvE9jy29Lx+0lN4Yshgqo9x8rRBrxNIF83nPzKJZZksmMRcwRDIRW0zxzjgIOpw
-         OIhQ==
+        d=linaro.org; s=google; t=1705906515; x=1706511315; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8aUJC8rG/vO3bD1rTOQLhtvB4t4NcN5TufneLFrEaCo=;
+        b=xbzs7y+9pWSdOgRktONzsIqxbYnumGP7nzwQGoMk1ZJiR73IDv8pbkwRVYIUZDzsy1
+         VPefcV9epAkqtlBqVlmHLchqUhLec4Fc5LShEBIHusHPgxpOhHaVNNV4EU7pOoOrw+0h
+         BLAvUo42jjgn152CzvRxIT2ZFwgWxU+IDW5RVKq7nplk6IIt+S8+63PySMplHn+njNhN
+         Qzf9xbfMozsEUVfGYdhbWn38HCfbhkKGPZxiUVqQRcr8kpSFYJYPCyARzWFMdfFB26Qi
+         9cVr2LdOdtdJ9Twxhlz4Zs84j0dQWx8avQxVqk2TMaByGgaPsRw8MLgyyPpzUL0/WEn2
+         gnhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705906252; x=1706511052;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M5fz13Ad4HCdkTb+naupdkUwXzh9ES8pqhqbkx5imjA=;
-        b=a+DXAoGaQb/+0hLVW2UPSZB2u7NDDhX3aPllkrI7nt1p114+tBu24x/j0urAnzok3t
-         mT2q0hfcVYx4TWcZkSsdYWYkinIpQFqm1EkVeS7a10GmzD25QG42xb6XPVveuxoD9tVj
-         +4qCKa1+2UYDA5LF6nyYYcixbB+rKa2busyyW7jxwzu7XPNCVoxdpZDvA62RREHKiHy1
-         hrCJa9SOxUD1yrIxu7Wh7okUytGIm+WV7pkuBjmQOSoNutq2uNMNicLiybvT/p2nFMzI
-         JYJQo2WcHqlnBzdF9N//CIaR/OegM1wbGx4dykl6VZ+prV19MObiMcTy+dJGEEiVl/pB
-         egJQ==
-X-Gm-Message-State: AOJu0YwZfqsMXacAj5TR35kHp+nKiM8gksAZc5KNz5VXmHDLqNvf876O
-	2CXLQEHejTMA9Vt0lPGTvfIIvns3/Y5vz1j8ucRttK0/Z6efpRpj
-X-Google-Smtp-Source: AGHT+IGxWWyo12l8q5kHSWTxtI4fT+UM26hwXK+UFhdyd02E53rTlHz7C1mhx3eAV2YOhkZBeULBbg==
-X-Received: by 2002:a2e:3004:0:b0:2cd:7830:5796 with SMTP id w4-20020a2e3004000000b002cd78305796mr1533664ljw.5.1705906251500;
-        Sun, 21 Jan 2024 22:50:51 -0800 (PST)
-Received: from ?IPV6:2001:14ba:7426:df00::3? (drtxq0yyyyyyyyyyyyybt-3.rev.dnainternet.fi. [2001:14ba:7426:df00::3])
-        by smtp.gmail.com with ESMTPSA id m21-20020a2e9115000000b002cd32d4722asm3265769ljg.61.2024.01.21.22.50.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jan 2024 22:50:50 -0800 (PST)
-Message-ID: <717b7e70-5cf8-4671-8a6b-005eefd0535e@gmail.com>
-Date: Mon, 22 Jan 2024 08:50:44 +0200
+        d=1e100.net; s=20230601; t=1705906515; x=1706511315;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8aUJC8rG/vO3bD1rTOQLhtvB4t4NcN5TufneLFrEaCo=;
+        b=eeJPvenLsb/cqIzL4z8Mk94Hh3CJR7sWvuFQPEnO9hQElENctdTZn+E6H8G3p3i13O
+         wb+/pUYF8fE79k+o7aUfXqcw467UDhPZwaeByXoN8EVxZBFtbBZgjRrbLRFWM6PIBgHO
+         CddZATh4+TTP4/g1+qYCqNnnS82pErH81XJz/FqusN2lkZ5GUl5vLsiuUQX2pw3f8KnG
+         INTsdYVqUHGipHrCIA7Z7R12Bghr+Rx845MeWSPNJqx4WmUgSVyrJxWzkCkmtrq0APC0
+         MeuKRWxHdzsezLPLN9D7QrntEIBvlYyCwbMAdR76JPR7SE4TAlcWSMqN8Q+/9l5EuPJE
+         UcuA==
+X-Gm-Message-State: AOJu0YxBO9l7Ywuv/lsQeFitPOAR/NF53k+wjcJVnmg5G52MZ8YA5Pzf
+	gcoMorazYN/Jt92FmXC27lUGz4iKYSGJ6c1W4lFahY4TxFN8CQfqzaj3+xSazmw=
+X-Google-Smtp-Source: AGHT+IGfn4IAtpvCRksZdJ+qY0f4oJppo8bUr5RyWi7AbO/2NfJDVKSiGSy1jFwXSGGedSZzJIOsgA==
+X-Received: by 2002:a05:600c:6002:b0:40e:ae0b:62ee with SMTP id az2-20020a05600c600200b0040eae0b62eemr387119wmb.56.1705906514724;
+        Sun, 21 Jan 2024 22:55:14 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id u21-20020a05600c139500b0040e4a7a7ca3sm38018916wmf.43.2024.01.21.22.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jan 2024 22:55:14 -0800 (PST)
+Date: Mon, 22 Jan 2024 09:55:11 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Erick Archer <erick.archer@gmx.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Franziska Naepelt <franziska.naepelt@googlemail.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Aloka Dixit <quic_alokad@quicinc.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: Use kcalloc() instead of kzalloc()
+Message-ID: <a5d8a5f1-432d-46f0-84fe-7b5b22ff5f32@moroto.mountain>
+References: <20240119173900.11035-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iio: gts-helper: Fix division loop
-To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
- Jonathan Cameron <jic23@kernel.org>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
- Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <ZZZ7pJBGkTdFFqiY@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
- <20240107162253.66c1f0f1@jic23-huawei>
- <a41ef2c9-bd74-4b0e-afb7-12e198847609@tweaklogic.com>
-Content-Language: en-US, en-GB
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <a41ef2c9-bd74-4b0e-afb7-12e198847609@tweaklogic.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119173900.11035-1-erick.archer@gmx.com>
 
-On 1/19/24 13:56, Subhajit Ghosh wrote:
-> On 8/1/24 02:52, Jonathan Cameron wrote:
->> On Thu, 4 Jan 2024 11:34:28 +0200
->> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
->>
->>> The loop based 64bit division may run for a long time when dividend is a
->>> lot bigger than the divider. Replace the division loop by the
->>> div64_u64() which implementation may be significantly faster.
->>>
->>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
->>> Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers")
->>
->> Hmm. Fix or not perf improvement?  I'm going to take the middle ground
->> and leave the fixes tag, but not rush this in.
->>
->> So applied to the togreg branch of iio.git and for now just pushed out
->> as testing for 0-day etc to take a look before I rebase that tree after
->> rc1.
->>
->>
->>
->>> ---
->>>
->>> I've implemented also a fixup series for supporting rounding of
->>> gains/scales:
->>> https://lore.kernel.org/lkml/37d3aa193e69577353d314e94463a08d488ddd8d.1701780964.git.mazziesaccount@gmail.com/
->>>
->>> That series does also remove the offending loop.
->>>
->>> We don't currently have any in-tree users of GTS helpers which would
->>> need the rounding support so pushing the rounding is not urgent (and I
->>> haven't heard of Subjahit whose driver required the rounding). Hence, we
->>> may want to only take this loop fix in for now (?) and reconsider
->>> rounding when someone need that.
->>>
->>> Jonathan, what's your take on this?
->> Agreed - let us wait for the rounding to have a user, but makes sense
->> to tidy this corner up in the meantime.
->>
->> Thanks,
->>
->> Jonathan
->>
->>>
->>>   drivers/iio/industrialio-gts-helper.c | 5 ++---
->>>   1 file changed, 2 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/iio/industrialio-gts-helper.c 
->>> b/drivers/iio/industrialio-gts-helper.c
->>> index 7653261d2dc2..abcab2d38589 100644
->>> --- a/drivers/iio/industrialio-gts-helper.c
->>> +++ b/drivers/iio/industrialio-gts-helper.c
->>> @@ -34,7 +34,7 @@
->>>   static int iio_gts_get_gain(const u64 max, const u64 scale)
->>>   {
->>>       u64 full = max;
->>> -    int tmp = 1;
->>> +    int tmp = 0;
->>>       if (scale > full || !scale)
->>>           return -EINVAL;
->>> @@ -48,8 +48,7 @@ static int iio_gts_get_gain(const u64 max, const 
->>> u64 scale)
->>>           tmp++;
->>>       }
->>> -    while (full > scale * (u64)tmp)
->>> -        tmp++;
->>> +    tmp += div64_u64(full, scale);
->>>       return tmp;
->>>   }
->>>
->>> base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
->>
->>
-> Hi Matti,
+On Fri, Jan 19, 2024 at 06:39:00PM +0100, Erick Archer wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 > 
-> Your fix works beautifully with the latest version of apds9306 driver 
-> which I am working on.
-> All available scale values can be set without any errors. Thank you.
+> So, use the purpose specific kcalloc() function instead of the argument
+> count * size in the kzalloc() function.
+> 
+> Also, it is preferred to use sizeof(*pointer) instead of sizeof(type)
+> due to the type of the variable can change and one needs not change the
+> former (unlike the latter).
+> 
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 
-Thanks for testing Subhajit! Just to ensure we have no miscommunication 
-- did you test just this division fix, or the rounding fix here:
-https://lore.kernel.org/lkml/37d3aa193e69577353d314e94463a08d488ddd8d.1701780964.git.mazziesaccount@gmail.com/
+I quite often write responses to patches and then never send them.  I
+wrote this response and debated sending it but in the end I decided to
+send it because you have sent multiple patches.  If you had only sent
+one patch then I wouldn't have bothered.
 
-> Moving to a new city with a new full time job with the assumption of 
-> getting more time
-> for my list of opensource projects and contributions proved to be 
-> utterly wrong!
+Generally, commit messages should say what the user visible effects of
+a patch are.  Sometimes with these sorts of commits, it's hard to
+determine the effect.  For example, Kees went through and changed dozens
+or hundreds of these allocations to use safer constructs and we don't
+necessarily expect him to audit all the code.  They should already have
+been fine, but it's better to be safe.
 
-Well, I can't blame you :) Being in a new work at new city sounds like 
-you have a lot on your plate right now. Give it half a year and things 
-will stabilize though :) Oh, and falsely assuming that "when XXX, I will 
-have the time to do YYY" - been there done that :)
+However in this case obviously the patch is small and just by glancing
+at it we can see that it has no effect on rutime.
 
-Good luck on the new work and city!
+But if someone is reviewing patches with "git log" instead of
+"git log -p" they aren't going to see the patch. I can almost always
+figure out what a commit does without looking at the commit message,
+that doesn't mean that the commit messages are unnecessary.
 
-Yours,
-	-- Matti
+So I really prefer if commit message say, "This commit is just to make
+static checkers happy and to make the code more readable.  It has no
+effect on runtime."  The commit message you wrote is way more scary than
+is warranted.  Here is my proposed commit message:
 
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+"We are trying to get rid of all multiplications from allocation
+functions to prevent integer overflows.  Here the multiplication is
+obviously safe, but using kcalloc() is more appropriate and improves
+readability.  This patch has no effect on runtime behavior."
 
-~~ When things go utterly wrong vim users can always type :help! ~~
+regards,
+dan carpenter
 
 
