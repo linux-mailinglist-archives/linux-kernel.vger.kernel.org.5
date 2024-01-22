@@ -1,148 +1,91 @@
-Return-Path: <linux-kernel+bounces-34117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF098373D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:32:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 814CC8373DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:35:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FF8D1F2437C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:32:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17D711F24961
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E44D405C1;
-	Mon, 22 Jan 2024 20:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A66640BEE;
+	Mon, 22 Jan 2024 20:34:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uPe+eF/r"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9UdbUfW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE8F2CA8;
-	Mon, 22 Jan 2024 20:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C841DFE5;
+	Mon, 22 Jan 2024 20:34:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705955519; cv=none; b=N3FnfkIAJXVfjusSCenGoQP12ZufA7ckZcXJac/Xb3Ep6gpIfRxfwEokOZ01G8odqMpWU9rGF8afS+JQZ8NzenJL8utDpQblecqs19ugf7n1Yo86CNFbHAyO2Jg6BopuLDuZpw9sTR9CDJ2EHA/orVlUW/aZ7sIqRr3mN6mDbfM=
+	t=1705955690; cv=none; b=LiAOQObKT3hik4wtzoiRzrpgZfrUDFed0YZeKRV3tFACdOgxChu34LQNsU9YQp/aJZSksPvNgnQqaHVHyQAPqgairWd005ZxrxYoXRY6h2MSBbgHToIi+6WN0QTgQMH/tD4X+WU/J/F0Lzv/6ClCzZvN0tREMuWS/Ftyz81SaAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705955519; c=relaxed/simple;
-	bh=lX95mZ24ENjeIfQOzcfLTShypXgPs84p0dynMFOg+lw=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=Br1oDsuVz9P5bjjuunaBFuoe6/hFBivOGjkYmooUJiRNiFVJy8BF/vqjLQ6sEqlPc2W7md2yeXxJ28Z81idtmas+COz05MAZr0D3ITXSnCbuHvUHtfjFuOJzRSlRv7ltDSgFvK6ogEZcmTynvIQwT4hmT3sJYRe+NwmY9mP5eBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uPe+eF/r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2148BC433C7;
-	Mon, 22 Jan 2024 20:31:54 +0000 (UTC)
+	s=arc-20240116; t=1705955690; c=relaxed/simple;
+	bh=V5cmoTuULoWNYm46a6ywQDlkSQMsgm/OdPOrANJiJVo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RypjqbU3R+Bthdl0/mTHXBSTiIRCL42d7dX4gVnjthOyk28P4kbDqHLTW999/C4KhbF4r94pULBdsJKF4hsP4IeZ6aF7cfZIdY/eZuVtVyWjt2xFbmfZaDWipFE4raxDV7iQkvzk0GhV/Pq8iubz8AsK7IMUvnD6olUk2idBC0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W9UdbUfW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0B4DC433A6;
+	Mon, 22 Jan 2024 20:34:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705955518;
-	bh=lX95mZ24ENjeIfQOzcfLTShypXgPs84p0dynMFOg+lw=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=uPe+eF/rA7sTtZUvKZkt68zZ8/f+lKon7D2hDcZCK4Tr9JZe4O2JZHF8hDz9a+Ujm
-	 ouFghdDZHWXyu+tYxJl2W3pPnpOrQLS9FQSXZ/K/gfCu7wvKUoJFB5FjcRMFBSvX0w
-	 jSP1fbaPxUR/1sQ+kQjiyiV9GL3H1lKpJt87L7QcG+Br/BhLcaLnxJyS5W38Fg6vEH
-	 CSW9ACot8PUcNv5Ep+akq/tYGy36kB2S1WpKdcWwmXyZzIzTzdrZrlkHhf05zTJwFb
-	 6qnUYt2UWtJrgVKvTvaUbQfMW7vxPU4t1F8jAFZRFJCSwm3voLxNuh7PYrk/DLxmNL
-	 O++2QxtHyRnUw==
+	s=k20201202; t=1705955689;
+	bh=V5cmoTuULoWNYm46a6ywQDlkSQMsgm/OdPOrANJiJVo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=W9UdbUfWnmEKRK9+KT2odx42x8+09Geh810AJ5mYzAeJQPSAu+5dn6g0s4O+2re4X
+	 gvoQo/19dBlOZup43iTh2+xVBX5EdUuI/+gg93spmSCKMVwrhczXtCTP4vvY8pFDBB
+	 YEAakBnP6OU+VylHZBWeqMsZ7ZVZGb5AKTNqfoUoynkAr8AF/Mz+LOP6Y8ZSBGYKwC
+	 xxPmX+6MbIXNVjJQxyqNwP/xsSF7K8JnC0b1giihwELpDo+ATssoIxKWAaN+GuJMmW
+	 tWpnk0MebpvwobkMEwgXBhDYjgxbsOjse1QgQWcH/EYb41jfOnufXWeBwyrxQ6+EBl
+	 Vrs19j4LcVFSw==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so3881494a12.2;
+        Mon, 22 Jan 2024 12:34:49 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy0zDhGbIQyewuK1RsOj4KmcVY0TOEdQUUMuIvby0IB821raRxQ
+	XPszGmsBUGQ1HZ3nV4okkMRquXoVQOHrh3REXN2OaXOOvhu7cPfeZFC4YV3jFhlfwqO8WdEzWHP
+	zuvoSwjx8BuU1DYz6rxox4LIkcVw=
+X-Google-Smtp-Source: AGHT+IG85Eoeg9WBFX8KzgBjG4JF6JfnLT+fdMlItTYbC035wmY/ToxDKMxonv/slZ9MnxD+r1bilt0/EYdum+117zk=
+X-Received: by 2002:a17:906:2683:b0:a28:b71d:6801 with SMTP id
+ t3-20020a170906268300b00a28b71d6801mr2651916ejc.149.1705955688198; Mon, 22
+ Jan 2024 12:34:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240122-topic-qdf_cleanup_net-v1-1-caf0d9c4408a@linaro.org>
+In-Reply-To: <20240122-topic-qdf_cleanup_net-v1-1-caf0d9c4408a@linaro.org>
+From: Timur Tabi <timur@kernel.org>
+Date: Mon, 22 Jan 2024 14:34:11 -0600
+X-Gmail-Original-Message-ID: <CAOZdJXXCmZi8Qx-y2D_NhJiafnGhvma2OY6F+KauqYcNAAQNCQ@mail.gmail.com>
+Message-ID: <CAOZdJXXCmZi8Qx-y2D_NhJiafnGhvma2OY6F+KauqYcNAAQNCQ@mail.gmail.com>
+Subject: Re: [PATCH] net: ethernet: qualcomm: Remove QDF24xx support
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Timur Tabi <timur@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 22 Jan 2024 22:31:53 +0200
-Message-Id: <CYLIRBOVXWK1.3Q3J47OI076X@suppilovahvero>
-Subject: Re: [PATCH v7 12/15] x86/sgx: Expose sgx_epc_cgroup_reclaim_pages()
- for global reclaimer
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>,
- <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
- <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>
-X-Mailer: aerc 0.15.2
-References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
- <20240122172048.11953-13-haitao.huang@linux.intel.com>
-In-Reply-To: <20240122172048.11953-13-haitao.huang@linux.intel.com>
 
-On Mon Jan 22, 2024 at 7:20 PM EET, Haitao Huang wrote:
-> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+On Mon, Jan 22, 2024 at 6:02=E2=80=AFAM Konrad Dybcio <konrad.dybcio@linaro=
+org> wrote:
 >
-> When cgroup is enabled, all reclaimable pages will be tracked in cgroup
-> LRUs. The global reclaimer needs to start reclamation from the root
-> cgroup. Expose the top level cgroup reclamation function so the global
-> reclaimer can reuse it.
+> This SoC family was destined for server use, featuring Qualcomm's very
+> interesting Kryo cores (before "Kryo" became a marketing term for Arm
+> cores with small modifications). It did however not leave the labs of
+> Qualcomm and presumably some partners, nor was it ever productized.
 >
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> ---
-> V7:
-> - Split this out from the big patch, #10 in V6. (Dave, Kai)
-> ---
->  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 2 +-
->  arch/x86/kernel/cpu/sgx/epc_cgroup.h | 9 +++++++++
->  2 files changed, 10 insertions(+), 1 deletion(-)
+> Remove the related drivers, as they seem to be long obsolete.
 >
-> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c b/arch/x86/kernel/cpu/s=
-gx/epc_cgroup.c
-> index c28ed12ff864..fdf1417d9ade 100644
-> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> @@ -88,7 +88,7 @@ bool sgx_epc_cgroup_lru_empty(struct misc_cg *root)
->   * @indirect:   In ksgxd or EPC cgroup work queue context.
->   * Return:	Number of pages reclaimed.
->   */
-> -static unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root, b=
-ool indirect)
-> +unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root, bool ind=
-irect)
->  {
->  	/*
->  	 * Attempting to reclaim only a few pages will often fail and is ineffi=
-cient, while
-> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.h b/arch/x86/kernel/cpu/s=
-gx/epc_cgroup.h
-> index 6e156de5f7ff..05a4de9f7024 100644
-> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.h
-> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
-> @@ -31,6 +31,12 @@ static inline int sgx_epc_cgroup_try_charge(struct sgx=
-_epc_cgroup *epc_cg, bool
->  static inline void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg=
-) { }
-> =20
->  static inline void sgx_epc_cgroup_init(void) { }
-> +
-> +static inline unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *=
-root,
-> +							bool indirect)
-> +{
-> +	return 0;
-> +}
->  #else
->  struct sgx_epc_cgroup {
->  	struct misc_cg			*cg;
-> @@ -69,6 +75,9 @@ static inline void sgx_put_epc_cg(struct sgx_epc_cgroup=
- *epc_cg)
->  int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool reclai=
-m);
->  void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg);
->  bool sgx_epc_cgroup_lru_empty(struct misc_cg *root);
-> +unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root,
-> +					  bool indirect);
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Here, on the other hand, you could put the whole declaration to single
-line.
+Sad day indeed, but understandable.
 
-> +
->  void sgx_epc_cgroup_init(void);
-> =20
->  #endif
+Acked-by: Timur Tabi <timur@kernel.org>
 
-BR, Jarkko
-
+If you're looking for other QDF stuff to remove, the QDF2400 hacks in
+the SBSA UART driver really should go.
 
