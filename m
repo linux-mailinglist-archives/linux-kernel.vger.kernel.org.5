@@ -1,91 +1,99 @@
-Return-Path: <linux-kernel+bounces-34118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 814CC8373DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D04DF83740B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17D711F24961
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:35:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FF3A1F280B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:40:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A66640BEE;
-	Mon, 22 Jan 2024 20:34:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9UdbUfW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8207A47A72;
+	Mon, 22 Jan 2024 20:40:45 +0000 (UTC)
+Received: from luna.linkmauve.fr (luna.linkmauve.fr [82.65.109.163])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C841DFE5;
-	Mon, 22 Jan 2024 20:34:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E4047A53;
+	Mon, 22 Jan 2024 20:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.65.109.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705955690; cv=none; b=LiAOQObKT3hik4wtzoiRzrpgZfrUDFed0YZeKRV3tFACdOgxChu34LQNsU9YQp/aJZSksPvNgnQqaHVHyQAPqgairWd005ZxrxYoXRY6h2MSBbgHToIi+6WN0QTgQMH/tD4X+WU/J/F0Lzv/6ClCzZvN0tREMuWS/Ftyz81SaAI=
+	t=1705956045; cv=none; b=I4zcP04Sy2lKyrs8kPw0xmFzE3aszcoLu1MpXZuKeFS5WhTAVHyi0utibevmuO6egU2x0WX1hOrpxldltjEneT3oexjYpbdn9q+FQvt1yhT9OlqDOBgm6mIjsimRlyasY4Cqusij/1jnEOrseqdPD5dK4GpT/VZ7GGK3DHAiZqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705955690; c=relaxed/simple;
-	bh=V5cmoTuULoWNYm46a6ywQDlkSQMsgm/OdPOrANJiJVo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RypjqbU3R+Bthdl0/mTHXBSTiIRCL42d7dX4gVnjthOyk28P4kbDqHLTW999/C4KhbF4r94pULBdsJKF4hsP4IeZ6aF7cfZIdY/eZuVtVyWjt2xFbmfZaDWipFE4raxDV7iQkvzk0GhV/Pq8iubz8AsK7IMUvnD6olUk2idBC0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W9UdbUfW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0B4DC433A6;
-	Mon, 22 Jan 2024 20:34:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705955689;
-	bh=V5cmoTuULoWNYm46a6ywQDlkSQMsgm/OdPOrANJiJVo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=W9UdbUfWnmEKRK9+KT2odx42x8+09Geh810AJ5mYzAeJQPSAu+5dn6g0s4O+2re4X
-	 gvoQo/19dBlOZup43iTh2+xVBX5EdUuI/+gg93spmSCKMVwrhczXtCTP4vvY8pFDBB
-	 YEAakBnP6OU+VylHZBWeqMsZ7ZVZGb5AKTNqfoUoynkAr8AF/Mz+LOP6Y8ZSBGYKwC
-	 xxPmX+6MbIXNVjJQxyqNwP/xsSF7K8JnC0b1giihwELpDo+ATssoIxKWAaN+GuJMmW
-	 tWpnk0MebpvwobkMEwgXBhDYjgxbsOjse1QgQWcH/EYb41jfOnufXWeBwyrxQ6+EBl
-	 Vrs19j4LcVFSw==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so3881494a12.2;
-        Mon, 22 Jan 2024 12:34:49 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy0zDhGbIQyewuK1RsOj4KmcVY0TOEdQUUMuIvby0IB821raRxQ
-	XPszGmsBUGQ1HZ3nV4okkMRquXoVQOHrh3REXN2OaXOOvhu7cPfeZFC4YV3jFhlfwqO8WdEzWHP
-	zuvoSwjx8BuU1DYz6rxox4LIkcVw=
-X-Google-Smtp-Source: AGHT+IG85Eoeg9WBFX8KzgBjG4JF6JfnLT+fdMlItTYbC035wmY/ToxDKMxonv/slZ9MnxD+r1bilt0/EYdum+117zk=
-X-Received: by 2002:a17:906:2683:b0:a28:b71d:6801 with SMTP id
- t3-20020a170906268300b00a28b71d6801mr2651916ejc.149.1705955688198; Mon, 22
- Jan 2024 12:34:48 -0800 (PST)
+	s=arc-20240116; t=1705956045; c=relaxed/simple;
+	bh=bAPGFNo77+D9kNCksfSqKSycd65DXYyf8t7nE08TAF8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tTwujwy2xOJRUpq4iubghjK2rT1ZvYvh6yUsfF9WjEUL8YuDucwQAq3I4A4AV0QSx0jkaSSVPxnwBowgr8pJPFiDhmo56UTrMPOD6aj44QEreJDurYAdLqd5yl+a6LSSB3F2jb6X8CUPYVR2uGnKKZnnmYddxZf5xQER8k7t90Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linkmauve.fr; spf=pass smtp.mailfrom=linkmauve.fr; arc=none smtp.client-ip=82.65.109.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linkmauve.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linkmauve.fr
+Received: by luna.linkmauve.fr (Postfix, from userid 1000)
+	id 79E38DDADBF; Mon, 22 Jan 2024 21:35:14 +0100 (CET)
+From: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	=?UTF-8?q?Tam=C3=A1s=20Sz=C5=B1cs?= <szucst@iit.uni-miskolc.hu>,
+	Christopher Obbard <chris.obbard@collabora.com>,
+	Shreeya Patel <shreeya.patel@collabora.com>,
+	John Clark <inindev@gmail.com>,
+	Dragan Simic <dsimic@manjaro.org>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+	Andy Yan <andy.yan@rock-chips.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+Subject: [PATCH 0/2] Add the thermal zones of the rk3588 to its dts
+Date: Mon, 22 Jan 2024 21:34:56 +0100
+Message-ID: <20240122203502.3311520-1-linkmauve@linkmauve.fr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122-topic-qdf_cleanup_net-v1-1-caf0d9c4408a@linaro.org>
-In-Reply-To: <20240122-topic-qdf_cleanup_net-v1-1-caf0d9c4408a@linaro.org>
-From: Timur Tabi <timur@kernel.org>
-Date: Mon, 22 Jan 2024 14:34:11 -0600
-X-Gmail-Original-Message-ID: <CAOZdJXXCmZi8Qx-y2D_NhJiafnGhvma2OY6F+KauqYcNAAQNCQ@mail.gmail.com>
-Message-ID: <CAOZdJXXCmZi8Qx-y2D_NhJiafnGhvma2OY6F+KauqYcNAAQNCQ@mail.gmail.com>
-Subject: Re: [PATCH] net: ethernet: qualcomm: Remove QDF24xx support
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Timur Tabi <timur@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 22, 2024 at 6:02=E2=80=AFAM Konrad Dybcio <konrad.dybcio@linaro=
-org> wrote:
->
-> This SoC family was destined for server use, featuring Qualcomm's very
-> interesting Kryo cores (before "Kryo" became a marketing term for Arm
-> cores with small modifications). It did however not leave the labs of
-> Qualcomm and presumably some partners, nor was it ever productized.
->
-> Remove the related drivers, as they seem to be long obsolete.
->
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+The driver got added back in 45d7b3867a5cabb97fc31f16122cda8540c3a30c,
+but the dts never got updated, so here it is!
 
-Sad day indeed, but understandable.
+I’ve added it to the rk3588s because that’s where most of the
+definitions are, but I’ve only tested on a rk3588 so maybe there are
+subtle changes.
 
-Acked-by: Timur Tabi <timur@kernel.org>
+The rk3588 TRM also documents slightly different values (in part 1
+section 14.5.3) than the driver, but I’ve left the values alone since I
+have no way to determine which one is (more) correct.
 
-If you're looking for other QDF stuff to remove, the QDF2400 hacks in
-the SBSA UART driver really should go.
+Only the CPU is properly mapped, as neither the GPU nor the NPU have
+been added to the dts for now, I’ve left some TODOs there.
+
+All of the thermal zones report almost the same value on my rock-5b
+board, I’m not sure if this is due to a programming error or if this is
+to be expected.  For instance, after running for a while, all of the
+zones report 44384 m℃, despite having used neither the GPU nor the NPU.
+
+Additionally, the alert and crit temperatures have been arbitrarily
+chosen based on other dts files, not based on any knowledge of the
+thermal behaviours of this specific SoC.
+
+Emmanuel Gil Peyrot (2):
+  arm64: dts: rockchip: Add the rk3588 thermal zones
+  arm64: dts: rockchip: Enable the tsadc on Rock-5B
+
+ .../boot/dts/rockchip/rk3588-rock-5b.dts      |   4 +
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 181 ++++++++++++++++++
+ 2 files changed, 185 insertions(+)
+
+-- 
+2.43.0
+
 
