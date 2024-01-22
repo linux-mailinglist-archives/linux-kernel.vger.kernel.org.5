@@ -1,140 +1,78 @@
-Return-Path: <linux-kernel+bounces-34207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEF15837590
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:42:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DEB6837595
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:44:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EE84B225E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:42:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AB601F2BF75
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:44:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26636482C4;
-	Mon, 22 Jan 2024 21:42:24 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20CC4879A;
+	Mon, 22 Jan 2024 21:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMTRc6Gc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11AAA3EA73
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E59481D0;
+	Mon, 22 Jan 2024 21:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705959743; cv=none; b=dU+R9KuYq02w7rY8Fqazsjh4eAkVbHIrf3weJHohenxA0f0EvD57t5s7cCHZJUpOXXKDRTpgraGpT5UGXGo5b3kkImGc5oLGCbz1sVrfgMg1uLggFrAbbXwTChx4yEisR3F3BTpa64MnUP/0RrBVTRLL+7XcPVW6HX0Er37jVDU=
+	t=1705959878; cv=none; b=mhDoNto8voUvdEmAas0AhEEPbOnHOVFtbzG+rLH3F72PGR+PQMEknK5gcbu1WIcS9bpdPEA/OOipfNcKG2s56OMptGDLnM8MOSddUnFalsDHI4+pKM6akn7nf57B6YOWzaY5bJD82qCS8aowzVXT1N0hFtVP9hJBkfMA8ubXE9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705959743; c=relaxed/simple;
-	bh=io+7IaJFn/feWesqaRgk9TY52nteThiIZlX7mv4DhKE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=lRXtnDb1n1T7klUKguJwV0rjGUCRp0WCowAqQz9LAZB/sXB69BptYahkhIPSNtGddNfGFEPwq/cRhPvZQYOqIU7lG9896hzpQbxRXKD6nt6AyEUD8f5hIoM5iCtTlzr3p9mYR9XhoT1MB6LX6Eio9dEoo75oTEcZgY7D8sd+Htg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-133-d2RyxRAbOJurcsKymIa9DQ-1; Mon, 22 Jan 2024 21:42:17 +0000
-X-MC-Unique: d2RyxRAbOJurcsKymIa9DQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 22 Jan
- 2024 21:41:49 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 22 Jan 2024 21:41:48 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Guenter Roeck' <linux@roeck-us.net>, Charlie Jenkins
-	<charlie@rivosinc.com>
-CC: Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>,
-	Samuel Holland <samuel.holland@sifive.com>, Xiao Wang
-	<xiao.w.wang@intel.com>, Evan Green <evan@rivosinc.com>, Guo Ren
-	<guoren@kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-arch@vger.kernel.org"
-	<linux-arch@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>
-Subject: RE: [PATCH v15 5/5] kunit: Add tests for csum_ipv6_magic and
- ip_fast_csum
-Thread-Topic: [PATCH v15 5/5] kunit: Add tests for csum_ipv6_magic and
- ip_fast_csum
-Thread-Index: AQHaTVGn8AUolzpWZEe7KQadoytUPLDmCvsQgAAHpwCAAEjwsA==
-Date: Mon, 22 Jan 2024 21:41:48 +0000
-Message-ID: <be959a4bb660466faba5ade7976485c8@AcuMS.aculab.com>
-References: <20240108-optimize_checksum-v15-0-1c50de5f2167@rivosinc.com>
- <20240108-optimize_checksum-v15-5-1c50de5f2167@rivosinc.com>
- <2c8e98b6-336e-4bc7-81ba-5a4d35ac868a@roeck-us.net>
- <6b0dc20f392c488a9080651a2a2cd4bd@AcuMS.aculab.com>
- <1dd253a5-9fe9-4d0a-b0cd-3775f089ca0c@roeck-us.net>
-In-Reply-To: <1dd253a5-9fe9-4d0a-b0cd-3775f089ca0c@roeck-us.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1705959878; c=relaxed/simple;
+	bh=j8rCJPrH0opyPn7g1x7+Sagl1pkcqo5+J3j5lU+glpk=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=G0oXRfn/t1tXXtlFwW1h/fwg18X9vcyyFCGg98qX+PFqHdPBUeM7b2qC3oxIF9fmGqq0SwIpy9KoXKKvH/Z6b7cYUZgQZr2QfVT7F2DYTpuQcKX7zhz/NX1pwQ9JwIlJWPR9e7tJDAEEtfsNERuuPpQkOgeJSeIx/WsIa/Qx6q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMTRc6Gc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 84559C433F1;
+	Mon, 22 Jan 2024 21:44:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705959877;
+	bh=j8rCJPrH0opyPn7g1x7+Sagl1pkcqo5+J3j5lU+glpk=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=kMTRc6Gc7OUirmwIX6H/kIvDUWbyIdMQig28EaXt6UimoAcFR2+ei9N5gKXl6RVui
+	 QmOgdTpE65WsRdsdb6+XzVGdy/4cJNmVV6iB4CgudouRVjulx9UjRe4P0PILM8yxb7
+	 LSAbYjNrLznV2qedujPB3ZRGNL3/UmkqhpNouyyeLDft5oqyo2xsFPevqgkEnPnyaW
+	 3o+EWQ7MopA1v+Cnk7R0ifTKUh/UKvBEzoSYhRtXfKaA4249IrA1FTbbtzPB+8XYeP
+	 rVnGnPaKcdV4EfDrhKLu2kgiVj83Mh/NLCesHskRFoKl7UfUD6B5q+6y5HO030qRP0
+	 lOUqG39PwViqA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 70CA4D8C9A8;
+	Mon, 22 Jan 2024 21:44:37 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1705946889.git.dsterba@suse.com>
+References: <cover.1705946889.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1705946889.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc1-tag
+X-PR-Tracked-Commit-Id: 7f2d219e78e95a137a9c76fddac7ff8228260439
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5d9248eed48054bf26b3d5ad3d7073a356a17d19
+Message-Id: <170595987745.4413.7633969849838857336.pr-tracker-bot@kernel.org>
+Date: Mon, 22 Jan 2024 21:44:37 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
 
-RnJvbTogR3VlbnRlciBSb2Vjaw0KPiBTZW50OiAyMiBKYW51YXJ5IDIwMjQgMTc6MTYNCj4gDQo+
-IE9uIDEvMjIvMjQgMDg6NTIsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiBGcm9tOiBHdWVudGVy
-IFJvZWNrDQo+ID4+IFNlbnQ6IDIyIEphbnVhcnkgMjAyNCAxNjo0MA0KPiA+Pg0KPiA+PiBIaSwN
-Cj4gPj4NCj4gPj4gT24gTW9uLCBKYW4gMDgsIDIwMjQgYXQgMDM6NTc6MDZQTSAtMDgwMCwgQ2hh
-cmxpZSBKZW5raW5zIHdyb3RlOg0KPiA+Pj4gU3VwcGxlbWVudCBleGlzdGluZyBjaGVja3N1bSB0
-ZXN0cyB3aXRoIHRlc3RzIGZvciBjc3VtX2lwdjZfbWFnaWMgYW5kDQo+ID4+PiBpcF9mYXN0X2Nz
-dW0uDQo+ID4+Pg0KPiA+Pj4gU2lnbmVkLW9mZi1ieTogQ2hhcmxpZSBKZW5raW5zIDxjaGFybGll
-QHJpdm9zaW5jLmNvbT4NCj4gPj4+IC0tLQ0KPiA+Pg0KPiA+PiBXaXRoIHRoaXMgcGF0Y2ggaW4g
-dGhlIHRyZWUsIHRoZSBhcm06bXBzMi1hbjM4NSBxZW11IGVtdWxhdGlvbiBnZXRzIGEgYmFkIGhp
-Y2N1cC4NCj4gPj4NCj4gPj4gWyAgICAxLjgzOTU1Nl0gVW5oYW5kbGVkIGV4Y2VwdGlvbjogSVBT
-UiA9IDAwMDAwMDA2IExSID0gZmZmZmZmZjENCj4gPj4gWyAgICAxLjgzOTgwNF0gQ1BVOiAwIFBJ
-RDogMTY0IENvbW06IGt1bml0X3RyeV9jYXRjaCBUYWludGVkOiBHICAgICAgICAgICAgICAgICBO
-IDYuOC4wLXJjMSAjMQ0KPiA+PiBbICAgIDEuODM5OTQ4XSBIYXJkd2FyZSBuYW1lOiBHZW5lcmlj
-IERUIGJhc2VkIHN5c3RlbQ0KPiA+PiBbICAgIDEuODQwMDYyXSBQQyBpcyBhdCBfX2NzdW1faXB2
-Nl9tYWdpYysweDgvMHhiNA0KPiA+PiBbICAgIDEuODQwNDA4XSBMUiBpcyBhdCB0ZXN0X2NzdW1f
-aXB2Nl9tYWdpYysweDNkLzB4YTQNCj4gPj4gWyAgICAxLjg0MDQ5M10gcGMgOiBbPDIxMjEyZjM0
-Pl0gICAgbHIgOiBbPDIxMTE3ZmQ1Pl0gICAgcHNyOiAwMTAwMDIwYg0KPiA+PiBbICAgIDEuODQw
-NTg2XSBzcCA6IDIxODBiZWJjICBpcCA6IDQ2YzdmMGQyICBmcCA6IDIxMjc1YjM4DQo+ID4+IFsg
-ICAgMS44NDA2NjRdIHIxMDogMjEyNzZiNjAgIHI5IDogMjEyNzViMjggIHI4IDogMjE0NjVjZmMN
-Cj4gPj4gWyAgICAxLjg0MDc1MV0gcjcgOiAwMDAwMzA4NSAgcjYgOiAyMTI3NWI0ZSAgcjUgOiAy
-MTM4NzAyYyAgcjQgOiAwMDAwMDAwMQ0KPiA+PiBbICAgIDEuODQwODQ3XSByMyA6IDJjMDAwMDAw
-ICByMiA6IDFhYzdmMGQyICByMSA6IDIxMjc1YjM5ICByMCA6IDIxMjc1YjI5DQo+ID4+IFsgICAg
-MS44NDA5NDJdIHhQU1I6IDAxMDAwMjBiDQo+ID4+DQo+ID4+IFRoaXMgdHJhbnNsYXRlcyB0bzoN
-Cj4gPj4NCj4gPj4gUEMgaXMgYXQgX19jc3VtX2lwdjZfbWFnaWMgKGFyY2gvYXJtL2xpYi9jc3Vt
-aXB2Ni5TOjE1KQ0KPiA+PiBMUiBpcyBhdCB0ZXN0X2NzdW1faXB2Nl9tYWdpYyAoLi9hcmNoL2Fy
-bS9pbmNsdWRlL2FzbS9jaGVja3N1bS5oOjYwDQo+ID4+IC4vYXJjaC9hcm0vaW5jbHVkZS9hc20v
-Y2hlY2tzdW0uaDoxNjMgbGliL2NoZWNrc3VtX2t1bml0LmM6NjE3KQ0KPiA+Pg0KPiA+PiBPYnZp
-b3VzbHkgSSBjYW4gbm90IHNheSBpZiB0aGlzIGlzIGEgcHJvYmxlbSB3aXRoIHFlbXUgb3IgYSBw
-cm9ibGVtIHdpdGgNCj4gPj4gdGhlIExpbnV4IGtlcm5lbC4gR2l2ZW4gdGhhdCwgYW5kIHRoZSBw
-cmVzdW1hYmx5IGxvdyBpbnRlcmVzdCBpbg0KPiA+PiBydW5uaW5nIG1wczItYW4zODUgd2l0aCBM
-aW51eCwgSSdsbCBzaW1wbHkgZGlzYWJsZSB0aGF0IHRlc3QuIEp1c3QgdGFrZQ0KPiA+PiBpdCBh
-cyBhIGhlYWRzIHVwIHRoYXQgdGhlcmUgX21heV8gYmUgYSBwcm9ibGVtIHdpdGggdGhpcyBvbiBh
-cm0NCj4gPj4gbm9tbXUgc3lzdGVtcy4NCj4gPg0KPiA+IENhbiB5b3UgZHJvcCBpbiBhIGRpc2Fz
-c2VtYmx5IG9mIF9fY3N1bV9pcHY2X21hZ2ljID8NCj4gPiBBY3R1YWxseSBJIHRoaW5rIGl0IGlz
-Og0KPiANCj4gSXQgaXMsIGFzIHBlciB0aGUgUEMgcG9pbnRlciBhYm92ZS4gSSBkb24ndCBrbm93
-IGFueXRoaW5nIGFib3V0IGFybSBhc3NlbWJsZXIsDQo+IG11Y2ggbGVzcyBhYm91dCBpdHMgYmVo
-YXZpb3Igd2l0aCBUSFVNQiBjb2RlLg0KDQpEb2Vzbid0IGxvb2sgbGlrZSB0aHVtYiB0byBtZSAo
-b2Zmc2V0IDggaXMgdHdvIDQtYnl0ZSBpbnN0cnVjdGlvbnMpIGFuZA0KdGhlIGNvZGUgSSBmb3Vu
-ZCBsb29rcyBsaWtlIGFybSB0byBtZS4NCihJIGhhdmVuJ3Qgd3JpdHRlbiBhbnkgYXJtIGFzbSBz
-aW5jZSBiZWZvcmUgdGhleSBpbnZlbnRlZCB0aHVtYiEpDQoNCj4gPiBFTlRSWShfX2NzdW1faXB2
-Nl9tYWdpYykNCj4gPiAJCXN0cglsciwgW3NwLCAjLTRdIQ0KPiA+IAkJYWRkcwlpcCwgcjIsIHIz
-DQo+ID4gCQlsZG1pYQlyMSwge3IxIC0gcjMsIGxyfQ0KPiA+DQo+ID4gU28gdGhlIGZhdWx0IGlz
-IChwcm9iYWJseSkgYSBtaXNhbGlnbmVkIGxkbWlhID8NCj4gPiBBcmUgdGhleSBldmVyIHN1cHBv
-cnRlZD8NCj4gPg0KPiANCj4gR29vZCBxdWVzdGlvbi4gTXkgcHJpbWFyeSBndWVzcyBpcyB0aGF0
-IHRoaXMgbmV2ZXIgd29ya2VkLiBBcyBJIHNhaWQsDQo+IHRoaXMgd2FzIGp1c3QgaW50ZW5kZWQg
-dG8gYmUgaW5mb3JtYXRpb25hbCwgKHByb2JhYmx5KSBubyByZWFzb24gdG8gYm90aGVyLg0KPiAN
-Cj4gT2YgY291cnNlIG9uZSBtaWdodCBhc2sgaWYgaXQgbWFrZXMgc2Vuc2UgdG8gZXZlbiBrZWVw
-IHRoZSBhcm0gbm9tbXUgY29kZQ0KPiBpbiB0aGUga2VybmVsLCBidXQgdGhhdCBpcyBvZiBjb3Vy
-c2UgYSBkaWZmZXJlbnQgcXVlc3Rpb24uIEkgZG8gd29uZGVyIHRob3VnaA0KPiBpZiBhbnlvbmUg
-YnV0IG1lIGlzIHJ1bm5pbmcgaXQuDQoNCklmIGl0IGlzIGFuIGFsaWdubWVudCBmYXVsdCBpdCBp
-c24ndCBhICdub21tdScgYnVnLg0KDQpBbmQgdHJhZGl0aW9uYWxseSBhcm0gZGlkbid0IHN1cHBv
-cnQgbWlzYWxpZ25lZCB0cmFuc2ZlcnMgKHdlbGwgbm90DQppbiBhbnl3YXkgYW55IG90aGVyIGNw
-dSBkaWQhKS4NCkl0IG1pZ2h0IGJlIHRoYXQgdGhlIGtlcm5lbCBhc3N1bWVzIHRoYXQgYWxsIGV0
-aGVybmV0IHBhY2tldHMgYXJlDQphbGlnbmVkLCBidXQgdGhlIHRlc3Qgc3VpdGUgaXNuJ3QgYWxp
-Z25pbmcgdGhlIGJ1ZmZlci4NCldoaWNoIHdvdWxkIG1ha2UgaXQgYSB0ZXN0IHN1aXRlIGJ1Zy4N
-Cg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2Fk
-LCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5v
-OiAxMzk3Mzg2IChXYWxlcykNCg==
+The pull request you sent on Mon, 22 Jan 2024 19:33:44 +0100:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc1-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5d9248eed48054bf26b3d5ad3d7073a356a17d19
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
