@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-32558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A724F835D21
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:50:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28A92835D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:51:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD23D1C21FCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:50:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD3B5283390
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0F439846;
-	Mon, 22 Jan 2024 08:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000DD39FC0;
+	Mon, 22 Jan 2024 08:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UIRNbueL"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uyQ4HLu0"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 063CE364D5
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:47:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDEB43B287
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705913245; cv=none; b=pCPmDUkZ8HiqbzmIsxqenZolYq+gybPnPNRWr0H893+Qx6glV8/OhUwgBEC3j92RaidNsD+cg5KkyEC3u+6W/omyziQy3icTIoyXLYS4yJ6cwwDcETdD/7wTpwMSjVWiU84Sby6LmJDeyxbvvKmlU7B+LEEr/PMeBvnsRUjVpsw=
+	t=1705913248; cv=none; b=oaccflRSEwcIPzxTmCtWThbpF3tfd1mR2p1jz2alvaMW4tJNOUWEYdxItmDu+eoAvtQ/JEy85d4OFwOnXiGM3y0s3gSkpqX6KoVc/IcZnxrgnoQKUwdRcJfzKNfXF9jxxZqIFHwKRtPH1NEA4K8/uf8vckJsR3wyqBOivfbrVuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705913245; c=relaxed/simple;
-	bh=7tUdhB5Hjq9r5i/bI7pjQefXP4gx7LfsrRrId2oYhB4=;
+	s=arc-20240116; t=1705913248; c=relaxed/simple;
+	bh=9SSOqOK0Lej5rqz0TF7e31lFUOaMw4aoR6sqSlIKxlM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Vl5y7U/pEUiWhSrOn35hlx6+s1whYyfcoYJeLOyP8qlKbKcjBTGmX1brp5A7sLivBVMFQEMIQvHB0Fy6/FNu+aoMxTr58WnuElfA8r2OlOfQLe1fu95YFCQMh8474ObrDQQUlA5i2Q5IXA35rNDhJ9rub66hkarai5LRZjhSJpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UIRNbueL; arc=none smtp.client-ip=209.85.218.47
+	 In-Reply-To:To:Cc; b=gMvab1pq1oMP/MGoKid2S7NdB7m9neCz/ci0AJZg5NkIJr5KbJ37t6vgr27MK4M7srzrbqmyJ28Z5Wv06+G56CVtBtuU4dcgua/uVYcnLIeUg1gnpzeiWz8Be4MhWs8xXXqZxfFZ9Nq9b7zZuuCb1WqVSoXLm4jDuLgVigdlYVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uyQ4HLu0; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3082d450adso19453766b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:47:23 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a30359b97a8so84194166b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:47:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705913242; x=1706518042; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705913244; x=1706518044; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pGozEijrd2enh9tKEhmSTYLHZEfP085NRkmYnjnJTF4=;
-        b=UIRNbueL1doiIfMd2q2A+2Lu2m4care/KTAklDtQZtKyYIey7A8Q1Mh6bMcwLcyttV
-         F4rdqEki/C5jqMpdOGWx0zQ77UnsPzOYrf7Mj04l6UIst2hX6o9+RFR6KUTuaG3RB5PY
-         WY3U8IA7UKyCGOzouMbE5zPw7LIptermJOJGQJxY6IxiUsp0+2YtB4f3NqvqQ+JrP1Iy
-         2r7Afyq9OUb6t9bAs9O/nCzU/F6tcoKEUjHTV507/4MuE5tm+t6uwoBIXs/cgs1SuOd4
-         YW3h/Rx6A/CzbkeHmHulc0SZVlBTQ+MgD2u4sgUvdtBiEu5N/5ojl/v2x/QH6P2G0i9p
-         5kLw==
+        bh=J+4N5IhDKtfhb9B64JgR/5eRkIAxdmeTyFYBzClQWGo=;
+        b=uyQ4HLu0WuqGvzML8f9CmLZWPak/kP5Yaaa0yV4oNL6PS2kcWsybu5zl4EdCqVrA48
+         3AToPyjHylqg1+lNMViQRod3z48Ac+WqLXC5FIycRW77dA4mwVZrAzowG4yJgc88a/fb
+         z3OsTgm3k1FY2/2SKmX8zXYqKEGptdXYwa1lZKS6RGPUbv7K55tS8knW6078X12BAh5y
+         tH/maTfpOcrAiGTBR6ddonzdfyVl9Q5YxYsfb7i5CMdWr6AXLIAJI5ZhEb8SZDgCFY1Z
+         KkC7pcloaaWVPBsZekUTA58DPKnT7/ND44UoLQSsAwuozAC+CKBrsfypsAIntzJOvxUq
+         RYsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705913242; x=1706518042;
+        d=1e100.net; s=20230601; t=1705913244; x=1706518044;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pGozEijrd2enh9tKEhmSTYLHZEfP085NRkmYnjnJTF4=;
-        b=IqoId9Gk2Bla9iWZ/dDXzVEuBCxeWpf/u4/p7M+lj5T3gRQOfWf64pp4+DKpYxNLQY
-         7TeSs7ozke5vl0KXs4K201XXz0lmiIl7clvm6P5hnA9mYUJ2N0c8c1QG9Fi/CzeGXNat
-         dqi538ofM6t4lcbxpWZ8uX80mSxMoDfedBxcpKthIVAwai9UzN3DSP5JZAhJmk0ioECS
-         TIA1nuh3xnibWNd4deirnHe2CeiI4hafcvtGi+DGKRIfuh9bslt1cBJvDtfwpIAkgAK0
-         xJJiWNPi3YOyV4cskNUjHtGN3ERWJoXbkNwOhMzZU2vclnCxIHmjcdi+WDsgTBYEM5Bf
-         pdjg==
-X-Gm-Message-State: AOJu0Yz3pjdHK3OOCufP7RUBB7oA/DTpezvxSzcpyoPpCvcJNag7eCuV
-	SwLonnLc8CHmeiOGDA8aZa8MB2wBVtQoC7azTrm/+xW9OuYe5P9tJW4MZf5Xcdg=
-X-Google-Smtp-Source: AGHT+IFVDm8CN995I0lrqyfm+4wxfcm+CrrDfUW7HOJYqkqQ993/J3bNWzJtsiDseke/grFBtkXYkA==
-X-Received: by 2002:a17:907:c249:b0:a30:6016:89da with SMTP id tj9-20020a170907c24900b00a30601689damr409761ejc.45.1705913242247;
-        Mon, 22 Jan 2024 00:47:22 -0800 (PST)
+        bh=J+4N5IhDKtfhb9B64JgR/5eRkIAxdmeTyFYBzClQWGo=;
+        b=JSN7/lbuSF6qAw7KwtQIfgasz68uMFyib9Ad6JfSKhtyEJtFJT8iK/LRYlpJzLrf73
+         JV6c1jhy4db1RQ568Zx0xjuOUn7CDFRMlLghhPH5+DypcfGYhtfcSAPQi5FgvEa8JVqN
+         8cmSxAKdDPzHmwLAjSVobn9sGuNs0NIEuNzSPZkwVn3qpD1MzrFY2BtwA/fGJnjNjB6H
+         ik+pP+IlThOx3MFpodnVSPGvnLjznUcj8Q5JHJjDZbH8hL4REdOkH81M50zzVUN3O6O5
+         fBlw6IQBuOOq5ntqEjJEqLlNGvzMsRnWuUkbIOZm0peTQBnLFJ1psGQVdO/N1HF4nAyP
+         HJbA==
+X-Gm-Message-State: AOJu0YyTUjFLjfYAddgRXDPhv4fC3D6g3QDaQp9jtHVK00HWvxd6Db7q
+	jvzL8y+tNK7WILbEe+RpxAX1F63rxLppX/jnmBZBGssmUktPxDoe4oZmT0tmdcM=
+X-Google-Smtp-Source: AGHT+IF5jY/odVzvuuX2tsOgaxne++vFuGZaQeGK6pDpveTgnv/VnFvr3/C7wt8hPfuKeQMEomU6Ng==
+X-Received: by 2002:a17:906:8302:b0:a30:76b5:fa05 with SMTP id j2-20020a170906830200b00a3076b5fa05mr192533ejx.40.1705913244072;
+        Mon, 22 Jan 2024 00:47:24 -0800 (PST)
 Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id b21-20020a17090630d500b00a2c4c23cd12sm13075462ejb.217.2024.01.22.00.47.20
+        by smtp.gmail.com with ESMTPSA id b21-20020a17090630d500b00a2c4c23cd12sm13075462ejb.217.2024.01.22.00.47.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 00:47:21 -0800 (PST)
+        Mon, 22 Jan 2024 00:47:23 -0800 (PST)
 From: Abel Vesa <abel.vesa@linaro.org>
-Date: Mon, 22 Jan 2024 10:47:01 +0200
-Subject: [PATCH v4 1/5] PM: domains: Allow devices attached to genpd to be
- managed by HW
+Date: Mon, 22 Jan 2024 10:47:02 +0200
+Subject: [PATCH v4 2/5] PM: domains: Add the domain HW-managed mode to the
+ summary
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240122-gdsc-hwctrl-v4-1-9061e8a7aa07@linaro.org>
+Message-Id: <20240122-gdsc-hwctrl-v4-2-9061e8a7aa07@linaro.org>
 References: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org>
 In-Reply-To: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, 
@@ -98,178 +98,75 @@ Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
  linux-media@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5610; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=awkvV2DdUJnYuJXVb0EJKbDlz6Jjymy9CH2d16MF0H4=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlriuPJ/oKq/9J/hlzle55QekASipW8hs2YpQ+H
- imOfR4YMd+JAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZa4rjwAKCRAbX0TJAJUV
- Vs9NEACe5dQjlAid71quApVBhRd9B4iOugaAxcj9GPY+LeWqTDt0KDK/qbbLV0GaNNzWYxv1u3/
- bOaSpBp9aHgEAjaPqfi1tSwY2VHXPrXmNqqgPDBxDR9N0Loze53ninXGRNY1JEvwjPoxjlu9JQS
- 05HO1F76KHGcHQwqEtxzG74/v0CPhA1Lvt2N1/l/rNZ5N21RWXt0MyPQW7hfxQyTTc8HDLOtZ0r
- tCrqvFLxzkqe8P/OQNptL9GpZUf+qEkZPmiO2a4lFd8FNdt4aEz15+7YgOWCXqMWuNaI4o6I5d3
- lQDd9ujLjB9W1HioRxjEZNy2WABZFh6ElSeqi9B7ZRSi0PSGjYctQt+givczmEMTMR3czU1m3wG
- Sp8csl0XRrmeY6gUsHRlMw9H3SEeYJtihCtpZjSdNEA6R1Tw7vPusZooGYf98UqYJHQbSMgk2Of
- nyvdYY9BXNCOqjz9WcetU0thWuqD7LhUlPI81BxKrydih6qzeqrvGV9CVgnR8fUXydeGUALqzxs
- L3ymluVGtrjX+ve1nidD4ogvsB6xM2V+Se0mpFoTEX3X7fLe06CTmDIKC+B8Ru4ioO9GCPSRJMc
- jP/hgqI0RmidUOiKeIKjl9ymLlzOuw5wELoL+fiuen3ihLJQFwJ39L/BdhlK+K/dflCANH2t/YY
- G8ObFj6XBuOxUPQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2247; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=9SSOqOK0Lej5rqz0TF7e31lFUOaMw4aoR6sqSlIKxlM=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlriuQcy6GvAlKv75yWNiL+5SW0RsJUO6/56kgP
+ JidJnlZ3WSJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZa4rkAAKCRAbX0TJAJUV
+ VpP9EADKWrlShjfOHeZMBqfEIYmnGs9ZDExFZPKyfsVQhcKvr6coiF2QWKf6+wuMuqH5iY4nKMx
+ nv9qy6yV0iOWi+DwMYZT/PvHti9yebGXkOhah/nOYwhC+6HfZYHCUrfxi7uhKOEaXOJhCHnG4rt
+ L/QrICOeo58RbuYwE6DllCq2r6FmkDVFfM+0TQ3c0YBRn0uhmkMU9Yl3utWBZ2ZNwAabi9vqGIw
+ VowRsXDLPin8pATypm/WGG1AS77x10VV7n4Du+kDPgrrNU+s0Eog1hk2hxBOcJg/hoysGPevgxM
+ s7kbbvrC7+vARF82wj/0S5SwLYQhkMtA6ldpOuURnpCIQwiZQJGXihzLZJ/9kWPSWWU6pLbGu2w
+ 7SIyTWaTe5Qf3W2XKr8y2l/81KOoeg4eujaB9EaAmQRA2nyE8RYtrgGIloLZeMN1etit0EUw0Bh
+ PaZ/vGdLEwbvWr3Qw9bPAhgbraBokx7GxgsVBZjkpR9ak2+bCB87+8IUjVTf+7qZSgoq5s/ePno
+ x9y/abt+Ka55T9QC8yHAEKJDJ8MAwF27UJmvs64kAbfmMNBTnBu4YeA5B1rwVZxfn6fNTi1WXV6
+ 0NvJflRNpfKFiM8657hoHU8h9UCrGJQZpcnNu0rjMP9MtuY1vSAcsa3GnYqkd7YaqCg7O+gp76B
+ d3aWRxBJUNxpGHA==
 X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
  fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
+Now that genpd supports dynamically switching the control for an
+attached device between hardware- and software-mode,  let's add this
+information to the genpd summary in debugfs.
 
-Some power-domains may be capable of relying on the HW to control the power
-for a device that's hooked up to it. Typically, for these kinds of
-configurations the consumer driver should be able to change the behavior of
-power domain at runtime, control the power domain in SW mode for certain
-configurations and handover the control to HW mode for other usecases.
-
-To allow a consumer driver to change the behaviour of the PM domain for its
-device, let's provide a new function, dev_pm_genpd_set_hwmode(). Moreover,
-let's add a corresponding optional genpd callback, ->set_hwmode_dev(),
-which the genpd provider should implement if it can support switching
-between HW controlled mode and SW controlled mode. Similarly, add the
-dev_pm_genpd_get_hwmode() to allow consumers to read the current mode and
-its corresponding optional genpd callback, ->get_hwmode_dev(), which the
-genpd provider can also implement for reading back the mode from the
-hardware.
-
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Suggested-by: Taniya Das <quic_tdas@quicinc.com>
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
 ---
- drivers/pmdomain/core.c   | 69 +++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/pm_domain.h | 17 ++++++++++++
- 2 files changed, 86 insertions(+)
+ drivers/pmdomain/core.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pmdomain/core.c b/drivers/pmdomain/core.c
-index a1f6cba3ae6c..41b6411d0ef5 100644
+index 41b6411d0ef5..841fde9e9f87 100644
 --- a/drivers/pmdomain/core.c
 +++ b/drivers/pmdomain/core.c
-@@ -548,6 +548,75 @@ void dev_pm_genpd_synced_poweroff(struct device *dev)
+@@ -3147,6 +3147,15 @@ static void rtpm_status_str(struct seq_file *s, struct device *dev)
+ 	seq_printf(s, "%-25s  ", p);
  }
- EXPORT_SYMBOL_GPL(dev_pm_genpd_synced_poweroff);
  
-+/**
-+ * dev_pm_genpd_set_hwmode - Set the HW mode for the device and its PM domain.
-+ *
-+ * @dev: Device for which the HW-mode should be changed.
-+ * @enable: Value to set or unset the HW-mode.
-+ *
-+ * Some PM domains can rely on HW signals to control the power for a device. To
-+ * allow a consumer driver to switch the behaviour for its device in runtime,
-+ * which may be beneficial from a latency or energy point of view, this function
-+ * may be called.
-+ *
-+ * It is assumed that the users guarantee that the genpd wouldn't be detached
-+ * while this routine is getting called.
-+ *
-+ * Returns 0 on success and negative error values on failures.
-+ */
-+int dev_pm_genpd_set_hwmode(struct device *dev, bool enable)
++static void mode_status_str(struct seq_file *s, struct device *dev)
 +{
-+	struct generic_pm_domain *genpd;
-+	int ret = 0;
++	struct generic_pm_domain_data *gpd_data;
 +
-+	genpd = dev_to_genpd_safe(dev);
-+	if (!genpd)
-+		return -ENODEV;
++	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
 +
-+	if (!genpd->set_hwmode_dev)
-+		return -EOPNOTSUPP;
-+
-+	genpd_lock(genpd);
-+
-+	if (dev_gpd_data(dev)->hw_mode == enable)
-+		goto out;
-+
-+	ret = genpd->set_hwmode_dev(genpd, dev, enable);
-+	if (!ret)
-+		dev_gpd_data(dev)->hw_mode = enable;
-+
-+out:
-+	genpd_unlock(genpd);
-+	return ret;
++	seq_printf(s, "%20s", gpd_data->hw_mode ? "HW" : "SW");
 +}
-+EXPORT_SYMBOL_GPL(dev_pm_genpd_set_hwmode);
 +
-+/**
-+ * dev_pm_genpd_get_hwmode - Get the HW mode setting for the device.
-+ *
-+ * @dev: Device for which the current HW-mode setting should be fetched.
-+ *
-+ * This helper function allows consumer drivers to fetch the current HW mode
-+ * setting of its the device.
-+ *
-+ * It is assumed that the users guarantee that the genpd wouldn't be detached
-+ * while this routine is getting called.
-+ */
-+bool dev_pm_genpd_get_hwmode(struct device *dev)
-+{
-+	struct generic_pm_domain *genpd;
-+
-+	genpd = dev_to_genpd_safe(dev);
-+	if (!genpd)
-+		return false;
-+
-+	if (genpd->get_hwmode_dev)
-+		return genpd->get_hwmode_dev(genpd, dev);
-+
-+	return dev_gpd_data(dev)->hw_mode;
-+}
-+EXPORT_SYMBOL_GPL(dev_pm_genpd_get_hwmode);
-+
- static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
+ static void perf_status_str(struct seq_file *s, struct device *dev)
  {
- 	unsigned int state_idx = genpd->state_idx;
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index b97c5e9820f9..5a26423a7ee1 100644
---- a/include/linux/pm_domain.h
-+++ b/include/linux/pm_domain.h
-@@ -148,6 +148,10 @@ struct generic_pm_domain {
- 	int (*set_performance_state)(struct generic_pm_domain *genpd,
- 				     unsigned int state);
- 	struct gpd_dev_ops dev_ops;
-+	int (*set_hwmode_dev)(struct generic_pm_domain *domain,
-+			      struct device *dev, bool enable);
-+	bool (*get_hwmode_dev)(struct generic_pm_domain *domain,
-+			      struct device *dev);
- 	int (*attach_dev)(struct generic_pm_domain *domain,
- 			  struct device *dev);
- 	void (*detach_dev)(struct generic_pm_domain *domain,
-@@ -210,6 +214,7 @@ struct generic_pm_domain_data {
- 	unsigned int performance_state;
- 	unsigned int default_pstate;
- 	unsigned int rpm_pstate;
-+	bool hw_mode;
- 	void *data;
- };
+ 	struct generic_pm_domain_data *gpd_data;
+@@ -3205,6 +3214,7 @@ static int genpd_summary_one(struct seq_file *s,
+ 		seq_printf(s, "\n    %-50s  ", kobj_path);
+ 		rtpm_status_str(s, pm_data->dev);
+ 		perf_status_str(s, pm_data->dev);
++		mode_status_str(s, pm_data->dev);
+ 		kfree(kobj_path);
+ 	}
  
-@@ -239,6 +244,8 @@ int dev_pm_genpd_remove_notifier(struct device *dev);
- void dev_pm_genpd_set_next_wakeup(struct device *dev, ktime_t next);
- ktime_t dev_pm_genpd_get_next_hrtimer(struct device *dev);
- void dev_pm_genpd_synced_poweroff(struct device *dev);
-+int dev_pm_genpd_set_hwmode(struct device *dev, bool enable);
-+bool dev_pm_genpd_get_hwmode(struct device *dev);
+@@ -3221,8 +3231,8 @@ static int summary_show(struct seq_file *s, void *data)
+ 	int ret = 0;
  
- extern struct dev_power_governor simple_qos_governor;
- extern struct dev_power_governor pm_domain_always_on_gov;
-@@ -307,6 +314,16 @@ static inline ktime_t dev_pm_genpd_get_next_hrtimer(struct device *dev)
- static inline void dev_pm_genpd_synced_poweroff(struct device *dev)
- { }
+ 	seq_puts(s, "domain                          status          children                           performance\n");
+-	seq_puts(s, "    /device                                             runtime status\n");
+-	seq_puts(s, "----------------------------------------------------------------------------------------------\n");
++	seq_puts(s, "    /device                                             runtime status                           managed by\n");
++	seq_puts(s, "------------------------------------------------------------------------------------------------------------\n");
  
-+static inline int dev_pm_genpd_set_hwmode(struct device *dev, bool enable)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline bool dev_pm_genpd_get_hwmode(struct device *dev)
-+{
-+	return false;
-+}
-+
- #define simple_qos_governor		(*(struct dev_power_governor *)(NULL))
- #define pm_domain_always_on_gov		(*(struct dev_power_governor *)(NULL))
- #endif
+ 	ret = mutex_lock_interruptible(&gpd_list_lock);
+ 	if (ret)
 
 -- 
 2.34.1
