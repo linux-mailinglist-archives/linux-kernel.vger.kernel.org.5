@@ -1,129 +1,257 @@
-Return-Path: <linux-kernel+bounces-33340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C6683688A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:40:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9752F836872
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:36:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8C911C2354B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:40:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47307287690
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E0B482F4;
-	Mon, 22 Jan 2024 15:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="sRmiSZjQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCAE860EDE;
+	Mon, 22 Jan 2024 15:05:04 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31EDB63107;
-	Mon, 22 Jan 2024 15:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B373D981
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:05:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935930; cv=none; b=aystO0rLxC6Dj77FJkEx85bM5xRehThCDMXHnYsYL1LqveqvlWD4GpBA1Hh45lQJBTbIc/0NNV4DYehzXdc6XkJ7OxsmfQ0DH/3Tm+KDzqh3SX90+19gyWhFr/dTjcO3Q0f3ER8fninIPgeUBhjM5tuKjd8WDAMbkqiuYovadnM=
+	t=1705935904; cv=none; b=JPdJM5Q/INdC1bbUqWO+ZF1LEQFPzS9nH4dZrS22XeA7tD7iFjGU4vi4Q9HLdOrk72vZolJHJ22TOs2GYsYwGlzvPmKIJcxL1FzOCF2gtoskP9DoGf/0XClV1LLRLlWiBZI54PHzhjheagiy31Hak1vnviun755jVOftMG1Koec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935930; c=relaxed/simple;
-	bh=F68i9hM8sovM7L3HP/urMxCAyGFLBSAzNVces5MUfjk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=drUR0jymZfwv6ypjMsGCQOK6DjvUHG69/M1RKR+rpRfgArXO+fUk8y24DXmfZs2OOrUZ76T0vb8peGMeiMetftjhUnu2o6g3PcFfyFruSjgbY2VExuSrBWivFZ/acAnAzIo8qqB4BfaFAuer0+1mqR4aN2vt+qPyixMRTeMtw84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=sRmiSZjQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD9ACC43399;
-	Mon, 22 Jan 2024 15:05:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705935930;
-	bh=F68i9hM8sovM7L3HP/urMxCAyGFLBSAzNVces5MUfjk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sRmiSZjQU/5ajgL+XobTaF6guD5KVFVFiRyahpHp1sxqe6jEavU4Dsx38RUhG/Mek
-	 uFa/gpf4NbLutvtobDxiEjPsSaATb6Zk4KCPJX4hhSJvBVObuo/AtNs1M80aJ+TJJ7
-	 W2WhTEMBBAyzL/6fSccXN6n24NX513TUqE4YDwPo=
-Date: Mon, 22 Jan 2024 07:05:29 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Carlos Llamas <cmllamas@google.com>
-Cc: Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Sherry Yang <sherryy@android.com>, linux-kernel@vger.kernel.org,
-	kernel-team@android.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 05/28] binder: fix unused alloc->free_async_space
-Message-ID: <2024012214-ideology-curvature-febb@gregkh>
-References: <20231201172212.1813387-1-cmllamas@google.com>
- <20231201172212.1813387-6-cmllamas@google.com>
- <Zal9HFZcC3rFjogI@google.com>
- <2024011955-quotation-zone-7f20@gregkh>
- <Zaqw9k4x7IUh6ys-@google.com>
- <2024012203-expedited-job-1d79@gregkh>
+	s=arc-20240116; t=1705935904; c=relaxed/simple;
+	bh=3lfCvPhZrkU82LwCUZZgALjuBUjL/R+aLt6h+1xcMls=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Gvd33FCeaqTCnOSsGjwpE2BuGB1pItdJRenCphGFZXlRm0ZXf9oKo9fdPHlEfn1cjnPpofUlMr1kRlqRbDrcNUuizcIHh6vmatmM6Q8VzVoBB4uOvHKfCWUFOi8XkOQfUOZcVuy+SbGkBP8Ke82wIPJkdhMvohWGEI+vuq90ql4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2F17C43390;
+	Mon, 22 Jan 2024 15:05:02 +0000 (UTC)
+Date: Mon, 22 Jan 2024 10:06:30 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook
+ <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, Al
+ Viro <viro@zeniv.linux.org.uk>, Ajay Kaher <ajay.kaher@broadcom.com>, Linus
+ Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files
+ and directories all be the same
+Message-ID: <20240122100630.6a400dd3@gandalf.local.home>
+In-Reply-To: <CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
+References: <20240117143548.595884070@goodmis.org>
+	<20240117143810.531966508@goodmis.org>
+	<CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024012203-expedited-job-1d79@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 07:04:20AM -0800, Greg Kroah-Hartman wrote:
-> On Fri, Jan 19, 2024 at 05:27:18PM +0000, Carlos Llamas wrote:
-> > On Fri, Jan 19, 2024 at 06:49:00AM +0100, Greg Kroah-Hartman wrote:
-> > > On Thu, Jan 18, 2024 at 07:33:48PM +0000, Carlos Llamas wrote:
-> > > > On Fri, Dec 01, 2023 at 05:21:34PM +0000, Carlos Llamas wrote:
-> > > > > Each transaction is associated with a 'struct binder_buffer' that stores
-> > > > > the metadata about its buffer area. Since commit 74310e06be4d ("android:
-> > > > > binder: Move buffer out of area shared with user space") this struct is
-> > > > > no longer embedded within the buffer itself but is instead allocated on
-> > > > > the heap to prevent userspace access to this driver-exclusive info.
-> > > > > 
-> > > > > Unfortunately, the space of this struct is still being accounted for in
-> > > > > the total buffer size calculation, specifically for async transactions.
-> > > > > This results in an additional 104 bytes added to every async buffer
-> > > > > request, and this area is never used.
-> > > > > 
-> > > > > This wasted space can be substantial. If we consider the maximum mmap
-> > > > > buffer space of SZ_4M, the driver will reserve half of it for async
-> > > > > transactions, or 0x200000. This area should, in theory, accommodate up
-> > > > > to 262,144 buffers of the minimum 8-byte size. However, after adding
-> > > > > the extra 'sizeof(struct binder_buffer)', the total number of buffers
-> > > > > drops to only 18,724, which is a sad 7.14% of the actual capacity.
-> > > > > 
-> > > > > This patch fixes the buffer size calculation to enable the utilization
-> > > > > of the entire async buffer space. This is expected to reduce the number
-> > > > > of -ENOSPC errors that are seen on the field.
-> > > > > 
-> > > > > Fixes: 74310e06be4d ("android: binder: Move buffer out of area shared with user space")
-> > > > > Signed-off-by: Carlos Llamas <cmllamas@google.com>
-> > > > > ---
-> > > > 
-> > > > Sorry, I forgot to Cc: stable@vger.kernel.org.
-> > > 
-> > > 
-> > > <formletter>
-> > > 
-> > > This is not the correct way to submit patches for inclusion in the
-> > > stable kernel tree.  Please read:
-> > >     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> > > for how to do this properly.
-> > > 
-> > > </formletter>
-> > 
-> > Oops, here is the complete info:
-> > 
-> > Commit ID: c6d05e0762ab276102246d24affd1e116a46aa0c
-> > Subject:   "binder: fix unused alloc->free_async_space"
-> > Reason:    Fixes an incorrect calculation of available space.
-> > Versions:  v4.19+
-> > 
-> > Note this patch will also have trivial conflicts in v4.19 and v5.4
-> > kernels as commit 261e7818f06e is missing there. Please let me know and
-> > I can send the corresponding patches separately.
-> 
-> It doesn't even apply to 6.7.y either, so we need backports for all
-> affected trees, thanks.
+On Mon, 22 Jan 2024 11:38:52 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-Now I got it to apply, but we need backports for 5.4.y and 4.19.y,
-thanks.
+> Hi Stephen,
 
-greg k-h
+I don't know who "Stephen" is, but I'll reply to this message.
+
+>=20
+> On Wed, Jan 17, 2024 at 3:37=E2=80=AFPM Steven Rostedt <rostedt@goodmis.o=
+rg> wrote:
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> >
+> > The dentries and inodes are created in the readdir for the sole purpose=
+ of
+> > getting a consistent inode number. Linus stated that is unnecessary, and
+> > that all inodes can have the same inode number. For a virtual file syst=
+em
+> > they are pretty meaningless.
+> >
+> > Instead use a single unique inode number for all files and one for all
+> > directories.
+> >
+> > Link: https://lore.kernel.org/all/20240116133753.2808d45e@gandalf.local=
+home/
+
+Yeah, Linus wanted me to try this first and see if there's any regressions.
+Well, I guess you just answered that.
+
+The above link has me saying to Linus:
+
+  It was me being paranoid that using the same inode number would break user
+  space. If that is not a concern, then I'm happy to just make it either the
+  same, or maybe just hash the ei and name that it is associated with.
+
+> > Link: https://lore.kernel.org/linux-trace-kernel/20240116211353.4121803=
+63@goodmis.org
+> >
+> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Al  Viro <viro@ZenIV.linux.org.uk>
+> > Cc: Ajay Kaher <ajay.kaher@broadcom.com>
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org> =20
+>=20
+> Thanks for your patch, which is now commit 53c41052ba312176 ("eventfs:
+> Have the inodes all for files and directories all be the same") in
+> v6.8-rc1, to which I have bisected the issue below.
+>=20
+> > --- a/fs/tracefs/event_inode.c
+> > +++ b/fs/tracefs/event_inode.c
+> > @@ -32,6 +32,10 @@
+> >   */
+> >  static DEFINE_MUTEX(eventfs_mutex);
+> >
+> > +/* Choose something "unique" ;-) */
+> > +#define EVENTFS_FILE_INODE_INO         0x12c4e37
+> > +#define EVENTFS_DIR_INODE_INO          0x134b2f5
+> > +
+> >  /*
+> >   * The eventfs_inode (ei) itself is protected by SRCU. It is released =
+from
+> >   * its parent's list and will have is_freed set (under eventfs_mutex).
+> > @@ -352,6 +356,9 @@ static struct dentry *create_file(const char *name,=
+ umode_t mode,
+> >         inode->i_fop =3D fop;
+> >         inode->i_private =3D data;
+> >
+> > +       /* All files will have the same inode number */
+> > +       inode->i_ino =3D EVENTFS_FILE_INODE_INO;
+> > +
+> >         ti =3D get_tracefs(inode);
+> >         ti->flags |=3D TRACEFS_EVENT_INODE;
+> >         d_instantiate(dentry, inode);
+> > @@ -388,6 +395,9 @@ static struct dentry *create_dir(struct eventfs_ino=
+de *ei, struct dentry *parent
+> >         inode->i_op =3D &eventfs_root_dir_inode_operations;
+> >         inode->i_fop =3D &eventfs_file_operations;
+> >
+> > +       /* All directories will have the same inode number */
+> > +       inode->i_ino =3D EVENTFS_DIR_INODE_INO;
+> > +
+> >         ti =3D get_tracefs(inode);
+> >         ti->flags |=3D TRACEFS_EVENT_INODE; =20
+>=20
+> This confuses "find".
+> Running "find /sys/" now prints lots of error messages to stderr:
+>=20
+> find: File system loop detected;
+> =E2=80=98/sys/kernel/debug/tracing/events/initcall/initcall_finish=E2=80=
+=99 is part of
+> the same file system loop as
+> =E2=80=98/sys/kernel/debug/tracing/events/initcall=E2=80=99.
+
+So at a minimum, the directories need to have unique inode numbers.
+
+
+> find: File system loop detected;
+> =E2=80=98/sys/kernel/debug/tracing/events/initcall/initcall_start=E2=80=
+=99 is part of
+> the same file system loop as
+> =E2=80=98/sys/kernel/debug/tracing/events/initcall=E2=80=99.
+> find: File system loop detected;
+> =E2=80=98/sys/kernel/debug/tracing/events/initcall/initcall_level=E2=80=
+=99 is part of
+> the same file system loop as
+> =E2=80=98/sys/kernel/debug/tracing/events/initcall=E2=80=99.
+> [...]
+
+Does this fix it for you? It hashes the eventfs_inode data structure after
+adding some salt to it.
+
+Kees,=20
+
+I'm using the eventfs_inode pointer to create a unique value for the inode.
+But it's being salted, hashed and then truncated. As it is very easy to
+read inodes (although by default, only root has access to read these
+inodes), the inode numbers themselves shouldn't be able to leak kernel
+addresses via the results of these inode numbers, would it?
+
+-- Steve
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 6795fda2af19..d54897b84596 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -19,6 +19,7 @@
+ #include <linux/namei.h>
+ #include <linux/workqueue.h>
+ #include <linux/security.h>
++#include <linux/siphash.h>
+ #include <linux/tracefs.h>
+ #include <linux/kref.h>
+ #include <linux/delay.h>
+@@ -36,6 +37,31 @@ static DEFINE_MUTEX(eventfs_mutex);
+ #define EVENTFS_FILE_INODE_INO		0x12c4e37
+ #define EVENTFS_DIR_INODE_INO		0x134b2f5
+=20
++/* Used for making inode numbers */
++static siphash_key_t inode_key;
++
++/* Copied from scripts/kconfig/symbol.c */
++static unsigned strhash(const char *s)
++{
++	/* fnv32 hash */
++	unsigned hash =3D 2166136261U;
++	for (; *s; s++)
++		hash =3D (hash ^ *s) * 0x01000193;
++	return hash;
++}
++
++/* Just try to make something consistent and unique */
++static int eventfs_dir_ino(struct event_inode *ei, const char *name)
++{
++	unsigned long sip =3D (unsigned long)ei;
++
++	sip +=3D strhash(name) + EVENTFS_DIR_INODE_INO;
++	sip =3D siphash_1u32((int)sip, &inode_key);
++
++	/* keep it positive */
++	return sip & ((1U << 31) - 1);
++}
++
+ /*
+  * The eventfs_inode (ei) itself is protected by SRCU. It is released from
+  * its parent's list and will have is_freed set (under eventfs_mutex).
+@@ -396,7 +422,7 @@ static struct dentry *create_dir(struct eventfs_inode *=
+ei, struct dentry *parent
+ 	inode->i_fop =3D &eventfs_file_operations;
+=20
+ 	/* All directories will have the same inode number */
+-	inode->i_ino =3D EVENTFS_DIR_INODE_INO;
++	inode->i_ino =3D eventfs_dir_ino(ei, ei->name);
+=20
+ 	ti =3D get_tracefs(inode);
+ 	ti->flags |=3D TRACEFS_EVENT_INODE;
+@@ -802,7 +828,7 @@ static int eventfs_iterate(struct file *file, struct di=
+r_context *ctx)
+=20
+ 		name =3D ei_child->name;
+=20
+-		ino =3D EVENTFS_DIR_INODE_INO;
++		ino =3D eventfs_dir_ino(ei_child, name);
+=20
+ 		if (!dir_emit(ctx, name, strlen(name), ino, DT_DIR))
+ 			goto out_dec;
+@@ -932,6 +958,9 @@ struct eventfs_inode *eventfs_create_events_dir(const c=
+har *name, struct dentry
+ 	if (IS_ERR(dentry))
+ 		return ERR_CAST(dentry);
+=20
++	if (siphash_key_is_zero(&inode_key))
++		get_random_bytes(&inode_key, sizeof(inode_key));
++
+ 	ei =3D kzalloc(sizeof(*ei), GFP_KERNEL);
+ 	if (!ei)
+ 		goto fail_ei;
+
 
