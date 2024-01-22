@@ -1,503 +1,243 @@
-Return-Path: <linux-kernel+bounces-33074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9116836419
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:11:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15B2D83641F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:13:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 228AD1F24EEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:11:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18E041C21111
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F6E3C6A6;
-	Mon, 22 Jan 2024 13:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VCdI5w7f"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C0E3CF42;
+	Mon, 22 Jan 2024 13:13:23 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D79E3C6BC
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EC820DD2
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705929104; cv=none; b=fZddp/3sD7dAC+lqf5HAbDXEBMkFhCzwW6E1ipR9R9Nevq+f82IEte5T+htAXolnI0h2Ees6caWaYP/10bW7YRCWi7aUnrzXcJCFfkCJClkQ+AHM1YFkGd9kKGvaP21nLcWfv2UaaiCWtRsUW41NN0gDhrmQHgz5M8coVZ4NdN8=
+	t=1705929203; cv=none; b=Ffz8POoJp4hTeR7uhP0MKSlIy9BjFr7igzoyrOhtuw3chcmswWIIrTsaR5+M8ZvB8LTiPpMcxx4HHMhrqfiS8TvlMxKO17hvlTDTyScNjxZakeAjyJ83AGD9iW/Na+nz2VJjbQI7iS+Au3tBPD42BMLgQQlxl51ookMfVwX/Sno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705929104; c=relaxed/simple;
-	bh=iFqukQALJCEAIiVjNq5raCIZC+Wze+COrL+a+qV52eY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UdbNgOnvfSDfYrmofL0hMDfK7Qq0yra6L3/KrMmW+o63I3ObDctLMZ5zwpU6fmxrKs4DCcNFnEDCE+2LiUsvSdi/tcJz9eOVKpPpDfxrtIqqbDfJmxOmHpQq8/MDHBNTE2EvKLJ+nPg/PMSNuXW2VEKPWuDQH5m2V8NhOiIAdn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VCdI5w7f; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40eb033c192so3301165e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 05:11:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705929101; x=1706533901; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BJTj6wcyWR9x7Ucgj0b0lcsFzl50SFu9dv/wKBaBgMA=;
-        b=VCdI5w7fUY1u6Tj5b10GH4zay07JvivyjbNjXMoNGV5KLrwIC2uMgp2cWn0XEgc3cU
-         ZoC6XpfJJC3Gy53b8FeUkShNvN9d1Ub3j6OIATzUxl1wwOdK6w0AU3cCa0E0koNjjWXK
-         vODypDk34r0txnx90gvwe0RwaJA0EtxdLnnI9HU63HTQnkd1A6UTdusZue57WlS5pcLH
-         OW1YFgNwHxwm/afiyERmu4Zpp/KI335IUeNMS4OKDNCKOqQobCz83OKImZV0CU1Darfc
-         BztyUxivPRaDfVcDtXcbiIzwZMOYEMRCpCRORkH5yXjUY0aODD1NXxdBfKLhVbXaQSAa
-         Oi9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705929101; x=1706533901;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BJTj6wcyWR9x7Ucgj0b0lcsFzl50SFu9dv/wKBaBgMA=;
-        b=r0D+xS/zTILNxfs9qHu0SWGwujttxHr3jidw0EINpCjaO0uRlvx16BO/ttY3A4dtbS
-         Te1UA7sVciCM2h0PSYSb6Scwg59qdu3X0nfVR+PZ4ZheLRBPIykRd1q/g/6b7KLK3z8w
-         zbef8Cfl1Jkm/Il6ObsPGHVmN3J/rjyJLX9eIUPuQajQoYYiOyDT0AWF9Gyb46xgORKF
-         WhqI612J3mNEFnS4czmkc8LnXuoy6BgLNP1RbRe+0D802Gi9GqqLiytrho8NklOkBws/
-         Hx5X1+Vjp1GdKzVvHk6AdK+RlO2wS1RzEKSEXNm1AhdhNUcKr4ekvzZqHNRl2YmoxxFv
-         n/8g==
-X-Gm-Message-State: AOJu0YzSLvG9V+qqwGxmPE9NPK3cQXBXswfc/4CbewvjSwYoinXfRnJW
-	1Pxe6OBxsJ5JQmm49Dbvm4lVhr3a7r1VhSW1QJxFAvSf35GnPpKzvIm2jvISXew=
-X-Google-Smtp-Source: AGHT+IHK2+u5+MnXNXD7DKeV3qS/mQwoZUY4TJrsybH5bmAYbgj9bb8ovK88rIKT2dPkIvOX2gIAYQ==
-X-Received: by 2002:a05:600c:4f55:b0:40e:a366:e718 with SMTP id m21-20020a05600c4f5500b0040ea366e718mr1867040wmq.42.1705929100682;
-        Mon, 22 Jan 2024 05:11:40 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id u13-20020a05600c19cd00b0040e451fd602sm42841958wmq.33.2024.01.22.05.11.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 05:11:40 -0800 (PST)
-Message-ID: <403b997a-ec01-4d41-a764-aea376f86362@linaro.org>
-Date: Mon, 22 Jan 2024 14:11:38 +0100
+	s=arc-20240116; t=1705929203; c=relaxed/simple;
+	bh=ShVSGz8bx4QujhaJoJYUvNHGEuQxq+K4Dn8Jt0gFXl0=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=YwrlZddFiaxzuAMXVsyKQLGdro18bJrVEDhFOV0qBq2zR7xL3OKHksMAvSf+1mwDteptNebxcjoTMHgbNQ4HjY6KwFWhrpHMzMjHAIZT4vNjmdHlE1cCjgv4m4vNhLWghjRjawrYOsWPhf3n1BI2JVzLdcTnc44l7keAeQtT0QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TJVxb4TLpzNlLt;
+	Mon, 22 Jan 2024 21:12:19 +0800 (CST)
+Received: from kwepemd500003.china.huawei.com (unknown [7.221.188.36])
+	by mail.maildlp.com (Postfix) with ESMTPS id 70023140499;
+	Mon, 22 Jan 2024 21:13:10 +0800 (CST)
+Received: from [10.67.146.137] (10.67.146.137) by
+ kwepemd500003.china.huawei.com (7.221.188.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Mon, 22 Jan 2024 21:13:09 +0800
+Subject: Re: [PATCH] irqchip/gic-v4.1:Check whether indirect table is
+ supported in allocate_vpe_l1_table
+To: Marc Zyngier <maz@kernel.org>
+CC: <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <guoyang2@huawei.com>,
+	<wangwudi@hisilicon.com>
+References: <20240122160607.1078960-1-tangnianyao@huawei.com>
+ <86sf2p91zt.wl-maz@kernel.org>
+From: Tangnianyao <tangnianyao@huawei.com>
+Message-ID: <5de3da53-9c0d-2a2d-876b-2181e540fa2f@huawei.com>
+Date: Mon, 22 Jan 2024 21:13:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/5] reset: Instantiate reset GPIO controller for
- shared reset-gpios
-Content-Language: en-US
-To: Philipp Zabel <p.zabel@pengutronix.de>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Peter Rosin <peda@axentia.se>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Sean Anderson <sean.anderson@seco.com>
-References: <20240112163608.528453-1-krzysztof.kozlowski@linaro.org>
- <20240112163608.528453-3-krzysztof.kozlowski@linaro.org>
- <568dc713f0c2fa29e5ba7b25c2d1d0e2be96fa95.camel@pengutronix.de>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <568dc713f0c2fa29e5ba7b25c2d1d0e2be96fa95.camel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <86sf2p91zt.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd500003.china.huawei.com (7.221.188.36)
 
-On 15/01/2024 17:55, Philipp Zabel wrote:
-> On Fr, 2024-01-12 at 17:36 +0100, Krzysztof Kozlowski wrote:
+
+
+On 1/22/2024 17:00, Marc Zyngier wrote:
+> [Fixing the LKML address, which has bits of Stephan's address embedded
+> in it...]
+>
+> On Mon, 22 Jan 2024 16:06:07 +0000,
+> Nianyao Tang <tangnianyao@huawei.com> wrote:
+>> In allocate_vpe_l1_table, when we fail to inherit VPE table from other
+>> redistributors or ITSs, and we allocate a new vpe table for current common 
+>> affinity field without checking whether indirect table is supported.
+>> Let's fix it.
+> Is there an actual implementation that doesn't support the indirect
+> property for the VPE table? I know this is allowed for consistency
+> with the original revision of the architecture, but I never expected
+> an actual GICv4.1 implementation to be *that* bad.
+>
+> If that's the case, I'm a bit puzzled/worried.
+
+I met this problem in a developing implementation and find it's allowed by GIC spec.
+In such environment,  in a common affinity field with only redistributors and without
+any ITS in it, forcing its_vpe_id_alloc to allocate a large vpeid(like 65000), and there
+comes an error message "VPE IRQ allocation failure". It originally comes from
+allocate_vpe_l2_table, reading GICR_VPROPBASER with GICR_VPROPBASER_4_1_SIZE=1
+and GICR_VPROPBASER_4_1_INDIRECT=0.
+
+>
+>> Signed-off-by: Nianyao Tang <tangnianyao@huawei.com>
+>> ---
+>>  drivers/irqchip/irq-gic-v3-its.c   | 28 ++++++++++++++++++++++------
+>>  include/linux/irqchip/arm-gic-v3.h |  1 +
+>>  2 files changed, 23 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+>> index d097001c1e3e..4146d1e285ec 100644
+>> --- a/drivers/irqchip/irq-gic-v3-its.c
+>> +++ b/drivers/irqchip/irq-gic-v3-its.c
+>> @@ -2836,6 +2836,7 @@ static int allocate_vpe_l1_table(void)
+>>  	unsigned int psz = SZ_64K;
+>>  	unsigned int np, epp, esz;
+>>  	struct page *page;
+>> +	bool indirect = false;
+> Why the upfront initialisation?
+>
 >>  
->> +static bool __reset_gpios_args_match(const struct of_phandle_args *a1,
->> +				     const struct of_phandle_args *a2)
->> +{
->> +	unsigned int i;
+>>  	if (!gic_rdists->has_rvpeid)
+>>  		return 0;
+>> @@ -2890,6 +2891,12 @@ static int allocate_vpe_l1_table(void)
+>>  		break;
+>>  	}
+>>  
+>> +	/* probe the indirect */
+>> +	val = GICR_VPROPBASER_4_1_INDIRECT;
+>> +	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
+>> +	val = gicr_read_vpropbaser(vlpi_base + GICR_VPROPBASER);
+>> +	indirect = !!(val & GICR_VPROPBASER_4_1_INDIRECT);
+> You can probe the indirect bit as part of the page-size probe, no need
+> for an extra R/W sequence.
+>
 >> +
->> +	if (!a2)
->> +		return false;
->> +
->> +	if (a1->args_count != a2->args_count)
->> +		return false;
->> +
->> +	for (i = 0; i < a1->args_count; i++)
->> +		if (a1->args[i] != a2->args[i])
->> +			return false;
->> +
->> +	return true;
->> +}
-> 
-> How about making this
-> 
-> 	return a2 &&
-> 	       a1->np == a2->np &&
-> 	       a1->args_count == a2->args_count &&
-> 	       !memcmp(a1->args, a2->args, sizeof(a1->args[0]) * a1->args_count);
-> 
-> ?
-> 
-> There's similar code in include/linux/cpufreq.h, maybe this could later
-> be lifted into a common of_phandle_args_equal().
-
-I'll make a helper because such long return is also not the fastest to
-parse by brain.
-
-> 
->> +
->> +static int __reset_add_reset_gpio_lookup(int id, struct device_node *np,
->> +					 unsigned int gpio,
->> +					 unsigned int of_flags)
->> +{
->> +	struct gpiod_lookup_table *lookup __free(kfree) = NULL;
->> +	struct gpio_device *gdev __free(gpio_device_put) = NULL;
->> +	char *label __free(kfree) = NULL;
->> +	unsigned int lookup_flags;
->> +
->> +	/*
->> +	 * Later we map GPIO flags between OF and Linux, however not all
->> +	 * constants from include/dt-bindings/gpio/gpio.h and
->> +	 * include/linux/gpio/machine.h match each other.
->> +	 */
->> +	if (of_flags > GPIO_ACTIVE_LOW) {
->> +		pr_err("reset-gpio code does not support GPIO flags %u for GPIO %u\n",
->> +			of_flags, gpio);
->> +		return -EINVAL;
->> +	}
->> +
->> +	gdev = gpio_device_find_by_fwnode(of_fwnode_handle(np));
->> +	if (!gdev)
->> +		return -EPROBE_DEFER;
->> +
->> +	label = kstrdup(gpio_device_get_label(gdev), GFP_KERNEL);
->> +	if (!label)
->> +		return -EINVAL;
-> 
-> The kstrdup() failure looks like it should be -ENOMEM to me.
-> I'd check the gpio_device_get_label(gdev) return value separately.
-
-OK, makes sense. One more local variable will be needed for that.
-
-> 
-> Is this going to be in v6.8-rc1, or does using gpio_device_get_label()
-> introduce a dependency?
-
-We were already in the merge window, so no problem here.
-gpio_device_get_label() is in v6.8-rc1.
-
-
-> 
->> +
->> +	/* Size: one lookup entry plus sentinel */
->> +	lookup = kzalloc(struct_size(lookup, table, 2), GFP_KERNEL);
->> +	if (!lookup)
->> +		return -ENOMEM;
->> +
->> +	lookup->dev_id = kasprintf(GFP_KERNEL, "reset-gpio.%d", id);
->> +	if (!lookup->dev_id)
->> +		return -ENOMEM;
->> +
->> +	lookup_flags = GPIO_PERSISTENT;
->> +	lookup_flags |= of_flags & GPIO_ACTIVE_LOW;
->> +	lookup->table[0] = GPIO_LOOKUP(no_free_ptr(label), gpio, "reset",
->> +				       lookup_flags);
->> +
->> +	gpiod_add_lookup_table(no_free_ptr(lookup));
->> +
->> +	return 0;
->> +}
->> +
->> +/*
->> + * @reset_args:	phandle to the GPIO provider with all the args like GPIO number
-> 
-> s/reset_//
-
-ack
-
-> 
->> + */
->> +static int __reset_add_reset_gpio_device(const struct of_phandle_args *args)
->> +{
->> +	struct reset_gpio_lookup *rgpio_dev;
->> +	struct platform_device *pdev;
->> +	int id, ret;
->> +
->> +	/*
->> +	 * Registering reset-gpio device might cause immediate
->> +	 * bind, resulting in its probe() registering new reset controller thus
->> +	 * taking reset_list_mutex lock via reset_controller_register().
->> +	 */
->> +	lockdep_assert_not_held(&reset_list_mutex);
->> +
->> +	mutex_lock(&reset_gpio_lookup_mutex);
->> +
->> +	list_for_each_entry(rgpio_dev, &reset_gpio_lookup_list, list) {
->> +		if (args->np == rgpio_dev->of_args.np) {
->> +			if (__reset_gpios_args_match(args, &rgpio_dev->of_args))
->> +				goto out; /* Already on the list, done */
->> +		}
->> +	}
->> +
->> +	id = ida_alloc(&reset_gpio_ida, GFP_KERNEL);
->> +	if (id < 0) {
->> +		ret = id;
->> +		goto err_unlock;
->> +	}
->> +
->> +	/*
->> +	 * Not freed in normal path, persisent subsystem data (which is assumed
->> +	 * also in the reset-gpio driver).
->> +	 */
->> +	rgpio_dev = kzalloc(sizeof(*rgpio_dev), GFP_KERNEL);
->> +	if (!rgpio_dev) {
->> +		ret = -ENOMEM;
->> +		goto err_ida_free;
->> +	}
->> +
->> +	ret = __reset_add_reset_gpio_lookup(id, args->np, args->args[0],
->> +					    args->args[1]);
->> +	if (ret < 0)
->> +		goto err_kfree;
->> +
->> +	rgpio_dev->of_args = *args;
->> +	/*
->> +	 * We keep the device_node reference, but of_args.np is put at the end
->> +	 * of __of_reset_control_get(), so get it one more time.
->> +	 * Hold reference as long as rgpio_dev memory is valid.
->> +	 */
->> +	of_node_get(rgpio_dev->of_args.np);
->> +	pdev = platform_device_register_data(NULL, "reset-gpio", id,
->> +					     &rgpio_dev->of_args,
->> +					     sizeof(rgpio_dev->of_args));
->> +	ret = PTR_ERR_OR_ZERO(pdev);
->> +	if (ret)
->> +		goto err_put;
->> +
->> +	list_add(&rgpio_dev->list, &reset_gpio_lookup_list);
->> +
->> +out:
->> +	mutex_unlock(&reset_gpio_lookup_mutex);
->> +
->> +	return 0;
->> +
->> +err_put:
->> +	of_node_put(rgpio_dev->of_args.np);
->> +err_kfree:
->> +	kfree(rgpio_dev);
->> +err_ida_free:
->> +	ida_free(&reset_gpio_ida, id);
->> +err_unlock:
->> +	mutex_unlock(&reset_gpio_lookup_mutex);
->> +
->> +	return ret;
->> +}
->> +
->> +static struct reset_controller_dev *__reset_find_rcdev(const struct of_phandle_args *args,
->> +						       bool gpio_fallback)
->> +{
->> +	struct reset_controller_dev *r, *rcdev;
-> 
-> Now that this is moved into a function, there's no need for the r,
-> rcdev split anymore. Just return a match when found, and NULL at the
-> end:
-> 
-> 	struct reset_controller_dev *rcdev;
-
-Indeed, thanks.
-
-> 
->> +
->> +	lockdep_assert_held(&reset_list_mutex);
->> +
->> +	rcdev = NULL;
->> +	list_for_each_entry(r, &reset_controller_list, list) {
-> 
-> 	list_for_each_entry(rcdev, &reset_controller_list, list) {
-> 
->> +		if (args->np == r->of_node) {
->> +			if (gpio_fallback) {
->> +				if (__reset_gpios_args_match(args, r->of_args)) {
->> +					rcdev = r;
->> +					break;
-> 
-> 					return rcdev;
-> 
->> +				}
->> +			} else {
->> +				rcdev = r;
->> +				break;
+>>  	/*
+>>  	 * Start populating the register from scratch, including RO fields
+>>  	 * (which we want to print in debug cases...)
+>> @@ -2907,15 +2914,24 @@ static int allocate_vpe_l1_table(void)
+>>  	 * as indirect and compute the number of required L1 pages.
+>>  	 */
+>>  	if (epp < ITS_MAX_VPEID) {
+>> -		int nl2;
+>> +		if (indirect) {
+>> +			int nl2;
+>>  
+>> -		val |= GICR_VPROPBASER_4_1_INDIRECT;
+>> +			val |= GICR_VPROPBASER_4_1_INDIRECT;
+>>  
+>> -		/* Number of L2 pages required to cover the VPEID space */
+>> -		nl2 = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
+>> +			/* Number of L2 pages required to cover the VPEID space */
+>> +			nl2 = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
+>>  
+>> -		/* Number of L1 pages to point to the L2 pages */
+>> -		npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
+>> +			/* Number of L1 pages to point to the L2 pages */
+>> +			npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
+>> +		} else {
+>> +			npg = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
+>> +			if (npg > GICR_VPROPBASER_PAGES_MAX) {
+>> +				pr_warn("GICR_VPROPBASER pages too large, reduce %llu->%u\n",
+>> +					npg, GICR_VPROPBASER_PAGES_MAX);
+>> +				npg = GICR_VPROPBASER_PAGES_MAX;
 >> +			}
 >> +		}
-> 
-> With the np check moved into __reset_gpios_args_match() above, the
-> whole loop could be turned into:
-> 
-> 		if (gpio_fallback) {
-> 			if (__reset_gpios_args_match(args, rcdev->of_args))
-> 				return rcdev;
-> 		} else {
-> 			if (args->np == rcdev->of_node)
-> 				return rcdev;
-> 		}
-> 
-> Explicitly checking against rcdev->of_args->np instead of rcdev-
->> of_node in gpio_fallback mode could avoid false positives in case
-> anybody ever creates a combined GPIO and reset controller device and
-> then uses its GPIOs to drive a shared reset line..
-
-ack
-
-> 
->> +	}
->> +
->> +	return rcdev;
-> 
-> 	return NULL;
-
-ack
-
-> 
->> +}
->>
->>  struct reset_control *
->>  __of_reset_control_get(struct device_node *node, const char *id, int index,
->>  		       bool shared, bool optional, bool acquired)
->>  {
->> +	struct of_phandle_args args = {0};
-> 
-> Is this still needed?
-
-I will double check.
-
-> 
->> +	bool gpio_fallback = false;
->>  	struct reset_control *rstc;
->> -	struct reset_controller_dev *r, *rcdev;
->> -	struct of_phandle_args args;
->> +	struct reset_controller_dev *rcdev;
->>  	int rstc_id;
->>  	int ret;
->>  
->> @@ -839,39 +1028,49 @@ __of_reset_control_get(struct device_node *node, const char *id, int index,
->>  					 index, &args);
->>  	if (ret == -EINVAL)
->>  		return ERR_PTR(ret);
->> -	if (ret)
->> -		return optional ? NULL : ERR_PTR(ret);
->> +	if (ret) {
->> +		/*
->> +		 * There can be only one reset-gpio for regular devices, so
->> +		 * don't bother with GPIO index.
->> +		 */
->> +		ret = of_parse_phandle_with_args(node, "reset-gpios", "#gpio-cells",
->> +						 0, &args);
->> +		if (ret)
->> +			return optional ? NULL : ERR_PTR(ret);
->>  
->> -	mutex_lock(&reset_list_mutex);
->> -	rcdev = NULL;
->> -	list_for_each_entry(r, &reset_controller_list, list) {
->> -		if (args.np == r->of_node) {
->> -			rcdev = r;
->> -			break;
->> +		gpio_fallback = true;
->> +
->> +		ret = __reset_add_reset_gpio_device(&args);
->> +		if (ret) {
->> +			rstc = ERR_PTR(ret);
->> +			goto out_put;
->>  		}
+>>  	} else {
+>>  		npg = 1;
+> Why don't you treat the two indirect cases at the same point? It
+> really should read:
+>
+> 	if (epp < ITS_MAX_VPEID && indirect) {
+> 		[unchanged]
+> 	} else {
+> 		[compute the number of L1 pages in the !indirect case]
+> 	}
+>
 >>  	}
->>  
->> +	mutex_lock(&reset_list_mutex);
->> +	rcdev = __reset_find_rcdev(&args, gpio_fallback);
->>  	if (!rcdev) {
->>  		rstc = ERR_PTR(-EPROBE_DEFER);
->> -		goto out;
->> +		goto out_unlock;
->>  	}
->>  
->>  	if (WARN_ON(args.args_count != rcdev->of_reset_n_cells)) {
-> 
-> Nice. I like that the __of_reset_control_get() changes are much less
-> invasive now.
-> 
->>  		rstc = ERR_PTR(-EINVAL);
->> -		goto out;
->> +		goto out_unlock;
->>  	}
->>  
->>  	rstc_id = rcdev->of_xlate(rcdev, &args);
->>  	if (rstc_id < 0) {
->>  		rstc = ERR_PTR(rstc_id);
->> -		goto out;
->> +		goto out_unlock;
->>  	}
->>  
->>  	/* reset_list_mutex also protects the rcdev's reset_control list */
->>  	rstc = __reset_control_get_internal(rcdev, rstc_id, shared, acquired);
->>  
->> -out:
->> +out_unlock:
->>  	mutex_unlock(&reset_list_mutex);
->> +out_put:
->>  	of_node_put(args.np);
->>  
->>  	return rstc;
->> diff --git a/include/linux/reset-controller.h b/include/linux/reset-controller.h
->> index 0fa4f60e1186..e064473215de 100644
->> --- a/include/linux/reset-controller.h
->> +++ b/include/linux/reset-controller.h
->> @@ -61,6 +61,9 @@ struct reset_control_lookup {
->>   * @dev: corresponding driver model device struct
->>   * @of_node: corresponding device tree node as phandle target
->>   * @of_reset_n_cells: number of cells in reset line specifiers
->> + * TODO: of_args have of_node, so we have here duplication
-> 
-> Any plans what to do about this? With the above changes we could
-> mandate that either of_node or of_args should be set, never both.
+>> diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
+>> index 728691365464..ace37dfbff20 100644
+>> --- a/include/linux/irqchip/arm-gic-v3.h
+>> +++ b/include/linux/irqchip/arm-gic-v3.h
+>> @@ -303,6 +303,7 @@
+>>  #define GICR_VPROPBASER_4_1_Z		(1ULL << 52)
+>>  #define GICR_VPROPBASER_4_1_ADDR	GENMASK_ULL(51, 12)
+>>  #define GICR_VPROPBASER_4_1_SIZE	GENMASK_ULL(6, 0)
+>> +#define GICR_VPROPBASER_PAGES_MAX  128
+> Don't hardcode numbers. Use the definition of the SIZE field
+> instead. And if you must have a new #define, please use the 4_1
+> indication so that it isn't confused with the v4.0 layout.
 
-Yes, makes sense. We could also drop of_node, but the code won't be more
-readable.
+yeah, I'm also confused when writing this hardcode number, and just follow
+the marco GITS_BASER_PAGES_MAX.
+I have another question here. The max number of pages  for GITS_BASER
+and GICR_VPROPBASER is different here, while GITS_BASER.Size is
+bit[7:0] with max 256, and GICR_4_1_VPROPBASER.Size is bit[6:0] with max 128.
+Kernel usually probe ITS basers first and then probe GICR_4_1_VPROPBASER in
+a common affinity group. Maybe we need to check this in "inherit_vpe_l1_table_from_its" ?
 
-Best regards,
-Krzysztof
+>
+> I'd expect something like the following (untested) hack.
+>
+> 	M.
+>
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index 9a7a74239eab..555b86f375e1 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -2836,6 +2836,7 @@ static int allocate_vpe_l1_table(void)
+>  	unsigned int psz = SZ_64K;
+>  	unsigned int np, epp, esz;
+>  	struct page *page;
+> +	bool indirect;
+>  
+>  	if (!gic_rdists->has_rvpeid)
+>  		return 0;
+> @@ -2870,10 +2871,12 @@ static int allocate_vpe_l1_table(void)
+>  
+>  	/* First probe the page size */
+>  	val = FIELD_PREP(GICR_VPROPBASER_4_1_PAGE_SIZE, GIC_PAGE_SIZE_64K);
+> +	val |= GICR_VPROPBASER_4_1_INDIRECT;
+>  	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
+>  	val = gicr_read_vpropbaser(vlpi_base + GICR_VPROPBASER);
+>  	gpsz = FIELD_GET(GICR_VPROPBASER_4_1_PAGE_SIZE, val);
+>  	esz = FIELD_GET(GICR_VPROPBASER_4_1_ENTRY_SIZE, val);
+> +	indirect = !!(val & GICR_VPROPBASER_4_1_INDIRECT);
+>  
+>  	switch (gpsz) {
+>  	default:
+> @@ -2906,7 +2909,7 @@ static int allocate_vpe_l1_table(void)
+>  	 * If we need more than just a single L1 page, flag the table
+>  	 * as indirect and compute the number of required L1 pages.
+>  	 */
+> -	if (epp < ITS_MAX_VPEID) {
+> +	if (epp < ITS_MAX_VPEID && indirect) {
+>  		int nl2;
+>  
+>  		val |= GICR_VPROPBASER_4_1_INDIRECT;
+> @@ -2917,7 +2920,8 @@ static int allocate_vpe_l1_table(void)
+>  		/* Number of L1 pages to point to the L2 pages */
+>  		npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
+>  	} else {
+> -		npg = 1;
+> +		npg = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
+> +		npg = clamp_val(npg, 1, (GICR_VPROPBASER_4_1_SIZE + 1));
+>  	}
+>  
+>  	val |= FIELD_PREP(GICR_VPROPBASER_4_1_SIZE, npg - 1);
+>
+I've tested your patch and it's ok and it can solve my problem.
 
 
