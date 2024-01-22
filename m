@@ -1,243 +1,161 @@
-Return-Path: <linux-kernel+bounces-33075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15B2D83641F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:13:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B377836423
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:13:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18E041C21111
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:13:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BA221F24AEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C0E3CF42;
-	Mon, 22 Jan 2024 13:13:23 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D763CF50;
+	Mon, 22 Jan 2024 13:13:54 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EC820DD2
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 125BD3C6AB
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:13:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705929203; cv=none; b=Ffz8POoJp4hTeR7uhP0MKSlIy9BjFr7igzoyrOhtuw3chcmswWIIrTsaR5+M8ZvB8LTiPpMcxx4HHMhrqfiS8TvlMxKO17hvlTDTyScNjxZakeAjyJ83AGD9iW/Na+nz2VJjbQI7iS+Au3tBPD42BMLgQQlxl51ookMfVwX/Sno=
+	t=1705929234; cv=none; b=VY9adPqS0o9EPuFYvfty0EyhsdKsTtHzSuCH3fmlgtwe1hGG/dwUkrW026tydM5jubB3WlCg+myMq2F9KRFuH2AAGyTy1d/svp96In4njk93nO0GKE3YsPJi2lVgZXrN0++oQE+XEQfLwmpEHbSsLuS2dfYCOxbUqGu/US6tz8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705929203; c=relaxed/simple;
-	bh=ShVSGz8bx4QujhaJoJYUvNHGEuQxq+K4Dn8Jt0gFXl0=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=YwrlZddFiaxzuAMXVsyKQLGdro18bJrVEDhFOV0qBq2zR7xL3OKHksMAvSf+1mwDteptNebxcjoTMHgbNQ4HjY6KwFWhrpHMzMjHAIZT4vNjmdHlE1cCjgv4m4vNhLWghjRjawrYOsWPhf3n1BI2JVzLdcTnc44l7keAeQtT0QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TJVxb4TLpzNlLt;
-	Mon, 22 Jan 2024 21:12:19 +0800 (CST)
-Received: from kwepemd500003.china.huawei.com (unknown [7.221.188.36])
-	by mail.maildlp.com (Postfix) with ESMTPS id 70023140499;
-	Mon, 22 Jan 2024 21:13:10 +0800 (CST)
-Received: from [10.67.146.137] (10.67.146.137) by
- kwepemd500003.china.huawei.com (7.221.188.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Mon, 22 Jan 2024 21:13:09 +0800
-Subject: Re: [PATCH] irqchip/gic-v4.1:Check whether indirect table is
- supported in allocate_vpe_l1_table
-To: Marc Zyngier <maz@kernel.org>
-CC: <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <guoyang2@huawei.com>,
-	<wangwudi@hisilicon.com>
-References: <20240122160607.1078960-1-tangnianyao@huawei.com>
- <86sf2p91zt.wl-maz@kernel.org>
-From: Tangnianyao <tangnianyao@huawei.com>
-Message-ID: <5de3da53-9c0d-2a2d-876b-2181e540fa2f@huawei.com>
-Date: Mon, 22 Jan 2024 21:13:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+	s=arc-20240116; t=1705929234; c=relaxed/simple;
+	bh=5R7j8Dl9cK0KfAuJewWJ6X7E8Pn2vi+QuvLjLtLOAz8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UHY0MACZhGiRCZZuqkeP8N/m+kBJ0dys1nlR3jDIF1/lACEfgIO3XCmUMTY2J4mJ7r5VH56mLN75aqMG0OitH0O3Jw+642OXoH/79V4zQLDKkbPIpQKNx9feKwaSFnNsF8kNTOTPqyXoHk3JAgrLYEW/IOnOJUmFVYSTX7g+/rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rRu75-0005ez-Pg; Mon, 22 Jan 2024 14:13:19 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rRu73-001biB-E1; Mon, 22 Jan 2024 14:13:17 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id EDDCF27B58F;
+	Mon, 22 Jan 2024 13:13:16 +0000 (UTC)
+Date: Mon, 22 Jan 2024 14:13:16 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-riscv@lists.infradead.org, 
+	Conor Dooley <conor.dooley@microchip.com>, Daire McNamara <daire.mcnamara@microchip.com>, 
+	Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] dt-bindings: can: mpfs: add missing required clock
+Message-ID: <20240122-surely-crimp-ba4a8c55106d-mkl@pengutronix.de>
+References: <20240122-catty-roast-d3625dbb02fe@spud>
+ <20240122-breeder-lying-0d3668d98886@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <86sf2p91zt.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd500003.china.huawei.com (7.221.188.36)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gm5qx6ivqj7qxcxg"
+Content-Disposition: inline
+In-Reply-To: <20240122-breeder-lying-0d3668d98886@spud>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
+--gm5qx6ivqj7qxcxg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 1/22/2024 17:00, Marc Zyngier wrote:
-> [Fixing the LKML address, which has bits of Stephan's address embedded
-> in it...]
->
-> On Mon, 22 Jan 2024 16:06:07 +0000,
-> Nianyao Tang <tangnianyao@huawei.com> wrote:
->> In allocate_vpe_l1_table, when we fail to inherit VPE table from other
->> redistributors or ITSs, and we allocate a new vpe table for current common 
->> affinity field without checking whether indirect table is supported.
->> Let's fix it.
-> Is there an actual implementation that doesn't support the indirect
-> property for the VPE table? I know this is allowed for consistency
-> with the original revision of the architecture, but I never expected
-> an actual GICv4.1 implementation to be *that* bad.
->
-> If that's the case, I'm a bit puzzled/worried.
+On 22.01.2024 12:19:50, Conor Dooley wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> The CAN controller on PolarFire SoC has an AHB peripheral clock _and_ a
+> CAN bus clock. The bus clock was omitted when the binding was written,
+> but is required for operation. Make up for lost time and add it.
+>=20
+> Cautionary tale in adding bindings without having implemented a real
+> user for them perhaps.
+>=20
+> Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs CAN contr=
+oller")
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>  .../devicetree/bindings/net/can/microchip,mpfs-can.yaml     | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can=
+=2Eyaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
+> index 45aa3de7cf01..01e4d4a54df6 100644
+> --- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
+> @@ -24,7 +24,9 @@ properties:
+>      maxItems: 1
+> =20
+>    clocks:
+> -    maxItems: 1
+> +    items:
+> +      - description: AHB peripheral clock
+> +      - description: CAN bus clock
 
-I met this problem in a developing implementation and find it's allowed by GIC spec.
-In such environment,  in a common affinity field with only redistributors and without
-any ITS in it, forcing its_vpe_id_alloc to allocate a large vpeid(like 65000), and there
-comes an error message "VPE IRQ allocation failure". It originally comes from
-allocate_vpe_l2_table, reading GICR_VPROPBASER with GICR_VPROPBASER_4_1_SIZE=1
-and GICR_VPROPBASER_4_1_INDIRECT=0.
+What about adding clock-names, so that the order can be checked
+automatically?
 
->
->> Signed-off-by: Nianyao Tang <tangnianyao@huawei.com>
->> ---
->>  drivers/irqchip/irq-gic-v3-its.c   | 28 ++++++++++++++++++++++------
->>  include/linux/irqchip/arm-gic-v3.h |  1 +
->>  2 files changed, 23 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
->> index d097001c1e3e..4146d1e285ec 100644
->> --- a/drivers/irqchip/irq-gic-v3-its.c
->> +++ b/drivers/irqchip/irq-gic-v3-its.c
->> @@ -2836,6 +2836,7 @@ static int allocate_vpe_l1_table(void)
->>  	unsigned int psz = SZ_64K;
->>  	unsigned int np, epp, esz;
->>  	struct page *page;
->> +	bool indirect = false;
-> Why the upfront initialisation?
->
->>  
->>  	if (!gic_rdists->has_rvpeid)
->>  		return 0;
->> @@ -2890,6 +2891,12 @@ static int allocate_vpe_l1_table(void)
->>  		break;
->>  	}
->>  
->> +	/* probe the indirect */
->> +	val = GICR_VPROPBASER_4_1_INDIRECT;
->> +	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
->> +	val = gicr_read_vpropbaser(vlpi_base + GICR_VPROPBASER);
->> +	indirect = !!(val & GICR_VPROPBASER_4_1_INDIRECT);
-> You can probe the indirect bit as part of the page-size probe, no need
-> for an extra R/W sequence.
->
->> +
->>  	/*
->>  	 * Start populating the register from scratch, including RO fields
->>  	 * (which we want to print in debug cases...)
->> @@ -2907,15 +2914,24 @@ static int allocate_vpe_l1_table(void)
->>  	 * as indirect and compute the number of required L1 pages.
->>  	 */
->>  	if (epp < ITS_MAX_VPEID) {
->> -		int nl2;
->> +		if (indirect) {
->> +			int nl2;
->>  
->> -		val |= GICR_VPROPBASER_4_1_INDIRECT;
->> +			val |= GICR_VPROPBASER_4_1_INDIRECT;
->>  
->> -		/* Number of L2 pages required to cover the VPEID space */
->> -		nl2 = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
->> +			/* Number of L2 pages required to cover the VPEID space */
->> +			nl2 = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
->>  
->> -		/* Number of L1 pages to point to the L2 pages */
->> -		npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
->> +			/* Number of L1 pages to point to the L2 pages */
->> +			npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
->> +		} else {
->> +			npg = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
->> +			if (npg > GICR_VPROPBASER_PAGES_MAX) {
->> +				pr_warn("GICR_VPROPBASER pages too large, reduce %llu->%u\n",
->> +					npg, GICR_VPROPBASER_PAGES_MAX);
->> +				npg = GICR_VPROPBASER_PAGES_MAX;
->> +			}
->> +		}
->>  	} else {
->>  		npg = 1;
-> Why don't you treat the two indirect cases at the same point? It
-> really should read:
->
-> 	if (epp < ITS_MAX_VPEID && indirect) {
-> 		[unchanged]
-> 	} else {
-> 		[compute the number of L1 pages in the !indirect case]
-> 	}
->
->>  	}
->> diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
->> index 728691365464..ace37dfbff20 100644
->> --- a/include/linux/irqchip/arm-gic-v3.h
->> +++ b/include/linux/irqchip/arm-gic-v3.h
->> @@ -303,6 +303,7 @@
->>  #define GICR_VPROPBASER_4_1_Z		(1ULL << 52)
->>  #define GICR_VPROPBASER_4_1_ADDR	GENMASK_ULL(51, 12)
->>  #define GICR_VPROPBASER_4_1_SIZE	GENMASK_ULL(6, 0)
->> +#define GICR_VPROPBASER_PAGES_MAX  128
-> Don't hardcode numbers. Use the definition of the SIZE field
-> instead. And if you must have a new #define, please use the 4_1
-> indication so that it isn't confused with the v4.0 layout.
+> =20
+>  required:
+>    - compatible
+> @@ -39,7 +41,7 @@ examples:
+>      can@2010c000 {
+>          compatible =3D "microchip,mpfs-can";
+>          reg =3D <0x2010c000 0x1000>;
+> -        clocks =3D <&clkcfg 17>;
+> +        clocks =3D <&clkcfg 17>, <&clkcfg 37>;
+>          interrupt-parent =3D <&plic>;
+>          interrupts =3D <56>;
+>      };
+> --=20
+> 2.43.0
+>=20
+>=20
 
-yeah, I'm also confused when writing this hardcode number, and just follow
-the marco GITS_BASER_PAGES_MAX.
-I have another question here. The max number of pages  for GITS_BASER
-and GICR_VPROPBASER is different here, while GITS_BASER.Size is
-bit[7:0] with max 256, and GICR_4_1_VPROPBASER.Size is bit[6:0] with max 128.
-Kernel usually probe ITS basers first and then probe GICR_4_1_VPROPBASER in
-a common affinity group. Maybe we need to check this in "inherit_vpe_l1_table_from_its" ?
+Marc
 
->
-> I'd expect something like the following (untested) hack.
->
-> 	M.
->
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index 9a7a74239eab..555b86f375e1 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -2836,6 +2836,7 @@ static int allocate_vpe_l1_table(void)
->  	unsigned int psz = SZ_64K;
->  	unsigned int np, epp, esz;
->  	struct page *page;
-> +	bool indirect;
->  
->  	if (!gic_rdists->has_rvpeid)
->  		return 0;
-> @@ -2870,10 +2871,12 @@ static int allocate_vpe_l1_table(void)
->  
->  	/* First probe the page size */
->  	val = FIELD_PREP(GICR_VPROPBASER_4_1_PAGE_SIZE, GIC_PAGE_SIZE_64K);
-> +	val |= GICR_VPROPBASER_4_1_INDIRECT;
->  	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
->  	val = gicr_read_vpropbaser(vlpi_base + GICR_VPROPBASER);
->  	gpsz = FIELD_GET(GICR_VPROPBASER_4_1_PAGE_SIZE, val);
->  	esz = FIELD_GET(GICR_VPROPBASER_4_1_ENTRY_SIZE, val);
-> +	indirect = !!(val & GICR_VPROPBASER_4_1_INDIRECT);
->  
->  	switch (gpsz) {
->  	default:
-> @@ -2906,7 +2909,7 @@ static int allocate_vpe_l1_table(void)
->  	 * If we need more than just a single L1 page, flag the table
->  	 * as indirect and compute the number of required L1 pages.
->  	 */
-> -	if (epp < ITS_MAX_VPEID) {
-> +	if (epp < ITS_MAX_VPEID && indirect) {
->  		int nl2;
->  
->  		val |= GICR_VPROPBASER_4_1_INDIRECT;
-> @@ -2917,7 +2920,8 @@ static int allocate_vpe_l1_table(void)
->  		/* Number of L1 pages to point to the L2 pages */
->  		npg = DIV_ROUND_UP(nl2 * SZ_8, psz);
->  	} else {
-> -		npg = 1;
-> +		npg = DIV_ROUND_UP(ITS_MAX_VPEID, epp);
-> +		npg = clamp_val(npg, 1, (GICR_VPROPBASER_4_1_SIZE + 1));
->  	}
->  
->  	val |= FIELD_PREP(GICR_VPROPBASER_4_1_SIZE, npg - 1);
->
-I've tested your patch and it's ok and it can solve my problem.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--gm5qx6ivqj7qxcxg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmWuaecACgkQvlAcSiqK
+BOiItAgAiVb1F3nml4JkuMIY7dmQo5gzshMOge9YwxV+CViwK6+VZN81W+a+uBRC
+nG6H9blRP6/eWCGmJMty07eR8pnzfzh1F7fdSr3ZjVJAtPcNY/Ywc5ByKebJz8jS
+bXxVgQ4cxcMzl54lO6xd0cFi9cCAIc8ENFStCmEhc65/KJMu8uDcitYv2T1fDj3d
+mrs7ok2oKy0JvVoQUVdeSfcWj3KxK4Hl4HX4cDZlsQhLuNRcRm17k5Xf8wtqiW+T
+Qi0Lyzls8rj/Phk0qKpWpcsMxVa76FAYj6W6yyW0s0mP+0piGLWfxNYqdXsvkOvh
+7ak8HyX1amqRf3OBh6/9Uk1imCpACw==
+=oZCM
+-----END PGP SIGNATURE-----
+
+--gm5qx6ivqj7qxcxg--
 
