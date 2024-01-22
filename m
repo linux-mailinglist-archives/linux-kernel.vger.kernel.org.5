@@ -1,113 +1,110 @@
-Return-Path: <linux-kernel+bounces-32447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 058DE835BD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:42:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E340D835BD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:42:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD2991C217CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:42:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5462831A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FE91642D;
-	Mon, 22 Jan 2024 07:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7691643D;
+	Mon, 22 Jan 2024 07:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOnqDMRd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N1uaOB34"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496DB14F6C;
-	Mon, 22 Jan 2024 07:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B846B16410;
+	Mon, 22 Jan 2024 07:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705909327; cv=none; b=t5Sfz5HNorVcrktsf8AlMjo0QV76sae2q72AvDQY+2LWEPkH6XcOzAR4lvPiGHMxF5ciJUasLer3bsYa/Y1UfpKEj456seFhhaVlj6ZN/SkXcrZLR2w43oiv3BK/c/LLpS1QxaXnOs2xVSe6JjhyQ70mcoFhnbE14Ya3LCUYQW8=
+	t=1705909309; cv=none; b=oNauoG96/P4snj4Y30c1PnuFLCAkWY+4g3B+OtnwYaqX6KpKpiNFwbtCPqfzdPy/tc2oAhA5miX560rudAPwZ4MpREuc4IQrS+WH5fvnVWX6UfCw1dc4AoJnmArxmGlSjvtnU77pbULpze45FFdY1ex+JfoeemCmcTo8GKuzWS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705909327; c=relaxed/simple;
-	bh=6q+Ae298LK6Fwx9w1Hxqg+/TcqF4+MMHBmWb7Tw8+hU=;
+	s=arc-20240116; t=1705909309; c=relaxed/simple;
+	bh=bNCnQp0ND/Bhd8jsEriViBmV+pDcacpd6HBwU8PIoQ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uQ1aSF46tk2aWy4OvE+gENAnpX36Khxre6ANhFgF3WpMnv5uKJSZ47FGArOukW+tj67uEYW0EXe+8fLu6W5OyCbdkmDJOn2fEO+cFlBc53a0sRUOZ//MKboctanu6k7iHoyCWR5lCgKo4Orm+cjwVGy3y2/E2vKVotdSGqSzwcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOnqDMRd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B284C43394;
-	Mon, 22 Jan 2024 07:41:58 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qt7rX/FWFSJrkHbfWz0jJi58j7jzfblFd2CYsokAHOuw8+EVpLt1eB+NvS03SgwKdUiPb65OgGvmq+ml/lLB0aM8+Bg90ciGZLISInxtGxGfZ5kVv+kp/nEW4seJ0UPpYcK/ZFT7xVhPSiTTS+N6qzBp+3BLXHUVz+TThBDHRHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N1uaOB34; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D970C43390;
+	Mon, 22 Jan 2024 07:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705909326;
-	bh=6q+Ae298LK6Fwx9w1Hxqg+/TcqF4+MMHBmWb7Tw8+hU=;
+	s=k20201202; t=1705909309;
+	bh=bNCnQp0ND/Bhd8jsEriViBmV+pDcacpd6HBwU8PIoQ0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jOnqDMRdvXuWTje7hxQN2dCLE7PzYUq8rAYWennGmg2eWAJlF8wYxF7WITOD93XyX
-	 kOi7HC3t/JBdyraClA4q5IQ6eCe0QP9DQEOOLu5rJzGGtUakerutvskNDSebyStAJZ
-	 z+mnBJqfh9Fcq+5rh+Kc2KPiYn9xLCRpmCpxOFhvwp4xLOdS0I9/a1r1ZusQ+JEtay
-	 eerJbS9dnoFfr2YnDqeIifjrZ8RFwgs3XLP/I8Wfw7PBHR0aHCQTC5FxayDUKgCqE/
-	 I+Nux9qFYloyZL8LPJSk6tchB/m6C22f9IUgs1mhO9obbBZ8/pniLuN0IIT85I3k0j
-	 4+4RMm18KCn0Q==
-Date: Mon, 22 Jan 2024 09:41:40 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Shijie Huang <shijie@amperemail.onmicrosoft.com>
-Cc: Yury Norov <yury.norov@gmail.com>,
-	Huang Shijie <shijie@os.amperecomputing.com>,
-	gregkh@linuxfoundation.org, patches@amperecomputing.com,
-	rafael@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-	aou@eecs.berkeley.edu, kuba@kernel.org, vschneid@redhat.com,
-	mingo@kernel.org, akpm@linux-foundation.org, vbabka@suse.cz,
-	tglx@linutronix.de, jpoimboe@kernel.org, ndesaulniers@google.com,
-	mikelley@microsoft.com, mhiramat@kernel.org, arnd@arndb.de,
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-	will@kernel.org, mark.rutland@arm.com, mpe@ellerman.id.au,
-	linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org,
-	jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org,
-	cl@os.amperecomputing.com
-Subject: Re: [PATCH] NUMA: Early use of cpu_to_node() returns 0 instead of
- the correct node id
-Message-ID: <Za4cNBQBLZujlAlP@kernel.org>
-References: <20240119033227.14113-1-shijie@os.amperecomputing.com>
- <Zan9sb0vtSvVvQeA@yury-ThinkPad>
- <1cd078fd-c345-4d85-a92f-04c806c20efa@amperemail.onmicrosoft.com>
- <Zao13I4Bb0tur0fZ@kernel.org>
- <b8786c38-d6c4-4fea-a918-ac6a45682dba@amperemail.onmicrosoft.com>
+	b=N1uaOB34gDFPl5VgCSojvtB3kJLoAuXALTXH8M8PXB48+q0RzPXLgeiOZWpGlithi
+	 qkFsXXxAmmVdkaObyI1c5dBA0XZvmGmQS5ZjOmsdELsxbqFHd/o1fgSu21/Qub1xzc
+	 4QWHiAXJlV+pgMtIWN7G/5uSZUkb79z6lK7eWfIQ2XLpScPtr6nsBxmRU7CgsiM53k
+	 7/JBW3HKmwzdTRZl5desoUu2GpDNwD1xNn8OXJWdeTOI5RU0VtPYgjRbAhIK/8fPR+
+	 VZs5/t9m/cS8yIQPJlHnAK9sS/D2ASIRHn2Oa9MbSZScGYOJOxE26iu3WP369JHIxT
+	 NEsU/yw3Jvv/w==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rRowR-0000000071i-3V5n;
+	Mon, 22 Jan 2024 08:41:59 +0100
+Date: Mon, 22 Jan 2024 08:41:59 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] ASoC: qcom: sc8280xp: limit speaker volumes
+Message-ID: <Za4cR90XoAaATq8X@hovoldconsulting.com>
+References: <20240119112420.7446-1-johan+linaro@kernel.org>
+ <20240119112420.7446-3-johan+linaro@kernel.org>
+ <d54d3640-49bf-4a2f-903b-4beeb0ebd56c@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6hBlhn91CWqsWzU0"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b8786c38-d6c4-4fea-a918-ac6a45682dba@amperemail.onmicrosoft.com>
+In-Reply-To: <d54d3640-49bf-4a2f-903b-4beeb0ebd56c@sirena.org.uk>
 
-On Fri, Jan 19, 2024 at 04:50:53PM +0800, Shijie Huang wrote:
-> 
-> 在 2024/1/19 16:42, Mike Rapoport 写道:
-> > Is there a fundamental reason to have early_cpu_to_node() at all?
-> 
-> The early_cpu_to_node does not work on some ARCHs (which support the NUMA),
-> such as  SPARC, MIPS and S390.
 
-My question was why we need early_cpu_to_node() at all and why can't we use
-cpu_to_node() early on arches that do have it.
- 
-> Thanks
-> 
-> Huang Shijie
-> 
-> > It seems that all the mappings are known by the end of setup_arch() and the
-> > initialization of numa_node can be moved earlier.
-> > > > I would also initialize the numa_node with NUMA_NO_NODE at declaration,
-> > > > so that if someone calls cpu_to_node() before the variable is properly
-> > > > initialized at runtime, he'll get NO_NODE, which is obviously an error.
-> > > Even we set the numa_node with NUMA_NO_NODE, it does not always produce
-> > > error.
-> > > 
-> > > Please see the alloc_pages_node().
-> > > 
-> > > 
-> > > Thanks
-> > > 
-> > > Huang Shijie
-> > > 
+--6hBlhn91CWqsWzU0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Sincerely yours,
-Mike.
+On Mon, Jan 22, 2024 at 12:03:55AM +0000, Mark Brown wrote:
+> On Fri, Jan 19, 2024 at 12:24:18PM +0100, Johan Hovold wrote:
+> > The UCM configuration for the Lenovo ThinkPad X13s has up until now
+> > been setting the speaker PA volume to the minimum -3 dB when enabling
+> > the speakers, but this does not prevent the user from increasing the
+> > volume further.
+>=20
+> This doesn't apply against current code, please check and resend.
+
+These patches are based on Linus's tree after merging the sound updates
+and I just verified that they apply cleanly to 6.8-rc1.
+
+I couldn't find anything related in either linux-next or your ASoC tree
+that should interfere.
+
+Could you please try again or let me know which branch to rebase on?
+
+Johan
+
+--6hBlhn91CWqsWzU0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCZa4cQwAKCRALxc3C7H1l
+CIxuAP40ZX5S3hcjEvbXjMLdYeKr/Nckfcn4BA2prKLZ4aqX+wD+Nete6gxhBX0l
+Ms5y+h/uAsuqbIqbgFwhpapBjxXd+w0=
+=Ejix
+-----END PGP SIGNATURE-----
+
+--6hBlhn91CWqsWzU0--
 
