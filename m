@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-33376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 083CD8368F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:51:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF3C8368F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CA751F24B5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:51:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74F241C21074
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B026E2D2;
-	Mon, 22 Jan 2024 15:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392866EB47;
+	Mon, 22 Jan 2024 15:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FnUZxFU1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zy1CEj6d"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FDF6E2C1;
-	Mon, 22 Jan 2024 15:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6B56E2D7;
+	Mon, 22 Jan 2024 15:07:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936037; cv=none; b=ChBFq0pAVuL5i7lBIe6jVirXy3QwTTctA2KkRkJACJenbLp9lt4srfRv1zAh6ZfG5lOStBOmGU2XMoVV7HqWCqO9bJJvrj9MLAmBu0zG0IeQDtV6e7YZOsgV/mywC9aDy+Azl21EgPCAVg0T8VZ1sU9W7CWqPEASOqHhudGX7UU=
+	t=1705936038; cv=none; b=sMoVHctdMHs3JJh7fixFWg1Hn1Xe4vbvIbBzmcWGmCZA79BwhqrRm5GiWk5p46E+nv7kRzxatdzCXfNjht5nrI9oFOFg6wytu3Mr13men7btleD8CifKF9DvVpgmDl03ahFY55jMHJHXQwmAfXtmKsFnOj6HvloVudiv5YrNgS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936037; c=relaxed/simple;
-	bh=gi/zS+FijJoacGOzitI9u1y72nJ7iavRiUxAwlBWS9s=;
+	s=arc-20240116; t=1705936038; c=relaxed/simple;
+	bh=9M4Bh447WXbW82Sc6GAht9rq9SrdziELRfSzU927JYM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cTItRP7+GPJxT+nVIlRSLWbtUSfaNaD9+bjsAKj9UwMB5ti6Y3Z9Jwzq8EYqUByi5IY88rZocYk2xmTJKERpCQ2yqE4Uzy+oZC5HHKrzYLFwvilfXHXVHMRohZJDHPTgxveRznwyCAVOsO0CtyeTBTM1tcs38ZiP1ChYukoRyi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FnUZxFU1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89AFC43390;
-	Mon, 22 Jan 2024 15:07:15 +0000 (UTC)
+	 MIME-Version; b=ADAkd0cazcG2YObdLieqLM+UIEk/Tgnw0KuirXrjVChyYeOyHf4FV2d/tUTO5Y1yFTDwGea8DgW3Hr/UOhiNTxnaSESRS19W6RghjNGrNcZtJSrn13GWaos8oulVtQVAwJiCNdnmBoJkRHGxV84u2g2RIDJw4i7HJOq6MGRC6/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zy1CEj6d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BF4BC433F1;
+	Mon, 22 Jan 2024 15:07:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936036;
-	bh=gi/zS+FijJoacGOzitI9u1y72nJ7iavRiUxAwlBWS9s=;
+	s=k20201202; t=1705936038;
+	bh=9M4Bh447WXbW82Sc6GAht9rq9SrdziELRfSzU927JYM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FnUZxFU1Kavc+oCxcqg+OK/1lKB193vwZ8uEx3oIisart/W5tNer+wd+EmDbtGhyu
-	 YHZ4DT0Q5afmi0zEzOAdCXmeR7uOvBOQc1msGK1D+AIzHdb+ObfR09qto0skaXytXd
-	 5WYrlMLgUFWUiCiwPUzpjvmgGmw21zwyuW5M8gtild3ySU7JOOrer4cNnf6mNDl7LC
-	 9cSLZp/qLisTsEpUJ9SZSRQkiwt1vvn82fE6LfnKnIugrLCuuFR8jhWglAus5Yuw2R
-	 pIXzb0P8FDaXek3SnEOuhEiobpYqQYLDx1uZL1lZMIXHWcoFeTFv0fut83Xmvpcw1F
-	 tFyfeFXi+d+zg==
+	b=Zy1CEj6dYLzendRm6SErCIG/ffIbsYdllbdejk5QXBGA0gWwG4oth+wC2R16+ieNr
+	 FCQnEAzmt8kC8lfNlpO7ltQN7wCbS9PK3vMVouo2P1kSSjBIzGRZQLcE9esZ1dEuQs
+	 l7MTIpephATX/BIuBuUvmVoaZEaEStWFO2qV3gH4A4Xov9U5HMwd+DRyOM7DAokJfd
+	 kEoq31wRmnuhcPZiROQhfV0kJ9t0ucXaDptZ9cAKg3c1bV4J3ALu47ku59jr4acFXK
+	 G1VFDggc8bAocYS4+G0DRFf+C47yr+a0IyGIeT0TcFwcaktdS/2j+ZoBwyD4QydPYj
+	 rL0Yqkp2cXIZw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
-	Stephen Boyd <sboyd@kernel.org>,
+Cc: Ben Dooks <ben.dooks@codethink.co.uk>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
 	Sasha Levin <sashal@kernel.org>,
-	mturquette@baylibre.com,
-	duje.mihanovic@skole.hr,
-	conor.dooley@microchip.com,
-	linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 52/73] clk: mmp: pxa168: Fix memory leak in pxa168_clk_init()
-Date: Mon, 22 Jan 2024 10:02:06 -0500
-Message-ID: <20240122150432.992458-52-sashal@kernel.org>
+	xingyu.wu@starfivetech.com,
+	samin.guo@starfivetech.com,
+	linux-watchdog@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 53/73] watchdog: starfive: add lock annotations to fix context imbalances
+Date: Mon, 22 Jan 2024 10:02:07 -0500
+Message-ID: <20240122150432.992458-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -67,49 +67,46 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.13
 Content-Transfer-Encoding: 8bit
 
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
+From: Ben Dooks <ben.dooks@codethink.co.uk>
 
-[ Upstream commit 2fbabea626b6467eb4e6c4cb7a16523da12e43b4 ]
+[ Upstream commit f77999887235f8c378af343df11a6bcedda5b284 ]
 
-In cases where mapping of mpmu/apmu/apbc registers fails, the code path
-does not handle the failure gracefully, potentially leading to a memory
-leak. This fix ensures proper cleanup by freeing the allocated memory
-for 'pxa_unit' before returning.
+Add the necessary __acquires() and __releases() to the functions
+that take and release the wdt lock to avoid the following sparse
+warnings:
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-Link: https://lore.kernel.org/r/20231210175232.3414584-1-visitorckw@gmail.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+drivers/watchdog/starfive-wdt.c:204:13: warning: context imbalance in 'starfive_wdt_unlock' - wrong count at exit
+drivers/watchdog/starfive-wdt.c:212:9: warning: context imbalance in 'starfive_wdt_lock' - unexpected unlock
+
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20231122085118.177589-1-ben.dooks@codethink.co.uk
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/mmp/clk-of-pxa168.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/watchdog/starfive-wdt.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/clk/mmp/clk-of-pxa168.c b/drivers/clk/mmp/clk-of-pxa168.c
-index fb0df64cf053..c5a7ba1deaa3 100644
---- a/drivers/clk/mmp/clk-of-pxa168.c
-+++ b/drivers/clk/mmp/clk-of-pxa168.c
-@@ -308,18 +308,21 @@ static void __init pxa168_clk_init(struct device_node *np)
- 	pxa_unit->mpmu_base = of_iomap(np, 0);
- 	if (!pxa_unit->mpmu_base) {
- 		pr_err("failed to map mpmu registers\n");
-+		kfree(pxa_unit);
- 		return;
- 	}
+diff --git a/drivers/watchdog/starfive-wdt.c b/drivers/watchdog/starfive-wdt.c
+index 5f501b41faf9..49b38ecc092d 100644
+--- a/drivers/watchdog/starfive-wdt.c
++++ b/drivers/watchdog/starfive-wdt.c
+@@ -202,12 +202,14 @@ static u32 starfive_wdt_ticks_to_sec(struct starfive_wdt *wdt, u32 ticks)
  
- 	pxa_unit->apmu_base = of_iomap(np, 1);
- 	if (!pxa_unit->apmu_base) {
- 		pr_err("failed to map apmu registers\n");
-+		kfree(pxa_unit);
- 		return;
- 	}
+ /* Write unlock-key to unlock. Write other value to lock. */
+ static void starfive_wdt_unlock(struct starfive_wdt *wdt)
++	__acquires(&wdt->lock)
+ {
+ 	spin_lock(&wdt->lock);
+ 	writel(wdt->variant->unlock_key, wdt->base + wdt->variant->unlock);
+ }
  
- 	pxa_unit->apbc_base = of_iomap(np, 2);
- 	if (!pxa_unit->apbc_base) {
- 		pr_err("failed to map apbc registers\n");
-+		kfree(pxa_unit);
- 		return;
- 	}
- 
+ static void starfive_wdt_lock(struct starfive_wdt *wdt)
++	__releases(&wdt->lock)
+ {
+ 	writel(~wdt->variant->unlock_key, wdt->base + wdt->variant->unlock);
+ 	spin_unlock(&wdt->lock);
 -- 
 2.43.0
 
