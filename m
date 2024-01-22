@@ -1,399 +1,201 @@
-Return-Path: <linux-kernel+bounces-32556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD059835D15
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:50:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBEA7835CFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:47:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EDDA1F2363B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:50:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3B86B250B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:47:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3CB3AC1B;
-	Mon, 22 Jan 2024 08:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3118239FCF;
+	Mon, 22 Jan 2024 08:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QM3ZNe09"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2077.outbound.protection.outlook.com [40.107.102.77])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KMd/dklJ"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8686838FB7;
-	Mon, 22 Jan 2024 08:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C882939AF8
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=134.134.136.65
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705913225; cv=fail; b=WQ2HIQzbv8dsK5oj8RouOD3PIIfGSHh8BuIGXSUtfynr1dBozlSOMjH33Bb8QtTrSqLqm+LOppHad4bFc/MKen8R/V9Wdz/xof0UEeEsoKtE+x8ICh3uV4HnUQD4AIc6xSE9qVx0Ibt64oNDffZHwWfeNUtVdNTFy2hgKbqqgR8=
+	t=1705913183; cv=fail; b=IWF+7ShfgCD3h7OFADCdk68N4S3JvHje2S7nKeX3I33h57+VK+JaULye4PUCp1MikIa5tVeVwSO3icrQZ1wKrhRfGyJA0VfPVvEZpTiNBKTgc5gBDNfkI/2EpiDM2vnOHgi0hTz1GQa2Wjq9nWoUfBshz3nlMQ7PgO6xskyB370=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705913225; c=relaxed/simple;
-	bh=MbRK6/zyypZDras7Ojni4hWbgIISVYMN8+1fiHTEfnc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XBgj+NWrfgdhVRBHvC5B7sPO9ethgEWRnsthiNIqXWJjxuGDPWeqgRxz8VzVsgCrWgTBdacsZeGSeHaJyCbAzBxRQ5xmbRPhUYD4Ly81HvXZQ2MsUS54bSbLZNNgrfuVm9UkK2w2dAeAaaekyfHUL0W2Agg687IlxR0MfUWdmJM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QM3ZNe09; arc=fail smtp.client-ip=40.107.102.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1705913183; c=relaxed/simple;
+	bh=xYfCVoKYShVB7AwL37e64w4Wa1tSTNG6RKNLfz4ePH0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ulE1TPBFlpDhh2hnqKz45E2NnXqSF6rY5NSm7RUQEPBZsOVO8mLzrf7Dm59/6XRl4ti8VAHUVW0QPsS/ZDt9mU//t3gCW2D8utLt6aIcOgz17A+SkLvQsQK/v8jPmWE9iMoY5nGnj8MCeb+42vW1UCozVlSzSX5C9ZRT2XcKSVE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KMd/dklJ; arc=fail smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705913181; x=1737449181;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=xYfCVoKYShVB7AwL37e64w4Wa1tSTNG6RKNLfz4ePH0=;
+  b=KMd/dklJlIbjdBUYpx2HyaWtBTggUX+LNae/a8MXEUj4++4Uayv/WBUp
+   MUFkcvVaF8WTopxwlevI9eKFk9GC6QUzRnv+WAFjzxV4NDrsc+foor0VE
+   J/pQi5Mr5LLl6x6yF5bFHWa8vFMmAknpfau+uG2dVQo0+m1psTI/XR6xn
+   cIAZqUioIwAkuXVHJedrE3IfEBd54simD/caEUZglQRMvuS69Gzu+S7ZU
+   AK+GCFvgxa9CnIgOe1ywZfZPSYd+ZtJSQZ1wRDXzKaP6mwi3tNv7sNWwM
+   gSMBpxO+ehcN3vRcecQOvhw3jefTYbraKA5BuK4bNDhaXkkAbvHrwM0mU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="404902073"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="404902073"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 00:46:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="908875145"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="908875145"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Jan 2024 00:46:18 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Jan 2024 00:46:17 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 22 Jan 2024 00:46:17 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 22 Jan 2024 00:46:17 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QbOtqSVIe67vuxG7Xlzjj8dP4uxtXojxgMKC5HYqRK5UIfF5B8BHy8HHRyoKHvUAtBkbf2tq11seQt4G+59zcNiE29zEUMBL4/zhkl2ePAM0Q5n6fKwGMbIfhBjZ3RmNCf8SEzyQuHrmpuqBVFu58HLshC8+qpqJlctreHQ/CJA6xsMySFoJMpNSi/HWC2t0Fq2UGXbIMj7mUbW1F7KNUTbGKXnIxBUFRmfGdR17FLK0oDLpdi27+eabOnqEgAnMHev9K5Z4vk8wDrw+X4BJlp2ppMN42pKrz1097MuOjudRDsDIr5LUVc5szlg2h5koq/ZyD2uPxxnt3M/t1VBAJw==
+ b=OW22OWUPBncWZYg5cAN8kHYTjTgSdWPog6awku3OmUlqqQtdWXqtho8ClvWX9nQYtv7SSVzVBG8AlmV3pWWQwMu7lR9TOSLl35raoyc3TtW8NakzbF1lhq9pWIdsyEH5GY07d4WSUSBtu6m/MDsNRu7sR1q5gig+Q+4L3/DIwZHUamcdVcBxtcVWPn9ig0Sr9t2vltkcQl6TKKsuD/tTPMaAt9VTWXRMde280aaCvZoQy/7i/rZreJw20rI7yBIIGRZmaovjbmgZQuqOQemVMN6jJewatiF47bl0ORg++RgYpddhytq/Hpu9CK8UwefHxyhgLUoaNF0L5enJPXwhWg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HlURVs4NqzvyjS99PltohAtgRthKnFTlg52pIs82LPo=;
- b=hTpE5fjZBbmEfyHHjgYkwF0kF6gvuEk7E0SaTjxZyUNGoAQ1OTmwJeUq4qK6pXQ/VQUNcNyOp1SxqRq1eDfm7UwjO+ptpG1aarwhSPLxmJjRxblESfxcReNYiAUZaD3F+QShZCrdgjhFi2QCDWyYMz5gIf4LmwG1r5yoxDee5GE5Nt+59i8uWpwx3spWAQShiUv5v8CLl+PljXHvq4IzzgkVTF03BAJvlQ68ZsGR7BtB29fg/T8MVFLe+5hGzOqDf9ts4FY4RfGx9v22bK9bYdtUDFrq53OkRQQoVt4H7b5xnLAvw0vDvdp8OhanPeh8zTfjko5sgFYmw88A13cALQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HlURVs4NqzvyjS99PltohAtgRthKnFTlg52pIs82LPo=;
- b=QM3ZNe09I0/QMJ97nuDqEAXKp/fMd6kX4q+SelETlcyeTkZ3vO+biwyS9lSZepUXFuqFN7/pthWsMcNqtPL7b65rxYWM28ouBLENzRmyrt5lBJmN66dD2WTiT+XgAfH4CmCWYklrJ900SOotUVrfjx0MrzTQx6hfc7hSqINfuI8/8dHWrZ/GojNsmN74kYlEk2r4R8hrdfJJU34VwxWLonbZ/WkUokTPpov4ZFklEKW33Z/zdcdXf1bG32f0zkijZmLEwc/sWf3LijMjEbRrGHwBi7R3mQ8YbB+IpKmCHASrl627wExWJ0gwNNFnazvV0ZS2jcJoPNOBfqUoKtiHBQ==
-Received: from BYAPR11CA0095.namprd11.prod.outlook.com (2603:10b6:a03:f4::36)
- by SA3PR12MB9179.namprd12.prod.outlook.com (2603:10b6:806:3a1::12) with
+ bh=eps0o8kkpaoNPR8Sr63vGH7exlraZo/hz2gNz+dIopE=;
+ b=bqUobPt7517Hiym5mCBkdS3obFnkTGdpv61uybe/SmlrFtoSl7563lp7y08+WiJ57+lAksfL9HeM1uPtHk0IiiKB6QjLoAPBsOWCdzk+Rkx4wmpu+CecPrZIOC5Fn+s0JBSsLNN7bApHdSbG1oob7u/78dIO0x9pb++k1rlmcuZmU+MQAPwdU8LB1G40UXqMUo4Ke3GzH/AK+3r7KzAsx1gg9a0BhVJLZc+T0kFe0T8L/Rl6fpeSdc4yC1jTxfVoZaI9Oe1jvTD+emoxTL5D7awO33Pr4dAFbjOjuvUWrmigTQjgcUCODf6NYygEVtIZZbHk2A2vHZubrbSQvrXWaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by MW4PR11MB6912.namprd11.prod.outlook.com (2603:10b6:303:22a::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Mon, 22 Jan
- 2024 08:46:59 +0000
-Received: from MWH0EPF000989E9.namprd02.prod.outlook.com
- (2603:10b6:a03:f4:cafe::9b) by BYAPR11CA0095.outlook.office365.com
- (2603:10b6:a03:f4::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32 via Frontend
- Transport; Mon, 22 Jan 2024 08:46:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- MWH0EPF000989E9.mail.protection.outlook.com (10.167.241.136) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.16 via Frontend Transport; Mon, 22 Jan 2024 08:46:59 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 22 Jan
- 2024 00:46:42 -0800
-Received: from dev-r-vrt-155.mtr.labs.mlnx (10.126.231.35) by
- rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 22 Jan 2024 00:46:36 -0800
-From: Danielle Ratson <danieller@nvidia.com>
-To: <netdev@vger.kernel.org>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <corbet@lwn.net>, <linux@armlinux.org.uk>,
-	<sdf@google.com>, <kory.maincent@bootlin.com>,
-	<maxime.chevallier@bootlin.com>, <vladimir.oltean@nxp.com>,
-	<przemyslaw.kitszel@intel.com>, <ahmed.zaki@intel.com>,
-	<richardcochran@gmail.com>, <shayagr@amazon.com>, <paul.greenwalt@intel.com>,
-	<jiri@resnulli.us>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <mlxsw@nvidia.com>, <petrm@nvidia.com>,
-	<idosch@nvidia.com>, Danielle Ratson <danieller@nvidia.com>
-Subject: [RFC PATCH net-next 9/9] ethtool: Add ability to flash transceiver modules' firmware
-Date: Mon, 22 Jan 2024 10:45:30 +0200
-Message-ID: <20240122084530.32451-10-danieller@nvidia.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240122084530.32451-1-danieller@nvidia.com>
-References: <20240122084530.32451-1-danieller@nvidia.com>
+ 2024 08:46:15 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::a8e9:c80f:9484:f7cb]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::a8e9:c80f:9484:f7cb%3]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
+ 08:46:15 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, "joro@8bytes.org"
+	<joro@8bytes.org>, "jgg@nvidia.com" <jgg@nvidia.com>
+CC: "Liu, Yi L" <yi.l.liu@intel.com>, "nicolinc@nvidia.com"
+	<nicolinc@nvidia.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
+	"vasant.hegde@amd.com" <vasant.hegde@amd.com>, "jon.grimm@amd.com"
+	<jon.grimm@amd.com>, "santosh.shukla@amd.com" <santosh.shukla@amd.com>,
+	"Dhaval.Giani@amd.com" <Dhaval.Giani@amd.com>, "pandoh@google.com"
+	<pandoh@google.com>, "loganodell@google.com" <loganodell@google.com>
+Subject: RE: [RFCv2 PATCH 5/7] iommufd: Introduce data struct for AMD nested
+ domain allocation
+Thread-Topic: [RFCv2 PATCH 5/7] iommufd: Introduce data struct for AMD nested
+ domain allocation
+Thread-Index: AQHaROtZDmd79pU1RUa4//VsDeeCg7Dlk3kg
+Date: Mon, 22 Jan 2024 08:46:14 +0000
+Message-ID: <BN9PR11MB52761131F227732B7D635DAD8C752@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20240112000646.98001-1-suravee.suthikulpanit@amd.com>
+ <20240112000646.98001-6-suravee.suthikulpanit@amd.com>
+In-Reply-To: <20240112000646.98001-6-suravee.suthikulpanit@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|MW4PR11MB6912:EE_
+x-ms-office365-filtering-correlation-id: 9a8a7480-723a-4b9e-bfff-08dc1b2697db
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: laMSsTAuwFo2wtu3rvJMzBpHrCnh9eafYery4/46PC0QJun5ywOz2TR1m8BRHBQHwoJtUOCJ7VOOz/wHXb/4Ugf1E7Ex7KTJzc+g9kah0wT8U4rtuzUIgYJzR6r10k0YLXld1dWDYE/CGJ698FlSMjLVf/gEv559HtF5dzeClYIeyEfytp4+oK8idvQW+RwcJHBd3kcZrlckqpWPr6i5DMP0/y8+hnT4ht/uHWKFqo0Ks5VzOU9VRzBWmg4TXwS65S4MgXHAWROegqkMqupMs1r8nNDoqmZPyt+DC/Cl1JeaHltKSypmLq+dLM2WHSirHSEwkFX06NO8qT0lsL95d7FmjKskegfWI7tYIUObR1oTki/uV1d8pSxO1vYOgfoeUDfo2r4hS9LRKMnILAKk/fUPojSisjPuB6eiJdb6C4ti3tM5C6aFwmGg8DqvpXXy2qt9onsD1lizKdetOvdLQVnzykYa0qgAQwgx8PkyKeMvBCsv5ZezDVPvl7+swHUDgu7wZ0YlRiYqNf9hNlb+dTOUnhLjN7qRdZJ+SQIjqhGO1Ow4WxsxM1r0sWP15nnBhYJUApcM4ES1MnxdUtTVw7mEEIWQJEpwd6REZhbUKJhWT91FO/L2QPR8eQvkUg2Q
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(376002)(136003)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(55016003)(6506007)(7696005)(71200400001)(9686003)(26005)(122000001)(86362001)(38070700009)(38100700002)(33656002)(82960400001)(41300700001)(52536014)(83380400001)(5660300002)(7416002)(2906002)(4744005)(8676002)(66476007)(8936002)(66446008)(66556008)(110136005)(64756008)(4326008)(66946007)(316002)(478600001)(76116006)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VCARr8HaYAVH9noumUYj/o9dc0LkvSWKjUqH2UJXBnomoTs7a/Ia++XCVQMN?=
+ =?us-ascii?Q?JDN7QL9q46+9e1U3EcaiSyhA64hHiM81V8GAgRRsGnef70h6dnFNnUYA1UKH?=
+ =?us-ascii?Q?6XxkJHtWBmd0stxfGjUeb5vDWDp/F+VjN13s7AZaobIyHqRnW/339UQijx/p?=
+ =?us-ascii?Q?SK2wkY35q0LzjtEbnZBUGwpg0fxZXsaBztz+jnvYFVJ4oBKGTbNlneO2Xlpr?=
+ =?us-ascii?Q?3a9oz+LjKuXUs3HcbV5cV+sk/+J5UujmoFrRK4gzopkRWaq52WozK4D3/Z7R?=
+ =?us-ascii?Q?9kknyFhGHxHGeRU2Qa95Z3feXNY/ZwB7a/MWkIcu0D5QCgg50eo1O8WMs2Ko?=
+ =?us-ascii?Q?kefuu/2UfGQM1IXcBJ6rbTBZ4iPn+4S+V2Inx7qR0JOSwpU+WAeeG1yH6dqb?=
+ =?us-ascii?Q?RGxuef3dQh5QXayh+RuwSIZC2ezHobo5dyerm0+3sh9BZH1fFWSeVidwAXfQ?=
+ =?us-ascii?Q?mZWvYlQ8BxK3LCRxrEJ55awEm3DKEgRgvXiFNtcp6cV02Ya0BJAZKlALJNME?=
+ =?us-ascii?Q?2tvj1rBQR27GIgtsAYN93xnmVLWS/LBM595OPQ2mXfKpPXwUfcWU471YoXRX?=
+ =?us-ascii?Q?BsS1/nLbe8wKyQfgdVoWhHqrn5rtZsn+JSvANGL6LO0+4BXHxNAT+RpkASXg?=
+ =?us-ascii?Q?fhrKA8zhC/cQTSq0BSnCTcIa2XpA/upPIfYHT0jvCeZKRaEi/bBlZkYyw4UK?=
+ =?us-ascii?Q?SxPI0tnJnqYKJLfXe767juNEcxRVNCULBICB6I6UimIDIJfDbm6hmuCB+5yy?=
+ =?us-ascii?Q?N9cMmcfxFQHePjIRKRI3mToo+YC7zVVEHDvHx7ylvJkJzW6giNpUQDVZqOM7?=
+ =?us-ascii?Q?oiBJ+682CQ6Ox40ncjsZO3r9eJBlr4CTsAqEQOcbSUoFlc5GdaaFojcFh1b2?=
+ =?us-ascii?Q?hON5raxOZADE+0STDD+XLLkIi3B0MvFb6YT1C+ZIxchY5bTOZE+4SQ1KV3yY?=
+ =?us-ascii?Q?IBwGXi+KiT010W8DeHsPebdrik9RXFa0vba07Zx/hJenGrT2qnyWHkpvGr0K?=
+ =?us-ascii?Q?kHojiQS0/6JMnVekCX53Z7wJH9vfQrlRZs1RucDZXPiiejZj8rtz87BodsVx?=
+ =?us-ascii?Q?I2gaqukUrbwRf64tU/XRltG/czw5voswyiOs4RhUt0pYxxfkrOpgpUcgqA97?=
+ =?us-ascii?Q?IMrKjO7C75MdNy7KAT7k3C6CNC4o90/NmC2M9mPoXiX1yiNbyidUGnesiAKI?=
+ =?us-ascii?Q?GkEGW8PLJNzRv4+vxMBlvvNWkPgXy+9/TBl2GxIMQP/U7xJ09o9/UPSTCHDh?=
+ =?us-ascii?Q?arcrLryqn1anOgcKZnXAGm3AnwPwcbj0mmjSBNn74SrPEpqrcnw7DHEgtjql?=
+ =?us-ascii?Q?uRH/Wzt/fjcs+iWmJPxADEZYKpY6h3kDtJGZ1eKmw4hO8qXyue1T9kGMplJF?=
+ =?us-ascii?Q?byj7JFNlRqVQ6t/h/P0eegtoWunUcGqOJL4BolLXyEJJ5R3FSvQm5HDN+3rI?=
+ =?us-ascii?Q?eEzQArWS+ZJg7ewXuywpzIuI99AkU1+6JHC1wFLlWutfwXl7jVuqv2qwxgIt?=
+ =?us-ascii?Q?9J+HnqNVesg/JAirVv+a6TTGGrOYXUQZe0eGgmhTcYZy7h/3fd9Rdl7EPbeW?=
+ =?us-ascii?Q?/xKaUpq9P6To59rc16QPeVTHv35vdTvT2ZZ+s9ZW?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989E9:EE_|SA3PR12MB9179:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7fb4c890-756a-4df2-ff37-08dc1b26b23d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	g5raV8CKTqI8AK9lMTCVnAb03/+u/QPGdsZ25O0dKlHf3+kirMXRO8/2ozT7KLSLrx6K8+8msTPDt9sLymsxcM8QVu6P9x6mO95KulS1HpP1uNjBpRl3/IWO8X2d2lKQatLeNbgokUbmE0qX3buY+yRNES2ffy6goRmAxANEZwTSTWSBoryTn8mLO+jap9pVUJe+4AlbK5JaAf/fJvTcTyhbpuUXWVmBvipe8BHuRBe3xRlwcOHS2CTD3gKKg2jHbVhcOL9V/9TCus35c5F8aXp+0U+NSANJ5IDXbZNvKy42UeSeJIfKy/osF2t3F5M/U2qRZGTfIccAhfKuMAT0W4W+pTzY7FyIS6nP45O81u4Qu49tng/xW0kVW7QeHZ2dae5LbKSonzbGr77BKDI41VmrQVDdAWgrIpgHay1uKunzMSkvzbW9AH1SvveBZ5VJ+dMeouDdj635cNauWKOkBNyXEkqRDHn3n5j5upoGccq0XPNe6YI/Nn8W2oYK3h70YF2M+U0FJX+Zql7lFja4CbBmglfNH7BEZ6mFEBxmgVex/w+0m1KUgCK/udcJMoNYKC4ca8QAOFssy1J30fkh57Kzwhy1jSNISezGSaTsM9MM41zW8bUxqYiNlRcLc1KKogBc1sITI2bpxVNw9YjGnm63v11IiIubSuS5M4RHxP73ziFEBHHvBgJP/qvl6bThF87l+KoebrsogUGn/6CGJYR3Q2FoOEhXD8y5MphFlonaDw0KyrH/Q17CStuUOMLF
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(346002)(376002)(230922051799003)(186009)(82310400011)(64100799003)(451199024)(1800799012)(40470700004)(36840700001)(46966006)(40460700003)(40480700001)(83380400001)(36756003)(86362001)(356005)(7636003)(82740400003)(36860700001)(5660300002)(8936002)(8676002)(4326008)(47076005)(2616005)(1076003)(336012)(107886003)(426003)(26005)(16526019)(70206006)(70586007)(6916009)(54906003)(316002)(41300700001)(6666004)(478600001)(7416002)(2906002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 08:46:59.1319
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a8a7480-723a-4b9e-bfff-08dc1b2697db
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2024 08:46:14.9934
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7fb4c890-756a-4df2-ff37-08dc1b26b23d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000989E9.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9179
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8MtbVKCP53Hu4phBCE519T8RrPLo90pA75Qt1M61r8FIFKoiGMSTGKHX7mGRmgcweCaqZwCaWyC6uV1gkZrysg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6912
+X-OriginatorOrg: intel.com
 
-Add the ability to flash the modules' firmware by implementing the
-interface between the user space and the kernel.
+> From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> Sent: Friday, January 12, 2024 8:07 AM
+>=20
+> +/**
+> + * struct iommu_hwpt_amd_v2 - AMD IOMMU specific user-managed
+> + *                            v2 I/O page table data
+> + * @gcr3: GCR3 guest physical ddress
+> + * @flags.glx: GCR3 table levels
+> + * @flags.giov: GIOV mode
+> + * @flags.guest_paging_mode: Guest v2 page table paging mode
+> + * @flags.reserved : Must be 0
+> + * @gdom_id: Guest domain ID
+> + * @__reserved: Must be 0
+> + */
+> +struct iommu_hwpt_amd_v2 {
+> +	__aligned_u64 gcr3;
+> +	struct {
+> +		__aligned_u64 glx  : 1,
+> +			      giov : 1,
 
-Example from a succeeding implementation:
+My impression was that giov allows non-PASID requests to be treated
+as if tagged with pasid#0. kind of a prerequisite for enabling nested
+translation? how does it work if guest disables it?
 
- # ethtool --flash-module-firmware swp40 file test.bin
+> +			      guest_paging_mode : 2,
+> +			      reserved : 60;
+> +	} flags;
+> +	__u32 gdom_id;
 
- Transceiver module firmware flashing started for device eth0
-
- Transceiver module firmware flashing in progress for device eth0
- Status message: Downloading firmware image
- Progress: 0%
-
- [...]
-
- Transceiver module firmware flashing in progress for device eth0
- Status message: Downloading firmware image
- Progress: 50%
-
- [...]
-
- Transceiver module firmware flashing in progress for device eth0
- Status message: Downloading firmware image
- Progress: 100%
-
- Transceiver module firmware flashing completed for device eth0
-
-Signed-off-by: Danielle Ratson <danieller@nvidia.com>
----
- net/ethtool/module.c  | 179 ++++++++++++++++++++++++++++++++++++++++++
- net/ethtool/netlink.c |   7 ++
- net/ethtool/netlink.h |   2 +
- 3 files changed, 188 insertions(+)
-
-diff --git a/net/ethtool/module.c b/net/ethtool/module.c
-index 09cf11564840..69cedb3ede6d 100644
---- a/net/ethtool/module.c
-+++ b/net/ethtool/module.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0-only
- 
- #include <linux/ethtool.h>
-+#include <linux/sfp.h>
-+#include <linux/firmware.h>
- 
- #include "netlink.h"
- #include "common.h"
-@@ -160,6 +162,183 @@ const struct ethnl_request_ops ethnl_module_request_ops = {
- 	.set_ntf_cmd		= ETHTOOL_MSG_MODULE_NTF,
- };
- 
-+/* MODULE_FW_FLASH_ACT */
-+
-+const struct nla_policy
-+ethnl_module_fw_flash_act_policy[ETHTOOL_A_MODULE_FW_FLASH_PASSWORD + 1] = {
-+	[ETHTOOL_A_MODULE_FW_FLASH_HEADER] =
-+		NLA_POLICY_NESTED(ethnl_header_policy),
-+	[ETHTOOL_A_MODULE_FW_FLASH_FILE_NAME] = { .type = NLA_NUL_STRING },
-+	[ETHTOOL_A_MODULE_FW_FLASH_PASSWORD] = { .type = NLA_U32 },
-+};
-+
-+struct module_sff8024_id_rpl {
-+	u8 id;
-+};
-+
-+#define MODULE_EEPROM_PAGE	0
-+#define MODULE_EEPROM_OFFSET	0
-+#define MODULE_EEPROM_LENGTH	1
-+#define MODULE_EEPROM_I2C_ADDR	0x50
-+
-+static int module_flash_fw_work_init(struct ethtool_module_fw_flash *module_fw,
-+				     struct net_device *dev,
-+				     struct netlink_ext_ack *extack)
-+{
-+	const struct ethtool_ops *ops = dev->ethtool_ops;
-+	struct ethtool_module_eeprom page_data = {};
-+	struct module_sff8024_id_rpl *rpl;
-+	int err;
-+
-+	/* Fetch the SFF-8024 Identifier Value. For all supported standards, it
-+	 * is located at I2C address 0x50, byte 0. See section 4.1 in SFF-8024,
-+	 * revision 4.9.
-+	 */
-+	page_data.page = MODULE_EEPROM_PAGE;
-+	page_data.offset = MODULE_EEPROM_OFFSET;
-+	page_data.length = MODULE_EEPROM_LENGTH;
-+	page_data.i2c_address = MODULE_EEPROM_I2C_ADDR;
-+	page_data.data = kmalloc(page_data.length, GFP_KERNEL);
-+	if (!page_data.data)
-+		return -ENOMEM;
-+
-+	err = ops->get_module_eeprom_by_page(dev, &page_data, extack);
-+	if (err < 0)
-+		goto out;
-+
-+	rpl = (struct module_sff8024_id_rpl *)page_data.data;
-+	switch (rpl->id) {
-+	case SFF8024_ID_QSFP_DD:
-+	case SFF8024_ID_OSFP:
-+	case SFF8024_ID_DSFP:
-+	case SFF8024_ID_QSFP_PLUS_CMIS:
-+	case SFF8024_ID_SFP_DD_CMIS:
-+	case SFF8024_ID_SFP_PLUS_CMIS:
-+		INIT_WORK(&module_fw->work, ethtool_cmis_fw_update);
-+		goto out;
-+	default:
-+		NL_SET_ERR_MSG(extack,
-+			       "Module type does not support firmware flashing");
-+		err = -EOPNOTSUPP;
-+		goto out;
-+	}
-+
-+out:
-+	kfree(page_data.data);
-+	return err;
-+}
-+
-+static int
-+module_flash_fw_schedule(struct net_device *dev,
-+			 struct ethtool_module_fw_flash_params *params,
-+			 struct netlink_ext_ack *extack)
-+{
-+	const struct ethtool_ops *ops = dev->ethtool_ops;
-+	struct ethtool_module_fw_flash *module_fw;
-+	int err;
-+
-+	if (!ops->set_module_eeprom_by_page ||
-+	    !ops->get_module_eeprom_by_page) {
-+		NL_SET_ERR_MSG(extack,
-+			       "Flashing module firmware is not supported by this device");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (dev->module_fw_flash_in_progress) {
-+		NL_SET_ERR_MSG(extack, "Module firmware flashing already in progress");
-+		return -EBUSY;
-+	}
-+
-+	module_fw = kzalloc(sizeof(*module_fw), GFP_KERNEL);
-+	if (!module_fw)
-+		return -ENOMEM;
-+
-+	module_fw->params = *params;
-+	err = request_firmware(&module_fw->fw, module_fw->params.file_name,
-+			       &dev->dev);
-+	if (err) {
-+		NL_SET_ERR_MSG(extack,
-+			       "Failed to request module firmware image");
-+		goto err_request_firmware;
-+	}
-+
-+	err = module_flash_fw_work_init(module_fw, dev, extack);
-+	if (err < 0) {
-+		NL_SET_ERR_MSG(extack,
-+			       "Flashing module firmware is not supported by this device");
-+		goto err_work_init;
-+	}
-+
-+	dev->module_fw_flash_in_progress = true;
-+	netdev_hold(dev, &module_fw->dev_tracker, GFP_KERNEL);
-+	module_fw->dev = dev;
-+
-+	schedule_work(&module_fw->work);
-+
-+	return 0;
-+
-+err_work_init:
-+	release_firmware(module_fw->fw);
-+err_request_firmware:
-+	kfree(module_fw);
-+	return err;
-+}
-+
-+static int module_flash_fw(struct net_device *dev, struct nlattr **tb,
-+			   struct netlink_ext_ack *extack)
-+{
-+	struct ethtool_module_fw_flash_params params = {};
-+	struct nlattr *attr;
-+
-+	if (!tb[ETHTOOL_A_MODULE_FW_FLASH_FILE_NAME]) {
-+		NL_SET_ERR_MSG_ATTR(extack,
-+				    tb[ETHTOOL_A_MODULE_FW_FLASH_FILE_NAME],
-+				    "File name attribute is missing");
-+		return -EINVAL;
-+	}
-+
-+	params.file_name =
-+		nla_data(tb[ETHTOOL_A_MODULE_FW_FLASH_FILE_NAME]);
-+
-+	attr = tb[ETHTOOL_A_MODULE_FW_FLASH_PASSWORD];
-+	if (attr) {
-+		params.password = cpu_to_be32(nla_get_u32(attr));
-+		params.password_valid = true;
-+	}
-+
-+	return module_flash_fw_schedule(dev, &params, extack);
-+}
-+
-+int ethnl_act_module_fw_flash(struct sk_buff *skb, struct genl_info *info)
-+{
-+	struct ethnl_req_info req_info = {};
-+	struct nlattr **tb = info->attrs;
-+	struct net_device *dev;
-+	int ret;
-+
-+	ret = ethnl_parse_header_dev_get(&req_info,
-+					 tb[ETHTOOL_A_MODULE_FW_FLASH_HEADER],
-+					 genl_info_net(info), info->extack,
-+					 true);
-+	if (ret < 0)
-+		return ret;
-+	dev = req_info.dev;
-+
-+	rtnl_lock();
-+	ret = ethnl_ops_begin(dev);
-+	if (ret < 0)
-+		goto out_rtnl;
-+
-+	ret = module_flash_fw(dev, tb, info->extack);
-+
-+	ethnl_ops_complete(dev);
-+
-+out_rtnl:
-+	rtnl_unlock();
-+	ethnl_parse_header_dev_put(&req_info);
-+	return ret;
-+}
-+
- /* MODULE_FW_FLASH_NTF */
- 
- static void
-diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index fe3553f60bf3..85e27bdb1f73 100644
---- a/net/ethtool/netlink.c
-+++ b/net/ethtool/netlink.c
-@@ -1129,6 +1129,13 @@ static const struct genl_ops ethtool_genl_ops[] = {
- 		.policy = ethnl_mm_set_policy,
- 		.maxattr = ARRAY_SIZE(ethnl_mm_set_policy) - 1,
- 	},
-+	{
-+		.cmd	= ETHTOOL_MSG_MODULE_FW_FLASH_ACT,
-+		.flags	= GENL_UNS_ADMIN_PERM,
-+		.doit	= ethnl_act_module_fw_flash,
-+		.policy	= ethnl_module_fw_flash_act_policy,
-+		.maxattr = ARRAY_SIZE(ethnl_module_fw_flash_act_policy) - 1,
-+	},
- };
- 
- static const struct genl_multicast_group ethtool_nl_mcgrps[] = {
-diff --git a/net/ethtool/netlink.h b/net/ethtool/netlink.h
-index 9a333a8d04c1..46712c9531ae 100644
---- a/net/ethtool/netlink.h
-+++ b/net/ethtool/netlink.h
-@@ -441,6 +441,7 @@ extern const struct nla_policy ethnl_plca_set_cfg_policy[ETHTOOL_A_PLCA_MAX + 1]
- extern const struct nla_policy ethnl_plca_get_status_policy[ETHTOOL_A_PLCA_HEADER + 1];
- extern const struct nla_policy ethnl_mm_get_policy[ETHTOOL_A_MM_HEADER + 1];
- extern const struct nla_policy ethnl_mm_set_policy[ETHTOOL_A_MM_MAX + 1];
-+extern const struct nla_policy ethnl_module_fw_flash_act_policy[ETHTOOL_A_MODULE_FW_FLASH_PASSWORD + 1];
- 
- int ethnl_set_features(struct sk_buff *skb, struct genl_info *info);
- int ethnl_act_cable_test(struct sk_buff *skb, struct genl_info *info);
-@@ -448,6 +449,7 @@ int ethnl_act_cable_test_tdr(struct sk_buff *skb, struct genl_info *info);
- int ethnl_tunnel_info_doit(struct sk_buff *skb, struct genl_info *info);
- int ethnl_tunnel_info_start(struct netlink_callback *cb);
- int ethnl_tunnel_info_dumpit(struct sk_buff *skb, struct netlink_callback *cb);
-+int ethnl_act_module_fw_flash(struct sk_buff *skb, struct genl_info *info);
- 
- extern const char stats_std_names[__ETHTOOL_STATS_CNT][ETH_GSTRING_LEN];
- extern const char stats_eth_phy_names[__ETHTOOL_A_STATS_ETH_PHY_CNT][ETH_GSTRING_LEN];
--- 
-2.40.1
-
+this is not used in this series.
 
