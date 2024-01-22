@@ -1,124 +1,98 @@
-Return-Path: <linux-kernel+bounces-34024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A5F5837204
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:11:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A45283720B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:12:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD1451C2AA73
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:11:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EDD21F2E769
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A27405DD;
-	Mon, 22 Jan 2024 18:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DEF7405D0;
+	Mon, 22 Jan 2024 18:49:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="EXRGo/dx"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aJ0SsbNF"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B2EA405D0
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0363D991;
+	Mon, 22 Jan 2024 18:48:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705949292; cv=none; b=TUtKw82FmHZbJV0DxmhojinBNuPQLq5dvHGANPkOYv6rtSZHE3hqrEzHQ3cKdz/+p7HJy3mG/NMyrnU6X0CQ+0gD7sUgIYWIlJ1tZi7RRoec20j6NhF98mL5xBdmSV7LiBFt2ONuWRfwww/Y9j/f34SqDKDWRReTjBngvVyjwx0=
+	t=1705949340; cv=none; b=WOQs1FpL16reZREm76svlEEU5G+PXcIq5YhM58Mmx32mp2+gdMzlAI7sfzCFxE5LVuOO5CH54xBG2R1jyt7jF9hx+WQmb6gJsPvMqV9pzVz25IK4/EwyjfpNH7Z1xdl/wSA1VmWfcm2ulW/2tVOdc46AVgkpQyjpwX5a7u0qYJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705949292; c=relaxed/simple;
-	bh=XSHpBvt2V7wCc/i4EefWOIw8hiJqZiIX+fFXsQb/5wY=;
+	s=arc-20240116; t=1705949340; c=relaxed/simple;
+	bh=MAQEcRqHb3if5HkmAI43gXvFuhSvOtbVx+WrKREOnrQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u83Nd3k3zMFa2zkugkmNjeGz9+20xMQijNsyByKa0iPDbdW6yu0P7z2VkU/IBg6I9DVjr3PpjmH5nlULGcuSGr35ydblwHTKZYwWx9eYZEJJnQB4yvdA2e8oud8RZ5MBgfvugQ+dBHbrW+dU+JhyrWENU8upRLsl8uBKATg6kFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=EXRGo/dx; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2DE1640E01A9;
-	Mon, 22 Jan 2024 18:48:09 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 06Jre4smaxfn; Mon, 22 Jan 2024 18:48:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705949287; bh=RyNDW7NZ0E73YW3daUqi9/kHUBRnzEMoHra0vLKJkZU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EXRGo/dxVX9aTdFGmY1aT1Mkn5CkQs4mPupCB4B7i7h/2OaMHc9u6KjebA3UqE4qX
-	 sD8GTBtCscwTiYb6Ez/vbEV/CM/ITuGjZjrO/DDZnBgR58mD9lVszrZ5o587gY5TnB
-	 iZvLy464feLvtg3b9nR71tXcTOb7LUGZ/w6YGJR/k06O/yqaGEFPpPDsFKEdL999RF
-	 xHhwoEdJbKN8TBp2StAfqVd3KynA86Rw0m9x+k0mCzt9gfgSeS/7FbQ9lVTlfMRJFT
-	 NThdaMlYiolg6snFzvLCNB14sG0e+95IQBVaDKXQYh9Sk5H1FH7JqyJ3aJHs0IJk6G
-	 DXBjTfvHRTH4Tahu+1aFOvHvrBQXGGRzNZ++hnKkO+05f6/5Zth85xKAgcgQCG+674
-	 bvy85qyodNQPotfUui6fG4whAKhE1jIO/Pg8/1sL1T4x3bhQziQheYss87hJSSlojj
-	 wxfHYgVGIhUYszWgBIwagH+P/zVSSCHebaiDrBMlsYmE+Rw3KTsKmpjoztz6jz/c1e
-	 6EtZ+TlNEWf9CDS74f/mAn5jy8R/KBZ+bYcdTD/dI1Amm0QQ3waXCu7QvAbM9DJslR
-	 01IhNnLbUqs2C3HBrVwBXkzYeXT6auK++fNohu0IFkbwlDfttBfeX0m6R1EicOG3GV
-	 i+bFZHTV6qvG3ok2iqb0bQ7w=
-Received: from zn.tnic (pd953099d.dip0.t-ipconnect.de [217.83.9.157])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1171140E0196;
-	Mon, 22 Jan 2024 18:47:56 +0000 (UTC)
-Date: Mon, 22 Jan 2024 19:47:55 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: "Luck, Tony" <tony.luck@intel.com>,
-	"Yu, Fenghua" <fenghua.yu@intel.com>,
-	Peter Newman <peternewman@google.com>,
-	"x86@kernel.org" <x86@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	Jamie Iles <quic_jiles@quicinc.com>,
-	Babu Moger <babu.moger@amd.com>,
-	"Shen, Xiaochen" <xiaochen.shen@intel.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [PATCH v2] x86/resctrl: Implement new mba_MBps throttling
- heuristic
-Message-ID: <20240122184755.GCZa64W02KXyeaVXJg@fat_crate.local>
-References: <20231201214737.104444-1-tony.luck@intel.com>
- <20240118214213.59596-1-tony.luck@intel.com>
- <45d2891e-989a-45c9-a527-8b14ff5f8748@intel.com>
- <SJ1PR11MB60837D4884419BDC2DCAA2D2FC752@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <bfa5104f-b887-4cc4-a24c-0497b86d9dde@intel.com>
- <20240122182121.GBZa6yIYPtHQx44EU9@fat_crate.local>
- <11fc82e0-961f-4c8d-844f-ad4b99067eb3@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XfamSanOfKWnjICbo7FZfNDOCYygmfVloxB3ErV8N9+PkG5MpdIDblNvsONd4LnxzkqtH+OQOrMttMBD+G90ExSw8BjzOW+AQSkzbRRDCO9KFBN3Q0Qwv80oMM8FNH2+LNfLExcvx48N2rKEc8yKLCdEYZDiWodibE6LEX02NY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aJ0SsbNF; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=W4nN7oLLaAH1mNj9CSrB8+XTPs6nsG2lTrYk1k3mo8Y=; b=aJ0SsbNFlexreTJ+32upLpZTgK
+	FeQ69FjtTeeF/ourGpH6q+CDAPsfhJIPuJCdvAz4dXR9RVagl35pYAIeZZ0FA58YUaLik8mFdMB0i
+	nNCp5BZOdsdZ2XurWcprbwB154NniOgVHIYSrdxuZjpYkmg8VT6ug8cgIVe19G7bLRa9aDyCif1SV
+	3WZA/dwtiWeLQcoCPxOeDJHz+Mro3aJNR9FRybP3wlgY2IPPL0NyD9kFA2bEW1h2SAbTIqSMXFmLd
+	aR0BBjqQ+R7aZvhjJIeUnMFrtDU4QW3K7PSNq11JvF4w4kpgnQwLb3UiOXdZiQEEeeJ4PG934jqnQ
+	sZ5FHp+Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rRzLt-00DbCX-17;
+	Mon, 22 Jan 2024 18:48:57 +0000
+Date: Mon, 22 Jan 2024 10:48:57 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Helge Deller <deller@gmx.de>
+Cc: deller@kernel.org, linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-modules@vger.kernel.org,
+	linux-arch@vger.kernel.org
+Subject: Re: [PATCH 2/4] modules: Ensure 64-bit alignment on __ksymtab_*
+ sections
+Message-ID: <Za64mVrm528kYoCW@bombadil.infradead.org>
+References: <20231122221814.139916-1-deller@kernel.org>
+ <20231122221814.139916-3-deller@kernel.org>
+ <ZYUlpxlg/WooxGWZ@bombadil.infradead.org>
+ <1b73bc5a-1948-4e67-9ec5-b238723b3a48@gmx.de>
+ <ZYXtPL7Ds1SUKPLT@bombadil.infradead.org>
+ <59bc81b5-820e-40ff-9159-c03e429af9a6@gmx.de>
+ <Za6Td6cx3JbTfnCZ@bombadil.infradead.org>
+ <b5e98501-6262-4b04-bbae-238e4956f904@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <11fc82e0-961f-4c8d-844f-ad4b99067eb3@intel.com>
+In-Reply-To: <b5e98501-6262-4b04-bbae-238e4956f904@gmx.de>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Mon, Jan 22, 2024 at 10:41:01AM -0800, Reinette Chatre wrote:
-> Thank you for noting this exchange. Yes, this order applies cleanly.
-> This is the list of pending resctrl fixes.
+On Mon, Jan 22, 2024 at 05:47:49PM +0100, Helge Deller wrote:
+> On 1/22/24 17:10, Luis Chamberlain wrote:
+> > 
+> > It's within the noise for x86_64, but given what you suggest
+> > for parisc where it is much more expensive, we should see a non-noise
+> > delta. Even just time on loading the module should likely result in
+> > a considerable delta than on x86_64. You may just need to play a bit
+> > with the default values at build time.
+> 
+> I don't know if it will be a "considerable" amount of time.
 
-Ok, if some of the fixes need to go to Linus now, lemme know.
+There are variables which you can tune, so given what you suggest
+it should be possible to get to that spot rather easily with a few
+changes to the default values I think.
 
-> There is also one pending resctrl feature, the SNC work [1], that Tony
-> plans to rebase on these fixes.
+> > If you don't feel like doing that test that's fine too, we can just
+> > ignore that.
+> 
+> I can do that test, but I won't have time for that in the next few weeks...
 
-Ack.
+I would appreciate it!
 
-> As a side note: I did have a conversation with James about the
-> MPAM work and his expectation is that the SNC work goes first.
-
-Ok.
-
-> I was working on a separate note to you but we can continue discussing
-> the pending resctrl work here.
-
-Separate note is fine too - however you prefer. I'll start going through
-those in the coming days and we can take it from there.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+  Luis
 
