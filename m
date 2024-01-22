@@ -1,141 +1,202 @@
-Return-Path: <linux-kernel+bounces-33988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26206837180
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:00:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9328A837182
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33D5E29421D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:00:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DF421C252C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B255102B;
-	Mon, 22 Jan 2024 18:33:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E203524B5;
+	Mon, 22 Jan 2024 18:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="L+07vhj+"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k8nkgU0F";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k8nkgU0F"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B168750A9E;
-	Mon, 22 Jan 2024 18:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27C151C54;
+	Mon, 22 Jan 2024 18:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705948430; cv=none; b=apaUxJs8yTzjkLvVtWQ2EiE5lDwnUXwHueQ9+4etdsz38bOjpp+bLFj3jfplhkE7a2hlx7EOKypOj1IlW3aR8q4dX7RehrdFwakM5Ru6WNo9t+DmuCt1tLh43GV0LLHdmX1u2HmCExrBgDNt+Yklq4fFqPPXhfUgRKfqsc9pYN8=
+	t=1705948457; cv=none; b=UY2tDBGqNlE0bYVSVgRVzZqDljMTU86k4W6dxkUj98eJkMUMlNtXE1Yas3QmxAFDnwp2VhMy26zAbXgqjL+1pusP8vbcZA00eJ2CDU8233HzydiBkH7x1u3XWhJy0BRKJe9ZLPcEdo85stNkKZJq8CnhT1XDkS2rXLRufDJE4mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705948430; c=relaxed/simple;
-	bh=zLoxhO1/k4AtBY/I4JrebYuKqycpixTXGsVOVS4/gBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=dWalReB3mZQ+jOp6i5F0lIwx/bYnXlZc8A4uPTQ4yB5pwmXPrnI0DuO++1gsarBWmynWM7vtIGqnB1LHTmnPdhBSBJiDxmgx3CYEXWts5D0/JX4J0lOZUh6OKKIGuzIADDCAkm2K4ozlXRmnYydT12H8hWrOjTP3FKf40BOxIq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=L+07vhj+; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40MIKinF021689;
-	Mon, 22 Jan 2024 18:33:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=GB0o6GF3v4B74TnutKUaWjeNsUhfFJCRGR/moEVEhGo=; b=L+
-	07vhj+ZaFp15Lvd6vMBhHyFT0cimsOo/0tGss+AP3uUqoQts6piJfD40ntpsnoDj
-	GeXti1v72FyNv+9agmlsQwRU9PMoCnk3awGdDhz83ehdFi0/2V8lr7ar/xVwkUmk
-	plHVK748pw5se2Y3f0LNVz4Lao5UIm+gW41Ybvq6J0hfeLKubhVm8fCyNh2v6avE
-	+ePmvbFzyIGlgVQLJ7pnDmSuecRxQn2VzdLPjFZGB5AXm9m492FedSGshkXmganw
-	xm5t9d+WmiONuA/fR5SX9soamDDH74ToHgSAOn5ji8Tnx5beg63dbX/h44IK0SDU
-	FWsZEwHG9TilO778qEOQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vst8w8jud-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 18:33:31 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40MIXUs1014880
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 18:33:30 GMT
-Received: from [10.110.26.199] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 22 Jan
- 2024 10:33:29 -0800
-Message-ID: <d80ae6ae-e1f2-48ef-b18a-29b5ca62e64c@quicinc.com>
-Date: Mon, 22 Jan 2024 10:33:28 -0800
+	s=arc-20240116; t=1705948457; c=relaxed/simple;
+	bh=oQacqnuO9mGmDHTgnL5CUIN0m7GKe62VcG6C7MQT824=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eCLSUMsLT7WsvUSq70r71BkGzwWJi9YFGBssP17lnTl95cc7udRm/T7Iv3z3iLRRbeJJiznXirUxvvwwWAo///t3QffhBLqMXOsaIBPQKJPHrv1grU/9FwayFzDcgycDzEIvwwkpe6WR0BMAnEvdJNe5eWcVemJgJ2KQ5YMBvws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k8nkgU0F; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k8nkgU0F; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 03DBF21FC0;
+	Mon, 22 Jan 2024 18:34:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705948454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=FjNsB5EjumG15DrXXoM5w5G4N1GM3TAKsj6a0kiIkio=;
+	b=k8nkgU0FiBOd8U+340kNfl8mFHAY46grDguxZYxxfz4bhnm+cVRLWMYYI70Nfd+HFqrZm7
+	hUeVnQdmYOaW5z+VnM5Xy4tpp/C2xj+1ydFnN0+9aOW/sKMFmbsn6pxN3hHSuGchLQUVa8
+	aBzhs+znyEOrOsprZOmgfEzmAWGzEsM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705948454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=FjNsB5EjumG15DrXXoM5w5G4N1GM3TAKsj6a0kiIkio=;
+	b=k8nkgU0FiBOd8U+340kNfl8mFHAY46grDguxZYxxfz4bhnm+cVRLWMYYI70Nfd+HFqrZm7
+	hUeVnQdmYOaW5z+VnM5Xy4tpp/C2xj+1ydFnN0+9aOW/sKMFmbsn6pxN3hHSuGchLQUVa8
+	aBzhs+znyEOrOsprZOmgfEzmAWGzEsM=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E94A11390F;
+	Mon, 22 Jan 2024 18:34:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id fcupOCW1rmVKbQAAn2gu4w
+	(envelope-from <dsterba@suse.com>); Mon, 22 Jan 2024 18:34:13 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.8-rc2
+Date: Mon, 22 Jan 2024 19:33:44 +0100
+Message-ID: <cover.1705946889.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH wireless v2] nl80211/cfg80211: add nla_policy for S1G band
-Content-Language: en-US
-To: Johannes Berg <johannes@sipsolutions.net>, Lin Ma <linma@zju.edu.cn>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvalo@kernel.org>
-References: <20240119151201.8670-1-linma@zju.edu.cn>
- <9e1db7f3-fd18-4b3b-a912-3cf6efd96fed@quicinc.com>
- <590fe2823d934af997c515640733eb8889b0560f.camel@sipsolutions.net>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <590fe2823d934af997c515640733eb8889b0560f.camel@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Yae4dbBKdj0cZ4XrGHH4egyT1fEyNCYT
-X-Proofpoint-ORIG-GUID: Yae4dbBKdj0cZ4XrGHH4egyT1fEyNCYT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-22_07,2024-01-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- impostorscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 adultscore=0 suspectscore=0
- spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401220130
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: ***
+X-Spam-Score: 3.46
+X-Spamd-Result: default: False [3.46 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_SPAM_SHORT(2.56)[0.853];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On 1/20/2024 12:27 PM, Johannes Berg wrote:
-> On Fri, 2024-01-19 at 15:47 -0800, Jeff Johnson wrote:
->>> --- a/net/wireless/nl80211.c
->>> +++ b/net/wireless/nl80211.c
->>> @@ -911,6 +911,7 @@ nl80211_match_band_rssi_policy[NUM_NL80211_BANDS] = {
->>>  	[NL80211_BAND_5GHZ] = { .type = NLA_S32 },
->>>  	[NL80211_BAND_6GHZ] = { .type = NLA_S32 },
->>>  	[NL80211_BAND_60GHZ] = { .type = NLA_S32 },
->>> +	[NL80211_BAND_S1GHZ] = { .type = NLA_S32 },
->>>  	[NL80211_BAND_LC]    = { .type = NLA_S32 },
->>>  };
->>>  
->> something is really suspicious since the NL80211_BAND_* enums are
->> *value* enums, not attribute ID enums, and hence they should never be
->> used in an nla_policy.
-> 
-> Yeah, that's what it looks like first, but then they do get used
-> anyway...
-> 
->> what is actually using these as attribute IDs, noting that
->> NL80211_BAND_2GHZ == 0 and hence cannot be used as an attribute ID
-> 
-> Ohh. Good catch!
-> 
->> seems the logic that introduced this policy needs to be revisited.
->>
-> 
-> Let's just remove it?
-> 
-> commit 1e1b11b6a1111cd9e8af1fd6ccda270a9fa3eacf
-> Author: vamsi krishna <vamsin@codeaurora.org>
-> Date:   Fri Feb 1 18:34:51 2019 +0530
-> 
->     nl80211/cfg80211: Specify band specific min RSSI thresholds with sched scan
-> 
-> 
-> As far as I can tell nothing is using that in the first place ...
-> Certainly not in the kernel, nor wpa_s, nor anything else I could find
-> really ...
-> 
-> We can't completely revert it since we need the attribute number to stay
-> allocated, but that's all we cannot remove.
+Hi,
 
-I'm investigating this and will report back.
+please pull the following fixes. Thanks.
 
+- zoned mode fixes:
+  - fix slowdown when writing large file sequentially by looking up
+    block groups with enough space faster
+  - locking fixes when activating a zone
+
+- new mount API fixes:
+  - preserve mount options for a ro/rw mount of the same subvolume
+
+- scrub fixes:
+  - fix use-after-free in case the chunk length is not aligned to 64K,
+    this does not happen normally but has been reported on images
+    converted from ext4
+  - similar alignment check was missing with raid-stripe-tree
+
+- subvolume deletion fixes:
+  - prevent calling ioctl on already deleted subvolume
+  - properly track flag tracking a deleted subvolume
+
+- in subpage mode, fix decompression of an inline extent (zlib, lzo, zstd)
+
+- fix crash when starting writeback on a folio, after integration with
+  recent MM changes this needs to be started conditionally
+
+- reject unknown flags in defrag ioctl
+
+- error handling, API fixes, minor warning fixes
+
+----------------------------------------------------------------
+The following changes since commit e94dfb7a2935cb91faca88bf7136177d1ce0dda8:
+
+  btrfs: pass btrfs_io_geometry into btrfs_max_io_len (2023-12-15 23:03:59 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc1-tag
+
+for you to fetch changes up to 7f2d219e78e95a137a9c76fddac7ff8228260439:
+
+  btrfs: scrub: limit RST scrub to chunk boundary (2024-01-18 23:43:08 +0100)
+
+----------------------------------------------------------------
+Chung-Chiang Cheng (1):
+      btrfs: tree-checker: fix inline ref size in error messages
+
+David Sterba (1):
+      btrfs: don't warn if discard range is not aligned to sector
+
+Dmitry Antipov (1):
+      btrfs: fix kvcalloc() arguments order in btrfs_ioctl_send()
+
+Fedor Pchelkin (1):
+      btrfs: ref-verify: free ref cache before clearing mount opt
+
+Josef Bacik (2):
+      btrfs: use the original mount's mount options for the legacy reconfigure
+      btrfs: don't unconditionally call folio_start_writeback in subpage
+
+Naohiro Aota (4):
+      btrfs: zoned: factor out prepare_allocation_zoned()
+      btrfs: zoned: optimize hint byte for zoned allocator
+      btrfs: fix unbalanced unlock of mapping_tree_lock
+      btrfs: zoned: fix lock ordering in btrfs_zone_activate()
+
+Omar Sandoval (2):
+      btrfs: don't abort filesystem when attempting to snapshot deleted subvolume
+      btrfs: avoid copying BTRFS_ROOT_SUBVOL_DEAD flag to snapshot of subvolume being deleted
+
+Qu Wenruo (6):
+      btrfs: defrag: reject unknown flags of btrfs_ioctl_defrag_range_args
+      btrfs: zlib: fix and simplify the inline extent decompression
+      btrfs: lzo: fix and simplify the inline extent decompression
+      btrfs: zstd: fix and simplify the inline extent decompression
+      btrfs: scrub: avoid use-after-free when chunk length is not 64K aligned
+      btrfs: scrub: limit RST scrub to chunk boundary
+
+ fs/btrfs/compression.c     | 23 ++++++++++-----
+ fs/btrfs/compression.h     |  6 ++--
+ fs/btrfs/extent-tree.c     | 53 ++++++++++++++++++++++++---------
+ fs/btrfs/inode.c           | 22 ++++++++------
+ fs/btrfs/ioctl.c           |  7 +++++
+ fs/btrfs/lzo.c             | 34 ++++++---------------
+ fs/btrfs/ref-verify.c      |  6 ++--
+ fs/btrfs/scrub.c           | 36 ++++++++++++++++++-----
+ fs/btrfs/send.c            |  4 +--
+ fs/btrfs/subpage.c         |  3 +-
+ fs/btrfs/super.c           |  8 +++++
+ fs/btrfs/tree-checker.c    |  2 +-
+ fs/btrfs/volumes.c         |  2 --
+ fs/btrfs/zlib.c            | 73 ++++++++++++----------------------------------
+ fs/btrfs/zoned.c           |  8 ++---
+ fs/btrfs/zstd.c            | 73 +++++++++++++---------------------------------
+ include/uapi/linux/btrfs.h |  3 ++
+ 17 files changed, 178 insertions(+), 185 deletions(-)
 
