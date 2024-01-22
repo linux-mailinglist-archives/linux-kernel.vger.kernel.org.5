@@ -1,413 +1,436 @@
-Return-Path: <linux-kernel+bounces-32614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39870835DF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:18:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A69835DFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:19:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB5E282EEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:18:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12699284C01
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0ED39FD5;
-	Mon, 22 Jan 2024 09:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="qcnTZXlU"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2043.outbound.protection.outlook.com [40.107.237.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC05F39FC8;
+	Mon, 22 Jan 2024 09:19:31 +0000 (UTC)
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F94439FCD
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705915106; cv=fail; b=nZ49WRPKCEO6dfu7eWEYA8TK0IOp+5cwunm/AbCg5K09YSFnOoJXiAphvF/1P+kuoxh8ZrwAMfGhdxsHvxwNKg9tMQB1fMDwRoYrYLXwfVSkjmDb5D4yUg6RGpbXUoaCnXHD0in1GbHWHawGP2kLc7jRRzhGi+y4q66C+QdAd3k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705915106; c=relaxed/simple;
-	bh=oqV1U/DA4As0P8xvxFg9bsnZMECqDmzACILhXA3IejA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=mD10r0Hu4BI53acMiKkADXdxzuwvuD/P6F/+UOpe8WknEQNFdFikDSowCnyDNz8XcGsxAnuMkA6IhzSNjULzLv7qBChdtpP0q2dNTOTk9hwGo7q1CiavzQ1n1ActMGRAKSnGZxCw1Yu+t5+oRkqU4XkSPMi1wuVeyJf5s/ujlTg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=qcnTZXlU; arc=fail smtp.client-ip=40.107.237.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UsUFVqk+FBQvMy5qwMOpLGvTFDsD4Ybtz4XOeoOaJGpoMdajvpcCTdwYjUFLimrdmAIp1SO9oyW+AhryOcu/vA0INqcBj2577S9LPkd4X+RpNAZfnJcQt3emg/qvOVmTs4MCXVk1TdaSLMmEGml2z4JnnV6goNw1Y6wbEsIeXcYt7wa+Ak+bjxCWEGKOegerMJ8vLVqn0kuJerb4wibkAEEw1Vha85B52bmz/A+hX/mMtFNz8P1DHo9fXdSrgoJuEmTAOJEh/IxqVwfABnGpwOl6gpgCEHiOVi83nqB9MLFFs4xZXxwmpU9O+V0nTsagE6i3r/Vr8ZHXDoOrKvo9BA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x2gh3+apziccsLlRdZ6xWsvdw8dGUNSoWVXA8P4DZ2w=;
- b=crr5hbvBrHQHdYIZjNsYqcaMLY/SeaVO2t1MoClYbOCOP6lTyLFcsK1AUUobc7HkoDUgvl+RSzlG91spn5J6nBgtwNE/nVpbo34x845L5u2EdZ77Gy+ttsLHVmXnhcFaScszFrD/Uoys9Ct8//1P5LACg6naY5BJF916kV8w6x+uNH7wXAZAvTzzDo0elWU+EtxMKScVx/QLKlQKP8CiCN66qd4cybj1kOPdWpOX/5/6SECg6kcBeqotKS35TG2jymT5NKjRPrxd/GFSgEPZHXXocQX61syqelOIy6wXlW/g/KmX6/duOhy0/f9yoTbYdDLzJWIuPGRbS7Sh+xMsJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x2gh3+apziccsLlRdZ6xWsvdw8dGUNSoWVXA8P4DZ2w=;
- b=qcnTZXlUjG6SIN5pqDNrFch/nvUV2q2luL40ynrPdtmYRAfc6174W/CSj554Dv4ZoOIGnDXblp/dABHpL1Ugd//knxcK8ikEP246X4Nr9EWkevcoSf+wSzd6dxoINI5Ykh5tMEwByNfQVmBewAvM8A+DTwO1ov59WpNyOB2Cc+k=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by BL1PR12MB5064.namprd12.prod.outlook.com (2603:10b6:208:30a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Mon, 22 Jan
- 2024 09:18:20 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
- 09:18:20 +0000
-Message-ID: <5ed7d46b-ae26-43f2-81e0-91e3cfc0218a@amd.com>
-Date: Mon, 22 Jan 2024 10:18:01 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: Remove double faults once write a device pfn
-Content-Language: en-US
-To: Xianrong Zhou <Xianrong.Zhou@amd.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Cc: luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
- daniel@ffwll.ch, jani.nikula@linux.intel.com,
- joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
- tvrtko.ursulin@linux.intel.com, kherbst@redhat.com, lyude@redhat.com,
- dakr@redhat.com, ray.huang@amd.com, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, zack.rusin@broadcom.com,
- bcm-kernel-feedback-list@broadcom.com, akpm@linux-foundation.org,
- Felix.Kuehling@amd.com, Philip.Yang@amd.com, srinivasan.shanmugam@amd.com,
- surenb@google.com, James.Zhu@amd.com, matthew.auld@intel.com,
- nirmoy.das@intel.com, lee@kernel.org, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- nouveau@lists.freedesktop.org, guoqing.zhang@amd.com, huazeng.li@amd.com
-References: <20240122033210.713530-1-Xianrong.Zhou@amd.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20240122033210.713530-1-Xianrong.Zhou@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0112.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a3::15) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC6C39FC0
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705915171; cv=none; b=XNf0cQdltZ7xSFwLEbUwApzYZKMAGkTcCQt1Q5nie/S7xQBv+LzyJIyTf18rmgIXxLv4Sn0mzMfeXjxoNQeuxIEw0dFlBUI5HDhZ1KEVhyO9bh2uJ2hQciJY9VWfGx/Hy7qtfjRTmdRG1C5dpkfGD5sEHLlNTXfbKfTcjVf+j5c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705915171; c=relaxed/simple;
+	bh=R0V8yyHzrOy7eUMDuPOjubXzec1N0sQgeOEAfAXp/kU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kY4sV1T/pvNyjMumsXsYZwOVWA/I31Ru6ocVMBUNlfvWUKejD1JUlLfJLnd7koDLkr20ip9qVcS2giW8/xkkInbvFaKXJw7Xwp+c44ldQTDl4VQN3kKQWr5SAEZ6duwZjd46e90Mazc/7hBfmH/hw48x0Wdz6Xt8y6Ee/cB+/To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W.5LiAY_1705915164;
+Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.5LiAY_1705915164)
+          by smtp.aliyun-inc.com;
+          Mon, 22 Jan 2024 17:19:25 +0800
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+To: xiang@kernel.org,
+	chao@kernel.org,
+	linux-erofs@lists.ozlabs.org
+Cc: huyue2@coolpad.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] erofs: make iov_iter describe target buffer when read from fscache
+Date: Mon, 22 Jan 2024 17:19:23 +0800
+Message-Id: <20240122091923.38841-1-jefflexu@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|BL1PR12MB5064:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf46b7f7-a589-4a73-c3f1-08dc1b2b133e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	HDbvOtgyAqOR07PZfrY9pDyLACUG1g6//Y6nht9/u9x5Yx4WVDIGOMKPk7irqeSuCAmMagaNpXbUmUHbicnBbC49aSyfl0dTTXlz+m20eXt/qzOCOnM8vfx7nhUZCAwL9v82BBt9NU7ZYPq8WQW2I5+p9p3s4wu+eLg+WuAyanjJw4tiemMbyj8Mrmzyuh1/S63gD0HA83+JBTSz5SwbrKmK6PwLCXdJm1Cq+Z6aecLj0kgOqGdrospiRx+drIk1jM7Z/atCIADwk4H4I4O0LCrQuX25DQVLRsywMdpQ25oELM43kJQ5zdcBrm+wvVFtSdWhydEGuMkXDnpyeZtbsASTBPH1/km6CQdDmiNeBIhtOzSKoGPnEUf2+p4e7W2wkAXCzEQD2GxCO/MP2f/FcoNNxj115AnxAf6jCn3vPXB4af8LNFScX1BCVtLxoaL5c0MA9TewMGA8Q5UhjlyKDBGZPo2zTsGZ26PUZUOAUfQGZAy1IbzcIVRhWUoc7v++ZZuoUCRKBohzrpCZ+j9gXY8OqdmT+HjI56p4jRYMLDsCsnpGNDqzWhnFjAR5dhoYSymeAdi97eoAwWgpdz9T9yZEW2C+kvxbZYi9TWHiwexutpYxY82hx/0RU0QOe5Mk7E1awYVus/2rR+czDDbjbA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(376002)(396003)(366004)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(31686004)(83380400001)(86362001)(31696002)(36756003)(8936002)(8676002)(4326008)(38100700002)(2616005)(26005)(5660300002)(6506007)(6666004)(6512007)(6486002)(66946007)(66556008)(316002)(66476007)(30864003)(478600001)(41300700001)(2906002)(7416002)(7406005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aVVnSnNxOTNvcE9lMWE0KzErRjRGKzc0WlIzYjFtYmFCVnlwSi9hYmxvMGZ1?=
- =?utf-8?B?cGs0UnBTWk93K2MwZTcxZE1uNHhBbFdRUXRnUnhjd2NMV2U3NmxFV0QwT0lY?=
- =?utf-8?B?RzNjYThwTVNwWjc4VXFJWWVkL1Nub2d3b1o2WWVTeWhNTXNxRTd2OE13d2xj?=
- =?utf-8?B?WEVZUEFIdFByNVMrckxkMVFOWjVLdXJ2VEh0QzNyeVphN1dlc1BTQmFadWtS?=
- =?utf-8?B?OWJjTWttZHJzTlEzSndXWHdkbmFYMzR3ZmZ6MGVYRlBtbC9OVDJLckY1dHRi?=
- =?utf-8?B?QXdZTDJrZjVBQU9IVGt2Q2lzNUZPOFJycjRtdS9RaVBCYzJWbGpCUE5wZWN3?=
- =?utf-8?B?bGVNSld3M2lVRGpiSDVwdWFhLzlLYW1FMnpBaEZzcDVHU2pOQmxtUlRiQWcz?=
- =?utf-8?B?YjU5U1AwbGxSZWppaHhBSnVHZTdDaEJXNVdYQ1ZIRlJsclg2NUVibUJSSXRa?=
- =?utf-8?B?N2ZkeXJnUG5HUllRSG9vbXh0dGNNVVMrMmhONlNhbDFQUkJ2ZkxwNHlCS01h?=
- =?utf-8?B?ekpGekRERVRrdTRIL1hEMDBJek9yL0ZKZTBlUk4xWWtuakRzRVF5U1ZBb0NH?=
- =?utf-8?B?THUyT25adUtlelBnS096bTVtWCtsZ01uN2Q3clhKVW1PTGsrZU53UWdvN0pK?=
- =?utf-8?B?dE5vS1QybWhaSkJyeW8vU2pjalJWNEp6VXpCN0pWWGRqSWxEQUNCRUJ4N2JQ?=
- =?utf-8?B?Tnd0SHUzUW9qYnIvRExia1F3RmVCcmE5OGdGR3gwZmpHaGY5OVlORG5VMDh2?=
- =?utf-8?B?WDFrcnl1emJNcVFpWlFhUDFsMEUxU3VJWElKNHI1VnV3K1N1UjNEQnN4RUE4?=
- =?utf-8?B?SWVwalY3ZStoemhEaDMxZ2FEVnVzeFdqd2phUit3TE1BZ3J4U0ZZek9Tb09J?=
- =?utf-8?B?QXdESUVxTzR3TmE2Z1R3SGErcExVekZ0dm9RMVZGWlFEOTEvbGhzZ3FKZjd1?=
- =?utf-8?B?cHZ4MU8vWGNUSXlGZCtZREdob3pvcGd6THNad2FjdHBUWlZaMGsxSlExblo3?=
- =?utf-8?B?QUJyQWU1dE8wZ2pYd3BCL2tCTER2Q3lqMVF3TGdIRE85ZGdmdXRNUi9sZlFG?=
- =?utf-8?B?YkpNcWwwZ3N5WnoxQzNTallObWdUeG9tU3Q2OSs5T0dBaUtZTk9VaCtNVUNh?=
- =?utf-8?B?SHo4dWREV3VLb3dCSmkwZjcvUG9LUzlMSzdIcnBKSUQ0RGpmZmJKVEp5YlBN?=
- =?utf-8?B?azJYVHhRYTB1YUd1QStXNzZ0MnByRE9XS0YwUmlId3FQQVllTjFNMVN2Y21V?=
- =?utf-8?B?cUt1M2RISVY3OWNqbTJETFdsRjluRGpnRjU5cDhEWlhueXltZUtVM24vS3pa?=
- =?utf-8?B?Yk9LZWR0QmU0TEwwSUw3SGN3emtmeEtBOVNKVS9mcG5DNjVtRStwMUxRMmNp?=
- =?utf-8?B?YUtSNnloUFFvV0RmOVlMcTBCY1UyZ1ZBZEJ5NjdQUjhUNDF4U0xibDJMQ0My?=
- =?utf-8?B?TDR4eVpRNDdyNmxOR21icndoc0JMbmJuVHBsamFTd3hEbnpTNVplbk1MR3R0?=
- =?utf-8?B?QTRqdFlQKzhPd2dnNm9JOXZUU0RmVjNYS2xmcnFQS0xXODlCeFZvbDU4Ly9r?=
- =?utf-8?B?WFEyQUIyY3drMnZVQTE2eUcxdldFL2FEQ0k0ank3bFRZcGJzQ0RDWUt0Z2VY?=
- =?utf-8?B?eGFFYzkra3lhVHVEaGVxcFZCd0dCL09PSzJ6NFhoL1Z4RnNOcDgzbFkrZDl1?=
- =?utf-8?B?Q1AzRXFIV3lPaE9Zdkl2ZW52M29aNElEYjNpZ2lPSUpaVjUrbXFyVDNHb1ZL?=
- =?utf-8?B?bHFwdE9la2xuZ0tLdndPdThxZkZ5Wi9Tb09jWVNoTTVqWXZXQlFpTGFWMElp?=
- =?utf-8?B?QnBxaFV4T3J0S0ZUeVpHUit0U0pqWXVoL0dCOEZNNEU3dm91dlFoSnludk04?=
- =?utf-8?B?WWJ1aGpoOWNXTlVNdWdDV25aNEpiTStOMzJRaktzWDVtSFdCNGFqemlmM0RU?=
- =?utf-8?B?cGR5YlZmWWFlcjBNN01KdzhLWmtGS2M1cGMySVBlZVRYUlYzOGJTZTZpSFFt?=
- =?utf-8?B?a0Y5MHRsZWdyUjJEK0JIcm11Y0w4cXdoVG5zNWsrT0hCa2lQdzhvS3hCem1w?=
- =?utf-8?B?U0dlRlJQeUtkNWozbW5wanhIK1pHenBzZjA4MFBzZC9KWjdDSmMxYmhrYkZO?=
- =?utf-8?Q?NNdkBU9bDCcTtEGY62EM4NoI2?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf46b7f7-a589-4a73-c3f1-08dc1b2b133e
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 09:18:20.2116
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U9gRofOrsEy0lxHwdnMICGmtFsukia7ztckzwU2wOaYg/IueMPw0Hcrxlz/mrNM4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5064
+Content-Transfer-Encoding: 8bit
 
-Am 22.01.24 um 04:32 schrieb Xianrong Zhou:
-> The vmf_insert_pfn_prot could cause unnecessary double faults
-> on a device pfn. Because currently the vmf_insert_pfn_prot does
-> not make the pfn writable so the pte entry is normally read-only
-> or dirty catching.
+So far the fscache mode supports uncompressed data only, and the data
+read from fscache is put directly into the target page cache.  As the
+support for compressed data in fscache mode is going to be introduced,
+refactor the interface of reading fscache so that the following
+compressed part could make the raw data read from fscache be directed to
+the target buffer it wants, decompress the raw data, and finally fill
+the page cache with the decompressed data.
 
-What? How do you got to this conclusion?
+As the first step, a new structure, i.e. erofs_fscache_io (io), is
+introduced to describe a generic read request from the fscache, while
+the caller can specify the target buffer it wants in the iov_iter
+structure (io->iter).  Besides, the caller can also specify its
+completion callback and private data through erofs_fscache_io, which
+will be called to make further handling, e.g. unlocking the page cache
+for uncompressed data or decompressing the read raw data, when the read
+request from the fscache completes.  Now erofs_fscache_read_io_async()
+serves as a generic interface for reading raw data from fscache for both
+compressed and uncompressed data.
 
-> The first fault only sets up the pte entry which actually is
-> dirty catching. And the second immediate fault to the pfn due
-> to first dirty catching when the cpu re-execute the store
-> instruction.
+The erofs_fscache_request structure is kept to describe a request to
+fill the page cache in the specified range.
 
-It could be that this is done to work around some hw behavior, but not 
-because of dirty catching.
+Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+---
+v2:
+- improve the naming and code arrangement (Gao Xiang)
 
-> Normally if the drivers call vmf_insert_pfn_prot and also supply
-> 'pfn_mkwrite' callback within vm_operations_struct which requires
-> the pte to be dirty catching then the vmf_insert_pfn_prot and the
-> double fault are reasonable. It is not a problem.
+v1: https://lore.kernel.org/all/20240122071253.119004-1-jefflexu@linux.alibaba.com/
+---
+ fs/erofs/fscache.c | 222 ++++++++++++++++++++++++---------------------
+ 1 file changed, 120 insertions(+), 102 deletions(-)
 
-Well, as far as I can see that behavior absolutely doesn't make sense.
-
-When pfn_mkwrite is requested then the driver should use PAGE_COPY, 
-which is exactly what VMWGFX (the only driver using dirty tracking) is 
-doing.
-
-Everybody else uses PAGE_SHARED which should make the pte writeable 
-immediately.
-
-Regards,
-Christian.
-
->
-> However the most of drivers calling vmf_insert_pfn_prot do not
-> supply the 'pfn_mkwrite' callback so that the second fault is
-> unnecessary.
->
-> So just like vmf_insert_mixed and vmf_insert_mixed_mkwrite pair,
-> we should also supply vmf_insert_pfn_mkwrite for drivers as well.
->
-> Signed-off-by: Xianrong Zhou <Xianrong.Zhou@amd.com>
-> ---
->   arch/x86/entry/vdso/vma.c                  |  3 ++-
->   drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c    |  2 +-
->   drivers/gpu/drm/i915/gem/i915_gem_ttm.c    |  2 +-
->   drivers/gpu/drm/nouveau/nouveau_gem.c      |  2 +-
->   drivers/gpu/drm/radeon/radeon_gem.c        |  2 +-
->   drivers/gpu/drm/ttm/ttm_bo_vm.c            |  8 +++++---
->   drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c |  8 +++++---
->   include/drm/ttm/ttm_bo.h                   |  3 ++-
->   include/linux/mm.h                         |  2 +-
->   mm/memory.c                                | 14 +++++++++++---
->   10 files changed, 30 insertions(+), 16 deletions(-)
->
-> diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
-> index 7645730dc228..dd2431c2975f 100644
-> --- a/arch/x86/entry/vdso/vma.c
-> +++ b/arch/x86/entry/vdso/vma.c
-> @@ -185,7 +185,8 @@ static vm_fault_t vvar_fault(const struct vm_special_mapping *sm,
->   		if (pvti && vclock_was_used(VDSO_CLOCKMODE_PVCLOCK)) {
->   			return vmf_insert_pfn_prot(vma, vmf->address,
->   					__pa(pvti) >> PAGE_SHIFT,
-> -					pgprot_decrypted(vma->vm_page_prot));
-> +					pgprot_decrypted(vma->vm_page_prot),
-> +					true);
->   		}
->   	} else if (sym_offset == image->sym_hvclock_page) {
->   		pfn = hv_get_tsc_pfn();
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-> index 49a5f1c73b3e..adcb20d9e624 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-> @@ -64,7 +64,7 @@ static vm_fault_t amdgpu_gem_fault(struct vm_fault *vmf)
->   		}
->   
->   		ret = ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
-> -					       TTM_BO_VM_NUM_PREFAULT);
-> +					       TTM_BO_VM_NUM_PREFAULT, true);
->   
->   		drm_dev_exit(idx);
->   	} else {
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-> index 9227f8146a58..c6f13ae6c308 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-> @@ -1114,7 +1114,7 @@ static vm_fault_t vm_fault_ttm(struct vm_fault *vmf)
->   
->   	if (drm_dev_enter(dev, &idx)) {
->   		ret = ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
-> -					       TTM_BO_VM_NUM_PREFAULT);
-> +					       TTM_BO_VM_NUM_PREFAULT, true);
->   		drm_dev_exit(idx);
->   	} else {
->   		ret = ttm_bo_vm_dummy_page(vmf, vmf->vma->vm_page_prot);
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> index 49c2bcbef129..7e1453762ec9 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_gem.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> @@ -56,7 +56,7 @@ static vm_fault_t nouveau_ttm_fault(struct vm_fault *vmf)
->   
->   	nouveau_bo_del_io_reserve_lru(bo);
->   	prot = vm_get_page_prot(vma->vm_flags);
-> -	ret = ttm_bo_vm_fault_reserved(vmf, prot, TTM_BO_VM_NUM_PREFAULT);
-> +	ret = ttm_bo_vm_fault_reserved(vmf, prot, TTM_BO_VM_NUM_PREFAULT, true);
->   	nouveau_bo_add_io_reserve_lru(bo);
->   	if (ret == VM_FAULT_RETRY && !(vmf->flags & FAULT_FLAG_RETRY_NOWAIT))
->   		return ret;
-> diff --git a/drivers/gpu/drm/radeon/radeon_gem.c b/drivers/gpu/drm/radeon/radeon_gem.c
-> index 3fec3acdaf28..b21cf00ae162 100644
-> --- a/drivers/gpu/drm/radeon/radeon_gem.c
-> +++ b/drivers/gpu/drm/radeon/radeon_gem.c
-> @@ -62,7 +62,7 @@ static vm_fault_t radeon_gem_fault(struct vm_fault *vmf)
->   		goto unlock_resv;
->   
->   	ret = ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
-> -				       TTM_BO_VM_NUM_PREFAULT);
-> +				       TTM_BO_VM_NUM_PREFAULT, true);
->   	if (ret == VM_FAULT_RETRY && !(vmf->flags & FAULT_FLAG_RETRY_NOWAIT))
->   		goto unlock_mclk;
->   
-> diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
-> index 4212b8c91dd4..7d14a7d267aa 100644
-> --- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
-> +++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
-> @@ -167,6 +167,7 @@ EXPORT_SYMBOL(ttm_bo_vm_reserve);
->    * @num_prefault: Maximum number of prefault pages. The caller may want to
->    * specify this based on madvice settings and the size of the GPU object
->    * backed by the memory.
-> + * @mkwrite: make the pfn or page writable
->    *
->    * This function inserts one or more page table entries pointing to the
->    * memory backing the buffer object, and then returns a return code
-> @@ -180,7 +181,8 @@ EXPORT_SYMBOL(ttm_bo_vm_reserve);
->    */
->   vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
->   				    pgprot_t prot,
-> -				    pgoff_t num_prefault)
-> +				    pgoff_t num_prefault,
-> +				    bool mkwrite)
->   {
->   	struct vm_area_struct *vma = vmf->vma;
->   	struct ttm_buffer_object *bo = vma->vm_private_data;
-> @@ -263,7 +265,7 @@ vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
->   		 * at arbitrary times while the data is mmap'ed.
->   		 * See vmf_insert_pfn_prot() for a discussion.
->   		 */
-> -		ret = vmf_insert_pfn_prot(vma, address, pfn, prot);
-> +		ret = vmf_insert_pfn_prot(vma, address, pfn, prot, mkwrite);
->   
->   		/* Never error on prefaulted PTEs */
->   		if (unlikely((ret & VM_FAULT_ERROR))) {
-> @@ -312,7 +314,7 @@ vm_fault_t ttm_bo_vm_dummy_page(struct vm_fault *vmf, pgprot_t prot)
->   	/* Prefault the entire VMA range right away to avoid further faults */
->   	for (address = vma->vm_start; address < vma->vm_end;
->   	     address += PAGE_SIZE)
-> -		ret = vmf_insert_pfn_prot(vma, address, pfn, prot);
-> +		ret = vmf_insert_pfn_prot(vma, address, pfn, prot, true);
->   
->   	return ret;
->   }
-> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c b/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c
-> index 74ff2812d66a..bb8e4b641681 100644
-> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c
-> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c
-> @@ -452,12 +452,14 @@ vm_fault_t vmw_bo_vm_fault(struct vm_fault *vmf)
->   	 * sure the page protection is write-enabled so we don't get
->   	 * a lot of unnecessary write faults.
->   	 */
-> -	if (vbo->dirty && vbo->dirty->method == VMW_BO_DIRTY_MKWRITE)
-> +	if (vbo->dirty && vbo->dirty->method == VMW_BO_DIRTY_MKWRITE) {
->   		prot = vm_get_page_prot(vma->vm_flags & ~VM_SHARED);
-> -	else
-> +		ret = ttm_bo_vm_fault_reserved(vmf, prot, num_prefault, false);
-> +	} else {
->   		prot = vm_get_page_prot(vma->vm_flags);
-> +		ret = ttm_bo_vm_fault_reserved(vmf, prot, num_prefault, true);
-> +	}
->   
-> -	ret = ttm_bo_vm_fault_reserved(vmf, prot, num_prefault);
->   	if (ret == VM_FAULT_RETRY && !(vmf->flags & FAULT_FLAG_RETRY_NOWAIT))
->   		return ret;
->   
-> diff --git a/include/drm/ttm/ttm_bo.h b/include/drm/ttm/ttm_bo.h
-> index 0223a41a64b2..66e293db69ee 100644
-> --- a/include/drm/ttm/ttm_bo.h
-> +++ b/include/drm/ttm/ttm_bo.h
-> @@ -386,7 +386,8 @@ vm_fault_t ttm_bo_vm_reserve(struct ttm_buffer_object *bo,
->   			     struct vm_fault *vmf);
->   vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
->   				    pgprot_t prot,
-> -				    pgoff_t num_prefault);
-> +				    pgoff_t num_prefault,
-> +				    bool mkwrite);
->   vm_fault_t ttm_bo_vm_fault(struct vm_fault *vmf);
->   void ttm_bo_vm_open(struct vm_area_struct *vma);
->   void ttm_bo_vm_close(struct vm_area_struct *vma);
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index f5a97dec5169..f8868e28ea04 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3553,7 +3553,7 @@ int vm_map_pages_zero(struct vm_area_struct *vma, struct page **pages,
->   vm_fault_t vmf_insert_pfn(struct vm_area_struct *vma, unsigned long addr,
->   			unsigned long pfn);
->   vm_fault_t vmf_insert_pfn_prot(struct vm_area_struct *vma, unsigned long addr,
-> -			unsigned long pfn, pgprot_t pgprot);
-> +			unsigned long pfn, pgprot_t pgprot, bool mkwrite);
->   vm_fault_t vmf_insert_mixed(struct vm_area_struct *vma, unsigned long addr,
->   			pfn_t pfn);
->   vm_fault_t vmf_insert_mixed_mkwrite(struct vm_area_struct *vma,
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 7e1f4849463a..2c28f1a349ff 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -2195,6 +2195,7 @@ static vm_fault_t insert_pfn(struct vm_area_struct *vma, unsigned long addr,
->    * @addr: target user address of this page
->    * @pfn: source kernel pfn
->    * @pgprot: pgprot flags for the inserted page
-> + * @mkwrite: make the pfn writable
->    *
->    * This is exactly like vmf_insert_pfn(), except that it allows drivers
->    * to override pgprot on a per-page basis.
-> @@ -2223,7 +2224,7 @@ static vm_fault_t insert_pfn(struct vm_area_struct *vma, unsigned long addr,
->    * Return: vm_fault_t value.
->    */
->   vm_fault_t vmf_insert_pfn_prot(struct vm_area_struct *vma, unsigned long addr,
-> -			unsigned long pfn, pgprot_t pgprot)
-> +			unsigned long pfn, pgprot_t pgprot, bool mkwrite)
->   {
->   	/*
->   	 * Technically, architectures with pte_special can avoid all these
-> @@ -2246,7 +2247,7 @@ vm_fault_t vmf_insert_pfn_prot(struct vm_area_struct *vma, unsigned long addr,
->   	track_pfn_insert(vma, &pgprot, __pfn_to_pfn_t(pfn, PFN_DEV));
->   
->   	return insert_pfn(vma, addr, __pfn_to_pfn_t(pfn, PFN_DEV), pgprot,
-> -			false);
-> +			mkwrite);
->   }
->   EXPORT_SYMBOL(vmf_insert_pfn_prot);
->   
-> @@ -2273,10 +2274,17 @@ EXPORT_SYMBOL(vmf_insert_pfn_prot);
->   vm_fault_t vmf_insert_pfn(struct vm_area_struct *vma, unsigned long addr,
->   			unsigned long pfn)
->   {
-> -	return vmf_insert_pfn_prot(vma, addr, pfn, vma->vm_page_prot);
-> +	return vmf_insert_pfn_prot(vma, addr, pfn, vma->vm_page_prot, false);
->   }
->   EXPORT_SYMBOL(vmf_insert_pfn);
->   
-> +vm_fault_t vmf_insert_pfn_mkwrite(struct vm_area_struct *vma, unsigned long addr,
-> +			unsigned long pfn)
-> +{
-> +	return vmf_insert_pfn_prot(vma, addr, pfn, vma->vm_page_prot, true);
-> +}
-> +EXPORT_SYMBOL(vmf_insert_pfn_mkwrite);
-> +
->   static bool vm_mixed_ok(struct vm_area_struct *vma, pfn_t pfn)
->   {
->   	/* these checks mirror the abort conditions in vm_normal_page */
+diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
+index bc12030393b2..41847a68a59a 100644
+--- a/fs/erofs/fscache.c
++++ b/fs/erofs/fscache.c
+@@ -13,8 +13,6 @@ static LIST_HEAD(erofs_domain_cookies_list);
+ static struct vfsmount *erofs_pseudo_mnt;
+ 
+ struct erofs_fscache_request {
+-	struct erofs_fscache_request *primary;
+-	struct netfs_cache_resources cache_resources;
+ 	struct address_space	*mapping;	/* The mapping being accessed */
+ 	loff_t			start;		/* Start position */
+ 	size_t			len;		/* Length of the request */
+@@ -23,42 +21,13 @@ struct erofs_fscache_request {
+ 	refcount_t		ref;
+ };
+ 
+-static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
+-					     loff_t start, size_t len)
+-{
+-	struct erofs_fscache_request *req;
+-
+-	req = kzalloc(sizeof(struct erofs_fscache_request), GFP_KERNEL);
+-	if (!req)
+-		return ERR_PTR(-ENOMEM);
+-
+-	req->mapping = mapping;
+-	req->start   = start;
+-	req->len     = len;
+-	refcount_set(&req->ref, 1);
+-
+-	return req;
+-}
+-
+-static struct erofs_fscache_request *erofs_fscache_req_chain(struct erofs_fscache_request *primary,
+-					     size_t len)
+-{
+-	struct erofs_fscache_request *req;
+-
+-	/* use primary request for the first submission */
+-	if (!primary->submitted) {
+-		refcount_inc(&primary->ref);
+-		return primary;
+-	}
+-
+-	req = erofs_fscache_req_alloc(primary->mapping,
+-			primary->start + primary->submitted, len);
+-	if (!IS_ERR(req)) {
+-		req->primary = primary;
+-		refcount_inc(&primary->ref);
+-	}
+-	return req;
+-}
++struct erofs_fscache_io {
++	struct netfs_cache_resources cres;
++	struct iov_iter		iter;
++	netfs_io_terminated_t	end_io;
++	void			*private;
++	refcount_t		ref;
++};
+ 
+ static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
+ {
+@@ -83,82 +52,117 @@ static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
+ static void erofs_fscache_req_put(struct erofs_fscache_request *req)
+ {
+ 	if (refcount_dec_and_test(&req->ref)) {
+-		if (req->cache_resources.ops)
+-			req->cache_resources.ops->end_operation(&req->cache_resources);
+-		if (!req->primary)
+-			erofs_fscache_req_complete(req);
+-		else
+-			erofs_fscache_req_put(req->primary);
++		erofs_fscache_req_complete(req);
+ 		kfree(req);
+ 	}
+ }
+ 
+-static void erofs_fscache_subreq_complete(void *priv,
++static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
++						loff_t start, size_t len)
++{
++	struct erofs_fscache_request *req;
++
++	req = kzalloc(sizeof(*req), GFP_KERNEL);
++	if (!req)
++		return NULL;
++
++	req->mapping = mapping;
++	req->start = start;
++	req->len = len;
++	refcount_set(&req->ref, 1);
++	return req;
++}
++
++static bool erofs_fscache_io_put(struct erofs_fscache_io *io)
++{
++	if (!refcount_dec_and_test(&io->ref))
++		return false;
++	if (io->cres.ops)
++		io->cres.ops->end_operation(&io->cres);
++	kfree(io);
++	return true;
++}
++
++static void erofs_fscache_req_io_put(struct erofs_fscache_io *io)
++{
++	struct erofs_fscache_request *req = io->private;
++
++	if (erofs_fscache_io_put(io))
++		erofs_fscache_req_put(req);
++}
++
++static void erofs_fscache_req_end_io(void *priv,
+ 		ssize_t transferred_or_error, bool was_async)
+ {
+-	struct erofs_fscache_request *req = priv;
++	struct erofs_fscache_io *io = priv;
++	struct erofs_fscache_request *req = io->private;
+ 
+-	if (IS_ERR_VALUE(transferred_or_error)) {
+-		if (req->primary)
+-			req->primary->error = transferred_or_error;
+-		else
+-			req->error = transferred_or_error;
+-	}
+-	erofs_fscache_req_put(req);
++	if (IS_ERR_VALUE(transferred_or_error))
++		req->error = transferred_or_error;
++	erofs_fscache_req_io_put(io);
++}
++
++static struct erofs_fscache_io *erofs_fscache_req_io_alloc(struct erofs_fscache_request *req)
++{
++	struct erofs_fscache_io *io;
++
++	io = kzalloc(sizeof(*io), GFP_KERNEL);
++	if (!io)
++		return NULL;
++
++	io->end_io = erofs_fscache_req_end_io;
++	io->private = req;
++	refcount_inc(&req->ref);
++	refcount_set(&io->ref, 1);
++	return io;
+ }
+ 
+ /*
+- * Read data from fscache (cookie, pstart, len), and fill the read data into
+- * page cache described by (req->mapping, lstart, len). @pstart describeis the
+- * start physical address in the cache file.
++ * Read data from fscache described by cookie at pstart physical address
++ * offset, and fill the read data into buffer described by io->iter.
+  */
+-static int erofs_fscache_read_folios_async(struct fscache_cookie *cookie,
+-		struct erofs_fscache_request *req, loff_t pstart, size_t len)
++static int erofs_fscache_read_io_async(struct fscache_cookie *cookie,
++		loff_t pstart, struct erofs_fscache_io *io)
+ {
+ 	enum netfs_io_source source;
+-	struct super_block *sb = req->mapping->host->i_sb;
+-	struct netfs_cache_resources *cres = &req->cache_resources;
+-	struct iov_iter iter;
+-	loff_t lstart = req->start + req->submitted;
+-	size_t done = 0;
++	struct netfs_cache_resources *cres = &io->cres;
++	struct iov_iter *iter = &io->iter;
+ 	int ret;
+ 
+-	DBG_BUGON(len > req->len - req->submitted);
+-
+ 	ret = fscache_begin_read_operation(cres, cookie);
+ 	if (ret)
+ 		return ret;
+ 
+-	while (done < len) {
+-		loff_t sstart = pstart + done;
+-		size_t slen = len - done;
++	while (iov_iter_count(iter)) {
++		size_t len, remain = iov_iter_count(iter);
+ 		unsigned long flags = 1 << NETFS_SREQ_ONDEMAND;
+ 
++		len = remain;
+ 		source = cres->ops->prepare_ondemand_read(cres,
+-				sstart, &slen, LLONG_MAX, &flags, 0);
+-		if (WARN_ON(slen == 0))
++				pstart, &len, LLONG_MAX, &flags, 0);
++		if (WARN_ON(len == 0))
+ 			source = NETFS_INVALID_READ;
+ 		if (source != NETFS_READ_FROM_CACHE) {
+-			erofs_err(sb, "failed to fscache prepare_read (source %d)", source);
++			erofs_err(NULL, "prepare_read failed (source %d)", source);
+ 			return -EIO;
+ 		}
+ 
+-		refcount_inc(&req->ref);
+-		iov_iter_xarray(&iter, ITER_DEST, &req->mapping->i_pages,
+-				lstart + done, slen);
+-
+-		ret = fscache_read(cres, sstart, &iter, NETFS_READ_HOLE_FAIL,
+-				   erofs_fscache_subreq_complete, req);
++		iov_iter_truncate(iter, len);
++		refcount_inc(&io->ref);
++		ret = fscache_read(cres, pstart, iter, NETFS_READ_HOLE_FAIL,
++				   io->end_io, io);
+ 		if (ret == -EIOCBQUEUED)
+ 			ret = 0;
+ 		if (ret) {
+-			erofs_err(sb, "failed to fscache_read (ret %d)", ret);
++			erofs_err(NULL, "fscache_read failed (ret %d)", ret);
+ 			return ret;
+ 		}
++		if (WARN_ON(iov_iter_count(iter)))
++			return -EIO;
+ 
+-		done += slen;
++		iov_iter_reexpand(iter, remain - len);
++		pstart += len;
+ 	}
+-	DBG_BUGON(done != len);
+ 	return 0;
+ }
+ 
+@@ -167,33 +171,43 @@ static int erofs_fscache_meta_read_folio(struct file *data, struct folio *folio)
+ 	int ret;
+ 	struct erofs_fscache *ctx = folio->mapping->host->i_private;
+ 	struct erofs_fscache_request *req;
++	struct erofs_fscache_io *io;
+ 
++	ret = -ENOMEM;
+ 	req = erofs_fscache_req_alloc(folio->mapping,
+ 				folio_pos(folio), folio_size(folio));
+-	if (IS_ERR(req)) {
++	if (!req) {
+ 		folio_unlock(folio);
+-		return PTR_ERR(req);
++		return ret;
+ 	}
+ 
+-	ret = erofs_fscache_read_folios_async(ctx->cookie, req,
+-				folio_pos(folio), folio_size(folio));
++	io = erofs_fscache_req_io_alloc(req);
++	if (!io) {
++		req->error = ret;
++		goto out;
++	}
++	iov_iter_xarray(&io->iter, ITER_DEST, &folio->mapping->i_pages,
++			folio_pos(folio), folio_size(folio));
++
++	ret = erofs_fscache_read_io_async(ctx->cookie, folio_pos(folio), io);
+ 	if (ret)
+ 		req->error = ret;
+ 
++	erofs_fscache_req_io_put(io);
++out:
+ 	erofs_fscache_req_put(req);
+ 	return ret;
+ }
+ 
+-static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
++static int erofs_fscache_data_read_slice(struct erofs_fscache_request *req)
+ {
+-	struct address_space *mapping = primary->mapping;
++	struct address_space *mapping = req->mapping;
+ 	struct inode *inode = mapping->host;
+ 	struct super_block *sb = inode->i_sb;
+-	struct erofs_fscache_request *req;
++	struct erofs_fscache_io *io;
+ 	struct erofs_map_blocks map;
+ 	struct erofs_map_dev mdev;
+-	struct iov_iter iter;
+-	loff_t pos = primary->start + primary->submitted;
++	loff_t pos = req->start + req->submitted;
+ 	size_t count;
+ 	int ret;
+ 
+@@ -204,6 +218,7 @@ static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
+ 
+ 	if (map.m_flags & EROFS_MAP_META) {
+ 		struct erofs_buf buf = __EROFS_BUF_INITIALIZER;
++		struct iov_iter iter;
+ 		erofs_blk_t blknr;
+ 		size_t offset, size;
+ 		void *src;
+@@ -224,15 +239,17 @@ static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
+ 		}
+ 		iov_iter_zero(PAGE_SIZE - size, &iter);
+ 		erofs_put_metabuf(&buf);
+-		primary->submitted += PAGE_SIZE;
++		req->submitted += PAGE_SIZE;
+ 		return 0;
+ 	}
+ 
+-	count = primary->len - primary->submitted;
++	count = req->len - req->submitted;
+ 	if (!(map.m_flags & EROFS_MAP_MAPPED)) {
++		struct iov_iter iter;
++
+ 		iov_iter_xarray(&iter, ITER_DEST, &mapping->i_pages, pos, count);
+ 		iov_iter_zero(count, &iter);
+-		primary->submitted += count;
++		req->submitted += count;
+ 		return 0;
+ 	}
+ 
+@@ -247,14 +264,15 @@ static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
+ 	if (ret)
+ 		return ret;
+ 
+-	req = erofs_fscache_req_chain(primary, count);
+-	if (IS_ERR(req))
+-		return PTR_ERR(req);
++	io = erofs_fscache_req_io_alloc(req);
++	if (!io)
++		return -ENOMEM;
++	iov_iter_xarray(&io->iter, ITER_DEST, &mapping->i_pages, pos, count);
++	ret = erofs_fscache_read_io_async(mdev.m_fscache->cookie,
++			mdev.m_pa + (pos - map.m_la), io);
++	erofs_fscache_req_io_put(io);
+ 
+-	ret = erofs_fscache_read_folios_async(mdev.m_fscache->cookie,
+-			req, mdev.m_pa + (pos - map.m_la), count);
+-	erofs_fscache_req_put(req);
+-	primary->submitted += count;
++	req->submitted += count;
+ 	return ret;
+ }
+ 
+@@ -278,9 +296,9 @@ static int erofs_fscache_read_folio(struct file *file, struct folio *folio)
+ 
+ 	req = erofs_fscache_req_alloc(folio->mapping,
+ 			folio_pos(folio), folio_size(folio));
+-	if (IS_ERR(req)) {
++	if (!req) {
+ 		folio_unlock(folio);
+-		return PTR_ERR(req);
++		return -ENOMEM;
+ 	}
+ 
+ 	ret = erofs_fscache_data_read(req);
+@@ -297,7 +315,7 @@ static void erofs_fscache_readahead(struct readahead_control *rac)
+ 
+ 	req = erofs_fscache_req_alloc(rac->mapping,
+ 			readahead_pos(rac), readahead_length(rac));
+-	if (IS_ERR(req))
++	if (!req)
+ 		return;
+ 
+ 	/* The request completion will drop refs on the folios. */
+-- 
+2.19.1.6.gb485710b
 
 
