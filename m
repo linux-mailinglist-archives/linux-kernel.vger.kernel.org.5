@@ -1,196 +1,160 @@
-Return-Path: <linux-kernel+bounces-33851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90927836FD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:25:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F59836F83
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:17:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01E92B2B37F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:17:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E318F1F26FDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9CB047F41;
-	Mon, 22 Jan 2024 17:44:57 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A03547F74;
+	Mon, 22 Jan 2024 17:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="n3+7wiRP"
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA05F47A6D;
-	Mon, 22 Jan 2024 17:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45CA47F6D
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:45:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945497; cv=none; b=N/2i96pxdMTPnXr2LA8oD2oR700u8WWurtt5lBwFUVJtzKKugApZFmH7IDhhWWRSIKf7jJGxexH67AN+k/TARvBxS4O6fiK178dXT+xlVS6jXO7W3Pj8U6XJvOFlL8bS41dLPu+842uj21ANMSTARgyr7AFo/XNMOyZMs65zhx4=
+	t=1705945537; cv=none; b=HjVoW7wPrtdaNFnwmreLumRx4hYVMW+sKs4GQj7TXAh5mjkmE9Q9BcLzRf5dy18EbDfKA3JszX8/iljIyVl5gf+12iZZK6UVnNx1okwUe1Tz2u+qTtr7mQyrzlTLs+9cFxbFn4CGHE4V54OqQxr5nRkCjRkhVefik4Ik2aXnoQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945497; c=relaxed/simple;
-	bh=1uo9SR5jLKvSqbQJuOZ/gWcBzY/vu6zvyq0QbExF35o=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qBE+AJHGZ+FPMfO2d+VDyqhuhgT/cfxS1OAU6WLqM04BnLa+RZybO73JN2e31BxRDVQ1Sd0NF6D1RjA3+RRPmFEcwRS1yQHRAQ/qvlT5meengAPpPkyv48VGY1a5k7QVu30vcWHwYGnJCkgL6kRSbL6WtACXQZ/zlDorwiaf9E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TJcwh1ZKDz6JBTC;
-	Tue, 23 Jan 2024 01:41:56 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 11383140A86;
-	Tue, 23 Jan 2024 01:44:51 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 22 Jan
- 2024 17:44:50 +0000
-Date: Mon, 22 Jan 2024 17:44:49 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: Russell King <rmk+kernel@armlinux.org.uk>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
-	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
-	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
-	<justin.he@arm.com>, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 04/21] ACPI: processor: Register all CPUs from
- acpi_processor_get_info()
-Message-ID: <20240122174449.00002f78@Huawei.com>
-In-Reply-To: <CAJZ5v0je=-oVnSumZs=dzcyVuVUeVeTgO7yOnjGg1igyrS7EHQ@mail.gmail.com>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-	<E1rDOg7-00Dvjq-VZ@rmk-PC.armlinux.org.uk>
-	<CAJZ5v0je=-oVnSumZs=dzcyVuVUeVeTgO7yOnjGg1igyrS7EHQ@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1705945537; c=relaxed/simple;
+	bh=abkKMctWm+0H/J5RM4zZHydX48MCx7/fwQLGgVanmtY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n7uv3Ac81dV5/I7x6+GgaWHOG730LfNZMoAq7ryeDvDrk8pnXF4pEKXxbowkkNnfdLqIRTwgFI1s+kW5mPyijV5goEWT4eKDTZNU09vjyJ7Nz+5xJowP1G+WF5kU2HQBhtpNyhGDY4IF6e4hg1XcQLwZAikI0gMRjvdPupPolPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=n3+7wiRP; arc=none smtp.client-ip=44.202.169.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
+	by cmsmtp with ESMTPS
+	id Rr63rl05vTHHuRyMTrd3Xx; Mon, 22 Jan 2024 17:45:29 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id RyMRroodFyxR5RyMSrG4iT; Mon, 22 Jan 2024 17:45:28 +0000
+X-Authority-Analysis: v=2.4 cv=JYOvEGGV c=1 sm=1 tr=0 ts=65aea9b8
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=NEAV23lmAAAA:8 a=7YfXLusrAAAA:8 a=lWKqt4ZwYMmOSQLAUVkA:9 a=QEXdDO2ut3YA:10
+ a=9cHFzqQdt-sA:10 a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=SLz71HocmBbuEhFRYD3r:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=nzXgY+4E9/m1cHPFb6LChwOFY++sdTtbwz4YGbTrgRc=; b=n3+7wiRP+JuxvMMGo4qhp0XaKk
+	ntYdQmu1vPL0HRLzb0Xjgsu5gVfpRgPAGCi3iU7g3a6+4XzF7KY0H8WEyi7NVc5ZUK/6ODe+JJL03
+	gtl7koEXVSWVIxh9BrwWRdPNYICBEOgSEObEJZlMzWGTOJ6IaFoKW9NboFe+oloOUicVrmpSYhjOb
+	3jZzqCJBY622cN9gleh/XZFh/AA723zNBf0XJ3XKDB/GCecp/YKxFp6teZmmLNwinrAit76vPFEIJ
+	bowEh1zBADupQW7qH+6hWqsJONUbtRHWyLVuYFSE928EK5739PtY9OgrFeSAV2zBYRDzeDaoUgvA+
+	2U6fAAMA==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:41722 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rRyMP-0019jE-22;
+	Mon, 22 Jan 2024 11:45:25 -0600
+Message-ID: <fd635112-c960-49a9-807f-692f47be46ed@embeddedor.com>
+Date: Mon, 22 Jan 2024 11:45:23 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-
-On Mon, 18 Dec 2023 21:30:50 +0100
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
-
-> On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@armlinux=
-org.uk> wrote:
-> >
-> > From: James Morse <james.morse@arm.com>
-> >
-> > To allow ACPI to skip the call to arch_register_cpu() when the _STA
-> > value indicates the CPU can't be brought online right now, move the
-> > arch_register_cpu() call into acpi_processor_get_info(). =20
->=20
-> This kind of looks backwards to me and has a potential to become
-> super-confusing.
->=20
-> I would instead add a way for the generic code to ask the platform
-> firmware whether or not the given CPU is enabled and so it can be
-> registered.
-
-Hi Rafael,
-
-The ACPI interpreter isn't up at this stage so we'd need to pull that
-forwards. I'm not sure if we can pull the interpreter init early enough.
-
-Perhaps pushing the registration back in all cases is the way to go?
-Given the acpi interpretter is initialized via subsys_initcall() it would
-need to be after that - I tried pushing cpu_dev_register_generic()
-immediately after acpi_bus_init() and that seems fine.
-We can't leave the rest of cpu_dev_init() that late because a bunch
-of other stuff relies on it (CPU freq blows up first as a core_init()
-on my setup).
-
-So to make this work we need it to always move the registration later
-than the necessary infrastructure, perhaps to subsys_initcall_sync()
-as is done for missing CPUs (we'd need to combine the two given that
-needs to run after this, or potentially just stop checking for acpi_disabled
-and don't taint the kernel!).  I think this is probably the most consistent
-option on basis it at least moves the registration to the same point
-whatever is going on and can easily use the arch callback you suggest
-to hide away the logic on deciding if a CPU is there or not.
-
-What do you think is the best way to do this?
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: Use kcalloc() instead of kzalloc()
+Content-Language: en-US
+To: Erick Archer <erick.archer@gmx.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Andrew Jones <ajones@ventanamicro.com>, Evan Green <evan@rivosinc.com>,
+ =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+ Jisheng Zhang <jszhang@kernel.org>, Charlie Jenkins <charlie@rivosinc.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <20240120135400.4710-1-erick.archer@gmx.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240120135400.4710-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1rRyMP-0019jE-22
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:41722
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfN8/pIlWIKBW4ux84Ow4ukmeD9/F19s8ExlF4OFTXP/pj3UJjWv3HBmWJOQ4xNV9k+GUDgkb1ZRY6uP8OFCZ6vb+4YHtP8KVGdOQKfrgi/vN6arqGzst
+ NJdjSV6ZhX1H16qcXTReh/PNYjNcOom7j/8XXbanIUuL7coxhV14yMfZqemt/Oi9fyjx68g6iUiEuppvuiGzFCt5AR25GLpaa+5yzd4GpfLn6hQjZ7XiiceZ
 
 
->=20
-> > Systems can still be booted with 'acpi=3Doff', or not include ano
-> > ACPI description at all. For these, the CPUs continue to be
-> > registered by cpu_dev_register_generic().
-> >
-> > This moves the CPU register logic back to a subsys_initcall(),
-> > while the memory nodes will have been registered earlier. =20
->=20
-> Isn't this somewhat risky?
->=20
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > ---
-> > Changes since RFC v2:
-> >  * Fixup comment in acpi_processor_get_info() (Gavin Shan)
-> >  * Add comment in cpu_dev_register_generic() (Gavin Shan)
-> > ---
-> >  drivers/acpi/acpi_processor.c | 12 ++++++++++++
-> >  drivers/base/cpu.c            |  6 +++++-
-> >  2 files changed, 17 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processo=
-r.c
-> > index 0511f2bc10bc..e7ed4730cbbe 100644
-> > --- a/drivers/acpi/acpi_processor.c
-> > +++ b/drivers/acpi/acpi_processor.c
-> > @@ -314,6 +314,18 @@ static int acpi_processor_get_info(struct acpi_dev=
-ice *device)
-> >                         cpufreq_add_device("acpi-cpufreq");
-> >         }
-> >
-> > +       /*
-> > +        * Register CPUs that are present. get_cpu_device() is used to =
-skip
-> > +        * duplicate CPU descriptions from firmware.
-> > +        */
-> > +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
-> > +           !get_cpu_device(pr->id)) {
-> > +               int ret =3D arch_register_cpu(pr->id);
-> > +
-> > +               if (ret)
-> > +                       return ret;
-> > +       }
-> > +
-> >         /*
-> >          *  Extra Processor objects may be enumerated on MP systems with
-> >          *  less than the max # of CPUs. They should be ignored _iff
-> > diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> > index 47de0f140ba6..13d052bf13f4 100644
-> > --- a/drivers/base/cpu.c
-> > +++ b/drivers/base/cpu.c
-> > @@ -553,7 +553,11 @@ static void __init cpu_dev_register_generic(void)
-> >  {
-> >         int i, ret;
-> >
-> > -       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
-> > +       /*
-> > +        * When ACPI is enabled, CPUs are registered via
-> > +        * acpi_processor_get_info().
-> > +        */
-> > +       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_disabled)
-> >                 return;
-> >
-> >         for_each_present_cpu(i) {
-> > --
-> > 2.30.2
-> >
-> > =20
->=20
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
+On 1/20/24 07:54, Erick Archer wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> So, use the purpose specific kcalloc() function instead of the argument
+> count * size in the kzalloc() function.
+> 
+> Also, it is preferred to use sizeof(*pointer) instead of sizeof(type)
+> due to the type of the variable can change and one needs not change the
+> former (unlike the latter).
+> 
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks!
+-- 
+Gustavo
+
+> ---
+>   arch/riscv/kernel/cpufeature.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> index 89920f84d0a3..549a76e34c4e 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -901,8 +901,7 @@ static int check_unaligned_access_all_cpus(void)
+>   {
+>   	unsigned int cpu;
+>   	unsigned int cpu_count = num_possible_cpus();
+> -	struct page **bufs = kzalloc(cpu_count * sizeof(struct page *),
+> -				     GFP_KERNEL);
+> +	struct page **bufs = kcalloc(cpu_count, sizeof(*bufs), GFP_KERNEL);
+> 
+>   	if (!bufs) {
+>   		pr_warn("Allocation failure, not measuring misaligned performance\n");
+> --
+> 2.25.1
+> 
+> 
 
