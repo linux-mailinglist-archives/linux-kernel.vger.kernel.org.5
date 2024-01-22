@@ -1,134 +1,180 @@
-Return-Path: <linux-kernel+bounces-34176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC743837525
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:22:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F143683752A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:24:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBB701C23D27
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:22:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7868EB21A0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F284879A;
-	Mon, 22 Jan 2024 21:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YAIqIXqo"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A5647F72;
+	Mon, 22 Jan 2024 21:24:25 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9124878C
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE96BF9C4
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705958524; cv=none; b=Z/DyYG3NfqTOyYkQpgX0glbh9KWJ5jd2ysFk5jlKmHstCNA/0QUQAIYk47KcISxUqQ+sO+Hsll9+XLcE0vvrlc1YzF11Jq+XCvdYWviT8Qtf4ERcU5qyiA9fyTey0YWykPGLKkoWG7EXxWUsdfgnTV20EU8b2znJlicDSw0iHjY=
+	t=1705958664; cv=none; b=tiGt0qrb7X37D/u3avJZjhNckxjUbqMFy6zMF5XHuPaW6Kh8jAsFVTiDP0jjVBwDLutmESGMojqwEUwNnucwWvS+pOZi7VsiNuC/FLw380nSxY2Sft4lSYTxVwL8cAlJmdgTvaR5ttbBvESCUeepPmmZbzrPW8I8L8Z9mDPtmk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705958524; c=relaxed/simple;
-	bh=pLoVzKrJkz7ffzxvQ4WrwdjXabs4IMmp0KiOtzfxPzk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RSzEOM33bn3xquSXbMBUsees3yHqSQ6pWdr0lOItLlFDRbFWBjoaSnObNdvrvkvjXYo4sDBh+PySo6KRgWOpsFAEAnkgh9rHrx7kDpAa0b7IyopBjrKXclr0O6cYsm2Nqsb/VdwjnKTgYYLuj3mwslKwG08D6gTLUOxIbfQygdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YAIqIXqo; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7bf2ab2c4caso144958839f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:22:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705958520; x=1706563320; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C2XOI0NMjef1ZYVplLac7re7Ka9S53/xQ299RZ4EXi8=;
-        b=YAIqIXqoh8MjGMo7Q9IrPEmJgLp6V1584FoUJuGg6N/66cX184hkfnDyTyR5Lf9yua
-         hfZ0bnrk6MAEL7rqKRDQSgmDgmp6bohjQ4y8ZQ98AaENNdNCOCN2yY+rPImWgPt2tSyc
-         FB2OF3k0XliBd+dN0gY1MbMLL435iLs2Bj3siYH4hMS2uuJLlh308iPzrXXUKW4CuEmH
-         4JWmm3V9KCoKtPlbB1NkZRzwooCVdpPzrQ3aGfVx97bf3BrYFzalPpBk2OqY8wHLAMBC
-         aCvclOEsI/dpJHEPg9EnuCwtRnNFUCKla6mG0zUb2hWRaXYF8eIXzsa1XEzsphPyIAeR
-         eI5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705958520; x=1706563320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C2XOI0NMjef1ZYVplLac7re7Ka9S53/xQ299RZ4EXi8=;
-        b=hett3qpvgdkzb/wb6oLFClKPKqBSiv/ENigVXckmcAnFqwvO+KUl1YA1ltiomXhcvQ
-         jeDvnKM4MEdCnRZNhfo3IJlGhc9DovdlcG4hvjDKeIDR78h6Qozn911KetmroVN2H+M7
-         fNsMwdS9dwVKWAYZlQVQcJloY3jqqW3VsszMWWWs4yEudjCJdQBhlCL76XOF8PYfzRBC
-         HKRfqysp6izoAuPDPoXui588lGhqZ9q0VrBtHfS4CwgH+oaD7ZcrrnYbdvp77CrTCuVH
-         xNOwhqOAd8AKFiD2kB7NUv7t1vbDB8nW3UwnxSQfdAM6xaX9wbxZPQ8hKk/5u88Frhxw
-         nhZQ==
-X-Gm-Message-State: AOJu0YxQtbh+DmzBkFIsH7x2xvuimjKPPjLz3n4UEwSllgUKo7TcwNj8
-	mrpHdimnPS+2yIziBMiIY52XCWfp0fY+DGy3bdkEHt32r5bsgi904d8NBLFxCs5HRe9dF5jje3b
-	+EjZ1SdbRz7/8CUaH115gFHXQmTg=
-X-Google-Smtp-Source: AGHT+IH3pjoNgX5d01NdPGZf4VD9LwjjUINwgfSHJD7ey9x4XFZxpUj0eVqYnRuZe2QrYd/fEjzz5GuANi4KMhcJo0w=
-X-Received: by 2002:a5d:8e0b:0:b0:7bf:8e8d:3412 with SMTP id
- e11-20020a5d8e0b000000b007bf8e8d3412mr5904993iod.20.1705958519832; Mon, 22
- Jan 2024 13:21:59 -0800 (PST)
+	s=arc-20240116; t=1705958664; c=relaxed/simple;
+	bh=6xC4jtIb98lvi19x9ooerCbLShD3mbJHIdT1NX33ozw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tcDI2EPsA3HsRF8h3oZVnFIZqp2Ps8cyJY+NiTDXEIyXk+mg3SLJ/z+f8UdMnICRp2SVC+rqC/VCWUpfqmgzAiZeu3OiGcUD8apkmoF4zg+boOIU3Z4l2sUUwIQTWzDurcGyMuMdnnKmdaRW4Y2gkICfNNfY7Byzmi14ZZEW7+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from rdvivi-mobl4 (unknown [192.55.55.57])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPSA id 369ECC433C7;
+	Mon, 22 Jan 2024 21:24:22 +0000 (UTC)
+Date: Mon, 22 Jan 2024 16:24:20 -0500
+From: Rodrigo Vivi <rodrigo.vivi@kernel.org>
+To: "Souza, Jose" <jose.souza@intel.com>, johannes@sipsolutions.net
+Cc: "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
+	"johannes@sipsolutions.net" <johannes@sipsolutions.net>
+Subject: Re: [PATCH] devcoredump: Remove devcoredump device if failing device
+ is gone
+Message-ID: <Za7c-8KfyKcMx8OM@rdvivi-mobl4>
+References: <20240117195349.343083-1-rodrigo.vivi@intel.com>
+ <b0fb26b5912ca3e6f3b6239e15b4dd02ebecd919.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240120024007.2850671-1-yosryahmed@google.com> <20240120024007.2850671-3-yosryahmed@google.com>
-In-Reply-To: <20240120024007.2850671-3-yosryahmed@google.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Mon, 22 Jan 2024 13:21:48 -0800
-Message-ID: <CAKEwX=MFYpSv26X_XO7cvH0vbGX70FNGK1ZaBgNm+7wKGDAfAw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in zswap_swapoff()
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Chris Li <chrisl@kernel.org>, Chengming Zhou <zhouchengming@bytedance.com>, 
-	Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0fb26b5912ca3e6f3b6239e15b4dd02ebecd919.camel@intel.com>
 
-On Fri, Jan 19, 2024 at 6:40=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> During swapoff, try_to_unuse() makes sure that zswap_invalidate() is
-> called for all swap entries before zswap_swapoff() is called. This means
-> that all zswap entries should already be removed from the tree. Simplify
-> zswap_swapoff() by removing the tree cleanup loop, and leaving an
-> assertion in its place.
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
-> Chengming, Chris, I think this should make the tree split and the xarray
-> conversion patches simpler (especially the former). If others agree,
-> both changes can be rebased on top of this.
-> ---
->  mm/zswap.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index f8bc9e0892687..9675c3c27f9d1 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1790,17 +1790,12 @@ void zswap_swapon(int type)
->  void zswap_swapoff(int type)
->  {
->         struct zswap_tree *tree =3D zswap_trees[type];
-> -       struct zswap_entry *entry, *n;
->
->         if (!tree)
->                 return;
->
-> -       /* walk the tree and free everything */
-> -       spin_lock(&tree->lock);
-> -       rbtree_postorder_for_each_entry_safe(entry, n, &tree->rbroot, rbn=
-ode)
-> -               zswap_free_entry(entry);
-> -       tree->rbroot =3D RB_ROOT;
-> -       spin_unlock(&tree->lock);
-> +       /* try_to_unuse() invalidated all entries already */
-> +       WARN_ON_ONCE(!RB_EMPTY_ROOT(&tree->rbroot));
->         kfree(tree);
->         zswap_trees[type] =3D NULL;
->  }
-> --
-> 2.43.0.429.g432eaa2c6b-goog
->
+On Fri, Jan 19, 2024 at 01:13:45PM -0500, Souza, Jose wrote:
+> On Wed, 2024-01-17 at 14:53 -0500, Rodrigo Vivi wrote:
+> > Make dev_coredumpm a real device managed helper, that not only
+> > frees the device after a scheduled delay (DEVCD_TIMEOUT), but
+> > also when the failing/crashed device is gone.
+> > 
+> > The module remove for the drivers using devcoredump are currently
+> > broken if attempted between the crash and the DEVCD_TIMEOUT, since
+> > the symbolic sysfs link won't be deleted.
+> > 
+> > On top of that, for PCI devices, the unbind of the device will
+> > call the pci .remove void function, that cannot fail. At that
+> > time, our device is pretty much gone, but the read and free
+> > functions are alive trough the devcoredump device and they
+> > can get some NULL dereferences or use after free.
+> > 
+> > So, if the failing-device is gone, let's cancel the scheduled
+> > work and remove devcoredump-device immediately.
+> > 
+> > Cc: Jose Souza <jose.souza@intel.com>
+> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > Cc: Johannes Berg <johannes@sipsolutions.net>
+> > Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> > ---
+> >  drivers/base/devcoredump.c | 29 ++++++++++++++++++++++-------
+> >  1 file changed, 22 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
+> > index 7e2d1f0d903a..6db7a2fd9a02 100644
+> > --- a/drivers/base/devcoredump.c
+> > +++ b/drivers/base/devcoredump.c
+> > @@ -8,6 +8,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/device.h>
+> >  #include <linux/devcoredump.h>
+> > +#include <linux/devm-helpers.h>
+> >  #include <linux/list.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/fs.h>
+> > @@ -118,19 +119,24 @@ static ssize_t devcd_data_read(struct file *filp, struct kobject *kobj,
+> >  	return devcd->read(buffer, offset, count, devcd->data, devcd->datalen);
+> >  }
+> >  
+> > -static ssize_t devcd_data_write(struct file *filp, struct kobject *kobj,
+> > -				struct bin_attribute *bin_attr,
+> > -				char *buffer, loff_t offset, size_t count)
+> > +static void devcd_remove_now(struct devcd_entry *devcd)
+> 
+> this function can also be used by devcd_free().
 
-Oh man this is sweet! FWIW:
-Acked-by: Nhat Pham <nphamcs@gmail.com>
+well, indeed.
+And perhaps using the
+
+flush_delayed_work(&devcd->del_wk);
+
+instead of
+
+mod_delayed_work(system_wq, &devcd->del_wk, 0);
+
+and then I don't even need to switch from
+INIT_DELAYED_WORK(&devcd->del_wk, devcd_del);
+to
+devm_delayed_work_autocancel()
+
+since it will be flushed, so no need to autocancel it.
+
+Johannes, any hard preference or request from your side?
+
+Thanks,
+Rodrigo.
+
+> 
+> Other than that LGTM.
+> 
+> >  {
+> > -	struct device *dev = kobj_to_dev(kobj);
+> > -	struct devcd_entry *devcd = dev_to_devcd(dev);
+> > -
+> >  	mutex_lock(&devcd->mutex);
+> >  	if (!devcd->delete_work) {
+> >  		devcd->delete_work = true;
+> >  		mod_delayed_work(system_wq, &devcd->del_wk, 0);
+> >  	}
+> >  	mutex_unlock(&devcd->mutex);
+> > +}
+> > +
+> > +static ssize_t devcd_data_write(struct file *filp, struct kobject *kobj,
+> > +				struct bin_attribute *bin_attr,
+> > +				char *buffer, loff_t offset, size_t count)
+> > +{
+> > +	struct device *dev = kobj_to_dev(kobj);
+> > +	struct devcd_entry *devcd = dev_to_devcd(dev);
+> > +
+> > +	devcd_remove_now(devcd);
+> >  
+> >  	return count;
+> >  }
+> > @@ -304,6 +310,12 @@ static ssize_t devcd_read_from_sgtable(char *buffer, loff_t offset,
+> >  				  offset);
+> >  }
+> >  
+> > +static void devcd_remove(void *data)
+> > +{
+> > +	struct devcd_entry *devcd = data;
+> > +	devcd_remove_now(devcd);
+> > +}
+> > +
+> >  /**
+> >   * dev_coredumpm - create device coredump with read/free methods
+> >   * @dev: the struct device for the crashed device
+> > @@ -379,7 +391,10 @@ void dev_coredumpm(struct device *dev, struct module *owner,
+> >  
+> >  	dev_set_uevent_suppress(&devcd->devcd_dev, false);
+> >  	kobject_uevent(&devcd->devcd_dev.kobj, KOBJ_ADD);
+> > -	INIT_DELAYED_WORK(&devcd->del_wk, devcd_del);
+> > +	if (devm_add_action(dev, devcd_remove, devcd))
+> > +		dev_warn(dev, "devcoredump managed auto-removal registration failed\n");
+> > +	if (devm_delayed_work_autocancel(dev, &devcd->del_wk, devcd_del))
+> > +		dev_warn(dev, "devcoredump managed autocancel work failed\n");
+> >  	schedule_delayed_work(&devcd->del_wk, DEVCD_TIMEOUT);
+> >  	mutex_unlock(&devcd->mutex);
+> >  	return;
+> 
 
