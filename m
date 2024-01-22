@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-34010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D17C68372B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:36:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B87D8371E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:07:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA615B317E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:07:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A937C28B61B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:07:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4F95F575;
-	Mon, 22 Jan 2024 18:46:36 +0000 (UTC)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D525F85D;
+	Mon, 22 Jan 2024 18:46:38 +0000 (UTC)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392A25F550;
-	Mon, 22 Jan 2024 18:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7445F578;
+	Mon, 22 Jan 2024 18:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705949195; cv=none; b=tE4OMwnySGoaY4BfpRDikTG0MsWviFTT6KsLDNjDsO5UTFHtWq8VGQyv9l+tsXKOevMvXhZwzbqLey2LuAA9eAo+UXCOHW8GWB6Rp2PekEAVuu4bi6dyEMoGqNl9otvCrxYjdv5KBmxn1ykeJvVeTYcx3+ZLWrATD6n2Lw+cwTA=
+	t=1705949197; cv=none; b=LaVCqwpFo9i1BGEyg3HzbIRjz3evCJciOk+1q1facAkDN2+P5hyi8M+h4NhrITQk98NESaIk8ULdRhRqjkKl4gmTscYNOMiZqBJtKaizA0eGFO7kiXkB5h2RCM0ftbinkT6EcDeMlX/TvyHSV9essPM8BHFZjJE+vej7RXw+b7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705949195; c=relaxed/simple;
-	bh=sDGGLOkBUwUK/3aeiPPS2IGDWdcuFqi49un44PPUlZU=;
+	s=arc-20240116; t=1705949197; c=relaxed/simple;
+	bh=5ioWY6cZMA7SINIP4rC5nvm/iCXXDx+mOGXSFMiYuNs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=o8qlWkNXz7Rrv+0OzAd8fyOMdMbqFJyR3NICEZQm8dD+8C1DmhzgZPabeABaD1UBuhkMLxRnQ8jjTWnXjiqJ5iUfVaMu7o4oZtNwmXJxzQGjldu4sWgx9UrVGY7+IyVqMmbORbQvQlqR61cqSHXeFy5IwXc8JtCF+NiQVFjkSwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.52
+	 MIME-Version; b=g2GcgMXZD5MF2bTcickFMOiIW4j53FqW+MmsLO0/1YZjxwGoUO83PEMXUexFZAE9mPUNL5kXoGhiSmxsGqhQdBrQjhLQ0Y+JKnYR0qcMo5tuNtb/Bq6QBmEdzVu8xqGPtIbW2abE7CceaoibZdLCigek9WvkpW5Erft5m9cpuFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so3773661a12.2;
-        Mon, 22 Jan 2024 10:46:33 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50f11e3ba3aso4949185e87.1;
+        Mon, 22 Jan 2024 10:46:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705949192; x=1706553992;
+        d=1e100.net; s=20230601; t=1705949194; x=1706553994;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yyXhSwOKSmfVLvqBMZ4A0Et3TQy4D/4oFIQvvopgsT8=;
-        b=Q2PEDVRTO1HkKgRscuEJaaZ2S0AqBjbLYIw7EblXFHWGYJchFQkBj8FwOyXsM/ta13
-         /i08JkYOYxOJR83RVF4bupwiiXS8ZP72Ka0nUI9HjqZbd5X5roeUcY/1EclqDc/ljqch
-         lhbj3km8VBlPOqTzJxQYJuTjo0wkzzydSbBMnSNR7W8fNqYRLdzRMB/hnuFhXVGpgW0v
-         jd4quoKQHaOyfnqTBPao+46imS/vUCGpLmLg4Ir/qo0hOOFOXn2kjZg9GMrfTW6Okii8
-         v2CFIQItB2SqACOZI5RUkg+fywuWfblMwTYxJJTng278fIy7HqY49YWjdC2JWwyGMWb5
-         7Ziw==
-X-Gm-Message-State: AOJu0YyjzywLp+rWWuwrb2Y3MoSzR63JDohUQEICYvXaaOLM00pLJXuD
-	jy129CBTUbWTh3ltPrhlQk+pf2dk0OeIAZLS3UDbFOZ61qIUEmq8
-X-Google-Smtp-Source: AGHT+IEbJnZWQY7SbKhO3jsNlHC+fqQl3oymqq8t539GG0DIyleK10sIDQfBfUAX7otRnA9pPg8Yew==
-X-Received: by 2002:a17:907:9507:b0:a30:6987:636d with SMTP id ew7-20020a170907950700b00a306987636dmr721665ejc.95.1705949192408;
-        Mon, 22 Jan 2024 10:46:32 -0800 (PST)
-Received: from localhost (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
-        by smtp.gmail.com with ESMTPSA id h25-20020a170906399900b00a29db9e8c84sm13639442eje.220.2024.01.22.10.46.31
+        bh=UUjkdIPV4RyRqGQf6e4w7ul6m32fEFyDKsrtQ13Dd7k=;
+        b=t+VH5YnYRUArLo+1DuaCbKRFoU5kbpaEp5kQqB/+LYKN+kEYMFqfizUKSsqqJdAaNn
+         GpUbXJc1/eFwNxlVFS4rboYiBciBl2G1l9e6rytbnEcNcz/Jy0lsCE7fek5WqlPc9G87
+         ANQoyhzubISDy5Beg7QlAcxyQu/J6e5FM7M7hmlFtWlGwtUixxus1tTXCmrSwny/oVI/
+         ifd3kJPEULWky8V92m0+J0yXmL3XrWDcfO5nJ8o/N64B0yS6eqcNFZHpMr8IDdtV0Ebr
+         QLVNdZjZyAVg+upLNgQbriBIdLkKcxBwY63XFS4XplbjEIuS7ILoy5KHHfc0om0B32hc
+         V0sw==
+X-Gm-Message-State: AOJu0Yx3mZMA5cv1o3LCyAn3mjHuOm1Dui/NpeCtvPxCrMtB/nW+Qaul
+	jzviag5fWDhdHLfBWC2UOABvG4JrfTLaQZjKeD2Rgac4JetaBYQneB/yNiAWtRNJJvg0
+X-Google-Smtp-Source: AGHT+IHJlVaR7M7rOyg8N8Ms83J5xrNsTkSCPc++kwM8OdBzzTHdEfe/0uDdMJaN2/pIDHbsZLN2oQ==
+X-Received: by 2002:a05:6512:1025:b0:50e:b5fc:bdcc with SMTP id r5-20020a056512102500b0050eb5fcbdccmr2109330lfr.63.1705949194059;
+        Mon, 22 Jan 2024 10:46:34 -0800 (PST)
+Received: from localhost (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
+        by smtp.gmail.com with ESMTPSA id v1-20020a17090606c100b00a2a04754eb1sm13674761ejb.8.2024.01.22.10.46.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 10:46:32 -0800 (PST)
+        Mon, 22 Jan 2024 10:46:33 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	abeni@redhat.com,
 	edumazet@google.com,
-	Paolo Abeni <pabeni@redhat.com>,
-	Karol Gugala <kgugala@antmicro.com>,
-	Mateusz Holenko <mholenko@antmicro.com>,
-	Gabriel Somlo <gsomlo@gmail.com>,
-	Joel Stanley <joel@jms.id.au>
+	Sunil Goutham <sgoutham@marvell.com>,
+	Linu Cherian <lcherian@marvell.com>,
+	Geetha sowjanya <gakula@marvell.com>,
+	Jerin Jacob <jerinj@marvell.com>,
+	hariprasad <hkelam@marvell.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	Paolo Abeni <pabeni@redhat.com>
 Cc: dsahern@kernel.org,
 	weiwan@google.com,
-	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+	netdev@vger.kernel.org (open list:MARVELL OCTEONTX2 RVU ADMIN FUNCTION DRIVER),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 11/22] net: fill in MODULE_DESCRIPTION()s for litex
-Date: Mon, 22 Jan 2024 10:45:32 -0800
-Message-Id: <20240122184543.2501493-12-leitao@debian.org>
+Subject: [PATCH net-next 12/22] net: fill in MODULE_DESCRIPTION()s for rvu_mbox
+Date: Mon, 22 Jan 2024 10:45:33 -0800
+Message-Id: <20240122184543.2501493-13-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240122184543.2501493-1-leitao@debian.org>
 References: <20240122184543.2501493-1-leitao@debian.org>
@@ -80,23 +82,23 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the LiteX Liteeth Ethernet device.
+Add descriptions to the Marvel RVU mbox driver.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ethernet/litex/litex_liteeth.c | 1 +
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/litex/litex_liteeth.c b/drivers/net/ethernet/litex/litex_liteeth.c
-index 5182fe737c37..ff54fbe41bcc 100644
---- a/drivers/net/ethernet/litex/litex_liteeth.c
-+++ b/drivers/net/ethernet/litex/litex_liteeth.c
-@@ -318,4 +318,5 @@ static struct platform_driver liteeth_driver = {
- module_platform_driver(liteeth_driver);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
+index 9690ac01f02c..b92264d0a77e 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
+@@ -413,4 +413,5 @@ const char *otx2_mbox_id2name(u16 id)
+ EXPORT_SYMBOL(otx2_mbox_id2name);
  
- MODULE_AUTHOR("Joel Stanley <joel@jms.id.au>");
-+MODULE_DESCRIPTION("LiteX Liteeth Ethernet driver");
- MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Marvell.");
++MODULE_DESCRIPTION("Marvell RVU NIC Mbox helpers");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.39.3
 
