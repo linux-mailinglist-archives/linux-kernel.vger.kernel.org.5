@@ -1,282 +1,277 @@
-Return-Path: <linux-kernel+bounces-32323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCD19835A24
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:54:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CE0F835A28
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:55:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E7881F228E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 04:54:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1AC92830DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 04:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C4A4C9D;
-	Mon, 22 Jan 2024 04:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679BF4C83;
+	Mon, 22 Jan 2024 04:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tVWcpxZn"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2061.outbound.protection.outlook.com [40.107.244.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="oP9PqvpM"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4676E4A32;
-	Mon, 22 Jan 2024 04:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.61
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705899258; cv=fail; b=QuPEyobrVxNQs+q71g+HGe6WCfw7eD8fuGke8od/XlFoLV4JEwJWF+3hfJC3IlQSvjUXMBgczatKLOaC5Px+5Q2VIs5A82truUCdWc5FXd6AQFAREAgDSKN1zSrlN4LlEJ1yaG6gqOjLFJSG0t5I6XUKPwItsqUi/cek10zIeHg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705899258; c=relaxed/simple;
-	bh=9FdOws/LbObpmn6GafFjzc1gzEJPNWYVZcQWXNfEZyI=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=l4vbSAUFoGEScaLENlboET6G+vBXRH16/18FuY5NvEIesSRtgXVDxUBjEohIGgEFpnN4rawr5RPnwLoLWXdYFsIPpWMWMVYHmqcFGzE3PSEmXJ9EhwCFMIpS2CeYjAyrP55jRi5rKDVmnZkAZbJggAcGLYDuj16+x/gXISHrgmQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tVWcpxZn; arc=fail smtp.client-ip=40.107.244.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h7SHZbG3ZgdddO12hdal6VrHxq7cvav+zStWAyE7uGX5WgYeqavYNR+qrwuidZ8CuqYYV7wm9/aBA3SCJDMlKgHdGUhM1o5JL+5DNC3DbOTsu8xguY+geSg/mHcfnbTY9yevRrjYNmVsOs3zZ0c/fVtd//aPwUIkvTHuYllJ4K7BiY8I78/JIHWnn3S4GieVMT5mwk0crOlqSw7CLGCzcsvsNPi3WZrBwbijiHlIL/EkNGVt+rVdlYruLOyO0NcSmDuSN2/qGiT6zAURXFT2FMENvDHKrrp4wg8ekqBTyGo3ndMsjtX8IfxveIFovTgIBH65tPrWq3jppvGbbg7DNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8QxcTLxSJkfLPHPszdtKAxpBW7LaE0zLZKeRdfs1ro8=;
- b=YJf5czgknL2eZdaUtTQVwU3hdbd+SPOL15rUv3yoYzEmLwGSVcbS8/ETnYL+6CA1j6fFcByNL6yB/k6aP+1Km0TdpxAj3XSLusir4UraAW3vZXT1G8tt497fgrSaNknvoUgos4VZ86vwQ/XeILlSN9DwLGTJSD/0+yMaz0d8ZmUZ7IJSFv2yQfCoDb6LpCe5Rqhvqpuutv7bjrFWuhULHNpWvU/VFAtlSSCAYMBZdkX6MareFr38SBaYu8VAZz+HMsV+Ysb5IPUqllJXVEb/Op6uaQp/T6mQia4HE1DIFQhrEM7IowcX3/FM+bXJWGJlBgJ03fxhf3lWDBw972199Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8QxcTLxSJkfLPHPszdtKAxpBW7LaE0zLZKeRdfs1ro8=;
- b=tVWcpxZn1XqpvyhjAltXCpYwSVF8OESjqkaOCl4XdBoKUe6E2LiY0YzUTPUeVgn7BDQ4E2dVETVO+M/ecJZfpxttstKvQDA76s3YZV86rNOME89iaXa6B5TGVn8R36feaqyPnOIfgDESS0q+LXCWOuqCyh24k/GsgyRVT6p/Kw8=
-Received: from MN2PR12MB4333.namprd12.prod.outlook.com (2603:10b6:208:1d3::23)
- by CY5PR12MB6647.namprd12.prod.outlook.com (2603:10b6:930:40::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Mon, 22 Jan
- 2024 04:54:12 +0000
-Received: from MN2PR12MB4333.namprd12.prod.outlook.com
- ([fe80::affa:d167:8c9f:76d1]) by MN2PR12MB4333.namprd12.prod.outlook.com
- ([fe80::affa:d167:8c9f:76d1%4]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
- 04:54:12 +0000
-From: "Mehta, Piyush" <piyush.mehta@amd.com>
-To: "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>, "dlemoal@kernel.org"
-	<dlemoal@kernel.org>, "cassel@kernel.org" <cassel@kernel.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "linus.walleij@linaro.org"
-	<linus.walleij@linaro.org>, "brgl@bgdev.pl" <brgl@bgdev.pl>, "Simek, Michal"
-	<michal.simek@amd.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Sayyed, Mubin"
-	<mubin.sayyed@amd.com>, "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>
-CC: "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-usb@vger.kernel.org"
-	<linux-usb@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>
-Subject: RE: [PATCH] dt-bindings: xilinx: replace Piyush Mehta maintainership
-Thread-Topic: [PATCH] dt-bindings: xilinx: replace Piyush Mehta maintainership
-Thread-Index: AQHaSsvSSnpmMxSc+EyR1P4Gwr3GubDlR8IA
-Date: Mon, 22 Jan 2024 04:54:12 +0000
-Message-ID:
- <MN2PR12MB43338F6C15D6952B01A3265488752@MN2PR12MB4333.namprd12.prod.outlook.com>
-References: <1705664181-722937-1-git-send-email-radhey.shyam.pandey@amd.com>
-In-Reply-To: <1705664181-722937-1-git-send-email-radhey.shyam.pandey@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN2PR12MB4333:EE_|CY5PR12MB6647:EE_
-x-ms-office365-filtering-correlation-id: 05d0cada-720c-4226-f3b4-08dc1b062d26
-x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- n/4OLth2PsuOAFMat+HHCAF6nAVRKkshbzYPwfv54dJbFtbhkn70vLNJaT/QzJ5x5yEACLjVp+QCEfMleVUSJAjVNsiaEmY3+Mwcfwbr/9bfrb4ieyiSN/damSenTVYzMwXqByaEPpHTsohoaWWFgaUd05EUGLO/UUD1OGd7xQv7257TDLf8uKvoUVfbKCSGkQUs0rvaM2h/TfWkt4n5Lby8B9/0e6KEDutQGhUCmd9uoHyczHIvtn4fTvWyqvDif4ZiUps8BBdfY5ImrJSR/A0S5p0xaWOaBN5AMU+qPyAZ81rTagSVRY8YBsHwTefkWN6Ksyqzcvd3tqWnsCBgGKfZWknTsemARuZprvVsZdrX5N40RjRI0fC+JeefIYG1DPwJtolORWAhOqjs+Oe1bmasjG3UxI2VHKNgxjozvnahjHQex2VDqlKyPPLaDsNMY9hfebgyfxeVCZipyDDdD2TZXkEUQ4e+fPJmPyc78s46jM6x/cMr0721MfeFdTPef4xIlmc63DayX+7H39UvIs1aDK9+nMbpqgaSzsUI0688tjg+P4rfUHjFM3wA1kOHDfr34hEob6RCvAIIhqIRMJqijQKAXxhkalkTnzkIOQ3KyMQ6n6lwWlr8r8cphHZ/
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4333.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(396003)(366004)(39860400002)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(41300700001)(26005)(921011)(55016003)(38070700009)(6506007)(9686003)(7696005)(53546011)(71200400001)(83380400001)(478600001)(38100700002)(122000001)(966005)(8676002)(110136005)(33656002)(2906002)(54906003)(64756008)(66446008)(66476007)(6636002)(76116006)(66556008)(66946007)(316002)(86362001)(5660300002)(7416002)(4326008)(52536014)(8936002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?IiU7f/Ne4DJmip8mke2QxBrRaHBjIN6sjITRSwgKf+urcCf91O8wZL4vOL/0?=
- =?us-ascii?Q?c2QE1tk+4eUmjel7G6DcVcL+AtJw+ZaTNUwrH4l3Bi/ZbgCSf5TBdrdX3Nz7?=
- =?us-ascii?Q?+mgSJfrEr2tiCuIzYNyQQlZruA0bUaVN+uJ2PbOTbhyxTNtbKXRGsyNeADVL?=
- =?us-ascii?Q?ovsLd7sCpdUgdtTMHbmGBfYVHAtihY3cgq6UunxBapy6hkoK60fNgXX2MdSz?=
- =?us-ascii?Q?feORw1bIW8lmorDybqjLrJJ0IjH/8eJz1dLCkJmGh/khjvSJMifp+HslkA8R?=
- =?us-ascii?Q?mBKBKKXBjGn2YaAhQZZu6DnunB4j+mQbro2z3ohLl2RzkZyyAjbVTQr9xnP/?=
- =?us-ascii?Q?HXPunEONK3XGOxK52oDrObF2FRQK1eAc1HPt19xDZ7VXdm82x5ERrGCZKfnX?=
- =?us-ascii?Q?dND8mt6RlQ/qdpJq2xwsMpqD3meY0XSc90ryDb1FaztObCJORPyyRCXwQ0xJ?=
- =?us-ascii?Q?79uOHT045cyha0IzEen/vATmFeGzD8Zl7xNw7tKtN5XOdKHVG56HKNo4IMKg?=
- =?us-ascii?Q?8AjwCan5GqYI2FI2iumADJazLhX9c1InpTcHGVKNa8cYaS11S/rBoN6b1Jo0?=
- =?us-ascii?Q?YTsC/Vbr2AKfepDCS/kDSznUmXxlF88Wff9JIuMNcq5FWe5Kcz768x1UbhPA?=
- =?us-ascii?Q?R6Lq/oB8LWGv0cwq5u9RZ9D1qJ43YQY72A9GExb1kJ6wEKSl67QHBUdvHWgM?=
- =?us-ascii?Q?FBL6bxQX9pdi3f9IpkBp7Hy522yiIpdqOts4ZFnUZv7FXsS87dtIEGTfjTAc?=
- =?us-ascii?Q?Ibm/wpVuYNqKDo2ncgfUnmJa51XySv/Lk69Iy7J3PojeXtRJqlClNvUda+nQ?=
- =?us-ascii?Q?icMW/TsH8xZ4UGG9Lx7XsyweOElh/wctmt/5+zLpyB6FP+fw1Ykel7IVp172?=
- =?us-ascii?Q?yBKubR7Yi0poZ/5+rEJnHeL1SJ75cUfZjVCzdcbo3JNGIjfcBhKSTxQzERwF?=
- =?us-ascii?Q?BxExWgXQqyCGGIN4s6w4SkhqVhR+RNGSKbZall0lup37Ggd2XNdGuaKd8ePl?=
- =?us-ascii?Q?n6JLqaZUJS+vDFQd8V534PmBGVCYPC2AzKrYcYP7n+MY/mmh8UxAw2ZX3HcG?=
- =?us-ascii?Q?AoE0UdxrLb054Nu58Uvx+8fAdli0iQ/8S78rpSBluDklkD9Iie9Co+16m1Qn?=
- =?us-ascii?Q?fyCsmW2gmxXLBpul4yCB87CwytsB9+3XvZcC3dvOhL8CAxQlyqehB9wH+Yfu?=
- =?us-ascii?Q?i2u2i4CCgvG1kTEQpWVHB0sMv9A5LdNe/a98Kj50hCfQ43UUC485ASKP8n+z?=
- =?us-ascii?Q?yzVBSM/oMLCMbCvaddcMpeMRBsGk8/d+R/wHvSP4+HPAm1oRZAb7eiTsqdx7?=
- =?us-ascii?Q?Khr8a4m0TYKqTWEZQvECvi503eV/6JPTOrHBKj0uj/iLpV26uYLIY5GEo8Px?=
- =?us-ascii?Q?nEd7CYhqS9HNgmE7M910C6ILoxE72E88npyq1DOqV3jvU1LPNSrtXCyu3EM3?=
- =?us-ascii?Q?M0ZJ9baiBC6cHcCob/sKfj1rWZY0nzVupawJsFJTafbAs5hgDGa+fN1Uv0fj?=
- =?us-ascii?Q?4ksHquklc050Np/5ceKgqg1T4iEOO741PQmhasG2+9oo+mrF7yuGvdF+C/y5?=
- =?us-ascii?Q?LIeFE+jKC0bf4lHhd/M=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CA637B;
+	Mon, 22 Jan 2024 04:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705899342; cv=none; b=YJEeQsQAjPjPjB/E2iqacl4ENASUKhIXhrC6WqIks4Cu6uoxd4/jb55VyB3rVq/DPTDtsuyS+28OXE3RiiJp6XeVAR/QxH02m7jzvgttfx+doNmbc6CZscBx2h2kxdzwnnimyxPmW9Auz51mS8jXEVICUXtvzASaeHuuwU9Ib+Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705899342; c=relaxed/simple;
+	bh=WdFX8jgbcR8BQulqKt1Rc1DE9dTSHKZ63A30QpN33s4=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=L9v1gNA3NLMObh4unkAKNYaTsjvNZDSdaqXJKFsA5EX8AQ96ARnuJnYqEHcYqHKyjpMfa95e9MQmbC75b3j8sCl9nxjC9LrZ/X6Xhec2yfMbLXPLKhZgFA7IS8Zl0mo0bxSu1C+JmBlbWTxkSDrmkxWmAM6JB18QIDqQIGmo/jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=oP9PqvpM; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4333.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05d0cada-720c-4226-f3b4-08dc1b062d26
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2024 04:54:12.0798
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dA6M1btzE98zZH2oKWQjKnSM3hWCI9HEWUGZ5s/tWeVbZcCoIDCdwZcyBT5vYTYv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6647
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1705899335;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IaQh+8yhOwOyEdvsy4EqrUjzPEtKP3cZ5MZ5et/P3ZM=;
+	b=oP9PqvpM9UcgRjsr0ZF5Qb5zJdhpkzJzeT6hO43CPJnvTd2bOs+RfIoz0IWCo/a4kBJpZe
+	a9l6oQKNThzWx3oSW1pivw361HJLoFZB2KY67R9/SsKjrtqQnUNXKEKqGVyHk3tPyYFp1K
+	mL5fZpwQQCl0gv6/EdepH0qCcFHh7MtKeXRt84MGXFmDOVp71pt7r8PyiJLTkOPj1XCUjg
+	Dk/d3OaKkSFqeByc+m3zNxxXxgBB3XJd4Fuy3EhYJiI0gZ+IrhcBOtNYX0IyCbZgJPMhF1
+	6TWvqxzIzVqix8m8psAfvXjRWn7jEZ8SKFQptyPXiXwXraQ0K3ubkcoREZHv7w==
+Date: Mon, 22 Jan 2024 05:55:35 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Sebastian Reichel
+ <sebastian.reichel@collabora.com>, Cristian Ciocaltea
+ <cristian.ciocaltea@collabora.com>, Christopher Obbard
+ <chris.obbard@collabora.com>, =?UTF-8?Q?Tam=C3=A1s_Sz=C5=B1cs?=
+ <szucst@iit.uni-miskolc.hu>, Shreeya Patel <shreeya.patel@collabora.com>,
+ Kever Yang <kever.yang@rock-chips.com>, Chris Morgan
+ <macromorgan@hotmail.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: rockchip: enable built-in thermal monitoring
+ on rk3588
+In-Reply-To: <CABjd4Yz11D8ThcT-oCWsQf9jL2idChFYSRYVVu3KNnzwoOwkKQ@mail.gmail.com>
+References: <20240106222357.23835-1-alchark@gmail.com>
+ <e0302da12345e5539583b2c96d747592@manjaro.org>
+ <CABjd4Yw5wTLyK5OPw2S-ipPVCw7RTUeF2J0RgH-Vyis-ng8rTw@mail.gmail.com>
+ <d7f2f25071a4d7c72bd286b11836dce7@manjaro.org>
+ <CABjd4Yz11D8ThcT-oCWsQf9jL2idChFYSRYVVu3KNnzwoOwkKQ@mail.gmail.com>
+Message-ID: <f5c05015e042b11a51a9af26c35f18ed@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-> -----Original Message-----
-> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-> Sent: Friday, January 19, 2024 5:06 PM
-> To: dlemoal@kernel.org; cassel@kernel.org; robh+dt@kernel.org;
-> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
-> linus.walleij@linaro.org; brgl@bgdev.pl; Simek, Michal
-> <michal.simek@amd.com>; p.zabel@pengutronix.de;
-> gregkh@linuxfoundation.org; Mehta, Piyush <piyush.mehta@amd.com>;
-> Sayyed, Mubin <mubin.sayyed@amd.com>; Pandey, Radhey Shyam
-> <radhey.shyam.pandey@amd.com>
-> Cc: linux-ide@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> kernel@vger.kernel.org; linux-gpio@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-usb@vger.kernel.org; git (AMD-Xilinx)
-> <git@amd.com>
-> Subject: [PATCH] dt-bindings: xilinx: replace Piyush Mehta maintainership
->=20
-> As Piyush is leaving AMD, he handed over ahci-ceva, ZynqMP Mode Pin GPIO
-> controller, Zynq UltraScale+ MPSoC and Versal reset, Xilinx SuperSpeed
-> DWC3 USB SoC controller, Microchip USB5744 4-port Hub Controller and Xili=
-nx
-> udc controller maintainership duties to Mubin and Radhey.
->=20
-> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Hello Alexey,
 
-Acked-by: Piyush Mehta <piyush.mehta@amd.com>
+On 2024-01-21 19:56, Alexey Charkov wrote:
+> On Thu, Jan 18, 2024 at 10:48 PM Dragan Simic <dsimic@manjaro.org> 
+> wrote:
+>> On 2024-01-08 14:41, Alexey Charkov wrote:
+>> I apologize for my delayed response.  It took me almost a month to
+>> nearly fully recover from some really nasty flu that eventually went
+>> into my lungs.  It was awful and I'm still not back to my 100%. :(
+> 
+> Ouch, I hope you get well soon!
 
-> ---
->  Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml      | 3 ++-
->  .../devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml     | 3 ++-
->  Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml | 3 ++-
->  Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml         | 3 ++-
->  Documentation/devicetree/bindings/usb/microchip,usb5744.yaml   | 3 ++-
->  Documentation/devicetree/bindings/usb/xlnx,usb2.yaml           | 3 ++-
->  6 files changed, 12 insertions(+), 6 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
-> b/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
-> index b29ce598f9aa..9952e0ef7767 100644
-> --- a/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
-> +++ b/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
-> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->  title: Ceva AHCI SATA Controller
->=20
->  maintainers:
-> -  - Piyush Mehta <piyush.mehta@amd.com>
-> +  - Mubin Sayyed <mubin.sayyed@amd.com>
-> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
->=20
->  description: |
->    The Ceva SATA controller mostly conforms to the AHCI interface with so=
-me
-> diff --git a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-
-> modepin.yaml b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-
-> modepin.yaml
-> index b1fd632718d4..bb93baa88879 100644
-> --- a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-
-> modepin.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-
-> modepin.ya
-> +++ ml
-> @@ -12,7 +12,8 @@ description:
->    PS_MODE). Every pin can be configured as input/output.
->=20
->  maintainers:
-> -  - Piyush Mehta <piyush.mehta@amd.com>
-> +  - Mubin Sayyed <mubin.sayyed@amd.com>
-> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
->=20
->  properties:
->    compatible:
-> diff --git a/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.ya=
-ml
-> b/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml
-> index 49db66801429..1f1b42dde94d 100644
-> --- a/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml
-> +++ b/Documentation/devicetree/bindings/reset/xlnx,zynqmp-reset.yaml
-> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->  title: Zynq UltraScale+ MPSoC and Versal reset
->=20
->  maintainers:
-> -  - Piyush Mehta <piyush.mehta@amd.com>
-> +  - Mubin Sayyed <mubin.sayyed@amd.com>
-> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
->=20
->  description: |
->    The Zynq UltraScale+ MPSoC and Versal has several different resets.
-> diff --git a/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
-> b/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
-> index bb373eb025a5..00f87a558c7d 100644
-> --- a/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
-> +++ b/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
-> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->  title: Xilinx SuperSpeed DWC3 USB SoC controller
->=20
->  maintainers:
-> -  - Piyush Mehta <piyush.mehta@amd.com>
-> +  - Mubin Sayyed <mubin.sayyed@amd.com>
-> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
->=20
->  properties:
->    compatible:
-> diff --git a/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
-> b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
-> index 6d4cfd943f58..445183d9d6db 100644
-> --- a/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
-> +++ b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
-> @@ -16,8 +16,9 @@ description:
->    USB 2.0 traffic.
->=20
->  maintainers:
-> -  - Piyush Mehta <piyush.mehta@amd.com>
->    - Michal Simek <michal.simek@amd.com>
-> +  - Mubin Sayyed <mubin.sayyed@amd.com>
-> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
->=20
->  properties:
->    compatible:
-> diff --git a/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
-> b/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
-> index 868dffe314bc..a7f75fe36665 100644
-> --- a/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
-> +++ b/Documentation/devicetree/bindings/usb/xlnx,usb2.yaml
-> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->  title: Xilinx udc controller
->=20
->  maintainers:
-> -  - Piyush Mehta <piyush.mehta@amd.com>
-> +  - Mubin Sayyed <mubin.sayyed@amd.com>
-> +  - Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
->=20
->  properties:
->    compatible:
-> --
-> 2.34.1
+Thank you, let's hope so.  It's been really exhausting. :(
 
+>> > On Sun, Jan 7, 2024 at 2:54 AM Dragan Simic <dsimic@manjaro.org> wrote:
+>> >> On 2024-01-06 23:23, Alexey Charkov wrote:
+>> >> > Include thermal zones information in device tree for rk3588 variants
+>> >> > and enable the built-in thermal sensing ADC on RADXA Rock 5B
+>> >> >
+>> >> > Signed-off-by: Alexey Charkov <alchark@gmail.com>
+>> >> > ---
+>> >> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> >> > b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> >> > index 8aa0499f9b03..8235991e3112 100644
+>> >> > --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> >> > +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> >> > @@ -10,6 +10,7 @@
+>> >> >  #include <dt-bindings/reset/rockchip,rk3588-cru.h>
+>> >> >  #include <dt-bindings/phy/phy.h>
+>> >> >  #include <dt-bindings/ata/ahci.h>
+>> >> > +#include <dt-bindings/thermal/thermal.h>
+>> >> >
+>> >> >  / {
+>> >> >       compatible = "rockchip,rk3588";
+>> >> > @@ -2112,6 +2113,148 @@ tsadc: tsadc@fec00000 {
+>> >> >               status = "disabled";
+>> >> >       };
+>> >> >
+>> >> > +     thermal_zones: thermal-zones {
+>> >> > +             soc_thermal: soc-thermal {
+>> >>
+>> >> It should be better to name it cpu_thermal instead.  In the end,
+>> >> that's what it is.
+>> >
+>> > The TRM document says the first TSADC channel (to which this section
+>> > applies) measures the temperature near the center of the SoC die,
+>> > which implies not only the CPU but also the GPU at least. RADXA's
+>> > kernel for Rock 5B also has GPU passive cooling as one of the cooling
+>> > maps under this node (not included here, as we don't have the GPU node
+>> > in .dtsi just yet). So perhaps naming this one cpu_thermal could be
+>> > misleading?
+>> 
+>> Ah, I see now, thanks for reminding;  it's all described on page 1,372
+>> of the first part of the RK3588 TRM v1.0.
+>> 
+>> Having that in mind, I'd suggest that we end up naming it 
+>> package_thermal.
+>> The temperature near the center of the chip is usually considered to 
+>> be
+>> the overall package temperature;  for example, that's how the 
+>> user-facing
+>> CPU temperatures are measured in the x86_64 world.
+> 
+> Sounds good, will rename in v3!
+
+Thanks, I'm glad you agree.
+
+>> >> > +                     trips {
+>> >> > +                             threshold: trip-point-0 {
+>> >>
+>> >> It should be better to name it cpu_alert0 instead, because that's what
+>> >> other newer dtsi files already use.
+>> >
+>> > Reflecting on your comments here and below, I'm thinking that maybe it
+>> > would be better to define only the critical trip point for the SoC
+>> > overall, and then have alerts along with the respective cooling maps
+>> > separately for A76-0,1, A76-2,3, A55-0,1,2,3? After all, given that we
+>> > have more granular temperature measurement here than in previous RK
+>> > chipsets it might be better to only throttle the "offending" cores,
+>> > not the full package.
+>> >
+>> > What do you think?
+>> >
+>> > Downstream DT doesn't follow this approach though, so maybe there's
+>> > something I'm missing here.
+>> 
+>> I agree, it's better to fully utilize the higher measurement 
+>> granularity
+>> made possible by having multiple temperature sensors available.
+>> 
+>> I also agree that we should have only the critical trip defined for 
+>> the
+>> package-level temperature sensor.  Let's have the separate temperature
+>> measurements for the CPU (sub)clusters do the thermal throttling, and
+>> let's keep the package-level measurement for the critical shutdowns
+>> only.  IIRC, some MediaTek SoC dtsi already does exactly that.
+>> 
+>> Of course, there are no reasons not to have the critical trips defined
+>> for the CPU (sub)clusters as well.
+> 
+> I think I'll also add a board-specific active cooling mechanism on the
+> package level in the next iteration, given that Rock 5B has a PWM fan
+> defined as a cooling device. That will go in the separate patch that
+> updates rk3588-rock-5b.dts (your feedback to v2 of this patch is also
+> duly noted, thank you!)
+
+Great, thanks.  Sure, making use of the Rock 5B's support for attaching
+a PWM-controlled cooling fan is the way to go.
+
+Just to reiterate a bit, any "active" trip points belong to the board 
+dts
+file(s), because having a cooling fan is a board-specific feature.  As a
+note, you may also want to have a look at the RockPro64 dts(i) files, 
+for
+example;  the RockPro64 also comes with a cooling fan connector and the
+associated PWM fan control logic.
+
+>> >> > +                                     temperature = <75000>;
+>> >> > +                                     hysteresis = <2000>;
+>> >> > +                                     type = "passive";
+>> >> > +                             };
+>> >> > +                             target: trip-point-1 {
+>> >>
+>> >> It should be better to name it cpu_alert1 instead, because that's what
+>> >> other newer dtsi files already use.
+>> >>
+>> >> > +                                     temperature = <85000>;
+>> >> > +                                     hysteresis = <2000>;
+>> >> > +                                     type = "passive";
+>> >> > +                             };
+>> >> > +                             soc_crit: soc-crit {
+>> >>
+>> >> It should be better to name it cpu_crit instead, because that's what
+>> >> other newer dtsi files already use.
+>> >
+>> > Seems to me that if I define separate trips for the three groups of
+>> > CPU cores as mentioned above this would better stay as soc_crit, as it
+>> > applies to the whole die rather than the CPU cluster alone. Then
+>> > 'threshold' and 'target' will go altogether, and I'll have separate
+>> > *_alert0 and *_alert1 per CPU group.
+>> 
+>> It should perhaps be the best to have "passive", "hot" and "critical"
+>> trips defined for all three CPU groups/(sub)clusters, separately of
+>> course, to have even higher granularity when it comes to the resulting
+>> thermal throttling.
+> 
+> I looked through drivers/thermal/rockchip_thermal.c, and it doesn't
+> seem to provide any callback for the "hot" trip as part of its struct
+> thermal_zone_device_ops, so I guess it would be redundant in our case
+> here? I couldn't find any generic mechanism to react to "hot" trips,
+> and they seem to be purely driver-specific, thus no-op in case of
+> Rockchips - or am I missing something?
+
+That's a good question.  Please, let me go through the code in detail,
+and I'll get back with an update soon.  Also, please wait a bit with
+sending the v3, until all open questions are addressed.
+
+>> >> > +                                     hysteresis = <2000>;
+>> >> > +                                     type = "critical";
+>> >> > +                             };
+>> >> > +                     };
+>> >> > +                     cooling-maps {
+>> >> > +                             map0 {
+>> >> > +                                     trip = <&target>;
+>> >>
+>> >> Shouldn't &threshold (i.e. &cpu_alert0) be referenced here instead?
+>> >>
+>> >> > +                                     cooling-device = <&cpu_l0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+>> >>
+>> >> Shouldn't all big CPU cores be listed here instead?
+>> >
+>> > I guess if a separate trip point is defined for cpu_l0,1,2,3 then it
+>> > would need to throttle at 75C, and then cpu_b0,1 and cpu_b2,3 at 85C
+>> > each. Logic being that if a sensor stacked in the middle of a group of
+>> > four cores shows 75C then one of the four might well be in abnormal
+>> > temperature range already (85+), while sensors next to only two big
+>> > cores each will likely show temperatures similar to the actual core
+>> > temperature.
+>> 
+>> I think we shouldn't make any assumptions of how the CPU cores heat up
+>> and affect each other, because we don't really know the required 
+>> details.
+>> Instead, we should simply define the reasonable values for the 
+>> "passive",
+>> "hot" and "critical" trips, and leave the rest to the standard thermal
+>> throttling logic.  I hope you agree.
+>> 
+>> In the end, that's why we have separate thermal sensors available.
+> 
+> Indeed! I'll add extra "passive" alerts though (at 75C) to enable the
+> power allocation governor to initialize its PID parameters calculation
+> before the control temperature setpoint gets hit (per Daniel's
+> feedback under separate cover).
+
+I'm glad you agree.  Adding one more "passive" trip point makes sense,
+but please let me go through the code in detail first.
 
