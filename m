@@ -1,138 +1,93 @@
-Return-Path: <linux-kernel+bounces-34278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D6B5837753
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:03:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34114837755
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF5CD1C25378
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:03:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0429283DD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EADB38DC6;
-	Mon, 22 Jan 2024 23:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35C9147F44;
+	Mon, 22 Jan 2024 23:03:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lRX8TthZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fyCnRa+M"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D4A381DB;
-	Mon, 22 Jan 2024 23:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78EDE38381;
+	Mon, 22 Jan 2024 23:03:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705964577; cv=none; b=ExAZudXeSDmUAwZxSia9LFTpTXrGatdvq1khddDSwzvBc9GEAX7/SlZ9oJ3pLdMAEm+4Lx6yD+1KYP88Wy/tFIT8AHwg6l/vBw31MqWJv98XpY6Gnh8xOyqRDX+vQIetRMUQ14v3FOw0l9nAzU6ar0Jz06QPw29cYrg2gvYgSXw=
+	t=1705964599; cv=none; b=lEEunRSzIgP/v6rBcbg3TijKPY7874/AbSateu6LBiPkzrNdA72Y4p6CFgB6NvW2u2NBvZNWAKwxlIaRXfxzT0zBpvgTSymuQZu/dqNV3UOJyRargeWqfpeHJKgV1svVXi+LWwJZasfm1qRfB8uXg8K6O0YTkRnBIEW08f7ujjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705964577; c=relaxed/simple;
-	bh=5f0TvwGjdk7WXeg6BeQeByM891O4z1o6LGJ+66Aju6g=;
+	s=arc-20240116; t=1705964599; c=relaxed/simple;
+	bh=9E0yhn+Lc/Wf7cldLrsQEIy48JDSgVb+dkMEu7awprU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NfROFLOPwN9lpPibZHeaVXA/+SJnbPESyh8UA3aRNlzDFvPlbjCoGLNiJOhe2d+33Kxju3vps7IVspouq0KlGWEK4OPkiHObBQ0OtKexa35rKFKwcBPF1u2vEHntOwI67xO12fDPcjymBB4aQUeJPNjs3VahCwBq6Ael/AWG2NU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lRX8TthZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C745BC43390;
-	Mon, 22 Jan 2024 23:02:56 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=c708TkQUOuYt9ze6w+wtup3yiMS4KybDfdi+P8H7Xr9rGs0fbge2sdnyLg2ENQDzuCAJs9FgP00t2wbZ2EKOvAIkhQF7PX5FLU+nFAiS7vyltq4Qsmt/HDQYTaPmzADtTLbULfE6GWM1WespF8hb0tDzEf6LZmVXmvuBo4w1/3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fyCnRa+M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 452EAC433C7;
+	Mon, 22 Jan 2024 23:03:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705964577;
-	bh=5f0TvwGjdk7WXeg6BeQeByM891O4z1o6LGJ+66Aju6g=;
+	s=k20201202; t=1705964599;
+	bh=9E0yhn+Lc/Wf7cldLrsQEIy48JDSgVb+dkMEu7awprU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lRX8TthZlj3aDisktVHgkXiP6G7cCfwFBA9MwRx2XwHZpSqwSH5cDgLkmPz3218DI
-	 Iuxx5g4m6n4iVIsdilCBQdsurC1K8fKyDxouEEzrgxUvxZ/4DHhE3TQ2dpx3pUCYXy
-	 lxOl94ziInVJ6XxA9FNDjFlv11vqjPvI9XNzYzq733RlRhsxTWg58W4377ELSVP2Pt
-	 Ie3CPCjYof6TabLmFLr1bTsws8VGDgYbnj8rvmxOVajc2zqcau/sjAcBrfuWLNQAIN
-	 2JyK31XW53Aud8EXdJptKfrPoodlDPEXn+COFCBPLrhr+NpFxlMmfC4FVot90qTF4O
-	 X/NJfKr2PhkqA==
-Date: Mon, 22 Jan 2024 16:02:55 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Aiden Leong <aiden.leong@aibsd.com>, linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-	nicolas@fjasle.eu, clang-built-linux <llvm@lists.linux.dev>,
-	=?utf-8?B?Ru+/ve+/ve+/vW5nLXJ177+977+977+9IFPvv73vv73vv71uZw==?= <maskray@google.com>
-Subject: Re: [PATCH v2 2/4] modpost: inform compilers that fatal() never
- returns
-Message-ID: <20240122230255.GD141255@dev-fedora.aadp>
-References: <d9ac2960-6644-4a87-b5e4-4bfb6e0364a8@aibsd.com>
- <CAK7LNATDD2gC53T5n7vCUH6O6mdAm801fTWyKi9fji+5Kb+0ng@mail.gmail.com>
+	b=fyCnRa+Ml6gi8FoJ0a6Wq6z/wFvdFCzrnyDATRof2LBkIs88L/Sd/33c2abS/hhdC
+	 qk+zaRsnoLx0PPzhc41zxZGCgRRwjRHstBTywnHITBscZsZuZRXdhA9jJcthFcdzF3
+	 i9ZZPG7Bdmoo70ro+oI5JkXJHW9oHwih+XTNk3iq1HJ4eti4sww3MBu6X83JdBWeD/
+	 le7nD2jFAedef2UTYI3pmAFFucxpZmFJTo5+3UmYNBFcbjiTFmBGIIcTebhOsu61M5
+	 B5poRtVF71CKafkTabLE4+V5SA1c9PMt/v3RZggGpVhGBrqc7GRxPyC98sD5fcUbZM
+	 3ubMUyXmh90EA==
+Date: Mon, 22 Jan 2024 15:03:18 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Ajay Kaher <ajay.kaher@broadcom.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] eventfs: Have the inodes all for files and
+ directories all be the same
+Message-ID: <20240122230318.GC6226@frogsfrogsfrogs>
+References: <20240116225531.681181743@goodmis.org>
+ <20240116234014.459886712@goodmis.org>
+ <20240122215930.GA6184@frogsfrogsfrogs>
+ <CAHk-=wiODW+oNdoF4nMqG3Th7HhPGQNQekDvw16CvgKvaZArRg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNATDD2gC53T5n7vCUH6O6mdAm801fTWyKi9fji+5Kb+0ng@mail.gmail.com>
+In-Reply-To: <CAHk-=wiODW+oNdoF4nMqG3Th7HhPGQNQekDvw16CvgKvaZArRg@mail.gmail.com>
 
-On Mon, Jan 22, 2024 at 10:29:32PM +0900, Masahiro Yamada wrote:
-> +CC: clang-built-linux list, Fangrui
-> 
-> On Mon, Jan 22, 2024 at 1:04 PM Aiden Leong <aiden.leong@aibsd.com> wrote:
+On Mon, Jan 22, 2024 at 02:02:28PM -0800, Linus Torvalds wrote:
+> On Mon, 22 Jan 2024 at 13:59, Darrick J. Wong <djwong@kernel.org> wrote:
 > >
-> >
-> >  > The function fatal() never returns because modpost_log() calls exit(1)
-> >
-> >  > when LOG_FATAL is passed.
-> >  >
-> >  > Inform compilers of this fact so that unreachable code flow can be
-> >  > identified at compile time.
-> >  >
-> >  > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> >  > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> >  > ---
-> >  >
-> >  > Changes in v2:
-> >  >   - Use noreturn attribute together with alias
-> >  >
-> >  >  scripts/mod/modpost.c | 3 +++
-> >  >  scripts/mod/modpost.h | 5 ++++-
-> >  >  2 files changed, 7 insertions(+), 1 deletion(-)
-> >  >
-> >  > diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> >  > index ca0a90158f85..c13bc9095df3 100644
-> >  > --- a/scripts/mod/modpost.c
-> >  > +++ b/scripts/mod/modpost.c
-> >  > @@ -90,6 +90,9 @@ void modpost_log(enum loglevel loglevel, const char
-> > *fmt, ...)
-> >  >          error_occurred = true;
-> >  >  }
-> >  >
-> >  > +void __attribute__((alias("modpost_log")))
-> >
-> > Hi Masahiro,
-> > I cross-compile kernel on Apple Silicon MacBook Pro
-> > and every thing works well until this patch.
-> >
-> > My build command:
-> > make ARCH=arm CROSS_COMPILE=arm-none-eabi- \
-> > HOSTCFLAGS="-I/opt/homebrew/opt/openssl/include" \
-> > HOSTLDFLAGS="-L/opt/homebrew/opt/openssl/lib"
-> >
-> > Error message:
-> > scripts/mod/modpost.c:93:21: error: aliases are not supported on darwin
+> >          though I don't think
+> > leaking raw kernel pointers is an awesome idea.
 > 
+> Yeah, I wasn't all that comfortable even with trying to hash it
+> (because I think the number of source bits is small enough that even
+> with a crypto hash, it's trivially brute-forceable).
 > 
-> It is unfortunate.  Indeed, I see this message in:
+> See
 > 
-> clang/include/clang/Basic/DiagnosticSemaKinds.td
+>    https://lore.kernel.org/all/20240122152748.46897388@gandalf.local.home/
 > 
-> 
-> Is this limitation due to macOS executable (PEF),
-> or is it Clang-specific?
+> for the current patch under discussion (and it contains a link _to_
+> said discussion).
 
-Based on my admittedly brief research, this seems related to the Mach-O
-format. That message was added by [1] in response to [2] but the message
-mentioned weak aliases being supported. A further clarification was made
-in [3] to state that all aliases are unsupported as a result of some
-internal Apple bug it seems but I do see a couple of bug reports stating
-that may not be true [4][5] (although that does not seem relevant for
-this report).
+Ah, cool, thank you!
 
-[1]: https://github.com/llvm/llvm-project/commit/0017c5fa92ad3b10e15fd34f3865e8e5b850a5ed
-[2]: https://llvm.org/bz8720
-[3]: https://github.com/llvm/llvm-project/commit/4e30b96834cea5682a8e9e024dda06319825000a
-[4]: https://github.com/llvm/llvm-project/issues/11488
-[5]: https://github.com/llvm/llvm-project/issues/71001
+--D
 
-Cheers,
-Nathan
+>            Linus
 
