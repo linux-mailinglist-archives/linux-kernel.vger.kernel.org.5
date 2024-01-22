@@ -1,436 +1,248 @@
-Return-Path: <linux-kernel+bounces-32615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62A69835DFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:19:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1440835E02
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:21:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12699284C01
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:19:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 033CF1C24050
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC05F39FC8;
-	Mon, 22 Jan 2024 09:19:31 +0000 (UTC)
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F52C39875;
+	Mon, 22 Jan 2024 09:21:46 +0000 (UTC)
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC6C39FC0
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E290439850
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705915171; cv=none; b=XNf0cQdltZ7xSFwLEbUwApzYZKMAGkTcCQt1Q5nie/S7xQBv+LzyJIyTf18rmgIXxLv4Sn0mzMfeXjxoNQeuxIEw0dFlBUI5HDhZ1KEVhyO9bh2uJ2hQciJY9VWfGx/Hy7qtfjRTmdRG1C5dpkfGD5sEHLlNTXfbKfTcjVf+j5c=
+	t=1705915305; cv=none; b=YwMTcP7sevXVKImEd6EjDc4Gp0KRbtUMNuQG9Cgy/tLTFGrE7fiQkD0So9TG6pWn7purAkbPnJfFiumLqq9r1r5fsP+HexdEeZVyXhNbcp12E9dSpzo3YM7UTh45EjTQPUu4mO2TNIvLlTHz1V3rKIKJvpj7u7H5O9XVCBOGiOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705915171; c=relaxed/simple;
-	bh=R0V8yyHzrOy7eUMDuPOjubXzec1N0sQgeOEAfAXp/kU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kY4sV1T/pvNyjMumsXsYZwOVWA/I31Ru6ocVMBUNlfvWUKejD1JUlLfJLnd7koDLkr20ip9qVcS2giW8/xkkInbvFaKXJw7Xwp+c44ldQTDl4VQN3kKQWr5SAEZ6duwZjd46e90Mazc/7hBfmH/hw48x0Wdz6Xt8y6Ee/cB+/To=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W.5LiAY_1705915164;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.5LiAY_1705915164)
-          by smtp.aliyun-inc.com;
-          Mon, 22 Jan 2024 17:19:25 +0800
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-To: xiang@kernel.org,
-	chao@kernel.org,
-	linux-erofs@lists.ozlabs.org
-Cc: huyue2@coolpad.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] erofs: make iov_iter describe target buffer when read from fscache
-Date: Mon, 22 Jan 2024 17:19:23 +0800
-Message-Id: <20240122091923.38841-1-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+	s=arc-20240116; t=1705915305; c=relaxed/simple;
+	bh=4KI2ZPp+klv0+9vC5YPDcXCE5qOHpeBA9+S8DFkEjqo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=nkz65DrcxyceE26ZfGOrQlJQjT0dk6plDYg4w++PZ7m52IqE16KzOT0SXY0dztkl2sG7bA7f3eFhArAVoTzWbUTwRTKq7D7CmEo5YfJa5Qv8j8ocLUy7A5FbW6tKW435klBCfYrVktGfXJTLjeNRBd2U2EpfrBUUhCDBKTKufwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40e60d74b81so3393765e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 01:21:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705915302; x=1706520102;
+        h=content-transfer-encoding:in-reply-to:references:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nW0OYZX6txhfsdkxEjh61D57I5eQsuXgO/N1kAmHy5Y=;
+        b=I9geHDDsbPb0UwkuqgvRc6nJmdRZN9mJO8Ji2seivseQqjueVmQpo+gryLiwlQPyuZ
+         9Qj0+V79E+JSxomfZGhVereix38CI0QOb3DJHc0O93QHf2NxGUEWtjQPFM2hDq9D4aHt
+         psIml34LeFifYY+pIeWBM8kafrAjArEJazMSMuSNbNF8n6nSSZ/aukGtZdIFRSLWM9Yr
+         59MnJClBZD1FvzS5Q8XCxM9niQYyzNVgphMZ3YobTbupIP69en6x3jg4LlN0qzE3YwQo
+         mo1KXV51XT/LbwzaeMLpoIQYBX8HzeGo93IP62TpRu861MByuLg1cJ8ElDd/yfvPnASf
+         2S/g==
+X-Gm-Message-State: AOJu0YxsPTaT57Dmnq03nGRLH/Re2bFiWOCE4cjCegjfoS5RhmRHtkfn
+	BLdjNr3srsxe/kcPMHTCS8UFCK42qiotg9mGqnm5xKRc+IsrUJAk
+X-Google-Smtp-Source: AGHT+IEfsX4fJoG8LnjDTWeQf2jBLmLmHGVt/WcR7FSBxGdNUm3k1JmLyxvfQ1KqsOTsVQDpxrOx7Q==
+X-Received: by 2002:a05:600c:4f04:b0:40d:3ae3:2337 with SMTP id l4-20020a05600c4f0400b0040d3ae32337mr5600525wmq.2.1705915301802;
+        Mon, 22 Jan 2024 01:21:41 -0800 (PST)
+Received: from [192.168.64.172] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
+        by smtp.gmail.com with ESMTPSA id o8-20020a05600c4fc800b0040e549c77a1sm42269726wmq.32.2024.01.22.01.21.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 01:21:41 -0800 (PST)
+Message-ID: <92407bcc-ed93-4963-898b-abc4737768bc@grimberg.me>
+Date: Mon, 22 Jan 2024 11:21:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] nvme_core: scan namespaces asynchronously
+Content-Language: en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+To: Stuart Hayes <stuart.w.hayes@gmail.com>, linux-kernel@vger.kernel.org,
+ Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org
+References: <20240118210303.10484-1-stuart.w.hayes@gmail.com>
+ <189cde89-9750-476f-8fbb-1c95dc056efb@grimberg.me>
+In-Reply-To: <189cde89-9750-476f-8fbb-1c95dc056efb@grimberg.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-So far the fscache mode supports uncompressed data only, and the data
-read from fscache is put directly into the target page cache.  As the
-support for compressed data in fscache mode is going to be introduced,
-refactor the interface of reading fscache so that the following
-compressed part could make the raw data read from fscache be directed to
-the target buffer it wants, decompress the raw data, and finally fill
-the page cache with the decompressed data.
+Resending... didn't make it to the list, probably smtp issues....
 
-As the first step, a new structure, i.e. erofs_fscache_io (io), is
-introduced to describe a generic read request from the fscache, while
-the caller can specify the target buffer it wants in the iov_iter
-structure (io->iter).  Besides, the caller can also specify its
-completion callback and private data through erofs_fscache_io, which
-will be called to make further handling, e.g. unlocking the page cache
-for uncompressed data or decompressing the read raw data, when the read
-request from the fscache completes.  Now erofs_fscache_read_io_async()
-serves as a generic interface for reading raw data from fscache for both
-compressed and uncompressed data.
-
-The erofs_fscache_request structure is kept to describe a request to
-fill the page cache in the specified range.
-
-Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
----
-v2:
-- improve the naming and code arrangement (Gao Xiang)
-
-v1: https://lore.kernel.org/all/20240122071253.119004-1-jefflexu@linux.alibaba.com/
----
- fs/erofs/fscache.c | 222 ++++++++++++++++++++++++---------------------
- 1 file changed, 120 insertions(+), 102 deletions(-)
-
-diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
-index bc12030393b2..41847a68a59a 100644
---- a/fs/erofs/fscache.c
-+++ b/fs/erofs/fscache.c
-@@ -13,8 +13,6 @@ static LIST_HEAD(erofs_domain_cookies_list);
- static struct vfsmount *erofs_pseudo_mnt;
- 
- struct erofs_fscache_request {
--	struct erofs_fscache_request *primary;
--	struct netfs_cache_resources cache_resources;
- 	struct address_space	*mapping;	/* The mapping being accessed */
- 	loff_t			start;		/* Start position */
- 	size_t			len;		/* Length of the request */
-@@ -23,42 +21,13 @@ struct erofs_fscache_request {
- 	refcount_t		ref;
- };
- 
--static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
--					     loff_t start, size_t len)
--{
--	struct erofs_fscache_request *req;
--
--	req = kzalloc(sizeof(struct erofs_fscache_request), GFP_KERNEL);
--	if (!req)
--		return ERR_PTR(-ENOMEM);
--
--	req->mapping = mapping;
--	req->start   = start;
--	req->len     = len;
--	refcount_set(&req->ref, 1);
--
--	return req;
--}
--
--static struct erofs_fscache_request *erofs_fscache_req_chain(struct erofs_fscache_request *primary,
--					     size_t len)
--{
--	struct erofs_fscache_request *req;
--
--	/* use primary request for the first submission */
--	if (!primary->submitted) {
--		refcount_inc(&primary->ref);
--		return primary;
--	}
--
--	req = erofs_fscache_req_alloc(primary->mapping,
--			primary->start + primary->submitted, len);
--	if (!IS_ERR(req)) {
--		req->primary = primary;
--		refcount_inc(&primary->ref);
--	}
--	return req;
--}
-+struct erofs_fscache_io {
-+	struct netfs_cache_resources cres;
-+	struct iov_iter		iter;
-+	netfs_io_terminated_t	end_io;
-+	void			*private;
-+	refcount_t		ref;
-+};
- 
- static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
- {
-@@ -83,82 +52,117 @@ static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
- static void erofs_fscache_req_put(struct erofs_fscache_request *req)
- {
- 	if (refcount_dec_and_test(&req->ref)) {
--		if (req->cache_resources.ops)
--			req->cache_resources.ops->end_operation(&req->cache_resources);
--		if (!req->primary)
--			erofs_fscache_req_complete(req);
--		else
--			erofs_fscache_req_put(req->primary);
-+		erofs_fscache_req_complete(req);
- 		kfree(req);
- 	}
- }
- 
--static void erofs_fscache_subreq_complete(void *priv,
-+static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
-+						loff_t start, size_t len)
-+{
-+	struct erofs_fscache_request *req;
-+
-+	req = kzalloc(sizeof(*req), GFP_KERNEL);
-+	if (!req)
-+		return NULL;
-+
-+	req->mapping = mapping;
-+	req->start = start;
-+	req->len = len;
-+	refcount_set(&req->ref, 1);
-+	return req;
-+}
-+
-+static bool erofs_fscache_io_put(struct erofs_fscache_io *io)
-+{
-+	if (!refcount_dec_and_test(&io->ref))
-+		return false;
-+	if (io->cres.ops)
-+		io->cres.ops->end_operation(&io->cres);
-+	kfree(io);
-+	return true;
-+}
-+
-+static void erofs_fscache_req_io_put(struct erofs_fscache_io *io)
-+{
-+	struct erofs_fscache_request *req = io->private;
-+
-+	if (erofs_fscache_io_put(io))
-+		erofs_fscache_req_put(req);
-+}
-+
-+static void erofs_fscache_req_end_io(void *priv,
- 		ssize_t transferred_or_error, bool was_async)
- {
--	struct erofs_fscache_request *req = priv;
-+	struct erofs_fscache_io *io = priv;
-+	struct erofs_fscache_request *req = io->private;
- 
--	if (IS_ERR_VALUE(transferred_or_error)) {
--		if (req->primary)
--			req->primary->error = transferred_or_error;
--		else
--			req->error = transferred_or_error;
--	}
--	erofs_fscache_req_put(req);
-+	if (IS_ERR_VALUE(transferred_or_error))
-+		req->error = transferred_or_error;
-+	erofs_fscache_req_io_put(io);
-+}
-+
-+static struct erofs_fscache_io *erofs_fscache_req_io_alloc(struct erofs_fscache_request *req)
-+{
-+	struct erofs_fscache_io *io;
-+
-+	io = kzalloc(sizeof(*io), GFP_KERNEL);
-+	if (!io)
-+		return NULL;
-+
-+	io->end_io = erofs_fscache_req_end_io;
-+	io->private = req;
-+	refcount_inc(&req->ref);
-+	refcount_set(&io->ref, 1);
-+	return io;
- }
- 
- /*
-- * Read data from fscache (cookie, pstart, len), and fill the read data into
-- * page cache described by (req->mapping, lstart, len). @pstart describeis the
-- * start physical address in the cache file.
-+ * Read data from fscache described by cookie at pstart physical address
-+ * offset, and fill the read data into buffer described by io->iter.
-  */
--static int erofs_fscache_read_folios_async(struct fscache_cookie *cookie,
--		struct erofs_fscache_request *req, loff_t pstart, size_t len)
-+static int erofs_fscache_read_io_async(struct fscache_cookie *cookie,
-+		loff_t pstart, struct erofs_fscache_io *io)
- {
- 	enum netfs_io_source source;
--	struct super_block *sb = req->mapping->host->i_sb;
--	struct netfs_cache_resources *cres = &req->cache_resources;
--	struct iov_iter iter;
--	loff_t lstart = req->start + req->submitted;
--	size_t done = 0;
-+	struct netfs_cache_resources *cres = &io->cres;
-+	struct iov_iter *iter = &io->iter;
- 	int ret;
- 
--	DBG_BUGON(len > req->len - req->submitted);
--
- 	ret = fscache_begin_read_operation(cres, cookie);
- 	if (ret)
- 		return ret;
- 
--	while (done < len) {
--		loff_t sstart = pstart + done;
--		size_t slen = len - done;
-+	while (iov_iter_count(iter)) {
-+		size_t len, remain = iov_iter_count(iter);
- 		unsigned long flags = 1 << NETFS_SREQ_ONDEMAND;
- 
-+		len = remain;
- 		source = cres->ops->prepare_ondemand_read(cres,
--				sstart, &slen, LLONG_MAX, &flags, 0);
--		if (WARN_ON(slen == 0))
-+				pstart, &len, LLONG_MAX, &flags, 0);
-+		if (WARN_ON(len == 0))
- 			source = NETFS_INVALID_READ;
- 		if (source != NETFS_READ_FROM_CACHE) {
--			erofs_err(sb, "failed to fscache prepare_read (source %d)", source);
-+			erofs_err(NULL, "prepare_read failed (source %d)", source);
- 			return -EIO;
- 		}
- 
--		refcount_inc(&req->ref);
--		iov_iter_xarray(&iter, ITER_DEST, &req->mapping->i_pages,
--				lstart + done, slen);
--
--		ret = fscache_read(cres, sstart, &iter, NETFS_READ_HOLE_FAIL,
--				   erofs_fscache_subreq_complete, req);
-+		iov_iter_truncate(iter, len);
-+		refcount_inc(&io->ref);
-+		ret = fscache_read(cres, pstart, iter, NETFS_READ_HOLE_FAIL,
-+				   io->end_io, io);
- 		if (ret == -EIOCBQUEUED)
- 			ret = 0;
- 		if (ret) {
--			erofs_err(sb, "failed to fscache_read (ret %d)", ret);
-+			erofs_err(NULL, "fscache_read failed (ret %d)", ret);
- 			return ret;
- 		}
-+		if (WARN_ON(iov_iter_count(iter)))
-+			return -EIO;
- 
--		done += slen;
-+		iov_iter_reexpand(iter, remain - len);
-+		pstart += len;
- 	}
--	DBG_BUGON(done != len);
- 	return 0;
- }
- 
-@@ -167,33 +171,43 @@ static int erofs_fscache_meta_read_folio(struct file *data, struct folio *folio)
- 	int ret;
- 	struct erofs_fscache *ctx = folio->mapping->host->i_private;
- 	struct erofs_fscache_request *req;
-+	struct erofs_fscache_io *io;
- 
-+	ret = -ENOMEM;
- 	req = erofs_fscache_req_alloc(folio->mapping,
- 				folio_pos(folio), folio_size(folio));
--	if (IS_ERR(req)) {
-+	if (!req) {
- 		folio_unlock(folio);
--		return PTR_ERR(req);
-+		return ret;
- 	}
- 
--	ret = erofs_fscache_read_folios_async(ctx->cookie, req,
--				folio_pos(folio), folio_size(folio));
-+	io = erofs_fscache_req_io_alloc(req);
-+	if (!io) {
-+		req->error = ret;
-+		goto out;
-+	}
-+	iov_iter_xarray(&io->iter, ITER_DEST, &folio->mapping->i_pages,
-+			folio_pos(folio), folio_size(folio));
-+
-+	ret = erofs_fscache_read_io_async(ctx->cookie, folio_pos(folio), io);
- 	if (ret)
- 		req->error = ret;
- 
-+	erofs_fscache_req_io_put(io);
-+out:
- 	erofs_fscache_req_put(req);
- 	return ret;
- }
- 
--static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
-+static int erofs_fscache_data_read_slice(struct erofs_fscache_request *req)
- {
--	struct address_space *mapping = primary->mapping;
-+	struct address_space *mapping = req->mapping;
- 	struct inode *inode = mapping->host;
- 	struct super_block *sb = inode->i_sb;
--	struct erofs_fscache_request *req;
-+	struct erofs_fscache_io *io;
- 	struct erofs_map_blocks map;
- 	struct erofs_map_dev mdev;
--	struct iov_iter iter;
--	loff_t pos = primary->start + primary->submitted;
-+	loff_t pos = req->start + req->submitted;
- 	size_t count;
- 	int ret;
- 
-@@ -204,6 +218,7 @@ static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
- 
- 	if (map.m_flags & EROFS_MAP_META) {
- 		struct erofs_buf buf = __EROFS_BUF_INITIALIZER;
-+		struct iov_iter iter;
- 		erofs_blk_t blknr;
- 		size_t offset, size;
- 		void *src;
-@@ -224,15 +239,17 @@ static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
- 		}
- 		iov_iter_zero(PAGE_SIZE - size, &iter);
- 		erofs_put_metabuf(&buf);
--		primary->submitted += PAGE_SIZE;
-+		req->submitted += PAGE_SIZE;
- 		return 0;
- 	}
- 
--	count = primary->len - primary->submitted;
-+	count = req->len - req->submitted;
- 	if (!(map.m_flags & EROFS_MAP_MAPPED)) {
-+		struct iov_iter iter;
-+
- 		iov_iter_xarray(&iter, ITER_DEST, &mapping->i_pages, pos, count);
- 		iov_iter_zero(count, &iter);
--		primary->submitted += count;
-+		req->submitted += count;
- 		return 0;
- 	}
- 
-@@ -247,14 +264,15 @@ static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
- 	if (ret)
- 		return ret;
- 
--	req = erofs_fscache_req_chain(primary, count);
--	if (IS_ERR(req))
--		return PTR_ERR(req);
-+	io = erofs_fscache_req_io_alloc(req);
-+	if (!io)
-+		return -ENOMEM;
-+	iov_iter_xarray(&io->iter, ITER_DEST, &mapping->i_pages, pos, count);
-+	ret = erofs_fscache_read_io_async(mdev.m_fscache->cookie,
-+			mdev.m_pa + (pos - map.m_la), io);
-+	erofs_fscache_req_io_put(io);
- 
--	ret = erofs_fscache_read_folios_async(mdev.m_fscache->cookie,
--			req, mdev.m_pa + (pos - map.m_la), count);
--	erofs_fscache_req_put(req);
--	primary->submitted += count;
-+	req->submitted += count;
- 	return ret;
- }
- 
-@@ -278,9 +296,9 @@ static int erofs_fscache_read_folio(struct file *file, struct folio *folio)
- 
- 	req = erofs_fscache_req_alloc(folio->mapping,
- 			folio_pos(folio), folio_size(folio));
--	if (IS_ERR(req)) {
-+	if (!req) {
- 		folio_unlock(folio);
--		return PTR_ERR(req);
-+		return -ENOMEM;
- 	}
- 
- 	ret = erofs_fscache_data_read(req);
-@@ -297,7 +315,7 @@ static void erofs_fscache_readahead(struct readahead_control *rac)
- 
- 	req = erofs_fscache_req_alloc(rac->mapping,
- 			readahead_pos(rac), readahead_length(rac));
--	if (IS_ERR(req))
-+	if (!req)
- 		return;
- 
- 	/* The request completion will drop refs on the folios. */
--- 
-2.19.1.6.gb485710b
-
+On 1/22/24 11:13, Sagi Grimberg wrote:
+> 
+> 
+> On 1/18/24 23:03, Stuart Hayes wrote:
+>> Use async function calls to make namespace scanning happen in parallel.
+>>
+>> Without the patch, NVME namespaces are scanned serially, so it can take a
+>> long time for all of a controller's namespaces to become available,
+>> especially with a slower (TCP) interface with large number of namespaces.
+>>
+>> The time it took for all namespaces to show up after connecting (via TCP)
+>> to a controller with 1002 namespaces was measured:
+>>
+>> network latency   without patch   with patch
+>>       0                 6s            1s
+>>      50ms             210s           10s
+>>     100ms             417s           18s
+>>
+> 
+> Impressive speedup. Not a very common use-case though...
+> 
+>> Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
+>>
+>> -- 
+>> V2: remove module param to enable/disable async scanning
+>>      add scan time measurements to commit message
+>>
+>> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+>> index 0af612387083..069350f85b83 100644
+>> --- a/drivers/nvme/host/core.c
+>> +++ b/drivers/nvme/host/core.c
+>> @@ -4,6 +4,7 @@
+>>    * Copyright (c) 2011-2014, Intel Corporation.
+>>    */
+>> +#include <linux/async.h>
+>>   #include <linux/blkdev.h>
+>>   #include <linux/blk-mq.h>
+>>   #include <linux/blk-integrity.h>
+>> @@ -3812,12 +3813,38 @@ static void nvme_validate_ns(struct nvme_ns 
+>> *ns, struct nvme_ns_info *info)
+>>           nvme_ns_remove(ns);
+>>   }
+>> -static void nvme_scan_ns(struct nvme_ctrl *ctrl, unsigned nsid)
+>> +/*
+>> + * struct nvme_scan_state - keeps track of controller & NSIDs to scan
+>> + * @ctrl:    Controller on which namespaces are being scanned
+>> + * @count:    Next NSID to scan (for sequential scan), or
+>> + *        Index of next NSID to scan in ns_list (for list scan)
+>> + * @ns_list:    pointer to list of NSIDs to scan (NULL if sequential 
+>> scan)
+>> + */
+>> +struct nvme_scan_state {
+>> +    struct nvme_ctrl *ctrl;
+>> +    atomic_t count;
+>> +    __le32 *ns_list;
+>> +};
+>> +
+>> +static void nvme_scan_ns(void *data, async_cookie_t cookie)
+> 
+> I think its better to call it nvme_scan_ns_async to indicate what
+> it is.
+> 
+>>   {
+>> -    struct nvme_ns_info info = { .nsid = nsid };
+>> +    struct nvme_ns_info info = {};
+>> +    struct nvme_scan_state *scan_state;
+>> +    struct nvme_ctrl *ctrl;
+>> +    u32 nsid;
+>>       struct nvme_ns *ns;
+>>       int ret;
+>> +    scan_state = data;
+>> +    ctrl = scan_state->ctrl;
+> 
+> I think these assignments can be done on the declaration.
+> 
+>> +    nsid = (u32)atomic_fetch_add(1, &scan_state->count);
+>> +    /*
+>> +     * get NSID from list (if scanning from a list, not sequentially)
+>> +     */
+>> +    if (scan_state->ns_list)
+>> +        nsid = le32_to_cpu(scan_state->ns_list[nsid]);
+>> +
+> 
+> This is awkward. ns_list passed in optionally.
+> How about we limit this change to only operate on nvme_scan_ns_list?
+> If the controller is old or quirked to support only a sequential scan
+> it does not benefit from a parallel scan. I doubt that these controllers
+> are likely to expose a large number of namespaces anyways.
+> 
+>> +    info.nsid = nsid;
+>>       if (nvme_identify_ns_descs(ctrl, &info))
+>>           return;
+>> @@ -3881,11 +3908,15 @@ static int nvme_scan_ns_list(struct nvme_ctrl 
+>> *ctrl)
+>>       __le32 *ns_list;
+>>       u32 prev = 0;
+>>       int ret = 0, i;
+>> +    ASYNC_DOMAIN(domain);
+>> +    struct nvme_scan_state scan_state;
+>>       ns_list = kzalloc(NVME_IDENTIFY_DATA_SIZE, GFP_KERNEL);
+>>       if (!ns_list)
+>>           return -ENOMEM;
+>> +    scan_state.ctrl = ctrl;
+>> +    scan_state.ns_list = ns_list;
+> 
+> Is there a need to have a local ns_list variable here?
+> 
+>>       for (;;) {
+>>           struct nvme_command cmd = {
+>>               .identify.opcode    = nvme_admin_identify,
+>> @@ -3901,19 +3932,25 @@ static int nvme_scan_ns_list(struct nvme_ctrl 
+>> *ctrl)
+>>               goto free;
+>>           }
+>> +        /*
+>> +         * scan list starting at list offset 0
+>> +         */
+>> +        atomic_set(&scan_state.count, 0);
+>>           for (i = 0; i < nr_entries; i++) {
+>>               u32 nsid = le32_to_cpu(ns_list[i]);
+>>               if (!nsid)    /* end of the list? */
+>>                   goto out;
+>> -            nvme_scan_ns(ctrl, nsid);
+>> +            async_schedule_domain(nvme_scan_ns, &scan_state, &domain);
+>>               while (++prev < nsid)
+>>                   nvme_ns_remove_by_nsid(ctrl, prev);
+>>           }
+>> +        async_synchronize_full_domain(&domain);
+>>       }
+>>    out:
+>>       nvme_remove_invalid_namespaces(ctrl, prev);
+> 
+> Is it a good idea to remove the invalid namespaces before synchronizing
+> the async scans?
+> 
+>>    free:
+>> +    async_synchronize_full_domain(&domain);
+>>       kfree(ns_list);
+>>       return ret;
+>>   }
+>> @@ -3922,14 +3959,23 @@ static void nvme_scan_ns_sequential(struct 
+>> nvme_ctrl *ctrl)
+>>   {
+>>       struct nvme_id_ctrl *id;
+>>       u32 nn, i;
+>> +    ASYNC_DOMAIN(domain);
+>> +    struct nvme_scan_state scan_state;
+>>       if (nvme_identify_ctrl(ctrl, &id))
+>>           return;
+>>       nn = le32_to_cpu(id->nn);
+>>       kfree(id);
+>> +    scan_state.ctrl = ctrl;
+>> +    /*
+>> +     * scan sequentially starting at NSID 1
+>> +     */
+>> +    atomic_set(&scan_state.count, 1);
+>> +    scan_state.ns_list = NULL;
+>>       for (i = 1; i <= nn; i++)
+>> -        nvme_scan_ns(ctrl, i);
+>> +        async_schedule_domain(nvme_scan_ns, &scan_state, &domain);
+>> +    async_synchronize_full_domain(&domain);
+>>       nvme_remove_invalid_namespaces(ctrl, nn);
+>>   }
+> 
+> I think we need a blktest for this. ns scanning has been notorious when
+> running simultaneously with controller reset/reconnect/remove
+> sequences... Ideally a test with a larger number of namespaces to
+> exercise the code.
+> 
+> Also, make sure that blktest suite does not complain about anything
+> else.
 
