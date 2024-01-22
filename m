@@ -1,92 +1,245 @@
-Return-Path: <linux-kernel+bounces-32754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03D1E835FB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:30:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A04D0835FB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB9971F27B4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:30:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C482B1C25CE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C41E3A1BD;
-	Mon, 22 Jan 2024 10:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NdDXnFgK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FACC38DDD;
+	Mon, 22 Jan 2024 10:30:27 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609C93A8C3;
-	Mon, 22 Jan 2024 10:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63DE38DD0
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705919390; cv=none; b=Earr6tDD4wsI8ao8zdypvxGGlj5zcj1YV0hjy6jTLwMIARFYPBE6xiEl4teRXOLnV3kpt8eaAWdlhqIHZGjJD3PmjCa/fOqaAu/FtrId2Re6ftYNkWJPXlzlpDluAyPpQxOi7xgb3L9bnRdmd/qwKmkYwVS4GF2GlowYsd+9mYQ=
+	t=1705919426; cv=none; b=GOVl++JW2V/Bd0J6oNDFkSGtvgtQ271YekJlCqRvmj7qep7GIaBNiwwiRRi/niwnlZWRYoI2w6CCEEC97sGy9SP/HcmlC2cVhavP79mJorOjq47EbvV8rPmGV6wGdxdtHAXR9s0vPBk4lvIH1DI4mIWzGL7hmpPs3MmtdNmxnFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705919390; c=relaxed/simple;
-	bh=jDLFyl1iKiEHyp5Pcbub/gZ1AielXM8NVmAdEUhcoHI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RCRzN8Ox+tSRPt+fHEpk8PxMMxQTs5rvQl2qAh2Q2kcg3Uql5LO1zkIMluFLRTEcWd2h5abcrMkORUoQ9VY4PTpnZIwZul8MlD7qXx2gsj2N9/IHv4NUW0Uy7UTBd0ICtFWQZ4+B8V0UrjtTnWfMdTFnexxzqIAHTnjcrTMjxX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NdDXnFgK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A311C43390;
-	Mon, 22 Jan 2024 10:29:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705919389;
-	bh=jDLFyl1iKiEHyp5Pcbub/gZ1AielXM8NVmAdEUhcoHI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NdDXnFgKzqNeKOercLqiY5oPy4XmqEdQizooiSNTMa1ncAx7HFkVKZd9TE4mJ0wvW
-	 ySGi1O/UKt11Dk+uMshzLNibAR905+qbEEdu0OUeMDHw47naSfnP2S93CuFZZSekdG
-	 uFMD7sZ3HcA80BWjuggxGiZjag+P86CVQGN2OdEuzoDFW35UABYXjrFkTN4g46xVl0
-	 nq2TldAyMErFwU3mzXhTI+DWJdAUT4DemoDsbJ2CVE4rZz9SaG4ableqi20K20ETTi
-	 gknA5H6jLtzRzuJWqsaXld4XEQ9d3/g74CqI5cGxWdtWfpO01NzTUs3BHa2RI7xwnj
-	 hYxSrCocuzSQQ==
-Message-ID: <74c3f9b7-1215-4216-bf56-c20e40acdeb8@kernel.org>
-Date: Mon, 22 Jan 2024 19:29:48 +0900
+	s=arc-20240116; t=1705919426; c=relaxed/simple;
+	bh=sjhtYo0uTKJDjV64i8Uij6oqjEcJm5KTACoZq53pVOQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=s+AA3gqLXqU5i3ft80RNy/nnZ5sdg3nM7m2QcxKSOU/d8I8nd5cqrvByvDjxFAJma2IKYiqxKgWoQ1eY7Qk4OL/ctB2YYMcp+w3mJH9R4HRVPUE0pfTyE86NdO57N+1siIMkPkWrIrc/pzYUCtKpAgGXiDOosoR1FYDNgZu94xw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-361a5c2e84eso32102575ab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:30:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705919424; x=1706524224;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/FdEqyXOm54eQOBsxXTV0kXHce7OoLUwfV8tUD0Ci2E=;
+        b=catXQaTg8B0qLXQtwxd3eiVR00YUOejJUuJweKB1pGwo2WQuVeakUHie2GRO0WRkqo
+         /9e9MdCkElOUB056GgqkL976EagNMcrbxwGKXhf/Y38ak2PWY7E38yrEkfo5lsuS9pEe
+         h35ENMrBkWg/Fiaj+PwloS0yOVZjqR5FsjHY/s4RMllx2ybvonP24AszKiMBneqvhmqu
+         EzziXRH2CBzs8l6VckTzZkOVwDlktFwKWqHl1lfMO84k3qQUZWxyOFlp8VAymewdwQqe
+         5nSAoeXKcYGJBzgYYRSoekHVGzX8QYuYAByoV3un416R8DpeQdbl5QHMq7WW94vHxZIH
+         SwOw==
+X-Gm-Message-State: AOJu0Yw6xOUyPMfqVzPeGHAUGEuOitgHeRfIJoh+RSdVAyOOiBw+Zztr
+	H4cqsYAPUfsbdjRJPRxqrpvzSAsTH7esHk1F0MmgRaSnuoUgz3h3Z3if+8KfRBTh+ZVX2F2Crl6
+	lwj9IeazgkF69VZpzI+jB/poHA9DzaDiMVsFigvTw5aEf6Iow90AjO0Q=
+X-Google-Smtp-Source: AGHT+IGJNaMG4cdhwWkiWJx3xn1C6qSB5FShAtMCbV7fb/WyB3LPFECQOmel16t7a/V2qP5q2Zdnk9MzrJdRh7mCVStlfeEwDFBR
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ata: ahci_ceva: add missing enable regulator API for
- Xilinx GT PHY support
-Content-Language: en-US
-To: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>, cassel@kernel.org,
- richardcochran@gmail.com, piyush.mehta@xilinx.com, axboe@kernel.dk,
- michal.simek@amd.com
-Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org, git@amd.com,
- Piyush Mehta <piyush.mehta@amd.com>
-References: <1705604904-471889-1-git-send-email-radhey.shyam.pandey@amd.com>
- <1705604904-471889-3-git-send-email-radhey.shyam.pandey@amd.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <1705604904-471889-3-git-send-email-radhey.shyam.pandey@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1be8:b0:35f:a338:44ae with SMTP id
+ y8-20020a056e021be800b0035fa33844aemr510512ilv.3.1705919424054; Mon, 22 Jan
+ 2024 02:30:24 -0800 (PST)
+Date: Mon, 22 Jan 2024 02:30:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000494dd8060f865121@google.com>
+Subject: [syzbot] [reiserfs?] possible deadlock in vfs_removexattr (2)
+From: syzbot <syzbot+7ecfa4360b4449cf2a01@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 1/19/24 04:08, Radhey Shyam Pandey wrote:
-> From: Piyush Mehta <piyush.mehta@amd.com>
-> 
-> The regulators API are disabled and enabled, during suspend and resume,
-> respectively. The following warning notice shows up on the initial suspend
-> because the enable regulators API is unaddressed in the probe:
-> 
-> regulator-dummy: Underflow of regulator enable count
-> 
-> Added the ahci_platform_enable_regulators API in probe to maintain the
-> regulator enabled and disabled ref count.
-> 
-> Fixes: 9a9d3abe24bb ("ata: ahci: ceva: Update the driver to support xilinx GT phy")
-> Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
-> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Hello,
 
-Looks OK to me.
+syzbot found the following issue on:
 
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+HEAD commit:    0802e17d9aca Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=10379b1be80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f9616b7e180577ba
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ecfa4360b4449cf2a01
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
--- 
-Damien Le Moal
-Western Digital Research
+Unfortunately, I don't have any reproducer for this issue yet.
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e84e45f27a78/disk-0802e17d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a8b16d2fc3b1/vmlinux-0802e17d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4c7ac36b3de1/Image-0802e17d.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7ecfa4360b4449cf2a01@syzkaller.appspotmail.com
+
+REISERFS (device loop1): Created .reiserfs_priv - reserved for xattr storage.
+======================================================
+WARNING: possible circular locking dependency detected
+6.7.0-rc8-syzkaller-g0802e17d9aca #0 Not tainted
+------------------------------------------------------
+syz-executor.1/16589 is trying to acquire lock:
+ffff00012c9b82e0 (&type->i_mutex_dir_key#15){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
+ffff00012c9b82e0 (&type->i_mutex_dir_key#15){+.+.}-{3:3}, at: vfs_removexattr+0xcc/0x23c fs/xattr.c:575
+
+but task is already holding lock:
+ffff0000ce5fe418 (sb_writers#28){.+.+}-{0:0}, at: mnt_want_write+0x44/0x9c fs/namespace.c:404
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (sb_writers#28){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1635 [inline]
+       sb_start_write+0x60/0x2ec include/linux/fs.h:1710
+       mnt_want_write_file+0x64/0x1e8 fs/namespace.c:448
+       reiserfs_ioctl+0x188/0x42c fs/reiserfs/ioctl.c:103
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:871 [inline]
+       __se_sys_ioctl fs/ioctl.c:857 [inline]
+       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+       el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+-> #1 (&sbi->lock){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+       reiserfs_write_lock+0x7c/0xe8 fs/reiserfs/lock.c:27
+       reiserfs_lookup+0x128/0x45c fs/reiserfs/namei.c:364
+       __lookup_slow+0x250/0x374 fs/namei.c:1694
+       lookup_one_len+0x178/0x28c fs/namei.c:2746
+       reiserfs_lookup_privroot+0x8c/0x184 fs/reiserfs/xattr.c:977
+       reiserfs_fill_super+0x15b4/0x2028 fs/reiserfs/super.c:2192
+       mount_bdev+0x1e8/0x2b4 fs/super.c:1650
+       get_super_block+0x44/0x58 fs/reiserfs/super.c:2601
+       legacy_get_tree+0xd4/0x16c fs/fs_context.c:662
+       vfs_get_tree+0x90/0x288 fs/super.c:1771
+       do_new_mount+0x25c/0x8c8 fs/namespace.c:3337
+       path_mount+0x590/0xe04 fs/namespace.c:3664
+       do_mount fs/namespace.c:3677 [inline]
+       __do_sys_mount fs/namespace.c:3886 [inline]
+       __se_sys_mount fs/namespace.c:3863 [inline]
+       __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3863
+       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+       el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+-> #0 (&type->i_mutex_dir_key#15){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x3384/0x763c kernel/locking/lockdep.c:5137
+       lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5754
+       down_write+0x50/0xc0 kernel/locking/rwsem.c:1579
+       inode_lock include/linux/fs.h:802 [inline]
+       vfs_removexattr+0xcc/0x23c fs/xattr.c:575
+       removexattr+0x148/0x1c4 fs/xattr.c:918
+       path_removexattr+0x160/0x23c fs/xattr.c:932
+       __do_sys_removexattr fs/xattr.c:946 [inline]
+       __se_sys_removexattr fs/xattr.c:943 [inline]
+       __arm64_sys_removexattr+0x60/0x78 fs/xattr.c:943
+       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+       el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+other info that might help us debug this:
+
+Chain exists of:
+  &type->i_mutex_dir_key#15 --> &sbi->lock --> sb_writers#28
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(sb_writers#28);
+                               lock(&sbi->lock);
+                               lock(sb_writers#28);
+  lock(&type->i_mutex_dir_key#15);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.1/16589:
+ #0: ffff0000ce5fe418 (sb_writers#28){.+.+}-{0:0}, at: mnt_want_write+0x44/0x9c fs/namespace.c:404
+
+stack backtrace:
+CPU: 0 PID: 16589 Comm: syz-executor.1 Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:291
+ show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:298
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2060
+ check_noncircular+0x310/0x404 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x3384/0x763c kernel/locking/lockdep.c:5137
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5754
+ down_write+0x50/0xc0 kernel/locking/rwsem.c:1579
+ inode_lock include/linux/fs.h:802 [inline]
+ vfs_removexattr+0xcc/0x23c fs/xattr.c:575
+ removexattr+0x148/0x1c4 fs/xattr.c:918
+ path_removexattr+0x160/0x23c fs/xattr.c:932
+ __do_sys_removexattr fs/xattr.c:946 [inline]
+ __se_sys_removexattr fs/xattr.c:943 [inline]
+ __arm64_sys_removexattr+0x60/0x78 fs/xattr.c:943
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
