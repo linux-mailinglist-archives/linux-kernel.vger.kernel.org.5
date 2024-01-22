@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-33608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4657D836C39
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:59:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C55836C3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:00:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BB3F1C26734
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:59:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE63E1F267C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18B347A7D;
-	Mon, 22 Jan 2024 15:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB99481B2;
+	Mon, 22 Jan 2024 15:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xNn2+TAx"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="w1l6Ffkh"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6FD47A74
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C6347F7B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705937707; cv=none; b=lywLelnS+Yi3Q28pO/75G4tyyXV2UEMFwsDYAH4G4j9PkyRVc8rEpimo6mUpfJ3AKq3fsGYbcwYQjv1Yvqd6HpR2RxKynWHj2OsTbh/LBSZjCF3A1Zhpw8YCtPpw4bhNuzXeDydCGEEMRKvZSDXgNJqwUvCxYDCvyj1g0rfI5fU=
+	t=1705937768; cv=none; b=nbIOURJDojlu0BiUSd07EHrg1iwW6N9J4+RSU2HOdxB5unl9FvJFeZmvZ4dHu5AS8IpjeWb2OUHlP4JQth8f8Qa44O6baGnSyyNLMm2BMXwSnC3uGUmg9x8o18Kx3Jsc/GsjFmZbBUg/WcN8Cxs78G3OpB9OPvUJGTF38n+P5YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705937707; c=relaxed/simple;
-	bh=2V3IlyGGnL9L4mNjyRFVxFS6i/HCwHMRcC7I3z1wWb0=;
+	s=arc-20240116; t=1705937768; c=relaxed/simple;
+	bh=HAgIWyhtdhJVsNQO4GdYk2+zw/yMtp7ITnbhJzTY1Sc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qMEs44Pidk7Ij7oWloBJ3WdnOkJbit9/PLBdc8XA1j/rvsReEy3K0ZUwlLAumqwULZmU3Et7RUi/u2Dpoyz+jb37UcCa3Yy4plLeNPKaVmDMhBLUNjaX9TDfobRt0O7YT8/ebGUC9vaYERjffGRJ3flqwTnu+fHS19AVQ0HeWGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xNn2+TAx; arc=none smtp.client-ip=209.85.218.47
+	 In-Reply-To:Content-Type; b=EEMVHfDpMCg9Uj/5el/6ZkfkY0YxUEB7sJSXpupZG/roZul+W+9wdY2DZA6T3uGj5dldDtnyasRPuNrshZ5DL+L44B2CqYBJU8n8cHsIdU1tG/KuTVv4/UGSJS5u5yTgnxiKHHYoZpCOjXMbO58gRoISEFTedNQyv0lHt+feISE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=w1l6Ffkh; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso312807066b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:35:05 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2dc7827a97so354395166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:36:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705937704; x=1706542504; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705937765; x=1706542565; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RJaOVUR+a2RILxmbVMeV4oAVZHNJjmiKxODj4kHUZ/w=;
-        b=xNn2+TAxfbe2XkXx+f0isc+qN6UnEYBf2uJ85xplR1a7aDimagqO3H+2xuDDimPsoJ
-         Fap6EMhmefMvI4krW3vpTRCM+NwR5/SP8w1vK94eptDowdiar2FG5cCUy5jIayIS2zda
-         I24KEuNOLvle/XKTwXmUv59ZqI0IttQmn3BX4qYCk3PNpQykReGQtAn9CLhoRkFIvfCK
-         32vUx1j0bojV5dRkzuvVnJ4k6McMXp9rwJpDmJCS6/R7f+mj8+wvzLZPxcEzf/Jdri7V
-         7ll+SpzvsG9QlQm/m8bbxD5DLNEaG355gW/JZJldSnQOeVvobVc/jDPSQVBCcJ0u9Eqa
-         ciHw==
+        bh=uCDPVOv0172L4ZkN8LFuem5/OBYW+jKR6BeqqGh8r/g=;
+        b=w1l6FfkhL70orty6/pqaSJnJK8p2knMuciZD6y6kce5uxMJqdkCJnRTjKXOPHCSFk0
+         b50y/ZoHzaP0/2Rua6KLS7TcOkTrQpQZlkJnpycYna8cspHl4PBHBOQvBmMjDtRQPsf9
+         RQhW9aBJ4qYaVzNEoL0kBhiECF1b2R5cQ906e/6uNMCZmYQ0sp5PcIJLj8XHOi3beU+Q
+         dCbeD5PMrMyEmNTg4VJMFtpt5uYHWagLf7cS8s3tPtxpSprFfrY8B1xxPHcsI1O7LsjS
+         WIzObo9DfehEkcTbOB4hHdPWQqkVVP2chQ7PRN9SFO50TtDvTKJGw9m74R65MgTtdu9O
+         qhJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705937704; x=1706542504;
+        d=1e100.net; s=20230601; t=1705937765; x=1706542565;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RJaOVUR+a2RILxmbVMeV4oAVZHNJjmiKxODj4kHUZ/w=;
-        b=X7hBPVVj5Bl/TRCqAETfKzilaNmZ30CqOVIeBxKF20YBNe4HoRV5Cw2w8St65AlBKQ
-         ZpAtMEivN7fXovWZjrmwBGDK+LtpnpaguilJ01NcNZuYOyTAO7ReBK9Fm0EH2IO0Eewv
-         L9Nk23i0gVLIRp4nE1zIGobTzeRsVzl6hUBrN3XEP5pvuiXAC53s8M+/qdikZrT51Dk+
-         VfXSK84gMHcWxVbzAvalkkWn3ciPK9ptWx1H6X9F/T8dVJDUwEgISY4RBQVpRc7Z1B9G
-         5IwSUCCRHgodk5aJbTDeb3sFq8dnysnj9zHvQLx0RqtYL/Jlj8fi3Im7Q1NSng6gm4+o
-         BLxA==
-X-Gm-Message-State: AOJu0YztpI3xQBwU0cj2KWkzjrVAXB3yeVr0MAUMERpLodbjt8iQp+iu
-	hmBFcj8L0pLlDHR8KmsykbIv75qjCZGiqEeF1BMG1fRZ1ZuJdM4a3Jnw+lDvaYk=
-X-Google-Smtp-Source: AGHT+IHvIt1F8qfqjs+sSFh64xKJOll2DHZGhsUwJZXh6rJUsXC/M4TaK6XJLnb9FNliR0obl04S9w==
-X-Received: by 2002:a17:907:d405:b0:a2f:c878:f696 with SMTP id vi5-20020a170907d40500b00a2fc878f696mr3034088ejc.54.1705937703731;
-        Mon, 22 Jan 2024 07:35:03 -0800 (PST)
+        bh=uCDPVOv0172L4ZkN8LFuem5/OBYW+jKR6BeqqGh8r/g=;
+        b=JtFZ1iwr/byVUzjzI2tq7KfxAydnAEOMNaE8zn8wupPuZsx2g1jsFP6jvagwM5Fu+Z
+         lhcVWrejAsYz7zSNRa0t8Ob2ZoXvDWRia68/uKVZ99otS5Zp0bgvoGJD8Ywk997M7Zrr
+         AOaKvNaaLfnxrWO66EYdQHGnc/asJYlEc5jKt/IkCFAv0lLt0EVcVfoZHQLYj0uUhQgv
+         /ZPz1WkDxsmGt6qdpaHxcyCwNMtFfITqtTRFnKPvlBngPG01YaUqKAeleWjP5Pb7f1kr
+         kyzAE+pKWZCJIjga5eNmLTo00lKXl65r+mIGJGLu9zasiyK0ks+DfIq2Is8br0ei9hvr
+         9hxw==
+X-Gm-Message-State: AOJu0YziURw1Iim2Z5eKG4n/tzgDb9U0LKiF1O0LXWmqyXM+wOIlvV24
+	Lwn47lz2sVP0ciFThH/AYxChyVo0cZXhWItenlmgxVQMToslQ0s43StEsM+i870=
+X-Google-Smtp-Source: AGHT+IFUyQuQrxrHjLEfYyD8sDLwhFMSjF3NIU2s6+Gl7veB1QtJf456RxZTyEd4+/ZNyyguGlbVKA==
+X-Received: by 2002:a17:907:cb85:b0:a2f:c5b1:4963 with SMTP id un5-20020a170907cb8500b00a2fc5b14963mr2367918ejc.24.1705937765431;
+        Mon, 22 Jan 2024 07:36:05 -0800 (PST)
 Received: from [192.168.231.132] (178235179218.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.218])
-        by smtp.gmail.com with ESMTPSA id s22-20020a17090699d600b00a3076ed99fdsm629263ejn.41.2024.01.22.07.34.40
+        by smtp.gmail.com with ESMTPSA id s22-20020a17090699d600b00a3076ed99fdsm629263ejn.41.2024.01.22.07.36.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 07:34:43 -0800 (PST)
-Message-ID: <fcb3c92e-df59-4135-83c7-2850f537e57c@linaro.org>
-Date: Mon, 22 Jan 2024 16:34:39 +0100
+        Mon, 22 Jan 2024 07:36:03 -0800 (PST)
+Message-ID: <88a6314b-f780-4511-85a5-839115beeff5@linaro.org>
+Date: Mon, 22 Jan 2024 16:36:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,15 +74,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sm8550: Use GIC-ITS for PCIe0 and PCIe1
+Subject: Re: [PATCH] net: ethernet: qualcomm: Remove QDF24xx support
 Content-Language: en-US
-To: Neil Armstrong <neil.armstrong@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240122-topic-sm8550-upstream-pcie-its-v1-1-aff5d0d7d6dd@linaro.org>
+To: Denis Kirjanov <dkirjanov@suse.de>, Timur Tabi <timur@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20240122-topic-qdf_cleanup_net-v1-1-caf0d9c4408a@linaro.org>
+ <ce1b41a4-a9bc-4dbc-ae85-5187b3cab10b@suse.de>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -119,22 +119,22 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20240122-topic-sm8550-upstream-pcie-its-v1-1-aff5d0d7d6dd@linaro.org>
+In-Reply-To: <ce1b41a4-a9bc-4dbc-ae85-5187b3cab10b@suse.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 22.01.2024 16:28, Neil Armstrong wrote:
-> Both PCIe0 and PCIe1 controllers are capable of signalling the MSIs
-> received from endpoint devices to the CPU using GIC-ITS MSI controller.
-> Add support for it.
+On 22.01.2024 13:25, Denis Kirjanov wrote:
 > 
-> Currently, BDF (0:0.0) and BDF (1:0.0) are enabled and with the
-> msi-map-mask of 0xff00, all the 32 devices under these two busses can
-> share the same Device ID.
+> 
+> On 1/22/24 15:02, Konrad Dybcio wrote:
+>> This SoC family was destined for server use, featuring Qualcomm's very
+>> interesting Kryo cores (before "Kryo" became a marketing term for Arm
+>> cores with small modifications). It did however not leave the labs of
+>> Qualcomm and presumably some partners, nor was it ever productized.
+> 
+> You forgot the net-next prefix
 
-Copypasta! you didn't actually add these :P
+Right. Should I resend, or just leave it now?
 
 Konrad
-
-
 
