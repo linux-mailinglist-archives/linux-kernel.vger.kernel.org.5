@@ -1,74 +1,76 @@
-Return-Path: <linux-kernel+bounces-34019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F5378371F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:10:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6B148371FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF19E28A8A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:10:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF8E91C2AC40
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:10:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDD460270;
-	Mon, 22 Jan 2024 18:47:13 +0000 (UTC)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D59E604D7;
+	Mon, 22 Jan 2024 18:47:17 +0000 (UTC)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 740AE57312;
-	Mon, 22 Jan 2024 18:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4274C3FB3D;
+	Mon, 22 Jan 2024 18:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705949232; cv=none; b=C+MG3iGP9cwIj2gNQXxLFJJFS/AJmMqs53GIjdnAridxRe9zKJVwZ0OTpAFn6GYxF7yCdTZHUMqDZvO44OZMFO5hemcNmvBvfG8tI9Fm+BMDjYB7/ynnxzdSyhGvGiCjbwKu25L+9eD7HAdvsWyziTWsoCI56PwQCLWB36PG8CY=
+	t=1705949236; cv=none; b=qO229blyBcA8toQo8bgHsRtpPEeo3S6YHzqSanACdj1SBNbEJfYM4t2KAkCvU7hoGPhp4Uw31J9sY60061XKRUCsuP6c+SXOmghPR7L/ytaAESjCkmLnatNU1zGH0CEcu5Xbb2hVjs2yzLpexHJZF8TuktPemaeLMaKBNSLAYjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705949232; c=relaxed/simple;
-	bh=uh8t6LUvifH8vyCsv0JdPgUlMgY9ophz5h/l7o9N6Kw=;
+	s=arc-20240116; t=1705949236; c=relaxed/simple;
+	bh=uEWezJ7+I9VN7UklI0BBr4CzYeqHpEpxvxNv/N6nB7o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AeJK7sVRTh+gKiK+W5ERdorvq9sc6rjf+V2I5gJ7P7hC/A0p15BGsaweb+r+qDIay1gIw3+quQb0M9U+3ofw3V8IJbAegSIbJoM2dVfiY/Je7QIv6OfPQ8Lkxm6TRn6+9JynN+XUMCKnza7zHOaTV5jRzWn2t77bsv7uEEpdlgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.44
+	 MIME-Version; b=hSEM+AuogrvOVkYG0Qyjg/8Q00c9kyF1vK17hKKabUHHPuo+ezp5zmyAZKfI1s9W1bOzQnZ9j7MTgk+dINmy4qQDV5zFc2WUKbiJYN30BQ7UgzG84kq5hiA3UqDH28dUWSlJglsjhzUIRtBr8lYvbIrfCyxKjw4xIylYX9TPCTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2d04888d3dso366791066b.2;
-        Mon, 22 Jan 2024 10:47:11 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50ff9bde634so1299649e87.2;
+        Mon, 22 Jan 2024 10:47:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705949230; x=1706554030;
+        d=1e100.net; s=20230601; t=1705949233; x=1706554033;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7AgXqAxt6b/HLf7UsuchGiNA/0l/ev1PlS/qyb2yk9M=;
-        b=pTpy/+LUigmmI1pz008scizMMbBKhAq+Pu4dlUg2VPGe5MltHAFSZG0i1Q/alcjdQw
-         dkXHii68dDbYac5JKBKFbV0GcYhez2I1YD7SucOjAwjMdDvq4fuubZ9zbrdpqnMkpxTr
-         cvVK8SNsJzDd4iVIdWgVjHMFOTPkM6yV35OOmhsRo6k42UqHym28W7B9Bwcoi8fL2DMD
-         lkciljRZNRZuQtqFiDNJfUyTatKih1RAWqYDVEQP0E8qZ2vmNPX+R4f/WHINg2rTgi+M
-         +5JsRUmWj8S+CFaK1Cu988AX7D5PD8yMslmRPMADf4B66G6DP22iDk773aj2MCkJ6xcc
-         h6Gw==
-X-Gm-Message-State: AOJu0YykSEmsAnx3gy8M3N2jXEKzjBbaFYWd8ulHT1uYzCG844qBWMhk
-	+vnA1Ktc6QWA0MDIzdNVIgmhqPfNXN2OzQAiCoNPCi7PDTSDRcYA
-X-Google-Smtp-Source: AGHT+IH3gTSGI3SxAP9i1h8YcrB3qhE5DHJO+EwUl9v/RrhOAk2VBTus+0Y/q/rD13UKqbRQYhRg1g==
-X-Received: by 2002:a17:907:8e08:b0:a2f:e26d:ceb2 with SMTP id th8-20020a1709078e0800b00a2fe26dceb2mr1691230ejc.135.1705949229792;
-        Mon, 22 Jan 2024 10:47:09 -0800 (PST)
+        bh=y1hTTwkFp3JNpz3iSovxHTDDs4dMLc/6WOVM3FZbhyU=;
+        b=sXTDJvondIPwBCybjSCyP8iauQBhN3g1VHh7jcRlCdnkjYsS92kDhcHZOmbqSjP/iP
+         O87TL12hkC1k+j6CSzB3bgpO0NZS+luC/7NJ4GJ6HxGSa8MWxOnn8B8jXjk1AvNWK83X
+         IU/Ql6d+S+GKHL7P3hJleRVhX0PTGzahu6lW5N8zOtbjUHNpU5NncB4yLPnHsT6+yHlp
+         r7FsxvIPaoqGzMMkry/xe87naCD1kYn4BRmxal/Wd5Ll0fvQiUh8ahC91Z4QezD5GtT4
+         rkPErEYhMwvIAAjQdpowPQwouWlgkanDpyTMSX0vuvaS7sCnIq7zYKeR1qCTLiRkFacM
+         0VLA==
+X-Gm-Message-State: AOJu0YyVZBEaaz2F6O2x0RPQh2OeIoiBk+fKmw9g6+Q0IIWJkmEnOtLn
+	nZguem0QemqDkRFPdlKAa0B5UT6Z7AXp6xMWhtbjr7XKBJ3Z3oNI
+X-Google-Smtp-Source: AGHT+IFL7hu7CUGvQC2EnxSJ7wwyl3FpRxZ6RdcGKTb72L6dHM0QCYvS8pBUVfbDZD0S47ho0lGH/A==
+X-Received: by 2002:a05:6512:ea6:b0:50f:f9c4:4974 with SMTP id bi38-20020a0565120ea600b0050ff9c44974mr1438767lfb.26.1705949233285;
+        Mon, 22 Jan 2024 10:47:13 -0800 (PST)
 Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
-        by smtp.gmail.com with ESMTPSA id rf19-20020a1709076a1300b00a2e9f198cffsm7241654ejc.72.2024.01.22.10.47.09
+        by smtp.gmail.com with ESMTPSA id q24-20020a170906541800b00a26f0f49dd2sm13826517ejo.11.2024.01.22.10.47.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 10:47:09 -0800 (PST)
+        Mon, 22 Jan 2024 10:47:13 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	abeni@redhat.com,
 	edumazet@google.com,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Ravi Gunasekaran <r-gunasekaran@ti.com>,
+	Roger Quadros <rogerq@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
 Cc: dsahern@kernel.org,
 	weiwan@google.com,
-	netdev@vger.kernel.org (open list:STMMAC ETHERNET DRIVER),
-	linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32 ARCHITECTURE),
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32 ARCHITECTURE),
+	Rob Herring <robh@kernel.org>,
+	Alex Elder <elder@linaro.org>,
+	Simon Horman <horms@kernel.org>,
+	linux-omap@vger.kernel.org (open list:TI ETHERNET SWITCH DRIVER (CPSW)),
+	netdev@vger.kernel.org (open list:TI ETHERNET SWITCH DRIVER (CPSW)),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 20/22] net: fill in MODULE_DESCRIPTION()s for dwmac-socfpga
-Date: Mon, 22 Jan 2024 10:45:41 -0800
-Message-Id: <20240122184543.2501493-21-leitao@debian.org>
+Subject: [PATCH net-next 21/22] net: fill in MODULE_DESCRIPTION()s for cpsw-common
+Date: Mon, 22 Jan 2024 10:45:42 -0800
+Message-Id: <20240122184543.2501493-22-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240122184543.2501493-1-leitao@debian.org>
 References: <20240122184543.2501493-1-leitao@debian.org>
@@ -81,23 +83,23 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the STMicro DWMAC for Altera SOCs.
+Add descriptions to the TI CPSW switch module.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c | 1 +
+ drivers/net/ethernet/ti/cpsw-common.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-index ba2ce776bd4d..68f85e4605cb 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-@@ -585,4 +585,5 @@ static struct platform_driver socfpga_dwmac_driver = {
- };
- module_platform_driver(socfpga_dwmac_driver);
+diff --git a/drivers/net/ethernet/ti/cpsw-common.c b/drivers/net/ethernet/ti/cpsw-common.c
+index 26dc906eae90..57fe936bb177 100644
+--- a/drivers/net/ethernet/ti/cpsw-common.c
++++ b/drivers/net/ethernet/ti/cpsw-common.c
+@@ -90,4 +90,5 @@ int ti_cm_get_macid(struct device *dev, int slave, u8 *mac_addr)
+ }
+ EXPORT_SYMBOL_GPL(ti_cm_get_macid);
  
-+MODULE_DESCRIPTION("Altera SOC DWMAC Specific Glue layer");
- MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("TI CPSW Switch common module");
+ MODULE_LICENSE("GPL");
 -- 
 2.39.3
 
