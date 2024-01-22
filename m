@@ -1,50 +1,62 @@
-Return-Path: <linux-kernel+bounces-34173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C08837517
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:15:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AE8883751C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:16:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A12FB1C24927
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:15:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B67A52888BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:15:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3AC3481B3;
-	Mon, 22 Jan 2024 21:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB51D47F78;
+	Mon, 22 Jan 2024 21:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bwlOHcpq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o1T7fwc1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01AC481AD
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4AE47F57;
+	Mon, 22 Jan 2024 21:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705958118; cv=none; b=HFpwC7J3r2753rpUzoPbTMxzVQu9YlQGI6NydpnK7Xn78Iv5T9GqPrk0fky47B63rCEtfVlSBgr6z3Mtb06tv70U+tRTA3pKBm0aD7E+D6ufhh1+UA+3YAli4Uks+psykXQlIhEqG36fY0WWLW4ImiPv9TkcQgMiLteRWT5iL8w=
+	t=1705958150; cv=none; b=X9tGT+OkIMgGrOVtcLZQez7FoCL6/Y0EIwRHD87V0MBh7TG5ghoBKrXYYkHRCm3rDuuHWHNlhn2i8wGOaEzf826IwGynadwiGKTHXlN+1Lanb0bMdJWjJIC7AStrIiNznY63xXvhdXPUa0jFoM2hfH8xzc/pLSA3/y4Frfz8+60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705958118; c=relaxed/simple;
-	bh=6ujvhevZE8aH8oCBFWmXxBC74lT8VSsDEBhApVvjmCQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZkBtYYg/Wpec9SBRnaF59aIpJN/G36uf7VVT6ICUW4ZuYi6nXhVe/jqvbJpCZtGLB81ZAwrWtJwIidebLEFFJfY41o42rEUBlqmCTJLGisANy1S4mgGIeEeART0Y4yEB/gh34UGBhDbgZ9W6tERuVjjPqhkfzE1zi6Nydtg6M4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bwlOHcpq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3180EC433F1;
-	Mon, 22 Jan 2024 21:15:17 +0000 (UTC)
+	s=arc-20240116; t=1705958150; c=relaxed/simple;
+	bh=+Sd1NCS7PJbxgZHkZkL/NbxvN4eZbz3phY9jzv/ht6M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QXXGsw0cMb9RlQYCvHqRizUUShLy1QBAiQsXWYyqpN+22Wx7kAFCIK23uc9FksuOeu4vUMlV6FR8y5vHHdmm7i9PTnfPs/p6PZWJK44fB5ixF2a3FpX/tJ/MDmJOMPNPXJTESikUeKAEDVgH0ohmWy+j2OloExRzBLLiIEhvA6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o1T7fwc1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 495A2C433F1;
+	Mon, 22 Jan 2024 21:15:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705958117;
-	bh=6ujvhevZE8aH8oCBFWmXxBC74lT8VSsDEBhApVvjmCQ=;
+	s=k20201202; t=1705958149;
+	bh=+Sd1NCS7PJbxgZHkZkL/NbxvN4eZbz3phY9jzv/ht6M=;
 	h=From:To:Cc:Subject:Date:From;
-	b=bwlOHcpqAOIvfCu/T2HVJedSesIefMZxez6ysV3jEzL++kqxzdWEw3lqX4vDevDHx
-	 vwDkJDrujljylyo4nmcpvGYJk4WT6bVkJEwjVCXaDlWC485IQ8rGu9WVDjFwNSz3pQ
-	 0OloJk6oIENsAFyPRrGFECVzf8tVBAtCnEIgBj457XeuMFI2rCVkyRL2Eb8XupqvHq
-	 dRk5PbgeYijWfMF914XPDzXBT9bpog88wp/xxd9y7zfcCrxpND9Y2+XxoWMX6dg9FR
-	 ldZB2569mkxHc9B7C40EBqdnQMJKqlfZfIqCPIoc5uwBSkjhAa7lOfrZlO+bcIEBmu
-	 XgeVTawBPSRjg==
+	b=o1T7fwc1V5q7RmfJRbstGjV5dsI6E/QdKShN042B+tXDRre9tnqA+ZuJfPs+J2SFm
+	 iCGqUKlYAMnRYK2K2tD8qYZSSNlMkusWT109maWcxydt5c9Fef/9/7EsNmKeFlYK2X
+	 AUleTEbReQs8WAhNUKP56QD7yNYehvF1OpvquuxBE5Hr6NSVmwPIlEypsYFaAoEpkT
+	 3Vr7duejQVZY6IGbfDGEiN5gRTc3EzDOHIYoOTf/4dLrAQaE9fAkWt6+fyGpf2OftS
+	 0Piu6niMK4yYNzDfs/n3s+kcGfRgAaL7oNg1aJIs3ofawGbH2iUyOQGWU2ocr+GCWK
+	 o+p89ipoWno9g==
 From: Rob Herring <robh@kernel.org>
-To: Frank Rowand <frowand.list@gmail.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Drop Frank Rowand from DT maintainership
-Date: Mon, 22 Jan 2024 15:15:00 -0600
-Message-ID: <20240122211501.1719374-1-robh@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alessandro Zummo <a.zummo@towertech.it>
+Cc: linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	linux-rtc@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: Drop my "+dt" sub-address
+Date: Mon, 22 Jan 2024 15:15:26 -0600
+Message-ID: <20240122211528.1719994-1-robh@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -54,27 +66,92 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Frank retired a while back and surprisingly has found better things to
-do than DT maintainership. Thank you Frank for all of your help with DT
-for many years.
+I never really implemented any filtering on the "+dt" sub-address, so
+drop it.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
+ Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml       | 2 +-
+ Documentation/devicetree/bindings/i2c/i2c-pxa.yaml          | 2 +-
+ Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml       | 2 +-
+ Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml | 2 +-
+ MAINTAINERS                                                 | 4 ++--
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml b/Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml
+index 9cf6137dd524..65155bb701a9 100644
+--- a/Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml
++++ b/Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml
+@@ -9,7 +9,7 @@ title: Marvell PXA GPIO controller
+ maintainers:
+   - Linus Walleij <linus.walleij@linaro.org>
+   - Bartosz Golaszewski <bgolaszewski@baylibre.com>
+-  - Rob Herring <robh+dt@kernel.org>
++  - Rob Herring <robh@kernel.org>
+ 
+ allOf:
+   - if:
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml b/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml
+index 31386a8d7684..e89ee361741e 100644
+--- a/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml
++++ b/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Marvell MMP I2C controller
+ 
+ maintainers:
+-  - Rob Herring <robh+dt@kernel.org>
++  - Rob Herring <robh@kernel.org>
+ 
+ allOf:
+   - $ref: /schemas/i2c/i2c-controller.yaml#
+diff --git a/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml b/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml
+index a16c355dcd11..fcf52d2cac9e 100644
+--- a/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml
+@@ -12,7 +12,7 @@ allOf:
+ maintainers:
+   - Alessandro Zummo <a.zummo@towertech.it>
+   - Alexandre Belloni <alexandre.belloni@bootlin.com>
+-  - Rob Herring <robh+dt@kernel.org>
++  - Rob Herring <robh@kernel.org>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml b/Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml
+index 1ee4aab695d3..fe6bc4173789 100644
+--- a/Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml
++++ b/Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml
+@@ -9,7 +9,7 @@ title: Marvell MMP Timer
+ maintainers:
+   - Daniel Lezcano <daniel.lezcano@linaro.org>
+   - Thomas Gleixner <tglx@linutronix.de>
+-  - Rob Herring <robh+dt@kernel.org>
++  - Rob Herring <robh@kernel.org>
+ 
+ properties:
+   $nodename:
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d1052fa6a69..eda745c0f92a 100644
+index eda745c0f92a..42b43337c266 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -16359,7 +16359,6 @@ F:	drivers/infiniband/ulp/opa_vnic
+@@ -16358,7 +16358,7 @@ S:	Supported
+ F:	drivers/infiniband/ulp/opa_vnic
  
  OPEN FIRMWARE AND FLATTENED DEVICE TREE
- M:	Rob Herring <robh+dt@kernel.org>
--M:	Frank Rowand <frowand.list@gmail.com>
+-M:	Rob Herring <robh+dt@kernel.org>
++M:	Rob Herring <robh@kernel.org>
  L:	devicetree@vger.kernel.org
  S:	Maintained
  W:	http://www.devicetree.org/
+@@ -16374,7 +16374,7 @@ K:	of_overlay_fdt_apply
+ K:	of_overlay_remove
+ 
+ OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+-M:	Rob Herring <robh+dt@kernel.org>
++M:	Rob Herring <robh@kernel.org>
+ M:	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+ M:	Conor Dooley <conor+dt@kernel.org>
+ L:	devicetree@vger.kernel.org
 -- 
 2.43.0
 
