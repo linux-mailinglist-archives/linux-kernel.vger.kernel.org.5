@@ -1,140 +1,138 @@
-Return-Path: <linux-kernel+bounces-33764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4D4C836E4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:49:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6F1F836E53
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:50:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A8FD284E3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:49:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F6381F28B10
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749E25DF3E;
-	Mon, 22 Jan 2024 17:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="a++aXjck"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72885DF2E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209FC5EE9E;
+	Mon, 22 Jan 2024 17:16:48 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [20.231.56.155])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAEDC4D592;
+	Mon, 22 Jan 2024 17:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=20.231.56.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705943762; cv=none; b=ZcM8vKoB3rplp2pRitPjqJ2Cgb5sl9EUKsEihPOpm5X3RX1UDf5V/7e9l7p1DLb9zyG9br/YAdjD0DFp/3NESmh5KyDe8eJtS4K7KmDSClPJFwOJYfWkGGLXui+dKevdFkldZmiBQNDxPnJXLNe0yqZNntGAwKRfIesBOFQkP9Q=
+	t=1705943807; cv=none; b=hqZK8GaYmK1udIBWBqQOv6thZ0anipOdxn6G7G918K0dca2tNgnImdvQ5PiJi09upqAK0kh/R7WTK8ZPyjPeqXBzLr6L3K9P+ZRJVQaEHfbG7GQ33Wheljx7SYYWfNB7TUxGthu+5HXX/zFhb6YITEkDfEpMklb4k8tZjc4e0yQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705943762; c=relaxed/simple;
-	bh=qi4d0pu7u814/CypIFC9w8MjeTjXsELC8s/V0OQyCwE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=so6acGvVVxsSJpx5gm5WqWlFkxcmSLxmcaK9qQmXxNyMjGnhuvQoJZBNqoYdHg8IB7HIO+6cpW2NhBiFRiisn8pYL4kn/odWl/06ibdHcrbP2fDWWGci0wrWN+JXDq6042H4gd9ktR95vKzHMKR4VM0tRZjD7RQgShSwpXjvSYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=a++aXjck; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6d9b760610bso793030b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:16:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1705943760; x=1706548560; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZykbXfSEvyPN8az3PbYAztD8rQi+GVKbnMIYIbl6l/g=;
-        b=a++aXjck1L2wXtrtA/TvdmT7FflZE2yfaTCL2sLW2+I1jNvqyu/vPsR1ZP3tBGRGLj
-         yS4n75zdvUAxBQXpk90UxlFxU9/tkMNu7/kUI++ahkmJr1O6nVdFz3B1X4AVeBhnt3QE
-         7OQWTMV7B0A3sRb0mYSGL1xPKDeP5GuwUfbqI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705943760; x=1706548560;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZykbXfSEvyPN8az3PbYAztD8rQi+GVKbnMIYIbl6l/g=;
-        b=KBuQt4xro09ANBJzsztlnQWq7bB8qi9p6ByjC97787/VZz6V6IV0MkAO5dffcOYtc1
-         8M+hkcvQX6ZXCDcl/mVkAVlAq1PspVTJtuFLzySgnc1HBu9geoPnkLyCJ1ySxkR1RLbi
-         PJmVO7c6W0J8daUxHah1LgLLjUkGZqt6ZYcGKJtKJRmLxXQKsfldoc95KSOz+yuKXixB
-         WyF7egqAfPe9Y9h3lByyB1WDBbtvoz7mDCrQyPc3UG5PaCjrsOBYuxPQ4WZgILSans9Y
-         EfE63xoqQDfW5vYdL87WaWzk+K0iw5uYpw3C0vXcE/W7yu1q28NWFS5P7TKsoPja58SW
-         xl6A==
-X-Gm-Message-State: AOJu0YxxK2fXmP+cbuIwzNY/+OrzMTmG8BDopzWXpU/QwGAZMdy0jDQ6
-	b9YSOD19BB6yKBymJO3135PS61NyEHfWhrvZ2img8/7blyAGW2qz7dzE8mvR9Nw=
-X-Google-Smtp-Source: AGHT+IF9qblypine1FnCuwH9nIKKzYWA4/9vvuB6JdzWcXCZe3+11yStM3b9Pm3XvyMdKtnaxdg5Yg==
-X-Received: by 2002:a62:6204:0:b0:6d9:383b:d91a with SMTP id w4-20020a626204000000b006d9383bd91amr8877907pfb.1.1705943759942;
-        Mon, 22 Jan 2024 09:15:59 -0800 (PST)
-Received: from [128.240.1.152] ([206.170.126.10])
-        by smtp.gmail.com with ESMTPSA id it22-20020a056a00459600b006dbcabc31c5sm4766765pfb.209.2024.01.22.09.15.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 09:15:59 -0800 (PST)
-Message-ID: <5aceb855-2862-4d53-b27b-50e2956e099b@linuxfoundation.org>
-Date: Mon, 22 Jan 2024 10:15:57 -0700
+	s=arc-20240116; t=1705943807; c=relaxed/simple;
+	bh=J+CE1fjgXdIrGGtCeeEtcrHP/hpRi/SonczTZdsbyEc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VFn0r/Nn0ag0byiKd8NzxS61MxKbTvD/gq+eNPxq/8FlXb++jkFD0J34tr7zDXKsozTWXmvuMHhwhYJCfvF2v8mv6VuLV1a131h30fw/IInZP2GbEP17KZNG99hE4wT8a8N6dKcMhzjCBi4EuWTUySErXFUPbT5k5lG/Y+NoOBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=20.231.56.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from luzhipeng.223.5.5.5 (unknown [39.174.92.167])
+	by mail-app4 (Coremail) with SMTP id cS_KCgCHhYXsoq5lm0x5AA--.18549S2;
+	Tue, 23 Jan 2024 01:16:29 +0800 (CST)
+From: Zhipeng Lu <alexious@zju.edu.cn>
+To: alexious@zju.edu.cn
+Cc: Kashyap Desai <kashyap.desai@broadcom.com>,
+	Sumit Saxena <sumit.saxena@broadcom.com>,
+	Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+	Chandrakanth patil <chandrakanth.patil@broadcom.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	megaraidlinux.pdl@broadcom.com,
+	linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] scsi: megaraid_sas: Fix a memleak in megasas_init_fw
+Date: Tue, 23 Jan 2024 01:16:10 +0800
+Message-Id: <20240122171610.3840351-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/3] kselftests: lib.mk: Add TEST_GEN_MODS_DIR variable
-Content-Language: en-US
-To: Marcos Paulo de Souza <mpdesouza@suse.com>, Shuah Khan
- <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
- Petr Mladek <pmladek@suse.com>, Joe Lawrence <joe.lawrence@redhat.com>,
- Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- live-patching@vger.kernel.org
-References: <20240112-send-lp-kselftests-v6-0-79f3e9a46717@suse.com>
- <20240112-send-lp-kselftests-v6-1-79f3e9a46717@suse.com>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240112-send-lp-kselftests-v6-1-79f3e9a46717@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cS_KCgCHhYXsoq5lm0x5AA--.18549S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFyfZr4Dur1xCFyUXrWxCrg_yoW5JF15pr
+	yruw13tr17AayxWrWqkw4F93yYyw48G3s8Kr18J34j93Wagr15XF4vgrW7GF97CFZ5JF9x
+	Zr4Yqr1fCF4UKaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
+	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+	8cxan2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFV
+	Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
+	x4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r
+	1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_
+	JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-On 1/12/24 10:43, Marcos Paulo de Souza wrote:
-> Add TEST_GEN_MODS_DIR variable for kselftests. It can point to
-> a directory containing kernel modules that will be used by
-> selftest scripts.
-> 
-> The modules are built as external modules for the running kernel.
-> As a result they are always binary compatible and the same tests
-> can be used for older or newer kernels.
-> 
-> The build requires "kernel-devel" package to be installed.
-> For example, in the upstream sources, the rpm devel package
-> is produced by "make rpm-pkg"
-> 
-> The modules can be built independently by
-> 
->    make -C tools/testing/selftests/livepatch/
-> 
-> or they will be automatically built before running the tests via
-> 
->    make -C tools/testing/selftests/livepatch/ run_tests
-> 
-> Note that they are _not_ built when running the standalone
-> tests by calling, for example, ./test-state.sh.
-> 
-> Along with TEST_GEN_MODS_DIR, it was necessary to create a new install
-> rule. INSTALL_MODS_RULE is needed because INSTALL_SINGLE_RULE would
-> copy the entire TEST_GEN_MODS_DIR directory to the destination, even
-> the files created by Kbuild to compile the modules. The new install
-> rule copies only the .ko files, as we would expect the gen_tar to work.
-> 
-> Reviewed-by: Joe Lawrence <joe.lawrence@redhat.com>
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> ---
->   Documentation/dev-tools/kselftest.rst |  4 ++++
->   tools/testing/selftests/lib.mk        | 26 +++++++++++++++++++++-----
+In the error-handling paths after allocation of
+fusion->stream_detect_by_ld and fusion->stream_detect_by_ld[i],
+megasas_init_fw should free them or there would be memleaks.
 
+Fixes: 2e47e4e62e40 ("scsi: megaraid_sas: Fail init if heartbeat timer fails")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+---
+Changelog:
 
-Hi Marcos,
+v2: remove the unused variable j.
+---
+ drivers/scsi/megaraid/megaraid_sas_base.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-I would like the doc patch and lib.mk patch separate. If lib.mk needs changes
-we don't have to touch the doc patch.
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 3d4f13da1ae8..a7d3c51fc17b 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -6016,7 +6016,7 @@ static int megasas_init_fw(struct megasas_instance *instance)
+ 	void *base_addr_phys;
+ 	struct megasas_ctrl_info *ctrl_info = NULL;
+ 	unsigned long bar_list;
+-	int i, j, loop;
++	int i, loop;
+ 	struct IOV_111 *iovPtr;
+ 	struct fusion_context *fusion;
+ 	bool intr_coalescing;
+@@ -6378,11 +6378,7 @@ static int megasas_init_fw(struct megasas_instance *instance)
+ 			if (!fusion->stream_detect_by_ld[i]) {
+ 				dev_err(&instance->pdev->dev,
+ 					"unable to allocate stream detect by LD\n ");
+-				for (j = 0; j < i; ++j)
+-					kfree(fusion->stream_detect_by_ld[j]);
+-				kfree(fusion->stream_detect_by_ld);
+-				fusion->stream_detect_by_ld = NULL;
+-				goto fail_get_ld_pd_list;
++				goto fail_alloc_stream_detect;
+ 			}
+ 			fusion->stream_detect_by_ld[i]->mru_bit_map
+ 				= MR_STREAM_BITMAP;
+@@ -6502,7 +6498,7 @@ static int megasas_init_fw(struct megasas_instance *instance)
+ 			megasas_start_timer(instance);
+ 		} else {
+ 			instance->skip_heartbeat_timer_del = 1;
+-			goto fail_get_ld_pd_list;
++			goto fail_alloc_stream_detect;
+ 		}
+ 	}
+ 
+@@ -6520,6 +6516,13 @@ static int megasas_init_fw(struct megasas_instance *instance)
+ fail_start_watchdog:
+ 	if (instance->requestorId && !instance->skip_heartbeat_timer_del)
+ 		del_timer_sync(&instance->sriov_heartbeat_timer);
++fail_alloc_stream_detect:
++	if (instance->adapter_type >= VENTURA_SERIES) {
++		for (i = 0; i < MAX_LOGICAL_DRIVES_EXT; ++i)
++			kfree(fusion->stream_detect_by_ld[i]);
++		kfree(fusion->stream_detect_by_ld);
++		fusion->stream_detect_by_ld = NULL;
++	}
+ fail_get_ld_pd_list:
+ 	instance->instancet->disable_intr(instance);
+ 	megasas_destroy_irqs(instance);
+-- 
+2.34.1
 
-thanks,
--- Shuah
 
