@@ -1,161 +1,94 @@
-Return-Path: <linux-kernel+bounces-33602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 665FD836C18
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:57:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F99A836C1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01FD41F23F1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:57:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52EF31C2653A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2AE5F840;
-	Mon, 22 Jan 2024 15:30:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BF25F861;
+	Mon, 22 Jan 2024 15:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="aVCff82c"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S52r1pOF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723B53D963;
-	Mon, 22 Jan 2024 15:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A875F855;
+	Mon, 22 Jan 2024 15:30:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705937434; cv=none; b=ZcaW5xhWQDpTf2MMTGr73OIl9U8GjY37a/GoJ5+04Ns0gQUCK8f0YSlP9nGK63xJL90k2Z4aas9yj3YahoVkuXUGP76pTh4NPKuG29WPZSCUW5jQg6VWaiInq/zynT4PwOZ+LiHw42cGO54hKD3tcHSuZrmxw+5hgcpjVKg+Tc8=
+	t=1705937444; cv=none; b=Bs5J7LLX2/7W5z6xVdpvYq5SYFWz3rZdR/HzLTbvj13nRc83lrPgAcY0ArZpBjFnPF3C8ravwo+vaVbjhqUPkBTgTIJQBlNi7rl6+QMpPKO1we8EjsoKlWe33CxqxAN8PB8A7tCOpBIylTud8Wfb0hGzphjjf7mHQDOJO8FbjD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705937434; c=relaxed/simple;
-	bh=gVMMJSucJVrsOQI7wa8WRq4Iqy9YmtcGWO5GPgFu3T4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KxjCU+cXCOndsPlWnK+JUnyiN+lqPGtP2Q4cWmjVZRi0lJ8gShwsQIFF7dRmxZdekWXVO7Kk0FQrakkWbKCIutFGY0pnAdX5687/fJYFVYrysGdsNQ+3btAWFltSqwQKWHYtRLzCDePYH5ueCvnuJpb9EGV7FaGFd50lQ6+eX/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=aVCff82c; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E11E740005;
-	Mon, 22 Jan 2024 15:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705937428;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ad8iZ7cAOLjC59VsXGmNvP0Dte+iZHPsXSv80mGa8CY=;
-	b=aVCff82cAuUdGWnH6XJ5zxRCCb74hOkkbM+j+P+f8CkTkim32vuf+HKFY9Kt2/sX+1eDq1
-	3s/POnlwJJi2GuKXxbTIMbWYpV/NbIqDQBnJ4zlAaMiyVmVn+eqSpBsrMxnYcSX2zvNW3k
-	3N5pReSGFlppvUTmwSqQxqa1kXzcXd+ErnfpGawcUR4dvFZIJjjwoOyrTuluKifAAp1BNx
-	HvdRodBSQRvBf3KlAenpmTj6amh/BRx3m5fsVT8T95utZkNphW4e1R2MINb4jt+L0hVCN7
-	vzwZ9lmNs1zn5a1nWyNnE6oYFbm2hZUkfOYNsOfddRAWok8+bjtjY5uUNSOVRA==
-Message-ID: <9cb47f37-bd98-4136-b844-33cf2be593df@bootlin.com>
-Date: Mon, 22 Jan 2024 16:30:26 +0100
+	s=arc-20240116; t=1705937444; c=relaxed/simple;
+	bh=9bNnmiH+8UI1sMbYl/o0a2aQj7h/T4wML5jeK7jIfLQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sR/RLavcNTy1aAvzBQFJqH8vSdt69qgASqJyxKRn9PaxA9D/3McmGQJ9zot3STZsua3o5dLDavMeZI38LSjFd/12xBaqS6Vi+wq3OK1qfBklX3A6ykAbM5D7pncPfqvbP5FN3hHLRZX4H6ZOfNA6kDKvs4J50n+NG/AUFMkKOJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S52r1pOF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF5FEC433F1;
+	Mon, 22 Jan 2024 15:30:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705937443;
+	bh=9bNnmiH+8UI1sMbYl/o0a2aQj7h/T4wML5jeK7jIfLQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S52r1pOFucH6amUFrPplJzUJA6WWuRXyKAGFvS3vhC/9FwYKOleIqdsBF4eyNfcFq
+	 0qGr2So+fGdTUMug81HDddK6ZtJvYO3xypBdB/7/gL4XFXSiakdzN+6E9C1Qi88OYR
+	 VLBpGvgY6P9HPDjtqbqtmj3nDT/Ftf1QIhJ94f6fRa3y1yhqvb4iFi2087NMwpBKGv
+	 vG/Pinz/+zkgXBRgu0Y9WxRYGTXPrGdu62k7HMTpWDBORZzJQ/WK/lokZeiH1IH7Jf
+	 y0MzwEYO1VikY+zMqnmaMc1GoqIqJbskbhzSeBtDTmnOkQ4eItDkD64A0LwTOIr+7H
+	 La+MUVN7brNjQ==
+Date: Mon, 22 Jan 2024 15:30:38 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Daniel Abrecht <linux-sound@nodmarc.danielabrecht.ch>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ASoC: soc-core.c: Add "Unknown" and "Unknown Product"
+ to dmi_blacklist
+Message-ID: <e90440a5-587b-48b2-a61f-0800aa8200d5@sirena.org.uk>
+References: <7d11d0711ad93f2208efb9ab13fe915b@abrecht.li>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 14/14] PCI: j721e: add suspend and resume support
-Content-Language: en-US
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
- Tony Lindgren <tony@atomide.com>, Haojian Zhuang
- <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Tom Joseph <tjoseph@cadence.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
- <20240102-j7200-pcie-s2r-v1-14-84e55da52400@bootlin.com>
- <CAHp75VfPQz4PWdzFUU_n+R=XohBjyXM0zsjD-bUD2jmb42ds8Q@mail.gmail.com>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <CAHp75VfPQz4PWdzFUU_n+R=XohBjyXM0zsjD-bUD2jmb42ds8Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fW75YJszql3fWvoQ"
+Content-Disposition: inline
+In-Reply-To: <7d11d0711ad93f2208efb9ab13fe915b@abrecht.li>
+X-Cookie: Poverty begins at home.
 
-Hello Andy,
 
-On 1/15/24 21:13, Andy Shevchenko wrote:
-> On Mon, Jan 15, 2024 at 6:16 PM Thomas Richard
-> <thomas.richard@bootlin.com> wrote:
->>
->> From: Théo Lebrun <theo.lebrun@bootlin.com>
->>
->> Add suspend and resume support for rc mode.
-> 
-> Same comments as for earlier patches.
-> Since it's wide, please, check the whole series for the same issues
-> and address them.
-> 
-> ...
-> 
->> +               if (pcie->reset_gpio)
-> 
-> Dup, why?
+--fW75YJszql3fWvoQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This pcie->reset_gpio corresponds to PERST# of PCIe endpoints.
-I assert it during suspend, because I have to deassert it (with a delay)
-during resume stage [1].
+On Wed, Jan 17, 2024 at 02:44:43PM +0100, Daniel Abrecht wrote:
+> In U-Boot, the default for DMI vendor / product if not set is "Unknown" and
+> "Unknown Product".
+> See https://source.denx.de/u-boot/u-boot/-/blob/v2023.10/lib/smbios.c?ref_type=tags#L272
 
-> 
->> +                       gpiod_set_value_cansleep(pcie->reset_gpio, 0);
-> 
-> ...
-> 
->> +               if (pcie->reset_gpio) {
->> +                       usleep_range(100, 200);
-> 
-> fsleep() ?
-> Btw, why is it needed here, perhaps a comment?
+This is still corrupted according to git am unfortunately.  I can't
+immediately spot the issue.
 
-The comment should be the same than in the probe [1].
-Should I copy it? Or should I just add a reference to the probe?
+--fW75YJszql3fWvoQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[1]
-https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/pci/controller/cadence/pci-j721e.c#L535
+-----BEGIN PGP SIGNATURE-----
 
-> 
->> +                       gpiod_set_value_cansleep(pcie->reset_gpio, 1);
->> +               }
-> 
-> ...
-> 
->> +               ret = cdns_pcie_host_setup(rc, false);
->> +               if (ret < 0) {
->> +                       clk_disable_unprepare(pcie->refclk);
->> +                       return -ENODEV;
-> 
-> Why is the error code being shadowed?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWuih4ACgkQJNaLcl1U
+h9DY9gf/ZxevJ0vqxtuKyX7zMqcY/z9pxHbGxT9P47qpYQ+dcc+1OgwcB1ARTZuL
+wyqDn2q03F+F04rgu+clhRVmtfBAEY0IobyVriEw+bY+ZUbJfQQPdoDQ/7fAsoEC
+GQKPleM1i9KhdQc0/mIS1VN7x5yHykY0z7uj6BaEZo5fHig8gTMHBwGHXoQoXE2q
+0TNTdsjgJZutzp2TqvjJg9phemdm5GzMVgP5vU8xvdynE/yfoczVTXenE0C0DYfH
+UNNYhSlZbKse/oiTAlC+1DqAMrhfLiS6cZjBQOfCMwOLMmOZv87RW44TSQ2wbOIl
+hOlaIZWxqG0Ssic1J70qYIX8T7aX1Q==
+=32Ep
+-----END PGP SIGNATURE-----
 
-Yes I should return ret instead.
-
-> 
->> +               }
-> 
-> ...
-> 
->> +#define cdns_pcie_to_rc(p) container_of(p, struct cdns_pcie_rc, pcie)
-> 
-> Is container_of.h included in this file?
-
-linux/container_of.h is included in linux/kernel.h.
-And linux/kernel.h is included in pcie-cadence.h
-(https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/pci/controller/cadence/pcie-cadence.h#L9).
-
-Regards,
-
--- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+--fW75YJszql3fWvoQ--
 
