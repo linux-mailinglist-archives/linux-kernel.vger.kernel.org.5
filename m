@@ -1,98 +1,116 @@
-Return-Path: <linux-kernel+bounces-33865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6015A836FB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:22:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48BF6836FB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:22:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7442D1C23012
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:22:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E26901F31E88
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1CB495F6;
-	Mon, 22 Jan 2024 17:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C114CB49;
+	Mon, 22 Jan 2024 17:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="HH+dQZ32"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HSbkB7nq"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6164C609;
-	Mon, 22 Jan 2024 17:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12D54CB31;
+	Mon, 22 Jan 2024 17:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945802; cv=none; b=QVa/+ZBANW/zLhAlV9swElggbIHIydG0FDd8S3TpKqp9Tht45bl7+DOFSg5mo8lYC0Uvj013RmzYnNq/uYWpt87/b0NPoXd/N9dHFD3xjJmGjSblM3Bu10szSxlmaMDcwm76MjPm/n2aBGZbGLRzn6ekSIslkI+uMY+huhBZf8Q=
+	t=1705945811; cv=none; b=RNm/R1UrxoS2Kaort5y+6ghPKQJVvrctR00aBGvPW9JL9OnqunfqwblBdTs8kY1YEb8Ez7s1U6ht1ITv2qTaxuIBlxSw7t2CEox/HuWXOlRf4JYPwoICRLRBO3ES/CExCszCv7ewQ+U4Rk/lpBbizDcga4wy3rvMjNItH7VubaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945802; c=relaxed/simple;
-	bh=pgKN2vv5aFY3btJxTALCeAZ5ln5MmVsdnMseQghfUgc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VlsTIImLBLi+co/S8CQuJsfYXxMVgkHNbfrfI1azc/SeaGPBwo79FctLxdKgjEDD/aLTfAQI4eYQH4Tk7/NbAZA6CSKQtvk0A6fN9dPqW+YmB+MkrzjwH736yXu9jicjJOiO1pAqUM+MWmGDuRj5Mll4s0DyW5PMjk8ytEeMhD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=HH+dQZ32; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 843A6C43390;
-	Mon, 22 Jan 2024 17:50:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705945801;
-	bh=pgKN2vv5aFY3btJxTALCeAZ5ln5MmVsdnMseQghfUgc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HH+dQZ32/Fwo22hkYcnlnDzXAieLU75LlWJRVNwLLnS3/YiSKLI4G/SjA1Y+JJMTm
-	 +Z6oqS6ZdmhsStTDWksVOSgIGqfCACw3y9vPRgUkHEZW/2Sdnfmq4elH06fMCO1ja3
-	 LmvPPRkYdOcqqDiyCC6qsg5we3UuQRuNXXuvmyFo=
+	s=arc-20240116; t=1705945811; c=relaxed/simple;
+	bh=nrjMhgFBwkaAZ6DvfofhjPey8YCxeJKDIVmE6A5ckUE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lWq4UjQ8NadYmJonOlC0UCkj6p6Vw4wb56QzF+TSaXYAylt0GC+OwXuccK+ehnlGwji5pF37o9a/missZcfRJ9QYiDuP1lpvtunSzw2VPVdse1as0H29W5REaC0Qiwy5E5gXxc18/+KHgsaSP+80ELKjxNLDmpEXqIbqXQjLXvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HSbkB7nq; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40MDaFQe003288;
+	Mon, 22 Jan 2024 17:50:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=gmrF2yQZXmlhVvRx/bjIoxB2JXFJsegupGpfsEiApCE=; b=HS
+	bkB7nqo1xBBC828dhvRL3EKRNeEZuF4dpKmSxLV03TYc6SmwvkB5qas1x4ku/w0F
+	a2j4WQUEvZPjzrBA1Mkyd/b3vWuJFus9Y144+eGU9ptly4gv5gX0N4kyUB9r0A9S
+	OhVDV4xOOjG2rv4xA5ZwHsXtF7XQUXZM2ceEgobPGg7wJBIXxJjWNxkI72VXhsHM
+	T61mqykPZORWX3qOV2mgRIsODFVqkA1Tsw4TnTLv3DhpjyICPuV3OISf0G5175+p
+	4gIkx7gGMmmDNmucn5N9EkjpdqMNyn9PohAHtH9TLcWGvah2HxH4CKGSdLIw1aPz
+	AUq72JIUdCB7WJTAhaog==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vspw8s4hf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 17:50:05 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40MHo4ED020349
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 17:50:04 GMT
+Received: from [10.110.104.139] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 22 Jan
+ 2024 09:50:00 -0800
+Message-ID: <dff70941-709c-4043-802a-16bfeb8ba4f8@quicinc.com>
 Date: Mon, 22 Jan 2024 09:50:00 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Mikhail Ukhin <mish.uxin2012@yandex.ru>
-Cc: Dave Kleikamp <shaggy@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-	jfs-discussion@lists.sourceforge.net, stable@vger.kernel.org,
-	lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
-	Mikhail Ivanov <iwanov-23@bk.ru>,
-	Pavel Koshutin <koshutin.pavel@yandex.ru>,
-	Artem Sadovnikov <ancowi69@gmail.com>
-Subject: Re: [PATCH 5.10/5.15] jfs: add check if log->bdev is NULL in
- lbmStartIO()
-Message-ID: <2024012246-passable-delegate-5528@gregkh>
-References: <20240112165007.4764-1-mish.uxin2012@yandex.ru>
- <2024011216-rubdown-buddhist-6d1e@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024011216-rubdown-buddhist-6d1e@gregkh>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] Add board-id support for multiple DT selection
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Amrit Anand
+	<quic_amrianan@quicinc.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        <devicetree-spec@vger.kernel.org>
+References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
+ <6ceb3c5d-4171-4f0e-a1c0-22a8488ea2bc@linaro.org>
+Content-Language: en-US
+From: Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <6ceb3c5d-4171-4f0e-a1c0-22a8488ea2bc@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 00ZgLwGHbsDfPXQ8AKTa0gTrYi7OTktY
+X-Proofpoint-ORIG-GUID: 00ZgLwGHbsDfPXQ8AKTa0gTrYi7OTktY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-22_07,2024-01-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ adultscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ clxscore=1011 suspectscore=0 impostorscore=0 mlxlogscore=601
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401220124
 
-On Fri, Jan 12, 2024 at 08:31:30PM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Jan 12, 2024 at 07:50:07PM +0300, Mikhail Ukhin wrote:
-> > Fuzzing of 5.10 stable branch shows NULL pointer dereference happens in 
-> > lbmStartIO() on log->bdev pointer. The reason for bdev being NULL is the 
-> > JFS_NOINTEGRITY flag is set on mount of this fs. When this flag is enabled,
-> > it results in the open_dummy_log function being called, which initializes a
-> > new dummy_log, but does not assign a value to bdev.
-> > 
-> > The error is fixed in 5.18 by commit
-> > 07888c665b405b1cd3577ddebfeb74f4717a84c4.
-> > Backport of this commit is too intrusive, so it is more reasonable to apply
-> > a small patch to fix this issue.
-> > 
-> > Found by Linux Verification Center (linuxtesting.org) with syzkaller.
-> > 
-> > Signed-off-by: Mikhail Ukhin <mish.uxin2012@yandex.ru>
-> > Signed-off-by: Mikhail Ivanov <iwanov-23@bk.ru>
-> > Signed-off-by: Pavel Koshutin <koshutin.pavel@yandex.ru>
-> > Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
-> > ---
-> >  fs/jfs/jfs_logmgr.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> Who is using jfs in 5.10 and 5.15?  Why not just mark the filesystem as
-> BROKEN there instead?  If you need to access your ancient filesystem
-> image just use a newer kernel.
-> 
-> For filesystems that are not used in older kernels, work like this feels
-> odd, especially for something just like a NULL dereference which doesn't
-> do much, right?
++devicetree-spec
 
-Now dropped from my review queue due to lack of response...
+On 1/20/2024 5:04 AM, Konrad Dybcio wrote:
+> On 20.01.2024 12:20, Amrit Anand wrote:
+>> Device manufacturers frequently ship multiple boards or SKUs under a
+>> single software package. These software packages will ship multiple
+>> devicetree blobs and require some mechanism to pick the correct DTB for
+>> the board the software package was deployed. Introduce a common
+>> definition for adding board identifiers to device trees. board-id
+>> provides a mechanism for bootloaders to select the appropriate DTB which
+>> is vendor/OEM-agnostic.
+> 
+> Maybe it'd be a good idea to add it to the base spec!
+> 
+> https://github.com/devicetree-org/devicetree-specification
+> 
+
+I agree. Rob, what do you think?
 
