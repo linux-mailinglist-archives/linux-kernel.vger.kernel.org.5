@@ -1,62 +1,65 @@
-Return-Path: <linux-kernel+bounces-32756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98434835FBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:31:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59FA4835FBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:32:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C61C21C24390
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:31:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BF552881C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C5B38DD8;
-	Mon, 22 Jan 2024 10:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VXYiQi5z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D430F3A1DA;
+	Mon, 22 Jan 2024 10:32:02 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05821DFF3;
-	Mon, 22 Jan 2024 10:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 840D73A1C2
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:31:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705919468; cv=none; b=O9gSOp8Bpxl56woXLbsBUV+Oh0zvsjnZGk0eqClIXy9T/KL8NYV+p2rJuAJuQ/Lg1AWEVLFMw6F5Exbj6ASOavF2VwjrDqQW+coKwQhTbPQlRHjtqLkXkDg5iKD17AnKE0Ssydhg5XCI7eZQsihk/zV9rJBYbiD8XRcNK/BT5tY=
+	t=1705919522; cv=none; b=q8gDKwtyKhhVh35K/WUgy0f1tXsEZuYmGKJ67KQNUJj4d80BwIPXSanz7cSFAeonjkWhu+g0wmVjgmUN1NKeAchZKPcb2ArAaJfJ5L+9p1HkIaW32RwxZ/WKxZUx7jnIKTDrhpDfUG670FYWVZt968upPOmNnk/l6gHdQ6pc+Kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705919468; c=relaxed/simple;
-	bh=Adk4o/syB8kwb6hMdHdd8CxVfC3VENFja8OPDajgNt8=;
+	s=arc-20240116; t=1705919522; c=relaxed/simple;
+	bh=KAlfgGQ/MAfkQYeGKUwMnf4LD+P82YLtjfk03BIrXi8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hMW/rcA1rWoxzNrt1smP4YO5GJu7aMmVEdoFjeykTygwCLT0sLMus8Ibu5pdwmeR7hDuzD1QUz2aFmdUdvNnNkRYVbkuDeNA254tQyXNQHurI811NnEZKJRepV+aVxGBtq/fO3Gw12oKjHzcCG697W5vDeJ+K+IaibCZj5ph1ts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VXYiQi5z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F258C43390;
-	Mon, 22 Jan 2024 10:31:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705919468;
-	bh=Adk4o/syB8kwb6hMdHdd8CxVfC3VENFja8OPDajgNt8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VXYiQi5zdrm6D/arV+leoLROlbr7Rb91J3KkdLkhJFacvol55XCXpGBRHkReoQ+wS
-	 MkW8a9h0UGD2duiJuDVOIRQc078qQhCdjKiWa7YZ0JajQZT3g7KahEljOb9k9u4+L0
-	 SarFw28EbOctK+w9oDuislDN8TCphzc4XCNBhJM2xZHh4GJsXbOdYpiurVhYnFUbSZ
-	 hDzRTkr8ZuZ39SzKyQg1H82b1R5/uANddhFrvfCs4Uxxn1eX18NofmN0nwOXZi936R
-	 6fNa0KMEOiAcpeAHyHYvOfNhPE6/J+R7WSebFfcC47s9rnezA6PZInjFYR6EvpMXUq
-	 c/Nbd7OHGXp9g==
-Date: Mon, 22 Jan 2024 10:31:00 +0000
-From: Simon Horman <horms@kernel.org>
-To: Danielle Ratson <danieller@nvidia.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net,
-	linux@armlinux.org.uk, sdf@google.com, kory.maincent@bootlin.com,
-	maxime.chevallier@bootlin.com, vladimir.oltean@nxp.com,
-	przemyslaw.kitszel@intel.com, ahmed.zaki@intel.com,
-	richardcochran@gmail.com, shayagr@amazon.com,
-	paul.greenwalt@intel.com, jiri@resnulli.us,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mlxsw@nvidia.com, petrm@nvidia.com, idosch@nvidia.com
-Subject: Re: [RFC PATCH net-next 7/9] ethtool: cmis_cdb: Add a layer for
- supporting CDB commands
-Message-ID: <20240122103100.GA126470@kernel.org>
-References: <20240122084530.32451-1-danieller@nvidia.com>
- <20240122084530.32451-8-danieller@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ftviCxNUPWnM5jIhzbNcsD1AU+gXODuwhy3gfdbBj7lIawDN05jiBvKStw5Fe4WWSNobas0q5bU7T6+tegiCzsjl3ijrhfNdPOCGkysWAL1np1oPyVQIGv98Xy0nkgkIW3vBqYTJxetdGGCVzrsg9T9Zxgn3GTj+3zjTrxwcyEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rRrah-0000aJ-TJ; Mon, 22 Jan 2024 11:31:43 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rRraf-001ZTQ-7T; Mon, 22 Jan 2024 11:31:41 +0100
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rRraf-001BEt-4b; Mon, 22 Jan 2024 11:31:41 +0100
+Date: Mon, 22 Jan 2024 11:31:41 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc: Sandy Huang <hjc@rock-chips.com>,
+	Heiko =?iso-8859-15?Q?St=FCbner?= <heiko@sntech.de>,
+	Andy Yan <andy.yan@rock-chips.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+	dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+	error27@gmail.com
+Subject: Re: [PATCH] drm/rockchip: vop2: add a missing unlock in
+ vop2_crtc_atomic_enable()
+Message-ID: <20240122103141.GU4700@pengutronix.de>
+References: <20240119190841.1619443-1-harshit.m.mogalapalli@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,188 +68,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240122084530.32451-8-danieller@nvidia.com>
+In-Reply-To: <20240119190841.1619443-1-harshit.m.mogalapalli@oracle.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon, Jan 22, 2024 at 10:45:28AM +0200, Danielle Ratson wrote:
+On Fri, Jan 19, 2024 at 11:08:40AM -0800, Harshit Mogalapalli wrote:
+> Unlock before returning on the error path.
+> 
+> Fixes: 5a028e8f062f ("drm/rockchip: vop2: Add support for rk3588")
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 
-..
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-> +/**
-> + * struct ethtool_cmis_cdb_request - CDB commands request fields as decribed in
-> + *				the CMIS standard
-> + * @id: Command ID.
-> + * @epl_len: EPL memory length.
-> + * @lpl_len: LPL memory length.
-> + * @chk_code: Check code for the previous field and the payload.
-> + * @resv1: Added to match the CMIS standard request continuity.
-> + * @resv2: Added to match the CMIS standard request continuity.
-> + * @payload: Payload for the CDB commands.
-> + */
-> +struct ethtool_cmis_cdb_request {
-> +	__be16 id;
-> +	struct_group(body,
-> +		u16 epl_len;
-> +		u8 lpl_len;
-> +		u8 chk_code;
-> +		u8 resv1;
-> +		u8 resv2;
-> +		u8 payload[ETHTOOL_CMIS_CDB_LPL_MAX_PL_LENGTH];
-> +	);
-> +};
-> +
-> +#define CDB_F_COMPLETION_VALID		BIT(0)
-> +#define CDB_F_STATUS_VALID		BIT(1)
-> +
-> +/**
-> + * struct ethtool_cmis_cdb_cmd_args - CDB commands execution arguments
-> + * @req: CDB command fields as described in the CMIS standard.
-> + * @max_duration: Maximum duration time for command completion in msec.
-> + * @read_write_len_ext: Allowable additional number of byte octets to the LPL
-> + *			in a READ or a WRITE commands.
-> + * @rpl_exp_len: Expected reply length in bytes.
-> + * @flags: Validation flags for CDB commands.
-> + */
-> +struct ethtool_cmis_cdb_cmd_args {
-> +	struct ethtool_cmis_cdb_request req;
-> +	u16				max_duration;
-> +	u8				read_write_len_ext;
-> +	u8                              rpl_exp_len;
-> +	u8				flags;
-> +};
+Thanks for fixing this.
 
-..
+Sascha
 
-> +int ethtool_cmis_page_init(struct ethtool_module_eeprom *page_data,
-> +			   u8 page, u32 offset, u32 length)
-> +{
-> +	page_data->page = page;
-> +	page_data->offset = offset;
-> +	page_data->length = length;
-> +	page_data->i2c_address = ETHTOOL_CMIS_CDB_PAGE_I2C_ADDR;
-> +	page_data->data = kmalloc(page_data->length, GFP_KERNEL);
-> +	if (!page_data->data)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-
-..
-
-> +static int
-> +__ethtool_cmis_cdb_execute_cmd(struct net_device *dev,
-> +			       struct ethtool_module_eeprom *page_data,
-> +			       u32 offset, u32 length, void *data)
-> +{
-> +	const struct ethtool_ops *ops = dev->ethtool_ops;
-> +	struct netlink_ext_ack extack = {};
-> +	int err;
-> +
-> +	page_data->offset = offset;
-> +	page_data->length = length;
-> +
-> +	memset(page_data->data, 0, ETHTOOL_CMIS_CDB_LPL_MAX_PL_LENGTH);
-> +	memcpy(page_data->data, data, page_data->length);
-> +
-> +	err = ops->set_module_eeprom_by_page(dev, page_data, &extack);
-> +	if (err < 0) {
-> +		if (extack._msg)
-> +			netdev_err(dev, "%s\n", extack._msg);
+> ---
+> This is based on static analysis. Only compile tested.
+> Note: Smatch found this.
+> ---
+>  drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> index 85b3b4871a1d..fdd768bbd487 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> @@ -1985,8 +1985,10 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
+>  		clock = vop2_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
+>  	}
+>  
+> -	if (!clock)
+> +	if (!clock) {
+> +		vop2_unlock(vop2);
+>  		return;
 > +	}
-> +
-> +	return err;
-> +}
+>  
+>  	if (vcstate->output_mode == ROCKCHIP_OUT_MODE_AAAA &&
+>  	    !(vp_data->feature & VOP2_VP_FEATURE_OUTPUT_10BIT))
+> -- 
+> 2.39.3
+> 
+> 
 
-..
-
-> +int ethtool_cmis_cdb_execute_cmd(struct net_device *dev,
-> +				 struct ethtool_cmis_cdb_cmd_args *args)
-> +{
-> +	struct ethtool_module_eeprom page_data = {};
-> +	u32 offset;
-> +	int err;
-> +
-> +	args->req.chk_code =
-> +		cmis_cdb_calc_checksum(&args->req, sizeof(args->req));
-> +
-> +	if (args->req.lpl_len > args->read_write_len_ext) {
-> +		ethnl_module_fw_flash_ntf_err(dev,
-> +					      "LPL length is longer than CDB read write length extension allows");
-> +		return -EINVAL;
-> +	}
-> +
-> +	err = ethtool_cmis_page_init(&page_data, ETHTOOL_CMIS_CDB_CMD_PAGE, 0,
-> +				     ETHTOOL_CMIS_CDB_LPL_MAX_PL_LENGTH);
-
-ETHTOOL_CMIS_CDB_LPL_MAX_PL_LENGTH is passed as the length argument
-of ethtool_cmis_page_init, which will allocate that many
-bytes for page_data->data.
-
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* According to the CMIS standard, there are two options to trigger the
-> +	 * CDB commands. The default option is triggering the command by writing
-> +	 * the CMDID bytes. Therefore, the command will be split to 2 calls:
-> +	 * First, with everything except the CMDID field and then the CMDID
-> +	 * field.
-> +	 */
-> +	offset = CMIS_CDB_CMD_ID_OFFSET +
-> +		offsetof(struct ethtool_cmis_cdb_request, body);
-> +	err = __ethtool_cmis_cdb_execute_cmd(dev, &page_data, offset,
-> +					     sizeof(args->req.body),
-> +					     &args->req.body);
-
-Hi Danielle,
-
-However, here sizeof(args->req.body) is passed as the length
-argument of __ethtool_cmis_cdb_execute_cmd() which will:
-
-1. Zero ETHTOOL_CMIS_CDB_LPL_MAX_PL_LENGTH bytes of page_data->data
-2. Copy sizeof(args->req.body) bytes into page_data->data
-
-args->req.body includes several fields, one of which is
-ETHTOOL_CMIS_CDB_LPL_MAX_PL_LENGTH bytes long. So,
-args->req.body > ETHTOOL_CMIS_CDB_LPL_MAX_PL_LENGTH
-and it seems that step 2 above causes a buffer overrun.
-
-Flagged by clang-17 W=1 build
-
- In file included from net/ethtool/cmis_cdb.c:3:
- In file included from ./include/linux/ethtool.h:16:
- In file included from ./include/linux/bitmap.h:12:
- In file included from ./include/linux/string.h:295:
- ./include/linux/fortify-string.h:579:4: error: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
-   579 |                         __write_overflow_field(p_size_field, size);
-       |                         ^
- ./include/linux/fortify-string.h:579:4: error: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
- ./include/linux/fortify-string.h:579:4: error: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
-
-
-> +	if (err < 0)
-> +		goto out;
-> +
-> +	offset = CMIS_CDB_CMD_ID_OFFSET +
-> +		offsetof(struct ethtool_cmis_cdb_request, id);
-> +	err = __ethtool_cmis_cdb_execute_cmd(dev, &page_data, offset,
-> +					     sizeof(args->req.id),
-> +					     &args->req.id);
-> +	if (err < 0)
-> +		goto out;
-> +
-> +	err = cmis_cdb_wait_for_completion(dev, args);
-> +	if (err < 0)
-> +		goto out;
-> +
-> +	err = cmis_cdb_wait_for_status(dev, args);
-> +	if (err < 0)
-> +		goto out;
-> +
-> +	err = cmis_cdb_process_reply(dev, &page_data, args);
-> +
-> +out:
-> +	ethtool_cmis_page_fini(&page_data);
-> +	return err;
-> +}
-
-..
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
