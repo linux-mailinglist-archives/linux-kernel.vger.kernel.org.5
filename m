@@ -1,102 +1,217 @@
-Return-Path: <linux-kernel+bounces-34252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8581837665
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:38:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53F2D837664
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:38:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40740B24362
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:38:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03C5D2840D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3916F2110D;
-	Mon, 22 Jan 2024 22:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743B314F6E;
+	Mon, 22 Jan 2024 22:35:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="hKRMANR7"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="CgEnb1nv"
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B156E10A15
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 22:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5856B101C5;
+	Mon, 22 Jan 2024 22:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705962915; cv=none; b=SKCpzJzsHdCPrevWjuvDjdA8UL0u7F7DEnuZAyUiSB0ilU4mfuDaU6kxKw3xUW93peqDhsDObV89QII+DNeWYFzkRlbGfo9rHFFSwqzpGPFIMqpM8MD2XTGHwvpXZOO5V5NTVSmN8kecbzVaBzFQ7wuyiL/EsVLfBTblcMWMgbA=
+	t=1705962902; cv=none; b=F9TrUaABcI5X3XuvwmcNdu149mNPnMUzqD4y2GCVO+J9qlV7rJsWxesbjykoVtbcZz2OgOgcNBrqMA6PU5ZkBwNchmOU5hWBfpo/6ewEdLaGj93B7Y6Lv/i0vxwypkDMy0E+IAWBhnVuI1uBQKmn/8/lfw2frdRG3FKEGEBzcMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705962915; c=relaxed/simple;
-	bh=ut2sHK1cYuimB9D9KMgHzTslY/TVKrAQ/ElwwDiRfRI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KKuHU9poZeaiB1OEdIj54nGw9zQaBTuAA6+3IySvbAxDO2sDXZyc4BZjfAeYDwLKF82gQu0E+AK7gH1Ks+I04GZjHVAaUla1cPGDG8qp5QS2GbXmhgyuEVdwC14tbzNCrgLW62MyOmd+eOwfyfvZpdlabn1i9ap7Kw1154lsjCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=hKRMANR7; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40eb2f3935eso4204025e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:35:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1705962911; x=1706567711; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VAXJjzRSHBzKnL2wNCpgqHq5fkln8HHHx4MUGY+C8nk=;
-        b=hKRMANR7qZs/lo5iRScAASeFPSmtx8hcX6XR3X3v96MuhF1bHK69Qb37SfZwifT+PC
-         6nNINihMchaGzSlvTJ0puG4pfot4/H50UxEdi7WoWL1OV1GZ4k9ERjx2mHpLsyp9Do3j
-         T5MsBTk6jNsuyZV67pgmFzGD55jMKXDaBwZVw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705962911; x=1706567711;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VAXJjzRSHBzKnL2wNCpgqHq5fkln8HHHx4MUGY+C8nk=;
-        b=jCx82F2WW30qDK6w7WGf30ivIqgjpsx7m/5cOvFX95aUKBokonVoUjbHHigC1vuXdV
-         e17n5JiGEWpHzYLOT9qh+NYtfJkNsMGGhfAsCJ/zK+TPJK5MTqdES0OFEUsWLX1qToAj
-         fa8FJznygPH4KZACtjN8kOJDJwscjR0B3zPic6mNbwO0xDUqeBEG1clXgBD6IMXTwlUH
-         7r2AVPhWgxbS8s89tFVpAdk4D9LPzMB5Ch1APp7vYNvoq+9BdP8Q34qqC4qIxyswgrrw
-         BhBHLprpZcDX4jKQ1nS6quHBD1gFGEY/H35HViDhO4dSxImAiYMa5W2joh1lFlaFHPFr
-         QRgg==
-X-Gm-Message-State: AOJu0YzK+qc8xmLzcaTJh76wflwyroSFbL3uTzT5JeImhCrv13dGCXvc
-	5/DTzMBsP77t12JD09WuNGAzuBfNmF732PavnGDHhrHMpEiWygkHughpHKRRrBGU7fewx4/kkn9
-	mOsNY+g==
-X-Google-Smtp-Source: AGHT+IHGdND0lAayUGet9h3G4OMxTZcXCSD2348g3xFgW3JI1OQgyotH86OqgxNyJ6WHCDOR5GfvVA==
-X-Received: by 2002:a05:600c:548f:b0:40e:4f81:3f68 with SMTP id iv15-20020a05600c548f00b0040e4f813f68mr2475823wmb.16.1705962911443;
-        Mon, 22 Jan 2024 14:35:11 -0800 (PST)
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com. [209.85.128.48])
-        by smtp.gmail.com with ESMTPSA id e4-20020a170906c00400b00a298adde5a1sm13751813ejz.189.2024.01.22.14.35.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 14:35:11 -0800 (PST)
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso41037875e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:35:10 -0800 (PST)
-X-Received: by 2002:a05:600c:4755:b0:40d:609d:d65e with SMTP id
- w21-20020a05600c475500b0040d609dd65emr2785432wmo.177.1705962910573; Mon, 22
- Jan 2024 14:35:10 -0800 (PST)
+	s=arc-20240116; t=1705962902; c=relaxed/simple;
+	bh=fW8RZaunINi3Cx/0kUOukws6BMxvvfRKRL6GyrdvzPU=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID; b=spy2efHQAkxWmd7PKcz2fiPT5xQsYSITfcJDIa3zPBOOJWJZ3xoZIZHr+KS/BCjN8qCaxpDQzByMzPkgc1ZTPN6jp8BV1tW/BIGhvZU8N0VDcjAr9eCuR5OZMP8FmTtNBY53lI8FCIE+YPMftQhgVP/SjCLfYQA4p9f8daoShs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=CgEnb1nv; arc=none smtp.client-ip=199.185.137.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=fW8RZaunIN
+	i3Cx/0kUOukws6BMxvvfRKRL6GyrdvzPU=; h=date:references:in-reply-to:
+	subject:cc:to:from; d=openbsd.org; b=CgEnb1nvZQetXaeg3BRJ3EjgbpFWzWJI8
+	EfQavnvBUtlaD7UWqu0eQlfgiWHk3o10U4h4IFSVDMkrW3/LhYY68Whgf6WBoHKpbaBTLb
+	2xX/jWnOZPndD+NMtkjmimYbqnfsAGpz+9h5x0i+yXuw9UFZ4FficA2ZegJoLd5hIvrJOR
+	gwaUkfj40qZVzE61RTeitxYYvcTETq8OlS8cn9FUZ68vUHCsbTRHh75InHtvJe7fJDSEiY
+	1N2erlahzki6kwMRW8eMhmt1pmBITZSKqTMnUoWaM4y3b+DRK/EzKYhFHut4ug8Sf5Mxye
+	RIeDGbjH5CNy2ULEpEYFGJitS8CgA==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+	by cvs.openbsd.org (OpenSMTPD) with ESMTP id 7bdc2336;
+	Mon, 22 Jan 2024 15:34:57 -0700 (MST)
+From: "Theo de Raadt" <deraadt@openbsd.org>
+To: Jeff Xu <jeffxu@chromium.org>
+cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
+    sroettger@google.com, willy@infradead.org,
+    gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+    usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
+    jorgelo@chromium.org, groeck@chromium.org,
+    linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+    linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
+    linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v7 0/4] Introduce mseal()
+In-reply-to: <CABi2SkXrnUZsWvpqS61mHw-SqDBOodqpcfjdoTTyeeYG9tRJGA@mail.gmail.com>
+References: <20240122152905.2220849-1-jeffxu@chromium.org> <726.1705938579@cvs.openbsd.org> <CABi2SkXrnUZsWvpqS61mHw-SqDBOodqpcfjdoTTyeeYG9tRJGA@mail.gmail.com>
+Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
+   message dated "Mon, 22 Jan 2024 14:10:17 -0800."
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705946889.git.dsterba@suse.com>
-In-Reply-To: <cover.1705946889.git.dsterba@suse.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 22 Jan 2024 14:34:54 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
-Message-ID: <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
-Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 22 Jan 2024 15:34:57 -0700
+Message-ID: <86181.1705962897@cvs.openbsd.org>
 
-On Mon, 22 Jan 2024 at 10:34, David Sterba <dsterba@suse.com> wrote:
+Jeff Xu <jeffxu@chromium.org> wrote:
+
+> On Mon, Jan 22, 2024 at 7:49=E2=80=AFAM Theo de Raadt <deraadt@openbsd.or=
+g> wrote:
+> >
+> > Regarding these pieces
+> >
+> > > The PROT_SEAL bit in prot field of mmap(). When present, it marks
+> > > the map sealed since creation.
+> >
+> > OpenBSD won't be doing this.  I had PROT_IMMUTABLE as a draft.  In my
+> > research I found basically zero circumstances when you userland does
+> > that.  The most common circumstance is you create a RW mapping, fill it,
+> > and then change to a more restrictve mapping, and lock it.
+> >
+> > There are a few regions in the addressspace that can be locked while RW.
+> > For instance, the stack.  But the kernel does that, not userland.  I
+> > found regions where the kernel wants to do this to the address space,
+> > but there is no need to export useless functionality to userland.
+> >
+> I have a feeling that most apps that need to use mmap() in their code
+> are likely using RW mappings. Adding sealing to mmap() could stop
+> those mappings from being executable. Of course, those apps would
+> need to change their code. We can't do it for them.
+
+I don't have a feeling about it.
+
+I spent a year engineering a complete system which exercises the maximum
+amount of memory you can lock.
+
+I saw nothing like what you are describing.  I had PROT_IMMUTABLE in my
+drafts, and saw it turning into a dangerous anti-pattern.
+
+> Also, I believe adding this to mmap() has no downsides, only
+> performance gain, as Pedro Falcato pointed out in [1].
+>=20
+> [1] https://lore.kernel.org/lkml/CAKbZUD2A+=3Dbp_sd+Q0Yif7NJqMu8p__eb4ygu=
+q0agEcmLH8SDQ@mail.gmail.com/
+
+Are you joking?  You don't have any code doing that today.  More feelings?
+
+OpenBSD userland has zero places it can use mmap() MAP_IMMUTABLE.
+
+It has two places where it has mprotect() + mimmutable() adjacent to each
+other, two codepaths for late mprotect() of RELRO, and then make the RELRO
+immutable.
+
+I think this idea is a premature optimization, and intentionally incompatib=
+le.
+
+Like I say, I had a similar MAP_ flag for mprotect() and mmap() in my
+development trees, and I recognized it was pointless, distracting developers
+into the wrong patterns, and I threw it out.
+
+> > OpenBSD now uses this for a high percent of the address space.  It might
+> > be worth re-reading a description of the split of responsibility regard=
+ing
+> > who locks different types of memory in a process;
+> > - kernel (the majority, based upon what ELF layout tell us),
+> > - shared library linker (the next majority, dealing with shared
+> >   library mappings and left-overs not determinable at kernel time),
+> > - libc (a small minority, mostly regarding forced mutable objects)
+> > - and the applications themselves (only 1 application today)
+> >
+> >     https://lwn.net/Articles/915662/
+> >
+> > > The MAP_SEALABLE bit in the flags field of mmap(). When present, it m=
+arks
+> > > the map as sealable. A map created without MAP_SEALABLE will not supp=
+ort
+> > > sealing, i.e. mseal() will fail.
+> >
+> > We definately won't be doing this.  We allow a process to lock any and =
+all
+> > it's memory that isn't locked already, even if it means it is shooting
+> > itself in the foot.
+> >
+> > I think you are going to severely hurt the power of this mechanism,
+> > because you won't be able to lock memory that has been allocated by a
+> > different callsite not under your source-code control which lacks the
+> > MAP_SEALABLE flag.  (Which is extremely common with the system-parts of
+> > a process, meaning not just libc but kernel allocated objects).
+> >
+> MAP_SEALABLE was an open discussion item called out on V3 [2] and V4 [3].
+>=20
+> I acknowledge that additional coordination would be required if
+> mapping were to be allocated by one software component and sealed in
+> another. However, this is feasible.
+>=20
+> Considering the side effect of not having this flag (as discussed in
+> V3/V4) and the significant implications of altering the lifetime of
+> the mapping (since unmapping would not be possible), I believe it is
+> reasonable to expect developers to exercise additional care and
+> caution when utilizing memory sealing.
 >
-> please pull the following fixes.
+> [2] https://lore.kernel.org/linux-mm/20231212231706.2680890-2-jeffxu@chro=
+mium.org/
+> [3] https://lore.kernel.org/all/20240104185138.169307-1-jeffxu@chromium.o=
+rg/
 
-Bah. These fixes are garbage. Now my machine doesn't even boot. I'm
-bisecting, but it's between
+I disagree *strongly*.  Developers need to exercise additional care on
+memory, period.  Memory sealing issues is the least of their worries.
 
-good: e94dfb7a2935 ("btrfs: pass btrfs_io_geometry into btrfs_max_io_len")
+(Except for handling RELRO, but only the ld.so developers will lose
+their hair).
 
-bad: f398e70dd69e ("btrfs: tree-checker: fix inline ref size in error messages")
 
-Not ok.
+OK, so mseal and mimmutable are very different.
 
-               Linus
+mimmutable can be used by any developer on the address space easily.
+
+mseal requires control of the whole stack between allocation and consumptio=
+n.
+
+I'm sorry, but I don't think you understand how dangerous this MAP_SEALABLE
+proposal is because of the difficulties it will create for use.
+
+The immutable memory management we have today in OpenBSD would completely
+impossible with such a flag.  Seperation between allocator (that doesn't kn=
+ow
+what is going to happen), and consumer (that does know), is completely comm=
+on
+in the systems environment (meaning the interaction between DSO, libc, other
+libraries, and the underside of applications).
+
+This is not not like an application where you can simply sprinkle the flag
+into the mmap() calls that cause you problems.  That mmap() call is now in
+someone else's code, and you CANNOT gain security advantage unless you
+convince them to gain an understanding of what that flag means -- and it is
+a flag that other Linux variants don't have, not even in their #include
+files.
+
+> > It may be fine inside a program like chrome, but I expect that flag to =
+make
+> > it harder to use in libc, and it will hinder adoption.
+> >
+> In the case of glibc and linux, as stated in the cover letter, Stephen
+> is working on a change to glibc to add sealing support to the dynamic
+> linker,  also I plan to make necessary code changes in the linux kernel.
+
+How will ld.so seal memory which the kernel mapped?  The kernel will now
+automatically puts MAP_SEALABLE on the text segment and stack?  Why not
+put it on all mmap() allocations?  Why not just skip the flag entirely?
+
+To me, this is all very bizzare.
+
+I don't understand what the MAP_SEALABLE flag is trying to solve.
 
