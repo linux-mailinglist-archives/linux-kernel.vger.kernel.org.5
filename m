@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-34342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64FDA837971
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:39:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AEE83793D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:34:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D649EB28ECC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:39:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5351F27AE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8682E5EE70;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32855EE87;
 	Mon, 22 Jan 2024 23:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iVmcjZvS"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eY8mJY2z"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3AB5D8F5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D9E5D90F;
 	Mon, 22 Jan 2024 23:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705967723; cv=none; b=TR8aKi7sHqYZQOvW9Tszr2ET5imBRNCSdLq9pfSGzsdbp4gps0zTrrVCmBZBaV1elp8LI+id8LpMYxDCMJ7MS1rrnoqkCItMKcy1nvZ2hNRkCpHn2x5Gi1ffkrD9oQj0Ro8dYeg49I9xUoyVyP1yjlvOiFfLUH9FTRXhj4R9jUo=
+	t=1705967724; cv=none; b=dPGWTQzLDsNgUqubau25zUzGCYwXfmjAbzTByJBpDvfceUaqRV8R3m3no5EwPoCsH6r2avj2ZSV2ITCnq+oPT6feIvx3pBRWkDZJAMGliDRLdq2GRYw5vsI8f6noSMCTgMwfylEYacafq+n+xfm7Dk95ba4OEb2Xfp9MN4fm/ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705967723; c=relaxed/simple;
-	bh=Sfee/X/abCwYtHCyjajD/sS8xPH3XSb8czberT3eqMA=;
+	s=arc-20240116; t=1705967724; c=relaxed/simple;
+	bh=zdJ2GT4ARrSNbJp3F6eaxutpQ4DdrmPtIT6M7sepMRw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gXbY+1Td+SPdZJS5WMH9IfKPXM8AxlaPscn66B7vbPhF9UPgISxc1ejMrK5gT1QHwVQbXpK5uhiRFqftDeaeoNqYpeex0HWxnDZ6mTaUmLHGKIYMd20DIQ6I+qlx+OqC82MKAaPq1+OyyeY0VKFjtSs1uHIoNHKnN0CUKhWO5ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iVmcjZvS; arc=none smtp.client-ip=198.175.65.15
+	 MIME-Version; b=rm20eqVYhZJeX7P1ZRHTSP05QKfQn5zfnUmMXbkFHVd3oKKvIil7k61JBq6+JGg0zBtPPXBBRNm2Jcoji/tL0eDq8ZmdoHgy05LAH3cgjUkitHkIrvilPkyquscIF9FzQDaPLXR59Lt9LuRyRrGRGDmsFwBo52eLh5ofQVDEiNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eY8mJY2z; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705967722; x=1737503722;
+  t=1705967723; x=1737503723;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Sfee/X/abCwYtHCyjajD/sS8xPH3XSb8czberT3eqMA=;
-  b=iVmcjZvSDAxbo3k8klWGf6+T3SC8fs7/geBGSn88BDKB9vaJ7zS9HG/Y
-   1F6gkQwX6TlrhVo5vYF5gXw4PDYF9Fq/fHLYpzPMeUmZis5uMTPTqVTgt
-   5aqlL8yIB+GvmhXAPbE/XkDcPRdNzu545ecizXBrlOrK6QFhpuhUmXtl0
-   6Tiemf8gpY93mdspou+8xV9T2hAOk22m3qxxEKjB9WdYM69vKzhmjT2Yv
-   5rMOyRTXM9HQ9d3US/GthFVXOSDeSEXc11fXiawrYsdm5vwMdv02/FLMY
-   6rzSVYX+YPFKVsUIyNvQ+dbFkkMJ0SsEGYgiko3aHY7wG4i+9jVG+DiCx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="1243857"
+  bh=zdJ2GT4ARrSNbJp3F6eaxutpQ4DdrmPtIT6M7sepMRw=;
+  b=eY8mJY2zOCPLikNmbPCkwyquo7u/d1vOOUi717MV3RZ49IqCm+VCKeih
+   fTuEdKdWlxT91N1rx9b4P4WPC1u3aNGoo1oi+0ZDia+Vfaw34RxhotQeI
+   n/LQnUtFvyTS7ZZ5BQT6KSn+3oWJ09zJsCQOB9SKECUWKekY/Gu1s8JAo
+   lfVK/C+JYSKMkrkZwQ76J3taaZiFcv4Cue6xes7DD2e95bo3zhjN2Udl9
+   0Kr790xE1+rSzuPq+gNaO6DRnSR6LHI2Ekrj7EkciriCx3EiD2luAYYdJ
+   +lVNj4vkPxwVFyhd/IqI+l7zCi56/FhBVKDLvTh2/roS0S3kdfoLKmXF2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="1243863"
 X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
-   d="scan'208";a="1243857"
+   d="scan'208";a="1243863"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 15:55:22 -0800
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 15:55:23 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="819888622"
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="819888629"
 X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
-   d="scan'208";a="819888622"
+   d="scan'208";a="819888629"
 Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 15:55:21 -0800
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 15:55:22 -0800
 From: isaku.yamahata@intel.com
 To: kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -66,12 +66,10 @@ Cc: isaku.yamahata@intel.com,
 	Kai Huang <kai.huang@intel.com>,
 	chen.bo@intel.com,
 	hang.yuan@intel.com,
-	tina.zhang@intel.com,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Binbin Wu <binbin.wu@linux.intel.com>
-Subject: [PATCH v18 033/121] KVM: x86/mmu: Add address conversion functions for TDX shared bit of GPA
-Date: Mon, 22 Jan 2024 15:53:09 -0800
-Message-Id: <5650dfd21333b4d66a42876468a672bfc6661921.1705965635.git.isaku.yamahata@intel.com>
+	tina.zhang@intel.com
+Subject: [PATCH v18 034/121] [MARKER] The start of TDX KVM patch series: KVM TDP refactoring for TDX
+Date: Mon, 22 Jan 2024 15:53:10 -0800
+Message-Id: <c897a0fb9a3b4dc2138d7dc99531f057b9623d5c.1705965635.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1705965634.git.isaku.yamahata@intel.com>
 References: <cover.1705965634.git.isaku.yamahata@intel.com>
@@ -85,101 +83,27 @@ Content-Transfer-Encoding: 8bit
 
 From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-TDX repurposes one GPA bit (51 bit or 47 bit based on configuration) to
-indicate the GPA is private(if cleared) or shared (if set) with VMM.  If
-GPA.shared is set, GPA is covered by the existing conventional EPT pointed
-by EPTP.  If GPA.shared bit is cleared, GPA is covered by TDX module.
-VMM has to issue SEAMCALLs to operate.
+This empty commit is to mark the start of patch series of KVM TDP
+refactoring for TDX.
 
-Add a member to remember GPA shared bit for each guest TDs, add address
-conversion functions between private GPA and shared GPA and test if GPA
-is private.
-
-Because struct kvm_arch (or struct kvm which includes struct kvm_arch. See
-kvm_arch_alloc_vm() that passes __GPF_ZERO) is zero-cleared when allocated,
-the new member to remember GPA shared bit is guaranteed to be zero with
-this patch unless it's initialized explicitly.
-
-Co-developed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
 ---
-v18:
-- Added Reviewed-by Binbin
----
- arch/x86/include/asm/kvm_host.h |  4 ++++
- arch/x86/kvm/mmu.h              | 27 +++++++++++++++++++++++++++
- arch/x86/kvm/vmx/tdx.c          |  5 +++++
- 3 files changed, 36 insertions(+)
+ Documentation/virt/kvm/intel-tdx-layer-status.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index b54e0bdb77eb..96f900386026 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1503,6 +1503,10 @@ struct kvm_arch {
- 	 */
- #define SPLIT_DESC_CACHE_MIN_NR_OBJECTS (SPTE_ENT_PER_PAGE + 1)
- 	struct kvm_mmu_memory_cache split_desc_cache;
-+
-+#ifdef CONFIG_KVM_MMU_PRIVATE
-+	gfn_t gfn_shared_mask;
-+#endif
- };
+diff --git a/Documentation/virt/kvm/intel-tdx-layer-status.rst b/Documentation/virt/kvm/intel-tdx-layer-status.rst
+index 8b8186e7bfeb..e893a3d714c7 100644
+--- a/Documentation/virt/kvm/intel-tdx-layer-status.rst
++++ b/Documentation/virt/kvm/intel-tdx-layer-status.rst
+@@ -25,6 +25,6 @@ Patch Layer status
+ * TD vcpu enter/exit:                   Not yet
+ * TD vcpu interrupts/exit/hypercall:    Not yet
  
- struct kvm_vm_stat {
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 60f21bb4c27b..191b820b7c4f 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -319,4 +319,31 @@ static inline gpa_t kvm_translate_gpa(struct kvm_vcpu *vcpu,
- 		return gpa;
- 	return translate_nested_gpa(vcpu, gpa, access, exception);
- }
-+
-+static inline gfn_t kvm_gfn_shared_mask(const struct kvm *kvm)
-+{
-+#ifdef CONFIG_KVM_MMU_PRIVATE
-+	return kvm->arch.gfn_shared_mask;
-+#else
-+	return 0;
-+#endif
-+}
-+
-+static inline gfn_t kvm_gfn_to_shared(const struct kvm *kvm, gfn_t gfn)
-+{
-+	return gfn | kvm_gfn_shared_mask(kvm);
-+}
-+
-+static inline gfn_t kvm_gfn_to_private(const struct kvm *kvm, gfn_t gfn)
-+{
-+	return gfn & ~kvm_gfn_shared_mask(kvm);
-+}
-+
-+static inline bool kvm_is_private_gpa(const struct kvm *kvm, gpa_t gpa)
-+{
-+	gfn_t mask = kvm_gfn_shared_mask(kvm);
-+
-+	return mask && !(gpa_to_gfn(gpa) & mask);
-+}
-+
- #endif
-diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-index 245be29721b4..59d170709f82 100644
---- a/arch/x86/kvm/vmx/tdx.c
-+++ b/arch/x86/kvm/vmx/tdx.c
-@@ -953,6 +953,11 @@ static int tdx_td_init(struct kvm *kvm, struct kvm_tdx_cmd *cmd)
- 	kvm_tdx->attributes = td_params->attributes;
- 	kvm_tdx->xfam = td_params->xfam;
- 
-+	if (td_params->exec_controls & TDX_EXEC_CONTROL_MAX_GPAW)
-+		kvm->arch.gfn_shared_mask = gpa_to_gfn(BIT_ULL(51));
-+	else
-+		kvm->arch.gfn_shared_mask = gpa_to_gfn(BIT_ULL(47));
-+
- out:
- 	/* kfree() accepts NULL. */
- 	kfree(init_vm);
+-* KVM MMU GPA shared bits:              Applying
+-* KVM TDP refactoring for TDX:          Not yet
++* KVM MMU GPA shared bits:              Applied
++* KVM TDP refactoring for TDX:          Applying
+ * KVM TDP MMU hooks:                    Not yet
 -- 
 2.25.1
 
