@@ -1,206 +1,163 @@
-Return-Path: <linux-kernel+bounces-32479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 462B0835C2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:58:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A21E835C2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:59:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB156288583
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:58:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE836B27B21
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCFC20DE0;
-	Mon, 22 Jan 2024 07:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDB21A71B;
+	Mon, 22 Jan 2024 07:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jySAO7ow"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="uT8k24hN"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC901A71B;
-	Mon, 22 Jan 2024 07:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B24210F9;
+	Mon, 22 Jan 2024 07:57:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705910270; cv=none; b=JLHP+m0CbQrOhKEdzszDy4VQK2f2M8xDwts5tzGNBIXz0E+LLFziMlcaCPR2LTf6O+I0ac2b38tRSkQ82kX8PKdCOZP6SAmu+Xmv29SNezbz/gNdhuuKfW7Yrz1nACdlXPvfQa7HyrjnuCIHKE/YG01NbKKbLcvNZ8lbTeCxRCo=
+	t=1705910282; cv=none; b=Y1no8DqZT9mn5W9KW2undk+SJMXq8RG/26YYJw3twz86HOuXZm5rD5vVrJOqgcT3Q2MA8WYbW4bYeSx3XO9QhbeteQmx4AP9NllchIT4i5t2jvwpoESS6gxgPw6zwFvZXpxMhamsTBuWtMQlWmz3fDhc47y6sEqdQJ+o05+H7xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705910270; c=relaxed/simple;
-	bh=MjiIoYwlMkNwAn1aR85M7buh7BSddsVlw/PLyOdAGPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o8uJeIXixPFXVEUJYjzXt1bnWgkK2aI+lmoJxFmY7Tm4RCgYa2JyXaEB8qceDhVmRtI65T5B6E8zzQs+9qTuhX1dwahVlI/4q/iOva8UMWajMwcs8pJzZUcLNgFly8xYfwnm84wgD+qGUVegpNCF5FxILmhY3RdP0Rt/BCGUuy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jySAO7ow; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705910268; x=1737446268;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MjiIoYwlMkNwAn1aR85M7buh7BSddsVlw/PLyOdAGPQ=;
-  b=jySAO7owxS6ThkjiWt2e1/eya0kvnWWCI6W7nXJavclPSW+8Wbcf7VuJ
-   FBQfe0M+VJx0C1xgP+/mvmnwziiVvrZBZNbiaXF4ZU313YmxUje9KJvHB
-   poGFWGd1sAEOSuobtymZJEt2pwtsXEu8yfooSnUE1K9mKHCYhAUWBojrI
-   sHmZsX9Bqzd8UUGQRjL34mvQnSYr647a6T5iZJEHmH9CwofKTautmYhp2
-   B0aVZnyhtAnefC1hMmyM4nH3SQfVf6uQiNThRdb+upyowfIwFlEwETOui
-   /kORtKynJdXGuFfIpK502NBaziwF/m1Bd2HVTNN125r9ep0pgPQb9Dupf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="1025353"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="1025353"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2024 23:57:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="1032499195"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="1032499195"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2024 23:57:45 -0800
-Message-ID: <090dabe9-408f-4ab2-b1dd-9f73c808de42@linux.intel.com>
-Date: Mon, 22 Jan 2024 15:57:13 +0800
+	s=arc-20240116; t=1705910282; c=relaxed/simple;
+	bh=3Y7jySyqlPvZGaoyZ+YsKIG1U/XZlc8UyCALp+lz74o=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=B7f0fnDaI+P/RrdoZNzFKOE06uCes00WOPeD3SojomaOpzzyp01F/gl1ZUYWskRkmtyKPT+Rot+s86zN6F5zfZVMHltkc0ClP2GLEZeMqwaXb1ES8cMSkrUu//ljQTR0+JPLE1kbhvZV2Sk5MebYHWclYnvblLccUXCHAE8C3iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=uT8k24hN; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] KVM: x86: LAM support for 6.8
-To: Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240104193303.3175844-1-seanjc@google.com>
- <20240104193303.3175844-4-seanjc@google.com>
- <CABgObfaBJQTm2stHFCsb8g0BKPsnnMYTvPfrqtc8aBmOcOimLQ@mail.gmail.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <CABgObfaBJQTm2stHFCsb8g0BKPsnnMYTvPfrqtc8aBmOcOimLQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1705910276;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nLAyqZlJC+DpGPL0c7ZN+DlDbeATJhEmWXqHqK+FrVc=;
+	b=uT8k24hN3//N3XzLOdgPwh2SoEZuhbMsotxXfEmkJD1CkzqDR2KduqYXDa2fARQCT37COP
+	Bq7im39H502CbRPgdiY+DMvf5hrK37SAs3Zj8BA2WVU4UdYRqIBigJ6AjcUmcbALrLG0Jn
+	xcdbrjy+YRcMHaS4CnoSAOaLzK2xaRULyYlwYZAtBSbaG8F14dTnchEEFARV9mMJnoiJ5g
+	wvs1iDx4ir0v9BsgYOuYYz2cDr2Wja/r/GaGkAPWnJeq6jDgDXoPmnhzsa6iKsEARhuEZB
+	GY+GYg5qv+OCvsRo6dDQ+whC4tZvDuRQ03n4EJpSbmv9w+9A3VrhmoHh2R35ZQ==
+Date: Mon, 22 Jan 2024 08:57:54 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Sebastian Reichel
+ <sebastian.reichel@collabora.com>, Cristian Ciocaltea
+ <cristian.ciocaltea@collabora.com>, Christopher Obbard
+ <chris.obbard@collabora.com>, =?UTF-8?Q?Tam=C3=A1s_Sz=C5=B1cs?=
+ <szucst@iit.uni-miskolc.hu>, Shreeya Patel <shreeya.patel@collabora.com>,
+ Kever Yang <kever.yang@rock-chips.com>, Chris Morgan
+ <macromorgan@hotmail.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: rockchip: enable built-in thermal monitoring
+ on rk3588
+In-Reply-To: <CABjd4YwxoPrKRPmjn-eWsU1N5fXCjAbnRwfKD9DLKgeL2=vHrA@mail.gmail.com>
+References: <20240106222357.23835-1-alchark@gmail.com>
+ <e0302da12345e5539583b2c96d747592@manjaro.org>
+ <CABjd4Yw5wTLyK5OPw2S-ipPVCw7RTUeF2J0RgH-Vyis-ng8rTw@mail.gmail.com>
+ <d7f2f25071a4d7c72bd286b11836dce7@manjaro.org>
+ <CABjd4Yz11D8ThcT-oCWsQf9jL2idChFYSRYVVu3KNnzwoOwkKQ@mail.gmail.com>
+ <f5c05015e042b11a51a9af26c35f18ed@manjaro.org>
+ <CABjd4Yy91MAd2wALp4KQiEub9OyxU+MR+ti5KA_c+yvZT5xaqQ@mail.gmail.com>
+ <81a5410c3dbedbd4fe9ce60ab236700c@manjaro.org>
+ <CABjd4YwxoPrKRPmjn-eWsU1N5fXCjAbnRwfKD9DLKgeL2=vHrA@mail.gmail.com>
+Message-ID: <a15edb98c32ca79b75bd4eaf64734561@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
+On 2024-01-22 08:36, Alexey Charkov wrote:
+> On Mon, Jan 22, 2024 at 10:22 AM Dragan Simic <dsimic@manjaro.org> 
+> wrote:
+>> On 2024-01-22 07:03, Alexey Charkov wrote:
+>> > On Mon, Jan 22, 2024 at 8:55 AM Dragan Simic <dsimic@manjaro.org> wrote:
+>> >> On 2024-01-21 19:56, Alexey Charkov wrote:
+>> >> > I think I'll also add a board-specific active cooling mechanism on the
+>> >> > package level in the next iteration, given that Rock 5B has a PWM fan
+>> >> > defined as a cooling device. That will go in the separate patch that
+>> >> > updates rk3588-rock-5b.dts (your feedback to v2 of this patch is also
+>> >> > duly noted, thank you!)
+>> >>
+>> >> Great, thanks.  Sure, making use of the Rock 5B's support for attaching
+>> >> a PWM-controlled cooling fan is the way to go.
+>> >>
+>> >> Just to reiterate a bit, any "active" trip points belong to the board
+>> >> dts file(s), because having a cooling fan is a board-specific feature.
+>> >> As a note, you may also want to have a look at the RockPro64 dts(i)
+>> >> files, for example;  the RockPro64 also comes with a cooling fan
+>> >> connector and the associated PWM fan control logic.
+>> >
+>> > Thanks for the pointer! There is also a helpful doc within devicetree
+>> > bindings descriptions, although it sits under hwmon which was a bit
+>> > confusing to me. I've already tested it locally (by adding to the
+>> > board dts), and it spins up and down quite nicely, and even modulates
+>> > the fan speed swiftly when the load changes - yay!
+>> 
+>> Nice!  Also, isn't it like magic? :)  To me, turning LEDs on/off and
+>> controlling fans acts as some kind of a "bridge" between the virtual
+>> and the real world. :)
+> 
+> Oh yes! I also keep admiring how one can add just a couple of lines of
+> text here and there that's not even real code, and the whole kernel
+> machinery starts crunching numbers, analyzing temperatures, running
+> PID loops, etc etc so that I could enjoy the satisfying whistle of a
+> small fan when I type `make -j8` :-D
 
+Yes, it's very satisfying, :) and it also demonstrates the true power
+of the device trees as hardware definitions.  Just a few more lines and
+the cooling works! :)
 
-On 1/8/2024 9:04 PM, Paolo Bonzini wrote:
-> On Thu, Jan 4, 2024 at 8:33 PM Sean Christopherson <seanjc@google.com> wrote:
->> LAM virtualization support.  FWIW, I intended to send this in early-ish
->> December as you've asked in the past, but December was basically a lost cause
->> for me in terms of doing upstream work.  :-/
->>
->> The following changes since commit e9e60c82fe391d04db55a91c733df4a017c28b2f:
->>
->>    selftests/kvm: fix compilation on non-x86_64 platforms (2023-11-21 11:58:25 -0500)
->>
->> are available in the Git repository at:
->>
->>    https://github.com/kvm-x86/linux.git tags/kvm-x86-lam-6.8
->>
->> for you to fetch changes up to 183bdd161c2b773a62f01d1c030f5a3a5b7c33b5:
->>
->>    KVM: x86: Use KVM-governed feature framework to track "LAM enabled" (2023-11-28 17:54:09 -0800)
-> Patches are surprisingly small for this. What's the state of tests
-> (https://www.spinics.net/lists/kvm/msg313712.html) though?
+>> As a suggestion, it would be good to test with a couple of different
+>> fans, to make sure that the PWM values work well for more that one fan
+>> model.  The Rock 5B requires a 5 V fan, if I'm not mistaken?
+> 
+> It is 5V, yes. I only have one fan to try though, and I simply relied
+> on the PWM values that are already defined in the upstream
+> rk3588-rock-5b.dts. They don't look ideal for my particular fan,
+> because the lowest non-zero cooling state currently uses a PWM value
+> of 95, which doesn't always make it spin up. But in the end it doesn't
+> seem to matter that much, because that tiny fan needs to spin at full
+> 255 whenever all eight cores are loaded (and even then it can only
+> balance the temperature at around 60.5С), and when the load is lighter
+> (such as during various ./configure runs) it just switches off
+> completely as the temperature goes down to 46C even with the fan not
+> spinning.
 
-The patch series is tested by the LAM kselftest cases as well as
-a set of test cases[1] in kvm-unit-tests.
+I see, 5 V fans unfortunately aren't very common.  I'm not sure why
+Radxa opted for 5 V there;  maybe the goal was to use Raspberry Pi 5 V
+fans, but using those tiny fans doesn't make much sense, IMHO.
 
-[1] 
-https://lore.kernel.org/kvm/20230530024356.24870-1-binbin.wu@linux.intel.com/
-Will send a new version with minor change to resolve a feedback soon.
+I think you can freely adjust the PWM values a bit to make your fan
+start reliably at the lowest state, regardless of how rarely that state
+will be used.  See, if your fan doesn't spin up reliably with the 
+current
+lowest state, chances for other fan models not to spin up are quite 
+high.
+IOW, it's better to play safe there, if you agree.
 
+What kind of heatsink are you using with your Rock 5B?  Ah yes, and
+what's the actual model of the fan you're using?
 
->
-> Thanks,
->
-> Paolo
->
->> ----------------------------------------------------------------
->> KVM x86 support for virtualizing Linear Address Masking (LAM)
->>
->> Add KVM support for Linear Address Masking (LAM).  LAM tweaks the canonicality
->> checks for most virtual address usage in 64-bit mode, such that only the most
->> significant bit of the untranslated address bits must match the polarity of the
->> last translated address bit.  This allows software to use ignored, untranslated
->> address bits for metadata, e.g. to efficiently tag pointers for address
->> sanitization.
->>
->> LAM can be enabled separately for user pointers and supervisor pointers, and
->> for userspace LAM can be select between 48-bit and 57-bit masking
->>
->>   - 48-bit LAM: metadata bits 62:48, i.e. LAM width of 15.
->>   - 57-bit LAM: metadata bits 62:57, i.e. LAM width of 6.
->>
->> For user pointers, LAM enabling utilizes two previously-reserved high bits from
->> CR3 (similar to how PCID_NOFLUSH uses bit 63): LAM_U48 and LAM_U57, bits 62 and
->> 61 respectively.  Note, if LAM_57 is set, LAM_U48 is ignored, i.e.:
->>
->>   - CR3.LAM_U48=0 && CR3.LAM_U57=0 == LAM disabled for user pointers
->>   - CR3.LAM_U48=1 && CR3.LAM_U57=0 == LAM-48 enabled for user pointers
->>   - CR3.LAM_U48=x && CR3.LAM_U57=1 == LAM-57 enabled for user pointers
->>
->> For supervisor pointers, LAM is controlled by a single bit, CR4.LAM_SUP, with
->> the 48-bit versus 57-bit LAM behavior following the current paging mode, i.e.:
->>
->>   - CR4.LAM_SUP=0 && CR4.LA57=x == LAM disabled for supervisor pointers
->>   - CR4.LAM_SUP=1 && CR4.LA57=0 == LAM-48 enabled for supervisor pointers
->>   - CR4.LAM_SUP=1 && CR4.LA57=1 == LAM-57 enabled for supervisor pointers
->>
->> The modified LAM canonicality checks:
->>   - LAM_S48                : [ 1 ][ metadata ][ 1 ]
->>                                63               47
->>   - LAM_U48                : [ 0 ][ metadata ][ 0 ]
->>                                63               47
->>   - LAM_S57                : [ 1 ][ metadata ][ 1 ]
->>                                63               56
->>   - LAM_U57 + 5-lvl paging : [ 0 ][ metadata ][ 0 ]
->>                                63               56
->>   - LAM_U57 + 4-lvl paging : [ 0 ][ metadata ][ 0...0 ]
->>                                63               56..47
->>
->> The bulk of KVM support for LAM is to emulate LAM's modified canonicality
->> checks.  The approach taken by KVM is to "fill" the metadata bits using the
->> highest bit of the translated address, e.g. for LAM-48, bit 47 is sign-extended
->> to bits 62:48.  The most significant bit, 63, is *not* modified, i.e. its value
->> from the raw, untagged virtual address is kept for the canonicality check. This
->> untagging allows
->>
->> Aside from emulating LAM's canonical checks behavior, LAM has the usual KVM
->> touchpoints for selectable features: enumeration (CPUID.7.1:EAX.LAM[bit 26],
->> enabling via CR3 and CR4 bits, etc.
->>
->> ----------------------------------------------------------------
->> Binbin Wu (9):
->>        KVM: x86: Consolidate flags for __linearize()
->>        KVM: x86: Add an emulation flag for implicit system access
->>        KVM: x86: Add X86EMUL_F_INVLPG and pass it in em_invlpg()
->>        KVM: x86/mmu: Drop non-PA bits when getting GFN for guest's PGD
->>        KVM: x86: Add & use kvm_vcpu_is_legal_cr3() to check CR3's legality
->>        KVM: x86: Remove kvm_vcpu_is_illegal_gpa()
->>        KVM: x86: Introduce get_untagged_addr() in kvm_x86_ops and call it in emulator
->>        KVM: x86: Untag addresses for LAM emulation where applicable
->>        KVM: x86: Use KVM-governed feature framework to track "LAM enabled"
->>
->> Robert Hoo (3):
->>        KVM: x86: Virtualize LAM for supervisor pointer
->>        KVM: x86: Virtualize LAM for user pointer
->>        KVM: x86: Advertise and enable LAM (user and supervisor)
->>
->>   arch/x86/include/asm/kvm-x86-ops.h |  1 +
->>   arch/x86/include/asm/kvm_host.h    |  5 +++-
->>   arch/x86/kvm/cpuid.c               |  2 +-
->>   arch/x86/kvm/cpuid.h               | 13 +++++----
->>   arch/x86/kvm/emulate.c             | 27 ++++++++++---------
->>   arch/x86/kvm/governed_features.h   |  1 +
->>   arch/x86/kvm/kvm_emulate.h         |  9 +++++++
->>   arch/x86/kvm/mmu.h                 |  8 ++++++
->>   arch/x86/kvm/mmu/mmu.c             |  2 +-
->>   arch/x86/kvm/mmu/mmu_internal.h    |  1 +
->>   arch/x86/kvm/mmu/paging_tmpl.h     |  2 +-
->>   arch/x86/kvm/svm/nested.c          |  4 +--
->>   arch/x86/kvm/vmx/nested.c          | 11 +++++---
->>   arch/x86/kvm/vmx/sgx.c             |  1 +
->>   arch/x86/kvm/vmx/vmx.c             | 55 ++++++++++++++++++++++++++++++++++++--
->>   arch/x86/kvm/vmx/vmx.h             |  2 ++
->>   arch/x86/kvm/x86.c                 | 18 +++++++++++--
->>   arch/x86/kvm/x86.h                 |  2 ++
->>   18 files changed, 134 insertions(+), 30 deletions(-)
->>
->
+> I don't currently use the GPU/NPU/VPU though - maybe those would
+> produce more moderate load which could benefit from spinning the fan
+> at medium speeds.
 
+Perhaps, but it will need to be tested at some point.  Have you tried
+loading only one or two CPU cores?
 
