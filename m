@@ -1,189 +1,165 @@
-Return-Path: <linux-kernel+bounces-32681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB4DC835ED2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:58:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0856835E72
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:45:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C8D61F23596
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:58:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F6DA289022
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0909939FD8;
-	Mon, 22 Jan 2024 09:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625EF39FC6;
+	Mon, 22 Jan 2024 09:45:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="M9Ez7rlP"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JMQnyxl9"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4A639FC6
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155B93A1A2;
+	Mon, 22 Jan 2024 09:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705917510; cv=none; b=cbparoj1nT1zn2wZ2R6JsBpSl7KMBTj9PMgNKvG/LBwsvtfdeUqTptTI9ph76iIqvAvtNNAROGNDr9lWwxoMRvEsf7votr8fGox8IvmpP6eI9hwGN5K/s3V+TIS3w/cKwDlvQcl/gzB2y5YpFYuaenTmV0PQY24yw/OhIPVrv94=
+	t=1705916703; cv=none; b=DGVciwSUFHnngmfTRbRBLueSKWoSZVLAagVxdlN5q00p4bBtQlHdofGPiU8Qb9SoucVwQfktfdVq+fXRm5nyJOxu0yR5Zsxwzu8MAe6ZpNUq0Qrmt8WriJPjn9hqR4f5wGXbFHOzq0QjpOjZNwCZ2gWrnVNE3vAzQJU5atTTWWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705917510; c=relaxed/simple;
-	bh=gELjH+KX0/rA4qx7//5Nome4OCqmT9IxOo93luUA218=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i0X3ec+xIwlEhK9e3wlbFMMbLDYifBQOZPSKYpDIudmX98UP/IDvXDxQYexPuFmIWXhVQ02DHirl+9RHr42REUsI8UE1E0SYO/750PmjJNM3PiCaOTA79P0N2R5ebZJboeSPen6hRokGCgLltNMvvI+7K2dgmAOqLBYTOEpzRKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=M9Ez7rlP; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d71e1d7c78so12908935ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 01:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1705917508; x=1706522308; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ar0+/R5zg7/etbhMp1vh5sjI6Zb7oH6GKFRH8tUiMSQ=;
-        b=M9Ez7rlPtoHYoxGO3MBzkbopA2rifgQrNPYd2MLnXEUjni/9O9okAdOgeEEXnB1HFC
-         teEq/PGnPX7E0CyFM5yZmO4WuxKxNjyhCM5yvu84KXPzIOjJp5yU4R8fdF8smK095V29
-         oVQQs/v4VvH1dKcFrB8HzCvtxFTJSLxDjc2kNIMY2SwCqEtMp3QUlrFQPeWcLFcpI3t4
-         jvrN/A8dNXsmwQ3M6AoZ5NrOIi3Pg+e8/UY8kpRGSRj+RlEEFSBazRA1j2Zj9hRvVynD
-         AsmrgMjrnZQSckVY8hmyAbDxQKO0R6J4mijjs8rPsh1s8VC478U8o4o71ijOAbNJJn19
-         ACXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705917508; x=1706522308;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ar0+/R5zg7/etbhMp1vh5sjI6Zb7oH6GKFRH8tUiMSQ=;
-        b=t6pjaXvHRy/Yf3BaWuw1g+t9XGn9jrfiy+qYp0/JizpQ2MmF9SF21oXr2NqNd3IVDe
-         tFm3aKJOKiEfQvPoYRlk24mSpqKk1jX2S0wF8lw+Z5uEsWsL7U7KoI1RWDJ5sEnxVdeR
-         2Hc1QwKZxbUeQtMeDVOl9CqJeU0s77mWz5LtbIZeTHjw7py/b0CuBtyYR3A2YL9TNnSj
-         ck98e3vqaOpVKDJBYB2KfTHYv6B0Wt2gd3RRt1TRqmXwPRAJ999lWfKn3PA7kXgj6I7H
-         vwA+JWvqrKqCYQZj7WTGavWV5h5Dlqql+UrS4/bu3bD8+eoQMGSd10BunzeBzK6JJmGQ
-         5lJQ==
-X-Gm-Message-State: AOJu0YyIbpBV7TQPaJ7M+OQqPsiLTn3LftUk3kfbQNw3pP1p5zTXgyjv
-	l7nyjR5fo6BGEjBSDf0/zUE4YaMm78M+oQ+rbxY1pegi3SVYiT2aytDMcuehLes=
-X-Google-Smtp-Source: AGHT+IHKENnHYqVAboNe6UKYbPrLe/qUracm76Q0elN96Cw/1VSOUCEjcWH3HSRF/EA0sR1/aZNq7g==
-X-Received: by 2002:a17:903:2287:b0:1d7:584c:d1e9 with SMTP id b7-20020a170903228700b001d7584cd1e9mr553307plh.73.1705917507748;
-        Mon, 22 Jan 2024 01:58:27 -0800 (PST)
-Received: from [192.168.20.11] ([180.150.112.156])
-        by smtp.gmail.com with ESMTPSA id h4-20020a170902f7c400b001d70953f166sm6591501plw.155.2024.01.22.01.58.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 01:58:27 -0800 (PST)
-Message-ID: <3742308c-d063-4179-a4cb-80db021ede46@tweaklogic.com>
-Date: Mon, 22 Jan 2024 20:28:22 +1030
+	s=arc-20240116; t=1705916703; c=relaxed/simple;
+	bh=t4I3ga6CJht5tl0WmnhE1Xni4i5mXbwGq8WdKx7/4Ag=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=forTIN2kpKzIkzIdR0C8qkR1z1ddZt5sFmNt/eu/A+NMvA73d+dkzqMNE9KBDwSEdClDQazVTfQtTFuWn3AY7XseQz9ta3vt7wJ621tulFioEiynLXnabuOsAy8nuIJPVMmcUfAY/ZqugueJLTAIiJ13eR7g9jDvjdrSXPnSSac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JMQnyxl9; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705916702; x=1737452702;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=t4I3ga6CJht5tl0WmnhE1Xni4i5mXbwGq8WdKx7/4Ag=;
+  b=JMQnyxl927QdETq8CXDQp3cJIojE1tLvAR8vTFmHn7wAzcjd5s8u1jOF
+   bodUgC9+EwrZA9nm6NC+uHHYsEUnRZZS3vFdriz4eBl4golC+1tsMeZaS
+   AV1l6T/YTWRDnhEzTR36Cu8kDWGFXzlxHSl8xz+4DTRbyF8qVLwhW9ymY
+   sC8XGi0beKISd0AVX9LS+O5FZeDAJO30BtbTtNeFASy4LudGNe8tYUzzf
+   MP88YtnkcsnlJE6zDId+wnyrgKIYL7rNnwUqMFkopp+baGKi3o9YRbgu+
+   q5rkC+8fPJFNFk3xAS8eKW2ZVJzvJwLYGaMfDQmYJUBCrCC4TYYTKCyLE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="22641468"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="22641468"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 01:45:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="778535212"
+X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
+   d="scan'208";a="778535212"
+Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 01:44:50 -0800
+From: Haibo Xu <haibo1.xu@intel.com>
+To: 
+Cc: xiaobo55x@gmail.com,
+	ajones@ventanamicro.com,
+	Haibo Xu <haibo1.xu@intel.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Mayuresh Chitale <mchitale@ventanamicro.com>,
+	wchen <waylingii@gmail.com>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Samuel Holland <samuel@sholland.org>,
+	Minda Chen <minda.chen@starfivetech.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Peter Xu <peterx@redhat.com>,
+	Like Xu <likexu@tencent.com>,
+	Vipin Sharma <vipinsh@google.com>,
+	Thomas Huth <thuth@redhat.com>,
+	Aaron Lewis <aaronlewis@google.com>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	kvm-riscv@lists.infradead.org
+Subject: [PATCH v5 00/12] RISCV: Add kvm Sstc timer selftests
+Date: Mon, 22 Jan 2024 17:58:30 +0800
+Message-Id: <cover.1705916069.git.haibo1.xu@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iio: gts-helper: Fix division loop
-To: Matti Vaittinen <mazziesaccount@gmail.com>,
- Jonathan Cameron <jic23@kernel.org>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
- Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <ZZZ7pJBGkTdFFqiY@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
- <20240107162253.66c1f0f1@jic23-huawei>
- <a41ef2c9-bd74-4b0e-afb7-12e198847609@tweaklogic.com>
- <717b7e70-5cf8-4671-8a6b-005eefd0535e@gmail.com>
-Content-Language: en-US
-From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <717b7e70-5cf8-4671-8a6b-005eefd0535e@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 22/1/24 17:20, Matti Vaittinen wrote:
-> On 1/19/24 13:56, Subhajit Ghosh wrote:
->> On 8/1/24 02:52, Jonathan Cameron wrote:
->>> On Thu, 4 Jan 2024 11:34:28 +0200
->>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
->>>
->>>> The loop based 64bit division may run for a long time when dividend is a
->>>> lot bigger than the divider. Replace the division loop by the
->>>> div64_u64() which implementation may be significantly faster.
->>>>
->>>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
->>>> Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers")
->>>
->>> Hmm. Fix or not perf improvement?  I'm going to take the middle ground
->>> and leave the fixes tag, but not rush this in.
->>>
->>> So applied to the togreg branch of iio.git and for now just pushed out
->>> as testing for 0-day etc to take a look before I rebase that tree after
->>> rc1.
->>>
->>>
->>>
->>>> ---
->>>>
->>>> I've implemented also a fixup series for supporting rounding of
->>>> gains/scales:
->>>> https://lore.kernel.org/lkml/37d3aa193e69577353d314e94463a08d488ddd8d.1701780964.git.mazziesaccount@gmail.com/
->>>>
->>>> That series does also remove the offending loop.
->>>>
->>>> We don't currently have any in-tree users of GTS helpers which would
->>>> need the rounding support so pushing the rounding is not urgent (and I
->>>> haven't heard of Subjahit whose driver required the rounding). Hence, we
->>>> may want to only take this loop fix in for now (?) and reconsider
->>>> rounding when someone need that.
->>>>
->>>> Jonathan, what's your take on this?
->>> Agreed - let us wait for the rounding to have a user, but makes sense
->>> to tidy this corner up in the meantime.
->>>
->>> Thanks,
->>>
->>> Jonathan
->>>
->>>>
->>>>   drivers/iio/industrialio-gts-helper.c | 5 ++---
->>>>   1 file changed, 2 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/iio/industrialio-gts-helper.c b/drivers/iio/industrialio-gts-helper.c
->>>> index 7653261d2dc2..abcab2d38589 100644
->>>> --- a/drivers/iio/industrialio-gts-helper.c
->>>> +++ b/drivers/iio/industrialio-gts-helper.c
->>>> @@ -34,7 +34,7 @@
->>>>   static int iio_gts_get_gain(const u64 max, const u64 scale)
->>>>   {
->>>>       u64 full = max;
->>>> -    int tmp = 1;
->>>> +    int tmp = 0;
->>>>       if (scale > full || !scale)
->>>>           return -EINVAL;
->>>> @@ -48,8 +48,7 @@ static int iio_gts_get_gain(const u64 max, const u64 scale)
->>>>           tmp++;
->>>>       }
->>>> -    while (full > scale * (u64)tmp)
->>>> -        tmp++;
->>>> +    tmp += div64_u64(full, scale);
->>>>       return tmp;
->>>>   }
->>>>
->>>> base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
->>>
->>>
->> Hi Matti,
->>
->> Your fix works beautifully with the latest version of apds9306 driver which I am working on.
->> All available scale values can be set without any errors. Thank you.
-> 
-> Thanks for testing Subhajit! Just to ensure we have no miscommunication - did you test just this division fix, or the rounding fix here:
-> https://lore.kernel.org/lkml/37d3aa193e69577353d314e94463a08d488ddd8d.1701780964.git.mazziesaccount@gmail.com/
-You are most welcome. I did not check the above rounding fix pointed out by the link. I will be happy to check it and let you know by the end of this month.
-I checked this division fix.
+The RISC-V arch_timer selftests is used to validate Sstc timer
+functionality in a guest, which sets up periodic timer interrupts
+and check the basic interrupt status upon its receipt.
 
-> 
->> Moving to a new city with a new full time job with the assumption of getting more time
->> for my list of opensource projects and contributions proved to be utterly wrong!
-> 
-> Well, I can't blame you :) Being in a new work at new city sounds like you have a lot on your plate right now. Give it half a year and things will stabilize though :) Oh, and falsely assuming that "when XXX, I will have the time to do YYY" - been there done that :)
-> 
-> Good luck on the new work and city!
-Thank you Matti.
-> 
-> Yours,
->      -- Matti
-> 
-Regards,
-Subhajit Ghosh
+This KVM selftests was ported from aarch64 arch_timer and tested
+with Linux v6.7-rc8 on a Qemu riscv64 virt machine.
+
+---
+Changed since v4:
+  * Rebased to Linux 6.7-rc8
+  * Added new patch(2/12) to clean up the data type in struct test_args
+  * Re-ordered patch(11/11) in v4 to patch(3/12)
+  * Changed the timer_err_margin_us type from int to uint32_t
+
+Haibo Xu (11):
+  KVM: arm64: selftests: Data type cleanup for arch_timer test
+  KVM: arm64: selftests: Enable tuning of error margin in arch_timer
+    test
+  KVM: arm64: selftests: Split arch_timer test code
+  KVM: selftests: Add CONFIG_64BIT definition for the build
+  tools: riscv: Add header file csr.h
+  tools: riscv: Add header file vdso/processor.h
+  KVM: riscv: selftests: Switch to use macro from csr.h
+  KVM: riscv: selftests: Add exception handling support
+  KVM: riscv: selftests: Add guest helper to get vcpu id
+  KVM: riscv: selftests: Change vcpu_has_ext to a common function
+  KVM: riscv: selftests: Add sstc timer test
+
+Paolo Bonzini (1):
+  selftests/kvm: Fix issues with $(SPLIT_TESTS)
+
+ tools/arch/riscv/include/asm/csr.h            | 541 ++++++++++++++++++
+ tools/arch/riscv/include/asm/vdso/processor.h |  32 ++
+ tools/testing/selftests/kvm/Makefile          |  27 +-
+ .../selftests/kvm/aarch64/arch_timer.c        | 295 +---------
+ tools/testing/selftests/kvm/arch_timer.c      | 259 +++++++++
+ .../selftests/kvm/include/aarch64/processor.h |   4 -
+ .../selftests/kvm/include/kvm_util_base.h     |   9 +
+ .../selftests/kvm/include/riscv/arch_timer.h  |  71 +++
+ .../selftests/kvm/include/riscv/processor.h   |  65 ++-
+ .../testing/selftests/kvm/include/test_util.h |   2 +
+ .../selftests/kvm/include/timer_test.h        |  45 ++
+ .../selftests/kvm/lib/riscv/handlers.S        | 101 ++++
+ .../selftests/kvm/lib/riscv/processor.c       |  87 +++
+ .../testing/selftests/kvm/riscv/arch_timer.c  | 111 ++++
+ .../selftests/kvm/riscv/get-reg-list.c        |  11 +-
+ 15 files changed, 1353 insertions(+), 307 deletions(-)
+ create mode 100644 tools/arch/riscv/include/asm/csr.h
+ create mode 100644 tools/arch/riscv/include/asm/vdso/processor.h
+ create mode 100644 tools/testing/selftests/kvm/arch_timer.c
+ create mode 100644 tools/testing/selftests/kvm/include/riscv/arch_timer.h
+ create mode 100644 tools/testing/selftests/kvm/include/timer_test.h
+ create mode 100644 tools/testing/selftests/kvm/lib/riscv/handlers.S
+ create mode 100644 tools/testing/selftests/kvm/riscv/arch_timer.c
+
+-- 
+2.34.1
+
 
