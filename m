@@ -1,113 +1,114 @@
-Return-Path: <linux-kernel+bounces-33625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23392836C70
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:05:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D6E836C7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:07:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 530A11C274A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:05:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20101B30574
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 138B448CEF;
-	Mon, 22 Jan 2024 15:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA6E60BB8;
+	Mon, 22 Jan 2024 15:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="n50s5fom"
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SVg/5b11"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94C103D99A;
-	Mon, 22 Jan 2024 15:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B5E405EF;
+	Mon, 22 Jan 2024 15:50:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705938588; cv=none; b=mKq12+Xz0r0n646R+6E9fkRAUFEZGX/XkeLWRTiJ8rAv+pSkg7dcW01j8G5uBxoSGCZrWoslGNUwhviqFoE2tGkoh989eErUlz0RjtJ0sbleQ1PY/nDkguU8Tsg9iZgCNNhRI46Hh4MZDDz5vt3ANL8qnHn6JFbeRrBGddGKZuw=
+	t=1705938613; cv=none; b=JGPyEB9+QoNNOP/6n4FxBEGTPnpYGada7vgGo9a7mFdE/6TA/LgXbOi/J52OVLhhHSQJwKpVFHn6L/MRQWZrI2xcDOF1vnnj6o2kHHdlIAnkBAdJWqf/AujbHDOWln7ZqTlJ9FF7U4XY4bgZXiTm3yCtur3tVG5lLoIpdi5z8Do=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705938588; c=relaxed/simple;
-	bh=k7nQjJCjWS7QC8MeL9YzD9PrLF0VGaGFHHqIeOBQKAw=;
-	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-	 Content-Type:Date:Message-ID; b=fID1Qsy58uP+We1doNCzvyMNE8nLBvii1lY1y71/LYXY09S9l0eHsDV0Hh/JIDPoq7lTpUDfz24AaImDMF6t1z2jAoCDZQhXSRM/v7QvifxPoIZHjw4VxSEIZoQRv8L5F8Dq7x/A2vDZFFSeziZ+cZ4KVanUCi2VmATWh25bERo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=n50s5fom; arc=none smtp.client-ip=199.185.137.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=k7nQjJCjWS
-	7QC8MeL9YzD9PrLF0VGaGFHHqIeOBQKAw=; h=date:references:in-reply-to:
-	subject:cc:to:from; d=openbsd.org; b=n50s5fom6DQvnOuPAWppwTTuDx/Hdrg2M
-	7/pKMQklBESCFMqVIrYmB+1FIBZ6frgkrGVkt3TVlG2/fCGGi1k0mvseFvgf3QQnRHxPQZ
-	pNfYfeRwaX414VOclH4koqNNxL1KaQ3r9/E85ErVnankDhKWJlSfkYbxME23q59ndFBIRU
-	FKde24hKJcx4S8gNnST4MkZcAyGU572VL3RobUJ5toxWWSu/Evt/C5N60lWHsq0IkCTWOe
-	a/WwPvGsNQA/yKQK5RMPAAOpAiItgv+A1lV3KKffLznE2p1B7xSxuGwMKU+urD1vRqxMsH
-	T3OFrVd320BK4OhFH394v9SNpAqsw==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-	by cvs.openbsd.org (OpenSMTPD) with ESMTP id 2feb09e1;
-	Mon, 22 Jan 2024 08:49:39 -0700 (MST)
-From: "Theo de Raadt" <deraadt@openbsd.org>
-To: jeffxu@chromium.org
-cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
-    sroettger@google.com, willy@infradead.org,
-    gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-    usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
-    jorgelo@chromium.org, groeck@chromium.org,
-    linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-    linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-    linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v7 0/4] Introduce mseal()
-In-reply-to: <20240122152905.2220849-1-jeffxu@chromium.org>
-References: <20240122152905.2220849-1-jeffxu@chromium.org>
-Comments: In-reply-to jeffxu@chromium.org
-   message dated "Mon, 22 Jan 2024 15:28:46 +0000."
+	s=arc-20240116; t=1705938613; c=relaxed/simple;
+	bh=PME5bbv3asP19dSw6d/TnXvufb8ShPW1A+mWkN22bCA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SsNiSRRvkAzJ9bD0sHVlMyN8adWRWMS8uVHNv7yGYb5LKel0zzdOgvGxrKr5l9w24mu0vv1mnAQ4Zl319NOTWLQM0CSOE49XSUW6SmsVXh287jHXZ3VubBy0RB0ooOFwrhRIcCV1uG6o+TZtd1GhFC8yaK1TniSBpJIGHUrAM4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=SVg/5b11; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40MAY6eZ000913;
+	Mon, 22 Jan 2024 15:49:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=6+n08baSWoKll1alAdFlutI81OxW5WoCAt0Bwt8+8Rw=;
+ b=SVg/5b11X9hsfS0XxUeB8SDt9PCe6LmN+FawiYto8pm6zvpO0yxSQznPLCQXJlb8eDYq
+ Em1/QIZ/ZUeoi2ZwmnbGsWjT6qb7HbfB5zuzDEO+qVUCVr53HaUuFkFBMHsK6mU/+MGU
+ 6uSldCxEaaAk1Ggl3NzZPL+lCgPoncppCSPnqH6+IHnH2n5GNf2Fly9UkX7WnGrqE6g1
+ 6BV6Apw39gVnvoqS8zNoDm+kkRCnSS3fmvVyGLBNGR1QcdLdrc7E0h+61h1qbAtw8TyX
+ Mt3SoHb4i58e2EegnCCETUCYk3oURwHo15Cqz0zm7K9dW0t1B0NM4+Emzii++8qMJgvl ug== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr7cwbukn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 22 Jan 2024 15:49:57 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40MFZV2Z039341;
+	Mon, 22 Jan 2024 15:49:56 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vs36yun01-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 22 Jan 2024 15:49:56 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40MFntnC001674;
+	Mon, 22 Jan 2024 15:49:55 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3vs36yumye-1;
+	Mon, 22 Jan 2024 15:49:55 +0000
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To: Aleksa Savic <savicaleksa83@gmail.com>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com
+Subject: [PATCH] hwmon: gigabyte_waterforce: Fix locking bug in waterforce_get_status()
+Date: Mon, 22 Jan 2024 07:49:52 -0800
+Message-ID: <20240122154952.2851934-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8627.1705938579.1@cvs.openbsd.org>
-Date: Mon, 22 Jan 2024 08:49:39 -0700
-Message-ID: <726.1705938579@cvs.openbsd.org>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-22_06,2024-01-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401220107
+X-Proofpoint-ORIG-GUID: L-dIc_Sqd8wHUlpEMhIJdMzSKoQ6ulL-
+X-Proofpoint-GUID: L-dIc_Sqd8wHUlpEMhIJdMzSKoQ6ulL-
 
-Regarding these pieces
+Goto 'unlock_and_return' for unlocking before returning on the error
+path.
 
-> The PROT_SEAL bit in prot field of mmap(). When present, it marks
-> the map sealed since creation.
+Fixes: d5939a793693 ("hwmon: Add driver for Gigabyte AORUS Waterforce AIO coolers")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is based on static analysis with smatch, only compile tested.
+---
+ drivers/hwmon/gigabyte_waterforce.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-OpenBSD won't be doing this.  I had PROT_IMMUTABLE as a draft.  In my
-research I found basically zero circumstances when you userland does
-that.  The most common circumstance is you create a RW mapping, fill it,
-and then change to a more restrictve mapping, and lock it.
-
-There are a few regions in the addressspace that can be locked while RW.
-For instance, the stack.  But the kernel does that, not userland.  I
-found regions where the kernel wants to do this to the address space,
-but there is no need to export useless functionality to userland.
-
-OpenBSD now uses this for a high percent of the address space.  It might
-be worth re-reading a description of the split of responsibility regarding
-who locks different types of memory in a process;
-- kernel (the majority, based upon what ELF layout tell us),
-- shared library linker (the next majority, dealing with shared
-  library mappings and left-overs not determinable at kernel time),
-- libc (a small minority, mostly regarding forced mutable objects)
-- and the applications themselves (only 1 application today)
-
-    https://lwn.net/Articles/915662/
-
-> The MAP_SEALABLE bit in the flags field of mmap(). When present, it marks
-> the map as sealable. A map created without MAP_SEALABLE will not support
-> sealing, i.e. mseal() will fail.
-
-We definately won't be doing this.  We allow a process to lock any and all
-it's memory that isn't locked already, even if it means it is shooting
-itself in the foot.
-
-I think you are going to severely hurt the power of this mechanism,
-because you won't be able to lock memory that has been allocated by a
-different callsite not under your source-code control which lacks the
-MAP_SEALABLE flag.  (Which is extremely common with the system-parts of
-a process, meaning not just libc but kernel allocated objects).
-
-It may be fine inside a program like chrome, but I expect that flag to make
-it harder to use in libc, and it will hinder adoption.
+diff --git a/drivers/hwmon/gigabyte_waterforce.c b/drivers/hwmon/gigabyte_waterforce.c
+index 1799377fc2f1..7bccfe2eaa76 100644
+--- a/drivers/hwmon/gigabyte_waterforce.c
++++ b/drivers/hwmon/gigabyte_waterforce.c
+@@ -146,7 +146,7 @@ static int waterforce_get_status(struct waterforce_data *priv)
+ 	/* Send command for getting status */
+ 	ret = waterforce_write_expanded(priv, get_status_cmd, GET_STATUS_CMD_LENGTH);
+ 	if (ret < 0)
+-		return ret;
++		goto unlock_and_return;
+ 
+ 	ret = wait_for_completion_interruptible_timeout(&priv->status_report_received,
+ 							msecs_to_jiffies(STATUS_VALIDITY));
+-- 
+2.39.3
 
 
