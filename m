@@ -1,616 +1,235 @@
-Return-Path: <linux-kernel+bounces-33026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B9683635D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:38:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3526836354
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 132D31F21FAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:38:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8EEB1C223E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9E739AC1;
-	Mon, 22 Jan 2024 12:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B798A3BB29;
+	Mon, 22 Jan 2024 12:35:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QEWbcmnQ"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="2IzTbMT9"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2077.outbound.protection.outlook.com [40.107.104.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD003CF50;
-	Mon, 22 Jan 2024 12:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705927051; cv=none; b=Oi3RBPvN5jXp+bkRVnGMKT8MRK1yubaEwnjmlXAEhku2c2/D7vg/mLoDTRlWAzI/naoIG9jr1evPVGdEb5QMGhHOUMx3mg2mzkj5VuFb5csLjVpilBlHUYmJcdsU/VmQQ90EcPe13xy7PNTnyE2RiCO1pGM/JZ1m1cLsZ+c1YVw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705927051; c=relaxed/simple;
-	bh=2V+YBexIdHp/QwN1FpmdpxIaDEdAlqrAt2nwl+lbC2o=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iFg2MDZSijIwPzXitNB8mdyYKHqdLopT6AuS1RCCHnEZyxRq+cvRpWfDEcQn+6Qr6hKJOtuWoBVknyXv8oN/AofwpozPpDTrffTG0k31LarRwASpCOQGFQ6If/AfwXtFVfYGjWqH0G6lP/5a0t3oLbJnjOdV4IyrZEudbmTFvRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QEWbcmnQ; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ce0efd60ddso1537959a12.0;
-        Mon, 22 Jan 2024 04:37:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705927049; x=1706531849; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BsRTlx9xbCoqaCvD8LXyePi0QNIMmxANnBnMlPU8zzE=;
-        b=QEWbcmnQ3Kf8HPkmGqv7YhJ736ZQ31eYNKY4shwe8eq1G3hKkop8MIQLguBnJh0l74
-         ZUkL54qDmO/V5HvuHIOgY6kfMMo316oMtmedqUh9u+3HXVqjCQ6gc1jVAeW/ZSA/vVLw
-         mVR2R5B08Dr1wB0Z/1aF7/pGzzrAAI3lwbmMG9ZRWUHKcY7X5dPTH/jBj+sDuwNvxMWT
-         G7dV0ZRvPjqaCWfgdbrZtfPMDtfHpU2qVD/EtZi3G0Dd7A2nHXDSK4UVZKyYN2ULTOBD
-         yqHbdlUviLS/dM3dhREKoBOmE88FbB3rVKVkrI4BHVytCxOfr1bF/t5w3iul8Qjq939x
-         jz7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705927049; x=1706531849;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BsRTlx9xbCoqaCvD8LXyePi0QNIMmxANnBnMlPU8zzE=;
-        b=FMZ7soRSQxWvshZL3Jq2jozsiWqpiJNNF0WmdcJ7Nr5W13d7QQsygG32Y6GHs1+lTK
-         7lupHBjfgH2NxfUPa9xhsmeok91wdhWoSyao39wovPeyliUNc9LEj+NS3e0STLd/z+C9
-         EPGdF+6hqDIA29vz+ba1oNgQtxNM9t0pV41HU8lLb5TWswQ5k8F8T4x05N+FeydfY5tH
-         cjQo1sUZTNE+AyGn2LoXSjRsjGD7Ex9kuHTowGxROiCBVvaw03UwQJPXv+5cLmps/CGy
-         eaTXnWkhJkO8fEL98U+dUoy4N7DYDizlLkbtEnoLWKLQetngA5XDS7Te1Iu6bJLGHCxV
-         7XKw==
-X-Gm-Message-State: AOJu0YyecYMbBuc3qQJe/mYL0MMK9CqH7G7cgFhkVP0jRmlHbjrjSBzg
-	SLabwJlpe19lJSAS2yzEHVpzzHoqt1UEifWz3g9/zzJLvR8A7+31
-X-Google-Smtp-Source: AGHT+IFaf2gr60RGOvxF0Pyzhs/WGx+AfLZGSZeFMFLhjwi7AWW26087rmz+hNu4w1deABHBKovGlQ==
-X-Received: by 2002:a05:6a20:1611:b0:19a:ef9e:989d with SMTP id l17-20020a056a20161100b0019aef9e989dmr1927897pzj.22.1705927048984;
-        Mon, 22 Jan 2024 04:37:28 -0800 (PST)
-Received: from hdebian.corp.toradex.com ([201.82.41.210])
-        by smtp.gmail.com with ESMTPSA id t19-20020a056a0021d300b006d9be753ac7sm9452933pfj.108.2024.01.22.04.37.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 04:37:28 -0800 (PST)
-From: Hiago De Franco <hiagofranco@gmail.com>
-To: Shawn Guo <shawnguo@kernel.org>,
-	linux-arm-kernel@lists.infradead.org
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Hiago De Franco <hiago.franco@toradex.com>
-Subject: [PATCH v1 2/2] arm: dts: nxp: imx: Add support for Apalis Evaluation Board v1.2
-Date: Mon, 22 Jan 2024 09:35:00 -0300
-Message-ID: <20240122123526.43400-3-hiagofranco@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240122123526.43400-1-hiagofranco@gmail.com>
-References: <20240122123526.43400-1-hiagofranco@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC7D26AC5;
+	Mon, 22 Jan 2024 12:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705926938; cv=fail; b=RmEOEtL5FjBjsMSuWF+FypF3DR3RFwOs4tCxB4mm3BP4BgXyVmlyx3hFs8l/y0cmuoH46TB9/HBH80DPE8L+EzQOlz4cQ4KypGnGQrUQisq/gCA+X+meZELfecmaCBYUb8Ihsx/dFP6URwEq25e4vd7E/2Qh146lXCeLSWy+hRk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705926938; c=relaxed/simple;
+	bh=VtE3ouGbiiKr+jvh7FVUvYKPahrdbr2s7FRZvHptwJs=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=cuOL6q+0s5t1FGxTyaJLvWgzdWAeqDSU2ax60/MRS6Cf//7DBp0fHfAml12hVL1vFZrzNsTn73mFHvP3nTv530zmXlwb0KLYgFsC6SFdOOuGBQhmC6mAqAXpS+5cdVmbaosl4Er2/VhOcnd83xIWBIatQxf1mUAZNmSvywOFAwk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=2IzTbMT9; arc=fail smtp.client-ip=40.107.104.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VnaGmOi+qwXcnXaIkwioPADjLoKWYdoh2CGgpbNZk4nZPegEaFmC+Ht9cLk/+/o5SSLlCF3rSbrWmja/9TA+R/Z76OZZgRw2lLq4fnIocYRwHTXlU56XxZsYlD++gTCcrBq/vgGXGqOthBWWsU8ztj50Irk1dCYntJMZYolzHnoETuWTePER4tM0gKbPbYF/dKOclWufcngKcAKlYCSgMkyRmjMg2taD/UacmWbKAVGmfTPywOSfhvBO6c0LZ/DdGlcoGa20JeQs30twv7BjKAPtGLFXvwJn1emXxtRV6q2KhS1EvC8q06B2psNSIK3WucDAH0KwKOOCqJYUuzzBFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+3chs/qp+SZKLQyDAiZP1eZh8EHNNAKnbTbXnIEN6xw=;
+ b=Xk+mZr1isF8hxJIBDe62TaaEHCdgP4St3Sx2X2xP2Cnx1ybTCmWPPDMVEdajCLyVpF1Ywmz05mqUxIGsi51GSNsrWGm+LVllzV2ZUbqOmrL1ndv4p+gNRY4PR7EXyVM3MGgyVUS8auKxKI5Yve4AGH8W6zqwBiTlhJu6xKTVxErMjN2kWUhTyLftbjqvMD1IomgmDGZHprI7nCyvxCe/SmJxEzxdvAP/QpdPSjZEgKgImbn4ht+Rqj/jzZ4ByT2OObc5LYx8Gf/2HGK1rGj6LAjWyCz5NlcS+8gcriKln53X14uwIT959LAaUWkGuwk6iKtKZ51dK1ulTJ7zXWGCAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+3chs/qp+SZKLQyDAiZP1eZh8EHNNAKnbTbXnIEN6xw=;
+ b=2IzTbMT9Tm3bQLETOPaeAt50P3a/4iybSc2WFuU6W1E2LJbBdcBQ9jgD18uGhIE9FVWe4BKrWKk6PGCEqDKcW+pwyB6XrpC4302EaoHVBoeq9/PE/e1OQBLq1xITTIaToYuvy/jgdDNoJVgpxhFPcWEAedFfZEnaALYsWHjHoYc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by AS4PR08MB8094.eurprd08.prod.outlook.com (2603:10a6:20b:589::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.31; Mon, 22 Jan
+ 2024 12:35:33 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::c8ee:9414:a0c6:42ab]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::c8ee:9414:a0c6:42ab%6]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
+ 12:35:33 +0000
+Message-ID: <1426b1e4-f42b-44e4-8d21-e675132866b3@wolfvision.net>
+Date: Mon, 22 Jan 2024 13:35:30 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] ASoC: dt-bindings: xmos,xvf3500: add bindings for
+ XMOS XVF3500
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Rob Herring <robh@kernel.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20240115-feature-xvf3500_driver-v1-0-ed9cfb48bb85@wolfvision.net>
+ <20240115-feature-xvf3500_driver-v1-2-ed9cfb48bb85@wolfvision.net>
+ <333c2986-c7c2-4a46-90cf-b59ae206e55a@linaro.org>
+ <96abddcc-fa65-4f27-84fe-2281fe0fcf1c@wolfvision.net>
+ <644f7f02-405d-47fb-bc72-4d54e897255f@linaro.org>
+ <5db4b898-93d5-446f-bfed-b57847f9967a@wolfvision.net>
+ <435f502c-1e1b-4d40-8dcc-34487905d69c@linaro.org>
+ <b7f76546-9998-43e0-abff-a4e73817dbae@wolfvision.net>
+ <47bdc31c-50d2-4d33-9339-5132b6364539@linaro.org>
+ <16027339-0a82-4dd1-86aa-19fda6e23f88@wolfvision.net>
+ <aeeb0dfb-87e2-4024-9d4a-0b9529477315@linaro.org>
+ <b888d958-4eb0-4c1f-ace6-b2b85faa5113@wolfvision.net>
+ <87ede9y3ue.wl-tiwai@suse.de>
+From: Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <87ede9y3ue.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: VI1PR0202CA0015.eurprd02.prod.outlook.com
+ (2603:10a6:803:14::28) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|AS4PR08MB8094:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9d9882db-d512-41d5-8b6a-08dc1b46a015
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rzkkokFx1BeKDKL6MkWP0zy3Qz7sUzVt5YO+tHtwShMtAhssz298RzgHlinoZEwBYhTkxrKIxIzQ+LrA+gSJiUspgGvJQcDBMepvbQf8G6/HCAwAvYgMEy6Cy8JuLlxc0ZvC8XHVKYURBvosDXcxrFtTJm8UCz2k8be6IHtA+4NnsBKXMBp/0fiOVUM/WZxiwwNwPFjNklXpX5uscLjZZ/knAwgtQoNI4QlMiXvLs1aph05CsoF05vcTMVwmK0qdxFaebI3oPh1GTbPHQ7CEkF+vF2LWznED7XUzQ1qcBWXVOYl5v4eWNZdeY00pF0qeYnh8r2gvG/z2HLBD8nqU24qhtTI4HjReWjrECqys8q6VeWyh8Dhk5Ag1y7ejzdXM3TDs8vr3tm+rPcG1Z8zzLWc3RCNQuqmhTlODME84obdkXgAdcIcFpo8DmvGOs2zaRBvgxbqR7osENsUcvHDVcj8jRWKNPt9Sb1FtPp25EO4ga73fyyQ2RZF0rzZqrSnddoIjJMq3uotWTZ7vQAV8R+zJma3lHfix5u77NS6+WyRfa/e/GHq2UN4XKvEPv8enauGmova8+NIy13bzHn3naysB62I4oZ7cYubPFw98VNQRGczykkHLi/MuVs9xMX8LzI+XpJaun+yqiLCE+E2D6Q==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39850400004)(346002)(376002)(366004)(396003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(6512007)(6506007)(2616005)(53546011)(5660300002)(83380400001)(8936002)(7416002)(2906002)(66556008)(6486002)(6916009)(66476007)(8676002)(4326008)(66946007)(31696002)(54906003)(316002)(478600001)(44832011)(86362001)(36756003)(38100700002)(41300700001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SWdaUG0rQm0rOFY4cERkbWR5T1ZrOS9Lb3lUUlNaM3pOeGdCTktISFlrSG0z?=
+ =?utf-8?B?Zmo5QVgraC8ybml6a2ZpSWZXM1M4c0ZlaFA0cXdVbTVDVFc3Q05LNzVFdTVN?=
+ =?utf-8?B?T0lhMVM2emFzQW8wUmlFQlJtL1l0WTlxOU5UWjltL1dHYURKVUNNZVlxcjNE?=
+ =?utf-8?B?SVdkTXo1Qnh4N1ZRSVByQnFzTUF6aFFEbHVoZGJrczhHMXNwSWgzVEFMTU9s?=
+ =?utf-8?B?ZDhkdUFGQlJsbm94TWdTeGFZY3MwYklsWFhnVUZOUFR3Y1RUaGJjcldtUFR2?=
+ =?utf-8?B?Y1lPVnAweHdBTTg2VHM4aWhBQnVCVEtHdGkxNDloZUNWL1dTRldGd1RKK2hX?=
+ =?utf-8?B?cXZZSkhEWnR1dXFMV0V1NlRtYmVndWRFaXFxUzhGVUVMUnJJMStsVFUrWW9n?=
+ =?utf-8?B?dFIyNGxoQVVadWR1VlI3QkgwWU9lRjdZcGs1N2Y4VEQ1bTVxdUo0RVdRNmF1?=
+ =?utf-8?B?TzZpamh4Vnd5SU5TVTgzWGtycEJpRDMzOFBxZ0pDQVdMaXYwMm44S0ZacTg4?=
+ =?utf-8?B?UTVWWkR5NDNxTFRqYlhPMzcvREtFZW10dkRNMWJ3S2gvTm9wZkxwWUYzNDkv?=
+ =?utf-8?B?VFV0S0MxYXVyakM4QzNLVVllSlNFbno2MTFYWXpWY3V0czhUZTZjL3JGdVd4?=
+ =?utf-8?B?bmZFSC9PdFFudlBpUWF4WW1Db3lyTFo5QkR1Wlg2alJSVko3Z0NTUlJJcEEr?=
+ =?utf-8?B?SnN1MXZGQzRjb2NSdGwyUGRHeThkVURnT2NPaC9ZNC9JWWcxK2ZkQWZKM1pE?=
+ =?utf-8?B?aFVmdnVXdTZUR2pKUGhxZDFybVlYUERlbDVUUmZFbDhGcXVhaTRUb0N5T0lu?=
+ =?utf-8?B?di9rWG85aFZYQXN5UVkxWGRlMm5vb3dTYVU3b0lQb0duT2o0MWZHQ3lFM09M?=
+ =?utf-8?B?djhSai9udlVTOEVSZjhCeDlnTmhyRSsrRlZSS2hwT0FRbSt2a1ZqNFVTazdB?=
+ =?utf-8?B?YTQrT2N4ZG5RaE4vOUI4OXJPTE1SZUFJdU94T0VLendmbXV1UnNjdkNSdjgv?=
+ =?utf-8?B?b1c5SmpWRmtuSlNxUCt6Z0t2YTF5YW1SZlZteTMxZ0RWWUFxekRBYnZxdDI1?=
+ =?utf-8?B?dlBaMW9yajNpSlZFSTZsMGtPOTFJRVJHNGdoUlRiSDk1NVZoNWxreUNKZ2VL?=
+ =?utf-8?B?WVN6RmFQdlMwbG03VUdodEhaUHNFajBuMU13QUlBWmRNSlViY3lVUlZKckc4?=
+ =?utf-8?B?aTQzYklRUjNzV1dIa2d2MVFJRnMxa0Q1RmYyMkNpSlBQYmJjakZXbk14RHZm?=
+ =?utf-8?B?YjRBdzk1N1ova3RqOW5wWGhnRWtDbnFlaElWcmhZTXlnVi9vL0lYQUpOKzRB?=
+ =?utf-8?B?K0VpdCszbXNYVDJJd0xqeHZOeTNFTWZ6WENQVUQzbDdDR3JWNEs3NktERWZx?=
+ =?utf-8?B?K1UrNzR5TFBMK2dEOUwzMjk5cXF0dmRHdWVTN3JwQUg4NjFORzdwU1pVS3Y4?=
+ =?utf-8?B?V01Ta3JyRXg0YlFUK1ZxWTJKakpqS0F2Vnc1VTBJd2RxaVhzS0oyUzBHUVpG?=
+ =?utf-8?B?TjNWczlPK1RtTE5WMlgzTWxhMFRZRkZoUlZ0RmJ3SlZrcXFEcnYxU1pvMzVw?=
+ =?utf-8?B?VGZvNitDa3NDQnpJTzZLUGphdE5NV2JYbzd3eTdUeDlFQWdGaDZUSDdEcFZr?=
+ =?utf-8?B?bVBoVDBhR1dNQWwyRVhMaXNsbDhrSzZsOHI2dkoxQ0VDNTNoSGRsN0p5WGov?=
+ =?utf-8?B?OWp4U2RtZCtBeXU0dzM1akNNWVBnUk00ZGt4TEltTUNJZXpFTEowODdLbXNS?=
+ =?utf-8?B?OCtqbVVJUkRLWk9BR2lsZnpmRzlEeUN2aWxuMHgzZXU5OFJoL1dDUTd1M0w5?=
+ =?utf-8?B?NUprQ1IvREN5anhSNW8xdDBZYUJJWU0ySEZLOWs0R1JlS05nNndxTkF3UHFo?=
+ =?utf-8?B?clFrOVRZUWxMckhsNnRhejZGaEJva3ZWTGg1djVpWnY3Q25kcjhQTlhWaHBW?=
+ =?utf-8?B?clhKOXVQeW5IRmZBUFlPc3NYVXB0RGxUdlRDSWJPbWVJTEFDUlVvTWxrQ3NX?=
+ =?utf-8?B?NTJCYk1jT2RQV0VyaGhBd3BLZU1TY0x0VXlzeGxYR1M1dDhGZWd1UG1hNHQr?=
+ =?utf-8?B?WmVQU1U0MTVHbFNiU3FNTUNIeGtqQ2VJL29icHhVYnhNMDhEY1l3RWluV21q?=
+ =?utf-8?B?RFVWRHVkUnBSa2tLdE1KTFphUGtuWFdsV28xT1ZYdG5wREJrVTV4Rm93NXh6?=
+ =?utf-8?B?Y1NzYXVMY1NoUXpJYVJvTUtLY0laTlM3eHVDVGhZcDRvNU9ybWJxbU1EOVdz?=
+ =?utf-8?Q?vwzn5Z7rd6O2zzy7pVvTEcyOB39oE+X/f2puFD4nqI=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d9882db-d512-41d5-8b6a-08dc1b46a015
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 12:35:32.8708
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YNeF04Dn2ivHqu+uNjhDP7HwViMO1lHrxAw6zVoQlerHrNoVfScoXao3C6kGYMMkEH+izbdbq7uB5PLqRtT5ptZ+L8TPgxjLhqqFFBJ0Y1o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR08MB8094
 
-From: Hiago De Franco <hiago.franco@toradex.com>
+On 22.01.24 13:01, Takashi Iwai wrote:
+> On Tue, 16 Jan 2024 08:29:04 +0100,
+> Javier Carrasco wrote:
+>>
+>> On 15.01.24 21:43, Krzysztof Kozlowski wrote:
+>>> On 15/01/2024 20:43, Javier Carrasco wrote:
+>>>> On 15.01.24 19:11, Krzysztof Kozlowski wrote:
+>>>>> On 15/01/2024 17:24, Javier Carrasco wrote:
+>>>>>> Do you mean that the XVF3500 should not be represented as a platform
+>>>>>> device and instead it should turn into an USB device represented as a
+>>>>>> node of an USB controller? Something like this (Rockchip SoC):
+>>>>>>
+>>>>>> &usb_host1_xhci {
+>>>>>> 	...
+>>>>>>
+>>>>>> 	xvf3500 {
+>>>>>> 		...
+>>>>>> 	};
+>>>>>> };
+>>>>>>
+>>>>>> Did I get you right or is that not the correct representation? Thank you
+>>>>>> again.
+>>>>>
+>>>>> I believe it should be just like onboard hub. I don't understand why
+>>>>> onboard hub was limited to hub, because other USB devices also could be
+>>>>> designed similarly by hardware folks :/
+>>>>>
+>>>>> And if we talk about Linux drivers, then your current solution does not
+>>>>> support suspend/resume and device unbind.
+>>>>>
+>>>>> Best regards,
+>>>>> Krzysztof
+>>>>>
+>>>>
+>>>> Actually this series is an attempt to get rid of a misuse of the
+>>>> onboard_usb_hub driver by a device that is not a HUB, but requires the
+>>>> platform-part of that driver for the initialization.
+>>>
+>>> That's just naming issue, isn't it?
+>>>
+>>>>
+>>>> What would be the best approach to provide support upstream? Should I
+>>>> turn this driver into a generic USB driver that does what the
+>>>> platform-part of the onboard HUB does? Or are we willing to accept
+>>>
+>>> No, because you did not solve the problems I mentioned. This is neither
+>>> accurate hardware description nor proper Linux driver model handling PM
+>>> and unbind.
+>>>
+>> You mentioned the PM handling twice, but I am not sure what you mean.
+>> The driver provides callbacks for SIMPLE_DEV_PM_OPS, which I tested in
+>> freeze and memory power states with positive results. On the other hand,
+>> I suppose that you insisted for a good reason, so I would be grateful if
+>> you could show me what I am doing wrong. The macro pattern was taken
+>> from other devices under sound/, which also check CONFIG_PM_SLEEP,
+>> but maybe I took a bad example or missed something.
+> 
+> FWIW, the patterns in sound/ are somewhat outdated and need to be
+> refreshed.  Nowadays one should use DEFINE_SIMPLE_DEV_PM_OPS() instead
+> (that should work without ifdef).
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-Add support for the new Apalis Evaluation Board v1.2. Because
-only the imx6q-apalis-eval.dts was available, the imx6q-apalis-eval.dtsi
-has been created which has common hardware configurations for v1.0, v1.1
-and v1.2. Both imx6q-apalis-eval.dts and imx6q-apalis-eval-v1.2.dts
-files include imx6q-apalis-eval.dtsi.
+Thank you for your feedback. I noticed that the pattern looks different,
+but given that many devices in sound/ still use that pattern, I just
+followed suit. In that case I will only use DEFINE_SIMPLE_DEV_PM_OPS.
 
-Versions 1.0 and 1.1 are compatible with each other and should
-use imx6q-apalis-eval.dts file. Now for v1.2, the new device-tree file
-should be used.
-
-Signed-off-by: Hiago De Franco <hiago.franco@toradex.com>
----
- arch/arm/boot/dts/nxp/imx/Makefile            |   1 +
- .../dts/nxp/imx/imx6q-apalis-eval-v1.2.dts    | 198 ++++++++++++++++++
- .../boot/dts/nxp/imx/imx6q-apalis-eval.dts    | 108 +---------
- .../boot/dts/nxp/imx/imx6q-apalis-eval.dtsi   | 120 +++++++++++
- 4 files changed, 321 insertions(+), 106 deletions(-)
- create mode 100644 arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval-v1.2.dts
- create mode 100644 arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval.dtsi
-
-diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/imx/Makefile
-index a724d1a7a9a0..0473f9b86ec7 100644
---- a/arch/arm/boot/dts/nxp/imx/Makefile
-+++ b/arch/arm/boot/dts/nxp/imx/Makefile
-@@ -147,6 +147,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6dl-yapp4-phoenix.dtb \
- 	imx6dl-yapp4-ursa.dtb \
- 	imx6q-apalis-eval.dtb \
-+	imx6q-apalis-eval-v1.2.dtb \
- 	imx6q-apalis-ixora.dtb \
- 	imx6q-apalis-ixora-v1.1.dtb \
- 	imx6q-apalis-ixora-v1.2.dtb \
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval-v1.2.dts b/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval-v1.2.dts
-new file mode 100644
-index 000000000000..2fba7ed1061c
---- /dev/null
-+++ b/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval-v1.2.dts
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2024 Toradex
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx6q-apalis-eval.dtsi"
-+
-+/ {
-+	model = "Toradex Apalis iMX6Q/D Module on Apalis Evaluation Board v1.2";
-+	compatible = "toradex,apalis_imx6q-eval-v1.2", "toradex,apalis_imx6q",
-+		     "fsl,imx6q";
-+
-+	reg_3v3_mmc: regulator-3v3-mmc {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio2 0 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_enable_3v3_mmc>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-name = "3.3V_MMC";
-+		startup-delay-us = <100>;
-+	};
-+
-+	reg_3v3_sd: regulator-3v3-sd {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio2 1 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_enable_3v3_sd>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-name = "3.3V_SD";
-+		startup-delay-us = <100>;
-+	};
-+
-+	reg_can1: regulator-can1 {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio2 3 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_enable_can1_power>;
-+		regulator-name = "5V_SW_CAN1";
-+		startup-delay-us = <1000>;
-+	};
-+
-+	reg_can2: regulator-can2 {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio2 2 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_enable_can2_power>;
-+		regulator-name = "5V_SW_CAN2";
-+		startup-delay-us = <1000>;
-+	};
-+
-+	sound-carrier {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,bitclock-master = <&codec_dai>;
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,frame-master = <&codec_dai>;
-+		simple-audio-card,name = "apalis-nau8822";
-+		simple-audio-card,routing =
-+			"Headphones", "LHP",
-+			"Headphones", "RHP",
-+			"Speaker", "LSPK",
-+			"Speaker", "RSPK",
-+			"Line Out", "AUXOUT1",
-+			"Line Out", "AUXOUT2",
-+			"LAUX", "Line In",
-+			"RAUX", "Line In",
-+			"LMICP", "Mic In",
-+			"RMICP", "Mic In";
-+		simple-audio-card,widgets =
-+			"Headphones", "Headphones",
-+			"Line Out", "Line Out",
-+			"Speaker", "Speaker",
-+			"Microphone", "Mic In",
-+			"Line", "Line In";
-+
-+		codec_dai: simple-audio-card,codec {
-+			sound-dai = <&nau8822_1a>;
-+			system-clock-frequency = <12288000>;
-+		};
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&ssi2>;
-+		};
-+	};
-+};
-+
-+&can1 {
-+	xceiver-supply = <&reg_can1>;
-+	status = "okay";
-+};
-+
-+&can2 {
-+	xceiver-supply = <&reg_can2>;
-+	status = "okay";
-+};
-+
-+/* I2C1_SDA/SCL on MXM3 209/211 */
-+&i2c1 {
-+	/* Audio Codec */
-+	nau8822_1a: audio-codec@1a {
-+		compatible = "nuvoton,nau8822";
-+		reg = <0x1a>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_nau8822>;
-+		#sound-dai-cells = <0>;
-+	};
-+
-+	/* Current measurement into module VCC */
-+	hwmon@40 {
-+		compatible = "ti,ina219";
-+		reg = <0x40>;
-+		shunt-resistor = <5000>;
-+	};
-+
-+	/* Temperature Sensor */
-+	temperature-sensor@4f {
-+		compatible = "ti,tmp75c";
-+		reg = <0x4f>;
-+	};
-+
-+	/* EEPROM */
-+	eeprom@57 {
-+		compatible = "st,24c02", "atmel,24c02";
-+		reg = <0x57>;
-+		pagesize = <16>;
-+		size = <256>;
-+	};
-+};
-+
-+&pcie {
-+	status = "okay";
-+};
-+
-+&ssi2 {
-+	status = "okay";
-+};
-+
-+/* MMC1 */
-+&usdhc1 {
-+	bus-width = <4>;
-+	pinctrl-0 = <&pinctrl_usdhc1_4bit &pinctrl_mmc_cd>;
-+	vmmc-supply = <&reg_3v3_mmc>;
-+	status = "okay";
-+};
-+
-+/* SD1 */
-+&usdhc2 {
-+	cd-gpios = <&gpio6 14 GPIO_ACTIVE_LOW>;
-+	pinctrl-0 = <&pinctrl_usdhc2 &pinctrl_sd_cd>;
-+	vmmc-supply = <&reg_3v3_sd>;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_enable_3v3_mmc: enable3v3mmcgrp {
-+		fsl,pins = <
-+			/* MMC1_PWR_CTRL */
-+			MX6QDL_PAD_NANDF_D0__GPIO2_IO00 0xb000
-+		>;
-+	};
-+
-+	pinctrl_enable_3v3_sd: enable3v3sdgrp {
-+		fsl,pins = <
-+			/* SD1_PWR_CTRL */
-+			MX6QDL_PAD_NANDF_D1__GPIO2_IO01 0xb000
-+		>;
-+	};
-+
-+	pinctrl_enable_can1_power: enablecan1powergrp {
-+		fsl,pins = <
-+			/* CAN1_PWR_EN */
-+			MX6QDL_PAD_NANDF_D3__GPIO2_IO03 0xb000
-+		>;
-+	};
-+
-+	pinctrl_enable_can2_power: enablecan2powergrp {
-+		fsl,pins = <
-+			/* CAN2_PWR_EN */
-+			MX6QDL_PAD_NANDF_D2__GPIO2_IO02 0xb000
-+		>;
-+	};
-+
-+	pinctrl_nau8822: nau8822grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DISP0_DAT16__AUD5_TXC	0x130b0
-+			MX6QDL_PAD_DISP0_DAT17__AUD5_TXD	0x130b0
-+			MX6QDL_PAD_DISP0_DAT18__AUD5_TXFS	0x130b0
-+			MX6QDL_PAD_DISP0_DAT19__AUD5_RXD	0x130b0
-+		>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval.dts b/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval.dts
-index 3fc079dfd61e..e1077e2da5f4 100644
---- a/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval.dts
-+++ b/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval.dts
-@@ -7,29 +7,13 @@
- 
- /dts-v1/;
- 
--#include <dt-bindings/gpio/gpio.h>
--#include <dt-bindings/input/input.h>
--#include <dt-bindings/interrupt-controller/irq.h>
--#include "imx6q.dtsi"
--#include "imx6qdl-apalis.dtsi"
-+#include "imx6q-apalis-eval.dtsi"
- 
- / {
- 	model = "Toradex Apalis iMX6Q/D Module on Apalis Evaluation Board";
- 	compatible = "toradex,apalis_imx6q-eval", "toradex,apalis_imx6q",
- 		     "fsl,imx6q";
- 
--	aliases {
--		i2c0 = &i2c1;
--		i2c1 = &i2c3;
--		i2c2 = &i2c2;
--		rtc0 = &rtc_i2c;
--		rtc1 = &snvs_rtc;
--	};
--
--	chosen {
--		stdout-path = "serial0:115200n8";
--	};
--
- 	reg_pcie_switch: regulator-pcie-switch {
- 		compatible = "regulator-fixed";
- 		enable-active-high;
-@@ -40,14 +24,6 @@ reg_pcie_switch: regulator-pcie-switch {
- 		startup-delay-us = <100000>;
- 		status = "okay";
- 	};
--
--	reg_3v3_sw: regulator-3v3-sw {
--		compatible = "regulator-fixed";
--		regulator-always-on;
--		regulator-max-microvolt = <3300000>;
--		regulator-min-microvolt = <3300000>;
--		regulator-name = "3.3V_SW";
--	};
- };
- 
- &can1 {
-@@ -62,102 +38,22 @@ &can2 {
- 
- /* I2C1_SDA/SCL on MXM3 209/211 (e.g. RTC on carrier board) */
- &i2c1 {
--	status = "okay";
--
-+	/* PCIe Switch */
- 	pcie-switch@58 {
- 		compatible = "plx,pex8605";
- 		reg = <0x58>;
- 	};
--
--	/* M41T0M6 real time clock on carrier board */
--	rtc_i2c: rtc@68 {
--		compatible = "st,m41t0";
--		reg = <0x68>;
--	};
--};
--
--/*
-- * I2C3_SDA/SCL (CAM) on MXM3 pin 201/203 (e.g. camera sensor on carrier
-- * board)
-- */
--&i2c3 {
--	status = "okay";
- };
- 
- &pcie {
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_reset_moci>;
--	/* active-high meaning opposite of regular PERST# active-low polarity */
--	reset-gpio = <&gpio1 28 GPIO_ACTIVE_HIGH>;
--	reset-gpio-active-high;
- 	vpcie-supply = <&reg_pcie_switch>;
- 	status = "okay";
- };
- 
--&pwm1 {
--	status = "okay";
--};
--
--&pwm2 {
--	status = "okay";
--};
--
--&pwm3 {
--	status = "okay";
--};
--
--&pwm4 {
--	status = "okay";
--};
--
--&reg_usb_host_vbus {
--	status = "okay";
--};
--
--&reg_usb_otg_vbus {
--	status = "okay";
--};
--
--&sata {
--	status = "okay";
--};
--
- &sound_spdif {
- 	status = "okay";
- };
- 
--&spdif {
--	status = "okay";
--};
--
--&uart1 {
--	status = "okay";
--};
--
--&uart2 {
--	status = "okay";
--};
--
--&uart4 {
--	status = "okay";
--};
--
--&uart5 {
--	status = "okay";
--};
--
--&usbh1 {
--	disable-over-current;
--	vbus-supply = <&reg_usb_host_vbus>;
--	status = "okay";
--};
--
--&usbotg {
--	disable-over-current;
--	vbus-supply = <&reg_usb_otg_vbus>;
--	status = "okay";
--};
--
- /* MMC1 */
- &usdhc1 {
- 	status = "okay";
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval.dtsi b/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval.dtsi
-new file mode 100644
-index 000000000000..b6c45ad3f430
---- /dev/null
-+++ b/arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval.dtsi
-@@ -0,0 +1,120 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2014-2024 Toradex
-+ */
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include "imx6q.dtsi"
-+#include "imx6qdl-apalis.dtsi"
-+
-+/ {
-+	aliases {
-+		i2c0 = &i2c1;
-+		i2c1 = &i2c3;
-+		i2c2 = &i2c2;
-+		rtc0 = &rtc_i2c;
-+		rtc1 = &snvs_rtc;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	reg_3v3_sw: regulator-3v3-sw {
-+		compatible = "regulator-fixed";
-+		regulator-always-on;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-name = "3.3V_SW";
-+	};
-+};
-+
-+&i2c1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	/* M41T0M6 real time clock on carrier board */
-+	rtc_i2c: rtc@68 {
-+		compatible = "st,m41t0";
-+		reg = <0x68>;
-+	};
-+};
-+
-+/*
-+ * I2C3_SDA/SCL (CAM) on MXM3 pin 201/203 (e.g. camera sensor on carrier
-+ * board)
-+ */
-+&i2c3 {
-+	status = "okay";
-+};
-+
-+&pcie {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_reset_moci>;
-+	/* active-high meaning opposite of regular PERST# active-low polarity */
-+	reset-gpio = <&gpio1 28 GPIO_ACTIVE_HIGH>;
-+	reset-gpio-active-high;
-+};
-+
-+&pwm1 {
-+	status = "okay";
-+};
-+
-+&pwm2 {
-+	status = "okay";
-+};
-+
-+&pwm3 {
-+	status = "okay";
-+};
-+
-+&pwm4 {
-+	status = "okay";
-+};
-+
-+&reg_usb_host_vbus {
-+	status = "okay";
-+};
-+
-+&reg_usb_otg_vbus {
-+	status = "okay";
-+};
-+
-+&sata {
-+	status = "okay";
-+};
-+
-+&spdif {
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	status = "okay";
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&usbh1 {
-+	disable-over-current;
-+	vbus-supply = <&reg_usb_host_vbus>;
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	disable-over-current;
-+	vbus-supply = <&reg_usb_otg_vbus>;
-+	status = "okay";
-+};
--- 
-2.43.0
+Thanks again and best regards,
+Javier Carrasco
 
 
