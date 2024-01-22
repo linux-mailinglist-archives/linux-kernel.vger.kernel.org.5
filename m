@@ -1,676 +1,190 @@
-Return-Path: <linux-kernel+bounces-34255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAF4283766E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:39:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DB4837674
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:43:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BB6D284EB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:39:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21F951F2769D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:43:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC6ABFC19;
-	Mon, 22 Jan 2024 22:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D8E12E64;
+	Mon, 22 Jan 2024 22:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="haxDCP3P";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="fsduceS0"
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="RKLRbBZI"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD721D683
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 22:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1D110A04
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 22:43:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705963183; cv=none; b=t/cBsP8jexedDTf2XvMXAzbSzO/z86/nVAxWH0znyHIijseHKfsmli87Ia0My1/lgtM0pIiDQhx8bPsJGyvp31AWvz06ocPaq401WFpwYn5s3aeeB3EosCOIHeynJWXa48BIRzsvxuz0uFKJddnKKAZIaU8JTAoOluJatgguRHA=
+	t=1705963391; cv=none; b=mUnnabkywjIqKmWgV7J1sA+5/8MFfylWmibtinl068wuYnkXuJiIS8cKtdT4JYxOKJbsdvsSUgGpqDLu9wseFExEKS5oeL4fV9vn1PV2++HPNXPR10UqJqEAZZSFt7IRVPy/bzcMojSvizHukxi5P3laKN3TGeq+xcmczm2oblU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705963183; c=relaxed/simple;
-	bh=yNm4e/yx7WAH0UZMYe2d2vHo/7XrlmuUvyXLqnjuR+0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LcCNzad6Xp+KfEt9Zs0HPJI6sFEVP3/+GxGi9WicWwhsZF7gEaf31E/TwgwRNEcdFNPBMu2eAfXx09WflTA3CJyWx1Ao2QlG0NBOwCuR9Nwr/fIn6kEAfY+nQzwdOXDbWhGyvb/YFPu8h3IBrgsWQNUCXDcpO8O2ZMPfB0Y79ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=haxDCP3P; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=fsduceS0; arc=none smtp.client-ip=161.53.235.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 6281F60177;
-	Mon, 22 Jan 2024 23:39:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1705963174; bh=yNm4e/yx7WAH0UZMYe2d2vHo/7XrlmuUvyXLqnjuR+0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=haxDCP3PBwt7Wt2GTCyUJU7b8AXc06fzB283bLud8zmunlFkP+o7tKz7cFFdYsBYE
-	 9TWtGYS/iX/+5h4lmUQn3VOmdDzkjf4TLpS9Pu5yRmpciQUqchr2lZxZJnND/GISHr
-	 Q+7I+U0rtHElre7Ml46odw4zbuseozgCkVj9cBWdcHqTz295lE24LfAdAb0c0umvUi
-	 L6MgCX8liy/Fz0R66lB5ecMcoZbtLDcXWkFPcY/VRmr4MMMy7mD+vHgOTWHZotwIeU
-	 whErEVzLxlf71IIMFZLrL4b2uZdvsNBhmyfEHI4QjYkWuMwiyF4cHM99scAGGqn1cR
-	 8/X6SPHt+xxgQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id Oq-0DsTxHCgU; Mon, 22 Jan 2024 23:39:30 +0100 (CET)
-Received: from [192.168.178.21] (dh207-42-16.xnet.hr [88.207.42.16])
-	by domac.alu.hr (Postfix) with ESMTPSA id F06D560173;
-	Mon, 22 Jan 2024 23:39:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1705963170; bh=yNm4e/yx7WAH0UZMYe2d2vHo/7XrlmuUvyXLqnjuR+0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fsduceS0tr7k6WupYksqrtjgoSFsRQp3d/XtfyNOJly9wZhTtLdZU+vleUjxUiYc8
-	 vjGS7w36BI5i/udQvVftm2hzQOPr3ubyWw5xMeNJw2eJZ3YJ11FCc1FgsjgkhuHhpH
-	 K2v5hxK8yjIGB4EKehHYpPY+kfKCN4tYkL1F0RQTkaAyUi7eg/r5wg7ywaTBrQJgwl
-	 lkQF9XbSa2268H0H0CZZymoXlbruRJZFsgPJjE4sc5+xsHfFfm72dgWtvHYRUBcDO9
-	 OIfUHyy+tH2o5hxILXue+IkIwceSaBHIhzEb97zLIAxKvewdLXlPqMTqcBmTn+ADGp
-	 IZWnx70NYwj2g==
-Message-ID: <bb91dc43-d331-4999-b43f-a741c865f7f2@alu.unizg.hr>
-Date: Mon, 22 Jan 2024 23:39:27 +0100
+	s=arc-20240116; t=1705963391; c=relaxed/simple;
+	bh=jq6waBdRNkIn/pUr1wxFo1S8k72Er9q9GsNFxc1jCWM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A8onQy509JzTsZQItC2rj3vyFndXeghTVQatkle9lJN3Y/7MalIzXrRHe/IFk4loZRrOIzqsbDCYIJpkExW/4sbzfdVMqVfMfGPE6OAHUI2UJ3h8advu+thLny6ec/LEqip0yvRK4VUja1/vCbmakwk3qHe9+65D2cyAou1fLM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=RKLRbBZI; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e913e3f03so47201495e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:43:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1705963387; x=1706568187; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9HIAkUY/IV0amVuu3edtawXBj2pvEspdSiVxTepe+1A=;
+        b=RKLRbBZIjEezbsnhPUeiat7Q7ReFw7qDQLP8phEw9D8P0JpFxE5I7g5dwxMhxPvDtg
+         S3VmKYohHnK3bmepVwnLrOQeygSDPvxtMhdgrjjXx+zR+A2LENyin76l31e2XylenONg
+         DCChTSCy8DCJ5P9CaJaEiy20WPlNzc3b6umQV5/hOrKnby+mN/GWCmM+kN09OEja8pXC
+         6Fsc2eamPTG2yKVT8TWepatmMuS4yWCHadwYN9wp4Dh/4fv1IyYd1z7ANMfdRDSVAOD+
+         26a7nXtV1Z/rVGjT0bOpvZTSkhi4OV2KGc9Usp/nanXXW1rzUHSyeCmdSQfl/fTGiex/
+         pN+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705963387; x=1706568187;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9HIAkUY/IV0amVuu3edtawXBj2pvEspdSiVxTepe+1A=;
+        b=g5MSckpQskrvNyca050dpWeJz/sWF1feaGyptoTvlqnShZ6MCsXCSxw7CWEwdLCT9m
+         pfUf1CmpA13O2WPPcUbnNyNIatEc374FOCQ0u7axbdoowmn4TzFpz/3m941mvFXAI/IO
+         n/LTfnyFKRHY7HoCMVAX7a8/J2FuI8AD8Xe9hz5gcqFLq1zf/WYH08Z0jokPvMxhkqe0
+         k7xLsJshhATvbgHxcPYi6QyfcrSYOSLuk2/HMJUx8OQV0KEimzE9CmCoTJbXj5IOMWgv
+         gMIKBzU7118dXDixAwZ+AWnpuTCfGb61tIhFHZJ/3vHEC8vMBKWz95CfTZM0GeRSC6vJ
+         9Tcw==
+X-Gm-Message-State: AOJu0YxUYi936W7zx0/hCqeOPVc0Wld4qvhSDGug+s2oTSJ9/ichN2m2
+	TRz7hzKkzqFWeLDLCHQ49/j9Ux2y3yHxQHfmAIcJ/622yGKB2lEWJFNQXeOLYVE=
+X-Google-Smtp-Source: AGHT+IEjlD5xRIOcTScuTGHjM6USJ+02b5+1PMeHVKOP7Pp8OqF4DhozZcwaJeTcrhn8QZSDG2G24Q==
+X-Received: by 2002:a7b:c38f:0:b0:40e:6617:fc33 with SMTP id s15-20020a7bc38f000000b0040e6617fc33mr2680804wmj.146.1705963386703;
+        Mon, 22 Jan 2024 14:43:06 -0800 (PST)
+Received: from airbuntu.. ([213.122.231.14])
+        by smtp.gmail.com with ESMTPSA id x16-20020adfdd90000000b00337d6539d52sm11412758wrl.18.2024.01.22.14.43.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 14:43:06 -0800 (PST)
+From: Qais Yousef <qyousef@layalina.io>
+To: Jens Axboe <axboe@kernel.dk>,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Wei Wang <wvw@google.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Qais Yousef <qyousef@layalina.io>
+Subject: [PATCH] block/blk-mq: Don't complete locally if capacities are different
+Date: Mon, 22 Jan 2024 22:42:20 +0000
+Message-Id: <20240122224220.1206234-1-qyousef@layalina.io>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BUG [RESEND]: kernel NULL pointer dereference, address:
- 0000000000000008
-To: "Ma, Jun" <majun@amd.com>, linux-kernel@vger.kernel.org,
- amd-gfx@lists.freedesktop.org
-Cc: Sathishkumar S <sathishkumar.sundararaju@amd.com>,
- Lijo Lazar <lijo.lazar@amd.com>,
- Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
- Guchun Chen <guchun.chen@amd.com>, Lang Yu <Lang.Yu@amd.com>,
- Felix Kuehling <Felix.Kuehling@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
- dri-devel@lists.freedesktop.org, =?UTF-8?B?TWFyZWsgT2zFocOhaw==?=
- <marek.olsak@amd.com>, Boyuan Zhang <boyuan.zhang@amd.com>,
- Daniel Vetter <daniel@ffwll.ch>, David Francis <David.Francis@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>, David Airlie <airlied@gmail.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-References: <83b9077a-3de8-464a-bd64-d32869b3728c@alu.unizg.hr>
- <b6336db1-be2c-418d-b45d-e715ae19507a@alu.unizg.hr>
- <1bc1a054-2aa8-4229-9a05-df7bac1ec0d8@amd.com>
-Content-Language: en-US, hr
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <1bc1a054-2aa8-4229-9a05-df7bac1ec0d8@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On 22. 01. 2024. 09:34, Ma, Jun wrote:
-> Perhaps similar to the problem I encountered earlier, you can
-> try the following patch
->=20
-> https://lists.freedesktop.org/archives/amd-gfx/2024-January/103259.html=
+The logic in blk_mq_complete_need_ipi() assumes SMP systems where all
+CPUs have equal capacities and only LLC cache can make a different on
+perceived performance. But this assumption falls apart on HMP systems
+where LLC is shared, but the CPUs have different capacities. Staying
+local then can have a big performance impact if the IO request was done
+from a CPU with higher capacity but the interrupt is serviced on a lower
+capacity CPU.
 
+Introduce new cpus_gte_capacity() function to enable do the additional
+check.
 
-Appaarently, this patch prevented NULL dereference, it was no longer in t=
-he log.
+Without the patch I see the BLOCK softirq always running on little cores
+(where the hardirq is serviced). With it I can see it running on all
+cores.
 
-However, there is another hang in XWayland password entry dialog, but I d=
-o not
-think that I figured out what is wrong.
+This was noticed after the topology change [1] where now on a big.LITTLE
+we truly get that the LLC is shared between all cores where as in the
+past it was being misrepresented for historical reasons. The logic
+exposed a missing dependency on capacities for such systems where there
+can be a big performance difference between the CPUs.
 
-Best regards,
-Mirsad
+This of course introduced a noticeable change in behavior depending on
+how the topology is presented. Leading to regressions in some workloads
+as the performance of the BLOCK softirq on littles can be noticeably
+worse.
 
-> Regards,
-> Ma Jun
->=20
-> On 1/21/2024 3:54 AM, Mirsad Todorovac wrote:
->> Hi,
->>
->> The last email did not pass to the most of the recipients due to banne=
-d .xz attachment.
->>
->> As the .config is too big to send inline or uncompressed either, I wil=
-l omit it in this
->> attempt. In the meantime, I had some success in decoding the stack tra=
-ce, but sadly not
->> complete.
->>
->> I don't think this Oops is deterministic, but I am working on a reprod=
-ucer.
->>
->> The platform is Ubuntu 22.04 LTS.
->>
->> Complete list of hardware and .config is available here:
->>
->> https://domac.alu.unizg.hr/~mtodorov/linux/bugreports/amdgpu/6.7.0-rtl=
--v02-nokcsan-09928-g052d534373b7/
->>
->> Best regards,
->> Mirsad
->>
->> ----------------------------------------------------------------------=
----------------------
->> kernel: [    5.576702] BUG: kernel NULL pointer dereference, address: =
-0000000000000008
->> kernel: [    5.576707] #PF: supervisor read access in kernel mode
->> kernel: [    5.576710] #PF: error_code(0x0000) - not-present page
->> kernel: [    5.576712] PGD 0 P4D 0
->> kernel: [    5.576715] Oops: 0000 [#1] PREEMPT SMP NOPTI
->> kernel: [    5.576718] CPU: 9 PID: 650 Comm: systemd-udevd Not tainted=
- 6.7.0-rtl-v0.2-nokcsan-09928-g052d534373b7 #2
->> kernel: [    5.576723] Hardware name: ASRock X670E PG Lightning/X670E =
-PG Lightning, BIOS 1.21 04/26/2023
->> kernel: [    5.576726] RIP: 0010:gfx_v10_0_early_init (drivers/gpu/drm=
-/amd/amdgpu/gfx_v10_0.c:4009 drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c:7478)=
- amdgpu
->> kernel: [ 5.576872] Code: 8d 55 a8 4c 89 ff e8 e4 83 ec ff 41 89 c2 83=
- f8 ed 0f 84 b3 fd ff ff 85 c0 74 05 0f 1f 44 00 00 49 8b 87 08 87 01 00 =
-4c 89 ff <48> 8b 40 08 0f b7 50 0a 0f b7 70 08 e8 e4 42 fb ff 41 89 c2 85=
- c0
->> All code
->> =3D=3D=3D=3D=3D=3D=3D=3D
->>     0:	8d 55 a8             	lea    -0x58(%rbp),%edx
->>     3:	4c 89 ff             	mov    %r15,%rdi
->>     6:	e8 e4 83 ec ff       	call   0xffffffffffec83ef
->>     b:	41 89 c2             	mov    %eax,%r10d
->>     e:	83 f8 ed             	cmp    $0xffffffed,%eax
->>    11:	0f 84 b3 fd ff ff    	je     0xfffffffffffffdca
->>    17:	85 c0                	test   %eax,%eax
->>    19:	74 05                	je     0x20
->>    1b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
->>    20:	49 8b 87 08 87 01 00 	mov    0x18708(%r15),%rax
->>    27:	4c 89 ff             	mov    %r15,%rdi
->>    2a:*	48 8b 40 08          	mov    0x8(%rax),%rax		<-- trapping inst=
-ruction
->>    2e:	0f b7 50 0a          	movzwl 0xa(%rax),%edx
->>    32:	0f b7 70 08          	movzwl 0x8(%rax),%esi
->>    36:	e8 e4 42 fb ff       	call   0xfffffffffffb431f
->>    3b:	41 89 c2             	mov    %eax,%r10d
->>    3e:	85 c0                	test   %eax,%eax
->>
->> Code starting with the faulting instruction
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>     0:	48 8b 40 08          	mov    0x8(%rax),%rax
->>     4:	0f b7 50 0a          	movzwl 0xa(%rax),%edx
->>     8:	0f b7 70 08          	movzwl 0x8(%rax),%esi
->>     c:	e8 e4 42 fb ff       	call   0xfffffffffffb42f5
->>    11:	41 89 c2             	mov    %eax,%r10d
->>    14:	85 c0                	test   %eax,%eax
->> kernel: [    5.576878] RSP: 0018:ffffa5b3c103f720 EFLAGS: 00010282
->> kernel: [    5.576881] RAX: 0000000000000000 RBX: ffffffffc1d73489 RCX=
-: 0000000000000000
->> kernel: [    5.576884] RDX: 0000000000000000 RSI: 0000000000000000 RDI=
-: ffff91ae4fa80000
->> kernel: [    5.576886] RBP: ffffa5b3c103f7b0 R08: 0000000000000000 R09=
-: 0000000000000000
->> kernel: [    5.576889] R10: 00000000ffffffea R11: 0000000000000000 R12=
-: ffff91ae4fa986e8
->> kernel: [    5.576892] R13: ffff91ae4fa986d8 R14: ffff91ae4fa986f8 R15=
-: ffff91ae4fa80000
->> kernel: [    5.576895] FS:  00007fdaa343c8c0(0000) GS:ffff91bd58440000=
-(0000) knlGS:0000000000000000
->> kernel: [    5.576898] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800500=
-33
->> kernel: [    5.576900] CR2: 0000000000000008 CR3: 00000001222d0000 CR4=
-: 0000000000750ef0
->> kernel: [    5.576903] PKRU: 55555554
->> kernel: [    5.576905] Call Trace:
->> kernel: [    5.576907]  <TASK>
->> kernel: [    5.576909] ? show_regs (arch/x86/kernel/dumpstack.c:479)
->> kernel: [    5.576914] ? __die (arch/x86/kernel/dumpstack.c:421 arch/x=
-86/kernel/dumpstack.c:434)
->> kernel: [    5.576917] ? page_fault_oops (arch/x86/mm/fault.c:707)
->> kernel: [    5.576921] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.576925] ? crypto_alloc_tfmmem.isra.0 (crypto/api.c:497)=
+[1] https://lpc.events/event/16/contributions/1342/attachments/962/1883/LPC-2022-Android-MC-Phantom-Domains.pdf
 
->> kernel: [    5.576930] ? do_user_addr_fault (arch/x86/mm/fault.c:1264)=
+Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+---
+ block/blk-mq.c                 | 5 +++--
+ include/linux/sched/topology.h | 6 ++++++
+ kernel/sched/core.c            | 8 ++++++++
+ 3 files changed, 17 insertions(+), 2 deletions(-)
 
->> kernel: [    5.576934] ? exc_page_fault (./arch/x86/include/asm/paravi=
-rt.h:693 arch/x86/mm/fault.c:1515 arch/x86/mm/fault.c:1563)
->> kernel: [    5.576937] ? asm_exc_page_fault (./arch/x86/include/asm/id=
-tentry.h:570)
->> kernel: [    5.576942] ? gfx_v10_0_early_init (drivers/gpu/drm/amd/amd=
-gpu/gfx_v10_0.c:4009 drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c:7478) amdgpu
->> kernel: [    5.577056] amdgpu_device_init (drivers/gpu/drm/amd/amdgpu/=
-amdgpu_device.c:2465 drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:4042) amd=
-gpu
->> kernel: [    5.577158] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577161] ? pci_bus_read_config_word (drivers/pci/access.=
-c:67 (discriminator 2))
->> kernel: [    5.577166] ? pci_read_config_word (drivers/pci/access.c:56=
-3)
->> kernel: [    5.577168] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577171] ? do_pci_enable_device (drivers/pci/pci.c:1975 =
-drivers/pci/pci.c:1949)
->> kernel: [    5.577176] amdgpu_driver_load_kms (drivers/gpu/drm/amd/amd=
-gpu/amdgpu_kms.c:146) amdgpu
->> kernel: [    5.577275] amdgpu_pci_probe (drivers/gpu/drm/amd/amdgpu/am=
-dgpu_drv.c:2237) amdgpu
->> kernel: [    5.577373] local_pci_probe (drivers/pci/pci-driver.c:324)
->> kernel: [    5.577377] pci_device_probe (drivers/pci/pci-driver.c:392 =
-drivers/pci/pci-driver.c:417 drivers/pci/pci-driver.c:460)
->> kernel: [    5.577381] really_probe (drivers/base/dd.c:579 drivers/bas=
-e/dd.c:658)
->> kernel: [    5.577386] __driver_probe_device (drivers/base/dd.c:800)
->> kernel: [    5.577389] driver_probe_device (drivers/base/dd.c:830)
->> kernel: [    5.577392] __driver_attach (drivers/base/dd.c:1217)
->> kernel: [    5.577396] ? __pfx___driver_attach (drivers/base/dd.c:1157=
-)
->> kernel: [    5.577399] bus_for_each_dev (drivers/base/bus.c:368)
->> kernel: [    5.577402] driver_attach (drivers/base/dd.c:1234)
->> kernel: [    5.577405] bus_add_driver (drivers/base/bus.c:674)
->> kernel: [    5.577409] driver_register (drivers/base/driver.c:246)
->> kernel: [    5.577411] ? __pfx_amdgpu_init (drivers/gpu/drm/amd/amdgpu=
-/amdgpu_drv.c:2497) amdgpu
->> kernel: [    5.577521] __pci_register_driver (drivers/pci/pci-driver.c=
-:1456)
->> kernel: [    5.577524] amdgpu_init (drivers/gpu/drm/amd/amdgpu/amdgpu_=
-drvc:2805) amdgpu
->> kernel: [    5.577628] do_one_initcall (init/main.c:1236)
->> kernel: [    5.577632] ? kmalloc_trace (mm/slub.c:3816 mm/slub.c:3860 =
-mm/slub.c:4007)
->> kernel: [    5.577637] do_init_module (kernel/module/main.c:2533)
->> kernel: [    5.577640] load_module (kernel/module/main.c:2984)
->> kernel: [    5.577647] init_module_from_file (kernel/module/main.c:315=
-1)
->> kernel: [    5.577649] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577652] ? init_module_from_file (kernel/module/main.c:3=
-151)
->> kernel: [    5.577657] idempotent_init_module (kernel/module/main.c:31=
-68)
->> kernel: [    5.577661] __x64_sys_finit_module (./include/linux/file.h:=
-45 kernel/module/main.c:3190 kernel/module/main.c:3172 kernel/module/main=
-=2Ec:3172)
->> kernel: [    5.577664] do_syscall_64 (arch/x86/entry/common.c:52 arch/=
-x86/entry/common.c:83)
->> kernel: [    5.577668] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577671] ? ksys_mmap_pgoff (mm/mmap.c:1428)
->> kernel: [    5.577675] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577678] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577681] ? syscall_exit_to_user_mode (kernel/entry/commo=
-n.c:215)
->> kernel: [    5.577684] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577687] ? do_syscall_64 (./arch/x86/include/asm/cpufeat=
-ureh:171 arch/x86/entry/common.c:98)
->> kernel: [    5.577689] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577692] ? do_syscall_64 (./arch/x86/include/asm/cpufeat=
-ureh:171 arch/x86/entry/common.c:98)
->> kernel: [    5.577695] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577698] ? do_syscall_64 (./arch/x86/include/asm/cpufeat=
-ureh:171 arch/x86/entry/common.c:98)
->> kernel: [    5.577700] ? srso_alias_return_thunk (arch/x86/lib/retpoli=
-ne.S:181)
->> kernel: [    5.577703] ? sysvec_call_function (arch/x86/kernel/smp.c:2=
-53 (discriminator 69))
->> kernel: [    5.577707] entry_SYSCALL_64_after_hwframe (arch/x86/entry/=
-entry_64.S:129)
->> kernel: [    5.577709] RIP: 0033:0x7fdaa331e88d
->> kernel: [ 5.577724] Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f=
- 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 =
-08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 73 b5 0f 00 f7 d8 64 89 01=
- 48
->> All code
->> =3D=3D=3D=3D=3D=3D=3D=3D
->>     0:	5b                   	pop    %rbx
->>     1:	41 5c                	pop    %r12
->>     3:	c3                   	ret
->>     4:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
->>     b:	00 00
->>     d:	f3 0f 1e fa          	endbr64
->>    11:	48 89 f8             	mov    %rdi,%rax
->>    14:	48 89 f7             	mov    %rsi,%rdi
->>    17:	48 89 d6             	mov    %rdx,%rsi
->>    1a:	48 89 ca             	mov    %rcx,%rdx
->>    1d:	4d 89 c2             	mov    %r8,%r10
->>    20:	4d 89 c8             	mov    %r9,%r8
->>    23:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
->>    28:	0f 05                	syscall
->>    2a:*	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax		<-- tra=
-pping instruction
->>    30:	73 01                	jae    0x33
->>    32:	c3                   	ret
->>    33:	48 8b 0d 73 b5 0f 00 	mov    0xfb573(%rip),%rcx        # 0xfb5a=
-d
->>    3a:	f7 d8                	neg    %eax
->>    3c:	64 89 01             	mov    %eax,%fs:(%rcx)
->>    3f:	48                   	rex.W
->>
->> Code starting with the faulting instruction
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>     0:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
->>     6:	73 01                	jae    0x9
->>     8:	c3                   	ret
->>     9:	48 8b 0d 73 b5 0f 00 	mov    0xfb573(%rip),%rcx        # 0xfb58=
-3
->>    10:	f7 d8                	neg    %eax
->>    12:	64 89 01             	mov    %eax,%fs:(%rcx)
->>    15:	48                   	rex.W
->> kernel: [    5.577729] RSP: 002b:00007ffeb4f87d28 EFLAGS: 00000246 ORI=
-G_RAX: 0000000000000139
->> kernel: [    5.577733] RAX: ffffffffffffffda RBX: 000055aedf3eeeb0 RCX=
-: 00007fdaa331e88d
->> kernel: [    5.577736] RDX: 0000000000000000 RSI: 000055aedf3efb80 RDI=
-: 000000000000001a
->> kernel: [    5.577738] RBP: 0000000000020000 R08: 0000000000000000 R09=
-: 0000000000000002
->> kernel: [    5.577741] R10: 000000000000001a R11: 0000000000000246 R12=
-: 000055aedf3efb80
->> kernel: [    5.577744] R13: 000055aedf3f2060 R14: 0000000000000000 R15=
-: 000055aedf2b1220
->> kernel: [    5.577748]  </TASK>
->> kernel: [    5.577750] Modules linked in: intel_rapl_msr intel_rapl_co=
-mmon amdgpu(+) edac_mce_amd kvm_amd kvm snd_hda_codec_realtek snd_hda_cod=
-ec_generic irqbypass ledtrig_audio crct10dif_pclmul polyval_clmulni polyv=
-al_generic snd_hda_codec_hdmi ghash_clmulni_intel sha512_ssse3 sha256_sss=
-e3 sha1_ssse3 amdxcp snd_hda_intel aesni_intel drm_exec snd_intel_dspcfg =
-crypto_simd gpu_sched snd_intel_sdw_acpi cryptd nls_iso8859_1 drm_buddy s=
-nd_hda_codec snd_seq_midi drm_suballoc_helper snd_seq_midi_event drm_ttm_=
-helper joydev snd_hda_core input_leds ttm rapl snd_rawmidi snd_hwdep drm_=
-display_helper snd_seq snd_pcm wmi_bmof cec k10temp snd_seq_device ccp rc=
-_core snd_timer snd drm_kms_helper i2c_algo_bit soundcore mac_hid tcp_bbr=
- sch_fq msr parport_pc ppdev lp drm parport efi_pstore ip_tables x_tables=
- autofs4 btrfs blake2b_generic xor raid6_pq libcrc32c hid_generic usbhid =
-hid crc32_pclmul nvme r8169 ahci nvme_core i2c_piix4 xhci_pci libahci xhc=
-i_pci_renesas realtek video wmi gpio_amdpt
->> kernel: [    5.577817] CR2: 0000000000000008
->> kernel: [    5.577820] ---[ end trace 0000000000000000 ]---
->> kernel: [    5.914230] RIP: 0010:gfx_v10_0_early_init (drivers/gpu/drm=
-/amd/amdgpu/gfx_v10_0.c:4009 drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c:7478)=
- amdgpu
->> kernel: [ 5.914388] Code: 8d 55 a8 4c 89 ff e8 e4 83 ec ff 41 89 c2 83=
- f8 ed 0f 84 b3 fd ff ff 85 c0 74 05 0f 1f 44 00 00 49 8b 87 08 87 01 00 =
-4c 89 ff <48> 8b 40 08 0f b7 50 0a 0f b7 70 08 e8 e4 42 fb ff 41 89 c2 85=
- c0
->> All code
->> =3D=3D=3D=3D=3D=3D=3D=3D
->>     0:	8d 55 a8             	lea    -0x58(%rbp),%edx
->>     3:	4c 89 ff             	mov    %r15,%rdi
->>     6:	e8 e4 83 ec ff       	call   0xffffffffffec83ef
->>     b:	41 89 c2             	mov    %eax,%r10d
->>     e:	83 f8 ed             	cmp    $0xffffffed,%eax
->>    11:	0f 84 b3 fd ff ff    	je     0xfffffffffffffdca
->>    17:	85 c0                	test   %eax,%eax
->>    19:	74 05                	je     0x20
->>    1b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
->>    20:	49 8b 87 08 87 01 00 	mov    0x18708(%r15),%rax
->>    27:	4c 89 ff             	mov    %r15,%rdi
->>    2a:*	48 8b 40 08          	mov    0x8(%rax),%rax		<-- trapping inst=
-ruction
->>    2e:	0f b7 50 0a          	movzwl 0xa(%rax),%edx
->>    32:	0f b7 70 08          	movzwl 0x8(%rax),%esi
->>    36:	e8 e4 42 fb ff       	call   0xfffffffffffb431f
->>    3b:	41 89 c2             	mov    %eax,%r10d
->>    3e:	85 c0                	test   %eax,%eax
->>
->> Code starting with the faulting instruction
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>     0:	48 8b 40 08          	mov    0x8(%rax),%rax
->>     4:	0f b7 50 0a          	movzwl 0xa(%rax),%edx
->>     8:	0f b7 70 08          	movzwl 0x8(%rax),%esi
->>     c:	e8 e4 42 fb ff       	call   0xfffffffffffb42f5
->>    11:	41 89 c2             	mov    %eax,%r10d
->>    14:	85 c0                	test   %eax,%eax
->> rsyslogd: rsyslogd's groupid changed to 111
->> kernel: [    5.914394] RSP: 0018:ffffa5b3c103f720 EFLAGS: 00010282
->> kernel: [    5.914397] RAX: 0000000000000000 RBX: ffffffffc1d73489 RCX=
-: 0000000000000000
->> kernel: [    5.914399] RDX: 0000000000000000 RSI: 0000000000000000 RDI=
-: ffff91ae4fa80000
->> kernel: [    5.914402] RBP: ffffa5b3c103f7b0 R08: 0000000000000000 R09=
-: 0000000000000000
->> kernel: [    5.914405] R10: 00000000ffffffea R11: 0000000000000000 R12=
-: ffff91ae4fa986e8
->> kernel: [    5.914408] R13: ffff91ae4fa986d8 R14: ffff91ae4fa986f8 R15=
-: ffff91ae4fa80000
->> kernel: [    5.914410] FS:  00007fdaa343c8c0(0000) GS:ffff91bd58440000=
-(0000) knlGS:0000000000000000
->> kernel: [    5.914414] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800500=
-33
->> kernel: [    5.914416] CR2: 0000000000000008 CR3: 00000001222d0000 CR4=
-: 0000000000750ef0
->> kernel: [    5.914419] PKRU: 55555554
->>
->> Best regards,
->> Mirsad
->>
->> On 1/18/24 18:23, Mirsad Todorovac wrote:
->>> Hi,
->>>
->>> Unfortunately, I was not able to reboot in this kernel again to do th=
-e stack decode, but I thought
->>> that any information about the NULL pointer dereference is better tha=
-n no info.
->>>
->>> The system is Ubuntu 23.10 Mantic with AMD product: Navi 23 [Radeon R=
-X 6600/6600 XT/6600M]
->>> graphic card.
->>>
->>> Please find the config and the hw listing attached.
->>>
->>> Best regards,
->>> Mirsad
->>
->>
->>
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576702] BUG: kernel NULL pointer derefe=
-rence, address: 0000000000000008
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576707] #PF: supervisor read access in =
-kernel mode
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576710] #PF: error_code(0x0000) - not-p=
-resent page
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576712] PGD 0 P4D 0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576715] Oops: 0000 [#1] PREEMPT SMP NOP=
-TI
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576718] CPU: 9 PID: 650 Comm: systemd-u=
-devd Not tainted 6.7.0-rtl-v0.2-nokcsan-09928-g052d534373b7 #2
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576723] Hardware name: ASRock X670E PG =
-Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576726] RIP: 0010:gfx_v10_0_early_init+=
-0x5ab/0x8d0 [amdgpu]
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576872] Code: 8d 55 a8 4c 89 ff e8 e4 8=
-3 ec ff 41 89 c2 83 f8 ed 0f 84 b3 fd ff ff 85 c0 74 05 0f 1f 44 00 00 49=
- 8b 87 08 87 01 00 4c 89 ff <48> 8b 40 08 0f b7 50 0a 0f b7 70 08 e8 e4 4=
-2 fb ff 41 89 c2 85 c0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576878] RSP: 0018:ffffa5b3c103f720 EFLA=
-GS: 00010282
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576881] RAX: 0000000000000000 RBX: ffff=
-ffffc1d73489 RCX: 0000000000000000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576884] RDX: 0000000000000000 RSI: 0000=
-000000000000 RDI: ffff91ae4fa80000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576886] RBP: ffffa5b3c103f7b0 R08: 0000=
-000000000000 R09: 0000000000000000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576889] R10: 00000000ffffffea R11: 0000=
-000000000000 R12: ffff91ae4fa986e8
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576892] R13: ffff91ae4fa986d8 R14: ffff=
-91ae4fa986f8 R15: ffff91ae4fa80000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576895] FS:=C2=A0 00007fdaa343c8c0(0000=
-) GS:ffff91bd58440000(0000) knlGS:0000000000000000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576898] CS:=C2=A0 0010 DS: 0000 ES: 000=
-0 CR0: 0000000080050033
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576900] CR2: 0000000000000008 CR3: 0000=
-0001222d0000 CR4: 0000000000750ef0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576903] PKRU: 55555554
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576905] Call Trace:
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576907]=C2=A0 <TASK>
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576909]=C2=A0 ? show_regs+0x72/0x90
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576914]=C2=A0 ? __die+0x25/0x80
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576917]=C2=A0 ? page_fault_oops+0x154/0=
-x4c0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576921]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576925]=C2=A0 ? crypto_alloc_tfmmem.isr=
-a.0+0x35/0x70
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576930]=C2=A0 ? do_user_addr_fault+0x30=
-e/0x6e0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576934]=C2=A0 ? exc_page_fault+0x84/0x1=
-b0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576937]=C2=A0 ? asm_exc_page_fault+0x27=
-/0x30
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.576942]=C2=A0 ? gfx_v10_0_early_init+0x=
-5ab/0x8d0 [amdgpu]
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577056]=C2=A0 amdgpu_device_init+0xefa/=
-0x2de0 [amdgpu]
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577158]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577161]=C2=A0 ? pci_bus_read_config_wor=
-d+0x47/0x90
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577166]=C2=A0 ? pci_read_config_word+0x=
-27/0x60
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577168]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577171]=C2=A0 ? do_pci_enable_device+0x=
-e1/0x110
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577176]=C2=A0 amdgpu_driver_load_kms+0x=
-1a/0x1c0 [amdgpu]
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577275]=C2=A0 amdgpu_pci_probe+0x1a8/0x=
-5e0 [amdgpu]
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577373]=C2=A0 local_pci_probe+0x48/0xb0=
-
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577377]=C2=A0 pci_device_probe+0xc8/0x2=
-90
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577381]=C2=A0 really_probe+0x1d2/0x440
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577386]=C2=A0 __driver_probe_device+0x8=
-a/0x190
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577389]=C2=A0 driver_probe_device+0x23/=
-0xd0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577392]=C2=A0 __driver_attach+0x10f/0x2=
-20
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577396]=C2=A0 ? __pfx___driver_attach+0=
-x10/0x10
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577399]=C2=A0 bus_for_each_dev+0x7a/0xe=
-0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577402]=C2=A0 driver_attach+0x1e/0x30
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577405]=C2=A0 bus_add_driver+0x127/0x24=
-0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577409]=C2=A0 driver_register+0x64/0x14=
-0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577411]=C2=A0 ? __pfx_amdgpu_init+0x10/=
-0x10 [amdgpu]
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577521]=C2=A0 __pci_register_driver+0x6=
-8/0x80
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577524]=C2=A0 amdgpu_init+0x69/0xff0 [a=
-mdgpu]
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577628]=C2=A0 do_one_initcall+0x46/0x33=
-0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577632]=C2=A0 ? kmalloc_trace+0x136/0x3=
-70
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577637]=C2=A0 do_init_module+0x6a/0x280=
-
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577640]=C2=A0 load_module+0x2419/0x2500=
-
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577647]=C2=A0 init_module_from_file+0x9=
-c/0xf0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577649]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577652]=C2=A0 ? init_module_from_file+0=
-x9c/0xf0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577657]=C2=A0 idempotent_init_module+0x=
-184/0x240
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577661]=C2=A0 __x64_sys_finit_module+0x=
-64/0xd0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577664]=C2=A0 do_syscall_64+0x76/0x140
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577668]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577671]=C2=A0 ? ksys_mmap_pgoff+0x123/0=
-x270
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577675]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577678]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577681]=C2=A0 ? syscall_exit_to_user_mo=
-de+0x97/0x1e0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577684]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577687]=C2=A0 ? do_syscall_64+0x85/0x14=
-0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577689]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577692]=C2=A0 ? do_syscall_64+0x85/0x14=
-0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577695]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577698]=C2=A0 ? do_syscall_64+0x85/0x14=
-0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577700]=C2=A0 ? srso_alias_return_thunk=
-+0x5/0xfbef5
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577703]=C2=A0 ? sysvec_call_function+0x=
-4e/0xb0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577707]=C2=A0 entry_SYSCALL_64_after_hw=
-frame+0x6e/0x76
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577709] RIP: 0033:0x7fdaa331e88d
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577724] Code: 5b 41 5c c3 66 0f 1f 84 0=
-0 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d=
- 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 73 b5 0=
-f 00 f7 d8 64 89 01 48
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577729] RSP: 002b:00007ffeb4f87d28 EFLA=
-GS: 00000246 ORIG_RAX: 0000000000000139
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577733] RAX: ffffffffffffffda RBX: 0000=
-55aedf3eeeb0 RCX: 00007fdaa331e88d
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577736] RDX: 0000000000000000 RSI: 0000=
-55aedf3efb80 RDI: 000000000000001a
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577738] RBP: 0000000000020000 R08: 0000=
-000000000000 R09: 0000000000000002
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577741] R10: 000000000000001a R11: 0000=
-000000000246 R12: 000055aedf3efb80
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577744] R13: 000055aedf3f2060 R14: 0000=
-000000000000 R15: 000055aedf2b1220
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577748]=C2=A0 </TASK>
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577750] Modules linked in: intel_rapl_m=
-sr intel_rapl_common amdgpu(+) edac_mce_amd kvm_amd kvm snd_hda_codec_rea=
-ltek snd_hda_codec_generic irqbypass ledtrig_audio crct10dif_pclmul polyv=
-al_clmulni polyval_generic snd_hda_codec_hdmi ghash_clmulni_intel sha512_=
-ssse3 sha256_ssse3 sha1_ssse3 amdxcp snd_hda_intel aesni_intel drm_exec s=
-nd_intel_dspcfg crypto_simd gpu_sched snd_intel_sdw_acpi cryptd nls_iso88=
-59_1 drm_buddy snd_hda_codec snd_seq_midi drm_suballoc_helper snd_seq_mid=
-i_event drm_ttm_helper joydev snd_hda_core input_leds ttm rapl snd_rawmid=
-i snd_hwdep drm_display_helper snd_seq snd_pcm wmi_bmof cec k10temp snd_s=
-eq_device ccp rc_core snd_timer snd drm_kms_helper i2c_algo_bit soundcore=
- mac_hid tcp_bbr sch_fq msr parport_pc ppdev lp drm parport efi_pstore ip=
-_tables x_tables autofs4 btrfs blake2b_generic xor raid6_pq libcrc32c hid=
-_generic usbhid hid crc32_pclmul nvme r8169 ahci nvme_core i2c_piix4 xhci=
-_pci libahci xhci_pci_renesas realtek video wmi gpio_amdpt
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577817] CR2: 0000000000000008
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.577820] ---[ end trace 0000000000000000=
- ]---
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914230] RIP: 0010:gfx_v10_0_early_init+=
-0x5ab/0x8d0 [amdgpu]
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914388] Code: 8d 55 a8 4c 89 ff e8 e4 8=
-3 ec ff 41 89 c2 83 f8 ed 0f 84 b3 fd ff ff 85 c0 74 05 0f 1f 44 00 00 49=
- 8b 87 08 87 01 00 4c 89 ff <48> 8b 40 08 0f b7 50 0a 0f b7 70 08 e8 e4 4=
-2 fb ff 41 89 c2 85 c0
->>> rsyslogd: rsyslogd's groupid changed to 111
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914394] RSP: 0018:ffffa5b3c103f720 EFLA=
-GS: 00010282
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914397] RAX: 0000000000000000 RBX: ffff=
-ffffc1d73489 RCX: 0000000000000000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914399] RDX: 0000000000000000 RSI: 0000=
-000000000000 RDI: ffff91ae4fa80000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914402] RBP: ffffa5b3c103f7b0 R08: 0000=
-000000000000 R09: 0000000000000000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914405] R10: 00000000ffffffea R11: 0000=
-000000000000 R12: ffff91ae4fa986e8
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914408] R13: ffff91ae4fa986d8 R14: ffff=
-91ae4fa986f8 R15: ffff91ae4fa80000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914410] FS:=C2=A0 00007fdaa343c8c0(0000=
-) GS:ffff91bd58440000(0000) knlGS:0000000000000000
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914414] CS:=C2=A0 0010 DS: 0000 ES: 000=
-0 CR0: 0000000080050033
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914416] CR2: 0000000000000008 CR3: 0000=
-0001222d0000 CR4: 0000000000750ef0
->>> kernel: [=C2=A0=C2=A0=C2=A0 5.914419] PKRU: 55555554
-
---=20
-Mirsad Goran Todorovac
-Sistem in=C5=BEenjer
-Grafi=C4=8Dki fakultet | Akademija likovnih umjetnosti
-Sveu=C4=8Dili=C5=A1te u Zagrebu
-=20
-System engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb, Republic of Croatia
-The European Union
-
-"I see something approaching fast ... Will it be friends with me?"
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index ac18f802c027..9b2d278a7ae7 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -1163,10 +1163,11 @@ static inline bool blk_mq_complete_need_ipi(struct request *rq)
+ 	if (force_irqthreads())
+ 		return false;
+ 
+-	/* same CPU or cache domain?  Complete locally */
++	/* same CPU or cache domain and capacity?  Complete locally */
+ 	if (cpu == rq->mq_ctx->cpu ||
+ 	    (!test_bit(QUEUE_FLAG_SAME_FORCE, &rq->q->queue_flags) &&
+-	     cpus_share_cache(cpu, rq->mq_ctx->cpu)))
++	     cpus_share_cache(cpu, rq->mq_ctx->cpu) &&
++	     cpus_gte_capacity(cpu, rq->mq_ctx->cpu)))
+ 		return false;
+ 
+ 	/* don't try to IPI to an offline CPU */
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index a6e04b4a21d7..31cef5780ba4 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -176,6 +176,7 @@ extern void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+ cpumask_var_t *alloc_sched_domains(unsigned int ndoms);
+ void free_sched_domains(cpumask_var_t doms[], unsigned int ndoms);
+ 
++bool cpus_gte_capacity(int this_cpu, int that_cpu);
+ bool cpus_share_cache(int this_cpu, int that_cpu);
+ bool cpus_share_resources(int this_cpu, int that_cpu);
+ 
+@@ -226,6 +227,11 @@ partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+ {
+ }
+ 
++static inline bool cpus_gte_capacity(int this_cpu, int that_cpu)
++{
++	return true;
++}
++
+ static inline bool cpus_share_cache(int this_cpu, int that_cpu)
+ {
+ 	return true;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index db4be4921e7f..db5ab4b3cee7 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3954,6 +3954,14 @@ void wake_up_if_idle(int cpu)
+ 	}
+ }
+ 
++bool cpus_gte_capacity(int this_cpu, int that_cpu)
++{
++	if (this_cpu == that_cpu)
++		return true;
++
++	return arch_scale_cpu_capacity(this_cpu) >= arch_scale_cpu_capacity(that_cpu);
++}
++
+ bool cpus_share_cache(int this_cpu, int that_cpu)
+ {
+ 	if (this_cpu == that_cpu)
+-- 
+2.34.1
 
 
